@@ -1,6 +1,6 @@
 from django.conf.urls import include, url
-from . import views
+from api.views import errand
 
 urlpatterns = [
-    url(r'test/', views.showme)
+    url(r'make/', errand.make)
 ]
