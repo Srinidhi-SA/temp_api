@@ -22,6 +22,7 @@ class Errand(models.Model):
         obj.save()
         obj.input_file = input_file
         obj.save()
+        hadoop.hadoop_r()
         obj.setup_storage_folders()
         obj.send_input_file_to_storage()
         return obj
