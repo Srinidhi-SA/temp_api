@@ -13,5 +13,6 @@ def test(request):
 urlpatterns = [
     url(r'test', test),
     url(r'errand/make', errand.make),
-    url(r'errand/preview', errand.preview)
+    url(r'errand/preview', errand.preview),
+    url(r'errand/columns', errand.columns)
 ]

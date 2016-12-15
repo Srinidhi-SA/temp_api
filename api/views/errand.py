@@ -33,3 +33,9 @@ def make(request):
 def preview(request):
     e = get_errand(request)
     return Response({'data': e.get_preview_data()})
+
+@api_view(['GET'])
+@renderer_classes((JSONRenderer, ))
+def columns(request):
+    e = get_errand(request)
+    return Response({'data': e.get_columns()})

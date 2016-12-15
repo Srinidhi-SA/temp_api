@@ -76,6 +76,10 @@ class Errand(models.Model):
                 items.append(row)
         return items
 
+    def get_columns(self):
+        preview = self.get_preview_data()
+        return preview[0]
+
 class ErrandSerializer(serializers.Serializer):
     slug = serializers.CharField(max_length=100)
     id = serializers.ReadOnlyField()
