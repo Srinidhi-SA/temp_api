@@ -11,6 +11,7 @@ def test(request):
     return Response({"message": "Is this a test?", "data": "Yes it is!"});
 
 urlpatterns = [
-    url(r'test/', test),
-    url(r'errand/make/', errand.make)
+    url(r'test', test),
+    url(r'errand/make', errand.make),
+    url(r'errand/preview', errand.preview)
 ]

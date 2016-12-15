@@ -3,13 +3,14 @@ from rest_framework import serializers
 from api.lib import hadoop
 import os
 import ConfigParser
+import csv
+import itertools
 
 def errand_base_directory(instance):
     return "uploads/errands/{0}".format(instance.id)
 
 def errand_input_file_directory_path(instance, filename):
     return errand_base_directory(instance) + "/{0}".format(filename)
-    # return "uploads/errands/{0}/{1}".format(instance.id, filename)
 
 class Errand(models.Model):
     slug = models.CharField(max_length=100)
@@ -66,6 +67,14 @@ class Errand(models.Model):
         with open(config_file_path, 'wb') as file:
             config.write(file)
         print "Take a look at: {}".format(config_file_path)
+
+    def get_preview_data(self):
+        items = []
+        with open(self.input_file.path) as file:
+            rows = csv.reader(file, delimiter=',')
+            for row in itertools.islice(rows, 20):
+                items.append(row)
+        return items
 
 class ErrandSerializer(serializers.Serializer):
     slug = serializers.CharField(max_length=100)
