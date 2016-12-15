@@ -15,6 +15,8 @@ def errand_input_file_directory_path(instance, filename):
 class Errand(models.Model):
     slug = models.CharField(max_length=100)
     input_file = models.FileField(upload_to=errand_input_file_directory_path, null=True, blank=True)
+    dimensions = models.CharField(max_length=300, null=True)
+    measure = models.CharField(max_length=100, null=True)
 
     # CLASS METHODS
     @classmethod
@@ -79,6 +81,14 @@ class Errand(models.Model):
     def get_columns(self):
         preview = self.get_preview_data()
         return preview[0]
+
+    def set_dimensions(self, list):
+        self.dimensions = ','.join([str(x) for x in list])
+        self.save()
+
+    def set_measure(self, string):
+        self.measure = string
+        self.save()
 
 class ErrandSerializer(serializers.Serializer):
     slug = serializers.CharField(max_length=100)

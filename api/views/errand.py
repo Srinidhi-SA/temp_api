@@ -13,7 +13,8 @@ def showme(request):
     return HttpResponse("Alright, this is a test");
 
 def get_errand(request):
-    return Errand.objects.get(pk=request.GET['errand_id'])
+    id = request.GET['errand_id'] if request.method == "GET" else request.POST['errand_id']
+    return Errand.objects.get(pk=id)
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer,))
@@ -39,3 +40,17 @@ def preview(request):
 def columns(request):
     e = get_errand(request)
     return Response({'data': e.get_columns()})
+
+@api_view(['POST'])
+@renderer_classes((JSONRenderer, ))
+def set_dimensions(request):
+    e = get_errand(request)
+    e.set_dimensions(request.POST['dimensions'].split(","))
+    return Response({'message': "Success"})
+
+@api_view(['POST'])
+@renderer_classes((JSONRenderer, ))
+def set_measure(request):
+    e = get_errand(request)
+    e.set_measure(request.POST['measure'])
+    return Response({'message': "Success", "id": e.id})
