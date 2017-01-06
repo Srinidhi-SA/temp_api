@@ -30,6 +30,7 @@ class Errand(models.Model):
         hadoop.hadoop_r()
         obj.setup_storage_folders()
         obj.send_input_file_to_storage()
+        obj.run_dist()
         return obj
 
     # INSTANCE METHODS
@@ -103,7 +104,7 @@ class Errand(models.Model):
     def get_result(self):
         if self.measure is None :
             raise Exception("Measure is not set")
-            
+
         result_dir = self.storage_output_dir() + "/result.json"
         list = hadoop.hadoop_ls(result_dir)
         for item in list:
