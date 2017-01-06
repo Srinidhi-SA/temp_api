@@ -12,6 +12,7 @@ def test(request):
 
 urlpatterns = [
     url(r'test', test),
+    url(r'env', errand.get_env),
     url(r'errand/make', errand.make),
     url(r'errand/preview', errand.preview),
     url(r'errand/columns', errand.columns),

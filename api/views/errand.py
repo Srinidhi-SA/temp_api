@@ -1,3 +1,5 @@
+import os
+import getpass
 from django.shortcuts import render
 from django.http import HttpResponse
 
@@ -54,3 +56,9 @@ def set_measure(request):
     e = get_errand(request)
     e.set_measure(request.POST['measure'])
     return Response({'message': "Success", "id": e.id})
+
+
+@api_view(['GET'])
+@renderer_classes((JSONRenderer, ))
+def get_env(request):
+    return Response({'user': getpass.getuser(), 'env': os.environ})

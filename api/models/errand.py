@@ -5,6 +5,7 @@ import os
 import ConfigParser
 import csv
 import itertools
+# import hadoopy
 
 def errand_base_directory(instance):
     return "uploads/errands/{0}".format(instance.id)
@@ -50,6 +51,9 @@ class Errand(models.Model):
     def get_input_file_storage_path(self):
         return "{0}{1}{2}".format(hadoop.hadoop_hdfs_url(self), self.storage_input_dir(), os.path.basename(self.input_file.name))
 
+    def get_output_file_path(self, name=""):
+        return self.storage_output_dir() + "/" + name
+
     def update_configration_file(self):
         config = ConfigParser.RawConfigParser()
         config.add_section("data")
@@ -89,6 +93,10 @@ class Errand(models.Model):
     def set_measure(self, string):
         self.measure = string
         self.save()
+
+    def get_results(self):
+        points = hadoop.hadoop_read_file(self.get_output_file_path("five_point.json"))
+        return {"quartiles": points[self.measure]["freq"]}
 
 class ErrandSerializer(serializers.Serializer):
     slug = serializers.CharField(max_length=100)

@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',
     'rest_framework',
     'corsheaders',
     'api'
@@ -127,3 +128,10 @@ STATIC_URL = '/static/'
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = False
+
+HDFS = {
+    'host': 'ec2-54-88-153-37.compute-1.amazonaws.com',
+    'port': '14000',
+    'uri': 'http://ec2-54-88-153-37.compute-1.amazonaws.com:14000/webhdfs/v1',
+    'user.name': 'hadoop'
+}
