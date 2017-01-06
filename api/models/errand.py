@@ -5,6 +5,7 @@ import os
 import ConfigParser
 import csv
 import itertools
+from subprocess import call
 # import hadoopy
 
 def errand_base_directory(instance):
@@ -49,7 +50,7 @@ class Errand(models.Model):
         hadoop.hadoop_put(self.input_file.path, self.storage_input_dir() + "/")
 
     def get_input_file_storage_path(self):
-        return "{0}{1}{2}".format(hadoop.hadoop_hdfs_url(self), self.storage_input_dir(), os.path.basename(self.input_file.name))
+        return "{0}/{1}".format(self.storage_input_dir(), os.path.basename(self.input_file.name))
 
     def get_output_file_path(self, name=""):
         return self.storage_output_dir() + "/" + name
@@ -94,9 +95,35 @@ class Errand(models.Model):
         self.measure = string
         self.save()
 
-    def get_results(self):
+    def get_results_old(self):
         points = hadoop.hadoop_read_file(self.get_output_file_path("five_point.json"))
         return {"quartiles": points[self.measure]["freq"]}
+
+    # RUNS THE SCRIPTS
+    def run_dist(self):
+        print("Running distrubutions scripts")
+        call(["sh", "api/lib/run_dist.sh", self.get_input_file_storage_path(), self.storage_output_dir()])
+
+    def get_result(self):
+        result_dir = self.storage_output_dir() + "/result.json"
+        list = hadoop.hadoop_ls(result_dir)
+        for item in list:
+            if item['length'] > 0:
+                filled_part = result_dir + "/" + item['pathSuffix']
+                print("Found at: " + filled_part)
+                return hadoop.hadoop_read_file(filled_part)
+        return {}
+
+    def get_narratives(self):
+        dir = self.storage_output_dir() + "/narratives.json"
+        list = hadoop.hadoop_ls(dir)
+        for item in list:
+            if item['length'] > 0:
+                filled_part = dir + "/" + item['pathSuffix']
+                print("Found at: " + filled_part)
+                return hadoop.hadoop_read_file(filled_part)
+        return {}
+
 
 class ErrandSerializer(serializers.Serializer):
     slug = serializers.CharField(max_length=100)
