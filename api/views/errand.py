@@ -62,3 +62,10 @@ def set_measure(request):
 @renderer_classes((JSONRenderer, ))
 def get_env(request):
     return Response({'user': getpass.getuser(), 'env': os.environ})
+
+
+@api_view(['GET'])
+@renderer_classes((JSONRenderer, ))
+def get_results(request):
+    e = get_errand(request)
+    return Response({'result': e.get_result(), 'narratives': e.get_narratives()})

@@ -95,33 +95,36 @@ class Errand(models.Model):
         self.measure = string
         self.save()
 
-    def get_results_old(self):
-        points = hadoop.hadoop_read_file(self.get_output_file_path("five_point.json"))
-        return {"quartiles": points[self.measure]["freq"]}
-
     # RUNS THE SCRIPTS
     def run_dist(self):
         print("Running distrubutions scripts")
         call(["sh", "api/lib/run_dist.sh", self.get_input_file_storage_path(), self.storage_output_dir()])
 
     def get_result(self):
+        if self.measure is None :
+            raise Exception("Measure is not set")
+            
         result_dir = self.storage_output_dir() + "/result.json"
         list = hadoop.hadoop_ls(result_dir)
         for item in list:
             if item['length'] > 0:
                 filled_part = result_dir + "/" + item['pathSuffix']
                 print("Found at: " + filled_part)
-                return hadoop.hadoop_read_file(filled_part)
+                data = hadoop.hadoop_read_file(filled_part)
+                return data['measures'][self.measure]
         return {}
 
     def get_narratives(self):
+        if self.measure is None :
+            raise Exception("Measure is not set")
         dir = self.storage_output_dir() + "/narratives.json"
         list = hadoop.hadoop_ls(dir)
         for item in list:
             if item['length'] > 0:
                 filled_part = dir + "/" + item['pathSuffix']
                 print("Found at: " + filled_part)
-                return hadoop.hadoop_read_file(filled_part)
+                data = hadoop.hadoop_read_file(filled_part)
+                return data['measures'][self.measure]
         return {}
 
 
