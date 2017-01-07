@@ -47,6 +47,15 @@ def hadoop_read_file(path='', parse_json = True):
 def hadoop_del_file(path):
     hadoop_hdfs().delete_file_dir(path)
 
+def hadoop_read_output_file(path):
+    list = hadoop_ls(path)
+    for item in list:
+        if item['length'] > 0:
+            filled_part = path + "/" + item['pathSuffix']
+            print("Found at: " + filled_part)
+            return hadoop_read_file(filled_part)
+    return {}
+
 def hadoop_hdfs():
     conf = settings.HDFS
     return PyWebHdfsClient(host= conf['host'],port= conf['port'], user_name=conf['user.name'])
