@@ -30,7 +30,7 @@ class Errand(models.Model):
         hadoop.hadoop_r()
         obj.setup_storage_folders()
         obj.send_input_file_to_storage()
-        obj.run_dist()
+        # obj.run_dist()
         return obj
 
     # INSTANCE METHODS
@@ -95,6 +95,7 @@ class Errand(models.Model):
     def set_measure(self, string):
         self.measure = string
         self.save()
+        self.run_dist() # THE DATA PROCESSING STARTS NOW
 
     # RUNS THE SCRIPTS
     def run_dist(self):
