@@ -68,4 +68,4 @@ def get_env(request):
 @renderer_classes((JSONRenderer, ))
 def get_results(request):
     e = get_errand(request)
-    return Response({'result': e.get_result(), 'narratives': e.get_narratives()})
+    return Response({'result': e.get_result(), 'narratives': e.get_narratives(), 'dimensions': e.get_dimension_results()})

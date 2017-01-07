@@ -26,9 +26,7 @@ def hadoop_mkdir(path):
 
 def hadoop_ls(path='/'):
     print "Looking for {}".format(path)
-    # subprocess.call(["/usr/local/hadoop/bin/hadoop", "fs", "-ls", path])
     result = hadoop_hdfs().list_dir(path)
-    print result
     return result['FileStatuses']['FileStatus']
 
 def hadoop_r():

@@ -134,14 +134,22 @@ class Errand(models.Model):
         narratives = hadoop.hadoop_read_output_file(path)
         print "=============="
         items = narratives['narratives'][self.measure]
-        narrative_data = {}
-        narrative_data['summary'] = items['summary']
-        narrative_data['narratives'] = []
+        dimensions_data = {}
+        dimensions_data['summary'] = items['summary']
+        dimensions_data['narratives'] = []
 
-        # for key, value in items['narratives'].iteritems():
-        #     print key
-        #     print value
-        return narrative_data
+        for key, value in items['narratives'].iteritems():
+            dimensions_data['narratives'].append(value)
+
+        # RESULTS
+        path = self.storage_output_dir() + "/dimensions-result.json"
+        result = hadoop.hadoop_read_output_file(path)
+        result_data = []
+        items = result["results"][self.measure]
+        for key, value in items.iteritems():
+            result_data.append([key, value["effect_size"]])
+        dimensions_data['raw_data'] = result_data
+        return dimensions_data
 
 class ErrandSerializer(serializers.Serializer):
     slug = serializers.CharField(max_length=100)
