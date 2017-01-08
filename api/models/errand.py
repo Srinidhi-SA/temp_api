@@ -151,6 +151,25 @@ class Errand(models.Model):
         dimensions_data['raw_data'] = result_data
         return dimensions_data
 
+    def get_reg_results(self):
+        data = {}
+        path = self.storage_output_dir() + "/reg-narratives.json"
+        narratives = hadoop.hadoop_read_output_file(path)
+        data['summary'] = narratives['narratives'][self.measure]['summary']
+        data['analysis'] = narratives['narratives'][self.measure]['analysis']
+
+        path = self.storage_output_dir() + "/reg-result.json"
+        result = hadoop.hadoop_read_output_file(path)
+        data['raw_data'] = []
+        for key, value in result['results'][self.measure]['stats']['coefficients'].iteritems():
+            data['raw_data'].append([key, value['coefficient']])
+
+        # ORDERS IT SO THAT THE ITEM[1] IS WHAT IS USED
+        def order(item):
+            return item[1]
+        data['raw_data'] = sorted(data['raw_data'], key = order)
+        return data
+
 class ErrandSerializer(serializers.Serializer):
     slug = serializers.CharField(max_length=100)
     id = serializers.ReadOnlyField()
