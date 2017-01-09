@@ -58,6 +58,8 @@ def set_measure(request):
     e = get_errand(request)
     e.set_measure(request.POST['measure'])
     if request.POST.has_key('cache') and request.POST['cache'] == "yes":
+        print("do nothing right now")
+    else:
         e.run_dist()
     sleep(1)
     return Response({'message': "Success", "id": e.id})
