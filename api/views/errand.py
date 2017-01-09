@@ -61,7 +61,7 @@ def set_measure(request):
         print("do nothing right now")
     else:
         e.run_dist()
-    sleep(1)
+    sleep(5)
     return Response({'message': "Success", "id": e.id})
 
 
