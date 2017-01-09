@@ -95,7 +95,6 @@ class Errand(models.Model):
     def set_measure(self, string):
         self.measure = string
         self.save()
-        self.run_dist() # THE DATA PROCESSING STARTS NOW
 
     # RUNS THE SCRIPTS
     def run_dist(self):

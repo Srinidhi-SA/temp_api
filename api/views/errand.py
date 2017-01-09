@@ -9,6 +9,8 @@ from rest_framework.response import Response
 
 from api.models.errand import Errand, ErrandSerializer
 
+from time import sleep
+
 # Create your views here.
 
 def showme(request):
@@ -55,6 +57,9 @@ def set_dimensions(request):
 def set_measure(request):
     e = get_errand(request)
     e.set_measure(request.POST['measure'])
+    if request.POST.has_key('cache') and request.POST['cache'] == "yes":
+        e.run_dist()
+    sleep(1)
     return Response({'message': "Success", "id": e.id})
 
 
