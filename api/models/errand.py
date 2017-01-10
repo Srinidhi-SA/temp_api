@@ -19,6 +19,7 @@ class Errand(models.Model):
     input_file = models.FileField(upload_to=errand_input_file_directory_path, null=True, blank=True)
     dimensions = models.CharField(max_length=300, null=True)
     measure = models.CharField(max_length=100, null=True)
+    is_archived = models.BooleanField(default=False)
 
     # CLASS METHODS
     @classmethod
@@ -161,7 +162,7 @@ class Errand(models.Model):
         result = hadoop.hadoop_read_output_file(path)
         data['raw_data'] = []
         for key, value in result['results'][self.measure]['stats']['coefficients'].iteritems():
-            data['raw_data'].append([key, value['coefficient']])
+            data['raw_data'].append([key, round(value['coefficient'], 1)])
 
         # ORDERS IT SO THAT THE ITEM[1] IS WHAT IS USED
         def order(item):
@@ -172,7 +173,9 @@ class Errand(models.Model):
 class ErrandSerializer(serializers.Serializer):
     slug = serializers.CharField(max_length=100)
     id = serializers.ReadOnlyField()
+    is_archived = serializers.BooleanField()
+    input_file_path = serializers.ReadOnlyField(source="input_file.url")
 
     class Meta:
         model = Errand
-        fields = ('id', 'slug')
+        fields = ('id', 'slug', 'input_file_path')

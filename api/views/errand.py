@@ -2,6 +2,9 @@ import os
 import getpass
 from django.shortcuts import render
 from django.http import HttpResponse
+from subprocess import call
+import subprocess
+import glob
 
 from rest_framework.decorators import renderer_classes, api_view
 from rest_framework.renderers import JSONRenderer
@@ -19,6 +22,11 @@ def showme(request):
 def get_errand(request):
     id = request.GET['errand_id'] if request.method == "GET" else request.POST['errand_id']
     return Errand.objects.get(pk=id)
+
+@api_view(['GET'])
+@renderer_classes((JSONRenderer,))
+def get_uploaded_files(request):
+    return Response({'files': glob.iglob("uploads/errands/*/*.csv")})
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer,))
@@ -81,3 +89,19 @@ def get_results(request):
         'dimensions': e.get_dimension_results(),
         'measures': e.get_reg_results()
     })
+
+
+@api_view(['GET'])
+@renderer_classes((JSONRenderer, ))
+def get_archived(request):
+    es = Errand.objects.filter(is_archived=True)
+    return Response({'errands': ErrandSerializer(es, many=True).data})
+
+
+@api_view(['POST'])
+@renderer_classes((JSONRenderer, ))
+def set_archived(request):
+    e = get_errand(request)
+    e.is_archived = True
+    e.save()
+    return Response({'data': "Successfully archived errand"})
