@@ -28,7 +28,6 @@ class Errand(models.Model):
         obj.save()
         obj.input_file = input_file
         obj.save()
-        hadoop.hadoop_r()
         obj.setup_storage_folders()
         obj.send_input_file_to_storage()
         # obj.run_dist()
@@ -174,6 +173,7 @@ class ErrandSerializer(serializers.Serializer):
     slug = serializers.CharField(max_length=100)
     id = serializers.ReadOnlyField()
     is_archived = serializers.BooleanField()
+    measure = serializers.CharField(max_length=100)
     input_file_path = serializers.ReadOnlyField(source="input_file.url")
 
     class Meta:
