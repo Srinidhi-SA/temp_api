@@ -49,6 +49,18 @@ def preview(request):
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
+def get_meta(request):
+    return Response({
+        'columns': [
+                {'name': 'a', 'data_type': 'String', 'data_format': 'string', 'no_of_nulls': 0},
+                {'name': 'b', 'data_type': 'String', 'data_format': 'string', 'no_of_nulls': 0},
+                {'name': 'c', 'data_type': 'String', 'data_format': 'string', 'no_of_nulls': 0}
+            ],
+        'count': {'rows': 82, 'cols': 20, 'dimensions': 4}
+    })
+
+@api_view(['GET'])
+@renderer_classes((JSONRenderer, ))
 def columns(request):
     e = get_errand(request)
     return Response({'data': e.get_columns()})

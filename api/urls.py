@@ -16,6 +16,7 @@ urlpatterns = [
     url(r'errand/uploaded_files', errand.get_uploaded_files),
     url(r'errand/make', errand.make),
     url(r'errand/preview', errand.preview),
+    url(r'errand/get_meta', errand.get_meta),
     url(r'errand/columns', errand.columns),
     url(r'errand/get_measures', errand.columns),
     url(r'errand/set_dimensions', errand.set_dimensions),
