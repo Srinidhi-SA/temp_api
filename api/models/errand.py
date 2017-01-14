@@ -99,7 +99,7 @@ class Errand(models.Model):
     # RUNS THE SCRIPTS
     def run_dist(self):
         print("Running distrubutions scripts")
-        call(["sh", "api/lib/run_dist.sh", self.get_input_file_storage_path(), self.storage_output_dir()])
+        call(["sh", "api/lib/run_dist.sh", self.get_input_file_storage_path(), self.storage_output_dir(), self.measure])
 
     def get_result(self):
         if self.measure is None :
@@ -112,7 +112,8 @@ class Errand(models.Model):
                 filled_part = result_dir + "/" + item['pathSuffix']
                 print("Found at: " + filled_part)
                 data = hadoop.hadoop_read_file(filled_part)
-                return data['measures'][self.measure]
+                return data
+                # return data['measures'][self.measure]
         return {}
 
     def get_narratives(self):
@@ -125,7 +126,8 @@ class Errand(models.Model):
                 filled_part = dir + "/" + item['pathSuffix']
                 print("Found at: " + filled_part)
                 data = hadoop.hadoop_read_file(filled_part)
-                return data['measures'][self.measure]
+                return data
+                # return data['measures'][self.measure]
         return {}
 
     def get_dimension_results(self):
@@ -139,6 +141,7 @@ class Errand(models.Model):
 
         for key, value in items['narratives'].iteritems():
             dimensions_data['narratives'].append(value)
+
 
         # RESULTS
         path = self.storage_output_dir() + "/dimensions-result.json"
@@ -154,13 +157,15 @@ class Errand(models.Model):
         data = {}
         path = self.storage_output_dir() + "/reg-narratives.json"
         narratives = hadoop.hadoop_read_output_file(path)
-        data['summary'] = narratives['narratives'][self.measure]['summary']
-        data['analysis'] = narratives['narratives'][self.measure]['analysis']
+        data['summary'] = narratives['summary']
+        data['analysis'] = narratives['analysis']
+
 
         path = self.storage_output_dir() + "/reg-result.json"
         result = hadoop.hadoop_read_output_file(path)
+        
         data['raw_data'] = []
-        for key, value in result['results'][self.measure]['stats']['coefficients'].iteritems():
+        for key, value in result['stats']['coefficients'].iteritems():
             data['raw_data'].append([key, round(value['coefficient'], 1)])
 
         # ORDERS IT SO THAT THE ITEM[1] IS WHAT IS USED
