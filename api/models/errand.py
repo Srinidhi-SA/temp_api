@@ -101,6 +101,23 @@ class Errand(models.Model):
         print("Running distrubutions scripts")
         call(["sh", "api/lib/run_dist.sh", self.get_input_file_storage_path(), self.storage_output_dir(), self.measure])
 
+    def run_meta(self):
+        print("Running meta script")
+        call(["sh", "api/lib/run_meta.sh", self.get_input_file_storage_path(), self.storage_output_dir()])
+
+    def get_meta(self):
+        path = self.storage_output_dir() + "/meta.json"
+        result = hadoop.hadoop_read_output_file(path)
+        print(result)
+        result_columns = result['columns']
+        data = {}
+        columns = []
+        data['count'] = {'rows': result['total_rows'], 'cols': result['total_columns'], 'dimensions': len(result_columns['dimension_columns'])}
+        for item in (result_columns['measure_columns'] + result_columns['dimension_columns']):
+            columns.append({'name': item, 'data_type': 'String', 'data_format': 'string', 'no_of_nulls': 0})
+        data['columns'] = columns
+        return data
+
     def get_result(self):
         if self.measure is None :
             raise Exception("Measure is not set")
@@ -163,7 +180,7 @@ class Errand(models.Model):
 
         path = self.storage_output_dir() + "/reg-result.json"
         result = hadoop.hadoop_read_output_file(path)
-        
+
         data['raw_data'] = []
         for key, value in result['stats']['coefficients'].iteritems():
             data['raw_data'].append([key, round(value['coefficient'], 1)])
