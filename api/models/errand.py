@@ -170,6 +170,12 @@ class Errand(models.Model):
         for key, value in items.iteritems():
             result_data.append([key, value["effect_size"]])
         dimensions_data['raw_data'] = result_data
+
+        # ORDERS IT SO THAT THE ITEM[1] IS WHAT IS USED
+        def order(item):
+            return item[1]
+        dimensions_data['raw_data'] = sorted(dimensions_data['raw_data'], key = order)
+
         return dimensions_data
 
     def get_reg_results(self):
