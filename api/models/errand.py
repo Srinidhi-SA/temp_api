@@ -30,7 +30,7 @@ class Errand(models.Model):
         obj.save()
         obj.setup_storage_folders()
         obj.send_input_file_to_storage()
-        # obj.run_dist()
+        obj.run_meta()
         return obj
 
     # INSTANCE METHODS
@@ -116,6 +116,8 @@ class Errand(models.Model):
         for item in (result_columns['measure_columns'] + result_columns['dimension_columns']):
             columns.append({'name': item, 'data_type': 'String', 'data_format': 'string', 'no_of_nulls': 0})
         data['columns'] = columns
+        data['measures'] = result_columns['measure_columns']
+        data['dimensions'] = result_columns['dimension_columns']
         return data
 
     def get_result(self):
