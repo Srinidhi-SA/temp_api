@@ -125,8 +125,9 @@ class Errand(models.Model):
             columns.append({'name': key, 'data_type': 'time', 'data_format': '', 'no_of_nulls': value['num_nulls']})
 
         data['columns'] = columns
-        data['measures'] = result_columns['measure_columns']
-        data['dimensions'] = result_columns['dimension_columns']
+        data['measures'] = result_columns['measure_columns'].keys()
+        data['dimensions'] = result_columns['dimension_columns'].keys()
+        
         return data
 
     def get_result(self):
@@ -169,7 +170,6 @@ class Errand(models.Model):
 
         for key, value in items['narratives'].iteritems():
             dimensions_data['narratives'].append(value)
-
 
         # RESULTS
         path = self.storage_output_dir() + "/dimensions-result.json"
