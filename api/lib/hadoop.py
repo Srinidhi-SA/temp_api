@@ -4,6 +4,7 @@ import json
 import os
 import os.path
 from pywebhdfs.webhdfs import PyWebHdfsClient
+from pywebhdfs.errors import FileNotFound
 from django.conf import settings
 
 def hadoop_put(from_path, to_dir):
@@ -23,6 +24,13 @@ def hadoop_mkdir(path):
     print "Creating directory {}".format(path)
     # subprocess.call(["/usr/local/hadoop/bin/hadoop", "fs", "-mkdir", "-p", path])
     hadoop_hdfs().make_dir(path)
+
+def hadoop_exists(path):
+    try:
+        hadoop_hdfs().get_file_dir_status(path)
+        return True
+    except FileNotFound as e:
+        return False
 
 def hadoop_ls(path='/'):
     print "Looking for {}".format(path)

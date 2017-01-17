@@ -43,6 +43,9 @@ class Errand(models.Model):
     def storage_output_dir(self):
         return "{}/output".format(self.base_storage_dir())
 
+    def storage_measure_output_dir(self):
+        return self.storage_output_dir() + "/" + self.measure
+
     def setup_storage_folders(self):
         hadoop.hadoop_mkdir(self.storage_input_dir())
         hadoop.hadoop_mkdir(self.storage_output_dir())
@@ -55,26 +58,6 @@ class Errand(models.Model):
 
     def get_output_file_path(self, name=""):
         return self.storage_output_dir() + "/" + name
-
-    def update_configration_file(self):
-        config = ConfigParser.RawConfigParser()
-        config.add_section("data")
-        config.set('data', 'ERRAND_ID', self.id)
-        config.set('data', 'ERRAND_SLUG', self.slug)
-
-        config.add_section("storage")
-        config.set('storage', 'INPUT_FILE', self.get_input_file_storage_path())
-        config.set('storage', 'OUTPUT_DIR', "{0}{1}".format(hadoop.hadoop_hdfs_url(), self.storage_output_dir()))
-
-        config.add_section('hooks')
-        config.set('hooks', 'progress', "http://api.example.com/api/errands/status/update")
-        config.set('hooks', 'complete', "http://api.example.com/api/errands/status/complete")
-        config.set('hooks', 'failed', "http://api.example.com/api/errands/status/failed")
-
-        config_file_path = errand_base_directory(self) + "/config.cfg"
-        with open(config_file_path, 'wb') as file:
-            config.write(file)
-        print "Take a look at: {}".format(config_file_path)
 
     def get_preview_data(self):
         items = []
@@ -95,15 +78,30 @@ class Errand(models.Model):
     def set_measure(self, string):
         self.measure = string
         self.save()
+        if hadoop.hadoop_exists(self.storage_measure_output_dir()) is not True:
+            hadoop.hadoop_mkdir(self.storage_measure_output_dir())
+
+    def is_measure_setup(self):
+        path = self.storage_measure_output_dir() + "/_DONE"
+        return hadoop.hadoop_exists(path)
 
     # RUNS THE SCRIPTS
-    def run_dist(self):
+    def run_dist(self, force = False):
+        if (force is False) and self.is_measure_setup():
+            print ("Not running the scripts as this measure is already setup")
+            return
+
         print("Running distrubutions scripts")
-        call(["sh", "api/lib/run_dist.sh", self.get_input_file_storage_path(), self.storage_output_dir(), self.measure])
+        call(["sh", "api/lib/run_dist.sh", self.get_input_file_storage_path(), self.storage_measure_output_dir(), self.measure])
+        self.mark_as_done()
 
     def run_meta(self):
         print("Running meta script")
         call(["sh", "api/lib/run_meta.sh", self.get_input_file_storage_path(), self.storage_output_dir()])
+
+    # THIS INDICTATES THAT THE PROCESSING IS COMPLETE
+    def mark_as_done(self):
+        return hadoop.hadoop_hdfs().create_file(self.storage_measure_output_dir() + "/_DONE", "")
 
     def get_meta(self):
         path = self.storage_output_dir() + "/meta.json"
@@ -127,42 +125,25 @@ class Errand(models.Model):
         data['columns'] = columns
         data['measures'] = result_columns['measure_columns'].keys()
         data['dimensions'] = result_columns['dimension_columns'].keys()
-        
+
         return data
 
     def get_result(self):
         if self.measure is None :
             raise Exception("Measure is not set")
-
-        result_dir = self.storage_output_dir() + "/result.json"
-        list = hadoop.hadoop_ls(result_dir)
-        for item in list:
-            if item['length'] > 0:
-                filled_part = result_dir + "/" + item['pathSuffix']
-                print("Found at: " + filled_part)
-                data = hadoop.hadoop_read_file(filled_part)
-                return data
-                # return data['measures'][self.measure]
-        return {}
+        result_dir = self.storage_measure_output_dir() + "/result.json"
+        return hadoop.hadoop_read_output_file(result_dir)
 
     def get_narratives(self):
         if self.measure is None :
             raise Exception("Measure is not set")
-        dir = self.storage_output_dir() + "/narratives.json"
-        list = hadoop.hadoop_ls(dir)
-        for item in list:
-            if item['length'] > 0:
-                filled_part = dir + "/" + item['pathSuffix']
-                print("Found at: " + filled_part)
-                data = hadoop.hadoop_read_file(filled_part)
-                return data
-                # return data['measures'][self.measure]
-        return {}
+        dir = self.storage_measure_output_dir() + "/narratives.json"
+        return hadoop.hadoop_read_output_file(dir)
+
 
     def get_dimension_results(self):
-        path = self.storage_output_dir() + "/dimensions-narratives.json"
+        path = self.storage_measure_output_dir() + "/dimensions-narratives.json"
         narratives = hadoop.hadoop_read_output_file(path)
-        print "=============="
         items = narratives['narratives'][self.measure]
         dimensions_data = {}
         dimensions_data['summary'] = items['summary']
@@ -172,7 +153,7 @@ class Errand(models.Model):
             dimensions_data['narratives'].append(value)
 
         # RESULTS
-        path = self.storage_output_dir() + "/dimensions-result.json"
+        path = self.storage_measure_output_dir() + "/dimensions-result.json"
         result = hadoop.hadoop_read_output_file(path)
         result_data = []
         items = result["results"][self.measure]
@@ -189,13 +170,12 @@ class Errand(models.Model):
 
     def get_reg_results(self):
         data = {}
-        path = self.storage_output_dir() + "/reg-narratives.json"
+        path = self.storage_measure_output_dir() + "/reg-narratives.json"
         narratives = hadoop.hadoop_read_output_file(path)
         data['summary'] = narratives['summary']
         data['analysis'] = narratives['analysis']
 
-
-        path = self.storage_output_dir() + "/reg-result.json"
+        path = self.storage_measure_output_dir() + "/reg-result.json"
         result = hadoop.hadoop_read_output_file(path)
 
         data['raw_data'] = []
