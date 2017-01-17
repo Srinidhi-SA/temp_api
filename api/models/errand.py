@@ -110,11 +110,20 @@ class Errand(models.Model):
         result = hadoop.hadoop_read_output_file(path)
         print(result)
         result_columns = result['columns']
+
         data = {}
         columns = []
         data['count'] = {'rows': result['total_rows'], 'cols': result['total_columns'], 'dimensions': len(result_columns['dimension_columns'])}
-        for item in (result_columns['measure_columns'] + result_columns['dimension_columns']):
-            columns.append({'name': item, 'data_type': 'String', 'data_format': 'string', 'no_of_nulls': 0})
+
+        for key, value in result_columns['dimension_columns'].iteritems() :
+            columns.append({'name': key, 'data_type': 'dimension', 'data_format': '', 'no_of_nulls': value['num_nulls']})
+
+        for key, value in result_columns['measure_columns'].iteritems() :
+            columns.append({'name': key, 'data_type': 'measure', 'data_format': '', 'no_of_nulls': value['num_nulls']})
+
+        for key, value in result_columns['time_dimension_columns'].iteritems() :
+            columns.append({'name': key, 'data_type': 'time', 'data_format': '', 'no_of_nulls': value['num_nulls']})
+
         data['columns'] = columns
         data['measures'] = result_columns['measure_columns']
         data['dimensions'] = result_columns['dimension_columns']
