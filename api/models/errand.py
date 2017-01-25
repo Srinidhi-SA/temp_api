@@ -6,6 +6,7 @@ import ConfigParser
 import csv
 import itertools
 from subprocess import call
+from api.models.dataset import Dataset
 # import hadoopy
 
 def errand_base_directory(instance):
@@ -20,17 +21,16 @@ class Errand(models.Model):
     dimensions = models.CharField(max_length=300, null=True)
     measure = models.CharField(max_length=100, null=True)
     is_archived = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    dataset = models.ForeignKey(Dataset, null=True)
 
     # CLASS METHODS
     @classmethod
-    def make(cls, data, input_file):
+    def make(cls, data):
         obj = cls(slug=data.get('slug'))
-        obj.save()
-        obj.input_file = input_file
+        obj.dataset_id = data.get('dataset_id')
         obj.save()
         obj.setup_storage_folders()
-        obj.send_input_file_to_storage()
-        obj.run_meta()
         return obj
 
     # INSTANCE METHODS
@@ -58,14 +58,6 @@ class Errand(models.Model):
 
     def get_output_file_path(self, name=""):
         return self.storage_output_dir() + "/" + name
-
-    def get_preview_data(self):
-        items = []
-        with open(self.input_file.path) as file:
-            rows = csv.reader(file, delimiter=',')
-            for row in itertools.islice(rows, 20):
-                items.append(row)
-        return items
 
     def get_columns(self):
         preview = self.get_preview_data()
@@ -95,38 +87,9 @@ class Errand(models.Model):
         call(["sh", "api/lib/run_dist.sh", self.get_input_file_storage_path(), self.storage_measure_output_dir(), self.measure])
         self.mark_as_done()
 
-    def run_meta(self):
-        print("Running meta script")
-        call(["sh", "api/lib/run_meta.sh", self.get_input_file_storage_path(), self.storage_output_dir()])
-
     # THIS INDICTATES THAT THE PROCESSING IS COMPLETE
     def mark_as_done(self):
         return hadoop.hadoop_hdfs().create_file(self.storage_measure_output_dir() + "/_DONE", "")
-
-    def get_meta(self):
-        path = self.storage_output_dir() + "/meta.json"
-        result = hadoop.hadoop_read_output_file(path)
-        print(result)
-        result_columns = result['columns']
-
-        data = {}
-        columns = []
-        data['count'] = {'rows': result['total_rows'], 'cols': result['total_columns'], 'dimensions': len(result_columns['dimension_columns'])}
-
-        for key, value in result_columns['dimension_columns'].iteritems() :
-            columns.append({'name': key, 'data_type': 'dimension', 'data_format': '', 'no_of_nulls': value['num_nulls']})
-
-        for key, value in result_columns['measure_columns'].iteritems() :
-            columns.append({'name': key, 'data_type': 'measure', 'data_format': '', 'no_of_nulls': value['num_nulls']})
-
-        for key, value in result_columns['time_dimension_columns'].iteritems() :
-            columns.append({'name': key, 'data_type': 'time', 'data_format': '', 'no_of_nulls': value['num_nulls']})
-
-        data['columns'] = columns
-        data['measures'] = result_columns['measure_columns'].keys()
-        data['dimensions'] = result_columns['dimension_columns'].keys()
-
-        return data
 
     def get_result(self):
         if self.measure is None :
@@ -193,7 +156,8 @@ class ErrandSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
     is_archived = serializers.BooleanField()
     measure = serializers.CharField(max_length=100)
-    input_file_path = serializers.ReadOnlyField(source="input_file.url")
+    dataset_id = serializers.ReadOnlyField()
+    created_at = serializers.DateTimeField()
 
     class Meta:
         model = Errand

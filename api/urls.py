@@ -17,12 +17,12 @@ urlpatterns = [
     # DATASETSS
     url(r'dataset/create', dataset.create),
     url(r'dataset/all', dataset.all),
+    url(r'dataset/preview', dataset.preview),
+    url(r'dataset/get_meta', dataset.get_meta),
 
     # ERRANDS
     url(r'errand/uploaded_files', errand.get_uploaded_files),
     url(r'errand/make', errand.make),
-    url(r'errand/preview', errand.preview),
-    url(r'errand/get_meta', errand.get_meta),
     url(r'errand/columns', errand.columns),
     url(r'errand/get_measures', errand.columns),
     url(r'errand/set_dimensions', errand.set_dimensions),

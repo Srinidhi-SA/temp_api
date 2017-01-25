@@ -12,6 +12,10 @@ from rest_framework.response import Response
 
 from api.models.dataset import Dataset, DatasetSerializer
 
+def get_dataset(request):
+    id = request.GET['dataset_id'] if request.method == "GET" else request.POST['dataset_id']
+    return Dataset.objects.get(pk=id)
+
 @api_view(['POST'])
 @renderer_classes((JSONRenderer,))
 def create(request):
@@ -22,3 +26,15 @@ def create(request):
 @renderer_classes((JSONRenderer,))
 def all(request):
     return Response({'data': DatasetSerializer(Dataset.objects.all(), many=True).data})
+
+@api_view(['GET'])
+@renderer_classes((JSONRenderer, ))
+def preview(request):
+    e = get_dataset(request)
+    return Response({'data': e.get_preview_data()})
+
+@api_view(['GET'])
+@renderer_classes((JSONRenderer, ))
+def get_meta(request):
+    e = get_dataset(request)
+    return Response(e.get_meta())

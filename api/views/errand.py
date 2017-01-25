@@ -33,12 +33,10 @@ def get_uploaded_files(request):
 def jack(request):
     return Response({'name': "prakash raman"});
 
-
 @api_view(['POST'])
 @renderer_classes((JSONRenderer, ))
 def make(request):
-    print(request.FILES.get('input_file'))
-    errand = Errand.make(request.POST, request.FILES.get('input_file'))
+    errand = Errand.make(request.POST)
     return Response({"message": "Successfully created errand", "data": ErrandSerializer(errand).data});
 
 @api_view(['GET'])
