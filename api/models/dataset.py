@@ -12,6 +12,7 @@ def dataset_base_directory(instance):
     return "uploads/datasets/{0}".format(instance.id)
 
 def dataset_input_file_directory_path(instance, filename):
+    print("yes, I am in here")
     return dataset_base_directory(instance) + "/{0}".format(filename)
 
 class Dataset(models.Model):
@@ -38,11 +39,12 @@ class Dataset(models.Model):
 
     @classmethod
     def make(cls, input_file):
+        print(input_file)
         obj = cls()
         obj.save()
         obj.input_file = input_file
-        obj.setup()
         obj.save()
+        obj.setup()
         return obj
 
     def setup(self):

@@ -20,7 +20,7 @@ def get_dataset(request):
 @renderer_classes((JSONRenderer,))
 def create(request):
     ds = Dataset.make(request.FILES.get('input_file'))
-    return Response({"status" : ds.id})
+    return Response({"data" : DatasetSerializer(ds).data})
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer,))
