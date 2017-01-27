@@ -75,7 +75,7 @@ def set_measure(request):
 @renderer_classes((JSONRenderer, ))
 def set_dimension(request):
     e = get_errand(request)
-    e.set_measure(request.POST['dimension'])
+    e.set_dimension(request.POST['dimension'])
     e.run_dimension()
     return Response({'message': "Success", "id": e.id})
 

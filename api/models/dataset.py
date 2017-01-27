@@ -45,6 +45,7 @@ class Dataset(models.Model):
         obj.input_file = input_file
         obj.save()
         obj.setup()
+        obj.run_meta()
         return obj
 
     def setup(self):
