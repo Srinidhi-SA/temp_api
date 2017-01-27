@@ -25,7 +25,7 @@ urlpatterns = [
     url(r'errand/make', errand.make),
     url(r'errand/columns', errand.columns),
     url(r'errand/get_measures', errand.columns),
-    url(r'errand/set_dimensions', errand.set_dimensions),
+    url(r'errand/set_dimension', errand.set_dimension),
     url(r'errand/set_measure', errand.set_measure),
     url(r'errand/get_results', errand.get_results),
     url(r'errand/archived', errand.get_archived),

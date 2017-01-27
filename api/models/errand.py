@@ -97,7 +97,7 @@ class Errand(models.Model):
         call(["sh", "api/lib/run_dist.sh", settings.HDFS['host'], self.dataset.get_input_file_storage_path(), self.storage_measure_output_dir(), self.measure])
         self.mark_as_done()
 
-    def run_dimension(self, force = True):
+    def run_dimension(self, force = False):
         if (force is False) and self.is_dimension_done():
             print ("Not running the scripts as this measure is already setup")
             return

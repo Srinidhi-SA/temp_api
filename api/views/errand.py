@@ -57,12 +57,6 @@ def columns(request):
     e = get_errand(request)
     return Response({'data': e.get_columns()})
 
-@api_view(['POST'])
-@renderer_classes((JSONRenderer, ))
-def set_dimensions(request):
-    e = get_errand(request)
-    e.set_dimensions(request.POST['dimensions'].split(","))
-    return Response({'message': "Success"})
 
 @api_view(['POST'])
 @renderer_classes((JSONRenderer, ))
@@ -74,6 +68,15 @@ def set_measure(request):
     else:
         e.run_dist()
     sleep(5)
+    return Response({'message': "Success", "id": e.id})
+
+
+@api_view(['POST'])
+@renderer_classes((JSONRenderer, ))
+def set_dimension(request):
+    e = get_errand(request)
+    e.set_measure(request.POST['dimension'])
+    e.run_dimension()
     return Response({'message': "Success", "id": e.id})
 
 
