@@ -1,12 +1,13 @@
 from django.db import models
 from rest_framework import serializers
 from api.lib import hadoop
-import os
+import os, json
 import ConfigParser
 import csv
 import itertools
 from subprocess import call
 from api.models.dataset import Dataset
+from django.conf import settings
 # import hadoopy
 
 def errand_base_directory(instance):
@@ -18,7 +19,7 @@ def errand_input_file_directory_path(instance, filename):
 class Errand(models.Model):
     slug = models.CharField(max_length=100)
     input_file = models.FileField(upload_to=errand_input_file_directory_path, null=True, blank=True)
-    dimensions = models.CharField(max_length=300, null=True)
+    dimension = models.CharField(max_length=300, null=True)
     measure = models.CharField(max_length=100, null=True)
     is_archived = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
@@ -46,6 +47,9 @@ class Errand(models.Model):
     def storage_measure_output_dir(self):
         return self.storage_output_dir() + "/" + self.measure
 
+    def storage_dimension_output_dir(self):
+        return self.storage_output_dir() + "/" + self.dimension
+
     def setup_storage_folders(self):
         hadoop.hadoop_mkdir(self.storage_input_dir())
         hadoop.hadoop_mkdir(self.storage_output_dir())
@@ -63,9 +67,11 @@ class Errand(models.Model):
         preview = self.get_preview_data()
         return preview[0]
 
-    def set_dimensions(self, list):
-        self.dimensions = ','.join([str(x) for x in list])
+    def set_dimension(self, string):
+        self.dimension = string
         self.save()
+        if hadoop.hadoop_exists(self.storage_dimension_output_dir()) is not True:
+            hadoop.hadoop_mkdir(self.storage_dimension_output_dir())
 
     def set_measure(self, string):
         self.measure = string
@@ -77,6 +83,10 @@ class Errand(models.Model):
         path = self.storage_measure_output_dir() + "/_DONE"
         return hadoop.hadoop_exists(path)
 
+    def is_dimension_done(self):
+        path = self.storage_dimension_output_dir() + "/_DONE"
+        return hadoop.hadoop_exists(path)
+
     # RUNS THE SCRIPTS
     def run_dist(self, force = False):
         if (force is False) and self.is_measure_setup():
@@ -84,12 +94,30 @@ class Errand(models.Model):
             return
 
         print("Running distrubutions scripts")
-        call(["sh", "api/lib/run_dist.sh", self.get_input_file_storage_path(), self.storage_measure_output_dir(), self.measure])
+        call(["sh", "api/lib/run_dist.sh", settings.HDFS['host'], self.dataset.get_input_file_storage_path(), self.storage_measure_output_dir(), self.measure])
         self.mark_as_done()
+
+    def run_dimension(self, force = True):
+        if (force is False) and self.is_dimension_done():
+            print ("Not running the scripts as this measure is already setup")
+            return
+
+        print("Running dimensions scripts")
+        call([
+            "sh", "api/lib/run_dimension.sh",
+            settings.HDFS['host'],
+            self.dataset.get_input_file_storage_path(),
+            self.storage_dimension_output_dir(),
+            self.dimension
+        ])
+        self.mark_dimension_as_done()
 
     # THIS INDICTATES THAT THE PROCESSING IS COMPLETE
     def mark_as_done(self):
         return hadoop.hadoop_hdfs().create_file(self.storage_measure_output_dir() + "/_DONE", "")
+
+    def mark_dimension_as_done(self):
+        return hadoop.hadoop_hdfs().create_file(self.storage_dimension_output_dir() + "/_DONE", "")
 
     def get_result(self):
         if self.measure is None :
@@ -150,6 +178,18 @@ class Errand(models.Model):
             return item[1]
         data['raw_data'] = sorted(data['raw_data'], key = order)
         return data
+
+    def get_frequency_results(self):
+        result_path = self.storage_dimension_output_dir() + "/frequency-result.json";
+        results_data = hadoop.hadoop_read_output_file(result_path);
+        results = []
+        table = json.loads(results_data['frequency_table'])[self.dimension]
+        result = zip(table[self.dimension].values(), table['count'].values())
+        narratives_path = self.storage_dimension_output_dir() + "/frequency-narratives.json";
+        return {
+            'raw_data': result,
+            'narratives': hadoop.hadoop_read_output_file(narratives_path)
+        }
 
 class ErrandSerializer(serializers.Serializer):
     slug = serializers.CharField(max_length=100)
