@@ -30,6 +30,7 @@ urlpatterns = [
     url(r'errand/get_results', errand.get_results),
     url(r'errand/archived', errand.get_archived),
     url(r'errand/archive', errand.set_archived),
-    url(r'errand/get_frequency_results', errand.get_frequency_results)
+    url(r'errand/get_frequency_results', errand.get_frequency_results),
+    url(r'errand/get_tree_results', errand.get_tree_results)
 
 ]

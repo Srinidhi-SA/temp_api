@@ -104,6 +104,12 @@ def get_frequency_results(request):
     e = get_errand(request)
     return Response(e.get_frequency_results())
 
+@api_view(['GET'])
+@renderer_classes((JSONRenderer, ))
+def get_tree_results(request):
+    e = get_errand(request)
+    return Response(e.get_tree_results())
+
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
