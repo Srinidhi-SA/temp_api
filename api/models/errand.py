@@ -195,15 +195,19 @@ class Errand(models.Model):
         result_path = self.storage_dimension_output_dir() + "/tree-result.json";
         tree = hadoop.hadoop_read_output_file(result_path)['tree'];
         bucket = [["Root", ""]]
-        self.hello(bucket, tree['name'], json.loads(tree['children']))
+        self._get_tree_results_node(bucket, tree['name'], json.loads(tree['children']))
         return bucket
 
-    def hello(self, bucket, parent, children):
+    def _get_tree_results_node(self, bucket, parent, children):
         for child in children:
             print(len(bucket))
             bucket.append([child['name'], parent])
             if 'children' in child:
-                self.hello(bucket, child['name'], child['children'])
+                self._get_tree_results_node(bucket, child['name'], child['children'])
+
+    def get_tree_narratives(self):
+        path = self.storage_dimension_output_dir() + "/tree-narratives.json"
+        return hadoop.hadoop_read_output_file(path)
 
 class ErrandSerializer(serializers.Serializer):
     slug = serializers.CharField(max_length=100)

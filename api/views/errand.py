@@ -113,6 +113,13 @@ def get_tree_results(request):
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
+def get_tree_narratives(request):
+    e = get_errand(request)
+    return Response(e.get_tree_narratives())
+
+
+@api_view(['GET'])
+@renderer_classes((JSONRenderer, ))
 def get_archived(request):
     es = Errand.objects.filter(is_archived=True)
     return Response({'errands': ErrandSerializer(es, many=True).data})
