@@ -30,3 +30,9 @@ def preview(request):
 @renderer_classes((JSONRenderer, ))
 def all(request):
     return Response({"data": RoboSerializer(Robo.objects.all(), many=True).data})
+
+@api_view(['GET'])
+@renderer_classes((JSONRenderer, ))
+def get_results(request):
+    r = get_robo(request)
+    return Response(r.get_results())
