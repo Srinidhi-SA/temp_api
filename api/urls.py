@@ -37,6 +37,7 @@ urlpatterns = [
 
     # ROBOS
     url(r'robo/create', robo.create),
+    url(r'robo/all', robo.all),
     url(r'robo/preview', robo.preview)
 
 ]

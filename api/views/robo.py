@@ -18,9 +18,15 @@ def get_robo(request):
 def create(request):
     ds = Robo.make(request.FILES.get('customer_file'), request.FILES.get('historical_file'), request.FILES.get('market_file'))
     return Response({"data" : RoboSerializer(ds).data})
+    return Response({'play': True})
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
 def preview(request):
     r = get_robo(request)
     return Response(r.get_preview())
+
+@api_view(['GET'])
+@renderer_classes((JSONRenderer, ))
+def all(request):
+    return Response({"data": RoboSerializer(Robo.objects.all(), many=True).data})

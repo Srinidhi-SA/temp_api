@@ -38,7 +38,26 @@ class Robo(models.Model):
         obj.market_file = market_file
         obj.save()
         obj.setup()
+        obj.run_portfolio()
         return obj
+
+    @property
+    def customer_filename(self):
+        if self.customer_file == None:
+            return  ""
+        return os.path.basename(self.customer_file.path)
+
+    @property
+    def historical_filename(self):
+        if self.historical_file == None:
+            return ""
+        return os.path.basename(self.historical_file.path)
+
+    @property
+    def market_filename(self):
+        if self.market_file == None:
+            return ""
+        return os.path.basename(self.market_file.path)
 
     def setup(self):
         hadoop.hadoop_mkdir(self.storage_input_dir())
@@ -76,9 +95,11 @@ class Robo(models.Model):
         narratives_path = self.storage_output_dir() +  "/portfolio-narratives.json"
         return {
             'result': hadoop.hadoop_read_output_file(result_path),
-            # 'narratives': hadoop.hadoop_read_output_file(narratives_path)
+            'narratives': hadoop.hadoop_read_output_file(narratives_path)
         }
 
 class RoboSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
-    name = serializers.ReadOnlyField(source="customer_filename")
+    customer_name = serializers.ReadOnlyField(source="customer_filename")
+    historical_filename = serializers.ReadOnlyField()
+    market_filename = serializers.ReadOnlyField()
