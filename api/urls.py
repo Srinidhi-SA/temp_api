@@ -3,7 +3,7 @@ from rest_framework.decorators import renderer_classes, api_view
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 
-from api.views import errand, dataset
+from api.views import errand, dataset, robo
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
@@ -33,6 +33,10 @@ urlpatterns = [
     url(r'errand/get_frequency_results', errand.get_frequency_results),
     url(r'errand/get_tree_results', errand.get_tree_results),
     url(r'errand/get_tree_narratives', errand.get_tree_narratives),
-    url(r'errand/get_chi_results', errand.get_chi_results)
+    url(r'errand/get_chi_results', errand.get_chi_results),
+
+    # ROBOS
+    url(r'robo/create', robo.create),
+    url(r'robo/preview', robo.preview)
 
 ]

@@ -212,9 +212,23 @@ class Errand(models.Model):
     def get_chi_results(self):
         result_path = self.storage_dimension_output_dir() + "/chi-result.json";
         narratives_path = self.storage_dimension_output_dir() + "/chi-narratives.json";
+        narratives_data = hadoop.hadoop_read_output_file(narratives_path);
+        narratives = []
+        list = narratives_data["narratives"][self.dimension]
+        for key, value in list.iteritems():
+            if type(value) == dict:
+                value['dimension'] = key
+                narratives.append(value)
+
+        # ORDERS IT SO THAT THE ITEM[1] IS WHAT IS USED
+        def order(item):
+            return -item['effect_size']
+        narratives = sorted(narratives, key = order)
+
         return {
             'result': hadoop.hadoop_read_output_file(result_path),
-            'narratives': hadoop.hadoop_read_output_file(narratives_path)
+            'narratives': narratives,
+            'narratives_raw': narratives_data
         }
 
 class ErrandSerializer(serializers.Serializer):
