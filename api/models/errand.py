@@ -209,6 +209,14 @@ class Errand(models.Model):
         path = self.storage_dimension_output_dir() + "/tree-narratives.json"
         return hadoop.hadoop_read_output_file(path)
 
+    def get_chi_results(self):
+        result_path = self.storage_dimension_output_dir() + "/chi-result.json";
+        narratives_path = self.storage_dimension_output_dir() + "/chi-narratives.json";
+        return {
+            'result': hadoop.hadoop_read_output_file(result_path),
+            'narratives': hadoop.hadoop_read_output_file(narratives_path)
+        }
+
 class ErrandSerializer(serializers.Serializer):
     slug = serializers.CharField(max_length=100)
     id = serializers.ReadOnlyField()

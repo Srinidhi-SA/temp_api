@@ -18,7 +18,7 @@ echo "Running frequency_dimensions.py"
 $COMMAND_PREFIX $SCRIPTS_ROOT/frequency_dimensions.py --input "hdfs://$1/$2" --result "hdfs://$1:8020$3/frequency-result.json" --narratives "hdfs://$1:8020$3/frequency-narratives.json" --dimensioncolumn $DIMENSION
 
 echo "Running chisquare.py"
-# $COMMAND_PREFIX $SCRIPTS_ROOT/chisquare.py --input "hdfs://$1/$2" --result "hdfs://$1:8020$3/chi-result.json" --narratives "hdfs://$1:8020$3/chi-narratives.json" --dimensioncolumn $DIMENSION
+$COMMAND_PREFIX $SCRIPTS_ROOT/chisquare.py --input "hdfs://$1/$2" --result "hdfs://$1:8020$3/chi-result.json" --narratives "hdfs://$1:8020$3/chi-narratives.json" --dimensioncolumn $DIMENSION --ignorecolumn 'fund_name'
 
 echo "Running decision_tree.py"
 $COMMAND_PREFIX $SCRIPTS_ROOT/decision_tree.py --input "hdfs://$1/$2" --result "hdfs://$1:8020$3/tree-result.json" --narratives "hdfs://$1:8020$3/tree-narratives.json" --dimensioncolumn $DIMENSION --ignorecolumn 'fund_name'
