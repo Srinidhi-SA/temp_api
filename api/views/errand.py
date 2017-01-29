@@ -126,7 +126,8 @@ def get_chi_results(request):
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
 def get_archived(request):
-    es = Errand.objects.filter(is_archived=True)
+    #es = Errand.objects.filter(is_archived=True)
+    es = Errand.objects.all()
     return Response({'errands': ErrandSerializer(es, many=True).data})
 
 
