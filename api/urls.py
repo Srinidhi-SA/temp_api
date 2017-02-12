@@ -43,7 +43,7 @@ urlpatterns = [
     url(r'robo/create', robo.create),
     url(r'robo/all', robo.all),
     url(r'robo/preview', robo.preview),
-    url(r'robo/get_results', robo.get_results)
+    url(r'robo/get_results', robo.get_results),
     url(r'robo/edit', robo.edit),
     url(r'robo/delete', robo.delete),
 
