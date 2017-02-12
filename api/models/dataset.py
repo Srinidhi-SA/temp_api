@@ -100,4 +100,4 @@ class Dataset(models.Model):
 
 class DatasetSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
-    name = serializers.ReadOnlyField(source="input_filename")
+    name = serializers.ReadOnlyField()

@@ -100,6 +100,7 @@ class Robo(models.Model):
 
 class RoboSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
+    name = serializers.ReadOnlyField()
     customer_name = serializers.ReadOnlyField(source="customer_filename")
     historical_filename = serializers.ReadOnlyField()
     market_filename = serializers.ReadOnlyField()
