@@ -53,6 +53,10 @@ class Dataset(models.Model):
         hadoop.hadoop_mkdir(self.storage_output_dir())
         self.send_input_file_to_storage()
 
+    @property
+    def safe_name(self):
+        return self.name if self.name else self.input_filename
+
     def send_input_file_to_storage(self):
         hadoop.hadoop_put(self.input_file.path, self.storage_input_dir() + "/")
 
@@ -100,4 +104,4 @@ class Dataset(models.Model):
 
 class DatasetSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
-    name = serializers.ReadOnlyField()
+    name = serializers.ReadOnlyField(source="safe_name")

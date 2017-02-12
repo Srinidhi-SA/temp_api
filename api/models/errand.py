@@ -24,6 +24,7 @@ class Errand(models.Model):
     is_archived = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     dataset = models.ForeignKey(Dataset, null=True)
+    name = models.CharField(max_length=300, null=True)
 
     # CLASS METHODS
     @classmethod
@@ -236,7 +237,7 @@ class ErrandSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
     is_archived = serializers.BooleanField()
     measure = serializers.CharField(max_length=100)
-    name = serializers.CharField(max_length=100)
+    name = serializers.ReadOnlyField()
     dataset_id = serializers.ReadOnlyField()
     created_at = serializers.DateTimeField()
 
