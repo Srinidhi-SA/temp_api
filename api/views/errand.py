@@ -138,3 +138,17 @@ def set_archived(request):
     e.is_archived = True
     e.save()
     return Response({'data': "Successfully archived errand"})
+
+@api_view(['POST'])
+@renderer_classes((JSONRenderer,))
+def edit(request):
+    e = get_errand(request)
+    e.name = request.POST['name']
+    e.save()
+    return Response({"message" : "Updated"})
+
+@api_view(['POST'])
+@renderer_classes((JSONRenderer,))
+def delete(request):
+    Errand.objects.filter(id__in=request.POST['errand_ids'].split(",")).delete()
+    return Response({"message": "Deleted"})

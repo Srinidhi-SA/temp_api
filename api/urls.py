@@ -19,6 +19,8 @@ urlpatterns = [
     url(r'dataset/all', dataset.all),
     url(r'dataset/preview', dataset.preview),
     url(r'dataset/get_meta', dataset.get_meta),
+    url(r'dataset/edit', dataset.edit),
+    url(r'dataset/delete', dataset.delete),
 
     # ERRANDS
     url(r'errand/uploaded_files', errand.get_uploaded_files),
@@ -34,11 +36,15 @@ urlpatterns = [
     url(r'errand/get_tree_results', errand.get_tree_results),
     url(r'errand/get_tree_narratives', errand.get_tree_narratives),
     url(r'errand/get_chi_results', errand.get_chi_results),
+    url(r'errand/edit', errand.edit),
+    url(r'errand/delete', errand.delete),
 
     # ROBOS
     url(r'robo/create', robo.create),
     url(r'robo/all', robo.all),
     url(r'robo/preview', robo.preview),
     url(r'robo/get_results', robo.get_results)
+    url(r'robo/edit', robo.edit),
+    url(r'robo/delete', robo.delete),
 
 ]

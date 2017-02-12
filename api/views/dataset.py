@@ -38,3 +38,17 @@ def preview(request):
 def get_meta(request):
     e = get_dataset(request)
     return Response(e.get_meta())
+
+@api_view(['POST'])
+@renderer_classes((JSONRenderer,))
+def edit(request):
+    e = get_dataset(request)
+    e.name = request.POST['name']
+    e.save()
+    return Response({"message" : "Updated"})
+
+@api_view(['POST'])
+@renderer_classes((JSONRenderer,))
+def delete(request):
+    Dataset.objects.filter(id__in=request.POST['dataset_ids'].split(",")).delete()
+    return Response({"message": "Deleted"})

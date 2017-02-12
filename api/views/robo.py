@@ -36,3 +36,17 @@ def all(request):
 def get_results(request):
     r = get_robo(request)
     return Response(r.get_results())
+
+@api_view(['POST'])
+@renderer_classes((JSONRenderer,))
+def edit(request):
+    e = get_robo(request)
+    e.name = request.POST['name']
+    e.save()
+    return Response({"message" : "Updated"})
+
+@api_view(['POST'])
+@renderer_classes((JSONRenderer,))
+def delete(request):
+    Robo.objects.filter(id__in=request.POST['robo_ids'].split(",")).delete()
+    return Response({"message": "Deleted"})
