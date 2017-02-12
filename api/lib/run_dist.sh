@@ -20,10 +20,10 @@ chmod 0400 api/lib/emr.pem
 
 # DO NOT FORGET TO UNCOMMENT THIS!!!!
 echo "Running for descr_stats"
-# ssh -i api/lib/emr.pem hadoop@$1 spark-submit --master yarn  --deploy-mode client /home/hadoop/codebase/marlabs-bi/bi/scripts/descr_stats.py --input "hdfs://$1:8020/$2" --result "hdfs://$1:8020$3/result.json" --narratives "hdfs://$1:8020$3/narratives.json" --measurecolumn $MEASURE
+ssh -i api/lib/emr.pem hadoop@$1 spark-submit --master yarn  --deploy-mode client /home/hadoop/codebase/marlabs-bi/bi/scripts/descr_stats.py --input "hdfs://$1:8020/$2" --result "hdfs://$1:8020$3/result.json" --narratives "hdfs://$1:8020$3/narratives.json" --measurecolumn $MEASURE
 
 echo "Running for one_way_anova.py"
-# ssh -i api/lib/emr.pem hadoop@$1 spark-submit --master yarn  --deploy-mode client /home/hadoop/codebase/marlabs-bi/bi/scripts/one_way_anova.py --input "hdfs://$1:8020/$2" --result "hdfs://$1:8020$3/dimensions-result.json" --narratives "hdfs://$1:8020$3/dimensions-narratives.json" --measurecolumn $MEASURE
+ssh -i api/lib/emr.pem hadoop@$1 spark-submit --master yarn  --deploy-mode client /home/hadoop/codebase/marlabs-bi/bi/scripts/one_way_anova.py --input "hdfs://$1:8020/$2" --result "hdfs://$1:8020$3/dimensions-result.json" --narratives "hdfs://$1:8020$3/dimensions-narratives.json" --measurecolumn $MEASURE
 
 echo "Running regression.py"
 $COMMAND_PREFIX $SCRIPTS_ROOT/regression.py --input "hdfs://$1/$2" --result "hdfs://$1:8020$3/reg-result.json" --narratives "hdfs://$1:8020$3/reg-narratives.json" --measurecolumn $MEASURE
