@@ -164,8 +164,10 @@ class Errand(models.Model):
         data = {}
         path = self.storage_measure_output_dir() + "/reg-narratives.json"
         narratives = hadoop.hadoop_read_output_file(path)
+        # print narratives.keys()
         data['summary'] = narratives['summary']
-        data['analysis'] = narratives['analysis']
+        # data['analysis'] = narratives['analysis']
+        data['narratives'] = narratives
 
         path = self.storage_measure_output_dir() + "/reg-result.json"
         result = hadoop.hadoop_read_output_file(path)
