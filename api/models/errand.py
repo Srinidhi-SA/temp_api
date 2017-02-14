@@ -240,6 +240,7 @@ class ErrandSerializer(serializers.Serializer):
     is_archived = serializers.BooleanField()
     measure = serializers.CharField(max_length=100)
     name = serializers.ReadOnlyField()
+    dimension = serializers.ReadOnlyField()
     dataset_id = serializers.ReadOnlyField()
     created_at = serializers.DateTimeField()
 
