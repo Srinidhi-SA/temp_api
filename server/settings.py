@@ -131,8 +131,8 @@ CORS_ALLOW_CREDENTIALS = False
 
 HDFS = {
     # 'host': 'ec2-54-88-153-37.compute-1.amazonaws.com',
-    'host': 'ec2-54-144-224-32.compute-1.amazonaws.com',
+    'host': 'ec2-52-90-172-255.compute-1.amazonaws.com',
     'port': '14000',
-    'uri': 'http://ec2-54-144-224-32.compute-1.amazonaws.com:14000/webhdfs/v1',
+    'uri': 'http://ec2-52-90-172-255.compute-1.amazonaws.com:14000/webhdfs/v1',
     'user.name': 'hadoop'
 }
