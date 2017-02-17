@@ -152,3 +152,9 @@ def edit(request):
 def delete(request):
     Errand.objects.filter(id__in=request.POST['errand_ids'].split(",")).delete()
     return Response({"message": "Deleted"})
+
+
+@api_view(['POST'])
+@renderer_classes((JSONRenderer,))
+def log_status(request, errand_id=None):
+    return Response({"message": "Successfully logged the statuses"})

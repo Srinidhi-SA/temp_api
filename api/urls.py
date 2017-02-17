@@ -38,6 +38,7 @@ urlpatterns = [
     url(r'errand/get_chi_results', errand.get_chi_results),
     url(r'errand/edit', errand.edit),
     url(r'errand/delete', errand.delete),
+    url(r'errand/(?P<errand_id>\d+)/log_status', errand.log_status),
 
     # ROBOS
     url(r'robo/create', robo.create),
