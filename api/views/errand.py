@@ -63,11 +63,9 @@ def columns(request):
 def set_measure(request):
     e = get_errand(request)
     e.set_measure(request.POST['measure'])
-    if request.POST.has_key('cache') and request.POST['cache'] == "yes":
-        print("do nothing right now")
-    else:
-        e.run_dist()
-    sleep(5)
+    e.compare_with = request.POST['compare_with']
+    e.save()
+    e.run_dist()
     return Response({'message': "Success", "id": e.id})
 
 
@@ -76,6 +74,8 @@ def set_measure(request):
 def set_dimension(request):
     e = get_errand(request)
     e.set_dimension(request.POST['dimension'])
+    e.compare_with = request.POST['compare_with']
+    e.save()
     e.run_dimension()
     return Response({'message': "Success", "id": e.id})
 

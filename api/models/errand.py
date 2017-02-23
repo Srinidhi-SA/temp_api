@@ -25,6 +25,7 @@ class Errand(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     dataset = models.ForeignKey(Dataset, null=True)
     name = models.CharField(max_length=300, null=True)
+    compare_with = models.CharField(max_length=300, default="")
 
     # CLASS METHODS
     @classmethod
