@@ -241,24 +241,25 @@ class Errand(models.Model):
         config.add_section("COLUMN_SETTINGS")
         config.add_section("FILTER_SETTINGS")
 
-        config.set('FILE_SETTINGS', 'InputFile', self.dataset.get_input_file_storage_path())
-        config.set('FILE_SETTINGS', 'OutputFolder', self.storage_measure_output_dir())
-        config.set('COLUMN_SETTINGS', 'result_column', self.measure)
-        config.set('COLUMN_SETTINGS', 'polarity', "positive")
+        config.set('FILE_SETTINGS', 'InputFile', hadoop.hadoop_get_full_url(self.dataset.get_input_file_storage_path()))
+        config.set('FILE_SETTINGS', 'OutputFolder', hadoop.hadoop_get_full_url(self.storage_measure_output_dir()))
 
-        # config.add_section("ColumnSettings")
-        # config.set('storage', 'INPUT_FILE', self.get_input_file_storage_path())
-        # config.set('storage', 'OUTPUT_DIR', "{0}{1}".format(hadoop.hadoop_hdfs_url(), self.storage_output_dir()))
-        #
-        # config.add_section('FilterSettings')
-        # config.set('hooks', 'progress', "http://api.example.com/api/errands/status/update")
-        # config.set('hooks', 'complete', "http://api.example.com/api/errands/status/complete")
-        # config.set('hooks', 'failed', "http://api.example.com/api/errands/status/failed")
+        if self.measure != None:
+            config.set('COLUMN_SETTINGS', 'result_column', self.measure)
+            config.set('COLUMN_SETTINGS', 'analysis_type', "Measure")
+        else:
+            config.set('COLUMN_SETTINGS', 'analysis_type', "Dimension")
+            config.set('COLUMN_SETTINGS', 'result_column', self.dimension)
+
+        config.set('COLUMN_SETTINGS', 'date_columns', "")
+        config.set('COLUMN_SETTINGS', 'polarity', "positive")
+        config.set('COLUMN_SETTINGS', 'consider_columns', self.compare_with)
 
         config_file_path = errand_base_directory(self) + "/config.cfg"
         with open(config_file_path, 'wb') as file:
             config.write(file)
         print "Take a look at: {}".format(config_file_path)
+        hadoop.hadoop_put(config_file_path, self.storage_input_dir())
 
 
 class ErrandSerializer(serializers.Serializer):

@@ -3,7 +3,7 @@ from rest_framework.decorators import renderer_classes, api_view
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 
-from api.views import errand, dataset, robo
+from api.views import errand, dataset, robo, option
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
@@ -47,5 +47,10 @@ urlpatterns = [
     url(r'robo/get_results', robo.get_results),
     url(r'robo/edit', robo.edit),
     url(r'robo/delete', robo.delete),
+
+    # OPTIONS
+    url(r'option/get_all', option.get_all),
+    url(r'option/get_dict', option.get_dict),
+    url(r'option/set', option.set)
 
 ]

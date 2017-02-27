@@ -62,6 +62,9 @@ def hadoop_read_output_file(path):
             return hadoop_read_file(filled_part)
     return {}
 
+def hadoop_get_full_url(path):
+    return "hdfs://" + settings.HDFS['host'] + ":8020" + path
+
 def hadoop_hdfs():
     conf = settings.HDFS
     return PyWebHdfsClient(host= conf['host'],port= conf['port'], user_name=conf['user.name'])
