@@ -156,5 +156,10 @@ def delete(request):
 
 @api_view(['POST'])
 @renderer_classes((JSONRenderer,))
+def configure_data(request):
+    return Response({"message": "Data has been configured"})
+
+@api_view(['POST'])
+@renderer_classes((JSONRenderer,))
 def log_status(request, errand_id=None):
     return Response({"message": "Successfully logged the statuses"})
