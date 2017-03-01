@@ -65,6 +65,10 @@ class Errand(models.Model):
     def get_output_file_path(self, name=""):
         return self.storage_output_dir() + "/" + name
 
+    @property
+    def config_file_path(self):
+        return errand_base_directory(self) + "/config.cfg"
+
     def get_columns(self):
         preview = self.get_preview_data()
         return preview[0]
@@ -113,6 +117,13 @@ class Errand(models.Model):
             self.dimension
         ])
         self.mark_dimension_as_done()
+
+    def run_master(self):
+        call([
+            "sh", "api/lib/run_master.sh",
+            settings.HDFS['host'],
+            hadoop.hadoop_get_full_url("/" + self.config_file_path)
+        ])
 
     # THIS INDICTATES THAT THE PROCESSING IS COMPLETE
     def mark_as_done(self):
@@ -255,11 +266,10 @@ class Errand(models.Model):
         config.set('COLUMN_SETTINGS', 'polarity', "positive")
         config.set('COLUMN_SETTINGS', 'consider_columns', self.compare_with)
 
-        config_file_path = errand_base_directory(self) + "/config.cfg"
-        with open(config_file_path, 'wb') as file:
+        with open(self.config_file_path, 'wb') as file:
             config.write(file)
-        print "Take a look at: {}".format(config_file_path)
-        hadoop.hadoop_put(config_file_path, self.storage_input_dir())
+        print "Take a look at: {}".format(self.config_file_path)
+        hadoop.hadoop_put(self.config_file_path, self.storage_input_dir())
 
 
 class ErrandSerializer(serializers.Serializer):
