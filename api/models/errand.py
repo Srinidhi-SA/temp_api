@@ -206,6 +206,12 @@ class Errand(models.Model):
             'narratives': hadoop.hadoop_read_output_file(narratives_path)
         }
 
+    def get_tree_results_raw(self):
+        result_path = self.storage_dimension_output_dir() + "/tree-result.json";
+        data = hadoop.hadoop_read_output_file(result_path);
+        data['tree']['children'] = json.loads(data['tree']['children'])
+        return data
+
     def get_tree_results(self):
         result_path = self.storage_dimension_output_dir() + "/tree-result.json";
         tree = hadoop.hadoop_read_output_file(result_path)['tree'];
