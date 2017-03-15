@@ -3,7 +3,7 @@ from rest_framework.decorators import renderer_classes, api_view
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 
-from api.views import errand, dataset, robo, option
+from api.views import errand, dataset, robo, option, user
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
@@ -13,6 +13,9 @@ def test(request):
 urlpatterns = [
     url(r'test', test),
     url(r'env', errand.get_env),
+
+    # USERS
+    url(r'user/login', user.login),
 
     # DATASETSS
     url(r'dataset/create', dataset.create),
