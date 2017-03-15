@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
 
 from django.contrib.auth.models import User
+from api.lib import urlhelpers
 
 @api_view(['POST'])
 @renderer_classes((JSONRenderer,))
@@ -22,4 +23,19 @@ def login(request):
         if not user.check_password(request.POST['password']):
             raise AuthenticationFailed(detail="Sorry, the credentials do not seem to match our records. Please try again")
         user.profile.reset_token()
-        return Response({"token" : user.profile.token})
+        return Response({"token" : user.profile.token, "profile": user.profile.rs()})
+
+
+@api_view(['GET'])
+@renderer_classes((JSONRenderer,))
+def profile(request):
+    user = urlhelpers.get_current_user(request)
+    return Response({"profile": user.profile.rs()})
+
+
+@api_view(['POST'])
+@renderer_classes((JSONRenderer,))
+def logout(request):
+    user = urlhelpers.get_current_user(request)
+    user.profile.logout()
+    return Response({"message": "User has been successufully logged out"})

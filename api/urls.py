@@ -16,6 +16,8 @@ urlpatterns = [
 
     # USERS
     url(r'user/login', user.login),
+    url(r'user/profile', user.profile),
+    url(r'user/logout', user.logout),
 
     # DATASETSS
     url(r'dataset/create', dataset.create),

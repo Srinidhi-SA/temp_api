@@ -14,6 +14,19 @@ class Profile(models.Model):
         self.token = "p" + str(self.id) + "-" + str(uuid.uuid4())
         self.save()
 
+    def logout(self):
+        self.token = ""
+        self.save()
+
+    def rs(self):
+        return {
+            "id": self.user.id,
+            "token": self.token,
+            "username": self.user.username,
+            "email": self.user.email,
+            "full_name": self.user.get_full_name()
+        }
+
 class ProfileSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
 

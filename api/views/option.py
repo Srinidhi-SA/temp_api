@@ -14,9 +14,8 @@ from api.models.option import Option, OptionSerializer
 def set(request):
     for key in request.POST:
         obj, created = Option.objects.get_or_create(slug=key)
-        if created:
-            obj.data = request.POST[key]
-            obj.save()
+        obj.data = request.POST[key]
+        obj.save()
     return Response({"data": "Successfully saved option information"})
 
 @api_view(['GET'])
