@@ -129,7 +129,7 @@ STATIC_URL = '/static/'
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = False
-CORS_ALLOW_HEADERS = default_headers + ('x-token')
+CORS_ALLOW_HEADERS = default_headers + ('x-token', )
 
 HDFS = {
     # 'host': 'ec2-54-88-153-37.compute-1.amazonaws.com',
