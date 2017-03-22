@@ -122,7 +122,7 @@ class Errand(models.Model):
         call([
             "sh", "api/lib/run_master.sh",
             settings.HDFS['host'],
-            hadoop.hadoop_get_full_url("/" + self.config_file_path)
+            hadoop.hadoop_get_full_url("/" + self.storage_input_dir() + "/config.cfg")
         ])
 
     # THIS INDICTATES THAT THE PROCESSING IS COMPLETE
