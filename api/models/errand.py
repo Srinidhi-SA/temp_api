@@ -69,6 +69,10 @@ class Errand(models.Model):
     def config_file_path(self):
         return errand_base_directory(self) + "/config.cfg"
 
+    @property
+    def config_file_path_hadoop(self):
+        return str(self.id) + "config.cfg"
+
     def get_columns(self):
         preview = self.get_preview_data()
         return preview[0]
@@ -122,7 +126,15 @@ class Errand(models.Model):
         call([
             "sh", "api/lib/run_master.sh",
             settings.HDFS['host'],
-            hadoop.hadoop_get_full_url("/" + self.storage_input_dir() + "/config.cfg")
+            "~/config/" + self.config_file_path_hadoop
+        ])
+
+    def run_save_config(self):
+        call([
+            "sh", "api/lib/run_save_config.sh",
+            settings.HDFS['host'],
+            settings.BASE_DIR + "/" + self.config_file_path,
+            self.config_file_path_hadoop
         ])
 
     # THIS INDICTATES THAT THE PROCESSING IS COMPLETE
