@@ -53,8 +53,14 @@ class Errand(models.Model):
         return self.storage_output_dir() + "/" + self.dimension
 
     def setup_storage_folders(self):
+        dir = "uploads"  + self.base_storage_dir()
         hadoop.hadoop_mkdir(self.storage_input_dir())
         hadoop.hadoop_mkdir(self.storage_output_dir())
+        print("looking for " + dir)
+        if not os.path.exists(dir):
+            os.makedirs(dir)
+        else:
+            print("you are already there")
 
     def send_input_file_to_storage(self):
         hadoop.hadoop_put(self.input_file.path, self.storage_input_dir() + "/")
@@ -123,10 +129,12 @@ class Errand(models.Model):
         self.mark_dimension_as_done()
 
     def run_master(self):
+        self.create_configuration_file()
+        self.run_save_config()
         call([
             "sh", "api/lib/run_master.sh",
             settings.HDFS['host'],
-            "~/config/" + self.config_file_path_hadoop
+            "/home/hadoop/configs/" + self.config_file_path_hadoop
         ])
 
     def run_save_config(self):
@@ -147,18 +155,21 @@ class Errand(models.Model):
     def get_result(self):
         if self.measure is None :
             raise Exception("Measure is not set")
-        result_dir = self.storage_measure_output_dir() + "/result.json"
+        # result_dir = self.storage_measure_output_dir() + "/result.json"
+        result_dir  = self.storage_output_dir() + "/results/DescrStats"
         return hadoop.hadoop_read_output_file(result_dir)
 
     def get_narratives(self):
         if self.measure is None :
             raise Exception("Measure is not set")
-        dir = self.storage_measure_output_dir() + "/narratives.json"
+        # dir = self.storage_measure_output_dir() + "/narratives.json"
+        dir = self.storage_output_dir() + "/narratives/DescrStats"
         return hadoop.hadoop_read_output_file(dir)
 
 
     def get_dimension_results(self):
-        path = self.storage_measure_output_dir() + "/dimensions-narratives.json"
+        # path = self.storage_measure_output_dir() + "/dimensions-narratives.json"
+        path = self.storage_output_dir() + "/narratives/OneWayAnova"
         narratives = hadoop.hadoop_read_output_file(path)
         items = narratives['narratives'][self.measure]
         dimensions_data = {}
@@ -169,7 +180,8 @@ class Errand(models.Model):
             dimensions_data['narratives'].append(value)
 
         # RESULTS
-        path = self.storage_measure_output_dir() + "/dimensions-result.json"
+        # path = self.storage_measure_output_dir() + "/dimensions-result.json"
+        path = self.storage_output_dir() + "/results/OneWayAnova"
         result = hadoop.hadoop_read_output_file(path)
         result_data = []
         items = result["results"][self.measure]
@@ -186,14 +198,16 @@ class Errand(models.Model):
 
     def get_reg_results(self):
         data = {}
-        path = self.storage_measure_output_dir() + "/reg-narratives.json"
+        # path = self.storage_measure_output_dir() + "/reg-narratives.json"
+        path = self.storage_output_dir() + "/narratives/Regression"
         narratives = hadoop.hadoop_read_output_file(path)
         # print narratives.keys()
         data['summary'] = narratives['summary']
         # data['analysis'] = narratives['analysis']
         data['narratives'] = narratives
 
-        path = self.storage_measure_output_dir() + "/reg-result.json"
+        # path = self.storage_measure_output_dir() + "/reg-result.json"
+        path = self.storage_output_dir() + "/results/Regression"
         result = hadoop.hadoop_read_output_file(path)
 
         data['raw_data'] = []
@@ -271,7 +285,9 @@ class Errand(models.Model):
         config.add_section("FILTER_SETTINGS")
 
         config.set('FILE_SETTINGS', 'InputFile', hadoop.hadoop_get_full_url(self.dataset.get_input_file_storage_path()))
-        config.set('FILE_SETTINGS', 'OutputFolder', hadoop.hadoop_get_full_url(self.storage_measure_output_dir()))
+        config.set('FILE_SETTINGS', 'result_file', hadoop.hadoop_get_full_url(self.storage_output_dir() + "/results/"))
+        config.set('FILE_SETTINGS', 'narratives_file', hadoop.hadoop_get_full_url(self.storage_output_dir() + "/narratives/"))
+        config.set('FILE_SETTINGS', 'monitor_api', 'http://52.77.216.14/api/errand/1/log_status')
 
         if self.measure != None:
             config.set('COLUMN_SETTINGS', 'result_column', self.measure)
