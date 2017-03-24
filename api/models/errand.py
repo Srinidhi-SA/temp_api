@@ -221,25 +221,30 @@ class Errand(models.Model):
         return data
 
     def get_frequency_results(self):
-        result_path = self.storage_dimension_output_dir() + "/frequency-result.json";
+        # result_path = self.storage_dimension_output_dir() + "/frequency-result.json";
+        result_path = self.storage_output_dir() + "/results/FreqDimension"
         results_data = hadoop.hadoop_read_output_file(result_path);
         results = []
         table = json.loads(results_data['frequency_table'])[self.dimension]
         result = zip(table[self.dimension].values(), table['count'].values())
-        narratives_path = self.storage_dimension_output_dir() + "/frequency-narratives.json";
+        # narratives_path = self.storage_dimension_output_dir() + "/frequency-narratives.json";
+        narratives_path = self.storage_output_dir() + "/narratives/FreqDimension"
+
         return {
             'raw_data': result,
             'narratives': hadoop.hadoop_read_output_file(narratives_path)
         }
 
     def get_tree_results_raw(self):
-        result_path = self.storage_dimension_output_dir() + "/tree-result.json";
+        # result_path = self.storage_dimension_output_dir() + "/tree-result.json";
+        result_path = self.storage_output_dir() + "/results/DecisionTree"
         data = hadoop.hadoop_read_output_file(result_path);
         data['tree']['children'] = json.loads(data['tree']['children'])
         return data
 
     def get_tree_results(self):
-        result_path = self.storage_dimension_output_dir() + "/tree-result.json";
+        # result_path = self.storage_dimension_output_dir() + "/tree-result.json";
+        result_path = self.storage_output_dir() + "/results/DecisionTree"
         tree = hadoop.hadoop_read_output_file(result_path)['tree'];
         bucket = [["Root", ""]]
         self._get_tree_results_node(bucket, tree['name'], json.loads(tree['children']))
@@ -253,12 +258,15 @@ class Errand(models.Model):
                 self._get_tree_results_node(bucket, child['name'], child['children'])
 
     def get_tree_narratives(self):
-        path = self.storage_dimension_output_dir() + "/tree-narratives.json"
+        # path = self.storage_dimension_output_dir() + "/tree-narratives.json"
+        path = self.storage_output_dir() + "/narratives/DecisionTree"
         return hadoop.hadoop_read_output_file(path)
 
     def get_chi_results(self):
-        result_path = self.storage_dimension_output_dir() + "/chi-result.json";
-        narratives_path = self.storage_dimension_output_dir() + "/chi-narratives.json";
+        # result_path = self.storage_dimension_output_dir() + "/chi-result.json";
+        # narratives_path = self.storage_dimension_output_dir() + "/chi-narratives.json";
+        result_path = self.storage_output_dir() + "/results/ChiSquare"
+        narratives_path = self.storage_output_dir() + "/narratives/ChiSquare"
         narratives_data = hadoop.hadoop_read_output_file(narratives_path);
         narratives = []
         list = narratives_data["narratives"][self.dimension]
