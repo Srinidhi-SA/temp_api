@@ -26,6 +26,7 @@ class Errand(models.Model):
     dataset = models.ForeignKey(Dataset, null=True)
     name = models.CharField(max_length=300, null=True)
     compare_with = models.CharField(max_length=300, default="")
+    column_data_raw = models.TextField(default="{}")
 
     # CLASS METHODS
     @classmethod
@@ -102,6 +103,14 @@ class Errand(models.Model):
     def is_dimension_done(self):
         path = self.storage_dimension_output_dir() + "/_DONE"
         return hadoop.hadoop_exists(path)
+
+    def set_column_data(self, data):
+        print "Saving: " + json.dumps(data)
+        self.column_data_raw = json.dumps(data)
+        self.save()
+
+    def get_column_data(self):
+        return json.loads(self.column_data_raw)
 
     # RUNS THE SCRIPTS
     def run_dist(self, force = False):
@@ -304,9 +313,19 @@ class Errand(models.Model):
             config.set('COLUMN_SETTINGS', 'analysis_type', "Dimension")
             config.set('COLUMN_SETTINGS', 'result_column', self.dimension)
 
-        config.set('COLUMN_SETTINGS', 'date_columns', "")
+
         config.set('COLUMN_SETTINGS', 'polarity', "positive")
         config.set('COLUMN_SETTINGS', 'consider_columns', self.compare_with)
+
+        column_data = self.get_column_data()
+        if column_data.has_key('date'):
+            config.set('COLUMN_SETTINGS', 'date_columns', column_data['date'])
+
+        if(column_data.has_key('date_format')):
+            config.set('COLUMN_SETTINGS', 'date_format', column_data['date_format'])
+
+        if(column_data.has_key('ignore')):
+            config.set('COLUMN_SETTINGS', 'ignore_column', column_data['ignore'])
 
         with open(self.config_file_path, 'wb') as file:
             config.write(file)

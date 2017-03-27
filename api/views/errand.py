@@ -82,6 +82,19 @@ def set_dimension(request):
     return Response({'message': "Success", "id": e.id})
 
 
+@api_view(['POST'])
+@renderer_classes((JSONRenderer, ))
+def set_column_data(request):
+    e = get_errand(request)
+    data = {}
+    for x in ["ignore", "date", "date_format"]:
+        if request.POST.has_key(x):
+            data[x] = request.POST[x]
+    print(data)
+    e.set_column_data(data)
+    return Response({'message': "Successfuly set column data"})
+
+
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
 def get_env(request):
