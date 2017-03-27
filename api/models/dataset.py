@@ -70,6 +70,7 @@ class Dataset(models.Model):
     def get_meta(self):
         path = self.storage_output_dir() + "/" + self.filename_meta
         result = hadoop.hadoop_read_output_file(path)
+        return result
         result_columns = result['columns']
 
         data = {}
