@@ -64,8 +64,8 @@ def set_measure(request):
     e = get_errand(request)
     e.set_measure(request.POST['measure'])
     e.compare_with = request.POST['compare_with']
+    e.compare_type = request.POST['compare_type']
     e.save()
-    # e.run_dist()
     e.run_master()
     return Response({'message': "Success", "id": e.id})
 
@@ -76,8 +76,8 @@ def set_dimension(request):
     e = get_errand(request)
     e.set_dimension(request.POST['dimension'])
     e.compare_with = request.POST['compare_with']
+    e.compare_type = request.POST['compare_type']
     e.save()
-    # e.run_dimension()
     e.run_master()
     return Response({'message': "Success", "id": e.id})
 

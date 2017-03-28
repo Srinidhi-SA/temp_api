@@ -26,6 +26,7 @@ class Errand(models.Model):
     dataset = models.ForeignKey(Dataset, null=True)
     name = models.CharField(max_length=300, null=True)
     compare_with = models.CharField(max_length=300, default="")
+    compare_type = models.CharField(max_length=100, null=True)
     column_data_raw = models.TextField(default="{}")
 
     # CLASS METHODS
@@ -316,6 +317,7 @@ class Errand(models.Model):
 
         config.set('COLUMN_SETTINGS', 'polarity', "positive")
         config.set('COLUMN_SETTINGS', 'consider_columns', self.compare_with)
+        config.set('COLUMN_SETTINGS', 'consider_columns_type', self.compare_type)
 
         column_data = self.get_column_data()
         if column_data.has_key('date'):
@@ -323,9 +325,6 @@ class Errand(models.Model):
 
         if(column_data.has_key('date_format')):
             config.set('COLUMN_SETTINGS', 'date_format', column_data['date_format'])
-
-        if(column_data.has_key('ignore')):
-            config.set('COLUMN_SETTINGS', 'ignore_columns', column_data['ignore'])
 
         with open(self.config_file_path, 'wb') as file:
             config.write(file)
