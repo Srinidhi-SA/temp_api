@@ -325,7 +325,7 @@ class Errand(models.Model):
             config.set('COLUMN_SETTINGS', 'date_format', column_data['date_format'])
 
         if(column_data.has_key('ignore')):
-            config.set('COLUMN_SETTINGS', 'ignore_column', column_data['ignore'])
+            config.set('COLUMN_SETTINGS', 'ignore_columns', column_data['ignore'])
 
         with open(self.config_file_path, 'wb') as file:
             config.write(file)
