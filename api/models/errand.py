@@ -26,6 +26,8 @@ class Errand(models.Model):
     dataset = models.ForeignKey(Dataset, null=True)
     name = models.CharField(max_length=300, null=True)
     compare_with = models.CharField(max_length=300, default="")
+    compare_type = models.CharField(max_length=100, null=True)
+    column_data_raw = models.TextField(default="{}")
 
     # CLASS METHODS
     @classmethod
@@ -53,8 +55,14 @@ class Errand(models.Model):
         return self.storage_output_dir() + "/" + self.dimension
 
     def setup_storage_folders(self):
+        dir = "uploads"  + self.base_storage_dir()
         hadoop.hadoop_mkdir(self.storage_input_dir())
         hadoop.hadoop_mkdir(self.storage_output_dir())
+        print("looking for " + dir)
+        if not os.path.exists(dir):
+            os.makedirs(dir)
+        else:
+            print("you are already there")
 
     def send_input_file_to_storage(self):
         hadoop.hadoop_put(self.input_file.path, self.storage_input_dir() + "/")
@@ -68,6 +76,10 @@ class Errand(models.Model):
     @property
     def config_file_path(self):
         return errand_base_directory(self) + "/config.cfg"
+
+    @property
+    def config_file_path_hadoop(self):
+        return str(self.id) + "config.cfg"
 
     def get_columns(self):
         preview = self.get_preview_data()
@@ -92,6 +104,14 @@ class Errand(models.Model):
     def is_dimension_done(self):
         path = self.storage_dimension_output_dir() + "/_DONE"
         return hadoop.hadoop_exists(path)
+
+    def set_column_data(self, data):
+        print "Saving: " + json.dumps(data)
+        self.column_data_raw = json.dumps(data)
+        self.save()
+
+    def get_column_data(self):
+        return json.loads(self.column_data_raw)
 
     # RUNS THE SCRIPTS
     def run_dist(self, force = False):
@@ -119,10 +139,20 @@ class Errand(models.Model):
         self.mark_dimension_as_done()
 
     def run_master(self):
+        self.create_configuration_file()
+        self.run_save_config()
         call([
             "sh", "api/lib/run_master.sh",
             settings.HDFS['host'],
-            hadoop.hadoop_get_full_url("/" + self.config_file_path)
+            "/home/hadoop/configs/" + self.config_file_path_hadoop
+        ])
+
+    def run_save_config(self):
+        call([
+            "sh", "api/lib/run_save_config.sh",
+            settings.HDFS['host'],
+            settings.BASE_DIR + "/" + self.config_file_path,
+            self.config_file_path_hadoop
         ])
 
     # THIS INDICTATES THAT THE PROCESSING IS COMPLETE
@@ -135,18 +165,21 @@ class Errand(models.Model):
     def get_result(self):
         if self.measure is None :
             raise Exception("Measure is not set")
-        result_dir = self.storage_measure_output_dir() + "/result.json"
+        # result_dir = self.storage_measure_output_dir() + "/result.json"
+        result_dir  = self.storage_output_dir() + "/results/DescrStats"
         return hadoop.hadoop_read_output_file(result_dir)
 
     def get_narratives(self):
         if self.measure is None :
             raise Exception("Measure is not set")
-        dir = self.storage_measure_output_dir() + "/narratives.json"
+        # dir = self.storage_measure_output_dir() + "/narratives.json"
+        dir = self.storage_output_dir() + "/narratives/DescrStats"
         return hadoop.hadoop_read_output_file(dir)
 
 
     def get_dimension_results(self):
-        path = self.storage_measure_output_dir() + "/dimensions-narratives.json"
+        # path = self.storage_measure_output_dir() + "/dimensions-narratives.json"
+        path = self.storage_output_dir() + "/narratives/OneWayAnova"
         narratives = hadoop.hadoop_read_output_file(path)
         items = narratives['narratives'][self.measure]
         dimensions_data = {}
@@ -157,7 +190,8 @@ class Errand(models.Model):
             dimensions_data['narratives'].append(value)
 
         # RESULTS
-        path = self.storage_measure_output_dir() + "/dimensions-result.json"
+        # path = self.storage_measure_output_dir() + "/dimensions-result.json"
+        path = self.storage_output_dir() + "/results/OneWayAnova"
         result = hadoop.hadoop_read_output_file(path)
         result_data = []
         items = result["results"][self.measure]
@@ -174,14 +208,16 @@ class Errand(models.Model):
 
     def get_reg_results(self):
         data = {}
-        path = self.storage_measure_output_dir() + "/reg-narratives.json"
+        # path = self.storage_measure_output_dir() + "/reg-narratives.json"
+        path = self.storage_output_dir() + "/narratives/Regression"
         narratives = hadoop.hadoop_read_output_file(path)
         # print narratives.keys()
         data['summary'] = narratives['summary']
         # data['analysis'] = narratives['analysis']
         data['narratives'] = narratives
 
-        path = self.storage_measure_output_dir() + "/reg-result.json"
+        # path = self.storage_measure_output_dir() + "/reg-result.json"
+        path = self.storage_output_dir() + "/results/Regression"
         result = hadoop.hadoop_read_output_file(path)
 
         data['raw_data'] = []
@@ -195,25 +231,30 @@ class Errand(models.Model):
         return data
 
     def get_frequency_results(self):
-        result_path = self.storage_dimension_output_dir() + "/frequency-result.json";
+        # result_path = self.storage_dimension_output_dir() + "/frequency-result.json";
+        result_path = self.storage_output_dir() + "/results/FreqDimension"
         results_data = hadoop.hadoop_read_output_file(result_path);
         results = []
         table = json.loads(results_data['frequency_table'])[self.dimension]
         result = zip(table[self.dimension].values(), table['count'].values())
-        narratives_path = self.storage_dimension_output_dir() + "/frequency-narratives.json";
+        # narratives_path = self.storage_dimension_output_dir() + "/frequency-narratives.json";
+        narratives_path = self.storage_output_dir() + "/narratives/FreqDimension"
+
         return {
             'raw_data': result,
             'narratives': hadoop.hadoop_read_output_file(narratives_path)
         }
 
     def get_tree_results_raw(self):
-        result_path = self.storage_dimension_output_dir() + "/tree-result.json";
+        # result_path = self.storage_dimension_output_dir() + "/tree-result.json";
+        result_path = self.storage_output_dir() + "/results/DecisionTree"
         data = hadoop.hadoop_read_output_file(result_path);
         data['tree']['children'] = json.loads(data['tree']['children'])
         return data
 
     def get_tree_results(self):
-        result_path = self.storage_dimension_output_dir() + "/tree-result.json";
+        # result_path = self.storage_dimension_output_dir() + "/tree-result.json";
+        result_path = self.storage_output_dir() + "/results/DecisionTree"
         tree = hadoop.hadoop_read_output_file(result_path)['tree'];
         bucket = [["Root", ""]]
         self._get_tree_results_node(bucket, tree['name'], json.loads(tree['children']))
@@ -227,12 +268,15 @@ class Errand(models.Model):
                 self._get_tree_results_node(bucket, child['name'], child['children'])
 
     def get_tree_narratives(self):
-        path = self.storage_dimension_output_dir() + "/tree-narratives.json"
+        # path = self.storage_dimension_output_dir() + "/tree-narratives.json"
+        path = self.storage_output_dir() + "/narratives/DecisionTree"
         return hadoop.hadoop_read_output_file(path)
 
     def get_chi_results(self):
-        result_path = self.storage_dimension_output_dir() + "/chi-result.json";
-        narratives_path = self.storage_dimension_output_dir() + "/chi-narratives.json";
+        # result_path = self.storage_dimension_output_dir() + "/chi-result.json";
+        # narratives_path = self.storage_dimension_output_dir() + "/chi-narratives.json";
+        result_path = self.storage_output_dir() + "/results/ChiSquare"
+        narratives_path = self.storage_output_dir() + "/narratives/ChiSquare"
         narratives_data = hadoop.hadoop_read_output_file(narratives_path);
         narratives = []
         list = narratives_data["narratives"][self.dimension]
@@ -259,7 +303,9 @@ class Errand(models.Model):
         config.add_section("FILTER_SETTINGS")
 
         config.set('FILE_SETTINGS', 'InputFile', hadoop.hadoop_get_full_url(self.dataset.get_input_file_storage_path()))
-        config.set('FILE_SETTINGS', 'OutputFolder', hadoop.hadoop_get_full_url(self.storage_measure_output_dir()))
+        config.set('FILE_SETTINGS', 'result_file', hadoop.hadoop_get_full_url(self.storage_output_dir() + "/results/"))
+        config.set('FILE_SETTINGS', 'narratives_file', hadoop.hadoop_get_full_url(self.storage_output_dir() + "/narratives/"))
+        config.set('FILE_SETTINGS', 'monitor_api', 'http://52.77.216.14/api/errand/1/log_status')
 
         if self.measure != None:
             config.set('COLUMN_SETTINGS', 'result_column', self.measure)
@@ -268,9 +314,17 @@ class Errand(models.Model):
             config.set('COLUMN_SETTINGS', 'analysis_type', "Dimension")
             config.set('COLUMN_SETTINGS', 'result_column', self.dimension)
 
-        config.set('COLUMN_SETTINGS', 'date_columns', "")
+
         config.set('COLUMN_SETTINGS', 'polarity', "positive")
         config.set('COLUMN_SETTINGS', 'consider_columns', self.compare_with)
+        config.set('COLUMN_SETTINGS', 'consider_columns_type', self.compare_type)
+
+        column_data = self.get_column_data()
+        if column_data.has_key('date'):
+            config.set('COLUMN_SETTINGS', 'date_columns', column_data['date'])
+
+        if(column_data.has_key('date_format')):
+            config.set('COLUMN_SETTINGS', 'date_format', column_data['date_format'])
 
         with open(self.config_file_path, 'wb') as file:
             config.write(file)

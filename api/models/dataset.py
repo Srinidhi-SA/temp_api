@@ -45,18 +45,15 @@ class Dataset(models.Model):
     @classmethod
     def make(cls, input_file):
         print(input_file)
-        print "inside make  "
         obj = cls()
         obj.save()
         obj.input_file = input_file
-        print obj.base_storage_dir(), obj.storage_input_dir(), obj.storage_output_dir()
         obj.save()
         obj.setup()
         obj.run_meta()
         return obj
 
     def setup(self):
-
         hadoop.hadoop_mkdir(self.storage_input_dir())
         hadoop.hadoop_mkdir(self.storage_output_dir())
         self.send_input_file_to_storage()
@@ -75,14 +72,10 @@ class Dataset(models.Model):
         print("Running meta script")
         call(["sh", "api/lib/run_meta.sh", settings.HDFS['host'], self.get_input_file_storage_path(), self.output_file_meta_path])
 
-
     def get_meta(self):
-
-        # import ipdb;ipdb.set_trace()
         path = self.storage_output_dir() + "/" + self.filename_meta
-        print path
         result = hadoop.hadoop_read_output_file(path)
-        result = json.loads(result['Metadata'])
+        return result
         result_columns = result['columns']
 
         data = {}

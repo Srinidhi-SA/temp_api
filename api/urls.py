@@ -34,6 +34,7 @@ urlpatterns = [
     url(r'errand/columns', errand.columns),
     url(r'errand/get_measures', errand.columns),
     url(r'errand/set_dimension', errand.set_dimension),
+    url(r'errand/set_column_data', errand.set_column_data),
     url(r'errand/set_measure', errand.set_measure),
     url(r'errand/get_results', errand.get_results),
     url(r'errand/archived', errand.get_archived),

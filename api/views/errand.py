@@ -64,8 +64,9 @@ def set_measure(request):
     e = get_errand(request)
     e.set_measure(request.POST['measure'])
     e.compare_with = request.POST['compare_with']
+    e.compare_type = request.POST['compare_type']
     e.save()
-    e.run_dist()
+    e.run_master()
     return Response({'message': "Success", "id": e.id})
 
 
@@ -75,9 +76,23 @@ def set_dimension(request):
     e = get_errand(request)
     e.set_dimension(request.POST['dimension'])
     e.compare_with = request.POST['compare_with']
+    e.compare_type = request.POST['compare_type']
     e.save()
-    e.run_dimension()
+    e.run_master()
     return Response({'message': "Success", "id": e.id})
+
+
+@api_view(['POST'])
+@renderer_classes((JSONRenderer, ))
+def set_column_data(request):
+    e = get_errand(request)
+    data = {}
+    for x in ["ignore", "date", "date_format"]:
+        if request.POST.has_key(x):
+            data[x] = request.POST[x]
+    print(data)
+    e.set_column_data(data)
+    return Response({'message': "Successfuly set column data"})
 
 
 @api_view(['GET'])

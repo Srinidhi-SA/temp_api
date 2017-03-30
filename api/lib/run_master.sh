@@ -15,6 +15,5 @@ chmod 0400 api/lib/emr.pem
 
 echo "Running master.py"
 COMMAND="$COMMAND_PREFIX $SCRIPTS_ROOT/master.py $INPUT_FILE_1"
-
 echo $COMMAND
-`$COMMAND`
+$COMMAND_PREFIX $SCRIPTS_ROOT/master.py $INPUT_FILE_1
