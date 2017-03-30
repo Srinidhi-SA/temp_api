@@ -12,15 +12,15 @@ echo "Fixing permission on pem file"
 chmod 0400 api/lib/mAdviser_key_pair.pem
 
 # SAMPLE SCRIPT
-#ssh -i api/lib/mAdviser_key_pair.pem hadoop@ec2-54-88-153-37.compute-1.amazonaws.com spark-submit --master yarn  --deploy-mode client /home/hadoop/codebase/marlabs-bi/bi/scripts/descr_stats.py "hdfs://ip-172-31-3-88.ec2.internal:8020/user/input/Iris.csv" "hdfs://ip-172-31-3-88.ec2.internal:8020/user/output/output_prakash.json" --driver-memory 1g --executor-memory 1g --executor-cores 2
+#ssh -i api/lib/mAdviser_key_pair.pem hadoop@ec2-54-88-153-37.compute-1.amazonaws.com spark-submit --master yarn  --deploy-mode client /home/hadoop/codebase/marlabs-bi/bi/scripts/descr_stats.py "hdfs://localhost:9000/user/input/Iris.csv" "hdfs://localhost:9000/user/output/output_prakash.json" --driver-memory 1g --executor-memory 1g --executor-cores 2
 
 
 # DO NOT FORGET TO UNCOMMENT THIS!!!!
 echo "Running for descr_stats"
-ssh -i api/lib/mAdviser_key_pair.pem hadoop@ec2-54-88-153-37.compute-1.amazonaws.com spark-submit --master yarn  --deploy-mode client /home/hadoop/codebase/marlabs-bi/bi/scripts/descr_stats.py --input "hdfs://ip-172-31-3-88.ec2.internal:8020/$1" --result "hdfs://ip-172-31-3-88.ec2.internal:8020$2/result.json" --narratives "hdfs://ip-172-31-3-88.ec2.internal:8020$2/narratives.json" --measurecolumn $MEASURE
+spark-submit --master yarn  --deploy-mode client /home/ankush/codebase/marlabs-bi/bi/scripts/descr_stats.py --input "hdfs://localhost:9000/$1" --result "hdfs://localhost:9000$2/result.json" --narratives "hdfs://localhost:9000$2/narratives.json" --measurecolumn $MEASURE
 
 echo "Running for one_way_anova.py"
-ssh -i api/lib/mAdviser_key_pair.pem hadoop@ec2-54-88-153-37.compute-1.amazonaws.com spark-submit --master yarn  --deploy-mode client /home/hadoop/codebase/marlabs-bi/bi/scripts/one_way_anova.py --input "hdfs://ip-172-31-3-88.ec2.internal:8020/$1" --result "hdfs://ip-172-31-3-88.ec2.internal:8020$2/dimensions-result.json" --narratives "hdfs://ip-172-31-3-88.ec2.internal:8020$2/dimensions-narratives.json" --measurecolumn $MEASURE
+spark-submit --master yarn  --deploy-mode client /home/ankush/codebase/marlabs-bi/bi/scripts/one_way_anova.py --input "hdfs://localhost:9000/$1" --result "hdfs://localhost:9000$2/dimensions-result.json" --narratives "hdfs://localhost:9000$2/dimensions-narratives.json" --measurecolumn $MEASURE
 
 echo "Running regression py"
-ssh -i api/lib/mAdviser_key_pair.pem hadoop@ec2-54-88-153-37.compute-1.amazonaws.com spark-submit --master yarn  --deploy-mode client /home/hadoop/codebase/marlabs-bi/bi/scripts/regression.py --input "hdfs://ip-172-31-3-88.ec2.internal:8020/$1" --result "hdfs://ip-172-31-3-88.ec2.internal:8020$2/reg-result.json" --narratives "hdfs://ip-172-31-3-88.ec2.internal:8020$2/reg-narratives.json" --measurecolumn $MEASURE
+spark-submit --master yarn  --deploy-mode client /home/ankush/codebase/marlabs-bi/bi/scripts/regression.py --input "hdfs://localhost:9000/$1" --result "hdfs://localhost:9000$2/reg-result.json" --narratives "hdfs://localhost:9000$2/reg-narratives.json" --measurecolumn $MEASURE

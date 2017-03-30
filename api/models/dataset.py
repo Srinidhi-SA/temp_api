@@ -7,6 +7,7 @@ import csv
 import itertools
 from subprocess import call
 from django.conf import settings
+import json
 
 def dataset_base_directory(instance):
     return "uploads/datasets/{0}".format(instance.id)
@@ -37,18 +38,25 @@ class Dataset(models.Model):
     def output_file_meta_path(self):
         return self.storage_output_dir() + '/' + self.filename_meta
 
+    @property
+    def output_file_meta_path_for_script(self):
+        return self.storage_output_dir() + '/' + self.filename_meta + "filter"
+
     @classmethod
     def make(cls, input_file):
         print(input_file)
+        print "inside make  "
         obj = cls()
         obj.save()
         obj.input_file = input_file
+        print obj.base_storage_dir(), obj.storage_input_dir(), obj.storage_output_dir()
         obj.save()
         obj.setup()
         obj.run_meta()
         return obj
 
     def setup(self):
+
         hadoop.hadoop_mkdir(self.storage_input_dir())
         hadoop.hadoop_mkdir(self.storage_output_dir())
         self.send_input_file_to_storage()
@@ -67,9 +75,14 @@ class Dataset(models.Model):
         print("Running meta script")
         call(["sh", "api/lib/run_meta.sh", settings.HDFS['host'], self.get_input_file_storage_path(), self.output_file_meta_path])
 
+
     def get_meta(self):
+
+        # import ipdb;ipdb.set_trace()
         path = self.storage_output_dir() + "/" + self.filename_meta
+        print path
         result = hadoop.hadoop_read_output_file(path)
+        result = json.loads(result['Metadata'])
         result_columns = result['columns']
 
         data = {}
@@ -99,6 +112,28 @@ class Dataset(models.Model):
             for row in itertools.islice(rows, 20):
                 items.append(row)
         return items
+
+
+    def sample_filter_subsetting(self,
+                                 COLUMN_SETTINGS,
+                                 DIMENSION_FILTER,
+                                 MEASURE_FILTER):
+
+        input_file = self.get_input_file_storage_path()
+        output_file = self.output_file_meta_path_for_script
+        call([
+            "sh", "api/lib/run_filter.sh",
+            settings.HDFS['host'],
+            input_file,
+            output_file,
+            json.dumps(COLUMN_SETTINGS),
+            json.dumps(DIMENSION_FILTER),
+            json.dumps(MEASURE_FILTER)
+        ])
+        return "Done"
+
+    def output_file_name(self):
+        return
 
 
 class DatasetSerializer(serializers.Serializer):

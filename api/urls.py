@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'dataset/get_meta', dataset.get_meta),
     url(r'dataset/edit', dataset.edit),
     url(r'dataset/delete', dataset.delete),
+    url(r'dataset/filter', dataset.filter_sample),
 
     # ERRANDS
     url(r'errand/uploaded_files', errand.get_uploaded_files),
