@@ -19,6 +19,8 @@ def dataset_input_file_directory_path(instance, filename):
 class Dataset(models.Model):
     input_file = models.FileField(upload_to=dataset_input_file_directory_path, null=True, blank=True)
     name = models.CharField(max_length=100, null=True)
+    userId = models.CharField(max_length=100, null=True)
+
     filename_meta = "meta.json"
 
     def base_storage_dir(self):
@@ -43,10 +45,11 @@ class Dataset(models.Model):
         return self.storage_output_dir() + '/' + self.filename_meta + "filter"
 
     @classmethod
-    def make(cls, input_file):
+    def make(cls, input_file, userId):
         print(input_file)
         obj = cls()
         obj.save()
+        obj.userId = userId
         obj.input_file = input_file
         obj.save()
         obj.setup()
@@ -75,7 +78,8 @@ class Dataset(models.Model):
     def get_meta(self):
         path = self.storage_output_dir() + "/" + self.filename_meta
         result = hadoop.hadoop_read_output_file(path)
-        return result
+        print  result
+        return  result
         result_columns = result['columns']
 
         data = {}
@@ -127,6 +131,23 @@ class Dataset(models.Model):
 
     def output_file_name(self):
         return
+
+    @property
+    def config_file_path(self):
+        return dataset_base_directory(self) + "/config.cfg"
+
+    def configuration_file(self, file_settings):
+        config = ConfigParser.RawConfigParser()
+        config.add_section("FILE_SETTINGS")
+        settings_string_for_file_setting = ", ".join(file_settings)
+        config.set('COLUMN_SETTINGS', 'analysis_type', settings_string_for_file_setting)
+        file_write_on = self.config_file_path
+
+
+        with open(file_write_on, 'wb') as file:
+            config.write(file)
+
+
 
 
 class DatasetSerializer(serializers.Serializer):

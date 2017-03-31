@@ -2,9 +2,11 @@ from django.conf.urls import include, url
 from rest_framework.decorators import renderer_classes, api_view
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
+from django.contrib.auth.decorators import login_required
 
 from api.views import errand, dataset, robo, option, user
 
+@login_required
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
 def test(request):

@@ -8,7 +8,7 @@ echo "INPUT FILE: $2"
 echo "OUTPUT DIRECTORY: $3"
 MEASURE=$4
 COMMAND_PREFIX="ssh -i api/lib/emr.pem hadoop@$1 spark-submit --master yarn --deploy-mode client"
-SCRIPTS_ROOT="/home/ankush/codebase/marlabs-bi/bi/scripts"
+SCRIPTS_ROOT="/home/hadoop/codebase/marlabs-bi/bi/scripts"
 echo "MEASURE: $MEASURE"
 
 echo "Fixing permission on pem file"
@@ -20,10 +20,22 @@ chmod 0400 api/lib/emr.pem
 
 # DO NOT FORGET TO UNCOMMENT THIS!!!!
 echo "Running for descr_stats"
-spark-submit --master yarn  --deploy-mode client /home/ankush/codebase/marlabs-bi/bi/scripts/descr_stats.py --input "hdfs://$1:9000/$2" --result "hdfs://$1:9000$3/result.json" --narratives "hdfs://$1:9000$3/narratives.json" --measurecolumn $MEASURE
+$COMMAND_PREFIX $SCRIPTS_ROOT/descr_stats.py --input "hdfs://$1:9000/$2" --result "hdfs://$1:9000$3/result.json" --narratives "hdfs://$1:9000$3/narratives.json" --measurecolumn $MEASURE
 
 echo "Running for one_way_anova.py"
-spark-submit --master yarn  --deploy-mode client /home/ankush/codebase/marlabs-bi/bi/scripts/one_way_anova.py --input "hdfs://$1:9000/$2" --result "hdfs://$1:9000$3/dimensions-result.json" --narratives "hdfs://$1:9000$3/dimensions-narratives.json" --measurecolumn $MEASURE
+$COMMAND_PREFIX $SCRIPTS_ROOT/one_way_anova.py --input "hdfs://$1:9000/$2" --result "hdfs://$1:9000$3/dimensions-result.json" --narratives "hdfs://$1:9000$3/dimensions-narratives.json" --measurecolumn $MEASURE
 
 echo "Running regression.py"
 $COMMAND_PREFIX $SCRIPTS_ROOT/regression.py --input "hdfs://$1/$2" --result "hdfs://$1:9000$3/reg-result.json" --narratives "hdfs://$1:9000$3/reg-narratives.json" --measurecolumn $MEASURE
+
+
+
+## DO NOT FORGET TO UNCOMMENT THIS!!!!
+#echo "Running for descr_stats"
+#spark-submit --master yarn  --deploy-mode client /home/ankush/codebase/marlabs-bi/bi/scripts/descr_stats.py --input "hdfs://$1:9000/$2" --result "hdfs://$1:9000$3/result.json" --narratives "hdfs://$1:9000$3/narratives.json" --measurecolumn $MEASURE
+#
+#echo "Running for one_way_anova.py"
+#spark-submit --master yarn  --deploy-mode client /home/ankush/codebase/marlabs-bi/bi/scripts/one_way_anova.py --input "hdfs://$1:9000/$2" --result "hdfs://$1:9000$3/dimensions-result.json" --narratives "hdfs://$1:9000$3/dimensions-narratives.json" --measurecolumn $MEASURE
+#
+#echo "Running regression.py"
+#$COMMAND_PREFIX $SCRIPTS_ROOT/regression.py --input "hdfs://$1/$2" --result "hdfs://$1:9000$3/reg-result.json" --narratives "hdfs://$1:9000$3/reg-narratives.json" --measurecolumn $MEASURE

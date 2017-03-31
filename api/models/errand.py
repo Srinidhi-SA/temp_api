@@ -8,6 +8,7 @@ import itertools
 from subprocess import call
 from api.models.dataset import Dataset
 from django.conf import settings
+from api.views.option import get_option_for_this_user
 # import hadoopy
 
 def errand_base_directory(instance):
@@ -28,12 +29,14 @@ class Errand(models.Model):
     compare_with = models.CharField(max_length=300, default="")
     compare_type = models.CharField(max_length=100, null=True)
     column_data_raw = models.TextField(default="{}")
+    userId = models.CharField(max_length=100, null=True)
 
     # CLASS METHODS
     @classmethod
     def make(cls, data):
         obj = cls(slug=data.get('slug'))
         obj.dataset_id = data.get('dataset_id')
+        obj.userId = data.get('userId')
         obj.save()
         obj.setup_storage_folders()
         return obj
@@ -141,11 +144,11 @@ class Errand(models.Model):
     def run_master(self):
         self.create_configuration_file()
         self.run_save_config()
-        call([
-            "sh", "api/lib/run_master.sh",
-            settings.HDFS['host'],
-            "/home/hadoop/configs/" + self.config_file_path_hadoop
-        ])
+        # call([
+        #     "sh", "api/lib/run_master.sh",
+        #     settings.HDFS['host'],
+        #     "/home/hadoop/configs/" + self.config_file_path_hadoop
+        # ])
 
     def run_save_config(self):
         call([
@@ -307,6 +310,11 @@ class Errand(models.Model):
         config.set('FILE_SETTINGS', 'narratives_file', hadoop.hadoop_get_full_url(self.storage_output_dir() + "/narratives/"))
         config.set('FILE_SETTINGS', 'monitor_api', 'http://52.77.216.14/api/errand/1/log_status')
 
+        # settings from master table, option.get_option_for_this_user
+        option_dict = get_option_for_this_user(self.userId)
+        print option_dict
+        config.set('FILE_SETTINGS', 'script_to_run', self.option_dict_to_string(option_dict))
+
         if self.measure != None:
             config.set('COLUMN_SETTINGS', 'result_column', self.measure)
             config.set('COLUMN_SETTINGS', 'analysis_type', "Measure")
@@ -330,6 +338,14 @@ class Errand(models.Model):
             config.write(file)
         print "Take a look at: {}".format(self.config_file_path)
         hadoop.hadoop_put(self.config_file_path, self.storage_input_dir())
+
+    def option_dict_to_string(self, option_dict):
+        options_with_yes = []
+        for key in option_dict:
+            if option_dict[key] == 'yes':
+                options_with_yes.append(key)
+        options_string = ", ".join(options_with_yes)
+        return options_string
 
 
 class ErrandSerializer(serializers.Serializer):

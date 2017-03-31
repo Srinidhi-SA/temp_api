@@ -131,18 +131,18 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = False
 CORS_ALLOW_HEADERS = default_headers + ('x-token', )
 
-# HDFS = {
-#     # 'host': 'ec2-54-88-153-37.compute-1.amazonaws.com',
-#     'host': 'ec2-52-90-172-255.compute-1.amazonaws.com',
-#     'port': '14000',
-#     'uri': 'http://ec2-52-90-172-255.compute-1.amazonaws.com:14000/webhdfs/v1',
-#     'user.name': 'hadoop'
-# }
-
 HDFS = {
     # 'host': 'ec2-54-88-153-37.compute-1.amazonaws.com',
-    'host': 'localhost',
-    'port': '50070',
-    'uri': 'http://localhost:50070/webhdfs/v1',
-    'user.name': 'ankush'
+    'host': 'ec2-52-90-172-255.compute-1.amazonaws.com',
+    'port': '14000',
+    'uri': 'http://ec2-52-90-172-255.compute-1.amazonaws.com:14000/webhdfs/v1',
+    'user.name': 'hadoop'
 }
+
+# HDFS = {
+#     # 'host': 'ec2-54-88-153-37.compute-1.amazonaws.com',
+#     'host': 'localhost',
+#     'port': '50070',
+#     'uri': 'http://localhost:50070/webhdfs/v1',
+#     'user.name': 'manjunath'
+# }

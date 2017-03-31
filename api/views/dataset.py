@@ -24,19 +24,23 @@ def get_dataset_from_data(request):
 @api_view(['POST'])
 @renderer_classes((JSONRenderer,))
 def create(request):
-    ds = Dataset.make(request.FILES.get('input_file'))
+    # ds = Dataset.make(request.FILES.get('input_file'))
+    print request.POST.get('userId')
+    ds = Dataset.make(request.FILES.get('input_file'), request.POST.get('userId'))
     return Response({"data" : DatasetSerializer(ds).data})
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer,))
 def all(request):
-    return Response({'data': DatasetSerializer(Dataset.objects.all(), many=True).data})
+    userId = request.query_params.get('userId')
+    return Response({'data': DatasetSerializer(Dataset.objects.filter(userId=userId), many=True).data})
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
 def preview(request):
     e = get_dataset(request)
     return Response({'data': e.get_preview_data()})
+
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))

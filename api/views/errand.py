@@ -2,6 +2,7 @@ import os
 import getpass
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 from subprocess import call
 import subprocess
 import glob
@@ -15,6 +16,7 @@ from api.models.errand import Errand, ErrandSerializer
 from time import sleep
 
 # Create your views here.
+
 
 def showme(request):
     return HttpResponse("Alright, this is a test");
@@ -148,7 +150,10 @@ def get_chi_results(request):
 @renderer_classes((JSONRenderer, ))
 def get_archived(request):
     #es = Errand.objects.filter(is_archived=True)
-    es = Errand.objects.all()
+    userId = request.query_params.get('userId')
+    print request.query_params.get('userId')
+    
+    es = Errand.objects.filter(userId=userId)
     return Response({'errands': ErrandSerializer(es, many=True).data})
 
 
@@ -160,6 +165,7 @@ def set_archived(request):
     e.save()
     return Response({'data': "Successfully archived errand"})
 
+
 @api_view(['POST'])
 @renderer_classes((JSONRenderer,))
 def edit(request):
@@ -167,6 +173,7 @@ def edit(request):
     e.name = request.POST['name']
     e.save()
     return Response({"message" : "Updated"})
+
 
 @api_view(['POST'])
 @renderer_classes((JSONRenderer,))
@@ -180,7 +187,9 @@ def delete(request):
 def configure_data(request):
     return Response({"message": "Data has been configured"})
 
+
 @api_view(['POST'])
 @renderer_classes((JSONRenderer,))
 def log_status(request, errand_id=None):
     return Response({"message": "Successfully logged the statuses"})
+

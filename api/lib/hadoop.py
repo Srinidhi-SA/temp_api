@@ -41,7 +41,7 @@ def hadoop_r():
 	subprocess.call(["/usr/local/hadoop/bin/hadoop"])
 
 def hadoop_hdfs_url(path=''):
-    return "hdfs://localhost:50070"
+    return "hdfs://localhost:9000"
 
 def hadoop_read_file(path='', parse_json = True):
     print "Reading file: " + path
@@ -55,7 +55,6 @@ def hadoop_del_file(path):
 
 def hadoop_read_output_file(path):
     list = hadoop_ls(path)
-    print list
     for item in list:
         if item['length'] > 0:
             filled_part = path + "/" + item['pathSuffix']
@@ -68,4 +67,5 @@ def hadoop_get_full_url(path):
 
 def hadoop_hdfs():
     conf = settings.HDFS
+    print "conf:", conf
     return PyWebHdfsClient(host= conf['host'],port= conf['port'], user_name=conf['user.name'])
