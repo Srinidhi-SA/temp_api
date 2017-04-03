@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 *.py[co]
 venv
 uploads
@@ -7,3 +8,14 @@ ENV
 
 
 
+=======
+installed.cfg
+bin
+develop-eggs
+dist
+downloads
+eggs
+parts
+src/*.egg-info
+uploads
+>>>>>>> f246ba3afaeaa0eb4fbd6362412cbc5613fced44
