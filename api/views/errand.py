@@ -15,6 +15,24 @@ from api.models.errand import Errand, ErrandSerializer
 
 from time import sleep
 
+name_map = {
+    'dview': "Dimension View",
+    'pred_count': "",
+    'measure_dimension_stest': "",
+    'md_variables':'',
+    'mesm_variables':'',
+    'prediction_rules_loc_los':'',
+    'dimension_dimension_stest':'',
+    'time_statistical':'',
+    'time_historical':'',
+    'measure_measure_impact':'',
+    'cview':'',
+    'textHighlight':'',
+    'prediction_check':'',
+    'desc_analysis':'',
+}
+
+
 # Create your views here.
 
 
@@ -192,4 +210,44 @@ def configure_data(request):
 @renderer_classes((JSONRenderer,))
 def log_status(request, errand_id=None):
     return Response({"message": "Successfully logged the statuses"})
+
+@api_view(['GET'])
+@renderer_classes((JSONRenderer, ),)
+def quickinfo(request):
+    e = get_errand(request)
+    user_id = e.userId
+    from api.views.dataset import get_dataset_from_data_from_id
+    from api.models.dataset import DatasetSerializer
+    ds = get_dataset_from_data_from_id(e.dataset_id)
+    dataset_quickinfo = DatasetSerializer(ds).data
+
+    from django.contrib.auth.models import User
+    user = User.objects.get(pk=user_id)
+    profile = {}
+    if user:
+        profile = user.profile.rs()
+        profile = {
+            "username": profile['username'],
+            "full_name": profile['full_name'],
+            "email": profile['email']
+        }
+
+    # read from option model
+    from api.views.option import get_option_for_this_user
+    config_details = get_option_for_this_user(user_id)
+    analysis_list = []
+    for key in config_details:
+        if config_details[key] == 'yes':
+            analysis_list.append(name_map.get(key, key))
+
+    # read from config file itself
+    config_file_script_to_run = e.read_config_file()
+
+    return Response({
+        "errand_quickinfo": ErrandSerializer(e).data,
+        "dataset_quickinfo": dataset_quickinfo,
+        "profile": profile,
+        "config_details": analysis_list,
+        "config_file_script_to_run": config_file_script_to_run
+    })
 

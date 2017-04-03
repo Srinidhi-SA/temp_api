@@ -347,6 +347,18 @@ class Errand(models.Model):
         options_string = ", ".join(options_with_yes)
         return options_string
 
+    def read_config_file(self):
+        details = {}
+        config = ConfigParser.RawConfigParser()
+        config.read(self.config_file_path)
+        section_name = "FILE_SETTINGS"
+        setting_name = "script_to_run"
+        print config.__dict__
+        analysis_list = config.get(section_name, setting_name)
+
+        details['analysis_list'] = analysis_list.split(', ')
+        return details
+
 
 class ErrandSerializer(serializers.Serializer):
     slug = serializers.CharField(max_length=100)

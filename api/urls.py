@@ -29,6 +29,7 @@ urlpatterns = [
     url(r'dataset/edit', dataset.edit),
     url(r'dataset/delete', dataset.delete),
     url(r'dataset/filter', dataset.filter_sample),
+    url(r'dataset/quickinfo', dataset.quickinfo),
 
     # ERRANDS
     url(r'errand/uploaded_files', errand.get_uploaded_files),
@@ -50,6 +51,7 @@ urlpatterns = [
     url(r'errand/delete', errand.delete),
     url(r'errand/configure_data', errand.configure_data),
     url(r'errand/(?P<errand_id>\d+)/log_status', errand.log_status),
+    url(r'errand/quickinfo', errand.quickinfo),
 
     # ROBOS
     url(r'robo/create', robo.create),

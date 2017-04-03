@@ -8,6 +8,7 @@ import itertools
 from subprocess import call
 from django.conf import settings
 import json
+from django.contrib.auth.models import User
 
 def dataset_base_directory(instance):
     return "uploads/datasets/{0}".format(instance.id)
@@ -20,6 +21,9 @@ class Dataset(models.Model):
     input_file = models.FileField(upload_to=dataset_input_file_directory_path, null=True, blank=True)
     name = models.CharField(max_length=100, null=True)
     userId = models.CharField(max_length=100, null=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    # file_type = models.CharField(max_length=100, null=True)
+    # file_size = models.IntegerField()
 
     filename_meta = "meta.json"
 
@@ -147,9 +151,29 @@ class Dataset(models.Model):
         with open(file_write_on, 'wb') as file:
             config.write(file)
 
+    def get_meta_data_numnbers(self):
+        meta_data = self.get_meta()
+        meta_data = meta_data['columns']
+        print meta_data
+        details = {}
+        details['time_dimension_columns'] = self.get_number_of_keys(meta_data['time_dimension_columns'])
+        details['dimension_columns'] = self.get_number_of_keys(meta_data['dimension_columns'])
+        details['measure_columns'] = self.get_number_of_keys(meta_data['measure_columns'])
+        return details
+
+    def get_number_of_keys(self, dictionary_object):
+        count = 0
+        for key in dictionary_object:
+            count += 1
+        return count
+
 
 
 
 class DatasetSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
     name = serializers.ReadOnlyField(source="safe_name")
+    created_at = serializers.DateTimeField()
+    user_id = serializers.ReadOnlyField()
+
+
