@@ -144,11 +144,11 @@ class Errand(models.Model):
     def run_master(self):
         self.create_configuration_file()
         self.run_save_config()
-        # call([
-        #     "sh", "api/lib/run_master.sh",
-        #     settings.HDFS['host'],
-        #     "/home/hadoop/configs/" + self.config_file_path_hadoop
-        # ])
+        call([
+            "sh", "api/lib/run_master.sh",
+            settings.HDFS['host'],
+            "/home/hadoop/configs/" + self.config_file_path_hadoop
+        ])
 
     def run_save_config(self):
         call([
