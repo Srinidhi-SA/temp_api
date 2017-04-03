@@ -162,6 +162,7 @@ class Dataset(models.Model):
         return details
 
     def get_number_of_keys(self, dictionary_object):
+        # find number of keys in a dictionary object
         count = 0
         for key in dictionary_object:
             count += 1
