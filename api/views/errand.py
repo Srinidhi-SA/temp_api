@@ -24,7 +24,6 @@ name_map = {
     'desc_analysis':'Descriptive analysis',
 }
 
-
 # Create your views here.
 
 
@@ -48,8 +47,11 @@ def jack(request):
 @api_view(['POST'])
 @renderer_classes((JSONRenderer, ))
 def make(request):
-    errand = Errand.make(request.POST)
-    return Response({"message": "Successfully created errand", "data": ErrandSerializer(errand).data});
+    userId = request.query_params.get('userId')
+    if userId is None:
+        return Response({"message": "Unsuccessfully!!"})
+    errand = Errand.make(request.POST, userId)
+    return Response({"message": "Successfully created errand", "data": ErrandSerializer(errand).data})
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
@@ -77,7 +79,9 @@ def set_measure(request):
     e.set_measure(request.POST['measure'])
     e.compare_with = request.POST['compare_with']
     e.compare_type = request.POST['compare_type']
-    e.is_archived = True
+
+    # analysis done
+    e.analysis_done = True
     e.save()
     e.run_master()
     return Response({'message': "Success", "id": e.id})
@@ -90,7 +94,9 @@ def set_dimension(request):
     e.set_dimension(request.POST['dimension'])
     e.compare_with = request.POST['compare_with']
     e.compare_type = request.POST['compare_type']
-    e.is_archived = True
+
+    # analysis done
+    e.analysis_done = True
     e.save()
     e.run_master()
     return Response({'message': "Success", "id": e.id})
@@ -170,7 +176,9 @@ def get_archived(request):
 
     es = Errand.objects.filter(
         userId=userId,
-        is_archived=True)
+        analysis_done=True,
+        is_archived=False
+        )
     return Response({'errands': ErrandSerializer(es, many=True).data})
 
 

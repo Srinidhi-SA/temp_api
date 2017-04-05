@@ -38,13 +38,14 @@ class Errand(models.Model):
     compare_type = models.CharField(max_length=100, null=True)
     column_data_raw = models.TextField(default="{}")
     userId = models.CharField(max_length=100, null=True)
+    analysis_done = models.BooleanField(default=False)
 
     # CLASS METHODS
     @classmethod
-    def make(cls, data):
+    def make(cls, data, userId):
         obj = cls(slug=data.get('slug'))
         obj.dataset_id = data.get('dataset_id')
-        obj.userId = data.get('userId')
+        obj.userId = userId
 
         # comp
         # obj.userId = '1'
@@ -402,6 +403,7 @@ class ErrandSerializer(serializers.Serializer):
     dataset_id = serializers.ReadOnlyField()
     created_at = serializers.DateTimeField()
     userId = serializers.ReadOnlyField()
+    analysis_done = serializers.BooleanField()
 
     class Meta:
         model = Errand
