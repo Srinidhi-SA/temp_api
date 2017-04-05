@@ -77,6 +77,7 @@ def set_measure(request):
     e.set_measure(request.POST['measure'])
     e.compare_with = request.POST['compare_with']
     e.compare_type = request.POST['compare_type']
+    e.is_archived = True
     e.save()
     e.run_master()
     return Response({'message': "Success", "id": e.id})
@@ -89,6 +90,7 @@ def set_dimension(request):
     e.set_dimension(request.POST['dimension'])
     e.compare_with = request.POST['compare_with']
     e.compare_type = request.POST['compare_type']
+    e.is_archived = True
     e.save()
     e.run_master()
     return Response({'message': "Success", "id": e.id})
@@ -159,15 +161,14 @@ def get_chi_results(request):
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
 def get_archived(request):
-    #es = Errand.objects.filter(is_archived=True)
+
     userId = request.query_params.get('userId')
     print request.query_params.get('userId')
-    userId = '3'
-
-    if userId is not None:
-        es = Errand.objects.filter(userId=userId)
-        return Response({'errands': ErrandSerializer(es, many=True).data})
-    return Response({'errands': []})
+    
+    es = Errand.objects.filter(
+        userId=userId,
+        is_archived=True)
+    return Response({'errands': ErrandSerializer(es, many=True).data})
 
 
 @api_view(['POST'])
