@@ -166,7 +166,7 @@ def get_archived(request):
     print request.query_params.get('userId')
 
     # comp
-    userId = '1'
+    # userId = '1'
 
     es = Errand.objects.filter(
         userId=userId,
@@ -249,5 +249,16 @@ def quickinfo(request):
         "profile": profile,
         "config_details": analysis_list,
         "config_file_script_to_run": config_file_script_to_run
+    })
+
+
+@api_view(['GET'])
+@renderer_classes((JSONRenderer,),)
+def get_trend_analysis(request):
+    e = get_errand(request)
+    trend_data = e.get_trend_analysis()
+
+    return Response({
+        'trend': trend_data
     })
 

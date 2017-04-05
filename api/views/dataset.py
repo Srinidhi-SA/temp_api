@@ -37,8 +37,8 @@ def create(request):
 def all(request):
     userId = request.query_params.get('userId')
 
-    # compromise
-    userId = '1'
+    # comp
+    # userId = '1'
 
     if userId is not None:
         return Response({'data': DatasetSerializer(Dataset.objects.filter(userId=userId), many=True).data})

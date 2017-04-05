@@ -13,9 +13,11 @@ from api.models.option import Option, OptionSerializer
 @api_view(['POST'])
 @renderer_classes((JSONRenderer,))
 def set(request):
-    print "Hello"
+
     userId = request.query_params.get('userId')
-    userId = '1'
+
+    # comp
+    # userId = '1'
     for key in request.POST:
         print key
         obj, created = Option.objects.get_or_create(slug=key, userId=userId)

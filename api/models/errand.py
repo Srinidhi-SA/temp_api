@@ -44,10 +44,10 @@ class Errand(models.Model):
     def make(cls, data):
         obj = cls(slug=data.get('slug'))
         obj.dataset_id = data.get('dataset_id')
-        # obj.userId = data.get('userId')
+        obj.userId = data.get('userId')
 
         # comp
-        obj.userId = '1'
+        # obj.userId = '1'
         obj.save()
         obj.setup_storage_folders()
         return obj
@@ -385,6 +385,11 @@ class Errand(models.Model):
         path = self.dataset.output_file_meta_path
         print path
 
+    def get_trend_analysis(self):
+        narratives_path = self.storage_output_dir() + "/narratives/Trend"
+        narratives_data = hadoop.hadoop_read_output_file(narratives_path)
+        data = json.loads(narratives_data)
+        return data
 
 
 class ErrandSerializer(serializers.Serializer):
