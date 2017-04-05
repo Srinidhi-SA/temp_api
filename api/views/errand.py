@@ -164,7 +164,10 @@ def get_archived(request):
 
     userId = request.query_params.get('userId')
     print request.query_params.get('userId')
-    
+
+    # comp
+    userId = '1'
+
     es = Errand.objects.filter(
         userId=userId,
         is_archived=True)

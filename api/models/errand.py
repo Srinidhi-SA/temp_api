@@ -44,7 +44,10 @@ class Errand(models.Model):
     def make(cls, data):
         obj = cls(slug=data.get('slug'))
         obj.dataset_id = data.get('dataset_id')
-        obj.userId = data.get('userId')
+        # obj.userId = data.get('userId')
+
+        # comp
+        obj.userId = '1'
         obj.save()
         obj.setup_storage_folders()
         return obj
@@ -342,7 +345,7 @@ class Errand(models.Model):
         if(column_data.has_key('date_format')):
             config.set('COLUMN_SETTINGS', 'date_format', column_data['date_format'])
 
-        path = self.storage_output_dir() + "/" + self.filename_meta
+        path = self.get_meta_json_path()
         config.set("META_DATA", 'path', path)
 
         with open(self.config_file_path, 'wb') as file:
@@ -377,6 +380,11 @@ class Errand(models.Model):
 
         details['analysis_list'] = analysis_list.split(', ')
         return details
+
+    def get_meta_json_path(self):
+        path = self.dataset.output_file_meta_path
+        print path
+
 
 
 class ErrandSerializer(serializers.Serializer):
