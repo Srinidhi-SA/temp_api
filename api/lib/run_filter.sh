@@ -11,7 +11,7 @@ echo "COLUMN_SETTINGS: $4"
 echo "DIMENSION_FILTER: $5"
 echo "MEASURE_FILTER: $6"
 
-COMMAND_PREFIX="ssh -i api/lib/emr.pem hadoop@$1 spark-submit --master yarn --deploy-mode client"
+COMMAND_PREFIX="ssh -i api/lib/TIAA.pem hadoop@$1 spark-submit --master yarn --deploy-mode client"
 #SCRIPTS_ROOT="/home/hadoop/codebase/marlabs-bi/bi/scripts"
 SCRIPTS_ROOT="/home/hadoop/codebase/marlabs-bi/bi/scripts"
 

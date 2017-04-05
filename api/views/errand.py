@@ -16,20 +16,12 @@ from api.models.errand import Errand, ErrandSerializer
 from time import sleep
 
 name_map = {
-    'dview': "Dimension View",
-    'pred_count': "",
-    'measure_dimension_stest': "",
-    'md_variables':'',
-    'mesm_variables':'',
-    'prediction_rules_loc_los':'',
-    'dimension_dimension_stest':'',
-    'time_statistical':'',
-    'time_historical':'',
-    'measure_measure_impact':'',
-    'cview':'',
-    'textHighlight':'',
-    'prediction_check':'',
-    'desc_analysis':'',
+    # 'dview': "Dimension View",
+    'measure_dimension_stest': "Measure vs. Dimension",
+    'dimension_dimension_stest':'Dimension vs. Dimension',
+    'measure_measure_impact':'Measure vs. Measure',
+    'prediction_check':'Predictive modeling',
+    'desc_analysis':'Descriptive analysis',
 }
 
 
@@ -170,9 +162,12 @@ def get_archived(request):
     #es = Errand.objects.filter(is_archived=True)
     userId = request.query_params.get('userId')
     print request.query_params.get('userId')
-    
-    es = Errand.objects.filter(userId=userId)
-    return Response({'errands': ErrandSerializer(es, many=True).data})
+    userId = '3'
+
+    if userId is not None:
+        es = Errand.objects.filter(userId=userId)
+        return Response({'errands': ErrandSerializer(es, many=True).data})
+    return Response({'errands': []})
 
 
 @api_view(['POST'])
@@ -215,6 +210,7 @@ def log_status(request, errand_id=None):
 @renderer_classes((JSONRenderer, ),)
 def quickinfo(request):
     e = get_errand(request)
+    print ErrandSerializer(e).data, e.userId
     user_id = e.userId
     from api.views.dataset import get_dataset_from_data_from_id
     from api.models.dataset import DatasetSerializer
@@ -237,8 +233,8 @@ def quickinfo(request):
     config_details = get_option_for_this_user(user_id)
     analysis_list = []
     for key in config_details:
-        if config_details[key] == 'yes':
-            analysis_list.append(name_map.get(key, key))
+        if config_details[key] == 'yes' and name_map.get(key, None):
+            analysis_list.append(name_map.get(key))
 
     # read from config file itself
     config_file_script_to_run = e.read_config_file()

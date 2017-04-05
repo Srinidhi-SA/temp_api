@@ -11,6 +11,14 @@ from django.conf import settings
 from api.views.option import get_option_for_this_user
 # import hadoopy
 
+name_map = {
+    'measure_dimension_stest': "Measure vs. Dimension",
+    'dimension_dimension_stest':'Dimension vs. Dimension',
+    'measure_measure_impact':'Measure vs. Measure',
+    'prediction_check':'Predictive modeling',
+    'desc_analysis':'Descriptive analysis',
+}
+
 def errand_base_directory(instance):
     return "uploads/errands/{0}".format(instance.id)
 
@@ -304,6 +312,7 @@ class Errand(models.Model):
         config.add_section("FILE_SETTINGS")
         config.add_section("COLUMN_SETTINGS")
         config.add_section("FILTER_SETTINGS")
+        config.add_section("META_DATA")
 
         config.set('FILE_SETTINGS', 'InputFile', hadoop.hadoop_get_full_url(self.dataset.get_input_file_storage_path()))
         config.set('FILE_SETTINGS', 'result_file', hadoop.hadoop_get_full_url(self.storage_output_dir() + "/results/"))
@@ -322,7 +331,6 @@ class Errand(models.Model):
             config.set('COLUMN_SETTINGS', 'analysis_type', "Dimension")
             config.set('COLUMN_SETTINGS', 'result_column', self.dimension)
 
-
         config.set('COLUMN_SETTINGS', 'polarity', "positive")
         config.set('COLUMN_SETTINGS', 'consider_columns', self.compare_with)
         config.set('COLUMN_SETTINGS', 'consider_columns_type', self.compare_type)
@@ -334,6 +342,9 @@ class Errand(models.Model):
         if(column_data.has_key('date_format')):
             config.set('COLUMN_SETTINGS', 'date_format', column_data['date_format'])
 
+        path = self.storage_output_dir() + "/" + self.filename_meta
+        config.set("META_DATA", 'path', path)
+
         with open(self.config_file_path, 'wb') as file:
             config.write(file)
         print "Take a look at: {}".format(self.config_file_path)
@@ -341,10 +352,18 @@ class Errand(models.Model):
 
     def option_dict_to_string(self, option_dict):
         options_with_yes = []
+        options_string = ''
         for key in option_dict:
-            if option_dict[key] == 'yes':
-                options_with_yes.append(key)
-        options_string = ", ".join(options_with_yes)
+            if option_dict[key] == 'yes' and name_map.get(key, None):
+                options_with_yes.append(name_map.get(key))
+            options_string = ", ".join(options_with_yes)
+
+        # if nothing selected in option put everything
+        if options_string == '':
+            for key in name_map:
+                options_with_yes.append(name_map.get(key))
+            options_string = ", ".join(options_with_yes)
+
         return options_string
 
     def read_config_file(self):
@@ -369,6 +388,7 @@ class ErrandSerializer(serializers.Serializer):
     dimension = serializers.ReadOnlyField()
     dataset_id = serializers.ReadOnlyField()
     created_at = serializers.DateTimeField()
+    userId = serializers.ReadOnlyField()
 
     class Meta:
         model = Errand

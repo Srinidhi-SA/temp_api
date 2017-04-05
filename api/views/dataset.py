@@ -36,7 +36,10 @@ def create(request):
 @renderer_classes((JSONRenderer,))
 def all(request):
     userId = request.query_params.get('userId')
-    return Response({'data': DatasetSerializer(Dataset.objects.filter(userId=userId), many=True).data})
+    userId = '3'
+    if userId is not None:
+        return Response({'data': DatasetSerializer(Dataset.objects.filter(userId=userId), many=True).data})
+    return Response({'data': []})
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))

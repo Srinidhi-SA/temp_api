@@ -7,12 +7,12 @@ echo "HOST: $1"
 echo "INPUT FILE: $2"
 echo "OUTPUT DIRECTORY: $3"
 DIMENSION=$4
-COMMAND_PREFIX="ssh -i api/lib/emr.pem hadoop@$1 spark-submit --master yarn --deploy-mode client"
-SCRIPTS_ROOT="/home/hadoop/few_files/marlabs-bi/bi/scripts"
+COMMAND_PREFIX="ssh -i api/lib/TIAA.pem hadoop@$1 spark-submit --master yarn --deploy-mode client"
+SCRIPTS_ROOT="/home/hadoop/codebase/marlabs-bi/bi/scripts"
 echo "DIMENSION: $DIMENSION"
 
 echo "Fixing permission on pem file"
-chmod 0400 api/lib/emr.pem
+chmod 0400 api/lib/TIAA.pem
 
 echo "Running frequency_dimensions.py"
 $COMMAND_PREFIX $SCRIPTS_ROOT/frequency_dimensions.py --input "hdfs://$1/$2" --result "hdfs://$1:8020$3/frequency-result.json" --narratives "hdfs://$1:8020$3/frequency-narratives.json" --dimensioncolumn $DIMENSION

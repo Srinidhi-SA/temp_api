@@ -7,12 +7,12 @@ echo "HOST: $1"
 echo "INPUT FILE: $2"
 echo "OUTPUT DIRECTORY: $3"
 MEASURE=$4
-COMMAND_PREFIX="ssh -i api/lib/emr.pem hadoop@$1 spark-submit --master yarn --deploy-mode client"
+COMMAND_PREFIX="ssh -i api/lib/TIAA.pem hadoop@$1 spark-submit --master yarn --deploy-mode client"
 SCRIPTS_ROOT="/home/hadoop/codebase/marlabs-bi/bi/scripts"
 echo "MEASURE: $MEASURE"
 
 echo "Fixing permission on pem file"
-chmod 0400 api/lib/emr.pem
+chmod 0400 api/lib/TIAA.pem
 
 # SAMPLE SCRIPT
 # ssh -i api/lib/mAdviser_key_pair.pem hadoop@ec2-54-88-153-37.compute-1.amazonaws.com spark-submit --master yarn  --deploy-mode client /home/hadoop/codebase/marlabs-bi/bi/scripts/descr_stats.py "hdfs://ip-172-31-3-88.ec2.internal:9000/user/input/Iris.csv" "hdfs://ip-172-31-3-88.ec2.internal:9000/user/output/output_prakash.json" --driver-memory 1g --executor-memory 1g --executor-cores 2

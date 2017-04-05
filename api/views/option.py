@@ -15,6 +15,7 @@ from api.models.option import Option, OptionSerializer
 def set(request):
     print "Hello"
     userId = request.query_params.get('userId')
+    userId = '3'
     for key in request.POST:
         print key
         obj, created = Option.objects.get_or_create(slug=key, userId=userId)

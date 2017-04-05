@@ -133,7 +133,8 @@ CORS_ALLOW_HEADERS = default_headers + ('x-token', )
 
 HDFS = {
     # 'host': 'ec2-54-88-153-37.compute-1.amazonaws.com',
-    'host': 'ec2-52-90-172-255.compute-1.amazonaws.com',
+    # 'host': 'ec2-52-90-172-255.compute-1.amazonaws.com',
+    'host': '34.205.203.38',
     'port': '14000',
     'uri': 'http://ec2-52-90-172-255.compute-1.amazonaws.com:14000/webhdfs/v1',
     'user.name': 'hadoop'
