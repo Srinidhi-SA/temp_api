@@ -147,7 +147,6 @@ class Dataset(models.Model):
         config.set('COLUMN_SETTINGS', 'analysis_type', settings_string_for_file_setting)
         file_write_on = self.config_file_path
 
-
         with open(file_write_on, 'wb') as file:
             config.write(file)
 
@@ -167,7 +166,6 @@ class Dataset(models.Model):
         for key in dictionary_object:
             count += 1
         return count
-
 
 
 

@@ -37,11 +37,10 @@ def create(request):
 def all(request):
     userId = request.query_params.get('userId')
 
-    # comp
-    # userId = '1'
+    ds = Dataset.objects.filter(userId=userId)
 
     if userId is not None:
-        return Response({'data': DatasetSerializer(Dataset.objects.filter(userId=userId), many=True).data})
+        return Response({'data': DatasetSerializer(ds, many=True).data})
     return Response({'data': []})
 
 @api_view(['GET'])

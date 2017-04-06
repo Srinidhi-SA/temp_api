@@ -30,7 +30,7 @@ class Errand(models.Model):
     input_file = models.FileField(upload_to=errand_input_file_directory_path, null=True, blank=True)
     dimension = models.CharField(max_length=300, null=True)
     measure = models.CharField(max_length=100, null=True)
-    is_archived = models.BooleanField(default=False)
+    is_archived = models.CharField(max_length=100, default="FALSE")
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     dataset = models.ForeignKey(Dataset, null=True)
     name = models.CharField(max_length=300, null=True)
@@ -38,7 +38,7 @@ class Errand(models.Model):
     compare_type = models.CharField(max_length=100, null=True)
     column_data_raw = models.TextField(default="{}")
     userId = models.CharField(max_length=100, null=True)
-    analysis_done = models.BooleanField(default=False)
+    analysis_done = models.CharField(max_length=100, default="FALSE")
 
     # CLASS METHODS
     @classmethod
@@ -135,7 +135,11 @@ class Errand(models.Model):
             return
 
         print("Running distrubutions scripts")
-        call(["sh", "api/lib/run_dist.sh", settings.HDFS['host'], self.dataset.get_input_file_storage_path(), self.storage_measure_output_dir(), self.measure])
+        call(["sh", "api/lib/run_dist.sh",
+              settings.HDFS['host'],
+              self.dataset.get_input_file_storage_path(),
+              self.storage_measure_output_dir(),
+              self.measure])
         self.mark_as_done()
 
     def run_dimension(self, force = False):
@@ -190,7 +194,6 @@ class Errand(models.Model):
         # dir = self.storage_measure_output_dir() + "/narratives.json"
         dir = self.storage_output_dir() + "/narratives/DescrStats"
         return hadoop.hadoop_read_output_file(dir)
-
 
     def get_dimension_results(self):
         # path = self.storage_measure_output_dir() + "/dimensions-narratives.json"
@@ -396,14 +399,14 @@ class Errand(models.Model):
 class ErrandSerializer(serializers.Serializer):
     slug = serializers.CharField(max_length=100)
     id = serializers.ReadOnlyField()
-    is_archived = serializers.BooleanField()
+    is_archived = serializers.CharField()
     measure = serializers.CharField(max_length=100)
     name = serializers.ReadOnlyField()
     dimension = serializers.ReadOnlyField()
     dataset_id = serializers.ReadOnlyField()
     created_at = serializers.DateTimeField()
     userId = serializers.ReadOnlyField()
-    analysis_done = serializers.BooleanField()
+    analysis_done = serializers.CharField()
 
     class Meta:
         model = Errand
