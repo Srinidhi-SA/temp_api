@@ -6,6 +6,8 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 import uuid
 
+from api.views.option import default_settings_in_option, set_option
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     token = models.CharField(max_length=100, null=True)
@@ -35,7 +37,13 @@ class ProfileSerializer(serializers.Serializer):
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
-        Profile.objects.create(user=instance)
+        profile_obj = Profile.objects.create(user=instance)
+
+        # filling option table on login
+        option_dict = default_settings_in_option()
+
+        set_option(option_dict=option_dict,
+                   userId=profile_obj.id)
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):

@@ -15,15 +15,10 @@ from api.models.option import Option, OptionSerializer
 def set(request):
 
     userId = request.query_params.get('userId')
+    option_dict = request.POST
 
-    # comp
-    # userId = '1'
-    for key in request.POST:
-        print key
-        obj, created = Option.objects.get_or_create(slug=key, userId=userId)
-        print obj
-        obj.data = request.POST[key]
-        obj.save()
+    set_option(option_dict, userId)
+
     return Response({"data": "Successfully saved option information"})
 
 
@@ -47,4 +42,36 @@ def get_option_for_this_user(userId):
     for item in Option.objects.filter(userId=userId):
         option_dict[item.slug] = item.data
     return option_dict
+
+
+def default_settings_in_option():
+    default = {
+        "cview": "yes",
+        "dview": "yes",
+        "textHighlight": "yes",
+        "desc_analysis": "yes",
+        "time_historical": "no",
+        "time_statistical": "no",
+        "measure_dimension_stest": "no",
+        "dimension_dimension_stest": "yes",
+        "measure_measure_impact": "no",
+        "prediction_check": "yes",
+        "prediction_rules_loc_los": "los",
+        "pred_count": "",
+        "md_variables": "",
+        "dd_variables": "",
+        "mesm_variables": ""
+    }
+
+    return default
+
+
+def set_option(option_dict, userId):
+    for key in option_dict:
+        obj, created = Option.objects.get_or_create(slug=key, userId=userId)
+        obj.data = option_dict[key]
+        obj.save()
+
+    return True
+
 

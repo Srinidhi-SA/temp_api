@@ -12,6 +12,7 @@ from rest_framework.exceptions import AuthenticationFailed
 
 from django.contrib.auth.models import User
 from api.lib import urlhelpers
+from api.views.option import default_settings_in_option, set_option
 
 
 @api_view(['POST'])
@@ -29,6 +30,7 @@ def login(request):
             raise AuthenticationFailed(
                 detail="Sorry, Your usage limit is reached. Please renew")
         user.profile.reset_token()
+
         return Response({"token": user.profile.token, "profile": user.profile.rs(), "userId": user.profile.id})
 
 
