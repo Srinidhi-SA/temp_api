@@ -84,6 +84,7 @@ def set_measure(request):
 
     # analysis done
     e.analysis_done = 'TRUE'
+    e.save()
     return Response({'message': "Success", "id": e.id})
 
 
@@ -99,6 +100,7 @@ def set_dimension(request):
 
     # analysis done
     e.analysis_done = "TRUE"
+    e.save()
     return Response({'message': "Success", "id": e.id})
 
 
