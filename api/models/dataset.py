@@ -105,15 +105,16 @@ class Dataset(models.Model):
 
         return data
 
-
     def get_preview_data(self):
         items = []
         with open(self.input_file.path) as file:
             rows = csv.reader(file, delimiter=',')
-            for row in itertools.islice(rows, 20):
+            # for row in itertools.islice(rows, 20):
+            for row in rows:
+                if "" in row or " " in row:
+                    continue
                 items.append(row)
-        return items
-
+        return items[:21]
 
     def sample_filter_subsetting(self,
                                  COLUMN_SETTINGS,
@@ -166,7 +167,6 @@ class Dataset(models.Model):
         for key in dictionary_object:
             count += 1
         return count
-
 
 
 class DatasetSerializer(serializers.Serializer):

@@ -109,15 +109,12 @@ def quickinfo(request):
         }
         subsetting = get_option_for_this_user(user_id)
 
-
     return Response({"message": "result",
                      "dataset_quickinfo": dataset_quickinfo,
                      "dataset_metadata": dataset_metadata,
                      "profile": profile,
                      "subsetting":subsetting
                      })
-
-
 
 
 '''

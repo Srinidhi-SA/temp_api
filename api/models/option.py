@@ -9,6 +9,8 @@ from subprocess import call
 from api.models.dataset import Dataset
 from django.conf import settings
 
+
+# WARNING: createsuperuser, remeber to make changes on user.py
 class Option(models.Model):
     slug = models.CharField(max_length=100)
     data = models.CharField(max_length=100, default="")
