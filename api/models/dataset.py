@@ -82,8 +82,14 @@ class Dataset(models.Model):
     def get_meta(self):
         path = self.storage_output_dir() + "/" + self.filename_meta
         result = hadoop.hadoop_read_output_file(path)
-        result = json.loads(result['Metadata'])
-        return  result
+
+        result_data = {}
+        if result.has_key('Metadata'):
+            result_data = json.loads(result['Metadata'])
+        else:
+            result_data = result
+
+        return  result_data
         result_columns = result['columns']
 
         data = {}
