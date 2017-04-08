@@ -17,6 +17,14 @@ def dataset_input_file_directory_path(instance, filename):
     print("yes, I am in here")
     return dataset_base_directory(instance) + "/{0}".format(filename)
 
+def check_blank_object(object):
+    keys = object.keys()
+    if len(keys) > 0:
+        return False
+    else:
+        return True
+
+
 class Dataset(models.Model):
     input_file = models.FileField(upload_to=dataset_input_file_directory_path, null=True, blank=True)
     name = models.CharField(max_length=100, null=True)
@@ -83,33 +91,37 @@ class Dataset(models.Model):
         path = self.storage_output_dir() + "/" + self.filename_meta
         result = hadoop.hadoop_read_output_file(path)
 
-        result_data = {}
-        if result.has_key('Metadata'):
-            result_data = json.loads(result['Metadata'])
+        if not check_blank_object(result):
+
+            result_data = {}
+            if result.has_key('Metadata'):
+                result_data = json.loads(result['Metadata'])
+            else:
+                result_data = result
+
+            return  result_data
         else:
-            result_data = result
-
-        return  result_data
-        result_columns = result['columns']
-
-        data = {}
-        columns = []
-        data['count'] = {'rows': result['total_rows'], 'cols': result['total_columns'], 'dimensions': len(result_columns['dimension_columns'])}
-
-        for key, value in result_columns['dimension_columns'].iteritems() :
-            columns.append({'name': key, 'data_type': 'dimension', 'data_format': '', 'no_of_nulls': value['num_nulls']})
-
-        for key, value in result_columns['measure_columns'].iteritems() :
-            columns.append({'name': key, 'data_type': 'measure', 'data_format': '', 'no_of_nulls': value['num_nulls']})
-
-        for key, value in result_columns['time_dimension_columns'].iteritems() :
-            columns.append({'name': key, 'data_type': 'time', 'data_format': '', 'no_of_nulls': value['num_nulls']})
-
-        data['columns'] = columns
-        data['measures'] = result_columns['measure_columns'].keys()
-        data['dimensions'] = result_columns['dimension_columns'].keys()
-
-        return data
+            return {}
+        # result_columns = result['columns']
+        #
+        # data = {}
+        # columns = []
+        # data['count'] = {'rows': result['total_rows'], 'cols': result['total_columns'], 'dimensions': len(result_columns['dimension_columns'])}
+        #
+        # for key, value in result_columns['dimension_columns'].iteritems() :
+        #     columns.append({'name': key, 'data_type': 'dimension', 'data_format': '', 'no_of_nulls': value['num_nulls']})
+        #
+        # for key, value in result_columns['measure_columns'].iteritems() :
+        #     columns.append({'name': key, 'data_type': 'measure', 'data_format': '', 'no_of_nulls': value['num_nulls']})
+        #
+        # for key, value in result_columns['time_dimension_columns'].iteritems() :
+        #     columns.append({'name': key, 'data_type': 'time', 'data_format': '', 'no_of_nulls': value['num_nulls']})
+        #
+        # data['columns'] = columns
+        # data['measures'] = result_columns['measure_columns'].keys()
+        # data['dimensions'] = result_columns['dimension_columns'].keys()
+        #
+        # return data
 
     def get_preview_data(self):
         items = []
@@ -159,14 +171,17 @@ class Dataset(models.Model):
 
     def get_meta_data_numnbers(self):
         meta_data = self.get_meta()
-        meta_data = meta_data['columns']
-        print meta_data
-        details = {}
-        details['time_dimension_columns'] = self.get_number_of_keys(meta_data['time_dimension_columns'])
-        details['dimension_columns'] = self.get_number_of_keys(meta_data['dimension_columns'])
-        details['measure_columns'] = self.get_number_of_keys(meta_data['measure_columns'])
-        return details
 
+        if 'columns' in meta_data.keys():
+            meta_data = meta_data['columns']
+
+            details = {}
+            details['time_dimension_columns'] = self.get_number_of_keys(meta_data['time_dimension_columns'])
+            details['dimension_columns'] = self.get_number_of_keys(meta_data['dimension_columns'])
+            details['measure_columns'] = self.get_number_of_keys(meta_data['measure_columns'])
+            return details
+        else:
+            return {}
     def get_number_of_keys(self, dictionary_object):
         # find number of keys in a dictionary object
         count = 0

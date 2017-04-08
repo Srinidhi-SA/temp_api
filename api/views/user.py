@@ -31,7 +31,11 @@ def login(request):
                 detail="Sorry, Your usage limit is reached. Please renew")
         user.profile.reset_token()
 
-        return Response({"token": user.profile.token, "profile": user.profile.rs(), "userId": user.profile.id})
+        return Response({"token": user.profile.token,
+                         "profile": user.profile.rs(),
+                         "userId": user.profile.id,
+                         "username": user.username
+                         })
 
 
 @api_view(['GET'])

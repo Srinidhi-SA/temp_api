@@ -25,6 +25,13 @@ def errand_base_directory(instance):
 def errand_input_file_directory_path(instance, filename):
     return errand_base_directory(instance) + "/{0}".format(filename)
 
+def check_blank_object(object):
+    keys = object.keys()
+    if len(keys) > 0:
+        return False
+    else:
+        return True
+
 class Errand(models.Model):
     slug = models.CharField(max_length=100)
     input_file = models.FileField(upload_to=errand_input_file_directory_path, null=True, blank=True)
@@ -186,97 +193,159 @@ class Errand(models.Model):
             raise Exception("Measure is not set")
         # result_dir = self.storage_measure_output_dir() + "/result.json"
         result_dir  = self.storage_output_dir() + "/results/DescrStats"
-        return hadoop.hadoop_read_output_file(result_dir)
+        try:
+            output = hadoop.hadoop_read_output_file(result_dir)
+        except Exception as error:
+            print error
+            return {}
+        if not check_blank_object(output):
+            return output
+        else:
+            return {}
 
     def get_narratives(self):
         if self.measure is None :
             raise Exception("Measure is not set")
         # dir = self.storage_measure_output_dir() + "/narratives.json"
         dir = self.storage_output_dir() + "/narratives/DescrStats"
-        return hadoop.hadoop_read_output_file(dir)
+        try:
+            output = hadoop.hadoop_read_output_file(dir)
+        except Exception as error:
+            print error
+            return {}
+
+        if not check_blank_object(output):
+            return output
+        else:
+            return {}
 
     def get_dimension_results(self):
         # path = self.storage_measure_output_dir() + "/dimensions-narratives.json"
         path = self.storage_output_dir() + "/narratives/OneWayAnova"
-        narratives = hadoop.hadoop_read_output_file(path)
-        items = narratives['narratives'][self.measure]
-        dimensions_data = {}
-        dimensions_data['summary'] = items['summary']
-        dimensions_data['narratives'] = []
 
-        for key, value in items['narratives'].iteritems():
-            dimensions_data['narratives'].append(value)
 
-        # RESULTS
-        # path = self.storage_measure_output_dir() + "/dimensions-result.json"
-        path = self.storage_output_dir() + "/results/OneWayAnova"
-        result = hadoop.hadoop_read_output_file(path)
-        result_data = []
-        items = result["results"][self.measure]
-        for key, value in items.iteritems():
-            result_data.append([key, value["effect_size"]])
-        dimensions_data['raw_data'] = result_data
+        try:
+            narratives = hadoop.hadoop_read_output_file(path)
+        except Exception as error:
+            print error
+            return {}
 
-        # ORDERS IT SO THAT THE ITEM[1] IS WHAT IS USED
-        def order(item):
-            return -item[1]
-        dimensions_data['raw_data'] = sorted(dimensions_data['raw_data'], key = order)
+        if not check_blank_object(narratives):
+            if self.measure in narratives['narratives'].keys():
+                items = narratives['narratives'][self.measure]
+                dimensions_data = {}
+                dimensions_data['summary'] = items['summary']
+                dimensions_data['narratives'] = []
 
-        return dimensions_data
+                for key, value in items['narratives'].iteritems():
+                    dimensions_data['narratives'].append(value)
+
+                # RESULTS
+                # path = self.storage_measure_output_dir() + "/dimensions-result.json"
+                path = self.storage_output_dir() + "/results/OneWayAnova"
+                result = hadoop.hadoop_read_output_file(path)
+                result_data = []
+                items = result["results"][self.measure]
+                for key, value in items.iteritems():
+                    result_data.append([key, value["effect_size"]])
+                dimensions_data['raw_data'] = result_data
+
+                # ORDERS IT SO THAT THE ITEM[1] IS WHAT IS USED
+                def order(item):
+                    return -item[1]
+                dimensions_data['raw_data'] = sorted(dimensions_data['raw_data'], key = order)
+
+                return dimensions_data
+            else:
+                return {}
+        else:
+            return {}
 
     def get_reg_results(self):
         data = {}
         # path = self.storage_measure_output_dir() + "/reg-narratives.json"
         path = self.storage_output_dir() + "/narratives/Regression"
-        narratives = hadoop.hadoop_read_output_file(path)
-        # print narratives.keys()
-        data['summary'] = narratives['summary']
-        # data['analysis'] = narratives['analysis']
-        data['narratives'] = narratives
+        try:
+            narratives = hadoop.hadoop_read_output_file(path)
+        except Exception as error:
+            print error
+            return {}
 
-        # path = self.storage_measure_output_dir() + "/reg-result.json"
-        path = self.storage_output_dir() + "/results/Regression"
-        result = hadoop.hadoop_read_output_file(path)
+        if not check_blank_object(narratives):
+            # print narratives.keys()
+            if "summary" in narratives.keys():
+                data['summary'] = narratives['summary']
+                # data['analysis'] = narratives['analysis']
+                data['narratives'] = narratives
 
-        data['raw_data'] = []
-        for key, value in result['stats']['coefficients'].iteritems():
-            data['raw_data'].append([key, round(value['coefficient'], 1)])
+                # path = self.storage_measure_output_dir() + "/reg-result.json"
+                path = self.storage_output_dir() + "/results/Regression"
+                result = hadoop.hadoop_read_output_file(path)
 
-        # ORDERS IT SO THAT THE ITEM[1] IS WHAT IS USED
-        def order(item):
-            return item[1]
-        data['raw_data'] = sorted(data['raw_data'], key = order)
-        return data
+                data['raw_data'] = []
+                for key, value in result['stats']['coefficients'].iteritems():
+                    data['raw_data'].append([key, round(value['coefficient'], 1)])
+
+                # ORDERS IT SO THAT THE ITEM[1] IS WHAT IS USED
+                def order(item):
+                    return item[1]
+                data['raw_data'] = sorted(data['raw_data'], key = order)
+                return data
+            else:
+                return {}
+        else:
+            return {}
+
 
     def get_frequency_results(self):
         # result_path = self.storage_dimension_output_dir() + "/frequency-result.json";
         result_path = self.storage_output_dir() + "/results/FreqDimension"
         results_data = hadoop.hadoop_read_output_file(result_path);
         results = []
-        table = json.loads(results_data['frequency_table'])[self.dimension]
-        result = zip(table[self.dimension].values(), table['count'].values())
-        # narratives_path = self.storage_dimension_output_dir() + "/frequency-narratives.json";
-        narratives_path = self.storage_output_dir() + "/narratives/FreqDimension"
+        if not check_blank_object(results_data):
+            if 'frequency_table' in results_data.keys():
+                table = json.loads(results_data['frequency_table'])[self.dimension]
+                result = zip(table[self.dimension].values(), table['count'].values())
+                # narratives_path = self.storage_dimension_output_dir() + "/frequency-narratives.json";
+                narratives_path = self.storage_output_dir() + "/narratives/FreqDimension"
 
-        return {
-            'raw_data': result,
-            'narratives': hadoop.hadoop_read_output_file(narratives_path)
-        }
+                return {
+                    'raw_data': result,
+                    'narratives': hadoop.hadoop_read_output_file(narratives_path)
+                }
+            else:
+                return{}
+        else:
+            return {}
 
     def get_tree_results_raw(self):
         # result_path = self.storage_dimension_output_dir() + "/tree-result.json";
         result_path = self.storage_output_dir() + "/results/DecisionTree"
         data = hadoop.hadoop_read_output_file(result_path);
-        data['tree']['children'] = json.loads(data['tree']['children'])
-        return data
+
+        if not check_blank_object(data):
+            if 'children' in data.keys():
+                data['tree']['children'] = json.loads(data['tree']['children'])
+                return data
+            else:
+                return {}
+        else:
+            return {}
 
     def get_tree_results(self):
         # result_path = self.storage_dimension_output_dir() + "/tree-result.json";
         result_path = self.storage_output_dir() + "/results/DecisionTree"
         tree = hadoop.hadoop_read_output_file(result_path)['tree'];
         bucket = [["Root", ""]]
-        self._get_tree_results_node(bucket, tree['name'], json.loads(tree['children']))
-        return bucket
+
+        if not check_blank_object(tree):
+            if 'name' in tree.keys() and 'children' in tree.keys():
+                self._get_tree_results_node(bucket, tree['name'], json.loads(tree['children']))
+                return bucket
+            else:
+                return {}
+        else:
+            return {}
 
     def _get_tree_results_node(self, bucket, parent, children):
         for child in children:
@@ -288,7 +357,11 @@ class Errand(models.Model):
     def get_tree_narratives(self):
         # path = self.storage_dimension_output_dir() + "/tree-narratives.json"
         path = self.storage_output_dir() + "/narratives/DecisionTree"
-        return hadoop.hadoop_read_output_file(path)
+        output = hadoop.hadoop_read_output_file(path)
+
+        if not check_blank_object(output):
+            return output
+        return {}
 
     def get_chi_results(self):
         # result_path = self.storage_dimension_output_dir() + "/chi-result.json";
@@ -297,22 +370,26 @@ class Errand(models.Model):
         narratives_path = self.storage_output_dir() + "/narratives/ChiSquare"
         narratives_data = hadoop.hadoop_read_output_file(narratives_path);
         narratives = []
-        list = narratives_data["narratives"][self.dimension]
-        for key, value in list.iteritems():
-            if type(value) == dict:
-                value['dimension'] = key
-                narratives.append(value)
 
-        # ORDERS IT SO THAT THE ITEM[1] IS WHAT IS USED
-        def order(item):
-            return -item['effect_size']
-        narratives = sorted(narratives, key = order)
+        if not check_blank_object(narratives_data):
+            if self.dimension in narratives_data.keys():
+                list = narratives_data["narratives"][self.dimension]
+                for key, value in list.iteritems():
+                    if type(value) == dict:
+                        value['dimension'] = key
+                        narratives.append(value)
 
-        return {
-            'result': hadoop.hadoop_read_output_file(result_path),
-            'narratives': narratives,
-            'narratives_raw': narratives_data
-        }
+                # ORDERS IT SO THAT THE ITEM[1] IS WHAT IS USED
+                def order(item):
+                    return -item['effect_size']
+                narratives = sorted(narratives, key = order)
+
+                return {
+                    'result': hadoop.hadoop_read_output_file(result_path),
+                    'narratives': narratives,
+                    'narratives_raw': narratives_data
+                }
+        return {}
 
     def create_configuration_file(self):
         config = ConfigParser.RawConfigParser()
@@ -341,6 +418,7 @@ class Errand(models.Model):
         config.set('COLUMN_SETTINGS', 'polarity', "positive")
         config.set('COLUMN_SETTINGS', 'consider_columns', self.compare_with)
         config.set('COLUMN_SETTINGS', 'consider_columns_type', self.compare_type)
+        config.set('COLUMN_SETTINGS', 'ignore_columns', "DATE_JOIN")
 
         column_data = self.get_column_data()
         if column_data.has_key('date'):
@@ -393,8 +471,12 @@ class Errand(models.Model):
     def get_trend_analysis(self):
         narratives_path = self.storage_output_dir() + "/narratives/Trend"
         narratives_data = hadoop.hadoop_read_output_file(narratives_path)
-        data = json.loads(narratives_data)
-        return data
+
+        if not check_blank_object(narratives_data):
+            data = json.loads(narratives_data)
+            return data
+        else:
+            return {}
 
 
 class ErrandSerializer(serializers.Serializer):
