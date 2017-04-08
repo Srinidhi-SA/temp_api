@@ -41,6 +41,7 @@ def login(request):
 @api_view(['GET'])
 @renderer_classes((JSONRenderer,))
 def profile(request):
+
     user = urlhelpers.get_current_user(request)
     return Response({"profile": user.profile.rs()})
 

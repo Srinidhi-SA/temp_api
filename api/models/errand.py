@@ -198,6 +198,7 @@ class Errand(models.Model):
         except Exception as error:
             print error
             return {}
+
         if not check_blank_object(output):
             return output
         else:
@@ -277,24 +278,36 @@ class Errand(models.Model):
                 data['summary'] = narratives['summary']
                 # data['analysis'] = narratives['analysis']
                 data['narratives'] = narratives
-
-                # path = self.storage_measure_output_dir() + "/reg-result.json"
-                path = self.storage_output_dir() + "/results/Regression"
-                result = hadoop.hadoop_read_output_file(path)
-
-                data['raw_data'] = []
-                for key, value in result['stats']['coefficients'].iteritems():
-                    data['raw_data'].append([key, round(value['coefficient'], 1)])
-
-                # ORDERS IT SO THAT THE ITEM[1] IS WHAT IS USED
-                def order(item):
-                    return item[1]
-                data['raw_data'] = sorted(data['raw_data'], key = order)
-                return data
             else:
-                return {}
+                data['summary'] = {}
+                data['narratives'] = narratives
+
         else:
-            return {}
+            data = {}
+
+        # path = self.storage_measure_output_dir() + "/reg-result.json"
+        path = self.storage_output_dir() + "/results/Regression"
+
+        try:
+            result = hadoop.hadoop_read_output_file(path)
+            if not check_blank_object(result):
+                data['raw_data'] = []
+                if "stats" in result.keys():
+                    for key, value in result['stats']['coefficients'].iteritems():
+                        data['raw_data'].append([key, round(value['coefficient'], 1)])
+
+                    # ORDERS IT SO THAT THE ITEM[1] IS WHAT IS USED
+                    def order(item):
+                        return item[1]
+
+                    data['raw_data'] = sorted(data['raw_data'], key=order)
+                else:
+                    data.pop('raw_data', None)
+        except Exception as error:
+            print error
+            return data
+
+        return data
 
 
     def get_frequency_results(self):
@@ -322,9 +335,9 @@ class Errand(models.Model):
         # result_path = self.storage_dimension_output_dir() + "/tree-result.json";
         result_path = self.storage_output_dir() + "/results/DecisionTree"
         data = hadoop.hadoop_read_output_file(result_path);
-
+        print data
         if not check_blank_object(data):
-            if 'children' in data.keys():
+            if 'tree' in data.keys():
                 data['tree']['children'] = json.loads(data['tree']['children'])
                 return data
             else:
@@ -370,9 +383,9 @@ class Errand(models.Model):
         narratives_path = self.storage_output_dir() + "/narratives/ChiSquare"
         narratives_data = hadoop.hadoop_read_output_file(narratives_path);
         narratives = []
-
+        print "self.dimension : ", self.dimension
         if not check_blank_object(narratives_data):
-            if self.dimension in narratives_data.keys():
+            if "narratives" in narratives_data.keys():
                 list = narratives_data["narratives"][self.dimension]
                 for key, value in list.iteritems():
                     if type(value) == dict:
@@ -418,7 +431,7 @@ class Errand(models.Model):
         config.set('COLUMN_SETTINGS', 'polarity', "positive")
         config.set('COLUMN_SETTINGS', 'consider_columns', self.compare_with)
         config.set('COLUMN_SETTINGS', 'consider_columns_type', self.compare_type)
-        config.set('COLUMN_SETTINGS', 'ignore_columns', "DATE_JOIN")
+        # config.set('COLUMN_SETTINGS', 'ignore_columns', "DATE_JOIN")  ---> see below ignore_column_suggestions
 
         column_data = self.get_column_data()
         if column_data.has_key('date'):
@@ -426,6 +439,11 @@ class Errand(models.Model):
 
         if(column_data.has_key('date_format')):
             config.set('COLUMN_SETTINGS', 'date_format', column_data['date_format'])
+
+
+        # ignore_column_suggestions
+        if(column_data.has_key('ignore_column_suggestions')):
+            config.set('COLUMN_SETTINGS', 'ignore_column_suggestions', column_data['ignore_column_suggestions'])
 
         path = self.get_meta_json_path()
         config.set("META_DATA", 'path', path)

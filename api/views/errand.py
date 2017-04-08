@@ -34,6 +34,23 @@ def get_errand(request):
     id = request.GET['errand_id'] if request.method == "GET" else request.POST['errand_id']
     return Errand.objects.get(pk=id)
 
+
+def list_to_string(list_obj):
+    string_  = ", ".join(list_obj)
+    return string_
+
+def string_to_list(string_):
+    list_ = string_.split(", ")
+    return list_
+
+def read_ignore_column_suggestions_from_meta_data(ds):
+    dict_data = []
+    meta_data = ds.get_meta()
+    ignore_columns_json_data = meta_data.get('ignore_column_suggestions', {})
+    for key, val in enumerate(ignore_columns_json_data):
+        dict_data += val
+    return list_to_string(dict_data)
+
 @api_view(['GET'])
 @renderer_classes((JSONRenderer,))
 def get_uploaded_files(request):
@@ -109,11 +126,16 @@ def set_dimension(request):
 @renderer_classes((JSONRenderer, ))
 def set_column_data(request):
     e = get_errand(request)
+    from api.views.dataset import get_dataset_from_data_from_id
+    ds = get_dataset_from_data_from_id(e.dataset_id)
+    ignore_column_suggestions = read_ignore_column_suggestions_from_meta_data(ds)
+
     data = {}
     for x in ["ignore", "date", "date_format"]:
         if request.POST.has_key(x):
             data[x] = request.POST[x]
     print(data)
+    data['ignore_column_suggestions'] = ignore_column_suggestions
     e.set_column_data(data)
     return Response({'message': "Successfuly set column data"})
 
@@ -128,6 +150,7 @@ def get_env(request):
 @renderer_classes((JSONRenderer, ))
 def get_results(request):
     e = get_errand(request)
+
     return Response({
         'result': e.get_result(),
         'narratives': e.get_narratives(),
@@ -178,7 +201,6 @@ def get_archived(request):
         analysis_done='TRUE',
         is_archived='FALSE'
         )
-    print es
 
     return Response({'errands': ErrandSerializer(es, many=True).data})
 
@@ -264,47 +286,47 @@ def quickinfo(request):
 @api_view(['GET'])
 @renderer_classes((JSONRenderer,),)
 def get_trend_analysis(request):
-    # e = get_errand(request)
-    # trend_data = e.get_trend_analysis()
+    e = get_errand(request)
+    trend_data = e.get_trend_analysis()
 
-    trend_data = {
-      "trend_data": [
-          {
-            "key1": "Nov-2015",
-            "key": "2015-12-09",
-            "value": 10755.22
-          },
-          {
-            "key1": "Nov-2015",
-            "key": "2015-11-30",
-            "value": 5096.99
-          },
-          {
-              "key1": "Nov-2015",
-              "key": "2015-10-30",
-              "value": 7096.99
-          },
-          {
-              "key1": "Nov-2015",
-              "key": "2015-9-30",
-              "value": 6096.99
-          },
-          {
-              "key1": "Nov-2015",
-              "key": "2015-8-30",
-              "value": 5000.99
-          }
-        ],
-      "narratives": {
-        "sub_heading": "This section provides insights on how ONLINE_SPEND is performing over time and captures the most significant moments that defined the overall pattern or trend over the observation period.",
-        "heading": "Trend Analysis",
-        "summary": [
-          "The dataset contains DATE_UPDATE figures for a period of 4 years and 3months. The values of DATE_UPDATE have decreased by 59.39% over the last 4 years and 3months, from $10748.49 in Sep-2003 to $4365.17 in Feb-2017. The total DATE_UPDATE was $37587370.46. with the average value per day being $25058.25. ",
-          " The largest decrease in DATE_UPDATE happened in Jan-2012, when it sharply decreased by 89.82% (from $47517.41 to $37574.03). ",
-          " While there were many ups and downs, the longest streak of continuous decrease (by absolute value) was experienced between Feb-2013 and Oct-2011, when it decreased from $31791.59 to $167.42.Driven by the strong negative growth, sales seem to be on negative trend. However, the DATE_UPDATE figures are unlikely to follow a seasonal pattern during this period."
-        ]
-      }
-    }
+    # trend_data = {
+    #   "trend_data": [
+    #       {
+    #         "key1": "Nov-2015",
+    #         "key": "2015-12-09",
+    #         "value": 10755.22
+    #       },
+    #       {
+    #         "key1": "Nov-2015",
+    #         "key": "2015-11-30",
+    #         "value": 5096.99
+    #       },
+    #       {
+    #           "key1": "Nov-2015",
+    #           "key": "2015-10-30",
+    #           "value": 7096.99
+    #       },
+    #       {
+    #           "key1": "Nov-2015",
+    #           "key": "2015-9-30",
+    #           "value": 6096.99
+    #       },
+    #       {
+    #           "key1": "Nov-2015",
+    #           "key": "2015-8-30",
+    #           "value": 5000.99
+    #       }
+    #     ],
+    #   "narratives": {
+    #     "sub_heading": "This section provides insights on how ONLINE_SPEND is performing over time and captures the most significant moments that defined the overall pattern or trend over the observation period.",
+    #     "heading": "Trend Analysis",
+    #     "summary": [
+    #       "The dataset contains DATE_UPDATE figures for a period of 4 years and 3months. The values of DATE_UPDATE have decreased by 59.39% over the last 4 years and 3months, from $10748.49 in Sep-2003 to $4365.17 in Feb-2017. The total DATE_UPDATE was $37587370.46. with the average value per day being $25058.25. ",
+    #       " The largest decrease in DATE_UPDATE happened in Jan-2012, when it sharply decreased by 89.82% (from $47517.41 to $37574.03). ",
+    #       " While there were many ups and downs, the longest streak of continuous decrease (by absolute value) was experienced between Feb-2013 and Oct-2011, when it decreased from $31791.59 to $167.42.Driven by the strong negative growth, sales seem to be on negative trend. However, the DATE_UPDATE figures are unlikely to follow a seasonal pattern during this period."
+    #     ]
+    #   }
+    # }
 
     return Response({
         'trend': trend_data

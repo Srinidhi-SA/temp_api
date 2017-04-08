@@ -13,6 +13,7 @@ from rest_framework.response import Response
 
 from api.models.dataset import Dataset, DatasetSerializer
 
+
 def get_dataset(request):
     id = request.GET['dataset_id'] if request.method == "GET" else request.POST['dataset_id']
     return Dataset.objects.get(pk=id)
@@ -23,6 +24,7 @@ def get_dataset_from_data(request):
 
 def get_dataset_from_data_from_id(id):
     return Dataset.objects.get(pk=id)
+
 
 @api_view(['POST'])
 @renderer_classes((JSONRenderer,))
