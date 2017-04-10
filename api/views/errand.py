@@ -31,8 +31,14 @@ def showme(request):
     return HttpResponse("Alright, this is a test");
 
 def get_errand(request):
+
     id = request.GET['errand_id'] if request.method == "GET" else request.POST['errand_id']
-    return Errand.objects.get(pk=id)
+    try:
+        e = Errand.objects.get(pk=id)
+        return e
+    except Exception as dne_error:
+        return None
+
 
 
 def list_to_string(list_obj):
@@ -75,6 +81,8 @@ def make(request):
 @renderer_classes((JSONRenderer, ))
 def preview(request):
     e = get_errand(request)
+    if e is None:
+        return Response({'message': 'Errand not Found!!'})
     return Response({'data': e.get_preview_data()})
 
 @api_view(['GET'])

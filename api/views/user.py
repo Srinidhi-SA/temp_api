@@ -20,9 +20,14 @@ from api.views.option import default_settings_in_option, set_option
 def login(request):
     email = request.POST['email']
     all = User.objects.filter(email=email)
+    print "username:", request.POST['email']
+    print "password:", request.POST['password']
+    print "all--"
     if all.count() == 0:
+        print "all-0"
         raise AuthenticationFailed(detail="Sorry, there is no user that matches your email address")
     else:
+        print "all>0"
         user = all.first()
         if not user.check_password(request.POST['password']) :
             raise AuthenticationFailed(detail="Sorry, the credentials do not seem to match our records. Please try again")
@@ -61,7 +66,7 @@ def restrict_days(user):
     print time_difference.days
 
     days = time_difference.days
-    if days > 3:
+    if days > 30:
         return False
     return True
 
