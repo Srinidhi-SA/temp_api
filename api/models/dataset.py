@@ -9,6 +9,7 @@ from subprocess import call
 from django.conf import settings
 import json
 from django.contrib.auth.models import User
+from api.models.jobserver import submit_metadatajob
 
 def dataset_base_directory(instance):
     return "uploads/datasets/{0}".format(instance.id)
@@ -84,8 +85,14 @@ class Dataset(models.Model):
         return "{0}/{1}".format(self.storage_input_dir(), self.input_filename)
 
     def run_meta(self):
-        print("Running meta script")
-        call(["sh", "api/lib/run_meta.sh", settings.HDFS['host'], self.get_input_file_storage_path(), self.output_file_meta_path])
+        #print("Running meta script")
+        #call(["sh", "api/lib/run_meta.sh", settings.HDFS['host'], self.get_input_file_storage_path(), self.output_file_meta_path])
+
+        print("Running jobserver meta script")
+        inputpath =  self.get_input_file_storage_path()
+        resultpath = self.output_file_meta_path
+        submit_metadatajob(inputpath, resultpath)
+
 
     def get_meta(self):
         path = self.storage_output_dir() + "/" + self.filename_meta
@@ -199,5 +206,3 @@ class DatasetSerializer(serializers.Serializer):
     name = serializers.ReadOnlyField(source="safe_name")
     created_at = serializers.DateTimeField()
     user_id = serializers.ReadOnlyField()
-
-
