@@ -53,6 +53,7 @@ urlpatterns = [
     url(r'errand/(?P<errand_id>\d+)/log_status', errand.log_status),
     url(r'errand/quickinfo', errand.quickinfo),
     url(r'errand/get_trend_analysis', errand.get_trend_analysis),
+    url(r'errand/get_dimension_all_results', errand.get_dimension_all_results),
 
     # ROBOS
     url(r'robo/create', robo.create),
