@@ -318,52 +318,8 @@ def quickinfo(request):
 @api_view(['GET'])
 @renderer_classes((JSONRenderer,),)
 def get_trend_analysis(request):
-    # e = get_errand(request)
-    # trend_data = e.get_trend_analysis()
-
-    # import json
-    # with open('/home/ankush/Downloads/trend.json') as json_data:
-    #     trend_data = json.load(json_data)
-
-    trend_data = {
-      "trend_data": [
-          {
-            "key1": "Nov-2015",
-            "key": "2015-12-09",
-            "value": 10755.22
-          },
-          {
-            "key1": "Nov-2015",
-            "key": "2015-11-30",
-            "value": 5096.99
-          },
-          {
-              "key1": "Nov-2015",
-              "key": "2015-10-30",
-              "value": 7096.99
-          },
-          {
-              "key1": "Nov-2015",
-              "key": "2015-9-30",
-              "value": 6096.99
-          },
-          {
-              "key1": "Nov-2015",
-              "key": "2015-8-30",
-              "value": 5000.99
-          }
-        ],
-      "narratives": {
-        "sub_heading": "This section provides insights on how ONLINE_SPEND is performing over time and captures the most significant moments that defined the overall pattern or trend over the observation period.",
-        "heading": "Trend Analysis",
-        "summary": [
-          "The dataset contains DATE_UPDATE figures for a period of 4 years and 3months. The values of DATE_UPDATE have decreased by 59.39% over the last 4 years and 3months, from $10748.49 in Sep-2003 to $4365.17 in Feb-2017. The total DATE_UPDATE was $37587370.46. with the average value per day being $25058.25. ",
-          " The largest decrease in DATE_UPDATE happened in Jan-2012, when it sharply decreased by 89.82% (from $47517.41 to $37574.03). ",
-          " While there were many ups and downs, the longest streak of continuous decrease (by absolute value) was experienced between Feb-2013 and Oct-2011, when it decreased from $31791.59 to $167.42.Driven by the strong negative growth, sales seem to be on negative trend. However, the DATE_UPDATE figures are unlikely to follow a seasonal pattern during this period."
-        ]
-      }
-    }
-
+    e = get_errand(request)
+    trend_data = e.get_trend_analysis()
 
     return Response({
         'trend': trend_data

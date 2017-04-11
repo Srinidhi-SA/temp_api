@@ -514,7 +514,6 @@ class Errand(models.Model):
         path = self.dataset.output_file_meta_path
         print path
 
-    # Incomplete
     def get_trend_analysis(self):
         narratives_path = self.storage_output_dir() + "/narratives/Trend"
 
