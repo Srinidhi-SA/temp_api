@@ -319,6 +319,10 @@ def quickinfo(request):
 @renderer_classes((JSONRenderer,),)
 def get_trend_analysis(request):
     e = get_errand(request)
+    if e is None:
+        return Response({
+        'trend': {}
+    })
     trend_data = e.get_trend_analysis()
 
     return Response({

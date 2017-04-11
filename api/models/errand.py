@@ -524,7 +524,7 @@ class Errand(models.Model):
             return {}
 
         if not check_blank_object(narratives_data):
-            data = json.loads(narratives_data)
+            data = narratives_data
             return data
         else:
             return {}
