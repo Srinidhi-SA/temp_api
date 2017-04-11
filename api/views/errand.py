@@ -171,37 +171,37 @@ def get_results(request):
 @renderer_classes((JSONRenderer, ))
 def get_frequency_results(request):
     e = get_errand(request)
-    # return Response(e.get_frequency_results())
-    return Response({})
+    return Response(e.get_frequency_results())
+    # return Response({})
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
 def get_tree_results(request):
     e = get_errand(request)
-    # return Response(e.get_tree_results())
-    return Response({})
+    return Response(e.get_tree_results())
+    # return Response({})
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
 def get_tree_results_raw(request):
     e = get_errand(request)
-    # return Response(e.get_tree_results_raw())
-    return Response({})
+    return Response(e.get_tree_results_raw())
+    # return Response({})
 
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
 def get_tree_narratives(request):
     e = get_errand(request)
-    # return Response(e.get_tree_narratives())
-    return Response({})
+    return Response(e.get_tree_narratives())
+    # return Response({})
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
 def get_chi_results(request):
     e = get_errand(request)
-    # return Response(e.get_chi_results())
-    return Response({})
+    return Response(e.get_chi_results())
+    # return Response({})
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))

@@ -9,6 +9,7 @@ from subprocess import call
 from django.conf import settings
 import json
 from django.contrib.auth.models import User
+from api.helper import CSVChecker
 
 def dataset_base_directory(instance):
     return "uploads/datasets/{0}".format(instance.id)
@@ -64,6 +65,11 @@ class Dataset(models.Model):
         obj.userId = userId
         obj.input_file = input_file
         obj.save()
+        csvc = CSVChecker(obj.input_file)
+        if not csvc.csv_checker():
+            print 'lol'
+            obj.delete()
+            return None
         obj.setup()
         obj.run_meta()
         return obj
