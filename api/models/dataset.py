@@ -71,7 +71,8 @@ class Dataset(models.Model):
         obj.input_file = input_file
         obj.save()
         csvc = CSVChecker(obj.input_file)
-        if not csvc.csv_checker() or csvc.empty_file_check():
+        # if not csvc.csv_checker() or csvc.empty_file_check():
+        if not csvc.csv_checker() :
             print 'lol'
             obj.delete()
             return None
