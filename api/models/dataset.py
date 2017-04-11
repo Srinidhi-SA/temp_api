@@ -10,6 +10,7 @@ from django.conf import settings
 import json
 from django.contrib.auth.models import User
 from api.helper import CSVChecker
+from requests.exceptions import ConnectionError
 
 def dataset_base_directory(instance):
     return "uploads/datasets/{0}".format(instance.id)
@@ -45,6 +46,10 @@ class Dataset(models.Model):
     def storage_output_dir(self):
         return "{}/output".format(self.base_storage_dir())
 
+    def delete_dataset_from_local(self, id):
+       path = "uploads/datasets/{0}".format(id)
+       #call(["rm", "-r",path])
+
     @property
     def input_filename(self):
         return os.path.basename(self.input_file.name)
@@ -66,12 +71,17 @@ class Dataset(models.Model):
         obj.input_file = input_file
         obj.save()
         csvc = CSVChecker(obj.input_file)
-        if not csvc.csv_checker():
+        if not csvc.csv_checker() or csvc.empty_file_check():
             print 'lol'
             obj.delete()
             return None
-        obj.setup()
-        obj.run_meta()
+        try:
+            obj.setup()
+            obj.run_meta()
+        except ConnectionError as e:
+            print e
+            obj.delete()
+            return "ConnectionError"
         return obj
 
     def setup(self):
@@ -198,6 +208,9 @@ class Dataset(models.Model):
 
     def update_options_for(self):
         pass
+
+
+
 
 
 class DatasetSerializer(serializers.Serializer):

@@ -29,10 +29,16 @@ def get_dataset_from_data_from_id(id):
 @api_view(['POST'])
 @renderer_classes((JSONRenderer,))
 def create(request):
+
     ds = Dataset.make(request.FILES.get('input_file'), request.POST.get('userId'))
     if ds is None:
         return Response({'data': {}})
+
+    elif ds == "ConnectionError":
+        return Response({"upload_error": "ConnectionError"})
+
     return Response({"data": DatasetSerializer(ds).data})
+
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer,))
