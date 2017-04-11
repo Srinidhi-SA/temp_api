@@ -28,7 +28,6 @@ urlpatterns = [
     url(r'dataset/get_meta', dataset.get_meta),
     url(r'dataset/edit', dataset.edit),
     url(r'dataset/delete', dataset.delete),
-    url(r'dataset/filter', dataset.filter_sample),
     url(r'dataset/quickinfo', dataset.quickinfo),
 
     # ERRANDS
@@ -54,6 +53,7 @@ urlpatterns = [
     url(r'errand/quickinfo', errand.quickinfo),
     url(r'errand/get_trend_analysis', errand.get_trend_analysis),
     url(r'errand/get_dimension_all_results', errand.get_dimension_all_results),
+    url(r'errand/filter', errand.filter_sample),
 
     # ROBOS
     url(r'robo/create', robo.create),

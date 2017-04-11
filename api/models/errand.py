@@ -469,10 +469,21 @@ class Errand(models.Model):
         if(column_data.has_key('date_format')):
             config.set('COLUMN_SETTINGS', 'date_format', column_data['date_format'])
 
-
         # ignore_column_suggestions
         if(column_data.has_key('ignore_column_suggestions')):
             config.set('COLUMN_SETTINGS', 'ignore_column_suggestions', column_data['ignore_column_suggestions'])
+
+        # ignore_column_suggestions
+        if(column_data.has_key('MEASURE_FILTER')):
+            config.set('COLUMN_SETTINGS', 'measure_column_filter', column_data['MEASURE_FILTER'])
+
+        # ignore_column_suggestions
+        if(column_data.has_key('DIMENSION_FILTER')):
+            config.set('COLUMN_SETTINGS', 'dimension_column_filter', column_data['DIMENSION_FILTER'])
+
+        # ignore_column_suggestions
+        if(column_data.has_key('measure_suggetions_json_data')):
+            config.set('COLUMN_SETTINGS', 'measure_suggestions', column_data['measure_suggetions_json_data'])
 
         path = self.get_meta_json_path()
         config.set("META_DATA", 'path', path)
@@ -528,6 +539,13 @@ class Errand(models.Model):
             return data
         else:
             return {}
+
+    def add_subsetting_to_column_data(self, main_data):
+
+        data = self.column_data_raw
+        data['MEASURE_FILTER'] = main_data['MEASURE_FILTER']
+        data['DIMENSION_FILTER'] = main_data['DIMENSION_FILTER']
+        self.save()
 
 
 class ErrandSerializer(serializers.Serializer):

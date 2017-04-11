@@ -53,9 +53,10 @@ def read_ignore_column_suggestions_from_meta_data(ds):
     dict_data = []
     meta_data = ds.get_meta()
     ignore_columns_json_data = meta_data.get('ignore_column_suggestions', {})
+    measure_suggetions_json_data = meta_data.get('measure_suggetions', {})
     for key, val in enumerate(ignore_columns_json_data):
         dict_data += val
-    return list_to_string(dict_data)
+    return list_to_string(dict_data), measure_suggetions_json_data
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer,))
@@ -136,7 +137,7 @@ def set_column_data(request):
     e = get_errand(request)
     from api.views.dataset import get_dataset_from_data_from_id
     ds = get_dataset_from_data_from_id(e.dataset_id)
-    ignore_column_suggestions = read_ignore_column_suggestions_from_meta_data(ds)
+    ignore_column_suggestions, measure_suggetions_json_data = read_ignore_column_suggestions_from_meta_data(ds)
 
     data = {}
     for x in ["ignore", "date", "date_format"]:
@@ -144,6 +145,7 @@ def set_column_data(request):
             data[x] = request.POST[x]
     print(data)
     data['ignore_column_suggestions'] = ignore_column_suggestions
+    data['measure_suggetions_json_data'] = measure_suggetions_json_data
     e.set_column_data(data)
     return Response({'message': "Successfuly set column data"})
 
@@ -328,3 +330,34 @@ def get_trend_analysis(request):
     return Response({
         'trend': trend_data
     })
+
+
+@api_view(['POST'])
+@renderer_classes((JSONRenderer,))
+def filter_sample(request):
+    e = get_errand(request)
+    dimension = "sales"
+    measure = "cities"
+    subsetting_data = request.POST
+
+    main_data = {}
+
+    DIMENSION_FILTER = {}
+    MEASURE_FILTER = {}
+
+    for dict_data in subsetting_data:
+        if dimension in dict_data:
+            fields = dict_data['fields']
+            DIMENSION_FILTER[dict_data[dimension]] = [field.keys[0] for field in fields if field['status'] == True]
+        elif measure in dict_data:
+            MEASURE_FILTER[dict_data[measure]] = {
+                "min":dict_data['min'],
+                "max":dict_data['max']
+            }
+
+    main_data['DIMENSION_FILTER'] = DIMENSION_FILTER
+    main_data['MEASURE_FILTER'] = MEASURE_FILTER
+
+    e.add_subsetting_to_column_data(main_data)
+    e.save()
+    return Response({"message": "result"})

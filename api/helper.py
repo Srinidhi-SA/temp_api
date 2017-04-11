@@ -26,3 +26,7 @@ class CSVChecker:
 
     def empty_file_check(self):
         pass
+
+
+def measure_filter_helper_true_getter(diction):
+    pass

@@ -73,23 +73,6 @@ def delete(request):
     return Response({"message": "Deleted"})
 
 
-@api_view(['POST'])
-@renderer_classes((JSONRenderer,))
-def filter_sample(request):
-
-    COLUMN_SETTINGS = json.loads(request.POST['COLUMN_SETTINGS'])
-    DIMENSION_FILTER = json.loads(request.POST['DIMENSION_FILTER'])
-    MEASURE_FILTER = json.loads(request.POST['MEASURE_FILTER'])
-    print DIMENSION_FILTER, COLUMN_SETTINGS, MEASURE_FILTER
-    e = get_dataset_from_data(request)
-    result = e.sample_filter_subsetting(
-        COLUMN_SETTINGS,
-        DIMENSION_FILTER,
-        MEASURE_FILTER
-    )
-    return Response({"message": "result"})
-
-
 @api_view(['GET'])
 @renderer_classes((JSONRenderer,),)
 def quickinfo(request):
