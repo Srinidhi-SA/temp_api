@@ -41,6 +41,18 @@ def get_option_for_this_user(userId):
     option_dict = {}
     for item in Option.objects.filter(userId=userId):
         option_dict[item.slug] = item.data
+
+    if option_dict == {}:
+        option_dict = default_settings_in_option()
+
+        set_option(
+            option_dict=option_dict,
+            userId=userId
+        )
+
+        for item in Option.objects.filter(userId=userId):
+            option_dict[item.slug] = item.data
+
     return option_dict
 
 
