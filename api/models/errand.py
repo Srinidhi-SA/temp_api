@@ -246,7 +246,8 @@ class Errand(models.Model):
                 path = self.storage_output_dir() + "/results/OneWayAnova"
 
                 try:
-                    result = hadoop.hadoop_read_output_file(path)
+                    hadoop_result = hadoop.hadoop_read_output_file(path)
+                    result = json.loads(hadoop_result["RESULT"])
                     result_data = []
                     items = result["results"][self.measure]
                     for key, value in items.iteritems():
