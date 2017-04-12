@@ -31,8 +31,14 @@ def showme(request):
     return HttpResponse("Alright, this is a test");
 
 def get_errand(request):
+
     id = request.GET['errand_id'] if request.method == "GET" else request.POST['errand_id']
-    return Errand.objects.get(pk=id)
+    try:
+        e = Errand.objects.get(pk=id)
+        return e
+    except Exception as dne_error:
+        return None
+
 
 
 def list_to_string(list_obj):
@@ -47,9 +53,10 @@ def read_ignore_column_suggestions_from_meta_data(ds):
     dict_data = []
     meta_data = ds.get_meta()
     ignore_columns_json_data = meta_data.get('ignore_column_suggestions', {})
+    measure_suggetions_json_data = meta_data.get('measure_suggetions', {})
     for key, val in enumerate(ignore_columns_json_data):
         dict_data += val
-    return list_to_string(dict_data)
+    return list_to_string(dict_data), measure_suggetions_json_data
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer,))
@@ -75,6 +82,8 @@ def make(request):
 @renderer_classes((JSONRenderer, ))
 def preview(request):
     e = get_errand(request)
+    if e is None:
+        return Response({'message': 'Errand not Found!!'})
     return Response({'data': e.get_preview_data()})
 
 @api_view(['GET'])
@@ -128,7 +137,7 @@ def set_column_data(request):
     e = get_errand(request)
     from api.views.dataset import get_dataset_from_data_from_id
     ds = get_dataset_from_data_from_id(e.dataset_id)
-    ignore_column_suggestions = read_ignore_column_suggestions_from_meta_data(ds)
+    ignore_column_suggestions, measure_suggetions_json_data = read_ignore_column_suggestions_from_meta_data(ds)
 
     data = {}
     for x in ["ignore", "date", "date_format"]:
@@ -136,6 +145,7 @@ def set_column_data(request):
             data[x] = request.POST[x]
     print(data)
     data['ignore_column_suggestions'] = ignore_column_suggestions
+    data['measure_suggetions_json_data'] = measure_suggetions_json_data
     e.set_column_data(data)
     return Response({'message': "Successfuly set column data"})
 
@@ -164,18 +174,21 @@ def get_results(request):
 def get_frequency_results(request):
     e = get_errand(request)
     return Response(e.get_frequency_results())
+    # return Response({})
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
 def get_tree_results(request):
     e = get_errand(request)
     return Response(e.get_tree_results())
+    # return Response({})
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
 def get_tree_results_raw(request):
     e = get_errand(request)
     return Response(e.get_tree_results_raw())
+    # return Response({})
 
 
 @api_view(['GET'])
@@ -183,12 +196,33 @@ def get_tree_results_raw(request):
 def get_tree_narratives(request):
     e = get_errand(request)
     return Response(e.get_tree_narratives())
+    # return Response({})
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
 def get_chi_results(request):
     e = get_errand(request)
     return Response(e.get_chi_results())
+    # return Response({})
+
+@api_view(['GET'])
+@renderer_classes((JSONRenderer, ))
+def get_dimension_all_results(request):
+    e = get_errand(request)
+    # return Response({
+    #     "get_frequency_results":{},
+    #     "get_tree_results":{},
+    #     "get_tree_results_raw":{},
+    #     "get_tree_narratives":{},
+    #     "get_chi_results":{}
+    # })
+    return Response({
+        "get_frequency_results":e.get_frequency_results(),
+        "get_tree_results":e.get_tree_results(),
+        "get_tree_results_raw":e.get_tree_results_raw(),
+        "get_tree_narratives":e.get_tree_narratives(),
+        "get_chi_results":e.get_chi_results()
+    })
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
@@ -287,48 +321,43 @@ def quickinfo(request):
 @renderer_classes((JSONRenderer,),)
 def get_trend_analysis(request):
     e = get_errand(request)
+    if e is None:
+        return Response({
+        'trend': {}
+    })
     trend_data = e.get_trend_analysis()
-
-    # trend_data = {
-    #   "trend_data": [
-    #       {
-    #         "key1": "Nov-2015",
-    #         "key": "2015-12-09",
-    #         "value": 10755.22
-    #       },
-    #       {
-    #         "key1": "Nov-2015",
-    #         "key": "2015-11-30",
-    #         "value": 5096.99
-    #       },
-    #       {
-    #           "key1": "Nov-2015",
-    #           "key": "2015-10-30",
-    #           "value": 7096.99
-    #       },
-    #       {
-    #           "key1": "Nov-2015",
-    #           "key": "2015-9-30",
-    #           "value": 6096.99
-    #       },
-    #       {
-    #           "key1": "Nov-2015",
-    #           "key": "2015-8-30",
-    #           "value": 5000.99
-    #       }
-    #     ],
-    #   "narratives": {
-    #     "sub_heading": "This section provides insights on how ONLINE_SPEND is performing over time and captures the most significant moments that defined the overall pattern or trend over the observation period.",
-    #     "heading": "Trend Analysis",
-    #     "summary": [
-    #       "The dataset contains DATE_UPDATE figures for a period of 4 years and 3months. The values of DATE_UPDATE have decreased by 59.39% over the last 4 years and 3months, from $10748.49 in Sep-2003 to $4365.17 in Feb-2017. The total DATE_UPDATE was $37587370.46. with the average value per day being $25058.25. ",
-    #       " The largest decrease in DATE_UPDATE happened in Jan-2012, when it sharply decreased by 89.82% (from $47517.41 to $37574.03). ",
-    #       " While there were many ups and downs, the longest streak of continuous decrease (by absolute value) was experienced between Feb-2013 and Oct-2011, when it decreased from $31791.59 to $167.42.Driven by the strong negative growth, sales seem to be on negative trend. However, the DATE_UPDATE figures are unlikely to follow a seasonal pattern during this period."
-    #     ]
-    #   }
-    # }
 
     return Response({
         'trend': trend_data
     })
 
+
+@api_view(['POST'])
+@renderer_classes((JSONRenderer,))
+def filter_sample(request):
+    e = get_errand(request)
+    dimension = "sales"
+    measure = "cities"
+    subsetting_data = request.POST
+
+    main_data = {}
+
+    DIMENSION_FILTER = {}
+    MEASURE_FILTER = {}
+
+    for dict_data in subsetting_data:
+        if dimension in dict_data:
+            fields = dict_data['fields']
+            DIMENSION_FILTER[dict_data[dimension]] = [field.keys[0] for field in fields if field['status'] == True]
+        elif measure in dict_data:
+            MEASURE_FILTER[dict_data[measure]] = {
+                "min":dict_data['min'],
+                "max":dict_data['max']
+            }
+
+    main_data['DIMENSION_FILTER'] = DIMENSION_FILTER
+    main_data['MEASURE_FILTER'] = MEASURE_FILTER
+
+    e.add_subsetting_to_column_data(main_data)
+    e.save()
+    return Response({"message": "result"})

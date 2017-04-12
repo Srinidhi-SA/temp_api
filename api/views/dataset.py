@@ -29,10 +29,16 @@ def get_dataset_from_data_from_id(id):
 @api_view(['POST'])
 @renderer_classes((JSONRenderer,))
 def create(request):
-    # ds = Dataset.make(request.FILES.get('input_file'))
-    print request.POST.get('userId')
+
     ds = Dataset.make(request.FILES.get('input_file'), request.POST.get('userId'))
-    return Response({"data" : DatasetSerializer(ds).data})
+    if ds is None:
+        return Response({'data': {}})
+
+    elif ds == "ConnectionError":
+        return Response({"upload_error": "ConnectionError"})
+
+    return Response({"data": DatasetSerializer(ds).data})
+
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer,))
@@ -64,30 +70,13 @@ def edit(request):
     e = get_dataset(request)
     e.name = request.POST['name']
     e.save()
-    return Response({"message" : "Updated"})
+    return Response({"message": "Updated"})
 
 @api_view(['POST'])
 @renderer_classes((JSONRenderer,))
 def delete(request):
     Dataset.objects.filter(id__in=request.POST['dataset_ids'].split(",")).delete()
     return Response({"message": "Deleted"})
-
-
-@api_view(['POST'])
-@renderer_classes((JSONRenderer,))
-def filter_sample(request):
-
-    COLUMN_SETTINGS = json.loads(request.POST['COLUMN_SETTINGS'])
-    DIMENSION_FILTER = json.loads(request.POST['DIMENSION_FILTER'])
-    MEASURE_FILTER = json.loads(request.POST['MEASURE_FILTER'])
-    print DIMENSION_FILTER, COLUMN_SETTINGS, MEASURE_FILTER
-    e = get_dataset_from_data(request)
-    result = e.sample_filter_subsetting(
-        COLUMN_SETTINGS,
-        DIMENSION_FILTER,
-        MEASURE_FILTER
-    )
-    return Response({"message": "result"})
 
 
 @api_view(['GET'])

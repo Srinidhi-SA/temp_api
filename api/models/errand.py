@@ -321,18 +321,28 @@ class Errand(models.Model):
     def get_frequency_results(self):
         # result_path = self.storage_dimension_output_dir() + "/frequency-result.json";
         result_path = self.storage_output_dir() + "/results/FreqDimension"
-        results_data = hadoop.hadoop_read_output_file(result_path);
+
+        try:
+            results_data = hadoop.hadoop_read_output_file(result_path)
+        except Exception as error:
+            print error
+            return {}
         results = []
         if not check_blank_object(results_data):
-            if 'frequency_table' in results_data.keys():
+            if 'frequency_table' in results_data.keys() and self.dimension is not None:
                 table = json.loads(results_data['frequency_table'])[self.dimension]
                 result = zip(table[self.dimension].values(), table['count'].values())
                 # narratives_path = self.storage_dimension_output_dir() + "/frequency-narratives.json";
                 narratives_path = self.storage_output_dir() + "/narratives/FreqDimension"
 
+                try:
+                    narratives_path_result = hadoop.hadoop_read_output_file(narratives_path)
+                except Exception as error:
+                    narratives_path_result={}
+                    
                 return {
                     'raw_data': result,
-                    'narratives': hadoop.hadoop_read_output_file(narratives_path)
+                    'narratives': narratives_path_result
                 }
             else:
                 return{}
@@ -342,8 +352,12 @@ class Errand(models.Model):
     def get_tree_results_raw(self):
         # result_path = self.storage_dimension_output_dir() + "/tree-result.json";
         result_path = self.storage_output_dir() + "/results/DecisionTree"
-        data = hadoop.hadoop_read_output_file(result_path);
-        print data
+        try:
+            data = hadoop.hadoop_read_output_file(result_path)
+        except Exception as error:
+            print error
+            return {}
+
         if not check_blank_object(data):
             if 'tree' in data.keys():
                 data['tree']['children'] = json.loads(data['tree']['children'])
@@ -356,7 +370,11 @@ class Errand(models.Model):
     def get_tree_results(self):
         # result_path = self.storage_dimension_output_dir() + "/tree-result.json";
         result_path = self.storage_output_dir() + "/results/DecisionTree"
-        tree = hadoop.hadoop_read_output_file(result_path)['tree'];
+        try:
+            tree = hadoop.hadoop_read_output_file(result_path)['tree']
+        except Exception as error:
+            print error
+            return {}
         bucket = [["Root", ""]]
 
         if not check_blank_object(tree):
@@ -378,7 +396,11 @@ class Errand(models.Model):
     def get_tree_narratives(self):
         # path = self.storage_dimension_output_dir() + "/tree-narratives.json"
         path = self.storage_output_dir() + "/narratives/DecisionTree"
-        output = hadoop.hadoop_read_output_file(path)
+        try:
+            output = hadoop.hadoop_read_output_file(path)
+        except Exception as error:
+            print error
+            return {}
 
         if not check_blank_object(output):
             return output
@@ -389,11 +411,18 @@ class Errand(models.Model):
         # narratives_path = self.storage_dimension_output_dir() + "/chi-narratives.json";
         result_path = self.storage_output_dir() + "/results/ChiSquare"
         narratives_path = self.storage_output_dir() + "/narratives/ChiSquare"
-        narratives_data = hadoop.hadoop_read_output_file(narratives_path);
+
+        try:
+            narratives_data = hadoop.hadoop_read_output_file(narratives_path)
+        except Exception as error:
+            print error
+            return {}
+
         narratives = []
         print "self.dimension : ", self.dimension
         if not check_blank_object(narratives_data):
-            if "narratives" in narratives_data.keys():
+            if "narratives" in narratives_data.keys() and self.dimension is not None:
+                print narratives_data["narratives"]
                 list = narratives_data["narratives"][self.dimension]
                 for key, value in list.iteritems():
                     if type(value) == dict:
@@ -448,10 +477,21 @@ class Errand(models.Model):
         if(column_data.has_key('date_format')):
             config.set('COLUMN_SETTINGS', 'date_format', column_data['date_format'])
 
-
         # ignore_column_suggestions
         if(column_data.has_key('ignore_column_suggestions')):
             config.set('COLUMN_SETTINGS', 'ignore_column_suggestions', column_data['ignore_column_suggestions'])
+
+        # ignore_column_suggestions
+        if(column_data.has_key('MEASURE_FILTER')):
+            config.set('COLUMN_SETTINGS', 'measure_column_filter', column_data['MEASURE_FILTER'])
+
+        # ignore_column_suggestions
+        if(column_data.has_key('DIMENSION_FILTER')):
+            config.set('COLUMN_SETTINGS', 'dimension_column_filter', column_data['DIMENSION_FILTER'])
+
+        # ignore_column_suggestions
+        if(column_data.has_key('measure_suggetions_json_data')):
+            config.set('COLUMN_SETTINGS', 'measure_suggestions', column_data['measure_suggetions_json_data'])
 
         path = self.get_meta_json_path()
         config.set("META_DATA", 'path', path)
@@ -493,16 +533,27 @@ class Errand(models.Model):
         path = self.dataset.output_file_meta_path
         print path
 
-    # Incomplete
     def get_trend_analysis(self):
         narratives_path = self.storage_output_dir() + "/narratives/Trend"
-        narratives_data = hadoop.hadoop_read_output_file(narratives_path)
+
+        try:
+            narratives_data = hadoop.hadoop_read_output_file(narratives_path)
+        except Exception as error:
+            print error
+            return {}
 
         if not check_blank_object(narratives_data):
-            data = json.loads(narratives_data)
+            data = narratives_data
             return data
         else:
             return {}
+
+    def add_subsetting_to_column_data(self, main_data):
+
+        data = self.column_data_raw
+        data['MEASURE_FILTER'] = main_data['MEASURE_FILTER']
+        data['DIMENSION_FILTER'] = main_data['DIMENSION_FILTER']
+        self.save()
 
 
 class ErrandSerializer(serializers.Serializer):

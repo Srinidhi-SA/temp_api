@@ -144,8 +144,8 @@ HDFS = {
 
 # HDFS = {
 #     # 'host': 'ec2-54-88-153-37.compute-1.amazonaws.com',
-#     'host': 'localhost',
+#     'host': '192.168.33.100',
 #     'port': '50070',
-#     'uri': 'http://localhost:50070/webhdfs/v1',
+#     'uri': 'http://192.168.33.100:50070/webhdfs/v1',
 #     'user.name': 'manjunath'
 # }
