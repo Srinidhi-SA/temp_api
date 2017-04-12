@@ -18,14 +18,14 @@ class CSVChecker:
     def open_and_read_file(self):
         with open(self.input_file.path) as file:
             rows = csv.reader(file, delimiter=',')
-            # for row in itertools.islice(rows, 20):
-
             for row in rows:
                 if "" in row or " " in row:
                     continue
 
-
     def empty_file_check(self):
-        if os.stat(self.input_file).st_size == 0:
-            return  False
+        print self.input_file.path
+
+        print os.stat(self.input_file.path).st_size
+        if os.stat(self.input_file.path).st_size == 0:
+            return  True
 
