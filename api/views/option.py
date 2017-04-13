@@ -69,7 +69,7 @@ def default_settings_in_option():
         "measure_measure_impact": "no",
         "prediction_check": "yes",
         "prediction_rules_loc_los": "los",
-        "pred_count": "",
+        "pred_count": "3",
         "md_variables": "",
         "dd_variables": "",
         "mesm_variables": ""

@@ -53,10 +53,10 @@ def read_ignore_column_suggestions_from_meta_data(ds):
     dict_data = []
     meta_data = ds.get_meta()
     ignore_columns_json_data = meta_data.get('ignore_column_suggestions', {})
-    measure_suggetions_json_data = meta_data.get('measure_suggetions', {})
-    for key, val in enumerate(ignore_columns_json_data):
-        dict_data += val
-    return list_to_string(dict_data), measure_suggetions_json_data
+    measure_suggetions_json_data = meta_data.get('measure_suggestions', "")
+    for key in ignore_columns_json_data:
+        dict_data += ignore_columns_json_data[key]
+    return list_to_string(dict_data), list_to_string(measure_suggetions_json_data)
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer,))
@@ -73,9 +73,13 @@ def jack(request):
 def make(request):
     userId = request.query_params.get('userId')
     if userId is None:
-        return Response({"message": "Unsuccessfully!!"})
+        return Response({"upload_error": "User not found. Try logout/login again"})
 
-    errand = Errand.make(request.POST, userId)
+    try:
+        errand = Errand.make(request.POST, userId)
+    except Exception as error:
+        print error
+        return Response({"upload_error": "Can't create story right now. Try after some time!!"})
     return Response({"message": "Successfully created errand", "data": ErrandSerializer(errand).data})
 
 @api_view(['GET'])
@@ -142,7 +146,7 @@ def set_column_data(request):
     data = {}
     for x in ["ignore", "date", "date_format"]:
         if request.POST.has_key(x):
-            data[x] = request.POST[x]
+            data[x] = "" if request.POST[x] == "null" else request.POST[x]
     print(data)
     data['ignore_column_suggestions'] = ignore_column_suggestions
     data['measure_suggetions_json_data'] = measure_suggetions_json_data
