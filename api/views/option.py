@@ -64,15 +64,15 @@ def default_settings_in_option():
         "desc_analysis": "yes",
         "time_historical": "no",
         "time_statistical": "no",
-        "measure_dimension_stest": "no",
+        "measure_dimension_stest": "yes",
         "dimension_dimension_stest": "yes",
-        "measure_measure_impact": "no",
+        "measure_measure_impact": "yes",
         "prediction_check": "yes",
         "prediction_rules_loc_los": "los",
         "pred_count": "3",
-        "md_variables": "",
-        "dd_variables": "",
-        "mesm_variables": ""
+        "md_variables": "low",
+        "dd_variables": "low",
+        "mesm_variables": "low"
     }
 
     return default
