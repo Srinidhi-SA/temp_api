@@ -16,8 +16,6 @@ def submit_masterjob(configpath):
     class_path = "bi.sparkjobs.madvisor.JobScript"
     config = 'cfgpath=[{0}]'.format(configpath)
     job = sjs.jobs.create(test_app, class_path, ctx=test_ctx, conf=config)
-
-    job_get = sjs.jobs.get(job.jobId)
     job_url = "http://{0}:8090/jobs/{1}".format(host,job.jobId)
     print "job_url: {0}".format(job_url)
 
@@ -40,8 +38,6 @@ def submit_metadatajob(inputpath,resultpath):
     class_path = "bi.sparkjobs.metadata.JobScript"
     config = 'input.strings=["{0}:8020/{1}","{0}:8020/{2}"]'.format(host_with_hdfs,inputpath,resultpath)
     job = sjs.jobs.create(test_app, class_path, ctx=test_ctx, conf=config)
-
-    job_get = sjs.jobs.get(job.jobId)
     job_url = "http://{0}:8090/jobs/{1}".format(host, job.jobId)
     print "job_url: {0}".format(job_url)
 
