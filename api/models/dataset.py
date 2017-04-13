@@ -56,7 +56,8 @@ class Dataset(models.Model):
 
     @property
     def output_file_meta_path(self):
-        return self.storage_output_dir() + '/' + self.filename_meta
+        return self.storage_output_dir() + '/' + self.filename_meta + "_" + self.input_filename + "_" + self.userId
+
 
     @property
     def output_file_meta_path_for_script(self):
@@ -100,10 +101,11 @@ class Dataset(models.Model):
 
     def run_meta(self):
         print("Running meta script")
+        print settings.HDFS['host'], self.get_input_file_storage_path(),  self.output_file_meta_path, self.input_file.name, self.input_filename
         call(["sh", "api/lib/run_meta.sh", settings.HDFS['host'], self.get_input_file_storage_path(), self.output_file_meta_path])
 
     def get_meta(self):
-        path = self.storage_output_dir() + "/" + self.filename_meta
+        path = self.output_file_meta_path
 
         try:
             result = hadoop.hadoop_read_output_file(path)
