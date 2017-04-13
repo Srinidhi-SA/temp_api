@@ -56,7 +56,7 @@ def read_ignore_column_suggestions_from_meta_data(ds):
     measure_suggetions_json_data = meta_data.get('measure_suggestions', "")
     for key in ignore_columns_json_data:
         dict_data += ignore_columns_json_data[key]
-    return list_to_string(dict_data), measure_suggetions_json_data
+    return list_to_string(dict_data), list_to_string(measure_suggetions_json_data)
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer,))

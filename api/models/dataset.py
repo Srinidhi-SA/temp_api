@@ -56,7 +56,7 @@ class Dataset(models.Model):
 
     @property
     def output_file_meta_path(self):
-        return self.storage_output_dir() + '/' + self.filename_meta + "_" + self.input_filename + "_" + self.userId
+        return self.storage_output_dir() + '/' + self.filename_meta + "_" + self.input_filename + "_" + self.userId.__str__()
 
 
     @property
