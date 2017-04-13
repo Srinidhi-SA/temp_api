@@ -111,7 +111,11 @@ class Dataset(models.Model):
 
     def get_meta(self):
         path = self.storage_output_dir() + "/" + self.filename_meta
-        result = hadoop.hadoop_read_output_file(path)
+
+        try:
+            result = hadoop.hadoop_read_output_file(path)
+        except Exception as error:
+            return {}
 
         if not check_blank_object(result):
 

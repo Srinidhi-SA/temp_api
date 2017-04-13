@@ -252,17 +252,23 @@ class Errand(models.Model):
                 # RESULTS
                 # path = self.storage_measure_output_dir() + "/dimensions-result.json"
                 path = self.storage_output_dir() + "/results/OneWayAnova"
-                result = hadoop.hadoop_read_output_file(path)
-                result_data = []
-                items = result["results"][self.measure]
-                for key, value in items.iteritems():
-                    result_data.append([key, value["effect_size"]])
-                dimensions_data['raw_data'] = result_data
 
-                # ORDERS IT SO THAT THE ITEM[1] IS WHAT IS USED
-                def order(item):
-                    return -item[1]
-                dimensions_data['raw_data'] = sorted(dimensions_data['raw_data'], key = order)
+                try:
+                    hadoop_result = hadoop.hadoop_read_output_file(path)
+                    result = json.loads(hadoop_result["RESULT"])
+                    result_data = []
+                    items = result["results"][self.measure]
+                    for key, value in items.iteritems():
+                        result_data.append([key, value["effect_size"]])
+                    dimensions_data['raw_data'] = result_data
+
+                    # ORDERS IT SO THAT THE ITEM[1] IS WHAT IS USED
+                    def order(item):
+                        return -item[1]
+                    dimensions_data['raw_data'] = sorted(dimensions_data['raw_data'], key = order)
+                except Exception as error:
+                    print error
+                    dimensions_data['raw_data'] = {}
 
                 return dimensions_data
             else:
@@ -434,8 +440,14 @@ class Errand(models.Model):
                     return -item['effect_size']
                 narratives = sorted(narratives, key = order)
 
+                result = {}
+                try:
+                    result = hadoop.hadoop_read_output_file(result_path)
+                except Exception as error:
+                    print error
+
                 return {
-                    'result': hadoop.hadoop_read_output_file(result_path),
+                    'result': result,
                     'narratives': narratives,
                     'narratives_raw': narratives_data
                 }
