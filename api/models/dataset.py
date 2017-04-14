@@ -77,6 +77,7 @@ class Dataset(models.Model):
             obj.delete()
             return None
         try:
+            csvc.csv_header_clean()
             obj.setup()
             obj.run_meta()
         except ConnectionError as e:

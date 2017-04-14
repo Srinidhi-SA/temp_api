@@ -505,8 +505,8 @@ class Errand(models.Model):
         if(column_data.has_key('measure_suggetions_json_data')):
             config.set('COLUMN_SETTINGS', 'measure_suggestions', column_data['measure_suggetions_json_data'])
 
-        path = self.get_meta_json_path()
-        config.set("META_DATA", 'path', path)
+        # path = self.get_meta_json_path()
+        # config.set("META_DATA", 'path', path)
 
         with open(self.config_file_path, 'wb') as file:
             config.write(file)
@@ -543,7 +543,7 @@ class Errand(models.Model):
 
     def get_meta_json_path(self):
         path = self.dataset.output_file_meta_path
-        print path
+        return path
 
     def get_trend_analysis(self):
         narratives_path = self.storage_output_dir() + "/narratives/Trend"
