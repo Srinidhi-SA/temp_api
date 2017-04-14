@@ -497,7 +497,7 @@ class Errand(models.Model):
         if(column_data.has_key('measure_suggetions_json_data')):
             config.set('COLUMN_SETTINGS', 'measure_suggestions', column_data['measure_suggetions_json_data'])
 
-        path = self.get_meta_json_path()
+        # path = self.get_meta_json_path()
         # config.set("META_DATA", 'path', path)
 
         with open(self.config_file_path, 'wb') as file:
