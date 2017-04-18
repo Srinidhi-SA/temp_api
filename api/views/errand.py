@@ -111,7 +111,11 @@ def set_measure(request):
     e.compare_with = request.POST['compare_with']
     e.compare_type = request.POST['compare_type']
     e.save()
-    e.run_master()
+    try:
+        e.run_master()
+    except Exception as e:
+        print e
+        return Response({'Exception': "Failure"})
 
     # analysis done
     e.analysis_done = 'TRUE'
@@ -127,8 +131,11 @@ def set_dimension(request):
     e.compare_with = request.POST['compare_with']
     e.compare_type = request.POST['compare_type']
     e.save()
-    e.run_master()
-
+    try:
+        e.run_master()
+    except Exception as e:
+        print e
+        return Response({'Exception': "Failure"})
     # analysis done
     e.analysis_done = "TRUE"
     e.save()

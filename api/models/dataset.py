@@ -80,7 +80,7 @@ class Dataset(models.Model):
             csvc.csv_header_clean()
             obj.setup()
             obj.run_meta()
-        except ConnectionError as e:
+        except Exception as e:
             print e
             obj.delete()
             return "ConnectionError"
