@@ -312,7 +312,6 @@ class Errand(models.Model):
         except Exception as error:
             print error
             return data
-
         return data
 
 

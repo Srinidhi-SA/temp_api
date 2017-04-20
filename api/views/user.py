@@ -13,6 +13,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from django.contrib.auth.models import User
 from api.lib import urlhelpers
 from api.views.option import default_settings_in_option, set_option
+from django.contrib.auth.models import User
 
 
 @api_view(['POST'])
@@ -68,4 +69,3 @@ def restrict_days(user):
     if days > 30:
         return False
     return True
-
