@@ -110,6 +110,7 @@ def set_measure(request):
     e.set_measure(request.POST['measure'])
     e.compare_with = request.POST['compare_with']
     e.compare_type = request.POST['compare_type']
+    e.name = request.POST['story_name']
     e.save()
     try:
         e.run_master()
@@ -130,6 +131,7 @@ def set_dimension(request):
     e.set_dimension(request.POST['dimension'])
     e.compare_with = request.POST['compare_with']
     e.compare_type = request.POST['compare_type']
+    e.name = request.POST['story_name']
     e.save()
     try:
         e.run_master()
