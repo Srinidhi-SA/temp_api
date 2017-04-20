@@ -42,6 +42,14 @@ def login(request):
                          "username": user.username
                          })
 
+def login_through_jwt(token, user=None, request=None):
+    return {
+        "token": token,
+        "profile": user.profile.rs(),
+        "userId": user.profile.id,
+        "username": user.username
+    }
+
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer,))

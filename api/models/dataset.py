@@ -147,14 +147,18 @@ class Dataset(models.Model):
 
     def get_preview_data(self):
         items = []
+        all_items = []
         with open(self.input_file.path) as file:
             rows = csv.reader(file, delimiter=',')
             # for row in itertools.islice(rows, 20):
             for row in rows:
                 if "" in row or " " in row:
+                    if len(all_items) > 21:
+                        continue
+                    all_items.append(row)
                     continue
                 items.append(row)
-        return items[:21]
+        return items[:21] if len(items) < 21 else all_items[:21]
 
     # def sample_filter_subsetting(self,
     #                              COLUMN_SETTINGS,
