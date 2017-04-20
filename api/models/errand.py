@@ -53,6 +53,7 @@ class Errand(models.Model):
         obj = cls(slug=data.get('slug'))
         obj.dataset_id = data.get('dataset_id')
         obj.userId = userId
+        obj.name = data.get('name')
 
         # comp
         # obj.userId = '1'
