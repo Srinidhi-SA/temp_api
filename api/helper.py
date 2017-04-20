@@ -1,6 +1,8 @@
 
 import csv
 import os
+import datetime
+from django.utils import timezone
 
 
 class CSVChecker:
@@ -62,6 +64,23 @@ class CSVChecker:
                 writer.writerow(row)
 
         return cleaned_header
+
+
+class DateHelp:
+
+    limited_days = 30
+
+    @classmethod
+    def restrict_days(cls, date_joined):
+        current_date = timezone.now()
+        user_joining_date = date_joined
+        time_difference = current_date - user_joining_date
+        print time_difference.days
+
+        days = time_difference.days
+        if days > cls.limited_days:
+            return False
+        return True
 
 
 

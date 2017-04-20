@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from subprocess import call
 import subprocess
 import glob
+import json
 
 from rest_framework.decorators import renderer_classes, api_view
 from rest_framework.renderers import JSONRenderer
@@ -33,6 +34,14 @@ def showme(request):
 def get_errand(request):
 
     id = request.GET['errand_id'] if request.method == "GET" else request.POST['errand_id']
+    try:
+        e = Errand.objects.get(pk=id)
+        return e
+    except Exception as dne_error:
+        return None
+
+def get_errand_from_id(id):
+
     try:
         e = Errand.objects.get(pk=id)
         return e
@@ -337,23 +346,36 @@ def get_trend_analysis(request):
 
 
 @api_view(['POST'])
-@renderer_classes((JSONRenderer,))
+# @renderer_classes((JSONRenderer,))
 def filter_sample(request):
-    e = get_errand(request)
-    dimension = "sales"
-    measure = "cities"
+    # e = get_errand(request)
+    dimension = "cities"
+    measure = "sales"
     subsetting_data = request.POST
 
+    subsetting_data = subsetting_data.get('data')
+
+    subsetting_data = json.loads(str(subsetting_data))
+    print subsetting_data
     main_data = {}
 
+    # errand_id = request.query_params.get('errand_id')
+    e = get_errand_from_id('112')
+
+    CONSIDER_COLUMNS = {}
     DIMENSION_FILTER = {}
     MEASURE_FILTER = {}
-
+    consider_columns = []
     for dict_data in subsetting_data:
         if dimension in dict_data:
             fields = dict_data['fields']
-            DIMENSION_FILTER[dict_data[dimension]] = [field.keys[0] for field in fields if field['status'] == True]
+            DIMENSION_FILTER[dict_data[dimension]] = [field.keys()[1] for field in fields if field['status'] == True]
+            consider_columns.append(dict_data[dimension])
+            for field in fields:
+                if field['status'] == True:
+                    print field.keys()
         elif measure in dict_data:
+            consider_columns.append(dict_data[measure])
             MEASURE_FILTER[dict_data[measure]] = {
                 "min":dict_data['min'],
                 "max":dict_data['max']
@@ -361,7 +383,11 @@ def filter_sample(request):
 
     main_data['DIMENSION_FILTER'] = DIMENSION_FILTER
     main_data['MEASURE_FILTER'] = MEASURE_FILTER
+    main_data['CONSIDER_COLUMNS'] = {"consider_columns": consider_columns}
 
     e.add_subsetting_to_column_data(main_data)
     e.save()
-    return Response({"message": "result"})
+
+    # e.call_filter_script()
+    return Response({"message": "result",
+                     "column_data":e.get_column_data()})
