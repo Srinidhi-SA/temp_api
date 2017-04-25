@@ -54,6 +54,7 @@ urlpatterns = [
     url(r'errand/get_trend_analysis', errand.get_trend_analysis),
     url(r'errand/get_dimension_all_results', errand.get_dimension_all_results),
     url(r'errand/filter', errand.filter_sample),
+    url(r'errand/drill_down_anova', errand.drill_down_anova),
 
     # ROBOS
     url(r'robo/create', robo.create),

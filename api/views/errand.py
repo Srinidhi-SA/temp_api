@@ -378,3 +378,13 @@ def filter_sample(request):
     e.add_subsetting_to_column_data(main_data)
     e.save()
     return Response({"message": "result"})
+
+
+@api_view(['GET'])
+@renderer_classes((JSONRenderer,),)
+def drill_down_anova(request):
+    import time
+    import random
+    delay_seconds = random.randint(30,60)
+    time.sleep(delay_seconds)
+    return Response({"message": "result","delay":delay_seconds})
