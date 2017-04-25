@@ -53,6 +53,7 @@ class Errand(models.Model):
         obj = cls(slug=data.get('slug'))
         obj.dataset_id = data.get('dataset_id')
         obj.userId = userId
+        obj.name = data.get('name')
 
         # comp
         # obj.userId = '1'
@@ -484,15 +485,19 @@ class Errand(models.Model):
         if(column_data.has_key('ignore_column_suggestions')):
             config.set('COLUMN_SETTINGS', 'ignore_column_suggestions', column_data['ignore_column_suggestions'])
 
-        # ignore_column_suggestions
+        # utf8_column_suggestions
+        if (column_data.has_key('utf8_columns')):
+            config.set('COLUMN_SETTINGS', 'utf8_columns', column_data['utf8_columns'])
+
+        # MEASURE_FILTER
         if(column_data.has_key('MEASURE_FILTER')):
             config.set('COLUMN_SETTINGS', 'measure_column_filter', column_data['MEASURE_FILTER'])
 
-        # ignore_column_suggestions
+        # DIMENSION_FILTER
         if(column_data.has_key('DIMENSION_FILTER')):
             config.set('COLUMN_SETTINGS', 'dimension_column_filter', column_data['DIMENSION_FILTER'])
 
-        # ignore_column_suggestions
+        # measure_suggetions_json_data
         if(column_data.has_key('measure_suggetions_json_data')):
             config.set('COLUMN_SETTINGS', 'measure_suggestions', column_data['measure_suggetions_json_data'])
 

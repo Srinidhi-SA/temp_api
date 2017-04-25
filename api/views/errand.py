@@ -65,7 +65,17 @@ def read_ignore_column_suggestions_from_meta_data(ds):
     measure_suggetions_json_data = meta_data.get('measure_suggestions', "")
     for key in ignore_columns_json_data:
         dict_data += ignore_columns_json_data[key]
-    return list_to_string(dict_data), list_to_string(measure_suggetions_json_data)
+    return list_to_string(dict_data), \
+           list_to_string(measure_suggetions_json_data), \
+           read_utf8_columns_from_meta_data(meta_data)
+
+def read_utf8_columns_from_meta_data(meta_data):
+    utf8_columns = meta_data.get('utf8_columns')
+    if utf8_columns != None:
+        return list_to_string(utf8_columns)
+    else:
+        return ""
+
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer,))
@@ -119,6 +129,7 @@ def set_measure(request):
     e.set_measure(request.POST['measure'])
     e.compare_with = request.POST['compare_with']
     e.compare_type = request.POST['compare_type']
+    e.name = request.POST['story_name']
     e.save()
     e.run_master()
 
@@ -135,6 +146,7 @@ def set_dimension(request):
     e.set_dimension(request.POST['dimension'])
     e.compare_with = request.POST['compare_with']
     e.compare_type = request.POST['compare_type']
+    e.name = request.POST['story_name']
     e.save()
     e.run_master()
 
@@ -150,7 +162,7 @@ def set_column_data(request):
     e = get_errand(request)
     from api.views.dataset import get_dataset_from_data_from_id
     ds = get_dataset_from_data_from_id(e.dataset_id)
-    ignore_column_suggestions, measure_suggetions_json_data = read_ignore_column_suggestions_from_meta_data(ds)
+    ignore_column_suggestions, measure_suggetions_json_data, utf8_columns = read_ignore_column_suggestions_from_meta_data(ds)
 
     data = {}
     for x in ["ignore", "date", "date_format"]:
@@ -159,6 +171,7 @@ def set_column_data(request):
     print(data)
     data['ignore_column_suggestions'] = ignore_column_suggestions
     data['measure_suggetions_json_data'] = measure_suggetions_json_data
+    data["utf8_columns"] = utf8_columns
     e.set_column_data(data)
     return Response({'message': "Successfuly set column data"})
 
@@ -388,6 +401,15 @@ def filter_sample(request):
     e.add_subsetting_to_column_data(main_data)
     e.save()
 
-    # e.call_filter_script()
-    return Response({"message": "result",
-                     "column_data":e.get_column_data()})
+    return Response({"message": "result"})
+
+
+@api_view(['GET'])
+@renderer_classes((JSONRenderer,),)
+def drill_down_anova(request):
+    import time
+    import random
+    delay_seconds = random.randint(30,60)
+    time.sleep(delay_seconds)
+    return Response({"message": "result","delay":delay_seconds})
+
