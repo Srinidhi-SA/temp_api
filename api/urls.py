@@ -3,6 +3,9 @@ from rest_framework.decorators import renderer_classes, api_view
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from django.contrib.auth.decorators import login_required
+from rest_framework_jwt.views import obtain_jwt_token
+from rest_framework_jwt.views import refresh_jwt_token
+from rest_framework_jwt.views import verify_jwt_token
 
 from api.views import errand, dataset, robo, option, user
 
@@ -20,6 +23,9 @@ urlpatterns = [
     url(r'user/login', user.login),
     url(r'user/profile', user.profile),
     url(r'user/logout', user.logout),
+    url(r'user/api-token-auth', obtain_jwt_token),
+    url(r'user/api-token-refresh', refresh_jwt_token),
+    url(r'user/api-token-verify', verify_jwt_token),
 
     # DATASETSS
     url(r'dataset/create', dataset.create),
@@ -29,6 +35,7 @@ urlpatterns = [
     url(r'dataset/edit', dataset.edit),
     url(r'dataset/delete', dataset.delete),
     url(r'dataset/quickinfo', dataset.quickinfo),
+    url(r'dataset/trick', dataset.trick),
 
     # ERRANDS
     url(r'errand/uploaded_files', errand.get_uploaded_files),
@@ -54,6 +61,7 @@ urlpatterns = [
     url(r'errand/get_trend_analysis', errand.get_trend_analysis),
     url(r'errand/get_dimension_all_results', errand.get_dimension_all_results),
     url(r'errand/filter', errand.filter_sample),
+    url(r'errand/drill_down_anova', errand.drill_down_anova),
 
     # ROBOS
     url(r'robo/create', robo.create),
@@ -66,6 +74,7 @@ urlpatterns = [
     # OPTIONS
     url(r'option/get_all', option.get_all),
     url(r'option/get_dict', option.get_dict),
-    url(r'option/set', option.set)
+    url(r'option/set', option.set),
+    url(r'option/test', option.test),
 
 ]

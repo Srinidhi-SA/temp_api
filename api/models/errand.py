@@ -321,7 +321,6 @@ class Errand(models.Model):
         except Exception as error:
             print error
             return data
-
         return data
 
 
@@ -567,10 +566,29 @@ class Errand(models.Model):
 
     def add_subsetting_to_column_data(self, main_data):
 
-        data = self.column_data_raw
+        data = self.get_column_data()
+        print "*"*30
+        print type(data), type(main_data['MEASURE_FILTER']), type(main_data['DIMENSION_FILTER'])
+
         data['MEASURE_FILTER'] = main_data['MEASURE_FILTER']
         data['DIMENSION_FILTER'] = main_data['DIMENSION_FILTER']
+        data['CONSIDER_COLUMNS'] = main_data['CONSIDER_COLUMNS']
+        self.set_column_data(data)
         self.save()
+
+    def call_filter_script(self):
+        data = self.get_column_data()
+        consider_columns = data["CONSIDER_COLUMNS"]
+        dimension_filter = data["DIMENSION_FILTER"]
+        measure_filter = data["MEASURE_FILTER"]
+        call(["sh", "api/lib/run_filter.sh",
+              settings.HDFS['host'],
+              self.get_input_file_storage_path(),
+              self.get_meta_json_path(),
+              json.loads(consider_columns),
+              json.loads(dimension_filter),
+              json.loads(measure_filter)
+              ])
 
 
 class ErrandSerializer(serializers.Serializer):

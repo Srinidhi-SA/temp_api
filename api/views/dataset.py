@@ -72,6 +72,7 @@ def edit(request):
     e.save()
     return Response({"message": "Updated"})
 
+
 @api_view(['POST'])
 @renderer_classes((JSONRenderer,))
 def delete(request):
@@ -107,6 +108,13 @@ def quickinfo(request):
                      "subsetting":subsetting
                      })
 
+from api.models.profile import provide_token_or_email_and_password
+
+@api_view(['GET'])
+@renderer_classes((JSONRenderer,),)
+@provide_token_or_email_and_password
+def trick(request):
+    return Response({'home':'home'})
 
 '''
 ----> METHODS = quickinfo
@@ -124,3 +132,5 @@ Subsets:
   Products (count>1000)
   Sales Agent (Top 10)
 '''
+
+
