@@ -54,16 +54,14 @@ def login_through_jwt(token, user=None, request=None):
 @api_view(['GET'])
 @renderer_classes((JSONRenderer,))
 def profile(request):
-
-    user = urlhelpers.get_current_user(request)
+    user = request.user
+    # user = urlhelpers.get_current_user(request)
     return Response({"profile": user.profile.rs()})
 
 
 @api_view(['POST'])
 @renderer_classes((JSONRenderer,))
 def logout(request):
-    user = urlhelpers.get_current_user(request)
-    user.profile.logout()
     return Response({"message": "User has been successufully logged out"})
 
 

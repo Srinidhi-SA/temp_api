@@ -409,7 +409,7 @@ def filter_sample(request):
 def drill_down_anova(request):
     import time
     import random
-    delay_seconds = random.randint(30,60)
+    delay_seconds = random.randint(180,183)
     time.sleep(delay_seconds)
     return Response({"message": "result","delay":delay_seconds})
 
