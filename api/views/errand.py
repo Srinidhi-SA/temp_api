@@ -438,7 +438,6 @@ def drill_down_anova(request):
 
 def add_more_info_to_errand_info(e):
 
-    print ErrandSerializer(e).data, e.userId
     user_id = e.userId
     from api.views.dataset import get_dataset_from_data_from_id
     from api.models.dataset import DatasetSerializer
