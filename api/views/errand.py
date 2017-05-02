@@ -380,7 +380,7 @@ def get_trend_analysis(request):
 
 
 @api_view(['POST'])
-# @renderer_classes((JSONRenderer,))
+@renderer_classes((JSONRenderer,))
 def filter_sample(request):
     # e = get_errand(request)
     dimension = "cities"
@@ -433,7 +433,6 @@ def drill_down_anova(request):
     delay_seconds = random.randint(180,183)
     time.sleep(delay_seconds)
     return Response({"message": "result","delay":delay_seconds})
-
 
 
 def add_more_info_to_errand_info(e):
