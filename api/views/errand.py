@@ -262,7 +262,12 @@ def get_archived(request):
         is_archived='FALSE'
         )
 
-    return Response({'errands': ErrandSerializer(es, many=True).data})
+    es_info = []
+    for e in es:
+        es_info.append(add_more_info_to_errand_info(e))
+
+    # return Response({'errands': ErrandSerializer(es, many=True).data})
+    return Response({'errands': es_info})
 
 
 @api_view(['POST'])
@@ -301,6 +306,7 @@ def configure_data(request):
 def log_status(request, errand_id=None):
     return Response({"message": "Successfully logged the statuses"})
 
+
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ),)
 def quickinfo(request):
@@ -334,8 +340,23 @@ def quickinfo(request):
     # read from config file itself
     config_file_script_to_run = e.read_config_file()
 
+    errand_info = ErrandSerializer(e).data
+
+    if errand_info.get("measure"):
+        errand_info["variable_type"] = "measure"
+        errand_info["variable_selected"] = errand_info.get("measure")
+    else:
+        errand_info["variable_type"] = "dimension"
+        errand_info["variable_selected"] = errand_info.get("dimension")
+
+    errand_info["dataset_name"] = dataset_quickinfo.get("name")
+    errand_info["dataset_created_at"] = dataset_quickinfo.get("created_at")
+    errand_info["dataset_creator"] = dataset_quickinfo.get("")
+    errand_info["username"] = profile.get("username")
+    errand_info["analysis_list"] = analysis_list
+
     return Response({
-        "errand_quickinfo": ErrandSerializer(e).data,
+        "errand_quickinfo": errand_info,
         "dataset_quickinfo": dataset_quickinfo,
         "profile": profile,
         "config_details": analysis_list,
@@ -412,4 +433,54 @@ def drill_down_anova(request):
     delay_seconds = random.randint(180,183)
     time.sleep(delay_seconds)
     return Response({"message": "result","delay":delay_seconds})
+
+
+
+def add_more_info_to_errand_info(e):
+
+    print ErrandSerializer(e).data, e.userId
+    user_id = e.userId
+    from api.views.dataset import get_dataset_from_data_from_id
+    from api.models.dataset import DatasetSerializer
+    ds = get_dataset_from_data_from_id(e.dataset_id)
+    dataset_quickinfo = DatasetSerializer(ds).data
+
+    from django.contrib.auth.models import User
+    user = User.objects.get(pk=user_id)
+    profile = {}
+    if user:
+        profile = user.profile.rs()
+        profile = {
+            "username": profile['username'],
+            "full_name": profile['full_name'],
+            "email": profile['email']
+        }
+
+    # read from option model
+    from api.views.option import get_option_for_this_user
+    config_details = get_option_for_this_user(user_id)
+    analysis_list = []
+    for key in config_details:
+        if config_details[key] == 'yes' and name_map.get(key, None):
+            analysis_list.append(name_map.get(key))
+
+    # read from config file itself
+    config_file_script_to_run = e.read_config_file()
+
+    errand_info = ErrandSerializer(e).data
+
+    if errand_info.get("measure"):
+        errand_info["variable_type"] = "measure"
+        errand_info["variable_selected"] = errand_info.get("measure")
+    else:
+        errand_info["variable_type"] = "dimension"
+        errand_info["variable_selected"] = errand_info.get("dimension")
+
+    errand_info["dataset_name"] = dataset_quickinfo.get("name")
+    errand_info["dataset_created_at"] = dataset_quickinfo.get("created_at")
+    errand_info["dataset_creator"] = dataset_quickinfo.get("")
+    errand_info["username"] = profile.get("username")
+    errand_info["analysis_list"] = analysis_list
+
+    return errand_info
 

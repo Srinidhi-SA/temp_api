@@ -217,6 +217,11 @@ class Errand(models.Model):
             return {}
 
         if not check_blank_object(output):
+            from collections import OrderedDict
+            output = OrderedDict(sorted(output.items(),
+                                        key = lambda x: x[1]["coeff"],
+                                        reverse= True)
+                                 )
             return output
         else:
             return {}
