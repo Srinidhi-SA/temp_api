@@ -162,23 +162,23 @@ class Dataset(models.Model):
 
         return items[:21] if len(items) > 21 else all_items[:21]
 
-    # def sample_filter_subsetting(self,
-    #                              COLUMN_SETTINGS,
-    #                              DIMENSION_FILTER,
-    #                              MEASURE_FILTER):
-    #
-    #     input_file = self.get_input_file_storage_path()
-    #     output_file = self.output_file_meta_path_for_script
-    #     call([
-    #         "sh", "api/lib/run_filter.sh",
-    #         settings.HDFS['host'],
-    #         input_file,
-    #         output_file,
-    #         json.dumps(COLUMN_SETTINGS),
-    #         json.dumps(DIMENSION_FILTER),
-    #         json.dumps(MEASURE_FILTER)
-    #     ])
-    #     return "Done"
+    def sample_filter_subsetting(self,
+                                 COLUMN_SETTINGS,
+                                 DIMENSION_FILTER,
+                                 MEASURE_FILTER):
+
+        input_file = self.get_input_file_storage_path()
+        output_file = self.output_file_meta_path_for_script
+        call([
+            "sh", "api/lib/run_filter.sh",
+            settings.HDFS['host'],
+            input_file,
+            output_file,
+            json.dumps(COLUMN_SETTINGS),
+            json.dumps(DIMENSION_FILTER),
+            json.dumps(MEASURE_FILTER)
+        ])
+        return "Done"
 
     def output_file_name(self):
         return

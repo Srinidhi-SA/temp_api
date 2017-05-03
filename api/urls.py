@@ -36,7 +36,9 @@ urlpatterns = [
     url(r'dataset/delete', dataset.delete),
     url(r'dataset/quickinfo', dataset.quickinfo),
     url(r'dataset/trick', dataset.trick),
+    url(r'dataset/filter', dataset.filter_sample),
 
+    # filter_sample
     # ERRANDS
     url(r'errand/uploaded_files', errand.get_uploaded_files),
     url(r'errand/make', errand.make),

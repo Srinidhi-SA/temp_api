@@ -116,6 +116,49 @@ from api.models.profile import provide_token_or_email_and_password
 def trick(request):
     return Response({'home':'home'})
 
+
+@api_view(['POST'])
+@renderer_classes((JSONRenderer,),)
+def filter_sample(request):
+    dimension = "cities"
+    measure = "sales"
+    subsetting_data = request.POST
+
+    subsetting_data = subsetting_data.get('data')
+
+    subsetting_data = json.loads(str(subsetting_data))
+    print subsetting_data
+    main_data = {}
+
+    e = get_dataset(request)
+
+    CONSIDER_COLUMNS = {}
+    DIMENSION_FILTER = {}
+    MEASURE_FILTER = {}
+    consider_columns = []
+    for dict_data in subsetting_data:
+        if dimension in dict_data:
+            fields = dict_data['fields']
+            DIMENSION_FILTER[dict_data[dimension]] = [field.keys()[1] for field in fields if field['status'] == True]
+            consider_columns.append(dict_data[dimension])
+            for field in fields:
+                if field['status'] == True:
+                    print field.keys()
+        elif measure in dict_data:
+            consider_columns.append(dict_data[measure])
+            MEASURE_FILTER[dict_data[measure]] = {
+                "min": dict_data['min'],
+                "max": dict_data['max']
+            }
+
+    main_data['DIMENSION_FILTER'] = DIMENSION_FILTER
+    main_data['MEASURE_FILTER'] = MEASURE_FILTER
+    main_data['CONSIDER_COLUMNS'] = {"consider_columns": consider_columns}
+
+    e.sample_filter_subsetting(main_data['CONSIDER_COLUMNS'],
+                               main_data['DIMENSION_FILTER'],
+                               main_data['MEASURE_FILTER'])
+    return Response({"message":"result"})
 '''
 ----> METHODS = quickinfo
 Dataset Name (40 Characters)
