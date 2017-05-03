@@ -283,6 +283,12 @@ class Errand(models.Model):
         path = self.storage_output_dir() + "/narratives/Regression"
         try:
             narratives = hadoop.hadoop_read_output_file(path)
+            from collections import OrderedDict
+            dimension_narratives = narratives["narratives"]
+            dimension_narratives_sorted = OrderedDict(sorted(dimension_narratives.items(),
+                                                      key=lambda x:x[1]["coeff"],
+                                                      reverse=True))
+            narratives["narratives"] = dimension_narratives_sorted
         except Exception as error:
             print error
             return {}

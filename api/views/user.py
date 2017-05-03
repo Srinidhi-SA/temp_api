@@ -43,11 +43,20 @@ def login(request):
                          })
 
 def login_through_jwt(token, user=None, request=None):
+
+    if not restrict_days(user):
+        return {
+            "status":400,
+            "message":"Sorry, Your usage limit is reached. Please renew"
+        }
+
     return {
         "token": token,
         "profile": user.profile.rs(),
         "userId": user.profile.id,
-        "username": user.username
+        "username": user.username,
+        "status": 200,
+        "message": "Login Successful"
     }
 
 
