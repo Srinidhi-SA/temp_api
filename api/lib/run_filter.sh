@@ -12,7 +12,7 @@ echo "DIMENSION_FILTER: $5"
 echo "MEASURE_FILTER: $6"
 echo "MEASURE_SUGGESTIONS: $7"
 
-COMMAND_PREFIX="ssh -i api/lSb/TIAA.pem hadoop@$1 spark-submit --master yarn --deploy-mode client"
+COMMAND_PREFIX="ssh -i api/lib/TIAA.pem hadoop@$1 spark-submit --master yarn --deploy-mode client"
 #SCRIPTS_ROOT="/home/hadoop/codebase/marlabs-bi/bi/scripts"
 SCRIPTS_ROOT="/home/hadoop/codebase/mAdvisor-MLScripts/bi/scripts"
 
@@ -30,7 +30,7 @@ echo $COMMAND_PREFIX /home/hadoop/codebase/mAdvisor-MLScripts/bi/filter_cl.py \
         --result "hdfs://$1:8020$3" \
         --consider_columns $4 \
         --dimension_filter $5 \
-        --measure_filter $6
+        --measure_filter $6 \
         --measure_suggestions $7
 
 
@@ -39,6 +39,6 @@ $COMMAND_PREFIX  /home/hadoop/codebase/mAdvisor-MLScripts/bi/filter_cl.py \
         --result "hdfs://$1:8020$3" \
         --consider_columns "'""$4""'" \
         --dimension_filter "'""$5""'" \
-        --measure_filter "'""$6""'"
+        --measure_filter "'""$6""'" \
         --measure_suggestions "'""$7""'"
 

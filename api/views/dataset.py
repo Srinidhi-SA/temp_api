@@ -137,11 +137,9 @@ def filter_sample(request):
     print subsetting_data
     main_data = {}
 
-    # ds = get_dataset(request)
     dataset_id = request.query_params.get("dataset_id")
     ds = get_dataset_from_data_from_id(dataset_id)
 
-    CONSIDER_COLUMNS = {}
     DIMENSION_FILTER = {}
     MEASURE_FILTER = {}
     consider_columns = []
@@ -166,6 +164,7 @@ def filter_sample(request):
     main_data['MEASURE_FILTER'] = MEASURE_FILTER
     main_data['CONSIDER_COLUMNS'] = {"consider_columns": consider_columns}
     main_data['MEASURE_SUGGESTIONS'] = {"measure_suggestions": MEASURE_SUGGESTIONS}
+
 
     ds.sample_filter_subsetting(main_data['CONSIDER_COLUMNS'],
                                main_data['DIMENSION_FILTER'],
