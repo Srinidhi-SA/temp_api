@@ -469,7 +469,7 @@ class Errand(models.Model):
         config.set('FILE_SETTINGS', 'script_to_run', self.option_dict_to_string(option_dict))
 
         # add scripts to run to errand database also
-        self.add_scripts_to_run_to_column_data(self, self.option_dict_to_string(option_dict))
+        self.add_scripts_to_run_to_column_data(self.option_dict_to_string(option_dict))
 
         if self.measure != None:
             config.set('COLUMN_SETTINGS', 'result_column', self.measure)

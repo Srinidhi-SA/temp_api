@@ -9,8 +9,9 @@ from subprocess import call
 from django.conf import settings
 import json
 from django.contrib.auth.models import User
-from api.helper import CSVChecker
+from api.helper import CSVChecker, tell_me_size_readable_format
 from requests.exceptions import ConnectionError
+
 
 def dataset_base_directory(instance):
     return "uploads/datasets/{0}".format(instance.id)
@@ -165,18 +166,26 @@ class Dataset(models.Model):
     def sample_filter_subsetting(self,
                                  COLUMN_SETTINGS,
                                  DIMENSION_FILTER,
-                                 MEASURE_FILTER):
+                                 MEASURE_FILTER,
+                                 MEASURE_SUGGESTIONS):
 
         input_file = self.get_input_file_storage_path()
         output_file = self.output_file_meta_path_for_script
+
+        column_settings = json.dumps(COLUMN_SETTINGS)
+        dimension_filter = json.dumps(DIMENSION_FILTER)
+        measure_filter = json.dumps(MEASURE_FILTER)
+        measure_suggestions = json.dumps(MEASURE_SUGGESTIONS)
+
         call([
             "sh", "api/lib/run_filter.sh",
             settings.HDFS['host'],
             input_file,
             output_file,
-            json.dumps(COLUMN_SETTINGS),
-            json.dumps(DIMENSION_FILTER),
-            json.dumps(MEASURE_FILTER)
+            str(column_settings),
+            str(dimension_filter),
+            str(measure_filter),
+            str(measure_suggestions)
         ])
         return "Done"
 
@@ -221,8 +230,14 @@ class Dataset(models.Model):
     def update_options_for(self):
         pass
 
+    def get_size_of_file(self):
+        return tell_me_size_readable_format(os.stat(self.input_file.path).st_size)
 
+    def get_measure_suggestion_from_meta_data(self):
+        meta_data = self.get_meta()
 
+        if 'measure_suggestions' in meta_data.keys():
+            return meta_data.get("measure_suggestions", [])
 
 
 class DatasetSerializer(serializers.Serializer):

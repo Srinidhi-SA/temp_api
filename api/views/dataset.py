@@ -47,9 +47,16 @@ def all(request):
 
     ds = Dataset.objects.filter(userId=userId)
 
+    all_dataset_info = []
+
+    for dataset in ds:
+        dataset_info = add_more_info_to_dataset(dataset)
+        all_dataset_info.append(dataset_info)
+
     if userId is not None:
-        return Response({'data': DatasetSerializer(ds, many=True).data})
+        return Response({'data': all_dataset_info})
     return Response({'data': []})
+
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
@@ -130,7 +137,9 @@ def filter_sample(request):
     print subsetting_data
     main_data = {}
 
-    e = get_dataset(request)
+    # ds = get_dataset(request)
+    dataset_id = request.query_params.get("dataset_id")
+    ds = get_dataset_from_data_from_id(dataset_id)
 
     CONSIDER_COLUMNS = {}
     DIMENSION_FILTER = {}
@@ -151,14 +160,21 @@ def filter_sample(request):
                 "max": dict_data['max']
             }
 
+    MEASURE_SUGGESTIONS = ds.get_measure_suggestion_from_meta_data()
+
     main_data['DIMENSION_FILTER'] = DIMENSION_FILTER
     main_data['MEASURE_FILTER'] = MEASURE_FILTER
     main_data['CONSIDER_COLUMNS'] = {"consider_columns": consider_columns}
+    main_data['MEASURE_SUGGESTIONS'] = {"measure_suggestions": MEASURE_SUGGESTIONS}
 
-    e.sample_filter_subsetting(main_data['CONSIDER_COLUMNS'],
+    ds.sample_filter_subsetting(main_data['CONSIDER_COLUMNS'],
                                main_data['DIMENSION_FILTER'],
-                               main_data['MEASURE_FILTER'])
+                               main_data['MEASURE_FILTER'],
+                               main_data['MEASURE_SUGGESTIONS'],
+                                )
+
     return Response({"message":"result"})
+
 '''
 ----> METHODS = quickinfo
 Dataset Name (40 Characters)
@@ -175,5 +191,33 @@ Subsets:
   Products (count>1000)
   Sales Agent (Top 10)
 '''
+
+
+def add_more_info_to_dataset(ds):
+    user_id = ds.userId
+    dataset_quickinfo = DatasetSerializer(ds).data
+    dataset_metadata = ds.get_meta_data_numnbers()
+    from django.contrib.auth.models import User
+    from api.views.option import get_option_for_this_user
+
+    profile = {}
+    subsetting = {}
+
+    if user_id:
+        user = User.objects.get(pk=user_id)
+        profile = user.profile.rs()
+        profile = {
+            "username": profile['username'],
+            "full_name": profile['full_name'],
+            "email": profile['email']
+        }
+        subsetting = get_option_for_this_user(user_id)
+
+    dataset_quickinfo["dataset_metadata"] = dataset_metadata
+    dataset_quickinfo["subsetting"] = subsetting
+    dataset_quickinfo["profile"] = profile
+    dataset_quickinfo["file_size"] = ds.get_size_of_file()
+
+    return dataset_quickinfo
 
 

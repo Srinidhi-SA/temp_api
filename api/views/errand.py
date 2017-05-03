@@ -26,7 +26,8 @@ name_map = {
 }
 
 # Create your views here.
-
+measure_operations = ["Measure vs. Dimension", 'Measure vs. Measure', 'Descriptive analysis']
+dimension_operations = ['Dimension vs. Dimension', 'Predictive modeling', 'Descriptive analysis']
 
 def showme(request):
     return HttpResponse("Alright, this is a test");
@@ -462,17 +463,20 @@ def add_more_info_to_errand_info(e):
         if config_details[key] == 'yes' and name_map.get(key, None):
             analysis_list.append(name_map.get(key))
 
-    # read from config file itself
+    # read from config file itself measure_operations
     config_file_script_to_run = e.read_config_file()
+    files_to_run = config_file_script_to_run.get('analysis_list', None)
 
     errand_info = ErrandSerializer(e).data
 
     if errand_info.get("measure"):
         errand_info["variable_type"] = "measure"
         errand_info["variable_selected"] = errand_info.get("measure")
+        analysis_list = list(set(measure_operations) - (set(measure_operations) - set(files_to_run)))
     else:
         errand_info["variable_type"] = "dimension"
         errand_info["variable_selected"] = errand_info.get("dimension")
+        analysis_list = list(set(dimension_operations) - (set(measure_operations) - set(files_to_run)))
 
     errand_info["dataset_name"] = dataset_quickinfo.get("name")
     errand_info["dataset_created_at"] = dataset_quickinfo.get("created_at")

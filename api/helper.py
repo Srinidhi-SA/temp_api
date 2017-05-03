@@ -83,6 +83,30 @@ class DateHelp:
         return True
 
 
+def tell_me_size_readable_format(num):
+
+    name = "B"
+
+    # assuming in B
+    if num > 1024:
+        num = num/1024
+        name = "KB"
+        if num > 1024:
+            num = num/1024
+            name = "MB"
+            if num > 1024:
+                num = num/1024
+                name = "GB"
+                return str(num) + " " + name
+            else:
+                return str(num) + " " + name
+        else:
+            return str(num) + " " + name
+
+    else:
+        return str(num) + " " + name
+
+
 
 
 
