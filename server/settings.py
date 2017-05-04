@@ -133,8 +133,6 @@ CORS_ALLOW_CREDENTIALS = False
 CORS_ALLOW_HEADERS = default_headers + ('x-token', )
 
 HDFS = {
-    # 'host': 'ec2-54-88-153-37.compute-1.amazonaws.com',
-    # 'host': 'ec2-52-90-172-255.compute-1.amazonaws.com',
 
     # Give host name without http
     'host': 'ec2-34-205-203-38.compute-1.amazonaws.com',
@@ -143,14 +141,6 @@ HDFS = {
     'user.name': 'hadoop'
 }
 
-# HDFS = {
-#     # 'host': 'ec2-54-88-153-37.compute-1.amazonaws.com',
-#     'host': '192.168.33.100',
-#     'port': '50070',
-#     'uri': 'http://192.168.33.100:50070/webhdfs/v1',
-#     'user.name': 'manjunath'
-# }
-#
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',

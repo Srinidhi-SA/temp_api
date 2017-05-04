@@ -476,6 +476,9 @@ class Errand(models.Model):
         print option_dict
         config.set('FILE_SETTINGS', 'script_to_run', self.option_dict_to_string(option_dict))
 
+        # add scripts to run to errand database also
+        self.add_scripts_to_run_to_column_data(self.option_dict_to_string(option_dict))
+
         if self.measure != None:
             config.set('COLUMN_SETTINGS', 'result_column', self.measure)
             config.set('COLUMN_SETTINGS', 'analysis_type', "Measure")
@@ -595,6 +598,12 @@ class Errand(models.Model):
               json.loads(dimension_filter),
               json.loads(measure_filter)
               ])
+
+    def add_scripts_to_run_to_column_data(self, scripts_to_run):
+        data = self.get_column_data()
+        data["scripts_to_run"] = scripts_to_run
+        self.set_column_data(data)
+        self.save()
 
 
 class ErrandSerializer(serializers.Serializer):
