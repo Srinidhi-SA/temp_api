@@ -256,9 +256,16 @@ class Errand(models.Model):
 
                 try:
                     hadoop_result = hadoop.hadoop_read_output_file(path)
+                    # result = json.loads(hadoop_result["RESULT"])
+                    # result_data = []
+                    # items = result["results"][self.measure]
+                    # for key, value in items.iteritems():
+                    #     result_data.append([key, value["effect_size"]])
+                    # dimensions_data['raw_data'] = result_data
+
                     result = json.loads(hadoop_result["RESULT"])
                     result_data = []
-                    items = result["results"][self.measure]
+                    items = result[self.measure]["OneWayAnovaResult"]
                     for key, value in items.iteritems():
                         result_data.append([key, value["effect_size"]])
                     dimensions_data['raw_data'] = result_data
