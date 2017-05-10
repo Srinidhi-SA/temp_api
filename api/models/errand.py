@@ -231,8 +231,7 @@ class Errand(models.Model):
 
     def get_dimension_results(self):
         # path = self.storage_measure_output_dir() + "/dimensions-narratives.json"
-        path = self.storage_output_dir() + "/narratives/OneWayAnova"
-
+        path = self.storage_output_dir() + "/narratives/TwoWayAnova"
 
         try:
             narratives = hadoop.hadoop_read_output_file(path)
@@ -252,17 +251,10 @@ class Errand(models.Model):
 
                 # RESULTS
                 # path = self.storage_measure_output_dir() + "/dimensions-result.json"
-                path = self.storage_output_dir() + "/results/OneWayAnova"
+                path = self.storage_output_dir() + "/results/TwoWayAnova"
 
                 try:
                     hadoop_result = hadoop.hadoop_read_output_file(path)
-                    # result = json.loads(hadoop_result["RESULT"])
-                    # result_data = []
-                    # items = result["results"][self.measure]
-                    # for key, value in items.iteritems():
-                    #     result_data.append([key, value["effect_size"]])
-                    # dimensions_data['raw_data'] = result_data
-
                     result = json.loads(hadoop_result["RESULT"])
                     result_data = []
                     items = result[self.measure]["OneWayAnovaResult"]
@@ -273,7 +265,8 @@ class Errand(models.Model):
                     # ORDERS IT SO THAT THE ITEM[1] IS WHAT IS USED
                     def order(item):
                         return -item[1]
-                    dimensions_data['raw_data'] = sorted(dimensions_data['raw_data'], key = order)
+
+                    dimensions_data['raw_data'] = sorted(dimensions_data['raw_data'], key=order)
                 except Exception as error:
                     print error
                     dimensions_data['raw_data'] = {}

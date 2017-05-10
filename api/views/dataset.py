@@ -127,12 +127,8 @@ def trick(request):
 @api_view(['POST'])
 @renderer_classes((JSONRenderer,),)
 def filter_sample(request):
-    dimension = "cities"
-    measure = "sales"
     subsetting_data = request.POST
-
     subsetting_data = subsetting_data.get('data')
-
     subsetting_data = json.loads(str(subsetting_data))
     print subsetting_data
     main_data = {}
@@ -144,14 +140,16 @@ def filter_sample(request):
     MEASURE_FILTER = {}
     consider_columns = []
     for dict_data in subsetting_data:
-        if dimension in dict_data:
+        if len(dict_data)==2:
+            dimension = 'cities'
             fields = dict_data['fields']
             DIMENSION_FILTER[dict_data[dimension]] = [field.keys()[1] for field in fields if field['status'] == True]
             consider_columns.append(dict_data[dimension])
             for field in fields:
                 if field['status'] == True:
                     print field.keys()
-        elif measure in dict_data:
+        elif len(dict_data)==2:
+            measure = 'sales'
             consider_columns.append(dict_data[measure])
             MEASURE_FILTER[dict_data[measure]] = {
                 "min": dict_data['min'],
