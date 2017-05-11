@@ -13,7 +13,7 @@ INPUT_FILE_2=$3
 INPUT_FILE_3=$4
 COMMAND_PREFIX="ssh -i api/lib/TIAA.pem hadoop@$1 spark-submit --master yarn --deploy-mode client"
 #COMMAND_PREFIX="spark-submit --master yarn --deploy-mode client"
-SCRIPTS_ROOT="/home/hadoop/codebase/marlabs-bi/bi/scripts"
+SCRIPTS_ROOT="/home/hadoop/codebase/mAdvisor-MLScripts/bi/scripts"
 
 echo "Fixing permission on pem file"
 chmod 0400 api/lib/TIAA.pem
