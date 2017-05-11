@@ -29,10 +29,7 @@ class Profile(models.Model):
             "full_name": self.user.get_full_name()
         }
 
-<<<<<<< HEAD
-=======
 
->>>>>>> origin/jobserver
 class ProfileSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
 
@@ -54,8 +51,6 @@ def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
 
 
-<<<<<<< HEAD
-=======
 from rest_framework.exceptions import AuthenticationFailed
 # A Decorator which takes a function
 def provide_token_or_email_and_password(view_function):
@@ -88,5 +83,3 @@ def provide_token_or_email_and_password(view_function):
             except Profile.DoesNotExist as e:
                 raise AuthenticationFailed(detail="Invalid user token provided. Please provide a active user token.")
     return _wrapped_view
->>>>>>> origin/jobserver
-
