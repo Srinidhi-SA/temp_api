@@ -216,5 +216,3 @@ def add_more_info_to_dataset(ds):
     dataset_quickinfo["file_size"] = ds.get_size_of_file()
 
     return dataset_quickinfo
-
-

@@ -1,4 +1,3 @@
-
 echo "Running the meta"
 
 export LC_ALL=en_US.UTF-8
@@ -41,4 +40,3 @@ $COMMAND_PREFIX  /home/hadoop/codebase/mAdvisor-MLScripts/bi/filter_cl.py \
         --dimension_filter "'""$5""'" \
         --measure_filter "'""$6""'" \
         --measure_suggestions "'""$7""'"
-

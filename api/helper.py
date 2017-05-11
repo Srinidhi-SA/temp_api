@@ -1,4 +1,3 @@
-
 import csv
 import os
 import datetime
@@ -105,11 +104,3 @@ def tell_me_size_readable_format(num):
 
     else:
         return str(num) + " " + name
-
-
-
-
-
-
-
-

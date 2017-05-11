@@ -492,4 +492,3 @@ def add_more_info_to_errand_info(e):
     errand_info["analysis_list"] = analysis_list
 
     return errand_info
-

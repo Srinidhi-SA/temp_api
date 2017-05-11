@@ -251,5 +251,3 @@ class DatasetSerializer(serializers.Serializer):
     name = serializers.ReadOnlyField(source="safe_name")
     created_at = serializers.DateTimeField()
     user_id = serializers.ReadOnlyField()
-
-

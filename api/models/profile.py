@@ -83,4 +83,3 @@ def provide_token_or_email_and_password(view_function):
             except Profile.DoesNotExist as e:
                 raise AuthenticationFailed(detail="Invalid user token provided. Please provide a active user token.")
     return _wrapped_view
-
