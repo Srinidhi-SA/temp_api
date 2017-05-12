@@ -40,7 +40,6 @@ def get_errand(request):
         return None
 
 
-
 def list_to_string(list_obj):
     string_  = ", ".join(list_obj)
     return string_
