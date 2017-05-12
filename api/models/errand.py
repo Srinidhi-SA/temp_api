@@ -10,21 +10,25 @@ from api.models.dataset import Dataset
 from django.conf import settings
 from api.views.option import get_option_for_this_user
 from api.models.jobserver import submit_masterjob
+
 # import hadoopy
 
 name_map = {
     'measure_dimension_stest': "Measure vs. Dimension",
-    'dimension_dimension_stest':'Dimension vs. Dimension',
-    'measure_measure_impact':'Measure vs. Measure',
-    'prediction_check':'Predictive modeling',
-    'desc_analysis':'Descriptive analysis',
+    'dimension_dimension_stest': 'Dimension vs. Dimension',
+    'measure_measure_impact': 'Measure vs. Measure',
+    'prediction_check': 'Predictive modeling',
+    'desc_analysis': 'Descriptive analysis',
 }
+
 
 def errand_base_directory(instance):
     return "uploads/errands/{0}".format(instance.id)
 
+
 def errand_input_file_directory_path(instance, filename):
     return errand_base_directory(instance) + "/{0}".format(filename)
+
 
 def check_blank_object(object):
     keys = object.keys()
@@ -32,6 +36,7 @@ def check_blank_object(object):
         return False
     else:
         return True
+
 
 class Errand(models.Model):
     slug = models.CharField(max_length=100)
@@ -79,7 +84,7 @@ class Errand(models.Model):
         return self.storage_output_dir() + "/" + self.dimension
 
     def setup_storage_folders(self):
-        dir = "uploads"  + self.base_storage_dir()
+        dir = "uploads" + self.base_storage_dir()
         hadoop.hadoop_mkdir(self.storage_input_dir())
         hadoop.hadoop_mkdir(self.storage_output_dir())
         print("looking for " + dir)
@@ -138,7 +143,7 @@ class Errand(models.Model):
         return json.loads(self.column_data_raw)
 
     # RUNS THE SCRIPTS
-    def run_dist(self, force = False):
+    def run_dist(self, force=False):
         if (force is False) and self.is_measure_setup():
             print ("Not running the scripts as this measure is already setup")
             return
@@ -151,7 +156,7 @@ class Errand(models.Model):
               self.measure])
         self.mark_as_done()
 
-    def run_dimension(self, force = False):
+    def run_dimension(self, force=False):
         if (force is False) and self.is_dimension_done():
             print ("Not running the scripts as this measure is already setup")
             return
@@ -168,7 +173,7 @@ class Errand(models.Model):
 
     def run_master(self):
         self.create_configuration_file()
-        #print("Running master script")
+        # print("Running master script")
         self.run_save_config()
         '''call([
             "sh", "api/lib/run_master.sh",
@@ -180,7 +185,6 @@ class Errand(models.Model):
         configpath = "/home/hadoop/configs/" + self.config_file_path_hadoop
         print "configpath:{0}".format(configpath)
         submit_masterjob(configpath)
-
 
     def run_save_config(self):
         call([
@@ -198,10 +202,10 @@ class Errand(models.Model):
         return hadoop.hadoop_hdfs().create_file(self.storage_dimension_output_dir() + "/_DONE", "")
 
     def get_result(self):
-        if self.measure is None :
+        if self.measure is None:
             raise Exception("Measure is not set")
         # result_dir = self.storage_measure_output_dir() + "/result.json"
-        result_dir  = self.storage_output_dir() + "/results/DescrStats"
+        result_dir = self.storage_output_dir() + "/results/DescrStats"
         try:
             output = hadoop.hadoop_read_output_file(result_dir)
         except Exception as error:
@@ -214,7 +218,7 @@ class Errand(models.Model):
             return {}
 
     def get_narratives(self):
-        if self.measure is None :
+        if self.measure is None:
             raise Exception("Measure is not set")
         # dir = self.storage_measure_output_dir() + "/narratives.json"
         dir = self.storage_output_dir() + "/narratives/DescrStats"
@@ -231,7 +235,8 @@ class Errand(models.Model):
 
     def get_dimension_results(self):
         # path = self.storage_measure_output_dir() + "/dimensions-narratives.json"
-        path = self.storage_output_dir() + "/narratives/OneWayAnova"
+
+        path = self.storage_output_dir() + "/narratives/TwoWayAnova"
 
 
         try:
@@ -252,13 +257,13 @@ class Errand(models.Model):
 
                 # RESULTS
                 # path = self.storage_measure_output_dir() + "/dimensions-result.json"
-                path = self.storage_output_dir() + "/results/OneWayAnova"
+                path = self.storage_output_dir() + "/results/TwoWayAnova"
 
                 try:
                     hadoop_result = hadoop.hadoop_read_output_file(path)
                     result = json.loads(hadoop_result["RESULT"])
                     result_data = []
-                    items = result["results"][self.measure]
+                    items = result[self.measure]["OneWayAnovaResult"]
                     for key, value in items.iteritems():
                         result_data.append([key, value["effect_size"]])
                     dimensions_data['raw_data'] = result_data
@@ -266,7 +271,8 @@ class Errand(models.Model):
                     # ORDERS IT SO THAT THE ITEM[1] IS WHAT IS USED
                     def order(item):
                         return -item[1]
-                    dimensions_data['raw_data'] = sorted(dimensions_data['raw_data'], key = order)
+
+                    dimensions_data['raw_data'] = sorted(dimensions_data['raw_data'], key=order)
                 except Exception as error:
                     print error
                     dimensions_data['raw_data'] = {}
@@ -283,6 +289,12 @@ class Errand(models.Model):
         path = self.storage_output_dir() + "/narratives/Regression"
         try:
             narratives = hadoop.hadoop_read_output_file(path)
+            from collections import OrderedDict
+            dimension_narratives = narratives["narratives"]
+            dimension_narratives_sorted = OrderedDict(sorted(dimension_narratives.items(),
+                                                             key=lambda x: x[1]["coeff"],
+                                                             reverse=True))
+            narratives["narratives"] = dimension_narratives_sorted
         except Exception as error:
             print error
             return {}
@@ -321,9 +333,7 @@ class Errand(models.Model):
         except Exception as error:
             print error
             return data
-
         return data
-
 
     def get_frequency_results(self):
         # result_path = self.storage_dimension_output_dir() + "/frequency-result.json";
@@ -345,14 +355,14 @@ class Errand(models.Model):
                 try:
                     narratives_path_result = hadoop.hadoop_read_output_file(narratives_path)
                 except Exception as error:
-                    narratives_path_result={}
-                    
+                    narratives_path_result = {}
+
                 return {
                     'raw_data': result,
                     'narratives': narratives_path_result
                 }
             else:
-                return{}
+                return {}
         else:
             return {}
 
@@ -439,7 +449,8 @@ class Errand(models.Model):
                 # ORDERS IT SO THAT THE ITEM[1] IS WHAT IS USED
                 def order(item):
                     return -item['effect_size']
-                narratives = sorted(narratives, key = order)
+
+                narratives = sorted(narratives, key=order)
 
                 result = {}
                 try:
@@ -463,13 +474,17 @@ class Errand(models.Model):
 
         config.set('FILE_SETTINGS', 'InputFile', hadoop.hadoop_get_full_url(self.dataset.get_input_file_storage_path()))
         config.set('FILE_SETTINGS', 'result_file', hadoop.hadoop_get_full_url(self.storage_output_dir() + "/results/"))
-        config.set('FILE_SETTINGS', 'narratives_file', hadoop.hadoop_get_full_url(self.storage_output_dir() + "/narratives/"))
+        config.set('FILE_SETTINGS', 'narratives_file',
+                   hadoop.hadoop_get_full_url(self.storage_output_dir() + "/narratives/"))
         config.set('FILE_SETTINGS', 'monitor_api', 'http://52.77.216.14/api/errand/1/log_status')
 
         # settings from master table, option.get_option_for_this_user
         option_dict = get_option_for_this_user(self.userId)
         print option_dict
         config.set('FILE_SETTINGS', 'script_to_run', self.option_dict_to_string(option_dict))
+
+        # add scripts to run to errand database also
+        self.add_scripts_to_run_to_column_data(self.option_dict_to_string(option_dict))
 
         if self.measure != None:
             config.set('COLUMN_SETTINGS', 'result_column', self.measure)
@@ -487,11 +502,11 @@ class Errand(models.Model):
         if column_data.has_key('date'):
             config.set('COLUMN_SETTINGS', 'date_columns', column_data['date'])
 
-        if(column_data.has_key('date_format')):
+        if (column_data.has_key('date_format')):
             config.set('COLUMN_SETTINGS', 'date_format', column_data['date_format'])
 
         # ignore_column_suggestions
-        if(column_data.has_key('ignore_column_suggestions')):
+        if (column_data.has_key('ignore_column_suggestions')):
             config.set('COLUMN_SETTINGS', 'ignore_column_suggestions', column_data['ignore_column_suggestions'])
 
         # utf8_column_suggestions
@@ -499,15 +514,15 @@ class Errand(models.Model):
             config.set('COLUMN_SETTINGS', 'utf8_columns', column_data['utf8_columns'])
 
         # MEASURE_FILTER
-        if(column_data.has_key('MEASURE_FILTER')):
+        if (column_data.has_key('MEASURE_FILTER')):
             config.set('COLUMN_SETTINGS', 'measure_column_filter', column_data['MEASURE_FILTER'])
 
         # DIMENSION_FILTER
-        if(column_data.has_key('DIMENSION_FILTER')):
+        if (column_data.has_key('DIMENSION_FILTER')):
             config.set('COLUMN_SETTINGS', 'dimension_column_filter', column_data['DIMENSION_FILTER'])
 
         # measure_suggetions_json_data
-        if(column_data.has_key('measure_suggetions_json_data')):
+        if (column_data.has_key('measure_suggetions_json_data')):
             config.set('COLUMN_SETTINGS', 'measure_suggestions', column_data['measure_suggetions_json_data'])
 
         # path = self.get_meta_json_path()
@@ -567,9 +582,34 @@ class Errand(models.Model):
 
     def add_subsetting_to_column_data(self, main_data):
 
-        data = self.column_data_raw
+        data = self.get_column_data()
+        print "*" * 30
+        print type(data), type(main_data['MEASURE_FILTER']), type(main_data['DIMENSION_FILTER'])
+
         data['MEASURE_FILTER'] = main_data['MEASURE_FILTER']
         data['DIMENSION_FILTER'] = main_data['DIMENSION_FILTER']
+        data['CONSIDER_COLUMNS'] = main_data['CONSIDER_COLUMNS']
+        self.set_column_data(data)
+        self.save()
+
+    def call_filter_script(self):
+        data = self.get_column_data()
+        consider_columns = data["CONSIDER_COLUMNS"]
+        dimension_filter = data["DIMENSION_FILTER"]
+        measure_filter = data["MEASURE_FILTER"]
+        call(["sh", "api/lib/run_filter.sh",
+              settings.HDFS['host'],
+              self.get_input_file_storage_path(),
+              self.get_meta_json_path(),
+              json.loads(consider_columns),
+              json.loads(dimension_filter),
+              json.loads(measure_filter)
+              ])
+
+    def add_scripts_to_run_to_column_data(self, scripts_to_run):
+        data = self.get_column_data()
+        data["scripts_to_run"] = scripts_to_run
+        self.set_column_data(data)
         self.save()
 
 

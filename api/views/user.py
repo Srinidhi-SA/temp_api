@@ -13,6 +13,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from django.contrib.auth.models import User
 from api.lib import urlhelpers
 from api.views.option import default_settings_in_option, set_option
+from django.contrib.auth.models import User
 
 
 @api_view(['POST'])
@@ -41,20 +42,35 @@ def login(request):
                          "username": user.username
                          })
 
+def login_through_jwt(token, user=None, request=None):
+
+    if not restrict_days(user):
+        return {
+            "status":400,
+            "message":"Sorry, Your usage limit is reached. Please renew"
+        }
+
+    return {
+        "token": token,
+        "profile": user.profile.rs(),
+        "userId": user.profile.id,
+        "username": user.username,
+        "status": 200,
+        "message": "Login Successful"
+    }
+
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer,))
 def profile(request):
-
-    user = urlhelpers.get_current_user(request)
+    user = request.user
+    # user = urlhelpers.get_current_user(request)
     return Response({"profile": user.profile.rs()})
 
 
 @api_view(['POST'])
 @renderer_classes((JSONRenderer,))
 def logout(request):
-    user = urlhelpers.get_current_user(request)
-    user.profile.logout()
     return Response({"message": "User has been successufully logged out"})
 
 
@@ -68,4 +84,3 @@ def restrict_days(user):
     if days > 30:
         return False
     return True
-

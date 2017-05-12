@@ -47,9 +47,16 @@ def all(request):
 
     ds = Dataset.objects.filter(userId=userId)
 
+    all_dataset_info = []
+
+    for dataset in ds:
+        dataset_info = add_more_info_to_dataset(dataset)
+        all_dataset_info.append(dataset_info)
+
     if userId is not None:
-        return Response({'data': DatasetSerializer(ds, many=True).data})
+        return Response({'data': all_dataset_info})
     return Response({'data': []})
+
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
@@ -71,6 +78,7 @@ def edit(request):
     e.name = request.POST['name']
     e.save()
     return Response({"message": "Updated"})
+
 
 @api_view(['POST'])
 @renderer_classes((JSONRenderer,))
@@ -107,6 +115,62 @@ def quickinfo(request):
                      "subsetting":subsetting
                      })
 
+from api.models.profile import provide_token_or_email_and_password
+
+@api_view(['GET'])
+@renderer_classes((JSONRenderer,),)
+@provide_token_or_email_and_password
+def trick(request):
+    return Response({'home':'home'})
+
+
+@api_view(['POST'])
+@renderer_classes((JSONRenderer,),)
+def filter_sample(request):
+    subsetting_data = request.POST
+    subsetting_data = subsetting_data.get('data')
+    subsetting_data = json.loads(str(subsetting_data))
+    print subsetting_data
+    main_data = {}
+
+    dataset_id = request.query_params.get("dataset_id")
+    ds = get_dataset_from_data_from_id(dataset_id)
+
+    DIMENSION_FILTER = {}
+    MEASURE_FILTER = {}
+    consider_columns = []
+    for dict_data in subsetting_data:
+        if len(dict_data)==2:
+            dimension = 'cities'
+            fields = dict_data['fields']
+            DIMENSION_FILTER[dict_data[dimension]] = [field.keys()[1] for field in fields if field['status'] == True]
+            consider_columns.append(dict_data[dimension])
+            for field in fields:
+                if field['status'] == True:
+                    print field.keys()
+        elif len(dict_data)==2:
+            measure = 'sales'
+            consider_columns.append(dict_data[measure])
+            MEASURE_FILTER[dict_data[measure]] = {
+                "min": dict_data['min'],
+                "max": dict_data['max']
+            }
+
+    MEASURE_SUGGESTIONS = ds.get_measure_suggestion_from_meta_data()
+
+    main_data['DIMENSION_FILTER'] = DIMENSION_FILTER
+    main_data['MEASURE_FILTER'] = MEASURE_FILTER
+    main_data['CONSIDER_COLUMNS'] = {"consider_columns": consider_columns}
+    main_data['MEASURE_SUGGESTIONS'] = {"measure_suggestions": MEASURE_SUGGESTIONS}
+
+
+    ds.sample_filter_subsetting(main_data['CONSIDER_COLUMNS'],
+                               main_data['DIMENSION_FILTER'],
+                               main_data['MEASURE_FILTER'],
+                               main_data['MEASURE_SUGGESTIONS'],
+                                )
+
+    return Response({"message":"result"})
 
 '''
 ----> METHODS = quickinfo
@@ -124,3 +188,31 @@ Subsets:
   Products (count>1000)
   Sales Agent (Top 10)
 '''
+
+
+def add_more_info_to_dataset(ds):
+    user_id = ds.userId
+    dataset_quickinfo = DatasetSerializer(ds).data
+    dataset_metadata = ds.get_meta_data_numnbers()
+    from django.contrib.auth.models import User
+    from api.views.option import get_option_for_this_user
+
+    profile = {}
+    subsetting = {}
+
+    if user_id:
+        user = User.objects.get(pk=user_id)
+        profile = user.profile.rs()
+        profile = {
+            "username": profile['username'],
+            "full_name": profile['full_name'],
+            "email": profile['email']
+        }
+        subsetting = get_option_for_this_user(user_id)
+
+    dataset_quickinfo["dataset_metadata"] = dataset_metadata
+    dataset_quickinfo["subsetting"] = subsetting
+    dataset_quickinfo["profile"] = profile
+    dataset_quickinfo["file_size"] = ds.get_size_of_file()
+
+    return dataset_quickinfo
