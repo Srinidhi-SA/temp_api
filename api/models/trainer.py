@@ -186,7 +186,8 @@ class Trainer(models.Model):
 
         # ignore_column_suggestions
         if (column_data.has_key('ignore_column_suggestions')):
-            config.set('COLUMN_SETTINGS', 'ignore_column_suggestions', column_data['ignore_column_suggestions'])
+            # config.set('COLUMN_SETTINGS', 'ignore_column_suggestions', column_data['ignore_column_suggestions'])
+            config.set('COLUMN_SETTINGS', 'ignore_column_suggestions', "")
 
         # utf8_column_suggestions
         if (column_data.has_key('utf8_columns')):
