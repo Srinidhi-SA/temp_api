@@ -277,7 +277,8 @@ class Trainer(models.Model):
                         {0} and has come up with the following results:
                         """.format(c_d),
             "model_dropdown": model_dropdown,
-            "dougnut": dougnut
+            "dougnut": dougnut,
+            "key_takeaways": "Based on the results from all the three algorithms, {0} has the highest accuracy.".format(best['Best Accuracy'])
         }
 
     def resolve_results(self):

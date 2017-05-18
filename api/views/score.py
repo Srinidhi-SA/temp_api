@@ -55,8 +55,8 @@ def get_details_from_request(request):
     details['name'] = data.get("name")
     details['dataset_id'] = data.get("dataset_id")
     details['trainer_id'] = data.get("trainer_id")
-    # details['model_name'] = data.get('model_name').split("-")[0]
-    details['model_name'] = "Random Forest"
+    details['model_name'] = data.get('model_name').split("-")[0]
+    # details['model_name'] = "Random Forest"
 
     print "details----->"
     print details
