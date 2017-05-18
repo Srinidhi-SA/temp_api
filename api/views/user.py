@@ -81,6 +81,6 @@ def restrict_days(user):
     print time_difference.days
 
     days = time_difference.days
-    if days > 30:
+    if days > 180:
         return False
     return True

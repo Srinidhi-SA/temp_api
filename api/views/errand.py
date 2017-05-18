@@ -209,12 +209,14 @@ def get_frequency_results(request):
     return Response(e.get_frequency_results())
     # return Response({})
 
+
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
 def get_tree_results(request):
     e = get_errand(request)
     return Response(e.get_tree_results())
     # return Response({})
+
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
@@ -231,12 +233,14 @@ def get_tree_narratives(request):
     return Response(e.get_tree_narratives())
     # return Response({})
 
+
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
 def get_chi_results(request):
     e = get_errand(request)
     return Response(e.get_chi_results())
     # return Response({})
+
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
@@ -256,6 +260,7 @@ def get_dimension_all_results(request):
         "get_tree_narratives":e.get_tree_narratives(),
         "get_chi_results":e.get_chi_results()
     })
+
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))

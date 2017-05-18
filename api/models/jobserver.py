@@ -27,7 +27,8 @@ def submit_masterjob(configpath):
         if data.get("status") == "FINISHED":
             final_status = data.get("status")
             break
-    return  final_status
+    return final_status
+
 
 def submit_metadatajob(inputpath,resultpath):
     host = settings.HDFS['host']

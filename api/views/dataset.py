@@ -148,13 +148,15 @@ def filter_sample(request):
             for field in fields:
                 if field['status'] == True:
                     print field.keys()
-        elif len(dict_data)==2:
+        elif len(dict_data)==3:
             measure = 'sales'
             consider_columns.append(dict_data[measure])
-            MEASURE_FILTER[dict_data[measure]] = {
-                "min": dict_data['min'],
-                "max": dict_data['max']
-            }
+            # MEASURE_FILTER[dict_data[measure]] = {
+            #     "min": dict_data['min'],
+            #     "max": dict_data['max']
+            # }
+
+            MEASURE_FILTER[dict_data[measure]] = [dict_data['min'], dict_data['max']]
 
     MEASURE_SUGGESTIONS = ds.get_measure_suggestion_from_meta_data()
 
@@ -193,7 +195,7 @@ Subsets:
 def add_more_info_to_dataset(ds):
     user_id = ds.userId
     dataset_quickinfo = DatasetSerializer(ds).data
-    dataset_metadata = ds.get_meta_data_numnbers()
+    # dataset_metadata = ds.get_meta_data_numnbers()
     from django.contrib.auth.models import User
     from api.views.option import get_option_for_this_user
 
@@ -210,7 +212,8 @@ def add_more_info_to_dataset(ds):
         }
         subsetting = get_option_for_this_user(user_id)
 
-    dataset_quickinfo["dataset_metadata"] = dataset_metadata
+    # dataset_quickinfo["dataset_metadata"] = dataset_metadata
+    dataset_quickinfo["dataset_metadata"] = []
     dataset_quickinfo["subsetting"] = subsetting
     dataset_quickinfo["profile"] = profile
     dataset_quickinfo["file_size"] = ds.get_size_of_file()

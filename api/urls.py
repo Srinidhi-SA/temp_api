@@ -7,7 +7,7 @@ from rest_framework_jwt.views import obtain_jwt_token
 from rest_framework_jwt.views import refresh_jwt_token
 from rest_framework_jwt.views import verify_jwt_token
 
-from api.views import errand, dataset, robo, option, user
+from api.views import errand, dataset, robo, option, user, trainer, score
 
 @login_required
 @api_view(['GET'])
@@ -79,4 +79,23 @@ urlpatterns = [
     url(r'option/set', option.set),
     url(r'option/test', option.test),
 
+    # TRAINER
+    url(r'trainer/make', trainer.create_trainer),
+    url(r'trainer/all', trainer.get_all_trainer),
+    url(r'trainer/model', trainer.retrieve_trainer),
+    url(r'trainer/set_column_data', trainer.set_column_data),
+    url(r'trainer/create', trainer.setup_and_call_script),
+    url(r'trainer/download', trainer.download_file),
+    url(r'trainer/remote', trainer.remote_folder),
+    url(r'trainer/edit', trainer.edit_trainer),
+    url(r'trainer/delete', trainer.delete_tariner),
+
+    # SCORE
+    url(r'score/make', score.create_score),
+    url(r'score/all', score.retrieve_all_score),
+    url(r'score/score', score.retrieve_score),
+    url(r'score/download', score.download_file),
+    url(r'score/unknown_api', score.unknown_api),
+    url(r'score/edit', score.edit_score),
+    url(r'score/delete', score.delete_score),
 ]

@@ -104,3 +104,19 @@ def tell_me_size_readable_format(num):
 
     else:
         return str(num) + " " + name
+
+
+def generate_nested_list_from_nested_dict(nested_dict):
+    data = nested_dict
+    keys = data.keys()
+    inner_keys = data[keys[0]].keys()
+    out = []
+    head_row = ["RANGE"]+inner_keys
+    out.append(head_row)
+    for val in keys:
+        row = [val]
+        for val2 in inner_keys:
+            temp = data[val]
+            row.append(temp.get(val2, 0))
+        out.append(row)
+    return out
