@@ -479,8 +479,12 @@ class Trainer(models.Model):
 
         petal_info = random_forst_data['feature_importance']
         feature = [["Name","Importance"]]
+        feature_data = []
         for key in petal_info.keys():
-            feature.append([key,round(petal_info[key],2)])
+            feature_data.append([key,round(petal_info[key],2)])
+
+        feature_data = sorted(feature_data,key = lambda x:x[1], reverse = True)
+        feature = feature + feature_data[:5]
         hard_coded = [
                                                       ['Probability', 'Active'],
                                                       ['>90%',  23],

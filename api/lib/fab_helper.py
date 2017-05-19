@@ -35,6 +35,16 @@ score_folders = [
     "Summary"
 ]
 
+score_story_folders = [
+    "Frequecy",
+    "Chisquare"
+]
+
+score_story_sub_folders = [
+    "narratives",
+    "results"
+]
+
 
 def remote_uname():
     run('uname -a')
@@ -89,3 +99,11 @@ def read_remote(dir_paths):
 
     return str(a)
 
+
+def remote_mkdir_for_score_story(id):
+    path = "/home/hadoop/scores/{0}".format(str(id))
+
+    for s_s_f in score_story_folders:
+        for s_s_s_f in score_story_sub_folders:
+            path_dir = "{0}/{1}/{2}".format(path,s_s_f,s_s_s_f)
+            run("mkdir -p {0}".format(path_dir))

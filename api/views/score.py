@@ -80,7 +80,7 @@ def create_score(request):
 
     # create response
     return Response({'details': ScoreSerializer(scr).data,
-                     'results':results})
+                     'results': results})
 
 
 @api_view(['GET'])
@@ -168,4 +168,9 @@ def download_file(request):
 from django.http import HttpResponse
 
 def unknown_api(request):
+    id = 59
+    score = get_score_using_id(id)
+
+    result = score.get_score_story_data()
+    print result
     return HttpResponse("Hello, world. You're at the polls index.")
