@@ -19,6 +19,7 @@ model_names = [
 map_model_name_with_folder = {
     "Random Forest": "RandomForest",
     "XGBoost":"XGBoost",
+    "Xgboost":"XGBoost",
     "Logistic Regression":"LogisticRegression",
     "Logistic": "LogisticRegression"
 

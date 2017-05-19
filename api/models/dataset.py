@@ -99,6 +99,7 @@ class Dataset(models.Model):
     def send_input_file_to_storage(self):
         hadoop.hadoop_put(self.input_file.path, self.storage_input_dir() + "/")
 
+
     def get_input_file_storage_path(self):
         return "{0}/{1}".format(self.storage_input_dir(), self.input_filename)
 
@@ -109,6 +110,9 @@ class Dataset(models.Model):
         print("Running jobserver meta script")
         inputpath =  self.get_input_file_storage_path()
         resultpath = self.output_file_meta_path
+        print "---metapath---"*10
+        print inputpath
+        print resultpath
         submit_metadatajob(inputpath, resultpath)
 
 
@@ -176,7 +180,8 @@ class Dataset(models.Model):
                                  MEASURE_SUGGESTIONS):
 
         input_file = self.get_input_file_storage_path()
-        output_file = self.output_file_meta_path_for_script
+        # output_file = self.output_file_meta_path_for_script
+        output_file = self.output_file_meta_path
 
         column_settings = json.dumps(COLUMN_SETTINGS)
         dimension_filter = json.dumps(DIMENSION_FILTER)
