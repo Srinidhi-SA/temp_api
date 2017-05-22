@@ -40,6 +40,7 @@ class Trainer(models.Model):
     details = models.TextField(default="{}")
     column_data_raw = models.TextField(default="{}")
     created_at = models.DateTimeField(auto_now_add=True, null=True)
+    analysis_done = models.CharField(max_length=100, default="FALSE")
 
     model_names = [
         "RandomForest",

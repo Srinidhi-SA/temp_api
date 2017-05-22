@@ -31,6 +31,8 @@ class Score(models.Model):
     userId = models.CharField(max_length=100, null=True)
     details = models.TextField(default="{}")
     created_at = models.DateTimeField(auto_now_add=True, null=True)
+    model_data = models.TextField(default="{}")
+    analysis_done = models.CharField(max_length=100, default="FALSE")
 
     score_folders = [
         "Results",
@@ -68,6 +70,10 @@ class Score(models.Model):
         print "create folder structure at EMR"
         obj.setup_emr_storage_folder()
 
+        # read model summary data
+        print "set model_data to model summary. It will be used while create config for score and score response"
+        obj.set_model_summary_data()
+
 
         print "config_creation"
         # obj.create_configuration_file()
@@ -78,6 +84,9 @@ class Score(models.Model):
 
         # call script
         obj.run_master()
+
+        obj.analysis_done = 'TRUE'
+        obj.save()
 
         return obj
 
@@ -128,6 +137,11 @@ class Score(models.Model):
         create_score_extended_folder(self.id)
         remote_mkdir_for_score_story(self.id)
 
+    def set_model_summary_data(self):
+        details = self.get_details()
+        model_name = details['model_name']
+        self.model_data = json.dumps(self.read_models_summary(model_name=model_name))
+
     def run_save_config(self):
         call([
             "sh", "api/lib/run_save_config.sh",
@@ -168,39 +182,35 @@ class Score(models.Model):
         config.set('COLUMN_SETTINGS', 'analysis_type', "Scoring")
         config.set('COLUMN_SETTINGS', 'result_column', self.model_column_data["result_column"])
         config.set('COLUMN_SETTINGS', 'polarity', "positive")
-        config.set('COLUMN_SETTINGS', 'consider_columns', "")
-        config.set('COLUMN_SETTINGS', 'consider_columns_type', "ab")
+        config.set('COLUMN_SETTINGS', 'consider_columns', self.model_column_data["compare_with"])
+        config.set('COLUMN_SETTINGS', 'consider_columns_type', self.model_column_data["compare_type"])
 
-        # settings from master table, option.get_option_for_this_user
+        if self.model_column_data.has_key('date'):
+            config.set('COLUMN_SETTINGS', 'date_columns', self.model_column_data['date'])
 
-        # config.set('FILE_SETTINGS', 'script_to_run', "")
-        #
-        # if column_data.has_key('date'):
-        #     config.set('COLUMN_SETTINGS', 'date_columns', column_data['date'])
-        #
-        # if (column_data.has_key('date_format')):
-        #     config.set('COLUMN_SETTINGS', 'date_format', column_data['date_format'])
-        #
-        # # ignore_column_suggestions
-        # if (column_data.has_key('ignore_column_suggestions')):
-        #     config.set('COLUMN_SETTINGS', 'ignore_column_suggestions', column_data['ignore_column_suggestions'])
-        #
-        # # utf8_column_suggestions
-        # if (column_data.has_key('utf8_columns')):
-        #     config.set('COLUMN_SETTINGS', 'utf8_columns', column_data['utf8_columns'])
-        #
-        # # MEASURE_FILTER
-        # if (column_data.has_key('MEASURE_FILTER')):
-        #     config.set('COLUMN_SETTINGS', 'measure_column_filter', column_data['MEASURE_FILTER'])
-        #
-        # # DIMENSION_FILTER
-        # if (column_data.has_key('DIMENSION_FILTER')):
-        #     config.set('COLUMN_SETTINGS', 'dimension_column_filter', column_data['DIMENSION_FILTER'])
-        #
-        # # measure_suggetions_json_data
-        # if (column_data.has_key('measure_suggetions_json_data')):
-        #     config.set('COLUMN_SETTINGS', 'measure_suggestions', column_data['measure_suggetions_json_data'])
+        if (self.model_column_data.has_key('date_format')):
+            config.set('COLUMN_SETTINGS', 'date_format', self.model_column_data['date_format'])
 
+        # ignore_column_suggestions
+        if (self.model_column_data.has_key('ignore_column_suggestions')):
+            # config.set('COLUMN_SETTINGS', 'ignore_column_suggestions', self.model_column_data['ignore_column_suggestions'])
+            config.set('COLUMN_SETTINGS', 'ignore_column_suggestions', "")
+
+        # utf8_column_suggestions
+        if (self.model_column_data.has_key('utf8_columns')):
+            config.set('COLUMN_SETTINGS', 'utf8_columns', self.model_column_data['utf8_columns'])
+
+        # MEASURE_FILTER
+        if (self.model_column_data.has_key('MEASURE_FILTER')):
+            config.set('COLUMN_SETTINGS', 'measure_column_filter', self.model_column_data['MEASURE_FILTER'])
+
+        # DIMENSION_FILTER
+        if (self.model_column_data.has_key('DIMENSION_FILTER')):
+            config.set('COLUMN_SETTINGS', 'dimension_column_filter', self.model_column_data['DIMENSION_FILTER'])
+
+        # measure_suggetions_json_data
+        if (self.model_column_data.has_key('measure_suggetions_json_data')):
+            config.set('COLUMN_SETTINGS', 'measure_suggestions', self.model_column_data['measure_suggetions_json_data'])
 
         with open(self.get_local_config_file(), 'wb') as file:
             config.write(file)
@@ -228,7 +238,7 @@ class Score(models.Model):
 
     def dummy_score_data(self):
         a = self.read_data_from_emr()
-        model_data = self.read_models_summary()
+        model_data = self.model_data
         feature_importance = model_data["modelSummary"]["feature_importance"]
 
         feature_as_array = [["Feature","Value"]]
@@ -346,19 +356,15 @@ class Score(models.Model):
                 }
         return {}
 
-
-    def read_models_summary(self):
+    def read_models_summary(self, model_name):
         out = {}
         model_base_path = self.trainer.get_emr_model_storage_folder()
         # out["result_column"] = self.model_column_data["result_column"]
-        details = self.get_details()
-        model_name = details['model_name']
+
         folder_name = map_model_name_with_folder[model_name]
         final_model_summary_path = model_base_path + "/{0}/ModelSummary/summary.json".format(folder_name)
         data = read_remote(final_model_summary_path)
         return json.loads(data)
-
-
 
 
 class ScoreSerializer(serializers.Serializer):

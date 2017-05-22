@@ -41,7 +41,8 @@ def get_trainer_using_id(id):
 def get_all_trainers_of_this_user(user_id):
 
     tr = Trainer.objects.filter(
-        userId=user_id
+        userId=user_id,
+        analysis_done='TRUE'
         )
     results = []
     user = User.objects.get(pk=user_id)
@@ -136,6 +137,7 @@ def setup_and_call_script(request):
     # setup and create
     trainer.setup_and_call(req_details)
     trainer.name = req_details.get("name")
+    trainer.analysis_done = 'TRUE'
     trainer.save()
 
     details = TrainerSerializer(trainer).data

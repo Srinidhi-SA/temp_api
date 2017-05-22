@@ -32,7 +32,8 @@ def get_score_using_id(id):
 def get_all_score_of_this_user(user_id):
 
     scr = Score.objects.filter(
-        userId=user_id
+        userId=user_id,
+        analysis_done='TRUE'
         )
     results = []
     user = User.objects.get(pk=user_id)
