@@ -236,7 +236,7 @@ class Errand(models.Model):
     def get_dimension_results(self):
         # path = self.storage_measure_output_dir() + "/dimensions-narratives.json"
 
-        path = self.storage_output_dir() + "/narratives/TwoWayAnova"
+        path = self.storage_output_dir() + "/narratives/OneWayAnova"
 
 
         try:
@@ -257,7 +257,7 @@ class Errand(models.Model):
 
                 # RESULTS
                 # path = self.storage_measure_output_dir() + "/dimensions-result.json"
-                path = self.storage_output_dir() + "/results/TwoWayAnova"
+                path = self.storage_output_dir() + "/results/OneWayAnova"
 
                 try:
                     hadoop_result = hadoop.hadoop_read_output_file(path)
