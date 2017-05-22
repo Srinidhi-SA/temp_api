@@ -40,13 +40,13 @@ class Score(models.Model):
     ]
 
     score_story_folders = [
-        "Frequecy",
-        "Chisquare"
+        "narratives",
+        "results"
     ]
 
     score_story_sub_folders = [
-        "Narratives",
-        "Results"
+        "FreqDimension",
+        "ChiSquare"
     ]
 
     @classmethod
@@ -163,7 +163,7 @@ class Score(models.Model):
         details = self.get_details()
         print details
         model_name = details['model_name']
-
+        model_summary = json.loads(self.model_data)["modelSummary"]
         self.model_column_data = self.trainer.get_column_data()
 
         config = ConfigParser.RawConfigParser()
@@ -176,6 +176,8 @@ class Score(models.Model):
                    )
         config.set('FILE_SETTINGS', 'ScorePath', self.base_emr_storage_folder())
         config.set('FILE_SETTINGS', 'FolderName', ", ".join(self.score_folders + self.score_story_folders))
+        if "trained_model_features" in model_summary.keys():
+            config.set('FILE_SETTINGS', 'ModelFeatures', model_summary["trained_model_features"])
 
         config.add_section("COLUMN_SETTINGS")
 
@@ -238,7 +240,7 @@ class Score(models.Model):
 
     def dummy_score_data(self):
         a = self.read_data_from_emr()
-        model_data = self.model_data
+        model_data = json.loads(self.model_data)
         feature_importance = model_data["modelSummary"]["feature_importance"]
 
         feature_as_array = [["Feature","Value"]]
@@ -280,7 +282,7 @@ class Score(models.Model):
 
     def get_frequency_results(self):
         # result_path = self.storage_dimension_output_dir() + "/frequency-result.json";
-        result_path = self.base_emr_storage_folder() + "/Frequency/results/result.json"
+        result_path = self.base_emr_storage_folder() + "/results/FreqDimension/data.json"
         dimesion_name = "STATUS"
         # dimesion_name = "predicted_class"
         # you might want to replace it with get_details.get('')
@@ -296,7 +298,7 @@ class Score(models.Model):
                 table = json.loads(results_data['frequency_table'])[dimesion_name]
                 result = zip(table[dimesion_name].values(), table['count'].values())
                 # narratives_path = self.storage_dimension_output_dir() + "/frequency-narratives.json";
-                narratives_path = self.base_emr_storage_folder() + "/Frequency/narratives/narrative.json"
+                narratives_path = self.base_emr_storage_folder() + "narratives/FreqDimension/data.json"
 
                 try:
                     narratives_path_result = json.loads(read_remote(narratives_path))
@@ -315,8 +317,8 @@ class Score(models.Model):
     def get_chi_results(self):
         # result_path = self.storage_dimension_output_dir() + "/chi-result.json";
         # narratives_path = self.storage_dimension_output_dir() + "/chi-narratives.json";
-        result_path = self.base_emr_storage_folder() + "/Chisquare/results/result.json"
-        narratives_path = self.base_emr_storage_folder() + "/Chisquare/narratives/narrative.json"
+        result_path = self.base_emr_storage_folder() + "/results/ChiSquare/data.json"
+        narratives_path = self.base_emr_storage_folder() + "/narratives/ChiSquare/data.json"
 
         try:
             narratives_data = json.loads(read_remote(narratives_path))

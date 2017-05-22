@@ -36,13 +36,13 @@ score_folders = [
 ]
 
 score_story_folders = [
-    "Frequecy",
-    "Chisquare"
+    "narratives",
+    "results"
 ]
 
 score_story_sub_folders = [
-    "narratives",
-    "results"
+    "FreqDimension",
+    "ChiSquare"
 ]
 
 

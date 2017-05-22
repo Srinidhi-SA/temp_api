@@ -121,11 +121,9 @@ def edit_score(request):
     score.change_name(request.data['name'])
 
     details = ScoreSerializer(score).data
-    results = score.read_score_details()
 
     return Response({
-        "details": details,
-        "results": results
+        "details": details
     })
 
 
