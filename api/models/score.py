@@ -224,8 +224,8 @@ class Score(models.Model):
             "header": "Scoring Summary",
             "heading": "mAdvisor has run the model on the given data set to predict <Variable Name>. Here is the overview of the prediction",
             "data": self.dummy_score_data(),
-            "story_data": dummy_data_for_story()
-            # "story_data": self.get_score_story_data()
+            # "story_data": dummy_data_for_story()
+            "story_data": self.get_score_story_data()
         }
 
     def run_master(self):
