@@ -175,7 +175,7 @@ def set_column_data(request):
     for x in ["ignore", "date", "date_format"]:
         if request.POST.has_key(x):
             data[x] = "" if request.POST[x] == "null" else request.POST[x]
-    print(data)
+    # print(data)
     data['ignore_column_suggestions'] = ignore_column_suggestions
     data['measure_suggetions_json_data'] = measure_suggetions_json_data
     data["utf8_columns"] = utf8_columns
@@ -323,7 +323,7 @@ def log_status(request, errand_id=None):
 @renderer_classes((JSONRenderer, ),)
 def quickinfo(request):
     e = get_errand(request)
-    print ErrandSerializer(e).data, e.userId
+    # print ErrandSerializer(e).data, e.userId
     user_id = e.userId
     from api.views.dataset import get_dataset_from_data_from_id
     from api.models.dataset import DatasetSerializer
@@ -402,7 +402,7 @@ def filter_sample(request):
     subsetting_data = subsetting_data.get('data')
 
     subsetting_data = json.loads(str(subsetting_data))
-    print subsetting_data
+    # print subsetting_data
     main_data = {}
 
     # errand_id = request.query_params.get('errand_id')
@@ -420,6 +420,7 @@ def filter_sample(request):
             for field in fields:
                 if field['status'] == True:
                     print field.keys()
+                    pass
         elif measure in dict_data:
             consider_columns.append(dict_data[measure])
             MEASURE_FILTER[dict_data[measure]] = {

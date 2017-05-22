@@ -135,7 +135,6 @@ class Errand(models.Model):
         return hadoop.hadoop_exists(path)
 
     def set_column_data(self, data):
-        print "Saving: " + json.dumps(data)
         self.column_data_raw = json.dumps(data)
         self.save()
 
@@ -439,7 +438,6 @@ class Errand(models.Model):
         print "self.dimension : ", self.dimension
         if not check_blank_object(narratives_data):
             if "narratives" in narratives_data.keys() and self.dimension is not None:
-                print narratives_data["narratives"]
                 list = narratives_data["narratives"][self.dimension]
                 for key, value in list.iteritems():
                     if type(value) == dict:
@@ -480,7 +478,6 @@ class Errand(models.Model):
 
         # settings from master table, option.get_option_for_this_user
         option_dict = get_option_for_this_user(self.userId)
-        print option_dict
         config.set('FILE_SETTINGS', 'script_to_run', self.option_dict_to_string(option_dict))
 
         # add scripts to run to errand database also
@@ -555,7 +552,6 @@ class Errand(models.Model):
         config.read(self.config_file_path)
         section_name = "FILE_SETTINGS"
         setting_name = "script_to_run"
-        print config.__dict__
         analysis_list = config.get(section_name, setting_name)
 
         details['analysis_list'] = analysis_list.split(', ')
@@ -583,8 +579,6 @@ class Errand(models.Model):
     def add_subsetting_to_column_data(self, main_data):
 
         data = self.get_column_data()
-        print "*" * 30
-        print type(data), type(main_data['MEASURE_FILTER']), type(main_data['DIMENSION_FILTER'])
 
         data['MEASURE_FILTER'] = main_data['MEASURE_FILTER']
         data['DIMENSION_FILTER'] = main_data['DIMENSION_FILTER']

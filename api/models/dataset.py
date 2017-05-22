@@ -67,7 +67,6 @@ class Dataset(models.Model):
 
     @classmethod
     def make(cls, input_file, userId):
-        print(input_file)
         obj = cls()
         obj.save()
         obj.userId = userId
@@ -110,9 +109,6 @@ class Dataset(models.Model):
         print("Running jobserver meta script")
         inputpath =  self.get_input_file_storage_path()
         resultpath = self.output_file_meta_path
-        print "---metapath---"*10
-        print inputpath
-        print resultpath
         submit_metadatajob(inputpath, resultpath)
 
 

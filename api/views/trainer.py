@@ -16,8 +16,6 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 
 
-
-
 def get_trainer(request):
     pass
 
@@ -70,7 +68,7 @@ def get_trainer_details_from_request(request):
         'dataset_id': int(data.get('dataset_id')) if data.get('dataset_id') and len(data.get('dataset_id')) > 0 else 1,
     }
 
-    print details
+    # print details
     return details
 
 
@@ -102,8 +100,8 @@ def read_ignore_column_suggestions_from_meta_data(ds):
 @api_view(['POST'])
 @renderer_classes((JSONRenderer, ))
 def create_trainer(request):
-    print "*"*40
-    print request.POST
+    # print "*"*40
+    # print request.POST
     # get user
     user = request.user
 
@@ -126,8 +124,8 @@ def create_trainer(request):
 @api_view(['POST'])
 @renderer_classes((JSONRenderer, ), )
 def setup_and_call_script(request):
-    print "--/" * 40
-    print request.POST
+    # print "--/" * 40
+    # print request.POST
     # get trainer object from request
     trainer = get_trainer(request)
 
@@ -202,7 +200,7 @@ def set_column_data(request):
     for x in ["ignore", "date", "date_format"]:
         if request.POST.has_key(x):
             data[x] = "" if request.POST[x] == "null" else request.POST[x]
-    print(data)
+
     data['ignore_column_suggestions'] = ignore_column_suggestions
     data['measure_suggetions_json_data'] = measure_suggetions_json_data
     data["utf8_columns"] = utf8_columns
@@ -239,39 +237,15 @@ def delete_tariner(request):
     return Response({'message':'trainer deleted'})
 
 
-
-
-# @api_view(['GET'])
-# def download_file(request):
-#     print settings.BASE_DIR
-#
-#
-#     trainer = get_trainer(request)
-#     print TrainerSerializer(trainer).data
-#     ds = trainer.dataset
-#     print ds.id, ds.input_file.name
-#
-#     import csv
-#     import os
-#     from django.http import HttpResponse
-#     from django.utils.encoding import smart_str
-#
-#     path_to_file = settings.BASE_DIR + "/" + ds.input_file.name
-#     response = HttpResponse(content_type='application/force-download')
-#     response['Content-Disposition'] = 'attachment; filename=%s' % smart_str(ds.input_file.name.split("/")[-1])
-#     response['X-Sendfile'] = smart_str(path_to_file)
-#
-#     return response
-
 @api_view(['GET'])
 def download_file(request):
-    print settings.BASE_DIR
+
 
 
     trainer = get_trainer(request)
-    print TrainerSerializer(trainer).data
+
     ds = trainer.dataset
-    print ds.id, ds.input_file.name
+
 
     import csv
     import os
@@ -280,7 +254,6 @@ def download_file(request):
 
     path_to_file = settings.BASE_DIR + "/" + ds.input_file.name
 
-    print path_to_file
 
     if os.path.exists(path_to_file):
         with open(path_to_file, 'rb') as fh:
@@ -304,7 +277,7 @@ def remote_folder(request):
 
     tr = get_trainer_using_id(92)
 
-    print tr.read_data_from_emr()
+    # print tr.read_data_from_emr()
     # create_base_model_and_score_folder()
     # create_model_instance_extended_folder(1)
     return HttpResponse({

@@ -402,10 +402,6 @@ class Trainer(models.Model):
         # data = self.resolve_results()
         data = self.read_data_from_emr()
 
-        print "//\\--"*100
-        print data
-        print "//\\--" * 100
-
         if data == []:
             return {}, [], [], {}
 

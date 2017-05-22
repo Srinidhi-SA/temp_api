@@ -51,7 +51,6 @@ def get_all_score_of_this_user(user_id):
 
 def get_details_from_request(request):
     data = request.data
-    print data
     details = dict()
     details['name'] = data.get("name")
     details['dataset_id'] = data.get("dataset_id")
@@ -59,8 +58,6 @@ def get_details_from_request(request):
     details['model_name'] = data.get('model_name').split("-")[0]
     # details['model_name'] = "Random Forest"
 
-    print "details----->"
-    print details
 
     return details
 
@@ -73,7 +70,6 @@ def create_score(request):
 
     # collect details from request
     details = get_details_from_request(request)
-    print details
 
     # create database entry for score
     scr = Score.make(details=details, userId=user.id)
@@ -103,12 +99,8 @@ def retrieve_score(request):
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ),)
 def retrieve_all_score(request):
-
     user = request.user
-
     scrs = get_all_score_of_this_user(user.id)
-    print scrs
-
     return Response({'data': scrs})
 
 
@@ -139,13 +131,9 @@ def delete_score(request):
 
 
 def download_file(request):
-    print settings.BASE_DIR
-
     score = get_score(request)
-    print ScoreSerializer(score).data
-    ds = score.dataset
-    print ds.id, ds.input_file.name
 
+    ds = score.dataset
     import csv
     import os
     from django.http import HttpResponse, Http404
@@ -153,7 +141,6 @@ def download_file(request):
 
     path_to_file = settings.BASE_DIR + "/" + ds.input_file.name
 
-    print path_to_file
 
     if os.path.exists(path_to_file):
         with open(path_to_file, 'rb') as fh:
@@ -171,5 +158,4 @@ def unknown_api(request):
     score = get_score_using_id(id)
 
     result = score.get_score_story_data()
-    print result
     return HttpResponse("Hello, world. You're at the polls index.")
