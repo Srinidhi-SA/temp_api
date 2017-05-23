@@ -33,6 +33,7 @@ class Score(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     model_data = models.TextField(default="{}")
     analysis_done = models.CharField(max_length=100, default="FALSE")
+    app_id = models.CharField(max_length=10, default="0")
 
     score_folders = [
         "Results",
@@ -59,6 +60,7 @@ class Score(models.Model):
         obj.trainer_id = details.get("trainer_id")
         obj.dataset_id = details.get("dataset_id")
         obj.details = json.dumps(details)
+        obj.set_app_id(details.get("app_id"))
 
         obj.save()
 
@@ -214,6 +216,8 @@ class Score(models.Model):
         if (self.model_column_data.has_key('measure_suggetions_json_data')):
             config.set('COLUMN_SETTINGS', 'measure_suggestions', self.model_column_data['measure_suggetions_json_data'])
 
+        config.set('COLUMN_SETTINGS', 'app_id', self.app_id)
+
         with open(self.get_local_config_file(), 'wb') as file:
             config.write(file)
         # print "Take a look at: {}".format(self.get_local_config_file())
@@ -225,7 +229,7 @@ class Score(models.Model):
 
     def read_score_details(self):
         return {
-            "header": "Scoring Summary",
+            "header": "Score Data Preview",
             "heading": "mAdvisor has run the model on the given data set to predict <Variable Name>. Here is the overview of the prediction",
             "data": self.dummy_score_data(),
             "story_data": self.get_score_story_data()
@@ -287,7 +291,6 @@ class Score(models.Model):
 
         result_path = self.base_emr_storage_folder() + "/results/FreqDimension/data.json"
         dimension_name = self.get_dimension_name_from_model()
-        # you might want to replace it with get_details.get('')
 
         try:
             results_data = json.loads(read_remote(result_path))
@@ -367,6 +370,12 @@ class Score(models.Model):
         data = read_remote(final_model_summary_path)
         return json.loads(data)
 
+    def set_app_id(self, app_id):
+        print "setting-->app", app_id
+        self.app_id = app_id
+
+    def get_app_id(self, app_id):
+        return app_id
 
 class ScoreSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()

@@ -93,10 +93,54 @@ class Robo(models.Model):
     def get_results(self):
         result_path = self.storage_output_dir() +  "/portfolio-result.json"
         narratives_path = self.storage_output_dir() +  "/portfolio-narratives.json"
+
+        result = hadoop.hadoop_read_output_file(result_path)
+        narratives = hadoop.hadoop_read_output_file(narratives_path)
+
+        port_snapshot= result["portfolio_snapshot"]
+        out = {}
+        for key in port_snapshot.keys():
+            if key != "class":
+                out[key] = self.google_chart_format(port_snapshot[key])
+            else:
+                out[key] = port_snapshot[key]
+        result["portfolio_snapshot"] = out
+
+        sector_performance = result["sector_performance"]
+        heat_map_data = self.heat_map_format(sector_performance)
+        result["heat_map"] = heat_map_data
         return {
-            'result': hadoop.hadoop_read_output_file(result_path),
-            'narratives': hadoop.hadoop_read_output_file(narratives_path)
+            'result': result,
+            'narratives': narratives,
+            'heat_map_data': heat_map_data
         }
+
+    def google_chart_format(self, data):
+        keys = data.keys()
+        out = [keys]
+        for val in data[keys[0]]:
+            temp = [val, data[keys[1]][val]]
+            out.append(temp)
+        return out
+
+    def heat_map_format(self, data):
+        out = {"column_one_values": [], "column_two_values": [], "table": []}
+        out["column_two_values"] = data["sector_order"]
+        col_1_keys = data["sector_data"][data["sector_data"].keys()[0]]
+        out["column_one_values"] = [x for x in col_1_keys if x != "outcome"]
+        # for key in data["sector_order"]:
+        #     temp = []
+        #     for val in out["column_one_values"]:
+        #         temp.append(data["sector_data"][key][val])
+        #     out["table"].append(temp)
+
+        for key in out["column_one_values"]:
+            temp = []
+            for val in data["sector_order"]:
+                temp.append(data["sector_data"][val][key])
+            out["table"].append(temp)
+
+        return out
 
 class RoboSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()

@@ -41,6 +41,7 @@ class Trainer(models.Model):
     column_data_raw = models.TextField(default="{}")
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     analysis_done = models.CharField(max_length=100, default="FALSE")
+    app_id = models.CharField(max_length=10, default="0")
 
     model_names = [
         "RandomForest",
@@ -61,6 +62,7 @@ class Trainer(models.Model):
         obj.dataset_id = details.get('dataset_id')
         obj.details = details.get('details', "{}")
         obj.name = details.get('name')
+        obj.set_app_id(details.get('app_id'))
 
         # save it to database
         obj.save()
@@ -205,6 +207,8 @@ class Trainer(models.Model):
         # measure_suggetions_json_data
         if (column_data.has_key('measure_suggetions_json_data')):
             config.set('COLUMN_SETTINGS', 'measure_suggestions', column_data['measure_suggetions_json_data'])
+
+        config.set('COLUMN_SETTINGS', 'app_id', self.app_id)
 
         with open(self.get_local_config_path(), 'wb') as file:
             config.write(file)
@@ -633,6 +637,12 @@ class Trainer(models.Model):
 
         return main_data
 
+    def set_app_id(self, app_id):
+        self.app_id = app_id
+
+    def get_app_id(self, app_id):
+        return app_id
+
 
 class TrainerSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
@@ -641,6 +651,7 @@ class TrainerSerializer(serializers.Serializer):
     userId = serializers.ReadOnlyField()
     created_at = serializers.DateTimeField()
     dataset_id = serializers.ReadOnlyField()
+    app_id = serializers.ReadOnlyField()
 
 
     class Meta:

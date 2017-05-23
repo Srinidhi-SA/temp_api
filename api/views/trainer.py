@@ -36,11 +36,12 @@ def get_trainer_using_id(id):
         return None
 
 
-def get_all_trainers_of_this_user(user_id):
+def get_all_trainers_of_this_user(user_id, app_id):
 
     tr = Trainer.objects.filter(
         userId=user_id,
-        analysis_done='TRUE'
+        analysis_done='TRUE',
+        app_id=app_id
         )
     results = []
     user = User.objects.get(pk=user_id)
@@ -67,6 +68,10 @@ def get_trainer_details_from_request(request):
         'dimension': data.get('dimension') if data.get('dimension') and len(data.get('dimension')) > 0 else "",
         'dataset_id': int(data.get('dataset_id')) if data.get('dataset_id') and len(data.get('dataset_id')) > 0 else 1,
     }
+
+    app_id = request.query_params.get("app_id")
+    print "-------trainer------------>app_id<----------------", app_id, request.query_params
+    details["app_id"] = app_id
 
     # print details
     return details
@@ -112,7 +117,7 @@ def create_trainer(request):
     tr = Trainer.make(details=details, userId=user.id)
 
     details = TrainerSerializer(tr).data
-    # results = tr.read_trainer_details()
+
 
     # create response
     return  Response({
@@ -128,7 +133,6 @@ def setup_and_call_script(request):
     # print request.POST
     # get trainer object from request
     trainer = get_trainer(request)
-
 
     req_details = get_trainer_details_from_request(request)
 
@@ -175,12 +179,14 @@ def retrieve_trainer(request):
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ), )
 def get_all_trainer(request):
-
     # get user
     user = request.user
 
+    # app_id = request.POST["app_id"]
+    app_id = request.query_params.get("app_id")
+
     # get all trainer details
-    trainers = get_all_trainers_of_this_user(user.id)
+    trainers = get_all_trainers_of_this_user(user.id, app_id)
 
     # create response
     return Response({

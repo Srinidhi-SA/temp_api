@@ -29,11 +29,12 @@ def get_score_using_id(id):
         return None
 
 
-def get_all_score_of_this_user(user_id):
+def get_all_score_of_this_user(user_id, app_id):
 
     scr = Score.objects.filter(
         userId=user_id,
-        analysis_done='TRUE'
+        analysis_done='TRUE',
+        app_id=app_id
         )
     results = []
     user = User.objects.get(pk=user_id)
@@ -48,6 +49,12 @@ def get_all_score_of_this_user(user_id):
 
     return results
 
+def add_more_info_to_score(score, data):
+
+    ds = score.dataset
+    model = score.trainer
+    pass
+
 
 def get_details_from_request(request):
     data = request.data
@@ -56,6 +63,7 @@ def get_details_from_request(request):
     details['dataset_id'] = data.get("dataset_id")
     details['trainer_id'] = data.get("trainer_id")
     details['model_name'] = data.get('model_name').split("-")[0]
+    details["app_id"] = request.query_params.get("app_id")
     # details['model_name'] = "Random Forest"
 
 
@@ -67,7 +75,6 @@ def get_details_from_request(request):
 def create_score(request):
 
     user = request.user
-
     # collect details from request
     details = get_details_from_request(request)
 
@@ -100,7 +107,8 @@ def retrieve_score(request):
 @renderer_classes((JSONRenderer, ),)
 def retrieve_all_score(request):
     user = request.user
-    scrs = get_all_score_of_this_user(user.id)
+    app_id = request.query_params.get("app_id")
+    scrs = get_all_score_of_this_user(user.id, app_id)
     return Response({'data': scrs})
 
 
