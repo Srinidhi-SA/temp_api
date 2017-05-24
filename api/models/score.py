@@ -230,7 +230,7 @@ class Score(models.Model):
     def read_score_details(self):
         return {
             "header": "Score Data Preview",
-            "heading": "mAdvisor has run the model on the given data set to predict <Variable Name>. Here is the overview of the prediction",
+            "heading": "mAdvisor has run the model on the given data set to predict {0}. Here is the overview of the prediction :".format(self.get_dimension_name_from_model()),
             "data": self.dummy_score_data(),
             "story_data": self.get_score_story_data()
         }
@@ -282,7 +282,8 @@ class Score(models.Model):
     def get_score_story_data(self):
         freq = self.get_frequency_results()
         chi = self.get_chi_results()
-
+        dimension_name = self.get_dimension_name_from_model()
+        freq["narratives"]["analysis"][1] = chi["narratives_raw"]["narratives"][dimension_name]["summary"][0]
         return {"get_frequency_results": freq,
                 "get_chi_results": chi
                 }
@@ -306,13 +307,6 @@ class Score(models.Model):
 
                 try:
                     narratives_path_result = json.loads(read_remote(narratives_path))
-
-                    print type(narratives_path_result)
-                    narratives_path_result["subheader"] = "Sales Snapshot"
-                    analysis_array = narratives_path_result["analysis"]
-                    print type(analysis_array)
-                    analysis_array[1] = "Something Text"
-                    narratives_path_result["analysis"] = analysis_array
                 except Exception as error:
                     narratives_path_result = {}
 

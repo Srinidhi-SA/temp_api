@@ -513,6 +513,8 @@ class Trainer(models.Model):
 
         data = self.set_precision_recall_for_each_data(data)
 
+        for d in data:
+            d["model_accuracy"] = d["model_accuracy"]*100
         return data
 
     def get_comparision_data(self, data):
@@ -623,6 +625,7 @@ class Trainer(models.Model):
             d["precision_recall_stats"] = self.format_precision_recall_data(d["precision_recall_stats"])
 
         return data
+
 
     def format_precision_recall_data(self, precision_data):
         new_precision_data = {}
