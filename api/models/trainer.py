@@ -607,7 +607,8 @@ class Trainer(models.Model):
 
 
     def get_algonames(self,data):
-        comp = self.get_comparision_data_reverse_without_percent(data)
+        # comp = self.get_comparision_data_reverse_without_percent(data)
+        comp = self.get_comparision_data_reverse(data)
         algo_performance = []
         for key in comp.keys():
             algo_performance.append([key,comp[key]["Accuracy"]])
