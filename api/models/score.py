@@ -306,6 +306,13 @@ class Score(models.Model):
 
                 try:
                     narratives_path_result = json.loads(read_remote(narratives_path))
+
+                    print type(narratives_path_result)
+                    narratives_path_result["subheader"] = "Sales Snapshot"
+                    analysis_array = narratives_path_result["analysis"]
+                    print type(analysis_array)
+                    analysis_array[1] = "Something Text"
+                    narratives_path_result["analysis"] = analysis_array
                 except Exception as error:
                     narratives_path_result = {}
 

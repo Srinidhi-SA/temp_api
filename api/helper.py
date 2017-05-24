@@ -112,6 +112,7 @@ def generate_nested_list_from_nested_dict(nested_dict):
     inner_keys = data[keys[0]].keys()
     out = []
     head_row = ["RANGE"]+inner_keys
+    head_row = [h.title() for h in head_row]
     out.append(head_row)
     for val in keys:
         row = [val]
@@ -119,4 +120,11 @@ def generate_nested_list_from_nested_dict(nested_dict):
             temp = data[val]
             row.append(temp.get(val2, 0))
         out.append(row)
+    return out
+
+def get_color_map():
+    out = {"Outperform": "Red",
+           "Underperform":"blue",
+           "Stable":"green"
+           }
     return out

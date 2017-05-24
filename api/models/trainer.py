@@ -277,11 +277,10 @@ class Trainer(models.Model):
             "data": final_data,
             "best": best,
             "feature": feature,
-            "comparision": comparision,
-            "heading": """mAdvisor has built three models
-                        (Random Forest, XGBoost and Logistic Regression) to predict
-                        {0} and has come up with the following results:
-                        """.format(c_d),
+            "heading": """mAdvisor has built 201 models using 3 algorithms
+                    (Random Forest, XGBoost and Logistic Regression) to predict
+                    {0} and has come up with the following results:
+                    """.format(c_d),
             "model_dropdown": model_dropdown,
             "dougnut": dougnut,
             "key_takeaways": "Based on the results from all the three algorithms, {0} has the highest accuracy.".format(best['Best Accuracy'])

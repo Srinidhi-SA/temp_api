@@ -1,7 +1,9 @@
 # import models
 
 from api.models.trainer import Trainer, TrainerSerializer
-from api.models.dataset import Dataset
+from api.models.dataset import Dataset, DatasetSerializer
+
+from api.views.dataset import add_more_info_to_dataset
 from django.contrib.auth.models import User
 import json
 from django.conf import settings
@@ -50,6 +52,7 @@ def get_all_trainers_of_this_user(user_id, app_id):
     for t in tr:
         trainer_serialize = TrainerSerializer(t).data
         trainer_serialize['username'] = profile['username']
+        trainer_serialize['dataset'] = add_more_info_to_dataset(t.dataset)
         # trainer_serialize['results'] = t.read_trainer_details()
         results.append(trainer_serialize)
 
