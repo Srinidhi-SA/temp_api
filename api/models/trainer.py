@@ -558,6 +558,28 @@ class Trainer(models.Model):
 
         return comparision
 
+    def get_comparision_data_reverse_without_percent(self, data):
+        comparision = dict()
+
+        key_names = {
+            'Accuracy': "model_accuracy",
+            'Precision': "model_precision",
+            'Recall': "model_recall"
+        }
+
+
+        for d in data:
+            small_details = dict()
+            if isinstance(d, unicode) or isinstance(d, str):
+                d = json.loads(d)
+
+            for k in key_names:
+
+                small_details[k] = float(d[key_names[k]])
+            comparision[d['algorithm_name']] = small_details
+
+        return comparision
+
     def get_dougnut_data(self, data):
 
         comparision = dict()
@@ -585,7 +607,7 @@ class Trainer(models.Model):
 
 
     def get_algonames(self,data):
-        comp = self.get_comparision_data_reverse(data)
+        comp = self.get_comparision_data_reverse_without_percent(data)
         algo_performance = []
         for key in comp.keys():
             algo_performance.append([key,comp[key]["Accuracy"]])
