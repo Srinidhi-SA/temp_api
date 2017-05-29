@@ -249,6 +249,8 @@ class Errand(models.Model):
                 items = narratives['narratives'][self.measure]
                 dimensions_data = {}
                 dimensions_data['summary'] = items['summary']
+                dimensions_data['drill_down_narrative'] = items['drill_down_narrative']
+
                 dimensions_data['narratives'] = []
 
                 for key, value in items['narratives'].iteritems():
