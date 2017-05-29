@@ -198,7 +198,10 @@ def get_results(request):
         'result': e.get_result(),
         'narratives': e.get_narratives(),
         'dimensions': e.get_dimension_results(),
-        'measures': e.get_reg_results()
+        'measures': e.get_reg_results(),
+        'decision_tree_narrative': e.get_decision_tree_regression_narratives(),
+        'decision_tree_result': e.get_decision_tree_regression_results(),
+
     })
 
 
