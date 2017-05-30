@@ -19,7 +19,7 @@ def submit_masterjob(configpath):
     job_url = "http://{0}:8090/jobs/{1}".format(host,job.jobId)
     print "job_url: {0}".format(job_url)
 
-    time.sleep(seconds=2)
+    time.sleep(2)
 
     final_status = None
     while True:
@@ -32,7 +32,7 @@ def submit_masterjob(configpath):
         elif data.get("status") == "ERROR" and "startTime" in data.keys():
             final_status = data.get("status")
             raise Exception("Jobserver might caught in some error!! Forget and Move on is only option.")
-        time.sleep(seconds=1)
+        time.sleep(1)
 
     return final_status
 
@@ -48,7 +48,7 @@ def submit_metadatajob(inputpath,resultpath):
     job = sjs.jobs.create(test_app, class_path, ctx=test_ctx, conf=config)
     job_url = "http://{0}:8090/jobs/{1}".format(host, job.jobId)
     print "job_url: {0}".format(job_url)
-    time.sleep(seconds=2)
+    time.sleep(2)
 
     final_status = None
     while True:
@@ -62,5 +62,5 @@ def submit_metadatajob(inputpath,resultpath):
             raise Exception("Jobserver might caught in some error!! Forget and Move on is only option.")
         else:
             pass
-        time.sleep(seconds=1)
+        time.sleep(1)
     return final_status
