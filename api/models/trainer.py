@@ -145,7 +145,7 @@ class Trainer(models.Model):
 
     def run_master(self):
         configpath = self.get_emr_model_config_path()
-        submit_masterjob(configpath)
+        status = submit_masterjob(configpath)
 
     def create_configuration_file(self):
 

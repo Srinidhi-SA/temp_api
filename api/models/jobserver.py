@@ -27,6 +27,10 @@ def submit_masterjob(configpath):
         if data.get("status") == "FINISHED":
             final_status = data.get("status")
             break
+        elif data.get("status") == "ERROR":
+            final_status = data.get("status")
+            raise Exception("Jobserver might caught in some error!! Forget and Move on is only option.")
+
     return final_status
 
 
@@ -50,4 +54,7 @@ def submit_metadatajob(inputpath,resultpath):
         if data.get("status") == "FINISHED":
             final_status = data.get("status")
             break
+        elif data.get("status") == "ERROR":
+            final_status = data.get("status")
+            raise Exception("Jobserver might caught in some error!! Forget and Move on is only option.")
     return final_status

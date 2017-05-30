@@ -201,6 +201,7 @@ def get_results(request):
         'measures': e.get_reg_results(),
         'decision_tree_narrative': e.get_decision_tree_regression_narratives(),
         'decision_tree_result': e.get_decision_tree_regression_results(),
+        'density_histogram': e.get_density_histogram(),
 
     })
 

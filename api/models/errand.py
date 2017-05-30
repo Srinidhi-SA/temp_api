@@ -285,27 +285,14 @@ class Errand(models.Model):
                 dimensions_data = {}
                 dimensions_data['summary'] = items['summary']
                 dimensions_data['drill_down_narrative'] = items['drill_down_narrative']
-                dimensions_data['drill_down_narrative'] = """
-                 Newly Added
-                  Newly Added
-                   Newly Added
-                As a developer I really like the idea of using OpenSSL
-                to get perfectly good, free, SSL certs. Unfortunately, from all the research/analysis I've done so far,
-                it doesn't look like there is
-                any way to use OpenSSL in such a way that my web users' browsers will trust the certs it generates for me.
-                """
-    
                 dimensions_data['narratives'] = []
 
                 for key, value in items['narratives'].iteritems():
                     if key in items['drill_down_narrative'].keys():
-                        # value['drill_down_narrative']=items['drill_down_narrative'][key]
-                        value['drill_down_narrative']= {'avg':'This gives narratives for average. Newly Added',
-                                                        'sum':'This gives narratives for sum. Newly Added'}
+                        value['drill_down_narrative']=items['drill_down_narrative'][key]
                     dimensions_data['narratives'].append(value)
 
                 # RESULTS
-                # path = self.storage_measure_output_dir() + "/dimensions-result.json"
                 path = self.storage_output_dir() + "/results/OneWayAnova"
 
                 try:
@@ -329,6 +316,20 @@ class Errand(models.Model):
                 return dimensions_data
             else:
                 return {}
+        else:
+            return {}
+
+    def get_density_histogram(self):
+        path = self.storage_output_dir() + "/results/DensityHistogram"
+
+        try:
+            output = hadoop.hadoop_read_output_file(path)
+        except Exception as error:
+            print error
+            return {}
+
+        if not check_blank_object(output):
+            return output
         else:
             return {}
 
