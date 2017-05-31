@@ -159,7 +159,7 @@ class Trainer(models.Model):
         config.set('FILE_SETTINGS', 'ModelName', ", ".join(self.model_names))
         config.set('FILE_SETTINGS', 'FolderName', ", ".join(self.inner_folders))
 
-        train_value = str(int(details["train_value"])/100)
+        train_value = str(float(details["train_value"])/100)
         config.set('FILE_SETTINGS', 'train_test_split', train_value)
 
         # Un-necessary
