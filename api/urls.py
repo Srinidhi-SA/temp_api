@@ -3,8 +3,11 @@ from rest_framework.decorators import renderer_classes, api_view
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from django.contrib.auth.decorators import login_required
+from rest_framework_jwt.views import obtain_jwt_token
+from rest_framework_jwt.views import refresh_jwt_token
+from rest_framework_jwt.views import verify_jwt_token
 
-from api.views import errand, dataset, robo, option, user
+from api.views import errand, dataset, robo, option, user, trainer, score
 
 @login_required
 @api_view(['GET'])
@@ -20,6 +23,9 @@ urlpatterns = [
     url(r'user/login', user.login),
     url(r'user/profile', user.profile),
     url(r'user/logout', user.logout),
+    url(r'user/api-token-auth', obtain_jwt_token),
+    url(r'user/api-token-refresh', refresh_jwt_token),
+    url(r'user/api-token-verify', verify_jwt_token),
 
     # DATASETSS
     url(r'dataset/create', dataset.create),
@@ -29,7 +35,10 @@ urlpatterns = [
     url(r'dataset/edit', dataset.edit),
     url(r'dataset/delete', dataset.delete),
     url(r'dataset/quickinfo', dataset.quickinfo),
+    url(r'dataset/trick', dataset.trick),
+    url(r'dataset/filter', dataset.filter_sample),
 
+    # filter_sample
     # ERRANDS
     url(r'errand/uploaded_files', errand.get_uploaded_files),
     url(r'errand/make', errand.make),
@@ -54,6 +63,7 @@ urlpatterns = [
     url(r'errand/get_trend_analysis', errand.get_trend_analysis),
     url(r'errand/get_dimension_all_results', errand.get_dimension_all_results),
     url(r'errand/filter', errand.filter_sample),
+    url(r'errand/drill_down_anova', errand.drill_down_anova),
 
     # ROBOS
     url(r'robo/create', robo.create),
@@ -66,6 +76,26 @@ urlpatterns = [
     # OPTIONS
     url(r'option/get_all', option.get_all),
     url(r'option/get_dict', option.get_dict),
-    url(r'option/set', option.set)
+    url(r'option/set', option.set),
+    url(r'option/test', option.test),
 
+    # TRAINER
+    url(r'trainer/make', trainer.create_trainer),
+    url(r'trainer/all', trainer.get_all_trainer),
+    url(r'trainer/model', trainer.retrieve_trainer),
+    url(r'trainer/set_column_data', trainer.set_column_data),
+    url(r'trainer/create', trainer.setup_and_call_script),
+    url(r'trainer/download', trainer.download_file),
+    url(r'trainer/remote', trainer.remote_folder),
+    url(r'trainer/edit', trainer.edit_trainer),
+    url(r'trainer/delete', trainer.delete_tariner),
+
+    # SCORE
+    url(r'score/make', score.create_score),
+    url(r'score/all', score.retrieve_all_score),
+    url(r'score/score', score.retrieve_score),
+    url(r'score/download', score.download_file),
+    url(r'score/unknown_api', score.unknown_api),
+    url(r'score/edit', score.edit_score),
+    url(r'score/delete', score.delete_score),
 ]

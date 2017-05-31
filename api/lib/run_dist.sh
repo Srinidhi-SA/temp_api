@@ -8,7 +8,7 @@ echo "INPUT FILE: $2"
 echo "OUTPUT DIRECTORY: $3"
 MEASURE=$4
 COMMAND_PREFIX="ssh -i api/lib/TIAA.pem hadoop@$1 spark-submit --master yarn --deploy-mode client"
-SCRIPTS_ROOT="/home/hadoop/codebase/marlabs-bi/bi/scripts"
+SCRIPTS_ROOT="/home/hadoop/codebase/mAdvisor-MLScripts/bi/scripts"
 echo "MEASURE: $MEASURE"
 
 echo "Fixing permission on pem file"

@@ -1,9 +1,10 @@
-
 import csv
 import os
+import datetime
+from django.utils import timezone
 
 
-class CSVChecker:
+class CSVChecker(object):
 
     def __init__(self, input_file):
         self.input_file = input_file
@@ -64,8 +65,66 @@ class CSVChecker:
         return cleaned_header
 
 
+class DateHelp:
+
+    limited_days = 30
+
+    @classmethod
+    def restrict_days(cls, date_joined):
+        current_date = timezone.now()
+        user_joining_date = date_joined
+        time_difference = current_date - user_joining_date
+        print time_difference.days
+
+        days = time_difference.days
+        if days > cls.limited_days:
+            return False
+        return True
 
 
+def tell_me_size_readable_format(num):
+
+    name = "B"
+
+    # assuming in B
+    if num > 1024:
+        num = num/1024
+        name = "KB"
+        if num > 1024:
+            num = num/1024
+            name = "MB"
+            if num > 1024:
+                num = num/1024
+                name = "GB"
+                return str(num) + " " + name
+            else:
+                return str(num) + " " + name
+        else:
+            return str(num) + " " + name
+
+    else:
+        return str(num) + " " + name
 
 
+def generate_nested_list_from_nested_dict(nested_dict):
+    data = nested_dict
+    keys = data.keys()
+    inner_keys = data[keys[0]].keys()
+    out = []
+    head_row = ["RANGE"]+inner_keys
+    head_row = [h.title() for h in head_row]
+    out.append(head_row)
+    for val in keys:
+        row = [val]
+        for val2 in inner_keys:
+            temp = data[val]
+            row.append(temp.get(val2, 0))
+        out.append(row)
+    return out
 
+def get_color_map():
+    out = {"Outperform": "Red",
+           "Underperform":"blue",
+           "Stable":"green"
+           }
+    return out

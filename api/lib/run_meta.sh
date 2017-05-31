@@ -13,5 +13,4 @@ chmod 0400 api/lib/TIAA.pem
 
 # DO NOT FORGET TO UNCOMMENT THIS!!!!
 echo "Running the meta"
-ssh -i api/lib/TIAA.pem hadoop@$1 spark-submit --master yarn  --deploy-mode client /home/hadoop/codebase/marlabs-bi/bi/scripts/metadata.py --input "hdfs://$1:8020$2" --result "hdfs://$1:8020$3"
-
+ssh -i api/lib/TIAA.pem hadoop@$1 spark-submit --master yarn  --deploy-mode client /home/hadoop/codebase/mAdvisor-MLScripts/bi/scripts/metadata.py --input "hdfs://$1:8020$2" --result "hdfs://$1:8020$3"

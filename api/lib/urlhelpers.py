@@ -12,7 +12,3 @@ def get_current_user(request):
         return profile.user
     except Profile.DoesNotExist as e:
         raise AuthenticationFailed(detail="Invalid user token provided. Please provide a active user token.")
-
-
-
-

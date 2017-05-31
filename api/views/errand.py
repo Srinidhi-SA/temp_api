@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from subprocess import call
 import subprocess
 import glob
+import json
 
 from rest_framework.decorators import renderer_classes, api_view
 from rest_framework.renderers import JSONRenderer
@@ -25,7 +26,8 @@ name_map = {
 }
 
 # Create your views here.
-
+measure_operations = ["Measure vs. Dimension", 'Measure vs. Measure', 'Descriptive analysis']
+dimension_operations = ['Dimension vs. Dimension', 'Predictive modeling', 'Descriptive analysis']
 
 def showme(request):
     return HttpResponse("Alright, this is a test");
@@ -39,6 +41,13 @@ def get_errand(request):
     except Exception as dne_error:
         return None
 
+def get_errand_from_id(id):
+
+    try:
+        e = Errand.objects.get(pk=id)
+        return e
+    except Exception as dne_error:
+        return None
 
 
 def list_to_string(list_obj):
@@ -166,7 +175,7 @@ def set_column_data(request):
     for x in ["ignore", "date", "date_format"]:
         if request.POST.has_key(x):
             data[x] = "" if request.POST[x] == "null" else request.POST[x]
-    print(data)
+    # print(data)
     data['ignore_column_suggestions'] = ignore_column_suggestions
     data['measure_suggetions_json_data'] = measure_suggetions_json_data
     data["utf8_columns"] = utf8_columns
@@ -189,7 +198,11 @@ def get_results(request):
         'result': e.get_result(),
         'narratives': e.get_narratives(),
         'dimensions': e.get_dimension_results(),
-        'measures': e.get_reg_results()
+        'measures': e.get_reg_results(),
+        'decision_tree_narrative': e.get_decision_tree_regression_narratives(),
+        'decision_tree_result': e.get_decision_tree_regression_results(),
+        'density_histogram': e.get_density_histogram(),
+
     })
 
 
@@ -200,12 +213,14 @@ def get_frequency_results(request):
     return Response(e.get_frequency_results())
     # return Response({})
 
+
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
 def get_tree_results(request):
     e = get_errand(request)
     return Response(e.get_tree_results())
     # return Response({})
+
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
@@ -222,12 +237,14 @@ def get_tree_narratives(request):
     return Response(e.get_tree_narratives())
     # return Response({})
 
+
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
 def get_chi_results(request):
     e = get_errand(request)
     return Response(e.get_chi_results())
     # return Response({})
+
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
@@ -248,6 +265,7 @@ def get_dimension_all_results(request):
         "get_chi_results":e.get_chi_results()
     })
 
+
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
 def get_archived(request):
@@ -260,7 +278,12 @@ def get_archived(request):
         is_archived='FALSE'
         )
 
-    return Response({'errands': ErrandSerializer(es, many=True).data})
+    es_info = []
+    for e in es:
+        es_info.append(add_more_info_to_errand_info(e))
+
+    # return Response({'errands': ErrandSerializer(es, many=True).data})
+    return Response({'errands': es_info})
 
 
 @api_view(['POST'])
@@ -299,11 +322,12 @@ def configure_data(request):
 def log_status(request, errand_id=None):
     return Response({"message": "Successfully logged the statuses"})
 
+
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ),)
 def quickinfo(request):
     e = get_errand(request)
-    print ErrandSerializer(e).data, e.userId
+    # print ErrandSerializer(e).data, e.userId
     user_id = e.userId
     from api.views.dataset import get_dataset_from_data_from_id
     from api.models.dataset import DatasetSerializer
@@ -332,8 +356,23 @@ def quickinfo(request):
     # read from config file itself
     config_file_script_to_run = e.read_config_file()
 
+    errand_info = ErrandSerializer(e).data
+
+    if errand_info.get("measure"):
+        errand_info["variable_type"] = "measure"
+        errand_info["variable_selected"] = errand_info.get("measure")
+    else:
+        errand_info["variable_type"] = "dimension"
+        errand_info["variable_selected"] = errand_info.get("dimension")
+
+    errand_info["dataset_name"] = dataset_quickinfo.get("name")
+    errand_info["dataset_created_at"] = dataset_quickinfo.get("created_at")
+    errand_info["dataset_creator"] = dataset_quickinfo.get("")
+    errand_info["username"] = profile.get("username")
+    errand_info["analysis_list"] = analysis_list
+
     return Response({
-        "errand_quickinfo": ErrandSerializer(e).data,
+        "errand_quickinfo": errand_info,
         "dataset_quickinfo": dataset_quickinfo,
         "profile": profile,
         "config_details": analysis_list,
@@ -359,21 +398,35 @@ def get_trend_analysis(request):
 @api_view(['POST'])
 @renderer_classes((JSONRenderer,))
 def filter_sample(request):
-    e = get_errand(request)
-    dimension = "sales"
-    measure = "cities"
+    # e = get_errand(request)
+    dimension = "cities"
+    measure = "sales"
     subsetting_data = request.POST
 
+    subsetting_data = subsetting_data.get('data')
+
+    subsetting_data = json.loads(str(subsetting_data))
+    # print subsetting_data
     main_data = {}
 
+    # errand_id = request.query_params.get('errand_id')
+    e = get_errand_from_id('112')
+
+    CONSIDER_COLUMNS = {}
     DIMENSION_FILTER = {}
     MEASURE_FILTER = {}
-
+    consider_columns = []
     for dict_data in subsetting_data:
         if dimension in dict_data:
             fields = dict_data['fields']
-            DIMENSION_FILTER[dict_data[dimension]] = [field.keys[0] for field in fields if field['status'] == True]
+            DIMENSION_FILTER[dict_data[dimension]] = [field.keys()[1] for field in fields if field['status'] == True]
+            consider_columns.append(dict_data[dimension])
+            for field in fields:
+                if field['status'] == True:
+                    print field.keys()
+                    pass
         elif measure in dict_data:
+            consider_columns.append(dict_data[measure])
             MEASURE_FILTER[dict_data[measure]] = {
                 "min":dict_data['min'],
                 "max":dict_data['max']
@@ -381,7 +434,70 @@ def filter_sample(request):
 
     main_data['DIMENSION_FILTER'] = DIMENSION_FILTER
     main_data['MEASURE_FILTER'] = MEASURE_FILTER
+    main_data['CONSIDER_COLUMNS'] = {"consider_columns": consider_columns}
 
     e.add_subsetting_to_column_data(main_data)
     e.save()
+
     return Response({"message": "result"})
+
+
+@api_view(['GET'])
+@renderer_classes((JSONRenderer,),)
+def drill_down_anova(request):
+    import time
+    import random
+    delay_seconds = random.randint(180,183)
+    time.sleep(delay_seconds)
+    return Response({"message": "result","delay":delay_seconds})
+
+
+def add_more_info_to_errand_info(e):
+
+    user_id = e.userId
+    from api.views.dataset import get_dataset_from_data_from_id
+    from api.models.dataset import DatasetSerializer
+    ds = get_dataset_from_data_from_id(e.dataset_id)
+    dataset_quickinfo = DatasetSerializer(ds).data
+
+    from django.contrib.auth.models import User
+    user = User.objects.get(pk=user_id)
+    profile = {}
+    if user:
+        profile = user.profile.rs()
+        profile = {
+            "username": profile['username'],
+            "full_name": profile['full_name'],
+            "email": profile['email']
+        }
+
+    # read from option model
+    from api.views.option import get_option_for_this_user
+    config_details = get_option_for_this_user(user_id)
+    analysis_list = []
+    for key in config_details:
+        if config_details[key] == 'yes' and name_map.get(key, None):
+            analysis_list.append(name_map.get(key))
+
+    # read from config file itself measure_operations
+    config_file_script_to_run = e.read_config_file()
+    files_to_run = config_file_script_to_run.get('analysis_list', None)
+
+    errand_info = ErrandSerializer(e).data
+
+    if errand_info.get("measure"):
+        errand_info["variable_type"] = "measure"
+        errand_info["variable_selected"] = errand_info.get("measure")
+        analysis_list = list(set(measure_operations) - (set(measure_operations) - set(files_to_run)))
+    else:
+        errand_info["variable_type"] = "dimension"
+        errand_info["variable_selected"] = errand_info.get("dimension")
+        analysis_list = list(set(dimension_operations) - (set(measure_operations) - set(files_to_run)))
+
+    errand_info["dataset_name"] = dataset_quickinfo.get("name")
+    errand_info["dataset_created_at"] = dataset_quickinfo.get("created_at")
+    errand_info["dataset_creator"] = dataset_quickinfo.get("")
+    errand_info["username"] = profile.get("username")
+    errand_info["analysis_list"] = analysis_list
+
+    return errand_info

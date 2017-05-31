@@ -9,9 +9,10 @@ from subprocess import call
 from django.conf import settings
 import json
 from django.contrib.auth.models import User
-from api.helper import CSVChecker
+from api.helper import CSVChecker, tell_me_size_readable_format
 from requests.exceptions import ConnectionError
 from api.models.jobserver import submit_metadatajob
+
 
 def dataset_base_directory(instance):
     return "uploads/datasets/{0}".format(instance.id)
@@ -66,7 +67,6 @@ class Dataset(models.Model):
 
     @classmethod
     def make(cls, input_file, userId):
-        print(input_file)
         obj = cls()
         obj.save()
         obj.userId = userId
@@ -97,6 +97,7 @@ class Dataset(models.Model):
 
     def send_input_file_to_storage(self):
         hadoop.hadoop_put(self.input_file.path, self.storage_input_dir() + "/")
+
 
     def get_input_file_storage_path(self):
         return "{0}/{1}".format(self.storage_input_dir(), self.input_filename)
@@ -160,27 +161,40 @@ class Dataset(models.Model):
             for row in rows:
                 all_items.append(row)
                 if "" in row or " " in row:
+                    if len(all_items) > 21:
+                        continue
+                    all_items.append(row)
                     continue
                 items.append(row)
+
         return items[:21] if len(items) > 21 else all_items[:21]
 
-    # def sample_filter_subsetting(self,
-    #                              COLUMN_SETTINGS,
-    #                              DIMENSION_FILTER,
-    #                              MEASURE_FILTER):
-    #
-    #     input_file = self.get_input_file_storage_path()
-    #     output_file = self.output_file_meta_path_for_script
-    #     call([
-    #         "sh", "api/lib/run_filter.sh",
-    #         settings.HDFS['host'],
-    #         input_file,
-    #         output_file,
-    #         json.dumps(COLUMN_SETTINGS),
-    #         json.dumps(DIMENSION_FILTER),
-    #         json.dumps(MEASURE_FILTER)
-    #     ])
-    #     return "Done"
+    def sample_filter_subsetting(self,
+                                 COLUMN_SETTINGS,
+                                 DIMENSION_FILTER,
+                                 MEASURE_FILTER,
+                                 MEASURE_SUGGESTIONS):
+
+        input_file = self.get_input_file_storage_path()
+        # output_file = self.output_file_meta_path_for_script
+        output_file = self.output_file_meta_path
+
+        column_settings = json.dumps(COLUMN_SETTINGS)
+        dimension_filter = json.dumps(DIMENSION_FILTER)
+        measure_filter = json.dumps(MEASURE_FILTER)
+        measure_suggestions = json.dumps(MEASURE_SUGGESTIONS)
+
+        call([
+            "sh", "api/lib/run_filter.sh",
+            settings.HDFS['host'],
+            input_file,
+            output_file,
+            str(column_settings),
+            str(dimension_filter),
+            str(measure_filter),
+            str(measure_suggestions)
+        ])
+        return "Done"
 
     def output_file_name(self):
         return
@@ -223,11 +237,18 @@ class Dataset(models.Model):
     def update_options_for(self):
         pass
 
+    def get_size_of_file(self):
+        return tell_me_size_readable_format(os.stat(self.input_file.path).st_size)
+
+    def get_measure_suggestion_from_meta_data(self):
+        meta_data = self.get_meta()
+
+        if 'measure_suggestions' in meta_data.keys():
+            return meta_data.get("measure_suggestions", [])
+
 
 class DatasetSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
     name = serializers.ReadOnlyField(source="safe_name")
     created_at = serializers.DateTimeField()
     user_id = serializers.ReadOnlyField()
-
-

@@ -86,4 +86,6 @@ def set_option(option_dict, userId):
 
     return True
 
-
+@api_view(['GET'])
+def test(request):
+    return "Hello"

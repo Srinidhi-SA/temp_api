@@ -7,6 +7,7 @@ import csv
 import itertools
 from subprocess import call
 from django.conf import settings
+from api.helper import get_color_map
 
 def robo_base_directory(instance):
     return "uploads/robos/{0}".format(instance.id)
@@ -93,10 +94,102 @@ class Robo(models.Model):
     def get_results(self):
         result_path = self.storage_output_dir() +  "/portfolio-result.json"
         narratives_path = self.storage_output_dir() +  "/portfolio-narratives.json"
+
+        result = hadoop.hadoop_read_output_file(result_path)
+        narratives = hadoop.hadoop_read_output_file(narratives_path)
+
+        port_snapshot= result["portfolio_snapshot"]
+        out = {}
+        for key in port_snapshot.keys():
+            if key != "class":
+                out[key] = self.google_chart_format(port_snapshot[key])
+            else:
+                out[key] = port_snapshot[key]
+        result["portfolio_snapshot"] = out
+
+        sector_performance = result["sector_performance"]
+        heat_map_data = self.heat_map_format(sector_performance)
+        result["heat_map"] = heat_map_data
+
+        result["sector_performance_color"] = self.add_coloring(result["sector_performance"])
+        result["portfolio_performance_gchart"] = self.fix_protfolio_performance(
+            result["portfolio_performance"],
+            ["scaled_total", "sensex"]
+        )
         return {
-            'result': hadoop.hadoop_read_output_file(result_path),
-            'narratives': hadoop.hadoop_read_output_file(narratives_path)
+            'result': result,
+            'narratives': narratives,
+            'heat_map_data': heat_map_data
         }
+
+    def google_chart_format(self, data):
+        keys = data.keys()
+        out = [keys]
+        for val in data[keys[0]]:
+            temp = [val, data[keys[1]][val]]
+            out.append(temp)
+        return out
+
+    def heat_map_format(self, data):
+        out = {"column_one_values": [], "column_two_values": [], "table": []}
+        out["column_two_values"] = data["sector_order"]
+        col_1_keys = data["sector_data"][data["sector_data"].keys()[0]]
+        out["column_one_values"] = [x for x in col_1_keys if x != "outcome"]
+
+        for key in out["column_one_values"]:
+            temp = []
+            for val in data["sector_order"]:
+                temp.append(data["sector_data"][val][key])
+            out["table"].append(temp)
+
+        return out
+
+    def add_coloring(self, data):
+        colormap = get_color_map()
+        out = []
+        first_row = ["Sector","Allocation",{"role":'style' }]
+        for key in data["sector_data"]:
+            temp = []
+            temp.append(key)
+            temp.append(data["sector_data"][key]["allocation"])
+            temp.append(colormap[data["sector_data"][key]["outcome"]])
+            out.append(temp)
+        sorted_out = sorted(out,key=lambda x:x[1], reverse=True)
+
+        return [first_row]+sorted_out
+
+    def fix_protfolio_performance(self, data, required_keys):
+
+
+        # all_keys = data.keys()
+        all_keys = required_keys
+        final_keys = ['date'] + all_keys
+
+        all_data = []
+
+        for key in all_keys:
+            val = data[key]
+            date_data = []
+            for d in val:
+                date_data.append(d['val'])
+            all_data.append(date_data)
+
+        date_first = []
+        k = data['sensex']
+        for d in k:
+            date_first.append(d['date'])
+
+        final_data = []
+
+        for i in range(len(date_first)):
+            d = []
+            d.append(date_first[i])
+            for k in all_data:
+                d.append(k[i])
+            final_data.append(d)
+
+        return [final_keys] + final_data
+
 
 class RoboSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
