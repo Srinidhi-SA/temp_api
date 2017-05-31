@@ -158,7 +158,9 @@ class Trainer(models.Model):
         config.set('FILE_SETTINGS', 'ModelPath', self.get_emr_model_storage_folder())
         config.set('FILE_SETTINGS', 'ModelName', ", ".join(self.model_names))
         config.set('FILE_SETTINGS', 'FolderName', ", ".join(self.inner_folders))
-        config.set('FILE_SETTINGS', 'train_test_split', details["train_value"])
+
+        train_value = str(int(details["train_value"])/100)
+        config.set('FILE_SETTINGS', 'train_test_split', train_value)
 
         # Un-necessary
         # config.set('FILE_SETTINGS', 'narratives_file', "")
@@ -410,8 +412,8 @@ class Trainer(models.Model):
 
         model_summary = dict()
         list_of_key_to_check_for_max = {
-            'model_recall': "Best Recall",
             'model_precision': "Best Precision",
+            'model_recall': "Best Recall",
             'model_accuracy': "Best Accuracy"
         }
 
