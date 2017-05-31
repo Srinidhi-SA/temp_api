@@ -406,7 +406,7 @@ class Trainer(models.Model):
         data = self.read_data_from_emr()
 
         if data == []:
-            return {}, [], [], {}
+            return {}, [], [], {}, [], {}, []
 
         model_summary = dict()
         list_of_key_to_check_for_max = {
