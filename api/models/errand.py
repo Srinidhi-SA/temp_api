@@ -272,7 +272,6 @@ class Errand(models.Model):
 
         path = self.storage_output_dir() + "/narratives/OneWayAnova"
 
-
         try:
             narratives = hadoop.hadoop_read_output_file(path)
         except Exception as error:
@@ -284,12 +283,13 @@ class Errand(models.Model):
                 items = narratives['narratives'][self.measure]
                 dimensions_data = {}
                 dimensions_data['summary'] = items['summary']
-                dimensions_data['drill_down_narrative'] = items['drill_down_narrative']
+                # dimensions_data['drill_down_narrative'] = items['drill_down_narrative']
                 dimensions_data['narratives'] = []
 
                 for key, value in items['narratives'].iteritems():
-                    if key in items['drill_down_narrative'].keys():
-                        value['drill_down_narrative']=items['drill_down_narrative'][key]
+                    # if key in items['drill_down_narrative'].keys():
+                        # value['drill_down_narrative']=items['drill_down_narrative'][key]
+                    value['drill_down_narrative'] = {'avg': "", 'sum': ""}
                     dimensions_data['narratives'].append(value)
 
                 # RESULTS
