@@ -10,6 +10,7 @@ from api.models.dataset import Dataset
 from django.conf import settings
 from api.views.option import get_option_for_this_user
 from api.models.jobserver import submit_masterjob
+from collections import OrderedDict
 
 # import hadoopy
 
@@ -290,6 +291,9 @@ class Errand(models.Model):
                     # if key in items['drill_down_narrative'].keys():
                         # value['drill_down_narrative']=items['drill_down_narrative'][key]
                     value['drill_down_narrative'] = {'avg': "", 'sum': ""}
+                    value['group_by_total'] = OrderedDict(sorted(value['group_by_total'].items(), key=lambda t: t[1],reverse=True))
+                    value['group_by_mean'] = OrderedDict(sorted(value['group_by_mean'].items(), key=lambda t: t[1], reverse=True))
+
                     dimensions_data['narratives'].append(value)
 
                 # RESULTS
@@ -303,12 +307,7 @@ class Errand(models.Model):
                     for key, value in items.iteritems():
                         result_data.append([key, value["effect_size"]])
                     dimensions_data['raw_data'] = result_data
-
-                    # ORDERS IT SO THAT THE ITEM[1] IS WHAT IS USED
-                    def order(item):
-                        return -item[1]
-
-                    dimensions_data['raw_data'] = sorted(dimensions_data['raw_data'], key=order)
+                    dimensions_data['raw_data'] = sorted(dimensions_data['raw_data'], key = lambda x: abs(x[1]),reverse=True)
                 except Exception as error:
                     print error
                     dimensions_data['raw_data'] = {}
@@ -373,11 +372,7 @@ class Errand(models.Model):
                     for key, value in result['stats']['coefficients'].iteritems():
                         data['raw_data'].append([key, round(value['coefficient'], 1)])
 
-                    # ORDERS IT SO THAT THE ITEM[1] IS WHAT IS USED
-                    def order(item):
-                        return item[1]
-
-                    data['raw_data'] = sorted(data['raw_data'], key=order)
+                    data['raw_data'] = sorted(data['raw_data'], key=lambda x:abs(x[1]),reverse=True)
                 else:
                     data.pop('raw_data', None)
         except Exception as error:
