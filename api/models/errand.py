@@ -396,7 +396,7 @@ class Errand(models.Model):
                 result = zip(table[self.dimension].values(), table['count'].values())
                 # narratives_path = self.storage_dimension_output_dir() + "/frequency-narratives.json";
                 narratives_path = self.storage_output_dir() + "/narratives/FreqDimension"
-
+                result = sorted(result, key=lambda x:abs(x[1]),reverse=True)
                 try:
                     narratives_path_result = hadoop.hadoop_read_output_file(narratives_path)
                 except Exception as error:
