@@ -138,6 +138,12 @@ HDFS = {
     'user.name': 'hadoop'
 }
 
+KAFKA = {
+    'host': 'localhost',
+    'port': '9092',
+    'topic': 'my-topic'
+}
+
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',

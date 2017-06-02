@@ -7,7 +7,7 @@ from rest_framework_jwt.views import obtain_jwt_token
 from rest_framework_jwt.views import refresh_jwt_token
 from rest_framework_jwt.views import verify_jwt_token
 
-from api.views import errand, dataset, robo, option, user, trainer, score
+from api.views import errand, dataset, robo, option, user, trainer, score, kafkaapi
 
 @login_required
 @api_view(['GET'])
@@ -98,4 +98,7 @@ urlpatterns = [
     url(r'score/unknown_api', score.unknown_api),
     url(r'score/edit', score.edit_score),
     url(r'score/delete', score.delete_score),
+
+    #REAL TIME
+    url(r'iot/senddata', kafkaapi.call_producer)
 ]
