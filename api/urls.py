@@ -2,19 +2,28 @@ from django.conf.urls import include, url
 from rest_framework.decorators import renderer_classes, api_view
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
+from rest_framework import routers
+
+
 from django.contrib.auth.decorators import login_required
 from rest_framework_jwt.views import obtain_jwt_token
 from rest_framework_jwt.views import refresh_jwt_token
 from rest_framework_jwt.views import verify_jwt_token
 
-from api.views import errand, dataset, robo, option, user, trainer, score
+
+from api.views import errand, dataset, robo, option, user, trainer, score, joblog
 
 @login_required
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
 def test(request):
     return Response({"message": "Is this a test?", "data": "Yes it is!"});
+#
+# router = routers.DefaultRouter()
+# router.register(r'jobs', joblog.JobViewSet)
 
+
+# noinspection PyPackageRequirements
 urlpatterns = [
     url(r'test', test),
     url(r'env', errand.get_env),
@@ -98,4 +107,9 @@ urlpatterns = [
     url(r'score/unknown_api', score.unknown_api),
     url(r'score/edit', score.edit_score),
     url(r'score/delete', score.delete_score),
+
+    # JOBS
+    # url(r'jobs', view=joblog.JobViewSet, name="jobsview")
+    url(r'jobs/$', joblog.JobGetCreateSet.as_view()),
+    url(r'jobs/(?P<pk>[0-9]+)/$', joblog.JobUpdateRetrieveDelete.as_view()),
 ]
