@@ -20,6 +20,7 @@ class Kafkadata:
             producer.flush()
             status = "Success: Kafka sent the message successfully!!"
         except Exception as e:
+            print e
             status = "Error: Kafka failed to send the message"
 
         return status
