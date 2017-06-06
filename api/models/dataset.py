@@ -11,7 +11,7 @@ import json
 from django.contrib.auth.models import User
 from api.helper import CSVChecker, tell_me_size_readable_format
 from requests.exceptions import ConnectionError
-from api.models.jobserver import submit_metadatajob
+from api.views.joblog import submit_metadatajob
 
 
 def dataset_base_directory(instance):
@@ -109,7 +109,7 @@ class Dataset(models.Model):
         print("Running jobserver meta script")
         inputpath =  self.get_input_file_storage_path()
         resultpath = self.output_file_meta_path
-        submit_metadatajob(inputpath, resultpath)
+        submit_metadatajob(inputpath, resultpath, None)
 
 
     def get_meta(self):

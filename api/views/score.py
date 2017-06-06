@@ -162,8 +162,10 @@ def download_file(request):
 from django.http import HttpResponse
 
 def unknown_api(request):
-    id = 59
-    score = get_score_using_id(id)
-
-    result = score.get_score_story_data()
+    from api.get_user import get_username
+    print get_username().user
+    # id = 59
+    # score = get_score_using_id(id)
+    #
+    # result = score.get_score_story_data()
     return HttpResponse("Hello, world. You're at the polls index.")

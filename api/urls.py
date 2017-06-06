@@ -110,6 +110,12 @@ urlpatterns = [
 
     # JOBS
     # url(r'jobs', view=joblog.JobViewSet, name="jobsview")
-    url(r'jobs/$', joblog.JobGetCreateSet.as_view()),
-    url(r'jobs/(?P<pk>[0-9]+)/$', joblog.JobUpdateRetrieveDelete.as_view()),
+    url(r'job/all$', joblog.get_jobs_of_this_user),
+    url(r'job/create$', joblog.set_job),
+    url(r'job/(?P<id>[0-9]+)/edit$', joblog.edit_job_of_this_user),
+    url(r'job/(?P<id>[0-9]+)/kill', joblog.kill_job_of_this_user),
+    url(r'job/(?P<id>[0-9]+)/resubmit_job', joblog.resubmit_job),
+    url(r'job/(?P<id>[0-9]+)/job', joblog.get_job),
+    url(r'job/(?P<id>[0-9]+)/delete', joblog.delete_job),
+    url(r'job/render_html', joblog.render_html),
 ]

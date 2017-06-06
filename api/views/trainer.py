@@ -7,7 +7,7 @@ from api.views.dataset import add_more_info_to_dataset
 from django.contrib.auth.models import User
 import json
 from django.conf import settings
-from api.models.jobserver import submit_masterjob
+from api.views.joblog import submit_masterjob
 
 # import views
 
@@ -19,8 +19,6 @@ from rest_framework.response import Response
 
 
 def get_trainer(request):
-    pass
-
     id = request.GET['trainer_id'] if request.method == "GET" else request.POST['trainer_id']
     try:
         e = Trainer.objects.get(pk=id)
