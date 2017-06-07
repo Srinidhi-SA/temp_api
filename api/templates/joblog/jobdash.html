@@ -37,12 +37,12 @@
             <td>{{ job.input_details|make_list|slice:':25'|join:'' }}</td>
             <td>
                 {% if job.status == "running" %}
-                    <a href="render_html">Refresh</a> <br><br>
+                    <a href="render_html" >Refresh</a> <br><br>
                     {% if user.is_superuser == True %}
                         <a href="{{job.id}}/kill">Kill</a>
                     {% endif %}
                 {% elif job.final_status == "killed" %}
-                    <a href="{{job.id}}/resubmit">Resubmit</a>
+                    <a href="{{job.id}}/resubmit_job">Resubmit</a>
                 {% endif %}
             </td>
             <td>{{job.killed_on}}</td>

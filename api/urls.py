@@ -29,7 +29,7 @@ urlpatterns = [
     url(r'env', errand.get_env),
 
     # USERS
-    url(r'user/login', user.login),
+    url(r'user/login', joblog.login_user),
     url(r'user/profile', user.profile),
     url(r'user/logout', user.logout),
     url(r'user/api-token-auth', obtain_jwt_token),

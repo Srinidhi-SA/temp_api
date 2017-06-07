@@ -7,6 +7,9 @@ from rest_framework.response import Response
 
 from django.shortcuts import render, redirect
 
+from django.contrib.auth.decorators import login_required
+
+
 import time
 import json
 import urllib
@@ -17,6 +20,30 @@ from sjsclient import app
 from rest_framework.response import Response
 
 from api.get_user import get_username
+
+
+
+from django.http import *
+from django.shortcuts import render_to_response,redirect
+from django.template import RequestContext
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login, logout
+
+
+def login_user(request):
+    logout(request)
+    username = password = ''
+    if request.POST:
+        username = request.POST['username']
+        password = request.POST['password']
+
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                return redirect(render_html)
+    return render(request, 'login/login.html')
+
 
 # TODO: Check for ERROR, and more conditions
 def submit_masterjob(configpath, parent_id):
@@ -229,6 +256,7 @@ def _delete_job(id):
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer,),)
+# @login_required(login_url='/login/')
 def get_jobs_of_this_user(request):
     user = request.user
     jobs = _get_jobs_this_user(user.id)
@@ -260,7 +288,7 @@ def edit_job_of_this_user(request, id):
     return Response({"detial": job_details})
 
 
-@api_view(['PUT'])
+@api_view(['GET'])
 @renderer_classes((JSONRenderer,),)
 def kill_job_of_this_user(request, id):
     user = request.user
@@ -281,7 +309,7 @@ def delete_job(request, id):
     return Response({"status": "Success"})
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 @renderer_classes((JSONRenderer,),)
 def resubmit_job(request, id):
     job = _get_job(id)
@@ -294,8 +322,6 @@ def resubmit_job(request, id):
         elif job.job_type == "master":
             submit_masterjob(data['configpath'], str(job.id))
     user = request.user
-    # from django.contrib.auth.models import User
-    # user = User.objects.get(id=1)
 
     if user.is_superuser:
         jobs = _get_all_jobs()
@@ -305,8 +331,9 @@ def resubmit_job(request, id):
     return render(request, 'joblog/jobdash.html', {'jobs': jobs, 'user': user})
 
 
-@api_view(['GET'])
-@renderer_classes((JSONRenderer,),)
+# @api_view(['GET'])
+# @renderer_classes((JSONRenderer,),)
+@login_required(login_url='/user/login/')
 def render_html(request):
     user = request.user
     # from django.contrib.auth.models import User

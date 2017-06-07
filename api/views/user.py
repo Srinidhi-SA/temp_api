@@ -30,7 +30,7 @@ def login(request):
     else:
         print "all>0"
         user = all.first()
-        if not user.check_password(request.POST['password']) :
+        if not user.check_password(request.POST['password']):
             raise AuthenticationFailed(detail="Sorry, the credentials do not seem to match our records. Please try again")
         if not restrict_days(user):
             raise AuthenticationFailed(
