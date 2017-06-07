@@ -292,8 +292,6 @@ def edit_job_of_this_user(request, id):
 @renderer_classes((JSONRenderer,),)
 def kill_job_of_this_user(request, id):
     user = request.user
-    # from django.contrib.auth.models import User
-    # user = User.objects.get(id=1)
     job_details = _kill_job(id=id,
                             user=user)
     if job_details is None:
@@ -333,11 +331,9 @@ def resubmit_job(request, id):
 
 # @api_view(['GET'])
 # @renderer_classes((JSONRenderer,),)
-@login_required(login_url='/user/login/')
+@login_required(login_url='/api/user/login/')
 def render_html(request):
     user = request.user
-    # from django.contrib.auth.models import User
-    # user = User.objects.get(id=1)
     if user.is_superuser:
         jobs = _get_all_jobs()
     else:
