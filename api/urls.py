@@ -106,8 +106,8 @@ urlpatterns = [
     url(r'score/delete', score.delete_score),
 
     #REAL TIME
-    url(r'iot/senddata', kafkaapi.call_producer)
-    
+    url(r'iot/senddata', kafkaapi.call_producer),
+
     # JOBS
     url(r'job/all$', joblog.get_jobs_of_this_user),
     url(r'job/create$', joblog.set_job),
