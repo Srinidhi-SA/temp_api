@@ -257,5 +257,10 @@ def add_more_info_to_dataset(ds):
     dataset_quickinfo["subsetting"] = subsetting
     dataset_quickinfo["profile"] = profile
     dataset_quickinfo["file_size"] = ds.get_size_of_file()
+    name_length = len(dataset_quickinfo["name"])
 
+    if name_length > 18:
+        dataset_quickinfo["truncated_name"] = dataset_quickinfo["name"][:15] + "..."
+    else:
+        dataset_quickinfo["truncated_name"] = dataset_quickinfo["name"]
     return dataset_quickinfo
