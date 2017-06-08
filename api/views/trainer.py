@@ -7,7 +7,7 @@ from api.views.dataset import add_more_info_to_dataset
 from django.contrib.auth.models import User
 import json
 from django.conf import settings
-from api.models.jobserver import submit_masterjob
+from api.views.joblog import submit_masterjob
 
 # import views
 
@@ -19,8 +19,6 @@ from rest_framework.response import Response
 
 
 def get_trainer(request):
-    pass
-
     id = request.GET['trainer_id'] if request.method == "GET" else request.POST['trainer_id']
     try:
         e = Trainer.objects.get(pk=id)
@@ -108,6 +106,13 @@ def read_ignore_column_suggestions_from_meta_data(ds):
 @api_view(['POST'])
 @renderer_classes((JSONRenderer, ))
 def create_trainer(request):
+    """
+    Creates Trainer (Model)
+    Creates entry in Trained table.
+    Creates local directories.
+    :param request: user and data
+    :return: JSON formatted trainer details
+    """
     # print "*"*40
     # print request.POST
     # get user
@@ -132,6 +137,14 @@ def create_trainer(request):
 @api_view(['POST'])
 @renderer_classes((JSONRenderer, ), )
 def setup_and_call_script(request):
+    """
+    Adds more configuration details.
+    Creates config file locally and copies to EMR.
+    Create directory structure at EMR
+    Run Master Script
+    :param request: Trainer Id, name and details
+    :return: JSON formatted model details and results
+    """
     # print "--/" * 40
     # print request.POST
     # get trainer object from request
@@ -164,6 +177,11 @@ def set_trainer_measure(request):
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ), )
 def retrieve_trainer(request):
+    """
+    Get a trainer detail
+    :param request: Trainer Id
+    :return: JSON formatted trainer details and results
+    """
 
     # get trainer object from request
     trainer = get_trainer(request)
@@ -182,6 +200,11 @@ def retrieve_trainer(request):
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ), )
 def get_all_trainer(request):
+    """
+    Get all trainer details
+    :param request: App Id
+    :return: JSON all trainer adetails and results
+    """
     # get user
     user = request.user
 
@@ -200,6 +223,11 @@ def get_all_trainer(request):
 @api_view(['POST'])
 @renderer_classes((JSONRenderer, ))
 def set_column_data(request):
+    """
+    Set configuration details
+    :param request: Trainer Id
+    :return: Success Message
+    """
     tr = get_trainer(request)
     from api.views.dataset import get_dataset_from_data_from_id
     ds = get_dataset_from_data_from_id(tr.dataset_id)
@@ -220,6 +248,11 @@ def set_column_data(request):
 @api_view(['PUT'])
 @renderer_classes((JSONRenderer, ), )
 def edit_trainer(request):
+    """
+    Edit name of trainer
+    :param request: Trainet id
+    :return: JSON Formatted trainer detials
+    """
     id = request.data['id']
     tr = get_trainer_using_id(id)
     tr.name = request.data['name']
@@ -239,6 +272,11 @@ def edit_trainer(request):
 @api_view(['DELETE'])
 @renderer_classes((JSONRenderer,),)
 def delete_tariner(request):
+    """
+    Delete trainer
+    :param request: Trainer Id
+    :return: Delete Message
+    """
     id = request.data['id']
     tr = get_trainer_using_id(id)
     tr.delete()

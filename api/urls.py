@@ -2,12 +2,16 @@ from django.conf.urls import include, url
 from rest_framework.decorators import renderer_classes, api_view
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
+from rest_framework import routers
+from rest_framework.documentation import include_docs_urls
+
+
 from django.contrib.auth.decorators import login_required
 from rest_framework_jwt.views import obtain_jwt_token
 from rest_framework_jwt.views import refresh_jwt_token
 from rest_framework_jwt.views import verify_jwt_token
 
-from api.views import errand, dataset, robo, option, user, trainer, score, kafkaapi
+from api.views import errand, dataset, robo, option, user, trainer, score, joblog, kafkaapi
 
 @login_required
 @api_view(['GET'])
@@ -15,12 +19,14 @@ from api.views import errand, dataset, robo, option, user, trainer, score, kafka
 def test(request):
     return Response({"message": "Is this a test?", "data": "Yes it is!"});
 
+
+# noinspection PyPackageRequirements
 urlpatterns = [
     url(r'test', test),
     url(r'env', errand.get_env),
 
     # USERS
-    url(r'user/login', user.login),
+    url(r'user/login', joblog.login_user),
     url(r'user/profile', user.profile),
     url(r'user/logout', user.logout),
     url(r'user/api-token-auth', obtain_jwt_token),
@@ -99,6 +105,18 @@ urlpatterns = [
     url(r'score/edit', score.edit_score),
     url(r'score/delete', score.delete_score),
 
+<<<<<<< HEAD
     #REAL TIME
     url(r'iot/senddata', kafkaapi.call_producer)
+=======
+    # JOBS
+    url(r'job/all$', joblog.get_jobs_of_this_user),
+    url(r'job/create$', joblog.set_job),
+    url(r'job/(?P<id>[0-9]+)/edit$', joblog.edit_job_of_this_user),
+    url(r'job/(?P<id>[0-9]+)/kill', joblog.kill_job_of_this_user),
+    url(r'job/(?P<id>[0-9]+)/resubmit_job', joblog.resubmit_job),
+    url(r'job/(?P<id>[0-9]+)/job', joblog.get_job),
+    url(r'job/(?P<id>[0-9]+)/delete', joblog.delete_job),
+    url(r'job/render_html', joblog.render_html),
+>>>>>>> docs_spl
 ]

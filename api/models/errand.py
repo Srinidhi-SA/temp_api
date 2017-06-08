@@ -9,7 +9,7 @@ from subprocess import call
 from api.models.dataset import Dataset
 from django.conf import settings
 from api.views.option import get_option_for_this_user
-from api.models.jobserver import submit_masterjob
+from api.views.joblog import submit_masterjob
 from collections import OrderedDict
 
 # import hadoopy
@@ -184,7 +184,7 @@ class Errand(models.Model):
         print ("Running jobserver master script")
         configpath = "/home/hadoop/configs/" + self.config_file_path_hadoop
         print "configpath:{0}".format(configpath)
-        submit_masterjob(configpath)
+        submit_masterjob(configpath, None)
 
     def run_save_config(self):
         call([

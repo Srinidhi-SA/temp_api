@@ -12,7 +12,7 @@ from api.lib.fab_helper import create_score_extended_folder, \
     map_model_name_with_folder, \
     read_remote, \
     remote_mkdir_for_score_story
-from api.models.jobserver import submit_masterjob
+from api.views.joblog import submit_masterjob
 from api.helper import generate_nested_list_from_nested_dict
 
 
@@ -239,7 +239,7 @@ class Score(models.Model):
         configpath = self.get_hadoop_config_file()
         print "configpath---------------------"
         print configpath
-        submit_masterjob(configpath)
+        submit_masterjob(configpath, None)
 
     def change_name(self, name):
         self.name = name

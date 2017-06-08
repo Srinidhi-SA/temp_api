@@ -9,7 +9,7 @@ from api.lib import hadoop
 from api.views.option import get_option_for_this_user
 from api.lib.fab_helper import create_model_instance_extended_folder, \
     read_remote
-from api.models.jobserver import submit_masterjob
+from api.views.joblog import submit_masterjob
 from api.helper import generate_nested_list_from_nested_dict
 
 import ConfigParser
@@ -145,7 +145,7 @@ class Trainer(models.Model):
 
     def run_master(self):
         configpath = self.get_emr_model_config_path()
-        status = submit_masterjob(configpath)
+        status = submit_masterjob(configpath, None)
 
     def create_configuration_file(self):
 

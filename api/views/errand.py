@@ -90,6 +90,12 @@ def jack(request):
 @api_view(['POST'])
 @renderer_classes((JSONRenderer, ))
 def make(request):
+    """
+    Creates database entry in errand table.
+    Creates hadoop directories.
+    :param request: Dataset ID, name, slug and other details
+    :return: Message Success
+    """
     userId = request.query_params.get('userId')
     if userId is None:
         return Response({"upload_error": "User not found. Try logout/login again"})
@@ -104,6 +110,11 @@ def make(request):
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
 def preview(request):
+    """
+    No Implementation
+    :param request:
+    :return:
+    """
     e = get_errand(request)
     if e is None:
         return Response({'message': 'Errand not Found!!'})
@@ -112,12 +123,22 @@ def preview(request):
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
 def get_meta(request):
+    """
+    No Implementation
+    :param request:
+    :return:
+    """
     e = get_errand(request)
     return Response(e.get_meta())
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
 def columns(request):
+    """
+    No Implementation
+    :param request:
+    :return:
+    """
     e = get_errand(request)
     return Response({'data': e.get_columns()})
 
@@ -125,6 +146,14 @@ def columns(request):
 @api_view(['POST'])
 @renderer_classes((JSONRenderer, ))
 def set_measure(request):
+    """
+    Start Measure Story.
+    Creates Hadoop Directories.
+    Creates Configuration and copy it to EMR.
+    Run Master Script.
+    :param request: Story name and other configuration details
+    :return: Errand (Story) Id
+    """
     e = get_errand(request)
     e.set_measure(request.POST['measure'])
     e.compare_with = request.POST['compare_with']
@@ -146,6 +175,14 @@ def set_measure(request):
 @api_view(['POST'])
 @renderer_classes((JSONRenderer, ))
 def set_dimension(request):
+    """
+    Start Dimension Story.
+    Creates Hadoop Directories.
+    Creates Configuration and copy it to EMR.
+    Run Master Script.
+    :param request: Story name and other configuration details
+    :return: Errand (Story) Id
+    """
     e = get_errand(request)
     e.set_dimension(request.POST['dimension'])
     e.compare_with = request.POST['compare_with']
@@ -166,6 +203,11 @@ def set_dimension(request):
 @api_view(['POST'])
 @renderer_classes((JSONRenderer, ))
 def set_column_data(request):
+    """
+    Set Errand related Configurations
+    :param request: Errand Id and configuration details
+    :return: Errand Id
+    """
     e = get_errand(request)
     from api.views.dataset import get_dataset_from_data_from_id
     ds = get_dataset_from_data_from_id(e.dataset_id)
@@ -192,6 +234,11 @@ def get_env(request):
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
 def get_results(request):
+    """
+    Get Story Details
+    :param request: Errand Id
+    :return: JSON formatted story details
+    """
     e = get_errand(request)
 
     return Response({
@@ -209,6 +256,11 @@ def get_results(request):
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
 def get_frequency_results(request):
+    """
+    Get frequency results of Errand
+    :param request: Errand Id
+    :return: JSON formatted frequency details
+    """
     e = get_errand(request)
     return Response(e.get_frequency_results())
     # return Response({})
@@ -217,6 +269,11 @@ def get_frequency_results(request):
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
 def get_tree_results(request):
+    """
+    Get decision tree results of Errand
+    :param request: Errand Id
+    :return: JSON formatted tree results
+    """
     e = get_errand(request)
     return Response(e.get_tree_results())
     # return Response({})
@@ -225,6 +282,11 @@ def get_tree_results(request):
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
 def get_tree_results_raw(request):
+    """
+    Get decision tree results of Errand
+    :param request: Errand Id
+    :return: JSON formatted tree results
+    """
     e = get_errand(request)
     return Response(e.get_tree_results_raw())
     # return Response({})
@@ -233,6 +295,11 @@ def get_tree_results_raw(request):
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
 def get_tree_narratives(request):
+    """
+    Get decision tree narratives of Errand
+    :param request: Errand Id
+    :return: JSON formatted tree narratives
+    """
     e = get_errand(request)
     return Response(e.get_tree_narratives())
     # return Response({})
@@ -241,6 +308,11 @@ def get_tree_narratives(request):
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
 def get_chi_results(request):
+    """
+    Get ChiSquare results of Errand
+    :param request: Errand Id
+    :return: JSON formatted ChiSquare results
+    """
     e = get_errand(request)
     return Response(e.get_chi_results())
     # return Response({})
@@ -249,14 +321,12 @@ def get_chi_results(request):
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
 def get_dimension_all_results(request):
+    """
+    Get All Dimension related results
+    :param request: Errand Id
+    :return: JSON formatted all results of dimension story
+    """
     e = get_errand(request)
-    # return Response({
-    #     "get_frequency_results":{},
-    #     "get_tree_results":{},
-    #     "get_tree_results_raw":{},
-    #     "get_tree_narratives":{},
-    #     "get_chi_results":{}
-    # })
     return Response({
         "get_frequency_results":e.get_frequency_results(),
         "get_tree_results":e.get_tree_results(),
@@ -269,6 +339,11 @@ def get_dimension_all_results(request):
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
 def get_archived(request):
+    """
+    List of all Errands not archived.
+    :param request: Errand Id
+    :return: List of errands
+    """
 
     userId = request.query_params.get('userId')
 
@@ -289,6 +364,11 @@ def get_archived(request):
 @api_view(['POST'])
 @renderer_classes((JSONRenderer, ))
 def set_archived(request):
+    """
+    Mark errand as archived (Like hide).
+    :param request: Errand Id
+    :return: Success Message
+    """
     e = get_errand(request)
     e.is_archived = 'TRUE'
     e.save()
@@ -298,15 +378,25 @@ def set_archived(request):
 @api_view(['POST'])
 @renderer_classes((JSONRenderer,))
 def edit(request):
+    """
+    Edit name of errand.
+    :param request: Errand Id and new name
+    :return: Update Message
+    """
     e = get_errand(request)
     e.name = request.POST['name']
     e.save()
-    return Response({"message" : "Updated"})
+    return Response({"message": "Updated"})
 
 
 @api_view(['POST'])
 @renderer_classes((JSONRenderer,))
 def delete(request):
+    """
+    Delete an errand.
+    :param request: Errand Id
+    :return: Delete Message
+    """
     Errand.objects.filter(id__in=request.POST['errand_ids'].split(",")).delete()
     return Response({"message": "Deleted"})
 
@@ -314,18 +404,34 @@ def delete(request):
 @api_view(['POST'])
 @renderer_classes((JSONRenderer,))
 def configure_data(request):
+    """
+    No Implementation
+    :param request:
+    :return:
+    """
     return Response({"message": "Data has been configured"})
 
 
 @api_view(['POST'])
 @renderer_classes((JSONRenderer,))
 def log_status(request, errand_id=None):
+    """
+    No Implementation
+    :param request:
+    :param errand_id:
+    :return:
+    """
     return Response({"message": "Successfully logged the statuses"})
 
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ),)
 def quickinfo(request):
+    """
+    No Implementation
+    :param request:
+    :return:
+    """
     e = get_errand(request)
     # print ErrandSerializer(e).data, e.userId
     user_id = e.userId
@@ -383,6 +489,11 @@ def quickinfo(request):
 @api_view(['GET'])
 @renderer_classes((JSONRenderer,),)
 def get_trend_analysis(request):
+    """
+    Get trend analysis results of Errand
+    :param request: Errand Id
+    :return: JSON formatted trend data
+    """
     e = get_errand(request)
     if e is None:
         return Response({
@@ -398,6 +509,11 @@ def get_trend_analysis(request):
 @api_view(['POST'])
 @renderer_classes((JSONRenderer,))
 def filter_sample(request):
+    """
+    No umplementation
+    :param request:
+    :return:
+    """
     # e = get_errand(request)
     dimension = "cities"
     measure = "sales"
@@ -445,6 +561,11 @@ def filter_sample(request):
 @api_view(['GET'])
 @renderer_classes((JSONRenderer,),)
 def drill_down_anova(request):
+    """
+    No Implementation
+    :param request:
+    :return:
+    """
     import time
     import random
     delay_seconds = random.randint(180,183)

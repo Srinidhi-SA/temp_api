@@ -8,6 +8,7 @@ import uuid
 
 from api.views.option import default_settings_in_option, set_option
 
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     token = models.CharField(max_length=100, null=True)
