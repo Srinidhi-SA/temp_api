@@ -29,6 +29,16 @@ def get_dataset_from_data_from_id(id):
 @api_view(['POST'])
 @renderer_classes((JSONRenderer,))
 def create(request):
+    """
+    Makes database entry for dataset.
+    Saves file to server.
+    Checks for error or empty in file uploaded.
+    Cleans header of file(csv) for (#, $, *)
+    Creates hadoop directory.
+    Run meta script.
+    :param request: Containing File(csv)
+    :return: Dataset info
+    """
 
     ds = Dataset.make(request.FILES.get('input_file'), request.POST.get('userId'))
     if ds is None:
@@ -43,6 +53,11 @@ def create(request):
 @api_view(['GET'])
 @renderer_classes((JSONRenderer,))
 def all(request):
+    """
+    Get all Datasets details with additional info. Uploaded by this user.
+    :param request: Get User
+    :return: All dataset info
+    """
     userId = request.query_params.get('userId')
 
     ds = Dataset.objects.filter(userId=userId)
@@ -61,6 +76,11 @@ def all(request):
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
 def preview(request):
+    """
+    Get preview (Header + first non-empty 20 lines of csv)
+    :param request: Dataset Id
+    :return: CSV Row details
+    """
     e = get_dataset(request)
     return Response({'data': e.get_preview_data()})
 
@@ -68,12 +88,22 @@ def preview(request):
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
 def get_meta(request):
+    """
+    Get Metadata related to a Dataset
+    :param request: Dataset Id
+    :return: Meta details
+    """
     e = get_dataset(request)
     return Response(e.get_meta())
 
 @api_view(['POST'])
 @renderer_classes((JSONRenderer,))
 def edit(request):
+    """
+    Edit name of dataset.
+    :param request: Dataset Id
+    :return: Updated message
+    """
     e = get_dataset(request)
     e.name = request.POST['name']
     e.save()
@@ -83,6 +113,11 @@ def edit(request):
 @api_view(['POST'])
 @renderer_classes((JSONRenderer,))
 def delete(request):
+    """
+    Delete datasets
+    :param request: List of Dataset IDs
+    :return: Deletion Message
+    """
     Dataset.objects.filter(id__in=request.POST['dataset_ids'].split(",")).delete()
     return Response({"message": "Deleted"})
 
@@ -127,6 +162,11 @@ def trick(request):
 @api_view(['POST'])
 @renderer_classes((JSONRenderer,),)
 def filter_sample(request):
+    """
+    Filtering csv data using filter details.
+    :param request: Dataset Id and Filter Details
+    :return: Message: Result
+    """
     subsetting_data = request.POST
     subsetting_data = subsetting_data.get('data')
     subsetting_data = json.loads(str(subsetting_data))

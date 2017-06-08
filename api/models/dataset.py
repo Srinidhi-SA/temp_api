@@ -1,16 +1,15 @@
-from django.db import models
-from rest_framework import serializers
-from api.lib import hadoop
-import os
 import ConfigParser
 import csv
-import itertools
-from subprocess import call
-from django.conf import settings
 import json
-from django.contrib.auth.models import User
+import os
+from subprocess import call
+
+from django.conf import settings
+from django.db import models
+from rest_framework import serializers
+
 from api.helper import CSVChecker, tell_me_size_readable_format
-from requests.exceptions import ConnectionError
+from api.lib import hadoop
 from api.views.joblog import submit_metadatajob
 
 

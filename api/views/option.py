@@ -13,6 +13,11 @@ from api.models.option import Option, OptionSerializer
 @api_view(['POST'])
 @renderer_classes((JSONRenderer,))
 def set(request):
+    """
+    User related additional settings.
+    :param request: userId and setting details
+    :return: Success Message
+    """
 
     userId = request.query_params.get('userId')
     option_dict = request.POST
@@ -25,6 +30,11 @@ def set(request):
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
 def get_all(request):
+    """
+    Get settings.
+    :param request: userId
+    :return: JSON formatted option details
+    """
     userId = request.query_params.get('userId')
     return Response({"data": OptionSerializer(Option.objects.filter(userId=userId), many=True).data})
 
@@ -32,6 +42,11 @@ def get_all(request):
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
 def get_dict(request):
+    """
+    Get settings.
+    :param request: userId
+    :return: JSON formatted option details
+    """
     userId = request.query_params.get('userId')
     option_dict = get_option_for_this_user(userId)
     return Response({"data": option_dict})

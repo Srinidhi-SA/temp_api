@@ -1,33 +1,20 @@
-from api.models.joblog import Jobdetail, JobSerializer
-from django.utils import timezone
+import json
+import time
+import urllib
 
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
+from django.shortcuts import render
+from django.utils import timezone
 from rest_framework.decorators import renderer_classes, api_view
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
-
-from django.shortcuts import render, redirect
-
-from django.contrib.auth.decorators import login_required
-
-
-import time
-import json
-import urllib
-
-from server import settings
 from sjsclient import client
-from sjsclient import app
-from rest_framework.response import Response
 
 from api.get_user import get_username
-
-
-
-from django.http import *
-from django.shortcuts import render_to_response,redirect
-from django.template import RequestContext
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login, logout
+from api.models.joblog import Jobdetail, JobSerializer
+from server import settings
 
 
 def login_user(request):
@@ -258,6 +245,11 @@ def _delete_job(id):
 @renderer_classes((JSONRenderer,),)
 # @login_required(login_url='/login/')
 def get_jobs_of_this_user(request):
+    """
+    Get All jobs (Running Finished Error) from jobserver
+    :param request: user login needed
+    :return: JSON All Jobs details
+    """
     user = request.user
     jobs = _get_jobs_this_user(user.id)
     return Response({"Job": JobSerializer(jobs, many=True).data})
@@ -266,6 +258,12 @@ def get_jobs_of_this_user(request):
 @api_view(['POST'])
 @renderer_classes((JSONRenderer,),)
 def set_job(request):
+    """
+    Not In Use
+    Insert an job row in Jobdetails Table.
+    :param request: user and data
+    :return: JSON Job details
+    """
     user = request.user
     data = request.data
     job_data = _set_job(data, user)
@@ -275,6 +273,12 @@ def set_job(request):
 @api_view(['GET'])
 @renderer_classes((JSONRenderer,),)
 def get_job(request, id):
+    """
+    Get a job detail
+    :param request: user
+    :param id: Job Id
+    :return: JSON Job details
+    """
     job = _get_job(id)
     return Response({"details": JobSerializer(job).data})
 
@@ -282,6 +286,12 @@ def get_job(request, id):
 @api_view(['PUT'])
 @renderer_classes((JSONRenderer,),)
 def edit_job_of_this_user(request, id):
+    """
+    Edit a job detail
+    :param request: user
+    :param id: Job Id
+    :return: JSON Job details
+    """
     user = request.user
     job_details = _edit_job(id=id,
                             data=request.data)
@@ -291,6 +301,12 @@ def edit_job_of_this_user(request, id):
 @api_view(['GET'])
 @renderer_classes((JSONRenderer,),)
 def kill_job_of_this_user(request, id):
+    """
+    Kill a running job
+    :param request: user
+    :param id: Job Id
+    :return: Kill Message
+    """
     user = request.user
     job_details = _kill_job(id=id,
                             user=user)
@@ -303,6 +319,12 @@ def kill_job_of_this_user(request, id):
 @api_view(['DELETE'])
 @renderer_classes((JSONRenderer,),)
 def delete_job(request, id):
+    """
+    Delete job
+    :param request: user
+    :param id: Job Id
+    :return: Success Message
+    """
     _delete_job(id)
     return Response({"status": "Success"})
 
@@ -310,6 +332,12 @@ def delete_job(request, id):
 @api_view(['GET'])
 @renderer_classes((JSONRenderer,),)
 def resubmit_job(request, id):
+    """
+    Resubmit an old job to rerun as new job
+    :param request: user
+    :param id: Parent Job Id
+    :return: JSON Job details of new job
+    """
     job = _get_job(id)
 
     data = json.loads(job.input_details)
@@ -333,6 +361,11 @@ def resubmit_job(request, id):
 # @renderer_classes((JSONRenderer,),)
 @login_required(login_url='/api/user/login/')
 def render_html(request):
+    """
+    Render Job Dashboard
+    :param request: user
+    :return: HTML
+    """
     user = request.user
     if user.is_superuser:
         jobs = _get_all_jobs()

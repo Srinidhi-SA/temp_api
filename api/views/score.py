@@ -73,6 +73,17 @@ def get_details_from_request(request):
 @api_view(['POST'])
 @renderer_classes((JSONRenderer, ), )
 def create_score(request):
+    """
+    Creates score based on already existing trained model.
+    Creates database entry on score.
+    Creates local folder for score and config
+    Creates Directories on EMR
+    Create configuration based on selected models
+    Copy configuration to EMR
+    Run Master Script
+    :param request: user, model Id, dataset_id, App ID and other details
+    :return: JSON formatted score details
+    """
 
     user = request.user
     # collect details from request
@@ -90,6 +101,11 @@ def create_score(request):
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ),)
 def retrieve_score(request):
+    """
+    Get a score details
+    :param request: Score Id
+    :return: JSON formatted details
+    """
     user = request.user
 
     scr = get_score(request)
@@ -106,6 +122,11 @@ def retrieve_score(request):
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ),)
 def retrieve_all_score(request):
+    """
+    List all the scores
+    :param request: App Id
+    :return: JSON formatted score deatils
+    """
     user = request.user
     app_id = request.query_params.get("app_id")
     scrs = get_all_score_of_this_user(user.id, app_id)
@@ -115,6 +136,11 @@ def retrieve_all_score(request):
 @api_view(['PUT'])
 @renderer_classes((JSONRenderer, ),)
 def edit_score(request):
+    """
+    Edit the score name
+    :param request: Score Id
+    :return: JSON score details
+    """
     id = request.data['id']
     score = get_score_using_id(id)
 
@@ -130,6 +156,11 @@ def edit_score(request):
 @api_view(['DELETE'])
 @renderer_classes((JSONRenderer, ),)
 def delete_score(request):
+    """
+    Delete Score
+    :param request: Score Id
+    :return: Delete Message
+    """
     id = request.data['id']
     score = get_score_using_id(id)
 
@@ -162,6 +193,11 @@ def download_file(request):
 from django.http import HttpResponse
 
 def unknown_api(request):
+    """
+    Test Api
+    :param request:
+    :return:
+    """
     from api.get_user import get_username
     print get_username().user
     # id = 59

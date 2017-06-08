@@ -3,6 +3,7 @@ from rest_framework.decorators import renderer_classes, api_view
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework import routers
+from rest_framework.documentation import include_docs_urls
 
 
 from django.contrib.auth.decorators import login_required
@@ -18,9 +19,6 @@ from api.views import errand, dataset, robo, option, user, trainer, score, joblo
 @renderer_classes((JSONRenderer, ))
 def test(request):
     return Response({"message": "Is this a test?", "data": "Yes it is!"});
-#
-# router = routers.DefaultRouter()
-# router.register(r'jobs', joblog.JobViewSet)
 
 
 # noinspection PyPackageRequirements
@@ -109,7 +107,6 @@ urlpatterns = [
     url(r'score/delete', score.delete_score),
 
     # JOBS
-    # url(r'jobs', view=joblog.JobViewSet, name="jobsview")
     url(r'job/all$', joblog.get_jobs_of_this_user),
     url(r'job/create$', joblog.set_job),
     url(r'job/(?P<id>[0-9]+)/edit$', joblog.edit_job_of_this_user),
