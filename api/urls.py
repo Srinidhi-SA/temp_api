@@ -105,10 +105,9 @@ urlpatterns = [
     url(r'score/edit', score.edit_score),
     url(r'score/delete', score.delete_score),
 
-<<<<<<< HEAD
     #REAL TIME
     url(r'iot/senddata', kafkaapi.call_producer)
-=======
+    
     # JOBS
     url(r'job/all$', joblog.get_jobs_of_this_user),
     url(r'job/create$', joblog.set_job),
@@ -118,5 +117,4 @@ urlpatterns = [
     url(r'job/(?P<id>[0-9]+)/job', joblog.get_job),
     url(r'job/(?P<id>[0-9]+)/delete', joblog.delete_job),
     url(r'job/render_html', joblog.render_html),
->>>>>>> docs_spl
 ]
