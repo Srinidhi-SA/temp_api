@@ -57,6 +57,15 @@ def get_all_trainers_of_this_user(user_id, app_id):
     return results
 
 
+def get_all_trainers(user_id):
+    tr = Trainer.objects.filter(
+        userId=user_id,
+        analysis_done='TRUE'
+    )
+
+    return tr
+
+
 def get_trainer_details_from_request(request):
 
     data = request.POST

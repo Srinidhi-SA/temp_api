@@ -11,7 +11,7 @@ from rest_framework_jwt.views import obtain_jwt_token
 from rest_framework_jwt.views import refresh_jwt_token
 from rest_framework_jwt.views import verify_jwt_token
 
-from api.views import errand, dataset, robo, option, user, trainer, score, joblog, kafkaapi
+from api.views import errand, dataset, robo, option, user, trainer, score, joblog, kafkaapi, config
 
 @login_required
 @api_view(['GET'])
@@ -117,4 +117,8 @@ urlpatterns = [
     url(r'job/(?P<id>[0-9]+)/job', joblog.get_job),
     url(r'job/(?P<id>[0-9]+)/delete', joblog.delete_job),
     url(r'job/render_html', joblog.render_html),
+
+    #CONFIG
+    url(r'config/(?P<type>[a-z]+)', config.database_name),
+    url(r'configpath/(?P<type>[a-z]+)/(?P<id>[0-9]+)', config.database_name_particular),
 ]

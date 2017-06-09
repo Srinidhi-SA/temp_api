@@ -49,6 +49,14 @@ def get_errand_from_id(id):
     except Exception as dne_error:
         return None
 
+def get_all_errand(userId):
+    es = Errand.objects.filter(
+        userId=userId,
+        analysis_done='TRUE',
+        is_archived='FALSE'
+        )
+    return es
+
 
 def list_to_string(list_obj):
     string_  = ", ".join(list_obj)
@@ -347,11 +355,7 @@ def get_archived(request):
 
     userId = request.query_params.get('userId')
 
-    es = Errand.objects.filter(
-        userId=userId,
-        analysis_done='TRUE',
-        is_archived='FALSE'
-        )
+    es = get_all_errand(userId)
 
     es_info = []
     for e in es:
@@ -502,7 +506,8 @@ def get_trend_analysis(request):
     trend_data = e.get_trend_analysis()
 
     return Response({
-        'trend': trend_data
+        # 'trend': trend_data
+        'trend': trend_narraives_demo
     })
 
 
@@ -622,3 +627,204 @@ def add_more_info_to_errand_info(e):
     errand_info["analysis_list"] = analysis_list
 
     return errand_info
+
+
+trend_narraives_demo = {
+  "narratives": {
+    "SectionHeading": "Sales Performance Report",
+    "chart1":[
+          {
+            "key1": "Jan-2017",
+            "value": 7500.0,
+            "key": "2017-01-01"
+          },
+          {
+            "key1": "Feb-2017",
+            "value": 3000.0,
+            "key": "2017-02-01"
+          },
+          {
+            "key1": "Mar-2017",
+            "value": 2100.0,
+            "key": "2017-03-01"
+          },
+          {
+            "key1": "Apr-2017",
+            "value": 5100.0,
+            "key": "2017-04-01"
+          },
+          {
+            "key1": "May-2017",
+            "value": 3600.0,
+            "key": "2017-05-01"
+          },
+          {
+            "key1": "Jun-2017",
+            "value": 1500.0,
+            "key": "2017-06-01"
+          },
+          {
+            "key1": "Jul-2017",
+            "value": 10800.0,
+            "key": "2017-07-01"
+          },
+          {
+            "key1": "Aug-2017",
+            "value": 900.0,
+            "key": "2017-08-01"
+          },
+          {
+            "key1": "Sep-2017",
+            "value": 3300.0,
+            "key": "2017-09-24"
+          },
+          {
+            "key1": "Oct-2017",
+            "value": 600.0,
+            "key": "2017-10-01"
+          },
+          {
+            "key1": "Nov-2017",
+            "value": 600.0,
+            "key": "2017-11-01"
+          },
+          {
+            "key1": "Dec-2017",
+            "value": 10800.0,
+            "key": "2017-12-01"
+          }
+    ],
+    "chart2":[
+          {
+            "key1": "Jan-2017",
+            "value": 7500.0,
+            "key": "2017-01-01"
+          },
+          {
+            "key1": "Feb-2017",
+            "value": 3000.0,
+            "key": "2017-02-01"
+          },
+          {
+            "key1": "Mar-2017",
+            "value": 2100.0,
+            "key": "2017-03-01"
+          },
+          {
+            "key1": "Apr-2017",
+            "value": 5100.0,
+            "key": "2017-04-01"
+          },
+          {
+            "key1": "May-2017",
+            "value": 3600.0,
+            "key": "2017-05-01"
+          },
+          {
+            "key1": "Jun-2017",
+            "value": 1500.0,
+            "key": "2017-06-01"
+          },
+          {
+            "key1": "Jul-2017",
+            "value": 10800.0,
+            "key": "2017-07-01"
+          },
+          {
+            "key1": "Aug-2017",
+            "value": 900.0,
+            "key": "2017-08-01"
+          },
+          {
+            "key1": "Sep-2017",
+            "value": 3300.0,
+            "key": "2017-09-24"
+          },
+          {
+            "key1": "Oct-2017",
+            "value": 600.0,
+            "key": "2017-10-01"
+          },
+          {
+            "key1": "Nov-2017",
+            "value": 600.0,
+            "key": "2017-11-01"
+          },
+          {
+            "key1": "Dec-2017",
+            "value": 10800.0,
+            "key": "2017-12-01"
+          }
+    ],
+    "table1":[
+              ["Increase","Period","Increased by","Range"],
+              ["Largest (Percentage)", "Feb 2016", "128%", "$4406 to $10085"],
+              ["Largest (Absolute)", "Mar 2016", "$ 5250", "$4400 to $9650"],
+              ["Longest Streak", "Jun-Aug 14", "$5350", "$9263 to $14628"]
+            ],
+    "table2":[
+              ["Decrease","Period","Increased by","Range"],
+              ["Largest (Percentage)", "Apr 2016", "40%", "$4406 to $10085"],
+              ["Largest (Absolute)", "Oct 2016", "$ 5250", "$4400 to $9650"],
+              ["Longest Streak", "Jun-Aug 14", "$5350", "$14628 to $9263"]
+            ],
+    "summary": {
+      "bubbleData":[
+                {"value":"232%","text":"Overall growth in sales over the last 12 months"},
+                {"value":"156%","text":"Largest growth in sales happened in Feb 2016"}
+                ],
+      "paragraphs": [
+        {
+          "content": [
+            " This section provides insights on how Sales is performing over time and captures the most significant moments that defined the overall pattern or trend over the observation period. "
+          ],
+          "header": "How Sales is Changing over Time "
+        },
+        {
+          "content": [
+            " The dataset contains sales figures for a 12-month period. The values of sales have grown by 232% during the same time, from $4,406 in Jan 2014 to $14,628 in Dec 2014. The total sales were $146,516 for the last 12 months, with the average sales per month being $12,209. Interestingly, the sales contribution from a streak of 3 months (Aug-Oct) amounts to a total of $651,037, which is almost half of the overall sales for the 12-month period. "
+          ],
+          "header": ""
+        },
+        {
+          "content": [
+            " Driven by the strong increase, sales seem to be on positive trend which is statistically significant. However, the sales figures are unlikely to follow a seasonal pattern during this period. "
+          ],
+          "header": ""
+        },
+        {
+          "content": [
+            " The sales figures hit a peak of $25,306 in Aug 2014, which resulted after a continuous streak of growth for 2 months (Jul-Aug). The most significant factor that fuelled this strong run is the product category, Local Deals. Sales contribution from Local Deals in Aug 2014 increased by over 4 percentage points (18% vis-\\u00e0-vis 13.6%) compared to rest of the observation period. "
+          ],
+          "header": " Highest and Lowest Points of Sales "
+        },
+        {
+          "content": [
+            " However, there are also few months when sales were lagging and didn\\u2019t do very well. The most notable among them was Jun 2014 and values for sales dropped to $9,263 from 12,263 in May 2014. This was primarily due to sharp decline in sales from 18 to 24 Age Group, which observed a decline of over 6 percentage points (21% vs. 15%). "
+          ],
+          "header": ""
+        },
+        {
+          "content":[
+              " City has been very instrumental in driving sales growth, as New York and Chicago witnessed the highest overall growth rates of 50% and 38% respectively. ",
+              " Product categories, such as Vegetables (35%) and Diary (32%), were also contributing significantly to the overall increase. "
+          ],
+          "header": " Significant factors that drive increase in Sales "
+        },
+        {
+          "content": [
+              " Deal Type has been an area of concern, as Adventures and Gourmet shrunk over 56% and 43% respectively. ",
+              " 45 to 54 age group declined by 25% from $10,350 to $7,800 and it had a significant impact on overall growth as the age group accounted for 30% of the total sales in Jan 2014, "
+          ],
+          "header": " Significant factors that drag Sales down "
+        },
+        {
+          "content": [
+            " The predicted values for sales, estimated based on historical trend and seasonality, for the next six months lie between $12,960 and $13,383. It is expected to cross 13,000-mark in Feb 2015 and generate total sales of about $13,383 in Jun 2015, which represents an overall decli ne of 9% (CAGR)."
+          ],
+          "header": " Forecast for the next 6 months "
+        }
+      ]
+    }
+  }
+}
