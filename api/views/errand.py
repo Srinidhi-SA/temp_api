@@ -805,17 +805,18 @@ trend_narraives_demo = {
             },
             {
               "key1": "Jun-2017",
-              "value": 1500.0,
+              "predicted_value": 1500.0,
+              "value":1500.0,
               "key": "2017-06-01"
             },
             {
               "key1": "Jul-2017",
-              "value": 10800.0,
+              "predicted_value": 10800.0,
               "key": "2017-07-01"
             },
             {
               "key1": "Aug-2017",
-              "value": 900.0,
+              "predicted_value": 900.0,
               "key": "2017-08-01"
             }
       ]
