@@ -257,9 +257,10 @@ class Score(models.Model):
 
         feature_as_array = [["Feature","Value"]]
         feature_as_array += feature_data[:5]
-        a["scoreSummary"]["feature_importance"] = feature_as_array
+        # a["scoreSummary"]["feature_importance"] = feature_as_array
+        a["scoreSummary"]["feature_importance"] = feature_importance_dummy_data
         a["scoreSummary"]["feature_importance_heading"] = "The top {0} features are:".format(str(len(a["scoreSummary"]["feature_importance"])-1))
-
+        a["scoreSummary"]["prediction_split"] = score_results_prediction_split
         return a["scoreSummary"]
 
     def read_data_from_emr(self):
@@ -389,3 +390,15 @@ class ScoreSerializer(serializers.Serializer):
     class Meta:
         model = Score
         field = ('id', 'name', 'created_at', 'user_id')
+
+score_results_prediction_split = [
+            ['Range', '>25%','>75%','>80%','>85%','>90%','>95%'],
+            ['Loss', 30, 200, 200, 400, 150, 250],
+            ['Won', 130, 100, 100, 200, 150, 50],
+
+        ]
+
+feature_importance_dummy_data = [
+    ["Name", "AGE_CATEGORY", "AMOUNT_PAID_NOVEMBER", "STATUS", "BILL_AMOUNT_NOVEMBER", "EDUCATION", "BILL_AMOUNT_DECEMBER", "AMOUNT_PAID_DECEMBER", "STATE", "OCCUPATION", "MARRIAGE"],
+    ["Value", 0.007058221371135741, 0.0028883097720690254, 0.0026129957425838064, 0.0021655785195103493, 0.0012144740424919747, 0.0011479622477891692, 0.0009416868976334556, 0.0008169380994169005, 0.00045068569038685796, 0.00012034484007067192]
+    ]

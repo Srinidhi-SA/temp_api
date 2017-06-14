@@ -244,7 +244,8 @@ def get_results(request):
     return Response({
         'result': e.get_result(),
         'narratives': e.get_narratives(),
-        'dimensions': e.get_dimension_results(),
+        # 'dimensions': e.get_dimension_results(),
+        'dimensions': anova_dummy_data_2,
         'measures': e.get_reg_results(),
         'decision_tree_narrative': e.get_decision_tree_regression_narratives(),
         'decision_tree_result': e.get_decision_tree_regression_results(),
@@ -822,4 +823,510 @@ trend_narraives_demo = {
       ]
     }
 }
+}
+
+anova_dummy_data = {
+  "narratives": {
+    "heading": "Sales Performance Analysis",
+    "main_card": {
+      "chart": {
+        "effect_size": {
+          "heading": "",
+          "data": {
+            "City": 0.76,
+            "Marketing Channel": 0.64,
+            "Deal Type": 0.45
+          },
+          "labels": {
+            "Dimension": "Effect Size"
+          }
+        }
+      },
+      "header": "Relationship between Sales and Other Dimensions",
+      "paragraphs": [{
+          "header": "",
+          "content": ["There are 20 dimensions in the dataset and 5 of them (including City, Marketing Channel, Deal Type, etc.) have significant influence on sales.  It implies that specific categories within each of the dimensions show considerable amount of variation in sales. However, other dimensions, such as Product Group, Subcategory, etc., don't show significant difference in sales values across categories."]
+        },
+        {
+          "header": "",
+          "content": ["The chart below displays the impact of key dimensions on sales, as measured by effect size. Let us take a deeper look at some of the most important dimensions that show significant amount of difference in average sales."]
+        }
+      ]
+    },
+    "cards": {
+      "City": {
+        "card1": {
+          "heading": "Impact of City on Sales",
+          "charts": {
+            "group_by_total": {
+              "heading": "",
+              "data": {
+                "Miami": 7860101.948559997,
+                "New York": 2.016576714184001E7,
+                "Los Angeles": 1.1850875860800004E7,
+                "Las Vegas": 3783720.639999998
+              },
+              "labels": {
+                "City": "Sales"
+              }
+            },
+            "group_by_mean": {
+              "heading": "",
+              "data": {
+                "Miami": 60101.948559997,
+                "New York": 65767.141840,
+                "Los Angeles": 850875.8608,
+                "Las Vegas": 37830.639999998
+              },
+              "labels": {
+                "City": "Sales"
+              }
+            },
+            "paragraphs": [{
+                "header": "Overview",
+                "content": ["The top 3 cities account for about 25% of the total sales.  Being the largest contributor, total sales from Miami amounts to $122,589 that accounts for about 10% of the total sales. However, Sacramento has the highest average sales of $295, whereas the average for Miami is $270. On the other hand, Minneapolis contributes to just 8% of the total sales with the average being 79. Interestingly, the effect of city on sales is significant as the average sales seem to be different across various cities. The average sale figures from Miami are typically 18% higher than those of Detroit and Boise."]
+              },
+              {
+                "header": "Key Factors Influencing Sales from Miami",
+                "content": ["High contribution of sales from Miami is characterized by the influence of key dimensions, such as Sales Person, Region, and Channel. Certain specific segments from those dimensions are more likely to explain Miami's significant sales turnover.  For instance, John Greg (40%) along with Karl (35%), the top performing Sales Persons account for 75% of the overall sales from Miami. In terms of Region, Americas (54%) and Europe (39%) account for 93% of the total sales. Among the channels, Convenience Stores has got the major chunk of sales from Miami, accounting for 43%."]
+              }
+            ],
+            "bubble_data": [{
+                "value": "34.87 Million",
+                "text": "New York is the largest contributor to sales"
+              },
+              {
+                "value": "234.87K",
+                "text": "San Francisco has the highest average sales"
+              }
+            ]
+          }
+        },
+        "card2": {
+            "heading": "Miami's Sales Performance over Time",
+            "chart": {
+              "trend_chart": {
+                "heading": "",
+                "data": {
+                  "Date": ["Jan-12", "Feb-12", "Mar-12", "Apr-12", "May-12", "Jun-12", "Jul-12", "Aug-12", "Sep-12", "Oct-12", "Nov-12", "Dec-12", "Jan-13", "Feb-13", "Mar-13", "Apr-13"],
+                  "Total Sales": [43223.875, 56400.8571428571, 39982.5455, 46732.8182, 56061, 85415, 59389.67, 4241.8, 53862.3, 39618.625, 5645.3, 35795.4, 43730.3, 57595.7142857143, 57147, 58620.875],
+                  "Miami Sales": [5164.8461538462, 3277.0882352941, 3858.064516129, 3920.5588235294, 4241.3461538462, 4123.83, 2893.2857142857, 2937, 3174.7297297297, 4039.0606060606, 3525.8, 254.925, 3160.1388888889, 3534.1428571429, 4045.2258064516, 3136.775]
+                }
+              }
+            },
+            "paragraphs": [{
+                "header": "",
+                "content": ["Sales contribution from Miami is predominantly in line with the overall sales trend, as the city observed similar ups and downs during the observation period. The overall sales figures hit a peak of $25,306 in Aug 2014, when it grew by over 32% compared to the previous month. Interestingly, Miami's sales also sharply rose and hit a peak of $25,155 during the same period. The last three months, between Jul 2014 and Sep 2014, accounted for almost half of Miami's total sales, i.e. $62,560. Driven by this buoyant growth off late, the outlook for Miami's next quarter sales looks very promising."]
+              },
+              {
+                "header": "How other cities are trending",
+                "content": ["Cities, Seattle and Atlanta, are the fastest growing in terms of sales at 19% & 20% respectively compared to the overall average of 10%. On the other hand, Denver and San Diego have experienced the highest negative growth rates of -10% and -20% respectively. Finally, there are also cities which didn't experience any growth nor decline are Washington and Boston.  Out of the 15 cities, 8 showed positive growth, 5 witnessed negative growth and 2 cities remained stagnant."]
+              }
+            ]
+          },
+        "card3": {
+            "heading": "City-Sales Performance Decision Matrix",
+            "chart": {
+              "decision_matrix": {
+                "heading": "",
+                "data": {
+                  "Date": ["Jan-12", "Feb-12", "Mar-12", "Apr-12", "May-12", "Jun-12", "Jul-12", "Aug-12", "Sep-12", "Oct-12", "Nov-12", "Dec-12", "Jan-13", "Feb-13", "Mar-13", "Apr-13"],
+                  "Total Sales": [43223.875, 56400.8571428571, 39982.5455, 46732.8182, 56061, 85415, 59389.67, 4241.8, 53862.3, 39618.625, 5645.3, 35795.4, 43730.3, 57595.7142857143, 57147, 58620.875],
+                  "Miami Sales": [5164.8461538462, 3277.0882352941, 3858.064516129, 3920.5588235294, 4241.3461538462, 4123.83, 2893.2857142857, 2937, 3174.7297297297, 4039.0606060606, 3525.8, 254.925, 3160.1388888889, 3534.1428571429, 4045.2258064516, 3136.775]
+                }
+              }
+            },
+            "paragraphs": [{
+                "header": "",
+                "content": ["Based on the absolute sales values and the overall growth rates, mAdvisor presents the decision matrix for sales as displayed below."]
+              },
+              {
+                "header": "Leaders Club",
+                "content": ["Total of 3 cities, Miami, Seattle, and Boston, feature in the Leaders Club signalling healthy trend in terms of revenue contribution as well growth."]
+              },
+              {
+                "header": "Opportunity Bay",
+                "content": ["Four cities, including NYC, Detroit, Denver, and Boise, feature in this quadrant implying that there is good potential for revenue growth, even though their current sales contributions are relatively less."]
+              },
+              {
+                "header": "Playing Safe",
+                "content": ["There are four cities (Atlanta, Orlando, San Francisco, and Sacramento) featuring in this quadrant which is characterized by high level of sales but low rates of growth."]
+              },
+              {
+                "header": "Red Alert",
+                "content": [" Chicago, Los Angeles, Washington, and San Diego are not performing well both in terms of sales contribution and growth."]
+              }
+            ]
+          }
+      },
+      "Deal Type": {
+            "card1": {
+              "heading": "Impact of Deal Type on Sales",
+              "chart": {
+                "group_by_total": {
+                  "heading": "",
+                  "data": {
+                    "Online": 7860101.948559997,
+                    "Telephone Booking": 2.016576714184001E7,
+                    "Referral": 1.1850875860800004E7,
+                    "Broker": 3783720.639999998
+                  },
+                  "labels": {
+                    "Deal Type": "Sales"
+                  }
+                },
+                "group_by_mean": {
+                  "heading": "",
+                  "data": {
+                    "Online": 60101.948559997,
+                    "Telephone Booking": 65767.141840,
+                    "Referral": 850875.8608,
+                    "Broker": 37830.639999998
+                  },
+                  "labels": {
+                    "Deal Type": "Sales"
+                  }
+                }
+              },
+              "paragraphs": [{
+                  "header": "Overview",
+                  "content": ["The top 3 Deal Types account for about 25% of the total sales.  Being the largest contributor, total sales from Online amounts to $122,589 that accounts for about 10% of the total sales. However, Broker has the highest average sales of $295, whereas the average for Online is $270. On the other hand, Referral contributes to just 8% of the total sales with the average being 79. Interestingly, the effect of Deal Type on sales is significant as the average sales seem to be different across various Deal Types. The average sale figures from Online are typically 18% higher than those of Detroit and Boise."]
+                },
+                {
+                  "header": "Key Factors Influencing Sales from Online",
+                  "content": ["High contribution of sales from Online is characterized by the influence of key dimensions, such as Sales Person, Region, and Channel. Certain specific segments from those dimensions are more likely to explain Online's significant sales turnover.  For instance, John Greg (40%) along with Karl (35%), the top performing Sales Persons account for 75% of the overall sales from Online. In terms of Region, Americas (54%) and Europe (39%) account for 93% of the total sales. Among the channels, Convenience Stores has got the major chunk of sales from Online, accounting for 43%."]
+                }
+              ],
+              "bubble_data": [{
+                  "value": "34.87 Million",
+                  "text": "Telephone Booking is the largest contributor to sales"
+                },
+                {
+                  "value": "234.87K",
+                  "text": "San Francisco has the highest average sales"
+                }
+              ]
+            },
+            "card2": {
+              "heading": "Online's Sales Performance over Time",
+              "chart": {
+                "trend_chart": {
+                  "heading": "",
+                  "data": {
+                    "Date": ["Jan-12", "Feb-12", "Mar-12", "Apr-12", "May-12", "Jun-12", "Jul-12", "Aug-12", "Sep-12", "Oct-12", "Nov-12", "Dec-12", "Jan-13", "Feb-13", "Mar-13", "Apr-13"],
+                    "Total Sales": [43223.875, 56400.8571428571, 39982.5455, 46732.8182, 56061, 85415, 59389.67, 4241.8, 53862.3, 39618.625, 5645.3, 35795.4, 43730.3, 57595.7142857143, 57147, 58620.875],
+                    "Online Sales": [5164.8461538462, 3277.0882352941, 3858.064516129, 3920.5588235294, 4241.3461538462, 4123.83, 2893.2857142857, 2937, 3174.7297297297, 4039.0606060606, 3525.8, 254.925, 3160.1388888889, 3534.1428571429, 4045.2258064516, 3136.775]
+                  }
+                }
+              },
+              "paragraphs": [{
+                  "header": "",
+                  "content": ["Sales contribution from Online is predominantly in line with the overall sales trend, as the Deal Type observed similar ups and downs during the observation period. The overall sales figures hit a peak of $25,306 in Aug 2014, when it grew by over 32% compared to the previous month. Interestingly, Online's sales also sharply rose and hit a peak of $25,155 during the same period. The last three months, between Jul 2014 and Sep 2014, accounted for almost half of Online's total sales, i.e. $62,560. Driven by this buoyant growth off late, the outlook for Online's next quarter sales looks very promising."]
+                },
+                {
+                  "header": "How other Deal Types are trending",
+                  "content": ["Deal Types, Seattle and Atlanta, are the fastest growing in terms of sales at 19% & 20% respectively compared to the overall average of 10%. On the other hand, Denver and San Diego have experienced the highest negative growth rates of -10% and -20% respectively. Finally, there are also Deal Types which didn't experience any growth nor decline are Washington and Boston.  Out of the 15 Deal Types, 8 showed positive growth, 5 witnessed negative growth and 2 Deal Types remained stagnant."]
+                }
+              ]
+            },
+            "card3": {
+              "heading": "Deal Type-Sales Performance Decision Matrix",
+              "chart": {
+                "decision_matrix": {
+                  "heading": "",
+                  "data": {
+                    "Date": ["Jan-12", "Feb-12", "Mar-12", "Apr-12", "May-12", "Jun-12", "Jul-12", "Aug-12", "Sep-12", "Oct-12", "Nov-12", "Dec-12", "Jan-13", "Feb-13", "Mar-13", "Apr-13"],
+                    "Total Sales": [43223.875, 56400.8571428571, 39982.5455, 46732.8182, 56061, 85415, 59389.67, 4241.8, 53862.3, 39618.625, 5645.3, 35795.4, 43730.3, 57595.7142857143, 57147, 58620.875],
+                    "Online Sales": [5164.8461538462, 3277.0882352941, 3858.064516129, 3920.5588235294, 4241.3461538462, 4123.83, 2893.2857142857, 2937, 3174.7297297297, 4039.0606060606, 3525.8, 254.925, 3160.1388888889, 3534.1428571429, 4045.2258064516, 3136.775]
+                  }
+                }
+              },
+              "paragraphs": [{
+                  "header": "",
+                  "content": ["Based on the absolute sales values and the overall growth rates, mAdvisor presents the decision matrix for sales as displayed below."]
+                },
+                {
+                  "header": "Leaders Club",
+                  "content": ["Total of 3 Deal Types, Online, Seattle, and Boston, feature in the Leaders Club signalling healthy trend in terms of revenue contribution as well growth."]
+                },
+                {
+                  "header": "Opportunity Bay",
+                  "content": ["Four Deal Types, including NYC, Detroit, Denver, and Boise, feature in this quadrant implying that there is good potential for revenue growth, even though their current sales contributions are relatively less."]
+                },
+                {
+                  "header": "Playing Safe",
+                  "content": ["There are four Deal Types (Atlanta, Orlando, San Francisco, and Broker) featuring in this quadrant which is characterized by high level of sales but low rates of growth."]
+                },
+                {
+                  "header": "Red Alert",
+                  "content": [" Chicago, Referral, Washington, and San Diego are not performing well both in terms of sales contribution and growth."]
+                }
+              ]
+            }
+
+          }
+    }
+  }
+}
+
+anova_dummy_data_2 = {
+  "narratives": {
+    "heading": "Sales Performance Analysis",
+    "main_card": {
+      "chart": {
+        "effect_size": {
+          "heading": "",
+          "data": {
+            "City": 0.76,
+            "Marketing Channel": 0.64,
+            "Deal Type": 0.45
+          },
+          "labels": {
+            "Dimension": "Effect Size"
+          }
+        }
+      },
+      "header": "Relationship between Sales and Other Dimensions",
+      "paragraphs": [{
+          "header": "",
+          "content": ["There are 20 dimensions in the dataset and 5 of them (including City, Marketing Channel, Deal Type, etc.) have significant influence on sales.  It implies that specific categories within each of the dimensions show considerable amount of variation in sales. However, other dimensions, such as Product Group, Subcategory, etc., don't show significant difference in sales values across categories."]
+        },
+        {
+          "header": "",
+          "content": ["The chart below displays the impact of key dimensions on sales, as measured by effect size. Let us take a deeper look at some of the most important dimensions that show significant amount of difference in average sales."]
+        }
+      ]
+    },
+    "cards": [
+	{
+        "card1": {
+          "heading": "Impact of City on Sales",
+          "charts": {
+            "group_by_total": {
+              "heading": "",
+              "data": {
+                "Miami": 7860101.948559997,
+                "New York": 2.016576714184001E7,
+                "Los Angeles": 1.1850875860800004E7,
+                "Las Vegas": 3783720.639999998
+              },
+              "labels": {
+                "City": "Sales"
+              }
+            },
+            "group_by_mean": {
+              "heading": "",
+              "data": {
+                "Miami": 60101.948559997,
+                "New York": 65767.141840,
+                "Los Angeles": 850875.8608,
+                "Las Vegas": 37830.639999998
+              },
+              "labels": {
+                "City": "Sales"
+              }
+            }
+          },
+          "paragraphs": [{
+            "header": "Overview",
+            "content": [
+                "The top 3 cities account for about 25% of the total sales.  Being the largest contributor, total sales from Miami amounts to $122,589 that accounts for about 10% of the total sales. However, Sacramento has the highest average sales of $295, whereas the average for Miami is $270. On the other hand, Minneapolis contributes to just 8% of the total sales with the average being 79. Interestingly, the effect of city on sales is significant as the average sales seem to be different across various cities. The average sale figures from Miami are typically 18% higher than those of Detroit and Boise."]
+          },
+          {
+                "header": "Key Factors Influencing Sales from Miami",
+                "content": [
+                    "High contribution of sales from Miami is characterized by the influence of key dimensions, such as Sales Person, Region, and Channel. Certain specific segments from those dimensions are more likely to explain Miami's significant sales turnover.  For instance, John Greg (40%) along with Karl (35%), the top performing Sales Persons account for 75% of the overall sales from Miami. In terms of Region, Americas (54%) and Europe (39%) account for 93% of the total sales. Among the channels, Convenience Stores has got the major chunk of sales from Miami, accounting for 43%."]
+          }
+          ],
+          "bubble_data": [{
+            "value": "34.87 Million",
+            "text": "New York is the largest contributor to sales"
+          },
+            {
+                "value": "234.87K",
+                "text": "San Francisco has the highest average sales"
+            }
+          ]
+        },
+        "card2": {
+            "heading": "Miami's Sales Performance over Time",
+            "charts": {
+              "trend_chart": {
+                "heading": "",
+                "data": [
+                  ['date', '2013-01-01', '2013-01-02', '2013-01-03', '2013-01-04', '2013-01-05', '2013-01-06', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12', '2014-01-01', '2014-01-02', '2015-01-03', '2015-01-04'],
+                  # ["x", "Jan-12", "Feb-12", "Mar-12", "Apr-12", "May-12", "Jun-12", "Jul-12", "Aug-12", "Sep-12", "Oct-12", "Nov-12", "Dec-12", "Jan-13", "Feb-13", "Mar-13", "Apr-13"],
+                  ["Total Sales", 43223.875, 56400.8571428571, 39982.5455, 46732.8182, 56061, 85415, 59389.67, 4241.8, 53862.3, 39618.625, 5645.3, 35795.4, 43730.3, 57595.7142857143, 57147, 58620.875],
+                  ["Miami Sales", 5164.8461538462, 3277.0882352941, 3858.064516129, 3920.5588235294, 4241.3461538462, 4123.83, 2893.2857142857, 2937, 3174.7297297297, 4039.0606060606, 3525.8, 254.925, 3160.1388888889, 3534.1428571429, 4045.2258064516, 3136.775]
+                ],
+                "format": '%b-%d-%Y'
+              }
+            },
+            "paragraphs": [{
+                "header": "",
+                "content": ["Sales contribution from Miami is predominantly in line with the overall sales trend, as the city observed similar ups and downs during the observation period. The overall sales figures hit a peak of $25,306 in Aug 2014, when it grew by over 32% compared to the previous month. Interestingly, Miami's sales also sharply rose and hit a peak of $25,155 during the same period. The last three months, between Jul 2014 and Sep 2014, accounted for almost half of Miami's total sales, i.e. $62,560. Driven by this buoyant growth off late, the outlook for Miami's next quarter sales looks very promising."]
+              },
+              {
+                "header": "How other cities are trending",
+                "content": ["Cities, Seattle and Atlanta, are the fastest growing in terms of sales at 19% & 20% respectively compared to the overall average of 10%. On the other hand, Denver and San Diego have experienced the highest negative growth rates of -10% and -20% respectively. Finally, there are also cities which didn't experience any growth nor decline are Washington and Boston.  Out of the 15 cities, 8 showed positive growth, 5 witnessed negative growth and 2 cities remained stagnant."]
+              }
+            ]
+          },
+        "card3": {
+            "heading": "City-Sales Performance Decision Matrix",
+            "charts": {
+              "decision_matrix": {
+                "heading": "",
+                  "data": [
+                      ['date', '2013-01-01', '2013-01-02', '2013-01-03', '2013-01-04', '2013-01-05', '2013-01-06',
+                       '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12', '2014-01-01',
+                       '2014-01-02', '2015-01-03', '2015-01-04'],
+                      # ["x", "Jan-12", "Feb-12", "Mar-12", "Apr-12", "May-12", "Jun-12", "Jul-12", "Aug-12", "Sep-12", "Oct-12", "Nov-12", "Dec-12", "Jan-13", "Feb-13", "Mar-13", "Apr-13"],
+                      ["Total Sales", 43223.875, 56400.8571428571, 39982.5455, 46732.8182, 56061, 85415, 59389.67,
+                       4241.8, 53862.3, 39618.625, 5645.3, 35795.4, 43730.3, 57595.7142857143, 57147, 58620.875],
+                      ["Miami Sales", 5164.8461538462, 3277.0882352941, 3858.064516129, 3920.5588235294,
+                       4241.3461538462, 4123.83, 2893.2857142857, 2937, 3174.7297297297, 4039.0606060606, 3525.8,
+                       254.925, 3160.1388888889, 3534.1428571429, 4045.2258064516, 3136.775]
+                  ],
+                  "format": '%b-%d-%Y'
+              }
+            },
+            "paragraphs": [{
+                "header": "",
+                "content": ["Based on the absolute sales values and the overall growth rates, mAdvisor presents the decision matrix for sales as displayed below."]
+              },
+              {
+                "header": "Leaders Club",
+                "content": ["Total of 3 cities, Miami, Seattle, and Boston, feature in the Leaders Club signalling healthy trend in terms of revenue contribution as well growth."]
+              },
+              {
+                "header": "Opportunity Bay",
+                "content": ["Four cities, including NYC, Detroit, Denver, and Boise, feature in this quadrant implying that there is good potential for revenue growth, even though their current sales contributions are relatively less."]
+              },
+              {
+                "header": "Playing Safe",
+                "content": ["There are four cities (Atlanta, Orlando, San Francisco, and Sacramento) featuring in this quadrant which is characterized by high level of sales but low rates of growth."]
+              },
+              {
+                "header": "Red Alert",
+                "content": [" Chicago, Los Angeles, Washington, and San Diego are not performing well both in terms of sales contribution and growth."]
+              }
+            ]
+          }
+      },
+      {
+            "card1": {
+              "heading": "Impact of Deal Type on Sales",
+              "charts": {
+                "group_by_total": {
+                  "heading": "",
+                  "data": {
+                    "Online": 7860101.948559997,
+                    "Telephone Booking": 2.016576714184001E7,
+                    "Referral": 1.1850875860800004E7,
+                    "Broker": 3783720.639999998
+                  },
+                  "labels": {
+                    "Deal Type": "Sales"
+                  }
+                },
+                "group_by_mean": {
+                  "heading": "",
+                  "data": {
+                    "Online": 60101.948559997,
+                    "Telephone Booking": 65767.141840,
+                    "Referral": 850875.8608,
+                    "Broker": 37830.639999998
+                  },
+                  "labels": {
+                    "Deal Type": "Sales"
+                  }
+                }
+              },
+              "paragraphs": [{
+                  "header": "Overview",
+                  "content": ["The top 3 Deal Types account for about 25% of the total sales.  Being the largest contributor, total sales from Online amounts to $122,589 that accounts for about 10% of the total sales. However, Broker has the highest average sales of $295, whereas the average for Online is $270. On the other hand, Referral contributes to just 8% of the total sales with the average being 79. Interestingly, the effect of Deal Type on sales is significant as the average sales seem to be different across various Deal Types. The average sale figures from Online are typically 18% higher than those of Detroit and Boise."]
+                },
+                {
+                  "header": "Key Factors Influencing Sales from Online",
+                  "content": ["High contribution of sales from Online is characterized by the influence of key dimensions, such as Sales Person, Region, and Channel. Certain specific segments from those dimensions are more likely to explain Online's significant sales turnover.  For instance, John Greg (40%) along with Karl (35%), the top performing Sales Persons account for 75% of the overall sales from Online. In terms of Region, Americas (54%) and Europe (39%) account for 93% of the total sales. Among the channels, Convenience Stores has got the major chunk of sales from Online, accounting for 43%."]
+                }
+              ],
+              "bubble_data": [{
+                  "value": "34.87 Million",
+                  "text": "Telephone Booking is the largest contributor to sales"
+                },
+                {
+                  "value": "234.87K",
+                  "text": "San Francisco has the highest average sales"
+                }
+              ]
+            },
+            "card2": {
+              "heading": "Online's Sales Performance over Time",
+              "charts": {
+                "trend_chart": {
+                  "heading": "",
+                    "data": [
+                        ['date', '2013-01-01', '2013-01-02', '2013-01-03', '2013-01-04', '2013-01-05', '2013-01-06',
+                         '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12',
+                         '2014-01-01', '2014-01-02', '2015-01-03', '2015-01-04'],
+                        # ["x", "Jan-12", "Feb-12", "Mar-12", "Apr-12", "May-12", "Jun-12", "Jul-12", "Aug-12", "Sep-12", "Oct-12", "Nov-12", "Dec-12", "Jan-13", "Feb-13", "Mar-13", "Apr-13"],
+                        ["Total Sales", 43223.875, 56400.8571428571, 39982.5455, 46732.8182, 56061, 85415, 59389.67,
+                         4241.8, 53862.3, 39618.625, 5645.3, 35795.4, 43730.3, 57595.7142857143, 57147, 58620.875],
+                        ["Miami Sales", 5164.8461538462, 3277.0882352941, 3858.064516129, 3920.5588235294,
+                         4241.3461538462, 4123.83, 2893.2857142857, 2937, 3174.7297297297, 4039.0606060606, 3525.8,
+                         254.925, 3160.1388888889, 3534.1428571429, 4045.2258064516, 3136.775]
+                    ],
+                    "format": '%b-%d-%Y'
+                }
+              },
+              "paragraphs": [{
+                  "header": "",
+                  "content": ["Sales contribution from Online is predominantly in line with the overall sales trend, as the Deal Type observed similar ups and downs during the observation period. The overall sales figures hit a peak of $25,306 in Aug 2014, when it grew by over 32% compared to the previous month. Interestingly, Online's sales also sharply rose and hit a peak of $25,155 during the same period. The last three months, between Jul 2014 and Sep 2014, accounted for almost half of Online's total sales, i.e. $62,560. Driven by this buoyant growth off late, the outlook for Online's next quarter sales looks very promising."]
+                },
+                {
+                  "header": "How other Deal Types are trending",
+                  "content": ["Deal Types, Seattle and Atlanta, are the fastest growing in terms of sales at 19% & 20% respectively compared to the overall average of 10%. On the other hand, Denver and San Diego have experienced the highest negative growth rates of -10% and -20% respectively. Finally, there are also Deal Types which didn't experience any growth nor decline are Washington and Boston.  Out of the 15 Deal Types, 8 showed positive growth, 5 witnessed negative growth and 2 Deal Types remained stagnant."]
+                }
+              ]
+            },
+            "card3": {
+              "heading": "Deal Type-Sales Performance Decision Matrix",
+              "charts": {
+                "decision_matrix": {
+                  "heading": "",
+                  "data": {
+                    "Date": ["Jan-12", "Feb-12", "Mar-12", "Apr-12", "May-12", "Jun-12", "Jul-12", "Aug-12", "Sep-12", "Oct-12", "Nov-12", "Dec-12", "Jan-13", "Feb-13", "Mar-13", "Apr-13"],
+                    "Total Sales": [43223.875, 56400.8571428571, 39982.5455, 46732.8182, 56061, 85415, 59389.67, 4241.8, 53862.3, 39618.625, 5645.3, 35795.4, 43730.3, 57595.7142857143, 57147, 58620.875],
+                    "Online Sales": [5164.8461538462, 3277.0882352941, 3858.064516129, 3920.5588235294, 4241.3461538462, 4123.83, 2893.2857142857, 2937, 3174.7297297297, 4039.0606060606, 3525.8, 254.925, 3160.1388888889, 3534.1428571429, 4045.2258064516, 3136.775]
+                  }
+                }
+              },
+              "paragraphs": [{
+                  "header": "",
+                  "content": ["Based on the absolute sales values and the overall growth rates, mAdvisor presents the decision matrix for sales as displayed below."]
+                },
+                {
+                  "header": "Leaders Club",
+                  "content": ["Total of 3 Deal Types, Online, Seattle, and Boston, feature in the Leaders Club signalling healthy trend in terms of revenue contribution as well growth."]
+                },
+                {
+                  "header": "Opportunity Bay",
+                  "content": ["Four Deal Types, including NYC, Detroit, Denver, and Boise, feature in this quadrant implying that there is good potential for revenue growth, even though their current sales contributions are relatively less."]
+                },
+                {
+                  "header": "Playing Safe",
+                  "content": ["There are four Deal Types (Atlanta, Orlando, San Francisco, and Broker) featuring in this quadrant which is characterized by high level of sales but low rates of growth."]
+                },
+                {
+                  "header": "Red Alert",
+                  "content": [" Chicago, Referral, Washington, and San Diego are not performing well both in terms of sales contribution and growth."]
+                }
+              ]
+            }
+
+      }
+    ]
+  }
 }
