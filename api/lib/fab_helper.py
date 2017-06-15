@@ -4,6 +4,8 @@ from django.conf import settings
 
 HDFS = settings.HDFS
 BASEDIR = settings.BASE_DIR
+EMR_INFO = settings.EMR
+emr_home_path = EMR_INFO.get('home_path')
 
 emr_file = BASEDIR + "/api/lib/TIAA.pem"
 
@@ -51,13 +53,13 @@ def remote_uname():
 
 
 def create_base_model_and_score_folder():
-    path = "/home/hadoop"
+    path = emr_home_path
     run('mkdir -p {0}/{1}'.format(path,'models'))
     run('mkdir -p {0}/{1}'.format(path,'scores'))
 
 
 def create_model_instance_extended_folder(id):
-    path = "/home/hadoop/models/{0}".format(str(id))
+    path = "{0}/models/{1}".format(emr_home_path, str(id))
 
     for m_n in model_names:
         for i_f in inner_folders:
@@ -65,7 +67,7 @@ def create_model_instance_extended_folder(id):
 
 
 def create_score_extended_folder(id):
-    path = "/home/hadoop/scores/{0}".format(str(id))
+    path = "{0}/scores/{1}".format(emr_home_path, str(id))
 
     for s_f in score_folders:
         run('mkdir -p {0}/{1}'.format(path, s_f))
@@ -101,7 +103,7 @@ def read_remote(dir_paths):
 
 
 def remote_mkdir_for_score_story(id):
-    path = "/home/hadoop/scores/{0}".format(str(id))
+    path = "{0}/scores/{1}".format(emr_home_path, str(id))
 
     for s_s_f in score_story_folders:
         for s_s_s_f in score_story_sub_folders:

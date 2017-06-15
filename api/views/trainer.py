@@ -9,6 +9,10 @@ import json
 from django.conf import settings
 from api.views.joblog import submit_masterjob
 
+EMR_INFO = settings.EMR
+emr_home_path = EMR_INFO.get('home_path')
+
+
 # import views
 
 # import rest_framework
@@ -319,7 +323,7 @@ def remote_folder(request):
         create_model_instance_extended_folder, \
         read_remote
     remote_uname()
-    path_dir = '/home/hadoop/config.cfg'
+    path_dir = '{0}/config.cfg'.format(emr_home_path)
     # read_remote(path_dir)
 
     tr = get_trainer_using_id(92)

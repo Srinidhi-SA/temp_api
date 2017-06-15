@@ -139,6 +139,11 @@ HDFS = {
     'user.name': 'hadoop'
 }
 
+EMR = {
+    "emr_pem_path": "",
+    "home_path": "/home/hadoop"
+}
+
 KAFKA = {
     'host': 'localhost',
     'port': '9092',
