@@ -26,6 +26,11 @@ def get_dataset_from_data_from_id(id):
     return Dataset.objects.get(pk=id)
 
 
+def get_all_dataset(userId):
+    ds = Dataset.objects.filter(userId=userId)
+    return ds
+
+
 @api_view(['POST'])
 @renderer_classes((JSONRenderer,))
 def create(request):
@@ -60,7 +65,7 @@ def all(request):
     """
     userId = request.query_params.get('userId')
 
-    ds = Dataset.objects.filter(userId=userId)
+    ds = get_all_dataset(userId)
 
     all_dataset_info = []
 

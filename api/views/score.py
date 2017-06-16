@@ -49,6 +49,13 @@ def get_all_score_of_this_user(user_id, app_id):
 
     return results
 
+def get_all_score(user_id):
+    scr = Score.objects.filter(
+        userId=user_id,
+        analysis_done='TRUE'
+        )
+    return scr
+
 def add_more_info_to_score(score, data):
 
     ds = score.dataset

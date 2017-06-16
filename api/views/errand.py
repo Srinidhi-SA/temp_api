@@ -49,6 +49,14 @@ def get_errand_from_id(id):
     except Exception as dne_error:
         return None
 
+def get_all_errand(userId):
+    es = Errand.objects.filter(
+        userId=userId,
+        analysis_done='TRUE',
+        is_archived='FALSE'
+        )
+    return es
+
 
 def list_to_string(list_obj):
     string_  = ", ".join(list_obj)
@@ -356,11 +364,7 @@ def get_archived(request):
 
     userId = request.query_params.get('userId')
 
-    es = Errand.objects.filter(
-        userId=userId,
-        analysis_done='TRUE',
-        is_archived='FALSE'
-        )
+    es = get_all_errand(userId)
 
     es_info = []
     for e in es:
