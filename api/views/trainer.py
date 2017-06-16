@@ -160,6 +160,7 @@ def setup_and_call_script(request):
 
     details = TrainerSerializer(trainer).data
     results = trainer.read_trainer_details()
+    # results['feature'] = trainer_feature_dummy_data
 
     # create response
     return Response({
@@ -189,6 +190,7 @@ def retrieve_trainer(request):
     # serialize trainer
     details = TrainerSerializer(trainer).data
     results = trainer.read_trainer_details()
+    # results['feature'] = trainer_feature_dummy_data
 
     # create response
     return Response({
@@ -329,6 +331,12 @@ def remote_folder(request):
     # create_model_instance_extended_folder(1)
     return HttpResponse({
                          'a':'a'})
+
+#
+# trainer_feature_dummy_data = [
+#     ["Name", "AGE_CATEGORY", "AMOUNT_PAID_NOVEMBER", "STATUS", "BILL_AMOUNT_NOVEMBER", "EDUCATION", "BILL_AMOUNT_DECEMBER", "AMOUNT_PAID_DECEMBER", "STATE", "OCCUPATION", "MARRIAGE"],
+#     ["Value", 0.007058221371135741, 0.0028883097720690254, 0.0026129957425838064, 0.0021655785195103493, 0.0012144740424919747, 0.0011479622477891692, 0.0009416868976334556, 0.0008169380994169005, 0.00045068569038685796, 0.00012034484007067192]
+# ]
 
 
 

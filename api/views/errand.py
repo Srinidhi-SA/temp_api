@@ -244,12 +244,21 @@ def get_results(request):
     return Response({
         'result': e.get_result(),
         'narratives': e.get_narratives(),
+
+        # real data dimension data (anova data)
         'dimensions': e.get_dimension_results(),
-        'measures': e.get_reg_results(),
+
+        #dummy data dimension data (anova data)
+        # 'dimensions': anova_dummy_data_2,
+
+        # real data measures data (regression data)
+        # 'measures': e.get_reg_results(),
+
+        # dummy data measures data (regression data)
+        'measures': regression_dummy_data,
         'decision_tree_narrative': e.get_decision_tree_regression_narratives(),
         'decision_tree_result': e.get_decision_tree_regression_results(),
         'density_histogram': e.get_density_histogram(),
-
     })
 
 
@@ -502,8 +511,8 @@ def get_trend_analysis(request):
     trend_data = e.get_trend_analysis()
 
     return Response({
-        # 'trend': trend_data
-        'trend': trend_narraives_demo
+        'trend': trend_data
+        # 'trend': trend_narraives_demo
     })
 
 
@@ -655,7 +664,7 @@ trend_narraives_demo = {
                 }
 
       ],
-      "chart":[
+      "chart":{"data":[
             {
               "key1": "Jan-2017",
               "value": 7500.0,
@@ -716,7 +725,7 @@ trend_narraives_demo = {
               "value": 10800.0,
               "key": "2017-12-01"
             }
-      ],
+      ],"format":"%b-%y"},
     },
     "card2":{
       "table1":[
@@ -777,7 +786,7 @@ trend_narraives_demo = {
           "header": " Forecast for the next 6 months "
         }
       ],
-      "chart": [
+      "chart": {"data":[
             {
               "key1": "Jan-2017",
               "value": 7500.0,
@@ -819,7 +828,689 @@ trend_narraives_demo = {
               "predicted_value": 900.0,
               "key": "2017-08-01"
             }
-      ]
+      ],"format":"%b-%y"}
     }
 }
 }
+
+anova_dummy_data_2 = {
+  "narratives": {
+    "heading": "Sales Performance Analysis",
+    "main_card": {
+      "charts": {
+        "effect_size": {
+          "heading": "",
+          "data": {
+            "City": 0.76,
+            "Marketing Channel": 0.64,
+            "Deal Type": 0.45
+          },
+          "labels": {
+            "Dimension": "Effect Size"
+          }
+        }
+      },
+      "header": "Relationship between Sales and Other Dimensions",
+      "paragraphs": [{
+          "header": "",
+          "content": ["There are 20 dimensions in the dataset and 5 of them (including City, Marketing Channel, Deal Type, etc.) have significant influence on sales.  It implies that specific categories within each of the dimensions show considerable amount of variation in sales. However, other dimensions, such as Product Group, Subcategory, etc., don't show significant difference in sales values across categories."]
+        },
+        {
+          "header": "",
+          "content": ["The chart below displays the impact of key dimensions on sales, as measured by effect size. Let us take a deeper look at some of the most important dimensions that show significant amount of difference in average sales."]
+        }
+      ]
+    },
+    "cards": [
+	{
+        "card1": {
+          "heading": "Impact of City on Sales",
+          "charts": {
+            "group_by_total": {
+              "heading": "",
+              "data": {
+                "Miami": 7860101.948559997,
+                "New York": 2.016576714184001E7,
+                "Los Angeles": 1.1850875860800004E7,
+                "Las Vegas": 3783720.639999998
+              },
+              "labels": {
+                "City": "Sales"
+              }
+            },
+            "group_by_mean": {
+              "heading": "",
+              "data": {
+                "Miami": 60101.948559997,
+                "New York": 65767.141840,
+                "Los Angeles": 850875.8608,
+                "Las Vegas": 37830.639999998
+              },
+              "labels": {
+                "City": "Sales"
+              }
+            }
+          },
+          "paragraphs": [{
+            "header": "Overview",
+            "content": [
+                "The top 3 cities account for about 25% of the total sales.  Being the largest contributor, total sales from Miami amounts to $122,589 that accounts for about 10% of the total sales. However, Sacramento has the highest average sales of $295, whereas the average for Miami is $270. On the other hand, Minneapolis contributes to just 8% of the total sales with the average being 79. Interestingly, the effect of city on sales is significant as the average sales seem to be different across various cities. The average sale figures from Miami are typically 18% higher than those of Detroit and Boise."]
+          },
+          {
+                "header": "Key Factors Influencing Sales from Miami",
+                "content": [
+                    "High contribution of sales from Miami is characterized by the influence of key dimensions, such as Sales Person, Region, and Channel. Certain specific segments from those dimensions are more likely to explain Miami's significant sales turnover.  For instance, John Greg (40%) along with Karl (35%), the top performing Sales Persons account for 75% of the overall sales from Miami. In terms of Region, Americas (54%) and Europe (39%) account for 93% of the total sales. Among the channels, Convenience Stores has got the major chunk of sales from Miami, accounting for 43%."]
+          }
+          ],
+          "bubble_data": [{
+            "value": "34.87 Million",
+            "text": "New York is the largest contributor to sales"
+          },
+            {
+                "value": "234.87K",
+                "text": "San Francisco has the highest average sales"
+            }
+          ]
+        },
+        "card2": {
+            "heading": "Miami's Sales Performance over Time",
+            "charts": {
+              "trend_chart": {
+                "heading": "",
+                "data": [
+                  ['date', '2013-01-01', '2013-01-02', '2013-01-03', '2013-01-04', '2013-01-05', '2013-01-06', '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12', '2014-01-01', '2014-01-02', '2015-01-03', '2015-01-04'],
+                  # ["x", "Jan-12", "Feb-12", "Mar-12", "Apr-12", "May-12", "Jun-12", "Jul-12", "Aug-12", "Sep-12", "Oct-12", "Nov-12", "Dec-12", "Jan-13", "Feb-13", "Mar-13", "Apr-13"],
+                  ["Total Sales", 43223.875, 56400.8571428571, 39982.5455, 46732.8182, 56061, 85415, 59389.67, 4241.8, 53862.3, 39618.625, 5645.3, 35795.4, 43730.3, 57595.7142857143, 57147, 58620.875],
+                  ["Miami Sales", 5164.8461538462, 3277.0882352941, 3858.064516129, 3920.5588235294, 4241.3461538462, 4123.83, 2893.2857142857, 2937, 3174.7297297297, 4039.0606060606, 3525.8, 254.925, 3160.1388888889, 3534.1428571429, 4045.2258064516, 3136.775]
+                ],
+                "format": '%b-%d-%Y'
+              }
+            },
+            "paragraphs": [{
+                "header": "",
+                "content": ["Sales contribution from Miami is predominantly in line with the overall sales trend, as the city observed similar ups and downs during the observation period. The overall sales figures hit a peak of $25,306 in Aug 2014, when it grew by over 32% compared to the previous month. Interestingly, Miami's sales also sharply rose and hit a peak of $25,155 during the same period. The last three months, between Jul 2014 and Sep 2014, accounted for almost half of Miami's total sales, i.e. $62,560. Driven by this buoyant growth off late, the outlook for Miami's next quarter sales looks very promising."]
+              },
+              {
+                "header": "How other cities are trending",
+                "content": ["Cities, Seattle and Atlanta, are the fastest growing in terms of sales at 19% & 20% respectively compared to the overall average of 10%. On the other hand, Denver and San Diego have experienced the highest negative growth rates of -10% and -20% respectively. Finally, there are also cities which didn't experience any growth nor decline are Washington and Boston.  Out of the 15 cities, 8 showed positive growth, 5 witnessed negative growth and 2 cities remained stagnant."]
+              }
+            ]
+          },
+        "card3": {
+            "heading": "City-Sales Performance Decision Matrix",
+            "charts": {
+              "decision_matrix": {
+                  "data": [
+                      ['x', 50, 30, 40, 20],
+                      ['y', 20, 30, 40, 50],
+                      ['label', 'chicago', 'ny', 'ambala', 'delhi'],
+                      ['categories', 'Leaders Club', 'Opportunity Bay', 'Playing Safe', 'Red Alert']
+                  ],
+              }
+            },
+            "paragraphs": [{
+                "header": "",
+                "content": ["Based on the absolute sales values and the overall growth rates, mAdvisor presents the decision matrix for sales as displayed below."]
+              },
+              {
+                "header": "Leaders Club",
+                "content": ["Total of 3 cities, Miami, Seattle, and Boston, feature in the Leaders Club signalling healthy trend in terms of revenue contribution as well growth."]
+              },
+              {
+                "header": "Opportunity Bay",
+                "content": ["Four cities, including NYC, Detroit, Denver, and Boise, feature in this quadrant implying that there is good potential for revenue growth, even though their current sales contributions are relatively less."]
+              },
+              {
+                "header": "Playing Safe",
+                "content": ["There are four cities (Atlanta, Orlando, San Francisco, and Sacramento) featuring in this quadrant which is characterized by high level of sales but low rates of growth."]
+              },
+              {
+                "header": "Red Alert",
+                "content": [" Chicago, Los Angeles, Washington, and San Diego are not performing well both in terms of sales contribution and growth."]
+              }
+            ]
+          }
+      },
+      {
+            "card1": {
+              "heading": "Impact of Deal Type on Sales",
+              "charts": {
+                "group_by_total": {
+                  "heading": "",
+                  "data": {
+                    "Online": 7860101.948559997,
+                    "Telephone Booking": 2.016576714184001E7,
+                    "Referral": 1.1850875860800004E7,
+                    "Broker": 3783720.639999998
+                  },
+                  "labels": {
+                    "Deal Type": "Sales"
+                  }
+                },
+                "group_by_mean": {
+                  "heading": "",
+                  "data": {
+                    "Online": 60101.948559997,
+                    "Telephone Booking": 65767.141840,
+                    "Referral": 850875.8608,
+                    "Broker": 37830.639999998
+                  },
+                  "labels": {
+                    "Deal Type": "Sales"
+                  }
+                }
+              },
+              "paragraphs": [{
+                  "header": "Overview",
+                  "content": ["The top 3 Deal Types account for about 25% of the total sales.  Being the largest contributor, total sales from Online amounts to $122,589 that accounts for about 10% of the total sales. However, Broker has the highest average sales of $295, whereas the average for Online is $270. On the other hand, Referral contributes to just 8% of the total sales with the average being 79. Interestingly, the effect of Deal Type on sales is significant as the average sales seem to be different across various Deal Types. The average sale figures from Online are typically 18% higher than those of Detroit and Boise."]
+                },
+                {
+                  "header": "Key Factors Influencing Sales from Online",
+                  "content": ["High contribution of sales from Online is characterized by the influence of key dimensions, such as Sales Person, Region, and Channel. Certain specific segments from those dimensions are more likely to explain Online's significant sales turnover.  For instance, John Greg (40%) along with Karl (35%), the top performing Sales Persons account for 75% of the overall sales from Online. In terms of Region, Americas (54%) and Europe (39%) account for 93% of the total sales. Among the channels, Convenience Stores has got the major chunk of sales from Online, accounting for 43%."]
+                }
+              ],
+              "bubble_data": [{
+                  "value": "34.87 Million",
+                  "text": "Telephone Booking is the largest contributor to sales"
+                },
+                {
+                  "value": "234.87K",
+                  "text": "San Francisco has the highest average sales"
+                }
+              ]
+            },
+            "card2": {
+              "heading": "Online's Sales Performance over Time",
+              "charts": {
+                "trend_chart": {
+                  "heading": "",
+                    "data": [
+                        ['date', '2013-01-01', '2013-01-02', '2013-01-03', '2013-01-04', '2013-01-05', '2013-01-06',
+                         '2013-01-07', '2013-01-08', '2013-01-09', '2013-01-10', '2013-01-11', '2013-01-12',
+                         '2014-01-01', '2014-01-02', '2015-01-03', '2015-01-04'],
+                        # ["x", "Jan-12", "Feb-12", "Mar-12", "Apr-12", "May-12", "Jun-12", "Jul-12", "Aug-12", "Sep-12", "Oct-12", "Nov-12", "Dec-12", "Jan-13", "Feb-13", "Mar-13", "Apr-13"],
+                        ["Total Sales", 43223.875, 56400.8571428571, 39982.5455, 46732.8182, 56061, 85415, 59389.67,
+                         4241.8, 53862.3, 39618.625, 5645.3, 35795.4, 43730.3, 57595.7142857143, 57147, 58620.875],
+                        ["Miami Sales", 5164.8461538462, 3277.0882352941, 3858.064516129, 3920.5588235294,
+                         4241.3461538462, 4123.83, 2893.2857142857, 2937, 3174.7297297297, 4039.0606060606, 3525.8,
+                         254.925, 3160.1388888889, 3534.1428571429, 4045.2258064516, 3136.775]
+                    ],
+                    "format": '%b-%d-%Y'
+                }
+              },
+              "paragraphs": [{
+                  "header": "",
+                  "content": ["Sales contribution from Online is predominantly in line with the overall sales trend, as the Deal Type observed similar ups and downs during the observation period. The overall sales figures hit a peak of $25,306 in Aug 2014, when it grew by over 32% compared to the previous month. Interestingly, Online's sales also sharply rose and hit a peak of $25,155 during the same period. The last three months, between Jul 2014 and Sep 2014, accounted for almost half of Online's total sales, i.e. $62,560. Driven by this buoyant growth off late, the outlook for Online's next quarter sales looks very promising."]
+                },
+                {
+                  "header": "How other Deal Types are trending",
+                  "content": ["Deal Types, Seattle and Atlanta, are the fastest growing in terms of sales at 19% & 20% respectively compared to the overall average of 10%. On the other hand, Denver and San Diego have experienced the highest negative growth rates of -10% and -20% respectively. Finally, there are also Deal Types which didn't experience any growth nor decline are Washington and Boston.  Out of the 15 Deal Types, 8 showed positive growth, 5 witnessed negative growth and 2 Deal Types remained stagnant."]
+                }
+              ]
+            },
+            "card3": {
+              "heading": "Deal Type-Sales Performance Decision Matrix",
+              "charts": {
+                "decision_matrix": {
+                  "heading": "",
+                  "data": [
+                      ['x', 50, 30, 40, 20],
+                      ['y', 20, 30, 40, 50],
+                      ['label', 'chicago', 'ny', 'ambala', 'delhi'],
+                      ['categories', 'Leaders Club', 'Opportunity Bay', 'Playing Safe', 'Red Alert']
+                  ],
+                }
+              },
+              "paragraphs": [{
+                  "header": "",
+                  "content": ["Based on the absolute sales values and the overall growth rates, mAdvisor presents the decision matrix for sales as displayed below."]
+                },
+                {
+                  "header": "Leaders Club",
+                  "content": ["Total of 3 Deal Types, Online, Seattle, and Boston, feature in the Leaders Club signalling healthy trend in terms of revenue contribution as well growth."]
+                },
+                {
+                  "header": "Opportunity Bay",
+                  "content": ["Four Deal Types, including NYC, Detroit, Denver, and Boise, feature in this quadrant implying that there is good potential for revenue growth, even though their current sales contributions are relatively less."]
+                },
+                {
+                  "header": "Playing Safe",
+                  "content": ["There are four Deal Types (Atlanta, Orlando, San Francisco, and Broker) featuring in this quadrant which is characterized by high level of sales but low rates of growth."]
+                },
+                {
+                  "header": "Red Alert",
+                  "content": [" Chicago, Referral, Washington, and San Diego are not performing well both in terms of sales contribution and growth."]
+                }
+              ]
+            }
+
+      }
+    ]
+  }
+}
+
+regression_dummy_data = {
+  "narratives": {
+    "heading": "Sales Performance Analysis",
+    "main_card": {
+      "chart": {
+          "heading": "Change in Sales per unit increase",
+          "data": [[ 30, 200, 100, 400, 150, -250, -10],
+                    [130, 100, -140, 200, 150, 50, -10, -200]],
+          "labels": {
+            "Dimension": "Effect Size"
+          }
+  
+      },
+      "header": "Key Measures that Affect Sales",
+      "paragraphs": [{
+          "header": "",
+          "content": ["""
+          There are 15 measures in the dataset and 4 of them (Marketing Cost, Shipping Cost
+                      and others) have significant influence on sales. It implies that these measures explain
+                      considerable amount of variation in sales figures. However, other measures, such as
+                      Number of Units, Average Profit Margin, Overhead Expense, don't show significant
+                      relationship with sales. """]
+        },
+        {
+          "header": "",
+          "content": ["""The chart below displays the impact of key measures on sales, as measured by
+                      regression coefficient. Let us take a deeper look at some of key measures that explain
+                      remarkable amount of change in sales."""]
+        }
+      ]
+    },
+    "cards": [
+       {
+        "card0": {
+          "heading": "Impact of Marketing Cost on Sales",
+          "charts": {
+            "chart1": {
+              "heading": "Magnitude of Impact on Average Sales",
+              "data": [['x', 'Category1', 'Category2'],
+                      ['value', 300, 400]],
+              "labels": {
+                "City": "Sales"
+              }
+            },
+            "chart2": {
+              "heading": "",
+              "data": [['Marketing Cost', 20, 30,10,50,60],
+                      ['Sales', 1300, 4000,2000,1200,3000],
+                      ['Colors', 'Red', 'Yellow','Green','Blue','Orange'],
+                      ['Labels','Low Sales with Low Marketing Cost','High Sales with Low Marketing Cost','Low Sales with High Marketing Cost']],
+              "labels": {
+                "City": "Sales"
+              }
+            }
+          },
+          "paragraphs": [{
+              "header": "Overview",
+              "content": ["""Marketing Cost is one of the most significant influencer of sales and it explains a great
+                          magnitude of change in sales. It is positively & strongly correlated with the sales
+                          figures. As Marketing Cost changes, sales also tend to move in the same direction. An
+                          incremental unit change in marketing cost corresponds to an average increase in sales
+                          by 13.3 units."""]
+            },
+            {
+              "header": "",
+              "content": ["""There are also key segments where marketing cost has been relatively more significant
+                          in driving the overall sales. For instance, price range 101 to 500 is an excellent case in
+                          point. For every unit increase in marketing cost in this segment, the sales values are
+                          likely to increase by an average of 39 units, which is almost thrice as high as the overall
+                          impact. The chart below displays other key areas where marketing cost plays a critical
+                          role"""]
+            },
+            {
+              "header": "",
+              "content": ["""Comparing the distribution of marketing cost with sales observations, we find that there
+                          are three distinct groups which notably differ from each other"""]
+            },
+            {
+              "header": "",
+              "content": ["""<ul>
+                <li>Group 1: This is the largest group, accounting for 82% of the observations, has an
+                average sale of $170 and average marketing cost of $3.67.</li>
+                <li>Group 2: The average sale for this group is $560 and the average marketing cost
+                is $8.2. It covers about 14% of the total observations.</li>
+                <li>Group3: The smallest group has the highest average sale, i.e., $1,438 and the
+                marketing cost typically amounts to $20.8 for any observation from this group.</li></ul>"""]
+            }
+          ]
+        },
+        "card1": {
+            "heading": "Key Areas where Marketing Cost Matters",
+            "tables": {
+                "table1": {
+                    "heading": "Average Sales",
+                    "data": {
+                        "header": [{"header1": "Category", "header2": "0 t0 10", "header3": "11 to 50",
+                                    "header4": "51 to 100"}],
+                        "tableData": [{"header1": "Less than 2.2", "header2": 10, "header3": 30, "header4": 60},
+                                      {"header2": 70, "header3": 30, "header4": 20}],
+
+                    }
+                },
+                "table2": {
+                    "heading": "Average Sales",
+                    "data": {
+                        "header": [{"header1": "Category", "header2": "0 t0 10", "header3": "11 to 50",
+                                    "header4": "51 to 100"}],
+                        "tableData": [{"header1": "Less than 2.2", "header2": 10, "header3": 30, "header4": 60},
+                                      {"header2": 70, "header3": 30, "header4": 20}],
+
+                    }
+                }
+        },
+            "paragraphs": [{
+                "header": "Discount range",
+                "content": ["""There are five categories within discount range (0 to 10 percent, 11 to 20 percent, 21 to
+                              30 percent, 31 to 40 percent, and 41 to 50 percent). The following table displays how
+                              average sales vary across discount ranges and segments of marketing cost."""]
+              },
+              {
+                "header": "",
+                "content": ["""Discount range has significant influence on sales and the impact of marketing cost on
+                            sales shows interesting variations across discount ranges. Even though the average
+                            sales from 0 to 10 percent is higher, marketing cost has the highest impact on 21 to 30
+                            percent discount range, as sales increases by 16.5 units for every unit increase in
+                            marketing cost. On the other hand, 0 to 10 percent discount range is the least affected,
+                            as it increases sales by just 0.3 units for one unit increase in marketing costs."""]
+              },
+              {
+                "header": "Price Range",
+                "content": ["""Price range contains four categories, which are 0 to 10, 11 to 50, 51 to 100, and 100 to
+                              500. The following table displays how average sales vary across price ranges and
+                              segments of marketing cost."""]
+              },
+              {
+                "header": "",
+                "content": ["""The relationship between marketing cost and sales is also significantly influenced by
+                              price range. For instance, price range, 101 to 500 seems to have an average sale of
+                              $344, which is significantly higher than the other three categories. The price range also
+                              seems to be highly influenced as it moves up by an enormous 46 units for every unit
+                              increase in marketing cost. However, marketing cost has hardly any impact (0.03 units)
+                              on sales when it comes to 0 to 10 price range."""]
+              }
+            ]
+          },
+        "card2": {
+            "heading": "How Sales and Marketing Cost Changed over Time",
+            "charts": {
+                "heading": "",
+                "data": [['x', 'Dec-13', 'Jan-14', 'Feb-14', 'Mar-14', 'Apr-14', 'May-14'],
+                ['data1', 30, 200, 100, 400, 150, 250],
+                ['data2', 130, 300, 200, 300, 250, 450]]
+            },
+            "paragraphs": [{
+                "header": "",
+                "content": ["""Marketing cost increased from $800 in Dec 2013 to $3,143 in Sep 2014, which is a fourfold
+                            increase over a 10-month period. It hit a peak of $5,133 in Aug 2014 and had the
+                            lowest ($800) in Dec 2013. The total marketing cost for the entire time period is
+                            $24,563, which is about 1.8% of the overall sales. The ratio of marketing cost over sales
+                            has been mostly constant, as changes in marketing cost over time is mostly in line with
+                            the overall sales trend. """]
+              }
+            ]
+          },
+        "card3": {
+          "heading": "Sensitivity Analysis: Effect of Marketing Cost on Segments of Sales",
+          "charts": {
+              "heading": "",
+              "data": [['Marketing Cost', 20, 30,10,50,60],
+                      ['Sales', 1300, 4000,2000,1200,3000],
+                      ['Colors', 'Red', 'Yellow','Green','Blue','Orange'],
+                      ['Labels','Low Sales with Low Marketing Cost','High Sales with Low Marketing Cost','Low Sales with High Marketing Cost']]
+            
+          },
+          "paragraphs": [{
+              "header": "",
+              "content": ["""Marketing cost seems to have a remarkable impact on various segments of sales
+                          observations. The chart above shows four quadrants based on the distribution of sales
+                          (high vs. low) and marketing cost (high vs. low)."""]
+            },
+            {
+              "header": "",
+              "content": ["""High Sales with High Marketing Cost: The sales observations from this quadrant are
+                          typically from Gourmet (Deal Type), 21 to 30 percent (Discount Range), and Email
+                          Campaign (Marketing Source). It accounts for about 22% of the total population."""]
+            },
+            {
+              "header": "",
+              "content": ["""Low Sales with Low Marketing Cost: Sales from National (Deal Type), 65+ (Age
+                          Group), and Email Campaign (Direct) belong to this segment. They cover nearly 58% of
+                          total sales observations."""]
+            },
+            {
+              "header": "",
+              "content": ["""High Sales with Low Marketing Cost: Nearly one-tenth of the total observations are
+                          from this group and they are generally coming from New York (City), 101 to 500 (Price
+                          Range)."""]
+            },
+            {
+              "header": "",
+              "content": [""" Low Sales with High Marketing Cost: The segment, which is least effective to
+                            marketing cost, comes from Families (Deal Type) and 45 to 54 (Age Group)."""]
+            },
+            {
+              "header": "",
+              "content": [""" Overall, sales values are relatively inelastic to changes in marketing costs. For a one
+                            percent increase in marketing cost is associated with a 0.24% increase in sales.
+                            However, the sensitivity of sales to change in marketing cost varies across these four
+                            segments."""]
+            },
+            {
+              "header": "",
+              "content": [""" <ul>
+                            <li>"High Sales with High Marketing Cost" and "Low Sales with Low Marketing
+                              Cost" show relatively higher sensitivity to change in marketing cost (increase of 0.7% and 0.6% respectively, for a one percent increase in marketing cost)
+                              compared to other segments
+                            </li>
+                            <li>Interestingly, for "High Sales with Low Marketing Cost" segment, sales
+                              decrease by 1.01% for a one percent increase in marketing cost. It implies that
+                              any incremental change in marketing cost undermines potential sales from this
+                              segment.
+                              </li>
+                          </ul>"""]
+            }
+          ]
+        }
+      },
+       {
+        "card0": {
+          "heading": "Impact of Marketing Cost on Sales",
+          "charts": {
+            "chart1": {
+              "heading": "Magnitude of Impact on Average Sales",
+              "data": [['x', 'Category1', 'Category2'],
+                      ['value', 300, 400]],
+              "labels": {
+                "City": "Sales"
+              }
+            },
+            "chart2": {
+              "heading": "",
+              "data": [['Marketing Cost', 20, 30,10,50,60],
+                      ['Sales', 1300, 4000,2000,1200,3000],
+                      ['Colors', 'Red', 'Yellow','Green','Blue','Orange'],
+                      ['Labels','Low Sales with Low Marketing Cost','High Sales with Low Marketing Cost','Low Sales with High Marketing Cost']],
+              "labels": {
+                "City": "Sales"
+              }
+            }
+          },
+          "paragraphs": [{
+              "header": "Overview",
+              "content": ["""Marketing Cost is one of the most significant influencer of sales and it explains a great
+                          magnitude of change in sales. It is positively & strongly correlated with the sales
+                          figures. As Marketing Cost changes, sales also tend to move in the same direction. An
+                          incremental unit change in marketing cost corresponds to an average increase in sales
+                          by 13.3 units."""]
+            },
+            {
+              "header": "",
+              "content": ["""There are also key segments where marketing cost has been relatively more significant
+                          in driving the overall sales. For instance, price range 101 to 500 is an excellent case in
+                          point. For every unit increase in marketing cost in this segment, the sales values are
+                          likely to increase by an average of 39 units, which is almost thrice as high as the overall
+                          impact. The chart below displays other key areas where marketing cost plays a critical
+                          role"""]
+            },
+            {
+              "header": "",
+              "content": ["""Comparing the distribution of marketing cost with sales observations, we find that there
+                          are three distinct groups which notably differ from each other"""]
+            },
+            {
+              "header": "",
+              "content": ["""<ul>
+                <li>Group 1: This is the largest group, accounting for 82% of the observations, has an
+                average sale of $170 and average marketing cost of $3.67.</li>
+                <li>Group 2: The average sale for this group is $560 and the average marketing cost
+                is $8.2. It covers about 14% of the total observations.</li>
+                <li>Group3: The smallest group has the highest average sale, i.e., $1,438 and the
+                marketing cost typically amounts to $20.8 for any observation from this group.</li></ul>"""]
+            }
+          ]
+        },
+        "card1": {
+            "heading": "Key Areas where Marketing Cost Matters",
+            "tables": {
+                "table1": {
+                    "heading": "Average Sales",
+                    "data": {
+                        "header": [{"header1": "Category", "header2": "0 t0 10", "header3": "11 to 50",
+                                    "header4": "51 to 100"}],
+                        "tableData": [{"header1": "Less than 2.2", "header2": 10, "header3": 30, "header4": 60},
+                                      {"header2": 70, "header3": 30, "header4": 20}],
+
+                    }
+                },
+                "table2": {
+                    "heading": "Average Sales",
+                    "data": {
+                        "header": [{"header1": "Category", "header2": "0 t0 10", "header3": "11 to 50",
+                                    "header4": "51 to 100"}],
+                        "tableData": [{"header1": "Less than 2.2", "header2": 10, "header3": 30, "header4": 60},
+                                      {"header2": 70, "header3": 30, "header4": 20}],
+
+                    }
+                }
+            },
+            "paragraphs": [{
+                "header": "Discount range",
+                "content": ["""There are five categories within discount range (0 to 10 percent, 11 to 20 percent, 21 to
+                              30 percent, 31 to 40 percent, and 41 to 50 percent). The following table displays how
+                              average sales vary across discount ranges and segments of marketing cost."""]
+              },
+              {
+                "header": "",
+                "content": ["""Discount range has significant influence on sales and the impact of marketing cost on
+                            sales shows interesting variations across discount ranges. Even though the average
+                            sales from 0 to 10 percent is higher, marketing cost has the highest impact on 21 to 30
+                            percent discount range, as sales increases by 16.5 units for every unit increase in
+                            marketing cost. On the other hand, 0 to 10 percent discount range is the least affected,
+                            as it increases sales by just 0.3 units for one unit increase in marketing costs."""]
+              },
+              {
+                "header": "Price Range",
+                "content": ["""Price range contains four categories, which are 0 to 10, 11 to 50, 51 to 100, and 100 to
+                              500. The following table displays how average sales vary across price ranges and
+                              segments of marketing cost."""]
+              },
+              {
+                "header": "",
+                "content": ["""The relationship between marketing cost and sales is also significantly influenced by
+                              price range. For instance, price range, 101 to 500 seems to have an average sale of
+                              $344, which is significantly higher than the other three categories. The price range also
+                              seems to be highly influenced as it moves up by an enormous 46 units for every unit
+                              increase in marketing cost. However, marketing cost has hardly any impact (0.03 units)
+                              on sales when it comes to 0 to 10 price range."""]
+              }
+            ]
+          },
+        "card2": {
+            "heading": "How Sales and Marketing Cost Changed over Time",
+            "charts": {
+                "heading": "",
+                "data": [['x', 'Dec-13', 'Jan-14', 'Feb-14', 'Mar-14', 'Apr-14', 'May-14'],
+                ['data1', 30, 200, 100, 400, 150, 250],
+                ['data2', 130, 300, 200, 300, 250, 450]]
+            },
+            "paragraphs": [{
+                "header": "",
+                "content": ["""Marketing cost increased from $800 in Dec 2013 to $3,143 in Sep 2014, which is a fourfold
+                            increase over a 10-month period. It hit a peak of $5,133 in Aug 2014 and had the
+                            lowest ($800) in Dec 2013. The total marketing cost for the entire time period is
+                            $24,563, which is about 1.8% of the overall sales. The ratio of marketing cost over sales
+                            has been mostly constant, as changes in marketing cost over time is mostly in line with
+                            the overall sales trend. """]
+              }
+            ]
+          },
+        "card3": {
+          "heading": "Sensitivity Analysis: Effect of Marketing Cost on Segments of Sales",
+          "charts": {
+              "heading": "",
+              "data": [['Marketing Cost', 20, 30,10,50,60],
+                      ['Sales', 1300, 4000,2000,1200,3000],
+                      ['Colors', 'Red', 'Yellow','Green','Blue','Orange'],
+                      ['Labels','Low Sales with Low Marketing Cost','High Sales with Low Marketing Cost','Low Sales with High Marketing Cost']]
+          },
+          "paragraphs": [{
+              "header": "",
+              "content": ["""Marketing cost seems to have a remarkable impact on various segments of sales
+                          observations. The chart above shows four quadrants based on the distribution of sales
+                          (high vs. low) and marketing cost (high vs. low)."""]
+            },
+            {
+              "header": "",
+              "content": ["""High Sales with High Marketing Cost: The sales observations from this quadrant are
+                          typically from Gourmet (Deal Type), 21 to 30 percent (Discount Range), and Email
+                          Campaign (Marketing Source). It accounts for about 22% of the total population."""]
+            },
+            {
+              "header": "",
+              "content": ["""Low Sales with Low Marketing Cost: Sales from National (Deal Type), 65+ (Age
+                          Group), and Email Campaign (Direct) belong to this segment. They cover nearly 58% of
+                          total sales observations."""]
+            },
+            {
+              "header": "",
+              "content": ["""High Sales with Low Marketing Cost: Nearly one-tenth of the total observations are
+                          from this group and they are generally coming from New York (City), 101 to 500 (Price
+                          Range)."""]
+            },
+            {
+              "header": "",
+              "content": [""" Low Sales with High Marketing Cost: The segment, which is least effective to
+                            marketing cost, comes from Families (Deal Type) and 45 to 54 (Age Group)."""]
+            },
+            {
+              "header": "",
+              "content": [""" Overall, sales values are relatively inelastic to changes in marketing costs. For a one
+                            percent increase in marketing cost is associated with a 0.24% increase in sales.
+                            However, the sensitivity of sales to change in marketing cost varies across these four
+                            segments."""]
+            },
+            {
+              "header": "",
+              "content": [""" <ul>
+                            <li>"High Sales with High Marketing Cost" and "Low Sales with Low Marketing
+                              Cost" show relatively higher sensitivity to change in marketing cost (increase of 0.7% and 0.6% respectively, for a one percent increase in marketing cost)
+                              compared to other segments
+                            </li>
+                            <li>Interestingly, for "High Sales with Low Marketing Cost" segment, sales
+                              decrease by 1.01% for a one percent increase in marketing cost. It implies that
+                              any incremental change in marketing cost undermines potential sales from this
+                              segment.
+                              </li>
+                          </ul>"""]
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
+
