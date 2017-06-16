@@ -15,6 +15,9 @@ from api.lib.fab_helper import create_score_extended_folder, \
 from api.views.joblog import submit_masterjob
 from api.helper import generate_nested_list_from_nested_dict
 
+EMR_INFO = settings.EMR
+emr_home_path = EMR_INFO.get('home_path')
+
 
 def check_blank_object(object):
     keys = object.keys()
@@ -105,7 +108,7 @@ class Score(models.Model):
         return self.local_base_directory() + '/' + self.get_config_filename()
 
     def get_hadoop_config_folder(self):
-        return "/home/hadoop/configs/scores/"
+        return "{0}/configs/scores/".format(emr_home_path)
 
     def get_hadoop_config_file(self):
         configpath = self.get_hadoop_config_folder() + self.get_config_filename()
@@ -120,7 +123,7 @@ class Score(models.Model):
             print("you are already there")
 
     def base_emr_storage_folder(self):
-        return "/home/hadoop/scores/{0}".format(str(self.id))
+        return "{0}/scores/{1}".format(emr_home_path, str(self.id))
 
     def hadoop_score_storage_name(self):
         return self.score_folders

@@ -11,6 +11,9 @@ from django.conf import settings
 from api.views.option import get_option_for_this_user
 from api.views.joblog import submit_masterjob
 from collections import OrderedDict
+EMR_INFO = settings.EMR
+print EMR_INFO
+emr_home_path = EMR_INFO.get('home_path')
 
 # import hadoopy
 
@@ -175,14 +178,8 @@ class Errand(models.Model):
         self.create_configuration_file()
         # print("Running master script")
         self.run_save_config()
-        '''call([
-            "sh", "api/lib/run_master.sh",
-            settings.HDFS['host'],
-            "/home/hadoop/configs/" + self.config_file_path_hadoop
-        ])'''
-
         print ("Running jobserver master script")
-        configpath = "/home/hadoop/configs/" + self.config_file_path_hadoop
+        configpath = "{0}/configs/".format(emr_home_path) + self.config_file_path_hadoop
         print "configpath:{0}".format(configpath)
         submit_masterjob(configpath, None)
 

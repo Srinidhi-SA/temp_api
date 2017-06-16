@@ -12,6 +12,9 @@ from api.lib.fab_helper import create_model_instance_extended_folder, \
 from api.views.joblog import submit_masterjob
 from api.helper import generate_nested_list_from_nested_dict
 
+EMR_INFO = settings.EMR
+emr_home_path = EMR_INFO.get('home_path')
+
 import ConfigParser
 
 name_map = {
@@ -123,13 +126,13 @@ class Trainer(models.Model):
         create_model_instance_extended_folder(self.id)
 
     def get_emr_model_storage_folder(self):
-        return "/home/hadoop/models/{0}".format(str(self.id))
+        return "{0}/models/{1}".format(emr_home_path, (self.id))
 
     def config_file_name(self):
         return str(self.id) + "_model_" + "config.cfg"
 
     def get_emr_model_config_path(self):
-        configpath = "/home/hadoop/configs/models/" + self.config_file_name()
+        configpath = "{0}/configs/models/".format(emr_home_path) + self.config_file_name()
         return configpath
 
     def get_local_config_path(self):
