@@ -35,7 +35,7 @@ def get_function_id(type):
 def get_config_path(type, obj):
 
     if type == "dataset":
-        return "uploads/datasets/{0}/client_data.csv".format(obj.id)
+	return str(obj.input_file)    
     elif type == 'errand':
         return obj.config_file_path
     elif type == "trainer":
