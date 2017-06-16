@@ -277,41 +277,11 @@ class Errand(models.Model):
             return {}
 
         if not check_blank_object(narratives):
-            if self.measure in narratives['narratives'].keys():
-                items = narratives['narratives'][self.measure]
-                dimensions_data = {}
-                dimensions_data['summary'] = items['summary']
-                # dimensions_data['drill_down_narrative'] = items['drill_down_narrative']
-                dimensions_data['narratives'] = []
-
-                for key, value in items['narratives'].iteritems():
-                    # if key in items['drill_down_narrative'].keys():
-                        # value['drill_down_narrative']=items['drill_down_narrative'][key]
-                    value['drill_down_narrative'] = {'avg': "", 'sum': ""}
-                    value['group_by_total'] = OrderedDict(sorted(value['group_by_total'].items(), key=lambda t: t[1],reverse=True))
-                    value['group_by_mean'] = OrderedDict(sorted(value['group_by_mean'].items(), key=lambda t: t[1], reverse=True))
-
-                    dimensions_data['narratives'].append(value)
-
-                # RESULTS
-                path = self.storage_output_dir() + "/results/OneWayAnova"
-
-                try:
-                    hadoop_result = hadoop.hadoop_read_output_file(path)
-                    result = json.loads(hadoop_result["RESULT"])
-                    result_data = []
-                    items = result[self.measure]["OneWayAnovaResult"]
-                    for key, value in items.iteritems():
-                        result_data.append([key, value["effect_size"]])
-                    dimensions_data['raw_data'] = result_data
-                    dimensions_data['raw_data'] = sorted(dimensions_data['raw_data'], key = lambda x: abs(x[1]),reverse=True)
-                except Exception as error:
-                    print error
-                    dimensions_data['raw_data'] = {}
-
-                return dimensions_data
-            else:
-                return {}
+            data = {}
+            if "narratives" in narratives.keys():
+                data["narratives"] = json.loads(str(narratives.get("narratives")))
+            return data
+            # return narratives
         else:
             return {}
 
@@ -615,6 +585,7 @@ class Errand(models.Model):
 
         if not check_blank_object(narratives_data):
             data = narratives_data
+            data = json.loads(data["TREND"])
             return data
         else:
             return {}

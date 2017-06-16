@@ -122,6 +122,19 @@ def generate_nested_list_from_nested_dict(nested_dict):
         out.append(row)
     return out
 
+
+def generate_list_from_nested_dict(nested_dict):
+    final_list = []
+    for key in nested_dict.keys():
+        temp_data = {}
+        temp_data['class'] = key
+        dict_data = nested_dict[key]
+        for k in dict_data:
+            temp_data[k] = dict_data[k]
+        final_list.append(temp_data)
+    return final_list
+
+
 def get_color_map():
     out = {"Outperform": "Red",
            "Underperform":"blue",

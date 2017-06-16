@@ -251,19 +251,12 @@ class Score(models.Model):
     def dummy_score_data(self):
         a = self.read_data_from_emr()
         model_data = json.loads(self.model_data)
-        feature_importance = model_data["modelSummary"]["feature_importance"]
-        feature_data = []
-        for key in feature_importance.keys():
-            feature_data.append([key,round(feature_importance[key],2)])
 
-        feature_data = sorted(feature_data, key=lambda x: x[1], reverse=True)
+        if "feature_importance" in model_data["modelSummary"].keys():
+            feature_importance = model_data["modelSummary"]["feature_importance"]
 
-        feature_as_array = [["Feature","Value"]]
-        feature_as_array += feature_data[:5]
-        # a["scoreSummary"]["feature_importance"] = feature_as_array
-        a["scoreSummary"]["feature_importance"] = feature_importance_dummy_data
-        a["scoreSummary"]["feature_importance_heading"] = "The top {0} features are:".format(str(len(a["scoreSummary"]["feature_importance"])-1))
-        a["scoreSummary"]["prediction_split"] = score_results_prediction_split
+            a["scoreSummary"]["feature_importance"] = feature_importance
+            a["scoreSummary"]["feature_importance_heading"] = "The top {0} features are:".format(str(len(a["scoreSummary"]["feature_importance"][0])-1))
         return a["scoreSummary"]
 
     def read_data_from_emr(self):
@@ -272,8 +265,8 @@ class Score(models.Model):
         data = read_remote(file_path)
         data = json.loads(data)
 
-        a1 = data["scoreSummary"]["prediction_split"]
-        data["scoreSummary"]["prediction_split"] = generate_nested_list_from_nested_dict(a1)
+        # a1 = data["scoreSummary"]["prediction_split"]
+        # data["scoreSummary"]["prediction_split"] = generate_nested_list_from_nested_dict(a1)
         return data
 
     def read_score_story_details_from_emr(self):
@@ -287,10 +280,14 @@ class Score(models.Model):
         freq = self.get_frequency_results()
         chi = self.get_chi_results()
         dimension_name = self.get_dimension_name_from_model()
-        freq["narratives"]["analysis"][1] = chi["narratives_raw"]["narratives"][dimension_name]["summary"][0]
-        return {"get_frequency_results": freq,
-                "get_chi_results": chi
-                }
+        if len(chi.keys()) > 0 and "narratives_raw" in chi.keys():
+            freq["narratives"]["analysis"][1] = chi["narratives_raw"]["narratives"][dimension_name]["summary"][0]
+        else:
+            chi = {}
+        return {
+            "get_frequency_results": freq,
+            "get_chi_results": chi
+        }
 
     def get_frequency_results(self):
 
@@ -394,14 +391,13 @@ class ScoreSerializer(serializers.Serializer):
         model = Score
         field = ('id', 'name', 'created_at', 'user_id')
 
-score_results_prediction_split = [
-            ['Range', '>25%','>75%','>80%','>85%','>90%','>95%'],
-            ['Loss', 30, 200, 200, 400, 150, 250],
-            ['Won', 130, 100, 100, 200, 150, 50],
-
-        ]
-
-feature_importance_dummy_data = [
-    ["Name", "AGE_CATEGORY", "AMOUNT_PAID_NOVEMBER", "STATUS", "BILL_AMOUNT_NOVEMBER", "EDUCATION", "BILL_AMOUNT_DECEMBER", "AMOUNT_PAID_DECEMBER", "STATE", "OCCUPATION", "MARRIAGE"],
-    ["Value", 0.007058221371135741, 0.0028883097720690254, 0.0026129957425838064, 0.0021655785195103493, 0.0012144740424919747, 0.0011479622477891692, 0.0009416868976334556, 0.0008169380994169005, 0.00045068569038685796, 0.00012034484007067192]
-    ]
+# score_results_prediction_split = [
+#             ['Range', '>25%','>75%','>80%','>85%','>90%','>95%'],
+#             ['Loss', 30, 200, 200, 400, 150, 250],
+#             ['Won', 130, 100, 100, 200, 150, 50],
+#         ]
+#
+# feature_importance_dummy_data = [
+#     ["Name", "AGE_CATEGORY", "AMOUNT_PAID_NOVEMBER", "STATUS", "BILL_AMOUNT_NOVEMBER", "EDUCATION", "BILL_AMOUNT_DECEMBER", "AMOUNT_PAID_DECEMBER", "STATE", "OCCUPATION", "MARRIAGE"],
+#     ["Value", 0.007058221371135741, 0.0028883097720690254, 0.0026129957425838064, 0.0021655785195103493, 0.0012144740424919747, 0.0011479622477891692, 0.0009416868976334556, 0.0008169380994169005, 0.00045068569038685796, 0.00012034484007067192]
+#     ]

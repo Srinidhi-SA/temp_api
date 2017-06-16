@@ -10,7 +10,7 @@ from api.views.option import get_option_for_this_user
 from api.lib.fab_helper import create_model_instance_extended_folder, \
     read_remote
 from api.views.joblog import submit_masterjob
-from api.helper import generate_nested_list_from_nested_dict
+from api.helper import generate_nested_list_from_nested_dict, generate_list_from_nested_dict
 
 EMR_INFO = settings.EMR
 emr_home_path = EMR_INFO.get('home_path')
@@ -483,23 +483,16 @@ class Trainer(models.Model):
                 break
 
         petal_info = random_forst_data['feature_importance']
-        feature = [["Name","Importance"]]
-        feature_data = []
-        for key in petal_info.keys():
-            feature_data.append([key,round(petal_info[key],2)])
+        # feature = [["Name","Importance"]]
+        # feature_data = []
+        # for key in petal_info.keys():
+        #     feature_data.append([key,round(petal_info[key],2)])
+        #
+        # feature_data = sorted(feature_data,key = lambda x:x[1], reverse = True)
+        # feature = feature + feature_data[:5]
 
-        feature_data = sorted(feature_data,key = lambda x:x[1], reverse = True)
-        feature = feature + feature_data[:5]
-        hard_coded = [
-                                                      ['Probability', 'Active'],
-                                                      ['>90%',  23],
-                                                      ['>75%',  13],
-                                                      ['>50%',  157],
-                                                      ['>25%',  196],
-                                                      ['<25%',  100]
-                                                    ]
-
-        return feature
+        # return feature
+        return petal_info
 
     def get_feature_importance(self, data):
 
@@ -627,7 +620,9 @@ class Trainer(models.Model):
     def set_precision_recall_for_each_data(self, data):
 
         for d in data:
-            d["precision_recall_stats"] = self.format_precision_recall_data(d["precision_recall_stats"])
+            pre_data = d["precision_recall_stats"]
+            # pre_data = original_precision_recall_stat_data
+            d["precision_recall_stats"] = self.format_precision_recall_data(pre_data)
 
         return data
 
@@ -635,15 +630,14 @@ class Trainer(models.Model):
     def format_precision_recall_data(self, precision_data):
         new_precision_data = {}
 
-        for key in precision_data:
+        for key in precision_data.keys():
             k = precision_data[key]
-            k.pop("counts")
+            if 'counts' in k.keys():
+                k.pop("counts")
             new_precision_data[key] = k
-        new_precision_data = generate_nested_list_from_nested_dict(new_precision_data)
-        new_precision_data = [
-                            {"precision":23, "recall":45, "range":'loss'},
-                            {"precision":13, "recall":5, "range":'won'},
-                             ]
+
+        new_precision_data = generate_list_from_nested_dict(new_precision_data)
+        new_precision_data = new_precision_data
 
         return new_precision_data
 
@@ -691,3 +685,33 @@ class TrainerSerializer(serializers.Serializer):
     class Meta:
         model = Trainer
         field = ('id', 'name', 'created_at', 'userId')
+
+
+# dummy_new_precision_data = [
+#     {"precision":23, "recall":45, "class":'loss'},
+#     {"precision":13, "recall":5, "class":'won'}
+# ]
+#
+#
+# original_precision_recall_stat_data = {
+#       "Loss": {
+#         "recall": 0.94,
+#         "counts": {
+#           "fp": 733,
+#           "tn": 1671,
+#           "fn": 442,
+#           "tp": 7216
+#         },
+#         "precision": 0.91
+#       },
+#       "Won": {
+#         "recall": 0.7,
+#         "counts": {
+#           "fp": 442,
+#           "tn": 7216,
+#           "fn": 733,
+#           "tp": 1671
+#         },
+#         "precision": 0.79
+#       }
+#     }
