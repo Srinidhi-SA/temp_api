@@ -184,6 +184,8 @@ class Errand(models.Model):
         print ("Running jobserver master script")
         configpath = "/home/hadoop/configs/" + self.config_file_path_hadoop
         print "configpath:{0}".format(configpath)
+        self.analysis_done = "TRUE"
+        self.save()
         submit_masterjob(configpath, None)
 
     def run_save_config(self):
@@ -308,47 +310,17 @@ class Errand(models.Model):
         path = self.storage_output_dir() + "/narratives/Regression"
         try:
             narratives = hadoop.hadoop_read_output_file(path)
-            from collections import OrderedDict
-            dimension_narratives = narratives["narratives"]
-            dimension_narratives_sorted = OrderedDict(sorted(dimension_narratives.items(),
-                                                             key=lambda x: x[1]["coeff"],
-                                                             reverse=True))
-            narratives["narratives"] = dimension_narratives_sorted
+            if not check_blank_object(narratives):
+                narratives = json.loads(narratives.get('REGRESSION'))
+                return {
+                    "narratives": narratives
+                }
+            else:
+                return {}
+
         except Exception as error:
             print error
             return {}
-
-        if not check_blank_object(narratives):
-            # print narratives.keys()
-            if "summary" in narratives.keys():
-                data['summary'] = narratives['summary']
-                # data['analysis'] = narratives['analysis']
-                data['narratives'] = narratives
-            else:
-                data['summary'] = {}
-                data['narratives'] = narratives
-
-        else:
-            data = {}
-
-        # path = self.storage_measure_output_dir() + "/reg-result.json"
-        path = self.storage_output_dir() + "/results/Regression"
-
-        try:
-            result = hadoop.hadoop_read_output_file(path)
-            if not check_blank_object(result):
-                data['raw_data'] = []
-                if "stats" in result.keys():
-                    for key, value in result['stats']['coefficients'].iteritems():
-                        data['raw_data'].append([key, round(value['coefficient'], 1)])
-
-                    data['raw_data'] = sorted(data['raw_data'], key=lambda x:abs(x[1]),reverse=True)
-                else:
-                    data.pop('raw_data', None)
-        except Exception as error:
-            print error
-            return data
-        return data
 
     def get_frequency_results(self):
         # result_path = self.storage_dimension_output_dir() + "/frequency-result.json";
@@ -582,16 +554,17 @@ class Errand(models.Model):
 
         try:
             narratives_data = hadoop.hadoop_read_output_file(narratives_path)
+            if not check_blank_object(narratives_data):
+                data = narratives_data
+                data = json.loads(data["TREND"])
+                return data
+            else:
+                return {}
         except Exception as error:
             print error
             return {}
 
-        if not check_blank_object(narratives_data):
-            data = narratives_data
-            data = json.loads(data["TREND"])
-            return data
-        else:
-            return {}
+
 
     def add_subsetting_to_column_data(self, main_data):
 
