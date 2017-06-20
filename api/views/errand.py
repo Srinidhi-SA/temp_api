@@ -167,6 +167,7 @@ def set_measure(request):
     e.compare_with = request.POST['compare_with']
     e.compare_type = request.POST['compare_type']
     e.name = request.POST['story_name']
+    # e.analysis_done = 'TRUE'
     e.save()
     try:
         e.run_master()
@@ -175,7 +176,7 @@ def set_measure(request):
         return Response({'Exception': "Failure"})
 
     # analysis done
-    e.analysis_done = 'TRUE'
+    # e.analysis_done = 'TRUE'
     e.save()
     return Response({'message': "Success", "id": e.id})
 
@@ -196,6 +197,7 @@ def set_dimension(request):
     e.compare_with = request.POST['compare_with']
     e.compare_type = request.POST['compare_type']
     e.name = request.POST['story_name']
+    # e.analysis_done = "TRUE"
     e.save()
     try:
         e.run_master()
@@ -203,7 +205,7 @@ def set_dimension(request):
         print e
         return Response({'Exception': "Failure"})
     # analysis done
-    e.analysis_done = "TRUE"
+    # e.analysis_done = "TRUE"
     e.save()
     return Response({'message': "Success", "id": e.id})
 
@@ -260,10 +262,10 @@ def get_results(request):
         # 'dimensions': anova_dummy_data_2,
 
         # real data measures data (regression data)
-        # 'measures': e.get_reg_results(),
+        'measures': e.get_reg_results(),
 
         # dummy data measures data (regression data)
-        'measures': regression_dummy_data,
+        # 'measures': regression_dummy_data,
         'decision_tree_narrative': e.get_decision_tree_regression_narratives(),
         'decision_tree_result': e.get_decision_tree_regression_results(),
         'density_histogram': e.get_density_histogram(),
