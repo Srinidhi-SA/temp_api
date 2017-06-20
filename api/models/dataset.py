@@ -123,7 +123,12 @@ class Dataset(models.Model):
 
             result_data = {}
             if result.has_key('Metadata'):
-                result_data = json.loads(result['Metadata'])
+                if isinstance(result['Metadata'], dict):
+                    result_data = result['Metadata']
+                elif isinstance(result['Metadata'], str):
+                    result_data = json.loads(result['Metadata'])
+                elif isinstance(result['Metadata'], unicode):
+                    result_data = json.loads(str(result['Metadata']))
             else:
                 result_data = result
 
