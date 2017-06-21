@@ -25,9 +25,9 @@ class Profile(models.Model):
         return {
             "id": self.user.id,
             "token": self.token,
-            "username": self.user.username,
+            "username": self.user.username.title(),
             "email": self.user.email,
-            "full_name": self.user.get_full_name()
+            "full_name": self.user.get_full_name().title()
         }
 
 
