@@ -12,6 +12,7 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 
 from api.models.dataset import Dataset, DatasetSerializer
+from api.helper import get_truncated_name
 
 
 def get_dataset(request):
@@ -262,10 +263,6 @@ def add_more_info_to_dataset(ds):
     dataset_quickinfo["subsetting"] = subsetting
     dataset_quickinfo["profile"] = profile
     dataset_quickinfo["file_size"] = ds.get_size_of_file()
-    name_length = len(dataset_quickinfo["name"])
 
-    if name_length > 18:
-        dataset_quickinfo["truncated_name"] = dataset_quickinfo["name"][:15] + "..."
-    else:
-        dataset_quickinfo["truncated_name"] = dataset_quickinfo["name"]
+    dataset_quickinfo["truncated_name"] = get_truncated_name(dataset_quickinfo["name"])
     return dataset_quickinfo

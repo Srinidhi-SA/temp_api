@@ -141,3 +141,13 @@ def get_color_map():
            "Stable":"green"
            }
     return out
+
+
+def get_truncated_name(name):
+    name = name.split('.')[0]
+    name_length = len(name)
+
+    if name_length > 18:
+        name = name[:15] + "..."
+
+    return name
