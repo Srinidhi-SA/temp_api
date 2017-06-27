@@ -28,7 +28,7 @@ def get_dataset_from_data_from_id(id):
 
 
 def get_all_dataset(userId):
-    ds = Dataset.objects.filter(userId=userId)
+    ds = Dataset.objects.filter(userId=userId).order_by('-created_at')
     return ds
 
 
@@ -219,23 +219,6 @@ def filter_sample(request):
                                 )
 
     return Response({"message":"result"})
-
-'''
-----> METHODS = quickinfo
-Dataset Name (40 Characters)
-Created By : Senthil R
-Updated on : Feb 21, 2017
-File type: CSV
-File size: 788KB
-Measures: 4
-Dimensions: 11
-Index: 3
-Subsets:
-  Cities (San Diego, Miami, New York)
-  Sales (>$ 200,000)
-  Products (count>1000)
-  Sales Agent (Top 10)
-'''
 
 
 def add_more_info_to_dataset(ds):
