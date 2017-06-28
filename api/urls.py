@@ -56,11 +56,27 @@ urlpatterns = [
     url(r'errand/get_results', errand.get_results),
     url(r'errand/archived', errand.get_archived),
     url(r'errand/archive', errand.set_archived),
+
+    # measure related separate apis
+    url(r'errand/get_decision_tree', errand.get_decision_tree),
+    url(r'errand/get_distribution', errand.get_distribution),
+    url(r'errand/get_regression', errand.get_regression),
+    url(r'errand/get_anova', errand.get_anova),
+    url(r'errand/get_narratives', errand.get_narratives),
+    url(r'errand/get_dimension_results', errand.get_dimension_results),
+    url(r'errand/get_reg_results', errand.get_reg_results),
+    url(r'errand/get_decision_tree_regression_narratives', errand.get_decision_tree_regression_narratives),
+    url(r'errand/get_decision_tree_regression_results', errand.get_decision_tree_regression_results),
+    url(r'errand/get_density_histogram', errand.get_density_histogram),
+
+    # dimension related separate apis
     url(r'errand/get_frequency_results', errand.get_frequency_results),
     url(r'errand/get_tree_results_raw', errand.get_tree_results_raw),
     url(r'errand/get_tree_results', errand.get_tree_results),
     url(r'errand/get_tree_narratives', errand.get_tree_narratives),
     url(r'errand/get_chi_results', errand.get_chi_results),
+
+
     url(r'errand/edit', errand.edit),
     url(r'errand/delete', errand.delete),
     url(r'errand/configure_data', errand.configure_data),
