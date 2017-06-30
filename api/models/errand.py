@@ -552,19 +552,19 @@ class Errand(models.Model):
     def get_trend_analysis(self):
         narratives_path = self.storage_output_dir() + "/narratives/Trend"
 
-        # try:
-        narratives_data = hadoop.hadoop_read_output_file(narratives_path)
-        if not check_blank_object(narratives_data):
-            data = narratives_data
-            data = json.loads(data["TREND"])
-            data = model_helper_c3.manipulate_trend_narrative_card1_chart_format(data)
-            # data = model_helper_c3.manipulate_trend_narrative_card3_chart_format(data)
-            return data
-        else:
+        try:
+            narratives_data = hadoop.hadoop_read_output_file(narratives_path)
+            if not check_blank_object(narratives_data):
+                data = narratives_data
+                data = json.loads(data["TREND"])
+                data = model_helper_c3.manipulate_trend_narrative_card1_chart_format(data)
+                # data = model_helper_c3.manipulate_trend_narrative_card3_chart_format(data)
+                return data
+            else:
+                return {}
+        except Exception as error:
+            print error
             return {}
-        # except Exception as error:
-        #     print error
-        #     return {}
 
     def add_subsetting_to_column_data(self, main_data):
 
