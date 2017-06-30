@@ -256,10 +256,10 @@ def get_results(request):
         ['x', 'gret', 'gret1', 'gret2', 'gret3', 'gret4', 'gret5'],
         ['y', 30, 200, 100, 400, 150, 250]
     ]
-    type = 'line'
+    chart_type = 'line'
 
     c3chart = C3Chart(data=data,
-                      chart_type=type)
+                      chart_type=chart_type)
 
     e = get_errand(request)
 
