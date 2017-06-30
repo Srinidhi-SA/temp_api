@@ -15,6 +15,9 @@ EMR_INFO = settings.EMR
 print EMR_INFO
 emr_home_path = EMR_INFO.get('home_path')
 
+# model_helper_c3 related imports
+from api.models import model_helper_c3
+
 # import hadoopy
 
 name_map = {
@@ -207,6 +210,7 @@ class Errand(models.Model):
         result_dir = self.storage_output_dir() + "/results/DescrStats"
         try:
             output = hadoop.hadoop_read_output_file(result_dir)
+            output = model_helper_c3.manipulate_results_histogram_bins(output)
         except Exception as error:
             print error
             return {}
@@ -249,7 +253,6 @@ class Errand(models.Model):
                 return {}
         else:
             return {}
-
 
     def get_narratives(self):
         if self.measure is None:
@@ -549,19 +552,19 @@ class Errand(models.Model):
     def get_trend_analysis(self):
         narratives_path = self.storage_output_dir() + "/narratives/Trend"
 
-        try:
-            narratives_data = hadoop.hadoop_read_output_file(narratives_path)
-            if not check_blank_object(narratives_data):
-                data = narratives_data
-                data = json.loads(data["TREND"])
-                return data
-            else:
-                return {}
-        except Exception as error:
-            print error
+        # try:
+        narratives_data = hadoop.hadoop_read_output_file(narratives_path)
+        if not check_blank_object(narratives_data):
+            data = narratives_data
+            data = json.loads(data["TREND"])
+            data = model_helper_c3.manipulate_trend_narrative_card1_chart_format(data)
+            # data = model_helper_c3.manipulate_trend_narrative_card3_chart_format(data)
+            return data
+        else:
             return {}
-
-
+        # except Exception as error:
+        #     print error
+        #     return {}
 
     def add_subsetting_to_column_data(self, main_data):
 

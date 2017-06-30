@@ -249,6 +249,18 @@ def get_results(request):
     :param request: Errand Id
     :return: JSON formatted story details
     """
+
+    from api.c3charts import C3Chart
+
+    data =  [
+        ['x', 'gret', 'gret1', 'gret2', 'gret3', 'gret4', 'gret5'],
+        ['y', 30, 200, 100, 400, 150, 250]
+    ]
+    type = 'line'
+
+    c3chart = C3Chart(data=data,
+                      chart_type=type)
+
     e = get_errand(request)
 
     return Response({
@@ -269,6 +281,7 @@ def get_results(request):
         'decision_tree_narrative': e.get_decision_tree_regression_narratives(),
         'decision_tree_result': e.get_decision_tree_regression_results(),
         'density_histogram': e.get_density_histogram(),
+        'c3_chart': c3chart.get_json()
     })
 
 
