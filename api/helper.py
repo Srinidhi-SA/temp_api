@@ -81,8 +81,13 @@ class DateHelp:
             return False
         return True
 
-
+#TODO: use python humanize
 def tell_me_size_readable_format(num):
+    """
+    Please use python humanize, will phase out this function
+    :param num:
+    :return:
+    """
 
     name = "B"
 
