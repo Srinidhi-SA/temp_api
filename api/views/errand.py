@@ -274,6 +274,56 @@ def get_results(request):
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
+def get_result_list_measures(request):
+    """
+    Get Story Details
+    :param request: Errand Id
+    :return: JSON formatted story details
+    """
+    e = get_errand(request)
+    data = {
+        'result': e.get_result(),
+        'narratives': e.get_narratives(),
+        'dimensions': e.get_dimension_results(),
+        'measures': e.get_reg_results(),
+        'decision_tree_narrative': e.get_decision_tree_regression_narratives(),
+        'decision_tree_result': e.get_decision_tree_regression_results(),
+        'density_histogram': e.get_density_histogram(),
+    }
+
+    name = {
+        'dimensions': 'Anova',
+        'measures':'Regression',
+    }
+    trend = e.get_trend_analysis()
+
+    final_array = []
+    if data['result'] != {} and data['narratives'] != {}:
+        final_array.append('Distribution')
+
+    if trend == {}:
+        pass
+    else:
+        final_array.append('Trend')
+
+    if data['dimensions'] == {}:
+        pass
+    else:
+        final_array.append('Anova')
+
+    if data['measures'] == {}:
+        pass
+    else:
+        final_array.append('Regression')
+
+    if data['decision_tree_result'] != {} and data['decision_tree_narrative'] != {}:
+        final_array.append('DecisionTree')
+
+    return Response({'result': final_array})
+
+
+@api_view(['GET'])
+@renderer_classes((JSONRenderer, ))
 def get_decision_tree(request):
     """
     Get anova of Errand

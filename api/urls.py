@@ -54,6 +54,7 @@ urlpatterns = [
     url(r'errand/set_column_data', errand.set_column_data),
     url(r'errand/set_measure', errand.set_measure),
     url(r'errand/get_results', errand.get_results),
+    url(r'errand/get_result_list_measures', errand.get_result_list_measures),
     url(r'errand/archived', errand.get_archived),
     url(r'errand/archive', errand.set_archived),
 
@@ -116,6 +117,8 @@ urlpatterns = [
     url(r'score/make', score.create_score),
     url(r'score/all', score.retrieve_all_score),
     url(r'score/score', score.retrieve_score),
+    url(r'score/set_column_data', score.set_column_data),
+    url(r'score/create', score.setup_and_call_script),
     url(r'score/download', score.download_file),
     url(r'score/unknown_api', score.unknown_api),
     url(r'score/edit', score.edit_score),
