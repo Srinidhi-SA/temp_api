@@ -15,6 +15,8 @@ from api.lib.fab_helper import create_score_extended_folder, \
 from api.views.joblog import submit_masterjob
 from api.helper import generate_nested_list_from_nested_dict
 
+from api.models import model_helper_c3
+
 EMR_INFO = settings.EMR
 emr_home_path = EMR_INFO.get('home_path')
 
@@ -257,7 +259,22 @@ class Score(models.Model):
 
             a["scoreSummary"]["feature_importance"] = feature_importance
             a["scoreSummary"]["feature_importance_heading"] = "The top {0} features are:".format(str(len(a["scoreSummary"]["feature_importance"][0])-1))
+
+        if 'prediction_split' in a["scoreSummary"].keys():
+            data = a["scoreSummary"].get('prediction_split')
+            a["scoreSummary"]['prediction_split_chart'] = model_helper_c3.manipulate_score_results_data_prediction_split(
+                data
+            )
+
+        if 'feature_importance' in a["scoreSummary"].keys():
+            data = a["scoreSummary"].get('feature_importance')
+            a["scoreSummary"][
+                'feature_importance_chart'] = model_helper_c3.manipulate_score_results_data_feature_importance(
+                data
+            )
+
         return a["scoreSummary"]
+
 
     def read_data_from_emr(self):
         base_dir = self.base_emr_storage_folder()

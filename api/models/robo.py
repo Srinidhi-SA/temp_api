@@ -8,6 +8,8 @@ import itertools
 from subprocess import call
 from django.conf import settings
 from api.helper import get_color_map
+from api.models import model_helper_c3
+
 
 def robo_base_directory(instance):
     return "uploads/robos/{0}".format(instance.id)
@@ -105,6 +107,8 @@ class Robo(models.Model):
                 out[key] = self.google_chart_format(port_snapshot[key])
             else:
                 out[key] = port_snapshot[key]
+
+        out = model_helper_c3.manipulate_result_snapshot_sector_and_class(out)
         result["portfolio_snapshot"] = out
 
         sector_performance = result["sector_performance"]
@@ -112,10 +116,26 @@ class Robo(models.Model):
         result["heat_map"] = heat_map_data
 
         result["sector_performance_color"] = self.add_coloring(result["sector_performance"])
-        result["portfolio_performance_gchart"] = self.fix_protfolio_performance(
+
+        result_set = self.fix_protfolio_performance(
             result["portfolio_performance"],
             ["scaled_total", "sensex"]
         )
+        result["portfolio_performance_gchart"] = result_set
+        result["portfolio_performance_gchart_chart"] = model_helper_c3.manipulate_result_portfolio_performance_gchart(result_set)
+
+        result['portfolio_performance_chart'] = model_helper_c3.manipulate_result_portfolio_performance(
+            result['portfolio_performance']
+        )
+
+        result["sector_performance"]["sector_data_chart"] = model_helper_c3.manipulate_result_sector_performance_sector_data(
+            result["sector_performance"]["sector_data"]
+        )
+
+        result["sector_performance_color_chart"] = model_helper_c3.manipulate_result_sector_performace_color(
+            result["sector_performance_color"]
+        )
+
         return {
             'result': result,
             'narratives': narratives,

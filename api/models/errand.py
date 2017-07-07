@@ -285,6 +285,8 @@ class Errand(models.Model):
             data = {}
             if "narratives" in narratives.keys():
                 data["narratives"] = json.loads(str(narratives.get("narratives")))
+            model_helper_c3.manipulate_dimensions_narratives_main_card_charts_effect_size_data(data)
+            model_helper_c3.manipulate_dimensions_narratives_cards_for_each_card1_charts_group_by_total_data(data)
             return data
             # return narratives
         else:
@@ -308,19 +310,21 @@ class Errand(models.Model):
         data = {}
         # path = self.storage_measure_output_dir() + "/reg-narratives.json"
         path = self.storage_output_dir() + "/narratives/Regression"
-        try:
-            narratives = hadoop.hadoop_read_output_file(path)
-            if not check_blank_object(narratives):
-                narratives = json.loads(narratives.get('REGRESSION'))
-                return {
-                    "narratives": narratives
-                }
-            else:
-                return {}
-
-        except Exception as error:
-            print error
+        # try:
+        narratives = hadoop.hadoop_read_output_file(path)
+        if not check_blank_object(narratives):
+            narratives = json.loads(narratives.get('REGRESSION'))
+            narratives = model_helper_c3.manipulate_measures_narratives_main_card_chart_data(narratives)
+            narratives = model_helper_c3.manipulate_measures_narratives_cards_data(narratives)
+            return {
+                "narratives": narratives
+            }
+        else:
             return {}
+
+        # except Exception as error:
+        #     print error
+        #     return {}
 
     def get_frequency_results(self):
         # result_path = self.storage_dimension_output_dir() + "/frequency-result.json";
@@ -339,6 +343,7 @@ class Errand(models.Model):
                 # narratives_path = self.storage_dimension_output_dir() + "/frequency-narratives.json";
                 narratives_path = self.storage_output_dir() + "/narratives/FreqDimension"
                 result = sorted(result, key=lambda x:abs(x[1]),reverse=True)
+                result_c3 = model_helper_c3.get_frequency_results_changes(result)
                 try:
                     narratives_path_result = hadoop.hadoop_read_output_file(narratives_path)
                 except Exception as error:
@@ -346,6 +351,7 @@ class Errand(models.Model):
 
                 return {
                     'raw_data': result,
+                    'result_c3': result_c3,
                     'narratives': narratives_path_result
                 }
             else:
@@ -437,6 +443,7 @@ class Errand(models.Model):
                     return -item['effect_size']
 
                 narratives = sorted(narratives, key=order)
+                narratives_c3 = model_helper_c3.get_chisquare_narratives_narratives_top5_result_changes(narratives)
 
                 result = {}
                 try:
@@ -447,6 +454,7 @@ class Errand(models.Model):
                 return {
                     'result': result,
                     'narratives': narratives,
+                    'narratives_c3': narratives_c3,
                     'narratives_raw': narratives_data
                 }
         return {}
@@ -558,7 +566,7 @@ class Errand(models.Model):
                 data = narratives_data
                 data = json.loads(data["TREND"])
                 data = model_helper_c3.manipulate_trend_narrative_card1_chart_format(data)
-                # data = model_helper_c3.manipulate_trend_narrative_card3_chart_format(data)
+                data = model_helper_c3.manipulate_trend_narrative_card3_chart_format(data)
                 return data
             else:
                 return {}
@@ -567,7 +575,6 @@ class Errand(models.Model):
             return {}
 
     def add_subsetting_to_column_data(self, main_data):
-
         data = self.get_column_data()
 
         data['MEASURE_FILTER'] = main_data['MEASURE_FILTER']

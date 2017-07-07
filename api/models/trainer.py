@@ -11,6 +11,7 @@ from api.lib.fab_helper import create_model_instance_extended_folder, \
     read_remote
 from api.views.joblog import submit_masterjob
 from api.helper import generate_nested_list_from_nested_dict, generate_list_from_nested_dict
+from api.models import  model_helper_c3
 
 EMR_INFO = settings.EMR
 emr_home_path = EMR_INFO.get('home_path')
@@ -277,11 +278,20 @@ class Trainer(models.Model):
             c_d = ""
 
         best, data, feature, comparision, model_dropdown, dougnut, final_data = self.resolve_result_like_boss()
+        feature_chart = model_helper_c3.manipulate_trainer_results_feature(feature)
+
+        for d in data:
+            print d.get('precision_recall_stats')
+            d['precision_recall_stats_chart'] = model_helper_c3.manipulate_trainer_results_data_precision_recall_stats(
+                d.get('precision_recall_stats')
+            )
+
         return {
             "header": "Model Summary",
             "data": final_data,
             "best": best,
             "feature": feature,
+            "feature_chart": feature_chart,
             "heading": """mAdvisor has built 201 models using 3 algorithms
                     (Random Forest, XGBoost and Logistic Regression) to predict
                     {0} and has come up with the following results:

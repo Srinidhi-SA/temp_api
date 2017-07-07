@@ -1,20 +1,14 @@
-import os
 import getpass
-from django.shortcuts import render
-from django.http import HttpResponse
-from django.contrib.auth.decorators import login_required
-from subprocess import call
-import subprocess
 import glob
 import json
+import os
 
+from django.http import HttpResponse
 from rest_framework.decorators import renderer_classes, api_view
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 
 from api.models.errand import Errand, ErrandSerializer
-
-from time import sleep
 
 name_map = {
     # 'dview': "Dimension View",
@@ -250,7 +244,7 @@ def get_results(request):
     :return: JSON formatted story details
     """
 
-    from api.c3charts import C3Chart
+    from api.C3Chart.c3charts import C3Chart
 
     data =  [
         ['x', 'gret', 'gret1', 'gret2', 'gret3', 'gret4', 'gret5'],
@@ -281,7 +275,7 @@ def get_results(request):
         'decision_tree_narrative': e.get_decision_tree_regression_narratives(),
         'decision_tree_result': e.get_decision_tree_regression_results(),
         'density_histogram': e.get_density_histogram(),
-        'c3_chart': c3chart.get_json()
+        # 'c3_chart': c3chart.get_json()
     })
 
 
@@ -1532,4 +1526,8 @@ regression_dummy_data = {
     ]
   }
 }
+
+
+def chart_html(request):
+    pass
 

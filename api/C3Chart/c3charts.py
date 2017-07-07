@@ -1,0 +1,454 @@
+'''
+C3Chart is a python wrapper for c3.js charts. It has no dependencies other than standard python libraries.
+
+Usage:
+=====
+
+    import C3Chart
+    C3Chart.generate(config)
+'''
+
+__author__ = 'Ankush Patel'
+
+import json
+from .config import *
+
+
+class C3Chart(object):
+
+    def __init__(self, **kwargs):
+        self._bindto = '#{}'.format(kwargs.get('bindto', 'chart'))
+        self._data = None
+        self._axis = {}
+        self._grid = None
+        self._region = None
+        self._legend = None
+        self._tooltip = None
+        self._subchart = None
+        self._point = None
+        self._zoom = None
+        self._color = None
+        self._size = {
+            'height': CHART_HEIGHT,
+            # 'width':
+        }
+        self._type = kwargs.get('chart_type', DEFAULT_CHART_TYPE)
+        self._x_label_text = kwargs.get('x_label_text', X_LABEL_DEFAULT_TEXT)
+        self._y_label_text = kwargs.get('y_label_text', Y_LABEL_DEFAULT_TEXT)
+        self._x_column_name = kwargs.get('x_column_name', X_COLUMN_NAME)
+        self._data_data = kwargs.get('data', None)
+        self._data_type = kwargs.get('data_type', DEFAULT_DATA_TYPE)
+        self._x_type = kwargs.get('x_type', X_DEFAULT_TYPE)
+        self._x_height = X_AXIS_HEIGHT
+        self._x_label_rotation = X_TICKS_ROTATION
+        self._point_radius = POINT_RADIUS
+        self._title = {'text': kwargs.get('title', TITLE)}
+
+        self._x_index_in_column_data = None
+        self._number_of_x_ticks = None
+
+        self.set_data_and_type()
+        self.set_basic_chart_setting()
+
+    def _set_title(self, title):
+        self._title = {'text': title}
+
+    def set_data_and_type(self):
+        type = 'columns'
+        if isinstance(self._type, tuple or list):
+            type = self._type[0]
+        elif isinstance(self._type, str):
+            type = self._type
+        self._data = {
+            self._data_type: self._data_data,
+            'type': type
+        }
+        if self._data_type == DEFAULT_DATA_TYPE:
+            self._data['x'] = self._x_column_name
+        self.other_useful_info()
+
+    def other_useful_info(self):
+        if self._data_type == DEFAULT_DATA_TYPE:
+            self._x_index_in_column_data = self.find_x_index_in_column_data()
+        self._x_max_string_length = self.find_and_set_length_of_max_string_in_x()
+        self._number_of_x_ticks = self.find_and_set_number_of_x_ticks()
+
+    def set_keys_in_data_field(self):
+        keys = []
+        for data in self._data_data:
+            keys = list(set(keys + data.keys()))
+
+        keys.remove(self._x_column_name)
+        self._data['keys'] = {'value': keys, 'x':self._x_column_name}
+
+    def set_x_axis(self,
+                   column_name=X_COLUMN_NAME):
+        self._data['x'] = column_name
+
+    def hide_x_axis(self):
+        self._data['x'] = None
+
+    def set_basic_chart_setting(self,
+                                padding_top=PADDING_TOP):
+        self._padding = {
+            'top': padding_top,
+            # 'right': 100,
+            # 'bottom': 40,
+            # 'left': 100
+        }
+
+    def set_basic_axis(self):
+
+        self._axis = {
+            'x':
+                {
+                    'tick':
+                        {
+                            'fit': X_TICK_FIT,
+                            'rotate': self._x_label_rotation,
+                            'multiline': X_TICK_MULTILNE
+                        },
+                    'height': self._x_height,
+                    'label':
+                        {
+                            'text': self._x_label_text,
+                            'position': X_LABEL_DEFAULT_POSITION
+                        },
+                    'type': self._x_type
+                },
+            'y':
+                {
+                    'tick':
+                        {
+                            'outer': False,
+                        },
+                    'label':
+                        {
+                            'text': self._y_label_text,
+                            'position': Y_LABEL_DEFAULT_POSITION
+                        }
+                }
+        }
+
+        if self._data_type == DATA_TYPE_JSON:
+            self.set_keys_in_data_field()
+
+    def set_basic_legends(self):
+        self._legend = {
+            'show': True
+        }
+
+    def hide_basic_legends(self):
+        self._legend = {
+            'show': False
+        }
+
+    def set_basic_grid_lines(self):
+        self._grid = {
+            'y': {
+                'show': True
+            },
+            'x': {
+                'show': True,
+            }
+        }
+
+    def set_basic_color_pattern(self,
+                                pattern=PATTERN):
+        self._color = {
+            'pattern': pattern
+        }
+
+    def set_basic_subchart(self):
+        self._subchart = {
+            'show': True
+        }
+        self._axis['x']['extent'] = [0,X_EXTENT_DEFAULT]
+
+        self._size = {
+                  'height': CHART_HEIGHT + 100 + X_AXIS_HEIGHT + 60
+                }
+
+
+    def hide_subchart(self):
+        self._subchart = None
+        self._axis['x']['extent'] = None
+        self._size = {
+            'height': CHART_HEIGHT
+        }
+
+    def set_basic_tooltip(self):
+        self._tooltip = {
+            'show': True
+        }
+
+    def set_height_between_legend_and_x_axis(self):
+        import math
+        if self._x_max_string_length:
+            self._x_height = abs(math.sin(math.radians(self._x_label_rotation))) * 5 * self._x_max_string_length + X_AXIS_HEIGHT
+        else:
+            self._x_height = X_AXIS_HEIGHT
+
+    def find_and_set_length_of_max_string_in_x(self):
+        data = self._data_data
+        if self._x_column_name and self._data_type == DATA_TYPE_JSON:
+            return max([len(d.get(self._x_column_name)) for d in data])
+        elif self._data_type == DEFAULT_DATA_TYPE:
+            x_data = data[self._x_index_in_column_data]
+            return max([len(str(d)) for d in x_data])
+
+    def find_and_set_number_of_x_ticks(self):
+        data = self._data_data
+        if self._data_type == DATA_TYPE_JSON:
+            return len(data)
+        elif self._data_type == DEFAULT_DATA_TYPE:
+            return len(data[self._x_index_in_column_data])
+
+    def find_x_extent(self):
+        if self._number_of_x_ticks < X_EXTENT_DEFAULT:
+            return [0,5]
+        else:
+            return [0, self._number_of_x_ticks/10]
+
+    def find_x_index_in_column_data(self):
+        # import pdb; pdb.set_trace();
+        # print self._data_data
+        for index, data in enumerate(self._data_data):
+            # print index, data, self._x_column_name
+            if data[0] == self._x_column_name:
+                return index
+        return 0
+
+    def set_subchart_after(self):
+        if self._number_of_x_ticks > SUBCHART_X_TICK_THRESHOLD:
+            self.set_basic_subchart()
+
+    def rotate_axis(self):
+        if self._axis:
+            self._axis['rotated'] = True
+            self._axis['x']['label']['position'] = Y_LABEL_DEFAULT_POSITION
+            self._axis['x']['label']['text'] = Y_LABEL_DEFAULT_TEXT
+            self._axis['x']['tick']['rotate'] = 0
+            self._axis['x']['tick']['fit'] = True
+            self._axis['y']['label']['position'] = X_LABEL_DEFAULT_POSITION
+            self._axis['y']['label']['text'] = X_LABEL_DEFAULT_TEXT
+
+            # if self._x_max_string_length and self._x_max_string_length < 15:
+            self.set_multiline_x()
+
+    def set_another_y_axis(self,
+                           y2_name=None):
+        if y2_name is None:
+            raise Exception('Dual axis: Y2 axis has to be assigned a column.')
+
+        if self._axis:
+            self._axis['y2'] = {
+                "show": True,
+                "label": {
+                    "text":'Y2 - Axis',
+                    "position": "outer-middle"
+                }
+            }
+        if self._data:
+            self._data['axes'] = {
+                y2_name: 'y2',
+            }
+
+    def set_x_type_to_timeseries(self):
+        if self._axis:
+            self._axis['x']['type'] = X_TYPE_TIMESERIES
+
+    def set_x_type_as_index(self):
+        if self._axis:
+            self._axis['x']['type'] = X_TYPE_INDEX
+
+    def set_axis_label_text(self,
+                            x_label=X_LABEL_DEFAULT_TEXT,
+                            y_label=Y_LABEL_DEFAULT_TEXT):
+
+        if self._axis:
+            self._axis['x']['label']['text'] = x_label
+            self._axis['y']['label']['text'] = y_label
+
+    def set_scatter_chart(self):
+        self._point = {
+            'r': self._point_radius
+        }
+        if self._data:
+            self._data['type'] = CHART_TYPE_SCATTER
+
+    def set_pie_chatter(self):
+        if self._data:
+            self._data['type'] = CHART_TYPE_PIE
+
+    def set_donut_chart(self):
+        if self._data:
+            self._data['type'] = CHART_TYPE_DONUT
+
+    def set_x_tick_rotation(self, rotation=X_TICKS_ROTATION):
+        if self._axis:
+            if self._axis['x']:
+                self._axis['x']['tick']['rotate'] = rotation
+
+    def set_multiline_x(self):
+        if self._axis['x']:
+            if 'tick' in self._axis.keys():
+                self._axis['x']['tick']['multiline'] = True
+            else:
+                self._axis['x']['tick'] = {
+                    'multiline': True
+                }
+
+    def hide_multipline_x(self):
+        pass
+
+    def add_groups_to_data(self, list_of_y):
+        self._data['groups'] = [list_of_y]
+
+    # function related
+    def add_tooltip_for_scatter(self):
+
+        if self._tooltip:
+            self._tooltip['contents'] = 'set_tooltip'
+        else:
+            self._tooltip = {
+                'show': True,
+                'contents': 'set_tooltip'
+            }
+
+    def set_d3_format_x(self, set_x=D3_FORMAT_MILLION):
+        self._axis['x']['tick']['format'] = set_x
+
+    def set_d3_format_y(self, set_y=D3_FORMAT_MILLION):
+        self._axis['y']['tick']['format'] = set_y
+
+    def set_d3_format_y2(self, set_y2=D3_FORMAT_MILLION):
+        if self._axis['y2']:
+            y2_json = self._axis['y2']
+            y2_json['tick'] = {
+                'format': set_y2
+            }
+            self._axis['y2'] = y2_json
+
+    def add_negative_color(self):
+        self._data['color'] = FUNCTION_COLOR
+        pass
+
+    def set_xs(self, xs):
+        self._data['x'] = None
+        self._data['xs'] = xs
+
+    def remove_x_from_data(self):
+        self._data['x'] = None
+
+    def set_all_basics(self):
+        self.set_height_between_legend_and_x_axis()
+        self.set_basic_axis()
+        self.set_basic_legends()
+        self.set_basic_grid_lines()
+        self.set_basic_color_pattern()
+        self.set_basic_tooltip()
+        self.set_subchart_after()
+        self.set_d3_format_y()
+
+    def special_bar_chart(self):
+        self.set_basic_axis()
+        self.hide_basic_legends()
+        self.set_basic_grid_lines()
+        self.set_basic_color_pattern()
+        self.set_basic_tooltip()
+        self.set_x_tick_rotation(0)
+        self.set_d3_format_y()
+
+    def get_json(self):
+
+        return {
+            # 'bindto': self._bindto,
+            'data': self._data,
+            'axis': self._axis,
+            'tooltip': self._tooltip,
+            'grid': self._grid,
+            'legend': self._legend,
+            'color': self._color,
+            'padding': self._padding,
+            'title': self._title,
+            'subchart': self._subchart,
+            'point': self._point,
+            'bar': {
+                'width': {
+                    'ratio': 0.5
+                }
+            },
+            'size': self._size
+        }
+
+
+class ScatterChart(C3Chart):
+
+    def __init__(self, **kwargs):
+        super(ScatterChart, self).__init__(**kwargs)
+        self.set_all_basics()
+        self.set_scatter_chart()
+        self.hide_subchart()
+
+class BarChart(C3Chart):
+
+    def __init__(self, **kwargs):
+        super(BarChart, self).__init__(**kwargs)
+
+
+class PieChart(C3Chart):
+
+    def __init__(self, **kwargs):
+        super(PieChart, self).__init__(**kwargs)
+        self.hide_x_axis()
+        self.set_pie_chatter()
+        self._pie = {
+                    'label': {
+                        'format': None
+                    }
+                }
+
+    def get_json(self):
+
+        return {
+            # 'bindto': self._bindto,
+            'data': self._data,
+            'legend': self._legend,
+            'color': self._color,
+            'padding': self._padding,
+            'title': self._title,
+            'size': self._size,
+            'pie': self._pie
+        }
+
+class DonutChart(C3Chart):
+
+    def __init__(self, **kwargs):
+        super(DonutChart, self).__init__(**kwargs)
+        self.hide_x_axis()
+        self.set_donut_chart()
+        self._donut = {
+            'title': "Title",
+            'label': {
+                'format': None
+            }
+        }
+
+    def get_json(self):
+        return {
+            # 'bindto': self._bindto,
+            'data': self._data,
+            'legend': self._legend,
+            'color': self._color,
+            'padding': self._padding,
+            'title': self._title,
+            'size': self._size,
+            'donut': self._donut
+        }
+
+
+
+
+
+
