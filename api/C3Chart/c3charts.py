@@ -46,6 +46,8 @@ class C3Chart(object):
 
         self._x_index_in_column_data = None
         self._number_of_x_ticks = None
+        self._number_of_y_data = None
+        self._total_data_count = None
 
         self.set_data_and_type()
         self.set_basic_chart_setting()
@@ -72,6 +74,8 @@ class C3Chart(object):
             self._x_index_in_column_data = self.find_x_index_in_column_data()
         self._x_max_string_length = self.find_and_set_length_of_max_string_in_x()
         self._number_of_x_ticks = self.find_and_set_number_of_x_ticks()
+        self._number_of_y_data = self.find_and_set_number_of_y_data()
+        self._total_data_count = self.find_and_set_total_data_count()
 
     def set_keys_in_data_field(self):
         keys = []
@@ -134,9 +138,15 @@ class C3Chart(object):
             self.set_keys_in_data_field()
 
     def set_basic_legends(self):
-        self._legend = {
-            'show': True
-        }
+        if self._number_of_y_data is None:
+            self._number_of_y_data = self.find_and_set_number_of_y_data()
+
+        if self._number_of_y_data > 1:
+            self._legend = {
+                'show': True
+            }
+        else:
+            self.hide_basic_legends()
 
     def hide_basic_legends(self):
         self._legend = {
@@ -166,9 +176,10 @@ class C3Chart(object):
         self._axis['x']['extent'] = [0,X_EXTENT_DEFAULT]
 
         self._size = {
-                  'height': CHART_HEIGHT + 100 + X_AXIS_HEIGHT + 60
+                  # 'height': CHART_HEIGHT + X_AXIS_HEIGHT
+                  'height': CHART_HEIGHT + self._x_height
+                  # 'height': CHART_HEIGHT
                 }
-
 
     def hide_subchart(self):
         self._subchart = None
@@ -185,7 +196,12 @@ class C3Chart(object):
     def set_height_between_legend_and_x_axis(self):
         import math
         if self._x_max_string_length:
-            self._x_height = abs(math.sin(math.radians(self._x_label_rotation))) * 5 * self._x_max_string_length + X_AXIS_HEIGHT
+            print 'calculation', abs(math.sin(math.radians(self._x_label_rotation))), abs(math.sin(math.radians(self._x_label_rotation))) *\
+                             5 *\
+                             self._x_max_string_length
+            self._x_height = abs(math.sin(math.radians(self._x_label_rotation))) *\
+                             5 *\
+                             self._x_max_string_length + X_AXIS_HEIGHT
         else:
             self._x_height = X_AXIS_HEIGHT
 
@@ -204,6 +220,15 @@ class C3Chart(object):
         elif self._data_type == DEFAULT_DATA_TYPE:
             return len(data[self._x_index_in_column_data])
 
+    def find_and_set_number_of_y_data(self):
+        return len(self._data_data) - 1
+
+    def find_and_set_total_data_count(self):
+        count = 0
+        for d in self._data_data:
+            count += len(d)
+        return count
+
     def find_x_extent(self):
         if self._number_of_x_ticks < X_EXTENT_DEFAULT:
             return [0,5]
@@ -211,10 +236,7 @@ class C3Chart(object):
             return [0, self._number_of_x_ticks/10]
 
     def find_x_index_in_column_data(self):
-        # import pdb; pdb.set_trace();
-        # print self._data_data
         for index, data in enumerate(self._data_data):
-            # print index, data, self._x_column_name
             if data[0] == self._x_column_name:
                 return index
         return 0
@@ -232,8 +254,6 @@ class C3Chart(object):
             self._axis['x']['tick']['fit'] = True
             self._axis['y']['label']['position'] = X_LABEL_DEFAULT_POSITION
             self._axis['y']['label']['text'] = X_LABEL_DEFAULT_TEXT
-
-            # if self._x_max_string_length and self._x_max_string_length < 15:
             self.set_multiline_x()
 
     def set_another_y_axis(self,
@@ -245,8 +265,8 @@ class C3Chart(object):
             self._axis['y2'] = {
                 "show": True,
                 "label": {
-                    "text":'Y2 - Axis',
-                    "position": "outer-middle"
+                    "text": Y2_LABEL_DEFAULT_TEXT,
+                    "position": Y2_LABEL_DEFAULT_POSITION
                 }
             }
         if self._data:
@@ -264,13 +284,36 @@ class C3Chart(object):
 
     def set_axis_label_text(self,
                             x_label=X_LABEL_DEFAULT_TEXT,
-                            y_label=Y_LABEL_DEFAULT_TEXT):
+                            y_label=Y_LABEL_DEFAULT_TEXT,
+                            y2_label=Y2_LABEL_DEFAULT_TEXT):
 
         if self._axis:
             self._axis['x']['label']['text'] = x_label
             self._axis['y']['label']['text'] = y_label
+            if 'y2' in self._axis.keys():
+                self._axis['y2']['label']['text'] = y2_label
+
+    def get_point_radius(self):
+
+        if self._total_data_count is None:
+            self._total_data_count = self.find_and_set_total_data_count()
+
+        count = self._total_data_count
+        if count < 30:
+            return 10
+        elif count < 60:
+            return 8
+        elif count < 120:
+            return 6
+        elif count < 240:
+            return 5
+        else:
+            return 4
 
     def set_scatter_chart(self):
+
+        self._point_radius = self.get_point_radius()
+
         self._point = {
             'r': self._point_radius
         }
@@ -341,6 +384,14 @@ class C3Chart(object):
     def remove_x_from_data(self):
         self._data['x'] = None
 
+    def get_some_related_info_printed(self):
+        print "x max string length", self._x_max_string_length
+        print "x length", self._x_height
+        print "chart", self._size
+        print "legend", self._legend
+        print "y_count", self._number_of_y_data
+        print "total", self._total_data_count
+
     def set_all_basics(self):
         self.set_height_between_legend_and_x_axis()
         self.set_basic_axis()
@@ -361,9 +412,8 @@ class C3Chart(object):
         self.set_d3_format_y()
 
     def get_json(self):
-
+        print self.get_some_related_info_printed()
         return {
-            # 'bindto': self._bindto,
             'data': self._data,
             'axis': self._axis,
             'tooltip': self._tooltip,
@@ -371,7 +421,7 @@ class C3Chart(object):
             'legend': self._legend,
             'color': self._color,
             'padding': self._padding,
-            'title': self._title,
+            # 'title': self._title,
             'subchart': self._subchart,
             'point': self._point,
             'bar': {
@@ -411,13 +461,14 @@ class PieChart(C3Chart):
 
     def get_json(self):
 
+
+        print self.get_some_related_info_printed()
         return {
-            # 'bindto': self._bindto,
             'data': self._data,
             'legend': self._legend,
             'color': self._color,
             'padding': self._padding,
-            'title': self._title,
+            # 'title': self._title,
             'size': self._size,
             'pie': self._pie
         }
@@ -429,15 +480,16 @@ class DonutChart(C3Chart):
         self.hide_x_axis()
         self.set_donut_chart()
         self._donut = {
-            'title': "Title",
+            # 'title': "Title",
             'label': {
                 'format': None
             }
         }
 
     def get_json(self):
+
+        print self.get_some_related_info_printed()
         return {
-            # 'bindto': self._bindto,
             'data': self._data,
             'legend': self._legend,
             'color': self._color,

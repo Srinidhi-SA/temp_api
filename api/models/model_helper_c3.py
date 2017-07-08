@@ -5,7 +5,8 @@ from api.C3Chart.c3charts import C3Chart, ScatterChart, PieChart, DonutChart
 
 def manipulate_results_histogram_bins(output):
     bins = output['histogram']['bins']
-    y_label = output['histogram']['column_name']
+    x_label = output['histogram']['column_name']
+    y_label = 'num_records'
     x_axis = []
     y_axis = []
 
@@ -18,7 +19,7 @@ def manipulate_results_histogram_bins(output):
     chart_data = [x_axis, y_axis]
     c3 = C3Chart(data=chart_data, chart_type='bar', data_type='columns')
     c3.set_all_basics()
-    c3.set_axis_label_text(y_label=y_label)
+    c3.set_axis_label_text(y_label='num_records', x_label=x_label)
     output['histogram_chart'] = c3.get_json()
     output['yformat'] = 'm'
     return output
@@ -32,7 +33,7 @@ def manipulate_trend_narrative_card1_chart_format(output):
     c3 = C3Chart(data=chart_data, x_column_name='key')
     c3.set_all_basics()
     # c3.set_x_axis(column_name='key')
-    c3.set_axis_label_text(x_label='key', y_label='value')
+    c3.set_axis_label_text(x_label='Time Period', y_label='ONLINE_SPEND')
     output['narratives']['card1']['chart_c3'] = c3.get_json()
     output['narratives']['card1']['yformat'] = 'm'
     return output
@@ -42,6 +43,7 @@ def manipulate_trend_narrative_card3_chart_format(output):
     card = output.get('narratives').get('card3').get('chart').get('data')
     c3 = C3Chart(data=card, x_column_name='key', data_type='json')
     c3.set_all_basics()
+    c3.set_axis_label_text(x_label='Time Period', y_label='ONLINE_SPEND')
     output['narratives']['card3']['chart_c3'] = c3.get_json()
     output['narratives']['card3']['yformat'] = 'm'
     return output
@@ -52,12 +54,12 @@ def manipulate_trend_narrative_card3_chart_format(output):
 def manipulate_dimensions_narratives_main_card_charts_effect_size_data(output):
     # dimensions.narratives.main_card.charts.effect_size.data
     card = output.get('narratives').get('main_card').get('charts').get('effect_size').get('data')
-    labels = output.get('narratives').get('main_card').get('charts').get('effect_size').get('labels').get('Dimension')
+    labels = output.get('narratives').get('main_card').get('charts').get('effect_size').get('labels')
     card = convert_single_json_object_into_column_data(card)
     c3 = C3Chart(data=card, x_column_name='x', data_type='columns', chart_type='bar')
     c3.set_all_basics()
     c3.rotate_axis()
-    # c3.set_axis_label_text(y_label=labels)
+    c3.set_axis_label_text(y_label=labels.get('Dimension'), x_label='Dimension')
     output['narratives']['main_card']['charts']['effect_size']['chart_c3'] = c3.get_json()
     output['narratives']['main_card']['charts']['effect_size']['yformat'] = 'm'
     return output
@@ -67,6 +69,8 @@ def manipulate_dimensions_narratives_cards_for_each_card1_charts_group_by_total_
     for index, data in enumerate(output.get('narratives').get('cards')):
         card1 = data.get('card1').get('charts').get('group_by_total').get('data')
         card2 = data.get('card1').get('charts').get('group_by_mean').get('data')
+        labels = data.get('card1').get('charts').get('group_by_mean').get('labels')
+
         card1 = convert_single_json_object_into_column_data(card1)
         card2 = convert_single_json_object_into_column_data(card2)
         card2[1][0] = 'y2'
@@ -75,6 +79,11 @@ def manipulate_dimensions_narratives_cards_for_each_card1_charts_group_by_total_
         c3.set_all_basics()
         c3.set_another_y_axis('y2')
         c3.set_d3_format_y2()
+        c3._set_title(title=data.get('card1').get('heading'))
+        c3.set_axis_label_text(x_label=labels.keys()[0],
+                               y_label=labels[labels.keys()[0]],
+                               y2_label='Average Spend'
+                               )
         output['narratives']['cards'][index]['card1']['chart_c3'] = c3.get_json()
         output['narratives']['cards'][index]['card1']['yformat'] = 'm'
         output['narratives']['cards'][index]['card1']['y2format'] = 'm'
@@ -82,7 +91,7 @@ def manipulate_dimensions_narratives_cards_for_each_card1_charts_group_by_total_
         card2 = data.get('card2').get('charts').get('trend_chart').get('data_c3')
         c3 = C3Chart(data=card2, x_column_name='Time Period', data_type='columns', chart_type='line')
         c3.set_all_basics()
-        # c3.set_axis_label_text(x_label=card2[0][0], y_label=card2[1][0])
+        c3.set_axis_label_text(x_label='Time Period', y_label='ONLINE_SPEND')
         output['narratives']['cards'][index]['card2']['chart_c3'] = c3.get_json()
         output['narratives']['cards'][index]['card2']['yformat'] = 'm'
 
@@ -94,7 +103,7 @@ def manipulate_dimensions_narratives_cards_for_each_card1_charts_group_by_total_
         c3.set_axis_label_text(x_label=card3[0][0], y_label=card3[1][0])
         c3.set_x_type_as_index()
         c3.add_tooltip_for_scatter()
-        # c3.set_axis_label_text(x_label=card3[0][0], y_label=card3[1][0])
+        c3.set_axis_label_text(x_label=card3[0][0], y_label=card3[1][0])
         output['narratives']['cards'][index]['card3']['chart_c3'] = c3.get_json()
         output['narratives']['cards'][index]['card3']['yformat'] = 'm'
         output['narratives']['cards'][index]['card3']['tooltip_c3'] = [card3[0], card3[1], card3[2]]
@@ -109,10 +118,10 @@ def manipulate_measures_narratives_main_card_chart_data(output):
     label = output.get('main_card').get('chart').get('label')
     title = output.get('main_card').get('header')
     data = add_x_and_y_at_start(data)
-    print data
     c3 = C3Chart(data=data, chart_type='bar')
     c3.special_bar_chart()
     # c3.set_axis_label_text(x_label=label.get('x'), y_label=label.get('y'))
+    c3.set_axis_label_text(x_label='Measure', y_label='ONLINE SPEND')
     c3._set_title(title=title)
     output['main_card']['chart_c3'] = c3.get_json()
     output['main_card']['yformat'] = 'f'
@@ -130,29 +139,32 @@ def manipulate_measures_narratives_cards_data(output):
         c3 = ScatterChart(data=card0_charts_2, x_column_name=x_name, data_type='columns')
         c3.set_xs(xs)
         # c3.set_axis_label_text(x_label=card0_charts_2[0][0], y_label=card0_charts_2[1][0])
+        c3.set_axis_label_text(x_label='ONLINE_SPEND', y_label='AVERAGE_BALANCE')
         c3.set_x_type_as_index()
         c3.hide_basic_legends()
         output['cards'][index]['card0']['chart_c3'] = c3.get_json()
         output['cards'][index]['card0']['yformat'] = 'm'
 
-        print 'card2'
         card2_charts_data = data.get('card2').get('charts').get('data')
         c3 = C3Chart(data=card2_charts_data)
         c3.set_all_basics()
         c3.set_another_y_axis('ONLINE_SPEND')
         c3.set_d3_format_y2()
         # c3.set_axis_label_text(x_label=card0_charts_2[0][0], y_label=card0_charts_2[1][0])
+        c3.set_axis_label_text(x_label='Time Period',
+                               y2_label='ONLINE SPEND',
+                               y_label='AVERAGE_BALANCE')
         output['cards'][index]['card2']['chart_c3'] = c3.get_json()
         output['cards'][index]['card2']['yformat'] = 'm'
         output['cards'][index]['card2']['y2format'] = 'm'
 
-        print 'card3'
         card3_charts_data = data.get('card3').get('charts').get('data')
         x_name = card3_charts_data[0][0]
         card3_charts_data, xs = convert_column_data_with_array_of_category_into_column_data_stright_xy(card3_charts_data, 2)
         c3 = ScatterChart(data=card3_charts_data, x_column_name=x_name, data_type='columns')
         c3.set_xs(xs)
-        c3.set_axis_label_text(x_label=card3_charts_data[0][0], y_label=card3_charts_data[1][0])
+        # c3.set_axis_label_text(x_label=card3_charts_data[0][0], y_label=card3_charts_data[1][0])
+        c3.set_axis_label_text(x_label='ONLINE_SPEND', y_label='AVERAGE_BALANCE')
         c3.set_x_type_as_index()
         output['cards'][index]['card3']['chart_c3'] = c3.get_json()
         output['cards'][index]['card3']['yformat'] = 'm'
@@ -193,7 +205,6 @@ def get_chisquare_narratives_narratives_top5_result_changes(output):
 
 
 def manipulate_result_snapshot_sector_and_class(data):
-    print "Manipulation for charts"
     sector = data['sector']
     sector = convert_individual_data_to_just_xy(sector, add_first_name=False)
     c3 = C3Chart(data=sector, chart_type='bar', x_column_name=sector[0][0])
@@ -243,8 +254,6 @@ def manipulate_result_sector_performance_sector_data(data):
     for d in data.keys():
         final_data.append([d, data[d].get('allocation')])
 
-    print final_data
-
     c3 = DonutChart(data=final_data)
     c3.set_all_basics()
     c3.remove_x_from_data()
@@ -277,8 +286,6 @@ def manipulate_result_sector_performace_color(data):
 
 
 def manipulate_trainer_results_feature(data):
-    print data
-    # data = convert_single_json_object_into_column_data(data)
     c3 = C3Chart(data=data, chart_type='bar', x_column_name='Name')
     c3.set_all_basics()
     c3.hide_subchart()
@@ -304,7 +311,7 @@ def manipulate_trainer_results_data_precision_recall_stats(data):
     return final_data
 
 
-# ---------------------------------------------------Model/Trainer ---------------------------------------------------->
+# ---------------------------------------------------Score  ----------------------------------------------------------->
 
 
 def manipulate_score_results_data_prediction_split(data):

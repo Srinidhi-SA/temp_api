@@ -323,6 +323,8 @@ class Score(models.Model):
                 result = zip(table[dimension_name].values(), table['count'].values())
                 narratives_path = self.base_emr_storage_folder() + "/narratives/FreqDimension/data.json"
 
+                result = sorted(result, key=lambda x:abs(x[1]),reverse=True)
+                result_c3 = model_helper_c3.get_frequency_results_changes(result)
                 try:
                     narratives_path_result = json.loads(read_remote(narratives_path))
                 except Exception as error:
@@ -330,6 +332,7 @@ class Score(models.Model):
 
                 return {
                     'raw_data': result,
+                    'result_c3': result_c3,
                     'narratives': narratives_path_result
                 }
             else:
@@ -365,6 +368,7 @@ class Score(models.Model):
                     return -item['effect_size']
 
                 narratives = sorted(narratives, key=order)
+                narratives_c3 = model_helper_c3.get_chisquare_narratives_narratives_top5_result_changes(narratives)
 
                 result = {}
                 try:
@@ -375,7 +379,8 @@ class Score(models.Model):
                 return {
                     'result': result,
                     'narratives': narratives,
-                    'narratives_raw': narratives_data
+                    'narratives_raw': narratives_data,
+                    'narratives_c3': narratives_c3
                 }
         return {}
 
