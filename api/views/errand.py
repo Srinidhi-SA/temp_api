@@ -281,6 +281,198 @@ def get_results(request):
 
 @api_view(['GET'])
 @renderer_classes((JSONRenderer, ))
+def get_result_list_measures(request):
+    """
+    Get Story Details
+    :param request: Errand Id
+    :return: JSON formatted story details
+    """
+    e = get_errand(request)
+    data = {
+        'result': e.get_result(),
+        'narratives': e.get_narratives(),
+        'dimensions': e.get_dimension_results(),
+        'measures': e.get_reg_results(),
+        'decision_tree_narrative': e.get_decision_tree_regression_narratives(),
+        'decision_tree_result': e.get_decision_tree_regression_results(),
+        'density_histogram': e.get_density_histogram(),
+    }
+
+    name = {
+        'dimensions': 'Anova',
+        'measures':'Regression',
+    }
+    trend = e.get_trend_analysis()
+
+    final_array = []
+    if data['result'] != {} and data['narratives'] != {}:
+        final_array.append('Distribution')
+
+    if trend == {}:
+        pass
+    else:
+        final_array.append('Trend')
+
+    if data['dimensions'] == {}:
+        pass
+    else:
+        final_array.append('Anova')
+
+    if data['measures'] == {}:
+        pass
+    else:
+        final_array.append('Regression')
+
+    if data['decision_tree_result'] != {} and data['decision_tree_narrative'] != {}:
+        final_array.append('DecisionTree')
+
+    return Response({'result': final_array})
+
+
+@api_view(['GET'])
+@renderer_classes((JSONRenderer, ))
+def get_decision_tree(request):
+    """
+    Get anova of Errand
+    :param request: Errand Id
+    :return: JSON formatted anova details
+    """
+    e = get_errand(request)
+    return Response({
+        'decision_tree_narrative': e.get_decision_tree_regression_narratives(),
+        'decision_tree_result': e.get_decision_tree_regression_results(),
+    })
+
+
+@api_view(['GET'])
+@renderer_classes((JSONRenderer, ))
+def get_distribution(request):
+    """
+    Get distribution results of Errand
+    :param request: Errand Id
+    :return: JSON formatted distribution details
+    """
+    e = get_errand(request)
+    return Response({
+        'result': e.get_result(),
+        'narratives': e.get_narratives()
+    })
+
+
+@api_view(['GET'])
+@renderer_classes((JSONRenderer, ))
+def get_regression(request):
+    """
+    Get regression results of Errand
+    :param request: Errand Id
+    :return: JSON formatted regression details
+    """
+    e = get_errand(request)
+    return Response({
+        'measures': e.get_reg_results()
+    })
+
+
+@api_view(['GET'])
+@renderer_classes((JSONRenderer, ))
+def get_anova(request):
+    """
+    Get anova of Errand
+    :param request: Errand Id
+    :return: JSON formatted anova details
+    """
+    e = get_errand(request)
+    return Response({
+        'dimensions': e.get_dimension_results(),
+    })
+
+
+@api_view(['GET'])
+@renderer_classes((JSONRenderer, ))
+def get_desc_stats(request):
+    """
+    Get desc stats of Errand
+    :param request: Errand Id
+    :return: JSON formatted desc stats details
+    """
+    e = get_errand(request)
+    return Response(e.get_result())
+
+
+@api_view(['GET'])
+@renderer_classes((JSONRenderer, ))
+def get_density_histogram(request):
+    """
+    Get density histogram of Errand
+    :param request: Errand Id
+    :return: JSON formatted density histogram details
+    """
+    e = get_errand(request)
+    return Response(e.get_density_histogram())
+
+
+@api_view(['GET'])
+@renderer_classes((JSONRenderer, ))
+def get_decision_tree_regression_results(request):
+    """
+    Get decision tree regression results of Errand
+    :param request: Errand Id
+    :return: JSON formatted decision tree regression result details
+    """
+    e = get_errand(request)
+    return Response(e.get_decision_tree_regression_results())
+
+
+@api_view(['GET'])
+@renderer_classes((JSONRenderer, ))
+def get_decision_tree_regression_narratives(request):
+    """
+    Get decision tree regression narrative of Errand
+    :param request: Errand Id
+    :return: JSON formatted decision tree regression narrative details
+    """
+    e = get_errand(request)
+    return Response(e.get_decision_tree_regression_narratives())
+
+
+@api_view(['GET'])
+@renderer_classes((JSONRenderer, ))
+def get_reg_results(request):
+    """
+    Get regression results of Errand
+    :param request: Errand Id
+    :return: JSON formatted regression details
+    """
+    e = get_errand(request)
+    return Response(e.get_reg_results())
+
+
+@api_view(['GET'])
+@renderer_classes((JSONRenderer, ))
+def get_dimension_results(request):
+    """
+    Get dimension results of Errand
+    :param request: Errand Id
+    :return: JSON formatted dimension details
+    """
+    e = get_errand(request)
+    return Response(e.get_dimension_results())
+
+
+@api_view(['GET'])
+@renderer_classes((JSONRenderer, ))
+def get_narratives(request):
+    """
+    Get Narrative results of Errand
+    :param request: Errand Id
+    :return: JSON formatted narrative details
+    """
+    e = get_errand(request)
+    return Response(e.get_narratives())
+
+
+@api_view(['GET'])
+@renderer_classes((JSONRenderer, ))
 def get_frequency_results(request):
     """
     Get frequency results of Errand

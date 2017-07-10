@@ -49,6 +49,7 @@ def get_all_score_of_this_user(user_id, app_id):
 
     return results
 
+
 def get_all_score(user_id):
     scr = Score.objects.filter(
         userId=user_id,
@@ -56,11 +57,52 @@ def get_all_score(user_id):
         )
     return scr
 
+
 def add_more_info_to_score(score, data):
 
     ds = score.dataset
     model = score.trainer
     pass
+
+
+def get_score_details_from_request(request):
+
+    data = request.POST
+
+    details = {
+        'compare_with': data.get('compare_with') if data.get('compare_with') and len(data.get('compare_with')) > 0 else "",
+        'compare_type': data.get('compare_type') if data.get('compare_type') and len(data.get('compare_type')) > 0 else "",
+        'name': data.get('name') if data.get('name') and len(data.get('name')) > 0 else "Unnamed",
+        'dimension': data.get('dimension') if data.get('dimension') and len(data.get('dimension')) > 0 else "",
+        # 'measure': data.get('measure') if data.get('measure') and len(data.get('measure')) > 0 else "",
+    }
+
+    return details
+
+
+def list_to_string(list_obj):
+    string_ = ", ".join(list_obj)
+    return string_
+
+
+def read_utf8_columns_from_meta_data(meta_data):
+    utf8_columns = meta_data.get('utf8_columns')
+    if utf8_columns != None:
+        return list_to_string(utf8_columns)
+    else:
+        return ""
+
+
+def read_ignore_column_suggestions_from_meta_data(ds):
+    dict_data = []
+    meta_data = ds.get_meta()
+    ignore_columns_json_data = meta_data.get('ignore_column_suggestions', {})
+    measure_suggetions_json_data = meta_data.get('measure_suggestions', "")
+    for key in ignore_columns_json_data:
+        dict_data += ignore_columns_json_data[key]
+    return list_to_string(dict_data), \
+           list_to_string(measure_suggetions_json_data), \
+           read_utf8_columns_from_meta_data(meta_data)
 
 
 def get_details_from_request(request):
@@ -72,7 +114,6 @@ def get_details_from_request(request):
     details['model_name'] = data.get('model_name').split("-")[0]
     details["app_id"] = request.query_params.get("app_id")
     # details['model_name'] = "Random Forest"
-
 
     return details
 
@@ -98,11 +139,58 @@ def create_score(request):
 
     # create database entry for score
     scr = Score.make(details=details, userId=user.id)
+    # results = scr.read_score_details()
+    result_column_from_model = scr.get_dimension_name_from_model()
+
+    # create response
+    return Response({'details': ScoreSerializer(scr).data,
+                     'result_column_from_model':result_column_from_model})
+
+
+@api_view(['POST'])
+@renderer_classes((JSONRenderer, ), )
+def setup_and_call_script(request):
+    """
+    :param request:
+    :return:
+    """
+    user = request.user
+    req_details = get_score_details_from_request(request)
+
+    scr = get_score(request)
+    scr.setup_and_call(req_details)
+
     results = scr.read_score_details()
 
     # create response
     return Response({'details': ScoreSerializer(scr).data,
                      'results': results})
+
+
+@api_view(['POST'])
+@renderer_classes((JSONRenderer, ))
+def set_column_data(request):
+    """
+    Set configuration details
+    :param request: Trainer Id
+    :return: Success Message
+    """
+    scr = get_score(request)
+
+    from api.views.dataset import get_dataset_from_data_from_id
+    ds = get_dataset_from_data_from_id(scr.dataset_id)
+    ignore_column_suggestions, measure_suggetions_json_data, utf8_columns = read_ignore_column_suggestions_from_meta_data(ds)
+
+    data = {}
+    for x in ["ignore", "date", "date_format"]:
+        if request.POST.has_key(x):
+            data[x] = "" if request.POST[x] == "null" else request.POST[x]
+
+    data['ignore_column_suggestions'] = ignore_column_suggestions
+    data['measure_suggetions_json_data'] = measure_suggetions_json_data
+    data["utf8_columns"] = utf8_columns
+    scr.set_column_data(data)
+    return Response({'message': "Successfuly set column data"})
 
 
 @api_view(['GET'])
@@ -212,3 +300,5 @@ def unknown_api(request):
     #
     # result = score.get_score_story_data()
     return HttpResponse("Hello, world. You're at the polls index.")
+
+
