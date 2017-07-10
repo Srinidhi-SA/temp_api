@@ -22,6 +22,16 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 
 
+from django.core.cache import cache
+from api.redis_access import get_cache_name
+
+from django.conf import settings
+from django.core.cache.backends.base import DEFAULT_TIMEOUT
+
+
+CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
+
+
 def get_trainer(request):
     id = request.GET['trainer_id'] if request.method == "GET" else request.POST['trainer_id']
     try:
@@ -202,13 +212,20 @@ def retrieve_trainer(request):
 
     # serialize trainer
     details = TrainerSerializer(trainer).data
-    results = trainer.read_trainer_details()
+
+    cache_name = get_cache_name(trainer)
+
+    data = cache.get(cache_name)
+    if data is None:
+        data = trainer.read_trainer_details()
+        cache.set(cache_name, data)
+
     # results['feature'] = trainer_feature_dummy_data
 
     # create response
     return Response({
         'trainer': details,
-        'results': results,
+        'results': data,
     })
 
 

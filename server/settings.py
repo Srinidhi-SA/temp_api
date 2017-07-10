@@ -201,3 +201,16 @@ JWT_AUTH = {
     'JWT_AUTH_COOKIE': None,
 
 }
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+
+REDIS_SALT = "Some_salt_for_redis_v0"
+prefix = "ext"

@@ -13,6 +13,14 @@ from rest_framework.response import Response
 
 from api.models.dataset import Dataset, DatasetSerializer
 from api.helper import get_truncated_name
+from django.core.cache import cache
+from api.redis_access import get_cache_name
+
+from django.conf import settings
+from django.core.cache.backends.base import DEFAULT_TIMEOUT
+
+
+CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
 
 def get_dataset(request):
@@ -100,7 +108,14 @@ def get_meta(request):
     :return: Meta details
     """
     e = get_dataset(request)
-    return Response(e.get_meta())
+
+    cache_name = get_cache_name(e)
+
+    data = cache.get(cache_name)
+    if data is None:
+        data = e.get_meta()
+        cache.set(cache_name, data)
+    return Response(data)
 
 @api_view(['POST'])
 @renderer_classes((JSONRenderer,))

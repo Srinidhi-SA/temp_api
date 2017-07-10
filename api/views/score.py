@@ -9,6 +9,14 @@ from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 
+from django.core.cache import cache
+from api.redis_access import get_cache_name
+
+from django.conf import settings
+from django.core.cache.backends.base import DEFAULT_TIMEOUT
+
+
+CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
 def get_score(request):
 
@@ -206,11 +214,21 @@ def retrieve_score(request):
     scr = get_score(request)
 
     details = ScoreSerializer(scr).data
-    results = scr.read_score_details()
 
+
+    cache_name = get_cache_name(scr)
+
+    data = cache.get(cache_name)
+    if data is None:
+        data = scr.read_score_details()
+        cache.set(cache_name, data)
+
+    # results['feature'] = trainer_feature_dummy_data
+
+    # create response
     return Response({
-        "details": details,
-        "results": results
+        'trainer': details,
+        'results': data,
     })
 
 

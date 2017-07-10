@@ -4,3 +4,5 @@ uploads
 ENV
 /.idea
 db.sqlite3
+dump.rdb
+

@@ -10,13 +10,21 @@ from rest_framework.response import Response
 
 from api.models.errand import Errand, ErrandSerializer
 
+from django.core.cache import cache
+from api.redis_access import get_cache_name
+
+from django.conf import settings
+from django.core.cache.backends.base import DEFAULT_TIMEOUT
+
+
+CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
+
 name_map = {
-    # 'dview': "Dimension View",
     'measure_dimension_stest': "Measure vs. Dimension",
-    'dimension_dimension_stest':'Dimension vs. Dimension',
-    'measure_measure_impact':'Measure vs. Measure',
-    'prediction_check':'Predictive modeling',
-    'desc_analysis':'Descriptive analysis',
+    'dimension_dimension_stest': 'Dimension vs. Dimension',
+    'measure_measure_impact': 'Measure vs. Measure',
+    'prediction_check': 'Predictive modeling',
+    'desc_analysis': 'Descriptive analysis',
 }
 
 # Create your views here.
@@ -24,7 +32,7 @@ measure_operations = ["Measure vs. Dimension", 'Measure vs. Measure', 'Descripti
 dimension_operations = ['Dimension vs. Dimension', 'Predictive modeling', 'Descriptive analysis']
 
 def showme(request):
-    return HttpResponse("Alright, this is a test");
+    return HttpResponse("Alright, this is a test")
 
 def get_errand(request):
 
@@ -244,39 +252,25 @@ def get_results(request):
     :return: JSON formatted story details
     """
 
-    from api.C3Chart.c3charts import C3Chart
-
-    data =  [
-        ['x', 'gret', 'gret1', 'gret2', 'gret3', 'gret4', 'gret5'],
-        ['y', 30, 200, 100, 400, 150, 250]
-    ]
-    chart_type = 'line'
-
-    c3chart = C3Chart(data=data,
-                      chart_type=chart_type)
-
     e = get_errand(request)
+    cache_name = get_cache_name(e)
 
-    return Response({
-        'result': e.get_result(),
-        'narratives': e.get_narratives(),
+    data = cache.get(cache_name)
+    if data is None:
 
-        # real data dimension data (anova data)
-        'dimensions': e.get_dimension_results(),
+        data = {
+            'result': e.get_result(),
+            'narratives': e.get_narratives(),
+            'dimensions': e.get_dimension_results(),
+            'measures': e.get_reg_results(),
+            'decision_tree_narrative': e.get_decision_tree_regression_narratives(),
+            'decision_tree_result': e.get_decision_tree_regression_results(),
+            'density_histogram': e.get_density_histogram()
+        }
 
-        #dummy data dimension data (anova data)
-        # 'dimensions': anova_dummy_data_2,
+        cache.set(cache_name, data)
 
-        # real data measures data (regression data)
-        'measures': e.get_reg_results(),
-
-        # dummy data measures data (regression data)
-        # 'measures': regression_dummy_data,
-        'decision_tree_narrative': e.get_decision_tree_regression_narratives(),
-        'decision_tree_result': e.get_decision_tree_regression_results(),
-        'density_histogram': e.get_density_histogram(),
-        # 'c3_chart': c3chart.get_json()
-    })
+    return Response(data)
 
 
 @api_view(['GET'])
@@ -288,45 +282,54 @@ def get_result_list_measures(request):
     :return: JSON formatted story details
     """
     e = get_errand(request)
-    data = {
-        'result': e.get_result(),
-        'narratives': e.get_narratives(),
-        'dimensions': e.get_dimension_results(),
-        'measures': e.get_reg_results(),
-        'decision_tree_narrative': e.get_decision_tree_regression_narratives(),
-        'decision_tree_result': e.get_decision_tree_regression_results(),
-        'density_histogram': e.get_density_histogram(),
-    }
 
-    name = {
-        'dimensions': 'Anova',
-        'measures':'Regression',
-    }
-    trend = e.get_trend_analysis()
+    cache_name = get_cache_name(e, extra='result_list')
+    data = cache.get(cache_name)
 
-    final_array = []
-    if data['result'] != {} and data['narratives'] != {}:
-        final_array.append('Distribution')
+    if data is None:
 
-    if trend == {}:
-        pass
-    else:
-        final_array.append('Trend')
+        data = {
+            'result': e.get_result(),
+            'narratives': e.get_narratives(),
+            'dimensions': e.get_dimension_results(),
+            'measures': e.get_reg_results(),
+            'decision_tree_narrative': e.get_decision_tree_regression_narratives(),
+            'decision_tree_result': e.get_decision_tree_regression_results(),
+            'density_histogram': e.get_density_histogram(),
+        }
 
-    if data['dimensions'] == {}:
-        pass
-    else:
-        final_array.append('Anova')
+        name = {
+            'dimensions': 'Anova',
+            'measures':'Regression',
+        }
+        trend = e.get_trend_analysis()
 
-    if data['measures'] == {}:
-        pass
-    else:
-        final_array.append('Regression')
+        final_array = []
+        if data['result'] != {} and data['narratives'] != {}:
+            final_array.append('Distribution')
 
-    if data['decision_tree_result'] != {} and data['decision_tree_narrative'] != {}:
-        final_array.append('DecisionTree')
+        if trend == {}:
+            pass
+        else:
+            final_array.append('Trend')
 
-    return Response({'result': final_array})
+        if data['dimensions'] == {}:
+            pass
+        else:
+            final_array.append('Anova')
+
+        if data['measures'] == {}:
+            pass
+        else:
+            final_array.append('Regression')
+
+        if data['decision_tree_result'] != {} and data['decision_tree_narrative'] != {}:
+            final_array.append('DecisionTree')
+
+        data = {'result': final_array}
+        cache.set(cache_name, data)
+
+    return Response(data)
 
 
 @api_view(['GET'])
@@ -545,13 +548,21 @@ def get_dimension_all_results(request):
     :return: JSON formatted all results of dimension story
     """
     e = get_errand(request)
-    return Response({
-        "get_frequency_results":e.get_frequency_results(),
-        "get_tree_results":e.get_tree_results(),
-        "get_tree_results_raw":e.get_tree_results_raw(),
-        "get_tree_narratives":e.get_tree_narratives(),
-        "get_chi_results":e.get_chi_results()
-    })
+    cache_name = get_cache_name(e)
+
+    data = cache.get(cache_name)
+    if data is None:
+        data = {
+            "get_frequency_results":e.get_frequency_results(),
+            "get_tree_results":e.get_tree_results(),
+            "get_tree_results_raw":e.get_tree_results_raw(),
+            "get_tree_narratives":e.get_tree_narratives(),
+            "get_chi_results":e.get_chi_results()
+        }
+
+        cache.set(cache_name, data)
+
+    return Response(data)
 
 
 @api_view(['GET'])

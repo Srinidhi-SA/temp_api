@@ -96,7 +96,6 @@ def submit_metadatajob(inputpath,resultpath, parent_id):
     job_url = "http://{0}:8090/jobs/{1}".format(host, job.jobId)
     print "job_url: {0}".format(job_url)
 
-
     create_joblog({
         'code': "{0}".format(job.jobId),
         'name': job_url,
