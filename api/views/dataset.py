@@ -14,7 +14,7 @@ from rest_framework.response import Response
 from api.models.dataset import Dataset, DatasetSerializer
 from api.helper import get_truncated_name
 from django.core.cache import cache
-from api.redis_access import get_cache_name
+from api.redis_access import get_cache_name, REDIS_TIMEOUT
 
 from django.conf import settings
 from django.core.cache.backends.base import DEFAULT_TIMEOUT
@@ -114,8 +114,9 @@ def get_meta(request):
     data = cache.get(cache_name)
     if data is None:
         data = e.get_meta()
-        cache.set(cache_name, data)
+        cache.set(cache_name, data, timeout=REDIS_TIMEOUT)
     return Response(data)
+
 
 @api_view(['POST'])
 @renderer_classes((JSONRenderer,))

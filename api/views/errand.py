@@ -10,14 +10,16 @@ from rest_framework.response import Response
 
 from api.models.errand import Errand, ErrandSerializer
 
+
 from django.core.cache import cache
-from api.redis_access import get_cache_name
+from api.redis_access import get_cache_name, REDIS_TIMEOUT
 
 from django.conf import settings
 from django.core.cache.backends.base import DEFAULT_TIMEOUT
 
 
 CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
+
 
 name_map = {
     'measure_dimension_stest': "Measure vs. Dimension",
@@ -268,7 +270,7 @@ def get_results(request):
             'density_histogram': e.get_density_histogram()
         }
 
-        cache.set(cache_name, data)
+        cache.set(cache_name, data, timeout=REDIS_TIMEOUT)
 
     return Response(data)
 
@@ -327,7 +329,7 @@ def get_result_list_measures(request):
             final_array.append('DecisionTree')
 
         data = {'result': final_array}
-        cache.set(cache_name, data)
+        cache.set(cache_name, data, timeout=REDIS_TIMEOUT)
 
     return Response(data)
 
@@ -560,7 +562,7 @@ def get_dimension_all_results(request):
             "get_chi_results":e.get_chi_results()
         }
 
-        cache.set(cache_name, data)
+        cache.set(cache_name, data, timeout=REDIS_TIMEOUT)
 
     return Response(data)
 

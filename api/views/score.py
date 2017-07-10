@@ -10,7 +10,7 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 
 from django.core.cache import cache
-from api.redis_access import get_cache_name
+from api.redis_access import get_cache_name, REDIS_TIMEOUT
 
 from django.conf import settings
 from django.core.cache.backends.base import DEFAULT_TIMEOUT
@@ -221,7 +221,7 @@ def retrieve_score(request):
     data = cache.get(cache_name)
     if data is None:
         data = scr.read_score_details()
-        cache.set(cache_name, data)
+        cache.set(cache_name, data, timeout=REDIS_TIMEOUT)
 
     # results['feature'] = trainer_feature_dummy_data
 
