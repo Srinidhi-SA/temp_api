@@ -349,9 +349,28 @@ def manipulate_score_results_data_feature_importance(data):
 
 def convert_json_to_column_data(json_data):
     """
-
-    :param json_data:
-    :return:
+    :param_json_data:  [
+                        {
+                            "value": 100062.04,
+                            "key": "Jan-1998"
+                        },
+                        {
+                            "value": 125248,
+                            "key": "Jan-1999"
+                        },
+                        {
+                            "value": 708180.8600000001,
+                            "key": "Aug-1999"
+                        },
+                        {
+                            "value": 1048392.7300000001,
+                            "key": "Sep-1999"
+                        }
+                    ]
+    :return: [
+        ['key', "Jan-1998", "Jan-1999", "Aug-1999", "Sep-1999"],
+        ['value', 100062.04, 125248, 708180.8600000001, 1048392.7300000001]
+    ]
     """
     # import pdb; pdb.set_trace()
     if not json_data or not json_data[0]:
