@@ -377,6 +377,17 @@ class C3Chart(object):
         self._data['color'] = FUNCTION_COLOR
         pass
 
+    def add_new_chart_on_a_data(self, chart_type='line', data_y='y'):
+        if self._data:
+            self._data['types'] = {
+                data_y: chart_type
+            }
+            pass
+
+    def hide_label(self, axis='x'):
+        if self._axis:
+            self._axis[axis]['label'] = None
+
     def set_xs(self, xs):
         self._data['x'] = None
         self._data['xs'] = xs

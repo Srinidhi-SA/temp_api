@@ -278,13 +278,20 @@ class Trainer(models.Model):
             c_d = ""
 
         best, data, feature, comparision, model_dropdown, dougnut, final_data = self.resolve_result_like_boss()
-        feature_chart = model_helper_c3.manipulate_trainer_results_feature(feature)
+        try:
+            feature_chart = model_helper_c3.manipulate_trainer_results_feature(feature)
+        except:
+            feature_chart = {}
 
         for d in data:
             print d.get('precision_recall_stats')
-            d['precision_recall_stats_chart'] = model_helper_c3.manipulate_trainer_results_data_precision_recall_stats(
-                d.get('precision_recall_stats')
-            )
+
+            try:
+                d['precision_recall_stats_chart'] = model_helper_c3.manipulate_trainer_results_data_precision_recall_stats(
+                    d.get('precision_recall_stats')
+                )
+            except:
+                pass
 
         return {
             "header": "Model Summary",

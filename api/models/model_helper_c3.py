@@ -48,6 +48,35 @@ def manipulate_trend_narrative_card3_chart_format(output):
     output['narratives']['card3']['yformat'] = 'm'
     return output
 
+# ------------------------------------------------------------------- Decision Tree Narrative ------------------------->
+
+
+def manipulate_decision_tree_narrative_card2_chart(output):
+    print "decision----------------------------------------------->"
+    # card2_chart = {"sum": {"High": -1627.7000000000044, "Medium": -2977.3000000000156, "Low": -1792.7999999999993},
+    #                "mean": {"High": -0.5265933354901341, "Medium": -1.858489388264679, "Low": -5.839739413680779}}
+    mean_data = output.get('card2_chart').get('mean')
+    # mean_data = card2_chart.get('mean')
+    sum_data = output.get('card2_chart').get('sum')
+    # sum_data = card2_chart.get('sum')
+    final_data1 = convert_single_json_object_into_column_data(mean_data)
+    final_data2 = convert_single_json_object_into_column_data(sum_data)
+    final_data1.append(final_data2[1])
+    final_data1[0][0] = 'level'
+    final_data1[1][0] = 'mean'
+    final_data1[2][0] = 'sum'
+    c3 = C3Chart(data=final_data1, x_column_name='level', data_type='columns', chart_type='bar')
+    c3.set_all_basics()
+    c3.add_new_chart_on_a_data(data_y='mean', chart_type='line')
+    c3.set_axis_label_text(y_label='Value', x_label='Level')
+    c3.set_another_y_axis(y2_name='mean')
+    c3.hide_label(axis='x')
+
+    output['card2_chart_c3'] = {
+        'chart_c3': c3.get_json(),
+        'yformat': 'f'
+        }
+    return output
 
 # --------------------------------------------------------------------Dimension Narrative------------------------------>
 
@@ -553,7 +582,6 @@ def convert_individual_data_to_just_xy(output, add_first_name=True):
     ]
     :return:
     """
-    # import pdb; pdb.set_trace()
 
     if add_first_name is True:
         final_output = [['x'], ['y']]

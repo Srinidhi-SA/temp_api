@@ -108,9 +108,11 @@ class Robo(models.Model):
             else:
                 out[key] = port_snapshot[key]
 
-        out = model_helper_c3.manipulate_result_snapshot_sector_and_class(out)
-        result["portfolio_snapshot"] = out
-
+        try:
+            out = model_helper_c3.manipulate_result_snapshot_sector_and_class(out)
+            result["portfolio_snapshot"] = out
+        except:
+            pass
         sector_performance = result["sector_performance"]
         heat_map_data = self.heat_map_format(sector_performance)
         result["heat_map"] = heat_map_data
@@ -122,19 +124,33 @@ class Robo(models.Model):
             ["scaled_total", "sensex"]
         )
         result["portfolio_performance_gchart"] = result_set
-        result["portfolio_performance_gchart_chart"] = model_helper_c3.manipulate_result_portfolio_performance_gchart(result_set)
 
-        result['portfolio_performance_chart'] = model_helper_c3.manipulate_result_portfolio_performance(
-            result['portfolio_performance']
-        )
+        try:
+            result["portfolio_performance_gchart_chart"] = model_helper_c3.manipulate_result_portfolio_performance_gchart(result_set)
+        except:
+            pass
 
-        result["sector_performance"]["sector_data_chart"] = model_helper_c3.manipulate_result_sector_performance_sector_data(
-            result["sector_performance"]["sector_data"]
-        )
+        try:
+            result['portfolio_performance_chart'] = model_helper_c3.manipulate_result_portfolio_performance(
+                result['portfolio_performance']
 
-        result["sector_performance_color_chart"] = model_helper_c3.manipulate_result_sector_performace_color(
-            result["sector_performance_color"]
-        )
+            )
+        except:
+            pass
+
+        try:
+            result["sector_performance"]["sector_data_chart"] = model_helper_c3.manipulate_result_sector_performance_sector_data(
+                result["sector_performance"]["sector_data"]
+            )
+        except:
+            pass
+
+        try:
+            result["sector_performance_color_chart"] = model_helper_c3.manipulate_result_sector_performace_color(
+                result["sector_performance_color"]
+            )
+        except:
+            pass
 
         return {
             'result': result,
