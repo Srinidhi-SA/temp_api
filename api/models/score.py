@@ -315,10 +315,11 @@ class Score(models.Model):
         base_dir = self.base_emr_storage_folder()
         file_path = base_dir + "/Summary/summary.json"
         data = read_remote(file_path)
-        data = json.loads(data)
 
-        # a1 = data["scoreSummary"]["prediction_split"]
-        # data["scoreSummary"]["prediction_split"] = generate_nested_list_from_nested_dict(a1)
+        if isinstance(data, dict):
+            data = data
+        elif isinstance(data, str):
+            data = json.loads(data)
         return data
 
     def read_score_story_details_from_emr(self):

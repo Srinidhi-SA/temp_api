@@ -327,7 +327,6 @@ class Errand(models.Model):
         #     return {}
 
     def get_frequency_results(self):
-        # result_path = self.storage_dimension_output_dir() + "/frequency-result.json";
         result_path = self.storage_output_dir() + "/results/FreqDimension"
 
         try:

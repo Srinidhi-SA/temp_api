@@ -177,7 +177,7 @@ class C3Chart(object):
 
         self._size = {
                   # 'height': CHART_HEIGHT + X_AXIS_HEIGHT
-                  'height': CHART_HEIGHT + self._x_height
+                  'height': CHART_HEIGHT + self._x_height + 60
                   # 'height': CHART_HEIGHT
                 }
 

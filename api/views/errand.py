@@ -343,10 +343,15 @@ def get_decision_tree(request):
     :return: JSON formatted anova details
     """
     e = get_errand(request)
-    return Response({
-        'decision_tree_narrative': e.get_decision_tree_regression_narratives(),
-        'decision_tree_result': e.get_decision_tree_regression_results(),
-    })
+    cache_name = get_cache_name(e, extra='get_decision_tree_')
+    data = cache.get(cache_name)
+    if data is None:
+        data = {
+            'decision_tree_narrative': e.get_decision_tree_regression_narratives(),
+            'decision_tree_result': e.get_decision_tree_regression_results(),
+        }
+        cache.set(cache_name, data, timeout=REDIS_TIMEOUT)
+    return Response(data)
 
 
 @api_view(['GET'])
@@ -358,10 +363,18 @@ def get_distribution(request):
     :return: JSON formatted distribution details
     """
     e = get_errand(request)
-    return Response({
-        'result': e.get_result(),
-        'narratives': e.get_narratives()
-    })
+    cache_name = get_cache_name(e, extra='get_distribution_')
+
+    data = cache.get(cache_name)
+    if data is None:
+        data = {
+            'result': e.get_result(),
+            'narratives': e.get_narratives()
+        }
+        cache.set(cache_name, data, timeout=REDIS_TIMEOUT)
+    return Response(
+        data
+    )
 
 
 @api_view(['GET'])
@@ -372,10 +385,20 @@ def get_regression(request):
     :param request: Errand Id
     :return: JSON formatted regression details
     """
+
     e = get_errand(request)
-    return Response({
-        'measures': e.get_reg_results()
-    })
+    cache_name = get_cache_name(e, extra='get_regression_')
+
+    data = cache.get(cache_name)
+    if data is None:
+        data = {
+            'measures': e.get_reg_results()
+        }
+        cache.set(cache_name, data, timeout=REDIS_TIMEOUT)
+
+    return Response(
+        data
+    )
 
 
 @api_view(['GET'])
@@ -387,9 +410,18 @@ def get_anova(request):
     :return: JSON formatted anova details
     """
     e = get_errand(request)
-    return Response({
-        'dimensions': e.get_dimension_results(),
-    })
+
+    cache_name = get_cache_name(e, extra='get_anova_')
+
+    data = cache.get(cache_name)
+
+    if data is None:
+        data = {
+            'dimensions': e.get_dimension_results()
+        }
+        cache.set(cache_name, data, timeout=REDIS_TIMEOUT)
+
+    return Response(data)
 
 
 @api_view(['GET'])
@@ -401,7 +433,16 @@ def get_desc_stats(request):
     :return: JSON formatted desc stats details
     """
     e = get_errand(request)
-    return Response(e.get_result())
+
+    cache_name = get_cache_name(e, extra='get_desc_stats_')
+
+    data = cache.get(cache_name)
+
+    if data is None:
+        data = e.get_result()
+        cache.set(cache_name, data, timeout=REDIS_TIMEOUT)
+
+    return Response(data)
 
 
 @api_view(['GET'])
@@ -413,7 +454,16 @@ def get_density_histogram(request):
     :return: JSON formatted density histogram details
     """
     e = get_errand(request)
-    return Response(e.get_density_histogram())
+
+    cache_name = get_cache_name(e, extra='get_density_histogram_')
+
+    data = cache.get(cache_name)
+
+    if data is None:
+        data = e.get_density_histogram()
+        cache.set(cache_name, data, timeout=REDIS_TIMEOUT)
+
+    return Response(data)
 
 
 @api_view(['GET'])
@@ -726,12 +776,16 @@ def get_trend_analysis(request):
         return Response({
         'trend': {}
     })
-    trend_data = e.get_trend_analysis()
+    cache_name = get_cache_name(e, extra='get_trend_analysis_')
 
-    return Response({
-        'trend': trend_data
-        # 'trend': trend_narraives_demo
-    })
+    data = cache.get(cache_name)
+    if data is None:
+        data = {
+            'trend': e.get_trend_analysis()
+        }
+        cache.set(cache_name, data, timeout=REDIS_TIMEOUT)
+
+    return Response(data)
 
 
 @api_view(['POST'])

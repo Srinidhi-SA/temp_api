@@ -168,11 +168,16 @@ def setup_and_call_script(request):
     scr = get_score(request)
     scr.setup_and_call(req_details)
 
-    results = scr.read_score_details()
+    cache_name = get_cache_name(scr)
+
+    data = cache.get(cache_name)
+    if data is None:
+        data = scr.read_score_details()
+        cache.set(cache_name, data, timeout=REDIS_TIMEOUT)
 
     # create response
     return Response({'details': ScoreSerializer(scr).data,
-                     'results': results})
+                     'results': data})
 
 
 @api_view(['POST'])
