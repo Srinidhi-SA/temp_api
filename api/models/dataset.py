@@ -10,7 +10,7 @@ from rest_framework import serializers
 
 from api.helper import CSVChecker, tell_me_size_readable_format
 from api.lib import hadoop
-from api.views.joblog import submit_metadatajob
+from api.views.joblog import submit_metadatajob, submit_filterjob
 
 
 def dataset_base_directory(instance):
@@ -188,7 +188,13 @@ class Dataset(models.Model):
         measure_filter = json.dumps(MEASURE_FILTER)
         measure_suggestions = json.dumps(MEASURE_SUGGESTIONS)
 
-        call([
+
+        print("Running jobserver filter script")
+        inputpath = self.get_input_file_storage_path()
+        resultpath = self.output_file_meta_path
+        submit_filterjob(inputpath, resultpath, measure_suggestions,column_settings, measure_filter, dimension_filter, None)
+
+        '''call([
             "sh", "api/lib/run_filter.sh",
             settings.HDFS['host'],
             input_file,
@@ -197,7 +203,8 @@ class Dataset(models.Model):
             str(dimension_filter),
             str(measure_filter),
             str(measure_suggestions)
-        ])
+        ]) '''
+
         return "Done"
 
     def output_file_name(self):

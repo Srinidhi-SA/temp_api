@@ -224,10 +224,10 @@ def filter_sample(request):
 
     main_data['DIMENSION_FILTER'] = DIMENSION_FILTER
     main_data['MEASURE_FILTER'] = MEASURE_FILTER
-    main_data['CONSIDER_COLUMNS'] = {"consider_columns": consider_columns}
-    main_data['MEASURE_SUGGESTIONS'] = {"measure_suggestions": MEASURE_SUGGESTIONS}
+    main_data['CONSIDER_COLUMNS'] = json.dumps({"consider_columns": json.dumps(consider_columns)})
+    main_data['MEASURE_SUGGESTIONS'] = json.dumps({"measure_suggestions": json.dumps(MEASURE_SUGGESTIONS)})
 
-
+    print main_data
     ds.sample_filter_subsetting(main_data['CONSIDER_COLUMNS'],
                                main_data['DIMENSION_FILTER'],
                                main_data['MEASURE_FILTER'],
