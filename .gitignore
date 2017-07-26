@@ -1,8 +1,11 @@
 *.pyc
 venv
+env
+myenv
 uploads
 ENV
 /.idea
 db.sqlite3
 dump.rdb
-
+*node_modules
+*dist

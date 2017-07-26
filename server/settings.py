@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'api',
+    'webpack_loader',
 ]
 
 MIDDLEWARE = [
@@ -214,3 +215,12 @@ CACHES = {
 
 REDIS_SALT = "Some_salt_for_redis_v0"
 prefix = "ext"
+
+
+## Webpack configurations
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'BUNDLE_DIR_NAME': '/home/marlabs/codebase/mAdvisor-api/static/react/dist/app/',
+        'STATS_FILE': os.path.join(BASE_DIR, 'static/react/webpack.config.js'),
+    }
+}
