@@ -2,8 +2,7 @@ import React from "react";
 import {render} from "react-dom";
 import {BrowserRouter as Router, Route, Switch, Link , IndexRoute} from "react-router-dom";
 
-import {Login} from "./login";
-
+import {Login} from "./templates/login";
 
 class App extends React.Component {
 	render(){
