@@ -17,7 +17,9 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from api.views.home import home as home_view
 urlpatterns = [
+
     url(r'^admin/', admin.site.urls),
     url(r'^api/', include('api.urls')),
-    url(r'^$',home_view)
+    url(r'^',home_view)
+
 ]
