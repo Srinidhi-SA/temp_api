@@ -5824,7 +5824,7 @@ button:focus {
 	outline: 0!important
 }
 /** Actual Styles Starts from here ***/
- 
+
 .ma-wrapper {
 	min-height: 100%;
 	padding-top: 80px
@@ -6705,15 +6705,15 @@ button:focus {
 	margin-right: 0;
 	margin-left: 0;
 }
-/* 
+/*
     Sometimes the sub menus get too large for the page and prevent the menu from scrolling, limiting functionality
-    A quick fix is to change .side-menu to 
+    A quick fix is to change .side-menu to
 
     -> position:absolute
-    
+
     and uncomment the code below.
-    You also need to uncomment 
-    
+    You also need to uncomment
+
     -> <div class="absolute-wrapper"> </div> in the html file
 
     you also need to tweek the animation. Just uncomment the code in that section
@@ -6858,7 +6858,7 @@ button:focus {
         -webkit-animation: slideout 300ms forwards;
         animation: slideout 300ms forwards;
         -webkit-transform-style: preserve-3d;
-        transform-style: preserve-3d; 
+        transform-style: preserve-3d;
     }*/
   @-moz-keyframes bodyslidein {
  0% {
@@ -6946,7 +6946,7 @@ button:focus {
 	margin: 0;
 }
 .navbar-header {
-	/* this is probably redundant 
+	/* this is probably redundant
     position: fixed;
     z-index: 3;
 	width:100%;*/
@@ -7787,6 +7787,7 @@ body.open-right-sidebar .ma-right-sidebar {
 	padding-left: 20px;
 	padding-right: 20px;
 	padding-top: 20px;
+	padding-bottom: 20px;
 }
 
 @media (min-width:768px) and (max-width:991px) {
@@ -7956,7 +7957,11 @@ body.open-right-sidebar .ma-right-sidebar {
 }
 }
 .ma-splash-screen {
-	background-color: #383737
+	background:#ffffff url('../images/login_bg.png') no-repeat center center fixed;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
 }
 .ma-splash-screen .ma-wrapper {
 	padding-top: 0
@@ -7965,7 +7970,7 @@ body.open-right-sidebar .ma-right-sidebar {
 	margin: 0
 }
 .ma-splash-screen .ma-wrapper .ma-content a {
-	color: #ababab
+	color: #575757
 }
 .ma-splash-screen .ma-wrapper .ma-content a:hover {
 	color: #fff
@@ -9966,21 +9971,21 @@ li.L1, li.L3, li.L5, li.L7, li.L9 {
 }
 .login-container {
 	max-width: 400px;
-	margin: 80px auto;
-	padding: 10px
+	margin: 110px auto;
+	padding: 10px;
 }
 .login-container .panel-default {
 	background: 0 0;
 	padding: 0;
 	border: 0;
-	overflow: hidden;
+	/*overflow: hidden;*/
 	margin-bottom: 20px
 }
 .login-container .panel-default .panel-heading {
 	padding: 0;
 	background: 0 0;
 	border: 0;
-	text-align: center;
+	text-align: right;
 	margin-bottom: 20px
 }
 .login-container .panel-default .panel-heading span {
@@ -9993,6 +9998,21 @@ li.L1, li.L3, li.L5, li.L7, li.L9 {
 	margin-top: 10px;
 	padding-bottom: 10px
 }
+.login-container .panel-default .panel-body {
+background: rgba(255, 255, 255, 0.6);
+-webkit-box-shadow: 0px 0px 14px 4px rgba(0,0,0,0.25);
+-moz-box-shadow: 0px 0px 14px 4px rgba(0,0,0,0.25);
+box-shadow: 0px 0px 14px 4px rgba(0,0,0,0.25);
+}
+
+.login-container h3 {
+    margin: 0px -15px 15px -20px!important;
+    border-left: 7px solid #7dac02;
+    padding-left: 10px;
+    line-height: 40px;
+    font-weight: bold;
+}
+
 .login-container .panel-default .panel-body .form-group {
 	margin: 0;
 	padding: 0
@@ -10001,8 +10021,9 @@ li.L1, li.L3, li.L5, li.L7, li.L9 {
 	padding: 0
 }
 .login-container .panel-default .panel-body .form-group .input-group {
-	border-bottom: 2px solid #4a4949;
-	padding: 10px 0
+    border: 1px solid #c3c0bf;
+    margin-top: 20px;
+    padding: 0 10px;
 }
 .login-container .panel-default .panel-body .form-group .input-group .input-group-addon {
 	border: 0;
@@ -10027,22 +10048,22 @@ li.L1, li.L3, li.L5, li.L7, li.L9 {
 	border-color: #f49090
 }
 .login-container .panel-default .panel-body .form-group.login-submit {
-	padding-top: 40px;
+	padding-top: 20px;
 	padding-bottom: 15px
 }
 .login-container .panel-default .panel-body .form-group.login-submit .btn {
 	width: 100%
 }
 .login-container .panel-default .panel-body .form-group.footer {
-	margin-top: 3px;
+	margin-top: 20px;
 	line-height: 35px;
 	font-size: 14px
 }
 .login-container .panel-default .panel-body .form-group .remember {
-	text-align: right;
 	color: #a3a2a2
 }
 .login-container .panel-default .panel-body .form-group .remember label {
+	color:#575757;
 	margin: 0;
 	cursor: pointer
 }
@@ -10056,6 +10077,17 @@ li.L1, li.L3, li.L5, li.L7, li.L9 {
 }
 .login-container .panel-default .panel-body .form-group .remember .ma-checkbox input[type=checkbox]+label:hover:before, .login-container .panel-default .panel-body .form-group .remember .ma-checkbox input[type=radio]+label:hover:before {
 	border-color: #575555
+}
+
+.login-container .btn-primary {
+    color: #fff;
+    background-color: #7dac02;
+    border-color: #7dac02;
+}
+.login-container .btn-primary:active {
+    color: #fff;
+    background-color: #76a202;
+    border-color: #7dac02;
 }
 .ma-error .error-container {
 	text-align: center
@@ -14947,4 +14979,143 @@ div.dataTables_wrapper div.dataTables_length label select {
 .lg-mb-0 {
 	margin-bottom: 0!important
 }
+}
+
+/*** Card Stye for Story ***/
+/*** story name field *****/
+#sName{
+    height: 40px;
+    width: 100%;
+    border: 1px solid #ccc;
+}
+
+/**********************/
+
+.card-header{
+	font-family: Arial Narrow;
+}
+.card-narrative{
+	font-family: Georgia;
+	font-size: 17px;
+}
+
+.newCardTitle{
+	color:#696969;
+	font-weight:bold;
+	text-decoration:none !important;
+	font-size:14px;
+	word-break: break-word;
+}
+.footerTitle{
+	display:block;
+	font-size:10px;
+	height:13px;
+
+}
+.newCardStyle{
+	background:#FFF;
+	padding:0px;
+	height:114px;
+	box-shadow:0px 5px 5px rgba(0,0,0,0.16);
+	/*box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);*/
+}
+
+.top20{
+	margin-top:20px;
+}
+.popover-div-a{
+	position: absolute;
+   font-size: 11px;
+   color: #337ab7;
+   text-transform:uppercase;
+   font-weight:14px;
+   font-weight: bold;
+}
+.popover-div-a:hover{
+	position: absolute;
+   font-size: 11px;
+   color: #337ab7;
+   text-transform:uppercase;
+   font-weight:14px;
+   font-weight: bold;
+   text-decoration:underline;
+}
+.newStoryCard{
+	font-size: 22px;
+    color: #fff;
+    /* float: right; */
+    /* text-align: center; */
+  /*  position: absolute;*/
+    /* z-index: 10; */
+    /* width: 50%;
+    margin-top: 10%;
+    margin-left: 20%;
+        margin-left: 20%;
+    margin-top: 8%;*/
+    padding-left:18px;
+    white-space:nowrap
+}
+.firstCard{
+	background-color: #00998c;
+	border-top: 1px solid #f4f4f4;
+	display: block;
+	padding: 0 0px;
+	height: 114px;
+	overflow: hidden;
+	transition: all .1s ease-in-out;
+}
+.card-center{
+	line-height: 100px;
+	padding-left:0px;
+	padding-right:20px;
+
+}
+.card-center-tile{
+	height:72px;
+	padding-left:20px;
+}
+.card-footer{
+	height:31px;
+	background-color:#ebebeb;
+	padding-left:15px;
+	/*color:#fff;*/
+}
+.card-selected {
+	/*background: #f1f1f1;*/
+	border: 1px solid #999;
+	box-shadow:0px 5px 5px #999999;
+	/*box-shadow: 0 5px 5px rgba(0,0,0,0.19);*/
+	transition: all .1s ease-in-out;
+}
+.tabHeaderTitle{
+	font-size:28px;
+	color:#999999;
+	padding-top:15px;
+}
+.font15{
+ font-size:16px;
+}
+.inputLine{
+	border-top:1px solid #ffffff;
+	border-left:1px solid #ffffff;
+	border-right:1px solid #ffffff;
+	width:99%;
+}
+.card-deatils{
+	float:right;
+	width:10%;
+	padding-top:5px;
+   padding-bottom:5px;
+}
+.activeClass{
+	color:#000;
+	float:left;
+	white-space:nowrap;
+	cursor:pointer
+}
+.inActiveClass{
+	color:#999;
+	float:left;
+	white-space:nowrap;
+	cursor:pointer
 }

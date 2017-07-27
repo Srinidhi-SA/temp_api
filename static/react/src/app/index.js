@@ -1,19 +1,21 @@
 import React from "react";
 import {render} from "react-dom";
-import {BrowserRouter as Router, Route, Switch, Link , IndexRoute} from "react-router-dom";
+import {BrowserRouter,Route,Switch, browserHistory} from "react-router-dom";
 
-import {Login} from "./templates/login";
+import {Home} from "./templates/Home";
+import {Login} from "./templates/Login";
 
 class App extends React.Component {
 	render(){
-
-	return (
-	    <Router>
-	        <Route path="/" component={Login} />
-	    </Router>
-	);
+		return(
+		   <BrowserRouter history={browserHistory}>
+			 <Switch>
+			    <Route exact path={"/"} component={Login}/>
+					<Route path={"/home"} component={Home}/>
+				</Switch>
+			 </BrowserRouter>
+		 );
 	}
-
 }
 
 render(<App/>, window.document.getElementById('app'));
