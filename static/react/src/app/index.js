@@ -1,19 +1,24 @@
 import React from "react";
 import {render} from "react-dom";
-import {BrowserRouter as Router, Route, Switch, Link , IndexRoute} from "react-router-dom";
+import {BrowserRouter, Route, Switch, Link, IndexRoute} from "react-router-dom";
 
-import {Login} from "./templates/login";
+import Home from "./templates/home";
+import Login from "./templates/login";
 
 class App extends React.Component {
-	render(){
+  render() {
 
-	return (
-	    <Router>
-	        <Route path="/" component={Login} />
-	    </Router>
-	);
-	}
+    return (
+      <BrowserRouter>
+        <div>
+          <Route exact path="/" component={Login}/>
+          <Route path="/home" component={Home}/>
+        </div>
+      </BrowserRouter>
+    );
+  }
 
 }
 
-render(<App/>, window.document.getElementById('app'));
+render(
+  <App/>, window.document.getElementById('app'));
