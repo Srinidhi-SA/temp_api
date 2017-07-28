@@ -1,7 +1,7 @@
 import React from "react";
 import fetch from "isomorphic-fetch";
-import {authenticateFunc,getList,storyList} from "../../services/ajax.js";
-
+import {authenticateFunc, getList} from "../../services/ajax.js";
+import {BrowserRouter,Route,Switch, withRouter} from "react-router-dom";
 export class Login extends React.Component {
    constructor(){
      super();
@@ -13,6 +13,7 @@ export class Login extends React.Component {
    }
 
   doAuth(){
+    var that = this;
      authenticateFunc();
   }
   render(){
@@ -28,7 +29,7 @@ export class Login extends React.Component {
              <div className="panel-heading"><img src="assets/images/m_adv_logo_text.png" alt="logo" className="logo-img" /></div>
              <div className="panel-body">
 
-               <form method="get" className="form-horizontal">
+
                  <h3>SIGN IN</h3>
                  <div className="login-form">
                    <div className="form-group">
@@ -59,7 +60,7 @@ export class Login extends React.Component {
                    </div>
 
                  </div>
-               </form>
+               
              </div>
            </div>
      </div>

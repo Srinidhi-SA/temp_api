@@ -18,21 +18,24 @@ export function getList(){
 		});
 }
 
-export{
-	storyList
-};
+
 export function authenticateFunc(){
-	fetch(API+'/user/api-token-auth',{
+	//alert("working1");
+	fetch(API+'/api/user/api-token-auth',{
 		method: 'POST',
+		headers: {
+	    'Content-Type': 'application/json',
+    },
 		body: JSON.stringify({
 				username: 'harman',
 				password: 'password123',
      })
 	})
 		.then(function(response) {
+			console.log("working");
 			return response.json();
 		}).then(function(json) {
-			//console.log(json);
+			console.log(json);
 		}).catch(function(err) {
 			//console.log(err);
 		});
