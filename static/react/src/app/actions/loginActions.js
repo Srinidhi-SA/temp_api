@@ -1,31 +1,41 @@
 var API = "http://34.196.204.54:9000";
 
-export function authenticateFunc(){
-	let login_response={};
+export function authenticateFunc() {
+    return (dispatch) => {
+    return fetchPosts().then(([response, json]) =>{
+        if(response.status === 200){
+        dispatch(fetchPostsSuccess(json))
+      }
+      else{
+        dispatch(fetchPostsError())
+      }
+    })
+  }
+}
 
-	fetch(API+'/api/user/api-token-auth',{
+function fetchPosts() {
+  return fetch(API+'/api/user/api-token-auth',{
 		method: 'POST',
 		headers: {
-	    'Content-Type': 'application/json',
-    },
+			'Content-Type': 'application/json',
+		},
 		body: JSON.stringify({
 				username: 'harman',
 				password: 'password123',
-     })
-	})
-		.then(function(response) {
-			console.log("working");
-			//console.log(response.json());
-			 return response.json();
-		}).then(function(json) {
-			login_response=json;
-			console.log(login_response);
-		}).catch(function(err) {
-			console.log(err);
-		});
+		 })
+	}).then( response => Promise.all([response, response.json()]));
+}
 
-    return{
-      type:'AUTHENTICATE_USER',
-      payload:login_response
-    }
+
+function fetchPostsSuccess(payload) {
+  return {
+    type: "AUTHENTICATE_USER",
+    payload
+  }
+}
+
+function fetchPostsError() {
+  return {
+    type: "AUTHENTICATE_USER_ERROR"
+  }
 }
