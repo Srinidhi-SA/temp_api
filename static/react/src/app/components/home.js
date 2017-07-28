@@ -2,7 +2,7 @@
  import LeftPanel from "./LeftPanel";
  import TopPanel from "./TopPanel";
  import DescriptionPanel from "./DescriptionPanel";
-export default class Home extends React.Component {
+export class Home extends React.Component {
 
 	render(){
     console.log("home is called!!");
