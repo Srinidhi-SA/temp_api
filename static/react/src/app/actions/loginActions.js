@@ -7,7 +7,7 @@ export function authenticateFunc() {
         dispatch(fetchPostsSuccess(json))
       }
       else{
-        dispatch(fetchPostsError())
+        dispatch(fetchPostsError(json))
       }
     })
   }
@@ -34,8 +34,9 @@ function fetchPostsSuccess(payload) {
   }
 }
 
-function fetchPostsError() {
+function fetchPostsError(json) {
   return {
-    type: "AUTHENTICATE_USER_ERROR"
+    type: "ERROR",
+    json
   }
 }

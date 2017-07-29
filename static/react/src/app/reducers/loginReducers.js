@@ -9,7 +9,12 @@ export default function reducer(state={
         return {...state,
                 login_response:action.payload
               }
-      }
+      }break;
+
+      case "ERROR":
+    { alert(action.json.non_field_errors);
+      throw new Error("Authentication Failed!!");
+    }break;
 
     }
     return state
