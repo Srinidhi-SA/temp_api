@@ -26,7 +26,7 @@ export class Home extends React.Component {
         <div className="main_wrapper">
           <LeftPanel/>
           <TopPanel/>
-          <DescriptionPanel/>
+          <DescriptionPanel desc_id="signals"/>
         </div>
       );
     } else {
