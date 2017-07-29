@@ -1,5 +1,5 @@
 export default function reducer(state={
-    login_response:"xyz"
+    login_response:{}
   }, action) {
     console.log("in reducer!!");
     console.log(action);

@@ -1,9 +1,9 @@
 import React from "react";
-import fetch from "isomorphic-fetch";
 import { connect } from "react-redux";
 // import {authenticateFunc,getList,storyList} from "../../services/ajax.js";
 import { authenticateFunc } from "../actions/loginActions";
 import store from "../store";
+import {Home} from "./home";
 
 
 @connect((store) => {
@@ -25,7 +25,11 @@ export class Login extends React.Component {
   }
   render(){
     console.log("login is called!!")
-
+console.log(store.getState().login.login_response)
+if (store.getState().login.login_response.status == 200 && store.getState().login.login_response.token != "") {
+  console.log("authorized!!!");
+  return (<Home/>);
+}else{
     return(
       <div className="ma-splash-screen">
       <div className="ma-wrapper am-login">
@@ -80,5 +84,6 @@ export class Login extends React.Component {
     );
 
   }
+}
 
 }
