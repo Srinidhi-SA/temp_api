@@ -8,7 +8,7 @@ export function getList(token) {
         dispatch(fetchPostsSuccess(json))
       }
       else{
-        dispatch(fetchPostsError())
+        dispatch(fetchPostsError(json))
       }
     })
   }
@@ -34,8 +34,10 @@ function fetchPostsSuccess(signalList) {
   }
 }
 
-function fetchPostsError() {
+function fetchPostsError(json) {
+  console.log("fetching list error!!",json)
   return {
-    type: "SIGNAL_LIST_ERROR"
+    type: "SIGNAL_LIST_ERROR",
+    json
   }
 }

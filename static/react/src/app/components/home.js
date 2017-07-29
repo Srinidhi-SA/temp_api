@@ -9,7 +9,10 @@ import store from "../store";
 
 
 @connect((store) => {
-  return {user: store.user.user, userFetched: store.user.fetched, tweets: store.tweets.tweets, login_response: store.login.login_response};
+  return {user: store.user.user,
+     userFetched: store.user.fetched,
+      tweets: store.tweets.tweets,
+       login_response: store.login.login_response};
 })
 
 export class Home extends React.Component {
@@ -19,8 +22,8 @@ export class Home extends React.Component {
   render() {
 
     console.log("home is called!!");
-    console.log(store.getState().login.login_response);
-    if (store.getState().login.login_response.status == 200 && store.getState().login.login_response.token != "") {
+    console.log(this.props.login_response);
+    if (this.props.login_response.status == 200 && this.props.login_response.token != "") {
       console.log("authorized!!!");
       return (
         <div className="main_wrapper">

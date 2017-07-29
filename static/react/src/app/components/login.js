@@ -25,8 +25,8 @@ export class Login extends React.Component {
   }
   render(){
     console.log("login is called!!")
-console.log(store.getState().login.login_response)
-if (store.getState().login.login_response.status == 200 && store.getState().login.login_response.token != "") {
+console.log(this.props.login_response)
+if (this.props.login_response.status == 200 && this.props.login_response.token != "") {
   console.log("authorized!!!");
   return (<Home/>);
 }else{
