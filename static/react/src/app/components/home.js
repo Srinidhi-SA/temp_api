@@ -1,7 +1,7 @@
 import React from "react";
-import LeftPanel from "./LeftPanel";
-import TopPanel from "./TopPanel";
-import DescriptionPanel from "./DescriptionPanel";
+import LeftPanel from "./LeftPanel/LeftPanel";
+import TopPanel from "./TopPanel/TopPanel";
+import DescriptionPanel from "./DescriptionPanel/DescriptionPanel";
 import {Login} from "./login";
 import { connect } from "react-redux";
 import store from "../store";

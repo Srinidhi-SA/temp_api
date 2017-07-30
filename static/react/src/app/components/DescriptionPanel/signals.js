@@ -1,8 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
 // import {authenticateFunc,getList,storyList} from "../../services/ajax.js";
-import store from "../store";
-import { getList } from "../actions/signalActions";
+import store from "../../store";
+import { getList } from "../../actions/signalActions";
 
 
 @connect((store) => {
@@ -28,8 +28,8 @@ export class Signals extends React.Component {
 
       if(data){
         console.log("under if data condition!!")
-  		 const storyList = data.map(story =>{
-  			return(<div className="col-md-3 top20 list-boxes" >
+  		 const storyList = data.map((story,i) =>{
+  			return(<div className="col-md-3 top20 list-boxes" key={i} >
               <div className="rep_block newCardStyle"  id={story.id}  name={story.name}>
               <div className="card-header"></div>
               <div className="card-center-tile">
