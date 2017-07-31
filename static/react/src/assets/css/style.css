@@ -1164,7 +1164,7 @@ a.text-primary:focus, a.text-primary:hover {
 	background-color: #00998c
 }
 a.bg-primary:focus, a.bg-primary:hover {
-	background-color: #ea3434
+	background-color: #007a70
 }
 .bg-success {
 	background-color: #7ACCBE
@@ -1185,7 +1185,7 @@ a.bg-warning:focus, a.bg-warning:hover {
 	background-color: #ffb43d
 }
 .bg-danger {
-	background-color: #00998c
+	background-color: #EF6262
 }
 a.bg-danger:focus, a.bg-danger:hover {
 	background-color: #ea3434
@@ -2073,10 +2073,10 @@ table td[class*=col-], table th[class*=col-] {
 	background-color: #ffbe57
 }
 .table>tbody>tr.danger>td, .table>tbody>tr.danger>th, .table>tbody>tr>td.danger, .table>tbody>tr>th.danger, .table>tfoot>tr.danger>td, .table>tfoot>tr.danger>th, .table>tfoot>tr>td.danger, .table>tfoot>tr>th.danger, .table>thead>tr.danger>td, .table>thead>tr.danger>th, .table>thead>tr>td.danger, .table>thead>tr>th.danger {
-	background-color: #00998c
+	background-color: #EF6262
 }
 .table-hover>tbody>tr.danger:hover>td, .table-hover>tbody>tr.danger:hover>th, .table-hover>tbody>tr:hover>.danger, .table-hover>tbody>tr>td.danger:hover, .table-hover>tbody>tr>th.danger:hover {
-	background-color: #006b62
+	background-color: #f17979
 }
 .table-responsive {
 	overflow-x: auto;
@@ -2625,26 +2625,26 @@ a.btn.disabled, fieldset[disabled] a.btn {
 	background-color: #fff
 }
 .btn-danger, .btn-danger.focus, .btn-danger:focus {
-	background-color: #00998c;
-	border-color: #00998c;
+	background-color: #EF6262;
+	border-color: #EF6262;
 	color: #fff
 }
 .btn-danger:hover {
 	color: #fff;
-	background-color: #4cb7ae;
-	border-color: #4cb7ae
+	background-color: #f17979;
+	border-color: #f17979
 }
 .btn-danger.active, .btn-danger.active.focus, .btn-danger.active:focus, .btn-danger.active:hover, .btn-danger:active, .btn-danger:active.focus, .btn-danger:active:focus, .btn-danger:active:hover, .open>.dropdown-toggle.btn-danger, .open>.dropdown-toggle.btn-danger.focus, .open>.dropdown-toggle.btn-danger:focus, .open>.dropdown-toggle.btn-danger:hover {
 	color: #fff;
-	background-color: #006b62;
-	border-color: #006b62
+	background-color: #ed4b4b;
+	border-color: #ed4b4b
 }
 .btn-danger.disabled, .btn-danger.disabled.active, .btn-danger.disabled.focus, .btn-danger.disabled:active, .btn-danger.disabled:focus, .btn-danger.disabled:hover, .btn-danger[disabled], .btn-danger[disabled].active, .btn-danger[disabled].focus, .btn-danger[disabled]:active, .btn-danger[disabled]:focus, .btn-danger[disabled]:hover, fieldset[disabled] .btn-danger, fieldset[disabled] .btn-danger.active, fieldset[disabled] .btn-danger.focus, fieldset[disabled] .btn-danger:active, fieldset[disabled] .btn-danger:focus, fieldset[disabled] .btn-danger:hover {
-	background-color: #00998c;
-	border-color: #00998c
+	background-color: #f27777;
+	border-color: #f27777
 }
 .btn-danger .badge {
-	color: #00998c;
+	color: #e22626;
 	background-color: #fff
 }
 .btn-link {
@@ -3517,7 +3517,7 @@ select[multiple].input-group-sm>.form-control, select[multiple].input-group-sm>.
 }
 .navbar-default {
 	background-color: #FFF;
-	border-color: #bbbbbb
+	border-color: #e4e4e4
 }
 .navbar-default .navbar-brand {
 	color: #777
@@ -3829,10 +3829,10 @@ a.badge:focus, a.badge:hover, a.label:focus, a.label:hover {
 	background-color: #ffb43d
 }
 .label-danger {
-	background-color: #00998c
+	background-color: #EF6262
 }
 .label-danger[href]:focus, .label-danger[href]:hover {
-	background-color: #ea3434
+	background-color: #f17979
 }
 .badge {
 	display: inline-block;
@@ -4563,6 +4563,7 @@ button.close {
 	-webkit-overflow-scrolling: touch;
 	outline: 0
 }
+
 .modal.fade .modal-dialog {
 	-webkit-transform: translate(0, -25%);
 	-ms-transform: translate(0, -25%);
@@ -4585,10 +4586,31 @@ button.close {
 .carousel-inner, .modal-open {
 	overflow: hidden
 }
+
+.modal {
+  text-align: center;
+  padding: 0!important;
+}
+
+.modal:before {
+  content: '';
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+  margin-right: -4px;
+}
+
+.modal-dialog {
+  display: inline-block;
+  text-align: left;
+  vertical-align: middle;
+}
+
 .modal-dialog {
 	position: relative;
 	width: auto;
 	margin: 10px
+	
 }
 .modal-content {
 	border: 1px solid #999;
@@ -5811,7 +5833,7 @@ html {
 }
 body {
 	padding: 0;
-	background-color: #ededed;/*height: 100%*/
+	background-color: #f0f0f0;/*height: 100% old bg-color: #ededed*/
 }
 a:focus, a:hover {
 	text-decoration: none;
@@ -7818,14 +7840,14 @@ body.open-right-sidebar .ma-right-sidebar {
 	background: #fff;
 	padding: 10px 20px;
 	position: relative;
-	box-shadow:0px 5px 5px rgba(0,0,0,0.04)
+/*	box-shadow:0px 5px 5px rgba(0,0,0,0.04)*/
 }
 .page-head h2 {
 	margin-bottom: 5px;
 	margin-top: 6px;
 	/*font-family: 'Open Sans', sans-serif;*/
 	font-weight: 300;
-	letter-spacing: -1px;
+	/*letter-spacing: -1px;*/
 	font-size: 28px;
 	line-height: 36px
 }
@@ -8335,13 +8357,13 @@ body.open-right-sidebar .ma-right-sidebar {
 	background-color: #ffbe57
 }
 .clr-btn-danger {
-	background-color: #00998c
+	background-color: #EF6262;
 }
 .clr-btn-danger-hover {
-	background-color: #4cb7ae
+	background-color: #f17979
 }
 .clr-btn-danger-active {
-	background-color: #006b62
+	background-color: #ed4b4b
 }
 .clr-btn-success {
 	background-color: #7ACCBE
@@ -10008,7 +10030,7 @@ box-shadow: 0px 0px 14px 4px rgba(0,0,0,0.25);
 
 .login-container h3 {
     margin: 0px -15px 15px -20px!important;
-    border-left: 7px solid #7dac02;
+    border-left: 7px solid #00998c;
     padding-left: 10px;
     line-height: 40px;
     font-weight: bold;
@@ -12858,7 +12880,7 @@ pre {
 	background-color: #FFC870
 }
 .badge-danger {
-	background-color: #00998c
+	background-color: #EF6262
 }
 .label {
 	border-radius: 0;
@@ -12886,7 +12908,7 @@ a.text-warning:focus, a.text-warning:hover {
 	color: #ffb43d
 }
 .text-danger {
-	color: #00998c
+	color: #EF6262
 }
 a.text-danger:focus, a.text-danger:hover {
 	color: #ea3434
@@ -12924,7 +12946,7 @@ a.text-alt4:focus, a.text-alt4:hover {
 	line-height: 22px
 }
 .form-control {
-	border-width: 2px;
+	border-width: 1px;
 	box-shadow: none;
 	padding: 10px 12px;
 	font-size: 14px
@@ -13861,12 +13883,17 @@ form.dropzone .note {
 table.dataTable {
 	margin: 0!important
 }
-div.dataTables_wrapper div.dataTables_info {
+div.dataTables_wrapper div.dataTables_info, div.dataTables_info  {
 	color: #767676;
 	padding-top: 9px
 }
-div.dataTables_wrapper div.dataTables_paginate ul.pagination {
+div.dataTables_wrapper div.dataTables_paginate ul.pagination, div.dataTables_paginate ul.pagination {
 	margin: 0
+}
+div.dataTables_paginate {
+    margin: 0;
+    white-space: nowrap;
+    text-align: right;
 }
 div.dataTables_wrapper div.dataTables_filter input {
 	padding-top: 6px;
@@ -13891,7 +13918,7 @@ div.dataTables_wrapper div.dataTables_length label select {
 .ma-datatable-footer {
 	margin: 0;
 	padding: 15px 3px 13px;
-	background-color: #f7f7f7;
+	/*background-color: #f7f7f7; mAdv Comment*/ 
 	border-top: 1px solid #eaeaea
 }
 .bootstrap-touchspin input {
@@ -14993,21 +15020,24 @@ div.dataTables_wrapper div.dataTables_length label select {
 /**********************/
 
 .card-header{
-	font-family: Arial Narrow;
+	height:10px;
 }
 .card-narrative{
-	font-family: Georgia;
+	 
 	font-size: 17px;
 }
 
 .newCardTitle{
-	color:#696969;
-	font-weight:bold;
-	text-decoration:none !important;
-	font-size:14px;
-	word-break: break-word;
-	line-height:50px
+    color: #696969;
+    font-weight: bold;
+    text-decoration: none !important;
+    font-size: 16px;
+    word-break: break-word;
+    /* line-height: 50px; */
+    height: 60px; 
 }
+.newCardTitle a{
+    color: #696969; display:block; }
 .footerTitle{
 	display:block;
 	font-size:12px; 
@@ -15017,9 +15047,22 @@ div.dataTables_wrapper div.dataTables_length label select {
 	padding:0px;
 	height:130px;
 	box-shadow:0px 5px 5px rgba(0,0,0,0.16);
-	/*box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);*/
+/*	cursor:pointer;
+	box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);*/
 }
-
+.firstCard .col-xs-8.col-xs-offset-0 {
+    padding-left: 30px;
+}
+.newCardStyle .card-center .fa { line-height:100px; color:#FFF; }
+.newCardStyle.firstCard:hover { background: #007a70; }
+.newCardStyle:hover { background: #f3fffe; }
+/*.newCardStyle:hover .fa, .newCardStyle:hover .newStoryCard { color:#00998c}*/
+.datalist {
+   height:50px !important;
+   max-height:80px !important;
+   overflow-y:auto;
+   display:block !important;
+}
 .dropdown-menu.dropdown-menu-right li a:hover {
      background:#00998c; color:#FFF
 }
@@ -15082,22 +15125,22 @@ div.dataTables_wrapper div.dataTables_length label select {
 	padding-right:20px;
 	
 }
-.card-center-tile{
+.card-center-tile {
     height: 80px;
-    padding-left: 20px;
+    padding: 0 15px;
     border-bottom: 1px solid #ced4d3;
-	line-height: 66px;
+    /* line-height: 66px; */
 }
-.card-footer{
-	height:40px;
-	/*background-color:#ebebeb;*/
-	padding-left:15px;
-	/*color:#fff;*/
+.card-footer {
+    height: 40px;
+    /* background-color: #ebebeb; */
+    padding: 0 0 0 15px;
+    /* color: #fff; */
 }
 .card-footer div.card-deatils { width:84px; }
 .card-footer .left_div {
     float: left;
-    width: 68%;
+    width: 57%;
     /* margin-top: -1%; */
     line-height: 20px;
 
@@ -15107,9 +15150,10 @@ div.dataTables_wrapper div.dataTables_length label select {
 	width:40px; line-height:40px;
 }
 
-.card-deatils.open a .fa { color: #7dac02}
-
-.card-footer div a:focus, .card-footer div a:hover, .card-footer div a:active { 
+/*.card-deatils.open a .fa { color: #7dac02} */
+ 
+ 
+.card-footer div a:focus, .card-footer div a:hover, .card-footer div a:active, .card-deatils.open a.more_button{ 
 background:#ededed; color:#7dac02
 }
 .card-selected {
@@ -15154,3 +15198,5 @@ background:#ededed; color:#7dac02
 	white-space:nowrap;
 	cursor:pointer
 }
+/** Table Css **/
+

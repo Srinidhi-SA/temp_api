@@ -22,12 +22,11 @@ export default class DescriptionPanel extends React.Component {
 
 if(component_name){
     return (
-      <div>
+
         <div className="side-body">
             <Desc_Header/>
             <Desc_Body/>
         </div>
-      </div>
       );
   }else{
     return (
