@@ -10,9 +10,7 @@ import store from "../store";
 
 
 @connect((store) => {
-  return {user: store.user.user,
-     userFetched: store.user.fetched,
-      tweets: store.tweets.tweets,
+  return {
        login_response: store.login.login_response};
 })
 

@@ -9,9 +9,6 @@ import $ from "jquery";
 
 @connect((store) => {
   return {
-    user: store.user.user,
-    userFetched: store.user.fetched,
-    tweets: store.tweets.tweets,
     login_response: store.login.login_response,
   };
 })
