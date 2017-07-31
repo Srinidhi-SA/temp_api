@@ -1,21 +1,32 @@
 import React from "react";
 import {render} from "react-dom";
-import {BrowserRouter,Route,Switch} from "react-router-dom";
+import {BrowserRouter, Route, Switch} from "react-router-dom";
+import { Provider } from "react-redux"
+import store from "./store"
 
-import {Home} from "./templates/Home";
-import {Login} from "./templates/Login";
+import {Home} from "./components/home";
+import {Login} from "./components/login";
+
+// console.log(store);
+
 
 class App extends React.Component {
-	render(){
-		return(
-		   <BrowserRouter>
-			 <Switch>
-			    <Route exact path={"/"} component={Login}/>
-					<Route path={"/home"} component={Home}/>
-				</Switch>
-			 </BrowserRouter>
-		 );
-	}
+
+
+  render() {
+
+    return (
+      <BrowserRouter>
+        <Switch>
+          <Route exact path="/" component={Login}/>
+          <Route path="/home" component={Home}/>
+        </Switch>
+      </BrowserRouter>
+    );
+  }
+
 }
 
-render(<App/>, window.document.getElementById('app'));
+render(<Provider store={store}>
+  <App/>
+</Provider>, window.document.getElementById('app'));

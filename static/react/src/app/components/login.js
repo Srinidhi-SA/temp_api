@@ -1,23 +1,35 @@
 import React from "react";
-import fetch from "isomorphic-fetch";
-import {authenticateFunc, getList} from "../../services/ajax.js";
-import {BrowserRouter,Route,Switch, withRouter} from "react-router-dom";
+import { connect } from "react-redux";
+// import {authenticateFunc,getList,storyList} from "../../services/ajax.js";
+import { authenticateFunc } from "../actions/loginActions";
+import store from "../store";
+import {Home} from "./home";
+
+
+@connect((store) => {
+  return {
+    user: store.user.user,
+    userFetched: store.user.fetched,
+    tweets: store.tweets.tweets,
+    login_response: store.login.login_response,
+  };
+})
+
 export class Login extends React.Component {
    constructor(){
      super();
-     var that = this;
-    //  this.state={
-    //    list: null
-    //  };
-
    }
 
   doAuth(){
-    var that = this;
-     authenticateFunc();
+        this.props.dispatch(authenticateFunc())
   }
   render(){
-
+    console.log("login is called!!")
+console.log(this.props.login_response)
+if (this.props.login_response.status == 200 && this.props.login_response.token != "") {
+  console.log("authorized!!!");
+  return (<Home/>);
+}else{
     return(
       <div className="ma-splash-screen">
       <div className="ma-wrapper am-login">
@@ -28,7 +40,6 @@ export class Login extends React.Component {
            <div className="panel panel-default">
              <div className="panel-heading"><img src="assets/images/m_adv_logo_text.png" alt="logo" className="logo-img" /></div>
              <div className="panel-body">
-
 
                  <h3>SIGN IN</h3>
                  <div className="login-form">
@@ -56,11 +67,10 @@ export class Login extends React.Component {
 
                    </div>
                    <div className="form-group login-submit">
-                     <button onClick={this.doAuth} className="btn btn-primary btn-lg">SIGN IN</button>
+                     <button onClick={this.doAuth.bind(this)} className="btn btn-primary btn-lg">SIGN IN</button>
                    </div>
 
                  </div>
-               
              </div>
            </div>
      </div>
@@ -74,12 +84,6 @@ export class Login extends React.Component {
     );
 
   }
-
 }
 
-// Home.propTypes = {
-//   name: React.PropTypes.string,
-//   age: React.PropTypes.number,
-//   user: React.PropTypes.object,
-//   children: React.PropTypes.element.isRequired
-// };
+}
