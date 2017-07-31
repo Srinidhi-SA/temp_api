@@ -32,7 +32,7 @@ export class Home extends React.Component {
         </div>
       );
     } else {
-      alert("please login to continue!!");
+      alert("Session ended!!");
       return(<Redirect to={"/"} />);
     }
 

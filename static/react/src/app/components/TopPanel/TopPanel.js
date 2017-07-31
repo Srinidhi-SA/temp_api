@@ -1,7 +1,15 @@
 import React from "react";
+import {Redirect} from 'react-router';
+import ReactDOM from 'react-dom';
+import $ from 'jquery';
+
+
 
 export default class TopPanel extends React.Component {
 
+	logout(){
+		sessionStorage.clear();
+	}
 	render(){
 		console.log("top")
 		return(
@@ -28,7 +36,7 @@ export default class TopPanel extends React.Component {
 									<div className="dropdown ma-user-nav">
 										<a className="dropdown-toggle" href="#" data-toggle="dropdown">
 											<i className="avatar-img img-circle">M</i>
-											<img src="assets/images/avatar.jpg" alt="M" className="avatar-img img-circle hide"/>
+											<img src="" alt="M" className="avatar-img img-circle hide"/>
 											<span className="user-name">Marlabs BI</span>
 											<span className="caret"></span>
 										</a>
@@ -37,7 +45,7 @@ export default class TopPanel extends React.Component {
 												<a href="#">Profile</a>
 											</li>
 											<li>
-												<a href="#">Logout</a>
+												<a href="#" className="logout" onClick={this.logout}>Logout</a>
 											</li>
 										</ul>
 									</div>
@@ -46,5 +54,5 @@ export default class TopPanel extends React.Component {
 								</div>
 
 		 );
-	}
+  }
 }
