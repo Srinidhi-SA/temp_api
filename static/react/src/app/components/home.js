@@ -4,6 +4,7 @@ import TopPanel from "./TopPanel/TopPanel";
 import DescriptionPanel from "./DescriptionPanel/DescriptionPanel";
 import {Login} from "./login";
 import { connect } from "react-redux";
+import { Redirect } from "react-router";
 import store from "../store";
 
 
@@ -23,7 +24,7 @@ export class Home extends React.Component {
 
     console.log("home is called!!");
     console.log(this.props.login_response);
-    if (this.props.login_response.status == 200 && this.props.login_response.token != "") {
+    if (sessionStorage.userToken) {
       console.log("authorized!!!");
       return (
         <div className="main_wrapper">
@@ -34,7 +35,7 @@ export class Home extends React.Component {
       );
     } else {
       alert("please login to continue!!");
-      return (<Login/>);
+      return(<Redirect to={"/"} />);
     }
 
   }

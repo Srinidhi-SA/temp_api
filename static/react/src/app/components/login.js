@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+import {Redirect} from 'react-router';
 // import {authenticateFunc,getList,storyList} from "../../services/ajax.js";
 import { authenticateFunc } from "../actions/loginActions";
 import store from "../store";
@@ -26,9 +27,10 @@ export class Login extends React.Component {
   render(){
     console.log("login is called!!")
 console.log(this.props.login_response)
-if (this.props.login_response.status == 200 && this.props.login_response.token != "") {
+if (sessionStorage.userToken) {
   console.log("authorized!!!");
-  return (<Home/>);
+//  return (<Home/>);
+return(<Redirect to={"/home"} />);
 }else{
     return(
       <div className="ma-splash-screen">

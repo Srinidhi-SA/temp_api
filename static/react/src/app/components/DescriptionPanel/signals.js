@@ -15,7 +15,7 @@ export class Signals extends React.Component {
     super();
   }
   componentWillMount() {
-        this.props.dispatch(getList(store.getState().login.login_response.token));
+        this.props.dispatch(getList(sessionStorage.userToken));
   }
 
   render() {
