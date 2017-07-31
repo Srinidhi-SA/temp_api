@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { authenticateFunc } from "../actions/loginActions";
 import store from "../store";
 import {Home} from "./home";
-
+import $ from "jquery";
 
 @connect((store) => {
   return {
@@ -21,7 +21,7 @@ export class Login extends React.Component {
    }
 
   doAuth(){
-        this.props.dispatch(authenticateFunc())
+      this.props.dispatch(authenticateFunc($("#username").val(),$("#password").val()))
   }
   render(){
     console.log("login is called!!")
