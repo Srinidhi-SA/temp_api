@@ -14,15 +14,27 @@ import store from "../store";
        login_response: store.login.login_response};
 })
 
-export class Home extends React.Component {
+export class Main extends React.Component {
   constructor(){
     super();
   }
   render() {
 
-    console.log("home is called!!");
-    return(
-      <div>In home</div>
-    )
+    console.log("Main is called!!");
+    console.log(this.props.login_response);
+    if (sessionStorage.userToken) {
+      console.log("authorized!!!");
+      return (
+        <div className="main_wrapper">
+          <LeftPanel/>
+          <TopPanel/>
+            {this.props.children}
+        </div>
+      );
+    } else {
+      alert("Session ended!!");
+      return(<Redirect to={"/login"} />);
+    }
+
   }
 }
