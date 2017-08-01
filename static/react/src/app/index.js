@@ -20,6 +20,11 @@ class App extends React.Component {
         <Switch>
           <Route exact path="/" component={Login}/>
           <Route path="/home" component={Home}/>
+					<Route render={
+						function(){
+							return <p>Not Found</p>;
+						}
+					}/>
         </Switch>
       </BrowserRouter>
     );

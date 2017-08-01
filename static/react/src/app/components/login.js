@@ -19,10 +19,25 @@ import $ from "jquery";
 export class Login extends React.Component {
    constructor(){
      super();
+     this.state = {
+           uId: '',
+           pwd: ''
+       };
    }
-
+onChangeUId(e){
+  const userId = e.target.value;
+  this.setState({uId : userId});
+}
+onChangePwd(e){
+  const password = e.target.value;
+  this.setState({pwd : password});
+}
   doAuth(){
-      this.props.dispatch(authenticateFunc($("#username").val(),$("#password").val()))
+
+      //this.props.dispatch(authenticateFunc($("#username").val(),$("#password").val()))
+      console.log("checking login form fields");
+      console.log(this.state.uId);
+      this.props.dispatch(authenticateFunc(this.state.uId,this.state.pwd))
   }
   render(){
     console.log("login is called!!")
@@ -47,12 +62,12 @@ return(<Redirect to={"/home"} />);
                  <div className="login-form">
                    <div className="form-group">
                      <div className="input-group">
-                       <input id="username" type="text" placeholder="Username" autoComplete="off" className="form-control"/><span className="input-group-addon"><i className="fa fa-user"></i></span>
+                       <input id="username" type="text" value={this.state.uId} onChange={this.onChangeUId.bind(this)} placeholder="Username" autoComplete="off" className="form-control"/><span className="input-group-addon"><i className="fa fa-user"></i></span>
                      </div>
                    </div>
                    <div className="form-group">
                      <div className="input-group">
-                       <input id="password" type="password" placeholder="Password" className="form-control" />
+                       <input id="password" type="password"  value={this.state.pwd} onChange={this.onChangePwd.bind(this)} placeholder="Password" className="form-control" />
                        <span className="input-group-addon"><i className="fa fa-key"></i></span>
                      </div>
                    </div>
