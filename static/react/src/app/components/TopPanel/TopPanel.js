@@ -1,6 +1,7 @@
 import React from "react";
 import {Redirect} from 'react-router';
 import ReactDOM from 'react-dom';
+import {sessionObject} from '../../actions/manageSessionStorage';
 import $ from 'jquery';
 
 
@@ -8,7 +9,7 @@ import $ from 'jquery';
 export default class TopPanel extends React.Component {
 
 	logout(){
-		sessionStorage.clear();
+		sessionObject.clearSession();
 	}
 	render(){
 		console.log("top")

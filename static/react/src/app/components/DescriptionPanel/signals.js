@@ -19,7 +19,8 @@ export class Signals extends React.Component {
   }
 
   render() {
-    console.log("signals is called");
+    console.log("signals is called##########3");
+    console.log(this.props);
     console.log(store.getState().signals.signalList.errands)
 
     const data = store.getState().signals.signalList.errands;
