@@ -1,19 +1,19 @@
 export default function reducer(state={
-    login_response:{}
+    signalList:{}
   }, action) {
-    console.log("in reducer!!");
+    console.log("in SIGNAL reducer!!");
     console.log(action);
 
     switch (action.type) {
-      case "AUTHENTICATE_USER": {
+      case "SIGNAL_LIST": {
         return {...state,
-                login_response:action.payload
+                signalList:action.signalList
               }
       }break;
 
-      case "ERROR":
+      case "SIGNAL_LIST_ERROR":
     { alert(action.json.non_field_errors);
-      throw new Error("Authentication Failed!!");
+      throw new Error("Unable to fetch signal list!!");
     }break;
 
     }

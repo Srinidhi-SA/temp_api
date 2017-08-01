@@ -1,41 +1,46 @@
+import manageSession from './manageSessionStorage';
 var API = "http://34.196.204.54:9000";
 
-export function authenticateFunc() {
+export function authenticateFunc(username,password) {
     return (dispatch) => {
-    return fetchPosts().then(([response, json]) =>{
+    return fetchPosts(username,password).then(([response, json]) =>{
         if(response.status === 200){
         dispatch(fetchPostsSuccess(json))
       }
       else{
-        dispatch(fetchPostsError())
+        dispatch(fetchPostsError(json))
       }
     })
   }
 }
 
-function fetchPosts() {
+function fetchPosts(username,password) {
+  console.log("user and pass is:");
+  console.log(username+" "+password);
   return fetch(API+'/api/user/api-token-auth',{
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify({
-				username: 'harman',
-				password: 'password123',
+				username: username,
+				password: password,
 		 })
 	}).then( response => Promise.all([response, response.json()]));
 }
 
 
 function fetchPostsSuccess(payload) {
+  manageSession(payload);
   return {
     type: "AUTHENTICATE_USER",
     payload
   }
 }
 
-function fetchPostsError() {
+function fetchPostsError(json) {
   return {
-    type: "AUTHENTICATE_USER_ERROR"
+    type: "ERROR",
+    json
   }
 }

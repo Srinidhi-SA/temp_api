@@ -1,16 +1,14 @@
 import React from "react";
-import fetch from "isomorphic-fetch";
 import { connect } from "react-redux";
+import {Redirect} from 'react-router';
 // import {authenticateFunc,getList,storyList} from "../../services/ajax.js";
 import { authenticateFunc } from "../actions/loginActions";
 import store from "../store";
-
+import {Home} from "./home";
+import $ from "jquery";
 
 @connect((store) => {
   return {
-    user: store.user.user,
-    userFetched: store.user.fetched,
-    tweets: store.tweets.tweets,
     login_response: store.login.login_response,
   };
 })
@@ -21,11 +19,16 @@ export class Login extends React.Component {
    }
 
   doAuth(){
-        this.props.dispatch(authenticateFunc())
+      this.props.dispatch(authenticateFunc($("#username").val(),$("#password").val()))
   }
   render(){
     console.log("login is called!!")
-
+console.log(this.props.login_response)
+if (sessionStorage.userToken) {
+  console.log("authorized!!!");
+//  return (<Home/>);
+return(<Redirect to={"/home"} />);
+}else{
     return(
       <div className="ma-splash-screen">
       <div className="ma-wrapper am-login">
@@ -80,5 +83,6 @@ export class Login extends React.Component {
     );
 
   }
+}
 
 }
