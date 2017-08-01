@@ -14,7 +14,7 @@ export default class DescriptionPanel extends React.Component {
 
         <div className="side-body">
             <Desc_Header/>
-            <Desc_Body selectedComponentLocation={this.props.selectedComponentLocation}/>
+            <Desc_Body />
         </div>
       );
   }

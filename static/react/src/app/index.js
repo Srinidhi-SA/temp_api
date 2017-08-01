@@ -24,11 +24,11 @@ class App extends React.Component {
       <div>
           <Route exact path="/login" component={Login}/>
           <Route path="/" component={Home} />
-          <Route path="/signals" component={Signals} selectedComponentLocation="signals"/>
+          {/*<Route path="/signals" component={Signals} selectedComponentLocation="signals"/>
           <Route path="/signals/:slug" component={Signal} selectedComponentLocation="signals"/>
           <Route path="/signals/:slug/:analysis_type" component={Signal} selectedComponentLocation="signals"/>
           <Route path="/signals/:slug/:analysis_type/:filter" component={Signal} selectedComponentLocation="signals"/>
-          </div>
+          */}</div>
       </BrowserRouter>
     );
   }

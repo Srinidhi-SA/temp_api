@@ -42,7 +42,7 @@ console.log(this.props.login_response)
 if (sessionStorage.userToken) {
   console.log("authorized!!!");
 //  return (<Home/>);
-return(<Redirect to={"/home"} />);
+return(<Redirect to={"/"} />);
 }else{
     return(
       <div className="ma-splash-screen">

@@ -33,7 +33,7 @@ export class Home extends React.Component {
       );
     } else {
       alert("Session ended!!");
-      return(<Redirect to={"/"} />);
+      return(<Redirect to={"/login"} />);
     }
 
   }
