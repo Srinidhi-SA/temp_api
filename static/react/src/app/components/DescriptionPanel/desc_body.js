@@ -5,13 +5,22 @@ export class Desc_Body extends React.Component {
 
   render() {
     console.log("Desc_Body")
-    return (
-      <div className="main-content">
+    console.log(this.props);
 
-        {/*Content Area*/}
+    switch(this.props.selectedComponentLocation){
+      case "/":
+      return(
+        <div className="main-content">
+        loading...
+        </div>
+      );break;
+      case "/signals":
+      return(
+        <div className="main-content">
         <Signals/>
-      </div>
+        </div>
+      );break;
+    }
 
-    );
   }
 }

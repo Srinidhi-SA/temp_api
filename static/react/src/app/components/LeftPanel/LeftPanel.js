@@ -1,4 +1,5 @@
 import React from "react";
+import {NavLink} from "react-router-dom";
 
 export default class LeftPanel extends React.Component {
 
@@ -12,9 +13,9 @@ export default class LeftPanel extends React.Component {
               <div className="side-menu-container">
                 <ul className="nav navbar-nav">
                   <li className="active">
-                    <a href="#" className="sdb_signal">
+                    <NavLink activeClassName="sdb_signal" to="/signals">
                       <span></span>
-                      SIGNAL</a>
+                      SIGNALS</NavLink>
                   </li>
                   <li>
                     <a href="#" className="sdb_story">
