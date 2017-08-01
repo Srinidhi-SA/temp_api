@@ -5,15 +5,16 @@ import {Provider} from "react-redux"
 import store from "./store"
 
 import {Main} from "./components/Main";
-import {Home} from "./components/home";
+import {Home} from "./components/Home";
 
-import {Login} from "./components/login";
-import {Signals} from "./components/DescriptionPanel/signals";
-import {TopPanel} from "./components/TopPanel/TopPanel";
-import {LeftPanel} from "./components/LeftPanel/LeftPanel";
+import {Login} from "./components/Login";
+//import {Signal} from "./components/Signal";
+import {Settings} from "./components/Settings/Settings";
+import {Apps} from "./components/Apps/Apps";
+import {Data} from "./components/Data/Data";
+import {Stories} from "./components/Stories/Stories";
+import {Signals} from "./components/Signals/Signals"
 
-
-// import {Signals} from "./components/DescriptionPanel/signals";
 
 // console.log(store);
 
@@ -23,20 +24,18 @@ class App extends React.Component {
 
     return (
       <BrowserRouter>
-      <div>
+      <Switch>
           <Route exact path="/login" component={Login}/>
           <Main>
             <Route path="/" component={Home} />
-          
             <Route path="/signals" component={Signals} />
-          
+            <Route path="/settings" component={Settings} />
+            <Route path="/apps" component={Apps} />
+            <Route path="/stories" component={Stories} />
+            <Route path="/data" component={Data} />
           </Main>
 
-          {/*<Route path="/signals" component={Signals} selectedComponentLocation="signals"/>
-          <Route path="/signals/:slug" component={Signal} selectedComponentLocation="signals"/>
-          <Route path="/signals/:slug/:analysis_type" component={Signal} selectedComponentLocation="signals"/>
-          <Route path="/signals/:slug/:analysis_type/:filter" component={Signal} selectedComponentLocation="signals"/>
-          */}</div>
+      </Switch>
       </BrowserRouter>
     );
   }

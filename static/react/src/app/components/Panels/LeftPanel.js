@@ -13,29 +13,29 @@ export default class LeftPanel extends React.Component {
               <div className="side-menu-container">
                 <ul className="nav navbar-nav">
                   <li className="active">
-                    <NavLink activeClassName="sdb_signal" to="/signals">
+                    <NavLink className="sdb_signal" to="/signals">
                       <span></span>
                       SIGNALS</NavLink>
                   </li>
                   <li>
-                    <a href="#" className="sdb_story">
+                    <NavLink className="sdb_story" to ="/stories">
                       <span></span>
-                      STORY</a>
+                      STORY</NavLink>
                   </li>
                   <li>
-                    <a href="#" className="sdb_app">
+                    <NavLink className="sdb_app" to ="/apps">
                       <span></span>
-                      APPS</a>
+                      APPS</NavLink>
                   </li>
                   <li>
-                    <a href="#" className="sdb_data">
+                    <NavLink className="sdb_data" to ="/data">
                       <span></span>
-                      DATA</a>
+                      DATA</NavLink>
                   </li>
                   <li>
-                    <a href="#" className="sdb_settings">
+                    <NavLink className="sdb_settings" to ="/settings">
                       <span></span>
-                      SETTINGS</a>
+                      SETTINGS</NavLink>
                   </li>
                 </ul>
               </div>

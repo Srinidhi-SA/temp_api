@@ -1,8 +1,4 @@
 import React from "react";
-import LeftPanel from "./LeftPanel/LeftPanel";
-import TopPanel from "./TopPanel/TopPanel";
-import DescriptionPanel from "./DescriptionPanel/DescriptionPanel";
-import {Login} from "./login";
 import { connect } from "react-redux";
 import { Redirect } from "react-router";
 import store from "../store";
@@ -22,7 +18,7 @@ export class Home extends React.Component {
 
     console.log("home is called!!");
     return(
-      <div>In home</div>
+      <Redirect to={"/signals"} />
     )
   }
 }

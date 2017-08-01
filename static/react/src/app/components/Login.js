@@ -4,7 +4,7 @@ import {Redirect} from 'react-router';
 // import {authenticateFunc,getList,storyList} from "../../services/ajax.js";
 import { authenticateFunc } from "../actions/loginActions";
 import store from "../store";
-import {Home} from "./home";
+import {Home} from "./Home";
 import $ from "jquery";
 
 @connect((store) => {

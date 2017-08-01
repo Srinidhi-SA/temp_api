@@ -1,5 +1,5 @@
 import React from "react";
-import DescriptionPanel from "./DescriptionPanel/DescriptionPanel";
+import DescriptionPanel from "../Panels/DescriptionPanel";
 import { connect } from "react-redux";
 import { Redirect } from "react-router";
 import store from "../store";

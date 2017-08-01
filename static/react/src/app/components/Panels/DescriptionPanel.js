@@ -1,14 +1,13 @@
 import React from "react";
-import {Signals} from "./signals";
-import {Desc_Body} from "./desc_body";
-import {Desc_Header} from "./desc_header";
+import {Desc_Body} from "./Desc_Body";
+import {Desc_Header} from "./Desc_Header";
 
 
 export default class DescriptionPanel extends React.Component {
 
   render() {
-    console.log("in description!!");
-    console.log(this.props);
+    // console.log("in description!!");
+    // console.log(this.props);
 
         return (
 

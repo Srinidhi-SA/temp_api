@@ -3,6 +3,7 @@ import {connect} from "react-redux";
 // import {authenticateFunc,getList,storyList} from "../../services/ajax.js";
 import store from "../../store";
 import {getList} from "../../actions/signalActions";
+import {Desc_Header} from "../Panels/Desc_Header";
 import $ from "jquery";
 var dateFormat = require('dateformat');
 
@@ -15,7 +16,7 @@ export class Signals extends React.Component {
     super();
   }
   componentWillMount() {
-        this.props.dispatch(getList(sessionStorage.userToken));
+    this.props.dispatch(getList(sessionStorage.userToken));
   }
 
   render() {
@@ -104,7 +105,12 @@ export class Signals extends React.Component {
       });
       return (
         <div>
-          {storyList}
+          <div className="side-body">
+            <Desc_Header/>
+            <div className="main-content">
+              {storyList}
+            </div>
+          </div>
         </div>
       );
     } else {

@@ -1,5 +1,5 @@
 import React from "react";
-import {Signals} from "./signals";
+import {Signals} from "../Signals/Signals";
 
 export class Desc_Body extends React.Component {
 
