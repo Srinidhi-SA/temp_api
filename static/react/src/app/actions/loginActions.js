@@ -1,4 +1,4 @@
-import manageSession from './manageSessionStorage';
+import {sessionObject} from './manageSessionStorage';
 var API = "http://34.196.204.54:9000";
 
 export function authenticateFunc(username,password) {
@@ -31,7 +31,7 @@ function fetchPosts(username,password) {
 
 
 function fetchPostsSuccess(payload) {
-  manageSession(payload);
+  sessionObject.manageSession(payload);
   return {
     type: "AUTHENTICATE_USER",
     payload
