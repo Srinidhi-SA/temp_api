@@ -34,7 +34,6 @@ class App extends React.Component {
             <Route path="/stories" component={Stories} />
             <Route path="/data" component={Data} />
           </Main>
-
       </Switch>
       </BrowserRouter>
     );
