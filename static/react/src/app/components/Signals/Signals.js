@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 // import {authenticateFunc,getList,storyList} from "../../services/ajax.js";
 import store from "../../store";
 import {getList} from "../../actions/signalActions";
-import {MainHeader} from "../Panels/MainHeader";
+import {MainHeader} from "../common/MainHeader";
 import $ from "jquery";
 var dateFormat = require('dateformat');
 

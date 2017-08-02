@@ -1,5 +1,5 @@
 import React from "react";
-import {Signals} from "../Signals/Signals";
+import {Signals} from "../signals/Signals";
 
 export class MainContent extends React.Component {
 

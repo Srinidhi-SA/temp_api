@@ -1,5 +1,5 @@
 import React from "react";
-import {MainHeader} from "../Panels/MainHeader";
+import {MainHeader} from "../common/MainHeader";
 
 export class Data extends React.Component {
   constructor() {
