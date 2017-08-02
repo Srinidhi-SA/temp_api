@@ -22,6 +22,6 @@ export class Signal extends React.Component {
 
     console.log("Signals is called$$$$$$$$$$$$$$!!");
     console.log(this.props);
-    return (<MasterSummary/>);
+    return (<MasterSummary signalId={this.props.match.params.slug}/>);
   }
 }

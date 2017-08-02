@@ -1,9 +1,10 @@
 import React from "react";
 import {connect} from "react-redux";
-import {Redirect} from "react-router";
+import {Redirect, Link} from "react-router-dom";
 import store from "../../store";
 import {MainHeader} from "../common/MainHeader";
-import {isEmpty} from "../../actions/helper"
+import {isEmpty} from "../../actions/helper";
+import $ from "jquery";
 @connect((store) => {
   return {login_response: store.login.login_response, signal: store.signals.signalAnalysis};
 })
@@ -18,12 +19,21 @@ export class MasterSummary extends React.Component {
     console.log(this.props);
     console.log(this.props.signal);
 
-    if(!isEmpty(this.props.signal)){
-      console.log("inside if"+this.props.signal);
-    const noOfDimention = this.props.signal.get_frequency_results.narratives.vartype.Dimentions;
-    const noOfMeasures = this.props.signal.get_frequency_results.narratives.vartype.Measures;
-    //const summary = this.props.signal.get_frequency_results.narratives.
-}
+    var noOfDimention;
+    var noOfMeasures;
+    var summary;
+
+    if (!isEmpty(this.props.signal)) {
+      console.log("inside if" + this.props.signal);
+      noOfDimention = this.props.signal.get_frequency_results.narratives.vartype.Dimensions;
+      noOfMeasures = this.props.signal.get_frequency_results.narratives.vartype.Measures;
+      summary = this.props.signal.get_frequency_results.narratives.summary.toString();
+      console.log(noOfMeasures);
+      console.log(noOfDimention);
+      console.log(summary);
+
+    }
+    const overViewLink="/signals/"+this.props.signalId+"/overview";
     return (
       <div className="side-body">
         <MainHeader/>
@@ -41,7 +51,7 @@ export class MasterSummary extends React.Component {
                               <div className="icon_ovr dmn"></div>
                               <div className="data-info">
                                 <div className="value">
-                                  <h1>6</h1>
+                                  <h1>{noOfDimention}</h1>
                                 </div>
                                 <div className="desc">
                                   <h3>Dimension</h3>
@@ -54,7 +64,7 @@ export class MasterSummary extends React.Component {
                               <div className="icon_ovr mes"></div>
                               <div className="data-info">
                                 <div className="value">
-                                  <h1>17</h1>
+                                  <h1>{noOfMeasures}</h1>
                                 </div>
                                 <div className="desc">
                                   <h3>Measures</h3>
@@ -64,11 +74,8 @@ export class MasterSummary extends React.Component {
                           </div>
                           <div className="clearfix"></div>
                           <div className="col-md-12">
-                            <p className="lead">mAdvisor has analyzed the dataset and it contains
-                              <strong>16</strong>
-                              variables and
-                              <strong>5000</strong>
-                              observations. Of these 1 variable is omitted, since it is not fit for the analysis. The consolidated dataset has 4 measures and 11 dimensions. Please click next to find the insights from our analysis of age factoring the other variables</p>
+                            <p className="lead">${summary}
+                            </p>
                           </div>
                         </div>
                       </div>
@@ -77,10 +84,10 @@ export class MasterSummary extends React.Component {
                       <h3>
                         <em>"Sales had a phenomenal growth during Jan-Dec"</em>
                       </h3>
-                      <a href="#">
+                      <Link to={overViewLink}>
                         <img src="../../../assets/images/icon_proceedformore.png" className="img-responsive" alt="Proceed for More"/>
                         View Summary
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 </div>
