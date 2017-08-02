@@ -32,7 +32,7 @@ export class MasterSummary extends React.Component {
       console.log(noOfDimention);
       console.log(summary);
 
-    }
+
     const overViewLink="/signals/"+this.props.signalId+"/overview";
     return (
       <div className="side-body">
@@ -98,5 +98,15 @@ export class MasterSummary extends React.Component {
         </div>
       </div>
     );
+  }else{
+    return(
+      <div className="side-body">
+        <MainHeader/>
+        <div className="main-content">
+        Loading...
+        </div>
+        </div>
+    );
+  }
   }
 }
