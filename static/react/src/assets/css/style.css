@@ -7051,7 +7051,7 @@ button:focus {
 .side-menu li a.sdb_signal:hover span, .side-menu li.active a.sdb_signal span {
 	background: url('../images/ico_signal.png') no-repeat 0 0;
 }
-.side-menu .navbar-nav .active a {
+.side-menu .navbar-nav .active a, .side-menu .navbar-nav a.active {
 	background: #00998c;
 	color: #FFF;
 }
@@ -7059,7 +7059,7 @@ button:focus {
 	background: #018e82;
 	color: #FFF;
 }
-.side-menu .navbar-nav .active a::after {
+.side-menu .navbar-nav .active a::after, .side-menu .navbar-nav a.active::after {
 	content: "";
 	position: absolute;
 	top: 45px;
