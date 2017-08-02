@@ -1,5 +1,5 @@
 import React from "react";
-import {Desc_Header} from "../Panels/Desc_Header";
+import {MainHeader} from "../Panels/MainHeader";
 
 export class Data extends React.Component {
   constructor() {
@@ -11,7 +11,7 @@ export class Data extends React.Component {
     return (
         <div>
           <div className="side-body">
-            <Desc_Header/>
+            <MainHeader/>
             <div className="main-content">
               Data is called!!!!!
             </div>
