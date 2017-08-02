@@ -9,11 +9,11 @@ import {Home} from "./components/Home";
 
 import {Login} from "./components/Login";
 //import {Signal} from "./components/Signal";
-import {Settings} from "./components/Settings/Settings";
-import {Apps} from "./components/Apps/Apps";
-import {Data} from "./components/Data/Data";
-import {Stories} from "./components/Stories/Stories";
-import {Signals} from "./components/Signals/Signals"
+import {Settings} from "./components/settings/Settings";
+import {Apps} from "./components/apps/Apps";
+import {Data} from "./components/data/Data";
+import {Stories} from "./components/stories/Stories";
+import {Signals} from "./components/signals/Signals"
 
 
 // console.log(store);
@@ -34,7 +34,6 @@ class App extends React.Component {
             <Route path="/stories" component={Stories} />
             <Route path="/data" component={Data} />
           </Main>
-
       </Switch>
       </BrowserRouter>
     );

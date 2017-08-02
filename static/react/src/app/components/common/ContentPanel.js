@@ -1,9 +1,9 @@
 import React from "react";
-import {Desc_Body} from "./Desc_Body";
-import {Desc_Header} from "./Desc_Header";
+import {MainContent} from "./MainContent";
+import {MainHeader} from "./MainHeader";
 
 
-export default class DescriptionPanel extends React.Component {
+export default class ContentPanel extends React.Component {
 
   render() {
     // console.log("in description!!");
@@ -12,8 +12,8 @@ export default class DescriptionPanel extends React.Component {
         return (
 
         <div className="side-body">
-            <Desc_Header/>
-            <Desc_Body />
+            <MainContent/>
+            <MainHeader />
         </div>
       );
   }

@@ -1,7 +1,7 @@
 import React from "react";
-import LeftPanel from "./Panels/LeftPanel";
-import TopPanel from "./Panels/TopPanel";
-import DescriptionPanel from "./Panels/DescriptionPanel";
+import LeftPanel from "./common/LeftPanel";
+import TopPanel from "./common/TopPanel";
+import ContentPanel from "./common/ContentPanel";
 import {Login} from "./Login";
 import { connect } from "react-redux";
 import { Redirect } from "react-router";
