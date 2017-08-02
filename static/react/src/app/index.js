@@ -14,6 +14,7 @@ import {Apps} from "./components/apps/Apps";
 import {Data} from "./components/data/Data";
 import {Stories} from "./components/stories/Stories";
 import {Signals} from "./components/signals/Signals"
+import {Signal} from "./components/signals/Signal"
 
 
 // console.log(store);
@@ -27,8 +28,9 @@ class App extends React.Component {
       <Switch>
           <Route exact path="/login" component={Login}/>
           <Main>
-            <Route path="/" component={Home} />
-            <Route path="/signals" component={Signals} />
+            <Route exact path="/" component={Home} />
+            <Route exact path="/signals" component={Signals} />
+            <Route path="/signals/:slug" component={Signal}/>
             <Route path="/settings" component={Settings} />
             <Route path="/apps" component={Apps} />
             <Route path="/stories" component={Stories} />

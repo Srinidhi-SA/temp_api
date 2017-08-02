@@ -1,5 +1,7 @@
 import React from "react";
 import {connect} from "react-redux";
+import {Link} from "react-router-dom";
+
 // import {authenticateFunc,getList,storyList} from "../../services/ajax.js";
 import store from "../../store";
 import {getList} from "../../actions/signalActions";
@@ -18,6 +20,15 @@ export class Signals extends React.Component {
   componentWillMount() {
     this.props.dispatch(getList(sessionStorage.userToken));
   }
+  
+//   openSignal(e){
+//     //alert(e.target.id);
+//     var errandId = e.target.id;
+// //    ReactDOM.render(<Provider store={store}>
+// //   <Tmp errandId={errandId} /></Provider>,
+// //   document.getElementById('playground')
+// // );
+//   }
 
   render() {
     console.log("signals is called##########3");
@@ -29,15 +40,16 @@ export class Signals extends React.Component {
     if (data) {
       console.log("under if data condition!!")
       const storyList = data.map((story, i) => {
+        var signalLink = "/signals/" + story.id;
         return (
           <div className="col-md-3 top20 list-boxes" key={i}>
-            <div className="rep_block newCardStyle" id={story.id} name={story.name}>
+            <div className="rep_block newCardStyle" name={story.name}>
               <div className="card-header"></div>
               <div className="card-center-tile">
                 <div className="row">
                   <div className="col-xs-9">
                     <h4 className="title newCardTitle">
-                      <a href="javascript:void(0)">{story.name}</a>
+                      <Link id={story.id} to={signalLink}>{story.name}</Link>
                     </h4>
                   </div>
                   <div className="col-xs-3">
