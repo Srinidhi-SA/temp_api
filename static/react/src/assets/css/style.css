@@ -6769,8 +6769,7 @@ button:focus {
 	border-bottom: 1px solid #333333;
 }
 .side-menu .navbar-nav .active a, .side-menu .navbar-nav  a.active {
-	background: #00998c;
-}
+	background: #00998c;color: #FFF; }
 .side-menu .navbar-nav li {
 	display: block;
 	width: 99px;
@@ -7049,7 +7048,7 @@ button:focus {
 .side-menu li a.sdb_signal span {
 	background: url('../images/ico_signal.png') no-repeat 0 -45px;
 }
-.side-menu li a.sdb_signal:hover span, .side-menu li.active a.sdb_signal span {
+.side-menu li a.sdb_signal:hover span, .side-menu li.active a.sdb_signal span, .side-menu li a.active.sdb_signal span {
 	background: url('../images/ico_signal.png') no-repeat 0 0;
 }
 .side-menu .navbar-nav .active a {
@@ -9823,9 +9822,9 @@ li.L1, li.L3, li.L5, li.L7, li.L9 {
 	padding: 24px 20px;
 	margin-bottom: 20px
 }
-.widget.widget-tile .data-info {
+/*.widget.widget-tile .data-info {
 	display: inline-block
-}
+}*/
 .widget.widget-tile .data-info .value {
 	font-size: 23px;
 	font-weight: 300
@@ -15205,7 +15204,8 @@ background:#ededed; color:#7dac02
 
 .ovr_block { background:#f5f5f5; overflow:hidden; margin: 10px;} 
 .ovr_block_left{ background:#FFF; }
-.icon_ovr { width: 75px; height: 75px; display:inline-block; padding:45px 40px; }
+.icon_ovr {  padding:43px 0 0 0; }
+.icon_ovr.ms { padding-top:28px;}
 .icon_ovr.dmn { background:url(../images/icon_dimension.png) no-repeat left bottom }
 .icon_ovr.mes { background:url(../images/icon_measure.png) no-repeat left bottom}
 .data-info h1 { text-align:right; color:#7dac02; font-size:44px; }

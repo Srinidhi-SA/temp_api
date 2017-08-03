@@ -43,30 +43,28 @@ export class MasterSummary extends React.Component {
                     <div className="col-md-8">
                       <div className="panel-body">
                         <div className="row">
-                          <div className="col-md-offset-2 col-md-4">
+                          <div className="col-md-4 col-md-offset-1">
                             <div className="widget widget-tile">
-                              <div className="icon_ovr dmn"></div>
-                              <div className="data-info">
-                                <div className="value">
-                                  <h1>{noOfDimention}</h1>
-                                </div>
-                                <div className="desc">
-                                  <h3>Dimension</h3>
-                                </div>
-                              </div>
+								<div class="col-xs-4 icon_ovr">
+									<img src="../assets/images/icon_dimension.png" class="img-responsive" />
+								</div>
+								<div class="col-xs-8 text-right data-info">
+								<h1>{noOfDimention}</h1>
+								<h3>Dimension</h3>
+								</div>   
+<div class="clearfix"></div>								
                             </div>
                           </div>
-                          <div className="col-md-4">
+                          <div className="col-md-4 col-md-offset-1">
                             <div className="widget widget-tile">
-                              <div className="icon_ovr mes"></div>
-                              <div className="data-info">
-                                <div className="value">
-                                  <h1>{noOfMeasures}</h1>
-                                </div>
-                                <div className="desc">
-                                  <h3>Measures</h3>
-                                </div>
-                              </div>
+								<div class="col-xs-4 icon_ovr ms">
+									<img src="../assets/images/icon_measure.png" class="img-responsive" />
+								</div>
+								<div class="col-xs-8 text-right data-info">
+								<h1>{noOfMeasures}</h1>
+								<h3>Measures</h3>
+								</div>
+                               
                             </div>
                           </div>
                           <div className="clearfix"></div>
