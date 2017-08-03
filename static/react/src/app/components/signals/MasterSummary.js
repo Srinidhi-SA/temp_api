@@ -3,7 +3,6 @@ import {connect} from "react-redux";
 import {Redirect, Link} from "react-router-dom";
 import store from "../../store";
 import {MainHeader} from "../common/MainHeader";
-import {isEmpty} from "../../actions/helper";
 import $ from "jquery";
 @connect((store) => {
   return {login_response: store.login.login_response, signal: store.signals.signalAnalysis};
@@ -16,24 +15,22 @@ export class MasterSummary extends React.Component {
   render() {
 
     console.log("MasterSummary is called!!");
-    console.log(this.props);
-    console.log(this.props.signal);
+    // console.log(this.props);
+    // console.log(this.props.signal);
 
     var noOfDimention;
     var noOfMeasures;
     var summary;
 
-    if (!isEmpty(this.props.signal)) {
-      console.log("inside if" + this.props.signal);
-      noOfDimention = this.props.signal.get_frequency_results.narratives.vartype.Dimensions;
-      noOfMeasures = this.props.signal.get_frequency_results.narratives.vartype.Measures;
-      summary = this.props.signal.get_frequency_results.narratives.summary.toString();
-      console.log(noOfMeasures);
-      console.log(noOfDimention);
-      console.log(summary);
+  //  console.log("inside if" + this.props.signal);
+    var noOfDimention = this.props.signal.get_frequency_results.narratives.vartype.Dimensions;
+    var noOfMeasures = this.props.signal.get_frequency_results.narratives.vartype.Measures;
+    var summary = this.props.signal.get_frequency_results.narratives.summary.toString();
+    // console.log(noOfMeasures);
+    // console.log(noOfDimention);
+    // console.log(summary);
 
-
-    const overViewLink="/signals/"+this.props.signalId+"/overview";
+    const overViewLink = "/signals/" + this.props.signalId + "/overview";
     return (
       <div className="side-body">
         <MainHeader/>
@@ -98,15 +95,6 @@ export class MasterSummary extends React.Component {
         </div>
       </div>
     );
-  }else{
-    return(
-      <div className="side-body">
-        <MainHeader/>
-        <div className="main-content">
-        Loading...
-        </div>
-        </div>
-    );
-  }
+
   }
 }

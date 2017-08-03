@@ -5,7 +5,7 @@ import {BreadCrumb} from "./BreadCrumb";
 export class MainHeader extends React.Component {
 
   render() {
-    console.log("Desc_Header")
+    console.log("in main header")
     return (
       <div className="page-head">
         <div class="row">
