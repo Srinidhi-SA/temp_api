@@ -15,8 +15,8 @@ export function authenticateFunc(username,password) {
 }
 
 function fetchPosts(username,password) {
-  console.log("user and pass is:");
-  console.log(username+" "+password);
+  // console.log("user and pass is:");
+  // console.log(username+" "+password);
   return fetch(API+'/api/user/api-token-auth',{
 		method: 'POST',
 		headers: {

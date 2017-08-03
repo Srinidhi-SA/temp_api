@@ -54,7 +54,7 @@ export function getSignalAnalysis(token,errandId) {
     return fetchPosts_analysis(token,errandId).then(([response, json]) =>{
         if(response.status === 200){
           console.log(json)
-        dispatch(fetchPostsSuccess_analysis(json))
+        dispatch(fetchPostsSuccess_analysis(json,errandId))
       }
       else{
         dispatch(fetchPostsError_analysis(json))
@@ -76,12 +76,13 @@ function fetchPosts_analysis(token,errandId) {
 }
 
 
-function fetchPostsSuccess_analysis(signalAnalysis) {
+function fetchPostsSuccess_analysis(signalAnalysis,errandId) {
   console.log("signal analysis from api to store")
   console.log(signalAnalysis)
   return {
     type: "SIGNAL_ANALYSIS",
-    signalAnalysis
+    signalAnalysis,
+    errandId
   }
 }
 

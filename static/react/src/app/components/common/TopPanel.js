@@ -12,7 +12,7 @@ export default class TopPanel extends React.Component {
 		sessionObject.clearSession();
 	}
 	render(){
-		console.log("top")
+		console.log("top panel")
 		return(
 		            <div>
 								{/* // Header Menu*/}
