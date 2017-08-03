@@ -10,7 +10,8 @@ import $ from "jquery";
 var dateFormat = require('dateformat');
 
 @connect((store) => {
-  return {login_response: store.login.login_response, signalList: store.signals.signalList};
+  return {login_response: store.login.login_response, signalList: store.signals.signalList,
+          selectedSignal: store.signals.signalAnalysis};
 })
 
 export class Signals extends React.Component {
@@ -20,15 +21,6 @@ export class Signals extends React.Component {
   componentWillMount() {
     this.props.dispatch(getList(sessionStorage.userToken));
   }
-  
-//   openSignal(e){
-//     //alert(e.target.id);
-//     var errandId = e.target.id;
-// //    ReactDOM.render(<Provider store={store}>
-// //   <Tmp errandId={errandId} /></Provider>,
-// //   document.getElementById('playground')
-// // );
-//   }
 
   render() {
     console.log("signals is called##########3");
