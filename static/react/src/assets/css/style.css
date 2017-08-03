@@ -15465,7 +15465,7 @@ a.tabs-control.right span {
 	-moz-box-shadow: -5px 0px 10px 0px rgba(0,0,0,0.2);
 	box-shadow: -5px 0px 10px 0px rgba(0,0,0,0.2);
 	}
-.row-offcanvas-left.active .sdbar_switch { left:-35px; }
+.row-offcanvas-left.active .sdbar_switch { left:-50px; }
 .mAd_icons.sw_on { width: 25px; height: 34px; background-position: -213px 0px; display: block; }
 .mAd_icons.sw_off { width: 25px; height: 34px; background-position: -213px -30px; display: block; }
 .side_panel .panel-heading { padding: 4px 15px; }
