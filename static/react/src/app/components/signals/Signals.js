@@ -2,10 +2,11 @@ import React from "react";
 import {connect} from "react-redux";
 import {Link} from "react-router-dom";
 
+
 // import {authenticateFunc,getList,storyList} from "../../services/ajax.js";
 import store from "../../store";
 import {getList} from "../../actions/signalActions";
-import {MainHeader} from "../common/MainHeader";
+import {BreadCrumb} from "../common/BreadCrumb";
 import $ from "jquery";
 var dateFormat = require('dateformat');
 
@@ -110,7 +111,8 @@ export class Signals extends React.Component {
       return (
         <div>
           <div className="side-body">
-            <MainHeader/>
+          { /* <MainHeader/>*/}
+          <BreadCrumb/>
             <div className="main-content">
               {storyList}
             </div>
