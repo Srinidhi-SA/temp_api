@@ -55,7 +55,7 @@
         <li><a href="#" class="sdb_story"> <span></span> STORY</a></li>
         <li><a href="#" class="sdb_app"> <span></span> APPS</a></li>
         <li><a href="#" class="sdb_data"> <span></span> DATA</a></li>
-        <li><a href="#" class="active sdb_settings"> <span></span> SETTINGS</a></li>
+        <li><a href="#" class="sdb_settings"> <span></span> SETTINGS</a></li>
       </ul>
     </div>
     <!-- /.Side bar Main Menu  --> 
@@ -73,7 +73,7 @@
       </ol> -->
       <div class="row">
           <div class="col-md-8">
-<h2>Settings</h2>
+<h2>User Profile</h2>
           </div>
          
       </div>
@@ -85,138 +85,46 @@
 	<!-- Page Content Area -->
 	<div class="main-content">
 		
-		<div class="user-profile">           
-			<div class="row">
-              <div class="col-md-12">
-                <div class="info-block panel panel-default">
+		<div class="user-profile">
+             
+			 
+			 
+			 <div class="user-display">
+               <div class="photo">&nbsp;</div>
+              <div class="bottom">
+                <div class="user-avatar"><img src="../assets/images/avatar.png"></div>
+                <div class="user-info">
+                  
+				  <div class="info-block panel panel-default">
                   <div class="panel-heading">
-                    <h5>General Report Settings</h5>
+                    <h4>Marlabs BI</h4>
                   </div>
                   <div class="panel-body">
-                    <table class="no-border no-strip skills">
+				  <table class="no-border no-strip skills">
                       <tbody class="no-border-x no-border-y">
                         <tr>
-                          <td class="item">Story Views:</td>
-                          <td>
-						  <div class="ma-checkbox inline">
-                          <input id="check1" type="checkbox" checked class="needsclick">
-                          <label for="check1">Card View</label>
-                        </div>
-						<div class="ma-checkbox inline">
-                          <input id="check2" type="checkbox" checked class="needsclick">
-                          <label for="check2">Document View</label>
-                        </div> 
-						  </td>
-                        </tr> 
-						  <tr>
-                          <td class="item">Text Highlighting:</td>
-                          <td>
-							<div class="ma-radio inline">
-							<input type="radio" checked name="rad2" id="rad1">
-							<label for="rad1">Yes</label>
-							</div>
-							<div class="ma-radio inline">
-							<input type="radio" name="rad2" id="rad2">
-							<label for="rad2">No</label>
-							</div>
-
-						  
-						  </td>
-                        </tr> 
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-			  </div>
-			<div class="row">
-              <div class="col-md-12">
-                <div class="info-block panel panel-default">
-                  <div class="panel-heading">
-                    <h5>Analysis Settings</h5>
-                  </div>
-                  <div class="panel-body">
-                    <table class="no-border no-strip skills">
-                      <tbody class="no-border-x no-border-y">
+                          <td class="item"><span class="fa fa-envelope fa-lg"></span> marlabsbi@marlabs.com</td>
+                         
+                        </tr>
                         <tr>
-                          <td class="item">Descriptive analysis:</td>
-                          <td>
-							<div class="ma-checkbox inline">
-                          <input id="check3" type="checkbox" checked class="needsclick">
-                          <label for="check3">Frequency distribution</label>
-                        </div>
-						  </td>
+                          <td class="item"><span class="fa fa-user fa-lg"></span> 16 September 1989</td>
+                           
+                        </tr>
+                        <tr>
+                          <td class="item"><span class="fa fa-phone-square fa-lg"></span> (999) 999-9999</td>
+                          
                         </tr> 
-						 <tr>
-                          <td class="item">Measure vs. Dimension:</td>
-                          <td><div class="ma-checkbox inline">
-                          <input id="check4" type="checkbox" checked class="needsclick">
-                          <label for="check4">Statistical tests on analysis of variance</label>
-                        </div>
-							<p>Number of significant variables to be explained by default</p>
-						<div class="btn-group radioBtn" data-toggle="buttons">
-						<label class="btn btn-default active"><input type="radio" id="rd_signifi1" name="rd_signifi" value="Low" /> Low</label> 
-						<label class="btn btn-default"><input type="radio" id="rd_signifi2" name="rd_signifi" value="Medium" /> Medium</label> 
-						<label class="btn btn-default"><input type="radio" id="rd_signifi3" name="rd_signifi" value="High" /> High</label> 
-						<label class="btn btn-default"><input type="radio" id="rd_signifi4" name="rd_signifi" value="All" /> All</label>
-						</div>
-							  	
-						</td>
-                        </tr> 
-						 <tr>
-                          <td class="item">Dimension vs. Dimension:</td>
-                          <td>
-						  <div class="ma-checkbox inline">
-                          <input id="check5" type="checkbox" checked class="needsclick">
-                          <label for="check5">Statistical tests on association between dimensions</label>
-                        </div>
-							<p>Number of significant variables to be explained by default</p>
-						<div class="btn-group radioBtn" data-toggle="buttons">
-						<label class="btn btn-default active"><input type="radio" id="rd_signifi1" name="rd_signifi" value="Low" /> Low</label> 
-						<label class="btn btn-default"><input type="radio" id="rd_signifi2" name="rd_signifi" value="Medium" /> Medium</label> 
-						<label class="btn btn-default"><input type="radio" id="rd_signifi3" name="rd_signifi" value="High" /> High</label> 
-						<label class="btn btn-default"><input type="radio" id="rd_signifi4" name="rd_signifi" value="All" /> All</label>
-						</div>						  
-						  </td>
-                        </tr> 
-						 <tr>
-                          <td class="item">Measure vs. Measure:</td>
-                          <td><div class="ma-checkbox inline">
-                          <input id="check6" type="checkbox" checked class="needsclick">
-                          <label for="check6">Measuring the impact of linear relationship between measures</label>
-                        </div>
-							<p>Number of significant variables to be explained by default</p>
-						<div class="btn-group radioBtn" data-toggle="buttons">
-						<label class="btn btn-default active"><input type="radio" id="rd_signifi1" name="rd_signifi" value="Low" /> Low</label> 
-						<label class="btn btn-default"><input type="radio" id="rd_signifi2" name="rd_signifi" value="Medium" /> Medium</label> 
-						<label class="btn btn-default"><input type="radio" id="rd_signifi3" name="rd_signifi" value="High" /> High</label> 
-						<label class="btn btn-default"><input type="radio" id="rd_signifi4" name="rd_signifi" value="All" /> All</label>
-						</div></td>
-                        </tr> 
-						 <tr>
-                          <td class="item">Predictive modeling:</td>
-                          <td>
-						  <div class="ma-checkbox inline">
-                          <input id="check7" type="checkbox" checked class="needsclick">
-                          <label for="check7">Rules for improving chosen measure or predicting categories within chosen dimension</label>
-                        </div>
-						<p>
-						Show top <input type="number" value="10" min='0' max='100' class="form-control" style="width:60px; display:inline-block" > prediction rules or recommendations based on:
-						</p>
-						  </td>
-                        </tr> 
-						 
-						 
-						 <tr>
-                          <td class="item"></td>
-                          <td><button class="btn btn-primary">Submit</button></td>
-                        </tr> 
+                        
                       </tbody>
                     </table>
-                  </div>
+				  </div>
+				  </div>
                 </div>
               </div>
-			  </div>
+            </div>
+			 
+			
+			
           </div>
 	</div>
 	<!-- /.Page Content Area --> 
