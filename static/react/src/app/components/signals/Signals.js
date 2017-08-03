@@ -69,13 +69,11 @@ export class Signals extends React.Component {
                   <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                     <li>
                       <a className="dropdown-item" href="#renameCard" data-toggle="modal">
-                        <i className="fa fa-edit"></i>
-                        Rename</a>
+                        <i className="fa fa-edit"></i> Rename</a>
                     </li>
                     <li>
                       <a className="dropdown-item" href="#deleteCard" data-toggle="modal">
-                        <i className="fa fa-trash-o"></i>
-                        Delete</a>
+                        <i className="fa fa-trash-o"></i> Delete</a>
                     </li>
                   </ul>
                   {/*<!-- End Rename and Delete BLock  -->*/}

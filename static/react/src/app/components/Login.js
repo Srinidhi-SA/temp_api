@@ -12,11 +12,13 @@ import $ from "jquery";
 
 export class Login extends React.Component {
   constructor() {
+  
     super();
     this.state = {
       uId: '',
       pwd: ''
-    };
+    };	
+	document.body.className = "ma-splash-screen";
   }
   onChangeUId(e) {
     const userId = e.target.value;
