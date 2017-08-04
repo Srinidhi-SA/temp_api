@@ -39,7 +39,7 @@
     <div class="dropdown ma-user-nav">
       <a class="dropdown-toggle" href="#" data-toggle="dropdown"> <i class="avatar-img img-circle">M</i> <img src="images/avatar.jpg" alt="M" class="avatar-img img-circle hide"><span class="user-name">Marlabs BI</span> <span class="caret"></span></a>
       <ul class="dropdown-menu dropdown-menu-right">
-        <li><a href="prfile.html">Profile</a></li>
+        <li><a href="profile.html">Profile</a></li>
         <li><a href="login.html">Logout</a></li>
       </ul>
     </div>
@@ -51,10 +51,10 @@
   <div class="side-menu">
     <div class="side-menu-container">
       <ul class="nav navbar-nav">
-        <li class="active"><a href="dashboard.html" class="sdb_signal"> <span></span> SIGNAL</a></li>
+        <li><a href="dashboard.html" class="sdb_signal"> <span></span> SIGNAL</a></li>
         <li><a href="story.html" class="sdb_story"> <span></span> STORY</a></li>
         <li><a href="apps.html" class="sdb_app"> <span></span> APPS</a></li>
-        <li><a href="data.html" class="sdb_data"> <span></span> DATA</a></li>
+        <li class="active"><a href="data.html" class="sdb_data"> <span></span> DATA</a></li>
         <li><a href="settings.html" class="sdb_settings"> <span></span> SETTINGS</a></li>
       </ul>
     </div>
@@ -103,12 +103,12 @@
       <div class="row list-block">
       <fieldset> 
         <div class="row_block">
-          <div class="col-md-3 top20 list-boxes" data-toggle="modal" data-target="#createNewStory">
+          <div class="col-md-3 top20 list-boxes" data-toggle="modal" data-target="#uploadData">
             <div class="newCardStyle firstCard">
               <div class="card-header"></div>
               <div class="card-center newStoryCard">
                 <div class="col-xs-2 col-xs-offset-1"><i class="fa fa-3x">+</i></div>
-                <div class="col-xs-8 col-xs-offset-0">CREATE NEW</div>
+                <div class="col-xs-8 col-xs-offset-0">UPLOAD NEW</div>
               </div>
             </div>
           </div>
@@ -452,15 +452,40 @@
 <!-- /. Main Wrapper ** Mandatory --> 
 
 <!-- Create Story Popup Modal -->
-<div id="createNewStory" tabindex="-1" role="dialog" class="modal fade modal-colored-header">
-      <div class="modal-dialog custom-width">
+<div id="uploadData" tabindex="-1" role="dialog" class="modal fade modal-colored-header">
+      <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" data-dismiss="modal" aria-hidden="true" class="close md-close"><i class="fa fa-close"></i></button>
-            <h3 class="modal-title">Create Story</h3>
+            <h3 class="modal-title">Upload Data</h3>
           </div>
           <div class="modal-body form">
-            <div class="form-group">
+			
+			<div class="tab-container tab-left">
+                <ul class="nav nav-tabs">
+                  <li class="active"><a href="#dat_upload1" data-toggle="tab"><span class="glyphicon glyphicon-list-alt"></span> File Upload</a></li>
+                  <li><a href="#dat_upload2" data-toggle="tab"><i class="fa fa-global"></i> Sql Server</a></li>
+				  <li><a href="#dat_upload3" data-toggle="tab"><i class="fa fa-global"></i> MySQL</a></li>
+                  <li><a href="#dat_upload4" data-toggle="tab"><i class="fa fa-camera"></i> Oracle</a></li>
+				  <li><a href="#dat_upload5" data-toggle="tab"><i class="fa fa-camera"></i> SalesForce</a></li>
+				  <li><a href="#dat_upload6" data-toggle="tab"><i class="fa fa-camera"></i> MongoDB</a></li>
+				  <li><a href="#dat_upload7" data-toggle="tab"><i class="fa fa-camera"></i> Hive</a></li>
+				  <li><a href="#dat_upload8" data-toggle="tab"><i class="fa fa-camera"></i> Dynamic CRM</a></li>
+				  <li><a href="#dat_upload9" data-toggle="tab"><i class="fa fa-camera"></i> HDFS</a></li>
+                </ul>
+                <div class="tab-content">
+                  <div id="dat_upload1" class="tab-pane active cont fade in">
+                    <h3><span class="glyphicon glyphicon-list-alt"></span> File Upload</h3>
+                    <div id="holder">
+					</div> 
+					<p id="upload" class="hidden"><label>Drag & drop not supported, but you can still upload via this input field:<br><input type="file"></label></p>
+					<p id="filereader">File API & FileReader API not supported</p>
+					<p id="formdata">XHR2's FormData is not supported</p>
+					<p id="progress">XHR2's upload progress isn't supported</p>
+					<p>Upload progress: <progress id="uploadprogress" max="100" value="0">0</progress></p>
+					<p class="hide">Drag an image from your desktop on to the drop zone above to see the browser both render the preview, but also upload automatically to this server.</p>
+					</article>
+					<div class="form-group">
               <label>Select an existing dataset</label>
               <select id="sel_existdataste" name="selectbasic" class="form-control">
                 <option value="334">superstore_v2.csv</option>
@@ -474,11 +499,75 @@
                 <option value="21">credit_churn_data_v5.csv</option>
                 <option value="11">65_world_indexes.csv</option>
               </select>
-            </div> 
+            </div>
+                  </div>
+                  <div id="dat_upload2" class="tab-pane cont fade">
+                    <h3>Sql Server</h3>
+                    <p> Consectetur adipisicing elit. Ad aperiam dolore veniam mollitia consectetur aut. Cumque sunt consequatur, officiis voluptatum quas atque magnam animi eaque facere cupiditate quos ad totam saepe porro nostrum tenetur. Assumenda esse quidem, sed vel dolore quisquam fuga culpa non, ducimus, impedit fugiat vero similique recusandae?</p>
+                    <p> Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad aperiam dolore veniam mollitia consectetur aut. Cumque sunt consequatur, officiis voluptatum quas atque magnam animi eaque facere cupiditate quos ad totam saepe porro nostrum tenetur. Assumenda esse quidem, sed vel dolore quisquam fuga culpa non, ducimus, impedit fugiat vero similique recusandae?</p>
+                  </div>
+                  <div id="dat_upload3" class="tab-pane fade">
+                    <h3>MySQL</h3>
+                    <p>Consectetur adipisicing elit. Ipsam ut praesentium, voluptate quidem necessitatibus quam nam officia soluta aperiam, recusandae.</p>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos facilis laboriosam, vitae ipsum tenetur atque vel repellendus culpa reiciendis velit quas, unde soluta quidem voluptas ipsam, rerum fuga placeat rem error voluptate eligendi modi. Delectus, iure sit impedit? Facere provident expedita itaque, magni, quas assumenda numquam eum! Sequi deserunt, rerum.</p><a href="#">Read more</a>
+                  </div>
+				  <div id="dat_upload4" class="tab-pane fade">
+                    <h3>Oracle</h3>
+                    <p>Consectetur adipisicing elit. Ipsam ut praesentium, voluptate quidem necessitatibus quam nam officia soluta aperiam, recusandae.</p>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos facilis laboriosam, vitae ipsum tenetur atque vel repellendus culpa reiciendis velit quas, unde soluta quidem voluptas ipsam, rerum fuga placeat rem error voluptate eligendi modi. Delectus, iure sit impedit? Facere provident expedita itaque, magni, quas assumenda numquam eum! Sequi deserunt, rerum.</p><a href="#">Read more</a>
+                  </div>
+				  <div id="dat_upload5" class="tab-pane fade">
+                    <h3>SalesForce</h3>
+                    <p>Consectetur adipisicing elit. Ipsam ut praesentium, voluptate quidem necessitatibus quam nam officia soluta aperiam, recusandae.</p>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos facilis laboriosam, vitae ipsum tenetur atque vel repellendus culpa reiciendis velit quas, unde soluta quidem voluptas ipsam, rerum fuga placeat rem error voluptate eligendi modi. Delectus, iure sit impedit? Facere provident expedita itaque, magni, quas assumenda numquam eum! Sequi deserunt, rerum.</p><a href="#">Read more</a>
+                  </div>
+				  <div id="dat_upload6" class="tab-pane fade">
+                    <h3>MongoDB</h3>
+                    <p>Consectetur adipisicing elit. Ipsam ut praesentium, voluptate quidem necessitatibus quam nam officia soluta aperiam, recusandae.</p>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos facilis laboriosam, vitae ipsum tenetur atque vel repellendus culpa reiciendis velit quas, unde soluta quidem voluptas ipsam, rerum fuga placeat rem error voluptate eligendi modi. Delectus, iure sit impedit? Facere provident expedita itaque, magni, quas assumenda numquam eum! Sequi deserunt, rerum.</p><a href="#">Read more</a>
+                  </div>
+				  <div id="dat_upload7" class="tab-pane fade">
+                    <h3>HIVE</h3>
+                    <p>Consectetur adipisicing elit. Ipsam ut praesentium, voluptate quidem necessitatibus quam nam officia soluta aperiam, recusandae.</p>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos facilis laboriosam, vitae ipsum tenetur atque vel repellendus culpa reiciendis velit quas, unde soluta quidem voluptas ipsam, rerum fuga placeat rem error voluptate eligendi modi. Delectus, iure sit impedit? Facere provident expedita itaque, magni, quas assumenda numquam eum! Sequi deserunt, rerum.</p><a href="#">Read more</a>
+                  </div>
+				  <div id="dat_upload8" class="tab-pane fade">
+                    <h3>Dynamic CRM</h3>
+                    <p>Consectetur adipisicing elit. Ipsam ut praesentium, voluptate quidem necessitatibus quam nam officia soluta aperiam, recusandae.</p>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos facilis laboriosam, vitae ipsum tenetur atque vel repellendus culpa reiciendis velit quas, unde soluta quidem voluptas ipsam, rerum fuga placeat rem error voluptate eligendi modi. Delectus, iure sit impedit? Facere provident expedita itaque, magni, quas assumenda numquam eum! Sequi deserunt, rerum.</p><a href="#">Read more</a>
+                  </div>
+				  <div id="dat_upload9" class="tab-pane fade">
+                    <h3>DHFS</h3>
+                    <p>Consectetur adipisicing elit. Ipsam ut praesentium, voluptate quidem necessitatibus quam nam officia soluta aperiam, recusandae.</p>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos facilis laboriosam, vitae ipsum tenetur atque vel repellendus culpa reiciendis velit quas, unde soluta quidem voluptas ipsam, rerum fuga placeat rem error voluptate eligendi modi. Delectus, iure sit impedit? Facere provident expedita itaque, magni, quas assumenda numquam eum! Sequi deserunt, rerum.</p><a href="#">Read more</a>
+                  </div>
+                </div>
+              </div>
+			
+			
+			<!-- &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& ! -->
+			<div class="row hide">
+				<div class="col-md-6"> 
+					<div class="col-sm-12 text-center">
+						<div class="glyphicon-ring"><span class="glyphicon glyphicon-list-alt"></span></div>
+						<h4 class="media-heading text-center">File Upload</h4>
+					</div>
+					<div class="clearfix"></div>
+					
+				</div>
+				<div class="col-md-6">
+					<div class="col-sm-3 col-sm-offset-4 text-center">
+						<div class="glyphicon-ring"><span class="glyphicon glyphicon-tasks"></span></div>
+						<h4 class="media-heading text-center">DB Upload</h4>
+					</div>	
+				</div>
+			</div>
+			
+             
           </div>
           <div class="modal-footer">
             <button type="button" data-dismiss="modal" class="btn btn-default md-close">Cancel</button>
-            <button type="button" data-dismiss="modal" class="btn btn-primary md-close">Create</button>
+            <button type="button" data-dismiss="modal" class="btn btn-primary md-close">Upload</button>
           </div>
         </div>
       </div>
@@ -538,6 +627,100 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> 
 <script src="js/bootstrap.min.js"></script>
 <script src="js/uiScripts.js"></script>
- 
+ <script>
+var holder = document.getElementById('holder'),
+    tests = {
+      filereader: typeof FileReader != 'undefined',
+      dnd: 'draggable' in document.createElement('span'),
+      formdata: !!window.FormData,
+      progress: "upload" in new XMLHttpRequest
+    }, 
+    support = {
+      filereader: document.getElementById('filereader'),
+      formdata: document.getElementById('formdata'),
+      progress: document.getElementById('progress')
+    },
+    acceptedTypes = {
+      'image/png': true,
+      'image/jpeg': true,
+      'image/gif': true
+    },
+    progress = document.getElementById('uploadprogress'),
+    fileupload = document.getElementById('upload');
+
+"filereader formdata progress".split(' ').forEach(function (api) {
+  if (tests[api] === false) {
+    support[api].className = 'fail';
+  } else {
+    // FFS. I could have done el.hidden = true, but IE doesn't support
+    // hidden, so I tried to create a polyfill that would extend the
+    // Element.prototype, but then IE10 doesn't even give me access
+    // to the Element object. Brilliant.
+    support[api].className = 'hidden';
+  }
+});
+
+function previewfile(file) {
+  if (tests.filereader === true && acceptedTypes[file.type] === true) {
+    var reader = new FileReader();
+    reader.onload = function (event) {
+      var image = new Image();
+      image.src = event.target.result;
+      image.width = 250; // a fake resize
+      holder.appendChild(image);
+    };
+
+    reader.readAsDataURL(file);
+  }  else {
+    holder.innerHTML += '<p>Uploaded ' + file.name + ' ' + (file.size ? (file.size/1024|0) + 'K' : '');
+    console.log(file);
+  }
+}
+
+function readfiles(files) {
+    debugger;
+    var formData = tests.formdata ? new FormData() : null;
+    for (var i = 0; i < files.length; i++) {
+      if (tests.formdata) formData.append('file', files[i]);
+      previewfile(files[i]);
+    }
+
+    // now post a new XHR request
+    if (tests.formdata) {
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '/devnull.php');
+      xhr.onload = function() {
+        progress.value = progress.innerHTML = 100;
+      };
+
+      if (tests.progress) {
+        xhr.upload.onprogress = function (event) {
+          if (event.lengthComputable) {
+            var complete = (event.loaded / event.total * 100 | 0);
+            progress.value = progress.innerHTML = complete;
+          }
+        }
+      }
+
+      xhr.send(formData);
+    }
+}
+
+if (tests.dnd) { 
+  holder.ondragover = function () { this.className = 'hover'; return false; };
+  holder.ondragend = function () { this.className = ''; return false; };
+  holder.ondrop = function (e) {
+    this.className = '';
+    e.preventDefault();
+    readfiles(e.dataTransfer.files);
+  }
+} else {
+  fileupload.className = 'hidden';
+  fileupload.querySelector('input').onchange = function () {
+    readfiles(this.files);
+  };
+}
+
+</script>
 </body>
 </html>
