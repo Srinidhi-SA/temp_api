@@ -18,7 +18,7 @@ class Card:
     name = ""
     slug = ""
     cardType = ""
-    data = {
+    cardData = {
         "noOfDimensions": 8,
         "noOfMeasures":  10,
         "summaryHtml": "summary with HTML <b>tags</b>",
@@ -29,6 +29,12 @@ class Card:
         self.name = name
         self.slug = slug
         self.cardType = cardType
+        self.cardData = {
+        "noOfDimensions": 8,
+        "noOfMeasures":  10,
+        "summaryHtml": "summary with HTML <b>tags</b>",
+        "quotesHtml": "Quote that comes on the right side"
+        }
 
 
 if __name__ == "__main__":
@@ -61,6 +67,7 @@ if __name__ == "__main__":
 
 
     root = Node("SignalsRoot","Signals",[n1,n2,n3,n4,n5],[])
+    # root = Node("SignalsRoot","Signals",[n1,],[])
     
     import json
     print(json.dumps(root, default=lambda o: o.__dict__))
