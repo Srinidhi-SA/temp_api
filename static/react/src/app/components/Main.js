@@ -1,7 +1,6 @@
 import React from "react";
 import LeftPanel from "./common/LeftPanel";
 import TopPanel from "./common/TopPanel";
-import ContentPanel from "./common/ContentPanel";
 import {Login} from "./Login";
 import { connect } from "react-redux";
 import { Redirect } from "react-router";
@@ -21,8 +20,8 @@ export class Main extends React.Component {
   render() {
 
     console.log("Main is called!!");
-    console.log(this.props);
-    console.log(this.props.login_response);
+    // console.log(this.props);
+    // console.log(this.props.login_response);
     if (sessionStorage.userToken) {
       console.log("authorized!!!");
       return (
