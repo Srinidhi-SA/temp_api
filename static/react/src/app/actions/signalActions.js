@@ -23,7 +23,7 @@ export function getList(token) {
 
 function fetchPosts(token) {
   console.log("JWT "+token)
-  return fetch(API+'/api/errand/archived?userId=13',{
+  return fetch(API+'/api/errand/archived?userId='+sessionStorage.userId,{
 		method: 'get',
     headers: getHeader(token)
 		}).then( response => Promise.all([response, response.json()]));
@@ -54,7 +54,7 @@ export function getSignalAnalysis(token,errandId,type) {
     return fetchPosts_analysis(token,errandId,type).then(([response, json]) =>{
         if(response.status === 200){
           console.log(json)
-        dispatch(fetchPostsSuccess_analysis(json,errandId))
+        dispatch(fetchPostsSuccess_analysis(json,errandId,type))
       }
       else{
         dispatch(fetchPostsError_analysis(json))
@@ -87,13 +87,14 @@ function fetchPosts_analysis(token,errandId,type) {
 }
 
 
-function fetchPostsSuccess_analysis(signalAnalysis, errandId) {
+function fetchPostsSuccess_analysis(signalAnalysis, errandId,variableType) {
   console.log("signal analysis from api to store")
   console.log(signalAnalysis)
   return {
     type: "SIGNAL_ANALYSIS",
     signalAnalysis,
-    errandId
+    errandId,
+    variableType
   }
 }
 

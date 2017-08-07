@@ -71,8 +71,9 @@ export function fetchCard(params, output) {
 }
 
 export function getPrevNext(output, curSufix) {
+//  alert("working");
     var listOfUrls = [];
-    generateAllUrls = function (rootNode, prefix) {
+    let generateAllUrls = function (rootNode, prefix) {
         // Generate all sets of urls for all cards
         for (var i = 0; i < rootNode.listOfCards.length; i++) {
             listOfUrls.push(prefix + rootNode.listOfCards[i]['slug']);
