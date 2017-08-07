@@ -1,7 +1,7 @@
 import React from "react";
 import {Redirect} from 'react-router';
 import ReactDOM from 'react-dom';
-import {sessionObject} from '../../actions/manageSessionStorage';
+import {sessionObject} from '../../helpers/manageSessionStorage';
 import $ from 'jquery';
 
 

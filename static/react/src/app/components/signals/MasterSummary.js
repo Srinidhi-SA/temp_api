@@ -69,7 +69,7 @@ export class MasterSummary extends React.Component {
                           </div>
                           <div className="clearfix"></div>
                           <div className="col-md-12">
-                            <p className="lead">${summary}
+                            <p className="lead">{summary}
                             </p>
                           </div>
                         </div>

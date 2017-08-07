@@ -4,7 +4,7 @@ import {Redirect} from "react-router";
 import store from "../../store";
 import {getSignalAnalysis} from "../../actions/signalActions";
 import {MasterSummary} from "./MasterSummary";
-import {isEmpty} from "../../actions/helper";
+import {isEmpty} from "../../helpers/helper";
 import {MainHeader} from "../common/MainHeader";
 
 
@@ -21,12 +21,12 @@ export class Signal extends React.Component {
   componentWillMount() {
     //alert("id:" + this.props.errandId);
     //console.log(store.getState().signals.signalAnalysis);
-    this.props.dispatch(getSignalAnalysis(sessionStorage.userToken, this.props.match.params.slug));
+    this.props.dispatch(getSignalAnalysis(sessionStorage.userToken, this.props.match.params.slug, this.props.location.state.variableType));
   }
   render() {
 
      console.log("selected Signal is called$$$$$$$$$$$$$$!!");
-    // console.log(this.props);
+     console.log(this.props);
     if(isEmpty(this.props.signal)||(this.props.match.params.slug!=this.props.selectedSignal)){
       // console.log("siggnal selection not matching *******")
       return(

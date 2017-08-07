@@ -48,10 +48,10 @@ function fetchPostsError(json) {
 }
 
 //for getting signal analysis:
-export function getSignalAnalysis(token,errandId) {
+export function getSignalAnalysis(token,errandId,type) {
 
     return (dispatch) => {
-    return fetchPosts_analysis(token,errandId).then(([response, json]) =>{
+    return fetchPosts_analysis(token,errandId,type).then(([response, json]) =>{
         if(response.status === 200){
           console.log(json)
         dispatch(fetchPostsSuccess_analysis(json,errandId))
@@ -64,8 +64,10 @@ export function getSignalAnalysis(token,errandId) {
 }
 
 
-function fetchPosts_analysis(token,errandId) {
+function fetchPosts_analysis(token,errandId,type) {
   console.log("JWT "+token)
+  console.log(type);
+  if(type== "dimension"){
   return fetch(API+'/api/errand/get_dimension_all_results?errand_id='+errandId,{
 		method: 'get',
 		headers: {
@@ -73,10 +75,19 @@ function fetchPosts_analysis(token,errandId) {
 			'Content-Type': 'application/x-www-form-urlencoded'
 		}
   }).then( response => Promise.all([response, response.json()]));
+}else{
+  return fetch(API+'/api/errand/get_results?errand_id='+errandId,{
+   method: 'get',
+   headers: {
+     'Authorization': "JWT "+token,
+     'Content-Type': 'application/x-www-form-urlencoded'
+   }
+  }).then( response => Promise.all([response, response.json()]));
+}
 }
 
 
-function fetchPostsSuccess_analysis(signalAnalysis,errandId) {
+function fetchPostsSuccess_analysis(signalAnalysis, errandId) {
   console.log("signal analysis from api to store")
   console.log(signalAnalysis)
   return {

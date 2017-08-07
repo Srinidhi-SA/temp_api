@@ -1,4 +1,4 @@
-import {sessionObject} from './manageSessionStorage';
+import {sessionObject} from '../helpers/manageSessionStorage';
 var API = "http://34.196.204.54:9000";
 
 export function authenticateFunc(username,password) {

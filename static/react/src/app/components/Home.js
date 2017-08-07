@@ -16,9 +16,11 @@ export class Home extends React.Component {
   }
   render() {
 
-    console.log("home is called!!");
     return(
-      <Redirect to={"/signals"} />
+      <div>
+    <Redirect to ="/signals"/>
+
+      </div>
     )
   }
 }

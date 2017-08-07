@@ -2166,7 +2166,7 @@ output {
 }
 .form-control {
 	width: 100%;
-	height: 44px;
+	/*height: 44px;*/
 	background-color: #fff;
 	border: 1px solid #eaeaea;
 	border-radius: 0;
@@ -4611,7 +4611,7 @@ button.close {
 	position: relative;
 	width: auto;
 	margin: 10px
-	
+
 }
 .modal-content {
 	border: 1px solid #999;
@@ -5343,6 +5343,7 @@ td.visible-print,  th.visible-print {
 	max-width: 630px;
 	min-width: 320px
 }
+.modal-lg .modal-content { max-width:inherit; }
 .modal-scrollbar-measure {
 	position: absolute;
 	top: -9999px;
@@ -5848,7 +5849,7 @@ button:focus {
 	outline: 0!important
 }
 /** Actual Styles Starts from here ***/
- 
+
 .ma-wrapper {
 	min-height: 100%;
 	padding-top: 80px
@@ -6729,15 +6730,15 @@ button:focus {
 	margin-right: 0;
 	margin-left: 0;
 }
-/* 
+/*
     Sometimes the sub menus get too large for the page and prevent the menu from scrolling, limiting functionality
-    A quick fix is to change .side-menu to 
+    A quick fix is to change .side-menu to
 
     -> position:absolute
-    
+
     and uncomment the code below.
-    You also need to uncomment 
-    
+    You also need to uncomment
+
     -> <div class="absolute-wrapper"> </div> in the html file
 
     you also need to tweek the animation. Just uncomment the code in that section
@@ -6881,7 +6882,7 @@ button:focus {
         -webkit-animation: slideout 300ms forwards;
         animation: slideout 300ms forwards;
         -webkit-transform-style: preserve-3d;
-        transform-style: preserve-3d; 
+        transform-style: preserve-3d;
     }*/
   @-moz-keyframes bodyslidein {
  0% {
@@ -6969,7 +6970,7 @@ button:focus {
 	margin: 0;
 }
 .navbar-header {
-	/* this is probably redundant 
+	/* this is probably redundant
     position: fixed;
     z-index: 3;
 	width:100%;*/
@@ -7807,9 +7808,9 @@ body.open-right-sidebar .ma-right-sidebar {
 	margin-left: 0
 }
 .main-content {
-	padding-left: 20px;
-	padding-right: 20px;
-	padding-top: 20px;
+	    padding-left: 13px;
+    padding-right: 13px;
+    padding-top: 10px;
 }
 
 @media (min-width:768px) and (max-width:991px) {
@@ -7980,7 +7981,7 @@ body.open-right-sidebar .ma-right-sidebar {
 }
 }
 .ma-splash-screen {
-	background:#ffffff url('../images/login_bg.png') no-repeat center center fixed; 
+	background:#ffffff url('../images/login_bg.png') no-repeat center center fixed;
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
 	-o-background-size: cover;
@@ -10022,7 +10023,7 @@ li.L1, li.L3, li.L5, li.L7, li.L9 {
 	padding-bottom: 10px
 }
 .login-container .panel-default .panel-body {
-background: rgba(255, 255, 255, 0.6); 
+background: rgba(255, 255, 255, 0.6);
 -webkit-box-shadow: 0px 0px 14px 4px rgba(0,0,0,0.25);
 -moz-box-shadow: 0px 0px 14px 4px rgba(0,0,0,0.25);
 box-shadow: 0px 0px 14px 4px rgba(0,0,0,0.25);
@@ -10082,7 +10083,7 @@ box-shadow: 0px 0px 14px 4px rgba(0,0,0,0.25);
 	line-height: 35px;
 	font-size: 14px
 }
-.login-container .panel-default .panel-body .form-group .remember {	
+.login-container .panel-default .panel-body .form-group .remember {
 	color: #a3a2a2
 }
 .login-container .panel-default .panel-body .form-group .remember label {
@@ -10533,7 +10534,7 @@ box-shadow: 0px 0px 14px 4px rgba(0,0,0,0.25);
 .user-profile .user-display .bottom .user-avatar {
 	position: absolute;
 	left: 46px;
-	top: -50px
+	/*top: -50px*/
 }
 .user-profile .user-display .bottom .user-avatar .status {
 	background-color: #00b777;
@@ -12554,7 +12555,7 @@ pre {
 	background-color: #3d3c3c
 }
 .modal-full-width {
-	width: 95%;
+	width: 85%;
 	max-width: none;
 	margin-left: auto;
 	margin-right: auto
@@ -12948,7 +12949,7 @@ a.text-alt4:focus, a.text-alt4:hover {
 .form-control {
 	border-width: 1px;
 	box-shadow: none;
-	padding: 10px 12px;
+/*	padding: 10px 12px;*/
 	font-size: 14px
 }
 .form-control:focus {
@@ -13069,7 +13070,7 @@ label {
 	border-color: #ddd
 }
 .input-group-btn .btn {
-	height: 44px
+	/*height: 44px*/
 }
 .input-lg {
 	height: 54px;
@@ -13918,7 +13919,7 @@ div.dataTables_wrapper div.dataTables_length label select {
 .ma-datatable-footer {
 	margin: 0;
 	padding: 15px 3px 13px;
-	/*background-color: #f7f7f7; mAdv Comment*/ 
+	/*background-color: #f7f7f7; mAdv Comment*/
 	border-top: 1px solid #eaeaea
 }
 .bootstrap-touchspin input {
@@ -15023,7 +15024,7 @@ div.dataTables_wrapper div.dataTables_length label select {
 	height:10px;
 }
 .card-narrative{
-	 
+
 	font-size: 17px;
 }
 
@@ -15034,13 +15035,13 @@ div.dataTables_wrapper div.dataTables_length label select {
     font-size: 16px;
     word-break: break-word;
     /* line-height: 50px; */
-    height: 60px; 
+    height: 60px;
 }
 .newCardTitle a{
     color: #696969; display:block; }
 .footerTitle{
 	display:block;
-	font-size:12px; 
+	font-size:12px;
 }
 .newCardStyle{
 	background:#FFF;
@@ -15123,7 +15124,7 @@ div.dataTables_wrapper div.dataTables_length label select {
 	line-height: 100px;
 	padding-left:0px;
 	padding-right:20px;
-	
+
 }
 .card-center-tile {
     height: 80px;
@@ -15151,9 +15152,9 @@ div.dataTables_wrapper div.dataTables_length label select {
 }
 
 /*.card-deatils.open a .fa { color: #7dac02} */
- 
- 
-.card-footer div a:focus, .card-footer div a:hover, .card-footer div a:active, .card-deatils.open a.more_button{ 
+
+
+.card-footer div a:focus, .card-footer div a:hover, .card-footer div a:active, .card-deatils.open a.more_button{
 background:#ededed; color:#7dac02
 }
 .card-selected {
@@ -15202,7 +15203,7 @@ background:#ededed; color:#7dac02
 
 /** Overview First Page Template **/
 
-.ovr_block { background:#f5f5f5; overflow:hidden; margin: 10px;} 
+.ovr_block { background:#f5f5f5; overflow:hidden; margin: 10px;}
 .ovr_block_left{ background:#FFF; }
 .icon_ovr {  padding:43px 0 0 0; }
 .icon_ovr.ms { padding-top:28px;}
@@ -15217,7 +15218,7 @@ background:#ededed; color:#7dac02
 
 /** Panel Header **/
 .panel-mAd .panel { padding: 10px; }
-.panel-mAd>.panel-heading { background-color: #FFF; margin: 0; padding: 6px 0px 0 10px; border-bottom:1px solid #ddd; }
+.panel-mAd>.panel-heading {  margin: 0; padding: 6px 0px 0 10px; /*background-color: #FFF; border-bottom:1px solid #ddd; */}
 .panel-mAd>.panel-heading h2 { margin-top: 8px;font-weight: bold;}
 .panel-mAd .panel-body { padding:0;}
 
@@ -15234,7 +15235,7 @@ background:#ededed; color:#7dac02
     display: table-cell;
 }
 .full-width-tabs > ul.nav.nav-tabs > li > a {
-    text-align: center; padding:0; 
+    text-align: center; padding:10px; text-transform: capitalize;
 }
 .panel-mAd .nav-tabs { background;none; }
 .panel-mAd li.active a {
@@ -15270,7 +15271,7 @@ background:#ededed; color:#7dac02
 .grp_legends_primary { color:#0fc4b5 }
 
 /*** Tabs Overvie Arro Icons placement ***/
-.tabs-control span {        
+.tabs-control span {
     position: absolute;
     /*set position of image from top to be 50%...*/
     top: 50%;
@@ -15290,10 +15291,10 @@ a.tabs-control.left span {
 
 }
 a.tabs-control.right span {
-    right: 0px; 
+    right: 0px;
     padding: 10px 5px;
 }
-.panel-mAd .tab-content { 
+.panel-mAd .tab-content {
     min-height: 360px;
 }
 
@@ -15406,7 +15407,7 @@ a.tabs-control.right span {
   .row-offcanvas.active .content {
     width: 100%; /* 12 columns */
   }
-       
+
   .sidebar-offcanvas {
     position: absolute;
     top: 0;
@@ -15460,7 +15461,7 @@ a.tabs-control.right span {
     border: 1px solid #ddd;
     width: 25px;
     height: 34px;
-    top: -1px; 
+    top: -1px;
 	-webkit-box-shadow: -5px 0px 10px 0px rgba(0,0,0,0.2);
 	-moz-box-shadow: -5px 0px 10px 0px rgba(0,0,0,0.2);
 	box-shadow: -5px 0px 10px 0px rgba(0,0,0,0.2);
@@ -15488,3 +15489,39 @@ a.tabs-control.right span {
     min-height: 360px;
    /* max-height: 500px;*/ padding:0; margin:0;
 }
+/*** Round Circle style for Data Upload ***/
+.glyphicon-ring {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 1px solid #ddd;
+  color: #ddd;
+  display: inline-table;
+  text-align: center;
+}
+.glyphicon-ring .glyphicon {    position: relative;
+    top: 1px;
+    display: inline-block;
+    font-family: 'Glyphicons Halflings';
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: 2em;
+    vertical-align: middle;
+    display: table-cell; }
+/**CSS FOR ICON WITH NO BACKGROUND COLOR**/
+
+/** Upload Data Styles ***/
+#holder { border: 1px dashed #ccc;
+    width: 300px;
+    min-height: 120px;
+    margin: 20px auto;}
+#holder.hover { border: 10px dashed #0c0; }
+#holder img { display: block; margin: 10px auto; }
+#holder p { margin: 10px; font-size: 14px; }
+progress { width: 100%; }
+progress:after { content: '%'; }
+.fail { background: #c00; padding: 2px; color: #fff; }
+.hidden { display: none !important;}
