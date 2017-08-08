@@ -5,6 +5,8 @@ import store from "../../store";
 import {MainHeader} from "../common/MainHeader";
 import $ from "jquery";
 import Breadcrumb from 'react-breadcrumb';
+import renderHTML from 'react-render-html';
+
 
 @connect((store) => {
   return {login_response: store.login.login_response, signal: store.signals.signalAnalysis};
@@ -89,7 +91,7 @@ export class MasterSummary extends React.Component {
                           </div>
                           <div className="clearfix"></div>
                           <div className="col-md-12">
-                            <p className="lead">{summary}
+                            <p className="lead">{renderHTML(summary)}
                             </p>
                           </div>
                         </div>

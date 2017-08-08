@@ -42,14 +42,7 @@ export class Signals extends React.Component {
                 <div className="row">
                   <div className="col-xs-9">
                     <h4 className="title newCardTitle">
-                      <Link to={{
-                        pathname: signalLink,
-                        state: {
-                          variableType: story.variable_type
-                        }
-                      }}>
-                        {story.name}
-                      </Link>
+                    <Link to={signalLink}> {story.name} </Link>
                     </h4>
                   </div>
                   <div className="col-xs-3">

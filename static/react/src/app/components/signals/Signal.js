@@ -13,8 +13,9 @@ import Breadcrumb from 'react-breadcrumb';
 @connect((store) => {
   return {login_response: store.login.login_response,
           signal: store.signals.signalAnalysis,
-          selectedSignal: store.signals.selectedSignal,
-        variableType:store.signals.variableType};
+          selectedSignal: store.signals.selectedSignal
+        // variableType:store.signals.variableType
+      };
 })
 
 export class Signal extends React.Component {
@@ -24,10 +25,7 @@ export class Signal extends React.Component {
   componentWillMount() {
     //alert("id:" + this.props.errandId);
     //console.log(store.getState().signals.signalAnalysis);
-    if(this.props.variableType)
-    this.props.dispatch(getSignalAnalysis(sessionStorage.userToken, this.props.match.params.slug, this.props.variableType));
-    else
-      this.props.dispatch(getSignalAnalysis(sessionStorage.userToken, this.props.match.params.slug, this.props.location.state.variableType));
+      this.props.dispatch(getSignalAnalysis(sessionStorage.userToken, this.props.match.params.slug));
 
   }
   render() {
