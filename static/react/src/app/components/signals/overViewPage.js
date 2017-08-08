@@ -311,12 +311,12 @@ let output = {
   "listOfCards": [
     {
       "cardType": "summary",
-      "cardData": [
-        {
-          CardType: "html",
-          data: '<table cellpadding="0" cellspacing="0" border="0" class="table table-bordered heat-table-map table-responsive" ><thead> <tr class="heatMapHeader"><th class="first">Head</th><th class="first">Active</th><th class="first">Churn</th> </tr></thead><tbody> <tr class="stats-row"><td  class="stats-title">Active</td><td>34%</td><td>58%</td></tr><tr class="stats-row"><td  class="stats-title">Churn</td><td>13%</td><td>88%</td></tr></tbody></table>'
-        }
-      ],
+      "cardData": {
+        "noOfMeasures": 10,
+        "quotesHtml": "Sales had a phenomenal growth during Jan-Dec need to be coming from api",
+        "summaryHtml": "summary with HTML <b>tags</b> ex: mAdvisor has analyzed the dataset and it contains<b> 17</b> variables and <b>1500</b> observations. Of these <b>6</b> variables are omitted, since these are not fit for the analysis. The consolidated dataset has 1 measure and 10 dimensions. Please click next to find the insights from our distribution analysis of <b>status</b> factoring the other variables",
+        "noOfDimensions": 8
+      },
       "name": "summary",
       "slug": "summary"
     }
@@ -329,7 +329,7 @@ export class OverViewPage extends React.Component {
   constructor() {
     super();
   }
-  prevNext(path) {
+prevNext(path) {
     console.log(path);
     let currentSuffix = path.location.pathname;
 
@@ -427,7 +427,7 @@ export class OverViewPage extends React.Component {
     });
 
     let expectedURL = this.prevNext(this.props);
-  
+
     let prevURL = "/signals/"+this.props.match.params.slug+"/"+expectedURL.prev;
     let nextURL = "/signals/"+this.props.match.params.slug+"/"+expectedURL.next;
   if(expectedURL.prev=="summary"){

@@ -1,5 +1,5 @@
+//function to get first card details of provided node slug
 export function getFirstCard(output, node_slug) {
-  // console.log("getFirstCard is called!!");
   var node = fetchNodeFromTree(node_slug, output);
   console.log("getFirstCard is called!! for node");
   console.log(node);
@@ -12,6 +12,7 @@ export function getFirstCard(output, node_slug) {
   }
 }
 
+//function to fetch card details for corresponding card slug form provided node object
 function fetchCardFromNode(card_slug, node) {
   console.log("fetchCardFromNode is called :" + card_slug);
   console.log(node);
@@ -23,6 +24,7 @@ function fetchCardFromNode(card_slug, node) {
   }
 }
 
+//function to fetch the node object from full json response
 export function fetchNodeFromTree(node_slug, output) {
   console.log("fetchNodeFromTree is called for: " + node_slug);
   console.log(output);
@@ -31,6 +33,7 @@ export function fetchNodeFromTree(node_slug, output) {
   return result;
 }
 
+//to search node in recursive manner
 function searchTree(element, matchingNode) {
   console.log("searchTree is called:" + matchingNode);
   console.log(element);
@@ -47,6 +50,7 @@ function searchTree(element, matchingNode) {
   return null;
 }
 
+//fetch card based on params levels in url from json response
 export function fetchCard(params, output) {
   //fetch specific card..
   console.log("fetchCard is called");
@@ -70,6 +74,7 @@ export function fetchCard(params, output) {
   return card;
 }
 
+//functionality to deal with next and previous navigations
 export function getPrevNext(output, curSufix) {
 //  alert("working");
     var listOfUrls = [];
