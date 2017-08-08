@@ -13,7 +13,8 @@ import Breadcrumb from 'react-breadcrumb';
 @connect((store) => {
   return {login_response: store.login.login_response,
           signal: store.signals.signalAnalysis,
-          selectedSignal: store.signals.selectedSignal
+          selectedSignal: store.signals.selectedSignal,
+          signalList: store.signals.signalList
         // variableType:store.signals.variableType
       };
 })
@@ -32,7 +33,8 @@ export class Signal extends React.Component {
 
      console.log("selected Signal is called$$$$$$$$$$$$$$!!");
      console.log(this.props);
-     let breadcrumb = [];
+
+
     if(isEmpty(this.props.signal)||(this.props.match.params.slug!=this.props.selectedSignal)){
       // console.log("siggnal selection not matching *******")
       return(
@@ -46,13 +48,13 @@ export class Signal extends React.Component {
                 label: 'Signals'
               },
               {
-                path:'/signals'+this.props.match.params.slug,
+                path:'/signals'+this.props.signal.name,
                 label: this.props.match.params.slug
               }
             ]}/>
             </div>
             <div class="col-md-8">
-              <h2>TODO: need to fill this</h2>
+              <h2>{this.props.signal.name}</h2>
             </div>
             </div>
           <div class="clearfix"></div>
@@ -63,7 +65,7 @@ export class Signal extends React.Component {
           </div>
       );
     }else{
-    return (<MasterSummary signalId={this.props.match.params.slug}/>);
+    return (<MasterSummary signalId={this.props.match.params.slug} />);
   }
 }
 }

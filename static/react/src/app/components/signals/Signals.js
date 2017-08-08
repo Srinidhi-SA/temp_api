@@ -42,7 +42,7 @@ export class Signals extends React.Component {
                 <div className="row">
                   <div className="col-xs-9">
                     <h4 className="title newCardTitle">
-                    <Link to={signalLink}> {story.name} </Link>
+                    <Link to={signalLink} id={story.slug}> {story.name} </Link>
                     </h4>
                   </div>
                   <div className="col-xs-3">

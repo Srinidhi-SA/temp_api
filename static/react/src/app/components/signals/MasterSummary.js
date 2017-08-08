@@ -19,17 +19,19 @@ export class MasterSummary extends React.Component {
   render() {
 
     console.log("MasterSummary is called!!");
-    // console.log(this.props);
+     console.log(this.props);
     // console.log(this.props.signal);
+    let heading = this.props.signal.name;
 
     var noOfDimention;
     var noOfMeasures;
     var summary;
 
   //  console.log("inside if" + this.props.signal);
-    var noOfDimention = this.props.signal.get_frequency_results.narratives.vartype.Dimensions;
-    var noOfMeasures = this.props.signal.get_frequency_results.narratives.vartype.Measures;
-    var summary = this.props.signal.get_frequency_results.narratives.summary.toString();
+    var noOfDimention = this.props.signal.listOfCards[0].cardData.noOfDimensions;
+    var noOfMeasures = this.props.signal.listOfCards[0].cardData.noOfMeasures;
+    var summary = this.props.signal.listOfCards[0].cardData.summaryHtml.toString();
+    var quotes = this.props.signal.listOfCards[0].cardData.quotesHtml.toString();
     // console.log(noOfMeasures);
     // console.log(noOfDimention);
     // console.log(summary);
@@ -46,12 +48,12 @@ export class MasterSummary extends React.Component {
             },
             {
               path:'/signals'+this.props.signalId,
-              label: this.props.signalId
+              label: heading
             }
           ]}/>
           </div>
           <div class="col-md-8">
-            <h2>TODO: need to fill this</h2>
+            <h2>{heading}</h2>
           </div>
           </div>
         <div class="clearfix"></div>
@@ -99,7 +101,7 @@ export class MasterSummary extends React.Component {
                     </div>
                     <div className="col-md-3 v_smry">
                       <h3>
-                        <em>"Sales had a phenomenal growth during Jan-Dec"</em>
+                        <em>{quotes}</em>
                       </h3>
                       <Link to={overViewLink}>
                         <img src="../../../assets/images/icon_proceedformore.png" className="img-responsive" alt="Proceed for More"/>
