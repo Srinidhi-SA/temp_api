@@ -31,7 +31,6 @@ from serializers import SignalSerializer
 
 class CustomPagination(PageNumberPagination):
     def get_paginated_response(self, data):
-        import pdb;pdb.set_trace()
         self.total_page_size = len(data)
         return Response({
 
