@@ -26,12 +26,14 @@ class DatasetSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         instance.meta_data = validated_data.get('meta_data', instance.meta_data)
+        instance.name = validated_data.get('name', instance.name)
         instance.created_by = validated_data.get('created_by', instance.created_by)
         instance.deleted = validated_data.get('deleted', instance.deleted)
         instance.bookmarked = validated_data.get('bookmarked', instance.bookmarked)
         instance.auto_update = validated_data.get('auto_update', instance.auto_update)
         instance.auto_update_duration = validated_data.get('auto_update_duration', instance.auto_update_duration)
         instance.db_details = validated_data.get('db_details', instance.db_details)
+        instance.db_type = validated_data.get('db_type', instance.db_type)
 
         instance.save()
         return instance
