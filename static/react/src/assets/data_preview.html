@@ -105,15 +105,45 @@
                         </div>
                         <div class="clearfix"></div>
                         <div class="table-responsive noSwipe">
-                           <table class="table table-condensed table-hover table-bordered table-striped">
+                           <table class="table table-condensed table-hover table-bordered table-striped cst_table">
                               <thead>
                                  <tr>
                                     <th>#</th>
-                                    <th><i class="fa fa-clock-o"></i> Date</th>
-                                    <th>Priority</th>
-                                    <th>Order Value</th>
-                                    <th>Discount</th>
-                                    <th>Ship Mode</th>
+                                    <th class="dropdown">  
+											<a href="#" data-toggle="dropdown" class="dropdown-toggle"><i class="fa fa-clock-o"></i> Date <b class="caret"></b></a>
+											<ul class="dropdown-menu">
+											<li><a href="#">Ascending</a></li>
+											<li><a href="#">Descending</a></li>
+											<li><a href="#">Measures</a></li> 
+											<li><a href="#">Dimensions</a></li>
+											</ul>
+									</th>
+                                    <th class="dropdown">									
+									<a href="#" data-toggle="dropdown" class="dropdown-toggle"><i class="fa fa-sort-amount-asc"></i> Priority <b class="caret"></b></a>
+											<ul class="dropdown-menu">
+											<li><a href="#">Low</a></li>
+											<li><a href="#">High</a></li> 
+											</ul></th>
+                                    <th class="dropdown">									
+									<a href="#" data-toggle="dropdown" class="dropdown-toggle"><i class="fa fa-sort-numeric-asc"></i> Order Value <b class="caret"></b></a>
+											<ul class="dropdown-menu">
+											<li><a href="#">Ascending</a></li>
+											<li><a href="#">Descending</a></li>
+											 
+											</ul></th>
+                                    <th class="dropdown">									
+									<a href="#" data-toggle="dropdown" class="dropdown-toggle"><i class="fa fa-sort-numeric-asc"></i> Discount <b class="caret"></b></a>
+											<ul class="dropdown-menu">
+											<li><a href="#">Ascending</a></li>
+											<li><a href="#">Descending</a></li>
+									 
+											</ul></th>
+                                    <th class="dropdown">									
+									<a href="#" data-toggle="dropdown" class="dropdown-toggle"><i class="fa fa-sort-amount-asc"></i> Ship Mode <b class="caret"></b></a>
+											<ul class="dropdown-menu">
+											<li><a href="#">Ascending</a></li>
+											<li><a href="#">Descending</a></li> 
+											</ul></th>
 
                                  </tr>
                               </thead>
@@ -144,6 +174,38 @@
                                  </tr>
                                  <tr>
                                     <td>4</td>
+                                    <td>07-01-2016</td>
+                                    <td>Low</td>
+                                    <td>5.2</td>
+                                    <td>0.04</td>
+                                    <td>Regular Air</td>
+                                 </tr>
+								   <tr>
+                                    <td>5</td>
+                                    <td>07-01-2016</td>
+                                    <td>Low</td>
+                                    <td>5.2</td>
+                                    <td>0.04</td>
+                                    <td>Regular Air</td>
+                                 </tr>
+								   <tr>
+                                    <td>6</td>
+                                    <td>07-01-2016</td>
+                                    <td>Low</td>
+                                    <td>5.2</td>
+                                    <td>0.04</td>
+                                    <td>Regular Air</td>
+                                 </tr>
+								   <tr>
+                                    <td>7</td>
+                                    <td>07-01-2016</td>
+                                    <td>Low</td>
+                                    <td>5.2</td>
+                                    <td>0.04</td>
+                                    <td>Regular Air</td>
+                                 </tr>
+								   <tr>
+                                    <td>8</td>
                                     <td>07-01-2016</td>
                                     <td>Low</td>
                                     <td>5.2</td>
@@ -201,6 +263,7 @@
                            <img src="../assets/images/data_preview_graph.png" class="img-responsive" />
                         </div>
                      </div>
+					 <!--
                      <div class="panel panel-primary cst_panel">
                         <div class="panel-heading">
                            <div class="tools"><span class="icon s7-upload"></span><span class="icon s7-edit"></span><span class="icon s7-close"></span></div>
@@ -223,6 +286,7 @@
                            </div>
                         </div>
                      </div>
+					 -->
                   </div>
                </div>
             </div>

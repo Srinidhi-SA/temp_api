@@ -15119,6 +15119,7 @@ div.dataTables_wrapper div.dataTables_length label select {
 	height: 130px;
 	overflow: hidden;
 	transition: all .1s ease-in-out;
+	cursor:pointer;
 }
 .card-center{
 	line-height: 100px;
@@ -15553,3 +15554,10 @@ table.table.table-condensed.table-hover.table-bordered.table-striped {
    /* background-color: #f0f0f0;*/
     margin: 0;
 }
+/*.cst_table thead th { text-align:center }*/
+.cst_table thead th a { display:block; color:#424242 }
+.cst_table thead th a:hover { color:#00998c;  }
+.cst_table thead th .dropdown-menu a:hover { color:#FFF;  }
+.cst_table thead th a .caret {position: absolute;
+    top: 20px;
+    right: 15px;}
