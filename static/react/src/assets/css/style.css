@@ -15561,3 +15561,10 @@ table.table.table-condensed.table-hover.table-bordered.table-striped {
 .cst_table thead th a .caret {position: absolute;
     top: 20px;
     right: 15px;}
+.cst_table tbody td { white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 140px;
+    overflow: hidden;
+    padding: 0;
+    margin: 0; }
+.preview_stats .panel-group.accordion {  margin-bottom: 18px;}

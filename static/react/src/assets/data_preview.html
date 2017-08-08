@@ -109,49 +109,50 @@
                               <thead>
                                  <tr>
                                     <th>#</th>
-                                    <th class="dropdown">  
-											<a href="#" data-toggle="dropdown" class="dropdown-toggle"><i class="fa fa-clock-o"></i> Date <b class="caret"></b></a>
-											<ul class="dropdown-menu">
-											<li><a href="#">Ascending</a></li>
-											<li><a href="#">Descending</a></li>
-											<li><a href="#">Measures</a></li> 
-											<li><a href="#">Dimensions</a></li>
-											</ul>
-									</th>
-                                    <th class="dropdown">									
-									<a href="#" data-toggle="dropdown" class="dropdown-toggle"><i class="fa fa-sort-amount-asc"></i> Priority <b class="caret"></b></a>
-											<ul class="dropdown-menu">
-											<li><a href="#">Low</a></li>
-											<li><a href="#">High</a></li> 
-											</ul></th>
-                                    <th class="dropdown">									
-									<a href="#" data-toggle="dropdown" class="dropdown-toggle"><i class="fa fa-sort-numeric-asc"></i> Order Value <b class="caret"></b></a>
-											<ul class="dropdown-menu">
-											<li><a href="#">Ascending</a></li>
-											<li><a href="#">Descending</a></li>
-											 
-											</ul></th>
-                                    <th class="dropdown">									
-									<a href="#" data-toggle="dropdown" class="dropdown-toggle"><i class="fa fa-sort-numeric-asc"></i> Discount <b class="caret"></b></a>
-											<ul class="dropdown-menu">
-											<li><a href="#">Ascending</a></li>
-											<li><a href="#">Descending</a></li>
-									 
-											</ul></th>
-                                    <th class="dropdown">									
-									<a href="#" data-toggle="dropdown" class="dropdown-toggle"><i class="fa fa-sort-amount-asc"></i> Ship Mode <b class="caret"></b></a>
-											<ul class="dropdown-menu">
-											<li><a href="#">Ascending</a></li>
-											<li><a href="#">Descending</a></li> 
-											</ul></th>
-
+                                    <th class="dropdown">
+                                       <a href="#" data-toggle="dropdown" class="dropdown-toggle"><i class="fa fa-clock-o"></i> Date <b class="caret"></b></a>
+                                       <ul class="dropdown-menu">
+                                          <li><a href="#">Ascending</a></li>
+                                          <li><a href="#">Descending</a></li>
+                                          <li><a href="#">Measures</a></li>
+                                          <li><a href="#">Dimensions</a></li>
+                                       </ul>
+                                    </th>
+                                    <th class="dropdown">
+                                       <a href="#" data-toggle="dropdown" class="dropdown-toggle"><i class="fa fa-sort-amount-asc"></i> Priority <b class="caret"></b></a>
+                                       <ul class="dropdown-menu">
+                                          <li><a href="#">Low</a></li>
+                                          <li><a href="#">High</a></li>
+                                       </ul>
+                                    </th>
+                                    <th class="dropdown">
+                                       <a href="#" data-toggle="dropdown" class="dropdown-toggle"><i class="fa fa-sort-numeric-asc"></i> Order Value <b class="caret"></b></a>
+                                       <ul class="dropdown-menu">
+                                          <li><a href="#">Ascending</a></li>
+                                          <li><a href="#">Descending</a></li>
+                                       </ul>
+                                    </th>
+                                    <th class="dropdown">
+                                       <a href="#" data-toggle="dropdown" class="dropdown-toggle"><i class="fa fa-sort-numeric-asc"></i> Discount <b class="caret"></b></a>
+                                       <ul class="dropdown-menu">
+                                          <li><a href="#">Ascending</a></li>
+                                          <li><a href="#">Descending</a></li>
+                                       </ul>
+                                    </th>
+                                    <th class="dropdown">
+                                       <a href="#" data-toggle="dropdown" class="dropdown-toggle"><i class="fa fa-sort-amount-asc"></i> Ship Mode <b class="caret"></b></a>
+                                       <ul class="dropdown-menu">
+                                          <li><a href="#">Ascending</a></li>
+                                          <li><a href="#">Descending</a></li>
+                                       </ul>
+                                    </th>
                                  </tr>
                               </thead>
                               <tbody class="no-border-x">
                                  <tr>
                                     <td>1</td>
                                     <td>07-01-2016</td>
-                                    <td>Low</td>
+                                    <td>High</td>
                                     <td>5.2</td>
                                     <td>0.04</td>
                                     <td>Regular Air</td>
@@ -180,7 +181,7 @@
                                     <td>0.04</td>
                                     <td>Regular Air</td>
                                  </tr>
-								   <tr>
+                                 <tr>
                                     <td>5</td>
                                     <td>07-01-2016</td>
                                     <td>Low</td>
@@ -188,7 +189,7 @@
                                     <td>0.04</td>
                                     <td>Regular Air</td>
                                  </tr>
-								   <tr>
+                                 <tr>
                                     <td>6</td>
                                     <td>07-01-2016</td>
                                     <td>Low</td>
@@ -196,7 +197,7 @@
                                     <td>0.04</td>
                                     <td>Regular Air</td>
                                  </tr>
-								   <tr>
+                                 <tr>
                                     <td>7</td>
                                     <td>07-01-2016</td>
                                     <td>Low</td>
@@ -204,7 +205,7 @@
                                     <td>0.04</td>
                                     <td>Regular Air</td>
                                  </tr>
-								   <tr>
+                                 <tr>
                                     <td>8</td>
                                     <td>07-01-2016</td>
                                     <td>Low</td>
@@ -217,76 +218,86 @@
                         </div>
                      </div>
                   </div>
-                  <div class="col-md-3">
-                     <div class="panel panel-primary cst_panel">
-                        <div class="panel-heading">
-                           <div class="tools">
-                              <a href="#">
-                              <i class="fa fa-arrow-down"></i>
-                              </a>
+                  <div class="col-md-3 preview_stats">
+					<!-- Start Tab Statistics -->
+                     <div id="tab_statistics" class="panel-group accordion accordion-semi">
+                        <div class="panel panel-default">
+                           <div class="panel-heading">
+                              <h4 class="panel-title"><a data-toggle="collapse" data-parent="#tab_statistics" href="#pnl_stc" aria-expanded="true" class="">Statistics <i class="fa fa-angle-down pull-right"></i></a></h4>
                            </div>
-                           <span class="title">Statistics</span>
-                        </div>
-                        <div class="panel-body">
-                           <table class="no-border no-strip skills">
-                              <tbody class="no-border-x no-border-y">
-                                 <tr>
-                                    <td class="item">Mean: </td>
-                                    <td>0.2166</td>
-                                 </tr>
-                                 <tr>
-                                    <td class="item">Median: </td>
-                                    <td>0</td>
-                                 </tr>
-                                 <tr>
-                                    <td class="item">Min: </td>
-                                    <td>0</td>
-                                 </tr>
-                                 <tr>
-                                    <td class="item">Max: </td>
-                                    <td>1</td>
-                                 </tr>
-                                 <tr>
-                                    <td class="item">Standard Deviation: </td>
-                                    <td> 0.4119</td>
-                                 </tr>
-                              </tbody>
-                           </table>
-                        </div>
-                     </div>
-                     <div class="panel panel-primary cst_panel">
-                        <div class="panel-heading">
-                           <div class="tools"><span class="icon s7-upload"></span><span class="icon s7-edit"></span><span class="icon s7-close"></span></div>
-                           <span class="title">Visualizations</span>
-                        </div>
-                        <div class="panel-body">
-                           <img src="../assets/images/data_preview_graph.png" class="img-responsive" />
-                        </div>
-                     </div>
-					 <!--
-                     <div class="panel panel-primary cst_panel">
-                        <div class="panel-heading">
-                           <div class="tools"><span class="icon s7-upload"></span><span class="icon s7-edit"></span><span class="icon s7-close"></span></div>
-                           <span class="title">Subsettings</span>
-                        </div>
-                        <div class="panel-body">
-                           <div class="row">
-                              <div class="col-xs-4">
-                                 <input type="text" class="form-control" id="from_value" value="0" />
+                           <div id="pnl_stc" class="panel-collapse collapse in" aria-expanded="true">
+                              <div class="panel-body">
+                                 <table class="no-border no-strip skills">
+                                    <tbody class="no-border-x no-border-y">
+                                       <tr>
+                                          <td class="item">Mean: </td>
+                                          <td>0.2166</td>
+                                       </tr>
+                                       <tr>
+                                          <td class="item">Median: </td>
+                                          <td>0</td>
+                                       </tr>
+                                       <tr>
+                                          <td class="item">Min: </td>
+                                          <td>0</td>
+                                       </tr>
+                                       <tr>
+                                          <td class="item">Max: </td>
+                                          <td>1</td>
+                                       </tr>
+                                       <tr>
+                                          <td class="item">Standard Deviation: </td>
+                                          <td> 0.4119</td>
+                                       </tr>
+                                    </tbody>
+                                 </table>
                               </div>
-                              <div class="col-xs-3">
-                                 <label>To</label>
-                              </div>
-                              <div class="col-xs-4">
-                                 <input type="text" class="form-control" id="to_value" value="10" />
-                              </div>
-                           </div>
-                           <div class="form-group">
-                              <input type="text" data-slider-value="[250,450]" data-slider-step="5" data-slider-max="1000" data-slider-min="10" value="" class="bslider form-control">
                            </div>
                         </div>
                      </div>
-					 -->
+					 <!-- ./ End Tab Statistics -->
+					 <!-- Start Tab Visualizations -->
+                     <div id="tab_visualizations" class="panel-group accordion accordion-semi">
+                        <div class="panel panel-default">
+                           <div class="panel-heading">
+                              <h4 class="panel-title"><a data-toggle="collapse" data-parent="#tab_visualizations" href="#pnl_visl" aria-expanded="true" class="">Visualizations <i class="fa fa-angle-down pull-right"></i></a></h4>
+                           </div>
+                           <div id="pnl_visl" class="panel-collapse collapse in" aria-expanded="true">
+                              <div class="panel-body">
+                                 <img src="../assets/images/data_preview_graph.png" class="img-responsive" />
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+					 <!-- ./ End Tab Visualizations -->
+					 
+					 <!-- Start Tab Subsettings - ->
+					 <div id="tab_subsettings" class="panel-group accordion accordion-semi">
+                        <div class="panel panel-default">
+                           <div class="panel-heading">
+                              <h4 class="panel-title"><a data-toggle="collapse" data-parent="#tab_subsettings" href="#pnl_tbset" aria-expanded="true" class="">Sub Setting <i class="fa fa-angle-down pull-right"></i></a></h4>
+                           </div>
+                           <div id="pnl_tbset" class="panel-collapse collapse in" aria-expanded="true">
+                              <div class="panel-body">
+                              <div class="row">
+                                 <div class="col-xs-4">
+                                    <input type="text" class="form-control" id="from_value" value="0" />
+                                 </div>
+                                 <div class="col-xs-3">
+                                    <label>To</label>
+                                 </div>
+                                 <div class="col-xs-4">
+                                    <input type="text" class="form-control" id="to_value" value="10" />
+                                 </div>
+                              </div>
+                              <div class="form-group">
+                                 <input type="text" data-slider-value="[250,450]" data-slider-step="5" data-slider-max="1000" data-slider-min="10" value="" class="bslider form-control">
+                              </div>
+                           </div>
+                           </div>
+                        </div>
+                     </div> 
+					 <!-- ./ End Tab Subsettings -->
                   </div>
                </div>
             </div>
