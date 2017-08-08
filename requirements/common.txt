@@ -5,5 +5,5 @@ djangorestframework-jwt==1.11.0
 PyJWT==1.5.2
 pytz==2017.2
 six==1.10.0
-django-filter-1.0.4
+django-filter==1.0.4
 python-sjsclient==0.7.0
