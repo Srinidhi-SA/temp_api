@@ -21,7 +21,7 @@ from rest_framework import routers
 
 # import views
 from datasets.views import DatasetView
-from signals.views import SignalView
+from signals.views import SignalView, get_datasource_config_list
 
 # import urls
 
@@ -41,7 +41,7 @@ router.register(
 )
 
 urlpatterns = [
-
+    url(r'^datasource/get_config_list$',get_datasource_config_list , name="datasource_get_config_list"),
 ]
 
 urlpatterns += router.urls
