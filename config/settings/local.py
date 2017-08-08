@@ -25,3 +25,35 @@ STATICFILES_DIRS = [
 print os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
     'api/static')
+
+HDFS = {
+
+    # Give host name without http
+    'host': 'ec2-34-205-203-38.compute-1.amazonaws.com',
+    'port': '14000', #webhdfs port
+    'uri': 'http://ec2-34-205-203-38.compute-1.amazonaws.com:14000/webhdfs/v1',
+    'user.name': 'hadoop',
+    'hdfs_port': '8020' #hdfs port
+}
+
+EMR = {
+    "emr_pem_path": "",
+    "home_path": "/home/hadoop"
+}
+
+KAFKA = {
+    'host': 'localhost',
+    'port': '9092',
+    'topic': 'my-topic'
+}
+
+JOBSERVER = {
+    'host': 'ec2-34-205-203-38.compute-1.amazonaws.com',
+    'port': '8090',
+    'app-name': 'test_api_1',
+    'context': 'pysql-context',
+    'class_path_master': 'bi.sparkjobs.madvisor.JobScript',
+    'class_path_metadata': 'bi.sparkjobs.metadata.JobScript',
+    'class_path_filter': 'bi.sparkjobs.filter.JobScript',
+
+}
