@@ -1,4 +1,4 @@
-var API = "http://34.196.204.54:9000";
+var API = "http://192.168.33.94:9000";
 
 function getHeader(token){
   return {

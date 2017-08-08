@@ -20,6 +20,7 @@ export class Signals extends React.Component {
     super();
   }
   componentWillMount() {
+	  console.log("In Data Tab")
     this.props.dispatch(getList(sessionStorage.userToken));
   }
 
@@ -110,7 +111,7 @@ export class Signals extends React.Component {
         <div>
           <div className="side-body">
           { /* <MainHeader/>*/}
-          <BreadCrumb/>
+          <BreadCrumb tabName="Signals"/>
             <div className="main-content">
               {storyList}
             </div>

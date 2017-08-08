@@ -7,7 +7,7 @@ export class BreadCrumb extends React.Component {
     return (
         <ol className="breadcrumb">
           <li>
-            <a href="#">Signals</a>
+            <a href="#">{this.props.tabName}</a>
           </li>
           <li className="active">TODO: need to fill this</li>
         </ol>

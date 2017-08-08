@@ -4,6 +4,7 @@ import {BrowserRouter, Route, Switch, IndexRoute} from "react-router-dom";
 import {Provider} from "react-redux"
 import store from "./store"
 
+
 import {Main} from "./components/Main";
 import {Home} from "./components/Home";
 import {Login} from "./components/Login";
@@ -37,7 +38,7 @@ class App extends React.Component {
             <Route path="/apps" component={Apps} />
             <Route path="/stories" component={Stories} />
             <Route path="/data" component={Data} />
-          </Main>
+                 </Main>
       </Switch>
       </BrowserRouter>
     );
