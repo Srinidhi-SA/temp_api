@@ -2,6 +2,8 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import render
+from django.conf import settings
+from django.http import JsonResponse
 
 # import python defaults
 import json
@@ -107,5 +109,5 @@ class SignalView(viewsets.ModelViewSet):
 
 
 
-
-
+def get_datasource_config_list(request):
+    return JsonResponse(settings.DATA_SOURCES_CONFIG)

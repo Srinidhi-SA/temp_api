@@ -177,3 +177,51 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 MEDIA_ROOT = '/uploads/'
+
+
+DATA_SOURCES_CONFIG = {"conf":  [{
+    "dataSourceType": "fileUpload",
+  		"formFields": [{
+			"fieldType": "button",
+			"name": "upload"
+		}]
+},
+	{
+		"dataSourceType": "MySQL",
+		"formFields": [{
+                    "fieldType": "Input",
+                				"placeHolder": "host",
+                				"labelName": "Host"
+                },
+			{
+				"fieldType": "Input",
+				"placeHoplaceHolder": "port",
+				"labelName": "Host",
+				"defaultValue": 3306
+                },
+			{
+				"fieldType": "Input",
+				"placeHolder": "schema",
+				"labelName": "Schema"
+                },
+			{
+				"fieldType": "Input",
+				"placeHolder": "username",
+				"labelName": "Username"
+                },
+			{
+				"fieldType": "Password",
+				"placeHolder": "password",
+				"labelName": "Password"
+                },
+			{
+				"fieldType": "Input",
+				"placeHolder": "tablename",
+				"labelName": "Table Name"
+                }
+		]
+}
+
+
+]
+}
