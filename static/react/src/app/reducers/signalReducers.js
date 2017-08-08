@@ -1,8 +1,8 @@
 export default function reducer(state = {
   signalList: {},
   signalAnalysis:{},
-  selectedSignal:"",
-  variableType:""
+  selectedSignal:""
+  // variableType:""
 }, action) {
   console.log("in SIGNAL reducer!!");
   console.log(action);
@@ -29,8 +29,7 @@ export default function reducer(state = {
         return {
           ...state,
           signalAnalysis: action.signalAnalysis,
-          selectedSignal: action.errandId,
-          variableType: action.variableType
+          selectedSignal: action.errandId
         }
       }
       break;

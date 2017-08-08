@@ -13,6 +13,7 @@ import {MainHeader} from "../../components/common/MainHeader";
 import {Card} from "./Card";
 
 //import {SignalAnalysisPage} from "./signals/SignalAnalysisPage";
+let showSubTree=false;
 let output = {
   "listOfNodes": [
     {
@@ -329,6 +330,18 @@ export class OverViewPage extends React.Component {
   constructor() {
     super();
   }
+
+  componentDidMount(){
+    // alert(showSubTree);
+    if(showSubTree){
+       $(".sb_navigation").show();
+       showSubTree = false;
+     }
+    else{
+       $(".sb_navigation").hide();
+     }
+  }
+
 prevNext(path) {
     console.log(path);
     let currentSuffix = path.location.pathname;
@@ -389,6 +402,7 @@ prevNext(path) {
     console.log(card);
     //check for level 2
     console.log(params.l1);
+
     if (params.l1) {
       let selectedNodeFromLevel1 = fetchNodeFromTree(params.l1, output);
       if (!isEmpty(selectedNodeFromLevel1) && selectedNodeFromLevel1.listOfNodes.length > 0) {
@@ -405,6 +419,7 @@ prevNext(path) {
         });
         console.log("varList is .....");
         console.log(varList);
+        showSubTree = true;
       }
     }
     let selectedNode = null;

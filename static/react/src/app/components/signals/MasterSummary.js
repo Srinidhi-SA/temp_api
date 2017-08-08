@@ -4,6 +4,8 @@ import {Redirect, Link} from "react-router-dom";
 import store from "../../store";
 import {MainHeader} from "../common/MainHeader";
 import $ from "jquery";
+import renderHTML from 'react-render-html';
+
 @connect((store) => {
   return {login_response: store.login.login_response, signal: store.signals.signalAnalysis};
 })
@@ -51,8 +53,8 @@ export class MasterSummary extends React.Component {
 								<div class="col-xs-8 text-right data-info">
 								<h1>{noOfDimention}</h1>
 								<h3>Dimension</h3>
-								</div>   
-<div class="clearfix"></div>								
+								</div>
+<div class="clearfix"></div>
                             </div>
                           </div>
                           <div className="col-md-4 col-md-offset-1">
@@ -64,12 +66,12 @@ export class MasterSummary extends React.Component {
 								<h1>{noOfMeasures}</h1>
 								<h3>Measures</h3>
 								</div>
-                               
+
                             </div>
                           </div>
                           <div className="clearfix"></div>
                           <div className="col-md-12">
-                            <p className="lead">{summary}
+                            <p className="lead">{renderHTML(summary)}
                             </p>
                           </div>
                         </div>
