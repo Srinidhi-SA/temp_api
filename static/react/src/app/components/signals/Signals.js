@@ -3,13 +3,13 @@ import {connect} from "react-redux";
 import {Link} from "react-router-dom";
 import store from "../../store";
 import {getList} from "../../actions/signalActions";
-import {BreadCrumb} from "../common/BreadCrumb";
+//import {BreadCrumb} from "../common/BreadCrumb";
+import Breadcrumb from 'react-breadcrumb';
 import $ from "jquery";
 var dateFormat = require('dateformat');
 
 @connect((store) => {
-  return {login_response: store.login.login_response, signalList: store.signals.signalList,
-          selectedSignal: store.signals.signalAnalysis};
+  return {login_response: store.login.login_response, signalList: store.signals.signalList, selectedSignal: store.signals.signalAnalysis};
 })
 
 export class Signals extends React.Component {
@@ -22,7 +22,10 @@ export class Signals extends React.Component {
 
   render() {
     console.log("signals is called##########3");
-    // console.log(this.props);
+    // let parametersForBreadCrumb = [];
+    // parametersForBreadCrumb.push({name:"Signals"});
+
+    console.log(this.props);
     // console.log(store.getState().signals.signalList.errands)
 
     const data = store.getState().signals.signalList.errands;
@@ -39,10 +42,14 @@ export class Signals extends React.Component {
                 <div className="row">
                   <div className="col-xs-9">
                     <h4 className="title newCardTitle">
-                    <Link to={{
-                      pathname: signalLink,
-                      state: { variableType: story.variable_type }
-                      }}> {story.name} </Link>
+                      <Link to={{
+                        pathname: signalLink,
+                        state: {
+                          variableType: story.variable_type
+                        }
+                      }}>
+                        {story.name}
+                      </Link>
                     </h4>
                   </div>
                   <div className="col-xs-3">
@@ -69,11 +76,13 @@ export class Signals extends React.Component {
                   <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                     <li>
                       <a className="dropdown-item" href="#renameCard" data-toggle="modal">
-                        <i className="fa fa-edit"></i> Rename</a>
+                        <i className="fa fa-edit"></i>
+                        Rename</a>
                     </li>
                     <li>
                       <a className="dropdown-item" href="#deleteCard" data-toggle="modal">
-                        <i className="fa fa-trash-o"></i> Delete</a>
+                        <i className="fa fa-trash-o"></i>
+                        Delete</a>
                     </li>
                   </ul>
                   {/*<!-- End Rename and Delete BLock  -->*/}
@@ -109,8 +118,13 @@ export class Signals extends React.Component {
       return (
         <div>
           <div className="side-body">
-          { /* <MainHeader/>*/}
-          <BreadCrumb/>
+            {/* <MainHeader/>*/}
+            <Breadcrumb path={[{
+                path: '/signals',
+                label: 'Signals'
+              }
+            ]}/>
+
             <div className="main-content">
               {storyList}
             </div>
@@ -119,7 +133,13 @@ export class Signals extends React.Component {
       );
     } else {
       return (
-        <div>no signals</div>
+        <div><Breadcrumb path={[{
+            path: '/signals',
+            label: 'Signals'
+          }
+        ]}/>
+          <div>no signals</div>
+        </div>
       )
     }
   }

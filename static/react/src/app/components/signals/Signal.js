@@ -6,6 +6,8 @@ import {getSignalAnalysis} from "../../actions/signalActions";
 import {MasterSummary} from "./MasterSummary";
 import {isEmpty} from "../../helpers/helper";
 import {MainHeader} from "../common/MainHeader";
+import Breadcrumb from 'react-breadcrumb';
+
 
 
 @connect((store) => {
@@ -32,11 +34,31 @@ export class Signal extends React.Component {
 
      console.log("selected Signal is called$$$$$$$$$$$$$$!!");
      console.log(this.props);
+     let breadcrumb = [];
     if(isEmpty(this.props.signal)||(this.props.match.params.slug!=this.props.selectedSignal)){
       // console.log("siggnal selection not matching *******")
       return(
         <div className="side-body">
-          <MainHeader/>
+        {/*<MainHeader/>*/}
+        <div className="page-head">
+          <div class="row">
+            <div class="col-md-12">
+            <Breadcrumb path={[{
+                path: '/signals',
+                label: 'Signals'
+              },
+              {
+                path:'/signals'+this.props.match.params.slug,
+                label: this.props.match.params.slug
+              }
+            ]}/>
+            </div>
+            <div class="col-md-8">
+              <h2>TODO: need to fill this</h2>
+            </div>
+            </div>
+          <div class="clearfix"></div>
+        </div>
           <div className="main-content">
           Loading...
           </div>

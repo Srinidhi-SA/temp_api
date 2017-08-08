@@ -4,6 +4,8 @@ import {Redirect, Link} from "react-router-dom";
 import store from "../../store";
 import {MainHeader} from "../common/MainHeader";
 import $ from "jquery";
+import Breadcrumb from 'react-breadcrumb';
+
 @connect((store) => {
   return {login_response: store.login.login_response, signal: store.signals.signalAnalysis};
 })
@@ -33,7 +35,25 @@ export class MasterSummary extends React.Component {
     const overViewLink = "/signals/" + this.props.signalId + "/overview";
     return (
       <div className="side-body">
-        <MainHeader/>
+      <div className="page-head">
+        <div class="row">
+          <div class="col-md-12">
+          <Breadcrumb path={[{
+              path: '/signals',
+              label: 'Signals'
+            },
+            {
+              path:'/signals'+this.props.signalId,
+              label: this.props.signalId
+            }
+          ]}/>
+          </div>
+          <div class="col-md-8">
+            <h2>TODO: need to fill this</h2>
+          </div>
+          </div>
+        <div class="clearfix"></div>
+      </div>
         <div className="main-content">
           <div className="row">
             <div className="col-md-12">
@@ -51,8 +71,8 @@ export class MasterSummary extends React.Component {
 								<div class="col-xs-8 text-right data-info">
 								<h1>{noOfDimention}</h1>
 								<h3>Dimension</h3>
-								</div>   
-<div class="clearfix"></div>								
+								</div>
+<div class="clearfix"></div>
                             </div>
                           </div>
                           <div className="col-md-4 col-md-offset-1">
@@ -64,7 +84,7 @@ export class MasterSummary extends React.Component {
 								<h1>{noOfMeasures}</h1>
 								<h3>Measures</h3>
 								</div>
-                               
+
                             </div>
                           </div>
                           <div className="clearfix"></div>

@@ -1,5 +1,7 @@
 import React from "react";
 import {Redirect, Link, NavLink} from "react-router-dom";
+import Breadcrumb from 'react-breadcrumb';
+
 import {
   resTree,
   searchTree,
@@ -441,7 +443,28 @@ prevNext(path) {
       <div>
         <div className="side-body">
           {/* Page Title and Breadcrumbs */}
-          <MainHeader/> {/* Page Content Area */}
+          <div className="page-head">
+            <div class="row">
+              <div class="col-md-12">
+              <Breadcrumb path={[{
+                  path: '/signals',
+                  label: 'Signals'
+                },
+                {
+                  path:'/signals/'+this.props.match.params.slug,
+                  label: this.props.match.params.slug
+                },
+                {path:'/signals/'+this.props.match.params.slug+'/'+this.props.match.params.l1,
+              label:this.props.match.params.l1}
+              ]}/>
+              </div>
+              <div class="col-md-8">
+                <h2>TODO: need to fill this</h2>
+              </div>
+              </div>
+            <div class="clearfix"></div>
+          </div>
+           {/* Page Content Area */}
           <div className="main-content">
 
             {/* Copy from here */}

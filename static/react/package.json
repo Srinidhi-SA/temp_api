@@ -18,6 +18,7 @@
   "dependencies": {
     "dateformat": "^2.0.0",
     "react": "^15.6.1",
+    "react-breadcrumb": "^1.0.0",
     "react-dom": "^15.6.1",
     "react-redux": "^5.0.5",
     "react-render-html": "^0.5.0",
