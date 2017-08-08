@@ -13,10 +13,10 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import detail_route, list_route
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.pagination import PageNumberPagination
 
 # import helper
-
+from api.pagination import CustomPagination
+from helper import convert_to_string
 
 # import models
 from models import Signals
@@ -28,17 +28,6 @@ from serializers import SignalSerializer
 # import views
 
 # create views here
-
-class CustomPagination(PageNumberPagination):
-    def get_paginated_response(self, data):
-        import pdb;pdb.set_trace()
-        self.total_page_size = len(data)
-        return Response({
-
-            'items_in_this': self.page.paginator.count,
-            'results': data
-        })
-
 
 class SignalView(viewsets.ModelViewSet):
 
@@ -58,6 +47,7 @@ class SignalView(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         data = request.data
+        data = convert_to_string(data)
         data['dataset'] = Datasets.objects.filter(slug=data['dataset'])
         data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
         serializer = SignalSerializer(data=data)

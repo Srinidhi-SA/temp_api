@@ -14,6 +14,7 @@ from django.contrib.auth.models import User
 
 # import helper
 from helper import UPLOAD_FOLDER
+from api.jobserver.views import submit_job
 
 
 def dataset_upload_directory(instance):
@@ -61,6 +62,12 @@ class Datasets(models.Model):
             'bookmarked': self.bookmarked
         }
 
+    def run_meta(self):
+        submit_job(
+            api_url='',
+            class_name='class_path_metadata'
+        )
+
     def generate_slug(self):
         if not self.slug:
             self.slug = slugify(str(self.name) + "-" + ''.join(
@@ -68,5 +75,6 @@ class Datasets(models.Model):
 
     def save(self, *args, **kwargs):
         self.generate_slug()
+        # self.run_meta()
         super(Datasets, self).save(*args, **kwargs)
 
