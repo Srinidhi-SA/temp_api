@@ -2,7 +2,7 @@ import json
 from rest_framework.utils import humanize_datetime
 
 
-UPLOAD_FOLDER = 'uploads/datasets/'
+
 
 
 def convert_to_string(data):

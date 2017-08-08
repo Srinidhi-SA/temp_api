@@ -13,12 +13,14 @@ from django.contrib.auth.models import User
 # import rest_framework
 
 # import helper
-from helper import UPLOAD_FOLDER
-from api.jobserver.views import submit_job
+from django.conf import settings
+
+from utils import submit_job
+from api.models import Job
 
 
 def dataset_upload_directory(instance):
-    return "{0}{1}/".format(UPLOAD_FOLDER, instance.id)
+    return "{0}{1}/".format(settings.UPLOAD_FOLDER, instance.id)
 
 
 def dataset_input_file_path(instance, filename):
@@ -43,6 +45,8 @@ class Datasets(models.Model):
     created_by = models.ForeignKey(User, null=False)
     deleted = models.BooleanField(default=False)
 
+    job = models.ForeignKey(Job, null=True)
+
     bookmarked = models.BooleanField(default=False)
 
     class Meta:
@@ -62,12 +66,6 @@ class Datasets(models.Model):
             'bookmarked': self.bookmarked
         }
 
-    def run_meta(self):
-        submit_job(
-            api_url='',
-            class_name='class_path_metadata'
-        )
-
     def generate_slug(self):
         if not self.slug:
             self.slug = slugify(str(self.name) + "-" + ''.join(
@@ -75,6 +73,6 @@ class Datasets(models.Model):
 
     def save(self, *args, **kwargs):
         self.generate_slug()
-        # self.run_meta()
+        job = Job()
+        job.name = "-".join(["Dataset" , self.slug])
         super(Datasets, self).save(*args, **kwargs)
-

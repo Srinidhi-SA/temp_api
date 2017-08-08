@@ -178,6 +178,7 @@ STATIC_URL = '/static/'
 
 MEDIA_ROOT = '/uploads/'
 
+UPLOAD_FOLDER = 'uploads/datasets/'
 
 DATA_SOURCES_CONFIG = {"conf":  [{
     "dataSourceType": "fileUpload",

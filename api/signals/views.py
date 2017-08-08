@@ -4,6 +4,8 @@ from __future__ import unicode_literals
 from django.shortcuts import render
 from django.conf import settings
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+
 
 # import python defaults
 import json
@@ -97,7 +99,6 @@ class SignalView(viewsets.ModelViewSet):
             dataset.save()
             return Response(dataset.config)
         return Response(dataset.create_configuration())
-
 
 
 
