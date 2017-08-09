@@ -1,29 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.shortcuts import render
-
-# import python defaults
-import json
-
-# import django defaults
-
-# import rest_framework
 from rest_framework import serializers
 
-# import helper
+from api.models import Dataset
 from helper import convert_to_json, convert_time_to_human
-
-# import models
-from models import Datasets
-
-# import serializers
-
-# import views
 
 
 class DatasetSerializer(serializers.ModelSerializer):
-
     def update(self, instance, validated_data):
         instance.meta_data = validated_data.get('meta_data', instance.meta_data)
         instance.name = validated_data.get('name', instance.name)
@@ -45,5 +29,5 @@ class DatasetSerializer(serializers.ModelSerializer):
         return ret
 
     class Meta:
-        model = Datasets
+        model = Dataset
         exclude = ('input_file', 'id')

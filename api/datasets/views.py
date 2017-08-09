@@ -15,7 +15,7 @@ from helper import convert_to_string
 from api.pagination import CustomPagination
 
 # import models
-from models import Datasets
+from api.models import Dataset
 
 # import serializers
 from serializers import DatasetSerializer
@@ -29,7 +29,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 class DatasetView(viewsets.ModelViewSet):
 
     def get_queryset(self):
-        queryset = Datasets.objects.filter(
+        queryset = Dataset.objects.filter(
             created_by=self.request.user
         )
         return queryset

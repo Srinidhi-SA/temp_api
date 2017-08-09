@@ -1,61 +1,41 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.shortcuts import render
-from django.conf import settings
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-
-
-# import python defaults
 import json
 
-# import django defaults
-
-# import rest_framework
-from rest_framework import viewsets
-from rest_framework.response import Response
-from rest_framework.decorators import detail_route, list_route
+from django.conf import settings
+from django.http import JsonResponse
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import viewsets
+from rest_framework.decorators import detail_route
+from rest_framework.response import Response
 
-# import helper
 from api.pagination import CustomPagination
-from helper import convert_to_string
-
-# import models
-from models import Signals
-from api.datasets.models import Datasets
-
-# import serializers
-from serializers import SignalSerializer
-
-# import views
-
-# create views here
+from api.utils import convert_to_string, InsightSerializer
+from models import Insight, Dataset
 
 
 class SignalView(viewsets.ModelViewSet):
-
     def get_queryset(self):
-        queryset = Signals.objects.filter(
+        queryset = Insight.objects.filter(
             created_by=self.request.user
         )
         return queryset
 
     def get_serializer_class(self):
-        return SignalSerializer
+        return InsightSerializer
 
     lookup_field = 'slug'
-    filter_backends = (DjangoFilterBackend, )
+    filter_backends = (DjangoFilterBackend,)
     filter_fields = ('bookmarked', 'deleted', 'type', 'name', 'status', 'analysis_done')
     pagination_class = CustomPagination
 
     def create(self, request, *args, **kwargs):
         data = request.data
         data = convert_to_string(data)
-        data['dataset'] = Datasets.objects.filter(slug=data['dataset'])
+        data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
         data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
-        serializer = SignalSerializer(data=data)
+        serializer = InsightSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -71,7 +51,8 @@ class SignalView(viewsets.ModelViewSet):
         :param kwargs: {'slug': 'signal-123-asdwqeasd'}
         :return:
         '''
-        import pdb;pdb.set_trace()
+        import pdb;
+        pdb.set_trace()
         data = request.data
         serializer = self.get_serializer_class()
         instance = self.get_object()
@@ -99,7 +80,6 @@ class SignalView(viewsets.ModelViewSet):
             dataset.save()
             return Response(dataset.config)
         return Response(dataset.create_configuration())
-
 
 
 def get_datasource_config_list(request):

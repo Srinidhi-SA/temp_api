@@ -1,13 +1,16 @@
+import json
 
+from rest_framework import serializers
+from rest_framework.utils import humanize_datetime
 from sjsclient import client
-from django.conf import settings
+
 from api.helper import JobserverDetails
-from models import Job
+from models import Job, Insight
+
 
 def submit_job(api_url, class_name):
-
     job = Job()
-    
+
     sjs = client.Client(
         JobserverDetails.get_jobserver_url()
     )
@@ -30,3 +33,63 @@ def submit_job(api_url, class_name):
 
     # print
     JobserverDetails.print_job_details(job)
+
+
+def convert_to_string(data):
+    keys = ['compare_type', 'column_data_raw', 'config', 'data']
+
+    for key in keys:
+        if key in data:
+            value = data[key]
+            if isinstance(value, str):
+                pass
+            elif isinstance(value, dict):
+                data[key] = json.dumps(value)
+
+    return data
+
+
+def convert_to_json(data):
+    keys = ['compare_type', 'column_data_raw', 'config', 'data']
+
+    for key in keys:
+        if key in data:
+            value = data[key]
+            data[key] = json.loads(value)
+    return data
+
+
+def convert_time_to_human(data):
+    keys = ['created_on', 'updated_on']
+
+    for key in keys:
+        if key in data:
+            value = data[key]
+            data[key] = humanize_datetime.humanize_strptime(value)
+    return data
+
+
+class InsightSerializer(serializers.ModelSerializer):
+    def to_representation(self, instance):
+        ret = super(InsightSerializer, self).to_representation(instance)
+        dataset = ret['dataset']
+        dataset_object = Insight.objects.get(pk=dataset)
+        ret['dataset'] = dataset_object.slug
+        ret = convert_to_json(ret)
+        return ret
+
+    def update(self, instance, validated_data):
+        instance.compare_with = validated_data.get("compare_with", instance.compare_with)
+        instance.compare_type = validated_data.get("compare_type", instance.compare_type)
+        instance.column_data_raw = validated_data.get("column_data_raw", instance.column_data_raw)
+        instance.status = validated_data.get("status", instance.status)
+        instance.live_status = validated_data.get("live_status", instance.live_status)
+        instance.analysis_done = validated_data.get("analysis_done", instance.analysis_done)
+
+        instance.save()
+
+        return instance
+
+    class Meta:
+        model = Insight
+        exclude = ('compare_with', 'compare_type', 'column_data_raw', 'id')

@@ -1,5 +1,5 @@
 import django_filters
-from models import Datasets
+from api.models import Dataset
 
 
 class DatasetFilters(django_filters.FilterSet):
@@ -13,5 +13,5 @@ class DatasetFilters(django_filters.FilterSet):
     bookmarked = django_filters.BooleanFilter()
 
     class Meta:
-        model = Datasets
+        model = Dataset
         fields = ['bookmarked', 'deleted', 'db_type', 'name']
