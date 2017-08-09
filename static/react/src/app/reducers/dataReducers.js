@@ -7,15 +7,6 @@ export default function reducer(state = {
   console.log(action);
 
   switch (action.type) {
-  case "TOTAL_DATA_LIST":
-  {
-    return {
-      ...state,
-      totalDataList: action.dataList,
-    }
-  }
-  break;
-  
   case "DATA_LIST":
       {
         return {

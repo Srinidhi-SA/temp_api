@@ -1,27 +1,27 @@
 export default function reducer(state = {
- dataUploadShowModal:false,
+		dataUploadShowModal:false,
 }, action) {
-  console.log("In DATA UPLOAD reducer!!");
-  console.log(action);
+	console.log("In DATA UPLOAD reducer!!");
+	console.log(action);
 
-  switch (action.type) {
-  case "SHOW_MODAL":
-  {
-    return {
-      ...state,
-      dataUploadShowModal:true,
-    }
-  }
-  break;
-  
-  case "HIDE_MODAL":
-      {
-        return {
-          ...state,
-          dataUploadShowModal:false,
-        }
-      }
-      break;
-  }
-  return state
+	switch (action.type) {
+	case "SHOW_MODAL":
+	{
+		return {
+			...state,
+			dataUploadShowModal:true,
+		}
+	}
+	break;
+
+	case "HIDE_MODAL":
+	{
+		return {
+			...state,
+			dataUploadShowModal:false,
+		}
+	}
+	break;
+ }
+return state
 }

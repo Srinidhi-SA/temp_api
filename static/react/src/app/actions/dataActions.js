@@ -1,5 +1,5 @@
-//var API = "http://192.168.33.94:9000";
-var API = "http://192.168.33.128:9001";
+var API = "http://192.168.33.94:9000";
+//var API = "http://192.168.33.128:9001";
 var perPage = 2;
 function getHeader(token){
 	return {
@@ -13,7 +13,7 @@ export function getDataList(pageNo) {
 		return fetchDataList(pageNo,sessionStorage.userToken).then(([response, json]) =>{
 			if(response.status === 200){
 				console.log(json)
-				dispatch(fetchProductList(json))
+				dispatch(fetchDataSuccess(json))
 			}
 			else{
 				dispatch(fetchdDataError(json))
@@ -37,7 +37,7 @@ function fetchDataError(json) {
 		json
 	}
 }
-export function fetchProductList(doc){
+export function fetchDataSuccess(doc){
 	var data = doc;
 	var current_page =  doc.current_page
 	return {
