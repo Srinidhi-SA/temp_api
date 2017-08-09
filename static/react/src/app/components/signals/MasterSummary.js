@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import {Redirect, Link} from "react-router-dom";
 import store from "../../store";
 import {MainHeader} from "../common/MainHeader";
-import $ from "jquery";
+// import $ from "jquery";
 import Breadcrumb from 'react-breadcrumb';
 import renderHTML from 'react-render-html';
 

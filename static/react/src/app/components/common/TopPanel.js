@@ -2,7 +2,7 @@ import React from "react";
 import {Redirect} from 'react-router';
 import ReactDOM from 'react-dom';
 import {sessionObject} from '../../helpers/manageSessionStorage';
-import $ from 'jquery';
+// import $ from 'jquery';
 
 // import store from "../../store";
 // import {connect} from "react-redux";

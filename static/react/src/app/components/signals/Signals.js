@@ -1,11 +1,12 @@
 import React from "react";
 import {connect} from "react-redux";
+import ReactDOM from "react-dom";
 import {Link} from "react-router-dom";
 import store from "../../store";
 import {getList} from "../../actions/signalActions";
 //import {BreadCrumb} from "../common/BreadCrumb";
 import Breadcrumb from 'react-breadcrumb';
-import $ from "jquery";
+//import $ from "jquery";
 var dateFormat = require('dateformat');
 
 @connect((store) => {
@@ -19,9 +20,34 @@ export class Signals extends React.Component {
   componentWillMount() {
     this.props.dispatch(getList(sessionStorage.userToken));
   }
+  componentDidMount(){
+    console.log("/checking anchor html");
+    console.log($('a[rel="popover"]'));
+    var tmp =setInterval(function(){
+      if($('a[rel="popover"]').html()){
+      $('a[rel="popover"]').popover({
+      	container: 'body',
+      	html: true,
+      	trigger: 'focus',
+      	placement: 'auto right',
+      	content: function () {
+      		var clone = $($(this).data('popover-content')).clone(true).removeClass('hide');
+      		return clone;
+      	}
+      }).click(function(e) {
+      	e.preventDefault();
+      });
+      clearInterval(tmp);
+    }
+  },100);
+
+  }
 
   render() {
     console.log("signals is called##########3");
+
+
+
     // let parametersForBreadCrumb = [];
     // parametersForBreadCrumb.push({name:"Signals"});
 
@@ -58,7 +84,7 @@ export class Signals extends React.Component {
 
                 <div className="card-deatils">
                   {/*<!-- Popover Content link -->*/}
-                  <a href="#" rel="popover" className="pover" data-popover-content="#myPopover">
+                  <a href="javascript:void(0);" rel="popover" className="pover" data-popover-content="#myPopover">
                     <i className="fa fa-info-circle fa-lg"></i>
                   </a>
 

@@ -4,7 +4,7 @@ import {Redirect} from 'react-router';
 // import {authenticateFunc,getList,storyList} from "../../services/ajax.js";
 import {authenticateFunc} from "../actions/loginActions";
 import store from "../store";
-import $ from "jquery";
+// import $ from "jquery";
 
 @connect((store) => {
   return {login_response: store.login.login_response};
@@ -12,12 +12,12 @@ import $ from "jquery";
 
 export class Login extends React.Component {
   constructor() {
-  
+
     super();
     this.state = {
       uId: '',
       pwd: ''
-    };	
+    };
 	document.body.className = "ma-splash-screen";
   }
   onChangeUId(e) {
