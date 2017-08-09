@@ -15571,3 +15571,10 @@ table.table.table-condensed.table-hover.table-bordered.table-striped {
     margin: 0; }
 .preview_stats .panel-group.accordion {  margin-bottom: 18px;}
 .preview_stats .panel-body { padding: 15px !important; }
+
+#loading {
+  position: relative;
+  left: 50%;
+  margin-left: -64px;
+  padding-top: 15%;
+}

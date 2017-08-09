@@ -20,33 +20,31 @@ export class Signals extends React.Component {
   componentWillMount() {
     this.props.dispatch(getList(sessionStorage.userToken));
   }
-  componentDidMount(){
+  componentDidMount() {
     console.log("/checking anchor html");
     console.log($('a[rel="popover"]'));
-    var tmp =setInterval(function(){
-      if($('a[rel="popover"]').html()){
-      $('a[rel="popover"]').popover({
-      	container: 'body',
-      	html: true,
-      	trigger: 'focus',
-      	placement: 'auto right',
-      	content: function () {
-      		var clone = $($(this).data('popover-content')).clone(true).removeClass('hide');
-      		return clone;
-      	}
-      }).click(function(e) {
-      	e.preventDefault();
-      });
-      clearInterval(tmp);
-    }
-  },100);
+    var tmp = setInterval(function() {
+      if ($('a[rel="popover"]').html()) {
+        $('a[rel="popover"]').popover({
+          container: 'body',
+          html: true,
+          trigger: 'focus',
+          placement: 'auto right',
+          content: function() {
+            var clone = $($(this).data('popover-content')).clone(true).removeClass('hide');
+            return clone;
+          }
+        }).click(function(e) {
+          e.preventDefault();
+        });
+        clearInterval(tmp);
+      }
+    }, 100);
 
   }
 
   render() {
     console.log("signals is called##########3");
-
-
 
     // let parametersForBreadCrumb = [];
     // parametersForBreadCrumb.push({name:"Signals"});
@@ -68,7 +66,9 @@ export class Signals extends React.Component {
                 <div className="row">
                   <div className="col-xs-9">
                     <h4 className="title newCardTitle">
-                    <Link to={signalLink} id={story.slug}> {story.name} </Link>
+                      <Link to={signalLink} id={story.slug}>
+                        {story.name}
+                      </Link>
                     </h4>
                   </div>
                   <div className="col-xs-3">
@@ -157,7 +157,9 @@ export class Signals extends React.Component {
             label: 'Signals'
           }
         ]}/>
-          <div>no signals</div>
+          <div>
+            <img id="loading" src="/assets/images/Preloader_2.gif"/>
+          </div>
         </div>
       )
     }

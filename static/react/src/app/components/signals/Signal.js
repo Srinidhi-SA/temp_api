@@ -60,7 +60,7 @@ export class Signal extends React.Component {
           <div class="clearfix"></div>
         </div>
           <div className="main-content">
-          Loading...
+          <img id = "loading" src="/assets/images/Preloader_2.gif"/>
           </div>
           </div>
       );
