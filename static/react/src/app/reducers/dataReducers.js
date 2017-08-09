@@ -1,8 +1,7 @@
 export default function reducer(state = {
   dataList: {},
-  totalDataList: {},
   selectedDataSet:"",
-  dataSetCurrentPage:1,
+  current_page:1,
 }, action) {
   console.log("In DATA reducer!!");
   console.log(action);
@@ -33,14 +32,6 @@ export default function reducer(state = {
         throw new Error("Unable to fetch data list!!");
       }
       break;
-    case "DATA_LIST_PAGE":
-    {
-    	 return {
-             ...state,
-             dataSetCurrentPage: action.page,
-           }
-    }
-    break;
   }
   return state
 }
