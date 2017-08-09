@@ -44,7 +44,7 @@ export class Login extends React.Component {
       return (<Redirect to={"/"}/>);
     } else {
       return (
-        <div className="ma-splash-screen">
+        
           <div className="ma-wrapper am-login">
             <div className="ma-content">
               <div className="main-content">
@@ -87,7 +87,7 @@ export class Login extends React.Component {
 
                         </div>
                         <div className="form-group login-submit">
-                          <button onClick={this.doAuth.bind(this)} className="btn btn-primary btn-lg">SIGN IN</button>
+                          <button onClick={this.doAuth.bind(this)} className="btn btn-primary">SIGN IN</button>
                         </div>
 
                       </div>
@@ -98,7 +98,7 @@ export class Login extends React.Component {
               </div>
             </div>
           </div>
-        </div>
+       
 
       );
 

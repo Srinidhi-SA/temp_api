@@ -13033,7 +13033,7 @@ label {
 }
 .ma-checkbox input[type=radio]+label:before, .ma-radio input[type=radio]+label:before {
 	border-radius: 50%;
-	font-family: 'Pe-icon-7-stroke';
+	font-family: 'FontAwesome';
 	line-height: 17px;
 	font-size: 14px
 }
@@ -13049,8 +13049,9 @@ label {
 	line-height: 19px
 }
 }
+
 .ma-checkbox input[type=radio]:checked+label:before, .ma-radio input[type=radio]:checked+label:before {
-	content: "\e6ce"
+	content: "\f00c"
 }
 .ma-checkbox.inline+.ma-checkbox.inline, .ma-checkbox.inline+.ma-radio.inline, .ma-radio.inline+.ma-checkbox.inline, .ma-radio.inline+.ma-radio.inline {
 	margin-left: 18px
