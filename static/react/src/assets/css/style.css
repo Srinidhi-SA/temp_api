@@ -1,5 +1,8 @@
 @import 'font-awesome.min.css';
+@import 'helper.css';
+@import 'pe-icon-7-stroke.css';
 @import url('https://fonts.googleapis.com/css?family=Open+Sans');
+
 @import url('https://fonts.googleapis.com/css?family=Quicksand');
 .label, sub, sup {
 	vertical-align: baseline
@@ -6679,7 +6682,7 @@ button:focus {
 .ma-left-sidebar .sidebar-elements>li.parent>a:after {
 	content: '\e688';
 	float: right;
-	font-family: 'Stroke 7';
+	font-family: 'Pe-icon-7-stroke';
 	font-size: 26px;
 	line-height: 28px;
 	color: #a1a1a1
@@ -8025,7 +8028,7 @@ body.open-right-sidebar .ma-right-sidebar {
 }
 .ma-scroll-top:before {
 	content: '\e682';
-	font-family: 'Stroke 7';
+	font-family: 'Pe-icon-7-stroke';
 	font-size: 30px
 }
 .ma-sticky-footer {
@@ -8485,7 +8488,7 @@ body.open-right-sidebar .ma-right-sidebar {
 }
 .gritter-item-wrapper .gritter-item .gritter-content.gritter-with-image .gritter-close:after, .gritter-item-wrapper .gritter-item .gritter-content.gritter-without-image .gritter-close:after {
 	content: '\e680';
-	font-family: 'Stroke 7';
+	font-family: 'Pe-icon-7-stroke';
 	position: absolute;
 	color: #fff;
 	font-size: 24px;
@@ -9749,7 +9752,7 @@ li.L1, li.L3, li.L5, li.L7, li.L9 {
 .widget-calendar .cal-container .cal-calendar .ui-datepicker .ui-datepicker-header .ui-datepicker-next span:after, .widget-calendar .cal-container .cal-calendar .ui-datepicker .ui-datepicker-header .ui-datepicker-prev span:after {
 	cursor: pointer;
 	content: "\e686";
-	font-family: 'Stroke 7';
+	font-family: 'Pe-icon-7-stroke';
 	display: block;
 	position: absolute;
 	width: 16px;
@@ -13002,7 +13005,7 @@ label {
 	border: 2px solid #eaeaea;
 	margin-right: 5px;
 	font-size: 18px;
-	font-family: 'Stroke 7';
+	font-family: 'FontAwesome';
 	font-weight: 400;
 	line-height: 19px;
 	vertical-align: bottom;
@@ -13015,7 +13018,7 @@ label {
 	border-color: #d1d1d1
 }
 .ma-checkbox input[type=checkbox]:checked+label:before, .ma-checkbox input[type=radio]:checked+label:before, .ma-radio input[type=checkbox]:checked+label:before, .ma-radio input[type=radio]:checked+label:before {
-	content: "\e6cd";
+	content: "\f00c";
 	color: #00998c;
 	border-color: #00998c
 }
@@ -13029,7 +13032,7 @@ label {
 }
 .ma-checkbox input[type=radio]+label:before, .ma-radio input[type=radio]+label:before {
 	border-radius: 50%;
-	font-family: 'Stroke 7';
+	font-family: 'Pe-icon-7-stroke';
 	line-height: 17px;
 	font-size: 14px
 }
@@ -13594,7 +13597,7 @@ form.dropzone .note {
 }
 .select2-container--default .select2-selection--single .select2-selection__arrow b:after {
 	content: "\e688";
-	font-family: 'Stroke 7';
+	font-family: 'Pe-icon-7-stroke';
 	font-size: 28px;
 	font-weight: 400;
 	line-height: 42px;
