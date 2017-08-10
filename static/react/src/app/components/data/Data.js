@@ -59,7 +59,7 @@ export class Data extends React.Component {
 						</h4>
 						</div>
 						<div className="col-xs-3">
-						<img src="/assets/images/data_cardIcon.png" className="img-responsive" alt="LOADING"/>
+						<img src="assets/images/data_cardIcon.png" className="img-responsive" alt="LOADING"/>
 						</div>
 						</div>
 						</div>

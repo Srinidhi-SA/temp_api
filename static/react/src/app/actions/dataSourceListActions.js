@@ -1,4 +1,4 @@
-var API = "http://192.168.33.94:9000";
+import {API} from "../helpers/env";
 function getHeader(token){
 	return {
 		'Authorization': "JWT "+token,
