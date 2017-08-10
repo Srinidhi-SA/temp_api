@@ -1,22 +1,42 @@
-export default function reducer(state={
-    dataPreview:null
-  }, action) {
-    console.log("in reducer!!");
-    console.log(action);
 
-    switch (action.type) {
-      case "DATA_PREVIEW": {
-        return {...state,
-                dataPreview:action.dataPreview
-              }
-      }break;
+export default function reducer(state = {
+		dataList: {},
+		selectedDataSet:"",
+		current_page:1,
+		 dataPreview:null,
+}, action) {
+	console.log("In DATA reducer!!");
+	console.log(action);
 
-      case "DATA_PREVIEW_ERROR":
-    { console.log(action.json);
-      alert("Fetching of Data failed!!");
-      throw new Error("Fetching of Data failed!!");
-    }break;
+	switch (action.type) {
+	case "DATA_LIST":
+	{
+		return {
+			...state,
+			dataList: action.data,
+			current_page:action.current_page,
+		}
+	}
+	break;
 
-    }
-    return state
+	case "DATA_LIST_ERROR":
+	{
+		alert(action.json.non_field_errors);
+		throw new Error("Unable to fetch data list!!");
+	}
+	break;
+	case "DATA_PREVIEW": {
+		return {...state,
+			dataPreview:action.dataPreview
+		}
+	}
+	break;
+	case "DATA_PREVIEW_ERROR":
+	{ 
+		throw new Error("Fetching of Data failed!!");
+	}
+	break;
+	}
+	return state
 }
+

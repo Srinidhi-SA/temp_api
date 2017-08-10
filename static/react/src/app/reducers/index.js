@@ -2,10 +2,16 @@ import { combineReducers } from "redux"
 
 import login from "./loginReducers"
 import signals from "./signalReducers"
-import data from "./dataReducers"
+
+import datasets from "./dataReducers"
+import dataUpload from "./dataUploadReducers"
+import dataSource from "./dataSourceReducers"
 
 export default combineReducers({
   login,
   signals,
-  data,
+  datasets,
+  dataUpload,
+  dataSource,
+
 })
