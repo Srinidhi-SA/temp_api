@@ -145,6 +145,19 @@ export class Signals extends React.Component {
             ]}/>
 
             <div className="main-content">
+            <div class="col-md-3 top20 list-boxes" data-toggle="modal" data-target="#createNewStory">
+              <div class="newCardStyle firstCard">
+                <div class="card-header"></div>
+                <div class="card-center newStoryCard">
+                  <div class="col-xs-2 col-xs-offset-1"><i class="fa fa-3x">+</i></div>
+                  <div class="col-xs-8 col-xs-offset-0">
+                  <Link to="/signals" >
+                    CREATE NEW
+                  </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
               {storyList}
             </div>
           </div>
