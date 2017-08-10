@@ -14,7 +14,7 @@ import Breadcrumb from 'react-breadcrumb';
   return {login_response: store.login.login_response,
           signal: store.signals.signalAnalysis,
           selectedSignal: store.signals.selectedSignal,
-          signalList: store.signals.signalList
+          signalList: store.signals.signalList.data
         // variableType:store.signals.variableType
       };
 })
