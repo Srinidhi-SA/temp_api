@@ -43,15 +43,15 @@ export default class TopPanel extends React.Component {
 										<a className="dropdown-toggle" href="#" data-toggle="dropdown">
 											<i className="avatar-img img-circle">M</i>
 											<img src="" alt="M" className="avatar-img img-circle hide"/>
-											<span className="user-name">{sessionStorage.username}</span>
+											<span className="user-name"> {sessionStorage.username}</span>
 											<span className="caret"></span>
 										</a>
 										<ul className="dropdown-menu dropdown-menu-right">
 											<li>
-												<a href="#">Profile</a>
+												<a href="javascript:;"><i class="fa fa-user" aria-hidden="true"></i> Profile</a>
 											</li>
 											<li>
-												<a href="#" className="logout" onClick={this.logout}>Logout</a>
+												<a href="javascript:;" className="logout" onClick={this.logout}><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a>
 											</li>
 										</ul>
 									</div>

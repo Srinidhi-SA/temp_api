@@ -6038,6 +6038,21 @@ button:focus {
 	font-weight: bold;
 	font-style: inherit;
 }
+.dropdown.ma-user-nav .dropdown-menu a i {
+	max-width: inherit;
+	max-height: inherit;
+	border-radius: inherit;
+	background: none;
+	width: inherit;
+	vertical-align: inherit;
+	text-align: inherit;
+	line-height: inherit;
+	display: inherit;
+	font-size: inherit;
+	font-weight: inherit;
+	font-style: inherit;
+	display: inline-block;
+}
 .ma-top-header .navbar-collapse .ma-user-nav>li.dropdown>a .user-name {
 	margin-left: 8px;
 	color: #708987;/*display: none*/
@@ -15072,14 +15087,26 @@ div.dataTables_wrapper div.dataTables_length label select {
 .dropdown-menu.dropdown-menu-right li a:hover {
      background:#00998c; color:#FFF
 }
-.dropdown-menu.dropdown-menu-right:after{
-    content: '';
+.dropdown-menu.dropdown-menu-right:before{
     position: absolute;
-    border: 7px solid transparent;
-    border-bottom: 7px solid white;
-    top: -14px;
-    /* margin-left: 44%; */
-    right: 18px;
+    top: -8px;
+    right: 10px;
+    display: inline-block;
+    border-right: 7px solid transparent;
+    border-bottom: 7px solid #ccc;
+    border-left: 7px solid transparent;
+    border-bottom-color: rgba(214, 214, 214, 1);
+    content: '';
+}
+.dropdown-menu.dropdown-menu-right:after{
+    position: absolute;
+    top: -7px;
+    right: 11px;
+    display: inline-block;
+    border-right: 6px solid transparent;
+    border-bottom: 7px solid #ffffff;
+    border-left: 6px solid transparent;
+    content: '';
 }
 .top20{
 	margin-bottom:30px;
@@ -15244,14 +15271,22 @@ background:#ededed; color:#7dac02
     text-align: center; padding:10px; text-transform: capitalize;
 }
 .panel-mAd .nav-tabs { background;none; }
-.panel-mAd li.active a {
+.panel-mAd li.active a, .panel-mAd li a.active {
     border-bottom: 2px solid #13c0b1 !important;
 }
 .panel-mAd .full-width-tabs > ul.nav.nav-tabs > li > a   span { display:block; }
 .mAd_icons { background:url(../images/mAd_image.png) no-repeat }
-.mAd_icons.tab_overview, .mAd_icons.tab_overview, .mAd_icons.tab_trend, .mAd_icons.tab_performance, .mAd_icons.tab_influences, .mAd_icons.tab_predictions { display:block; margin:0 auto; width:35px; height:30px; }
-.mAd_icons.tab_overview { background-position: 0 0px;}
+.mAd_icons.tab_overview, .mAd_icons.tab_overview, .mAd_icons.tab_trend, .mAd_icons.tab_performance, .mAd_icons.tab_influences, .mAd_icons.tab_predictions, .mAd_icons.tab_chi-square, .mAd_icons.tab_chi-square,  .mAd_icons.tab_summary { display:block; margin:0 auto; width:35px; height:30px; }
+
+.mAd_icons.tab_overview{ background-position: 0 0;}
 .nav-tabs li a:hover .mAd_icons.tab_overview, .active .mAd_icons.tab_overview { background-position: 0 -30px;}
+
+.mAd_icons.tab_summary { background-position: -142px -70px}
+.nav-tabs li a:hover .mAd_icons.tab_summary, .active .mAd_icons.tab_summary { background-position: -142px -100px}
+
+.mAd_icons.tab_chi-square{ background-position: -108px -70px}
+.nav-tabs li a:hover .mAd_icons.tab_chi-square, .active .mAd_icons.tab_chi-square { background-position: -108px -100px}
+
 .mAd_icons.tab_trend { background-position: -35px 0px;}
 .nav-tabs li a:hover .mAd_icons.tab_trend, .active .mAd_icons.tab_trend { background-position: -35px -30px;}
 .mAd_icons.tab_performance { background-position: -70px 0px;}
@@ -15290,16 +15325,10 @@ background:#ededed; color:#7dac02
 	-moz-box-shadow: 0px 0px 10px 3px rgba(0,0,0,0.2);
 	box-shadow: 0px 0px 10px 3px rgba(0,0,0,0.2);
 }
-a.tabs-control.left span {
-    left: 20px;
-   /* border: 1px solid; */
-    padding: 10px 5px;
+a.tabs-control.left span, a.tabs-control.right span {  padding: 15px 5px;}
+a.tabs-control.left span { left: 20px; } 
+a.tabs-control.right span { right: 0px; }
 
-}
-a.tabs-control.right span {
-    right: 0px;
-    padding: 10px 5px;
-}
 .panel-mAd .tab-content {
     min-height: 360px;
 }
