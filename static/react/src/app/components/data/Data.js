@@ -34,7 +34,7 @@ export class Data extends React.Component {
     return (
         <div>
           <div className="side-body">
-            <MainHeader/>
+          {  /*<MainHeader/>*/}
             <div className="main-content">
               Data is called!!!!!
               <button id="test_dataset6-t6iy9qzk3k" onClick={this.getPreviewData.bind(this)}>Data file 1</button>
