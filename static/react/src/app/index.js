@@ -14,7 +14,7 @@ import {Data} from "./components/data/Data";
 import {Stories} from "./components/stories/Stories";
 import {Signals} from "./components/signals/Signals";
 import {Signal} from "./components/signals/Signal";
-import {OverView} from "./components/signals/OverView";
+import {OverViewPage} from "./components/signals/overViewPage";
 
 
 
@@ -32,7 +32,9 @@ class App extends React.Component {
             <Route exact path="/" component={Home} />
             <Route exact path="/signals" component={Signals} />
             <Route exact path="/signals/:slug" component={Signal}/>
-            <Route path="/signals/:slug/:overview" component={OverView}/>
+            <Route exact path="/signals/:slug/:l1" component={OverViewPage}/>
+            <Route exact path="/signals/:slug/:l1/:l2/:l3" component={OverViewPage}/>
+            <Route exact path="/signals/:slug/:l1/:l2" component={OverViewPage}/>
             <Route path="/settings" component={Settings} />
             <Route path="/apps" component={Apps} />
             <Route path="/stories" component={Stories} />

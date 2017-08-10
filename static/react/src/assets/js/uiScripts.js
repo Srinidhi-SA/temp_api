@@ -2,10 +2,10 @@ $(function () {
 /** In small device sidebar will dis-appear, with the help of below jq will appear the side menu **/
 		$('.navbar-toggle').click(function () {
 			$('.navbar-nav').toggleClass('slide-in');
-			$('.side-body').toggleClass('body-slide-in');        
+			$('.side-body').toggleClass('body-slide-in');
 		});
-		
-/*** Popover function ***/ 
+
+/*** Popover function ***/
 $('[rel="popover"]').popover({
 	container: 'body',
 	html: true,
@@ -27,7 +27,7 @@ $('.back').click(function(){
   $('.nav-tabs > .active').prev('li').find('a').trigger('click');
 });
 /** Below code is for subnavigation ***/
-var hidWidth;
+/*var hidWidth;
 var scrollBarWidths = 40;
 
 var widthOfList = function(){
@@ -54,7 +54,7 @@ var reAdjust = function(){
   else {
     $('.scroller-right').show();
   }
-  
+
   if (getLeftPosi()<0) {
     $('.scroller-left').show();
   }
@@ -66,32 +66,32 @@ var reAdjust = function(){
 
 reAdjust();
 
-$(window).on('resize',function(e){  
+$(window).on('resize',function(e){
   	reAdjust();
 });
 
 $('.scroller-right').click(function() {
-  
+
   $('.scroller-left').fadeIn('slow');
   $('.scroller-right').fadeOut('slow');
-  
+
   $('.list').animate({left:"+="+widthOfHidden()+"px"},'slow',function(){
 
   });
 });
 
 $('.scroller-left').click(function() {
-  
+
 	$('.scroller-right').fadeIn('slow');
 	$('.scroller-left').fadeOut('slow');
-  
-  	$('.list').animate({left:"-="+getLeftPosi()+"px"},'slow',function(){
-  	
-  	});
-});    
 
+  	$('.list').animate({left:"-="+getLeftPosi()+"px"},'slow',function(){
+
+  	});
+});
+*/
 /** Slide Panel ***/
-	
+
 $('[data-toggle=offcanvas]').click(function () {
     $('.row-offcanvas').toggleClass('active');
 	if ($('.row-offcanvas-left').hasClass('active')){
@@ -102,7 +102,7 @@ $('[data-toggle=offcanvas]').click(function () {
 		$('.sdbar_switch i').removeClass('sw_off');
 	};
   });
-  
+
  /*** Seach Visible ***/
 $("#search-button, #search-icon").click(function(e){
  e.preventDefault();
@@ -110,6 +110,6 @@ $("#search-button, #search-icon").click(function(e){
 });
 
 
- 
+
 
 });
