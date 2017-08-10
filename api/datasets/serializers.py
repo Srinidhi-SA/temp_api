@@ -30,4 +30,4 @@ class DatasetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Dataset
-        exclude = ('input_file', 'id')
+        exclude = ('input_file', 'id', 'job')

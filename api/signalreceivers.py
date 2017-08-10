@@ -10,10 +10,21 @@ def trigger_metadata_creation_job(sender, instance=None, created=False, **kwargs
     if created:
         print("Dataset got created, trigger a metadata job")
         # TODO: Dataset got created, trigger a metadata job
-        submit_job(
-            api_url='',  # TODO: Fill with proper url <job>
-            class_name='class_path_metadata'
-        )
+
+        config_json = {
+            "job_details": {
+                "job_url": "http://<ip>/api/job/<slug>/",
+                "get_config": {"action": "get_config",
+                               "method": "GET"},
+                "save_results": {"action": "result",
+                                 "method": "PUT"
+                                 }
+            }
+
+
+        }
+
+        submit_job(class_name='class_path_metadata', config_json=config_json)
 
 
 @receiver(post_save, sender=Insight)

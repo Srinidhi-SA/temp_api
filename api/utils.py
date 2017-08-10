@@ -4,32 +4,24 @@ from rest_framework import serializers
 from rest_framework.utils import humanize_datetime
 from sjsclient import client
 
-from api.helper import JobserverDetails
-from models import Job, Insight
+from models import Job, Insight, Dataset
+from django.conf import settings
 
 
-def submit_job(api_url, class_name):
+def submit_job(class_name, config_json):
+    """
+
+    :param class_name:
+    :param config_json:
+    :return:
+    """
     job = Job()
 
-    sjs = client.Client(
-        JobserverDetails.get_jobserver_url()
-    )
-
-    app = sjs.apps.get(
-        JobserverDetails.get_app()
-    )
-
-    ctx = sjs.contexts.get(
-        JobserverDetails.get_context()
-    )
-
+    sjs = client.Client(JobserverDetails.get_jobserver_url())
+    app = sjs.apps.get(JobserverDetails.get_app())
+    ctx = sjs.contexts.get(JobserverDetails.get_context())
     class_path = JobserverDetails.get_class_path(class_name)
-
-    config = {
-        'config_url': api_url
-    }
-
-    job = sjs.jobs.create(app, class_path, ctx=ctx, conf=config)
+    job = sjs.jobs.create(app, class_path, ctx=ctx, conf=config_json)
 
     # print
     JobserverDetails.print_job_details(job)
@@ -73,7 +65,7 @@ class InsightSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         ret = super(InsightSerializer, self).to_representation(instance)
         dataset = ret['dataset']
-        dataset_object = Insight.objects.get(pk=dataset)
+        dataset_object = Dataset.objects.get(pk=dataset)
         ret['dataset'] = dataset_object.slug
         ret = convert_to_json(ret)
         return ret
@@ -93,3 +85,28 @@ class InsightSerializer(serializers.ModelSerializer):
     class Meta:
         model = Insight
         exclude = ('compare_with', 'compare_type', 'column_data_raw', 'id')
+
+
+class JobserverDetails(object):
+    @classmethod
+    def get_jobserver_url(cls):
+        return "http://" + settings.JOBSERVER.get('HOST') + ":" + settings.JOBSERVER.get('PORT')
+
+    @classmethod
+    def get_app(cls):
+        return settings.JOBSERVER.get('app-name')
+
+    @classmethod
+    def get_context(cls):
+        return settings.JOBSERVER.get('context')
+
+    @classmethod
+    def get_class_path(cls, name):
+        if name not in settings.JOBSERVER:
+            raise Exception('No such class.')
+        return settings.JOBSERVER.get(name)
+
+    @classmethod
+    def print_job_details(cls, job):
+        job_url = "{0}/{2}".format(cls.get_jobserver_url(), job.jobId)
+        print "job_url: {0}".format(job_url)
