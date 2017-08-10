@@ -1,15 +1,16 @@
 import React from "react";
 import {connect} from "react-redux";
+import ReactDOM from "react-dom";
 import {Link} from "react-router-dom";
 import store from "../../store";
 import {getList} from "../../actions/signalActions";
-import {BreadCrumb} from "../common/BreadCrumb";
-import $ from "jquery";
+//import {BreadCrumb} from "../common/BreadCrumb";
+import Breadcrumb from 'react-breadcrumb';
+//import $ from "jquery";
 var dateFormat = require('dateformat');
 
 @connect((store) => {
-  return {login_response: store.login.login_response, signalList: store.signals.signalList,
-          selectedSignal: store.signals.signalAnalysis};
+  return {login_response: store.login.login_response, signalList: store.signals.signalList.data, selectedSignal: store.signals.signalAnalysis};
 })
 
 export class Signals extends React.Component {
@@ -19,18 +20,44 @@ export class Signals extends React.Component {
   componentWillMount() {
     this.props.dispatch(getList(sessionStorage.userToken));
   }
+  componentDidMount() {
+    console.log("/checking anchor html");
+    console.log($('a[rel="popover"]'));
+    var tmp = setInterval(function() {
+      if ($('a[rel="popover"]').html()) {
+        $('a[rel="popover"]').popover({
+          container: 'body',
+          html: true,
+          trigger: 'focus',
+          placement: 'auto right',
+          content: function() {
+            var clone = $($(this).data('popover-content')).clone(true).removeClass('hide');
+            return clone;
+          }
+        }).click(function(e) {
+          e.preventDefault();
+        });
+        clearInterval(tmp);
+      }
+    }, 100);
+
+  }
 
   render() {
     console.log("signals is called##########3");
-    // console.log(this.props);
+
+    // let parametersForBreadCrumb = [];
+    // parametersForBreadCrumb.push({name:"Signals"});
+
+    console.log(this.props);
     // console.log(store.getState().signals.signalList.errands)
 
-    const data = store.getState().signals.signalList.errands;
+    const data = this.props.signalList;
 
     if (data) {
       console.log("under if data condition!!")
       const storyList = data.map((story, i) => {
-        var signalLink = "/signals/" + story.id;
+        var signalLink = "/signals/" + story.slug;
         return (
           <div className="col-md-3 top20 list-boxes" key={i}>
             <div className="rep_block newCardStyle" name={story.name}>
@@ -39,7 +66,9 @@ export class Signals extends React.Component {
                 <div className="row">
                   <div className="col-xs-9">
                     <h4 className="title newCardTitle">
-                    <Link to={signalLink}> {story.name} </Link>
+                      <Link to={signalLink} id={story.slug}>
+                        {story.name}
+                      </Link>
                     </h4>
                   </div>
                   <div className="col-xs-3">
@@ -55,7 +84,7 @@ export class Signals extends React.Component {
 
                 <div className="card-deatils">
                   {/*<!-- Popover Content link -->*/}
-                  <a href="#" rel="popover" className="pover" data-popover-content="#myPopover">
+                  <a href="javascript:void(0);" rel="popover" className="pover" data-popover-content="#myPopover">
                     <i className="fa fa-info-circle fa-lg"></i>
                   </a>
 
@@ -66,11 +95,13 @@ export class Signals extends React.Component {
                   <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                     <li>
                       <a className="dropdown-item" href="#renameCard" data-toggle="modal">
-                        <i className="fa fa-edit"></i> Rename</a>
+                        <i className="fa fa-edit"></i>
+                        Rename</a>
                     </li>
                     <li>
                       <a className="dropdown-item" href="#deleteCard" data-toggle="modal">
-                        <i className="fa fa-trash-o"></i> Delete</a>
+                        <i className="fa fa-trash-o"></i>
+                        Delete</a>
                     </li>
                   </ul>
                   {/*<!-- End Rename and Delete BLock  -->*/}
@@ -78,16 +109,16 @@ export class Signals extends React.Component {
                 {/*popover*/}
                 <div id="myPopover" className="pop_box hide">
                   <h4>Created By :
-                    <span className="text-primary">Harman</span>
+                    <span className="text-primary">{story.username}</span>
                   </h4>
                   <h5>Updated on :
                     <mark>10.10.2017</mark>
                   </h5>
                   <hr className="hr-popover"/>
                   <p>
-                    Data Set : kk<br/>
-                    Variable selected : kk1<br/>
-                    Variable type : sale</p>
+                    Data Set : {story.dataset_name}<br/>
+                    Variable selected : {story.variable_selected}<br/>
+                    Variable type : {story.variable_type}</p>
                   <hr className="hr-popover"/>
                   <h4 className="text-primary">Analysis List</h4>
                   <ul className="list-unstyled">
@@ -106,8 +137,13 @@ export class Signals extends React.Component {
       return (
         <div>
           <div className="side-body">
-          { /* <MainHeader/>*/}
-          <BreadCrumb/>
+            {/* <MainHeader/>*/}
+            <Breadcrumb path={[{
+                path: '/signals',
+                label: 'Signals'
+              }
+            ]}/>
+
             <div className="main-content">
               {storyList}
             </div>
@@ -116,7 +152,15 @@ export class Signals extends React.Component {
       );
     } else {
       return (
-        <div>no signals</div>
+        <div><Breadcrumb path={[{
+            path: '/signals',
+            label: 'Signals'
+          }
+        ]}/>
+          <div>
+            <img id="loading" src="/assets/images/Preloader_2.gif"/>
+          </div>
+        </div>
       )
     }
   }
