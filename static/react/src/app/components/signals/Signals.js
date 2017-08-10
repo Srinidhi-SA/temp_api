@@ -151,8 +151,9 @@ export class Signals extends React.Component {
                 <div class="card-center newStoryCard">
                   <div class="col-xs-2 col-xs-offset-1"><i class="fa fa-3x">+</i></div>
                   <div class="col-xs-8 col-xs-offset-0">
-                  <Link to="/signals" >
                     CREATE NEW
+                  <Link to="/signals" >
+
                   </Link>
                   </div>
                 </div>
