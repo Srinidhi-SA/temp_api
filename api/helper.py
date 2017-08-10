@@ -1,4 +1,3 @@
-
 from django.conf import settings
 JOBSERVER = settings.JOBSERVER
 THIS_SERVER_DETAILS = settings.THIS_SERVER_DETAILS

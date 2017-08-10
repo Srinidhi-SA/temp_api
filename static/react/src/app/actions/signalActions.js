@@ -1,4 +1,5 @@
-var API = "http://34.196.204.54:9000";
+import {API} from "../helpers/env";
+// var API = "http://34.196.204.54:9000";
 
 function getHeader(token){
   return {
@@ -23,7 +24,7 @@ export function getList(token) {
 
 function fetchPosts(token) {
   console.log("JWT "+token)
-  return fetch(API+'/api/errand/archived?userId=13',{
+  return fetch(API+'/api/errand/archived?userId='+sessionStorage.userId,{
 		method: 'get',
     headers: getHeader(token)
 		}).then( response => Promise.all([response, response.json()]));
@@ -66,6 +67,7 @@ export function getSignalAnalysis(token,errandId) {
 
 function fetchPosts_analysis(token,errandId) {
   console.log("JWT "+token)
+
   return fetch(API+'/api/errand/get_dimension_all_results?errand_id='+errandId,{
 		method: 'get',
 		headers: {
@@ -73,10 +75,11 @@ function fetchPosts_analysis(token,errandId) {
 			'Content-Type': 'application/x-www-form-urlencoded'
 		}
   }).then( response => Promise.all([response, response.json()]));
+
 }
 
 
-function fetchPostsSuccess_analysis(signalAnalysis,errandId) {
+function fetchPostsSuccess_analysis(signalAnalysis, errandId) {
   console.log("signal analysis from api to store")
   console.log(signalAnalysis)
   return {

@@ -1,5 +1,6 @@
-import {sessionObject} from './manageSessionStorage';
-var API = "http://34.196.204.54:9000";
+import {sessionObject} from '../helpers/manageSessionStorage';
+import {API} from "../helpers/env";
+
 
 export function authenticateFunc(username,password) {
     return (dispatch) => {

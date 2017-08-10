@@ -1,19 +1,24 @@
 import React from "react";
 import {Redirect} from 'react-router';
 import ReactDOM from 'react-dom';
-import {sessionObject} from '../../actions/manageSessionStorage';
-import $ from 'jquery';
+import {sessionObject} from '../../helpers/manageSessionStorage';
+// import $ from 'jquery';
 
-
-
+// import store from "../../store";
+// import {connect} from "react-redux";
+//
+//
+// @connect((store) => {
+//   return {login_res:store.login.login_response};
+// })
 export default class TopPanel extends React.Component {
 
 	logout(){
 		sessionObject.clearSession();
 	}
 	render(){
-		console.log("top panel")
-		return(
+		console.log("top panel & user name"+sessionStorage.username);
+			return(
 		            <div>
 								{/* // Header Menu*/}
 								<nav className="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -38,7 +43,7 @@ export default class TopPanel extends React.Component {
 										<a className="dropdown-toggle" href="#" data-toggle="dropdown">
 											<i className="avatar-img img-circle">M</i>
 											<img src="" alt="M" className="avatar-img img-circle hide"/>
-											<span className="user-name">Marlabs BI</span>
+											<span className="user-name">{sessionStorage.username}</span>
 											<span className="caret"></span>
 										</a>
 										<ul className="dropdown-menu dropdown-menu-right">
