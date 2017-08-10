@@ -81,7 +81,7 @@ prevNext(path) {
     //load level 1 , this will be loaded in all calls!!
     tabList = this.props.signal.listOfNodes.map((tab, i) => {
       let selectedLink = "/signals/" + params.slug + "/" + tab.slug;
-      let classname1 = "mAd_icons tab_" + tab.name;
+      let classname1 = "mAd_icons tab_" + tab.name.toLowerCase();
       //console.log(classname1);
       return (
         <li key={i}>
@@ -187,9 +187,9 @@ console.log("l1name is ...."+selectedSignal);
               ]}
               />
               </div>
-              <div class="col-md-8">
+            {/*  <div class="col-md-8">
                 <h2>{l1Name}</h2>
-              </div>
+              </div> */}
               </div>
             <div class="clearfix"></div>
           </div>
@@ -202,6 +202,7 @@ console.log("l1name is ...."+selectedSignal);
               <div className="col-md-12">
                 <div className="panel panel-mAd">
                   <div className="panel-heading">
+					<h2 class="pull-left">{l1Name}</h2>
                     <div className="btn-toolbar pull-right">
                       <div className="btn-group btn-space">
                         <button type="button" className="btn btn-default">
