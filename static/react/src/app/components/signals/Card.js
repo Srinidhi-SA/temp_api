@@ -117,15 +117,17 @@ export class Card extends React.Component {
 
   render() {
     console.log(this.props);
-    cardData = this.props.cardData.cardData;
+    console.log("card is called!!!! with data:----");
+    cardData = this.props.cardData;
+    console.log(cardData);
     const cardElements = cardData.map((story, i) => {
-
-      switch (cardData[i].CardType) {
+       console.log(story);
+      switch (story.dataType) {
         case "html":
-          return (<CardHtml key = {i} htmlElement={cardData[i].data} type={cardData[i].dataType}/>);
+          return (<CardHtml key = {i} htmlElement={story.data} type={story.dataType}/>);
           break;
         case "c3Chart":
-          return (<C3Chart key = {i} data={cardData[i].data} yformat={"m"}/>);
+          return (<C3Chart key = {i} data={story.data} yformat={"m"}/>);
           break;
       }
 

@@ -10,7 +10,7 @@ import Breadcrumb from 'react-breadcrumb';
 var dateFormat = require('dateformat');
 
 @connect((store) => {
-  return {login_response: store.login.login_response, signalList: store.signals.signalList, selectedSignal: store.signals.signalAnalysis};
+  return {login_response: store.login.login_response, signalList: store.signals.signalList.data, selectedSignal: store.signals.signalAnalysis};
 })
 
 export class Signals extends React.Component {
@@ -52,12 +52,12 @@ export class Signals extends React.Component {
     console.log(this.props);
     // console.log(store.getState().signals.signalList.errands)
 
-    const data = store.getState().signals.signalList.errands;
+    const data = this.props.signalList;
 
     if (data) {
       console.log("under if data condition!!")
       const storyList = data.map((story, i) => {
-        var signalLink = "/signals/" + story.id;
+        var signalLink = "/signals/" + story.slug;
         return (
           <div className="col-md-3 top20 list-boxes" key={i}>
             <div className="rep_block newCardStyle" name={story.name}>
@@ -109,16 +109,16 @@ export class Signals extends React.Component {
                 {/*popover*/}
                 <div id="myPopover" className="pop_box hide">
                   <h4>Created By :
-                    <span className="text-primary">Harman</span>
+                    <span className="text-primary">{story.username}</span>
                   </h4>
                   <h5>Updated on :
                     <mark>10.10.2017</mark>
                   </h5>
                   <hr className="hr-popover"/>
                   <p>
-                    Data Set : kk<br/>
-                    Variable selected : kk1<br/>
-                    Variable type : sale</p>
+                    Data Set : {story.dataset_name}<br/>
+                    Variable selected : {story.variable_selected}<br/>
+                    Variable type : {story.variable_type}</p>
                   <hr className="hr-popover"/>
                   <h4 className="text-primary">Analysis List</h4>
                   <ul className="list-unstyled">
