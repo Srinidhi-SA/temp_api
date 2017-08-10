@@ -1,7 +1,6 @@
 import React from "react";
 import {Redirect, Link, NavLink} from "react-router-dom";
 import Breadcrumb from 'react-breadcrumb';
-
 import {
   resTree,
   searchTree,
@@ -10,11 +9,12 @@ import {
   fetchNodeFromTree,
   getPrevNext
 } from "../../helpers/processStory";
+import {connect} from "react-redux";
 import {isEmpty} from "../../helpers/helper";
 import {MainHeader} from "../../components/common/MainHeader";
 import {Card} from "./Card";
 import store from "../../store";
-import {connect} from "react-redux";
+
 
 
 
@@ -26,6 +26,9 @@ let showSubTree=false;
   return {signal:store.signals.signalAnalysis};
 })
 
+@connect((store) => {
+  return {pure:false};
+})
 export class OverViewPage extends React.Component {
   constructor() {
     super();
@@ -33,14 +36,25 @@ export class OverViewPage extends React.Component {
 
   componentDidMount(){
     // alert(showSubTree);
+    var that = this;
+
     if(showSubTree){
        $(".sb_navigation").show();
        showSubTree = false;
+       $(".sb_navigation #myTab i.mAd_icons.ic_perf ~ span").each(function(){
+
+        if($(this).html() == that.props.match.params.l2){
+          $(this).parent().addClass('active');
+        }else{
+          $(this).parent().removeClass('active');
+        }
+       });
      }
     else{
        $(".sb_navigation").hide();
      }
-  }
+    }
+
 
 prevNext(path) {
     console.log(path);
@@ -55,6 +69,7 @@ prevNext(path) {
     return expectedURL;
   }
   render() {
+
     console.log("overviewPage is called!!");
     console.log(this.props);
     let selectedSignal = this.props.signal.name;
@@ -111,7 +126,7 @@ prevNext(path) {
           let selectedl2Link = "/signals/" + params.slug + "/" + selectedNodeFromLevel1.slug + "/" + letiable.slug + "/$";
           return (
             <li key={i}>
-              <NavLink activeClassName="active" to={selectedl2Link}>
+              <NavLink to={selectedl2Link}>
                 <i className="mAd_icons ic_perf"></i>
                 <span>{letiable.name}</span>
               </NavLink>

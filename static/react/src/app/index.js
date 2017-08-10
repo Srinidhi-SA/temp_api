@@ -11,6 +11,7 @@ import {Login} from "./components/Login";
 import {Settings} from "./components/settings/Settings";
 import {Apps} from "./components/apps/Apps";
 import {Data} from "./components/data/Data";
+import {DataPreview} from "./components/data/DataPreview";
 import {Stories} from "./components/stories/Stories";
 import {Signals} from "./components/signals/Signals";
 import {Signal} from "./components/signals/Signal";
@@ -39,6 +40,7 @@ class App extends React.Component {
             <Route path="/apps" component={Apps} />
             <Route path="/stories" component={Stories} />
             <Route path="/data" component={Data} />
+            <Route path="/data/:slug" component={DataPreview} />
           </Main>
       </Switch>
       </BrowserRouter>

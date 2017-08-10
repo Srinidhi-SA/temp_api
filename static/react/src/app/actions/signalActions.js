@@ -4,11 +4,12 @@ import {API} from "../helpers/env";
 function getHeader(token){
   return {
     'Authorization': "JWT "+token,
-    'Content-Type': 'application/x-www-form-urlencoded'
+    'Content-Type': 'application/json'
   };
 }
-
+//x-www-form-urlencoded'
 export function getList(token) {
+  // alert(token);
     return (dispatch) => {
     return fetchPosts(token).then(([response, json]) =>{
         if(response.status === 200){
@@ -24,6 +25,7 @@ export function getList(token) {
 
 function fetchPosts(token) {
   console.log("JWT "+token)
+
   return fetch(API+'/api/signals/',{
 		method: 'get',
     headers: getHeader(token)
