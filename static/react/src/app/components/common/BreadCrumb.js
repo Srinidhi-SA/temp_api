@@ -1,16 +1,41 @@
 import React from "react";
-
+import {NavLink} from "react-router-dom";
 
 export class BreadCrumb extends React.Component {
+  constructor() {
+    super();
+  }
 
   render() {
-    return (
-        <ol className="breadcrumb">
-          <li>
-            <a href="#">{this.props.tabName}</a>
-          </li>
-          <li className="active">TODO: need to fill this</li>
-        </ol>
-    );
+    console.log("breadcrumb is called!!");
+    console.log(this.props);
+    let data = this.props.parameters;
+
+    if (data) {
+      let breadcrumb = data.map((page, i) => {
+        if (page.url) {
+          return (
+            <ol key = {i} className="breadcrumb">
+              <li>
+                <NavLink to={page.url}>{page.name}</NavLink>
+              </li>
+            </ol>
+          );
+        } else {
+          return (
+            <ol key = {i} className="breadcrumb">
+              <li>
+                {page.name}
+              </li>
+            </ol>
+          );
+        }
+
+      });
+
+      return (
+        <div>{breadcrumb}</div>
+      );
+    }
   }
 }

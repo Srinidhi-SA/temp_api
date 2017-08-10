@@ -4,7 +4,7 @@ import {Redirect} from 'react-router';
 // import {authenticateFunc,getList,storyList} from "../../services/ajax.js";
 import {authenticateFunc} from "../actions/loginActions";
 import store from "../store";
-import $ from "jquery";
+// import $ from "jquery";
 
 @connect((store) => {
   return {login_response: store.login.login_response};
@@ -12,12 +12,12 @@ import $ from "jquery";
 
 export class Login extends React.Component {
   constructor() {
-  
+
     super();
     this.state = {
       uId: '',
       pwd: ''
-    };	
+    };
 	document.body.className = "ma-splash-screen";
   }
   onChangeUId(e) {
@@ -48,7 +48,7 @@ export class Login extends React.Component {
           <div className="ma-wrapper am-login">
             <div className="ma-content">
               <div className="main-content">
-
+             <form action="javascript:void(0);">
                 <div className="login-container">
                   <div className="panel panel-default">
                     <div className="panel-heading"><img src="assets/images/m_adv_logo_text.png" alt="logo" className="logo-img"/></div>
@@ -94,7 +94,7 @@ export class Login extends React.Component {
                     </div>
                   </div>
                 </div>
-
+              </form>
               </div>
             </div>
           </div>

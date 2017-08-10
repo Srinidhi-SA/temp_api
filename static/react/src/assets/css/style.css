@@ -4611,8 +4611,9 @@ button.close {
 	position: relative;
 	width: auto;
 	margin: 10px
-	
+
 } */
+
 .modal-content {
 	border: 1px solid #999;
 	border: 1px solid rgba(0, 0, 0, .2);
@@ -5849,7 +5850,7 @@ button:focus {
 	outline: 0!important
 }
 /** Actual Styles Starts from here ***/
- 
+
 .ma-wrapper {
 	min-height: 100%;
 	padding-top: 80px
@@ -6730,15 +6731,15 @@ button:focus {
 	margin-right: 0;
 	margin-left: 0;
 }
-/* 
+/*
     Sometimes the sub menus get too large for the page and prevent the menu from scrolling, limiting functionality
-    A quick fix is to change .side-menu to 
+    A quick fix is to change .side-menu to
 
     -> position:absolute
-    
+
     and uncomment the code below.
-    You also need to uncomment 
-    
+    You also need to uncomment
+
     -> <div class="absolute-wrapper"> </div> in the html file
 
     you also need to tweek the animation. Just uncomment the code in that section
@@ -6882,7 +6883,7 @@ button:focus {
         -webkit-animation: slideout 300ms forwards;
         animation: slideout 300ms forwards;
         -webkit-transform-style: preserve-3d;
-        transform-style: preserve-3d; 
+        transform-style: preserve-3d;
     }*/
   @-moz-keyframes bodyslidein {
  0% {
@@ -6970,7 +6971,7 @@ button:focus {
 	margin: 0;
 }
 .navbar-header {
-	/* this is probably redundant 
+	/* this is probably redundant
     position: fixed;
     z-index: 3;
 	width:100%;*/
@@ -7981,7 +7982,7 @@ body.open-right-sidebar .ma-right-sidebar {
 }
 }
 .ma-splash-screen {
-	background:#ffffff url('../images/login_bg.png') no-repeat center center fixed; 
+	background:#ffffff url('../images/login_bg.png') no-repeat center center fixed;
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
 	-o-background-size: cover;
@@ -10023,7 +10024,7 @@ li.L1, li.L3, li.L5, li.L7, li.L9 {
 	padding-bottom: 10px
 }
 .login-container .panel-default .panel-body {
-background: rgba(255, 255, 255, 0.6); 
+background: rgba(255, 255, 255, 0.6);
 -webkit-box-shadow: 0px 0px 14px 4px rgba(0,0,0,0.25);
 -moz-box-shadow: 0px 0px 14px 4px rgba(0,0,0,0.25);
 box-shadow: 0px 0px 14px 4px rgba(0,0,0,0.25);
@@ -10083,7 +10084,7 @@ box-shadow: 0px 0px 14px 4px rgba(0,0,0,0.25);
 	line-height: 35px;
 	font-size: 14px
 }
-.login-container .panel-default .panel-body .form-group .remember {	
+.login-container .panel-default .panel-body .form-group .remember {
 	color: #a3a2a2
 }
 .login-container .panel-default .panel-body .form-group .remember label {
@@ -13919,7 +13920,7 @@ div.dataTables_wrapper div.dataTables_length label select {
 .ma-datatable-footer {
 	margin: 0;
 	padding: 15px 3px 13px;
-	/*background-color: #f7f7f7; mAdv Comment*/ 
+	/*background-color: #f7f7f7; mAdv Comment*/
 	border-top: 1px solid #eaeaea
 }
 .bootstrap-touchspin input {
@@ -15024,7 +15025,7 @@ div.dataTables_wrapper div.dataTables_length label select {
 	height:10px;
 }
 .card-narrative{
-	 
+
 	font-size: 17px;
 }
 
@@ -15035,13 +15036,13 @@ div.dataTables_wrapper div.dataTables_length label select {
     font-size: 16px;
     word-break: break-word;
     /* line-height: 50px; */
-    height: 60px; 
+    height: 60px;
 }
 .newCardTitle a{
     color: #696969; display:block; }
 .footerTitle{
 	display:block;
-	font-size:12px; 
+	font-size:12px;
 }
 .newCardStyle{
 	background:#FFF;
@@ -15119,12 +15120,13 @@ div.dataTables_wrapper div.dataTables_length label select {
 	height: 130px;
 	overflow: hidden;
 	transition: all .1s ease-in-out;
+	cursor:pointer;
 }
 .card-center{
 	line-height: 100px;
 	padding-left:0px;
 	padding-right:20px;
-	
+
 }
 .card-center-tile {
     height: 80px;
@@ -15152,9 +15154,9 @@ div.dataTables_wrapper div.dataTables_length label select {
 }
 
 /*.card-deatils.open a .fa { color: #7dac02} */
- 
- 
-.card-footer div a:focus, .card-footer div a:hover, .card-footer div a:active, .card-deatils.open a.more_button{ 
+
+
+.card-footer div a:focus, .card-footer div a:hover, .card-footer div a:active, .card-deatils.open a.more_button{
 background:#ededed; color:#7dac02
 }
 .card-selected {
@@ -15203,7 +15205,7 @@ background:#ededed; color:#7dac02
 
 /** Overview First Page Template **/
 
-.ovr_block { background:#f5f5f5; overflow:hidden; margin: 10px;} 
+.ovr_block { background:#f5f5f5; overflow:hidden; margin: 10px;}
 .ovr_block_left{ background:#FFF; }
 .icon_ovr {  padding:43px 0 0 0; }
 .icon_ovr.ms { padding-top:28px;}
@@ -15271,7 +15273,7 @@ background:#ededed; color:#7dac02
 .grp_legends_primary { color:#0fc4b5 }
 
 /*** Tabs Overvie Arro Icons placement ***/
-.tabs-control span {        
+.tabs-control span {
     position: absolute;
     /*set position of image from top to be 50%...*/
     top: 50%;
@@ -15291,10 +15293,10 @@ a.tabs-control.left span {
 
 }
 a.tabs-control.right span {
-    right: 0px; 
+    right: 0px;
     padding: 10px 5px;
 }
-.panel-mAd .tab-content { 
+.panel-mAd .tab-content {
     min-height: 360px;
 }
 
@@ -15407,7 +15409,7 @@ a.tabs-control.right span {
   .row-offcanvas.active .content {
     width: 100%; /* 12 columns */
   }
-       
+
   .sidebar-offcanvas {
     position: absolute;
     top: 0;
@@ -15461,7 +15463,7 @@ a.tabs-control.right span {
     border: 1px solid #ddd;
     width: 25px;
     height: 34px;
-    top: -1px; 
+    top: -1px;
 	-webkit-box-shadow: -5px 0px 10px 0px rgba(0,0,0,0.2);
 	-moz-box-shadow: -5px 0px 10px 0px rgba(0,0,0,0.2);
 	box-shadow: -5px 0px 10px 0px rgba(0,0,0,0.2);
@@ -15525,6 +15527,7 @@ progress { width: 100%; }
 progress:after { content: '%'; }
 .fail { background: #c00; padding: 2px; color: #fff; }
 .hidden { display: none !important;}
+
 #uploadData .modal-body {
     padding: 0;
 }
@@ -15542,7 +15545,7 @@ progress:after { content: '%'; }
 .db_images.db_dhfs {background-position: -190px -184px}
 .tab-left .nav-tabs>li>a, .tab-right .nav-tabs>li>a { font-weight: bold;
     text-transform: uppercase;}
- 
+
 /** Table Top Border ***/
 table.table.table-condensed.table-hover.table-bordered.table-striped {
     border-top: 1px solid #ddd;
@@ -15552,4 +15555,26 @@ table.table.table-condensed.table-hover.table-bordered.table-striped {
     padding: 10px 20px;
    /* background-color: #f0f0f0;*/
     margin: 0;
+}
+/*.cst_table thead th { text-align:center }*/
+.cst_table thead th a { display:block; color:#424242 }
+.cst_table thead th a:hover { color:#00998c;  }
+.cst_table thead th .dropdown-menu a:hover { color:#FFF;  }
+.cst_table thead th a .caret {position: absolute;
+    top: 20px;
+    right: 15px;}
+.cst_table tbody td { white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 140px;
+    overflow: hidden;
+    padding: 0;
+    margin: 0; }
+.preview_stats .panel-group.accordion {  margin-bottom: 18px;}
+.preview_stats .panel-body { padding: 15px !important; }
+
+#loading {
+  position: relative;
+  left: 50%;
+  margin-left: -64px;
+  padding-top: 15%;
 }

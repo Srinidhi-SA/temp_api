@@ -5,19 +5,15 @@ import {push} from "react-router-redux";
 import $ from "jquery";
 import {Pagination} from "react-bootstrap";
 import {DropToUpload} from 'react-drop-to-upload'
-
 import store from "../../store";
+
 import {MainHeader} from "../common/MainHeader";
 import {BreadCrumb} from "../common/BreadCrumb";
 import {getDataList} from "../../actions/dataActions";
 import {fetchProductList} from "../../actions/dataActions";
 import {DataUpload} from "./DataUpload";
 import {open,close} from "../../actions/dataUploadActions";
-
-
-
 var dateFormat = require('dateformat');
-
 
 @connect((store) => {
 	return {login_response: store.login.login_response, dataList: store.datasets.dataList,
@@ -50,7 +46,7 @@ export class Data extends React.Component {
 				addButton = <DataUpload />
 			}
 			const dataSetList = dataSets.map((data, i) => {
-				var dataSetLink = "/data/" + data.id;
+				var dataSetLink = "/data/" + data.slug;
 				return ( 
 						<div className="col-md-3 top20 list-boxes" key={i}>
 						<div className="rep_block newCardStyle" name={data.name}>
@@ -59,7 +55,7 @@ export class Data extends React.Component {
 						<div className="row">
 						<div className="col-xs-9">
 						<h4 className="title newCardTitle">
-						<Link id={data.id} to={dataSetLink}>{data.name}</Link>
+						<Link id={data.slug} to={dataSetLink}>{data.name}</Link>
 						</h4>
 						</div>
 						<div className="col-xs-3">
@@ -69,8 +65,8 @@ export class Data extends React.Component {
 						</div>
 						<div className="card-footer">
 						<div className="left_div">
-						<span className="footerTitle"></span>{data.profile.username}
-						<span className="footerTitle">{dateFormat(data.created_at, "mmmm d,yyyy h:MM")}</span>
+						<span className="footerTitle"></span>Test
+						<span className="footerTitle">{dateFormat(data.created_on, "mmmm d,yyyy h:MM")}</span>
 						</div>
 
 						<div className="card-deatils">
@@ -127,7 +123,6 @@ export class Data extends React.Component {
 			return (
 					<div className="side-body">
 					{ /* <MainHeader/>*/}
-					<BreadCrumb tabName="Data"/>
 					<div className="main-content">
 					{addButton}
 					{dataSetList}
@@ -149,5 +144,4 @@ export class Data extends React.Component {
 		this.props.history.push('/data/page/'+eventKey+'')
 		this.props.dispatch(getDataList(eventKey));
 	}
-
 }

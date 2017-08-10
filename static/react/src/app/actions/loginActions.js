@@ -1,5 +1,6 @@
-import {sessionObject} from './manageSessionStorage';
-var API = "http://192.168.33.94:9000";
+import {sessionObject} from '../helpers/manageSessionStorage';
+import {API} from "../helpers/env";
+
 
 export function authenticateFunc(username,password) {
     return (dispatch) => {
@@ -17,7 +18,7 @@ export function authenticateFunc(username,password) {
 function fetchPosts(username,password) {
   // console.log("user and pass is:");
   // console.log(username+" "+password);
-  return fetch(API+'/api/user/api-token-auth',{
+  return fetch(API+'/api-token-auth/',{
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',

@@ -1,14 +1,15 @@
-var API = "http://192.168.33.94:9000";
-//var API = "http://192.168.33.128:9001";
+import {API} from "../helpers/env";
+// var API = "http://34.196.204.54:9000";
 
 function getHeader(token){
   return {
     'Authorization': "JWT "+token,
-    'Content-Type': 'application/x-www-form-urlencoded'
+    'Content-Type': 'application/json'
   };
 }
-
+//x-www-form-urlencoded'
 export function getList(token) {
+  alert(token);
     return (dispatch) => {
     return fetchPosts(token).then(([response, json]) =>{
         if(response.status === 200){
@@ -24,7 +25,8 @@ export function getList(token) {
 
 function fetchPosts(token) {
   console.log("JWT "+token)
-  return fetch(API+'/api/errand/archived?userId=13',{
+
+  return fetch(API+'/api/signals/',{
 		method: 'get',
     headers: getHeader(token)
 		}).then( response => Promise.all([response, response.json()]));
@@ -67,17 +69,19 @@ export function getSignalAnalysis(token,errandId) {
 
 function fetchPosts_analysis(token,errandId) {
   console.log("JWT "+token)
-  return fetch(API+'/api/errand/get_dimension_all_results?errand_id='+errandId,{
+
+  return fetch(API+'/api/signals/'+errandId+"/",{
 		method: 'get',
 		headers: {
 			'Authorization': "JWT "+token,
 			'Content-Type': 'application/x-www-form-urlencoded'
 		}
   }).then( response => Promise.all([response, response.json()]));
+
 }
 
 
-function fetchPostsSuccess_analysis(signalAnalysis,errandId) {
+function fetchPostsSuccess_analysis(signalAnalysis, errandId) {
   console.log("signal analysis from api to store")
   console.log(signalAnalysis)
   return {
