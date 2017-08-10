@@ -45,6 +45,7 @@ export class Signals extends React.Component {
 
   render() {
     console.log("signals is called##########3");
+	document.body.className = "";
 
     // let parametersForBreadCrumb = [];
     // parametersForBreadCrumb.push({name:"Signals"});
