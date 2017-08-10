@@ -9,7 +9,6 @@ function getHeader(token){
 }
 //x-www-form-urlencoded'
 export function getList(token) {
-  alert(token);
     return (dispatch) => {
     return fetchPosts(token).then(([response, json]) =>{
         if(response.status === 200){

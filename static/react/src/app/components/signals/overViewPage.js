@@ -26,9 +26,6 @@ let showSubTree=false;
   return {signal:store.signals.signalAnalysis};
 })
 
-@connect((store) => {
-  return {pure:false};
-})
 export class OverViewPage extends React.Component {
   constructor() {
     super();
