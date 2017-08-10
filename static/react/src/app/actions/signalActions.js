@@ -3,11 +3,11 @@ import {API} from "../helpers/env";
 
 function getHeader(token){
   return {
-    'Authorization': "JWT "+token,
-    'Content-Type': 'application/x-www-form-urlencoded'
+    'Authorization': "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1hcmxhYnMiLCJ1c2VyX2lkIjoxLCJlbWFpbCI6IiIsImV4cCI6MTUwMjMwNDQxNn0.F5fgcWSwCnmHwsMiBf1qHbs6X_p0t1RbzE-51ZARy7A",
+    'Content-Type': 'application/json'
   };
 }
-
+//x-www-form-urlencoded'
 export function getList(token) {
     return (dispatch) => {
     return fetchPosts(token).then(([response, json]) =>{
@@ -24,7 +24,8 @@ export function getList(token) {
 
 function fetchPosts(token) {
   console.log("JWT "+token)
-  return fetch(API+'/api/errand/archived?userId='+sessionStorage.userId,{
+//  return fetch(API+'/api/errand/archived?userId='+sessionStorage.userId,{
+return fetch(API+'/api/signals/',{
 		method: 'get',
     headers: getHeader(token)
 		}).then( response => Promise.all([response, response.json()]));
