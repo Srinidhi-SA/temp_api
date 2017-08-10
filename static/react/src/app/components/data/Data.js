@@ -4,7 +4,7 @@ import {Link, Redirect} from "react-router-dom";
 import {push} from "react-router-redux";
 import $ from "jquery";
 import {Pagination} from "react-bootstrap";
-import {DropToUpload} from 'react-drop-to-upload'
+// import {DropToUpload} from 'react-drop-to-upload'
 import store from "../../store";
 
 import {MainHeader} from "../common/MainHeader";
@@ -47,7 +47,7 @@ export class Data extends React.Component {
 			}
 			const dataSetList = dataSets.map((data, i) => {
 				var dataSetLink = "/data/" + data.slug;
-				return ( 
+				return (
 						<div className="col-md-3 top20 list-boxes" key={i}>
 						<div className="rep_block newCardStyle" name={data.name}>
 						<div className="card-header"></div>
@@ -130,7 +130,7 @@ export class Data extends React.Component {
 					<div>
 					<Pagination className="pull-left" ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
 					</div>
-					</div>      
+					</div>
 					</div>
 			);
 		}else {
