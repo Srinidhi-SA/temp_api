@@ -40,7 +40,6 @@ export class Signals extends React.Component {
         clearInterval(tmp);
       }
     }, 100);
-
   }
 
   render() {

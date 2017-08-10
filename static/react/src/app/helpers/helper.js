@@ -6,3 +6,14 @@ export function isEmpty(obj) {
 
     return JSON.stringify(obj) === JSON.stringify({});
 }
+const FILEUPLOAD = "File Upload";
+const MYSQL = "MySQL";
+const INPUT = "Input";
+const PASSWORD = "Password";
+
+export{
+	FILEUPLOAD,
+	MYSQL,
+	INPUT,
+	PASSWORD
+	}

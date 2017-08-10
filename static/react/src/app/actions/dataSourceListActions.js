@@ -2,7 +2,7 @@ import {API} from "../helpers/env";
 function getHeader(token){
 	return {
 		'Authorization': "JWT "+token,
-		'Content-Type': 'application/x-www-form-urlencoded'
+		'Content-Type': 'application/json'
 	};
 }
 
@@ -55,4 +55,21 @@ function fetchDataSourceList(token,file) {
 		headers: getHeader(token)
 	}).then( response => Promise.all([response, response.json()]));
 }
-
+export function saveFileToStore(files) {
+	console.log("In Data Upload ")
+	console.log(files)
+	var file = files[0]
+	return {
+		type: "DATA_UPLOAD_FILE",
+		files
+	}
+}
+export function updateSelectedDataSrc(selectedDataSrcType) {	
+	return {
+		type: "DATA_SOURCE_SELECTED_TYPE",
+		selectedDataSrcType
+	}
+}
+export function updateDbDetails(evt){
+	alert(evt.name)
+}

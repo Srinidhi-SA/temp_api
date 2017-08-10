@@ -4,7 +4,6 @@ import {Link, Redirect} from "react-router-dom";
 import {push} from "react-router-redux";
 import $ from "jquery";
 import {Pagination} from "react-bootstrap";
-import {DropToUpload} from 'react-drop-to-upload'
 import store from "../../store";
 
 import {MainHeader} from "../common/MainHeader";
@@ -36,14 +35,16 @@ export class Data extends React.Component {
 	render() {
 		console.log("data is called##########3");
 		const dataSets = store.getState().datasets.dataList.data;
-		console.log(dataSets)
 		if (dataSets) {
 			const pages = store.getState().datasets.dataList.total_number_of_pages;
 			const current_page = store.getState().datasets.dataList.current_page;
-			console.log("current_page"+current_page)
 			let addButton = null;
+			let paginationTag = null
 			if(current_page == 1){
 				addButton = <DataUpload />
+			}
+			if(pages > 1){
+				paginationTag = <Pagination className="pull-left" ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
 			}
 			const dataSetList = dataSets.map((data, i) => {
 				var dataSetLink = "/data/" + data.slug;
@@ -59,7 +60,7 @@ export class Data extends React.Component {
 						</h4>
 						</div>
 						<div className="col-xs-3">
-						<img src="assets/images/data_cardIcon.png" className="img-responsive" alt="LOADING"/>
+						<img src="/assets/images/data_cardIcon.png" className="img-responsive" alt="LOADING"/>
 						</div>
 						</div>
 						</div>
@@ -122,13 +123,12 @@ export class Data extends React.Component {
 			});
 			return (
 					<div className="side-body">
-					{ /* <MainHeader/>*/}
 					<div className="main-content">
 					{addButton}
 					{dataSetList}
 					<div className="clearfix"></div>
-					<div>
-					<Pagination className="pull-left" ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
+					<div id="idPagination">
+					{paginationTag}
 					</div>
 					</div>      
 					</div>
