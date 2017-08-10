@@ -12,7 +12,7 @@ from rest_framework.response import Response
 
 from api.pagination import CustomPagination
 from api.utils import convert_to_string, InsightSerializer
-from models import Insight, Dataset
+from models import Insight, Dataset, Job
 
 
 class SignalView(viewsets.ModelViewSet):
@@ -51,8 +51,6 @@ class SignalView(viewsets.ModelViewSet):
         :param kwargs: {'slug': 'signal-123-asdwqeasd'}
         :return:
         '''
-        import pdb;
-        pdb.set_trace()
         data = request.data
         serializer = self.get_serializer_class()
         instance = self.get_object()
@@ -84,3 +82,20 @@ class SignalView(viewsets.ModelViewSet):
 
 def get_datasource_config_list(request):
     return JsonResponse(settings.DATA_SOURCES_CONFIG)
+
+
+def get_config(request, slug=None):
+    job = Job.objects.get(slug=slug)
+    if not job:
+        return JsonResponse({'result':'Failed'})
+    return JsonResponse(json.loads(job.config))
+
+
+def set_result(request, slug=None):
+    import pdb;pdb.set_trace()
+    job = Job.objects.get(slug=slug)
+    if not job:
+        return JsonResponse({'result':'Failed'})
+    job.results = request.data
+    job.save()
+    return JsonResponse({'result':'Succeed'})

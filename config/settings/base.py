@@ -117,7 +117,8 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.CursorPagination',
-    'PAGE_SIZE': 10
+    'PAGE_SIZE': 10000,
+    'EXCEPTION_HANDLER': 'api.exceptions.custom_exception_handler'
 }
 
 
@@ -135,7 +136,8 @@ JWT_AUTH = {
     'rest_framework_jwt.utils.jwt_get_user_id_from_payload_handler',
 
     'JWT_RESPONSE_PAYLOAD_HANDLER':
-    'rest_framework_jwt.utils.jwt_response_payload_handler',
+    # 'rest_framework_jwt.utils.jwt_response_payload_handler',
+    'api.user_helper.jwt_response_payload_handler',
 
     'JWT_SECRET_KEY': SECRET_KEY,
     'JWT_GET_USER_SECRET_KEY': None,
@@ -157,6 +159,7 @@ JWT_AUTH = {
 
 }
 
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
@@ -176,9 +179,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-MEDIA_ROOT = '/uploads/'
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = '/media/'
 
-UPLOAD_FOLDER = 'uploads/datasets/'
+UPLOAD_FOLDER = '/uploads/datasets/'
 
 DATA_SOURCES_CONFIG = {"conf":  [{
     "dataSourceType": "fileUpload",
@@ -225,4 +229,10 @@ DATA_SOURCES_CONFIG = {"conf":  [{
 
 
 ]
+}
+
+THIS_SERVER_DETAILS = {
+    "host": "localhost",
+    "port": "9001",
+    "initail_domain": "/api"
 }

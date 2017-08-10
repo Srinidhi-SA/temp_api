@@ -5,12 +5,12 @@ from rest_framework.utils import humanize_datetime
 from sjsclient import client
 
 from api.helper import JobserverDetails
+from api.user_helper import UserSerializer
+from django.contrib.auth.models import User
 from models import Job, Insight
 
 
-def submit_job(api_url, class_name):
-    job = Job()
-
+def submit_job(slug, class_name):
     sjs = client.Client(
         JobserverDetails.get_jobserver_url()
     )
@@ -25,14 +25,14 @@ def submit_job(api_url, class_name):
 
     class_path = JobserverDetails.get_class_path(class_name)
 
-    config = {
-        'config_url': api_url
-    }
+    config = JobserverDetails.get_config(slug=slug,
+                                         name=class_name)
 
     job = sjs.jobs.create(app, class_path, ctx=ctx, conf=config)
 
     # print
-    JobserverDetails.print_job_details(job)
+    job_url = JobserverDetails.print_job_details(job)
+    return job_url
 
 
 def convert_to_string(data):
@@ -69,6 +69,7 @@ def convert_time_to_human(data):
     return data
 
 
+# TODO: use dataserializer
 class InsightSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         ret = super(InsightSerializer, self).to_representation(instance)
@@ -76,6 +77,7 @@ class InsightSerializer(serializers.ModelSerializer):
         dataset_object = Insight.objects.get(pk=dataset)
         ret['dataset'] = dataset_object.slug
         ret = convert_to_json(ret)
+        ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
         return ret
 
     def update(self, instance, validated_data):

@@ -2,12 +2,23 @@
 from __future__ import unicode_literals
 
 from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
+from api.user_helper import UserSerializer
+from django.contrib.auth.models import User
 
 from api.models import Dataset
 from helper import convert_to_json, convert_time_to_human
 
 
 class DatasetSerializer(serializers.ModelSerializer):
+
+    # name = serializers.CharField(max_length=100,
+    #                              validators=[UniqueValidator(queryset=Dataset.objects.all())]
+    #                              )
+
+    input_file = serializers.FileField(allow_null=True)
+
+
     def update(self, instance, validated_data):
         instance.meta_data = validated_data.get('meta_data', instance.meta_data)
         instance.name = validated_data.get('name', instance.name)
@@ -24,10 +35,12 @@ class DatasetSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         ret = super(DatasetSerializer, self).to_representation(instance)
+
         ret = convert_to_json(ret)
         ret = convert_time_to_human(ret)
+        ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
         return ret
 
     class Meta:
         model = Dataset
-        exclude = ('input_file', 'id')
+        exclude = ( 'id', 'updated_on')

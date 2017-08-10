@@ -12,7 +12,7 @@ def convert_to_string(data):
     for key in keys:
         if key in data:
             value = data[key]
-            if isinstance(value, str):
+            if isinstance(value, str or unicode):
                 pass
             elif isinstance(value, dict):
                 data[key] = json.dumps(value)
@@ -21,7 +21,7 @@ def convert_to_string(data):
 
 
 def convert_to_json(data):
-    keys = ['meta_data', 'db_details']
+    keys = ['meta_data', 'db_details', 'preview']
 
     for key in keys:
         if key in data:

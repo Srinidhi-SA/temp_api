@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 
 import random
 import string
+import csv
+import json
 
 from django.template.defaultfilters import slugify
 from django.db import models
@@ -31,6 +33,7 @@ class Job(models.Model):
     slug = models.SlugField(null=True)
     config = models.TextField(default="{}")
     results = models.TextField(default="{}")
+    url = models.TextField(default="")
 
     created_on = models.DateTimeField(auto_now_add=True, null=True)
     updated_on = models.DateTimeField(auto_now=True, null=True)
@@ -43,19 +46,18 @@ class Job(models.Model):
 
     def save(self, *args, **kwargs):
         self.generate_slug()
-        # submit_job(
-        #     api_url='',  # TODO: Fill with proper url <job>
-        #     class_name='class_path_metadata'
-        # )
+        super(Job, self).save(*args, **kwargs)
 
 
-def dataset_upload_directory(instance):
-    return "{0}{1}/".format(settings.UPLOAD_FOLDER, instance.id)
+def dataset_upload_directory():
+    return "{0}".format(settings.MEDIA_ROOT)
 
 
 def dataset_input_file_path(instance, filename):
     print("yes, I am in here")
-    return dataset_upload_directory(instance) + "{0}".format(filename)
+    print dataset_upload_directory() + "{0}".format(filename)
+    # return dataset_upload_directory() + "{0}".format(filename)
+    return "/uploads"
 
 
 class Dataset(models.Model):
@@ -64,9 +66,10 @@ class Dataset(models.Model):
     auto_update = models.BooleanField(default=False)
     auto_update_duration = models.IntegerField(default=99999)
 
-    input_file = models.FileField(upload_to=dataset_input_file_path, null=True)
+    input_file = models.FileField(upload_to='datasets', null=True)
     db_type = models.CharField(max_length=100, null=True)
     db_details = models.TextField(default="{}")
+    preview = models.TextField(default="{}")
 
     meta_data = models.TextField(default="{}")
 
@@ -103,9 +106,45 @@ class Dataset(models.Model):
 
     def save(self, *args, **kwargs):
         self.generate_slug()
+        print "Generated Slug"
+        # ---------------
+        from utils import submit_job
         job = Job()
         job.name = "-".join(["Dataset", self.slug])
+        job.job_type = "metadata"
+        job.object_id = str(self.slug)
+        job.config = "{}"
+        job.save()
+
+        # job_url = submit_job(
+        #     slug=job.slug,
+        #     class_name='class_path_metadata'
+        # )
+
+        # job.url = job_url
+        job.save()
+        print "Added job. Not jobserver---"
+
+        # --------------
+        self.job = job
         super(Dataset, self).save(*args, **kwargs)
+
+    def set_preview_data(self):
+        items = []
+        all_items = []
+        with open(self.input_file.path) as file:
+            rows = csv.reader(file, delimiter=str(','))
+            # for row in itertools.islice(rows, 20):
+            for row in rows:
+                all_items.append(row)
+                if "" in row or " " in row:
+                    if len(all_items) > 21:
+                        continue
+                    all_items.append(row)
+                    continue
+                items.append(row)
+
+        return json.dumps({"data" : items[:21] if len(items) > 21 else all_items[:21]})
 
 
 class Insight(models.Model):
