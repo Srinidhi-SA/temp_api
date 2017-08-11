@@ -105,6 +105,8 @@ class Dataset(models.Model):
         self.generate_slug()
         print "Generated Slug"
 
+        super(Dataset, self).save(*args, **kwargs)
+
         self.copy_file_to_hdfs()
 
         jobConfig = self.generate_config(*args, **kwargs)
@@ -127,7 +129,6 @@ class Dataset(models.Model):
         print "Added job. Not jobserver---"
 
         self.job = job
-        super(Dataset, self).save(*args, **kwargs)
 
     def set_preview_data(self):
         items = []
@@ -159,7 +160,7 @@ class Dataset(models.Model):
         hadoop.hadoop_put(self.input_file.path, self.get_hdfs_relative_path())
 
     def get_hdfs_relative_path(self):
-        return os.path.join( [settings.HDFS.get('base_path'), self.slug, self.name])
+        return os.path.join( settings.HDFS.get('base_path'), self.slug, self.name)
 
     def create_directory_for_dataset(self):
         pass
