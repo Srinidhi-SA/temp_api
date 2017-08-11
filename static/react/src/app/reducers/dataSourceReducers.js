@@ -1,13 +1,13 @@
 export default function reducer(state = {
-	dataSourceList:{},
-	fileUpload:{},
-	selectedDataSrcType:null,
-	db_Host:null,
-	db_Schema:null,
-	db_Port:null,
-	db_Username:null,
-	db_Tablename:null,
-	db_Password:null,
+		dataSourceList:{},
+		fileUpload:{},
+		selectedDataSrcType:null,
+		db_host:null,
+		db_schema:null,
+		db_port:null,
+		db_username:null,
+		db_tablename:null,
+		db_password:null,
 }, action) {
 	console.log("In DATA Source reducer!!");
 	console.log(action.files);
@@ -20,13 +20,13 @@ export default function reducer(state = {
 			dataSourceList:action.dataSrcList,
 		}
 	}
-  break;
+	break;
 	case "DATA_SOURCE_LIST_ERROR":
-    {
-      alert(action.json.non_field_errors);
-      throw new Error("Unable to fetch data source list!!");
-    }
-    break;
+	{
+		alert(action.json.non_field_errors);
+		throw new Error("Unable to fetch data source list!!");
+	}
+	break;
 	case "DATA_SOURCE_SELECTED_TYPE":
 	{
 		return {
@@ -35,19 +35,62 @@ export default function reducer(state = {
 		}
 	}
 	break;
-	case "MYSQL_DETAILS":
+	case "DATA_UPLOAD_FILE":
 	{
 		return {
 			...state,
-			db_Host:action.host,
-			db_Schema:action.schema,
-			db_Port:action.port,
-			db_Username:action.username,
-			db_Password:action.password,
-			db_Tablename:action.tablename
+			fileUpload:action.files[0],
 		}
 	}
 	break;
- }
-return state
+	case "DB_HOST_NAME":
+	{
+		return {
+			...state,
+			db_host:action.host,
+		}
+	}
+	break;
+	case "DB_PORT_NAME":
+	{
+		return {
+			...state,
+			db_port:action.port,	
+		}
+	}
+	break;
+	case "DB_USER_NAME":
+	{
+		return {
+			...state,
+			db_username:action.username,
+		}
+	}
+	break;
+	case "DB_PASSWORD":
+	{
+		return {
+			...state,
+			db_password:action.password,
+		}
+	}
+	break;
+	case "DB_TABLENAME":
+	{
+		return {
+			...state,
+			db_tablename:action.tablename
+		}
+	}
+	break;
+	case "DB_SCHEMA":
+	{
+		return {
+			...state,
+			db_schema:action.schema,
+		}
+	}
+	break;
+	}
+	return state
 }

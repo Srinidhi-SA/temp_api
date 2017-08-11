@@ -4,7 +4,7 @@ var perPage = 2;
 
 function getHeader(token){
 	return {
-		'Authorization': "JWT "+token,
+		'Authorization': token,
 		'Content-Type': 'application/json'
 	};
 }
@@ -17,14 +17,13 @@ export function getDataList(pageNo) {
 				dispatch(fetchDataSuccess(json))
 			}
 			else{
-				dispatch(fetchdDataError(json))
+				dispatch(fetchDataError(json))
 			}
 		})
 	}
 }
 
 function fetchDataList(pageNo,token) {
-	console.log("JWT "+token)
 	return fetch(API+'/api/datasets?page_number='+pageNo+'&page_size='+perPage+'',{
 		method: 'get',
 		headers: getHeader(token)

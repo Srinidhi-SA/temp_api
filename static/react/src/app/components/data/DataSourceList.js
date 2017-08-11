@@ -9,14 +9,18 @@ import $ from "jquery";
 
 import {FILEUPLOAD,MYSQL,INPUT,PASSWORD} from "../../helpers/helper";
 
-import {getDataSourceList,saveFileToStore,updateSelectedDataSrc} from "../../actions/dataSourceListActions";
+import {getDataSourceList,saveFileToStore,updateSelectedDataSrc,updateDbDetails} from "../../actions/dataSourceListActions";
 
 
 @connect((store) => {
 	return {login_response: store.login.login_response,
 		dataSrcList:store.dataSource.dataSourceList,
 		fileUpload:store.dataSource.fileUpload,
-		mySQLDetails:store.dataSource.mySQLDetails,
+		db_host:store.dataSource.db_host,
+		db_schema:store.dataSource.db_host,
+		db_username:store.dataSource.db_host,
+		db_port:store.dataSource.db_port,
+		db_password:store.dataSource.db_host,
 	};
 })
 
@@ -26,7 +30,6 @@ export class DataSourceList extends React.Component {
 		super(props);
 		this.onDrop = this.onDrop.bind(this);
 		this.handleSelect = this.handleSelect.bind(this);
-		this.handleInputChange = this.handleInputChange.bind(this);
 	}
 	componentWillMount() {
 		this.props.dispatch(getDataSourceList());
@@ -58,7 +61,7 @@ export class DataSourceList extends React.Component {
 				let formList = null;
 				var divId = "data_upload_"+i;
 				const fieldsList = fields.map((field,j) =>{
-					if(field.fieldType == "file"){
+					if(field.fieldType == "button"){
 						return(<div class="tab-pane active cont fade in">
 						<h3>
 						File Upload
@@ -81,7 +84,7 @@ export class DataSourceList extends React.Component {
 						return(<div class="form-group" id={j}>
 						<label for="fl1" class="col-sm-2 control-label">{field.labelName}</label>
 						<div class="col-sm-10">
-						<input id={j} type="text" placeholder={field.placeHolder} class="form-control" onChange={this.handleInputChange}/>
+						<input id={j} type="text" name={field.labelName} placeholder={field.placeHolder} class="form-control" onChange={this.handleInputChange.bind(this)}/>
 						</div>
 						</div>)
 					}
@@ -89,7 +92,7 @@ export class DataSourceList extends React.Component {
 						return(<div class="form-group" id={j}>
 						<label for="fl1" class="col-sm-2 control-label">{field.labelName}</label>
 						<div class="col-sm-10">
-						<input  id={j} type="password" placeholder={field.placeHolder} class="form-control"/>
+						<input  id={j} type="password" name={field.labelName}  placeholder={field.placeHolder} class="form-control" onChange={this.handleInputChange.bind(this)}/>
 						</div>
 						</div>)
 					}

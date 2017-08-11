@@ -1,4 +1,6 @@
 import {API} from "../helpers/env";
+import {HOST,PORT,SCHEMA,USERNAME,PASSWORD,TABLENAME} from "../helpers/helper";
+
 function getHeader(token){
 	return {
 		'Authorization': "JWT "+token,
@@ -71,5 +73,46 @@ export function updateSelectedDataSrc(selectedDataSrcType) {
 	}
 }
 export function updateDbDetails(evt){
-	alert(evt.name)
+	if(evt.target.name.toLowerCase() == HOST.toLowerCase()){
+		var host  = evt.target.value;
+		return {
+			type: "DB_HOST_NAME",
+			host
+		}
+	}
+	else if(evt.target.name.toLowerCase() == PORT.toLowerCase()){
+		var port  = evt.target.value;
+		return {
+			type: "DB_PORT_NAME",
+			port
+		}
+	}
+	else if(evt.target.name.toLowerCase() == USERNAME.toLowerCase()){
+		var username  = evt.target.value;
+		return {
+			type: "DB_USER_NAME",
+			username
+		}
+    }
+	else if(evt.target.name.toLowerCase() == SCHEMA.toLowerCase()){
+		var schema  = evt.target.value;
+		return {
+			type: "DB_SCHEMA",
+			schema
+		}
+    }
+	else if(evt.target.name.toLowerCase() == PASSWORD.toLowerCase()){
+		var password  = evt.target.value;
+		return {
+			type: "DB_PASSWORD",
+			password
+		}
+    }
+	else if(evt.target.name.toLowerCase() == TABLENAME.toLowerCase()){
+		var tablename  = evt.target.value;
+		return {
+			type: "DB_TABLENAME",
+			tablename
+		}
+    }
 }
