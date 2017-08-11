@@ -76,7 +76,7 @@ class SignalView(viewsets.ModelViewSet):
             dataset.config = json.dumps(data['config'])
             dataset.save()
             return Response(dataset.config)
-        return Response(dataset.create_configuration())
+        return Response(dataset.generate_config())
 
 
 def get_datasource_config_list(request):
@@ -90,10 +90,13 @@ def get_config(request, slug=None):
     return JsonResponse(json.loads(job.config))
 
 
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
 def set_result(request, slug=None):
     job = Job.objects.get(slug=slug)
     if not job:
         return JsonResponse({'result':'Failed'})
-    job.results = json.dumps(request.data)
+    job.results = request.body
     job.save()
     return JsonResponse({'result':'Succeed'})

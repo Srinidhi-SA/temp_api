@@ -52,11 +52,6 @@ class Job(models.Model):
         super(Job, self).save(*args, **kwargs)
 
 
-def get_hdfs_dataset_path():
-    pass
-
-
-
 class Dataset(models.Model):
     name = models.CharField(max_length=100, null=True)
     slug = models.SlugField(null=True)
@@ -106,10 +101,11 @@ class Dataset(models.Model):
         print "Generated Slug"
 
         super(Dataset, self).save(*args, **kwargs)
-
+        print "Dataset save once. Initial"
         self.copy_file_to_hdfs()
 
         jobConfig = self.generate_config(*args, **kwargs)
+        print "Dataset realted config genarated."
 
         job = Job()
         job.name = "-".join(["Dataset", self.slug])
@@ -118,17 +114,20 @@ class Dataset(models.Model):
         job.config = json.dumps(jobConfig)
         job.save()
 
+        print "Job enrty created"
+
         from utils import submit_job
         job_url = submit_job(
             slug=job.slug,
             class_name='class_path_metadata'
         )
 
+        print "Job submitted."
+
         job.url = job_url
         job.save()
-        print "Added job. Not jobserver---"
-
         self.job = job
+        self.save()
 
     def set_preview_data(self):
         items = []
@@ -145,7 +144,7 @@ class Dataset(models.Model):
                     continue
                 items.append(row)
 
-        return json.dumps({"data" : items[:21] if len(items) > 21 else all_items[:21]})
+        return json.dumps({"data": items[:21] if len(items) > 21 else all_items[:21]})
 
     def generate_config(self, *args, **kwrgs):
         inputFile = "hdfs://{}:{}/{}".format(settings.HDFS.get("host"), settings.HDFS.get("port"), self.get_hdfs_relative_path())
@@ -208,7 +207,32 @@ class Insight(models.Model):
         self.generate_slug()
         super(Insight, self).save(*args, **kwargs)
 
-    def create_configuration(self):
+        jobConfig = self.generate_config(*args, **kwargs)
+        print "Dataset realted config genarated."
+
+        job = Job()
+        job.name = "-".join(["Insight", self.slug])
+        job.job_type = "master"
+        job.object_id = str(self.slug)
+        job.config = json.dumps(jobConfig)
+        job.save()
+
+        print "Job enrty created"
+
+        from utils import submit_job
+        job_url = submit_job(
+            slug=job.slug,
+            class_name='class_path_master'
+        )
+
+        print "Job submitted."
+
+        job.url = job_url
+        job.save()
+        self.job = job
+        self.save()
+
+    def generate_config(self, *args, **kwargs):
         config = dict()
 
         config["url_settings"] = self.create_configuration_url_settings()
