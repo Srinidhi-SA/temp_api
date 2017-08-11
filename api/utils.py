@@ -1,13 +1,13 @@
 import json
 
+from django.contrib.auth.models import User
 from rest_framework import serializers
 from rest_framework.utils import humanize_datetime
 from sjsclient import client
 
 from api.helper import JobserverDetails
 from api.user_helper import UserSerializer
-from django.contrib.auth.models import User
-from models import Job, Insight
+from models import Insight, Dataset
 
 
 def submit_job(slug, class_name):
@@ -74,7 +74,7 @@ class InsightSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         ret = super(InsightSerializer, self).to_representation(instance)
         dataset = ret['dataset']
-        dataset_object = Insight.objects.get(pk=dataset)
+        dataset_object = Dataset.objects.get(pk=dataset)
         ret['dataset'] = dataset_object.slug
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
