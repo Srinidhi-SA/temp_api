@@ -12988,7 +12988,7 @@ label {
 }
 .ma-checkbox, .ma-radio {
 	display: block;
-	line-height: 22px;
+	line-height: 14px;
 	margin: 0;
 	padding: 7px 0
 }
@@ -13015,15 +13015,15 @@ label {
 }
 .ma-checkbox input[type=checkbox]+label:before, .ma-checkbox input[type=radio]+label:before, .ma-radio input[type=checkbox]+label:before, .ma-radio input[type=radio]+label:before {
 	content: "";
-	width: 22px;
-	height: 22px;
+	width: 16px;
+	height: 16px;
 	display: inline-block;
 	border: 2px solid #eaeaea;
 	margin-right: 5px;
-	font-size: 18px;
+	font-size: 11px;
 	font-family: 'FontAwesome';
 	font-weight: 400;
-	line-height: 19px;
+	line-height: 13px;
 	vertical-align: bottom;
 	text-align: center;
 	background-color: #fff;
@@ -13050,12 +13050,12 @@ label {
 	border-radius: 50%;
 	font-family: 'FontAwesome';
 	line-height: 17px;
-	font-size: 14px
+	font-size: 11px
 }
 
 @media screen and (-webkit-min-device-pixel-ratio:0) {
 .ma-checkbox input[type=radio]+label:before,  .ma-radio input[type=radio]+label:before {
-	line-height: 18px
+	line-height: 13px;
 }
 }
 
