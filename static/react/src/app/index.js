@@ -16,6 +16,7 @@ import {Stories} from "./components/stories/Stories";
 import {Signals} from "./components/signals/Signals";
 import {Signal} from "./components/signals/Signal";
 import {OverViewPage} from "./components/signals/overViewPage";
+import {DataVariableSelection} from "./components/data/DataVariableSelection";
 
 
 
@@ -39,8 +40,9 @@ class App extends React.Component {
             <Route path="/settings" component={Settings} />
             <Route path="/apps" component={Apps} />
             <Route path="/stories" component={Stories} />
-            <Route path="/data" component={Data} />
+            <Route exact  path="/data" component={Data} />
             <Route path="/data/:slug" component={DataPreview} />
+            <Route path="/data/variableSelection" component={DataVariableSelection} />
           </Main>
       </Switch>
       </BrowserRouter>

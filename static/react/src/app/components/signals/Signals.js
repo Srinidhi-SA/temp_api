@@ -8,6 +8,8 @@ import {getList} from "../../actions/signalActions";
 import Breadcrumb from 'react-breadcrumb';
 //import $ from "jquery";
 var dateFormat = require('dateformat');
+import {CreateSignal} from "./CreateSignal";
+
 
 @connect((store) => {
   return {login_response: store.login.login_response, signalList: store.signals.signalList.data, selectedSignal: store.signals.signalAnalysis};
@@ -58,6 +60,7 @@ export class Signals extends React.Component {
       const storyList = data.map((story, i) => {
         var signalLink = "/signals/" + story.slug;
         return (
+        		
           <div className="col-md-3 top20 list-boxes" key={i}>
             <div className="rep_block newCardStyle" name={story.name}>
               <div className="card-header"></div>
@@ -144,6 +147,7 @@ export class Signals extends React.Component {
             ]}/>
 
             <div className="main-content">
+            <CreateSignal/>
               {storyList}
             </div>
           </div>
