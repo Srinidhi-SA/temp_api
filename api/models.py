@@ -119,7 +119,8 @@ class Dataset(models.Model):
         from utils import submit_job
         job_url = submit_job(
             slug=job.slug,
-            class_name='class_path_metadata'
+            class_name='class_path_metadata',
+            job_config=jobConfig
         )
 
         print "Job submitted."

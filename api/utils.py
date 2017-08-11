@@ -25,9 +25,11 @@ def submit_job(slug, class_name, job_config):
 
     class_path = JobserverDetails.get_class_path(class_name)
 
-    config = JobserverDetails.get_config(slug=slug,
+    config1 = JobserverDetails.get_config(slug=slug,
                                          class_name=class_name,)
+    config = {}
     config['job_config'] = job_config
+    config['job_config'].update(config1)
 
     job = sjs.jobs.create(app, class_path, ctx=ctx, conf=json.dumps(config))
 
