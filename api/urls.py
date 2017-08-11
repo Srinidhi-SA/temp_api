@@ -10,7 +10,7 @@ from api import views
 
 # Start adding urlconf from here
 
-router = routers.DefaultRouter(trailing_slash=False)
+router = routers.DefaultRouter()
 router.register(
     'datasets',
     DatasetView,
