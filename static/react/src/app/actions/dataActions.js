@@ -84,3 +84,5 @@ function fetchDataPreviewError(json) {
     json
   }
 }
+
+//get preview data

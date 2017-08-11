@@ -9,7 +9,6 @@ function getHeader(token){
 }
 //x-www-form-urlencoded'
 export function getList(token) {
-  alert(token);
     return (dispatch) => {
     return fetchPosts(token).then(([response, json]) =>{
         if(response.status === 200){
@@ -68,7 +67,7 @@ export function getSignalAnalysis(token,errandId) {
 
 
 function fetchPosts_analysis(token,errandId) {
-  console.log("JWT "+token)
+  console.log(token)
 
   return fetch(API+'/api/signals/'+errandId+"/",{
 		method: 'get',

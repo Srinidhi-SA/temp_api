@@ -5,6 +5,7 @@ function getHeader(token){
 	return {
 		'Authorization': token,
 		'Content-Type': 'application/json'
+
 	};
 }
 
@@ -33,7 +34,7 @@ function fetchDataSrcSuccess(dataSrcList){
 		dataSrcList,
 	}
 }
-function fetchDataSrcError(json) {	
+function fetchDataSrcError(json) {
 	return {
 		type: "DATA_SOURCE_LIST_ERROR",
 		json
@@ -116,3 +117,4 @@ export function updateDbDetails(evt){
 		}
     }
 }
+
