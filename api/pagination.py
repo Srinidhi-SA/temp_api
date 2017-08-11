@@ -1,12 +1,20 @@
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
-
+from django.conf import settings
 
 class CustomPagination(PageNumberPagination):
     def get_paginated_response(self, data):
 
-        page_number = int(self.request.query_params.get('page_number', 1))
-        page_size = int(self.request.query_params.get('page_size', 10))
+        # TODO: move the below exception handeling to some util function
+        try:
+            page_number = int(self.request.query_params.get('page_number', settings.PAGENUMBER))
+        except ValueError:
+            page_number = settings.PAGENUMBER
+        try:
+            page_size = int(self.request.query_params.get('page_size', settings.PAGESIZE))
+        except ValueError:
+            page_size = settings.PAGESIZE
+
         pagination = self.get_page_count(data, page_number, page_size)
         return Response({
             'data': pagination["current_data"],

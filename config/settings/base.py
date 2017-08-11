@@ -107,6 +107,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 REST_FRAMEWORK = {
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
@@ -186,14 +187,16 @@ MEDIA_URL = '/media/'
 UPLOAD_FOLDER = '/uploads/datasets/'
 
 DATA_SOURCES_CONFIG = {"conf":  [{
-    "dataSourceType": "fileUpload",
+        "dataSourceType": "fileUpload",
+        "dataSourceName" : "File Upload",
   		"formFields": [{
-			"fieldType": "button",
-			"name": "upload"
+			"fieldType": "file",
+			"name": "File"
 		}]
 },
 	{
 		"dataSourceType": "MySQL",
+        "dataSourceName" : "MySQL",
 		"formFields": [{
                     "fieldType": "Input",
                 				"placeHolder": "host",
@@ -202,7 +205,7 @@ DATA_SOURCES_CONFIG = {"conf":  [{
 			{
 				"fieldType": "Input",
 				"placeHoplaceHolder": "port",
-				"labelName": "Host",
+				"labelName": "Port",
 				"defaultValue": 3306
                 },
 			{
@@ -237,3 +240,7 @@ THIS_SERVER_DETAILS = {
     "port": "9001",
     "initail_domain": "/api"
 }
+
+
+PAGESIZE = 10
+PAGENUMBER = 1
