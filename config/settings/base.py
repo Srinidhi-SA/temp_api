@@ -240,3 +240,7 @@ THIS_SERVER_DETAILS = {
     "port": "9001",
     "initail_domain": "/api"
 }
+
+
+PAGESIZE = 10
+PAGENUMBER = 1

@@ -8,11 +8,11 @@ class CustomPagination(PageNumberPagination):
         # TODO: move the below exception handeling to some util function
         try:
             page_number = int(self.request.query_params.get('page_number', settings.PAGENUMBER))
-        except Exception as e:
+        except ValueError:
             page_number = settings.PAGENUMBER
         try:
             page_size = int(self.request.query_params.get('page_size', settings.PAGESIZE))
-        except Exception as e:
+        except ValueError:
             page_size = settings.PAGESIZE
 
         pagination = self.get_page_count(data, page_number, page_size)
