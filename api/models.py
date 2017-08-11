@@ -192,6 +192,8 @@ class Insight(models.Model):
 
     bookmarked = models.BooleanField(default=False)
 
+    job = models.ForeignKey(Job, null=True)
+
     class Meta:
         ordering = ['-created_on', '-updated_on']
 
@@ -222,7 +224,8 @@ class Insight(models.Model):
         from utils import submit_job
         job_url = submit_job(
             slug=job.slug,
-            class_name='class_path_master'
+            class_name='class_path_master',
+            job_config=jobConfig
         )
 
         print "Job submitted."

@@ -10,7 +10,7 @@ from api.user_helper import UserSerializer
 from models import Insight, Dataset
 
 
-def submit_job(slug, class_name):
+def submit_job(slug, class_name, job_config):
     sjs = client.Client(
         JobserverDetails.get_jobserver_url()
     )
@@ -26,7 +26,8 @@ def submit_job(slug, class_name):
     class_path = JobserverDetails.get_class_path(class_name)
 
     config = JobserverDetails.get_config(slug=slug,
-                                         class_name=class_name)
+                                         class_name=class_name,)
+    config['job_config'] = job_config
 
     job = sjs.jobs.create(app, class_path, ctx=ctx, conf=json.dumps(config))
 
