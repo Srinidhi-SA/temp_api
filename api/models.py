@@ -5,11 +5,14 @@ import random
 import string
 import csv
 import json
+import os
 
 from django.template.defaultfilters import slugify
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
+
+from api.lib import hadoop
 
 # Create your models here.
 
@@ -49,15 +52,9 @@ class Job(models.Model):
         super(Job, self).save(*args, **kwargs)
 
 
-def dataset_upload_directory():
-    return "{0}".format(settings.MEDIA_ROOT)
+def get_hdfs_dataset_path():
+    pass
 
-
-def dataset_input_file_path(instance, filename):
-    print("yes, I am in here")
-    print dataset_upload_directory() + "{0}".format(filename)
-    # return dataset_upload_directory() + "{0}".format(filename)
-    return "/uploads"
 
 
 class Dataset(models.Model):
@@ -107,25 +104,28 @@ class Dataset(models.Model):
     def save(self, *args, **kwargs):
         self.generate_slug()
         print "Generated Slug"
-        # ---------------
-        from utils import submit_job
+
+        self.copy_file_to_hdfs()
+
+        jobConfig = self.generate_config(*args, **kwargs)
+
         job = Job()
         job.name = "-".join(["Dataset", self.slug])
         job.job_type = "metadata"
         job.object_id = str(self.slug)
-        job.config = "{}"
+        job.config = json.dumps(jobConfig)
         job.save()
 
-        # job_url = submit_job(
-        #     slug=job.slug,
-        #     class_name='class_path_metadata'
-        # )
+        from utils import submit_job
+        job_url = submit_job(
+            slug=job.slug,
+            class_name='class_path_metadata'
+        )
 
-        # job.url = job_url
+        job.url = job_url
         job.save()
         print "Added job. Not jobserver---"
 
-        # --------------
         self.job = job
         super(Dataset, self).save(*args, **kwargs)
 
@@ -145,6 +145,24 @@ class Dataset(models.Model):
                 items.append(row)
 
         return json.dumps({"data" : items[:21] if len(items) > 21 else all_items[:21]})
+
+    def generate_config(self, *args, **kwrgs):
+        inputFile = "hdfs://{}:{}/{}".format(settings.HDFS.get("host"), settings.HDFS.get("port"), self.get_hdfs_relative_path())
+        return {
+            "dataSourceType" : "file",
+            "config" : {
+                "inputFile" : inputFile
+            }
+        }
+
+    def copy_file_to_hdfs(self):
+        hadoop.hadoop_put(self.input_file.path, self.get_hdfs_relative_path())
+
+    def get_hdfs_relative_path(self):
+        return os.path.join( [settings.HDFS.get('base_path'), self.slug, self.name])
+
+    def create_directory_for_dataset(self):
+        pass
 
 
 class Insight(models.Model):
