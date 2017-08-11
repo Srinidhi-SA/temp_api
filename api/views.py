@@ -96,6 +96,6 @@ def set_result(request, slug=None):
     job = Job.objects.get(slug=slug)
     if not job:
         return JsonResponse({'result':'Failed'})
-    job.results = request.data
+    job.results = json.dumps(request.data)
     job.save()
     return JsonResponse({'result':'Succeed'})
