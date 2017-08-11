@@ -3,7 +3,7 @@ import {HOST,PORT,SCHEMA,USERNAME,PASSWORD,TABLENAME} from "../helpers/helper";
 
 function getHeader(token){
 	return {
-		'Authorization': "JWT "+token,
+		'Authorization': token,
 		'Content-Type': 'application/json'
 	};
 }

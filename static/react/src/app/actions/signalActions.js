@@ -3,7 +3,7 @@ import {API} from "../helpers/env";
 
 function getHeader(token){
   return {
-    'Authorization': "JWT "+token,
+    'Authorization': token,
     'Content-Type': 'application/json'
   };
 }
@@ -24,7 +24,7 @@ export function getList(token) {
 }
 
 function fetchPosts(token) {
-  console.log("JWT "+token)
+  console.log(token)
 
   return fetch(API+'/api/signals/',{
 		method: 'get',
@@ -73,7 +73,7 @@ function fetchPosts_analysis(token,errandId) {
   return fetch(API+'/api/signals/'+errandId+"/",{
 		method: 'get',
 		headers: {
-			'Authorization': "JWT "+token,
+			'Authorization': token,
 			'Content-Type': 'application/x-www-form-urlencoded'
 		}
   }).then( response => Promise.all([response, response.json()]));
