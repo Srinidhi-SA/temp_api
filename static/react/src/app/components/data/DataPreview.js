@@ -6,7 +6,7 @@ import {getData} from "../../actions/dataActions";
 import store from "../../store";
 @connect((store) => {
   return {login_response: store.login.login_response,
-           dataPreview: store.data.dataPreview};
+           dataPreview: store.datasets.dataPreview};
 })
 
 //var tableTemplate= "";
@@ -21,9 +21,9 @@ export class DataPreview extends React.Component {
   // }
 
   render() {
-    console.log("data is called##########3");
+    console.log("data prev is called##########3");
     console.log(this.props);
-    const data = store.getState().data.dataPreview.meta_data.data;
+    const data = store.getState().datasets.dataPreview.meta_data.data;
 
     if (data) {
       console.log(data[0]);

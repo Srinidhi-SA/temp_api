@@ -9,14 +9,14 @@ import store from "../../store";
 
 import {MainHeader} from "../common/MainHeader";
 import {BreadCrumb} from "../common/BreadCrumb";
-import {getDataList} from "../../actions/dataActions";
+import {getDataList,getDataSetPreview} from "../../actions/dataActions";
 import {fetchProductList} from "../../actions/dataActions";
 import {DataUpload} from "./DataUpload";
 import {open,close} from "../../actions/dataUploadActions";
 var dateFormat = require('dateformat');
 
 @connect((store) => {
-	return {login_response: store.login.login_response, dataList: store.datasets.dataList,
+	return {login_response: store.login.login_response, dataList: store.datasets.dataList,dataPreview: store.datasets.dataPreview
 	};
 })
 
@@ -24,6 +24,7 @@ export class Data extends React.Component {
 	constructor() {
 		super();
 		this.handleSelect = this.handleSelect.bind(this);
+		this.selectedData = "";
 	}
 	componentWillMount() {
 		var pageNo = 1;
@@ -33,8 +34,19 @@ export class Data extends React.Component {
 		}else
 			this.props.dispatch(getDataList(pageNo));
 	}
+	getPreviewData(e){
+		this.selectedData = e.target.id;
+		alert(this.selectedData);
+	  this.props.dispatch(getDataSetPreview(this.selectedData));
+	}
 	render() {
-		console.log("data is called##########3");
+		console.log("data is called");
+		console.log(this.props);
+		if(store.getState().datasets&&store.getState().datasets.dataPreview){
+			let _link = "/data/"+this.selectedData;
+			return(<Redirect to={_link}/>);
+		}
+
 		const dataSets = store.getState().datasets.dataList.data;
 		console.log(dataSets)
 		if (dataSets) {
@@ -55,7 +67,7 @@ export class Data extends React.Component {
 						<div className="row">
 						<div className="col-xs-9">
 						<h4 className="title newCardTitle">
-						<Link id={data.slug} to={dataSetLink}>{data.name}</Link>
+						<a href="javascript:void(0);" id= {data.slug} onClick = {this.getPreviewData.bind(this)}>ererrre</a>
 						</h4>
 						</div>
 						<div className="col-xs-3">

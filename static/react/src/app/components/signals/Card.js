@@ -31,7 +31,7 @@ export class Card extends React.Component {
           return (<CardHtml key = {i} htmlElement={story.data} type={story.dataType}/>);
           break;
         case "c3Chart":
-          return (<div><C3Chart key = {i} data={story.data.data} yformat={story.data.yformat} tooltip={story.data.tooltip_c3}/><div className="clearfix"/></div>);
+          return (<div><C3Chart key = {i} data={story.data.chart_c3} yformat={story.data.yformat} y2format={story.data.y2format} tooltip={story.data.tooltip_c3}/><div className="clearfix"/></div>);
           break;
       }
 
