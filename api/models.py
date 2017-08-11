@@ -160,7 +160,7 @@ class Dataset(models.Model):
         hadoop.hadoop_put(self.input_file.path, self.get_hdfs_relative_path())
 
     def get_hdfs_relative_path(self):
-        return os.path.join( settings.HDFS.get('base_path'), self.slug, self.name)
+        return os.path.join( settings.HDFS.get('base_path'), self.slug, self.input_file.name)
 
     def create_directory_for_dataset(self):
         pass
