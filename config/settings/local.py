@@ -33,7 +33,8 @@ HDFS = {
     'port': '14000', #webhdfs port
     'uri': 'http://ec2-34-205-203-38.compute-1.amazonaws.com:14000/webhdfs/v1',
     'user.name': 'hadoop',
-    'hdfs_port': '8020' #hdfs port
+    'hdfs_port': '8020', #hdfs port
+    'base_path' : '/dev/dataset/'
 }
 
 EMR = {
