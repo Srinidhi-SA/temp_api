@@ -244,3 +244,25 @@ THIS_SERVER_DETAILS = {
 
 PAGESIZE = 10
 PAGENUMBER = 1
+
+HDFS = {
+
+    # Give host name without http
+    'host': 'ec2-34-205-203-38.compute-1.amazonaws.com',
+    'port': '14000', #webhdfs port
+    'uri': 'webhdfs/v1',
+    'user.name': 'hadoop',
+    'hdfs_port': '8020', #hdfs port
+    'base_path' : '/dev/dataset/'
+}
+
+JOBSERVER = {
+    'host': 'ec2-34-205-203-38.compute-1.amazonaws.com',
+    'port': '8090',
+    'app-name': 'test_api_1',
+    'context': 'pysql-context',
+    'class_path_master': 'bi.sparkjobs.madvisor.JobScript',
+    'class_path_metadata': 'bi.sparkjobs.metadata.JobScript',
+    'class_path_filter': 'bi.sparkjobs.filter.JobScript',
+
+}

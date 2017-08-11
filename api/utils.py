@@ -28,7 +28,7 @@ def submit_job(slug, class_name):
     config = JobserverDetails.get_config(slug=slug,
                                          class_name=class_name)
 
-    job = sjs.jobs.create(app, class_path, ctx=ctx, conf=config)
+    job = sjs.jobs.create(app, class_path, ctx=ctx, conf=json.dumps(config))
 
     # print
     job_url = JobserverDetails.print_job_details(job)

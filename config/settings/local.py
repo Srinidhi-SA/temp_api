@@ -29,10 +29,10 @@ print os.path.join(
 HDFS = {
 
     # Give host name without http
-    'host': 'ec2-34-205-203-38.compute-1.amazonaws.com',
-    'port': '14000', #webhdfs port
-    'uri': 'http://ec2-34-205-203-38.compute-1.amazonaws.com:14000/webhdfs/v1',
-    'user.name': 'hadoop',
+    'host': 'localhost',
+    'port': '50070', #webhdfs port
+    'uri': '/webhdfs/v1',
+    'user.name': 'marlabs',
     'hdfs_port': '8020', #hdfs port
     'base_path' : '/dev/dataset/'
 }
@@ -49,7 +49,7 @@ KAFKA = {
 }
 
 JOBSERVER = {
-    'host': 'ec2-34-205-203-38.compute-1.amazonaws.com',
+    'host': 'localhost',
     'port': '8090',
     'app-name': 'test_api_1',
     'context': 'pysql-context',

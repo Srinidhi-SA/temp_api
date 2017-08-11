@@ -52,7 +52,6 @@ class SignalView(viewsets.ModelViewSet):
         :return:
         '''
         data = request.data
-        serializer = self.get_serializer_class()
         instance = self.get_object()
         serializer = self.get_serializer(instance=instance, data=data, partial=True)
         if serializer.is_valid():
@@ -92,7 +91,6 @@ def get_config(request, slug=None):
 
 
 def set_result(request, slug=None):
-    import pdb;pdb.set_trace()
     job = Job.objects.get(slug=slug)
     if not job:
         return JsonResponse({'result':'Failed'})
