@@ -24,23 +24,24 @@ class JobserverDetails(object):
         return JOBSERVER.get(name)
 
     @classmethod
-    def get_config(cls, slug, name):
+    def get_config(cls, slug, class_name):
         return {
-            "job_type": name,
-            "job_url" : "http://{0}:{1}/api/job/<slug>/".format(THIS_SERVER_DETAILS.get('host'),
-                                                                THIS_SERVER_DETAILS.get('port'),
-                                                                slug),
-            "get_config" :
-                {
-                    "action" : "get_config" ,
-                    "method" : "GET"
-                },
-            "save_results" :
-                {
-                    "action" : "result",
-                    "method"  : "PUT"
-                }
-        }
+                "job_type": class_name,
+                "job_url" : "http://{0}:{1}/api/job/<slug>/".format(THIS_SERVER_DETAILS.get('host'),
+                                                                    THIS_SERVER_DETAILS.get('port'),
+                                                                    slug),
+                "get_config" :
+                    {
+                        "action" : "get_config" ,
+                        "method" : "GET"
+                    },
+                "save_results" :
+                    {
+                        "action" : "result",
+                        "method"  : "PUT"
+                    }
+            }
+
 
     @classmethod
     def print_job_details(cls, job):
