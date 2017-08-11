@@ -53,8 +53,8 @@ JOBSERVER = {
     'port': '8090',
     'app-name': 'test_api_1',
     'context': 'pysql-context',
-    'class_path_master': 'bi.sparkjobs.madvisor.JobScript',
-    'class_path_metadata': 'bi.sparkjobs.metadata.JobScript',
+    'class_path_master': 'bi.sparkjobs.JobScript',
+    'class_path_metadata': 'bi.sparkjobs.JobScript',
     'class_path_filter': 'bi.sparkjobs.filter.JobScript',
 
 }
