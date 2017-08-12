@@ -148,7 +148,7 @@ class Dataset(models.Model):
         return json.dumps({"data": items[:21] if len(items) > 21 else all_items[:21]})
 
     def generate_config(self, *args, **kwrgs):
-        inputFile = "hdfs://{}:{}/{}".format(settings.HDFS.get("host"), settings.HDFS.get("port"), self.get_hdfs_relative_path())
+        inputFile = "hdfs://{}:{}{}".format(settings.HDFS.get("host"), settings.HDFS.get("port"), self.get_hdfs_relative_file_path())
         return {
             "dataSourceType" : "file",
             "config" : {
@@ -160,7 +160,11 @@ class Dataset(models.Model):
         hadoop.hadoop_put(self.input_file.path, self.get_hdfs_relative_path())
 
     def get_hdfs_relative_path(self):
-        return os.path.join( settings.HDFS.get('base_path'), self.slug, self.input_file.name)
+        return os.path.join( settings.HDFS.get('base_path'), self.slug)
+
+    def get_hdfs_relative_file_path(self):
+        return os.path.join( settings.HDFS.get('base_path'), self.slug, os.path.basename(self.input_file.path))
+
 
     def create_directory_for_dataset(self):
         pass
