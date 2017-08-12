@@ -103,7 +103,7 @@ class Dataset(models.Model):
         super(Dataset, self).save(*args, **kwargs)
         print "Dataset save once. Initial"
         # self.copy_file_to_hdfs()
-        self.copy_file_to_hdfs_local()
+        # self.copy_file_to_hdfs_local()
 
         jobConfig = self.generate_config(*args, **kwargs)
         print "Dataset realted config genarated."
@@ -129,7 +129,7 @@ class Dataset(models.Model):
         job.url = job_url
         job.save()
         self.job = job
-        self.save()
+        # self.save()
 
     def set_preview_data(self):
         items = []
@@ -175,7 +175,7 @@ class Dataset(models.Model):
 
     def get_input_file(self, type='file'):
         if type=='file':
-            return "file:///{}".format(self.emr_local())
+            return "file:///{}".format(self.input_file.path)
         elif type=='hdfs':
             return "hdfs://{}:{}{}".format(settings.HDFS.get("host"), settings.HDFS.get("port"), self.get_hdfs_relative_file_path())
 
