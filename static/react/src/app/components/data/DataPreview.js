@@ -2,91 +2,89 @@ import React from "react";
 import {MainHeader} from "../common/MainHeader";
 import {connect} from "react-redux";
 import {Redirect} from 'react-router';
-import {getData} from "../../actions/dataActions";
 import store from "../../store";
 import {C3Chart} from "../c3Chart";
 import ReactDOM from 'react-dom';
 
-var dataPrev= {
-     "metaData" : [   {"name": "Rows", "value": 30, "display":true},
-                      {"name": "Measures", "value": 10, "display":true},
-                     {"name": "Dimensions", "value": 5, "display":true},
-                     {"name": "Ignore Suggestion", "value": 20, "display":false}
-                 ],
-
-    "columnData" : [{
-			"name": "Age",
-			"slug": "age_a",
-			"columnStats":[ {"name": "Mean", "value":100}, {"name": "Sum", "value":1000}, {"name": "Min", "value":0},
-							 {"name": "Max", "value":1000}	],
-			"chartData" : {
-                      "data": {
-                  "columns": [
-                      ['data1', 30, 200, 100, 400, 150, 250]
-
-                  ],
-                  "type": 'bar'
-              },
-              "size": {
-                "height": 200
-              },
-              "legend": {
-                 "show": false
-               },
-              "bar": {
-                  "width": {
-                      "ratio": 0.5
-                  }
-
-              }
-          },
-			"columnType": "measure/dimension/datetime"
-      },
-  	  {
-  			"name": "Name",
-  			"slug": "name_a",
-  			"columnStats":[ {"name": "Mean", "value":200}, {"name": "Sum", "value":2000}, {"name": "Min", "value":0},
-  							 {"name": "Max", "value":1000}	],
-  			"chartData" : {
-                        "data": {
-                    "columns": [
-                        ['data1', 30, 200, 100, 400, 150, 750]
-
-                    ],
-                    "type": 'bar'
-                },
-                "size": {
-                  "height": 200
-                },
-                "legend": {
-                "show": false
-              },
-                "bar": {
-                    "width": {
-                        "ratio": 0.5
-                    }
-
-                }
-            },
-  			"columnType": "measure/dimension/datetime"
-      }],
-    "headers" :[
-        {   "name": "Age",
-          "slug" : "age_a" },
-		  {   "name": "Name",
-          "slug" : "name_a", }
-
-      ],
-    "sampleData" :[[20,30],
-	               [33,44],
-				   [24,33],
-				   [44,36]]
-};
+// var dataPrev= {
+//      "metaData" : [   {"name": "Rows", "value": 30, "display":true},
+//                       {"name": "Measures", "value": 10, "display":true},
+//                      {"name": "Dimensions", "value": 5, "display":true},
+//                      {"name": "Ignore Suggestion", "value": 20, "display":false}
+//                  ],
+//
+//     "columnData" : [{
+// 			"name": "Age",
+// 			"slug": "age_a",
+// 			"columnStats":[ {"name": "Mean", "value":100}, {"name": "Sum", "value":1000}, {"name": "Min", "value":0},
+// 							 {"name": "Max", "value":1000}	],
+// 			"chartData" : {
+//                       "data": {
+//                   "columns": [
+//                       ['data1', 30, 200, 100, 400, 150, 250]
+//
+//                   ],
+//                   "type": 'bar'
+//               },
+//               "size": {
+//                 "height": 200
+//               },
+//               "legend": {
+//                  "show": false
+//                },
+//               "bar": {
+//                   "width": {
+//                       "ratio": 0.5
+//                   }
+//
+//               }
+//           },
+// 			"columnType": "measure/dimension/datetime"
+//       },
+//   	  {
+//   			"name": "Name",
+//   			"slug": "name_a",
+//   			"columnStats":[ {"name": "Mean", "value":200}, {"name": "Sum", "value":2000}, {"name": "Min", "value":0},
+//   							 {"name": "Max", "value":1000}	],
+//   			"chartData" : {
+//                         "data": {
+//                     "columns": [
+//                         ['data1', 30, 200, 100, 400, 150, 750]
+//
+//                     ],
+//                     "type": 'bar'
+//                 },
+//                 "size": {
+//                   "height": 200
+//                 },
+//                 "legend": {
+//                 "show": false
+//               },
+//                 "bar": {
+//                     "width": {
+//                         "ratio": 0.5
+//                     }
+//
+//                 }
+//             },
+//   			"columnType": "measure/dimension/datetime"
+//       }],
+//     "headers" :[
+//         {   "name": "Age",
+//           "slug" : "age_a" },
+// 		  {   "name": "Name",
+//           "slug" : "name_a", }
+//
+//       ],
+//     "sampleData" :[[20,30],
+// 	               [33,44],
+// 				   [24,33],
+// 				   [44,36]]
+// };
 
 
 @connect((store) => {
-  return {login_response: store.login.login_response
-            };
+  return {login_response: store.login.login_response, dataPreview: store.datasets.dataPreview};
 })
 
 
@@ -120,12 +118,14 @@ setSideElements(e){
    //renderFlag=true;
    const chkClass = $(e.target).attr('class');
    console.log(chkClass);
+   let dataPrev = this.props.dataPreview.meta_data;
    dataPrev.columnData.map((item, i) => {
      if(chkClass.indexOf(item.slug) !== -1){
+       //alert("working");
        const sideChartUpdate = item.chartData;
        const sideTableUpdate = item.columnStats;
        $("#side-chart").empty();
-        ReactDOM.render(<C3Chart data={sideChartUpdate} yformat={false} sideChart={true}/>, document.getElementById('side-chart'));
+        ReactDOM.render(<C3Chart classId={"_side"} data={sideChartUpdate} yformat={false} sideChart={true}/>, document.getElementById('side-chart'));
 
         const sideTableUpdatedTemplate=sideTableUpdate.map((tableItem,tableIndex)=>{
         return(  <tr key={tableIndex}>
@@ -142,11 +142,11 @@ setSideElements(e){
 }
 
   render() {
-    console.log("data is called##########3");
+    console.log("data prev is called##########3");
     console.log(this.props);
   //  const data = store.getState().data.dataPreview.meta_data.data;
-
-    if (true) {
+  let dataPrev = this.props.dataPreview.meta_data;
+    if (dataPrev) {
     //  console.log(data[0]);
       //const tableThTemplate=data[0].map((thElement, thIndex) => {
     const topInfo = dataPrev.metaData.map((item, i) => {
@@ -196,23 +196,6 @@ setSideElements(e){
       );
     });
 
-//     return (
-// <div classNameName="side-body">
-// <div classNameName="main-content">
-//       <table>
-//         <thead>
-//           <tr>
-//              {tableThTemplate}
-//           </tr>
-//         </thead>
-//         <tbody>
-//              {tableRowsTemplate}
-//         </tbody>
-//
-//       </table>
-//     </div>
-//     </div>
-//     );
 const sideChart = dataPrev.columnData[0].chartData;
 console.log("chart-----------")
 console.log(JSON.stringify(sideChart));
@@ -289,7 +272,7 @@ return(
                     <div id="pnl_visl" className="panel-collapse collapse in" aria-expanded="true">
                        <div className="panel-body" id="side-chart">
                           {/*<img src="../assets/images/data_preview_graph.png" className="img-responsive" />*/}
-                          <C3Chart data={sideChart} yformat={false} sideChart={true}/>
+                          <C3Chart classId={"_side"} data={sideChart} yformat={false} sideChart={true}/>
                        </div>
                     </div>
                  </div>
@@ -332,7 +315,7 @@ return(
     } else {
       return (
         <div>no data</div>
-      )
+      );
   }
 }
 }

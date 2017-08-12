@@ -8,6 +8,8 @@ import {getList} from "../../actions/signalActions";
 import Breadcrumb from 'react-breadcrumb';
 //import $ from "jquery";
 var dateFormat = require('dateformat');
+import {CreateSignal} from "./CreateSignal";
+
 
 @connect((store) => {
   return {login_response: store.login.login_response, signalList: store.signals.signalList.data, selectedSignal: store.signals.signalAnalysis};
@@ -40,7 +42,6 @@ export class Signals extends React.Component {
         clearInterval(tmp);
       }
     }, 100);
-
   }
 
   render() {
@@ -60,6 +61,7 @@ export class Signals extends React.Component {
       const storyList = data.map((story, i) => {
         var signalLink = "/signals/" + story.slug;
         return (
+        		
           <div className="col-md-3 top20 list-boxes" key={i}>
             <div className="rep_block newCardStyle" name={story.name}>
               <div className="card-header"></div>
@@ -146,20 +148,7 @@ export class Signals extends React.Component {
             ]}/>
 
             <div className="main-content">
-            <div class="col-md-3 top20 list-boxes" data-toggle="modal" data-target="#createNewStory">
-              <div class="newCardStyle firstCard">
-                <div class="card-header"></div>
-                <div class="card-center newStoryCard">
-                  <div class="col-xs-2 col-xs-offset-1"><i class="fa fa-3x">+</i></div>
-                  <div class="col-xs-8 col-xs-offset-0">
-                    CREATE NEW
-                  <Link to="/signals" >
-
-                  </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <CreateSignal/>
               {storyList}
             </div>
           </div>

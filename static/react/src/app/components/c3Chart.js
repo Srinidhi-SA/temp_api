@@ -8,14 +8,16 @@ export class C3Chart extends React.Component {
     super(props);
     console.log("yformat55555555555555");
     console.log(props);
+    // alert(props.classId);
   }
   getChartElement(){
-      return $(".chart", this.element);
+      return $(".chart"+this.props.classId, this.element);
     }
 componentWillMount(){
   if(this.props.sideChart){
   //  $(".chart").removeClass("col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2").addClass("col-md-12");
    chartDiv = <div class="chart col-md-12"></div>
+
 }else{
    chartDiv = <div class="chart col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2"></div>
 }
@@ -29,7 +31,11 @@ componentWillMount(){
   // }
   updateChart() {
     let data = this.props.data;
-
+     if(this.props.sideChart){
+       data['size']= {
+          height: 200
+       }
+     }
     if(this.props.yformat){
     if(this.props.yformat=='m'){
       //console.log(this.props.yformat);
@@ -84,10 +90,9 @@ if(this.props.tooltip){
 
 
   render() {
+     const classId = "chart"+this.props.classId + " col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2";
       return(
-        <div>
-                  {chartDiv}
-        </div>      
+                        <div class={classId}></div>
       );
   }
 }

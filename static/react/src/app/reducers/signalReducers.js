@@ -312,7 +312,8 @@
 export default function reducer(state = {
   signalList: {},
   signalAnalysis:{},
-  selectedSignal:{}
+  selectedSignal:{},
+  newSignalShowModal:false,
   // variableType:""
 }, action) {
   console.log("in SIGNAL reducer!!");
@@ -351,6 +352,23 @@ export default function reducer(state = {
         throw new Error("Unable to fetch signal list!!");
       }
       break;
+    case "CREATE_SIGNAL_SHOW_MODAL":
+	{
+		return {
+			...state,
+			newSignalShowModal:true,
+		}
+	}
+	break;
+
+	case "CREATE_SIGNAL_HIDE_MODAL":
+	{
+		return {
+			...state,
+			newSignalShowModal:false,
+		}
+	}
+	break;
 
   }
   return state

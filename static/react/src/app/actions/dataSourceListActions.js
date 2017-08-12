@@ -1,8 +1,10 @@
-var API = "http://192.168.33.94:9000";
+import {API} from "../helpers/env";
+import {HOST,PORT,SCHEMA,USERNAME,PASSWORD,TABLENAME} from "../helpers/helper";
+
 function getHeader(token){
 	return {
 		'Authorization': token,
-		'Content-Type': 'application/x-www-form-urlencoded'
+		'Content-Type': 'application/json'
 	};
 }
 
@@ -54,4 +56,64 @@ function fetchDataSourceList(token,file) {
 		method: 'get',
 		headers: getHeader(token)
 	}).then( response => Promise.all([response, response.json()]));
+}
+
+export function saveFileToStore(files) {
+	console.log("In Data Upload ")
+	console.log(files)
+	var file = files[0]
+	return {
+		type: "DATA_UPLOAD_FILE",
+		files
+	}
+}
+export function updateSelectedDataSrc(selectedDataSrcType) {
+	return {
+		type: "DATA_SOURCE_SELECTED_TYPE",
+		selectedDataSrcType
+	}
+}
+export function updateDbDetails(evt){
+	if(evt.target.name.toLowerCase() == HOST.toLowerCase()){
+		var host  = evt.target.value;
+		return {
+			type: "DB_HOST_NAME",
+			host
+		}
+	}
+	else if(evt.target.name.toLowerCase() == PORT.toLowerCase()){
+		var port  = evt.target.value;
+		return {
+			type: "DB_PORT_NAME",
+			port
+		}
+	}
+	else if(evt.target.name.toLowerCase() == USERNAME.toLowerCase()){
+		var username  = evt.target.value;
+		return {
+			type: "DB_USER_NAME",
+			username
+		}
+    }
+	else if(evt.target.name.toLowerCase() == SCHEMA.toLowerCase()){
+		var schema  = evt.target.value;
+		return {
+			type: "DB_SCHEMA",
+			schema
+		}
+    }
+	else if(evt.target.name.toLowerCase() == PASSWORD.toLowerCase()){
+		var password  = evt.target.value;
+		return {
+			type: "DB_PASSWORD",
+			password
+		}
+    }
+	else if(evt.target.name.toLowerCase() == TABLENAME.toLowerCase()){
+		var tablename  = evt.target.value;
+		return {
+			type: "DB_TABLENAME",
+			tablename
+		}
+    }
 }

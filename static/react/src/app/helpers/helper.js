@@ -6,3 +6,25 @@ export function isEmpty(obj) {
 
     return JSON.stringify(obj) === JSON.stringify({});
 }
+const FILEUPLOAD = "File Upload";
+const MYSQL = "MySQL";
+const INPUT = "Input";
+const HOST = "Host";
+const PORT = "Port";
+const SCHEMA = "Schema";
+const USERNAME = "Username";
+const PASSWORD = "Password";
+const TABLENAME = "Table Name";
+const PERPAGE = 5; 
+
+export{
+	FILEUPLOAD,
+	MYSQL,
+	INPUT,
+	PASSWORD,
+	HOST,
+	PORT,
+	SCHEMA,
+	USERNAME,
+	TABLENAME,
+	}

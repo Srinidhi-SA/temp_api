@@ -161,7 +161,7 @@ prevNext(path) {
   if(expectedURL.prev=="summary"){
     prevURL = "/signals/"+this.props.match.params.slug;
   }else if(expectedURL.next==null){
-    nextURL = "/signals";
+    nextURL = "/signaldocumentMode/"+this.props.match.params.slug;
   }
 
 console.log("l1name is ...."+selectedSignal);
@@ -281,7 +281,10 @@ console.log("l1name is ...."+selectedSignal);
                         <Link className="tabs-control left grp_legends_green back" to={prevURL}>
                           <span className="fa fa-chevron-left"></span>
                         </Link>
-                        <Link className="tabs-control right grp_legends_green continue" to={nextURL}>
+                        <Link className="tabs-control right grp_legends_green continue" to={{
+                      pathname: nextURL,
+                      state: { lastVar: card.slug }
+                      }}>
                           <span className="fa fa-chevron-right"></span>
                         </Link>
                       </div>

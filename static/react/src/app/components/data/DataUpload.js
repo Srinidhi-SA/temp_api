@@ -7,12 +7,12 @@ import Dropzone from 'react-dropzone'
 import store from "../../store";
 import $ from "jquery";
 
-import {open,close} from "../../actions/dataUploadActions";
+import {open,close,fileUpload,dataUpload} from "../../actions/dataUploadActions";
 import {DataSourceList} from "./DataSourceList";
 
 @connect((store) => {
 	return {login_response: store.login.login_response, showModal:store.dataUpload.dataUploadShowModal,
-	};
+	fileDataUpload:store.dataUpload.fileUpload};
 })
 
 export class DataUpload extends React.Component {
@@ -28,7 +28,11 @@ export class DataUpload extends React.Component {
     	this.props.dispatch(close())
     }
 	onDrop(files) {
-		console.log(files)
+		console.log("File Dropped"+this.props);
+		this.props.dispatch(fileUpload(files[0]))
+	}
+	uploadData(){
+		this.props.dispatch(dataUpload())
 	}
 	render() {
 			return (
@@ -50,7 +54,7 @@ export class DataUpload extends React.Component {
 					</Modal.Body>
 					<Modal.Footer>
 					<Button className="btn btn-primary md-close" onClick={this.closePopup.bind(this)}>Close</Button>
-					<Button className="btn btn-primary md-close" onClick={this.closePopup.bind(this)}>Upload</Button>
+					<Button className="btn btn-primary md-close" onClick={this.uploadData.bind(this)}>Upload</Button>
 					</Modal.Footer>
 					</Modal>
 					</div>
