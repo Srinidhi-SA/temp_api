@@ -3,7 +3,7 @@ import {API} from "../helpers/env";
 
 function getHeader(token){
   return {
-    'Authorization': "JWT "+token,
+    'Authorization': token,
     'Content-Type': 'application/json'
   };
 }

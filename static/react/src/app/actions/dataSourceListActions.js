@@ -1,7 +1,7 @@
 var API = "http://192.168.33.94:9000";
 function getHeader(token){
 	return {
-		'Authorization': "JWT "+token,
+		'Authorization': token,
 		'Content-Type': 'application/x-www-form-urlencoded'
 	};
 }
@@ -31,7 +31,7 @@ function fetchDataSrcSuccess(dataSrcList){
 		dataSrcList,
 	}
 }
-function fetchDataSrcError(json) {	
+function fetchDataSrcError(json) {
 	return {
 		type: "DATA_SOURCE_LIST_ERROR",
 		json
@@ -55,4 +55,3 @@ function fetchDataSourceList(token,file) {
 		headers: getHeader(token)
 	}).then( response => Promise.all([response, response.json()]));
 }
-

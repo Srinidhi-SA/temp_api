@@ -39,7 +39,7 @@ class App extends React.Component {
             <Route path="/settings" component={Settings} />
             <Route path="/apps" component={Apps} />
             <Route path="/stories" component={Stories} />
-            <Route path="/data" component={Data} />
+            <Route exact path="/data" component={Data} />
             <Route path="/data/:slug" component={DataPreview} />
           </Main>
       </Switch>
