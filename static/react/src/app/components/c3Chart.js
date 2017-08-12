@@ -2,7 +2,7 @@ import React from "react";
 import {connect} from "react-redux";
 import {c3Functions} from "../helpers/c3.functions";
 
-var data= {}, toolData = [], toolLegend=[];
+var data= {}, toolData = [], toolLegend=[], chartDiv =null;
 export class C3Chart extends React.Component {
   constructor(props) {
     super(props);
@@ -13,16 +13,29 @@ export class C3Chart extends React.Component {
   getChartElement(){
       return $(".chart"+this.props.classId, this.element);
     }
+componentWillMount(){
+  if(this.props.sideChart){
+  //  $(".chart").removeClass("col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2").addClass("col-md-12");
+   chartDiv = <div class="chart col-md-12"></div>
 
+}else{
+   chartDiv = <div class="chart col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2"></div>
+}
+}
   componentDidMount() {
     this.updateChart();
+
   }
   // componentDidUpdate() {
   //   this.updateChart();
   // }
   updateChart() {
     let data = this.props.data;
-
+     if(this.props.sideChart){
+       data['size']= {
+          height: 200
+       }
+     }
     if(this.props.yformat){
     if(this.props.yformat=='m'){
       //console.log(this.props.yformat);

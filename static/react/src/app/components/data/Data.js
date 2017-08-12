@@ -35,7 +35,7 @@ export class Data extends React.Component {
 	}
 	getPreviewData(e){
 		this.selectedData = e.target.id;
-		alert(this.selectedData);
+		//alert(this.selectedData);
 	  this.props.dispatch(getDataSetPreview(this.selectedData));
 	}
 	render() {

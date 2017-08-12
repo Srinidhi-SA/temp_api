@@ -5,7 +5,6 @@ function getHeader(token){
 	return {
 		'Authorization': token,
 		'Content-Type': 'application/json'
-
 	};
 }
 
@@ -58,6 +57,7 @@ function fetchDataSourceList(token,file) {
 		headers: getHeader(token)
 	}).then( response => Promise.all([response, response.json()]));
 }
+
 export function saveFileToStore(files) {
 	console.log("In Data Upload ")
 	console.log(files)
@@ -67,7 +67,7 @@ export function saveFileToStore(files) {
 		files
 	}
 }
-export function updateSelectedDataSrc(selectedDataSrcType) {	
+export function updateSelectedDataSrc(selectedDataSrcType) {
 	return {
 		type: "DATA_SOURCE_SELECTED_TYPE",
 		selectedDataSrcType
@@ -117,4 +117,3 @@ export function updateDbDetails(evt){
 		}
     }
 }
-
