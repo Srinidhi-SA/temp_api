@@ -8,9 +8,10 @@ export class C3Chart extends React.Component {
     super(props);
     console.log("yformat55555555555555");
     console.log(props);
+    alert(props.classId);
   }
   getChartElement(){
-      return $(".chart", this.element);
+      return $(".chart"+this.props.classId, this.element);
     }
 
   componentDidMount() {
@@ -74,9 +75,11 @@ if(this.props.tooltip){
    const chart = c3.generate(data);
   }
 
+
   render() {
+     const classId = "chart"+this.props.classId + " col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2";
       return(
-                        <div class="chart col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2"></div>
+                        <div class={classId}></div>
       );
   }
 }

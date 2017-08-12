@@ -42,7 +42,7 @@ export class Data extends React.Component {
 	render() {
 		console.log("data is called");
 		console.log(this.props);
-		if(store.getState().datasets&&store.getState().datasets.dataPreview){
+		if(store.getState().datasets&&store.getState().datasets.dataPreview&&store.getState().datasets.dataPreview){
 			let _link = "/data/"+this.selectedData;
 			return(<Redirect to={_link}/>);
 		}
