@@ -104,9 +104,14 @@ export class DataPreview extends React.Component {
          let initialColCls = $(initialCol).attr("class");
          $(" td."+initialColCls).addClass("activeColumn");
 
-         $(".cst_table td").click(function(){
+         $(".cst_table td,.cst_table th").click(function(){
            $(".cst_table td").removeClass("activeColumn");
            let cls = $(this).attr("class");
+            if(cls.indexOf(" ") !== -1){
+               let tmp =[];
+              tmp = cls.split(" ");
+              cls = tmp[0];
+            }
             $(" td."+cls).addClass("activeColumn");
          });
 
@@ -117,11 +122,10 @@ export class DataPreview extends React.Component {
 setSideElements(e){
    //renderFlag=true;
    const chkClass = $(e.target).attr('class');
-   console.log(chkClass);
    let dataPrev = this.props.dataPreview.meta_data;
    dataPrev.columnData.map((item, i) => {
      if(chkClass.indexOf(item.slug) !== -1){
-       //alert("working");
+
        const sideChartUpdate = item.chartData;
        const sideTableUpdate = item.columnStats;
        $("#side-chart").empty();
@@ -166,10 +170,11 @@ setSideElements(e){
 
 
       const tableThTemplate=dataPrev.columnData.map((thElement, thIndex) => {
-        const cls = thElement.slug + " dropdown"
+        const cls = thElement.slug + " dropdown";
+        const anchorCls =thElement.slug + " dropdown-toggle";
           return(
             <th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)}>
-            <a href="#" data-toggle="dropdown" className="dropdown-toggle"><i className="fa fa-clock-o"></i> {thElement.name}</a>
+            <a href="#" data-toggle="dropdown" className={anchorCls}><i className="fa fa-clock-o"></i> {thElement.name}</a>
             {/*<ul className="dropdown-menu">
                <li><a href="#">Ascending</a></li>
                <li><a href="#">Descending</a></li>
