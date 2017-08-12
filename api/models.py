@@ -12,7 +12,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
 
-from api.lib import hadoop
+from api.lib import hadoop, fab_helper
 
 # Create your models here.
 
@@ -102,7 +102,8 @@ class Dataset(models.Model):
 
         super(Dataset, self).save(*args, **kwargs)
         print "Dataset save once. Initial"
-        self.copy_file_to_hdfs()
+        # self.copy_file_to_hdfs()
+        self.copy_file_to_hdfs_local()
 
         jobConfig = self.generate_config(*args, **kwargs)
         print "Dataset realted config genarated."
@@ -148,7 +149,7 @@ class Dataset(models.Model):
         return json.dumps({"data": items[:21] if len(items) > 21 else all_items[:21]})
 
     def generate_config(self, *args, **kwrgs):
-        inputFile = "hdfs://{}:{}{}".format(settings.HDFS.get("host"), settings.HDFS.get("port"), self.get_hdfs_relative_file_path())
+        inputFile = self.get_input_file(type='file')
         return {
             "dataSourceType" : "file",
             "config" : {
@@ -165,9 +166,18 @@ class Dataset(models.Model):
     def get_hdfs_relative_file_path(self):
         return os.path.join( settings.HDFS.get('base_path'), self.slug, os.path.basename(self.input_file.path))
 
+    def emr_local(self):
+        return "/home/marlabs" + self.get_hdfs_relative_path()
 
-    def create_directory_for_dataset(self):
-        pass
+    def copy_file_to_hdfs_local(self):
+        fab_helper.mkdir_remote(self.get_hdfs_relative_path())
+        fab_helper.put_file(self.input_file.path, self.get_hdfs_relative_path())
+
+    def get_input_file(self, type='file'):
+        if type=='file':
+            return "file:///{}".format(self.emr_local())
+        elif type=='hdfs':
+            return "hdfs://{}:{}{}".format(settings.HDFS.get("host"), settings.HDFS.get("port"), self.get_hdfs_relative_file_path())
 
 
 class Insight(models.Model):

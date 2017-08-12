@@ -68,7 +68,6 @@ class DatasetView(viewsets.ModelViewSet):
 
         return creation_failed_exception(serializer.errors)
 
-
     def update(self, request, *args, **kwargs):
         data = request.data
         data = convert_to_string(data)

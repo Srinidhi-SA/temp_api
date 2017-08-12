@@ -109,3 +109,13 @@ def remote_mkdir_for_score_story(id):
         for s_s_s_f in score_story_sub_folders:
             path_dir = "{0}/{1}/{2}".format(path,s_s_f,s_s_s_f)
             run("mkdir -p {0}".format(path_dir))
+
+def put_file(from_file, to_dir):
+    put(
+        local_path=from_file,
+        remote_path=to_dir,
+        use_sudo=True,
+        mirror_local_mode=True
+    )
+
+
