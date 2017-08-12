@@ -102,7 +102,7 @@ class Dataset(models.Model):
 
         super(Dataset, self).save(*args, **kwargs)
         print "Dataset save once. Initial"
-        # self.copy_file_to_hdfs()
+        self.copy_file_to_hdfs()
         # self.copy_file_to_hdfs_local()
 
         jobConfig = self.generate_config(*args, **kwargs)
@@ -151,10 +151,17 @@ class Dataset(models.Model):
     def generate_config(self, *args, **kwrgs):
         inputFile = self.get_input_file(type='file')
         return {
-            "dataSourceType" : "file",
-            "config" : {
-                "inputFile" : inputFile
-            }
+            # "dataSourceType" : "file",
+            # "config" : {
+            #     "inputFile" : inputFile
+            # }
+            "FILE_SETTINGS":{
+                                "inputFile" : [inputFile],
+                            },
+            "COLUMN_SETTINGS": {
+                                "analysis_type": ["metaData"],
+                            }
+
         }
 
     def copy_file_to_hdfs(self):
