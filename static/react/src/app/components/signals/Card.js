@@ -25,18 +25,21 @@ export class Card extends React.Component {
     cardData = this.props.cardData;
     console.log(cardData);
     const cardElements = cardData.map((story, i) => {
-       console.log(JSON.stringify(story));
+      //  console.log(JSON.stringify(story));
       switch (story.dataType) {
         case "html":
           return (<CardHtml key = {i} htmlElement={story.data} type={story.dataType}/>);
           break;
         case "c3Chart":
-          return (<div><C3Chart key = {i} data={story.data.chart_c3} yformat={story.data.yformat} y2format={story.data.y2format} tooltip={story.data.tooltip_c3}/><div className="clearfix"/></div>);
+        console.log("checking chart data:::::");
+          return (<div><C3Chart key = {i} classId={i} data={story.data.chart_c3} yformat={story.data.yformat} y2format={story.data.y2format} tooltip={story.data.tooltip_c3}/><div className="clearfix"/></div>);
           break;
       }
 
     });
-
+//
+// console.log("cardelement is:");
+// console.log(cardElements);
     return (
       <div className="side-body">
         <div className="main-content">
