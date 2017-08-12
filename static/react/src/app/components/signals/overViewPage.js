@@ -65,7 +65,8 @@ prevNext(path) {
     console.log(expectedURL);
     return expectedURL;
   }
-  render() {
+
+render() {
 
     console.log("overviewPage is called!!");
     console.log(this.props);
@@ -158,7 +159,7 @@ prevNext(path) {
 
     let prevURL = "/signals/"+this.props.match.params.slug+"/"+expectedURL.prev;
     let nextURL = "/signals/"+this.props.match.params.slug+"/"+expectedURL.next;
-  if(expectedURL.prev=="summary"){
+  if(expectedURL.prev==this.props.signal.listOfCards[0].slug){
     prevURL = "/signals/"+this.props.match.params.slug;
   }else if(expectedURL.next==null){
     nextURL = "/signaldocumentMode/"+this.props.match.params.slug;
