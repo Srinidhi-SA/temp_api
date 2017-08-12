@@ -151,17 +151,15 @@ class Dataset(models.Model):
     def generate_config(self, *args, **kwrgs):
         inputFile = self.get_input_file(type='file')
         return {
-            # "dataSourceType" : "file",
-            # "config" : {
-            #     "inputFile" : inputFile
-            # }
-            "FILE_SETTINGS":{
-                                "inputFile" : [inputFile],
-                            },
-            "COLUMN_SETTINGS": {
-                                "analysis_type": ["metaData"],
-                            }
+            "config" : {
+                "FILE_SETTINGS":{
+                                    "inputFile" : [inputFile],
+                                },
+                "COLUMN_SETTINGS": {
+                                    "analysis_type": ["metaData"],
+                                }
 
+                }
         }
 
     def copy_file_to_hdfs(self):
@@ -182,7 +180,7 @@ class Dataset(models.Model):
 
     def get_input_file(self, type='file'):
         if type=='file':
-            return "file:///{}".format(self.input_file.path)
+            return "file://{}".format(self.input_file.path)
         elif type=='hdfs':
             return "hdfs://{}:{}{}".format(settings.HDFS.get("host"), settings.HDFS.get("port"), self.get_hdfs_relative_file_path())
 
