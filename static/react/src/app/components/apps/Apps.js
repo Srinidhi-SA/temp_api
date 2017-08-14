@@ -1,5 +1,6 @@
 import React from "react";
 import {MainHeader} from "../common/MainHeader";
+import {Tabs,Tab} from "react-bootstrap";
 
 export class Apps extends React.Component {
   constructor() {
@@ -11,9 +12,11 @@ export class Apps extends React.Component {
     return (
         <div>
           <div className="side-body">
-            <MainHeader/>
             <div className="main-content">
-              Apps is called!!!!!
+            <Tabs defaultActiveKey={1} animation={false} id="noanim-tab-example">
+            <Tab eventKey={1} title="Models">Models List</Tab>
+            <Tab eventKey={2} title="Score">Score List</Tab>
+          </Tabs>
             </div>
           </div>
         </div>
