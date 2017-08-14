@@ -58,3 +58,5 @@ JOBSERVER = {
     'class_path_filter': 'bi.sparkjobs.filter.JobScript',
 
 }
+
+ALLOWED_HOSTS = ['*']

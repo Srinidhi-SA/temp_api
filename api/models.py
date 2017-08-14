@@ -153,12 +153,12 @@ class Dataset(models.Model):
         return {
             "config" : {
                 "FILE_SETTINGS":{
-                                    "inputFile" : [inputFile],
+                                    "inputfile" : [inputFile],
                                 },
                 "COLUMN_SETTINGS": {
                                     "analysis_type": ["metaData"],
-                                }
-
+                                },
+		"DATE_SETTINGS": {}
                 }
         }
 
