@@ -7,7 +7,7 @@ from sjsclient import client
 
 from api.helper import JobserverDetails
 from api.user_helper import UserSerializer
-from models import Insight, Dataset
+from models import Insight, Dataset, Trainer
 
 
 def submit_job(slug, class_name, job_config):
@@ -90,6 +90,7 @@ class InsightSerializer(serializers.ModelSerializer):
         instance.status = validated_data.get("status", instance.status)
         instance.live_status = validated_data.get("live_status", instance.live_status)
         instance.analysis_done = validated_data.get("analysis_done", instance.analysis_done)
+        instance.name = validated_data.get("name", instance.name)
 
         instance.save()
 
@@ -98,3 +99,30 @@ class InsightSerializer(serializers.ModelSerializer):
     class Meta:
         model = Insight
         exclude = ('compare_with', 'compare_type', 'column_data_raw', 'id')
+
+
+class TrainerSerlializer(serializers.ModelSerializer):
+
+    def to_representation(self, instance):
+        ret = super(TrainerSerlializer, self).to_representation(instance)
+        dataset = ret['dataset']
+        dataset_object = Dataset.objects.get(pk=dataset)
+        ret['dataset'] = dataset_object.slug
+        ret = convert_to_json(ret)
+        ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        return ret
+
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get("name", instance.name)
+        instance.column_data_raw = validated_data.get("column_data_raw", instance.column_data_raw)
+        instance.deleted = validated_data.get("deleted", instance.deleted)
+        instance.bookmarked = validated_data.get("bookmarked", instance.bookmarked)
+        instance.data = validated_data.get("data", instance.data)
+
+        instance.save()
+
+        return instance
+
+    class Meta:
+        model = Trainer
+        fields = "__all__"
