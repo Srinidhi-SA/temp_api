@@ -7,7 +7,8 @@ import {
   getFirstCard,
   fetchCard,
   fetchNodeFromTree,
-  getPrevNext
+  getPrevNext,
+  getLastCardOfTree
 } from "../../helpers/processStory";
 import {connect} from "react-redux";
 import {isEmpty} from "../../helpers/helper";
@@ -65,7 +66,8 @@ prevNext(path) {
     console.log(expectedURL);
     return expectedURL;
   }
-  render() {
+
+render() {
 
     console.log("overviewPage is called!!");
     console.log(this.props);
@@ -154,17 +156,25 @@ prevNext(path) {
       )
     });
 
+    let documentModeLink = "/signaldocumentMode/"+this.props.match.params.slug;
     let expectedURL = this.prevNext(this.props);
 
     let prevURL = "/signals/"+this.props.match.params.slug+"/"+expectedURL.prev;
     let nextURL = "/signals/"+this.props.match.params.slug+"/"+expectedURL.next;
-  if(expectedURL.prev=="summary"){
+  if(expectedURL.prev==this.props.signal.listOfCards[0].slug){
     prevURL = "/signals/"+this.props.match.params.slug;
   }else if(expectedURL.next==null){
-    nextURL = "/signals";
+    nextURL = documentModeLink;
   }
 
+let lastcard = getLastCardOfTree(this.props.signal);
+console.log("last card is::::");
+console.log(lastcard);
+console.log(documentModeLink);
+
+
 console.log("l1name is ...."+selectedSignal);
+//console.log(card);
     return (
       <div>
         <div className="side-body">
@@ -205,12 +215,18 @@ console.log("l1name is ...."+selectedSignal);
 					<h2 class="pull-left">{l1Name}</h2>
                     <div className="btn-toolbar pull-right">
                       <div className="btn-group btn-space">
-                        <button type="button" className="btn btn-default">
+
+                        <button type="button" className="btn btn-default" disabled = "true">
                           <i className="fa fa-file-pdf-o"></i>
                         </button>
+                        <Link className="tabs-control right grp_legends_green continue" to={{
+                      pathname: documentModeLink,
+                      state: { lastVar: lastcard.slug }
+                      }}>
                         <button type="button" className="btn btn-default">
                           <i className="fa fa-print"></i>
                         </button>
+                        </Link>
                         <button type="button" className="btn btn-default">
                           <i className="fa fa-times"></i>
                         </button>
@@ -281,7 +297,10 @@ console.log("l1name is ...."+selectedSignal);
                         <Link className="tabs-control left grp_legends_green back" to={prevURL}>
                           <span className="fa fa-chevron-left"></span>
                         </Link>
-                        <Link className="tabs-control right grp_legends_green continue" to={nextURL}>
+                        <Link className="tabs-control right grp_legends_green continue" to={{
+                      pathname: nextURL,
+                      state: { lastVar: card.slug }
+                      }}>
                           <span className="fa fa-chevron-right"></span>
                         </Link>
                       </div>

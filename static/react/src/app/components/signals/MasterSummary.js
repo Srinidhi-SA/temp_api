@@ -29,9 +29,9 @@ export class MasterSummary extends React.Component {
     var summary;
 
 
-     var noOfDimention = this.props.signal.listOfCards[0].cardData.noOfDimensions;
-     var noOfMeasures = this.props.signal.listOfCards[0].cardData.noOfMeasures;
-     var summary = this.props.signal.listOfCards[0].cardData.summaryHtml;
+     noOfDimention = this.props.signal.listOfCards[0].cardData.noOfDimensions;
+      noOfMeasures = this.props.signal.listOfCards[0].cardData.noOfMeasures;
+      summary = this.props.signal.listOfCards[0].cardData.summaryHtml;
      var quotes = this.props.signal.listOfCards[0].cardData.quotesHtml.toString();
     //  var noOfDimention = 10;
     //  var noOfMeasures = 9;

@@ -15,9 +15,10 @@ import {DataPreview} from "./components/data/DataPreview";
 import {Stories} from "./components/stories/Stories";
 import {Signals} from "./components/signals/Signals";
 import {Signal} from "./components/signals/Signal";
+import {SignalDocumentMode} from "./components/signals/SignalDocumentMode";
 import {OverViewPage} from "./components/signals/overViewPage";
 import {DataVariableSelection} from "./components/data/DataVariableSelection";
-
+import {VariableSelection} from "./components/signals/variableSelection";
 
 
 // console.log(store);
@@ -37,6 +38,8 @@ class App extends React.Component {
             <Route exact path="/signals/:slug/:l1" component={OverViewPage}/>
             <Route exact path="/signals/:slug/:l1/:l2/:l3" component={OverViewPage}/>
             <Route exact path="/signals/:slug/:l1/:l2" component={OverViewPage}/>
+            <Route path = "/signaldocumentMode/:slug" component = {SignalDocumentMode}/>
+            <Route path="/variableselection" component={VariableSelection} />
             <Route path="/settings" component={Settings} />
             <Route path="/apps" component={Apps} />
             <Route path="/stories" component={Stories} />
