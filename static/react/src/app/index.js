@@ -17,7 +17,6 @@ import {Signals} from "./components/signals/Signals";
 import {Signal} from "./components/signals/Signal";
 import {SignalDocumentMode} from "./components/signals/SignalDocumentMode";
 import {OverViewPage} from "./components/signals/overViewPage";
-import {DataVariableSelection} from "./components/data/DataVariableSelection";
 import {VariableSelection} from "./components/signals/variableSelection";
 
 
@@ -41,11 +40,10 @@ class App extends React.Component {
             <Route path = "/signaldocumentMode/:slug" component = {SignalDocumentMode}/>
             <Route path="/variableselection" component={VariableSelection} />
             <Route path="/settings" component={Settings} />
-            <Route path="/apps" component={Apps} />
+            <Route exact path="/apps" component={Apps} />
             <Route path="/stories" component={Stories} />
             <Route exact  path="/data" component={Data} />
             <Route path="/data/:slug" component={DataPreview} />
-            <Route path="/data/variableSelection" component={DataVariableSelection} />
           </Main>
       </Switch>
       </BrowserRouter>

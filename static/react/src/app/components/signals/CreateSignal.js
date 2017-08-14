@@ -10,7 +10,7 @@ import {openCreateSignalModal,closeCreateSignalModal} from "../../actions/create
 @connect((store) => {
 	return {login_response: store.login.login_response, 
 		newSignalShowModal: store.signals.newSignalShowModal,
-		dataList: store.datasets.dataList};
+		allDataList: store.datasets.allDataSets,};
 })
 
 export class CreateSignal extends React.Component {
@@ -26,7 +26,17 @@ export class CreateSignal extends React.Component {
     }
 
 	render() {
-		const dataSets = store.getState().datasets.dataList.data;
+		const dataSets = store.getState().datasets.allDataSets.data;
+		let renderSelectBox = null;
+		if(dataSets){
+			renderSelectBox = <select id="signal_Dataset" name="selectbasic" class="form-control">
+			{dataSets.map(dataSet =>
+			<option key={dataSet.slug} value={dataSet.slug}>{dataSet.name}</option>
+			)}
+			</select>
+		}else{
+			renderSelectBox = "No Datasets"
+		}
 		return (
 				<div class="col-md-3 top20 list-boxes" onClick={this.openSignalModal.bind(this)}>
 				<div class="newCardStyle firstCard">
@@ -44,16 +54,12 @@ export class CreateSignal extends React.Component {
 				<Modal.Body>
 				  <div class="form-group">
 	              <label>Select an existing dataset</label>
-				<select id="sel_existdataste" name="selectbasic" class="form-control">
-				{dataSets.map(dataSet =>
-				<option key={dataSet.slug} value={dataSet.slug}>{dataSet.name}</option>
-				)}
-				</select>
+				{renderSelectBox}
 				</div>
 				</Modal.Body>
 				<Modal.Footer>
 				<Button className="btn btn-primary md-close" onClick={this.closeSignalModal.bind(this)}>Close</Button>
-				<Link to="/data/variableSelection"><Button className="btn btn-primary md-close">Create</Button></Link>
+				<Link to="/variableSelection"><Button className="btn btn-primary md-close">Create</Button></Link>
 				</Modal.Footer>
 				</Modal>
 				</div>

@@ -68,7 +68,7 @@ export class Data extends React.Component {
 						<div className="row">
 						<div className="col-xs-9">
 						<h4 className="title newCardTitle">
-						<a href="javascript:void(0);" id= {data.slug} onClick = {this.getPreviewData.bind(this)}>ererrre</a>
+						<a href="javascript:void(0);" id= {data.slug} onClick = {this.getPreviewData.bind(this)}>{data.name}</a>
 						</h4>
 						</div>
 						<div className="col-xs-3">

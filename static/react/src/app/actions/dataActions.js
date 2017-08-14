@@ -1,6 +1,6 @@
 
 import {API} from "../helpers/env";
-var perPage = 2;
+import {PERPAGE} from "../helpers/helper";
 
 function getHeader(token){
 	return {
@@ -24,7 +24,7 @@ export function getDataList(pageNo) {
 }
 
 function fetchDataList(pageNo,token) {
-	return fetch(API+'/api/datasets?page_number='+pageNo+'&page_size='+perPage+'',{
+	return fetch(API+'/api/datasets?page_number='+pageNo+'&page_size='+PERPAGE+'',{
 		method: 'get',
 		headers: getHeader(token)
 	}).then( response => Promise.all([response, response.json()]));
@@ -67,7 +67,7 @@ function fetchDataPreview(slug) {
     headers: getHeader(sessionStorage.userToken)
 		}).then( response => Promise.all([response, response.json()]));
 }
-
+//get preview data
 function fetchDataPreviewSuccess(dataPreview) {
   console.log("data preview from api to store")
   console.log(dataPreview)
@@ -85,4 +85,38 @@ function fetchDataPreviewError(json) {
   }
 }
 
-//get preview data
+export function getAllDataList(pageNo) {
+	return (dispatch) => {
+		return fetchAllDataList(sessionStorage.userToken).then(([response, json]) =>{
+			if(response.status === 200){
+				console.log(json)
+				dispatch(fetchAllDataSuccess(json))
+			}
+			else{
+				dispatch(fetchAllDataError(json))
+			}
+		})
+	}
+}
+
+
+function fetchAllDataList(token) {
+	return fetch(API+'/api/datasets?page_size=1000',{
+		method: 'get',
+		headers: getHeader(token)
+	}).then( response => Promise.all([response, response.json()]));
+}
+
+function fetchAllDataError(json) {
+	return {
+		type: "DATA_ALL_LIST_ERROR",
+		json
+	}
+}
+export function fetchAllDataSuccess(doc){
+	var data = doc;
+	return {
+		type: "DATA_ALL_LIST",
+		data,
+	}
+}

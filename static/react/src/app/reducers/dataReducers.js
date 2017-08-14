@@ -3,7 +3,8 @@ export default function reducer(state = {
 		dataList: {},
 		selectedDataSet:"",
 		current_page:1,
-		 dataPreview:null,
+		dataPreview:null,
+		allDataSets:{},
 }, action) {
 	console.log("In DATA reducer!!");
 	console.log(action);
@@ -34,6 +35,21 @@ export default function reducer(state = {
 	case "DATA_PREVIEW_ERROR":
 	{ 
 		throw new Error("Fetching of Data failed!!");
+	}
+	break;
+	case "DATA_ALL_LIST":
+	{
+		return {
+			...state,
+			allDataSets: action.data,
+		}
+	}
+	break;
+
+	case "DATA_ALL_LIST_ERROR":
+	{
+		alert(action.json.non_field_errors);
+		throw new Error("Unable to fetch data list!!");
 	}
 	break;
 	}

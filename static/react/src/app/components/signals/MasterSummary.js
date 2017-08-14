@@ -53,7 +53,7 @@ export class MasterSummary extends React.Component {
               label: 'Signals'
             },
             {
-              path:'/signals'+this.props.signalId,
+              path:'/signals/'+this.props.signalId,
               label: heading
             }
           ]}/>

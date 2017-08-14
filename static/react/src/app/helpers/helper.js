@@ -15,7 +15,7 @@ const SCHEMA = "Schema";
 const USERNAME = "Username";
 const PASSWORD = "Password";
 const TABLENAME = "Table Name";
-const PERPAGE = 5; 
+const PERPAGE = 10; 
 
 export{
 	FILEUPLOAD,
@@ -27,4 +27,5 @@ export{
 	SCHEMA,
 	USERNAME,
 	TABLENAME,
+	PERPAGE,
 	}
