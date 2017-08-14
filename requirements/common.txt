@@ -7,3 +7,5 @@ pytz==2017.2
 six==1.10.0
 django-filter==1.0.4
 python-sjsclient==0.7.0
+pywebhdfs==0.4.1
+Fabric==1.13.2
