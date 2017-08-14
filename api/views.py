@@ -99,4 +99,4 @@ def set_result(request, slug=None):
         return JsonResponse({'result':'Failed'})
     job.results = request.body
     job.save()
-    return JsonResponse({'result':'Succeed'})
+    return JsonResponse({'result':'Success'})

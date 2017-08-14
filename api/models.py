@@ -118,17 +118,21 @@ class Dataset(models.Model):
         print "Job enrty created"
 
         from utils import submit_job
-        job_url = submit_job(
-            slug=job.slug,
-            class_name='class_path_metadata',
-            job_config=jobConfig
-        )
 
-        print "Job submitted."
+        try:
+            job_url = submit_job(
+                slug=job.slug,
+                class_name='metadata',
+                job_config=jobConfig
+            )
+            print "Job submitted."
 
-        job.url = job_url
-        job.save()
-        self.job = job
+            job.url = job_url
+            job.save()
+            self.job = job
+        except Exception as exc:
+            print "Unable to submit job."
+            print exc
         # self.save()
 
     def set_preview_data(self):
@@ -153,13 +157,15 @@ class Dataset(models.Model):
         return {
             "config" : {
                 "FILE_SETTINGS":{
-                                    "inputFile" : [inputFile],
+                                    "inputfile" : [inputFile],
                                 },
                 "COLUMN_SETTINGS": {
                                     "analysis_type": ["metaData"],
-                                }
+                                },
+                "DATE_SETTINGS": {
 
-                }
+                },
+            }
         }
 
     def copy_file_to_hdfs(self):
@@ -182,7 +188,10 @@ class Dataset(models.Model):
         if type=='file':
             return "file://{}".format(self.input_file.path)
         elif type=='hdfs':
-            return "hdfs://{}:{}{}".format(settings.HDFS.get("host"), settings.HDFS.get("port"), self.get_hdfs_relative_file_path())
+            return "hdfs://{}:{}{}".format(
+                settings.HDFS.get("host"),
+                settings.HDFS.get("port"),
+                self.get_hdfs_relative_file_path())
 
 
 class Insight(models.Model):
@@ -242,26 +251,31 @@ class Insight(models.Model):
         print "Job enrty created"
 
         from utils import submit_job
-        job_url = submit_job(
-            slug=job.slug,
-            class_name='class_path_master',
-            job_config=jobConfig
-        )
 
-        print "Job submitted."
+        try:
+            job_url = submit_job(
+                slug=job.slug,
+                class_name='master',
+                job_config=jobConfig
+            )
+            print "Job submitted."
 
-        job.url = job_url
-        job.save()
-        self.job = job
+            job.url = job_url
+            job.save()
+            self.job = job
+        except Exception as exc:
+            print "Unable to submit job."
+            print exc
+
         self.save()
 
     def generate_config(self, *args, **kwargs):
-        config = dict()
+        config = {}
 
-        config["url_settings"] = self.create_configuration_url_settings()
-        config["column_settings"] = self.create_configuration_column_settings()
-        config["filter_settings"] = self.create_configuration_filter_settings()
-        config["meta_data"] = self.create_configuration_meta_data()
+        config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
+        config['config']["COLUMN_SETTINGS"]= self.create_configuration_column_settings()
+        config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
+        config['config']["FILE_SETTINGS"] = self.create_configuration_meta_data()
 
         import json
         self.config = json.dumps(config)
@@ -273,34 +287,38 @@ class Insight(models.Model):
         return json.loads(self.config)
 
     def create_configuration_url_settings(self):
+        # return {
+        #     "dataset_api": {
+        #         "methods": ['get'],
+        #         "url": ""
+        #     },
+        #     "results_api": {
+        #         "methods": ['get', 'post'],
+        #         "url": ""
+        #     },
+        #     "narratives_api": {
+        #         "methods": ['get', 'post'],
+        #         "url": ""
+        #     },
+        #     "monitor_api": {
+        #         "methods": ['get', 'post'],
+        #         "url": ""
+        #     },
+        #     "config_api": {
+        #         "methods": ['get', 'post'],
+        #         "url": ""
+        #     },
+        #     "scripts_to_run": self.get_scripts_to_run()
+        # }
+
         return {
-            "dataset_api": {
-                "methods": ['get'],
-                "url": ""
-            },
-            "results_api": {
-                "methods": ['get', 'post'],
-                "url": ""
-            },
-            "narratives_api": {
-                "methods": ['get', 'post'],
-                "url": ""
-            },
-            "monitor_api": {
-                "methods": ['get', 'post'],
-                "url": ""
-            },
-            "config_api": {
-                "methods": ['get', 'post'],
-                "url": ""
-            },
-            "scripts_to_run": self.get_scripts_to_run()
+            "inputfile": [self.dataset.get_input_file(type='file')]
         }
 
     def create_configuration_column_settings(self):
         return {
+            "analysis_type": ["master"],
             "result_column": "",
-            "analysis_type": "",
             "polarity": "",
             "consider_columns": "",
             "consider_columns_type": "",
@@ -314,10 +332,10 @@ class Insight(models.Model):
         }
 
     def create_configuration_filter_settings(self):
-        return ""
+        return {}
 
     def create_configuration_meta_data(self):
-        return ""
+        return {}
 
     def get_list_of_scripts_to_run(self):
         pass
