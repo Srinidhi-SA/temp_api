@@ -15,7 +15,7 @@ def hadoop_put(from_path, to_dir):
     with open(from_path, 'r') as file:
         data = file.read()
     print "Creating on HDFS"
-    # hadoop_del_file(to)
+    hadoop_del_file(hdfs_file_path)
     hdfs = hadoop_hdfs()
     print hdfs_file_path
     print hdfs.create_file(hdfs_file_path, data)
