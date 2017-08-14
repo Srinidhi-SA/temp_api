@@ -10,7 +10,7 @@ export class Apps extends React.Component {
   }
   render() {
     console.log("apps is called##########3");
-  const models = <div id="appsModels"><AppsModelList/>
+  const models = <div id="appsModels"><AppsModelList history={this.props.history}/>
   <div className="clearfix"></div></div>
     return (
         <div>
