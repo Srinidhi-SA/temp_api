@@ -287,30 +287,6 @@ class Insight(models.Model):
         return json.loads(self.config)
 
     def create_configuration_url_settings(self):
-        # return {
-        #     "dataset_api": {
-        #         "methods": ['get'],
-        #         "url": ""
-        #     },
-        #     "results_api": {
-        #         "methods": ['get', 'post'],
-        #         "url": ""
-        #     },
-        #     "narratives_api": {
-        #         "methods": ['get', 'post'],
-        #         "url": ""
-        #     },
-        #     "monitor_api": {
-        #         "methods": ['get', 'post'],
-        #         "url": ""
-        #     },
-        #     "config_api": {
-        #         "methods": ['get', 'post'],
-        #         "url": ""
-        #     },
-        #     "scripts_to_run": self.get_scripts_to_run()
-        # }
-
         return {
             "inputfile": [self.dataset.get_input_file(type='file')]
         }
@@ -339,5 +315,46 @@ class Insight(models.Model):
 
     def get_list_of_scripts_to_run(self):
         pass
+
+
+class Trainer(models.Model):
+
+    name = models.CharField(max_length=300, null=True)
+    slug = models.SlugField(null=False, blank=True)
+    dataset = models.ForeignKey(Dataset, null=False)
+    column_data_raw = models.TextField(default="{}")
+    app_id = models.IntegerField(null=True, default=0)
+
+    data = models.TextField(default="{}")
+
+    created_on = models.DateTimeField(auto_now_add=True, null=True)
+    updated_on = models.DateTimeField(auto_now=True, null=True)
+    created_by = models.ForeignKey(User, null=False)
+    deleted = models.BooleanField(default=False)
+
+    bookmarked = models.BooleanField(default=False)
+
+    job = models.ForeignKey(Job, null=True)
+
+    class Meta:
+        ordering = ['-created_on', '-updated_on']
+
+    def __str__(self):
+        pass
+
+    def generate_slug(self):
+        if not self.slug:
+            self.slug = slugify(self.name + "-" + ''.join(
+                random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
+
+    def save(self, *args, **kwargs):
+        self.generate_slug()
+        super(Trainer, self).save(*args, **kwargs)
+
+    def generate_config(self):
+        return {}
+
+
+
 
 
