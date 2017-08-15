@@ -27,7 +27,7 @@ export class AppsModelList extends React.Component {
 	  var pageNo = 1;
 	  if(this.props.history.location.pathname.indexOf("page") != -1){
 			pageNo = this.props.history.location.pathname.split("page/")[1];
-			this.props.dispatch(getDataList(pageNo));
+			this.props.dispatch(getAppsModelList(pageNo));
 		}else
 		  this.props.dispatch(getAppsModelList(pageNo));
 	}
@@ -35,8 +35,8 @@ export class AppsModelList extends React.Component {
     console.log("apps model list is called##########3");
     const modelList = store.getState().apps.modelList.data;
 	if (modelList) {
-		const pages = store.getState().datasets.dataList.total_number_of_pages;
-		const current_page = store.getState().datasets.dataList.current_page;
+		const pages = store.getState().apps.modelList.total_number_of_pages;
+		const current_page = store.getState().apps.current_page;
 		let addButton = null;
 		let paginationTag = null
 		if(current_page == 1){

@@ -53,6 +53,7 @@ export function getDataSetPreview(slug) {
         if(response.status === 200){
           console.log(json)
         dispatch(fetchDataPreviewSuccess(json))
+        //dispatch(showDataPreview())
       }
       else{
         dispatch(fetchDataPreviewError(json))
@@ -118,5 +119,25 @@ export function fetchAllDataSuccess(doc){
 	return {
 		type: "DATA_ALL_LIST",
 		data,
+	}
+}
+export function updateSelectedMeasures(evt){
+	var measure = evt.target.value;
+	return {
+		type: "SELECTED_MEASURES",
+		measure
+	}
+}
+
+
+export function showDataPreview() {
+	return {
+		type: "SHOW_DATA_PREVIEW",
+	}
+}
+
+export function hideDataPreview() {
+	return {
+		type: "HIDE_DATA_PREVIEW",
 	}
 }

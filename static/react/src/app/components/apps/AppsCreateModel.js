@@ -12,12 +12,14 @@ import {getAllDataList,getDataSetPreview} from "../../actions/dataActions";
 	return {login_response: store.login.login_response, 
 		appsModelShowModal: store.apps.appsModelShowModal,
 		allDataList: store.datasets.allDataSets,
+		dataPreview: store.datasets.dataPreview,
 		};
 })
 
 export class AppsCreateModel extends React.Component {
 	constructor(props) {
 		super(props);
+		this.selectedData="";
 	}
 	componentWillMount() {
 		this.props.dispatch(getAllDataList());
@@ -28,13 +30,17 @@ export class AppsCreateModel extends React.Component {
     closeModelPopup(){
     	this.props.dispatch(closeModelPopup())
     }
-    getDataSetPreview(){
-    	var selectedData = $("#model_Dataset").val();
-    	this.props.dispatch(getDataSetPreview(selectedData));
+    getDataSetPreview(e){
+    	this.selectedData = $("#model_Dataset").val();
+    	this.props.dispatch(getDataSetPreview(this.selectedData));
     }
 	render() {
 		const dataSets = store.getState().datasets.allDataSets.data;
 		let renderSelectBox = null;
+		if(store.getState().datasets.dataPreviewFlag){
+			let _link = "/data/"+store.getState().datasets.dataPreview.slug;
+			return(<Redirect to={_link}/>);
+		}
 		if(dataSets){
 			renderSelectBox = <select id="model_Dataset" name="selectbasic" class="form-control">
 			{dataSets.map(dataSet =>

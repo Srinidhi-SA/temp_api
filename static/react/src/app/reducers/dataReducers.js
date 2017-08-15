@@ -5,6 +5,10 @@ export default function reducer(state = {
 		current_page:1,
 		dataPreview:null,
 		allDataSets:{},
+		selectedDimensions:"",
+		selectedMeasures:[],
+		selectedTimeDimensions:"",
+		dataPreviewFlag:false,
 }, action) {
 	console.log("In DATA reducer!!");
 	console.log(action);
@@ -28,7 +32,8 @@ export default function reducer(state = {
 	break;
 	case "DATA_PREVIEW": {
 		return {...state,
-			dataPreview:action.dataPreview
+			dataPreview:action.dataPreview,
+			dataPreviewFlag:true,
 		}
 	}
 	break;
@@ -50,6 +55,30 @@ export default function reducer(state = {
 	{
 		alert(action.json.non_field_errors);
 		throw new Error("Unable to fetch data list!!");
+	}
+	break;
+	case "SELECTED_MEASURES":
+	{
+		return {
+			...state,
+			selectedMeasures:state.selectedMeasures.concat(action.measure),
+		}
+	}
+	break;
+	case "SHOW_DATA_PREVIEW":
+	{
+		return {
+			...state,
+			dataPreviewFlag:true,
+		}
+	}
+	break;
+	case "HIDE_DATA_PREVIEW":
+	{
+		return {
+			...state,
+			dataPreviewFlag:false,
+		}
 	}
 	break;
 	}
