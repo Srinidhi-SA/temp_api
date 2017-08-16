@@ -58,13 +58,7 @@ class JobserverDetails(object):
 
 
 def find_chart_data_and_replace_with_chart_data(data):
-    columnData = data['columnData']
-
-    for data in columnData:
-        data["chartData"] = chartData
-
-    data['columnData'] = columnData
-    return data
+    return chartData
 
 chartData = {
       "data": {

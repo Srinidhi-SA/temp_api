@@ -209,14 +209,22 @@ def set_result(request, slug=None):
 
 
 def write_into_databases(job_type, object_slug, results):
+    from api import helper
+
     if job_type == "metadata":
         dataset_object = Dataset.objects.get(slug=object_slug)
+
+        columnData = results['columnData']
+        for data in columnData:
+            data["chartData"] = helper.find_chart_data_and_replace_with_chart_data(data["chartData"])
         dataset_object.meta_data = results
         dataset_object.analysis_done = True
         dataset_object.save()
-
     elif job_type == "master":
-        pass
+        insight_object = Insight.objects.get(slug=object_slug)
+        insight_object.data = results
+        insight_object.analysis_done = True
+        insight_object.save()
     elif job_type == "":
         pass
     print "written to the database."
