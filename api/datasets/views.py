@@ -105,6 +105,16 @@ class DatasetView(viewsets.ModelViewSet):
         serializer = self.serializer_class(instance=instance)
         return Response(serializer.data.get('db_details'))
 
+    @list_route(methods=['get'])
+    def all(self, request):
+
+        query_set = self.get_queryset()
+
+        serializer = DatasetSerializer(query_set, many=True).data
+
+        return Response(serializer)
+
+
 
 
 
