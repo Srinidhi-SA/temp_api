@@ -2,6 +2,8 @@ export default function reducer(state = {
 		appsModelShowModal:false,
 		modelList: {},
 		current_page:1,
+		trainValue:50,
+		testValue:50,
 }, action) {
 	console.log("In APPs reducer!!");
 	console.log(action);
@@ -40,7 +42,16 @@ export default function reducer(state = {
 		throw new Error("Unable to fetch model list!!");
 	}
 	break;
-	
+	case "UPDATE_MODEL_RANGE":
+	{
+		return {
+			...state,
+			trainValue: action.trainValue,
+			testValue:action.testValue,
+		}
+	}
+	break;
+
  }
 return state
 }

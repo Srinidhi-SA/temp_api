@@ -97,7 +97,7 @@ export class DataVariableSelection extends React.Component {
 			  {/*<!-------------------------------------------------------------------------------->*/}
 			          <div className="row">
 			          <div className="col-lg-4">
-			            <div className="panel panel-primary panel-borders cst-panel">
+			            <div className="panel panel-primary-p1 cst-panel-shadow">
 			            <div className="panel-heading"><i className="pe-7s-graph1"></i> Measures</div>
 			            <div className="panel-body">
 			            {/*  <!-- Row for select all-->*/}
@@ -128,7 +128,7 @@ export class DataVariableSelection extends React.Component {
 			              <hr />
 			            {/*  <!-- Row for list of variables-->*/}
 			              <div className="row">
-			                <div className="col-md-12">
+			                <div className="col-md-12 cst-scroll-panel">
 			                  <ul className="list-unstyled">
 			                      {measureTemplate}
 			                  </ul>
@@ -140,7 +140,7 @@ export class DataVariableSelection extends React.Component {
 
 			          </div>{/*<!-- /.col-lg-4 -->*/}
 			          <div className="col-lg-4">
-			              <div className="panel panel-primary panel-borders cst-panel">
+			              <div className="panel panel-primary-p2 cst-panel-shadow">
 			              <div className="panel-heading"><i className="pe-7s-graph1"></i> Dimensions</div>
 			                <div className="panel-body">
 			                  {/*  <!-- Row for select all-->*/}
@@ -171,7 +171,7 @@ export class DataVariableSelection extends React.Component {
 			                    <hr />
 			                  {/*  <!-- Row for list of variables-->*/}
 			                    <div className="row">
-			                    <div className="col-md-12">
+			                    <div className="col-md-12 cst-scroll-panel">
 			                      <ul className="list-unstyled">
 			                           {dimensionTemplate}
 			                      </ul>
@@ -186,7 +186,7 @@ export class DataVariableSelection extends React.Component {
 
 			          </div>{/*<!-- /.col-lg-4 -->*/}
 			          <div className="col-lg-4">
-			              <div className="panel panel-primary panel-borders cst-panel">
+			              <div className="panel panel-primary-p3 cst-panel-shadow">
 			            <div className="panel-heading"><i className="pe-7s-date"></i> Dates</div>
 			            <div className="panel-body">
 
@@ -215,7 +215,7 @@ export class DataVariableSelection extends React.Component {
 			                    <hr />
 			                      {/*<!-- Row for list of variables-->*/}
 			                    <div className="row">
-			                    <div className="col-md-12">
+			                    <div className="col-md-12 cst-scroll-panel">
 
 			                      <ul className="list-unstyled">
 			                                {datetimeTemplate}
