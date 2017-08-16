@@ -37,7 +37,8 @@ class SignalView(viewsets.ModelViewSet):
         data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
         serializer = InsightSerializer(data=data)
         if serializer.is_valid():
-            serializer.save()
+            signal_object = serializer.save()
+            signal_object.create()
             return Response(serializer.data)
 
         return Response(serializer.errors)
@@ -126,7 +127,6 @@ class TrainerView(viewsets.ModelViewSet):
         return Response(serializer.errors)
 
 
-
 class ScoreView(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = Score.objects.filter(
@@ -181,7 +181,7 @@ def get_datasource_config_list(request):
 def get_config(request, slug=None):
     job = Job.objects.get(slug=slug)
     if not job:
-        return JsonResponse({'result':'Failed'})
+        return JsonResponse({'result': 'Failed'})
     return JsonResponse(json.loads(job.config))
 
 
@@ -193,10 +193,28 @@ def set_result(request, slug=None):
     print "So you wanna write."
     job = Job.objects.get(slug=slug)
     if not job:
-        return JsonResponse({'result':'Failed'})
-    job.results = request.body
+        return JsonResponse({'result': 'Failed'})
+    results = request.body
+    job.results = results
     print "data----------->"
     print request.body
     job.save()
-    print "Data has been saved."
-    return JsonResponse({'result':'Success'})
+    print "Data has been saved to job table."
+    write_into_databases(
+        job_type=job.job_type,
+        object_slug=job.object_id,
+        results=results
+    )
+    return JsonResponse({'result': 'Success'})
+
+
+def write_into_databases(job_type, object_slug, results):
+    if job_type == "metadata":
+        dataset_object = Dataset.objects.get(slug=object_slug)
+        dataset_object.result = results
+        dataset_object.save()
+    elif job_type == "master":
+        pass
+    elif job_type == "":
+        pass
+    print "written to the database."

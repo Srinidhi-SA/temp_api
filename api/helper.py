@@ -27,7 +27,7 @@ class JobserverDetails(object):
 
         job_type = {
             "metadata": "metaData",
-            "prediction": "prediction",
+            "master": "story",
         }
 
         return {
@@ -55,3 +55,29 @@ class JobserverDetails(object):
         job_url = "{0}/jobs/{1}".format(cls.get_jobserver_url(), job.jobId)
         print "job_url: {0}".format(job_url)
         return job_url
+
+
+def find_chart_data_and_replace_with_chart_data(data):
+    columnData = data['columnData']
+
+    for data in columnData:
+        data["chartData"] = chartData
+
+    data['columnData'] = columnData
+    return data
+
+chartData = {
+      "data": {
+          "columns": [
+              ["data1", 30, 200, 100, 400, 150, 250],
+              ["data2", 130, 100, 140, 200, 150, 50]
+          ],
+          "type": "bar",
+      },
+      "bar": {
+          "width": {
+              "ratio": 0.5
+          }
+      }
+
+    }

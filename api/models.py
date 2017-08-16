@@ -250,6 +250,9 @@ class Insight(models.Model):
         self.generate_slug()
         super(Insight, self).save(*args, **kwargs)
 
+    def create(self):
+        self.add_to_job()
+
     def add_to_job(self, *args, **kwargs):
 
         jobConfig = self.generate_config(*args, **kwargs)
@@ -284,7 +287,9 @@ class Insight(models.Model):
         self.save()
 
     def generate_config(self, *args, **kwargs):
-        config = {}
+        config = {
+            "config": {}
+        }
 
         config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
         config['config']["COLUMN_SETTINGS"]= self.create_configuration_column_settings()
@@ -310,7 +315,7 @@ class Insight(models.Model):
                               # 'result_file': ['file:///home/gulshan/marlabs/test1/algos/kill/'],
                               'script_to_run': ['Descriptive analysis', 'Measure vs. Dimension',
                                                 'Dimension vs. Dimension', 'Measure vs. Measure'],
-                              'inputfile': [self.dataset.get_input_file(type='file')]
+                              'inputfile': [self.dataset.get_input_file()]
                               }
 
     def create_configuration_column_settings(self):
