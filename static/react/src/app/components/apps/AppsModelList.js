@@ -121,14 +121,12 @@ export class AppsModelList extends React.Component {
 			)
 		});
 		return (
-				<div className="side-body">
-				<div className="main-content">
+				<div>
 				{addButton}
 				{appsModelList}
 				<div className="clearfix"></div>
 				<div id="idPagination">
 				{paginationTag}
-				</div>
 				</div>
 				</div>
 		);

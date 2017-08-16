@@ -3,27 +3,34 @@ import {MainHeader} from "../common/MainHeader";
 import {connect} from "react-redux";
 import {Link, Redirect} from "react-router";
 import store from "../../store";
-import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
+import {Modal,Button,Tab,Row,Col,Nav,NavItem,Popover,OverlayTrigger} from "react-bootstrap";
 import {C3Chart} from "../c3Chart";
 import ReactDOM from 'react-dom';
+import $ from "jquery";
 
-import {updateSelectedMeasures} from "../../actions/dataActions";
+import {updateSelectedVariables} from "../../actions/dataActions";
 
 @connect((store) => {
-	return {login_response: store.login.login_response, dataPreview: store.datasets.dataPreview};
+	return {login_response: store.login.login_response, dataPreview: store.datasets.dataPreview,
+		selectedVariablesCount:store.datasets.selectedVariablesCount,
+		selectedMeasures:store.datasets.selectedMeasures,
+		selectedDimensions:store.datasets.selectedDimensions,
+		selectedVariablesCount:store.datasets.selectedVariablesCount};
 })
 
 export class DataVariableSelection extends React.Component {
 	constructor(props) {
 		super(props);
-		this.handleMeasures = this.handleMeasures.bind(this);
+		this.handleCheckboxEvents = this.handleCheckboxEvents.bind(this);
 	}
-	handleMeasures(e){
-		this.props.dispatch(updateSelectedMeasures(e))
+	handleCheckboxEvents(e){
+		this.props.dispatch(updateSelectedVariables(e))
 	}
 	render() {
+		
 		console.log("data variableSelection is called##########3");
 		let dataPrev = store.getState().datasets.dataPreview;
+		let selMeasures = store.getState().datasets.selectedMeasures;
 		if(dataPrev){
 			 const metaData = dataPrev.meta_data.columnData;
 			    var measures =[], dimensions =[],datetime =[];
@@ -47,7 +54,7 @@ export class DataVariableSelection extends React.Component {
 			    	  var measureTemplate = measures.map((mItem,mIndex)=>{
 			    	      const mId = "chk_mea" + mIndex;
 			    	      return(
-			    	        <li key={mIndex}><div className="ma-checkbox inline"><input id={mId} type="checkbox" className="measure" onChange={this.handleMeasures} value={mItem}/><label htmlFor={mId} className="radioLabels">{mItem}</label></div> </li>
+			    	        <li key={mIndex}><div className="ma-checkbox inline"><input id={mId} type="checkbox" className="measure" onChange={this.handleCheckboxEvents} value={mItem}/><label htmlFor={mId} className="radioLabels">{mItem}</label></div> </li>
 			    	      );
 			    	  });
 			    	}else{
@@ -57,7 +64,7 @@ export class DataVariableSelection extends React.Component {
 			    	  var dimensionTemplate = dimensions.map((dItem,dIndex)=>{
 			    	      const dId = "chk_dim" + dIndex;
 			    	    return(
-			    	     <li key={dIndex}><div className="ma-checkbox inline"><input id={dId} type="checkbox" className="dimension" value={dItem}/><label htmlFor={dId}>{dItem}</label></div> </li>
+			    	     <li key={dIndex}><div className="ma-checkbox inline"><input id={dId} type="checkbox" className="dimension" onChange={this.handleCheckboxEvents} value={dItem}/><label htmlFor={dId}>{dItem}</label></div> </li>
 			    	   );
 			    	  });
 			    	}else{
@@ -68,19 +75,22 @@ export class DataVariableSelection extends React.Component {
 			    	  var datetimeTemplate = datetime.map((dtItem,dtIndex)=>{
 			    	    const dtId = "rad_dt" + dtIndex;
 			    	  return(
-			    	   <li key={dtIndex}><div className="ma-radio inline"><input type="radio"  name="date_type" id={dtId} value={dtItem}/><label htmlFor={dtId}>{dtItem}</label></div></li>
+			    	   <li key={dtIndex}><div className="ma-radio inline"><input type="radio"  className="timeDimension" onChange={this.handleCheckboxEvents} name="date_type" id={dtId} value={dtItem}/><label htmlFor={dtId}>{dtItem}</label></div></li>
 			    	 );
 			    	  });
 			    	}else{
 			    	  var datetimeTemplate = <label>No dates variable present</label>
 			    	}
-
+			    	const popoverLeft = (
+							  <Popover id="popover-positioned-top" title="Variables List">
+							 Testing
+							  </Popover>
+							);
 			return(
-					<div className = "side-body">
-				    <div className="main-content">
-			        <div className="panel panel-default">
-			      <div className="panel-body">
-			          <div className="row">
+					<div>
+				    
+			         
+			         <div className="row">
 			          <div className="col-lg-4">
 			              <label>Including the follwing variables:</label>
 			          </div>{/*<!-- /.col-lg-4 -->*/}
@@ -220,10 +230,13 @@ export class DataVariableSelection extends React.Component {
 			          </div>{/*<!-- /.col-lg-4 -->*/}
 			          </div>  {/*<!-- /.row -->*/}
 			{/*<!-------------------------------------------------------------------------------->*/}
+			 <div className="row">
+	            <div className="col-md-4 col-md-offset-5">
+	                <h4>{store.getState().datasets.selectedVariablesCount} Variable selected<OverlayTrigger trigger="click" placement="left" overlay={popoverLeft}><a><i className="pe-7s-more pe-2x pe-va"></i></a></OverlayTrigger></h4>
+	            </div>
+	          </div>
 			     </div>
-			          </div>
-			        </div>
-			        </div>
+			         
 			           
 			        
 			);

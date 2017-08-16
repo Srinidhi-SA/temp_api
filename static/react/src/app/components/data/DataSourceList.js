@@ -53,7 +53,7 @@ export class DataSourceList extends React.Component {
 		if (dataSrcList) {
 			const navTabs = dataSrcList.map((data, i) => {
 				return (<NavItem eventKey={data.dataSourceType} onSelect={this.handleSelect}>
-				{data.dataSourceType}
+				{data.dataSourceName}
 				</NavItem>)
 			});
 			const navTabContent = dataSrcList.map((data, i) => {
@@ -61,7 +61,7 @@ export class DataSourceList extends React.Component {
 				let formList = null;
 				var divId = "data_upload_"+i;
 				const fieldsList = fields.map((field,j) =>{
-					if(field.fieldType == "button"){
+					if(field.fieldType == "file"){
 						return(<div class="tab-pane active cont fade in">
 						<h3>
 						File Upload
@@ -109,7 +109,7 @@ export class DataSourceList extends React.Component {
 			});
 			return (
 					<div>
-					<Tab.Container id="left-tabs-example" defaultActiveKey="File Upload">
+					<Tab.Container id="left-tabs-example" defaultActiveKey="fileUpload">
 					<Row className="clearfix">
 					<Col sm={3}>
 					<Nav bsStyle="pills" stacked>

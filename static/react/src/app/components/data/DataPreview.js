@@ -104,7 +104,7 @@ export class DataPreview extends React.Component {
 	}
 	render() {
 		console.log("data prev is called##########3");
-		let _link = "/data/"+store.getState().datasets.dataPreview.slug+"/variableSelection";
+		let _link = "/apps/createModel";
 		let dataPrev = store.getState().datasets.dataPreview.meta_data;
 		console.log(dataPrev)
 		if (dataPrev) {
