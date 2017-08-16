@@ -112,6 +112,12 @@
                         <div class="clearfix"></div>
                         <div class="table-responsive noSwipe">
                            <table class="table table-condensed table-hover table-bordered table-striped cst_table">
+<colgroup></colgroup>
+<colgroup></colgroup>
+<colgroup></colgroup>
+<colgroup></colgroup>
+<colgroup></colgroup>
+<colgroup></colgroup>
                               <thead>
                                  <tr>
                                     <th>#</th>
@@ -317,13 +323,21 @@
       <!-- Placed at the end of the document so the pages load faster --> 
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> 
       <script src="js/bootstrap.min.js"></script>
-      <script src="js/bootstrap-slider.js"></script>
+      
+	  <style>
+	  .hover { border:2px solid blue; }
+	  </style>
       <script>
-         $('.bslider').slider({
-         formatter: function(value) {
-         return 'Current value: ' + value;
-         }
-         });
+$("table").delegate('td','mouseover mouseleave', function(e) {
+    if (e.type == 'mouseover') {
+     // $(this).parent().addClass("hover");
+      $("colgroup").eq($(this).index()).addClass("hover");
+    }
+    else {
+      $(this).parent().removeClass("hover");
+      $("colgroup").eq($(this).index()).removeClass("hover");
+    }
+});
       </script>
       <script src="js/uiScripts.js"></script>
    </body>

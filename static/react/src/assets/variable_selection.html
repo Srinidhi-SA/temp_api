@@ -82,28 +82,24 @@
 					<div class="row">
 					<div class="col-lg-4">
 							<div class="form-group">
-								<input type="text" name="createSname" id="createSname" class="form-control input-sm" placeholder="Create Signal Name">
-							</div>
-					</div><!-- /.col-lg-4 -->
-					<div class="col-lg-4">
-							<div class="form-group">
 								<select class="form-control" id="selectAnalyse">
-									<option>I want to Analyse</option>
-									<option>I want to Analyse 2</option>
-									<option>I want to Analyse 3</option>
-									<option>I want to Analyse 4</option>
+									<option>I want to analyze</option>
+									<option>I want to analyze 2</option>
+									<option>I want to analyze 3</option>
+									<option>I want to analyze 4</option>
 								</select>
 							</div>
 					</div><!-- /.col-lg-4 -->
+					
 					</div><!-- /.row -->
 					<div class="row">
 					<div class="col-lg-4">
-							<label>Including the follwing variables:</label>
+							<label>Including the following variables:</label>
 					</div><!-- /.col-lg-4 -->
 					</div>
 					<div class="row">
 					<div class="col-lg-4">
-						<div class="panel panel-primary panel-borders cst-panel">
+						<div class="panel panel-primary-p1 cst-panel-shadow">
 						<div class="panel-heading"><i class="pe-7s-graph1"></i> Measures</div>
 						<div class="panel-body">
 							<!-- Row for select all-->
@@ -116,8 +112,7 @@
 								</div>
 								<div class="col-md-8">
 									<div class="input-group pull-right">
-									<input type="text" name="search_signals" title="Search Signals" id="search_signals" class="form-control" placeholder="Search signals...">
-									<span class="input-group-addon"><i class="fa fa-search fa-lg"></i></span>
+										<input type="text" class="form-control" placeholder="Search measures..." name="srch-measure" id="srch-measure">
 									<span class="input-group-btn"> 
 									<button type="button" data-toggle="dropdown" title="Sorting" class="btn btn-default dropdown-toggle" aria-expanded="false"><i class="fa fa-sort-alpha-asc fa-lg"></i> <span class="caret"></span></button>
 									<ul role="menu" class="dropdown-menu dropdown-menu-right">
@@ -134,7 +129,7 @@
 							<hr />
 							<!-- Row for list of variables-->
 							<div class="row">
-								<div class="col-md-12">
+								<div class="col-md-12 cst-scroll-panel">
 									<ul class="list-unstyled">
 									<li><div class="ma-checkbox inline"><input id="chk_mes1" type="checkbox" class="needsclick"><label for="chk_mes1">Number of items</label></div> </li>
 									<li><div class="ma-checkbox inline"><input id="chk_mes2" type="checkbox" class="needsclick"><label for="chk_mes2">Profits</label></div> </li>
@@ -151,8 +146,8 @@
 							
 					</div><!-- /.col-lg-4 -->
 					<div class="col-lg-4">
-							<div class="panel panel-primary panel-borders cst-panel">
-							<div class="panel-heading"><i class="pe-7s-graph1"></i> Dimensions</div>
+							<div class="panel panel-primary-p2 cst-panel-shadow">
+							<div class="panel-heading"><i class="pe-7s-graph2"></i> Dimensions</div>
 								<div class="panel-body">
 										<!-- Row for select all-->
 										<div class="row">
@@ -164,8 +159,7 @@
 											</div>
 										<div class="col-md-8">
 											<div class="input-group pull-right">
-											<input type="text" name="search_signals" title="Search Signals" id="search_signals" class="form-control" placeholder="Search signals...">
-											<span class="input-group-addon"><i class="fa fa-search fa-lg"></i></span>
+											<input type="text" class="form-control" placeholder="Search dimension..." name="srch-dimension" id="srch-dimension">
 											<span class="input-group-btn"> 
 											<button type="button" data-toggle="dropdown" title="Sorting" class="btn btn-default dropdown-toggle" aria-expanded="false"><i class="fa fa-sort-alpha-asc fa-lg"></i> <span class="caret"></span></button>
 											<ul role="menu" class="dropdown-menu dropdown-menu-right">
@@ -182,7 +176,7 @@
 										<hr />
 										<!-- Row for list of variables-->
 										<div class="row">
-										<div class="col-md-12">
+										<div class="col-md-12 cst-scroll-panel">
 											<ul class="list-unstyled">
 											<li><div class="ma-checkbox inline"><input id="chk_dim1" type="checkbox" class="needsclick"><label for="chk_dim1">Number of items</label></div> </li>
 											<li><div class="ma-checkbox inline"><input id="chk_dim2" type="checkbox" class="needsclick"><label for="chk_dim2">Profits</label></div> </li>
@@ -202,7 +196,7 @@
 							
 					</div><!-- /.col-lg-4 -->
 					<div class="col-lg-4">
-							<div class="panel panel-primary panel-borders cst-panel">
+							<div class="panel panel-primary-p3 cst-panel-shadow">
 						<div class="panel-heading"><i class="pe-7s-date"></i> Dates</div>
 						<div class="panel-body">
 							
@@ -213,8 +207,7 @@
 											</div>
 										<div class="col-md-8">
 											<div class="input-group pull-right">
-											<input type="text" name="search_signals" title="Search Signals" id="search_signals" class="form-control" placeholder="Search signals...">
-											<span class="input-group-addon"><i class="fa fa-search fa-lg"></i></span>
+											<input type="text" class="form-control" placeholder="Search date type..." name="srch-dtype" id="srch-dtype">
 											<span class="input-group-btn"> 
 											<button type="button" data-toggle="dropdown" title="Sorting" class="btn btn-default dropdown-toggle" aria-expanded="false"><i class="fa fa-sort-alpha-asc fa-lg"></i> <span class="caret"></span></button>
 											<ul role="menu" class="dropdown-menu dropdown-menu-right">
@@ -231,8 +224,7 @@
 										<hr />
 										<!-- Row for list of variables-->
 										<div class="row">
-										<div class="col-md-12">
-											
+										<div class="col-md-12 cst-scroll-panel">											
 											<ul class="list-unstyled">
 											<li><div class="ma-radio inline"><input type="radio" checked="" name="date_type" id="rad1"><label for="rad1">Transaction Date</label></div></li>
 											<li><div class="ma-radio inline"><input type="radio" checked="" name="date_type" id="rad2"><label for="rad2">Sales Date</label></div></li>
@@ -240,6 +232,7 @@
 											<li><div class="ma-radio inline"><input type="radio" checked="" name="date_type" id="rad4"><label for="rad4">Manufacturing Date</label></div></li>
 											<li><div class="ma-radio inline"><input type="radio" checked="" name="date_type" id="rad5"><label for="rad5">Transaction Date</label></div></li>
 											<li><div class="ma-radio inline"><input type="radio" checked="" name="date_type" id="rad6"><label for="rad6">Sales Date</label></div></li>
+											<li><div class="ma-radio inline"><input type="radio" checked="" name="date_type" id="rad7"><label for="rad7">None</label></div></li>
 											</ul>
 										</div>
 										</div>
@@ -252,27 +245,74 @@
 						
 					<div class="row">
 						<div class="col-md-4 col-md-offset-5">
-								<h4>18 Variable selected <a href="#"><i class="pe-7s-more pe-2x pe-va"></i></a></h4>
+								<h4>18 Variable selected <a href="javascript:;" class="pover" data-popover-content="#selected_var" data-placement="bottom" data-toggle="popover"><i class="pe-7s-more pe-2x pe-va"></i></a></h4>
+						</div>
+						
+						<div id="selected_var" class="pop_box hide">
+						<div class="row">
+							<div class="col-md-6">
+							<select class="form-control">
+									<option selected>Variable Type</option>
+									<option>Measures</option>
+									<option>Dimensions</option>
+								</select>
+							</div>
+							<div class="col-md-6">
+								<div class="input-group pull-right">
+									<input type="text" class="form-control" placeholder="Search date type..." name="srch-dtype" id="srch-dtype">
+									<span class="input-group-btn"> 
+									<button type="button" data-toggle="dropdown" title="Sorting" class="btn btn-default dropdown-toggle" aria-expanded="false"><i class="fa fa-sort-alpha-asc fa-lg"></i> <span class="caret"></span></button>
+									<ul role="menu" class="dropdown-menu dropdown-menu-right">
+									<li><a href="#">Name Ascending</a></li>
+									<li><a href="#">Name Descending</a></li>
+									<li><a href="#">Date Ascending</a></li>
+									<li><a href="#">Date Descending</a></li>
+									</ul>
+									</span> 
+								</div>
+							</div>							
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<div class="panel-border">
+								asdf
+								</div>
+							</div>
+						</div>	
+						</div>
+						
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<div class="panel panel-alt4 panel-borders">
+								<div class="panel-heading text-center">Performing the following Analysis</div>
+								<div class="panel-body text-center">
+									<div class="ma-checkbox inline"><input id="chk_analysis0" type="checkbox" class="needsclick"><label for="chk_analysis0">Distribution Analysis </label></div>
+									<div class="ma-checkbox inline"><input id="chk_analysis1" type="checkbox" class="needsclick"><label for="chk_analysis1">Trend Analysis </label></div>
+									<div class="ma-checkbox inline"><input id="chk_analysis2" type="checkbox" class="needsclick"><label for="chk_analysis2">Anova </label></div>
+									<div class="ma-checkbox inline"><input id="chk_analysis3" type="checkbox" class="needsclick"><label for="chk_analysis3">Regression </label></div>
+									<div class="ma-checkbox inline"><input id="chk_analysis4" type="checkbox" class="needsclick"><label for="chk_analysis4">Decision Tree</label></div>
+									<hr>
+									<div class="pull-left">
+									<div class="ma-checkbox inline"><input id="chk_results" type="checkbox" class="needsclick"><label for="chk_results">Statistically Significant Results</label></div>
+									</div>
+									<div class="pull-right">
+									<a href="javascript:;" class="pull-right">Go to advanced settings</a>
+									</div>
+								</div>									
+							</div>
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-md-8 col-md-offset-2">
-							<div class="panel panel-primary panel-borders cst-panel">
-								<div class="panel-heading">Performing the following Analysis</div>
-								<div class="panel-body">
-									<div class="ma-checkbox inline"><input id="chk_analysis1" type="checkbox" class="needsclick"><label for="chk_analysis1">Frequency Distribution </label></div>
-									<div class="ma-checkbox inline"><input id="chk_analysis2" type="checkbox" class="needsclick"><label for="chk_analysis2">Trend </label></div>
-									<div class="ma-checkbox inline"><input id="chk_analysis3" type="checkbox" class="needsclick"><label for="chk_analysis3">Chi Sq </label></div>
-									<div class="ma-checkbox inline"><input id="chk_analysis4" type="checkbox" class="needsclick"><label for="chk_analysis4">Decision Tree</label></div>
-									<hr>
-									<div class="ma-checkbox inline"><input id="chk_results" type="checkbox" class="needsclick"><label for="chk_results">Statistically Significant Results</label></div>
-									<a href="javascript:;" class="pull-right">Go to advanced settings</a></div>
-								</div>
+						<div class="col-lg-4 col-lg-offset-8">
+							<div class="form-group">
+								<input type="text" name="createSname" id="createSname" class="form-control input-sm" placeholder="Enter a signal name">
 							</div>
+						</div><!-- /.col-lg-4 -->
 					</div>
-					 
+					<hr/> 
 					<div class="row">
-						<div class="col-md-12 text-center">
+						<div class="col-md-12 text-right">
 							<button class="btn btn-primary">CREATE SIGNAL</button>
 						</div>
 					</div>
@@ -292,13 +332,22 @@
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> 
       <script src="js/bootstrap.min.js"></script>
       <script src="js/bootstrap-slider.js"></script>
-      <script>
-         $('.bslider').slider({
-         formatter: function(value) {
-         return 'Current value: ' + value;
-         }
-         });
-      </script>
       <script src="js/uiScripts.js"></script>
+ <script>
+ /*** Popover function ***/
+$('[data-toggle="popover"]').popover({
+	container: 'body',
+	html: true,
+	trigger: 'focus',
+	placement: 'bottom',
+	content: function () {
+		var clone = $($(this).data('popover-content')).clone(true).removeClass('hide');
+		return clone;
+	}
+}).click(function(e) {
+	e.preventDefault();
+});
+ 
+ </script>
    </body>
 </html>
