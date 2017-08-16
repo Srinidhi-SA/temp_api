@@ -7,7 +7,7 @@ from sjsclient import client
 
 from api.helper import JobserverDetails
 from api.user_helper import UserSerializer
-from models import Insight, Dataset, Trainer
+from models import Insight, Dataset, Trainer, Score
 
 
 def submit_job(slug, class_name, job_config):
@@ -39,7 +39,7 @@ def submit_job(slug, class_name, job_config):
 
 
 def convert_to_string(data):
-    keys = ['compare_type', 'column_data_raw', 'config', 'data']
+    keys = ['compare_type', 'column_data_raw', 'config', 'data', 'model_data']
 
     for key in keys:
         if key in data:
@@ -53,7 +53,7 @@ def convert_to_string(data):
 
 
 def convert_to_json(data):
-    keys = ['compare_type', 'column_data_raw', 'config', 'data']
+    keys = ['compare_type', 'column_data_raw', 'config', 'data', 'model_data']
 
     for key in keys:
         if key in data:
@@ -125,4 +125,34 @@ class TrainerSerlializer(serializers.ModelSerializer):
 
     class Meta:
         model = Trainer
-        fields = "__all__"
+        exclude = ('id', 'job')
+
+
+class ScoreSerlializer(serializers.ModelSerializer):
+
+    def to_representation(self, instance):
+        ret = super(ScoreSerlializer, self).to_representation(instance)
+        trainer = ret['trainer']
+        trainer_object = Trainer.objects.get(pk=trainer)
+        ret['trainer'] = trainer_object.slug
+        ret['dataset'] = trainer_object.dataset.slug
+        ret = convert_to_json(ret)
+        ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        return ret
+
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get("name", instance.name)
+        instance.config = validated_data.get("config", instance.config)
+        instance.deleted = validated_data.get("deleted", instance.deleted)
+        instance.bookmarked = validated_data.get("bookmarked", instance.bookmarked)
+        instance.data = validated_data.get("data", instance.data)
+        instance.model_data = validated_data.get("model_data", instance.model_data)
+        instance.column_data_raw = validated_data.get("column_data_raw", instance.column_data_raw)
+
+        instance.save()
+
+        return instance
+
+    class Meta:
+        model = Score
+        exclude = ('id', 'job')

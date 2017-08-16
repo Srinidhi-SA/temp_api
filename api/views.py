@@ -11,8 +11,8 @@ from rest_framework.decorators import detail_route
 from rest_framework.response import Response
 
 from api.pagination import CustomPagination
-from api.utils import convert_to_string, InsightSerializer, TrainerSerlializer
-from models import Insight, Dataset, Job, Trainer
+from api.utils import convert_to_string, InsightSerializer, TrainerSerlializer, ScoreSerlializer
+from models import Insight, Dataset, Job, Trainer, Score
 
 
 class SignalView(viewsets.ModelViewSet):
@@ -101,6 +101,54 @@ class TrainerView(viewsets.ModelViewSet):
         data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
         data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
         serializer = TrainerSerlializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+
+        return Response(serializer.errors)
+
+    def update(self, request, *args, **kwargs):
+        '''
+        Comparing with the previous implementation:-
+            This update method can cover set_column_data, set_measure, set_dimension
+        :param request:
+        :param args:
+        :param kwargs: {'slug': 'signal-123-asdwqeasd'}
+        :return:
+        '''
+        data = request.data
+        data = convert_to_string(data)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance=instance, data=data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors)
+
+
+
+class ScoreView(viewsets.ModelViewSet):
+    def get_queryset(self):
+        queryset = Score.objects.filter(
+            created_by=self.request.user
+        )
+        return queryset
+
+    def get_serializer_class(self):
+        return ScoreSerlializer
+
+    lookup_field = 'slug'
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = ('bookmarked', 'deleted', 'name')
+    pagination_class = CustomPagination
+
+    def create(self, request, *args, **kwargs):
+        import pdb;pdb.set_trace()
+        data = request.data
+        data = convert_to_string(data)
+        data['trainer'] = Trainer.objects.filter(slug=data['trainer'])
+        data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
+        serializer = ScoreSerlializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
