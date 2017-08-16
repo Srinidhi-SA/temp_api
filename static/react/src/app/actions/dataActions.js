@@ -121,13 +121,48 @@ export function fetchAllDataSuccess(doc){
 		data,
 	}
 }
-export function updateSelectedMeasures(evt){
-	var measure = evt.target.value;
-	console.log(evt.target.checked)
-	return {
-		type: "SELECTED_MEASURES",
-		measure
+export function updateSelectedVariables(evt){
+	var variableName = evt.target.value;
+	if(evt.target.className == "measure"){
+		if(evt.target.checked){
+			return {
+				type: "SELECTED_MEASURES",
+				variableName
+			}
+		}else{
+			return {
+				type: "UNSELECT_MEASURES",
+				variableName
+			}
+		}
 	}
+	else if(evt.target.className == "dimension"){
+		if(evt.target.checked){
+			return {
+				type: "SELECTED_DIMENSIONS",
+				variableName
+			}
+		}else{
+			return {
+				type: "UNSELECT_DIMENSION",
+				variableName
+			}
+		}
+	}
+	else if(evt.target.className == "timeDimension"){
+		if(evt.target.checked){
+			return {
+				type: "SELECTED_TIMEDIMENSION",
+				variableName
+			}
+		}else{
+			return {
+				type: "UNSELECT_TIMEDIMENSION",
+				variableName
+			}
+		}
+	}
+	
 }
 
 
