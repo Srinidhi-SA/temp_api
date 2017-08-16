@@ -203,21 +203,22 @@ def set_result(request, slug=None):
     write_into_databases(
         job_type=job.job_type,
         object_slug=job.object_id,
-        results=results
+        results=json.loads(results)
     )
     return JsonResponse({'result': 'Success'})
 
 
 def write_into_databases(job_type, object_slug, results):
     from api import helper
-
+    import json
     if job_type == "metadata":
         dataset_object = Dataset.objects.get(slug=object_slug)
 
         columnData = results['columnData']
         for data in columnData:
             data["chartData"] = helper.find_chart_data_and_replace_with_chart_data(data["chartData"])
-        dataset_object.meta_data = results
+        results['columnData'] = columnData
+        dataset_object.meta_data = json.dumps(results)
         dataset_object.analysis_done = True
         dataset_object.save()
     elif job_type == "master":
