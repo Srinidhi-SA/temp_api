@@ -81,19 +81,16 @@ export class DataVariableSelection extends React.Component {
 			    	}else{
 			    	  var datetimeTemplate = <label>No dates variable present</label>
 			    	}
-			 
-			    	
 			    	const popoverLeft = (
 							  <Popover id="popover-positioned-top" title="Variables List">
 							 Testing
 							  </Popover>
 							);
 			return(
-					<div className = "side-body">
-				    <div className="main-content">
-			        <div className="panel panel-default">
-			      <div className="panel-body">
-			          <div className="row">
+					<div>
+				    
+			         
+			         <div className="row">
 			          <div className="col-lg-4">
 			              <label>Including the follwing variables:</label>
 			          </div>{/*<!-- /.col-lg-4 -->*/}
@@ -239,9 +236,7 @@ export class DataVariableSelection extends React.Component {
 	            </div>
 	          </div>
 			     </div>
-			          </div>
-			        </div>
-			        </div>
+			         
 			           
 			        
 			);

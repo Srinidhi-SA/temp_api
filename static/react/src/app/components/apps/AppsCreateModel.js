@@ -33,6 +33,7 @@ export class AppsCreateModel extends React.Component {
     getDataSetPreview(e){
     	this.selectedData = $("#model_Dataset").val();
     	this.props.dispatch(getDataSetPreview(this.selectedData));
+    	this.props.dispatch(closeModelPopup());
     }
 	render() {
 		const dataSets = store.getState().datasets.allDataSets.data;
