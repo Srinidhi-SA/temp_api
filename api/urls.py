@@ -7,6 +7,7 @@ from rest_framework import routers
 from datasets.views import DatasetView
 from views import SignalView, get_datasource_config_list
 from views import TrainerView
+from views import ScoreView
 from api import views
 
 # Start adding urlconf from here
@@ -30,6 +31,17 @@ router.register(
     base_name='trainer'
 )
 
+router.register(
+    'trainer',
+    TrainerView,
+    base_name='trainer'
+)
+
+router.register(
+    'score',
+    ScoreView,
+    base_name='score'
+)
 
 urlpatterns = [
     url(r'^datasource/get_config_list$',get_datasource_config_list , name="datasource_get_config_list"),
@@ -38,4 +50,5 @@ urlpatterns = [
 ]
 
 urlpatterns += router.urls
+
 
