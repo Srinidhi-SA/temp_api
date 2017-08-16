@@ -107,12 +107,11 @@ class DatasetView(viewsets.ModelViewSet):
 
     @list_route(methods=['get'])
     def all(self, request):
-
         query_set = self.get_queryset()
-
-        serializer = DatasetSerializer(query_set, many=True).data
-
-        return Response(serializer)
+        serializer = DatasetSerializer(query_set, many=True)
+        return Response({
+            "data": serializer.data
+        })
 
 
 
