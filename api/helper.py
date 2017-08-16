@@ -24,9 +24,15 @@ class JobserverDetails(object):
 
     @classmethod
     def get_config(cls, slug, class_name):
+
+        job_type = {
+            "metadata": "metaData",
+            "prediction": "prediction",
+        }
+
         return {
             "job_config": {
-                "job_type": class_name,
+                "job_type": job_type[class_name],
                 "job_url" : "http://{0}:{1}/api/job/{2}/".format(THIS_SERVER_DETAILS.get('host'),
                                                                     THIS_SERVER_DETAILS.get('port'),
                                                                     slug),
@@ -44,9 +50,8 @@ class JobserverDetails(object):
             }
         }
 
-
     @classmethod
     def print_job_details(cls, job):
-        job_url = "{0}/{1}".format(cls.get_jobserver_url(), job.jobId)
+        job_url = "{0}/jobs/{1}".format(cls.get_jobserver_url(), job.jobId)
         print "job_url: {0}".format(job_url)
         return job_url

@@ -7,9 +7,9 @@ BASEDIR = settings.BASE_DIR
 EMR_INFO = settings.EMR
 emr_home_path = EMR_INFO.get('home_path')
 
-# emr_file = BASEDIR + "/keyfiles/TIAA.pem"
+emr_file = BASEDIR + "/keyfiles/TIAA.pem"
 
-# env.key_filename=[emr_file]
+env.key_filename=[emr_file]
 env.host_string="{0}@{1}".format(HDFS["user.name"], HDFS["host"])
 
 model_names = [
