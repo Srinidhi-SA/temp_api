@@ -234,10 +234,10 @@ DATA_SOURCES_CONFIG = {"conf":  [{
 
 ]
 }
-
+# dev api http://34.196.204.54:9092
 THIS_SERVER_DETAILS = {
-    "host": "localhost",
-    "port": "9001",
+    "host": "34.196.204.54",
+    "port": "9092",
     "initail_domain": "/api"
 }
 

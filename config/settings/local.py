@@ -26,13 +26,24 @@ print os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
     'api/static')
 
+# HDFS = {
+#
+#     # Give host name without http
+#     'host': 'localhost',
+#     'port': '50070', #webhdfs port
+#     'uri': '/webhdfs/v1',
+#     'user.name': 'marlabs',
+#     'hdfs_port': '8020', #hdfs port
+#     'base_path' : '/dev/dataset/'
+# }
+
 HDFS = {
 
     # Give host name without http
-    'host': 'localhost',
-    'port': '50070', #webhdfs port
+    'host': 'ec2-34-205-203-38.compute-1.amazonaws.com',
+    'port': '14000', #webhdfs port
     'uri': '/webhdfs/v1',
-    'user.name': 'marlabs',
+    'user.name': 'hadoop',
     'hdfs_port': '8020', #hdfs port
     'base_path' : '/dev/dataset/'
 }
@@ -48,10 +59,21 @@ KAFKA = {
     'topic': 'my-topic'
 }
 
+# JOBSERVER = {
+#     'host': 'localhost',
+#     'port': '8090',
+#     'app-name': 'test_api_1',
+#     'context': 'pysql-context',
+#     'master': 'bi.sparkjobs.JobScript',
+#     'metadata': 'bi.sparkjobs.JobScript',
+#     'filter': 'bi.sparkjobs.filter.JobScript',
+#
+# }
+
 JOBSERVER = {
-    'host': 'localhost',
+    'host': 'ec2-34-205-203-38.compute-1.amazonaws.com',
     'port': '8090',
-    'app-name': 'test_api_1',
+    'app-name': 'product_revamp',
     'context': 'pysql-context',
     'master': 'bi.sparkjobs.JobScript',
     'metadata': 'bi.sparkjobs.JobScript',
@@ -60,3 +82,5 @@ JOBSERVER = {
 }
 
 ALLOWED_HOSTS = ['*']
+
+APPEND_SLASH=False
