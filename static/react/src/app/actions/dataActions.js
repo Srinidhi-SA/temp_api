@@ -53,7 +53,7 @@ export function getDataSetPreview(slug) {
         if(response.status === 200){
           console.log(json)
         dispatch(fetchDataPreviewSuccess(json))
-        //dispatch(showDataPreview())
+        dispatch(showDataPreview())
       }
       else{
         dispatch(fetchDataPreviewError(json))

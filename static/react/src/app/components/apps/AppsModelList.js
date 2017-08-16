@@ -31,6 +31,7 @@ export class AppsModelList extends React.Component {
 		}else
 		  this.props.dispatch(getAppsModelList(pageNo));
 	}
+ 
   render() {
     console.log("apps model list is called##########3");
     const modelList = store.getState().apps.modelList.data;
@@ -46,7 +47,7 @@ export class AppsModelList extends React.Component {
 			paginationTag = <Pagination className="pull-left" ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
 		}
 		const appsModelList = modelList.map((data, i) => {
-			var modelLink = "/data/" + data.slug;
+			var modelLink = "/apps/models/" + data.slug;
 			return (
 					<div className="col-md-3 top20 list-boxes" key={i}>
 					<div className="rep_block newCardStyle" name={data.name}>
@@ -55,7 +56,7 @@ export class AppsModelList extends React.Component {
 					<div className="row">
 					<div className="col-xs-9">
 					<h4 className="title newCardTitle">
-					<a href="javascript:void(0);" id= {data.slug}>{data.name}</a>
+					<a href="javascript:void(0);" id= {data.slug}><Link to={modelLink}>{data.name}</Link></a>
 					</h4>
 					</div>
 					<div className="col-xs-3">
