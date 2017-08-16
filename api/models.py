@@ -92,20 +92,24 @@ class Dataset(models.Model):
         }
 
     def generate_slug(self):
+        print "asdasd", self.slug
         if not self.slug:
             self.slug = slugify(str(self.name) + "-" + ''.join(
                 random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
+        print "-----------", self.slug
 
     def save(self, *args, **kwargs):
         self.generate_slug()
-        print "Generated Slug"
-
         super(Dataset, self).save(*args, **kwargs)
-        print "Dataset save once. Initial"
-        self.copy_file_to_hdfs()
-        # self.copy_file_to_hdfs_local()
 
-        jobConfig = self.generate_config(*args, **kwargs)
+    def create(self):
+        self.copy_file_to_destination()
+        self.add_to_job()
+
+    def add_to_job(self):
+
+        jobConfig = self.generate_config()
+        print jobConfig
         print "Dataset realted config genarated."
 
         job = Job()
@@ -115,11 +119,12 @@ class Dataset(models.Model):
         job.config = json.dumps(jobConfig)
         job.save()
 
-        print "Job enrty created"
+        print "Job created."
 
         from utils import submit_job
 
         try:
+            print "Submitting job."
             job_url = submit_job(
                 slug=job.slug,
                 class_name='metadata',
@@ -129,31 +134,15 @@ class Dataset(models.Model):
 
             job.url = job_url
             job.save()
-            self.job = job
         except Exception as exc:
             print "Unable to submit job."
             print exc
-        # self.save()
 
-    def set_preview_data(self):
-        items = []
-        all_items = []
-        with open(self.input_file.path) as file:
-            rows = csv.reader(file, delimiter=str(','))
-            # for row in itertools.islice(rows, 20):
-            for row in rows:
-                all_items.append(row)
-                if "" in row or " " in row:
-                    if len(all_items) > 21:
-                        continue
-                    all_items.append(row)
-                    continue
-                items.append(row)
-
-        return json.dumps({"data": items[:21] if len(items) > 21 else all_items[:21]})
+        self.job = job
+        self.save()
 
     def generate_config(self, *args, **kwrgs):
-        inputFile = self.get_input_file(type='file')
+        inputFile = self.get_input_file(type='fake')
         return {
             "config" : {
                 "FILE_SETTINGS":{
@@ -168,8 +157,31 @@ class Dataset(models.Model):
             }
         }
 
+    def copy_file_to_destination(self):
+        # import pdb;pdb.set_trace()
+        try:
+            self.copy_file_to_hdfs()
+            self.file_remote = "hdfs"
+        except:
+            try:
+                self.copy_file_to_hdfs_local()
+                self.file_remote = "emr_file"
+            except:
+                pass
+
     def copy_file_to_hdfs(self):
-        hadoop.hadoop_put(self.input_file.path, self.get_hdfs_relative_path())
+        try:
+            hadoop.hadoop_put(self.input_file.path, self.get_hdfs_relative_path())
+        except:
+            raise Exception("Failed to copy file to HDFS.")
+
+    def copy_file_to_hdfs_local(self):
+        try:
+            pass
+            # fab_helper.mkdir_remote(self.get_hdfs_relative_path())
+            # fab_helper.put_file(self.input_file.path, self.get_hdfs_relative_path())
+        except:
+            raise Exception("Failed to copy file to EMR Local")
 
     def get_hdfs_relative_path(self):
         return os.path.join( settings.HDFS.get('base_path'), self.slug)
@@ -180,18 +192,17 @@ class Dataset(models.Model):
     def emr_local(self):
         return "/home/marlabs" + self.get_hdfs_relative_path()
 
-    def copy_file_to_hdfs_local(self):
-        fab_helper.mkdir_remote(self.get_hdfs_relative_path())
-        fab_helper.put_file(self.input_file.path, self.get_hdfs_relative_path())
-
     def get_input_file(self, type='file'):
-        if type=='file':
+        type = self.file_remote
+        if type=='emr_file':
             return "file://{}".format(self.input_file.path)
         elif type=='hdfs':
             return "hdfs://{}:{}{}".format(
                 settings.HDFS.get("host"),
                 settings.HDFS.get("port"),
                 self.get_hdfs_relative_file_path())
+        elif type=='fake':
+            return "file:///asdasdasdasd"
 
 
 class Insight(models.Model):
@@ -238,6 +249,8 @@ class Insight(models.Model):
         self.generate_slug()
         super(Insight, self).save(*args, **kwargs)
 
+    def add_to_job(self, *args, **kwargs):
+
         jobConfig = self.generate_config(*args, **kwargs)
         print "Dataset realted config genarated."
 
@@ -248,7 +261,7 @@ class Insight(models.Model):
         job.config = json.dumps(jobConfig)
         job.save()
 
-        print "Job enrty created"
+        print "Job entry created."
 
         from utils import submit_job
 
@@ -262,11 +275,11 @@ class Insight(models.Model):
 
             job.url = job_url
             job.save()
-            self.job = job
         except Exception as exc:
             print "Unable to submit job."
             print exc
 
+        self.job = job
         self.save()
 
     def generate_config(self, *args, **kwargs):
@@ -351,8 +364,73 @@ class Trainer(models.Model):
         self.generate_slug()
         super(Trainer, self).save(*args, **kwargs)
 
-    def generate_config(self):
+    def generate_config(self, *args, **kwargs):
         return {}
+
+    def add_to_job(self, *args, **kwargs):
+
+        jobConfig = self.generate_config(*args, **kwargs)
+        print "Dataset realted config genarated."
+
+        job = Job()
+        job.name = "-".join(["Insight", self.slug])
+        job.job_type = "master"
+        job.object_id = str(self.slug)
+        job.config = json.dumps(jobConfig)
+        job.save()
+
+        print "Job entry created."
+
+        from utils import submit_job
+
+        try:
+            job_url = submit_job(
+                slug=job.slug,
+                class_name='master',
+                job_config=jobConfig
+            )
+            print "Job submitted."
+
+            job.url = job_url
+            job.save()
+        except Exception as exc:
+            print "Unable to submit job."
+            print exc
+
+        self.job = job
+        self.save()
+
+
+class Score(models.Model):
+
+    name = models.CharField(max_length=300, null=True)
+    slug = models.SlugField(null=False, blank=True)
+    trainer = models.ForeignKey(Trainer, null=False)
+    config = models.TextField(default="{}")
+    data = models.TextField(default="{}")
+    model_data = models.TextField(default="{}")
+    column_data_raw = models.TextField(default="{}")
+
+    created_on = models.DateTimeField(auto_now_add=True, null=True)
+    updated_on = models.DateTimeField(auto_now=True, null=True)
+    created_by = models.ForeignKey(User, null=False)
+    deleted = models.BooleanField(default=False)
+
+    bookmarked = models.BooleanField(default=False)
+
+    job = models.ForeignKey(Job, null=True)
+
+    def __str__(self):
+        pass
+
+    def generate_slug(self):
+        if not self.slug:
+            self.slug = slugify(self.name + "-" + ''.join(
+                random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
+
+    def save(self, *args, **kwargs):
+        self.generate_slug()
+        super(Score, self).save(*args, **kwargs)
 
 
 

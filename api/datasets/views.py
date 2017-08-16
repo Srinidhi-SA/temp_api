@@ -60,10 +60,7 @@ class DatasetView(viewsets.ModelViewSet):
         serializer = DatasetSerializer(data=data)
         if serializer.is_valid():
             dataset_object = serializer.save()
-
-            if dataset_object.input_file.name is not None:
-                dataset_object.preview = dataset_object.set_preview_data()
-                dataset_object.save()
+            dataset_object.create()
             return Response(serializer.data)
 
         return creation_failed_exception(serializer.errors)
