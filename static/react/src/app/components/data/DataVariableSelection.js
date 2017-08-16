@@ -30,7 +30,6 @@ export class DataVariableSelection extends React.Component {
 		
 		console.log("data variableSelection is called##########3");
 		let dataPrev = store.getState().datasets.dataPreview;
-		let selMeasures = store.getState().datasets.selectedMeasures;
 		if(dataPrev){
 			 const metaData = dataPrev.meta_data.columnData;
 			    var measures =[], dimensions =[],datetime =[];

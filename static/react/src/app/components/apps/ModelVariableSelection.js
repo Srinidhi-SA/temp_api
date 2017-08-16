@@ -23,6 +23,18 @@ export class ModelVariableSelection extends React.Component {
 
 	render() {
 		console.log("Create Model Variable Selection  is called##########3");
+		let dataPrev = store.getState().datasets.dataPreview;
+		 const metaData = dataPrev.meta_data.columnData;
+		 let renderSelectBox = null;
+		if(metaData){
+			renderSelectBox =  <select className="form-control" id="createModelAnalysisList">
+			{metaData.map((metaItem,metaIndex) =>
+			<option key={metaIndex} value={metaItem.name}>{metaItem.name}</option>
+			)}
+			</select>
+		}else{
+			renderSelectBox = <option>No Variables</option>
+		}
 			return(
 					 <div className="side-body">
 			            <div className="page-head">
@@ -36,6 +48,20 @@ export class ModelVariableSelection extends React.Component {
 			            <div className="main-content">
 				        <div className="panel panel-default">
 				      <div className="panel-body">
+				      
+				      <div className="row">
+			          <div className="col-lg-4">
+			              <div className="form-group">
+			                <input type="text" name="createModelName" id="createModelName" className="form-control input-sm" placeholder="Create Model Name" />
+			              </div>
+			          </div>{/*<!-- /.col-lg-4 -->*/}
+			          <div className="col-lg-4">
+			              <div className="form-group">
+			              {renderSelectBox}
+			              </div>
+			          </div>{/*<!-- /.col-lg-4 -->*/}
+			          </div>
+			          
 				      <DataVariableSelection/>
 				      </div>
 				      </div>
