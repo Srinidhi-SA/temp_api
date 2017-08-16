@@ -189,9 +189,14 @@ from django.views.decorators.csrf import csrf_exempt
 
 @csrf_exempt
 def set_result(request, slug=None):
+    print "Welcome to API."
+    print "So you wanna write."
     job = Job.objects.get(slug=slug)
     if not job:
         return JsonResponse({'result':'Failed'})
     job.results = request.body
+    print "data----------->"
+    print request.body
     job.save()
+    print "Data has been saved."
     return JsonResponse({'result':'Success'})

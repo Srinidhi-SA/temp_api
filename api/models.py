@@ -73,6 +73,7 @@ class Dataset(models.Model):
     job = models.ForeignKey(Job, null=True)
 
     bookmarked = models.BooleanField(default=False)
+    file_remote = models.CharField(max_length=100, null=True)
 
     class Meta:
         ordering = ['-created_on', '-updated_on']
@@ -142,7 +143,7 @@ class Dataset(models.Model):
         self.save()
 
     def generate_config(self, *args, **kwrgs):
-        inputFile = self.get_input_file(type='fake')
+        inputFile = self.get_input_file()
         return {
             "config" : {
                 "FILE_SETTINGS":{
@@ -158,7 +159,6 @@ class Dataset(models.Model):
         }
 
     def copy_file_to_destination(self):
-        # import pdb;pdb.set_trace()
         try:
             self.copy_file_to_hdfs()
             self.file_remote = "hdfs"
@@ -178,8 +178,8 @@ class Dataset(models.Model):
     def copy_file_to_hdfs_local(self):
         try:
             pass
-            # fab_helper.mkdir_remote(self.get_hdfs_relative_path())
-            # fab_helper.put_file(self.input_file.path, self.get_hdfs_relative_path())
+            fab_helper.mkdir_remote(self.get_hdfs_relative_path())
+            fab_helper.put_file(self.input_file.path, self.get_hdfs_relative_path())
         except:
             raise Exception("Failed to copy file to EMR Local")
 
@@ -192,14 +192,15 @@ class Dataset(models.Model):
     def emr_local(self):
         return "/home/marlabs" + self.get_hdfs_relative_path()
 
-    def get_input_file(self, type='file'):
+    def get_input_file(self):
         type = self.file_remote
         if type=='emr_file':
             return "file://{}".format(self.input_file.path)
         elif type=='hdfs':
+            # return "file:///home/hadoop/data_date.csv"
             return "hdfs://{}:{}{}".format(
                 settings.HDFS.get("host"),
-                settings.HDFS.get("port"),
+                settings.HDFS.get("hdfs_port"),
                 self.get_hdfs_relative_file_path())
         elif type=='fake':
             return "file:///asdasdasdasd"

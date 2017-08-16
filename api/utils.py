@@ -31,6 +31,8 @@ def submit_job(slug, class_name, job_config):
     config['job_config'] = job_config
     config['job_config'].update(config1)
 
+    print "overall---------config"
+    print config
     job = sjs.jobs.create(app, class_path, ctx=ctx, conf=json.dumps(config))
 
     # print
