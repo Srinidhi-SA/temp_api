@@ -74,6 +74,7 @@ class Dataset(models.Model):
 
     bookmarked = models.BooleanField(default=False)
     file_remote = models.CharField(max_length=100, null=True)
+    analysis_done = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['-created_on', '-updated_on']
@@ -145,9 +146,9 @@ class Dataset(models.Model):
     def generate_config(self, *args, **kwrgs):
         inputFile = self.get_input_file()
         return {
-            "config" : {
-                "FILE_SETTINGS":{
-                                    "inputfile" : [inputFile],
+            "config": {
+                "FILE_SETTINGS": {
+                                    "inputfile": [inputFile],
                                 },
                 "COLUMN_SETTINGS": {
                                     "analysis_type": ["metaData"],
@@ -371,6 +372,7 @@ class Trainer(models.Model):
     deleted = models.BooleanField(default=False)
 
     bookmarked = models.BooleanField(default=False)
+    analysis_done = models.BooleanField(default=False)
 
     job = models.ForeignKey(Job, null=True)
 
@@ -440,6 +442,7 @@ class Score(models.Model):
     updated_on = models.DateTimeField(auto_now=True, null=True)
     created_by = models.ForeignKey(User, null=False)
     deleted = models.BooleanField(default=False)
+    analysis_done = models.BooleanField(default=False)
 
     bookmarked = models.BooleanField(default=False)
 

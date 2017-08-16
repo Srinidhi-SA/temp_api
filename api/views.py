@@ -212,7 +212,9 @@ def write_into_databases(job_type, object_slug, results):
     if job_type == "metadata":
         dataset_object = Dataset.objects.get(slug=object_slug)
         dataset_object.meta_data = results
+        dataset_object.analysis_done = True
         dataset_object.save()
+
     elif job_type == "master":
         pass
     elif job_type == "":
