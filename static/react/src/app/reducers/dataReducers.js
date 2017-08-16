@@ -5,9 +5,9 @@ export default function reducer(state = {
 		current_page:1,
 		dataPreview:null,
 		allDataSets:{},
-		selectedDimensions:"",
+		selectedDimensions:[],
 		selectedMeasures:[],
-		selectedTimeDimensions:"",
+		selectedTimeDimensions:[],
 		dataPreviewFlag:false,
 }, action) {
 	console.log("In DATA reducer!!");

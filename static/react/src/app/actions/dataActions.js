@@ -123,6 +123,7 @@ export function fetchAllDataSuccess(doc){
 }
 export function updateSelectedMeasures(evt){
 	var measure = evt.target.value;
+	console.log(evt.target.checked)
 	return {
 		type: "SELECTED_MEASURES",
 		measure
