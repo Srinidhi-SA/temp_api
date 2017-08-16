@@ -112,6 +112,12 @@
                         <div class="clearfix"></div>
                         <div class="table-responsive noSwipe">
                            <table class="table table-condensed table-hover table-bordered table-striped cst_table">
+<colgroup></colgroup>
+<colgroup></colgroup>
+<colgroup></colgroup>
+<colgroup></colgroup>
+<colgroup></colgroup>
+<colgroup></colgroup>
                               <thead>
                                  <tr>
                                     <th>#</th>
@@ -227,7 +233,7 @@
                   <div class="col-md-3 preview_stats">
 					<!-- Start Tab Statistics -->
                      <div id="tab_statistics" class="panel-group accordion accordion-semi">
-                        <div class="panel panel-default">
+                        <div class="panel panel-primary-p1">
                            <div class="panel-heading">
                               <h4 class="panel-title"><a data-toggle="collapse" data-parent="#tab_statistics" href="#pnl_stc" aria-expanded="true" class="">Statistics <i class="fa fa-angle-down pull-right"></i></a></h4>
                            </div>
@@ -264,7 +270,7 @@
 					 <!-- ./ End Tab Statistics -->
 					 <!-- Start Tab Visualizations -->
                      <div id="tab_visualizations" class="panel-group accordion accordion-semi">
-                        <div class="panel panel-default">
+                        <div class="panel panel-primary-p2">
                            <div class="panel-heading">
                               <h4 class="panel-title"><a data-toggle="collapse" data-parent="#tab_visualizations" href="#pnl_visl" aria-expanded="true" class="">Visualizations <i class="fa fa-angle-down pull-right"></i></a></h4>
                            </div>
@@ -306,6 +312,14 @@
 					 <!-- ./ End Tab Subsettings -->
                   </div>
                </div>
+			   
+			   <div class="row">
+				<div class="col-md-12 text-right">
+					<button class="btn btn-default"> Close </button>
+					<button class="btn btn-primary"> Save changes</button>
+					<button class="btn btn-primary"> Apply and Continue</button>
+				</div>
+			   </div>
             </div>
             <!-- /.Page Content Area --> 
          </div>
@@ -317,13 +331,21 @@
       <!-- Placed at the end of the document so the pages load faster --> 
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> 
       <script src="js/bootstrap.min.js"></script>
-      <script src="js/bootstrap-slider.js"></script>
+      
+	  <style>
+	  .hover { border:2px solid blue; }
+	  </style>
       <script>
-         $('.bslider').slider({
-         formatter: function(value) {
-         return 'Current value: ' + value;
-         }
-         });
+$("table").delegate('td','mouseover mouseleave', function(e) {
+    if (e.type == 'mouseover') {
+     // $(this).parent().addClass("hover");
+      $("colgroup").eq($(this).index()).addClass("hover");
+    }
+    else {
+      $(this).parent().removeClass("hover");
+      $("colgroup").eq($(this).index()).removeClass("hover");
+    }
+});
       </script>
       <script src="js/uiScripts.js"></script>
    </body>

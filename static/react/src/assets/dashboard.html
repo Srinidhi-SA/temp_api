@@ -453,14 +453,45 @@
 
 <!-- Create Story Popup Modal -->
 <div id="createNewStory" tabindex="-1" role="dialog" class="modal fade modal-colored-header">
-      <div class="modal-dialog custom-width">
+      <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" data-dismiss="modal" aria-hidden="true" class="close md-close"><i class="fa fa-close"></i></button>
-            <h3 class="modal-title">Create Story</h3>
+            <h3 class="modal-title">Create Signal</h3>
           </div>
-          <div class="modal-body form">
+          <div class="modal-body">
+		  <div class="row">
+			<div class="col-md-6"><h4>Select an existing dataset</h4></div>
+			<div class="col-md-6"><div class="input-group pull-right">                 
+              <input type="text" name="search_signals" title="Search Signals" id="search_signals" class="form-control" placeholder="Search signals...">           
+                <span class="input-group-btn">
+                     <button type="button" data-toggle="dropdown" title="Sorting" class="btn btn-default dropdown-toggle" aria-expanded="false"><i class="fa fa-sort-alpha-asc fa-lg"></i> <span class="caret"></span></button>
+                      <ul role="menu" class="dropdown-menu dropdown-menu-right">
+                      <li><a href="#">Name Ascending</a></li>
+                      <li><a href="#">Name Descending</a></li>
+                      <li><a href="#">Date Ascending</a></li>
+                      <li><a href="#">Date Descending</a></li>
+                      </ul>
+                </span> 
+              </div></div>
+		  </div>
+		  <div class="row">
+			<div class="col-md-12">
+				<h5>Recently Used</h5>
+			</div>
+		  </div>
+		  <div class="row">
+			<div class="col-md-12">
+				<h5>Bookmark</h5>
+			</div>
+		  </div>
+		  <div class="row">
+			<div class="col-md-12">
+				<h5>Others</h5>
+			</div>
+		  </div>
             <div class="form-group">
+			
               <label>Select an existing dataset</label>
               <select id="sel_existdataste" name="selectbasic" class="form-control">
                 <option value="334">superstore_v2.csv</option>

@@ -2501,7 +2501,7 @@ select[multiple].input-lg, textarea.input-lg {
 	touch-action: manipulation;
 	cursor: pointer;
 	border: 1px solid transparent;
-	padding: 8px 12px;
+	padding: 7px 12px;
 	font-size: 13px;
 	-webkit-user-select: none;
 	-moz-user-select: none;
@@ -4286,7 +4286,7 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:focus, a.list-g
 	padding: 15px 20px 20px
 }
 .panel-heading {
-	padding: 13px 13px 13px;
+	padding: 5px 10px;
 	border-bottom: 1px solid transparent;
 	border-top-right-radius: 0;
 	border-top-left-radius: 0
@@ -12988,7 +12988,7 @@ label {
 }
 .ma-checkbox, .ma-radio {
 	display: block;
-	line-height: 22px;
+	line-height: 14px;
 	margin: 0;
 	padding: 7px 0
 }
@@ -13015,15 +13015,15 @@ label {
 }
 .ma-checkbox input[type=checkbox]+label:before, .ma-checkbox input[type=radio]+label:before, .ma-radio input[type=checkbox]+label:before, .ma-radio input[type=radio]+label:before {
 	content: "";
-	width: 22px;
-	height: 22px;
+	width: 16px;
+	height: 16px;
 	display: inline-block;
-	border: 2px solid #eaeaea;
+	border: 2px solid #d6d6d6;
 	margin-right: 5px;
-	font-size: 18px;
+	font-size: 11px;
 	font-family: 'FontAwesome';
 	font-weight: 400;
-	line-height: 19px;
+	line-height: 13px;
 	vertical-align: bottom;
 	text-align: center;
 	background-color: #fff;
@@ -13050,12 +13050,12 @@ label {
 	border-radius: 50%;
 	font-family: 'FontAwesome';
 	line-height: 17px;
-	font-size: 14px
+	font-size: 11px
 }
 
 @media screen and (-webkit-min-device-pixel-ratio:0) {
 .ma-checkbox input[type=radio]+label:before,  .ma-radio input[type=radio]+label:before {
-	line-height: 18px
+	line-height: 13px;
 }
 }
 
@@ -15579,23 +15579,31 @@ progress:after { content: '%'; }
 .tab-left .nav-tabs>li>a, .tab-right .nav-tabs>li>a { font-weight: bold;
     text-transform: uppercase;}
 
+
+/**Custom Panel with heading colors and shadow ****/
+.panel-primary-p1 .panel-heading, .panel-primary-p2 .panel-heading, .panel-primary-p3 .panel-heading {     
+    margin: 0;
+	text-align:center;
+	color:#FFF
+}
+
+.panel-primary-p1 .panel-heading, .panel-group.accordion.accordion-semi .panel.panel-primary-p1 .panel-heading a { background-color:#7ead05; color: #FFF;}
+.panel-primary-p2 .panel-heading, .panel-group.accordion.accordion-semi .panel.panel-primary-p2 .panel-heading a { background-color:#b6ae01; color: #FFF;}
+.panel-primary-p3 .panel-heading, .panel-group.accordion.accordion-semi .panel.panel-primary-p3 .panel-heading a { background-color:#bd9c00; color: #FFF;} 
+.cst-panel-shadow  { margin-bottom: 5px; padding: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); transition: all 0.3s cubic-bezier(.25,.8,.25,1);} 
+.cst-panel-shadow:hover { box-shadow: 0 14px 18px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22); } 
+.cst-scroll-panel { height:170px; overflow:auto; }
+.panel-alt4 .panel-heading{ color: #0e0e0e; }
+.panel-borders { border-color: #bdbdbd; }
 /** Table Top Border ***/
 table.table.table-condensed.table-hover.table-bordered.table-striped {
     border-top: 1px solid #ddd;
-}
-.cst_panel { margin-bottom:10px; }
-.cst_panel  .panel-heading {
-    padding: 10px 20px;
-   /* background-color: #f0f0f0;*/
-    margin: 0;
 }
 /*.cst_table thead th { text-align:center }*/
 .cst_table thead th a { display:block; color:#424242 }
 .cst_table thead th a:hover { color:#00998c;  }
 .cst_table thead th .dropdown-menu a:hover { color:#FFF;  }
-.cst_table thead th a .caret {position: absolute;
-    top: 20px;
-    right: 15px;}
+.cst_table thead th a .caret { position: absolute; top: 20px; right: 15px;}
 .cst_table tbody td { white-space: nowrap;
     text-overflow: ellipsis;
     max-width: 140px;
@@ -15611,6 +15619,7 @@ table.table.table-condensed.table-hover.table-bordered.table-striped {
   margin-left: -64px;
   padding-top: 15%;
 }
+ 
 .cst-panel .panel-heading {
     padding: 10px;
 }
@@ -15623,3 +15632,10 @@ table.table.table-condensed.table-hover.table-bordered.table-striped {
 	background-color: #e4f9f7;
 	border-color: #e4f9f7 !important;
 }
+ 
+.seld_var_box { padding:10px 0; }
+.seld_var_box a { display:inline-block; border:1px solid red; width:100px; background-color:#f2f0f1; border:1px solid #d6d4d5; padding:3px; color:#0f0d0e; margin:0 0 3px 0 }
+.seld_var_box a:hover { color:#00998c}
+.seld_var_box a i.remove { display:block; width:20px; float:right; font-size:18px; }
+
+ 
