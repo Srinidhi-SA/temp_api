@@ -288,8 +288,8 @@ class Insight(models.Model):
 
         config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
         config['config']["COLUMN_SETTINGS"]= self.create_configuration_column_settings()
-        config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
-        config['config']["FILE_SETTINGS"] = self.create_configuration_meta_data()
+        # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
+        # config['config']["META_HELPER"] = self.create_configuration_meta_data()
 
         import json
         self.config = json.dumps(config)
@@ -302,24 +302,43 @@ class Insight(models.Model):
 
     def create_configuration_url_settings(self):
         return {
-            "inputfile": [self.dataset.get_input_file(type='file')]
-        }
+                              # 'monitor_api': ['http://52.77.216.14/api/errand/1/log_status'],
+                              # 'levelcounts': ['GG|~|34|~|HH|~|4'],
+                              # 'narratives_file': ['file:///home/gulshan/marlabs/test2/algos/kill/'],
+                              # 'scorepath': ['file:///home/gulshan/marlabs/test1/algos/output'],
+                              # 'modelpath': ['file:///home/gulshan/marlabs/test1/algos/'], 'train_test_split': ['0.8'],
+                              # 'result_file': ['file:///home/gulshan/marlabs/test1/algos/kill/'],
+                              'script_to_run': ['Descriptive analysis', 'Measure vs. Dimension',
+                                                'Dimension vs. Dimension', 'Measure vs. Measure'],
+                              'inputfile': [self.dataset.get_input_file(type='file')]
+                              }
 
     def create_configuration_column_settings(self):
         return {
-            "analysis_type": ["master"],
-            "result_column": "",
-            "polarity": "",
-            "consider_columns": "",
-            "consider_columns_type": "",
-            "date_columns": "",
-            "date_format": "",
-            "ignore_column_suggestions": "",
-            "utf8_columns": "",
-            "measure_column_filter": "",
-            "dimension_column_filter": "",
-            "measure_suggestions": ""
-        }
+                                'polarity': ['positive'],
+                                'consider_columns_type': ['including'],
+                                'date_format': None,
+                                'ignore_column_suggestions': None,
+                                'result_column': ['Platform'],
+                                'consider_columns': ['Date', 'Gender', 'Education', 'Model', 'Free service count',
+                                                     'Free service labour cost', 'Status'],
+                                'date_columns': ['Month'],
+                                'analysis_type': ['Dimension'],
+                }
+        # return {
+        #     "analysis_type": ["master"],
+        #     "result_column": "",
+        #     "polarity": "",
+        #     "consider_columns": "",
+        #     "consider_columns_type": "",
+        #     "date_columns": "",
+        #     "date_format": "",
+        #     "ignore_column_suggestions": "",
+        #     "utf8_columns": "",
+        #     "measure_column_filter": "",
+        #     "dimension_column_filter": "",
+        #     "measure_suggestions": ""
+        # }
 
     def create_configuration_filter_settings(self):
         return {}
