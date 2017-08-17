@@ -43,3 +43,45 @@ class DatasetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Dataset
         exclude = ( 'id', 'updated_on')
+
+
+class DataListSerializer(serializers.Serializer):
+
+    class Meta:
+        model = Dataset
+        exculde = (
+            "input_file",
+            "auto_update",
+            "auto_update_duration",
+            "input_file",
+            "db_type",
+            "db_details",
+            "preview",
+            "meta_data",
+            "file_remote"
+        )
+
+"""
+name = models.CharField(max_length=100, null=True)
+    slug = models.SlugField(null=True)
+    auto_update = models.BooleanField(default=False)
+    auto_update_duration = models.IntegerField(default=99999)
+
+    input_file = models.FileField(upload_to='datasets', null=True)
+    db_type = models.CharField(max_length=100, null=True)
+    db_details = models.TextField(default="{}")
+    preview = models.TextField(default="{}")
+
+    meta_data = models.TextField(default="{}")
+
+    created_on = models.DateTimeField(auto_now_add=True, null=True)
+    updated_on = models.DateTimeField(auto_now=True, null=True)
+    created_by = models.ForeignKey(User, null=False)
+    deleted = models.BooleanField(default=False)
+
+    job = models.ForeignKey(Job, null=True)
+
+    bookmarked = models.BooleanField(default=False)
+    file_remote = models.CharField(max_length=100, null=True)
+    analysis_done = models.BooleanField(default=False
+"""

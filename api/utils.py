@@ -7,7 +7,7 @@ from sjsclient import client
 
 from api.helper import JobserverDetails
 from api.user_helper import UserSerializer
-from models import Insight, Dataset, Trainer, Score
+from models import Insight, Dataset, Trainer, Score, Job
 
 
 def submit_job(slug, class_name, job_config):
@@ -158,3 +158,10 @@ class ScoreSerlializer(serializers.ModelSerializer):
     class Meta:
         model = Score
         exclude = ('id', 'job')
+
+
+class JobSerializer(serializers.Serializer):
+
+    class Meta:
+        model = Job
+        exclude = ("id", "created_on")

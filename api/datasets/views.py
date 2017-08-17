@@ -112,9 +112,3 @@ class DatasetView(viewsets.ModelViewSet):
         return Response({
             "data": serializer.data
         })
-
-
-
-
-
-

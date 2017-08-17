@@ -308,29 +308,23 @@ class Insight(models.Model):
 
     def create_configuration_url_settings(self):
         return {
-                              # 'monitor_api': ['http://52.77.216.14/api/errand/1/log_status'],
-                              # 'levelcounts': ['GG|~|34|~|HH|~|4'],
-                              # 'narratives_file': ['file:///home/gulshan/marlabs/test2/algos/kill/'],
-                              # 'scorepath': ['file:///home/gulshan/marlabs/test1/algos/output'],
-                              # 'modelpath': ['file:///home/gulshan/marlabs/test1/algos/'], 'train_test_split': ['0.8'],
-                              # 'result_file': ['file:///home/gulshan/marlabs/test1/algos/kill/'],
-                              'script_to_run': ['Descriptive analysis', 'Measure vs. Dimension',
-                                                'Dimension vs. Dimension', 'Measure vs. Measure'],
-                              'inputfile': [self.dataset.get_input_file()]
-                              }
+            'script_to_run': ['Descriptive analysis', 'Measure vs. Dimension',
+                            'Dimension vs. Dimension', 'Measure vs. Measure'],
+            'inputfile': [self.dataset.get_input_file()]
+        }
 
     def create_configuration_column_settings(self):
         return {
-                                'polarity': ['positive'],
-                                'consider_columns_type': ['including'],
-                                'date_format': None,
-                                'ignore_column_suggestions': None,
-                                'result_column': ['Platform'],
-                                'consider_columns': ['Date', 'Gender', 'Education', 'Model', 'Free service count',
-                                                     'Free service labour cost', 'Status'],
-                                'date_columns': ['Month'],
-                                'analysis_type': ['Dimension'],
-                }
+            'polarity': ['positive'],
+            'consider_columns_type': ['including'],
+            'date_format': None,
+            'ignore_column_suggestions': None,
+            'result_column': ['Platform'],
+            'consider_columns': ['Date', 'Gender', 'Education', 'Model', 'Free service count',
+                                 'Free service labour cost', 'Status'],
+            'date_columns': ['Month'],
+            'analysis_type': ['Dimension'],
+        }
         # return {
         #     "analysis_type": ["master"],
         #     "result_column": "",
