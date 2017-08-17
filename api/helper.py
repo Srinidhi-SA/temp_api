@@ -73,7 +73,7 @@ def metadata_chart_conversion(data):
     }
     values = ["data1"]
     for obj in data:
-        values.append(data["value"])
+        values.append(obj["value"])
     output["data"]["columns"] = [values]
 
     return output
