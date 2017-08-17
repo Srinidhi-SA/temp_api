@@ -266,3 +266,19 @@ JOBSERVER = {
     'class_path_filter': 'bi.sparkjobs.filter.JobScript',
 
 }
+
+ENABLED_ANALYSIS = {
+    "dimension": [
+        {"name": "Descriptive analysis", "id": "descriptive-analysis"},
+        {"name": "Dimension vs. Dimension", "id": "dimension-vs-dimension"},
+        {"name": "Predictive modeling", "id": "predictive-modeling"}
+    ],
+    "measure": [
+        {"name": "Descriptive analysis", "id": "descriptive-analysis"},
+        {"name": "Measure vs. Dimension", "id": "measure-vs-dimension"},
+        {"name": "Measure vs. Measure", "id": "measure-vs-measure"}
+    ],
+    # "time"
+}
+
+# {"name":"Trend":"id":4} will be added to the above lists based on the logic(if date columns is present or not)
