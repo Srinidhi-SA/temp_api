@@ -15,7 +15,7 @@ import {updateSelectedVariables} from "../../actions/dataActions";
 		selectedVariablesCount:store.datasets.selectedVariablesCount,
 		selectedMeasures:store.datasets.selectedMeasures,
 		selectedDimensions:store.datasets.selectedDimensions,
-		selectedVariablesCount:store.datasets.selectedVariablesCount};
+		selectedTimeDimensions:store.datasets.selectedTimeDimensions};
 })
 
 export class DataVariableSelection extends React.Component {

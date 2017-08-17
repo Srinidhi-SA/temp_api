@@ -38,7 +38,7 @@ export class CreateSignal extends React.Component {
     closeSignalModal(){
     	this.props.dispatch(closeCreateSignalModal())
     }
-		
+
 		getPreviewData(e){
 			//this.selectedData = e.target.id;
 			this.props.dispatch(showDataPreview());
@@ -60,6 +60,7 @@ export class CreateSignal extends React.Component {
 
 		if(store.getState().datasets&&store.getState().datasets.dataPreview&&store.getState().datasets.dataPreviewFlag){
 			let _link = "/data/"+this.selectedData.name;
+			//let _link= "/signals/datapreview/"+this.selectedData.name;
 			return(<Redirect to={_link}/>);
 		}
 		if(dataSets){

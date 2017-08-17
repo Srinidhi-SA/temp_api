@@ -24,7 +24,7 @@ export function getDataList(pageNo) {
 }
 
 function fetchDataList(pageNo,token) {
-	return fetch(API+'/api/datasets?page_number='+pageNo+'&page_size='+PERPAGE+'',{
+	return fetch(API+'/api/datasets/?page_number='+pageNo+'&page_size='+PERPAGE+'',{
 		method: 'get',
 		headers: getHeader(token)
 	}).then( response => Promise.all([response, response.json()]));
@@ -63,7 +63,7 @@ export function getDataSetPreview(slug) {
 }
 
 function fetchDataPreview(slug) {
-  return fetch(API+'/api/datasets/'+ slug,{
+  return fetch(API+'/api/datasets/'+ slug +'/',{
 		method: 'get',
     headers: getHeader(sessionStorage.userToken)
 		}).then( response => Promise.all([response, response.json()]));
@@ -102,7 +102,7 @@ export function getAllDataList(pageNo) {
 
 
 function fetchAllDataList(token) {
-	return fetch(API+'/api/datasets?page_size=1000',{
+	return fetch(API+'/api/datasets/?page_size=1000',{
 		method: 'get',
 		headers: getHeader(token)
 	}).then( response => Promise.all([response, response.json()]));
@@ -119,6 +119,22 @@ export function fetchAllDataSuccess(doc){
 	return {
 		type: "DATA_ALL_LIST",
 		data,
+	}
+}
+export function selectedAnalysisList(evt){
+	var selectedAnalysis = evt.target.value;
+	if(evt.target.className == "possibleAnalysis"){
+		if(evt.target.checked){
+			return {
+				type: "SELECTED_ANALYSIS_TYPE",
+				selectedAnalysis
+			}
+		}else{
+			return {
+				type: "UNSELECT_ANALYSIS_TYPE",
+				selectedAnalysis
+			}
+		}
 	}
 }
 export function updateSelectedVariables(evt){
@@ -162,7 +178,7 @@ export function updateSelectedVariables(evt){
 			}
 		}
 	}
-	
+
 }
 
 

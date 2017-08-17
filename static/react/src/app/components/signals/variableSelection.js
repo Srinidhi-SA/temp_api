@@ -6,6 +6,7 @@ import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
 import store from "../../store";
 
 import {openCreateSignalModal,closeCreateSignalModal} from "../../actions/createSignalActions";
+import {selectedAnalysisList} from "../../actions/dataActions";
 import {DataVariableSelection} from "../data/DataVariableSelection";
 // var dataSelection= {
 //      "metaData" : [   {"name": "Rows", "value": 30, "display":true},
@@ -119,7 +120,11 @@ var selectedVariables = {measures:[],dimensions:[],date:null};  // pass selected
 	return {login_response: store.login.login_response,
 		newSignalShowModal: store.signals.newSignalShowModal,
 		dataList: store.datasets.dataList,
-  dataPreview: store.datasets.dataPreview};
+  dataPreview: store.datasets.dataPreview,
+  selectedMeasures:store.datasets.selectedMeasures,
+  selectedDimensions:store.datasets.selectedDimensions,
+  selectedTimeDimensions:store.datasets.selectedTimeDimensions,
+    selectedAnalysis:store.datasets.selectedAnalysis};
 })
 
 export class VariableSelection extends React.Component {
@@ -283,8 +288,62 @@ export class VariableSelection extends React.Component {
 //  });
 //
 // }
+handleAnlysisList(e){
+  this.props.dispatch(selectedAnalysisList(e))
+
+}
+createSignal(){
+  console.log(this.props);
+   let analysisList =[],config={}, postData={};
+
+  config['possibleAnalysis'] = this.props.selectedAnalysis;
+  config['measures'] =this.props.selectedMeasures;
+  config['dimension'] =this.props.selectedDimensions;
+  config['timeDimension'] =this.props.selectedTimeDimensions;
+ // alert($("#createSname").val());
+ // alert($('#signalVariableList option:selected').val());
+ // alert($('#signalVariableList option:selected').text());
+ // alert(this.props.dataPreview.slug);
+
+ postData["name"]=$("#createSname").val();
+ postData["type"]=$('#signalVariableList option:selected').val();
+ postData["target_column"]=$('#signalVariableList option:selected').text();
+ postData["config"]=config;
+ postData["dataset"]=this.props.dataPreview.slug;
+ console.log(postData);
+
+
+
+
+}
 
 	render() {
+
+    let dataPrev = store.getState().datasets.dataPreview;
+     const metaData = dataPrev.meta_data.columnData;
+     let renderSelectBox = null;
+    if(metaData){
+      renderSelectBox =  <select className="form-control" id="signalVariableList">
+      {metaData.map((metaItem,metaIndex) =>
+      <option key={metaIndex} value={metaItem.columnType}>{metaItem.name}</option>
+      )}
+      </select>
+    }else{
+      renderSelectBox = <option>No Variables</option>
+    }
+
+//    const possibleAnalysis = dataPrev.meta_data.possibleAnalysis;
+     const possibleAnalysis = ["Distribution Analysis","Trend Analysis", "Anova", "Regression","Decision Tree"];
+        let renderPossibleAnalysis = null;
+     if(possibleAnalysis){
+       renderPossibleAnalysis = possibleAnalysis.map((metaItem,metaIndex) =>{
+      let id = "chk_analysis"+ metaIndex;
+      return(<div key={metaIndex} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem} onChange={this.handleAnlysisList.bind(this)} /><label htmlFor={id}>{metaItem}</label></div>);
+      });
+
+     }else{
+       renderSelectBox = <option>No Variables</option>
+     }
 
 		return (
 <div className="side-body">
@@ -295,16 +354,12 @@ export class VariableSelection extends React.Component {
   <div className="row">
   <div className="col-lg-4">
       <div className="htmlForm-group">
-        <select className="htmlForm-control" id="selectAnalyse">
-          <option>I want to analyze</option>
-          <option>I want to analyze 2</option>
-          <option>I want to analyze 3</option>
-          <option>I want to analyze 4</option>
-        </select>
+           {renderSelectBox}
       </div>
   </div>{/*<!-- /.col-lg-4 -->*/}
 
   </div>{/*<!-- /.row -->*/}
+  <br/>
  {/*  adding selection component */}
        <DataVariableSelection/>
  {/*---------end of selection component----------------------*/}
@@ -312,12 +367,8 @@ export class VariableSelection extends React.Component {
     <div className="col-md-12">
       <div className="panel panel-alt4 panel-borders">
         <div className="panel-heading text-center">PerhtmlForming the following Analysis</div>
-        <div className="panel-body text-center">
-          <div className="ma-checkbox inline"><input id="chk_analysis0" type="checkbox" className="needsclick"/><label htmlFor="chk_analysis0">Distribution Analysis </label></div>
-          <div className="ma-checkbox inline"><input id="chk_analysis1" type="checkbox" className="needsclick"/><label htmlFor="chk_analysis1">Trend Analysis </label></div>
-          <div className="ma-checkbox inline"><input id="chk_analysis2" type="checkbox" className="needsclick"/><label htmlFor="chk_analysis2">Anova </label></div>
-          <div className="ma-checkbox inline"><input id="chk_analysis3" type="checkbox" className="needsclick"/><label htmlFor="chk_analysis3">Regression </label></div>
-          <div className="ma-checkbox inline"><input id="chk_analysis4" type="checkbox" className="needsclick"/><label htmlFor="chk_analysis4">Decision Tree</label></div>
+        <div className="panel-body text-center" >
+          {renderPossibleAnalysis}
           <hr/>
           <div className="pull-left">
           <div className="ma-checkbox inline"><input id="chk_results" type="checkbox" className="needsclick"/><label htmlFor="chk_results">Statistically Significant Results</label></div>
@@ -339,7 +390,7 @@ export class VariableSelection extends React.Component {
   <hr/>
   <div className="row">
     <div className="col-md-12 text-right">
-      <button className="btn btn-primary">CREATE SIGNAL</button>
+      <button onClick={this.createSignal.bind(this)} className="btn btn-primary">CREATE SIGNAL</button>
     </div>
   </div>
 
