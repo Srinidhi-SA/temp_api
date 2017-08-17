@@ -2,7 +2,7 @@ import React from "react";
 import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab} from "react-bootstrap";
 import {AppsModelList} from "./AppsModelList";
-
+import {AppsScoreList} from "./AppsScoreList";
 
 export class Apps extends React.Component {
   constructor() {
@@ -10,7 +10,9 @@ export class Apps extends React.Component {
   }
   render() {
     console.log("apps is called##########3");
-  const models = <div id="appsModels"><AppsModelList history={this.props.history}/>
+   let models = <div id="appsModels"><AppsModelList history={this.props.history}/>
+  <div className="clearfix"></div></div>
+  let score = <div id="appsScore"><AppsScoreList history={this.props.history}/>
   <div className="clearfix"></div></div>
     return (
         <div>
@@ -20,7 +22,7 @@ export class Apps extends React.Component {
             <Tab eventKey={1} title="Models">
             {models}
             </Tab>
-            <Tab eventKey={2} title="Score">Score List <div class="clearfix"></div></Tab>
+            <Tab eventKey={2} title="Score">{score}</Tab>
           </Tabs>
             </div>
           </div>

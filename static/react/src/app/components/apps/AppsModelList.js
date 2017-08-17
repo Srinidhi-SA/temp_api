@@ -47,7 +47,7 @@ export class AppsModelList extends React.Component {
 			paginationTag = <Pagination className="pull-left" ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
 		}
 		const appsModelList = modelList.map((data, i) => {
-			var modelLink = "/apps/models/" + data.slug;
+			var modelLink = "/apps/" + data.slug;
 			return (
 					<div className="col-md-3 top20 list-boxes" key={i}>
 					<div className="rep_block newCardStyle" name={data.name}>
@@ -92,30 +92,6 @@ export class AppsModelList extends React.Component {
 					</ul>
 					{/*<!-- End Rename and Delete BLock  -->*/}
 					</div>
-
-					{/*popover*/}
-					<div id="myPopover" className="pop_box hide">
-					<h4>Created By :
-						<span className="text-primary">Harman</span>
-						</h4>
-						<h5>Updated on :
-							<mark>10.10.2017</mark>
-							</h5>
-							<hr className="hr-popover"/>
-							<p>
-							Data Set : kk<br/>
-							Variable selected : kk1<br/>
-							Variable type : sale</p>
-							<hr className="hr-popover"/>
-							<h4 className="text-primary">Analysis List</h4>
-							<ul className="list-unstyled">
-							<li>
-							<i className="fa fa-check"></i>
-							12</li>
-							</ul>
-							<a href="javascript:void(0)" class="btn btn-primary pull-right">View Story</a>
-							<div className="clearfix"></div>
-							</div>
 							</div>
 							</div>
 							</div>
@@ -138,7 +114,7 @@ export class AppsModelList extends React.Component {
 	}
 }
   handleSelect(eventKey) {
-		this.props.history.push('/apps/models/page/'+eventKey+'')
+		this.props.history.push('/apps/page/'+eventKey+'')
 		this.props.dispatch(getAppsModelList(eventKey));
 	}
 }

@@ -108,3 +108,54 @@ function triggerCreateModel(token,modelName,targetVariable) {
 		}).then( response => Promise.all([response, response.json()]));
 }
 
+export function getAppsScoreList(pageNo) {
+	return (dispatch) => {
+		return fetchScoreList(pageNo,sessionStorage.userToken).then(([response, json]) =>{
+			if(response.status === 200){
+				console.log(json)
+				dispatch(fetchScoreListSuccess(json))
+			}
+			else{
+				dispatch(fetchScoreListError(json))
+			}
+		})
+	}
+}
+
+function fetchScoreList(pageNo,token) {
+	return fetch(API+'/api/score?page_number='+pageNo+'&page_size='+PERPAGE+'',{
+		method: 'get',
+		headers: getHeader(token)
+	}).then( response => Promise.all([response, response.json()]));
+}
+
+function fetchScoreListError(json) {
+	return {
+		type: "SCORE_LIST_ERROR",
+		json
+	}
+}
+export function fetchScoreListSuccess(doc){
+	var data = doc;
+	var current_page =  doc.current_page
+	return {
+		type: "SCORE_LIST",
+		data,
+		current_page,
+	}
+}
+
+export function showCreateScorePopup() {
+	return {
+		type: "APPS_SCORE_SHOW_POPUP",
+	}
+}
+
+export function hideCreateScorePopup() {
+	return {
+		type: "APPS_SCORE_HIDE_POPUP",
+	}
+}
+
+
+

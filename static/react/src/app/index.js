@@ -21,6 +21,7 @@ import {VariableSelection} from "./components/signals/variableSelection";
 import {DataVariableSelection} from "./components/data/DataVariableSelection";
 import {ModelVariableSelection} from "./components/apps/ModelVariableSelection";
 import {AppsModelDetail} from "./components/apps/AppsModelDetail";
+import {AppsModelList} from "./components/apps/AppsModelList";
 // console.log(store);
 
 class App extends React.Component {
@@ -45,7 +46,7 @@ class App extends React.Component {
             <Route exact path="/data" component={Data} />
             <Route exact path="/data/:slug" component={DataPreview} />
             <Route exact path="/data/:slug/variableSelection" component={DataVariableSelection} />
-            <Route exact path="/apps/:slug/" component={ModelVariableSelection} />
+            <Route exact path="/apps/:slug" component={ModelVariableSelection} />
             <Route exact path="/apps/models/:slug" component={AppsModelDetail} />
           </Main>
       </Switch>
