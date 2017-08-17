@@ -1,5 +1,8 @@
 import React from "react";
 import {MainHeader} from "../common/MainHeader";
+import {Tabs,Tab} from "react-bootstrap";
+import {AppsModelList} from "./AppsModelList";
+import {AppsScoreList} from "./AppsScoreList";
 
 export class Apps extends React.Component {
   constructor() {
@@ -7,13 +10,20 @@ export class Apps extends React.Component {
   }
   render() {
     console.log("apps is called##########3");
-    console.log(this.props);
+   let models = <div id="appsModels"><AppsModelList history={this.props.history}/>
+  <div className="clearfix"></div></div>
+  let score = <div id="appsScore"><AppsScoreList history={this.props.history}/>
+  <div className="clearfix"></div></div>
     return (
         <div>
           <div className="side-body">
-            <MainHeader/>
             <div className="main-content">
-              Apps is called!!!!!
+            <Tabs defaultActiveKey={1} animation={false} id="noanim-tab-example">
+            <Tab eventKey={1} title="Models">
+            {models}
+            </Tab>
+            <Tab eventKey={2} title="Score">{score}</Tab>
+          </Tabs>
             </div>
           </div>
         </div>

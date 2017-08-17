@@ -1,336 +1,27 @@
 import React from "react";
 import {Redirect, Link, NavLink} from "react-router-dom";
 import Breadcrumb from 'react-breadcrumb';
-
 import {
   resTree,
   searchTree,
   getFirstCard,
   fetchCard,
   fetchNodeFromTree,
-  getPrevNext
+  getPrevNext,
+  getLastCardOfTree
 } from "../../helpers/processStory";
+import {connect} from "react-redux";
 import {isEmpty} from "../../helpers/helper";
 import {MainHeader} from "../../components/common/MainHeader";
 import {Card} from "./Card";
 import store from "../../store";
-import {connect} from "react-redux";
+
 
 
 
 //import {SignalAnalysisPage} from "./signals/SignalAnalysisPage";
 let showSubTree=false;
-// let this.props.signal = {
-//   "listOfNodes": [
-//     {
-//       "listOfNodes": [],
-//       "listOfCards": [
-//         {
-//           "cardType": "executivesummary",
-//           "cardData": [
-//             {
-//               CardType: "html",
-//               data: '<table cellpadding="0" cellspacing="0" border="0" class="table table-bordered heat-table-map table-responsive" ><thead> <tr class="heatMapHeader"><th class="first">Head</th><th class="first">Active</th><th class="first">Churn</th> </tr></thead><tbody> <tr class="stats-row"><td  class="stats-title">Active</td><td>34%</td><td>58%</td></tr><tr class="stats-row"><td  class="stats-title">Churn</td><td>13%</td><td>88%</td></tr></tbody></table>'
-//             }
-//           ],
-//           "name": "overview",
-//           "slug": "overview"
-//         }
-//       ],
-//       "name": "overview",
-//       "slug": "overview"
-//     }, {
-//       "listOfNodes": [],
-//       "listOfCards": [
-//         {
-//           "cardType": "normal",
-//           "cardData": [
-//             {
-//               CardType: "html",
-//               data: '<table cellpadding="0" cellspacing="0" border="0" class="table table-bordered heat-table-map table-responsive" ><thead> <tr class="heatMapHeader"><th class="first">Head</th><th class="first">Active</th><th class="first">Churn</th> </tr></thead><tbody> <tr class="stats-row"><td  class="stats-title">Active</td><td>34%</td><td>58%</td></tr><tr class="stats-row"><td  class="stats-title">Churn</td><td>13%</td><td>88%</td></tr></tbody></table>'
-//             }, {
-//               CardType: "html",
-//               data: "<p> The CHURN STATUS variable has only two values, i.e. Active and Churn. Active is the <b>largest</b> with 3,893 observations, whereas Churn is the <b>smallest</b> with just 1,107 observations.<p>"
-//             }, {
-//               CardType: "html",
-//               data: "<div className='clearfix'></div><p> The CHURN STATUS variable has only two values, i.e. Active and Churn. Active is the <b>largest</b> with 3,893 observations, whereas Churn is the <b>smallest</b> with just 1,107 observations.<p>"
-//             }
-//           ],
-//           "name": "trend1",
-//           "slug": "trend1"
-//         }, {
-//           "cardType": "normal",
-//           "cardData": [
-//             {
-//               CardType: "html",
-//               data: '<table cellpadding="0" cellspacing="0" border="0" class="table table-bordered heat-table-map table-responsive" ><thead> <tr class="heatMapHeader"><th class="first">Head</th><th class="first">Active</th><th class="first">Churn</th> </tr></thead><tbody> <tr class="stats-row"><td  class="stats-title">Active</td><td>34%</td><td>58%</td></tr><tr class="stats-row"><td  class="stats-title">Churn</td><td>13%</td><td>88%</td></tr></tbody></table>'
-//             }
-//           ],
-//           "name": "trend2",
-//           "slug": "trend2"
-//         }, {
-//           "cardType": "normal",
-//           "cardData": [
-//             {
-//               CardType: "html",
-//               data: '<table cellpadding="0" cellspacing="0" border="0" class="table table-bordered heat-table-map table-responsive" ><thead> <tr class="heatMapHeader"><th class="first">Head</th><th class="first">Active</th><th class="first">Churn</th> </tr></thead><tbody> <tr class="stats-row"><td  class="stats-title">Active</td><td>34%</td><td>58%</td></tr><tr class="stats-row"><td  class="stats-title">Churn</td><td>13%</td><td>88%</td></tr></tbody></table>'
-//             }
-//           ],
-//           "name": "trend3",
-//           "slug": "trend3"
-//         }
-//       ],
-//       "name": "trend",
-//       "slug": "trend"
-//     }, {
-//       "listOfNodes": [
-//         {
-//           "listOfNodes": [],
-//           "listOfCards": [
-//             {
-//               "cardType": "normal",
-//               "cardData": [
-//                 {
-//                   CardType: "c3Chart",
-//                   data: {
-//                     "bar": {
-//                       "width": 50
-//                     },
-//                     "point": null,
-//                     "color": {
-//                       "pattern": [
-//                         "#00AEB3",
-//                         "#f47b16",
-//                         "#7c5bbb",
-//                         "#dd2e1f",
-//                         "#00a0dc",
-//                         "#efb920",
-//                         "#e2247f",
-//                         "#7cb82f",
-//                         "#86898c"
-//                       ]
-//                     },
-//                     "tooltip": {
-//                       "show": true
-//                     },
-//                     "padding": {
-//                       "top": 40
-//                     },
-//                     "grid": {
-//                       "y": {
-//                         "show": true
-//                       },
-//                       "x": {
-//                         "show": true
-//                       }
-//                     },
-//                     "subchart": null,
-//                     "axis": {
-//                       "y": {
-//                         "tick": {
-//                           "outer": false,
-//                           "format": "m"
-//                         },
-//                         "label": {
-//                           "text": "",
-//                           "position": "outer-middle"
-//                         }
-//                       },
-//                       "x": {
-//                         "height": 71.21320343559643,
-//                         "tick": {
-//                           "rotate": -45,
-//                           "multiline": false,
-//                           "fit": false
-//                         },
-//                         "type": "category",
-//                         "label": {
-//                           "text": "",
-//                           "position": "outer-center"
-//                         }
-//                       }
-//                     },
-//                     "data": {
-//                       "x": "x",
-//                       "type": "bar",
-//                       "columns": [
-//                         [
-//                           "x", "Active", "Churn"
-//                         ],
-//                         ["y", 3893, 1107]
-//                       ]
-//                     },
-//                     "legend": {
-//                       "show": false
-//                     },
-//                     "size": {
-//                       "height": 340
-//                     }
-//                   }
-//                 }
-//               ],
-//               "name": "performance1",
-//               "slug": "performance1"
-//             }, {
-//               "cardType": "normal",
-//               "cardData": [
-//                 {
-//                   CardType: "html",
-//                   data: '<table cellpadding="0" cellspacing="0" border="0" class="table table-bordered heat-table-map table-responsive" ><thead> <tr class="heatMapHeader"><th class="first">Head</th><th class="first">Active</th><th class="first">Churn</th> </tr></thead><tbody> <tr class="stats-row"><td  class="stats-title">Active</td><td>34%</td><td>58%</td></tr><tr class="stats-row"><td  class="stats-title">Churn</td><td>13%</td><td>88%</td></tr></tbody></table>'
-//                 }
-//               ],
-//               "name": "performance2",
-//               "slug": "performance2"
-//             }, {
-//               "cardType": "Nornormalmal",
-//               "cardData": [
-//                 {
-//                   CardType: "html",
-//                   data: '<table cellpadding="0" cellspacing="0" border="0" class="table table-bordered heat-table-map table-responsive" ><thead> <tr class="heatMapHeader"><th class="first">Head</th><th class="first">Active</th><th class="first">Churn</th> </tr></thead><tbody> <tr class="stats-row"><td  class="stats-title">Active</td><td>34%</td><td>58%</td></tr><tr class="stats-row"><td  class="stats-title">Churn</td><td>13%</td><td>88%</td></tr></tbody></table>'
-//                 }
-//               ],
-//               "name": "performance3",
-//               "slug": "performance3"
-//             }
-//           ],
-//           "name": "AverageNumber1",
-//           "slug": "AverageNumber1"
-//         }, {
-//           "listOfNodes": [],
-//           "listOfCards": [
-//             {
-//               "cardType": "normal",
-//               "cardData": [
-//                 {
-//                   CardType: "html",
-//                   data: '<table cellpadding="0" cellspacing="0" border="0" class="table table-bordered heat-table-map table-responsive" ><thead> <tr class="heatMapHeader"><th class="first">Head</th><th class="first">Active</th><th class="first">Churn</th> </tr></thead><tbody> <tr class="stats-row"><td  class="stats-title">Active</td><td>34%</td><td>58%</td></tr><tr class="stats-row"><td  class="stats-title">Churn</td><td>13%</td><td>88%</td></tr></tbody></table>'
-//                 }
-//               ],
-//               "name": "performance1 of AverageNumber2",
-//               "slug": "performance1"
-//             }, {
-//               "cardType": "normal",
-//               "cardData": [
-//                 {
-//                   CardType: "html",
-//                   data: '<table cellpadding="0" cellspacing="0" border="0" class="table table-bordered heat-table-map table-responsive" ><thead> <tr class="heatMapHeader"><th class="first">Head</th><th class="first">Active</th><th class="first">Churn</th> </tr></thead><tbody> <tr class="stats-row"><td  class="stats-title">Active</td><td>34%</td><td>58%</td></tr><tr class="stats-row"><td  class="stats-title">Churn</td><td>13%</td><td>88%</td></tr></tbody></table>'
-//                 }
-//               ],
-//               "name": "performance2 of AverageNumber2",
-//               "slug": "performance2"
-//             }, {
-//               "cardType": "Nornormalmal",
-//               "cardData": [
-//                 {
-//                   CardType: "html",
-//                   data: '<table cellpadding="0" cellspacing="0" border="0" class="table table-bordered heat-table-map table-responsive" ><thead> <tr class="heatMapHeader"><th class="first">Head</th><th class="first">Active</th><th class="first">Churn</th> </tr></thead><tbody> <tr class="stats-row"><td  class="stats-title">Active</td><td>34%</td><td>58%</td></tr><tr class="stats-row"><td  class="stats-title">Churn</td><td>13%</td><td>88%</td></tr></tbody></table>'
-//                 }
-//               ],
-//               "name": "performance3 of AverageNumber2",
-//               "slug": "performance3"
-//             }
-//           ],
-//           "name": "AverageNumber2",
-//           "slug": "AverageNumber2"
-//         }, {
-//           "listOfNodes": [],
-//           "listOfCards": [
-//             {
-//               "cardType": "normal",
-//               "cardData": [
-//                 {
-//                   CardType: "html",
-//                   data: '<table cellpadding="0" cellspacing="0" border="0" class="table table-bordered heat-table-map table-responsive" ><thead> <tr class="heatMapHeader"><th class="first">Head</th><th class="first">Active</th><th class="first">Churn</th> </tr></thead><tbody> <tr class="stats-row"><td  class="stats-title">Active</td><td>34%</td><td>58%</td></tr><tr class="stats-row"><td  class="stats-title">Churn</td><td>13%</td><td>88%</td></tr></tbody></table>'
-//                 }
-//               ],
-//               "name": "performance1 of AverageNumber3",
-//               "slug": "performance1"
-//             }, {
-//               "cardType": "normal",
-//               "cardData": [
-//                 {
-//                   CardType: "html",
-//                   data: '<table cellpadding="0" cellspacing="0" border="0" class="table table-bordered heat-table-map table-responsive" ><thead> <tr class="heatMapHeader"><th class="first">Head</th><th class="first">Active</th><th class="first">Churn</th> </tr></thead><tbody> <tr class="stats-row"><td  class="stats-title">Active</td><td>34%</td><td>58%</td></tr><tr class="stats-row"><td  class="stats-title">Churn</td><td>13%</td><td>88%</td></tr></tbody></table>'
-//                 }
-//               ],
-//               "name": "performance2 of AverageNumber3",
-//               "slug": "performance2"
-//             }, {
-//               "cardType": "Nornormalmal",
-//               "cardData": [
-//                 {
-//                   CardType: "html",
-//                   data: '<table cellpadding="0" cellspacing="0" border="0" class="table table-bordered heat-table-map table-responsive" ><thead> <tr class="heatMapHeader"><th class="first">Head</th><th class="first">Active</th><th class="first">Churn</th> </tr></thead><tbody> <tr class="stats-row"><td  class="stats-title">Active</td><td>34%</td><td>58%</td></tr><tr class="stats-row"><td  class="stats-title">Churn</td><td>13%</td><td>88%</td></tr></tbody></table>'
-//                 }
-//               ],
-//               "name": "performance3 of AverageNumber3",
-//               "slug": "performance3"
-//             }
-//           ],
-//           "name": "AverageNumber3",
-//           "slug": "AverageNumber3"
-//         }
-//       ],
-//       "listOfCards": [
-//         {
-//           "cardType": "normal",
-//           "cardData": [
-//             {
-//               CardType: "html",
-//               data: '<table cellpadding="0" cellspacing="0" border="0" class="table table-bordered heat-table-map table-responsive" ><thead> <tr class="heatMapHeader"><th class="first">Head</th><th class="first">Active</th><th class="first">Churn</th> </tr></thead><tbody> <tr class="stats-row"><td  class="stats-title">Active</td><td>34%</td><td>58%</td></tr><tr class="stats-row"><td  class="stats-title">Churn</td><td>13%</td><td>88%</td></tr></tbody></table>'
-//             }
-//           ],
-//           "name": "PerformanceOverview",
-//           "slug": "performanceOverview"
-//         }
-//       ],
-//       "name": "performance",
-//       "slug": "performance"
-//     }, {
-//       "listOfNodes": [],
-//       "listOfCards": [
-//         {
-//           "cardType": "summary",
-//           "cardData": [
-//             {
-//               CardType: "html",
-//               data: '<table cellpadding="0" cellspacing="0" border="0" class="table table-bordered heat-table-map table-responsive" ><thead> <tr class="heatMapHeader"><th class="first">Head</th><th class="first">Active</th><th class="first">Churn</th> </tr></thead><tbody> <tr class="stats-row"><td  class="stats-title">Active</td><td>34%</td><td>58%</td></tr><tr class="stats-row"><td  class="stats-title">Churn</td><td>13%</td><td>88%</td></tr></tbody></table>'
-//             }
-//           ],
-//           "name": "summary",
-//           "slug": "summary"
-//         }, {
-//           "cardType": "executivesummary",
-//           "cardData": [
-//             {
-//               CardType: "html",
-//               data: '<table cellpadding="0" cellspacing="0" border="0" class="table table-bordered heat-table-map table-responsive" ><thead> <tr class="heatMapHeader"><th class="first">Head</th><th class="first">Active</th><th class="first">Churn</th> </tr></thead><tbody> <tr class="stats-row"><td  class="stats-title">Active</td><td>34%</td><td>58%</td></tr><tr class="stats-row"><td  class="stats-title">Churn</td><td>13%</td><td>88%</td></tr></tbody></table>'
-//             }
-//           ],
-//           "name": "overview",
-//           "slug": "overview"
-//         }
-//       ],
-//       "name": "influences",
-//       "slug": "influences"
-//     }
-//   ],
-//   "listOfCards": [
-//     {
-//       "cardType": "summary",
-//       "cardData": {
-//         "noOfMeasures": 10,
-//         "quotesHtml": "Sales had a phenomenal growth during Jan-Dec need to be coming from api",
-//         "summaryHtml": "summary with HTML <b>tags</b> ex: mAdvisor has analyzed the dataset and it contains<b> 17</b> variables and <b>1500</b> observations. Of these <b>6</b> variables are omitted, since these are not fit for the analysis. The consolidated dataset has 1 measure and 10 dimensions. Please click next to find the insights from our distribution analysis of <b>status</b> factoring the other variables",
-//         "noOfDimensions": 8
-//       },
-//       "name": "summary",
-//       "slug": "summary"
-//     }
-//   ],
-//   "name": "SignalsRoot",
-//   "slug": "Signals"
-// };
+
 
 @connect((store) => {
   return {signal:store.signals.signalAnalysis};
@@ -343,14 +34,25 @@ export class OverViewPage extends React.Component {
 
   componentDidMount(){
     // alert(showSubTree);
+    var that = this;
+
     if(showSubTree){
        $(".sb_navigation").show();
        showSubTree = false;
+       $(".sb_navigation #myTab i.mAd_icons.ic_perf ~ span").each(function(){
+
+        if($(this).html() == that.props.match.params.l2){
+          $(this).parent().addClass('active');
+        }else{
+          $(this).parent().removeClass('active');
+        }
+       });
      }
     else{
        $(".sb_navigation").hide();
      }
-  }
+    }
+
 
 prevNext(path) {
     console.log(path);
@@ -364,7 +66,9 @@ prevNext(path) {
     console.log(expectedURL);
     return expectedURL;
   }
-  render() {
+
+render() {
+
     console.log("overviewPage is called!!");
     console.log(this.props);
     let selectedSignal = this.props.signal.name;
@@ -379,7 +83,7 @@ prevNext(path) {
     //load level 1 , this will be loaded in all calls!!
     tabList = this.props.signal.listOfNodes.map((tab, i) => {
       let selectedLink = "/signals/" + params.slug + "/" + tab.slug;
-      let classname1 = "mAd_icons tab_" + tab.name;
+      let classname1 = "mAd_icons tab_" + tab.name.toLowerCase();
       //console.log(classname1);
       return (
         <li key={i}>
@@ -421,7 +125,7 @@ prevNext(path) {
           let selectedl2Link = "/signals/" + params.slug + "/" + selectedNodeFromLevel1.slug + "/" + letiable.slug + "/$";
           return (
             <li key={i}>
-              <NavLink activeClassName="active" to={selectedl2Link}>
+              <NavLink to={selectedl2Link}>
                 <i className="mAd_icons ic_perf"></i>
                 <span>{letiable.name}</span>
               </NavLink>
@@ -452,17 +156,25 @@ prevNext(path) {
       )
     });
 
+    let documentModeLink = "/signaldocumentMode/"+this.props.match.params.slug;
     let expectedURL = this.prevNext(this.props);
 
     let prevURL = "/signals/"+this.props.match.params.slug+"/"+expectedURL.prev;
     let nextURL = "/signals/"+this.props.match.params.slug+"/"+expectedURL.next;
-  if(expectedURL.prev=="summary"){
+  if(expectedURL.prev==this.props.signal.listOfCards[0].slug){
     prevURL = "/signals/"+this.props.match.params.slug;
   }else if(expectedURL.next==null){
-    nextURL = "/signals";
+    nextURL = documentModeLink;
   }
 
+let lastcard = getLastCardOfTree(this.props.signal);
+console.log("last card is::::");
+console.log(lastcard);
+console.log(documentModeLink);
+
+
 console.log("l1name is ...."+selectedSignal);
+//console.log(card);
     return (
       <div>
         <div className="side-body">
@@ -485,9 +197,9 @@ console.log("l1name is ...."+selectedSignal);
               ]}
               />
               </div>
-              <div class="col-md-8">
+            {/*  <div class="col-md-8">
                 <h2>{l1Name}</h2>
-              </div>
+              </div> */}
               </div>
             <div class="clearfix"></div>
           </div>
@@ -500,14 +212,21 @@ console.log("l1name is ...."+selectedSignal);
               <div className="col-md-12">
                 <div className="panel panel-mAd">
                   <div className="panel-heading">
+					<h2 class="pull-left">{l1Name}</h2>
                     <div className="btn-toolbar pull-right">
                       <div className="btn-group btn-space">
-                        <button type="button" className="btn btn-default">
+
+                        <button type="button" className="btn btn-default" disabled = "true">
                           <i className="fa fa-file-pdf-o"></i>
                         </button>
+                        <Link className="tabs-control right grp_legends_green continue" to={{
+                      pathname: documentModeLink,
+                      state: { lastVar: lastcard.slug }
+                      }}>
                         <button type="button" className="btn btn-default">
                           <i className="fa fa-print"></i>
                         </button>
+                        </Link>
                         <button type="button" className="btn btn-default">
                           <i className="fa fa-times"></i>
                         </button>
@@ -544,10 +263,7 @@ console.log("l1name is ...."+selectedSignal);
 
                             {/*/span*/}
                             <div className="col-xs-12 col-sm-9 content">
-                              <Card cardData={card}/>
-                              <p>
-                                {card.name}
-                              </p>
+                              <Card cardData={card.cardData}/>
                             </div>
                             {/*/span*/}
 
@@ -581,7 +297,10 @@ console.log("l1name is ...."+selectedSignal);
                         <Link className="tabs-control left grp_legends_green back" to={prevURL}>
                           <span className="fa fa-chevron-left"></span>
                         </Link>
-                        <Link className="tabs-control right grp_legends_green continue" to={nextURL}>
+                        <Link className="tabs-control right grp_legends_green continue" to={{
+                      pathname: nextURL,
+                      state: { lastVar: card.slug }
+                      }}>
                           <span className="fa fa-chevron-right"></span>
                         </Link>
                       </div>

@@ -266,3 +266,18 @@ JOBSERVER = {
     'class_path_filter': 'bi.sparkjobs.filter.JobScript',
 
 }
+
+ANALYSIS_FOR_TARGET_VARIABLE = {
+    "target_variable": {"dimension": [
+        {"name": "Descriptive analysis", "id": "descriptive-analysis"},
+        {"name": "Dimension vs. Dimension", "id": "dimension-vs-dimension"},
+        {"name": "Predictive modeling", "id": "predictive-modeling"}
+    ],
+        "measure": [
+            {"name": "Descriptive analysis", "id": "descriptive-analysis"},
+            {"name": "Measure vs. Dimension", "id": "measure-vs-dimension"},
+            {"name": "Measure vs. Measure", "id": "measure-vs-measure"}
+        ], },
+    "time_dimension" :{"name": "Trend", "id" : "trend", "help_text" : "Enable this analysis type only if date columns is present in selected variables"}
+}
+# {"name":"Trend":"id":4} will be added to the above lists based on the logic(if date columns is present or not)

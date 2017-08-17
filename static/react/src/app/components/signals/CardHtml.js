@@ -17,6 +17,8 @@ export class CardHtml extends React.Component {
 
   render() {
    var element = this.props.htmlElement;
+   console.log("checking html element");
+   console.log(element);
       return(
         <div>
          {renderHTML(element)}

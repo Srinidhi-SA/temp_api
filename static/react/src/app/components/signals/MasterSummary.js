@@ -6,6 +6,7 @@ import {MainHeader} from "../common/MainHeader";
 // import $ from "jquery";
 import Breadcrumb from 'react-breadcrumb';
 import renderHTML from 'react-render-html';
+import {Card} from "./Card";
 
 
 @connect((store) => {
@@ -20,23 +21,28 @@ export class MasterSummary extends React.Component {
 
     console.log("MasterSummary is called!!");
      console.log(this.props);
-    // console.log(this.props.signal);
+     console.log(this.props.signal);
     let heading = this.props.signal.name;
 
     var noOfDimention;
     var noOfMeasures;
     var summary;
 
-  //  console.log("inside if" + this.props.signal);
-    var noOfDimention = this.props.signal.listOfCards[0].cardData.noOfDimensions;
-    var noOfMeasures = this.props.signal.listOfCards[0].cardData.noOfMeasures;
-    var summary = this.props.signal.listOfCards[0].cardData.summaryHtml.toString();
-    var quotes = this.props.signal.listOfCards[0].cardData.quotesHtml.toString();
-    // console.log(noOfMeasures);
+
+     noOfDimention = this.props.signal.listOfCards[0].cardData.noOfDimensions;
+      noOfMeasures = this.props.signal.listOfCards[0].cardData.noOfMeasures;
+      summary = this.props.signal.listOfCards[0].cardData.summaryHtml;
+     var quotes = this.props.signal.listOfCards[0].cardData.quotesHtml.toString();
+    //  var noOfDimention = 10;
+    //  var noOfMeasures = 9;
+    // var summary = "mAdvisor has analyzed the dataset, which contains<b> 15</b> variables and <b>5,000</b> observations. Please click next to find the insights from our analysis of <b>platform</b>, that describes how it is distributed, what drives it, and how we can predict it.";
+    // var quotes = "not coming from backend!!";
+    // // console.log(noOfMeasures);
     // console.log(noOfDimention);
     // console.log(summary);
+    let firstOverviewSlug = this.props.signal.listOfNodes[0].slug;
 
-    const overViewLink = "/signals/" + this.props.signalId + "/overview";
+    const overViewLink = "/signals/" + this.props.signalId + "/"+ firstOverviewSlug;
     return (
       <div className="side-body">
       <div className="page-head">
@@ -47,7 +53,7 @@ export class MasterSummary extends React.Component {
               label: 'Signals'
             },
             {
-              path:'/signals'+this.props.signalId,
+              path:'/signals/'+this.props.signalId,
               label: heading
             }
           ]}/>
@@ -93,7 +99,7 @@ export class MasterSummary extends React.Component {
                           </div>
                           <div className="clearfix"></div>
                           <div className="col-md-12">
-                            <p className="lead">{renderHTML(summary)}
+                            <p className="lead"><Card cardData={summary}/>
                             </p>
                           </div>
                         </div>

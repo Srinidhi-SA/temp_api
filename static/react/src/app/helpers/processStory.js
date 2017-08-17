@@ -108,3 +108,15 @@ export function getPrevNext(output, curSufix) {
 
 
 }
+
+export function getLastCardOfTree(output){
+if(output.listOfNodes.length!=0)
+  output= output.listOfNodes[output.listOfNodes.length-1];
+  if(output.listOfNodes.length>0){
+    return getLastCardOfTree(output);
+
+  }
+  else{
+    return output.listOfCards[output.listOfCards.length - 1];
+  }
+}
