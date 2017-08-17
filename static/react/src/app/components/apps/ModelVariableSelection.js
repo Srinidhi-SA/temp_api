@@ -48,7 +48,7 @@ export class ModelVariableSelection extends React.Component {
 			            <div className="main-content">
 				        <div className="panel panel-default">
 				      <div className="panel-body">
-				      
+
 				      <div className="row">
 			          <div className="col-lg-4">
 			              <div className="form-group">
@@ -61,7 +61,7 @@ export class ModelVariableSelection extends React.Component {
 			              </div>
 			          </div>{/*<!-- /.col-lg-4 -->*/}
 			          </div>
-			          
+
 				      <DataVariableSelection/>
 				      </div>
 				      </div>

@@ -84,7 +84,6 @@ export default function reducer(state = {
 		}
 	}
 	break;
-<<<<<<< HEAD
 	case "UNSELECT_MEASURES":
 	{
 		return {
