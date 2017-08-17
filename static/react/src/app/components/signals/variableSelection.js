@@ -6,7 +6,7 @@ import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
 import store from "../../store";
 
 import {openCreateSignalModal,closeCreateSignalModal} from "../../actions/createSignalActions";
-
+import {DataVariableSelection} from "../data/DataVariableSelection";
 // var dataSelection= {
 //      "metaData" : [   {"name": "Rows", "value": 30, "display":true},
 //                       {"name": "Measures", "value": 10, "display":true},
@@ -125,222 +125,166 @@ var selectedVariables = {measures:[],dimensions:[],date:null};  // pass selected
 export class VariableSelection extends React.Component {
 	constructor(props) {
 		super(props);
-    this.state={
-      countOfSelected:0,
-      radioChecked:""
-    };
+    // this.state={
+    //   countOfSelected:0,
+    //   radioChecked:""
+    // };
     console.log("preview data check");
 	}
 
 
 
-componentDidMount(){
-  var that = this;
- $(function(){
-   selectedVariables.date = $("#rad_dt0").val();
-    $("[type='radio']").click(function(){
-        // let count=0;
-         let id=$(this).attr("id");
-
-        selectedVariables.date = $("#"+id).val();
-         that.setState(previousState => {
-          return {radioChecked:id
-                    };
-        });
-        console.log(selectedVariables);
-      //  $("#"+id).prop("checked", true);
-
-    });
-
-   $("#mea").click(function(){   // select all measure clicked
-     let count=0;
-      if($(this).is(":checked")){
-        $('.measure[type="checkbox"]').prop('checked', true);
-      }else{
-        $('.measure[type="checkbox"]').prop('checked', false);
-      }
-      selectedVariables.dimensions=[];
-      $('.dimension[type="checkbox"]').each(function(){
-
-         if($(this).is(":checked")){
-           count++;
-           selectedVariables.dimensions.push($(this).val());
-         }
-      });
-
-      selectedVariables.measures=[];
-      $('.measure[type="checkbox"]').each(function(){
-
-         if($(this).is(":checked")){
-           count++;
-           selectedVariables.measures.push($(this).val());
-         }
-      });
-
-      // if($('input:radio[name="date_type"]').is("checked")){
-      //   alert("working");
-      //   count++;
-      // }
-      console.log(selectedVariables);
-
-      that.setState(previousState => {
-       return { countOfSelected: count};
-     });
-   });
-
-   $("#dim").click(function(){     // select all dimension clicked
-     let count=0;
-      if($(this).is(":checked")){
-         $('.dimension[type="checkbox"]').prop('checked', true);
-      }else{
-         $('.dimension[type="checkbox"]').prop('checked', false);
-      }
-
-      selectedVariables.dimensions=[];
-      $('.dimension[type="checkbox"]').each(function(){
-
-         if($(this).is(":checked")){
-           count++;
-           selectedVariables.dimensions.push($(this).val());
-         }
-      });
-      selectedVariables.measures=[];
-      $('.measure[type="checkbox"]').each(function(){
-
-         if($(this).is(":checked")){
-           count++;
-           selectedVariables.measures.push($(this).val());
-         }
-      });
-
-    console.log(selectedVariables);
-
-      that.setState(previousState => {
-       return { countOfSelected: count};
-     });
-
-   });
-
-$('.measure[type="checkbox"]').click(function(){
-  let count = 0;
-  selectedVariables.measures=[];
-  $('.measure[type="checkbox"]').each(function(){
-     if(!$(this).is(":checked")){
-       $('#mea[type="checkbox"]').prop('checked',false);
-     }else{
-
-       count++;
-        selectedVariables.measures.push($(this).val());
-     }
-  });
-  selectedVariables.dimensions=[];
-  $('.dimension[type="checkbox"]').each(function(){
-
-     if(!$(this).is(":checked")){
-       $('#mea[type="checkbox"]').prop('checked',false);
-     }else{
-
-       count++;
-       selectedVariables.dimensions.push($(this).val());
-     }
-  });
-
- console.log(selectedVariables);
-
-  that.setState(previousState => {
-   return { countOfSelected: count};
- });
-
-});
-
-$('.dimension[type="checkbox"]').click(function(){
-  let count=0;
-   selectedVariables.dimensions=[];
-  $('.dimension[type="checkbox"]').each(function(){
-     if(!$(this).is(":checked")){
-       $('#dim[type="checkbox"]').prop('checked',false);
-     }else{
-
-       count++;
-       selectedVariables.dimensions.push($(this).val());
-     }
-  });
-   selectedVariables.measures=[];
-  $('.measure[type="checkbox"]').each(function(){
-     if(!$(this).is(":checked")){
-       $('#mea[type="checkbox"]').prop('checked',false);
-     }else{
-
-       count++;
-        selectedVariables.measures.push($(this).val());
-     }
-  });
-
-   console.log(selectedVariables);
-
-  that.setState(previousState => {
-   return { countOfSelected: count};
- });
-});
-
- });
-
-}
+// componentDidMount(){
+//   var that = this;
+//  $(function(){
+//    selectedVariables.date = $("#rad_dt0").val();
+//     $("[type='radio']").click(function(){
+//         // let count=0;
+//          let id=$(this).attr("id");
+//
+//         selectedVariables.date = $("#"+id).val();
+//          that.setState(previousState => {
+//           return {radioChecked:id
+//                     };
+//         });
+//         console.log(selectedVariables);
+//
+//
+//     });
+//
+//    $("#mea").click(function(){   // select all measure clicked
+//      let count=0;
+//       if($(this).is(":checked")){
+//         $('.measure[type="checkbox"]').prop('checked', true);
+//       }else{
+//         $('.measure[type="checkbox"]').prop('checked', false);
+//       }
+//       selectedVariables.dimensions=[];
+//       $('.dimension[type="checkbox"]').each(function(){
+//
+//          if($(this).is(":checked")){
+//            count++;
+//            selectedVariables.dimensions.push($(this).val());
+//          }
+//       });
+//
+//       selectedVariables.measures=[];
+//       $('.measure[type="checkbox"]').each(function(){
+//
+//          if($(this).is(":checked")){
+//            count++;
+//            selectedVariables.measures.push($(this).val());
+//          }
+//       });
+//
+//
+//       console.log(selectedVariables);
+//
+//       that.setState(previousState => {
+//        return { countOfSelected: count};
+//      });
+//    });
+//
+//    $("#dim").click(function(){     // select all dimension clicked
+//      let count=0;
+//       if($(this).is(":checked")){
+//          $('.dimension[type="checkbox"]').prop('checked', true);
+//       }else{
+//          $('.dimension[type="checkbox"]').prop('checked', false);
+//       }
+//
+//       selectedVariables.dimensions=[];
+//       $('.dimension[type="checkbox"]').each(function(){
+//
+//          if($(this).is(":checked")){
+//            count++;
+//            selectedVariables.dimensions.push($(this).val());
+//          }
+//       });
+//       selectedVariables.measures=[];
+//       $('.measure[type="checkbox"]').each(function(){
+//
+//          if($(this).is(":checked")){
+//            count++;
+//            selectedVariables.measures.push($(this).val());
+//          }
+//       });
+//
+//     console.log(selectedVariables);
+//
+//       that.setState(previousState => {
+//        return { countOfSelected: count};
+//      });
+//
+//    });
+//
+// $('.measure[type="checkbox"]').click(function(){
+//   let count = 0;
+//   selectedVariables.measures=[];
+//   $('.measure[type="checkbox"]').each(function(){
+//      if(!$(this).is(":checked")){
+//        $('#mea[type="checkbox"]').prop('checked',false);
+//      }else{
+//
+//        count++;
+//         selectedVariables.measures.push($(this).val());
+//      }
+//   });
+//   selectedVariables.dimensions=[];
+//   $('.dimension[type="checkbox"]').each(function(){
+//
+//      if(!$(this).is(":checked")){
+//        $('#mea[type="checkbox"]').prop('checked',false);
+//      }else{
+//
+//        count++;
+//        selectedVariables.dimensions.push($(this).val());
+//      }
+//   });
+//
+//  console.log(selectedVariables);
+//
+//   that.setState(previousState => {
+//    return { countOfSelected: count};
+//  });
+//
+// });
+//
+// $('.dimension[type="checkbox"]').click(function(){
+//   let count=0;
+//    selectedVariables.dimensions=[];
+//   $('.dimension[type="checkbox"]').each(function(){
+//      if(!$(this).is(":checked")){
+//        $('#dim[type="checkbox"]').prop('checked',false);
+//      }else{
+//
+//        count++;
+//        selectedVariables.dimensions.push($(this).val());
+//      }
+//   });
+//    selectedVariables.measures=[];
+//   $('.measure[type="checkbox"]').each(function(){
+//      if(!$(this).is(":checked")){
+//        $('#mea[type="checkbox"]').prop('checked',false);
+//      }else{
+//
+//        count++;
+//         selectedVariables.measures.push($(this).val());
+//      }
+//   });
+//
+//    console.log(selectedVariables);
+//
+//   that.setState(previousState => {
+//    return { countOfSelected: count};
+//  });
+// });
+//
+//  });
+//
+// }
 
 	render() {
-		//const dataSets = store.getState().datasets.dataList.data;
-    const metaData = dataSelection.columnData;
-    var measures =[], dimensions =[],datetime =[];
-    metaData.map((metaItem,metaIndex)=>{
-      console.log(metaItem)
-      switch(metaItem.columnType){
-        case "measure":
-         //m[metaItem.slug] = metaItem.name;
-         measures.push(metaItem.name);
-         //m={};
-         break;
-        case "dimension":
-         dimensions.push(metaItem.name);
-        break;
-        case "datetime":
-          datetime.push(metaItem.name);
-        break;
-      }
-
-    });
-
-  if(measures.length>0){
-  var measureTemplate = measures.map((mItem,mIndex)=>{
-      const mId = "chk_mea" + mIndex;
-      return(
-        <li key={mIndex}><div className="ma-checkbox inline"><input id={mId} type="checkbox" className="measure" value={mItem}/><label htmlFor={mId} className="radioLabels">{mItem}</label></div> </li>
-      );
-  });
-}else{
-  var measureTemplate =  <label>No measure variable present</label>
-}
-
-if(dimensions.length>0){
-  var dimensionTemplate = dimensions.map((dItem,dIndex)=>{
-      const dId = "chk_dim" + dIndex;
-    return(
-     <li key={dIndex}><div className="ma-checkbox inline"><input id={dId} type="checkbox" className="dimension" value={dItem}/><label htmlFor={dId}>{dItem}</label></div> </li>
-   );
-  });
-}else{
-  var dimensionTemplate =  <label>No dimension variable present</label>
-}
-
-if(datetime.length>0){
-  var datetimeTemplate = datetime.map((dtItem,dtIndex)=>{
-    const dtId = "rad_dt" + dtIndex;
-  return(
-   <li key={dtIndex}><div className="ma-radio inline"><input type="radio" checked={this.state.radioChecked === dtId} name="date_type" id={dtId} value={dtItem}/><label htmlFor={dtId}>{dtItem}</label></div></li>
- );
-  });
-}else{
-  var datetimeTemplate = <label>No dates variable present</label>
-}
 
 		return (
 <div className="side-body">
@@ -361,185 +305,9 @@ if(datetime.length>0){
   </div>{/*<!-- /.col-lg-4 -->*/}
 
   </div>{/*<!-- /.row -->*/}
-  <div className="row">
-  <div className="col-lg-4">
-      <label>Including the following variables:</label>
-  </div>{/*<!-- /.col-lg-4 -->*/}
-  </div>
-  <div className="row">
-  <div className="col-lg-4">
-    <div className="panel panel-primary-p1 cst-panel-shadow">
-    <div className="panel-heading"><i className="pe-7s-graph1"></i> Measures</div>
-    <div className="panel-body">
-      {/*<!-- Row htmlFor select all-->*/}
-      <div className="row">
-        <div className="col-md-4">
-          <div className="ma-checkbox inline">
-          <input id="check1" type="checkbox" className="needsclick" />
-          <label htmlFor="check1">Select All</label>
-          </div>
-        </div>
-        <div className="col-md-8">
-          <div className="input-group pull-right">
-            <input type="text" className="htmlForm-control" placeholder="Search measures..." name="srch-measure" id="srch-measure"/>
-          <span className="input-group-btn">
-          <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i className="fa fa-sort-alpha-asc fa-lg"></i> <span className="caret"></span></button>
-          <ul role="menu" className="dropdown-menu dropdown-menu-right">
-          <li><a href="#">Name Ascending</a></li>
-          <li><a href="#">Name Descending</a></li>
-          <li><a href="#">Date Ascending</a></li>
-          <li><a href="#">Date Descending</a></li>
-          </ul>
-          </span>
-          </div>
-        </div>
-      </div>
-      {/*<!-- End -->*/}
-      <hr />
-      {/*<!-- Row htmlFor list of variables-->*/}
-      <div className="row">
-        <div className="col-md-12 cst-scroll-panel">
-          <ul className="list-unstyled">
-                              {measureTemplate}
-          </ul>
-        </div>
-      </div>
-      {/*<!-- End Row htmlFor list of variables-->*/}
-    </div>
-    </div>
-
-  </div>{/*<!-- /.col-lg-4 -->*/}
-  <div className="col-lg-4">
-      <div className="panel panel-primary-p2 cst-panel-shadow">
-      <div className="panel-heading"><i className="pe-7s-graph2"></i> Dimensions</div>
-        <div className="panel-body">
-            {/*<!-- Row htmlFor select all-->*/}
-            <div className="row">
-              <div className="col-md-4">
-                <div className="ma-checkbox inline">
-                <input id="check2" type="checkbox" className="needsclick"/>
-                <label htmlFor="check2">Select All</label>
-                </div>
-              </div>
-            <div className="col-md-8">
-              <div className="input-group pull-right">
-              <input type="text" className="htmlForm-control" placeholder="Search dimension..." name="srch-dimension" id="srch-dimension"/>
-              <span className="input-group-btn">
-              <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i className="fa fa-sort-alpha-asc fa-lg"></i> <span className="caret"></span></button>
-              <ul role="menu" className="dropdown-menu dropdown-menu-right">
-              <li><a href="#">Name Ascending</a></li>
-              <li><a href="#">Name Descending</a></li>
-              <li><a href="#">Date Ascending</a></li>
-              <li><a href="#">Date Descending</a></li>
-              </ul>
-              </span>
-              </div>
-            </div>
-            </div>
-            {/*<!-- End -->*/}
-            <hr />
-            {/*<!-- Row htmlFor list of variables-->*/}
-            <div className="row">
-            <div className="col-md-12 cst-scroll-panel">
-              <ul className="list-unstyled">
-            {dimensionTemplate}
-              </ul>
-            </div>
-            </div>
-            {/*<!-- End Row htmlFor list of variables-->*/}
-
-
-        </div>
-      </div>
-
-
-  </div>{/*<!-- /.col-lg-4 -->*/}
-  <div className="col-lg-4">
-      <div className="panel panel-primary-p3 cst-panel-shadow">
-    <div className="panel-heading"><i className="pe-7s-date"></i> Dates</div>
-    <div className="panel-body">
-
-      {/*<!-- Row htmlFor options all-->*/}
-            <div className="row">
-              <div className="col-md-4">
-
-              </div>
-            <div className="col-md-8">
-              <div className="input-group pull-right">
-              <input type="text" className="htmlForm-control" placeholder="Search date type..." name="srch-dtype" id="srch-dtype"/>
-              <span className="input-group-btn">
-              <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i className="fa fa-sort-alpha-asc fa-lg"></i> <span className="caret"></span></button>
-              <ul role="menu" className="dropdown-menu dropdown-menu-right">
-              <li><a href="#">Name Ascending</a></li>
-              <li><a href="#">Name Descending</a></li>
-              <li><a href="#">Date Ascending</a></li>
-              <li><a href="#">Date Descending</a></li>
-              </ul>
-              </span>
-              </div>
-            </div>
-            </div>
-            {/*<!-- End Row htmlFor options all -->*/}
-            <hr />
-            {/*<!-- Row htmlFor list of variables-->*/}
-            <div className="row">
-            <div className="col-md-12 cst-scroll-panel">
-              <ul className="list-unstyled">
-              {datetimeTemplate}
-              </ul>
-            </div>
-            </div>
-            {/*<!-- End Row htmlFor list of variables-->*/}
-
-    </div>
-    </div>
-  </div>{/*<!-- /.col-lg-4 -->*/}
-  </div>{/*<!-- /.row -->*/}
-
-  <div className="row">
-    <div className="col-md-4 col-md-offset-5">
-        <h4>{this.state.countOfSelected} Variable selected <a href="javascript:;" className="pover" data-popover-content="#selected_var" data-placement="bottom" data-toggle="popover"><i className="pe-7s-more pe-2x pe-va"></i></a></h4>
-    </div>
-
-    <div id="selected_var" className="pop_box hide">
-    <div className="row">
-      <div className="col-md-6">
-      <select className="htmlForm-control">
-          <option selected>Variable Type</option>
-          <option>Measures</option>
-          <option>Dimensions</option>
-        </select>
-      </div>
-      <div className="col-md-6">
-        <div className="input-group pull-right">
-          <input type="text" className="htmlForm-control" placeholder="Search date type..." name="srch-dtype" id="srch-dtype"/>
-          <span className="input-group-btn">
-          <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i className="fa fa-sort-alpha-asc fa-lg"></i> <span className="caret"></span></button>
-          <ul role="menu" className="dropdown-menu dropdown-menu-right">
-          <li><a href="#">Name Ascending</a></li>
-          <li><a href="#">Name Descending</a></li>
-          <li><a href="#">Date Ascending</a></li>
-          <li><a href="#">Date Descending</a></li>
-          </ul>
-          </span>
-        </div>
-      </div>
-      <div className="clearfix"></div>
-    </div>
-    <div className="row">
-      <div className="col-md-12">
-        <div className="panel seld_var_box">
-        <a>Tax rate <i className="remove pe-7s-close"></i></a>
-        <a>City <i className="remove pe-7s-close"></i></a>
-        <a>Unit price <i className="remove pe-7s-close"></i></a>
-        <a>Gender <i className="remove pe-7s-close"></i></a>
-        <a>Profits <i className="remove pe-7s-close"></i></a>
-        </div>
-      </div>
-    </div>
-    </div>
-
-  </div>
+ {/*  adding selection component */}
+       <DataVariableSelection/>
+ {/*---------end of selection component----------------------*/}
   <div className="row">
     <div className="col-md-12">
       <div className="panel panel-alt4 panel-borders">

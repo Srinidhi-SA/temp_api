@@ -27,23 +27,25 @@ export class DataVariableSelection extends React.Component {
 		this.props.dispatch(updateSelectedVariables(e))
 	}
 	render() {
-		
+
 		console.log("data variableSelection is called##########3");
 		let dataPrev = store.getState().datasets.dataPreview;
 		if(dataPrev){
+			console.log("data variable selection");
+			console.log(dataPrev);
 			 const metaData = dataPrev.meta_data.columnData;
 			    var measures =[], dimensions =[],datetime =[];
 			    metaData.map((metaItem,metaIndex)=>{
 			      switch(metaItem.columnType){
-			        case "Measure":
+			        case "measure":
 			         //m[metaItem.slug] = metaItem.name;
 			         measures.push(metaItem.name);
 			         //m={};
 			         break;
-			        case "Dimension":
+			        case "dimension":
 			         dimensions.push(metaItem.name);
 			        break;
-			        case "TimeDimension":
+			        case "datetime":
 			          datetime.push(metaItem.name);
 			        break;
 			      }
@@ -87,8 +89,8 @@ export class DataVariableSelection extends React.Component {
 							);
 			return(
 					<div>
-				    
-			         
+
+
 			         <div className="row">
 			          <div className="col-lg-4">
 			              <label>Including the follwing variables:</label>
@@ -235,14 +237,14 @@ export class DataVariableSelection extends React.Component {
 	            </div>
 	          </div>
 			     </div>
-			         
-			           
-			        
+
+
+
 			);
 		}else{
 			return (
 					<div>No data Available</div>
 			);
-		}	
+		}
 	}
 }

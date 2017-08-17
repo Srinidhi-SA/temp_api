@@ -8,20 +8,22 @@ import store from "../../store";
 
 import {MainHeader} from "../common/MainHeader";
 import {BreadCrumb} from "../common/BreadCrumb";
-import {getDataList,getDataSetPreview} from "../../actions/dataActions";
+import {getDataList,getDataSetPreview,storeSignalMeta} from "../../actions/dataActions";
 import {fetchProductList} from "../../actions/dataActions";
 import {DataUpload} from "./DataUpload";
 import {open,close} from "../../actions/dataUploadActions";
 var dateFormat = require('dateformat');
 
 @connect((store) => {
-	return {login_response: store.login.login_response, dataList: store.datasets.dataList,dataPreview: store.datasets.dataPreview
+	return {login_response: store.login.login_response,
+		dataList: store.datasets.dataList,dataPreview: store.datasets.dataPreview,
+		 signalMeta: store.datasets.signalMeta,
 	};
 })
 
 export class Data extends React.Component {
-	constructor() {
-		super();
+	constructor(props) {
+		super(props);
 		this.handleSelect = this.handleSelect.bind(this);
 		this.selectedData = "";
 	}
@@ -34,8 +36,10 @@ export class Data extends React.Component {
 			this.props.dispatch(getDataList(pageNo));
 	}
 	getPreviewData(e){
+		var that=this;
 		this.selectedData = e.target.id;
 		//alert(this.selectedData);
+		this.props.dispatch(storeSignalMeta(null,that.props.match.url));
 	  this.props.dispatch(getDataSetPreview(this.selectedData));
 	}
 	render() {
