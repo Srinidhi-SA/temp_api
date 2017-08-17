@@ -22,6 +22,7 @@ export class Signals extends React.Component {
   componentWillMount() {
     this.props.dispatch(getList(sessionStorage.userToken));
   }
+
   componentDidMount() {
     console.log("/checking anchor html");
     console.log($('a[rel="popover"]'));
@@ -44,6 +45,8 @@ export class Signals extends React.Component {
     }, 100);
   }
 
+
+
   render() {
     console.log("signals is called##########3");
 	document.body.className = "";
@@ -61,7 +64,7 @@ export class Signals extends React.Component {
       const storyList = data.map((story, i) => {
         var signalLink = "/signals/" + story.slug;
         return (
-        		
+
           <div className="col-md-3 top20 list-boxes" key={i}>
             <div className="rep_block newCardStyle" name={story.name}>
               <div className="card-header"></div>
@@ -148,7 +151,7 @@ export class Signals extends React.Component {
             ]}/>
 
             <div className="main-content">
-            <CreateSignal/>
+            <CreateSignal url={this.props.match.url}/>
               {storyList}
             </div>
           </div>

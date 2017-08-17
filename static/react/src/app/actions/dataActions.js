@@ -53,7 +53,7 @@ export function getDataSetPreview(slug) {
         if(response.status === 200){
           console.log(json)
         dispatch(fetchDataPreviewSuccess(json))
-        //dispatch(showDataPreview())
+        dispatch(showDataPreview())
       }
       else{
         dispatch(fetchDataPreviewError(json))
@@ -175,5 +175,13 @@ export function showDataPreview() {
 export function hideDataPreview() {
 	return {
 		type: "HIDE_DATA_PREVIEW",
+	}
+}
+
+export function storeSignalMeta(signalMeta,curUrl) {
+	return {
+		type: "STORE_SIGNAL_META",
+		signalMeta,
+		curUrl
 	}
 }

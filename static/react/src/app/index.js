@@ -38,6 +38,7 @@ class App extends React.Component {
             <Route exact path="/signals/:slug/:l1" component={OverViewPage}/>
             <Route exact path="/signals/:slug/:l1/:l2/:l3" component={OverViewPage}/>
             <Route exact path="/signals/:slug/:l1/:l2" component={OverViewPage}/>
+            <Route path="/variableselection" component={VariableSelection} />
             <Route path = "/signaldocumentMode/:slug" component = {SignalDocumentMode}/>
             <Route path="/settings" component={Settings} />
             <Route exact path="/apps" component={Apps} />
@@ -46,6 +47,7 @@ class App extends React.Component {
             <Route exact path="/data/:slug" component={DataPreview} />
             <Route eaxct path="/data/:slug/variableSelection" component={DataVariableSelection} />
             <Route eaxct path="/apps/:slug/" component={ModelVariableSelection} />
+
           </Main>
       </Switch>
       </BrowserRouter>
