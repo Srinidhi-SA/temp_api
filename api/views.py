@@ -143,7 +143,7 @@ class ScoreView(viewsets.ModelViewSet):
     pagination_class = CustomPagination
 
     def create(self, request, *args, **kwargs):
-        import pdb;pdb.set_trace()
+        # import pdb;pdb.set_trace()
         data = request.data
         data = convert_to_string(data)
         data['trainer'] = Trainer.objects.filter(slug=data['trainer'])
@@ -213,7 +213,6 @@ def write_into_databases(job_type, object_slug, results):
     import json
     if job_type == "metadata":
         dataset_object = Dataset.objects.get(slug=object_slug)
-
         columnData = results['columnData']
         for data in columnData:
             data["chartData"] = helper.find_chart_data_and_replace_with_chart_data(data["chartData"])
@@ -223,7 +222,7 @@ def write_into_databases(job_type, object_slug, results):
         dataset_object.save()
     elif job_type == "master":
         insight_object = Insight.objects.get(slug=object_slug)
-        insight_object.data = results
+        insight_object.data = json.dumps(results)
         insight_object.analysis_done = True
         insight_object.save()
     elif job_type == "":

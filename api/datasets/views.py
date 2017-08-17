@@ -52,7 +52,7 @@ class DatasetView(viewsets.ModelViewSet):
         if data['input_file'] is None:
             data['name'] = data.get('name', data.get('db_type', "H") + "_"+ str(random.randint(1000000,10000000)))
         else:
-            data['name'] = data['input_file'].name
+            data['name'] = data.get('name', data['input_file'].name)
 
         # question: why to use user.id when it can take, id, pk, object.
         # answer: I tried. Sighhh but it gave this error "Incorrect type. Expected pk value, received User."
