@@ -56,9 +56,31 @@ class JobserverDetails(object):
         print "job_url: {0}".format(job_url)
         return job_url
 
+def metadata_chart_conversion(data):
+    output = {
+      "data": {
+          "columns": [
+              [],
+          ],
+          "type": "bar",
+      },
+      "bar": {
+          "width": {
+              "ratio": 0.5
+          }
+      }
+
+    }
+    values = ["data1"]
+    for obj in data:
+        values.append(data["value"])
+    output["data"]["columns"] = [values]
+
+    return output
 
 def find_chart_data_and_replace_with_chart_data(data):
-    return chartData
+    output = metadata_chart_conversion(data)
+    return output
 
 chartData = {
       "data": {
@@ -75,3 +97,11 @@ chartData = {
       }
 
     }
+
+
+# def add_slug_to_card(data):
+#
+#     name = data.get('name', "Unnamed")
+#     from django.template.defaultfilters import slugify
+#     import random
+#     slug = slugify(name  + random.random)
