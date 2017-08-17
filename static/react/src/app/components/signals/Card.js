@@ -41,10 +41,10 @@ export class Card extends React.Component {
 // console.log("cardelement is:");
 // console.log(cardElements);
     return (
-      <div className="side-body">
-        <div className="main-content">
+      <div className="xs-p-20">
+       
           {cardElements}
-        </div>
+       
       </div>
     );
 

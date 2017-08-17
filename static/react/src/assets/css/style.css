@@ -5185,7 +5185,7 @@ html {
 }
 body {
 	padding: 0;
-	background-color: #f0f0f0;/*height: 100% old bg-color: #ededed*/
+	background-color: #f7f7f7;/*height: 100% old bg-color: #ededed -- f0f0f0*/
 }
 a:focus, a:hover {
 	text-decoration: none;
@@ -14424,7 +14424,7 @@ div.dataTables_wrapper div.dataTables_length label select {
 }
 .newCardStyle .card-center .fa { line-height:100px; color:#FFF; }
 .newCardStyle.firstCard:hover { background: #007a70; }
-.newCardStyle:hover { background: #f3fffe; }
+/*.newCardStyle:hover { background: #f3fffe; }*/
 /*.newCardStyle:hover .fa, .newCardStyle:hover .newStoryCard { color:#00998c}*/
 .datalist {
    height:50px !important;
@@ -14674,8 +14674,8 @@ background:#ededed; color:#7dac02
 	box-shadow: 0px 0px 10px 3px rgba(0,0,0,0.2);
 }
 a.tabs-control.left span, a.tabs-control.right span {  padding: 15px 5px;}
-a.tabs-control.left span { left: 20px; }
-a.tabs-control.right span { right: 0px; }
+a.tabs-control.left span { left: 25px; }
+a.tabs-control.right span { right: 5px; }
 
 .panel-mAd .tab-content {
     min-height: 360px;
@@ -14863,7 +14863,8 @@ a.tabs-control.right span { right: 0px; }
 .side_panel .list-group {
     margin-bottom: 0px;
     padding-left: 0;
-    height: 300px;
+    min-height:99%;
+	height: 100%;
     overflow: auto; border-bottom:1px solid #ddd }
 .panel-mAd .sb_navigation #search-button{ display:block }
 .panel-mAd .sb_navigation #search-form{ display:none }
@@ -14909,9 +14910,13 @@ progress:after { content: '%'; }
 .fail { background: #c00; padding: 2px; color: #fff; }
 .hidden { display: none !important;}
 
-#uploadData .modal-body {
-    padding: 0;
-}
+#uploadData .modal-body, .uploadData .modal-body { padding: 0; background:#f5f5f5; }
+.uploadData .col-sm-3, .uploadData .col-sm-9 { padding: 0; }
+.uploadData .col-sm-9 { padding-right: 10px; }
+.uploadData .nav-pills { padding-left: 10px; }
+.uploadData .nav-pills>li a {background:#f5f5f5; color:#555; padding: 15px 17px; font-weight: bold; text-transform: uppercase;}
+.uploadData .nav-pills>li a:hover {color:#00998c}
+.uploadData .nav-pills>li.active>a { background:#FFF; color:#555;}
 .modal-body .tab-content {  margin-bottom: inherit; margin-top: 0; }
 .modal-body .tab-content h3 { margin-top:0; }
 .db_images { width: 190px; height: 92px; background: url(../../assets/images/db_images.png) no-repeat 0 0;}

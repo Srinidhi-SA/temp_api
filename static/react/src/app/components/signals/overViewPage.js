@@ -216,15 +216,15 @@ console.log("l1name is ...."+selectedSignal);
                     <div className="btn-toolbar pull-right">
                       <div className="btn-group btn-space">
 
-                        <button type="button" className="btn btn-default" disabled = "true">
-                          <i className="fa fa-file-pdf-o"></i>
+                        <button type="button" className="btn btn-default" disabled = "true" title="Card mode">
+                          <i className="pe-7s-display2 pe-lg"></i>
                         </button>
                         <Link className="tabs-control right grp_legends_green continue" to={{
                       pathname: documentModeLink,
                       state: { lastVar: lastcard.slug }
                       }}>
-                        <button type="button" className="btn btn-default">
-                          <i className="fa fa-print"></i>
+                        <button type="button" className="btn btn-default" title="Document mode">
+                          <i className="pe-7s-news-paper pe-lg"></i>
                         </button>
                         </Link>
                         <button type="button" className="btn btn-default">
