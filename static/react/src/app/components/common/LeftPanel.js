@@ -17,11 +17,11 @@ export default class LeftPanel extends React.Component {
                       <span></span>
                       SIGNALS</NavLink>
                   </li>
-                  <li>
+                {/*  <li>
                     <NavLink className="sdb_story" to ="/stories">
                       <span></span>
                       STORY</NavLink>
-                  </li>
+                  </li>*/}
                   <li>
                     <NavLink className="sdb_app" to ="/apps">
                       <span></span>

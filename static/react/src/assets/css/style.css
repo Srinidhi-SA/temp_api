@@ -12910,22 +12910,22 @@ pre {
 	padding: 13px 15px
 }
 .text-success {
-	color: #7ACCBE
+	color: #5cb85c
 }
 a.text-success:focus, a.text-success:hover {
-	color: #55beac
+	color: #49b549
 }
 .text-info {
-	color: #8dcadf
+	color: #5bc0de
 }
 a.text-info:focus, a.text-info:hover {
-	color: #65b7d4
+	color: #3cadcf
 }
 .text-warning {
-	color: #FFC870
+	color: #f0ad4e
 }
 a.text-warning:focus, a.text-warning:hover {
-	color: #ffb43d
+	color: #e69b32
 }
 .text-danger {
 	color: #EF6262
@@ -15638,4 +15638,59 @@ table.table.table-condensed.table-hover.table-bordered.table-striped {
 .seld_var_box a:hover { color:#00998c}
 .seld_var_box a i.remove { display:block; width:20px; float:right; font-size:18px; }
 
+ /*** Pravallika Sytle guide for slider sleek bar ***/
+ #range{
+	width:100%;
+	padding-top: 10px;
+    padding-bottom: 13px;
+    padding-left: 17px;
+    padding-right: 17px;
+}
+#testPercent{
+	display: inline-block;
+	border: 1px solid #999;
+	height: 25px;
+    width: 29px;
+    text-align: center;
+} 
+#trainPercent{
+	display: inline-block;
+	border: 1px solid #999;
+	height: 25px;
+    width: 29px;
+    text-align: center;
+}
+#rangeRightSpan{
+	display: inline-block;
+    float: right;
+    margin-top: -23px;
+    margin-right: -17px;
+} 
+#rangeLeftSpan{
+	display: inline-block;
+    margin-top: -4px;
+    margin-left: -17px;
+    float: left;
+}
+
+#rangeElement{
+	width:80%;
+	margin-left:10%;
+} 
+.apps_table_style {
+	background-color:#90be5b;
+	color:#000;
+}
+.apps_table_style thead {
+	background-color:#eec633;
+}
+table.apps_table_style thead th { font-weight:bold }
+.apps_table_style tbody th.left_highlilght {
+	background-color:#c3e37e; 
+	text-align:center;
+	 vertical-align: middle;
+} 
  
+
+
+h4, h5 { font-weight:bold }

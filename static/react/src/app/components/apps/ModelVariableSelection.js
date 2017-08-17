@@ -55,8 +55,7 @@ export class ModelVariableSelection extends React.Component {
 			            </div>
 			            <div className="main-content">
 				        <div className="panel panel-default">
-				      <div className="panel-body">
-				      
+				      <div className="panel-body">    
 				      <Form onSubmit={this.createModel.bind(this)}>
 				      <FormGroup role="form">
 				      <div className="row">			          

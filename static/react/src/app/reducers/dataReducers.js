@@ -10,6 +10,7 @@ export default function reducer(state = {
 		selectedTimeDimensions:"",
 		dataPreviewFlag:false,
 		selectedVariablesCount:0,
+		signalMeta:{},
 }, action) {
 	console.log("In DATA reducer!!");
 	console.log(action);
@@ -39,7 +40,7 @@ export default function reducer(state = {
 	}
 	break;
 	case "DATA_PREVIEW_ERROR":
-	{ 
+	{
 		throw new Error("Fetching of Data failed!!");
 	}
 	break;
@@ -128,7 +129,15 @@ export default function reducer(state = {
 		}
 	}
 	break;
+	case "STORE_SIGNAL_META":
+	{
+		return {
+			...state,
+			signalMeta:action.signalMeta,
+			curUrl : action.curUrl
+		}
+	}
+	break;
 	}
 	return state
 }
-

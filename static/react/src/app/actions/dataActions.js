@@ -177,3 +177,11 @@ export function hideDataPreview() {
 		type: "HIDE_DATA_PREVIEW",
 	}
 }
+
+export function storeSignalMeta(signalMeta,curUrl) {
+	return {
+		type: "STORE_SIGNAL_META",
+		signalMeta,
+		curUrl
+	}
+}
