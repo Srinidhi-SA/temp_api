@@ -222,9 +222,29 @@ def write_into_databases(job_type, object_slug, results):
         dataset_object.save()
     elif job_type == "master":
         insight_object = Insight.objects.get(slug=object_slug)
+        results = add_slugs(results)
         insight_object.data = json.dumps(results)
         insight_object.analysis_done = True
         insight_object.save()
     elif job_type == "":
         pass
     print "written to the database."
+
+
+def add_slugs(results):
+    from api import helper
+    listOfNodes = results.get('listOfNodes', [])
+    listOfCards = results.get('listOfCards', [])
+
+    name = results['name']
+    results['slug'] = helper.get_slug(name)
+
+    if len(listOfCards) > 0:
+        for loC in listOfCards:
+            add_slugs(loC)
+
+    if len(listOfNodes) > 0:
+        for loN in listOfNodes:
+            add_slugs(loN)
+
+    return results

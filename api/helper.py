@@ -56,6 +56,7 @@ class JobserverDetails(object):
         print "job_url: {0}".format(job_url)
         return job_url
 
+
 def metadata_chart_conversion(data):
     output = {
       "data": {
@@ -78,6 +79,7 @@ def metadata_chart_conversion(data):
 
     return output
 
+
 def find_chart_data_and_replace_with_chart_data(data):
     output = metadata_chart_conversion(data)
     return output
@@ -99,9 +101,38 @@ chartData = {
     }
 
 
-# def add_slug_to_card(data):
-#
-#     name = data.get('name', "Unnamed")
-#     from django.template.defaultfilters import slugify
-#     import random
-#     slug = slugify(name  + random.random)
+def replace_chart_data(data):
+    if isinstance(data, list):
+
+        pass
+    elif isinstance(data, dict):
+        pass
+
+
+def add_slug_to_card(data):
+    name = data.get('name', "Unnamed")
+    data['slug'] = get_slug(name)
+    return data
+
+
+def get_slug(name):
+
+    from django.template.defaultfilters import slugify
+    import string
+    import random
+    slug = slugify(str(name) + "-" + ''.join(
+                random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
+    return slug
+
+def check_chart_data_format(data):
+    keys = ['data', 'axes', 'label_text', 'legend', 'chart_type', 'types']
+
+    data_keys = data.keys()
+
+    if len(list(set(keys) - set(data_keys))) < 1:
+        return False
+    return True
+
+def convert_listed_josn():
+    pass
+
