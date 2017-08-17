@@ -56,7 +56,7 @@ export class Data extends React.Component {
 				addButton = <DataUpload />
 			}
 			if(pages > 1){
-				paginationTag = <Pagination className="pull-left" ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
+				paginationTag = <Pagination ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
 			}
 			const dataSetList = dataSets.map((data, i) => {
 				var dataSetLink = "/data/" + data.slug;
@@ -85,7 +85,7 @@ export class Data extends React.Component {
 						<div className="card-deatils">
 						{/*<!-- Popover Content link -->*/}
 						<a href="#" rel="popover" className="pover" data-popover-content="#myPopover">
-						<i className="fa fa-info-circle fa-lg"></i>
+						<i className="pe-7s-info pe-2x"></i>
 						</a>
 
 						{/*<!-- Rename and Delete BLock  -->*/}
@@ -139,9 +139,12 @@ export class Data extends React.Component {
 					{addButton}
 					{dataSetList}
 					<div className="clearfix"></div>
-					<div id="idPagination">
+					 
+					<div className="ma-datatable-footer" id="idPagination">
+					<div className="dataTables_paginate">
 					{paginationTag}
 					</div>
+				 </div>
 					</div>
 					</div>
 			);
