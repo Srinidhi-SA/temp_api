@@ -1,7 +1,7 @@
 import React from "react";
 import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab} from "react-bootstrap";
-
+import {AppsCreateScore} from "./AppsCreateScore";
 export class AppsModelDetail extends React.Component {
   constructor() {
     super();
@@ -12,7 +12,8 @@ export class AppsModelDetail extends React.Component {
     return (
           <div className="side-body">
             <div className="main-content">
-             Apps Model List
+             Apps Model Summary
+             <AppsCreateScore match={this.props.match}/>
             </div>
           </div>
       );

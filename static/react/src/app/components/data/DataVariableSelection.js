@@ -233,7 +233,7 @@ export class DataVariableSelection extends React.Component {
 			{/*<!-------------------------------------------------------------------------------->*/}
 			 <div className="row">
 	            <div className="col-md-4 col-md-offset-5">
-	                <h4>{store.getState().datasets.selectedVariablesCount} Variable selected<OverlayTrigger trigger="click" placement="left" overlay={popoverLeft}><a><i className="pe-7s-more pe-2x pe-va"></i></a></OverlayTrigger></h4>
+	                <h4>{store.getState().datasets.selectedVariablesCount} Variable selected<OverlayTrigger trigger="click" placement="left"><a><i className="pe-7s-more pe-2x pe-va"></i></a></OverlayTrigger></h4>
 	            </div>
 	          </div>
 			     </div>

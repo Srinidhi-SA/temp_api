@@ -11,6 +11,7 @@ export default function reducer(state = {
 		dataPreviewFlag:false,
 		selectedVariablesCount:0,
 		signalMeta:{},
+		curUrl:"",
 }, action) {
 	console.log("In DATA reducer!!");
 	console.log(action);

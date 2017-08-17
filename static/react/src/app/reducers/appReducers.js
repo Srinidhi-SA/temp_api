@@ -7,6 +7,8 @@ export default function reducer(state = {
 		scoreList:{},
 		appsScoreShowModal:false,
 		score_current_page:1,
+		modelSlug:"",
+		modelSummary:{},
 }, action) {
 	console.log("In APPs reducer!!");
 	console.log(action);
@@ -88,6 +90,21 @@ export default function reducer(state = {
 		}
 	}
 	break;
+	
+	case "MODEL_SUMMARY_SUCCESS":
+	{
+		return {
+			...state,
+			modelList: action.data,
+		}
+	}
+	break;
+
+	case "MODEL_SUMMARY_ERROR":
+	{
+		alert(action.json.non_field_errors);
+		throw new Error("Unable to fetch model summary!!");
+	}
  }
 return state
 }

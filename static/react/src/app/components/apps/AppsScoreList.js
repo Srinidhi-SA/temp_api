@@ -5,7 +5,7 @@ import {Link, Redirect} from "react-router-dom";
 import {push} from "react-router-redux";
 
 import {MainHeader} from "../common/MainHeader";
-import {Tabs,Tab} from "react-bootstrap";
+import {Tabs,Tab,Pagination} from "react-bootstrap";
 import {AppsCreateScore} from "./AppsCreateScore";
 import {getAppsScoreList} from "../../actions/appActions";
 var dateFormat = require('dateformat');
@@ -34,8 +34,8 @@ export class AppsScoreList extends React.Component {
  
   render() {
     console.log("apps score list is called##########3");
-    const modelList = store.getState().apps.scoreList.data;
-	if (modelList) {
+    const scoreList = store.getState().apps.scoreList.data;
+	if (scoreList) {
 		const pages = store.getState().apps.scoreList.total_number_of_pages;
 		const current_page = store.getState().apps.score_current_page;
 		let addButton = null;
@@ -46,7 +46,7 @@ export class AppsScoreList extends React.Component {
 		if(pages > 1){
 			paginationTag = <Pagination className="pull-left" ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
 		}
-		const appsModelList = modelList.map((data, i) => {
+		const appsScoreList = scoreList.map((data, i) => {
 			var modelLink = "/apps/" + data.slug;
 			return (
 					<div className="col-md-3 top20 list-boxes" key={i}>
@@ -66,7 +66,7 @@ export class AppsScoreList extends React.Component {
 					</div>
 					<div className="card-footer">
 					<div className="left_div">
-					<span className="footerTitle"></span>Test
+					<span className="footerTitle"></span>{sessionStorage.userName}
 					<span className="footerTitle">{dateFormat(data.created_on, "mmmm d,yyyy h:MM")}</span>
 					</div>
 
@@ -99,8 +99,7 @@ export class AppsScoreList extends React.Component {
 		});
 		return (
 				<div>
-				{addButton}
-				{appsModelList}
+				{appsScoreList}
 				<div className="clearfix"></div>
 				<div id="idPagination">
 				{paginationTag}
@@ -109,12 +108,12 @@ export class AppsScoreList extends React.Component {
 		);
 	}else {
 		return (
-				<div>No DataSets</div>
+				<div>No Scores Available</div>
 		)
 	}
 }
   handleSelect(eventKey) {
 		this.props.history.push('/apps/page/'+eventKey+'')
-		this.props.dispatch(getAppsModelList(eventKey));
+		this.props.dispatch(getAppsScoreList(eventKey));
 	}
 }

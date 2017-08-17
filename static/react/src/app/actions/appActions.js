@@ -36,7 +36,7 @@ export function getAppsModelList(pageNo) {
 }
 
 function fetchModelList(pageNo,token) {
-	return fetch(API+'/api/trainer?page_number='+pageNo+'&page_size='+PERPAGE+'',{
+	return fetch(API+'/api/trainer/?page_number='+pageNo+'&page_size='+PERPAGE+'',{
 		method: 'get',
 		headers: getHeader(token)
 	}).then( response => Promise.all([response, response.json()]));
@@ -123,7 +123,7 @@ export function getAppsScoreList(pageNo) {
 }
 
 function fetchScoreList(pageNo,token) {
-	return fetch(API+'/api/score?page_number='+pageNo+'&page_size='+PERPAGE+'',{
+	return fetch(API+'/api/score/?page_number='+pageNo+'&page_size='+PERPAGE+'',{
 		method: 'get',
 		headers: getHeader(token)
 	}).then( response => Promise.all([response, response.json()]));
@@ -157,5 +157,38 @@ export function hideCreateScorePopup() {
 	}
 }
 
+export function getAppsModelSummary(slug) {
+	return (dispatch) => {
+		return fetchModelSummary(sessionStorage.userToken,slug).then(([response, json]) =>{
+			if(response.status === 200){
+				console.log(json)
+				dispatch(fetchModelSummarySuccess(json))
+			}
+			else{
+				dispatch(fetchModelSummaryError(json))
+			}
+		})
+	}
+}
 
+function fetchModelSummary(token,slug) {
+	return fetch(API+'/api/trainer/'+slug+'/',{
+		method: 'get',
+		headers: getHeader(token)
+	}).then( response => Promise.all([response, response.json()]));
+}
+
+function fetchModelSummaryError(json) {
+	return {
+		type: "MODEL_SUMMARY_ERROR",
+		json
+	}
+}
+export function fetchModelSummarySuccess(doc){
+	var data = doc;
+	return {
+		type: "MODEL_SUMMARY_SUCCESS",
+		data,
+	}
+}
 

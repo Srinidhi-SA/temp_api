@@ -82,7 +82,7 @@ export class Data extends React.Component {
 						</div>
 						<div className="card-footer">
 						<div className="left_div">
-						<span className="footerTitle"></span>Test
+						<span className="footerTitle"></span>{sessionStorage.userName}
 						<span className="footerTitle">{dateFormat(data.created_on, "mmmm d,yyyy h:MM")}</span>
 						</div>
 
