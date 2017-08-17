@@ -15677,3 +15677,20 @@ table.table.table-condensed.table-hover.table-bordered.table-striped {
 	width:80%;
 	margin-left:10%;
 } 
+.apps_table_style {
+	background-color:#90be5b;
+	color:#000;
+}
+.apps_table_style thead {
+	background-color:#eec633;
+}
+table.apps_table_style thead th { font-weight:bold }
+.apps_table_style tbody th.left_highlilght {
+	background-color:#c3e37e; 
+	text-align:center;
+	 vertical-align: middle;
+} 
+ 
+
+
+h4, h5 { font-weight:bold }
