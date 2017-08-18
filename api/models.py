@@ -384,6 +384,9 @@ class Trainer(models.Model):
         self.generate_slug()
         super(Trainer, self).save(*args, **kwargs)
 
+    def create(self):
+        self.add_to_job()
+
     def generate_config(self, *args, **kwargs):
         return {}
 
