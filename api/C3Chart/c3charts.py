@@ -256,6 +256,12 @@ class C3Chart(object):
             self._axis['y']['label']['text'] = X_LABEL_DEFAULT_TEXT
             self.set_multiline_x()
 
+    def set_y_axis(self, y_name='y'):
+        if self._data:
+            self._data['axes'] = {
+                y_name: 'y',
+            }
+
     def set_another_y_axis(self,
                            y2_name=None):
         if y2_name is None:
@@ -393,6 +399,12 @@ class C3Chart(object):
             }
             pass
 
+    def add_new_chart_on_a_data_list(self, types=None):
+        if self._data:
+            if types is not None:
+                self._data['types'] = types
+
+
     def hide_label(self, axis='x'):
         if self._axis:
             self._axis[axis]['label'] = None
@@ -403,6 +415,7 @@ class C3Chart(object):
 
     def remove_x_from_data(self):
         self._data['x'] = None
+
 
     def get_some_related_info_printed(self):
         print "x max string length", self._x_max_string_length

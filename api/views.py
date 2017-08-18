@@ -231,6 +231,15 @@ def write_into_databases(job_type, object_slug, results):
         pass
     print "written to the database."
 
+@csrf_exempt
+def random_test_api(request):
+    import json
+    print "Welcome to Random Test API."
+    data = json.loads(request.body)
+    data = add_slugs(data)
+
+    return JsonResponse({"data": data})
+
 
 def add_slugs(results):
     from api import helper
@@ -243,12 +252,15 @@ def add_slugs(results):
     if len(listOfCards) > 0:
         for loC in listOfCards:
             add_slugs(loC)
+            if loC['cardType'] == 'normal':
+                convert_chart_data_to_beautiful_things(loC['cardData'])
 
     if len(listOfNodes) > 0:
         for loN in listOfNodes:
             add_slugs(loN)
 
     return results
+
 
 def convert_chart_data_to_beautiful_things(data):
     from api import helper
