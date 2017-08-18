@@ -6330,6 +6330,7 @@ button:focus {
 	border-radius: 0;
 	background-color: #f3f3f3;
 }
+
 /* Search */
 #search .panel-body .navbar-form {
 	border-bottom: 0;
@@ -13263,7 +13264,7 @@ div.dataTables_wrapper div.dataTables_paginate ul.pagination, div.dataTables_pag
 div.dataTables_paginate {
     margin: 0;
     white-space: nowrap;
-    text-align: right;
+    text-align: center;
 }
 div.dataTables_wrapper div.dataTables_filter input {
 	padding-top: 6px;
@@ -14516,13 +14517,16 @@ div.dataTables_wrapper div.dataTables_length label select {
     border-bottom: 1px solid #ececec;
     /* line-height: 66px; */
 }
+.ci {
+    line-height: 1.538em;
+}
 .card-footer {
     height: 40px;
     /* background-color: #ebebeb; */
     padding: 0 0 0 15px;
     /* color: #fff; */
 }
-.card-footer div.card-deatils { width:84px; }
+.card-footer div.card-deatils { width: 72px; }
 .card-footer .left_div {
     float: left;
     width: 57%;
@@ -14532,7 +14536,7 @@ div.dataTables_wrapper div.dataTables_length label select {
 }
 .card-footer .pover, .card-footer .more_button{
     display: inline-block;
-	width:40px; line-height:40px;
+	width:36px;/*  line-height:40px;*/
 }
 
 /*.card-deatils.open a .fa { color: #7dac02} */

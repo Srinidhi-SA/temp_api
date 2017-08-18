@@ -47,7 +47,7 @@ export class CreateSignal extends React.Component {
 				</div>
 				</div>
 				<div id="newSignal"  role="dialog" className="modal fade modal-colored-header">
-				<Modal show={store.getState().signals.newSignalShowModal} onHide={this.closeSignalModal.bind(this)}>
+				<Modal show={store.getState().signals.newSignalShowModal} onHide={this.closeSignalModal.bind(this)} dialogClassName="modal-colored-header">
 				<Modal.Header closeButton>
 				<h3 className="modal-title">Create New</h3>
 				</Modal.Header>
@@ -58,8 +58,8 @@ export class CreateSignal extends React.Component {
 				</div>
 				</Modal.Body>
 				<Modal.Footer>
-				<Button className="btn btn-primary md-close" onClick={this.closeSignalModal.bind(this)}>Close</Button>
-				<Link to="/variableSelection"><Button className="btn btn-primary md-close">Create</Button></Link>
+				<Button  onClick={this.closeSignalModal.bind(this)}>Close</Button>
+				<Link to="/variableSelection" className="btn btn-primary"> Create</Link>
 				</Modal.Footer>
 				</Modal>
 				</div>
