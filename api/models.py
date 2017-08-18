@@ -320,8 +320,13 @@ class Insight(models.Model):
             'date_format': None,
             'ignore_column_suggestions': None,
             'result_column': ['Platform'],
-            'consider_columns': ['Date', 'Gender', 'Education', 'Model', 'Free service count',
-                                 'Free service labour cost', 'Status'],
+            'consider_columns': ['Gender',
+                                 'Education',
+                                 'Model',
+                                 'Free service count',
+                                 'Free service labour cost',
+                                 'Status'
+                                 ],
             'date_columns': ['Month'],
             'analysis_type': ['Dimension'],
         }
@@ -384,6 +389,9 @@ class Trainer(models.Model):
     def save(self, *args, **kwargs):
         self.generate_slug()
         super(Trainer, self).save(*args, **kwargs)
+
+    def create(self):
+        self.add_to_job()
 
     def generate_config(self, *args, **kwargs):
         return {}

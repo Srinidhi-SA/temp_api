@@ -103,7 +103,8 @@ class TrainerView(viewsets.ModelViewSet):
         data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
         serializer = TrainerSerlializer(data=data)
         if serializer.is_valid():
-            serializer.save()
+            trainer_object = serializer.save()
+            trainer_object.create()
             return Response(serializer.data)
 
         return Response(serializer.errors)
@@ -248,3 +249,11 @@ def add_slugs(results):
             add_slugs(loN)
 
     return results
+
+def convert_chart_data_to_beautiful_things(data):
+    from api import helper
+    for card in data:
+        if card["dataType"] == "c3Chart":
+            chart_raw_data = card["data"]
+            # function
+            card["data"] = helper.decode_and_convert_chart_raw_data(chart_raw_data)

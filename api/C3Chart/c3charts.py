@@ -293,6 +293,15 @@ class C3Chart(object):
             if 'y2' in self._axis.keys():
                 self._axis['y2']['label']['text'] = y2_label
 
+    def set_axis_label_simple(self, label_text):
+
+        axis_names = ['x', 'y', 'y2']
+
+        for axis_name in axis_names:
+            if axis_name in label_text:
+                if axis_name in self._axis:
+                    self._axis[axis_name]['label']['text'] = label_text.get(axis_name, "")
+
     def get_point_radius(self):
 
         if self._total_data_count is None:
