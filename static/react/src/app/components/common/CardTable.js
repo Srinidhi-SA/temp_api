@@ -18,7 +18,6 @@ export class CardTable extends React.Component {
   render() {
    var element = this.props.jsonData;
    console.log("checking table element");
-   console.log(element);
    let tableEle = "";
    if(element.tableType == CIRCULARCHARTTABLE){
 	   tableEle =  <CircularChartTable  tableData={element} />;

@@ -4,7 +4,7 @@ import {Link, Redirect} from "react-router-dom";
 import {push} from "react-router-redux";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
 import store from "../../store";
-import {showCreateScorePopup,hideCreateScorePopup} from "../../actions/appActions";
+import {showCreateScorePopup,hideCreateScorePopup,updateSelectedAlg} from "../../actions/appActions";
 import {getAllDataList,getDataSetPreview,storeSignalMeta} from "../../actions/dataActions";
 
 
@@ -37,12 +37,15 @@ export class AppsCreateScore extends React.Component {
     }
     getDataSetPreview(e){
     	this.selectedData = $("#score_Dataset").val();
+    	this.props.dispatch(updateSelectedAlg($("#algorithms").val()));
     	this.props.dispatch(getDataSetPreview(this.selectedData));
     	this.props.dispatch(hideCreateScorePopup());
     }
 	render() {
 		const dataSets = store.getState().datasets.allDataSets.data;
+		const algorithms = store.getState().apps.algorithmsList;
 		let renderSelectBox = null;
+		let algorithmNames = null;
 		let _link = "";
 		if(store.getState().datasets.dataPreview){
 		 _link = "/data/"+store.getState().datasets.dataPreview.slug;	
@@ -56,6 +59,15 @@ export class AppsCreateScore extends React.Component {
 		}else{
 			renderSelectBox = "No Datasets"
 		}
+		if(algorithms){
+			algorithmNames = <select id="algorithms" name="selectbasic" class="form-control">
+			{algorithms.map(algorithm =>
+			<option key={algorithm} value={algorithm}>{algorithm}</option>
+			)}
+			</select>
+		}else{
+			algorithmNames = "No Algorithms"
+		}
 		return (
 				<div class="col-md-3 col-md-offset-5" onClick={this.openScorePopup.bind(this)}>
 				<Button className="btn btn-primary md-close">Create Score</Button>
@@ -68,6 +80,9 @@ export class AppsCreateScore extends React.Component {
 				  <div class="form-group">
 				  <label>Select an existing dataset</label>
 	              {renderSelectBox}
+	              <br/>
+	              <label>Select an Algorithm</label>
+	              {algorithmNames}
 				</div>
 				</Modal.Body>
 				<Modal.Footer>

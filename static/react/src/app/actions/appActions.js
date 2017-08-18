@@ -200,3 +200,11 @@ export function getListOfCards(totalCardList){
 	console.log(cardList)
 	return cardList;
 }
+
+export function updateSelectedAlg(name){
+	return {
+		type: "SELECTED_ALGORITHM",
+		name,
+	}
+}
+
