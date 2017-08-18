@@ -307,13 +307,30 @@ class Insight(models.Model):
         return json.loads(self.config)
 
     def create_configuration_url_settings(self):
+        default_scripts_to_run = [
+            'Descriptive analysis',
+            'Measure vs. Dimension',
+            'Dimension vs. Dimension',
+            'Trend'
+        ]
+        config = json.loads(self.config)
+        script_to_run = config.get('possibleAnalysis', default_scripts_to_run)
+        if script_to_run is [] or script_to_run is "":
+            script_to_run = default_scripts_to_run
+
         return {
-            'script_to_run': ['Descriptive analysis', 'Measure vs. Dimension',
-                            'Dimension vs. Dimension', 'Trend'],
+            'script_to_run': script_to_run,
             'inputfile': [self.dataset.get_input_file()]
         }
 
     def create_configuration_column_settings(self):
+
+        config = json.loads(self.config)
+        analysis_type = [self.type]
+        data_columns = [config["timeDimension"]]
+        result_column = [self.target_column]
+        consider_columns = config['dimension'] + config['measures']
+
         return {
             'polarity': ['positive'],
             'consider_columns_type': ['excluding'],
