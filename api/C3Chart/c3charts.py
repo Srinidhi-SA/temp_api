@@ -56,10 +56,10 @@ class C3Chart(object):
         self._title = {'text': title}
 
     def set_data_and_type(self):
-        type = 'columns'
+        type = 'bar'
         if isinstance(self._type, tuple or list):
             type = self._type[0]
-        elif isinstance(self._type, str):
+        elif isinstance(self._type, str or unicode):
             type = self._type
         self._data = {
             self._data_type: self._data_data,

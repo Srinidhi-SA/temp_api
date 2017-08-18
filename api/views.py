@@ -197,7 +197,12 @@ def set_result(request, slug=None):
     if not job:
         return JsonResponse({'result': 'Failed'})
     results = request.body
-    job.results = results
+    if isinstance(results, str or unicode):
+        job.results = results
+    elif isinstance(results, dict):
+        results = json.dumps(results)
+        job.results = results
+
     print "data----------->"
     print request.body
     job.save()
@@ -264,6 +269,7 @@ def add_slugs(results):
 
 
 def convert_chart_data_to_beautiful_things(data):
+    # import pdb;pdb.set_trace()
     from api import helper
     for card in data:
         if card["dataType"] == "c3Chart":

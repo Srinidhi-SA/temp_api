@@ -106,7 +106,7 @@ def decode_and_convert_chart_raw_data(data):
     if not check_chart_data_format(data):
         return {}
     from api.C3Chart.c3charts import C3Chart
-
+    # import pdb;pdb.set_trace()
     chart_type = data['chart_type']
     axes = data['axes']
     label_text = data['label_text']
