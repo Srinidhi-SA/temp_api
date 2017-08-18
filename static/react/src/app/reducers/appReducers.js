@@ -95,7 +95,7 @@ export default function reducer(state = {
 	{
 		return {
 			...state,
-			modelList: action.data,
+			modelSummary: action.data,
 		}
 	}
 	break;

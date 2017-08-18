@@ -191,4 +191,12 @@ export function fetchModelSummarySuccess(doc){
 		data,
 	}
 }
-
+export function getListOfCards(totalCardList){
+	console.log("In Apps Model Detail");
+	let cardList = new Array();
+	for(var i=0;i<totalCardList.length;i++){
+		cardList.push(totalCardList[i].cardData)
+	}
+	console.log(cardList)
+	return cardList;
+}

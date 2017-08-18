@@ -43,7 +43,7 @@ export class AppsModelList extends React.Component {
 		const current_page = store.getState().apps.current_page;
 		let addButton = null;
 		let paginationTag = null
-		if(current_page == 1){
+		if(current_page == 1 || current_page == 0){
 			addButton = <AppsCreateModel match={this.props.match}/>
 		}
 		if(pages > 1){
@@ -117,7 +117,7 @@ export class AppsModelList extends React.Component {
 	}
 }
   handleSelect(eventKey) {
-		this.props.history.push('/apps/page/'+eventKey+'')
+		this.props.history.push('/apps/models/page/'+eventKey+'')
 		this.props.dispatch(getAppsModelList(eventKey));
 	}
 }

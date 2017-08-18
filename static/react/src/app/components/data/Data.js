@@ -56,7 +56,7 @@ export class Data extends React.Component {
 			const current_page = store.getState().datasets.dataList.current_page;
 			let addButton = null;
 			let paginationTag = null
-			if(current_page == 1){
+			if(current_page == 1 || current_page == 0){
 				addButton = <DataUpload />
 			}
 			if(pages > 1){

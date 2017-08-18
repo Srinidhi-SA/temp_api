@@ -57,15 +57,8 @@ export class AppsCreateScore extends React.Component {
 			renderSelectBox = "No Datasets"
 		}
 		return (
-				<div class="col-md-3 top20 list-boxes" onClick={this.openScorePopup.bind(this)}>
-				<div class="newCardStyle firstCard">
-				<div class="card-header"></div>
-				<div class="card-center newStoryCard">
-				<div class="col-xs-2 col-xs-offset-1"><i class="fa fa-3x">+</i></div>
-				<div class="col-xs-8 col-xs-offset-0">CREATE SCORE</div>
-				</div>
-				</div>
-				
+				<div class="col-md-3 col-md-offset-5" onClick={this.openScorePopup.bind(this)}>
+				<Button className="btn btn-primary md-close">Create Score</Button>
 				<div id="newScore"  role="dialog" className="modal fade modal-colored-header">
 				<Modal show={store.getState().apps.appsScoreShowModal} onHide={this.closeScorePopup.bind(this)} dialogClassName="modal-colored-header">
 				<Modal.Header closeButton>

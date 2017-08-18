@@ -5,6 +5,9 @@ import store from "../../store";
 import {getSignalAnalysis} from "../../actions/signalActions";
 import {C3Chart} from "../c3Chart";
 import {CardHtml} from "./CardHtml";
+import {CardTable} from "../common/CardTable";
+import $ from "jquery";
+
 var data = null,
   yformat = null,
   cardData = {};
@@ -25,7 +28,7 @@ export class Card extends React.Component {
     cardData = this.props.cardData;
     console.log(cardData);
     const cardElements = cardData.map((story, i) => {
-      //  console.log(JSON.stringify(story));
+     // console.log(JSON.stringify(story));
       switch (story.dataType) {
         case "html":
           return (<CardHtml key = {i} htmlElement={story.data} type={story.dataType}/>);
@@ -34,6 +37,9 @@ export class Card extends React.Component {
         console.log("checking chart data:::::");
           return (<div><C3Chart key = {i} classId={i} data={story.data.chart_c3} yformat={story.data.yformat} y2format={story.data.y2format} tooltip={story.data.tooltip_c3}/><div className="clearfix"/></div>);
           break;
+        case "table":
+            return (<CardTable key = {i} jsonData={story.data} type={story.dataType}/>);
+            break;
       }
 
     });
@@ -41,10 +47,8 @@ export class Card extends React.Component {
 // console.log("cardelement is:");
 // console.log(cardElements);
     return (
-      <div className="side-body">
-        <div className="main-content">
+      <div>
           {cardElements}
-        </div>
       </div>
     );
 

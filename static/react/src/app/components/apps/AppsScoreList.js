@@ -113,7 +113,7 @@ export class AppsScoreList extends React.Component {
 	}
 }
   handleSelect(eventKey) {
-		this.props.history.push('/apps/page/'+eventKey+'')
+		this.props.history.push('/apps/score/page/'+eventKey+'')
 		this.props.dispatch(getAppsScoreList(eventKey));
 	}
 }
