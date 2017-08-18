@@ -5,6 +5,7 @@ import json
 
 from django.conf import settings
 from django.http import JsonResponse
+from django.shortcuts import render
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.decorators import detail_route
@@ -248,3 +249,8 @@ def add_slugs(results):
             add_slugs(loN)
 
     return results
+
+
+def home(request):
+    context = {}
+    return render(request, 'home.html', context)
