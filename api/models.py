@@ -309,19 +309,18 @@ class Insight(models.Model):
     def create_configuration_url_settings(self):
         return {
             'script_to_run': ['Descriptive analysis', 'Measure vs. Dimension',
-                            'Dimension vs. Dimension', 'Measure vs. Measure'],
+                            'Dimension vs. Dimension', 'Trend'],
             'inputfile': [self.dataset.get_input_file()]
         }
 
     def create_configuration_column_settings(self):
         return {
             'polarity': ['positive'],
-            'consider_columns_type': ['including'],
+            'consider_columns_type': ['excluding'],
             'date_format': None,
-            'ignore_column_suggestions': None,
+            'ignore_column_suggestions': ["Order Date"],
             'result_column': ['Platform'],
-            'consider_columns': ['Date', 'Gender', 'Education', 'Model', 'Free service count',
-                                 'Free service labour cost', 'Status'],
+            'consider_columns': [],
             'date_columns': ['Month'],
             'analysis_type': ['Dimension'],
         }
