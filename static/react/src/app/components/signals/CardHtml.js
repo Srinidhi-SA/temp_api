@@ -6,15 +6,13 @@ import {getSignalAnalysis} from "../../actions/signalActions";
 import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
 import HeatMap from '../../helpers/heatmap';
+import $ from "jquery";
 
 export class CardHtml extends React.Component {
   constructor(){
     super();
   }
-  componentDidMount() {
-      HeatMap("heat-table-map");
-  }
-
+ 
   render() {
    var element = this.props.htmlElement;
    console.log("checking html element");

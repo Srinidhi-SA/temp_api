@@ -30,7 +30,6 @@ export class SignalDocumentMode extends React.Component {
       console.log("cardLists is:");
       console.log(cardLists);
       return result;
-
     }
   }
   render() {

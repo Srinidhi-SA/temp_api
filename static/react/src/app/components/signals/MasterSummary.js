@@ -32,7 +32,7 @@ export class MasterSummary extends React.Component {
      noOfDimention = this.props.signal.listOfCards[0].cardData.noOfDimensions;
       noOfMeasures = this.props.signal.listOfCards[0].cardData.noOfMeasures;
       summary = this.props.signal.listOfCards[0].cardData.summaryHtml;
-     var quotes = this.props.signal.listOfCards[0].cardData.quotesHtml.toString();
+     var quotes = this.props.signal.listOfCards[0].cardData.quotesHtml;//.toString();
     //  var noOfDimention = 10;
     //  var noOfMeasures = 9;
     // var summary = "mAdvisor has analyzed the dataset, which contains<b> 15</b> variables and <b>5,000</b> observations. Please click next to find the insights from our analysis of <b>platform</b>, that describes how it is distributed, what drives it, and how we can predict it.";
