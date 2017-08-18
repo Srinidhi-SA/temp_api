@@ -5,6 +5,7 @@ import json
 
 from django.conf import settings
 from django.http import JsonResponse
+from django.shortcuts import render
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.decorators import detail_route
@@ -269,3 +270,6 @@ def convert_chart_data_to_beautiful_things(data):
             chart_raw_data = card["data"]
             # function
             card["data"] = helper.decode_and_convert_chart_raw_data(chart_raw_data)
+def home(request):
+    context = {}
+    return render(request, 'home.html', context)

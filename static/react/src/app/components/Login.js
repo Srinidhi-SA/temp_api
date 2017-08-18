@@ -4,6 +4,7 @@ import {Redirect} from 'react-router';
 // import {authenticateFunc,getList,storyList} from "../../services/ajax.js";
 import {authenticateFunc} from "../actions/loginActions";
 import store from "../store";
+import {STATIC_URL} from "../helpers/env"
 // import $ from "jquery";
 
 @connect((store) => {
@@ -51,7 +52,7 @@ export class Login extends React.Component {
              <form action="javascript:void(0);">
                 <div className="login-container">
                   <div className="panel panel-default">
-                    <div className="panel-heading"><img src="assets/images/m_adv_logo_text.png" alt="logo" className="logo-img"/></div>
+                    <div className="panel-heading"><img src={STATIC_URL + "assets/images/m_adv_logo_text.png" } alt="logo" className="logo-img"/></div>
                     <div className="panel-body">
 
                       <h3>SIGN IN</h3>

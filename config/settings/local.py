@@ -18,14 +18,6 @@ PROJECT_APP = [
 INSTALLED_APPS += PROJECT_APP
 
 
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
-print os.path.join(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-    'api/static')
-
 # HDFS = {
 #
 #     # Give host name without http
