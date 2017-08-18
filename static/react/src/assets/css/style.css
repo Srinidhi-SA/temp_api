@@ -14517,8 +14517,11 @@ div.dataTables_wrapper div.dataTables_length label select {
     border-bottom: 1px solid #ececec;
     /* line-height: 66px; */
 }
+.pe-2x {
+    font-size: 22px;
+}
 .ci {
-    line-height: 1.538em;
+    line-height: 1.9em;
 }
 .card-footer {
     height: 40px;
