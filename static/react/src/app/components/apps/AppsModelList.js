@@ -5,9 +5,9 @@ import {Link, Redirect} from "react-router-dom";
 import {push} from "react-router-redux";
 
 import {MainHeader} from "../common/MainHeader";
-import {Tabs,Tab} from "react-bootstrap";
+import {Tabs,Tab,Pagination} from "react-bootstrap";
 import {AppsCreateModel} from "./AppsCreateModel";
-import {getAppsModelList} from "../../actions/appActions";
+import {getAppsModelList,getAppsModelSummary} from "../../actions/appActions";
 var dateFormat = require('dateformat');
 
 
@@ -31,23 +31,26 @@ export class AppsModelList extends React.Component {
 		}else
 		  this.props.dispatch(getAppsModelList(pageNo));
 	}
- 
+  getModelSummary(slug){
+	this.props.dispatch(getAppsModelSummary(slug))
+  }
   render() {
     console.log("apps model list is called##########3");
+    console.log(this.props)
     const modelList = store.getState().apps.modelList.data;
 	if (modelList) {
 		const pages = store.getState().apps.modelList.total_number_of_pages;
 		const current_page = store.getState().apps.current_page;
 		let addButton = null;
 		let paginationTag = null
-		if(current_page == 1){
-			addButton = <AppsCreateModel />
+		if(current_page == 1 || current_page == 0){
+			addButton = <AppsCreateModel match={this.props.match}/>
 		}
 		if(pages > 1){
 			paginationTag = <Pagination className="pull-left" ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
 		}
 		const appsModelList = modelList.map((data, i) => {
-			var modelLink = "/apps/" + data.slug;
+			var modelLink = "/apps/models/" + data.slug;
 			return (
 					<div className="col-md-3 top20 list-boxes" key={i}>
 					<div className="rep_block newCardStyle" name={data.name}>
@@ -56,7 +59,7 @@ export class AppsModelList extends React.Component {
 					<div className="row">
 					<div className="col-xs-9">
 					<h4 className="title newCardTitle">
-					<a href="javascript:void(0);" id= {data.slug}><Link to={modelLink}>{data.name}</Link></a>
+					<a href="javascript:void(0);" id= {data.slug} onClick={this.getModelSummary.bind(this,data.slug)}><Link to={modelLink}>{data.name}</Link></a>
 					</h4>
 					</div>
 					<div className="col-xs-3">
@@ -66,7 +69,7 @@ export class AppsModelList extends React.Component {
 					</div>
 					<div className="card-footer">
 					<div className="left_div">
-					<span className="footerTitle"></span>Test
+					<span className="footerTitle"></span>{sessionStorage.userName}
 					<span className="footerTitle">{dateFormat(data.created_on, "mmmm d,yyyy h:MM")}</span>
 					</div>
 
@@ -109,12 +112,12 @@ export class AppsModelList extends React.Component {
 		);
 	}else {
 		return (
-				<div>No DataSets</div>
+				<div>No Models Available</div>
 		)
 	}
 }
   handleSelect(eventKey) {
-		this.props.history.push('/apps/page/'+eventKey+'')
+		this.props.history.push('/apps/models/page/'+eventKey+'')
 		this.props.dispatch(getAppsModelList(eventKey));
 	}
 }

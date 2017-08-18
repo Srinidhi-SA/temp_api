@@ -56,7 +56,7 @@ export class Data extends React.Component {
 			const current_page = store.getState().datasets.dataList.current_page;
 			let addButton = null;
 			let paginationTag = null
-			if(current_page == 1){
+			if(current_page == 1 || current_page == 0){
 				addButton = <DataUpload />
 			}
 			if(pages > 1){
@@ -82,7 +82,7 @@ export class Data extends React.Component {
 						</div>
 						<div className="card-footer">
 						<div className="left_div">
-						<span className="footerTitle"></span>Test
+						<span className="footerTitle"></span>{sessionStorage.userName}
 						<span className="footerTitle">{dateFormat(data.created_on, "mmmm d,yyyy h:MM")}</span>
 						</div>
 

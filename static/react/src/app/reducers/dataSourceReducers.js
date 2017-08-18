@@ -1,7 +1,7 @@
 export default function reducer(state = {
 		dataSourceList:{},
 		fileUpload:{},
-		selectedDataSrcType:null,
+		selectedDataSrcType:"fileUpload",
 		db_host:null,
 		db_schema:null,
 		db_port:null,
