@@ -1,8 +1,23 @@
 import React from "react";
 import {NavLink} from "react-router-dom";
+import {connect} from "react-redux";
+import {hideDataPreview} from "../../actions/dataActions";
+
+
+@connect((store) => {
+  return {dataPreviewFlag:store.datasets.dataPreviewFlag};
+})
 
 export default class LeftPanel extends React.Component {
 
+  constructor(props) {
+    super(props);
+
+  }
+
+hideDataPrev(){
+  	this.props.dispatch(hideDataPreview());
+}
   render() {
     console.log("LeftPanel")
     return (
@@ -13,7 +28,7 @@ export default class LeftPanel extends React.Component {
               <div className="side-menu-container">
                 <ul className="nav navbar-nav">
                   <li>
-                    <NavLink className="sdb_signal" to="/signals">
+                    <NavLink onClick={this.hideDataPrev.bind(this)} className="sdb_signal" to="/signals">
                       <span></span>
                       SIGNALS</NavLink>
                   </li>

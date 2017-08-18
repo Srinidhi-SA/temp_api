@@ -314,6 +314,7 @@ export default function reducer(state = {
   signalAnalysis:{},
   selectedSignal:{},
   newSignalShowModal:false,
+  signalData:null,
   // variableType:""
 }, action) {
   console.log("in SIGNAL reducer!!");
@@ -369,6 +370,21 @@ export default function reducer(state = {
 		}
 	}
 	break;
+
+  case "CREATE_SUCCESS":
+  {
+    return {
+      ...state,
+      signalData:action.signalData,
+    }
+  }
+  break;
+  case "CREATE_ERROR":
+    {
+      alert(action.json.non_field_errors);
+      throw new Error("Create Signal Failed!!");
+    }
+    break;
 
   }
   return state

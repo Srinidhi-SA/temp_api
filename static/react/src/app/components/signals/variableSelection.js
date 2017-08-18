@@ -7,6 +7,7 @@ import store from "../../store";
 
 import {openCreateSignalModal,closeCreateSignalModal} from "../../actions/createSignalActions";
 import {selectedAnalysisList} from "../../actions/dataActions";
+import {createSignal} from "../../actions/signalActions";
 import {DataVariableSelection} from "../data/DataVariableSelection";
 // var dataSelection= {
 //      "metaData" : [   {"name": "Rows", "value": 30, "display":true},
@@ -124,7 +125,10 @@ var selectedVariables = {measures:[],dimensions:[],date:null};  // pass selected
   selectedMeasures:store.datasets.selectedMeasures,
   selectedDimensions:store.datasets.selectedDimensions,
   selectedTimeDimensions:store.datasets.selectedTimeDimensions,
-    selectedAnalysis:store.datasets.selectedAnalysis};
+    selectedAnalysis:store.datasets.selectedAnalysis,
+    signalData: store.signals.signalData,
+    selectedSignal: store.signals.signalAnalysis
+  };
 })
 
 export class VariableSelection extends React.Component {
@@ -294,6 +298,8 @@ handleAnlysisList(e){
 }
 createSignal(){
   console.log(this.props);
+  // if($('#createSname').val().trim() != "" || $('#createSname').val().trim() != null){
+  $('body').pleaseWait();
    let analysisList =[],config={}, postData={};
 
   config['possibleAnalysis'] = this.props.selectedAnalysis;
@@ -312,12 +318,23 @@ createSignal(){
  postData["dataset"]=this.props.dataPreview.slug;
  console.log(postData);
 
-
+this.props.dispatch(createSignal(postData));
+// }else{
+//   $('#createSname').css("border","2px solid red");
+// }
 
 
 }
 
-	render() {
+	render(){
+     if(!$.isEmptyObject(this.props.selectedSignal)){
+       console.log("move from variable selection page");
+       console.log(this.props.selectedSignal)
+       $('body').pleaseWait('stop');
+       let _link = "/signals/"+this.props.selectedSignal.slug;
+       return(<Redirect to={_link}/>)
+    ;
+     }
 
     let dataPrev = store.getState().datasets.dataPreview;
      const metaData = dataPrev.meta_data.columnData;
@@ -369,13 +386,13 @@ createSignal(){
         <div className="panel-heading text-center">PerhtmlForming the following Analysis</div>
         <div className="panel-body text-center" >
           {renderPossibleAnalysis}
-          <hr/>
+        {/*  <hr/>
           <div className="pull-left">
           <div className="ma-checkbox inline"><input id="chk_results" type="checkbox" className="needsclick"/><label htmlFor="chk_results">Statistically Significant Results</label></div>
           </div>
           <div className="pull-right">
           <a href="javascript:void(0);" className="pull-right">Go to advanced settings</a>
-          </div>
+          </div>*/}
         </div>
       </div>
     </div>

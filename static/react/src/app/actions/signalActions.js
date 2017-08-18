@@ -1,5 +1,12 @@
 import {API} from "../helpers/env";
+import {connect} from "react-redux";
+import store from "../store";
 // var API = "http://34.196.204.54:9000";
+
+// @connect((store) => {
+//   return {signal: store.signals.signalAnalysis};
+// })
+var createSignalInterval = null;
 
 function getHeader(token){
   return {
@@ -8,6 +15,55 @@ function getHeader(token){
   };
 }
 //x-www-form-urlencoded'
+export function createSignal(metaData) {
+    return (dispatch) => {
+    return fetchCreateSignal(metaData).then(([response, json]) =>{
+        if(response.status === 200){
+          console.log(json)
+        dispatch(fetchCreateSignalSuccess(json,dispatch))
+      }
+      else{
+        dispatch(fetchCreateSignalError(json))
+      }
+    })
+  }
+}
+
+function fetchCreateSignal(metaData) {
+  console.log(metaData)
+
+  return fetch(API+'/api/signals/',{
+		method: 'POST',
+    headers: getHeader(sessionStorage.userToken),
+    body: JSON.stringify(metaData)
+		}).then( response => Promise.all([response, response.json()]));
+}
+function fetchCreateSignalSuccess(signalData,dispatch) {
+  console.log("signal list from api to store")
+//  console.log(signalData);
+    createSignalInterval = setInterval(function(){
+    if(!signalData.analysis_done){
+      console.log("checking storeeeee");
+          console.log(signalData.slug);
+          dispatch(getSignalAnalysis(sessionStorage.userToken,signalData.slug));
+    }
+
+  },2000);
+
+  return {
+    type: "CREATE_SUCCESS",
+    signalData
+  }
+}
+
+function fetchCreateSignalError(json) {
+  console.log("fetching list error!!",json)
+  return {
+    type: "CREATE_ERROR",
+    json
+  }
+}
+
 export function getList(token) {
     return (dispatch) => {
     return fetchPosts(token).then(([response, json]) =>{
@@ -55,7 +111,7 @@ export function getSignalAnalysis(token,errandId) {
     return (dispatch) => {
     return fetchPosts_analysis(token,errandId).then(([response, json]) =>{
         if(response.status === 200){
-          console.log(json)
+
         dispatch(fetchPostsSuccess_analysis(json,errandId))
       }
       else{
@@ -83,6 +139,11 @@ function fetchPosts_analysis(token,errandId) {
 function fetchPostsSuccess_analysis(signalAnalysis, errandId) {
   console.log("signal analysis from api to store")
   console.log(signalAnalysis)
+  console.log("3");
+  if(signalAnalysis.analysis_done){
+  //  alert("final done");
+    clearInterval(createSignalInterval);
+  }
   return {
     type: "SIGNAL_ANALYSIS",
     signalAnalysis,

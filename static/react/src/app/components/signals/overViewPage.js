@@ -35,7 +35,7 @@ export class OverViewPage extends React.Component {
   componentDidMount(){
     // alert(showSubTree);
     var that = this;
-
+    // alert(showSubTree);
     if(showSubTree){
        $(".sb_navigation").show();
        showSubTree = false;
@@ -49,6 +49,7 @@ export class OverViewPage extends React.Component {
        });
      }
     else{
+    //  console.log($(".sb_navigation").html());
        $(".sb_navigation").hide();
      }
     }

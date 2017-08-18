@@ -181,15 +181,19 @@ setSideElements(e){
 
        const sideChartUpdate = item.chartData;
        const sideTableUpdate = item.columnStats;
+			 console.log("checking side table data:; ");
+			 console.log(sideTableUpdate);
        $("#side-chart").empty();
         ReactDOM.render(<C3Chart classId={"_side"} data={sideChartUpdate} yformat={false} sideChart={true}/>, document.getElementById('side-chart'));
 
         const sideTableUpdatedTemplate=sideTableUpdate.map((tableItem,tableIndex)=>{
-        return(  <tr key={tableIndex}>
-             <td className="item">{tableItem.name}</td>
-             <td>{tableItem.value}</td>
-            </tr>
-         );
+					if(tableItem.display){
+			        return(  <tr key={tableIndex}>
+			             <td className="item">{tableItem.name}</td>
+			             <td>{tableItem.value}</td>
+			            </tr>
+			         );
+					}
         });
          $("#side-table").empty();
         ReactDOM.render( <tbody className="no-border-x no-border-y">{sideTableUpdatedTemplate}</tbody>, document.getElementById('side-table'));
@@ -234,8 +238,7 @@ moveToVariableSelection(){
         return(
           <div key={i} className="col-md-3 col-xs-6">
              <h3>
-                {item.value}
-                <small>{item.name}</small>
+                {item.value} <small>{item.name}</small>
              </h3>
           </div>
 
@@ -281,12 +284,16 @@ const sideChart = dataPrev.columnData[0].chartData;
 console.log("chart-----------")
 console.log(JSON.stringify(sideChart));
 const sideTable = dataPrev.columnData[0].columnStats;
+console.log("checking side table data:; ");
+console.log(sideTable);
 const sideTableTemaplte=sideTable.map((tableItem,tableIndex)=>{
-return(  <tr key={tableIndex}>
-     <td className="item">{tableItem.name}</td>
-     <td>{tableItem.value}</td>
-    </tr>
- );
+	if(tableItem.display){
+			return(  <tr key={tableIndex}>
+			     <td className="item">{tableItem.name}</td>
+			     <td>{tableItem.value}</td>
+			    </tr>
+			 );
+ }
 });
 
 return(

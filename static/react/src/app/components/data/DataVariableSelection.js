@@ -99,7 +99,7 @@ export class DataVariableSelection extends React.Component {
 			  {/*<!-------------------------------------------------------------------------------->*/}
 			          <div className="row">
 			          <div className="col-lg-4">
-			            <div className="panel panel-primary panel-borders cst-panel">
+			            <div className="panel panel-primary-p1 cst-panel-shadow">
 			            <div className="panel-heading"><i className="pe-7s-graph1"></i> Measures</div>
 			            <div className="panel-body">
 			            {/*  <!-- Row for select all-->*/}
@@ -113,7 +113,7 @@ export class DataVariableSelection extends React.Component {
 			                <div className="col-md-8">
 			                  <div className="input-group pull-right">
 			                  <input type="text" name="search_signals" title="Search Signals" id="search_signals" className="form-control" placeholder="Search signals..." />
-			                  <span className="input-group-addon"><i className="fa fa-search fa-lg"></i></span>
+			                  {/*<span className="input-group-addon"><i className="fa fa-search fa-lg"></i></span>*/}
 			                  <span className="input-group-btn">
 			                  <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i className="fa fa-sort-alpha-asc fa-lg"></i> <span className="caret"></span></button>
 			                  <ul role="menu" className="dropdown-menu dropdown-menu-right">
@@ -130,7 +130,7 @@ export class DataVariableSelection extends React.Component {
 			              <hr />
 			            {/*  <!-- Row for list of variables-->*/}
 			              <div className="row">
-			                <div className="col-md-12">
+			                <div className="col-md-12 cst-scroll-panel">
 			                  <ul className="list-unstyled">
 			                      {measureTemplate}
 			                  </ul>
@@ -142,7 +142,7 @@ export class DataVariableSelection extends React.Component {
 
 			          </div>{/*<!-- /.col-lg-4 -->*/}
 			          <div className="col-lg-4">
-			              <div className="panel panel-primary panel-borders cst-panel">
+			              <div className="panel panel-primary-p2 cst-panel-shadow">
 			              <div className="panel-heading"><i className="pe-7s-graph1"></i> Dimensions</div>
 			                <div className="panel-body">
 			                  {/*  <!-- Row for select all-->*/}
@@ -156,7 +156,7 @@ export class DataVariableSelection extends React.Component {
 			                    <div className="col-md-8">
 			                      <div className="input-group pull-right">
 			                      <input type="text" name="search_signals" title="Search Signals" id="search_signals" className="form-control" placeholder="Search signals..." />
-			                      <span className="input-group-addon"><i className="fa fa-search fa-lg"></i></span>
+			                     {/* <span className="input-group-addon"><i className="fa fa-search fa-lg"></i></span>*/}
 			                      <span className="input-group-btn">
 			                      <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i className="fa fa-sort-alpha-asc fa-lg"></i> <span className="caret"></span></button>
 			                      <ul role="menu" className="dropdown-menu dropdown-menu-right">
@@ -173,7 +173,7 @@ export class DataVariableSelection extends React.Component {
 			                    <hr />
 			                  {/*  <!-- Row for list of variables-->*/}
 			                    <div className="row">
-			                    <div className="col-md-12">
+			                    <div className="col-md-12 cst-scroll-panel">
 			                      <ul className="list-unstyled">
 			                           {dimensionTemplate}
 			                      </ul>
@@ -188,7 +188,7 @@ export class DataVariableSelection extends React.Component {
 
 			          </div>{/*<!-- /.col-lg-4 -->*/}
 			          <div className="col-lg-4">
-			              <div className="panel panel-primary panel-borders cst-panel">
+			              <div className="panel panel-primary-p3 cst-panel-shadow">
 			            <div className="panel-heading"><i className="pe-7s-date"></i> Dates</div>
 			            <div className="panel-body">
 
@@ -200,7 +200,7 @@ export class DataVariableSelection extends React.Component {
 			                    <div className="col-md-8">
 			                      <div className="input-group pull-right">
 			                      <input type="text" name="search_signals" title="Search Signals" id="search_signals" className="form-control" placeholder="Search signals..."/>
-			                      <span className="input-group-addon"><i className="fa fa-search fa-lg"></i></span>
+			                     {/* <span className="input-group-addon"><i className="fa fa-search fa-lg"></i></span>*/}
 			                      <span className="input-group-btn">
 			                      <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i className="fa fa-sort-alpha-asc fa-lg"></i> <span className="caret"></span></button>
 			                      <ul role="menu" className="dropdown-menu dropdown-menu-right">
@@ -217,7 +217,7 @@ export class DataVariableSelection extends React.Component {
 			                    <hr />
 			                      {/*<!-- Row for list of variables-->*/}
 			                    <div className="row">
-			                    <div className="col-md-12">
+			                    <div className="col-md-12 cst-scroll-panel">
 
 			                      <ul className="list-unstyled">
 			                                {datetimeTemplate}
@@ -233,7 +233,8 @@ export class DataVariableSelection extends React.Component {
 			{/*<!-------------------------------------------------------------------------------->*/}
 			 <div className="row">
 	            <div className="col-md-4 col-md-offset-5">
-	                <h4>{store.getState().datasets.selectedVariablesCount} Variable selected<OverlayTrigger trigger="click" placement="left" overlay={popoverLeft}><a><i className="pe-7s-more pe-2x pe-va"></i></a></OverlayTrigger></h4>
+	                <h4>{store.getState().datasets.selectedVariablesCount} Variable selected</h4>
+									{/*<OverlayTrigger trigger="click" placement="left" overlay={popoverLeft}><a><i className="pe-7s-more pe-2x pe-va"></i></a></OverlayTrigger>*/}
 	            </div>
 	          </div>
 			     </div>
