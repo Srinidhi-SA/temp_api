@@ -28,7 +28,9 @@
     "react-router-redux": "^4.0.8",
     "redux": "^3.7.2",
     "redux-promise-middleware": "^4.3.0",
-    "redux-thunk": "^2.2.0"
+    "redux-thunk": "^2.2.0",
+    "react-circular-progressbar": "^0.1.5"
+
   },
   "devDependencies": {
     "babel-core": "^6.25.0",
