@@ -104,10 +104,10 @@ chartData = {
 
 
 def decode_and_convert_chart_raw_data(data):
-
+    import pdb;pdb.set_trace()
     if not check_chart_data_format(data):
         return {}
-    from api.C3Chart.c3charts import C3Chart
+    from api.C3Chart.c3charts import C3Chart, ScatterChart
     # import pdb;pdb.set_trace()
     chart_type = data['chart_type']
     axes = data['axes']
@@ -181,15 +181,48 @@ def decode_and_convert_chart_raw_data(data):
             "yformat": "m"
         }
 
-    elif chart_type in ["scatter_line", "scatter"]:
-        pass
+    elif chart_type in ["scatter"]:
+        chart_data, xs = replace_chart_data(data['data'], data['axes'])
+        c3 = ScatterChart(
+            data=chart_data,
+            data_type='columns'
+        )
+        c3.set_xs(xs)
+
+        c3.set_axis_label_simple(
+            label_text=label_text
+        )
+
+        return {
+            "chart_c3": c3.get_json(),
+            "yformat": "m"
+        }
+
+    elif chart_type in ["scatter_line"]:
+
+        chart_data, xs = replace_chart_data(data['data'], data['axes'])
+        c3 = ScatterChart(
+            data=chart_data,
+            data_type='columns'
+        )
+        c3.set_xs(xs)
+
+        c3.set_axis_label_simple(
+            label_text=label_text
+        )
+
+        c3.set_line_chart()
+        return {
+            "chart_c3": c3.get_json(),
+            "yformat": "m"
+        }
 
 
-def replace_chart_data(data):
+def replace_chart_data(data, axes=None):
     if isinstance(data, list):
         return convert_listed_dict_objects(data)
     elif isinstance(data, dict):
-        pass
+        return dict_to_list(data, axes)
 
 
 def get_slug(name):
@@ -262,7 +295,6 @@ def convert_listed_dict_objects(json_data):
     return column_data
 
 
-
 def convert_json_with_list_to_column_data_for_xs(data):
     """
     {
@@ -322,4 +354,83 @@ def convert_json_with_list_to_column_data_for_xs(data):
             final_data[y_index].append(snip.get('val'))
 
     return final_data, xs
+
+
+def inv_axes(axes):
+    """
+
+    :param axes:
+                {
+                "x": "key",
+                "y": "a",
+                }
+    :return: {'a': 'y', 'key': 'x'}
+    """
+    ax = dict()
+    for key in axes:
+        ax[axes[key]] = key
+    return ax
+
+
+def dict_to_list(datas, axes=None):
+    """
+     {
+        'a' : [{
+            'date':23,
+            'value':5
+        },
+        {
+            'date':24,
+            'value':6
+        }],
+        'b' : [{
+            'date':23,
+            'value':4
+        },
+        {
+            'date':24,
+            'value':7
+        }]
+    }
+
+    to
+
+    [
+        ['a_date', 23, 24],
+        ['a', 5, 6],
+        ['b_date', 23, 24],
+        ['b', 4, 7]
+    ],
+
+    {
+        "a": "a_x",
+        "b": "b_x"
+    }
+
+    :param datas:
+    :param axes:
+    :return:
+    """
+    ar = []
+    xs = dict()
+    if axes.get('x', None) is None:
+        raise Exception("No x in axes.")
+    inverted_axes = inv_axes(axes)
+    for key in datas:
+        chart_data = datas[key]
+        convert_data = convert_listed_dict_objects(chart_data)
+        x = ""
+        y = ""
+        for d in convert_data:
+            if inverted_axes.get(d[0], None) == 'x':
+                d[0] = key + '_x'
+                x = key + '_x'
+            else:
+                d[0] = key
+                y = key
+        xs[y] = x
+        ar += convert_data
+    return ar, xs
+
+
 

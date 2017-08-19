@@ -335,6 +335,10 @@ class C3Chart(object):
         if self._data:
             self._data['type'] = CHART_TYPE_SCATTER
 
+    def set_line_chart(self):
+        if self._data:
+            self._data['type'] = "line"
+
     def set_pie_chatter(self):
         if self._data:
             self._data['type'] = CHART_TYPE_PIE
