@@ -5,7 +5,7 @@ import {push} from "react-router-redux";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
 import store from "../../store";
 import {showCreateScorePopup,hideCreateScorePopup,updateSelectedAlg} from "../../actions/appActions";
-import {getAllDataList,getDataSetPreview,storeSignalMeta} from "../../actions/dataActions";
+import {getAllDataList,getDataSetPreview,storeSignalMeta,updateDatasetName} from "../../actions/dataActions";
 
 
 @connect((store) => {
@@ -14,6 +14,7 @@ import {getAllDataList,getDataSetPreview,storeSignalMeta} from "../../actions/da
 		allDataList: store.datasets.allDataSets,
 		dataPreview: store.datasets.dataPreview,
 		appsScoreShowModal:store.apps.appsScoreShowModal,
+		selectedDataset:store.datasets.selectedDataSet,
 		};
 })
 
@@ -41,17 +42,17 @@ export class AppsCreateScore extends React.Component {
     	this.props.dispatch(getDataSetPreview(this.selectedData));
     	this.props.dispatch(hideCreateScorePopup());
     }
+    updateDataset(e){
+    	this.props.dispatch(updateDatasetName(e.target.value));
+    }
 	render() {
 		const dataSets = store.getState().datasets.allDataSets.data;
 		const algorithms = store.getState().apps.algorithmsList;
 		let renderSelectBox = null;
 		let algorithmNames = null;
-		let _link = "";
-		if(store.getState().datasets.dataPreview){
-		 _link = "/data/"+store.getState().datasets.dataPreview.slug;	
-		}
+		
 		if(dataSets){
-			renderSelectBox = <select id="score_Dataset" name="selectbasic" class="form-control">
+			renderSelectBox = <select id="score_Dataset" name="selectbasic" onChange={this.updateDataset.bind(this)}  class="form-control">
 			{dataSets.map(dataSet =>
 			<option key={dataSet.slug} value={dataSet.slug}>{dataSet.name}</option>
 			)}
@@ -87,7 +88,7 @@ export class AppsCreateScore extends React.Component {
 				</Modal.Body>
 				<Modal.Footer>
 				<Button className="btn btn-primary md-close" onClick={this.closeScorePopup.bind(this)}>Close</Button>
-				<Link to={_link} className="btn btn-primary"  onClick={this.getDataSetPreview.bind(this)} >Create</Link>
+				<Link to={"/data/"+store.getState().datasets.selectedDataSet} className="btn btn-primary"  onClick={this.getDataSetPreview.bind(this)} >Create</Link>
 				</Modal.Footer>
 				</Modal>
 				</div>

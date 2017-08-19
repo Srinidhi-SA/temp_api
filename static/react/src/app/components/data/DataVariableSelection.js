@@ -8,7 +8,7 @@ import {C3Chart} from "../c3Chart";
 import ReactDOM from 'react-dom';
 import $ from "jquery";
 
-import {updateSelectedVariables} from "../../actions/dataActions";
+import {updateSelectedVariables,resetSelectedVariables} from "../../actions/dataActions";
 
 @connect((store) => {
 	return {login_response: store.login.login_response, dataPreview: store.datasets.dataPreview,
@@ -21,6 +21,7 @@ import {updateSelectedVariables} from "../../actions/dataActions";
 export class DataVariableSelection extends React.Component {
 	constructor(props) {
 		super(props);
+		this.props.dispatch(resetSelectedVariables())
 		this.handleCheckboxEvents = this.handleCheckboxEvents.bind(this);
 	}
 	handleCheckboxEvents(e){

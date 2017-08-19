@@ -38,6 +38,7 @@ export default function reducer(state = {
 		return {...state,
 			dataPreview:action.dataPreview,
 			dataPreviewFlag:true,
+			selectedDataSet:action.dataPreview.slug
 		}
 	}
 	break;
@@ -51,6 +52,7 @@ export default function reducer(state = {
 		return {
 			...state,
 			allDataSets: action.data,
+			selectedDataSet:action.data.data[0].slug
 		}
 	}
 	break;
@@ -156,6 +158,24 @@ export default function reducer(state = {
 		}
 	}
 	break;
+	case "SELECTED_DATASET": {
+		return {...state,
+			selectedDataSet:action.dataset,
+		}
+	}
+	break;
+	case "RESET_VARIABLES": {
+		return {...state,
+			selectedDimensions:[],
+			selectedTimeDimensions:[],
+			selectedVariablesCount:0,
+			selectedMeasures:[],
+			
+			
+		}
+	}
+	break;
+	
 	}
 	return state
 }

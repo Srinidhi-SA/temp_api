@@ -244,3 +244,36 @@ function triggerCreateScore(token,scoreName,targetVariable) {
 		}).then( response => Promise.all([response, response.json()]));
 }
 
+export function getAppsScoreSummary(slug) {
+	return (dispatch) => {
+		return fetchScoreSummary(sessionStorage.userToken,slug).then(([response, json]) =>{
+			if(response.status === 200){
+				console.log(json)
+				dispatch(fetchScoreSummarySuccess(json))
+			}
+			else{
+				dispatch(fetchScoreSummaryError(json))
+			}
+		})
+	}
+}
+
+function fetchScoreSummary(token,slug) {
+	return fetch(API+'/api/score/'+slug+'/',{
+		method: 'get',
+		headers: getHeader(token)
+	}).then( response => Promise.all([response, response.json()]));
+}
+
+function fetchScoreSummaryError(json) {
+	return {
+		type: "SCORE_SUMMARY_ERROR",
+		json
+	}
+}
+export function fetchScoreSummarySuccess(data){
+	return {
+		type: "SCORE_SUMMARY_SUCCESS",
+		data,
+	}
+}

@@ -12,7 +12,9 @@ export class CardHtml extends React.Component {
   constructor(){
     super();
   }
- 
+  componentDidMount() {
+      HeatMap("heat-table-map");
+  }
   render() {
    var element = this.props.htmlElement;
    console.log("checking html element");

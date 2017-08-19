@@ -5,7 +5,7 @@ import {push} from "react-router-redux";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
 import store from "../../store";
 import {closeModelPopup,openModelPopup} from "../../actions/appActions";
-import {getAllDataList,getDataSetPreview,storeSignalMeta} from "../../actions/dataActions";
+import {getAllDataList,getDataSetPreview,storeSignalMeta,updateDatasetName} from "../../actions/dataActions";
 
 
 @connect((store) => {
@@ -14,6 +14,7 @@ import {getAllDataList,getDataSetPreview,storeSignalMeta} from "../../actions/da
 		allDataList: store.datasets.allDataSets,
 		dataPreview: store.datasets.dataPreview,
 		curUrl:store.datasets.curUrl,
+		selectedDataset:store.datasets.selectedDataSet,
 		};
 })
 
@@ -21,6 +22,7 @@ export class AppsCreateModel extends React.Component {
 	constructor(props) {
 		super(props);
 		this.selectedData="";
+		this._link = "";
 	}
 	componentWillMount() {
 		this.props.dispatch(getAllDataList());
@@ -37,6 +39,10 @@ export class AppsCreateModel extends React.Component {
     	this.selectedData = $("#model_Dataset").val();
     	this.props.dispatch(getDataSetPreview(this.selectedData));
     }
+    updateDataset(e){
+    	this.selectedData = e.target.value;
+    	this.props.dispatch(updateDatasetName(e.target.value));
+    }
 	render() {
 		 console.log("apps create model list is called##########3");
 		    console.log(this.props)
@@ -47,7 +53,7 @@ export class AppsCreateModel extends React.Component {
 		 _link = "/data/"+store.getState().datasets.dataPreview.slug;	
 		}
 		if(dataSets){
-			renderSelectBox = <select id="model_Dataset" name="selectbasic" class="form-control">
+			renderSelectBox = <select id="model_Dataset" name="selectbasic" onChange={this.updateDataset.bind(this)} class="form-control">
 			{dataSets.map(dataSet =>
 			<option key={dataSet.slug} value={dataSet.slug}>{dataSet.name}</option>
 			)}
@@ -78,7 +84,7 @@ export class AppsCreateModel extends React.Component {
 				</Modal.Body>
 				<Modal.Footer>
 				<Button className="btn btn-primary md-close" onClick={this.closeModelPopup.bind(this)}>Close</Button>
-                 <Link to={_link} className="btn btn-primary" onClick={this.getDataSetPreview.bind(this)}>Create</Link>
+                 <Link to={"/data/"+store.getState().datasets.selectedDataSet} className="btn btn-primary" onClick={this.getDataSetPreview.bind(this)}>Create</Link>
 				</Modal.Footer>
 				</Modal>
 				</div>

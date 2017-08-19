@@ -11,6 +11,8 @@ export default function reducer(state = {
 		modelSummary:{},
 		algorithmsList:null,
 		selectedAlg:"",
+		scoreSummary:{},
+		scoreSlug:"",
 }, action) {
 	console.log("In APPs reducer!!");
 	console.log(action.data);
@@ -95,7 +97,6 @@ export default function reducer(state = {
 	
 	case "MODEL_SUMMARY_SUCCESS":
 	{
-		console.log(action.data.data.model_dropdown)
 		return {
 			...state,
 			modelSummary: action.data,
@@ -118,6 +119,23 @@ export default function reducer(state = {
 			...state,
 			selectedAlg:action.name,
 		}
+	}
+	break;
+	case "SCORE_SUMMARY_SUCCESS":
+	{
+	
+		return {
+			...state,
+			scoreSummary: action.data,
+			scoreSlug:action.data.slug,
+		}
+	}
+	break;
+
+	case "SCORE_SUMMARY_ERROR":
+	{
+		alert(action.json.non_field_errors);
+		throw new Error("Unable to fetch score summary!!");
 	}
 	break;
 	
