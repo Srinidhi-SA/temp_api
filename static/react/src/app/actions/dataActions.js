@@ -102,7 +102,7 @@ export function getAllDataList(pageNo) {
 
 
 function fetchAllDataList(token) {
-	return fetch(API+'/api/datasets/?page_size=1000',{
+	return fetch(API+'/api/datasets/all/',{
 		method: 'get',
 		headers: getHeader(token)
 	}).then( response => Promise.all([response, response.json()]));
@@ -199,5 +199,17 @@ export function storeSignalMeta(signalMeta,curUrl) {
 		type: "STORE_SIGNAL_META",
 		signalMeta,
 		curUrl
+	}
+}
+
+export function updateDatasetName(dataset){
+	return {
+		type: "SELECTED_DATASET",
+		dataset,
+	}
+}
+export function resetSelectedVariables(){
+	return {
+		type: "RESET_VARIABLES",
 	}
 }

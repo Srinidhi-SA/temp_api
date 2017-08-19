@@ -84,7 +84,7 @@ export class ModelVariableSelection extends React.Component {
 				      </div>
 				      <div className="row">
 				      <div className="col-lg-2 col-lg-offset-10">
-				      <Button type="submit" className="btn btn-primary md-close pull-right">Create Model</Button>
+				      <Button type="submit" bsStyle="primary">Create Model</Button>
 				      </div>
 				      </div>
 				      </FormGroup>

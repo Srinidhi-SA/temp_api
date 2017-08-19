@@ -115,7 +115,7 @@ export class Signals extends React.Component {
                 {/*popover*/}
                 <div id="myPopover" className="pop_box hide">
                   <h4>Created By :
-                    <span className="text-primary">{story.username}</span>
+                    <span className="text-primary">{sessionStorage.userName}</span>
                   </h4>
                   <h5>Updated on :
                     <mark>10.10.2017</mark>

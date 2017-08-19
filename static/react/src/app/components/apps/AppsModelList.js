@@ -5,9 +5,12 @@ import {Link, Redirect} from "react-router-dom";
 import {push} from "react-router-redux";
 
 import {MainHeader} from "../common/MainHeader";
-import {Tabs,Tab,Pagination} from "react-bootstrap";
+import {Tabs,Tab,Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstrap";
 import {AppsCreateModel} from "./AppsCreateModel";
 import {getAppsModelList,getAppsModelSummary} from "../../actions/appActions";
+import {DetailOverlay} from "../common/DetailOverlay";
+
+
 var dateFormat = require('dateformat');
 
 
@@ -75,9 +78,9 @@ export class AppsModelList extends React.Component {
 
 					<div className="card-deatils">
 					{/*<!-- Popover Content link -->*/}
-					<a href="#" rel="popover" className="pover" data-popover-content="#myPopover">
+					 <OverlayTrigger trigger={['hover', 'focus']} placement="left" overlay={<Popover id="popover-trigger-focus"><DetailOverlay details={data}/></Popover>}><a href="#"  className="pover">
 					<i className="fa fa-info-circle fa-lg"></i>
-					</a>
+					</a></OverlayTrigger>
 
 					{/*<!-- Rename and Delete BLock  -->*/}
 					<a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">

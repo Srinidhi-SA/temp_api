@@ -3,9 +3,9 @@ import {connect} from "react-redux";
 import {Link, Redirect} from "react-router-dom";
 import {push} from "react-router-redux";
 import $ from "jquery";
-import {Pagination} from "react-bootstrap";
+import {Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstrap";
 import store from "../../store";
-
+import {DetailOverlay} from "../common/DetailOverlay";
 import {MainHeader} from "../common/MainHeader";
 import {BreadCrumb} from "../common/BreadCrumb";
 import {getDataList,getDataSetPreview,storeSignalMeta} from "../../actions/dataActions";
@@ -88,9 +88,9 @@ export class Data extends React.Component {
 
 						<div className="card-deatils">
 						{/*<!-- Popover Content link -->*/}
-						<a href="#" rel="popover" className="pover" data-popover-content="#myPopover">
-						<i className="ci pe-7s-info pe-2x"></i>
-						</a>
+						 <OverlayTrigger trigger={['hover', 'focus']} placement="left" overlay={<Popover id="popover-trigger-focus"><DetailOverlay details={data}/></Popover>}><a href="#"  className="pover">
+							<i className="fa fa-info-circle fa-lg"></i>
+							</a></OverlayTrigger>
 
 						{/*<!-- Rename and Delete BLock  -->*/}
 						<a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
