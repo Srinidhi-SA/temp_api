@@ -15,7 +15,7 @@ import {updateSelectedVariables} from "../../actions/dataActions";
 		selectedVariablesCount:store.datasets.selectedVariablesCount,
 		selectedMeasures:store.datasets.selectedMeasures,
 		selectedDimensions:store.datasets.selectedDimensions,
-		selectedVariablesCount:store.datasets.selectedVariablesCount};
+		selectedTimeDimensions:store.datasets.selectedTimeDimensions};
 })
 
 export class DataVariableSelection extends React.Component {
@@ -113,7 +113,7 @@ export class DataVariableSelection extends React.Component {
 			                <div className="col-md-8">
 			                  <div className="input-group pull-right">
 			                  <input type="text" name="search_signals" title="Search Signals" id="search_signals" className="form-control" placeholder="Search signals..." />
-			                  <span className="input-group-addon"><i className="fa fa-search fa-lg"></i></span>
+			                  {/*<span className="input-group-addon"><i className="fa fa-search fa-lg"></i></span>*/}
 			                  <span className="input-group-btn">
 			                  <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i className="fa fa-sort-alpha-asc fa-lg"></i> <span className="caret"></span></button>
 			                  <ul role="menu" className="dropdown-menu dropdown-menu-right">
@@ -156,7 +156,7 @@ export class DataVariableSelection extends React.Component {
 			                    <div className="col-md-8">
 			                      <div className="input-group pull-right">
 			                      <input type="text" name="search_signals" title="Search Signals" id="search_signals" className="form-control" placeholder="Search signals..." />
-			                      <span className="input-group-addon"><i className="fa fa-search fa-lg"></i></span>
+			                     {/* <span className="input-group-addon"><i className="fa fa-search fa-lg"></i></span>*/}
 			                      <span className="input-group-btn">
 			                      <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i className="fa fa-sort-alpha-asc fa-lg"></i> <span className="caret"></span></button>
 			                      <ul role="menu" className="dropdown-menu dropdown-menu-right">
@@ -200,7 +200,7 @@ export class DataVariableSelection extends React.Component {
 			                    <div className="col-md-8">
 			                      <div className="input-group pull-right">
 			                      <input type="text" name="search_signals" title="Search Signals" id="search_signals" className="form-control" placeholder="Search signals..."/>
-			                      <span className="input-group-addon"><i className="fa fa-search fa-lg"></i></span>
+			                     {/* <span className="input-group-addon"><i className="fa fa-search fa-lg"></i></span>*/}
 			                      <span className="input-group-btn">
 			                      <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i className="fa fa-sort-alpha-asc fa-lg"></i> <span className="caret"></span></button>
 			                      <ul role="menu" className="dropdown-menu dropdown-menu-right">
@@ -233,7 +233,10 @@ export class DataVariableSelection extends React.Component {
 			{/*<!-------------------------------------------------------------------------------->*/}
 			 <div className="row">
 	            <div className="col-md-4 col-md-offset-5">
-	                <h4>{store.getState().datasets.selectedVariablesCount} Variable selected  <OverlayTrigger trigger="click" placement="left"><a><i className="pe-7s-more pe-2x pe-va"></i></a></OverlayTrigger></h4>
+
+	                <h4>{store.getState().datasets.selectedVariablesCount} Variable selected</h4>
+									{/*<OverlayTrigger trigger="click" placement="left" overlay={popoverLeft}><a><i className="pe-7s-more pe-2x pe-va"></i></a></OverlayTrigger>*/}
+
 	            </div>
 	          </div>
 			     </div>

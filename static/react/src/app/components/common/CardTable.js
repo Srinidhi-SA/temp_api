@@ -6,9 +6,10 @@ import {getSignalAnalysis} from "../../actions/signalActions";
 import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
 import HeatMap from '../../helpers/heatmap';
-import {NORMALTABLE,CONFUSIONMATRIX,HEATMAPTABLE,CIRCULARCHARTTABLE} from "../../helpers/helper";
+import {NORMALTABLE,CONFUSIONMATRIX,HEATMAPTABLE,CIRCULARCHARTTABLE,DECISIONTREETABLE} from "../../helpers/helper";
 import {CircularChartTable} from "./CircularChartTable";
 import {ConfusionMatrix} from "./ConfusionMatrix";
+import {DecisionTreeTable} from "./decisionTreeTable";
 
 export class CardTable extends React.Component {
   constructor(){
@@ -23,8 +24,11 @@ export class CardTable extends React.Component {
 	   tableEle =  <CircularChartTable  tableData={element} />;
    }
    if(element.tableType == CONFUSIONMATRIX){
-	   tableEle =  <ConfusionMatrix  tableData={element} />;
-   }
+	   tableEle = <ConfusionMatrix tableData={element}/>;
+       }
+   if(element.tableType == DECISIONTREETABLE){
+	   tableEle = <DecisionTreeTable tableData={element}/>;
+       }
    return (
 		      <div>
 		        {tableEle}

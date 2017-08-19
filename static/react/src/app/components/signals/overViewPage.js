@@ -35,7 +35,7 @@ export class OverViewPage extends React.Component {
   componentDidMount(){
     // alert(showSubTree);
     var that = this;
-
+    // alert(showSubTree);
     if(showSubTree){
        $(".sb_navigation").show();
        showSubTree = false;
@@ -49,9 +49,24 @@ export class OverViewPage extends React.Component {
        });
      }
     else{
+    //  console.log($(".sb_navigation").html());
        $(".sb_navigation").hide();
      }
-    }
+    
+	$('[data-toggle=offcanvas]').click(function () {
+		
+    $('.row-offcanvas').toggleClass('active');
+	if ($('.row-offcanvas-left').hasClass('active')){
+		$('.sdbar_switch i').removeClass('sw_on');
+		$('.sdbar_switch i').addClass('sw_off');
+    } else {
+		$('.sdbar_switch i').addClass('sw_on');
+		$('.sdbar_switch i').removeClass('sw_off');
+	};
+  });
+  
+	}
+	
 
 
 prevNext(path) {
@@ -216,15 +231,15 @@ console.log("l1name is ...."+selectedSignal);
                     <div className="btn-toolbar pull-right">
                       <div className="btn-group btn-space">
 
-                        <button type="button" className="btn btn-default" disabled = "true">
-                          <i className="fa fa-file-pdf-o"></i>
+                        <button type="button" className="btn btn-default" disabled = "true" title="Card mode">
+                          <i className="pe-7s-display2 pe-lg"></i>
                         </button>
                         <Link className="tabs-control right grp_legends_green continue" to={{
                       pathname: documentModeLink,
                       state: { lastVar: lastcard.slug }
                       }}>
-                        <button type="button" className="btn btn-default">
-                          <i className="fa fa-print"></i>
+                        <button type="button" className="btn btn-default" title="Document mode">
+                          <i className="pe-7s-news-paper pe-lg"></i>
                         </button>
                         </Link>
                         <button type="button" className="btn btn-default">
@@ -269,7 +284,7 @@ console.log("l1name is ...."+selectedSignal);
 
                             <div className="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
                               <div className="side_panel">
-                                <a href="javscript:;" data-toggle="offcanvas" className="sdbar_switch">
+                                <a href="javscript:void(0);" data-toggle="offcanvas" className="sdbar_switch">
                                   <i className="mAd_icons sw_on"></i>
                                 </a>
                                 <div className="panel panel-primary">

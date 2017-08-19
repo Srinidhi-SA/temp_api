@@ -90,7 +90,7 @@ if(this.props.tooltip){
 
 
   render() {
-     const classId = "chart"+this.props.classId + " col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2";
+     const classId = "chart"+this.props.classId + " col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 xs-mb-20";
       return(
                         <div class={classId}></div>
       );

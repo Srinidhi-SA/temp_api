@@ -121,6 +121,22 @@ export function fetchAllDataSuccess(doc){
 		data,
 	}
 }
+export function selectedAnalysisList(evt){
+	var selectedAnalysis = evt.target.value;
+	if(evt.target.className == "possibleAnalysis"){
+		if(evt.target.checked){
+			return {
+				type: "SELECTED_ANALYSIS_TYPE",
+				selectedAnalysis
+			}
+		}else{
+			return {
+				type: "UNSELECT_ANALYSIS_TYPE",
+				selectedAnalysis
+			}
+		}
+	}
+}
 export function updateSelectedVariables(evt){
 	var variableName = evt.target.value;
 	if(evt.target.className == "measure"){
@@ -162,7 +178,7 @@ export function updateSelectedVariables(evt){
 			}
 		}
 	}
-	
+
 }
 
 
