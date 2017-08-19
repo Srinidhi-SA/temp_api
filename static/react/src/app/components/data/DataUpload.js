@@ -45,7 +45,7 @@ export class DataUpload extends React.Component {
 					</div>
 					</div>
 					<div id="uploadData"  role="dialog" className="modal fade modal-colored-header">
-					<Modal show={store.getState().dataUpload.dataUploadShowModal} onHide={this.closePopup.bind(this)}>
+					<Modal show={store.getState().dataUpload.dataUploadShowModal} onHide={this.closePopup.bind(this)} dialogClassName="modal-colored-header uploadData">
 					<Modal.Header closeButton>
 					<h3 className="modal-title">Upload Data</h3>
 					</Modal.Header>
@@ -53,8 +53,8 @@ export class DataUpload extends React.Component {
 					<DataSourceList/>
 					</Modal.Body>
 					<Modal.Footer>
-					<Button className="btn btn-primary md-close" onClick={this.closePopup.bind(this)}>Close</Button>
-					<Button className="btn btn-primary md-close" onClick={this.uploadData.bind(this)}>Upload</Button>
+					<Button onClick={this.closePopup.bind(this)}>Close</Button>
+					<Button bsStyle="primary" onClick={this.uploadData.bind(this)}>Upload</Button>
 					</Modal.Footer>
 					</Modal>
 					</div>

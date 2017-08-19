@@ -53,9 +53,16 @@ export class Card extends React.Component {
 // console.log("cardelement is:");
 // console.log(cardElements);
     return (
+
       <div className="xs-p-50 for-docs">
 
           {cardElements}
+
+
+      <div className="xs-p-20">
+       
+          {cardElements}
+       
 
       </div>
     );

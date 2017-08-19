@@ -91,12 +91,12 @@ export class Signals extends React.Component {
                 <div className="card-deatils">
                   {/*<!-- Popover Content link -->*/}
                   <a href="javascript:void(0);" rel="popover" className="pover" data-popover-content="#myPopover">
-                    <i className="fa fa-info-circle fa-lg"></i>
+                    <i className="ci pe-7s-info pe-2x"></i>
                   </a>
 
                   {/*<!-- Rename and Delete BLock  -->*/}
                   <a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
-                    <i className="fa fa-ellipsis-v fa-lg"></i>
+                    <i className="ci pe-7s-more pe-rotate-90 pe-2x"></i>
                   </a>
                   <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                     <li>
