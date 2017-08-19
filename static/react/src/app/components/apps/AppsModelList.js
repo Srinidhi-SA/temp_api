@@ -5,9 +5,9 @@ import {Link, Redirect} from "react-router-dom";
 import {push} from "react-router-redux";
 
 import {MainHeader} from "../common/MainHeader";
-import {Tabs,Tab} from "react-bootstrap";
+import {Tabs,Tab,Pagination} from "react-bootstrap";
 import {AppsCreateModel} from "./AppsCreateModel";
-import {getAppsModelList} from "../../actions/appActions";
+import {getAppsModelList,getAppsModelSummary} from "../../actions/appActions";
 var dateFormat = require('dateformat');
 
 
@@ -31,22 +31,26 @@ export class AppsModelList extends React.Component {
 		}else
 		  this.props.dispatch(getAppsModelList(pageNo));
 	}
+  getModelSummary(slug){
+	this.props.dispatch(getAppsModelSummary(slug))
+  }
   render() {
     console.log("apps model list is called##########3");
+    console.log(this.props)
     const modelList = store.getState().apps.modelList.data;
 	if (modelList) {
 		const pages = store.getState().apps.modelList.total_number_of_pages;
 		const current_page = store.getState().apps.current_page;
 		let addButton = null;
 		let paginationTag = null
-		if(current_page == 1){
-			addButton = <AppsCreateModel />
+		if(current_page == 1 || current_page == 0){
+			addButton = <AppsCreateModel match={this.props.match}/>
 		}
 		if(pages > 1){
 			paginationTag = <Pagination className="pull-left" ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
 		}
 		const appsModelList = modelList.map((data, i) => {
-			var modelLink = "/data/" + data.slug;
+			var modelLink = "/apps/models/" + data.slug;
 			return (
 					<div className="col-md-3 top20 list-boxes" key={i}>
 					<div className="rep_block newCardStyle" name={data.name}>
@@ -55,7 +59,7 @@ export class AppsModelList extends React.Component {
 					<div className="row">
 					<div className="col-xs-9">
 					<h4 className="title newCardTitle">
-					<a href="javascript:void(0);" id= {data.slug}>{data.name}</a>
+					<a href="javascript:void(0);" id= {data.slug} onClick={this.getModelSummary.bind(this,data.slug)}><Link to={modelLink}>{data.name}</Link></a>
 					</h4>
 					</div>
 					<div className="col-xs-3">
@@ -65,7 +69,7 @@ export class AppsModelList extends React.Component {
 					</div>
 					<div className="card-footer">
 					<div className="left_div">
-					<span className="footerTitle"></span>Test
+					<span className="footerTitle"></span>{sessionStorage.userName}
 					<span className="footerTitle">{dateFormat(data.created_on, "mmmm d,yyyy h:MM")}</span>
 					</div>
 
@@ -91,30 +95,6 @@ export class AppsModelList extends React.Component {
 					</ul>
 					{/*<!-- End Rename and Delete BLock  -->*/}
 					</div>
-
-					{/*popover*/}
-					<div id="myPopover" className="pop_box hide">
-					<h4>Created By :
-						<span className="text-primary">Harman</span>
-						</h4>
-						<h5>Updated on :
-							<mark>10.10.2017</mark>
-							</h5>
-							<hr className="hr-popover"/>
-							<p>
-							Data Set : kk<br/>
-							Variable selected : kk1<br/>
-							Variable type : sale</p>
-							<hr className="hr-popover"/>
-							<h4 className="text-primary">Analysis List</h4>
-							<ul className="list-unstyled">
-							<li>
-							<i className="fa fa-check"></i>
-							12</li>
-							</ul>
-							<a href="javascript:void(0)" class="btn btn-primary pull-right">View Story</a>
-							<div className="clearfix"></div>
-							</div>
 							</div>
 							</div>
 							</div>
@@ -132,7 +112,7 @@ export class AppsModelList extends React.Component {
 		);
 	}else {
 		return (
-				<div>No DataSets</div>
+				<div>No Models Available</div>
 		)
 	}
 }

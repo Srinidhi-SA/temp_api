@@ -136,13 +136,22 @@ export class DataPreview extends React.Component {
 				text: "Create Signal"
 			};
 
+		}else if(store.getState().datasets.curUrl.startsWith("/apps/models/")){
+			this.buttons['close']= {
+					url : "/apps",
+					text: "Close"
+			};
+			this.buttons['create']= {
+					url :"/apps/createScore",
+					text: "Create Score"
+			};
 		}else if(store.getState().datasets.curUrl.startsWith("/apps")){
 		this.buttons['close']= {
 			url : "/apps",
 			text: "Close"
 		};
 		this.buttons['create']= {
-			url :"/apps/summary",
+			url :"/apps/createModel",
 			text: "Create Model"
 		};
 	}

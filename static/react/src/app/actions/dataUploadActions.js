@@ -31,7 +31,7 @@
 	}
 	
 	function triggerDataUpload(token) {
-		if(store.getState().dataSource.selectedDataSrcType == FILEUPLOAD){
+		if(store.getState().dataSource.selectedDataSrcType == "fileUpload"){
 			var data = new FormData();
 			data.append("input_file",store.getState().dataSource.fileUpload);
 			return fetch(API+'/api/datasets/',{

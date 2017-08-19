@@ -1516,7 +1516,7 @@ output {
 	width: 100%;
 	/*height: 44px;*/
 	background-color: #fff;
-	border: 1px solid #eaeaea;
+	border: 1px solid #e0e0e0;
 	border-radius: 0;
 	-webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
 	-o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
@@ -3050,13 +3050,16 @@ select[multiple].input-group-sm>.form-control, select[multiple].input-group-sm>.
 .pagination>li>a, .pagination>li>span {
     position: relative;
     float: left;
-    padding: 5px 12px;
+    padding: 4px 12px;
     line-height: 1.42857143;
     text-decoration: none;
     color: #00998c;
     background-color: transparent;
     border: transparent;
     margin-left: -1px;
+    border-radius: 50%;
+    font-size: 14px;
+    margin-left: 2px;
 }
 .pagination-lg>li:first-child>a, .pagination-lg>li:first-child>span, .pagination-sm>li:first-child>a, .pagination-sm>li:first-child>span {
 	border-bottom-left-radius: 0;
@@ -5186,7 +5189,7 @@ html {
 }
 body {
 	padding: 0;
-	background-color: #f0f0f0;/*height: 100% old bg-color: #ededed*/
+	background-color: #f7f7f7;/*height: 100% old bg-color: #ededed -- f0f0f0*/
 }
 a:focus, a:hover {
 	text-decoration: none;
@@ -6328,6 +6331,7 @@ button:focus {
 	border-radius: 0;
 	background-color: #f3f3f3;
 }
+
 /* Search */
 #search .panel-body .navbar-form {
 	border-bottom: 0;
@@ -13261,7 +13265,7 @@ div.dataTables_wrapper div.dataTables_paginate ul.pagination, div.dataTables_pag
 div.dataTables_paginate {
     margin: 0;
     white-space: nowrap;
-    text-align: right;
+    text-align: center;
 }
 div.dataTables_wrapper div.dataTables_filter input {
 	padding-top: 6px;
@@ -14425,7 +14429,7 @@ div.dataTables_wrapper div.dataTables_length label select {
 }
 .newCardStyle .card-center .fa { line-height:100px; color:#FFF; }
 .newCardStyle.firstCard:hover { background: #007a70; }
-.newCardStyle:hover { background: #f3fffe; }
+/*.newCardStyle:hover { background: #f3fffe; }*/
 /*.newCardStyle:hover .fa, .newCardStyle:hover .newStoryCard { color:#00998c}*/
 .datalist {
    height:50px !important;
@@ -14511,8 +14515,14 @@ div.dataTables_wrapper div.dataTables_length label select {
 .card-center-tile {
     height: 80px;
     padding: 0 15px;
-    border-bottom: 1px solid #ced4d3;
+    border-bottom: 1px solid #ececec;
     /* line-height: 66px; */
+}
+.pe-2x {
+    font-size: 22px;
+}
+.ci {
+    line-height: 1.9em;
 }
 .card-footer {
     height: 40px;
@@ -14520,7 +14530,7 @@ div.dataTables_wrapper div.dataTables_length label select {
     padding: 0 0 0 15px;
     /* color: #fff; */
 }
-.card-footer div.card-deatils { width:84px; }
+.card-footer div.card-deatils { width: 72px; }
 .card-footer .left_div {
     float: left;
     width: 57%;
@@ -14530,7 +14540,7 @@ div.dataTables_wrapper div.dataTables_length label select {
 }
 .card-footer .pover, .card-footer .more_button{
     display: inline-block;
-	width:40px; line-height:40px;
+	width:36px;/*  line-height:40px;*/
 }
 
 /*.card-deatils.open a .fa { color: #7dac02} */
@@ -14625,13 +14635,17 @@ background:#ededed; color:#7dac02
 }
 .panel-mAd .full-width-tabs > ul.nav.nav-tabs > li > a   span { display:block; }
 .mAd_icons { background:url(../images/mAd_image.png) no-repeat }
-.mAd_icons.tab_overview, .mAd_icons.tab_overview, .mAd_icons.tab_trend, .mAd_icons.tab_performance, .mAd_icons.tab_influences, .mAd_icons.tab_predictions, .mAd_icons.tab_chi-square, .mAd_icons.tab_chi-square,  .mAd_icons.tab_summary { display:block; margin:0 auto; width:35px; height:30px; }
+.mAd_icons.tab_overview, .mAd_icons.tab_overview, .mAd_icons.tab_trend, .mAd_icons.tab_performance, .mAd_icons.tab_influences, .mAd_icons.tab_predictions, .mAd_icons.tab_chi-square, .mAd_icons.tab_chi-square,  .mAd_icons.tab_summary, .mAd_icons.tab_decision-tree { display:block; margin:0 auto; width:35px; height:30px; }
 
 .mAd_icons.tab_overview{ background-position: 0 0;}
 .nav-tabs li a:hover .mAd_icons.tab_overview, .active .mAd_icons.tab_overview { background-position: 0 -30px;}
 
 .mAd_icons.tab_summary { background-position: -142px -70px}
 .nav-tabs li a:hover .mAd_icons.tab_summary, .active .mAd_icons.tab_summary { background-position: -142px -100px}
+
+.mAd_icons.tab_decision-tree{ background-position: 0 0;}
+.nav-tabs li a:hover .mAd_icons.tab_decision-tree, .active .mAd_icons.tab_decision-tree { background-position: 0 -30px;}
+
 
 .mAd_icons.tab_chi-square{ background-position: -108px -70px}
 .nav-tabs li a:hover .mAd_icons.tab_chi-square, .active .mAd_icons.tab_chi-square { background-position: -108px -100px}
@@ -14675,8 +14689,8 @@ background:#ededed; color:#7dac02
 	box-shadow: 0px 0px 10px 3px rgba(0,0,0,0.2);
 }
 a.tabs-control.left span, a.tabs-control.right span {  padding: 15px 5px;}
-a.tabs-control.left span { left: 20px; }
-a.tabs-control.right span { right: 0px; }
+a.tabs-control.left span { left: 25px; }
+a.tabs-control.right span { right: 5px; }
 
 .panel-mAd .tab-content {
     min-height: 360px;
@@ -14864,7 +14878,8 @@ a.tabs-control.right span { right: 0px; }
 .side_panel .list-group {
     margin-bottom: 0px;
     padding-left: 0;
-    height: 300px;
+    min-height:99%;
+	height: 100%;
     overflow: auto; border-bottom:1px solid #ddd }
 .panel-mAd .sb_navigation #search-button{ display:block }
 .panel-mAd .sb_navigation #search-form{ display:none }
@@ -14910,9 +14925,17 @@ progress:after { content: '%'; }
 .fail { background: #c00; padding: 2px; color: #fff; }
 .hidden { display: none !important;}
 
-#uploadData .modal-body {
-    padding: 0;
-}
+#uploadData .modal-body, .uploadData .modal-body { padding: 0; background:#f5f5f5; }
+.uploadData .col-sm-3, .uploadData .col-sm-9 { padding: 0; }
+.uploadData .col-sm-9 { padding-right: 10px; }
+.uploadData .nav-pills { padding-left: 10px; }
+.uploadData .nav-pills>li a {background:#f5f5f5; color:#555; padding: 15px 17px; font-weight: bold; text-transform: uppercase;}
+.uploadData .nav-pills>li a:hover {color:#00998c}
+.uploadData .nav-pills>li.active>a { background:#FFF; color:#555;}
+
+.uploadData .form-horizontal .col-sm-3, .uploadData .form-horizontal .col-sm-9 { padding-right: 20px;  }
+
+
 .modal-body .tab-content {  margin-bottom: inherit; margin-top: 0; }
 .modal-body .tab-content h3 { margin-top:0; }
 .db_images { width: 190px; height: 92px; background: url(../../assets/images/db_images.png) no-repeat 0 0;}
@@ -15038,6 +15061,44 @@ table.apps_table_style thead th { font-weight:bold }
 	background-color:#c3e37e;
 	text-align:center;
 	 vertical-align: middle;
+} 
+ 
+.table_borderless, .table_borderless tr td { border:none !important; }
+
+h4, h5 { font-weight:bold }
+/*
+ * react-circular-progressbar styles
+ *
+ * All of the styles in this file are optional and configurable!
+ */
+
+.CircularProgressbar {
+  /*
+   * This fixes an issue where the CircularProgressbar svg has
+   * 0 width inside a "display: flex" container, and thus not visible.
+   *
+   * If you're not using "display: flex", you can remove this style.
+   */
+  width: 75%;
+}
+
+.CircularProgressbar .CircularProgressbar-path {
+  stroke: #3e98c7;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.5s ease 0s;
+}
+
+.CircularProgressbar .CircularProgressbar-trail {
+  stroke: #d6d6d6;
+}
+
+.CircularProgressbar .CircularProgressbar-text {
+  fill: #3e98c7;
+  font-size: 20px;
+  dominant-baseline: middle;
+  text-anchor: middle;
+}
+=======
 }
 
 
@@ -15045,4 +15106,12 @@ table.apps_table_style thead th { font-weight:bold }
 h4, h5 { font-weight:bold }
 
 .for-docs {}
-	.for-docs h2.text-center { width:50%; float: left; margin-top: 40px; margin-bottom: 20px;}
+.for-docs h2.text-center { width:50%; float: left; margin-top: 40px; margin-bottom: 20px;}
+
+
+h4, h5 { font-weight:bold }
+
+.dropzone div { width: inherit !important; text-align: center; height: 130px !important; display: table-cell; vertical-align: middle; padding: 30px; }
+.dropzone div:hover{ border-color: rgb(0, 153, 140) !important;}
+
+

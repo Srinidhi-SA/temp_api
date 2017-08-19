@@ -12,6 +12,7 @@ export default function reducer(state = {
 		selectedAnalysis:[],
 		selectedVariablesCount:0,
 		signalMeta:{},
+		curUrl:"",
 }, action) {
 	console.log("In DATA reducer!!");
 	console.log(action);

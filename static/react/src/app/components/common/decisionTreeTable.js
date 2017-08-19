@@ -29,7 +29,7 @@ export class DecisionTreeTable extends React.Component {
   }
 
   render() {
-   var element = this.props.htmlElement;
+   var element = this.props.tableData.tableData;
    console.log("checking html element");
    console.log(element);
    console.log();

@@ -30,7 +30,6 @@ export class SignalDocumentMode extends React.Component {
       console.log("cardLists is:");
       console.log(cardLists);
       return result;
-
     }
   }
   render() {
@@ -100,12 +99,12 @@ export class SignalDocumentMode extends React.Component {
                       <div className="btn-toolbar pull-right">
                         <div className="btn-group btn-space">
                         <Link className="tabs-control right grp_legends_green continue" to={cardModeLink}>
-                          <button type="button" className="btn btn-default">
-                            <i className="fa fa-file-pdf-o"></i>
+                          <button type="button" className="btn btn-default" title="Card mode">
+                            <i className="pe-7s-display2 pe-lg"></i>
                           </button>
                           </Link>
-                          <button type="button" className="btn btn-default" disabled = "true">
-                              <i className="fa fa-print"></i>
+                          <button type="button" className="btn btn-default" disabled = "true" title="Document Mode">
+                              <i className="pe-7s-news-paper pe-lg"></i>
                             </button>
                           <button type="button" className="btn btn-default">
                             <i className="fa fa-times"></i>

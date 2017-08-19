@@ -63,7 +63,7 @@ export function getDataSetPreview(slug) {
 }
 
 function fetchDataPreview(slug) {
-  return fetch(API+'/api/datasets/'+ slug +'/',{
+  return fetch(API+'/api/datasets/'+slug+'/',{
 		method: 'get',
     headers: getHeader(sessionStorage.userToken)
 		}).then( response => Promise.all([response, response.json()]));

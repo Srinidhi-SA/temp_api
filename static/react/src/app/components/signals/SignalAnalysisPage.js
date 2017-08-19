@@ -81,8 +81,8 @@ export class SignalAnalysisPage extends React.Component {
                     <h2 className="pull-left">Sales Performance Report</h2>
                     <div className="btn-toolbar pull-right">
                       <div className="btn-group btn-space">
-                        <button type="button" className="btn btn-default"><i className="fa fa-file-pdf-o"></i></button>
-                        <button type="button" className="btn btn-default"><i className="fa fa-print"></i></button>
+                        <button type="button" className="btn btn-default"><i className="pe-7s-display2 pe-lg"></i></button>
+                        <button type="button" className="btn btn-default" title="Document mode"><i className="pe-7s-news-paper pe-lg"></i></button>
                         <button type="button" className="btn btn-default"><i className="fa fa-times"></i></button>
                       </div>
                     </div>
