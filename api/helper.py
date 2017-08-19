@@ -28,6 +28,8 @@ class JobserverDetails(object):
         job_type = {
             "metadata": "metaData",
             "master": "story",
+            "model":"prediction",
+            "score": "scoring"
         }
 
         return {
@@ -170,6 +172,9 @@ def decode_and_convert_chart_raw_data(data):
 
         if axisRotation:
             c3.rotate_axis()
+
+        from api.C3Chart import config
+        c3.set_basic_color_pattern(config.SECOND_FLIP_PATTERN)
 
         return {
             "chart_c3": c3.get_json(),

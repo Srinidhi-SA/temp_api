@@ -57,9 +57,9 @@ class C3Chart(object):
 
     def set_data_and_type(self):
         type = 'bar'
-        if isinstance(self._type, tuple or list):
+        if isinstance(self._type, tuple) or isinstance(self._type, list):
             type = self._type[0]
-        elif isinstance(self._type, str or unicode):
+        elif isinstance(self._type, str) or isinstance(self._type, unicode):
             type = self._type
         self._data = {
             self._data_type: self._data_data,

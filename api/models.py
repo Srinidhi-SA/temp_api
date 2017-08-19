@@ -327,9 +327,9 @@ class Insight(models.Model):
 
         config = json.loads(self.config)
         analysis_type = [self.type]
-        data_columns = [config["timeDimension"]]
+        data_columns = [config.get("timeDimension", "")]
         result_column = [self.target_column]
-        consider_columns = config['dimension'] + config['measures']
+        consider_columns = config.get('dimension', []) + config.get('measures', [])
 
         return {
             'polarity': ['positive'],
@@ -390,7 +390,7 @@ class Trainer(models.Model):
         ordering = ['-created_on', '-updated_on']
 
     def __str__(self):
-        pass
+        return "Trainer- Name:{0} | slug:{1} |  app:{2}".format(self.name, self.slug, self.app_id)
 
     def generate_slug(self):
         if not self.slug:
@@ -414,7 +414,7 @@ class Trainer(models.Model):
 
         job = Job()
         job.name = "-".join(["Insight", self.slug])
-        job.job_type = "master"
+        job.job_type = "model"
         job.object_id = str(self.slug)
         job.config = json.dumps(jobConfig)
         job.save()
@@ -426,7 +426,7 @@ class Trainer(models.Model):
         try:
             job_url = submit_job(
                 slug=job.slug,
-                class_name='master',
+                class_name='model',
                 job_config=jobConfig
             )
             print "Job submitted."
@@ -462,7 +462,7 @@ class Score(models.Model):
     job = models.ForeignKey(Job, null=True)
 
     def __str__(self):
-        pass
+        return "Score- Name:{0} | slug:{1} |  trainer:{2}".format(self.name, self.slug, self.trainer)
 
     def generate_slug(self):
         if not self.slug:
@@ -472,6 +472,46 @@ class Score(models.Model):
     def save(self, *args, **kwargs):
         self.generate_slug()
         super(Score, self).save(*args, **kwargs)
+
+    def create(self):
+        self.add_to_job()
+
+    def generate_config(self, *args, **kwargs):
+        return {}
+
+    def add_to_job(self, *args, **kwargs):
+
+        jobConfig = self.generate_config(*args, **kwargs)
+        print "Dataset realted config genarated."
+
+        job = Job()
+        job.name = "-".join(["Insight", self.slug])
+        job.job_type = "score"
+        job.object_id = str(self.slug)
+        job.config = json.dumps(jobConfig)
+        job.save()
+
+        print "Job entry created."
+
+        from utils import submit_job
+
+        try:
+            job_url = submit_job(
+                slug=job.slug,
+                class_name='score',
+                job_config=jobConfig
+            )
+            print "Job submitted."
+
+            job.url = job_url
+            job.save()
+        except Exception as exc:
+            print "Unable to submit job."
+            print exc
+
+        self.job = job
+        self.save()
+
 
 
 

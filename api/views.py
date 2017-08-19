@@ -152,7 +152,8 @@ class ScoreView(viewsets.ModelViewSet):
         data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
         serializer = ScoreSerlializer(data=data)
         if serializer.is_valid():
-            serializer.save()
+            score_object = serializer.save()
+            score_object.create()
             return Response(serializer.data)
 
         return Response(serializer.errors)
@@ -189,6 +190,7 @@ def get_config(request, slug=None):
 
 from django.views.decorators.csrf import csrf_exempt
 
+
 @csrf_exempt
 def set_result(request, slug=None):
     print "Welcome to API."
@@ -207,12 +209,29 @@ def set_result(request, slug=None):
     print request.body
     job.save()
     print "Data has been saved to job table."
-    write_into_databases(
+    results = write_into_databases(
         job_type=job.job_type,
         object_slug=job.object_id,
         results=json.loads(results)
     )
-    return JsonResponse({'result': 'Success'})
+    return JsonResponse({'result': "success"})
+    
+
+@csrf_exempt
+def use_set_result(request, slug=None):
+    job = Job.objects.get(slug=slug)
+    if not job:
+        return JsonResponse({'result': 'Failed'})
+
+    results = job.results
+
+    results = write_into_databases(
+        job_type=job.job_type,
+        object_slug=job.object_id,
+        results=json.loads(results)
+    )
+
+    return JsonResponse({'result': results})
 
 
 def write_into_databases(job_type, object_slug, results):
@@ -227,15 +246,30 @@ def write_into_databases(job_type, object_slug, results):
         dataset_object.meta_data = json.dumps(results)
         dataset_object.analysis_done = True
         dataset_object.save()
+        return results
     elif job_type == "master":
         insight_object = Insight.objects.get(slug=object_slug)
         results = add_slugs(results)
         insight_object.data = json.dumps(results)
         insight_object.analysis_done = True
         insight_object.save()
-    elif job_type == "":
-        pass
+        return results
+    elif job_type == "model":
+        trainer_object = Trainer.objects.get(slug=object_slug)
+        results = add_slugs(results)
+        trainer_object.data = json.dumps(results)
+        trainer_object.analysis_done = True
+        trainer_object.save()
+        return results
+    elif job_type == 'score':
+        score_object = Score.objects.get(slug=object_slug)
+        results = add_slugs(results)
+        score_object.data = json.dumps(results)
+        score_object.analysis_done = True
+        score_object.save()
+        return results
     print "written to the database."
+
 
 @csrf_exempt
 def random_test_api(request):
@@ -276,6 +310,8 @@ def convert_chart_data_to_beautiful_things(data):
             chart_raw_data = card["data"]
             # function
             card["data"] = helper.decode_and_convert_chart_raw_data(chart_raw_data)
+
+
 def home(request):
     context = {}
     return render(request, 'home.html', context)

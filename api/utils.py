@@ -23,8 +23,11 @@ def submit_job(slug, class_name, job_config):
         JobserverDetails.get_context()
     )
 
+    # class path for all class name are same, it is job_type which distinguishes which scripts to run
+    # actually not much use of this function for now. things may change in future.
     class_path = JobserverDetails.get_class_path(class_name)
 
+    # here
     config1 = JobserverDetails.get_config(slug=slug,
                                          class_name=class_name,)
     config = {}
