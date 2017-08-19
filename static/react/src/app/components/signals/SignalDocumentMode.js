@@ -12,6 +12,7 @@ import {Card} from "./Card";
 export class SignalDocumentMode extends React.Component {
   constructor() {
     super();
+	//this.docFlag = true;
   }
 
   searchTree(_Node, cardLists, lastVar) {
@@ -114,7 +115,7 @@ export class SignalDocumentMode extends React.Component {
                       <div className="clearfix"></div>
                     </div>
                     <div className="panel-body">
-                      <Card cardData={objs}/>
+                      <Card cardData={objs} />
                     </div>
                   </div>
                 </div>

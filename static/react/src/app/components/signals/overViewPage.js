@@ -30,6 +30,7 @@ let showSubTree=false;
 export class OverViewPage extends React.Component {
   constructor() {
     super();
+	this.nextRedirect = null;
   }
 
   componentDidMount(){
@@ -81,6 +82,11 @@ prevNext(path) {
     console.log(expectedURL);
     return expectedURL;
   }
+  
+  redirectPush(url){
+	  console.log(url);
+	  this.props.history.push(url);
+  }
 
 render() {
 
@@ -112,19 +118,21 @@ render() {
 
     //check first time load!!
     if (Object.keys(params).length < 3) {
+		
       card = getFirstCard(this.props.signal, params.l1);
       console.log("card after process is:");
       console.log(card);
       let cardLink = "/signals/" + params.slug + "/" + params.l1 + "/" + card.slug;
       return (<Redirect to={cardLink}/>);
     } else {
+		
       //node with listOfCards is selected..
       card = fetchCard(params, this.props.signal);
       if (params.l3 && params.l3 == "$") {
         let cardLink = "/signals/" + params.slug + "/" + params.l1 + "/" + params.l2 + "/" + card.slug;
         return (<Redirect to ={cardLink}/>);
       }
-
+       
     }
 
     console.log("card finally searched is:");
@@ -176,6 +184,7 @@ render() {
 
     let prevURL = "/signals/"+this.props.match.params.slug+"/"+expectedURL.prev;
     let nextURL = "/signals/"+this.props.match.params.slug+"/"+expectedURL.next;
+	this.nextRedirect = nextURL;
   if(expectedURL.prev==this.props.signal.listOfCards[0].slug){
     prevURL = "/signals/"+this.props.match.params.slug;
   }else if(expectedURL.next==null){
@@ -312,7 +321,7 @@ console.log("l1name is ...."+selectedSignal);
                         <Link className="tabs-control left grp_legends_green back" to={prevURL}>
                           <span className="fa fa-chevron-left"></span>
                         </Link>
-                        <Link className="tabs-control right grp_legends_green continue" to={{
+                        <Link onClick={this.redirectPush.bind(this)} className="tabs-control right grp_legends_green continue" to={{
                       pathname: nextURL,
                       state: { lastVar: card.slug }
                       }}>

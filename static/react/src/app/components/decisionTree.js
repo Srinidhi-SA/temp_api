@@ -13,7 +13,7 @@ export class DecisionTree extends React.Component {
 componentWillMount(){
 }
 
-draw(){
+componentDidMount(){
 
 		if(this.props.treeData != null){
       var treeData = this.props.treeData;
@@ -34,7 +34,8 @@ draw(){
 		var diagonal = d3.svg.diagonal()
 		    .projection(function(d) { return [d.y, d.x]; });
 
-		var svg = d3.select('#'+this.get('elementId'));
+		//var svg = d3.select('#'+this.get('elementId'));
+		var svg = d3.select('#dtree');
 		svg = svg
 		    .attr("width", width + margin.right + margin.left)
 		    .attr("height", height + margin.top + margin.bottom)
@@ -178,7 +179,7 @@ draw(){
   render() {
 
       return(
-                        <div className="decision-tree">{this.draw.bind(this)()}</div>
+                        <div className="decision-tree" id="dtree"></div>
       );
   }
 }

@@ -2,34 +2,48 @@ import React from "react";
 import {connect} from "react-redux";
 import {c3Functions} from "../helpers/c3.functions";
 
-var data= {}, toolData = [], toolLegend=[], chartDiv =null;
+
+
+
+//var data= {}, toolData = [], toolLegend=[], chartDiv =null;
 export class C3Chart extends React.Component {
   constructor(props) {
+	  
     super(props);
     console.log("yformat55555555555555");
     console.log(props);
-    // alert(props.classId);
+    //this.data ={};
+	//this.toolData = [];
+	//this.toolLegend =[];
+	//this.chartDiv = null;
+	if($(".chart"+props.classId).html()){
+		this.updateChart();
+	}
   }
   getChartElement(){
       return $(".chart"+this.props.classId, this.element);
     }
 componentWillMount(){
-  if(this.props.sideChart){
-  //  $(".chart").removeClass("col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2").addClass("col-md-12");
-   chartDiv = <div class="chart col-md-12"></div>
+	console.log("chart store object::::");
+	console.log(this.props.chartObject);
 
-}else{
-   chartDiv = <div class="chart col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2"></div>
-}
+		this.updateChart();
+
+  /*if(this.props.sideChart){
+  
+   this.chartDiv = <div class="chart col-md-12"></div>
+
+  }else{
+   this.chartDiv = <div class="chart col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2"></div>
+ }*/
 }
   componentDidMount() {
     this.updateChart();
-
   }
-  // componentDidUpdate() {
-  //   this.updateChart();
-  // }
+  
+  
   updateChart() {
+
     let data = this.props.data;
      if(this.props.sideChart){
        data['size']= {
@@ -71,26 +85,33 @@ componentWillMount(){
 if(this.props.tooltip){
   //alert("working");
   var tooltip = this.props.tooltip;
-  //console.log("tooltip");
-  //console.log(tooltip);
+  
   window.toolData =[];
   window.toolData.push(tooltip[0]);
   window.toolData.push(tooltip[1]);
   window.toolLegend= tooltip[2];
+  
+  
   //window.tooltipFunc = data.tooltip.contents;
-  //console.log(data.tooltip.show)
+  
   data.tooltip.contents = c3Functions.set_tooltip;
-  //console.log(data.tooltip.contents)
+ 
   console.log(data.tooltip.contents);
 }
   data['bindto'] = this.getChartElement().get(0); // binding chart to html element
   console.log(data);
-   const chart = c3.generate(data);
+
+   let chart = c3.generate(data);
+      chart.destroy();
+	  chart = c3.generate(data);
+   
+    this.props.dispatch(chartObjStore(chart));
   }
 
 
   render() {
-     const classId = "chart"+this.props.classId + " col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 xs-mb-20";
+	  this.updateChart();
+     const classId = "chart"+this.props.classId + " ct col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 xs-mb-20";
       return(
                         <div class={classId}></div>
       );
