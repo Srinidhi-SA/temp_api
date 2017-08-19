@@ -27,6 +27,7 @@
  .c3-axis-x .tick {
 	 fill: #848484;
 	 font-size:1.28em;
+	 font-family: 'Quicksand', sans-serif;
 }
 .c3-axis-x:not(.c3-axis) .tick {
     /*visibility: hidden;*/
@@ -34,24 +35,29 @@
 }
 .c3-axis-x-label {
 	font-size:13px;
+	font-family: 'Quicksand', sans-serif;
 }
 .c3-axis-y .tick {
 	fill: #848484;
 	font-size:1.28em;
+	font-family: 'Quicksand', sans-serif;
 }
 .c3-axis-y-label {
 	font-size:13px;
+	font-family: 'Quicksand', sans-serif;
 }
 .c3-axis-y2 .tick {
 	fill: #848484;
 	font-size:1.28em;
+	font-family: 'Quicksand', sans-serif;
 }
 .c3-axis-y2-label {
 	font-size:13px;
+	font-family: 'Quicksand', sans-serif;
 }
 /*-- Grid --*/
  .c3-grid line {
-    stroke: #f6f6f6;
+    stroke: #e1e5e4; /*#f6f6f6;*/
 }
 .c3-grid text {
     fill: #aaa;
@@ -117,6 +123,7 @@
 /*-- Legend --*/
  .c3-legend-item {
     font-size: 12px;
+	font-family: 'Quicksand', sans-serif;
 }
 .c3-legend-item-hidden {
     opacity: 0.15;
@@ -189,11 +196,11 @@
     /*  font-size: 28px !important;*/
 }
 .c3 .c3-axis-x path, .c3 .c3-axis-x line {
- stroke: #ededed;
+ stroke: #a1a1a1;
 }
 .c3 .c3-axis-y path, .c3 .c3-axis-y line {
- stroke: #ededed;
+ stroke: #a1a1a1;
 }
 .c3 .c3-axis-y2 path, .c3 .c3-axis-y2 line {
- stroke: #ededed;
+ stroke: #a1a1a1;
 }

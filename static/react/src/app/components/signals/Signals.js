@@ -85,7 +85,7 @@ export class Signals extends React.Component {
               <div className="card-footer">
                 <div className="left_div">
                   <span className="footerTitle"></span>{story.username}
-                  <span className="footerTitle">{dateFormat(story.created_at, "mmmm d,yyyy h:MM")}</span>
+                  <span className="footerTitle">{dateFormat(story.created_at, "mmm d,yyyy h:MM")}</span>
                 </div>
 
                 <div className="card-deatils">
