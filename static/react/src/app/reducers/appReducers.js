@@ -100,6 +100,7 @@ export default function reducer(state = {
 			...state,
 			modelSummary: action.data,
 			algorithmsList:action.data.data.model_dropdown,
+			modelSlug:action.data.slug,
 		}
 	}
 	break;

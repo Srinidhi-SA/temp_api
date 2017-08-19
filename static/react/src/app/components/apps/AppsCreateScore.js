@@ -70,7 +70,7 @@ export class AppsCreateScore extends React.Component {
 		}
 		return (
 				<div class="col-md-3 col-md-offset-5" onClick={this.openScorePopup.bind(this)}>
-				<Button className="btn btn-primary md-close">Create Score</Button>
+				<Button bsStyle="primary">Create Score</Button>
 				<div id="newScore"  role="dialog" className="modal fade modal-colored-header">
 				<Modal show={store.getState().apps.appsScoreShowModal} onHide={this.closeScorePopup.bind(this)} dialogClassName="modal-colored-header">
 				<Modal.Header closeButton>
@@ -87,7 +87,7 @@ export class AppsCreateScore extends React.Component {
 				</Modal.Body>
 				<Modal.Footer>
 				<Button className="btn btn-primary md-close" onClick={this.closeScorePopup.bind(this)}>Close</Button>
-				<Button className="btn btn-primary md-close" onClick={this.getDataSetPreview.bind(this)}><Link to={_link}>Create</Link></Button>
+				<Link to={_link} className="btn btn-primary"  onClick={this.getDataSetPreview.bind(this)} >Create</Link>
 				</Modal.Footer>
 				</Modal>
 				</div>

@@ -26,7 +26,7 @@ export class ModelVariableSelection extends React.Component {
 		this.props.dispatch(updateTrainAndTest(e))
 	}
 	createModel(event){
-		 event.preventDefault();
+		event.preventDefault();
 		this.props.dispatch(createModel($("#createModelName").val(),$("#createModelAnalysisList").val()))
 	}
 	render() {

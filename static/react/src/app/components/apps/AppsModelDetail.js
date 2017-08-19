@@ -28,8 +28,12 @@ export class AppsModelDetail extends React.Component {
 		let listOfCardList = getListOfCards(modelSummary.model_summary.listOfCards)
 		let cardDataList = listOfCardList.map((data, i) => {
 			if( i != 0){
-				return ( <div className="col-md-6 xs-p-50"><Card cardData={data} /></div>)
-			}else return (<Card key={i} cardData={data} />)
+				if(i%2 != 0)
+				return (<div className="col-md-6 xs-p-50 clearfix"><Card cardData={data} /></div>)
+				else
+				return (<div className="col-md-6 xs-p-50"><Card cardData={data} /></div>)
+			}
+             else return (<Card key={i} cardData={data} />)
 			
 		                    });
 		if(listOfCardList){
@@ -46,10 +50,10 @@ export class AppsModelDetail extends React.Component {
 		                      <div className="clearfix"></div>
 		                    </div>
 		                   <div className="panel-body">
-		                   <div class="row"> 
-		                   <div className="col-md-12">
+		                   <div className="row-fluid"> 
+		           
 		                  {cardDataList}
-		                    </div>
+
 		                    </div>
 		                    <div class="row">
 		                    <div className="col-md-2 col-md-offset-10">

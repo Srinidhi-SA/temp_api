@@ -78,7 +78,7 @@ export class AppsCreateModel extends React.Component {
 				</Modal.Body>
 				<Modal.Footer>
 				<Button className="btn btn-primary md-close" onClick={this.closeModelPopup.bind(this)}>Close</Button>
-				<Button className="btn btn-primary md-close" onClick={this.getDataSetPreview.bind(this)}><Link to={_link}>Create</Link></Button>
+                 <Link to={_link} className="btn btn-primary" onClick={this.getDataSetPreview.bind(this)}>Create</Link>
 				</Modal.Footer>
 				</Modal>
 				</div>

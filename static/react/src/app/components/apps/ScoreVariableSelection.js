@@ -8,7 +8,7 @@ import {Modal,Button,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "r
 import {C3Chart} from "../c3Chart";
 import ReactDOM from 'react-dom';
 import {DataVariableSelection} from "../data/DataVariableSelection";
-import {updateTrainAndTest,createModel} from "../../actions/appActions";
+import {updateTrainAndTest,createScore} from "../../actions/appActions";
 
 
 @connect((store) => {
@@ -23,7 +23,7 @@ export class ScoreVariableSelection extends React.Component {
 	}
 	createScore(event){
 		 event.preventDefault();
-		//this.props.dispatch(createModel($("#createScoreName").val(),$("#createScoreAnalysisList").val()))
+		this.props.dispatch(createScore($("#createScoreName").val(),$("#createScoreAnalysisList").val()))
 	}
 	render() {
 		console.log("Create Score Variable Selection  is called##########3");
@@ -74,7 +74,7 @@ export class ScoreVariableSelection extends React.Component {
 		          
 				      <div className="row">
 				      <div className="col-lg-2 col-lg-offset-10">
-				      <Button type="submit" className="btn btn-primary md-close pull-right">SCORE MODEL</Button>
+				      <Button type="submit" bsStyle="primary">SCORE MODEL</Button>
 				      </div>
 				      </div>
 				      </FormGroup>
