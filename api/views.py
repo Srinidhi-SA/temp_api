@@ -19,7 +19,8 @@ from models import Insight, Dataset, Job, Trainer, Score
 class SignalView(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = Insight.objects.filter(
-            created_by=self.request.user
+            created_by=self.request.user,
+            deleted=False
         )
         return queryset
 
@@ -85,7 +86,8 @@ class SignalView(viewsets.ModelViewSet):
 class TrainerView(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = Trainer.objects.filter(
-            created_by=self.request.user
+            created_by=self.request.user,
+            deleted=False
         )
         return queryset
 
@@ -134,7 +136,8 @@ class TrainerView(viewsets.ModelViewSet):
 class ScoreView(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = Score.objects.filter(
-            created_by=self.request.user
+            created_by=self.request.user,
+            deleted=False
         )
         return queryset
 
