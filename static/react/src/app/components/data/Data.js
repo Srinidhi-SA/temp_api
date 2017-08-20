@@ -19,7 +19,7 @@ var dateFormat = require('dateformat');
 		dataList: store.datasets.dataList,dataPreview: store.datasets.dataPreview,
 		 signalMeta: store.datasets.signalMeta,
 		 selectedDataSet:store.datasets.selectedDataSet,
-		 dataPreviewFlag:store.getState().datasets.dataPreviewFlag,
+		 dataPreviewFlag:store.datasets.dataPreviewFlag,
 	};
 })
 
