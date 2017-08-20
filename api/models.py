@@ -366,9 +366,10 @@ class Insight(models.Model):
         config = json.loads(self.config)
         consider_columns_type = ['including']
         analysis_type = [self.type]
-        data_columns = config.get("timeDimension", "")
+        data_columns = config.get("timeDimension", [])
         result_column = [self.target_column]
-        consider_columns = config.get('dimension', []) + config.get('measures', [])
+        consider_columns = config.get('dimension', []) + config.get('measures', []) + data_columns
+
         ignore_column_suggestion = []
 
         if len(consider_columns) < 1:
