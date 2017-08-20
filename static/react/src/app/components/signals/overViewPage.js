@@ -66,7 +66,13 @@ export class OverViewPage extends React.Component {
 	};
   });
   
-	}
+  if($(".list-group").children().length == 1){
+	    $('.row-offcanvas-left').addClass('active');
+		$('.sdbar_switch i').removeClass('sw_on');
+		$('.sdbar_switch i').addClass('sw_off');
+    }
+  }
+
 	
 
 
@@ -114,6 +120,14 @@ render() {
         }
        });
      }
+	 
+	   if($(".list-group").children()){
+		 if($(".list-group").children().length == 1){
+	    $('.row-offcanvas-left').addClass('active');
+		$('.sdbar_switch i').removeClass('sw_on');
+		$('.sdbar_switch i').addClass('sw_off');
+		   }
+    }
     
 	 
     let selectedSignal = this.props.signal.name;
@@ -184,6 +198,7 @@ render() {
         showSubTree = true;
       }
     }
+	
     let selectedNode = null;
     let selectedNode_slug = null;
     let selectedURL = ""
