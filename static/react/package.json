@@ -8,7 +8,7 @@
     "start": "npm run build",
     "buildLinux": "webpack -d && cp src/index.html dist/index.html && webpack-dev-server --content-base src/ --inline --hot --history-api-fallback",
     "build": "webpack -d && copy src\\index.html dist\\index.html && webpack-dev-server --content-base src/ --inline --hot --history-api-fallback",
-    "buildProd": "webpack -p && cp src/index.html dist/index.html"
+    "buildProd": "cp confs/prod/env.js src/app/helpers/env.js &&webpack -p && cp src/index.html dist/index.html"
   },
   "keywords": [
     "marlabsai"
@@ -30,7 +30,9 @@
     "react-tree-graph": "^2.0.0",
     "redux": "^3.7.2",
     "redux-promise-middleware": "^4.3.0",
-    "redux-thunk": "^2.2.0"
+    "redux-thunk": "^2.2.0",
+    "react-circular-progressbar": "^0.1.5"
+
   },
   "devDependencies": {
     "babel-core": "^6.25.0",

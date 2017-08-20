@@ -1,0 +1,170 @@
+import json
+
+from django.contrib.auth.models import User
+from rest_framework import serializers
+from rest_framework.utils import humanize_datetime
+from sjsclient import client
+
+from api.helper import JobserverDetails
+from api.user_helper import UserSerializer
+from models import Insight, Dataset, Trainer, Score, Job
+
+
+def submit_job(slug, class_name, job_config):
+    sjs = client.Client(
+        JobserverDetails.get_jobserver_url()
+    )
+
+    app = sjs.apps.get(
+        JobserverDetails.get_app()
+    )
+
+    ctx = sjs.contexts.get(
+        JobserverDetails.get_context()
+    )
+
+    # class path for all class name are same, it is job_type which distinguishes which scripts to run
+    # actually not much use of this function for now. things may change in future.
+    class_path = JobserverDetails.get_class_path(class_name)
+
+    # here
+    config1 = JobserverDetails.get_config(slug=slug,
+                                         class_name=class_name,)
+    config = {}
+    config['job_config'] = job_config
+    config['job_config'].update(config1)
+
+    print "overall---------config"
+    print config
+    job = sjs.jobs.create(app, class_path, ctx=ctx, conf=json.dumps(config))
+
+    # print
+    job_url = JobserverDetails.print_job_details(job)
+    return job_url
+
+
+def convert_to_string(data):
+    keys = ['compare_type', 'column_data_raw', 'config', 'data', 'model_data']
+
+    for key in keys:
+        if key in data:
+            value = data[key]
+            if isinstance(value, str):
+                pass
+            elif isinstance(value, dict):
+                data[key] = json.dumps(value)
+
+    return data
+
+
+def convert_to_json(data):
+    keys = ['compare_type', 'column_data_raw', 'config', 'data', 'model_data']
+
+    for key in keys:
+        if key in data:
+            value = data[key]
+            data[key] = json.loads(value)
+    return data
+
+
+def convert_time_to_human(data):
+    keys = ['created_on', 'updated_on']
+
+    for key in keys:
+        if key in data:
+            value = data[key]
+            data[key] = humanize_datetime.humanize_strptime(value)
+    return data
+
+
+# TODO: use dataserializer
+class InsightSerializer(serializers.ModelSerializer):
+    def to_representation(self, instance):
+        ret = super(InsightSerializer, self).to_representation(instance)
+        dataset = ret['dataset']
+        dataset_object = Dataset.objects.get(pk=dataset)
+        ret['dataset'] = dataset_object.slug
+        ret = convert_to_json(ret)
+        ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        return ret
+
+    def update(self, instance, validated_data):
+        instance.compare_with = validated_data.get("compare_with", instance.compare_with)
+        instance.compare_type = validated_data.get("compare_type", instance.compare_type)
+        instance.column_data_raw = validated_data.get("column_data_raw", instance.column_data_raw)
+        instance.status = validated_data.get("status", instance.status)
+        instance.live_status = validated_data.get("live_status", instance.live_status)
+        instance.analysis_done = validated_data.get("analysis_done", instance.analysis_done)
+        instance.name = validated_data.get("name", instance.name)
+
+        instance.save()
+
+        return instance
+
+    class Meta:
+        model = Insight
+        exclude = ('compare_with', 'compare_type', 'column_data_raw', 'id')
+
+
+class TrainerSerlializer(serializers.ModelSerializer):
+
+    def to_representation(self, instance):
+        ret = super(TrainerSerlializer, self).to_representation(instance)
+        dataset = ret['dataset']
+        dataset_object = Dataset.objects.get(pk=dataset)
+        ret['dataset'] = dataset_object.slug
+        ret = convert_to_json(ret)
+        ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        return ret
+
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get("name", instance.name)
+        instance.column_data_raw = validated_data.get("column_data_raw", instance.column_data_raw)
+        instance.deleted = validated_data.get("deleted", instance.deleted)
+        instance.bookmarked = validated_data.get("bookmarked", instance.bookmarked)
+        instance.data = validated_data.get("data", instance.data)
+
+        instance.save()
+
+        return instance
+
+    class Meta:
+        model = Trainer
+        exclude = ('id', 'job')
+
+
+class ScoreSerlializer(serializers.ModelSerializer):
+
+    def to_representation(self, instance):
+        ret = super(ScoreSerlializer, self).to_representation(instance)
+        trainer = ret['trainer']
+        trainer_object = Trainer.objects.get(pk=trainer)
+        ret['trainer'] = trainer_object.slug
+        ret['dataset'] = trainer_object.dataset.slug
+        ret = convert_to_json(ret)
+        ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        return ret
+
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get("name", instance.name)
+        instance.config = validated_data.get("config", instance.config)
+        instance.deleted = validated_data.get("deleted", instance.deleted)
+        instance.bookmarked = validated_data.get("bookmarked", instance.bookmarked)
+        instance.data = validated_data.get("data", instance.data)
+        instance.model_data = validated_data.get("model_data", instance.model_data)
+        instance.column_data_raw = validated_data.get("column_data_raw", instance.column_data_raw)
+
+        instance.save()
+
+        return instance
+
+    class Meta:
+        model = Score
+        exclude = ('id', 'job')
+
+
+class JobSerializer(serializers.Serializer):
+
+    class Meta:
+        model = Job
+        exclude = ("id", "created_on")

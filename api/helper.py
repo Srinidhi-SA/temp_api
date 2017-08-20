@@ -1,158 +1,435 @@
-import csv
-import os
-import datetime
-from django.utils import timezone
+from django.conf import settings
+JOBSERVER = settings.JOBSERVER
+THIS_SERVER_DETAILS = settings.THIS_SERVER_DETAILS
 
 
-class CSVChecker(object):
-
-    def __init__(self, input_file):
-        self.input_file = input_file
-
-    def csv_checker(self):
-        try:
-            self.open_and_read_file()
-            return True
-        except Exception as error:
-            return False
-
-    def open_and_read_file(self):
-        with open(self.input_file.path) as file:
-            rows = csv.reader(file, delimiter=',')
-            for row in rows:
-                if "" in row or " " in row:
-                    continue
-
-    def empty_file_check(self):
-        if os.stat(self.input_file.path).st_size == 0:
-            return  True
-
-    def clean_column_names(self, colname_list):
-        special_chars = [".", "*", "$", "#"]
-        cleaned_list = []
-
-        for col in colname_list:
-            for x in special_chars:
-                col = col.replace(x, "")
-            col = col.strip(' ')
-            cleaned_list.append(col)
-        return cleaned_list
-
-    # change function to much improvement needed
-    def csv_header_clean(self):
-        header = None
-        first = 0
-        OLD_DATA = []
-        with open(self.input_file.path) as file:
-            rows = csv.reader(file, delimiter=',')
-            for row in rows:
-                if first == 0:
-                    header = row
-                    print header
-                    first = 1
-                else:
-                    OLD_DATA.append(row)
-
-        cleaned_header = self.clean_column_names(header)
-
-        with open(self.input_file.path, 'w') as file:
-            writer = csv.writer(file, delimiter=',')
-            writer.writerow(cleaned_header)
-
-            for row in OLD_DATA:
-                writer.writerow(row)
-
-        return cleaned_header
-
-
-class DateHelp:
-
-    limited_days = 30
+class JobserverDetails(object):
+    @classmethod
+    def get_jobserver_url(cls):
+        return "http://" + JOBSERVER.get('host') + ":" + JOBSERVER.get('port')
 
     @classmethod
-    def restrict_days(cls, date_joined):
-        current_date = timezone.now()
-        user_joining_date = date_joined
-        time_difference = current_date - user_joining_date
-        print time_difference.days
+    def get_app(cls):
+        return JOBSERVER.get('app-name')
 
-        days = time_difference.days
-        if days > cls.limited_days:
-            return False
+    @classmethod
+    def get_context(cls):
+        return JOBSERVER.get('context')
+
+    @classmethod
+    def get_class_path(cls, name):
+        if name not in JOBSERVER:
+            raise Exception('No such class.')
+        return JOBSERVER.get(name)
+
+    @classmethod
+    def get_config(cls, slug, class_name):
+
+        job_type = {
+            "metadata": "metaData",
+            "master": "story",
+            "model":"prediction",
+            "score": "scoring"
+        }
+
+        return {
+            "job_config": {
+                "job_type": job_type[class_name],
+                "job_url" : "http://{0}:{1}/api/job/{2}/".format(THIS_SERVER_DETAILS.get('host'),
+                                                                    THIS_SERVER_DETAILS.get('port'),
+                                                                    slug),
+                "get_config" :
+                    {
+                        "action" : "get_config" ,
+                        "method" : "GET"
+                    },
+                "set_result" :
+
+                    {
+                        "action" : "result",
+                        "method"  : "PUT"
+                    }
+            }
+        }
+
+    @classmethod
+    def print_job_details(cls, job):
+        job_url = "{0}/jobs/{1}".format(cls.get_jobserver_url(), job.jobId)
+        print "job_url: {0}".format(job_url)
+        return job_url
+
+
+def metadata_chart_conversion(data):
+    output = {
+      "data": {
+          "columns": [
+              [],
+          ],
+          "type": "bar",
+      },
+      "bar": {
+          "width": {
+              "ratio": 0.5
+          }
+      }
+
+    }
+    values = ["data1"]
+    for obj in data:
+        values.append(obj["value"])
+    output["data"]["columns"] = [values]
+
+    return output
+
+
+def find_chart_data_and_replace_with_chart_data(data):
+    output = metadata_chart_conversion(data)
+    return output
+
+chartData = {
+      "data": {
+          "columns": [
+              ["data1", 30, 200, 100, 400, 150, 250],
+              ["data2", 130, 100, 140, 200, 150, 50]
+          ],
+          "type": "bar",
+      },
+      "bar": {
+          "width": {
+              "ratio": 0.5
+          }
+      }
+
+    }
+
+
+def decode_and_convert_chart_raw_data(data):
+    if not check_chart_data_format(data):
+        return {}
+    from api.C3Chart.c3charts import C3Chart, ScatterChart
+    # import pdb;pdb.set_trace()
+    chart_type = data['chart_type']
+    axes = data['axes']
+    label_text = data['label_text']
+    legend = data['legend']
+    types = data.get('types', None)
+    axisRotation = data.get('axisRotation', None)
+
+    if chart_type in ["bar", "line", "spline"]:
+        chart_data = replace_chart_data(data['data'])
+        c3 = C3Chart(
+            data=chart_data,
+            chart_type=chart_type,
+            x_column_name=axes.get('x', 'key')
+        )
+        c3.set_all_basics()
+
+        if axes.get('y', None) is not None:
+            c3.set_y_axis(
+                y_name=axes.get('y')
+            )
+
+        if axes.get('y2', None) is not None:
+            c3.set_another_y_axis(
+                y2_name=axes.get('y2')
+            )
+
+        c3.set_axis_label_simple(
+            label_text=label_text
+        )
+
+        return {
+            "chart_c3": c3.get_json(),
+            "yformat": "m"
+        }
+    elif chart_type in ["combination"]:
+
+        chart_data = replace_chart_data(data['data'])
+        c3 = C3Chart(
+            data=chart_data,
+            chart_type=chart_type,
+            x_column_name=axes.get('x', 'key')
+        )
+        c3.set_all_basics()
+
+        if axes.get('y', None) is not None:
+            c3.set_y_axis(
+                y_name=axes.get('y')
+            )
+
+        if axes.get('y2', None) is not None:
+            c3.set_another_y_axis(
+                y2_name=axes.get('y2')
+            )
+
+        c3.set_axis_label_simple(
+            label_text=label_text
+        )
+
+        if types:
+            c3.add_new_chart_on_a_data_list(types)
+
+        if axisRotation:
+            c3.rotate_axis()
+
+        from api.C3Chart import config
+        c3.set_basic_color_pattern(config.SECOND_FLIP_PATTERN)
+
+        return {
+            "chart_c3": c3.get_json(),
+            "yformat": "m"
+        }
+
+    elif chart_type in ["scatter"]:
+        chart_data, xs = replace_chart_data(data['data'], data['axes'])
+        c3 = ScatterChart(
+            data=chart_data,
+            data_type='columns'
+        )
+        c3.set_xs(xs)
+
+        c3.set_axis_label_simple(
+            label_text=label_text
+        )
+
+        return {
+            "chart_c3": c3.get_json(),
+            "yformat": "m"
+        }
+
+    elif chart_type in ["scatter_line"]:
+
+        chart_data, xs = replace_chart_data(data['data'], data['axes'])
+        c3 = ScatterChart(
+            data=chart_data,
+            data_type='columns'
+        )
+        c3.set_xs(xs)
+
+        c3.set_axis_label_simple(
+            label_text=label_text
+        )
+
+        c3.set_line_chart()
+        return {
+            "chart_c3": c3.get_json(),
+            "yformat": "m"
+        }
+
+
+def replace_chart_data(data, axes=None):
+    if isinstance(data, list):
+        return convert_listed_dict_objects(data)
+    elif isinstance(data, dict):
+        return dict_to_list(data, axes)
+
+
+def get_slug(name):
+
+    from django.template.defaultfilters import slugify
+    import string
+    import random
+    slug = slugify(str(name) + "-" + ''.join(
+                random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
+    return slug
+
+
+def check_chart_data_format(data):
+    keys = ['data', 'axes', 'label_text', 'legend', 'chart_type', 'types', 'axisRotation']
+
+    data_keys = data.keys()
+
+    if len(set(keys) - set(data_keys)) < 1:
         return True
+    return False
 
-#TODO: use python humanize
-def tell_me_size_readable_format(num):
+
+def convert_according_to_legend_simple(chart_data, legend):
+
+    for data in chart_data:
+        name = legend.get(data[0], None)
+        if name is not None:
+            data[0] = name
+
+    return chart_data
+
+
+def convert_listed_dict_objects(json_data):
     """
-    Please use python humanize, will phase out this function
-    :param num:
+    :param_json_data:  [
+                        {
+                            "value": 100062.04,
+                            "key": "Jan-1998"
+                        },
+                        {
+                            "value": 125248,
+                            "key": "Jan-1999"
+                        },
+                        {
+                            "value": 708180.8600000001,
+                            "key": "Aug-1999"
+                        },
+                        {
+                            "value": 1048392.7300000001,
+                            "key": "Sep-1999"
+                        }
+                    ]
+    :return: [
+        ['key', "Jan-1998", "Jan-1999", "Aug-1999", "Sep-1999"],
+        ['value', 100062.04, 125248, 708180.8600000001, 1048392.7300000001]
+    ]
+    """
+    if not json_data or not json_data[0]:
+        return []
+    keys = json_data[0].keys()
+    column_data = [[] for _ in range(len(keys))]
+    item_index_dictionary = dict()
+    for index, item in enumerate(keys):
+        column_data[index].append(item)
+        item_index_dictionary[item] = index
+
+    for data in json_data:
+        for item in data.keys():
+            column_data[item_index_dictionary[item]].append(data[item])
+    return column_data
+
+
+def convert_json_with_list_to_column_data_for_xs(data):
+    """
+    {
+        'a' : [{
+            'date':23,
+            'value':5
+        },
+        {
+            'date':24,
+            'value':6
+        }],
+        'b' : [{
+            'date':23,
+            'value':4
+        },
+        {
+            'date':24,
+            'value':7
+        }]
+    }
+
+    to
+
+    [
+        ['a_date', 23, 24],
+        ['a', 5, 6],
+        ['b_date', 23, 24],
+        ['b', 4, 7]
+    ]
+
+    """
+    # import pdb; pdb.set_trace()
+    all_key = data.keys()
+
+    final_data = []
+    xs = {}
+    mapp = {}
+    i = 0
+    for d in all_key:
+        final_data.append([d + '_x'])
+        final_data.append([d])
+
+        xs[d] = d + '_x'
+
+        mapp[d + '_x'] = i
+        i += 1
+        mapp[d] = i
+        i += 1
+
+    # import pdb;pdb.set_trace()
+    for d in data.keys():
+        array_of_json = data[d]
+        x_index = mapp[d + '_x']
+        y_index = mapp[d]
+        for snip in array_of_json:
+            final_data[x_index].append(snip.get('date'))
+            final_data[y_index].append(snip.get('val'))
+
+    return final_data, xs
+
+
+def inv_axes(axes):
+    """
+
+    :param axes:
+                {
+                "x": "key",
+                "y": "a",
+                }
+    :return: {'a': 'y', 'key': 'x'}
+    """
+    ax = dict()
+    for key in axes:
+        ax[axes[key]] = key
+    return ax
+
+
+def dict_to_list(datas, axes=None):
+    """
+     {
+        'a' : [{
+            'date':23,
+            'value':5
+        },
+        {
+            'date':24,
+            'value':6
+        }],
+        'b' : [{
+            'date':23,
+            'value':4
+        },
+        {
+            'date':24,
+            'value':7
+        }]
+    }
+
+    to
+
+    [
+        ['a_date', 23, 24],
+        ['a', 5, 6],
+        ['b_date', 23, 24],
+        ['b', 4, 7]
+    ],
+
+    {
+        "a": "a_x",
+        "b": "b_x"
+    }
+
+    :param datas:
+    :param axes:
     :return:
     """
-
-    name = "B"
-
-    # assuming in B
-    if num > 1024:
-        num = num/1024
-        name = "KB"
-        if num > 1024:
-            num = num/1024
-            name = "MB"
-            if num > 1024:
-                num = num/1024
-                name = "GB"
-                return str(num) + " " + name
+    ar = []
+    xs = dict()
+    if axes.get('x', None) is None:
+        raise Exception("No x in axes.")
+    inverted_axes = inv_axes(axes)
+    for key in datas:
+        chart_data = datas[key]
+        convert_data = convert_listed_dict_objects(chart_data)
+        x = ""
+        y = ""
+        for d in convert_data:
+            if inverted_axes.get(d[0], None) == 'x':
+                d[0] = key + '_x'
+                x = key + '_x'
             else:
-                return str(num) + " " + name
-        else:
-            return str(num) + " " + name
-
-    else:
-        return str(num) + " " + name
-
-
-def generate_nested_list_from_nested_dict(nested_dict):
-    data = nested_dict
-    keys = data.keys()
-    inner_keys = data[keys[0]].keys()
-    out = []
-    head_row = ["RANGE"]+inner_keys
-    head_row = [h.title() for h in head_row]
-    out.append(head_row)
-    for val in keys:
-        row = [val]
-        for val2 in inner_keys:
-            temp = data[val]
-            row.append(temp.get(val2, 0))
-        out.append(row)
-    return out
+                d[0] = key
+                y = key
+        xs[y] = x
+        ar += convert_data
+    return ar, xs
 
 
-def generate_list_from_nested_dict(nested_dict):
-    final_list = []
-    for key in nested_dict.keys():
-        temp_data = {}
-        temp_data['class'] = key
-        dict_data = nested_dict[key]
-        for k in dict_data:
-            temp_data[k] = dict_data[k]
-        final_list.append(temp_data)
-    return final_list
 
-
-def get_color_map():
-    out = {"Outperform": "Red",
-           "Underperform":"blue",
-           "Stable":"green"
-           }
-    return out
-
-
-def get_truncated_name(name):
-    name = name.split('.')[0]
-    name_length = len(name)
-
-    if name_length > 18:
-        name = name[:15] + "..."
-
-    return name
