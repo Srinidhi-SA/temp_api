@@ -385,6 +385,14 @@ export default function reducer(state = {
       throw new Error("Create Signal Failed!!");
     }
     break;
+ case "SET_POSSIBLE_LIST":
+    {
+    return {
+      ...state,
+      getVarType:action.varType,
+    }
+  }
+  break;
 
   }
   return state

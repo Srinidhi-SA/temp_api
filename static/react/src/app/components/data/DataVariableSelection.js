@@ -56,7 +56,7 @@ export class DataVariableSelection extends React.Component {
 			    	  var measureTemplate = measures.map((mItem,mIndex)=>{
 			    	      const mId = "chk_mea" + mIndex;
 			    	      return(
-			    	        <li key={mIndex}><div className="ma-checkbox inline"><input id={mId} type="checkbox" className="measure" onChange={this.handleCheckboxEvents} value={mItem}/><label htmlFor={mId} className="radioLabels">{mItem}</label></div> </li>
+			    	        <li key={mIndex}><div className="ma-checkbox inline"><input id={mId} type="checkbox" className="measure" onChange={this.handleCheckboxEvents} value={mItem} defaultChecked={true}/><label htmlFor={mId} className="radioLabels">{mItem}</label></div> </li>
 			    	      );
 			    	  });
 			    	}else{
@@ -66,7 +66,7 @@ export class DataVariableSelection extends React.Component {
 			    	  var dimensionTemplate = dimensions.map((dItem,dIndex)=>{
 			    	      const dId = "chk_dim" + dIndex;
 			    	    return(
-			    	     <li key={dIndex}><div className="ma-checkbox inline"><input id={dId} type="checkbox" className="dimension" onChange={this.handleCheckboxEvents} value={dItem}/><label htmlFor={dId}>{dItem}</label></div> </li>
+			    	     <li key={dIndex}><div className="ma-checkbox inline"><input id={dId} type="checkbox" className="dimension" onChange={this.handleCheckboxEvents} value={dItem} defaultChecked={true}/><label htmlFor={dId}>{dItem}</label></div> </li>
 			    	   );
 			    	  });
 			    	}else{
@@ -77,7 +77,7 @@ export class DataVariableSelection extends React.Component {
 			    	  var datetimeTemplate = datetime.map((dtItem,dtIndex)=>{
 			    	    const dtId = "rad_dt" + dtIndex;
 			    	  return(
-			    	   <li key={dtIndex}><div className="ma-radio inline"><input type="radio"  className="timeDimension" onChange={this.handleCheckboxEvents} name="date_type" id={dtId} value={dtItem}/><label htmlFor={dtId}>{dtItem}</label></div></li>
+			    	   <li key={dtIndex}><div className="ma-radio inline"><input type="radio"  className="timeDimension" onChange={this.handleCheckboxEvents} name="date_type" id={dtId} value={dtItem} defaultChecked={true}/><label htmlFor={dtId}>{dtItem}</label></div></li>
 			    	 );
 			    	  });
 			    	}else{

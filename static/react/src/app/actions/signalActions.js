@@ -159,3 +159,11 @@ function fetchPostsError_analysis(json) {
     json
   }
 }
+
+
+export function setPossibleAnalysisList(varType) {
+	return {
+		type: "SET_POSSIBLE_LIST",
+		varType
+	}
+}
