@@ -234,7 +234,6 @@ export function setSelectedVariables(dimensions,measures,timeDimension){
 	}else{
 		count = dimensions.length + measures.length;
 	}
-	alert(count)
 	return {
 		type: "SET_VARIABLES",
 		dimensions,
