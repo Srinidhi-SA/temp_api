@@ -27,7 +27,7 @@ export class DataPreviewRightPanel extends React.Component {
 		const sideTableTemaplte=sideTable.map((tableItem,tableIndex)=>{
 			return(  <tr key={tableIndex}>
 			<td className="item">{tableItem.name}</td>
-			<td>{tableItem.slug}</td>
+			<td>: {tableItem.slug}</td>
 			</tr>
 			);
 		});

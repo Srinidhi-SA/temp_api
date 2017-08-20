@@ -11693,7 +11693,7 @@ pre {
 	margin: 0
 }
 .panel-group.accordion .panel .panel-heading a {
-	padding: 13px 10px;
+	padding: 10px;
 	display: block;
 	color: #00998c;
 	font-weight: 300
@@ -14421,16 +14421,30 @@ div.dataTables_wrapper div.dataTables_length label select {
 	display:block;
 	font-size:12px;
 }
-.newCardStyle{
+.newCardStyle { height:130px; }
+
+
+.newCardStyle, .app-block{
 	background:#FFF;
 	padding:0px;
-	height:130px;
 	box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
   transition: all 0.3s cubic-bezier(.25,.8,.25,1);
 /*	cursor:pointer;
 	box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);*/
 }
-.newCardStyle:hover { box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22); }
+
+.tab_block { height:40px; border-top:1px solid red; display:block;}
+.app-block .card-deatils a{   float: right; }
+ul.app_labels { list-style-type: none; padding: 0px; margin: 0; float: left; }
+.app_labels li { display:inline-block }
+.app-block .card-footer { padding:0; }
+.app-block  .card-footer div.card-deatils { width: 46px; }
+
+.app-block  a.app-link { height: 128px; display: block; border-bottom: 1px solid #e0e0e0; color:#333; }
+.app_labels li a { border:1px solid #cacaca; width: 100px; display: inline-block; line-height: 1.8em; color: #333; padding-left: 5px; }
+.app-block  a.app-link:hover, .app-block  a.app-link:focus, .app_labels li a:hover, .app_labels li a:focus { color: #00998c}
+
+.newCardStyle:hover, .app-block:hover { box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22); }
 .firstCard .col-xs-8.col-xs-offset-0 {
         padding-left: 12px;
 }
@@ -14641,7 +14655,7 @@ background:#ededed; color:#7dac02
 }
 .panel-mAd .full-width-tabs > ul.nav.nav-tabs > li > a   span { display:block; }
 .mAd_icons { background:url(../images/mAd_image.png) no-repeat }
-.mAd_icons.tab_overview, .mAd_icons.tab_overview, .mAd_icons.tab_trend, .mAd_icons.tab_performance, .mAd_icons.tab_influences, .mAd_icons.tab_predictions, .mAd_icons.tab_chi-square, .mAd_icons.tab_chi-square,  .mAd_icons.tab_summary, .mAd_icons.tab_decision-tree { display:block; margin:0 auto; width:35px; height:30px; }
+.mAd_icons.tab_overview, .mAd_icons.tab_overview, .mAd_icons.tab_trend, .mAd_icons.tab_performance, .mAd_icons.tab_influences, .mAd_icons.tab_predictions, .mAd_icons.tab_chi-square, .mAd_icons.tab_association, .mAd_icons.tab_summary, .mAd_icons.tab_decision-tree, .mAd_icons.tab_prediction { display:block; margin:0 auto; width:35px; height:30px; }
 
 .mAd_icons.tab_overview{ background-position: 0 0;}
 .nav-tabs li a:hover .mAd_icons.tab_overview, .active .mAd_icons.tab_overview { background-position: 0 -30px;} 
@@ -14649,12 +14663,12 @@ background:#ededed; color:#7dac02
 .mAd_icons.tab_summary{ background-position: -142px -70px}
 .nav-tabs li a:hover .mAd_icons.tab_summary, .active .mAd_icons.tab_summary { background-position: -142px -100px}
 
-.mAd_icons.tab_decision-tree{ background-position: 0 0;}
-.nav-tabs li a:hover .mAd_icons.tab_decision-tree, .active .mAd_icons.tab_decision-tree { background-position: 0 -30px;}
+.mAd_icons.tab_decision-tree, .mAd_icons.tab_prediction{ background-position: 0 0;}
+.nav-tabs li a:hover .mAd_icons.tab_decision-tree, .nav-tabs li a:hover .mAd_icons.tab_prediction, .active .mAd_icons.tab_decision-tree, .active .mAd_icons.tab_prediction { background-position: 0 -30px;}
 
 
-.mAd_icons.tab_chi-square{ background-position: -108px -70px}
-.nav-tabs li a:hover .mAd_icons.tab_chi-square, .active .mAd_icons.tab_chi-square { background-position: -108px -100px}
+.mAd_icons.tab_chi-square, .mAd_icons.tab_association{ background-position: -108px -70px}
+.nav-tabs li a:hover .mAd_icons.tab_chi-square, .nav-tabs li a:hover .mAd_icons.tab_association, .active .mAd_icons.tab_chi-square, .active .mAd_icons.tab_association { background-position: -108px -100px}
 
 .mAd_icons.tab_performance { background-position: -35px 0px;}
 .nav-tabs li a:hover .mAd_icons.tab_performance, .active .mAd_icons.tab_performance{ background-position: -35px -30px;}
@@ -14883,7 +14897,7 @@ a.tabs-control.right span { right: 5px; }
 	-moz-box-shadow: -5px 0px 10px 0px rgba(0,0,0,0.2);
 	box-shadow: -5px 0px 10px 0px rgba(0,0,0,0.2);}
 .side_panel .list-group-item.active, .side_panel .list-group-item.active:focus, .side_panel .list-group-item.active:hover {
-    background: #f7f7f7; color: #333; border-color: #dad9d9; }
+    background: #f7f7f7; color: #00998c; border-color: #d0d4d3; }
 .panel-mAd .tab-content { padding: 5px 20px;}
 .side_panel .list-group {
     margin-bottom: 0px;
@@ -15143,6 +15157,19 @@ h4, h5 { font-weight:bold }
 .advance_settings ul li ul { list-style-type: none; }
 .advance_settings ul > li label { font-weight:bold;  }
 .advance_settings ul li ul li label { font-weight:normal }
+.sidebar-offcanvas a.list-group-item {
+    white-space: nowrap;
+    text-overflow: ellipsis; 
+    overflow: hidden;
+}
+div.pop_box h4 .text-primary {
+    text-transform: capitalize;
+}
+.card h2 small { font-size: 50%; }
+.table-hover.table-bordered.table-striped.cst_table td {
+    cursor: pointer;
+}
+.table-hover.table-bordered.table-striped.cst_table td.activeColumn { cursor: auto;}
 /**************** Css realated to developers, keep the source down ***/
 
 
