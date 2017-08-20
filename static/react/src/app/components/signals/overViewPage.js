@@ -92,6 +92,24 @@ render() {
 
     console.log("overviewPage is called!!");
     console.log(this.props);
+	 var that = this;
+	 /* if(showSubTree){
+       $(".sb_navigation").show();
+       //showSubTree = false;
+       $(".sb_navigation #myTab i.mAd_icons.ic_perf ~ span").each(function(){
+
+        if($(this).html() == that.props.match.params.l2){
+          $(this).parent().addClass('active');
+        }else{
+          $(this).parent().removeClass('active');
+        }
+       });
+     }
+    else{
+    //  console.log($(".sb_navigation").html());
+       $(".sb_navigation").hide();
+     }*/
+	 
     let selectedSignal = this.props.signal.name;
     //let this.props.signal = resTree();
     console.log(this.props.signal);

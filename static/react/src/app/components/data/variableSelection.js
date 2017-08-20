@@ -7,7 +7,7 @@ import store from "../../store";
 
 import {openCreateSignalModal,closeCreateSignalModal} from "../../actions/createSignalActions";
 
-var dataSelection= {
+/*var dataSelection= {
      "metaData" : [   {"name": "Rows", "value": 30, "display":true},
                       {"name": "Measures", "value": 10, "display":true},
                      {"name": "Dimensions", "value": 5, "display":true},
@@ -111,7 +111,7 @@ var dataSelection= {
 	               [33,44,'10/01/1990'],
 				   [24,33,'30/01/1990'],
 				   [44,36,'20/02/1990']]
-};
+};*/
 
 var selectedVariables = {measures:[],dimensions:[],date:null};  // pass selectedVariables to config
 
@@ -313,7 +313,7 @@ $('.dimension[type="checkbox"]').click(function(){
   var measureTemplate = measures.map((mItem,mIndex)=>{
       const mId = "chk_mea" + mIndex;
       return(
-        <li key={mIndex}><div className="ma-checkbox inline"><input id={mId} type="checkbox" className="measure" value={mItem}/><label htmlFor={mId} className="radioLabels">{mItem}</label></div> </li>
+        <li key={mIndex}><div className="ma-checkbox inline"><input id={mId} type="checkbox" className="measure" value={mItem} defaultChecked={true}/><label htmlFor={mId} className="radioLabels">{mItem}</label></div> </li>
       );
   });
 }else{
@@ -324,7 +324,7 @@ if(dimensions.length>0){
   var dimensionTemplate = dimensions.map((dItem,dIndex)=>{
       const dId = "chk_dim" + dIndex;
     return(
-     <li key={dIndex}><div className="ma-checkbox inline"><input id={dId} type="checkbox" className="dimension" value={dItem}/><label htmlFor={dId}>{dItem}</label></div> </li>
+     <li key={dIndex}><div className="ma-checkbox inline"><input id={dId} type="checkbox" className="dimension" value={dItem} defaultChecked={true}/><label htmlFor={dId}>{dItem}</label></div> </li>
    );
   });
 }else{
