@@ -78,6 +78,15 @@ setPossibleList(e){
      this.props.dispatch(setPossibleAnalysisList(e.target.value));
 }
 
+componentDidUpdate(){
+	console.log("trend disbale check:::: ");
+     console.log(this.props.selectedDimensions);
+	 console.log(this.props.selectedTimeDimensions);
+	 if(!this.props.selectedTimeDimensions){
+		 $('#analysisList input[type="checkbox"]').last().attr("disabled", true);
+	 }
+}
+
 	render(){
 		var that= this;
      if(!$.isEmptyObject(this.props.selectedSignal) && !that.signalFlag){
@@ -106,8 +115,8 @@ setPossibleList(e){
 
 	// possible analysis list -------------------------------------
 	
-   //const possibleAnalysis = dataPrev.meta_data.possibleAnalysis.target_variable;
-    const possibleAnalysis = {"dimension": [
+   const possibleAnalysis = dataPrev.meta_data.possibleAnalysis.target_variable;
+    /*const possibleAnalysis = {"dimension": [
        {"name": "Descriptive analysis", "id": "descriptive-analysis"},
        {"name": "Dimension vs. Dimension", "id": "dimension-vs-dimension"},
        {"name": "Predictive modeling", "id": "predictive-modeling"}
@@ -116,7 +125,7 @@ setPossibleList(e){
            {"name": "Descriptive analysis", "id": "descriptive-analysis"},
            {"name": "Measure vs. Dimension", "id": "measure-vs-dimension"},
            {"name": "Measure vs. Measure", "id": "measure-vs-measure"}
-       ], };
+       ], };*/
         let renderPossibleAnalysis = null, renderSubList=null;
 		
      if(possibleAnalysis){

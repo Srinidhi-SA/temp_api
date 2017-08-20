@@ -167,3 +167,9 @@ export function setPossibleAnalysisList(varType) {
 		varType
 	}
 }
+export function showPredictions(predictionSelected) {
+	return {
+		type: "SEL_PREDICTION",
+		predictionSelected
+	}
+}

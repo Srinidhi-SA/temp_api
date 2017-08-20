@@ -19,8 +19,13 @@ export class C3Chart extends React.Component {
 	if($(".chart"+props.classId).html()){
 		this.updateChart();
 	}
+	
+	this.classId = "chart"+this.props.classId + " ct col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 xs-mb-20";
   }
   getChartElement(){
+	  if(this.props.classId=='_side'){
+		  return $(".chart", this.element);
+	  }
       return $(".chart"+this.props.classId, this.element);
     }
 componentWillMount(){
@@ -28,16 +33,14 @@ componentWillMount(){
 	console.log(this.props.chartObject);
 
 		this.updateChart();
+		
+		  if(this.props.classId =='_side'){
+         this.classId = "chart col-md-12";
+       }
 
-  /*if(this.props.sideChart){
-  
-   this.chartDiv = <div class="chart col-md-12"></div>
-
-  }else{
-   this.chartDiv = <div class="chart col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2"></div>
- }*/
 }
   componentDidMount() {
+	
     this.updateChart();
   }
   
@@ -112,16 +115,10 @@ if(this.props.tooltip){
   render() {
 	  this.updateChart();
 	  
-     const classId = "chart"+this.props.classId + " ct col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 xs-mb-20";
-	/*if(this.props.sideChart=='_side'){
-  
-   const classId = "chart ct col-md-12";
-
-  }else{
-   const classId = "chart"+this.props.classId + " ct col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 xs-mb-20";
- }*/
+     //var classId = "chart"+this.props.classId + " ct col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 xs-mb-20";
+	  
       return(
-                        <div class={classId}></div>
+                        <div class={this.classId}></div>
       );
   }
 }

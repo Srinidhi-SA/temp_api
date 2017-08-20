@@ -104,6 +104,7 @@ export class DataPreview extends React.Component {
 		this.buttons={};
 		//this.buttonsTemplate=null;
 		this.hideDataPreview = this.hideDataPreview.bind(this);
+		this.chartId = "_side";
 	}
 
 	hideDataPreview(){
@@ -384,7 +385,7 @@ export class DataPreview extends React.Component {
 					<div id="pnl_visl" className="panel-collapse collapse in" aria-expanded="true">
 					<div className="panel-body" id="side-chart">
 					{/*<img src="../assets/images/data_preview_graph.png" className="img-responsive" />*/}
-					<C3Chart classId={"_side"} data={sideChart} yformat={false} sideChart={true}/>
+					<C3Chart classId={this.chartId} data={sideChart} yformat={false} sideChart={true}/>
 					</div>
 					</div>
 					</div>
