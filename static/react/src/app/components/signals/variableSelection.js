@@ -176,7 +176,7 @@ setPossibleList(e){
   <div className="row">
     <div className="col-md-12">
       <div className="panel panel-alt4 panel-borders">
-        <div className="panel-heading text-center">PerhtmlForming the following Analysis</div>
+        <div className="panel-heading text-center">Type of Signals</div>
          <div className="panel-body text-center" id="analysisList" >
 	      {renderPossibleAnalysis}
 	     </div>
