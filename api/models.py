@@ -326,20 +326,34 @@ class Insight(models.Model):
     def create_configuration_column_settings(self):
 
         config = json.loads(self.config)
+        consider_columns_type = ['including']
         analysis_type = [self.type]
-        data_columns = [config.get("timeDimension", "")]
+        data_columns = config.get("timeDimension", "")
         result_column = [self.target_column]
         consider_columns = config.get('dimension', []) + config.get('measures', [])
+        ignore_column_suggestion = []
+
+        if len(consider_columns) < 1:
+            consider_columns_type = ['excluding']
+
+        if self.dataset.analysis_done is True:
+            dataset_meta_data = self.dataset.meta_data.get('metaData')
+            for variable in dataset_meta_data:
+                if variable['name'] == 'ignoreColumnSuggestions':
+                    ignore_column_suggestion += variable['value']
+        else:
+            print "How the hell reached here!. Metadata is still not there. Please Wait."
+            ignore_column_suggestion = []
 
         return {
             'polarity': ['positive'],
-            'consider_columns_type': ['excluding'],
+            'consider_columns_type': consider_columns_type,
             'date_format': None,
-            'ignore_column_suggestions': ["Order Date"],
-            'result_column': ['Platform'],
-            'consider_columns': [],
-            'date_columns': ['Month'],
-            'analysis_type': ['Dimension'],
+            'ignore_column_suggestions': ignore_column_suggestion,
+            'result_column': result_column,
+            'consider_columns': consider_columns,
+            'date_columns': data_columns,
+            'analysis_type': analysis_type,
         }
         # return {
         #     "analysis_type": ["master"],
@@ -366,6 +380,8 @@ class Insight(models.Model):
         pass
 
 
+# TODO: add generate config
+# TODO: add set_result for this one
 class Trainer(models.Model):
 
     name = models.CharField(max_length=300, null=True)
@@ -405,7 +421,19 @@ class Trainer(models.Model):
         self.add_to_job()
 
     def generate_config(self, *args, **kwargs):
-        return {}
+        config = {
+            "config": {}
+        }
+
+        config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
+        config['config']["COLUMN_SETTINGS"]= self.create_configuration_column_settings()
+        # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
+        # config['config']["META_HELPER"] = self.create_configuration_meta_data()
+
+        import json
+        self.config = json.dumps(config)
+        self.save()
+        return config
 
     def add_to_job(self, *args, **kwargs):
 
@@ -440,7 +468,15 @@ class Trainer(models.Model):
         self.job = job
         self.save()
 
+        def create_configuration_url_settings():
+            pass
 
+        def create_configuration_column_settings():
+            pass
+
+
+# TODO: Add generate config
+# TODO: Add set_result function: it will be contain many things.
 class Score(models.Model):
 
     name = models.CharField(max_length=300, null=True)
@@ -511,6 +547,27 @@ class Score(models.Model):
 
         self.job = job
         self.save()
+
+        def generate_config(self, *args, **kwargs):
+            config = {
+                "config": {}
+            }
+
+            config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
+            config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
+            # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
+            # config['config']["META_HELPER"] = self.create_configuration_meta_data()
+
+            import json
+            self.config = json.dumps(config)
+            self.save()
+            return config
+
+        def create_configuration_url_settings():
+            pass
+
+        def create_configuration_column_settings():
+            pass
 
 
 
