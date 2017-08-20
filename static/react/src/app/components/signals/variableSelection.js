@@ -187,7 +187,7 @@ setPossibleList(e){
   <div className="row">
     <div className="col-lg-4 col-lg-offset-8">
       <div className="htmlForm-group">
-        <input type="text" name="createSname" id="createSname" className="htmlForm-control input-sm" placeholder="Enter a signal name"/>
+        <input type="text" name="createSname" id="createSname" className="form-control input-sm" placeholder="Enter a signal name"/>
       </div>
     </div>{/*<!-- /.col-lg-4 -->*/}
   </div>
