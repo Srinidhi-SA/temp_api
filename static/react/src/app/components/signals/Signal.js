@@ -7,6 +7,8 @@ import {MasterSummary} from "./MasterSummary";
 import {isEmpty} from "../../helpers/helper";
 import {MainHeader} from "../common/MainHeader";
 import Breadcrumb from 'react-breadcrumb';
+import {STATIC_URL} from "../../helpers/env.js"
+
 
 
 
@@ -69,7 +71,7 @@ export class Signal extends React.Component {
           <div class="clearfix"></div>
         </div>
           <div className="main-content">
-          <img id = "loading" src="/assets/images/Preloader_2.gif"/>
+          <img id = "loading" src={ STATIC_URL + "assets/images/Preloader_2.gif" } />
           </div>
           </div>
       );

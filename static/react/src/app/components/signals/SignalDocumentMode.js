@@ -4,6 +4,7 @@ import {Link} from "react-router-dom";
 import store from "../../store";
 import Breadcrumb from 'react-breadcrumb';
 import {Card} from "./Card";
+import {STATIC_URL} from "../../helpers/env.js"
 
 @connect((store) => {
   return {signal: store.signals.signalAnalysis};
@@ -144,7 +145,7 @@ export class SignalDocumentMode extends React.Component {
           <div class="clearfix"></div>
         </div>
         <div className="main-content">
-          <img id="loading" src="/assets/images/Preloader_2.gif"/>
+          <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif" } />
         </div>
       </div>
     );

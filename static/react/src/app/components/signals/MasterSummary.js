@@ -7,6 +7,7 @@ import {MainHeader} from "../common/MainHeader";
 import Breadcrumb from 'react-breadcrumb';
 import renderHTML from 'react-render-html';
 import {Card} from "./Card";
+import {STATIC_URL} from "../../helpers/env.js"
 
 
 @connect((store) => {
@@ -81,7 +82,7 @@ export class MasterSummary extends React.Component {
 									<td class="text-center"><h1><h1>{noOfDimention}</h1></h1></td>
 								</tr>
 								<tr>
-									<td ><img src="../assets/images/icon_dimension.png" /> </td>
+									<td ><img src={ STATIC_URL + "assets/images/icon_dimension.png" } /> </td>
 									<td class="text-center">									
 								<h3> Dimension</h3>
 									</td>
@@ -95,7 +96,7 @@ export class MasterSummary extends React.Component {
 									<td class="text-center"><h1>{noOfMeasures}</h1></td>
 								</tr>
 								<tr>
-									<td ><img src="../assets/images/icon_measure.png" /></td>
+									<td ><img src={ STATIC_URL + "assets/images/icon_measure.png" } /></td>
 									<td class="text-center">									
 								<h3> Measures</h3>
 									</td>
@@ -116,7 +117,7 @@ export class MasterSummary extends React.Component {
                         <em>{quotes}</em>
                       </h3>
                       <Link to={overViewLink}>
-                        <img src="../../../assets/images/icon_proceedformore.png" className="img-responsive" alt="Proceed for More"/>
+                        <img src={ STATIC_URL + "assets/images/icon_proceedformore.png" } className="img-responsive" alt="Proceed for More"/>
                         View Summary
                       </Link>
                     </div>

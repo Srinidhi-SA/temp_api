@@ -7,6 +7,7 @@ import {AppsCreateScore} from "./AppsCreateScore";
 import {Card} from "../signals/Card";
 import {getListOfCards} from "../../actions/appActions";
 import {Button} from "react-bootstrap";
+import {STATIC_URL} from "../../helpers/env.js"
 
 @connect((store) => {
 	return {login_response: store.login.login_response, 
@@ -74,7 +75,7 @@ export class AppsScoreDetail extends React.Component {
 		        <div className="page-head">
 		        </div>
 		        <div className="main-content">
-		          <img id="loading" src="/assets/images/Preloader_2.gif"/>
+		          <img id="loading" src={ STATIC_URL + "/assets/images/Preloader_2.gif"}/>
 		        </div>
 		      </div>
 		    );
