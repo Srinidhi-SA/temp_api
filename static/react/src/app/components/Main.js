@@ -32,7 +32,7 @@ export class Main extends React.Component {
         </div>
       );
     } else {
-      alert("Session ended!!");
+      console.log("Session ended!!");
       return(<Redirect to={"/login"} />);
     }
 

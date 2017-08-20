@@ -74,7 +74,7 @@ this.props.dispatch(createSignal(postData));
 
 setPossibleList(e){
 	
-	console.log(e.target.value);
+	//alert(e.target.value);
      this.props.dispatch(setPossibleAnalysisList(e.target.value));
 }
 
