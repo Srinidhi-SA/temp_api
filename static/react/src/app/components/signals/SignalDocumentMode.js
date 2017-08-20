@@ -108,7 +108,7 @@ export class SignalDocumentMode extends React.Component {
                               <i className="pe-7s-news-paper pe-lg"></i>
                             </button>
                           <button type="button" className="btn btn-default">
-                            <i className="fa fa-times"></i>
+                            <i className="pe-7s-close pe-lg"></i>
                           </button>
                         </div>
                       </div>

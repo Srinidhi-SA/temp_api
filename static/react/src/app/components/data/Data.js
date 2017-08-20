@@ -140,10 +140,13 @@ export class Data extends React.Component {
 			return (
 					<div className="side-body">
 					<div className="main-content">
+					<div class="row">
 					{addButton}
+					
 					{dataSetList}
+					
 					<div className="clearfix"></div>
-					 
+					</div> 
 					<div className="ma-datatable-footer" id="idPagination">
 					<div className="dataTables_paginate">
 					{paginationTag}

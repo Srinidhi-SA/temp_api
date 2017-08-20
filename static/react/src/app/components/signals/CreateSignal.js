@@ -91,8 +91,8 @@ export class CreateSignal extends React.Component {
 				<div class="newCardStyle firstCard">
 				<div class="card-header"></div>
 				<div class="card-center newStoryCard">
-				<div class="col-xs-2 col-xs-offset-1"><i class="fa fa-3x">+</i></div>
-				<div class="col-xs-8 col-xs-offset-0">CREATE NEW</div>
+				 
+				<div class="col-xs-12 text-center"> CREATE SIGNAL </div>
 				</div>
 				</div>
 				<div id="newSignal"  role="dialog" className="modal fade modal-colored-header">
