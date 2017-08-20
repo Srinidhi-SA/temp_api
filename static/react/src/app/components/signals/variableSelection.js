@@ -34,7 +34,7 @@ export class VariableSelection extends React.Component {
 		super(props);
   
     console.log("preview data check");
-	this.possibleListCount =0;
+	this.signalFlag =true;
 	this.possibleTrend = null;
 	}
 
@@ -46,6 +46,7 @@ handleAnlysisList(e){
 }
 createSignal(){
   console.log(this.props);
+  this.signalFlag = false;
   // if($('#createSname').val().trim() != "" || $('#createSname').val().trim() != null){
   $('body').pleaseWait();
    let analysisList =[],config={}, postData={};
@@ -79,7 +80,7 @@ setPossibleList(e){
 
 	render(){
 		var that= this;
-     if(!$.isEmptyObject(this.props.selectedSignal)){
+     if(!$.isEmptyObject(this.props.selectedSignal) && !that.signalFlag){
        console.log("move from variable selection page");
        console.log(this.props.selectedSignal)
        $('body').pleaseWait('stop');
