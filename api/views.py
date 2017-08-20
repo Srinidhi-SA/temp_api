@@ -312,7 +312,12 @@ def convert_chart_data_to_beautiful_things(data):
         if card["dataType"] == "c3Chart":
             chart_raw_data = card["data"]
             # function
-            card["data"] = helper.decode_and_convert_chart_raw_data(chart_raw_data)
+            try:
+                card["data"] = helper.decode_and_convert_chart_raw_data(chart_raw_data)
+            except Exception as e:
+                print "Error in Cards"
+                print e
+                card["data"] = {}
 
 
 def home(request):
