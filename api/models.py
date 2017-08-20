@@ -337,7 +337,8 @@ class Insight(models.Model):
             consider_columns_type = ['excluding']
 
         if self.dataset.analysis_done is True:
-            dataset_meta_data = self.dataset.meta_data.get('metaData')
+            meta_data = json.loads(self.dataset.meta_data)
+            dataset_meta_data = meta_data.get('metaData')
             for variable in dataset_meta_data:
                 if variable['name'] == 'ignoreColumnSuggestions':
                     ignore_column_suggestion += variable['value']
