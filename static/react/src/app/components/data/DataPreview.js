@@ -260,7 +260,7 @@ export class DataPreview extends React.Component {
 			const topInfo = dataPrev.metaData.map((item, i) => {
 				if(item.display){
 					return(
-							<div key={i} className="col-md-3 col-xs-6">
+							<div key={i} className="col-md-2 co-sm-4 col-xs-6">
 							<h3>
 							{item.value} <small>{item.name}</small>
 							</h3>
@@ -422,10 +422,11 @@ export class DataPreview extends React.Component {
 					</div>
 					<div className="row">
 					<div className="col-md-12 text-right">
+					<div className="panel"><div className="panel-body">
 					<Button onClick={this.closePreview.bind(this)}> {this.buttons.close.text} </Button>
 					<Button onClick={this.moveToVariableSelection.bind(this)} bsStyle="primary"> {this.buttons.create.text}</Button>
 					</div>
-
+</div></div>
 					</div>
 
 					</div>
