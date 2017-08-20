@@ -39,9 +39,8 @@ export class DataUpload extends React.Component {
 					<div className="col-md-3 top20 list-boxes" onClick={this.openPopup.bind(this)}>
 					<div className="newCardStyle firstCard">
 					<div className="card-header"></div>
-					<div className="card-center newStoryCard">
-					<div className="col-xs-2 col-xs-offset-1"><i className="fa fa-3x">+</i></div>
-					<div className="col-xs-8 col-xs-offset-0">UPLOAD NEW</div>
+					<div className="card-center newStoryCard">					
+					<div className="col-xs-12 text-center"> UPLOAD DATA </div>
 					</div>
 					</div>
 					<div id="uploadData"  role="dialog" className="modal fade modal-colored-header">
