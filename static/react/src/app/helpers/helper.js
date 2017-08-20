@@ -37,6 +37,38 @@ export function generateHeaders(table) {
     })
   return cols;
 }
+
+export function generateHeatMapHeaders(table) {
+    var cols = table.tableData.map(function(rowData,i){
+  	  if(i== 0){
+  		  var row=rowData.map(function(colData,j) {
+    	           return<th key={j} className="first">{colData}</th>;
+    	       }); 
+		  return<tr key={i} className="heatMapHeader">{row}</tr>
+  	  }
+    })
+	
+  return cols;
+}
+
+export function generateHeatMapRows(table) {
+    var cols = table.tableData.map(function(rowData,i){
+  	  if(i!= 0){
+  		  var row=rowData.map(function(colData,j) {
+			      if(j==0){
+					  return<td key={j} className="stats-title">{colData}</td>;
+				  }else{
+					 return<td key={j}>{colData}</td>; 
+				  }
+    	           
+    	       }); 
+		  return<tr key={i} className="stats-row">{row}</tr>
+  	  }
+    })
+	
+  return cols;
+}
+
 export function  generateCircularChartRows(table) {
 var tbodyData = table.tableData.map(function(rowData,i){
 	if(i != 0){

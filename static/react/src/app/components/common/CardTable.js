@@ -10,6 +10,7 @@ import {NORMALTABLE,CONFUSIONMATRIX,HEATMAPTABLE,CIRCULARCHARTTABLE,DECISIONTREE
 import {CircularChartTable} from "./CircularChartTable";
 import {ConfusionMatrix} from "./ConfusionMatrix";
 import {DecisionTreeTable} from "./decisionTreeTable";
+import {HeatMapTable} from "./heatmap";
 
 export class CardTable extends React.Component {
   constructor(){
@@ -29,6 +30,9 @@ export class CardTable extends React.Component {
    if(element.tableType == DECISIONTREETABLE){
 	   tableEle = <DecisionTreeTable tableData={element}/>;
        }
+	 if(element.tableType == HEATMAPTABLE){
+	   tableEle = <HeatMapTable tableData={element}/>;
+	 }
    return (
 		      <div>
 		        {tableEle}
