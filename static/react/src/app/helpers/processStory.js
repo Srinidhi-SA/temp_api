@@ -110,8 +110,13 @@ export function getPrevNext(output, curSufix) {
 }
 
 export function getLastCardOfTree(output){
-if(output.listOfNodes.length!=0)
+     console.log("last card");
+if(output.listOfNodes.length!=0){
+  console.log(output);
+  console.log(output.listOfNodes.length-1);
   output= output.listOfNodes[output.listOfNodes.length-1];
+  console.log(output);
+}
   if(output.listOfNodes.length>0){
     return getLastCardOfTree(output);
 

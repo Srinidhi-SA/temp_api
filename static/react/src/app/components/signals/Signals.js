@@ -86,29 +86,27 @@ export class Signals extends React.Component {
               <div className="card-footer">
                 <div className="left_div">
                   <span className="footerTitle"></span>{story.username}
-                  <span className="footerTitle">{dateFormat(story.created_at, "mmmm d,yyyy h:MM")}</span>
+                  <span className="footerTitle">{dateFormat(story.created_at, "mmm d,yyyy h:MM")}</span>
                 </div>
 
                 <div className="card-deatils">
                   {/*<!-- Popover Content link -->*/}
                   <a href="javascript:void(0);" rel="popover" className="pover" data-popover-content="#myPopover">
-                    <i className="fa fa-info-circle fa-lg"></i>
+                    <i className="ci pe-7s-info pe-2x"></i>
                   </a>
 
                   {/*<!-- Rename and Delete BLock  -->*/}
                   <a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
-                    <i className="fa fa-ellipsis-v fa-lg"></i>
+                    <i className="ci pe-7s-more pe-rotate-90 pe-2x"></i>
                   </a>
                   <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                     <li>
                       <a className="dropdown-item" href="#renameCard" data-toggle="modal">
-                        <i className="fa fa-edit"></i>
-                        Rename</a>
+                        <i className="fa fa-edit"></i>  Rename</a>
                     </li>
                     <li>
                       <a className="dropdown-item" href="#deleteCard" data-toggle="modal">
-                        <i className="fa fa-trash-o"></i>
-                        Delete</a>
+                        <i className="fa fa-trash-o"></i>  Delete</a>
                     </li>
                   </ul>
                   {/*<!-- End Rename and Delete BLock  -->*/}
@@ -116,7 +114,7 @@ export class Signals extends React.Component {
                 {/*popover*/}
                 <div id="myPopover" className="pop_box hide">
                   <h4>Created By :
-                    <span className="text-primary">{story.username}</span>
+                    <span className="text-primary">{sessionStorage.userName}</span>
                   </h4>
                   <h5>Updated on :
                     <mark>10.10.2017</mark>
@@ -145,16 +143,19 @@ export class Signals extends React.Component {
         <div>
           <div className="side-body">
             {/* <MainHeader/>*/}
+			<div class="page-head">
             <Breadcrumb path={[{
                 path: '/signals',
                 label: 'Signals'
               }
             ]}/>
-
+			</div>
             <div className="main-content">
-            <CreateSignal url={this.props.match.url}/>
-              {storyList}
-            </div>
+				<div className="row">
+					<CreateSignal url={this.props.match.url}/>
+					{storyList} 
+				</div>
+			</div>
           </div>
         </div>
       );

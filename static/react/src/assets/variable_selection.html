@@ -77,7 +77,7 @@
             <!-- Page Content Area -->
             <div class="main-content">
 				<div class="panel panel-default">
-					<div class="panel-body">
+					<div class="panel-body md-p-40">
 						
 					<div class="row">
 					<div class="col-lg-4">
@@ -302,7 +302,7 @@
 									<div class="ma-checkbox inline"><input id="chk_results" type="checkbox" class="needsclick"><label for="chk_results">Statistically Significant Results</label></div>
 									</div>
 									<div class="pull-right">
-									<a href="javascript:;" class="pull-right">Go to advanced settings</a>
+									<a href="#myModal" data-toggle="modal" class="pull-right">Go to advanced settings</a>
 									</div>
 								</div>									
 							</div>
@@ -331,6 +331,122 @@
          <!-- /. Main Content ends with side-body -->
       </div>
       <!-- /. Main Wrapper ** Mandatory --> 
+	  
+	  <!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Advanced Settings</h4>
+      </div>
+      <div class="modal-body">
+		<ul class="list-unstyled">
+			<li><div class="ma-checkbox inline">
+			  <input id="check_1" type="checkbox" class="needsclick">
+			  <label for="check_1">Distribution Analysis</label>
+			</div>
+				<ul>
+					<li><div class="ma-checkbox inline">
+					<input id="check_ck1" type="checkbox" class="needsclick">
+					<label for="check_ck1">Overview</label>
+					</div>
+					</li>
+					<li>
+					<div class="ma-checkbox inline">
+					<input id="check_ck2" type="checkbox" class="needsclick">
+					<label for="check_ck2">Concetration of H & L</label>
+					</div>
+					</li>
+				</ul>
+			</li>
+			<li><div class="ma-checkbox inline">
+			  <input id="check_2" type="checkbox" class="needsclick">
+			  <label for="check_2">Trend Analysis</label>
+			</div>
+				<ul>
+					<li><div class="ma-checkbox inline">
+					<input id="check_ck2_1" type="checkbox" class="needsclick">
+					<label for="check_ck2_1">Overview</label>
+					</div>
+					</li>
+					<li>
+					<div class="ma-checkbox inline">
+					<input id="check_ck2_2" type="checkbox" class="needsclick">
+					<label for="check_ck2_2">Factors that drive up</label>
+					</div>
+					</li>
+					<li>
+					<div class="ma-checkbox inline">
+					<input id="check_ck2_3" type="checkbox" class="needsclick">
+					<label for="check_ck2_3">Factors that drive down</label>
+					</div>
+					</li>
+					<li>
+					<div class="ma-checkbox inline">
+					<input id="check_ck2_4" type="checkbox" class="needsclick">
+					<label for="check_ck2_4">Forecast</label>
+					</div>
+					</li>
+				</ul>
+			</li>
+			
+			<li><div class="ma-checkbox inline">
+			  <input id="check_3" type="checkbox" class="needsclick">
+			  <label for="check_3">Anova</label>
+			</div>
+				<ul>
+					<li><div class="ma-checkbox inline">
+					<input id="check_ck3_1" type="checkbox" class="needsclick">
+					<label for="check_ck3_1">Overview</label>
+					</div>
+					</li>
+					<li>
+					<div class="ma-checkbox inline">
+					<input id="check_ck3_2" type="checkbox" class="needsclick">
+					<label for="check_ck3_2">Top Sublevel(Miami) </label>
+					</div>
+					</li>
+					<li>
+					<div class="ma-checkbox inline">
+					<input id="check_ck3_3" type="checkbox" class="needsclick">
+					<label for="check_ck3_3">Trend for top Sublevel </label>
+					</div>
+					</li>
+					<li>
+					<div class="ma-checkbox inline">
+					<input id="check_ck3_4" type="checkbox" class="needsclick">
+					<label for="check_ck3_4">Decision Matrix</label>
+					</div>
+					<div class="clearfix"></div>
+					<div class="btn-group radioBtn" data-toggle="buttons">
+						<label class="btn btn-default active"><input type="radio" id="rd_signifi1" name="rd_signifi" value="Low" /> Low</label> 
+						<label class="btn btn-default"><input type="radio" id="rd_signifi2" name="rd_signifi" value="Medium" /> Medium</label> 
+						<label class="btn btn-default"><input type="radio" id="rd_signifi3" name="rd_signifi" value="High" /> High</label> 
+						<label class="btn btn-default"><input type="radio" id="rd_signifi4" name="rd_signifi" value="All" /> All</label>
+						<label class="btn btn-default"><input type="radio" id="rd_signifi4" name="rd_signifi" value="Custom" /> Custom</label>
+					</div>
+					</li>
+				</ul>
+			</li>
+			
+		</ul>
+			
+		 
+			
+			
+			
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+	  
       <!-- Bootstrap core JavaScript
          ================================================== --> 
       <!-- Placed at the end of the document so the pages load faster --> 

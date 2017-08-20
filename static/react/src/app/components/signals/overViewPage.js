@@ -30,12 +30,13 @@ let showSubTree=false;
 export class OverViewPage extends React.Component {
   constructor() {
     super();
+	this.nextRedirect = null;
   }
 
   componentDidMount(){
     // alert(showSubTree);
     var that = this;
-
+    // alert(showSubTree);
     if(showSubTree){
        $(".sb_navigation").show();
        showSubTree = false;
@@ -49,9 +50,24 @@ export class OverViewPage extends React.Component {
        });
      }
     else{
+    //  console.log($(".sb_navigation").html());
        $(".sb_navigation").hide();
      }
-    }
+    
+	$('[data-toggle=offcanvas]').click(function () {
+		
+    $('.row-offcanvas').toggleClass('active');
+	if ($('.row-offcanvas-left').hasClass('active')){
+		$('.sdbar_switch i').removeClass('sw_on');
+		$('.sdbar_switch i').addClass('sw_off');
+    } else {
+		$('.sdbar_switch i').addClass('sw_on');
+		$('.sdbar_switch i').removeClass('sw_off');
+	};
+  });
+  
+	}
+	
 
 
 prevNext(path) {
@@ -66,11 +82,34 @@ prevNext(path) {
     console.log(expectedURL);
     return expectedURL;
   }
+  
+  redirectPush(url){
+	  console.log(url);
+	  this.props.history.push(url);
+  }
 
 render() {
 
     console.log("overviewPage is called!!");
     console.log(this.props);
+	 var that = this;
+	 /* if(showSubTree){
+       $(".sb_navigation").show();
+       //showSubTree = false;
+       $(".sb_navigation #myTab i.mAd_icons.ic_perf ~ span").each(function(){
+
+        if($(this).html() == that.props.match.params.l2){
+          $(this).parent().addClass('active');
+        }else{
+          $(this).parent().removeClass('active');
+        }
+       });
+     }
+    else{
+    //  console.log($(".sb_navigation").html());
+       $(".sb_navigation").hide();
+     }*/
+	 
     let selectedSignal = this.props.signal.name;
     //let this.props.signal = resTree();
     console.log(this.props.signal);
@@ -97,19 +136,21 @@ render() {
 
     //check first time load!!
     if (Object.keys(params).length < 3) {
+		
       card = getFirstCard(this.props.signal, params.l1);
       console.log("card after process is:");
       console.log(card);
       let cardLink = "/signals/" + params.slug + "/" + params.l1 + "/" + card.slug;
       return (<Redirect to={cardLink}/>);
     } else {
+		
       //node with listOfCards is selected..
       card = fetchCard(params, this.props.signal);
       if (params.l3 && params.l3 == "$") {
         let cardLink = "/signals/" + params.slug + "/" + params.l1 + "/" + params.l2 + "/" + card.slug;
         return (<Redirect to ={cardLink}/>);
       }
-
+       
     }
 
     console.log("card finally searched is:");
@@ -161,6 +202,7 @@ render() {
 
     let prevURL = "/signals/"+this.props.match.params.slug+"/"+expectedURL.prev;
     let nextURL = "/signals/"+this.props.match.params.slug+"/"+expectedURL.next;
+	this.nextRedirect = nextURL;
   if(expectedURL.prev==this.props.signal.listOfCards[0].slug){
     prevURL = "/signals/"+this.props.match.params.slug;
   }else if(expectedURL.next==null){
@@ -216,19 +258,19 @@ console.log("l1name is ...."+selectedSignal);
                     <div className="btn-toolbar pull-right">
                       <div className="btn-group btn-space">
 
-                        <button type="button" className="btn btn-default" disabled = "true">
-                          <i className="fa fa-file-pdf-o"></i>
+                        <button type="button" className="btn btn-default" disabled = "true" title="Card mode">
+                          <i className="pe-7s-display2 pe-lg"></i>
                         </button>
                         <Link className="tabs-control right grp_legends_green continue" to={{
                       pathname: documentModeLink,
                       state: { lastVar: lastcard.slug }
                       }}>
-                        <button type="button" className="btn btn-default">
-                          <i className="fa fa-print"></i>
+                        <button type="button" className="btn btn-default" title="Document mode">
+                          <i className="pe-7s-news-paper pe-lg"></i>
                         </button>
                         </Link>
                         <button type="button" className="btn btn-default">
-                          <i className="fa fa-times"></i>
+                          <i className="pe-7s-close pe-lg"></i>
                         </button>
                       </div>
                     </div>
@@ -269,14 +311,14 @@ console.log("l1name is ...."+selectedSignal);
 
                             <div className="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
                               <div className="side_panel">
-                                <a href="javscript:;" data-toggle="offcanvas" className="sdbar_switch">
+                                <a href="javscript:void(0);" data-toggle="offcanvas" className="sdbar_switch">
                                   <i className="mAd_icons sw_on"></i>
                                 </a>
                                 <div className="panel panel-primary">
                                   <div className="panel-heading">
                                     <span className="title">
                                       <i className="mAd_icons ic_perf active"></i>
-                                      Measure 1
+                                      Summary
                                     </span>
                                   </div>
                                   <div className="panel-body">
@@ -297,7 +339,7 @@ console.log("l1name is ...."+selectedSignal);
                         <Link className="tabs-control left grp_legends_green back" to={prevURL}>
                           <span className="fa fa-chevron-left"></span>
                         </Link>
-                        <Link className="tabs-control right grp_legends_green continue" to={{
+                        <Link onClick={this.redirectPush.bind(this)} className="tabs-control right grp_legends_green continue" to={{
                       pathname: nextURL,
                       state: { lastVar: card.slug }
                       }}>

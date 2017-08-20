@@ -1,6 +1,7 @@
 
 import {API} from "../helpers/env";
 import {PERPAGE} from "../helpers/helper";
+import {dataPreviewInterval} from "./dataUploadActions";
 
 function getHeader(token){
 	return {
@@ -13,7 +14,6 @@ export function getDataList(pageNo) {
 	return (dispatch) => {
 		return fetchDataList(pageNo,sessionStorage.userToken).then(([response, json]) =>{
 			if(response.status === 200){
-				console.log(json)
 				dispatch(fetchDataSuccess(json))
 			}
 			else{
@@ -47,12 +47,12 @@ export function fetchDataSuccess(doc){
 }
 
 
-export function getDataSetPreview(slug) {
+export function getDataSetPreview(slug,interval) {
     return (dispatch) => {
     return fetchDataPreview(slug).then(([response, json]) =>{
         if(response.status === 200){
           console.log(json)
-        dispatch(fetchDataPreviewSuccess(json))
+        dispatch(fetchDataPreviewSuccess(json,interval,dispatch))
         dispatch(showDataPreview())
       }
       else{
@@ -69,13 +69,24 @@ function fetchDataPreview(slug) {
 		}).then( response => Promise.all([response, response.json()]));
 }
 //get preview data
-function fetchDataPreviewSuccess(dataPreview) {
+function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
   console.log("data preview from api to store")
-  console.log(dataPreview)
-  return {
-    type: "DATA_PREVIEW",
-    dataPreview
+  if(interval){
+	  if(dataPreview.analysis_done){
+		  clearInterval(interval);	
+		  return {
+			    type: "DATA_PREVIEW",
+			    dataPreview
+			  }
+		 
+	  } 
+  }else{
+	  return {
+		    type: "DATA_PREVIEW",
+		    dataPreview
+		  } 
   }
+ 
 }
 
 function fetchDataPreviewError(json) {
@@ -102,7 +113,7 @@ export function getAllDataList(pageNo) {
 
 
 function fetchAllDataList(token) {
-	return fetch(API+'/api/datasets/?page_size=1000',{
+	return fetch(API+'/api/datasets/all/',{
 		method: 'get',
 		headers: getHeader(token)
 	}).then( response => Promise.all([response, response.json()]));
@@ -119,6 +130,22 @@ export function fetchAllDataSuccess(doc){
 	return {
 		type: "DATA_ALL_LIST",
 		data,
+	}
+}
+export function selectedAnalysisList(evt){
+	var selectedAnalysis = evt.target.value;
+	if(evt.target.className == "possibleAnalysis"){
+		if(evt.target.checked){
+			return {
+				type: "SELECTED_ANALYSIS_TYPE",
+				selectedAnalysis
+			}
+		}else{
+			return {
+				type: "UNSELECT_ANALYSIS_TYPE",
+				selectedAnalysis
+			}
+		}
 	}
 }
 export function updateSelectedVariables(evt){
@@ -162,7 +189,7 @@ export function updateSelectedVariables(evt){
 			}
 		}
 	}
-	
+
 }
 
 
@@ -183,5 +210,17 @@ export function storeSignalMeta(signalMeta,curUrl) {
 		type: "STORE_SIGNAL_META",
 		signalMeta,
 		curUrl
+	}
+}
+
+export function updateDatasetName(dataset){
+	return {
+		type: "SELECTED_DATASET",
+		dataset,
+	}
+}
+export function resetSelectedVariables(){
+	return {
+		type: "RESET_VARIABLES",
 	}
 }

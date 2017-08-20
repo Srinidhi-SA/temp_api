@@ -4,8 +4,8 @@ import {Link, Redirect} from "react-router-dom";
 import {push} from "react-router-redux";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
 import store from "../../store";
-import {showCreateScorePopup,hideCreateScorePopup} from "../../actions/appActions";
-import {getAllDataList,getDataSetPreview,storeSignalMeta} from "../../actions/dataActions";
+import {showCreateScorePopup,hideCreateScorePopup,updateSelectedAlg} from "../../actions/appActions";
+import {getAllDataList,getDataSetPreview,storeSignalMeta,updateDatasetName} from "../../actions/dataActions";
 
 
 @connect((store) => {
@@ -14,6 +14,8 @@ import {getAllDataList,getDataSetPreview,storeSignalMeta} from "../../actions/da
 		allDataList: store.datasets.allDataSets,
 		dataPreview: store.datasets.dataPreview,
 		appsScoreShowModal:store.apps.appsScoreShowModal,
+		selectedDataset:store.datasets.selectedDataSet,
+		dataPreviewFlag:store.datasets.dataPreviewFlag,
 		};
 })
 
@@ -37,18 +39,24 @@ export class AppsCreateScore extends React.Component {
     }
     getDataSetPreview(e){
     	this.selectedData = $("#score_Dataset").val();
+    	this.props.dispatch(updateSelectedAlg($("#algorithms").val()));
     	this.props.dispatch(getDataSetPreview(this.selectedData));
     	this.props.dispatch(hideCreateScorePopup());
     }
+    updateDataset(e){
+    	this.props.dispatch(updateDatasetName(e.target.value));
+    }
 	render() {
-		const dataSets = store.getState().datasets.allDataSets.data;
-		let renderSelectBox = null;
-		let _link = "";
-		if(store.getState().datasets.dataPreview){
-		 _link = "/data/"+store.getState().datasets.dataPreview.slug;	
+		if(store.getState().datasets.dataPreviewFlag){
+			let _link = "/data/"+store.getState().datasets.selectedDataSet;
+			return(<Redirect to={_link}/>);
 		}
+		const dataSets = store.getState().datasets.allDataSets.data;
+		const algorithms = store.getState().apps.algorithmsList;
+		let renderSelectBox = null;
+		let algorithmNames = null;
 		if(dataSets){
-			renderSelectBox = <select id="score_Dataset" name="selectbasic" class="form-control">
+			renderSelectBox = <select id="score_Dataset" name="selectbasic" onChange={this.updateDataset.bind(this)}  class="form-control">
 			{dataSets.map(dataSet =>
 			<option key={dataSet.slug} value={dataSet.slug}>{dataSet.name}</option>
 			)}
@@ -56,9 +64,18 @@ export class AppsCreateScore extends React.Component {
 		}else{
 			renderSelectBox = "No Datasets"
 		}
+		if(algorithms){
+			algorithmNames = <select id="algorithms" name="selectbasic" class="form-control">
+			{algorithms.map(algorithm =>
+			<option key={algorithm} value={algorithm}>{algorithm}</option>
+			)}
+			</select>
+		}else{
+			algorithmNames = "No Algorithms"
+		}
 		return (
 				<div class="col-md-3 col-md-offset-5" onClick={this.openScorePopup.bind(this)}>
-				<Button className="btn btn-primary md-close">Create Score</Button>
+				<Button bsStyle="primary">Create Score</Button>
 				<div id="newScore"  role="dialog" className="modal fade modal-colored-header">
 				<Modal show={store.getState().apps.appsScoreShowModal} onHide={this.closeScorePopup.bind(this)} dialogClassName="modal-colored-header">
 				<Modal.Header closeButton>
@@ -68,11 +85,14 @@ export class AppsCreateScore extends React.Component {
 				  <div class="form-group">
 				  <label>Select an existing dataset</label>
 	              {renderSelectBox}
+	              <br/>
+	              <label>Select an Algorithm</label>
+	              {algorithmNames}
 				</div>
 				</Modal.Body>
 				<Modal.Footer>
 				<Button className="btn btn-primary md-close" onClick={this.closeScorePopup.bind(this)}>Close</Button>
-				<Button className="btn btn-primary md-close" onClick={this.getDataSetPreview.bind(this)}><Link to={_link}>Create</Link></Button>
+				<Button bsStyle="primary"  onClick={this.getDataSetPreview.bind(this)} >Create</Button>
 				</Modal.Footer>
 				</Modal>
 				</div>

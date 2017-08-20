@@ -7,6 +7,7 @@ import store from "../../store";
 import {C3Chart} from "../c3Chart";
 import ReactDOM from 'react-dom';
 import {hideDataPreview} from "../../actions/dataActions";
+import {Button} from "react-bootstrap";
 
 //var dataPrev= {
 //"metaData" : [   {"name": "Rows", "value": 30, "display":true},
@@ -115,45 +116,55 @@ export class DataPreview extends React.Component {
 		console.log("------------------");
 		console.log(this.props);
 		console.log("data prevvvvv");
-		this.props.dispatch(hideDataPreview());
 		console.log(store.getState().datasets.curUrl);
-		if(store.getState().datasets.curUrl.startsWith("/signals")){
-			this.buttons['close']= {
-					url : "/signals",
-					text: "Close"
-			};
-			this.buttons['create']= {
-					url : "/variableselection",
-					text: "Create Signal"
-			};
+		if(store.getState().datasets.curUrl){
+			if(store.getState().datasets.curUrl.startsWith("/signals")){
+				this.buttons['close']= {
+						url : "/signals",
+						text: "Close"
+				};
+				this.buttons['create']= {
+						url : "/variableselection",
+						text: "Create Signal"
+				};
 
-		}else if(store.getState().datasets.curUrl.startsWith("/data")){
+			}else if(store.getState().datasets.curUrl.startsWith("/data")){
+				this.buttons['close']= {
+						url : "/data",
+						text: "Close"
+				};
+				this.buttons['create']= {
+						url : "/data/preview/createSignal",
+						text: "Create Signal"
+				};
+
+			}else if(store.getState().datasets.curUrl.startsWith("/apps/models/")){
+				this.buttons['close']= {
+						url : "/apps",
+						text: "Close"
+				};
+				this.buttons['create']= {
+						url :"/apps/createScore",
+						text: "Create Score"
+				};
+			}else if(store.getState().datasets.curUrl.startsWith("/apps")){
+				this.buttons['close']= {
+						url : "/apps",
+						text: "Close"
+				};
+				this.buttons['create']= {
+						url :"/apps/createModel",
+						text: "Create Model"
+				};
+			}
+		}else{
 			this.buttons['close']= {
 					url : "/data",
 					text: "Close"
 			};
 			this.buttons['create']= {
-					url : "/signals/summary",
+					url : "/data/preview/createSignal",
 					text: "Create Signal"
-			};
-
-		}else if(store.getState().datasets.curUrl.startsWith("/apps/models/")){
-			this.buttons['close']= {
-					url : "/apps",
-					text: "Close"
-			};
-			this.buttons['create']= {
-					url :"/apps/createScore",
-					text: "Create Score"
-			};
-		}else if(store.getState().datasets.curUrl.startsWith("/apps")){
-			this.buttons['close']= {
-					url : "/apps",
-					text: "Close"
-			};
-			this.buttons['create']= {
-					url :"/apps/createModel",
-					text: "Create Model"
 			};
 		}
 
@@ -178,6 +189,7 @@ export class DataPreview extends React.Component {
 			});
 
 		});
+
 	}
 
 
@@ -191,15 +203,19 @@ export class DataPreview extends React.Component {
 
 				const sideChartUpdate = item.chartData;
 				const sideTableUpdate = item.columnStats;
+				console.log("checking side table data:; ");
+				console.log(sideTableUpdate);
 				$("#side-chart").empty();
 				ReactDOM.render(<C3Chart classId={"_side"} data={sideChartUpdate} yformat={false} sideChart={true}/>, document.getElementById('side-chart'));
 
 				const sideTableUpdatedTemplate=sideTableUpdate.map((tableItem,tableIndex)=>{
-					return(  <tr key={tableIndex}>
-					<td className="item">{tableItem.name}</td>
-					<td>{tableItem.value}</td>
-					</tr>
-					);
+					if(tableItem.display){
+						return(  <tr key={tableIndex}>
+						<td className="item">{tableItem.name}</td>
+						<td>{tableItem.value}</td>
+						</tr>
+						);
+					}
 				});
 				$("#side-table").empty();
 				ReactDOM.render( <tbody className="no-border-x no-border-y">{sideTableUpdatedTemplate}</tbody>, document.getElementById('side-table'));
@@ -227,6 +243,7 @@ export class DataPreview extends React.Component {
 	render() {
 		console.log("data prev is called##########3");
 		console.log(this.props);
+		$('body').pleaseWait('stop');
 		//  const data = store.getState().data.dataPreview.meta_data.data;
 
 		// const buttonsTemplate = <div className="col-md-12 text-right">
@@ -244,8 +261,7 @@ export class DataPreview extends React.Component {
 					return(
 							<div key={i} className="col-md-3 col-xs-6">
 							<h3>
-							{item.value}
-							<small>{item.name}</small>
+							{item.value} <small>{item.name}</small>
 							</h3>
 							</div>
 
@@ -291,12 +307,16 @@ export class DataPreview extends React.Component {
 			console.log("chart-----------")
 			console.log(JSON.stringify(sideChart));
 			const sideTable = dataPrev.columnData[0].columnStats;
+			console.log("checking side table data:; ");
+			console.log(sideTable);
 			const sideTableTemaplte=sideTable.map((tableItem,tableIndex)=>{
-				return(  <tr key={tableIndex}>
-				<td className="item">{tableItem.name}</td>
-				<td>{tableItem.value}</td>
-				</tr>
-				);
+				if(tableItem.display){
+					return(  <tr key={tableIndex}>
+					<td className="item">{tableItem.name}</td>
+					<td>{tableItem.value}</td>
+					</tr>
+					);
+				}
 			});
 
 			return(
@@ -401,8 +421,8 @@ export class DataPreview extends React.Component {
 					</div>
 					<div className="row">
 					<div className="col-md-12 text-right">
-					<button onClick={this.closePreview.bind(this)} className="btn btn-default" > {this.buttons.close.text} </button>
-					<button onClick={this.moveToVariableSelection.bind(this)} className="btn btn-primary"> {this.buttons.create.text}</button>
+					<Button onClick={this.closePreview.bind(this)}> {this.buttons.close.text} </Button>
+					<Button onClick={this.moveToVariableSelection.bind(this)} bsStyle="primary"> {this.buttons.create.text}</Button>
 					</div>
 
 					</div>

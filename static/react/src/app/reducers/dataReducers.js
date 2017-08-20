@@ -9,6 +9,7 @@ export default function reducer(state = {
 		selectedMeasures:[],
 		selectedTimeDimensions:"",
 		dataPreviewFlag:false,
+		selectedAnalysis:[],
 		selectedVariablesCount:0,
 		signalMeta:{},
 		curUrl:"",
@@ -37,6 +38,7 @@ export default function reducer(state = {
 		return {...state,
 			dataPreview:action.dataPreview,
 			dataPreviewFlag:true,
+			selectedDataSet:action.dataPreview.slug
 		}
 	}
 	break;
@@ -50,6 +52,7 @@ export default function reducer(state = {
 		return {
 			...state,
 			allDataSets: action.data,
+			selectedDataSet:action.data.data[0].slug
 		}
 	}
 	break;
@@ -58,6 +61,22 @@ export default function reducer(state = {
 	{
 		alert(action.json.non_field_errors);
 		throw new Error("Unable to fetch data list!!");
+	}
+	break;
+	case "SELECTED_ANALYSIS_TYPE":
+	{
+		return{
+			...state,
+			selectedAnalysis:state.selectedAnalysis.concat(action.selectedAnalysis),
+		}
+	}
+	break;
+	case "UNSELECT_ANALYSIS_TYPE":
+	{
+		return{
+     ...state,
+		selectedAnalysis: state.selectedAnalysis.filter(item => action.selectedAnalysis !== item)
+	  }
 	}
 	break;
 	case "SELECTED_MEASURES":
@@ -139,6 +158,24 @@ export default function reducer(state = {
 		}
 	}
 	break;
+	case "SELECTED_DATASET": {
+		return {...state,
+			selectedDataSet:action.dataset,
+		}
+	}
+	break;
+	case "RESET_VARIABLES": {
+		return {...state,
+			selectedDimensions:[],
+			selectedTimeDimensions:[],
+			selectedVariablesCount:0,
+			selectedMeasures:[],
+			
+			
+		}
+	}
+	break;
+	
 	}
 	return state
 }
