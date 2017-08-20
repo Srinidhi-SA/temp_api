@@ -71,6 +71,9 @@ def metadata_chart_conversion(data):
           "width": {
               "ratio": 0.5
           }
+      },
+      "legend": {
+          "show": False
       }
 
     }
