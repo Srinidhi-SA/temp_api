@@ -38,7 +38,7 @@ export default function reducer(state = {
 		return {...state,
 			dataPreview:action.dataPreview,
 			dataPreviewFlag:true,
-			selectedDataSet:action.dataPreview.slug
+			selectedDataSet:action.slug
 		}
 	}
 	break;
@@ -170,8 +170,15 @@ export default function reducer(state = {
 			selectedTimeDimensions:[],
 			selectedVariablesCount:0,
 			selectedMeasures:[],
-			
-			
+		}
+	}
+	break;
+	case "SET_VARIABLES": {
+		return {...state,
+			selectedDimensions:action.dimensions,
+			selectedTimeDimensions:action.timeDimension,
+			selectedMeasures:action.measures,
+			selectedVariablesCount:action.count,
 		}
 	}
 	break;

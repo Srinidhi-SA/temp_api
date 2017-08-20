@@ -41,8 +41,8 @@ export class OverViewPage extends React.Component {
        $(".sb_navigation").show();
        showSubTree = false;
        $(".sb_navigation #myTab i.mAd_icons.ic_perf ~ span").each(function(){
-
-        if($(this).html() == that.props.match.params.l2){
+        console.log($(this).html() +" == "+ that.props.match.params.l2);
+        if($(this).attr('id') == that.props.match.params.l2){
           $(this).parent().addClass('active');
         }else{
           $(this).parent().removeClass('active');
@@ -66,7 +66,13 @@ export class OverViewPage extends React.Component {
 	};
   });
   
-	}
+  if($(".list-group").children().length == 1){
+	    $('.row-offcanvas-left').addClass('active');
+		$('.sdbar_switch i').removeClass('sw_on');
+		$('.sdbar_switch i').addClass('sw_off');
+    }
+  }
+
 	
 
 
@@ -87,28 +93,42 @@ prevNext(path) {
 	  console.log(url);
 	  this.props.history.push(url);
   }
-
+/*updateSubTreeClass(){
+		   //alert("working");
+       $(".sb_navigation #myTab i.mAd_icons.ic_perf ~ span").each(function(){
+        console.log($(this).html() +" == "+ that.props.match.params.l2);
+        if($(this).attr('id') == that.props.match.params.l2){
+          $(this).parent().addClass('active');
+        }else{
+          $(this).parent().removeClass('active');
+        }
+       });
+    	
+}*/
 render() {
 
     console.log("overviewPage is called!!");
     console.log(this.props);
 	 var that = this;
-	 /* if(showSubTree){
-       $(".sb_navigation").show();
-       //showSubTree = false;
+	    if(showSubTree){
        $(".sb_navigation #myTab i.mAd_icons.ic_perf ~ span").each(function(){
-
-        if($(this).html() == that.props.match.params.l2){
+        console.log($(this).html() +" == "+ that.props.match.params.l2);
+        if($(this).attr('id') == that.props.match.params.l2){
           $(this).parent().addClass('active');
         }else{
           $(this).parent().removeClass('active');
         }
        });
      }
-    else{
-    //  console.log($(".sb_navigation").html());
-       $(".sb_navigation").hide();
-     }*/
+	 
+	   if($(".list-group").children()){
+		 if($(".list-group").children().length == 1){
+	    $('.row-offcanvas-left').addClass('active');
+		$('.sdbar_switch i').removeClass('sw_on');
+		$('.sdbar_switch i').addClass('sw_off');
+		   }
+    }
+    
 	 
     let selectedSignal = this.props.signal.name;
     //let this.props.signal = resTree();
@@ -168,7 +188,7 @@ render() {
             <li key={i}>
               <NavLink to={selectedl2Link}>
                 <i className="mAd_icons ic_perf"></i>
-                <span>{letiable.name}</span>
+                <span id={letiable.slug}>{letiable.name}</span>
               </NavLink>
             </li>
           )
@@ -178,6 +198,7 @@ render() {
         showSubTree = true;
       }
     }
+	
     let selectedNode = null;
     let selectedNode_slug = null;
     let selectedURL = ""
@@ -193,7 +214,7 @@ render() {
     cardList = selectedNode.listOfCards.map((card, i) => {
       let selectedLink = selectedURL + "/" + card.slug;
       return (
-        <NavLink to={selectedLink} key={i} className="list-group-item">{card.name}</NavLink>
+        <NavLink to={selectedLink} key={i} className="list-group-item"><i className="fa fa-bar-chart"></i> {card.name}</NavLink>
       )
     });
 
@@ -317,8 +338,9 @@ console.log("l1name is ...."+selectedSignal);
                                 <div className="panel panel-primary">
                                   <div className="panel-heading">
                                     <span className="title">
-                                      <i className="mAd_icons ic_perf active"></i>
-                                      Summary
+
+                                      <i className="fa fa-list-ul"></i> List of Analysis
+
                                     </span>
                                   </div>
                                   <div className="panel-body">

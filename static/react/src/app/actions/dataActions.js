@@ -71,22 +71,25 @@ function fetchDataPreview(slug) {
 //get preview data
 function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
   console.log("data preview from api to store")
-  if(interval){
-	  if(dataPreview.analysis_done){
+  if(dataPreview.analysis_done){
+	  console.log(dataPreview)
+	  var slug = dataPreview.slug;
+	  if(interval != undefined){
 		  clearInterval(interval);	
 		  return {
-			    type: "DATA_PREVIEW",
-			    dataPreview
-			  }
-		 
-	  } 
-  }else{
-	  return {
-		    type: "DATA_PREVIEW",
-		    dataPreview
+			  type: "DATA_PREVIEW",
+			  dataPreview,
+			  slug,
+		  }
+	  } else{
+		  console.log(dataPreview)
+		  return {
+			  type: "DATA_PREVIEW",
+			  dataPreview,
+			  slug,
 		  } 
+	  }
   }
- 
 }
 
 function fetchDataPreviewError(json) {
@@ -222,5 +225,20 @@ export function updateDatasetName(dataset){
 export function resetSelectedVariables(){
 	return {
 		type: "RESET_VARIABLES",
+	}
+}
+export function setSelectedVariables(dimensions,measures,timeDimension){
+	var count = 0
+	if(timeDimension != undefined){
+		count = dimensions.length + measures.length + 1;
+	}else{
+		count = dimensions.length + measures.length;
+	}
+	return {
+		type: "SET_VARIABLES",
+		dimensions,
+		measures,
+		timeDimension,
+		count,
 	}
 }
