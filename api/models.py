@@ -161,26 +161,23 @@ class Dataset(models.Model):
         }
 
     def csv_header_clean(self):
-        header = None
-        first = 0
-        OLD_DATA = []
+        CLEAN_DATA = []
+        cleaned_header = []
         with open(self.input_file.path) as file:
             rows = csv.reader(file)
-            for row in rows:
-                if first == 0:
-                    header = row
-                    print header
-                    first = 1
+            for (i,row) in enumerate(rows):
+                row = [self.clean_restriced_chars(item) for item in row]
+                if i == 0:
+                    cleaned_header = self.clean_column_names(row)
+                    print cleaned_header
                 else:
-                    OLD_DATA.append(row)
-
-        cleaned_header = self.clean_column_names(header)
+                    CLEAN_DATA.append(row)
 
         with open(self.input_file.path, 'w') as file:
             writer = csv.writer(file)
             writer.writerow(cleaned_header)
 
-            for row in OLD_DATA:
+            for row in CLEAN_DATA:
                 writer.writerow(row)
 
         return cleaned_header
@@ -195,6 +192,10 @@ class Dataset(models.Model):
             col = col.strip(' ')
             cleaned_list.append(col)
         return cleaned_list
+
+    def clean_restriced_chars(self, line):
+        restricted_chars = string.printable
+        return "".join([c for c in line if c in restricted_chars])
 
     def copy_file_to_destination(self):
         try:
