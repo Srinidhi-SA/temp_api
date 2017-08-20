@@ -104,7 +104,6 @@ chartData = {
 
 
 def decode_and_convert_chart_raw_data(data):
-    import pdb;pdb.set_trace()
     if not check_chart_data_format(data):
         return {}
     from api.C3Chart.c3charts import C3Chart, ScatterChart
