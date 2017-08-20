@@ -12,7 +12,8 @@ import {DataSourceList} from "./DataSourceList";
 
 @connect((store) => {
 	return {login_response: store.login.login_response, showModal:store.dataUpload.dataUploadShowModal,
-	fileDataUpload:store.dataUpload.fileUpload};
+	fileDataUpload:store.dataUpload.fileUpload,
+	selectedDataset:store.datasets.selectedDataSet,};
 })
 
 export class DataUpload extends React.Component {
@@ -54,7 +55,7 @@ export class DataUpload extends React.Component {
 					</Modal.Body>
 					<Modal.Footer>
 					<Button onClick={this.closePopup.bind(this)}>Close</Button>
-					<Button bsStyle="primary" onClick={this.uploadData.bind(this)}>Upload</Button>
+				    <Button bsStyle="primary" onClick={this.uploadData.bind(this)}>Upload</Button>
 					</Modal.Footer>
 					</Modal>
 					</div>

@@ -54,6 +54,8 @@ class App extends React.Component {
             <Route exact path="/apps/models/page/:slug" component={Apps} />
             <Route exact path="/apps/score/page/:slug" component={Apps} />
             <Route exact path="/apps/score/:slug" component={AppsScoreDetail} />
+            <Route exact path="/data/preview/createSignal" component={VariableSelection}/>
+            
             </Main>
       </Switch>
       </BrowserRouter>
