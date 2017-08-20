@@ -215,6 +215,30 @@ def decode_and_convert_chart_raw_data(data):
             "chart_c3": c3.get_json(),
             "yformat": "m"
         }
+    elif chart_type in ['scatter_tooltip']:
+        # take from old code. tooltip related with scatter. easier to get this data
+        data_c3 = data['data']
+        card3_data, xs = convert_column_data_with_array_of_category_into_column_data_stright_xy(data_c3, 3)
+
+        c3 = ScatterChart(
+            data=card3_data,
+            data_type='columns'
+        )
+        c3.set_xs(xs)
+
+        c3.set_axis_label_simple(
+            label_text=label_text
+        )
+
+        c3.set_x_type_as_index()
+
+        c3.add_tooltip_for_scatter()
+
+        return {
+            'chart_c3': c3.get_json(),
+            'yformat': 'm',
+            'tooltip_c3': [data_c3[0], data_c3[1], data_c3[2]]
+        }
 
 
 def replace_chart_data(data, axes=None):
@@ -430,6 +454,69 @@ def dict_to_list(datas, axes=None):
         xs[y] = x
         ar += convert_data
     return ar, xs
+
+
+def convert_column_data_with_array_of_category_into_column_data_stright_xy(columns_data, category_data_index):
+    def get_all_unique(category_data_list):
+        return list(set(category_data_list))
+
+    category_data_list = columns_data[category_data_index]
+    try:
+        color_naming_scheme = columns_data[3]
+    except:
+        color_naming_scheme = None
+
+    if isinstance(color_naming_scheme, dict):
+        pass
+    elif isinstance(color_naming_scheme, list) or color_naming_scheme is None:
+
+        color_naming_scheme = {
+                        'red': 'Cluster0',
+                        'blue': 'Cluster1',
+                        'green': 'Cluster2',
+                        'orange': 'Cluster3',
+                        'yellow': 'Cluster4'
+                    }
+
+    unique_category_name = get_all_unique(category_data_list)
+
+    end_data = []
+    name_indexs = dict()
+    xs = dict()
+
+    i = 0
+    for name in unique_category_name:
+        if name == columns_data[category_data_index][0]:
+            continue
+
+        name_x = name
+        try:
+            name_y = color_naming_scheme[name_x]
+        except:
+            name_y = name + '_'
+
+        end_data.append([name_x])
+        name_indexs[name_x] = i
+        i += 1
+
+        end_data.append([name_y])
+        name_indexs[name_y] = i
+        i += 1
+
+        xs[name_y] = name_x
+
+    for index, name in enumerate(columns_data[category_data_index][1:]):
+        name_x = name
+        try:
+            name_y = color_naming_scheme[name_x]
+        except:
+            name_y = name + '_'
+
+        end_data[name_indexs[name_x]].append(columns_data[0][index + 1])
+        end_data[name_indexs[name_y]].append(columns_data[1][index + 1])
+
+    return end_data, xs
+
 
 
 
