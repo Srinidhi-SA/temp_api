@@ -52,5 +52,5 @@ urlpatterns = [
 ]
 
 urlpatterns += router.urls
-print urlpatterns
+# print urlpatterns
 
