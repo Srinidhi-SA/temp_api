@@ -9,6 +9,7 @@ import {Tabs,Tab,Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstra
 import {AppsCreateScore} from "./AppsCreateScore";
 import {getAppsScoreList,getAppsScoreSummary} from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
+import {STATIC_URL} from "../../helpers/env.js"
 
 var dateFormat = require('dateformat');
 
@@ -64,7 +65,7 @@ export class AppsScoreList extends React.Component {
 						</h4>
 						</div>
 						<div className="col-xs-3">
-						<img src="/assets/images/data_cardIcon.png" className="img-responsive" alt="LOADING"/>
+						<img src={ STATIC_URL + "assets/images/data_cardIcon.png" } className="img-responsive" alt="LOADING"/>
 						</div>
 						</div>
 						</div>

@@ -12,6 +12,8 @@ import {getDataList,getDataSetPreview,storeSignalMeta} from "../../actions/dataA
 import {fetchProductList} from "../../actions/dataActions";
 import {DataUpload} from "./DataUpload";
 import {open,close} from "../../actions/dataUploadActions";
+import {STATIC_URL} from "../../helpers/env.js"
+
 var dateFormat = require('dateformat');
 
 @connect((store) => {
@@ -78,7 +80,7 @@ export class Data extends React.Component {
 						</h4>
 						</div>
 						<div className="col-xs-3">
-						<img src="/assets/images/data_cardIcon.png" className="img-responsive" alt="LOADING"/>
+						<img src={ STATIC_URL + "assets/images/data_cardIcon.png" } className="img-responsive" alt="LOADING"/>
 						</div>
 						</div>
 						</div>

@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
+import {STATIC_URL} from "../../helpers/env.js"
 
 export class SignalAnalysisPage extends React.Component {
   constructor(){
@@ -114,7 +115,7 @@ export class SignalAnalysisPage extends React.Component {
                                   </div>
                                   <span className="title">Phenomenal growth during Jan-Dec - 2014</span> </div>
                                 <div className="panel-body">
-                                  <div className="grp_height"> <img src="/assets/images/grp1.jpg" alt="grp 1" className="img-responsive"/> </div>
+                                  <div className="grp_height"> <img src={ STATIC_URL + "assets/images/grp1.jpg"} alt="grp 1" className="img-responsive"/> </div>
                                   <div className="grp_legends grp_legends_green">
                                     <div className="grp_legend_label">
                                       <h3> 32% <small>Strong Growth</small> </h3>
@@ -137,7 +138,7 @@ export class SignalAnalysisPage extends React.Component {
                                   </div>
                                   <span className="title">Moderate Decline - Mar to June 2014</span> </div>
                                 <div className="panel-body">
-                                  <div className="grp_height"> <img src="/assets/images/grp2.jpg" alt="grp 2" className="img-responsive"/> </div>
+                                  <div className="grp_height"> <img src={ STATIC_URL + "assets/images/grp2.jpg" } alt="grp 2" className="img-responsive"/> </div>
                                   <div className="grp_legends grp_legends_red">
                                     <div className="grp_legend_label">
                                       <h3> 9% <small>Decline</small> </h3>
@@ -160,7 +161,7 @@ export class SignalAnalysisPage extends React.Component {
                                   </div>
                                   <span className="title">Variance in sales</span> </div>
                                 <div className="panel-body">
-                                  <div className="grp_height"> <img src="/assets/images/grp3.jpg" alt="grp 3" className="img-responsive"/> </div>
+                                  <div className="grp_height"> <img src={ STATIC_URL + "assets/images/grp3.jpg"} alt="grp 3" className="img-responsive"/> </div>
                                   <div className="grp_legends grp_legends_primary">
                                     <div className="grp_legend_label">
                                       <h3> 6% <small>Average Sale</small> </h3>
@@ -209,7 +210,7 @@ export class SignalAnalysisPage extends React.Component {
                                   </div>
                                   <span className="title">Variance in sales</span> </div>
                                 <div className="panel-body">
-                                  <div className="grp_height"> <img src="/assets/images/graph_1.png" alt="grp 3" className="img-responsive"/> </div>
+                                  <div className="grp_height"> <img src={ STATIC_URL + "assets/images/graph_1.png"} alt="grp 3" className="img-responsive"/> </div>
                                   <div className="grp_legends grp_legends_primary">
                                     <div className="grp_legend_label">
                                       <h3> 6% <small>Average Sale</small> </h3>
@@ -263,7 +264,7 @@ export class SignalAnalysisPage extends React.Component {
                             <div className="row row-offcanvas row-offcanvas-left">
 
                             { /* <!--/span-->*/}
-                              <div className="col-xs-12 col-sm-9 content"> <img src='/assets/images/graph_1.png' className="img-responsive text-center"/>
+                              <div className="col-xs-12 col-sm-9 content"> <img src={ STATIC_URL + 'assets/images/graph_1.png' } className="img-responsive text-center"/>
                                 <p> Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passage.. </p>
                               </div>
                             { /* <!--/span-->*/}

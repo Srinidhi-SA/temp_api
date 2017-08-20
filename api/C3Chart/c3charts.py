@@ -56,10 +56,10 @@ class C3Chart(object):
         self._title = {'text': title}
 
     def set_data_and_type(self):
-        type = 'columns'
-        if isinstance(self._type, tuple or list):
+        type = 'bar'
+        if isinstance(self._type, tuple) or isinstance(self._type, list):
             type = self._type[0]
-        elif isinstance(self._type, str):
+        elif isinstance(self._type, str) or isinstance(self._type, unicode):
             type = self._type
         self._data = {
             self._data_type: self._data_data,
@@ -256,6 +256,12 @@ class C3Chart(object):
             self._axis['y']['label']['text'] = X_LABEL_DEFAULT_TEXT
             self.set_multiline_x()
 
+    def set_y_axis(self, y_name='y'):
+        if self._data:
+            self._data['axes'] = {
+                y_name: 'y',
+            }
+
     def set_another_y_axis(self,
                            y2_name=None):
         if y2_name is None:
@@ -293,6 +299,15 @@ class C3Chart(object):
             if 'y2' in self._axis.keys():
                 self._axis['y2']['label']['text'] = y2_label
 
+    def set_axis_label_simple(self, label_text):
+
+        axis_names = ['x', 'y', 'y2']
+
+        for axis_name in axis_names:
+            if axis_name in label_text:
+                if axis_name in self._axis:
+                    self._axis[axis_name]['label']['text'] = label_text.get(axis_name, "")
+
     def get_point_radius(self):
 
         if self._total_data_count is None:
@@ -319,6 +334,10 @@ class C3Chart(object):
         }
         if self._data:
             self._data['type'] = CHART_TYPE_SCATTER
+
+    def set_line_chart(self):
+        if self._data:
+            self._data['type'] = "line"
 
     def set_pie_chatter(self):
         if self._data:
@@ -384,6 +403,12 @@ class C3Chart(object):
             }
             pass
 
+    def add_new_chart_on_a_data_list(self, types=None):
+        if self._data:
+            if types is not None:
+                self._data['types'] = types
+
+
     def hide_label(self, axis='x'):
         if self._axis:
             self._axis[axis]['label'] = None
@@ -394,6 +419,7 @@ class C3Chart(object):
 
     def remove_x_from_data(self):
         self._data['x'] = None
+
 
     def get_some_related_info_printed(self):
         print "x max string length", self._x_max_string_length

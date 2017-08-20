@@ -9,6 +9,7 @@ import Breadcrumb from 'react-breadcrumb';
 //import $ from "jquery";
 var dateFormat = require('dateformat');
 import {CreateSignal} from "./CreateSignal";
+import {STATIC_URL} from "../../helpers/env";
 
 
 @connect((store) => {
@@ -78,7 +79,7 @@ export class Signals extends React.Component {
                     </h4>
                   </div>
                   <div className="col-xs-3">
-                    <img src="assets/images/d_cardIcon.png" className="img-responsive" alt="LOADING"/>
+                    <img src={ STATIC_URL + "assets/images/d_cardIcon.png" } className="img-responsive" alt="LOADING"/>
                   </div>
                 </div>
               </div>
@@ -166,7 +167,7 @@ export class Signals extends React.Component {
           }
         ]}/>
           <div>
-            <img id="loading" src="/assets/images/Preloader_2.gif"/>
+            <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif"} />
           </div>
         </div>
       )

@@ -8,7 +8,7 @@ import {C3Chart} from "../c3Chart";
 import ReactDOM from 'react-dom';
 import $ from "jquery";
 
-import {updateSelectedVariables,resetSelectedVariables} from "../../actions/dataActions";
+import {updateSelectedVariables,resetSelectedVariables,setSelectedVariables} from "../../actions/dataActions";
 
 @connect((store) => {
 	return {login_response: store.login.login_response, dataPreview: store.datasets.dataPreview,
@@ -21,39 +21,50 @@ import {updateSelectedVariables,resetSelectedVariables} from "../../actions/data
 export class DataVariableSelection extends React.Component {
 	constructor(props) {
 		super(props);
-		this.props.dispatch(resetSelectedVariables())
+		//this.props.dispatch(resetSelectedVariables())
 		this.handleCheckboxEvents = this.handleCheckboxEvents.bind(this);
+		this.setVariables = this.setVariables.bind(this);
+		this.measures = [];
+		this.dimensions = [];
+		this.datetime = [];
 	}
 	handleCheckboxEvents(e){
 		this.props.dispatch(updateSelectedVariables(e))
 	}
+	setVariables(dimensions,measures,timeDimension,count){
+		this.props.dispatch(setSelectedVariables(dimensions,measures,timeDimension))
+	}
+componentDidMount(){
+		this.setVariables(this.dimensions,this.measures,this.datetime[this.datetime.length-1]);
+}
 	render() {
 
 		console.log("data variableSelection is called##########3");
+		
 		let dataPrev = store.getState().datasets.dataPreview;
 		if(dataPrev){
 			console.log("data variable selection");
 			console.log(dataPrev);
 			 const metaData = dataPrev.meta_data.columnData;
-			    var measures =[], dimensions =[],datetime =[];
+			   // var measures =[], dimensions =[],datetime =[];
 			    metaData.map((metaItem,metaIndex)=>{
 			      switch(metaItem.columnType){
 			        case "measure":
 			         //m[metaItem.slug] = metaItem.name;
-			         measures.push(metaItem.name);
+			        this.measures.push(metaItem.name);
 			         //m={};
 			         break;
 			        case "dimension":
-			         dimensions.push(metaItem.name);
+			        this.dimensions.push(metaItem.name);
 			        break;
 			        case "datetime":
-			          datetime.push(metaItem.name);
+			          this.datetime.push(metaItem.name);
 			        break;
 			      }
 
 			    });
-			    if(measures.length>0){
-			    	  var measureTemplate = measures.map((mItem,mIndex)=>{
+			    if(this.measures.length>0){
+			    	  var measureTemplate = this.measures.map((mItem,mIndex)=>{
 			    	      const mId = "chk_mea" + mIndex;
 			    	      return(
 			    	        <li key={mIndex}><div className="ma-checkbox inline"><input id={mId} type="checkbox" className="measure" onChange={this.handleCheckboxEvents} value={mItem} defaultChecked={true}/><label htmlFor={mId} className="radioLabels">{mItem}</label></div> </li>
@@ -62,8 +73,8 @@ export class DataVariableSelection extends React.Component {
 			    	}else{
 			    	  var measureTemplate =  <label>No measure variable present</label>
 			    	}
-			    if(dimensions.length>0){
-			    	  var dimensionTemplate = dimensions.map((dItem,dIndex)=>{
+			    if(this.dimensions.length>0){
+			    	  var dimensionTemplate = this.dimensions.map((dItem,dIndex)=>{
 			    	      const dId = "chk_dim" + dIndex;
 			    	    return(
 			    	     <li key={dIndex}><div className="ma-checkbox inline"><input id={dId} type="checkbox" className="dimension" onChange={this.handleCheckboxEvents} value={dItem} defaultChecked={true}/><label htmlFor={dId}>{dItem}</label></div> </li>
@@ -73,8 +84,8 @@ export class DataVariableSelection extends React.Component {
 			    	  var dimensionTemplate =  <label>No dimension variable present</label>
 			    	}
 
-			    	if(datetime.length>0){
-			    	  var datetimeTemplate = datetime.map((dtItem,dtIndex)=>{
+			    	if(this.datetime.length>0){
+			    	  var datetimeTemplate = this.datetime.map((dtItem,dtIndex)=>{
 			    	    const dtId = "rad_dt" + dtIndex;
 			    	  return(
 			    	   <li key={dtIndex}><div className="ma-radio inline"><input type="radio"  className="timeDimension" onChange={this.handleCheckboxEvents} name="date_type" id={dtId} value={dtItem} defaultChecked={true}/><label htmlFor={dtId}>{dtItem}</label></div></li>
@@ -83,6 +94,7 @@ export class DataVariableSelection extends React.Component {
 			    	}else{
 			    	  var datetimeTemplate = <label>No dates variable present</label>
 			    	}
+			    	
 			    	const popoverLeft = (
 							  <Popover id="popover-positioned-top" title="Variables List">
 							 Testing

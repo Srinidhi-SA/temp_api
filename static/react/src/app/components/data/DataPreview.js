@@ -8,6 +8,7 @@ import {C3Chart} from "../c3Chart";
 import ReactDOM from 'react-dom';
 import {hideDataPreview} from "../../actions/dataActions";
 import {Button} from "react-bootstrap";
+import {STATIC_URL} from "../../helpers/env.js"
 
 //var dataPrev= {
 //"metaData" : [   {"name": "Rows", "value": 30, "display":true},
