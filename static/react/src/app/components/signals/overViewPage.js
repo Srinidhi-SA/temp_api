@@ -199,7 +199,7 @@ render() {
     cardList = selectedNode.listOfCards.map((card, i) => {
       let selectedLink = selectedURL + "/" + card.slug;
       return (
-        <NavLink to={selectedLink} key={i} className="list-group-item">{card.name}</NavLink>
+        <NavLink to={selectedLink} key={i} className="list-group-item"><i className="fa fa-bar-chart"></i> {card.name}</NavLink>
       )
     });
 
@@ -323,8 +323,9 @@ console.log("l1name is ...."+selectedSignal);
                                 <div className="panel panel-primary">
                                   <div className="panel-heading">
                                     <span className="title">
-                                      <i className="mAd_icons ic_perf active"></i>
-                                      List of analysis
+
+                                      <i className="fa fa-list-ul"></i> List of Analysis
+
                                     </span>
                                   </div>
                                   <div className="panel-body">
