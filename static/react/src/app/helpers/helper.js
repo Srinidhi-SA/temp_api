@@ -24,6 +24,7 @@ const NORMALTABLE = "normal";
 const CONFUSIONMATRIX = "confusionMatrix";
 const HEATMAPTABLE = "heatMap";
 const CIRCULARCHARTTABLE = "circularChartTable";
+const DECISIONTREETABLE = "decisionTreeTable"
 
 
 export function generateHeaders(table) {
@@ -76,6 +77,7 @@ export{
 	NORMALTABLE,
 	CONFUSIONMATRIX,
 	HEATMAPTABLE,
-	CIRCULARCHARTTABLE
+	CIRCULARCHARTTABLE,
+	DECISIONTREETABLE
 	
 	}

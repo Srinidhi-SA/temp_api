@@ -12,7 +12,8 @@ import {DataSourceList} from "./DataSourceList";
 
 @connect((store) => {
 	return {login_response: store.login.login_response, showModal:store.dataUpload.dataUploadShowModal,
-	fileDataUpload:store.dataUpload.fileUpload};
+	fileDataUpload:store.dataUpload.fileUpload,
+	selectedDataset:store.datasets.selectedDataSet,};
 })
 
 export class DataUpload extends React.Component {
@@ -39,13 +40,12 @@ export class DataUpload extends React.Component {
 					<div className="col-md-3 top20 list-boxes" onClick={this.openPopup.bind(this)}>
 					<div className="newCardStyle firstCard">
 					<div className="card-header"></div>
-					<div className="card-center newStoryCard">
-					<div className="col-xs-2 col-xs-offset-1"><i className="fa fa-3x">+</i></div>
-					<div className="col-xs-8 col-xs-offset-0">UPLOAD NEW</div>
+					<div className="card-center newStoryCard">					
+					<div className="col-xs-12 text-center"> UPLOAD DATA </div>
 					</div>
 					</div>
 					<div id="uploadData"  role="dialog" className="modal fade modal-colored-header">
-					<Modal show={store.getState().dataUpload.dataUploadShowModal} onHide={this.closePopup.bind(this)}>
+					<Modal show={store.getState().dataUpload.dataUploadShowModal} onHide={this.closePopup.bind(this)} dialogClassName="modal-colored-header uploadData">
 					<Modal.Header closeButton>
 					<h3 className="modal-title">Upload Data</h3>
 					</Modal.Header>
@@ -53,8 +53,8 @@ export class DataUpload extends React.Component {
 					<DataSourceList/>
 					</Modal.Body>
 					<Modal.Footer>
-					<Button className="btn btn-primary md-close" onClick={this.closePopup.bind(this)}>Close</Button>
-					<Button className="btn btn-primary md-close" onClick={this.uploadData.bind(this)}>Upload</Button>
+					<Button onClick={this.closePopup.bind(this)}>Close</Button>
+				    <Button bsStyle="primary" onClick={this.uploadData.bind(this)}>Upload</Button>
 					</Modal.Footer>
 					</Modal>
 					</div>

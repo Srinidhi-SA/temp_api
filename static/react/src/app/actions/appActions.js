@@ -94,8 +94,6 @@ function triggerCreateModel(token,modelName,targetVariable) {
 			 "trainValue":store.getState().apps.trainValue,
 			 "testValue":store.getState().apps.testValue,
 			 "analysisVariable":targetVariable}
-	
-	    var postDetails = {"name":modelName,"dataset":datasetSlug,"app_id":app_id,"column_data_raw":details}
 		return fetch(API+'/api/trainer/',{
 			method: 'post',
 			headers: getHeader(token),
@@ -199,4 +197,83 @@ export function getListOfCards(totalCardList){
 	}
 	console.log(cardList)
 	return cardList;
+}
+
+export function updateSelectedAlg(name){
+	return {
+		type: "SELECTED_ALGORITHM",
+		name,
+	}
+}
+
+export function createScore(scoreName,targetVariable) {
+	console.log(scoreName);
+	console.log(targetVariable);
+	  return (dispatch) => {
+			return triggerCreateScore(sessionStorage.userToken,scoreName,targetVariable).then(([response, json]) =>{
+				if(response.status === 200){
+					console.log(json)
+					alert("Success")
+					//dispatch(createModelSuccess(json))
+				}
+				else{
+					alert("Error")
+					//dispatch(createModelError(json))
+				}
+			})
+		}
+}
+
+function triggerCreateScore(token,scoreName,targetVariable) {
+		var datasetSlug = store.getState().datasets.dataPreview.slug;
+		var app_id=1;
+		var details = {"measures":store.getState().datasets.selectedMeasures.join(),
+			"dimension":store.getState().datasets.selectedDimensions.join(),
+			"timeDimension":store.getState().datasets.selectedTimeDimensions,
+			 "analysisVariable":targetVariable}
+		return fetch(API+'/api/score/',{
+			method: 'post',
+			headers: getHeader(token),
+			body:JSON.stringify({
+				"name":scoreName,
+				"dataset":datasetSlug,
+				"trainer":store.getState().apps.modelSlug,
+				"app_id":app_id,
+				"column_data_raw":details
+		 }),
+		}).then( response => Promise.all([response, response.json()]));
+}
+
+export function getAppsScoreSummary(slug) {
+	return (dispatch) => {
+		return fetchScoreSummary(sessionStorage.userToken,slug).then(([response, json]) =>{
+			if(response.status === 200){
+				console.log(json)
+				dispatch(fetchScoreSummarySuccess(json))
+			}
+			else{
+				dispatch(fetchScoreSummaryError(json))
+			}
+		})
+	}
+}
+
+function fetchScoreSummary(token,slug) {
+	return fetch(API+'/api/score/'+slug+'/',{
+		method: 'get',
+		headers: getHeader(token)
+	}).then( response => Promise.all([response, response.json()]));
+}
+
+function fetchScoreSummaryError(json) {
+	return {
+		type: "SCORE_SUMMARY_ERROR",
+		json
+	}
+}
+export function fetchScoreSummarySuccess(data){
+	return {
+		type: "SCORE_SUMMARY_SUCCESS",
+		data,
+	}
 }

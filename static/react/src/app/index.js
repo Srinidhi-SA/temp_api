@@ -22,7 +22,7 @@ import {DataVariableSelection} from "./components/data/DataVariableSelection";
 import {ModelVariableSelection} from "./components/apps/ModelVariableSelection";
 import {AppsModelDetail} from "./components/apps/AppsModelDetail";
 import {ScoreVariableSelection} from "./components/apps/ScoreVariableSelection";
-// console.log(store);
+import {AppsScoreDetail} from "./components/apps/AppsScoreDetail";
 
 class App extends React.Component {
 
@@ -35,6 +35,7 @@ class App extends React.Component {
           <Main>
             <Route exact path="/" component={Home} />
             <Route exact path="/signals" component={Signals} />
+            {/*<Route exact path="/signals/datapreview/:slug" component={DataPreview} />*/}
             <Route exact path="/signals/:slug" component={Signal}/>
             <Route exact path="/signals/:slug/:l1" component={OverViewPage}/>
             <Route exact path="/signals/:slug/:l1/:l2/:l3" component={OverViewPage}/>
@@ -46,14 +47,16 @@ class App extends React.Component {
             <Route path="/stories" component={Stories} />
             <Route exact path="/data" component={Data} />
             <Route exact path="/data/:slug" component={DataPreview} />
-            <Route exact path="/data/:slug/variableSelection" component={DataVariableSelection} />
             <Route exact path="/apps/createModel" component={ModelVariableSelection} />
             <Route exact path="/apps/models/:slug" component={AppsModelDetail} />
             <Route exact path="/apps/createScore" component={ScoreVariableSelection} />
             <Route exact path="/data/page/:slug" component={Data} />
             <Route exact path="/apps/models/page/:slug" component={Apps} />
             <Route exact path="/apps/score/page/:slug" component={Apps} />
-          </Main>
+            <Route exact path="/apps/score/:slug" component={AppsScoreDetail} />
+            <Route exact path="/data/preview/createSignal" component={VariableSelection}/>
+            
+            </Main>
       </Switch>
       </BrowserRouter>
     );

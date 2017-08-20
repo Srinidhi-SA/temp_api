@@ -4,6 +4,7 @@ import {Link} from "react-router-dom";
 import store from "../../store";
 import Breadcrumb from 'react-breadcrumb';
 import {Card} from "./Card";
+import {STATIC_URL} from "../../helpers/env.js"
 
 @connect((store) => {
   return {signal: store.signals.signalAnalysis};
@@ -12,6 +13,7 @@ import {Card} from "./Card";
 export class SignalDocumentMode extends React.Component {
   constructor() {
     super();
+	//this.docFlag = true;
   }
 
   searchTree(_Node, cardLists, lastVar) {
@@ -99,22 +101,22 @@ export class SignalDocumentMode extends React.Component {
                       <div className="btn-toolbar pull-right">
                         <div className="btn-group btn-space">
                         <Link className="tabs-control right grp_legends_green continue" to={cardModeLink}>
-                          <button type="button" className="btn btn-default">
-                            <i className="fa fa-file-pdf-o"></i>
+                          <button type="button" className="btn btn-default" title="Card mode">
+                            <i className="pe-7s-display2 pe-lg"></i>
                           </button>
                           </Link>
-                          <button type="button" className="btn btn-default" disabled = "true">
-                              <i className="fa fa-print"></i>
+                          <button type="button" className="btn btn-default" disabled = "true" title="Document Mode">
+                              <i className="pe-7s-news-paper pe-lg"></i>
                             </button>
                           <button type="button" className="btn btn-default">
-                            <i className="fa fa-times"></i>
+                            <i className="pe-7s-close pe-lg"></i>
                           </button>
                         </div>
                       </div>
                       <div className="clearfix"></div>
                     </div>
                     <div className="panel-body">
-                      <Card cardData={objs}/>
+                      <Card cardData={objs} />
                     </div>
                   </div>
                 </div>
@@ -143,7 +145,7 @@ export class SignalDocumentMode extends React.Component {
           <div class="clearfix"></div>
         </div>
         <div className="main-content">
-          <img id="loading" src="/assets/images/Preloader_2.gif"/>
+          <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif" } />
         </div>
       </div>
     );

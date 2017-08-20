@@ -1,7 +1,8 @@
 	import {API} from "../helpers/env";
 	import store from "../store";
 	import {FILEUPLOAD} from "../helpers/helper";
-	import {getDataList} from "./dataActions";
+	import {getDataList,getDataSetPreview,updateDatasetName} from "./dataActions";
+	export var dataPreviewInterval = null;
 	
 	function getHeaderWithoutContent(token){
 		return {
@@ -15,12 +16,13 @@
 		};
 	}
 	export function dataUpload() {
+		 $('body').pleaseWait();
 		  return (dispatch) => {
 				return triggerDataUpload(sessionStorage.userToken).then(([response, json]) =>{
 					if(response.status === 200){
-						console.log(json)
-						dispatch(dataUploadSuccess(json))
-						dispatch(getDataList(1))
+						console.log(json.slug)
+						dispatch(updateDatasetName(json.slug))
+						dispatch(dataUploadSuccess(json,dispatch))
 					}
 					else{
 						dispatch(dataUploadError(json))
@@ -61,12 +63,17 @@
 		
 	}
 	
-	function dataUploadSuccess(json) {
-		alert("File Uploaded Successfully")
-		return {
-			type: "HIDE_MODAL",
-		}
+	function dataUploadSuccess(data,dispatch) {
+		 dataPreviewInterval = setInterval(function(){
+			    if(!data.analysis_done){
+			          dispatch(getDataSetPreview(data.slug,dataPreviewInterval));
+			    }
+			  },20000);
+			return {
+				type: "HIDE_MODAL",
+			}
 	}
+	
 	export function dataUploadError(josn){
 		return {
 			type: "DATA_UPLOAD_TO_SERVER_ERROR",

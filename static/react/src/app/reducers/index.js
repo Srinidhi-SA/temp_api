@@ -7,6 +7,7 @@ import datasets from "./dataReducers"
 import dataUpload from "./dataUploadReducers"
 import dataSource from "./dataSourceReducers"
 import apps from "./appReducers"
+import chartObject from "./chartReducers"
 
 export default combineReducers({
   login,
@@ -15,5 +16,6 @@ export default combineReducers({
   dataUpload,
   dataSource,
   apps,
+  chartObject,
 
 })

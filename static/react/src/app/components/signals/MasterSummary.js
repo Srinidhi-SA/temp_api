@@ -7,6 +7,7 @@ import {MainHeader} from "../common/MainHeader";
 import Breadcrumb from 'react-breadcrumb';
 import renderHTML from 'react-render-html';
 import {Card} from "./Card";
+import {STATIC_URL} from "../../helpers/env.js"
 
 
 @connect((store) => {
@@ -70,36 +71,42 @@ export class MasterSummary extends React.Component {
               <div className="panel panel-default">
                 <div className="panel-body">
                   <div className="row">
-                    <div className="col-md-8">
-                      <div className="panel-body">
+					<div className="ex_bg">
+                    <div className="col-md-9">
+                      <div className="panel-body md-p-50">
                         <div className="row">
-                          <div className="col-md-4 col-md-offset-1">
-                            <div className="widget widget-tile">
-								<div class="col-xs-4 icon_ovr">
-									<img src="../assets/images/icon_dimension.png" class="img-responsive" />
-								</div>
-								<div class="col-xs-8 text-right data-info">
-								<h1>{noOfDimention}</h1>
-								<h3>Dimension</h3>
-								</div>
-<div class="clearfix"></div>
-                            </div>
+                          <div className="col-md-4 col-md-offset-2 col-sm-6 data-info">
+							<table>
+								<tr>
+									<td></td>
+									<td class="text-center"><h1><h1>{noOfDimention}</h1></h1></td>
+								</tr>
+								<tr>
+									<td ><img src={ STATIC_URL + "assets/images/icon_dimension.png" } /> </td>
+									<td class="text-center">									
+								<h3> Dimension</h3>
+									</td>
+								</tr>
+							</table> 
                           </div>
-                          <div className="col-md-4 col-md-offset-1">
-                            <div className="widget widget-tile">
-								<div class="col-xs-4 icon_ovr ms">
-									<img src="../assets/images/icon_measure.png" class="img-responsive" />
-								</div>
-								<div class="col-xs-8 text-right data-info">
-								<h1>{noOfMeasures}</h1>
-								<h3>Measures</h3>
-								</div>
-
-                            </div>
+                          <div className="col-md-4 col-md-offset-1 col-sm-6 data-info">
+							<table>
+								<tr>
+									<td></td>
+									<td class="text-center"><h1>{noOfMeasures}</h1></td>
+								</tr>
+								<tr>
+									<td ><img src={ STATIC_URL + "assets/images/icon_measure.png" } /></td>
+									<td class="text-center">									
+								<h3> Measures</h3>
+									</td>
+								</tr>
+							</table>
+								 
                           </div>
                           <div className="clearfix"></div>
-                          <div className="col-md-12">
-                            <p className="lead"><Card cardData={summary}/>
+                          <div className="col-md-12 xs-pt-20">
+                            <p className="lead txt-justify"><Card cardData={summary}/>
                             </p>
                           </div>
                         </div>
@@ -110,11 +117,13 @@ export class MasterSummary extends React.Component {
                         <em>{quotes}</em>
                       </h3>
                       <Link to={overViewLink}>
-                        <img src="../../../assets/images/icon_proceedformore.png" className="img-responsive" alt="Proceed for More"/>
+                        <img src={ STATIC_URL + "assets/images/icon_proceedformore.png" } className="img-responsive" alt="Proceed for More"/>
                         View Summary
                       </Link>
                     </div>
-                  </div>
+					<div class="clearfix"></div>
+					</div>
+				  </div>
                 </div>
               </div>
             </div>

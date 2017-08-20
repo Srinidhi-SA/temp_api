@@ -16,12 +16,16 @@ export class ConfusionMatrix extends React.Component {
   render() {
    var data = this.props.tableData;
    console.log("checking confusion matrix table element");
+   console.log(data)
    var headerComponents = generateHeaders(data);
    var rowComponents = generateRows(data);
    return (
            <table className="table table-bordered apps_table_style">
-               <thead>{headerComponents}</thead>
-               <tbody>{rowComponents}</tbody>
+               <thead><tr>
+				<th colSpan={data.tableData.length+3} class="text-center">Actual</th>
+				</tr></thead>
+               <tbody><tr><th rowSpan={data.tableData.length} class="left_highlilght">Predicted</th>
+				{headerComponents}</tr>{rowComponents}</tbody>
            </table>
        );
   }

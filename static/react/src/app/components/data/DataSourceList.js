@@ -21,6 +21,7 @@ import {getDataSourceList,saveFileToStore,updateSelectedDataSrc,updateDbDetails}
 		db_username:store.dataSource.db_host,
 		db_port:store.dataSource.db_port,
 		db_password:store.dataSource.db_host,
+		selectedDataset:store.datasets.selectedDataSet,
 	};
 })
 
@@ -69,6 +70,8 @@ export class DataSourceList extends React.Component {
 						<div class="db_images db_file_upload"></div>
 						</div>
 						</h3>
+						<div className="clearfix"></div>
+						<div className="xs-pt-20"></div>
 						<div className="dropzone">
 						<Dropzone onDrop={this.onDrop} accept=".csv" onDropRejected={this.popupMsg}>
 						<p>Try dropping some files here, or click to select files to upload.</p>
@@ -82,16 +85,16 @@ export class DataSourceList extends React.Component {
 						</div>)
 					}else if(field.fieldType.toLowerCase() == INPUT.toLowerCase()){
 						return(<div class="form-group" id={j}>
-						<label for="fl1" class="col-sm-2 control-label">{field.labelName}</label>
-						<div class="col-sm-10">
+						<label for="fl1" class="col-sm-3 control-label">{field.labelName}</label>
+						<div class="col-sm-9">
 						<input id={j} type="text" name={field.labelName} placeholder={field.placeHolder} class="form-control" onChange={this.handleInputChange.bind(this)}/>
 						</div>
 						</div>)
 					}
 					else if(field.fieldType.toLowerCase() == PASSWORD.toLowerCase()){
 						return(<div class="form-group" id={j}>
-						<label for="fl1" class="col-sm-2 control-label">{field.labelName}</label>
-						<div class="col-sm-10">
+						<label for="fl1" class="col-sm-3 control-label">{field.labelName}</label>
+						<div class="col-sm-9">
 						<input  id={j} type="password" name={field.labelName}  placeholder={field.placeHolder} class="form-control" onChange={this.handleInputChange.bind(this)}/>
 						</div>
 						</div>)

@@ -9,9 +9,13 @@ export default function reducer(state = {
 		score_current_page:1,
 		modelSlug:"",
 		modelSummary:{},
+		algorithmsList:null,
+		selectedAlg:"",
+		scoreSummary:{},
+		scoreSlug:"",
 }, action) {
 	console.log("In APPs reducer!!");
-	console.log(action);
+	console.log(action.data);
 
 	switch (action.type) {
 	case "APPS_MODEL_SHOW_POPUP":
@@ -96,6 +100,8 @@ export default function reducer(state = {
 		return {
 			...state,
 			modelSummary: action.data,
+			algorithmsList:action.data.data.model_dropdown,
+			modelSlug:action.data.slug,
 		}
 	}
 	break;
@@ -105,6 +111,34 @@ export default function reducer(state = {
 		alert(action.json.non_field_errors);
 		throw new Error("Unable to fetch model summary!!");
 	}
+	break;
+	
+	case "SELECTED_ALGORITHM":
+	{
+		return {
+			...state,
+			selectedAlg:action.name,
+		}
+	}
+	break;
+	case "SCORE_SUMMARY_SUCCESS":
+	{
+	
+		return {
+			...state,
+			scoreSummary: action.data,
+			scoreSlug:action.data.slug,
+		}
+	}
+	break;
+
+	case "SCORE_SUMMARY_ERROR":
+	{
+		alert(action.json.non_field_errors);
+		throw new Error("Unable to fetch score summary!!");
+	}
+	break;
+	
  }
 return state
 }

@@ -6,35 +6,31 @@ import {Tabs,Tab} from "react-bootstrap";
 import {AppsCreateScore} from "./AppsCreateScore";
 import {Card} from "../signals/Card";
 import {getListOfCards} from "../../actions/appActions";
-import CircularProgressbar from 'react-circular-progressbar';
+import {Button} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"
 
 @connect((store) => {
 	return {login_response: store.login.login_response, 
-		modelList:store.apps.modelList,modelSummary:store.apps.modelSummary,
+		scoreList:store.apps.scoreList,scoreSummary:store.apps.scoreSummary,
 		};
 })
 
 
-export class AppsModelDetail extends React.Component {
+export class AppsScoreDetail extends React.Component {
   constructor() {
     super();
   }
   
   render() {
-    console.log("apps Model Detail View is called##########3");
-    const modelSummary = store.getState().apps.modelSummary.data;
-	if (modelSummary) {
+    console.log("apps Score Detail View is called##########3");
+    const scoreSummary = store.getState().apps.scoreSummary.data;
+    console.log(scoreSummary)
+	if (scoreSummary) {
 		console.log(this.props)
-		let listOfCardList = getListOfCards(modelSummary.model_summary.listOfCards)
+		let listOfCardList = getListOfCards(scoreSummary.listOfCards)
 		let cardDataList = listOfCardList.map((data, i) => {
-			if( i != 0){
-				if(i%2 != 0)
-				return (<div className="col-md-6 xs-p-50 clearfix"><Card cardData={data} /></div>)
-				else
-				return (<div className="col-md-6 xs-p-50"><Card cardData={data} /></div>)
-			}
-             else return (<Card key={i} cardData={data} />)
+		
+            return (<Card key={i} cardData={data} />)
 			
 		                    });
 		if(listOfCardList){
@@ -47,7 +43,7 @@ export class AppsModelDetail extends React.Component {
 		                 
 		                <div className="panel panel-mAd">
 		                    <div className="panel-heading">
-		                      <h2>{store.getState().apps.modelSummary.name}</h2>
+		                      <h2>{store.getState().apps.scoreSummary.name}</h2>
 		                      <div className="clearfix"></div>
 		                    </div>
 		                   <div className="panel-body">
@@ -58,7 +54,7 @@ export class AppsModelDetail extends React.Component {
 		                    </div>
 		                    <div class="row">
 		                    <div className="col-md-2 col-md-offset-10">
-		                   <AppsCreateScore match={this.props.match}/>
+		                    <Button className="btn btn-primary md-close">Download</Button>
 		                   </div>
 		                   </div>
 		             </div>
@@ -79,7 +75,7 @@ export class AppsModelDetail extends React.Component {
 		        <div className="page-head">
 		        </div>
 		        <div className="main-content">
-		          <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif" } />
+		          <img id="loading" src={ STATIC_URL + "/assets/images/Preloader_2.gif"}/>
 		        </div>
 		      </div>
 		    );
