@@ -65,6 +65,7 @@ function fetchCreateSignalError(json) {
 }
 
 export function getList(token) {
+	//alert("working");
     return (dispatch) => {
     return fetchPosts(token).then(([response, json]) =>{
         if(response.status === 200){

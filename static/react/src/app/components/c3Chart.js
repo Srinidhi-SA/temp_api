@@ -105,7 +105,7 @@ if(this.props.tooltip){
       chart.destroy();
 	  chart = c3.generate(data);
    
-    this.props.dispatch(chartObjStore(chart));
+    //this.props.dispatch(chartObjStore(chart));
   }
 
 
