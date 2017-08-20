@@ -1,6 +1,7 @@
 
 import {API} from "../helpers/env";
 import {PERPAGE} from "../helpers/helper";
+import {dataPreviewInterval} from "./dataUploadActions";
 
 function getHeader(token){
 	return {
@@ -13,7 +14,6 @@ export function getDataList(pageNo) {
 	return (dispatch) => {
 		return fetchDataList(pageNo,sessionStorage.userToken).then(([response, json]) =>{
 			if(response.status === 200){
-				console.log(json)
 				dispatch(fetchDataSuccess(json))
 			}
 			else{
@@ -47,12 +47,12 @@ export function fetchDataSuccess(doc){
 }
 
 
-export function getDataSetPreview(slug) {
+export function getDataSetPreview(slug,interval) {
     return (dispatch) => {
     return fetchDataPreview(slug).then(([response, json]) =>{
         if(response.status === 200){
           console.log(json)
-        dispatch(fetchDataPreviewSuccess(json))
+        dispatch(fetchDataPreviewSuccess(json,interval,dispatch))
         dispatch(showDataPreview())
       }
       else{
@@ -69,13 +69,24 @@ function fetchDataPreview(slug) {
 		}).then( response => Promise.all([response, response.json()]));
 }
 //get preview data
-function fetchDataPreviewSuccess(dataPreview) {
+function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
   console.log("data preview from api to store")
-  console.log(dataPreview)
-  return {
-    type: "DATA_PREVIEW",
-    dataPreview
+  if(interval){
+	  if(dataPreview.analysis_done){
+		  clearInterval(interval);	
+		  return {
+			    type: "DATA_PREVIEW",
+			    dataPreview
+			  }
+		 
+	  } 
+  }else{
+	  return {
+		    type: "DATA_PREVIEW",
+		    dataPreview
+		  } 
   }
+ 
 }
 
 function fetchDataPreviewError(json) {

@@ -21,6 +21,7 @@ import {getDataSourceList,saveFileToStore,updateSelectedDataSrc,updateDbDetails}
 		db_username:store.dataSource.db_host,
 		db_port:store.dataSource.db_port,
 		db_password:store.dataSource.db_host,
+		selectedDataset:store.datasets.selectedDataSet,
 	};
 })
 

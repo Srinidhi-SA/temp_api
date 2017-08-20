@@ -15,6 +15,7 @@ import {getAllDataList,getDataSetPreview,storeSignalMeta,updateDatasetName} from
 		dataPreview: store.datasets.dataPreview,
 		curUrl:store.datasets.curUrl,
 		selectedDataset:store.datasets.selectedDataSet,
+		dataPreviewFlag:store.datasets.dataPreviewFlag,
 		};
 })
 
@@ -49,8 +50,9 @@ export class AppsCreateModel extends React.Component {
 		const dataSets = store.getState().datasets.allDataSets.data;
 		let renderSelectBox = null;
 		let _link = "";
-		if(store.getState().datasets.dataPreview){
-		 _link = "/data/"+store.getState().datasets.dataPreview.slug;	
+		if(store.getState().datasets.dataPreviewFlag){
+			let _link = "/data/"+store.getState().datasets.selectedDataSet;
+			return(<Redirect to={_link}/>);
 		}
 		if(dataSets){
 			renderSelectBox = <select id="model_Dataset" name="selectbasic" onChange={this.updateDataset.bind(this)} class="form-control">
@@ -84,7 +86,7 @@ export class AppsCreateModel extends React.Component {
 				</Modal.Body>
 				<Modal.Footer>
 				<Button className="btn btn-primary md-close" onClick={this.closeModelPopup.bind(this)}>Close</Button>
-                 <Link to={"/data/"+store.getState().datasets.selectedDataSet} className="btn btn-primary" onClick={this.getDataSetPreview.bind(this)}>Create</Link>
+                <Button bsStyle="primary" onClick={this.getDataSetPreview.bind(this)}>Create</Button>
 				</Modal.Footer>
 				</Modal>
 				</div>

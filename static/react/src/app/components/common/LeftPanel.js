@@ -38,12 +38,12 @@ hideDataPrev(){
                       STORY</NavLink>
                   </li>*/}
                   <li>
-                    <NavLink className="sdb_app" to ="/apps">
+                    <NavLink onClick={this.hideDataPrev.bind(this)}  className="sdb_app" to ="/apps">
                       <span></span>
                       APPS</NavLink>
                   </li>
                   <li>
-                    <NavLink className="sdb_data" to ="/data">
+                    <NavLink onClick={this.hideDataPrev.bind(this)} className="sdb_data" to ="/data">
                       <span></span>
                       DATA</NavLink>
                   </li>

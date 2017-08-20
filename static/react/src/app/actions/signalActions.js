@@ -48,7 +48,7 @@ function fetchCreateSignalSuccess(signalData,dispatch) {
           dispatch(getSignalAnalysis(sessionStorage.userToken,signalData.slug));
     }
 
-  },2000);
+  },20000);
 
   return {
     type: "CREATE_SUCCESS",

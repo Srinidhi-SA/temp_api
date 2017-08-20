@@ -18,6 +18,8 @@ var dateFormat = require('dateformat');
 	return {login_response: store.login.login_response,
 		dataList: store.datasets.dataList,dataPreview: store.datasets.dataPreview,
 		 signalMeta: store.datasets.signalMeta,
+		 selectedDataSet:store.datasets.selectedDataSet,
+		 dataPreviewFlag:store.getState().datasets.dataPreviewFlag,
 	};
 })
 
@@ -45,8 +47,8 @@ export class Data extends React.Component {
 	render() {
 		console.log("data is called");
 		console.log(this.props);
-		if(store.getState().datasets&&store.getState().datasets.dataPreview&&store.getState().datasets.dataPreview){
-			let _link = "/data/"+this.selectedData;
+		if(store.getState().datasets.dataPreviewFlag){
+			let _link = "/data/"+store.getState().datasets.selectedDataSet;
 			return(<Redirect to={_link}/>);
 		}
 

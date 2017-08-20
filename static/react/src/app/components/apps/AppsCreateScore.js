@@ -15,6 +15,7 @@ import {getAllDataList,getDataSetPreview,storeSignalMeta,updateDatasetName} from
 		dataPreview: store.datasets.dataPreview,
 		appsScoreShowModal:store.apps.appsScoreShowModal,
 		selectedDataset:store.datasets.selectedDataSet,
+		dataPreviewFlag:store.datasets.dataPreviewFlag,
 		};
 })
 
@@ -46,11 +47,14 @@ export class AppsCreateScore extends React.Component {
     	this.props.dispatch(updateDatasetName(e.target.value));
     }
 	render() {
+		if(store.getState().datasets.dataPreviewFlag){
+			let _link = "/data/"+store.getState().datasets.selectedDataSet;
+			return(<Redirect to={_link}/>);
+		}
 		const dataSets = store.getState().datasets.allDataSets.data;
 		const algorithms = store.getState().apps.algorithmsList;
 		let renderSelectBox = null;
 		let algorithmNames = null;
-		
 		if(dataSets){
 			renderSelectBox = <select id="score_Dataset" name="selectbasic" onChange={this.updateDataset.bind(this)}  class="form-control">
 			{dataSets.map(dataSet =>
@@ -88,7 +92,7 @@ export class AppsCreateScore extends React.Component {
 				</Modal.Body>
 				<Modal.Footer>
 				<Button className="btn btn-primary md-close" onClick={this.closeScorePopup.bind(this)}>Close</Button>
-				<Link to={"/data/"+store.getState().datasets.selectedDataSet} className="btn btn-primary"  onClick={this.getDataSetPreview.bind(this)} >Create</Link>
+				<Button bsStyle="primary"  onClick={this.getDataSetPreview.bind(this)} >Create</Button>
 				</Modal.Footer>
 				</Modal>
 				</div>
