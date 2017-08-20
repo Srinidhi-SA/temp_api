@@ -228,7 +228,7 @@ console.log("l1name is ...."+selectedSignal);
                         </button>
                         </Link>
                         <button type="button" className="btn btn-default">
-                          <i className="fa fa-times"></i>
+                          <i className="pe-7s-close pe-lg"></i>
                         </button>
                       </div>
                     </div>
@@ -276,7 +276,7 @@ console.log("l1name is ...."+selectedSignal);
                                   <div className="panel-heading">
                                     <span className="title">
                                       <i className="mAd_icons ic_perf active"></i>
-                                      Measure 1
+                                      Summary
                                     </span>
                                   </div>
                                   <div className="panel-body">

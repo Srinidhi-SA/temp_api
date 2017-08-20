@@ -2426,7 +2426,7 @@ select[multiple].input-group-sm>.form-control, select[multiple].input-group-sm>.
 	list-style: none
 }
 .nav>li>a {
-	padding: 10px 15px
+	padding: 0
 }
 .nav>li>a:focus, .nav>li>a:hover {
 	text-decoration: none;
@@ -2738,8 +2738,7 @@ select[multiple].input-group-sm>.form-control, select[multiple].input-group-sm>.
 	float: left
 }
 .navbar-nav>li>a {
-	padding-top: 16px;
-	padding-bottom: 16px
+	padding: 10px 0
 }
 }
 .navbar-form {
@@ -3503,6 +3502,8 @@ a.thumbnail.active, a.thumbnail:focus, a.thumbnail:hover {
 a.list-group-item, button.list-group-item {
 	color: #555
 }
+.sdbar_switch a.list-group-item {white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+
 a.list-group-item .list-group-item-heading, button.list-group-item .list-group-item-heading {
 	color: #333
 }
@@ -4001,7 +4002,7 @@ button.close {
 	position: absolute
 }
 .modal-footer {
-	padding: 15px;
+	padding: 10px 15px;
 	text-align: right;
 	border-top: 1px solid #e5e5e5
 }
@@ -6124,7 +6125,7 @@ button:focus {
 
 .side-menu {
 	position: fixed;
-	width: 100px;
+	width: 80px;
 	height: 100%;
 	background-color: #333333;
 	border-right: 1px solid #eee;
@@ -6141,7 +6142,7 @@ button:focus {
 	background: #00998c;color: #FFF; }
 .side-menu .navbar-nav li {
 	display: block;
-	width: 99px;
+	width: 79px;
 }
 .side-menu .navbar-nav li a {
 	text-align: center;
@@ -6150,7 +6151,7 @@ button:focus {
 }
 /* Main body section */
 .side-body {
-	margin-left: 100px;
+	margin-left: 80px;
 	margin-top: 60px;
 }
 
@@ -6432,9 +6433,9 @@ button:focus {
 .side-menu .navbar-nav .active a::after, .side-menu .navbar-nav  a.active::after {
 	content: "";
 	position: absolute;
-	top: 45px;
-	left: 70px;
-	border-width: 10px 15px 10px 15px;
+	top: 40px;
+	left: 54px;
+    border-width: 7px 13px 7px 13px;
 	border-style: solid;
 	border-color: transparent #FFF transparent transparent; /* Old mAdv Comment e0e6e5 */
 	display: block;
@@ -10215,7 +10216,7 @@ box-shadow: 0px 0px 14px 4px rgba(0,0,0,0.25);
 	list-style: none
 }
 .btn-hspace, .btn-space {
-	margin-right: 5px
+	margin-right:0 /*margin-right: 5px*/
 }
 .pricing-table-features>li {
 	font-size: 14px;
@@ -11950,7 +11951,7 @@ pre {
 .modal-colored-header .modal-header {
 	background-color: #00998c;
 	color: #fff;
-	padding: 20px 15px
+	padding: 15px
 }
 .modal-colored-header .modal-body {
 	background-color: #fff
@@ -14408,7 +14409,12 @@ div.dataTables_wrapper div.dataTables_length label select {
     height: 60px;
 }
 .newCardTitle a{
-    color: #696969; display:block; }
+        color: #696969;
+    display: block;
+    height: 52px;
+    /* border: 1px solid; */
+    text-overflow: ellipsis;
+    overflow: hidden; white-space: nowrap; text-transform: capitalize; }
 .footerTitle{
 	display:block;
 	font-size:12px;
@@ -14424,7 +14430,7 @@ div.dataTables_wrapper div.dataTables_length label select {
 }
 .newCardStyle:hover { box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22); }
 .firstCard .col-xs-8.col-xs-offset-0 {
-    padding-left: 30px;
+        padding-left: 12px;
 }
 .newCardStyle .card-center .fa { line-height:100px; color:#FFF; }
 .newCardStyle.firstCard:hover { background: #007a70; }
@@ -14481,7 +14487,7 @@ div.dataTables_wrapper div.dataTables_length label select {
    text-decoration:underline;
 }
 .newStoryCard{
-	font-size: 22px;
+	font-size: 26px;
     color: #fff;
     /* float: right; */
     /* text-align: center; */
@@ -14506,13 +14512,13 @@ div.dataTables_wrapper div.dataTables_length label select {
 	cursor:pointer;
 }
 .card-center{
-	line-height: 100px;
+	line-height: 107px;
 	padding-left:0px;
 	padding-right:20px;
 
 }
 .card-center-tile {
-    height: 80px;
+    height: 78px;
     padding: 0 15px;
     border-bottom: 1px solid #ececec;
     /* line-height: 66px; */
@@ -14533,7 +14539,7 @@ div.dataTables_wrapper div.dataTables_length label select {
 .card-footer .left_div {
     float: left;
     width: 57%;
-    /* margin-top: -1%; */
+     margin-top: 2px;
     line-height: 20px;
 
 }
@@ -14600,9 +14606,10 @@ background:#ededed; color:#7dac02
 .icon_ovr.ms { padding-top:28px;}
 .icon_ovr.dmn { background:url(../images/icon_dimension.png) no-repeat left bottom }
 .icon_ovr.mes { background:url(../images/icon_measure.png) no-repeat left bottom}
-.data-info h1 { text-align:right; color:#7dac02; font-size:44px; }
-.data-info h1, .data-info h3 { margin-top: 10px;}
-.v_smry { text-align: center; padding: 3em; }
+.data-info h1 { color:#7dac02; font-size:50px; }
+ 
+.data-info h1, .data-info h3 { margin: 0;}
+.v_smry { text-align: center; padding: 7em 3em; }
 .v_smry img { margin:0 auto; }
 .v_smry a { color: #7dac02; font-size:18px; font-weight:bold; }
 .text_seconday { color:rgb(224,123,22)}
@@ -14625,9 +14632,7 @@ background:#ededed; color:#7dac02
     float: none;
     display: table-cell;
 }
-.full-width-tabs > ul.nav.nav-tabs > li > a {
-    text-align: center; padding:10px; text-transform: capitalize;
-}
+.full-width-tabs > ul.nav.nav-tabs > li > a { text-align: center; padding-bottom: 5px; text-transform: capitalize; padding-top: 0; }
 .panel-mAd .nav-tabs { background;none; }
 .panel-mAd li.active a, .panel-mAd li a.active {
     border-bottom: 2px solid #13c0b1 !important;
@@ -14637,9 +14642,9 @@ background:#ededed; color:#7dac02
 .mAd_icons.tab_overview, .mAd_icons.tab_overview, .mAd_icons.tab_trend, .mAd_icons.tab_performance, .mAd_icons.tab_influences, .mAd_icons.tab_predictions, .mAd_icons.tab_chi-square, .mAd_icons.tab_chi-square,  .mAd_icons.tab_summary, .mAd_icons.tab_decision-tree { display:block; margin:0 auto; width:35px; height:30px; }
 
 .mAd_icons.tab_overview{ background-position: 0 0;}
-.nav-tabs li a:hover .mAd_icons.tab_overview, .active .mAd_icons.tab_overview { background-position: 0 -30px;}
+.nav-tabs li a:hover .mAd_icons.tab_overview, .active .mAd_icons.tab_overview { background-position: 0 -30px;} 
 
-.mAd_icons.tab_summary { background-position: -142px -70px}
+.mAd_icons.tab_summary{ background-position: -142px -70px}
 .nav-tabs li a:hover .mAd_icons.tab_summary, .active .mAd_icons.tab_summary { background-position: -142px -100px}
 
 .mAd_icons.tab_decision-tree{ background-position: 0 0;}
@@ -14649,18 +14654,22 @@ background:#ededed; color:#7dac02
 .mAd_icons.tab_chi-square{ background-position: -108px -70px}
 .nav-tabs li a:hover .mAd_icons.tab_chi-square, .active .mAd_icons.tab_chi-square { background-position: -108px -100px}
 
-.mAd_icons.tab_trend { background-position: -35px 0px;}
-.nav-tabs li a:hover .mAd_icons.tab_trend, .active .mAd_icons.tab_trend { background-position: -35px -30px;}
-.mAd_icons.tab_performance { background-position: -70px 0px;}
-.nav-tabs li a:hover .mAd_icons.tab_performance, .active .mAd_icons.tab_performance{ background-position: -70px -30px;}
+.mAd_icons.tab_performance { background-position: -35px 0px;}
+.nav-tabs li a:hover .mAd_icons.tab_performance, .active .mAd_icons.tab_performance{ background-position: -35px -30px;}
+
+.mAd_icons.tab_trend  { background-position: -70px 0px;}
+.nav-tabs li a:hover .mAd_icons.tab_trend,.active .mAd_icons.tab_trend { background-position: -70px -30px;}
+
 .mAd_icons.tab_influences { background-position: -108px 0px; }
 .nav-tabs li a:hover .mAd_icons.tab_influences, .active .mAd_icons.tab_influences{ background-position: -108px -30px;}
 .mAd_icons.tab_predictions { background-position: -140px 0px;}
 .nav-tabs li a:hover .mAd_icons.tab_predictions, .active .mAd_icons.tab_predictions{ background-position: -140px -30px;}
 .mAd_icons.oppr_icon { width: 80px; height: 80px; background-position: 0 -65px; margin: 0 auto; }
 
-.mAd_icons.ic_perf { width: 27px; height: 27px; margin: 0 auto; background-position: -184px -5px; display: inline-block;}
-.mAd_icons.ic_perf.active { background-position: -184px -36px; float: left; margin-right: 10px;}
+.mAd_icons.ic_perf { width: 27px; height: 27px; margin: 0 auto; background-position: -234px -5px; display: inline-block;}
+.mAd_icons.ic_perf.active { background-position: -235px -36px; float: left; margin-right: 10px;}
+.mAd_icons.ic_inflnce { width: 27px; height: 27px; margin: 0 auto; background-position: -184px -5px; display: inline-block;}
+.mAd_icons.ic_inflnce.active { background-position: -184px -36px; float: left; margin-right: 10px;}
 
 
 .summary_heading { padding: 0; margin: 0 0 10px 0; min-height: 55px; border-color: #ddd; }
@@ -14746,7 +14755,7 @@ a.tabs-control.right span { right: 5px; }
 .panel-mAd .tab-pane { overflow:hidden; }
 .sb_navigation { border-bottom:1px solid #ddd; }
 .sb_navigation li a { padding: 0px; margin: 0 5px; }
-.sb_navigation li a span {display:block;white-space: nowrap; width:130px; overflow: hidden;
+.sb_navigation li a span {display:block;white-space: nowrap; width:176px; overflow: hidden;
     text-overflow: ellipsis }
 .sb_navigation li a.active { border-bottom: 1px solid #04bcac; color: #00998c;}
 
@@ -14872,7 +14881,7 @@ a.tabs-control.right span { right: 5px; }
 	-moz-box-shadow: -5px 0px 10px 0px rgba(0,0,0,0.2);
 	box-shadow: -5px 0px 10px 0px rgba(0,0,0,0.2);}
 .side_panel .list-group-item.active, .side_panel .list-group-item.active:focus, .side_panel .list-group-item.active:hover {
-    background: #e8e8e8; color: #333; border-color: #dad9d9; }
+    background: #f7f7f7; color: #333; border-color: #dad9d9; }
 .panel-mAd .tab-content { padding: 5px 20px;}
 .side_panel .list-group {
     margin-bottom: 0px;
@@ -15049,20 +15058,29 @@ table.table.table-condensed.table-hover.table-bordered.table-striped {
 	margin-left:10%;
 } 
 .apps_table_style {
-	background-color:#90be5b;
-	color:#000;
+    background-color: #ffffff;
+    color: #000;
 }
 .apps_table_style thead {
-	background-color:#eec633;
+    background-color: #00998c;
+    color: #fff;
 }
 table.apps_table_style thead th { font-weight:bold }
 .apps_table_style tbody th.left_highlilght {
-	background-color:#c3e37e; 
-	text-align:center;
-	 vertical-align: middle;
-} 
+    background-color: #b9e6e3;
+    text-align: center;
+    vertical-align: middle;
+}
 
 h4, h5 { font-weight:bold }
 
 .dropzone div { width: inherit !important; text-align: center; height: 130px !important; display: table-cell; vertical-align: middle; padding: 30px; }
 .dropzone div:hover{ border-color: rgb(0, 153, 140) !important;}
+
+.data-info h3 img { 
+    display: inline-block;
+    vertical-align: bottom;}
+.ex_bg { background: #f7f7f7; margin: 0 10px; }
+.ex_bg .col-md-9 { background:#FFF;  }
+.panel.panel-mAd { padding: 10px 15px; }
+.txt-justify { text-align: justify }
