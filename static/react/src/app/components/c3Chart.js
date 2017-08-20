@@ -111,7 +111,15 @@ if(this.props.tooltip){
 
   render() {
 	  this.updateChart();
+	  
      const classId = "chart"+this.props.classId + " ct col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 xs-mb-20";
+	/*if(this.props.sideChart=='_side'){
+  
+   const classId = "chart ct col-md-12";
+
+  }else{
+   const classId = "chart"+this.props.classId + " ct col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 xs-mb-20";
+ }*/
       return(
                         <div class={classId}></div>
       );

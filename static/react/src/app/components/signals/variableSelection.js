@@ -34,167 +34,19 @@ export class VariableSelection extends React.Component {
 		super(props);
   
     console.log("preview data check");
-	this.possibleListCount =0;
+	this.signalFlag =true;
 	this.possibleTrend = null;
 	}
 
 
 
-// componentDidMount(){
-//   var that = this;
-//  $(function(){
-//    selectedVariables.date = $("#rad_dt0").val();
-//     $("[type='radio']").click(function(){
-//         // let count=0;
-//          let id=$(this).attr("id");
-//
-//         selectedVariables.date = $("#"+id).val();
-//          that.setState(previousState => {
-//           return {radioChecked:id
-//                     };
-//         });
-//         console.log(selectedVariables);
-//
-//
-//     });
-//
-//    $("#mea").click(function(){   // select all measure clicked
-//      let count=0;
-//       if($(this).is(":checked")){
-//         $('.measure[type="checkbox"]').prop('checked', true);
-//       }else{
-//         $('.measure[type="checkbox"]').prop('checked', false);
-//       }
-//       selectedVariables.dimensions=[];
-//       $('.dimension[type="checkbox"]').each(function(){
-//
-//          if($(this).is(":checked")){
-//            count++;
-//            selectedVariables.dimensions.push($(this).val());
-//          }
-//       });
-//
-//       selectedVariables.measures=[];
-//       $('.measure[type="checkbox"]').each(function(){
-//
-//          if($(this).is(":checked")){
-//            count++;
-//            selectedVariables.measures.push($(this).val());
-//          }
-//       });
-//
-//
-//       console.log(selectedVariables);
-//
-//       that.setState(previousState => {
-//        return { countOfSelected: count};
-//      });
-//    });
-//
-//    $("#dim").click(function(){     // select all dimension clicked
-//      let count=0;
-//       if($(this).is(":checked")){
-//          $('.dimension[type="checkbox"]').prop('checked', true);
-//       }else{
-//          $('.dimension[type="checkbox"]').prop('checked', false);
-//       }
-//
-//       selectedVariables.dimensions=[];
-//       $('.dimension[type="checkbox"]').each(function(){
-//
-//          if($(this).is(":checked")){
-//            count++;
-//            selectedVariables.dimensions.push($(this).val());
-//          }
-//       });
-//       selectedVariables.measures=[];
-//       $('.measure[type="checkbox"]').each(function(){
-//
-//          if($(this).is(":checked")){
-//            count++;
-//            selectedVariables.measures.push($(this).val());
-//          }
-//       });
-//
-//     console.log(selectedVariables);
-//
-//       that.setState(previousState => {
-//        return { countOfSelected: count};
-//      });
-//
-//    });
-//
-// $('.measure[type="checkbox"]').click(function(){
-//   let count = 0;
-//   selectedVariables.measures=[];
-//   $('.measure[type="checkbox"]').each(function(){
-//      if(!$(this).is(":checked")){
-//        $('#mea[type="checkbox"]').prop('checked',false);
-//      }else{
-//
-//        count++;
-//         selectedVariables.measures.push($(this).val());
-//      }
-//   });
-//   selectedVariables.dimensions=[];
-//   $('.dimension[type="checkbox"]').each(function(){
-//
-//      if(!$(this).is(":checked")){
-//        $('#mea[type="checkbox"]').prop('checked',false);
-//      }else{
-//
-//        count++;
-//        selectedVariables.dimensions.push($(this).val());
-//      }
-//   });
-//
-//  console.log(selectedVariables);
-//
-//   that.setState(previousState => {
-//    return { countOfSelected: count};
-//  });
-//
-// });
-//
-// $('.dimension[type="checkbox"]').click(function(){
-//   let count=0;
-//    selectedVariables.dimensions=[];
-//   $('.dimension[type="checkbox"]').each(function(){
-//      if(!$(this).is(":checked")){
-//        $('#dim[type="checkbox"]').prop('checked',false);
-//      }else{
-//
-//        count++;
-//        selectedVariables.dimensions.push($(this).val());
-//      }
-//   });
-//    selectedVariables.measures=[];
-//   $('.measure[type="checkbox"]').each(function(){
-//      if(!$(this).is(":checked")){
-//        $('#mea[type="checkbox"]').prop('checked',false);
-//      }else{
-//
-//        count++;
-//         selectedVariables.measures.push($(this).val());
-//      }
-//   });
-//
-//    console.log(selectedVariables);
-//
-//   that.setState(previousState => {
-//    return { countOfSelected: count};
-//  });
-// });
-//
-//  });
-//
-// }
 handleAnlysisList(e){
   this.props.dispatch(selectedAnalysisList(e))
 
 }
 createSignal(){
   console.log(this.props);
+  this.signalFlag = false;
   // if($('#createSname').val().trim() != "" || $('#createSname').val().trim() != null){
   $('body').pleaseWait();
    let analysisList =[],config={}, postData={};
@@ -222,13 +74,13 @@ this.props.dispatch(createSignal(postData));
 
 setPossibleList(e){
 	
-	console.log(e.target.value);
+	//alert(e.target.value);
      this.props.dispatch(setPossibleAnalysisList(e.target.value));
 }
 
 	render(){
 		var that= this;
-     if(!$.isEmptyObject(this.props.selectedSignal)){
+     if(!$.isEmptyObject(this.props.selectedSignal) && !that.signalFlag){
        console.log("move from variable selection page");
        console.log(this.props.selectedSignal)
        $('body').pleaseWait('stop');

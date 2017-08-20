@@ -236,7 +236,7 @@ export class DataPreview extends React.Component {
 	}
 
 	moveToVariableSelection(){
-		console.log("working");
+		//alert(this.buttons.create.url);
 		const url = this.buttons.create.url;
 		this.props.history.push(url);
 	}
