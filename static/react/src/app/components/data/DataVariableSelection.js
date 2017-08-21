@@ -45,6 +45,8 @@ componentDidMount(){
 	     this.props.dispatch(resetSelectedVariables());
 		this.setVariables(this.dimensions,this.measures,this.datetime[this.datetime.length-1]);
 }
+
+
 	render() {
 
 		console.log("data variableSelection is called##########3");
@@ -104,7 +106,7 @@ componentDidMount(){
 			    	 );
 			    	  });
 			    	}else{
-			    	  var datetimeTemplate = <label>No dates variable present</label>
+			    	  var datetimeTemplate = <label>No date dimensions to display</label>
 			    	}
 			    	
 			    	const popoverLeft = (
