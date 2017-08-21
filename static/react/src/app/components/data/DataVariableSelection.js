@@ -127,7 +127,7 @@ componentDidMount(){
 			          <div className="row">
 			          <div className="col-lg-4">
 			            <div className="panel panel-primary-p1 cst-panel-shadow">
-			            <div className="panel-heading"><i className="mAd-icons ic_infllce"></i> Measures</div>
+			            <div className="panel-heading"><i className="mAd_icons ic_inflnce"></i> Measures</div>
 			            <div className="panel-body">
 			            {/*  <!-- Row for select all-->*/}
 			              <div className="row">
@@ -170,7 +170,7 @@ componentDidMount(){
 			          </div>{/*<!-- /.col-lg-4 -->*/}
 			          <div className="col-lg-4">
 			              <div className="panel panel-primary-p2 cst-panel-shadow">
-			              <div className="panel-heading"><i className="mAd-icons ic_perf"></i> Dimensions</div>
+			              <div className="panel-heading"><i className="mAd_icons ic_perf"></i> Dimensions</div>
 			                <div className="panel-body">
 			                  {/*  <!-- Row for select all-->*/}
 			                    <div className="row">
