@@ -113,7 +113,7 @@ componentDidMount(){
 			          <div className="row">
 			          <div className="col-lg-4">
 			            <div className="panel panel-primary-p1 cst-panel-shadow">
-			            <div className="panel-heading"><i className="pe-7s-graph1"></i> Measures</div>
+			            <div className="panel-heading"><i className="mAd-icons ic_infllce"></i> Measures</div>
 			            <div className="panel-body">
 			            {/*  <!-- Row for select all-->*/}
 			              <div className="row">
@@ -156,7 +156,7 @@ componentDidMount(){
 			          </div>{/*<!-- /.col-lg-4 -->*/}
 			          <div className="col-lg-4">
 			              <div className="panel panel-primary-p2 cst-panel-shadow">
-			              <div className="panel-heading"><i className="pe-7s-graph1"></i> Dimensions</div>
+			              <div className="panel-heading"><i className="mAd-icons ic_perf"></i> Dimensions</div>
 			                <div className="panel-body">
 			                  {/*  <!-- Row for select all-->*/}
 			                    <div className="row">
@@ -247,7 +247,7 @@ componentDidMount(){
 			 <div className="row">
 	            <div className="col-md-4 col-md-offset-5">
 
-	                <h4>{store.getState().datasets.selectedVariablesCount} Variable selected</h4>
+	                <h4>{store.getState().datasets.selectedVariablesCount} Variables selected </h4>
 									{/*<OverlayTrigger trigger="click" placement="left" overlay={popoverLeft}><a><i className="pe-7s-more pe-2x pe-va"></i></a></OverlayTrigger>*/}
 
 	            </div>

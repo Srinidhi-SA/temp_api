@@ -98,7 +98,7 @@ export class CreateSignal extends React.Component {
 				<div id="newSignal"  role="dialog" className="modal fade modal-colored-header">
 				<Modal show={store.getState().signals.newSignalShowModal} onHide={this.closeSignalModal.bind(this)} dialogClassName="modal-colored-header">
 				<Modal.Header closeButton>
-				<h3 className="modal-title">Create New</h3>
+				<h3 className="modal-title">Create Signal</h3>
 				</Modal.Header>
 				<Modal.Body>
 				  <div class="form-group">
@@ -111,7 +111,7 @@ export class CreateSignal extends React.Component {
 				<Modal.Footer>
 
 				<Button  onClick={this.closeSignalModal.bind(this)}>Close</Button>
-			    <Button className="btn btn-primary md-close" onClick={this.getPreviewData.bind(this)}>Create</Button>
+			    <Button bsStyle="primary" onClick={this.getPreviewData.bind(this)}>Create</Button>
 
 				</Modal.Footer>
 				</Modal>

@@ -393,6 +393,14 @@ export default function reducer(state = {
     }
   }
   break;
+   case "SEL_PREDICTION":
+    {
+    return {
+      ...state,
+      selectedPrediction:action.predictionSelected,
+    }
+  }
+  break;
 
   }
   return state
