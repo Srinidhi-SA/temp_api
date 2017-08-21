@@ -7,8 +7,6 @@ import {openDULoaderPopup,closeDULoaderPopup} from "../../actions/dataActions";
 import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
 import HeatMap from '../../helpers/heatmap';
-import {LoadingBar} from 'react-redux-loading-bar'
-import { Line } from 'rc-progress';
 
 
 @connect((store) => {
