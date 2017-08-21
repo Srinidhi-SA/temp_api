@@ -90,20 +90,22 @@ def find_chart_data_and_replace_with_chart_data(data):
     return output
 
 chartData = {
-      "data": {
-          "columns": [
-              ["data1", 30, 200, 100, 400, 150, 250],
-              ["data2", 130, 100, 140, 200, 150, 50]
-          ],
-          "type": "bar",
-      },
-      "bar": {
-          "width": {
-              "ratio": 0.5
-          }
-      }
-
-    }
+        "data": {
+            "columns": [
+            ["data1", 30, 200, 100, 400, 150, 250],
+            ["data2", 130, 100, 140, 200, 150, 50]
+            ],
+            "type": "bar",
+        },
+        "bar": {
+            "width": {
+            "ratio": 0.5
+        },
+        "color":{
+            "pattern": ['#0fc4b5' , '#005662', '#148071' , '#6cba86' , '#bcf3a2']
+        }
+    },
+}
 
 
 def decode_and_convert_chart_raw_data(data):
