@@ -74,7 +74,10 @@ def metadata_chart_conversion(data):
       },
       "legend": {
           "show": False
-      }
+      },
+        "color":{
+            "pattern": ['#0fc4b5' , '#005662', '#148071' , '#6cba86' , '#bcf3a2']
+        }
 
     }
     values = ["data1"]
