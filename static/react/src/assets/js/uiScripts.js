@@ -26,8 +26,8 @@ $('.continue').click(function(){
 $('.back').click(function(){
   $('.nav-tabs > .active').prev('li').find('a').trigger('click');
 });
-var hidWidth;
-/** Below code is for subnavigation ***/
+/*var hidWidth;
+ * Below code is for subnavigation ** 
 var scrollBarWidths = 40;
 
 var widthOfList = function(){
@@ -83,7 +83,7 @@ $('.scroller-left').click(function() {
   	$('.list').animate({left:"-="+getLeftPosi()+"px"},'slow',function(){
   	});
 });
-
+*/
 /** Slide Panel **
 
 $('[data-toggle=offcanvas]').click(function () {
