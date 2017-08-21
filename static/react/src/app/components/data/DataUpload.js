@@ -37,7 +37,7 @@ export class DataUpload extends React.Component {
 		this.props.dispatch(fileUpload(files[0]))
 	}
 	uploadData(){
-		this.props.dispatch(dataUpload())
+		this.props.dispatch(dataUpload());	
 	}
 	render() {
 			return (

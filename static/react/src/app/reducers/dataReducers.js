@@ -44,6 +44,14 @@ export default function reducer(state = {
 		}
 	}
 	break;
+	case "DATA_PREVIEW_FOR_LOADER": {
+		return {...state,
+			dataPreview:action.dataPreview,
+			selectedDataSet:action.slug
+		}
+	}
+	break;
+	
 	case "DATA_PREVIEW_ERROR":
 	{
 		throw new Error("Fetching of Data failed!!");

@@ -9,3 +9,22 @@ export function openCreateSignalModal() {
 			type: "CREATE_SIGNAL_HIDE_MODAL",
 		}
 	}
+	
+	export function openCsLoaderModal() {
+		return {
+			type: "SHOW_CREATE_SIGNAL_LOADER",
+		}
+	}
+	
+	export function closeCsLoaderModal() {
+		return {
+			type: "HIDE_CREATE_SIGNAL_LOADER",
+		}
+	}
+	
+	export function updateCsLoaderValue(value) {
+		return {
+			type: "CREATE_SIGNAL_LOADER_VALUE",
+			value
+		}
+	}
