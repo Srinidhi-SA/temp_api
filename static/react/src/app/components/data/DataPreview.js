@@ -431,7 +431,7 @@ export class DataPreview extends React.Component {
 
 					</div>
 					{/*<!-- /.Page Content Area --> */}
-					</div>
+					 </div>
 			);
 		} else {
 			return (

@@ -14632,10 +14632,10 @@ background:#ededed; color:#7dac02
 
 /** Panel Header **/
 .panel-mAd .panel { padding: 10px; }
-.panel-mAd>.panel-heading {  margin: 0; padding: 6px 0px 0 10px; /*background-color: #FFF; border-bottom:1px solid #ddd; */}
+.panel-mAd>.panel-heading {  margin: 0; /*padding: 6px 0px 0 10px; background-color: #FFF; border-bottom:1px solid #ddd; */}
 .panel-mAd>.panel-heading h2 { margin-top: 8px;font-weight: bold;}
 .panel-mAd .panel-body { padding:0;}
-
+.panel-mAd div h2 small { font-size:50%; }
 /** For Card Tabs **/
 .panel-mAd  .nav-tabs { background:#FFF; }
 .full-width-tabs > ul.nav.nav-tabs {
@@ -14655,7 +14655,7 @@ background:#ededed; color:#7dac02
 }
 .panel-mAd .full-width-tabs > ul.nav.nav-tabs > li > a   span { display:block; }
 .mAd_icons { background:url(../images/mAd_image.png) no-repeat }
-.mAd_icons.tab_overview, .mAd_icons.tab_overview, .mAd_icons.tab_trend, .mAd_icons.tab_performance, .mAd_icons.tab_influences, .mAd_icons.tab_predictions, .mAd_icons.tab_chi-square, .mAd_icons.tab_association, .mAd_icons.tab_summary, .mAd_icons.tab_decision-tree, .mAd_icons.tab_prediction { display:block; margin:0 auto; width:35px; height:30px; }
+.mAd_icons.tab_overview, .mAd_icons.tab_overview, .mAd_icons.tab_trend, .mAd_icons.tab_performance, .mAd_icons.tab_influencers, .mAd_icons.tab_prediction, .mAd_icons.tab_chi-square, .mAd_icons.tab_association, .mAd_icons.tab_summary, .mAd_icons.tab_decision-tree, .mAd_icons.tab_prediction { display:block; margin:0 auto; width:35px; height:30px; }
 
 .mAd_icons.tab_overview{ background-position: 0 0;}
 .nav-tabs li a:hover .mAd_icons.tab_overview, .active .mAd_icons.tab_overview { background-position: 0 -30px;} 
@@ -14676,8 +14676,8 @@ background:#ededed; color:#7dac02
 .mAd_icons.tab_trend  { background-position: -70px 0px;}
 .nav-tabs li a:hover .mAd_icons.tab_trend,.active .mAd_icons.tab_trend { background-position: -70px -30px;}
 
-.mAd_icons.tab_influences { background-position: -108px 0px; }
-.nav-tabs li a:hover .mAd_icons.tab_influences, .active .mAd_icons.tab_influences{ background-position: -108px -30px;}
+.mAd_icons.tab_influencers { background-position: -108px 0px; }
+.nav-tabs li a:hover .mAd_icons.tab_influencers, .active .mAd_icons.tab_influencers{ background-position: -108px -30px;}
 .mAd_icons.tab_predictions { background-position: -140px 0px;}
 .nav-tabs li a:hover .mAd_icons.tab_predictions, .active .mAd_icons.tab_predictions{ background-position: -140px -30px;}
 .mAd_icons.oppr_icon { width: 80px; height: 80px; background-position: 0 -65px; margin: 0 auto; }
