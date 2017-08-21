@@ -57,7 +57,7 @@ export class Card extends React.Component {
            }
           break;
           case "tree":
-            return (<div className="custom-container"> <Tree data={d3data} height={200} width={400} treeClassName="custom"/></div>);
+            return (<div className="custom-container"> {/*<Tree data={d3data} height={200} width={400} treeClassName="custom"/>*/}</div>);
           break;
         case "table":
             return (<CardTable key = {i} jsonData={story.data} type={story.dataType}/>);
