@@ -34,7 +34,7 @@ export class VariableSelection extends React.Component {
 		super(props);
   
     console.log("preview data check");
-	this.possibleListCount =0;
+	this.signalFlag =true;
 	this.possibleTrend = null;
 	}
 
@@ -46,6 +46,7 @@ handleAnlysisList(e){
 }
 createSignal(){
   console.log(this.props);
+  this.signalFlag = false;
   // if($('#createSname').val().trim() != "" || $('#createSname').val().trim() != null){
   $('body').pleaseWait();
    let analysisList =[],config={}, postData={};
@@ -73,13 +74,22 @@ this.props.dispatch(createSignal(postData));
 
 setPossibleList(e){
 	
-	console.log(e.target.value);
+	//alert(e.target.value);
      this.props.dispatch(setPossibleAnalysisList(e.target.value));
+}
+
+componentDidUpdate(){
+	console.log("trend disbale check:::: ");
+     console.log(this.props.selectedDimensions);
+	 console.log(this.props.selectedTimeDimensions);
+	 if(!this.props.selectedTimeDimensions){
+		 $('#analysisList input[type="checkbox"]').last().attr("disabled", true);
+	 }
 }
 
 	render(){
 		var that= this;
-     if(!$.isEmptyObject(this.props.selectedSignal)){
+     if(!$.isEmptyObject(this.props.selectedSignal) && !that.signalFlag){
        console.log("move from variable selection page");
        console.log(this.props.selectedSignal)
        $('body').pleaseWait('stop');
@@ -105,8 +115,8 @@ setPossibleList(e){
 
 	// possible analysis list -------------------------------------
 	
-   //const possibleAnalysis = dataPrev.meta_data.possibleAnalysis.target_variable;
-    const possibleAnalysis = {"dimension": [
+   const possibleAnalysis = dataPrev.meta_data.possibleAnalysis.target_variable;
+    /*const possibleAnalysis = {"dimension": [
        {"name": "Descriptive analysis", "id": "descriptive-analysis"},
        {"name": "Dimension vs. Dimension", "id": "dimension-vs-dimension"},
        {"name": "Predictive modeling", "id": "predictive-modeling"}
@@ -115,7 +125,7 @@ setPossibleList(e){
            {"name": "Descriptive analysis", "id": "descriptive-analysis"},
            {"name": "Measure vs. Dimension", "id": "measure-vs-dimension"},
            {"name": "Measure vs. Measure", "id": "measure-vs-measure"}
-       ], };
+       ], };*/
         let renderPossibleAnalysis = null, renderSubList=null;
 		
      if(possibleAnalysis){
@@ -175,7 +185,7 @@ setPossibleList(e){
   <div className="row">
     <div className="col-md-12">
       <div className="panel panel-alt4 panel-borders">
-        <div className="panel-heading text-center">PerhtmlForming the following Analysis</div>
+        <div className="panel-heading text-center">Type of Signals</div>
          <div className="panel-body text-center" id="analysisList" >
 	      {renderPossibleAnalysis}
 	     </div>
@@ -186,7 +196,7 @@ setPossibleList(e){
   <div className="row">
     <div className="col-lg-4 col-lg-offset-8">
       <div className="htmlForm-group">
-        <input type="text" name="createSname" id="createSname" className="htmlForm-control input-sm" placeholder="Enter a signal name"/>
+        <input type="text" name="createSname" id="createSname" className="form-control input-sm" placeholder="Enter a signal name"/>
       </div>
     </div>{/*<!-- /.col-lg-4 -->*/}
   </div>

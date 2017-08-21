@@ -104,6 +104,7 @@ export class DataPreview extends React.Component {
 		this.buttons={};
 		//this.buttonsTemplate=null;
 		this.hideDataPreview = this.hideDataPreview.bind(this);
+		this.chartId = "_side";
 	}
 
 	hideDataPreview(){
@@ -236,7 +237,7 @@ export class DataPreview extends React.Component {
 	}
 
 	moveToVariableSelection(){
-		console.log("working");
+		//alert(this.buttons.create.url);
 		const url = this.buttons.create.url;
 		this.props.history.push(url);
 	}
@@ -260,9 +261,13 @@ export class DataPreview extends React.Component {
 			const topInfo = dataPrev.metaData.map((item, i) => {
 				if(item.display){
 					return(
+ 
+							 
+ 
 							<div key={i} className="col-md-2 co-sm-4 col-xs-6">
+ 
 							<h3>
-							{item.value} <small>{item.name}</small>
+							{item.value} <br/><small>{item.displayName}</small>
 							</h3>
 							</div>
 
@@ -384,7 +389,7 @@ export class DataPreview extends React.Component {
 					<div id="pnl_visl" className="panel-collapse collapse in" aria-expanded="true">
 					<div className="panel-body" id="side-chart">
 					{/*<img src="../assets/images/data_preview_graph.png" className="img-responsive" />*/}
-					<C3Chart classId={"_side"} data={sideChart} yformat={false} sideChart={true}/>
+					<C3Chart classId={this.chartId} data={sideChart} yformat={false} sideChart={true}/>
 					</div>
 					</div>
 					</div>
@@ -422,11 +427,18 @@ export class DataPreview extends React.Component {
 					</div>
 					<div className="row">
 					<div className="col-md-12 text-right">
-					<div className="panel"><div className="panel-body">
+ 
+					<div className="panel">
+					<div className="pane-body">
 					<Button onClick={this.closePreview.bind(this)}> {this.buttons.close.text} </Button>
 					<Button onClick={this.moveToVariableSelection.bind(this)} bsStyle="primary"> {this.buttons.create.text}</Button>
 					</div>
-</div></div>
+					</div>
+					</div>
+
+ 
+					</div>
+ 
 					</div>
 
 					</div>
