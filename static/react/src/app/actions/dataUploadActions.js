@@ -1,7 +1,7 @@
 	import {API} from "../helpers/env";
 	import store from "../store";
 	import {FILEUPLOAD} from "../helpers/helper";
-	import {getDataList,getDataSetPreview,updateDatasetName} from "./dataActions";
+	import {getDataList,getDataSetPreview,updateDatasetName,openDULoaderPopup} from "./dataActions";
 	export var dataPreviewInterval = null;
 	
 	function getHeaderWithoutContent(token){
@@ -16,9 +16,13 @@
 		};
 	}
 	export function dataUpload() {
-		 $('body').pleaseWait();
+		
+
+		// $('body').pleaseWait();
 		  return (dispatch) => {
-				return triggerDataUpload(sessionStorage.userToken).then(([response, json]) =>{
+			  dispatch(close());
+			  dispatch(openDULoaderPopup());
+			return triggerDataUpload(sessionStorage.userToken).then(([response, json]) =>{
 					if(response.status === 200){
 						console.log(json.slug)
 						dispatch(updateDatasetName(json.slug))
@@ -27,7 +31,7 @@
 					else{
 						dispatch(dataUploadError(json))
 					}
-				})
+				});
 			}
 	}
 	
@@ -64,6 +68,7 @@
 	
 	function dataUploadSuccess(data,dispatch) {
 		 dataPreviewInterval = setInterval(function(){
+			 dispatch(dataUploadLoaderValue(store.getState().datasets.dULoaderValue+10));
 			    if(!data.analysis_done){
 			          dispatch(getDataSetPreview(data.slug,dataPreviewInterval));
 			    }
@@ -90,6 +95,13 @@
 	export function close() {
 		return {
 			type: "HIDE_MODAL",
+		}
+	}
+	
+	export function dataUploadLoaderValue(value){
+		return {
+			type: "DATA_UPLOAD_LOADER_VALUE",
+			value,
 		}
 	}
 	

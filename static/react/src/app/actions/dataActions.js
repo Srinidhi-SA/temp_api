@@ -1,7 +1,8 @@
 
 import {API} from "../helpers/env";
 import {PERPAGE} from "../helpers/helper";
-import {dataPreviewInterval} from "./dataUploadActions";
+import store from "../store";
+import {dataPreviewInterval,dataUploadLoaderValue} from "./dataUploadActions";
 
 function getHeader(token){
 	return {
@@ -53,9 +54,10 @@ export function getDataSetPreview(slug,interval) {
         if(response.status === 200){
           console.log(json)
         dispatch(fetchDataPreviewSuccess(json,interval,dispatch))
-        dispatch(showDataPreview())
       }
       else{
+    	dispatch(hideDULoaderPopup());
+    	dispatch(dataUploadLoaderValue(10));
         dispatch(fetchDataPreviewError(json))
       }
     })
@@ -71,9 +73,9 @@ function fetchDataPreview(slug) {
 //get preview data
 function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
   console.log("data preview from api to store")
+    var slug = "";
   if(dataPreview.analysis_done){
-	  console.log(dataPreview)
-	  var slug = dataPreview.slug;
+	  slug = dataPreview.slug;
 	  if(interval != undefined){
 		  clearInterval(interval);	
 		  return {
@@ -82,14 +84,22 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
 			  slug,
 		  }
 	  } else{
-		  console.log(dataPreview)
 		  return {
 			  type: "DATA_PREVIEW",
 			  dataPreview,
 			  slug,
 		  } 
 	  }
-  }
+	  dispatch(hideDULoaderPopup());
+	  dispatch(dataUploadLoaderValue(10));
+	  dispatch(showDataPreview());
+  }else{
+	  var value = store.getState().datasets.dULoaderValue+10;
+	  return {
+			type: "DATA_UPLOAD_LOADER_VALUE",
+			value,
+		}
+  } 
 }
 
 function fetchDataPreviewError(json) {
@@ -240,5 +250,18 @@ export function setSelectedVariables(dimensions,measures,timeDimension){
 		measures,
 		timeDimension,
 		count,
+	}
+}
+
+export function openDULoaderPopup(){
+	return {
+		type: "DATA_UPLOAD_LOADER",
+	}
+}
+
+
+export function hideDULoaderPopup(){
+	return {
+		type: "HIDE_DATA_UPLOAD_LOADER",
 	}
 }

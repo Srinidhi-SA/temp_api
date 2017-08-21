@@ -13,6 +13,8 @@ export default function reducer(state = {
 		selectedVariablesCount:0,
 		signalMeta:{},
 		curUrl:"",
+		dataUploadLoaderModal:false,
+		dULoaderValue:10,
 }, action) {
 	console.log("In DATA reducer!!");
 	console.log(action);
@@ -183,6 +185,38 @@ export default function reducer(state = {
 	}
 	break;
 	
+	case "SHOW_DATA_PREVIEW":
+	{
+		return {
+			...state,
+			dataPreviewFlag:true,
+		}
+	}
+	break;
+	case "DATA_UPLOAD_LOADER":
+	{
+		return {
+			...state,
+			dataUploadLoaderModal:true,
+		}
+	}
+	break;
+	case "HIDE_DATA_UPLOAD_LOADER":
+	{
+		return {
+			...state,
+			dataUploadLoaderModal:false,
+		}
+	}
+	break;
+	case "DATA_UPLOAD_LOADER_VALUE":
+	{
+		return {
+			...state,
+			dULoaderValue:action.value,
+		}
+	}
+	break;
 	}
 	return state
 }
