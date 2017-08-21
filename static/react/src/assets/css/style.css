@@ -15251,3 +15251,6 @@ progress::-webkit-progress-value {
 }
 
 
+.card.full-width-tabs{
+    overflow: hidden;
+}
