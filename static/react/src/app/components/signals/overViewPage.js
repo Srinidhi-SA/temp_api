@@ -335,7 +335,7 @@ console.log("l1name is ...."+selectedSignal);
 
                             <div className="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
                               <div className="side_panel">
-                                <a href="javscript:void(0);" data-toggle="offcanvas" className="sdbar_switch">
+                                <a href="javascript:void(0);" data-toggle="offcanvas" className="sdbar_switch">
                                   <i className="mAd_icons sw_on"></i>
                                 </a>
                                 <div className="panel panel-primary">
