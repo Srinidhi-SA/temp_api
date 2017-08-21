@@ -35,7 +35,11 @@ export class DataVariableSelection extends React.Component {
 		this.props.dispatch(setSelectedVariables(dimensions,measures,timeDimension))
 	}
 componentDidMount(){
-		this.setVariables(this.dimensions,this.measures,this.datetime[this.datetime.length-1]);
+		this.setVariables(this.dimensions,this.measures,this.datetime[this.datetime.length-1]);	
+	 
+}
+
+componentWillMount(){  
 }
 	render() {
 
@@ -92,7 +96,7 @@ componentDidMount(){
 			    	 );
 			    	  });
 			    	}else{
-			    	  var datetimeTemplate = <label>No dates variable present</label>
+			    	  var datetimeTemplate = <label>No date dimensions to display</label>
 			    	}
 			    	
 			    	const popoverLeft = (

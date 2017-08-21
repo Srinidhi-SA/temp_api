@@ -26,8 +26,8 @@ $('.continue').click(function(){
 $('.back').click(function(){
   $('.nav-tabs > .active').prev('li').find('a').trigger('click');
 });
+var hidWidth;
 /** Below code is for subnavigation ***/
-/*var hidWidth;
 var scrollBarWidths = 40;
 
 var widthOfList = function(){
@@ -71,26 +71,20 @@ $(window).on('resize',function(e){
 });
 
 $('.scroller-right').click(function() {
-
   $('.scroller-left').fadeIn('slow');
   $('.scroller-right').fadeOut('slow');
-
   $('.list').animate({left:"+="+widthOfHidden()+"px"},'slow',function(){
-
   });
 });
 
 $('.scroller-left').click(function() {
-
 	$('.scroller-right').fadeIn('slow');
 	$('.scroller-left').fadeOut('slow');
-
   	$('.list').animate({left:"-="+getLeftPosi()+"px"},'slow',function(){
-
   	});
 });
-*/
-/** Slide Panel ***/
+
+/** Slide Panel **
 
 $('[data-toggle=offcanvas]').click(function () {
     $('.row-offcanvas').toggleClass('active');
@@ -101,7 +95,7 @@ $('[data-toggle=offcanvas]').click(function () {
 		$('.sdbar_switch i').addClass('sw_on');
 		$('.sdbar_switch i').removeClass('sw_off');
 	};
-  });
+  });*/
 
  /*** Seach Visible ***/
 $("#search-button, #search-icon").click(function(e){
