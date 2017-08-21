@@ -156,9 +156,7 @@ export class Data extends React.Component {
 					<div className="main-content">
 					<div class="row">
 					{addButton}
-					
 					{dataSetList}
-					
 					<div className="clearfix"></div>
 					</div> 
 					<div className="ma-datatable-footer" id="idPagination">

@@ -1,5 +1,5 @@
 import {API} from "../helpers/env";
-import {CSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL} from "../helpers/helper";
+import {CSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,PERPAGE} from "../helpers/helper";
 import {connect} from "react-redux";
 import store from "../store";
 import {openCsLoaderModal,closeCsLoaderModal,updateCsLoaderValue} from "./createSignalActions";
@@ -70,10 +70,9 @@ function fetchCreateSignalError(json) {
   }
 }
 
-export function getList(token) {
-	//alert("working");
+export function getList(token,pageNo) {
     return (dispatch) => {
-    return fetchPosts(token).then(([response, json]) =>{
+    return fetchPosts(token,pageNo).then(([response, json]) =>{
         if(response.status === 200){
           console.log(json)
         dispatch(fetchPostsSuccess(json))
@@ -85,10 +84,10 @@ export function getList(token) {
   }
 }
 
-function fetchPosts(token) {
+function fetchPosts(token,pageNo) {
   console.log(token)
 
-  return fetch(API+'/api/signals/',{
+  return fetch(API+'/api/signals/?page_number='+pageNo+'&page_size='+PERPAGE+'',{
 		method: 'get',
     headers: getHeader(token)
 		}).then( response => Promise.all([response, response.json()]));
@@ -97,10 +96,12 @@ function fetchPosts(token) {
 
 function fetchPostsSuccess(signalList) {
   console.log("signal list from api to store")
-  console.log(signalList)
+  console.log(signalList);
+  var current_page =  signalList.current_page
   return {
     type: "SIGNAL_LIST",
-    signalList
+    signalList,
+    current_page
   }
 }
 
