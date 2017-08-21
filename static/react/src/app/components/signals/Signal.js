@@ -42,7 +42,7 @@ export class Signal extends React.Component {
      console.log("selected Signal is called$$$$$$$$$$$$$$!!");
      console.log(this.props);
     //  console.log(this.props.signal);
-    //  console.log(this.props.match.params.slug +" != "+ this.props.signal.slug);
+     console.log(this.props.match.params.slug +" != "+ this.props.signal.slug);
 
 
 
