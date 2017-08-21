@@ -14655,7 +14655,7 @@ background:#ededed; color:#7dac02
 }
 .panel-mAd .full-width-tabs > ul.nav.nav-tabs > li > a   span { display:block; }
 .mAd_icons { background:url(../images/mAd_image.png) no-repeat }
-.mAd_icons.tab_overview, .mAd_icons.tab_overview, .mAd_icons.tab_trend, .mAd_icons.tab_performance, .mAd_icons.tab_influencers, .mAd_icons.tab_prediction, .mAd_icons.tab_chi-square, .mAd_icons.tab_association, .mAd_icons.tab_summary, .mAd_icons.tab_decision-tree, .mAd_icons.tab_prediction { display:block; margin:0 auto; width:35px; height:30px; }
+.mAd_icons.tab_overview, .mAd_icons.tab_overview, .mAd_icons.tab_trend, .mAd_icons.tab_performance, .mAd_icons.tab_influencers, .mAd_icons.tab_prediction, .mAd_icons.tab_chi-square, .mAd_icons.tab_association, .mAd_icons.tab_summary, .mAd_icons.tab_decision-tree { display:block; margin:0 auto; width:35px; height:30px; }
 
 .mAd_icons.tab_overview{ background-position: 0 0;}
 .nav-tabs li a:hover .mAd_icons.tab_overview, .active .mAd_icons.tab_overview { background-position: 0 -30px;} 
@@ -14663,8 +14663,8 @@ background:#ededed; color:#7dac02
 .mAd_icons.tab_summary{ background-position: -142px -70px}
 .nav-tabs li a:hover .mAd_icons.tab_summary, .active .mAd_icons.tab_summary { background-position: -142px -100px}
 
-.mAd_icons.tab_decision-tree, .mAd_icons.tab_prediction{ background-position: 0 0;}
-.nav-tabs li a:hover .mAd_icons.tab_decision-tree, .nav-tabs li a:hover .mAd_icons.tab_prediction, .active .mAd_icons.tab_decision-tree, .active .mAd_icons.tab_prediction { background-position: 0 -30px;}
+.mAd_icons.tab_decision-tree, .mAd_icons.tab_prediction{  background-position: -140px 0px;}
+.nav-tabs li a:hover .mAd_icons.tab_decision-tree, .nav-tabs li a:hover .mAd_icons.tab_prediction, .active .mAd_icons.tab_decision-tree, .active .mAd_icons.tab_prediction { background-position: -140px -30px;}
 
 
 .mAd_icons.tab_chi-square, .mAd_icons.tab_association{ background-position: -108px -70px}
