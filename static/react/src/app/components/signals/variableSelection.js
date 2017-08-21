@@ -5,12 +5,12 @@ import ReactDOM from 'react-dom';
 import {push} from "react-router-redux";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
 import store from "../../store";
-
-import {openCreateSignalModal,closeCreateSignalModal} from "../../actions/createSignalActions";
 import {selectedAnalysisList,resetSelectedVariables} from "../../actions/dataActions";
+import {openCreateSignalModal,closeCreateSignalModal,updateCsLoaderValue} from "../../actions/createSignalActions";
 import {createSignal,setPossibleAnalysisList} from "../../actions/signalActions";
 import {DataVariableSelection} from "../data/DataVariableSelection";
-
+import {CreateSignalLoader} from "../common/CreateSignalLoader";
+import {openCsLoaderModal,closeCsLoaderModal} from "../../actions/createSignalActions";
 
 var selectedVariables = {measures:[],dimensions:[],date:null};  // pass selectedVariables to config
 
@@ -48,7 +48,9 @@ createSignal(){
   console.log(this.props);
   this.signalFlag = false;
   // if($('#createSname').val().trim() != "" || $('#createSname').val().trim() != null){
-  $('body').pleaseWait();
+  //$('body').pleaseWait();
+  this.props.dispatch(updateCsLoaderValue(10))
+  this.props.dispatch(openCsLoaderModal())
    let analysisList =[],config={}, postData={};
 
   config['possibleAnalysis'] = this.props.selectedAnalysis;
@@ -212,6 +214,7 @@ componentDidUpdate(){
 
   </div>
 </div>
+<CreateSignalLoader />
     </div>
 </div>
 

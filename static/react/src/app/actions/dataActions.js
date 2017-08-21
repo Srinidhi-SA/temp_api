@@ -1,7 +1,8 @@
 
 import {API} from "../helpers/env";
-import {PERPAGE} from "../helpers/helper";
-import {dataPreviewInterval} from "./dataUploadActions";
+import {PERPAGE,DULOADERPERVALUE,DEFAULTINTERVAL} from "../helpers/helper";
+import store from "../store";
+import {dataPreviewInterval,dataUploadLoaderValue} from "./dataUploadActions";
 
 function getHeader(token){
 	return {
@@ -48,56 +49,81 @@ export function fetchDataSuccess(doc){
 
 
 export function getDataSetPreview(slug,interval) {
-    return (dispatch) => {
-    return fetchDataPreview(slug).then(([response, json]) =>{
-        if(response.status === 200){
-          console.log(json)
-        dispatch(fetchDataPreviewSuccess(json,interval,dispatch))
-        dispatch(showDataPreview())
-      }
-      else{
-        dispatch(fetchDataPreviewError(json))
-      }
-    })
-  }
+	return (dispatch) => {
+		return fetchDataPreview(slug).then(([response, json]) =>{
+			if(response.status === 200){
+				console.log(json)
+				dispatch(fetchDataPreviewSuccess(json,interval,dispatch))
+			}
+			else{
+				dispatch(hideDULoaderPopup());
+				dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
+				dispatch(fetchDataPreviewError(json))
+			}
+		})
+	}
 }
 
 function fetchDataPreview(slug) {
-  return fetch(API+'/api/datasets/'+slug+'/',{
+	return fetch(API+'/api/datasets/'+slug+'/',{
 		method: 'get',
-    headers: getHeader(sessionStorage.userToken)
-		}).then( response => Promise.all([response, response.json()]));
+		headers: getHeader(sessionStorage.userToken)
+	}).then( response => Promise.all([response, response.json()]));
 }
 //get preview data
 function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
-  console.log("data preview from api to store")
-  if(dataPreview.analysis_done){
-	  console.log(dataPreview)
-	  var slug = dataPreview.slug;
-	  if(interval != undefined){
-		  clearInterval(interval);	
-		  return {
-			  type: "DATA_PREVIEW",
-			  dataPreview,
-			  slug,
-		  }
-	  } else{
-		  console.log(dataPreview)
-		  return {
-			  type: "DATA_PREVIEW",
-			  dataPreview,
-			  slug,
-		  } 
-	  }
-  }
+	console.log("data preview from api to store")
+	var slug = "";
+	if(dataPreview.analysis_done){
+		slug = dataPreview.slug;
+		if(interval != undefined){
+			clearInterval(interval);
+			dispatch(dispatchDataPreview(dataPreview,slug));
+			dispatch(hideDULoaderPopup());
+			dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
+			return {
+				type: "SHOW_DATA_PREVIEW",
+			}
+		} else{
+			dispatch(dispatchDataPreview(dataPreview,slug));
+			dispatch(hideDULoaderPopup());
+			dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
+			return {
+				type: "SHOW_DATA_PREVIEW",
+			}
+		}
+	}else{
+		if(interval != undefined){
+			return {
+				type: "DATA_PREVIEW_FOR_LOADER",
+				dataPreview,
+				slug,
+			}
+		}
+		else {
+			return {
+				type: "DATA_PREVIEW",
+				dataPreview,
+				slug,
+			}
+		}
+
+	} 
 }
 
+function dispatchDataPreview(dataPreview,slug){
+	return {
+		type: "DATA_PREVIEW",
+		dataPreview,
+		slug,
+	}
+}
 function fetchDataPreviewError(json) {
-  console.log("fetching list error!!",json)
-  return {
-    type: "DATA_PREVIEW_ERROR",
-    json
-  }
+	console.log("fetching list error!!",json)
+	return {
+		type: "DATA_PREVIEW_ERROR",
+		json
+	}
 }
 
 export function getAllDataList(pageNo) {
@@ -242,5 +268,18 @@ export function setSelectedVariables(dimensions,measures,timeDimension){
 		measures,
 		timeDimension,
 		count,
+	}
+}
+
+export function openDULoaderPopup(){
+	return {
+		type: "DATA_UPLOAD_LOADER",
+	}
+}
+
+
+export function hideDULoaderPopup(){
+	return {
+		type: "HIDE_DATA_UPLOAD_LOADER",
 	}
 }
