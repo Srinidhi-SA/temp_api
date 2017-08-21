@@ -25,6 +25,7 @@ const CONFUSIONMATRIX = "confusionMatrix";
 const HEATMAPTABLE = "heatMap";
 const CIRCULARCHARTTABLE = "circularChartTable";
 const DECISIONTREETABLE = "decisionTreeTable"
+const DULOADERPERVALUE = 10
 
 
 export function generateHeaders(table) {
@@ -78,6 +79,7 @@ export{
 	CONFUSIONMATRIX,
 	HEATMAPTABLE,
 	CIRCULARCHARTTABLE,
-	DECISIONTREETABLE
+	DECISIONTREETABLE,
+	DULOADERPERVALUE
 	
 	}

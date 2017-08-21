@@ -1,6 +1,6 @@
 
 import {API} from "../helpers/env";
-import {PERPAGE} from "../helpers/helper";
+import {PERPAGE,DULOADERPERVALUE} from "../helpers/helper";
 import store from "../store";
 import {dataPreviewInterval,dataUploadLoaderValue} from "./dataUploadActions";
 
@@ -57,7 +57,7 @@ export function getDataSetPreview(slug,interval) {
       }
       else{
     	dispatch(hideDULoaderPopup());
-    	dispatch(dataUploadLoaderValue(10));
+    	dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
         dispatch(fetchDataPreviewError(json))
       }
     })
@@ -77,24 +77,23 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
   if(dataPreview.analysis_done){
 	  slug = dataPreview.slug;
 	  if(interval != undefined){
-		  clearInterval(interval);	
+		  clearInterval(interval);
+		  dispatch(dispatchDataPreview(dataPreview,slug));
+		  dispatch(hideDULoaderPopup());
+		  dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
 		  return {
-			  type: "DATA_PREVIEW",
-			  dataPreview,
-			  slug,
-		  }
+				type: "SHOW_DATA_PREVIEW",
+			}
 	  } else{
+		  dispatch(dispatchDataPreview(dataPreview,slug));
+		  dispatch(hideDULoaderPopup());
+		  dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
 		  return {
-			  type: "DATA_PREVIEW",
-			  dataPreview,
-			  slug,
-		  } 
+				type: "SHOW_DATA_PREVIEW",
+			}
 	  }
-	  dispatch(hideDULoaderPopup());
-	  dispatch(dataUploadLoaderValue(10));
-	  dispatch(showDataPreview());
   }else{
-	  var value = store.getState().datasets.dULoaderValue+10;
+	  var value = store.getState().datasets.dULoaderValue+DULOADERPERVALUE;
 	  return {
 			type: "DATA_UPLOAD_LOADER_VALUE",
 			value,
@@ -102,6 +101,13 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
   } 
 }
 
+function dispatchDataPreview(dataPreview,slug){
+	return {
+		  type: "DATA_PREVIEW",
+		  dataPreview,
+		  slug,
+	  }
+}
 function fetchDataPreviewError(json) {
   console.log("fetching list error!!",json)
   return {

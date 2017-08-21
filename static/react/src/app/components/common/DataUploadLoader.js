@@ -47,7 +47,7 @@ export class DataUploadLoader extends React.Component {
 			
 				<div className="p_bar_body">
 				<progress className="prg_bar" value={store.getState().datasets.dULoaderValue} max="95"></progress>
-				<div className="progress-value">{store.getState().datasets.dULoaderValue} %</div>
+				<div className="progress-value"><h3>{store.getState().datasets.dULoaderValue} %</h3></div>
 				</div>
 			</div>
 		</div>
