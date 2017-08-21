@@ -8,6 +8,7 @@ import store from "../../store";
 import $ from "jquery";
 
 import {open,close,fileUpload,dataUpload} from "../../actions/dataUploadActions";
+import {saveFileToStore} from "../../actions/dataSourceListActions";
 import {DataSourceList} from "./DataSourceList";
 
 @connect((store) => {
@@ -23,7 +24,10 @@ export class DataUpload extends React.Component {
 		this.onDrop = this.onDrop.bind(this);
 	}
     openPopup(){
-    	this.props.dispatch(open())
+    	this.props.dispatch(open());
+    	var files = [{name:"",size:""}]
+    	this.props.dispatch(saveFileToStore(files))
+    	
     }
     closePopup(){
     	this.props.dispatch(close())
@@ -33,7 +37,7 @@ export class DataUpload extends React.Component {
 		this.props.dispatch(fileUpload(files[0]))
 	}
 	uploadData(){
-		this.props.dispatch(dataUpload())
+		this.props.dispatch(dataUpload());	
 	}
 	render() {
 			return (

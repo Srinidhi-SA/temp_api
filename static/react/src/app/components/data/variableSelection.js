@@ -285,7 +285,11 @@ $('.dimension[type="checkbox"]').click(function(){
 
  });
 
+
+ 
 }
+
+
 
 	render() {
 		//const dataSets = store.getState().datasets.dataList.data;
@@ -339,7 +343,7 @@ if(datetime.length>0){
  );
   });
 }else{
-  var datetimeTemplate = <label>No dates variable present</label>
+  var datetimeTemplate = <label>No date dimensions to display</label>
 }
 
 		return (
