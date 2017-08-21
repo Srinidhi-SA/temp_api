@@ -8,7 +8,7 @@
     "start": "npm run build",
     "buildLinux": "webpack -d && cp src/index.html dist/index.html && webpack-dev-server --content-base src/ --inline --hot --history-api-fallback",
     "build": "webpack -d && copy src\\index.html dist\\index.html && webpack-dev-server --content-base src/ --inline --hot --history-api-fallback",
-    "buildProd": "cp confs/prod/env.js src/app/helpers/env.js &&webpack -p && cp src/index.html dist/index.html && git checkout git checkout src/app/helpers/env.js"
+    "buildProd": "cp confs/prod/env.js src/app/helpers/env.js &&webpack -p && cp src/index.html dist/index.html "
   },
   "keywords": [
     "marlabsai"
