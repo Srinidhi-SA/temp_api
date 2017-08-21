@@ -15251,6 +15251,7 @@ progress::-webkit-progress-value {
 }
 
 
+<<<<<<< 712117ec9c7722e771ba1d2cf38cb36b5e35bea5
 html{
     font: 10px sans-serif;
 }
@@ -15293,3 +15294,8 @@ html{
 	font-weight:bold !important;
 }
 
+=======
+.card.full-width-tabs{
+    overflow: hidden;
+}
+>>>>>>> bug fix
