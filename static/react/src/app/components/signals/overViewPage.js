@@ -71,7 +71,6 @@ export class OverViewPage extends React.Component {
 		$('.sdbar_switch i').removeClass('sw_on');
 		$('.sdbar_switch i').addClass('sw_off');
     }
-	
 
   }
   
