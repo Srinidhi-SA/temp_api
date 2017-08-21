@@ -366,9 +366,16 @@ class Insight(models.Model):
         config = json.loads(self.config)
         consider_columns_type = ['including']
         analysis_type = [self.type]
-        data_columns = config.get("timeDimension", [])
+        data_columns = config.get("timeDimension", None)
         result_column = [self.target_column]
-        consider_columns = config.get('dimension', []) + config.get('measures', []) + data_columns
+        if data_columns is None:
+            consider_columns = config.get('dimension', []) + config.get('measures', [])
+            data_columns = ""
+        else:
+            if data_columns is "":
+                consider_columns = config.get('dimension', []) + config.get('measures', [])
+            else:
+                consider_columns = config.get('dimension', []) + config.get('measures', []) + [data_columns]
 
         ignore_column_suggestion = []
 
@@ -392,7 +399,7 @@ class Insight(models.Model):
             'ignore_column_suggestions': ignore_column_suggestion,
             'result_column': result_column,
             'consider_columns': consider_columns,
-            'date_columns': data_columns,
+            'date_columns': [data_columns],
             'analysis_type': analysis_type,
         }
         # return {
