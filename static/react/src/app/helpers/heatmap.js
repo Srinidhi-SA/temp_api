@@ -12,9 +12,13 @@ export default function(divId){
     /*yr = 243;
     yg = 32;
     yb = 117;*/
-     var yr = 0;
+   /*  var yr = 0;
    var yg = 100;
-   var yb = 0
+   var yb = 0*/
+    
+	var yr = 0;
+   var yg = 153;
+   var yb = 140
 
    var n = 100;
   var counts= $("."+divId).find('tbody td').not('.stats-title').map(function() {

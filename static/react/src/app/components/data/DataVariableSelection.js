@@ -21,7 +21,8 @@ import {updateSelectedVariables,resetSelectedVariables,setSelectedVariables} fro
 export class DataVariableSelection extends React.Component {
 	constructor(props) {
 		super(props);
-		//this.props.dispatch(resetSelectedVariables())
+		this.firstLoop = true;
+		//this.props.dispatch(resetSelectedVariables());
 		this.handleCheckboxEvents = this.handleCheckboxEvents.bind(this);
 		this.setVariables = this.setVariables.bind(this);
 		this.measures = [];
@@ -32,11 +33,20 @@ export class DataVariableSelection extends React.Component {
 		this.props.dispatch(updateSelectedVariables(e))
 	}
 	setVariables(dimensions,measures,timeDimension,count){
+	//	this.props.dispatch(resetSelectedVariables());
 		this.props.dispatch(setSelectedVariables(dimensions,measures,timeDimension))
 	}
+	
+	componentWillMount(){
+		//this.props.dispatch(resetSelectedVariables());
+	}
+	
 componentDidMount(){
+	     this.props.dispatch(resetSelectedVariables());
 		this.setVariables(this.dimensions,this.measures,this.datetime[this.datetime.length-1]);
 }
+
+
 	render() {
 
 		console.log("data variableSelection is called##########3");
@@ -48,6 +58,7 @@ componentDidMount(){
 			 const metaData = dataPrev.meta_data.columnData;
 			   // var measures =[], dimensions =[],datetime =[];
 			    metaData.map((metaItem,metaIndex)=>{
+					if(this.firstLoop){
 			      switch(metaItem.columnType){
 			        case "measure":
 			         //m[metaItem.slug] = metaItem.name;
@@ -61,8 +72,11 @@ componentDidMount(){
 			          this.datetime.push(metaItem.name);
 			        break;
 			      }
+				}
+				 
 
 			    });
+				this.firstLoop = false;
 			    if(this.measures.length>0){
 			    	  var measureTemplate = this.measures.map((mItem,mIndex)=>{
 			    	      const mId = "chk_mea" + mIndex;
@@ -92,7 +106,7 @@ componentDidMount(){
 			    	 );
 			    	  });
 			    	}else{
-			    	  var datetimeTemplate = <label>No dates variable present</label>
+			    	  var datetimeTemplate = <label>No date dimensions to display</label>
 			    	}
 			    	
 			    	const popoverLeft = (

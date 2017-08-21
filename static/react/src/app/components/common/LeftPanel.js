@@ -12,10 +12,14 @@ export default class LeftPanel extends React.Component {
 
   constructor(props) {
     super(props);
-
+   
   }
-
-hideDataPrev(){
+componentDidMount(){
+	console.log("Main side navbar props:::");
+   console.log(this.props.location);
+}
+  
+hideDataPrev(e){
   	this.props.dispatch(hideDataPreview());
 }
   render() {
@@ -28,7 +32,7 @@ hideDataPrev(){
               <div className="side-menu-container">
                 <ul className="nav navbar-nav">
                   <li>
-                    <NavLink onClick={this.hideDataPrev.bind(this)} className="sdb_signal" to="/signals">
+                    <NavLink  onClick={this.hideDataPrev.bind(this)} activeClassName="active" className="sdb_signal" to="/signals">
                       <span></span>
                       SIGNALS</NavLink>
                   </li>
@@ -38,17 +42,17 @@ hideDataPrev(){
                       STORY</NavLink>
                   </li>*/}
                   <li>
-                    <NavLink onClick={this.hideDataPrev.bind(this)}  className="sdb_app" to ="/apps">
+                    <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" className="sdb_app" to ="/apps">
                       <span></span>
                       APPS</NavLink>
                   </li>
                   <li>
-                    <NavLink onClick={this.hideDataPrev.bind(this)} className="sdb_data" to ="/data">
+                    <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" className="sdb_data" to ="/data">
                       <span></span>
                       DATA</NavLink>
                   </li>
                   <li>
-                    <NavLink className="sdb_settings" to ="/settings">
+                    <NavLink  onClick={this.hideDataPrev.bind(this)} activeClassName="active" className="sdb_settings" to ="/settings">
                       <span></span>
                       SETTINGS</NavLink>
                   </li>

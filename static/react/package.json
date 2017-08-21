@@ -30,9 +30,7 @@
     "react-tree-graph": "^2.0.0",
     "redux": "^3.7.2",
     "redux-promise-middleware": "^4.3.0",
-    "redux-thunk": "^2.2.0",
-    "react-circular-progressbar": "^0.1.5"
-
+    "redux-thunk": "^2.2.0"
   },
   "devDependencies": {
     "babel-core": "^6.25.0",
@@ -45,8 +43,8 @@
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
-    "redux-logger": "^3.0.6",
     "jquery": "^3.2.1",
+    "redux-logger": "^3.0.6",
     "webpack": "^3.4.1",
     "webpack-dev-server": "^2.6.1"
   }
