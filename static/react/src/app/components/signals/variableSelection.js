@@ -7,7 +7,7 @@ import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
 import store from "../../store";
 
 import {openCreateSignalModal,closeCreateSignalModal} from "../../actions/createSignalActions";
-import {selectedAnalysisList} from "../../actions/dataActions";
+import {selectedAnalysisList,resetSelectedVariables} from "../../actions/dataActions";
 import {createSignal,setPossibleAnalysisList} from "../../actions/signalActions";
 import {DataVariableSelection} from "../data/DataVariableSelection";
 
@@ -78,9 +78,11 @@ setPossibleList(e){
      this.props.dispatch(setPossibleAnalysisList(e.target.value));
 }
 
+
 componentDidUpdate(){
 	console.log("trend disbale check:::: ");
-     console.log(this.props.selectedDimensions);
+	
+     console.log(store.getState().datasets.selectedDimensions);
 	 console.log(this.props.selectedTimeDimensions);
 	 if(!this.props.selectedTimeDimensions){
 		 $('#analysisList input[type="checkbox"]').last().attr("disabled", true);
@@ -152,7 +154,7 @@ componentDidUpdate(){
 	 renderPossibleAnalysis= (function(){
                 return( <div >
                              {renderSubList}
-		                    <div  className="ma-checkbox inline"><input id={that.possibleTrend} type="checkbox" className="possibleAnalysis" value="Trend Analysis" onChange={that.handleAnlysisList.bind(this)} /><label htmlFor={that.possibleTrend}>Trend Analysis</label></div>
+		                    <div  className="ma-checkbox inline"><input id={that.possibleTrend} type="checkbox" className="possibleAnalysis" value="Trend Analysis" onChange={that.handleAnlysisList.bind(that)} /><label htmlFor={that.possibleTrend}>Trend Analysis</label></div>
                           </div>
 			);
         })(); 

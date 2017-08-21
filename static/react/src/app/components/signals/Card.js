@@ -10,20 +10,21 @@ import {CardTable} from "../common/CardTable";
 import {PredictionDropDown} from "../common/predictionDropdown";
 //import Tree from 'react-d3-tree';
 import Tree from 'react-tree-graph';
+
 import $ from "jquery";
 
 
 var data = null,
   yformat = null,
   cardData = {};
-let d3data = {
+/*let d3data = {
     name: 'Parent',
     children: [{
         name: 'Child One'
     }, {
         name: 'Child Two'
     }]
-};
+};*/
 
 @connect((store) => {
   return {login_response: store.login.login_response, signal: store.signals.signalAnalysis,
@@ -56,7 +57,7 @@ export class Card extends React.Component {
            }
           break;
           case "tree":
-            return (<div className="custom-container">{/* <Tree data={d3data} height={200} width={400}/>*/}</div>);
+            return (<div className="custom-container"> <Tree data={d3data} height={200} width={400} treeClassName="custom"/></div>);
           break;
         case "table":
             return (<CardTable key = {i} jsonData={story.data} type={story.dataType}/>);
