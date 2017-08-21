@@ -7,6 +7,7 @@ import {C3Chart} from "../c3Chart";
 import {DecisionTree} from "../decisionTree";
 import {CardHtml} from "./CardHtml";
 import {CardTable} from "../common/CardTable";
+import {PredictionDropDown} from "../common/predictionDropdown";
 //import Tree from 'react-d3-tree';
 import Tree from 'react-tree-graph';
 import $ from "jquery";
@@ -59,6 +60,9 @@ export class Card extends React.Component {
           break;
         case "table":
             return (<CardTable key = {i} jsonData={story.data} type={story.dataType}/>);
+            break;
+		case "dropdown":
+            return (<PredictionDropDown key = {i} jsonData={story.data} type={story.dataType}/>);
             break;
       }
 

@@ -29,7 +29,6 @@
 					}
 				})
 			}
-	
 	}
 	
 	function triggerDataUpload(token) {
