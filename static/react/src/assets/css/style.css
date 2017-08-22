@@ -14663,8 +14663,8 @@ background:#ededed; color:#7dac02
 .mAd_icons.tab_summary{ background-position: -142px -70px}
 .nav-tabs li a:hover .mAd_icons.tab_summary, .active .mAd_icons.tab_summary { background-position: -142px -100px}
 
-.mAd_icons.tab_decision-tree, .mAd_icons.tab_prediction{  background-position: -140px 0px;}
-.nav-tabs li a:hover .mAd_icons.tab_decision-tree, .nav-tabs li a:hover .mAd_icons.tab_prediction, .active .mAd_icons.tab_decision-tree, .active .mAd_icons.tab_prediction { background-position: -140px -30px;}
+.mAd_icons.tab_decision-tree, .mAd_icons.tab_prediction{  background-position: -144px 0px;}
+.nav-tabs li a:hover .mAd_icons.tab_decision-tree, .nav-tabs li a:hover .mAd_icons.tab_prediction, .active .mAd_icons.tab_decision-tree, .active .mAd_icons.tab_prediction { background-position: -144px -30px;}
 
 
 .mAd_icons.tab_chi-square, .mAd_icons.tab_association{ background-position: -108px -70px}
@@ -14678,8 +14678,8 @@ background:#ededed; color:#7dac02
 
 .mAd_icons.tab_influencers { background-position: -108px 0px; }
 .nav-tabs li a:hover .mAd_icons.tab_influencers, .active .mAd_icons.tab_influencers{ background-position: -108px -30px;}
-.mAd_icons.tab_predictions { background-position: -140px 0px;}
-.nav-tabs li a:hover .mAd_icons.tab_predictions, .active .mAd_icons.tab_predictions{ background-position: -140px -30px;}
+.mAd_icons.tab_predictions { background-position: -144px 0px;}
+.nav-tabs li a:hover .mAd_icons.tab_predictions, .active .mAd_icons.tab_predictions{ background-position: -144px -30px;}
 .mAd_icons.oppr_icon { width: 80px; height: 80px; background-position: 0 -65px; margin: 0 auto; }
 
 .mAd_icons.ic_perf { width: 27px; height: 27px; margin: 0 auto; background-position: -234px -5px; display: inline-block;}
