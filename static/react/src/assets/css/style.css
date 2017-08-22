@@ -15251,6 +15251,29 @@ progress::-webkit-progress-value {
 }
 
 
+html{
+    font: 10px sans-serif;
+}
+
+
+  svg{
+  /*  border: 1px solid silver !important;*/
+}
+
+.node{
+    cursor: pointer!important;
+}
+
+.node circle{
+    stroke: steelblue !important;
+    stroke-width: 1.5px !important;
+}
+
+.link{
+    fill: none !important;
+    stroke: lightgray !important;
+    stroke-width: 1.5px !important;
+}
 .card.full-width-tabs{
     overflow: hidden;
 }

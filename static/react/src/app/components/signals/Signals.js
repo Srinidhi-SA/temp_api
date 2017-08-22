@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import ReactDOM from "react-dom";
 import {Link} from "react-router-dom";
 import store from "../../store";
-import {getList} from "../../actions/signalActions";
+import {getList,emptySignalAnalysis} from "../../actions/signalActions";
 import {Pagination} from "react-bootstrap";
 //import {BreadCrumb} from "../common/BreadCrumb";
 import Breadcrumb from 'react-breadcrumb';
@@ -58,11 +58,16 @@ export class Signals extends React.Component {
 		this.props.dispatch(getList(sessionStorage.userToken,eventKey));	
 	}
 
-
+ 
+  getSignalAnalysis(e){
+	  console.log("Link Onclick is called")
+	  console.log(e.target.id);
+	  this.props.dispatch(emptySignalAnalysis());
+  }
   render() {
     console.log("signals is called##########3");
 	document.body.className = "";
-
+// h:MM
     // let parametersForBreadCrumb = [];
     // parametersForBreadCrumb.push({name:"Signals"});
 
@@ -92,7 +97,7 @@ export class Signals extends React.Component {
                 <div className="row">
                   <div className="col-xs-9">
                     <h4 className="title newCardTitle">
-                      <Link to={signalLink} id={story.slug}>
+                      <Link to={signalLink} id={story.slug} onClick={this.getSignalAnalysis.bind(this)}>
                         {story.name}
                       </Link>
                     </h4>
@@ -105,7 +110,7 @@ export class Signals extends React.Component {
               <div className="card-footer">
                 <div className="left_div">
                   <span className="footerTitle"></span>{story.username}
-                  <span className="footerTitle">{dateFormat(story.created_at, "mmm d,yyyy h:MM")}</span>
+                  <span className="footerTitle">{dateFormat(story.created_at, "mmm d,yyyy")}</span>
                 </div>
 
                 <div className="card-deatils">

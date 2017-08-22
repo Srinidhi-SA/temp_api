@@ -119,6 +119,15 @@ export default function reducer(state = {
 		}
 	}
 	break;
+	case "SIGNAL_ANALYSIS_EMPTY":
+    {
+      return {
+        ...state,
+        signalAnalysis: {},
+      }
+    }
+    break;
+    
   }
   return state
 }
