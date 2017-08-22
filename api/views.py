@@ -328,5 +328,6 @@ def convert_chart_data_to_beautiful_things(data):
 
 
 def home(request):
-    context = {}
+
+    context = {"UI_VERSION":settings.UI_VERSION}
     return render(request, 'home.html', context)
