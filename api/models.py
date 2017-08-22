@@ -362,7 +362,6 @@ class Insight(models.Model):
         }
 
     def create_configuration_column_settings(self):
-
         config = json.loads(self.config)
         consider_columns_type = ['including']
         analysis_type = [self.type]
@@ -378,6 +377,7 @@ class Insight(models.Model):
                 consider_columns = config.get('dimension', []) + config.get('measures', []) + [data_columns]
 
         ignore_column_suggestion = []
+        utf8_column_suggestions = []
 
         if len(consider_columns) < 1:
             consider_columns_type = ['excluding']
@@ -385,12 +385,17 @@ class Insight(models.Model):
         if self.dataset.analysis_done is True:
             meta_data = json.loads(self.dataset.meta_data)
             dataset_meta_data = meta_data.get('metaData')
+
             for variable in dataset_meta_data:
                 if variable['name'] == 'ignoreColumnSuggestions':
                     ignore_column_suggestion += variable['value']
+
+                if variable['name'] == 'utf8ColumnSuggestion':
+                    utf8_column_suggestions += variable['value']
         else:
             print "How the hell reached here!. Metadata is still not there. Please Wait."
             ignore_column_suggestion = []
+            utf8_column_suggestions = []
 
         return {
             'polarity': ['positive'],
@@ -401,6 +406,7 @@ class Insight(models.Model):
             'consider_columns': consider_columns,
             'date_columns': [data_columns],
             'analysis_type': analysis_type,
+            'utf8_columns': utf8_column_suggestions
         }
         # return {
         #     "analysis_type": ["master"],
