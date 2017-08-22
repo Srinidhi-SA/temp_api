@@ -9,7 +9,8 @@ import {CardHtml} from "./CardHtml";
 import {CardTable} from "../common/CardTable";
 import {PredictionDropDown} from "../common/predictionDropdown";
 //import Tree from 'react-d3-tree';
-import Tree from 'react-tree-graph';
+import {ReactD3} from "../reactD3";
+//import Tree from 'react-tree-graph';
 
 import $ from "jquery";
 
@@ -26,6 +27,31 @@ var data = null,
     }]
 };*/
 
+const myTreeData = [
+  {
+    name: 'Top Level',
+   
+    children: [
+      {
+        name: 'Level 2: A',
+		children: [
+			  {
+				name: 'Level 2: A',
+			   
+			  },
+			  {
+				name: 'Level 2: B',
+			  },
+			],
+       
+      },
+      {
+        name: 'Level 2: B',
+      },
+    ],
+  },
+];
+
 @connect((store) => {
   return {login_response: store.login.login_response, signal: store.signals.signalAnalysis,
   chartObject: store.chartObject.chartObj};
@@ -36,7 +62,7 @@ export class Card extends React.Component {
     super();
     
    }
-
+//
   render() {
     console.log(this.props);
     console.log("card is called!!!! with data:----");
@@ -57,7 +83,9 @@ export class Card extends React.Component {
            }
           break;
           case "tree":
-            return (<div className="custom-container"> {/*<Tree data={d3data} height={200} width={400} treeClassName="custom"/>*/}</div>);
+		  	console.log("checking tree data");
+           console.log(story.data);
+            return ( <DecisionTree key={i} treeData={story.data}/>);
           break;
         case "table":
             return (<CardTable key = {i} jsonData={story.data} type={story.dataType}/>);
