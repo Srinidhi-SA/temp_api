@@ -33,10 +33,8 @@ export class Signal extends React.Component {
 
      console.log("selected Signal is called$$$$$$$$$$$$$$!!");
      console.log(this.props.signal);
-     console.log(isEmpty(this.props.signal));
- 
     if(isEmpty(this.props.signal)){
-   
+
       return(
         <div className="side-body">
         {/*<MainHeader/>*/}
