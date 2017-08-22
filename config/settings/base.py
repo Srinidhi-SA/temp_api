@@ -304,3 +304,5 @@ CORS_ALLOW_HEADERS = (
     'authorization',
     'x-csrftoken'
 )
+
+UI_VERSION = "0.1"
