@@ -15277,6 +15277,17 @@ html{
     stroke: lightgray !important;
     stroke-width: 1.5px !important;
 }
+
 .card.full-width-tabs{
     overflow: hidden;
+}
+
+.table-style{
+	margin-top: 1.8%;
+	padding-left: 10%;
+    padding-right: 10%;
+}
+
+.table-style table th {
+	font-weight:bold !important;
 }
