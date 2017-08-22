@@ -3,16 +3,17 @@ import {connect} from "react-redux";
 import {Link, Redirect} from "react-router-dom";
 import {push} from "react-router-redux";
 import $ from "jquery";
-import {Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstrap";
+import {Pagination,Tooltip,OverlayTrigger,Popover,Modal,Button} from "react-bootstrap";
 import store from "../../store";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {MainHeader} from "../common/MainHeader";
 import {BreadCrumb} from "../common/BreadCrumb";
 import {getDataList,getDataSetPreview,storeSignalMeta} from "../../actions/dataActions";
-import {fetchProductList} from "../../actions/dataActions";
+import {fetchProductList,openDULoaderPopup,closeDULoaderPopup} from "../../actions/dataActions";
 import {DataUpload} from "./DataUpload";
 import {open,close} from "../../actions/dataUploadActions";
 import {STATIC_URL} from "../../helpers/env.js"
+import {DataUploadLoader} from "../common/DataUploadLoader";
 
 var dateFormat = require('dateformat');
 
@@ -22,6 +23,7 @@ var dateFormat = require('dateformat');
 		 signalMeta: store.datasets.signalMeta,
 		 selectedDataSet:store.datasets.selectedDataSet,
 		 dataPreviewFlag:store.datasets.dataPreviewFlag,
+		 dataUploadLoaderModal:store.datasets.dataUploadLoaderModal,
 	};
 })
 
@@ -46,6 +48,14 @@ export class Data extends React.Component {
 		this.props.dispatch(storeSignalMeta(null,that.props.match.url));
 	  this.props.dispatch(getDataSetPreview(this.selectedData));
 	}
+	
+	openModelPopup(){
+	  	this.props.dispatch(openDULoaderPopup())
+	  }
+	  closeModelPopup(){
+	  	this.props.dispatch(closeDULoaderPopup())
+	  }
+	  
 	render() {
 		console.log("data is called");
 		console.log(this.props);
@@ -146,9 +156,7 @@ export class Data extends React.Component {
 					<div className="main-content">
 					<div class="row">
 					{addButton}
-					
 					{dataSetList}
-					
 					<div className="clearfix"></div>
 					</div> 
 					<div className="ma-datatable-footer" id="idPagination">
@@ -156,6 +164,7 @@ export class Data extends React.Component {
 					{paginationTag}
 					</div>
 				 </div>
+			<DataUploadLoader />	  
 					</div>
 					</div>
 			);

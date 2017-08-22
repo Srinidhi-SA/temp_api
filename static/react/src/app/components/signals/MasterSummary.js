@@ -28,12 +28,26 @@ export class MasterSummary extends React.Component {
     var noOfDimention;
     var noOfMeasures;
     var summary;
+	var mText;
+	var dText;
 
 
      noOfDimention = this.props.signal.listOfCards[0].cardData.noOfDimensions;
       noOfMeasures = this.props.signal.listOfCards[0].cardData.noOfMeasures;
       summary = this.props.signal.listOfCards[0].cardData.summaryHtml;
      var quotes = this.props.signal.listOfCards[0].cardData.quotesHtml;//.toString();
+	 
+	 if(noOfDimention>1){
+		 dText = "Dimensions";
+	 }else{
+		 dText = "Dimension";
+	 }
+	 
+	 if(noOfMeasures>1){
+		 mText = "Measures";
+	 }else{
+		 mText = "Measure";
+	 }
     //  var noOfDimention = 10;
     //  var noOfMeasures = 9;
     // var summary = "mAdvisor has analyzed the dataset, which contains<b> 15</b> variables and <b>5,000</b> observations. Please click next to find the insights from our analysis of <b>platform</b>, that describes how it is distributed, what drives it, and how we can predict it.";
@@ -84,7 +98,7 @@ export class MasterSummary extends React.Component {
 								<tr>
 									<td ><img src={ STATIC_URL + "assets/images/icon_dimension.png" } /> </td>
 									<td class="text-center">									
-								<h3> Dimension</h3>
+								<h3> {dText}</h3>
 									</td>
 								</tr>
 							</table> 
@@ -98,7 +112,7 @@ export class MasterSummary extends React.Component {
 								<tr>
 									<td ><img src={ STATIC_URL + "assets/images/icon_measure.png" } /></td>
 									<td class="text-center">									
-								<h3> Measures</h3>
+								<h3> {mText}</h3>
 									</td>
 								</tr>
 							</table>

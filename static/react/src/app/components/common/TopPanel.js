@@ -35,7 +35,7 @@ export default class TopPanel extends React.Component {
 
 											{/* Brand */}
 											<div className="brand-name-wrapper">
-												<a className="navbar-brand" href="#"></a>
+												<a className="navbar-brand" href="/"></a>
 											</div>
 										</div>
 									</div>

@@ -1,6 +1,8 @@
 import {API} from "../helpers/env";
+import {CSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,PERPAGE} from "../helpers/helper";
 import {connect} from "react-redux";
 import store from "../store";
+import {openCsLoaderModal,closeCsLoaderModal,updateCsLoaderValue} from "./createSignalActions";
 // var API = "http://34.196.204.54:9000";
 
 // @connect((store) => {
@@ -24,6 +26,8 @@ export function createSignal(metaData) {
       }
       else{
         dispatch(fetchCreateSignalError(json))
+         dispatch(closeCsLoaderModal())
+        dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
       }
     })
   }
@@ -40,15 +44,16 @@ function fetchCreateSignal(metaData) {
 }
 function fetchCreateSignalSuccess(signalData,dispatch) {
   console.log("signal list from api to store")
-//  console.log(signalData);
+   dispatch(updateCsLoaderValue(store.getState().signals.createSignalLoaderValue+CSLOADERPERVALUE))
     createSignalInterval = setInterval(function(){
     if(!signalData.analysis_done){
-      console.log("checking storeeeee");
-          console.log(signalData.slug);
+    	if(store.getState().signals.createSignalLoaderValue < LOADERMAXPERVALUE){
+    	  dispatch(updateCsLoaderValue(store.getState().signals.createSignalLoaderValue+CSLOADERPERVALUE))
+    	}
           dispatch(getSignalAnalysis(sessionStorage.userToken,signalData.slug));
     }
 
-  },20000);
+  },DEFAULTINTERVAL);
 
   return {
     type: "CREATE_SUCCESS",
@@ -58,16 +63,16 @@ function fetchCreateSignalSuccess(signalData,dispatch) {
 
 function fetchCreateSignalError(json) {
   console.log("fetching list error!!",json)
+  
   return {
     type: "CREATE_ERROR",
     json
   }
 }
 
-export function getList(token) {
-	//alert("working");
+export function getList(token,pageNo) {
     return (dispatch) => {
-    return fetchPosts(token).then(([response, json]) =>{
+    return fetchPosts(token,pageNo).then(([response, json]) =>{
         if(response.status === 200){
           console.log(json)
         dispatch(fetchPostsSuccess(json))
@@ -79,10 +84,10 @@ export function getList(token) {
   }
 }
 
-function fetchPosts(token) {
+function fetchPosts(token,pageNo) {
   console.log(token)
 
-  return fetch(API+'/api/signals/',{
+  return fetch(API+'/api/signals/?page_number='+pageNo+'&page_size='+PERPAGE+'',{
 		method: 'get',
     headers: getHeader(token)
 		}).then( response => Promise.all([response, response.json()]));
@@ -91,10 +96,12 @@ function fetchPosts(token) {
 
 function fetchPostsSuccess(signalList) {
   console.log("signal list from api to store")
-  console.log(signalList)
+  console.log(signalList);
+  var current_page =  signalList.current_page
   return {
     type: "SIGNAL_LIST",
-    signalList
+    signalList,
+    current_page
   }
 }
 
@@ -113,10 +120,12 @@ export function getSignalAnalysis(token,errandId) {
     return fetchPosts_analysis(token,errandId).then(([response, json]) =>{
         if(response.status === 200){
 
-        dispatch(fetchPostsSuccess_analysis(json,errandId))
+        dispatch(fetchPostsSuccess_analysis(json,errandId,dispatch))
       }
       else{
-        dispatch(fetchPostsError_analysis(json))
+        dispatch(fetchPostsError_analysis(json));
+        dispatch(closeCsLoaderModal())
+        dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
       }
     })
   }
@@ -137,13 +146,15 @@ function fetchPosts_analysis(token,errandId) {
 }
 
 
-function fetchPostsSuccess_analysis(signalAnalysis, errandId) {
+function fetchPostsSuccess_analysis(signalAnalysis, errandId,dispatch) {
   console.log("signal analysis from api to store")
   console.log(signalAnalysis)
   console.log("3");
   if(signalAnalysis.analysis_done){
   //  alert("final done");
     clearInterval(createSignalInterval);
+    dispatch(closeCsLoaderModal())
+    dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
   }
   return {
     type: "SIGNAL_ANALYSIS",

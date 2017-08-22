@@ -3,14 +3,14 @@ import {connect} from "react-redux";
 import {Link, Redirect} from "react-router-dom";
 import ReactDOM from 'react-dom';
 import {push} from "react-router-redux";
-import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
+import {Modal,Button,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "react-bootstrap";
 import store from "../../store";
-
-import {openCreateSignalModal,closeCreateSignalModal} from "../../actions/createSignalActions";
-import {selectedAnalysisList} from "../../actions/dataActions";
+import {selectedAnalysisList,resetSelectedVariables} from "../../actions/dataActions";
+import {openCreateSignalModal,closeCreateSignalModal,updateCsLoaderValue} from "../../actions/createSignalActions";
 import {createSignal,setPossibleAnalysisList} from "../../actions/signalActions";
 import {DataVariableSelection} from "../data/DataVariableSelection";
-
+import {CreateSignalLoader} from "../common/CreateSignalLoader";
+import {openCsLoaderModal,closeCsLoaderModal} from "../../actions/createSignalActions";
 
 var selectedVariables = {measures:[],dimensions:[],date:null};  // pass selectedVariables to config
 
@@ -44,11 +44,14 @@ handleAnlysisList(e){
   this.props.dispatch(selectedAnalysisList(e))
 
 }
-createSignal(){
+createSignal(event){
+	event.preventDefault();
   console.log(this.props);
   this.signalFlag = false;
   // if($('#createSname').val().trim() != "" || $('#createSname').val().trim() != null){
-  $('body').pleaseWait();
+  //$('body').pleaseWait();
+  this.props.dispatch(updateCsLoaderValue(10))
+  this.props.dispatch(openCsLoaderModal())
    let analysisList =[],config={}, postData={};
 
   config['possibleAnalysis'] = this.props.selectedAnalysis;
@@ -78,9 +81,11 @@ setPossibleList(e){
      this.props.dispatch(setPossibleAnalysisList(e.target.value));
 }
 
+
 componentDidUpdate(){
 	console.log("trend disbale check:::: ");
-     console.log(this.props.selectedDimensions);
+	
+     console.log(store.getState().datasets.selectedDimensions);
 	 console.log(this.props.selectedTimeDimensions);
 	 if(!this.props.selectedTimeDimensions){
 		 $('#analysisList input[type="checkbox"]').last().attr("disabled", true);
@@ -135,7 +140,7 @@ componentDidUpdate(){
 		   let trendId = metaIndex +1;
 		   that.possibleTrend = "chk_analysis"+trendId;
 			  
-			  return(<div key={metaIndex} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} onChange={this.handleAnlysisList.bind(this)} /><label htmlFor={id}>{metaItem.name}</label></div>);
+			  return(<div key={metaIndex} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} onChange={this.handleAnlysisList.bind(this)}  /><label htmlFor={id}>{metaItem.name}</label></div>);
 		
        });
 	 }else if($('#signalVariableList option:selected').val() == "measure"){
@@ -152,7 +157,7 @@ componentDidUpdate(){
 	 renderPossibleAnalysis= (function(){
                 return( <div >
                              {renderSubList}
-		                    <div  className="ma-checkbox inline"><input id={that.possibleTrend} type="checkbox" className="possibleAnalysis" value="Trend Analysis" onChange={that.handleAnlysisList.bind(this)} /><label htmlFor={that.possibleTrend}>Trend Analysis</label></div>
+		                    <div  className="ma-checkbox inline"><input id={that.possibleTrend} type="checkbox" className="possibleAnalysis" value="Trend Analysis" onChange={that.handleAnlysisList.bind(that)} /><label htmlFor={that.possibleTrend}>Trend Analysis</label></div>
                           </div>
 			);
         })(); 
@@ -167,7 +172,8 @@ componentDidUpdate(){
       <div className="main-content">
 <div className="panel panel-default">
   <div className="panel-body">
-
+  <Form onSubmit={this.createSignal.bind(this)}>
+  <FormGroup role="form">
   <div className="row">
   <div className="col-lg-4">
       <div className="htmlForm-group">
@@ -196,20 +202,22 @@ componentDidUpdate(){
   <div className="row">
     <div className="col-lg-4 col-lg-offset-8">
       <div className="htmlForm-group">
-        <input type="text" name="createSname" id="createSname" className="form-control input-sm" placeholder="Enter a signal name"/>
+        <input type="text" name="createSname" id="createSname"  required={true} className="form-control input-sm" placeholder="Enter a signal name"/>
       </div>
     </div>{/*<!-- /.col-lg-4 -->*/}
   </div>
   <hr/>
   <div className="row">
     <div className="col-md-12 text-right">
-      <button onClick={this.createSignal.bind(this)} className="btn btn-primary">CREATE SIGNAL</button>
+      <button type="submit" className="btn btn-primary">CREATE SIGNAL</button>
     </div>
   </div>
-
+  </FormGroup>
+  </Form>
 
   </div>
 </div>
+<CreateSignalLoader />
     </div>
 </div>
 

@@ -21,7 +21,8 @@ import {updateSelectedVariables,resetSelectedVariables,setSelectedVariables} fro
 export class DataVariableSelection extends React.Component {
 	constructor(props) {
 		super(props);
-		//this.props.dispatch(resetSelectedVariables())
+		this.firstLoop = true;
+		//this.props.dispatch(resetSelectedVariables());
 		this.handleCheckboxEvents = this.handleCheckboxEvents.bind(this);
 		this.setVariables = this.setVariables.bind(this);
 		this.measures = [];
@@ -32,11 +33,20 @@ export class DataVariableSelection extends React.Component {
 		this.props.dispatch(updateSelectedVariables(e))
 	}
 	setVariables(dimensions,measures,timeDimension,count){
+	//	this.props.dispatch(resetSelectedVariables());
 		this.props.dispatch(setSelectedVariables(dimensions,measures,timeDimension))
 	}
+	
+	componentWillMount(){
+		//this.props.dispatch(resetSelectedVariables());
+	}
+	
 componentDidMount(){
+	     this.props.dispatch(resetSelectedVariables());
 		this.setVariables(this.dimensions,this.measures,this.datetime[this.datetime.length-1]);
 }
+
+
 	render() {
 
 		console.log("data variableSelection is called##########3");
@@ -48,6 +58,7 @@ componentDidMount(){
 			 const metaData = dataPrev.meta_data.columnData;
 			   // var measures =[], dimensions =[],datetime =[];
 			    metaData.map((metaItem,metaIndex)=>{
+					if(this.firstLoop){
 			      switch(metaItem.columnType){
 			        case "measure":
 			         //m[metaItem.slug] = metaItem.name;
@@ -61,8 +72,11 @@ componentDidMount(){
 			          this.datetime.push(metaItem.name);
 			        break;
 			      }
+				}
+				 
 
 			    });
+				this.firstLoop = false;
 			    if(this.measures.length>0){
 			    	  var measureTemplate = this.measures.map((mItem,mIndex)=>{
 			    	      const mId = "chk_mea" + mIndex;
@@ -92,7 +106,7 @@ componentDidMount(){
 			    	 );
 			    	  });
 			    	}else{
-			    	  var datetimeTemplate = <label>No dates variable present</label>
+			    	  var datetimeTemplate = <label>No date dimensions to display</label>
 			    	}
 			    	
 			    	const popoverLeft = (
@@ -113,10 +127,10 @@ componentDidMount(){
 			          <div className="row">
 			          <div className="col-lg-4">
 			            <div className="panel panel-primary-p1 cst-panel-shadow">
-			            <div className="panel-heading"><i className="mAd-icons ic_infllce"></i> Measures</div>
+			            <div className="panel-heading"><i className="mAd_icons ic_inflnce"></i> Measures</div>
 			            <div className="panel-body">
 			            {/*  <!-- Row for select all-->*/}
-			              <div className="row">
+			              <div className="row hidden">
 			                <div className="col-md-4">
 			                  <div className="ma-checkbox inline">
 			                  <input id="mea" type="checkbox" className="measureAll" />
@@ -140,7 +154,7 @@ componentDidMount(){
 			                </div>
 			              </div>
 			            {/*  <!-- End -->*/}
-			              <hr />
+			             {/*  <hr /> */}
 			            {/*  <!-- Row for list of variables-->*/}
 			              <div className="row">
 			                <div className="col-md-12 cst-scroll-panel">
@@ -156,10 +170,10 @@ componentDidMount(){
 			          </div>{/*<!-- /.col-lg-4 -->*/}
 			          <div className="col-lg-4">
 			              <div className="panel panel-primary-p2 cst-panel-shadow">
-			              <div className="panel-heading"><i className="mAd-icons ic_perf"></i> Dimensions</div>
+			              <div className="panel-heading"><i className="mAd_icons ic_perf "></i> Dimensions</div>
 			                <div className="panel-body">
 			                  {/*  <!-- Row for select all-->*/}
-			                    <div className="row">
+			                    <div className="row hidden">
 			                      <div className="col-md-4">
 			                        <div className="ma-checkbox inline">
 			                        <input id="dim" type="checkbox" className="dimensionAll"/>
@@ -183,7 +197,7 @@ componentDidMount(){
 			                    </div>
 			                    </div>
 			                  {/*  <!-- End -->*/}
-			                    <hr />
+			                   {/* <hr /> */} 
 			                  {/*  <!-- Row for list of variables-->*/}
 			                    <div className="row">
 			                    <div className="col-md-12 cst-scroll-panel">
@@ -206,7 +220,7 @@ componentDidMount(){
 			            <div className="panel-body">
 
 			            {/*  <!-- Row for options all-->*/}
-			                    <div className="row">
+			                    <div className="row hidden">
 			                      <div className="col-md-4">
 
 			                      </div>
@@ -227,7 +241,7 @@ componentDidMount(){
 			                    </div>
 			                    </div>
 			                    {/*<!-- End Row for options all -->*/}
-			                    <hr />
+			                   {/* <hr /> */} 
 			                      {/*<!-- Row for list of variables-->*/}
 			                    <div className="row">
 			                    <div className="col-md-12 cst-scroll-panel">

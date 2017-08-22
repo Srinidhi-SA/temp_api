@@ -4,6 +4,7 @@ import ReactDOM from "react-dom";
 import {Link} from "react-router-dom";
 import store from "../../store";
 import {getList} from "../../actions/signalActions";
+import {Pagination} from "react-bootstrap";
 //import {BreadCrumb} from "../common/BreadCrumb";
 import Breadcrumb from 'react-breadcrumb';
 //import $ from "jquery";
@@ -11,17 +12,22 @@ var dateFormat = require('dateformat');
 import {CreateSignal} from "./CreateSignal";
 import {STATIC_URL} from "../../helpers/env";
 
-
 @connect((store) => {
   return {login_response: store.login.login_response, signalList: store.signals.signalList.data, selectedSignal: store.signals.signalAnalysis};
 })
 
 export class Signals extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    this.handleSelect = this.handleSelect.bind(this);
   }
   componentWillMount() {
-    this.props.dispatch(getList(sessionStorage.userToken));
+	  var pageNo = 1;
+	  if(this.props.history.location.pathname.indexOf("page") != -1){
+		  pageNo = this.props.history.location.pathname.split("page=")[1];
+		  this.props.dispatch(getList(sessionStorage.userToken,pageNo));
+	  }else
+		  this.props.dispatch(getList(sessionStorage.userToken,pageNo));
   }
 
   componentDidMount() {
@@ -46,6 +52,11 @@ export class Signals extends React.Component {
     }, 100);
   }
 
+  
+  handleSelect(eventKey) {
+		this.props.history.push('/signals?page='+eventKey+'')
+		this.props.dispatch(getList(sessionStorage.userToken,eventKey));	
+	}
 
 
   render() {
@@ -56,10 +67,18 @@ export class Signals extends React.Component {
     // parametersForBreadCrumb.push({name:"Signals"});
 
     console.log(this.props);
-    // console.log(store.getState().signals.signalList.errands)
-
     const data = this.props.signalList;
-
+    const pages = store.getState().signals.signalList.total_number_of_pages;
+	const current_page = store.getState().signals.signalList.current_page;
+	let addButton = null;
+	let paginationTag = null
+	if(current_page == 1 || current_page == 0){
+		addButton = <CreateSignal url={this.props.match.url}/>
+	}
+	if(pages > 1){
+		paginationTag = <Pagination ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
+	}
+	
     if (data) {
       console.log("under if data condition!!")
       const storyList = data.map((story, i) => {
@@ -140,24 +159,22 @@ export class Signals extends React.Component {
         )
       });
       return (
-        <div>
           <div className="side-body">
             {/* <MainHeader/>*/}
-			<div class="page-head">
-            <Breadcrumb path={[{
-                path: '/signals',
-                label: 'Signals'
-              }
-            ]}/>
-			</div>
+			
             <div className="main-content">
 				<div className="row">
-					<CreateSignal url={this.props.match.url}/>
-					{storyList} 
+				{addButton}
+					{storyList}
+					<div className="clearfix"></div>
+					</div>
+					<div className="ma-datatable-footer" id="idSignalPagination">
+					<div className="dataTables_paginate">
+					{paginationTag}
+					</div>
+				 </div>
 				</div>
 			</div>
-          </div>
-        </div>
       );
     } else {
       return (
@@ -173,4 +190,7 @@ export class Signals extends React.Component {
       )
     }
   }
+  
+	
+	
 }

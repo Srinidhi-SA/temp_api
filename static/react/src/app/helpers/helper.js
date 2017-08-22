@@ -25,7 +25,10 @@ const CONFUSIONMATRIX = "confusionMatrix";
 const HEATMAPTABLE = "heatMap";
 const CIRCULARCHARTTABLE = "circularChartTable";
 const DECISIONTREETABLE = "decisionTreeTable"
-
+const DULOADERPERVALUE = 10;
+const CSLOADERPERVALUE = 10;
+const LOADERMAXPERVALUE = 90;
+const DEFAULTINTERVAL = 20000;
 
 export function generateHeaders(table) {
     var cols = table.tableData.map(function(rowData,i){
@@ -110,6 +113,9 @@ export{
 	CONFUSIONMATRIX,
 	HEATMAPTABLE,
 	CIRCULARCHARTTABLE,
-	DECISIONTREETABLE
-	
+	DECISIONTREETABLE,
+	DULOADERPERVALUE,
+	CSLOADERPERVALUE,
+	LOADERMAXPERVALUE,
+	DEFAULTINTERVAL,
 	}
