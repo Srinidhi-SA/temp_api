@@ -27,27 +27,16 @@ export class Signal extends React.Component {
     super();
   }
   componentWillMount() {
-    //alert("id:" + this.props.errandId);
-    //console.log(store.getState().signals.signalAnalysis);
-    console.log("check this.props.selectedSignal::");
-
-    if(isEmpty(this.props.signal)){
-    //  alert("working");
-      this.props.dispatch(getSignalAnalysis(sessionStorage.userToken, this.props.match.params.slug));
-    }
-
+	  this.props.dispatch(getSignalAnalysis(sessionStorage.userToken, this.props.match.params.slug));
   }
   render() {
 
      console.log("selected Signal is called$$$$$$$$$$$$$$!!");
-     console.log(this.props);
-    //  console.log(this.props.signal);
-    //  console.log(this.props.match.params.slug +" != "+ this.props.signal.slug);
-
-
-
-    if(isEmpty(this.props.signal)&&(this.props.match.params.slug!=this.props.signal.slug)){
-      // console.log("siggnal selection not matching *******")
+     console.log(this.props.signal);
+     console.log(isEmpty(this.props.signal));
+ 
+    if(isEmpty(this.props.signal)){
+   
       return(
         <div className="side-body">
         {/*<MainHeader/>*/}
