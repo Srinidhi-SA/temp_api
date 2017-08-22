@@ -170,7 +170,9 @@ export class Data extends React.Component {
 			);
 		}else {
 			return (
-					<div>No DataSets</div>
+					   <div>
+			            <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif"} />
+			          </div>
 			)
 		}
 	}
