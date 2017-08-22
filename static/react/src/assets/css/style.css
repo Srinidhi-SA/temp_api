@@ -15189,8 +15189,8 @@ div.pop_box h4 .text-primary {
 .cst-scroll-panel::-webkit-scrollbar-thumb
 {
 	border-radius: 10px;
-	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-	background-color: rgba(0,0,0,.3);
+	-webkit-box-shadow: inset 0 0 6px rgba(89, 89, 89, 0.4);
+	background-color: rgba(181, 181, 181, 0.8);
 }
 
  .col-xs-12.col-sm-9.content {
