@@ -15277,3 +15277,13 @@ html{
     stroke: lightgray !important;
     stroke-width: 1.5px !important;
 }
+
+.table-style{
+	margin-top: 1.8%;
+	padding-left: 13%;
+    padding-right: 13%;
+}
+
+.table-style table th {
+	font-weight:bold !important;
+}

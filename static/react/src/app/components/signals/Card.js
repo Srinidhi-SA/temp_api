@@ -88,7 +88,7 @@ export class Card extends React.Component {
             return ( <DecisionTree key={i} treeData={story.data}/>);
           break;
         case "table":
-            return (<CardTable key = {i} jsonData={story.data} type={story.dataType}/>);
+            return (<div className="table-style"><CardTable key = {i} jsonData={story.data} type={story.dataType}/></div>);
             break;
 		case "dropdown":
             return (<PredictionDropDown key = {i} jsonData={story.data} type={story.dataType}/>);
