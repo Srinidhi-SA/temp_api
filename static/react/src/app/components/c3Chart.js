@@ -54,7 +54,14 @@ componentWillMount(){
        }
      }
     if(this.props.yformat){
-    if(this.props.yformat=='m'){
+	let formats= ['.2s','$','$,.2s','.2f'];
+		if(formats.indexOf(this.props.yformat) >= 0){
+			data.axis.y.tick.format = d3.format(this.props.yformat);
+		}else{
+			data.axis.y.tick.format = d3.format('');
+		}
+	
+   /* if(this.props.yformat=='m'){
       //console.log(this.props.yformat);
       data.axis.y.tick.format = d3.format('.2s');
     }else  if(this.props.yformat=='$'){
@@ -66,11 +73,18 @@ componentWillMount(){
     }else  if(this.props.yformat=='f'){
      // console.log(this.props.yformat);
       data.axis.y.tick.format = d3.format('.2f');
-    }
+    }*/
   }
 
   if(this.props.y2format){
-  if(this.props.y2format=='m'){
+	  let formats= ['.2s','$','$,.2s','.2f'];
+		if(formats.indexOf(this.props.y2format) >= 0){
+			data.axis.y2.tick.format = d3.format(this.props.y2format);
+		}else{
+			data.axis.y2.tick.format = d3.format('');
+		}
+		
+  /*if(this.props.y2format=='m'){
     //console.log(this.get('y2format'));
     data.axis.y2.tick.format = d3.format('.2s');
   }else  if(this.props.y2format=='$'){
@@ -82,7 +96,7 @@ componentWillMount(){
   }else  if(this.props.y2format =='f'){
     //console.log(this.get('yformat'));
     data.axis.y.tick.format = d3.format('.2f');
-  }
+  }*/
 }
 
 if(this.props.tooltip){
