@@ -127,10 +127,10 @@ componentDidMount(){
 			          <div className="row">
 			          <div className="col-lg-4">
 			            <div className="panel panel-primary-p1 cst-panel-shadow">
-			            <div className="panel-heading"><i className="mAd-icons ic_infllce"></i> Measures</div>
+			            <div className="panel-heading"><i className="mAd_icons ic_inflnce"></i> Measures</div>
 			            <div className="panel-body">
 			            {/*  <!-- Row for select all-->*/}
-			              <div className="row">
+			              <div className="row hidden">
 			                <div className="col-md-4">
 			                  <div className="ma-checkbox inline">
 			                  <input id="mea" type="checkbox" className="measureAll" />
@@ -154,7 +154,7 @@ componentDidMount(){
 			                </div>
 			              </div>
 			            {/*  <!-- End -->*/}
-			              <hr />
+			             {/*  <hr /> */}
 			            {/*  <!-- Row for list of variables-->*/}
 			              <div className="row">
 			                <div className="col-md-12 cst-scroll-panel">
@@ -170,10 +170,10 @@ componentDidMount(){
 			          </div>{/*<!-- /.col-lg-4 -->*/}
 			          <div className="col-lg-4">
 			              <div className="panel panel-primary-p2 cst-panel-shadow">
-			              <div className="panel-heading"><i className="mAd-icons ic_perf"></i> Dimensions</div>
+			              <div className="panel-heading"><i className="mAd_icons ic_perf "></i> Dimensions</div>
 			                <div className="panel-body">
 			                  {/*  <!-- Row for select all-->*/}
-			                    <div className="row">
+			                    <div className="row hidden">
 			                      <div className="col-md-4">
 			                        <div className="ma-checkbox inline">
 			                        <input id="dim" type="checkbox" className="dimensionAll"/>
@@ -197,7 +197,7 @@ componentDidMount(){
 			                    </div>
 			                    </div>
 			                  {/*  <!-- End -->*/}
-			                    <hr />
+			                   {/* <hr /> */} 
 			                  {/*  <!-- Row for list of variables-->*/}
 			                    <div className="row">
 			                    <div className="col-md-12 cst-scroll-panel">
@@ -220,7 +220,7 @@ componentDidMount(){
 			            <div className="panel-body">
 
 			            {/*  <!-- Row for options all-->*/}
-			                    <div className="row">
+			                    <div className="row hidden">
 			                      <div className="col-md-4">
 
 			                      </div>
@@ -241,7 +241,7 @@ componentDidMount(){
 			                    </div>
 			                    </div>
 			                    {/*<!-- End Row for options all -->*/}
-			                    <hr />
+			                   {/* <hr /> */} 
 			                      {/*<!-- Row for list of variables-->*/}
 			                    <div className="row">
 			                    <div className="col-md-12 cst-scroll-panel">

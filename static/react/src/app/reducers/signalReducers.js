@@ -7,6 +7,7 @@ export default function reducer(state = {
   signalData:null,
   createSignalLoaderModal:false,
   createSignalLoaderValue:10,
+  current_page:1,
   // variableType:""
 }, action) {
   console.log("in SIGNAL reducer!!");
@@ -17,7 +18,8 @@ export default function reducer(state = {
       {
         return {
           ...state,
-          signalList: action.signalList
+          signalList: action.signalList,
+          current_page:action.current_page,
         }
       }
       break;

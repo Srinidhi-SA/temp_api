@@ -429,7 +429,7 @@ export class DataPreview extends React.Component {
 					<div className="col-md-12 text-right">
  
 					<div className="panel">
-					<div className="pane-body">
+					<div className="panel-body">
 					<Button onClick={this.closePreview.bind(this)}> {this.buttons.close.text} </Button>
 					<Button onClick={this.moveToVariableSelection.bind(this)} bsStyle="primary"> {this.buttons.create.text}</Button>
 					</div>
