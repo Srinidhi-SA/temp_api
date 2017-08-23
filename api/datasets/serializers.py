@@ -45,11 +45,24 @@ class DatasetSerializer(serializers.ModelSerializer):
         exclude = ( 'id', 'updated_on')
 
 
-class DataListSerializer(serializers.Serializer):
+class DataListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Dataset
-        exculde = (
+        fields = (
+            "slug",
+            "name",
+            "created_on",
+            "updated_on",
+            "input_file",
+            "db_type",
+            "bookmarked",
+            "analysis_done",
+            "file_remote"
+        )
+
+"""
+        fields = (
             "input_file",
             "auto_update",
             "auto_update_duration",
@@ -58,8 +71,11 @@ class DataListSerializer(serializers.Serializer):
             "db_details",
             "preview",
             "meta_data",
-            "file_remote"
+            "file_remote",
+
         )
+"""
+
 
 """
 name = models.CharField(max_length=100, null=True)
