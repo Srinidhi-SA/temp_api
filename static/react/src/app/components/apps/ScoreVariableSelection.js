@@ -9,6 +9,7 @@ import {C3Chart} from "../c3Chart";
 import ReactDOM from 'react-dom';
 import {DataVariableSelection} from "../data/DataVariableSelection";
 import {updateTrainAndTest,createScore} from "../../actions/appActions";
+import {AppsLoader} from "../common/AppsLoader";
 
 
 @connect((store) => {
@@ -27,6 +28,11 @@ export class ScoreVariableSelection extends React.Component {
 	}
 	render() {
 		console.log("Create Score Variable Selection  is called##########3");
+		 if(store.getState().apps.scoreSummaryFlag){
+				let _link = "/apps/"+store.getState().apps.currentAppId+'/scores/'+store.getState().apps.scoreSlug;
+				return(<Redirect to={_link}/>);
+			}
+		 
 		let dataPrev = store.getState().datasets.dataPreview;
 		 const metaData = dataPrev.meta_data.columnData;
 		 let renderSelectBox = null;
@@ -82,6 +88,7 @@ export class ScoreVariableSelection extends React.Component {
 				      </div>
 				      </div>
 				      </div>
+				      <AppsLoader/>
 						</div>
 			);
 	}

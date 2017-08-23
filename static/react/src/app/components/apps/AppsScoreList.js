@@ -48,7 +48,7 @@ export class AppsScoreList extends React.Component {
 				paginationTag = <Pagination className="pull-left" ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
 			}
 			const appsScoreList = scoreList.map((data, i) => {
-				var scoreLink = "/apps/score/" + data.slug;
+				var scoreLink = "/apps/"+store.getState().apps.currentAppId+"/scores/"+data.slug;
 				return (
 						<div className="col-md-3 top20 list-boxes" key={i}>
 						<div className="rep_block newCardStyle" name={data.name}>
@@ -61,7 +61,7 @@ export class AppsScoreList extends React.Component {
 						</h4>
 						</div>
 						<div className="col-xs-3">
-						<img src={ STATIC_URL + "assets/images/data_cardIcon.png" } className="img-responsive" alt="LOADING"/>
+						<img src={ STATIC_URL + "assets/images/apps_score_icon.png" } className="img-responsive" alt="LOADING"/>
 						</div>
 						</div>
 						</div>
@@ -116,7 +116,7 @@ export class AppsScoreList extends React.Component {
 		}
 	}
 	handleSelect(eventKey) {
-		this.props.history.push('/apps/score/page/'+eventKey+'')
+		this.props.history.push('/apps/'+store.getState().apps.currentAppId+'scores?page='+eventKey+'')
 		this.props.dispatch(getAppsScoreList(eventKey));
 	}
 }

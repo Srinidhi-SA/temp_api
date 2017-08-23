@@ -18,6 +18,8 @@ export default function reducer(state = {
 		appsLoaderModal:false,
 		appsLoaderPerValue:0,
 		appsLoaderText :"",
+		modelSummaryFlag:false,
+		scoreSummaryFlag:false,
 		
 }, action) {
 	console.log("In APPs reducer!!");
@@ -189,7 +191,7 @@ export default function reducer(state = {
 	{
 		return {
 			...state,
-			modelCreationFalg:action.value,
+			modelSlug:action.slug,
 		}
 	}
 	break;
@@ -199,6 +201,37 @@ export default function reducer(state = {
 		throw new Error("Unable to create model!");
 	}
 	break;
+	case "UPDATE_MODEL_FLAG":
+	{
+		return {
+			...state,
+			modelSummaryFlag:action.flag,
+		}
+	}
+	break;
+	case "CREATE_SCORE_SUCCESS":
+	{
+		return {
+			...state,
+			scoreSlug:action.slug,
+		}
+	}
+	break;
+	case "CREATE_SCORE_ERROR":
+	{
+		//alert(action.json.non_field_errors);
+		throw new Error("Unable to create score!");
+	}
+	break;
+	case "UPDATE_SCORE_FLAG":
+	{
+		return {
+			...state,
+			scoreSummaryFlag:action.flag,
+		}
+	}
+	break;
+	
  }
 return state
 }

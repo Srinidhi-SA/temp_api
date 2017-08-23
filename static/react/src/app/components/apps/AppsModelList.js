@@ -10,7 +10,7 @@ import {AppsCreateModel} from "./AppsCreateModel";
 import {getAppsModelList,getAppsModelSummary} from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {STATIC_URL} from "../../helpers/env.js"
-import {AppsLoader} from "../common/AppsLoader";
+
 
 var dateFormat = require('dateformat');
 
@@ -18,6 +18,8 @@ var dateFormat = require('dateformat');
 @connect((store) => {
 	return {login_response: store.login.login_response, 
 		modelList: store.apps.modelList,
+		modelSummaryFlag:store.apps.modelSummaryFlag,
+		modelSlug:store.apps.modelSlug,
 		};
 })
 
@@ -40,7 +42,7 @@ export class AppsModelList extends React.Component {
   }
   render() {
     console.log("apps model list is called##########3");
-    console.log(this.props)
+    console.log(this.props);
     const modelList = store.getState().apps.modelList.data;
 	if (modelList) {
 		const pages = store.getState().apps.modelList.total_number_of_pages;
@@ -54,7 +56,7 @@ export class AppsModelList extends React.Component {
 			paginationTag = <Pagination className="pull-left" ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
 		}
 		const appsModelList = modelList.map((data, i) => {
-			var modelLink = "/apps/models/" + data.slug;
+			var modelLink = "/apps/"+store.getState().apps.currentAppId+"/models/" + data.slug;
 			return (
 					<div className="col-md-3 top20 list-boxes" key={i}>
 					<div className="rep_block newCardStyle" name={data.name}>
@@ -67,7 +69,7 @@ export class AppsModelList extends React.Component {
 					</h4>
 					</div>
 					<div className="col-xs-3">
-					<img src={ STATIC_URL + "assets/images/data_cardIcon.png" } className="img-responsive" alt="LOADING"/>
+					<img src={ STATIC_URL + "assets/images/apps_model_icon.png" } className="img-responsive" alt="LOADING"/>
 					</div>
 					</div>
 					</div>
@@ -112,7 +114,6 @@ export class AppsModelList extends React.Component {
 				<div id="idPagination">
 				{paginationTag}
 				</div>
-				<AppsLoader/>
 				</div>
 		);
 	}else {

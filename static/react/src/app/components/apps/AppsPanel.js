@@ -2,14 +2,15 @@ import React from "react";
 import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab} from "react-bootstrap";
 import {Link, Redirect} from "react-router-dom";
-import {updateSelectedApp} from "../../actions/appActions";
+import {updateSelectedApp,updateModelSummaryFlag} from "../../actions/appActions";
 
 export class AppsPanel extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
   }
   gotoAppsList(appId,appName){
-	 this.props.dispatch(updateSelectedApp(appId,appName))
+	 this.props.dispatch(updateSelectedApp(appId,appName));
+	 this.props.dispatch(updateModelSummaryFlag(false));
   }
   render() {
     console.log("Apps panel is called##########3");
@@ -90,8 +91,8 @@ export class AppsPanel extends React.Component {
 					</div>
 					<div className="col-md-4">							
 						<div className="app-block">
-							<a href="#" className="app-link">
-							<div className="ol-md-4 col-sm-3 col-xs-5 xs-p-20">
+							<a href="#" className="app-link disabled" >
+							<div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
 								<img src="../assets/images/icon_robo.png" className="img-responsive"/>
 							</div>
 							<div className="col-md-8 col-sm-9 col-xs-7">

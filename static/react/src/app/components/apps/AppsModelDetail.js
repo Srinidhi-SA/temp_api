@@ -26,7 +26,7 @@ export class AppsModelDetail extends React.Component {
     const modelSummary = store.getState().apps.modelSummary.data;
 	if (modelSummary) {
 		console.log(this.props)
-		let listOfCardList = getListOfCards(modelSummary.model_summary.listOfCards)
+		let listOfCardList = getListOfCards(modelSummary.data.model_summary.listOfCards)
 		let cardDataList = listOfCardList.map((data, i) => {
 			if( i != 0){
 				if(i%2 != 0)
@@ -74,7 +74,9 @@ export class AppsModelDetail extends React.Component {
 		}
 	}
 	
-	 return (
+	else{
+		return (
+	
 		      <div className="side-body">
 		        <div className="page-head">
 		        </div>
@@ -83,6 +85,7 @@ export class AppsModelDetail extends React.Component {
 		        </div>
 		      </div>
 		    );
+	}
     
   }
 }

@@ -73,7 +73,7 @@ export function createModel(modelName,targetVariable) {
 	console.log(modelName);
 	console.log(targetVariable);
 	  return (dispatch) => {
-		  dispatch(openAppsLoader(DULOADERPERVALUE,"Please wait while <br/> mAdvisor is creating model... "));
+		  dispatch(openAppsLoader(DULOADERPERVALUE,"Please wait while mAdvisor is creating model... "));
 			return triggerCreateModel(sessionStorage.userToken,modelName,targetVariable).then(([response, json]) =>{
 				if(response.status === 200){
 					console.log(json)
@@ -108,7 +108,7 @@ function triggerCreateModel(token,modelName,targetVariable) {
 		}).then( response => Promise.all([response, response.json()]));
 }
 function createModelSuccess(data,dispatch){
-	var value = data.analysis_done;
+	var slug = data.slug;
 	appsInterval = setInterval(function(){
 			if(store.getState().apps.appsLoaderPerValue < LOADERMAXPERVALUE){
 				dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE));
@@ -116,12 +116,12 @@ function createModelSuccess(data,dispatch){
 			dispatch(getAppsModelSummary(data.slug));
 			return {
 				type: "CREATE_MODEL_SUCCESS",
-				value,	
+				slug,	
 			}
 	},DEFAULTINTERVAL);
 	return {
 		type: "CREATE_MODEL_SUCCESS",
-		value,	
+		slug,	
 	}
 }
 export function getAppsScoreList(pageNo) {
@@ -180,12 +180,14 @@ export function getAppsModelSummary(slug) {
 				if(json.analysis_done){
 					clearInterval(appsInterval);
 					dispatch(fetchModelSummarySuccess(json));
-					dispatch(closeAppsLoaderValue())
+					dispatch(closeAppsLoaderValue());
+					dispatch(updateModelSummaryFlag(true));
 				}
 			}
 			else{
 				dispatch(closeAppsLoaderValue())
-				dispatch(fetchModelSummaryError(json))
+				dispatch(fetchModelSummaryError(json));
+				dispatch(updateModelSummaryFlag(false));
 			}
 		})
 	}
@@ -232,15 +234,14 @@ export function createScore(scoreName,targetVariable) {
 	console.log(scoreName);
 	console.log(targetVariable);
 	  return (dispatch) => {
+		  dispatch(openAppsLoader(DULOADERPERVALUE,"Please wait while mAdvisor is creating score... "));
 			return triggerCreateScore(sessionStorage.userToken,scoreName,targetVariable).then(([response, json]) =>{
 				if(response.status === 200){
-					console.log(json)
-					alert("Success")
-					//dispatch(createModelSuccess(json))
+					
+					dispatch(createScoreSuccess(json,dispatch))
 				}
 				else{
-					alert("Error")
-					//dispatch(createModelError(json))
+					dispatch(createScoreError(json))
 				}
 			})
 		}
@@ -266,14 +267,39 @@ function triggerCreateScore(token,scoreName,targetVariable) {
 		}).then( response => Promise.all([response, response.json()]));
 }
 
+function createScoreSuccess(data,dispatch){
+	var slug = data.slug;
+	appsInterval = setInterval(function(){
+			if(store.getState().apps.appsLoaderPerValue < LOADERMAXPERVALUE){
+				dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE));
+			}
+			dispatch(getAppsScoreSummary(data.slug));
+			return {
+				type: "CREATE_SCORE_SUCCESS",
+				slug,	
+			}
+	},DEFAULTINTERVAL);
+	return {
+		type: "CREATE_SCORE_SUCCESS",
+		slug,	
+	}
+}
+
 export function getAppsScoreSummary(slug) {
 	return (dispatch) => {
 		return fetchScoreSummary(sessionStorage.userToken,slug).then(([response, json]) =>{
 			if(response.status === 200){
-				console.log(json)
-				dispatch(fetchScoreSummarySuccess(json))
+				if(json.analysis_done){
+					clearInterval(appsInterval);
+					dispatch(fetchScoreSummarySuccess(json));
+					dispatch(closeAppsLoaderValue());
+					dispatch(updateScoreSummaryFlag(true));
+				}
+				
 			}
 			else{
+				dispatch(closeAppsLoaderValue());
+				dispatch(updateScoreSummaryFlag(false));
 				dispatch(fetchScoreSummaryError(json))
 			}
 		})
@@ -340,5 +366,15 @@ export function openAppsLoader(value,text){
 		text,
 	}
 }
-
-
+export function updateModelSummaryFlag(flag){
+	return {
+		type: "UPDATE_MODEL_FLAG",
+		flag,
+	}
+}
+export function updateScoreSummaryFlag(flag){
+	return {
+		type: "UPDATE_SCORE_FLAG",
+		flag,
+	}
+}

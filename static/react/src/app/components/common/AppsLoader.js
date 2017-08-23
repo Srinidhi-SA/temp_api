@@ -39,7 +39,7 @@ export class AppsLoader extends React.Component {
 				<p className="text-center"><br/>
 				<i className="pe-7s-science pe-spin pe-5x pe-va text-primary" ></i><br/>
 				<br/>
-				{store.getState().apps.appsLoaderText}
+				<h3>{store.getState().apps.appsLoaderText}</h3>
 				</p><br/>
 			
 				<div className="p_bar_body">
