@@ -106,6 +106,51 @@ class InsightSerializer(serializers.ModelSerializer):
         exclude = ('compare_with', 'compare_type', 'column_data_raw', 'id')
 
 
+class InsightListSerializers(serializers.ModelSerializer):
+
+    class Meta:
+        model = Insight
+        exclude = (
+            'compare_with',
+            'compare_type',
+            'column_data_raw',
+            'id',
+            'config',
+            'data'
+        )
+
+
+"""
+    name = models.CharField(max_length=300, null=True)
+    slug = models.SlugField(null=False, blank=True)
+    type = models.CharField(max_length=300, null=True)  # dimension/measure
+    target_column = models.CharField(max_length=300, null=True, blank=True)
+
+    dataset = models.ForeignKey(Dataset, null=True)  # get all dataset related detail
+
+    compare_with = models.CharField(max_length=300, default="")
+    compare_type = models.CharField(max_length=300, null=True)
+    column_data_raw = models.TextField(default="{}")
+    config = models.TextField(default="{}")
+
+    status = models.BooleanField(default=False)
+    live_status = models.CharField(max_length=300, default='0', choices=STATUS_CHOICES)
+    analysis_done = models.BooleanField(default=False)
+    # state -> job submitted, job started, job ...
+
+    data = models.TextField(default="{}")
+
+    created_on = models.DateTimeField(auto_now_add=True, null=True)
+    updated_on = models.DateTimeField(auto_now=True, null=True)
+    created_by = models.ForeignKey(User, null=False)
+    deleted = models.BooleanField(default=False)
+
+    bookmarked = models.BooleanField(default=False)
+
+    job = models.ForeignKey(Job, null=True)
+"""
+
+
 class TrainerSerlializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
