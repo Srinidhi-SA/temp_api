@@ -29,10 +29,10 @@ export class Apps extends React.Component {
   render() {
     console.log("apps is called##########3");
     console.log(this.props)
-   let models = <div id="appsModels"><AppsModelList history={this.props.history} match={this.props.match}/>
-  <div className="clearfix"></div></div>
-  let scores = <div id="appsScore"><AppsScoreList history={this.props.history} match={this.props.match}/>
-  <div className="clearfix"></div></div>
+   let models = <AppsModelList history={this.props.history} match={this.props.match}/>
+  
+  let scores = <AppsScoreList history={this.props.history} match={this.props.match}/>
+ 
     return (
           <div className="side-body">
             <div className="main-content">

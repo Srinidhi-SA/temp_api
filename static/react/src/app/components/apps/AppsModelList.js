@@ -57,7 +57,7 @@ export class AppsModelList extends React.Component {
 			addButton = <AppsCreateModel match={this.props.match}/>
 		}
 		if(pages > 1){
-			paginationTag = <Pagination className="pull-left" ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
+			paginationTag = <Pagination  ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
 		}
 		const appsModelList = modelList.map((data, i) => {
 			var modelLink = "/apps/"+store.getState().apps.currentAppId+"/models/" + data.slug;
@@ -112,13 +112,18 @@ export class AppsModelList extends React.Component {
 		});
 		return (
 				<div>
+				<div className="row">
 				{addButton}
 				{appsModelList}
 				<div className="clearfix"></div>
-				<div id="idPagination">
+				</div>
+				<div className="ma-datatable-footer"  id="idPagination">
+				<div className="dataTables_paginate">
 				{paginationTag}
 				</div>
 				</div>
+				</div>
+				
 		);
 	}else {
 		return (

@@ -29,7 +29,7 @@ export class AppsPanel extends React.Component {
 					<div class="col-md-4">
 						
 						<div className="app-block"> 
-							<a onClick={this.gotoAppsList.bind(this,2,"Opportunity Scoring")} className="app-link" ><Link  to="/apps/2/models">
+							<a className="app-link" ><Link  to="/apps/2/models">
 							<div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
 								<img src="../assets/images/icon_oppr.png" className="img-responsive"/>
 							</div>
@@ -44,8 +44,8 @@ export class AppsPanel extends React.Component {
 							<div className="card-footer">
 							<ul className="app_labels">
 								<li className="xs-p-10 text-primary"><i className="fa fa-tag fa-1x"></i></li>
-								<li><a href="#"><i className="fa fa-tag"></i> Business</a></li>
-								<li><a href="#"><i className="fa fa-tag"></i> Climate</a></li>
+								<li><a href="#"><i className="fa fa-tag"></i> Marketing</a></li>
+								<li><a href="#"><i className="fa fa-tag"></i> Sales</a></li>
 							</ul>
 						
 						<div className="card-deatils">
@@ -61,7 +61,7 @@ export class AppsPanel extends React.Component {
 					<div className="col-md-4">
 						
 						<div className="app-block">
-						<a  onClick={this.gotoAppsList.bind(this,1,"Automation Prediction")} className="app-link"><Link  to="/apps/1/models">
+						<a  className="app-link"><Link  to="/apps/1/models">
 							<div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
 								<img src="../assets/images/icon_prediction.png" className="img-responsive"/>
 							</div>
@@ -76,8 +76,8 @@ export class AppsPanel extends React.Component {
 						<div className="card-footer">
 							<ul className="app_labels">
 								<li className="xs-p-10 text-primary"><i className="fa fa-tag fa-1x"></i></li>
-								<li><a href="#"><i className="fa fa-tag"></i> Business</a></li>
-								<li><a href="#"><i className="fa fa-tag"></i> Climate</a></li>
+								<li><a href="#"><i className="fa fa-tag"></i> Marketing</a></li>
+								<li><a href="#"><i className="fa fa-tag"></i> Sales</a></li>
 							 
 							</ul>							
 						<div className="card-deatils">
@@ -93,7 +93,7 @@ export class AppsPanel extends React.Component {
 					</div>
 					<div className="col-md-4">							
 						<div className="app-block">
-							<a href="#" className="app-link disabled" >
+							<a href="#" className="app-link" >
 							<div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
 								<img src="../assets/images/icon_robo.png" className="img-responsive"/>
 							</div>
@@ -107,8 +107,7 @@ export class AppsPanel extends React.Component {
 							<div className="card-footer">
 							<ul className="app_labels">
 								<li className="xs-p-10 text-primary"><i className="fa fa-tag fa-1x"></i></li>
-								<li><a href="#"><i className="fa fa-tag"></i> Business</a></li>
-								<li><a href="#"><i className="fa fa-tag"></i> Climate</a></li>
+								<li><a href="#"><i className="fa fa-tag"></i> Finance</a></li>
 							 
 							</ul>
 						

@@ -155,7 +155,7 @@ export class Data extends React.Component {
 			return (
 					<div className="side-body">
 					<div className="main-content">
-					<div class="row">
+					<div className="row">
 					{addButton}
 					{dataSetList}
 					<div className="clearfix"></div>

@@ -101,13 +101,20 @@ export class AppsScoreList extends React.Component {
 				)
 			});
 			return (
+					
 					<div>
+					<div className="row">
+					{addButton}
 					{appsScoreList}
 					<div className="clearfix"></div>
-					<div id="idPagination">
+					</div>
+					<div className="ma-datatable-footer"  id="idPagination">
+					<div className="dataTables_paginate">
 					{paginationTag}
 					</div>
 					</div>
+					</div>
+					
 			);
 		}else {
 			return (
