@@ -70,6 +70,7 @@ JOBSERVER = {
     'master': 'bi.sparkjobs.JobScript',
     'metadata': 'bi.sparkjobs.JobScript',
     'model': 'bi.sparkjobs.JobScript',
+    'score': 'bi.sparkjobs.JobScript',
     'filter': 'bi.sparkjobs.filter.JobScript',
 
 }
