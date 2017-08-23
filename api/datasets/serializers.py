@@ -42,7 +42,7 @@ class DatasetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Dataset
-        exclude = ( 'id', 'updated_on')
+        exclude = ( 'id', 'updated_at')
 
 
 class DataListSerializer(serializers.ModelSerializer):
@@ -52,8 +52,8 @@ class DataListSerializer(serializers.ModelSerializer):
         fields = (
             "slug",
             "name",
-            "created_on",
-            "updated_on",
+            "created_at",
+            "updated_at",
             "input_file",
             "db_type",
             "bookmarked",
