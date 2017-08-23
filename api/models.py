@@ -249,34 +249,6 @@ class Dataset(models.Model):
         elif type == 'fake':
             return "file:///asdasdasdasd"
 
-    def common_config(self):
-
-        ignore_column_suggestion = []
-        utf8_column_suggestions = []
-        dateTimeSuggestions = []
-
-        if self.dataset.analysis_done is True:
-            meta_data = json.loads(self.dataset.meta_data)
-            dataset_meta_data = meta_data.get('metaData')
-
-            for variable in dataset_meta_data:
-                if variable['name'] == 'ignoreColumnSuggestions':
-                    ignore_column_suggestion += variable['value']
-
-                if variable['name'] == 'utf8ColumnSuggestion':
-                    utf8_column_suggestions += variable['value']
-
-                if variable['name'] == 'dateTimeSuggestions':
-                    dateTimeSuggestions += [variable['value']]
-        else:
-            print "How the hell reached here!. Metadata is still not there. Please Wait."
-
-        return {
-            'ignore_column_suggestion': ignore_column_suggestion,
-            'utf8_column_suggestions': utf8_column_suggestions,
-            'dateTimeSuggestions': dateTimeSuggestions,
-        }
-
 
 class Insight(models.Model):
     name = models.CharField(max_length=300, null=True)
@@ -377,30 +349,6 @@ class Insight(models.Model):
         import json
         return json.loads(self.config)
 
-    def get_config_from_config(self):
-        config = json.loads(self.config)
-        consider_columns_type = ['including']
-        data_columns = config.get("timeDimension", None)
-
-        if data_columns is None:
-            consider_columns = config.get('dimension', []) + config.get('measures', [])
-            data_columns = ""
-        else:
-            if data_columns is "":
-                consider_columns = config.get('dimension', []) + config.get('measures', [])
-            else:
-                consider_columns = config.get('dimension', []) + config.get('measures', []) + [data_columns]
-
-        if len(consider_columns) < 1:
-            consider_columns_type = ['excluding']
-
-        ret = {
-            'consider_columns_type': consider_columns_type,
-            'consider_columns': consider_columns,
-            'date_columns': [data_columns],
-        }
-        return ret
-
     def create_configuration_url_settings(self):
         default_scripts_to_run = [
             'Descriptive analysis',
@@ -419,22 +367,52 @@ class Insight(models.Model):
         }
 
     def create_configuration_column_settings(self):
+        config = json.loads(self.config)
+        consider_columns_type = ['including']
         analysis_type = [self.type]
+        data_columns = config.get("timeDimension", None)
         result_column = [self.target_column]
+        if data_columns is None:
+            consider_columns = config.get('dimension', []) + config.get('measures', [])
+            data_columns = ""
+        else:
+            if data_columns is "":
+                consider_columns = config.get('dimension', []) + config.get('measures', [])
+            else:
+                consider_columns = config.get('dimension', []) + config.get('measures', []) + [data_columns]
 
-        ret = {
+        ignore_column_suggestion = []
+        utf8_column_suggestions = []
+
+        if len(consider_columns) < 1:
+            consider_columns_type = ['excluding']
+
+        if self.dataset.analysis_done is True:
+            meta_data = json.loads(self.dataset.meta_data)
+            dataset_meta_data = meta_data.get('metaData')
+
+            for variable in dataset_meta_data:
+                if variable['name'] == 'ignoreColumnSuggestions':
+                    ignore_column_suggestion += variable['value']
+
+                if variable['name'] == 'utf8ColumnSuggestion':
+                    utf8_column_suggestions += variable['value']
+        else:
+            print "How the hell reached here!. Metadata is still not there. Please Wait."
+            ignore_column_suggestion = []
+            utf8_column_suggestions = []
+
+        return {
             'polarity': ['positive'],
-            'result_column': result_column,
-            'analysis_type': analysis_type,
+            'consider_columns_type': consider_columns_type,
             'date_format': None,
+            'ignore_column_suggestions': ignore_column_suggestion,
+            'result_column': result_column,
+            'consider_columns': consider_columns,
+            'date_columns': [data_columns],
+            'analysis_type': analysis_type,
+            'utf8_columns': utf8_column_suggestions
         }
-
-        get_config_from_config = self.get_config_from_config()
-        meta_data_related_config = self.dataset.common_config()
-
-        ret.update(get_config_from_config)
-        ret.update(meta_data_related_config)
-        return ret
         # return {
         #     "analysis_type": ["master"],
         #     "result_column": "",
@@ -502,7 +480,6 @@ class Trainer(models.Model):
             "config": {}
         }
 
-        import pdb;pdb.set_trace()
         config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
         config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
@@ -513,57 +490,30 @@ class Trainer(models.Model):
         self.save()
         return config
 
-    def get_config_from_config(self):
-        config = json.loads(self.config)
-        consider_columns_type = ['including']
-        data_columns = config.get("timeDimension", None)
-
-        if data_columns is None:
-            consider_columns = config.get('dimension', []) + config.get('measures', [])
-            data_columns = ""
-        else:
-            if data_columns is "":
-                consider_columns = config.get('dimension', []) + config.get('measures', [])
-            else:
-                consider_columns = config.get('dimension', []) + config.get('measures', []) + [data_columns]
-
-        if len(consider_columns) < 1:
-            consider_columns_type = ['excluding']
-
-        ret = {
-            'consider_columns_type': consider_columns_type,
-            'consider_columns': consider_columns,
-            'date_columns': [data_columns],
-        }
-        return ret
-
     def create_configuration_url_settings(self):
-        config = json.loads(self.config)
-        train_test_split = config.get('trainValue')/100
         return {
-            'inputfile': [self.dataset.get_input_file()],
-            'modelpath': [self.slug],
-            'train_test_split': [train_test_split],
-            'analysis_type': ['training']
-        }
+                    'inputfile': [self.dataset.get_input_file()],
+                    # Model Slug will go instead of model path
+                    'modelpath': [self.slug],
+                    'train_test_split': [0.8],
+                    'analysis_type': ['training']
+                }
 
     def create_configuration_column_settings(self):
-        config = json.loads(self.config)
-        result_column = config.get('analysisVariable')
-
-        ret = {
-            'polarity': ['positive'],
-            'result_column': [result_column],
-            'date_format': None,
-        }
-
-        get_config_from_config = self.get_config_from_config()
-        meta_data_related_config = self.dataset.common_config()
-
-        ret.update(get_config_from_config)
-        ret.update(meta_data_related_config)
-
-        return ret
+        return {
+                    'result_column': ['Opportunity Result'],
+                    'consider_columns_type': ['excluding'],
+                    'consider_columns': [
+                            "User ID",
+                            "Number of Steps"
+                        ],
+                    'polarity': ['positive'],
+                    'date_format': None,
+                    'date_columns': [],
+                    'ignore_column_suggestions': [],
+                    'dateTimeSuggestions' : [],
+                    'utf8ColumnSuggestion': [],
+                }
 
     def add_to_job(self, *args, **kwargs):
 
@@ -571,7 +521,7 @@ class Trainer(models.Model):
         print "Dataset realted config genarated."
 
         job = Job()
-        job.name = "-".join(["Insight", self.slug])
+        job.name = "-".join(["Trainer", self.slug])
         job.job_type = "model"
         job.object_id = str(self.slug)
         job.config = json.dumps(jobConfig)
@@ -597,92 +547,6 @@ class Trainer(models.Model):
 
         self.job = job
         self.save()
-
-        def create_configuration_url_settings():
-            config = json.loads(self.config)
-
-            trainValue = config.get("trainValue")
-            if trainValue > 100 and trainValue < 1:
-                raise Exception("trainValue should be in between 1 to 100")
-
-            return {
-                'inputfile': [self.dataset.get_input_file()],
-                'modelpath': [self.slug],
-                'train_test_split' : [trainValue/100]
-            }
-            pass
-
-        def create_configuration_column_settings():
-            config = json.loads(self.config)
-            consider_columns_type = ['including']
-            analysis_type = [self.type]
-            data_columns = config.get("timeDimension", None)
-            result_column = [self.target_column]
-            if data_columns is None:
-                consider_columns = config.get('dimension', []) + config.get('measures', [])
-                data_columns = ""
-            else:
-                if data_columns is "":
-                    consider_columns = config.get('dimension', []) + config.get('measures', [])
-                else:
-                    consider_columns = config.get('dimension', []) + config.get('measures', []) + [data_columns]
-
-            ignore_column_suggestion = []
-            utf8_column_suggestions = []
-            dateTimeSuggestions = []
-
-            if len(consider_columns) < 1:
-                consider_columns_type = ['excluding']
-
-            if self.dataset.analysis_done is True:
-                meta_data = json.loads(self.dataset.meta_data)
-                dataset_meta_data = meta_data.get('metaData')
-
-                for variable in dataset_meta_data:
-                    if variable['name'] == 'ignoreColumnSuggestions':
-                        ignore_column_suggestion += variable['value']
-
-                    if variable['name'] == 'utf8ColumnSuggestion':
-                        utf8_column_suggestions += variable['value']
-
-                    if variable['name'] == 'dateTimeSuggestions':
-                        dateTimeSuggestions += [variable['value']]
-            else:
-                print "How the hell reached here!. Metadata is still not there. Please Wait."
-                ignore_column_suggestion = []
-                utf8_column_suggestions = []
-
-            return {
-                'polarity': ['positive'],
-                'consider_columns_type': consider_columns_type,
-                'date_format': None,
-                'ignore_column_suggestions': ignore_column_suggestion,
-                'consider_columns': consider_columns,
-                'date_columns': [data_columns],
-                'analysis_type': analysis_type,
-                'utf8_columns': utf8_column_suggestions,
-                'analysis_type': ['prediction'],
-                # 'result_column': ['Opportunity Result'],
-                # 'consider_columns_type': ['excluding'],
-                # 'consider_columns': [],
-            }
-
-"""
-{
-    "name": "WWADw",
-    "dataset": "iriscsv-5dbng5clba",
-    "app_id": 1,
-    "column_data_raw":
-        {
-            "measures": "",
-            "dimension": "",
-            "timeDimension": "",
-            "trainValue": 50,
-            "testValue": 50,
-            "analysisVariable": "age"
-        }
-}
-"""
 
 
 # TODO: Add generate config
