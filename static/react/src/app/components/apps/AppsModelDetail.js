@@ -5,34 +5,48 @@ import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab} from "react-bootstrap";
 import {AppsCreateScore} from "./AppsCreateScore";
 import {Card} from "../signals/Card";
-import {getListOfCards} from "../../actions/appActions";
+import {getListOfCards,getAppsModelSummary} from "../../actions/appActions";
+import {storeSignalMeta} from "../../actions/dataActions";
 import CircularProgressbar from 'react-circular-progressbar';
 import {STATIC_URL} from "../../helpers/env.js"
+import {isEmpty} from "../../helpers/helper";
 
 @connect((store) => {
 	return {login_response: store.login.login_response, 
 		modelList:store.apps.modelList,modelSummary:store.apps.modelSummary,
+		modelSlug:store.apps.modelSlug,
 		};
 })
 
 
 export class AppsModelDetail extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
   }
+  componentWillMount() {
+		this.props.dispatch(storeSignalMeta(null,this.props.match.url));
+	}
   
+  componentDidMount() {
+	  if(!isEmpty(store.getState().apps.modelSummary)){
+		  if(store.getState().apps.modelSummary.slug != store.getState().apps.modelSlug)
+		  this.props.dispatch(getAppsModelSummary(store.getState().apps.modelSlug));
+	  }else{
+		  this.props.dispatch(getAppsModelSummary(store.getState().apps.modelSlug));
+	  }
+  }
   render() {
     console.log("apps Model Detail View is called##########3");
-    const modelSummary = store.getState().apps.modelSummary.data;
-	if (modelSummary) {
+    const modelSummary = store.getState().apps.modelSummary;
+	if (!$.isEmptyObject(modelSummary)) {
 		console.log(this.props)
-		let listOfCardList = getListOfCards(modelSummary.model_summary.listOfCards)
+		let listOfCardList = getListOfCards(modelSummary.data.model_summary.listOfCards)
 		let cardDataList = listOfCardList.map((data, i) => {
 			if( i != 0){
 				if(i%2 != 0)
-				return (<div className="col-md-6 xs-p-50 clearfix"><Card cardData={data} /></div>)
+				return (<div className="col-md-6 xs-p-30 clearfix"><Card cardData={data} /></div>)
 				else
-				return (<div className="col-md-6 xs-p-50"><Card cardData={data} /></div>)
+				return (<div className="col-md-6 xs-p-30"><Card cardData={data} /></div>)
 			}
              else return (<Card key={i} cardData={data} />)
 			
@@ -74,7 +88,9 @@ export class AppsModelDetail extends React.Component {
 		}
 	}
 	
-	 return (
+	else{
+		return (
+	
 		      <div className="side-body">
 		        <div className="page-head">
 		        </div>
@@ -83,6 +99,7 @@ export class AppsModelDetail extends React.Component {
 		        </div>
 		      </div>
 		    );
+	}
     
   }
 }

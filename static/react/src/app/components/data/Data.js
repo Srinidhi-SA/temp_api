@@ -35,6 +35,7 @@ export class Data extends React.Component {
 	}
 	componentWillMount() {
 		var pageNo = 1;
+		this.props.dispatch(storeSignalMeta(null,this.props.match.url));
 		if(this.props.history.location.pathname.indexOf("page") != -1){
 			pageNo = this.props.history.location.pathname.split("page/")[1];
 			this.props.dispatch(getDataList(pageNo));
@@ -154,7 +155,7 @@ export class Data extends React.Component {
 			return (
 					<div className="side-body">
 					<div className="main-content">
-					<div class="row">
+					<div className="row">
 					{addButton}
 					{dataSetList}
 					<div className="clearfix"></div>
