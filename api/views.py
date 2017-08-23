@@ -12,7 +12,7 @@ from rest_framework.decorators import detail_route
 from rest_framework.response import Response
 
 from api.pagination import CustomPagination
-from api.utils import convert_to_string, InsightSerializer, TrainerSerlializer, ScoreSerlializer
+from api.utils import convert_to_string, InsightSerializer, TrainerSerlializer, ScoreSerlializer, InsightListSerializers
 from models import Insight, Dataset, Job, Trainer, Score
 
 
@@ -62,6 +62,18 @@ class SignalView(viewsets.ModelViewSet):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors)
+
+    def list(self, request, *args, **kwargs):
+        page_class = self.pagination_class()
+        query_set = self.get_queryset()
+
+        page = page_class.paginate_queryset(
+            queryset=query_set,
+            request=request
+        )
+
+        serializer = InsightListSerializers(page, many=True)
+        return page_class.get_paginated_response(serializer.data)
 
     @detail_route(methods=['post'])
     def run_master(self, request, slug=None):
