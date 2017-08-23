@@ -23,3 +23,5 @@ tests/report/
 env
 .vscode
 *.csv
+.project
+.pydevproject
