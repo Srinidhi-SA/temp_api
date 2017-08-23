@@ -20,6 +20,7 @@ export default function reducer(state = {
 		appsLoaderText :"",
 		modelSummaryFlag:false,
 		scoreSummaryFlag:false,
+		modelTargetVariable:"",
 		
 }, action) {
 	console.log("In APPs reducer!!");
@@ -108,8 +109,9 @@ export default function reducer(state = {
 		return {
 			...state,
 			modelSummary: action.data,
-			algorithmsList:action.data.model_dropdown,
+			algorithmsList:action.data.data.model_dropdown,
 			modelSlug:action.data.slug,
+			modelTargetVariable:action.data.data.config.target_variable[0],
 		}
 	}
 	break;

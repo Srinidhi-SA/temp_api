@@ -119,7 +119,7 @@ export class DataPreview extends React.Component {
 		console.log("------------------");
 		console.log(this.props);
 		console.log("data prevvvvv");
-		console.log(store.getState().datasets.curUrl);
+		console.log(store.getState().datasets.curUrl.indexOf("models"));
 		if(store.getState().datasets.curUrl){
 			if(store.getState().datasets.curUrl.startsWith("/signals")){
 				this.buttons['close']= {
@@ -141,24 +141,27 @@ export class DataPreview extends React.Component {
 						text: "Create Signal"
 				};
 
-			}else if(store.getState().datasets.curUrl.startsWith("/apps/models/")){
-				this.buttons['close']= {
-						url : "/apps",
-						text: "Close"
-				};
-				this.buttons['create']= {
-						url :"/apps/createScore",
-						text: "Create Score"
-				};
 			}else if(store.getState().datasets.curUrl.startsWith("/apps")){
-				this.buttons['close']= {
-						url : "/apps",
-						text: "Close"
-				};
-				this.buttons['create']= {
-						url :"/apps/"+store.getState().apps.currentAppId+"/createModel",
-						text: "Create Model"
-				};
+				if(store.getState().datasets.curUrl.indexOf("models") == -1){
+					this.buttons['close']= {
+							url : "/apps",
+							text: "Close"
+					};
+					this.buttons['create']= {
+							url :"/apps/"+store.getState().apps.currentAppId+"/scores/dataPreview/createScore",
+							text: "Create Score"
+					};
+				}else{
+					this.buttons['close']= {
+							url : "/apps",
+							text: "Close"
+					};
+					this.buttons['create']= {
+							url :"/apps/"+store.getState().apps.currentAppId+"/models/dataPreview/createModel",
+							text: "Create Model"
+					};
+				}
+				
 			}
 		}else{
 			this.buttons['close']= {

@@ -7,7 +7,7 @@ import {push} from "react-router-redux";
 import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstrap";
 import {AppsCreateScore} from "./AppsCreateScore";
-import {getAppsScoreList,getAppsScoreSummary} from "../../actions/appActions";
+import {getAppsScoreList,getAppsScoreSummary,updateScoreSlug} from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {STATIC_URL} from "../../helpers/env.js"
 
@@ -17,6 +17,8 @@ var dateFormat = require('dateformat');
 @connect((store) => {
 	return {login_response: store.login.login_response, 
 		scoreList: store.apps.scoreList,
+		scoreSlug:store.apps.scoreSlug,
+		currentAppId:store.apps.currentAppId,
 	};
 })
 
@@ -35,7 +37,7 @@ export class AppsScoreList extends React.Component {
 			this.props.dispatch(getAppsScoreList(pageNo));
 	}
 	getScoreSummary(slug){
-		this.props.dispatch(getAppsScoreSummary(slug))
+		this.props.dispatch(updateScoreSlug(slug))
 	}
 	render() {
 		console.log("apps score list is called##########3");

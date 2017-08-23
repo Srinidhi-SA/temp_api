@@ -2,6 +2,8 @@ import {API} from "../helpers/env";
 import {PERPAGE} from "../helpers/helper";
 import store from "../store";
 import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL} from "../helpers/helper";
+import {hideDataPreview} from "./dataActions";
+
 export var appsInterval = null;
 
 function getHeader(token){
@@ -181,6 +183,7 @@ export function getAppsModelSummary(slug) {
 					clearInterval(appsInterval);
 					dispatch(fetchModelSummarySuccess(json));
 					dispatch(closeAppsLoaderValue());
+					dispatch(hideDataPreview());
 					dispatch(updateModelSummaryFlag(true));
 				}
 			}
@@ -249,11 +252,12 @@ export function createScore(scoreName,targetVariable) {
 
 function triggerCreateScore(token,scoreName,targetVariable) {
 		var datasetSlug = store.getState().datasets.dataPreview.slug;
-		var app_id=1;
-		var details = {"measures":store.getState().datasets.selectedMeasures.join(),
-			"dimension":store.getState().datasets.selectedDimensions.join(),
+		var app_id=store.getState().apps.currentAppId;
+		var details = {"measures":store.getState().datasets.selectedMeasures,
+			"dimension":store.getState().datasets.selectedDimensions,
 			"timeDimension":store.getState().datasets.selectedTimeDimensions,
-			 "analysisVariable":targetVariable}
+			 "analysisVariable":targetVariable,
+			 "algorithmName":store.getState().apps.selectedAlg}
 		return fetch(API+'/api/score/',{
 			method: 'post',
 			headers: getHeader(token),
@@ -262,7 +266,7 @@ function triggerCreateScore(token,scoreName,targetVariable) {
 				"dataset":datasetSlug,
 				"trainer":store.getState().apps.modelSlug,
 				"app_id":app_id,
-				"column_data_raw":details
+				"config":details
 		 }),
 		}).then( response => Promise.all([response, response.json()]));
 }
@@ -293,6 +297,7 @@ export function getAppsScoreSummary(slug) {
 					clearInterval(appsInterval);
 					dispatch(fetchScoreSummarySuccess(json));
 					dispatch(closeAppsLoaderValue());
+					dispatch(hideDataPreview());
 					dispatch(updateScoreSummaryFlag(true));
 				}
 				
@@ -385,5 +390,10 @@ export function updateModelSlug(slug){
 		slug,	
 	}
 }
-
+export function updateScoreSlug(slug){
+	return {
+		type: "CREATE_SCORE_SUCCESS",
+		slug,	
+	}
+}
 

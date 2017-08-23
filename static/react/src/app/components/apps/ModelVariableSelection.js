@@ -13,7 +13,8 @@ import {AppsLoader} from "../common/AppsLoader";
 
 @connect((store) => {
 	return {login_response: store.login.login_response, dataPreview: store.datasets.dataPreview,
-	trainValue:store.apps.trainValue,testValue:store.apps.testValue,modelSummaryFlag:store.apps.modelSummaryFlag,
+	trainValue:store.apps.trainValue,testValue:store.apps.testValue,
+	modelSummaryFlag:store.apps.modelSummaryFlag,
 	modelSlug:store.apps.modelSlug,
 	};
 })
@@ -32,7 +33,8 @@ export class ModelVariableSelection extends React.Component {
 	}
 	render() {
 		console.log("Create Model Variable Selection  is called##########3");
-		 if(store.getState().apps.modelSummaryFlag){
+		{/* */}
+		if(store.getState().apps.modelSummaryFlag){
 				let _link = "/apps/"+store.getState().apps.currentAppId+'/models/'+store.getState().apps.modelSlug;
 				return(<Redirect to={_link}/>);
 			}

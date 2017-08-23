@@ -49,9 +49,9 @@ class App extends React.Component {
             <Route path="/stories" component={Stories} />
             <Route exact path="/data" component={Data} />
             <Route exact path="/data/:slug" component={DataPreview} />
-            <Route exact path="/apps/:slug/createModel" component={ModelVariableSelection} />
+            <Route exact path="/apps/:slug/models/dataPreview/createModel" component={ModelVariableSelection} />
             <Route exact path="/apps/:slug/models/:slug" component={AppsModelDetail} />
-            <Route exact path="/apps/:slug/createScore" component={ScoreVariableSelection} />
+            <Route exact path="/apps/:slug/scores/dataPreview/createScore" component={ScoreVariableSelection} />
             <Route exact path="/data/page/:slug" component={Data} />
             <Route exact path="/apps/:slug/models?page=:slug" component={Apps} />
             <Route exact path="/apps/:slug/scores?page=:slug" component={Apps} />
@@ -60,7 +60,8 @@ class App extends React.Component {
             <Route exact path="/signals?page=:slug" component={Signals}/>
             <Route exact path="/apps/:slug/models" component={Apps} />
             <Route exact path="/apps/:slug/scores" component={Apps} />
-            		
+            <Route exact path="/apps/:slug/models/data/:slug" component={DataPreview} />
+            				
             </Main>
       </Switch>
       </BrowserRouter>

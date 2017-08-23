@@ -13,7 +13,10 @@ import {AppsLoader} from "../common/AppsLoader";
 
 
 @connect((store) => {
-	return {login_response: store.login.login_response, dataPreview: store.datasets.dataPreview,
+	return {login_response: store.login.login_response, 
+		dataPreview: store.datasets.dataPreview,
+		modelTargetVariable:store.apps.modelTargetVariable,
+		selectedAlg:store.apps.selectedAlg,
 	};
 })
 
@@ -37,13 +40,9 @@ export class ScoreVariableSelection extends React.Component {
 		 const metaData = dataPrev.meta_data.columnData;
 		 let renderSelectBox = null;
 		if(metaData){
-			renderSelectBox =  <select className="form-control" id="createScoreAnalysisList">
-			{metaData.map((metaItem,metaIndex) =>
-			<option key={metaIndex} value={metaItem.name}>{metaItem.name}</option>
-			)}
+			renderSelectBox =  <select disabled className="form-control" id="createScoreAnalysisList">
+			<option key={store.getState().apps.modelTargetVariable} value={store.getState().apps.modelTargetVariable}>{store.getState().apps.modelTargetVariable}</option>
 			</select>
-		}else{
-			renderSelectBox = <option>No Variables</option>
 		}
 			return(
 					 <div className="side-body">

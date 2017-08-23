@@ -20,6 +20,7 @@ var dateFormat = require('dateformat');
 		modelList: store.apps.modelList,
 		modelSummaryFlag:store.apps.modelSummaryFlag,
 		modelSlug:store.apps.modelSlug,
+		currentAppId:store.apps.currentAppId,
 		};
 })
 

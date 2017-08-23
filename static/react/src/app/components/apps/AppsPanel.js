@@ -3,14 +3,17 @@ import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab} from "react-bootstrap";
 import {Link, Redirect} from "react-router-dom";
 import {updateSelectedApp,updateModelSummaryFlag} from "../../actions/appActions";
+import {connect} from "react-redux";
+
 
 export class AppsPanel extends React.Component {
   constructor(props) {
     super(props);
+    console.log(this.props)
   }
   gotoAppsList(appId,appName){
-	 this.props.dispatch(updateSelectedApp(appId,appName));
-	 this.props.dispatch(updateModelSummaryFlag(false));
+	// this.props.dispatch(updateSelectedApp(appId,appName));
+	 //this.props.dispatch(updateModelSummaryFlag(false));
   }
   render() {
     console.log("Apps panel is called##########3");
@@ -26,7 +29,7 @@ export class AppsPanel extends React.Component {
 					<div class="col-md-4">
 						
 						<div className="app-block"> 
-							<a href="#" className="app-link" ><Link onClick={this.gotoAppsList.bind(this,1,"Opportunity Scoring")} to="/apps/1/models">
+							<a onClick={this.gotoAppsList.bind(this,2,"Opportunity Scoring")} className="app-link" ><Link  to="/apps/2/models">
 							<div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
 								<img src="../assets/images/icon_oppr.png" className="img-responsive"/>
 							</div>
@@ -59,7 +62,7 @@ export class AppsPanel extends React.Component {
 					<div className="col-md-4">
 						
 						<div className="app-block">
-						<a href="#" className="app-link"><Link onClick={this.gotoAppsList.bind(this,2,"Automation Prediction")} to="/apps/2/models">
+						<a  onClick={this.gotoAppsList.bind(this,1,"Automation Prediction")} className="app-link"><Link  to="/apps/1/models">
 							<div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
 								<img src="../assets/images/icon_prediction.png" className="img-responsive"/>
 							</div>
