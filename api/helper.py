@@ -236,6 +236,7 @@ def decode_and_convert_chart_raw_data(data):
                 c3_chart_details["yformat"] = yAxisNumberFormat
             else:
                 c3_chart_details["yformat"] = '.2s'
+        c3_chart_details["yformat"] = '.2s'
 
         if axes.get('y2', None) is not None:
             c3.set_another_y_axis(
@@ -277,6 +278,7 @@ def decode_and_convert_chart_raw_data(data):
                 c3_chart_details["yformat"] = yAxisNumberFormat
             else:
                 c3_chart_details["yformat"] = '.2s'
+        c3_chart_details["yformat"] = '.2s'
 
         if axes.get('y2', None) is not None:
             c3.set_another_y_axis(
@@ -322,6 +324,7 @@ def decode_and_convert_chart_raw_data(data):
                 c3_chart_details["yformat"] = yAxisNumberFormat
             else:
                 c3_chart_details["yformat"] = '.2s'
+        c3_chart_details["yformat"] = '.2s'
 
         if axes.get('y2', None) is not None:
             c3.set_another_y_axis(
