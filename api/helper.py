@@ -28,7 +28,7 @@ class JobserverDetails(object):
         job_type = {
             "metadata": "metaData",
             "master": "story",
-            "model":"prediction",
+            "model":"training",
             "score": "scoring"
         }
 
