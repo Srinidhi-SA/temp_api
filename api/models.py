@@ -743,7 +743,6 @@ class Score(models.Model):
         return ret
 
     def create_configuration_column_settings(self):
-        import pdb;pdb.set_trace()
         config = json.loads(self.config)
         model_data = json.loads(self.trainer.data)
         model_config_from_results = model_data['config']
