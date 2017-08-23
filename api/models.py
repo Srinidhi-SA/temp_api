@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import random
-import string
 import csv
 import json
 import os
+import random
+import string
 
-from django.template.defaultfilters import slugify
-from django.db import models
-from django.contrib.auth.models import User
 from django.conf import settings
+from django.contrib.auth.models import User
+from django.db import models
+from django.template.defaultfilters import slugify
 
 from api.lib import hadoop, fab_helper
 
@@ -37,9 +37,12 @@ class Job(models.Model):
     config = models.TextField(default="{}")
     results = models.TextField(default="{}")
     url = models.TextField(default="")
+    status = models.CharField(max_length=100, default="")
 
-    created_on = models.DateTimeField(auto_now_add=True, null=True)
-    updated_on = models.DateTimeField(auto_now=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
+    # TODO: @Ankush please add created by
+    # created_by = models.ForeignKey(User, null=False)
     deleted = models.BooleanField(default=False)
 
     def generate_slug(self):
@@ -50,6 +53,9 @@ class Job(models.Model):
     def save(self, *args, **kwargs):
         self.generate_slug()
         super(Job, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return " : ".join(["{}".format(x) for x in [self.name, self.job_type, self.created_at, self.slug]])
 
 
 class Dataset(models.Model):
@@ -65,8 +71,8 @@ class Dataset(models.Model):
 
     meta_data = models.TextField(default="{}")
 
-    created_on = models.DateTimeField(auto_now_add=True, null=True)
-    updated_on = models.DateTimeField(auto_now=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
     created_by = models.ForeignKey(User, null=False)
     deleted = models.BooleanField(default=False)
 
@@ -77,10 +83,10 @@ class Dataset(models.Model):
     analysis_done = models.BooleanField(default=False)
 
     class Meta:
-        ordering = ['-created_on', '-updated_on']
+        ordering = ['-created_at', '-updated_at']
 
     def __str__(self):
-        return "Dataset|Name:{0}|Type:{1}".format(self.name, self.db_type)
+        return " : ".join(["{}".format(x) for x in [self.name, self.db_type, self.slug]])
 
     def as_dict(self):
         return {
@@ -89,16 +95,15 @@ class Dataset(models.Model):
             'auto_update': self.auto_update,
             'db_type': self.db_type,
             'db_details': self.db_details,
-            'created_on': self.created_on,
+            'created_on': self.created_at,  # TODO: depricate this value
+            'created_at': self.created_at,
             'bookmarked': self.bookmarked
         }
 
     def generate_slug(self):
-        print "asdasd", self.slug
         if not self.slug:
             self.slug = slugify(str(self.name) + "-" + ''.join(
                 random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
-        print "-----------", self.slug
 
     def save(self, *args, **kwargs):
         self.generate_slug()
@@ -149,11 +154,11 @@ class Dataset(models.Model):
         return {
             "config": {
                 "FILE_SETTINGS": {
-                                    "inputfile": [inputFile],
-                                },
+                    "inputfile": [inputFile],
+                },
                 "COLUMN_SETTINGS": {
-                                    "analysis_type": ["metaData"],
-                                },
+                    "analysis_type": ["metaData"],
+                },
                 "DATE_SETTINGS": {
 
                 },
@@ -165,7 +170,7 @@ class Dataset(models.Model):
         cleaned_header = []
         with open(self.input_file.path) as file:
             rows = csv.reader(file)
-            for (i,row) in enumerate(rows):
+            for (i, row) in enumerate(rows):
                 row = [self.clean_restriced_chars(item) for item in row]
                 if i == 0:
                     cleaned_header = self.clean_column_names(row)
@@ -223,25 +228,25 @@ class Dataset(models.Model):
             raise Exception("Failed to copy file to EMR Local")
 
     def get_hdfs_relative_path(self):
-        return os.path.join( settings.HDFS.get('base_path'), self.slug)
+        return os.path.join(settings.HDFS.get('base_path'), self.slug)
 
     def get_hdfs_relative_file_path(self):
-        return os.path.join( settings.HDFS.get('base_path'), self.slug, os.path.basename(self.input_file.path))
+        return os.path.join(settings.HDFS.get('base_path'), self.slug, os.path.basename(self.input_file.path))
 
     def emr_local(self):
         return "/home/marlabs" + self.get_hdfs_relative_path()
 
     def get_input_file(self):
         type = self.file_remote
-        if type=='emr_file':
+        if type == 'emr_file':
             return "file://{}".format(self.input_file.path)
-        elif type=='hdfs':
+        elif type == 'hdfs':
             # return "file:///home/hadoop/data_date.csv"
             return "hdfs://{}:{}{}".format(
                 settings.HDFS.get("host"),
                 settings.HDFS.get("hdfs_port"),
                 self.get_hdfs_relative_file_path())
-        elif type=='fake':
+        elif type == 'fake':
             return "file:///asdasdasdasd"
 
 
@@ -265,8 +270,8 @@ class Insight(models.Model):
 
     data = models.TextField(default="{}")
 
-    created_on = models.DateTimeField(auto_now_add=True, null=True)
-    updated_on = models.DateTimeField(auto_now=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
     created_by = models.ForeignKey(User, null=False)
     deleted = models.BooleanField(default=False)
 
@@ -275,10 +280,10 @@ class Insight(models.Model):
     job = models.ForeignKey(Job, null=True)
 
     class Meta:
-        ordering = ['-created_on', '-updated_on']
+        ordering = ['-created_at', '-updated_at']
 
     def __str__(self):
-        return "Signal- Name:{0} | status{1}".format(self.name, self.status)
+        return " : ".join(["{}".format(x) for x in [self.name, self.slug, self.status, self.created_at]])
 
     def generate_slug(self):
         if not self.slug:
@@ -331,7 +336,7 @@ class Insight(models.Model):
         }
 
         config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
-        config['config']["COLUMN_SETTINGS"]= self.create_configuration_column_settings()
+        config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
         # config['config']["META_HELPER"] = self.create_configuration_meta_data()
 
@@ -436,7 +441,6 @@ class Insight(models.Model):
 # TODO: add generate config
 # TODO: add set_result for this one
 class Trainer(models.Model):
-
     name = models.CharField(max_length=300, null=True)
     slug = models.SlugField(null=False, blank=True)
     dataset = models.ForeignKey(Dataset, null=False)
@@ -445,8 +449,8 @@ class Trainer(models.Model):
 
     data = models.TextField(default="{}")
 
-    created_on = models.DateTimeField(auto_now_add=True, null=True)
-    updated_on = models.DateTimeField(auto_now=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
     created_by = models.ForeignKey(User, null=False)
     deleted = models.BooleanField(default=False)
 
@@ -456,10 +460,10 @@ class Trainer(models.Model):
     job = models.ForeignKey(Job, null=True)
 
     class Meta:
-        ordering = ['-created_on', '-updated_on']
+        ordering = ['-created_at', '-updated_at']
 
     def __str__(self):
-        return "Trainer- Name:{0} | slug:{1} |  app:{2}".format(self.name, self.slug, self.app_id)
+        return " : ".join(["{}".format(x) for x in [self.name, self.created_at, self.slug, self.app_id]])
 
     def generate_slug(self):
         if not self.slug:
@@ -479,7 +483,7 @@ class Trainer(models.Model):
         }
 
         config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
-        config['config']["COLUMN_SETTINGS"]= self.create_configuration_column_settings()
+        config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
         # config['config']["META_HELPER"] = self.create_configuration_meta_data()
 
@@ -531,7 +535,6 @@ class Trainer(models.Model):
 # TODO: Add generate config
 # TODO: Add set_result function: it will be contain many things.
 class Score(models.Model):
-
     name = models.CharField(max_length=300, null=True)
     slug = models.SlugField(null=False, blank=True)
     trainer = models.ForeignKey(Trainer, null=False)
@@ -540,8 +543,8 @@ class Score(models.Model):
     model_data = models.TextField(default="{}")
     column_data_raw = models.TextField(default="{}")
 
-    created_on = models.DateTimeField(auto_now_add=True, null=True)
-    updated_on = models.DateTimeField(auto_now=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
     created_by = models.ForeignKey(User, null=False)
     deleted = models.BooleanField(default=False)
     analysis_done = models.BooleanField(default=False)
@@ -551,7 +554,7 @@ class Score(models.Model):
     job = models.ForeignKey(Job, null=True)
 
     def __str__(self):
-        return "Score- Name:{0} | slug:{1} |  trainer:{2}".format(self.name, self.slug, self.trainer)
+        return " : ".join(["{}".format(x) for x in [self.name, self.created_at, self.slug, self.trainer]])
 
     def generate_slug(self):
         if not self.slug:
@@ -621,9 +624,3 @@ class Score(models.Model):
 
         def create_configuration_column_settings():
             pass
-
-
-
-
-
-
