@@ -19,6 +19,7 @@ export class HeatMapTable extends React.Component {
  
   render() {
    var data = this.props.tableData;
+   HeatMap("heat-table-map");
    console.log("checking circular chart tabletable element");
    var headerComponents = generateHeatMapHeaders(data);
    var rowComponents = generateHeatMapRows(data);

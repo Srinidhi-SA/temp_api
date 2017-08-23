@@ -184,3 +184,8 @@ export function showPredictions(predictionSelected) {
 		predictionSelected
 	}
 }
+export function emptySignalAnalysis() {
+	return {
+		type: "SIGNAL_ANALYSIS_EMPTY",
+	}
+}
