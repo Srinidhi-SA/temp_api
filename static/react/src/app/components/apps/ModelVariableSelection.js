@@ -77,7 +77,7 @@ export class ModelVariableSelection extends React.Component {
 				      <div className="col-lg-8">
 				      <div id="range" >
 					  <div id="rangeLeftSpan" >Train <span id="trainPercent">{store.getState().apps.trainValue}</span></div>
-					  <input type="range" id="rangeElement"  onChange={this.handleRangeSlider.bind(this)} min="50" />
+					  <input type="range" id="rangeElement"  onChange={this.handleRangeSlider.bind(this)} min={50} />
 					  <div id="rangeRightSpan" ><span id="testPercent">{store.getState().apps.testValue}</span> Test </div>
 			          </div>
 				      </div>

@@ -90,8 +90,8 @@ export function createModel(modelName,targetVariable) {
 function triggerCreateModel(token,modelName,targetVariable) {
 		var datasetSlug = store.getState().datasets.dataPreview.slug;
 		var app_id=store.getState().apps.currentAppId;
-		var details = {"measures":store.getState().datasets.selectedMeasures.join(),
-			"dimension":store.getState().datasets.selectedDimensions.join(),
+		var details = {"measures":store.getState().datasets.selectedMeasures,
+			"dimension":store.getState().datasets.selectedDimensions,
 			"timeDimension":store.getState().datasets.selectedTimeDimensions,
 			 "trainValue":store.getState().apps.trainValue,
 			 "testValue":store.getState().apps.testValue,
@@ -378,3 +378,12 @@ export function updateScoreSummaryFlag(flag){
 		flag,
 	}
 }
+
+export function updateModelSlug(slug){
+	return {
+		type: "CREATE_MODEL_SUCCESS",
+		slug,	
+	}
+}
+
+

@@ -5,26 +5,36 @@ import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab} from "react-bootstrap";
 import {AppsCreateScore} from "./AppsCreateScore";
 import {Card} from "../signals/Card";
-import {getListOfCards} from "../../actions/appActions";
+import {getListOfCards,getAppsModelSummary} from "../../actions/appActions";
 import CircularProgressbar from 'react-circular-progressbar';
 import {STATIC_URL} from "../../helpers/env.js"
+import {isEmpty} from "../../helpers/helper";
 
 @connect((store) => {
 	return {login_response: store.login.login_response, 
 		modelList:store.apps.modelList,modelSummary:store.apps.modelSummary,
+		modelSlug:store.apps.modelSlug,
 		};
 })
 
 
 export class AppsModelDetail extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
   }
-  
+  componentWillMount() {
+	  if(!isEmpty(store.getState().apps.modelSummary)){
+		  if(store.getState().apps.modelSummary.slug != store.getState().apps.modelSlug)
+		  this.props.dispatch(getAppsModelSummary(store.getState().apps.modelSlug));
+	  }else{
+		  this.props.dispatch(getAppsModelSummary(store.getState().apps.modelSlug));
+	  }
+	  
+  }
   render() {
     console.log("apps Model Detail View is called##########3");
-    const modelSummary = store.getState().apps.modelSummary.data;
-	if (modelSummary) {
+    const modelSummary = store.getState().apps.modelSummary;
+	if (!isEmpty(modelSummary)) {
 		console.log(this.props)
 		let listOfCardList = getListOfCards(modelSummary.data.model_summary.listOfCards)
 		let cardDataList = listOfCardList.map((data, i) => {

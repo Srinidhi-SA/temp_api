@@ -7,7 +7,7 @@ import {push} from "react-router-redux";
 import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstrap";
 import {AppsCreateModel} from "./AppsCreateModel";
-import {getAppsModelList,getAppsModelSummary} from "../../actions/appActions";
+import {getAppsModelList,getAppsModelSummary,updateModelSlug} from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {STATIC_URL} from "../../helpers/env.js"
 
@@ -38,11 +38,12 @@ export class AppsModelList extends React.Component {
 		  this.props.dispatch(getAppsModelList(pageNo));
 	}
   getModelSummary(slug){
-	this.props.dispatch(getAppsModelSummary(slug))
+	this.props.dispatch(updateModelSlug(slug))
   }
   render() {
     console.log("apps model list is called##########3");
     console.log(this.props);
+    
     const modelList = store.getState().apps.modelList.data;
 	if (modelList) {
 		const pages = store.getState().apps.modelList.total_number_of_pages;
