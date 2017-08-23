@@ -104,7 +104,6 @@ export class AppsScoreList extends React.Component {
 					
 					<div>
 					<div className="row">
-					{addButton}
 					{appsScoreList}
 					<div className="clearfix"></div>
 					</div>
