@@ -79,3 +79,5 @@ ALLOWED_HOSTS = ['*']
 
 APPEND_SLASH=False
 DATA_UPLOAD_MAX_MEMORY_SIZE = 1024*1024*1024
+
+mAdvisorScores = '/home/hadoop/mAdvisorScores/'
