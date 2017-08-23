@@ -35,7 +35,8 @@ class DatasetView(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = Dataset.objects.filter(
-            created_by=self.request.user
+            created_by=self.request.user,
+            deleted=False
         )
         return queryset
 

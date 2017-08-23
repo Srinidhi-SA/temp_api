@@ -284,3 +284,25 @@ ANALYSIS_FOR_TARGET_VARIABLE = {
     "time_dimension" :{"name": "Trend", "id" : "trend", "help_text" : "Enable this analysis type only if date columns is present in selected variables"}
 }
 # {"name":"Trend":"id":4} will be added to the above lists based on the logic(if date columns is present or not)
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOW_METHODS = (
+    'GET',
+    'POST',
+    'PUT',
+    'PATCH',
+    'DELETE',
+    'OPTIONS'
+)
+
+CORS_ALLOW_HEADERS = (
+    'x-requested-with',
+    'content-type',
+    'accept',
+    'origin',
+    'authorization',
+    'x-csrftoken'
+)
+
+UI_VERSION = "0.1"
