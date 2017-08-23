@@ -26,7 +26,6 @@ export default function reducer(state = {
 
     case "SIGNAL_LIST_ERROR":
       {
-       // alert(action.json.non_field_errors);
         throw new Error("Unable to fetch signal list!!");
       }
       break;
@@ -43,7 +42,6 @@ export default function reducer(state = {
 
     case "SIGNAL_ANALYSIS_ERROR":
       {
-        //alert(action.json.non_field_errors);
         throw new Error("Unable to fetch signal list!!");
       }
       break;
@@ -75,7 +73,6 @@ export default function reducer(state = {
   break;
   case "CREATE_ERROR":
     {
-     // alert(action.json.non_field_errors);
       throw new Error("Create Signal Failed!!");
     }
     break;
