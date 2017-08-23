@@ -22,7 +22,7 @@ from api.exceptions import creation_failed_exception, update_failed_exception
 from api.models import Dataset
 
 # import serializers
-from serializers import DatasetSerializer
+from serializers import DatasetSerializer, DataListSerializer
 from api.user_helper import UserSerializer
 
 # import views
@@ -109,7 +109,21 @@ class DatasetView(viewsets.ModelViewSet):
     @list_route(methods=['get'])
     def all(self, request):
         query_set = self.get_queryset()
-        serializer = DatasetSerializer(query_set, many=True)
+        serializer = DataListSerializer(query_set, many=True)
         return Response({
             "data": serializer.data
         })
+
+    def list(self, request, *args, **kwargs):
+        page_class = self.pagination_class()
+        query_set = self.get_queryset()
+
+        page = page_class.paginate_queryset(
+            queryset=query_set,
+            request=request
+        )
+
+        serializer = DataListSerializer(page, many=True)
+        return page_class.get_paginated_response(serializer.data)
+
+
