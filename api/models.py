@@ -656,7 +656,7 @@ class Score(models.Model):
     def add_to_job(self, *args, **kwargs):
 
         jobConfig = self.generate_config(*args, **kwargs)
-        print "Dataset realted config genarated."
+        print "Score realted config genarated."
 
         job = Job()
         job.name = "-".join(["Insight", self.slug])
