@@ -118,7 +118,7 @@ export class AppsScoreList extends React.Component {
 		}
 	}
 	handleSelect(eventKey) {
-		this.props.history.push('/apps/'+store.getState().apps.currentAppId+'scores?page='+eventKey+'')
+		this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/scores?page='+eventKey+'')
 		this.props.dispatch(getAppsScoreList(eventKey));
 	}
 }

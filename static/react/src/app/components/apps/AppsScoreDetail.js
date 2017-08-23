@@ -35,7 +35,7 @@ export class AppsScoreDetail extends React.Component {
     console.log("apps Score Detail View is called##########3");
     const scoreSummary = store.getState().apps.scoreSummary;
     console.log(scoreSummary)
-	if (scoreSummary) {
+	if (!$.isEmptyObject(scoreSummary)) {
 		console.log(this.props)
 		let listOfCardList = getListOfCards(scoreSummary.data.listOfCards)
 		let cardDataList = listOfCardList.map((data, i) => {
@@ -63,8 +63,8 @@ export class AppsScoreDetail extends React.Component {
 
 		                    </div>
 		                    <div class="row">
-		                    <div className="col-md-2 col-md-offset-10">
-		                    <Button className="btn btn-primary md-close">Download</Button>
+		                    <div className="col-md-2 col-md-offset-11">
+		                    <a> <Button bsStyle="primary">Download</Button></a>
 		                   </div>
 		                   </div>
 		             </div>
@@ -79,16 +79,18 @@ export class AppsScoreDetail extends React.Component {
 			      );	
 		}
 	}
-	
-	 return (
-		      <div className="side-body">
-		        <div className="page-head">
-		        </div>
-		        <div className="main-content">
-		          <img id="loading" src={ STATIC_URL + "/assets/images/Preloader_2.gif"}/>
-		        </div>
-		      </div>
-		    );
+	else{
+		return (
+			      <div className="side-body">
+			        <div className="page-head">
+			        </div>
+			        <div className="main-content">
+			          <img id="loading" src={ STATIC_URL + "/assets/images/Preloader_2.gif"}/>
+			        </div>
+			      </div>
+			    );
+	}
+	 
     
   }
 }

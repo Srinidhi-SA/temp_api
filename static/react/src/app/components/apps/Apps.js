@@ -37,7 +37,7 @@ export class Apps extends React.Component {
           <div className="side-body">
             <div className="main-content">
             <Tabs defaultActiveKey={1} id="controlled-tab-example" >
-            <Tab eventKey={1} title="Models">{models}</Tab>
+            <Tab  eventKey={1} title="Models">{models}</Tab>
             <Tab eventKey={2} title="Scores">{scores}</Tab>
           </Tabs>
           </div>

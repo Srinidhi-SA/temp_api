@@ -7,7 +7,7 @@ import {push} from "react-router-redux";
 import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstrap";
 import {AppsCreateModel} from "./AppsCreateModel";
-import {getAppsModelList,getAppsModelSummary,updateModelSlug} from "../../actions/appActions";
+import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryFlag,updateModelSummaryFlag} from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {STATIC_URL} from "../../helpers/env.js"
 
@@ -30,7 +30,9 @@ export class AppsModelList extends React.Component {
     this.handleSelect = this.handleSelect.bind(this);
   }
   componentWillMount() {
-	  console.log(this.props.history)
+	  console.log(this.props.history);
+	  this.props.dispatch(updateModelSummaryFlag(false));
+	  this.props.dispatch(updateScoreSummaryFlag(false));
 	  var pageNo = 1;
 	  if(this.props.history.location.pathname.indexOf("page") != -1){
 			pageNo = this.props.history.location.pathname.split("page/")[1];

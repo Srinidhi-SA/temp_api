@@ -46,7 +46,6 @@ export class AppsPanel extends React.Component {
 								<li className="xs-p-10 text-primary"><i className="fa fa-tag fa-1x"></i></li>
 								<li><a href="#"><i className="fa fa-tag"></i> Business</a></li>
 								<li><a href="#"><i className="fa fa-tag"></i> Climate</a></li>
-								<li><a href="#"><i className="fa fa-tag"></i> Climate</a></li>
 							</ul>
 						
 						<div className="card-deatils">

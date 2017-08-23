@@ -82,7 +82,8 @@ export function createModel(modelName,targetVariable) {
 					dispatch(createModelSuccess(json,dispatch))
 				}
 				else{
-					dispatch(closeAppsLoaderValue())
+					dispatch(closeAppsLoaderValue());
+					dispatch(updateModelSummaryFlag(false));
 					dispatch(createModelError(json))
 				}
 			})
@@ -244,7 +245,9 @@ export function createScore(scoreName,targetVariable) {
 					dispatch(createScoreSuccess(json,dispatch))
 				}
 				else{
-					dispatch(createScoreError(json))
+					dispatch(createScoreError(json));
+					dispatch(updateScoreSummaryFlag(false));
+					dispatch(closeAppsLoaderValue())
 				}
 			})
 		}
