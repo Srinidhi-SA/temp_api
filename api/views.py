@@ -146,7 +146,6 @@ class TrainerView(viewsets.ModelViewSet):
         return page_class.get_paginated_response(serializer.data)
 
 
-
 # TODO: add score download,
 # TODO: get place from scripts, check if you have file already, if yes return file else download file from theat place
 # TODO: and keep in some place and pass it to
@@ -171,6 +170,7 @@ class ScoreView(viewsets.ModelViewSet):
         data = request.data
         data = convert_to_string(data)
         data['trainer'] = Trainer.objects.filter(slug=data['trainer'])
+        data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
         data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
         serializer = ScoreSerlializer(data=data)
         if serializer.is_valid():
@@ -225,14 +225,19 @@ class ScoreView(viewsets.ModelViewSet):
             to_dir=save_file_to
         )
 
+        filename = instance.slug
+        filepath = save_file_to
+
+        from django.http import HttpResponse, Http404
+        import os
 
         if download_path is None:
-            return Response({'message': 'Failed'})
-
-
-
-
-
+            with open(filepath, 'rb') as f:
+                response = HttpResponse(f.read(), content_type='application/csv')
+                response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+                return response
+        else:
+            return Http404
 
 
 def get_datasource_config_list(request):
