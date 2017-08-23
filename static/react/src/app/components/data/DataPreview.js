@@ -222,7 +222,7 @@ export class DataPreview extends React.Component {
 				const sideTableUpdatedTemplate=sideTableUpdate.map((tableItem,tableIndex)=>{
 					if(tableItem.display){
 						return(  <tr key={tableIndex}>
-						<td className="item">{tableItem.name}</td>
+						<td className="item">{tableItem.displayName}</td>
 						<td>{tableItem.value}</td>
 						</tr>
 						);
@@ -328,7 +328,7 @@ export class DataPreview extends React.Component {
 			const sideTableTemaplte=sideTable.map((tableItem,tableIndex)=>{
 				if(tableItem.display){
 					return(  <tr key={tableIndex}>
-					<td className="item">{tableItem.name}</td>
+					<td className="item">{tableItem.displayName}</td>
 					<td>: {tableItem.value}</td>
 					</tr>
 					);
