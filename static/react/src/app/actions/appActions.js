@@ -36,7 +36,7 @@ export function getAppsModelList(pageNo) {
 }
 
 function fetchModelList(pageNo,token) {
-	return fetch(API+'/api/trainer/?page_number='+pageNo+'&page_size='+PERPAGE+'',{
+	return fetch(API+'/api/trainer/?app_id='+store.getState().apps.currentAppId+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
 		method: 'get',
 		headers: getHeader(token)
 	}).then( response => Promise.all([response, response.json()]));
@@ -121,7 +121,7 @@ export function getAppsScoreList(pageNo) {
 }
 
 function fetchScoreList(pageNo,token) {
-	return fetch(API+'/api/score/?page_number='+pageNo+'&page_size='+PERPAGE+'',{
+	return fetch(API+'/api/score/?app_id='+store.getState().apps.currentAppId+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
 		method: 'get',
 		headers: getHeader(token)
 	}).then( response => Promise.all([response, response.json()]));
@@ -277,3 +277,11 @@ export function fetchScoreSummarySuccess(data){
 		data,
 	}
 }
+export function updateSelectedApp(appId,appName){
+	return {
+		type: "SELECTED_APP_DETAILS",
+		appId,
+		appName,
+	}
+}
+

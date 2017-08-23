@@ -116,12 +116,14 @@ export class AppsModelList extends React.Component {
 		);
 	}else {
 		return (
-				<div>No Models Available</div>
+				   <div>
+		            <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif"} />
+		          </div>
 		)
 	}
 }
   handleSelect(eventKey) {
-		this.props.history.push('/apps/models/page/'+eventKey+'')
+		this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models?page='+eventKey+'')
 		this.props.dispatch(getAppsModelList(eventKey));
 	}
 }

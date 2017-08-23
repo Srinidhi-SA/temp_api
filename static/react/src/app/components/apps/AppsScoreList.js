@@ -43,11 +43,7 @@ export class AppsScoreList extends React.Component {
 		if (scoreList) {
 			const pages = store.getState().apps.scoreList.total_number_of_pages;
 			const current_page = store.getState().apps.score_current_page;
-			let addButton = null;
 			let paginationTag = null
-			if(current_page == 1){
-				addButton = <AppsCreateScore />
-			}
 			if(pages > 1){
 				paginationTag = <Pagination className="pull-left" ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
 			}
@@ -113,7 +109,9 @@ export class AppsScoreList extends React.Component {
 			);
 		}else {
 			return (
-					<div>No Scores Available</div>
+					   <div>
+			            <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif"} />
+			          </div>
 			)
 		}
 	}

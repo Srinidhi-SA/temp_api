@@ -23,6 +23,8 @@ import {ModelVariableSelection} from "./components/apps/ModelVariableSelection";
 import {AppsModelDetail} from "./components/apps/AppsModelDetail";
 import {ScoreVariableSelection} from "./components/apps/ScoreVariableSelection";
 import {AppsScoreDetail} from "./components/apps/AppsScoreDetail";
+import {AppsPanel} from "./components/apps/AppsPanel";
+import {AppsScoreList} from "./components/apps/AppsScoreList";
 
 class App extends React.Component {
 
@@ -43,7 +45,7 @@ class App extends React.Component {
             <Route path="/variableselection" component={VariableSelection} />
             <Route path = "/signaldocumentMode/:slug" component = {SignalDocumentMode}/>
             <Route path="/settings" component={Settings} />
-            <Route exact path="/apps" component={Apps} />
+            <Route exact path="/apps" component={AppsPanel} />
             <Route path="/stories" component={Stories} />
             <Route exact path="/data" component={Data} />
             <Route exact path="/data/:slug" component={DataPreview} />
@@ -51,11 +53,13 @@ class App extends React.Component {
             <Route exact path="/apps/models/:slug" component={AppsModelDetail} />
             <Route exact path="/apps/createScore" component={ScoreVariableSelection} />
             <Route exact path="/data/page/:slug" component={Data} />
-            <Route exact path="/apps/models/page/:slug" component={Apps} />
-            <Route exact path="/apps/score/page/:slug" component={Apps} />
+            <Route exact path="/apps/:slug/models?page=:slug" component={Apps} />
+            <Route exact path="/apps/:slug/score?page=:slug" component={Apps} />
             <Route exact path="/apps/score/:slug" component={AppsScoreDetail} />
             <Route exact path="/data/preview/createSignal" component={VariableSelection}/>
             <Route exact path="/signals?page=:slug" component={Signals}/>
+            <Route exact path="/apps/:slug/models" component={Apps} />
+            <Route exact path="/apps/:slug/scores" component={Apps} />
             		
             </Main>
       </Switch>

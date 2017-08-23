@@ -3,36 +3,27 @@ import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab} from "react-bootstrap";
 import {AppsModelList} from "./AppsModelList";
 import {AppsScoreList} from "./AppsScoreList";
+import {Link, Redirect} from "react-router-dom";
 
 export class Apps extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
   }
  
   render() {
     console.log("apps is called##########3");
+    console.log(this.props)
    let models = <div id="appsModels"><AppsModelList history={this.props.history} match={this.props.match}/>
   <div className="clearfix"></div></div>
-  let score = <div id="appsScore"><AppsScoreList history={this.props.history} match={this.props.match}/>
+  let scores = <div id="appsScore"><AppsScoreList history={this.props.history} match={this.props.match}/>
   <div className="clearfix"></div></div>
     return (
           <div className="side-body">
             <div className="main-content">
-            <div class="tab-container">
-            <ul class="nav nav-tabs">
-              <li class="active"><a title="models" href="#models" data-toggle="tab"><i className="pe-7s-drawer"></i>Models</a></li>
-              <li><a title="score" href="#score" data-toggle="tab"><i className="pe-7s-target"></i>Score</a></li>
-            </ul>
-            <div class="tab-content">
-              <div id="models" class="tab-pane active cont">
-                {models}
-              </div>
-              <div id="score" class="tab-pane cont">
-              {score}
-                </div>
-             
-          </div>
-            </div>
+            <Tabs defaultActiveKey={1} id="uncontrolled-tab-example">
+            <Tab eventKey={1} title="Models">{models}</Tab>
+            <Tab eventKey={2} title="Scores">{scores}</Tab>
+          </Tabs>
           </div>
         </div>
       );

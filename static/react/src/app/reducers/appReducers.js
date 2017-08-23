@@ -13,6 +13,8 @@ export default function reducer(state = {
 		selectedAlg:"",
 		scoreSummary:{},
 		scoreSlug:"",
+		currentAppId:1,
+		currentAppName:"",
 }, action) {
 	console.log("In APPs reducer!!");
 	console.log(action.data);
@@ -47,7 +49,7 @@ export default function reducer(state = {
 
 	case "MODEL_LIST_ERROR":
 	{
-		alert(action.json.non_field_errors);
+		//alert(action.json.non_field_errors);
 		throw new Error("Unable to fetch model list!!");
 	}
 	break;
@@ -73,7 +75,7 @@ export default function reducer(state = {
 
 	case "SCORE_LIST_ERROR":
 	{
-		alert(action.json.non_field_errors);
+		//alert(action.json.non_field_errors);
 		throw new Error("Unable to fetch score list!!");
 	}
 	break;
@@ -108,7 +110,7 @@ export default function reducer(state = {
 
 	case "MODEL_SUMMARY_ERROR":
 	{
-		alert(action.json.non_field_errors);
+		//alert(action.json.non_field_errors);
 		throw new Error("Unable to fetch model summary!!");
 	}
 	break;
@@ -134,11 +136,20 @@ export default function reducer(state = {
 
 	case "SCORE_SUMMARY_ERROR":
 	{
-		alert(action.json.non_field_errors);
+		//alert(action.json.non_field_errors);
 		throw new Error("Unable to fetch score summary!!");
 	}
 	break;
+	case "SELECTED_APP_DETAILS":
+	{
 	
+		return {
+			...state,
+			currentAppId: action.appId,
+			currentAppName:action.appName,
+		}
+	}
+	break;
  }
 return state
 }
