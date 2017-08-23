@@ -95,7 +95,8 @@ import {STATIC_URL} from "../../helpers/env.js"
 @connect((store) => {
 	return {login_response: store.login.login_response, dataPreview: store.datasets.dataPreview,
 		signalMeta: store.datasets.signalMeta,curUrl: store.datasets.curUrl,
-		dataPreviewFlag:store.datasets.dataPreviewFlag};
+		dataPreviewFlag:store.datasets.dataPreviewFlag,
+		currentAppId:store.apps.currentAppId};
 })
 
 
@@ -123,7 +124,7 @@ export class DataPreview extends React.Component {
 		console.log("------------------");
 		console.log(this.props);
 		console.log("data prevvvvv");
-		console.log(store.getState().datasets.curUrl);
+		console.log(store.getState().datasets.curUrl.indexOf("models"));
 		if(store.getState().datasets.curUrl){
 			if(store.getState().datasets.curUrl.startsWith("/signals")){
 				this.buttons['close']= {
@@ -145,24 +146,27 @@ export class DataPreview extends React.Component {
 						text: "Create Signal"
 				};
 
-			}else if(store.getState().datasets.curUrl.startsWith("/apps/models/")){
-				this.buttons['close']= {
-						url : "/apps",
-						text: "Close"
-				};
-				this.buttons['create']= {
-						url :"/apps/createScore",
-						text: "Create Score"
-				};
 			}else if(store.getState().datasets.curUrl.startsWith("/apps")){
-				this.buttons['close']= {
-						url : "/apps",
-						text: "Close"
-				};
-				this.buttons['create']= {
-						url :"/apps/createModel",
-						text: "Create Model"
-				};
+				if(store.getState().datasets.curUrl.indexOf("models") == -1){
+					this.buttons['close']= {
+							url : "/apps",
+							text: "Close"
+					};
+					this.buttons['create']= {
+							url :"/apps/"+store.getState().apps.currentAppId+"/scores/dataPreview/createScore",
+							text: "Create Score"
+					};
+				}else{
+					this.buttons['close']= {
+							url : "/apps",
+							text: "Close"
+					};
+					this.buttons['create']= {
+							url :"/apps/"+store.getState().apps.currentAppId+"/models/dataPreview/createModel",
+							text: "Create Model"
+					};
+				}
+				
 			}
 		}else{
 			this.buttons['close']= {

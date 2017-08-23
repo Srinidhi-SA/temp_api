@@ -3,36 +3,43 @@ import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab} from "react-bootstrap";
 import {AppsModelList} from "./AppsModelList";
 import {AppsScoreList} from "./AppsScoreList";
+import {Link, Redirect} from "react-router-dom";
+import store from "../../store";
+import {connect} from "react-redux";
+
+@connect((store) => {
+	return {login_response: store.login.login_response, 
+		modelList:store.apps.modelList,currentAppId:store.apps.currentAppId,
+		scoreList: store.apps.scoreList,
+		};
+})
+
 
 export class Apps extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    console.log(this.props)
   }
- 
+
+	  
+  modifyUrl(tabId){
+  if(tabId == 2)this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/scores')
+  if(tabId == 1)this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models')
+  }
   render() {
     console.log("apps is called##########3");
-   let models = <div id="appsModels"><AppsModelList history={this.props.history} match={this.props.match}/>
-  <div className="clearfix"></div></div>
-  let score = <div id="appsScore"><AppsScoreList history={this.props.history} match={this.props.match}/>
-  <div className="clearfix"></div></div>
+    console.log(this.props)
+   let models = <AppsModelList history={this.props.history} match={this.props.match}/>
+  
+  let scores = <AppsScoreList history={this.props.history} match={this.props.match}/>
+ 
     return (
           <div className="side-body">
             <div className="main-content">
-            <div class="tab-container">
-            <ul class="nav nav-tabs">
-              <li class="active"><a title="models" href="#models" data-toggle="tab"><i className="pe-7s-drawer"></i>Models</a></li>
-              <li><a title="score" href="#score" data-toggle="tab"><i className="pe-7s-target"></i>Score</a></li>
-            </ul>
-            <div class="tab-content">
-              <div id="models" class="tab-pane active cont">
-                {models}
-              </div>
-              <div id="score" class="tab-pane cont">
-              {score}
-                </div>
-             
-          </div>
-            </div>
+            <Tabs defaultActiveKey={1} id="controlled-tab-example" >
+            <Tab  eventKey={1} title="Models">{models}</Tab>
+            <Tab eventKey={2} title="Scores">{scores}</Tab>
+          </Tabs>
           </div>
         </div>
       );
