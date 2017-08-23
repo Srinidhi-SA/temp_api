@@ -9,6 +9,7 @@ import {getListOfCards,getAppsScoreSummary} from "../../actions/appActions";
 import {Button} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js";
 import {isEmpty} from "../../helpers/helper";
+import {API} from "../../helpers/env";
 
 @connect((store) => {
 	return {login_response: store.login.login_response, 
@@ -19,8 +20,8 @@ import {isEmpty} from "../../helpers/helper";
 
 
 export class AppsScoreDetail extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
   }
   componentWillMount() {
 	  if(!isEmpty(store.getState().apps.scoreSummary)){
@@ -64,7 +65,8 @@ export class AppsScoreDetail extends React.Component {
 		                    </div>
 		                    <div class="row">
 		                    <div className="col-md-2 col-md-offset-11">
-		                    <a> <Button bsStyle="primary">Download</Button></a>
+		                   	
+		                    	<a  href={'http://ec2-34-205-203-38.compute-1.amazonaws.com:8001/'+store.getState().apps.scoreSlug+'/data.csv'}id="download" className="btn btn-primary" download>Download</a>
 		                   </div>
 		                   </div>
 		             </div>
