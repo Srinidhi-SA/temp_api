@@ -178,6 +178,19 @@ class TrainerSerlializer(serializers.ModelSerializer):
         exclude = ('id', 'job')
 
 
+class TrainerListSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Trainer
+        exclude =  (
+            'column_data_raw',
+            'id',
+            'config',
+            'data'
+        )
+
+
+
 class ScoreSerlializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
@@ -206,6 +219,18 @@ class ScoreSerlializer(serializers.ModelSerializer):
     class Meta:
         model = Score
         exclude = ('id', 'job')
+
+
+class ScoreListSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Score
+        exclude =  (
+            'column_data_raw',
+            'id',
+            'config',
+            'data'
+        )
 
 
 class JobSerializer(serializers.Serializer):
