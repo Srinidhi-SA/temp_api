@@ -622,6 +622,7 @@ class Score(models.Model):
     name = models.CharField(max_length=300, null=True)
     slug = models.SlugField(null=False, blank=True)
     trainer = models.ForeignKey(Trainer, null=False)
+    dataset = models.ForeignKey(Dataset, null=False , default="")
     config = models.TextField(default="{}")
     data = models.TextField(default="{}")
     model_data = models.TextField(default="{}")
@@ -651,9 +652,6 @@ class Score(models.Model):
 
     def create(self):
         self.add_to_job()
-
-    def generate_config(self, *args, **kwargs):
-        return {}
 
     def add_to_job(self, *args, **kwargs):
 
@@ -688,76 +686,82 @@ class Score(models.Model):
         self.job = job
         self.save()
 
-        def generate_config(self, *args, **kwargs):
-            config = {
-                "config": {}
-            }
+    def generate_config(self, *args, **kwargs):
+        config = {
+            "config": {}
+        }
 
-            config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
-            config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
-            # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
-            # config['config']["META_HELPER"] = self.create_configuration_meta_data()
+        config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
+        config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
+        # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
+        # config['config']["META_HELPER"] = self.create_configuration_meta_data()
 
-            import json
-            self.config = json.dumps(config)
-            self.save()
-            return config
+        import json
+        self.config = json.dumps(config)
+        self.save()
+        return config
 
-        def create_configuration_url_settings(self):
+    def create_configuration_url_settings(self):
 
-            trainer_slug = self.trainer.slug
-            score_slug = self.slug
-            # model_data = json.loads(self.trainer.data)
-            # model_summary = model_data['model_summary']
+        trainer_slug = self.trainer.slug
+        score_slug = self.slug
+        # model_data = json.loads(self.trainer.data)
+        # model_config_from_results = model_data['config']
 
-            return {
-                'inputfile': [self.dataset.get_input_file()],
-                'modelpath': [trainer_slug],
-                'scorepath': [score_slug],
-                'analysis_type': ['score'],
-            }
+        return {
+            'inputfile': [self.dataset.get_input_file()],
+            'modelpath': [trainer_slug],
+            'scorepath': [score_slug],
+            'analysis_type': ['score'],
+            'levelcounts': [],
+            'modelfeatures': [],
+            'algorithmslug': ['f77631ce2ab24cf78c55bb6a5fce4db8rf']
+        }
 
-        def get_config_from_config(self):
-            config = json.loads(self.config)
-            consider_columns_type = ['including']
-            data_columns = config.get("timeDimension", None)
+    def get_config_from_config(self):
+        config = json.loads(self.config)
+        consider_columns_type = ['including']
+        data_columns = config.get("timeDimension", None)
 
-            if data_columns is None:
+        if data_columns is None:
+            consider_columns = config.get('dimension', []) + config.get('measures', [])
+            data_columns = ""
+        else:
+            if data_columns is "":
                 consider_columns = config.get('dimension', []) + config.get('measures', [])
-                data_columns = ""
             else:
-                if data_columns is "":
-                    consider_columns = config.get('dimension', []) + config.get('measures', [])
-                else:
-                    consider_columns = config.get('dimension', []) + config.get('measures', []) + [data_columns]
+                consider_columns = config.get('dimension', []) + config.get('measures', []) + [data_columns]
 
-            if len(consider_columns) < 1:
-                consider_columns_type = ['excluding']
+        if len(consider_columns) < 1:
+            consider_columns_type = ['excluding']
 
-            ret = {
-                'consider_columns_type': consider_columns_type,
-                'consider_columns': consider_columns,
-                'date_columns': [] if data_columns is "" else [data_columns],
-            }
-            return ret
+        ret = {
+            'consider_columns_type': consider_columns_type,
+            'consider_columns': consider_columns,
+            'date_columns': [] if data_columns is "" else [data_columns],
+        }
+        return ret
 
-        def create_configuration_column_settings(self):
-            config = json.loads(self.config)
-            result_column = config.get('analysisVariable')
+    def create_configuration_column_settings(self):
+        import pdb;pdb.set_trace()
+        config = json.loads(self.config)
+        model_data = json.loads(self.trainer.data)
+        model_config_from_results = model_data['config']
+        result_column = model_config_from_results.get('target_variable')[0]
 
-            ret = {
-                'polarity': ['positive'],
-                'result_column': [result_column],
-                'date_format': None,
-            }
+        ret = {
+            'polarity': ['positive'],
+            'result_column': [result_column],
+            'date_format': None,
+        }
 
-            get_config_from_config = self.get_config_from_config()
-            meta_data_related_config = self.dataset.common_config()
+        get_config_from_config = self.get_config_from_config()
+        meta_data_related_config = self.dataset.common_config()
 
-            ret.update(get_config_from_config)
-            ret.update(meta_data_related_config)
+        ret.update(get_config_from_config)
+        ret.update(meta_data_related_config)
 
-            return ret
+        return ret
 
-        def get_local_file_path(self):
-            return '/tmp/' + self.slug
+    def get_local_file_path(self):
+        return '/tmp/' + self.slug
