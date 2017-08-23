@@ -713,8 +713,8 @@ class Score(models.Model):
             'modelpath': [trainer_slug],
             'scorepath': [score_slug],
             'analysis_type': ['score'],
-            'levelcounts': [],
-            'modelfeatures': [],
+            'levelcounts': ['GG|~|34|~|HH|~|4'],
+            'modelfeatures': ['Session ID|~|Order Value|~|Discount'],
             'algorithmslug': ['f77631ce2ab24cf78c55bb6a5fce4db8rf']
         }
 
@@ -736,8 +736,8 @@ class Score(models.Model):
             consider_columns_type = ['excluding']
 
         ret = {
-            'consider_columns_type': consider_columns_type,
-            'consider_columns': consider_columns,
+            'score_consider_columns_type': consider_columns_type,
+            'score_consider_columns': consider_columns,
             'date_columns': [] if data_columns is "" else [data_columns],
         }
         return ret
