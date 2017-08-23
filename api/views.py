@@ -216,7 +216,7 @@ def set_result(request, slug=None):
     if not job:
         return JsonResponse({'result': 'Failed'})
     results = request.body
-    if isinstance(results, str or unicode):
+    if isinstance(results, str) or isinstance(results, unicode):
         job.results = results
     elif isinstance(results, dict):
         results = json.dumps(results)
