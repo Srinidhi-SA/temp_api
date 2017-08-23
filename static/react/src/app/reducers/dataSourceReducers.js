@@ -23,7 +23,7 @@ export default function reducer(state = {
 	break;
 	case "DATA_SOURCE_LIST_ERROR":
 	{
-		alert(action.json.non_field_errors);
+//		alert(action.json.non_field_errors);
 		throw new Error("Unable to fetch data source list!!");
 	}
 	break;

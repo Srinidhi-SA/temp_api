@@ -32,7 +32,7 @@ export default function reducer(state = {
 
 	case "DATA_LIST_ERROR":
 	{
-		alert(action.json.non_field_errors);
+//		alert(action.json.non_field_errors);
 		throw new Error("Unable to fetch data list!!");
 	}
 	break;
@@ -69,7 +69,7 @@ export default function reducer(state = {
 
 	case "DATA_ALL_LIST_ERROR":
 	{
-		alert(action.json.non_field_errors);
+//		alert(action.json.non_field_errors);
 		throw new Error("Unable to fetch data list!!");
 	}
 	break;
