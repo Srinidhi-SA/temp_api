@@ -68,6 +68,6 @@ FUNCTION_NEGATIVE_COLOR = "set_negative_color"
 FUNCTION_COLOR = "set_color"
 
 # d3.format
-D3_FORMAT_DOLLAR = 'set_format_$'
-D3_FORMAT_MILLION = 'set_format_m'
-D3_FORMAT_MILLION_DOLLAR = 'set_format_$m'
+D3_FORMAT_EMPTY = ''
+D3_FORMAT_MILLION = '.2s'
+D3_FORMAT_DOLLAR = '$'

@@ -433,8 +433,6 @@ class Insight(models.Model):
         pass
 
 
-# TODO: add generate config
-# TODO: add set_result for this one
 class Trainer(models.Model):
 
     name = models.CharField(max_length=300, null=True)
