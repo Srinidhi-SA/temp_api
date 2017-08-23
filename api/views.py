@@ -215,7 +215,7 @@ class ScoreView(viewsets.ModelViewSet):
     def download(self, request, slug=None):
         instance = self.get_object()
         score_data = json.loads(instance.data)
-        download_path = score_data.get('download_path', None)
+        download_path = '/home/hadoop/' + instance.slug + '/data.csv'
         save_file_to = instance.get_local_file_path()
 
         from api.lib.fab_helper import get_file
@@ -234,7 +234,7 @@ class ScoreView(viewsets.ModelViewSet):
         if download_path is None:
             with open(filepath, 'rb') as f:
                 response = HttpResponse(f.read(), content_type='application/csv')
-                response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+                response['Content-Disposition'] = 'inline; filename=' + os.path.basename(filepath)
                 return response
         else:
             return Http404
@@ -371,7 +371,6 @@ def add_slugs(results):
 
 
 def convert_chart_data_to_beautiful_things(data):
-    # import pdb;pdb.set_trace()
     from api import helper
     for card in data:
         if card["dataType"] == "c3Chart":
