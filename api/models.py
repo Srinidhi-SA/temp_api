@@ -410,6 +410,10 @@ class Insight(models.Model):
         ]
         config = json.loads(self.config)
         script_to_run = config.get('possibleAnalysis', default_scripts_to_run)
+        for index, value in enumerate(script_to_run):
+            if value == 'Trend Analysis':
+                script_to_run[index] = 'Trend'
+
         if script_to_run is [] or script_to_run is "":
             script_to_run = default_scripts_to_run
 
