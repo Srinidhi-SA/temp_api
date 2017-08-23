@@ -659,7 +659,7 @@ class Score(models.Model):
         print "Score realted config genarated."
 
         job = Job()
-        job.name = "-".join(["Insight", self.slug])
+        job.name = "-".join(["score", self.slug])
         job.job_type = "score"
         job.object_id = str(self.slug)
         job.config = json.dumps(jobConfig)
