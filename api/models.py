@@ -707,19 +707,26 @@ class Score(models.Model):
 
     def create_configuration_url_settings(self):
 
+        config = json.loads(self.config)
+        algorithmslug = config.get('algorithmName')
+
         trainer_slug = self.trainer.slug
         score_slug = self.slug
-        # model_data = json.loads(self.trainer.data)
-        # model_config_from_results = model_data['config']
+        model_data = json.loads(self.trainer.data)
+        model_config_from_results = model_data['config']
+        targetVariableLevelcount = model_config_from_results.get('targetVariableLevelcount', None)
+        modelFeaturesDict = model_config_from_results.get('modelFeatures', None)
+        # algorithmslug = 'f77631ce2ab24cf78c55bb6a5fce4db8rf'
 
         return {
             'inputfile': [self.dataset.get_input_file()],
             'modelpath': [trainer_slug],
             'scorepath': [score_slug],
             'analysis_type': ['score'],
-            'levelcounts': ['GG|~|34|~|HH|~|4'],
-            'modelfeatures': ['Session ID|~|Order Value|~|Discount'],
-            'algorithmslug': ['f77631ce2ab24cf78c55bb6a5fce4db8rf']
+            'levelcounts': targetVariableLevelcount if targetVariableLevelcount is not None else [],
+            'algorithmslug': [algorithmslug],
+            'modelfeatures': modelFeaturesDict[algorithmslug] if modelFeaturesDict is not None else []
+
         }
 
     def get_config_from_config(self):
