@@ -12,7 +12,14 @@ from rest_framework.decorators import detail_route
 from rest_framework.response import Response
 
 from api.pagination import CustomPagination
-from api.utils import convert_to_string, InsightSerializer, TrainerSerlializer, ScoreSerlializer, InsightListSerializers
+from api.utils import \
+    convert_to_string, \
+    InsightSerializer, \
+    TrainerSerlializer, \
+    ScoreSerlializer, \
+    InsightListSerializers, \
+    TrainerListSerializer, \
+    ScoreListSerializer
 from models import Insight, Dataset, Job, Trainer, Score
 
 
@@ -75,25 +82,6 @@ class SignalView(viewsets.ModelViewSet):
         serializer = InsightListSerializers(page, many=True)
         return page_class.get_paginated_response(serializer.data)
 
-    @detail_route(methods=['post'])
-    def run_master(self, request, slug=None):
-        pass
-
-    @detail_route(methods=['get'])
-    def get_config(self, request, slug=None):
-        dataset = self.get_object()
-        return Response(dataset.get_config())
-
-    @detail_route(methods=['post'])
-    def set_config(self, request, slug=None):
-        dataset = self.get_object()
-        data = request.data
-        if 'config' in data:
-            dataset.config = json.dumps(data['config'])
-            dataset.save()
-            return Response(dataset.config)
-        return Response(dataset.generate_config())
-
 
 class TrainerView(viewsets.ModelViewSet):
     def get_queryset(self):
@@ -141,6 +129,23 @@ class TrainerView(viewsets.ModelViewSet):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors)
+
+    def list(self, request, *args, **kwargs):
+        app_id = int(kwargs.get('app_id', 1))
+        query_set = self.get_queryset()
+
+        query_set = query_set.filter(app_id=app_id)
+        page_class = self.pagination_class()
+
+        page = page_class.paginate_queryset(
+            queryset=query_set,
+            request=request
+        )
+
+        serializer = TrainerListSerializer(page, many=True)
+        return page_class.get_paginated_response(serializer.data)
+
+
 
 # TODO: add score download,
 # TODO: get place from scripts, check if you have file already, if yes return file else download file from theat place
@@ -192,6 +197,42 @@ class ScoreView(viewsets.ModelViewSet):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors)
+
+    def list(self, request, *args, **kwargs):
+        query_set = self.get_queryset()
+
+        page_class = self.pagination_class()
+
+        page = page_class.paginate_queryset(
+            queryset=query_set,
+            request=request
+        )
+
+        serializer = ScoreListSerializer(page, many=True)
+        return page_class.get_paginated_response(serializer.data)
+
+    @detail_route(methods=['get'])
+    def download(self, request, slug=None):
+        instance = self.get_object()
+        score_data = json.loads(instance.data)
+        download_path = score_data.get('download_path', None)
+        save_file_to = instance.get_local_file_path()
+
+        from api.lib.fab_helper import get_file
+
+        get_file(
+            from_file=download_path,
+            to_dir=save_file_to
+        )
+
+
+        if download_path is None:
+            return Response({'message': 'Failed'})
+
+
+
+
+
 
 
 def get_datasource_config_list(request):

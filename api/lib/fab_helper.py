@@ -118,4 +118,11 @@ def put_file(from_file, to_dir):
         mirror_local_mode=True
     )
 
+def get_file(from_file, to_dir):
+
+    get(
+        remote_path=from_file,
+        local_path=to_dir
+    )
+
 
