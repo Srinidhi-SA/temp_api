@@ -90,7 +90,8 @@ import {STATIC_URL} from "../../helpers/env.js"
 @connect((store) => {
 	return {login_response: store.login.login_response, dataPreview: store.datasets.dataPreview,
 		signalMeta: store.datasets.signalMeta,curUrl: store.datasets.curUrl,
-		dataPreviewFlag:store.datasets.dataPreviewFlag};
+		dataPreviewFlag:store.datasets.dataPreviewFlag,
+		currentAppId:store.apps.currentAppId};
 })
 
 
@@ -155,7 +156,7 @@ export class DataPreview extends React.Component {
 						text: "Close"
 				};
 				this.buttons['create']= {
-						url :"/apps/createModel",
+						url :"/apps/"+store.getState().apps.currentAppId+"/createModel",
 						text: "Create Model"
 				};
 			}

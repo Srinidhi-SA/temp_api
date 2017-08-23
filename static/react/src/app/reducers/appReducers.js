@@ -15,6 +15,10 @@ export default function reducer(state = {
 		scoreSlug:"",
 		currentAppId:1,
 		currentAppName:"",
+		appsLoaderModal:false,
+		appsLoaderPerValue:0,
+		appsLoaderText :"",
+		
 }, action) {
 	console.log("In APPs reducer!!");
 	console.log(action.data);
@@ -148,6 +152,51 @@ export default function reducer(state = {
 			currentAppId: action.appId,
 			currentAppName:action.appName,
 		}
+	}
+	break;
+	case "OPEN_APPS_LOADER_MODAL":
+	{
+	
+		return {
+			...state,
+			appsLoaderModal:true,
+			appsLoaderPerValue:action.value,
+			appsLoaderText :action.text,
+		}
+	}
+	break;
+	case "HIDE_APPS_LOADER_MODAL":
+	{
+	
+		return {
+			...state,
+			appsLoaderModal:false,
+			appsLoaderPerValue:0,
+			appsLoaderText :"",
+		}
+	}
+	break;
+	case "UPDATE_APPS_LOADER_VALUE":
+	{
+	
+		return {
+			...state,
+			appsLoaderPerValue:action.value,
+		}
+	}
+	break;
+	case "CREATE_MODEL_SUCCESS":
+	{
+		return {
+			...state,
+			modelCreationFalg:action.value,
+		}
+	}
+	break;
+	case "CREATE_MODEL_ERROR":
+	{
+		//alert(action.json.non_field_errors);
+		throw new Error("Unable to create model!");
 	}
 	break;
  }

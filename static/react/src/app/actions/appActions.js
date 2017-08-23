@@ -1,6 +1,8 @@
 import {API} from "../helpers/env";
 import {PERPAGE} from "../helpers/helper";
 import store from "../store";
+import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL} from "../helpers/helper";
+export var appsInterval = null;
 
 function getHeader(token){
 	return {
@@ -71,15 +73,15 @@ export function createModel(modelName,targetVariable) {
 	console.log(modelName);
 	console.log(targetVariable);
 	  return (dispatch) => {
+		  dispatch(openAppsLoader(DULOADERPERVALUE,"Please wait while <br/> mAdvisor is creating model... "));
 			return triggerCreateModel(sessionStorage.userToken,modelName,targetVariable).then(([response, json]) =>{
 				if(response.status === 200){
 					console.log(json)
-					alert("Success")
-					//dispatch(createModelSuccess(json))
+					dispatch(createModelSuccess(json,dispatch))
 				}
 				else{
-					alert("Error")
-					//dispatch(createModelError(json))
+					dispatch(closeAppsLoaderValue())
+					dispatch(createModelError(json))
 				}
 			})
 		}
@@ -87,7 +89,7 @@ export function createModel(modelName,targetVariable) {
 
 function triggerCreateModel(token,modelName,targetVariable) {
 		var datasetSlug = store.getState().datasets.dataPreview.slug;
-		var app_id=1;
+		var app_id=store.getState().apps.currentAppId;
 		var details = {"measures":store.getState().datasets.selectedMeasures.join(),
 			"dimension":store.getState().datasets.selectedDimensions.join(),
 			"timeDimension":store.getState().datasets.selectedTimeDimensions,
@@ -101,11 +103,27 @@ function triggerCreateModel(token,modelName,targetVariable) {
 				"name":modelName,
 				"dataset":datasetSlug,
 				"app_id":app_id,
-				"column_data_raw":details
+				"config":details
 		 }),
 		}).then( response => Promise.all([response, response.json()]));
 }
-
+function createModelSuccess(data,dispatch){
+	var value = data.analysis_done;
+	appsInterval = setInterval(function(){
+			if(store.getState().apps.appsLoaderPerValue < LOADERMAXPERVALUE){
+				dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE));
+			}
+			dispatch(getAppsModelSummary(data.slug));
+			return {
+				type: "CREATE_MODEL_SUCCESS",
+				value,	
+			}
+	},DEFAULTINTERVAL);
+	return {
+		type: "CREATE_MODEL_SUCCESS",
+		value,	
+	}
+}
 export function getAppsScoreList(pageNo) {
 	return (dispatch) => {
 		return fetchScoreList(pageNo,sessionStorage.userToken).then(([response, json]) =>{
@@ -159,10 +177,14 @@ export function getAppsModelSummary(slug) {
 	return (dispatch) => {
 		return fetchModelSummary(sessionStorage.userToken,slug).then(([response, json]) =>{
 			if(response.status === 200){
-				console.log(json)
-				dispatch(fetchModelSummarySuccess(json))
+				if(json.analysis_done){
+					clearInterval(appsInterval);
+					dispatch(fetchModelSummarySuccess(json));
+					dispatch(closeAppsLoaderValue())
+				}
 			}
 			else{
+				dispatch(closeAppsLoaderValue())
 				dispatch(fetchModelSummaryError(json))
 			}
 		})
@@ -284,4 +306,39 @@ export function updateSelectedApp(appId,appName){
 		appName,
 	}
 }
+
+export function openAppsLoaderValue(value,text){
+	return {
+		type: "OPEN_APPS_LOADER_MODAL",
+		value,
+		text,
+	}
+}
+export function closeAppsLoaderValue(){
+	return {
+		type: "HIDE_APPS_LOADER_MODAL",
+	}
+}
+function createModelError(){
+	return {
+		type: "CREATE_MODEL_ERROR",
+	}
+}
+
+
+function updateAppsLoaderValue(value){
+	return {
+		type: "UPDATE_APPS_LOADER_VALUE",
+		value,
+	}
+}
+
+export function openAppsLoader(value,text){
+	return {
+		type: "OPEN_APPS_LOADER_MODAL",
+		value,
+		text,
+	}
+}
+
 

@@ -10,7 +10,7 @@ import {AppsCreateModel} from "./AppsCreateModel";
 import {getAppsModelList,getAppsModelSummary} from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {STATIC_URL} from "../../helpers/env.js"
-
+import {AppsLoader} from "../common/AppsLoader";
 
 var dateFormat = require('dateformat');
 
@@ -112,6 +112,7 @@ export class AppsModelList extends React.Component {
 				<div id="idPagination">
 				{paginationTag}
 				</div>
+				<AppsLoader/>
 				</div>
 		);
 	}else {
