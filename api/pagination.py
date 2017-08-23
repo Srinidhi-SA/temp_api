@@ -3,6 +3,7 @@ from rest_framework.pagination import PageNumberPagination
 from django.conf import settings
 
 class CustomPagination(PageNumberPagination):
+
     def get_paginated_response(self, data):
 
         # TODO: move the below exception handeling to some util function
@@ -49,3 +50,10 @@ class CustomPagination(PageNumberPagination):
             "current_page_size": page_size,
             "current_data": page_data
         }
+
+    def paginate_queryset(self, queryset, request, view=None):
+        # import pdb;pdb.set_trace()
+        self.request = request
+        self.view = view
+        self.queryset = queryset
+        return queryset
