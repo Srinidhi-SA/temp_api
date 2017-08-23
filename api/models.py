@@ -718,6 +718,8 @@ class Score(models.Model):
         modelFeaturesDict = model_config_from_results.get('modelFeatures', None)
         # algorithmslug = 'f77631ce2ab24cf78c55bb6a5fce4db8rf'
 
+        modelfeatures = modelFeaturesDict.get(algorithmslug, None)
+
         return {
             'inputfile': [self.dataset.get_input_file()],
             'modelpath': [trainer_slug],
@@ -725,7 +727,7 @@ class Score(models.Model):
             'analysis_type': ['score'],
             'levelcounts': targetVariableLevelcount if targetVariableLevelcount is not None else [],
             'algorithmslug': [algorithmslug],
-            'modelfeatures': modelFeaturesDict[algorithmslug] if modelFeaturesDict is not None else []
+            'modelfeatures': modelfeatures if modelfeatures is not None else []
 
         }
 
