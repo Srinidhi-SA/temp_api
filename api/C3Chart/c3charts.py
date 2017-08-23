@@ -202,6 +202,9 @@ class C3Chart(object):
             self._x_height = abs(math.sin(math.radians(self._x_label_rotation))) *\
                              5 *\
                              self._x_max_string_length + X_AXIS_HEIGHT
+
+            if self._x_height > 80:
+                self._x_height = 80
         else:
             self._x_height = X_AXIS_HEIGHT
 
