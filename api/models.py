@@ -255,8 +255,8 @@ class Dataset(models.Model):
         utf8_column_suggestions = []
         dateTimeSuggestions = []
 
-        if self.dataset.analysis_done is True:
-            meta_data = json.loads(self.dataset.meta_data)
+        if self.analysis_done is True:
+            meta_data = json.loads(self.meta_data)
             dataset_meta_data = meta_data.get('metaData')
 
             for variable in dataset_meta_data:
@@ -397,7 +397,7 @@ class Insight(models.Model):
         ret = {
             'consider_columns_type': consider_columns_type,
             'consider_columns': consider_columns,
-            'date_columns': [data_columns],
+            'date_columns': [] if data_columns is "" else [data_columns],
         }
         return ret
 
@@ -465,6 +465,7 @@ class Trainer(models.Model):
     slug = models.SlugField(null=False, blank=True)
     dataset = models.ForeignKey(Dataset, null=False)
     column_data_raw = models.TextField(default="{}")
+    config = models.TextField(default="{}")
     app_id = models.IntegerField(null=True, default=0)
 
     data = models.TextField(default="{}")
@@ -532,13 +533,14 @@ class Trainer(models.Model):
         ret = {
             'consider_columns_type': consider_columns_type,
             'consider_columns': consider_columns,
-            'date_columns': [data_columns],
+            'date_columns': [] if data_columns is "" else [data_columns],
         }
         return ret
 
     def create_configuration_url_settings(self):
+
         config = json.loads(self.config)
-        train_test_split = config.get('trainValue')/100
+        train_test_split = float(config.get('trainValue'))/100
         return {
             'inputfile': [self.dataset.get_input_file()],
             'modelpath': [self.slug],
@@ -565,9 +567,8 @@ class Trainer(models.Model):
         return ret
 
     def add_to_job(self, *args, **kwargs):
-
         jobConfig = self.generate_config(*args, **kwargs)
-        print "Dataset realted config genarated."
+        print "Trainer realted config genarated."
 
         job = Job()
         job.name = "-".join(["Trainer", self.slug])
@@ -596,75 +597,6 @@ class Trainer(models.Model):
 
         self.job = job
         self.save()
-
-        def create_configuration_url_settings():
-            config = json.loads(self.config)
-
-            trainValue = config.get("trainValue")
-            if trainValue > 100 and trainValue < 1:
-                raise Exception("trainValue should be in between 1 to 100")
-
-            return {
-                'inputfile': [self.dataset.get_input_file()],
-                'modelpath': [self.slug],
-                'train_test_split' : [trainValue/100]
-            }
-            pass
-
-        def create_configuration_column_settings():
-            config = json.loads(self.config)
-            consider_columns_type = ['including']
-            analysis_type = [self.type]
-            data_columns = config.get("timeDimension", None)
-            result_column = [self.target_column]
-            if data_columns is None:
-                consider_columns = config.get('dimension', []) + config.get('measures', [])
-                data_columns = ""
-            else:
-                if data_columns is "":
-                    consider_columns = config.get('dimension', []) + config.get('measures', [])
-                else:
-                    consider_columns = config.get('dimension', []) + config.get('measures', []) + [data_columns]
-
-            ignore_column_suggestion = []
-            utf8_column_suggestions = []
-            dateTimeSuggestions = []
-
-            if len(consider_columns) < 1:
-                consider_columns_type = ['excluding']
-
-            if self.dataset.analysis_done is True:
-                meta_data = json.loads(self.dataset.meta_data)
-                dataset_meta_data = meta_data.get('metaData')
-
-                for variable in dataset_meta_data:
-                    if variable['name'] == 'ignoreColumnSuggestions':
-                        ignore_column_suggestion += variable['value']
-
-                    if variable['name'] == 'utf8ColumnSuggestion':
-                        utf8_column_suggestions += variable['value']
-
-                    if variable['name'] == 'dateTimeSuggestions':
-                        dateTimeSuggestions += [variable['value']]
-            else:
-                print "How the hell reached here!. Metadata is still not there. Please Wait."
-                ignore_column_suggestion = []
-                utf8_column_suggestions = []
-
-            return {
-                'polarity': ['positive'],
-                'consider_columns_type': consider_columns_type,
-                'date_format': None,
-                'ignore_column_suggestions': ignore_column_suggestion,
-                'consider_columns': consider_columns,
-                'date_columns': [data_columns],
-                'analysis_type': analysis_type,
-                'utf8_columns': utf8_column_suggestions,
-                'analysis_type': ['prediction'],
-                # 'result_column': ['Opportunity Result'],
-                # 'consider_columns_type': ['excluding'],
-                # 'consider_columns': [],
-            }
 
 """
 {
