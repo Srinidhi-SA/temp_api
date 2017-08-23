@@ -4,7 +4,7 @@ import {Tabs,Tab} from "react-bootstrap";
 import {Link, Redirect} from "react-router-dom";
 import {updateSelectedApp,updateModelSummaryFlag} from "../../actions/appActions";
 import {connect} from "react-redux";
-
+import {STATIC_URL} from "../../helpers/env.js"
 
 export class AppsPanel extends React.Component {
   constructor(props) {
@@ -31,7 +31,7 @@ export class AppsPanel extends React.Component {
 						<div className="app-block"> 
 							<a className="app-link" ><Link  to="/apps/2/models">
 							<div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
-								<img src="../assets/images/icon_oppr.png" className="img-responsive"/>
+								<img src={STATIC_URL + "assets/images/icon_oppr.png"} className="img-responsive"/>
 							</div>
 							<div className="col-md-8 col-sm-9 col-xs-7">
 								<h4>OPPORTUNITY SCORING</h4>
@@ -63,7 +63,7 @@ export class AppsPanel extends React.Component {
 						<div className="app-block">
 						<a  className="app-link"><Link  to="/apps/1/models">
 							<div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
-								<img src="../assets/images/icon_prediction.png" className="img-responsive"/>
+								<img src={STATIC_URL + "assets/images/icon_prediction.png"} className="img-responsive"/>
 							</div>
 							<div className="col-md-8 col-sm-9 col-xs-7">
 								<h4>AUTOMATED PREDICTION</h4>
@@ -95,7 +95,7 @@ export class AppsPanel extends React.Component {
 						<div className="app-block">
 							<a href="#" className="app-link" >
 							<div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
-								<img src="../assets/images/icon_robo.png" className="img-responsive"/>
+								<img src={STATIC_URL + "assets/images/icon_robo.png"} className="img-responsive"/>
 							</div>
 							<div className="col-md-8 col-sm-9 col-xs-7">
 								<h4>ROBO-ADVISOR INSIGHTS</h4>
