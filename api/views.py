@@ -278,7 +278,7 @@ def write_into_databases(job_type, object_slug, results):
         return results
     elif job_type == "model":
         trainer_object = Trainer.objects.get(slug=object_slug)
-        results = add_slugs(results)
+        results['model_summary'] = add_slugs(results['model_summary'])
         trainer_object.data = json.dumps(results)
         trainer_object.analysis_done = True
         trainer_object.save()
