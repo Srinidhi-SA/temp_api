@@ -19,7 +19,8 @@ from models import Insight, Dataset, Job, Trainer, Score
 class SignalView(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = Insight.objects.filter(
-            created_by=self.request.user
+            created_by=self.request.user,
+            deleted=False
         )
         return queryset
 
@@ -85,7 +86,8 @@ class SignalView(viewsets.ModelViewSet):
 class TrainerView(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = Trainer.objects.filter(
-            created_by=self.request.user
+            created_by=self.request.user,
+            deleted=False
         )
         return queryset
 
@@ -134,7 +136,8 @@ class TrainerView(viewsets.ModelViewSet):
 class ScoreView(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = Score.objects.filter(
-            created_by=self.request.user
+            created_by=self.request.user,
+            deleted=False
         )
         return queryset
 
@@ -246,6 +249,10 @@ def write_into_databases(job_type, object_slug, results):
             data["chartData"] = helper.find_chart_data_and_replace_with_chart_data(data["chartData"])
         results['columnData'] = columnData
         results['possibleAnalysis'] = settings.ANALYSIS_FOR_TARGET_VARIABLE
+        da = []
+        for d in results.get('sampleData'):
+            da.append(map(str, results.get('sampleData')[3]))
+        results['sampleData'] = da
         dataset_object.meta_data = json.dumps(results)
         dataset_object.analysis_done = True
         dataset_object.save()
@@ -321,5 +328,6 @@ def convert_chart_data_to_beautiful_things(data):
 
 
 def home(request):
-    context = {}
+
+    context = {"UI_VERSION":settings.UI_VERSION}
     return render(request, 'home.html', context)

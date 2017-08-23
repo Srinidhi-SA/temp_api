@@ -1,4 +1,8 @@
 import React from "react";
+import { Scrollbars } from 'react-custom-scrollbars';
+
+
+
 import {MainHeader} from "../common/MainHeader";
 import {connect} from "react-redux";
 //import {Redirect} from 'react-router';
@@ -9,6 +13,7 @@ import ReactDOM from 'react-dom';
 import {hideDataPreview} from "../../actions/dataActions";
 import {Button} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"
+
 
 //var dataPrev= {
 //"metaData" : [   {"name": "Rows", "value": 30, "display":true},
@@ -247,6 +252,7 @@ export class DataPreview extends React.Component {
 	}
 
 	render() {
+		
 		console.log("data prev is called##########3");
 		console.log(this.props);
 		$('body').pleaseWait('stop');
@@ -350,6 +356,8 @@ export class DataPreview extends React.Component {
 
 					<div className="clearfix"></div>
 					<div className="table-responsive noSwipe">
+					
+					<Scrollbars>
 					<table className="table table-condensed table-hover table-bordered table-striped cst_table">
 					<thead>
 					<tr>
@@ -361,6 +369,7 @@ export class DataPreview extends React.Component {
 					</tbody>
 
 					</table>
+					</Scrollbars>
 					</div>
 					</div>
 					</div>

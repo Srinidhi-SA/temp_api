@@ -15,7 +15,6 @@ componentWillMount(){
 componentDidMount(){
 
 		if(this.props.treeData != null){
-			  
       var treeData = this.props.treeData;
 		var margin = {top: 20, right: 120, bottom: 20, left: 120},
 	width = 960 - margin.right - margin.left,
@@ -72,8 +71,12 @@ function update(source) {
 	  .attr("x", function(d) { return d.children || d._children ? -13 : 13; })
 	  .attr("dy", ".35em")
 	  .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
-	  .text(function(d) { return d.name; })
-	  .style("fill-opacity", 1e-6);
+	  .text(function(d) { if(d.name.toString().length>20){ return d.name.toString().substr(0,20)+"...";}else{return d.name;}})
+	  .style("fill-opacity", 1e-6)
+	  .append("title")
+	  .text(function(d) { return d.name;});
+	  
+	  
 
   // Transition nodes to their new position.
   var nodeUpdate = node.transition()

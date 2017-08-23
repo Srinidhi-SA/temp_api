@@ -170,7 +170,10 @@ componentDidMount(){
 			          </div>{/*<!-- /.col-lg-4 -->*/}
 			          <div className="col-lg-4">
 			              <div className="panel panel-primary-p2 cst-panel-shadow">
+
+						  
 			              <div className="panel-heading"><i className="mAd_icons ic_perf "></i> Dimensions</div>
+
 			                <div className="panel-body">
 			                  {/*  <!-- Row for select all-->*/}
 			                    <div className="row hidden">

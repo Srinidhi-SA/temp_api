@@ -8,6 +8,7 @@
     "start": "npm run build",
     "buildLinux": "webpack -d && cp src/index.html dist/index.html && webpack-dev-server --content-base src/ --inline --hot --history-api-fallback",
     "build": "webpack -d && copy src\\index.html dist\\index.html && webpack-dev-server --content-base src/ --inline --hot --history-api-fallback",
+    "buildDev": "cp confs/dev/env.js src/app/helpers/env.js &&webpack -p && cp src/index.html dist/index.html ",
     "buildProd": "cp confs/prod/env.js src/app/helpers/env.js &&webpack -p && cp src/index.html dist/index.html "
   },
   "keywords": [
@@ -21,10 +22,12 @@
     "react-bootstrap": "^0.31.2",
     "react-breadcrumb": "^1.0.0",
     "react-circular-progressbar": "^0.1.5",
+    "react-custom-scrollbars": "^4.1.2",
     "react-d3-tree": "^1.4.0",
     "react-dom": "^15.6.1",
     "react-dropzone": "^4.0.0",
     "react-redux": "^5.0.5",
+    "react-redux-loading-bar": "^2.9.2",
     "react-render-html": "^0.5.0",
     "react-router-dom": "^4.1.2",
     "react-router-redux": "^4.0.8",

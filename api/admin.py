@@ -4,8 +4,46 @@ from django.contrib import admin
 
 from api.models import Dataset, Insight, Job, Score, Trainer
 
-admin.site.register(Dataset)
-admin.site.register(Insight)
-admin.site.register(Job)
-admin.site.register(Score)
-admin.site.register(Trainer)
+
+class DatasetAdmin(admin.ModelAdmin):
+    search_fields = ["name", "slug"]
+    list_display = ["name", "slug", "created_at", "deleted"]  # TODO: @Ankush Add "created_by"
+    # list_filter = []
+    readonly_fields = ["created_at", "deleted"]
+
+
+class InsightAdmin(admin.ModelAdmin):
+    search_fields = ["name", "slug", "target_column"]
+    list_display = ["name", "slug", "type", "target_column", "dataset", "status", "analysis_done", "created_at",
+                    "created_by"]
+    list_filter = ["status", "analysis_done"]
+    readonly_fields = ["created_at"]
+
+
+class JobAdmin(admin.ModelAdmin):
+    search_fields = ["name", "slug", ]
+    list_display = ["name", "slug", "job_type", "deleted", "status"]
+    list_filter = ["job_type", "status"]
+    readonly_fields = ["created_at"]
+
+
+class ScoreAdmin(admin.ModelAdmin):
+    search_fields = ["name", "slug"]
+    list_display = ["name", "slug", "analysis_done", "created_at", "created_by"]
+    list_filter = ["analysis_done", ]
+    readonly_fields = ["created_at"]
+
+
+class TrainerAdmin(admin.ModelAdmin):
+    search_fields = ["name", "slug"]
+    list_display = ["name", "slug", "app_id", "analysis_done", "created_at",
+                    "created_by", "deleted"]
+    list_filter = ["analysis_done"]
+    readonly_fields = ["created_at"]
+
+
+admin.site.register(Dataset, DatasetAdmin)
+admin.site.register(Insight, InsightAdmin)
+admin.site.register(Job, JobAdmin)
+admin.site.register(Score, ScoreAdmin)
+admin.site.register(Trainer, TrainerAdmin)
