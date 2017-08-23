@@ -214,8 +214,10 @@ class ScoreView(viewsets.ModelViewSet):
     @detail_route(methods=['get'])
     def download(self, request, slug=None):
         instance = self.get_object()
-        score_data = json.loads(instance.data)
-        download_path = '/home/hadoop/' + instance.slug + '/data.csv'
+        from django.conf import settings
+        hadoop_base_file_path = settings.mAdvisorScores
+
+        download_path = hadoop_base_file_path + instance.slug + '/data.csv'
         save_file_to = instance.get_local_file_path()
 
         from api.lib.fab_helper import get_file
@@ -225,19 +227,18 @@ class ScoreView(viewsets.ModelViewSet):
             to_dir=save_file_to
         )
 
-        filename = instance.slug
         filepath = save_file_to
 
-        from django.http import HttpResponse, Http404
+        from django.http import HttpResponse
         import os
 
-        if download_path is None:
+        if download_path is not None:
             with open(filepath, 'rb') as f:
                 response = HttpResponse(f.read(), content_type='application/csv')
                 response['Content-Disposition'] = 'inline; filename=' + os.path.basename(filepath)
                 return response
         else:
-            return Http404
+            return JsonResponse({'result': 'failed to download'})
 
 
 def get_datasource_config_list(request):
