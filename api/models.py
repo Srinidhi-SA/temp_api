@@ -642,6 +642,9 @@ class Score(models.Model):
 
     job = models.ForeignKey(Job, null=True)
 
+    class Meta:
+        ordering = ['-created_at', '-updated_at']
+
     def __str__(self):
         return " : ".join(["{}".format(x) for x in [self.name, self.created_at, self.slug, self.trainer]])
 
