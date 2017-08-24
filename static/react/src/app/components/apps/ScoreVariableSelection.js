@@ -17,6 +17,7 @@ import {AppsLoader} from "../common/AppsLoader";
 		dataPreview: store.datasets.dataPreview,
 		modelTargetVariable:store.apps.modelTargetVariable,
 		selectedAlg:store.apps.selectedAlg,
+		scoreSummaryFlag:store.apps.scoreSummaryFlag,
 	};
 })
 

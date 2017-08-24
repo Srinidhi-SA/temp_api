@@ -1,7 +1,7 @@
 import {API} from "../helpers/env";
 import {PERPAGE} from "../helpers/helper";
 import store from "../store";
-import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL} from "../helpers/helper";
+import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL} from "../helpers/helper";
 import {hideDataPreview} from "./dataActions";
 
 export var appsInterval = null;
@@ -121,7 +121,7 @@ function createModelSuccess(data,dispatch){
 				type: "CREATE_MODEL_SUCCESS",
 				slug,	
 			}
-	},DEFAULTINTERVAL);
+	},APPSDEFAULTINTERVAL);
 	return {
 		type: "CREATE_MODEL_SUCCESS",
 		slug,	
@@ -260,7 +260,8 @@ function triggerCreateScore(token,scoreName,targetVariable) {
 			"dimension":store.getState().datasets.selectedDimensions,
 			"timeDimension":store.getState().datasets.selectedTimeDimensions,
 			 "analysisVariable":targetVariable,
-			 "algorithmName":store.getState().apps.selectedAlg}
+			 "algorithmName":store.getState().apps.selectedAlg,
+			 "app_id":app_id}
 		return fetch(API+'/api/score/',{
 			method: 'post',
 			headers: getHeader(token),
@@ -268,7 +269,6 @@ function triggerCreateScore(token,scoreName,targetVariable) {
 				"name":scoreName,
 				"dataset":datasetSlug,
 				"trainer":store.getState().apps.modelSlug,
-				"app_id":app_id,
 				"config":details
 		 }),
 		}).then( response => Promise.all([response, response.json()]));
@@ -285,7 +285,7 @@ function createScoreSuccess(data,dispatch){
 				type: "CREATE_SCORE_SUCCESS",
 				slug,	
 			}
-	},DEFAULTINTERVAL);
+	},APPSDEFAULTINTERVAL);
 	return {
 		type: "CREATE_SCORE_SUCCESS",
 		slug,	

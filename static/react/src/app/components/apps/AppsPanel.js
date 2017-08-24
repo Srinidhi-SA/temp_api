@@ -5,7 +5,7 @@ import {connect} from "react-redux";
 import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab} from "react-bootstrap";
 import {Link, Redirect} from "react-router-dom";
-import {updateSelectedApp,updateModelSummaryFlag} from "../../actions/appActions";
+import {updateSelectedApp,updateModelSummaryFlag,updateScoreSummaryFlag} from "../../actions/appActions";
 import {STATIC_URL} from "../../helpers/env.js"
 
 @connect((store) => {

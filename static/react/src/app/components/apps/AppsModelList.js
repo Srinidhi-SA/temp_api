@@ -34,7 +34,7 @@ export class AppsModelList extends React.Component {
 	  
 	  var pageNo = 1;
 	  if(this.props.history.location.pathname.indexOf("page") != -1){
-			pageNo = this.props.history.location.pathname.split("page/")[1];
+			pageNo = this.props.history.location.pathname.split("page=")[1];
 			this.props.dispatch(getAppsModelList(pageNo));
 		}else
 		  this.props.dispatch(getAppsModelList(pageNo));

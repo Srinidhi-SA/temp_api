@@ -31,7 +31,7 @@ export class AppsScoreList extends React.Component {
 		console.log(this.props.history)
 		var pageNo = 1;
 		if(this.props.history.location.pathname.indexOf("page") != -1){
-			pageNo = this.props.history.location.pathname.split("page/")[1];
+			pageNo = this.props.history.location.pathname.split("page=")[1];
 			this.props.dispatch(getAppsScoreList(pageNo));
 		}else
 			this.props.dispatch(getAppsScoreList(pageNo));
@@ -47,7 +47,7 @@ export class AppsScoreList extends React.Component {
 			const current_page = store.getState().apps.score_current_page;
 			let paginationTag = null
 			if(pages > 1){
-				paginationTag = <Pagination className="pull-left" ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
+				paginationTag = <Pagination  ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
 			}
 			const appsScoreList = scoreList.map((data, i) => {
 				var scoreLink = "/apps/"+store.getState().apps.currentAppId+"/scores/"+data.slug;
