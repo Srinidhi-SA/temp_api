@@ -1,11 +1,13 @@
 import React from "react";
-import {MainHeader} from "../common/MainHeader";
+import { Scrollbars } from 'react-custom-scrollbars';
 import {connect} from "react-redux";
 import {Link, Redirect} from "react-router";
-import store from "../../store";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem,Popover,OverlayTrigger} from "react-bootstrap";
-import {C3Chart} from "../c3Chart";
 import ReactDOM from 'react-dom';
+
+import {MainHeader} from "../common/MainHeader";
+import store from "../../store";
+import {C3Chart} from "../c3Chart";
 import $ from "jquery";
 
 import {updateSelectedVariables,resetSelectedVariables,setSelectedVariables} from "../../actions/dataActions";
@@ -158,9 +160,11 @@ componentDidMount(){
 			            {/*  <!-- Row for list of variables-->*/}
 			              <div className="row">
 			                <div className="col-md-12 cst-scroll-panel">
+			                <Scrollbars>
 			                  <ul className="list-unstyled">
 			                      {measureTemplate}
 			                  </ul>
+			                 </Scrollbars>
 			                </div>
 			              </div>
 			            {/*  <!-- End Row for list of variables-->*/}
@@ -201,9 +205,11 @@ componentDidMount(){
 			                  {/*  <!-- Row for list of variables-->*/}
 			                    <div className="row">
 			                    <div className="col-md-12 cst-scroll-panel">
+			                    <Scrollbars>
 			                      <ul className="list-unstyled">
 			                           {dimensionTemplate}
 			                      </ul>
+			                     </Scrollbars>
 			                    </div>
 			                    </div>
 			                  {/*  <!-- End Row for list of variables-->*/}
@@ -245,10 +251,11 @@ componentDidMount(){
 			                      {/*<!-- Row for list of variables-->*/}
 			                    <div className="row">
 			                    <div className="col-md-12 cst-scroll-panel">
-
+			                    	 <Scrollbars>
 			                      <ul className="list-unstyled">
 			                                {datetimeTemplate}
 			                      </ul>
+			                      </Scrollbars>
 			                    </div>
 			                    </div>
 			                      {/*<!-- End Row for list of variables-->*/}
