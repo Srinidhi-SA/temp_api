@@ -89,7 +89,7 @@ export class AppsScoreDetail extends React.Component {
 			        <div className="page-head">
 			        </div>
 			        <div className="main-content">
-			          <img id="loading" src={STATIC_URL + "/assets/images/Preloader_2.gif"}/>
+			        Loading....
 			        </div>
 			      </div>
 			    );
