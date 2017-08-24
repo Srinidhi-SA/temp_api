@@ -15112,7 +15112,7 @@ h4, h5 { font-weight:bold }
 }
 
 .CircularProgressbar .CircularProgressbar-path {
-  stroke: #3e98c7;
+  stroke: #00998c;
   stroke-linecap: round;
   transition: stroke-dashoffset 0.5s ease 0s;
 }
@@ -15122,7 +15122,7 @@ h4, h5 { font-weight:bold }
 }
 
 .CircularProgressbar .CircularProgressbar-text {
-  fill: #3e98c7;
+  fill: #00998c;
   font-size: 20px;
   dominant-baseline: middle;
   text-anchor: middle;
