@@ -15281,7 +15281,7 @@ html{
 
 .node circle{
     stroke: steelblue !important;
-    stroke-width: 1.5px !important;
+    stroke-width: 0.8px !important;
 }
 
 .link{
