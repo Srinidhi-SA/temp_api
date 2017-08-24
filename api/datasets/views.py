@@ -109,7 +109,7 @@ class DatasetView(viewsets.ModelViewSet):
     @list_route(methods=['get'])
     def all(self, request):
         query_set = self.get_queryset()
-        serializer = DataListSerializer(query_set, many=True)
+        serializer = DatasetSerializer(query_set, many=True)
         return Response({
             "data": serializer.data
         })
@@ -123,7 +123,7 @@ class DatasetView(viewsets.ModelViewSet):
             request=request
         )
 
-        serializer = DataListSerializer(page, many=True)
+        serializer = DatasetSerializer(page, many=True)
         return page_class.get_paginated_response(serializer.data)
 
 
