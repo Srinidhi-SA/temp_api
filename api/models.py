@@ -748,10 +748,13 @@ class Score(models.Model):
         if len(consider_columns) < 1:
             consider_columns_type = ['excluding']
 
+        app_id = config.get('app_id', 1)
+
         ret = {
             'score_consider_columns_type': consider_columns_type,
             'score_consider_columns': consider_columns,
             'date_columns': [] if data_columns is "" else [data_columns],
+            'app_id': app_id
         }
         return ret
 
