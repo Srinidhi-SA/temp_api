@@ -79,7 +79,7 @@ class SignalView(viewsets.ModelViewSet):
             request=request
         )
 
-        serializer = InsightListSerializers(page, many=True)
+        serializer = InsightSerializer(page, many=True)
         return page_class.get_paginated_response(serializer.data)
 
 
@@ -142,7 +142,7 @@ class TrainerView(viewsets.ModelViewSet):
             request=request
         )
 
-        serializer = TrainerListSerializer(page, many=True)
+        serializer = TrainerSerlializer(page, many=True)
         return page_class.get_paginated_response(serializer.data)
 
 
@@ -208,7 +208,7 @@ class ScoreView(viewsets.ModelViewSet):
             request=request
         )
 
-        serializer = ScoreListSerializer(page, many=True)
+        serializer = ScoreSerlializer(page, many=True)
         return page_class.get_paginated_response(serializer.data)
 
     @detail_route(methods=['get'])
