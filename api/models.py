@@ -249,6 +249,34 @@ class Dataset(models.Model):
         elif type == 'fake':
             return "file:///asdasdasdasd"
 
+    def common_config(self):
+
+        ignore_column_suggestion = []
+        utf8_column_suggestions = []
+        dateTimeSuggestions = []
+
+        if self.analysis_done is True:
+            meta_data = json.loads(self.meta_data)
+            dataset_meta_data = meta_data.get('metaData')
+
+            for variable in dataset_meta_data:
+                if variable['name'] == 'ignoreColumnSuggestions':
+                    ignore_column_suggestion += variable['value']
+
+                if variable['name'] == 'utf8ColumnSuggestion':
+                    utf8_column_suggestions += variable['value']
+
+                if variable['name'] == 'dateTimeSuggestions':
+                    dateTimeSuggestions += [variable['value']]
+        else:
+            print "How the hell reached here!. Metadata is still not there. Please Wait."
+
+        return {
+            'ignore_column_suggestion': ignore_column_suggestion,
+            'utf8_column_suggestions': utf8_column_suggestions,
+            'dateTimeSuggestions': dateTimeSuggestions,
+        }
+
 
 class Insight(models.Model):
     name = models.CharField(max_length=300, null=True)
@@ -349,29 +377,11 @@ class Insight(models.Model):
         import json
         return json.loads(self.config)
 
-    def create_configuration_url_settings(self):
-        default_scripts_to_run = [
-            'Descriptive analysis',
-            'Measure vs. Dimension',
-            'Dimension vs. Dimension',
-            'Trend'
-        ]
-        config = json.loads(self.config)
-        script_to_run = config.get('possibleAnalysis', default_scripts_to_run)
-        if script_to_run is [] or script_to_run is "":
-            script_to_run = default_scripts_to_run
-
-        return {
-            'script_to_run': script_to_run,
-            'inputfile': [self.dataset.get_input_file()]
-        }
-
-    def create_configuration_column_settings(self):
+    def get_config_from_config(self):
         config = json.loads(self.config)
         consider_columns_type = ['including']
-        analysis_type = [self.type]
         data_columns = config.get("timeDimension", None)
-        result_column = [self.target_column]
+
         if data_columns is None:
             consider_columns = config.get('dimension', []) + config.get('measures', [])
             data_columns = ""
@@ -381,38 +391,54 @@ class Insight(models.Model):
             else:
                 consider_columns = config.get('dimension', []) + config.get('measures', []) + [data_columns]
 
-        ignore_column_suggestion = []
-        utf8_column_suggestions = []
-
         if len(consider_columns) < 1:
             consider_columns_type = ['excluding']
 
-        if self.dataset.analysis_done is True:
-            meta_data = json.loads(self.dataset.meta_data)
-            dataset_meta_data = meta_data.get('metaData')
+        ret = {
+            'consider_columns_type': consider_columns_type,
+            'consider_columns': consider_columns,
+            'date_columns': [] if data_columns is "" else [data_columns],
+        }
+        return ret
 
-            for variable in dataset_meta_data:
-                if variable['name'] == 'ignoreColumnSuggestions':
-                    ignore_column_suggestion += variable['value']
+    def create_configuration_url_settings(self):
+        default_scripts_to_run = [
+            'Descriptive analysis',
+            'Measure vs. Dimension',
+            'Dimension vs. Dimension',
+            'Trend'
+        ]
+        config = json.loads(self.config)
+        script_to_run = config.get('possibleAnalysis', default_scripts_to_run)
+        for index, value in enumerate(script_to_run):
+            if value == 'Trend Analysis':
+                script_to_run[index] = 'Trend'
 
-                if variable['name'] == 'utf8ColumnSuggestion':
-                    utf8_column_suggestions += variable['value']
-        else:
-            print "How the hell reached here!. Metadata is still not there. Please Wait."
-            ignore_column_suggestion = []
-            utf8_column_suggestions = []
+        if script_to_run is [] or script_to_run is "":
+            script_to_run = default_scripts_to_run
 
         return {
-            'polarity': ['positive'],
-            'consider_columns_type': consider_columns_type,
-            'date_format': None,
-            'ignore_column_suggestions': ignore_column_suggestion,
-            'result_column': result_column,
-            'consider_columns': consider_columns,
-            'date_columns': [data_columns],
-            'analysis_type': analysis_type,
-            'utf8_columns': utf8_column_suggestions
+            'script_to_run': script_to_run,
+            'inputfile': [self.dataset.get_input_file()]
         }
+
+    def create_configuration_column_settings(self):
+        analysis_type = [self.type]
+        result_column = [self.target_column]
+
+        ret = {
+            'polarity': ['positive'],
+            'result_column': result_column,
+            'analysis_type': analysis_type,
+            'date_format': None,
+        }
+
+        get_config_from_config = self.get_config_from_config()
+        meta_data_related_config = self.dataset.common_config()
+
+        ret.update(get_config_from_config)
+        ret.update(meta_data_related_config)
+        return ret
         # return {
         #     "analysis_type": ["master"],
         #     "result_column": "",
@@ -438,13 +464,12 @@ class Insight(models.Model):
         pass
 
 
-# TODO: add generate config
-# TODO: add set_result for this one
 class Trainer(models.Model):
     name = models.CharField(max_length=300, null=True)
     slug = models.SlugField(null=False, blank=True)
     dataset = models.ForeignKey(Dataset, null=False)
     column_data_raw = models.TextField(default="{}")
+    config = models.TextField(default="{}")
     app_id = models.IntegerField(null=True, default=0)
 
     data = models.TextField(default="{}")
@@ -492,13 +517,65 @@ class Trainer(models.Model):
         self.save()
         return config
 
-    def add_to_job(self, *args, **kwargs):
+    def get_config_from_config(self):
+        config = json.loads(self.config)
+        consider_columns_type = ['including']
+        data_columns = config.get("timeDimension", None)
 
+        if data_columns is None:
+            consider_columns = config.get('dimension', []) + config.get('measures', [])
+            data_columns = ""
+        else:
+            if data_columns is "":
+                consider_columns = config.get('dimension', []) + config.get('measures', [])
+            else:
+                consider_columns = config.get('dimension', []) + config.get('measures', []) + [data_columns]
+
+        if len(consider_columns) < 1:
+            consider_columns_type = ['excluding']
+
+        ret = {
+            'consider_columns_type': consider_columns_type,
+            'consider_columns': consider_columns,
+            'date_columns': [] if data_columns is "" else [data_columns],
+        }
+        return ret
+
+    def create_configuration_url_settings(self):
+
+        config = json.loads(self.config)
+        train_test_split = float(config.get('trainValue'))/100
+        return {
+            'inputfile': [self.dataset.get_input_file()],
+            'modelpath': [self.slug],
+            'train_test_split': [train_test_split],
+            'analysis_type': ['training']
+        }
+
+    def create_configuration_column_settings(self):
+        config = json.loads(self.config)
+        result_column = config.get('analysisVariable')
+
+        ret = {
+            'polarity': ['positive'],
+            'result_column': [result_column],
+            'date_format': None,
+        }
+
+        get_config_from_config = self.get_config_from_config()
+        meta_data_related_config = self.dataset.common_config()
+
+        ret.update(get_config_from_config)
+        ret.update(meta_data_related_config)
+
+        return ret
+
+    def add_to_job(self, *args, **kwargs):
         jobConfig = self.generate_config(*args, **kwargs)
-        print "Dataset realted config genarated."
+        print "Trainer realted config genarated."
 
         job = Job()
-        job.name = "-".join(["Insight", self.slug])
+        job.name = "-".join(["Trainer", self.slug])
         job.job_type = "model"
         job.object_id = str(self.slug)
         job.config = json.dumps(jobConfig)
@@ -525,11 +602,22 @@ class Trainer(models.Model):
         self.job = job
         self.save()
 
-        def create_configuration_url_settings():
-            pass
-
-        def create_configuration_column_settings():
-            pass
+"""
+{
+    "name": "WWADw",
+    "dataset": "iriscsv-5dbng5clba",
+    "app_id": 1,
+    "column_data_raw":
+        {
+            "measures": "",
+            "dimension": "",
+            "timeDimension": "",
+            "trainValue": 50,
+            "testValue": 50,
+            "analysisVariable": "age"
+        }
+}
+"""
 
 
 # TODO: Add generate config
@@ -538,6 +626,7 @@ class Score(models.Model):
     name = models.CharField(max_length=300, null=True)
     slug = models.SlugField(null=False, blank=True)
     trainer = models.ForeignKey(Trainer, null=False)
+    dataset = models.ForeignKey(Dataset, null=False , default="")
     config = models.TextField(default="{}")
     data = models.TextField(default="{}")
     model_data = models.TextField(default="{}")
@@ -552,6 +641,9 @@ class Score(models.Model):
     bookmarked = models.BooleanField(default=False)
 
     job = models.ForeignKey(Job, null=True)
+
+    class Meta:
+        ordering = ['-created_at', '-updated_at']
 
     def __str__(self):
         return " : ".join(["{}".format(x) for x in [self.name, self.created_at, self.slug, self.trainer]])
@@ -568,16 +660,13 @@ class Score(models.Model):
     def create(self):
         self.add_to_job()
 
-    def generate_config(self, *args, **kwargs):
-        return {}
-
     def add_to_job(self, *args, **kwargs):
 
         jobConfig = self.generate_config(*args, **kwargs)
-        print "Dataset realted config genarated."
+        print "Score realted config genarated."
 
         job = Job()
-        job.name = "-".join(["Insight", self.slug])
+        job.name = "-".join(["score", self.slug])
         job.job_type = "score"
         job.object_id = str(self.slug)
         job.config = json.dumps(jobConfig)
@@ -604,23 +693,93 @@ class Score(models.Model):
         self.job = job
         self.save()
 
-        def generate_config(self, *args, **kwargs):
-            config = {
-                "config": {}
-            }
+    def generate_config(self, *args, **kwargs):
+        config = {
+            "config": {}
+        }
 
-            config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
-            config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
-            # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
-            # config['config']["META_HELPER"] = self.create_configuration_meta_data()
+        config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
+        config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
+        # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
+        # config['config']["META_HELPER"] = self.create_configuration_meta_data()
 
-            import json
-            self.config = json.dumps(config)
-            self.save()
-            return config
+        import json
+        self.config = json.dumps(config)
+        self.save()
+        return config
 
-        def create_configuration_url_settings():
-            pass
+    def create_configuration_url_settings(self):
 
-        def create_configuration_column_settings():
-            pass
+        config = json.loads(self.config)
+        algorithmslug = config.get('algorithmName')
+
+        trainer_slug = self.trainer.slug
+        score_slug = self.slug
+        model_data = json.loads(self.trainer.data)
+        model_config_from_results = model_data['config']
+        targetVariableLevelcount = model_config_from_results.get('targetVariableLevelcount', None)
+        modelFeaturesDict = model_config_from_results.get('modelFeatures', None)
+        # algorithmslug = 'f77631ce2ab24cf78c55bb6a5fce4db8rf'
+
+        modelfeatures = modelFeaturesDict.get(algorithmslug, None)
+
+        return {
+            'inputfile': [self.dataset.get_input_file()],
+            'modelpath': [trainer_slug],
+            'scorepath': [score_slug],
+            'analysis_type': ['score'],
+            'levelcounts': targetVariableLevelcount if targetVariableLevelcount is not None else [],
+            'algorithmslug': [algorithmslug],
+            'modelfeatures': modelfeatures if modelfeatures is not None else []
+
+        }
+
+    def get_config_from_config(self):
+        config = json.loads(self.config)
+        consider_columns_type = ['including']
+        data_columns = config.get("timeDimension", None)
+
+        if data_columns is None:
+            consider_columns = config.get('dimension', []) + config.get('measures', [])
+            data_columns = ""
+        else:
+            if data_columns is "":
+                consider_columns = config.get('dimension', []) + config.get('measures', [])
+            else:
+                consider_columns = config.get('dimension', []) + config.get('measures', []) + [data_columns]
+
+        if len(consider_columns) < 1:
+            consider_columns_type = ['excluding']
+
+        app_id = config.get('app_id', 1)
+
+        ret = {
+            'score_consider_columns_type': consider_columns_type,
+            'score_consider_columns': consider_columns,
+            'date_columns': [] if data_columns is "" else [data_columns],
+            'app_id': [app_id]
+        }
+        return ret
+
+    def create_configuration_column_settings(self):
+        config = json.loads(self.config)
+        model_data = json.loads(self.trainer.data)
+        model_config_from_results = model_data['config']
+        result_column = model_config_from_results.get('target_variable')[0]
+
+        ret = {
+            'polarity': ['positive'],
+            'result_column': [result_column],
+            'date_format': None,
+        }
+
+        get_config_from_config = self.get_config_from_config()
+        meta_data_related_config = self.dataset.common_config()
+
+        ret.update(get_config_from_config)
+        ret.update(meta_data_related_config)
+
+        return ret
+
+    def get_local_file_path(self):
+        return '/tmp/' + self.slug

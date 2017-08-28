@@ -69,6 +69,8 @@ JOBSERVER = {
     'context': 'pysql-context',
     'master': 'bi.sparkjobs.JobScript',
     'metadata': 'bi.sparkjobs.JobScript',
+    'model': 'bi.sparkjobs.JobScript',
+    'score': 'bi.sparkjobs.JobScript',
     'filter': 'bi.sparkjobs.filter.JobScript',
 
 }
@@ -77,3 +79,5 @@ ALLOWED_HOSTS = ['*']
 
 APPEND_SLASH=False
 DATA_UPLOAD_MAX_MEMORY_SIZE = 1024*1024*1024
+
+mAdvisorScores = '/home/hadoop/mAdvisorScores/'

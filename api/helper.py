@@ -28,8 +28,8 @@ class JobserverDetails(object):
         job_type = {
             "metadata": "metaData",
             "master": "story",
-            "model":"prediction",
-            "score": "scoring"
+            "model":"training",
+            "score": "prediction"
         }
 
         return {
@@ -122,6 +122,11 @@ def decode_and_convert_chart_raw_data(data):
     legend = data['legend']
     types = data.get('types', None)
     axisRotation = data.get('axisRotation', None)
+    yAxisNumberFormat = data.get('yAxisNumberFormat', None)
+    y2AxisNumberFormat = data.get('y2AxisNumberFormat', None)
+    subchart = data.get('subchart', True)
+
+    c3_chart_details = dict()
 
     if chart_type in ["bar", "line", "spline"]:
         chart_data = replace_chart_data(data['data'])
@@ -136,20 +141,32 @@ def decode_and_convert_chart_raw_data(data):
             c3.set_y_axis(
                 y_name=axes.get('y')
             )
+            if yAxisNumberFormat is not None:
+                c3_chart_details["yformat"] = yAxisNumberFormat
+            else:
+                c3_chart_details["yformat"] = '.2s'
 
         if axes.get('y2', None) is not None:
             c3.set_another_y_axis(
                 y2_name=axes.get('y2')
             )
 
+            if y2AxisNumberFormat is not None:
+                c3_chart_details["y2format"] = y2AxisNumberFormat
+            else:
+                c3_chart_details["y2format"] = '.2s'
+            c3.set_d3_format_y2(c3_chart_details["y2format"])
+
         c3.set_axis_label_simple(
             label_text=label_text
         )
 
-        return {
-            "chart_c3": c3.get_json(),
-            "yformat": "m"
-        }
+        if subchart is False:
+            c3.hide_subchart()
+
+        c3_chart_details["chart_c3"] = c3.get_json()
+        return c3_chart_details
+
     elif chart_type in ["combination"]:
 
         chart_data = replace_chart_data(data['data'])
@@ -164,11 +181,21 @@ def decode_and_convert_chart_raw_data(data):
             c3.set_y_axis(
                 y_name=axes.get('y')
             )
+            if yAxisNumberFormat is not None:
+                c3_chart_details["yformat"] = yAxisNumberFormat
+            else:
+                c3_chart_details["yformat"] = '.2s'
 
         if axes.get('y2', None) is not None:
             c3.set_another_y_axis(
                 y2_name=axes.get('y2')
             )
+
+            if y2AxisNumberFormat is not None:
+                c3_chart_details["y2format"] = y2AxisNumberFormat
+            else:
+                c3_chart_details["y2format"] = '.2s'
+            c3.set_d3_format_y2(c3_chart_details["y2format"])
 
         c3.set_axis_label_simple(
             label_text=label_text
@@ -183,10 +210,11 @@ def decode_and_convert_chart_raw_data(data):
         from api.C3Chart import config
         c3.set_basic_color_pattern(config.SECOND_FLIP_PATTERN)
 
-        return {
-            "chart_c3": c3.get_json(),
-            "yformat": "m"
-        }
+        if subchart is False:
+            c3.hide_subchart()
+
+        c3_chart_details["chart_c3"] = c3.get_json()
+        return c3_chart_details
 
     elif chart_type in ["scatter"]:
         chart_data, xs = replace_chart_data(data['data'], data['axes'])
@@ -200,10 +228,32 @@ def decode_and_convert_chart_raw_data(data):
             label_text=label_text
         )
 
-        return {
-            "chart_c3": c3.get_json(),
-            "yformat": "m"
-        }
+        if axes.get('y', None) is not None:
+            c3.set_y_axis(
+                y_name=axes.get('y')
+            )
+            if yAxisNumberFormat is not None:
+                c3_chart_details["yformat"] = yAxisNumberFormat
+            else:
+                c3_chart_details["yformat"] = '.2s'
+        c3_chart_details["yformat"] = '.2s'
+
+        if axes.get('y2', None) is not None:
+            c3.set_another_y_axis(
+                y2_name=axes.get('y2')
+            )
+
+            if y2AxisNumberFormat is not None:
+                c3_chart_details["y2format"] = y2AxisNumberFormat
+            else:
+                c3_chart_details["y2format"] = '.2s'
+            c3.set_d3_format_y2(c3_chart_details["y2format"])
+
+        if subchart is False:
+            c3.hide_subchart()
+
+        c3_chart_details["chart_c3"] = c3.get_json()
+        return c3_chart_details
 
     elif chart_type in ["scatter_line"]:
 
@@ -219,10 +269,34 @@ def decode_and_convert_chart_raw_data(data):
         )
 
         c3.set_line_chart()
-        return {
-            "chart_c3": c3.get_json(),
-            "yformat": "m"
-        }
+
+        if axes.get('y', None) is not None:
+            c3.set_y_axis(
+                y_name=axes.get('y')
+            )
+            if yAxisNumberFormat is not None:
+                c3_chart_details["yformat"] = yAxisNumberFormat
+            else:
+                c3_chart_details["yformat"] = '.2s'
+        c3_chart_details["yformat"] = '.2s'
+
+        if axes.get('y2', None) is not None:
+            c3.set_another_y_axis(
+                y2_name=axes.get('y2')
+            )
+
+            if y2AxisNumberFormat is not None:
+                c3_chart_details["y2format"] = y2AxisNumberFormat
+            else:
+                c3_chart_details["y2format"] = '.2s'
+            c3.set_d3_format_y2(c3_chart_details["y2format"])
+
+        if subchart is False:
+            c3.hide_subchart()
+
+        c3_chart_details["chart_c3"] = c3.get_json()
+        return c3_chart_details
+
     elif chart_type in ['scatter_tooltip']:
         # take from old code. tooltip related with scatter. easier to get this data
         data_c3 = data['data']
@@ -242,11 +316,33 @@ def decode_and_convert_chart_raw_data(data):
 
         c3.add_tooltip_for_scatter()
 
-        return {
-            'chart_c3': c3.get_json(),
-            'yformat': 'm',
-            'tooltip_c3': [data_c3[0], data_c3[1], data_c3[2]]
-        }
+        if axes.get('y', None) is not None:
+            c3.set_y_axis(
+                y_name=axes.get('y')
+            )
+            if yAxisNumberFormat is not None:
+                c3_chart_details["yformat"] = yAxisNumberFormat
+            else:
+                c3_chart_details["yformat"] = '.2s'
+        c3_chart_details["yformat"] = '.2s'
+
+        if axes.get('y2', None) is not None:
+            c3.set_another_y_axis(
+                y2_name=axes.get('y2')
+            )
+
+            if y2AxisNumberFormat is not None:
+                c3_chart_details["y2format"] = y2AxisNumberFormat
+            else:
+                c3_chart_details["y2format"] = '.2s'
+            c3.set_d3_format_y2(c3_chart_details["y2format"])
+
+        if subchart is False:
+            c3.hide_subchart()
+
+        c3_chart_details["chart_c3"] = c3.get_json()
+        c3_chart_details["tooltip_c3"] = [data_c3[0], data_c3[1], data_c3[2]]
+        return c3_chart_details
 
 
 def replace_chart_data(data, axes=None):

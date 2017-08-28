@@ -12,7 +12,14 @@ from rest_framework.decorators import detail_route
 from rest_framework.response import Response
 
 from api.pagination import CustomPagination
-from api.utils import convert_to_string, InsightSerializer, TrainerSerlializer, ScoreSerlializer
+from api.utils import \
+    convert_to_string, \
+    InsightSerializer, \
+    TrainerSerlializer, \
+    ScoreSerlializer, \
+    InsightListSerializers, \
+    TrainerListSerializer, \
+    ScoreListSerializer
 from models import Insight, Dataset, Job, Trainer, Score
 
 
@@ -46,14 +53,6 @@ class SignalView(viewsets.ModelViewSet):
         return Response(serializer.errors)
 
     def update(self, request, *args, **kwargs):
-        '''
-        Comparing with the previous implementation:-
-            This update method can cover set_column_data, set_measure, set_dimension
-        :param request:
-        :param args:
-        :param kwargs: {'slug': 'signal-123-asdwqeasd'}
-        :return:
-        '''
         data = request.data
         data = convert_to_string(data)
         instance = self.get_object()
@@ -63,24 +62,31 @@ class SignalView(viewsets.ModelViewSet):
             return Response(serializer.data)
         return Response(serializer.errors)
 
-    @detail_route(methods=['post'])
-    def run_master(self, request, slug=None):
-        pass
+    def list(self, request, *args, **kwargs):
 
-    @detail_route(methods=['get'])
-    def get_config(self, request, slug=None):
-        dataset = self.get_object()
-        return Response(dataset.get_config())
+        if 'page' in request.query_params:
+            if request.query_params.get('page') == 'all':
+                query_set = self.get_queryset()
 
-    @detail_route(methods=['post'])
-    def set_config(self, request, slug=None):
-        dataset = self.get_object()
-        data = request.data
-        if 'config' in data:
-            dataset.config = json.dumps(data['config'])
-            dataset.save()
-            return Response(dataset.config)
-        return Response(dataset.generate_config())
+                if 'name' in request.query_params:
+                    name = request.query_params.get('name')
+                    query_set = query_set.filter(name__contains=name)
+
+                serializer = InsightListSerializers(query_set, many=True)
+                return Response({
+                    "data": serializer.data
+                })
+
+        page_class = self.pagination_class()
+        query_set = self.get_queryset()
+
+        page = page_class.paginate_queryset(
+            queryset=query_set,
+            request=request
+        )
+
+        serializer = InsightListSerializers(page, many=True)
+        return page_class.get_paginated_response(serializer.data)
 
 
 class TrainerView(viewsets.ModelViewSet):
@@ -113,14 +119,6 @@ class TrainerView(viewsets.ModelViewSet):
         return Response(serializer.errors)
 
     def update(self, request, *args, **kwargs):
-        '''
-        Comparing with the previous implementation:-
-            This update method can cover set_column_data, set_measure, set_dimension
-        :param request:
-        :param args:
-        :param kwargs: {'slug': 'signal-123-asdwqeasd'}
-        :return:
-        '''
         data = request.data
         data = convert_to_string(data)
         instance = self.get_object()
@@ -130,9 +128,34 @@ class TrainerView(viewsets.ModelViewSet):
             return Response(serializer.data)
         return Response(serializer.errors)
 
-# TODO: add score download,
-# TODO: get place from scripts, check if you have file already, if yes return file else download file from theat place
-# TODO: and keep in some place and pass it to
+    def list(self, request, *args, **kwargs):
+        app_id = int(kwargs.get('app_id', 1))
+        if 'page' in request.query_params:
+            if request.query_params.get('page') == 'all':
+                query_set = self.get_queryset()
+
+                if 'name' in request.query_params:
+                    name = request.query_params.get('name')
+                    query_set = query_set.filter(name__contains=name)
+
+                serializer = TrainerListSerializer(query_set, many=True)
+                return Response({
+                    "data": serializer.data
+                })
+        query_set = self.get_queryset()
+
+        query_set = query_set.filter(app_id=app_id)
+        page_class = self.pagination_class()
+
+        page = page_class.paginate_queryset(
+            queryset=query_set,
+            request=request
+        )
+
+        serializer = TrainerListSerializer(page, many=True)
+        return page_class.get_paginated_response(serializer.data)
+
+
 class ScoreView(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = Score.objects.filter(
@@ -150,10 +173,10 @@ class ScoreView(viewsets.ModelViewSet):
     pagination_class = CustomPagination
 
     def create(self, request, *args, **kwargs):
-        # import pdb;pdb.set_trace()
         data = request.data
         data = convert_to_string(data)
         data['trainer'] = Trainer.objects.filter(slug=data['trainer'])
+        data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
         data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
         serializer = ScoreSerlializer(data=data)
         if serializer.is_valid():
@@ -164,14 +187,6 @@ class ScoreView(viewsets.ModelViewSet):
         return Response(serializer.errors)
 
     def update(self, request, *args, **kwargs):
-        '''
-        Comparing with the previous implementation:-
-            This update method can cover set_column_data, set_measure, set_dimension
-        :param request:
-        :param args:
-        :param kwargs: {'slug': 'signal-123-asdwqeasd'}
-        :return:
-        '''
         data = request.data
         data = convert_to_string(data)
         instance = self.get_object()
@@ -180,6 +195,62 @@ class ScoreView(viewsets.ModelViewSet):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors)
+
+    def list(self, request, *args, **kwargs):
+
+        if 'page' in request.query_params:
+            if request.query_params.get('page') == 'all':
+                query_set = self.get_queryset()
+
+                if 'name' in request.query_params:
+                    name = request.query_params.get('name')
+                    query_set = query_set.filter(name__contains=name)
+
+                serializer = ScoreListSerializer(query_set, many=True)
+                return Response({
+                    "data": serializer.data
+                })
+
+        query_set = self.get_queryset()
+
+        page_class = self.pagination_class()
+
+        page = page_class.paginate_queryset(
+            queryset=query_set,
+            request=request
+        )
+
+        serializer = ScoreListSerializer(page, many=True)
+        return page_class.get_paginated_response(serializer.data)
+
+    @detail_route(methods=['get'])
+    def download(self, request, slug=None):
+        instance = self.get_object()
+        from django.conf import settings
+        hadoop_base_file_path = settings.mAdvisorScores
+
+        download_path = hadoop_base_file_path + instance.slug + '/data.csv'
+        save_file_to = instance.get_local_file_path()
+
+        from api.lib.fab_helper import get_file
+
+        get_file(
+            from_file=download_path,
+            to_dir=save_file_to
+        )
+
+        filepath = save_file_to
+
+        from django.http import HttpResponse
+        import os
+
+        if download_path is not None:
+            with open(filepath, 'rb') as f:
+                response = HttpResponse(f.read(), content_type='application/csv')
+                response['Content-Disposition'] = 'inline; filename=' + os.path.basename(filepath)
+                return response
+        else:
+            return JsonResponse({'result': 'failed to download'})
 
 
 def get_datasource_config_list(request):
@@ -204,7 +275,7 @@ def set_result(request, slug=None):
     if not job:
         return JsonResponse({'result': 'Failed'})
     results = request.body
-    if isinstance(results, str or unicode):
+    if isinstance(results, str) or isinstance(results, unicode):
         job.results = results
     elif isinstance(results, dict):
         results = json.dumps(results)
@@ -266,7 +337,7 @@ def write_into_databases(job_type, object_slug, results):
         return results
     elif job_type == "model":
         trainer_object = Trainer.objects.get(slug=object_slug)
-        results = add_slugs(results)
+        results['model_summary'] = add_slugs(results['model_summary'])
         trainer_object.data = json.dumps(results)
         trainer_object.analysis_done = True
         trainer_object.save()
@@ -313,7 +384,6 @@ def add_slugs(results):
 
 
 def convert_chart_data_to_beautiful_things(data):
-    # import pdb;pdb.set_trace()
     from api import helper
     for card in data:
         if card["dataType"] == "c3Chart":

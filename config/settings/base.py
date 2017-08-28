@@ -279,7 +279,8 @@ ANALYSIS_FOR_TARGET_VARIABLE = {
         "measure": [
             {"name": "Descriptive analysis", "id": "descriptive-analysis"},
             {"name": "Measure vs. Dimension", "id": "measure-vs-dimension"},
-            {"name": "Measure vs. Measure", "id": "measure-vs-measure"}
+            {"name": "Measure vs. Measure", "id": "measure-vs-measure"},
+            {"name": "Predictive modeling", "id": "predictive-modeling"}
         ], },
     "time_dimension" :{"name": "Trend", "id" : "trend", "help_text" : "Enable this analysis type only if date columns is present in selected variables"}
 }
