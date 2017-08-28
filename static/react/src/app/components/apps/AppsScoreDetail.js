@@ -63,7 +63,9 @@ export class AppsScoreDetail extends React.Component {
 		                  {cardDataList}
 
 		                    </div>
-		                    <div class="row">
+		                    
+		                    
+		                    <div className="row">
 		                    <div className="col-md-2 col-md-offset-11">
 		                   	
 		                    	<a  href={'http://ec2-34-205-203-38.compute-1.amazonaws.com:8001/'+store.getState().apps.scoreSlug+'/data.csv'}id="download" className="btn btn-primary" download>Download</a>
@@ -87,7 +89,7 @@ export class AppsScoreDetail extends React.Component {
 			        <div className="page-head">
 			        </div>
 			        <div className="main-content">
-			          <img id="loading" src={ STATIC_URL + "/assets/images/Preloader_2.gif"}/>
+			        Loading....
 			        </div>
 			      </div>
 			    );

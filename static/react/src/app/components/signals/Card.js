@@ -64,12 +64,11 @@ export class Card extends React.Component {
    }
 //
   render() {
-    console.log(this.props);
     console.log("card is called!!!! with data:----");
     cardData = this.props.cardData;
     console.log(cardData);
     const cardElements = cardData.map((story, i) => {
-     // console.log(JSON.stringify(story));
+     console.log(i);
       switch (story.dataType) {
         case "html":
 			
@@ -84,7 +83,6 @@ export class Card extends React.Component {
           break;
           case "tree":
 		  	console.log("checking tree data");
-           console.log(story.data);
             return ( <DecisionTree key={i} treeData={story.data}/>);
           break;
         case "table":

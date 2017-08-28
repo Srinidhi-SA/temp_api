@@ -84,11 +84,12 @@ function update(source) {
 	  .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
 
   nodeUpdate.select("circle")
-	  .attr("r", 10)
+	  .attr("r", 4)
 	  .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
 
   nodeUpdate.select("text")
-	  .style("fill-opacity", 1);
+	  .style("fill-opacity", 1)
+	  .style("font-size", "11px");
 
   // Transition exiting nodes to the parent's new position.
   var nodeExit = node.exit().transition()

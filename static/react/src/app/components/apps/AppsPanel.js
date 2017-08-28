@@ -1,10 +1,21 @@
 import React from "react";
+import store from "../../store";
+import {connect} from "react-redux";
+
 import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab} from "react-bootstrap";
 import {Link, Redirect} from "react-router-dom";
-import {updateSelectedApp,updateModelSummaryFlag} from "../../actions/appActions";
-import {connect} from "react-redux";
+import {updateSelectedApp,updateModelSummaryFlag,updateScoreSummaryFlag} from "../../actions/appActions";
 import {STATIC_URL} from "../../helpers/env.js"
+
+@connect((store) => {
+	return {login_response: store.login.login_response, 
+		modelList: store.apps.modelList,
+		modelSummaryFlag:store.apps.modelSummaryFlag,
+		modelSlug:store.apps.modelSlug,
+		currentAppId:store.apps.currentAppId,
+		};
+})
 
 export class AppsPanel extends React.Component {
   constructor(props) {
@@ -12,8 +23,9 @@ export class AppsPanel extends React.Component {
     console.log(this.props)
   }
   gotoAppsList(appId,appName){
-	// this.props.dispatch(updateSelectedApp(appId,appName));
-	 //this.props.dispatch(updateModelSummaryFlag(false));
+	  this.props.dispatch(updateSelectedApp(appId,appName));
+	  this.props.dispatch(updateModelSummaryFlag(false));
+	  this.props.dispatch(updateScoreSummaryFlag(false));
   }
   render() {
     console.log("Apps panel is called##########3");
@@ -29,7 +41,7 @@ export class AppsPanel extends React.Component {
 					<div class="col-md-4">
 						
 						<div className="app-block"> 
-							<a className="app-link" ><Link  to="/apps/2/models">
+							<Link onClick={this.gotoAppsList.bind(this,1,"OPPORTUNITY SCORING")} className="app-link" to="/apps/2/models">
 							<div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
 								<img src={STATIC_URL + "assets/images/icon_oppr.png"} className="img-responsive"/>
 							</div>
@@ -40,7 +52,7 @@ export class AppsPanel extends React.Component {
 								</p>
 							</div>
 							</Link>
-							</a>
+						
 							<div className="card-footer">
 							<ul className="app_labels">
 								<li className="xs-p-10 text-primary"><i className="fa fa-tag fa-1x"></i></li>
@@ -61,7 +73,7 @@ export class AppsPanel extends React.Component {
 					<div className="col-md-4">
 						
 						<div className="app-block">
-						<a  className="app-link"><Link  to="/apps/1/models">
+						<Link onClick={this.gotoAppsList.bind(this,2,"AUTOMATED PREDICTION")} className="app-link" to="/apps/1/models">
 							<div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
 								<img src={STATIC_URL + "assets/images/icon_prediction.png"} className="img-responsive"/>
 							</div>
@@ -72,7 +84,6 @@ export class AppsPanel extends React.Component {
 								</p>
 							</div>
 							</Link>
-						</a>
 						<div className="card-footer">
 							<ul className="app_labels">
 								<li className="xs-p-10 text-primary"><i className="fa fa-tag fa-1x"></i></li>

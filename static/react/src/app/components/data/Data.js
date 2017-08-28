@@ -37,7 +37,7 @@ export class Data extends React.Component {
 		var pageNo = 1;
 		this.props.dispatch(storeSignalMeta(null,this.props.match.url));
 		if(this.props.history.location.pathname.indexOf("page") != -1){
-			pageNo = this.props.history.location.pathname.split("page/")[1];
+			pageNo = this.props.history.location.pathname.split("page=")[1];
 			this.props.dispatch(getDataList(pageNo));
 		}else
 			this.props.dispatch(getDataList(pageNo));
@@ -179,7 +179,7 @@ export class Data extends React.Component {
 	}
 
 	handleSelect(eventKey) {
-		this.props.history.push('/data/page/'+eventKey+'')
+		this.props.history.push('/data?page='+eventKey+'')
 		this.props.dispatch(getDataList(eventKey));
 	}
 }

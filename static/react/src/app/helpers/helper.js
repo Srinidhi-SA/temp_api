@@ -29,6 +29,7 @@ const DULOADERPERVALUE = 10;
 const CSLOADERPERVALUE = 10;
 const LOADERMAXPERVALUE = 90;
 const DEFAULTINTERVAL = 20000;
+const APPSDEFAULTINTERVAL = 15000;
 
 export function generateHeaders(table) {
     var cols = table.tableData.map(function(rowData,i){
@@ -118,4 +119,5 @@ export{
 	CSLOADERPERVALUE,
 	LOADERMAXPERVALUE,
 	DEFAULTINTERVAL,
+	APPSDEFAULTINTERVAL,
 	}
