@@ -211,7 +211,14 @@ class C3Chart(object):
             return max([len(d.get(self._x_column_name)) for d in data])
         elif self._data_type == DEFAULT_DATA_TYPE:
             x_data = data[self._x_index_in_column_data]
-            return max([len(str(d)) for d in x_data])
+            if len(x_data) > 0:
+                first_item = x_data[1]
+                import math
+                if isinstance(first_item, int) or isinstance(first_item, float):
+                    import pdb;pdb.set_trace()
+                    return abs(max([d for d in x_data[1:]]))
+
+            return max([len(str(d)) for d in x_data[1:]])
 
     def find_and_set_number_of_x_ticks(self):
         data = self._data_data
