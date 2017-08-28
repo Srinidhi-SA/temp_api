@@ -53,14 +53,6 @@ class SignalView(viewsets.ModelViewSet):
         return Response(serializer.errors)
 
     def update(self, request, *args, **kwargs):
-        '''
-        Comparing with the previous implementation:-
-            This update method can cover set_column_data, set_measure, set_dimension
-        :param request:
-        :param args:
-        :param kwargs: {'slug': 'signal-123-asdwqeasd'}
-        :return:
-        '''
         data = request.data
         data = convert_to_string(data)
         instance = self.get_object()
@@ -71,6 +63,20 @@ class SignalView(viewsets.ModelViewSet):
         return Response(serializer.errors)
 
     def list(self, request, *args, **kwargs):
+
+        if 'page' in request.query_params:
+            if request.query_params.get('page') == 'all':
+                query_set = self.get_queryset()
+
+                if 'name' in request.query_params:
+                    name = request.query_params.get('name')
+                    query_set = query_set.filter(name__contains=name)
+
+                serializer = InsightListSerializers(query_set, many=True)
+                return Response({
+                    "data": serializer.data
+                })
+
         page_class = self.pagination_class()
         query_set = self.get_queryset()
 
@@ -79,7 +85,7 @@ class SignalView(viewsets.ModelViewSet):
             request=request
         )
 
-        serializer = InsightSerializer(page, many=True)
+        serializer = InsightListSerializers(page, many=True)
         return page_class.get_paginated_response(serializer.data)
 
 
@@ -113,14 +119,6 @@ class TrainerView(viewsets.ModelViewSet):
         return Response(serializer.errors)
 
     def update(self, request, *args, **kwargs):
-        '''
-        Comparing with the previous implementation:-
-            This update method can cover set_column_data, set_measure, set_dimension
-        :param request:
-        :param args:
-        :param kwargs: {'slug': 'signal-123-asdwqeasd'}
-        :return:
-        '''
         data = request.data
         data = convert_to_string(data)
         instance = self.get_object()
@@ -132,6 +130,18 @@ class TrainerView(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         app_id = int(kwargs.get('app_id', 1))
+        if 'page' in request.query_params:
+            if request.query_params.get('page') == 'all':
+                query_set = self.get_queryset()
+
+                if 'name' in request.query_params:
+                    name = request.query_params.get('name')
+                    query_set = query_set.filter(name__contains=name)
+
+                serializer = TrainerListSerializer(query_set, many=True)
+                return Response({
+                    "data": serializer.data
+                })
         query_set = self.get_queryset()
 
         query_set = query_set.filter(app_id=app_id)
@@ -142,13 +152,10 @@ class TrainerView(viewsets.ModelViewSet):
             request=request
         )
 
-        serializer = TrainerSerlializer(page, many=True)
+        serializer = TrainerListSerializer(page, many=True)
         return page_class.get_paginated_response(serializer.data)
 
 
-# TODO: add score download,
-# TODO: get place from scripts, check if you have file already, if yes return file else download file from theat place
-# TODO: and keep in some place and pass it to
 class ScoreView(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = Score.objects.filter(
@@ -166,7 +173,6 @@ class ScoreView(viewsets.ModelViewSet):
     pagination_class = CustomPagination
 
     def create(self, request, *args, **kwargs):
-        # import pdb;pdb.set_trace()
         data = request.data
         data = convert_to_string(data)
         data['trainer'] = Trainer.objects.filter(slug=data['trainer'])
@@ -181,14 +187,6 @@ class ScoreView(viewsets.ModelViewSet):
         return Response(serializer.errors)
 
     def update(self, request, *args, **kwargs):
-        '''
-        Comparing with the previous implementation:-
-            This update method can cover set_column_data, set_measure, set_dimension
-        :param request:
-        :param args:
-        :param kwargs: {'slug': 'signal-123-asdwqeasd'}
-        :return:
-        '''
         data = request.data
         data = convert_to_string(data)
         instance = self.get_object()
@@ -199,6 +197,20 @@ class ScoreView(viewsets.ModelViewSet):
         return Response(serializer.errors)
 
     def list(self, request, *args, **kwargs):
+
+        if 'page' in request.query_params:
+            if request.query_params.get('page') == 'all':
+                query_set = self.get_queryset()
+
+                if 'name' in request.query_params:
+                    name = request.query_params.get('name')
+                    query_set = query_set.filter(name__contains=name)
+
+                serializer = ScoreListSerializer(query_set, many=True)
+                return Response({
+                    "data": serializer.data
+                })
+
         query_set = self.get_queryset()
 
         page_class = self.pagination_class()
@@ -208,7 +220,7 @@ class ScoreView(viewsets.ModelViewSet):
             request=request
         )
 
-        serializer = ScoreSerlializer(page, many=True)
+        serializer = ScoreListSerializer(page, many=True)
         return page_class.get_paginated_response(serializer.data)
 
     @detail_route(methods=['get'])

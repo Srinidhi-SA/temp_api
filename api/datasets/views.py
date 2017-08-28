@@ -1,32 +1,18 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-# import python default
 import random
-import json
-import csv
 
-# import django defaults
-
-# import rest_framework
-from rest_framework import viewsets
-from rest_framework.response import Response
-from rest_framework.decorators import detail_route, list_route
-
-# import helper
-from helper import convert_to_string
-from api.pagination import CustomPagination
-from api.exceptions import creation_failed_exception, update_failed_exception
-
-# import models
-from api.models import Dataset
-
-# import serializers
-from serializers import DatasetSerializer, DataListSerializer
-from api.user_helper import UserSerializer
-
-# import views
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import viewsets
+from rest_framework.decorators import detail_route, list_route
+from rest_framework.response import Response
+
+from api.exceptions import creation_failed_exception, update_failed_exception
+from api.models import Dataset
+from api.pagination import CustomPagination
+from helper import convert_to_string
+from serializers import DatasetSerializer, DataListSerializer
 
 # Create your views here.
 
@@ -109,12 +95,26 @@ class DatasetView(viewsets.ModelViewSet):
     @list_route(methods=['get'])
     def all(self, request):
         query_set = self.get_queryset()
-        serializer = DatasetSerializer(query_set, many=True)
+        serializer = DataListSerializer(query_set, many=True)
         return Response({
             "data": serializer.data
         })
 
     def list(self, request, *args, **kwargs):
+        # import pdb;pdb.set_trace()
+        if 'page' in request.query_params:
+            if request.query_params.get('page') == 'all':
+                query_set = self.get_queryset()
+
+                if 'name' in request.query_params:
+                    name = request.query_params.get('name')
+                    query_set = query_set.filter(name__contains=name)
+
+                serializer = DataListSerializer(query_set, many=True)
+                return Response({
+                    "data": serializer.data
+                })
+
         page_class = self.pagination_class()
         query_set = self.get_queryset()
 
@@ -123,7 +123,7 @@ class DatasetView(viewsets.ModelViewSet):
             request=request
         )
 
-        serializer = DatasetSerializer(page, many=True)
+        serializer = DataListSerializer(page, many=True)
         return page_class.get_paginated_response(serializer.data)
 
 
