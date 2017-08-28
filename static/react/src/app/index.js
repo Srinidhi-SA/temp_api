@@ -72,5 +72,7 @@ class App extends React.Component {
 
 render(
   <Provider store={store}>
+ 
   <App/>
+
 </Provider>, window.document.getElementById('app'));

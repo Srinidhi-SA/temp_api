@@ -12,11 +12,20 @@ import {sessionObject} from '../../helpers/manageSessionStorage';
 //   return {login_res:store.login.login_response};
 // })
 export default class TopPanel extends React.Component {
-
+    constructor(props){
+		super(props);
+		this.state = {loginFlag: true}
+	}
 	logout(){
 		sessionObject.clearSession();
+		  this.setState({
+             loginFlag: false
+         });
 	}
 	render(){
+		if(!this.state.loginFlag){
+			return(<Redirect to="/login" />);
+		}else{
 		console.log("top panel & user name"+sessionStorage.username);
 			return(
 		            <div>
@@ -51,7 +60,7 @@ export default class TopPanel extends React.Component {
 												<a href="javascript:;"><i class="fa fa-user" aria-hidden="true"></i> Profile</a>
 											</li>
 											<li>
-												<a href="javascript:;" className="logout" onClick={this.logout}><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a>
+												<a href="javascript:;" className="logout" onClick={this.logout.bind(this)}><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a>
 											</li>
 										</ul>
 									</div>
@@ -60,5 +69,7 @@ export default class TopPanel extends React.Component {
 								</div>
 
 		 );
+		}
   }
+	
 }
