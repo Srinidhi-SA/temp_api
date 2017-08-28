@@ -4,11 +4,11 @@ from __future__ import unicode_literals
 from django.conf.urls import url
 from rest_framework import routers
 
+from api import views
 from datasets.views import DatasetView
+from views import ScoreView
 from views import SignalView, get_datasource_config_list
 from views import TrainerView
-from views import ScoreView
-from api import views
 
 # Start adding urlconf from here
 
