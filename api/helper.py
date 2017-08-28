@@ -252,6 +252,9 @@ def decode_and_convert_chart_raw_data(data):
         if subchart is False:
             c3.hide_subchart()
 
+
+        c3.set_x_type_as_index()
+
         c3_chart_details["chart_c3"] = c3.get_json()
         return c3_chart_details
 

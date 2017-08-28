@@ -215,7 +215,7 @@ class C3Chart(object):
                 first_item = x_data[1]
                 import math
                 if isinstance(first_item, int) or isinstance(first_item, float):
-                    return abs(max([d for d in x_data[1:]]))
+                    return len(str(int(abs(max([d for d in x_data[1:]])))))
 
             return max([len(str(d)) for d in x_data[1:]])
 
@@ -485,7 +485,6 @@ class ScatterChart(C3Chart):
         self.set_all_basics()
         self.set_scatter_chart()
         self.hide_subchart()
-        self.set_x_type_as_index()
 
 class BarChart(C3Chart):
 
