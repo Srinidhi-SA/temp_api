@@ -451,7 +451,10 @@ class RoboView(viewsets.ModelViewSet):
 
         for file in files:
             dataset = dict()
-            dataset['input_file'] = files[file]
+            input_file = files[file]
+            dataset['input_file'] = input_file
+            dataset['name'] = input_file.name
+            
             dataset['created_by'] = request.user.id
             from api.datasets.serializers import DatasetSerializer
             serializer = DatasetSerializer(data=dataset)
