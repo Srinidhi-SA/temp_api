@@ -10,7 +10,7 @@ from helper import JobserverDetails
 @receiver(post_save, sender=Dataset)
 def trigger_metadata_creation_job(sender, instance=None, created=False, **kwargs):
     print("Dataset got created, trigger a metadata job")
-    import pdb; pdb.set_trace()
+    #import pdb; pdb.set_trace()
     if created:
         print("Dataset got created, trigger a metadata job")
         # TODO: Dataset got created, trigger a metadata job
