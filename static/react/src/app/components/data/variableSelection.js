@@ -1,4 +1,6 @@
 import React from "react";
+import { Scrollbars } from 'react-custom-scrollbars';
+
 import {connect} from "react-redux";
 import {Link, Redirect} from "react-router-dom";
 import {push} from "react-router-redux";
@@ -403,9 +405,11 @@ if(datetime.length>0){
       {/*<!-- Row htmlFor list of variables-->*/}
       <div className="row">
         <div className="col-md-12 cst-scroll-panel">
+		<Scrollbars>
           <ul className="list-unstyled">
                               {measureTemplate}
           </ul>
+		 </Scrollbars> 
         </div>
       </div>
       {/*<!-- End Row htmlFor list of variables-->*/}
@@ -445,9 +449,11 @@ if(datetime.length>0){
             {/*<!-- Row htmlFor list of variables-->*/}
             <div className="row">
             <div className="col-md-12 cst-scroll-panel">
+			<Scrollbars>
               <ul className="list-unstyled">
             {dimensionTemplate}
               </ul>
+			</Scrollbars>
             </div>
             </div>
             {/*<!-- End Row htmlFor list of variables-->*/}
@@ -488,9 +494,11 @@ if(datetime.length>0){
             {/*<!-- Row htmlFor list of variables-->*/}
             <div className="row">
             <div className="col-md-12 cst-scroll-panel">
+			<Scrollbars>
               <ul className="list-unstyled">
               {datetimeTemplate}
               </ul>
+			</Scrollbars>
             </div>
             </div>
             {/*<!-- End Row htmlFor list of variables-->*/}
