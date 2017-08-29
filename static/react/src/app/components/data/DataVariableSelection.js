@@ -1,4 +1,5 @@
 import React from "react";
+import { Scrollbars } from 'react-custom-scrollbars';
 import {MainHeader} from "../common/MainHeader";
 import {connect} from "react-redux";
 import {Link, Redirect} from "react-router";
@@ -158,9 +159,11 @@ componentDidMount(){
 			            {/*  <!-- Row for list of variables-->*/}
 			              <div className="row">
 			                <div className="col-md-12 cst-scroll-panel">
+							<Scrollbars>
 			                  <ul className="list-unstyled">
 			                      {measureTemplate}
 			                  </ul>
+							  </Scrollbars>
 			                </div>
 			              </div>
 			            {/*  <!-- End Row for list of variables-->*/}
@@ -204,9 +207,11 @@ componentDidMount(){
 			                  {/*  <!-- Row for list of variables-->*/}
 			                    <div className="row">
 			                    <div className="col-md-12 cst-scroll-panel">
+								<Scrollbars>
 			                      <ul className="list-unstyled">
 			                           {dimensionTemplate}
 			                      </ul>
+								</Scrollbars>
 			                    </div>
 			                    </div>
 			                  {/*  <!-- End Row for list of variables-->*/}
@@ -248,10 +253,11 @@ componentDidMount(){
 			                      {/*<!-- Row for list of variables-->*/}
 			                    <div className="row">
 			                    <div className="col-md-12 cst-scroll-panel">
-
+								<Scrollbars>
 			                      <ul className="list-unstyled">
 			                                {datetimeTemplate}
 			                      </ul>
+								</Scrollbars>
 			                    </div>
 			                    </div>
 			                      {/*<!-- End Row for list of variables-->*/}
