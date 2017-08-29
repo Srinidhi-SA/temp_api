@@ -130,6 +130,7 @@ def decode_and_convert_chart_raw_data(data):
 
     if chart_type in ["bar", "line", "spline"]:
         chart_data = replace_chart_data(data['data'])
+        c3_chart_details['table_c3'] = chart_data
         c3 = C3Chart(
             data=chart_data,
             chart_type=chart_type,
@@ -170,6 +171,8 @@ def decode_and_convert_chart_raw_data(data):
     elif chart_type in ["combination"]:
 
         chart_data = replace_chart_data(data['data'])
+        c3_chart_details['table_c3'] = chart_data
+
         c3 = C3Chart(
             data=chart_data,
             chart_type=chart_type,
@@ -217,7 +220,10 @@ def decode_and_convert_chart_raw_data(data):
         return c3_chart_details
 
     elif chart_type in ["scatter"]:
-        chart_data, xs = replace_chart_data(data['data'], data['axes'])
+        data_c3 = data['data']
+        chart_data, xs = replace_chart_data(data_c3, data['axes'])
+        c3_chart_details['table_c3'] = chart_data
+
         c3 = ScatterChart(
             data=chart_data,
             data_type='columns'
@@ -259,8 +265,10 @@ def decode_and_convert_chart_raw_data(data):
         return c3_chart_details
 
     elif chart_type in ["scatter_line"]:
+        data_c3 = data['data']
+        chart_data, xs = replace_chart_data(data_c3, data['axes'])
 
-        chart_data, xs = replace_chart_data(data['data'], data['axes'])
+        c3_chart_details['table_c3'] =  chart_data
         c3 = ScatterChart(
             data=chart_data,
             data_type='columns'
@@ -304,6 +312,7 @@ def decode_and_convert_chart_raw_data(data):
         # take from old code. tooltip related with scatter. easier to get this data
         data_c3 = data['data']
         card3_data, xs = convert_column_data_with_array_of_category_into_column_data_stright_xy(data_c3, 3)
+        c3_chart_details['table_c3'] = data_c3
 
         c3 = ScatterChart(
             data=card3_data,
