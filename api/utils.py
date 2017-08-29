@@ -7,7 +7,7 @@ from sjsclient import client
 
 from api.helper import JobserverDetails
 from api.user_helper import UserSerializer
-from models import Insight, Dataset, Trainer, Score, Job
+from models import Insight, Dataset, Trainer, Score, Job, Robo
 
 
 def submit_job(slug, class_name, job_config):
@@ -206,3 +206,44 @@ class JobSerializer(serializers.Serializer):
     class Meta:
         model = Job
         exclude = ("id", "created_at")
+
+
+class RoboSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Robo
+        exclude = ("id", "config", "column_data_raw")
+
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name', instance.name)
+        instance.analysis_done = validated_data.get('analysis_done', instance.analysis_done)
+        instance.deleted = validated_data.get('deleted', instance.deleted)
+
+        instance.save()
+        return instance
+
+    def to_representation(self, instance):
+        from api.datasets.serializers import DatasetSerializer
+        ret = super(RoboSerializer, self).to_representation(instance)
+
+        customer_dataset_object = Dataset.objects.get(pk=ret['customer_dataset'])
+        ret['customer_dataset'] = DatasetSerializer(customer_dataset_object).data
+
+        historical_dataset_object = Dataset.objects.get(pk=ret['historical_dataset'])
+        ret['historical_dataset'] = DatasetSerializer(historical_dataset_object).data
+
+        market_dataset_object = Dataset.objects.get(pk=ret['market_dataset'])
+        ret['market_dataset'] = DatasetSerializer(market_dataset_object).data
+
+        if instance.analysis_done is False:
+            if customer_dataset_object.analysis_done and \
+                historical_dataset_object.analysis_done and \
+                    market_dataset_object.analysis_done:
+                instance.analysis_done = True
+                instance.save()
+
+        ret = convert_to_json(ret)
+        ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        ret['analysis_done'] = instance.analysis_done
+        return ret
+
