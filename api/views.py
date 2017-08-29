@@ -19,8 +19,9 @@ from api.utils import \
     ScoreSerlializer, \
     InsightListSerializers, \
     TrainerListSerializer, \
-    ScoreListSerializer
-from models import Insight, Dataset, Job, Trainer, Score
+    ScoreListSerializer, \
+    RoboSerializer
+from models import Insight, Dataset, Job, Trainer, Score, Robo
 
 
 class SignalView(viewsets.ModelViewSet):
@@ -413,3 +414,63 @@ def home(request):
 
     context = {"UI_VERSION":settings.UI_VERSION}
     return render(request, 'home.html', context)
+
+
+class RoboView(viewsets.ModelViewSet):
+    def get_queryset(self):
+        query_set = Robo.objects.filter(
+            created_by=self.request.user,
+            deleted=False
+        )
+        return query_set
+
+    def get_serializer_class(self):
+        return RoboSerializer
+
+    lookup_field = 'slug'
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = ('bookmarked', 'deleted', 'name')
+    pagination_class = CustomPagination
+
+    dataset_name_mapping = {
+        "customer_file": "customer_dataset",
+        "historical_file": "historical_dataset",
+        "market_file": "market_dataset"
+    }
+
+    def create(self, request, *args, **kwargs):
+        # import pdb;pdb.set_trace()
+        data =request.data
+        data = convert_to_string(data)
+        files = request.FILES
+
+        real_data = {
+            'name': 'robo_name',
+            'created_by': request.user.id
+        }
+
+        for file in files:
+            dataset = dict()
+            dataset['input_file'] = files[file]
+            dataset['created_by'] = request.user.id
+            from api.datasets.serializers import DatasetSerializer
+            serializer = DatasetSerializer(data=dataset)
+            if serializer.is_valid():
+                dataset_object = serializer.save()
+                dataset_object.create()
+                real_data[self.dataset_name_mapping[file]] = dataset_object.id
+        serializer = RoboSerializer(data=real_data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors)
+
+    def update(self, request, *args, **kwargs):
+        data = request.data
+        data = convert_to_string(data)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance=instance, data=data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors)
