@@ -80,6 +80,10 @@ class SignalView(viewsets.ModelViewSet):
         page_class = self.pagination_class()
         query_set = self.get_queryset()
 
+        if 'name' in request.query_params:
+            name = request.query_params.get('name')
+            query_set = query_set.filter(name__contains=name)
+
         page = page_class.paginate_queryset(
             queryset=query_set,
             request=request
@@ -143,6 +147,10 @@ class TrainerView(viewsets.ModelViewSet):
                     "data": serializer.data
                 })
         query_set = self.get_queryset()
+
+        if 'name' in request.query_params:
+            name = request.query_params.get('name')
+            query_set = query_set.filter(name__contains=name)
 
         query_set = query_set.filter(app_id=app_id)
         page_class = self.pagination_class()
@@ -212,6 +220,10 @@ class ScoreView(viewsets.ModelViewSet):
                 })
 
         query_set = self.get_queryset()
+
+        if 'name' in request.query_params:
+            name = request.query_params.get('name')
+            query_set = query_set.filter(name__contains=name)
 
         page_class = self.pagination_class()
 
