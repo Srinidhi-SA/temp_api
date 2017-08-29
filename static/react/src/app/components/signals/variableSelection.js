@@ -7,7 +7,7 @@ import {Modal,Button,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "r
 import store from "../../store";
 import {selectedAnalysisList,resetSelectedVariables} from "../../actions/dataActions";
 import {openCreateSignalModal,closeCreateSignalModal,updateCsLoaderValue} from "../../actions/createSignalActions";
-import {createSignal,setPossibleAnalysisList} from "../../actions/signalActions";
+import {createSignal,setPossibleAnalysisList,emptySignalAnalysis} from "../../actions/signalActions";
 import {DataVariableSelection} from "../data/DataVariableSelection";
 import {CreateSignalLoader} from "../common/CreateSignalLoader";
 import {openCsLoaderModal,closeCsLoaderModal} from "../../actions/createSignalActions";
@@ -36,6 +36,7 @@ export class VariableSelection extends React.Component {
     console.log("preview data check");
 	this.signalFlag =true;
 	this.possibleTrend = null;
+	props.dispatch(emptySignalAnalysis());
 	}
 
 
