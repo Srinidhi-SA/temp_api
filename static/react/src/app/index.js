@@ -25,6 +25,7 @@ import {ScoreVariableSelection} from "./components/apps/ScoreVariableSelection";
 import {AppsScoreDetail} from "./components/apps/AppsScoreDetail";
 import {AppsPanel} from "./components/apps/AppsPanel";
 import {AppsScoreList} from "./components/apps/AppsScoreList";
+import {RoboInsightList} from "./components/apps/RoboInsightList";
 
 class App extends React.Component {
 
@@ -61,7 +62,8 @@ class App extends React.Component {
             <Route exact path="/apps/:slug/models" component={Apps} />
             <Route exact path="/apps/:slug/scores" component={Apps} />
             <Route exact path="/apps/:slug/models/data/:slug" component={DataPreview} />
-            				
+            <Route exact path="/apps/:slug/robo" component={RoboInsightList} />
+            					
             </Main>
       </Switch>
       </BrowserRouter>

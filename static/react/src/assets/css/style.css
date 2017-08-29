@@ -15320,3 +15320,7 @@ html{
  height: 3px
 }
 
+.dropzone.rb_insight_upload div {
+    height: inherit !important;
+    padding: 5px;
+}

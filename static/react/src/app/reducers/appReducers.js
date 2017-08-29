@@ -21,6 +21,8 @@ export default function reducer(state = {
 		modelSummaryFlag:false,
 		scoreSummaryFlag:false,
 		modelTargetVariable:"",
+		roboList:{},
+		appsRoboShowModal:false,
 		
 }, action) {
 	console.log("In APPs reducer!!");
@@ -233,6 +235,40 @@ export default function reducer(state = {
 		}
 	}
 	break;
+	case "ROBO_LIST":
+	{
+		return {
+			...state,
+			roboList: action.data,
+			current_page:action.current_page,
+		}
+	}
+	break;
+
+	case "ROBO_LIST_ERROR":
+	{
+		//alert(action.json.non_field_errors);
+		throw new Error("Unable to fetch robo list!!");
+	}
+	break;
+	case "APPS_ROBO_SHOW_POPUP":
+	{
+		return {
+			...state,
+			appsRoboShowModal:true,
+		}
+	}
+	break;
+
+	case "APPS_ROBO_HIDE_POPUP":
+	{
+		return {
+			...state,
+			appsRoboShowModal:false,
+		}
+	}
+	break;
+	
 	
  }
 return state

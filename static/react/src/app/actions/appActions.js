@@ -400,3 +400,50 @@ export function updateScoreSlug(slug){
 	}
 }
 
+export function getAppsRoboList(pageNo) {
+	return (dispatch) => {
+		return fetchRoboList(pageNo,sessionStorage.userToken).then(([response, json]) =>{
+			if(response.status === 200){
+				console.log(json)
+				dispatch(fetchRoboListSuccess(json))
+			}
+			else{
+				dispatch(fetchRoboListError(json))
+			}
+		})
+	}
+}
+
+function fetchRoboList(pageNo,token) {
+	return fetch(API+'/api/trainer/?app_id='+store.getState().apps.currentAppId+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
+		method: 'get',
+		headers: getHeader(token)
+	}).then( response => Promise.all([response, response.json()]));
+}
+
+function fetchRoboListError(json) {
+	return {
+		type: "ROBO_LIST_ERROR",
+		json
+	}
+}
+export function fetchRoboListSuccess(doc){
+	var data = doc;
+	var current_page =  doc.current_page
+	return {
+		type: "ROBO_LIST",
+		data,
+		current_page,
+	}
+}
+export function closeRoboDataPopup() {
+	return {
+		type: "APPS_ROBO_HIDE_POPUP",
+	}
+}
+
+export function openRoboDataPopup() {
+	return {
+		type: "APPS_ROBO_SHOW_POPUP",
+	}
+}

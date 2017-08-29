@@ -1,0 +1,114 @@
+import React from "react";
+import {connect} from "react-redux";
+import {Link, Redirect} from "react-router-dom";
+import {push} from "react-router-redux";
+import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
+import store from "../../store";
+import {openRoboDataPopup,closeRoboDataPopup} from "../../actions/appActions";
+import Dropzone from 'react-dropzone'
+
+@connect((store) => {
+	return {login_response: store.login.login_response, 
+		appsRoboShowModal: store.apps.appsRoboShowModal,
+		};
+})
+
+export class RoboDataUpload extends React.Component {
+	constructor(props) {
+		super(props);
+	}
+	componentWillMount() {
+		//this.props.dispatch(storeSignalMeta(null,this.props.match.url));
+		this.props.dispatch(closeRoboDataPopup());
+	}
+	openRoboDataPopup(){
+    	this.props.dispatch(openRoboDataPopup())
+    }
+    closeRoboDataPopup(){
+    	this.props.dispatch(closeRoboDataPopup())
+    }
+  
+	render() {
+		 console.log("apps robo data Upload is called##########3");
+		    console.log(this.props)
+	
+		return (
+				<div class="col-md-3 top20 list-boxes" onClick={this.openRoboDataPopup.bind(this)}>
+				<div class="newCardStyle firstCard">
+				<div class="card-header"></div>
+				<div class="card-center newStoryCard">
+				<div class="col-xs-12 text-center">UPLOAD DATA</div>
+				</div>
+				</div>
+				
+				<div id="newModel"  role="dialog" className="modal fade modal-colored-header">
+				<Modal show={store.getState().apps.appsRoboShowModal} onHide={this.closeRoboDataPopup.bind(this)} dialogClassName="modal-colored-header">
+				<Modal.Header closeButton>
+				<h3 className="modal-title">Robo Data Upload</h3>
+				</Modal.Header>
+				<Modal.Body>
+				  <div className="form-group">
+				  <div className="row">
+				  <label className="col-md-3">Customer Data </label>
+				  <div className="col-md-9">
+				  <div className="dropzone rb_insight_upload">
+					<Dropzone onDrop={this.onDrop} accept=".csv" onDropRejected={this.popupMsg}>
+					<p>Try dropping some files here, or click to select files to upload.</p>
+					</Dropzone>
+					<aside>
+			          <ul className="list-unstyled bullets_primary">
+			            	<li></li>
+			          </ul>
+			        </aside>
+					</div>
+					</div>
+				  </div>
+				  <div className="clearfix"></div>
+				  
+				  <div className="row">
+				  <label className="col-md-3">Historial Data </label>
+				  <div className="col-md-9">
+				  <div className="dropzone rb_insight_upload">
+					<Dropzone onDrop={this.onDrop} accept=".csv" onDropRejected={this.popupMsg}>
+					<p>Try dropping some files here, or click to select files to upload.</p>
+					</Dropzone>
+					<aside>
+			          <ul className="list-unstyled bullets_primary">
+			            	<li></li>
+			          </ul>
+			        </aside>
+					</div>
+					</div>
+				  </div>
+				  
+				  <div className="row">
+				  <label className="col-md-3">External Data </label>
+				  <div className="col-md-9">
+				  <div className="dropzone rb_insight_upload">
+					<Dropzone onDrop={this.onDrop} accept=".csv" onDropRejected={this.popupMsg}>
+					<p>Try dropping some files here, or click to select files to upload.</p>
+					</Dropzone>
+					<aside>
+			          <ul className="list-unstyled bullets_primary">
+			            	<li></li>
+			          </ul>
+			        </aside>
+					</div>
+					</div>
+				  </div>
+				  
+				</div>
+				</Modal.Body>
+				<Modal.Footer>
+				<Button className="btn btn-primary md-close" onClick={this.closeRoboDataPopup.bind(this)}>Close</Button>
+                <Button bsStyle="primary" >Upload</Button>
+				</Modal.Footer>
+				</Modal>
+				</div>
+				</div>
+
+
+		)
+	}
+
+}	  
