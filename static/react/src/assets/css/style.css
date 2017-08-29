@@ -15315,3 +15315,8 @@ html{
 	padding: 0% 5% !important;
 	
 }
+.loadingBar{
+ backgroundColor:#148071;
+ height: 3px
+}
+
