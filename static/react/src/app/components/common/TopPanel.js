@@ -2,6 +2,7 @@ import React from "react";
 import {Redirect} from 'react-router';
 import ReactDOM from 'react-dom';
 import {sessionObject} from '../../helpers/manageSessionStorage';
+import LoadingBar from 'react-redux-loading-bar'
 // import $ from 'jquery';
 
 // import store from "../../store";
@@ -30,7 +31,9 @@ export default class TopPanel extends React.Component {
 			return(
 		            <div>
 								{/* // Header Menu*/}
+								
 								<nav className="navbar navbar-default navbar-fixed-top" role="navigation">
+								<LoadingBar style={{ backgroundColor: '#148071', height: '3px' }} />
 									{/*/ Brand and toggle get grouped for better mobile display -->*/}
 									<div className="navbar-header">
 										<div className="brand-wrapper">
