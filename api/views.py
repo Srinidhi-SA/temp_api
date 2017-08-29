@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 import json
+import random
 
 from django.conf import settings
 from django.http import JsonResponse
@@ -439,13 +440,13 @@ class RoboView(viewsets.ModelViewSet):
     }
 
     def create(self, request, *args, **kwargs):
-        # import pdb;pdb.set_trace()
+
         data =request.data
         data = convert_to_string(data)
         files = request.FILES
-
+        name = data.get('name', "robo" + "_"+ str(random.randint(1000000,10000000)))
         real_data = {
-            'name': 'robo_name',
+            'name': name,
             'created_by': request.user.id
         }
 
@@ -454,7 +455,6 @@ class RoboView(viewsets.ModelViewSet):
             input_file = files[file]
             dataset['input_file'] = input_file
             dataset['name'] = input_file.name
-            
             dataset['created_by'] = request.user.id
             from api.datasets.serializers import DatasetSerializer
             serializer = DatasetSerializer(data=dataset)
