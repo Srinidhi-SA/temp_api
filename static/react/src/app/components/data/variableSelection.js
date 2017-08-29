@@ -8,6 +8,7 @@ import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
 import store from "../../store";
 
 import {openCreateSignalModal,closeCreateSignalModal} from "../../actions/createSignalActions";
+import {emptySignalAnalysis} from "../../actions/signalActions";
 
 /*var dataSelection= {
      "metaData" : [   {"name": "Rows", "value": 30, "display":true},
@@ -132,6 +133,7 @@ export class VariableSelection extends React.Component {
       radioChecked:""
     };
     console.log("preview data check");
+	props.dispatch(emptySignalAnalysis());
 	}
 
 
