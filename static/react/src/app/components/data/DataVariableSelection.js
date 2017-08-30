@@ -6,7 +6,6 @@ import { Link, Redirect } from "react-router";
 import { Modal, Button, Tab, Row, Col, Nav, NavItem, Popover, OverlayTrigger } from "react-bootstrap";
 import ReactDOM from 'react-dom';
 
-
 import store from "../../store";
 import { C3Chart } from "../c3Chart";
 import $ from "jquery";
