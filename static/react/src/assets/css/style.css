@@ -15393,5 +15393,13 @@ padding: 0px 15px 15px;
   padding-bottom: 2px;
 }
 
+
+
 /* end of chart table pop up css */
 
+
+.m-auto{
+ width: 80%;
+ margin: 0 auto;
+ text-align:center;
+}

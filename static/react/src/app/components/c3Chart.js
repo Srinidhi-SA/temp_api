@@ -23,7 +23,8 @@ export class C3Chart extends React.Component {
 		this.updateChart();
 	}
 	
-	this.classId = "chart"+this.props.classId + " ct col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 xs-mb-20";
+	this.classId = "chart"+this.props.classId + " ct col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-1 xs-mb-20";
+	//col-md-8 col-md-offset-1 col-sm-8 col-sm-offset-1 xs-mb-20";
   }
   
   getChartElement(){
@@ -47,17 +48,21 @@ export class C3Chart extends React.Component {
 		this.updateChart();
 		
 		  if(this.props.classId =='_side'){
-         this.classId = "chart col-md-12";
+            this.classId = "chart";
+		    
+
        }
 
 }
   componentDidMount() {
 	
     this.updateChart();
+	$('.chart-data-icon').css('visibility','hidden');
   }
   
   
   updateChart() {
+	  var that = this;
     let data = this.props.data;
      if(this.props.sideChart){
        data['size']= {
@@ -142,7 +147,9 @@ if(this.props.tooltip){
 	
 	//------------ popup setup------------------------------------------------
 	$('.chart-area').mouseenter(function(){
+		if(that.props.classId != '_side'){
 		 $('.chart-data-icon').css('visibility','visible');
+		}
 	}).mouseleave(function(){
 		 $('.chart-data-icon').css('visibility','hidden');
 	});
@@ -178,19 +185,25 @@ if(this.props.tooltip){
 
 
   render() {
-	  this.updateChart();
+	  var that = this;
+	  $(function(){
+		  that.updateChart();
+	  });
+	  
 	  
      //var classId = "chart"+this.props.classId + " ct col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 xs-mb-20";
 	  
       return(
-<div className="container chart-area">
+<div className="chart-area">
   <div className="row">
   	<div className="chart-data-icon col-md-9 col-md-offset-1">
          <i className="fa fa-cloud-download" aria-hidden="true" onClick={this.showModal.bind(this)}></i>
      </div>
+	 <div className="clearfix"></div>
   </div>
     <div className="row">
 		   <div className={this.classId}></div>
+		   <div className="clearfix"></div>
      </div>
 		   {/* chart data Popup */}
 		   <div id="" className={this.modalCls} role="dialog">

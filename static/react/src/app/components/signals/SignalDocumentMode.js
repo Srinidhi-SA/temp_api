@@ -108,9 +108,11 @@ export class SignalDocumentMode extends React.Component {
                           <button type="button" className="btn btn-default" disabled = "true" title="Document Mode">
                               <i className="pe-7s-news-paper pe-lg"></i>
                             </button>
+					   <Link className="tabs-control right grp_legends_green continue" to="/signals">
                           <button type="button" className="btn btn-default">
                             <i className="pe-7s-close pe-lg"></i>
                           </button>
+						 </Link>
                         </div>
                       </div>
                       <div className="clearfix"></div>

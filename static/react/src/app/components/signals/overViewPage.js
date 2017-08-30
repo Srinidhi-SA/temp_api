@@ -287,9 +287,11 @@ console.log("l1name is ...."+selectedSignal);
                           <i className="pe-7s-news-paper pe-lg"></i>
                         </button>
                         </Link>
+						 <Link className="tabs-control right grp_legends_green continue" to="/signals">
                         <button type="button" className="btn btn-default">
                           <i className="pe-7s-close pe-lg"></i>
                         </button>
+						</Link>
                       </div>
                     </div>
                     <div className="clearfix"></div>

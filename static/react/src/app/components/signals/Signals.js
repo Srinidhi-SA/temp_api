@@ -96,6 +96,11 @@ export class Signals extends React.Component {
     if (data) {
       console.log("under if data condition!!")
       const storyList = data.map((story, i) => {
+		  if(story.type == "dimension"){
+		     var imgLink =  STATIC_URL + "assets/images/d_cardIcon.png"
+		  }else{
+			 var imgLink =  STATIC_URL + "assets/images/m_carIcon.png"
+		  }
         var signalLink = "/signals/" + story.slug;
         return (
 
@@ -112,7 +117,7 @@ export class Signals extends React.Component {
                     </h4>
                   </div>
                   <div className="col-xs-3">
-                    <img src={ STATIC_URL + "assets/images/d_cardIcon.png" } className="img-responsive" alt="LOADING"/>
+                    <img src={imgLink} className="img-responsive" alt="LOADING"/>
                   </div>
                 </div>
               </div>
