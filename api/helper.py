@@ -128,9 +128,14 @@ def decode_and_convert_chart_raw_data(data):
 
     c3_chart_details = dict()
 
+    from api.models import SaveData
+    sd = SaveData()
+    sd.save()
     if chart_type in ["bar", "line", "spline"]:
         chart_data = replace_chart_data(data['data'])
         c3_chart_details['table_c3'] = chart_data
+        sd.set_data(data=chart_data)
+        c3_chart_details['download_url'] = sd.get_url()
         c3 = C3Chart(
             data=chart_data,
             chart_type=chart_type,
@@ -172,7 +177,8 @@ def decode_and_convert_chart_raw_data(data):
 
         chart_data = replace_chart_data(data['data'])
         c3_chart_details['table_c3'] = chart_data
-
+        sd.set_data(data=chart_data)
+        c3_chart_details['download_url'] = sd.get_url()
         c3 = C3Chart(
             data=chart_data,
             chart_type=chart_type,
@@ -223,7 +229,8 @@ def decode_and_convert_chart_raw_data(data):
         data_c3 = data['data']
         chart_data, xs = replace_chart_data(data_c3, data['axes'])
         c3_chart_details['table_c3'] = chart_data
-
+        sd.set_data(data=chart_data)
+        c3_chart_details['download_url'] = sd.get_url()
         c3 = ScatterChart(
             data=chart_data,
             data_type='columns'
@@ -269,6 +276,8 @@ def decode_and_convert_chart_raw_data(data):
         chart_data, xs = replace_chart_data(data_c3, data['axes'])
 
         c3_chart_details['table_c3'] =  chart_data
+        sd.set_data(data=chart_data)
+        c3_chart_details['download_url'] = sd.get_url()
         c3 = ScatterChart(
             data=chart_data,
             data_type='columns'
@@ -313,7 +322,8 @@ def decode_and_convert_chart_raw_data(data):
         data_c3 = data['data']
         card3_data, xs = convert_column_data_with_array_of_category_into_column_data_stright_xy(data_c3, 3)
         c3_chart_details['table_c3'] = data_c3
-
+        sd.set_data(data=data_c3)
+        c3_chart_details['download_url'] = sd.get_url()
         c3 = ScatterChart(
             data=card3_data,
             data_type='columns'

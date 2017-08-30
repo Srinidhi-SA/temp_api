@@ -22,7 +22,7 @@ from api.utils import \
     TrainerListSerializer, \
     ScoreListSerializer, \
     RoboSerializer
-from models import Insight, Dataset, Job, Trainer, Score, Robo
+from models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData
 
 
 class SignalView(viewsets.ModelViewSet):
@@ -477,3 +477,23 @@ class RoboView(viewsets.ModelViewSet):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors)
+
+
+@csrf_exempt
+def get_chart_or_small_data(request, slug=None):
+
+    data_object = SaveData.objects.get(slug=slug)
+    if data_object is None:
+        return Response({'Message': 'Failed'})
+
+    csv_data = data_object.get_data()
+    csv_data = map(list, zip(*csv_data))
+    from django.http import HttpResponse
+    import csv
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="{0}.csv"'.format(slug)
+    writer = csv.writer(response)
+    for row in csv_data:
+        writer.writerow(row)
+
+    return response
