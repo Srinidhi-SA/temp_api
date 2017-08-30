@@ -15324,3 +15324,13 @@ html{
     height: inherit !important;
     padding: 5px;
 }
+.customInput{
+	border-color: #ccc;
+    border-width: 2px;
+    border-radius: 5px;
+    padding: 5px;
+    width: 376px;
+    height: 41px;
+    margin-bottom: 10px;
+}
+    

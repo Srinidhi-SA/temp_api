@@ -2,9 +2,10 @@ import React from "react";
 import {connect} from "react-redux";
 import {Link, Redirect} from "react-router-dom";
 import {push} from "react-router-redux";
+import Dialog from 'react-bootstrap-dialog'
 import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
 import store from "../../store";
-import {openRoboDataPopup,closeRoboDataPopup,saveFilesToStore,uploadFiles} from "../../actions/appActions";
+import {openRoboDataPopup,closeRoboDataPopup,saveFilesToStore,uploadFiles,clearRoboDataUploadFiles} from "../../actions/appActions";
 import Dropzone from 'react-dropzone'
 import {CUSTOMERDATA,HISTORIALDATA,EXTERNALDATA} from "../../helpers/helper"
 
@@ -26,6 +27,7 @@ export class RoboDataUpload extends React.Component {
 		this.props.dispatch(closeRoboDataPopup());
 	}
 	openRoboDataPopup(){
+		this.props.dispatch(clearRoboDataUploadFiles())
     	this.props.dispatch(openRoboDataPopup())
     }
     closeRoboDataPopup(){
@@ -47,7 +49,7 @@ export class RoboDataUpload extends React.Component {
 		alert("Only CSV files are allowed to upload")
 	}
 	uploadFiles(){
-		this.props.dispatch(uploadFiles());
+		this.props.dispatch(uploadFiles(this.refs.dialog,$("#roboInsightName").val()));
 	}
 	render() {
 		 console.log("apps robo data Upload is called##########3");
@@ -70,6 +72,14 @@ export class RoboDataUpload extends React.Component {
 				</Modal.Header>
 				<Modal.Body>
 				  <div className="form-group">
+				  <div className="row">
+				  <label className="col-md-3">Name</label>
+				  <div className="col-md-9">
+				  <input id="roboInsightName" type="text"  placeholder="Enter Insight Name" className="form-control customInput" />
+					</div>
+				  </div>
+				  <div className="clearfix"></div>
+				  
 				  <div className="row">
 				  <label className="col-md-3">Customer Data</label>
 				  <div className="col-md-9">
@@ -127,6 +137,7 @@ export class RoboDataUpload extends React.Component {
 				</Modal.Footer>
 				</Modal>
 				</div>
+				<Dialog ref="dialog" />
 				</div>
 
 

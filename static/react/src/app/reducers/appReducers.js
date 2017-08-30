@@ -342,6 +342,18 @@ export default function reducer(state = {
 		throw new Error("Unable to fetch robo summary!!");
 	}
 	break;
+	case "EMPTY_ROBO_DATA_UPLOAD_FILES":
+	{
+		return {
+			...state,
+			historialDataUpload:{},
+			customerDataUpload:{},
+			externalDataUpload:{},
+			
+		}
+	}
+	break;
+	
  }
 return state
 }

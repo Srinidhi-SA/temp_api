@@ -1,5 +1,5 @@
 import {API} from "../helpers/env";
-import {PERPAGE} from "../helpers/helper";
+import {PERPAGE,isEmpty} from "../helpers/helper";
 import store from "../store";
 import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,CUSTOMERDATA,HISTORIALDATA,EXTERNALDATA} from "../helpers/helper";
 import {hideDataPreview,getDataSetPreview} from "./dataActions";
@@ -473,9 +473,9 @@ export function saveFilesToStore(files,uploadData) {
 }
 
 
-export function uploadFiles() {
-
-	  return (dispatch) => {
+export function uploadFiles(dialog) {
+if(!isEmpty(store.getState().apps.customerDataUpload) && !isEmpty(store.getState().apps.historialDataUpload) && !isEmpty(store.getState().apps.externalDataUpload)){
+	return (dispatch) => {
 		  dispatch(closeRoboDataPopup());
 		  dispatch(openAppsLoader(DULOADERPERVALUE,"Please wait while mAdvisor is processing data... "));
 			return triggerDataUpload(sessionStorage.userToken).then(([response, json]) =>{
@@ -489,6 +489,10 @@ export function uploadFiles() {
 				}
 			})
 		}
+}else{
+	dialog.showAlert("Please select Customer Data,Historial Data and External Data.");
+}
+	  
 }
 
 function triggerDataUpload(token) {
@@ -572,5 +576,9 @@ export function showRoboDataUploadPreview(flag){
 		flag,
 	}
 }
-
+export function clearRoboDataUploadFiles() {
+	return {
+		type: "EMPTY_ROBO_DATA_UPLOAD_FILES",
+	}
+}
 
