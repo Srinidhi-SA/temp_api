@@ -10,6 +10,7 @@ import {getAppsRoboList} from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {STATIC_URL} from "../../helpers/env.js";
 import {RoboDataUpload} from "./RoboDataUpload";
+import {AppsLoader} from "../common/AppsLoader";
 
 var dateFormat = require('dateformat');
 
@@ -18,6 +19,10 @@ var dateFormat = require('dateformat');
 	return {login_response: store.login.login_response, 
 		roboList: store.apps.roboList,
 		currentAppId:store.apps.currentAppId,
+		showRoboDataUploadPreview:store.apps.showRoboDataUploadPreview,
+		roboDatasetSlug:store.apps.roboDatasetSlug,
+		roboSummary:store.apps.roboSummary,
+		dataPreviewFlag:store.datasets.dataPreviewFlag,
 		};
 })
 
@@ -38,7 +43,11 @@ export class RoboInsightList extends React.Component {
   render() {
     console.log("apps robo list is called##########3");
     console.log(this.props);
-    
+    if(store.getState().datasets.dataPreviewFlag){
+		let _link = "/apps/"+store.getState().apps.currentAppId+"/robo/dataPreview"
+		return(<Redirect to={_link}/>);
+	}
+
     const roboList = store.getState().apps.roboList.data;
 	if (roboList) {
 		const pages = store.getState().apps.roboList.total_number_of_pages;
@@ -116,6 +125,7 @@ export class RoboInsightList extends React.Component {
 				</div>
 				</div>
 				</div>
+				<AppsLoader/>
 				</div>
 				
 		);

@@ -4,12 +4,16 @@ import {Link, Redirect} from "react-router-dom";
 import {push} from "react-router-redux";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
 import store from "../../store";
-import {openRoboDataPopup,closeRoboDataPopup} from "../../actions/appActions";
+import {openRoboDataPopup,closeRoboDataPopup,saveFilesToStore,uploadFiles} from "../../actions/appActions";
 import Dropzone from 'react-dropzone'
+import {CUSTOMERDATA,HISTORIALDATA,EXTERNALDATA} from "../../helpers/helper"
 
 @connect((store) => {
 	return {login_response: store.login.login_response, 
 		appsRoboShowModal: store.apps.appsRoboShowModal,
+		customerDataUpload:store.apps.customerDataUpload,
+		historialDataUpload:store.apps.historialDataUpload,
+		externalDataUpload:store.apps.externalDataUpload,
 		};
 })
 
@@ -27,10 +31,28 @@ export class RoboDataUpload extends React.Component {
     closeRoboDataPopup(){
     	this.props.dispatch(closeRoboDataPopup())
     }
-  
+    onDropCustomerData(files) {
+		console.log(files);
+		this.props.dispatch(saveFilesToStore(files,CUSTOMERDATA))
+	}
+    onDropHistorialData(files) {
+		console.log(files);
+		this.props.dispatch(saveFilesToStore(files,HISTORIALDATA))
+	}
+    onDropExternalData(files) {
+		console.log(files);
+		this.props.dispatch(saveFilesToStore(files,EXTERNALDATA))
+	}
+	popupMsg(){
+		alert("Only CSV files are allowed to upload")
+	}
+	uploadFiles(){
+		this.props.dispatch(uploadFiles());
+	}
 	render() {
 		 console.log("apps robo data Upload is called##########3");
-		    console.log(this.props)
+		  var fileName = store.getState().apps.customerDataUpload.name;
+	        var fileSize = store.getState().apps.customerDataUpload.size;
 	
 		return (
 				<div class="col-md-3 top20 list-boxes" onClick={this.openRoboDataPopup.bind(this)}>
@@ -49,15 +71,15 @@ export class RoboDataUpload extends React.Component {
 				<Modal.Body>
 				  <div className="form-group">
 				  <div className="row">
-				  <label className="col-md-3">Customer Data </label>
+				  <label className="col-md-3">Customer Data</label>
 				  <div className="col-md-9">
 				  <div className="dropzone rb_insight_upload">
-					<Dropzone onDrop={this.onDrop} accept=".csv" onDropRejected={this.popupMsg}>
+					<Dropzone onDrop={this.onDropCustomerData.bind(this)} accept=".csv" onDropRejected={this.popupMsg}>
 					<p>Try dropping some files here, or click to select files to upload.</p>
 					</Dropzone>
 					<aside>
-			          <ul className="list-unstyled bullets_primary">
-			            	<li></li>
+			          <ul className="list-unstyled">
+			            	<li>{fileName} - {fileSize}</li>
 			          </ul>
 			        </aside>
 					</div>
@@ -69,12 +91,12 @@ export class RoboDataUpload extends React.Component {
 				  <label className="col-md-3">Historial Data </label>
 				  <div className="col-md-9">
 				  <div className="dropzone rb_insight_upload">
-					<Dropzone onDrop={this.onDrop} accept=".csv" onDropRejected={this.popupMsg}>
+					<Dropzone onDrop={this.onDropHistorialData.bind(this)} accept=".csv" onDropRejected={this.popupMsg}>
 					<p>Try dropping some files here, or click to select files to upload.</p>
 					</Dropzone>
 					<aside>
-			          <ul className="list-unstyled bullets_primary">
-			            	<li></li>
+			          <ul className="list-unstyled">
+			            	<li>{store.getState().apps.historialDataUpload.name} - { store.getState().apps.historialDataUpload.size}</li>
 			          </ul>
 			        </aside>
 					</div>
@@ -85,12 +107,12 @@ export class RoboDataUpload extends React.Component {
 				  <label className="col-md-3">External Data </label>
 				  <div className="col-md-9">
 				  <div className="dropzone rb_insight_upload">
-					<Dropzone onDrop={this.onDrop} accept=".csv" onDropRejected={this.popupMsg}>
+					<Dropzone onDrop={this.onDropExternalData.bind(this)} accept=".csv" onDropRejected={this.popupMsg}>
 					<p>Try dropping some files here, or click to select files to upload.</p>
 					</Dropzone>
 					<aside>
-			          <ul className="list-unstyled bullets_primary">
-			            	<li></li>
+			          <ul className="list-unstyled">
+			            	<li>{store.getState().apps.externalDataUpload.name} - { store.getState().apps.externalDataUpload.size}</li>
 			          </ul>
 			        </aside>
 					</div>
@@ -101,7 +123,7 @@ export class RoboDataUpload extends React.Component {
 				</Modal.Body>
 				<Modal.Footer>
 				<Button className="btn btn-primary md-close" onClick={this.closeRoboDataPopup.bind(this)}>Close</Button>
-                <Button bsStyle="primary" >Upload</Button>
+                <Button bsStyle="primary" onClick={this.uploadFiles.bind(this)}>Upload</Button>
 				</Modal.Footer>
 				</Modal>
 				</div>

@@ -23,6 +23,15 @@ export default function reducer(state = {
 		modelTargetVariable:"",
 		roboList:{},
 		appsRoboShowModal:false,
+		customerDataUpload:{},
+		historialDataUpload:{},
+		externalDataUpload:{},
+		roboDatasetSlug:"",
+		roboSummary:{},
+		showRoboDataUploadPreview:false,
+		customerDataset_slug :"",
+		historialDataset_slug:"",
+		externalDataset_slug:"",
 		
 }, action) {
 	console.log("In APPs reducer!!");
@@ -268,8 +277,71 @@ export default function reducer(state = {
 		}
 	}
 	break;
+	case "CUSTOMER_DATA_UPLOAD_FILE":
+	{
+		return {
+			...state,
+			customerDataUpload:action.files[0],
+		}
+	}
+	break;
+	case "HISTORIAL_DATA_UPLOAD_FILE":
+	{
+		return {
+			...state,
+			historialDataUpload:action.files[0],
+		}
+	}
+	break;
 	
+	case "EXTERNAL_DATA_UPLOAD_FILE":
+	{
+		return {
+			...state,
+			externalDataUpload:action.files[0],
+		}
+	}
+	break;
+	case "ROBO_DATA_UPLOAD_SUCCESS":
+	{
+		return {
+			...state,
+			roboDatasetSlug:action.slug,
+		}
+	}
+	break;
 	
+	case "ROBO_DATA_UPLOAD_ERROR":
+	{
+		//alert(action.json.non_field_errors);
+		throw new Error("Unable to upload robo data files!!");
+	}
+	break;
+	case "ROBO_SUMMARY_SUCCESS":
+	{
+		return {
+			...state,
+			roboSummary: action.data,
+			customerDataset_slug:action.data.customer_dataset.slug,
+			historialDataset_slug:action.data.historical_dataset.slug,
+			externalDataset_slug:action.data.market_dataset.slug,
+		}
+	}
+	break;
+	case "ROBO_DATA_UPLOAD_PREVIEW":
+	{
+		return {
+			...state,
+			showRoboDataUploadPreview: action.flag,
+		}
+	}
+	break;
+	case "ROBO_SUMMARY_ERROR":
+	{
+		//alert(action.json.non_field_errors);
+		throw new Error("Unable to fetch robo summary!!");
+	}
+	break;
  }
 return state
 }

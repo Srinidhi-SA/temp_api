@@ -1,9 +1,9 @@
 import {API} from "../helpers/env";
 import {PERPAGE} from "../helpers/helper";
 import store from "../store";
-import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL} from "../helpers/helper";
-import {hideDataPreview} from "./dataActions";
-
+import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,CUSTOMERDATA,HISTORIALDATA,EXTERNALDATA} from "../helpers/helper";
+import {hideDataPreview,getDataSetPreview} from "./dataActions";
+import {getHeaderWithoutContent} from "./dataUploadActions";
 export var appsInterval = null;
 
 function getHeader(token){
@@ -415,7 +415,7 @@ export function getAppsRoboList(pageNo) {
 }
 
 function fetchRoboList(pageNo,token) {
-	return fetch(API+'/api/trainer/?app_id='+store.getState().apps.currentAppId+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
+	return fetch(API+'/api/robo/?page_number='+pageNo+'&page_size='+PERPAGE+'',{
 		method: 'get',
 		headers: getHeader(token)
 	}).then( response => Promise.all([response, response.json()]));
@@ -447,3 +447,130 @@ export function openRoboDataPopup() {
 		type: "APPS_ROBO_SHOW_POPUP",
 	}
 }
+
+export function saveFilesToStore(files,uploadData) {
+	console.log(files)
+	var file = files[0]
+	if(uploadData == CUSTOMERDATA){
+		return {
+			type: "CUSTOMER_DATA_UPLOAD_FILE",
+			files
+		}
+	}
+	else if(uploadData == HISTORIALDATA){
+		return {
+			type: "HISTORIAL_DATA_UPLOAD_FILE",
+			files
+		}
+	}
+	else if(uploadData == EXTERNALDATA){
+		return {
+			type: "EXTERNAL_DATA_UPLOAD_FILE",
+			files
+		}
+	}
+	
+}
+
+
+export function uploadFiles() {
+
+	  return (dispatch) => {
+		  dispatch(closeRoboDataPopup());
+		  dispatch(openAppsLoader(DULOADERPERVALUE,"Please wait while mAdvisor is processing data... "));
+			return triggerDataUpload(sessionStorage.userToken).then(([response, json]) =>{
+				if(response.status === 200){
+					
+					dispatch(dataUploadFilesSuccess(json,dispatch))
+				}
+				else{
+					dispatch(dataUploadFilesError(json));
+					dispatch(closeAppsLoaderValue())
+				}
+			})
+		}
+}
+
+function triggerDataUpload(token) {
+		var data = new FormData();
+		data.append("customer_file",store.getState().apps.customerDataUpload);
+		data.append("historical_file",store.getState().apps.historialDataUpload);
+		data.append("market_file",store.getState().apps.externalDataUpload);
+		return fetch(API+'/api/robo/',{
+			method: 'post',
+			headers: getHeaderWithoutContent(token),
+			body:data,
+		}).then( response => Promise.all([response, response.json()]));	
+}
+
+function dataUploadFilesSuccess(data,dispatch) {
+	var slug = data.slug;
+	appsInterval = setInterval(function(){
+			if(store.getState().apps.appsLoaderPerValue < LOADERMAXPERVALUE){
+				dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE));
+			}
+			dispatch(getRoboDataset(data.slug));
+	},APPSDEFAULTINTERVAL);
+	return {
+		type: "ROBO_DATA_UPLOAD_SUCCESS",
+		slug,	
+	}
+}
+
+export function dataUploadFilesError(josn){
+	return {
+		type: "ROBO_DATA_UPLOAD_ERROR",
+		json
+	}
+}
+
+export function getRoboDataset(slug) {
+	return (dispatch) => {
+		return fetchRoboDataset(sessionStorage.userToken,slug).then(([response, json]) =>{
+			if(response.status === 200){
+				if(json.analysis_done){
+					clearInterval(appsInterval);
+					dispatch(fetchRoboSummarySuccess(json));
+					dispatch(closeAppsLoaderValue());
+					dispatch(getDataSetPreview(store.getState().apps.customerDataset_slug))
+					dispatch(showRoboDataUploadPreview(true));
+					dispatch(hideDataPreview());
+				}
+			}
+			else{
+				dispatch(closeAppsLoaderValue());
+				dispatch(showRoboDataUploadPreview(false));
+				dispatch(fetchModelSummaryError(json));
+			}
+		})
+	}
+}
+
+function fetchRoboDataset(token,slug) {
+	return fetch(API+'/api/robo/'+slug+'/',{
+		method: 'get',
+		headers: getHeader(token)
+	}).then( response => Promise.all([response, response.json()]));
+}
+
+function fetchRoboSummaryError(json) {
+	return {
+		type: "ROBO_SUMMARY_ERROR",
+		json
+	}
+}
+export function fetchRoboSummarySuccess(doc){
+	var data = doc;
+	return {
+		type: "ROBO_SUMMARY_SUCCESS",
+		data,
+	}
+}
+export function showRoboDataUploadPreview(flag){
+	return {
+		type: "ROBO_DATA_UPLOAD_PREVIEW",
+		flag,
+	}
+}
+
+
