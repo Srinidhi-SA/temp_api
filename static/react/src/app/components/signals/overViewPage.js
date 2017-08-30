@@ -11,7 +11,7 @@ import {
   getLastCardOfTree
 } from "../../helpers/processStory";
 import {connect} from "react-redux";
-import {isEmpty} from "../../helpers/helper";
+import {isEmpty,subTreeSetting} from "../../helpers/helper";
 import {MainHeader} from "../../components/common/MainHeader";
 import {Card} from "./Card";
 import store from "../../store";
@@ -20,7 +20,7 @@ import store from "../../store";
 
 
 //import {SignalAnalysisPage} from "./signals/SignalAnalysisPage";
-let showSubTree=false;
+//let showSubTree=false;
 
 
 @connect((store) => {
@@ -31,15 +31,21 @@ export class OverViewPage extends React.Component {
   constructor() {
     super();
 	this.nextRedirect = null;
+	this.showSubTree=false;
   }
+  
+  componentWillReceiveProps(nextProps) {
+     
+}
 
   componentDidMount(){
     // alert(showSubTree);
+	
     var that = this;
     // alert(showSubTree);
-    if(showSubTree){
+    if(this.showSubTree){
        $(".sb_navigation").show();
-       showSubTree = false;
+       this.showSubTree = false;
        $(".sb_navigation #myTab i.mAd_icons.ic_perf ~ span").each(function(){
         console.log($(this).html() +" == "+ that.props.match.params.l2);
         if($(this).attr('id') == that.props.match.params.l2){
@@ -112,25 +118,13 @@ render() {
 
     console.log("overviewPage is called!!");
     console.log(this.props);
+	
 	 var that = this;
-	    if(showSubTree){
-       $(".sb_navigation #myTab i.mAd_icons.ic_perf ~ span").each(function(){
-        console.log($(this).html() +" == "+ that.props.match.params.l2);
-        if($(this).attr('id') == that.props.match.params.l2){
-          $(this).parent().addClass('active');
-        }else{
-          $(this).parent().removeClass('active');
-        }
-       });
-     }
 	 
-	   if($(".list-group").children()){
-		 if($(".list-group").children().length == 1){
-	    $('.row-offcanvas-left').addClass('active');
-		$('.sdbar_switch i').removeClass('sw_on');
-		$('.sdbar_switch i').addClass('sw_off');
-		   }
-    }
+	  let urlSplit = this.props.location.pathname.split("/");
+	  console.log(urlSplit);
+	  
+	  subTreeSetting(urlSplit.length,6,that.props.match.params.l2); // setting of subtree and active classes
     
 	 
     let selectedSignal = this.props.signal.name;
@@ -198,7 +192,7 @@ render() {
         });
         console.log("varList is .....");
         console.log(varList);
-        showSubTree = true;
+        that.showSubTree = true;
       }
     }
 	
@@ -317,7 +311,7 @@ console.log("l1name is ...."+selectedSignal);
                                 <i className="glyphicon glyphicon-chevron-right"></i>
                               </div>
                               <div className="wrapper">
-                                <ul className="nav nav-tabs list" id="myTab">
+                                <ul className="nav nav-tabs list" id="subTab">
                                   {varList}
                                 </ul>
                               </div>

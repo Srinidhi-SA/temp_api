@@ -2,7 +2,7 @@ import React from "react";
 import {connect} from "react-redux";
 import {c3Functions} from "../helpers/c3.functions";
 import { Scrollbars } from 'react-custom-scrollbars';
-
+import {API} from "../helpers/env";
 
 
 //var data= {}, toolData = [], toolLegend=[], chartDiv =null;
@@ -16,6 +16,7 @@ export class C3Chart extends React.Component {
 	//this.toolData = [];
 	//this.toolLegend =[];
 	//this.chartDiv = null;
+	this.tableDownload = "";
 	this.modalCls = "modal fade chart-modal"+props.classId;
 	 this.tableCls = "table-responsive table-area table"+props.classId;
 	if($(".chart"+props.classId).html()){
@@ -70,6 +71,11 @@ export class C3Chart extends React.Component {
 		}else{
 			data.axis.y.tick.format = d3.format('');
 		}
+		
+	if(this.props.tabledownload){
+		this.tableDownload = API + this.props.tabledownload;
+		
+	}
 	
    /* if(this.props.yformat=='m'){
       //console.log(this.props.yformat);
@@ -211,9 +217,9 @@ if(this.props.tooltip){
 			</div>
 		   </div> 
 
-		   {/*<div className="chart-data-download">
-			  <a href="" id="cddownload" className="btn btn-primary" download >Download Chart Data</a>
-		   </div>*/}
+		   <div className="chart-data-download">
+			  <a href={this.tableDownload} id="cddownload" className="btn btn-primary" download >Download Chart Data</a>
+		   </div>
 
 
 

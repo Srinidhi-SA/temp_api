@@ -78,7 +78,7 @@ export class Card extends React.Component {
         console.log("checking chart data:::::");
           if(!$.isEmptyObject(story.data)){
 			  
-           return (<div key={i}><C3Chart classId={i} data={story.data.chart_c3} yformat={story.data.yformat} y2format={story.data.y2format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3}/><div className="clearfix"/></div>);
+           return (<div key={i}><C3Chart classId={i} data={story.data.chart_c3} yformat={story.data.yformat} y2format={story.data.y2format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} /><div className="clearfix"/></div>);
            }
           break;
           case "tree":
