@@ -357,6 +357,7 @@ if(datetime.length>0){
   <div className="panel-body">
 
   <div className="row">
+   <label className="col-lg-2" for="signalVariableList">I want to analyze</label>
   <div className="col-lg-4">
       <div className="htmlForm-group">
         <select className="htmlForm-control" id="selectAnalyse">
@@ -569,7 +570,7 @@ if(datetime.length>0){
           <div className="ma-checkbox inline"><input id="chk_results" type="checkbox" className="needsclick"><label htmlFor="chk_results">Statistically Significant Results</label></div>
           </div>
           <div className="pull-right">
-          <a href="javascript:;" className="pull-right">Go to advanced settings</a>
+          <a href="javascript:;" className="pull-right">Advanced Settings</a>
           </div>
         </div>
       </div>
