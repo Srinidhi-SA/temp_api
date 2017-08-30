@@ -8,12 +8,13 @@ import store from "../../store";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {MainHeader} from "../common/MainHeader";
 import {BreadCrumb} from "../common/BreadCrumb";
-import {getDataList,getDataSetPreview,storeSignalMeta} from "../../actions/dataActions";
+import {getDataList,getDataSetPreview,storeSignalMeta,handleDelete} from "../../actions/dataActions";
 import {fetchProductList,openDULoaderPopup,closeDULoaderPopup} from "../../actions/dataActions";
 import {DataUpload} from "./DataUpload";
 import {open,close} from "../../actions/dataUploadActions";
 import {STATIC_URL} from "../../helpers/env.js"
 import {DataUploadLoader} from "../common/DataUploadLoader";
+import Dialog from 'react-bootstrap-dialog'
 
 var dateFormat = require('dateformat');
 
@@ -35,8 +36,9 @@ export class Data extends React.Component {
 	}
 	componentWillMount() {
 		var pageNo = 1;
+		this.props.dispatch(storeSignalMeta(null,this.props.match.url));
 		if(this.props.history.location.pathname.indexOf("page") != -1){
-			pageNo = this.props.history.location.pathname.split("page/")[1];
+			pageNo = this.props.history.location.pathname.split("page=")[1];
 			this.props.dispatch(getDataList(pageNo));
 		}else
 			this.props.dispatch(getDataList(pageNo));
@@ -55,7 +57,12 @@ export class Data extends React.Component {
 	  closeModelPopup(){
 	  	this.props.dispatch(closeDULoaderPopup())
 	  }
-	  
+	  handleDelete(slug){
+		 this.props.dispatch(handleDelete(slug,this.refs.dialog));
+	  }
+	  handleRename(slug){
+		  this.props.dispatch(handleRename(slug,this.refs.dialog));
+	  }
 	render() {
 		console.log("data is called");
 		console.log(this.props);
@@ -102,7 +109,7 @@ export class Data extends React.Component {
 
 						<div className="card-deatils">
 						{/*<!-- Popover Content link -->*/}
-						 <OverlayTrigger trigger={['hover', 'focus']} placement="left" overlay={<Popover id="popover-trigger-focus"><DetailOverlay details={data}/></Popover>}><a href="#"  className="pover">
+						 <OverlayTrigger trigger="click" rootClose  placement="left" overlay={<Popover id="popover-trigger-focus"><DetailOverlay details={data}/></Popover>}><a href="#"  className="pover">
 							<i className="ci pe-7s-info pe-2x"></i>
 							</a></OverlayTrigger>
 
@@ -111,11 +118,11 @@ export class Data extends React.Component {
 						<i className="ci pe-7s-more pe-rotate-90 pe-2x"></i>
 						</a>
 						<ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-						<li>
+						<li onClick={this.handleRename.bind(this,data.slug)}>
 						<a className="dropdown-item" href="#renameCard" data-toggle="modal">
 						<i className="fa fa-edit"></i> Rename</a>
 						</li>
-						<li>
+						<li onClick={this.handleDelete.bind(this,data.slug)}>
 						<a className="dropdown-item" href="#deleteCard" data-toggle="modal">
 						<i className="fa fa-trash-o"></i> Delete</a>
 						</li>
@@ -154,7 +161,7 @@ export class Data extends React.Component {
 			return (
 					<div className="side-body">
 					<div className="main-content">
-					<div class="row">
+					<div className="row">
 					{addButton}
 					{dataSetList}
 					<div className="clearfix"></div>
@@ -164,7 +171,8 @@ export class Data extends React.Component {
 					{paginationTag}
 					</div>
 				 </div>
-			<DataUploadLoader />	  
+			     <DataUploadLoader />	
+			     <Dialog ref="dialog" />
 					</div>
 					</div>
 			);
@@ -178,7 +186,7 @@ export class Data extends React.Component {
 	}
 
 	handleSelect(eventKey) {
-		this.props.history.push('/data/page/'+eventKey+'')
+		this.props.history.push('/data?page='+eventKey+'')
 		this.props.dispatch(getDataList(eventKey));
 	}
 }

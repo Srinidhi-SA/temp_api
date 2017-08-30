@@ -13,6 +13,15 @@ export default function reducer(state = {
 		selectedAlg:"",
 		scoreSummary:{},
 		scoreSlug:"",
+		currentAppId:1,
+		currentAppName:"",
+		appsLoaderModal:false,
+		appsLoaderPerValue:0,
+		appsLoaderText :"",
+		modelSummaryFlag:false,
+		scoreSummaryFlag:false,
+		modelTargetVariable:"",
+		
 }, action) {
 	console.log("In APPs reducer!!");
 	console.log(action.data);
@@ -102,6 +111,7 @@ export default function reducer(state = {
 			modelSummary: action.data,
 			algorithmsList:action.data.data.model_dropdown,
 			modelSlug:action.data.slug,
+			modelTargetVariable:action.data.data.config.target_variable[0],
 		}
 	}
 	break;
@@ -136,6 +146,91 @@ export default function reducer(state = {
 	{
 		//alert(action.json.non_field_errors);
 		throw new Error("Unable to fetch score summary!!");
+	}
+	break;
+	case "SELECTED_APP_DETAILS":
+	{
+	
+		return {
+			...state,
+			currentAppId: action.appId,
+			currentAppName:action.appName,
+		}
+	}
+	break;
+	case "OPEN_APPS_LOADER_MODAL":
+	{
+	
+		return {
+			...state,
+			appsLoaderModal:true,
+			appsLoaderPerValue:action.value,
+			appsLoaderText :action.text,
+		}
+	}
+	break;
+	case "HIDE_APPS_LOADER_MODAL":
+	{
+	
+		return {
+			...state,
+			appsLoaderModal:false,
+			appsLoaderPerValue:0,
+			appsLoaderText :"",
+		}
+	}
+	break;
+	case "UPDATE_APPS_LOADER_VALUE":
+	{
+	
+		return {
+			...state,
+			appsLoaderPerValue:action.value,
+		}
+	}
+	break;
+	case "CREATE_MODEL_SUCCESS":
+	{
+		return {
+			...state,
+			modelSlug:action.slug,
+		}
+	}
+	break;
+	case "CREATE_MODEL_ERROR":
+	{
+		//alert(action.json.non_field_errors);
+		throw new Error("Unable to create model!");
+	}
+	break;
+	case "UPDATE_MODEL_FLAG":
+	{
+		return {
+			...state,
+			modelSummaryFlag:action.flag,
+		}
+	}
+	break;
+	case "CREATE_SCORE_SUCCESS":
+	{
+		return {
+			...state,
+			scoreSlug:action.slug,
+		}
+	}
+	break;
+	case "CREATE_SCORE_ERROR":
+	{
+		//alert(action.json.non_field_errors);
+		throw new Error("Unable to create score!");
+	}
+	break;
+	case "UPDATE_SCORE_FLAG":
+	{
+		return {
+			...state,
+			scoreSummaryFlag:action.flag,
+		}
 	}
 	break;
 	

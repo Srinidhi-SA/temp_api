@@ -7,7 +7,7 @@ import {push} from "react-router-redux";
 import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstrap";
 import {AppsCreateScore} from "./AppsCreateScore";
-import {getAppsScoreList,getAppsScoreSummary} from "../../actions/appActions";
+import {getAppsScoreList,getAppsScoreSummary,updateScoreSlug} from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {STATIC_URL} from "../../helpers/env.js"
 
@@ -17,6 +17,8 @@ var dateFormat = require('dateformat');
 @connect((store) => {
 	return {login_response: store.login.login_response, 
 		scoreList: store.apps.scoreList,
+		scoreSlug:store.apps.scoreSlug,
+		currentAppId:store.apps.currentAppId,
 	};
 })
 
@@ -29,13 +31,13 @@ export class AppsScoreList extends React.Component {
 		console.log(this.props.history)
 		var pageNo = 1;
 		if(this.props.history.location.pathname.indexOf("page") != -1){
-			pageNo = this.props.history.location.pathname.split("page/")[1];
+			pageNo = this.props.history.location.pathname.split("page=")[1];
 			this.props.dispatch(getAppsScoreList(pageNo));
 		}else
 			this.props.dispatch(getAppsScoreList(pageNo));
 	}
 	getScoreSummary(slug){
-		this.props.dispatch(getAppsScoreSummary(slug))
+		this.props.dispatch(updateScoreSlug(slug))
 	}
 	render() {
 		console.log("apps score list is called##########3");
@@ -43,16 +45,12 @@ export class AppsScoreList extends React.Component {
 		if (scoreList) {
 			const pages = store.getState().apps.scoreList.total_number_of_pages;
 			const current_page = store.getState().apps.score_current_page;
-			let addButton = null;
 			let paginationTag = null
-			if(current_page == 1){
-				addButton = <AppsCreateScore />
-			}
 			if(pages > 1){
-				paginationTag = <Pagination className="pull-left" ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
+				paginationTag = <Pagination  ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
 			}
 			const appsScoreList = scoreList.map((data, i) => {
-				var scoreLink = "/apps/score/" + data.slug;
+				var scoreLink = "/apps/"+store.getState().apps.currentAppId+"/scores/"+data.slug;
 				return (
 						<div className="col-md-3 top20 list-boxes" key={i}>
 						<div className="rep_block newCardStyle" name={data.name}>
@@ -65,7 +63,7 @@ export class AppsScoreList extends React.Component {
 						</h4>
 						</div>
 						<div className="col-xs-3">
-						<img src={ STATIC_URL + "assets/images/data_cardIcon.png" } className="img-responsive" alt="LOADING"/>
+						<img src={ STATIC_URL + "assets/images/apps_score_icon.png" } className="img-responsive" alt="LOADING"/>
 						</div>
 						</div>
 						</div>
@@ -77,7 +75,7 @@ export class AppsScoreList extends React.Component {
 
 						<div className="card-deatils">
 						{/*<!-- Popover Content link -->*/}
-						<OverlayTrigger trigger={['hover', 'focus']} placement="left" overlay={<Popover id="popover-trigger-focus"><DetailOverlay details={data}/></Popover>}><a href="#"  className="pover">
+						<OverlayTrigger trigger="click" rootClose  placement="left" overlay={<Popover id="popover-trigger-focus"><DetailOverlay details={data}/></Popover>}><a href="#"  className="pover">
 						<i className="ci pe-7s-info pe-2x"></i>
 						</a></OverlayTrigger>
 
@@ -103,22 +101,30 @@ export class AppsScoreList extends React.Component {
 				)
 			});
 			return (
+					
 					<div>
+					<div className="row">
 					{appsScoreList}
 					<div className="clearfix"></div>
-					<div id="idPagination">
+					</div>
+					<div className="ma-datatable-footer"  id="idPagination">
+					<div className="dataTables_paginate">
 					{paginationTag}
 					</div>
 					</div>
+					</div>
+					
 			);
 		}else {
 			return (
-					<div>No Scores Available</div>
+					   <div>
+			            <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif"} />
+			          </div>
 			)
 		}
 	}
 	handleSelect(eventKey) {
-		this.props.history.push('/apps/score/page/'+eventKey+'')
+		this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/scores?page='+eventKey+'')
 		this.props.dispatch(getAppsScoreList(eventKey));
 	}
 }

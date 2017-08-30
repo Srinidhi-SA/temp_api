@@ -3,6 +3,9 @@ import {API} from "../helpers/env";
 import {PERPAGE,DULOADERPERVALUE,DEFAULTINTERVAL} from "../helpers/helper";
 import store from "../store";
 import {dataPreviewInterval,dataUploadLoaderValue} from "./dataUploadActions";
+import Dialog from 'react-bootstrap-dialog'
+import { showLoading, hideLoading } from 'react-redux-loading-bar'
+
 
 function getHeader(token){
 	return {
@@ -12,6 +15,7 @@ function getHeader(token){
 }
 
 export function getDataList(pageNo) {
+	
 	return (dispatch) => {
 		return fetchDataList(pageNo,sessionStorage.userToken).then(([response, json]) =>{
 			if(response.status === 200){
@@ -283,3 +287,55 @@ export function hideDULoaderPopup(){
 		type: "HIDE_DATA_UPLOAD_LOADER",
 	}
 }
+export function showDialogBox(slug,dialog,dispatch){
+	Dialog.setOptions({
+		  defaultOkLabel: 'Yes',
+		  defaultCancelLabel: 'No',
+		})
+	dialog.show({
+		  title: 'Delete Dataset',
+		  body: 'Are you sure you want to delete dataset?',
+		  actions: [
+		    Dialog.CancelAction(),
+		    Dialog.OKAction(() => {
+		    	deleteDataset(slug,dialog,dispatch)
+		    })
+		  ],
+		  bsSize: 'small',
+		  onHide: (dialogBox) => {
+		    dialogBox.hide()
+		    console.log('closed by clicking background.')
+		  }
+		});
+}
+export function handleDelete(slug,dialog) {
+	return (dispatch) => {
+		showDialogBox(slug,dialog,dispatch)
+	}
+}
+function deleteDataset(slug,dialog,dispatch){
+	dispatch(showLoading());
+	Dialog.resetOptions();
+	return deleteDatasetAPI(slug).then(([response, json]) =>{
+		if(response.status === 200){
+			dispatch(getDataList(store.getState().datasets.current_page));
+			dispatch(hideLoading());
+		}
+		else{
+			dialog.showAlert("Error occured , Please try after sometime.");
+			dispatch(hideLoading());
+		}
+	})
+}
+function deleteDatasetAPI(slug){
+	return fetch(API+'/api/datasets/'+slug+'/',{
+		method: 'put',
+		headers: getHeader(sessionStorage.userToken),
+		body:JSON.stringify({
+			deleted:true,
+		}),
+	}).then( response => Promise.all([response, response.json()]));
+	
+	}
+	
+	

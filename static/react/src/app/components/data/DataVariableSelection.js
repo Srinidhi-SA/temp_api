@@ -1,5 +1,6 @@
 import React from "react";
 import { Scrollbars } from 'react-custom-scrollbars';
+import {MainHeader} from "../common/MainHeader";
 import {connect} from "react-redux";
 import {Link, Redirect} from "react-router";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem,Popover,OverlayTrigger} from "react-bootstrap";
@@ -174,7 +175,10 @@ componentDidMount(){
 			          </div>{/*<!-- /.col-lg-4 -->*/}
 			          <div className="col-lg-4">
 			              <div className="panel panel-primary-p2 cst-panel-shadow">
+
+						  
 			              <div className="panel-heading"><i className="mAd_icons ic_perf "></i> Dimensions</div>
+
 			                <div className="panel-body">
 			                  {/*  <!-- Row for select all-->*/}
 			                    <div className="row hidden">

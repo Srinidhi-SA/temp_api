@@ -7,7 +7,7 @@ import {push} from "react-router-redux";
 import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstrap";
 import {AppsCreateModel} from "./AppsCreateModel";
-import {getAppsModelList,getAppsModelSummary} from "../../actions/appActions";
+import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryFlag,updateModelSummaryFlag} from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {STATIC_URL} from "../../helpers/env.js"
 
@@ -18,6 +18,9 @@ var dateFormat = require('dateformat');
 @connect((store) => {
 	return {login_response: store.login.login_response, 
 		modelList: store.apps.modelList,
+		modelSummaryFlag:store.apps.modelSummaryFlag,
+		modelSlug:store.apps.modelSlug,
+		currentAppId:store.apps.currentAppId,
 		};
 })
 
@@ -27,20 +30,22 @@ export class AppsModelList extends React.Component {
     this.handleSelect = this.handleSelect.bind(this);
   }
   componentWillMount() {
-	  console.log(this.props.history)
+	  console.log(this.props.history);
+	  
 	  var pageNo = 1;
 	  if(this.props.history.location.pathname.indexOf("page") != -1){
-			pageNo = this.props.history.location.pathname.split("page/")[1];
+			pageNo = this.props.history.location.pathname.split("page=")[1];
 			this.props.dispatch(getAppsModelList(pageNo));
 		}else
 		  this.props.dispatch(getAppsModelList(pageNo));
 	}
   getModelSummary(slug){
-	this.props.dispatch(getAppsModelSummary(slug))
+	this.props.dispatch(updateModelSlug(slug))
   }
   render() {
     console.log("apps model list is called##########3");
-    console.log(this.props)
+    console.log(this.props);
+    
     const modelList = store.getState().apps.modelList.data;
 	if (modelList) {
 		const pages = store.getState().apps.modelList.total_number_of_pages;
@@ -51,10 +56,10 @@ export class AppsModelList extends React.Component {
 			addButton = <AppsCreateModel match={this.props.match}/>
 		}
 		if(pages > 1){
-			paginationTag = <Pagination className="pull-left" ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
+			paginationTag = <Pagination  ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
 		}
 		const appsModelList = modelList.map((data, i) => {
-			var modelLink = "/apps/models/" + data.slug;
+			var modelLink = "/apps/"+store.getState().apps.currentAppId+"/models/" + data.slug;
 			return (
 					<div className="col-md-3 top20 list-boxes" key={i}>
 					<div className="rep_block newCardStyle" name={data.name}>
@@ -67,7 +72,7 @@ export class AppsModelList extends React.Component {
 					</h4>
 					</div>
 					<div className="col-xs-3">
-					<img src={ STATIC_URL + "assets/images/data_cardIcon.png" } className="img-responsive" alt="LOADING"/>
+					<img src={ STATIC_URL + "assets/images/apps_model_icon.png" } className="img-responsive" alt="LOADING"/>
 					</div>
 					</div>
 					</div>
@@ -79,7 +84,7 @@ export class AppsModelList extends React.Component {
 
 					<div className="card-deatils">
 					{/*<!-- Popover Content link -->*/}
-					 <OverlayTrigger trigger={['hover', 'focus']} placement="left" overlay={<Popover id="popover-trigger-focus"><DetailOverlay details={data}/></Popover>}><a href="#"  className="pover">
+					 <OverlayTrigger trigger="click" rootClose  placement="left" overlay={<Popover id="popover-trigger-focus"><DetailOverlay details={data}/></Popover>}><a href="#"  className="pover">
 					<i className="ci pe-7s-info pe-2x"></i>
 					</a></OverlayTrigger>
 
@@ -106,22 +111,29 @@ export class AppsModelList extends React.Component {
 		});
 		return (
 				<div>
+				<div className="row">
 				{addButton}
 				{appsModelList}
 				<div className="clearfix"></div>
-				<div id="idPagination">
+				</div>
+				<div className="ma-datatable-footer"  id="idPagination">
+				<div className="dataTables_paginate">
 				{paginationTag}
 				</div>
 				</div>
+				</div>
+				
 		);
 	}else {
 		return (
-				<div>No Models Available</div>
+				   <div>
+		            <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif"} />
+		          </div>
 		)
 	}
 }
   handleSelect(eventKey) {
-		this.props.history.push('/apps/models/page/'+eventKey+'')
+		this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models?page='+eventKey+'')
 		this.props.dispatch(getAppsModelList(eventKey));
 	}
 }
