@@ -38,6 +38,9 @@ class SignalView(viewsets.ModelViewSet):
     def get_serializer_class(self):
         return InsightSerializer
 
+    def get_object_from_all(self):
+        return Insight.objects.get(slug=self.kwargs.get('slug'))
+
     lookup_field = 'slug'
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('bookmarked', 'deleted', 'type', 'name', 'status', 'analysis_done')
@@ -59,7 +62,12 @@ class SignalView(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         data = request.data
         data = convert_to_string(data)
-        instance = self.get_object()
+
+        try:
+            instance = self.get_object_from_all()
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
         serializer = self.get_serializer(instance=instance, data=data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -99,7 +107,7 @@ class SignalView(viewsets.ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
 
         try:
-            instance = Insight.objects.get(slug=kwargs.get('slug'))
+            instance = self.get_object_from_all()
         except:
             return creation_failed_exception("File Doesn't exist.")
 
@@ -122,6 +130,10 @@ class TrainerView(viewsets.ModelViewSet):
     def get_serializer_class(self):
         return TrainerSerlializer
 
+
+    def get_object_from_all(self):
+        return Trainer.objects.get(slug=self.kwargs.get('slug'))
+
     lookup_field = 'slug'
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('bookmarked', 'deleted', 'name', "app_id")
@@ -143,7 +155,12 @@ class TrainerView(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         data = request.data
         data = convert_to_string(data)
-        instance = self.get_object()
+        # instance = self.get_object()
+        try:
+            instance = self.get_object_from_all()
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
         serializer = self.get_serializer(instance=instance, data=data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -184,7 +201,7 @@ class TrainerView(viewsets.ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
 
         try:
-            instance = Trainer.objects.get(slug=kwargs.get('slug'))
+            instance = self.get_object_from_all()
         except:
             return creation_failed_exception("File Doesn't exist.")
 
@@ -206,6 +223,9 @@ class ScoreView(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         return ScoreSerlializer
+
+    def get_object_from_all(self):
+        return Score.objects.get(slug=self.kwargs.get('slug'))
 
     lookup_field = 'slug'
     filter_backends = (DjangoFilterBackend,)
@@ -229,7 +249,13 @@ class ScoreView(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         data = request.data
         data = convert_to_string(data)
-        instance = self.get_object()
+        # instance = self.get_object()
+
+        try:
+            instance = self.get_object_from_all()
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
         serializer = self.get_serializer(instance=instance, data=data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -270,7 +296,7 @@ class ScoreView(viewsets.ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
 
         try:
-            instance = Score.objects.get(slug=kwargs.get('slug'))
+            instance = self.get_object_from_all()
         except:
             return creation_failed_exception("File Doesn't exist.")
 
@@ -472,6 +498,9 @@ class RoboView(viewsets.ModelViewSet):
     def get_serializer_class(self):
         return RoboSerializer
 
+    def get_object_from_all(self):
+        return Robo.objects.get(slug=self.kwargs.get('slug'))
+
     lookup_field = 'slug'
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('bookmarked', 'deleted', 'name')
@@ -515,7 +544,12 @@ class RoboView(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         data = request.data
         data = convert_to_string(data)
-        instance = self.get_object()
+        # instance = self.get_object()
+        try:
+            instance = self.get_object_from_all()
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
         serializer = self.get_serializer(instance=instance, data=data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -524,7 +558,7 @@ class RoboView(viewsets.ModelViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         try:
-            instance = Robo.objects.get(slug=kwargs.get('slug'))
+            instance = self.get_object_from_all()
         except:
             return creation_failed_exception("File Doesn't exist.")
 

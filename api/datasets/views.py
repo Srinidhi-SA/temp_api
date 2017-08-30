@@ -28,6 +28,9 @@ class DatasetView(viewsets.ModelViewSet):
         )
         return queryset
 
+    def get_object_from_all(self):
+        return Dataset.objects.get(slug=self.kwargs.get('slug'))
+
     serializer_class = DatasetSerializer
     lookup_field = 'slug'
     filter_backends = (DjangoFilterBackend,)
@@ -57,7 +60,12 @@ class DatasetView(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         data = request.data
         data = convert_to_string(data)
-        instance = self.get_object()
+        # instance = self.get_object()
+
+        try:
+            instance = self.get_object_from_all()
+        except:
+            return creation_failed_exception("File Doesn't exist.")
 
         # question: do we need update method in views/ as well as in serializers?
         # answer: Yes. LoL
@@ -133,7 +141,7 @@ class DatasetView(viewsets.ModelViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         try:
-            instance = Dataset.objects.get(slug=kwargs.get('slug'))
+            instance = self.get_object_from_all()
         except:
             return creation_failed_exception("File Doesn't exist.")
 
