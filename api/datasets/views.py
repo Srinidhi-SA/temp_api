@@ -7,6 +7,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
+from django.http import Http404
 
 from api.exceptions import creation_failed_exception, update_failed_exception
 from api.models import Dataset
@@ -22,7 +23,8 @@ class DatasetView(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = Dataset.objects.filter(
             created_by=self.request.user,
-            deleted=False
+            deleted=False,
+            analysis_done=True
         )
         return queryset
 
@@ -129,4 +131,14 @@ class DatasetView(viewsets.ModelViewSet):
         serializer = DataListSerializer(page, many=True)
         return page_class.get_paginated_response(serializer.data)
 
+    def retrieve(self, request, *args, **kwargs):
+        try:
+            instance = Dataset.objects.get(slug=kwargs.get('slug'))
+        except:
+            return creation_failed_exception("File Doesn't exist.")
 
+        if instance is None:
+            return creation_failed_exception("File Doesn't exist.")
+
+        serializer = DatasetSerializer(instance=instance)
+        return Response(serializer.data)

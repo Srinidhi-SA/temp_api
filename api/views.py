@@ -13,6 +13,7 @@ from rest_framework.decorators import detail_route
 from rest_framework.response import Response
 
 from api.pagination import CustomPagination
+from api.exceptions import creation_failed_exception, update_failed_exception
 from api.utils import \
     convert_to_string, \
     InsightSerializer, \
@@ -29,7 +30,8 @@ class SignalView(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = Insight.objects.filter(
             created_by=self.request.user,
-            deleted=False
+            deleted=False,
+            analysis_done=True
         )
         return queryset
 
@@ -94,12 +96,26 @@ class SignalView(viewsets.ModelViewSet):
         serializer = InsightListSerializers(page, many=True)
         return page_class.get_paginated_response(serializer.data)
 
+    def retrieve(self, request, *args, **kwargs):
+
+        try:
+            instance = Insight.objects.get(slug=kwargs.get('slug'))
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
+        if instance is None:
+            return creation_failed_exception("File Doesn't exist.")
+
+        serializer = InsightSerializer(instance=instance)
+        return Response(serializer.data)
+
 
 class TrainerView(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = Trainer.objects.filter(
             created_by=self.request.user,
-            deleted=False
+            deleted=False,
+            analysis_done=True
         )
         return queryset
 
@@ -165,12 +181,26 @@ class TrainerView(viewsets.ModelViewSet):
         serializer = TrainerListSerializer(page, many=True)
         return page_class.get_paginated_response(serializer.data)
 
+    def retrieve(self, request, *args, **kwargs):
+
+        try:
+            instance = Trainer.objects.get(slug=kwargs.get('slug'))
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
+        if instance is None:
+            return creation_failed_exception("File Doesn't exist.")
+
+        serializer = TrainerSerlializer(instance=instance)
+        return Response(serializer.data)
+
 
 class ScoreView(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = Score.objects.filter(
             created_by=self.request.user,
-            deleted=False
+            deleted=False,
+            analysis_done=True
         )
         return queryset
 
@@ -236,6 +266,19 @@ class ScoreView(viewsets.ModelViewSet):
 
         serializer = ScoreListSerializer(page, many=True)
         return page_class.get_paginated_response(serializer.data)
+
+    def retrieve(self, request, *args, **kwargs):
+
+        try:
+            instance = Score.objects.get(slug=kwargs.get('slug'))
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
+        if instance is None:
+            return creation_failed_exception("File Doesn't exist.")
+
+        serializer = ScoreSerlializer(instance=instance)
+        return Response(serializer.data)
 
     @detail_route(methods=['get'])
     def download(self, request, slug=None):
@@ -421,7 +464,8 @@ class RoboView(viewsets.ModelViewSet):
     def get_queryset(self):
         query_set = Robo.objects.filter(
             created_by=self.request.user,
-            deleted=False
+            deleted=False,
+            analysis_done=True
         )
         return query_set
 
@@ -477,3 +521,15 @@ class RoboView(viewsets.ModelViewSet):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors)
+
+    def retrieve(self, request, *args, **kwargs):
+        try:
+            instance = Robo.objects.get(slug=kwargs.get('slug'))
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
+        if instance is None:
+            return creation_failed_exception("File Doesn't exist.")
+
+        serializer = RoboSerializer(instance=instance)
+        return Response(serializer.data)
