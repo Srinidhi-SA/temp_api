@@ -30,7 +30,7 @@ export class AppsLoader extends React.Component {
   render() {
    return (
           <div id="dULoader">
-      	<Modal show={store.getState().apps.appsLoaderModal} onHide={this.closeModelPopup.bind(this)} dialogClassName="modal-colored-header">
+      	<Modal show={store.getState().apps.appsLoaderModal} backdrop="static" onHide={this.closeModelPopup.bind(this)} dialogClassName="modal-colored-header">
       	<Modal.Body>
 		<div className="row">
 		<div className="col-md-12">
