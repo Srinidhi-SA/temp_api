@@ -71,7 +71,7 @@ function update(source) {
 	  .attr("x", function(d) { return d.children || d._children ? -13 : 13; })
 	  .attr("dy", ".35em")
 	  .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
-	  .text(function(d) { if(d.name.toString().length>20){ return d.name.toString().substr(0,20)+"...";}else{return d.name;}})
+	  .text(function(d) { if(d.name.toString().length>20){ return d.name.toString().substr(0,20)+" ...";}else{return d.name;}})
 	  .style("fill-opacity", 1e-6)
 	  .append("title")
 	  .text(function(d) { return d.name;});

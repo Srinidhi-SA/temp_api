@@ -4,7 +4,6 @@ import {c3Functions} from "../helpers/c3.functions";
 
 
 
-
 //var data= {}, toolData = [], toolLegend=[], chartDiv =null;
 export class C3Chart extends React.Component {
   constructor(props) {
@@ -16,19 +15,22 @@ export class C3Chart extends React.Component {
 	//this.toolData = [];
 	//this.toolLegend =[];
 	//this.chartDiv = null;
+
 	if($(".chart"+props.classId).html()){
 		this.updateChart();
 	}
 	
 	this.classId = "chart"+this.props.classId + " ct col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 xs-mb-20";
   }
+  
   getChartElement(){
 	  if(this.props.classId=='_side'){
 		  return $(".chart", this.element);
 	  }
       return $(".chart"+this.props.classId, this.element);
     }
-componentWillMount(){
+
+   componentWillMount(){
 	console.log("chart store object::::");
 	console.log(this.props.chartObject);
 
@@ -41,7 +43,7 @@ componentWillMount(){
 }
   componentDidMount() {
 	
-    this.updateChart();
+   // this.updateChart();
   }
   
   
@@ -122,16 +124,22 @@ if(this.props.tooltip){
 	  chart = c3.generate(data);
    
     //this.props.dispatch(chartObjStore(chart));
+	
   }
 
 
   render() {
-	  this.updateChart();
+	  var that = this;
+	  $(function(){
+		  that.updateChart();
+	  });
+	  
 	  
      //var classId = "chart"+this.props.classId + " ct col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 xs-mb-20";
 	  
       return(
-                        <div class={this.classId}></div>
+	        <div class={this.classId}></div>
+ 
       );
   }
 }

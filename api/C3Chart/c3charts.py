@@ -215,8 +215,7 @@ class C3Chart(object):
                 first_item = x_data[1]
                 import math
                 if isinstance(first_item, int) or isinstance(first_item, float):
-                    import pdb;pdb.set_trace()
-                    return abs(max([d for d in x_data[1:]]))
+                    return len(str(int(abs(max([d for d in x_data[1:]])))))
 
             return max([len(str(d)) for d in x_data[1:]])
 
@@ -427,6 +426,8 @@ class C3Chart(object):
     def remove_x_from_data(self):
         self._data['x'] = None
 
+    def set_x_type(self, to=X_DEFAULT_TYPE):
+        self._x_type = to
 
     def get_some_related_info_printed(self):
         print "x max string length", self._x_max_string_length

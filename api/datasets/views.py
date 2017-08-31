@@ -101,7 +101,6 @@ class DatasetView(viewsets.ModelViewSet):
         })
 
     def list(self, request, *args, **kwargs):
-        # import pdb;pdb.set_trace()
         if 'page' in request.query_params:
             if request.query_params.get('page') == 'all':
                 query_set = self.get_queryset()
@@ -117,6 +116,10 @@ class DatasetView(viewsets.ModelViewSet):
 
         page_class = self.pagination_class()
         query_set = self.get_queryset()
+
+        if 'name' in request.query_params:
+            name = request.query_params.get('name')
+            query_set = query_set.filter(name__contains=name)
 
         page = page_class.paginate_queryset(
             queryset=query_set,

@@ -9,6 +9,7 @@ from datasets.views import DatasetView
 from views import ScoreView
 from views import SignalView, get_datasource_config_list
 from views import TrainerView
+from views import RoboView
 
 # Start adding urlconf from here
 
@@ -41,6 +42,12 @@ router.register(
     'score',
     ScoreView,
     base_name='score'
+)
+
+router.register(
+    'robo',
+    RoboView,
+    base_name='robo'
 )
 
 urlpatterns = [

@@ -783,3 +783,43 @@ class Score(models.Model):
 
     def get_local_file_path(self):
         return '/tmp/' + self.slug
+
+
+class Robo(models.Model):
+
+    name = models.CharField(max_length=300, default="", blank=True)
+    slug = models.SlugField(null=False, blank=True)
+
+    customer_dataset = models.ForeignKey(Dataset, null=False, default="", related_name='customer_dataset')
+    historical_dataset = models.ForeignKey(Dataset, null=False , default="", related_name='historical_dataset')
+    market_dataset = models.ForeignKey(Dataset, null=False , default="", related_name='market_dataset')
+
+    config = models.TextField(default="{}")
+    data = models.TextField(default="{}")
+    column_data_raw = models.TextField(default="{}")
+
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
+    created_by = models.ForeignKey(User, null=False)
+    deleted = models.BooleanField(default=False)
+    analysis_done = models.BooleanField(default=False)
+
+    bookmarked = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['-created_at', '-updated_at']
+
+    def __str__(self):
+        return " : ".join(["{}".format(x) for x in [self.name, self.created_at, self.slug]])
+
+    def generate_slug(self):
+        if not self.slug:
+            self.slug = slugify(self.name + "-" + ''.join(
+                random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
+
+    def save(self, *args, **kwargs):
+        self.generate_slug()
+        super(Robo, self).save(*args, **kwargs)
+
+    def create(self, *args, **kwargs):
+        pass

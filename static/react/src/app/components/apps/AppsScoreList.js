@@ -75,7 +75,7 @@ export class AppsScoreList extends React.Component {
 
 						<div className="card-deatils">
 						{/*<!-- Popover Content link -->*/}
-						<OverlayTrigger trigger={['hover', 'focus']} placement="left" overlay={<Popover id="popover-trigger-focus"><DetailOverlay details={data}/></Popover>}><a href="#"  className="pover">
+						<OverlayTrigger trigger="click" rootClose  placement="left" overlay={<Popover id="popover-trigger-focus"><DetailOverlay details={data}/></Popover>}><a href="#"  className="pover">
 						<i className="ci pe-7s-info pe-2x"></i>
 						</a></OverlayTrigger>
 

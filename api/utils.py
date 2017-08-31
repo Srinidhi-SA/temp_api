@@ -7,7 +7,7 @@ from sjsclient import client
 
 from api.helper import JobserverDetails
 from api.user_helper import UserSerializer
-from models import Insight, Dataset, Trainer, Score, Job
+from models import Insight, Dataset, Trainer, Score, Job, Robo
 
 
 def submit_job(slug, class_name, job_config):
@@ -120,37 +120,6 @@ class InsightListSerializers(serializers.ModelSerializer):
         )
 
 
-"""
-    name = models.CharField(max_length=300, null=True)
-    slug = models.SlugField(null=False, blank=True)
-    type = models.CharField(max_length=300, null=True)  # dimension/measure
-    target_column = models.CharField(max_length=300, null=True, blank=True)
-
-    dataset = models.ForeignKey(Dataset, null=True)  # get all dataset related detail
-
-    compare_with = models.CharField(max_length=300, default="")
-    compare_type = models.CharField(max_length=300, null=True)
-    column_data_raw = models.TextField(default="{}")
-    config = models.TextField(default="{}")
-
-    status = models.BooleanField(default=False)
-    live_status = models.CharField(max_length=300, default='0', choices=STATUS_CHOICES)
-    analysis_done = models.BooleanField(default=False)
-    # state -> job submitted, job started, job ...
-
-    data = models.TextField(default="{}")
-
-    created_on = models.DateTimeField(auto_now_add=True, null=True)
-    updated_on = models.DateTimeField(auto_now=True, null=True)
-    created_by = models.ForeignKey(User, null=False)
-    deleted = models.BooleanField(default=False)
-
-    bookmarked = models.BooleanField(default=False)
-
-    job = models.ForeignKey(Job, null=True)
-"""
-
-
 class TrainerSerlializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
@@ -188,7 +157,6 @@ class TrainerListSerializer(serializers.ModelSerializer):
             'config',
             'data'
         )
-
 
 
 class ScoreSerlializer(serializers.ModelSerializer):
@@ -238,3 +206,44 @@ class JobSerializer(serializers.Serializer):
     class Meta:
         model = Job
         exclude = ("id", "created_at")
+
+
+class RoboSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Robo
+        exclude = ("id", "config", "column_data_raw")
+
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name', instance.name)
+        instance.analysis_done = validated_data.get('analysis_done', instance.analysis_done)
+        instance.deleted = validated_data.get('deleted', instance.deleted)
+
+        instance.save()
+        return instance
+
+    def to_representation(self, instance):
+        from api.datasets.serializers import DatasetSerializer
+        ret = super(RoboSerializer, self).to_representation(instance)
+
+        customer_dataset_object = Dataset.objects.get(pk=ret['customer_dataset'])
+        ret['customer_dataset'] = DatasetSerializer(customer_dataset_object).data
+
+        historical_dataset_object = Dataset.objects.get(pk=ret['historical_dataset'])
+        ret['historical_dataset'] = DatasetSerializer(historical_dataset_object).data
+
+        market_dataset_object = Dataset.objects.get(pk=ret['market_dataset'])
+        ret['market_dataset'] = DatasetSerializer(market_dataset_object).data
+
+        if instance.analysis_done is False:
+            if customer_dataset_object.analysis_done and \
+                historical_dataset_object.analysis_done and \
+                    market_dataset_object.analysis_done:
+                instance.analysis_done = True
+                instance.save()
+
+        ret = convert_to_json(ret)
+        ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        ret['analysis_done'] = instance.analysis_done
+        return ret
+

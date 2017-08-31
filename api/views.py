@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 import json
+import random
 
 from django.conf import settings
 from django.http import JsonResponse
@@ -19,8 +20,9 @@ from api.utils import \
     ScoreSerlializer, \
     InsightListSerializers, \
     TrainerListSerializer, \
-    ScoreListSerializer
-from models import Insight, Dataset, Job, Trainer, Score
+    ScoreListSerializer, \
+    RoboSerializer
+from models import Insight, Dataset, Job, Trainer, Score, Robo
 
 
 class SignalView(viewsets.ModelViewSet):
@@ -79,6 +81,10 @@ class SignalView(viewsets.ModelViewSet):
 
         page_class = self.pagination_class()
         query_set = self.get_queryset()
+
+        if 'name' in request.query_params:
+            name = request.query_params.get('name')
+            query_set = query_set.filter(name__contains=name)
 
         page = page_class.paginate_queryset(
             queryset=query_set,
@@ -143,6 +149,10 @@ class TrainerView(viewsets.ModelViewSet):
                     "data": serializer.data
                 })
         query_set = self.get_queryset()
+
+        if 'name' in request.query_params:
+            name = request.query_params.get('name')
+            query_set = query_set.filter(name__contains=name)
 
         query_set = query_set.filter(app_id=app_id)
         page_class = self.pagination_class()
@@ -212,6 +222,10 @@ class ScoreView(viewsets.ModelViewSet):
                 })
 
         query_set = self.get_queryset()
+
+        if 'name' in request.query_params:
+            name = request.query_params.get('name')
+            query_set = query_set.filter(name__contains=name)
 
         page_class = self.pagination_class()
 
@@ -401,3 +415,65 @@ def home(request):
 
     context = {"UI_VERSION":settings.UI_VERSION}
     return render(request, 'home.html', context)
+
+
+class RoboView(viewsets.ModelViewSet):
+    def get_queryset(self):
+        query_set = Robo.objects.filter(
+            created_by=self.request.user,
+            deleted=False
+        )
+        return query_set
+
+    def get_serializer_class(self):
+        return RoboSerializer
+
+    lookup_field = 'slug'
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = ('bookmarked', 'deleted', 'name')
+    pagination_class = CustomPagination
+
+    dataset_name_mapping = {
+        "customer_file": "customer_dataset",
+        "historical_file": "historical_dataset",
+        "market_file": "market_dataset"
+    }
+
+    def create(self, request, *args, **kwargs):
+
+        data =request.data
+        data = convert_to_string(data)
+        files = request.FILES
+        name = data.get('name', "robo" + "_"+ str(random.randint(1000000,10000000)))
+        real_data = {
+            'name': name,
+            'created_by': request.user.id
+        }
+
+        for file in files:
+            dataset = dict()
+            input_file = files[file]
+            dataset['input_file'] = input_file
+            dataset['name'] = input_file.name
+            dataset['created_by'] = request.user.id
+            from api.datasets.serializers import DatasetSerializer
+            serializer = DatasetSerializer(data=dataset)
+            if serializer.is_valid():
+                dataset_object = serializer.save()
+                dataset_object.create()
+                real_data[self.dataset_name_mapping[file]] = dataset_object.id
+        serializer = RoboSerializer(data=real_data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors)
+
+    def update(self, request, *args, **kwargs):
+        data = request.data
+        data = convert_to_string(data)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance=instance, data=data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors)
