@@ -27,7 +27,7 @@ import {AppsPanel} from "./components/apps/AppsPanel";
 import {AppsScoreList} from "./components/apps/AppsScoreList";
 import {RoboInsightList} from "./components/apps/RoboInsightList";
 import {RoboDataUploadPreview} from "./components/apps/RoboDataUploadPreview";
-
+import {RoboDocumentMode} from "./components/apps/RoboDocumentMode";
 class App extends React.Component {
 
   render() {
@@ -65,7 +65,7 @@ class App extends React.Component {
             <Route exact path="/apps/:AppId/models/data/:slug" component={DataPreview} />
             <Route exact path="/apps/:AppId/robo" component={RoboInsightList} />
             <Route exact path="/apps/:AppId/robo/:slug" component={RoboDataUploadPreview} />
-            <Route exact path="/apps/:AppId/robo/:slug/:l1" component={OverViewPage} />
+            <Route exact path="/apps/:AppId/robo/:slug/:l1" component={RoboDocumentMode} />
           					
             </Main>
       </Switch>

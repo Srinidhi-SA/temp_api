@@ -539,7 +539,7 @@ export function getRoboDataset(slug) {
 					dispatch(closeAppsLoaderValue());
 					dispatch(showRoboDataUploadPreview(true));
 					//dispatch(clearDataPreview());
-					//dispatch(hideDataPreview());
+					dispatch(hideDataPreview());
 				}
 			}
 			else{
