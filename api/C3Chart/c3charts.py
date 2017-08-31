@@ -430,8 +430,6 @@ class C3Chart(object):
         self._x_type = to
 
     def set_name_to_data(self, legend):
-        import pdb;
-        pdb.set_trace()
         new_legend = {}
         changes = {
             'x': 'k1',

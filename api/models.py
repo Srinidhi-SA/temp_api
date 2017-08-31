@@ -735,6 +735,12 @@ class Score(models.Model):
         }
 
     def get_config_from_config(self):
+        trainer_config = json.loads(self.trainer.config)
+        trainer_config_config = trainer_config.get('config')
+        file_column_config = trainer_config_config.get('COLUMN_SETTINGS')
+        trainer_consider_column_type = file_column_config.get('consider_columns_type')
+        trainer_consider_columns = file_column_config.get('consider_columns')
+
         config = json.loads(self.config)
         consider_columns_type = ['including']
         data_columns = config.get("timeDimension", None)
@@ -754,6 +760,8 @@ class Score(models.Model):
         app_id = config.get('app_id', 1)
 
         ret = {
+            'consider_columns_type': trainer_consider_column_type,
+            'consider_columns': trainer_consider_columns,
             'score_consider_columns_type': consider_columns_type,
             'score_consider_columns': consider_columns,
             'date_columns': [] if data_columns is "" else [data_columns],
