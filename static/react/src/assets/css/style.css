@@ -14661,6 +14661,10 @@ background:#ededed; color:#7dac02
 .mAd_icons { background:url(../images/mAd_image.png) no-repeat }
 .mAd_icons.tab_overview, .mAd_icons.tab_overview, .mAd_icons.tab_trend, .mAd_icons.tab_performance, .mAd_icons.tab_influencers, .mAd_icons.tab_prediction, .mAd_icons.tab_chi-square, .mAd_icons.tab_association, .mAd_icons.tab_summary, .mAd_icons.tab_decision-tree { display:block; margin:0 auto; width:35px; height:30px; }
 
+.mAd_icons.ic_mes_s, .mAd_icons.ic_dime_s { width:20px; height:18px; display:inline-block;}
+.mAd_icons.ic_mes_s { background-position: -260px -11px; }
+.mAd_icons.ic_dime_s { background-position:-281px -11px }
+
 .mAd_icons.tab_overview{ background-position: 0 0;}
 .nav-tabs li a:hover .mAd_icons.tab_overview, .active .mAd_icons.tab_overview { background-position: 0 -30px;} 
 
@@ -15326,7 +15330,6 @@ html{
  height: 3px
 }
 
-
 /*chart table popup css*/
 .chart-data-popup{
 	/*height: 380px;*/
@@ -15403,3 +15406,21 @@ padding: 0px 15px 15px;
  text-align:center;
 }
 */
+
+.dropzone.rb_insight_upload div {
+    height: inherit !important;
+    padding: 5px;
+}
+.customInput{
+	border-color: #ccc;
+    border-width: 2px;
+    border-radius: 5px;
+    padding: 5px;
+    width: 376px;
+    height: 41px;
+    margin-bottom: 10px;
+}
+ 
+.apps_tabs_content .side-body { margin:0 !important}   
+
+

@@ -96,7 +96,9 @@ import {STATIC_URL} from "../../helpers/env.js"
 	return {login_response: store.login.login_response, dataPreview: store.datasets.dataPreview,
 		signalMeta: store.datasets.signalMeta,curUrl: store.datasets.curUrl,
 		dataPreviewFlag:store.datasets.dataPreviewFlag,
-		currentAppId:store.apps.currentAppId};
+		currentAppId:store.apps.currentAppId,
+		roboDatasetSlug:store.apps.roboDatasetSlug,
+		signal: store.signals.signalAnalysis};
 })
 
 
@@ -147,7 +149,16 @@ export class DataPreview extends React.Component {
 				};
 
 			}else if(store.getState().datasets.curUrl.startsWith("/apps")){
-				if(store.getState().datasets.curUrl.indexOf("models") == -1){
+				if(store.getState().datasets.curUrl.indexOf("robo") != -1){
+					this.buttons['close']= {
+							url : "/apps/"+store.getState().apps.currentAppId+"/robo",
+							text: "Close"
+					};
+					this.buttons['create']= {
+							url :"/apps/"+store.getState().apps.currentAppId+"/robo/"+store.getState().apps.roboDatasetSlug+"/"+store.getState().signals.signalAnalysis.slug,
+							text: "Compose Insight"
+					};
+				}else if(store.getState().datasets.curUrl.indexOf("models") == -1){
 					this.buttons['close']= {
 							url : "/apps",
 							text: "Close"
@@ -321,7 +332,6 @@ export class DataPreview extends React.Component {
 
 			const sideChart = dataPrev.columnData[0].chartData;
 			console.log("chart-----------")
-			console.log(JSON.stringify(sideChart));
 			const sideTable = dataPrev.columnData[0].columnStats;
 			console.log("checking side table data:; ");
 			console.log(sideTable);
@@ -438,7 +448,7 @@ export class DataPreview extends React.Component {
 					{/*<!-- ./ End Tab Subsettings -->*/}
 					</div>
 					</div>
-					<div className="row">
+					<div className="row buttonRow">
 					<div className="col-md-12 text-right">
  
 					<div className="panel">
@@ -460,7 +470,9 @@ export class DataPreview extends React.Component {
 			);
 		} else {
 			return (
-					<div>no data</div>
+					 <div>
+			            <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif"} />
+			          </div>
 			);
 		}
 	}
