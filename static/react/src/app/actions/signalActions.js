@@ -237,7 +237,6 @@ function deleteSignal(slug,dialog,dispatch){
 function deleteSignalAPI(slug){
 	console.log("deleteSignalAPI(slug)");
 	console.log(slug);
-	alert("slug");
 	return fetch(API+'/api/signals/'+slug+'/',{
 		method: 'put',
 		headers: getHeader(sessionStorage.userToken),
