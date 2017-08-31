@@ -15213,6 +15213,10 @@ margin-right:8px;
 content:''
 }
 a.disabled { color:#ccc !important; }
+.ex_bg .md-p-50 { min-height: 296px; }
+
+
+
 /**************** Css realated to developers, keep the source down ***/
 
 
