@@ -429,6 +429,10 @@ class C3Chart(object):
     def set_x_type(self, to=X_DEFAULT_TYPE):
         self._x_type = to
 
+    def set_name_to_data(self, legend):
+        if self._data:
+            self._data['names'] = legend
+
     def get_some_related_info_printed(self):
         print "x max string length", self._x_max_string_length
         print "x length", self._x_height
