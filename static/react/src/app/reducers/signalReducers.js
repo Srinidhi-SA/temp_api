@@ -8,6 +8,7 @@ export default function reducer(state = {
   createSignalLoaderModal:false,
   createSignalLoaderValue:10,
   current_page:1,
+  urlPrefix:"signals",
   // variableType:""
 }, action) {
   console.log("in SIGNAL reducer!!");
@@ -125,6 +126,17 @@ export default function reducer(state = {
     }
     break;
     
+	 case "ROBO_DATA_ANALYSIS":
+     {
+       return {
+         ...state,
+         signalAnalysis: action.roboData.data,
+         urlPrefix:action.urlPrefix,
+         selectedSignal:action.roboSlug,
+       }
+     }
+     break;
+     
   }
   return state
 }

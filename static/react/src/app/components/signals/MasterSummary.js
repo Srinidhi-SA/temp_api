@@ -48,13 +48,7 @@ export class MasterSummary extends React.Component {
 	 }else{
 		 mText = "Measure";
 	 }
-    //  var noOfDimention = 10;
-    //  var noOfMeasures = 9;
-    // var summary = "mAdvisor has analyzed the dataset, which contains<b> 15</b> variables and <b>5,000</b> observations. Please click next to find the insights from our analysis of <b>platform</b>, that describes how it is distributed, what drives it, and how we can predict it.";
-    // var quotes = "not coming from backend!!";
-    // // console.log(noOfMeasures);
-    // console.log(noOfDimention);
-    // console.log(summary);
+ 
     let firstOverviewSlug = this.props.signal.listOfNodes[0].slug;
 
     const overViewLink = "/signals/" + this.props.signalId + "/"+ firstOverviewSlug;

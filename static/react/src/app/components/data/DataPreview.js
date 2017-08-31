@@ -96,7 +96,9 @@ import {STATIC_URL} from "../../helpers/env.js"
 	return {login_response: store.login.login_response, dataPreview: store.datasets.dataPreview,
 		signalMeta: store.datasets.signalMeta,curUrl: store.datasets.curUrl,
 		dataPreviewFlag:store.datasets.dataPreviewFlag,
-		currentAppId:store.apps.currentAppId};
+		currentAppId:store.apps.currentAppId,
+		roboDatasetSlug:store.apps.roboDatasetSlug,
+		signal: store.signals.signalAnalysis};
 })
 
 
@@ -153,7 +155,7 @@ export class DataPreview extends React.Component {
 							text: "Close"
 					};
 					this.buttons['create']= {
-							url :"/apps/"+store.getState().apps.currentAppId+"/scores/dataPreview/createScore",
+							url :"/apps/"+store.getState().apps.currentAppId+"/robo/"+store.getState().apps.roboDatasetSlug+"/"+store.getState().signals.signalAnalysis.slug,
 							text: "Compose Insight"
 					};
 				}else if(store.getState().datasets.curUrl.indexOf("models") == -1){

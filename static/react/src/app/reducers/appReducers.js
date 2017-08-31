@@ -323,6 +323,7 @@ export default function reducer(state = {
 		return {
 			...state,
 			roboSummary: action.data,
+			roboDatasetSlug:action.data.slug,
 			customerDataset_slug:action.data.customer_dataset.slug,
 			historialDataset_slug:action.data.historical_dataset.slug,
 			externalDataset_slug:action.data.market_dataset.slug,

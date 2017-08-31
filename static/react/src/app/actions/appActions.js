@@ -593,4 +593,13 @@ export function updateRoboUploadTab(tabId){
 		tabId
 	}
 }
+export function updateRoboAnalysisData(roboData,urlPrefix){
+	var roboSlug = "robo_6916600-2a33ebfd89";
+	return {
+		type: "ROBO_DATA_ANALYSIS",
+		roboData,
+		urlPrefix,
+		roboSlug
+	}
+}
 

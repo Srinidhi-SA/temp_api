@@ -80,11 +80,6 @@ export class OverViewPage extends React.Component {
 
   }
   
-  
-
-	
-
-
 prevNext(path) {
     console.log(path);
     let currentSuffix = path.location.pathname;
