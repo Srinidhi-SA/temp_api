@@ -32,6 +32,7 @@ export default function reducer(state = {
 		customerDataset_slug :"",
 		historialDataset_slug:"",
 		externalDataset_slug:"",
+		roboUploadTabId:1,
 		
 }, action) {
 	console.log("In APPs reducer!!");
@@ -350,6 +351,15 @@ export default function reducer(state = {
 			customerDataUpload:{},
 			externalDataUpload:{},
 			
+		}
+	}
+	break;
+	case "UPDATE_ROBO_UPLOAD_TAB_ID":
+	{
+		return {
+			...state,
+			
+			roboUploadTabId:action.tabId,
 		}
 	}
 	break;

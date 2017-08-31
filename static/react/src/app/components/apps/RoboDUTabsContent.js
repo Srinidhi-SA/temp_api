@@ -6,7 +6,8 @@ import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {connect} from "react-redux";
 import {getDataSetPreview} from "../../actions/dataActions";
-import {DataPreview} from "../data/DataPreview";
+import {STATIC_URL} from "../../helpers/env.js"
+import {clearDataPreview,updateRoboUploadTab} from "../../actions/appActions";
 
 @connect((store) => {
 	return {login_response: store.login.login_response, 
@@ -15,27 +16,37 @@ import {DataPreview} from "../data/DataPreview";
 		customerDataset_slug:store.apps.customerDataset_slug,
 		historialDataset_slug:store.apps.historialDataset_slug,
 		externalDataset_slug:store.apps.externalDataset_slug,
+		roboUploadTabId:store.apps.roboUploadTabId
 		};
 })
 
 
-export class RoboDataUploadPreview extends React.Component {
+export class RoboDUTabsContent extends React.Component {
   constructor(props) {
     super(props);
     console.log(this.props)
   }
-  componentWillMount(){
-	 this.props.dispatch(getDataSetPreview(store.getState().apps.customerDataset_slug))
-  }
- 
   render() {
-    console.log("apps is called##########3");
-    console.log(this.props)
- 
-    return (
-          <div>
-            <DataPreview/>
-        </div>
-      );
+    console.log("robo is called##########3");
+    //This should be called only once
+    if(store.getState().apps.customerDataset_slug && store.getState().apps.roboUploadTabId == 1){
+		  this.props.dispatch(getDataSetPreview(store.getState().apps.customerDataset_slug));
+		  this.props.dispatch(updateRoboUploadTab(2))
+	  }
+     let dataPreview = store.getState().datasets.dataPreview;
+    		if(dataPreview){
+    			return (   <div className="apps_tabs_content">
+    	            <DataPreview />
+    	        </div>
+    	        );
+    		}else{
+    			return (
+ 					   <div>
+ 			            <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif"} />
+ 			          </div>
+ 			);
+    		}
+       
+      
   }
 }

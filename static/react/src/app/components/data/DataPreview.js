@@ -321,7 +321,6 @@ export class DataPreview extends React.Component {
 
 			const sideChart = dataPrev.columnData[0].chartData;
 			console.log("chart-----------")
-			console.log(JSON.stringify(sideChart));
 			const sideTable = dataPrev.columnData[0].columnStats;
 			console.log("checking side table data:; ");
 			console.log(sideTable);
@@ -460,7 +459,9 @@ export class DataPreview extends React.Component {
 			);
 		} else {
 			return (
-					<div>no data</div>
+					 <div>
+			            <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif"} />
+			          </div>
 			);
 		}
 	}

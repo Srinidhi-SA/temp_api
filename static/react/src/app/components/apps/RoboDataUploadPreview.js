@@ -6,6 +6,10 @@ import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {connect} from "react-redux";
 import {getDataSetPreview} from "../../actions/dataActions";
+import {clearDataPreview,updateRoboUploadTab} from "../../actions/appActions";
+import {RoboDUTabsContent} from "./RoboDUTabsContent";
+import {RoboDUHistorialData} from "./RoboDUHistorialData";
+import {RoboDUExternalData} from "./RoboDUExternalData";
 
 @connect((store) => {
 	return {login_response: store.login.login_response, 
@@ -14,6 +18,7 @@ import {getDataSetPreview} from "../../actions/dataActions";
 		customerDataset_slug:store.apps.customerDataset_slug,
 		historialDataset_slug:store.apps.historialDataset_slug,
 		externalDataset_slug:store.apps.externalDataset_slug,
+		roboUploadTabId:store.apps.roboUploadTabId
 		};
 })
 
@@ -21,27 +26,34 @@ import {getDataSetPreview} from "../../actions/dataActions";
 export class RoboDataUploadPreview extends React.Component {
   constructor(props) {
     super(props);
-    console.log(this.props)
+    console.log(this.props);
   }
-  /*componentWillMount(){
-	 this.props.dispatch(getDataSetPreview(store.getState().apps.customerDataset_slug))
-  }*/
+  componentWillMount(){
+	  this.props.dispatch(updateRoboUploadTab(1));
+  }
+
   handleTabSelect(key){
-	  alert(key)
+	  this.props.dispatch(clearDataPreview());
+	  this.props.dispatch(updateRoboUploadTab(key))
+	  if(key == 1)
+	  this.props.dispatch(getDataSetPreview(store.getState().apps.customerDataset_slug))
+	  if(key == 2)
+	  this.props.dispatch(getDataSetPreview(store.getState().apps.historialDataset_slug))
+	  if(key == 3)
+	  this.props.dispatch(getDataSetPreview(store.getState().apps.externalDataset_slug))
   }
+ 
   render() {
     console.log("apps is called##########3");
-    console.log(this.props)
- 
     return (
-          <div className="side-body">
+    		<div className="side-body">
             <div className="main-content">
             <Tabs defaultActiveKey={1} onSelect={this.handleTabSelect.bind(this)} id="controlled-tab-example" >
-            <Tab eventKey={1} title="Customer Data"><DataPreview /></Tab>
-            <Tab eventKey={2} title="Historial Data"><DataPreview /></Tab>
-            <Tab eventKey={3} title="External Data"><DataPreview /></Tab>
+            <Tab eventKey={1} title="Customer Data"><RoboDUTabsContent /></Tab>
+            <Tab eventKey={2} title="Historial Data"><RoboDUTabsContent /></Tab>
+            <Tab eventKey={3} title="External Data"><RoboDUTabsContent /></Tab>
           </Tabs>
-          </div>
+        </div>
         </div>
       );
   }

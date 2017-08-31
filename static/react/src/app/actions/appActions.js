@@ -473,12 +473,12 @@ export function saveFilesToStore(files,uploadData) {
 }
 
 
-export function uploadFiles(dialog) {
+export function uploadFiles(dialog,insightName) {
 if(!isEmpty(store.getState().apps.customerDataUpload) && !isEmpty(store.getState().apps.historialDataUpload) && !isEmpty(store.getState().apps.externalDataUpload)){
 	return (dispatch) => {
 		  dispatch(closeRoboDataPopup());
 		  dispatch(openAppsLoader(DULOADERPERVALUE,"Please wait while mAdvisor is processing data... "));
-			return triggerDataUpload(sessionStorage.userToken).then(([response, json]) =>{
+			return triggerDataUpload(sessionStorage.userToken,insightName).then(([response, json]) =>{
 				if(response.status === 200){
 					
 					dispatch(dataUploadFilesSuccess(json,dispatch))
@@ -495,11 +495,12 @@ if(!isEmpty(store.getState().apps.customerDataUpload) && !isEmpty(store.getState
 	  
 }
 
-function triggerDataUpload(token) {
+function triggerDataUpload(token,insightName) {
 		var data = new FormData();
 		data.append("customer_file",store.getState().apps.customerDataUpload);
 		data.append("historical_file",store.getState().apps.historialDataUpload);
 		data.append("market_file",store.getState().apps.externalDataUpload);
+		data.append("name",insightName);
 		return fetch(API+'/api/robo/',{
 			method: 'post',
 			headers: getHeaderWithoutContent(token),
@@ -536,9 +537,9 @@ export function getRoboDataset(slug) {
 					clearInterval(appsInterval);
 					dispatch(fetchRoboSummarySuccess(json));
 					dispatch(closeAppsLoaderValue());
-					dispatch(getDataSetPreview(store.getState().apps.customerDataset_slug))
 					dispatch(showRoboDataUploadPreview(true));
-					dispatch(hideDataPreview());
+					//dispatch(clearDataPreview());
+					//dispatch(hideDataPreview());
 				}
 			}
 			else{
@@ -579,6 +580,17 @@ export function showRoboDataUploadPreview(flag){
 export function clearRoboDataUploadFiles() {
 	return {
 		type: "EMPTY_ROBO_DATA_UPLOAD_FILES",
+	}
+}
+export function clearDataPreview(){
+	return {
+		type: "CLEAR_DATA_PREVIEW",
+	}
+}
+export function updateRoboUploadTab(tabId){
+	return {
+		type: "UPDATE_ROBO_UPLOAD_TAB_ID",
+		tabId
 	}
 }
 

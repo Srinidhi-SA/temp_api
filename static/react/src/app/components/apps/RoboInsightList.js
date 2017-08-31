@@ -6,7 +6,7 @@ import {push} from "react-router-redux";
 
 import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstrap";
-import {getAppsRoboList} from "../../actions/appActions";
+import {getAppsRoboList,getRoboDataset} from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {STATIC_URL} from "../../helpers/env.js";
 import {RoboDataUpload} from "./RoboDataUpload";
@@ -39,7 +39,9 @@ export class RoboInsightList extends React.Component {
 		}else
 		  this.props.dispatch(getAppsRoboList(pageNo));
 	}
- 
+  getInsightPreview(slug){
+	  this.props.dispatch(getRoboDataset(slug));
+  }
   render() {
     console.log("apps robo list is called##########3");
     console.log(this.props);
@@ -70,7 +72,7 @@ export class RoboInsightList extends React.Component {
 					<div className="row">
 					<div className="col-xs-9">
 					<h4 className="title newCardTitle">
-					<a href="javascript:void(0);" id= {data.slug}><Link to={modelLink}>{data.name}</Link></a>
+					<a href="javascript:void(0);" id= {data.slug}><Link onClick={this.getInsightPreview.bind(this,data.slug)} to={modelLink}>{data.name}</Link></a>
 					</h4>
 					</div>
 					<div className="col-xs-3">

@@ -64,7 +64,7 @@ class App extends React.Component {
             <Route exact path="/apps/:slug/scores" component={Apps} />
             <Route exact path="/apps/:slug/models/data/:slug" component={DataPreview} />
             <Route exact path="/apps/:slug/robo" component={RoboInsightList} />
-            <Route exact path="/apps/:slug/robo/dataPreview" component={RoboDataUploadPreview} />
+            <Route exact path="/apps/:slug/robo/:slug" component={RoboDataUploadPreview} />
             							
             </Main>
       </Switch>
