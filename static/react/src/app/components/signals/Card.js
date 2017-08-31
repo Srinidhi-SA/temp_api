@@ -10,6 +10,7 @@ import {CardTable} from "../common/CardTable";
 import {PredictionDropDown} from "../common/predictionDropdown";
 //import Tree from 'react-d3-tree';
 import {ReactD3} from "../reactD3";
+import { Scrollbars } from 'react-custom-scrollbars';
 //import Tree from 'react-tree-graph';
 
 import $ from "jquery";
@@ -86,7 +87,7 @@ export class Card extends React.Component {
             return ( <DecisionTree key={i} treeData={story.data}/>);
           break;
         case "table":
-            return (<div className="table-style"><CardTable key = {i} jsonData={story.data} type={story.dataType}/></div>);
+        return (<div className="table-style"><CardTable key = {i} jsonData={story.data} type={story.dataType}/></div>);
             break;
 		case "dropdown":
             return (<PredictionDropDown key = {i} jsonData={story.data} type={story.dataType}/>);
