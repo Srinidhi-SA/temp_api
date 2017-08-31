@@ -5,7 +5,7 @@ import {DataPreview} from "../data/DataPreview";
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {connect} from "react-redux";
-import {getDataSetPreview} from "../../actions/dataActions";
+import {getDataSetPreview,storeSignalMeta} from "../../actions/dataActions";
 import {clearDataPreview,updateRoboUploadTab} from "../../actions/appActions";
 import {RoboDUTabsContent} from "./RoboDUTabsContent";
 import {RoboDUHistorialData} from "./RoboDUHistorialData";
@@ -30,6 +30,7 @@ export class RoboDataUploadPreview extends React.Component {
   }
   componentWillMount(){
 	  this.props.dispatch(updateRoboUploadTab(1));
+	  this.props.dispatch(storeSignalMeta(null,this.props.match.url));
   }
 
   handleTabSelect(key){
@@ -49,9 +50,9 @@ export class RoboDataUploadPreview extends React.Component {
     		<div className="side-body">
             <div className="main-content">
             <Tabs defaultActiveKey={1} onSelect={this.handleTabSelect.bind(this)} id="controlled-tab-example" >
-            <Tab eventKey={1} title="Customer Data"><RoboDUTabsContent /></Tab>
-            <Tab eventKey={2} title="Historial Data"><RoboDUTabsContent /></Tab>
-            <Tab eventKey={3} title="External Data"><RoboDUTabsContent /></Tab>
+            <Tab eventKey={1} title="Customer Data"><RoboDUTabsContent history={this.props.history}/></Tab>
+            <Tab eventKey={2} title="Historial Data"><RoboDUTabsContent history={this.props.history}/></Tab>
+            <Tab eventKey={3} title="External Data"><RoboDUTabsContent history={this.props.history}/></Tab>
           </Tabs>
         </div>
         </div>

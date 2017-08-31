@@ -36,7 +36,7 @@ export class RoboDUTabsContent extends React.Component {
      let dataPreview = store.getState().datasets.dataPreview;
     		if(dataPreview){
     			return (   <div className="apps_tabs_content">
-    	            <DataPreview />
+    	            <DataPreview history={this.props.history}/>
     	        </div>
     	        );
     		}else{
