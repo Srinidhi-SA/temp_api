@@ -238,7 +238,7 @@ export function createScore(scoreName,targetVariable) {
 	console.log(scoreName);
 	console.log(targetVariable);
 	  return (dispatch) => {
-		  dispatch(openAppsLoader(DULOADERPERVALUE,"Please wait while mAdvisor is creating score... "));
+		  dispatch(openAppsLoader(DULOADERPERVALUE,"Please wait while mAdvisor is scoring your model... "));
 			return triggerCreateScore(sessionStorage.userToken,scoreName,targetVariable).then(([response, json]) =>{
 				if(response.status === 200){
 					
