@@ -430,8 +430,24 @@ class C3Chart(object):
         self._x_type = to
 
     def set_name_to_data(self, legend):
+        import pdb;
+        pdb.set_trace()
+        new_legend = {}
+        changes = {
+            'x': 'k1',
+            'y': 'k2',
+            'y2': 'k3'
+        }
+
+        for val in legend:
+            if val in ['x', 'y', 'y2']:
+                new_legend[changes[val]] = legend[val]
+
+        new_legend.update(legend)
+        print "------------> legensd"
+        print new_legend
         if self._data:
-            self._data['names'] = legend
+            self._data['names'] = new_legend
 
     def get_some_related_info_printed(self):
         print "x max string length", self._x_max_string_length
