@@ -60,7 +60,7 @@ export class OverViewPage extends React.Component {
        $(".sb_navigation").hide();
      }
     
-	$('[data-toggle=offcanvas]').click(function () {
+/*	$('[data-toggle=offcanvas]').click(function () {
 		
     $('.row-offcanvas').toggleClass('active');
 	if ($('.row-offcanvas-left').hasClass('active')){
@@ -70,7 +70,7 @@ export class OverViewPage extends React.Component {
 		$('.sdbar_switch i').addClass('sw_on');
 		$('.sdbar_switch i').removeClass('sw_off');
 	};
-  });
+  });*/
   
   if($(".list-group").children().length == 1){
 	    $('.row-offcanvas-left').addClass('active');
@@ -81,7 +81,16 @@ export class OverViewPage extends React.Component {
   }
   
   
-
+toggleSideList(){
+	    $('.row-offcanvas').toggleClass('active');
+	if ($('.row-offcanvas-left').hasClass('active')){
+		$('.sdbar_switch i').removeClass('sw_on');
+		$('.sdbar_switch i').addClass('sw_off');
+    } else {
+		$('.sdbar_switch i').addClass('sw_on');
+		$('.sdbar_switch i').removeClass('sw_off');
+	};
+}
 	
 
 
@@ -331,7 +340,7 @@ console.log("l1name is ...."+selectedSignal);
 
                             <div className="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
                               <div className="side_panel">
-                                <a href="javascript:void(0);" data-toggle="offcanvas" className="sdbar_switch">
+                                <a href="javascript:void(0);" data-toggle="offcanvas" onClick={this.toggleSideList.bind(this)} className="sdbar_switch">
                                   <i className="mAd_icons sw_on"></i>
                                 </a>
                                 <div className="panel panel-primary">
@@ -383,3 +392,4 @@ console.log("l1name is ...."+selectedSignal);
     );
   }
 }
+

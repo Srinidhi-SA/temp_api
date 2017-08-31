@@ -116,6 +116,7 @@ export function  subTreeSetting(urlLength, length,paramL2) {
 			  $(".sb_navigation").hide();
 	  } // end of show -hide subtree and active class of subtree element
 	 
+
 	   if($(".list-group").children()){ // show hide side panel list
 		 if($(".list-group").children().length == 1){
 	    $('.row-offcanvas-left').addClass('active');
@@ -124,6 +125,7 @@ export function  subTreeSetting(urlLength, length,paramL2) {
 		   }
           }
 		  
+
 		/*  if(that.showSubTree){   // for sub tree active class check
        $(".sb_navigation #subTab i.mAd_icons.ic_perf ~ span").each(function(){
         console.log($(this).html() +" == "+ that.props.match.params.l2);
