@@ -5,6 +5,7 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from api.user_helper import UserSerializer
 from django.contrib.auth.models import User
+from django.conf import settings
 
 from api.models import Dataset
 from helper import convert_to_json, convert_time_to_human
@@ -37,6 +38,9 @@ class DatasetSerializer(serializers.ModelSerializer):
         ret = convert_to_json(ret)
         ret = convert_time_to_human(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        meta_data = ret.get('meta_data')
+        if 'possibleAnalysis' in meta_data:
+            meta_data['possibleAnalysis'] = settings.ANALYSIS_FOR_TARGET_VARIABLE
         return ret
 
     class Meta:
