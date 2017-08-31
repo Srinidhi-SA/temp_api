@@ -143,7 +143,7 @@ componentDidUpdate(){
 		   let trendId = metaIndex +1;
 		   that.possibleTrend = "chk_analysis"+trendId;
 			  
-			  return(<div key={metaIndex} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} onChange={this.handleAnlysisList.bind(this)}  /><label htmlFor={id}>{metaItem.name}</label></div>);
+			  return(<div key={metaIndex} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} onChange={this.handleAnlysisList.bind(this)}  /><label htmlFor={id}>{metaItem.display}</label></div>);
 		
        });
 	 }else if($('#signalVariableList option:selected').val() == "measure"){
@@ -151,7 +151,7 @@ componentDidUpdate(){
 		   let id = "chk_analysis"+ metaIndex;
 		   let trendId = metaIndex +1;
 		   that.possibleTrend = "chk_analysis"+trendId;
-			  return(<div key={metaIndex} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} onChange={this.handleAnlysisList.bind(this)} /><label htmlFor={id}>{metaItem.name}</label></div>);
+			  return(<div key={metaIndex} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} onChange={this.handleAnlysisList.bind(this)} /><label htmlFor={id}>{metaItem.display}</label></div>);
 		
        });
 		 
@@ -160,7 +160,7 @@ componentDidUpdate(){
 	 renderPossibleAnalysis= (function(){
                 return( <div >
                              {renderSubList}
-		                    <div  className="ma-checkbox inline"><input id={that.possibleTrend} type="checkbox" className="possibleAnalysis" value="Trend Analysis" onChange={that.handleAnlysisList.bind(that)} /><label htmlFor={that.possibleTrend}>Trend Analysis</label></div>
+		                    <div  className="ma-checkbox inline"><input id={that.possibleTrend} type="checkbox" className="possibleAnalysis" value="Trend" onChange={that.handleAnlysisList.bind(that)} /><label htmlFor={that.possibleTrend}>Trend</label></div>
                           </div>
 			);
         })(); 
