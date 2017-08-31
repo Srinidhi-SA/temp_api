@@ -147,7 +147,16 @@ export class DataPreview extends React.Component {
 				};
 
 			}else if(store.getState().datasets.curUrl.startsWith("/apps")){
-				if(store.getState().datasets.curUrl.indexOf("models") == -1){
+				if(store.getState().datasets.curUrl.indexOf("robo") != -1){
+					this.buttons['close']= {
+							url : "/apps/"+store.getState().apps.currentAppId+"/robo",
+							text: "Close"
+					};
+					this.buttons['create']= {
+							url :"/apps/"+store.getState().apps.currentAppId+"/scores/dataPreview/createScore",
+							text: "Compose Insight"
+					};
+				}else if(store.getState().datasets.curUrl.indexOf("models") == -1){
 					this.buttons['close']= {
 							url : "/apps",
 							text: "Close"
@@ -321,7 +330,6 @@ export class DataPreview extends React.Component {
 
 			const sideChart = dataPrev.columnData[0].chartData;
 			console.log("chart-----------")
-			console.log(JSON.stringify(sideChart));
 			const sideTable = dataPrev.columnData[0].columnStats;
 			console.log("checking side table data:; ");
 			console.log(sideTable);
@@ -438,7 +446,7 @@ export class DataPreview extends React.Component {
 					{/*<!-- ./ End Tab Subsettings -->*/}
 					</div>
 					</div>
-					<div className="row">
+					<div className="row buttonRow">
 					<div className="col-md-12 text-right">
  
 					<div className="panel">
@@ -460,7 +468,9 @@ export class DataPreview extends React.Component {
 			);
 		} else {
 			return (
-					<div>no data</div>
+					 <div>
+			            <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif"} />
+			          </div>
 			);
 		}
 	}
