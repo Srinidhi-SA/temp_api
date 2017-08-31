@@ -2,7 +2,7 @@ import {API} from "../helpers/env";
 import {PERPAGE,isEmpty} from "../helpers/helper";
 import store from "../store";
 import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,CUSTOMERDATA,HISTORIALDATA,EXTERNALDATA} from "../helpers/helper";
-import {hideDataPreview,getDataSetPreview} from "./dataActions";
+import {hideDataPreview,getDataSetPreview,showDataPreview} from "./dataActions";
 import {getHeaderWithoutContent} from "./dataUploadActions";
 export var appsInterval = null;
 
@@ -539,7 +539,8 @@ export function getRoboDataset(slug) {
 					dispatch(closeAppsLoaderValue());
 					dispatch(showRoboDataUploadPreview(true));
 					//dispatch(clearDataPreview());
-					dispatch(hideDataPreview());
+					dispatch(showDataPreview());
+					dispatch(getAppsRoboList(1));
 				}
 			}
 			else{
