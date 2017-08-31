@@ -155,7 +155,7 @@ export class DataPreview extends React.Component {
 							text: "Close"
 					};
 					this.buttons['create']= {
-							url :"/apps/"+store.getState().apps.currentAppId+"/robo/"+store.getState().apps.roboDatasetSlug+"/"+store.getState().signals.signalAnalysis.slug,
+							url :"/apps-robo/"+store.getState().apps.roboDatasetSlug+"/"+store.getState().signals.signalAnalysis.slug,
 							text: "Compose Insight"
 					};
 				}else if(store.getState().datasets.curUrl.indexOf("models") == -1){
