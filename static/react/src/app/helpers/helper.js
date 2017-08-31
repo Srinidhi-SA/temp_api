@@ -30,6 +30,10 @@ const CSLOADERPERVALUE = 10;
 const LOADERMAXPERVALUE = 90;
 const DEFAULTINTERVAL = 20000;
 const APPSDEFAULTINTERVAL = 15000;
+const CUSTOMERDATA = "Customer Data";
+const HISTORIALDATA = "Historial Data";
+const EXTERNALDATA = "External Data";
+
 
 export function generateHeaders(table) {
     var cols = table.tableData.map(function(rowData,i){
@@ -161,4 +165,8 @@ export{
 	LOADERMAXPERVALUE,
 	DEFAULTINTERVAL,
 	APPSDEFAULTINTERVAL,
+	CUSTOMERDATA,
+	HISTORIALDATA,
+	EXTERNALDATA,
+	
 	}

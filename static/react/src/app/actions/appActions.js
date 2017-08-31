@@ -1,9 +1,9 @@
 import {API} from "../helpers/env";
-import {PERPAGE} from "../helpers/helper";
+import {PERPAGE,isEmpty} from "../helpers/helper";
 import store from "../store";
-import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL} from "../helpers/helper";
-import {hideDataPreview} from "./dataActions";
-
+import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,CUSTOMERDATA,HISTORIALDATA,EXTERNALDATA} from "../helpers/helper";
+import {hideDataPreview,getDataSetPreview} from "./dataActions";
+import {getHeaderWithoutContent} from "./dataUploadActions";
 export var appsInterval = null;
 
 function getHeader(token){
@@ -397,6 +397,209 @@ export function updateScoreSlug(slug){
 	return {
 		type: "CREATE_SCORE_SUCCESS",
 		slug,	
+	}
+}
+
+export function getAppsRoboList(pageNo) {
+	return (dispatch) => {
+		return fetchRoboList(pageNo,sessionStorage.userToken).then(([response, json]) =>{
+			if(response.status === 200){
+				console.log(json)
+				dispatch(fetchRoboListSuccess(json))
+			}
+			else{
+				dispatch(fetchRoboListError(json))
+			}
+		})
+	}
+}
+
+function fetchRoboList(pageNo,token) {
+	return fetch(API+'/api/robo/?page_number='+pageNo+'&page_size='+PERPAGE+'',{
+		method: 'get',
+		headers: getHeader(token)
+	}).then( response => Promise.all([response, response.json()]));
+}
+
+function fetchRoboListError(json) {
+	return {
+		type: "ROBO_LIST_ERROR",
+		json
+	}
+}
+export function fetchRoboListSuccess(doc){
+	var data = doc;
+	var current_page =  doc.current_page
+	return {
+		type: "ROBO_LIST",
+		data,
+		current_page,
+	}
+}
+export function closeRoboDataPopup() {
+	return {
+		type: "APPS_ROBO_HIDE_POPUP",
+	}
+}
+
+export function openRoboDataPopup() {
+	return {
+		type: "APPS_ROBO_SHOW_POPUP",
+	}
+}
+
+export function saveFilesToStore(files,uploadData) {
+	console.log(files)
+	var file = files[0]
+	if(uploadData == CUSTOMERDATA){
+		return {
+			type: "CUSTOMER_DATA_UPLOAD_FILE",
+			files
+		}
+	}
+	else if(uploadData == HISTORIALDATA){
+		return {
+			type: "HISTORIAL_DATA_UPLOAD_FILE",
+			files
+		}
+	}
+	else if(uploadData == EXTERNALDATA){
+		return {
+			type: "EXTERNAL_DATA_UPLOAD_FILE",
+			files
+		}
+	}
+	
+}
+
+
+export function uploadFiles(dialog,insightName) {
+if(!isEmpty(store.getState().apps.customerDataUpload) && !isEmpty(store.getState().apps.historialDataUpload) && !isEmpty(store.getState().apps.externalDataUpload)){
+	return (dispatch) => {
+		  dispatch(closeRoboDataPopup());
+		  dispatch(openAppsLoader(DULOADERPERVALUE,"Please wait while mAdvisor is processing data... "));
+			return triggerDataUpload(sessionStorage.userToken,insightName).then(([response, json]) =>{
+				if(response.status === 200){
+					
+					dispatch(dataUploadFilesSuccess(json,dispatch))
+				}
+				else{
+					dispatch(dataUploadFilesError(json));
+					dispatch(closeAppsLoaderValue())
+				}
+			})
+		}
+}else{
+	dialog.showAlert("Please select Customer Data,Historial Data and External Data.");
+}
+	  
+}
+
+function triggerDataUpload(token,insightName) {
+		var data = new FormData();
+		data.append("customer_file",store.getState().apps.customerDataUpload);
+		data.append("historical_file",store.getState().apps.historialDataUpload);
+		data.append("market_file",store.getState().apps.externalDataUpload);
+		data.append("name",insightName);
+		return fetch(API+'/api/robo/',{
+			method: 'post',
+			headers: getHeaderWithoutContent(token),
+			body:data,
+		}).then( response => Promise.all([response, response.json()]));	
+}
+
+function dataUploadFilesSuccess(data,dispatch) {
+	var slug = data.slug;
+	appsInterval = setInterval(function(){
+			if(store.getState().apps.appsLoaderPerValue < LOADERMAXPERVALUE){
+				dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE));
+			}
+			dispatch(getRoboDataset(data.slug));
+	},APPSDEFAULTINTERVAL);
+	return {
+		type: "ROBO_DATA_UPLOAD_SUCCESS",
+		slug,	
+	}
+}
+
+export function dataUploadFilesError(josn){
+	return {
+		type: "ROBO_DATA_UPLOAD_ERROR",
+		json
+	}
+}
+
+export function getRoboDataset(slug) {
+	return (dispatch) => {
+		return fetchRoboDataset(sessionStorage.userToken,slug).then(([response, json]) =>{
+			if(response.status === 200){
+				if(json.analysis_done){
+					clearInterval(appsInterval);
+					dispatch(fetchRoboSummarySuccess(json));
+					dispatch(closeAppsLoaderValue());
+					dispatch(showRoboDataUploadPreview(true));
+					//dispatch(clearDataPreview());
+					dispatch(hideDataPreview());
+				}
+			}
+			else{
+				dispatch(closeAppsLoaderValue());
+				dispatch(showRoboDataUploadPreview(false));
+				dispatch(fetchModelSummaryError(json));
+			}
+		})
+	}
+}
+
+function fetchRoboDataset(token,slug) {
+	return fetch(API+'/api/robo/'+slug+'/',{
+		method: 'get',
+		headers: getHeader(token)
+	}).then( response => Promise.all([response, response.json()]));
+}
+
+function fetchRoboSummaryError(json) {
+	return {
+		type: "ROBO_SUMMARY_ERROR",
+		json
+	}
+}
+export function fetchRoboSummarySuccess(doc){
+	var data = doc;
+	return {
+		type: "ROBO_SUMMARY_SUCCESS",
+		data,
+	}
+}
+export function showRoboDataUploadPreview(flag){
+	return {
+		type: "ROBO_DATA_UPLOAD_PREVIEW",
+		flag,
+	}
+}
+export function clearRoboDataUploadFiles() {
+	return {
+		type: "EMPTY_ROBO_DATA_UPLOAD_FILES",
+	}
+}
+export function clearDataPreview(){
+	return {
+		type: "CLEAR_DATA_PREVIEW",
+	}
+}
+export function updateRoboUploadTab(tabId){
+	return {
+		type: "UPDATE_ROBO_UPLOAD_TAB_ID",
+		tabId
+	}
+}
+export function updateRoboAnalysisData(roboData,urlPrefix){
+	var roboSlug = "robo_6916600-2a33ebfd89";
+	return {
+		type: "ROBO_DATA_ANALYSIS",
+		roboData,
+		urlPrefix,
+		roboSlug
 	}
 }
 

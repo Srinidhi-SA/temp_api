@@ -25,7 +25,9 @@ import {ScoreVariableSelection} from "./components/apps/ScoreVariableSelection";
 import {AppsScoreDetail} from "./components/apps/AppsScoreDetail";
 import {AppsPanel} from "./components/apps/AppsPanel";
 import {AppsScoreList} from "./components/apps/AppsScoreList";
-
+import {RoboInsightList} from "./components/apps/RoboInsightList";
+import {RoboDataUploadPreview} from "./components/apps/RoboDataUploadPreview";
+import {RoboDocumentMode} from "./components/apps/RoboDocumentMode";
 class App extends React.Component {
 
   render() {
@@ -49,19 +51,22 @@ class App extends React.Component {
             <Route path="/stories" component={Stories} />
             <Route exact path="/data" component={Data} />
             <Route exact path="/data/:slug" component={DataPreview} />
-            <Route exact path="/apps/:slug/models/dataPreview/createModel" component={ModelVariableSelection} />
-            <Route exact path="/apps/:slug/models/:slug" component={AppsModelDetail} />
-            <Route exact path="/apps/:slug/scores/dataPreview/createScore" component={ScoreVariableSelection} />
+            <Route exact path="/apps/:AppId/models/dataPreview/createModel" component={ModelVariableSelection} />
+            <Route exact path="/apps/:AppId/models/:slug" component={AppsModelDetail} />
+            <Route exact path="/apps/:AppId/scores/dataPreview/createScore" component={ScoreVariableSelection} />
             <Route exact path="/data?page=:slug" component={Data} />
-            <Route exact path="/apps/:slug/models?page=:slug" component={Apps} />
-            <Route exact path="/apps/:slug/scores?page=:slug" component={Apps} />
-            <Route exact path="/apps/:slug/scores/:slug" component={AppsScoreDetail} />
+            <Route exact path="/apps/:AppId/models?page=:slug" component={Apps} />
+            <Route exact path="/apps/:AppId/scores?page=:slug" component={Apps} />
+            <Route exact path="/apps/:AppId/scores/:slug" component={AppsScoreDetail} />
             <Route exact path="/data/preview/createSignal" component={VariableSelection}/>
             <Route exact path="/signals?page=:slug" component={Signals}/>
-            <Route exact path="/apps/:slug/models" component={Apps} />
-            <Route exact path="/apps/:slug/scores" component={Apps} />
-            <Route exact path="/apps/:slug/models/data/:slug" component={DataPreview} />
-            				
+            <Route exact path="/apps/:AppId/models" component={Apps} />
+            <Route exact path="/apps/:AppId/scores" component={Apps} />
+            <Route exact path="/apps/:AppId/models/data/:slug" component={DataPreview} />
+            <Route exact path="/apps/:AppId/robo" component={RoboInsightList} />
+            <Route exact path="/apps/:AppId/robo/:slug" component={RoboDataUploadPreview} />
+            <Route exact path="/apps/:AppId/robo/:slug/:l1" component={RoboDocumentMode} />
+          					
             </Main>
       </Switch>
       </BrowserRouter>
