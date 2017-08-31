@@ -43,7 +43,7 @@ export class C3Chart extends React.Component {
 }
   componentDidMount() {
 	
-    this.updateChart();
+   // this.updateChart();
   }
   
   
