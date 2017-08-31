@@ -271,18 +271,22 @@ JOBSERVER = {
 }
 
 ANALYSIS_FOR_TARGET_VARIABLE = {
-    "target_variable": {"dimension": [
-        {"name": "Descriptive analysis", "id": "descriptive-analysis"},
-        {"name": "Dimension vs. Dimension", "id": "dimension-vs-dimension"},
-        {"name": "Predictive modeling", "id": "predictive-modeling"}
+    "target_variable": {
+        "dimension": [
+        {"name": "Descriptive analysis", "id": "descriptive-analysis", "display": "Overview"},
+        {"name": "Dimension vs. Dimension", "id": "dimension-vs-dimension", "display": "Association"},
+        {"name": "Predictive modeling", "id": "predictive-modeling", "display": "Prediction"}
     ],
         "measure": [
-            {"name": "Descriptive analysis", "id": "descriptive-analysis"},
-            {"name": "Measure vs. Dimension", "id": "measure-vs-dimension"},
-            {"name": "Measure vs. Measure", "id": "measure-vs-measure"},
-            {"name": "Predictive modeling", "id": "predictive-modeling"}
+            {"name": "Descriptive analysis", "id": "descriptive-analysis", "display": "Overview"},
+            {"name": "Measure vs. Dimension", "id": "measure-vs-dimension", "display": "Performance"},
+            {"name": "Measure vs. Measure", "id": "measure-vs-measure", "display": "Incluencer"},
+            {"name": "Predictive modeling", "id": "predictive-modeling", "display": "Prediction"}
         ], },
-    "time_dimension" :{"name": "Trend", "id" : "trend", "help_text" : "Enable this analysis type only if date columns is present in selected variables"}
+    "time_dimension" :{"name": "Trend",
+                       "id" : "trend",
+                       "help_text" : "Enable this analysis type only if date columns is present in selected variables",
+                       "display": "Trend"}
 }
 # {"name":"Trend":"id":4} will be added to the above lists based on the logic(if date columns is present or not)
 
