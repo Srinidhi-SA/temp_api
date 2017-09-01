@@ -1,7 +1,6 @@
 import React from "react";
 import {connect} from "react-redux";
 import {c3Functions} from "../helpers/c3.functions";
-import { Scrollbars } from 'react-custom-scrollbars';
 
 
 
@@ -16,8 +15,7 @@ export class C3Chart extends React.Component {
 	//this.toolData = [];
 	//this.toolLegend =[];
 	//this.chartDiv = null;
-	this.modalCls = "modal fade chart-modal"+props.classId;
-	 this.tableCls = "table-responsive table-area table"+props.classId;
+
 	if($(".chart"+props.classId).html()){
 		this.updateChart();
 	}
@@ -31,14 +29,7 @@ export class C3Chart extends React.Component {
 	  }
       return $(".chart"+this.props.classId, this.element);
     }
-	
-	closeModal(){ //closing the modal
-		$(".chart-modal"+this.props.classId).modal('hide');
-	}  
-	 showModal(){// showing the modal
-		$(".chart-modal"+this.props.classId).modal({ keyboard: true,show: true });
-	 }
-	
+
    componentWillMount(){
 	console.log("chart store object::::");
 	console.log(this.props.chartObject);
@@ -52,7 +43,7 @@ export class C3Chart extends React.Component {
 }
   componentDidMount() {
 	
-    this.updateChart();
+   // this.updateChart();
   }
   
   
@@ -134,94 +125,20 @@ if(this.props.tooltip){
    
     //this.props.dispatch(chartObjStore(chart));
 	
-	//------------ popup setup------------------------------------------------
-	$('.chart-area').mouseenter(function(){
-		 $('.chart-data-icon').css('visibility','visible');
-	}).mouseleave(function(){
-		 $('.chart-data-icon').css('visibility','hidden');
-	});
-	if(this.props.tabledata){
-         var tabledata = this.props.tabledata;
-		 console.log("table data");
-	     console.log(tabledata);
-		  
-		 var collength = tabledata.length;
-		 console.log(collength);
-		 var rowlength = tabledata[0].length;
-		 var tablehtml  = "<thead><tr>", tablehead ="",  tablebody="";
-		 for(var i=0; i<collength;i++){
-			 tablehtml += "<th> <b>" + tabledata[i][0] +"</b></th>";
-		 }
-		   tablehtml += "</tr></thead><tbody>";
-
-			 for(var j=1; j<rowlength;j++){
-				 tablehtml +="<tr>";
-				 for(var k=0; k<collength;k++){
-			 tablehtml += "<td>" + tabledata[k][j] +"</td>"
-			 }
-			 tablehtml +="</tr>";
-		 }
-		 tablehtml += "</tbody></table>";
-
-		$(".table"+this.props.classId +" table").html(tablehtml);
-	}
-	
-	//-----popup setup end------------------------------------------------
-	
   }
 
 
   render() {
-	  this.updateChart();
+	  var that = this;
+	  $(function(){
+		  that.updateChart();
+	  });
+	  
 	  
      //var classId = "chart"+this.props.classId + " ct col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 xs-mb-20";
 	  
       return(
-<div className="container chart-area">
-  <div className="row">
-  	<div className="chart-data-icon col-md-9 col-md-offset-1">
-         <i className="fa fa-cloud-download" aria-hidden="true" onClick={this.showModal.bind(this)}></i>
-     </div>
-  </div>
-    <div className="row">
-		   <div className={this.classId}></div>
-     </div>
-		   {/* chart data Popup */}
-		   <div id="" className={this.modalCls} role="dialog">
-		   <div className="modal-dialog ">
-  
-		   {/*Modal content*/}
-			<div className="modal-content chart-data-popup">
-			   <div className="modal-body chart-data-modal-body">
-			  <p className="chart-data-title">Chart Data</p>
-			   <button type='button' onClick={this.closeModal.bind(this)} className='close chart-data-close'  data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>
-
-		  </div>
-		  <br/>
-		  
-		  <div className="row" >
-			<div className="col-md-12">
-			 <div className={this.tableCls}>
-			  <Scrollbars>
-			   <table className='table chart-table'>
-			   </table>
-			  {/*<div class="form-group col-md-7;">*/}
-			   </Scrollbars>
-			   </div>
-			</div>
-		   </div> 
-
-		   {/*<div className="chart-data-download">
-			  <a href="" id="cddownload" className="btn btn-primary" download >Download Chart Data</a>
-		   </div>*/}
-
-
-
-		   </div>
-		  </div>
-		 </div>
-
- </div>
+	        <div class={this.classId}></div>
  
       );
   }

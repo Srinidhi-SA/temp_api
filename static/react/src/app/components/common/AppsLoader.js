@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Redirect } from "react-router";
 import store from "../../store";
 import {Modal,Button} from "react-bootstrap";
-import {openDULoaderPopup,closeDULoaderPopup} from "../../actions/dataActions";
+import {openAppsLoaderValue,closeAppsLoaderValue} from "../../actions/appActions";
 import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
 import HeatMap from '../../helpers/heatmap';
@@ -22,15 +22,15 @@ export class AppsLoader extends React.Component {
     super();
   }
 	openModelPopup(){
-  	this.props.dispatch(openDULoaderPopup())
+  	this.props.dispatch(openAppsLoaderValue())
   }
   closeModelPopup(){
-  	this.props.dispatch(closeDULoaderPopup())
+  	this.props.dispatch(closeAppsLoaderValue())
   }
   render() {
    return (
           <div id="dULoader">
-      	<Modal show={store.getState().apps.appsLoaderModal} onHide={this.closeModelPopup.bind(this)} dialogClassName="modal-colored-header">
+      	<Modal show={store.getState().apps.appsLoaderModal} backdrop="static" onHide={this.closeModelPopup.bind(this)} dialogClassName="modal-colored-header">
       	<Modal.Body>
 		<div className="row">
 		<div className="col-md-12">

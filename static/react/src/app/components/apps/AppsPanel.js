@@ -5,7 +5,7 @@ import {connect} from "react-redux";
 import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab} from "react-bootstrap";
 import {Link, Redirect} from "react-router-dom";
-import {updateSelectedApp,updateModelSummaryFlag,updateScoreSummaryFlag} from "../../actions/appActions";
+import {updateSelectedApp,updateModelSummaryFlag,updateScoreSummaryFlag,showRoboDataUploadPreview} from "../../actions/appActions";
 import {STATIC_URL} from "../../helpers/env.js"
 
 @connect((store) => {
@@ -26,6 +26,7 @@ export class AppsPanel extends React.Component {
 	  this.props.dispatch(updateSelectedApp(appId,appName));
 	  this.props.dispatch(updateModelSummaryFlag(false));
 	  this.props.dispatch(updateScoreSummaryFlag(false));
+	  this.props.dispatch(showRoboDataUploadPreview(false));
   }
   render() {
     console.log("Apps panel is called##########3");
@@ -41,7 +42,7 @@ export class AppsPanel extends React.Component {
 					<div class="col-md-4">
 						
 						<div className="app-block"> 
-							<Link onClick={this.gotoAppsList.bind(this,1,"OPPORTUNITY SCORING")} className="app-link" to="/apps/2/models">
+							<Link onClick={this.gotoAppsList.bind(this,1,"OPPORTUNITY SCORING")} className="app-link" to="/apps/1/models">
 							<div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
 								<img src={STATIC_URL + "assets/images/icon_oppr.png"} className="img-responsive"/>
 							</div>
@@ -73,7 +74,7 @@ export class AppsPanel extends React.Component {
 					<div className="col-md-4">
 						
 						<div className="app-block">
-						<Link onClick={this.gotoAppsList.bind(this,2,"AUTOMATED PREDICTION")} className="app-link" to="/apps/1/models">
+						<Link onClick={this.gotoAppsList.bind(this,2,"AUTOMATED PREDICTION")} className="app-link" to="/apps/2/models">
 							<div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
 								<img src={STATIC_URL + "assets/images/icon_prediction.png"} className="img-responsive"/>
 							</div>
@@ -104,7 +105,7 @@ export class AppsPanel extends React.Component {
 					</div>
 					<div className="col-md-4">							
 						<div className="app-block">
-							<a href="#" className="app-link" >
+						<Link onClick={this.gotoAppsList.bind(this,3,"ROBO INSIGHTS")} className="app-link" to="/apps/3/robo">
 							<div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
 								<img src={STATIC_URL + "assets/images/icon_robo.png"} className="img-responsive"/>
 							</div>
@@ -114,7 +115,7 @@ export class AppsPanel extends React.Component {
 									Machine-learning alogrithms are applied to explore the relation between significant flares and...
 								</p>
 							</div>	
-							</a>
+							</Link>
 							<div className="card-footer">
 							<ul className="app_labels">
 								<li className="xs-p-10 text-primary"><i className="fa fa-tag fa-1x"></i></li>

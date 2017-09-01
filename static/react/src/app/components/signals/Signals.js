@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import ReactDOM from "react-dom";
 import {Link} from "react-router-dom";
 import store from "../../store";
-import {getList,emptySignalAnalysis} from "../../actions/signalActions";
+import {getList,emptySignalAnalysis,handleDelete} from "../../actions/signalActions";
 import {Pagination} from "react-bootstrap";
 //import {BreadCrumb} from "../common/BreadCrumb";
 import Breadcrumb from 'react-breadcrumb';
@@ -11,6 +11,7 @@ import Breadcrumb from 'react-breadcrumb';
 var dateFormat = require('dateformat');
 import {CreateSignal} from "./CreateSignal";
 import {STATIC_URL} from "../../helpers/env";
+import Dialog from 'react-bootstrap-dialog';
 
 @connect((store) => {
   return {login_response: store.login.login_response, signalList: store.signals.signalList.data, selectedSignal: store.signals.signalAnalysis};
@@ -57,7 +58,15 @@ export class Signals extends React.Component {
 		this.props.history.push('/signals?page='+eventKey+'')
 		this.props.dispatch(getList(sessionStorage.userToken,eventKey));	
 	}
-
+	
+  handleDelete(slug){
+	  //alert("reached handle");
+		 this.props.dispatch(handleDelete(slug,this.refs.dialog));
+	  }
+	  
+   handleRename(slug){
+		  //this.props.dispatch(handleRename(slug,this.refs.dialog));
+	  }
  
   getSignalAnalysis(e){
 	  console.log("Link Onclick is called")
@@ -87,6 +96,11 @@ export class Signals extends React.Component {
     if (data) {
       console.log("under if data condition!!")
       const storyList = data.map((story, i) => {
+		  if(story.type == "dimension"){
+		     var imgLink =  STATIC_URL + "assets/images/d_cardIcon.png"
+		  }else{
+			 var imgLink =  STATIC_URL + "assets/images/m_carIcon.png"
+		  }
         var signalLink = "/signals/" + story.slug;
         return (
 
@@ -103,7 +117,7 @@ export class Signals extends React.Component {
                     </h4>
                   </div>
                   <div className="col-xs-3">
-                    <img src={ STATIC_URL + "assets/images/d_cardIcon.png" } className="img-responsive" alt="LOADING"/>
+                    <img src={imgLink} className="img-responsive" alt="LOADING"/>
                   </div>
                 </div>
               </div>
@@ -128,7 +142,7 @@ export class Signals extends React.Component {
                       <a className="dropdown-item" href="#renameCard" data-toggle="modal">
                         <i className="fa fa-edit"></i>  Rename</a>
                     </li>
-                    <li>
+                    <li onClick={this.handleDelete.bind(this,story.slug)}>
                       <a className="dropdown-item" href="#deleteCard" data-toggle="modal">
                         <i className="fa fa-trash-o"></i>  Delete</a>
                     </li>
@@ -179,6 +193,7 @@ export class Signals extends React.Component {
 					</div>
 				 </div>
 				</div>
+				<Dialog ref="dialog" />
 			</div>
       );
     } else {

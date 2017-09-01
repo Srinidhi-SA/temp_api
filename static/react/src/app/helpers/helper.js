@@ -30,6 +30,10 @@ const CSLOADERPERVALUE = 10;
 const LOADERMAXPERVALUE = 90;
 const DEFAULTINTERVAL = 20000;
 const APPSDEFAULTINTERVAL = 15000;
+const CUSTOMERDATA = "Customer Data";
+const HISTORIALDATA = "Historial Data";
+const EXTERNALDATA = "External Data";
+
 
 export function generateHeaders(table) {
     var cols = table.tableData.map(function(rowData,i){
@@ -98,7 +102,50 @@ export function  generateRows(table) {
 	  })
 	return tbodyData;
 	}
+	
+export function  subTreeSetting(urlLength, length,paramL2) {
+	  $(function(){ 
+	    if(urlLength == length ){  //show -hide subtree and active class of subtree element
+		  $(".sb_navigation").show();
+		   $(".sb_navigation #subTab i.mAd_icons.ic_perf ~ span").each(function(){
+				console.log($(this).html() +" == "+ paramL2);
+				if($(this).attr('id') == paramL2){
+				  $(this).parent().addClass('active');
+				}else{
+				  $(this).parent().removeClass('active');
+				}
+			   });
+		 
+	  }else{
+			  $(".sb_navigation").hide();
+	  } // end of show -hide subtree and active class of subtree element
+	 
 
+	   if($(".list-group").children()){ // show hide side panel list
+		 if($(".list-group").children().length == 1){
+	    $('.row-offcanvas-left').addClass('active');
+		$('.sdbar_switch i').removeClass('sw_on');
+		$('.sdbar_switch i').addClass('sw_off');
+		   }
+          }
+		  
+
+		/*  if(that.showSubTree){   // for sub tree active class check
+       $(".sb_navigation #subTab i.mAd_icons.ic_perf ~ span").each(function(){
+        console.log($(this).html() +" == "+ that.props.match.params.l2);
+        if($(this).attr('id') == that.props.match.params.l2){
+          $(this).parent().addClass('active');
+        }else{
+          $(this).parent().removeClass('active');
+        }
+       });
+     }*/
+	 
+		
+	  });
+
+	}
+	
 export{
 	FILEUPLOAD,
 	MYSQL,
@@ -120,4 +167,8 @@ export{
 	LOADERMAXPERVALUE,
 	DEFAULTINTERVAL,
 	APPSDEFAULTINTERVAL,
+	CUSTOMERDATA,
+	HISTORIALDATA,
+	EXTERNALDATA,
+	
 	}

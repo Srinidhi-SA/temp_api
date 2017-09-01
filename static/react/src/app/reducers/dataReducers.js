@@ -223,6 +223,14 @@ export default function reducer(state = {
 		}
 	}
 	break;
+	case "CLEAR_DATA_PREVIEW": {
+		return {...state,
+			dataPreview:{},
+			dataPreviewFlag:false,
+			selectedDataSet:""
+		}
+	}
+	break;
 	}
 	return state
 }

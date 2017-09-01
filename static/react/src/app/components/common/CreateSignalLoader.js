@@ -29,7 +29,8 @@ export class CreateSignalLoader extends React.Component {
   render() {
    return (
           <div id="createSignalLoader">
-      	<Modal show={store.getState().signals.createSignalLoaderModal} onHide={this.closeModelPopup.bind(this)} dialogClassName="modal-colored-header">
+
+      	<Modal show={store.getState().signals.createSignalLoaderModal}  backdrop="static" onHide={this.closeModelPopup.bind(this)} dialogClassName="modal-colored-header">
       	<Modal.Body>
     	<div className="row">
 		<div className="col-md-12">

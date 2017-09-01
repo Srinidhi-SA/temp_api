@@ -3,6 +3,9 @@ import {CSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,PERPAGE} from "../hel
 import {connect} from "react-redux";
 import store from "../store";
 import {openCsLoaderModal,closeCsLoaderModal,updateCsLoaderValue} from "./createSignalActions";
+import Dialog from 'react-bootstrap-dialog'
+import { showLoading, hideLoading } from 'react-redux-loading-bar'
+
 // var API = "http://34.196.204.54:9000";
 
 // @connect((store) => {
@@ -189,3 +192,59 @@ export function emptySignalAnalysis() {
 		type: "SIGNAL_ANALYSIS_EMPTY",
 	}
 }
+
+//delete signal -------------------
+export function showDialogBox(slug,dialog,dispatch){
+	Dialog.setOptions({
+		  defaultOkLabel: 'Yes',
+		  defaultCancelLabel: 'No',
+		})
+	dialog.show({
+		  title: 'Delete Dataset',
+		  body: 'Are you sure you want to delete signal?',
+		  actions: [
+		    Dialog.CancelAction(),
+		    Dialog.OKAction(() => {
+		    	deleteSignal(slug,dialog,dispatch)
+		    })
+		  ],
+		  bsSize: 'small',
+		  onHide: (dialogBox) => {
+		    dialogBox.hide()
+		    console.log('closed by clicking background.')
+		  }
+		});
+}
+export function handleDelete(slug,dialog) {
+	return (dispatch) => {
+		showDialogBox(slug,dialog,dispatch)
+	}
+}
+function deleteSignal(slug,dialog,dispatch){
+	dispatch(showLoading());
+	Dialog.resetOptions();
+	return deleteSignalAPI(slug).then(([response, json]) =>{
+		if(response.status === 200){
+			dispatch(getList(sessionStorage.userToken,store.getState().signals.signalList.current_page));
+			dispatch(hideLoading());
+		}
+		else{
+			dialog.showAlert("Error occured , Please try after sometime.");
+			dispatch(hideLoading());
+		}
+	})
+}
+function deleteSignalAPI(slug){
+	console.log("deleteSignalAPI(slug)");
+	console.log(slug);
+	return fetch(API+'/api/signals/'+slug+'/',{
+		method: 'put',
+		headers: getHeader(sessionStorage.userToken),
+		body:JSON.stringify({
+			deleted:true,
+		}),
+	}).then( response => Promise.all([response, response.json()]));
+	
+	}
+
+// end of delete signal
