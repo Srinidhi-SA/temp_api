@@ -135,7 +135,7 @@ class TrainerView(viewsets.ModelViewSet):
         return Response(serializer.errors)
 
     def list(self, request, *args, **kwargs):
-        app_id = int(kwargs.get('app_id', 1))
+        app_id = int(request.query_params.get('app_id', 1))
         if 'page' in request.query_params:
             if request.query_params.get('page') == 'all':
                 query_set = self.get_queryset()
