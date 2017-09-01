@@ -114,7 +114,7 @@ chartData = {
 def decode_and_convert_chart_raw_data(data):
     if not check_chart_data_format(data):
         return {}
-    from api.C3Chart.c3charts import C3Chart, ScatterChart
+    from api.C3Chart.c3charts import C3Chart, ScatterChart, PieChart
     # import pdb;pdb.set_trace()
     chart_type = data['chart_type']
     axes = data['axes']
@@ -124,6 +124,8 @@ def decode_and_convert_chart_raw_data(data):
     axisRotation = data.get('axisRotation', None)
     yAxisNumberFormat = data.get('yAxisNumberFormat', None)
     y2AxisNumberFormat = data.get('y2AxisNumberFormat', None)
+    if y2AxisNumberFormat == "":
+        y2AxisNumberFormat = ".2s"
     subchart = data.get('subchart', True)
 
     print "legend ------->> --------"
@@ -370,6 +372,19 @@ def decode_and_convert_chart_raw_data(data):
         c3_chart_details["chart_c3"] = c3.get_json()
         c3_chart_details["tooltip_c3"] = [data_c3[0], data_c3[1], data_c3[2]]
         return c3_chart_details
+
+    # elif chart_type in ['pie']:
+    #     data_c3 = data['data']
+    #     chart_data = replace_chart_data(data_c3)
+    #     c3_chart_details['table_c3'] = chart_data
+    #
+    #     c3 = PieChart(data=chart_data)
+    #     c3.set_all_basics()
+    #
+    #     c3_chart_details['pieformat'] = 'set_pie_labels'
+    #     c3_chart_details['pielabelformat'] = '.2s'
+    #     c3_chart_details['chart_c3'] = c3.get_json()
+    #     return c3_chart_details
 
 
 def replace_chart_data(data, axes=None):
