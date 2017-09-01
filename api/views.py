@@ -22,7 +22,8 @@ from api.utils import \
     InsightListSerializers, \
     TrainerListSerializer, \
     ScoreListSerializer, \
-    RoboSerializer
+    RoboSerializer, \
+    RoboListSerializer
 from models import Insight, Dataset, Job, Trainer, Score, Robo
 
 
@@ -567,3 +568,34 @@ class RoboView(viewsets.ModelViewSet):
 
         serializer = RoboSerializer(instance=instance)
         return Response(serializer.data)
+
+    def list(self, request, *args, **kwargs):
+
+        if 'page' in request.query_params:
+            if request.query_params.get('page') == 'all':
+                query_set = self.get_queryset()
+
+                if 'name' in request.query_params:
+                    name = request.query_params.get('name')
+                    query_set = query_set.filter(name__contains=name)
+
+                serializer = RoboListSerializer(query_set, many=True)
+                return Response({
+                    "data": serializer.data
+                })
+
+        query_set = self.get_queryset()
+
+        if 'name' in request.query_params:
+            name = request.query_params.get('name')
+            query_set = query_set.filter(name__contains=name)
+
+        page_class = self.pagination_class()
+
+        page = page_class.paginate_queryset(
+            queryset=query_set,
+            request=request
+        )
+
+        serializer = RoboListSerializer(page, many=True)
+        return page_class.get_paginated_response(serializer.data)

@@ -248,3 +248,13 @@ class RoboSerializer(serializers.ModelSerializer):
         ret['analysis_done'] = instance.analysis_done
         return ret
 
+
+class RoboListSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Robo
+        exclude =  (
+            'id',
+            'config',
+            'data'
+        )
