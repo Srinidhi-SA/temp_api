@@ -99,7 +99,6 @@ componentDidUpdate(){
      if(!$.isEmptyObject(this.props.selectedSignal) && !that.signalFlag){
        console.log("move from variable selection page");
        console.log(this.props.selectedSignal)
-	   alert("done");
        $('body').pleaseWait('stop');
        let _link = "/signals/"+this.props.selectedSignal.slug;
        return(<Redirect to={_link}/>)
