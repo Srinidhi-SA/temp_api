@@ -85,11 +85,11 @@ export class AppsScoreDetail extends React.Component {
 	}
 	else{
 		return (
-			      <div className="side-body">
+				 <div className="side-body">
 			        <div className="page-head">
 			        </div>
 			        <div className="main-content">
-			        Loading....
+			          <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif" } />
 			        </div>
 			      </div>
 			    );
