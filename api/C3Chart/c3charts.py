@@ -103,6 +103,11 @@ class C3Chart(object):
 
     def set_basic_axis(self):
 
+        if USE_MULTILINE_LABELS:
+            X_TICK_MULTILNE = True
+        else:
+            X_TICK_MULTILNE = False
+
         self._axis = {
             'x':
                 {
@@ -197,17 +202,20 @@ class C3Chart(object):
         }
 
     def set_height_between_legend_and_x_axis(self):
-        # self._x_height = X_AXIS_HEIGHT + 30
-        import math
-        if self._x_max_string_length:
-            print 'calculation', abs(math.sin(math.radians(self._x_label_rotation))), abs(math.sin(math.radians(self._x_label_rotation))) *\
-                             5 *\
-                             self._x_max_string_length
-            self._x_height = abs(math.sin(math.radians(self._x_label_rotation))) *\
-                             5 *\
-                             self._x_max_string_length + X_AXIS_HEIGHT
+        if USE_MULTILINE_LABELS:
+            import math
+            if self._x_max_string_length:
+                print 'calculation', abs(math.sin(math.radians(self._x_label_rotation))), abs(
+                    math.sin(math.radians(self._x_label_rotation))) * \
+                                                                                          5 * \
+                                                                                          self._x_max_string_length
+                self._x_height = abs(math.sin(math.radians(self._x_label_rotation))) * \
+                                 5 * \
+                                 self._x_max_string_length + X_AXIS_HEIGHT
+            else:
+                self._x_height = X_AXIS_HEIGHT
         else:
-            self._x_height = X_AXIS_HEIGHT
+            self._x_height = X_AXIS_HEIGHT + 30
 
     def find_and_set_length_of_max_string_in_x(self):
         data = self._data_data
