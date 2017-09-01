@@ -84,6 +84,7 @@ class InsightSerializer(serializers.ModelSerializer):
         dataset = ret['dataset']
         dataset_object = Dataset.objects.get(pk=dataset)
         ret['dataset'] = dataset_object.slug
+        ret['dataset_name'] = dataset_object.name
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
         return ret
@@ -109,6 +110,16 @@ class InsightSerializer(serializers.ModelSerializer):
 
 class InsightListSerializers(serializers.ModelSerializer):
 
+    def to_representation(self, instance):
+        ret = super(InsightListSerializers, self).to_representation(instance)
+        dataset = ret['dataset']
+        dataset_object = Dataset.objects.get(pk=dataset)
+        ret['dataset'] = dataset_object.slug
+        ret['dataset_name'] = dataset_object.name
+        ret = convert_to_json(ret)
+        ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        return ret
+
     class Meta:
         model = Insight
         exclude = (
@@ -128,6 +139,7 @@ class TrainerSerlializer(serializers.ModelSerializer):
         dataset = ret['dataset']
         dataset_object = Dataset.objects.get(pk=dataset)
         ret['dataset'] = dataset_object.slug
+        ret['dataset_name'] = dataset_object.name
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
         return ret
@@ -150,6 +162,17 @@ class TrainerSerlializer(serializers.ModelSerializer):
 
 class TrainerListSerializer(serializers.ModelSerializer):
 
+    def to_representation(self, instance):
+        ret = super(TrainerListSerializer, self).to_representation(instance)
+        dataset = ret['dataset']
+        dataset_object = Dataset.objects.get(pk=dataset)
+        ret['dataset'] = dataset_object.slug
+        ret['dataset_name'] = dataset_object.name
+        ret = convert_to_json(ret)
+        ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        return ret
+
+
     class Meta:
         model = Trainer
         exclude =  (
@@ -167,7 +190,9 @@ class ScoreSerlializer(serializers.ModelSerializer):
         trainer = ret['trainer']
         trainer_object = Trainer.objects.get(pk=trainer)
         ret['trainer'] = trainer_object.slug
+        ret['trainer_name'] = trainer_object.name
         ret['dataset'] = trainer_object.dataset.slug
+        ret['dataset_name'] = trainer_object.dataset.name
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
         return ret
@@ -191,6 +216,18 @@ class ScoreSerlializer(serializers.ModelSerializer):
 
 
 class ScoreListSerializer(serializers.ModelSerializer):
+
+    def to_representation(self, instance):
+        ret = super(ScoreListSerializer, self).to_representation(instance)
+        trainer = ret['trainer']
+        trainer_object = Trainer.objects.get(pk=trainer)
+        ret['trainer'] = trainer_object.slug
+        ret['trainer_name'] = trainer_object.name
+        ret['dataset'] = trainer_object.dataset.slug
+        ret['dataset_name'] = trainer_object.dataset.name
+        ret = convert_to_json(ret)
+        ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        return ret
 
     class Meta:
         model = Score
@@ -236,6 +273,7 @@ class RoboSerializer(serializers.ModelSerializer):
         market_dataset_object = Dataset.objects.get(pk=ret['market_dataset'])
         ret['market_dataset'] = DatasetSerializer(market_dataset_object).data
 
+
         if instance.analysis_done is False:
             if customer_dataset_object.analysis_done and \
                 historical_dataset_object.analysis_done and \
@@ -250,6 +288,35 @@ class RoboSerializer(serializers.ModelSerializer):
 
 
 class RoboListSerializer(serializers.ModelSerializer):
+
+    def to_representation(self, instance):
+        from api.datasets.serializers import DatasetSerializer
+        ret = super(RoboListSerializer, self).to_representation(instance)
+
+        customer_dataset_object = Dataset.objects.get(pk=ret['customer_dataset'])
+        ret['customer_dataset'] = customer_dataset_object.slug
+
+        historical_dataset_object = Dataset.objects.get(pk=ret['historical_dataset'])
+        ret['historical_dataset'] = historical_dataset_object.slug
+
+        market_dataset_object = Dataset.objects.get(pk=ret['market_dataset'])
+        ret['market_dataset'] = market_dataset_object.slug
+
+        ret['dataset_name'] = market_dataset_object.name + ", " +\
+                              customer_dataset_object.name + ", " + \
+                              historical_dataset_object.name
+
+        if instance.analysis_done is False:
+            if customer_dataset_object.analysis_done and \
+                historical_dataset_object.analysis_done and \
+                    market_dataset_object.analysis_done:
+                instance.analysis_done = True
+                instance.save()
+
+        ret = convert_to_json(ret)
+        ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        ret['analysis_done'] = instance.analysis_done
+        return ret
 
     class Meta:
         model = Robo
