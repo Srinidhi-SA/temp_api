@@ -22,7 +22,7 @@ export class DetailOverlay extends React.Component {
              <span className="text-primary">{sessionStorage.userName}</span>
            </h4>
            <h5>Updated on :
-             <mark>{dateFormat(details.updated_on, "mmmm d,yyyy h:MM")}</mark>
+             <mark>{dateFormat(details.updated_at, "mmmm d,yyyy h:MM")}</mark>
            </h5>
            <hr className="hr-popover"/>
            <p>
