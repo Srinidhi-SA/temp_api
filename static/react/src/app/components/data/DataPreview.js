@@ -303,7 +303,7 @@ export class DataPreview extends React.Component {
 				const anchorCls =thElement.slug + " dropdown-toggle";
 				return(
 						<th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)}>
-						<a href="#" data-toggle="dropdown" className={anchorCls}><i className="fa fa-clock-o"></i> {thElement.name}</a>
+						<a href="#" data-toggle="dropdown" className={anchorCls}><i className="fa"></i> {thElement.name}</a>
 						{/*<ul className="dropdown-menu">
                <li><a href="#">Ascending</a></li>
                <li><a href="#">Descending</a></li>
