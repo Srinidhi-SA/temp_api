@@ -96,6 +96,7 @@ class InsightSerializer(serializers.ModelSerializer):
         instance.live_status = validated_data.get("live_status", instance.live_status)
         instance.analysis_done = validated_data.get("analysis_done", instance.analysis_done)
         instance.name = validated_data.get("name", instance.name)
+        instance.deleted = validated_data.get("deleted", instance.deleted)
 
         instance.save()
 
