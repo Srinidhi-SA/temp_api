@@ -336,7 +336,7 @@ def write_into_databases(job_type, object_slug, results):
         results['possibleAnalysis'] = settings.ANALYSIS_FOR_TARGET_VARIABLE
         da = []
         for d in results.get('sampleData'):
-            da.append(map(str, results.get('sampleData')[3]))
+            da.append(map(str, d))
         results['sampleData'] = da
         dataset_object.meta_data = json.dumps(results)
         dataset_object.analysis_done = True
