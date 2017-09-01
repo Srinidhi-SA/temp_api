@@ -1116,7 +1116,7 @@ address, blockquote .small, blockquote footer, blockquote small, dd, dt, pre {
 
 @media (min-width:768px) {
 .lead {
-	font-size: 19.5px
+	font-size: 16.5px
 }
 }
 .small, small {
@@ -11488,7 +11488,7 @@ pre {
 	margin: 0 20px
 }
 .panel-heading .panel-title, .panel-heading .title, .panel-heading>h1, .panel-heading>h2, .panel-heading>h3, .panel-heading>h4, .panel-heading>h5, .panel-heading>h6 {
-	font-size: 18px;
+	font-size: 20px;
 	font-weight: 300;
 	display: block;
 	margin: 0
@@ -14636,7 +14636,7 @@ background:#ededed; color:#7dac02
 
 /** Panel Header **/
 .panel-mAd .panel { padding: 10px; }
-.panel-mAd>.panel-heading {  margin: 0; /*padding: 6px 0px 0 10px; background-color: #FFF; border-bottom:1px solid #ddd; */}
+.panel-mAd>.panel-heading {  margin: 0 0 10px 0; /*padding: 6px 0px 0 10px; background-color: #FFF; border-bottom:1px solid #ddd; */}
 .panel-mAd>.panel-heading h2 { margin-top: 8px;font-weight: bold;}
 .panel-mAd .panel-body { padding:0;}
 .panel-mAd div h2 small { font-size:50%; }
@@ -14710,7 +14710,7 @@ background:#ededed; color:#7dac02
 .tabs-control span {
     position: absolute;
     /*set position of image from top to be 50%...*/
-    top: 50%;
+    top: 330px;
     /*and then shift it down to make it perfectly center.*/
     transform: translate(-50%, -50%);
 
@@ -14897,7 +14897,7 @@ a.tabs-control.right span { right: 5px; }
 	box-shadow: -5px 0px 10px 0px rgba(0,0,0,0.2);
 	}
 .row-offcanvas-left.active .sdbar_switch { left:-50px; }
-.mAd_icons.sw_on { width: 25px; height: 34px; background-position: -213px 0px; display: block; }
+.mAd_icons.sw_on { width: 25px; height: 34px; background-position: -212px 0px; display: block; }
 .mAd_icons.sw_off { width: 25px; height: 34px; background-position: -213px -30px; display: block; }
 .side_panel .panel-heading { padding: 4px 15px; }
 .panel-mAd .side_panel div.panel {padding: 0;}
@@ -14906,7 +14906,7 @@ a.tabs-control.right span { right: 5px; }
 	box-shadow: -5px 0px 10px 0px rgba(0,0,0,0.2);}
 .side_panel .list-group-item.active, .side_panel .list-group-item.active:focus, .side_panel .list-group-item.active:hover {
     background: #f7f7f7; color: #00998c; border-color: #d0d4d3; }
-.panel-mAd .tab-content { padding: 5px 20px;}
+.panel-mAd .tab-content { padding: 0px 20px 5px 20px;}
 .side_panel .list-group {
     margin-bottom: 0px;
     padding-left: 0;
@@ -15165,11 +15165,11 @@ h4, h5 { font-weight:bold }
 .advance_settings ul li ul { list-style-type: none; }
 .advance_settings ul > li label { font-weight:bold;  }
 .advance_settings ul li ul li label { font-weight:normal }
-.sidebar-offcanvas a.list-group-item {
+/*.sidebar-offcanvas a.list-group-item {
     white-space: nowrap;
     text-overflow: ellipsis; 
     overflow: hidden;
-}
+}*/
 div.pop_box h4 .text-primary {
     text-transform: capitalize;
 }
