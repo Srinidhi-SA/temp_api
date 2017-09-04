@@ -5,6 +5,10 @@ import datetime
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
+DEBUG = True
+
+ALLOWED_HOSTS = ['*']
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -17,17 +21,6 @@ PROJECT_APP = [
 
 INSTALLED_APPS += PROJECT_APP
 
-
-# HDFS = {
-#
-#     # Give host name without http
-#     'host': 'localhost',
-#     'port': '50070', #webhdfs port
-#     'uri': '/webhdfs/v1',
-#     'user.name': 'marlabs',
-#     'hdfs_port': '8020', #hdfs port
-#     'base_path' : '/dev/dataset/'
-# }
 
 HDFS = {
 
@@ -51,16 +44,6 @@ KAFKA = {
     'topic': 'my-topic'
 }
 
-# JOBSERVER = {
-#     'host': 'localhost',
-#     'port': '8090',
-#     'app-name': 'test_api_1',
-#     'context': 'pysql-context',
-#     'master': 'bi.sparkjobs.JobScript',
-#     'metadata': 'bi.sparkjobs.JobScript',
-#     'filter': 'bi.sparkjobs.filter.JobScript',
-#
-# }
 
 JOBSERVER = {
     'host': 'ec2-34-205-203-38.compute-1.amazonaws.com',
@@ -72,10 +55,14 @@ JOBSERVER = {
     'model': 'bi.sparkjobs.JobScript',
     'score': 'bi.sparkjobs.JobScript',
     'filter': 'bi.sparkjobs.filter.JobScript',
-
 }
 
-ALLOWED_HOSTS = ['*']
+THIS_SERVER_DETAILS = {
+    "host": "34.196.204.54",
+    "port": "9012",
+    "initail_domain": "/api"
+}
+
 
 APPEND_SLASH=False
 DATA_UPLOAD_MAX_MEMORY_SIZE = 1024*1024*1024

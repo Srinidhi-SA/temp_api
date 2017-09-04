@@ -237,12 +237,6 @@ DATA_SOURCES_CONFIG = {"conf":  [{
 
 ]
 }
-# dev api http://34.196.204.54:9092
-THIS_SERVER_DETAILS = {
-    "host": "34.196.204.54",
-    "port": "9012",
-    "initail_domain": "/api"
-}
 
 
 PAGESIZE = 10
@@ -280,7 +274,7 @@ ANALYSIS_FOR_TARGET_VARIABLE = {
         "measure": [
             {"name": "Descriptive analysis", "id": "descriptive-analysis", "display": "Overview"},
             {"name": "Measure vs. Dimension", "id": "measure-vs-dimension", "display": "Performance"},
-            {"name": "Measure vs. Measure", "id": "measure-vs-measure", "display": "Incluencer"},
+            {"name": "Measure vs. Measure", "id": "measure-vs-measure", "display": "Influencer"},
             {"name": "Predictive modeling", "id": "predictive-modeling", "display": "Prediction"}
         ], },
     "time_dimension" :{"name": "Trend",
@@ -310,4 +304,4 @@ CORS_ALLOW_HEADERS = (
     'x-csrftoken'
 )
 
-UI_VERSION = "0.1"
+UI_VERSION = "0.8"
