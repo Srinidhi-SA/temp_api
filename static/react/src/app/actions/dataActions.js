@@ -1,4 +1,4 @@
-
+import React from "react";
 import {API} from "../helpers/env";
 import {PERPAGE,DULOADERPERVALUE,DEFAULTINTERVAL} from "../helpers/helper";
 import store from "../store";
@@ -301,7 +301,7 @@ export function showDialogBox(slug,dialog,dispatch){
 		    	deleteDataset(slug,dialog,dispatch)
 		    })
 		  ],
-		  bsSize: 'small',
+		  bsSize: 'medium',
 		  onHide: (dialogBox) => {
 		    dialogBox.hide()
 		    console.log('closed by clicking background.')
@@ -338,4 +338,59 @@ function deleteDatasetAPI(slug){
 	
 	}
 	
+
+export function handleRename(slug,dialog,name){
+	return (dispatch) => {
+		showRenameDialogBox(slug,dialog,dispatch,name)
+	}
+}
+function showRenameDialogBox(slug,dialog,dispatch,name){
+	 const customBody = (
+		      <div className="form-group">
+		      <label for="fl1" className="col-sm-6 control-label">Enter Dataset New Name</label>
+		      <input className="form-control"  id="idRenameDataset" type="text" value={name}/>
+		      </div>
+		    )
+
+	dialog.show({
+		  title: 'Rename Dataset',
+		  body: customBody,
+		  actions: [
+		    Dialog.CancelAction(),
+		    Dialog.OKAction(() => {
+		    	renameDataset(slug,dialog,$("#idRenameDataset").val(),dispatch)
+		    })
+		  ],
+		  bsSize: 'medium',
+		  onHide: (dialogBox) => {
+		    dialogBox.hide()
+		    console.log('closed by clicking background.')
+		  }
+		});
+}
+	
+function renameDataset(slug,dialog,newName,dispatch){
+	dispatch(showLoading());
+	Dialog.resetOptions();
+	return renameDatasetAPI(slug,newName).then(([response, json]) =>{
+		if(response.status === 200){
+			dispatch(getDataList(store.getState().datasets.current_page));
+			dispatch(hideLoading());
+		}
+		else{
+			dialog.showAlert("Error occured , Please try after sometime.");
+			dispatch(hideLoading());
+		}
+	})
+}
+function renameDatasetAPI(slug,newName){
+	return fetch(API+'/api/datasets/'+slug+'/',{
+		method: 'put',
+		headers: getHeader(sessionStorage.userToken),
+		body:JSON.stringify({
+			name:newName,
+		}),
+	}).then( response => Promise.all([response, response.json()]));
+	
+	}
 	

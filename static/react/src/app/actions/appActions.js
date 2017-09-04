@@ -1,9 +1,14 @@
 import {API} from "../helpers/env";
 import {PERPAGE,isEmpty} from "../helpers/helper";
 import store from "../store";
-import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,CUSTOMERDATA,HISTORIALDATA,EXTERNALDATA} from "../helpers/helper";
+import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,CUSTOMERDATA,HISTORIALDATA,EXTERNALDATA,DELETEMODEL,
+	RENAMEMODEL,DELETESCORE,RENAMESCORE,DELETEINSIGHT,RENAMEINSIGHT,} from "../helpers/helper";
 import {hideDataPreview,getDataSetPreview,showDataPreview} from "./dataActions";
 import {getHeaderWithoutContent} from "./dataUploadActions";
+import Dialog from 'react-bootstrap-dialog';
+import React from "react";
+import { showLoading, hideLoading } from 'react-redux-loading-bar';
+
 export var appsInterval = null;
 
 function getHeader(token){
@@ -602,5 +607,266 @@ export function updateRoboAnalysisData(roboData,urlPrefix){
 		urlPrefix,
 		roboSlug
 	}
+}export function showDialogBox(slug,dialog,dispatch,title,msgText){
+	Dialog.setOptions({
+		  defaultOkLabel: 'Yes',
+		  defaultCancelLabel: 'No',
+		})
+	dialog.show({
+		  title: title,
+		  body: msgText,
+		  actions: [
+		    Dialog.CancelAction(),
+		    Dialog.OKAction(() => {
+		    	if(title == DELETEMODEL)
+		    	deleteModel(slug,dialog,dispatch)
+		    	else if(title ==  DELETEINSIGHT)
+		    	deleteInsight(slug,dialog,dispatch)
+		    	else
+		    	deleteScore(slug,dialog,dispatch)
+		    		
+		    })
+		  ],
+		  bsSize: 'medium',
+		  onHide: (dialogBox) => {
+		    dialogBox.hide()
+		    console.log('closed by clicking background.')
+		  }
+		});
 }
+export function handleModelDelete(slug,dialog) {
+	return (dispatch) => {
+		showDialogBox(slug,dialog,dispatch,"Delete Model","Are you sure, you want to delete model?")
+	}
+}
+function deleteModel(slug,dialog,dispatch){
+	dispatch(showLoading());
+	Dialog.resetOptions();
+	return deleteModelAPI(slug).then(([response, json]) =>{
+		if(response.status === 200){
+			dispatch(getAppsModelList(store.getState().apps.current_page));
+			dispatch(hideLoading());
+		}
+		else{
+			dialog.showAlert("Error occured , Please try after sometime.");
+			dispatch(hideLoading());
+		}
+	})
+}
+function deleteModelAPI(slug){
+	return fetch(API+'/api/trainer/'+slug+'/',{
+		method: 'put',
+		headers: getHeader(sessionStorage.userToken),
+		body:JSON.stringify({
+			deleted:true,
+		}),
+	}).then( response => Promise.all([response, response.json()]));
+	
+	}
+	
+
+export function handleModelRename(slug,dialog,name){
+	const customBody = (
+		      <div className="form-group">
+		      <label for="fl1" className="col-sm-6 control-label">Enter Model New Name</label>
+		      <input className="form-control"  id="idRenameModel" type="text" value={name}/>
+		      </div>
+		    )
+	return (dispatch) => {
+		showRenameDialogBox(slug,dialog,dispatch,RENAMEMODEL,customBody)
+	}
+}
+function showRenameDialogBox(slug,dialog,dispatch,title,customBody){
+	dialog.show({
+		  title: title,
+		  body: customBody,
+		  actions: [
+		    Dialog.CancelAction(),
+		    Dialog.OKAction(() => {
+		    	if(title == RENAMEMODEL)
+		    	renameModel(slug,dialog,$("#idRenameModel").val(),dispatch)
+		    	else if(title ==  RENAMEINSIGHT)
+		    	renameInsight(slug,dialog,$("#idRenameInsight").val(),dispatch)
+		    	else
+		    	renameScore(slug,dialog,$("#idRenameScore").val(),dispatch)	
+		    })
+		  ],
+		  bsSize: 'medium',
+		  onHide: (dialogBox) => {
+		    dialogBox.hide()
+		    console.log('closed by clicking background.')
+		  }
+		});
+}
+	
+function renameModel(slug,dialog,newName,dispatch){
+	dispatch(showLoading());
+	Dialog.resetOptions();
+	return renameModelAPI(slug,newName).then(([response, json]) =>{
+		if(response.status === 200){
+			dispatch(getAppsModelList(store.getState().apps.current_page));
+			dispatch(hideLoading());
+		}
+		else{
+			dialog.showAlert("Error occured , Please try after sometime.");
+			dispatch(hideLoading());
+		}
+	})
+}
+function renameModelAPI(slug,newName){
+	return fetch(API+'/api/trainer/'+slug+'/',{
+		method: 'put',
+		headers: getHeader(sessionStorage.userToken),
+		body:JSON.stringify({
+			name:newName,
+		}),
+	}).then( response => Promise.all([response, response.json()]));
+	
+	}
+	
+
+export function handleScoreDelete(slug,dialog) {
+	return (dispatch) => {
+		showDialogBox(slug,dialog,dispatch,DELETESCORE,"Are you sure, you want to delete score?")
+	}
+}
+function deleteScore(slug,dialog,dispatch){
+	dispatch(showLoading());
+	Dialog.resetOptions();
+	return deleteScoreAPI(slug).then(([response, json]) =>{
+		if(response.status === 200){
+			dispatch(getAppsScoreList(store.getState().apps.current_page));
+			dispatch(hideLoading());
+		}
+		else{
+			dialog.showAlert("Error occured , Please try after sometime.");
+			dispatch(hideLoading());
+		}
+	})
+}
+function deleteScoreAPI(slug){
+	return fetch(API+'/api/score/'+slug+'/',{
+		method: 'put',
+		headers: getHeader(sessionStorage.userToken),
+		body:JSON.stringify({
+			deleted:true,
+		}),
+	}).then( response => Promise.all([response, response.json()]));
+	
+	}
+	
+
+export function handleScoreRename(slug,dialog,name){
+	const customBody = (
+		      <div className="form-group">
+		      <label for="fl1" className="col-sm-6 control-label">Enter Score New Name</label>
+		      <input className="form-control"  id="idRenameScore" type="text" value={name}/>
+		      </div>
+		    )
+	return (dispatch) => {
+		showRenameDialogBox(slug,dialog,dispatch,RENAMESCORE,customBody)
+	}
+}
+
+function renameScore(slug,dialog,newName,dispatch){
+	dispatch(showLoading());
+	Dialog.resetOptions();
+	return renameScoreAPI(slug,newName).then(([response, json]) =>{
+		if(response.status === 200){
+			dispatch(getAppsScoreList(store.getState().apps.current_page));
+			dispatch(hideLoading());
+		}
+		else{
+			dialog.showAlert("Error occured , Please try after sometime.");
+			dispatch(hideLoading());
+		}
+	})
+}
+function renameScoreAPI(slug,newName){
+	return fetch(API+'/api/score/'+slug+'/',{
+		method: 'put',
+		headers: getHeader(sessionStorage.userToken),
+		body:JSON.stringify({
+			name:newName,
+		}),
+	}).then( response => Promise.all([response, response.json()]));
+	
+	}
+
+export function activateModelScoreTabs(id){
+	return {
+		type: "APPS_SELECTED_TAB",
+	    id,
+	}
+}
+
+export function handleInsightDelete(slug,dialog) {
+	return (dispatch) => {
+		showDialogBox(slug,dialog,dispatch,DELETEINSIGHT,"Are you sure, you want to delete Insight?")
+	}
+}
+function deleteInsight(slug,dialog,dispatch){
+	dispatch(showLoading());
+	Dialog.resetOptions();
+	return deleteInsightAPI(slug).then(([response, json]) =>{
+		if(response.status === 200){
+			dispatch(getAppsRoboList(store.getState().apps.current_page));
+			dispatch(hideLoading());
+		}
+		else{
+			dialog.showAlert("Error occured , Please try after sometime.");
+			dispatch(hideLoading());
+		}
+	})
+}
+function deleteInsightAPI(slug){
+	return fetch(API+'/api/robo/'+slug+'/',{
+		method: 'put',
+		headers: getHeader(sessionStorage.userToken),
+		body:JSON.stringify({
+			deleted:true,
+		}),
+	}).then( response => Promise.all([response, response.json()]));
+	
+	}
+	
+
+export function handleInsightRename(slug,dialog,name){
+	const customBody = (
+		      <div className="form-group">
+		      <label for="fl1" className="col-sm-6 control-label">Enter Insight New Name</label>
+		      <input className="form-control"  id="idRenameInsight" type="text" value={name}/>
+		      </div>
+		    )
+	return (dispatch) => {
+		showRenameDialogBox(slug,dialog,dispatch,RENAMEINSIGHT,customBody)
+	}
+}
+
+function renameInsight(slug,dialog,newName,dispatch){
+	dispatch(showLoading());
+	Dialog.resetOptions();
+	return renameInsightAPI(slug,newName).then(([response, json]) =>{
+		if(response.status === 200){
+			dispatch(getAppsRoboList(store.getState().apps.current_page));
+			dispatch(hideLoading());
+		}
+		else{
+			dialog.showAlert("Error occured , Please try after sometime.");
+			dispatch(hideLoading());
+		}
+	})
+}
+function renameInsightAPI(slug,newName){
+	return fetch(API+'/api/robo/'+slug+'/',{
+		method: 'put',
+		headers: getHeader(sessionStorage.userToken),
+		body:JSON.stringify({
+			name:newName,
+		}),
+	}).then( response => Promise.all([response, response.json()]));
+	
+	}
+	
+
 

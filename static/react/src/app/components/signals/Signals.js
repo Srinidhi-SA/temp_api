@@ -3,8 +3,8 @@ import {connect} from "react-redux";
 import ReactDOM from "react-dom";
 import {Link} from "react-router-dom";
 import store from "../../store";
-import {getList,emptySignalAnalysis,handleDelete} from "../../actions/signalActions";
-import {Pagination} from "react-bootstrap";
+import {getList,emptySignalAnalysis,handleDelete,handleRename} from "../../actions/signalActions";
+import {Pagination,Tooltip,OverlayTrigger,Popover,Modal,Button} from "react-bootstrap";
 //import {BreadCrumb} from "../common/BreadCrumb";
 import Breadcrumb from 'react-breadcrumb';
 //import $ from "jquery";
@@ -12,6 +12,7 @@ var dateFormat = require('dateformat');
 import {CreateSignal} from "./CreateSignal";
 import {STATIC_URL} from "../../helpers/env";
 import Dialog from 'react-bootstrap-dialog';
+import {DetailOverlay} from "../common/DetailOverlay";
 
 @connect((store) => {
   return {login_response: store.login.login_response, signalList: store.signals.signalList.data, selectedSignal: store.signals.signalAnalysis};
@@ -34,7 +35,7 @@ export class Signals extends React.Component {
   componentDidMount() {
     console.log("/checking anchor html");
     console.log($('a[rel="popover"]'));
-    var tmp = setInterval(function() {
+   /* var tmp = setInterval(function() {
       if ($('a[rel="popover"]').html()) {
         $('a[rel="popover"]').popover({
           container: 'body',
@@ -50,7 +51,7 @@ export class Signals extends React.Component {
         });
         clearInterval(tmp);
       }
-    }, 100);
+    }, 100);*/
   }
 
   
@@ -60,12 +61,11 @@ export class Signals extends React.Component {
 	}
 	
   handleDelete(slug){
-	  //alert("reached handle");
 		 this.props.dispatch(handleDelete(slug,this.refs.dialog));
 	  }
 	  
-   handleRename(slug){
-		  //this.props.dispatch(handleRename(slug,this.refs.dialog));
+   handleRename(slug,name){
+		 this.props.dispatch(handleRename(slug,this.refs.dialog,name));
 	  }
  
   getSignalAnalysis(e){
@@ -129,16 +129,16 @@ export class Signals extends React.Component {
 
                 <div className="card-deatils">
                   {/*<!-- Popover Content link -->*/}
-                  <a href="javascript:void(0);" rel="popover" className="pover" data-popover-content="#myPopover">
-                    <i className="ci pe-7s-info pe-2x"></i>
-                  </a>
+                  <OverlayTrigger trigger="click" rootClose  placement="left" overlay={<Popover id="popover-trigger-focus"><DetailOverlay details={story}/></Popover>}><a href="#"  className="pover">
+					<i className="ci pe-7s-info pe-2x"></i>
+					</a></OverlayTrigger>
 
                   {/*<!-- Rename and Delete BLock  -->*/}
                   <a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
                     <i className="ci pe-7s-more pe-rotate-90 pe-2x"></i>
                   </a>
                   <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                    <li>
+                    <li onClick={this.handleRename.bind(this,story.slug,story.name)}>
                       <a className="dropdown-item" href="#renameCard" data-toggle="modal">
                         <i className="fa fa-edit"></i>  Rename</a>
                     </li>
@@ -150,28 +150,7 @@ export class Signals extends React.Component {
                   {/*<!-- End Rename and Delete BLock  -->*/}
                 </div>
                 {/*popover*/}
-                <div id="myPopover" className="pop_box hide">
-                  <h4>Created By :
-                    <span className="text-primary">{sessionStorage.userName}</span>
-                  </h4>
-                  <h5>Updated on :
-                    <mark>10.10.2017</mark>
-                  </h5>
-                  <hr className="hr-popover"/>
-                  <p>
-                    Data Set : {story.dataset_name}<br/>
-                    Variable selected : {story.variable_selected}<br/>
-                    Variable type : {story.variable_type}</p>
-                  <hr className="hr-popover"/>
-                  <h4 className="text-primary">Analysis List</h4>
-                  <ul className="list-unstyled">
-                    <li>
-                      <i className="fa fa-check"></i>
-                      12</li>
-                  </ul>
-                  <a href="javascript:void(0)" class="btn btn-primary pull-right">View Story</a>
-                  <div className="clearfix"></div>
-                </div>
+            
               </div>
             </div>
           </div>
