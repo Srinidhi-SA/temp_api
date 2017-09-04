@@ -7,9 +7,10 @@ import {push} from "react-router-redux";
 import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstrap";
 import {AppsCreateScore} from "./AppsCreateScore";
-import {getAppsScoreList,getAppsScoreSummary,updateScoreSlug} from "../../actions/appActions";
+import {getAppsScoreList,getAppsScoreSummary,updateScoreSlug,handleScoreRename,handleScoreDelete,activateModelScoreTabs} from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {STATIC_URL} from "../../helpers/env.js"
+import Dialog from 'react-bootstrap-dialog'
 
 var dateFormat = require('dateformat');
 
@@ -33,12 +34,22 @@ export class AppsScoreList extends React.Component {
 		if(this.props.history.location.pathname.indexOf("page") != -1){
 			pageNo = this.props.history.location.pathname.split("page=")[1];
 			this.props.dispatch(getAppsScoreList(pageNo));
-		}else
+		}else{
 			this.props.dispatch(getAppsScoreList(pageNo));
+			// this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/scores')
+		}
+			
 	}
 	getScoreSummary(slug){
 		this.props.dispatch(updateScoreSlug(slug))
 	}
+	  handleScoreDelete(slug){
+		  this.props.dispatch(handleScoreDelete(slug,this.refs.dialog));
+	  }
+	  handleScoreRename(slug){
+		  this.props.dispatch(handleScoreRename(slug,this.refs.dialog));
+	  }
+	 
 	render() {
 		console.log("apps score list is called##########3");
 		const scoreList = store.getState().apps.scoreList.data;
@@ -84,11 +95,11 @@ export class AppsScoreList extends React.Component {
 						<i className="ci pe-7s-more pe-rotate-90 pe-2x"></i>
 						</a>
 						<ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-						<li>
+						<li onClick={this.handleScoreRename.bind(this,data.slug)}>
 						<a className="dropdown-item" href="#renameCard" data-toggle="modal">
 						<i className="fa fa-edit"></i> Rename</a>
 						</li>
-						<li>
+						<li onClick={this.handleScoreDelete.bind(this,data.slug)} >
 						<a className="dropdown-item" href="#deleteCard" data-toggle="modal">
 						<i className="fa fa-trash-o"></i> Delete</a>
 						</li>
@@ -112,6 +123,7 @@ export class AppsScoreList extends React.Component {
 					{paginationTag}
 					</div>
 					</div>
+					 <Dialog ref="dialog" />
 					</div>
 					
 			);
@@ -126,5 +138,6 @@ export class AppsScoreList extends React.Component {
 	handleSelect(eventKey) {
 		this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/scores?page='+eventKey+'')
 		this.props.dispatch(getAppsScoreList(eventKey));
+		this.props.dispatch(activateModelScoreTabs(2));
 	}
 }

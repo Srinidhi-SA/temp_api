@@ -8,7 +8,7 @@ import store from "../../store";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {MainHeader} from "../common/MainHeader";
 import {BreadCrumb} from "../common/BreadCrumb";
-import {getDataList,getDataSetPreview,storeSignalMeta,handleDelete} from "../../actions/dataActions";
+import {getDataList,getDataSetPreview,storeSignalMeta,handleDelete,handleRename} from "../../actions/dataActions";
 import {fetchProductList,openDULoaderPopup,closeDULoaderPopup} from "../../actions/dataActions";
 import {DataUpload} from "./DataUpload";
 import {open,close} from "../../actions/dataUploadActions";
@@ -131,28 +131,7 @@ export class Data extends React.Component {
 						</div>
 
 						{/*popover*/}
-						<div id="myPopover" className="pop_box hide">
-						<h4>Created By :
-							<span className="text-primary">Harman</span>
-							</h4>
-							<h5>Updated on :
-								<mark>10.10.2017</mark>
-								</h5>
-								<hr className="hr-popover"/>
-								<p>
-								Data Set : kk<br/>
-								Variable selected : kk1<br/>
-								Variable type : sale</p>
-								<hr className="hr-popover"/>
-								<h4 className="text-primary">Analysis List</h4>
-								<ul className="list-unstyled">
-								<li>
-								<i className="fa fa-check"></i>
-								12</li>
-								</ul>
-								<a href="javascript:void(0)" class="btn btn-primary pull-right">View Story</a>
-								<div className="clearfix"></div>
-								</div>
+				
 								</div>
 								</div>
 								</div>
