@@ -136,8 +136,8 @@ export class AppsScoreList extends React.Component {
 		}
 	}
 	handleSelect(eventKey) {
+		this.props.dispatch(activateModelScoreTabs(2));
 		this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/scores?page='+eventKey+'')
 		this.props.dispatch(getAppsScoreList(eventKey));
-		this.props.dispatch(activateModelScoreTabs(2));
 	}
 }

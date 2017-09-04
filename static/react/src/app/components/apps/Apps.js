@@ -21,15 +21,11 @@ export class Apps extends React.Component {
   constructor(props) {
     super(props);
     console.log(this.props);
-    this.state = {
-    	    key: 1
-    	  };
   }
   
   modifyUrl(tabId){
 	  this.props.dispatch(activateModelScoreTabs(tabId));
-  /*if(tabId == 2)this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/scores')
-  if(tabId == 1)this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models')*/
+      //this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models?page=1')
   }
   render() {
     console.log("apps is called##########3");
