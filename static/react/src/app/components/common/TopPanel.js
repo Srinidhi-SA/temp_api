@@ -2,7 +2,8 @@ import React from "react";
 import {Redirect} from 'react-router';
 import ReactDOM from 'react-dom';
 import {sessionObject} from '../../helpers/manageSessionStorage';
-import LoadingBar from 'react-redux-loading-bar'
+import LoadingBar from 'react-redux-loading-bar';
+import {Link} from "react-router-dom";
 // import $ from 'jquery';
 
 // import store from "../../store";
@@ -60,7 +61,7 @@ export default class TopPanel extends React.Component {
 										</a>
 										<ul className="dropdown-menu dropdown-menu-right">
 											<li>
-												<a href="javascript:;"><i class="fa fa-user" aria-hidden="true"></i> Profile</a>
+												<Link to="/user-profile"><i class="fa fa-user" aria-hidden="true"></i> Profile</Link>
 											</li>
 											<li>
 												<a href="javascript:;" className="logout" onClick={this.logout.bind(this)}><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a>

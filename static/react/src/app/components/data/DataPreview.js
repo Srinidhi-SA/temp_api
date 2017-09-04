@@ -299,11 +299,27 @@ export class DataPreview extends React.Component {
 
 
 			const tableThTemplate=dataPrev.columnData.map((thElement, thIndex) => {
+				console.log("th check::");
+				console.log(thElement);
 				const cls = thElement.slug + " dropdown";
+				let iconCls =null;
+				switch(thElement.columnType){
+					case "measure":
+					iconCls ="mAd_icons ic_mes_s";
+					break;
+					case "dimension":
+					iconCls = "mAd_icons ic_dime_s";
+					break;
+					case "datetime":
+					iconCls = "pe-7s-timer pe-lg pe-va";
+					break;
+					
+				}
+				
 				const anchorCls =thElement.slug + " dropdown-toggle";
 				return(
 						<th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)}>
-						<a href="#" data-toggle="dropdown" className={anchorCls}><i className="fa"></i> {thElement.name}</a>
+						<a href="#" data-toggle="dropdown" className={anchorCls}><i className={iconCls}></i> {thElement.name}</a>
 						{/*<ul className="dropdown-menu">
                <li><a href="#">Ascending</a></li>
                <li><a href="#">Descending</a></li>
