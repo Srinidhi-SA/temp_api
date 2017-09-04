@@ -64,8 +64,8 @@ export class Signals extends React.Component {
 		 this.props.dispatch(handleDelete(slug,this.refs.dialog));
 	  }
 	  
-   handleRename(slug){
-		 this.props.dispatch(handleRename(slug,this.refs.dialog));
+   handleRename(slug,name){
+		 this.props.dispatch(handleRename(slug,this.refs.dialog,name));
 	  }
  
   getSignalAnalysis(e){
@@ -138,7 +138,7 @@ export class Signals extends React.Component {
                     <i className="ci pe-7s-more pe-rotate-90 pe-2x"></i>
                   </a>
                   <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                    <li onClick={this.handleRename.bind(this,story.slug)}>
+                    <li onClick={this.handleRename.bind(this,story.slug,story.name)}>
                       <a className="dropdown-item" href="#renameCard" data-toggle="modal">
                         <i className="fa fa-edit"></i>  Rename</a>
                     </li>

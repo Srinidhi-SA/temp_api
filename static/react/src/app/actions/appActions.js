@@ -665,15 +665,15 @@ function deleteModelAPI(slug){
 	}
 	
 
-export function handleModelRename(slug,dialog){
+export function handleModelRename(slug,dialog,name){
 	const customBody = (
 		      <div className="form-group">
 		      <label for="fl1" className="col-sm-6 control-label">Enter Model New Name</label>
-		      <input className="form-control"  id="idRenameModel" type="text" />
+		      <input className="form-control"  id="idRenameModel" type="text" value={name}/>
 		      </div>
 		    )
 	return (dispatch) => {
-		showRenameDialogBox(slug,dialog,dispatch,"Rename Model",customBody)
+		showRenameDialogBox(slug,dialog,dispatch,RENAMEMODEL,customBody)
 	}
 }
 function showRenameDialogBox(slug,dialog,dispatch,title,customBody){
@@ -756,11 +756,11 @@ function deleteScoreAPI(slug){
 	}
 	
 
-export function handleScoreRename(slug,dialog){
+export function handleScoreRename(slug,dialog,name){
 	const customBody = (
 		      <div className="form-group">
 		      <label for="fl1" className="col-sm-6 control-label">Enter Score New Name</label>
-		      <input className="form-control"  id="idRenameScore" type="text" />
+		      <input className="form-control"  id="idRenameScore" type="text" value={name}/>
 		      </div>
 		    )
 	return (dispatch) => {
@@ -831,11 +831,11 @@ function deleteInsightAPI(slug){
 	}
 	
 
-export function handleInsightRename(slug,dialog){
+export function handleInsightRename(slug,dialog,name){
 	const customBody = (
 		      <div className="form-group">
 		      <label for="fl1" className="col-sm-6 control-label">Enter Insight New Name</label>
-		      <input className="form-control"  id="idRenameInsight" type="text" />
+		      <input className="form-control"  id="idRenameInsight" type="text" value={name}/>
 		      </div>
 		    )
 	return (dispatch) => {

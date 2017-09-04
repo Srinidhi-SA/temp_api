@@ -46,8 +46,8 @@ export class AppsScoreList extends React.Component {
 	  handleScoreDelete(slug){
 		  this.props.dispatch(handleScoreDelete(slug,this.refs.dialog));
 	  }
-	  handleScoreRename(slug){
-		  this.props.dispatch(handleScoreRename(slug,this.refs.dialog));
+	  handleScoreRename(slug,name){
+		  this.props.dispatch(handleScoreRename(slug,this.refs.dialog,name));
 	  }
 	 
 	render() {
@@ -95,7 +95,7 @@ export class AppsScoreList extends React.Component {
 						<i className="ci pe-7s-more pe-rotate-90 pe-2x"></i>
 						</a>
 						<ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-						<li onClick={this.handleScoreRename.bind(this,data.slug)}>
+						<li onClick={this.handleScoreRename.bind(this,data.slug,data.name)}>
 						<a className="dropdown-item" href="#renameCard" data-toggle="modal">
 						<i className="fa fa-edit"></i> Rename</a>
 						</li>

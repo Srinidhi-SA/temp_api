@@ -43,8 +43,8 @@ export class RoboInsightList extends React.Component {
   getInsightPreview(slug){
 	  this.props.dispatch(getRoboDataset(slug));
   }
-  handleInsightRename(slug){
-	  this.props.dispatch(handleInsightRename(slug,this.refs.dialog))
+  handleInsightRename(slug,name){
+	  this.props.dispatch(handleInsightRename(slug,this.refs.dialog,name))
   }
   handleInsightDelete(slug){
 	  this.props.dispatch(handleInsightDelete(slug,this.refs.dialog))
@@ -104,7 +104,7 @@ export class RoboInsightList extends React.Component {
 					<i className="ci pe-7s-more pe-rotate-90 pe-2x"></i>
 					</a>
 					<ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-					<li onClick={this.handleInsightRename.bind(this,data.slug)}>
+					<li onClick={this.handleInsightRename.bind(this,data.slug,data.name)}>
 					<a className="dropdown-item" href="#renameCard" data-toggle="modal">
 					<i className="fa fa-edit"></i> Rename</a>
 					</li>

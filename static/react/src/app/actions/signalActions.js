@@ -249,16 +249,16 @@ function deleteSignalAPI(slug){
 	}
 
 
-export function handleRename(slug,dialog){
+export function handleRename(slug,dialog,name){
 	return (dispatch) => {
-		showRenameDialogBox(slug,dialog,dispatch)
+		showRenameDialogBox(slug,dialog,dispatch,name)
 	}
 }
-function showRenameDialogBox(slug,dialog,dispatch){
+function showRenameDialogBox(slug,dialog,dispatch,name){
 	 const customBody = (
 		      <div className="form-group">
 		      <label for="fl1" className="col-sm-6 control-label">Enter Signal New Name</label>
-		      <input className="form-control"  id="idRenameSignal" type="text" />
+		      <input className="form-control"  id="idRenameSignal" type="text" value={name}/>
 		      </div>
 		    )
 

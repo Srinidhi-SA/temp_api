@@ -49,8 +49,8 @@ export class AppsModelList extends React.Component {
   handleModelDelete(slug){
 	  this.props.dispatch(handleModelDelete(slug,this.refs.dialog));
   }
-  handleModelRename(slug){
-	  this.props.dispatch(handleModelRename(slug,this.refs.dialog));
+  handleModelRename(slug,name){
+	  this.props.dispatch(handleModelRename(slug,this.refs.dialog,name));
   }
   render() {
     console.log("apps model list is called##########3");
@@ -103,7 +103,7 @@ export class AppsModelList extends React.Component {
 					<i className="ci pe-7s-more pe-rotate-90 pe-2x"></i>
 					</a>
 					<ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-					<li onClick={this.handleModelRename.bind(this,data.slug)}>
+					<li onClick={this.handleModelRename.bind(this,data.slug,data.name)}>
 					<a className="dropdown-item" href="#renameCard" data-toggle="modal">
 					<i className="fa fa-edit"></i> Rename</a>
 					</li>
