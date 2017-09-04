@@ -115,7 +115,6 @@ def decode_and_convert_chart_raw_data(data):
     if not check_chart_data_format(data):
         return {}
     from api.C3Chart.c3charts import C3Chart, ScatterChart, DonutChart, PieChart
-    # import pdb;pdb.set_trace()
     chart_type = data['chart_type']
     axes = data['axes']
     label_text = data['label_text']
@@ -396,6 +395,7 @@ def decode_and_convert_chart_raw_data(data):
 
         c3_chart_details['table_c3'] = chart_data
         c3_chart_details["chart_c3"] = c3.get_json()
+        return c3_chart_details
 
 
 
@@ -508,7 +508,7 @@ def convert_json_with_list_to_column_data_for_xs(data):
     ]
 
     """
-    # import pdb; pdb.set_trace()
+
     all_key = data.keys()
 
     final_data = []
@@ -526,7 +526,6 @@ def convert_json_with_list_to_column_data_for_xs(data):
         mapp[d] = i
         i += 1
 
-    # import pdb;pdb.set_trace()
     for d in data.keys():
         array_of_json = data[d]
         x_index = mapp[d + '_x']
