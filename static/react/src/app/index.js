@@ -39,6 +39,7 @@ class App extends React.Component {
           <Main>
             <Route exact path="/" component={Home} />
             <Route exact path="/signals" component={Signals} />
+            <Route exact path="/signals/" component={Signals} />
             {/*<Route exact path="/signals/datapreview/:slug" component={DataPreview} />*/}
             <Route exact path="/signals/:slug" component={Signal}/>
             <Route exact path="/signals/:slug/:l1" component={OverViewPage}/>
