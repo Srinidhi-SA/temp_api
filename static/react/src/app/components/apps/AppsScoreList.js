@@ -55,7 +55,7 @@ export class AppsScoreList extends React.Component {
 		const scoreList = store.getState().apps.scoreList.data;
 		if (scoreList) {
 			const pages = store.getState().apps.scoreList.total_number_of_pages;
-			const current_page = store.getState().apps.score_current_page;
+			const current_page = store.getState().apps.current_page;
 			let paginationTag = null
 			if(pages > 1){
 				paginationTag = <Pagination  ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>

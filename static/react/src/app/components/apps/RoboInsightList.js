@@ -6,11 +6,12 @@ import {push} from "react-router-redux";
 
 import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstrap";
-import {getAppsRoboList,getRoboDataset} from "../../actions/appActions";
+import {getAppsRoboList,getRoboDataset,handleInsightDelete,handleInsightRename} from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {STATIC_URL} from "../../helpers/env.js";
 import {RoboDataUpload} from "./RoboDataUpload";
 import {AppsLoader} from "../common/AppsLoader";
+import Dialog from 'react-bootstrap-dialog'
 
 var dateFormat = require('dateformat');
 
@@ -41,6 +42,12 @@ export class RoboInsightList extends React.Component {
 	}
   getInsightPreview(slug){
 	  this.props.dispatch(getRoboDataset(slug));
+  }
+  handleInsightRename(slug){
+	  this.props.dispatch(handleInsightRename(slug,this.refs.dialog))
+  }
+  handleInsightDelete(slug){
+	  this.props.dispatch(handleInsightDelete(slug,this.refs.dialog))
   }
   render() {
     console.log("apps robo list is called##########3");
@@ -83,7 +90,7 @@ export class RoboInsightList extends React.Component {
 					<div className="card-footer">
 					<div className="left_div">
 					<span className="footerTitle"></span>{sessionStorage.userName}
-					<span className="footerTitle">{dateFormat(data.created_on, "mmmm d,yyyy h:MM")}</span>
+					<span className="footerTitle">{dateFormat(data.created_at, "mmmm d,yyyy h:MM")}</span>
 					</div>
 
 					<div className="card-deatils">
@@ -97,11 +104,11 @@ export class RoboInsightList extends React.Component {
 					<i className="ci pe-7s-more pe-rotate-90 pe-2x"></i>
 					</a>
 					<ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-					<li>
+					<li onClick={this.handleInsightRename.bind(this,data.slug)}>
 					<a className="dropdown-item" href="#renameCard" data-toggle="modal">
 					<i className="fa fa-edit"></i> Rename</a>
 					</li>
-					<li>
+					<li onClick={this.handleInsightDelete.bind(this,data.slug)}>
 					<a className="dropdown-item" href="#deleteCard" data-toggle="modal">
 					<i className="fa fa-trash-o"></i> Delete</a>
 					</li>
@@ -128,6 +135,7 @@ export class RoboInsightList extends React.Component {
 				</div>
 				</div>
 				<AppsLoader/>
+				 <Dialog ref="dialog" />
 				</div>
 				
 		);

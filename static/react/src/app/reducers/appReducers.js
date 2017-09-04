@@ -88,7 +88,7 @@ export default function reducer(state = {
 		return {
 			...state,
 			scoreList: action.data,
-			score_current_page:action.current_page,
+			current_page:action.current_page,
 		}
 	}
 	break;

@@ -619,6 +619,8 @@ export function updateRoboAnalysisData(roboData,urlPrefix){
 		    Dialog.OKAction(() => {
 		    	if(title == "Delete Model")
 		    	deleteModel(slug,dialog,dispatch)
+		    	else if(title ==  "Delete Insight")
+		    	deleteInsight(slug,dialog,dispatch)
 		    	else
 		    	deleteScore(slug,dialog,dispatch)
 		    		
@@ -641,7 +643,7 @@ function deleteModel(slug,dialog,dispatch){
 	Dialog.resetOptions();
 	return deleteModelAPI(slug).then(([response, json]) =>{
 		if(response.status === 200){
-			dispatch(getAppsModelList(store.getState().datasets.current_page));
+			dispatch(getAppsModelList(store.getState().apps.current_page));
 			dispatch(hideLoading());
 		}
 		else{
@@ -682,6 +684,8 @@ function showRenameDialogBox(slug,dialog,dispatch,title,customBody){
 		    Dialog.OKAction(() => {
 		    	if(title == "Rename Model")
 		    	renameModel(slug,dialog,$("#idRenameModel").val(),dispatch)
+		    	else if(title ==  "Rename Insight")
+		    	renameInsight(slug,dialog,$("#idRenameInsight").val(),dispatch)
 		    	else
 		    	renameScore(slug,dialog,$("#idRenameScore").val(),dispatch)	
 		    })
@@ -699,7 +703,7 @@ function renameModel(slug,dialog,newName,dispatch){
 	Dialog.resetOptions();
 	return renameModelAPI(slug,newName).then(([response, json]) =>{
 		if(response.status === 200){
-			dispatch(getAppsModelList(store.getState().datasets.current_page));
+			dispatch(getAppsModelList(store.getState().apps.current_page));
 			dispatch(hideLoading());
 		}
 		else{
@@ -730,7 +734,7 @@ function deleteScore(slug,dialog,dispatch){
 	Dialog.resetOptions();
 	return deleteScoreAPI(slug).then(([response, json]) =>{
 		if(response.status === 200){
-			dispatch(getAppsScoreList(store.getState().datasets.current_page));
+			dispatch(getAppsScoreList(store.getState().apps.current_page));
 			dispatch(hideLoading());
 		}
 		else{
@@ -766,9 +770,9 @@ export function handleScoreRename(slug,dialog){
 function renameScore(slug,dialog,newName,dispatch){
 	dispatch(showLoading());
 	Dialog.resetOptions();
-	return renameModelAPI(slug,newName).then(([response, json]) =>{
+	return renameScoreAPI(slug,newName).then(([response, json]) =>{
 		if(response.status === 200){
-			dispatch(getAppsScoreList(store.getState().datasets.current_page));
+			dispatch(getAppsScoreList(store.getState().apps.current_page));
 			dispatch(hideLoading());
 		}
 		else{
@@ -777,7 +781,7 @@ function renameScore(slug,dialog,newName,dispatch){
 		}
 	})
 }
-function renameModelAPI(slug,newName){
+function renameScoreAPI(slug,newName){
 	return fetch(API+'/api/score/'+slug+'/',{
 		method: 'put',
 		headers: getHeader(sessionStorage.userToken),
@@ -794,6 +798,74 @@ export function activateModelScoreTabs(id){
 	    id,
 	}
 }
+
+export function handleInsightDelete(slug,dialog) {
+	return (dispatch) => {
+		showDialogBox(slug,dialog,dispatch,"Delete Insight","Are you sure, you want to delete Insight?")
+	}
+}
+function deleteInsight(slug,dialog,dispatch){
+	dispatch(showLoading());
+	Dialog.resetOptions();
+	return deleteInsightAPI(slug).then(([response, json]) =>{
+		if(response.status === 200){
+			dispatch(getAppsRoboList(store.getState().apps.current_page));
+			dispatch(hideLoading());
+		}
+		else{
+			dialog.showAlert("Error occured , Please try after sometime.");
+			dispatch(hideLoading());
+		}
+	})
+}
+function deleteInsightAPI(slug){
+	return fetch(API+'/api/robo/'+slug+'/',{
+		method: 'put',
+		headers: getHeader(sessionStorage.userToken),
+		body:JSON.stringify({
+			deleted:true,
+		}),
+	}).then( response => Promise.all([response, response.json()]));
+	
+	}
+	
+
+export function handleInsightRename(slug,dialog){
+	const customBody = (
+		      <div className="form-group">
+		      <label for="fl1" className="col-sm-6 control-label">Enter Insight New Name</label>
+		      <input className="form-control"  id="idRenameInsight" type="text" />
+		      </div>
+		    )
+	return (dispatch) => {
+		showRenameDialogBox(slug,dialog,dispatch,"Rename Insight",customBody)
+	}
+}
+
+function renameInsight(slug,dialog,newName,dispatch){
+	dispatch(showLoading());
+	Dialog.resetOptions();
+	return renameInsightAPI(slug,newName).then(([response, json]) =>{
+		if(response.status === 200){
+			dispatch(getAppsRoboList(store.getState().apps.current_page));
+			dispatch(hideLoading());
+		}
+		else{
+			dialog.showAlert("Error occured , Please try after sometime.");
+			dispatch(hideLoading());
+		}
+	})
+}
+function renameInsightAPI(slug,newName){
+	return fetch(API+'/api/robo/'+slug+'/',{
+		method: 'put',
+		headers: getHeader(sessionStorage.userToken),
+		body:JSON.stringify({
+			name:newName,
+		}),
+	}).then( response => Promise.all([response, response.json()]));
+	
+	}
 	
 
 
