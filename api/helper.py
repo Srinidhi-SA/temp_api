@@ -126,7 +126,7 @@ def decode_and_convert_chart_raw_data(data):
     if y2AxisNumberFormat == "":
         y2AxisNumberFormat = ".2s"
     subchart = data.get('subchart', True)
-    rotate = data.get('rotate', True)
+    rotate = data.get('rotate', False)
 
     print "legend ------->> --------"
     print legend
