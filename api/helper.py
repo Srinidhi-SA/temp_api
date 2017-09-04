@@ -175,6 +175,9 @@ def decode_and_convert_chart_raw_data(data):
             c3.rotate_axis()
 
         c3_chart_details["chart_c3"] = c3.get_json()
+        xdata = get_x_column_from_chart_data_without_xs(chart_data, axes)
+        if len(xdata) > 1:
+            c3_chart_details["xdata"] = get_x_column_from_chart_data_without_xs(chart_data, axes)
         return c3_chart_details
 
     elif chart_type in ["combination"]:
@@ -674,6 +677,20 @@ def convert_column_data_with_array_of_category_into_column_data_stright_xy(colum
         end_data[name_indexs[name_y]].append(columns_data[1][index + 1])
 
     return end_data, xs
+
+def get_x_column_from_chart_data_without_xs(chart_data, axes):
+    i = None
+    for index, row in enumerate(chart_data):
+        if row[0] == axes.get('x', 'key'):
+            i = index
+            break
+
+    if i is not None:
+        return chart_data[i][1:]
+    else:
+        return []
+
+
 
 
 
