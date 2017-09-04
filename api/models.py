@@ -815,6 +815,7 @@ class Robo(models.Model):
     robo_analysis_done = models.BooleanField(default=True)
 
     bookmarked = models.BooleanField(default=False)
+    job = models.ForeignKey(Job, null=True)
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
