@@ -404,8 +404,14 @@ class C3Chart(object):
                 'contents': 'set_tooltip'
             }
 
-    def set_d3_format_x(self, set_x=D3_FORMAT_MILLION):
-        self._axis['x']['tick']['format'] = set_x
+    def set_tick_format_x(self, set_x=D3_FORMAT_MILLION):
+        if 'x' in self._axis:
+            if 'tick' in self._axis['x']:
+                self._axis['x']['tick']['format'] = set_x
+            else:
+                self._axis['x']['tick'] = {
+                    'format': set_x
+                }
 
     def set_d3_format_y(self, set_y=D3_FORMAT_MILLION):
         self._axis['y']['tick']['format'] = set_y
@@ -420,6 +426,15 @@ class C3Chart(object):
             tick_conf.update(new_tick_format)
             y2_json['tick'] = tick_conf
             self._axis['y2'] = y2_json
+
+    def set_tooltip_format(self, set_format=D3_FORMAT_MILLION):
+        if self._tooltip:
+            if 'format' in self._tooltip:
+                self._tooltip['format']['title'] = set_format
+            else:
+                self._tooltip['format'] = {
+                    'title': set_format
+                }
 
     def add_negative_color(self):
         self._data['color'] = FUNCTION_COLOR

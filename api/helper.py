@@ -174,10 +174,14 @@ def decode_and_convert_chart_raw_data(data):
         if rotate is True:
             c3.rotate_axis()
 
-        c3_chart_details["chart_c3"] = c3.get_json()
         xdata = get_x_column_from_chart_data_without_xs(chart_data, axes)
         if len(xdata) > 1:
             c3_chart_details["xdata"] = get_x_column_from_chart_data_without_xs(chart_data, axes)
+            c3.set_tick_format_x()
+            c3.set_tooltip_format()
+
+        c3_chart_details["chart_c3"] = c3.get_json()
+
         return c3_chart_details
 
     elif chart_type in ["combination"]:
