@@ -1,7 +1,8 @@
 import {API} from "../helpers/env";
 import {PERPAGE,isEmpty} from "../helpers/helper";
 import store from "../store";
-import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,CUSTOMERDATA,HISTORIALDATA,EXTERNALDATA} from "../helpers/helper";
+import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,CUSTOMERDATA,HISTORIALDATA,EXTERNALDATA,DELETEMODEL,
+	RENAMEMODEL,DELETESCORE,RENAMESCORE,DELETEINSIGHT,RENAMEINSIGHT,} from "../helpers/helper";
 import {hideDataPreview,getDataSetPreview,showDataPreview} from "./dataActions";
 import {getHeaderWithoutContent} from "./dataUploadActions";
 import Dialog from 'react-bootstrap-dialog';
@@ -617,9 +618,9 @@ export function updateRoboAnalysisData(roboData,urlPrefix){
 		  actions: [
 		    Dialog.CancelAction(),
 		    Dialog.OKAction(() => {
-		    	if(title == "Delete Model")
+		    	if(title == DELETEMODEL)
 		    	deleteModel(slug,dialog,dispatch)
-		    	else if(title ==  "Delete Insight")
+		    	else if(title ==  DELETEINSIGHT)
 		    	deleteInsight(slug,dialog,dispatch)
 		    	else
 		    	deleteScore(slug,dialog,dispatch)
@@ -682,9 +683,9 @@ function showRenameDialogBox(slug,dialog,dispatch,title,customBody){
 		  actions: [
 		    Dialog.CancelAction(),
 		    Dialog.OKAction(() => {
-		    	if(title == "Rename Model")
+		    	if(title == RENAMEMODEL)
 		    	renameModel(slug,dialog,$("#idRenameModel").val(),dispatch)
-		    	else if(title ==  "Rename Insight")
+		    	else if(title ==  RENAMEINSIGHT)
 		    	renameInsight(slug,dialog,$("#idRenameInsight").val(),dispatch)
 		    	else
 		    	renameScore(slug,dialog,$("#idRenameScore").val(),dispatch)	
@@ -726,7 +727,7 @@ function renameModelAPI(slug,newName){
 
 export function handleScoreDelete(slug,dialog) {
 	return (dispatch) => {
-		showDialogBox(slug,dialog,dispatch,"Delete Score","Are you sure, you want to delete score?")
+		showDialogBox(slug,dialog,dispatch,DELETESCORE,"Are you sure, you want to delete score?")
 	}
 }
 function deleteScore(slug,dialog,dispatch){
@@ -763,7 +764,7 @@ export function handleScoreRename(slug,dialog){
 		      </div>
 		    )
 	return (dispatch) => {
-		showRenameDialogBox(slug,dialog,dispatch,"Rename Score",customBody)
+		showRenameDialogBox(slug,dialog,dispatch,RENAMESCORE,customBody)
 	}
 }
 
@@ -801,7 +802,7 @@ export function activateModelScoreTabs(id){
 
 export function handleInsightDelete(slug,dialog) {
 	return (dispatch) => {
-		showDialogBox(slug,dialog,dispatch,"Delete Insight","Are you sure, you want to delete Insight?")
+		showDialogBox(slug,dialog,dispatch,DELETEINSIGHT,"Are you sure, you want to delete Insight?")
 	}
 }
 function deleteInsight(slug,dialog,dispatch){
@@ -838,7 +839,7 @@ export function handleInsightRename(slug,dialog){
 		      </div>
 		    )
 	return (dispatch) => {
-		showRenameDialogBox(slug,dialog,dispatch,"Rename Insight",customBody)
+		showRenameDialogBox(slug,dialog,dispatch,RENAMEINSIGHT,customBody)
 	}
 }
 
