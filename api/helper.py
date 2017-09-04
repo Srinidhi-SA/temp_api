@@ -114,7 +114,7 @@ chartData = {
 def decode_and_convert_chart_raw_data(data):
     if not check_chart_data_format(data):
         return {}
-    from api.C3Chart.c3charts import C3Chart, ScatterChart
+    from api.C3Chart.c3charts import C3Chart, ScatterChart, DonutChart, PieChart
     # import pdb;pdb.set_trace()
     chart_type = data['chart_type']
     axes = data['axes']
@@ -125,6 +125,7 @@ def decode_and_convert_chart_raw_data(data):
     yAxisNumberFormat = data.get('yAxisNumberFormat', None)
     y2AxisNumberFormat = data.get('y2AxisNumberFormat', None)
     subchart = data.get('subchart', True)
+    rotate = data.get('rotate', True)
 
     c3_chart_details = dict()
 
@@ -164,6 +165,9 @@ def decode_and_convert_chart_raw_data(data):
 
         if subchart is False:
             c3.hide_subchart()
+
+        if rotate is True:
+            c3.rotate_axis()
 
         c3_chart_details["chart_c3"] = c3.get_json()
         return c3_chart_details
@@ -264,7 +268,7 @@ def decode_and_convert_chart_raw_data(data):
         c3_chart_details["chart_c3"] = c3.get_json()
         return c3_chart_details
 
-    elif chart_type in ["scatter_line"]:
+    elif chart_type in ["scatter_line", "scatter_bar"]:
         data_c3 = data['data']
         chart_data, xs = replace_chart_data(data_c3, data['axes'])
 
@@ -279,7 +283,10 @@ def decode_and_convert_chart_raw_data(data):
             label_text=label_text
         )
 
-        c3.set_line_chart()
+        if chart_type == "scatter_line":
+            c3.set_line_chart()
+        elif chart_type == "scatter_bar":
+            c3.set_bar_chart()
 
         if axes.get('y', None) is not None:
             c3.set_y_axis(
@@ -355,6 +362,25 @@ def decode_and_convert_chart_raw_data(data):
         c3_chart_details["chart_c3"] = c3.get_json()
         c3_chart_details["tooltip_c3"] = [data_c3[0], data_c3[1], data_c3[2]]
         return c3_chart_details
+    elif chart_type in ['donut']:
+        chart_data = replace_chart_data(data['data'])
+        c3 = DonutChart(data=chart_data)
+        c3.set_all_basics()
+        c3.remove_x_from_data()
+
+        c3_chart_details['table_c3'] = chart_data
+        c3_chart_details["chart_c3"] = c3.get_json()
+        return c3_chart_details
+
+    elif chart_type in ['pie']:
+        chart_data = replace_chart_data(data['data'])
+        c3 = PieChart(data=chart_data)
+        c3.set_all_basics()
+
+        c3_chart_details['table_c3'] = chart_data
+        c3_chart_details["chart_c3"] = c3.get_json()
+
+
 
 
 def replace_chart_data(data, axes=None):
