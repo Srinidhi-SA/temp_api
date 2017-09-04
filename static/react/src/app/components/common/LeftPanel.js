@@ -1,5 +1,5 @@
 import React from "react";
-import {NavLink} from "react-router-dom";
+import {NavLink,withRouter} from "react-router-dom";
 import {connect} from "react-redux";
 import {hideDataPreview} from "../../actions/dataActions";
 
@@ -8,22 +8,32 @@ import {hideDataPreview} from "../../actions/dataActions";
   return {dataPreviewFlag:store.datasets.dataPreviewFlag};
 })
 
-export default class LeftPanel extends React.Component {
+class LeftPanel extends React.Component {
 
   constructor(props) {
     super(props);
-   
+	 console.log("checking this. refs:::")
+      console.log(props);
   }
 componentDidMount(){
 	console.log("Main side navbar props:::");
-   console.log(this.props.location);
+   console.log(this);
 }
-  
+  componentWillUpdate() {  
+     //this.setState({currentTab: "otherTab"});
+    }
+
 hideDataPrev(e){
-  	this.props.dispatch(hideDataPreview());
+	this.props.dispatch(hideDataPreview());
+	/*$("."+e.target).addClass("active");
+	$(".sdb").each(function(){
+		$(this).removeClass("active");
+	})*/
+	
 }
   render() {
     console.log("LeftPanel")
+    console.log(this.props);
     return (
       <div>
         <div>
@@ -32,7 +42,7 @@ hideDataPrev(e){
               <div className="side-menu-container">
                 <ul className="nav navbar-nav">
                   <li>
-                    <NavLink  onClick={this.hideDataPrev.bind(this)} activeClassName="active" className="sdb_signal" to="/signals">
+                    <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" className="sdb sdb_signal" to="/signals">
                       <span></span>
                       SIGNALS</NavLink>
                   </li>
@@ -42,17 +52,17 @@ hideDataPrev(e){
                       STORY</NavLink>
                   </li>*/}
                   <li>
-                    <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" className="sdb_app" to ="/apps">
+                    <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" className=" sdb sdb_app" to ="/apps">
                       <span></span>
                       APPS</NavLink>
                   </li>
                   <li>
-                    <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" className="sdb_data" to ="/data">
+                    <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" className="sdb sdb_data" to ="/data">
                       <span></span>
                       DATA</NavLink>
                   </li>
                   <li>
-                    <NavLink  onClick={this.hideDataPrev.bind(this)} activeClassName="active" className="sdb_settings" to ="/settings">
+                    <NavLink  onClick={this.hideDataPrev.bind(this)} activeClassName="active" className="sdb sdb_settings" to ="/settings">
                       <span></span>
                       SETTINGS</NavLink>
                   </li>
@@ -71,3 +81,4 @@ hideDataPrev(e){
     );
   }
 }
+export default  withRouter(LeftPanel);

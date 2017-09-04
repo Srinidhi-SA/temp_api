@@ -4,7 +4,7 @@ import {FILEUPLOAD,DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL} from "../
 import {getDataList,getDataSetPreview,updateDatasetName,openDULoaderPopup} from "./dataActions";
 export var dataPreviewInterval = null;
 
-function getHeaderWithoutContent(token){
+export function getHeaderWithoutContent(token){
 	return {
 		'Authorization': token,
 	};

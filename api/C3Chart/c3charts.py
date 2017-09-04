@@ -103,6 +103,11 @@ class C3Chart(object):
 
     def set_basic_axis(self):
 
+        if USE_MULTILINE_LABELS:
+            X_TICK_MULTILNE = True
+        else:
+            X_TICK_MULTILNE = False
+
         self._axis = {
             'x':
                 {
@@ -110,7 +115,8 @@ class C3Chart(object):
                         {
                             'fit': X_TICK_FIT,
                             'rotate': self._x_label_rotation,
-                            'multiline': X_TICK_MULTILNE
+                            'multiline': X_TICK_MULTILNE,
+                            # 'count': 15
                         },
                     'height': self._x_height,
                     'label':
@@ -125,6 +131,8 @@ class C3Chart(object):
                     'tick':
                         {
                             'outer': False,
+                            'count': 7,
+                            'multiline': Y_TICK_MULTILNE
                         },
                     'label':
                         {
@@ -194,16 +202,20 @@ class C3Chart(object):
         }
 
     def set_height_between_legend_and_x_axis(self):
-        import math
-        if self._x_max_string_length:
-            print 'calculation', abs(math.sin(math.radians(self._x_label_rotation))), abs(math.sin(math.radians(self._x_label_rotation))) *\
-                             5 *\
-                             self._x_max_string_length
-            self._x_height = abs(math.sin(math.radians(self._x_label_rotation))) *\
-                             5 *\
-                             self._x_max_string_length + X_AXIS_HEIGHT
+        if USE_MULTILINE_LABELS:
+            import math
+            if self._x_max_string_length:
+                print 'calculation', abs(math.sin(math.radians(self._x_label_rotation))), abs(
+                    math.sin(math.radians(self._x_label_rotation))) * \
+                                                                                          5 * \
+                                                                                          self._x_max_string_length
+                self._x_height = abs(math.sin(math.radians(self._x_label_rotation))) * \
+                                 5 * \
+                                 self._x_max_string_length + X_AXIS_HEIGHT
+            else:
+                self._x_height = X_AXIS_HEIGHT
         else:
-            self._x_height = X_AXIS_HEIGHT
+            self._x_height = X_AXIS_HEIGHT + 30
 
     def find_and_set_length_of_max_string_in_x(self):
         data = self._data_data
@@ -279,6 +291,10 @@ class C3Chart(object):
                 "label": {
                     "text": Y2_LABEL_DEFAULT_TEXT,
                     "position": Y2_LABEL_DEFAULT_POSITION
+                },
+                "tick": {
+                    "count": 7,
+                    "multiline": True
                 }
             }
         if self._data:
@@ -397,9 +413,12 @@ class C3Chart(object):
     def set_d3_format_y2(self, set_y2=D3_FORMAT_MILLION):
         if self._axis['y2']:
             y2_json = self._axis['y2']
-            y2_json['tick'] = {
+            tick_conf = y2_json['tick']
+            new_tick_format = {
                 'format': set_y2
             }
+            tick_conf.update(new_tick_format)
+            y2_json['tick'] = tick_conf
             self._axis['y2'] = y2_json
 
     def add_negative_color(self):
@@ -432,6 +451,41 @@ class C3Chart(object):
 
     def set_x_type(self, to=X_DEFAULT_TYPE):
         self._x_type = to
+
+    def set_name_to_data(self, legend):
+        new_legend = {}
+        changes = {
+            'x': 'k1',
+            'y': 'k2',
+            'y2': 'k3'
+        }
+
+        for val in legend:
+            if val in ['x', 'y', 'y2']:
+                new_legend[changes[val]] = legend[val]
+
+        new_legend.update(legend)
+        print "------------> legensd"
+        print new_legend
+        if self._data:
+            self._data['names'] = new_legend
+
+    def set_basic_bar_chart(self, bar_width_ration=DEFAULT_BAR_WIDTH):
+
+        if self._type == 'bar':
+            if self._number_of_x_ticks is not None and \
+                    self._number_of_y_data is not None:
+                if self._number_of_x_ticks * self._number_of_y_data < 11:
+                    bar_width_ration = SMALL_BAR_WIDTH
+                    return {
+                        'width': bar_width_ration
+                    }
+        return  {
+            'width': {
+                    'ratio': bar_width_ration
+            }
+        }
+
 
     def get_some_related_info_printed(self):
         print "x max string length", self._x_max_string_length
@@ -473,11 +527,7 @@ class C3Chart(object):
             # 'title': self._title,
             'subchart': self._subchart,
             'point': self._point,
-            'bar': {
-                'width': {
-                    'ratio': 0.5
-                }
-            },
+            'bar': self.set_basic_bar_chart(),
             'size': self._size
         }
 

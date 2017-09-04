@@ -124,9 +124,13 @@ def decode_and_convert_chart_raw_data(data):
     axisRotation = data.get('axisRotation', None)
     yAxisNumberFormat = data.get('yAxisNumberFormat', None)
     y2AxisNumberFormat = data.get('y2AxisNumberFormat', None)
+    if y2AxisNumberFormat == "":
+        y2AxisNumberFormat = ".2s"
     subchart = data.get('subchart', True)
     rotate = data.get('rotate', True)
 
+    print "legend ------->> --------"
+    print legend
     c3_chart_details = dict()
 
     if chart_type in ["bar", "line", "spline"]:
@@ -165,6 +169,8 @@ def decode_and_convert_chart_raw_data(data):
 
         if subchart is False:
             c3.hide_subchart()
+        if legend:
+            c3.set_name_to_data(legend)
 
         if rotate is True:
             c3.rotate_axis()
@@ -214,6 +220,9 @@ def decode_and_convert_chart_raw_data(data):
         if axisRotation:
             c3.rotate_axis()
 
+        if legend:
+            c3.set_name_to_data(legend)
+
         from api.C3Chart import config
         c3.set_basic_color_pattern(config.SECOND_FLIP_PATTERN)
 
@@ -262,6 +271,8 @@ def decode_and_convert_chart_raw_data(data):
         if subchart is False:
             c3.hide_subchart()
 
+        if legend:
+            c3.set_name_to_data(legend)
 
         c3.set_x_type_as_index()
 
@@ -312,6 +323,9 @@ def decode_and_convert_chart_raw_data(data):
         if subchart is False:
             c3.hide_subchart()
 
+        if legend:
+            c3.set_name_to_data(legend)
+
         c3_chart_details["chart_c3"] = c3.get_json()
         return c3_chart_details
 
@@ -358,6 +372,9 @@ def decode_and_convert_chart_raw_data(data):
 
         if subchart is False:
             c3.hide_subchart()
+
+        if legend:
+            c3.set_name_to_data(legend)
 
         c3_chart_details["chart_c3"] = c3.get_json()
         c3_chart_details["tooltip_c3"] = [data_c3[0], data_c3[1], data_c3[2]]

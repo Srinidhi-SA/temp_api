@@ -8,6 +8,7 @@ export default function reducer(state = {
   createSignalLoaderModal:false,
   createSignalLoaderValue:10,
   current_page:1,
+  urlPrefix:"signals",
   // variableType:""
 }, action) {
   console.log("in SIGNAL reducer!!");
@@ -26,7 +27,6 @@ export default function reducer(state = {
 
     case "SIGNAL_LIST_ERROR":
       {
-       // alert(action.json.non_field_errors);
         throw new Error("Unable to fetch signal list!!");
       }
       break;
@@ -43,7 +43,6 @@ export default function reducer(state = {
 
     case "SIGNAL_ANALYSIS_ERROR":
       {
-        //alert(action.json.non_field_errors);
         throw new Error("Unable to fetch signal list!!");
       }
       break;
@@ -75,7 +74,6 @@ export default function reducer(state = {
   break;
   case "CREATE_ERROR":
     {
-     // alert(action.json.non_field_errors);
       throw new Error("Create Signal Failed!!");
     }
     break;
@@ -128,6 +126,17 @@ export default function reducer(state = {
     }
     break;
     
+	 case "ROBO_DATA_ANALYSIS":
+     {
+       return {
+         ...state,
+         signalAnalysis: action.roboData.data,
+         urlPrefix:action.urlPrefix,
+         selectedSignal:action.roboSlug,
+       }
+     }
+     break;
+     
   }
   return state
 }

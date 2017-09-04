@@ -32,7 +32,6 @@ export default function reducer(state = {
 
 	case "DATA_LIST_ERROR":
 	{
-		//alert(action.json.non_field_errors);
 		throw new Error("Unable to fetch data list!!");
 	}
 	break;
@@ -69,7 +68,6 @@ export default function reducer(state = {
 
 	case "DATA_ALL_LIST_ERROR":
 	{
-		//alert(action.json.non_field_errors);
 		throw new Error("Unable to fetch data list!!");
 	}
 	break;
@@ -222,6 +220,14 @@ export default function reducer(state = {
 		return {
 			...state,
 			dULoaderValue:action.value,
+		}
+	}
+	break;
+	case "CLEAR_DATA_PREVIEW": {
+		return {...state,
+			dataPreview:{},
+			dataPreviewFlag:false,
+			selectedDataSet:""
 		}
 	}
 	break;

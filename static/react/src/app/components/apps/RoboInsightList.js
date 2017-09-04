@@ -6,60 +6,64 @@ import {push} from "react-router-redux";
 
 import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstrap";
-import {AppsCreateModel} from "./AppsCreateModel";
-import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryFlag,updateModelSummaryFlag} from "../../actions/appActions";
+import {getAppsRoboList,getRoboDataset} from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
-import {STATIC_URL} from "../../helpers/env.js"
-
+import {STATIC_URL} from "../../helpers/env.js";
+import {RoboDataUpload} from "./RoboDataUpload";
+import {AppsLoader} from "../common/AppsLoader";
 
 var dateFormat = require('dateformat');
 
 
 @connect((store) => {
 	return {login_response: store.login.login_response, 
-		modelList: store.apps.modelList,
-		modelSummaryFlag:store.apps.modelSummaryFlag,
-		modelSlug:store.apps.modelSlug,
+		roboList: store.apps.roboList,
 		currentAppId:store.apps.currentAppId,
+		showRoboDataUploadPreview:store.apps.showRoboDataUploadPreview,
+		roboDatasetSlug:store.apps.roboDatasetSlug,
+		roboSummary:store.apps.roboSummary,
+		dataPreviewFlag:store.datasets.dataPreviewFlag,
 		};
 })
 
-export class AppsModelList extends React.Component {
+export class RoboInsightList extends React.Component {
   constructor(props) {
     super(props);
     this.handleSelect = this.handleSelect.bind(this);
   }
   componentWillMount() {
-	  console.log(this.props.history);
-	  
 	  var pageNo = 1;
 	  if(this.props.history.location.pathname.indexOf("page") != -1){
 			pageNo = this.props.history.location.pathname.split("page=")[1];
-			this.props.dispatch(getAppsModelList(pageNo));
+			this.props.dispatch(getAppsRoboList(pageNo));
 		}else
-		  this.props.dispatch(getAppsModelList(pageNo));
+		  this.props.dispatch(getAppsRoboList(pageNo));
 	}
-  getModelSummary(slug){
-	this.props.dispatch(updateModelSlug(slug))
+  getInsightPreview(slug){
+	  this.props.dispatch(getRoboDataset(slug));
   }
   render() {
-    console.log("apps model list is called##########3");
+    console.log("apps robo list is called##########3");
     console.log(this.props);
-    
-    const modelList = store.getState().apps.modelList.data;
-	if (modelList) {
-		const pages = store.getState().apps.modelList.total_number_of_pages;
+    if(store.getState().datasets.dataPreviewFlag){
+		let _link = "/apps/"+store.getState().apps.currentAppId+"/robo/dataPreview"
+		return(<Redirect to={_link}/>);
+	}
+
+    const roboList = store.getState().apps.roboList.data;
+	if (roboList) {
+		const pages = store.getState().apps.roboList.total_number_of_pages;
 		const current_page = store.getState().apps.current_page;
 		let addButton = null;
 		let paginationTag = null
 		if(current_page == 1 || current_page == 0){
-			addButton = <AppsCreateModel match={this.props.match}/>
+			addButton = <RoboDataUpload match={this.props.match}/>
 		}
 		if(pages > 1){
 			paginationTag = <Pagination  ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
 		}
-		const appsModelList = modelList.map((data, i) => {
-			var modelLink = "/apps/"+store.getState().apps.currentAppId+"/models/" + data.slug;
+		const appsRoboList = roboList.map((data, i) => {
+			var modelLink = "/apps/"+store.getState().apps.currentAppId+"/robo/" + data.slug;
 			return (
 					<div className="col-md-3 top20 list-boxes" key={i}>
 					<div className="rep_block newCardStyle" name={data.name}>
@@ -68,7 +72,7 @@ export class AppsModelList extends React.Component {
 					<div className="row">
 					<div className="col-xs-9">
 					<h4 className="title newCardTitle">
-					<a href="javascript:void(0);" id= {data.slug} onClick={this.getModelSummary.bind(this,data.slug)}><Link to={modelLink}>{data.name}</Link></a>
+					<a href="javascript:void(0);" id= {data.slug}><Link onClick={this.getInsightPreview.bind(this,data.slug)} to={modelLink}>{data.name}</Link></a>
 					</h4>
 					</div>
 					<div className="col-xs-3">
@@ -79,7 +83,7 @@ export class AppsModelList extends React.Component {
 					<div className="card-footer">
 					<div className="left_div">
 					<span className="footerTitle"></span>{sessionStorage.userName}
-					<span className="footerTitle">{dateFormat(data.created_at, "mmmm d,yyyy h:MM")}</span>
+					<span className="footerTitle">{dateFormat(data.created_on, "mmmm d,yyyy h:MM")}</span>
 					</div>
 
 					<div className="card-deatils">
@@ -110,10 +114,11 @@ export class AppsModelList extends React.Component {
 			)
 		});
 		return (
-				<div>
+				  <div className="side-body">
+		            <div className="main-content">
 				<div className="row">
 				{addButton}
-				{appsModelList}
+				{appsRoboList}
 				<div className="clearfix"></div>
 				</div>
 				<div className="ma-datatable-footer"  id="idPagination">
@@ -121,6 +126,8 @@ export class AppsModelList extends React.Component {
 				{paginationTag}
 				</div>
 				</div>
+				</div>
+				<AppsLoader/>
 				</div>
 				
 		);
@@ -133,7 +140,7 @@ export class AppsModelList extends React.Component {
 	}
 }
   handleSelect(eventKey) {
-		this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models?page='+eventKey+'')
-		this.props.dispatch(getAppsModelList(eventKey));
+		this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/robo?page='+eventKey+'')
+		this.props.dispatch(getAppsRoboList(eventKey));
 	}
 }

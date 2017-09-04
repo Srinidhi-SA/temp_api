@@ -2,6 +2,7 @@ import React from "react";
 import {Redirect} from 'react-router';
 import ReactDOM from 'react-dom';
 import {sessionObject} from '../../helpers/manageSessionStorage';
+import LoadingBar from 'react-redux-loading-bar'
 // import $ from 'jquery';
 
 // import store from "../../store";
@@ -12,16 +13,27 @@ import {sessionObject} from '../../helpers/manageSessionStorage';
 //   return {login_res:store.login.login_response};
 // })
 export default class TopPanel extends React.Component {
-
+    constructor(props){
+		super(props);
+		this.state = {loginFlag: true}
+	}
 	logout(){
 		sessionObject.clearSession();
+		  this.setState({
+             loginFlag: false
+         });
 	}
 	render(){
+		if(!this.state.loginFlag){
+			return(<Redirect to="/login" />);
+		}else{
 		console.log("top panel & user name"+sessionStorage.username);
 			return(
 		            <div>
 								{/* // Header Menu*/}
+								
 								<nav className="navbar navbar-default navbar-fixed-top" role="navigation">
+								<LoadingBar style={{ backgroundColor: '#148071', height: '3px' }} />
 									{/*/ Brand and toggle get grouped for better mobile display -->*/}
 									<div className="navbar-header">
 										<div className="brand-wrapper">
@@ -41,9 +53,9 @@ export default class TopPanel extends React.Component {
 									</div>
 									<div className="dropdown ma-user-nav">
 										<a className="dropdown-toggle" href="#" data-toggle="dropdown">
-											<i className="avatar-img img-circle">M</i>
-											<img src="" alt="M" className="avatar-img img-circle hide"/>
-											<span className="user-name"> {sessionStorage.username}</span>
+											<i className="avatar-img img-circle">{sessionStorage.userName.substr(0,1).toUpperCase()}</i>
+											<img src="" alt="M" className="avatar-img img-circle hide"/>&nbsp;
+											<span className="user-name">{sessionStorage.userName}</span>
 											<span className="caret"></span>
 										</a>
 										<ul className="dropdown-menu dropdown-menu-right">
@@ -51,7 +63,7 @@ export default class TopPanel extends React.Component {
 												<a href="javascript:;"><i class="fa fa-user" aria-hidden="true"></i> Profile</a>
 											</li>
 											<li>
-												<a href="javascript:;" className="logout" onClick={this.logout}><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a>
+												<a href="javascript:;" className="logout" onClick={this.logout.bind(this)}><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a>
 											</li>
 										</ul>
 									</div>
@@ -60,5 +72,7 @@ export default class TopPanel extends React.Component {
 								</div>
 
 		 );
+		}
   }
+	
 }

@@ -14,6 +14,7 @@ export default function reducer(state={
       case "ERROR":
     { 
 //    	  alert(action.json.non_field_errors);
+
       throw new Error("Authentication Failed!!");
     }break;
 

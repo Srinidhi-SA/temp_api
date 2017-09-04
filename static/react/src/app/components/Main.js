@@ -14,8 +14,10 @@ import store from "../store";
 })
 
 export class Main extends React.Component {
-  constructor(){
-    super();
+  constructor(props){
+    super(props);
+	console.log("props in main:::");
+	console.log(props);
   }
   render() {
 

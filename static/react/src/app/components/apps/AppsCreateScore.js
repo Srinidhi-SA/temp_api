@@ -4,7 +4,7 @@ import {Link, Redirect} from "react-router-dom";
 import {push} from "react-router-redux";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
 import store from "../../store";
-import {showCreateScorePopup,hideCreateScorePopup,updateSelectedAlg} from "../../actions/appActions";
+import {showCreateScorePopup,hideCreateScorePopup,updateSelectedAlg,updateModelSummaryFlag} from "../../actions/appActions";
 import {getAllDataList,getDataSetPreview,storeSignalMeta,updateDatasetName} from "../../actions/dataActions";
 
 
@@ -16,6 +16,7 @@ import {getAllDataList,getDataSetPreview,storeSignalMeta,updateDatasetName} from
 		appsScoreShowModal:store.apps.appsScoreShowModal,
 		selectedDataset:store.datasets.selectedDataSet,
 		dataPreviewFlag:store.datasets.dataPreviewFlag,
+		currentAppId:store.apps.currentAppId,
 		};
 })
 
@@ -28,8 +29,9 @@ export class AppsCreateScore extends React.Component {
 		console.log("In model summary");
 		console.log(this.props.match);
 		this.props.dispatch(getAllDataList());
-		this.props.dispatch(storeSignalMeta(null,this.props.match.url));
+		this.props.dispatch(storeSignalMeta(null,"/apps/"+store.getState().apps.currentAppId+"/scores"));
 		this.props.dispatch(hideCreateScorePopup());
+		this.props.dispatch(updateModelSummaryFlag(false));
 	}
 	openScorePopup(){
     	this.props.dispatch(showCreateScorePopup())
@@ -67,7 +69,7 @@ export class AppsCreateScore extends React.Component {
 		if(algorithms){
 			algorithmNames = <select id="algorithms" name="selectbasic" class="form-control">
 			{algorithms.map(algorithm =>
-			<option key={algorithm} value={algorithm}>{algorithm}</option>
+			<option key={algorithm.slug} value={algorithm.slug}>{algorithm.name} {algorithm.accuracy}</option>
 			)}
 			</select>
 		}else{

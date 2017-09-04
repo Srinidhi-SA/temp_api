@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Redirect } from "react-router";
 import store from "../../store";
 import {Modal,Button} from "react-bootstrap";
-import {openDULoaderPopup,closeDULoaderPopup} from "../../actions/dataActions";
+import {openAppsLoaderValue,closeAppsLoaderValue} from "../../actions/appActions";
 import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
 import HeatMap from '../../helpers/heatmap';
@@ -11,27 +11,26 @@ import HeatMap from '../../helpers/heatmap';
 
 @connect((store) => {
 	return {login_response: store.login.login_response,
-		dataList: store.datasets.dataList,
-		dataPreview: store.datasets.dataPreview,
-		dataUploadLoaderModal:store.datasets.dataUploadLoaderModal,
-		dULoaderValue:store.datasets.dULoaderValue,
+		appsLoaderModal:store.apps.appsLoaderModal,
+		appsLoaderPerValue:store.apps.appsLoaderPerValue,
+		appsLoaderText:store.apps.appsLoaderText,
 	};
 })
 
-export class DataUploadLoader extends React.Component {
+export class AppsLoader extends React.Component {
   constructor(){
     super();
   }
 	openModelPopup(){
-  	this.props.dispatch(openDULoaderPopup())
+  	this.props.dispatch(openAppsLoaderValue())
   }
   closeModelPopup(){
-  	this.props.dispatch(closeDULoaderPopup())
+  	this.props.dispatch(closeAppsLoaderValue())
   }
   render() {
    return (
           <div id="dULoader">
-      	<Modal show={store.getState().datasets.dataUploadLoaderModal} backdrop="static" onHide={this.closeModelPopup.bind(this)} dialogClassName="modal-colored-header">
+      	<Modal show={store.getState().apps.appsLoaderModal} backdrop="static" onHide={this.closeModelPopup.bind(this)} dialogClassName="modal-colored-header">
       	<Modal.Body>
 		<div className="row">
 		<div className="col-md-12">
@@ -40,12 +39,12 @@ export class DataUploadLoader extends React.Component {
 				<p className="text-center"><br/>
 				<i className="pe-7s-science pe-spin pe-5x pe-va text-primary" ></i><br/>
 				<br/>
-				Please wait while<br/>mAdvisor is uploading your data.....
+				<p>{store.getState().apps.appsLoaderText}</p>
 				</p><br/>
 			
 				<div className="p_bar_body">
-				<progress className="prg_bar" value={store.getState().datasets.dULoaderValue} max={95}></progress>
-				<div className="progress-value"><h3>{store.getState().datasets.dULoaderValue} %</h3></div>
+				<progress className="prg_bar" value={store.getState().apps.appsLoaderPerValue} max={95}></progress>
+				<div className="progress-value"><h3>{store.getState().apps.appsLoaderPerValue} %</h3></div>
 				</div>
 			</div>
 		</div>

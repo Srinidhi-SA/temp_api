@@ -27,7 +27,9 @@ export class Signal extends React.Component {
     super();
   }
   componentWillMount() {
+	  if(isEmpty(this.props.signal)){
 	  this.props.dispatch(getSignalAnalysis(sessionStorage.userToken, this.props.match.params.slug));
+	  }
   }
   render() {
 

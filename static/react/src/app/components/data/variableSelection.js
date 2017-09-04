@@ -1,4 +1,6 @@
 import React from "react";
+import { Scrollbars } from 'react-custom-scrollbars';
+
 import {connect} from "react-redux";
 import {Link, Redirect} from "react-router-dom";
 import {push} from "react-router-redux";
@@ -6,6 +8,7 @@ import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
 import store from "../../store";
 
 import {openCreateSignalModal,closeCreateSignalModal} from "../../actions/createSignalActions";
+import {emptySignalAnalysis} from "../../actions/signalActions";
 
 /*var dataSelection= {
      "metaData" : [   {"name": "Rows", "value": 30, "display":true},
@@ -130,6 +133,7 @@ export class VariableSelection extends React.Component {
       radioChecked:""
     };
     console.log("preview data check");
+	props.dispatch(emptySignalAnalysis());
 	}
 
 
@@ -353,6 +357,7 @@ if(datetime.length>0){
   <div className="panel-body">
 
   <div className="row">
+   <label className="col-lg-2" for="signalVariableList">I want to analyze</label>
   <div className="col-lg-4">
       <div className="htmlForm-group">
         <select className="htmlForm-control" id="selectAnalyse">
@@ -403,9 +408,11 @@ if(datetime.length>0){
       {/*<!-- Row htmlFor list of variables-->*/}
       <div className="row">
         <div className="col-md-12 cst-scroll-panel">
+		<Scrollbars>
           <ul className="list-unstyled">
                               {measureTemplate}
           </ul>
+		 </Scrollbars> 
         </div>
       </div>
       {/*<!-- End Row htmlFor list of variables-->*/}
@@ -445,9 +452,11 @@ if(datetime.length>0){
             {/*<!-- Row htmlFor list of variables-->*/}
             <div className="row">
             <div className="col-md-12 cst-scroll-panel">
+			<Scrollbars>
               <ul className="list-unstyled">
             {dimensionTemplate}
               </ul>
+			</Scrollbars>
             </div>
             </div>
             {/*<!-- End Row htmlFor list of variables-->*/}
@@ -488,9 +497,11 @@ if(datetime.length>0){
             {/*<!-- Row htmlFor list of variables-->*/}
             <div className="row">
             <div className="col-md-12 cst-scroll-panel">
+			<Scrollbars>
               <ul className="list-unstyled">
               {datetimeTemplate}
               </ul>
+			</Scrollbars>
             </div>
             </div>
             {/*<!-- End Row htmlFor list of variables-->*/}
@@ -559,7 +570,7 @@ if(datetime.length>0){
           <div className="ma-checkbox inline"><input id="chk_results" type="checkbox" className="needsclick"><label htmlFor="chk_results">Statistically Significant Results</label></div>
           </div>
           <div className="pull-right">
-          <a href="javascript:;" className="pull-right">Go to advanced settings</a>
+          <a href="javascript:;" className="pull-right">Advanced Settings</a>
           </div>
         </div>
       </div>

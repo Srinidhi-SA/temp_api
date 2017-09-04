@@ -95,7 +95,10 @@ import {STATIC_URL} from "../../helpers/env.js"
 @connect((store) => {
 	return {login_response: store.login.login_response, dataPreview: store.datasets.dataPreview,
 		signalMeta: store.datasets.signalMeta,curUrl: store.datasets.curUrl,
-		dataPreviewFlag:store.datasets.dataPreviewFlag};
+		dataPreviewFlag:store.datasets.dataPreviewFlag,
+		currentAppId:store.apps.currentAppId,
+		roboDatasetSlug:store.apps.roboDatasetSlug,
+		signal: store.signals.signalAnalysis};
 })
 
 
@@ -123,7 +126,7 @@ export class DataPreview extends React.Component {
 		console.log("------------------");
 		console.log(this.props);
 		console.log("data prevvvvv");
-		console.log(store.getState().datasets.curUrl);
+		console.log(store.getState().datasets.curUrl.indexOf("models"));
 		if(store.getState().datasets.curUrl){
 			if(store.getState().datasets.curUrl.startsWith("/signals")){
 				this.buttons['close']= {
@@ -145,24 +148,36 @@ export class DataPreview extends React.Component {
 						text: "Create Signal"
 				};
 
-			}else if(store.getState().datasets.curUrl.startsWith("/apps/models/")){
-				this.buttons['close']= {
-						url : "/apps",
-						text: "Close"
-				};
-				this.buttons['create']= {
-						url :"/apps/createScore",
-						text: "Create Score"
-				};
 			}else if(store.getState().datasets.curUrl.startsWith("/apps")){
-				this.buttons['close']= {
-						url : "/apps",
-						text: "Close"
-				};
-				this.buttons['create']= {
-						url :"/apps/createModel",
-						text: "Create Model"
-				};
+				if(store.getState().datasets.curUrl.indexOf("robo") != -1){
+					this.buttons['close']= {
+							url : "/apps/"+store.getState().apps.currentAppId+"/robo",
+							text: "Close"
+					};
+					this.buttons['create']= {
+							url :"/apps/"+store.getState().apps.currentAppId+"/robo/"+store.getState().apps.roboDatasetSlug+"/"+store.getState().signals.signalAnalysis.slug,
+							text: "Compose Insight"
+					};
+				}else if(store.getState().datasets.curUrl.indexOf("models") == -1){
+					this.buttons['close']= {
+							url : "/apps",
+							text: "Close"
+					};
+					this.buttons['create']= {
+							url :"/apps/"+store.getState().apps.currentAppId+"/scores/dataPreview/createScore",
+							text: "Create Score"
+					};
+				}else{
+					this.buttons['close']= {
+							url : "/apps",
+							text: "Close"
+					};
+					this.buttons['create']= {
+							url :"/apps/"+store.getState().apps.currentAppId+"/models/dataPreview/createModel",
+							text: "Create Model"
+					};
+				}
+				
 			}
 		}else{
 			this.buttons['close']= {
@@ -218,7 +233,7 @@ export class DataPreview extends React.Component {
 				const sideTableUpdatedTemplate=sideTableUpdate.map((tableItem,tableIndex)=>{
 					if(tableItem.display){
 						return(  <tr key={tableIndex}>
-						<td className="item">{tableItem.name}</td>
+						<td className="item">{tableItem.displayName}</td>
 						<td>{tableItem.value}</td>
 						</tr>
 						);
@@ -288,7 +303,7 @@ export class DataPreview extends React.Component {
 				const anchorCls =thElement.slug + " dropdown-toggle";
 				return(
 						<th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)}>
-						<a href="#" data-toggle="dropdown" className={anchorCls}><i className="fa fa-clock-o"></i> {thElement.name}</a>
+						<a href="#" data-toggle="dropdown" className={anchorCls}><i className="fa"></i> {thElement.name}</a>
 						{/*<ul className="dropdown-menu">
                <li><a href="#">Ascending</a></li>
                <li><a href="#">Descending</a></li>
@@ -317,14 +332,13 @@ export class DataPreview extends React.Component {
 
 			const sideChart = dataPrev.columnData[0].chartData;
 			console.log("chart-----------")
-			console.log(JSON.stringify(sideChart));
 			const sideTable = dataPrev.columnData[0].columnStats;
 			console.log("checking side table data:; ");
 			console.log(sideTable);
 			const sideTableTemaplte=sideTable.map((tableItem,tableIndex)=>{
 				if(tableItem.display){
 					return(  <tr key={tableIndex}>
-					<td className="item">{tableItem.name}</td>
+					<td className="item">{tableItem.displayName}</td>
 					<td>: {tableItem.value}</td>
 					</tr>
 					);
@@ -434,7 +448,7 @@ export class DataPreview extends React.Component {
 					{/*<!-- ./ End Tab Subsettings -->*/}
 					</div>
 					</div>
-					<div className="row">
+					<div className="row buttonRow">
 					<div className="col-md-12 text-right">
  
 					<div className="panel">
@@ -456,7 +470,9 @@ export class DataPreview extends React.Component {
 			);
 		} else {
 			return (
-					<div>no data</div>
+					 <div>
+			            <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif"} />
+			          </div>
 			);
 		}
 	}

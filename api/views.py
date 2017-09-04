@@ -169,7 +169,7 @@ class TrainerView(viewsets.ModelViewSet):
         return Response(serializer.errors)
 
     def list(self, request, *args, **kwargs):
-        app_id = int(kwargs.get('app_id', 1))
+        app_id = int(request.query_params.get('app_id', 1))
         if 'page' in request.query_params:
             if request.query_params.get('page') == 'all':
                 query_set = self.get_queryset()
@@ -406,7 +406,7 @@ def write_into_databases(job_type, object_slug, results):
         results['possibleAnalysis'] = settings.ANALYSIS_FOR_TARGET_VARIABLE
         da = []
         for d in results.get('sampleData'):
-            da.append(map(str, results.get('sampleData')[3]))
+            da.append(map(str, d))
         results['sampleData'] = da
         dataset_object.meta_data = json.dumps(results)
         dataset_object.analysis_done = True
