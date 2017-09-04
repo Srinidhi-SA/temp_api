@@ -115,7 +115,7 @@ export class OverViewPage extends React.Component {
         console.log( this.props );
 
         var that = this;
-        that.urlPrefix = "/signals/";
+        that.urlPrefix = "/signals";
         if(this.props.urlPrefix){
             that.urlPrefix = this.props.urlPrefix;
         }
@@ -141,7 +141,7 @@ export class OverViewPage extends React.Component {
             
         
         tabList = this.props.signal.listOfNodes.map(( tab, i ) => {
-            let selectedLink = that.urlPrefix + params.slug + "/" + tab.slug;
+            let selectedLink = that.urlPrefix + "/" + params.slug + "/" + tab.slug;
             let classname1 = "mAd_icons tab_" + tab.name.toLowerCase();
             //console.log(classname1);
             return (
@@ -161,14 +161,14 @@ export class OverViewPage extends React.Component {
             card = getFirstCard( this.props.signal, params.l1 );
             console.log( "card after process is:" );
             console.log( card );
-            let cardLink = that.urlPrefix + params.slug + "/" + params.l1 + "/" + card.slug;
+            let cardLink = that.urlPrefix + "/" + params.slug + "/" + params.l1 + "/" + card.slug;
             return ( <Redirect to={cardLink} /> );
         } else {
 
             //node with listOfCards is selected..
             card = fetchCard( params, this.props.signal );
             if ( params.l3 && params.l3 == "$" ) {
-                let cardLink = that.urlPrefix + params.slug + "/" + params.l1 + "/" + params.l2 + "/" + card.slug;
+                let cardLink = that.urlPrefix + "/" + params.slug + "/" + params.l1 + "/" + params.l2 + "/" + card.slug;
                 return ( <Redirect to={cardLink} /> );
             }
 
@@ -184,7 +184,7 @@ export class OverViewPage extends React.Component {
             l1Name = selectedNodeFromLevel1.name;
             if ( !isEmpty( selectedNodeFromLevel1 ) && selectedNodeFromLevel1.listOfNodes.length > 0 ) {
                 varList = selectedNodeFromLevel1.listOfNodes.map(( letiable, i ) => {
-                    let selectedl2Link = that.urlPrefix + params.slug + "/" + selectedNodeFromLevel1.slug + "/" + letiable.slug + "/$";
+                    let selectedl2Link = that.urlPrefix + "/" + params.slug + "/" + selectedNodeFromLevel1.slug + "/" + letiable.slug + "/$";
                     return (
                         <li key={i}>
                             <NavLink to={selectedl2Link}>
@@ -205,10 +205,10 @@ export class OverViewPage extends React.Component {
         let selectedURL = ""
         if ( Object.keys( params ).length == 3 ) {
             selectedNode_slug = params.l1;
-            selectedURL = that.urlPrefix + params.slug + "/" + params.l1;
+            selectedURL = that.urlPrefix + "/" + params.slug + "/" + params.l1;
         } else {
             selectedNode_slug = params.l2;
-            selectedURL = that.urlPrefix + params.slug + "/" + params.l1 + "/" + params.l2;
+            selectedURL = that.urlPrefix + "/" + params.slug + "/" + params.l1 + "/" + params.l2;
         }
         console.log( "selectedNode_slug is: " + selectedNode_slug );
         selectedNode = fetchNodeFromTree( selectedNode_slug, this.props.signal );
@@ -218,15 +218,20 @@ export class OverViewPage extends React.Component {
                 <NavLink to={selectedLink} key={i} className="list-group-item"><i className="fa fa-bar-chart"></i> {card.name}</NavLink>
             )
         } );
-
-        let documentModeLink = "/signaldocumentMode/" + this.props.match.params.slug;
+        let documentModeLink  = "";
+        if(that.urlPrefix.indexOf("signals") != -1){
+        	documentModeLink = "/signaldocumentMode/" + this.props.match.params.slug;	
+        }else{
+        	documentModeLink = "/apps-robo-document-mode/" + this.props.match.params.slug;
+        }
+        
         let expectedURL = this.prevNext( this.props );
 
-        let prevURL = that.urlPrefix + this.props.match.params.slug + "/" + expectedURL.prev;
-        let nextURL = that.urlPrefix + this.props.match.params.slug + "/" + expectedURL.next;
+        let prevURL = that.urlPrefix + "/" + this.props.match.params.slug + "/" + expectedURL.prev;
+        let nextURL = that.urlPrefix + "/" + this.props.match.params.slug + "/" + expectedURL.next;
         this.nextRedirect = nextURL;
         if ( expectedURL.prev == this.props.signal.listOfCards[0].slug ) {
-            prevURL = that.urlPrefix + this.props.match.params.slug;
+            prevURL = that.urlPrefix + "/" + this.props.match.params.slug;
         } else if ( expectedURL.next == null ) {
             nextURL = documentModeLink;
         }
@@ -251,11 +256,11 @@ export class OverViewPage extends React.Component {
                                     label: 'Signals'
                                 },
                                 {
-                                    path: that.urlPrefix + this.props.match.params.slug,
+                                    path: that.urlPrefix + "/" + this.props.match.params.slug,
                                     label: selectedSignal
                                 },
                                 {
-                                    path: that.urlPrefix + this.props.match.params.slug + '/' + this.props.match.params.l1,
+                                    path: that.urlPrefix +  "/" + this.props.match.params.slug + '/' + this.props.match.params.l1,
                                     label: l1Name
                                 }
                                 ]}

@@ -68,7 +68,8 @@ class App extends React.Component {
             <Route exact path="/apps-robo/:slug/:l1" component={OverViewPage} />
             <Route exact path="/apps-robo/:slug/:l1/:l2" component={OverViewPage} />
             <Route exact path="/apps-robo/:slug/:l1/:l2/:l3" component={OverViewPage} />
-          					
+            <Route exact path="/apps-robo-document-mode/:slug" component={RoboDocumentMode} />
+            						
             </Main>
       </Switch>
       </BrowserRouter>

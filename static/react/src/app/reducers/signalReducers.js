@@ -8,7 +8,7 @@ export default function reducer(state = {
   createSignalLoaderModal:false,
   createSignalLoaderValue:10,
   current_page:1,
-  urlPrefix:"signals",
+  urlPrefix:"/signals",
   // variableType:""
 }, action) {
   console.log("in SIGNAL reducer!!");
@@ -36,7 +36,8 @@ export default function reducer(state = {
         return {
           ...state,
           signalAnalysis: action.signalAnalysis.data,
-          selectedSignal: action.errandId
+          selectedSignal: action.errandId,
+          urlPrefix:"/signals",
         }
       }
       break;
