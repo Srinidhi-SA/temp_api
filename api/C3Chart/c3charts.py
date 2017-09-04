@@ -215,7 +215,7 @@ class C3Chart(object):
             else:
                 self._x_height = X_AXIS_HEIGHT
         else:
-            self._x_height = X_AXIS_HEIGHT + 30
+            self._x_height = X_AXIS_HEIGHT + 40
 
     def find_and_set_length_of_max_string_in_x(self):
         data = self._data_data
