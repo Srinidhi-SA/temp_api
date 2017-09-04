@@ -669,7 +669,7 @@ export function handleModelRename(slug,dialog,name){
 	const customBody = (
 		      <div className="form-group">
 		      <label for="fl1" className="col-sm-6 control-label">Enter Model New Name</label>
-		      <input className="form-control"  id="idRenameModel" type="text" value={name}/>
+		      <input className="form-control"  id="idRenameModel" type="text" defaultValue={name}/>
 		      </div>
 		    )
 	return (dispatch) => {
@@ -760,7 +760,7 @@ export function handleScoreRename(slug,dialog,name){
 	const customBody = (
 		      <div className="form-group">
 		      <label for="fl1" className="col-sm-6 control-label">Enter Score New Name</label>
-		      <input className="form-control"  id="idRenameScore" type="text" value={name}/>
+		      <input className="form-control"  id="idRenameScore" type="text" defaultValue={name}/>
 		      </div>
 		    )
 	return (dispatch) => {
@@ -835,7 +835,7 @@ export function handleInsightRename(slug,dialog,name){
 	const customBody = (
 		      <div className="form-group">
 		      <label for="fl1" className="col-sm-6 control-label">Enter Insight New Name</label>
-		      <input className="form-control"  id="idRenameInsight" type="text" value={name}/>
+		      <input className="form-control"  id="idRenameInsight" type="text" defaultValue={name}/>
 		      </div>
 		    )
 	return (dispatch) => {
