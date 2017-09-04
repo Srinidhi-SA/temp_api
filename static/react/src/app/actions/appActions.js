@@ -835,7 +835,7 @@ export function handleInsightRename(slug,dialog,name){
 	const customBody = (
 		      <div className="form-group">
 		      <label for="fl1" className="col-sm-6 control-label">Enter Insight New Name</label>
-		      <input className="form-control"  id="idRenameInsight" type="text" value={name}/>
+		      <input className="form-control"  id="idRenameInsight" type="text" defaultValue={name}/>
 		      </div>
 		    )
 	return (dispatch) => {

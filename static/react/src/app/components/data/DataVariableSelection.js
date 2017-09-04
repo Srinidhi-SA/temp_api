@@ -10,7 +10,7 @@ import store from "../../store";
 import { C3Chart } from "../c3Chart";
 import $ from "jquery";
 
-import { updateSelectedVariables, resetSelectedVariables, setSelectedVariables } from "../../actions/dataActions";
+import { updateSelectedVariables, resetSelectedVariables, setSelectedVariables,updateDatasetVariables,handleDVSearch } from "../../actions/dataActions";
 
 @connect(( store ) => {
     return {
@@ -18,7 +18,10 @@ import { updateSelectedVariables, resetSelectedVariables, setSelectedVariables }
         selectedVariablesCount: store.datasets.selectedVariablesCount,
         selectedMeasures: store.datasets.selectedMeasures,
         selectedDimensions: store.datasets.selectedDimensions,
-        selectedTimeDimensions: store.datasets.selectedTimeDimensions
+        selectedTimeDimensions: store.datasets.selectedTimeDimensions,
+        dataSetMeasures:store.datasets.dataSetMeasures,
+        dataSetDimensions:store.datasets.dataSetDimensions,
+        dataSetTimeDimensions:store.datasets.dataSetTimeDimensions,
     };
 } )
 
@@ -48,9 +51,12 @@ export class DataVariableSelection extends React.Component {
     componentDidMount() {
         this.props.dispatch( resetSelectedVariables() );
         this.setVariables( this.dimensions, this.measures, this.datetime[this.datetime.length - 1] );
+        this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime))
     }
 
-
+    handleDVSearch(evt){
+    this.props.dispatch(handleDVSearch(evt))
+    }
     render() {
 
         console.log( "data variableSelection is called##########3" );
@@ -81,8 +87,9 @@ export class DataVariableSelection extends React.Component {
 
             } );
             this.firstLoop = false;
-            if ( this.measures.length > 0 ) {
-                var measureTemplate = this.measures.map(( mItem, mIndex ) => {
+            
+            if ( store.getState().datasets.dataSetMeasures.length > 0 ) {
+                var measureTemplate = store.getState().datasets.dataSetMeasures.map(( mItem, mIndex ) => {
                     const mId = "chk_mea" + mIndex;
                     return (
                         <li key={mIndex}><div className="ma-checkbox inline"><input id={mId} type="checkbox" className="measure" onChange={this.handleCheckboxEvents} value={mItem} defaultChecked={true} /><label htmlFor={mId} className="radioLabels">{mItem}</label></div> </li>
@@ -91,8 +98,8 @@ export class DataVariableSelection extends React.Component {
             } else {
                 var measureTemplate = <label>No measure variable present</label>
             }
-            if ( this.dimensions.length > 0 ) {
-                var dimensionTemplate = this.dimensions.map(( dItem, dIndex ) => {
+            if ( store.getState().datasets.dataSetDimensions.length > 0 ) {
+                var dimensionTemplate = store.getState().datasets.dataSetDimensions.map(( dItem, dIndex ) => {
                     const dId = "chk_dim" + dIndex;
                     return (
                         <li key={dIndex}><div className="ma-checkbox inline"><input id={dId} type="checkbox" className="dimension" onChange={this.handleCheckboxEvents} value={dItem} defaultChecked={true} /><label htmlFor={dId}>{dItem}</label></div> </li>
@@ -102,8 +109,8 @@ export class DataVariableSelection extends React.Component {
                 var dimensionTemplate = <label>No dimension variable present</label>
             }
 
-            if ( this.datetime.length > 0 ) {
-                var datetimeTemplate = this.datetime.map(( dtItem, dtIndex ) => {
+            if ( store.getState().datasets.dataSetTimeDimensions.length > 0 ) {
+                var datetimeTemplate = store.getState().datasets.dataSetTimeDimensions.map(( dtItem, dtIndex ) => {
                     const dtId = "rad_dt" + dtIndex;
                     return (
                         <li key={dtIndex}><div className="ma-radio inline"><input type="radio" className="timeDimension" onChange={this.handleCheckboxEvents} name="date_type" id={dtId} value={dtItem} defaultChecked={true} /><label htmlFor={dtId}>{dtItem}</label></div></li>
@@ -134,7 +141,7 @@ export class DataVariableSelection extends React.Component {
                                 <div className="panel-heading"><i className="mAd_icons ic_inflnce"></i> Measures</div>
                                 <div className="panel-body">
                                     {/*  <!-- Row for select all-->*/}
-                                    <div className="row hidden">
+                                    <div className="row">
                                         <div className="col-md-4">
                                             <div className="ma-checkbox inline">
                                                 <input id="mea" type="checkbox" className="measureAll" />
@@ -143,7 +150,7 @@ export class DataVariableSelection extends React.Component {
                                         </div>
                                         <div className="col-md-8">
                                             <div className="input-group pull-right">
-                                                <input type="text" name="search_signals" title="Search Signals" id="search_signals" className="form-control" placeholder="Search signals..." />
+                                                <input type="text" name="measures" title="Search Measures" id="measures"  onChange={this.handleDVSearch.bind(this)} className="form-control" placeholder="Search measures..." />
                                                 {/*<span className="input-group-addon"><i className="fa fa-search fa-lg"></i></span>*/}
                                                 <span className="input-group-btn">
                                                     <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i className="fa fa-sort-alpha-asc fa-lg"></i> <span className="caret"></span></button>

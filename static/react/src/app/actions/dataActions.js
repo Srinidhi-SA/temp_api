@@ -393,4 +393,23 @@ function renameDatasetAPI(slug,newName){
 	}).then( response => Promise.all([response, response.json()]));
 	
 	}
+
+export function updateDatasetVariables(measures,dimensions,timeDimensions){
 	
+	return {
+		type: "DATASET_VARIABLES",
+		measures,
+		dimensions,
+		timeDimensions,
+	}
+}
+	
+export function handleDVSearch(evt){
+	var name = evt.target.value;
+	return {
+		type: "SEARCH_MEASURE",
+		name,
+	}
+}
+
+

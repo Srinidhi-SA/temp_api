@@ -15,6 +15,13 @@ export default function reducer(state = {
 		curUrl:"",
 		dataUploadLoaderModal:false,
 		dULoaderValue:10,
+		dataSetMeasures:[],
+		dataSetDimensions:[],
+		dataSetTimeDimensions:[],
+		ImmutableMeasures:[],
+		ImmutableDimension:[],
+		ImmutableTimeDimension:[],
+		
 }, action) {
 	console.log("In DATA reducer!!");
 	console.log(action);
@@ -231,6 +238,31 @@ export default function reducer(state = {
 		}
 	}
 	break;
+	case "DATASET_VARIABLES": {
+		return {...state,
+			dataSetMeasures:action.measures,
+			dataSetDimensions:action.dimensions,
+			dataSetTimeDimensions:action.timeDimensions,
+			ImmutableMeasures:action.measures,
+			ImmutableDimension:action.dimensions,
+			ImmutableTimeDimension:action.timeDimensions,
+			
+		}
 	}
+	break;
+	
+	case "SEARCH_MEASURE":
+	{
+		return {
+			...state,
+			dataSetMeasures: state.ImmutableMeasures.filter((item) => item.toLowerCase().includes(action.name.toLowerCase())),
+			
+		}
+	}
+	break;
+	
+	
+	}
+	
 	return state
 }
