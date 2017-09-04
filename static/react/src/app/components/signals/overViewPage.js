@@ -32,6 +32,7 @@ export class OverViewPage extends React.Component {
     super();
 	this.nextRedirect = null;
 	this.showSubTree=false;
+
   }
   
   componentWillReceiveProps(nextProps) {
@@ -109,6 +110,8 @@ prevNext(path) {
 	  console.log(url);
 	  this.props.history.push(url);
   }
+  
+
 /*updateSubTreeClass(){
 		   //alert("working");
        $(".sb_navigation #myTab i.mAd_icons.ic_perf ~ span").each(function(){
@@ -150,7 +153,7 @@ render() {
       //console.log(classname1);
       return (
         <li key={i}>
-          <NavLink to={selectedLink}>
+          <NavLink to={selectedLink}> 
             <i className={classname1}></i>
             <span>{tab.name}</span>
           </NavLink>
