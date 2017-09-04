@@ -345,6 +345,10 @@ class C3Chart(object):
         if self._data:
             self._data['type'] = "line"
 
+    def set_bar_chart(self):
+        if self._data:
+            self._data['type'] = "bar"
+
     def set_pie_chatter(self):
         if self._data:
             self._data['type'] = CHART_TYPE_PIE
@@ -518,6 +522,7 @@ class PieChart(C3Chart):
             'pie': self._pie
         }
 
+
 class DonutChart(C3Chart):
 
     def __init__(self, **kwargs):
@@ -544,8 +549,5 @@ class DonutChart(C3Chart):
             'donut': self._donut
         }
 
-
-
-
-
-
+class BarChartColored(C3Chart):
+    pass
