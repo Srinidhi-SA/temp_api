@@ -229,6 +229,12 @@ def decode_and_convert_chart_raw_data(data):
         if legend:
             c3.set_name_to_data(legend)
 
+        xdata = get_x_column_from_chart_data_without_xs(chart_data, axes)
+        if len(xdata) > 1:
+            c3_chart_details["xdata"] = get_x_column_from_chart_data_without_xs(chart_data, axes)
+            c3.set_tick_format_x()
+            c3.set_tooltip_format()
+
         from api.C3Chart import config
         c3.set_basic_color_pattern(config.SECOND_FLIP_PATTERN)
 
