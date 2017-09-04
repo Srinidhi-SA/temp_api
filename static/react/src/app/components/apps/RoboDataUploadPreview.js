@@ -4167,7 +4167,7 @@ export class RoboDataUploadPreview extends React.Component {
   componentWillMount(){
 	  this.props.dispatch(updateRoboUploadTab(1));
 	  this.props.dispatch(storeSignalMeta(null,this.props.match.url));
-	  this.props.dispatch(updateRoboAnalysisData(roboData,"/apps-robo"));
+	 // this.props.dispatch(updateRoboAnalysisData(store.getState().apps.roboSummary.data,"/apps-robo"));
   }
 
   handleTabSelect(key){
