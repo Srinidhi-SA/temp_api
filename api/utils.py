@@ -273,13 +273,16 @@ class RoboSerializer(serializers.ModelSerializer):
         market_dataset_object = Dataset.objects.get(pk=ret['market_dataset'])
         ret['market_dataset'] = DatasetSerializer(market_dataset_object).data
 
-
-        if instance.analysis_done is False:
+        if instance.dataset_analysis_done is False:
             if customer_dataset_object.analysis_done and \
                 historical_dataset_object.analysis_done and \
                     market_dataset_object.analysis_done:
-                instance.analysis_done = True
+                instance.dataset_analysis_done = True
                 instance.save()
+
+        if instance.robo_analysis_done and instance.dataset_analysis_done:
+            instance.analysis_done = True
+            instance.save()
 
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data

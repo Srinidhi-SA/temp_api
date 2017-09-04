@@ -266,7 +266,7 @@ JOBSERVER = {
     'context': 'pysql-context',
     'class_path_master': 'bi.sparkjobs.madvisor.JobScript',
     'class_path_metadata': 'bi.sparkjobs.metadata.JobScript',
-    'class_path_filter': 'bi.sparkjobs.filter.JobScript',
+    'class_path_filter': 'bi.sparkjobs.filter.JobScript'
 
 }
 

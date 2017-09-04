@@ -799,8 +799,8 @@ class Robo(models.Model):
     slug = models.SlugField(null=False, blank=True)
 
     customer_dataset = models.ForeignKey(Dataset, null=False, default="", related_name='customer_dataset')
-    historical_dataset = models.ForeignKey(Dataset, null=False , default="", related_name='historical_dataset')
-    market_dataset = models.ForeignKey(Dataset, null=False , default="", related_name='market_dataset')
+    historical_dataset = models.ForeignKey(Dataset, null=False, default="", related_name='historical_dataset')
+    market_dataset = models.ForeignKey(Dataset, null=False, default="", related_name='market_dataset')
 
     config = models.TextField(default="{}")
     data = models.TextField(default="{}")
@@ -811,6 +811,8 @@ class Robo(models.Model):
     created_by = models.ForeignKey(User, null=False)
     deleted = models.BooleanField(default=False)
     analysis_done = models.BooleanField(default=False)
+    dataset_analysis_done = models.BooleanField(default=False)
+    robo_analysis_done = models.BooleanField(default=True)
 
     bookmarked = models.BooleanField(default=False)
 
@@ -830,4 +832,41 @@ class Robo(models.Model):
         super(Robo, self).save(*args, **kwargs)
 
     def create(self, *args, **kwargs):
-        pass
+        self.add_to_job()
+
+    def generate_config(self, *args, **kwargs):
+        return {
+
+        }
+
+    def add_to_job(self, *args, **kwargs):
+        jobConfig = self.generate_config(*args, **kwargs)
+
+        job = Job()
+        job.name = "-".join(["Robo", self.slug])
+        job.job_type = "robo"
+        job.object_id = str(self.slug)
+        job.config = json.dumps(jobConfig)
+        job.save()
+
+        print "Job entry created."
+
+        from utils import submit_job
+
+        try:
+            job_url = submit_job(
+                slug=job.slug,
+                class_name='robo',
+                job_config=jobConfig
+            )
+
+            print "Job submitted."
+
+            job.url = job_url
+            job.save()
+        except Exception as exc:
+            print "Unable to submit job."
+            print exc
+
+        self.job = job
+        self.save()

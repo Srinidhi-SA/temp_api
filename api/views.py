@@ -433,6 +433,13 @@ def write_into_databases(job_type, object_slug, results):
         score_object.analysis_done = True
         score_object.save()
         return results
+    elif job_type == 'robo':
+        robo_object = Robo.objects.get(slug=object_slug)
+        results = add_slugs(results)
+        robo_object.data = json.dumps(results)
+        robo_object.robo_analysis_done = True
+        robo_object.save()
+        return results
     print "written to the database."
 
 
@@ -513,6 +520,7 @@ class RoboView(viewsets.ModelViewSet):
         "market_file": "market_dataset"
     }
 
+    # TODO: config missing
     def create(self, request, *args, **kwargs):
 
         data =request.data
@@ -538,7 +546,8 @@ class RoboView(viewsets.ModelViewSet):
                 real_data[self.dataset_name_mapping[file]] = dataset_object.id
         serializer = RoboSerializer(data=real_data)
         if serializer.is_valid():
-            serializer.save()
+            robo_object = serializer.save()
+            robo_object.create()
             return Response(serializer.data)
         return Response(serializer.errors)
 

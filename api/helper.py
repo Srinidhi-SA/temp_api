@@ -29,7 +29,8 @@ class JobserverDetails(object):
             "metadata": "metaData",
             "master": "story",
             "model":"training",
-            "score": "prediction"
+            "score": "prediction",
+            "robo": "robo"
         }
 
         return {
