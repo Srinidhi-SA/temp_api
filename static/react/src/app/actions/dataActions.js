@@ -183,29 +183,51 @@ export function selectedAnalysisList(evt){
 }
 export function updateSelectedVariables(evt){
 	var variableName = evt.target.value;
+	
 	if(evt.target.className == "measure"){
+		//Calculate whether select all should be check or not
+		var meaChkBoxList = store.getState().datasets.measureChecked;
+		meaChkBoxList[evt.target.name] = evt.target.checked;
+		 var isAllChecked = meaChkBoxList.filter(function(c) {
+	    	return c;
+	    }).length === meaChkBoxList.length;
+		
 		if(evt.target.checked){
 			return {
 				type: "SELECTED_MEASURES",
-				variableName
+				variableName,
+				meaChkBoxList,
+				isAllChecked
 			}
 		}else{
 			return {
 				type: "UNSELECT_MEASURES",
-				variableName
+				variableName,
+				meaChkBoxList,
+				isAllChecked
 			}
 		}
 	}
 	else if(evt.target.className == "dimension"){
+		var dimChkBoxList = store.getState().datasets.dimensionChecked;
+		dimChkBoxList[evt.target.name] = evt.target.checked;
+		 var isAllChecked = dimChkBoxList.filter(function(c) {
+	    	return c;
+	    }).length === dimChkBoxList.length;
 		if(evt.target.checked){
 			return {
 				type: "SELECTED_DIMENSIONS",
-				variableName
+				variableName,
+				dimChkBoxList,
+				isAllChecked,
+				
 			}
 		}else{
 			return {
 				type: "UNSELECT_DIMENSION",
-				variableName
+				variableName,
+				dimChkBoxList,
+				isAllChecked,
 			}
 		}
 	}
@@ -394,19 +416,21 @@ function renameDatasetAPI(slug,newName){
 
 }
 
-export function updateDatasetVariables(measures,dimensions,timeDimensions){
+export function updateDatasetVariables(measures,dimensions,timeDimensions,measureChkBoxList,dimChkBoxList){
 
 	return {
 		type: "DATASET_VARIABLES",
 		measures,
 		dimensions,
 		timeDimensions,
+		measureChkBoxList,
+		dimChkBoxList
 	}
 }
 
 export function handleDVSearch(evt){
 	var name = evt.target.value;
-	switch (  evt.target.id ) {
+	switch (  evt.target.name ) {
 	case "measure":
 		return {
 		type: "SEARCH_MEASURE",
@@ -463,17 +487,43 @@ export function handelSort(variableType,sortOrder){
 export function handleSelectAll(evt){
 	switch ( evt.target.id ) {
 	case "measure":
+		$("#measureSearch").val("");
+		var meaChkBoxList = store.getState().datasets.measureChecked;
+		meaChkBoxList = meaChkBoxList.map(function() { 
+            return evt.target.checked 
+        })
 	if(evt.target.checked){
 		let measures = store.getState().datasets.ImmutableMeasures;
 		return {
 			type: "SELECT_ALL_MEASURES",
 			measures,
+			meaChkBoxList
 		}
 	}else{
-		
+		return {
+			type: "UNSELECT_ALL_MEASURES",
+			meaChkBoxList
+		}
 	}
 		break;
 	case "dimension":
+		var diaChkBoxList = store.getState().datasets.dimensionChecked;
+		diaChkBoxList = diaChkBoxList.map(function() { 
+            return evt.target.checked 
+        })
+        if(evt.target.checked){
+    		let dimension = store.getState().datasets.ImmutableDimension;
+    		return {
+    			type: "SELECT_ALL_DIMENSION",
+    			dimension,
+    			diaChkBoxList
+    		}
+    	}else{
+    		return {
+    			type: "UNSELECT_ALL_DIMENSION",
+    			diaChkBoxList
+    		}
+    	}
 		
 		break;
 	case "datetime":
