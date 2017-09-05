@@ -66,16 +66,16 @@ function fetchCreateSignalSuccess(signalData,dispatch) {
 
 function fetchCreateSignalError(json) {
   console.log("fetching list error!!",json)
-  
+
   return {
     type: "CREATE_ERROR",
     json
   }
 }
 
-export function getList(token,pageNo) {
+export function getList(token,pageNo,search_element) {
     return (dispatch) => {
-    return fetchPosts(token,pageNo).then(([response, json]) =>{
+    return fetchPosts(token,pageNo,search_element).then(([response, json]) =>{
         if(response.status === 200){
           console.log(json)
         dispatch(fetchPostsSuccess(json))
@@ -87,13 +87,23 @@ export function getList(token,pageNo) {
   }
 }
 
-function fetchPosts(token,pageNo) {
+function fetchPosts(token,pageNo,search_element) {
   console.log(token)
+  console.log(search_element)
+  if(search_element!=""&&search_element!=null){
+    console.log("calling for search element!!")
+    return fetch(API+'/api/signals/?name='+search_element+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
+      method: 'get',
+      headers: getHeader(token)
+      }).then( response => Promise.all([response, response.json()]));
+  }else{
+    return fetch(API+'/api/signals/?page_number='+pageNo+'&page_size='+PERPAGE+'',{
+      method: 'get',
+      headers: getHeader(token)
+      }).then( response => Promise.all([response, response.json()]));
+  }
 
-  return fetch(API+'/api/signals/?page_number='+pageNo+'&page_size='+PERPAGE+'',{
-		method: 'get',
-    headers: getHeader(token)
-		}).then( response => Promise.all([response, response.json()]));
+
 }
 
 
@@ -244,7 +254,14 @@ function deleteSignalAPI(slug){
 			deleted:true,
 		}),
 	}).then( response => Promise.all([response, response.json()]));
-	
+
 	}
 
 // end of delete signal
+//store search element
+export function storeSearchElement(search_element){
+  return {
+		type: "SEARCH_SIGNAL",
+		search_element
+	}
+}

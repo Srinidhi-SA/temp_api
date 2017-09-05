@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import ReactDOM from "react-dom";
 import {Link} from "react-router-dom";
 import store from "../../store";
-import {getList,emptySignalAnalysis,handleDelete} from "../../actions/signalActions";
+import {getList, emptySignalAnalysis, handleDelete, storeSearchElement} from "../../actions/signalActions";
 import {Pagination} from "react-bootstrap";
 //import {BreadCrumb} from "../common/BreadCrumb";
 import Breadcrumb from 'react-breadcrumb';
@@ -14,7 +14,7 @@ import {STATIC_URL} from "../../helpers/env";
 import Dialog from 'react-bootstrap-dialog';
 
 @connect((store) => {
-  return {login_response: store.login.login_response, signalList: store.signals.signalList.data, selectedSignal: store.signals.signalAnalysis};
+  return {login_response: store.login.login_response, signalList: store.signals.signalList.data, selectedSignal: store.signals.signalAnalysis, signal_search_element: store.signals.signal_search_element};
 })
 
 export class Signals extends React.Component {
@@ -23,13 +23,13 @@ export class Signals extends React.Component {
     this.handleSelect = this.handleSelect.bind(this);
   }
   componentWillMount() {
-	  var pageNo = 1;
-	  if(this.props.history.location.pathname.indexOf("page") != -1){
-		  pageNo = this.props.history.location.pathname.split("page=")[1];
-		  this.props.dispatch(getList(sessionStorage.userToken,pageNo));
-	  }else
-		  this.props.dispatch(getList(sessionStorage.userToken,pageNo));
-  }
+    var pageNo = 1;
+    if (this.props.history.location.pathname.indexOf("page") != -1) {
+      pageNo = this.props.history.location.pathname.split("page=")[1];
+      this.props.dispatch(getList(sessionStorage.userToken, pageNo, this.props.signal_search_element));
+    } else
+      this.props.dispatch(getList(sessionStorage.userToken, pageNo, this.props.signal_search_element));
+    }
 
   componentDidMount() {
     console.log("/checking anchor html");
@@ -51,56 +51,77 @@ export class Signals extends React.Component {
         clearInterval(tmp);
       }
     }, 100);
+
   }
 
-  
   handleSelect(eventKey) {
-		this.props.history.push('/signals?page='+eventKey+'')
-		this.props.dispatch(getList(sessionStorage.userToken,eventKey));	
-	}
-	
-  handleDelete(slug){
-	  //alert("reached handle");
-		 this.props.dispatch(handleDelete(slug,this.refs.dialog));
-	  }
-	  
-   handleRename(slug){
-		  //this.props.dispatch(handleRename(slug,this.refs.dialog));
-	  }
- 
-  getSignalAnalysis(e){
-	  console.log("Link Onclick is called")
-	  console.log(e.target.id);
-	  this.props.dispatch(emptySignalAnalysis());
+    if(this.props.signal_search_element){
+      this.props.history.push('/signals?search='+this.props.signal_search_element+'&page=' + eventKey + '');
+    }else
+    this.props.history.push('/signals?page=' + eventKey + '');
+    this.props.dispatch(getList(sessionStorage.userToken, eventKey, this.props.signal_search_element));
+  }
+
+  handleDelete(slug) {
+    //alert("reached handle");
+    this.props.dispatch(handleDelete(slug, this.refs.dialog));
+  }
+
+  handleRename(slug) {
+    //this.props.dispatch(handleRename(slug,this.refs.dialog));
+  }
+
+  getSignalAnalysis(e) {
+    console.log("Link Onclick is called")
+    console.log(e.target.id);
+    this.props.dispatch(emptySignalAnalysis());
+  }
+  _handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      console.log('searching');
+      if (e.target.value != "" && e.target.value != null)
+        this.props.history.push('/signals?search=' + e.target.value + '')
+
+      this.props.dispatch(storeSearchElement(e.target.value));
+      this.props.dispatch(getList(sessionStorage.userToken, 1, e.target.value));
+    }
   }
   render() {
     console.log("signals is called##########3");
-	document.body.className = "";
-// h:MM
+    document.body.className = "";
+    // h:MM
     // let parametersForBreadCrumb = [];
     // parametersForBreadCrumb.push({name:"Signals"});
+
+    //empty search element
+    if (this.props.signal_search_element!=""&&(this.props.location.search == "" || this.props.location.search == null)) {
+      console.log("search is empty");
+      this.props.dispatch(storeSearchElement(""));
+      document.getElementById('search_signals').value= "";
+    }
+    //search element ends..
 
     console.log(this.props);
     const data = this.props.signalList;
     const pages = store.getState().signals.signalList.total_number_of_pages;
-	const current_page = store.getState().signals.signalList.current_page;
-	let addButton = null;
-	let paginationTag = null
-	if(current_page == 1 || current_page == 0){
-		addButton = <CreateSignal url={this.props.match.url}/>
-	}
-	if(pages > 1){
-		paginationTag = <Pagination ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
-	}
-	
+    const current_page = store.getState().signals.signalList.current_page;
+    let addButton = null;
+    let paginationTag = null
+    if (current_page == 1 || current_page == 0) {
+      addButton = <CreateSignal url={this.props.match.url}/>
+    }
+    if (pages > 1) {
+      paginationTag = <Pagination ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
+    }
+
     if (data) {
       console.log("under if data condition!!")
       const storyList = data.map((story, i) => {
-		  if(story.type == "dimension"){
-		     var imgLink =  STATIC_URL + "assets/images/d_cardIcon.png"
-		  }else{
-			 var imgLink =  STATIC_URL + "assets/images/m_carIcon.png"
-		  }
+        if (story.type == "dimension") {
+          var imgLink = STATIC_URL + "assets/images/d_cardIcon.png"
+        } else {
+          var imgLink = STATIC_URL + "assets/images/m_carIcon.png"
+        }
         var signalLink = "/signals/" + story.slug;
         return (
 
@@ -140,11 +161,13 @@ export class Signals extends React.Component {
                   <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                     <li>
                       <a className="dropdown-item" href="#renameCard" data-toggle="modal">
-                        <i className="fa fa-edit"></i>  Rename</a>
+                        <i className="fa fa-edit"></i>
+                        Rename</a>
                     </li>
-                    <li onClick={this.handleDelete.bind(this,story.slug)}>
+                    <li onClick={this.handleDelete.bind(this, story.slug)}>
                       <a className="dropdown-item" href="#deleteCard" data-toggle="modal">
-                        <i className="fa fa-trash-o"></i>  Delete</a>
+                        <i className="fa fa-trash-o"></i>
+                        Delete</a>
                     </li>
                   </ul>
                   {/*<!-- End Rename and Delete BLock  -->*/}
@@ -177,24 +200,71 @@ export class Signals extends React.Component {
           </div>
         )
       });
+
       return (
-          <div className="side-body">
-            {/* <MainHeader/>*/}
-			
-            <div className="main-content">
-				<div className="row">
-				{addButton}
-					{storyList}
-					<div className="clearfix"></div>
-					</div>
-					<div className="ma-datatable-footer" id="idSignalPagination">
-					<div className="dataTables_paginate">
-					{paginationTag}
-					</div>
-				 </div>
-				</div>
-				<Dialog ref="dialog" />
-			</div>
+        <div className="side-body">
+          {/* <MainHeader/>*/}
+          {/*<!-- Page Title and Breadcrumbs -->*/}
+          <div class="page-head">
+            {/*<!-- <ol class="breadcrumb">
+                <li><a href="#">Story</a></li>
+                <li class="active">Sales Performance Report</li>
+              </ol> -->*/}
+            <div class="row">
+              <div class="col-md-8">
+                <h2>Signals</h2>
+              </div>
+              <div class="col-md-4">
+                <div class="input-group pull-right">
+
+                  <input type="text" name="search_signals" onKeyPress={this._handleKeyPress} title="Search Signals" id="search_signals" class="form-control" placeholder="Search signals..."/>
+                  <span class="input-group-addon">
+                    <i class="fa fa-search fa-lg"></i>
+                  </span>
+                  <span class="input-group-btn">
+                    <button type="button" class="btn btn-default" title="Select All Card">
+                      <i class="fa fa-address-card-o fa-lg"></i>
+                    </button>
+                    <button type="button" data-toggle="dropdown" title="Sorting" class="btn btn-default dropdown-toggle" aria-expanded="false">
+                      <i class="fa fa-sort-alpha-asc fa-lg"></i>
+                      <span class="caret"></span>
+                    </button>
+                    <ul role="menu" class="dropdown-menu dropdown-menu-right">
+                      <li>
+                        <a href="#">Name Ascending</a>
+                      </li>
+                      <li>
+                        <a href="#">Name Descending</a>
+                      </li>
+                      <li>
+                        <a href="#">Date Ascending</a>
+                      </li>
+                      <li>
+                        <a href="#">Date Descending</a>
+                      </li>
+                    </ul>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="clearfix"></div>
+          </div>
+
+          <div className="main-content">
+            <div className="row">
+              {addButton}
+              {storyList}
+              <div className="clearfix"></div>
+            </div>
+            <div className="ma-datatable-footer" id="idSignalPagination">
+              <div className="dataTables_paginate">
+                {paginationTag}
+              </div>
+            </div>
+          </div>
+          <Dialog ref="dialog"/>
+        </div>
       );
     } else {
       return (
@@ -204,13 +274,11 @@ export class Signals extends React.Component {
           }
         ]}/>
           <div>
-            <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif"} />
+            <img id="loading" src={STATIC_URL + "assets/images/Preloader_2.gif"}/>
           </div>
         </div>
       )
     }
   }
-  
-	
-	
+
 }

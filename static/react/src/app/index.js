@@ -60,13 +60,14 @@ class App extends React.Component {
             <Route exact path="/apps/:AppId/scores/:slug" component={AppsScoreDetail} />
             <Route exact path="/data/preview/createSignal" component={VariableSelection}/>
             <Route exact path="/signals?page=:slug" component={Signals}/>
+            <Route exact path="/signals?search=:slug" component={Signals}/>
             <Route exact path="/apps/:AppId/models" component={Apps} />
             <Route exact path="/apps/:AppId/scores" component={Apps} />
             <Route exact path="/apps/:AppId/models/data/:slug" component={DataPreview} />
             <Route exact path="/apps/:AppId/robo" component={RoboInsightList} />
             <Route exact path="/apps/:AppId/robo/:slug" component={RoboDataUploadPreview} />
             <Route exact path="/apps/:AppId/robo/:slug/:l1" component={RoboDocumentMode} />
-          					
+
             </Main>
       </Switch>
       </BrowserRouter>
@@ -77,7 +78,7 @@ class App extends React.Component {
 
 render(
   <Provider store={store}>
- 
+
   <App/>
 
 </Provider>, window.document.getElementById('app'));
