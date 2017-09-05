@@ -216,8 +216,8 @@ export class AppsScoreList extends React.Component {
 			this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/scores?search=' + this.props.score_search_element+'?page='+eventKey+'')
 		} else
 		this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/scores?page='+eventKey+'')
-
-		this.props.dispatch(getAppsScoreList(eventKey));
+        
 		this.props.dispatch(activateModelScoreTabs(2));
+		this.props.dispatch(getAppsScoreList(eventKey));
 	}
 }

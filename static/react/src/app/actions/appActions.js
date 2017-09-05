@@ -147,7 +147,7 @@ export function getAppsScoreList(pageNo,search_element) {
 		return fetchScoreList(pageNo,sessionStorage.userToken,search_element).then(([response, json]) =>{
 			if(response.status === 200){
 				console.log(json)
-				dispatch(fetchScoreListSuccess(json))
+				dispatch(fetchScoreListSuccess(json));
 			}
 			else{
 				dispatch(fetchScoreListError(json))
