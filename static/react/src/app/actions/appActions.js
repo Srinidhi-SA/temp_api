@@ -30,9 +30,9 @@ export function closeModelPopup() {
 	}
 }
 
-export function getAppsModelList(pageNo) {
+export function getAppsModelList(pageNo,search_element) {
 	return (dispatch) => {
-		return fetchModelList(pageNo,sessionStorage.userToken).then(([response, json]) =>{
+		return fetchModelList(pageNo,sessionStorage.userToken,search_element).then(([response, json]) =>{
 			if(response.status === 200){
 				console.log(json)
 				dispatch(fetchModelListSuccess(json))
@@ -44,11 +44,21 @@ export function getAppsModelList(pageNo) {
 	}
 }
 
-function fetchModelList(pageNo,token) {
-	return fetch(API+'/api/trainer/?app_id='+store.getState().apps.currentAppId+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
-		method: 'get',
-		headers: getHeader(token)
-	}).then( response => Promise.all([response, response.json()]));
+function fetchModelList(pageNo,token,search_element) {
+	if(search_element!=""&&search_element!=null){
+		console.log("calling for model search element!!")
+		return fetch(API+'/api/trainer/?app_id='+store.getState().apps.currentAppId+'&name='+search_element+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
+			method: 'get',
+			headers: getHeader(token)
+			}).then( response => Promise.all([response, response.json()]));
+	}else{
+		return fetch(API+'/api/trainer/?app_id='+store.getState().apps.currentAppId+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
+			method: 'get',
+			headers: getHeader(token)
+		}).then( response => Promise.all([response, response.json()]));
+	}
+
+
 }
 
 function fetchModelListError(json) {
@@ -124,17 +134,17 @@ function createModelSuccess(data,dispatch){
 			dispatch(getAppsModelSummary(data.slug));
 			return {
 				type: "CREATE_MODEL_SUCCESS",
-				slug,	
+				slug,
 			}
 	},APPSDEFAULTINTERVAL);
 	return {
 		type: "CREATE_MODEL_SUCCESS",
-		slug,	
+		slug,
 	}
 }
-export function getAppsScoreList(pageNo) {
+export function getAppsScoreList(pageNo,search_element) {
 	return (dispatch) => {
-		return fetchScoreList(pageNo,sessionStorage.userToken).then(([response, json]) =>{
+		return fetchScoreList(pageNo,sessionStorage.userToken,search_element).then(([response, json]) =>{
 			if(response.status === 200){
 				console.log(json)
 				dispatch(fetchScoreListSuccess(json))
@@ -146,11 +156,21 @@ export function getAppsScoreList(pageNo) {
 	}
 }
 
-function fetchScoreList(pageNo,token) {
-	return fetch(API+'/api/score/?app_id='+store.getState().apps.currentAppId+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
-		method: 'get',
-		headers: getHeader(token)
-	}).then( response => Promise.all([response, response.json()]));
+function fetchScoreList(pageNo,token,search_element) {
+	if(search_element!=""&&search_element!=null){
+		console.log("calling for score search element!!")
+		return fetch(API+'/api/score/?app_id='+store.getState().apps.currentAppId+'&name='+search_element+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
+			method: 'get',
+			headers: getHeader(token)
+			}).then( response => Promise.all([response, response.json()]));
+	}else{
+		return fetch(API+'/api/score/?app_id='+store.getState().apps.currentAppId+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
+			method: 'get',
+			headers: getHeader(token)
+		}).then( response => Promise.all([response, response.json()]));
+	}
+
+
 }
 
 function fetchScoreListError(json) {
@@ -246,7 +266,7 @@ export function createScore(scoreName,targetVariable) {
 		  dispatch(openAppsLoader(DULOADERPERVALUE,"Please wait while mAdvisor is scoring your model... "));
 			return triggerCreateScore(sessionStorage.userToken,scoreName,targetVariable).then(([response, json]) =>{
 				if(response.status === 200){
-					
+
 					dispatch(createScoreSuccess(json,dispatch))
 				}
 				else{
@@ -288,12 +308,12 @@ function createScoreSuccess(data,dispatch){
 			dispatch(getAppsScoreSummary(data.slug));
 			return {
 				type: "CREATE_SCORE_SUCCESS",
-				slug,	
+				slug,
 			}
 	},APPSDEFAULTINTERVAL);
 	return {
 		type: "CREATE_SCORE_SUCCESS",
-		slug,	
+		slug,
 	}
 }
 
@@ -308,7 +328,7 @@ export function getAppsScoreSummary(slug) {
 					dispatch(hideDataPreview());
 					dispatch(updateScoreSummaryFlag(true));
 				}
-				
+
 			}
 			else{
 				dispatch(closeAppsLoaderValue());
@@ -395,19 +415,19 @@ export function updateScoreSummaryFlag(flag){
 export function updateModelSlug(slug){
 	return {
 		type: "CREATE_MODEL_SUCCESS",
-		slug,	
+		slug,
 	}
 }
 export function updateScoreSlug(slug){
 	return {
 		type: "CREATE_SCORE_SUCCESS",
-		slug,	
+		slug,
 	}
 }
 
-export function getAppsRoboList(pageNo) {
+export function getAppsRoboList(pageNo,search_element) {
 	return (dispatch) => {
-		return fetchRoboList(pageNo,sessionStorage.userToken).then(([response, json]) =>{
+		return fetchRoboList(pageNo,sessionStorage.userToken,search_element).then(([response, json]) =>{
 			if(response.status === 200){
 				console.log(json)
 				dispatch(fetchRoboListSuccess(json))
@@ -419,11 +439,21 @@ export function getAppsRoboList(pageNo) {
 	}
 }
 
-function fetchRoboList(pageNo,token) {
-	return fetch(API+'/api/robo/?page_number='+pageNo+'&page_size='+PERPAGE+'',{
-		method: 'get',
-		headers: getHeader(token)
-	}).then( response => Promise.all([response, response.json()]));
+function fetchRoboList(pageNo,token,search_element) {
+	if(search_element!=""&&search_element!=null){
+		//console.log("calling for robo search element!!")
+		return fetch(API+'/api/robo/?name='+search_element+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
+			method: 'get',
+			headers: getHeader(token)
+			}).then( response => Promise.all([response, response.json()]));
+	}else{
+		return fetch(API+'/api/robo/?page_number='+pageNo+'&page_size='+PERPAGE+'',{
+			method: 'get',
+			headers: getHeader(token)
+		}).then( response => Promise.all([response, response.json()]));
+	}
+
+
 }
 
 function fetchRoboListError(json) {
@@ -474,7 +504,7 @@ export function saveFilesToStore(files,uploadData) {
 			files
 		}
 	}
-	
+
 }
 
 
@@ -485,7 +515,7 @@ if(!isEmpty(store.getState().apps.customerDataUpload) && !isEmpty(store.getState
 		  dispatch(openAppsLoader(DULOADERPERVALUE,"Please wait while mAdvisor is processing data... "));
 			return triggerDataUpload(sessionStorage.userToken,insightName).then(([response, json]) =>{
 				if(response.status === 200){
-					
+
 					dispatch(dataUploadFilesSuccess(json,dispatch))
 				}
 				else{
@@ -497,7 +527,7 @@ if(!isEmpty(store.getState().apps.customerDataUpload) && !isEmpty(store.getState
 }else{
 	dialog.showAlert("Please select Customer Data,Historial Data and External Data.");
 }
-	  
+
 }
 
 function triggerDataUpload(token,insightName) {
@@ -510,7 +540,7 @@ function triggerDataUpload(token,insightName) {
 			method: 'post',
 			headers: getHeaderWithoutContent(token),
 			body:data,
-		}).then( response => Promise.all([response, response.json()]));	
+		}).then( response => Promise.all([response, response.json()]));
 }
 
 function dataUploadFilesSuccess(data,dispatch) {
@@ -523,7 +553,7 @@ function dataUploadFilesSuccess(data,dispatch) {
 	},APPSDEFAULTINTERVAL);
 	return {
 		type: "ROBO_DATA_UPLOAD_SUCCESS",
-		slug,	
+		slug,
 	}
 }
 
@@ -624,7 +654,7 @@ export function updateRoboAnalysisData(roboData,urlPrefix){
 		    	deleteInsight(slug,dialog,dispatch)
 		    	else
 		    	deleteScore(slug,dialog,dispatch)
-		    		
+
 		    })
 		  ],
 		  bsSize: 'medium',
@@ -661,9 +691,9 @@ function deleteModelAPI(slug){
 			deleted:true,
 		}),
 	}).then( response => Promise.all([response, response.json()]));
-	
+
 	}
-	
+
 
 export function handleModelRename(slug,dialog,name){
 	const customBody = (
@@ -688,7 +718,7 @@ function showRenameDialogBox(slug,dialog,dispatch,title,customBody){
 		    	else if(title ==  RENAMEINSIGHT)
 		    	renameInsight(slug,dialog,$("#idRenameInsight").val(),dispatch)
 		    	else
-		    	renameScore(slug,dialog,$("#idRenameScore").val(),dispatch)	
+		    	renameScore(slug,dialog,$("#idRenameScore").val(),dispatch)
 		    })
 		  ],
 		  bsSize: 'medium',
@@ -698,7 +728,7 @@ function showRenameDialogBox(slug,dialog,dispatch,title,customBody){
 		  }
 		});
 }
-	
+
 function renameModel(slug,dialog,newName,dispatch){
 	dispatch(showLoading());
 	Dialog.resetOptions();
@@ -721,9 +751,9 @@ function renameModelAPI(slug,newName){
 			name:newName,
 		}),
 	}).then( response => Promise.all([response, response.json()]));
-	
+
 	}
-	
+
 
 export function handleScoreDelete(slug,dialog) {
 	return (dispatch) => {
@@ -752,9 +782,9 @@ function deleteScoreAPI(slug){
 			deleted:true,
 		}),
 	}).then( response => Promise.all([response, response.json()]));
-	
+
 	}
-	
+
 
 export function handleScoreRename(slug,dialog,name){
 	const customBody = (
@@ -790,7 +820,7 @@ function renameScoreAPI(slug,newName){
 			name:newName,
 		}),
 	}).then( response => Promise.all([response, response.json()]));
-	
+
 	}
 
 export function activateModelScoreTabs(id){
@@ -827,9 +857,9 @@ function deleteInsightAPI(slug){
 			deleted:true,
 		}),
 	}).then( response => Promise.all([response, response.json()]));
-	
+
 	}
-	
+
 
 export function handleInsightRename(slug,dialog,name){
 	const customBody = (
@@ -865,8 +895,23 @@ function renameInsightAPI(slug,newName){
 			name:newName,
 		}),
 	}).then( response => Promise.all([response, response.json()]));
-	
+
 	}
-	
 
-
+export function storeRoboSearchElement(search_element){
+	return {
+		type: "SEARCH_ROBO",
+		search_element
+	}
+}
+export function storeModelSearchElement(search_element){
+	return {
+		type: "SEARCH_MODEL",
+		search_element
+	}
+}export function storeScoreSearchElement(search_element){
+	return {
+		type: "SEARCH_SCORE",
+		search_element
+	}
+}

@@ -6,10 +6,10 @@ import {AppsScoreList} from "./AppsScoreList";
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {connect} from "react-redux";
-import {activateModelScoreTabs} from "../../actions/appActions";
+import {activateModelScoreTabs,storeModelSearchElement,storeScoreSearchElement,getAppsModelList,getAppsScoreList} from "../../actions/appActions";
 
 @connect((store) => {
-	return {login_response: store.login.login_response, 
+	return {login_response: store.login.login_response,
 		modelList:store.apps.modelList,currentAppId:store.apps.currentAppId,
 		scoreList: store.apps.scoreList,
 		activateModelScoreTabs:store.apps.activateModelScoreTabs,
@@ -25,9 +25,16 @@ export class Apps extends React.Component {
     	    key: 1
     	  };
   }
-  
+
   modifyUrl(tabId){
 	  this.props.dispatch(activateModelScoreTabs(tabId));
+		//cleat Model Filters
+		this.props.dispatch(storeModelSearchElement(""));
+		this.props.dispatch(getAppsModelList(1,""));
+		//clear score Filters
+		this.props.dispatch(storeScoreSearchElement(""));
+		this.props.dispatch(getAppsScoreList(1,""));
+
   /*if(tabId == 2)this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/scores')
   if(tabId == 1)this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models')*/
   }
@@ -35,9 +42,9 @@ export class Apps extends React.Component {
     console.log("apps is called##########3");
     console.log(this.props)
    let models = <AppsModelList history={this.props.history} match={this.props.match}/>
-  
+
   let scores = <AppsScoreList history={this.props.history} match={this.props.match}/>
-  
+
     return (
           <div className="side-body">
             <div className="main-content">

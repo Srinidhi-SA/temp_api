@@ -7,7 +7,7 @@ import {push} from "react-router-redux";
 import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstrap";
 import {AppsCreateScore} from "./AppsCreateScore";
-import {getAppsScoreList,getAppsScoreSummary,updateScoreSlug,handleScoreRename,handleScoreDelete,activateModelScoreTabs} from "../../actions/appActions";
+import {getAppsScoreList,getAppsScoreSummary,updateScoreSlug,handleScoreRename,handleScoreDelete,activateModelScoreTabs,storeScoreSearchElement} from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {STATIC_URL} from "../../helpers/env.js"
 import Dialog from 'react-bootstrap-dialog'
@@ -16,10 +16,12 @@ var dateFormat = require('dateformat');
 
 
 @connect((store) => {
-	return {login_response: store.login.login_response, 
+	return {login_response: store.login.login_response,
 		scoreList: store.apps.scoreList,
 		scoreSlug:store.apps.scoreSlug,
 		currentAppId:store.apps.currentAppId,
+		score_search_element: store.apps.score_search_element
+
 	};
 })
 
@@ -30,15 +32,16 @@ export class AppsScoreList extends React.Component {
 	}
 	componentWillMount() {
 		console.log(this.props.history)
+
 		var pageNo = 1;
 		if(this.props.history.location.pathname.indexOf("page") != -1){
 			pageNo = this.props.history.location.pathname.split("page=")[1];
-			this.props.dispatch(getAppsScoreList(pageNo));
+			this.props.dispatch(getAppsScoreList(pageNo,this.props.score_search_element));
 		}else{
-			this.props.dispatch(getAppsScoreList(pageNo));
+			this.props.dispatch(getAppsScoreList(pageNo,this.props.score_search_element));
 			// this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/scores')
 		}
-			
+
 	}
 	getScoreSummary(slug){
 		this.props.dispatch(updateScoreSlug(slug))
@@ -49,9 +52,37 @@ export class AppsScoreList extends React.Component {
 	  handleScoreRename(slug,name){
 		  this.props.dispatch(handleScoreRename(slug,this.refs.dialog,name));
 	  }
-	 
+
+		_handleKeyPress = (e) => {
+			if (e.key === 'Enter') {
+				//console.log('searching in data list');
+
+				//have to uncomment following once url issue is fixed!!!!!!!
+
+				// if (e.target.value != "" && e.target.value != null)
+				// 	this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models?search=' + e.target.value + '')
+
+				this.props.dispatch(storeScoreSearchElement(e.target.value));
+				this.props.dispatch(getAppsScoreList(1,e.target.value));
+
+			}
+		}
+
 	render() {
 		console.log("apps score list is called##########3");
+		//empty search element
+		let search_element = document.getElementById('score_insights');
+		if (this.props.score_search_element != "" && (this.props.history.location.search == "" || this.props.history.location.search == null)) {
+			console.log("search is empty");
+			this.props.dispatch(storeScoreSearchElement(""));
+			if (search_element)
+			document.getElementById('score_insights').value = "";
+		}
+		if(this.props.score_search_element==""&&this.props.history.location.search!=""){
+			if(search_element)
+			document.getElementById('score_insights').value = "";
+		}
+		//search element ends..
 		const scoreList = store.getState().apps.scoreList.data;
 		if (scoreList) {
 			const pages = store.getState().apps.scoreList.total_number_of_pages;
@@ -112,8 +143,53 @@ export class AppsScoreList extends React.Component {
 				)
 			});
 			return (
-					
+
 					<div>
+					<div class="page-head">
+						{/*<!-- <ol class="breadcrumb">
+							<li><a href="#">Story</a></li>
+							<li class="active">Sales Performance Report</li>
+						</ol> -->*/}
+						<div class="row">
+						<div class="col-md-8">
+
+						</div>
+							<div class="col-md-4">
+								<div class="input-group pull-right">
+
+									<input type="text" name="score_insights" onKeyPress={this._handleKeyPress} title="Score Insights" id="score_insights" class="form-control" placeholder="Search Score insights..."/>
+									<span class="input-group-addon">
+										<i class="fa fa-search fa-lg"></i>
+									</span>
+									<span class="input-group-btn">
+										<button type="button" class="btn btn-default" title="Select All Card">
+											<i class="fa fa-address-card-o fa-lg"></i>
+										</button>
+										<button type="button" data-toggle="dropdown" title="Sorting" class="btn btn-default dropdown-toggle" aria-expanded="false">
+											<i class="fa fa-sort-alpha-asc fa-lg"></i>
+											<span class="caret"></span>
+										</button>
+										<ul role="menu" class="dropdown-menu dropdown-menu-right">
+											<li>
+												<a href="#">Name Ascending</a>
+											</li>
+											<li>
+												<a href="#">Name Descending</a>
+											</li>
+											<li>
+												<a href="#">Date Ascending</a>
+											</li>
+											<li>
+												<a href="#">Date Descending</a>
+											</li>
+										</ul>
+									</span>
+								</div>
+							</div>
+						</div>
+
+						<div class="clearfix"></div>
+					</div>
 					<div className="row">
 					{appsScoreList}
 					<div className="clearfix"></div>
@@ -125,7 +201,7 @@ export class AppsScoreList extends React.Component {
 					</div>
 					 <Dialog ref="dialog" />
 					</div>
-					
+
 			);
 		}else {
 			return (
@@ -136,7 +212,11 @@ export class AppsScoreList extends React.Component {
 		}
 	}
 	handleSelect(eventKey) {
+		if (this.props.score_search_element) {
+			this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/scores?search=' + this.props.score_search_element+'?page='+eventKey+'')
+		} else
 		this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/scores?page='+eventKey+'')
+
 		this.props.dispatch(getAppsScoreList(eventKey));
 		this.props.dispatch(activateModelScoreTabs(2));
 	}

@@ -34,7 +34,10 @@ export default function reducer(state = {
 		externalDataset_slug:"",
 		roboUploadTabId:1,
 		appsSelectedTabId:1,
-		
+		robo_search_element:"",
+		model_search_element:"",
+		score_search_element:"",
+
 }, action) {
 	console.log("In APPs reducer!!");
 	console.log(action.data);
@@ -82,7 +85,7 @@ export default function reducer(state = {
 		}
 	}
 	break;
-	
+
 	case "SCORE_LIST":
 	{
 		return {
@@ -116,7 +119,7 @@ export default function reducer(state = {
 		}
 	}
 	break;
-	
+
 	case "MODEL_SUMMARY_SUCCESS":
 	{
 		return {
@@ -135,7 +138,7 @@ export default function reducer(state = {
 		throw new Error("Unable to fetch model summary!!");
 	}
 	break;
-	
+
 	case "SELECTED_ALGORITHM":
 	{
 		return {
@@ -146,7 +149,7 @@ export default function reducer(state = {
 	break;
 	case "SCORE_SUMMARY_SUCCESS":
 	{
-	
+
 		return {
 			...state,
 			scoreSummary: action.data,
@@ -163,7 +166,7 @@ export default function reducer(state = {
 	break;
 	case "SELECTED_APP_DETAILS":
 	{
-	
+
 		return {
 			...state,
 			currentAppId: action.appId,
@@ -173,7 +176,7 @@ export default function reducer(state = {
 	break;
 	case "OPEN_APPS_LOADER_MODAL":
 	{
-	
+
 		return {
 			...state,
 			appsLoaderModal:true,
@@ -184,7 +187,7 @@ export default function reducer(state = {
 	break;
 	case "HIDE_APPS_LOADER_MODAL":
 	{
-	
+
 		return {
 			...state,
 			appsLoaderModal:false,
@@ -195,7 +198,7 @@ export default function reducer(state = {
 	break;
 	case "UPDATE_APPS_LOADER_VALUE":
 	{
-	
+
 		return {
 			...state,
 			appsLoaderPerValue:action.value,
@@ -295,7 +298,7 @@ export default function reducer(state = {
 		}
 	}
 	break;
-	
+
 	case "EXTERNAL_DATA_UPLOAD_FILE":
 	{
 		return {
@@ -312,7 +315,7 @@ export default function reducer(state = {
 		}
 	}
 	break;
-	
+
 	case "ROBO_DATA_UPLOAD_ERROR":
 	{
 		//alert(action.json.non_field_errors);
@@ -352,7 +355,7 @@ export default function reducer(state = {
 			historialDataUpload:{},
 			customerDataUpload:{},
 			externalDataUpload:{},
-			
+
 		}
 	}
 	break;
@@ -360,7 +363,7 @@ export default function reducer(state = {
 	{
 		return {
 			...state,
-			
+
 			roboUploadTabId:action.tabId,
 		}
 	}
@@ -373,7 +376,31 @@ export default function reducer(state = {
 		}
 	}
 	break;
-	
+	case "SEARCH_ROBO":
+	{
+		return{
+			...state,
+			robo_search_element:action.search_element
+		}
+	}
+	break;
+	case "SEARCH_MODEL":
+	{
+		return{
+			...state,
+			model_search_element:action.search_element
+		}
+	}
+	break;
+	case "SEARCH_SCORE":
+	{
+		return{
+			...state,
+			score_search_element:action.search_element
+		}
+	}
+	break;
+
  }
 return state
 }

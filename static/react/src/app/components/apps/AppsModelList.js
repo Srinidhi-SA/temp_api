@@ -8,7 +8,7 @@ import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstrap";
 import {AppsCreateModel} from "./AppsCreateModel";
 import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryFlag,
-	updateModelSummaryFlag,handleModelDelete,handleModelRename} from "../../actions/appActions";
+	updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement} from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {STATIC_URL} from "../../helpers/env.js";
 import Dialog from 'react-bootstrap-dialog'
@@ -18,11 +18,12 @@ var dateFormat = require('dateformat');
 
 
 @connect((store) => {
-	return {login_response: store.login.login_response, 
+	return {login_response: store.login.login_response,
 		modelList: store.apps.modelList,
 		modelSummaryFlag:store.apps.modelSummaryFlag,
 		modelSlug:store.apps.modelSlug,
 		currentAppId:store.apps.currentAppId,
+		model_search_element: store.apps.model_search_element
 		};
 })
 
@@ -33,15 +34,15 @@ export class AppsModelList extends React.Component {
   }
   componentWillMount() {
 	  console.log(this.props.history);
-	  
+
 	  var pageNo = 1;
 	  if(this.props.history.location.pathname.indexOf("page") != -1){
 			pageNo = this.props.history.location.pathname.split("page=")[1];
-			this.props.dispatch(getAppsModelList(pageNo));
+			this.props.dispatch(getAppsModelList(pageNo,this.props.model_search_element));
 		}else{
-			this.props.dispatch(getAppsModelList(pageNo));
+			this.props.dispatch(getAppsModelList(pageNo,this.props.model_search_element));
 		}
-		  
+
 	}
   getModelSummary(slug){
 	this.props.dispatch(updateModelSlug(slug))
@@ -52,10 +53,35 @@ export class AppsModelList extends React.Component {
   handleModelRename(slug,name){
 	  this.props.dispatch(handleModelRename(slug,this.refs.dialog,name));
   }
+	_handleKeyPress = (e) => {
+		if (e.key === 'Enter') {
+			//console.log('searching in data list');
+			if (e.target.value != "" && e.target.value != null)
+				this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models?search=' + e.target.value + '')
+
+			this.props.dispatch(storeModelSearchElement(e.target.value));
+			this.props.dispatch(getAppsModelList(1,e.target.value));
+
+		}
+	}
   render() {
     console.log("apps model list is called##########3");
     console.log(this.props);
-    
+		//empty search element
+		let search_element = document.getElementById('model_insights');
+		if (this.props.model_search_element != "" && (this.props.history.location.search == "" || this.props.history.location.search == null)) {
+			console.log("search is empty");
+			this.props.dispatch(storeModelSearchElement(""));
+			if (search_element)
+			document.getElementById('model_insights').value = "";
+		}
+		if(this.props.model_search_element==""&&this.props.history.location.search!=""){
+			if(search_element)
+			document.getElementById('model_insights').value = "";
+		}
+		//search element ends..
+
+
     const modelList = store.getState().apps.modelList.data;
 	if (modelList) {
 		const pages = store.getState().apps.modelList.total_number_of_pages;
@@ -121,6 +147,51 @@ export class AppsModelList extends React.Component {
 		});
 		return (
 				<div>
+				<div class="page-head">
+					{/*<!-- <ol class="breadcrumb">
+						<li><a href="#">Story</a></li>
+						<li class="active">Sales Performance Report</li>
+					</ol> -->*/}
+					<div class="row">
+					<div class="col-md-8">
+
+					</div>
+						<div class="col-md-4">
+							<div class="input-group pull-right">
+
+								<input type="text" name="model_insights" onKeyPress={this._handleKeyPress} title="Model Insights" id="model_insights" class="form-control" placeholder="Search Model insights..."/>
+								<span class="input-group-addon">
+									<i class="fa fa-search fa-lg"></i>
+								</span>
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-default" title="Select All Card">
+										<i class="fa fa-address-card-o fa-lg"></i>
+									</button>
+									<button type="button" data-toggle="dropdown" title="Sorting" class="btn btn-default dropdown-toggle" aria-expanded="false">
+										<i class="fa fa-sort-alpha-asc fa-lg"></i>
+										<span class="caret"></span>
+									</button>
+									<ul role="menu" class="dropdown-menu dropdown-menu-right">
+										<li>
+											<a href="#">Name Ascending</a>
+										</li>
+										<li>
+											<a href="#">Name Descending</a>
+										</li>
+										<li>
+											<a href="#">Date Ascending</a>
+										</li>
+										<li>
+											<a href="#">Date Descending</a>
+										</li>
+									</ul>
+								</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="clearfix"></div>
+				</div>
 				<div className="row">
 				{addButton}
 				{appsModelList}
@@ -133,7 +204,7 @@ export class AppsModelList extends React.Component {
 				</div>
 				 <Dialog ref="dialog" />
 				</div>
-				
+
 		);
 	}else {
 		return (
@@ -144,7 +215,12 @@ export class AppsModelList extends React.Component {
 	}
 }
   handleSelect(eventKey) {
+
+		if (this.props.model_search_element) {
+			this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models?search=' + this.props.model_search_element+'?page='+eventKey+'')
+		} else
 		this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models?page='+eventKey+'')
+
 		this.props.dispatch(getAppsModelList(eventKey));
 	}
 }

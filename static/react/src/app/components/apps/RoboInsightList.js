@@ -6,7 +6,7 @@ import {push} from "react-router-redux";
 
 import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstrap";
-import {getAppsRoboList,getRoboDataset,handleInsightDelete,handleInsightRename} from "../../actions/appActions";
+import {getAppsRoboList,getRoboDataset,handleInsightDelete,handleInsightRename,storeRoboSearchElement} from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {STATIC_URL} from "../../helpers/env.js";
 import {RoboDataUpload} from "./RoboDataUpload";
@@ -17,13 +17,14 @@ var dateFormat = require('dateformat');
 
 
 @connect((store) => {
-	return {login_response: store.login.login_response, 
+	return {login_response: store.login.login_response,
 		roboList: store.apps.roboList,
 		currentAppId:store.apps.currentAppId,
 		showRoboDataUploadPreview:store.apps.showRoboDataUploadPreview,
 		roboDatasetSlug:store.apps.roboDatasetSlug,
 		roboSummary:store.apps.roboSummary,
 		dataPreviewFlag:store.datasets.dataPreviewFlag,
+		robo_search_element: store.datasets.robo_search_element
 		};
 })
 
@@ -36,9 +37,9 @@ export class RoboInsightList extends React.Component {
 	  var pageNo = 1;
 	  if(this.props.history.location.pathname.indexOf("page") != -1){
 			pageNo = this.props.history.location.pathname.split("page=")[1];
-			this.props.dispatch(getAppsRoboList(pageNo));
+			this.props.dispatch(getAppsRoboList(pageNo,this.props.robo_search_element));
 		}else
-		  this.props.dispatch(getAppsRoboList(pageNo));
+		  this.props.dispatch(getAppsRoboList(pageNo,this.props.robo_search_element));
 	}
   getInsightPreview(slug){
 	  this.props.dispatch(getRoboDataset(slug));
@@ -49,9 +50,30 @@ export class RoboInsightList extends React.Component {
   handleInsightDelete(slug){
 	  this.props.dispatch(handleInsightDelete(slug,this.refs.dialog))
   }
+	_handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      //console.log('searching in data list');
+      if (e.target.value != "" && e.target.value != null)
+        this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/robo?search=' + e.target.value + '')
+
+      this.props.dispatch(storeRoboSearchElement(e.target.value));
+			this.props.dispatch(getAppsRoboList(1,e.target.value));
+
+    }
+  }
   render() {
     console.log("apps robo list is called##########3");
     console.log(this.props);
+		//empty search element
+		if (this.props.robo_search_element != "" && (this.props.location.search == "" || this.props.location.search == null)) {
+			console.log("search is empty");
+			this.props.dispatch(storeRoboSearchElement(""));
+			let search_element = document.getElementById('robo_insights');
+			if (search_element)
+			document.getElementById('robo_insights').value = "";
+		}
+		//search element ends..
+
     if(store.getState().datasets.dataPreviewFlag){
 		let _link = "/apps/"+store.getState().apps.currentAppId+"/robo/dataPreview"
 		return(<Redirect to={_link}/>);
@@ -122,6 +144,51 @@ export class RoboInsightList extends React.Component {
 		});
 		return (
 				  <div className="side-body">
+					<div class="page-head">
+						{/*<!-- <ol class="breadcrumb">
+							<li><a href="#">Story</a></li>
+							<li class="active">Sales Performance Report</li>
+						</ol> -->*/}
+						<div class="row">
+							<div class="col-md-8">
+								<h2>Robo Advisor Insights</h2>
+							</div>
+							<div class="col-md-4">
+								<div class="input-group pull-right">
+
+									<input type="text" name="robo_insights" onKeyPress={this._handleKeyPress} title="Robo Insights" id="robo_insights" class="form-control" placeholder="Search robo insights..."/>
+									<span class="input-group-addon">
+										<i class="fa fa-search fa-lg"></i>
+									</span>
+									<span class="input-group-btn">
+										<button type="button" class="btn btn-default" title="Select All Card">
+											<i class="fa fa-address-card-o fa-lg"></i>
+										</button>
+										<button type="button" data-toggle="dropdown" title="Sorting" class="btn btn-default dropdown-toggle" aria-expanded="false">
+											<i class="fa fa-sort-alpha-asc fa-lg"></i>
+											<span class="caret"></span>
+										</button>
+										<ul role="menu" class="dropdown-menu dropdown-menu-right">
+											<li>
+												<a href="#">Name Ascending</a>
+											</li>
+											<li>
+												<a href="#">Name Descending</a>
+											</li>
+											<li>
+												<a href="#">Date Ascending</a>
+											</li>
+											<li>
+												<a href="#">Date Descending</a>
+											</li>
+										</ul>
+									</span>
+								</div>
+							</div>
+						</div>
+
+						<div class="clearfix"></div>
+					</div>
 		            <div className="main-content">
 				<div className="row">
 				{addButton}
@@ -137,7 +204,7 @@ export class RoboInsightList extends React.Component {
 				<AppsLoader/>
 				 <Dialog ref="dialog" />
 				</div>
-				
+
 		);
 	}else {
 		return (
@@ -148,7 +215,11 @@ export class RoboInsightList extends React.Component {
 	}
 }
   handleSelect(eventKey) {
+		if (this.props.robo_search_element) {
+			this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/robo?search=' + this.props.robo_search_element+'?page='+eventKey+'')
+		} else
 		this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/robo?page='+eventKey+'')
+
 		this.props.dispatch(getAppsRoboList(eventKey));
 	}
 }
