@@ -1,3 +1,4 @@
+import React from "react";
 import {API} from "../helpers/env";
 import {CSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,PERPAGE} from "../helpers/helper";
 import {connect} from "react-redux";
@@ -210,7 +211,7 @@ export function showDialogBox(slug,dialog,dispatch){
 		  defaultCancelLabel: 'No',
 		})
 	dialog.show({
-		  title: 'Delete Dataset',
+		  title: 'Delete Signal',
 		  body: 'Are you sure you want to delete signal?',
 		  actions: [
 		    Dialog.CancelAction(),
@@ -218,7 +219,7 @@ export function showDialogBox(slug,dialog,dispatch){
 		    	deleteSignal(slug,dialog,dispatch)
 		    })
 		  ],
-		  bsSize: 'small',
+		  bsSize: 'medium',
 		  onHide: (dialogBox) => {
 		    dialogBox.hide()
 		    console.log('closed by clicking background.')
@@ -265,3 +266,59 @@ export function storeSearchElement(search_element){
 		search_element
 	}
 }
+
+
+export function handleRename(slug,dialog,name){
+	return (dispatch) => {
+		showRenameDialogBox(slug,dialog,dispatch,name)
+	}
+}
+function showRenameDialogBox(slug,dialog,dispatch,name){
+	 const customBody = (
+		      <div className="form-group">
+		      <label for="fl1" className="col-sm-6 control-label">Enter Signal New Name</label>
+		      <input className="form-control"  id="idRenameSignal" type="text" defaultValue={name}/>
+		      </div>
+		    )
+
+	dialog.show({
+		  title: 'Rename Signal',
+		  body: customBody,
+		  actions: [
+		    Dialog.CancelAction(),
+		    Dialog.OKAction(() => {
+		    	renameSignal(slug,dialog,$("#idRenameSignal").val(),dispatch)
+		    })
+		  ],
+		  bsSize: 'medium',
+		  onHide: (dialogBox) => {
+		    dialogBox.hide()
+		    console.log('closed by clicking background.')
+		  }
+		});
+}
+
+function renameSignal(slug,dialog,newName,dispatch){
+	dispatch(showLoading());
+	Dialog.resetOptions();
+	return renameSignalAPI(slug,newName).then(([response, json]) =>{
+		if(response.status === 200){
+			dispatch(getList(sessionStorage.userToken,store.getState().datasets.current_page));
+			dispatch(hideLoading());
+		}
+		else{
+			dialog.showAlert("Error occured , Please try after sometime.");
+			dispatch(hideLoading());
+		}
+	})
+}
+function renameSignalAPI(slug,newName){
+	return fetch(API+'/api/signals/'+slug+'/',{
+		method: 'put',
+		headers: getHeader(sessionStorage.userToken),
+		body:JSON.stringify({
+			name:newName,
+		}),
+	}).then( response => Promise.all([response, response.json()]));
+
+	}

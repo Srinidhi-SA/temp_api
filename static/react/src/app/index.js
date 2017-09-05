@@ -28,6 +28,7 @@ import {AppsScoreList} from "./components/apps/AppsScoreList";
 import {RoboInsightList} from "./components/apps/RoboInsightList";
 import {RoboDataUploadPreview} from "./components/apps/RoboDataUploadPreview";
 import {RoboDocumentMode} from "./components/apps/RoboDocumentMode";
+import {Profile} from "./components/common/profile";
 class App extends React.Component {
 
   render() {
@@ -38,6 +39,7 @@ class App extends React.Component {
           <Route exact path="/login" component={Login}/>
           <Main>
             <Route exact path="/" component={Home} />
+			<Route exact path="/user-profile" component={Profile} />
             <Route exact path="/signals" component={Signals} />
             {/*<Route exact path="/signals/datapreview/:slug" component={DataPreview} />*/}
             <Route exact path="/signals/:slug" component={Signal}/>

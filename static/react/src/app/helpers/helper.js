@@ -33,6 +33,12 @@ const APPSDEFAULTINTERVAL = 15000;
 const CUSTOMERDATA = "Customer Data";
 const HISTORIALDATA = "Historial Data";
 const EXTERNALDATA = "External Data";
+const DELETEMODEL = "Delete Model";
+const RENAMEMODEL = "Rename Model";
+const DELETESCORE = "Delete Score";
+const RENAMESCORE = "Rename Score";
+const DELETEINSIGHT = "Delete Insight";
+const RENAMEINSIGHT = "Rename Insight";
 
 
 export function generateHeaders(table) {
@@ -170,5 +176,10 @@ export{
 	CUSTOMERDATA,
 	HISTORIALDATA,
 	EXTERNALDATA,
-	
+	DELETEMODEL,
+	RENAMEMODEL,
+	DELETESCORE,
+	RENAMESCORE,
+	DELETEINSIGHT,
+	RENAMEINSIGHT,
 	}

@@ -7,9 +7,11 @@ import {push} from "react-router-redux";
 import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstrap";
 import {AppsCreateModel} from "./AppsCreateModel";
-import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryFlag,updateModelSummaryFlag} from "../../actions/appActions";
+import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryFlag,
+	updateModelSummaryFlag,handleModelDelete,handleModelRename} from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
-import {STATIC_URL} from "../../helpers/env.js"
+import {STATIC_URL} from "../../helpers/env.js";
+import Dialog from 'react-bootstrap-dialog'
 
 
 var dateFormat = require('dateformat');
@@ -36,11 +38,19 @@ export class AppsModelList extends React.Component {
 	  if(this.props.history.location.pathname.indexOf("page") != -1){
 			pageNo = this.props.history.location.pathname.split("page=")[1];
 			this.props.dispatch(getAppsModelList(pageNo));
-		}else
-		  this.props.dispatch(getAppsModelList(pageNo));
+		}else{
+			this.props.dispatch(getAppsModelList(pageNo));
+		}
+		  
 	}
   getModelSummary(slug){
 	this.props.dispatch(updateModelSlug(slug))
+  }
+  handleModelDelete(slug){
+	  this.props.dispatch(handleModelDelete(slug,this.refs.dialog));
+  }
+  handleModelRename(slug,name){
+	  this.props.dispatch(handleModelRename(slug,this.refs.dialog,name));
   }
   render() {
     console.log("apps model list is called##########3");
@@ -93,11 +103,11 @@ export class AppsModelList extends React.Component {
 					<i className="ci pe-7s-more pe-rotate-90 pe-2x"></i>
 					</a>
 					<ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-					<li>
+					<li onClick={this.handleModelRename.bind(this,data.slug,data.name)}>
 					<a className="dropdown-item" href="#renameCard" data-toggle="modal">
 					<i className="fa fa-edit"></i> Rename</a>
 					</li>
-					<li>
+					<li onClick={this.handleModelDelete.bind(this,data.slug)} >
 					<a className="dropdown-item" href="#deleteCard" data-toggle="modal">
 					<i className="fa fa-trash-o"></i> Delete</a>
 					</li>
@@ -121,6 +131,7 @@ export class AppsModelList extends React.Component {
 				{paginationTag}
 				</div>
 				</div>
+				 <Dialog ref="dialog" />
 				</div>
 				
 		);

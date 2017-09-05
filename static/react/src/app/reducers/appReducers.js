@@ -33,6 +33,7 @@ export default function reducer(state = {
 		historialDataset_slug:"",
 		externalDataset_slug:"",
 		roboUploadTabId:1,
+		appsSelectedTabId:1,
 		
 }, action) {
 	console.log("In APPs reducer!!");
@@ -87,7 +88,7 @@ export default function reducer(state = {
 		return {
 			...state,
 			scoreList: action.data,
-			score_current_page:action.current_page,
+			current_page:action.current_page,
 		}
 	}
 	break;
@@ -361,6 +362,14 @@ export default function reducer(state = {
 			...state,
 			
 			roboUploadTabId:action.tabId,
+		}
+	}
+	break;
+	case "APPS_SELECTED_TAB":
+	{
+		return {
+			...state,
+			appsSelectedTabId:action.id,
 		}
 	}
 	break;
