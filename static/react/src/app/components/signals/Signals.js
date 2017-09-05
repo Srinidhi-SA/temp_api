@@ -104,6 +104,8 @@ export class Signals extends React.Component {
       if (this.props.signal_search_element != "" && (this.props.location.search == "" || this.props.location.search == null)) {
         console.log("search is empty");
         this.props.dispatch(storeSearchElement(""));
+        let search_element = document.getElementById('search_signals');
+        if (search_element)
         document.getElementById('search_signals').value = "";
       }
       //search element ends..
