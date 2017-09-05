@@ -1,9 +1,10 @@
-@import 'font-awesome.min.css';
-@import 'helper.css';
-@import 'pe-icon-7-stroke.css';
-@import url('https://fonts.googleapis.com/css?family=Open+Sans');
-
 @import url('https://fonts.googleapis.com/css?family=Quicksand');
+@import 'scrolltabs.css';
+@import 'font-awesome.min.css';
+@import 'pe-icon-7-stroke.css';
+@import 'helper.css';
+/*@import url('https://fonts.googleapis.com/css?family=Open+Sans');*/
+
 .label, sub, sup {
 	vertical-align: baseline
 }
