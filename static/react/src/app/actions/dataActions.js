@@ -14,10 +14,10 @@ function getHeader(token){
 	};
 }
 
-export function getDataList(pageNo) {
-	
+export function getDataList(pageNo,search_element) {
+
 	return (dispatch) => {
-		return fetchDataList(pageNo,sessionStorage.userToken).then(([response, json]) =>{
+		return fetchDataList(pageNo,sessionStorage.userToken,search_element).then(([response, json]) =>{
 			if(response.status === 200){
 				dispatch(fetchDataSuccess(json))
 			}
@@ -28,11 +28,24 @@ export function getDataList(pageNo) {
 	}
 }
 
-function fetchDataList(pageNo,token) {
-	return fetch(API+'/api/datasets/?page_number='+pageNo+'&page_size='+PERPAGE+'',{
-		method: 'get',
-		headers: getHeader(token)
-	}).then( response => Promise.all([response, response.json()]));
+function fetchDataList(pageNo,token,search_element) {
+
+	console.log(token)
+	console.log(search_element)
+	if(search_element!=""&&search_element!=null){
+		console.log("calling for search element!!")
+		return fetch(API+'/api/datasets/?name='+search_element+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
+			method: 'get',
+			headers: getHeader(token)
+			}).then( response => Promise.all([response, response.json()]));
+	}else{
+		return fetch(API+'/api/datasets/?page_number='+pageNo+'&page_size='+PERPAGE+'',{
+			method: 'get',
+			headers: getHeader(token)
+		}).then( response => Promise.all([response, response.json()]));
+	}
+
+
 }
 
 function fetchDataError(json) {
@@ -112,7 +125,7 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
 			}
 		}
 
-	} 
+	}
 }
 
 function dispatchDataPreview(dataPreview,slug){
@@ -335,9 +348,9 @@ function deleteDatasetAPI(slug){
 			deleted:true,
 		}),
 	}).then( response => Promise.all([response, response.json()]));
-	
+
 	}
-	
+
 
 export function handleRename(slug,dialog,name){
 	return (dispatch) => {
@@ -368,7 +381,7 @@ function showRenameDialogBox(slug,dialog,dispatch,name){
 		  }
 		});
 }
-	
+
 function renameDataset(slug,dialog,newName,dispatch){
 	dispatch(showLoading());
 	Dialog.resetOptions();
@@ -391,6 +404,12 @@ function renameDatasetAPI(slug,newName){
 			name:newName,
 		}),
 	}).then( response => Promise.all([response, response.json()]));
-	
+
 	}
-	
+
+	export function storeSearchElement(search_element){
+	  return {
+			type: "SEARCH_DATA",
+			search_element
+		}
+	}

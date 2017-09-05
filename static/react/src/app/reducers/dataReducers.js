@@ -15,6 +15,7 @@ export default function reducer(state = {
 		curUrl:"",
 		dataUploadLoaderModal:false,
 		dULoaderValue:10,
+		  data_search_element:"",
 }, action) {
 	console.log("In DATA reducer!!");
 	console.log(action);
@@ -50,7 +51,7 @@ export default function reducer(state = {
 		}
 	}
 	break;
-	
+
 	case "DATA_PREVIEW_ERROR":
 	{
 		throw new Error("Fetching of Data failed!!");
@@ -190,7 +191,7 @@ export default function reducer(state = {
 		}
 	}
 	break;
-	
+
 	case "SHOW_DATA_PREVIEW":
 	{
 		return {
@@ -228,6 +229,14 @@ export default function reducer(state = {
 			dataPreview:{},
 			dataPreviewFlag:false,
 			selectedDataSet:""
+		}
+	}
+	break;
+	case "SEARCH_DATA":
+	{
+		return{
+			...state,
+			data_search_element:action.search_element
 		}
 	}
 	break;
