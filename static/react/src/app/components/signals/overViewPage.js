@@ -226,11 +226,11 @@ export class OverViewPage extends React.Component {
         }
         
         let expectedURL = this.prevNext( this.props );
-
         let prevURL = that.urlPrefix + "/" + this.props.match.params.slug + "/" + expectedURL.prev;
         let nextURL = that.urlPrefix + "/" + this.props.match.params.slug + "/" + expectedURL.next;
         this.nextRedirect = nextURL;
-        if ( expectedURL.prev == this.props.signal.listOfCards[0].slug ) {
+        //handler when previous is null
+        if ( expectedURL.prev == this.props.signal.listOfCards[0].slug || expectedURL.prev == null) {
             prevURL = that.urlPrefix + "/" + this.props.match.params.slug;
         } else if ( expectedURL.next == null ) {
             nextURL = documentModeLink;
@@ -253,7 +253,7 @@ export class OverViewPage extends React.Component {
                             <div class="col-md-12">
                                 <Breadcrumb path={[{
                                     path: that.urlPrefix,
-                                    label: 'Signals'
+                                    label: that.urlPrefix,
                                 },
                                 {
                                     path: that.urlPrefix + "/" + this.props.match.params.slug,

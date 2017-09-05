@@ -31,7 +31,7 @@ export class RoboDocumentMode extends React.Component {
 
   render() {
     console.log("apps Robo Detail View is called##########3");
-    return (<div className="side-body">
+   /* return (<div className="side-body">
     <div className="main-content">
     <div className="row">
     <div className="col-md-offset-1 col-md-10">
@@ -92,9 +92,9 @@ export class RoboDocumentMode extends React.Component {
     </div>
     </div>
     </div>
-    );
+    );*/
     
-    /*const roboSummary = store.getState().signals.signalAnalysis;
+    const roboSummary = store.getState().signals.signalAnalysis;
 	if (!$.isEmptyObject(roboSummary)) {
 		console.log(this.props)
 		let listOfCardList = getListOfCards(roboSummary.listOfCards)
@@ -132,9 +132,9 @@ export class RoboDocumentMode extends React.Component {
 			          </div>
 			      );	
 		}
-	}*/
-	
-	/*else{
+	}
+
+	else{
 		return (
 	
 		      <div className="side-body">
@@ -145,7 +145,7 @@ export class RoboDocumentMode extends React.Component {
 		        </div>
 		      </div>
 		    );
-	}*/
+	}
     
   }
 }

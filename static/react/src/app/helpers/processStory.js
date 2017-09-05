@@ -90,7 +90,12 @@ export function getPrevNext( rootNode, curSufix ) {
             generateAllUrls( rootNode.listOfNodes[i], prefix + rootNode.listOfNodes[i]["slug"] + "/" );
         }
     }
-    generateAllUrls( rootNode, "" );
+    //when listofNodes is empty append slug to prefix
+    if(rootNode.listOfNodes.length == 0){
+    	var rootSlug = curSufix.split("/")
+    	generateAllUrls( rootNode, rootSlug[0]+"/");
+    }
+    else generateAllUrls( rootNode, "" );
 
     var curIndex = listOfUrls.indexOf( curSufix );
     var prev = null;
