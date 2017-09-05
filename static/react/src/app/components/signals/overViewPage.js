@@ -15,6 +15,10 @@ import {isEmpty,subTreeSetting} from "../../helpers/helper";
 import {MainHeader} from "../../components/common/MainHeader";
 import {Card} from "./Card";
 import store from "../../store";
+import {getSignalAnalysis} from "../../actions/signalActions";
+import {STATIC_URL} from "../../helpers/env.js"
+
+
 
 
 
@@ -34,14 +38,18 @@ export class OverViewPage extends React.Component {
 	this.showSubTree=false;
 
   }
-  
-  componentWillReceiveProps(nextProps) {
-     
-}
 
+  componentWillReceiveProps(nextProps) {
+
+}
+componentWillMount() {
+  if(isEmpty(this.props.signal)){
+  this.props.dispatch(getSignalAnalysis(sessionStorage.userToken, this.props.match.params.slug));
+  }
+}
   componentDidMount(){
     // alert(showSubTree);
-	
+
     var that = this;
     // alert(showSubTree);
     if(this.showSubTree){
@@ -60,9 +68,9 @@ export class OverViewPage extends React.Component {
     //  console.log($(".sb_navigation").html());
        $(".sb_navigation").hide();
      }
-    
+
 /*	$('[data-toggle=offcanvas]').click(function () {
-		
+
     $('.row-offcanvas').toggleClass('active');
 	if ($('.row-offcanvas-left').hasClass('active')){
 		$('.sdbar_switch i').removeClass('sw_on');
@@ -72,7 +80,7 @@ export class OverViewPage extends React.Component {
 		$('.sdbar_switch i').removeClass('sw_off');
 	};
   });*/
-  
+
   if($(".list-group").children().length == 1){
 	    $('.row-offcanvas-left').addClass('active');
 		$('.sdbar_switch i').removeClass('sw_on');
@@ -91,7 +99,7 @@ toggleSideList(){
 		$('.sdbar_switch i').removeClass('sw_off');
 	};
 }
-	
+
 
 prevNext(path) {
     console.log(path);
@@ -105,12 +113,12 @@ prevNext(path) {
     console.log(expectedURL);
     return expectedURL;
   }
-  
+
   redirectPush(url){
 	  console.log(url);
 	  this.props.history.push(url);
   }
-  
+
 
 /*updateSubTreeClass(){
 		   //alert("working");
@@ -122,21 +130,52 @@ prevNext(path) {
           $(this).parent().removeClass('active');
         }
        });
-    	
+
 }*/
 render() {
 
     console.log("overviewPage is called!!");
     console.log(this.props);
-	
+
+    if(isEmpty(this.props.signal)){
+
+      return(
+        <div className="side-body">
+        {/*<MainHeader/>*/}
+        <div className="page-head">
+          <div class="row">
+            <div class="col-md-12">
+            <Breadcrumb path={[{
+                path: '/signals',
+                label: 'Signals'
+              },
+              {
+                path:'/signals'+this.props.signal.name,
+                label: this.props.match.params.slug
+              }
+            ]}/>
+            </div>
+            <div class="col-md-8">
+              <h2>{this.props.signal.name}</h2>
+            </div>
+            </div>
+          <div class="clearfix"></div>
+        </div>
+          <div className="main-content">
+          <img id = "loading" src={ STATIC_URL + "assets/images/Preloader_2.gif" } />
+          </div>
+          </div>
+      );
+    }else{
+
 	 var that = this;
-	 
+
 	  let urlSplit = this.props.location.pathname.split("/");
 	  console.log(urlSplit);
-	  
+
 	  subTreeSetting(urlSplit.length,6,that.props.match.params.l2); // setting of subtree and active classes
-    
-	 
+
+
     let selectedSignal = this.props.signal.name;
     //let this.props.signal = resTree();
     console.log(this.props.signal);
@@ -153,7 +192,7 @@ render() {
       //console.log(classname1);
       return (
         <li key={i}>
-          <NavLink to={selectedLink}> 
+          <NavLink to={selectedLink}>
             <i className={classname1}></i>
             <span>{tab.name}</span>
           </NavLink>
@@ -163,21 +202,21 @@ render() {
 
     //check first time load!!
     if (Object.keys(params).length < 3) {
-		
+
       card = getFirstCard(this.props.signal, params.l1);
       console.log("card after process is:");
       console.log(card);
       let cardLink = "/signals/" + params.slug + "/" + params.l1 + "/" + card.slug;
       return (<Redirect to={cardLink}/>);
     } else {
-		
+
       //node with listOfCards is selected..
       card = fetchCard(params, this.props.signal);
       if (params.l3 && params.l3 == "$") {
         let cardLink = "/signals/" + params.slug + "/" + params.l1 + "/" + params.l2 + "/" + card.slug;
         return (<Redirect to ={cardLink}/>);
       }
-       
+
     }
 
     console.log("card finally searched is:");
@@ -205,7 +244,7 @@ render() {
         that.showSubTree = true;
       }
     }
-	
+
     let selectedNode = null;
     let selectedNode_slug = null;
     let selectedURL = ""
@@ -393,4 +432,4 @@ console.log("l1name is ...."+selectedSignal);
     );
   }
 }
-
+}
