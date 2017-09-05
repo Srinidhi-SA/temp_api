@@ -15,7 +15,7 @@ function getHeader(token){
 }
 
 export function getDataList(pageNo) {
-	
+
 	return (dispatch) => {
 		return fetchDataList(pageNo,sessionStorage.userToken).then(([response, json]) =>{
 			if(response.status === 200){
@@ -289,24 +289,24 @@ export function hideDULoaderPopup(){
 }
 export function showDialogBox(slug,dialog,dispatch){
 	Dialog.setOptions({
-		  defaultOkLabel: 'Yes',
-		  defaultCancelLabel: 'No',
-		})
+		defaultOkLabel: 'Yes',
+		defaultCancelLabel: 'No',
+	})
 	dialog.show({
-		  title: 'Delete Dataset',
-		  body: 'Are you sure you want to delete dataset?',
-		  actions: [
-		    Dialog.CancelAction(),
-		    Dialog.OKAction(() => {
-		    	deleteDataset(slug,dialog,dispatch)
-		    })
-		  ],
-		  bsSize: 'medium',
-		  onHide: (dialogBox) => {
-		    dialogBox.hide()
-		    console.log('closed by clicking background.')
-		  }
-		});
+		title: 'Delete Dataset',
+		body: 'Are you sure you want to delete dataset?',
+		actions: [
+		          Dialog.CancelAction(),
+		          Dialog.OKAction(() => {
+		        	  deleteDataset(slug,dialog,dispatch)
+		          })
+		          ],
+		          bsSize: 'medium',
+		          onHide: (dialogBox) => {
+		        	  dialogBox.hide()
+		        	  console.log('closed by clicking background.')
+		          }
+	});
 }
 export function handleDelete(slug,dialog) {
 	return (dispatch) => {
@@ -335,9 +335,9 @@ function deleteDatasetAPI(slug){
 			deleted:true,
 		}),
 	}).then( response => Promise.all([response, response.json()]));
-	
-	}
-	
+
+}
+
 
 export function handleRename(slug,dialog,name){
 	return (dispatch) => {
@@ -345,30 +345,30 @@ export function handleRename(slug,dialog,name){
 	}
 }
 function showRenameDialogBox(slug,dialog,dispatch,name){
-	 const customBody = (
-		      <div className="form-group">
-		      <label for="fl1" className="col-sm-6 control-label">Enter Dataset New Name</label>
-		      <input className="form-control"  id="idRenameDataset" type="text" defaultValue={name}/>
-		      </div>
-		    )
+	const customBody = (
+			<div className="form-group">
+			<label for="fl1" className="col-sm-6 control-label">Enter Dataset New Name</label>
+			<input className="form-control"  id="idRenameDataset" type="text" defaultValue={name}/>
+			</div>
+	)
 
 	dialog.show({
-		  title: 'Rename Dataset',
-		  body: customBody,
-		  actions: [
-		    Dialog.CancelAction(),
-		    Dialog.OKAction(() => {
-		    	renameDataset(slug,dialog,$("#idRenameDataset").val(),dispatch)
-		    })
-		  ],
-		  bsSize: 'medium',
-		  onHide: (dialogBox) => {
-		    dialogBox.hide()
-		    console.log('closed by clicking background.')
-		  }
-		});
+		title: 'Rename Dataset',
+		body: customBody,
+		actions: [
+		          Dialog.CancelAction(),
+		          Dialog.OKAction(() => {
+		        	  renameDataset(slug,dialog,$("#idRenameDataset").val(),dispatch)
+		          })
+		          ],
+		          bsSize: 'medium',
+		          onHide: (dialogBox) => {
+		        	  dialogBox.hide()
+		        	  console.log('closed by clicking background.')
+		          }
+	});
 }
-	
+
 function renameDataset(slug,dialog,newName,dispatch){
 	dispatch(showLoading());
 	Dialog.resetOptions();
@@ -391,11 +391,11 @@ function renameDatasetAPI(slug,newName){
 			name:newName,
 		}),
 	}).then( response => Promise.all([response, response.json()]));
-	
-	}
+
+}
 
 export function updateDatasetVariables(measures,dimensions,timeDimensions){
-	
+
 	return {
 		type: "DATASET_VARIABLES",
 		measures,
@@ -403,13 +403,82 @@ export function updateDatasetVariables(measures,dimensions,timeDimensions){
 		timeDimensions,
 	}
 }
-	
+
 export function handleDVSearch(evt){
 	var name = evt.target.value;
-	return {
+	switch (  evt.target.id ) {
+	case "measure":
+		return {
 		type: "SEARCH_MEASURE",
 		name,
 	}
+		break;
+	case "dimension":
+		return {
+		type: "SEARCH_DIMENSION",
+		name,
+	}
+		break;
+	case "datetime":
+		return {
+		type: "SEARCH_TIMEDIMENSION",
+		name,
+	}
+		break;
+	}
+
+}
+export function handelSort(variableType,sortOrder){
+	switch ( variableType ) {
+	case "measure":
+		let measures = store.getState().datasets.dataSetMeasures.slice().sort(function(a,b) { return (a.toLowerCase() < b.toLowerCase()) ? -1 : 1;});
+		if(sortOrder == "DESC" )
+			measures = store.getState().datasets.dataSetMeasures.slice().sort(function(a,b) { return (a.toLowerCase() > b.toLowerCase()) ? -1 : 1;});
+		return {
+			type: "SORT_MEASURE",
+			measures,
+		}
+		break;
+	case "dimension":
+		let dimensions = store.getState().datasets.dataSetDimensions.slice().sort(function(a,b) { return (a.toLowerCase() < b.toLowerCase()) ? -1 : 1;});
+		if(sortOrder == "DESC" )
+			dimensions = store.getState().datasets.dataSetDimensions.slice().sort(function(a,b) { return (a.toLowerCase() > b.toLowerCase()) ? -1 : 1;});
+		return {
+			type: "SORT_DIMENSION",
+			dimensions,
+		}
+		break;
+	case "datetime":
+		let timedimensions = store.getState().datasets.dataSetTimeDimensions.slice().sort(function(a,b) { return (a.toLowerCase() < b.toLowerCase()) ? -1 : 1;});
+		if(sortOrder == "DESC" )
+			timedimensions = store.getState().datasets.dataSetTimeDimensions.slice().sort(function(a,b) { return (a.toLowerCase() > b.toLowerCase()) ? -1 : 1;});
+		return {
+			type: "SORT_TIMEDIMENSION",
+			timedimensions,
+		}
+		break;
+	}
 }
 
+export function handleSelectAll(evt){
+	switch ( evt.target.id ) {
+	case "measure":
+	if(evt.target.checked){
+		let measures = store.getState().datasets.ImmutableMeasures;
+		return {
+			type: "SELECT_ALL_MEASURES",
+			measures,
+		}
+	}else{
+		
+	}
+		break;
+	case "dimension":
+		
+		break;
+	case "datetime":
+		
+		break;
+	}
+}
 

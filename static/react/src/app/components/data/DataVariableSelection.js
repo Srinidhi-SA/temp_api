@@ -10,7 +10,7 @@ import store from "../../store";
 import { C3Chart } from "../c3Chart";
 import $ from "jquery";
 
-import { updateSelectedVariables, resetSelectedVariables, setSelectedVariables,updateDatasetVariables,handleDVSearch } from "../../actions/dataActions";
+import { updateSelectedVariables, resetSelectedVariables, setSelectedVariables,updateDatasetVariables,handleDVSearch,handelSort,handleSelectAll } from "../../actions/dataActions";
 
 @connect(( store ) => {
     return {
@@ -22,6 +22,8 @@ import { updateSelectedVariables, resetSelectedVariables, setSelectedVariables,u
         dataSetMeasures:store.datasets.dataSetMeasures,
         dataSetDimensions:store.datasets.dataSetDimensions,
         dataSetTimeDimensions:store.datasets.dataSetTimeDimensions,
+        measureAllChecked:store.datasets.measureAllChecked,
+        measureChecked:store.datasets.measureChecked,
     };
 } )
 
@@ -56,6 +58,12 @@ export class DataVariableSelection extends React.Component {
 
     handleDVSearch(evt){
     this.props.dispatch(handleDVSearch(evt))
+    }
+    handelSort(variableType,sortOrder){
+    	this.props.dispatch(handelSort(variableType,sortOrder))
+    }
+    handleSelectAll(evt){
+    	this.props.dispatch(handleSelectAll(evt))
     }
     render() {
 
@@ -92,7 +100,7 @@ export class DataVariableSelection extends React.Component {
                 var measureTemplate = store.getState().datasets.dataSetMeasures.map(( mItem, mIndex ) => {
                     const mId = "chk_mea" + mIndex;
                     return (
-                        <li key={mIndex}><div className="ma-checkbox inline"><input id={mId} type="checkbox" className="measure" onChange={this.handleCheckboxEvents} value={mItem} defaultChecked={true} /><label htmlFor={mId} className="radioLabels">{mItem}</label></div> </li>
+                        <li key={mIndex}><div className="ma-checkbox inline"><input id={mId} type="checkbox" className="measure" onChange={this.handleCheckboxEvents} value={mItem} defaultChecked={store.getState().datasets.measureChecked}  /><label htmlFor={mId} className="radioLabels">{mItem}</label></div> </li>
                     );
                 } );
             } else {
@@ -144,21 +152,20 @@ export class DataVariableSelection extends React.Component {
                                     <div className="row">
                                         <div className="col-md-4">
                                             <div className="ma-checkbox inline">
-                                                <input id="mea" type="checkbox" className="measureAll" />
+                                                <input id="measure" type="checkbox" className="measureAll" onChange={this.handleSelectAll.bind(this)} defaultChecked={store.getState().datasets.measureAllChecked}/>
                                                 <label htmlFor="mea">Select All</label>
                                             </div>
                                         </div>
                                         <div className="col-md-8">
                                             <div className="input-group pull-right">
-                                                <input type="text" name="measures" title="Search Measures" id="measures"  onChange={this.handleDVSearch.bind(this)} className="form-control" placeholder="Search measures..." />
+                                                <input type="text" name="measures" title="Search Measures" id="measure"  onChange={this.handleDVSearch.bind(this)} className="form-control" placeholder="Search measures..." />
                                                 {/*<span className="input-group-addon"><i className="fa fa-search fa-lg"></i></span>*/}
                                                 <span className="input-group-btn">
                                                     <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i className="fa fa-sort-alpha-asc fa-lg"></i> <span className="caret"></span></button>
                                                     <ul role="menu" className="dropdown-menu dropdown-menu-right">
-                                                        <li><a href="#">Name Ascending</a></li>
-                                                        <li><a href="#">Name Descending</a></li>
-                                                        <li><a href="#">Date Ascending</a></li>
-                                                        <li><a href="#">Date Descending</a></li>
+                                                        <li onClick={this.handelSort.bind(this,"measure","ASC")}><a href="#">Ascending</a></li>
+                                                        <li onClick={this.handelSort.bind(this,"measure","DESC")}><a href="#">Descending</a></li>
+               
                                                     </ul>
                                                 </span>
                                             </div>
@@ -189,7 +196,7 @@ export class DataVariableSelection extends React.Component {
 
                                 <div className="panel-body">
                                     {/*  <!-- Row for select all-->*/}
-                                    <div className="row hidden">
+                                    <div className="row">
                                         <div className="col-md-4">
                                             <div className="ma-checkbox inline">
                                                 <input id="dim" type="checkbox" className="dimensionAll" />
@@ -198,15 +205,13 @@ export class DataVariableSelection extends React.Component {
                                         </div>
                                         <div className="col-md-8">
                                             <div className="input-group pull-right">
-                                                <input type="text" name="search_signals" title="Search Signals" id="search_signals" className="form-control" placeholder="Search signals..." />
+                                                <input type="text" name="search_dimensions" title="Search Dimension" id="dimension" onChange={this.handleDVSearch.bind(this)}  className="form-control" placeholder="Search dimension..." />
                                                 {/* <span className="input-group-addon"><i className="fa fa-search fa-lg"></i></span>*/}
                                                 <span className="input-group-btn">
                                                     <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i className="fa fa-sort-alpha-asc fa-lg"></i> <span className="caret"></span></button>
                                                     <ul role="menu" className="dropdown-menu dropdown-menu-right">
-                                                        <li><a href="#">Name Ascending</a></li>
-                                                        <li><a href="#">Name Descending</a></li>
-                                                        <li><a href="#">Date Ascending</a></li>
-                                                        <li><a href="#">Date Descending</a></li>
+                                                        <li onClick={this.handelSort.bind(this,"dimension","ASC")}><a href="#">Ascending</a></li>
+                                                        <li onClick={this.handelSort.bind(this,"dimension","DESC")}><a href="#">Descending</a></li>
                                                     </ul>
                                                 </span>
                                             </div>
@@ -244,15 +249,14 @@ export class DataVariableSelection extends React.Component {
                                         </div>
                                         <div className="col-md-8">
                                             <div className="input-group pull-right">
-                                                <input type="text" name="search_signals" title="Search Signals" id="search_signals" className="form-control" placeholder="Search signals..." />
+                                                <input type="text" name="datatime" title="Search Time Dimensions" id="datetime" className="form-control" onChange={this.handleDVSearch.bind(this)} placeholder="Search time diemnsions..." />
                                                 {/* <span className="input-group-addon"><i className="fa fa-search fa-lg"></i></span>*/}
                                                 <span className="input-group-btn">
                                                     <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i className="fa fa-sort-alpha-asc fa-lg"></i> <span className="caret"></span></button>
                                                     <ul role="menu" className="dropdown-menu dropdown-menu-right">
-                                                        <li><a href="#">Name Ascending</a></li>
-                                                        <li><a href="#">Name Descending</a></li>
-                                                        <li><a href="#">Date Ascending</a></li>
-                                                        <li><a href="#">Date Descending</a></li>
+                                                        <li onClick={this.handelSort.bind(this,"datetime","ASC")}><a href="#">Ascending</a></li>
+                                                        <li onClick={this.handelSort.bind(this,"datetime","DESC")}><a href="#">Descending</a></li>
+                                                       
                                                     </ul>
                                                 </span>
                                             </div>

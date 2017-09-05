@@ -21,6 +21,8 @@ export default function reducer(state = {
 		ImmutableMeasures:[],
 		ImmutableDimension:[],
 		ImmutableTimeDimension:[],
+		measureAllChecked:true,
+		measureChecked:true,
 		
 }, action) {
 	console.log("In DATA reducer!!");
@@ -260,7 +262,76 @@ export default function reducer(state = {
 		}
 	}
 	break;
+	case "SORT_MEASURE":
+	{
+		return {
+			...state,
+			dataSetMeasures: action.measures
+			
+		}
+	}
+	break;
 	
+	case "SORT_DIMENSION":
+	{
+		return {
+			...state,
+			dataSetDimensions: action.dimensions
+			
+		}
+	}
+	break;
+	
+	case "SORT_TIMEDIMENSION":
+	{
+		return {
+			...state,
+			dataSetTimeDimensions: action.timedimensions
+			
+		}
+	}
+	break;
+	
+	case "SEARCH_DIMENSION":
+	{
+		return {
+			...state,
+			dataSetDimensions: state.ImmutableDimension.filter((item) => item.toLowerCase().includes(action.name.toLowerCase())),
+			
+		}
+	}
+	break;
+	
+	case "SEARCH_TIMEDIMENSION":
+	{
+		return {
+			...state,
+			dataSetTimeDimensions: state.ImmutableTimeDimension.filter((item) => item.toLowerCase().includes(action.name.toLowerCase())),
+			
+		}
+	}
+	break;
+	
+	case "SELECT_ALL_MEASURES":
+	{
+		return {
+			...state,
+			selectedMeasures:action.measures,
+			measureChecked:true,
+			measureAllChecked:true,
+		}
+	}
+	break;
+	case "UNSELECT_ALL_MEASURES":
+	{
+		return {
+			...state,
+			selectedMeasures:[],
+			measureChecked:false,
+			measureAllChecked:false,
+		}
+	}
+	break;
 	
 	}
 	
