@@ -86,7 +86,7 @@ export class RoboInsightList extends React.Component {
 		//search element ends..
 
     if(store.getState().datasets.dataPreviewFlag){
-		let _link = "/apps/"+store.getState().apps.currentAppId+"/robo/dataPreview"
+		let _link = "/apps-robo/"+store.getState().apps.roboDatasetSlug
 		return(<Redirect to={_link}/>);
 	}
 
@@ -103,7 +103,7 @@ export class RoboInsightList extends React.Component {
 			paginationTag = <Pagination  ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
 		}
 		const appsRoboList = roboList.map((data, i) => {
-			var modelLink = "/apps/"+store.getState().apps.currentAppId+"/robo/" + data.slug;
+			var modelLink = "/apps-robo/" + data.slug;
 			return (
 					<div className="col-md-3 top20 list-boxes" key={i}>
 					<div className="rep_block newCardStyle" name={data.name}>

@@ -566,19 +566,26 @@ export function dataUploadFilesError(josn){
 		json
 	}
 }
-
+export function updateRoboSlug(slug){
+	return {
+		type: "ROBO_DATA_UPLOAD_SUCCESS",
+		slug
+	}
+}
 export function getRoboDataset(slug) {
 	return (dispatch) => {
+		dispatch(updateRoboSlug(slug));
 		return fetchRoboDataset(sessionStorage.userToken,slug).then(([response, json]) =>{
 			if(response.status === 200){
 				if(json.analysis_done){
 					clearInterval(appsInterval);
 					dispatch(fetchRoboSummarySuccess(json));
+					dispatch(updateRoboAnalysisData(json,"/apps-robo"));
 					dispatch(closeAppsLoaderValue());
 					dispatch(showRoboDataUploadPreview(true));
 					//dispatch(clearDataPreview());
 					dispatch(showDataPreview());
-					dispatch(getAppsRoboList(1));
+					//dispatch(getAppsRoboList(1));
 				}
 			}
 			else{
@@ -633,7 +640,7 @@ export function updateRoboUploadTab(tabId){
 	}
 }
 export function updateRoboAnalysisData(roboData,urlPrefix){
-	var roboSlug = "robo_6916600-2a33ebfd89";
+	var roboSlug = roboData.slug;
 	return {
 		type: "ROBO_DATA_ANALYSIS",
 		roboData,

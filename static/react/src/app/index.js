@@ -66,10 +66,12 @@ class App extends React.Component {
             <Route exact path="/signals?page=:slug" component={Signals}/>
             <Route exact path="/signals?search=:slug" component={Signals}/>
             <Route exact path="/apps/:AppId/models/data/:slug" component={DataPreview} />
-            <Route exact path="/apps/:AppId/robo" component={RoboInsightList} />
-            <Route exact path="/apps/:AppId/robo/:slug" component={RoboDataUploadPreview} />
-            <Route exact path="/apps/:AppId/robo/:slug/:l1" component={RoboDocumentMode} />
-
+            <Route exact path="/apps-robo" component={RoboInsightList} />
+            <Route exact path="/apps-robo/:slug" component={RoboDataUploadPreview} />
+            <Route exact path="/apps-robo/:slug/:l1" component={OverViewPage} />
+            <Route exact path="/apps-robo/:slug/:l1/:l2" component={OverViewPage} />
+            <Route exact path="/apps-robo/:slug/:l1/:l2/:l3" component={OverViewPage} />
+            <Route exact path="/apps-robo-document-mode/:slug" component={RoboDocumentMode} />
             </Main>
       </Switch>
       </BrowserRouter>

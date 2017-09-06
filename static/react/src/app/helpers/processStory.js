@@ -74,29 +74,36 @@ export function fetchCard(params, output) {
   return card;
 }
 
-//functionality to deal with next and previous navigations
-export function getPrevNext(output, curSufix) {
-//  alert("working");
+/**
+ * functionality to deal with next and previous navigations
+ * @param {any} rootNode
+ * @param {any} curSufix
+ */
+export function getPrevNext( rootNode, curSufix ) {
     var listOfUrls = [];
-    let generateAllUrls = function (rootNode, prefix) {
+    let generateAllUrls = function( rootNode, prefix ) {
         // Generate all sets of urls for all cards
-        for (var i = 0; i < rootNode.listOfCards.length; i++) {
-            listOfUrls.push(prefix + rootNode.listOfCards[i]['slug']);
-            // console.log(prefix+rootNode.listOfCards[i]['slug']);
+        for ( var i = 0; i < rootNode.listOfCards.length; i++ ) {
+            listOfUrls.push( prefix + rootNode.listOfCards[i]['slug'] );
         }
-        for (var i = 0; i < rootNode.listOfNodes.length; i++) {
-            generateAllUrls(rootNode.listOfNodes[i], prefix + rootNode.listOfNodes[i]["slug"] + "/");
+        for ( var i = 0; i < rootNode.listOfNodes.length; i++ ) {
+            generateAllUrls( rootNode.listOfNodes[i], prefix + rootNode.listOfNodes[i]["slug"] + "/" );
         }
     }
-    generateAllUrls(output, "");
+    //when listofNodes is empty append slug to prefix
+    if(rootNode.listOfNodes.length == 0){
+    	var rootSlug = curSufix.split("/")
+    	generateAllUrls( rootNode, rootSlug[0]+"/");
+    }
+    else generateAllUrls( rootNode, "" );
 
-    var curIndex = listOfUrls.indexOf(curSufix);
+    var curIndex = listOfUrls.indexOf( curSufix );
     var prev = null;
     var next = null;
-    if (curIndex > 0) {
+    if ( curIndex > 0 ) {
         prev = listOfUrls[curIndex - 1];
     }
-    if (curIndex < listOfUrls.length - 1) {
+    if ( curIndex < listOfUrls.length - 1 ) {
         next = listOfUrls[curIndex + 1]
     }
 

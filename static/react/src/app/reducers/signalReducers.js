@@ -1,5 +1,13 @@
 export default function reducer(state = {
   signalList: {},
+  signalAnalysis:{},
+  selectedSignal:{},
+  newSignalShowModal:false,
+  signalData:null,
+  createSignalLoaderModal:false,
+  createSignalLoaderValue:10,
+  current_page:1,
+  urlPrefix:"/signals",
   signalAnalysis: {},
   selectedSignal: {},
   newSignalShowModal: false,
@@ -7,9 +15,7 @@ export default function reducer(state = {
   createSignalLoaderModal: false,
   createSignalLoaderValue: 10,
   current_page: 1,
-  urlPrefix: "signals",
   signal_search_element:"",
-  // variableType:""
 }, action) {
   console.log("in SIGNAL reducer!!");
   console.log(action);
@@ -36,7 +42,8 @@ export default function reducer(state = {
         return {
           ...state,
           signalAnalysis: action.signalAnalysis.data,
-          selectedSignal: action.errandId
+          selectedSignal: action.errandId,
+          urlPrefix:"/signals",
         }
       }
       break;
