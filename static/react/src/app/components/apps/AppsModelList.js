@@ -10,6 +10,7 @@ import {AppsCreateModel} from "./AppsCreateModel";
 import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryFlag,
 	updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement} from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
+import {SEARCHCHARLIMIT} from  "../../helpers/helper"
 import {STATIC_URL} from "../../helpers/env.js";
 import Dialog from 'react-bootstrap-dialog'
 
@@ -70,7 +71,7 @@ export class AppsModelList extends React.Component {
 			this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models'+'')
 			this.props.dispatch(getAppsModelList(1));
 
-		}else if (e.target.value.length>3) {
+		}else if (e.target.value.length > SEARCHCHARLIMIT) {
 			this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models?search=' + e.target.value + '')
 		this.props.dispatch(storeModelSearchElement(e.target.value));
 		this.props.dispatch(getAppsModelList(1));

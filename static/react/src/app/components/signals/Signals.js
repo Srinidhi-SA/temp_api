@@ -18,6 +18,7 @@ import Breadcrumb from 'react-breadcrumb';
 var dateFormat = require('dateformat');
 import {CreateSignal} from "./CreateSignal";
 import {STATIC_URL} from "../../helpers/env";
+import {SEARCHCHARLIMIT} from  "../../helpers/helper"
 import Dialog from 'react-bootstrap-dialog';
 import {DetailOverlay} from "../common/DetailOverlay";
 
@@ -99,7 +100,7 @@ export class Signals extends React.Component {
       this.props.history.push('/signals');
       this.props.dispatch(getList(sessionStorage.userToken, 1));
 
-    } else if (e.target.value.length > 3) {
+    } else if (e.target.value.length > SEARCHCHARLIMIT) {
       this.props.history.push('/signals?search=' + e.target.value + '')
       this.props.dispatch(storeSearchElement(e.target.value));
       this.props.dispatch(getList(sessionStorage.userToken, 1));
@@ -215,7 +216,7 @@ export class Signals extends React.Component {
 
               <div class="row">
                 <div class="col-md-8">
-                  <h2>Signals</h2>
+                  <h4>Signals</h4>
                 </div>
                 <div class="col-md-4">
                   <div class="input-group pull-right">

@@ -112,9 +112,9 @@ export class RoboDocumentMode extends React.Component {
 			          <div className="row">
 		                <div className="col-md-12">
 		                 
-		                <div className="panel panel-mAd">
+		                <div className="panel panel-mAd documentModeSpacing ">
 		                    <div className="panel-heading">
-		                      <h2>{store.getState().apps.modelSummary.name}</h2>
+		                      <h2>{store.getState().apps.roboSummary.name}</h2>
 		                     
 		                      <div className="btn-toolbar pull-right">
 		                        <div className="btn-group btn-space">

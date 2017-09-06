@@ -25,6 +25,7 @@ import {
 } from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {STATIC_URL} from "../../helpers/env.js"
+import {SEARCHCHARLIMIT} from  "../../helpers/helper"
 import Dialog from 'react-bootstrap-dialog'
 
 var dateFormat = require('dateformat');
@@ -79,7 +80,7 @@ export class AppsScoreList extends React.Component {
       this.props.dispatch(getAppsScoreList(1));
       this.props.history.push('/apps/' + store.getState().apps.currentAppId + '/scores'+ '')
 
-    } else if (e.target.value.length > 3) {
+    } else if (e.target.value.length > SEARCHCHARLIMIT) {
       this.props.history.push('/apps/' + store.getState().apps.currentAppId + '/scores?search=' + e.target.value+'')
       this.props.dispatch(storeScoreSearchElement(e.target.value));
       this.props.dispatch(getAppsScoreList(1));

@@ -20,6 +20,7 @@ import {fetchProductList, openDULoaderPopup, closeDULoaderPopup, storeSearchElem
 import {DataUpload} from "./DataUpload";
 import {open, close} from "../../actions/dataUploadActions";
 import {STATIC_URL} from "../../helpers/env.js"
+import {SEARCHCHARLIMIT} from  "../../helpers/helper"
 import {DataUploadLoader} from "../common/DataUploadLoader";
 import Dialog from 'react-bootstrap-dialog'
 
@@ -88,8 +89,7 @@ export class Data extends React.Component {
       this.props.dispatch(storeSearchElement(""));
       this.props.history.push('/data');
       this.props.dispatch(getDataList(1));
-
-    }else if (e.target.value.length>3) {
+    }else if (e.target.value.length > SEARCHCHARLIMIT) {
       this.props.history.push('/data?search=' + e.target.value + '')
     this.props.dispatch(storeSearchElement(e.target.value));
     this.props.dispatch(getDataList(1));
@@ -187,7 +187,7 @@ export class Data extends React.Component {
           <div class="page-head">
             <div class="row">
               <div class="col-md-8">
-                <h2>Data</h2>
+                <h4>Data</h4>
               </div>
               <div class="col-md-4">
                 <div class="input-group pull-right">
