@@ -394,23 +394,24 @@ def decode_and_convert_chart_raw_data(data):
         return c3_chart_details
     elif chart_type in ['donut']:
         chart_data = replace_chart_data(data['data'])
-        c3 = DonutChart(data=chart_data)
+        pie_chart_data = convert_chart_data_to_pie_chart(chart_data)
+        c3 = DonutChart(data=pie_chart_data)
         c3.set_all_basics()
         c3.remove_x_from_data()
 
-        c3_chart_details['table_c3'] = chart_data
+        c3_chart_details['table_c3'] = pie_chart_data
         c3_chart_details["chart_c3"] = c3.get_json()
         return c3_chart_details
 
     elif chart_type in ['pie']:
         chart_data = replace_chart_data(data['data'])
-        c3 = PieChart(data=chart_data)
+        pie_chart_data = convert_chart_data_to_pie_chart(chart_data)
+        c3 = PieChart(data=pie_chart_data)
         c3.set_all_basics()
 
-        c3_chart_details['table_c3'] = chart_data
+        c3_chart_details['table_c3'] = pie_chart_data
         c3_chart_details["chart_c3"] = c3.get_json()
         return c3_chart_details
-
 
 
 
@@ -419,6 +420,13 @@ def replace_chart_data(data, axes=None):
         return convert_listed_dict_objects(data)
     elif isinstance(data, dict):
         return dict_to_list(data, axes)
+
+
+def convert_chart_data_to_pie_chart(chart_data):
+
+    pie_chart_data = zip(*chart_data)
+    pie_chart_data = map(list, pie_chart_data)
+    return pie_chart_data[1:]
 
 
 def get_slug(name):
@@ -700,6 +708,7 @@ def get_x_column_from_chart_data_without_xs(chart_data, axes):
         return chart_data[i][1:]
     else:
         return []
+
 
 
 

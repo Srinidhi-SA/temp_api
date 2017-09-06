@@ -609,7 +609,7 @@ class DonutChart(C3Chart):
             'legend': self._legend,
             'color': self._color,
             'padding': self._padding,
-            'title': self._title,
+            # 'title': self._title,
             'size': self._size,
             'donut': self._donut
         }
