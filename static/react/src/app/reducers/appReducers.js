@@ -33,11 +33,10 @@ export default function reducer(state = {
 		historialDataset_slug:"",
 		externalDataset_slug:"",
 		roboUploadTabId:1,
-		appsSelectedTabId:1,
 		robo_search_element:"",
 		model_search_element:"",
 		score_search_element:"",
-
+		appsSelectedTabId:"model",
 }, action) {
 	console.log("In APPs reducer!!");
 	console.log(action.data);

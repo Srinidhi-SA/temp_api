@@ -13,6 +13,7 @@ import {activateModelScoreTabs,storeModelSearchElement,storeScoreSearchElement,g
 		modelList:store.apps.modelList,currentAppId:store.apps.currentAppId,
 		scoreList: store.apps.scoreList,
 		activateModelScoreTabs:store.apps.activateModelScoreTabs,
+		appsSelectedTabId:store.apps.appsSelectedTabId,
 		};
 })
 
@@ -31,9 +32,11 @@ export class Apps extends React.Component {
 		//clear score Filters
 		this.props.dispatch(storeScoreSearchElement(""));
 		this.props.dispatch(getAppsScoreList(1));
-
-  /*if(tabId == 2)this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/scores')
-  if(tabId == 1)this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models')*/
+	  if(tabId == "score"){
+		  this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/scores')  
+	  }else{
+		  this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models')   
+	  }
   }
   render() {
     console.log("apps is called##########3");
@@ -45,9 +48,9 @@ export class Apps extends React.Component {
     return (
           <div className="side-body">
             <div className="main-content">
-            <Tabs activeKey={store.getState().apps.activateModelScoreTabs} onSelect={this.modifyUrl.bind(this)} >
-            <Tab  eventKey={1} title="Models">{models}</Tab>
-            <Tab eventKey={2} title="Scores">{scores}</Tab>
+            <Tabs defaultActiveKey="score" activeKey={store.getState().apps.appsSelectedTabId} onSelect={this.modifyUrl.bind(this)} >
+            <Tab  eventKey="model" title="Models">{models}</Tab>
+            <Tab eventKey="score" title="Scores">{scores}</Tab>
           </Tabs>
           </div>
         </div>
