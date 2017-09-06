@@ -195,6 +195,15 @@ export function selectedAnalysisList(evt){
 		}
 	}
 }
+export function unselectAllPossibleAnalysis(){
+	let unselectAll =[];
+	return {
+				type: "UNSELECT_All_ANALYSIS_TYPE",
+				unselectAll
+			}
+	
+}
+
 export function updateSelectedVariables(evt){
 	var variableName = evt.target.value;
 
