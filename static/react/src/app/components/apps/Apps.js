@@ -27,9 +27,9 @@ export class Apps extends React.Component {
   modifyUrl(tabId){
 	  this.props.dispatch(activateModelScoreTabs(tabId));
 	  if(tabId == "score"){
-		  this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/scores?page=1')  
+		  this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/scores')  
 	  }else{
-		  this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models?page=1')   
+		  this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models')   
 	  }
 	  
       
