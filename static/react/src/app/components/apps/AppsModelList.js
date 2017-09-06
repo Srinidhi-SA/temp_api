@@ -64,6 +64,17 @@ export class AppsModelList extends React.Component {
 
 		}
 	}
+	onChangeOfSearchBox(e){
+		if(e.target.value==""||e.target.value==null){
+			this.props.dispatch(storeModelSearchElement(""));
+			this.props.dispatch(getAppsModelList(sessionStorage.userToken, 1, ""));
+
+		}else if (e.target.value.length>3) {
+			this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models?search=' + e.target.value + '')
+		this.props.dispatch(storeModelSearchElement(e.target.value));
+		this.props.dispatch(getAppsModelList(sessionStorage.userToken, 1, e.target.value));
+		}
+	}
   render() {
     console.log("apps model list is called##########3");
     console.log(this.props);
@@ -159,7 +170,7 @@ export class AppsModelList extends React.Component {
 						<div class="col-md-4">
 							<div class="input-group pull-right">
 
-								<input type="text" name="model_insights" onKeyPress={this._handleKeyPress} title="Model Insights" id="model_insights" class="form-control" placeholder="Search Model insights..."/>
+								<input type="text" name="model_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Model Insights" id="model_insights" class="form-control" placeholder="Search Model insights..."/>
 								<span class="input-group-addon">
 									<i class="fa fa-search fa-lg"></i>
 								</span>

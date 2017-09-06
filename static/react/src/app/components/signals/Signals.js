@@ -93,6 +93,17 @@ export class Signals extends React.Component {
       console.log(e.target.id);
       this.props.dispatch(emptySignalAnalysis());
     }
+    onChangeOfSearchBox(e){
+      if(e.target.value==""||e.target.value==null){
+        this.props.dispatch(storeSearchElement(""));
+        this.props.dispatch(getList(sessionStorage.userToken, 1, ""));
+
+      }else if (e.target.value.length>3) {
+        this.props.history.push('/signals?search=' + e.target.value + '')
+      this.props.dispatch(storeSearchElement(e.target.value));
+      this.props.dispatch(getList(sessionStorage.userToken, 1, e.target.value));
+      }
+    }
     render() {
       console.log("signals is called##########3");
       document.body.className = "";
@@ -207,7 +218,7 @@ export class Signals extends React.Component {
                 <div class="col-md-4">
                   <div class="input-group pull-right">
 
-                    <input type="text" name="search_signals" onKeyPress={this._handleKeyPress} title="Search Signals" id="search_signals" class="form-control" placeholder="Search signals..."/>
+                    <input type="text" name="search_signals" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search Signals" id="search_signals" class="form-control" placeholder="Search signals..."/>
                     <span class="input-group-addon">
                       <i class="fa fa-search fa-lg"></i>
                     </span>
