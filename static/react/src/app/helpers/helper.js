@@ -152,6 +152,21 @@ export function  subTreeSetting(urlLength, length,paramL2) {
 
 	}
 	
+	
+	export function  showHideSideChart(colType) {
+		if(colType =="datetime"){
+				$(function(){
+			       $("#tab_visualizations #pnl_visl").removeClass("in");
+                   $("#tab_visualizations a").addClass("collapsed");
+				});
+			}else{
+				$(function(){
+			       $("#tab_visualizations #pnl_visl").addClass("in");
+                   $("#tab_visualizations a").removeClass("collapsed");
+				});
+			}
+	}
+	
 export{
 	FILEUPLOAD,
 	MYSQL,
