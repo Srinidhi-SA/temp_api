@@ -36,9 +36,9 @@ export class AppsScoreList extends React.Component {
 		var pageNo = 1;
 		if(this.props.history.location.pathname.indexOf("page") != -1){
 			pageNo = this.props.history.location.pathname.split("page=")[1];
-			this.props.dispatch(getAppsScoreList(pageNo,this.props.score_search_element));
+			this.props.dispatch(getAppsScoreList(pageNo));
 		}else{
-			this.props.dispatch(getAppsScoreList(pageNo,this.props.score_search_element));
+			this.props.dispatch(getAppsScoreList(pageNo));
 			// this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/scores')
 		}
 
@@ -63,19 +63,19 @@ export class AppsScoreList extends React.Component {
 				// 	this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models?search=' + e.target.value + '')
 
 				this.props.dispatch(storeScoreSearchElement(e.target.value));
-				this.props.dispatch(getAppsScoreList(1,e.target.value));
+				this.props.dispatch(getAppsScoreList(1));
 
 			}
 		}
 		onChangeOfSearchBox(e){
 			if(e.target.value==""||e.target.value==null){
 				this.props.dispatch(storeScoreSearchElement(""));
-				this.props.dispatch(getAppsScoreList(1, ""));
+				this.props.dispatch(getAppsScoreList(1));
 
 			}else if (e.target.value.length>3) {
 				//this.props.history.push('/signals?search=' + e.target.value + '')
 			this.props.dispatch(storeScoreSearchElement(e.target.value));
-			this.props.dispatch(getAppsScoreList(1, e.target.value));
+			this.props.dispatch(getAppsScoreList(1));
 			}
 		}
 

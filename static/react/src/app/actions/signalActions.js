@@ -74,9 +74,9 @@ function fetchCreateSignalError(json) {
   }
 }
 
-export function getList(token,pageNo,search_element) {
+export function getList(token,pageNo) {
     return (dispatch) => {
-    return fetchPosts(token,pageNo,search_element).then(([response, json]) =>{
+    return fetchPosts(token,pageNo).then(([response, json]) =>{
         if(response.status === 200){
           console.log(json)
         dispatch(fetchPostsSuccess(json))
@@ -88,8 +88,9 @@ export function getList(token,pageNo,search_element) {
   }
 }
 
-function fetchPosts(token,pageNo,search_element) {
+function fetchPosts(token,pageNo) {
   console.log(token)
+  let search_element = store.getState().signals.signal_search_element
   console.log(search_element)
   if(search_element!=""&&search_element!=null){
     console.log("calling for search element!!")

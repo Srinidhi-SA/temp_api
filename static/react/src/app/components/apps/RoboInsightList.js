@@ -24,7 +24,7 @@ var dateFormat = require('dateformat');
 		roboDatasetSlug:store.apps.roboDatasetSlug,
 		roboSummary:store.apps.roboSummary,
 		dataPreviewFlag:store.datasets.dataPreviewFlag,
-		robo_search_element: store.datasets.robo_search_element
+		robo_search_element: store.apps.robo_search_element
 		};
 })
 
@@ -37,9 +37,9 @@ export class RoboInsightList extends React.Component {
 	  var pageNo = 1;
 	  if(this.props.history.location.pathname.indexOf("page") != -1){
 			pageNo = this.props.history.location.pathname.split("page=")[1];
-			this.props.dispatch(getAppsRoboList(pageNo,this.props.robo_search_element));
+			this.props.dispatch(getAppsRoboList(pageNo));
 		}else
-		  this.props.dispatch(getAppsRoboList(pageNo,this.props.robo_search_element));
+		  this.props.dispatch(getAppsRoboList(pageNo));
 	}
   getInsightPreview(slug){
 	  this.props.dispatch(getRoboDataset(slug));
@@ -57,19 +57,19 @@ export class RoboInsightList extends React.Component {
         this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/robo?search=' + e.target.value + '')
 
       this.props.dispatch(storeRoboSearchElement(e.target.value));
-			this.props.dispatch(getAppsRoboList(1,e.target.value));
+			this.props.dispatch(getAppsRoboList(1));
 
     }
   }
 	onChangeOfSearchBox(e){
 		if(e.target.value==""||e.target.value==null){
 			this.props.dispatch(storeRoboSearchElement(""));
-			this.props.dispatch(getAppsRoboList(1, ""));
+			this.props.dispatch(getAppsRoboList(1));
 
 		}else if (e.target.value.length>3) {
 			this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/robo?search=' + e.target.value + '')
 		this.props.dispatch(storeRoboSearchElement(e.target.value));
-		this.props.dispatch(getAppsRoboList(1, e.target.value));
+		this.props.dispatch(getAppsRoboList(1));
 		}
 	}
   render() {

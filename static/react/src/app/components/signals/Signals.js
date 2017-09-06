@@ -34,9 +34,9 @@ export class Signals extends React.Component {
     var pageNo = 1;
     if (this.props.history.location.pathname.indexOf("page") != -1) {
       pageNo = this.props.history.location.pathname.split("page=")[1];
-      this.props.dispatch(getList(sessionStorage.userToken, pageNo, this.props.signal_search_element));
+      this.props.dispatch(getList(sessionStorage.userToken, pageNo));
     } else
-      this.props.dispatch(getList(sessionStorage.userToken, pageNo, this.props.signal_search_element));
+      this.props.dispatch(getList(sessionStorage.userToken, pageNo));
     }
 
   componentDidMount() {
@@ -66,7 +66,7 @@ export class Signals extends React.Component {
       this.props.history.push('/signals?search=' + this.props.signal_search_element + '&page=' + eventKey + '');
     } else
       this.props.history.push('/signals?page=' + eventKey + '');
-    this.props.dispatch(getList(sessionStorage.userToken, eventKey, this.props.signal_search_element));
+    this.props.dispatch(getList(sessionStorage.userToken, eventKey));
   }
 
   _handleKeyPress = (e) => {
@@ -76,7 +76,7 @@ export class Signals extends React.Component {
         this.props.history.push('/signals?search=' + e.target.value + '')
 
       this.props.dispatch(storeSearchElement(e.target.value));
-      this.props.dispatch(getList(sessionStorage.userToken, 1, e.target.value));
+      this.props.dispatch(getList(sessionStorage.userToken, 1));
     }
   }
 
@@ -97,12 +97,12 @@ export class Signals extends React.Component {
       if(e.target.value==""||e.target.value==null){
         this.props.dispatch(storeSearchElement(""));
         this.props.history.push('/signals');
-        this.props.dispatch(getList(sessionStorage.userToken, 1, ""));
+        this.props.dispatch(getList(sessionStorage.userToken, 1));
 
       }else if (e.target.value.length>3) {
         this.props.history.push('/signals?search=' + e.target.value + '')
       this.props.dispatch(storeSearchElement(e.target.value));
-      this.props.dispatch(getList(sessionStorage.userToken, 1, e.target.value));
+      this.props.dispatch(getList(sessionStorage.userToken, 1));
       }
     }
     render() {

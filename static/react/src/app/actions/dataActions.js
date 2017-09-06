@@ -15,9 +15,9 @@ function getHeader(token){
 }
 
 
-export function getDataList(pageNo,search_element) {
+export function getDataList(pageNo) {
 	return (dispatch) => {
-		return fetchDataList(pageNo,sessionStorage.userToken,search_element).then(([response, json]) =>{
+		return fetchDataList(pageNo,sessionStorage.userToken).then(([response, json]) =>{
 			if(response.status === 200){
 				dispatch(fetchDataSuccess(json))
 			}
@@ -28,9 +28,10 @@ export function getDataList(pageNo,search_element) {
 	}
 }
 
-function fetchDataList(pageNo,token,search_element) {
+function fetchDataList(pageNo,token) {
 
 	console.log(token)
+	let search_element = store.getState().datasets.data_search_element
 	console.log(search_element)
 	if(search_element!=""&&search_element!=null){
 		console.log("calling for search element!!")
@@ -196,7 +197,7 @@ export function selectedAnalysisList(evt){
 }
 export function updateSelectedVariables(evt){
 	var variableName = evt.target.value;
-	
+
 	if(evt.target.className == "measure"){
 		//Calculate whether select all should be check or not
 		var meaChkBoxList = store.getState().datasets.measureChecked;
@@ -204,7 +205,7 @@ export function updateSelectedVariables(evt){
 		 var isAllChecked = meaChkBoxList.filter(function(c) {
 	    	return c;
 	    }).length === meaChkBoxList.length;
-		
+
 		if(evt.target.checked){
 			return {
 				type: "SELECTED_MEASURES",
@@ -233,7 +234,7 @@ export function updateSelectedVariables(evt){
 				variableName,
 				dimChkBoxList,
 				isAllChecked,
-				
+
 			}
 		}else{
 			return {
@@ -510,8 +511,8 @@ export function handleSelectAll(evt){
 	case "measure":
 		$("#measureSearch").val("");
 		var meaChkBoxList = store.getState().datasets.measureChecked;
-		meaChkBoxList = meaChkBoxList.map(function() { 
-            return evt.target.checked 
+		meaChkBoxList = meaChkBoxList.map(function() {
+            return evt.target.checked
         })
 	if(evt.target.checked){
 		let measures = store.getState().datasets.ImmutableMeasures;
@@ -529,8 +530,8 @@ export function handleSelectAll(evt){
 		break;
 	case "dimension":
 		var diaChkBoxList = store.getState().datasets.dimensionChecked;
-		diaChkBoxList = diaChkBoxList.map(function() { 
-            return evt.target.checked 
+		diaChkBoxList = diaChkBoxList.map(function() {
+            return evt.target.checked
         })
         if(evt.target.checked){
     		let dimension = store.getState().datasets.ImmutableDimension;
@@ -545,12 +546,10 @@ export function handleSelectAll(evt){
     			diaChkBoxList
     		}
     	}
-		
+
 		break;
 	case "datetime":
-		
+
 		break;
 	}
 }
-
-

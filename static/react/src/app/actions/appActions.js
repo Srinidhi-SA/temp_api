@@ -30,9 +30,9 @@ export function closeModelPopup() {
 	}
 }
 
-export function getAppsModelList(pageNo,search_element) {
+export function getAppsModelList(pageNo) {
 	return (dispatch) => {
-		return fetchModelList(pageNo,sessionStorage.userToken,search_element).then(([response, json]) =>{
+		return fetchModelList(pageNo,sessionStorage.userToken).then(([response, json]) =>{
 			if(response.status === 200){
 				console.log(json)
 				dispatch(fetchModelListSuccess(json))
@@ -44,7 +44,8 @@ export function getAppsModelList(pageNo,search_element) {
 	}
 }
 
-function fetchModelList(pageNo,token,search_element) {
+function fetchModelList(pageNo,token) {
+	let search_element = store.getState().apps.model_search_element
 	if(search_element!=""&&search_element!=null){
 		console.log("calling for model search element!!")
 		return fetch(API+'/api/trainer/?app_id='+store.getState().apps.currentAppId+'&name='+search_element+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
@@ -142,9 +143,9 @@ function createModelSuccess(data,dispatch){
 		slug,
 	}
 }
-export function getAppsScoreList(pageNo,search_element) {
+export function getAppsScoreList(pageNo) {
 	return (dispatch) => {
-		return fetchScoreList(pageNo,sessionStorage.userToken,search_element).then(([response, json]) =>{
+		return fetchScoreList(pageNo,sessionStorage.userToken).then(([response, json]) =>{
 			if(response.status === 200){
 				console.log(json)
 				dispatch(fetchScoreListSuccess(json));
@@ -156,7 +157,8 @@ export function getAppsScoreList(pageNo,search_element) {
 	}
 }
 
-function fetchScoreList(pageNo,token,search_element) {
+function fetchScoreList(pageNo,token) {
+	let search_element = store.getState().apps.score_search_element
 	if(search_element!=""&&search_element!=null){
 		console.log("calling for score search element!!")
 		return fetch(API+'/api/score/?app_id='+store.getState().apps.currentAppId+'&name='+search_element+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
@@ -425,9 +427,9 @@ export function updateScoreSlug(slug){
 	}
 }
 
-export function getAppsRoboList(pageNo,search_element) {
+export function getAppsRoboList(pageNo) {
 	return (dispatch) => {
-		return fetchRoboList(pageNo,sessionStorage.userToken,search_element).then(([response, json]) =>{
+		return fetchRoboList(pageNo,sessionStorage.userToken).then(([response, json]) =>{
 			if(response.status === 200){
 				console.log(json)
 				dispatch(fetchRoboListSuccess(json))
@@ -439,7 +441,8 @@ export function getAppsRoboList(pageNo,search_element) {
 	}
 }
 
-function fetchRoboList(pageNo,token,search_element) {
+function fetchRoboList(pageNo,token) {
+	let search_element = store.getState().apps.robo_search_element
 	if(search_element!=""&&search_element!=null){
 		//console.log("calling for robo search element!!")
 		return fetch(API+'/api/robo/?name='+search_element+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{

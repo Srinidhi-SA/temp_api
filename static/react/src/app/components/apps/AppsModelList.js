@@ -38,9 +38,9 @@ export class AppsModelList extends React.Component {
 	  var pageNo = 1;
 	  if(this.props.history.location.pathname.indexOf("page") != -1){
 			pageNo = this.props.history.location.pathname.split("page=")[1];
-			this.props.dispatch(getAppsModelList(pageNo,this.props.model_search_element));
+			this.props.dispatch(getAppsModelList(pageNo));
 		}else{
-			this.props.dispatch(getAppsModelList(pageNo,this.props.model_search_element));
+			this.props.dispatch(getAppsModelList(pageNo));
 		}
 
 	}
@@ -60,7 +60,7 @@ export class AppsModelList extends React.Component {
 				this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models?search=' + e.target.value + '')
 
 			this.props.dispatch(storeModelSearchElement(e.target.value));
-			this.props.dispatch(getAppsModelList(1,e.target.value));
+			this.props.dispatch(getAppsModelList(1));
 
 		}
 	}
@@ -68,12 +68,12 @@ export class AppsModelList extends React.Component {
 		if(e.target.value==""||e.target.value==null){
 			this.props.dispatch(storeModelSearchElement(""));
 			this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models'+'')
-			this.props.dispatch(getAppsModelList(1,""));
+			this.props.dispatch(getAppsModelList(1));
 
 		}else if (e.target.value.length>3) {
 			this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models?search=' + e.target.value + '')
 		this.props.dispatch(storeModelSearchElement(e.target.value));
-		this.props.dispatch(getAppsModelList(1, e.target.value));
+		this.props.dispatch(getAppsModelList(1));
 		}
 	}
   render() {

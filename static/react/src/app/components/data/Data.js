@@ -49,9 +49,9 @@ export class Data extends React.Component {
     this.props.dispatch(storeSignalMeta(null, this.props.match.url));
     if (this.props.history.location.pathname.indexOf("page") != -1) {
       pageNo = this.props.history.location.pathname.split("page=")[1];
-      this.props.dispatch(getDataList(pageNo, this.props.data_search_element));
+      this.props.dispatch(getDataList(pageNo));
     } else
-      this.props.dispatch(getDataList(pageNo, this.props.data_search_element));
+      this.props.dispatch(getDataList(pageNo));
     }
   getPreviewData(e) {
     var that = this;
@@ -80,19 +80,19 @@ export class Data extends React.Component {
         this.props.history.push('/data?search=' + e.target.value + '')
 
       this.props.dispatch(storeSearchElement(e.target.value));
-      this.props.dispatch(getDataList(1, e.target.value));
+      this.props.dispatch(getDataList(1));
     }
   }
   onChangeOfSearchBox(e){
     if(e.target.value==""||e.target.value==null){
       this.props.dispatch(storeSearchElement(""));
       this.props.history.push('/data');
-      this.props.dispatch(getDataList( 1, ""));
+      this.props.dispatch(getDataList(1));
 
     }else if (e.target.value.length>3) {
       this.props.history.push('/data?search=' + e.target.value + '')
     this.props.dispatch(storeSearchElement(e.target.value));
-    this.props.dispatch(getDataList(1, e.target.value));
+    this.props.dispatch(getDataList(1));
     }
   }
   render() {
@@ -252,6 +252,6 @@ export class Data extends React.Component {
     } else
 this.props.history.push('/data?page=' + eventKey + '');
 
-    this.props.dispatch(getDataList(eventKey, this.props.data_search_element));
+    this.props.dispatch(getDataList(eventKey));
   }
 }

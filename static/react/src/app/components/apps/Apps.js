@@ -27,10 +27,10 @@ export class Apps extends React.Component {
 	  this.props.dispatch(activateModelScoreTabs(tabId));
 		//cleat Model Filters
 		this.props.dispatch(storeModelSearchElement(""));
-		this.props.dispatch(getAppsModelList(1,""));
+		this.props.dispatch(getAppsModelList(1));
 		//clear score Filters
 		this.props.dispatch(storeScoreSearchElement(""));
-		this.props.dispatch(getAppsScoreList(1,""));
+		this.props.dispatch(getAppsScoreList(1));
 
   /*if(tabId == 2)this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/scores')
   if(tabId == 1)this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models')*/

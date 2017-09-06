@@ -27,8 +27,8 @@ componentDidMount(){
 
 hideDataPrev(e){
 	this.props.dispatch(hideDataPreview());
-  this.props.dispatch(getList(sessionStorage.userToken, 1, ""));
-  this.props.dispatch(getDataList(1,""));
+  this.props.dispatch(getList(sessionStorage.userToken, 1));
+  this.props.dispatch(getDataList(1));
 	/*$("."+e.target).addClass("active");
 	$(".sdb").each(function(){
 		$(this).removeClass("active");
