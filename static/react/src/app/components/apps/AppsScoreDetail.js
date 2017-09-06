@@ -52,7 +52,7 @@ export class AppsScoreDetail extends React.Component {
 			          <div className="row">
 		                <div className="col-md-12">
 		                 
-		                <div className="panel panel-mAd">
+		                <div className="panel panel-mAd documentModeSpacing ">
 		                    <div className="panel-heading">
 		                      <h2>{store.getState().apps.scoreSummary.name}</h2>
 		                      <div className="clearfix"></div>
@@ -68,7 +68,7 @@ export class AppsScoreDetail extends React.Component {
 		                    <div className="row">
 		                    <div className="col-md-2 col-md-offset-11">
 		                   	
-		                    	<a  href={'http://ec2-34-205-203-38.compute-1.amazonaws.com:8001/'+store.getState().apps.scoreSlug+'/data.csv'}id="download" className="btn btn-primary" download>Download</a>
+		                    	<a  href={'http://174.129.163.0:8001/'+store.getState().apps.scoreSlug+'/data.csv'}id="download" className="btn btn-primary" download>Download</a>
 		                   </div>
 		                   </div>
 		             </div>
@@ -85,11 +85,11 @@ export class AppsScoreDetail extends React.Component {
 	}
 	else{
 		return (
-			      <div className="side-body">
+				 <div className="side-body">
 			        <div className="page-head">
 			        </div>
 			        <div className="main-content">
-			        Loading....
+			          <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif" } />
 			        </div>
 			      </div>
 			    );

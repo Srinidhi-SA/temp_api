@@ -136,6 +136,18 @@ if(this.props.tooltip){
  
   console.log(data.tooltip.contents);
 }
+
+
+if(this.props.xdata){
+	let xdata = this.props.xdata; 
+	console.log(this.props.xdata);
+	data.axis.x.tick.format = function (x) { if(xdata[x] && xdata[x].length>13){return xdata[x].substr(0,13)+"..";}else{return xdata[x] ;}}
+	
+	data.tooltip.format.title = function (d) { return xdata[d]; }
+	
+	
+}
+
   data['bindto'] = this.getChartElement().get(0); // binding chart to html element
   console.log(data);
 
@@ -195,12 +207,12 @@ if(this.props.tooltip){
 	  
       return(
 <div className="chart-area">
-  <div className="row">
+<div className="row">
   	<div className="chart-data-icon col-md-9 col-md-offset-1">
          <i className="fa fa-cloud-download" aria-hidden="true" onClick={this.showModal.bind(this)}></i>
      </div>
 	 <div className="clearfix"></div>
-  </div>
+</div>
     <div className="row">
 		   <div className={this.classId}></div>
 		   <div className="clearfix"></div>

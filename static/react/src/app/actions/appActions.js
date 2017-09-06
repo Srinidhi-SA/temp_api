@@ -1,9 +1,14 @@
 import {API} from "../helpers/env";
 import {PERPAGE,isEmpty} from "../helpers/helper";
 import store from "../store";
-import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,CUSTOMERDATA,HISTORIALDATA,EXTERNALDATA} from "../helpers/helper";
+import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,CUSTOMERDATA,HISTORIALDATA,EXTERNALDATA,DELETEMODEL,
+	RENAMEMODEL,DELETESCORE,RENAMESCORE,DELETEINSIGHT,RENAMEINSIGHT,} from "../helpers/helper";
 import {hideDataPreview,getDataSetPreview,showDataPreview} from "./dataActions";
 import {getHeaderWithoutContent} from "./dataUploadActions";
+import Dialog from 'react-bootstrap-dialog';
+import React from "react";
+import { showLoading, hideLoading } from 'react-redux-loading-bar';
+
 export var appsInterval = null;
 
 function getHeader(token){
@@ -40,10 +45,21 @@ export function getAppsModelList(pageNo) {
 }
 
 function fetchModelList(pageNo,token) {
-	return fetch(API+'/api/trainer/?app_id='+store.getState().apps.currentAppId+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
-		method: 'get',
-		headers: getHeader(token)
-	}).then( response => Promise.all([response, response.json()]));
+	let search_element = store.getState().apps.model_search_element
+	if(search_element!=""&&search_element!=null){
+		console.log("calling for model search element!!")
+		return fetch(API+'/api/trainer/?app_id='+store.getState().apps.currentAppId+'&name='+search_element+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
+			method: 'get',
+			headers: getHeader(token)
+			}).then( response => Promise.all([response, response.json()]));
+	}else{
+		return fetch(API+'/api/trainer/?app_id='+store.getState().apps.currentAppId+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
+			method: 'get',
+			headers: getHeader(token)
+		}).then( response => Promise.all([response, response.json()]));
+	}
+
+
 }
 
 function fetchModelListError(json) {
@@ -119,12 +135,12 @@ function createModelSuccess(data,dispatch){
 			dispatch(getAppsModelSummary(data.slug));
 			return {
 				type: "CREATE_MODEL_SUCCESS",
-				slug,	
+				slug,
 			}
 	},APPSDEFAULTINTERVAL);
 	return {
 		type: "CREATE_MODEL_SUCCESS",
-		slug,	
+		slug,
 	}
 }
 export function getAppsScoreList(pageNo) {
@@ -132,7 +148,7 @@ export function getAppsScoreList(pageNo) {
 		return fetchScoreList(pageNo,sessionStorage.userToken).then(([response, json]) =>{
 			if(response.status === 200){
 				console.log(json)
-				dispatch(fetchScoreListSuccess(json))
+				dispatch(fetchScoreListSuccess(json));
 			}
 			else{
 				dispatch(fetchScoreListError(json))
@@ -142,10 +158,21 @@ export function getAppsScoreList(pageNo) {
 }
 
 function fetchScoreList(pageNo,token) {
-	return fetch(API+'/api/score/?app_id='+store.getState().apps.currentAppId+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
-		method: 'get',
-		headers: getHeader(token)
-	}).then( response => Promise.all([response, response.json()]));
+	let search_element = store.getState().apps.score_search_element
+	if(search_element!=""&&search_element!=null){
+		console.log("calling for score search element!!")
+		return fetch(API+'/api/score/?app_id='+store.getState().apps.currentAppId+'&name='+search_element+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
+			method: 'get',
+			headers: getHeader(token)
+			}).then( response => Promise.all([response, response.json()]));
+	}else{
+		return fetch(API+'/api/score/?app_id='+store.getState().apps.currentAppId+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
+			method: 'get',
+			headers: getHeader(token)
+		}).then( response => Promise.all([response, response.json()]));
+	}
+
+
 }
 
 function fetchScoreListError(json) {
@@ -238,10 +265,10 @@ export function createScore(scoreName,targetVariable) {
 	console.log(scoreName);
 	console.log(targetVariable);
 	  return (dispatch) => {
-		  dispatch(openAppsLoader(DULOADERPERVALUE,"Please wait while mAdvisor is creating score... "));
+		  dispatch(openAppsLoader(DULOADERPERVALUE,"Please wait while mAdvisor is scoring your model... "));
 			return triggerCreateScore(sessionStorage.userToken,scoreName,targetVariable).then(([response, json]) =>{
 				if(response.status === 200){
-					
+
 					dispatch(createScoreSuccess(json,dispatch))
 				}
 				else{
@@ -283,12 +310,12 @@ function createScoreSuccess(data,dispatch){
 			dispatch(getAppsScoreSummary(data.slug));
 			return {
 				type: "CREATE_SCORE_SUCCESS",
-				slug,	
+				slug,
 			}
 	},APPSDEFAULTINTERVAL);
 	return {
 		type: "CREATE_SCORE_SUCCESS",
-		slug,	
+		slug,
 	}
 }
 
@@ -303,7 +330,7 @@ export function getAppsScoreSummary(slug) {
 					dispatch(hideDataPreview());
 					dispatch(updateScoreSummaryFlag(true));
 				}
-				
+
 			}
 			else{
 				dispatch(closeAppsLoaderValue());
@@ -390,13 +417,13 @@ export function updateScoreSummaryFlag(flag){
 export function updateModelSlug(slug){
 	return {
 		type: "CREATE_MODEL_SUCCESS",
-		slug,	
+		slug,
 	}
 }
 export function updateScoreSlug(slug){
 	return {
 		type: "CREATE_SCORE_SUCCESS",
-		slug,	
+		slug,
 	}
 }
 
@@ -415,10 +442,21 @@ export function getAppsRoboList(pageNo) {
 }
 
 function fetchRoboList(pageNo,token) {
-	return fetch(API+'/api/robo/?page_number='+pageNo+'&page_size='+PERPAGE+'',{
-		method: 'get',
-		headers: getHeader(token)
-	}).then( response => Promise.all([response, response.json()]));
+	let search_element = store.getState().apps.robo_search_element
+	if(search_element!=""&&search_element!=null){
+		//console.log("calling for robo search element!!")
+		return fetch(API+'/api/robo/?name='+search_element+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
+			method: 'get',
+			headers: getHeader(token)
+			}).then( response => Promise.all([response, response.json()]));
+	}else{
+		return fetch(API+'/api/robo/?page_number='+pageNo+'&page_size='+PERPAGE+'',{
+			method: 'get',
+			headers: getHeader(token)
+		}).then( response => Promise.all([response, response.json()]));
+	}
+
+
 }
 
 function fetchRoboListError(json) {
@@ -469,7 +507,7 @@ export function saveFilesToStore(files,uploadData) {
 			files
 		}
 	}
-	
+
 }
 
 
@@ -480,7 +518,7 @@ if(!isEmpty(store.getState().apps.customerDataUpload) && !isEmpty(store.getState
 		  dispatch(openAppsLoader(DULOADERPERVALUE,"Please wait while mAdvisor is processing data... "));
 			return triggerDataUpload(sessionStorage.userToken,insightName).then(([response, json]) =>{
 				if(response.status === 200){
-					
+
 					dispatch(dataUploadFilesSuccess(json,dispatch))
 				}
 				else{
@@ -492,7 +530,7 @@ if(!isEmpty(store.getState().apps.customerDataUpload) && !isEmpty(store.getState
 }else{
 	dialog.showAlert("Please select Customer Data,Historial Data and External Data.");
 }
-	  
+
 }
 
 function triggerDataUpload(token,insightName) {
@@ -505,7 +543,7 @@ function triggerDataUpload(token,insightName) {
 			method: 'post',
 			headers: getHeaderWithoutContent(token),
 			body:data,
-		}).then( response => Promise.all([response, response.json()]));	
+		}).then( response => Promise.all([response, response.json()]));
 }
 
 function dataUploadFilesSuccess(data,dispatch) {
@@ -518,7 +556,7 @@ function dataUploadFilesSuccess(data,dispatch) {
 	},APPSDEFAULTINTERVAL);
 	return {
 		type: "ROBO_DATA_UPLOAD_SUCCESS",
-		slug,	
+		slug,
 	}
 }
 
@@ -609,5 +647,281 @@ export function updateRoboAnalysisData(roboData,urlPrefix){
 		urlPrefix,
 		roboSlug
 	}
+}export function showDialogBox(slug,dialog,dispatch,title,msgText){
+	Dialog.setOptions({
+		  defaultOkLabel: 'Yes',
+		  defaultCancelLabel: 'No',
+		})
+	dialog.show({
+		  title: title,
+		  body: msgText,
+		  actions: [
+		    Dialog.CancelAction(),
+		    Dialog.OKAction(() => {
+		    	if(title == DELETEMODEL)
+		    	deleteModel(slug,dialog,dispatch)
+		    	else if(title ==  DELETEINSIGHT)
+		    	deleteInsight(slug,dialog,dispatch)
+		    	else
+		    	deleteScore(slug,dialog,dispatch)
+
+		    })
+		  ],
+		  bsSize: 'medium',
+		  onHide: (dialogBox) => {
+		    dialogBox.hide()
+		    console.log('closed by clicking background.')
+		  }
+		});
+}
+export function handleModelDelete(slug,dialog) {
+	return (dispatch) => {
+		showDialogBox(slug,dialog,dispatch,"Delete Model","Are you sure, you want to delete model?")
+	}
+}
+function deleteModel(slug,dialog,dispatch){
+	dispatch(showLoading());
+	Dialog.resetOptions();
+	return deleteModelAPI(slug).then(([response, json]) =>{
+		if(response.status === 200){
+			dispatch(getAppsModelList(store.getState().apps.current_page));
+			dispatch(hideLoading());
+		}
+		else{
+			dialog.showAlert("Error occured , Please try after sometime.");
+			dispatch(hideLoading());
+		}
+	})
+}
+function deleteModelAPI(slug){
+	return fetch(API+'/api/trainer/'+slug+'/',{
+		method: 'put',
+		headers: getHeader(sessionStorage.userToken),
+		body:JSON.stringify({
+			deleted:true,
+		}),
+	}).then( response => Promise.all([response, response.json()]));
+
+	}
+
+
+export function handleModelRename(slug,dialog,name){
+	const customBody = (
+		      <div className="form-group">
+		      <label for="fl1" className="col-sm-6 control-label">Enter Model New Name</label>
+		      <input className="form-control"  id="idRenameModel" type="text" defaultValue={name}/>
+		      </div>
+		    )
+	return (dispatch) => {
+		showRenameDialogBox(slug,dialog,dispatch,RENAMEMODEL,customBody)
+	}
+}
+function showRenameDialogBox(slug,dialog,dispatch,title,customBody){
+	dialog.show({
+		  title: title,
+		  body: customBody,
+		  actions: [
+		    Dialog.CancelAction(),
+		    Dialog.OKAction(() => {
+		    	if(title == RENAMEMODEL)
+		    	renameModel(slug,dialog,$("#idRenameModel").val(),dispatch)
+		    	else if(title ==  RENAMEINSIGHT)
+		    	renameInsight(slug,dialog,$("#idRenameInsight").val(),dispatch)
+		    	else
+		    	renameScore(slug,dialog,$("#idRenameScore").val(),dispatch)
+		    })
+		  ],
+		  bsSize: 'medium',
+		  onHide: (dialogBox) => {
+		    dialogBox.hide()
+		    console.log('closed by clicking background.')
+		  }
+		});
 }
 
+function renameModel(slug,dialog,newName,dispatch){
+	dispatch(showLoading());
+	Dialog.resetOptions();
+	return renameModelAPI(slug,newName).then(([response, json]) =>{
+		if(response.status === 200){
+			dispatch(getAppsModelList(store.getState().apps.current_page));
+			dispatch(hideLoading());
+		}
+		else{
+			dialog.showAlert("Error occured , Please try after sometime.");
+			dispatch(hideLoading());
+		}
+	})
+}
+function renameModelAPI(slug,newName){
+	return fetch(API+'/api/trainer/'+slug+'/',{
+		method: 'put',
+		headers: getHeader(sessionStorage.userToken),
+		body:JSON.stringify({
+			name:newName,
+		}),
+	}).then( response => Promise.all([response, response.json()]));
+
+	}
+
+
+export function handleScoreDelete(slug,dialog) {
+	return (dispatch) => {
+		showDialogBox(slug,dialog,dispatch,DELETESCORE,"Are you sure, you want to delete score?")
+	}
+}
+function deleteScore(slug,dialog,dispatch){
+	dispatch(showLoading());
+	Dialog.resetOptions();
+	return deleteScoreAPI(slug).then(([response, json]) =>{
+		if(response.status === 200){
+			dispatch(getAppsScoreList(store.getState().apps.current_page));
+			dispatch(hideLoading());
+		}
+		else{
+			dialog.showAlert("Error occured , Please try after sometime.");
+			dispatch(hideLoading());
+		}
+	})
+}
+function deleteScoreAPI(slug){
+	return fetch(API+'/api/score/'+slug+'/',{
+		method: 'put',
+		headers: getHeader(sessionStorage.userToken),
+		body:JSON.stringify({
+			deleted:true,
+		}),
+	}).then( response => Promise.all([response, response.json()]));
+
+	}
+
+
+export function handleScoreRename(slug,dialog,name){
+	const customBody = (
+		      <div className="form-group">
+		      <label for="fl1" className="col-sm-6 control-label">Enter Score New Name</label>
+		      <input className="form-control"  id="idRenameScore" type="text" defaultValue={name}/>
+		      </div>
+		    )
+	return (dispatch) => {
+		showRenameDialogBox(slug,dialog,dispatch,RENAMESCORE,customBody)
+	}
+}
+
+function renameScore(slug,dialog,newName,dispatch){
+	dispatch(showLoading());
+	Dialog.resetOptions();
+	return renameScoreAPI(slug,newName).then(([response, json]) =>{
+		if(response.status === 200){
+			dispatch(getAppsScoreList(store.getState().apps.current_page));
+			dispatch(hideLoading());
+		}
+		else{
+			dialog.showAlert("Error occured , Please try after sometime.");
+			dispatch(hideLoading());
+		}
+	})
+}
+function renameScoreAPI(slug,newName){
+	return fetch(API+'/api/score/'+slug+'/',{
+		method: 'put',
+		headers: getHeader(sessionStorage.userToken),
+		body:JSON.stringify({
+			name:newName,
+		}),
+	}).then( response => Promise.all([response, response.json()]));
+
+	}
+
+export function activateModelScoreTabs(id){
+	return {
+		type: "APPS_SELECTED_TAB",
+	    id,
+	}
+}
+
+export function handleInsightDelete(slug,dialog) {
+	return (dispatch) => {
+		showDialogBox(slug,dialog,dispatch,DELETEINSIGHT,"Are you sure, you want to delete Insight?")
+	}
+}
+function deleteInsight(slug,dialog,dispatch){
+	dispatch(showLoading());
+	Dialog.resetOptions();
+	return deleteInsightAPI(slug).then(([response, json]) =>{
+		if(response.status === 200){
+			dispatch(getAppsRoboList(store.getState().apps.current_page));
+			dispatch(hideLoading());
+		}
+		else{
+			dialog.showAlert("Error occured , Please try after sometime.");
+			dispatch(hideLoading());
+		}
+	})
+}
+function deleteInsightAPI(slug){
+	return fetch(API+'/api/robo/'+slug+'/',{
+		method: 'put',
+		headers: getHeader(sessionStorage.userToken),
+		body:JSON.stringify({
+			deleted:true,
+		}),
+	}).then( response => Promise.all([response, response.json()]));
+
+	}
+
+
+export function handleInsightRename(slug,dialog,name){
+	const customBody = (
+		      <div className="form-group">
+		      <label for="fl1" className="col-sm-6 control-label">Enter Insight New Name</label>
+		      <input className="form-control"  id="idRenameInsight" type="text" defaultValue={name}/>
+		      </div>
+		    )
+	return (dispatch) => {
+		showRenameDialogBox(slug,dialog,dispatch,RENAMEINSIGHT,customBody)
+	}
+}
+
+function renameInsight(slug,dialog,newName,dispatch){
+	dispatch(showLoading());
+	Dialog.resetOptions();
+	return renameInsightAPI(slug,newName).then(([response, json]) =>{
+		if(response.status === 200){
+			dispatch(getAppsRoboList(store.getState().apps.current_page));
+			dispatch(hideLoading());
+		}
+		else{
+			dialog.showAlert("Error occured , Please try after sometime.");
+			dispatch(hideLoading());
+		}
+	})
+}
+function renameInsightAPI(slug,newName){
+	return fetch(API+'/api/robo/'+slug+'/',{
+		method: 'put',
+		headers: getHeader(sessionStorage.userToken),
+		body:JSON.stringify({
+			name:newName,
+		}),
+	}).then( response => Promise.all([response, response.json()]));
+
+	}
+
+export function storeRoboSearchElement(search_element){
+	return {
+		type: "SEARCH_ROBO",
+		search_element
+	}
+}
+export function storeModelSearchElement(search_element){
+	return {
+		type: "SEARCH_MODEL",
+		search_element
+	}
+}export function storeScoreSearchElement(search_element){
+	return {
+		type: "SEARCH_SCORE",
+		search_element
+	}
+}

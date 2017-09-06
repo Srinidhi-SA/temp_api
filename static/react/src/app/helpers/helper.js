@@ -33,6 +33,12 @@ const APPSDEFAULTINTERVAL = 15000;
 const CUSTOMERDATA = "Customer Data";
 const HISTORIALDATA = "Historial Data";
 const EXTERNALDATA = "External Data";
+const DELETEMODEL = "Delete Model";
+const RENAMEMODEL = "Rename Model";
+const DELETESCORE = "Delete Score";
+const RENAMESCORE = "Rename Score";
+const DELETEINSIGHT = "Delete Insight";
+const RENAMEINSIGHT = "Rename Insight";
 
 
 export function generateHeaders(table) {
@@ -120,6 +126,7 @@ export function  subTreeSetting(urlLength, length,paramL2) {
 			  $(".sb_navigation").hide();
 	  } // end of show -hide subtree and active class of subtree element
 	 
+
 	   if($(".list-group").children()){ // show hide side panel list
 		 if($(".list-group").children().length == 1){
 	    $('.row-offcanvas-left').addClass('active');
@@ -128,6 +135,7 @@ export function  subTreeSetting(urlLength, length,paramL2) {
 		   }
           }
 		  
+
 		/*  if(that.showSubTree){   // for sub tree active class check
        $(".sb_navigation #subTab i.mAd_icons.ic_perf ~ span").each(function(){
         console.log($(this).html() +" == "+ that.props.match.params.l2);
@@ -168,5 +176,10 @@ export{
 	CUSTOMERDATA,
 	HISTORIALDATA,
 	EXTERNALDATA,
-	
+	DELETEMODEL,
+	RENAMEMODEL,
+	DELETESCORE,
+	RENAMESCORE,
+	DELETEINSIGHT,
+	RENAMEINSIGHT,
 	}

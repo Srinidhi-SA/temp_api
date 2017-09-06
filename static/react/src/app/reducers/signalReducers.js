@@ -1,4 +1,3 @@
-
 export default function reducer(state = {
   signalList: {},
   signalAnalysis:{},
@@ -9,7 +8,14 @@ export default function reducer(state = {
   createSignalLoaderValue:10,
   current_page:1,
   urlPrefix:"/signals",
-  // variableType:""
+  signalAnalysis: {},
+  selectedSignal: {},
+  newSignalShowModal: false,
+  signalData: null,
+  createSignalLoaderModal: false,
+  createSignalLoaderValue: 10,
+  current_page: 1,
+  signal_search_element:"",
 }, action) {
   console.log("in SIGNAL reducer!!");
   console.log(action);
@@ -20,7 +26,7 @@ export default function reducer(state = {
         return {
           ...state,
           signalList: action.signalList,
-          current_page:action.current_page,
+          current_page: action.current_page
         }
       }
       break;
@@ -48,96 +54,104 @@ export default function reducer(state = {
       }
       break;
     case "CREATE_SIGNAL_SHOW_MODAL":
-	{
-		return {
-			...state,
-			newSignalShowModal:true,
-		}
-	}
-	break;
+      {
+        return {
+          ...state,
+          newSignalShowModal: true
+        }
+      }
+      break;
 
-	case "CREATE_SIGNAL_HIDE_MODAL":
-	{
-		return {
-			...state,
-			newSignalShowModal:false,
-		}
-	}
-	break;
+    case "CREATE_SIGNAL_HIDE_MODAL":
+      {
+        return {
+          ...state,
+          newSignalShowModal: false
+        }
+      }
+      break;
 
-  case "CREATE_SUCCESS":
-  {
-    return {
-      ...state,
-      signalData:action.signalData,
-    }
-  }
-  break;
-  case "CREATE_ERROR":
+    case "CREATE_SUCCESS":
+      {
+        return {
+          ...state,
+          signalData: action.signalData
+        }
+      }
+      break;
+    case "CREATE_ERROR":
+      {
+        throw new Error("Create Signal Failed!!");
+      }
+      break;
+    case "SET_POSSIBLE_LIST":
+      {
+        return {
+          ...state,
+          getVarType: action.varType
+        }
+      }
+      break;
+    case "SEL_PREDICTION":
+      {
+        return {
+          ...state,
+          selectedPrediction: action.predictionSelected
+        }
+      }
+      break;
+    case "HIDE_CREATE_SIGNAL_LOADER":
+      {
+        return {
+          ...state,
+          createSignalLoaderModal: false
+        }
+      }
+      break;
+    case "SHOW_CREATE_SIGNAL_LOADER":
+      {
+        return {
+          ...state,
+          createSignalLoaderModal: true
+        }
+      }
+      break;
+    case "CREATE_SIGNAL_LOADER_VALUE":
+      {
+        return {
+          ...state,
+          createSignalLoaderValue: action.value
+        }
+      }
+      break;
+    case "SIGNAL_ANALYSIS_EMPTY":
+      {
+        return {
+          ...state,
+          signalAnalysis: {}
+        }
+      }
+      break;
+
+    case "ROBO_DATA_ANALYSIS":
+      {
+        return {
+          ...state,
+          signalAnalysis: action.roboData.data,
+          urlPrefix: action.urlPrefix,
+          selectedSignal: action.roboSlug
+        }
+      }
+      break;
+    case "SEARCH_SIGNAL":
     {
-      throw new Error("Create Signal Failed!!");
-    }
-    break;
- case "SET_POSSIBLE_LIST":
-    {
-    return {
-      ...state,
-      getVarType:action.varType,
-    }
-  }
-  break;
-   case "SEL_PREDICTION":
-    {
-    return {
-      ...state,
-      selectedPrediction:action.predictionSelected,
-    }
-  }
-  break;
- case "HIDE_CREATE_SIGNAL_LOADER":
-	{
-		return {
-			...state,
-			createSignalLoaderModal:false,
-		}
-	}
-	break;
-	case "SHOW_CREATE_SIGNAL_LOADER":
-	{
-		return {
-			...state,
-			createSignalLoaderModal:true,
-		}
-	}
-	break;
-	case "CREATE_SIGNAL_LOADER_VALUE":
-	{
-		return {
-			...state,
-			createSignalLoaderValue:action.value,
-		}
-	}
-	break;
-	case "SIGNAL_ANALYSIS_EMPTY":
-    {
-      return {
+      return{
         ...state,
-        signalAnalysis: {},
+        signal_search_element:action.search_element
       }
     }
     break;
-    
-	 case "ROBO_DATA_ANALYSIS":
-     {
-       return {
-         ...state,
-         signalAnalysis: action.roboData.data,
-         urlPrefix:action.urlPrefix,
-         selectedSignal:action.roboSlug,
-       }
-     }
-     break;
-     
+
   }
   return state
 }

@@ -19,15 +19,22 @@ export class HeatMapTable extends React.Component {
  
   render() {
    var data = this.props.tableData;
+   var tableTitle ="";
+   if(this.props.tableData.topHeader){
+   tableTitle = this.props.tableData.topHeader;
+   }
    HeatMap("heat-table-map");
    console.log("checking circular chart tabletable element");
    var headerComponents = generateHeatMapHeaders(data);
    var rowComponents = generateHeatMapRows(data);
    return (
+          <div>
            <table className="table table-bordered heat-table-map">
                <thead>{headerComponents}</thead>
                <tbody>{rowComponents}</tbody>
            </table>
+		   <div className="text-center">{tableTitle}</div>
+		   </div>
        );
   }
 }
