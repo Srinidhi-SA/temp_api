@@ -612,7 +612,6 @@ class RoboView(viewsets.ModelViewSet):
         return page_class.get_paginated_response(serializer.data)
 
 dummy_robo_data = {
-    "result": {
         "listOfNodes": [],
         "listOfCards": [
             {
@@ -4147,4 +4146,3 @@ dummy_robo_data = {
         "name": "DSDS",
         "slug": "dsds-lkdzu1oaql"
     }
-}
