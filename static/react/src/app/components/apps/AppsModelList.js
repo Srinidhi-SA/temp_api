@@ -172,9 +172,7 @@ export class AppsModelList extends React.Component {
 							<div class="input-group pull-right">
 
 								<input type="text" name="model_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Model Insights" id="model_insights" class="form-control" placeholder="Search Model insights..."/>
-								<span class="input-group-addon">
-									<i class="fa fa-search fa-lg"></i>
-								</span>
+								
 								<span class="input-group-btn">
 									<button type="button" class="btn btn-default" title="Select All Card">
 										<i class="fa fa-address-card-o fa-lg"></i>
