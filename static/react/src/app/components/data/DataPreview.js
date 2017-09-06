@@ -13,83 +13,9 @@ import ReactDOM from 'react-dom';
 import {hideDataPreview} from "../../actions/dataActions";
 import {Button} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"
+import {showHideSideChart} from "../../helpers/helper.js"
 
 
-//var dataPrev= {
-//"metaData" : [   {"name": "Rows", "value": 30, "display":true},
-//{"name": "Measures", "value": 10, "display":true},
-//{"name": "Dimensions", "value": 5, "display":true},
-//{"name": "Ignore Suggestion", "value": 20, "display":false}
-//],
-
-//"columnData" : [{
-//"name": "Age",
-//"slug": "age_a",
-//"columnStats":[ {"name": "Mean", "value":100}, {"name": "Sum", "value":1000}, {"name": "Min", "value":0},
-//{"name": "Max", "value":1000}	],
-//"chartData" : {
-//"data": {
-//"columns": [
-//['data1', 30, 200, 100, 400, 150, 250]
-
-//],
-//"type": 'bar'
-//},
-//"size": {
-//"height": 200
-//},
-//"legend": {
-//"show": false
-//},
-//"bar": {
-//"width": {
-//"ratio": 0.5
-//}
-
-//}
-//},
-//"columnType": "measure/dimension/datetime"
-//},
-//{
-//"name": "Name",
-//"slug": "name_a",
-//"columnStats":[ {"name": "Mean", "value":200}, {"name": "Sum", "value":2000}, {"name": "Min", "value":0},
-//{"name": "Max", "value":1000}	],
-//"chartData" : {
-//"data": {
-//"columns": [
-//['data1', 30, 200, 100, 400, 150, 750]
-
-//],
-//"type": 'bar'
-//},
-//"size": {
-//"height": 200
-//},
-//"legend": {
-//"show": false
-//},
-//"bar": {
-//"width": {
-//"ratio": 0.5
-//}
-
-//}
-//},
-//"columnType": "measure/dimension/datetime"
-//}],
-//"headers" :[
-//{   "name": "Age",
-//"slug" : "age_a" },
-//{   "name": "Name",
-//"slug" : "name_a", }
-
-//],
-//"sampleData" :[[20,30],
-//[33,44],
-//[24,33],
-//[44,36]]
-//};
 
 
 @connect((store) => {
@@ -209,6 +135,8 @@ export class DataPreview extends React.Component {
 				}
 				$(" td."+cls).addClass("activeColumn");
 			});
+			
+			
 
 		});
 
@@ -221,6 +149,9 @@ export class DataPreview extends React.Component {
 		const chkClass = $(e.target).attr('class');
 		let dataPrev = this.props.dataPreview.meta_data;
 		dataPrev.columnData.map((item, i) => {
+			
+			showHideSideChart(item.columnType); // hide side chart on datetime selection
+			
 			if(chkClass.indexOf(item.slug) !== -1){
 
 				const sideChartUpdate = item.chartData;
