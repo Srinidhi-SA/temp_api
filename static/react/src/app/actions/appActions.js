@@ -580,11 +580,11 @@ export function getRoboDataset(slug) {
 				if(json.analysis_done){
 					clearInterval(appsInterval);
 					dispatch(fetchRoboSummarySuccess(json));
+					dispatch(updateRoboAnalysisData(json,"/apps-robo"));
 					dispatch(closeAppsLoaderValue());
 					dispatch(showRoboDataUploadPreview(true));
 					//dispatch(clearDataPreview());
 					dispatch(showDataPreview());
-					dispatch(updateRoboAnalysisData(json,"/apps-robo"));
 					//dispatch(getAppsRoboList(1));
 				}
 			}

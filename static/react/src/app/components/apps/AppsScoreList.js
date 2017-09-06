@@ -170,26 +170,26 @@ export class AppsScoreList extends React.Component {
       return (
 
         <div>
-          <div class="page-head">
+          <div className="page-head">
             {/*<!-- <ol class="breadcrumb">
 							<li><a href="#">Story</a></li>
 							<li class="active">Sales Performance Report</li>
 						</ol> -->*/}
-            <div class="row">
-              <div class="col-md-8"></div>
-              <div class="col-md-4">
-                <div class="input-group pull-right">
+            <div className="row">
+              <div className="col-md-8"></div>
+              <div className="col-md-4">
+                <div className="input-group pull-right">
 
-                  <input type="text" name="score_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Score Insights" id="score_insights" class="form-control" placeholder="Search Score insights..."/>
-                  <span class="input-group-btn">
-                    <button type="button" class="btn btn-default" title="Select All Card">
-                      <i class="fa fa-address-card-o fa-lg"></i>
+                  <input type="text" name="score_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Score Insights" id="score_insights" className="form-control" placeholder="Search Score insights..."/>
+                  <span className="input-group-btn">
+                    <button type="button" className="btn btn-default" title="Select All Card">
+                      <i className="fa fa-address-card-o fa-lg"></i>
                     </button>
-                    <button type="button" data-toggle="dropdown" title="Sorting" class="btn btn-default dropdown-toggle" aria-expanded="false">
-                      <i class="fa fa-sort-alpha-asc fa-lg"></i>
-                      <span class="caret"></span>
+                    <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false">
+                      <i className="fa fa-sort-alpha-asc fa-lg"></i>
+                      <span className="caret"></span>
                     </button>
-                    <ul role="menu" class="dropdown-menu dropdown-menu-right">
+                    <ul role="menu" className="dropdown-menu dropdown-menu-right">
                       <li>
                         <a href="#">Name Ascending</a>
                       </li>
@@ -208,7 +208,7 @@ export class AppsScoreList extends React.Component {
               </div>
             </div>
 
-            <div class="clearfix"></div>
+            <div className="clearfix"></div>
           </div>
           <div className="row">
             {appsScoreList}
