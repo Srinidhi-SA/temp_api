@@ -99,6 +99,16 @@ export default function reducer(state = {
 	  }
 	}
 	break;
+	
+	case "UNSELECT_All_ANALYSIS_TYPE":
+	{
+		return{
+     ...state,
+		selectedAnalysis: action.unselectAll
+	  }
+	}
+	break;
+	
 	case "SELECTED_MEASURES":
 	{
 		return {
