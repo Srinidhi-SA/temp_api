@@ -65,10 +65,8 @@ export class AppsScoreList extends React.Component {
     if (e.key === 'Enter') {
       //console.log('searching in data list');
 
-      //have to uncomment following once url issue is fixed!!!!!!!
-
-      // if (e.target.value != "" && e.target.value != null)
-      // 	this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models?search=' + e.target.value + '')
+       if (e.target.value != "" && e.target.value != null)
+       	this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/scores?search=' + e.target.value + '')
 
       this.props.dispatch(storeScoreSearchElement(e.target.value));
       this.props.dispatch(getAppsScoreList(1));
@@ -79,9 +77,10 @@ export class AppsScoreList extends React.Component {
     if (e.target.value == "" || e.target.value == null) {
       this.props.dispatch(storeScoreSearchElement(""));
       this.props.dispatch(getAppsScoreList(1));
+      this.props.history.push('/apps/' + store.getState().apps.currentAppId + '/scores'+ '')
 
     } else if (e.target.value.length > 3) {
-      //this.props.history.push('/signals?search=' + e.target.value + '')
+      this.props.history.push('/apps/' + store.getState().apps.currentAppId + '/scores?search=' + e.target.value+'')
       this.props.dispatch(storeScoreSearchElement(e.target.value));
       this.props.dispatch(getAppsScoreList(1));
     }
