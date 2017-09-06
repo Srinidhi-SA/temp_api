@@ -67,6 +67,17 @@ export class AppsScoreList extends React.Component {
 
 			}
 		}
+		onChangeOfSearchBox(e){
+			if(e.target.value==""||e.target.value==null){
+				this.props.dispatch(storeScoreSearchElement(""));
+				this.props.dispatch(getAppsScoreList(sessionStorage.userToken, 1, ""));
+
+			}else if (e.target.value.length>3) {
+				//this.props.history.push('/signals?search=' + e.target.value + '')
+			this.props.dispatch(storeScoreSearchElement(e.target.value));
+			this.props.dispatch(getAppsScoreList(sessionStorage.userToken, 1, e.target.value));
+			}
+		}
 
 	render() {
 		console.log("apps score list is called##########3");
@@ -157,7 +168,7 @@ export class AppsScoreList extends React.Component {
 							<div class="col-md-4">
 								<div class="input-group pull-right">
 
-									<input type="text" name="score_insights" onKeyPress={this._handleKeyPress} title="Score Insights" id="score_insights" class="form-control" placeholder="Search Score insights..."/>
+									<input type="text" name="score_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Score Insights" id="score_insights" class="form-control" placeholder="Search Score insights..."/>
 									<span class="input-group-addon">
 										<i class="fa fa-search fa-lg"></i>
 									</span>
@@ -216,8 +227,8 @@ export class AppsScoreList extends React.Component {
 			this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/scores?search=' + this.props.score_search_element+'?page='+eventKey+'')
 		} else
 		this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/scores?page='+eventKey+'')
-
-		this.props.dispatch(getAppsScoreList(eventKey));
+        
 		this.props.dispatch(activateModelScoreTabs(2));
+		this.props.dispatch(getAppsScoreList(eventKey));
 	}
 }

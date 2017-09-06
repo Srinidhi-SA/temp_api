@@ -61,6 +61,17 @@ export class RoboInsightList extends React.Component {
 
     }
   }
+	onChangeOfSearchBox(e){
+		if(e.target.value==""||e.target.value==null){
+			this.props.dispatch(storeRoboSearchElement(""));
+			this.props.dispatch(getAppsRoboList(sessionStorage.userToken, 1, ""));
+
+		}else if (e.target.value.length>3) {
+			this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/robo?search=' + e.target.value + '')
+		this.props.dispatch(storeRoboSearchElement(e.target.value));
+		this.props.dispatch(getAppsRoboList(sessionStorage.userToken, 1, e.target.value));
+		}
+	}
   render() {
     console.log("apps robo list is called##########3");
     console.log(this.props);
@@ -156,7 +167,7 @@ export class RoboInsightList extends React.Component {
 							<div class="col-md-4">
 								<div class="input-group pull-right">
 
-									<input type="text" name="robo_insights" onKeyPress={this._handleKeyPress} title="Robo Insights" id="robo_insights" class="form-control" placeholder="Search robo insights..."/>
+									<input type="text" name="robo_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Robo Insights" id="robo_insights" class="form-control" placeholder="Search robo insights..."/>
 									<span class="input-group-addon">
 										<i class="fa fa-search fa-lg"></i>
 									</span>
