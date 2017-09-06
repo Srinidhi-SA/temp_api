@@ -83,6 +83,18 @@ export class Data extends React.Component {
       this.props.dispatch(getDataList(1, e.target.value));
     }
   }
+  onChangeOfSearchBox(e){
+    if(e.target.value==""||e.target.value==null){
+      this.props.dispatch(storeSearchElement(""));
+      this.props.history.push('/data');
+      this.props.dispatch(getDataList( 1, ""));
+
+    }else if (e.target.value.length>3) {
+      this.props.history.push('/data?search=' + e.target.value + '')
+    this.props.dispatch(storeSearchElement(e.target.value));
+    this.props.dispatch(getDataList(1, e.target.value));
+    }
+  }
   render() {
     console.log("data is called");
     console.log(this.props);
@@ -179,7 +191,7 @@ export class Data extends React.Component {
               </div>
               <div class="col-md-4">
                 <div class="input-group pull-right">
-                  <input type="text" name="search_data" onKeyPress={this._handleKeyPress} title="Search Data" id="search_data" class="form-control" placeholder="Search data..."/>
+                  <input type="text" name="search_data" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search Data" id="search_data" class="form-control" placeholder="Search data..."/>
 
                   <span class="input-group-btn">
                     <button type="button" class="btn btn-default" title="Select All Card">

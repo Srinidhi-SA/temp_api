@@ -67,12 +67,13 @@ export class AppsModelList extends React.Component {
 	onChangeOfSearchBox(e){
 		if(e.target.value==""||e.target.value==null){
 			this.props.dispatch(storeModelSearchElement(""));
-			this.props.dispatch(getAppsModelList(sessionStorage.userToken, 1, ""));
+			this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models'+'')
+			this.props.dispatch(getAppsModelList(1,""));
 
 		}else if (e.target.value.length>3) {
 			this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models?search=' + e.target.value + '')
 		this.props.dispatch(storeModelSearchElement(e.target.value));
-		this.props.dispatch(getAppsModelList(sessionStorage.userToken, 1, e.target.value));
+		this.props.dispatch(getAppsModelList(1, e.target.value));
 		}
 	}
   render() {

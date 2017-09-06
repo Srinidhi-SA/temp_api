@@ -96,6 +96,7 @@ export class Signals extends React.Component {
     onChangeOfSearchBox(e){
       if(e.target.value==""||e.target.value==null){
         this.props.dispatch(storeSearchElement(""));
+        this.props.history.push('/signals');
         this.props.dispatch(getList(sessionStorage.userToken, 1, ""));
 
       }else if (e.target.value.length>3) {

@@ -64,12 +64,12 @@ export class RoboInsightList extends React.Component {
 	onChangeOfSearchBox(e){
 		if(e.target.value==""||e.target.value==null){
 			this.props.dispatch(storeRoboSearchElement(""));
-			this.props.dispatch(getAppsRoboList(sessionStorage.userToken, 1, ""));
+			this.props.dispatch(getAppsRoboList(1, ""));
 
 		}else if (e.target.value.length>3) {
 			this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/robo?search=' + e.target.value + '')
 		this.props.dispatch(storeRoboSearchElement(e.target.value));
-		this.props.dispatch(getAppsRoboList(sessionStorage.userToken, 1, e.target.value));
+		this.props.dispatch(getAppsRoboList(1, e.target.value));
 		}
 	}
   render() {
