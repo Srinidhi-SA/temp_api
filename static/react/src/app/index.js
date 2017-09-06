@@ -49,22 +49,22 @@ class App extends React.Component {
             <Route path="/variableselection" component={VariableSelection} />
             <Route path = "/signaldocumentMode/:slug" component = {SignalDocumentMode}/>
             <Route path="/settings" component={Settings} />
-            <Route exact path="/apps" component={AppsPanel} />
             <Route path="/stories" component={Stories} />
             <Route exact path="/data" component={Data} />
             <Route exact path="/data/:slug" component={DataPreview} />
+            <Route exact path="/apps" component={AppsPanel} />
+            <Route exact path="/apps/:AppId/models" component={Apps} />
+            <Route exact path="/apps/:AppId/scores" component={Apps} />
+            <Route exact path="/apps/:AppId/models?page=:slug" component={Apps} />
+            <Route exact path="/apps/:AppId/scores?page=:slug" component={Apps} />
             <Route exact path="/apps/:AppId/models/dataPreview/createModel" component={ModelVariableSelection} />
             <Route exact path="/apps/:AppId/models/:slug" component={AppsModelDetail} />
             <Route exact path="/apps/:AppId/scores/dataPreview/createScore" component={ScoreVariableSelection} />
             <Route exact path="/data?page=:slug" component={Data} />
-            <Route exact path="/apps/:AppId/models?page=:slug" component={Apps} />
-            <Route exact path="/apps/:AppId/scores?page=:slug" component={Apps} />
             <Route exact path="/apps/:AppId/scores/:slug" component={AppsScoreDetail} />
             <Route exact path="/data/preview/createSignal" component={VariableSelection}/>
             <Route exact path="/signals?page=:slug" component={Signals}/>
             <Route exact path="/signals?search=:slug" component={Signals}/>
-            <Route exact path="/apps/:AppId/models" component={Apps} />
-            <Route exact path="/apps/:AppId/scores" component={Apps} />
             <Route exact path="/apps/:AppId/models/data/:slug" component={DataPreview} />
             <Route exact path="/apps/:AppId/robo" component={RoboInsightList} />
             <Route exact path="/apps/:AppId/robo/:slug" component={RoboDataUploadPreview} />

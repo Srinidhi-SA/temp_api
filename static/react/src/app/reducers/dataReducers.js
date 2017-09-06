@@ -15,7 +15,18 @@ export default function reducer(state = {
 		curUrl:"",
 		dataUploadLoaderModal:false,
 		dULoaderValue:10,
-		  data_search_element:"",
+		data_search_element:"",
+		dataSetMeasures:[],
+		dataSetDimensions:[],
+		dataSetTimeDimensions:[],
+		ImmutableMeasures:[],
+		ImmutableDimension:[],
+		ImmutableTimeDimension:[],
+		measureAllChecked:true,
+		measureChecked:[],
+		dimensionAllChecked:true,
+		dimensionChecked:[],
+
 }, action) {
 	console.log("In DATA reducer!!");
 	console.log(action);
@@ -94,6 +105,9 @@ export default function reducer(state = {
 			...state,
 			selectedMeasures:state.selectedMeasures.concat(action.variableName),
 			selectedVariablesCount:state.selectedVariablesCount+1,
+			measureChecked:action.meaChkBoxList,
+			measureAllChecked:action.isAllChecked
+			
 		}
 	}
 	break;
@@ -119,6 +133,10 @@ export default function reducer(state = {
 			...state,
 			selectedMeasures: state.selectedMeasures.filter(item => action.variableName !== item),
 			selectedVariablesCount:state.selectedVariablesCount-1,
+			measureChecked:action.meaChkBoxList,
+			measureAllChecked:action.isAllChecked
+		
+			
 		}
 	}
 	break;
@@ -128,6 +146,8 @@ export default function reducer(state = {
 			...state,
 			selectedDimensions:state.selectedDimensions.concat(action.variableName),
 			selectedVariablesCount:state.selectedVariablesCount+1,
+			dimensionAllChecked:action.isAllChecked,
+			dimensionChecked:action.dimChkBoxList,
 		}
 	}
 	break;
@@ -137,6 +157,8 @@ export default function reducer(state = {
 			...state,
 			selectedDimensions: state.selectedDimensions.filter(item => action.variableName !== item),
 			selectedVariablesCount:state.selectedVariablesCount-1,
+			dimensionAllChecked:action.isAllChecked,
+			dimensionChecked:action.dimChkBoxList,
 		}
 	}
 	break;
@@ -240,6 +262,135 @@ export default function reducer(state = {
 		}
 	}
 	break;
+	case "DATASET_VARIABLES": {
+		return {...state,
+			dataSetMeasures:action.measures,
+			dataSetDimensions:action.dimensions,
+			dataSetTimeDimensions:action.timeDimensions,
+			ImmutableMeasures:action.measures,
+			ImmutableDimension:action.dimensions,
+			ImmutableTimeDimension:action.timeDimensions,
+			measureChecked:action.measureChkBoxList,
+			dimensionChecked:action.dimChkBoxList,
+			measureAllChecked:true,
+			dimensionAllChecked:true,
+			
+		}
 	}
+	break;
+	
+	case "SEARCH_MEASURE":
+	{
+		return {
+			...state,
+			dataSetMeasures: state.ImmutableMeasures.filter((item) => item.toLowerCase().includes(action.name.toLowerCase())),
+			
+		}
+	}
+	break;
+	case "SORT_MEASURE":
+	{
+		return {
+			...state,
+			dataSetMeasures: action.measures
+			
+		}
+	}
+	break;
+	
+	case "SORT_DIMENSION":
+	{
+		return {
+			...state,
+			dataSetDimensions: action.dimensions
+			
+		}
+	}
+	break;
+	
+	case "SORT_TIMEDIMENSION":
+	{
+		return {
+			...state,
+			dataSetTimeDimensions: action.timedimensions
+			
+		}
+	}
+	break;
+	
+	case "SEARCH_DIMENSION":
+	{
+		return {
+			...state,
+			dataSetDimensions: state.ImmutableDimension.filter((item) => item.toLowerCase().includes(action.name.toLowerCase())),
+			
+		}
+	}
+	break;
+	
+	case "SEARCH_TIMEDIMENSION":
+	{
+		return {
+			...state,
+			dataSetTimeDimensions: state.ImmutableTimeDimension.filter((item) => item.toLowerCase().includes(action.name.toLowerCase())),
+			
+		}
+	}
+	break;
+	
+	case "SELECT_ALL_MEASURES":
+	{
+		return {
+			...state,
+			selectedMeasures:action.measures,
+			measureAllChecked:true,
+			measureChecked:action.meaChkBoxList,
+			selectedVariablesCount:state.selectedDimensions.length+action.measures.length,
+			dataSetMeasures:action.measures
+			
+		}
+	}
+	break;
+	case "UNSELECT_ALL_MEASURES":
+	{
+		return {
+			...state,
+			selectedMeasures:[],
+			measureAllChecked:false,
+			measureChecked:action.meaChkBoxList,
+			selectedVariablesCount:state.selectedVariablesCount-state.selectedMeasures.length,
+			dataSetMeasures:state.ImmutableMeasures
+		}
+	}
+	break;
+	
+	case "SELECT_ALL_DIMENSION":
+	{
+		return {
+			...state,
+			selectedDimensions:action.dimension,
+			dimensionAllChecked:true,
+			dimensionChecked:action.diaChkBoxList,
+			selectedVariablesCount:state.selectedMeasures.length+action.dimension.length,
+			dataSetDimensions: action.dimension,
+			
+		}
+	}
+	break;
+	case "UNSELECT_ALL_DIMENSION":
+	{
+		return {
+			...state,
+			selectedDimensions:[],
+			dimensionAllChecked:false,
+			dimensionChecked:action.diaChkBoxList,
+			selectedVariablesCount:state.selectedVariablesCount-state.selectedDimensions.length,
+			dataSetDimensions:state.ImmutableDimension
+		}
+	}
+	break;	
+	
+	}
+	
 	return state
 }

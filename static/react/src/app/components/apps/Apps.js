@@ -21,9 +21,6 @@ export class Apps extends React.Component {
   constructor(props) {
     super(props);
     console.log(this.props);
-    this.state = {
-    	    key: 1
-    	  };
   }
 
   modifyUrl(tabId){
