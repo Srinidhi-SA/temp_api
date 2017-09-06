@@ -218,11 +218,12 @@ export class Signals extends React.Component {
                 </div>
                 <div class="col-md-4">
                   <div class="input-group pull-right">
-
-                    <input type="text" name="search_signals" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search Signals" id="search_signals" class="form-control" placeholder="Search signals..."/>
-                    <span class="input-group-addon">
-                      <i class="fa fa-search fa-lg"></i>
-                    </span>
+<div className="search-wrapper">
+	<form>
+                    <input type="text" name="search_signals" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search Signals" id="search_signals" className="form-control search-box" placeholder="Search signals..." required />
+                    <button className="close-icon" type="reset"></button>
+					</form>
+					</div>
                     <span class="input-group-btn">
                       <button type="button" class="btn btn-default" title="Select All Card">
                         <i class="fa fa-address-card-o fa-lg"></i>
