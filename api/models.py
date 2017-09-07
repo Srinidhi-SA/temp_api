@@ -468,18 +468,19 @@ class Insight(models.Model):
         brief_info = dict()
         config = self.get_config()
         config = config.get('config')
-        if 'COLUMN_SETTINGS' in config:
-            column_settings = config['COLUMN_SETTINGS']
-            brief_info.update({
-                'variable selected': column_settings.get('result_column'),
-                'variable type': column_settings.get('analysis_type')
-            })
+        if config is not None:
+            if 'COLUMN_SETTINGS' in config:
+                column_settings = config['COLUMN_SETTINGS']
+                brief_info.update({
+                    'variable selected': column_settings.get('result_column'),
+                    'variable type': column_settings.get('analysis_type')
+                })
 
-        if 'FILE_SETTINGS' in config:
-            file_setting = config['FILE_SETTINGS']
-            brief_info.update({
-                'analysis list': set(file_setting.get('script_to_run'))
-            })
+            if 'FILE_SETTINGS' in config:
+                file_setting = config['FILE_SETTINGS']
+                brief_info.update({
+                    'analysis list': set(file_setting.get('script_to_run'))
+                })
 
         brief_info.update(
             {
@@ -621,18 +622,19 @@ class Trainer(models.Model):
         brief_info = dict()
         config = self.get_config()
         config = config.get('config')
-        if 'COLUMN_SETTINGS' in config:
-            column_settings = config['COLUMN_SETTINGS']
-            brief_info.update({
-                'variable selected': column_settings.get('result_column')
-            })
+        if config is not None:
+            if 'COLUMN_SETTINGS' in config:
+                column_settings = config['COLUMN_SETTINGS']
+                brief_info.update({
+                    'variable selected': column_settings.get('result_column')
+                })
 
-        if 'FILE_SETTINGS' in config:
-            file_setting = config['FILE_SETTINGS']
-            brief_info.update({
-                'analysis type': file_setting.get('analysis_type'),
-                'train_test_split': file_setting.get('train_test_split')
-            })
+            if 'FILE_SETTINGS' in config:
+                file_setting = config['FILE_SETTINGS']
+                brief_info.update({
+                    'analysis type': file_setting.get('analysis_type'),
+                    'train_test_split': file_setting.get('train_test_split')
+                })
 
         brief_info.update(
             {
@@ -825,18 +827,19 @@ class Score(models.Model):
         brief_info = dict()
         config = self.get_config()
         config = config.get('config')
-        if 'COLUMN_SETTINGS' in config:
-            column_settings = config['COLUMN_SETTINGS']
-            brief_info.update({
-                'variable selected': column_settings.get('result_column')
-            })
+        if config is not None:
+            if 'COLUMN_SETTINGS' in config:
+                column_settings = config['COLUMN_SETTINGS']
+                brief_info.update({
+                    'variable selected': column_settings.get('result_column')
+                })
 
-        if 'FILE_SETTINGS' in config:
-            file_setting = config['FILE_SETTINGS']
-            brief_info.update({
-                'analysis type': file_setting.get('analysis_type'),
-                'algorithm name': file_setting.get('algorithmslug'),
-            })
+            if 'FILE_SETTINGS' in config:
+                file_setting = config['FILE_SETTINGS']
+                brief_info.update({
+                    'analysis type': file_setting.get('analysis_type'),
+                    'algorithm name': file_setting.get('algorithmslug'),
+                })
 
         brief_info.update(
             {
