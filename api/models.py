@@ -251,6 +251,11 @@ class Dataset(models.Model):
                 self.get_hdfs_relative_file_path())
         elif type == 'fake':
             return "file:///asdasdasdasd"
+        else:
+            return json.dumps({
+                        "datasource_type": self.datasource_type,
+                        "datasource_details": json.loads(self.datasource_details)
+                    })
 
     def common_config(self):
 

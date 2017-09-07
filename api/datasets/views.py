@@ -39,7 +39,6 @@ class DatasetView(viewsets.ModelViewSet):
     pagination_class = CustomPagination
 
     def create(self, request, *args, **kwargs):
-        import pdb;pdb.set_trace()
         data = request.data
         data = convert_to_string(data)
 
@@ -49,7 +48,7 @@ class DatasetView(viewsets.ModelViewSet):
                 data['name'] = data.get('name', data.get('datasource_type', "H") + "_"+ str(random.randint(1000000,10000000)))
             else:
                 data['name'] = data.get('name', data['input_file'].name)
-        elif 'db_details' in data:
+        elif 'datasource_details' in data:
             data['name'] = data.get('name', data.get('datasource_type', "H") + "_" + str(random.randint(1000000, 10000000)))
 
         # question: why to use user.id when it can take, id, pk, object.
