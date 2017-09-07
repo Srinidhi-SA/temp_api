@@ -1,6 +1,6 @@
 import React from "react";
 import {API} from "../helpers/env";
-import {CSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,PERPAGE} from "../helpers/helper";
+import {CSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,PERPAGE,SUCCESS,FAILED} from "../helpers/helper";
 import {connect} from "react-redux";
 import store from "../store";
 import {openCsLoaderModal,closeCsLoaderModal,updateCsLoaderValue} from "./createSignalActions";
@@ -50,12 +50,10 @@ function fetchCreateSignalSuccess(signalData,dispatch) {
   //console.log("signal list from api to store")
    dispatch(updateCsLoaderValue(store.getState().signals.createSignalLoaderValue+CSLOADERPERVALUE))
     createSignalInterval = setInterval(function(){
-    if(!signalData.analysis_done){
     	if(store.getState().signals.createSignalLoaderValue < LOADERMAXPERVALUE){
     	  dispatch(updateCsLoaderValue(store.getState().signals.createSignalLoaderValue+CSLOADERPERVALUE))
     	}
           dispatch(getSignalAnalysis(sessionStorage.userToken,signalData.slug));
-    }
 
   },DEFAULTINTERVAL);
 
@@ -162,14 +160,16 @@ function fetchPosts_analysis(token,errandId) {
 
 
 function fetchPostsSuccess_analysis(signalAnalysis, errandId,dispatch) {
-  //console.log("signal analysis from api to store")
-  //console.log(signalAnalysis)
-  //console.log("3");
-  if(signalAnalysis.analysis_done){
-  //  alert("final done");
+
+  if(signalAnalysis.status == SUCCESS){
     clearInterval(createSignalInterval);
     dispatch(closeCsLoaderModal())
     dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
+  }else if(signalAnalysis.status == FAILED){
+	  bootbox.alert("Your signal could not be created. Please try later.")
+	    clearInterval(createSignalInterval);
+	    dispatch(closeCsLoaderModal())
+	    dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
   }
   return {
     type: "SIGNAL_ANALYSIS",

@@ -35,7 +35,8 @@ var dateFormat = require('dateformat');
     selectedDataSet: store.datasets.selectedDataSet,
     dataPreviewFlag: store.datasets.dataPreviewFlag,
     dataUploadLoaderModal: store.datasets.dataUploadLoaderModal,
-    data_search_element: store.datasets.data_search_element
+    data_search_element: store.datasets.data_search_element,
+    dialogBox:store.datasets.dataDialogBox,
   };
 })
 
@@ -95,6 +96,7 @@ export class Data extends React.Component {
     this.props.dispatch(getDataList(1));
     }
   }
+
   render() {
     console.log("data is called");
     console.log(this.props);
@@ -151,7 +153,7 @@ export class Data extends React.Component {
                 <div className="card-deatils">
                   {/*<!-- Popover Content link -->*/}
                   <OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={data}/> < /Popover>}>
-                    <a href="#" className="pover">
+                    <a  className="pover cursor">
                       <i className="ci pe-7s-info pe-2x"></i>
                     </a>
                   </OverlayTrigger>
@@ -241,6 +243,7 @@ export class Data extends React.Component {
       return (
         <div>
           <img id="loading" src={STATIC_URL + "assets/images/Preloader_2.gif"}/>
+           <Dialog ref="dialog"/>
         </div>
       )
     }

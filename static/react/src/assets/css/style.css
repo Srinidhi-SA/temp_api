@@ -15475,7 +15475,10 @@ padding: 0px 15px 15px;
     margin-bottom: 10px;
 }
  
-.apps_tabs_content .side-body { margin:0 !important}   
+.apps_tabs_content .side-body { margin:0 !important}
+.cursor{
+	cursor:pointer
+}   
 
 
 /*.slick-next:before, .slick-prev:before { color:red !important}*/

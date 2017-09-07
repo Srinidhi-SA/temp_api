@@ -2,7 +2,7 @@ import {API} from "../helpers/env";
 import {PERPAGE,isEmpty} from "../helpers/helper";
 import store from "../store";
 import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,CUSTOMERDATA,HISTORIALDATA,EXTERNALDATA,DELETEMODEL,
-	RENAMEMODEL,DELETESCORE,RENAMESCORE,DELETEINSIGHT,RENAMEINSIGHT,} from "../helpers/helper";
+	RENAMEMODEL,DELETESCORE,RENAMESCORE,DELETEINSIGHT,RENAMEINSIGHT,SUCCESS,FAILED} from "../helpers/helper";
 import {hideDataPreview,getDataSetPreview,showDataPreview} from "./dataActions";
 import {getHeaderWithoutContent} from "./dataUploadActions";
 import Dialog from 'react-bootstrap-dialog';
@@ -161,12 +161,12 @@ function fetchScoreList(pageNo,token) {
 	let search_element = store.getState().apps.score_search_element
 	if(search_element!=""&&search_element!=null){
 		console.log("calling for score search element!!")
-		return fetch(API+'/api/score/?app_id='+store.getState().apps.currentAppId+'&name='+search_element+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
+		return fetch(API+'/api/score/?apps_id='+store.getState().apps.currentAppId+'&name='+search_element+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
 			method: 'get',
 			headers: getHeader(token)
 			}).then( response => Promise.all([response, response.json()]));
 	}else{
-		return fetch(API+'/api/score/?app_id='+store.getState().apps.currentAppId+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
+		return fetch(API+'/api/score/?apps_id='+store.getState().apps.currentAppId+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
 			method: 'get',
 			headers: getHeader(token)
 		}).then( response => Promise.all([response, response.json()]));
@@ -207,12 +207,19 @@ export function getAppsModelSummary(slug) {
 	return (dispatch) => {
 		return fetchModelSummary(sessionStorage.userToken,slug).then(([response, json]) =>{
 			if(response.status === 200){
-				if(json.analysis_done){
+				if(json.status == SUCCESS){
 					clearInterval(appsInterval);
 					dispatch(fetchModelSummarySuccess(json));
 					dispatch(closeAppsLoaderValue());
 					dispatch(hideDataPreview());
 					dispatch(updateModelSummaryFlag(true));
+				}else if(json.status == FAILED){
+					bootbox.alert("Your model could not created.Please try later.",function(){
+						window.history.go(-2);
+					});
+					clearInterval(appsInterval);
+					dispatch(closeAppsLoaderValue());
+					dispatch(hideDataPreview());
 				}
 			}
 			else{
@@ -323,12 +330,19 @@ export function getAppsScoreSummary(slug) {
 	return (dispatch) => {
 		return fetchScoreSummary(sessionStorage.userToken,slug).then(([response, json]) =>{
 			if(response.status === 200){
-				if(json.analysis_done){
+				if(json.status == SUCCESS){
 					clearInterval(appsInterval);
 					dispatch(fetchScoreSummarySuccess(json));
 					dispatch(closeAppsLoaderValue());
 					dispatch(hideDataPreview());
 					dispatch(updateScoreSummaryFlag(true));
+				}else if(json.status == FAILED){
+					bootbox.alert("Your score could not created.Please try later.",function(result){
+						window.history.go(-2);
+					})
+					clearInterval(appsInterval);
+					dispatch(closeAppsLoaderValue());
+					dispatch(hideDataPreview());
 				}
 
 			}
@@ -577,7 +591,7 @@ export function getRoboDataset(slug) {
 		dispatch(updateRoboSlug(slug));
 		return fetchRoboDataset(sessionStorage.userToken,slug).then(([response, json]) =>{
 			if(response.status === 200){
-				if(json.analysis_done){
+				if(json.status == SUCCESS){
 					clearInterval(appsInterval);
 					dispatch(fetchRoboSummarySuccess(json));
 					dispatch(updateRoboAnalysisData(json,"/apps-robo"));
@@ -586,6 +600,12 @@ export function getRoboDataset(slug) {
 					//dispatch(clearDataPreview());
 					dispatch(showDataPreview());
 					//dispatch(getAppsRoboList(1));
+				}else if(json.status == FAILED){
+					bootbox.alert("Your robo insight could not created.Please try later.",function(result){
+						window.history.go(-2);
+					});
+					clearInterval(appsInterval);
+					dispatch(closeAppsLoaderValue());
 				}
 			}
 			else{

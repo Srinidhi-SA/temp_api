@@ -399,7 +399,6 @@ export default function reducer(state = {
 		}
 	}
 	break;	
-	
 	}
 	
 	return state
