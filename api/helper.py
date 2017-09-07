@@ -718,21 +718,22 @@ def get_x_column_from_chart_data_without_xs(chart_data, axes):
 def get_jobserver_status(
         instance=None
 ):
-    # import pdb;pdb.set_trace()
-    # from api.models import Job
-    # job_id = instance.job
-    # job = Job.objects.get(id=job_id)
     job_url = instance.job.url
-
-    live_status = return_status_of_job_log(job_url)
-    instance.status = live_status
-    instance.save()
-    return live_status
+    if instance.status in ['SUCCESS']:
+        return instance.status
+    try:
+        live_status = return_status_of_job_log(job_url)
+        instance.status = live_status
+        instance.save()
+        return live_status
+    except Exception as err:
+        return err
 
 
 def return_status_of_job_log(job_url):
     import urllib, json
     final_status = "RUNNING"
+    print job_url
     check_status = urllib.urlopen(job_url)
     data = json.loads(check_status.read())
     if data.get("status") == "FINISHED":

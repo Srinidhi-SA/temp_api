@@ -271,6 +271,7 @@ class RoboSerializer(serializers.ModelSerializer):
         return instance
 
     def to_representation(self, instance):
+
         print get_jobserver_status(instance)
         from api.datasets.serializers import DatasetSerializer
         ret = super(RoboSerializer, self).to_representation(instance)

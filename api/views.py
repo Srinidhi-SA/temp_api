@@ -95,7 +95,7 @@ class SignalView(viewsets.ModelViewSet):
         if instance is None:
             return creation_failed_exception("File Doesn't exist.")
 
-        serializer = self.serializer_class(instance=instance)
+        serializer = InsightSerializer(instance=instance)
         return Response(serializer.data)
 
 class TrainerView(viewsets.ModelViewSet):
@@ -164,7 +164,7 @@ class TrainerView(viewsets.ModelViewSet):
         if instance is None:
             return creation_failed_exception("File Doesn't exist.")
 
-        serializer = self.serializer_class(instance=instance)
+        serializer = TrainerSerlializer(instance=instance)
         return Response(serializer.data)
 
 class ScoreView(viewsets.ModelViewSet):
@@ -235,7 +235,7 @@ class ScoreView(viewsets.ModelViewSet):
         if instance is None:
             return creation_failed_exception("File Doesn't exist.")
 
-        serializer = self.serializer_class(instance=instance)
+        serializer = ScoreSerlializer(instance=instance)
         return Response(serializer.data)
 
     @detail_route(methods=['get'])
@@ -352,7 +352,7 @@ class RoboView(viewsets.ModelViewSet):
         if instance is None:
             return creation_failed_exception("File Doesn't exist.")
 
-        serializer = self.serializer_class(instance=instance)
+        serializer = RoboSerializer(instance=instance)
         return Response(serializer.data)
 
     def list(self, request, *args, **kwargs):

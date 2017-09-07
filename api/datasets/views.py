@@ -129,5 +129,5 @@ class DatasetView(viewsets.ModelViewSet):
         if instance is None:
             return creation_failed_exception("File Doesn't exist.")
 
-        serializer = self.serializer_class(instance=instance)
+        serializer = DatasetSerializer(instance=instance)
         return Response(serializer.data)
