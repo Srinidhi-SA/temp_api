@@ -51,13 +51,15 @@ function triggerDataUpload(token) {
 		var password = store.getState().dataSource.db_password;
 		var tablename = store.getState().dataSource.db_tablename;
 		var schema = store.getState().dataSource.db_schema;
-		var dbDetails = {"host":host,"port":port,"schema":schema,"username":username,"tablename":tablename,"password":password}
+		var dataSourceDetails = {"host":host,"port":port,"schema":schema,"username":username,"tablename":tablename,"password":password, "datasourceType":store.getState().dataSource.selectedDataSrcType}
 		return fetch(API+'/api/datasets/',{
 			method: 'post',
 			headers: getHeader(token),
-			body:JSON.stringify({
-				db_details:dbDetails
-			}),
+            body: JSON.stringify( {
+                datasource_details: dataSourceDetails,
+                datasource_type: store.getState().dataSource.selectedDataSrcType
+
+            } ),
 		}).then( response => Promise.all([response, response.json()]));
 
 	}

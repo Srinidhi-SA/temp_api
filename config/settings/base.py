@@ -232,15 +232,58 @@ DATA_SOURCES_CONFIG = {"conf":  [{
 				"labelName": "Table Name"
                 }
 		]
+},
+                                 {
+        "dataSourceType": "Hana",
+        "dataSourceName" : "HANA",
+        "formFields": [
+            {
+                "fieldType": "Input",
+                "placeHolder": "Dataset Name",
+                "labelName": "Name"
+                },
+            {
+                "fieldType": "Input",
+                "placeHolder": "host",
+                "labelName": "Host"
+                },
+            {
+                "fieldType": "Input",
+                "placeHoplaceHolder": "port",
+                "labelName": "Port",
+                "defaultValue": 30015
+                },
+            {
+                "fieldType": "Input",
+                "placeHolder": "schema",
+                "labelName": "Schema"
+                },
+            {
+                "fieldType": "Input",
+                "placeHolder": "username",
+                "labelName": "Username"
+                },
+            {
+                "fieldType": "Password",
+                "placeHolder": "password",
+                "labelName": "Password"
+                },
+            {
+                "fieldType": "Input",
+                "placeHolder": "tablename",
+                "labelName": "Table Name"
+                }
+        ]
 }
+
 
 
 ]
 }
 # dev api http://34.196.204.54:9092
 THIS_SERVER_DETAILS = {
-    "host": "34.196.204.54",
-    "port": "9012",
+    "host": "madvisordev.marlabsai.com", # shoudn't start with http://
+    "port": "80",
     "initail_domain": "/api"
 }
 
