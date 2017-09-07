@@ -64,7 +64,7 @@ class Dataset(models.Model):
     auto_update = models.BooleanField(default=False)
     auto_update_duration = models.IntegerField(default=99999)
 
-    input_file = models.FileField(upload_to='datasets', null=True)
+    input_file = models.FileField(upload_to='datasets', null=True, required=False)
     datasource_type = models.CharField(max_length=100, null=True)
     datasource_details = models.TextField(default="{}")
     preview = models.TextField(default="{}")
