@@ -921,7 +921,7 @@ def job_submission(
 ):
     # Job Book Keeping
     job = Job()
-    job.name = "-".join(["Insight", instance.slug])
+    job.name = "-".join([job_type, instance.slug])
     job.job_type = job_type
     job.object_id = str(instance.slug)
 
