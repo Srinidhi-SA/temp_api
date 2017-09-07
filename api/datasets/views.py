@@ -120,4 +120,14 @@ class DatasetView(viewsets.ModelViewSet):
         )
 
     def retrieve(self, request, *args, **kwargs):
-        return get_retrieve_data(self)
+        # return get_retrieve_data(self)
+        try:
+            instance = self.get_object_from_all()
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
+        if instance is None:
+            return creation_failed_exception("File Doesn't exist.")
+
+        serializer = self.serializer_class(instance=instance)
+        return Response(serializer.data)

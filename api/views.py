@@ -86,8 +86,17 @@ class SignalView(viewsets.ModelViewSet):
         )
 
     def retrieve(self, request, *args, **kwargs):
-        return get_retrieve_data(self)
+        # return get_retrieve_data(self)
+        try:
+            instance = self.get_object_from_all()
+        except:
+            return creation_failed_exception("File Doesn't exist.")
 
+        if instance is None:
+            return creation_failed_exception("File Doesn't exist.")
+
+        serializer = self.serializer_class(instance=instance)
+        return Response(serializer.data)
 
 class TrainerView(viewsets.ModelViewSet):
     def get_queryset(self):
@@ -146,8 +155,17 @@ class TrainerView(viewsets.ModelViewSet):
         )
 
     def retrieve(self, request, *args, **kwargs):
-        return get_retrieve_data(self)
+        # return get_retrieve_data(self)
+        try:
+            instance = self.get_object_from_all()
+        except:
+            return creation_failed_exception("File Doesn't exist.")
 
+        if instance is None:
+            return creation_failed_exception("File Doesn't exist.")
+
+        serializer = self.serializer_class(instance=instance)
+        return Response(serializer.data)
 
 class ScoreView(viewsets.ModelViewSet):
     def get_queryset(self):
@@ -208,7 +226,17 @@ class ScoreView(viewsets.ModelViewSet):
         )
 
     def retrieve(self, request, *args, **kwargs):
-        return get_retrieve_data(self)
+        # return get_retrieve_data(self)
+        try:
+            instance = self.get_object_from_all()
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
+        if instance is None:
+            return creation_failed_exception("File Doesn't exist.")
+
+        serializer = self.serializer_class(instance=instance)
+        return Response(serializer.data)
 
     @detail_route(methods=['get'])
     def download(self, request, slug=None):
@@ -315,7 +343,17 @@ class RoboView(viewsets.ModelViewSet):
         return Response(serializer.errors)
 
     def retrieve(self, request, *args, **kwargs):
-        return get_retrieve_data(self)
+        # return get_retrieve_data(self)
+        try:
+            instance = self.get_object_from_all()
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
+        if instance is None:
+            return creation_failed_exception("File Doesn't exist.")
+
+        serializer = self.serializer_class(instance=instance)
+        return Response(serializer.data)
 
     def list(self, request, *args, **kwargs):
 
