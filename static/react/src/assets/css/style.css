@@ -3,6 +3,8 @@
 @import 'font-awesome.min.css';
 @import 'pe-icon-7-stroke.css';
 @import 'helper.css';
+@import 'slick.min.css';
+@import 'slick-theme.min.css';
 /*@import url('https://fonts.googleapis.com/css?family=Open+Sans');*/
 
 .label, sub, sup {
@@ -14779,9 +14781,8 @@ a.tabs-control.right span { right: 5px; }
 /** slide panel **/
 .panel-mAd .tab-pane { overflow:hidden; }
 .sb_navigation { border-bottom:1px solid #ddd; }
-.sb_navigation li a { padding: 0px; margin: 0 5px; }
-.sb_navigation li a span {display:block;white-space: nowrap; width:176px; overflow: hidden;
-    text-overflow: ellipsis }
+.sb_navigation li a { padding: 0px; margin: 0 5px; text-align: center; display: block;}
+.sb_navigation li a span {display:block;white-space: nowrap;/* width:176px; */overflow: hidden; text-overflow: ellipsis }
 .sb_navigation li a.active { border-bottom: 1px solid #04bcac; color: #00998c;}
 
 /*************************/
@@ -15477,3 +15478,5 @@ padding: 0px 15px 15px;
 .apps_tabs_content .side-body { margin:0 !important}   
 
 
+/*.slick-next:before, .slick-prev:before { color:red !important}*/
+.slick-next, .slick-prev { z-index:10 }

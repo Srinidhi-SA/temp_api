@@ -17,6 +17,7 @@ import {Card} from "./Card";
 import store from "../../store";
 import {getSignalAnalysis} from "../../actions/signalActions";
 import {STATIC_URL} from "../../helpers/env.js"
+import Slider from "react-slick"
 
 
 
@@ -137,6 +138,14 @@ render() {
     console.log("overviewPage is called!!");
     console.log(this.props);
 
+	var settings = {
+      dots: false,
+      infinite: false,
+      speed: 500,
+      slidesToShow: 6,
+      slidesToScroll: 1
+	  //swipeToSlide: true
+    };
     if(isEmpty(this.props.signal)){
 
       return(
@@ -354,18 +363,12 @@ console.log("l1name is ...."+selectedSignal);
                       <div className="tab-content">
                         <div className="sb_navigation">
                           <div className="row">
-                            <div className="col-xs-11">
-                              <div className="scroller scroller-left">
-                                <i className="glyphicon glyphicon-chevron-left"></i>
-                              </div>
-                              <div className="scroller scroller-right">
-                                <i className="glyphicon glyphicon-chevron-right"></i>
-                              </div>
-                              <div className="wrapper">
-                                <ul className="nav nav-tabs list" id="subTab">
-                                  {varList}
-                                </ul>
-                              </div>
+                            <div className="col-xs-12">
+                                                         
+                               
+                                   <Slider {...settings}>{varList}</Slider>
+                              
+                              
                             </div>
                           </div>
                         </div>
