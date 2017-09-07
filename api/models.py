@@ -259,6 +259,43 @@ class Dataset(models.Model):
             'dateTimeSuggestions': dateTimeSuggestions,
         }
 
+    def get_config(self):
+        import json
+        config = json.loads(self.meta_data)
+        if config is None:
+            return {}
+        return config
+
+    def get_brief_info(self):
+        brief_info = dict()
+        config = self.get_config()
+        sample = {
+            'Rows': 'number of rows',
+            'Columns': 'number of columns',
+            'Measures': 'number of measures',
+            'Dimensions': 'number of dimensions',
+            'Time Dimension': 'number of time dimension',
+        }
+        if 'metaData' in config:
+            metad = config['metaData']
+            for data in metad:
+                if 'displayName' not in data:
+                    continue
+                if data['displayName'] in sample:
+                    brief_info.update(
+                        {
+                            sample[data['displayName']]: data['value']
+                        }
+                    )
+
+        brief_info.update(
+            {
+                'created_by': self.created_by.username,
+                'updated_at': self.updated_at,
+            }
+        )
+        return brief_info
+
 
 class Insight(models.Model):
     name = models.CharField(max_length=300, null=True)
@@ -427,6 +464,33 @@ class Insight(models.Model):
     def get_list_of_scripts_to_run(self):
         pass
 
+    def get_brief_info(self):
+        brief_info = dict()
+        config = self.get_config()
+        config = config.get('config')
+        if 'COLUMN_SETTINGS' in config:
+            column_settings = config['COLUMN_SETTINGS']
+            brief_info.update({
+                'variable selected': column_settings.get('result_column'),
+                'variable type': column_settings.get('analysis_type')
+            })
+
+        if 'FILE_SETTINGS' in config:
+            file_setting = config['FILE_SETTINGS']
+            brief_info.update({
+                'analysis list': set(file_setting.get('script_to_run'))
+            })
+
+        brief_info.update(
+            {
+                'created_by': self.created_by.username,
+                'updated_at': self.updated_at,
+                'dataset': self.dataset.name
+            }
+        )
+
+        return brief_info
+
 
 class Trainer(models.Model):
     name = models.CharField(max_length=300, null=True)
@@ -548,6 +612,37 @@ class Trainer(models.Model):
         self.job = job
         self.status = "INPROGRESS"
         self.save()
+
+    def get_config(self):
+        import json
+        return json.loads(self.config)
+
+    def get_brief_info(self):
+        brief_info = dict()
+        config = self.get_config()
+        config = config.get('config')
+        if 'COLUMN_SETTINGS' in config:
+            column_settings = config['COLUMN_SETTINGS']
+            brief_info.update({
+                'variable selected': column_settings.get('result_column')
+            })
+
+        if 'FILE_SETTINGS' in config:
+            file_setting = config['FILE_SETTINGS']
+            brief_info.update({
+                'analysis type': file_setting.get('analysis_type'),
+                'train_test_split': file_setting.get('train_test_split')
+            })
+
+        brief_info.update(
+            {
+                'created_by': self.created_by.username,
+                'updated_at': self.updated_at,
+                'dataset': self.dataset.name
+            }
+        )
+
+        return brief_info
 
 """
 {
@@ -721,6 +816,37 @@ class Score(models.Model):
 
     def get_local_file_path(self):
         return '/tmp/' + self.slug
+
+    def get_config(self):
+        import json
+        return json.loads(self.config)
+
+    def get_brief_info(self):
+        brief_info = dict()
+        config = self.get_config()
+        config = config.get('config')
+        if 'COLUMN_SETTINGS' in config:
+            column_settings = config['COLUMN_SETTINGS']
+            brief_info.update({
+                'variable selected': column_settings.get('result_column')
+            })
+
+        if 'FILE_SETTINGS' in config:
+            file_setting = config['FILE_SETTINGS']
+            brief_info.update({
+                'analysis type': file_setting.get('analysis_type'),
+                'algorithm name': file_setting.get('algorithmslug'),
+            })
+
+        brief_info.update(
+            {
+                'created_by': self.created_by.username,
+                'updated_at': self.updated_at,
+                'dataset': self.dataset.name,
+                'model':self.trainer.name
+            }
+        )
+        return brief_info
 
 
 class Robo(models.Model):

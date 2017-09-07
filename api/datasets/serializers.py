@@ -53,6 +53,11 @@ class DatasetSerializer(serializers.ModelSerializer):
 
 class DataListSerializer(serializers.ModelSerializer):
 
+    def to_representation(self, instance):
+        ret = super(DataListSerializer, self).to_representation(instance)
+        ret['brief_info'] = instance.get_brief_info()
+        return ret
+
     class Meta:
         model = Dataset
         fields = (

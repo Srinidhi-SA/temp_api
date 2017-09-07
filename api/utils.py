@@ -126,7 +126,11 @@ class InsightListSerializers(serializers.ModelSerializer):
         ret['dataset_name'] = dataset_object.name
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        ret['breif_info'] = instance.get_brief_info()
         return ret
+
+    def get_brief_info(self):
+        pass
 
     class Meta:
         model = Insight
@@ -179,6 +183,7 @@ class TrainerListSerializer(serializers.ModelSerializer):
         ret['dataset_name'] = dataset_object.name
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        ret['breif_info'] = instance.get_brief_info()
         return ret
 
 
@@ -237,6 +242,7 @@ class ScoreListSerializer(serializers.ModelSerializer):
         ret['dataset_name'] = trainer_object.dataset.name
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        ret['breif_info'] = instance.get_brief_info()
         return ret
 
     class Meta:
@@ -294,7 +300,6 @@ class RoboSerializer(serializers.ModelSerializer):
 
         if instance.robo_analysis_done and instance.dataset_analysis_done:
             instance.analysis_done = True
-            print get_jobserver_status(instance)
             instance.save()
 
         ret = convert_to_json(ret)

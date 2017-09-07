@@ -50,12 +50,14 @@ class DatasetView(viewsets.ModelViewSet):
         # question: why to use user.id when it can take, id, pk, object.
         # answer: I tried. Sighhh but it gave this error "Incorrect type. Expected pk value, received User."
         data['created_by'] = request.user.id
-        serializer = DatasetSerializer(data=data)
-        if serializer.is_valid():
-            dataset_object = serializer.save()
-            dataset_object.create()
-            return Response(serializer.data)
-
+        try:
+            serializer = DatasetSerializer(data=data)
+            if serializer.is_valid():
+                dataset_object = serializer.save()
+                dataset_object.create()
+                return Response(serializer.data)
+        except Exception as err:
+            return creation_failed_exception(err)
         return creation_failed_exception(serializer.errors)
 
     def update(self, request, *args, **kwargs):
