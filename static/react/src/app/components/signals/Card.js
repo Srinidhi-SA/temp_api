@@ -68,8 +68,9 @@ export class Card extends React.Component {
     console.log("card is called!!!! with data:----");
     cardData = this.props.cardData;
     console.log(cardData);
+    
     const cardElements = cardData.map((story, i) => {
-     console.log(i);
+    	let randomNum = Math.random().toString(36).substr(2,8);
       switch (story.dataType) {
         case "html":
 			
@@ -78,8 +79,7 @@ export class Card extends React.Component {
         case "c3Chart":
         console.log("checking chart data:::::");
           if(!$.isEmptyObject(story.data)){
-			  
-           return (<div key={i}><C3Chart classId={Math.random().toString(36).substr(2,8)} data={story.data.chart_c3} yformat={story.data.yformat} y2format={story.data.y2format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div>);
+           return (<div key={i}><C3Chart classId={randomNum} data={story.data.chart_c3} yformat={story.data.yformat} y2format={story.data.y2format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div>);
            }
           break;
           case "tree":
