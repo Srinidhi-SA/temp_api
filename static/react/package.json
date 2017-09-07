@@ -36,7 +36,8 @@
     "react-with-addons": "0.0.1",
     "redux": "^3.7.2",
     "redux-promise-middleware": "^4.3.0",
-    "redux-thunk": "^2.2.0"
+    "redux-thunk": "^2.2.0",
+    "slick-carousel": "^1.7.1"
   },
   "devDependencies": {
     "babel-core": "^6.25.0",
