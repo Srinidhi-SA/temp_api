@@ -26,7 +26,6 @@ export default function reducer(state = {
 		measureChecked:[],
 		dimensionAllChecked:true,
 		dimensionChecked:[],
-		dataDialogBox:"",
 
 }, action) {
 	console.log("In DATA reducer!!");
@@ -397,15 +396,6 @@ export default function reducer(state = {
 			dimensionChecked:action.diaChkBoxList,
 			selectedVariablesCount:state.selectedVariablesCount-state.selectedDimensions.length,
 			dataSetDimensions:state.ImmutableDimension
-		}
-	}
-	break;	
-
-	case "DATA_DIALOG_BOX":
-	{
-		return {
-			...state,
-			dataDialogBox:action.dialogBox,	
 		}
 	}
 	break;	

@@ -16,7 +16,7 @@ import {DetailOverlay} from "../common/DetailOverlay";
 import {MainHeader} from "../common/MainHeader";
 import {BreadCrumb} from "../common/BreadCrumb";
 import {getDataList, getDataSetPreview, storeSignalMeta, handleDelete, handleRename} from "../../actions/dataActions";
-import {fetchProductList, openDULoaderPopup, closeDULoaderPopup, storeSearchElement,getDialogRef} from "../../actions/dataActions";
+import {fetchProductList, openDULoaderPopup, closeDULoaderPopup, storeSearchElement} from "../../actions/dataActions";
 import {DataUpload} from "./DataUpload";
 import {open, close} from "../../actions/dataUploadActions";
 import {STATIC_URL} from "../../helpers/env.js"
@@ -96,9 +96,7 @@ export class Data extends React.Component {
     this.props.dispatch(getDataList(1));
     }
   }
-  componentDidMount(){
-  this.props.dispatch(getDialogRef(this.refs.dialog));
-  }
+
   render() {
     console.log("data is called");
     console.log(this.props);
@@ -155,7 +153,7 @@ export class Data extends React.Component {
                 <div className="card-deatils">
                   {/*<!-- Popover Content link -->*/}
                   <OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={data}/> < /Popover>}>
-                    <a href="#" className="pover">
+                    <a  className="pover cursor">
                       <i className="ci pe-7s-info pe-2x"></i>
                     </a>
                   </OverlayTrigger>

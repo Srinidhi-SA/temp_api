@@ -553,9 +553,4 @@ export function handleSelectAll(evt){
 		break;
 	}
 }
-export function getDialogRef(dialogBox){
-	return {
-		type: "DATA_DIALOG_BOX",
-		dialogBox
-	}
-}
+
