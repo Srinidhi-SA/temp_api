@@ -56,7 +56,7 @@ function triggerDataUpload(token) {
 			method: 'post',
 			headers: getHeader(token),
 			body:JSON.stringify({
-				db_details:dbDetails
+				data_source_details:dbDetails
 			}),
 		}).then( response => Promise.all([response, response.json()]));
 
@@ -68,12 +68,10 @@ function triggerDataUpload(token) {
 
 function dataUploadSuccess(data,dispatch) {
 	dataPreviewInterval = setInterval(function(){
-		if(!data.analysis_done){
 			if(store.getState().datasets.dULoaderValue < LOADERMAXPERVALUE){
 				dispatch(dataUploadLoaderValue(store.getState().datasets.dULoaderValue+DULOADERPERVALUE));
 			}
 			dispatch(getDataSetPreview(data.slug,dataPreviewInterval));
-		}
 	},DEFAULTINTERVAL);
 	return {
 		type: "HIDE_MODAL",

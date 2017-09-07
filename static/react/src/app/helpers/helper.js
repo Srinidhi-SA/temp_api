@@ -40,6 +40,9 @@ const RENAMESCORE = "Rename Score";
 const DELETEINSIGHT = "Delete Insight";
 const RENAMEINSIGHT = "Rename Insight";
 const SEARCHCHARLIMIT = 3;
+const SUCCESS = "SUCCESS";
+const FAILED = "FAILED";
+const INPROGRESS  = "INPROGRESS"
 
 
 export function generateHeaders(table) {
@@ -199,4 +202,7 @@ export{
 	DELETEINSIGHT,
 	RENAMEINSIGHT,
 	SEARCHCHARLIMIT,
+	SUCCESS,
+	FAILED,
+	INPROGRESS
 	}

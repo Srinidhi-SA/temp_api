@@ -1,11 +1,11 @@
 import React from "react";
 import {API} from "../helpers/env";
-import {PERPAGE,DULOADERPERVALUE,DEFAULTINTERVAL} from "../helpers/helper";
+import {PERPAGE,DULOADERPERVALUE,DEFAULTINTERVAL,SUCCESS,FAILED} from "../helpers/helper";
 import store from "../store";
 import {dataPreviewInterval,dataUploadLoaderValue} from "./dataUploadActions";
 import Dialog from 'react-bootstrap-dialog'
 import { showLoading, hideLoading } from 'react-redux-loading-bar'
-
+let refDialogBox = "";
 
 function getHeader(token){
 	return {
@@ -92,40 +92,31 @@ function fetchDataPreview(slug) {
 function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
 	console.log("data preview from api to store")
 	var slug = "";
-	if(dataPreview.analysis_done){
+	if(dataPreview.status == SUCCESS){
 		slug = dataPreview.slug;
 		if(interval != undefined){
 			clearInterval(interval);
 			dispatch(dispatchDataPreview(dataPreview,slug));
 			dispatch(hideDULoaderPopup());
 			dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
-			return {
-				type: "SHOW_DATA_PREVIEW",
-			}
 		} else{
 			dispatch(dispatchDataPreview(dataPreview,slug));
-			dispatch(hideDULoaderPopup());
-			dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
-			return {
-				type: "SHOW_DATA_PREVIEW",
-			}
 		}
-	}else{
-		if(interval != undefined){
-			return {
-				type: "DATA_PREVIEW_FOR_LOADER",
-				dataPreview,
-				slug,
-			}
+		return {
+			type: "DATA_PREVIEW",
+			dataPreview,
+			slug,
 		}
-		else {
-			return {
-				type: "DATA_PREVIEW",
-				dataPreview,
-				slug,
-			}
+	}else if(dataPreview.status == FAILED){
+		clearInterval(interval);
+		dispatch(hideDULoaderPopup());
+		 bootbox.alert("The uploaded file does not contain data in readable format. Please check the source file.")
+		dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
+		return {
+			type: "DATA_PREVIEW_FOR_LOADER",
+			dataPreview,
+			slug,
 		}
-
 	}
 }
 
@@ -560,5 +551,11 @@ export function handleSelectAll(evt){
 	case "datetime":
 
 		break;
+	}
+}
+export function getDialogRef(dialogBox){
+	return {
+		type: "DATA_DIALOG_BOX",
+		dialogBox
 	}
 }

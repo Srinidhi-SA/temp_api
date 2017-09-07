@@ -16,7 +16,7 @@ import {DetailOverlay} from "../common/DetailOverlay";
 import {MainHeader} from "../common/MainHeader";
 import {BreadCrumb} from "../common/BreadCrumb";
 import {getDataList, getDataSetPreview, storeSignalMeta, handleDelete, handleRename} from "../../actions/dataActions";
-import {fetchProductList, openDULoaderPopup, closeDULoaderPopup, storeSearchElement} from "../../actions/dataActions";
+import {fetchProductList, openDULoaderPopup, closeDULoaderPopup, storeSearchElement,getDialogRef} from "../../actions/dataActions";
 import {DataUpload} from "./DataUpload";
 import {open, close} from "../../actions/dataUploadActions";
 import {STATIC_URL} from "../../helpers/env.js"
@@ -35,7 +35,8 @@ var dateFormat = require('dateformat');
     selectedDataSet: store.datasets.selectedDataSet,
     dataPreviewFlag: store.datasets.dataPreviewFlag,
     dataUploadLoaderModal: store.datasets.dataUploadLoaderModal,
-    data_search_element: store.datasets.data_search_element
+    data_search_element: store.datasets.data_search_element,
+    dialogBox:store.datasets.dataDialogBox,
   };
 })
 
@@ -94,6 +95,9 @@ export class Data extends React.Component {
     this.props.dispatch(storeSearchElement(e.target.value));
     this.props.dispatch(getDataList(1));
     }
+  }
+  componentDidMount(){
+  this.props.dispatch(getDialogRef(this.refs.dialog));
   }
   render() {
     console.log("data is called");
@@ -241,6 +245,7 @@ export class Data extends React.Component {
       return (
         <div>
           <img id="loading" src={STATIC_URL + "assets/images/Preloader_2.gif"}/>
+           <Dialog ref="dialog"/>
         </div>
       )
     }
