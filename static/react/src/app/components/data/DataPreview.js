@@ -120,6 +120,7 @@ export class DataPreview extends React.Component {
 
 
 	componentDidMount() {
+		//alert("working")
 		$(function(){
 			let initialCol= $(".cst_table td").first();
 			let initialColCls = $(initialCol).attr("class");

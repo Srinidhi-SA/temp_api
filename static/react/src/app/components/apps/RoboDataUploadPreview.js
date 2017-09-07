@@ -10,9 +10,11 @@ import {clearDataPreview,updateRoboUploadTab,updateRoboAnalysisData} from "../..
 import {RoboDUTabsContent} from "./RoboDUTabsContent";
 import {RoboDUHistorialData} from "./RoboDUHistorialData";
 import {RoboDUExternalData} from "./RoboDUExternalData";
+import ReactDOM from 'react-dom';
+import {Provider} from "react-redux"
 
 
-var roboData = {
+/*var roboData = {
 		"data": {
 			"listOfNodes": [{
 				"listOfNodes": [],
@@ -4144,7 +4146,7 @@ var roboData = {
 			"name": "Overview",
 			"slug": "overview-f1761s6ta9"
 	                }
-}
+}*/
 @connect((store) => {
 	return {login_response: store.login.login_response, 
 		currentAppId:store.apps.currentAppId,
@@ -4179,17 +4181,44 @@ export class RoboDataUploadPreview extends React.Component {
 	  this.props.dispatch(getDataSetPreview(store.getState().apps.historialDataset_slug))
 	  if(key == 3)
 	  this.props.dispatch(getDataSetPreview(store.getState().apps.externalDataset_slug))
+  
+        $(".tab-div").empty();
+        ReactDOM.render(<Provider store={store}><RoboDUTabsContent history={this.props.history}/></Provider>, document.getElementById(key));
   }
- 
+   componentDidMount(){
+	    ReactDOM.render(<Provider store={store}><RoboDUTabsContent history={this.props.history}/></Provider>, document.getElementById("1"));
+   }
+   
+   componentDidUpdate(){
+	   		$(function(){
+			let initialCol= $(".cst_table td").first();
+			let initialColCls = $(initialCol).attr("class");
+			$(" td."+initialColCls).addClass("activeColumn");
+
+			$(".cst_table td,.cst_table th").click(function(){
+				$(".cst_table td").removeClass("activeColumn");
+				let cls = $(this).attr("class");
+				if(cls.indexOf(" ") !== -1){
+					let tmp =[];
+					tmp = cls.split(" ");
+					cls = tmp[0];
+				}
+				$(" td."+cls).addClass("activeColumn");
+			});
+			
+			
+
+		});
+   }
   render() {
     console.log("apps is called##########3");
     return (
     		<div className="side-body">
             <div className="main-content">
             <Tabs defaultActiveKey={1} onSelect={this.handleTabSelect.bind(this)} id="controlled-tab-example" >
-            <Tab eventKey={1} title="Customer Data"><RoboDUTabsContent history={this.props.history}/></Tab>
-            <Tab eventKey={2} title="Historial Data"><RoboDUTabsContent history={this.props.history}/></Tab>
-            <Tab eventKey={3} title="External Data"><RoboDUTabsContent history={this.props.history}/></Tab>
+            <Tab eventKey={1} title="Customer Data"><div class="tab-div" id={1}></div></Tab>
+            <Tab eventKey={2} title="Historial Data"><div class="tab-div" id={2}></div></Tab>
+            <Tab eventKey={3} title="External Data"><div  class="tab-div" id={3}></div></Tab>
           </Tabs>
         </div>
         </div>
