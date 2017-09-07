@@ -14443,7 +14443,7 @@ div.dataTables_wrapper div.dataTables_length label select {
 .tab_block { height:40px; border-top:1px solid red; display:block;}
 .app-block .card-deatils a{   float: right; }
 ul.app_labels { list-style-type: none; padding: 0px; margin: 0; float: left; }
-.app_labels li { display:inline-block; margin-right:5px; }
+.app_labels li { display:inline-block; margin-right:2px; }
 ul.app_labels li:first-child { margin: 0; padding: 10px 5px!important; }
 .app-block .card-footer { padding:0; }
 .app-block  .card-footer div.card-deatils { width: 46px; }
