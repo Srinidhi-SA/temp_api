@@ -154,7 +154,7 @@ export function  subTreeSetting(urlLength, length,paramL2) {
 	}
 	
 	
-	export function  showHideSideChart(colType) {
+	export function  showHideSideChart(colType,colstats) {
 		if(colType =="datetime"){
 				$(function(){
 			       $("#tab_visualizations #pnl_visl").removeClass("in");
@@ -166,8 +166,30 @@ export function  subTreeSetting(urlLength, length,paramL2) {
                    $("#tab_visualizations a").removeClass("collapsed");
 				});
 			}
+			
 	}
 	
+		export function  showHideSideTable(colstats) {
+			let flag = false
+			
+			for(var i =0; i<colstats.length;i++){
+				if(colstats[i].display){
+					flag=true;
+				}
+			}
+			
+		
+		if(colstats.length == 0 || !flag){
+		
+			$("#tab_statistics #pnl_stc").removeClass("in");
+			$("#tab_statistics a").addClass("collapsed");
+		}else{
+		
+			$("#tab_statistics #pnl_stc").addClass("in");
+			$("#tab_statistics a").removeClass("collapsed");
+		}
+		  
+	}
 export{
 	FILEUPLOAD,
 	MYSQL,
