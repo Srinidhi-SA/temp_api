@@ -133,27 +133,17 @@ class Dataset(models.Model):
         self.save()
 
     def generate_config(self, *args, **kwrgs):
+        inputFile = ""
+        datasource_details = ""
         if self.input_file is not None:
             inputFile = self.get_input_file()
-            return {
+        else:
+            datasource_details = json.loads(self.datasource_details)
+
+        return {
                 "config": {
                     "FILE_SETTINGS": {
                         "inputfile": [inputFile],
-                    },
-                    "COLUMN_SETTINGS": {
-                        "analysis_type": ["metaData"],
-                    },
-                    "DATE_SETTINGS": {
-
-                    },
-                }
-            }
-        else:
-            datasource_details = json.loads(self.datasource_details)
-            return {
-                "config": {
-                    "FILE_SETTINGS": {
-
                     },
                     "COLUMN_SETTINGS": {
                         "analysis_type": ["metaData"],
@@ -240,22 +230,33 @@ class Dataset(models.Model):
         return "/home/marlabs" + self.get_hdfs_relative_path()
 
     def get_input_file(self):
-        type = self.file_remote
-        if type == 'emr_file':
-            return "file://{}".format(self.input_file.path)
-        elif type == 'hdfs':
-            # return "file:///home/hadoop/data_date.csv"
-            return "hdfs://{}:{}{}".format(
-                settings.HDFS.get("host"),
-                settings.HDFS.get("hdfs_port"),
-                self.get_hdfs_relative_file_path())
-        elif type == 'fake':
-            return "file:///asdasdasdasd"
+
+        if self.input_file is not None:
+            type = self.file_remote
+            if type == 'emr_file':
+                return "file://{}".format(self.input_file.path)
+            elif type == 'hdfs':
+                # return "file:///home/hadoop/data_date.csv"
+                return "hdfs://{}:{}{}".format(
+                    settings.HDFS.get("host"),
+                    settings.HDFS.get("hdfs_port"),
+                    self.get_hdfs_relative_file_path())
+            elif type == 'fake':
+                return "file:///asdasdasdasd"
         else:
-            return json.dumps({
+            return ""
+
+    def get_datasource_info(self):
+        datasource_details = ""
+        if self.input_file is not None:
+            inputFile = self.get_input_file()
+        else:
+            datasource_details = json.loads(self.datasource_details)
+
+        return {
                         "datasource_type": self.datasource_type,
-                        "datasource_details": json.loads(self.datasource_details)
-                    })
+                        "datasource_details": datasource_details
+                    }
 
     def common_config(self):
 
@@ -392,6 +393,7 @@ class Insight(models.Model):
 
         config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
         config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
+        config['config']["DATA_SOURCE"] = self.dataset.get_datasource_info()
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
         # config['config']["META_HELPER"] = self.create_configuration_meta_data()
 
@@ -565,6 +567,7 @@ class Trainer(models.Model):
 
         config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
         config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
+        config['config']["DATA_SOURCE"] = self.dataset.get_datasource_info()
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
         # config['config']["META_HELPER"] = self.create_configuration_meta_data()
 
@@ -753,6 +756,7 @@ class Score(models.Model):
 
         config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
         config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
+        config['config']["DATA_SOURCE"] = self.dataset.get_datasource_info()
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
         # config['config']["META_HELPER"] = self.create_configuration_meta_data()
 
