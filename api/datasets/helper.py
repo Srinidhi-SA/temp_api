@@ -7,7 +7,7 @@ from rest_framework.utils import humanize_datetime
 
 def convert_to_string(data):
 
-    keys = ['meta_data', 'db_details']
+    keys = ['meta_data', 'datasource_details']
 
     for key in keys:
         if key in data:
@@ -21,7 +21,7 @@ def convert_to_string(data):
 
 
 def convert_to_json(data):
-    keys = ['meta_data', 'db_details', 'preview']
+    keys = ['meta_data', 'datasource_details', 'preview']
 
     for key in keys:
         if key in data:

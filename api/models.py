@@ -65,8 +65,8 @@ class Dataset(models.Model):
     auto_update_duration = models.IntegerField(default=99999)
 
     input_file = models.FileField(upload_to='datasets', null=True)
-    db_type = models.CharField(max_length=100, null=True)
-    db_details = models.TextField(default="{}")
+    datasource_type = models.CharField(max_length=100, null=True)
+    datasource_details = models.TextField(default="{}")
     preview = models.TextField(default="{}")
 
     meta_data = models.TextField(default="{}")
@@ -87,15 +87,15 @@ class Dataset(models.Model):
         ordering = ['-created_at', '-updated_at']
 
     def __str__(self):
-        return " : ".join(["{}".format(x) for x in [self.name, self.db_type, self.slug]])
+        return " : ".join(["{}".format(x) for x in [self.name, self.datasource_type, self.slug]])
 
     def as_dict(self):
         return {
             'name': self.name,
             'slug': self.slug,
             'auto_update': self.auto_update,
-            'db_type': self.db_type,
-            'db_details': self.db_details,
+            'datasource_type': self.datasource_type,
+            'datasource_details': self.datasource_details,
             'created_on': self.created_at,  # TODO: depricate this value
             'created_at': self.created_at,
             'bookmarked': self.bookmarked
@@ -111,8 +111,9 @@ class Dataset(models.Model):
         super(Dataset, self).save(*args, **kwargs)
 
     def create(self):
-        self.csv_header_clean()
-        self.copy_file_to_destination()
+        if self.input_file is not None:
+            self.csv_header_clean()
+            self.copy_file_to_destination()
         self.add_to_job()
 
     def add_to_job(self):
@@ -132,20 +133,40 @@ class Dataset(models.Model):
         self.save()
 
     def generate_config(self, *args, **kwrgs):
-        inputFile = self.get_input_file()
-        return {
-            "config": {
-                "FILE_SETTINGS": {
-                    "inputfile": [inputFile],
-                },
-                "COLUMN_SETTINGS": {
-                    "analysis_type": ["metaData"],
-                },
-                "DATE_SETTINGS": {
+        if self.input_file is not None:
+            inputFile = self.get_input_file()
+            return {
+                "config": {
+                    "FILE_SETTINGS": {
+                        "inputfile": [inputFile],
+                    },
+                    "COLUMN_SETTINGS": {
+                        "analysis_type": ["metaData"],
+                    },
+                    "DATE_SETTINGS": {
 
-                },
+                    },
+                }
             }
-        }
+        else:
+            datasource_details = json.loads(self.datasource_details)
+            return {
+                "config": {
+                    "FILE_SETTINGS": {
+
+                    },
+                    "COLUMN_SETTINGS": {
+                        "analysis_type": ["metaData"],
+                    },
+                    "DATE_SETTINGS": {
+
+                    },
+                    "DATA_SOURCE": {
+                        "datasource_type": self.datasource_type,
+                        "datasource_details": datasource_details
+                    }
+                }
+            }
 
     def csv_header_clean(self):
         CLEAN_DATA = []

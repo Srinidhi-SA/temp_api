@@ -28,8 +28,8 @@ class DatasetSerializer(serializers.ModelSerializer):
         instance.bookmarked = validated_data.get('bookmarked', instance.bookmarked)
         instance.auto_update = validated_data.get('auto_update', instance.auto_update)
         instance.auto_update_duration = validated_data.get('auto_update_duration', instance.auto_update_duration)
-        instance.db_details = validated_data.get('db_details', instance.db_details)
-        instance.db_type = validated_data.get('db_type', instance.db_type)
+        instance.datasource_details = validated_data.get('datasource_details', instance.datasource_details)
+        instance.datasource_type = validated_data.get('datasource_type', instance.datasource_type)
 
         instance.save()
         return instance
@@ -66,7 +66,7 @@ class DataListSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
             "input_file",
-            "db_type",
+            "datasource_type",
             "bookmarked",
             "analysis_done",
             "file_remote"

@@ -35,17 +35,22 @@ class DatasetView(viewsets.ModelViewSet):
     serializer_class = DatasetSerializer
     lookup_field = 'slug'
     filter_backends = (DjangoFilterBackend,)
-    filter_fields = ('bookmarked', 'deleted', 'db_type', 'name')
+    filter_fields = ('bookmarked', 'deleted', 'datasource_type', 'name')
     pagination_class = CustomPagination
 
     def create(self, request, *args, **kwargs):
+        import pdb;pdb.set_trace()
         data = request.data
         data = convert_to_string(data)
-        data['input_file'] =  request.FILES.get('input_file')
-        if data['input_file'] is None:
-            data['name'] = data.get('name', data.get('db_type', "H") + "_"+ str(random.randint(1000000,10000000)))
-        else:
-            data['name'] = data.get('name', data['input_file'].name)
+
+        if 'input_file' in data:
+            data['input_file'] =  request.FILES.get('input_file')
+            if data['input_file'] is None:
+                data['name'] = data.get('name', data.get('datasource_type', "H") + "_"+ str(random.randint(1000000,10000000)))
+            else:
+                data['name'] = data.get('name', data['input_file'].name)
+        elif 'db_details' in data:
+            data['name'] = data.get('name', data.get('datasource_type', "H") + "_" + str(random.randint(1000000, 10000000)))
 
         # question: why to use user.id when it can take, id, pk, object.
         # answer: I tried. Sighhh but it gave this error "Incorrect type. Expected pk value, received User."
