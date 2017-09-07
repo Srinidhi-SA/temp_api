@@ -21,8 +21,8 @@ export class MasterSummary extends React.Component {
   render() {
 
     console.log("MasterSummary is called!!");
-     console.log(this.props);
-     console.log(this.props.signal);
+     //console.log(this.props);
+     //console.log(this.props.signal);
     let heading = this.props.signal.name;
 
     var noOfDimention;
@@ -36,19 +36,19 @@ export class MasterSummary extends React.Component {
       noOfMeasures = this.props.signal.listOfCards[0].cardData.noOfMeasures;
       summary = this.props.signal.listOfCards[0].cardData.summaryHtml;
      var quotes = this.props.signal.listOfCards[0].cardData.quotesHtml;//.toString();
-	 
+
 	 if(noOfDimention>1){
 		 dText = "Dimensions";
 	 }else{
 		 dText = "Dimension";
 	 }
-	 
+
 	 if(noOfMeasures>1){
 		 mText = "Measures";
 	 }else{
 		 mText = "Measure";
 	 }
- 
+
     let firstOverviewSlug = this.props.signal.listOfNodes[0].slug;
 
     const overViewLink = "/signals/" + this.props.signalId + "/"+ firstOverviewSlug;
@@ -91,11 +91,11 @@ export class MasterSummary extends React.Component {
 								</tr>
 								<tr>
 									<td ><img src={ STATIC_URL + "assets/images/icon_dimension.png" } /> </td>
-									<td class="text-center">									
+									<td class="text-center">
 								<h3> {dText}</h3>
 									</td>
 								</tr>
-							</table> 
+							</table>
                           </div>
                           <div className="col-md-4 col-md-offset-1 col-sm-6 data-info">
 							<table>
@@ -105,12 +105,12 @@ export class MasterSummary extends React.Component {
 								</tr>
 								<tr>
 									<td ><img src={ STATIC_URL + "assets/images/icon_measure.png" } /></td>
-									<td class="text-center">									
+									<td class="text-center">
 								<h3> {mText}</h3>
 									</td>
 								</tr>
 							</table>
-								 
+
                           </div>
                           <div className="clearfix"></div>
                           <div className="col-md-12 xs-pt-20">

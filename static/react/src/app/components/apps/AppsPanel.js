@@ -105,7 +105,7 @@ export class AppsPanel extends React.Component {
 					</div>
 					<div className="col-md-4">							
 						<div className="app-block">
-						<Link onClick={this.gotoAppsList.bind(this,3,"ROBO INSIGHTS")} className="app-link" to="/apps/3/robo">
+						<Link onClick={this.gotoAppsList.bind(this,3,"ROBO INSIGHTS")} className="app-link" to="/apps-robo">
 							<div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
 								<img src={STATIC_URL + "assets/images/icon_robo.png"} className="img-responsive"/>
 							</div>

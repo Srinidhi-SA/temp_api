@@ -34,7 +34,7 @@ export class Signal extends React.Component {
   render() {
 
      console.log("selected Signal is called$$$$$$$$$$$$$$!!");
-     console.log(this.props.signal);
+     console.log(this.props);
     if(isEmpty(this.props.signal)){
 
       return(
