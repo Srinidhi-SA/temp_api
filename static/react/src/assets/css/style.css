@@ -14443,11 +14443,12 @@ div.dataTables_wrapper div.dataTables_length label select {
 .tab_block { height:40px; border-top:1px solid red; display:block;}
 .app-block .card-deatils a{   float: right; }
 ul.app_labels { list-style-type: none; padding: 0px; margin: 0; float: left; }
-.app_labels li { display:inline-block }
+.app_labels li { display:inline-block; margin-right:5px; }
+ul.app_labels li:first-child { margin: 0; padding: 10px 5px!important; }
 .app-block .card-footer { padding:0; }
 .app-block  .card-footer div.card-deatils { width: 46px; }
 
-.app-block  a.app-link { height: 128px; display: block; border-bottom: 1px solid #e0e0e0; color:#333; }
+.app-block  a.app-link { min-height: 128px; display: block; border-bottom: 1px solid #e0e0e0; color:#333; }
 .app_labels li a { border:1px solid #cacaca; width: 100px; display: inline-block; line-height: 1.8em; color: #333; padding-left: 5px; }
 .app-block  a.app-link:hover, .app-block  a.app-link:focus, .app_labels li a:hover, .app_labels li a:focus { color: #00998c}
 

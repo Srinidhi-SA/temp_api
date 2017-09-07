@@ -52,6 +52,7 @@ export class AppsPanel extends React.Component {
 									Business Goals by understading the top-level business goals, we can infer the investment climate.
 								</p>
 							</div>
+							<div class="clearfix"></div>
 							</Link>
 						
 							<div className="card-footer">
@@ -84,6 +85,7 @@ export class AppsPanel extends React.Component {
 									Machine-learning alogrithms are applied to explore the relation between significant flares and...
 								</p>
 							</div>
+							<div class="clearfix"></div>
 							</Link>
 						<div className="card-footer">
 							<ul className="app_labels">
@@ -114,7 +116,8 @@ export class AppsPanel extends React.Component {
 								<p>
 									Machine-learning alogrithms are applied to explore the relation between significant flares and...
 								</p>
-							</div>	
+							</div>
+<div class="clearfix"></div>							
 							</Link>
 							<div className="card-footer">
 							<ul className="app_labels">
