@@ -15386,19 +15386,21 @@ html{
 
 /*chart table popup css*/
 .chart-data-popup{
-	/*height: 380px;*/
+	/*height: 380px;
 	max-height:400px !important;
 	min-height: 264px !important;
 	width: 100% !important;
-
+*/
 }
 .chart-data-icon {
     font-size: 32px;
     z-index:10 !important;
 }
-.chart-data-icon .fa-download{
+
+.chart-data-icon .fa-search-plus{
     float: right;
 	cursor: pointer;
+	color:#00998c
 }
 
 .c3{
@@ -15414,39 +15416,39 @@ padding: 0px 15px 15px;
 
 
 .chart-data-modal-body{
-	position: relative;
+	/*position: relative;
   padding: 9px !important;
 	height: 32px;
 	background-color: #00998c;
-	border: 1px solid #00998c;
+	border: 1px solid #00998c; */
 }
 .chart-data-title{
-	  font-size: 14px;
+	/*  font-size: 14px;
 	  margin-top: -2%;
     display: inline-block;
 		color:white;
-
+*/
 }
 .chart-data-close{
-	display: block;
+	/*display: block;
 	margin-top:-0.8%;
 	font-family: Georgia;
 	float: right;
 	color:white !important;
-	opacity: 0.8 !important;
+	opacity: 0.8 !important;*/
 }
 
 .chart-data-download{
-	padding-top: 7px;
-	padding-right: 13px;
+	/*padding-top: 7px;
+	padding-right: 13px; */
 }
 
 #cddownload{
-	margin-left: 71.3%;
+/*	margin-left: 71.3%;
   margin-bottom: 2%;
 	background-color: #00998c;
 	padding-top: 2px;
-  padding-bottom: 2px;
+  padding-bottom: 2px;*/
 }
 
 
