@@ -34,14 +34,14 @@ export class C3Chart extends React.Component {
 
 	closeModal(){ //closing the modal
 		$(".chart-modal"+this.props.classId).modal('hide');
-	}  
+	}
 	showModal(){// showing the modal
 		$(".chart-modal"+this.props.classId).modal({ keyboard: true,show: true });
 	}
 
 	componentWillMount(){
-		console.log("chart store object::::");
-		console.log(this.props.chartObject);
+		//console.log("chart store object::::");
+		//console.log(this.props.chartObject);
 		this.updateChart();
 
 		if(this.props.classId =='_side'){
@@ -77,16 +77,16 @@ export class C3Chart extends React.Component {
 			}
 
 			/* if(this.props.yformat=='m'){
-      //console.log(this.props.yformat);
+      ////console.log(this.props.yformat);
       data.axis.y.tick.format = d3.format('.2s');
     }else  if(this.props.yformat=='$'){
-      //console.log(this.props.yformat);
+      ////console.log(this.props.yformat);
       data.axis.y.tick.format = d3.format('$');
     }else  if(this.props.yformat=='$m'){
-     // console.log(this.props.yformat);
+     // //console.log(this.props.yformat);
       data.axis.y.tick.format = d3.format('$,.2s');
     }else  if(this.props.yformat=='f'){
-     // console.log(this.props.yformat);
+     // //console.log(this.props.yformat);
       data.axis.y.tick.format = d3.format('.2f');
     }*/
 		}
@@ -100,16 +100,16 @@ export class C3Chart extends React.Component {
 			}
 
 			/*if(this.props.y2format=='m'){
-    //console.log(this.get('y2format'));
+    ////console.log(this.get('y2format'));
     data.axis.y2.tick.format = d3.format('.2s');
   }else  if(this.props.y2format=='$'){
-    //console.log(this.get('y2format'));
+    ////console.log(this.get('y2format'));
     data.axis.y2.tick.format = d3.format('$');
   }else  if(this.props.y2format=='$m'){
-    //console.log(this.get('y2format'));
+    ////console.log(this.get('y2format'));
     data.axis.y2.tick.format = d3.format('$,.2s');
   }else  if(this.props.y2format =='f'){
-    //console.log(this.get('yformat'));
+    ////console.log(this.get('yformat'));
     data.axis.y.tick.format = d3.format('.2f');
   }*/
 		}
@@ -128,13 +128,13 @@ export class C3Chart extends React.Component {
 
 			data.tooltip.contents = c3Functions.set_tooltip;
 
-			console.log(data.tooltip.contents);
+			//console.log(data.tooltip.contents);
 		}
 
 
 		if(this.props.xdata){
-			let xdata = this.props.xdata; 
-			console.log(this.props.xdata);
+			let xdata = this.props.xdata;
+			//console.log(this.props.xdata);
 			data.axis.x.tick.format = function (x) { if(xdata[x] && xdata[x].length>13){return xdata[x].substr(0,13)+"..";}else{return xdata[x] ;}}
 
 			data.tooltip.format.title = function (d) { return xdata[d]; }
@@ -143,7 +143,7 @@ export class C3Chart extends React.Component {
 		}
 
 		data['bindto'] = this.getChartElement().get(0); // binding chart to html element
-		console.log(data);
+		//console.log(data);
 
 		let chart = c3.generate(data);
 		chart.destroy();
@@ -161,11 +161,11 @@ export class C3Chart extends React.Component {
 		});
 		if(this.props.tabledata){
 			var tabledata = this.props.tabledata;
-			console.log("table data");
-			console.log(tabledata);
+			//console.log("table data");
+			//console.log(tabledata);
 
 			var collength = tabledata.length;
-			console.log(collength);
+			//console.log(collength);
 			var rowlength = tabledata[0].length;
 			var tablehtml  = "<thead><tr>", tablehead ="",  tablebody="";
 			for(var i=0; i<collength;i++){
@@ -198,7 +198,7 @@ export class C3Chart extends React.Component {
 		$(function(){
 			that.updateChart();
 		});
- 
+
 
 		//var classId = "chart"+this.props.classId + " ct col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 xs-mb-20";
 
@@ -237,7 +237,7 @@ export class C3Chart extends React.Component {
 				</Scrollbars>
 				</div>
 				</div>
-				</div> 
+				</div>
 
 				<div className="chart-data-download">
 				<a href={this.tableDownload} id="cddownload" className="btn btn-primary" download >Download Chart Data</a>

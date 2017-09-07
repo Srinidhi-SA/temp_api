@@ -25,7 +25,7 @@ export function createSignal(metaData) {
     return (dispatch) => {
     return fetchCreateSignal(metaData).then(([response, json]) =>{
         if(response.status === 200){
-          console.log(json)
+          //console.log(json)
         dispatch(fetchCreateSignalSuccess(json,dispatch))
       }
       else{
@@ -38,7 +38,7 @@ export function createSignal(metaData) {
 }
 
 function fetchCreateSignal(metaData) {
-  console.log(metaData)
+  //console.log(metaData)
 
   return fetch(API+'/api/signals/',{
 		method: 'POST',
@@ -47,7 +47,7 @@ function fetchCreateSignal(metaData) {
 		}).then( response => Promise.all([response, response.json()]));
 }
 function fetchCreateSignalSuccess(signalData,dispatch) {
-  console.log("signal list from api to store")
+  //console.log("signal list from api to store")
    dispatch(updateCsLoaderValue(store.getState().signals.createSignalLoaderValue+CSLOADERPERVALUE))
     createSignalInterval = setInterval(function(){
     if(!signalData.analysis_done){
@@ -66,7 +66,7 @@ function fetchCreateSignalSuccess(signalData,dispatch) {
 }
 
 function fetchCreateSignalError(json) {
-  console.log("fetching list error!!",json)
+  //console.log("fetching list error!!",json)
 
   return {
     type: "CREATE_ERROR",
@@ -78,7 +78,7 @@ export function getList(token,pageNo) {
     return (dispatch) => {
     return fetchPosts(token,pageNo).then(([response, json]) =>{
         if(response.status === 200){
-          console.log(json)
+          //console.log(json)
         dispatch(fetchPostsSuccess(json))
       }
       else{
@@ -89,11 +89,11 @@ export function getList(token,pageNo) {
 }
 
 function fetchPosts(token,pageNo) {
-  console.log(token)
+  //console.log(token)
   let search_element = store.getState().signals.signal_search_element
-  console.log(search_element)
+  //console.log(search_element)
   if(search_element!=""&&search_element!=null){
-    console.log("calling for search element!!")
+    //console.log("calling for search element!!")
     return fetch(API+'/api/signals/?name='+search_element+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
       method: 'get',
       headers: getHeader(token)
@@ -110,8 +110,8 @@ function fetchPosts(token,pageNo) {
 
 
 function fetchPostsSuccess(signalList) {
-  console.log("signal list from api to store")
-  console.log(signalList);
+  //console.log("signal list from api to store")
+  //console.log(signalList);
   var current_page =  signalList.current_page
   return {
     type: "SIGNAL_LIST",
@@ -121,7 +121,7 @@ function fetchPostsSuccess(signalList) {
 }
 
 function fetchPostsError(json) {
-  console.log("fetching list error!!",json)
+  //console.log("fetching list error!!",json)
   return {
     type: "SIGNAL_LIST_ERROR",
     json
@@ -148,7 +148,7 @@ export function getSignalAnalysis(token,errandId) {
 
 
 function fetchPosts_analysis(token,errandId) {
-  console.log(token)
+  //console.log(token)
 
   return fetch(API+'/api/signals/'+errandId+"/",{
 		method: 'get',
@@ -162,9 +162,9 @@ function fetchPosts_analysis(token,errandId) {
 
 
 function fetchPostsSuccess_analysis(signalAnalysis, errandId,dispatch) {
-  console.log("signal analysis from api to store")
-  console.log(signalAnalysis)
-  console.log("3");
+  //console.log("signal analysis from api to store")
+  //console.log(signalAnalysis)
+  //console.log("3");
   if(signalAnalysis.analysis_done){
   //  alert("final done");
     clearInterval(createSignalInterval);
@@ -179,7 +179,7 @@ function fetchPostsSuccess_analysis(signalAnalysis, errandId,dispatch) {
 }
 
 function fetchPostsError_analysis(json) {
-  console.log("fetching list error!!",json)
+  //console.log("fetching list error!!",json)
   return {
     type: "SIGNAL_ANALYSIS_ERROR",
     json
@@ -223,7 +223,7 @@ export function showDialogBox(slug,dialog,dispatch){
 		  bsSize: 'medium',
 		  onHide: (dialogBox) => {
 		    dialogBox.hide()
-		    console.log('closed by clicking background.')
+		    //console.log('closed by clicking background.')
 		  }
 		});
 }
@@ -247,8 +247,8 @@ function deleteSignal(slug,dialog,dispatch){
 	})
 }
 function deleteSignalAPI(slug){
-	console.log("deleteSignalAPI(slug)");
-	console.log(slug);
+	//console.log("deleteSignalAPI(slug)");
+	//console.log(slug);
 	return fetch(API+'/api/signals/'+slug+'/',{
 		method: 'put',
 		headers: getHeader(sessionStorage.userToken),
@@ -294,7 +294,7 @@ function showRenameDialogBox(slug,dialog,dispatch,name){
 		  bsSize: 'medium',
 		  onHide: (dialogBox) => {
 		    dialogBox.hide()
-		    console.log('closed by clicking background.')
+		    //console.log('closed by clicking background.')
 		  }
 		});
 }
