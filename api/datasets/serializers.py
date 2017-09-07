@@ -9,6 +9,7 @@ from django.conf import settings
 
 from api.models import Dataset
 from helper import convert_to_json, convert_time_to_human
+from api.helper import get_jobserver_status
 
 
 class DatasetSerializer(serializers.ModelSerializer):
@@ -34,6 +35,7 @@ class DatasetSerializer(serializers.ModelSerializer):
         return instance
 
     def to_representation(self, instance):
+        print get_jobserver_status(instance)
         ret = super(DatasetSerializer, self).to_representation(instance)
         ret = convert_to_json(ret)
         ret = convert_time_to_human(ret)
@@ -41,6 +43,7 @@ class DatasetSerializer(serializers.ModelSerializer):
         meta_data = ret.get('meta_data')
         if 'possibleAnalysis' in meta_data:
             meta_data['possibleAnalysis'] = settings.ANALYSIS_FOR_TARGET_VARIABLE
+
         return ret
 
     class Meta:

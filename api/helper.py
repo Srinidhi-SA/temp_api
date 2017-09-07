@@ -23,7 +23,11 @@ class JobserverDetails(object):
         return JOBSERVER.get(name)
 
     @classmethod
-    def get_config(cls, slug, class_name):
+    def get_config(cls,
+                   slug,
+                   class_name,
+                   job_name=None
+                   ):
 
         job_type = {
             "metadata": "metaData",
@@ -39,6 +43,7 @@ class JobserverDetails(object):
                 "job_url" : "http://{0}:{1}/api/job/{2}/".format(THIS_SERVER_DETAILS.get('host'),
                                                                     THIS_SERVER_DETAILS.get('port'),
                                                                     slug),
+                "job_name": job_name,
                 "get_config" :
                     {
                         "action" : "get_config" ,
@@ -708,6 +713,40 @@ def get_x_column_from_chart_data_without_xs(chart_data, axes):
         return chart_data[i][1:]
     else:
         return []
+
+
+def get_jobserver_status(
+        instance=None
+):
+    # import pdb;pdb.set_trace()
+    # from api.models import Job
+    # job_id = instance.job
+    # job = Job.objects.get(id=job_id)
+    job_url = instance.job.url
+
+    live_status = return_status_of_job_log(job_url)
+    instance.status = live_status
+    instance.save()
+    return live_status
+
+
+def return_status_of_job_log(job_url):
+    import urllib, json
+    final_status = "RUNNING"
+    check_status = urllib.urlopen(job_url)
+    data = json.loads(check_status.read())
+    if data.get("status") == "FINISHED":
+        final_status = data.get("status")
+    elif data.get("status") == "ERROR" and "startTime" in data.keys():
+        final_status = data.get("status")
+    elif data.get("status") == "RUNNING":
+        final_status = data.get("status")
+    else:
+        pass
+
+    jobserver_status = settings.JOBSERVER_STATUS
+
+    return jobserver_status.get(final_status)
 
 
 

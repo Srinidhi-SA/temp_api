@@ -14,6 +14,7 @@ from api.models import Dataset
 from api.pagination import CustomPagination
 from helper import convert_to_string
 from serializers import DatasetSerializer, DataListSerializer
+from api.query_filtering import get_listed_data, get_retrieve_data
 
 # Create your views here.
 
@@ -111,42 +112,12 @@ class DatasetView(viewsets.ModelViewSet):
         })
 
     def list(self, request, *args, **kwargs):
-        if 'page' in request.query_params:
-            if request.query_params.get('page') == 'all':
-                query_set = self.get_queryset()
 
-                if 'name' in request.query_params:
-                    name = request.query_params.get('name')
-                    query_set = query_set.filter(name__contains=name)
-
-                serializer = DataListSerializer(query_set, many=True)
-                return Response({
-                    "data": serializer.data
-                })
-
-        page_class = self.pagination_class()
-        query_set = self.get_queryset()
-
-        if 'name' in request.query_params:
-            name = request.query_params.get('name')
-            query_set = query_set.filter(name__contains=name)
-
-        page = page_class.paginate_queryset(
-            queryset=query_set,
-            request=request
+        return get_listed_data(
+            viewset=self,
+            request=request,
+            list_serializer=DataListSerializer
         )
 
-        serializer = DataListSerializer(page, many=True)
-        return page_class.get_paginated_response(serializer.data)
-
     def retrieve(self, request, *args, **kwargs):
-        try:
-            instance = self.get_object_from_all()
-        except:
-            return creation_failed_exception("File Doesn't exist.")
-
-        if instance is None:
-            return creation_failed_exception("File Doesn't exist.")
-
-        serializer = DatasetSerializer(instance=instance)
-        return Response(serializer.data)
+        return get_retrieve_data(self)

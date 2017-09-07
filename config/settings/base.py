@@ -310,4 +310,15 @@ CORS_ALLOW_HEADERS = (
     'x-csrftoken'
 )
 
+JOBSERVER_STATUS = {
+    'RUNNING': 'INPROGRESS',
+    'FINISHED': 'SUCCESS',
+    'ERROR': 'FAILED',
+    'UNKNOWN': 'UNKNOWN'
+}
+
 UI_VERSION = "0.8"
+
+ERROR_MESSAGE = {
+    'upload_error': 'Code had a weakness. Now it is broken.'
+}

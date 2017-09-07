@@ -81,6 +81,7 @@ class Dataset(models.Model):
     bookmarked = models.BooleanField(default=False)
     file_remote = models.CharField(max_length=100, null=True)
     analysis_done = models.BooleanField(default=False)
+    status = models.CharField(max_length=100, null=True, default="Not Registered")
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
@@ -120,33 +121,14 @@ class Dataset(models.Model):
         print jobConfig
         print "Dataset realted config genarated."
 
-        job = Job()
-        job.name = "-".join(["Dataset", self.slug])
-        job.job_type = "metadata"
-        job.object_id = str(self.slug)
-        job.config = json.dumps(jobConfig)
-        job.save()
-
-        print "Job created."
-
-        from utils import submit_job
-
-        try:
-            print "Submitting job."
-            job_url = submit_job(
-                slug=job.slug,
-                class_name='metadata',
-                job_config=jobConfig
-            )
-            print "Job submitted."
-
-            job.url = job_url
-            job.save()
-        except Exception as exc:
-            print "Unable to submit job."
-            print exc
+        job = job_submission(
+            instance=self,
+            jobConfig=jobConfig,
+            job_type='metadata'
+        )
 
         self.job = job
+        self.status = "INPROGRESS"
         self.save()
 
     def generate_config(self, *args, **kwrgs):
@@ -291,7 +273,6 @@ class Insight(models.Model):
     column_data_raw = models.TextField(default="{}")
     config = models.TextField(default="{}")
 
-    status = models.BooleanField(default=False)
     live_status = models.CharField(max_length=300, default='0', choices=STATUS_CHOICES)
     analysis_done = models.BooleanField(default=False)
     # state -> job submitted, job started, job ...
@@ -306,6 +287,7 @@ class Insight(models.Model):
     bookmarked = models.BooleanField(default=False)
 
     job = models.ForeignKey(Job, null=True)
+    status = models.CharField(max_length=100, null=True, default="Not Registered")
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
@@ -330,32 +312,14 @@ class Insight(models.Model):
         jobConfig = self.generate_config(*args, **kwargs)
         print "Dataset realted config genarated."
 
-        job = Job()
-        job.name = "-".join(["Insight", self.slug])
-        job.job_type = "master"
-        job.object_id = str(self.slug)
-        job.config = json.dumps(jobConfig)
-        job.save()
-
-        print "Job entry created."
-
-        from utils import submit_job
-
-        try:
-            job_url = submit_job(
-                slug=job.slug,
-                class_name='master',
-                job_config=jobConfig
-            )
-            print "Job submitted."
-
-            job.url = job_url
-            job.save()
-        except Exception as exc:
-            print "Unable to submit job."
-            print exc
+        job = job_submission(
+            instance=self,
+            jobConfig=jobConfig,
+            job_type='master'
+        )
 
         self.job = job
+        self.status = "INPROGRESS"
         self.save()
 
     def generate_config(self, *args, **kwargs):
@@ -483,6 +447,7 @@ class Trainer(models.Model):
     analysis_done = models.BooleanField(default=False)
 
     job = models.ForeignKey(Job, null=True)
+    status = models.CharField(max_length=100, null=True, default="Not Registered")
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
@@ -574,32 +539,14 @@ class Trainer(models.Model):
         jobConfig = self.generate_config(*args, **kwargs)
         print "Trainer realted config genarated."
 
-        job = Job()
-        job.name = "-".join(["Trainer", self.slug])
-        job.job_type = "model"
-        job.object_id = str(self.slug)
-        job.config = json.dumps(jobConfig)
-        job.save()
-
-        print "Job entry created."
-
-        from utils import submit_job
-
-        try:
-            job_url = submit_job(
-                slug=job.slug,
-                class_name='model',
-                job_config=jobConfig
-            )
-            print "Job submitted."
-
-            job.url = job_url
-            job.save()
-        except Exception as exc:
-            print "Unable to submit job."
-            print exc
+        job = job_submission(
+            instance=self,
+            jobConfig=jobConfig,
+            job_type='model'
+        )
 
         self.job = job
+        self.status = "INPROGRESS"
         self.save()
 
 """
@@ -641,6 +588,7 @@ class Score(models.Model):
     bookmarked = models.BooleanField(default=False)
 
     job = models.ForeignKey(Job, null=True)
+    status = models.CharField(max_length=100, null=True, default="Not Registered")
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
@@ -665,32 +613,14 @@ class Score(models.Model):
         jobConfig = self.generate_config(*args, **kwargs)
         print "Score realted config genarated."
 
-        job = Job()
-        job.name = "-".join(["score", self.slug])
-        job.job_type = "score"
-        job.object_id = str(self.slug)
-        job.config = json.dumps(jobConfig)
-        job.save()
-
-        print "Job entry created."
-
-        from utils import submit_job
-
-        try:
-            job_url = submit_job(
-                slug=job.slug,
-                class_name='score',
-                job_config=jobConfig
-            )
-            print "Job submitted."
-
-            job.url = job_url
-            job.save()
-        except Exception as exc:
-            print "Unable to submit job."
-            print exc
+        job = job_submission(
+            instance=self,
+            jobConfig=jobConfig,
+            job_type='score'
+        )
 
         self.job = job
+        self.status = "INPROGRESS"
         self.save()
 
     def generate_config(self, *args, **kwargs):
@@ -816,6 +746,7 @@ class Robo(models.Model):
 
     bookmarked = models.BooleanField(default=False)
     job = models.ForeignKey(Job, null=True)
+    status = models.CharField(max_length=100, null=True, default="Not Registered")
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
@@ -843,31 +774,51 @@ class Robo(models.Model):
     def add_to_job(self, *args, **kwargs):
         jobConfig = self.generate_config(*args, **kwargs)
 
-        job = Job()
-        job.name = "-".join(["Robo", self.slug])
-        job.job_type = "robo"
-        job.object_id = str(self.slug)
-        job.config = json.dumps(jobConfig)
-        job.save()
-
-        print "Job entry created."
-
-        from utils import submit_job
-
-        try:
-            job_url = submit_job(
-                slug=job.slug,
-                class_name='robo',
-                job_config=jobConfig
-            )
-
-            print "Job submitted."
-
-            job.url = job_url
-            job.save()
-        except Exception as exc:
-            print "Unable to submit job."
-            print exc
+        job = job_submission(
+            instance=self,
+            jobConfig=jobConfig,
+            job_type='robo'
+        )
 
         self.job = job
+        self.status = "INPROGRESS"
         self.save()
+
+
+def job_submission(
+        instance=None,
+        jobConfig=None,
+        job_type=None
+):
+    # Job Book Keeping
+    job = Job()
+    job.name = "-".join(["Insight", instance.slug])
+    job.job_type = job_type
+    job.object_id = str(instance.slug)
+
+    if jobConfig is None:
+        jobConfig = json.loads(instance.config)
+    job.config = json.dumps(jobConfig)
+    job.save()
+
+    print "Job entry created."
+
+    # Submitting JobServer
+    from utils import submit_job
+
+    try:
+        job_url = submit_job(
+            slug=job.slug,
+            class_name=job_type,
+            job_config=jobConfig,
+            job_name=instance.name
+        )
+        print "Job submitted."
+
+        job.url = job_url
+        job.save()
+    except Exception as exc:
+        print "Unable to submit job."
+        print exc
+
+    return job

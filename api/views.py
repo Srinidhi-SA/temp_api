@@ -26,6 +26,8 @@ from api.utils import \
     RoboListSerializer
 from models import Insight, Dataset, Job, Trainer, Score, Robo
 
+from api.query_filtering import get_listed_data, get_retrieve_data
+
 
 class SignalView(viewsets.ModelViewSet):
     def get_queryset(self):
@@ -77,46 +79,14 @@ class SignalView(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
 
-        if 'page' in request.query_params:
-            if request.query_params.get('page') == 'all':
-                query_set = self.get_queryset()
-
-                if 'name' in request.query_params:
-                    name = request.query_params.get('name')
-                    query_set = query_set.filter(name__contains=name)
-
-                serializer = InsightListSerializers(query_set, many=True)
-                return Response({
-                    "data": serializer.data
-                })
-
-        page_class = self.pagination_class()
-        query_set = self.get_queryset()
-
-        if 'name' in request.query_params:
-            name = request.query_params.get('name')
-            query_set = query_set.filter(name__contains=name)
-
-        page = page_class.paginate_queryset(
-            queryset=query_set,
-            request=request
+        return get_listed_data(
+            viewset=self,
+            request=request,
+            list_serializer=InsightListSerializers
         )
 
-        serializer = InsightListSerializers(page, many=True)
-        return page_class.get_paginated_response(serializer.data)
-
     def retrieve(self, request, *args, **kwargs):
-
-        try:
-            instance = self.get_object_from_all()
-        except:
-            return creation_failed_exception("File Doesn't exist.")
-
-        if instance is None:
-            return creation_failed_exception("File Doesn't exist.")
-
-        serializer = InsightSerializer(instance=instance)
-        return Response(serializer.data)
+        return get_retrieve_data(self)
 
 
 class TrainerView(viewsets.ModelViewSet):
@@ -130,7 +100,6 @@ class TrainerView(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         return TrainerSerlializer
-
 
     def get_object_from_all(self):
         return Trainer.objects.get(slug=self.kwargs.get('slug'))
@@ -169,48 +138,15 @@ class TrainerView(viewsets.ModelViewSet):
         return Response(serializer.errors)
 
     def list(self, request, *args, **kwargs):
-        app_id = int(request.query_params.get('app_id', 1))
-        if 'page' in request.query_params:
-            if request.query_params.get('page') == 'all':
-                query_set = self.get_queryset()
 
-                if 'name' in request.query_params:
-                    name = request.query_params.get('name')
-                    query_set = query_set.filter(name__contains=name)
-
-                serializer = TrainerListSerializer(query_set, many=True)
-                return Response({
-                    "data": serializer.data
-                })
-        query_set = self.get_queryset()
-
-        if 'name' in request.query_params:
-            name = request.query_params.get('name')
-            query_set = query_set.filter(name__contains=name)
-
-        query_set = query_set.filter(app_id=app_id)
-        page_class = self.pagination_class()
-
-        page = page_class.paginate_queryset(
-            queryset=query_set,
-            request=request
+        return get_listed_data(
+            viewset=self,
+            request=request,
+            list_serializer=TrainerListSerializer
         )
 
-        serializer = TrainerListSerializer(page, many=True)
-        return page_class.get_paginated_response(serializer.data)
-
     def retrieve(self, request, *args, **kwargs):
-
-        try:
-            instance = self.get_object_from_all()
-        except:
-            return creation_failed_exception("File Doesn't exist.")
-
-        if instance is None:
-            return creation_failed_exception("File Doesn't exist.")
-
-        serializer = TrainerSerlializer(instance=instance)
-        return Response(serializer.data)
+        return get_retrieve_data(self)
 
 
 class ScoreView(viewsets.ModelViewSet):
@@ -265,47 +201,14 @@ class ScoreView(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
 
-        if 'page' in request.query_params:
-            if request.query_params.get('page') == 'all':
-                query_set = self.get_queryset()
-
-                if 'name' in request.query_params:
-                    name = request.query_params.get('name')
-                    query_set = query_set.filter(name__contains=name)
-
-                serializer = ScoreListSerializer(query_set, many=True)
-                return Response({
-                    "data": serializer.data
-                })
-
-        query_set = self.get_queryset()
-
-        if 'name' in request.query_params:
-            name = request.query_params.get('name')
-            query_set = query_set.filter(name__contains=name)
-
-        page_class = self.pagination_class()
-
-        page = page_class.paginate_queryset(
-            queryset=query_set,
-            request=request
+        return get_listed_data(
+            viewset=self,
+            request=request,
+            list_serializer=ScoreListSerializer
         )
 
-        serializer = ScoreListSerializer(page, many=True)
-        return page_class.get_paginated_response(serializer.data)
-
     def retrieve(self, request, *args, **kwargs):
-
-        try:
-            instance = self.get_object_from_all()
-        except:
-            return creation_failed_exception("File Doesn't exist.")
-
-        if instance is None:
-            return creation_failed_exception("File Doesn't exist.")
-
-        serializer = ScoreSerlializer(instance=instance)
-        return Response(serializer.data)
+        return get_retrieve_data(self)
 
     @detail_route(methods=['get'])
     def download(self, request, slug=None):
@@ -335,6 +238,92 @@ class ScoreView(viewsets.ModelViewSet):
                 return response
         else:
             return JsonResponse({'result': 'failed to download'})
+
+
+class RoboView(viewsets.ModelViewSet):
+    def get_queryset(self):
+        query_set = Robo.objects.filter(
+            created_by=self.request.user,
+            deleted=False,
+            analysis_done=True
+        )
+        return query_set
+
+    def get_serializer_class(self):
+        return RoboSerializer
+
+    def get_object_from_all(self):
+        return Robo.objects.get(slug=self.kwargs.get('slug'))
+
+    lookup_field = 'slug'
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = ('bookmarked', 'deleted', 'name')
+    pagination_class = CustomPagination
+
+    dataset_name_mapping = {
+        "customer_file": "customer_dataset",
+        "historical_file": "historical_dataset",
+        "market_file": "market_dataset"
+    }
+
+    # TODO: config missing
+    def create(self, request, *args, **kwargs):
+
+        data =request.data
+        data = convert_to_string(data)
+        files = request.FILES
+        name = data.get('name', "robo" + "_"+ str(random.randint(1000000,10000000)))
+        real_data = {
+            'name': name,
+            'created_by': request.user.id
+        }
+
+        for file in files:
+            dataset = dict()
+            input_file = files[file]
+            dataset['input_file'] = input_file
+            dataset['name'] = input_file.name
+            dataset['created_by'] = request.user.id
+            from api.datasets.serializers import DatasetSerializer
+            serializer = DatasetSerializer(data=dataset)
+            if serializer.is_valid():
+                dataset_object = serializer.save()
+                dataset_object.create()
+                real_data[self.dataset_name_mapping[file]] = dataset_object.id
+        serializer = RoboSerializer(data=real_data)
+        if serializer.is_valid():
+            robo_object = serializer.save()
+            robo_object.create()
+            robo_object.data = json.dumps(dummy_robo_data)
+            robo_object.save()
+            return Response(serializer.data)
+        return Response(serializer.errors)
+
+    def update(self, request, *args, **kwargs):
+        data = request.data
+        data = convert_to_string(data)
+        # instance = self.get_object()
+        try:
+            instance = self.get_object_from_all()
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
+        serializer = self.get_serializer(instance=instance, data=data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors)
+
+    def retrieve(self, request, *args, **kwargs):
+        return get_retrieve_data(self)
+
+    def list(self, request, *args, **kwargs):
+
+        return get_listed_data(
+            viewset=self,
+            request=request,
+            list_serializer=RoboListSerializer
+        )
 
 
 def get_datasource_config_list(request):
@@ -492,124 +481,6 @@ def home(request):
 
     context = {"UI_VERSION":settings.UI_VERSION}
     return render(request, 'home.html', context)
-
-
-class RoboView(viewsets.ModelViewSet):
-    def get_queryset(self):
-        query_set = Robo.objects.filter(
-            created_by=self.request.user,
-            deleted=False,
-            analysis_done=True
-        )
-        return query_set
-
-    def get_serializer_class(self):
-        return RoboSerializer
-
-    def get_object_from_all(self):
-        return Robo.objects.get(slug=self.kwargs.get('slug'))
-
-    lookup_field = 'slug'
-    filter_backends = (DjangoFilterBackend,)
-    filter_fields = ('bookmarked', 'deleted', 'name')
-    pagination_class = CustomPagination
-
-    dataset_name_mapping = {
-        "customer_file": "customer_dataset",
-        "historical_file": "historical_dataset",
-        "market_file": "market_dataset"
-    }
-
-    # TODO: config missing
-    def create(self, request, *args, **kwargs):
-
-        data =request.data
-        data = convert_to_string(data)
-        files = request.FILES
-        name = data.get('name', "robo" + "_"+ str(random.randint(1000000,10000000)))
-        real_data = {
-            'name': name,
-            'created_by': request.user.id
-        }
-
-        for file in files:
-            dataset = dict()
-            input_file = files[file]
-            dataset['input_file'] = input_file
-            dataset['name'] = input_file.name
-            dataset['created_by'] = request.user.id
-            from api.datasets.serializers import DatasetSerializer
-            serializer = DatasetSerializer(data=dataset)
-            if serializer.is_valid():
-                dataset_object = serializer.save()
-                dataset_object.create()
-                real_data[self.dataset_name_mapping[file]] = dataset_object.id
-        serializer = RoboSerializer(data=real_data)
-        if serializer.is_valid():
-            robo_object = serializer.save()
-            robo_object.create()
-            robo_object.data = json.dumps(dummy_robo_data)
-            robo_object.save()
-            return Response(serializer.data)
-        return Response(serializer.errors)
-
-    def update(self, request, *args, **kwargs):
-        data = request.data
-        data = convert_to_string(data)
-        # instance = self.get_object()
-        try:
-            instance = self.get_object_from_all()
-        except:
-            return creation_failed_exception("File Doesn't exist.")
-
-        serializer = self.get_serializer(instance=instance, data=data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors)
-
-    def retrieve(self, request, *args, **kwargs):
-        try:
-            instance = self.get_object_from_all()
-        except:
-            return creation_failed_exception("File Doesn't exist.")
-
-        if instance is None:
-            return creation_failed_exception("File Doesn't exist.")
-
-        serializer = RoboSerializer(instance=instance)
-        return Response(serializer.data)
-
-    def list(self, request, *args, **kwargs):
-
-        if 'page' in request.query_params:
-            if request.query_params.get('page') == 'all':
-                query_set = self.get_queryset()
-
-                if 'name' in request.query_params:
-                    name = request.query_params.get('name')
-                    query_set = query_set.filter(name__contains=name)
-
-                serializer = RoboListSerializer(query_set, many=True)
-                return Response({
-                    "data": serializer.data
-                })
-
-        query_set = self.get_queryset()
-
-        if 'name' in request.query_params:
-            name = request.query_params.get('name')
-            query_set = query_set.filter(name__contains=name)
-
-        page_class = self.pagination_class()
-
-        page = page_class.paginate_queryset(
-            queryset=query_set,
-            request=request
-        )
-
-        serializer = RoboListSerializer(page, many=True)
-        return page_class.get_paginated_response(serializer.data)
 
 dummy_robo_data = {
         "listOfNodes": [],
@@ -4146,3 +4017,7 @@ dummy_robo_data = {
         "name": "DSDS",
         "slug": "dsds-lkdzu1oaql"
     }
+
+
+
+

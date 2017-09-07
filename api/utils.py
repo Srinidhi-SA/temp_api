@@ -5,12 +5,17 @@ from rest_framework import serializers
 from rest_framework.utils import humanize_datetime
 from sjsclient import client
 
-from api.helper import JobserverDetails
+from api.helper import JobserverDetails, get_jobserver_status
 from api.user_helper import UserSerializer
 from models import Insight, Dataset, Trainer, Score, Job, Robo
 
 
-def submit_job(slug, class_name, job_config):
+def submit_job(
+        slug,
+        class_name,
+        job_config,
+        job_name=None
+):
     sjs = client.Client(
         JobserverDetails.get_jobserver_url()
     )
@@ -29,7 +34,9 @@ def submit_job(slug, class_name, job_config):
 
     # here
     config1 = JobserverDetails.get_config(slug=slug,
-                                         class_name=class_name,)
+                                         class_name=class_name,
+                                          job_name=job_name
+                                          )
     config = {}
     config['job_config'] = job_config
     config['job_config'].update(config1)
@@ -80,6 +87,7 @@ def convert_time_to_human(data):
 # TODO: use dataserializer
 class InsightSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
+        print get_jobserver_status(instance)
         ret = super(InsightSerializer, self).to_representation(instance)
         dataset = ret['dataset']
         dataset_object = Dataset.objects.get(pk=dataset)
@@ -135,6 +143,7 @@ class InsightListSerializers(serializers.ModelSerializer):
 class TrainerSerlializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
+        print get_jobserver_status(instance)
         ret = super(TrainerSerlializer, self).to_representation(instance)
         dataset = ret['dataset']
         dataset_object = Dataset.objects.get(pk=dataset)
@@ -186,6 +195,7 @@ class TrainerListSerializer(serializers.ModelSerializer):
 class ScoreSerlializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
+        print get_jobserver_status(instance)
         ret = super(ScoreSerlializer, self).to_representation(instance)
         trainer = ret['trainer']
         trainer_object = Trainer.objects.get(pk=trainer)
@@ -261,6 +271,7 @@ class RoboSerializer(serializers.ModelSerializer):
         return instance
 
     def to_representation(self, instance):
+        print get_jobserver_status(instance)
         from api.datasets.serializers import DatasetSerializer
         ret = super(RoboSerializer, self).to_representation(instance)
 
@@ -282,6 +293,7 @@ class RoboSerializer(serializers.ModelSerializer):
 
         if instance.robo_analysis_done and instance.dataset_analysis_done:
             instance.analysis_done = True
+            print get_jobserver_status(instance)
             instance.save()
 
         ret = convert_to_json(ret)
@@ -328,3 +340,6 @@ class RoboListSerializer(serializers.ModelSerializer):
             'config',
             'data'
         )
+
+
+
