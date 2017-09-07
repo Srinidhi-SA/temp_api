@@ -1,0 +1,121 @@
+/******************* BASIC STYLING **********************/
+.scroll_tabs_container {
+  position: relative;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  text-align: left;
+  height: 54px;
+  margin-bottom: 10px;
+}
+
+ul.scroll_tabs_container {
+  list-style: none;
+  border-bottom: 1px solid #ddd;
+  color:#000;
+}
+
+.scroll_tabs_container div.scroll_tab_inner {
+  height: 54px;
+}
+
+.scroll_tabs_container div.scroll_tab_inner li {
+  padding-left: 20px;
+  padding-right: 20px;
+  /*line-height: 40px;*/
+  font-size: 14px;
+ /* background-color: #CCCCCC;
+  color: #333333;*/
+  cursor: pointer;
+}
+
+.scroll_tabs_container div.scroll_tab_inner li {
+  display: -moz-inline-stack;
+  display: inline-block;
+  *display: inline;
+  list-style-type: none;
+}
+.scroll_tab_inner a {
+    display: block;
+	text-align: center;
+}
+.scroll_tabs_container div.scroll_tab_inner li a span {
+    display: block;
+    white-space: nowrap;
+    width: 176px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.scroll_tabs_container div.scroll_tab_inner span.scroll_tab_left_finisher {
+  padding: 0px;
+  width: 0px;
+}
+
+.scroll_tabs_container div.scroll_tab_inner span.scroll_tab_right_finisher {
+  padding: 0px;
+  width: 0px;
+}
+
+.scroll_tabs_container .scroll_tab_left_button {
+  height: 54px;
+  text-align:center;
+  border-right: 1px solid #dddddd;
+  border-bottom: 1px solid #FFF;
+ /* background-color: #7dac02;*/
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.scroll_tabs_container .scroll_tab_left_button::before {
+  content: "\3c";
+  line-height: 54px;
+  padding-left: 5px;
+}
+
+.scroll_tabs_container .scroll_tab_left_button_over {
+  color:#00998c;
+  /*background-color: #00998c;*/
+}
+
+.scroll_tabs_container .scroll_tab_left_button_disabled {
+  color: #b8e4e1;
+/*  background-color: #f2fbfa;*/
+  cursor: default !important;
+}
+
+.scroll_tabs_container .scroll_tab_right_button {
+  height: 54px;
+  text-align:center;
+  border-left: 1px solid #dddddd;
+  border-bottom: 1px solid #FFF;
+ /* background-color: #7dac02;*/
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.scroll_tabs_container .scroll_tab_right_button::before {
+  content: "\3e";
+  line-height: 54px;
+  padding-left: 5px;
+}
+
+.scroll_tabs_container .scroll_tab_right_button_over {
+  color:#00998c;
+  /*background-color: #00998c;*/
+}
+
+.scroll_tabs_container .scroll_tab_right_button_disabled{
+  color: #b8e4e1;
+  /*background-color: #f2fbfa;*/
+  cursor: default !important;
+}
+ 

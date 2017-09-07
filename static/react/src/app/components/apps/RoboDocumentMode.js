@@ -1,5 +1,6 @@
 import React from "react";
 import {connect} from "react-redux";
+import {Link} from "react-router-dom";
 import store from "../../store";
 import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab} from "react-bootstrap";
@@ -31,7 +32,7 @@ export class RoboDocumentMode extends React.Component {
 
   render() {
     console.log("apps Robo Detail View is called##########3");
-    return (<div className="side-body">
+   /* return (<div className="side-body">
     <div className="main-content">
     <div className="row">
     <div className="col-md-offset-1 col-md-10">
@@ -92,10 +93,12 @@ export class RoboDocumentMode extends React.Component {
     </div>
     </div>
     </div>
-    );
+    );*/
     
-    /*const roboSummary = store.getState().signals.signalAnalysis;
+    const roboSummary = store.getState().signals.signalAnalysis;
 	if (!$.isEmptyObject(roboSummary)) {
+		let firstSlug = this.props.signal.slug;
+	    let cardModeLink = "/apps-robo/" + store.getState().apps.roboDatasetSlug + "/"+ firstSlug;
 		console.log(this.props)
 		let listOfCardList = getListOfCards(roboSummary.listOfCards)
 		let cardDataList = listOfCardList.map((data, i) => {
@@ -109,9 +112,28 @@ export class RoboDocumentMode extends React.Component {
 			          <div className="row">
 		                <div className="col-md-12">
 		                 
-		                <div className="panel panel-mAd">
+		                <div className="panel panel-mAd documentModeSpacing ">
 		                    <div className="panel-heading">
-		                      <h2>{store.getState().apps.modelSummary.name}</h2>
+		                      <h2>{store.getState().apps.roboSummary.name}</h2>
+		                     
+		                      <div className="btn-toolbar pull-right">
+		                        <div className="btn-group btn-space">
+		                        <Link className="tabs-control right grp_legends_green continue" to={cardModeLink}>
+		                          <button type="button" className="btn btn-default" title="Card mode">
+		                            <i className="pe-7s-display2 pe-lg"></i>
+		                          </button>
+		                          </Link>
+		                          <button type="button" className="btn btn-default" disabled = "true" title="Document Mode">
+		                              <i className="pe-7s-news-paper pe-lg"></i>
+		                            </button>
+							   <Link className="tabs-control right grp_legends_green continue" to="/apps-robo">
+		                          <button type="button" className="btn btn-default">
+		                            <i className="pe-7s-close pe-lg"></i>
+		                          </button>
+								 </Link>
+		                        </div>
+		                      </div>
+		                      
 		                      <div className="clearfix"></div>
 		                    </div>
 		                   <div className="panel-body">
@@ -132,9 +154,9 @@ export class RoboDocumentMode extends React.Component {
 			          </div>
 			      );	
 		}
-	}*/
-	
-	/*else{
+	}
+
+	else{
 		return (
 	
 		      <div className="side-body">
@@ -145,7 +167,7 @@ export class RoboDocumentMode extends React.Component {
 		        </div>
 		      </div>
 		    );
-	}*/
+	}
     
   }
 }
