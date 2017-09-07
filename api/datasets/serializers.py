@@ -18,7 +18,7 @@ class DatasetSerializer(serializers.ModelSerializer):
     #                              validators=[UniqueValidator(queryset=Dataset.objects.all())]
     #                              )
 
-    input_file = serializers.FileField(allow_null=True)
+    input_file = serializers.FileField(allow_null=True, read_only=True)
 
     def update(self, instance, validated_data):
         instance.meta_data = validated_data.get('meta_data', instance.meta_data)

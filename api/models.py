@@ -64,7 +64,7 @@ class Dataset(models.Model):
     auto_update = models.BooleanField(default=False)
     auto_update_duration = models.IntegerField(default=99999)
 
-    input_file = models.FileField(upload_to='datasets', null=True, required=False)
+    input_file = models.FileField(upload_to='datasets', null=True)
     datasource_type = models.CharField(max_length=100, null=True)
     datasource_details = models.TextField(default="{}")
     preview = models.TextField(default="{}")
@@ -111,7 +111,7 @@ class Dataset(models.Model):
         super(Dataset, self).save(*args, **kwargs)
 
     def create(self):
-        if self.input_file is not None:
+        if self.input_file._file is not None:
             self.csv_header_clean()
             self.copy_file_to_destination()
         self.add_to_job()
@@ -135,7 +135,7 @@ class Dataset(models.Model):
     def generate_config(self, *args, **kwrgs):
         inputFile = ""
         datasource_details = ""
-        if self.input_file is not None:
+        if self.input_file._file is not None:
             inputFile = self.get_input_file()
         else:
             datasource_details = json.loads(self.datasource_details)
@@ -231,7 +231,7 @@ class Dataset(models.Model):
 
     def get_input_file(self):
 
-        if self.input_file is not None:
+        if self.input_file._file is not None:
             type = self.file_remote
             if type == 'emr_file':
                 return "file://{}".format(self.input_file.path)
@@ -248,7 +248,7 @@ class Dataset(models.Model):
 
     def get_datasource_info(self):
         datasource_details = ""
-        if self.input_file is not None:
+        if self.input_file._file is not None:
             inputFile = self.get_input_file()
         else:
             datasource_details = json.loads(self.datasource_details)
