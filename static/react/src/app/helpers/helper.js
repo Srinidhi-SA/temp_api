@@ -19,7 +19,7 @@ const SCHEMA = "Schema";
 const USERNAME = "Username";
 const PASSWORD = "Password";
 const TABLENAME = "Table Name";
-const PERPAGE = 10; 
+const PERPAGE = 10;
 const NORMALTABLE = "normal";
 const CONFUSIONMATRIX = "confusionMatrix";
 const HEATMAPTABLE = "heatMap";
@@ -39,7 +39,7 @@ const DELETESCORE = "Delete Score";
 const RENAMESCORE = "Rename Score";
 const DELETEINSIGHT = "Delete Insight";
 const RENAMEINSIGHT = "Rename Insight";
-const SEARCHCHARLIMIT = 3;
+const SEARCHCHARLIMIT = 2;
 const SUCCESS = "SUCCESS";
 const FAILED = "FAILED";
 const INPROGRESS  = "INPROGRESS"
@@ -50,7 +50,7 @@ export function generateHeaders(table) {
   	  if(i== 0){
   		  return rowData.map(function(colData,j) {
     	           return<th key={j}>{colData}</th>;
-    	       });  
+    	       });
   	  }
     })
   return cols;
@@ -61,11 +61,11 @@ export function generateHeatMapHeaders(table) {
   	  if(i== 0){
   		  var row=rowData.map(function(colData,j) {
     	           return<th key={j} className="first">{colData}</th>;
-    	       }); 
+    	       });
 		  return<tr key={i} className="heatMapHeader">{row}</tr>
   	  }
     })
-	
+
   return cols;
 }
 
@@ -76,14 +76,14 @@ export function generateHeatMapRows(table) {
 			      if(j==0){
 					  return<td key={j} className="stats-title">{colData}</td>;
 				  }else{
-					 return<td key={j}>{colData}</td>; 
+					 return<td key={j}>{colData}</td>;
 				  }
-    	           
-    	       }); 
+
+    	       });
 		  return<tr key={i} className="stats-row">{row}</tr>
   	  }
     })
-	
+
   return cols;
 }
 
@@ -94,8 +94,8 @@ var tbodyData = table.tableData.map(function(rowData,i){
 			if(j == 0)
   	           return<td key={j}>{colData}</td>;
   	           else
-  	        	    return<td key={j}><CircularProgressbar percentage={colData} initialAnimation={true}/></td>;  
-  	       });  
+  	        	    return<td key={j}><CircularProgressbar percentage={colData} initialAnimation={true}/></td>;
+  	       });
 		return<tr key={i}>{rows}</tr>;
 	}
   })
@@ -105,16 +105,16 @@ export function  generateRows(table) {
 	var tbodyData = table.tableData.map(function(rowData,i){
 		if(i != 0){
 			var rows = rowData.map(function(colData,j) {
-	  	           return<td key={j}>{colData}</td>; 
-	  	       });  
+	  	           return<td key={j}>{colData}</td>;
+	  	       });
 			return<tr key={i}>{rows}</tr>;
 		}
 	  })
 	return tbodyData;
 	}
-	
+
 export function  subTreeSetting(urlLength, length,paramL2) {
-	  $(function(){ 
+	  $(function(){
 	    if(urlLength == length ){  //show -hide subtree and active class of subtree element
 		  $(".sb_navigation").show();
 		   $(".sb_navigation #subTab i.mAd_icons.ic_perf ~ span").each(function(){
@@ -125,11 +125,11 @@ export function  subTreeSetting(urlLength, length,paramL2) {
 				  $(this).parent().removeClass('active');
 				}
 			   });
-		 
+
 	  }else{
 			  $(".sb_navigation").hide();
 	  } // end of show -hide subtree and active class of subtree element
-	 
+
 
 	   if($(".list-group").children()){ // show hide side panel list
 		 if($(".list-group").children().length == 1){
@@ -138,7 +138,7 @@ export function  subTreeSetting(urlLength, length,paramL2) {
 		$('.sdbar_switch i').addClass('sw_off');
 		   }
           }
-		  
+
 
 		/*  if(that.showSubTree){   // for sub tree active class check
        $(".sb_navigation #subTab i.mAd_icons.ic_perf ~ span").each(function(){
@@ -150,13 +150,13 @@ export function  subTreeSetting(urlLength, length,paramL2) {
         }
        });
      }*/
-	 
-		
+
+
 	  });
 
 	}
-	
-	
+
+
 	export function  showHideSideChart(colType,colstats) {
 		if(colType =="datetime"){
 				$(function(){
@@ -169,29 +169,29 @@ export function  subTreeSetting(urlLength, length,paramL2) {
                    $("#tab_visualizations a").removeClass("collapsed");
 				});
 			}
-			
+
 	}
-	
+
 		export function  showHideSideTable(colstats) {
 			let flag = false
-			
+
 			for(var i =0; i<colstats.length;i++){
 				if(colstats[i].display){
 					flag=true;
 				}
 			}
-			
-		
+
+
 		if(colstats.length == 0 || !flag){
-		
+
 			$("#tab_statistics #pnl_stc").removeClass("in");
 			$("#tab_statistics a").addClass("collapsed");
 		}else{
-		
+
 			$("#tab_statistics #pnl_stc").addClass("in");
 			$("#tab_statistics a").removeClass("collapsed");
 		}
-		  
+
 	}
 export{
 	FILEUPLOAD,
