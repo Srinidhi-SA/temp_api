@@ -8,35 +8,47 @@ import {generateHeaders,generateCircularChartRows} from "../../helpers/helper";
 var dateFormat = require('dateformat');
 
 export class DetailOverlay extends React.Component {
-  constructor(){
-    super();
+  constructor(props){
+    super(props);
   }
  
+  getValues(displayName,value,name){
+	  return <p className="overlayTooltip">{displayName}&nbsp;:&nbsp;{value}</p> 
+  }
+  getDateValues(displayName,value,name){
+	  value = dateFormat(value, "mmmm d,yyyy h:MM");
+	 return <p className="overlayTooltip">{displayName}&nbsp;:&nbsp;{value}</p> 
+  }
+  getAnalysisValues(displayName,value,name){
+	  value = value.map((key,index) =>{
+		  return( <li><i class="fa fa-check"></i>&nbsp;{key}</li>);
+	  })
+	 let  analysisList = <ul class="list-unstyled">{value}</ul>;
+	   return  <p className="overlayTooltip"><h4 class="text-primary">Analysis List</h4>{analysisList}</p> 
+  }
   render() {
-   var details = this.props.details;
+   var details = this.props.details.brief_info;
    console.log("In overlay element");
    console.log(this.props.details)
+   let templateList = "";
+   let template = details.map((key,index) =>{
+	  if(key.name == "analysis list"){
+		  templateList = this.getAnalysisValues(key.displayName,key.value,key.name)
+	  }
+	  else if(key.name == "updated_at"){
+		  templateList = this.getDateValues(key.displayName,key.value,key.name)
+	  }else{
+		  templateList = this.getValues(key.displayName,key.value,key.name) 
+	  }
+	   
+	 if(index == 1 || index == 3 )
+	  return(<div>{templateList}<hr className="hr-popover"/></div>);
+	   else
+	  return( <div>{templateList}</div>);   
+   })
    return (
-		   <div>
-           <h4>Created By :
-             <span className="text-primary">{sessionStorage.userName}</span>
-           </h4>
-           <h5>Updated on :
-             <mark>{dateFormat(details.updated_at, "mmmm d,yyyy h:MM")}</mark>
-           </h5>
-           <hr className="hr-popover"/>
-           <p>
-             Data Set : {details.dataset}<br/>
-             Variable selected : <br/>
-             Variable type : </p>
-           <hr className="hr-popover"/>
-           <h4 className="text-primary">Analysis List</h4>
-           <ul className="list-unstyled">
-             <li>
-               <i className="fa fa-check"></i>
-               12</li>
-           </ul>
-           <div className="clearfix"></div>
+		   <div id="myPopover" >
+           {template}
          </div>
        );
   }

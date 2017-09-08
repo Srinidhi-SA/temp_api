@@ -10,7 +10,7 @@ import store from "../../store";
 import { C3Chart } from "../c3Chart";
 import $ from "jquery";
 
-import { updateSelectedVariables, resetSelectedVariables, setSelectedVariables } from "../../actions/dataActions";
+import { updateSelectedVariables, resetSelectedVariables, setSelectedVariables,updateDatasetVariables,handleDVSearch,handelSort,handleSelectAll } from "../../actions/dataActions";
 
 @connect(( store ) => {
     return {
@@ -18,7 +18,14 @@ import { updateSelectedVariables, resetSelectedVariables, setSelectedVariables }
         selectedVariablesCount: store.datasets.selectedVariablesCount,
         selectedMeasures: store.datasets.selectedMeasures,
         selectedDimensions: store.datasets.selectedDimensions,
-        selectedTimeDimensions: store.datasets.selectedTimeDimensions
+        selectedTimeDimensions: store.datasets.selectedTimeDimensions,
+        dataSetMeasures:store.datasets.dataSetMeasures,
+        dataSetDimensions:store.datasets.dataSetDimensions,
+        dataSetTimeDimensions:store.datasets.dataSetTimeDimensions,
+        measureAllChecked:store.datasets.measureAllChecked,
+        measureChecked:store.datasets.measureChecked,
+        dimensionAllChecked:store.datasets.dimensionAllChecked,
+        dimensionChecked:store.datasets.dimensionChecked,
     };
 } )
 
@@ -32,6 +39,9 @@ export class DataVariableSelection extends React.Component {
         this.measures = [];
         this.dimensions = [];
         this.datetime = [];
+        this.measureChkBoxList = [];
+        this.dimensionChkBoxList = [];
+        this.dimensionDateTime = [];
     }
     handleCheckboxEvents( e ) {
         this.props.dispatch( updateSelectedVariables( e ) )
@@ -48,14 +58,37 @@ export class DataVariableSelection extends React.Component {
     componentDidMount() {
         this.props.dispatch( resetSelectedVariables() );
         this.setVariables( this.dimensions, this.measures, this.datetime[this.datetime.length - 1] );
+        this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.measureChkBoxList,this.dimensionChkBoxList));
+        
     }
 
-
+    handleDVSearch(evt){
+    this.props.dispatch(handleDVSearch(evt))
+    }
+    handelSort(variableType,sortOrder){
+    	this.props.dispatch(handelSort(variableType,sortOrder))
+    }
+    handleSelectAll(evt){
+    	this.props.dispatch(handleSelectAll(evt))
+    }
     render() {
 
         console.log( "data variableSelection is called##########3" );
 
         let dataPrev = store.getState().datasets.dataPreview;
+        var that = this;
+        const popoverLeft = (
+        		  <Popover id="popover-trigger-hover-focus">
+        		<p>mAdvisor has identified this as date suggestion.This could be used for trend analysis. </p>
+        		  </Popover>
+        		);
+        
+        let timeSuggestionToolTip = (<div className="col-md-2"><OverlayTrigger trigger={['hover', 'focus']}  rootClose placement="top" overlay={popoverLeft}>
+        <a className="pover cursor">
+        <i className="pe-7s-info pe-2x"></i>
+      </a>
+    </OverlayTrigger></div>)
+        
         if ( dataPrev ) {
             console.log( "data variable selection" );
             console.log( dataPrev );
@@ -65,12 +98,18 @@ export class DataVariableSelection extends React.Component {
                 if ( this.firstLoop ) {
                     switch ( metaItem.columnType ) {
                         case "measure":
-                            //m[metaItem.slug] = metaItem.name;
-                            this.measures.push( metaItem.name );
-                            //m={};
+                           if(!metaItem.ignoreSuggestionFlag){
+                        	   this.measures.push( metaItem.name );
+                               this.measureChkBoxList.push(true);  
+                           }
                             break;
                         case "dimension":
-                            this.dimensions.push( metaItem.name );
+                        	if(!metaItem.ignoreSuggestionFlag && !metaItem.dateSuggestionFlag){
+                        		this.dimensions.push( metaItem.name );
+                        		this.dimensionChkBoxList.push(true)
+                        	}else if(metaItem.dateSuggestionFlag){
+                        		 this.dimensionDateTime.push(metaItem.name)
+                        	}
                             break;
                         case "datetime":
                             this.datetime.push( metaItem.name );
@@ -80,44 +119,50 @@ export class DataVariableSelection extends React.Component {
 
 
             } );
+            this.datetime = this.datetime.concat(this.dimensionDateTime);
             this.firstLoop = false;
-            if ( this.measures.length > 0 ) {
-                var measureTemplate = this.measures.map(( mItem, mIndex ) => {
+            
+            if ( store.getState().datasets.dataSetMeasures.length > 0 ) {
+                var measureTemplate = store.getState().datasets.dataSetMeasures.map(( mItem, mIndex ) => {
                     const mId = "chk_mea" + mIndex;
                     return (
-                        <li key={mIndex}><div className="ma-checkbox inline"><input id={mId} type="checkbox" className="measure" onChange={this.handleCheckboxEvents} value={mItem} defaultChecked={true} /><label htmlFor={mId} className="radioLabels">{mItem}</label></div> </li>
+                        <li key={mIndex}><div className="ma-checkbox inline"><input id={mId} name={mIndex} type="checkbox" className="measure" onChange={this.handleCheckboxEvents} value={mItem} checked={store.getState().datasets.measureChecked[mIndex]}   /><label htmlFor={mId} className="radioLabels">{mItem}</label></div> </li>
                     );
                 } );
             } else {
                 var measureTemplate = <label>No measure variable present</label>
             }
-            if ( this.dimensions.length > 0 ) {
-                var dimensionTemplate = this.dimensions.map(( dItem, dIndex ) => {
+            if ( store.getState().datasets.dataSetDimensions.length > 0 ) {
+                var dimensionTemplate = store.getState().datasets.dataSetDimensions.map(( dItem, dIndex ) => {
                     const dId = "chk_dim" + dIndex;
+                    
                     return (
-                        <li key={dIndex}><div className="ma-checkbox inline"><input id={dId} type="checkbox" className="dimension" onChange={this.handleCheckboxEvents} value={dItem} defaultChecked={true} /><label htmlFor={dId}>{dItem}</label></div> </li>
+                        <li key={dIndex}><div className="ma-checkbox inline"><input id={dId} name={dIndex} type="checkbox" className="dimension" onChange={this.handleCheckboxEvents} value={dItem} checked={store.getState().datasets.dimensionChecked[dIndex]} /><label htmlFor={dId}>{dItem}</label></div> </li>
                     );
                 } );
             } else {
                 var dimensionTemplate = <label>No dimension variable present</label>
             }
 
-            if ( this.datetime.length > 0 ) {
-                var datetimeTemplate = this.datetime.map(( dtItem, dtIndex ) => {
+            if ( store.getState().datasets.dataSetTimeDimensions.length > 0 ) {
+                var datetimeTemplate = store.getState().datasets.dataSetTimeDimensions.map(( dtItem, dtIndex ) => {
                     const dtId = "rad_dt" + dtIndex;
-                    return (
-                        <li key={dtIndex}><div className="ma-radio inline"><input type="radio" className="timeDimension" onChange={this.handleCheckboxEvents} name="date_type" id={dtId} value={dtItem} defaultChecked={true} /><label htmlFor={dtId}>{dtItem}</label></div></li>
-                    );
+                    if(dtIndex == 0 && $.inArray( dtItem, that.dimensionDateTime) == -1){
+                    	 return (
+                                 <li key={dtIndex}><div className="ma-radio inline"><input type="radio" className="timeDimension" onChange={this.handleCheckboxEvents} name="date_type" id={dtId} value={dtItem} defaultChecked /><label htmlFor={dtId}>{dtItem}</label></div></li>
+                             );
+                    }else{
+                    	 return (
+                                 <li key={dtIndex}><div className="ma-radio inline col-md-10"><input type="radio" className="timeDimension" onChange={this.handleCheckboxEvents} name="date_type" id={dtId} value={dtItem} /><label htmlFor={dtId}>{dtItem}</label></div>{timeSuggestionToolTip}</li>
+                             );
+                    }
+                   
                 } );
             } else {
                 var datetimeTemplate = <label>No date dimensions to display</label>
             }
 
-            const popoverLeft = (
-                <Popover id="popover-positioned-top" title="Variables List">
-                    Testing
-							  </Popover>
-            );
+           
             return (
                 <div>
 
@@ -134,24 +179,23 @@ export class DataVariableSelection extends React.Component {
                                 <div className="panel-heading"><i className="mAd_icons ic_inflnce"></i> Measures</div>
                                 <div className="panel-body">
                                     {/*  <!-- Row for select all-->*/}
-                                    <div className="row hidden">
+                                    <div className="row">
                                         <div className="col-md-4">
                                             <div className="ma-checkbox inline">
-                                                <input id="mea" type="checkbox" className="measureAll" />
-                                                <label htmlFor="mea">Select All</label>
+                                                <input id="measure" type="checkbox" className="measureAll" onChange={this.handleSelectAll.bind(this)} checked={store.getState().datasets.measureAllChecked}/>
+                                                <label htmlFor="measure">Select All</label>
                                             </div>
                                         </div>
                                         <div className="col-md-8">
                                             <div className="input-group pull-right">
-                                                <input type="text" name="search_signals" title="Search Signals" id="search_signals" className="form-control" placeholder="Search signals..." />
+                                                <input type="text" name="measure" title="Search Measures" id="measureSearch"  onChange={this.handleDVSearch.bind(this)} className="form-control" placeholder="Search measures..." />
                                                 {/*<span className="input-group-addon"><i className="fa fa-search fa-lg"></i></span>*/}
                                                 <span className="input-group-btn">
                                                     <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i className="fa fa-sort-alpha-asc fa-lg"></i> <span className="caret"></span></button>
                                                     <ul role="menu" className="dropdown-menu dropdown-menu-right">
-                                                        <li><a href="#">Name Ascending</a></li>
-                                                        <li><a href="#">Name Descending</a></li>
-                                                        <li><a href="#">Date Ascending</a></li>
-                                                        <li><a href="#">Date Descending</a></li>
+                                                        <li onClick={this.handelSort.bind(this,"measure","ASC")} className="cursor"><a>Ascending</a></li>
+                                                        <li onClick={this.handelSort.bind(this,"measure","DESC")} className="cursor"><a>Descending</a></li>
+               
                                                     </ul>
                                                 </span>
                                             </div>
@@ -182,24 +226,22 @@ export class DataVariableSelection extends React.Component {
 
                                 <div className="panel-body">
                                     {/*  <!-- Row for select all-->*/}
-                                    <div className="row hidden">
+                                    <div className="row">
                                         <div className="col-md-4">
                                             <div className="ma-checkbox inline">
-                                                <input id="dim" type="checkbox" className="dimensionAll" />
-                                                <label htmlFor="dim">Select All</label>
+                                                <input id="dimension" type="checkbox" className="dimensionAll" onChange={this.handleSelectAll.bind(this)} checked={store.getState().datasets.dimensionAllChecked}/>
+                                                <label htmlFor="dimension">Select All</label>
                                             </div>
                                         </div>
                                         <div className="col-md-8">
                                             <div className="input-group pull-right">
-                                                <input type="text" name="search_signals" title="Search Signals" id="search_signals" className="form-control" placeholder="Search signals..." />
+                                                <input type="text" name="dimension" title="Search Dimension" id="dimensionSearch" onChange={this.handleDVSearch.bind(this)}  className="form-control" placeholder="Search dimension..." />
                                                 {/* <span className="input-group-addon"><i className="fa fa-search fa-lg"></i></span>*/}
                                                 <span className="input-group-btn">
                                                     <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i className="fa fa-sort-alpha-asc fa-lg"></i> <span className="caret"></span></button>
                                                     <ul role="menu" className="dropdown-menu dropdown-menu-right">
-                                                        <li><a href="#">Name Ascending</a></li>
-                                                        <li><a href="#">Name Descending</a></li>
-                                                        <li><a href="#">Date Ascending</a></li>
-                                                        <li><a href="#">Date Descending</a></li>
+                                                        <li onClick={this.handelSort.bind(this,"dimension","ASC")} className="cursor"><a>Ascending</a></li>
+                                                        <li onClick={this.handelSort.bind(this,"dimension","DESC")} className="cursor"><a>Descending</a></li>
                                                     </ul>
                                                 </span>
                                             </div>
@@ -231,21 +273,20 @@ export class DataVariableSelection extends React.Component {
                                 <div className="panel-body">
 
                                     {/*  <!-- Row for options all-->*/}
-                                    <div className="row hidden">
+                                    <div className="row">
                                         <div className="col-md-4">
 
                                         </div>
                                         <div className="col-md-8">
                                             <div className="input-group pull-right">
-                                                <input type="text" name="search_signals" title="Search Signals" id="search_signals" className="form-control" placeholder="Search signals..." />
+                                                <input type="text" name="datetime" title="Search Time Dimensions" id="datetimeSearch" className="form-control" onChange={this.handleDVSearch.bind(this)} placeholder="Search time dimensions..." />
                                                 {/* <span className="input-group-addon"><i className="fa fa-search fa-lg"></i></span>*/}
                                                 <span className="input-group-btn">
                                                     <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i className="fa fa-sort-alpha-asc fa-lg"></i> <span className="caret"></span></button>
                                                     <ul role="menu" className="dropdown-menu dropdown-menu-right">
-                                                        <li><a href="#">Name Ascending</a></li>
-                                                        <li><a href="#">Name Descending</a></li>
-                                                        <li><a href="#">Date Ascending</a></li>
-                                                        <li><a href="#">Date Descending</a></li>
+                                                        <li onClick={this.handelSort.bind(this,"datetime","ASC")} className="cursor"><a>Ascending</a></li>
+                                                        <li onClick={this.handelSort.bind(this,"datetime","DESC")} className="cursor"><a>Descending</a></li>
+                                                       
                                                     </ul>
                                                 </span>
                                             </div>

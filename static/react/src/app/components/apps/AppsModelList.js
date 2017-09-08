@@ -7,20 +7,24 @@ import {push} from "react-router-redux";
 import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstrap";
 import {AppsCreateModel} from "./AppsCreateModel";
-import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryFlag,updateModelSummaryFlag} from "../../actions/appActions";
+import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryFlag,
+	updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement} from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
-import {STATIC_URL} from "../../helpers/env.js"
+import {SEARCHCHARLIMIT} from  "../../helpers/helper"
+import {STATIC_URL} from "../../helpers/env.js";
+import Dialog from 'react-bootstrap-dialog'
 
 
 var dateFormat = require('dateformat');
 
 
 @connect((store) => {
-	return {login_response: store.login.login_response, 
+	return {login_response: store.login.login_response,
 		modelList: store.apps.modelList,
 		modelSummaryFlag:store.apps.modelSummaryFlag,
 		modelSlug:store.apps.modelSlug,
 		currentAppId:store.apps.currentAppId,
+		model_search_element: store.apps.model_search_element
 		};
 })
 
@@ -31,21 +35,66 @@ export class AppsModelList extends React.Component {
   }
   componentWillMount() {
 	  console.log(this.props.history);
-	  
+
 	  var pageNo = 1;
 	  if(this.props.history.location.pathname.indexOf("page") != -1){
 			pageNo = this.props.history.location.pathname.split("page=")[1];
 			this.props.dispatch(getAppsModelList(pageNo));
-		}else
-		  this.props.dispatch(getAppsModelList(pageNo));
+		}else{
+			this.props.dispatch(getAppsModelList(pageNo));
+		}
+
 	}
   getModelSummary(slug){
 	this.props.dispatch(updateModelSlug(slug))
   }
+  handleModelDelete(slug){
+	  this.props.dispatch(handleModelDelete(slug,this.refs.dialog));
+  }
+  handleModelRename(slug,name){
+	  this.props.dispatch(handleModelRename(slug,this.refs.dialog,name));
+  }
+	_handleKeyPress = (e) => {
+		if (e.key === 'Enter') {
+			//console.log('searching in data list');
+			if (e.target.value != "" && e.target.value != null)
+				this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models?search=' + e.target.value + '')
+
+			this.props.dispatch(storeModelSearchElement(e.target.value));
+			this.props.dispatch(getAppsModelList(1));
+
+		}
+	}
+	onChangeOfSearchBox(e){
+		if(e.target.value==""||e.target.value==null){
+			this.props.dispatch(storeModelSearchElement(""));
+			this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models'+'')
+			this.props.dispatch(getAppsModelList(1));
+
+		}else if (e.target.value.length > SEARCHCHARLIMIT) {
+			this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models?search=' + e.target.value + '')
+		this.props.dispatch(storeModelSearchElement(e.target.value));
+		this.props.dispatch(getAppsModelList(1));
+		}
+	}
   render() {
     console.log("apps model list is called##########3");
     console.log(this.props);
-    
+		//empty search element
+		let search_element = document.getElementById('model_insights');
+		if (this.props.model_search_element != "" && (this.props.history.location.search == "" || this.props.history.location.search == null)) {
+			console.log("search is empty");
+			this.props.dispatch(storeModelSearchElement(""));
+			if (search_element)
+			document.getElementById('model_insights').value = "";
+		}
+		if(this.props.model_search_element==""&&this.props.history.location.search!=""){
+			if(search_element)
+			document.getElementById('model_insights').value = "";
+		}
+		//search element ends..
+
+
     const modelList = store.getState().apps.modelList.data;
 	if (modelList) {
 		const pages = store.getState().apps.modelList.total_number_of_pages;
@@ -79,7 +128,7 @@ export class AppsModelList extends React.Component {
 					<div className="card-footer">
 					<div className="left_div">
 					<span className="footerTitle"></span>{sessionStorage.userName}
-					<span className="footerTitle">{dateFormat(data.created_at, "mmmm d,yyyy h:MM")}</span>
+					<span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy h:MM")}</span>
 					</div>
 
 					<div className="card-deatils">
@@ -93,11 +142,11 @@ export class AppsModelList extends React.Component {
 					<i className="ci pe-7s-more pe-rotate-90 pe-2x"></i>
 					</a>
 					<ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-					<li>
+					<li onClick={this.handleModelRename.bind(this,data.slug,data.name)}>
 					<a className="dropdown-item" href="#renameCard" data-toggle="modal">
 					<i className="fa fa-edit"></i> Rename</a>
 					</li>
-					<li>
+					<li onClick={this.handleModelDelete.bind(this,data.slug)} >
 					<a className="dropdown-item" href="#deleteCard" data-toggle="modal">
 					<i className="fa fa-trash-o"></i> Delete</a>
 					</li>
@@ -111,6 +160,50 @@ export class AppsModelList extends React.Component {
 		});
 		return (
 				<div>
+				<div className="page-head">
+					{/*<!-- <ol class="breadcrumb">
+						<li><a href="#">Story</a></li>
+						<li class="active">Sales Performance Report</li>
+					</ol> -->*/}
+					<div className="row">
+					<div className="col-md-8">
+
+					</div>
+						<div className="col-md-4">
+							<div className="input-group pull-right">
+
+								<input type="text" name="model_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Model Insights" id="model_insights" className="form-control" placeholder="Search Model insights..."/>
+
+								{/*<span className="input-group-btn">
+									<button type="button" className="btn btn-default" title="Select All Card">
+										<i className="fa fa-address-card-o fa-lg"></i>
+									</button>
+									<button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false">
+										<i className="fa fa-sort-alpha-asc fa-lg"></i>
+										<span className="caret"></span>
+									</button>
+									<ul role="menu" className="dropdown-menu dropdown-menu-right">
+										<li>
+											<a href="#">Name Ascending</a>
+										</li>
+										<li>
+											<a href="#">Name Descending</a>
+										</li>
+										<li>
+											<a href="#">Date Ascending</a>
+										</li>
+										<li>
+											<a href="#">Date Descending</a>
+										</li>
+									</ul>
+								</span>*/}
+							</div>
+						</div>
+					</div>
+
+					<div class="clearfix"></div>
+				</div>
+				<div className="main-content">
 				<div className="row">
 				{addButton}
 				{appsModelList}
@@ -122,7 +215,9 @@ export class AppsModelList extends React.Component {
 				</div>
 				</div>
 				</div>
-				
+				 <Dialog ref="dialog" />
+				</div>
+
 		);
 	}else {
 		return (
@@ -133,7 +228,12 @@ export class AppsModelList extends React.Component {
 	}
 }
   handleSelect(eventKey) {
+
+		if (this.props.model_search_element) {
+			this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models?search=' + this.props.model_search_element+'?page='+eventKey+'')
+		} else
 		this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models?page='+eventKey+'')
+
 		this.props.dispatch(getAppsModelList(eventKey));
 	}
 }

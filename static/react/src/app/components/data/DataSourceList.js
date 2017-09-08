@@ -84,25 +84,25 @@ export class DataSourceList extends React.Component {
 						</div>
 						</div>)
 					}else if(field.fieldType.toLowerCase() == INPUT.toLowerCase()){
-						return(<div class="form-group" id={j}>
-						<label for="fl1" class="col-sm-3 control-label">{field.labelName}</label>
-						<div class="col-sm-9">
-						<input id={j} type="text" name={field.labelName} placeholder={field.placeHolder} class="form-control" onChange={this.handleInputChange.bind(this)}/>
+						return(<div className="form-group" id={j}>
+						<label for="fl1" className="col-sm-3 control-label">{field.labelName}</label>
+						<div className="col-sm-9">
+						<input id={j} type="text" name={field.labelName} placeholder={field.placeHolder} className="form-control" onChange={this.handleInputChange.bind(this)}/>
 						</div>
 						</div>)
 					}
 					else if(field.fieldType.toLowerCase() == PASSWORD.toLowerCase()){
-						return(<div class="form-group" id={j}>
-						<label for="fl1" class="col-sm-3 control-label">{field.labelName}</label>
-						<div class="col-sm-9">
-						<input  id={j} type="password" name={field.labelName}  placeholder={field.placeHolder} class="form-control" onChange={this.handleInputChange.bind(this)}/>
+						return(<div className="form-group" id={j}>
+						<label for="fl1" className="col-sm-3 control-label">{field.labelName}</label>
+						<div className="col-sm-9">
+						<input  id={j} type="password" name={field.labelName}  placeholder={field.placeHolder} className="form-control" onChange={this.handleInputChange.bind(this)}/>
 						</div>
 						</div>)
 					}
 
 				});
 				if(data.dataSourceType.toLowerCase() != FILEUPLOAD.toLowerCase()){
-					formList = <div id={divId}><form role="form" class="form-horizontal">{fieldsList}</form></div>
+					formList = <div id={divId}><form role="form" className="form-horizontal">{fieldsList}</form></div>
 				}else{
 					formList = <div id={divId}>{fieldsList}</div>
 				}

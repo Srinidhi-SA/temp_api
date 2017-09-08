@@ -40,11 +40,18 @@ export class ScoreVariableSelection extends React.Component {
 		let dataPrev = store.getState().datasets.dataPreview;
 		 const metaData = dataPrev.meta_data.columnData;
 		 let renderSelectBox = null;
-		if(metaData){
-			renderSelectBox =  <select disabled className="form-control" id="createScoreAnalysisList">
-			<option key={store.getState().apps.modelTargetVariable} value={store.getState().apps.modelTargetVariable}>{store.getState().apps.modelTargetVariable}</option>
-			</select>
-		}
+		 if(metaData){
+				renderSelectBox =  <select className="form-control" id="createModelAnalysisList">
+				{metaData.map((metaItem,metaIndex) =>{
+				 if(metaItem.columnType !="datetime" && !metaItem.ignoreSuggestionFlag && !metaItem.dateSuggestionFlag){
+					 return(<option key={metaIndex} value={metaItem.name}>{metaItem.name}</option>)
+				 }
+				}
+				)}
+				</select>
+			}else{
+				renderSelectBox = <option>No Variables</option>
+			}
 			return(
 					 <div className="side-body">
 			            <div className="page-head">

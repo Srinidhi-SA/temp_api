@@ -240,6 +240,36 @@
 					</div>
                   </div>
                   <div role="tabpanel" class="tab-pane" id="performance">
+					<div class="row">
+					 <div className="col-xs-11">
+                               
+<div id="topMenu">
+<div id="box">
+<div class="scroller scroller-left"><i class="fa fa-arrow-left"></i></div>
+<div class="scroller scroller-right"><i class="fa fa-arrow-right"></i></div>
+<div class="wrapper">
+<ul class="nav nav-tabs list">
+<li class="item"><a href="#" class="active" title="Average Number of cart 1"><i class="mAd_icons ic_perf"></i><span>Average Number of cart 1</span></a></li>
+<li class="item"><a href="#" title="Average Number of cart 2"><i class="mAd_icons ic_perf"></i><span>Average Number of cart 2</span></a></li>
+<li class="item"><a href="#" title="Average Number of cart 3"><i class="mAd_icons ic_perf"></i><span>Average Number of cart 3</span></a></li>
+<li class="item"><a href="#" title="Average Number of cart 4"><i class="mAd_icons ic_perf"></i><span>Average Number of cart 4</span></a></li>
+<li class="item"><a href="#" title="Average Number of cart 5"><i class="mAd_icons ic_perf"></i><span>Average Number of cart 5</span></a></li>
+<li class="item"><a href="#" title="Average Number of cart 6"><i class="mAd_icons ic_perf"></i><span>Average Number of cart 6</span></a></li>
+<li class="item"><a href="#" title="Average Number of cart 7"><i class="mAd_icons ic_perf"></i><span>Average Number of cart 7</span></a></li>
+<li class="item"><a href="#" title="Average Number of cart 8"><i class="mAd_icons ic_perf"></i><span>Average Number of cart 8</span></a></li>
+<li class="item"><a href="#" title="Average Number of cart 9"><i class="mAd_icons ic_perf"></i><span>Average Number of cart 9</span></a></li>
+<li class="item"><a href="#" title="Average Number of cart 10"><i class="mAd_icons ic_perf"></i><span>Average Number of cart 10</span></a></li>
+<li class="item"><a href="#" title="Average Number of cart 11"><i class="mAd_icons ic_perf"></i><span>Average Number of cart 11</span></a></li>
+<li class="item"><a href="#" title="Average Number of cart 12"><i class="mAd_icons ic_perf"></i><span>Average Number of cart 12</span></a></li>
+<li class="item"><a href="#" title="Average Number of cart 13"><i class="mAd_icons ic_perf"></i><span>Average Number of cart 13</span></a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="col-xs-1"></div>
+</div>
+				  
 					<div >
 						<ul id="tabs2" class="scroll_tabs_container">
 						<li><a href="#" class="active" title="Average Number of cart 1 Custom lengthy box"><i class="mAd_icons ic_perf"></i><span>Average Number of cart 1 Custom lengthy box</span></a></li>
@@ -260,6 +290,7 @@
                     <div class="sb_navigation">
                       <div class="row">
                         <div class="col-xs-11">
+						<!--
                           <div class="scroller scroller-left"><i class="glyphicon glyphicon-chevron-left"></i></div>
                           <div class="scroller scroller-right"><i class="glyphicon glyphicon-chevron-right"></i></div>
                           <div class="wrapper">
@@ -278,7 +309,7 @@
                               <li><a href="#" title="Average Number of cart 12"><i class="mAd_icons ic_perf"></i><span>Average Number of cart 12</span></a></li>
                               <li><a href="#" title="Average Number of cart 13"><i class="mAd_icons ic_perf"></i><span>Average Number of cart 13</span></a></li>
                             </ul>
-                          </div>
+                          </div> -->
                         </div>
                         <div class="col-xs-1">
                           <div class="input-group">
@@ -440,13 +471,87 @@
 <!-- Placed at the end of the document so the pages load faster --> 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> 
 <script src="js/bootstrap.min.js"></script> 
-
+<!--
 <script src="js/jquery.scrolltabs.js"></script>
 <script src="js/jquery.mousewheel.js"></script>
 
 <script src="js/uiScripts.js"></script>
 <script>
 $('#tabs2').scrollTabs();
+</script>-->
+<script>
+var hidWidth;
+var scrollBarWidths = 40;
+
+var widthOfList = function(){
+  var itemsWidth = 0;
+  $('.item').each(function(){
+    var itemWidth = $(this).outerWidth();
+    itemsWidth+=itemWidth;
+  });
+  //alert(itemsWidth);
+  return itemsWidth;
+};
+
+var widthOfHidden = function(){
+  return (($('.wrapper').outerWidth())-widthOfList()-getLeftPosi())-scrollBarWidths;
+};
+
+var getLeftPosi = function(){
+  //return $('.item:first-child').position().left;
+  return $('.list').position().left;
+};
+
+var reAdjust = function(){
+  if (($('.wrapper').outerWidth()) < widthOfList()) {
+    $('.scroller-right').show();
+  }
+  else {
+    $('.scroller-right').hide();
+   	/*
+    var leftPos = $('.item:first-child').position().left;
+	$('.item').animate({left:"-="+leftPos+"px"},'slow');
+    */
+  }
+  
+  if (getLeftPosi()<0) {
+    $('.scroller-left').show();
+  }
+  else {
+    $('.item').animate({left:"-="+getLeftPosi()+"px"},'slow');
+  	$('.scroller-left').hide();
+  }
+}
+
+reAdjust();
+
+$(window).on('resize',function(e){  
+  	reAdjust();
+});
+
+$('.scroller-right').click(function() {
+  
+  $('.scroller-left').fadeIn('slow');
+  $('.scroller-right').fadeOut('slow');
+  
+  $('.list').animate({left:"+="+widthOfHidden()+"px"},'slow',function(){
+  	//reAdjust();
+  });  	
+});
+
+$('.scroller-left').click(function() {
+  	//var leftPos = $('.item:first-child').position().left;
+	//$('.item').animate({left:"-="+getLeftPosi()+"px"},'slow');
+  	//$('.scroller-left').hide();
+  
+	$('.scroller-right').fadeIn('slow');
+	$('.scroller-left').fadeOut('slow');
+  
+  	$('.list').animate({left:"-="+getLeftPosi()+"px"},'slow',function(){
+  	
+  	});
+	
+});    
 </script>
 </body>
 </html>

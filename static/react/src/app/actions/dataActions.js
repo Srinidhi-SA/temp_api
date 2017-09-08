@@ -1,11 +1,12 @@
-
+import React from "react";
 import {API} from "../helpers/env";
-import {PERPAGE,DULOADERPERVALUE,DEFAULTINTERVAL} from "../helpers/helper";
+import {PERPAGE,DULOADERPERVALUE,DEFAULTINTERVAL,SUCCESS,FAILED} from "../helpers/helper";
 import store from "../store";
 import {dataPreviewInterval,dataUploadLoaderValue} from "./dataUploadActions";
 import Dialog from 'react-bootstrap-dialog'
-import { showLoading, hideLoading } from 'react-redux-loading-bar'
-
+import { showLoading, hideLoading } from 'react-redux-loading-bar';
+import {isEmpty} from "../helpers/helper";
+let refDialogBox = "";
 
 function getHeader(token){
 	return {
@@ -14,8 +15,8 @@ function getHeader(token){
 	};
 }
 
+
 export function getDataList(pageNo) {
-	
 	return (dispatch) => {
 		return fetchDataList(pageNo,sessionStorage.userToken).then(([response, json]) =>{
 			if(response.status === 200){
@@ -29,10 +30,24 @@ export function getDataList(pageNo) {
 }
 
 function fetchDataList(pageNo,token) {
-	return fetch(API+'/api/datasets/?page_number='+pageNo+'&page_size='+PERPAGE+'',{
-		method: 'get',
-		headers: getHeader(token)
-	}).then( response => Promise.all([response, response.json()]));
+
+	console.log(token)
+	let search_element = store.getState().datasets.data_search_element
+	console.log(search_element)
+	if(search_element!=""&&search_element!=null){
+		console.log("calling for search element!!")
+		return fetch(API+'/api/datasets/?name='+search_element+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
+			method: 'get',
+			headers: getHeader(token)
+			}).then( response => Promise.all([response, response.json()]));
+	}else{
+		return fetch(API+'/api/datasets/?page_number='+pageNo+'&page_size='+PERPAGE+'',{
+			method: 'get',
+			headers: getHeader(token)
+		}).then( response => Promise.all([response, response.json()]));
+	}
+
+
 }
 
 function fetchDataError(json) {
@@ -78,41 +93,32 @@ function fetchDataPreview(slug) {
 function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
 	console.log("data preview from api to store")
 	var slug = "";
-	if(dataPreview.analysis_done){
+	if(dataPreview.status == SUCCESS){
 		slug = dataPreview.slug;
 		if(interval != undefined){
 			clearInterval(interval);
 			dispatch(dispatchDataPreview(dataPreview,slug));
 			dispatch(hideDULoaderPopup());
 			dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
-			return {
-				type: "SHOW_DATA_PREVIEW",
-			}
 		} else{
 			dispatch(dispatchDataPreview(dataPreview,slug));
-			dispatch(hideDULoaderPopup());
-			dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
-			return {
-				type: "SHOW_DATA_PREVIEW",
-			}
 		}
-	}else{
-		if(interval != undefined){
-			return {
-				type: "DATA_PREVIEW_FOR_LOADER",
-				dataPreview,
-				slug,
-			}
+		return {
+			type: "DATA_PREVIEW",
+			dataPreview,
+			slug,
 		}
-		else {
-			return {
-				type: "DATA_PREVIEW",
-				dataPreview,
-				slug,
-			}
+	}else if(dataPreview.status == FAILED){
+		clearInterval(interval);
+		dispatch(hideDULoaderPopup());
+		 bootbox.alert("The uploaded file does not contain data in readable format. Please check the source file.")
+		dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
+		return {
+			type: "DATA_PREVIEW_FOR_LOADER",
+			dataPreview,
+			slug,
 		}
-
-	} 
+	}
 }
 
 function dispatchDataPreview(dataPreview,slug){
@@ -159,10 +165,16 @@ function fetchAllDataError(json) {
 	}
 }
 export function fetchAllDataSuccess(doc){
-	var data = doc;
+	var data = ""
+	var slug = "";
+	if(doc.data[0] != undefined){
+		slug  = doc.data[0].slug;
+		data = doc;
+	}
 	return {
 		type: "DATA_ALL_LIST",
 		data,
+		slug
 	}
 }
 export function selectedAnalysisList(evt){
@@ -181,31 +193,62 @@ export function selectedAnalysisList(evt){
 		}
 	}
 }
+export function unselectAllPossibleAnalysis(){
+	let unselectAll =[];
+	return {
+				type: "UNSELECT_All_ANALYSIS_TYPE",
+				unselectAll
+			}
+	
+}
+
 export function updateSelectedVariables(evt){
 	var variableName = evt.target.value;
+
 	if(evt.target.className == "measure"){
+		//Calculate whether select all should be check or not
+		var meaChkBoxList = store.getState().datasets.measureChecked;
+		meaChkBoxList[evt.target.name] = evt.target.checked;
+		 var isAllChecked = meaChkBoxList.filter(function(c) {
+	    	return c;
+	    }).length === meaChkBoxList.length;
+
 		if(evt.target.checked){
 			return {
 				type: "SELECTED_MEASURES",
-				variableName
+				variableName,
+				meaChkBoxList,
+				isAllChecked
 			}
 		}else{
 			return {
 				type: "UNSELECT_MEASURES",
-				variableName
+				variableName,
+				meaChkBoxList,
+				isAllChecked
 			}
 		}
 	}
 	else if(evt.target.className == "dimension"){
+		var dimChkBoxList = store.getState().datasets.dimensionChecked;
+		dimChkBoxList[evt.target.name] = evt.target.checked;
+		 var isAllChecked = dimChkBoxList.filter(function(c) {
+	    	return c;
+	    }).length === dimChkBoxList.length;
 		if(evt.target.checked){
 			return {
 				type: "SELECTED_DIMENSIONS",
-				variableName
+				variableName,
+				dimChkBoxList,
+				isAllChecked,
+
 			}
 		}else{
 			return {
 				type: "UNSELECT_DIMENSION",
-				variableName
+				variableName,
+				dimChkBoxList,
+				isAllChecked,
 			}
 		}
 	}
@@ -289,24 +332,24 @@ export function hideDULoaderPopup(){
 }
 export function showDialogBox(slug,dialog,dispatch){
 	Dialog.setOptions({
-		  defaultOkLabel: 'Yes',
-		  defaultCancelLabel: 'No',
-		})
+		defaultOkLabel: 'Yes',
+		defaultCancelLabel: 'No',
+	})
 	dialog.show({
-		  title: 'Delete Dataset',
-		  body: 'Are you sure you want to delete dataset?',
-		  actions: [
-		    Dialog.CancelAction(),
-		    Dialog.OKAction(() => {
-		    	deleteDataset(slug,dialog,dispatch)
-		    })
-		  ],
-		  bsSize: 'small',
-		  onHide: (dialogBox) => {
-		    dialogBox.hide()
-		    console.log('closed by clicking background.')
-		  }
-		});
+		title: 'Delete Dataset',
+		body: 'Are you sure you want to delete dataset?',
+		actions: [
+		          Dialog.CancelAction(),
+		          Dialog.OKAction(() => {
+		        	  deleteDataset(slug,dialog,dispatch)
+		          })
+		          ],
+		          bsSize: 'medium',
+		          onHide: (dialogBox) => {
+		        	  dialogBox.hide()
+		        	  console.log('closed by clicking background.')
+		          }
+	});
 }
 export function handleDelete(slug,dialog) {
 	return (dispatch) => {
@@ -335,7 +378,186 @@ function deleteDatasetAPI(slug){
 			deleted:true,
 		}),
 	}).then( response => Promise.all([response, response.json()]));
-	
+
+}
+
+
+
+export function handleRename(slug,dialog,name){
+	return (dispatch) => {
+		showRenameDialogBox(slug,dialog,dispatch,name)
 	}
-	
-	
+}
+function showRenameDialogBox(slug,dialog,dispatch,name){
+	const customBody = (
+			<div className="form-group">
+			<label for="fl1" className="col-sm-6 control-label">Enter Dataset New Name</label>
+			<input className="form-control"  id="idRenameDataset" type="text" defaultValue={name}/>
+			</div>
+	)
+
+	dialog.show({
+		title: 'Rename Dataset',
+		body: customBody,
+		actions: [
+		          Dialog.CancelAction(),
+		          Dialog.OKAction(() => {
+		        	  renameDataset(slug,dialog,$("#idRenameDataset").val(),dispatch)
+		          })
+		          ],
+		          bsSize: 'medium',
+		          onHide: (dialogBox) => {
+		        	  dialogBox.hide()
+		        	  console.log('closed by clicking background.')
+		          }
+	});
+}
+
+function renameDataset(slug,dialog,newName,dispatch){
+	dispatch(showLoading());
+	Dialog.resetOptions();
+	return renameDatasetAPI(slug,newName).then(([response, json]) =>{
+		if(response.status === 200){
+			dispatch(getDataList(store.getState().datasets.current_page));
+			dispatch(hideLoading());
+		}
+		else{
+			dialog.showAlert("Error occured , Please try after sometime.");
+			dispatch(hideLoading());
+		}
+	})
+}
+function renameDatasetAPI(slug,newName){
+	return fetch(API+'/api/datasets/'+slug+'/',{
+		method: 'put',
+		headers: getHeader(sessionStorage.userToken),
+		body:JSON.stringify({
+			name:newName,
+		}),
+	}).then( response => Promise.all([response, response.json()]));
+	}
+
+	export function storeSearchElement(search_element){
+	  return {
+			type: "SEARCH_DATA",
+			search_element
+		}
+	}
+
+
+export function updateDatasetVariables(measures,dimensions,timeDimensions,measureChkBoxList,dimChkBoxList){
+
+	return {
+		type: "DATASET_VARIABLES",
+		measures,
+		dimensions,
+		timeDimensions,
+		measureChkBoxList,
+		dimChkBoxList
+	}
+}
+
+export function handleDVSearch(evt){
+	var name = evt.target.value;
+	switch (  evt.target.name ) {
+	case "measure":
+		return {
+		type: "SEARCH_MEASURE",
+		name,
+	}
+		break;
+	case "dimension":
+		return {
+		type: "SEARCH_DIMENSION",
+		name,
+	}
+		break;
+	case "datetime":
+		return {
+		type: "SEARCH_TIMEDIMENSION",
+		name,
+	}
+		break;
+	}
+
+}
+export function handelSort(variableType,sortOrder){
+	switch ( variableType ) {
+	case "measure":
+		let measures = store.getState().datasets.dataSetMeasures.slice().sort(function(a,b) { return (a.toLowerCase() < b.toLowerCase()) ? -1 : 1;});
+		if(sortOrder == "DESC" )
+			measures = store.getState().datasets.dataSetMeasures.slice().sort(function(a,b) { return (a.toLowerCase() > b.toLowerCase()) ? -1 : 1;});
+		return {
+			type: "SORT_MEASURE",
+			measures,
+		}
+		break;
+	case "dimension":
+		let dimensions = store.getState().datasets.dataSetDimensions.slice().sort(function(a,b) { return (a.toLowerCase() < b.toLowerCase()) ? -1 : 1;});
+		if(sortOrder == "DESC" )
+			dimensions = store.getState().datasets.dataSetDimensions.slice().sort(function(a,b) { return (a.toLowerCase() > b.toLowerCase()) ? -1 : 1;});
+		return {
+			type: "SORT_DIMENSION",
+			dimensions,
+		}
+		break;
+	case "datetime":
+		let timedimensions = store.getState().datasets.dataSetTimeDimensions.slice().sort(function(a,b) { return (a.toLowerCase() < b.toLowerCase()) ? -1 : 1;});
+		if(sortOrder == "DESC" )
+			timedimensions = store.getState().datasets.dataSetTimeDimensions.slice().sort(function(a,b) { return (a.toLowerCase() > b.toLowerCase()) ? -1 : 1;});
+		return {
+			type: "SORT_TIMEDIMENSION",
+			timedimensions,
+		}
+		break;
+	}
+}
+
+export function handleSelectAll(evt){
+	switch ( evt.target.id ) {
+	case "measure":
+		$("#measureSearch").val("");
+		var meaChkBoxList = store.getState().datasets.measureChecked;
+		meaChkBoxList = meaChkBoxList.map(function() {
+            return evt.target.checked
+        })
+	if(evt.target.checked){
+		let measures = store.getState().datasets.ImmutableMeasures;
+		return {
+			type: "SELECT_ALL_MEASURES",
+			measures,
+			meaChkBoxList
+		}
+	}else{
+		return {
+			type: "UNSELECT_ALL_MEASURES",
+			meaChkBoxList
+		}
+	}
+		break;
+	case "dimension":
+		var diaChkBoxList = store.getState().datasets.dimensionChecked;
+		diaChkBoxList = diaChkBoxList.map(function() {
+            return evt.target.checked
+        })
+        if(evt.target.checked){
+    		let dimension = store.getState().datasets.ImmutableDimension;
+    		return {
+    			type: "SELECT_ALL_DIMENSION",
+    			dimension,
+    			diaChkBoxList
+    		}
+    	}else{
+    		return {
+    			type: "UNSELECT_ALL_DIMENSION",
+    			diaChkBoxList
+    		}
+    	}
+
+		break;
+	case "datetime":
+
+		break;
+	}
+}
+
