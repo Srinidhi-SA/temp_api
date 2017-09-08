@@ -15401,7 +15401,8 @@ html{
 .chart-data-icon .fa-search-plus{
     float: right;
 	cursor: pointer;
-	color:#00998c
+	color:#00998c;
+	z-index:10 !important;
 }
 
 .c3{
