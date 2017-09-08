@@ -226,7 +226,7 @@ export class Signals extends React.Component {
                     <button className="close-icon" type="reset"></button>
 					</form>
 					</div>
-                    <span class="input-group-btn">
+                    {/*<span class="input-group-btn">
                       <button type="button" class="btn btn-default" title="Select All Card">
                         <i class="fa fa-address-card-o fa-lg"></i>
                       </button>
@@ -248,12 +248,12 @@ export class Signals extends React.Component {
                           <a href="#">Date Descending</a>
                         </li>
                       </ul>
-                    </span>
+                    </span>*/}
                   </div>
 
                 </div>
               </div>
-             
+
 
             <div class="clearfix"></div>
           </div>

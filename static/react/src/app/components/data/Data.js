@@ -195,7 +195,7 @@ export class Data extends React.Component {
                 <div class="input-group pull-right">
                   <input type="text" name="search_data" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search Data" id="search_data" class="form-control" placeholder="Search data..."/>
 
-                  <span class="input-group-btn">
+                  {/*<span class="input-group-btn">
                     <button type="button" class="btn btn-default" title="Select All Card">
                       <i class="fa fa-address-card-o fa-lg"></i>
                     </button>
@@ -217,7 +217,7 @@ export class Data extends React.Component {
                         <a href="#">Date Descending</a>
                       </li>
                     </ul>
-                  </span>
+                  </span>*/}
                 </div>
               </div>
             </div>

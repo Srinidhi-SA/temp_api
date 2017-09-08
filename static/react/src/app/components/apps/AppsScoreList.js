@@ -181,7 +181,7 @@ export class AppsScoreList extends React.Component {
                 <div className="input-group pull-right">
 
                   <input type="text" name="score_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Score Insights" id="score_insights" className="form-control" placeholder="Search Score insights..."/>
-                  <span className="input-group-btn">
+                  {/*<span className="input-group-btn">
                     <button type="button" className="btn btn-default" title="Select All Card">
                       <i className="fa fa-address-card-o fa-lg"></i>
                     </button>
@@ -203,7 +203,7 @@ export class AppsScoreList extends React.Component {
                         <a href="#">Date Descending</a>
                       </li>
                     </ul>
-                  </span>
+                  </span>*/}
                 </div>
               </div>
             </div>
