@@ -4,7 +4,8 @@ import {PERPAGE,DULOADERPERVALUE,DEFAULTINTERVAL,SUCCESS,FAILED} from "../helper
 import store from "../store";
 import {dataPreviewInterval,dataUploadLoaderValue} from "./dataUploadActions";
 import Dialog from 'react-bootstrap-dialog'
-import { showLoading, hideLoading } from 'react-redux-loading-bar'
+import { showLoading, hideLoading } from 'react-redux-loading-bar';
+import {isEmpty} from "../helpers/helper";
 let refDialogBox = "";
 
 function getHeader(token){
@@ -164,10 +165,16 @@ function fetchAllDataError(json) {
 	}
 }
 export function fetchAllDataSuccess(doc){
-	var data = doc;
+	var data = ""
+	var slug = "";
+	if(doc.data[0] != undefined){
+		slug  = doc.data[0].slug;
+		data = doc;
+	}
 	return {
 		type: "DATA_ALL_LIST",
 		data,
+		slug
 	}
 }
 export function selectedAnalysisList(evt){

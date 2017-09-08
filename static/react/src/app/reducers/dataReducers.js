@@ -73,7 +73,7 @@ export default function reducer(state = {
 		return {
 			...state,
 			allDataSets: action.data,
-			selectedDataSet:action.data.data[0].slug
+			selectedDataSet:action.slug
 		}
 	}
 	break;
