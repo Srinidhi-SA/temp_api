@@ -66,8 +66,8 @@ class Dataset(models.Model):
     auto_update_duration = models.IntegerField(default=99999)
 
     input_file = models.FileField(upload_to='datasets', null=True)
-    db_type = models.CharField(max_length=100, null=True)
-    db_details = models.TextField(default="{}")
+    datasource_type = models.CharField(max_length=100, null=True)
+    datasource_details = models.TextField(default="{}")
     preview = models.TextField(default="{}")
 
     meta_data = models.TextField(default="{}")
@@ -88,15 +88,15 @@ class Dataset(models.Model):
         ordering = ['-created_at', '-updated_at']
 
     def __str__(self):
-        return " : ".join(["{}".format(x) for x in [self.name, self.db_type, self.slug]])
+        return " : ".join(["{}".format(x) for x in [self.name, self.datasource_type, self.slug]])
 
     def as_dict(self):
         return {
             'name': self.name,
             'slug': self.slug,
             'auto_update': self.auto_update,
-            'db_type': self.db_type,
-            'db_details': self.db_details,
+            'datasource_type': self.datasource_type,
+            'datasource_details': self.datasource_details,
             'created_on': self.created_at,  # TODO: depricate this value
             'created_at': self.created_at,
             'bookmarked': self.bookmarked
@@ -112,8 +112,9 @@ class Dataset(models.Model):
         super(Dataset, self).save(*args, **kwargs)
 
     def create(self):
-        self.csv_header_clean()
-        self.copy_file_to_destination()
+        if self.datasource_type in ['file', 'fileUpload']:
+            self.csv_header_clean()
+            self.copy_file_to_destination()
         self.add_to_job()
 
     def add_to_job(self):
@@ -133,20 +134,30 @@ class Dataset(models.Model):
         self.save()
 
     def generate_config(self, *args, **kwrgs):
-        inputFile = self.get_input_file()
-        return {
-            "config": {
-                "FILE_SETTINGS": {
-                    "inputfile": [inputFile],
-                },
-                "COLUMN_SETTINGS": {
-                    "analysis_type": ["metaData"],
-                },
-                "DATE_SETTINGS": {
+        inputFile = ""
+        datasource_details = ""
+        if self.datasource_type in ['file', 'fileUpload']:
+            inputFile = self.get_input_file()
+        else:
+            datasource_details = json.loads(self.datasource_details)
 
-                },
+        return {
+                "config": {
+                    "FILE_SETTINGS": {
+                        "inputfile": [inputFile],
+                    },
+                    "COLUMN_SETTINGS": {
+                        "analysis_type": ["metaData"],
+                    },
+                    "DATE_SETTINGS": {
+
+                    },
+                    "DATA_SOURCE": {
+                        "datasource_type": self.datasource_type,
+                        "datasource_details": datasource_details
+                    }
+                }
             }
-        }
 
     def csv_header_clean(self):
         CLEAN_DATA = []
@@ -220,17 +231,33 @@ class Dataset(models.Model):
         return "/home/marlabs" + self.get_hdfs_relative_path()
 
     def get_input_file(self):
-        type = self.file_remote
-        if type == 'emr_file':
-            return "file://{}".format(self.input_file.path)
-        elif type == 'hdfs':
-            # return "file:///home/hadoop/data_date.csv"
-            return "hdfs://{}:{}{}".format(
-                settings.HDFS.get("host"),
-                settings.HDFS.get("hdfs_port"),
-                self.get_hdfs_relative_file_path())
-        elif type == 'fake':
-            return "file:///asdasdasdasd"
+
+        if self.datasource_type in ['file', 'fileUpload']:
+            type = self.file_remote
+            if type == 'emr_file':
+                return "file://{}".format(self.input_file.path)
+            elif type == 'hdfs':
+                # return "file:///home/hadoop/data_date.csv"
+                return "hdfs://{}:{}{}".format(
+                    settings.HDFS.get("host"),
+                    settings.HDFS.get("hdfs_port"),
+                    self.get_hdfs_relative_file_path())
+            elif type == 'fake':
+                return "file:///asdasdasdasd"
+        else:
+            return ""
+
+    def get_datasource_info(self):
+        datasource_details = ""
+        if self.datasource_type in ['file', 'fileUpload']:
+            inputFile = self.get_input_file()
+        else:
+            datasource_details = json.loads(self.datasource_details)
+
+        return {
+                        "datasource_type": self.datasource_type,
+                        "datasource_details": datasource_details
+                    }
 
     def common_config(self):
 
@@ -369,6 +396,7 @@ class Insight(models.Model):
 
         config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
         config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
+        config['config']["DATA_SOURCE"] = self.dataset.get_datasource_info()
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
         # config['config']["META_HELPER"] = self.create_configuration_meta_data()
 
@@ -542,6 +570,7 @@ class Trainer(models.Model):
 
         config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
         config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
+        config['config']["DATA_SOURCE"] = self.dataset.get_datasource_info()
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
         # config['config']["META_HELPER"] = self.create_configuration_meta_data()
 
@@ -730,6 +759,7 @@ class Score(models.Model):
 
         config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
         config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
+        config['config']["DATA_SOURCE"] = self.dataset.get_datasource_info()
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
         # config['config']["META_HELPER"] = self.create_configuration_meta_data()
 
