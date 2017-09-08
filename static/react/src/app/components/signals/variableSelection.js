@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 import {push} from "react-router-redux";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "react-bootstrap";
 import store from "../../store";
-import {selectedAnalysisList,resetSelectedVariables} from "../../actions/dataActions";
+import {selectedAnalysisList,resetSelectedVariables,unselectAllPossibleAnalysis} from "../../actions/dataActions";
 import {openCreateSignalModal,closeCreateSignalModal,updateCsLoaderValue} from "../../actions/createSignalActions";
 import {createSignal,setPossibleAnalysisList,emptySignalAnalysis} from "../../actions/signalActions";
 import {DataVariableSelection} from "../data/DataVariableSelection";
@@ -36,6 +36,7 @@ export class VariableSelection extends React.Component {
     console.log("preview data check");
 	this.signalFlag =true;
 	this.possibleTrend = null;
+	this.prevSelectedVar = null;
 	
 	props.dispatch(emptySignalAnalysis());
 	}
@@ -78,11 +79,17 @@ this.props.dispatch(createSignal(postData));
 }
 
 setPossibleList(e){
-	
 	//alert(e.target.value);
      this.props.dispatch(setPossibleAnalysisList(e.target.value));
 }
 
+componentDidMount(){
+	var that = this;
+	$(function(){
+		that.props.dispatch(setPossibleAnalysisList($('#signalVariableList option:selected').val()));
+	});
+	
+}
 
 componentDidUpdate(){
 	console.log("trend disbale check:::: ");
@@ -122,21 +129,18 @@ componentDidUpdate(){
 
 	// possible analysis list -------------------------------------
 	
-   const possibleAnalysis = dataPrev.meta_data.possibleAnalysis.target_variable;
-    /*const possibleAnalysis = {"dimension": [
-       {"name": "Descriptive analysis", "id": "descriptive-analysis"},
-       {"name": "Dimension vs. Dimension", "id": "dimension-vs-dimension"},
-       {"name": "Predictive modeling", "id": "predictive-modeling"}
-   ],
-       "measure": [
-           {"name": "Descriptive analysis", "id": "descriptive-analysis"},
-           {"name": "Measure vs. Dimension", "id": "measure-vs-dimension"},
-           {"name": "Measure vs. Measure", "id": "measure-vs-measure"}
-       ], };*/
-        let renderPossibleAnalysis = null, renderSubList=null;
+    const possibleAnalysis = dataPrev.meta_data.possibleAnalysis.target_variable;
+    let renderPossibleAnalysis = null, renderSubList=null;
 		
+ // possible analysis options -----
      if(possibleAnalysis){
-		 if($('#signalVariableList option:selected').val() == "dimension"){	
+		 if(that.prevSelectedVar != that.props.getVarType){
+			 $(".possibleAnalysis").prop("checked",false);
+			 that.props.dispatch(unselectAllPossibleAnalysis());
+		 }
+		// if($('#signalVariableList option:selected').val() == "dimension"){	
+		if(that.props.getVarType == "dimension"){
+			that.prevSelectedVar ="dimension";
          renderSubList = possibleAnalysis.dimension.map((metaItem,metaIndex) =>{
 		   let id = "chk_analysis"+ metaIndex;
 		   let trendId = metaIndex +1;
@@ -145,7 +149,8 @@ componentDidUpdate(){
 			  return(<div key={metaIndex} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} onChange={this.handleAnlysisList.bind(this)}  /><label htmlFor={id}>{metaItem.display}</label></div>);
 		
        });
-	 }else if($('#signalVariableList option:selected').val() == "measure"){
+	 }else if(that.props.getVarType ==  "measure"){
+		 that.prevSelectedVar = "measure";
 	    renderSubList = possibleAnalysis.measure.map((metaItem,metaIndex) =>{
 		   let id = "chk_analysis"+ metaIndex;
 		   let trendId = metaIndex +1;

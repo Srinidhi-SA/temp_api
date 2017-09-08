@@ -1,7 +1,9 @@
 import React from "react";
 import {NavLink,withRouter} from "react-router-dom";
 import {connect} from "react-redux";
-import {hideDataPreview} from "../../actions/dataActions";
+import {hideDataPreview,getDataList} from "../../actions/dataActions";
+import {getList} from "../../actions/signalActions";
+
 
 
 @connect((store) => {
@@ -19,17 +21,19 @@ componentDidMount(){
 	console.log("Main side navbar props:::");
    console.log(this);
 }
-  componentWillUpdate() {  
+  componentWillUpdate() {
      //this.setState({currentTab: "otherTab"});
     }
 
 hideDataPrev(e){
 	this.props.dispatch(hideDataPreview());
+  this.props.dispatch(getList(sessionStorage.userToken, 1));
+  this.props.dispatch(getDataList(1));
 	/*$("."+e.target).addClass("active");
 	$(".sdb").each(function(){
 		$(this).removeClass("active");
 	})*/
-	
+
 }
   render() {
     console.log("LeftPanel")

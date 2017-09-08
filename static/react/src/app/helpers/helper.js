@@ -33,6 +33,13 @@ const APPSDEFAULTINTERVAL = 15000;
 const CUSTOMERDATA = "Customer Data";
 const HISTORIALDATA = "Historial Data";
 const EXTERNALDATA = "External Data";
+const DELETEMODEL = "Delete Model";
+const RENAMEMODEL = "Rename Model";
+const DELETESCORE = "Delete Score";
+const RENAMESCORE = "Rename Score";
+const DELETEINSIGHT = "Delete Insight";
+const RENAMEINSIGHT = "Rename Insight";
+const SEARCHCHARLIMIT = 3;
 
 
 export function generateHeaders(table) {
@@ -146,6 +153,21 @@ export function  subTreeSetting(urlLength, length,paramL2) {
 
 	}
 	
+	
+	export function  showHideSideChart(colType) {
+		if(colType =="datetime"){
+				$(function(){
+			       $("#tab_visualizations #pnl_visl").removeClass("in");
+                   $("#tab_visualizations a").addClass("collapsed");
+				});
+			}else{
+				$(function(){
+			       $("#tab_visualizations #pnl_visl").addClass("in");
+                   $("#tab_visualizations a").removeClass("collapsed");
+				});
+			}
+	}
+	
 export{
 	FILEUPLOAD,
 	MYSQL,
@@ -170,5 +192,11 @@ export{
 	CUSTOMERDATA,
 	HISTORIALDATA,
 	EXTERNALDATA,
-	
+	DELETEMODEL,
+	RENAMEMODEL,
+	DELETESCORE,
+	RENAMESCORE,
+	DELETEINSIGHT,
+	RENAMEINSIGHT,
+	SEARCHCHARLIMIT,
 	}
