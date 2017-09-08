@@ -134,7 +134,7 @@ export class RoboInsightList extends React.Component {
               <div className="card-footer">
                 <div className="left_div">
                   <span className="footerTitle"></span>{sessionStorage.userName}
-                  <span className="footerTitle">{dateFormat(data.created_at, "mmmm d,yyyy h:MM")}</span>
+                  <span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy h:MM")}</span>
                 </div>
 
                 <div className="card-deatils">
