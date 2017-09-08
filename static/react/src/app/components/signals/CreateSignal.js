@@ -70,7 +70,6 @@ export class CreateSignal extends React.Component {
 
 		if(store.getState().datasets&&store.getState().datasets.dataPreview&&store.getState().datasets.dataPreviewFlag){
 			let _link = "/data/"+this.selectedData.name;
-			//let _link= "/signals/datapreview/"+this.selectedData.name;
 			return(<Redirect to={_link}/>);
 		}
 		if(dataSets){
@@ -81,8 +80,6 @@ export class CreateSignal extends React.Component {
 					return(<option key={dataSet.slug}  value={dataSet.slug}>{dataSet.name}</option>);
 				}
 			});
-
-
 
 		}else{
 			renderSelectBox = "No Datasets"

@@ -177,7 +177,7 @@ export default function reducer(state = {
 		return {
 			...state,
 			selectedTimeDimensions:action.variableName,
-			selectedVariablesCount:state.selectedVariablesCount+1,
+			selectedVariablesCount:state.selectedVariablesCount,
 		}
 	}
 	break;

@@ -15479,4 +15479,7 @@ padding: 0px 15px 15px;
 	cursor:pointer
 }   
 
+.overlayTooltip{
+word-break: break-word;
+}
 
