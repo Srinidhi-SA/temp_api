@@ -239,7 +239,7 @@ export class DataPreview extends React.Component {
 			const tableThTemplate=dataPrev.columnData.map((thElement, thIndex) => {
 				console.log("th check::");
 				console.log(thElement);
-				const cls = thElement.slug + " dropdown";
+				let cls = thElement.slug + " dropdown";
 				let iconCls =null;
 				switch(thElement.columnType){
 					case "measure":
@@ -254,7 +254,25 @@ export class DataPreview extends React.Component {
 					
 				}
 				
+				
 				const anchorCls =thElement.slug + " dropdown-toggle";
+				
+				if(thElement.ignoreSuggestionFlag){
+					cls = cls + " greyout-col";
+				
+				return(
+						<th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)} title={thElement.ignoreSuggestionMsg}>
+						<a href="#" data-toggle="dropdown" className={anchorCls}><i className={iconCls}></i> {thElement.name}</a>
+						{/*<ul className="dropdown-menu">
+               <li><a href="#">Ascending</a></li>
+               <li><a href="#">Descending</a></li>
+               <li><a href="#">Measures</a></li>
+               <li><a href="#">Dimensions</a></li>
+            </ul>*/}
+
+						</th>
+				);
+			}else{
 				return(
 						<th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)}>
 						<a href="#" data-toggle="dropdown" className={anchorCls}><i className={iconCls}></i> {thElement.name}</a>
@@ -267,6 +285,8 @@ export class DataPreview extends React.Component {
 
 						</th>
 				);
+				
+			}
 			});
 			//  data.splice(0,1);
 			const tableRowsTemplate = dataPrev.sampleData.map((trElement, trIndex) => {

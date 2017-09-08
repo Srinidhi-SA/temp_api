@@ -15486,3 +15486,7 @@ padding: 0px 15px 15px;
 
 /*.slick-next:before, .slick-prev:before { color:red !important}*/
 .slick-next, .slick-prev { z-index:10 }
+
+.greyout-col{
+	background-color: silver;
+}
