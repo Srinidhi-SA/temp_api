@@ -173,7 +173,7 @@ export class Signals extends React.Component {
                 <div className="card-deatils">
                   {/*<!-- Popover Content link -->*/}
                   <OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={story}/> < /Popover>}>
-                    <a href="#" className="pover">
+                    <a className="pover cursor">
                       <i className="ci pe-7s-info pe-2x"></i>
                     </a>
                   </OverlayTrigger>
