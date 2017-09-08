@@ -13,6 +13,7 @@ from django.db import models
 from django.template.defaultfilters import slugify
 
 from api.lib import hadoop, fab_helper
+from api.helper import convert_json_object_into_list_of_object
 
 # Create your models here.
 
@@ -294,7 +295,7 @@ class Dataset(models.Model):
                 'updated_at': self.updated_at,
             }
         )
-        return brief_info
+        return convert_json_object_into_list_of_object(brief_info)
 
 
 class Insight(models.Model):
@@ -472,8 +473,8 @@ class Insight(models.Model):
             if 'COLUMN_SETTINGS' in config:
                 column_settings = config['COLUMN_SETTINGS']
                 brief_info.update({
-                    'variable selected': column_settings.get('result_column'),
-                    'variable type': column_settings.get('analysis_type')
+                    'variable selected': column_settings.get('result_column')[0],
+                    'variable type': column_settings.get('analysis_type')[0]
                 })
 
             if 'FILE_SETTINGS' in config:
@@ -490,7 +491,7 @@ class Insight(models.Model):
             }
         )
 
-        return brief_info
+        return convert_json_object_into_list_of_object(brief_info)
 
 
 class Trainer(models.Model):
@@ -626,14 +627,14 @@ class Trainer(models.Model):
             if 'COLUMN_SETTINGS' in config:
                 column_settings = config['COLUMN_SETTINGS']
                 brief_info.update({
-                    'variable selected': column_settings.get('result_column')
+                    'variable selected': column_settings.get('result_column')[0]
                 })
 
             if 'FILE_SETTINGS' in config:
                 file_setting = config['FILE_SETTINGS']
                 brief_info.update({
-                    'analysis type': file_setting.get('analysis_type'),
-                    'train_test_split': file_setting.get('train_test_split')
+                    'analysis type': file_setting.get('analysis_type')[0],
+                    'train_test_split': file_setting.get('train_test_split')[0]
                 })
 
         brief_info.update(
@@ -644,7 +645,7 @@ class Trainer(models.Model):
             }
         )
 
-        return brief_info
+        return convert_json_object_into_list_of_object(brief_info)
 
 """
 {
@@ -831,14 +832,14 @@ class Score(models.Model):
             if 'COLUMN_SETTINGS' in config:
                 column_settings = config['COLUMN_SETTINGS']
                 brief_info.update({
-                    'variable selected': column_settings.get('result_column')
+                    'variable selected': column_settings.get('result_column')[0]
                 })
 
             if 'FILE_SETTINGS' in config:
                 file_setting = config['FILE_SETTINGS']
                 brief_info.update({
-                    'analysis type': file_setting.get('analysis_type'),
-                    'algorithm name': file_setting.get('algorithmslug'),
+                    'analysis type': file_setting.get('analysis_type')[0],
+                    'algorithm name': file_setting.get('algorithmslug')[0],
                 })
 
         brief_info.update(
@@ -849,7 +850,7 @@ class Score(models.Model):
                 'model':self.trainer.name
             }
         )
-        return brief_info
+        return convert_json_object_into_list_of_object(brief_info)
 
 
 class Robo(models.Model):

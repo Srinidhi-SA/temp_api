@@ -750,6 +750,17 @@ def return_status_of_job_log(job_url):
     return jobserver_status.get(final_status)
 
 
+def convert_json_object_into_list_of_object(datas):
+    list_of_objects = []
+    for key in datas:
+        temp = dict()
+        temp['displayName'] = key
+        temp['value'] = datas[key]
+        list_of_objects.append(temp)
+
+    return list_of_objects
+
+
 
 
 
