@@ -111,7 +111,7 @@ class Dataset(models.Model):
         super(Dataset, self).save(*args, **kwargs)
 
     def create(self):
-        if self.input_file._file is not None:
+        if self.datasource_type in ['file']:
             self.csv_header_clean()
             self.copy_file_to_destination()
         self.add_to_job()
@@ -135,7 +135,7 @@ class Dataset(models.Model):
     def generate_config(self, *args, **kwrgs):
         inputFile = ""
         datasource_details = ""
-        if self.input_file._file is not None:
+        if self.datasource_type in ['file']:
             inputFile = self.get_input_file()
         else:
             datasource_details = json.loads(self.datasource_details)
@@ -231,7 +231,7 @@ class Dataset(models.Model):
 
     def get_input_file(self):
 
-        if self.input_file._file is not None:
+        if self.datasource_type in ['file']:
             type = self.file_remote
             if type == 'emr_file':
                 return "file://{}".format(self.input_file.path)
@@ -248,7 +248,7 @@ class Dataset(models.Model):
 
     def get_datasource_info(self):
         datasource_details = ""
-        if self.input_file._file is not None:
+        if self.datasource_type in ['file']:
             inputFile = self.get_input_file()
         else:
             datasource_details = json.loads(self.datasource_details)

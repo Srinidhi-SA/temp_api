@@ -44,11 +44,13 @@ class DatasetView(viewsets.ModelViewSet):
 
         if 'input_file' in data:
             data['input_file'] =  request.FILES.get('input_file')
+            data['datasource_type'] = 'file'
             if data['input_file'] is None:
                 data['name'] = data.get('name', data.get('datasource_type', "H") + "_"+ str(random.randint(1000000,10000000)))
             else:
                 data['name'] = data.get('name', data['input_file'].name)
         elif 'datasource_details' in data:
+            data['input_file'] = None
             data['name'] = data.get('name', data.get('datasource_type', "H") + "_" + str(random.randint(1000000, 10000000)))
 
         # question: why to use user.id when it can take, id, pk, object.
