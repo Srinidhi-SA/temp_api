@@ -132,7 +132,7 @@ export class OverViewPage extends React.Component {
     let breadcrumb_label = "Signals";
     if (this.props.urlPrefix) {
       that.urlPrefix = this.props.urlPrefix;
-	
+
 		if (this.props.urlPrefix != "/signals")
         breadcrumb_label = that.urlPrefix;
     }
@@ -360,7 +360,7 @@ export class OverViewPage extends React.Component {
                       </div>
                       <div className="clearfix"></div>
                     </div>
- 
+
                     <div className="panel-body">
                       <div className="card full-width-tabs">
                         <ul className="nav nav-tabs" id="guide-tabs" role="tablist">
@@ -370,17 +370,17 @@ export class OverViewPage extends React.Component {
                         <div className="tab-content">
                           <div className="sb_navigation">
                             <div className="row">
-                              <div className="col-xs-12">
-                              
-                               
+                              <div className="col-xs-12" id = "subTab">
+
+
                                     <Slider {...settings}>{varList}</Slider>
                               </div>
- 
+
                     <div className="clearfix"></div>
                   </div>
-                  
+
                     </div>
-                       
+
                           <div className="content_scroll container-fluid">
                             <div className="row row-offcanvas row-offcanvas-left">
 
