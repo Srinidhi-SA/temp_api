@@ -365,3 +365,61 @@ UI_VERSION = "0.8"
 ERROR_MESSAGE = {
     'upload_error': 'Code had a weakness. Now it is broken.'
 }
+
+BRIEF_INFO_CONFIG = {
+    'number of rows': 'Number of Rows',
+    'number of columns': 'Number of Coulmns',
+    'number of measures': 'Number of Measures',
+    'number of dimensions': 'Number of Dimensions',
+    'number of time dimension': 'Number of Date',
+    'created_by': 'Created By',
+    'updated_at': 'Updated On',
+    'variable selected': 'Variable Selected',
+    'variable type': 'Variable Type',
+    'dataset': 'Dataset',
+    'analysis list': 'Analysis List',
+    'train_test_split': 'Train Test Split',
+    'algorithm name': 'Algorithm Name',
+    'model': 'Model',
+    'file_size': 'File Size'
+}
+
+FIRST_ORDER = [
+    'created_by',
+    'updated_at',
+]
+
+SECOND_ORDER = [
+    'dataset',
+    'variable selected',
+    'variable type',
+]
+
+DATASET_ORDER = [
+    'number of rows',
+    'number of columns',
+    'number of measures',
+    'number of dimensions',
+    'number of time dimension',
+    'file_size'
+]
+
+THIRD_ORDER = [
+    'analysis list',
+    'train_test_split',
+    'model',
+    'algorithm name'
+]
+
+ORDER_DATASET = FIRST_ORDER + SECOND_ORDER + DATASET_ORDER
+ORDER_SIGNAL = FIRST_ORDER + SECOND_ORDER + THIRD_ORDER
+ORDER_TRAINER = FIRST_ORDER + SECOND_ORDER + THIRD_ORDER
+ORDER_SCORE = FIRST_ORDER + SECOND_ORDER + THIRD_ORDER
+
+ORDER_DICT = {
+    'dataset': ORDER_DATASET,
+    'signal': ORDER_SIGNAL,
+    'trainer': ORDER_TRAINER,
+    'score': ORDER_SCORE
+}
+

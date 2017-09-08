@@ -750,13 +750,26 @@ def return_status_of_job_log(job_url):
     return jobserver_status.get(final_status)
 
 
-def convert_json_object_into_list_of_object(datas):
+def convert_json_object_into_list_of_object(datas, order_type='dataset'):
+    from django.conf import settings
+    # import pdb;pdb.set_trace()
+
+    order_dict = settings.ORDER_DICT
+    order_by = order_dict[order_type]
+
+    brief_name = settings.BRIEF_INFO_CONFIG
+    # ordered_datas = dict()
+    # for item in order_by:
+    #     ordered_datas[item] = datas[item]
+
     list_of_objects = []
-    for key in datas:
-        temp = dict()
-        temp['displayName'] = key
-        temp['value'] = datas[key]
-        list_of_objects.append(temp)
+    for key in order_by:
+        if key in datas:
+            temp = dict()
+            temp['name'] = key
+            temp['displayName'] = brief_name[key]
+            temp['value'] = datas[key]
+            list_of_objects.append(temp)
 
     return list_of_objects
 

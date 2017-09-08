@@ -268,6 +268,7 @@ class Dataset(models.Model):
         return config
 
     def get_brief_info(self):
+        list_objects = []
         brief_info = dict()
         config = self.get_config()
         sample = {
@@ -293,9 +294,10 @@ class Dataset(models.Model):
             {
                 'created_by': self.created_by.username,
                 'updated_at': self.updated_at,
+                'dataset': self.name
             }
         )
-        return convert_json_object_into_list_of_object(brief_info)
+        return convert_json_object_into_list_of_object(brief_info, 'dataset')
 
 
 class Insight(models.Model):
@@ -491,7 +493,7 @@ class Insight(models.Model):
             }
         )
 
-        return convert_json_object_into_list_of_object(brief_info)
+        return convert_json_object_into_list_of_object(brief_info, 'signal')
 
 
 class Trainer(models.Model):
@@ -645,7 +647,7 @@ class Trainer(models.Model):
             }
         )
 
-        return convert_json_object_into_list_of_object(brief_info)
+        return convert_json_object_into_list_of_object(brief_info, 'trainer')
 
 """
 {
@@ -850,7 +852,7 @@ class Score(models.Model):
                 'model':self.trainer.name
             }
         )
-        return convert_json_object_into_list_of_object(brief_info)
+        return convert_json_object_into_list_of_object(brief_info, 'score')
 
 
 class Robo(models.Model):
