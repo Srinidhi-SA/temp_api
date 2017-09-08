@@ -41,6 +41,7 @@ export class DataVariableSelection extends React.Component {
         this.datetime = [];
         this.measureChkBoxList = [];
         this.dimensionChkBoxList = [];
+        this.dimensionDateTime = [];
     }
     handleCheckboxEvents( e ) {
         this.props.dispatch( updateSelectedVariables( e ) )
@@ -75,6 +76,19 @@ export class DataVariableSelection extends React.Component {
         console.log( "data variableSelection is called##########3" );
 
         let dataPrev = store.getState().datasets.dataPreview;
+        var that = this;
+        const popoverLeft = (
+        		  <Popover id="popover-trigger-hover-focus">
+        		<p>mAdvisor has identified this as date suggestion.This could be used for trend analysis. </p>
+        		  </Popover>
+        		);
+        
+        let timeSuggestionToolTip = (<div className="col-md-2"><OverlayTrigger trigger={['hover', 'focus']}  rootClose placement="top" overlay={popoverLeft}>
+        <a className="pover cursor">
+        <i className="pe-7s-info pe-2x"></i>
+      </a>
+    </OverlayTrigger></div>)
+        
         if ( dataPrev ) {
             console.log( "data variable selection" );
             console.log( dataPrev );
@@ -84,14 +98,18 @@ export class DataVariableSelection extends React.Component {
                 if ( this.firstLoop ) {
                     switch ( metaItem.columnType ) {
                         case "measure":
-                            //m[metaItem.slug] = metaItem.name;
-                            this.measures.push( metaItem.name );
-                            this.measureChkBoxList.push(true);
-                            //m={};
+                           if(!metaItem.ignoreSuggestionFlag){
+                        	   this.measures.push( metaItem.name );
+                               this.measureChkBoxList.push(true);  
+                           }
                             break;
                         case "dimension":
-                            this.dimensions.push( metaItem.name );
-                            this.dimensionChkBoxList.push(true)
+                        	if(!metaItem.ignoreSuggestionFlag && !metaItem.dateSuggestionFlag){
+                        		this.dimensions.push( metaItem.name );
+                        		this.dimensionChkBoxList.push(true)
+                        	}else if(metaItem.dateSuggestionFlag){
+                        		 this.dimensionDateTime.push(metaItem.name)
+                        	}
                             break;
                         case "datetime":
                             this.datetime.push( metaItem.name );
@@ -101,6 +119,7 @@ export class DataVariableSelection extends React.Component {
 
 
             } );
+            this.datetime = this.datetime.concat(this.dimensionDateTime);
             this.firstLoop = false;
             
             if ( store.getState().datasets.dataSetMeasures.length > 0 ) {
@@ -116,6 +135,7 @@ export class DataVariableSelection extends React.Component {
             if ( store.getState().datasets.dataSetDimensions.length > 0 ) {
                 var dimensionTemplate = store.getState().datasets.dataSetDimensions.map(( dItem, dIndex ) => {
                     const dId = "chk_dim" + dIndex;
+                    
                     return (
                         <li key={dIndex}><div className="ma-checkbox inline"><input id={dId} name={dIndex} type="checkbox" className="dimension" onChange={this.handleCheckboxEvents} value={dItem} checked={store.getState().datasets.dimensionChecked[dIndex]} /><label htmlFor={dId}>{dItem}</label></div> </li>
                     );
@@ -127,19 +147,22 @@ export class DataVariableSelection extends React.Component {
             if ( store.getState().datasets.dataSetTimeDimensions.length > 0 ) {
                 var datetimeTemplate = store.getState().datasets.dataSetTimeDimensions.map(( dtItem, dtIndex ) => {
                     const dtId = "rad_dt" + dtIndex;
-                    return (
-                        <li key={dtIndex}><div className="ma-radio inline"><input type="radio" className="timeDimension" onChange={this.handleCheckboxEvents} name="date_type" id={dtId} value={dtItem} defaultChecked={true} /><label htmlFor={dtId}>{dtItem}</label></div></li>
-                    );
+                    if(dtIndex == 0 && $.inArray( dtItem, that.dimensionDateTime) == -1){
+                    	 return (
+                                 <li key={dtIndex}><div className="ma-radio inline"><input type="radio" className="timeDimension" onChange={this.handleCheckboxEvents} name="date_type" id={dtId} value={dtItem} defaultChecked /><label htmlFor={dtId}>{dtItem}</label></div></li>
+                             );
+                    }else{
+                    	 return (
+                                 <li key={dtIndex}><div className="ma-radio inline col-md-10"><input type="radio" className="timeDimension" onChange={this.handleCheckboxEvents} name="date_type" id={dtId} value={dtItem} /><label htmlFor={dtId}>{dtItem}</label></div>{timeSuggestionToolTip}</li>
+                             );
+                    }
+                   
                 } );
             } else {
                 var datetimeTemplate = <label>No date dimensions to display</label>
             }
 
-            const popoverLeft = (
-                <Popover id="popover-positioned-top" title="Variables List">
-                    Testing
-							  </Popover>
-            );
+           
             return (
                 <div>
 
@@ -170,8 +193,8 @@ export class DataVariableSelection extends React.Component {
                                                 <span className="input-group-btn">
                                                     <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i className="fa fa-sort-alpha-asc fa-lg"></i> <span className="caret"></span></button>
                                                     <ul role="menu" className="dropdown-menu dropdown-menu-right">
-                                                        <li onClick={this.handelSort.bind(this,"measure","ASC")}><a href="#">Ascending</a></li>
-                                                        <li onClick={this.handelSort.bind(this,"measure","DESC")}><a href="#">Descending</a></li>
+                                                        <li onClick={this.handelSort.bind(this,"measure","ASC")} className="cursor"><a>Ascending</a></li>
+                                                        <li onClick={this.handelSort.bind(this,"measure","DESC")} className="cursor"><a>Descending</a></li>
                
                                                     </ul>
                                                 </span>
@@ -217,8 +240,8 @@ export class DataVariableSelection extends React.Component {
                                                 <span className="input-group-btn">
                                                     <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i className="fa fa-sort-alpha-asc fa-lg"></i> <span className="caret"></span></button>
                                                     <ul role="menu" className="dropdown-menu dropdown-menu-right">
-                                                        <li onClick={this.handelSort.bind(this,"dimension","ASC")}><a href="#">Ascending</a></li>
-                                                        <li onClick={this.handelSort.bind(this,"dimension","DESC")}><a href="#">Descending</a></li>
+                                                        <li onClick={this.handelSort.bind(this,"dimension","ASC")} className="cursor"><a>Ascending</a></li>
+                                                        <li onClick={this.handelSort.bind(this,"dimension","DESC")} className="cursor"><a>Descending</a></li>
                                                     </ul>
                                                 </span>
                                             </div>
@@ -250,7 +273,7 @@ export class DataVariableSelection extends React.Component {
                                 <div className="panel-body">
 
                                     {/*  <!-- Row for options all-->*/}
-                                    <div className="row hidden">
+                                    <div className="row">
                                         <div className="col-md-4">
 
                                         </div>
@@ -261,8 +284,8 @@ export class DataVariableSelection extends React.Component {
                                                 <span className="input-group-btn">
                                                     <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i className="fa fa-sort-alpha-asc fa-lg"></i> <span className="caret"></span></button>
                                                     <ul role="menu" className="dropdown-menu dropdown-menu-right">
-                                                        <li onClick={this.handelSort.bind(this,"datetime","ASC")}><a href="#">Ascending</a></li>
-                                                        <li onClick={this.handelSort.bind(this,"datetime","DESC")}><a href="#">Descending</a></li>
+                                                        <li onClick={this.handelSort.bind(this,"datetime","ASC")} className="cursor"><a>Ascending</a></li>
+                                                        <li onClick={this.handelSort.bind(this,"datetime","DESC")} className="cursor"><a>Descending</a></li>
                                                        
                                                     </ul>
                                                 </span>

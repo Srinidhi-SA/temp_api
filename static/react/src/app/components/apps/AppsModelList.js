@@ -128,7 +128,7 @@ export class AppsModelList extends React.Component {
 					<div className="card-footer">
 					<div className="left_div">
 					<span className="footerTitle"></span>{sessionStorage.userName}
-					<span className="footerTitle">{dateFormat(data.created_at, "mmmm d,yyyy h:MM")}</span>
+					<span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy h:MM")}</span>
 					</div>
 
 					<div className="card-deatils">
@@ -173,8 +173,8 @@ export class AppsModelList extends React.Component {
 							<div className="input-group pull-right">
 
 								<input type="text" name="model_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Model Insights" id="model_insights" className="form-control" placeholder="Search Model insights..."/>
-								
-								<span className="input-group-btn">
+
+								{/*<span className="input-group-btn">
 									<button type="button" className="btn btn-default" title="Select All Card">
 										<i className="fa fa-address-card-o fa-lg"></i>
 									</button>
@@ -196,7 +196,7 @@ export class AppsModelList extends React.Component {
 											<a href="#">Date Descending</a>
 										</li>
 									</ul>
-								</span>
+								</span>*/}
 							</div>
 						</div>
 					</div>

@@ -59,7 +59,8 @@ function triggerDataUpload(token) {
                 datasource_details: dataSourceDetails,
                 datasource_type: store.getState().dataSource.selectedDataSrcType
 
-            } ),
+            }),
+
 		}).then( response => Promise.all([response, response.json()]));
 
 	}
@@ -70,12 +71,10 @@ function triggerDataUpload(token) {
 
 function dataUploadSuccess(data,dispatch) {
 	dataPreviewInterval = setInterval(function(){
-		if(!data.analysis_done){
 			if(store.getState().datasets.dULoaderValue < LOADERMAXPERVALUE){
 				dispatch(dataUploadLoaderValue(store.getState().datasets.dULoaderValue+DULOADERPERVALUE));
 			}
 			dispatch(getDataSetPreview(data.slug,dataPreviewInterval));
-		}
 	},DEFAULTINTERVAL);
 	return {
 		type: "HIDE_MODAL",

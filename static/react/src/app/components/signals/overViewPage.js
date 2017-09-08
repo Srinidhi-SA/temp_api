@@ -17,6 +17,7 @@ import {Card} from "./Card";
 import store from "../../store";
 import {getSignalAnalysis} from "../../actions/signalActions";
 import {STATIC_URL} from "../../helpers/env.js"
+import Slider from "react-slick"
 
 //import {SignalAnalysisPage} from "./signals/SignalAnalysisPage";
 //let showSubTree=false;
@@ -132,9 +133,18 @@ export class OverViewPage extends React.Component {
     if (this.props.urlPrefix) {
       that.urlPrefix = this.props.urlPrefix;
 
-      if (this.props.urlPrefix != "/signals")
+		if (this.props.urlPrefix != "/signals")
         breadcrumb_label = that.urlPrefix;
-      }
+    }
+
+	var settings = {
+	dots: false,
+	infinite: false,
+	speed: 500,
+	slidesToShow: 6,
+	slidesToScroll: 1
+	//swipeToSlide: true
+	};
 
     if (isEmpty(this.props.signal)) {
 
@@ -350,6 +360,7 @@ export class OverViewPage extends React.Component {
                       </div>
                       <div className="clearfix"></div>
                     </div>
+
                     <div className="panel-body">
                       <div className="card full-width-tabs">
                         <ul className="nav nav-tabs" id="guide-tabs" role="tablist">
@@ -359,21 +370,17 @@ export class OverViewPage extends React.Component {
                         <div className="tab-content">
                           <div className="sb_navigation">
                             <div className="row">
-                              <div className="col-xs-11">
-                                <div className="scroller scroller-left">
-                                  <i className="glyphicon glyphicon-chevron-left"></i>
-                                </div>
-                                <div className="scroller scroller-right">
-                                  <i className="glyphicon glyphicon-chevron-right"></i>
-                                </div>
-                                <div className="wrapper">
-                                  <ul className="nav nav-tabs list" id="subTab">
-                                    {varList}
-                                  </ul>
-                                </div>
+                              <div className="col-xs-12" id = "subTab">
+
+
+                                    <Slider {...settings}>{varList}</Slider>
                               </div>
-                            </div>
-                          </div>
+
+                    <div className="clearfix"></div>
+                  </div>
+
+                    </div>
+
                           <div className="content_scroll container-fluid">
                             <div className="row row-offcanvas row-offcanvas-left">
 

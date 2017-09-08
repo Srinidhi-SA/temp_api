@@ -13,7 +13,7 @@ import ReactDOM from 'react-dom';
 import {hideDataPreview} from "../../actions/dataActions";
 import {Button} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"
-import {showHideSideChart} from "../../helpers/helper.js"
+import {showHideSideChart,showHideSideTable} from "../../helpers/helper.js"
 
 
 
@@ -39,6 +39,7 @@ export class DataPreview extends React.Component {
 		//this.buttonsTemplate=null;
 		this.hideDataPreview = this.hideDataPreview.bind(this);
 		this.chartId = "_side";
+		this.firstTimeSideTable = [];
 	}
 
 	hideDataPreview(){
@@ -140,6 +141,7 @@ export class DataPreview extends React.Component {
 			
 
 		});
+		showHideSideTable(this.firstTimeSideTable);
 
 	}
 
@@ -150,13 +152,14 @@ export class DataPreview extends React.Component {
 		const chkClass = $(e.target).attr('class');
 		let dataPrev = this.props.dataPreview.meta_data;
 		dataPrev.columnData.map((item, i) => {
-			
-			showHideSideChart(item.columnType); // hide side chart on datetime selection
+			 
+			showHideSideChart(item.columnType); // hide side chart on datetime selection 
 			
 			if(chkClass.indexOf(item.slug) !== -1){
-
+                console.log(item);
 				const sideChartUpdate = item.chartData;
 				const sideTableUpdate = item.columnStats;
+				showHideSideTable(sideTableUpdate); // hide side table on blank or all display false
 				console.log("checking side table data:; ");
 				console.log(sideTableUpdate);
 				$("#side-chart").empty();
@@ -166,7 +169,7 @@ export class DataPreview extends React.Component {
 					if(tableItem.display){
 						return(  <tr key={tableIndex}>
 						<td className="item">{tableItem.displayName}</td>
-						<td>{tableItem.value}</td>
+						<td>&nbsp; : {tableItem.value}</td>
 						</tr>
 						);
 					}
@@ -222,7 +225,7 @@ export class DataPreview extends React.Component {
  
 							<div key={i} className="col-md-2 co-sm-4 col-xs-6">
  
-							<h3>
+							<h3 className="text-center">
 							{item.value} <br/><small>{item.displayName}</small>
 							</h3>
 							</div>
@@ -236,7 +239,7 @@ export class DataPreview extends React.Component {
 			const tableThTemplate=dataPrev.columnData.map((thElement, thIndex) => {
 				console.log("th check::");
 				console.log(thElement);
-				const cls = thElement.slug + " dropdown";
+				let cls = thElement.slug + " dropdown";
 				let iconCls =null;
 				switch(thElement.columnType){
 					case "measure":
@@ -251,7 +254,25 @@ export class DataPreview extends React.Component {
 					
 				}
 				
+				
 				const anchorCls =thElement.slug + " dropdown-toggle";
+				
+				if(thElement.ignoreSuggestionFlag){
+					cls = cls + " greyout-col";
+				
+				return(
+						<th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)} title={thElement.ignoreSuggestionMsg}>
+						<a href="#" data-toggle="dropdown" className={anchorCls}><i className={iconCls}></i> {thElement.name}</a>
+						{/*<ul className="dropdown-menu">
+               <li><a href="#">Ascending</a></li>
+               <li><a href="#">Descending</a></li>
+               <li><a href="#">Measures</a></li>
+               <li><a href="#">Dimensions</a></li>
+            </ul>*/}
+
+						</th>
+				);
+			}else{
 				return(
 						<th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)}>
 						<a href="#" data-toggle="dropdown" className={anchorCls}><i className={iconCls}></i> {thElement.name}</a>
@@ -264,6 +285,8 @@ export class DataPreview extends React.Component {
 
 						</th>
 				);
+				
+			}
 			});
 			//  data.splice(0,1);
 			const tableRowsTemplate = dataPrev.sampleData.map((trElement, trIndex) => {
@@ -284,13 +307,14 @@ export class DataPreview extends React.Component {
 			const sideChart = dataPrev.columnData[0].chartData;
 			console.log("chart-----------")
 			const sideTable = dataPrev.columnData[0].columnStats;
+			this.firstTimeSideTable = sideTable; //show hide side table
 			console.log("checking side table data:; ");
 			console.log(sideTable);
 			const sideTableTemaplte=sideTable.map((tableItem,tableIndex)=>{
 				if(tableItem.display){
 					return(  <tr key={tableIndex}>
 					<td className="item">{tableItem.displayName}</td>
-					<td>: {tableItem.value}</td>
+					<td>&nbsp; : {tableItem.value}</td>
 					</tr>
 					);
 				}

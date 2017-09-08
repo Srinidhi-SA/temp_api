@@ -35,7 +35,8 @@ var dateFormat = require('dateformat');
     selectedDataSet: store.datasets.selectedDataSet,
     dataPreviewFlag: store.datasets.dataPreviewFlag,
     dataUploadLoaderModal: store.datasets.dataUploadLoaderModal,
-    data_search_element: store.datasets.data_search_element
+    data_search_element: store.datasets.data_search_element,
+    dialogBox:store.datasets.dataDialogBox,
   };
 })
 
@@ -95,6 +96,7 @@ export class Data extends React.Component {
     this.props.dispatch(getDataList(1));
     }
   }
+
   render() {
     console.log("data is called");
     console.log(this.props);
@@ -145,13 +147,13 @@ export class Data extends React.Component {
               <div className="card-footer">
                 <div className="left_div">
                   <span className="footerTitle"></span>{sessionStorage.userName}
-                  <span className="footerTitle">{dateFormat(data.created_at, "mmmm d,yyyy h:MM")}</span>
+                  <span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy h:MM")}</span>
                 </div>
 
                 <div className="card-deatils">
                   {/*<!-- Popover Content link -->*/}
                   <OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={data}/> < /Popover>}>
-                    <a href="#" className="pover">
+                    <a  className="pover cursor">
                       <i className="ci pe-7s-info pe-2x"></i>
                     </a>
                   </OverlayTrigger>
@@ -193,7 +195,7 @@ export class Data extends React.Component {
                 <div class="input-group pull-right">
                   <input type="text" name="search_data" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search Data" id="search_data" class="form-control" placeholder="Search data..."/>
 
-                  <span class="input-group-btn">
+                  {/*<span class="input-group-btn">
                     <button type="button" class="btn btn-default" title="Select All Card">
                       <i class="fa fa-address-card-o fa-lg"></i>
                     </button>
@@ -215,7 +217,7 @@ export class Data extends React.Component {
                         <a href="#">Date Descending</a>
                       </li>
                     </ul>
-                  </span>
+                  </span>*/}
                 </div>
               </div>
             </div>
@@ -241,6 +243,7 @@ export class Data extends React.Component {
       return (
         <div>
           <img id="loading" src={STATIC_URL + "assets/images/Preloader_2.gif"}/>
+           <Dialog ref="dialog"/>
         </div>
       )
     }

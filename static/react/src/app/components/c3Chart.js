@@ -190,67 +190,72 @@ export class C3Chart extends React.Component {
 	}
 
 
-	render() {
-		var that = this;
-		if(this.props.classId !='_side'){
+	 render() {
+	  var that = this;
+	  
+	  if(this.props.classId !='_side'){
 		this.classId = "chart"+this.props.classId + " ct col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-1 xs-mb-20";
 		}
-		$(function(){
-			that.updateChart();
-		});
-
-
-		//var classId = "chart"+this.props.classId + " ct col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 xs-mb-20";
-
-		return(
-				<div className="chart-area">
-				<div className="row">
-				<div className="chart-data-icon col-md-9 col-md-offset-1">
-				<i className="fa fa-download" aria-hidden="true" onClick={this.showModal.bind(this)}></i>
+	  
+	  $(function(){
+		  that.updateChart();
+	  });
+	  
+	  
+     //var classId = "chart"+this.props.classId + " ct col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 xs-mb-20";
+	  
+      return(
+<div className="chart-area">
+<div className="row">
+  	<div className="chart-data-icon col-md-9 col-md-offset-1">
+         <i className="fa fa-search-plus" aria-hidden="true" onClick={this.showModal.bind(this)}></i>
+     </div>
+	 <div className="clearfix"></div>
+</div>
+    <div className="row">
+		   <div className={this.classId}></div>
+		   <div className="clearfix"></div>
+     </div>
+		   {/* chart data Popup */}
+		   <div id="" className={this.modalCls} role="dialog">
+		   <div className="modal-colored-header uploadData modal-dialog ">
+  
+		   {/*Modal content*/}
+			<div className="modal-content chart-data-popup">
+				<div class="modal-header">
+				
+				<button type='button' onClick={this.closeModal.bind(this)} className='close'  data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>
+				<h3 class="modal-title">Chart Data</h3>
 				</div>
-				<div className="clearfix"></div>
-				</div>
-				<div className="row">
-				<div className={this.classId}></div>
-				<div className="clearfix"></div>
-				</div>
-				{/* chart data Popup */}
-				<div id="" className={this.modalCls} role="dialog">
-				<div className="modal-dialog ">
-
-				{/*Modal content*/}
-				<div className="modal-content chart-data-popup">
+				
 				<div className="modal-body chart-data-modal-body">
-				<p className="chart-data-title">Chart Data</p>
-				<button type='button' onClick={this.closeModal.bind(this)} className='close chart-data-close'  data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>
+					<div className="row" >
+					<div className="col-md-12">
+					<div className={this.tableCls}>
+					<Scrollbars>
+					<table className='table chart-table'>
+					</table>
+					{/*<div class="form-group col-md-7;">*/}
+					</Scrollbars>
+					</div>
+					</div>
+					</div> 
 
 				</div>
-				<br/>
-
-				<div className="row" >
-				<div className="col-md-12">
-				<div className={this.tableCls}>
-				<Scrollbars>
-				<table className='table chart-table'>
-				</table>
-				{/*<div class="form-group col-md-7;">*/}
-				</Scrollbars>
-				</div>
-				</div>
+		  
+				<div class="modal-footer">
+				<a href={this.tableDownload} id="cddownload" className="btn btn-primary" download ><i className="fa fa-cloud-download"></i> Download Chart Data</a>
 				</div>
 
-				<div className="chart-data-download">
-				<a href={this.tableDownload} id="cddownload" className="btn btn-primary" download >Download Chart Data</a>
-				</div>
+		   </div>
+		  </div>
+		 </div>
+
+ </div>
+ 
+      );
+  }
 
 
-
-				</div>
-				</div>
-				</div>
-
-				</div>
-
-		);
-	}
+   
 }

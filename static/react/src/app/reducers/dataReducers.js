@@ -73,7 +73,7 @@ export default function reducer(state = {
 		return {
 			...state,
 			allDataSets: action.data,
-			selectedDataSet:action.data.data[0].slug
+			selectedDataSet:action.slug
 		}
 	}
 	break;
@@ -177,7 +177,7 @@ export default function reducer(state = {
 		return {
 			...state,
 			selectedTimeDimensions:action.variableName,
-			selectedVariablesCount:state.selectedVariablesCount+1,
+			selectedVariablesCount:state.selectedVariablesCount,
 		}
 	}
 	break;
@@ -399,7 +399,6 @@ export default function reducer(state = {
 		}
 	}
 	break;	
-	
 	}
 	
 	return state
