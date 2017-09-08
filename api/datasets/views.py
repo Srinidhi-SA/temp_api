@@ -44,7 +44,7 @@ class DatasetView(viewsets.ModelViewSet):
 
         if 'input_file' in data:
             data['input_file'] =  request.FILES.get('input_file')
-            data['datasource_type'] = 'file'
+            data['datasource_type'] = 'fileUpload'
             if data['input_file'] is None:
                 data['name'] = data.get('name', data.get('datasource_type', "H") + "_"+ str(random.randint(1000000,10000000)))
             else:
