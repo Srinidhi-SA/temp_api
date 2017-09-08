@@ -13,6 +13,7 @@ from django.db import models
 from django.template.defaultfilters import slugify
 
 from api.lib import hadoop, fab_helper
+from api.helper import convert_json_object_into_list_of_object
 
 # Create your models here.
 
@@ -65,8 +66,8 @@ class Dataset(models.Model):
     auto_update_duration = models.IntegerField(default=99999)
 
     input_file = models.FileField(upload_to='datasets', null=True)
-    db_type = models.CharField(max_length=100, null=True)
-    db_details = models.TextField(default="{}")
+    datasource_type = models.CharField(max_length=100, null=True)
+    datasource_details = models.TextField(default="{}")
     preview = models.TextField(default="{}")
 
     meta_data = models.TextField(default="{}")
@@ -81,20 +82,21 @@ class Dataset(models.Model):
     bookmarked = models.BooleanField(default=False)
     file_remote = models.CharField(max_length=100, null=True)
     analysis_done = models.BooleanField(default=False)
+    status = models.CharField(max_length=100, null=True, default="Not Registered")
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
 
     def __str__(self):
-        return " : ".join(["{}".format(x) for x in [self.name, self.db_type, self.slug]])
+        return " : ".join(["{}".format(x) for x in [self.name, self.datasource_type, self.slug]])
 
     def as_dict(self):
         return {
             'name': self.name,
             'slug': self.slug,
             'auto_update': self.auto_update,
-            'db_type': self.db_type,
-            'db_details': self.db_details,
+            'datasource_type': self.datasource_type,
+            'datasource_details': self.datasource_details,
             'created_on': self.created_at,  # TODO: depricate this value
             'created_at': self.created_at,
             'bookmarked': self.bookmarked
@@ -110,8 +112,9 @@ class Dataset(models.Model):
         super(Dataset, self).save(*args, **kwargs)
 
     def create(self):
-        self.csv_header_clean()
-        self.copy_file_to_destination()
+        if self.datasource_type in ['file', 'fileUpload']:
+            self.csv_header_clean()
+            self.copy_file_to_destination()
         self.add_to_job()
 
     def add_to_job(self):
@@ -120,50 +123,41 @@ class Dataset(models.Model):
         print jobConfig
         print "Dataset realted config genarated."
 
-        job = Job()
-        job.name = "-".join(["Dataset", self.slug])
-        job.job_type = "metadata"
-        job.object_id = str(self.slug)
-        job.config = json.dumps(jobConfig)
-        job.save()
-
-        print "Job created."
-
-        from utils import submit_job
-
-        try:
-            print "Submitting job."
-            job_url = submit_job(
-                slug=job.slug,
-                class_name='metadata',
-                job_config=jobConfig
-            )
-            print "Job submitted."
-
-            job.url = job_url
-            job.save()
-        except Exception as exc:
-            print "Unable to submit job."
-            print exc
+        job = job_submission(
+            instance=self,
+            jobConfig=jobConfig,
+            job_type='metadata'
+        )
 
         self.job = job
+        self.status = "INPROGRESS"
         self.save()
 
     def generate_config(self, *args, **kwrgs):
-        inputFile = self.get_input_file()
-        return {
-            "config": {
-                "FILE_SETTINGS": {
-                    "inputfile": [inputFile],
-                },
-                "COLUMN_SETTINGS": {
-                    "analysis_type": ["metaData"],
-                },
-                "DATE_SETTINGS": {
+        inputFile = ""
+        datasource_details = ""
+        if self.datasource_type in ['file', 'fileUpload']:
+            inputFile = self.get_input_file()
+        else:
+            datasource_details = json.loads(self.datasource_details)
 
-                },
+        return {
+                "config": {
+                    "FILE_SETTINGS": {
+                        "inputfile": [inputFile],
+                    },
+                    "COLUMN_SETTINGS": {
+                        "analysis_type": ["metaData"],
+                    },
+                    "DATE_SETTINGS": {
+
+                    },
+                    "DATA_SOURCE": {
+                        "datasource_type": self.datasource_type,
+                        "datasource_details": datasource_details
+                    }
+                }
             }
-        }
 
     def csv_header_clean(self):
         CLEAN_DATA = []
@@ -237,17 +231,33 @@ class Dataset(models.Model):
         return "/home/marlabs" + self.get_hdfs_relative_path()
 
     def get_input_file(self):
-        type = self.file_remote
-        if type == 'emr_file':
-            return "file://{}".format(self.input_file.path)
-        elif type == 'hdfs':
-            # return "file:///home/hadoop/data_date.csv"
-            return "hdfs://{}:{}{}".format(
-                settings.HDFS.get("host"),
-                settings.HDFS.get("hdfs_port"),
-                self.get_hdfs_relative_file_path())
-        elif type == 'fake':
-            return "file:///asdasdasdasd"
+
+        if self.datasource_type in ['file', 'fileUpload']:
+            type = self.file_remote
+            if type == 'emr_file':
+                return "file://{}".format(self.input_file.path)
+            elif type == 'hdfs':
+                # return "file:///home/hadoop/data_date.csv"
+                return "hdfs://{}:{}{}".format(
+                    settings.HDFS.get("host"),
+                    settings.HDFS.get("hdfs_port"),
+                    self.get_hdfs_relative_file_path())
+            elif type == 'fake':
+                return "file:///asdasdasdasd"
+        else:
+            return ""
+
+    def get_datasource_info(self):
+        datasource_details = ""
+        if self.datasource_type in ['file', 'fileUpload']:
+            inputFile = self.get_input_file()
+        else:
+            datasource_details = json.loads(self.datasource_details)
+
+        return {
+                        "datasource_type": self.datasource_type,
+                        "datasource_details": datasource_details
+                    }
 
     def common_config(self):
 
@@ -277,6 +287,45 @@ class Dataset(models.Model):
             'dateTimeSuggestions': dateTimeSuggestions,
         }
 
+    def get_config(self):
+        import json
+        config = json.loads(self.meta_data)
+        if config is None:
+            return {}
+        return config
+
+    def get_brief_info(self):
+        list_objects = []
+        brief_info = dict()
+        config = self.get_config()
+        sample = {
+            'Rows': 'number of rows',
+            'Columns': 'number of columns',
+            'Measures': 'number of measures',
+            'Dimensions': 'number of dimensions',
+            'Time Dimension': 'number of time dimension',
+        }
+        if 'metaData' in config:
+            metad = config['metaData']
+            for data in metad:
+                if 'displayName' not in data:
+                    continue
+                if data['displayName'] in sample:
+                    brief_info.update(
+                        {
+                            sample[data['displayName']]: data['value']
+                        }
+                    )
+
+        brief_info.update(
+            {
+                'created_by': self.created_by.username,
+                'updated_at': self.updated_at,
+                'dataset': self.name
+            }
+        )
+        return convert_json_object_into_list_of_object(brief_info, 'dataset')
+
 
 class Insight(models.Model):
     name = models.CharField(max_length=300, null=True)
@@ -291,7 +340,6 @@ class Insight(models.Model):
     column_data_raw = models.TextField(default="{}")
     config = models.TextField(default="{}")
 
-    status = models.BooleanField(default=False)
     live_status = models.CharField(max_length=300, default='0', choices=STATUS_CHOICES)
     analysis_done = models.BooleanField(default=False)
     # state -> job submitted, job started, job ...
@@ -306,6 +354,7 @@ class Insight(models.Model):
     bookmarked = models.BooleanField(default=False)
 
     job = models.ForeignKey(Job, null=True)
+    status = models.CharField(max_length=100, null=True, default="Not Registered")
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
@@ -330,32 +379,14 @@ class Insight(models.Model):
         jobConfig = self.generate_config(*args, **kwargs)
         print "Dataset realted config genarated."
 
-        job = Job()
-        job.name = "-".join(["Insight", self.slug])
-        job.job_type = "master"
-        job.object_id = str(self.slug)
-        job.config = json.dumps(jobConfig)
-        job.save()
-
-        print "Job entry created."
-
-        from utils import submit_job
-
-        try:
-            job_url = submit_job(
-                slug=job.slug,
-                class_name='master',
-                job_config=jobConfig
-            )
-            print "Job submitted."
-
-            job.url = job_url
-            job.save()
-        except Exception as exc:
-            print "Unable to submit job."
-            print exc
+        job = job_submission(
+            instance=self,
+            jobConfig=jobConfig,
+            job_type='master'
+        )
 
         self.job = job
+        self.status = "INPROGRESS"
         self.save()
 
     def generate_config(self, *args, **kwargs):
@@ -365,6 +396,7 @@ class Insight(models.Model):
 
         config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
         config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
+        config['config']["DATA_SOURCE"] = self.dataset.get_datasource_info()
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
         # config['config']["META_HELPER"] = self.create_configuration_meta_data()
 
@@ -463,6 +495,34 @@ class Insight(models.Model):
     def get_list_of_scripts_to_run(self):
         pass
 
+    def get_brief_info(self):
+        brief_info = dict()
+        config = self.get_config()
+        config = config.get('config')
+        if config is not None:
+            if 'COLUMN_SETTINGS' in config:
+                column_settings = config['COLUMN_SETTINGS']
+                brief_info.update({
+                    'variable selected': column_settings.get('result_column')[0],
+                    'variable type': column_settings.get('analysis_type')[0]
+                })
+
+            if 'FILE_SETTINGS' in config:
+                file_setting = config['FILE_SETTINGS']
+                brief_info.update({
+                    'analysis list': set(file_setting.get('script_to_run'))
+                })
+
+        brief_info.update(
+            {
+                'created_by': self.created_by.username,
+                'updated_at': self.updated_at,
+                'dataset': self.dataset.name
+            }
+        )
+
+        return convert_json_object_into_list_of_object(brief_info, 'signal')
+
 
 class Trainer(models.Model):
     name = models.CharField(max_length=300, null=True)
@@ -483,6 +543,7 @@ class Trainer(models.Model):
     analysis_done = models.BooleanField(default=False)
 
     job = models.ForeignKey(Job, null=True)
+    status = models.CharField(max_length=100, null=True, default="Not Registered")
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
@@ -509,6 +570,7 @@ class Trainer(models.Model):
 
         config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
         config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
+        config['config']["DATA_SOURCE"] = self.dataset.get_datasource_info()
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
         # config['config']["META_HELPER"] = self.create_configuration_meta_data()
 
@@ -574,33 +636,47 @@ class Trainer(models.Model):
         jobConfig = self.generate_config(*args, **kwargs)
         print "Trainer realted config genarated."
 
-        job = Job()
-        job.name = "-".join(["Trainer", self.slug])
-        job.job_type = "model"
-        job.object_id = str(self.slug)
-        job.config = json.dumps(jobConfig)
-        job.save()
-
-        print "Job entry created."
-
-        from utils import submit_job
-
-        try:
-            job_url = submit_job(
-                slug=job.slug,
-                class_name='model',
-                job_config=jobConfig
-            )
-            print "Job submitted."
-
-            job.url = job_url
-            job.save()
-        except Exception as exc:
-            print "Unable to submit job."
-            print exc
+        job = job_submission(
+            instance=self,
+            jobConfig=jobConfig,
+            job_type='model'
+        )
 
         self.job = job
+        self.status = "INPROGRESS"
         self.save()
+
+    def get_config(self):
+        import json
+        return json.loads(self.config)
+
+    def get_brief_info(self):
+        brief_info = dict()
+        config = self.get_config()
+        config = config.get('config')
+        if config is not None:
+            if 'COLUMN_SETTINGS' in config:
+                column_settings = config['COLUMN_SETTINGS']
+                brief_info.update({
+                    'variable selected': column_settings.get('result_column')[0]
+                })
+
+            if 'FILE_SETTINGS' in config:
+                file_setting = config['FILE_SETTINGS']
+                brief_info.update({
+                    'analysis type': file_setting.get('analysis_type')[0],
+                    'train_test_split': file_setting.get('train_test_split')[0]
+                })
+
+        brief_info.update(
+            {
+                'created_by': self.created_by.username,
+                'updated_at': self.updated_at,
+                'dataset': self.dataset.name
+            }
+        )
+
+        return convert_json_object_into_list_of_object(brief_info, 'trainer')
 
 """
 {
@@ -641,6 +717,7 @@ class Score(models.Model):
     bookmarked = models.BooleanField(default=False)
 
     job = models.ForeignKey(Job, null=True)
+    status = models.CharField(max_length=100, null=True, default="Not Registered")
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
@@ -665,32 +742,14 @@ class Score(models.Model):
         jobConfig = self.generate_config(*args, **kwargs)
         print "Score realted config genarated."
 
-        job = Job()
-        job.name = "-".join(["score", self.slug])
-        job.job_type = "score"
-        job.object_id = str(self.slug)
-        job.config = json.dumps(jobConfig)
-        job.save()
-
-        print "Job entry created."
-
-        from utils import submit_job
-
-        try:
-            job_url = submit_job(
-                slug=job.slug,
-                class_name='score',
-                job_config=jobConfig
-            )
-            print "Job submitted."
-
-            job.url = job_url
-            job.save()
-        except Exception as exc:
-            print "Unable to submit job."
-            print exc
+        job = job_submission(
+            instance=self,
+            jobConfig=jobConfig,
+            job_type='score'
+        )
 
         self.job = job
+        self.status = "INPROGRESS"
         self.save()
 
     def generate_config(self, *args, **kwargs):
@@ -700,6 +759,7 @@ class Score(models.Model):
 
         config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
         config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
+        config['config']["DATA_SOURCE"] = self.dataset.get_datasource_info()
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
         # config['config']["META_HELPER"] = self.create_configuration_meta_data()
 
@@ -735,6 +795,12 @@ class Score(models.Model):
         }
 
     def get_config_from_config(self):
+        trainer_config = json.loads(self.trainer.config)
+        trainer_config_config = trainer_config.get('config')
+        file_column_config = trainer_config_config.get('COLUMN_SETTINGS')
+        trainer_consider_column_type = file_column_config.get('consider_columns_type')
+        trainer_consider_columns = file_column_config.get('consider_columns')
+
         config = json.loads(self.config)
         consider_columns_type = ['including']
         data_columns = config.get("timeDimension", None)
@@ -754,6 +820,8 @@ class Score(models.Model):
         app_id = config.get('app_id', 1)
 
         ret = {
+            'consider_columns_type': trainer_consider_column_type,
+            'consider_columns': trainer_consider_columns,
             'score_consider_columns_type': consider_columns_type,
             'score_consider_columns': consider_columns,
             'date_columns': [] if data_columns is "" else [data_columns],
@@ -784,6 +852,38 @@ class Score(models.Model):
     def get_local_file_path(self):
         return '/tmp/' + self.slug
 
+    def get_config(self):
+        import json
+        return json.loads(self.config)
+
+    def get_brief_info(self):
+        brief_info = dict()
+        config = self.get_config()
+        config = config.get('config')
+        if config is not None:
+            if 'COLUMN_SETTINGS' in config:
+                column_settings = config['COLUMN_SETTINGS']
+                brief_info.update({
+                    'variable selected': column_settings.get('result_column')[0]
+                })
+
+            if 'FILE_SETTINGS' in config:
+                file_setting = config['FILE_SETTINGS']
+                brief_info.update({
+                    'analysis type': file_setting.get('analysis_type')[0],
+                    'algorithm name': file_setting.get('algorithmslug')[0],
+                })
+
+        brief_info.update(
+            {
+                'created_by': self.created_by.username,
+                'updated_at': self.updated_at,
+                'dataset': self.dataset.name,
+                'model':self.trainer.name
+            }
+        )
+        return convert_json_object_into_list_of_object(brief_info, 'score')
+
 
 class Robo(models.Model):
 
@@ -791,8 +891,8 @@ class Robo(models.Model):
     slug = models.SlugField(null=False, blank=True)
 
     customer_dataset = models.ForeignKey(Dataset, null=False, default="", related_name='customer_dataset')
-    historical_dataset = models.ForeignKey(Dataset, null=False , default="", related_name='historical_dataset')
-    market_dataset = models.ForeignKey(Dataset, null=False , default="", related_name='market_dataset')
+    historical_dataset = models.ForeignKey(Dataset, null=False, default="", related_name='historical_dataset')
+    market_dataset = models.ForeignKey(Dataset, null=False, default="", related_name='market_dataset')
 
     config = models.TextField(default="{}")
     data = models.TextField(default="{}")
@@ -803,8 +903,12 @@ class Robo(models.Model):
     created_by = models.ForeignKey(User, null=False)
     deleted = models.BooleanField(default=False)
     analysis_done = models.BooleanField(default=False)
+    dataset_analysis_done = models.BooleanField(default=False)
+    robo_analysis_done = models.BooleanField(default=True)
 
     bookmarked = models.BooleanField(default=False)
+    job = models.ForeignKey(Job, null=True)
+    status = models.CharField(max_length=100, null=True, default="Not Registered")
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
@@ -822,4 +926,61 @@ class Robo(models.Model):
         super(Robo, self).save(*args, **kwargs)
 
     def create(self, *args, **kwargs):
-        pass
+        self.add_to_job()
+
+    def generate_config(self, *args, **kwargs):
+        return {
+
+        }
+
+    def add_to_job(self, *args, **kwargs):
+        jobConfig = self.generate_config(*args, **kwargs)
+
+        job = job_submission(
+            instance=self,
+            jobConfig=jobConfig,
+            job_type='robo'
+        )
+
+        self.job = job
+        self.status = "INPROGRESS"
+        self.save()
+
+
+def job_submission(
+        instance=None,
+        jobConfig=None,
+        job_type=None
+):
+    # Job Book Keeping
+    job = Job()
+    job.name = "-".join([job_type, instance.slug])
+    job.job_type = job_type
+    job.object_id = str(instance.slug)
+
+    if jobConfig is None:
+        jobConfig = json.loads(instance.config)
+    job.config = json.dumps(jobConfig)
+    job.save()
+
+    print "Job entry created."
+
+    # Submitting JobServer
+    from utils import submit_job
+
+    try:
+        job_url = submit_job(
+            slug=job.slug,
+            class_name=job_type,
+            job_config=jobConfig,
+            job_name=instance.name
+        )
+        print "Job submitted."
+
+        job.url = job_url
+        job.save()
+    except Exception as exc:
+        print "Unable to submit job."
+        print exc
+
+    return job
