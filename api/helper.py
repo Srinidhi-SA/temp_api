@@ -154,6 +154,11 @@ def remove_grid_from_chart_data(chart_data):
             del chart_data['chart_c3']['grid']
     return chart_data
 
+def remove_xdata_from_chart_data(chart_data):
+    if 'xdata' in chart_data:
+        del chart_data['xdata']
+    return chart_data
+
 def decode_and_convert_chart_raw_data(data):
     if not check_chart_data_format(data):
         return {}
