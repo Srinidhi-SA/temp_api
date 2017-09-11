@@ -381,7 +381,7 @@ export class DataPreview extends React.Component {
 					<div id="tab_visualizations" className="panel-group accordion accordion-semi">
 					<div className="panel panel-default">
 					<div className="panel-heading">
-					<h4 className="panel-title"><a data-toggle="collapse" data-parent="#tab_visualizations" href="#pnl_visl" aria-expanded="true" className="">Visualization <i className="fa fa-angle-down pull-right"></i></a></h4>
+					<h4 className="panel-title"><a data-toggle="collapse" data-parent="#tab_visualizations" href="#pnl_visl" aria-expanded="true" className=""> Visualization <i className="fa fa-angle-down pull-right"></i></a></h4>
 					</div>
 					<div id="pnl_visl" className="panel-collapse collapse in" aria-expanded="true">
 					<div className="panel-body" id="side-chart">
