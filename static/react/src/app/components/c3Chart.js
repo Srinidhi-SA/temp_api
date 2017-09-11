@@ -208,7 +208,7 @@ export class C3Chart extends React.Component {
 <div className="chart-area">
 <div className="row">
   	<div className="chart-data-icon col-md-9 col-md-offset-1">
-         <i className="fa fa-search-plus" aria-hidden="true" onClick={this.showModal.bind(this)}></i>
+         <i className="fa fa-table pull-right" aria-hidden="true" onClick={this.showModal.bind(this)}></i>
      </div>
 	 <div className="clearfix"></div>
 </div>
