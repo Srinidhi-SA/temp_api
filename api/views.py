@@ -485,6 +485,7 @@ def chart_changes_in_metadata_chart(chart_data):
     chart_data = helper.remove_grid_from_chart_data(chart_data)
     chart_data = helper.remove_xdata_from_chart_data(chart_data)
     chart_data = helper.remove_chart_height_from_x_chart_data(chart_data)
+    chart_data = helper.keep_bar_width_in_ratio(chart_data)
     return chart_data
 
 

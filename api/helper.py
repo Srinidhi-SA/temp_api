@@ -137,6 +137,16 @@ def remove_chart_height_from_x_chart_data(chart_data):
                     del chart_data['chart_c3']["axis"]["x"]["height"]
     return chart_data
 
+def keep_bar_width_in_ratio(chart_data):
+    if 'chart_c3' in chart_data:
+        if 'bar' in chart_data['chart_c3']:
+            chart_data['chart_c3']['bar'] =  {
+                            "width": {
+                                "ratio": 0.5
+                            }
+                        }
+    return chart_data
+
 def remove_padding_from_chart_data(chart_data):
     if 'chart_c3' in chart_data:
         if "padding" in chart_data['chart_c3']:
