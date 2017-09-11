@@ -179,7 +179,11 @@ export class C3Chart extends React.Component {
 		  
 		 // alert("render");
 		  that.updateChart();
-		  
+	     if(that.props.classId =='_side'){
+			$(".chart-data-icon").empty();
+			
+		 }
+			 	  
 	  });
 	  
 	  
@@ -187,16 +191,16 @@ export class C3Chart extends React.Component {
 	  
       return(
 <div className="chart-area">
-<div className="row">
+{/*<div className="row">
   	<div className="chart-data-icon col-md-7 col-md-offset-2  xs-mb-20">
         
      </div>
 	 <div className="clearfix"></div>
-</div>
+</div>*/}
     <div className="row">
-	<div className="chart-data-icon col-md-7 col-md-offset-2  xs-mb-20">
-         <i className="fa fa-search-plus pull-right" aria-hidden="true" onClick={this.showModal.bind(this)}></i>
-     </div>
+		<div className="chart-data-icon col-md-7 col-md-offset-2  xs-mb-20">
+			 <i className="fa fa-search-plus pull-right" aria-hidden="true" onClick={this.showModal.bind(this)}></i>
+		 </div>
 	
 	       <div className="clearfix"></div>
 		   <div className={this.classId}></div>
