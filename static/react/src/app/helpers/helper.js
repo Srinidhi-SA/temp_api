@@ -157,7 +157,8 @@ export function  subTreeSetting(urlLength, length,paramL2) {
 	}
 
 
-	export function  showHideSideChart(colType,colstats) {
+	export function  showHideSideChart(colType) {
+		
 		if(colType =="datetime"){
 				$(function(){
 			       $("#tab_visualizations #pnl_visl").removeClass("in");

@@ -152,19 +152,22 @@ export class DataPreview extends React.Component {
 		const chkClass = $(e.target).attr('class');
 		let dataPrev = this.props.dataPreview.meta_data;
 		dataPrev.columnData.map((item, i) => {
-			 
-			showHideSideChart(item.columnType); // hide side chart on datetime selection 
 			
 			if(chkClass.indexOf(item.slug) !== -1){
                 console.log(item);
-				const sideChartUpdate = item.chartData;
-				const sideTableUpdate = item.columnStats;
-				showHideSideTable(sideTableUpdate); // hide side table on blank or all display false
+				$("#side-chart").empty();
+				showHideSideChart(item.columnType); // hide side chart on datetime selection 
+				if(!$.isEmptyObject(item.chartData)){
+				const sideChartUpdate = item.chartData.chart_c3;
+				let yformat = item.chartData.yformat;
+				let  xdata= item.chartData.xdata;
 				console.log("checking side table data:; ");
 				console.log(sideTableUpdate);
 				$("#side-chart").empty();
-				ReactDOM.render(<C3Chart classId={"_side"} data={sideChartUpdate} yformat={false} sideChart={true}/>, document.getElementById('side-chart'));
-
+				ReactDOM.render(<C3Chart classId={"_side"} data={sideChartUpdate} yformat={yformat} xdata={xdata} sideChart={true}/>, document.getElementById('side-chart'));
+                }
+				const sideTableUpdate = item.columnStats;
+				showHideSideTable(sideTableUpdate); // hide side table on blank or all display false
 				const sideTableUpdatedTemplate=sideTableUpdate.map((tableItem,tableIndex)=>{
 					if(tableItem.display){
 						return(  <tr key={tableIndex}>
@@ -259,7 +262,7 @@ export class DataPreview extends React.Component {
 				
 				if(thElement.ignoreSuggestionFlag){
 					cls = cls + " greyout-col";
-				
+				  
 				return(
 						<th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)} title={thElement.ignoreSuggestionMsg}>
 						<a href="#" data-toggle="dropdown" className={anchorCls}><i className={iconCls}></i> {thElement.name}</a>
@@ -292,9 +295,17 @@ export class DataPreview extends React.Component {
 			const tableRowsTemplate = dataPrev.sampleData.map((trElement, trIndex) => {
 
 				const tds=trElement.map((tdElement, tdIndex) => {
-					return(
+					if(dataPrev.columnData[tdIndex].ignoreSuggestionFlag){
+						let cls = dataPrev.columnData[tdIndex].slug + " greyout-col";
+						return(
+							<td key={tdIndex} className={cls} onClick={this.setSideElements.bind(this)}>{tdElement}</td>
+					   );
+					}else{
+						return(
 							<td key={tdIndex} className={dataPrev.columnData[tdIndex].slug} onClick={this.setSideElements.bind(this)}>{tdElement}</td>
 					);
+					}
+					
 				});
 				return (
 						<tr key={trIndex}>
@@ -304,7 +315,9 @@ export class DataPreview extends React.Component {
 				);
 			});
 
-			const sideChart = dataPrev.columnData[0].chartData;
+			const sideChart = dataPrev.columnData[0].chartData.chart_c3;
+			let yformat = dataPrev.columnData[0].chartData.yformat;
+			let xdata = dataPrev.columnData[0].chartData.xdata;
 			console.log("chart-----------")
 			const sideTable = dataPrev.columnData[0].columnStats;
 			this.firstTimeSideTable = sideTable; //show hide side table
@@ -387,7 +400,7 @@ export class DataPreview extends React.Component {
 					<div id="pnl_visl" className="panel-collapse collapse in" aria-expanded="true">
 					<div className="panel-body" id="side-chart">
 					{/*<img src="../assets/images/data_preview_graph.png" className="img-responsive" />*/}
-					<C3Chart classId={this.chartId} data={sideChart} yformat={false} sideChart={true}/>
+					<C3Chart classId={this.chartId} data={sideChart} yformat={yformat} xdata={xdata} sideChart={true}/>
 					</div>
 					</div>
 					</div>
