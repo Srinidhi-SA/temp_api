@@ -65,11 +65,11 @@ hideDataPrev(e){
                       <span></span>
                       DATA</NavLink>
                   </li>
-                  <li>
+                  {/* <li>
                     <NavLink  onClick={this.hideDataPrev.bind(this)} activeClassName="active" className="sdb sdb_settings" to ="/settings">
                       <span></span>
                       SETTINGS</NavLink>
-                  </li>
+                  </li> */}
                 </ul>
               </div>
               {/* // /.Side bar Main Menu  -->*/}

@@ -117,7 +117,7 @@ componentDidUpdate(){
      let renderSelectBox = null;
     if(metaData){
       renderSelectBox = metaData.map((metaItem,metaIndex) =>{
-		  if(metaItem.columnType !="datetime"){
+		  if(metaItem.columnType !="datetime" && !metaItem.ignoreSuggestionFlag && !metaItem.dateSuggestionFlag){
 		  return(
 		    <option key={metaIndex}  value={metaItem.columnType}>{metaItem.name}</option>
 			);

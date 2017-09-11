@@ -15401,7 +15401,8 @@ html{
 .chart-data-icon .fa-search-plus{
     float: right;
 	cursor: pointer;
-	color:#00998c
+	color:#00998c;
+	z-index:10 !important;
 }
 
 .c3{
@@ -15483,6 +15484,9 @@ padding: 0px 15px 15px;
 	cursor:pointer
 }   
 
+.overlayTooltip{
+word-break: break-word;
+}
 
 /*.slick-next:before, .slick-prev:before { color:red !important}*/
 .slick-next, .slick-prev { z-index:10 }

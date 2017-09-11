@@ -169,7 +169,7 @@ export class DataPreview extends React.Component {
 					if(tableItem.display){
 						return(  <tr key={tableIndex}>
 						<td className="item">{tableItem.displayName}</td>
-						<td>{tableItem.value}</td>
+						<td>&nbsp; : {tableItem.value}</td>
 						</tr>
 						);
 					}
@@ -224,8 +224,7 @@ export class DataPreview extends React.Component {
 
 
 							<div key={i} className="col-md-2 co-sm-4 col-xs-6">
-
-							<h3>
+							<h3 className="text-center">
 							{item.value} <br/><small>{item.displayName}</small>
 							</h3>
 							</div>
@@ -314,7 +313,7 @@ export class DataPreview extends React.Component {
 				if(tableItem.display){
 					return(  <tr key={tableIndex}>
 					<td className="item">{tableItem.displayName}</td>
-					<td>: {tableItem.value}</td>
+					<td>&nbsp; : {tableItem.value}</td>
 					</tr>
 					);
 				}

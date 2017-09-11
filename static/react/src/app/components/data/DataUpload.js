@@ -58,7 +58,7 @@ export class DataUpload extends React.Component {
 					</Modal.Body>
 					<Modal.Footer>
 					<Button onClick={this.closePopup.bind(this)}>Close</Button>
-				    <Button bsStyle="primary" onClick={this.uploadData.bind(this)}>Upload</Button>
+				    <Button bsStyle="primary" onClick={this.uploadData.bind(this)}>Load Data</Button>
 					</Modal.Footer>
 					</Modal>
 					</div>
