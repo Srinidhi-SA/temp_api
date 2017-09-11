@@ -6440,7 +6440,7 @@ button:focus {
 	left: 54px;
     border-width: 7px 13px 7px 13px;
 	border-style: solid;
-	border-color: transparent #FFF transparent transparent; /* Old mAdv Comment e0e6e5 */
+	border-color: transparent #f7f7f7 transparent transparent; /* Old mAdv Comment e0e6e5 */
 	display: block;
 	width: 0;
 }
