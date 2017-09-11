@@ -21,7 +21,7 @@ import {STATIC_URL} from "../../helpers/env";
 import {SEARCHCHARLIMIT} from  "../../helpers/helper"
 import Dialog from 'react-bootstrap-dialog';
 import {DetailOverlay} from "../common/DetailOverlay";
-import {getAllDataList} from "../../action/dataActions";
+import {getAllDataList} from "../../actions/dataActions";
 
 @connect((store) => {
   return {login_response: store.login.login_response, signalList: store.signals.signalList.data, selectedSignal: store.signals.signalAnalysis, signal_search_element: store.signals.signal_search_element};
