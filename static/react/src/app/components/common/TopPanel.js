@@ -19,10 +19,12 @@ export default class TopPanel extends React.Component {
 		this.state = {loginFlag: true}
 	}
 	logout(){
-		sessionObject.clearSession();
+
 		  this.setState({
              loginFlag: false
          });
+         sessionObject.clearSession();
+         location.reload();
 	}
 	render(){
 		if(!this.state.loginFlag){
@@ -32,7 +34,7 @@ export default class TopPanel extends React.Component {
 			return(
 		            <div>
 								{/* // Header Menu*/}
-								
+
 								<nav className="navbar navbar-default navbar-fixed-top" role="navigation">
 								<LoadingBar style={{ backgroundColor: '#148071', height: '3px' }} />
 									{/*/ Brand and toggle get grouped for better mobile display -->*/}
@@ -75,5 +77,5 @@ export default class TopPanel extends React.Component {
 		 );
 		}
   }
-	
+
 }
