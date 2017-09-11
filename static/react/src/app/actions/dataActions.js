@@ -483,22 +483,27 @@ export function handleDVSearch(evt){
 }
 export function handelSort(variableType,sortOrder){
 	switch ( variableType ) {
+
 	case "measure":
 		let measures = store.getState().datasets.dataSetMeasures.slice().sort(function(a,b) { return (a.toLowerCase() < b.toLowerCase()) ? -1 : 1;});
 		if(sortOrder == "DESC" )
 			measures = store.getState().datasets.dataSetMeasures.slice().sort(function(a,b) { return (a.toLowerCase() > b.toLowerCase()) ? -1 : 1;});
+		let checkBoxList = handleCheckboxes(measures,"measure")
 		return {
 			type: "SORT_MEASURE",
 			measures,
+			checkBoxList
 		}
 		break;
 	case "dimension":
 		let dimensions = store.getState().datasets.dataSetDimensions.slice().sort(function(a,b) { return (a.toLowerCase() < b.toLowerCase()) ? -1 : 1;});
 		if(sortOrder == "DESC" )
 			dimensions = store.getState().datasets.dataSetDimensions.slice().sort(function(a,b) { return (a.toLowerCase() > b.toLowerCase()) ? -1 : 1;});
+		let checkBoxList1 = handleCheckboxes(dimensions,"dimension")
 		return {
 			type: "SORT_DIMENSION",
 			dimensions,
+			checkBoxList1
 		}
 		break;
 	case "datetime":
@@ -512,7 +517,21 @@ export function handelSort(variableType,sortOrder){
 		break;
 	}
 }
-
+function handleCheckboxes(list,listType){
+	var checkBoxList = [];
+	var targetArray = store.getState().datasets.selectedDimensions;
+	if(listType == "measure"){
+		targetArray = store.getState().datasets.selectedMeasures;
+	}else  if(listType == "dimension"){
+		targetArray = store.getState().datasets.selectedDimensions;
+	}
+	for(var i=0;i<list.length;i++){
+		if($.inArray(list[i],targetArray) != -1){
+			checkBoxList.push(true);
+		}else 	checkBoxList.push(false);
+		}
+	return checkBoxList;
+}
 export function handleSelectAll(evt){
 	switch ( evt.target.id ) {
 	case "measure":

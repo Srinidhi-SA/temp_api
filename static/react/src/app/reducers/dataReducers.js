@@ -26,6 +26,7 @@ export default function reducer(state = {
 		measureChecked:[],
 		dimensionAllChecked:true,
 		dimensionChecked:[],
+		dateTimeChecked:[],
 
 }, action) {
 	console.log("In DATA reducer!!");
@@ -302,7 +303,8 @@ export default function reducer(state = {
 	{
 		return {
 			...state,
-			dataSetMeasures: action.measures
+			dataSetMeasures: action.measures,
+			measureChecked:action.checkBoxList,
 			
 		}
 	}
@@ -312,7 +314,8 @@ export default function reducer(state = {
 	{
 		return {
 			...state,
-			dataSetDimensions: action.dimensions
+			dataSetDimensions: action.dimensions,
+			dimensionChecked:action.checkBoxList1,
 			
 		}
 	}
@@ -322,7 +325,8 @@ export default function reducer(state = {
 	{
 		return {
 			...state,
-			dataSetTimeDimensions: action.timedimensions
+			dataSetTimeDimensions: action.timedimensions,
+			
 			
 		}
 	}
