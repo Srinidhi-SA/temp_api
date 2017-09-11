@@ -190,14 +190,14 @@ export class DataVariableSelection extends React.Component {
                                             <div className="input-group pull-right">
                                                 <input type="text" name="measure" title="Search Measures" id="measureSearch"  onChange={this.handleDVSearch.bind(this)} className="form-control" placeholder="Search measures..." />
                                                 {/*<span className="input-group-addon"><i className="fa fa-search fa-lg"></i></span>*/}
-                                                <span className="input-group-btn">
+                                               {/* <span className="input-group-btn">
                                                     <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i className="fa fa-sort-alpha-asc fa-lg"></i> <span className="caret"></span></button>
                                                     <ul role="menu" className="dropdown-menu dropdown-menu-right">
                                                         <li onClick={this.handelSort.bind(this,"measure","ASC")} className="cursor"><a>Ascending</a></li>
                                                         <li onClick={this.handelSort.bind(this,"measure","DESC")} className="cursor"><a>Descending</a></li>
                
                                                     </ul>
-                                                </span>
+                                                </span>*/} 
                                             </div>
                                         </div>
                                     </div>
@@ -237,13 +237,13 @@ export class DataVariableSelection extends React.Component {
                                             <div className="input-group pull-right">
                                                 <input type="text" name="dimension" title="Search Dimension" id="dimensionSearch" onChange={this.handleDVSearch.bind(this)}  className="form-control" placeholder="Search dimension..." />
                                                 {/* <span className="input-group-addon"><i className="fa fa-search fa-lg"></i></span>*/}
-                                                <span className="input-group-btn">
+                                               {/* <span className="input-group-btn">
                                                     <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i className="fa fa-sort-alpha-asc fa-lg"></i> <span className="caret"></span></button>
                                                     <ul role="menu" className="dropdown-menu dropdown-menu-right">
                                                         <li onClick={this.handelSort.bind(this,"dimension","ASC")} className="cursor"><a>Ascending</a></li>
                                                         <li onClick={this.handelSort.bind(this,"dimension","DESC")} className="cursor"><a>Descending</a></li>
                                                     </ul>
-                                                </span>
+                                                </span>*/} 
                                             </div>
                                         </div>
                                     </div>
@@ -281,14 +281,14 @@ export class DataVariableSelection extends React.Component {
                                             <div className="input-group pull-right">
                                                 <input type="text" name="datetime" title="Search Time Dimensions" id="datetimeSearch" className="form-control" onChange={this.handleDVSearch.bind(this)} placeholder="Search time dimensions..." />
                                                 {/* <span className="input-group-addon"><i className="fa fa-search fa-lg"></i></span>*/}
-                                                <span className="input-group-btn">
+                                               {/* <span className="input-group-btn">
                                                     <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i className="fa fa-sort-alpha-asc fa-lg"></i> <span className="caret"></span></button>
                                                     <ul role="menu" className="dropdown-menu dropdown-menu-right">
                                                         <li onClick={this.handelSort.bind(this,"datetime","ASC")} className="cursor"><a>Ascending</a></li>
                                                         <li onClick={this.handelSort.bind(this,"datetime","DESC")} className="cursor"><a>Descending</a></li>
                                                        
                                                     </ul>
-                                                </span>
+                                                </span>*/} 
                                             </div>
                                         </div>
                                     </div>
