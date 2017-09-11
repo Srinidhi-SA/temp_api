@@ -338,7 +338,8 @@ ANALYSIS_LIST = {
     "Predictive modeling": "Prediction",
     "Measure vs. Dimension": "Performance",
     "Measure vs. Measure": "Influencer",
-    "Trend":"Trend"
+    "Trend":"Trend",
+    "Trend Analysis": "Trend"
 }
 # {"name":"Trend":"id":4} will be added to the above lists based on the logic(if date columns is present or not)
 
