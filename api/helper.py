@@ -115,6 +115,44 @@ chartData = {
     },
 }
 
+def remove_tooltip_format_from_chart_data(chart_data):
+
+    if 'chart_c3' in chart_data:
+        if 'tooltip' in chart_data['chart_c3']:
+            del chart_data['chart_c3']['tooltip']
+    return chart_data
+
+
+def remove_chart_height_from_chart_data(chart_data):
+    if 'chart_c3' in chart_data:
+        if "size" in chart_data['chart_c3']:
+            del chart_data['chart_c3']['size']
+    return chart_data
+
+
+def remove_padding_from_chart_data(chart_data):
+    if 'chart_c3' in chart_data:
+        if "padding" in chart_data['chart_c3']:
+            del chart_data['chart_c3']['padding']
+    return chart_data
+
+def remove_subchart_from_chart_data(chart_data):
+    if 'chart_c3' in chart_data:
+        if "subchart" in chart_data['chart_c3']:
+            del chart_data['chart_c3']['subchart']
+    return chart_data
+
+def remove_legend_from_chart_data(chart_data):
+    if 'chart_c3' in chart_data:
+        if "legend" in chart_data['chart_c3']:
+            del chart_data['chart_c3']['legend']
+    return chart_data
+
+def remove_grid_from_chart_data(chart_data):
+    if 'chart_c3' in chart_data:
+        if "grid" in chart_data['chart_c3']:
+            del chart_data['chart_c3']['grid']
+    return chart_data
 
 def decode_and_convert_chart_raw_data(data):
     if not check_chart_data_format(data):

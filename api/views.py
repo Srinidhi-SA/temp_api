@@ -432,7 +432,8 @@ def write_into_databases(job_type, object_slug, results):
             card_data = data["chartData"]
             if 'dataType' in card_data and card_data['dataType'] == 'c3Chart':
                 chart_data = card_data['data']
-                data["chartData"] = helper.decode_and_convert_chart_raw_data(chart_data)
+                final_chart_data = helper.decode_and_convert_chart_raw_data(chart_data)
+                data["chartData"] = chart_changes_in_metadata_chart(final_chart_data)
 
         results['columnData'] = columnData
         results['possibleAnalysis'] = settings.ANALYSIS_FOR_TARGET_VARIABLE
@@ -473,6 +474,16 @@ def write_into_databases(job_type, object_slug, results):
         robo_object.save()
         return results
     print "written to the database."
+
+def chart_changes_in_metadata_chart(chart_data):
+    from api import helper
+    chart_data = helper.remove_tooltip_format_from_chart_data(chart_data)
+    chart_data = helper.remove_chart_height_from_chart_data(chart_data)
+    chart_data = helper.remove_padding_from_chart_data(chart_data)
+    chart_data = helper.remove_subchart_from_chart_data(chart_data)
+    # chart_data = helper.remove_legend_from_chart_data(chart_data)
+    chart_data = helper.remove_grid_from_chart_data(chart_data)
+    return chart_data
 
 
 @csrf_exempt
