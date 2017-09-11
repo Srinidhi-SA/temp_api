@@ -21,6 +21,7 @@ import {STATIC_URL} from "../../helpers/env";
 import {SEARCHCHARLIMIT} from  "../../helpers/helper"
 import Dialog from 'react-bootstrap-dialog';
 import {DetailOverlay} from "../common/DetailOverlay";
+import {getAllDataList} from "../../actions/dataActions";
 
 @connect((store) => {
   return {login_response: store.login.login_response, signalList: store.signals.signalList.data, selectedSignal: store.signals.signalAnalysis, signal_search_element: store.signals.signal_search_element};
@@ -33,6 +34,7 @@ export class Signals extends React.Component {
   }
   componentWillMount() {
     var pageNo = 1;
+    this.props.dispatch(getAllDataList());
     if (this.props.history.location.pathname.indexOf("page") != -1) {
       pageNo = this.props.history.location.pathname.split("page=")[1];
       this.props.dispatch(getList(sessionStorage.userToken, pageNo));
