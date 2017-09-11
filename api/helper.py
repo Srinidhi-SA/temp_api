@@ -794,7 +794,7 @@ def convert_json_object_into_list_of_object(datas, order_type='dataset'):
             temp['displayName'] = brief_name[key]
 
             if key in ['analysis_list', 'analysis list']:
-                temp['value'] = [analysis_list[key] for item in datas[key]]
+                temp['value'] = [analysis_list[item] for item in datas[key]]
             else:
                 temp['value'] = datas[key]
             list_of_objects.append(temp)
