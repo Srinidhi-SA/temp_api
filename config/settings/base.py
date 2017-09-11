@@ -331,6 +331,15 @@ ANALYSIS_FOR_TARGET_VARIABLE = {
                        "help_text" : "Enable this analysis type only if date columns is present in selected variables",
                        "display": "Trend"}
 }
+
+ANALYSIS_LIST = {
+    "Descriptive analysis": "Overview",
+    "Dimension vs. Dimension": "Association",
+    "Predictive modeling": "Prediction",
+    "Measure vs. Dimension": "Performance",
+    "Measure vs. Measure": "Influencer",
+    "Trend":"Trend"
+}
 # {"name":"Trend":"id":4} will be added to the above lists based on the logic(if date columns is present or not)
 
 CORS_ORIGIN_ALLOW_ALL = True

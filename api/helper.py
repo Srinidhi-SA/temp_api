@@ -84,7 +84,6 @@ def metadata_chart_conversion(data):
         "color":{
             "pattern": ['#0fc4b5' , '#005662', '#148071' , '#6cba86' , '#bcf3a2']
         }
-
     }
     values = ["data1"]
     for obj in data:
@@ -129,6 +128,8 @@ def decode_and_convert_chart_raw_data(data):
     axisRotation = data.get('axisRotation', None)
     yAxisNumberFormat = data.get('yAxisNumberFormat', None)
     y2AxisNumberFormat = data.get('y2AxisNumberFormat', None)
+    showLegend = data.get('show_legend', True)
+    hide_xtick = data.get('hide_xtick', False)
     if y2AxisNumberFormat == "":
         y2AxisNumberFormat = ".2s"
     subchart = data.get('subchart', True)
@@ -174,8 +175,10 @@ def decode_and_convert_chart_raw_data(data):
 
         if subchart is False:
             c3.hide_subchart()
-        if legend:
+        if showLegend is True and legend:
             c3.set_name_to_data(legend)
+        else:
+            c3.hide_basic_legends()
 
         if rotate is True:
             c3.rotate_axis()
@@ -185,6 +188,9 @@ def decode_and_convert_chart_raw_data(data):
             c3_chart_details["xdata"] = get_x_column_from_chart_data_without_xs(chart_data, axes)
             c3.set_tick_format_x()
             c3.set_tooltip_format()
+
+        if hide_xtick is True:
+            c3.hide_x_tick()
 
         c3_chart_details["chart_c3"] = c3.get_json()
 
@@ -232,8 +238,13 @@ def decode_and_convert_chart_raw_data(data):
         if axisRotation:
             c3.rotate_axis()
 
-        if legend:
+        if hide_xtick is True:
+            c3.hide_x_tick()
+
+        if showLegend is True and legend:
             c3.set_name_to_data(legend)
+        else:
+            c3.hide_basic_legends()
 
         xdata = get_x_column_from_chart_data_without_xs(chart_data, axes)
         if len(xdata) > 1:
@@ -289,10 +300,15 @@ def decode_and_convert_chart_raw_data(data):
         if subchart is False:
             c3.hide_subchart()
 
-        if legend:
+        if showLegend is True and legend:
             c3.set_name_to_data(legend)
+        else:
+            c3.hide_basic_legends()
 
         c3.set_x_type_as_index()
+
+        if hide_xtick is True:
+            c3.hide_x_tick()
 
         c3_chart_details["chart_c3"] = c3.get_json()
         return c3_chart_details
@@ -341,8 +357,13 @@ def decode_and_convert_chart_raw_data(data):
         if subchart is False:
             c3.hide_subchart()
 
-        if legend:
+        if showLegend is True and legend:
             c3.set_name_to_data(legend)
+        else:
+            c3.hide_basic_legends()
+
+        if hide_xtick is True:
+            c3.hide_x_tick()
 
         c3_chart_details["chart_c3"] = c3.get_json()
         return c3_chart_details
@@ -391,8 +412,13 @@ def decode_and_convert_chart_raw_data(data):
         if subchart is False:
             c3.hide_subchart()
 
-        if legend:
+        if showLegend is True and legend:
             c3.set_name_to_data(legend)
+        else:
+            c3.hide_basic_legends()
+
+        if hide_xtick is True:
+            c3.hide_x_tick()
 
         c3_chart_details["chart_c3"] = c3.get_json()
         c3_chart_details["tooltip_c3"] = [data_c3[0], data_c3[1], data_c3[2]]
@@ -755,12 +781,10 @@ def convert_json_object_into_list_of_object(datas, order_type='dataset'):
     # import pdb;pdb.set_trace()
 
     order_dict = settings.ORDER_DICT
+    analysis_list = settings.ANALYSIS_LIST
     order_by = order_dict[order_type]
 
     brief_name = settings.BRIEF_INFO_CONFIG
-    # ordered_datas = dict()
-    # for item in order_by:
-    #     ordered_datas[item] = datas[item]
 
     list_of_objects = []
     for key in order_by:
@@ -768,7 +792,11 @@ def convert_json_object_into_list_of_object(datas, order_type='dataset'):
             temp = dict()
             temp['name'] = key
             temp['displayName'] = brief_name[key]
-            temp['value'] = datas[key]
+
+            if key in ['analysis_list', 'analysis list']:
+                temp['value'] = [analysis_list[key] for item in datas[key]]
+            else:
+                temp['value'] = datas[key]
             list_of_objects.append(temp)
 
     return list_of_objects
