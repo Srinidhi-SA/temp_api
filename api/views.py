@@ -429,7 +429,11 @@ def write_into_databases(job_type, object_slug, results):
         columnData = results['columnData']
         for data in columnData:
             # data["chartData"] = helper.find_chart_data_and_replace_with_chart_data(data["chartData"])
-            data["chartData"] = helper.decode_and_convert_chart_raw_data(data["chartData"])
+            card_data = data["chartData"]
+            if 'dataType' in card_data and card_data['dataType'] == 'c3Chart':
+                chart_data = card_data['data']
+                data["chartData"] = helper.decode_and_convert_chart_raw_data(chart_data)
+
         results['columnData'] = columnData
         results['possibleAnalysis'] = settings.ANALYSIS_FOR_TARGET_VARIABLE
         da = []

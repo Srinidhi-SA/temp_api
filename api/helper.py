@@ -778,8 +778,6 @@ def return_status_of_job_log(job_url):
 
 def convert_json_object_into_list_of_object(datas, order_type='dataset'):
     from django.conf import settings
-    # import pdb;pdb.set_trace()
-
     order_dict = settings.ORDER_DICT
     analysis_list = settings.ANALYSIS_LIST
     order_by = order_dict[order_type]
