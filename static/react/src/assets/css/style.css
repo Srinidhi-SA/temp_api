@@ -15275,7 +15275,7 @@ a.disabled { color:#ccc !important; }
 .search-box:not(:valid) ~ .close-icon {
 	display: none;
 }
-
+.fa.fa-table.pull-right { cursor: pointer; }
 /**************** Css realated to developers, keep the source down ***/
 
 
