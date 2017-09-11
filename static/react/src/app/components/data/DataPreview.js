@@ -104,7 +104,7 @@ export class DataPreview extends React.Component {
 							text: "Create Model"
 					};
 				}
-				
+
 			}
 		}else{
 			this.buttons['close']= {
@@ -137,8 +137,8 @@ export class DataPreview extends React.Component {
 				}
 				$(" td."+cls).addClass("activeColumn");
 			});
-			
-			
+
+
 
 		});
 		showHideSideTable(this.firstTimeSideTable);
@@ -152,9 +152,9 @@ export class DataPreview extends React.Component {
 		const chkClass = $(e.target).attr('class');
 		let dataPrev = this.props.dataPreview.meta_data;
 		dataPrev.columnData.map((item, i) => {
-			 
-			showHideSideChart(item.columnType); // hide side chart on datetime selection 
-			
+
+			showHideSideChart(item.columnType); // hide side chart on datetime selection
+
 			if(chkClass.indexOf(item.slug) !== -1){
                 console.log(item);
 				const sideChartUpdate = item.chartData;
@@ -201,7 +201,7 @@ export class DataPreview extends React.Component {
 	}
 
 	render() {
-		
+
 		console.log("data prev is called##########3");
 		console.log(this.props);
 		$('body').pleaseWait('stop');
@@ -220,11 +220,11 @@ export class DataPreview extends React.Component {
 			const topInfo = dataPrev.metaData.map((item, i) => {
 				if(item.display){
 					return(
- 
-							 
- 
+
+
+
 							<div key={i} className="col-md-2 co-sm-4 col-xs-6">
- 
+
 							<h3>
 							{item.value} <br/><small>{item.displayName}</small>
 							</h3>
@@ -251,15 +251,15 @@ export class DataPreview extends React.Component {
 					case "datetime":
 					iconCls = "pe-7s-timer pe-lg pe-va";
 					break;
-					
+
 				}
-				
-				
+
+
 				const anchorCls =thElement.slug + " dropdown-toggle";
-				
+
 				if(thElement.ignoreSuggestionFlag){
 					cls = cls + " greyout-col";
-				
+
 				return(
 						<th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)} title={thElement.ignoreSuggestionMsg}>
 						<a href="#" data-toggle="dropdown" className={anchorCls}><i className={iconCls}></i> {thElement.name}</a>
@@ -285,7 +285,7 @@ export class DataPreview extends React.Component {
 
 						</th>
 				);
-				
+
 			}
 			});
 			//  data.splice(0,1);
@@ -341,7 +341,7 @@ export class DataPreview extends React.Component {
 
 					<div className="clearfix"></div>
 					<div className="table-responsive noSwipe">
-					
+
 					<Scrollbars>
 					<table className="table table-condensed table-hover table-bordered table-striped cst_table">
 					<thead>
@@ -382,7 +382,7 @@ export class DataPreview extends React.Component {
 					<div id="tab_visualizations" className="panel-group accordion accordion-semi">
 					<div className="panel panel-default">
 					<div className="panel-heading">
-					<h4 className="panel-title"><a data-toggle="collapse" data-parent="#tab_visualizations" href="#pnl_visl" aria-expanded="true" className="">Visualizations <i className="fa fa-angle-down pull-right"></i></a></h4>
+					<h4 className="panel-title"><a data-toggle="collapse" data-parent="#tab_visualizations" href="#pnl_visl" aria-expanded="true" className="">Visualization <i className="fa fa-angle-down pull-right"></i></a></h4>
 					</div>
 					<div id="pnl_visl" className="panel-collapse collapse in" aria-expanded="true">
 					<div className="panel-body" id="side-chart">
@@ -425,7 +425,7 @@ export class DataPreview extends React.Component {
 					</div>
 					<div className="row buttonRow">
 					<div className="col-md-12 text-right">
- 
+
 					<div className="panel">
 					<div className="panel-body">
 					<Button onClick={this.closePreview.bind(this)}> {this.buttons.close.text} </Button>
@@ -434,12 +434,12 @@ export class DataPreview extends React.Component {
 					</div>
 					</div>
 
- 
-					</div>
- 
+
 					</div>
 
-					 
+					</div>
+
+
 					{/*<!-- /.Page Content Area --> */}
 					 </div>
 			);
