@@ -115,6 +115,7 @@ chartData = {
     },
 }
 
+
 def remove_tooltip_format_from_chart_data(chart_data):
 
     if 'chart_c3' in chart_data:
@@ -122,13 +123,19 @@ def remove_tooltip_format_from_chart_data(chart_data):
             del chart_data['chart_c3']['tooltip']
     return chart_data
 
-
 def remove_chart_height_from_chart_data(chart_data):
     if 'chart_c3' in chart_data:
         if "size" in chart_data['chart_c3']:
             del chart_data['chart_c3']['size']
     return chart_data
 
+def remove_chart_height_from_x_chart_data(chart_data):
+    if 'chart_c3' in chart_data:
+        if "axis" in chart_data['chart_c3']:
+            if "x" in chart_data['chart_c3']["axis"]:
+                if "height" in chart_data['chart_c3']["axis"]["x"]:
+                    del chart_data['chart_c3']["axis"]["x"]["height"]
+    return chart_data
 
 def remove_padding_from_chart_data(chart_data):
     if 'chart_c3' in chart_data:
