@@ -86,46 +86,103 @@
 	<div class="main-content">
 		
 		<div class="user-profile">
-             
-			 
-			 
-			 <div class="user-display">
-               <div class="photo">&nbsp;</div>
+			 <div class="user-display">              
               <div class="bottom">
-                <div class="user-avatar"><img src="../assets/images/avatar.png"></div>
-                <div class="user-info">
+                <div class="user-avatar col-md-2"><img src="../assets/images/avatar.png"></div>
+                <div class="user-info col-md-12">
                   
-				  <div class="info-block panel panel-default">
-                  <div class="panel-heading">
-                    <h4>Marlabs BI</h4>
-                  </div>
+				  <div class="panel-default">
+                  
                   <div class="panel-body">
-				  <table class="no-border no-strip skills">
-                      <tbody class="no-border-x no-border-y">
+				  <div class="row">
+					<div class="col-md-8">
+					<h3>Marlabs BI</h3>
+				  <table class="full-table-width no-border no-strip skills">
+                      <tbody class="no-border-x no-border-y full-width" >
                         <tr>
                           <td class="item"><span class="fa fa-envelope fa-lg"></span> marlabsbi@marlabs.com</td>
                          
-                        </tr>
-                        <tr>
-                          <td class="item"><span class="fa fa-user fa-lg"></span> 16 September 1989</td>
-                           
-                        </tr>
-                        <tr>
-                          <td class="item"><span class="fa fa-phone-square fa-lg"></span> (999) 999-9999</td>
-                          
                         </tr> 
-                        
+                        <tr>
+                          <td class="item"><span class="fa fa-phone-square fa-lg"></span> (999) 999-9999</td>                          
+                        </tr>                        
                       </tbody>
                     </table>
+					</div>
+					<div class="col-md-4 text-right xs-p-20">
+						<a href="#" class="btn btn-primary">Edit Profile</a>
+					</div>
+				  </div>
+				  
 				  </div>
 				  </div>
                 </div>
-              </div>
+               <div claass="clearfix"></div>
+			  </div>
+			  <div claass="clearfix"></div>
             </div>
-			 
-			
-			
+			<div claass="clearfix"></div>
+			 <div class="row">
+			<div class="col-md-2 co-sm-4 col-xs-6">
+				<h3 class="text-center text-primary">1500<br>
+				<small>Data Set Uploaded </small></h3>
+			</div>
+			<div class="col-md-2 co-sm-4 col-xs-6">
+				<h3 class="text-center text-primary">1500<br>
+				<small>Signal Created </small></h3>
+			</div>
+			<div class="col-md-2 co-sm-4 col-xs-6">
+				<h3 class="text-center text-primary">1500<br>
+				<small>Stories Created </small></h3>
+			</div>
+			<div class="col-md-2 co-sm-4 col-xs-6">
+				<h3 class="text-center text-primary">1500<br>
+				<small>Models Creatd </small></h3>
+			</div>
+			<div class="col-md-2 co-sm-4 col-xs-6">
+				<h3 class="text-center text-primary">1500<br>
+				<small>Algorighms Ran </small></h3>
+			</div>
+			<div class="col-md-2 co-sm-4 col-xs-6">
+				<h3 class="text-center text-primary">1500<br>
+				<small>Records Crunched</small></h3>
+			</div> 
+		  </div>
           </div>
+		  <div class="xs-p-20"></div>
+		 <div class="row">
+			<div class="col-md-4">
+				<h5>TOTAL SPACE</h5>
+				<img src="images/userProfileGraph.png" class="img-responsive">
+			</div>
+			<div class="col-md-8">
+				<div class="row">
+					<div class="col-md-12 text-right">
+					<p class="xs-p-20">
+						First Login : <b>July 4th 2017</b> <br>
+						Subscription Left : <b>25 Days</b>
+					</p>
+					</div>
+					<div class="clearfix"></div>
+					<div class="col-md-8">
+						<div class="panel xs-p-20 minHP">
+							<p>Your maximum file upload size is <b>5.0GB</b> and maximum number of columns allowed in your data set is <b>50</b> columns.</p>
+						</div>
+					 
+					</div>
+					<div class="col-md-4">
+						<div class="panel text-center xs-p-20 minHP">
+							<a href="#">
+								<img src="images/launch_icon.png"><br />
+								UPGRADE ACCOUNT SERVICE
+							</a>
+						</div>
+					</div>
+					<div class="clearfix"></div>
+				</div>
+			</div>
+		 </div>
+		  
 	</div>
 	<!-- /.Page Content Area --> 
   
@@ -134,94 +191,15 @@
 
 </div>
 <!-- /. Main Wrapper ** Mandatory --> 
-
-<!-- Create Story Popup Modal -->
-<div id="createNewStory" tabindex="-1" role="dialog" class="modal fade modal-colored-header">
-      <div class="modal-dialog custom-width">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" data-dismiss="modal" aria-hidden="true" class="close md-close"><i class="fa fa-close"></i></button>
-            <h3 class="modal-title">Create Story</h3>
-          </div>
-          <div class="modal-body form">
-            <div class="form-group">
-              <label>Select an existing dataset</label>
-              <select id="sel_existdataste" name="selectbasic" class="form-control">
-                <option value="334">superstore_v2.csv</option>
-                <option value="274">test</option>
-                <option value="239">Ecommerce_data.csv</option>
-                <option value="112">Space_X_Missions.csv</option>
-                <option value="49">data_date.csv</option>
-                <option value="40">US-Mutual-Fund-Data_updated.csv</option>
-                <option value="34">Video_Games_Sales_as_at_22_Dec_2016.csv</option>
-                <option value="29">Pokemon_copy.csv</option>
-                <option value="21">credit_churn_data_v5.csv</option>
-                <option value="11">65_world_indexes.csv</option>
-              </select>
-            </div> 
-          </div>
-          <div class="modal-footer">
-            <button type="button" data-dismiss="modal" class="btn btn-default md-close">Cancel</button>
-            <button type="button" data-dismiss="modal" class="btn btn-primary md-close">Create</button>
-          </div>
-        </div>
-      </div>
-    </div>
-<!-- /. Rename popup modal -->
-
-<!-- Rename Popup Modal -->
-<div id="renameCard" tabindex="-1" role="dialog" class="modal fade modal-colored-header">
-      <div class="modal-dialog custom-width">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" data-dismiss="modal" aria-hidden="true" class="close md-close"><i class="fa fa-close"></i></button>
-            <h3 class="modal-title">Renaming the Card Title</h3>
-          </div>
-          <div class="modal-body form">
-            <div class="form-group">
-              <label>Please enter the new name for the story</label>
-              <input type="text" placeholder="Please enter the name" class="form-control">
-            </div> 
-          </div>
-          <div class="modal-footer">
-            <button type="button" data-dismiss="modal" class="btn btn-default md-close">Cancel</button>
-            <button type="button" data-dismiss="modal" class="btn btn-primary md-close">Proceed</button>
-          </div>
-        </div>
-      </div>
-    </div>
-<!-- /. Rename popup modal -->
-
-
-<!-- Delete Popup Modal -->
-<div id="deleteCard" class="modal fade">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">Confirmation</h4>
-            </div>
-            <div class="modal-body">               
-              <div class="text-center">
-              <div class="i-circle text-danger"><i class="fa fa-4x">×</i></div>
-              <h4>Are you sure you want to delete this card set?</h4>              
-              </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Proceed</button>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- /. Delete popup modal -->
+  
+ 
 
 <!-- Bootstrap core JavaScript
     ================================================== --> 
 <!-- Placed at the end of the document so the pages load faster --> 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> 
 <script src="js/bootstrap.min.js"></script>
-<script src="js/uiScripts.js"></script>
+<!--<script src="js/uiScripts.js"></script>-->
  
 </body>
 </html>

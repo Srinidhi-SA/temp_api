@@ -16,6 +16,7 @@ export default function reducer(state = {
   createSignalLoaderValue: 10,
   current_page: 1,
   signal_search_element:"",
+  sideCardListFlag:null,
 }, action) {
   console.log("in SIGNAL reducer!!");
   console.log(action);
@@ -151,7 +152,15 @@ export default function reducer(state = {
       }
     }
     break;
-
+	case "SET_SIDECARDLIST_FLAG":
+	{
+		return{
+			...state,
+			sideCardListFlag:action.sideCardListClass
+		}
+		
+	}
+    break;
   }
   return state
 }
