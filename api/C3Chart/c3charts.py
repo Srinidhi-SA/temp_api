@@ -391,21 +391,26 @@ class C3Chart(object):
         pass
 
     # TODO: make it proper code. remove unnecessary checks. better ask from backend
-    def add_additional_grid_line_at_zero(self):
-        datas = self._data_data
-        negative = False
+    def add_additional_grid_line_at_zero(self, datas = None):
+        # negative = False
+        # if datas is None:
+        #     datas = self._data_data
+        #     for data in datas:
+        #         for d in data:
+        #             if (isinstance(d, int) or isinstance(d, float)) and d < 0:
+        #                 negative = True
+        #                 break
+        # else:
+        #     for d in datas:
+        #         if (isinstance(d, int) or isinstance(d, float)) and d < 0:
+        #             negative = True
+        #             break
+        #
+        # if negative is False:
+        #     print "no negative"
+        #     return ""
 
-        for data in datas:
-            for d in data:
-                if (isinstance(d, int) or isinstance(d, float)) and d < 0:
-                    negative = True
-                    break
-
-        if negative is False:
-            print "no negative"
-            return ""
-
-        zero_data = {"value": 0, "text": 'Line 0 for y'}
+        zero_data = {"value": 0, "text": ''}
         if self._grid:
             if 'y' in self._grid:
                 if 'lines' in self._grid['y']:
