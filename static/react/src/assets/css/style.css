@@ -15276,7 +15276,7 @@ a.disabled { color:#ccc !important; }
 .search-box:not(:valid) ~ .close-icon {
 	display: none;
 }
-.fa.fa-table.pull-right { cursor: pointer; }
+.fa.fa-table.pull-right { cursor: pointer; color: #747474; }
 .full-table-width { width:100%; }
 .minHP { min-height:120px; }
 /**************** Css realated to developers, keep the source down ***/
