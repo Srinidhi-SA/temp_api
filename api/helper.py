@@ -23,13 +23,18 @@ class JobserverDetails(object):
         return JOBSERVER.get(name)
 
     @classmethod
-    def get_config(cls, slug, class_name):
+    def get_config(cls,
+                   slug,
+                   class_name,
+                   job_name=None
+                   ):
 
         job_type = {
             "metadata": "metaData",
             "master": "story",
             "model":"training",
-            "score": "prediction"
+            "score": "prediction",
+            "robo": "robo"
         }
 
         return {
@@ -38,6 +43,7 @@ class JobserverDetails(object):
                 "job_url" : "http://{0}:{1}/api/job/{2}/".format(THIS_SERVER_DETAILS.get('host'),
                                                                     THIS_SERVER_DETAILS.get('port'),
                                                                     slug),
+                "job_name": job_name,
                 "get_config" :
                     {
                         "action" : "get_config" ,
@@ -114,8 +120,7 @@ chartData = {
 def decode_and_convert_chart_raw_data(data):
     if not check_chart_data_format(data):
         return {}
-    from api.C3Chart.c3charts import C3Chart, ScatterChart
-    # import pdb;pdb.set_trace()
+    from api.C3Chart.c3charts import C3Chart, ScatterChart, DonutChart, PieChart
     chart_type = data['chart_type']
     axes = data['axes']
     label_text = data['label_text']
@@ -124,8 +129,13 @@ def decode_and_convert_chart_raw_data(data):
     axisRotation = data.get('axisRotation', None)
     yAxisNumberFormat = data.get('yAxisNumberFormat', None)
     y2AxisNumberFormat = data.get('y2AxisNumberFormat', None)
+    if y2AxisNumberFormat == "":
+        y2AxisNumberFormat = ".2s"
     subchart = data.get('subchart', True)
+    rotate = data.get('rotate', False)
 
+    print "legend ------->> --------"
+    print legend
     c3_chart_details = dict()
 
     if chart_type in ["bar", "line", "spline"]:
@@ -164,8 +174,20 @@ def decode_and_convert_chart_raw_data(data):
 
         if subchart is False:
             c3.hide_subchart()
+        if legend:
+            c3.set_name_to_data(legend)
+
+        if rotate is True:
+            c3.rotate_axis()
+
+        xdata = get_x_column_from_chart_data_without_xs(chart_data, axes)
+        if len(xdata) > 1:
+            c3_chart_details["xdata"] = get_x_column_from_chart_data_without_xs(chart_data, axes)
+            c3.set_tick_format_x()
+            c3.set_tooltip_format()
 
         c3_chart_details["chart_c3"] = c3.get_json()
+
         return c3_chart_details
 
     elif chart_type in ["combination"]:
@@ -209,6 +231,15 @@ def decode_and_convert_chart_raw_data(data):
 
         if axisRotation:
             c3.rotate_axis()
+
+        if legend:
+            c3.set_name_to_data(legend)
+
+        xdata = get_x_column_from_chart_data_without_xs(chart_data, axes)
+        if len(xdata) > 1:
+            c3_chart_details["xdata"] = get_x_column_from_chart_data_without_xs(chart_data, axes)
+            c3.set_tick_format_x()
+            c3.set_tooltip_format()
 
         from api.C3Chart import config
         c3.set_basic_color_pattern(config.SECOND_FLIP_PATTERN)
@@ -258,13 +289,15 @@ def decode_and_convert_chart_raw_data(data):
         if subchart is False:
             c3.hide_subchart()
 
+        if legend:
+            c3.set_name_to_data(legend)
 
         c3.set_x_type_as_index()
 
         c3_chart_details["chart_c3"] = c3.get_json()
         return c3_chart_details
 
-    elif chart_type in ["scatter_line"]:
+    elif chart_type in ["scatter_line", "scatter_bar"]:
         data_c3 = data['data']
         chart_data, xs = replace_chart_data(data_c3, data['axes'])
 
@@ -279,7 +312,10 @@ def decode_and_convert_chart_raw_data(data):
             label_text=label_text
         )
 
-        c3.set_line_chart()
+        if chart_type == "scatter_line":
+            c3.set_line_chart()
+        elif chart_type == "scatter_bar":
+            c3.set_bar_chart()
 
         if axes.get('y', None) is not None:
             c3.set_y_axis(
@@ -304,6 +340,9 @@ def decode_and_convert_chart_raw_data(data):
 
         if subchart is False:
             c3.hide_subchart()
+
+        if legend:
+            c3.set_name_to_data(legend)
 
         c3_chart_details["chart_c3"] = c3.get_json()
         return c3_chart_details
@@ -352,9 +391,33 @@ def decode_and_convert_chart_raw_data(data):
         if subchart is False:
             c3.hide_subchart()
 
+        if legend:
+            c3.set_name_to_data(legend)
+
         c3_chart_details["chart_c3"] = c3.get_json()
         c3_chart_details["tooltip_c3"] = [data_c3[0], data_c3[1], data_c3[2]]
         return c3_chart_details
+    elif chart_type in ['donut']:
+        chart_data = replace_chart_data(data['data'])
+        pie_chart_data = convert_chart_data_to_pie_chart(chart_data)
+        c3 = DonutChart(data=pie_chart_data)
+        c3.set_all_basics()
+        c3.remove_x_from_data()
+
+        c3_chart_details['table_c3'] = pie_chart_data
+        c3_chart_details["chart_c3"] = c3.get_json()
+        return c3_chart_details
+
+    elif chart_type in ['pie']:
+        chart_data = replace_chart_data(data['data'])
+        pie_chart_data = convert_chart_data_to_pie_chart(chart_data)
+        c3 = PieChart(data=pie_chart_data)
+        c3.set_all_basics()
+
+        c3_chart_details['table_c3'] = pie_chart_data
+        c3_chart_details["chart_c3"] = c3.get_json()
+        return c3_chart_details
+
 
 
 def replace_chart_data(data, axes=None):
@@ -362,6 +425,13 @@ def replace_chart_data(data, axes=None):
         return convert_listed_dict_objects(data)
     elif isinstance(data, dict):
         return dict_to_list(data, axes)
+
+
+def convert_chart_data_to_pie_chart(chart_data):
+
+    pie_chart_data = zip(*chart_data)
+    pie_chart_data = map(list, pie_chart_data)
+    return pie_chart_data[1:]
 
 
 def get_slug(name):
@@ -465,7 +535,7 @@ def convert_json_with_list_to_column_data_for_xs(data):
     ]
 
     """
-    # import pdb; pdb.set_trace()
+
     all_key = data.keys()
 
     final_data = []
@@ -483,7 +553,6 @@ def convert_json_with_list_to_column_data_for_xs(data):
         mapp[d] = i
         i += 1
 
-    # import pdb;pdb.set_trace()
     for d in data.keys():
         array_of_json = data[d]
         x_index = mapp[d + '_x']
@@ -632,6 +701,80 @@ def convert_column_data_with_array_of_category_into_column_data_stright_xy(colum
         end_data[name_indexs[name_y]].append(columns_data[1][index + 1])
 
     return end_data, xs
+
+def get_x_column_from_chart_data_without_xs(chart_data, axes):
+    i = None
+    for index, row in enumerate(chart_data):
+        if row[0] == axes.get('x', 'key'):
+            i = index
+            break
+
+    if i is not None:
+        return chart_data[i][1:]
+    else:
+        return []
+
+
+def get_jobserver_status(
+        instance=None
+):
+    job_url = instance.job.url
+    if instance.status in ['SUCCESS']:
+        return instance.status
+    try:
+        live_status = return_status_of_job_log(job_url)
+        instance.status = live_status
+        instance.save()
+        return live_status
+    except Exception as err:
+        return err
+
+
+def return_status_of_job_log(job_url):
+    import urllib, json
+    final_status = "RUNNING"
+    print job_url
+    check_status = urllib.urlopen(job_url)
+    data = json.loads(check_status.read())
+    if data.get("status") == "FINISHED":
+        final_status = data.get("status")
+    elif data.get("status") == "ERROR" and "startTime" in data.keys():
+        final_status = data.get("status")
+    elif data.get("status") == "RUNNING":
+        final_status = data.get("status")
+    else:
+        pass
+
+    jobserver_status = settings.JOBSERVER_STATUS
+
+    return jobserver_status.get(final_status)
+
+
+def convert_json_object_into_list_of_object(datas, order_type='dataset'):
+    from django.conf import settings
+    # import pdb;pdb.set_trace()
+
+    order_dict = settings.ORDER_DICT
+    order_by = order_dict[order_type]
+
+    brief_name = settings.BRIEF_INFO_CONFIG
+    # ordered_datas = dict()
+    # for item in order_by:
+    #     ordered_datas[item] = datas[item]
+
+    list_of_objects = []
+    for key in order_by:
+        if key in datas:
+            temp = dict()
+            temp['name'] = key
+            temp['displayName'] = brief_name[key]
+            temp['value'] = datas[key]
+            list_of_objects.append(temp)
+
+    return list_of_objects
+
+
+
 
 
 
