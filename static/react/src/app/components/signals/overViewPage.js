@@ -130,11 +130,15 @@ export class OverViewPage extends React.Component {
     var that = this;
     that.urlPrefix = "/signals";
     let breadcrumb_label = "Signals";
+    let storyName = ""
     if (this.props.urlPrefix) {
       that.urlPrefix = this.props.urlPrefix;
+      storyName = this.props.signal.name;
 
-		if (this.props.urlPrefix != "/signals")
+		if (this.props.urlPrefix != "/signals"){
         breadcrumb_label = that.urlPrefix;
+        storyName = "App Name"
+      }
     }
 
 	var settings = {
@@ -159,13 +163,13 @@ export class OverViewPage extends React.Component {
                     path: that.urlPrefix,
                     label: breadcrumb_label
                   }, {
-                    path: that.urlPrefix + this.props.signal.name,
+                    path: that.urlPrefix + storyName,
                     label: this.props.match.params.slug
                   }
                 ]}/>
               </div>
               <div class="col-md-8">
-                <h2>{this.props.signal.name}</h2>
+                <h2>{storyName}</h2>
               </div>
             </div>
             <div class="clearfix"></div>
@@ -182,7 +186,7 @@ export class OverViewPage extends React.Component {
 
       subTreeSetting(urlSplit.length, 6, that.props.match.params.l2); // setting of subtree and active classes
 
-      let selectedSignal = this.props.signal.name;
+      let selectedSignal = storyName;
       //let this.props.signal = resTree();
       //console.log(this.props.signal);
       let tabList = null;
@@ -312,7 +316,7 @@ export class OverViewPage extends React.Component {
                       label: breadcrumb_label
                     }, {
                       path: that.urlPrefix + "/" + this.props.match.params.slug,
-                      label: selectedSignal
+                      label: storyName
                     }, {
                       path: that.urlPrefix + "/" + this.props.match.params.slug + '/' + this.props.match.params.l1,
                       label: l1Name
@@ -334,7 +338,7 @@ export class OverViewPage extends React.Component {
                 <div className="col-md-12">
                   <div className="panel panel-mAd">
                     <div className="panel-heading">
-                      <h2 class="pull-left">{l1Name}</h2>
+                      <h2 class="pull-left">{storyName}</h2>
                       <div className="btn-toolbar pull-right">
                         <div className="btn-group btn-space">
 
