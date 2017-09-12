@@ -817,7 +817,7 @@ def get_jobserver_status(
         instance=None
 ):
     job_url = instance.job.url
-    if instance.status in ['SUCCESS']:
+    if instance.status in ['SUCCESS', 'FAILED']:
         return instance.status
     try:
         live_status = return_status_of_job_log(job_url)
@@ -839,6 +839,8 @@ def return_status_of_job_log(job_url):
     elif data.get("status") == "ERROR" and "startTime" in data.keys():
         final_status = data.get("status")
     elif data.get("status") == "RUNNING":
+        final_status = data.get("status")
+    elif data.get("status") == "KILLED":
         final_status = data.get("status")
     else:
         pass

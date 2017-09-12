@@ -130,7 +130,11 @@ class Dataset(models.Model):
         )
 
         self.job = job
-        self.status = "INPROGRESS"
+
+        if job is None:
+            self.status = "FAILED"
+        else:
+            self.status = "INPROGRESS"
         self.save()
 
     def generate_config(self, *args, **kwrgs):
@@ -982,5 +986,6 @@ def job_submission(
     except Exception as exc:
         print "Unable to submit job."
         print exc
+        return None
 
     return job

@@ -367,10 +367,11 @@ JOBSERVER_STATUS = {
     'RUNNING': 'INPROGRESS',
     'FINISHED': 'SUCCESS',
     'ERROR': 'FAILED',
-    'UNKNOWN': 'UNKNOWN'
+    'UNKNOWN': 'UNKNOWN',
+    'KILLED': 'FAILED'
 }
 
-UI_VERSION = "0.8"
+UI_VERSION = "0.94"
 
 ERROR_MESSAGE = {
     'upload_error': 'Code had a weakness. Now it is broken.'
