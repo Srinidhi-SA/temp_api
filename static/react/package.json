@@ -17,6 +17,7 @@
   "author": "Marlabs AI team",
   "license": "Private",
   "dependencies": {
+    "bootbox": "^4.4.0",
     "dateformat": "^2.0.0",
     "react": "^15.6.1",
     "react-bootstrap": "^0.31.2",
