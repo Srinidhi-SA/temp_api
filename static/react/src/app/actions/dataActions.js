@@ -253,15 +253,19 @@ export function updateSelectedVariables(evt){
 		}
 	}
 	else if(evt.target.className == "timeDimension"){
+		var timeChkBoxList = store.getState().datasets.dateTimeChecked;
+		timeChkBoxList[evt.target.name] = evt.target.checked;
 		if(evt.target.checked){
 			return {
 				type: "SELECTED_TIMEDIMENSION",
-				variableName
+				variableName,
+				timeChkBoxList
 			}
 		}else{
 			return {
 				type: "UNSELECT_TIMEDIMENSION",
-				variableName
+				variableName,
+				timeChkBoxList
 			}
 		}
 	}
@@ -445,7 +449,7 @@ function renameDatasetAPI(slug,newName){
 	}
 
 
-export function updateDatasetVariables(measures,dimensions,timeDimensions,measureChkBoxList,dimChkBoxList){
+export function updateDatasetVariables(measures,dimensions,timeDimensions,measureChkBoxList,dimChkBoxList,dateTimeChkBoxList){
 
 	return {
 		type: "DATASET_VARIABLES",
@@ -453,7 +457,8 @@ export function updateDatasetVariables(measures,dimensions,timeDimensions,measur
 		dimensions,
 		timeDimensions,
 		measureChkBoxList,
-		dimChkBoxList
+		dimChkBoxList,
+		dateTimeChkBoxList
 	}
 }
 
@@ -510,9 +515,11 @@ export function handelSort(variableType,sortOrder){
 		let timedimensions = store.getState().datasets.dataSetTimeDimensions.slice().sort(function(a,b) { return (a.toLowerCase() < b.toLowerCase()) ? -1 : 1;});
 		if(sortOrder == "DESC" )
 			timedimensions = store.getState().datasets.dataSetTimeDimensions.slice().sort(function(a,b) { return (a.toLowerCase() > b.toLowerCase()) ? -1 : 1;});
+		let checkBoxList2 = handleCheckboxes(timedimensions,"datetime")
 		return {
 			type: "SORT_TIMEDIMENSION",
 			timedimensions,
+			checkBoxList2,
 		}
 		break;
 	}
@@ -524,6 +531,9 @@ function handleCheckboxes(list,listType){
 		targetArray = store.getState().datasets.selectedMeasures;
 	}else  if(listType == "dimension"){
 		targetArray = store.getState().datasets.selectedDimensions;
+	}else  if(listType == "datetime"){
+		targetArray = [];
+		targetArray[0] = store.getState().datasets.selectedTimeDimensions;
 	}
 	for(var i=0;i<list.length;i++){
 		if($.inArray(list[i],targetArray) != -1){

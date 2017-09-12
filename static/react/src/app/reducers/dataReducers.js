@@ -179,6 +179,7 @@ export default function reducer(state = {
 			...state,
 			selectedTimeDimensions:action.variableName,
 			selectedVariablesCount:state.selectedVariablesCount,
+			dateTimeChecked:action.timeChkBoxList,
 		}
 	}
 	break;
@@ -188,6 +189,7 @@ export default function reducer(state = {
 			...state,
 			selectedTimeDimensions:action.variableName,
 			selectedVariablesCount:state.selectedVariablesCount-1,
+			dateTimeChecked:action.timeChkBoxList,
 		}
 	}
 	break;
@@ -285,6 +287,7 @@ export default function reducer(state = {
 			dimensionChecked:action.dimChkBoxList,
 			measureAllChecked:true,
 			dimensionAllChecked:true,
+			dateTimeChecked:action.dateTimeChkBoxList,
 			
 		}
 	}
@@ -326,6 +329,7 @@ export default function reducer(state = {
 		return {
 			...state,
 			dataSetTimeDimensions: action.timedimensions,
+			dateTimeChecked:action.checkBoxList2,
 			
 			
 		}
