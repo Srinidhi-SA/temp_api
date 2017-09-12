@@ -51,7 +51,10 @@ export class DataPreview extends React.Component {
 
 	componentWillMount(){
 		console.log("------------------");
-		console.log(this.props);
+		console.log(this.props.match.params);
+		 if (isEmpty(this.props.dataPreview)) {
+		      this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
+		    }
 		console.log("data prevvvvv");
 		console.log(store.getState().datasets.curUrl.indexOf("models"));
 		if(store.getState().datasets.curUrl){
