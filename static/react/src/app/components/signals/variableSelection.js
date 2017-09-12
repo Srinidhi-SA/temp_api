@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 import {push} from "react-router-redux";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "react-bootstrap";
 import store from "../../store";
-import {selectedAnalysisList,resetSelectedVariables,unselectAllPossibleAnalysis} from "../../actions/dataActions";
+import {selectedAnalysisList,resetSelectedVariables,unselectAllPossibleAnalysis,getDataSetPreview} from "../../actions/dataActions";
 import {openCreateSignalModal,closeCreateSignalModal,updateCsLoaderValue} from "../../actions/createSignalActions";
 import {createSignal,setPossibleAnalysisList,emptySignalAnalysis} from "../../actions/signalActions";
 import {DataVariableSelection} from "../data/DataVariableSelection";
@@ -83,7 +83,11 @@ setPossibleList(e){
 	//alert(e.target.value);
      this.props.dispatch(setPossibleAnalysisList(e.target.value));
 }
-
+componentWillMount(){
+	if (this.props.dataPreview == null) {
+		this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
+	}
+}
 componentDidMount(){
 	var that = this;
 	$(function(){
@@ -111,9 +115,9 @@ componentDidUpdate(){
      }
 
     let dataPrev = store.getState().datasets.dataPreview;
-     const metaData = dataPrev.meta_data.columnData;
      let renderSelectBox = null;
-    if(metaData){
+    if(dataPrev){
+    	  const metaData = dataPrev.meta_data.columnData;
       renderSelectBox = metaData.map((metaItem,metaIndex) =>{
 		  if(metaItem.columnType !="datetime" && !metaItem.ignoreSuggestionFlag && !metaItem.dateSuggestionFlag){
 		  return(
@@ -126,7 +130,7 @@ componentDidUpdate(){
     }
 
 	// possible analysis list -------------------------------------
-
+    if(dataPrev){
     const possibleAnalysis = dataPrev.meta_data.possibleAnalysis.target_variable;
     let renderPossibleAnalysis = null, renderSubList=null;
 
@@ -170,6 +174,7 @@ componentDidUpdate(){
   }else{
      renderSelectBox = <option>No Variables</option>
   }
+    }
   // end of possible analysis list ------------------------------------
 
 		return (

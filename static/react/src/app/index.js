@@ -62,7 +62,7 @@ class App extends React.Component {
             <Route exact path="/apps/:AppId/scores/dataPreview/createScore" component={ScoreVariableSelection} />
             <Route exact path="/data?page=:slug" component={Data} />
             <Route exact path="/apps/:AppId/scores/:slug" component={AppsScoreDetail} />
-            <Route exact path="/data/preview/createSignal" component={VariableSelection}/>
+            <Route exact path="/data/:slug/createSignal" component={VariableSelection}/>
             <Route exact path="/signals?page=:slug" component={Signals}/>
             <Route exact path="/signals?search=:slug" component={Signals}/>
             <Route exact path="/apps/:AppId/models/data/:slug" component={DataPreview} />
