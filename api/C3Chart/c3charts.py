@@ -390,6 +390,42 @@ class C3Chart(object):
     def hide_multipline_x(self):
         pass
 
+    # TODO: make it proper code. remove unnecessary checks. better ask from backend
+    def add_additional_grid_line_at_zero(self):
+        datas = self._data_data
+        negative = False
+
+        for data in datas:
+            for d in data:
+                if (isinstance(d, int) or isinstance(d, float)) and d < 0:
+                    negative = True
+                    break
+
+        if negative is False:
+            print "no negative"
+            return ""
+
+        zero_data = {"value": 0, "text": 'Line 0 for y'}
+        if self._grid:
+            if 'y' in self._grid:
+                if 'lines' in self._grid['y']:
+                    if isinstance(self._grid['y']['lines'], list):
+                        self._grid['y']['lines'].append(zero_data)
+                    else:
+                        self._grid['y']['lines'] = [zero_data]
+                else:
+                    self._grid['y']['lines'] = [zero_data]
+            else:
+                self._grid['y'] = {
+                    "lines": [zero_data]
+                }
+        else:
+            self._grid = {
+                'y': {
+                    "lines": [zero_data]
+                }
+            }
+
     def add_groups_to_data(self, list_of_y):
         self._data['groups'] = [list_of_y]
 

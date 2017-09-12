@@ -261,6 +261,7 @@ def decode_and_convert_chart_raw_data(data):
 
         if hide_xtick is True:
             c3.hide_x_tick()
+        c3.add_additional_grid_line_at_zero()
 
         c3_chart_details["chart_c3"] = c3.get_json()
 
@@ -327,6 +328,7 @@ def decode_and_convert_chart_raw_data(data):
 
         if subchart is False:
             c3.hide_subchart()
+        c3.add_additional_grid_line_at_zero()
 
         c3_chart_details["chart_c3"] = c3.get_json()
         return c3_chart_details
@@ -379,7 +381,7 @@ def decode_and_convert_chart_raw_data(data):
 
         if hide_xtick is True:
             c3.hide_x_tick()
-
+        c3.add_additional_grid_line_at_zero()
         c3_chart_details["chart_c3"] = c3.get_json()
         return c3_chart_details
 
@@ -434,7 +436,7 @@ def decode_and_convert_chart_raw_data(data):
 
         if hide_xtick is True:
             c3.hide_x_tick()
-
+        c3.add_additional_grid_line_at_zero()
         c3_chart_details["chart_c3"] = c3.get_json()
         return c3_chart_details
 
@@ -489,7 +491,7 @@ def decode_and_convert_chart_raw_data(data):
 
         if hide_xtick is True:
             c3.hide_x_tick()
-
+        c3.add_additional_grid_line_at_zero()
         c3_chart_details["chart_c3"] = c3.get_json()
         c3_chart_details["tooltip_c3"] = [data_c3[0], data_c3[1], data_c3[2]]
         return c3_chart_details
