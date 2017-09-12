@@ -25,7 +25,8 @@ var selectedVariables = {measures:[],dimensions:[],date:null};  // pass selected
     selectedAnalysis:store.datasets.selectedAnalysis,
     signalData: store.signals.signalData,
     selectedSignal: store.signals.signalAnalysis,
-	getVarType: store.signals.getVarType
+	getVarType: store.signals.getVarType,
+	 dataSetTimeDimensions:store.datasets.dataSetTimeDimensions,
   };
 })
 
@@ -93,10 +94,7 @@ componentDidMount(){
 
 componentDidUpdate(){
 	console.log("trend disbale check:::: ");
-	
-     console.log(store.getState().datasets.selectedDimensions);
-	 console.log(this.props.selectedTimeDimensions);
-	 if(!this.props.selectedTimeDimensions){
+	 if(this.props.dataSetTimeDimensions.length == 0){
 		 $('#analysisList input[type="checkbox"]').last().attr("disabled", true);
 	 }
 }
