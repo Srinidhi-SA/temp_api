@@ -390,7 +390,11 @@ class Insight(models.Model):
         )
 
         self.job = job
-        self.status = "INPROGRESS"
+        if job is None:
+            self.status = "FAILED"
+        else:
+            self.status = "INPROGRESS"
+
         self.save()
 
     def generate_config(self, *args, **kwargs):
@@ -647,7 +651,10 @@ class Trainer(models.Model):
         )
 
         self.job = job
-        self.status = "INPROGRESS"
+        if job is None:
+            self.status = "FAILED"
+        else:
+            self.status = "INPROGRESS"
         self.save()
 
     def get_config(self):
@@ -753,7 +760,10 @@ class Score(models.Model):
         )
 
         self.job = job
-        self.status = "INPROGRESS"
+        if job is None:
+            self.status = "FAILED"
+        else:
+            self.status = "INPROGRESS"
         self.save()
 
     def generate_config(self, *args, **kwargs):
@@ -947,7 +957,10 @@ class Robo(models.Model):
         )
 
         self.job = job
-        self.status = "INPROGRESS"
+        if job is None:
+            self.status = "FAILED"
+        else:
+            self.status = "INPROGRESS"
         self.save()
 
 
