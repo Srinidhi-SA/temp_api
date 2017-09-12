@@ -137,6 +137,7 @@ setSideListFlag(e){
     if (this.props.urlPrefix) {
       that.urlPrefix = this.props.urlPrefix;
       storyName = this.props.signal.name;
+
 		if (this.props.urlPrefix != "/signals"){
         breadcrumb_label = that.urlPrefix;
         storyName = "App Name"
@@ -165,7 +166,7 @@ setSideListFlag(e){
                     path: that.urlPrefix,
                     label: breadcrumb_label
                   }, {
-                    path: that.urlPrefix + this.props.signal.slug,
+                    path: that.urlPrefix + storyName,
                     label: this.props.match.params.slug
                   }
                 ]}/>
