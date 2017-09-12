@@ -334,7 +334,7 @@ export class OverViewPage extends React.Component {
                 <div className="col-md-12">
                   <div className="panel panel-mAd">
                     <div className="panel-heading">
-                      <h2 class="pull-left">{l1Name}</h2>
+                      <h2 class="pull-left">{this.props.signal.name}</h2>
                       <div className="btn-toolbar pull-right">
                         <div className="btn-group btn-space">
 
