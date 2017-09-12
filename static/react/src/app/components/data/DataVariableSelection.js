@@ -42,6 +42,7 @@ export class DataVariableSelection extends React.Component {
         this.measureChkBoxList = [];
         this.dimensionChkBoxList = [];
         this.dimensionDateTime = [];
+        this.selectedTimeDimension = "";
     }
     handleCheckboxEvents( e ) {
         this.props.dispatch( updateSelectedVariables( e ) )
@@ -57,7 +58,7 @@ export class DataVariableSelection extends React.Component {
 
     componentDidMount() {
         this.props.dispatch( resetSelectedVariables() );
-        this.setVariables( this.dimensions, this.measures, this.datetime[this.datetime.length - 1] );
+        this.setVariables( this.dimensions, this.measures, this.selectedTimeDimension);
         this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.measureChkBoxList,this.dimensionChkBoxList));
         
     }
@@ -115,6 +116,7 @@ export class DataVariableSelection extends React.Component {
                             this.datetime.push( metaItem.name );
                             break;
                     }
+                    this.selectedTimeDimension = this.datetime[0];
                 }
 
 
@@ -149,11 +151,11 @@ export class DataVariableSelection extends React.Component {
                     const dtId = "rad_dt" + dtIndex;
                     if(dtIndex == 0 && $.inArray( dtItem, that.dimensionDateTime) == -1){
                     	 return (
-                                 <li key={dtIndex}><div className="ma-radio inline"><input type="radio" className="timeDimension" onChange={this.handleCheckboxEvents} name="date_type" id={dtId} value={dtItem} defaultChecked /><label htmlFor={dtId}>{dtItem}</label></div></li>
+                                 <li key={dtIndex}><div className="ma-radio inline"><input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents} name="date_type" id={dtId} value={dtItem} defaultChecked /><label htmlFor={dtId}>{dtItem}</label></div></li>
                              );
                     }else{
                     	 return (
-                                 <li key={dtIndex}><div className="ma-radio inline col-md-10"><input type="radio" className="timeDimension" onChange={this.handleCheckboxEvents} name="date_type" id={dtId} value={dtItem} /><label htmlFor={dtId}>{dtItem}</label></div>{timeSuggestionToolTip}</li>
+                                 <li key={dtIndex}><div className="ma-radio inline col-md-10"><input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents} name="date_type" id={dtId} value={dtItem} /><label htmlFor={dtId}>{dtItem}</label></div>{timeSuggestionToolTip}</li>
                              );
                     }
                    
