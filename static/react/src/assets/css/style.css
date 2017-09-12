@@ -15401,10 +15401,10 @@ html{
     z-index:10 !important;
 }
 
-.chart-data-icon .fa-search-plus{
+.chart-data-icon .fa-table{
     float: right;
 	cursor: pointer;
-	/*color:#00998c;*/
+	color: #afacac;
 	z-index:10 !important;
 }
 
@@ -15495,7 +15495,7 @@ word-break: break-word;
 .slick-next, .slick-prev { z-index:10 }
 
 .greyout-col{
-	background-color: silver;
+	background-color: #ece8e8;
 }
 
 svg[class^='chart']{
