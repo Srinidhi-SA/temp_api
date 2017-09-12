@@ -38,6 +38,8 @@ export class DataPreview extends React.Component {
 		this.hideDataPreview = this.hideDataPreview.bind(this);
 		this.chartId = "_side";
 		this.firstTimeSideTable = [];
+		this.firstTimeSideChart = {};
+		this.firstTimeColTypeForChart = null;
 	}
 
 	hideDataPreview(){
@@ -140,6 +142,7 @@ export class DataPreview extends React.Component {
 
 		});
 		showHideSideTable(this.firstTimeSideTable);
+		showHideSideChart(this.firstTimeColTypeForChart,this.firstTimeSideChart);
 
 	}
 
@@ -151,12 +154,12 @@ export class DataPreview extends React.Component {
 		let dataPrev = this.props.dataPreview.meta_data;
 		dataPrev.columnData.map((item, i) => {
 
-			showHideSideChart(item.columnType); // hide side chart on datetime selection
+			//showHideSideChart(item.columnType); // hide side chart on datetime selection
 
 			if(chkClass.indexOf(item.slug) !== -1){
                 console.log(item);
 				$("#side-chart").empty();
-				showHideSideChart(item.columnType); // hide side chart on datetime selection 
+				showHideSideChart(item.columnType,item.chartData); // hide side chart on datetime selection 
 				if(!$.isEmptyObject(item.chartData)){
 				const sideChartUpdate = item.chartData.chart_c3;
 				let yformat = item.chartData.yformat;
@@ -320,6 +323,12 @@ export class DataPreview extends React.Component {
 			console.log("chart-----------")
 			const sideTable = dataPrev.columnData[0].columnStats;
 			this.firstTimeSideTable = sideTable; //show hide side table
+			this.firstTimeSideChart = dataPrev.columnData[0].chartData;
+			this.firstTimeColTypeForChart = dataPrev.columnData[0].columnType;
+			let firstChart = "";
+			 if(!$.isEmptyObject(this.firstTimeSideChart)){
+				 firstChart = <C3Chart classId={this.chartId} data={sideChart} yformat={yformat} xdata={xdata} sideChart={true}/> ;
+			 }
 			console.log("checking side table data:; ");
 			console.log(sideTable);
 			const sideTableTemaplte=sideTable.map((tableItem,tableIndex)=>{
@@ -399,7 +408,7 @@ export class DataPreview extends React.Component {
 					<div id="pnl_visl" className="panel-collapse collapse in" aria-expanded="true">
 					<div className="panel-body" id="side-chart">
 					{/*<img src="../assets/images/data_preview_graph.png" className="img-responsive" />*/}
-					<C3Chart classId={this.chartId} data={sideChart} yformat={yformat} xdata={xdata} sideChart={true}/>
+						{firstChart}
 					</div>
 					</div>
 					</div>
