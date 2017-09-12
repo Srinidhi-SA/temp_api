@@ -191,6 +191,7 @@ export class C3Chart extends React.Component {
 			$(".chart-data-icon").empty();
 			
 		 }
+		
 			 	  
 	  });
 	  
@@ -231,7 +232,7 @@ export class C3Chart extends React.Component {
 					<div className="row" >
 					<div className="col-md-12">
 					<div className={this.tableCls}>
-					<Scrollbars>
+					<Scrollbars autoHide={true}>
 					<table className='table chart-table'>
 					</table>
 					{/*<div class="form-group col-md-7;">*/}
