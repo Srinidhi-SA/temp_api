@@ -3,6 +3,11 @@ import {connect} from "react-redux";
 import {c3Functions} from "../helpers/c3.functions";
 import { Scrollbars } from 'react-custom-scrollbars';
 import {API} from "../helpers/env";
+import store from "../store";
+
+@connect((store) => {
+  return {sideCardListFlag: store.signals.sideCardListFlag};
+})
 
 
 //var data= {}, toolData = [], toolLegend=[], chartDiv =null;
@@ -170,7 +175,7 @@ export class C3Chart extends React.Component {
 
 	 render() {
 	  var that = this;
-	  
+	  console.log(this.props);
 	  if(this.props.classId !='_side'){
 		this.classId = "chart"+this.props.classId + " ct col-md-7 col-md-offset-2  xs-mb-20";
 		}

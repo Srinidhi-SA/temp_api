@@ -15,7 +15,7 @@ import {isEmpty, subTreeSetting} from "../../helpers/helper";
 import {MainHeader} from "../../components/common/MainHeader";
 import {Card} from "./Card";
 import store from "../../store";
-import {getSignalAnalysis} from "../../actions/signalActions";
+import {getSignalAnalysis,setSideCardListFlag} from "../../actions/signalActions";
 import {STATIC_URL} from "../../helpers/env.js"
 import Slider from "react-slick"
 
@@ -33,8 +33,11 @@ export class OverViewPage extends React.Component {
     this.nextRedirect = null;
     this.showSubTree = false;
   }
-
-  componentWillReceiveProps(nextProps) {}
+  
+setSideListFlag(e){
+	this.props.dispatch(setSideCardListFlag(e.target.className));
+}
+  //componentWillReceiveProps(nextProps) {}
   componentWillMount() {
     if (isEmpty(this.props.signal)) {
       this.props.dispatch(getSignalAnalysis(sessionStorage.userToken, this.props.match.params.slug));
@@ -400,8 +403,8 @@ export class OverViewPage extends React.Component {
 
                               <div className="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
                                 <div className="side_panel">
-                                  <a href="javascript:void(0);" data-toggle="offcanvas" className="sdbar_switch">
-                                    <i className="mAd_icons sw_on"></i>
+                                  <a href="javascript:void(0);" data-toggle="offcanvas" className="sdbar_switch" >
+                                    <i className="mAd_icons sw_on" onClick={this.setSideListFlag.bind(this)}></i>
                                   </a>
                                   <div className="panel panel-primary">
                                     <div className="panel-heading">
