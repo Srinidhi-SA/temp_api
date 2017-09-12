@@ -166,7 +166,7 @@ setSideListFlag(e){
                     path: that.urlPrefix,
                     label: breadcrumb_label
                   }, {
-                    path: that.urlPrefix + storyName,
+                    path: that.urlPrefix + this.props.signal.slug,
                     label: this.props.match.params.slug
                   }
                 ]}/>
