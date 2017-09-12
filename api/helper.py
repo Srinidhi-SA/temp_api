@@ -816,6 +816,13 @@ def get_x_column_from_chart_data_without_xs(chart_data, axes):
 def get_jobserver_status(
         instance=None
 ):
+    if instance is None:
+
+        return "no instance ---!!"
+
+    if instance.job is None:
+        print "no job---!!"
+        return ""
     job_url = instance.job.url
     if instance.status in ['SUCCESS', 'FAILED']:
         return instance.status
