@@ -163,7 +163,7 @@ export class OverViewPage extends React.Component {
                     path: that.urlPrefix,
                     label: breadcrumb_label
                   }, {
-                    path: that.urlPrefix + storyName,
+                    path: that.urlPrefix + this.props.signal.slug,
                     label: this.props.match.params.slug
                   }
                 ]}/>
@@ -293,6 +293,11 @@ export class OverViewPage extends React.Component {
       if (expectedURL.prev == this.props.signal.listOfCards[0].slug || expectedURL.prev == null) {
         prevURL = that.urlPrefix + "/" + this.props.match.params.slug;
       } else if (expectedURL.next == null) {
+        nextURL = documentModeLink;
+      }
+
+      //for sigma release below code is written seperately, later we have to merge this with above if else
+      if (expectedURL.next == null) {
         nextURL = documentModeLink;
       }
 
