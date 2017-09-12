@@ -1,8 +1,6 @@
 import React from "react";
 import { Scrollbars } from 'react-custom-scrollbars';
-
-
-
+import {Provider} from "react-redux";
 import {MainHeader} from "../common/MainHeader";
 import {connect} from "react-redux";
 //import {Redirect} from 'react-router';
@@ -164,7 +162,7 @@ export class DataPreview extends React.Component {
 				console.log("checking side table data:; ");
 				console.log(sideTableUpdate);
 				$("#side-chart").empty();
-				ReactDOM.render(<C3Chart classId={"_side"} data={sideChartUpdate} yformat={yformat} xdata={xdata} sideChart={true}/>, document.getElementById('side-chart'));
+				ReactDOM.render(<Provider store={store}><C3Chart classId={"_side"} data={sideChartUpdate} yformat={yformat} xdata={xdata} sideChart={true}/></Provider>, document.getElementById('side-chart'));
                 }
 				const sideTableUpdate = item.columnStats;
 				showHideSideTable(sideTableUpdate); // hide side table on blank or all display false
