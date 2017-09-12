@@ -42,6 +42,7 @@ export class DataVariableSelection extends React.Component {
         this.measureChkBoxList = [];
         this.dimensionChkBoxList = [];
         this.dimensionDateTime = [];
+        this.selectedTimeDimension = "";
     }
     handleCheckboxEvents( e ) {
         this.props.dispatch( updateSelectedVariables( e ) )
@@ -57,7 +58,7 @@ export class DataVariableSelection extends React.Component {
 
     componentDidMount() {
         this.props.dispatch( resetSelectedVariables() );
-        this.setVariables( this.dimensions, this.measures, this.datetime[this.datetime.length - 1] );
+        this.setVariables( this.dimensions, this.measures, this.selectedTimeDimension);
         this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.measureChkBoxList,this.dimensionChkBoxList));
         
     }
@@ -115,6 +116,7 @@ export class DataVariableSelection extends React.Component {
                             this.datetime.push( metaItem.name );
                             break;
                     }
+                    this.selectedTimeDimension = this.datetime[0];
                 }
 
 
@@ -149,11 +151,11 @@ export class DataVariableSelection extends React.Component {
                     const dtId = "rad_dt" + dtIndex;
                     if(dtIndex == 0 && $.inArray( dtItem, that.dimensionDateTime) == -1){
                     	 return (
-                                 <li key={dtIndex}><div className="ma-radio inline"><input type="radio" className="timeDimension" onChange={this.handleCheckboxEvents} name="date_type" id={dtId} value={dtItem} defaultChecked /><label htmlFor={dtId}>{dtItem}</label></div></li>
+                                 <li key={dtIndex}><div className="ma-radio inline"><input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents} name="date_type" id={dtId} value={dtItem} defaultChecked /><label htmlFor={dtId}>{dtItem}</label></div></li>
                              );
                     }else{
                     	 return (
-                                 <li key={dtIndex}><div className="ma-radio inline col-md-10"><input type="radio" className="timeDimension" onChange={this.handleCheckboxEvents} name="date_type" id={dtId} value={dtItem} /><label htmlFor={dtId}>{dtItem}</label></div>{timeSuggestionToolTip}</li>
+                                 <li key={dtIndex}><div className="ma-radio inline col-md-10"><input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents} name="date_type" id={dtId} value={dtItem} /><label htmlFor={dtId}>{dtItem}</label></div>{timeSuggestionToolTip}</li>
                              );
                     }
                    
@@ -190,14 +192,14 @@ export class DataVariableSelection extends React.Component {
                                             <div className="input-group pull-right">
                                                 <input type="text" name="measure" title="Search Measures" id="measureSearch"  onChange={this.handleDVSearch.bind(this)} className="form-control" placeholder="Search measures..." />
                                                 {/*<span className="input-group-addon"><i className="fa fa-search fa-lg"></i></span>*/}
-                                                <span className="input-group-btn">
+                                               {/* <span className="input-group-btn">
                                                     <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i className="fa fa-sort-alpha-asc fa-lg"></i> <span className="caret"></span></button>
                                                     <ul role="menu" className="dropdown-menu dropdown-menu-right">
                                                         <li onClick={this.handelSort.bind(this,"measure","ASC")} className="cursor"><a>Ascending</a></li>
                                                         <li onClick={this.handelSort.bind(this,"measure","DESC")} className="cursor"><a>Descending</a></li>
                
                                                     </ul>
-                                                </span>
+                                                </span>*/} 
                                             </div>
                                         </div>
                                     </div>
@@ -237,13 +239,13 @@ export class DataVariableSelection extends React.Component {
                                             <div className="input-group pull-right">
                                                 <input type="text" name="dimension" title="Search Dimension" id="dimensionSearch" onChange={this.handleDVSearch.bind(this)}  className="form-control" placeholder="Search dimension..." />
                                                 {/* <span className="input-group-addon"><i className="fa fa-search fa-lg"></i></span>*/}
-                                                <span className="input-group-btn">
+                                               {/* <span className="input-group-btn">
                                                     <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i className="fa fa-sort-alpha-asc fa-lg"></i> <span className="caret"></span></button>
                                                     <ul role="menu" className="dropdown-menu dropdown-menu-right">
                                                         <li onClick={this.handelSort.bind(this,"dimension","ASC")} className="cursor"><a>Ascending</a></li>
                                                         <li onClick={this.handelSort.bind(this,"dimension","DESC")} className="cursor"><a>Descending</a></li>
                                                     </ul>
-                                                </span>
+                                                </span>*/} 
                                             </div>
                                         </div>
                                     </div>
@@ -281,14 +283,14 @@ export class DataVariableSelection extends React.Component {
                                             <div className="input-group pull-right">
                                                 <input type="text" name="datetime" title="Search Time Dimensions" id="datetimeSearch" className="form-control" onChange={this.handleDVSearch.bind(this)} placeholder="Search time dimensions..." />
                                                 {/* <span className="input-group-addon"><i className="fa fa-search fa-lg"></i></span>*/}
-                                                <span className="input-group-btn">
+                                               {/* <span className="input-group-btn">
                                                     <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i className="fa fa-sort-alpha-asc fa-lg"></i> <span className="caret"></span></button>
                                                     <ul role="menu" className="dropdown-menu dropdown-menu-right">
                                                         <li onClick={this.handelSort.bind(this,"datetime","ASC")} className="cursor"><a>Ascending</a></li>
                                                         <li onClick={this.handelSort.bind(this,"datetime","DESC")} className="cursor"><a>Descending</a></li>
                                                        
                                                     </ul>
-                                                </span>
+                                                </span>*/} 
                                             </div>
                                         </div>
                                     </div>
