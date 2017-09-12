@@ -254,7 +254,15 @@ export function updateSelectedVariables(evt){
 	}
 	else if(evt.target.className == "timeDimension"){
 		var timeChkBoxList = store.getState().datasets.dateTimeChecked;
-		timeChkBoxList[evt.target.name] = evt.target.checked;
+		var index = evt.target.id.split("dt")[1];
+		for(var i =0;i<timeChkBoxList.length;i++){
+			if(i == index){
+				timeChkBoxList[i] = evt.target.checked;
+			}else{
+				timeChkBoxList[i] = false;
+			}
+		}
+		timeChkBoxList[evt.target.id.split("dt")[1]] = evt.target.checked;
 		if(evt.target.checked){
 			return {
 				type: "SELECTED_TIMEDIMENSION",

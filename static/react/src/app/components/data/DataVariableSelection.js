@@ -164,11 +164,11 @@ export class DataVariableSelection extends React.Component {
               
                     	if($.inArray( dtItem, that.dimensionDateTime) == -1){
                         	return (
-                        			<li key={dtIndex}><div className="ma-radio inline"><input type="radio" className="timeDimension" onChange={this.handleCheckboxEvents} name="date_type" id={dtId} value={dtItem} checked={store.getState().datasets.dateTimeChecked[dtIndex]} /><label htmlFor={dtId}>{dtItem}</label></div></li>
+                        			<li key={dtIndex}><div className="ma-radio inline"><input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents}  name="date_type" id={dtId} value={dtItem} checked={store.getState().datasets.dateTimeChecked[dtIndex]} /><label htmlFor={dtId}>{dtItem}</label></div></li>
                         	);
                         }else{
                         	return (
-                        			<li key={dtIndex}><div className="ma-radio inline col-md-10"><input type="radio" className="timeDimension" onChange={this.handleCheckboxEvents} name="date_type" id={dtId} value={dtItem} checked={store.getState().datasets.dateTimeChecked[dtIndex]} /><label htmlFor={dtId}>{dtItem}</label></div>{timeSuggestionToolTip}</li>
+                        			<li key={dtIndex}><div className="ma-radio inline col-md-10"><input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents}  name="date_type" id={dtId} value={dtItem} checked={store.getState().datasets.dateTimeChecked[dtIndex]} /><label htmlFor={dtId}>{dtItem}</label></div>{timeSuggestionToolTip}</li>
                         	);	
                         }
              
