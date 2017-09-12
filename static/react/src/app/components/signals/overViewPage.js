@@ -295,6 +295,11 @@ export class OverViewPage extends React.Component {
         nextURL = documentModeLink;
       }
 
+      //for sigma release below code is written seperately, later we have to merge this with above if else
+      if (expectedURL.next == null) {
+        nextURL = documentModeLink;
+      }
+
       let lastcard = getLastCardOfTree(this.props.signal);
       //console.log("last card is::::");
       //console.log(lastcard);

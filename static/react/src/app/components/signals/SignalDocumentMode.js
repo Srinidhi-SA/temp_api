@@ -4,7 +4,10 @@ import {Link} from "react-router-dom";
 import store from "../../store";
 import Breadcrumb from 'react-breadcrumb';
 import {Card} from "./Card";
-import {STATIC_URL} from "../../helpers/env.js"
+import {STATIC_URL} from "../../helpers/env.js";
+import {getSignalAnalysis} from "../../actions/signalActions";
+import {isEmpty, subTreeSetting} from "../../helpers/helper";
+
 
 @connect((store) => {
   return {signal: store.signals.signalAnalysis};
@@ -14,6 +17,14 @@ export class SignalDocumentMode extends React.Component {
   constructor() {
     super();
 	//this.docFlag = true;
+  }
+  componentWillMount() {
+    // alert("in will mount!!!")
+    // console.log("in will mount!!!")
+    if (isEmpty(this.props.signal)) {
+      this.props.dispatch(getSignalAnalysis(sessionStorage.userToken, this.props.match.params.slug));
+    }
+    // console.log(this.props.signal)
   }
 
   searchTree(_Node, cardLists, lastVar) {
@@ -40,6 +51,7 @@ export class SignalDocumentMode extends React.Component {
     console.log(this.props);
 
     let cardList = [];
+    if(!isEmpty(this.props.signal)){
     let lastCard = this.props.history.location.state.lastVar;
     cardList = this.searchTree(this.props.signal, cardList, lastCard);
     console.log("card list is...");
@@ -128,6 +140,7 @@ export class SignalDocumentMode extends React.Component {
         </div>
       );
     }
+  }else{
 
     return (
       <div className="side-body">
@@ -152,4 +165,5 @@ export class SignalDocumentMode extends React.Component {
       </div>
     );
   }
+}
 }
