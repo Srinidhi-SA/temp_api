@@ -15,7 +15,7 @@ import {isEmpty, subTreeSetting} from "../../helpers/helper";
 import {MainHeader} from "../../components/common/MainHeader";
 import {Card} from "./Card";
 import store from "../../store";
-import {getSignalAnalysis} from "../../actions/signalActions";
+import {getSignalAnalysis,setSideCardListFlag} from "../../actions/signalActions";
 import {STATIC_URL} from "../../helpers/env.js"
 import Slider from "react-slick"
 
@@ -33,8 +33,11 @@ export class OverViewPage extends React.Component {
     this.nextRedirect = null;
     this.showSubTree = false;
   }
-
-  componentWillReceiveProps(nextProps) {}
+  
+setSideListFlag(e){
+	this.props.dispatch(setSideCardListFlag(e.target.className));
+}
+  //componentWillReceiveProps(nextProps) {}
   componentWillMount() {
     if (isEmpty(this.props.signal)) {
       this.props.dispatch(getSignalAnalysis(sessionStorage.userToken, this.props.match.params.slug));
@@ -130,11 +133,14 @@ export class OverViewPage extends React.Component {
     var that = this;
     that.urlPrefix = "/signals";
     let breadcrumb_label = "Signals";
+    let storyName = ""
     if (this.props.urlPrefix) {
       that.urlPrefix = this.props.urlPrefix;
-
-		if (this.props.urlPrefix != "/signals")
+      storyName = this.props.signal.name;
+		if (this.props.urlPrefix != "/signals"){
         breadcrumb_label = that.urlPrefix;
+        storyName = "App Name"
+      }
     }
 
 	var settings = {
@@ -159,13 +165,13 @@ export class OverViewPage extends React.Component {
                     path: that.urlPrefix,
                     label: breadcrumb_label
                   }, {
-                    path: that.urlPrefix + this.props.signal.name,
+                    path: that.urlPrefix + this.props.signal.slug,
                     label: this.props.match.params.slug
                   }
                 ]}/>
               </div>
               <div class="col-md-8">
-                <h2>{this.props.signal.name}</h2>
+                <h2>{storyName}</h2>
               </div>
             </div>
             <div class="clearfix"></div>
@@ -182,7 +188,7 @@ export class OverViewPage extends React.Component {
 
       subTreeSetting(urlSplit.length, 6, that.props.match.params.l2); // setting of subtree and active classes
 
-      let selectedSignal = this.props.signal.name;
+      let selectedSignal = storyName;
       //let this.props.signal = resTree();
       //console.log(this.props.signal);
       let tabList = null;
@@ -292,6 +298,11 @@ export class OverViewPage extends React.Component {
         nextURL = documentModeLink;
       }
 
+      //for sigma release below code is written seperately, later we have to merge this with above if else
+      if (expectedURL.next == null) {
+        nextURL = documentModeLink;
+      }
+
       let lastcard = getLastCardOfTree(this.props.signal);
       //console.log("last card is::::");
       //console.log(lastcard);
@@ -312,7 +323,7 @@ export class OverViewPage extends React.Component {
                       label: breadcrumb_label
                     }, {
                       path: that.urlPrefix + "/" + this.props.match.params.slug,
-                      label: selectedSignal
+                      label: storyName
                     }, {
                       path: that.urlPrefix + "/" + this.props.match.params.slug + '/' + this.props.match.params.l1,
                       label: l1Name
@@ -334,7 +345,7 @@ export class OverViewPage extends React.Component {
                 <div className="col-md-12">
                   <div className="panel panel-mAd">
                     <div className="panel-heading">
-                      <h2 class="pull-left">{l1Name}</h2>
+                      <h2 class="pull-left">{storyName}</h2>
                       <div className="btn-toolbar pull-right">
                         <div className="btn-group btn-space">
 
@@ -392,8 +403,8 @@ export class OverViewPage extends React.Component {
 
                               <div className="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
                                 <div className="side_panel">
-                                  <a href="javascript:void(0);" data-toggle="offcanvas" className="sdbar_switch">
-                                    <i className="mAd_icons sw_on"></i>
+                                  <a href="javascript:void(0);" data-toggle="offcanvas" className="sdbar_switch" >
+                                    <i className="mAd_icons sw_on" onClick={this.setSideListFlag.bind(this)}></i>
                                   </a>
                                   <div className="panel panel-primary">
                                     <div className="panel-heading">
