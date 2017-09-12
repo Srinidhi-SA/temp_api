@@ -18,11 +18,11 @@ export class C3Chart extends React.Component {
 		this.tableDownload = "";
 		this.modalCls = "modal fade chart-modal"+props.classId;
 		this.tableCls = "table-responsive table-area table"+props.classId;
-		if($(".chart"+props.classId).html()){
+		/*if($(".chart"+props.classId).html()){
 			this.updateChart();
-		}
+		}*/
 
-		this.classId = "chart"+this.props.classId + " ct col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-1 xs-mb-20";
+		this.classId = "chart"+this.props.classId + " ct col-md-7 col-md-offset-2 xs-mb-20";
 	}
 
 	getChartElement(){
@@ -40,9 +40,6 @@ export class C3Chart extends React.Component {
 	}
 
 	componentWillMount(){
-		//console.log("chart store object::::");
-		//console.log(this.props.chartObject);
-		this.updateChart();
 
 		if(this.props.classId =='_side'){
 			this.classId = "chart";
@@ -50,8 +47,13 @@ export class C3Chart extends React.Component {
 
 	}
 	componentDidMount() {
-		this.updateChart();
+		//alert("did");
+		$(".chart"+this.props.classId).empty();
+		//this.updateChart();
 		$('.chart-data-icon').css('visibility','hidden');
+		
+		
+		
 	}
 
 
@@ -59,9 +61,8 @@ export class C3Chart extends React.Component {
 		var that = this;
 		let data = this.props.data;
 		if(this.props.sideChart){
-			data['size']= {
-					height: 200
-			}
+			console.log(data);
+			data['size']= {height: 200}
 		}
 		if(this.props.yformat){
 			let formats= ['.2s','$','$,.2s','.2f'];
@@ -76,19 +77,7 @@ export class C3Chart extends React.Component {
 
 			}
 
-			/* if(this.props.yformat=='m'){
-      ////console.log(this.props.yformat);
-      data.axis.y.tick.format = d3.format('.2s');
-    }else  if(this.props.yformat=='$'){
-      ////console.log(this.props.yformat);
-      data.axis.y.tick.format = d3.format('$');
-    }else  if(this.props.yformat=='$m'){
-     // //console.log(this.props.yformat);
-      data.axis.y.tick.format = d3.format('$,.2s');
-    }else  if(this.props.yformat=='f'){
-     // //console.log(this.props.yformat);
-      data.axis.y.tick.format = d3.format('.2f');
-    }*/
+	
 		}
 
 		if(this.props.y2format){
@@ -99,19 +88,6 @@ export class C3Chart extends React.Component {
 				data.axis.y2.tick.format = d3.format('');
 			}
 
-			/*if(this.props.y2format=='m'){
-    ////console.log(this.get('y2format'));
-    data.axis.y2.tick.format = d3.format('.2s');
-  }else  if(this.props.y2format=='$'){
-    ////console.log(this.get('y2format'));
-    data.axis.y2.tick.format = d3.format('$');
-  }else  if(this.props.y2format=='$m'){
-    ////console.log(this.get('y2format'));
-    data.axis.y2.tick.format = d3.format('$,.2s');
-  }else  if(this.props.y2format =='f'){
-    ////console.log(this.get('yformat'));
-    data.axis.y.tick.format = d3.format('.2f');
-  }*/
 		}
 
 		if(this.props.tooltip){
@@ -147,7 +123,11 @@ export class C3Chart extends React.Component {
 
 		let chart = c3.generate(data);
 		chart.destroy();
-		chart = c3.generate(data);
+		
+		chart = setTimeout(function(){
+			return c3.generate(data);
+		},100);
+		//c3.generate(data);
 
 		//this.props.dispatch(chartObjStore(chart));
 
@@ -161,8 +141,6 @@ export class C3Chart extends React.Component {
 		});
 		if(this.props.tabledata){
 			var tabledata = this.props.tabledata;
-			//console.log("table data");
-			//console.log(tabledata);
 
 			var collength = tabledata.length;
 			//console.log(collength);
@@ -194,11 +172,18 @@ export class C3Chart extends React.Component {
 	  var that = this;
 	  
 	  if(this.props.classId !='_side'){
-		this.classId = "chart"+this.props.classId + " ct col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-1 xs-mb-20";
+		this.classId = "chart"+this.props.classId + " ct col-md-7 col-md-offset-2  xs-mb-20";
 		}
 	  
 	  $(function(){
+		  
+		 // alert("render");
 		  that.updateChart();
+	     if(that.props.classId =='_side'){
+			$(".chart-data-icon").empty();
+			
+		 }
+			 	  
 	  });
 	  
 	  
@@ -206,13 +191,19 @@ export class C3Chart extends React.Component {
 	  
       return(
 <div className="chart-area">
-<div className="row">
-  	<div className="chart-data-icon col-md-9 col-md-offset-1">
-         <i className="fa fa-table pull-right" aria-hidden="true" onClick={this.showModal.bind(this)}></i>
+
+{/*<div className="row">
+  	<div className="chart-data-icon col-md-7 col-md-offset-2  xs-mb-20">
+        
      </div>
 	 <div className="clearfix"></div>
-</div>
+</div>*/}
     <div className="row">
+		<div className="chart-data-icon col-md-7 col-md-offset-2  xs-mb-20">
+			 <i className="fa fa-search-plus pull-right" aria-hidden="true" onClick={this.showModal.bind(this)}></i>
+		 </div>
+	
+	       <div className="clearfix"></div>
 		   <div className={this.classId}></div>
 		   <div className="clearfix"></div>
      </div>

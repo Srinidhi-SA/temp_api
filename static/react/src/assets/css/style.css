@@ -15397,14 +15397,14 @@ html{
 */
 }
 .chart-data-icon {
-    font-size: 32px;
+    font-size: 24px;
     z-index:10 !important;
 }
 
 .chart-data-icon .fa-search-plus{
     float: right;
 	cursor: pointer;
-	color:#00998c;
+	/*color:#00998c;*/
 	z-index:10 !important;
 }
 
@@ -15496,4 +15496,10 @@ word-break: break-word;
 
 .greyout-col{
 	background-color: silver;
+}
+
+svg[class^='chart']{
+  width: 70%;
+  min-height: 340px;
+  margin-left:10%;
 }
