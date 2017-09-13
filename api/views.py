@@ -547,13 +547,6 @@ def get_info(request):
 
     def get_all_info_related_to_user(user):
         things = ['dataset', 'insight', 'trainer', 'score', 'robo']
-        display = {
-            'dataset': 'Dataset',
-            'insight': 'Insight',
-            'trainer': 'Trainer',
-            'score': 'Score',
-            'robo': 'Robo'
-        }
         all_data = dict()
         for t in things:
 
@@ -569,10 +562,18 @@ def get_info(request):
             'score': Score,
             'robo': Robo
         }
+        display = {
+            'dataset': 'Data Set Uploaded',
+            'insight': 'Signals Created',
+            'trainer': 'Models Created',
+            'score': 'Score Created',
+            'robo': 'Robo Created'
+        }
 
         all_objects = t[type].objects.filter(created_by=user)
         return {
             'count': len(all_objects),
+            'displayName': display[type]
         }
 
     return JsonResponse({
