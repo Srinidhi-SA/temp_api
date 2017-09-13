@@ -80,7 +80,7 @@ export class SignalDocumentMode extends React.Component {
     })
     console.log(objs);
     let firstOverviewSlug = this.props.signal.listOfNodes[0].slug;
-    let cardModeLink = "/signals/" + this.props.signal.slug + "/"+ firstOverviewSlug;
+    let cardModeLink = "/signals/" + this.props.match.params.slug + "/"+ firstOverviewSlug;
 
     if (objs) {
       return (

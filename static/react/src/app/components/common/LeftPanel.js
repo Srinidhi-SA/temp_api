@@ -60,7 +60,7 @@ hideDataPrev(e){
                     <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" className=" sdb sdb_app" to ="/apps">
                       <span></span>
                       APPS</NavLink>
-                  </li>  
+                  </li>
 
                   <li>
                     <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" className="sdb sdb_data" to ="/data">
