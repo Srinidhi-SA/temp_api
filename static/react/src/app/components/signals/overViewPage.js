@@ -33,7 +33,7 @@ export class OverViewPage extends React.Component {
     this.nextRedirect = null;
     this.showSubTree = false;
   }
-  
+
 setSideListFlag(e){
 	this.props.dispatch(setSideCardListFlag(e.target.className));
 }
@@ -161,7 +161,7 @@ setSideListFlag(e){
           <div className="page-head">
             <div class="row">
               <div class="col-md-12">
-                <Breadcrumb path={[
+                {/*<Breadcrumb path={[
                   {
                     path: that.urlPrefix,
                     label: breadcrumb_label
@@ -169,7 +169,7 @@ setSideListFlag(e){
                     path: that.urlPrefix + this.props.signal.slug,
                     label: this.props.match.params.slug
                   }
-                ]}/>
+                ]}/>*/}
               </div>
               <div class="col-md-8">
                 <h2>{storyName}</h2>
