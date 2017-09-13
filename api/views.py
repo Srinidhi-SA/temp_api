@@ -547,10 +547,10 @@ def get_info(request):
 
     def get_all_info_related_to_user(user):
         things = ['dataset', 'insight', 'trainer', 'score', 'robo']
-        all_data = dict()
+        all_data = []
         for t in things:
 
-            all_data[t] = get_all_objects(user, t)
+            all_data.append(get_all_objects(user, t))
         return all_data
 
     def get_all_objects(user, type):
