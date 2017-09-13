@@ -26,6 +26,7 @@ export default function reducer(state = {
 		measureChecked:[],
 		dimensionAllChecked:true,
 		dimensionChecked:[],
+		dateTimeChecked:[],
 
 }, action) {
 	console.log("In DATA reducer!!");
@@ -178,6 +179,7 @@ export default function reducer(state = {
 			...state,
 			selectedTimeDimensions:action.variableName,
 			selectedVariablesCount:state.selectedVariablesCount,
+			dateTimeChecked:action.timeChkBoxList,
 		}
 	}
 	break;
@@ -187,6 +189,7 @@ export default function reducer(state = {
 			...state,
 			selectedTimeDimensions:action.variableName,
 			selectedVariablesCount:state.selectedVariablesCount-1,
+			dateTimeChecked:action.timeChkBoxList,
 		}
 	}
 	break;
@@ -284,6 +287,7 @@ export default function reducer(state = {
 			dimensionChecked:action.dimChkBoxList,
 			measureAllChecked:true,
 			dimensionAllChecked:true,
+			dateTimeChecked:action.dateTimeChkBoxList,
 			
 		}
 	}
@@ -302,7 +306,8 @@ export default function reducer(state = {
 	{
 		return {
 			...state,
-			dataSetMeasures: action.measures
+			dataSetMeasures: action.measures,
+			measureChecked:action.checkBoxList,
 			
 		}
 	}
@@ -312,7 +317,8 @@ export default function reducer(state = {
 	{
 		return {
 			...state,
-			dataSetDimensions: action.dimensions
+			dataSetDimensions: action.dimensions,
+			dimensionChecked:action.checkBoxList1,
 			
 		}
 	}
@@ -322,7 +328,9 @@ export default function reducer(state = {
 	{
 		return {
 			...state,
-			dataSetTimeDimensions: action.timedimensions
+			dataSetTimeDimensions: action.timedimensions,
+			dateTimeChecked:action.checkBoxList2,
+			
 			
 		}
 	}
