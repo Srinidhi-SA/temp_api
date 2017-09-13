@@ -125,7 +125,7 @@ setSideListFlag(e){
     this.props.history.push(url);
   }
 
- 
+
   /*updateSubTreeClass(){
 		   //alert("working");
        $(".sb_navigation #myTab i.mAd_icons.ic_perf ~ span").each(function(){
@@ -332,12 +332,13 @@ setScrollActive(){
 
       //console.log("l1name is ...." + selectedSignal);
       ////console.log(card);
-	 
-	  
+
+
 	  if (!isEmpty(selectedNodeFromLevel1) && selectedNodeFromLevel1.listOfNodes.length > 0) {
-	       this.setScrollActive();
+        if(varList.length>6)
+         this.setScrollActive();
 	  }
-	  
+
       return (
         <div>
           <div className="side-body">
