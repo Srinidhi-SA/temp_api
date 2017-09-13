@@ -36,7 +36,7 @@ class CustomPagination(PageNumberPagination):
                 "current_page_size": 0,
                 "current_data": []
             }
-        total_number_of_pages = (total_data_count / page_size) + 1
+        total_number_of_pages = ((total_data_count - 1) / page_size) + 1
         if page_number > total_number_of_pages:
             page_number = 1
             page_size = 10
@@ -52,7 +52,6 @@ class CustomPagination(PageNumberPagination):
         }
 
     def paginate_queryset(self, queryset, request, view=None):
-        # import pdb;pdb.set_trace()
         self.request = request
         self.view = view
         self.queryset = queryset

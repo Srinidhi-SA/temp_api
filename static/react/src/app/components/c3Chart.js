@@ -3,6 +3,11 @@ import {connect} from "react-redux";
 import {c3Functions} from "../helpers/c3.functions";
 import { Scrollbars } from 'react-custom-scrollbars';
 import {API} from "../helpers/env";
+import store from "../store";
+
+@connect((store) => {
+  return {sideCardListFlag: store.signals.sideCardListFlag};
+})
 
 
 //var data= {}, toolData = [], toolLegend=[], chartDiv =null;
@@ -36,6 +41,7 @@ export class C3Chart extends React.Component {
 		$(".chart-modal"+this.props.classId).modal('hide');
 	}
 	showModal(){// showing the modal
+	
 		$(".chart-modal"+this.props.classId).modal({ keyboard: true,show: true });
 	}
 
@@ -170,9 +176,11 @@ export class C3Chart extends React.Component {
 
 	 render() {
 	  var that = this;
-	  
+	  console.log(this.props);
 	  if(this.props.classId !='_side'){
 		this.classId = "chart"+this.props.classId + " ct col-md-7 col-md-offset-2  xs-mb-20";
+		this.modalCls = "modal fade chart-modal"+this.props.classId;
+		this.tableCls = "table-responsive table-area table"+this.props.classId;
 		}
 	  
 	  $(function(){
@@ -183,6 +191,7 @@ export class C3Chart extends React.Component {
 			$(".chart-data-icon").empty();
 			
 		 }
+		
 			 	  
 	  });
 	  
@@ -223,7 +232,7 @@ export class C3Chart extends React.Component {
 					<div className="row" >
 					<div className="col-md-12">
 					<div className={this.tableCls}>
-					<Scrollbars>
+					<Scrollbars autoHide={true}>
 					<table className='table chart-table'>
 					</table>
 					{/*<div class="form-group col-md-7;">*/}

@@ -3720,7 +3720,7 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:focus, a.list-g
 .panel>.table-responsive {
 	border: 0;
 	margin-bottom: 0;
-	height:423px;
+	height:425px;
 }
 .panel-group {
 	margin-bottom: 18px
@@ -15401,10 +15401,10 @@ html{
     z-index:10 !important;
 }
 
-.chart-data-icon .fa-search-plus{
+.chart-data-icon .fa-table{
     float: right;
 	cursor: pointer;
-	/*color:#00998c;*/
+	color: #afacac;
 	z-index:10 !important;
 }
 
@@ -15495,11 +15495,17 @@ word-break: break-word;
 .slick-next, .slick-prev { z-index:10 }
 
 .greyout-col{
-	background-color: silver;
+	background-color: #ece8e8;
 }
 
 svg[class^='chart']{
   width: 70%;
   min-height: 340px;
   margin-left:10%;
+}
+#tab_statistics .panel-body {
+    min-height: 156px;
+}
+#tab_visualizations .panel-body {
+    min-height: 244px;
 }
