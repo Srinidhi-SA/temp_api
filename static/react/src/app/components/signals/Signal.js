@@ -43,7 +43,7 @@ export class Signal extends React.Component {
         <div className="page-head">
           <div class="row">
             <div class="col-md-12">
-            <Breadcrumb path={[{
+            {/*<Breadcrumb path={[{
                 path: '/signals',
                 label: 'Signals'
               },
@@ -51,7 +51,7 @@ export class Signal extends React.Component {
                 path:'/signals'+this.props.signal.name,
                 label: this.props.signal.name
               }
-            ]}/>
+            ]}/>*/}
             </div>
             <div class="col-md-8">
               <h2>{this.props.signal.name}</h2>

@@ -28,12 +28,13 @@ import Slider from "react-slick"
 
 export class OverViewPage extends React.Component {
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.nextRedirect = null;
     this.showSubTree = false;
+
   }
-  
+
 setSideListFlag(e){
 	this.props.dispatch(setSideCardListFlag(e.target.className));
 }
@@ -110,8 +111,20 @@ setSideListFlag(e){
 
   redirectPush(url) {
     //console.log(url);
+	/*let urlSplit = this.props.location.pathname.split("/");
+	let nextSubSlug = this.nextSubTabSlug.split("/");
+	//alert(urlSplit[4]);
+	//alert(this.curSubTabSlug);
+	if((urlSplit[4]!= nextSubSlug[4]) && urlSplit[5]){
+		let chkActive = $(".sb_navigation li>a.active").parent().next();
+		//console.log(chkActive.attr("class"));
+		if(chkActive.attr("class").indexOf("slick-active")< 0){
+		$(".slick-next").click();
+		}
+	}*/
     this.props.history.push(url);
   }
+
 
   /*updateSubTreeClass(){
 		   //alert("working");
@@ -125,6 +138,14 @@ setSideListFlag(e){
        });
 
 }*/
+
+setScrollActive(){
+	var that = this;
+	$(function(){
+		let index = $(".sb_navigation li>a.active").parent().index();
+		that.refs.slider.slickGoTo(index);
+	});
+}
 
   render() {
 
@@ -161,7 +182,7 @@ setSideListFlag(e){
           <div className="page-head">
             <div class="row">
               <div class="col-md-12">
-                <Breadcrumb path={[
+                {/*<Breadcrumb path={[
                   {
                     path: that.urlPrefix,
                     label: breadcrumb_label
@@ -169,7 +190,7 @@ setSideListFlag(e){
                     path: that.urlPrefix + this.props.signal.slug,
                     label: this.props.match.params.slug
                   }
-                ]}/>
+                ]}/>*/}
               </div>
               <div class="col-md-8">
                 <h2>{storyName}</h2>
@@ -241,7 +262,7 @@ setSideListFlag(e){
       //console.log(params.l1);
       var l1Name = params.l1;
       if (params.l1) {
-        let selectedNodeFromLevel1 = fetchNodeFromTree(params.l1, this.props.signal);
+        var selectedNodeFromLevel1 = fetchNodeFromTree(params.l1, this.props.signal);
         l1Name = selectedNodeFromLevel1.name;
         if (!isEmpty(selectedNodeFromLevel1) && selectedNodeFromLevel1.listOfNodes.length > 0) {
           varList = selectedNodeFromLevel1.listOfNodes.map((letiable, i) => {
@@ -311,6 +332,13 @@ setSideListFlag(e){
 
       //console.log("l1name is ...." + selectedSignal);
       ////console.log(card);
+
+
+	  if (!isEmpty(selectedNodeFromLevel1) && selectedNodeFromLevel1.listOfNodes.length > 0) {
+        if(varList.length>6)
+         this.setScrollActive();
+	  }
+
       return (
         <div>
           <div className="side-body">
@@ -385,7 +413,7 @@ setSideListFlag(e){
                               <div className="col-xs-12" id = "subTab">
 
 
-                                    <Slider {...settings}>{varList}</Slider>
+                                    <Slider ref='slider' {...settings}>{varList}</Slider>
                               </div>
 
                     <div className="clearfix"></div>
