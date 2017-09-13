@@ -157,9 +157,9 @@ export function  subTreeSetting(urlLength, length,paramL2) {
 	}
 
 
-	export function  showHideSideChart(colType) {
+	export function  showHideSideChart(colType,chartData) {
 		
-		if(colType =="datetime"){
+		if(colType =="datetime" || $.isEmptyObject(chartData)){
 				$(function(){
 			       $("#tab_visualizations #pnl_visl").removeClass("in");
                    $("#tab_visualizations a").addClass("collapsed");
@@ -170,6 +170,7 @@ export function  subTreeSetting(urlLength, length,paramL2) {
                    $("#tab_visualizations a").removeClass("collapsed");
 				});
 			}
+		
 
 	}
 
