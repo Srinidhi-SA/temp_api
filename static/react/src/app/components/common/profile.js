@@ -85,7 +85,7 @@ export class Profile extends React.Component {
             <div className="user-profile">
               <div className="user-display">
                 <div className="bottom">
-                  <div className="user-avatar col-md-2"><img src="../assets/images/avatar.png"/></div>
+                  <div className="user-avatar col-md-2"><img src={STATIC_URL + "assets/images/avatar.png"}/></div>
                   <div className="user-info col-md-12">
 
                     <div className="panel-default">
