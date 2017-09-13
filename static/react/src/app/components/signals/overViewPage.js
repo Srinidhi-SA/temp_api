@@ -335,7 +335,7 @@ setScrollActive(){
 
 
 	  if (!isEmpty(selectedNodeFromLevel1) && selectedNodeFromLevel1.listOfNodes.length > 0) {
-        if(varList.length>6)
+      if(varList.length>6)
          this.setScrollActive();
 	  }
 
