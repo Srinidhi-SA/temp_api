@@ -50,6 +50,7 @@ export class DataSourceList extends React.Component {
 	render() {
 		const dataSrcList = store.getState().dataSource.dataSourceList.conf;
         var fileName = store.getState().dataSource.fileUpload.name;
+       
         var fileSize = store.getState().dataSource.fileUpload.size;
 		if (dataSrcList) {
 			const navTabs = dataSrcList.map((data, i) => {
@@ -77,8 +78,8 @@ export class DataSourceList extends React.Component {
 						<p>Try dropping some files here, or click to select files to upload.</p>
 						</Dropzone>
 						<aside>
-				          <ul>
-				            	<li>{fileName} - {fileSize}</li>
+				          <ul className={fileName != "" ? "list-unstyled bullets_primary":"list-unstyled"}>
+				            	<li>{fileName}{fileName != "" ? " - ":""}{fileSize}{fileName != "" ? " bytes ":""}</li>
 				          </ul>
 				        </aside>
 						</div>
