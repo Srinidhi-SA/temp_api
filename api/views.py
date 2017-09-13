@@ -11,6 +11,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
+from rest_framework.decorators import api_view
 
 from api.pagination import CustomPagination
 from api.exceptions import creation_failed_exception, update_failed_exception
@@ -538,6 +539,45 @@ def home(request):
 
     context = {"UI_VERSION":settings.UI_VERSION}
     return render(request, 'home.html', context)
+
+@api_view(['GET'])
+def get_info(request):
+
+    user = request.user
+
+    def get_all_info_related_to_user(user):
+        things = ['dataset', 'insight', 'trainer', 'score', 'robo']
+        display = {
+            'dataset': 'Dataset',
+            'insight': 'Insight',
+            'trainer': 'Trainer',
+            'score': 'Score',
+            'robo': 'Robo'
+        }
+        all_data = dict()
+        for t in things:
+
+            all_data[t] = get_all_objects(user, t)
+        return all_data
+
+    def get_all_objects(user, type):
+        from api.models import Dataset, Insight, Trainer, Score, Robo
+        t = {
+            'dataset': Dataset,
+            'insight': Insight,
+            'trainer': Trainer,
+            'score': Score,
+            'robo': Robo
+        }
+
+        all_objects = t[type].objects.filter(created_by=user)
+        return {
+            'count': len(all_objects),
+        }
+
+    return JsonResponse({
+        'info': get_all_info_related_to_user(user)
+    })
 
 dummy_robo_data = {
         "listOfNodes": [],
