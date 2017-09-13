@@ -576,8 +576,37 @@ def get_info(request):
             'displayName': display[type]
         }
 
+    def get_total_size(user):
+        from api.models import Dataset
+        all_dataset = Dataset.objects.filter(created_by=user)
+        size = 0
+        for dataset in all_dataset:
+            try:
+                size += dataset.input_file.size
+            except Exception as err:
+                pass
+                # print err
+
+        return convert_to_humanize(size)
+
+    def convert_to_humanize(size):
+        size_name = {
+            1: 'B',
+            2: 'KB',
+            3: 'MB',
+            4: 'GB',
+            5: 'TB'
+        }
+        i = 1
+        while size/1024 > 0:
+            i += 1
+            size = size/1024
+
+        return str(size) + " " + size_name[i]
+
     return JsonResponse({
-        'info': get_all_info_related_to_user(user)
+        'info': get_all_info_related_to_user(user),
+        'total_size': get_total_size(user)
     })
 
 dummy_robo_data = {
