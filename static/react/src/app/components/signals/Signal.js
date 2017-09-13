@@ -49,7 +49,7 @@ export class Signal extends React.Component {
               },
               {
                 path:'/signals'+this.props.signal.name,
-                label: this.props.match.params.slug
+                label: this.props.signal.name
               }
             ]}/>
             </div>

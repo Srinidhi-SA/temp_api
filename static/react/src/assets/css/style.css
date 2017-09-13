@@ -3720,7 +3720,7 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:focus, a.list-g
 .panel>.table-responsive {
 	border: 0;
 	margin-bottom: 0;
-	height:426px;
+	height:425px;
 }
 .panel-group {
 	margin-bottom: 18px
@@ -15502,4 +15502,10 @@ svg[class^='chart']{
   width: 70%;
   min-height: 340px;
   margin-left:10%;
+}
+#tab_statistics .panel-body {
+    min-height: 156px;
+}
+#tab_visualizations .panel-body {
+    min-height: 244px;
 }
