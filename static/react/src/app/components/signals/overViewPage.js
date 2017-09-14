@@ -65,7 +65,7 @@ setSideListFlag(e){
       $(".sb_navigation").hide();
     }
 
-    $('[data-toggle=offcanvas]').click(function () {
+   /*$('[data-toggle=offcanvas]').click(function () {
 
         $('.row-offcanvas').toggleClass('active');
     	if ($('.row-offcanvas-left').hasClass('active')){
@@ -75,7 +75,7 @@ setSideListFlag(e){
     		$('.sdbar_switch i').addClass('sw_on');
     		$('.sdbar_switch i').removeClass('sw_off');
     	};
-      });
+      });*/
 
     if ($(".list-group").children().length == 1) {
       $('.row-offcanvas-left').addClass('active');
@@ -86,6 +86,7 @@ setSideListFlag(e){
   }
 
   toggleSideList() {
+	  //alert($('.row-offcanvas').attr('class'));
     $('.row-offcanvas').toggleClass('active');
     if ($('.row-offcanvas-left').hasClass('active')) {
       $('.sdbar_switch i').removeClass('sw_on');
@@ -335,7 +336,7 @@ setScrollActive(){
 
 
 	  if (!isEmpty(selectedNodeFromLevel1) && selectedNodeFromLevel1.listOfNodes.length > 0) {
-        if(varList.length>6)
+      if(varList.length>6)
          this.setScrollActive();
 	  }
 
@@ -432,7 +433,7 @@ setScrollActive(){
 
                               <div className="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
                                 <div className="side_panel">
-                                  <a href="javascript:void(0);" data-toggle="offcanvas" className="sdbar_switch" >
+                                  <a href="javascript:void(0);" onClick={this.toggleSideList.bind(this)} data-toggle="offcanvas" className="sdbar_switch" >
                                     <i className="mAd_icons sw_on" onClick={this.setSideListFlag.bind(this)}></i>
                                   </a>
                                   <div className="panel panel-primary">

@@ -39,6 +39,7 @@
     "redux": "^3.7.2",
     "redux-promise-middleware": "^4.3.0",
     "redux-thunk": "^2.2.0",
+    "save-svg-as-png": "^1.2.0",
     "slick-carousel": "^1.7.1"
   },
   "devDependencies": {
