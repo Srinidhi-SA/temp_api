@@ -45,7 +45,7 @@ export class Login extends React.Component {
       return (<Redirect to={"/"}/>);
     } else {
       return (
-        
+
           <div className="ma-wrapper am-login">
             <div className="ma-content">
               <div className="main-content">
@@ -82,9 +82,9 @@ export class Login extends React.Component {
                             <label htmlFor="remember">Remember Me</label>
 
                           </div>
-                          <div className="col-xs-6 text-right">
+                          {/*<div className="col-xs-6 text-right">
                             <a href="#">Forgot Password?</a>
-                          </div>
+                          </div>*/}
 
                         </div>
                         <div className="form-group login-submit">
@@ -99,7 +99,7 @@ export class Login extends React.Component {
               </div>
             </div>
           </div>
-       
+
 
       );
 
