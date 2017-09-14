@@ -313,6 +313,7 @@ class RoboView(viewsets.ModelViewSet):
             dataset['input_file'] = input_file
             dataset['name'] = input_file.name
             dataset['created_by'] = request.user.id
+            dataset['datasource_type'] = 'fileUpload'
             from api.datasets.serializers import DatasetSerializer
             serializer = DatasetSerializer(data=dataset)
             if serializer.is_valid():
