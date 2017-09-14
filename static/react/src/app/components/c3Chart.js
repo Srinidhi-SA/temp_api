@@ -61,7 +61,25 @@ export class C3Chart extends React.Component {
 
 
 	}
+	
 
+	downloadSVG(){
+		
+		var nodeList = document.querySelector(".chart"+this.props.classId +">svg").querySelectorAll('.c3-chart .c3-chart-lines path');
+		//var nodeList1 = document.querySelector(".chart"+this.props.classId +">svg").querySelectorAll('.c3 line');
+		var nodeList2 = document.querySelector(".chart"+this.props.classId +">svg").querySelectorAll('.c3-axis path');
+		var line_graph = Array.from(nodeList);
+		 var x_and_y = Array.from(nodeList2);//.concat(Array.from(nodeList2));
+		 line_graph.forEach(function(element){
+              element.style.fill = "none";
+         });
+		  x_and_y.forEach(function(element){
+			element.style.fill = "none";
+			element.style.stroke = "black";
+        });
+		saveSvgAsPng(document.querySelector(".chart"+this.props.classId +">svg"), "diagram.png");
+		
+	}
 
 	updateChart() {
 		var that = this;
@@ -214,6 +232,7 @@ export class C3Chart extends React.Component {
 	       <div className="clearfix"></div>
 		   <div className={this.classId}></div>
 		   <div className="clearfix"></div>
+		  
      </div>
 		   {/* chart data Popup */}
 		   <div id="" className={this.modalCls} role="dialog">
@@ -243,6 +262,7 @@ export class C3Chart extends React.Component {
 				</div>
 
 				<div class="modal-footer">
+				<button className="btn btn-primary" onClick={this.downloadSVG.bind(this)}><i class="fa fa-picture-o" aria-hidden="true"></i>  Download Chart</button> &nbsp;
 				<a href={this.tableDownload} id="cddownload" className="btn btn-primary" download ><i className="fa fa-cloud-download"></i> Download Chart Data</a>
 				</div>
 

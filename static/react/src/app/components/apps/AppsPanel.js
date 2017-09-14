@@ -9,7 +9,7 @@ import {updateSelectedApp,updateModelSummaryFlag,updateScoreSummaryFlag,showRobo
 import {STATIC_URL} from "../../helpers/env.js"
 
 @connect((store) => {
-	return {login_response: store.login.login_response, 
+	return {login_response: store.login.login_response,
 		modelList: store.apps.modelList,
 		modelSummaryFlag:store.apps.modelSummaryFlag,
 		modelSlug:store.apps.modelSlug,
@@ -34,14 +34,14 @@ export class AppsPanel extends React.Component {
     return (
           <div className="side-body">
             <div className="main-content">
-            
+
             <div className="panel">
 			<div className="panel-body">
-			 
+
 				<div class="row">
 					<div class="col-md-4">
-						
-						<div className="app-block"> 
+
+						<div className="app-block">
 							<Link onClick={this.gotoAppsList.bind(this,1,"OPPORTUNITY SCORING")} className="app-link" to="/apps/1/models">
 							<div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
 								<img src={STATIC_URL + "assets/images/icon_oppr.png"} className="img-responsive"/>
@@ -54,26 +54,26 @@ export class AppsPanel extends React.Component {
 							</div>
 							<div class="clearfix"></div>
 							</Link>
-						
+
 							<div className="card-footer">
 							<ul className="app_labels">
 								<li className="xs-p-10 text-primary"><i className="fa fa-tag fa-1x"></i></li>
 								<li><a href="#"><i className="fa fa-tag"></i> Marketing</a></li>
 								<li><a href="#"><i className="fa fa-tag"></i> Sales</a></li>
 							</ul>
-						
-						<div className="card-deatils">
+
+						{/*<div className="card-deatils">
 								<a href="javascript:void(0);" rel="popover" className="pover" data-popover-content="#myPopover" data-original-title="" title=""><i className="ci pe-7s-info pe-2x"></i></a>
-						</div>
+						</div>*/}
 						<div id="myPopover" className="pop_box hide">
 						<p>Info</p>
 						</div>
 						</div>
 						</div>
-						
+
 					</div>
 					<div className="col-md-4">
-						
+
 						<div className="app-block">
 						<Link onClick={this.gotoAppsList.bind(this,2,"AUTOMATED PREDICTION")} className="app-link" to="/apps/2/models">
 							<div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
@@ -92,20 +92,20 @@ export class AppsPanel extends React.Component {
 								<li className="xs-p-10 text-primary"><i className="fa fa-tag fa-1x"></i></li>
 								<li><a href="#"><i className="fa fa-tag"></i> Marketing</a></li>
 								<li><a href="#"><i className="fa fa-tag"></i> Sales</a></li>
-							 
-							</ul>							
-						<div className="card-deatils">
+
+							</ul>
+						{/*<div className="card-deatils">
 								<a href="javascript:void(0);" rel="popover" className="pover" data-popover-content="#myPopover" data-original-title="" title=""><i className="ci pe-7s-info pe-2x"></i></a>
-						</div>
+						</div>*/}
 						<div id="myPopover" className="pop_box hide">
 						<p>Info</p>
 						</div>
 						</div>
-						
+
 						</div>
-						
+
 					</div>
-					<div className="col-md-4">							
+					<div className="col-md-4">
 						<div className="app-block">
 						<Link onClick={this.gotoAppsList.bind(this,3,"ROBO INSIGHTS")} className="app-link" to="/apps-robo">
 							<div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
@@ -117,30 +117,30 @@ export class AppsPanel extends React.Component {
 									Machine-learning alogrithms are applied to explore the relation between significant flares and...
 								</p>
 							</div>
-<div class="clearfix"></div>							
+<div class="clearfix"></div>
 							</Link>
 							<div className="card-footer">
 							<ul className="app_labels">
 								<li className="xs-p-10 text-primary"><i className="fa fa-tag fa-1x"></i></li>
 								<li><a href="#"><i className="fa fa-tag"></i> Finance</a></li>
-							 
+
 							</ul>
-						
-						<div className="card-deatils">
+
+						{/*<div className="card-deatils">
 								<a href="javascript:void(0);" rel="popover" className="pover" data-popover-content="#myPopover" data-original-title="" title=""><i className="ci pe-7s-info pe-2x"></i></a>
-						</div>
+						</div>*/}
 						<div id="myPopover" className="pop_box hide">
 						<p>Info</p>
 						</div>
 						</div>
 						</div>
-						
+
 					</div>
 				</div>
-				
-		 
+
+
 		   </div>
-		</div> 
+		</div>
           </div>
         </div>
       );

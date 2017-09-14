@@ -115,6 +115,7 @@ export function  generateRows(table) {
 
 export function  subTreeSetting(urlLength, length,paramL2) {
 	  $(function(){
+	  
 	    if(urlLength == length ){  //show -hide subtree and active class of subtree element
 		  $(".sb_navigation").show();
 		   $(".sb_navigation #subTab i.mAd_icons.ic_perf ~ span").each(function(){
