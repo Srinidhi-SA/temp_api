@@ -71,7 +71,6 @@ export class VariableSelection extends React.Component {
     }
     
     setPossibleList(e){
-        alert(e.target.value);
         this.props.dispatch(setPossibleAnalysisList(e.target.value));
     }
     componentWillMount(){
