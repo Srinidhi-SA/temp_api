@@ -41,7 +41,7 @@ export class C3Chart extends React.Component {
 		$(".chart-modal"+this.props.classId).modal('hide');
 	}
 	showModal(){// showing the modal
-	
+
 		$(".chart-modal"+this.props.classId).modal({ keyboard: true,show: true });
 	}
 
@@ -57,9 +57,9 @@ export class C3Chart extends React.Component {
 		$(".chart"+this.props.classId).empty();
 		//this.updateChart();
 		$('.chart-data-icon').css('visibility','hidden');
-		
-		
-		
+
+
+
 	}
 
 
@@ -83,7 +83,7 @@ export class C3Chart extends React.Component {
 
 			}
 
-	
+
 		}
 
 		if(this.props.y2format){
@@ -129,7 +129,7 @@ export class C3Chart extends React.Component {
 
 		let chart = c3.generate(data);
 		chart.destroy();
-		
+
 		chart = setTimeout(function(){
 			return c3.generate(data);
 		},100);
@@ -182,28 +182,27 @@ export class C3Chart extends React.Component {
 		this.modalCls = "modal fade chart-modal"+this.props.classId;
 		this.tableCls = "table-responsive table-area table"+this.props.classId;
 		}
-	  
+
 	  $(function(){
-		  
+
 		 // alert("render");
 		  that.updateChart();
 	     if(that.props.classId =='_side'){
 			$(".chart-data-icon").empty();
-			
+
 		 }
-		
-			 	  
+
 	  });
-	  
-	  
+
+
      //var classId = "chart"+this.props.classId + " ct col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 xs-mb-20";
-	  
+
       return(
 <div className="chart-area">
 
 {/*<div className="row">
   	<div className="chart-data-icon col-md-7 col-md-offset-2  xs-mb-20">
-        
+
      </div>
 	 <div className="clearfix"></div>
 </div>*/}
@@ -211,7 +210,7 @@ export class C3Chart extends React.Component {
 		<div className="chart-data-icon col-md-7 col-md-offset-2  xs-mb-20">
 			 <i className="fa fa-table pull-right" aria-hidden="true" onClick={this.showModal.bind(this)}></i>
 		 </div>
-	
+
 	       <div className="clearfix"></div>
 		   <div className={this.classId}></div>
 		   <div className="clearfix"></div>
@@ -219,15 +218,15 @@ export class C3Chart extends React.Component {
 		   {/* chart data Popup */}
 		   <div id="" className={this.modalCls} role="dialog">
 		   <div className="modal-colored-header uploadData modal-dialog ">
-  
+
 		   {/*Modal content*/}
 			<div className="modal-content chart-data-popup">
 				<div class="modal-header">
-				
+
 				<button type='button' onClick={this.closeModal.bind(this)} className='close'  data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>
 				<h3 class="modal-title">Chart Data</h3>
 				</div>
-				
+
 				<div className="modal-body chart-data-modal-body">
 					<div className="row" >
 					<div className="col-md-12">
@@ -239,10 +238,10 @@ export class C3Chart extends React.Component {
 					</Scrollbars>
 					</div>
 					</div>
-					</div> 
+					</div>
 
 				</div>
-		  
+
 				<div class="modal-footer">
 				<a href={this.tableDownload} id="cddownload" className="btn btn-primary" download ><i className="fa fa-cloud-download"></i> Download Chart Data</a>
 				</div>
@@ -252,10 +251,10 @@ export class C3Chart extends React.Component {
 		 </div>
 
  </div>
- 
+
       );
   }
 
 
-   
+
 }
