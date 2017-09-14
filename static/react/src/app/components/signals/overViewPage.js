@@ -299,7 +299,7 @@ setScrollActive(){
         return (
           <NavLink to={selectedLink} key={i} className="list-group-item">
             <i className="fa fa-bar-chart"></i>
-            {card.name}</NavLink>
+            <span>{card.name}</span></NavLink>
         )
       });
       let documentModeLink = "";
@@ -411,8 +411,6 @@ setScrollActive(){
                           <div className="sb_navigation">
                             <div className="row">
                               <div className="col-xs-12" id = "subTab">
-
-
                                     <Slider ref='slider' {...settings}>{varList}</Slider>
                               </div>
 
