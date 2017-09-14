@@ -22,6 +22,7 @@ import {isEmpty} from "../../helpers/helper";
 		dataPreviewFlag:store.datasets.dataPreviewFlag,
 		currentAppId:store.apps.currentAppId,
 		roboDatasetSlug:store.apps.roboDatasetSlug,
+		modelSlug:store.apps.modelSlug,
 		signal: store.signals.signalAnalysis};
 })
 
@@ -94,7 +95,7 @@ export class DataPreview extends React.Component {
 							text: "Close"
 					};
 					this.buttons['create']= {
-							url :"/apps/"+store.getState().apps.currentAppId+"/scores/dataPreview/createScore",
+							url :"/apps/"+store.getState().apps.currentAppId+"/models/"+store.getState().apps.modelSlug+"/data/"+this.props.match.params.slug+"/createScore",
 							text: "Create Score"
 					};
 				}else{
@@ -103,7 +104,7 @@ export class DataPreview extends React.Component {
 							text: "Close"
 					};
 					this.buttons['create']= {
-							url :"/apps/"+store.getState().apps.currentAppId+"/models/dataPreview/createModel",
+							url :"/apps/"+store.getState().apps.currentAppId+"/models/data/"+this.props.match.params.slug+"/createModel",
 							text: "Create Model"
 					};
 				}

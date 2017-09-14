@@ -222,8 +222,7 @@ export default function reducer(state = {
 			selectedVariablesCount:action.count,
 		}
 	}
-	break;
-
+    break;
 	case "SHOW_DATA_PREVIEW":
 	{
 		return {

@@ -42,7 +42,13 @@ const RENAMEINSIGHT = "Rename Insight";
 const SEARCHCHARLIMIT = 2;
 const SUCCESS = "SUCCESS";
 const FAILED = "FAILED";
-const INPROGRESS  = "INPROGRESS"
+const INPROGRESS  = "INPROGRESS";
+const APPNAME1 = "OPPORTUNITY SCORING";
+const APPNAME2 ="AUTOMATED PREDICTION";
+const APPNAME3 = "ROBO INSIGHTS";
+const APPID1 = 1;
+const APPID2 = 2;
+const APPID3 = 3;
 
 
 export function generateHeaders(table) {
@@ -228,5 +234,11 @@ export{
 	SEARCHCHARLIMIT,
 	SUCCESS,
 	FAILED,
-	INPROGRESS
+	INPROGRESS,
+	APPNAME1,
+	APPNAME2,
+	APPNAME3,
+	APPID1,
+	APPID2,
+	APPID3,
 	}

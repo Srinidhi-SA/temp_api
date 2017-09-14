@@ -7,6 +7,7 @@ import {Tabs,Tab} from "react-bootstrap";
 import {Link, Redirect} from "react-router-dom";
 import {updateSelectedApp,updateModelSummaryFlag,updateScoreSummaryFlag,showRoboDataUploadPreview} from "../../actions/appActions";
 import {STATIC_URL} from "../../helpers/env.js"
+import {APPID1,APPID2,APPID3,APPNAME1,APPNAME2,APPNAME3} from "../../helpers/helper.js"
 
 @connect((store) => {
 	return {login_response: store.login.login_response, 
@@ -42,7 +43,7 @@ export class AppsPanel extends React.Component {
 					<div class="col-md-4">
 						
 						<div className="app-block"> 
-							<Link onClick={this.gotoAppsList.bind(this,1,"OPPORTUNITY SCORING")} className="app-link" to="/apps/1/models">
+							<Link onClick={this.gotoAppsList.bind(this,APPID1,APPNAME1)} className="app-link" to='/apps/1/models'>
 							<div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
 								<img src={STATIC_URL + "assets/images/icon_oppr.png"} className="img-responsive"/>
 							</div>
@@ -75,7 +76,7 @@ export class AppsPanel extends React.Component {
 					<div className="col-md-4">
 						
 						<div className="app-block">
-						<Link onClick={this.gotoAppsList.bind(this,2,"AUTOMATED PREDICTION")} className="app-link" to="/apps/2/models">
+						<Link onClick={this.gotoAppsList.bind(this,APPID2,APPNAME2)} className="app-link" to="/apps/2/models">
 							<div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
 								<img src={STATIC_URL + "assets/images/icon_prediction.png"} className="img-responsive"/>
 							</div>
@@ -107,7 +108,7 @@ export class AppsPanel extends React.Component {
 					</div>
 					<div className="col-md-4">							
 						<div className="app-block">
-						<Link onClick={this.gotoAppsList.bind(this,3,"ROBO INSIGHTS")} className="app-link" to="/apps-robo">
+						<Link onClick={this.gotoAppsList.bind(this,APPID3,APPNAME3)} className="app-link" to="/apps-robo">
 							<div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
 								<img src={STATIC_URL + "assets/images/icon_robo.png"} className="img-responsive"/>
 							</div>

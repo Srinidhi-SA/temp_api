@@ -301,14 +301,15 @@ export function resetSelectedVariables(){
 	}
 }
 export function setSelectedVariables(dimensions,measures,timeDimension){
-	var count = 0
+	let count = 0;
 	if(timeDimension != undefined){
-		count = dimensions.length + measures.length + 1;
+		count = dimensions.slice().length + measures.slice().length + 1;
 	}else{
-		count = dimensions.length + measures.length;
+		count = dimensions.slice().length + measures.slice().length;
 	}
 	console.log("check count::");
 	console.log(dimensions)
+	console.log(count)
 	return {
 		type: "SET_VARIABLES",
 		dimensions,
@@ -446,14 +447,13 @@ function renameDatasetAPI(slug,newName){
 
 
 export function updateDatasetVariables(measures,dimensions,timeDimensions,measureChkBoxList,dimChkBoxList){
-
 	return {
 		type: "DATASET_VARIABLES",
 		measures,
 		dimensions,
 		timeDimensions,
 		measureChkBoxList,
-		dimChkBoxList
+		dimChkBoxList,
 	}
 }
 
