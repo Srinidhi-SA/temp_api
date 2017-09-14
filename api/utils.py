@@ -278,7 +278,7 @@ class RoboSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
 
-        print get_jobserver_status(instance)
+        # print get_jobserver_status(instance)
         from api.datasets.serializers import DatasetSerializer
         ret = super(RoboSerializer, self).to_representation(instance)
 
@@ -298,8 +298,18 @@ class RoboSerializer(serializers.ModelSerializer):
                 instance.dataset_analysis_done = True
                 instance.save()
 
+
         if instance.robo_analysis_done and instance.dataset_analysis_done:
             instance.analysis_done = True
+
+            if 'FAILED' in [
+                customer_dataset_object.status,
+                historical_dataset_object.status,
+                market_dataset_object.status
+                ]:
+                instance.status = 'FAILED'
+            else:
+                instance.status = "SUCCESS"
             instance.save()
 
         ret = convert_to_json(ret)
