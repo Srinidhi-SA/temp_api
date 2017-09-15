@@ -4,6 +4,7 @@
 @import 'helper.css';
 @import 'slick.min.css';
 @import 'slick-theme.min.css';
+.mAd_icons { background:url(../images/mAd_image.png) no-repeat }
 /*@import url('https://fonts.googleapis.com/css?family=Open+Sans');*/
 
 .label, sub, sup {
@@ -5287,6 +5288,7 @@ button:focus {
 }
 }
 /** M-KK Style for sidebar **/
+
 :focus {
 	outline: none;
 }
@@ -13834,7 +13836,7 @@ background:#ededed; color:#7dac02
 /** Panel Header **/
 .panel-mAd .panel { padding: 10px; }
 .panel-mAd>.panel-heading {      margin: 0; padding: 0; /*padding: 6px 0px 0 10px; background-color: #FFF; border-bottom:1px solid #ddd; */}
-.panel-mAd>.panel-heading h2 { margin-top: 8px;font-weight: bold;}
+.panel-mAd>.panel-heading h2 { margin-top: 8px;font-weight: bold; text-transform:capitalize}
 .panel-mAd .panel-body { padding:0;}
 .panel-mAd div h2 small { font-size:50%; }
 /** For Card Tabs **/
@@ -13852,49 +13854,50 @@ box-shadow: 0px 6px 9px 0px rgba(240,255,246,1);  }
     float: none;
     display: table-cell;
 }
-.full-width-tabs > ul.nav.nav-tabs > li > a { text-align: center; padding: 5px; text-transform: capitalize; display: block; border-top:2px solid #00bfb2; border-left:2px solid #00bfb2; color:#FFFFFF; text-transform:uppercase}
+.full-width-tabs > ul.nav.nav-tabs > li > a { text-align: center; padding: 8px; text-transform: capitalize; display: block; border-top:2px solid #00bfb2; border-left:2px solid #00bfb2; color:#FFFFFF; text-transform:uppercase}
+
 .panel-mAd .nav-tabs { background;none; }
 .full-width-tabs > ul.nav.nav-tabs > li.active a, .full-width-tabs > ul.nav.nav-tabs > li > a.active { 
 	color:#00998c;
-	background:#f0fff6;
+	background:#FFFFFF;
 }
 /*.panel-mAd .full-width-tabs > ul.nav.nav-tabs > li > a   span { display:block; }*/
-.mAd_icons { background:url(../images/mAd_image.png) no-repeat }
-.mAd_icons.tab_overview, .mAd_icons.tab_overview, .mAd_icons.tab_trend, .mAd_icons.tab_performance, .mAd_icons.tab_influencers, .mAd_icons.tab_prediction, .mAd_icons.tab_chi-square, .mAd_icons.tab_association, .mAd_icons.tab_summary, .mAd_icons.tab_decision-tree { display: inline-block; margin: 0 5px 0 5px; width: 35px; height:30px; vertical-align: middle; }
+
+.mAd_icons.tab_overview, .mAd_icons.tab_overview, .mAd_icons.tab_trend, .mAd_icons.tab_performance, .mAd_icons.tab_influencers, .mAd_icons.tab_prediction, .mAd_icons.tab_chi-square, .mAd_icons.tab_association, .mAd_icons.tab_summary, .mAd_icons.tab_decision-tree { display: inline-block; margin: 0 5px 0 5px;width: 27px;height: 19px; vertical-align: middle; }
 
 .mAd_icons.ic_mes_s, .mAd_icons.ic_dime_s { width:20px; height:18px; display:inline-block;}
 .mAd_icons.ic_mes_s { background-position: -260px -11px; }
 .mAd_icons.ic_dime_s { background-position:-281px -11px }
 
-.mAd_icons.tab_overview{ background-position: 0 0;}
-.nav-tabs li a:hover .mAd_icons.tab_overview, .active .mAd_icons.tab_overview { background-position: 0 -30px;} 
+.mAd_icons.tab_overview{ background-position: 0 -3px;}
+.nav-tabs li a:hover .mAd_icons.tab_overview, .active .mAd_icons.tab_overview { background-position: 0 -28px;} 
 
 .mAd_icons.tab_summary{ background-position: -142px -70px}
 .nav-tabs li a:hover .mAd_icons.tab_summary, .active .mAd_icons.tab_summary { background-position: -142px -100px}
 
-.mAd_icons.tab_decision-tree, .mAd_icons.tab_prediction{  background-position: -144px 0px;}
+.mAd_icons.tab_decision-tree, .mAd_icons.tab_prediction{  background-position: -144px -4px;}
 .nav-tabs li a:hover .mAd_icons.tab_decision-tree, .nav-tabs li a:hover .mAd_icons.tab_prediction, .active .mAd_icons.tab_decision-tree, .active .mAd_icons.tab_prediction { background-position: -144px -30px;}
 
 
-.mAd_icons.tab_chi-square, .mAd_icons.tab_association{ background-position: -108px -70px}
-.nav-tabs li a:hover .mAd_icons.tab_chi-square, .nav-tabs li a:hover .mAd_icons.tab_association, .active .mAd_icons.tab_chi-square, .active .mAd_icons.tab_association { background-position: -108px -100px}
+.mAd_icons.tab_chi-square, .mAd_icons.tab_association{ background-position: -108px -70px;}
+.nav-tabs li a:hover .mAd_icons.tab_chi-square, .nav-tabs li a:hover .mAd_icons.tab_association, .active .mAd_icons.tab_chi-square, .active .mAd_icons.tab_association { background-position: -108px -89px}
 
-.mAd_icons.tab_performance { background-position: -35px 0px;}
+.mAd_icons.tab_performance { background-position: -35px -3px;}
 .nav-tabs li a:hover .mAd_icons.tab_performance, .active .mAd_icons.tab_performance{ background-position: -35px -30px;}
 
-.mAd_icons.tab_trend  { background-position: -70px 0px;}
-.nav-tabs li a:hover .mAd_icons.tab_trend,.active .mAd_icons.tab_trend { background-position: -70px -30px;}
+.mAd_icons.tab_trend  { background-position: -70px -3px;}
+.nav-tabs li a:hover .mAd_icons.tab_trend,.active .mAd_icons.tab_trend { background-position: -70px -27px;}
 
-.mAd_icons.tab_influencers { background-position: -108px 0px; }
-.nav-tabs li a:hover .mAd_icons.tab_influencers, .active .mAd_icons.tab_influencers{ background-position: -108px -30px;}
+.mAd_icons.tab_influencers { background-position: -108px -3px; }
+.nav-tabs li a:hover .mAd_icons.tab_influencers, .active .mAd_icons.tab_influencers{ background-position: -108px -27px}
 .mAd_icons.tab_predictions { background-position: -144px 0px;}
 .nav-tabs li a:hover .mAd_icons.tab_predictions, .active .mAd_icons.tab_predictions{ background-position: -144px -30px;}
 .mAd_icons.oppr_icon { width: 80px; height: 80px; background-position: 0 -65px; margin: 0 auto; }
 
-.mAd_icons.ic_perf { width: 27px; height: 27px; background-position: -234px -5px; display: inline-block; margin: 0 5px 0 5px; vertical-align: middle; }
-.mAd_icons.ic_perf.active { background-position: -235px -36px; float: left; margin-right: 10px;}
-.mAd_icons.ic_inflnce { width: 27px; height: 27px; margin: 0 auto; background-position: -184px -5px; display: inline-block;}
-.mAd_icons.ic_inflnce.active { background-position: -184px -36px; float: left; margin-right: 10px;}
+.mAd_icons.ic_perf { width: 26px; height: 22px; background-position: -234px -5px; display: inline-block; margin: 0 5px 0 5px; vertical-align: middle; }
+a.active .mAd_icons.ic_perf,.mAd_icons.ic_perf.active { background-position: -235px -27px; margin-right: 5px;}
+.mAd_icons.ic_inflnce { width: 26px; height: 22px; margin: 0 auto; background-position: -184px -5px; display: inline-block;}
+a.active .mAd_icons.ic_inflnce, .mAd_icons.ic_inflnce.active { background-position: -184px -27px; margin-right: 5px;}
 
 
 .summary_heading { padding: 0; margin: 0 0 10px 0; min-height: 55px; border-color: #ddd; }
@@ -13921,7 +13924,7 @@ box-shadow: 0px 6px 9px 0px rgba(240,255,246,1);  }
 	-moz-box-shadow: 0px 0px 10px 3px rgba(0,0,0,0.2);
 	box-shadow: 0px 0px 10px 3px rgba(0,0,0,0.2);
 }
-a.tabs-control.left span, a.tabs-control.right span {  padding: 15px 5px;}
+a.tabs-control.left span, a.tabs-control.right span {  padding: 15px 6px;}
 a.tabs-control.left span { left: 25px; }
 a.tabs-control.right span { right: 5px; }
 
@@ -13979,13 +13982,13 @@ a.tabs-control.right span { right: 5px; }
 /** slide panel **/
 .panel-mAd .tab-pane { overflow:hidden; }
 .sb_navigation {
-    background: #f0fff6;
+    background: #FFFFFF;
     border-left: 1px solid #00bfb2;
     border-right: 1px solid #00bfb2;
     border-bottom: 1px solid #00bfb2;
 }
-.sb_navigation li a { padding: 5px; /* margin: 0 5px; text-align: center; */ display: block; color:#636363; }
-.sb_navigation li a span { white-space: nowrap;/* width:176px; */overflow: hidden; text-overflow: ellipsis }
+.sb_navigation li a { padding: 7px; /* margin: 0 5px; text-align: center; */ display: block; color:#636363; }
+.sb_navigation li a span {white-space: nowrap; width: 156px; overflow: hidden; text-overflow: ellipsis; display: inline-block; vertical-align: middle; }
 .sb_navigation li a.active { color: #00998c;}
 
 /*************************/
@@ -14103,7 +14106,7 @@ a.tabs-control.right span { right: 5px; }
 	}
 .row-offcanvas-left.active .sdbar_switch { left:-50px; }
 .mAd_icons.sw_on { width: 25px; height: 34px; background-position: -212px 0px; display: block; }
-.mAd_icons.sw_off { width: 25px; height: 34px; background-position: -213px -30px; display: block; }
+.mAd_icons.sw_off { width: 25px; height: 34px; background-position: -211px -30px; display: block; }
 .side_panel .panel-heading .title { font-size: 15px; padding: 5px 0px;}
 .side_panel .panel-heading .title .fa {margin-right: 5px;}
 .list-group-item span { display: inline-block; width: 232px; vertical-align: top;}
@@ -14355,17 +14358,17 @@ h4, h5 { font-weight:bold }
 .txt-justify { text-align: justify }
 
 .panel-primary-p1 .mAd_icons.ic_inflnce {
-    width: 27px;
-    height: 27px;
+    width: 22px;
+    height: 19px;
     margin: 0 auto;
-    background-position: -184px -36px;
+    background-position: -184px -48px;
     display: inline-block;
     vertical-align: bottom;
 }
 .panel-primary-p2 .mAd_icons.ic_perf {
-    height: 27px;
-    width: 27px;
-    background-position: -236px -36px;
+    height: 19px;
+    width: 22px;
+    background-position: -236px -48px;
     /* border: 1px solid red; */
     display: inline-block;
     vertical-align: bottom;
