@@ -13,7 +13,7 @@ import {
   OverlayTrigger,
   Popover
 } from "react-bootstrap";
-import {getAppsRoboList, getRoboDataset, handleInsightDelete, handleInsightRename, storeRoboSearchElement} from "../../actions/appActions";
+import {getAppsRoboList, getRoboDataset, handleInsightDelete, handleInsightRename, storeRoboSearchElement,clearRoboSummary} from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {STATIC_URL} from "../../helpers/env.js";
 import {RoboDataUpload} from "./RoboDataUpload";
@@ -32,7 +32,10 @@ var dateFormat = require('dateformat');
     roboDatasetSlug: store.apps.roboDatasetSlug,
     roboSummary: store.apps.roboSummary,
     dataPreviewFlag: store.datasets.dataPreviewFlag,
-    robo_search_element: store.apps.robo_search_element
+    robo_search_element: store.apps.robo_search_element,
+    customerDataset_slug:store.apps.customerDataset_slug,
+	historialDataset_slug:store.apps.historialDataset_slug,
+	externalDataset_slug:store.apps.externalDataset_slug,
   };
 })
 
@@ -50,6 +53,7 @@ export class RoboInsightList extends React.Component {
       this.props.dispatch(getAppsRoboList(pageNo));
     }
   getInsightPreview(slug) {
+	this.props.dispatch(clearRoboSummary());
     this.props.dispatch(getRoboDataset(slug));
   }
   handleInsightRename(slug, name) {
@@ -95,7 +99,7 @@ export class RoboInsightList extends React.Component {
     //search element ends..
 
     if (store.getState().datasets.dataPreviewFlag) {
-      let _link = "/apps-robo/" + store.getState().apps.roboDatasetSlug
+      let _link = "/apps-robo-list/" + store.getState().apps.roboDatasetSlug+"/customer/data/"+store.getState().apps.customerDataset_slug
       return (<Redirect to={_link}/>);
     }
 
@@ -112,7 +116,7 @@ export class RoboInsightList extends React.Component {
         paginationTag = <Pagination ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
       }
       const appsRoboList = roboList.map((data, i) => {
-        var modelLink = "/apps-robo/" + data.slug;
+        var modelLink = "/apps-robo-list/" + data.slug+"/customer/data/"+data.customer_dataset;
         return (
           <div className="col-md-3 top20 list-boxes" key={i}>
             <div className="rep_block newCardStyle" name={data.name}>

@@ -17,13 +17,15 @@ import {Card} from "./Card";
 import store from "../../store";
 import {getSignalAnalysis,setSideCardListFlag} from "../../actions/signalActions";
 import {STATIC_URL} from "../../helpers/env.js"
-import Slider from "react-slick"
+import Slider from "react-slick";
+import {getRoboDataset} from "../../actions/appActions";
 
 //import {SignalAnalysisPage} from "./signals/SignalAnalysisPage";
 //let showSubTree=false;
 
 @connect((store) => {
-  return {signal: store.signals.signalAnalysis, urlPrefix: store.signals.urlPrefix};
+  return {signal: store.signals.signalAnalysis, urlPrefix: store.signals.urlPrefix,
+	  customerDataset_slug:store.apps.customerDataset_slug,};
 })
 
 export class OverViewPage extends React.Component {
@@ -39,8 +41,13 @@ setSideListFlag(e){
 }
   //componentWillReceiveProps(nextProps) {}
   componentWillMount() {
+	  
     if (isEmpty(this.props.signal)) {
-      this.props.dispatch(getSignalAnalysis(sessionStorage.userToken, this.props.match.params.slug));
+    	if(this.props.match.url.indexOf("apps-robo") != -1){
+    		this.props.dispatch(getRoboDataset(this.props.match.params.slug));
+    	}else{
+    		this.props.dispatch(getSignalAnalysis(sessionStorage.userToken, this.props.match.params.slug));	
+    	}
     }
   }
   componentDidMount() {
@@ -140,7 +147,7 @@ setSideListFlag(e){
 
 		if (this.props.urlPrefix != "/signals"){
         breadcrumb_label = that.urlPrefix;
-        storyName = "App Name"
+        storyName = this.props.signal.name
       }
     }
 
@@ -235,10 +242,9 @@ setSideListFlag(e){
 
       }
 
-      //console.log("card finally searched is:");
-      //console.log(card);
+      console.log("l1Name is:");
       //check for level 2
-      //console.log(params.l1);
+      console.log(params.l1);
       var l1Name = params.l1;
       if (params.l1) {
         let selectedNodeFromLevel1 = fetchNodeFromTree(params.l1, this.props.signal);
@@ -311,6 +317,10 @@ setSideListFlag(e){
 
       //console.log("l1name is ...." + selectedSignal);
       ////console.log(card);
+      let nameLink = that.urlPrefix + "/" + this.props.match.params.slug;
+      if(that.urlPrefix == "/apps-robo"){
+    	  nameLink = that.urlPrefix+"-list" + "/" + this.props.match.params.slug+"/customer"+"/data/"+store.getState().apps.customerDataset_slug;
+      }
       return (
         <div>
           <div className="side-body">
@@ -323,7 +333,7 @@ setSideListFlag(e){
                       path: that.urlPrefix,
                       label: breadcrumb_label
                     }, {
-                      path: that.urlPrefix + "/" + this.props.match.params.slug,
+                      path: nameLink,
                       label: storyName
                     }, {
                       path: that.urlPrefix + "/" + this.props.match.params.slug + '/' + this.props.match.params.l1,

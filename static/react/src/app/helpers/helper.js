@@ -49,6 +49,10 @@ const APPNAME3 = "ROBO INSIGHTS";
 const APPID1 = 1;
 const APPID2 = 2;
 const APPID3 = 3;
+const CUSTOMER = "customer";
+const HISTORIAL = "historial";
+const EXTERNAL = "external"
+
 
 
 export function generateHeaders(table) {
@@ -241,4 +245,7 @@ export{
 	APPID1,
 	APPID2,
 	APPID3,
+	CUSTOMER,
+	HISTORIAL,
+	EXTERNAL
 	}

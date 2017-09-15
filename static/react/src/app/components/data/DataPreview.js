@@ -52,8 +52,8 @@ export class DataPreview extends React.Component {
 
 	componentWillMount(){
 		console.log("------------------");
-		console.log(this.props.match.params);
-		 if (this.props.dataPreview == null) {
+		console.log(this.props);
+		 if (this.props.dataPreview == null || isEmpty(this.props.dataPreview)) {
 		      this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
 		    }
 		console.log("data prevvvvv");
@@ -224,7 +224,7 @@ export class DataPreview extends React.Component {
 		// 	 </div>
 
 		let dataPrev = this.props.dataPreview;
-		if (dataPrev) {
+		if (dataPrev && !isEmpty(dataPrev)) {
 			dataPrev = this.props.dataPreview.meta_data
 			//  console.log(data[0]);
 			//const tableThTemplate=data[0].map((thElement, thIndex) => {
