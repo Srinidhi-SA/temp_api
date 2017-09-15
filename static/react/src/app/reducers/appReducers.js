@@ -32,7 +32,7 @@ export default function reducer(state = {
 		customerDataset_slug :"",
 		historialDataset_slug:"",
 		externalDataset_slug:"",
-		roboUploadTabId:1,
+		roboUploadTabId:"customer",
 		robo_search_element:"",
 		model_search_element:"",
 		score_search_element:"",
@@ -399,7 +399,19 @@ export default function reducer(state = {
 		}
 	}
 	break;
-
+	case "ROBO_SUMMARY_SUCCESS":
+	{
+		return {
+			...state,
+			roboSummary: {},
+			roboDatasetSlug:"",
+			customerDataset_slug:"",
+			historialDataset_slug:"",
+			externalDataset_slug:"",
+			roboUploadTabId:"customer",
+		}
+	}
+	break;
  }
 return state
 }

@@ -29,14 +29,14 @@ export class RoboDUTabsContent extends React.Component {
   render() {
     console.log("robo is called##########3");
     //This should be called only once
-    if(store.getState().apps.customerDataset_slug && store.getState().apps.roboUploadTabId == 1){
+    /*if(store.getState().apps.customerDataset_slug && store.getState().apps.roboUploadTabId == 1){
 		  this.props.dispatch(getDataSetPreview(store.getState().apps.customerDataset_slug));
 		  this.props.dispatch(updateRoboUploadTab(2))
-	  }
+	  }*/
      let dataPreview = store.getState().datasets.dataPreview;
     		if(dataPreview){
     			return (   <div className="apps_tabs_content">
-    	            <DataPreview history={this.props.history}/>
+    	            <DataPreview history={this.props.history} match={this.props.match}/>
     	        </div>
     	        );
     		}else{

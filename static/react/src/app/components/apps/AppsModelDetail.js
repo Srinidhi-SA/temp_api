@@ -25,6 +25,10 @@ export class AppsModelDetail extends React.Component {
   }
   componentWillMount() {
 		this.props.dispatch(storeSignalMeta(null,this.props.match.url));
+		//It will trigger when refresh happens on url
+		if(isEmpty(this.props.modelSummary)){
+		    this.props.dispatch(getAppsModelSummary(this.props.match.params.slug));   
+		}
 	}
   
   componentDidMount() {
