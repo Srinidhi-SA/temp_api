@@ -83,29 +83,27 @@ export class Profile extends React.Component {
           <div className="main-content">
 
             <div className="user-profile">
-              <div className="user-display">
+              <div className="user-display xs-p-30">
                 <div className="bottom">
                   <div className="user-avatar col-md-2"><img src={STATIC_URL + "assets/images/avatar.png"}/></div>
-                  <div className="user-info col-md-12">
+                  <div className="user-info col-md-10">
 
                     <div className="panel-default">
 
                       <div className="panel-body">
                         <div className="row">
-                          <div className="col-md-8">
+                          <div className="col-md-12">
                             <h3>{sessionStorage.userName}</h3>
                             <table className="full-table-width no-border no-strip skills">
                               <tbody className="no-border-x no-border-y full-width">
                                 <tr>
                                   <td className="item">
-                                    <span className="fa fa-envelope fa-lg"></span>
-                                    {sessionStorage.email}</td>
+                                    <span className="fa fa-envelope fa-lg"></span> <b> {sessionStorage.email}</b></td>
 
                                 </tr>
                                 <tr>
-                                  <td className="item">
-                                    <span className="fa fa-phone-square fa-lg"></span>
-                                    (999) 999-9999</td>
+                                  <td className="item text-bold">
+                                    <span className="fa fa-phone-square fa-lg"></span> <b> (999) 999-9999</b></td>
                                 </tr>
                               </tbody>
                             </table>
@@ -118,47 +116,47 @@ export class Profile extends React.Component {
                       </div>
                     </div>
                   </div>
-                  <div claass="clearfix"></div>
+                  <div className="clearfix"></div>
                 </div>
-                <div claass="clearfix"></div>
+                <div className="clearfix"></div>
               </div>
-              <div claass="clearfix"></div>
-              <div className="row">
+              <div className="clearfix"></div>
+              <div className="row xs-p-50">
               {statsList}
                 {/*<div className="col-md-2 co-sm-4 col-xs-6">
-                  <h3 className="text-center text-primary">1500<br/>
+                  <h4 className="text-center text-primary">1500<br/>
                     <small>Data Set Uploaded
                     </small>
-                  </h3>
+                  </h4>
                 </div>
                 <div className="col-md-2 co-sm-4 col-xs-6">
-                  <h3 className="text-center text-primary">1500<br/>
+                  <h4 className="text-center text-primary">1500<br/>
                     <small>Signal Created
                     </small>
-                  </h3>
+                  </h4>
                 </div>
                 <div className="col-md-2 co-sm-4 col-xs-6">
-                  <h3 className="text-center text-primary">1500<br/>
+                  <h4 className="text-center text-primary">1500<br/>
                     <small>Stories Created
                     </small>
-                  </h3>
+                  </h4>
                 </div>
                 <div className="col-md-2 co-sm-4 col-xs-6">
-                  <h3 className="text-center text-primary">1500<br/>
+                  <h4 className="text-center text-primary">1500<br/>
                     <small>Models Creatd
                     </small>
-                  </h3>
+                  </h4>
                 </div>
                 <div className="col-md-2 co-sm-4 col-xs-6">
-                  <h3 className="text-center text-primary">1500<br/>
+                  <h4 className="text-center text-primary">1500<br/>
                     <small>Algorighms Ran
                     </small>
-                  </h3>
+                  </h4>
                 </div>
                 <div className="col-md-2 co-sm-4 col-xs-6">
-                  <h3 className="text-center text-primary">1500<br/>
+                  <h4 className="text-center text-primary">1500<br/>
                     <small>Records Crunched</small>
-                  </h3>
+                  </h4>
                 </div>*/}
               </div>
             </div>
