@@ -5578,10 +5578,10 @@ button:focus {
 	color: #dbdbdb
 }
 .navbar-default.navbar-fixed-top .dropdown {
-	float: right;
-	margin-top: 8px;
-	margin-right: 10px;
-	margin-left: 20px;
+    float: right;
+    margin-top: 6px;
+    margin-right: 10px;
+    /* margin-left: 20px; */
 }
 .side-menu li a span {
 	width: 45px;
