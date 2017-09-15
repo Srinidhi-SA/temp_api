@@ -554,6 +554,10 @@ function handleCheckboxes(list,listType){
 	return checkBoxList;
 }
 export function handleSelectAll(evt){
+	var dataTimeCount = 0;
+	if(store.getState().datasets.selectedTimeDimensions){
+		dataTimeCount = 1;
+	}
 	switch ( evt.target.id ) {
 	case "measure":
 		$("#measureSearch").val("");
@@ -566,12 +570,14 @@ export function handleSelectAll(evt){
 		return {
 			type: "SELECT_ALL_MEASURES",
 			measures,
-			meaChkBoxList
+			meaChkBoxList,
+			dataTimeCount
 		}
 	}else{
 		return {
 			type: "UNSELECT_ALL_MEASURES",
-			meaChkBoxList
+			meaChkBoxList,
+			dataTimeCount
 		}
 	}
 		break;
@@ -585,12 +591,14 @@ export function handleSelectAll(evt){
     		return {
     			type: "SELECT_ALL_DIMENSION",
     			dimension,
-    			diaChkBoxList
+    			diaChkBoxList,
+    			dataTimeCount
     		}
     	}else{
     		return {
     			type: "UNSELECT_ALL_DIMENSION",
-    			diaChkBoxList
+    			diaChkBoxList,
+    			dataTimeCount
     		}
     	}
 
