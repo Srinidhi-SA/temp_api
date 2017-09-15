@@ -153,3 +153,21 @@ def pull_api_at_remote():
 
     finally:
         print "finally loop."
+
+
+def apt_get(*packages):
+    sudo('apt-get -y --no-upgrade install %s' % ' '.join(packages), shell=False)
+
+
+def install_mysql():
+    with settings(hide('warnings', 'stderr'), warn_only=True):
+        result = sudo('dpkg-query --show mysql-server')
+    if result.failed is False:
+        warn('MySQL is already installed')
+        return
+    mysql_password = prompt('Please enter MySQL root password:')
+    sudo('echo "mysql-server-5.0 mysql-server/root_password password ' \
+                              '%s" | debconf-set-selections' % mysql_password)
+    sudo('echo "mysql-server-5.0 mysql-server/root_password_again password ' \
+                              '%s" | debconf-set-selections' % mysql_password)
+    apt_get('mysql-server')

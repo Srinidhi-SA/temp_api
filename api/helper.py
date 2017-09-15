@@ -760,7 +760,7 @@ def convert_column_data_with_array_of_category_into_column_data_stright_xy(colum
                         'orange': 'Cluster3',
                         'yellow': 'Cluster4'
                     }
-
+    
     unique_category_name = get_all_unique(category_data_list)
 
     end_data = []
@@ -772,11 +772,13 @@ def convert_column_data_with_array_of_category_into_column_data_stright_xy(colum
         if name == columns_data[category_data_index][0]:
             continue
 
-        name_x = name
+        # name_x = name
+        name_x = name + '_'
         try:
             name_y = color_naming_scheme[name_x]
         except:
-            name_y = name + '_'
+            # name_y = name + '_'
+            name_y = name
 
         end_data.append([name_x])
         name_indexs[name_x] = i
@@ -789,11 +791,13 @@ def convert_column_data_with_array_of_category_into_column_data_stright_xy(colum
         xs[name_y] = name_x
 
     for index, name in enumerate(columns_data[category_data_index][1:]):
-        name_x = name
+        # name_x = name
+        name_x = name + '_'
         try:
             name_y = color_naming_scheme[name_x]
         except:
-            name_y = name + '_'
+            # name_y = name + '_'
+            name_y = name
 
         end_data[name_indexs[name_x]].append(columns_data[0][index + 1])
         end_data[name_indexs[name_y]].append(columns_data[1][index + 1])
