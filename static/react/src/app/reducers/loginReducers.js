@@ -1,6 +1,7 @@
 export default function reducer(state={
     login_response:{},
-    profileInfo:{}
+    profileInfo:{},
+    errmsg:""
   }, action) {
     console.log("in reducer!!");
     console.log(action);
@@ -8,15 +9,17 @@ export default function reducer(state={
     switch (action.type) {
       case "AUTHENTICATE_USER": {
         return {...state,
-                login_response:action.payload
+                login_response:action.payload,
+                errmsg:""
               }
       }break;
 
       case "ERROR":
-    {
-//    	  alert(action.json.non_field_errors);
+    {   return{...state,
+                errmsg:action.json.non_field_errors
+              }
+      //throw new Error("Authentication Failed!!");
 
-      throw new Error("Authentication Failed!!");
     }break;
 
     case "PROFILE_INFO":
