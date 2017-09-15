@@ -3,6 +3,11 @@ import {connect} from "react-redux";
 import {c3Functions} from "../helpers/c3.functions";
 import { Scrollbars } from 'react-custom-scrollbars';
 import {API} from "../helpers/env";
+import store from "../store";
+
+@connect((store) => {
+  return {sideCardListFlag: store.signals.sideCardListFlag};
+})
 
 
 //var data= {}, toolData = [], toolLegend=[], chartDiv =null;
@@ -36,6 +41,7 @@ export class C3Chart extends React.Component {
 		$(".chart-modal"+this.props.classId).modal('hide');
 	}
 	showModal(){// showing the modal
+
 		$(".chart-modal"+this.props.classId).modal({ keyboard: true,show: true });
 	}
 
@@ -51,11 +57,29 @@ export class C3Chart extends React.Component {
 		$(".chart"+this.props.classId).empty();
 		//this.updateChart();
 		$('.chart-data-icon').css('visibility','hidden');
+
+
+
+	}
+	
+
+	downloadSVG(){
 		
-		
+		var nodeList = document.querySelector(".chart"+this.props.classId +">svg").querySelectorAll('.c3-chart .c3-chart-lines path');
+		//var nodeList1 = document.querySelector(".chart"+this.props.classId +">svg").querySelectorAll('.c3 line');
+		var nodeList2 = document.querySelector(".chart"+this.props.classId +">svg").querySelectorAll('.c3-axis path');
+		var line_graph = Array.from(nodeList);
+		 var x_and_y = Array.from(nodeList2);//.concat(Array.from(nodeList2));
+		 line_graph.forEach(function(element){
+              element.style.fill = "none";
+         });
+		  x_and_y.forEach(function(element){
+			element.style.fill = "none";
+			element.style.stroke = "black";
+        });
+		saveSvgAsPng(document.querySelector(".chart"+this.props.classId +">svg"), "diagram.png");
 		
 	}
-
 
 	updateChart() {
 		var that = this;
@@ -77,7 +101,7 @@ export class C3Chart extends React.Component {
 
 			}
 
-	
+
 		}
 
 		if(this.props.y2format){
@@ -123,7 +147,7 @@ export class C3Chart extends React.Component {
 
 		let chart = c3.generate(data);
 		chart.destroy();
-		
+
 		chart = setTimeout(function(){
 			return c3.generate(data);
 		},100);
@@ -170,31 +194,33 @@ export class C3Chart extends React.Component {
 
 	 render() {
 	  var that = this;
-	  
+	  console.log(this.props);
 	  if(this.props.classId !='_side'){
 		this.classId = "chart"+this.props.classId + " ct col-md-7 col-md-offset-2  xs-mb-20";
+		this.modalCls = "modal fade chart-modal"+this.props.classId;
+		this.tableCls = "table-responsive table-area table"+this.props.classId;
 		}
-	  
+
 	  $(function(){
-		  
+
 		 // alert("render");
 		  that.updateChart();
 	     if(that.props.classId =='_side'){
 			$(".chart-data-icon").empty();
-			
+
 		 }
-			 	  
+
 	  });
-	  
-	  
+
+
      //var classId = "chart"+this.props.classId + " ct col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 xs-mb-20";
-	  
+
       return(
 <div className="chart-area">
 
 {/*<div className="row">
   	<div className="chart-data-icon col-md-7 col-md-offset-2  xs-mb-20">
-        
+
      </div>
 	 <div className="clearfix"></div>
 </div>*/}
@@ -202,39 +228,41 @@ export class C3Chart extends React.Component {
 		<div className="chart-data-icon col-md-7 col-md-offset-2  xs-mb-20">
 			 <i className="fa fa-table pull-right" aria-hidden="true" onClick={this.showModal.bind(this)}></i>
 		 </div>
-	
+
 	       <div className="clearfix"></div>
 		   <div className={this.classId}></div>
 		   <div className="clearfix"></div>
+		  
      </div>
 		   {/* chart data Popup */}
 		   <div id="" className={this.modalCls} role="dialog">
 		   <div className="modal-colored-header uploadData modal-dialog ">
-  
+
 		   {/*Modal content*/}
 			<div className="modal-content chart-data-popup">
 				<div class="modal-header">
-				
+
 				<button type='button' onClick={this.closeModal.bind(this)} className='close'  data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>
 				<h3 class="modal-title">Chart Data</h3>
 				</div>
-				
+
 				<div className="modal-body chart-data-modal-body">
 					<div className="row" >
 					<div className="col-md-12">
 					<div className={this.tableCls}>
-					<Scrollbars>
+					<Scrollbars autoHide={true}>
 					<table className='table chart-table'>
 					</table>
 					{/*<div class="form-group col-md-7;">*/}
 					</Scrollbars>
 					</div>
 					</div>
-					</div> 
+					</div>
 
 				</div>
-		  
+
 				<div class="modal-footer">
+				<button className="btn btn-primary" onClick={this.downloadSVG.bind(this)}><i class="fa fa-picture-o" aria-hidden="true"></i>  Download Chart</button> &nbsp;
 				<a href={this.tableDownload} id="cddownload" className="btn btn-primary" download ><i className="fa fa-cloud-download"></i> Download Chart Data</a>
 				</div>
 
@@ -243,10 +271,10 @@ export class C3Chart extends React.Component {
 		 </div>
 
  </div>
- 
+
       );
   }
 
 
-   
+
 }

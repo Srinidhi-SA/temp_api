@@ -115,6 +115,7 @@ export function  generateRows(table) {
 
 export function  subTreeSetting(urlLength, length,paramL2) {
 	  $(function(){
+	  
 	    if(urlLength == length ){  //show -hide subtree and active class of subtree element
 		  $(".sb_navigation").show();
 		   $(".sb_navigation #subTab i.mAd_icons.ic_perf ~ span").each(function(){
@@ -157,9 +158,9 @@ export function  subTreeSetting(urlLength, length,paramL2) {
 	}
 
 
-	export function  showHideSideChart(colType) {
+	export function  showHideSideChart(colType,chartData) {
 		
-		if(colType =="datetime"){
+		if(colType =="datetime" || $.isEmptyObject(chartData)){
 				$(function(){
 			       $("#tab_visualizations #pnl_visl").removeClass("in");
                    $("#tab_visualizations a").addClass("collapsed");
@@ -170,6 +171,7 @@ export function  subTreeSetting(urlLength, length,paramL2) {
                    $("#tab_visualizations a").removeClass("collapsed");
 				});
 			}
+		
 
 	}
 

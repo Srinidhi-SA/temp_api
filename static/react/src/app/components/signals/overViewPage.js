@@ -15,7 +15,7 @@ import {isEmpty, subTreeSetting} from "../../helpers/helper";
 import {MainHeader} from "../../components/common/MainHeader";
 import {Card} from "./Card";
 import store from "../../store";
-import {getSignalAnalysis} from "../../actions/signalActions";
+import {getSignalAnalysis,setSideCardListFlag} from "../../actions/signalActions";
 import {STATIC_URL} from "../../helpers/env.js"
 import Slider from "react-slick"
 
@@ -28,13 +28,17 @@ import Slider from "react-slick"
 
 export class OverViewPage extends React.Component {
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.nextRedirect = null;
     this.showSubTree = false;
+
   }
 
-  componentWillReceiveProps(nextProps) {}
+setSideListFlag(e){
+	this.props.dispatch(setSideCardListFlag(e.target.className));
+}
+  //componentWillReceiveProps(nextProps) {}
   componentWillMount() {
     if (isEmpty(this.props.signal)) {
       this.props.dispatch(getSignalAnalysis(sessionStorage.userToken, this.props.match.params.slug));
@@ -61,7 +65,7 @@ export class OverViewPage extends React.Component {
       $(".sb_navigation").hide();
     }
 
-    $('[data-toggle=offcanvas]').click(function () {
+   /*$('[data-toggle=offcanvas]').click(function () {
 
         $('.row-offcanvas').toggleClass('active');
     	if ($('.row-offcanvas-left').hasClass('active')){
@@ -71,7 +75,7 @@ export class OverViewPage extends React.Component {
     		$('.sdbar_switch i').addClass('sw_on');
     		$('.sdbar_switch i').removeClass('sw_off');
     	};
-      });
+      });*/
 
     if ($(".list-group").children().length == 1) {
       $('.row-offcanvas-left').addClass('active');
@@ -82,6 +86,7 @@ export class OverViewPage extends React.Component {
   }
 
   toggleSideList() {
+	  //alert($('.row-offcanvas').attr('class'));
     $('.row-offcanvas').toggleClass('active');
     if ($('.row-offcanvas-left').hasClass('active')) {
       $('.sdbar_switch i').removeClass('sw_on');
@@ -107,8 +112,20 @@ export class OverViewPage extends React.Component {
 
   redirectPush(url) {
     //console.log(url);
+	/*let urlSplit = this.props.location.pathname.split("/");
+	let nextSubSlug = this.nextSubTabSlug.split("/");
+	//alert(urlSplit[4]);
+	//alert(this.curSubTabSlug);
+	if((urlSplit[4]!= nextSubSlug[4]) && urlSplit[5]){
+		let chkActive = $(".sb_navigation li>a.active").parent().next();
+		//console.log(chkActive.attr("class"));
+		if(chkActive.attr("class").indexOf("slick-active")< 0){
+		$(".slick-next").click();
+		}
+	}*/
     this.props.history.push(url);
   }
+
 
   /*updateSubTreeClass(){
 		   //alert("working");
@@ -123,6 +140,14 @@ export class OverViewPage extends React.Component {
 
 }*/
 
+setScrollActive(){
+	var that = this;
+	$(function(){
+		let index = $(".sb_navigation li>a.active").parent().index();
+		that.refs.slider.slickGoTo(index);
+	});
+}
+
   render() {
 
     console.log("overviewPage is called!!");
@@ -134,6 +159,7 @@ export class OverViewPage extends React.Component {
     if (this.props.urlPrefix) {
       that.urlPrefix = this.props.urlPrefix;
       storyName = this.props.signal.name;
+
 		if (this.props.urlPrefix != "/signals"){
         breadcrumb_label = that.urlPrefix;
         storyName = "App Name"
@@ -157,7 +183,7 @@ export class OverViewPage extends React.Component {
           <div className="page-head">
             <div class="row">
               <div class="col-md-12">
-                <Breadcrumb path={[
+                {/*<Breadcrumb path={[
                   {
                     path: that.urlPrefix,
                     label: breadcrumb_label
@@ -165,7 +191,7 @@ export class OverViewPage extends React.Component {
                     path: that.urlPrefix + this.props.signal.slug,
                     label: this.props.match.params.slug
                   }
-                ]}/>
+                ]}/>*/}
               </div>
               <div class="col-md-8">
                 <h2>{storyName}</h2>
@@ -237,7 +263,7 @@ export class OverViewPage extends React.Component {
       //console.log(params.l1);
       var l1Name = params.l1;
       if (params.l1) {
-        let selectedNodeFromLevel1 = fetchNodeFromTree(params.l1, this.props.signal);
+        var selectedNodeFromLevel1 = fetchNodeFromTree(params.l1, this.props.signal);
         l1Name = selectedNodeFromLevel1.name;
         if (!isEmpty(selectedNodeFromLevel1) && selectedNodeFromLevel1.listOfNodes.length > 0) {
           varList = selectedNodeFromLevel1.listOfNodes.map((letiable, i) => {
@@ -295,6 +321,11 @@ export class OverViewPage extends React.Component {
         nextURL = documentModeLink;
       }
 
+      //for sigma release below code is written seperately, later we have to merge this with above if else
+      if (expectedURL.next == null) {
+        nextURL = documentModeLink;
+      }
+
       let lastcard = getLastCardOfTree(this.props.signal);
       //console.log("last card is::::");
       //console.log(lastcard);
@@ -302,6 +333,13 @@ export class OverViewPage extends React.Component {
 
       //console.log("l1name is ...." + selectedSignal);
       ////console.log(card);
+
+
+	  if (!isEmpty(selectedNodeFromLevel1) && selectedNodeFromLevel1.listOfNodes.length > 0) {
+      if(varList.length>6)
+         this.setScrollActive();
+	  }
+
       return (
         <div>
           <div className="side-body">
@@ -376,7 +414,7 @@ export class OverViewPage extends React.Component {
                               <div className="col-xs-12" id = "subTab">
 
 
-                                    <Slider {...settings}>{varList}</Slider>
+                                    <Slider ref='slider' {...settings}>{varList}</Slider>
                               </div>
 
                     <div className="clearfix"></div>
@@ -395,8 +433,8 @@ export class OverViewPage extends React.Component {
 
                               <div className="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
                                 <div className="side_panel">
-                                  <a href="javascript:void(0);" data-toggle="offcanvas" className="sdbar_switch">
-                                    <i className="mAd_icons sw_on"></i>
+                                  <a href="javascript:void(0);" onClick={this.toggleSideList.bind(this)} data-toggle="offcanvas" className="sdbar_switch" >
+                                    <i className="mAd_icons sw_on" onClick={this.setSideListFlag.bind(this)}></i>
                                   </a>
                                   <div className="panel panel-primary">
                                     <div className="panel-heading">

@@ -268,6 +268,13 @@ export function storeSearchElement(search_element){
 	}
 }
 
+export function setSideCardListFlag(sideCardListClass){
+	 return {
+		type: "SET_SIDECARDLIST_FLAG",
+		sideCardListClass
+	}
+}
+
 
 export function handleRename(slug,dialog,name){
 	return (dispatch) => {

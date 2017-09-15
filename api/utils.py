@@ -5,12 +5,17 @@ from rest_framework import serializers
 from rest_framework.utils import humanize_datetime
 from sjsclient import client
 
-from api.helper import JobserverDetails
+from api.helper import JobserverDetails, get_jobserver_status
 from api.user_helper import UserSerializer
 from models import Insight, Dataset, Trainer, Score, Job, Robo
 
 
-def submit_job(slug, class_name, job_config):
+def submit_job(
+        slug,
+        class_name,
+        job_config,
+        job_name=None
+):
     sjs = client.Client(
         JobserverDetails.get_jobserver_url()
     )
@@ -29,7 +34,9 @@ def submit_job(slug, class_name, job_config):
 
     # here
     config1 = JobserverDetails.get_config(slug=slug,
-                                         class_name=class_name,)
+                                         class_name=class_name,
+                                          job_name=job_name
+                                          )
     config = {}
     config['job_config'] = job_config
     config['job_config'].update(config1)
@@ -80,10 +87,12 @@ def convert_time_to_human(data):
 # TODO: use dataserializer
 class InsightSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
+        print get_jobserver_status(instance)
         ret = super(InsightSerializer, self).to_representation(instance)
         dataset = ret['dataset']
         dataset_object = Dataset.objects.get(pk=dataset)
         ret['dataset'] = dataset_object.slug
+        ret['dataset_name'] = dataset_object.name
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
         return ret
@@ -96,6 +105,7 @@ class InsightSerializer(serializers.ModelSerializer):
         instance.live_status = validated_data.get("live_status", instance.live_status)
         instance.analysis_done = validated_data.get("analysis_done", instance.analysis_done)
         instance.name = validated_data.get("name", instance.name)
+        instance.deleted = validated_data.get("deleted", instance.deleted)
 
         instance.save()
 
@@ -107,6 +117,20 @@ class InsightSerializer(serializers.ModelSerializer):
 
 
 class InsightListSerializers(serializers.ModelSerializer):
+
+    def to_representation(self, instance):
+        ret = super(InsightListSerializers, self).to_representation(instance)
+        dataset = ret['dataset']
+        dataset_object = Dataset.objects.get(pk=dataset)
+        ret['dataset'] = dataset_object.slug
+        ret['dataset_name'] = dataset_object.name
+        ret = convert_to_json(ret)
+        ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        ret['brief_info'] = instance.get_brief_info()
+        return ret
+
+    def get_brief_info(self):
+        pass
 
     class Meta:
         model = Insight
@@ -123,10 +147,12 @@ class InsightListSerializers(serializers.ModelSerializer):
 class TrainerSerlializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
+        print get_jobserver_status(instance)
         ret = super(TrainerSerlializer, self).to_representation(instance)
         dataset = ret['dataset']
         dataset_object = Dataset.objects.get(pk=dataset)
         ret['dataset'] = dataset_object.slug
+        ret['dataset_name'] = dataset_object.name
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
         return ret
@@ -149,6 +175,18 @@ class TrainerSerlializer(serializers.ModelSerializer):
 
 class TrainerListSerializer(serializers.ModelSerializer):
 
+    def to_representation(self, instance):
+        ret = super(TrainerListSerializer, self).to_representation(instance)
+        dataset = ret['dataset']
+        dataset_object = Dataset.objects.get(pk=dataset)
+        ret['dataset'] = dataset_object.slug
+        ret['dataset_name'] = dataset_object.name
+        ret = convert_to_json(ret)
+        ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        ret['brief_info'] = instance.get_brief_info()
+        return ret
+
+
     class Meta:
         model = Trainer
         exclude =  (
@@ -162,11 +200,14 @@ class TrainerListSerializer(serializers.ModelSerializer):
 class ScoreSerlializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
+        print get_jobserver_status(instance)
         ret = super(ScoreSerlializer, self).to_representation(instance)
         trainer = ret['trainer']
         trainer_object = Trainer.objects.get(pk=trainer)
         ret['trainer'] = trainer_object.slug
+        ret['trainer_name'] = trainer_object.name
         ret['dataset'] = trainer_object.dataset.slug
+        ret['dataset_name'] = trainer_object.dataset.name
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
         return ret
@@ -190,6 +231,19 @@ class ScoreSerlializer(serializers.ModelSerializer):
 
 
 class ScoreListSerializer(serializers.ModelSerializer):
+
+    def to_representation(self, instance):
+        ret = super(ScoreListSerializer, self).to_representation(instance)
+        trainer = ret['trainer']
+        trainer_object = Trainer.objects.get(pk=trainer)
+        ret['trainer'] = trainer_object.slug
+        ret['trainer_name'] = trainer_object.name
+        ret['dataset'] = trainer_object.dataset.slug
+        ret['dataset_name'] = trainer_object.dataset.name
+        ret = convert_to_json(ret)
+        ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        ret['brief_info'] = instance.get_brief_info()
+        return ret
 
     class Meta:
         model = Score
@@ -223,6 +277,8 @@ class RoboSerializer(serializers.ModelSerializer):
         return instance
 
     def to_representation(self, instance):
+
+        print get_jobserver_status(instance)
         from api.datasets.serializers import DatasetSerializer
         ret = super(RoboSerializer, self).to_representation(instance)
 
@@ -235,6 +291,42 @@ class RoboSerializer(serializers.ModelSerializer):
         market_dataset_object = Dataset.objects.get(pk=ret['market_dataset'])
         ret['market_dataset'] = DatasetSerializer(market_dataset_object).data
 
+        if instance.dataset_analysis_done is False:
+            if customer_dataset_object.analysis_done and \
+                historical_dataset_object.analysis_done and \
+                    market_dataset_object.analysis_done:
+                instance.dataset_analysis_done = True
+                instance.save()
+
+        if instance.robo_analysis_done and instance.dataset_analysis_done:
+            instance.analysis_done = True
+            instance.save()
+
+        ret = convert_to_json(ret)
+        ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        ret['analysis_done'] = instance.analysis_done
+        return ret
+
+
+class RoboListSerializer(serializers.ModelSerializer):
+
+    def to_representation(self, instance):
+        from api.datasets.serializers import DatasetSerializer
+        ret = super(RoboListSerializer, self).to_representation(instance)
+
+        customer_dataset_object = Dataset.objects.get(pk=ret['customer_dataset'])
+        ret['customer_dataset'] = customer_dataset_object.slug
+
+        historical_dataset_object = Dataset.objects.get(pk=ret['historical_dataset'])
+        ret['historical_dataset'] = historical_dataset_object.slug
+
+        market_dataset_object = Dataset.objects.get(pk=ret['market_dataset'])
+        ret['market_dataset'] = market_dataset_object.slug
+
+        ret['dataset_name'] = market_dataset_object.name + ", " +\
+                              customer_dataset_object.name + ", " + \
+                              historical_dataset_object.name
+
         if instance.analysis_done is False:
             if customer_dataset_object.analysis_done and \
                 historical_dataset_object.analysis_done and \
@@ -246,4 +338,14 @@ class RoboSerializer(serializers.ModelSerializer):
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
         ret['analysis_done'] = instance.analysis_done
         return ret
+
+    class Meta:
+        model = Robo
+        exclude =  (
+            'id',
+            'config',
+            'data'
+        )
+
+
 

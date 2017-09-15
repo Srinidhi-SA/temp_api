@@ -1,8 +1,6 @@
 import React from "react";
 import { Scrollbars } from 'react-custom-scrollbars';
-
-
-
+import {Provider} from "react-redux";
 import {MainHeader} from "../common/MainHeader";
 import {connect} from "react-redux";
 //import {Redirect} from 'react-router';
@@ -40,6 +38,8 @@ export class DataPreview extends React.Component {
 		this.hideDataPreview = this.hideDataPreview.bind(this);
 		this.chartId = "_side";
 		this.firstTimeSideTable = [];
+		this.firstTimeSideChart = {};
+		this.firstTimeColTypeForChart = null;
 	}
 
 	hideDataPreview(){
@@ -104,7 +104,7 @@ export class DataPreview extends React.Component {
 							text: "Create Model"
 					};
 				}
-				
+
 			}
 		}else{
 			this.buttons['close']= {
@@ -137,11 +137,12 @@ export class DataPreview extends React.Component {
 				}
 				$(" td."+cls).addClass("activeColumn");
 			});
-			
-			
+
+
 
 		});
 		showHideSideTable(this.firstTimeSideTable);
+		showHideSideChart(this.firstTimeColTypeForChart,this.firstTimeSideChart);
 
 	}
 
@@ -152,11 +153,13 @@ export class DataPreview extends React.Component {
 		const chkClass = $(e.target).attr('class');
 		let dataPrev = this.props.dataPreview.meta_data;
 		dataPrev.columnData.map((item, i) => {
-			
+
+			//showHideSideChart(item.columnType); // hide side chart on datetime selection
+
 			if(chkClass.indexOf(item.slug) !== -1){
                 console.log(item);
 				$("#side-chart").empty();
-				showHideSideChart(item.columnType); // hide side chart on datetime selection 
+				showHideSideChart(item.columnType,item.chartData); // hide side chart on datetime selection 
 				if(!$.isEmptyObject(item.chartData)){
 				const sideChartUpdate = item.chartData.chart_c3;
 				let yformat = item.chartData.yformat;
@@ -164,7 +167,7 @@ export class DataPreview extends React.Component {
 				console.log("checking side table data:; ");
 				console.log(sideTableUpdate);
 				$("#side-chart").empty();
-				ReactDOM.render(<C3Chart classId={"_side"} data={sideChartUpdate} yformat={yformat} xdata={xdata} sideChart={true}/>, document.getElementById('side-chart'));
+				ReactDOM.render(<Provider store={store}><C3Chart classId={"_side"} data={sideChartUpdate} yformat={yformat} xdata={xdata} sideChart={true}/></Provider>, document.getElementById('side-chart'));
                 }
 				const sideTableUpdate = item.columnStats;
 				showHideSideTable(sideTableUpdate); // hide side table on blank or all display false
@@ -204,7 +207,7 @@ export class DataPreview extends React.Component {
 	}
 
 	render() {
-		
+
 		console.log("data prev is called##########3");
 		console.log(this.props);
 		$('body').pleaseWait('stop');
@@ -223,11 +226,10 @@ export class DataPreview extends React.Component {
 			const topInfo = dataPrev.metaData.map((item, i) => {
 				if(item.display){
 					return(
- 
-							 
- 
+
+
+
 							<div key={i} className="col-md-2 co-sm-4 col-xs-6">
- 
 							<h3 className="text-center">
 							{item.value} <br/><small>{item.displayName}</small>
 							</h3>
@@ -254,15 +256,15 @@ export class DataPreview extends React.Component {
 					case "datetime":
 					iconCls = "pe-7s-timer pe-lg pe-va";
 					break;
-					
+
 				}
-				
-				
+
+
 				const anchorCls =thElement.slug + " dropdown-toggle";
-				
+
 				if(thElement.ignoreSuggestionFlag){
 					cls = cls + " greyout-col";
-				  
+					
 				return(
 						<th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)} title={thElement.ignoreSuggestionMsg}>
 						<a href="#" data-toggle="dropdown" className={anchorCls}><i className={iconCls}></i> {thElement.name}</a>
@@ -288,7 +290,7 @@ export class DataPreview extends React.Component {
 
 						</th>
 				);
-				
+
 			}
 			});
 			//  data.splice(0,1);
@@ -321,6 +323,12 @@ export class DataPreview extends React.Component {
 			console.log("chart-----------")
 			const sideTable = dataPrev.columnData[0].columnStats;
 			this.firstTimeSideTable = sideTable; //show hide side table
+			this.firstTimeSideChart = dataPrev.columnData[0].chartData;
+			this.firstTimeColTypeForChart = dataPrev.columnData[0].columnType;
+			let firstChart = "";
+			 if(!$.isEmptyObject(this.firstTimeSideChart)){
+				 firstChart = <C3Chart classId={this.chartId} data={sideChart} yformat={yformat} xdata={xdata} sideChart={true}/> ;
+			 }
 			console.log("checking side table data:; ");
 			console.log(sideTable);
 			const sideTableTemaplte=sideTable.map((tableItem,tableIndex)=>{
@@ -354,7 +362,7 @@ export class DataPreview extends React.Component {
 
 					<div className="clearfix"></div>
 					<div className="table-responsive noSwipe">
-					
+
 					<Scrollbars>
 					<table className="table table-condensed table-hover table-bordered table-striped cst_table">
 					<thead>
@@ -400,7 +408,7 @@ export class DataPreview extends React.Component {
 					<div id="pnl_visl" className="panel-collapse collapse in" aria-expanded="true">
 					<div className="panel-body" id="side-chart">
 					{/*<img src="../assets/images/data_preview_graph.png" className="img-responsive" />*/}
-					<C3Chart classId={this.chartId} data={sideChart} yformat={yformat} xdata={xdata} sideChart={true}/>
+						{firstChart}
 					</div>
 					</div>
 					</div>
@@ -438,7 +446,7 @@ export class DataPreview extends React.Component {
 					</div>
 					<div className="row buttonRow">
 					<div className="col-md-12 text-right">
- 
+
 					<div className="panel">
 					<div className="panel-body">
 					<Button onClick={this.closePreview.bind(this)}> {this.buttons.close.text} </Button>
@@ -447,12 +455,12 @@ export class DataPreview extends React.Component {
 					</div>
 					</div>
 
- 
-					</div>
- 
+
 					</div>
 
-					 
+					</div>
+
+
 					{/*<!-- /.Page Content Area --> */}
 					 </div>
 			);

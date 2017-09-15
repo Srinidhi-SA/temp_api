@@ -7,12 +7,14 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
+from django.http import Http404
 
 from api.exceptions import creation_failed_exception, update_failed_exception
 from api.models import Dataset
 from api.pagination import CustomPagination
 from helper import convert_to_string
 from serializers import DatasetSerializer, DataListSerializer
+from api.query_filtering import get_listed_data, get_retrieve_data
 
 # Create your views here.
 
@@ -22,40 +24,60 @@ class DatasetView(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = Dataset.objects.filter(
             created_by=self.request.user,
-            deleted=False
+            deleted=False,
+            analysis_done=True
         )
         return queryset
+
+    def get_object_from_all(self):
+        return Dataset.objects.get(slug=self.kwargs.get('slug'))
 
     serializer_class = DatasetSerializer
     lookup_field = 'slug'
     filter_backends = (DjangoFilterBackend,)
-    filter_fields = ('bookmarked', 'deleted', 'db_type', 'name')
+    filter_fields = ('bookmarked', 'deleted', 'datasource_type', 'name')
     pagination_class = CustomPagination
 
     def create(self, request, *args, **kwargs):
         data = request.data
         data = convert_to_string(data)
-        data['input_file'] =  request.FILES.get('input_file')
-        if data['input_file'] is None:
-            data['name'] = data.get('name', data.get('db_type', "H") + "_"+ str(random.randint(1000000,10000000)))
-        else:
-            data['name'] = data.get('name', data['input_file'].name)
+
+        if 'input_file' in data:
+            data['input_file'] =  request.FILES.get('input_file')
+            data['datasource_type'] = 'fileUpload'
+            if data['input_file'] is None:
+                data['name'] = data.get('name', data.get('datasource_type', "H") + "_"+ str(random.randint(1000000,10000000)))
+            else:
+                data['name'] = data.get('name', data['input_file'].name)
+        elif 'datasource_details' in data:
+            data['input_file'] = None
+            if "Dataset Name" in data['datasource_details']:
+                data['name'] = data['datasource_details']['Dataset Name']
+            else:
+                data['name'] = data.get('name', data.get('datasource_type', "H") + "_" + str(random.randint(1000000, 10000000)))
 
         # question: why to use user.id when it can take, id, pk, object.
         # answer: I tried. Sighhh but it gave this error "Incorrect type. Expected pk value, received User."
         data['created_by'] = request.user.id
-        serializer = DatasetSerializer(data=data)
-        if serializer.is_valid():
-            dataset_object = serializer.save()
-            dataset_object.create()
-            return Response(serializer.data)
-
+        try:
+            serializer = DatasetSerializer(data=data)
+            if serializer.is_valid():
+                dataset_object = serializer.save()
+                dataset_object.create()
+                return Response(serializer.data)
+        except Exception as err:
+            return creation_failed_exception(err)
         return creation_failed_exception(serializer.errors)
 
     def update(self, request, *args, **kwargs):
         data = request.data
         data = convert_to_string(data)
-        instance = self.get_object()
+        # instance = self.get_object()
+
+        try:
+            instance = self.get_object_from_all()
+        except:
+            return creation_failed_exception("File Doesn't exist.")
 
         # question: do we need update method in views/ as well as in serializers?
         # answer: Yes. LoL
@@ -101,32 +123,22 @@ class DatasetView(viewsets.ModelViewSet):
         })
 
     def list(self, request, *args, **kwargs):
-        if 'page' in request.query_params:
-            if request.query_params.get('page') == 'all':
-                query_set = self.get_queryset()
 
-                if 'name' in request.query_params:
-                    name = request.query_params.get('name')
-                    query_set = query_set.filter(name__contains=name)
-
-                serializer = DataListSerializer(query_set, many=True)
-                return Response({
-                    "data": serializer.data
-                })
-
-        page_class = self.pagination_class()
-        query_set = self.get_queryset()
-
-        if 'name' in request.query_params:
-            name = request.query_params.get('name')
-            query_set = query_set.filter(name__contains=name)
-
-        page = page_class.paginate_queryset(
-            queryset=query_set,
-            request=request
+        return get_listed_data(
+            viewset=self,
+            request=request,
+            list_serializer=DataListSerializer
         )
 
-        serializer = DataListSerializer(page, many=True)
-        return page_class.get_paginated_response(serializer.data)
+    def retrieve(self, request, *args, **kwargs):
+        # return get_retrieve_data(self)
+        try:
+            instance = self.get_object_from_all()
+        except:
+            return creation_failed_exception("File Doesn't exist.")
 
+        if instance is None:
+            return creation_failed_exception("File Doesn't exist.")
 
+        serializer = DatasetSerializer(instance=instance)
+        return Response(serializer.data)

@@ -25,19 +25,20 @@ var selectedVariables = {measures:[],dimensions:[],date:null};  // pass selected
     selectedAnalysis:store.datasets.selectedAnalysis,
     signalData: store.signals.signalData,
     selectedSignal: store.signals.signalAnalysis,
-	getVarType: store.signals.getVarType
+	getVarType: store.signals.getVarType,
+	 dataSetTimeDimensions:store.datasets.dataSetTimeDimensions,
   };
 })
 
 export class VariableSelection extends React.Component {
 	constructor(props) {
 		super(props);
-  
+
     console.log("preview data check");
 	this.signalFlag =true;
 	this.possibleTrend = null;
 	this.prevSelectedVar = null;
-	
+
 	props.dispatch(emptySignalAnalysis());
 	}
 
@@ -61,7 +62,7 @@ createSignal(event){
   config['measures'] =this.props.selectedMeasures;
   config['dimension'] =this.props.selectedDimensions;
   config['timeDimension'] =this.props.selectedTimeDimensions;
- 
+
 
  postData["name"]=$("#createSname").val();
  postData["type"]=$('#signalVariableList option:selected').val();
@@ -88,15 +89,12 @@ componentDidMount(){
 	$(function(){
 		that.props.dispatch(setPossibleAnalysisList($('#signalVariableList option:selected').val()));
 	});
-	
+
 }
 
 componentDidUpdate(){
 	console.log("trend disbale check:::: ");
-	
-     console.log(store.getState().datasets.selectedDimensions);
-	 console.log(this.props.selectedTimeDimensions);
-	 if(!this.props.selectedTimeDimensions){
+	 if(this.props.dataSetTimeDimensions.length == 0){
 		 $('#analysisList input[type="checkbox"]').last().attr("disabled", true);
 	 }
 }
@@ -128,26 +126,26 @@ componentDidUpdate(){
     }
 
 	// possible analysis list -------------------------------------
-	
+
     const possibleAnalysis = dataPrev.meta_data.possibleAnalysis.target_variable;
     let renderPossibleAnalysis = null, renderSubList=null;
-		
+
  // possible analysis options -----
      if(possibleAnalysis){
 		 if(that.prevSelectedVar != that.props.getVarType){
 			 $(".possibleAnalysis").prop("checked",false);
 			 that.props.dispatch(unselectAllPossibleAnalysis());
 		 }
-		// if($('#signalVariableList option:selected').val() == "dimension"){	
+		// if($('#signalVariableList option:selected').val() == "dimension"){
 		if(that.props.getVarType == "dimension"){
 			that.prevSelectedVar ="dimension";
          renderSubList = possibleAnalysis.dimension.map((metaItem,metaIndex) =>{
 		   let id = "chk_analysis"+ metaIndex;
 		   let trendId = metaIndex +1;
 		   that.possibleTrend = "chk_analysis"+trendId;
-			  
+
 			  return(<div key={metaIndex} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} onChange={this.handleAnlysisList.bind(this)}  /><label htmlFor={id}>{metaItem.display}</label></div>);
-		
+
        });
 	 }else if(that.props.getVarType ==  "measure"){
 		 that.prevSelectedVar = "measure";
@@ -156,24 +154,24 @@ componentDidUpdate(){
 		   let trendId = metaIndex +1;
 		   that.possibleTrend = "chk_analysis"+trendId;
 			  return(<div key={metaIndex} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} onChange={this.handleAnlysisList.bind(this)} /><label htmlFor={id}>{metaItem.display}</label></div>);
-		
+
        });
-		 
+
 	 }
-	 
+
 	 renderPossibleAnalysis= (function(){
                 return( <div >
                              {renderSubList}
 		                    <div  className="ma-checkbox inline"><input id={that.possibleTrend} type="checkbox" className="possibleAnalysis" value="Trend" onChange={that.handleAnlysisList.bind(that)} /><label htmlFor={that.possibleTrend}>Trend</label></div>
                           </div>
 			);
-        })(); 
+        })();
 
   }else{
      renderSelectBox = <option>No Variables</option>
   }
   // end of possible analysis list ------------------------------------
-	 
+
 		return (
 <div className="side-body">
       <div className="main-content">
@@ -203,7 +201,7 @@ componentDidUpdate(){
          <div className="panel-body text-center" id="analysisList" >
 	      {renderPossibleAnalysis}
 	     </div>
-	   
+
       </div>
     </div>
   </div>

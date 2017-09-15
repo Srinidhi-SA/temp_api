@@ -26,6 +26,7 @@ import { updateSelectedVariables, resetSelectedVariables, setSelectedVariables,u
         measureChecked:store.datasets.measureChecked,
         dimensionAllChecked:store.datasets.dimensionAllChecked,
         dimensionChecked:store.datasets.dimensionChecked,
+        dateTimeChecked:store.datasets.dateTimeChecked,
     };
 } )
 
@@ -42,6 +43,8 @@ export class DataVariableSelection extends React.Component {
         this.measureChkBoxList = [];
         this.dimensionChkBoxList = [];
         this.dimensionDateTime = [];
+        this.dateTimeChkBoxList = [];
+        this.selectedTimeDimension = "";
     }
     handleCheckboxEvents( e ) {
         this.props.dispatch( updateSelectedVariables( e ) )
@@ -57,8 +60,8 @@ export class DataVariableSelection extends React.Component {
 
     componentDidMount() {
         this.props.dispatch( resetSelectedVariables() );
-        this.setVariables( this.dimensions, this.measures, this.datetime[this.datetime.length - 1] );
-        this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.measureChkBoxList,this.dimensionChkBoxList));
+        this.setVariables( this.dimensions, this.measures, this.selectedTimeDimension );
+        this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.measureChkBoxList,this.dimensionChkBoxList,this.dateTimeChkBoxList));
         
     }
 
@@ -115,11 +118,22 @@ export class DataVariableSelection extends React.Component {
                             this.datetime.push( metaItem.name );
                             break;
                     }
+                    this.selectedTimeDimension = this.datetime[0];
                 }
 
 
             } );
+       
             this.datetime = this.datetime.concat(this.dimensionDateTime);
+            if ( this.firstLoop ) {
+            for(var i=0;i<this.datetime.length;i++){
+            	if(i == 0 && $.inArray( this.datetime[i], that.dimensionDateTime)){
+            		this.dateTimeChkBoxList.push(true)
+            	}else{
+            		this.dateTimeChkBoxList.push(false)
+            	}
+            }
+            }
             this.firstLoop = false;
             
             if ( store.getState().datasets.dataSetMeasures.length > 0 ) {
@@ -147,15 +161,18 @@ export class DataVariableSelection extends React.Component {
             if ( store.getState().datasets.dataSetTimeDimensions.length > 0 ) {
                 var datetimeTemplate = store.getState().datasets.dataSetTimeDimensions.map(( dtItem, dtIndex ) => {
                     const dtId = "rad_dt" + dtIndex;
-                    if(dtIndex == 0 && $.inArray( dtItem, that.dimensionDateTime) == -1){
-                    	 return (
-                                 <li key={dtIndex}><div className="ma-radio inline"><input type="radio" className="timeDimension" onChange={this.handleCheckboxEvents} name="date_type" id={dtId} value={dtItem} defaultChecked /><label htmlFor={dtId}>{dtItem}</label></div></li>
-                             );
-                    }else{
-                    	 return (
-                                 <li key={dtIndex}><div className="ma-radio inline col-md-10"><input type="radio" className="timeDimension" onChange={this.handleCheckboxEvents} name="date_type" id={dtId} value={dtItem} /><label htmlFor={dtId}>{dtItem}</label></div>{timeSuggestionToolTip}</li>
-                             );
-                    }
+              
+                    	if($.inArray( dtItem, that.dimensionDateTime) == -1){
+                        	return (
+                        			<li key={dtIndex}><div className="ma-radio inline"><input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents}  name="date_type" id={dtId} value={dtItem} checked={store.getState().datasets.dateTimeChecked[dtIndex]} /><label htmlFor={dtId}>{dtItem}</label></div></li>
+                        	);
+                        }else{
+                        	return (
+                        			<li key={dtIndex}><div className="ma-radio inline col-md-10"><input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents}  name="date_type" id={dtId} value={dtItem} checked={store.getState().datasets.dateTimeChecked[dtIndex]} /><label htmlFor={dtId}>{dtItem}</label></div>{timeSuggestionToolTip}</li>
+                        	);	
+                        }
+             
+                    
                    
                 } );
             } else {
