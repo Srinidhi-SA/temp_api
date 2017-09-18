@@ -144,7 +144,7 @@ export class Profile extends React.Component {
                 <div className="col-md-12 text-right">
                   <p className="xs-p-20">
                     First Login :
-                    <b>{this.props.login_response.user.date_joined}</b>
+                    <b>{sessionStorage.date}</b>
                     {/*<br/>
                     Subscription Left :
                     <b>25 Days</b>*/}
