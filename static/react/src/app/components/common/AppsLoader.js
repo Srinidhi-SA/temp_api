@@ -14,6 +14,7 @@ import HeatMap from '../../helpers/heatmap';
 		appsLoaderModal:store.apps.appsLoaderModal,
 		appsLoaderPerValue:store.apps.appsLoaderPerValue,
 		appsLoaderText:store.apps.appsLoaderText,
+		appsLoaderImage:store.apps.appsLoaderImage,
 	};
 })
 
@@ -37,7 +38,7 @@ export class AppsLoader extends React.Component {
 		<div className="panel">
 			<div className="panel-body">
 				<p className="text-center"><br/>
-				<i className="pe-7s-science pe-spin pe-5x pe-va text-primary" ></i><br/>
+				<i className={store.getState().apps.appsLoaderImage} ></i><br/>
 				<br/>
 				<p>{store.getState().apps.appsLoaderText}</p>
 				</p><br/>

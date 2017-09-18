@@ -950,3 +950,118 @@ export function clearRoboSummary(){
 		type: "ROBO_SUMMARY_SUCCESS",
 	}
 }
+export function showAudioFUModal(){
+	return {
+		type: "SHOW_AUDIO_FILE_UPLOAD",
+	}
+}
+
+export function hideAudioFUModal(){
+	return {
+		type: "HIDE_AUDIO_FILE_UPLOAD",
+	}
+}
+
+export function uploadAudioFileToStore(files){
+	return {
+		type: "AUDIO_UPLOAD_FILE",
+		files
+	}
+}
+
+export function uploadAudioFile(){
+	return (dispatch) => {
+		  dispatch(hideAudioFUModal());
+		  dispatch(openAppsLoader(DULOADERPERVALUE,"Please wait while mAdvisor analyse your audio file... "));
+			return triggerAudioUpload(sessionStorage.userToken).then(([response, json]) =>{
+				if(response.status === 200){
+
+					dispatch(audioUploadFilesSuccess(json,dispatch))
+				}
+				else{
+					dispatch(audioUploadFilesError(json));
+					dispatch(closeAppsLoaderValue())
+				}
+			})
+		}
+}
+
+function triggerAudioUpload(token){
+	var data = new FormData();
+	data.append("input_file",store.getState().apps.audioFileUpload);
+	return fetch(API+'/api/audioset/',{
+		method: 'post',
+		headers: getHeaderWithoutContent(token),
+		body:data,
+	}).then( response => Promise.all([response, response.json()]));
+}
+
+function audioUploadFilesSuccess(data,dispatch) {
+	var slug = data.slug;
+	appsInterval = setInterval(function(){
+			if(store.getState().apps.appsLoaderPerValue < LOADERMAXPERVALUE){
+				dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE));
+			}
+			dispatch(getAudioFile(data.slug));
+	},APPSDEFAULTINTERVAL);
+	return {
+		type: "AUDIO_UPLOAD_SUCCESS",
+		slug,
+	}
+}
+
+function audioUploadFilesError(){
+	return {
+		type: "AUDIO_UPLOAD_ERROR",
+	}
+}
+
+export function getAudioFile(slug) {
+	return (dispatch) => {
+		return fetchAudioFileSummary(sessionStorage.userToken,slug).then(([response, json]) =>{
+			if(response.status === 200){
+				if(json.status == SUCCESS){
+					clearInterval(appsInterval);
+					dispatch(closeAppsLoaderValue());
+					dispatch(clearAudioFile())
+				}else if(json.status == FAILED){
+					bootbox.alert("Your audio file could not analysed.Please try later.",function(result){
+						window.history.go(-1);
+					});
+					clearInterval(appsInterval);
+					dispatch(closeAppsLoaderValue());
+					dispatch(clearAudioFile());
+				}
+			}
+			else{
+				//dispatch(closeAppsLoaderValue());
+				dispatch(fetchAFSummaryError(json));
+			}
+		})
+	}
+}
+function fetchAudioFileSummary(token,slug){
+	return fetch(API+'/api/audioset/'+slug+'/',{
+		method: 'get',
+		headers: getHeader(token)
+	}).then( response => Promise.all([response, response.json()]));
+}
+
+function fetchAFSummarySuccess(data){
+	return {
+		type: "AUDIO_UPLOAD_SUMMARY_SUCCESS",
+		data,
+	}
+}
+
+function fetchAFSummaryError(data){
+	return {
+		type: "AUDIO_UPLOAD_SUMMARY_ERROR",
+	}
+}
+
+function clearAudioFile(){
+	return {
+		type: "CLEAR_AUDIO_UPLOAD_FILE",
+	}
+}

@@ -37,9 +37,15 @@ export default function reducer(state = {
 		model_search_element:"",
 		score_search_element:"",
 		appsSelectedTabId:"model",
+		audioFileUploadShowFlag:false,
+		audioFileUpload:{},
+		appsLoaderImage:"pe-7s-science pe-spin pe-5x pe-va text-primary",
+		audioFileSummary:{},
+		audioFileSlug :"",
+		
 }, action) {
 	console.log("In APPs reducer!!");
-	console.log(action.data);
+	console.log(action);
 
 	switch (action.type) {
 	case "APPS_MODEL_SHOW_POPUP":
@@ -409,6 +415,65 @@ export default function reducer(state = {
 			historialDataset_slug:"",
 			externalDataset_slug:"",
 			roboUploadTabId:"customer",
+		}
+	}
+	break;
+	case "SHOW_AUDIO_FILE_UPLOAD":
+	{
+		return{
+			...state,
+			audioFileUploadShowFlag:true,
+		}
+	}
+	break;
+	case "HIDE_AUDIO_FILE_UPLOAD":
+	{
+		return{
+			...state,
+			audioFileUploadShowFlag:false,
+		}
+	}
+	break;
+	case "AUDIO_UPLOAD_FILE":
+	{
+		console.log(action.files[0])
+		return{
+			...state,
+			audioFileUpload:action.files[0],
+		}
+	}
+	break;
+	case "AUDIO_UPLOAD_SUCCESS":
+	{
+		return{
+			...state,
+			audioFileSlug:action.slug,
+		}
+	}
+	break;
+	case "AUDIO_UPLOAD_ERROR":
+	{
+		throw new Error("Unable to upload audio files!!");
+	}
+	break;
+	case "AUDIO_UPLOAD_SUMMARY_SUCCESS":
+	{
+		return{
+			...state,
+			audioFileSummary:action.data,
+		}
+	}
+	break;
+	case "AUDIO_UPLOAD_SUMMARY_ERROR":
+	{
+		throw new Error("Unable to get audio file preview!!");
+	}
+	break;
+	case "CLEAR_AUDIO_UPLOAD_FILE":
+	{
+		return{
+			...state,
+			audioFileUpload:{},
 		}
 	}
 	break;

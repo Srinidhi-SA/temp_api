@@ -51,7 +51,9 @@ const APPID2 = 2;
 const APPID3 = 3;
 const CUSTOMER = "customer";
 const HISTORIAL = "historial";
-const EXTERNAL = "external"
+const EXTERNAL = "external";
+const APPID4 = 4;
+const APPNAME4 = "Audio File Upload"
 
 
 
@@ -248,5 +250,7 @@ export{
 	APPID3,
 	CUSTOMER,
 	HISTORIAL,
-	EXTERNAL
+	EXTERNAL,
+	APPID4,
+	APPNAME4,
 	}
