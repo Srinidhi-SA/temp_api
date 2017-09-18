@@ -701,7 +701,7 @@ def get_info(request):
             #     'position': 'right'
             # },
             'size': {
-                'height': 300
+                'height': 225
             },
             'color': {
                 "pattern": ['#0fc4b5' , '#005662' , '#148071' , '#6cba86' , '#bcf3a2']
