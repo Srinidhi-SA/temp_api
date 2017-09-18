@@ -154,6 +154,10 @@ def pull_api_at_remote():
     finally:
         print "finally loop."
 
+def only_for_api_push_and_pull():
+    push_api_to_remote()
+    pull_api_at_remote()
+
 
 def apt_get(*packages):
     sudo('apt-get -y --no-upgrade install %s' % ' '.join(packages), shell=False)
