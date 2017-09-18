@@ -701,7 +701,10 @@ def get_info(request):
                 'position': 'right'
             },
             'size': {
-                'height': 200
+                'height': 300
+            },
+            'color': {
+                "pattern": ['#0fc4b5' , '#005662' , '#148071' , '#6cba86' , '#bcf3a2']
             }
         }
         return chart_data
