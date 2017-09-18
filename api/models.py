@@ -1002,3 +1002,231 @@ def job_submission(
         return None
 
     return job
+
+
+class Audioset(models.Model):
+    name = models.CharField(max_length=100, null=True)
+    slug = models.SlugField(null=True)
+    auto_update = models.BooleanField(default=False)
+    auto_update_duration = models.IntegerField(default=99999)
+
+    input_file = models.FileField(upload_to='audioset', null=True)
+    datasource_type = models.CharField(max_length=100, null=True)
+    datasource_details = models.TextField(default="{}")
+    preview = models.TextField(default="{}")
+
+    meta_data = models.TextField(default="{}")
+
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
+    created_by = models.ForeignKey(User, null=False)
+    deleted = models.BooleanField(default=False)
+
+    job = models.ForeignKey(Job, null=True)
+
+    bookmarked = models.BooleanField(default=False)
+    file_remote = models.CharField(max_length=100, null=True)
+    analysis_done = models.BooleanField(default=False)
+    status = models.CharField(max_length=100, null=True, default="Not Registered")
+
+    class Meta:
+        ordering = ['-created_at', '-updated_at']
+
+    def __str__(self):
+        return " : ".join(["{}".format(x) for x in [self.name, self.datasource_type, self.slug]])
+
+    def generate_slug(self):
+        if not self.slug:
+            self.slug = slugify(str(self.name) + "-" + ''.join(
+                random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
+
+    def save(self, *args, **kwargs):
+        self.generate_slug()
+        super(Audioset, self).save(*args, **kwargs)
+
+    def create(self):
+        self.meta_data = json.dumps(dummy_audio_data)
+        self.analysis_done = True
+        self.save()
+
+dummy_audio_data = {
+  "semantic_roles": [
+    {
+      "action": {
+        "text": "calling",
+        "verb": {
+          "text": "call",
+          "tense": "present"
+        },
+        "normalized": "call"
+      },
+      "sentence": "I am calling regarding my cellphone details  regarding the AD and D. center and my bills that's not in proper order  can you get back to me",
+      "object": {
+        "text": "regarding my cellphone details regarding the AD and D.  center"
+      },
+      "subject": {
+        "text": "I"
+      }
+    },
+    {
+      "action": {
+        "text": "get",
+        "verb": {
+          "text": "get",
+          "tense": "future"
+        },
+        "normalized": "get"
+      },
+      "sentence": "I am calling regarding my cellphone details  regarding the AD and D. center and my bills that's not in proper order  can you get back to me",
+      "object": {
+        "text": "to me"
+      },
+      "subject": {
+        "text": "you"
+      }
+    }
+  ],
+  "emotion": {
+    "document": {
+      "emotion": {
+        "anger": 0.168596,
+        "joy": 0.028956,
+        "sadness": 0.058371,
+        "fear": 0.035605,
+        "disgust": 0.03976
+      }
+    }
+  },
+  "sentiment": {
+    "document": {
+      "score": -0.658045,
+      "label": "negative"
+    }
+  },
+  "language": "en",
+  "entities": [
+
+  ],
+  "relations": [
+    {
+      "score": 0.941288,
+      "type": "agentOf",
+      "arguments": [
+        {
+          "text": "I",
+          "entities": [
+            {
+              "text": "you",
+              "type": "Person"
+            }
+          ]
+        },
+        {
+          "text": "calling",
+          "entities": [
+            {
+              "text": "calling",
+              "type": "EventCommunication"
+            }
+          ]
+        }
+      ],
+      "sentence": "I am calling regarding my cellphone details  regarding the AD and D. center and my bills that's not in proper order  can you get back to me"
+    }
+  ],
+  "keywords": [
+    {
+      "relevance": 0.955237,
+      "text": "cellphone details",
+      "emotion": {
+        "anger": 0.168596,
+        "joy": 0.028956,
+        "sadness": 0.058371,
+        "fear": 0.035605,
+        "disgust": 0.03976
+      },
+      "sentiment": {
+        "score": -0.658045
+      }
+    },
+    {
+      "relevance": 0.79169,
+      "text": "proper order",
+      "emotion": {
+        "anger": 0.168596,
+        "joy": 0.028956,
+        "sadness": 0.058371,
+        "fear": 0.035605,
+        "disgust": 0.03976
+      },
+      "sentiment": {
+        "score": -0.658045
+      }
+    },
+    {
+      "relevance": 0.603743,
+      "text": "D. center",
+      "emotion": {
+        "anger": 0.168596,
+        "joy": 0.028956,
+        "sadness": 0.058371,
+        "fear": 0.035605,
+        "disgust": 0.03976
+      },
+      "sentiment": {
+        "score": -0.658045
+      }
+    },
+    {
+      "relevance": 0.32934,
+      "text": "bills",
+      "emotion": {
+        "anger": 0.168596,
+        "joy": 0.028956,
+        "sadness": 0.058371,
+        "fear": 0.035605,
+        "disgust": 0.03976
+      },
+      "sentiment": {
+        "score": -0.658045
+      }
+    },
+    {
+      "relevance": 0.275752,
+      "text": "AD",
+      "emotion": {
+        "anger": 0.168596,
+        "joy": 0.028956,
+        "sadness": 0.058371,
+        "fear": 0.035605,
+        "disgust": 0.03976
+      },
+      "sentiment": {
+        "score": -0.658045
+      }
+    }
+  ],
+  "concepts": [
+
+  ],
+  "usage": {
+    "text_characters": 138,
+    "features": 8,
+    "text_units": 1
+  },
+  "categories": [
+    {
+      "score": 0.301348,
+      "label": "/finance/personal finance/lending/credit cards"
+    },
+    {
+      "score": 0.17561,
+      "label": "/business and industrial"
+    },
+    {
+      "score": 0.165519,
+      "label": "/technology and computing"
+    }
+  ],
+  "text": "I am calling regarding my cellphone details regarding the AD  and D. center and my bills that's not in proper order can you get back  to me "
+}

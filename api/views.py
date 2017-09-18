@@ -365,6 +365,98 @@ class RoboView(viewsets.ModelViewSet):
             list_serializer=RoboListSerializer
         )
 
+from api.models import Audioset
+from api.utils import AudiosetSerializer, AudioListSerializer
+
+
+class AudiosetView(viewsets.ModelViewSet):
+
+    def get_queryset(self):
+        queryset = Audioset.objects.filter(
+            created_by=self.request.user,
+            deleted=False,
+            analysis_done=True
+        )
+        return queryset
+
+    def get_object_from_all(self):
+        return Audioset.objects.get(slug=self.kwargs.get('slug'))
+
+    serializer_class = AudiosetSerializer
+    lookup_field = 'slug'
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = ('bookmarked', 'deleted', 'datasource_type', 'name')
+    pagination_class = CustomPagination
+
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        data = convert_to_string(data)
+
+        if 'input_file' in data:
+            data['input_file'] =  request.FILES.get('input_file')
+            data['datasource_type'] = 'fileUpload'
+            if data['input_file'] is None:
+                data['name'] = data.get('name', data.get('datasource_type', "H") + "_"+ str(random.randint(1000000,10000000)))
+            else:
+                data['name'] = data.get('name', data['input_file'].name)
+        elif 'datasource_details' in data:
+            data['input_file'] = None
+            if "Dataset Name" in data['datasource_details']:
+                data['name'] = data['datasource_details']['Dataset Name']
+            else:
+                data['name'] = data.get('name', data.get('datasource_type', "H") + "_" + str(random.randint(1000000, 10000000)))
+
+        # question: why to use user.id when it can take, id, pk, object.
+        # answer: I tried. Sighhh but it gave this error "Incorrect type. Expected pk value, received User."
+        data['created_by'] = request.user.id
+        try:
+            serializer = AudiosetSerializer(data=data)
+            if serializer.is_valid():
+                audioset_object = serializer.save()
+                audioset_object.create()
+                return Response(serializer.data)
+        except Exception as err:
+            return creation_failed_exception(err)
+        return creation_failed_exception(serializer.errors)
+
+    def retrieve(self, request, *args, **kwargs):
+        try:
+            instance = self.get_object_from_all()
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
+        if instance is None:
+            return creation_failed_exception("File Doesn't exist.")
+
+        serializer = AudiosetSerializer(instance=instance)
+        return Response(serializer.data)
+
+    def list(self, request, *args, **kwargs):
+        return get_listed_data(
+            viewset=self,
+            request=request,
+            list_serializer=AudioListSerializer
+        )
+
+    def update(self, request, *args, **kwargs):
+        data = request.data
+        data = convert_to_string(data)
+        # instance = self.get_object()
+
+        try:
+            instance = self.get_object_from_all()
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
+        # question: do we need update method in views/ as well as in serializers?
+        # answer: Yes. LoL
+        serializer = self.serializer_class(instance=instance, data=data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+
+        return update_failed_exception(serializer.errors)
+
 
 def get_datasource_config_list(request):
     return JsonResponse(settings.DATA_SOURCES_CONFIG)

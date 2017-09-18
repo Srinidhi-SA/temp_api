@@ -10,6 +10,7 @@ from views import ScoreView
 from views import SignalView, get_datasource_config_list
 from views import TrainerView
 from views import RoboView
+from views import AudiosetView
 
 # Start adding urlconf from here
 
@@ -26,11 +27,6 @@ router.register(
     base_name='signals'
 )
 
-router.register(
-    'trainer',
-    TrainerView,
-    base_name='trainer'
-)
 
 router.register(
     'trainer',
@@ -48,6 +44,12 @@ router.register(
     'robo',
     RoboView,
     base_name='robo'
+)
+
+router.register(
+    'audioset',
+    AudiosetView,
+    base_name='audioset'
 )
 
 urlpatterns = [
