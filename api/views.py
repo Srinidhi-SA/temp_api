@@ -697,9 +697,9 @@ def get_info(request):
                      ],
                 'type': 'pie',
             },
-            'legend': {
-                'position': 'right'
-            },
+            # 'legend': {
+            #     'position': 'right'
+            # },
             'size': {
                 'height': 300
             },
