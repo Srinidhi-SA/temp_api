@@ -158,12 +158,10 @@ export class DataPreview extends React.Component {
 		let dataPrev = this.props.dataPreview.meta_data;
 		dataPrev.columnData.map((item, i) => {
 
-			//showHideSideChart(item.columnType); // hide side chart on datetime selection
-
 			if(chkClass.indexOf(item.slug) !== -1){
                 console.log(item);
 				$("#side-chart").empty();
-				showHideSideChart(item.columnType,item.chartData); // hide side chart on datetime selection 
+				showHideSideChart(item.columnType); // hide side chart on datetime selection
 				if(!$.isEmptyObject(item.chartData)){
 				const sideChartUpdate = item.chartData.chart_c3;
 				let yformat = item.chartData.yformat;
@@ -269,7 +267,7 @@ export class DataPreview extends React.Component {
 
 				if(thElement.ignoreSuggestionFlag){
 					cls = cls + " greyout-col";
-					
+
 				return(
 						<th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)} title={thElement.ignoreSuggestionMsg}>
 						<a href="#" data-toggle="dropdown" className={anchorCls}><i className={iconCls}></i> {thElement.name}</a>
@@ -312,7 +310,7 @@ export class DataPreview extends React.Component {
 							<td key={tdIndex} className={dataPrev.columnData[tdIndex].slug} onClick={this.setSideElements.bind(this)}>{tdElement}</td>
 					);
 					}
-					
+
 				});
 				return (
 						<tr key={trIndex}>

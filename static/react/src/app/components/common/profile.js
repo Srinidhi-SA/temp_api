@@ -55,10 +55,10 @@ export class Profile extends React.Component {
         console.log(analysis)
         return (
           <div key = {i} className="col-md-2 co-sm-4 col-xs-6">
-            <h3 className="text-center text-primary">{analysis.count}<br/>
+            <h2 className="text-center text-primary">{analysis.count}<br/>
               <small>{analysis.displayName}
               </small>
-            </h3>
+            </h2>
           </div>
         )
       });
@@ -87,7 +87,7 @@ export class Profile extends React.Component {
             <div className="user-profile">
               <div className="user-display xs-p-10">
                 
-                  <div className="user-avatar col-md-2 text-center"><img src={STATIC_URL + "assets/images/avatar.png"} className="img-responsive img-center img-circle"/></div>
+                  <div className="user-avatar col-md-2 text-center"><img src={STATIC_URL + "assets/images/avatar.png"} className="img-responsive img-center img-circle xs-p-20"/></div>
                   <div className="user-info col-md-10">
 
                     <div className="panel-default">
@@ -127,11 +127,11 @@ export class Profile extends React.Component {
               
               </div>
               <div className="clearfix"></div>
-              <div className="row xs-p-20">
+              <div className="row xs-p-10">
                 {statsList}
               </div>
             </div>
-            <div className="xs-p-20"></div>
+            <div className="xs-p-10"></div>
             <div className="row">
             <div className="col-md-4">
             <h5 class="text-center">TOTAL SPACE</h5>
@@ -143,8 +143,7 @@ export class Profile extends React.Component {
               <div className="row">
                 <div className="col-md-12 text-right">
                   <p className="xs-p-20">
-                    First Login :
-                    <b>{sessionStorage.date}</b>
+                    First Login : <b> {sessionStorage.date}</b>
                     {/*<br/>
                     Subscription Left :
                     <b>25 Days</b>*/}

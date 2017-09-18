@@ -14494,6 +14494,7 @@ a.disabled { color:#ccc !important; }
 .full-table-width { width:100%; }
 .minHP { min-height:120px; }
 .img-responsive.img-center { margin:0 auto; }
+.user-info h3 { margin-top:6px; }
 /**************** Css realated to developers, keep the source down ***/
 
 

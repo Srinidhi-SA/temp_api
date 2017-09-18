@@ -386,7 +386,9 @@ setScrollActive(){
                 <div className="col-md-12">
                   <div className="panel panel-mAd">
                     <div className="panel-heading">
+ 
                       <h2 class="pull-left">{storyName}</h2>
+ 
                       <div className="btn-toolbar pull-right">
                         <div className="btn-group btn-space">
 
