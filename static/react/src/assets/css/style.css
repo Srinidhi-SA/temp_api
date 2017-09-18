@@ -14231,7 +14231,8 @@ table.table.table-condensed.table-hover.table-bordered.table-striped {
     overflow: hidden;
     padding: 0;
     margin: 0; }
-.preview_stats .panel-group.accordion {  margin-bottom: 18px;}
+.preview_stats .panel-group.accordion { margin-bottom: 18px; border: 1px solid #e8e8e8;}
+.preview_stats .panel-group.accordion h4.panel-title {     margin-top: 0; }
 .preview_stats .panel-body { padding: 15px !important; }
 
 #loading {
