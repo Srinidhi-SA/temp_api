@@ -10,7 +10,7 @@ import store from "../../store";
 import { C3Chart } from "../c3Chart";
 import $ from "jquery";
 
-import { updateSelectedVariables, resetSelectedVariables, setSelectedVariables,updateDatasetVariables,handleDVSearch,handelSort,handleSelectAll } from "../../actions/dataActions";
+import {updateSelectedVariables, resetSelectedVariables, setSelectedVariables,updateDatasetVariables,handleDVSearch,handelSort,handleSelectAll } from "../../actions/dataActions";
 
 @connect(( store ) => {
     return {
@@ -49,13 +49,9 @@ export class DataVariableSelection extends React.Component {
     handleCheckboxEvents( e ) {
         this.props.dispatch( updateSelectedVariables( e ) )
     }
-    setVariables( dimensions, measures, timeDimension, count ) {
+    setVariables( dimensions, measures, timeDimension) {
         //	this.props.dispatch(resetSelectedVariables());
         this.props.dispatch( setSelectedVariables( dimensions, measures, timeDimension ) )
-    }
-
-    componentWillMount() {
-        //this.props.dispatch(resetSelectedVariables());
     }
 
     componentDidMount() {
@@ -64,7 +60,6 @@ export class DataVariableSelection extends React.Component {
         this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.measureChkBoxList,this.dimensionChkBoxList,this.dateTimeChkBoxList));
         
     }
-
     handleDVSearch(evt){
     this.props.dispatch(handleDVSearch(evt))
     }
@@ -95,6 +90,7 @@ export class DataVariableSelection extends React.Component {
         if ( dataPrev ) {
             console.log( "data variable selection" );
             console.log( dataPrev );
+            
             const metaData = dataPrev.meta_data.columnData;
             // var measures =[], dimensions =[],datetime =[];
             metaData.map(( metaItem, metaIndex ) => {
@@ -123,7 +119,7 @@ export class DataVariableSelection extends React.Component {
 
 
             } );
-       
+
             this.datetime = this.datetime.concat(this.dimensionDateTime);
             if ( this.firstLoop ) {
             for(var i=0;i<this.datetime.length;i++){
@@ -133,7 +129,13 @@ export class DataVariableSelection extends React.Component {
             		this.dateTimeChkBoxList.push(false)
             	}
             }
+            this.props.dispatch( resetSelectedVariables() );
+            this.setVariables( this.dimensions, this.measures, this.selectedTimeDimension);
+            this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.measureChkBoxList,this.dimensionChkBoxList,this.dateTimeChkBoxList));
+              
             }
+
+           
             this.firstLoop = false;
             
             if ( store.getState().datasets.dataSetMeasures.length > 0 ) {

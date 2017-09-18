@@ -57,21 +57,24 @@ class App extends React.Component {
             <Route exact path="/apps/:AppId/scores" component={Apps} />
             <Route exact path="/apps/:AppId/models?page=:slug" component={Apps} />
             <Route exact path="/apps/:AppId/scores?page=:slug" component={Apps} />
-            <Route exact path="/apps/:AppId/models/dataPreview/createModel" component={ModelVariableSelection} />
+            <Route exact path="/apps/:AppId/models/data/:slug/createModel" component={ModelVariableSelection} />
             <Route exact path="/apps/:AppId/models/:slug" component={AppsModelDetail} />
-            <Route exact path="/apps/:AppId/scores/dataPreview/createScore" component={ScoreVariableSelection} />
+            <Route exact path="/apps/:AppId/models/:modelSlug/data/:slug/createScore" component={ScoreVariableSelection} />
             <Route exact path="/data?page=:slug" component={Data} />
             <Route exact path="/apps/:AppId/scores/:slug" component={AppsScoreDetail} />
-            <Route exact path="/data/preview/createSignal" component={VariableSelection}/>
+            <Route exact path="/data/:slug/createSignal" component={VariableSelection}/>
             <Route exact path="/signals?page=:slug" component={Signals}/>
             <Route exact path="/signals?search=:slug" component={Signals}/>
             <Route exact path="/apps/:AppId/models/data/:slug" component={DataPreview} />
             <Route exact path="/apps-robo" component={RoboInsightList} />
-            <Route exact path="/apps-robo/:slug" component={RoboDataUploadPreview} />
+            <Route exact path="/apps-robo-list/:roboSlug/:tabName/data/:slug" component={RoboDataUploadPreview} />
             <Route exact path="/apps-robo/:slug/:l1" component={OverViewPage} />
             <Route exact path="/apps-robo/:slug/:l1/:l2" component={OverViewPage} />
             <Route exact path="/apps-robo/:slug/:l1/:l2/:l3" component={OverViewPage} />
             <Route exact path="/apps-robo-document-mode/:slug" component={RoboDocumentMode} />
+            <Route exact path="/apps/:AppId/models/:modelSlug/data/:slug" component={DataPreview} />
+            <Route exact path="/apps-robo/:roboSlug" component={RoboDataUploadPreview} />
+            <Route exact path="/apps-robo-list" component={RoboInsightList} />
             </Main>
       </Switch>
       </BrowserRouter>
