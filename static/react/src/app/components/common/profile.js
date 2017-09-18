@@ -85,9 +85,9 @@ export class Profile extends React.Component {
           <div className="main-content">
 
             <div className="user-profile">
-              <div className="user-display xs-p-30">
-                <div className="bottom">
-                  <div className="user-avatar col-md-2"><img src={STATIC_URL + "assets/images/avatar.png"}/></div>
+              <div className="user-display xs-p-10">
+                
+                  <div className="user-avatar col-md-2 text-center"><img src={STATIC_URL + "assets/images/avatar.png"} className="img-responsive img-center img-circle"/></div>
                   <div className="user-info col-md-10">
 
                     <div className="panel-default">
@@ -100,17 +100,15 @@ export class Profile extends React.Component {
                               <tbody className="no-border-x no-border-y full-width">
                                 <tr>
                                   <td className="item">
-                                    <span className="fa fa-envelope fa-lg"></span>
-                                    <b>
-                                      {sessionStorage.email}</b>
+                                    <span className="fa fa-envelope fa-lg"></span> <b>
+                                       {sessionStorage.email}</b>
                                   </td>
 
                                 </tr>
                                 <tr>
                                   <td className="item text-bold">
-                                    <span className="fa fa-phone-square fa-lg"></span>
-                                    <b>
-                                      (999) 999-9999</b>
+                                    <span className="fa fa-phone-square fa-lg"></span> <b>
+                                       (999) 999-9999</b>
                                   </td>
                                 </tr>
                               </tbody>
@@ -125,18 +123,18 @@ export class Profile extends React.Component {
                     </div>
                   </div>
                   <div className="clearfix"></div>
-                </div>
-                <div className="clearfix"></div>
+                
+              
               </div>
               <div className="clearfix"></div>
-              <div className="row xs-p-50">
+              <div className="row xs-p-20">
                 {statsList}
               </div>
             </div>
             <div className="xs-p-20"></div>
             <div className="row">
             <div className="col-md-4">
-            <h5>TOTAL SPACE</h5>
+            <h5 class="text-center">TOTAL SPACE</h5>
             <C3Chart classId="_profile" data={this.props.profileInfo.chart_c3}/>
               {/*
               <img src="images/userProfileGraph.png" className="img-responsive"/>*/}

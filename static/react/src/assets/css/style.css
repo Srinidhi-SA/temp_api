@@ -14493,6 +14493,7 @@ a.disabled { color:#ccc !important; }
 .fa.fa-table.pull-right { cursor: pointer; color: #747474; }
 .full-table-width { width:100%; }
 .minHP { min-height:120px; }
+.img-responsive.img-center { margin:0 auto; }
 /**************** Css realated to developers, keep the source down ***/
 
 
