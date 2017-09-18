@@ -1047,6 +1047,7 @@ class Audioset(models.Model):
     def create(self):
         self.meta_data = json.dumps(dummy_audio_data)
         self.analysis_done = True
+        self.status = 'SUCCESS'
         self.save()
 
     def get_brief_info(self):
