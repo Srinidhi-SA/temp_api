@@ -690,11 +690,16 @@ def get_info(request):
 
         in_GB = convert_to_GB(size)
         chart_data = {
-            'columns': [
-                         ['Used', in_GB],
-                         ['Free', 5 - in_GB],
+            'data': {
+                'columns': [
+                         ['Used (in GB)', in_GB],
+                         ['Available (in GB)', 5 - in_GB],
                      ],
-            'type': 'pie',
+                'type': 'pie',
+            },
+            'legend': {
+                'position': 'right'
+            }
         }
         return chart_data
 

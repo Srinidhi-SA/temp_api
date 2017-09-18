@@ -905,7 +905,7 @@ def convert_to_GB(size):
     count = 3
 
     while count > 0:
-        size = size/1024
+        size = float(size)/1024
         count -= 1
 
     return size
