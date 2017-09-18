@@ -146,7 +146,7 @@ def pull_api_at_remote():
 
             run("git checkout {0}".format(api_branch))
             run("git pull origin {0}".format(api_branch))
-            run("git stash apply")
+            # run("git stash apply")
 
     except Exception as err:
         print err

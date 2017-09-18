@@ -699,6 +699,9 @@ def get_info(request):
             },
             'legend': {
                 'position': 'right'
+            },
+            'size': {
+                'height': 200
             }
         }
         return chart_data
