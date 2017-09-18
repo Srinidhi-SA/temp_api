@@ -209,9 +209,14 @@ def decode_and_convert_chart_raw_data(data):
     print legend
     c3_chart_details = dict()
 
+    from api.models import SaveData
+    sd = SaveData()
+    sd.save()
     if chart_type in ["bar", "line", "spline"]:
         chart_data = replace_chart_data(data['data'])
         c3_chart_details['table_c3'] = chart_data
+        sd.set_data(data=chart_data)
+        c3_chart_details['download_url'] = sd.get_url()
         c3 = C3Chart(
             data=chart_data,
             chart_type=chart_type,
@@ -271,7 +276,8 @@ def decode_and_convert_chart_raw_data(data):
 
         chart_data = replace_chart_data(data['data'])
         c3_chart_details['table_c3'] = chart_data
-
+        sd.set_data(data=chart_data)
+        c3_chart_details['download_url'] = sd.get_url()
         c3 = C3Chart(
             data=chart_data,
             chart_type=chart_type,
@@ -337,7 +343,8 @@ def decode_and_convert_chart_raw_data(data):
         data_c3 = data['data']
         chart_data, xs = replace_chart_data(data_c3, data['axes'])
         c3_chart_details['table_c3'] = chart_data
-
+        sd.set_data(data=chart_data)
+        c3_chart_details['download_url'] = sd.get_url()
         c3 = ScatterChart(
             data=chart_data,
             data_type='columns'
@@ -390,6 +397,8 @@ def decode_and_convert_chart_raw_data(data):
         chart_data, xs = replace_chart_data(data_c3, data['axes'])
 
         c3_chart_details['table_c3'] =  chart_data
+        sd.set_data(data=chart_data)
+        c3_chart_details['download_url'] = sd.get_url()
         c3 = ScatterChart(
             data=chart_data,
             data_type='columns'
@@ -445,7 +454,8 @@ def decode_and_convert_chart_raw_data(data):
         data_c3 = data['data']
         card3_data, xs = convert_column_data_with_array_of_category_into_column_data_stright_xy(data_c3, 3)
         c3_chart_details['table_c3'] = data_c3
-
+        sd.set_data(data=data_c3)
+        c3_chart_details['download_url'] = sd.get_url()
         c3 = ScatterChart(
             data=card3_data,
             data_type='columns'
@@ -497,6 +507,8 @@ def decode_and_convert_chart_raw_data(data):
         return c3_chart_details
     elif chart_type in ['donut']:
         chart_data = replace_chart_data(data['data'])
+        sd.set_data(data=chart_data)
+        c3_chart_details['download_url'] = sd.get_url()
         pie_chart_data = convert_chart_data_to_pie_chart(chart_data)
         c3 = DonutChart(data=pie_chart_data)
         c3.set_all_basics()
@@ -509,13 +521,14 @@ def decode_and_convert_chart_raw_data(data):
     elif chart_type in ['pie']:
         chart_data = replace_chart_data(data['data'])
         pie_chart_data = convert_chart_data_to_pie_chart(chart_data)
+        sd.set_data(data=chart_data)
+        c3_chart_details['download_url'] = sd.get_url()
         c3 = PieChart(data=pie_chart_data)
         c3.set_all_basics()
 
         c3_chart_details['table_c3'] = pie_chart_data
         c3_chart_details["chart_c3"] = c3.get_json()
         return c3_chart_details
-
 
 
 def replace_chart_data(data, axes=None):

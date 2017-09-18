@@ -1243,3 +1243,33 @@ dummy_audio_data = {
   ],
   "text": "I am calling regarding my cellphone details regarding the AD  and D. center and my bills that's not in proper order can you get back  to me "
 }
+
+class SaveData(models.Model):
+    slug = models.SlugField(null=False, blank=True)
+    data = models.TextField(default="{}")
+
+    def get_data(self):
+        data = self.data
+        json_data = json.loads(data)
+        csv_data = json_data.get('data')
+        return csv_data
+
+    def set_data(self, data):
+        json_data = {
+            "data": data
+        }
+        self.data = json.dumps(json_data)
+        self.save()
+        return True
+
+    def generate_slug(self):
+        if not self.slug:
+            self.slug = slugify(''.join(
+                random.choice(string.ascii_uppercase + string.digits) for _ in range(16)))
+
+    def save(self, *args, **kwargs):
+        self.generate_slug()
+        super(SaveData, self).save(*args, **kwargs)
+
+    def get_url(self):
+        return "/api/download_data/" + self.slug
