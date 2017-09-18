@@ -639,10 +639,9 @@ def get_info(request):
     user = request.user
     from api.helper import convert_to_humanize
     def get_all_info_related_to_user(user):
-        things = ['dataset', 'insight', 'trainer', 'score', 'robo']
+        things = ['dataset', 'insight', 'trainer', 'score', 'robo', 'audioset']
         all_data = []
         for t in things:
-
             all_data.append(get_all_objects(user, t))
         return all_data
 
@@ -653,14 +652,16 @@ def get_info(request):
             'insight': Insight,
             'trainer': Trainer,
             'score': Score,
-            'robo': Robo
+            'robo': Robo,
+            'audioset': Audioset
         }
         display = {
             'dataset': 'Data Set Uploaded',
             'insight': 'Signals Created',
             'trainer': 'Models Created',
             'score': 'Score Created',
-            'robo': 'Robo Created'
+            'robo': 'Robo Created',
+            'audioset': 'Audioset Created'
         }
 
         all_objects = t[type].objects.filter(created_by=user)
@@ -680,11 +681,33 @@ def get_info(request):
                 pass
                 # print err
 
-        return convert_to_humanize(size)
+        return size
+
+    def get_size_pie_chart(size):
+        from api.helper import \
+            decode_and_convert_chart_raw_data, \
+            convert_to_GB
+
+        in_GB = convert_to_GB(size)
+        chart_data = {
+            'columns': [
+                         ['Used', in_GB],
+                         ['Free', 5 - in_GB],
+                     ],
+            'type': 'pie',
+        }
+        return chart_data
+
+    def get_html_template():
+        return """<p> Your maximum file upload size is <b>5 GB</b> and maximum number of columns allowed in your data set is 50 columns."""
+
+    used_data_size = get_total_size(user)
 
     return JsonResponse({
         'info': get_all_info_related_to_user(user),
-        'total_size': get_total_size(user)
+        'used_size': convert_to_humanize(used_data_size),
+        'chart_c3': get_size_pie_chart(used_data_size),
+        'comment': get_html_template(),
     })
 
 dummy_robo_data = {
