@@ -902,7 +902,7 @@ class Score(models.Model):
 class Robo(models.Model):
 
     name = models.CharField(max_length=300, default="", blank=True)
-    slug = models.SlugField(null=False, blank=True)
+    slug = models.SlugField(null=False, blank=True, max_length=300)
 
     customer_dataset = models.ForeignKey(Dataset, null=False, default="", related_name='customer_dataset')
     historical_dataset = models.ForeignKey(Dataset, null=False, default="", related_name='historical_dataset')
