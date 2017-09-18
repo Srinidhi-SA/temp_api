@@ -8,7 +8,7 @@ import {STATIC_URL} from "../helpers/env"
 // import $ from "jquery";
 
 @connect((store) => {
-  return {login_response: store.login.login_response};
+  return {login_response: store.login.login_response, errmsg:store.login.errmsg};
 })
 
 export class Login extends React.Component {
@@ -39,6 +39,7 @@ export class Login extends React.Component {
   render() {
     console.log("login is called!!")
     // console.log(this.props.login_response)
+
     if (sessionStorage.userToken) {
       console.log("authorized!!!");
       //  return (<Home/>);
@@ -74,14 +75,14 @@ export class Login extends React.Component {
                           </div>
                         </div>
                         <div className="form-group footer row">
-                          <div className="col-xs-6 remember text-left">
+                          {/*<div className="col-xs-6 remember text-left">
                             <div className="ma-checkbox">
                               <input type="checkbox" id="remember" className="needsclick"/>
                               <label htmlFor="remember"></label>
                             </div>
                             <label htmlFor="remember">Remember Me</label>
 
-                          </div>
+                          </div>*/}
                           {/*<div className="col-xs-6 text-right">
                             <a href="#">Forgot Password?</a>
                           </div>*/}
@@ -90,6 +91,7 @@ export class Login extends React.Component {
                         <div className="form-group login-submit">
                           <button onClick={this.doAuth.bind(this)} className="btn btn-primary">SIGN IN</button>
                         </div>
+                        <div className = "text-danger text-center">{this.props.errmsg}</div>
 
                       </div>
                     </div>

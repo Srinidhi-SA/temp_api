@@ -27,6 +27,10 @@ export class SignalDocumentMode extends React.Component {
     // console.log(this.props.signal)
   }
 
+  print(){
+     window.print();
+  }
+  
   searchTree(_Node, cardLists, lastVar) {
     if (_Node.listOfCards[_Node.listOfCards.length - 1].slug == lastVar) {
       console.log("cardlist if no cards in node:");
@@ -85,7 +89,7 @@ export class SignalDocumentMode extends React.Component {
     if (objs) {
       return (
         <div>
-          <div className="side-body">
+          <div className="side-body" id="side-body">
             {/* Page Title and Breadcrumbs */}
             <div className="page-head">
               <div class="row">
@@ -129,6 +133,17 @@ export class SignalDocumentMode extends React.Component {
                       </div>
                       <div className="clearfix"></div>
                     </div>
+					<div className="btn-toolbar pull-right">
+				       <div className="btn-group btn-space">
+                      
+                          <button type="button" onClick={this.print.bind(this)}className="btn btn-default" title="Print Document">
+                              <i class="fa fa-print" aria-hidden="true"></i>
+                            </button>
+					
+                        </div>
+					</div>
+					 <div className="clearfix"></div>
+					 <br/>
                     <div className="panel-body documentModeSpacing">
                       <Card cardData={objs} />
                     </div>

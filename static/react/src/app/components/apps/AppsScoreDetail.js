@@ -24,6 +24,12 @@ export class AppsScoreDetail extends React.Component {
     super(props);
   }
   componentWillMount() {
+      //It will trigger when refresh happens on url
+      if(isEmpty(this.props.scoreSummary)){
+          this.props.dispatch(getAppsScoreSummary(this.props.match.params.slug));   
+      }
+  }
+  componentDidMount() {
 	  if(!isEmpty(store.getState().apps.scoreSummary)){
 		  if(store.getState().apps.scoreSummary.slug != store.getState().apps.scoreSlug)
 		  this.props.dispatch(getAppsScoreSummary(store.getState().apps.scoreSlug));

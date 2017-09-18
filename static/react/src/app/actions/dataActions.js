@@ -313,14 +313,15 @@ export function resetSelectedVariables(){
 	}
 }
 export function setSelectedVariables(dimensions,measures,timeDimension){
-	var count = 0
+	let count = 0;
 	if(timeDimension != undefined){
-		count = dimensions.length + measures.length + 1;
+		count = dimensions.slice().length + measures.slice().length + 1;
 	}else{
-		count = dimensions.length + measures.length;
+		count = dimensions.slice().length + measures.slice().length;
 	}
 	console.log("check count::");
 	console.log(dimensions)
+	console.log(count)
 	return {
 		type: "SET_VARIABLES",
 		dimensions,
@@ -457,6 +458,7 @@ function renameDatasetAPI(slug,newName){
 	}
 
 
+
 export function updateDatasetVariables(measures,dimensions,timeDimensions,measureChkBoxList,dimChkBoxList,dateTimeChkBoxList){
 
 	return {
@@ -467,6 +469,7 @@ export function updateDatasetVariables(measures,dimensions,timeDimensions,measur
 		measureChkBoxList,
 		dimChkBoxList,
 		dateTimeChkBoxList
+
 	}
 }
 
@@ -551,6 +554,10 @@ function handleCheckboxes(list,listType){
 	return checkBoxList;
 }
 export function handleSelectAll(evt){
+	var dataTimeCount = 0;
+	if(store.getState().datasets.selectedTimeDimensions){
+		dataTimeCount = 1;
+	}
 	switch ( evt.target.id ) {
 	case "measure":
 		$("#measureSearch").val("");
@@ -563,12 +570,14 @@ export function handleSelectAll(evt){
 		return {
 			type: "SELECT_ALL_MEASURES",
 			measures,
-			meaChkBoxList
+			meaChkBoxList,
+			dataTimeCount
 		}
 	}else{
 		return {
 			type: "UNSELECT_ALL_MEASURES",
-			meaChkBoxList
+			meaChkBoxList,
+			dataTimeCount
 		}
 	}
 		break;
@@ -582,12 +591,14 @@ export function handleSelectAll(evt){
     		return {
     			type: "SELECT_ALL_DIMENSION",
     			dimension,
-    			diaChkBoxList
+    			diaChkBoxList,
+    			dataTimeCount
     		}
     	}else{
     		return {
     			type: "UNSELECT_ALL_DIMENSION",
-    			diaChkBoxList
+    			diaChkBoxList,
+    			dataTimeCount
     		}
     	}
 

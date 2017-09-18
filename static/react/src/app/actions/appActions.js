@@ -945,3 +945,8 @@ export function storeModelSearchElement(search_element){
 		search_element
 	}
 }
+export function clearRoboSummary(){
+	return {
+		type: "ROBO_SUMMARY_SUCCESS",
+	}
+}

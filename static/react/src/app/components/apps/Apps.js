@@ -6,7 +6,8 @@ import {AppsScoreList} from "./AppsScoreList";
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {connect} from "react-redux";
-import {activateModelScoreTabs,storeModelSearchElement,storeScoreSearchElement,getAppsModelList,getAppsScoreList} from "../../actions/appActions";
+import {APPID1,APPID2,APPID3,APPNAME1,APPNAME2,APPNAME3} from "../../helpers/helper.js"
+import {activateModelScoreTabs,storeModelSearchElement,storeScoreSearchElement,getAppsModelList,getAppsScoreList,updateSelectedApp} from "../../actions/appActions";
 
 @connect((store) => {
 	return {login_response: store.login.login_response,
@@ -23,7 +24,20 @@ export class Apps extends React.Component {
     super(props);
     console.log(this.props);
   }
-
+  componentWillMount(){
+      if(this.props.match.params.AppId == APPID1){
+          this.props.dispatch(updateSelectedApp(APPID1,APPNAME1)); 
+      }else if(this.props.match.params.AppId == APPID2){
+          this.props.dispatch(updateSelectedApp(APPID2,APPNAME2));
+      }
+      
+      //checking for score and model tab
+      if(this.props.match.url.indexOf("model") != -1){
+          this.props.dispatch(activateModelScoreTabs("model"));
+      }else if(this.props.match.url.indexOf("score") != -1){
+          this.props.dispatch(activateModelScoreTabs("score"));
+      }
+  }
   modifyUrl(tabId){
 	  this.props.dispatch(activateModelScoreTabs(tabId));
 		//cleat Model Filters
@@ -49,8 +63,8 @@ export class Apps extends React.Component {
           <div className="side-body">
             <div className="main-content">
             <Tabs defaultActiveKey="score" activeKey={store.getState().apps.appsSelectedTabId} onSelect={this.modifyUrl.bind(this)} >
-            <Tab  eventKey="model" title="Models">{models}</Tab>
-            <Tab eventKey="score" title="Scores">{scores}</Tab>
+            <Tab  eventKey="model" id="model" title="Models">{models}</Tab>
+            <Tab eventKey="score" id="score" title="Scores">{scores}</Tab>
           </Tabs>
           </div>
         </div>

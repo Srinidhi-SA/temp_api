@@ -17,6 +17,7 @@ import {getAllDataList,getDataSetPreview,storeSignalMeta,updateDatasetName} from
 		selectedDataset:store.datasets.selectedDataSet,
 		dataPreviewFlag:store.datasets.dataPreviewFlag,
 		currentAppId:store.apps.currentAppId,
+		modelSlug:store.apps.modelSlug,
 		};
 })
 
@@ -50,7 +51,7 @@ export class AppsCreateScore extends React.Component {
     }
 	render() {
 		if(store.getState().datasets.dataPreviewFlag){
-			let _link = "/data/"+store.getState().datasets.selectedDataSet;
+			let _link = "/apps/"+store.getState().apps.currentAppId+"/models/"+store.getState().apps.modelSlug+"/data/"+store.getState().datasets.selectedDataSet;
 			return(<Redirect to={_link}/>);
 		}
 		const dataSets = store.getState().datasets.allDataSets.data;

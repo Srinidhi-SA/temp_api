@@ -16,6 +16,7 @@ import {getAllDataList,getDataSetPreview,storeSignalMeta,updateDatasetName} from
 		curUrl:store.datasets.curUrl,
 		selectedDataset:store.datasets.selectedDataSet,
 		dataPreviewFlag:store.datasets.dataPreviewFlag,
+		currentAppId:store.apps.currentAppId,
 		};
 })
 
@@ -51,7 +52,7 @@ export class AppsCreateModel extends React.Component {
 		let renderSelectBox = null;
 		let _link = "";
 		if(store.getState().datasets.dataPreviewFlag){
-			let _link = "/data/"+store.getState().datasets.selectedDataSet;
+			let _link = "/apps/"+store.getState().apps.currentAppId+"/models/data/"+store.getState().datasets.selectedDataSet;
 			return(<Redirect to={_link}/>);
 		}
 		if(dataSets){

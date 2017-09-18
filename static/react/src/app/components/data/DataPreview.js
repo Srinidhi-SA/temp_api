@@ -8,11 +8,11 @@ import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {C3Chart} from "../c3Chart";
 import ReactDOM from 'react-dom';
-import {hideDataPreview} from "../../actions/dataActions";
+import {hideDataPreview,getDataSetPreview} from "../../actions/dataActions";
 import {Button} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"
 import {showHideSideChart,showHideSideTable} from "../../helpers/helper.js"
-
+import {isEmpty} from "../../helpers/helper";
 
 
 
@@ -22,6 +22,7 @@ import {showHideSideChart,showHideSideTable} from "../../helpers/helper.js"
 		dataPreviewFlag:store.datasets.dataPreviewFlag,
 		currentAppId:store.apps.currentAppId,
 		roboDatasetSlug:store.apps.roboDatasetSlug,
+		modelSlug:store.apps.modelSlug,
 		signal: store.signals.signalAnalysis};
 })
 
@@ -52,6 +53,9 @@ export class DataPreview extends React.Component {
 	componentWillMount(){
 		console.log("------------------");
 		console.log(this.props);
+		 if (this.props.dataPreview == null || isEmpty(this.props.dataPreview)) {
+		      this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
+		    }
 		console.log("data prevvvvv");
 		console.log(store.getState().datasets.curUrl.indexOf("models"));
 		if(store.getState().datasets.curUrl){
@@ -61,7 +65,7 @@ export class DataPreview extends React.Component {
 						text: "Close"
 				};
 				this.buttons['create']= {
-						url : "/variableselection",
+						url : "/data/"+this.props.match.params.slug+"/createSignal",
 						text: "Create Signal"
 				};
 
@@ -71,7 +75,7 @@ export class DataPreview extends React.Component {
 						text: "Close"
 				};
 				this.buttons['create']= {
-						url : "/data/preview/createSignal",
+						url : "/data/"+this.props.match.params.slug+"/createSignal",
 						text: "Create Signal"
 				};
 
@@ -91,7 +95,7 @@ export class DataPreview extends React.Component {
 							text: "Close"
 					};
 					this.buttons['create']= {
-							url :"/apps/"+store.getState().apps.currentAppId+"/scores/dataPreview/createScore",
+							url :"/apps/"+store.getState().apps.currentAppId+"/models/"+store.getState().apps.modelSlug+"/data/"+this.props.match.params.slug+"/createScore",
 							text: "Create Score"
 					};
 				}else{
@@ -100,7 +104,7 @@ export class DataPreview extends React.Component {
 							text: "Close"
 					};
 					this.buttons['create']= {
-							url :"/apps/"+store.getState().apps.currentAppId+"/models/dataPreview/createModel",
+							url :"/apps/"+store.getState().apps.currentAppId+"/models/data/"+this.props.match.params.slug+"/createModel",
 							text: "Create Model"
 					};
 				}
@@ -112,7 +116,7 @@ export class DataPreview extends React.Component {
 					text: "Close"
 			};
 			this.buttons['create']= {
-					url : "/data/preview/createSignal",
+					url : "/data/"+this.props.match.params.slug+"/createSignal",
 					text: "Create Signal"
 			};
 		}
@@ -219,8 +223,9 @@ export class DataPreview extends React.Component {
 		// 			<button className="btn btn-primary"> {this.buttons.create.text}</button>
 		// 	 </div>
 
-		let dataPrev = this.props.dataPreview.meta_data;
-		if (dataPrev) {
+		let dataPrev = this.props.dataPreview;
+		if (dataPrev && !isEmpty(dataPrev)) {
+			dataPrev = this.props.dataPreview.meta_data
 			//  console.log(data[0]);
 			//const tableThTemplate=data[0].map((thElement, thIndex) => {
 			const topInfo = dataPrev.metaData.map((item, i) => {

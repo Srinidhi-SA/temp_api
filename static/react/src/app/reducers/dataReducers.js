@@ -225,8 +225,7 @@ export default function reducer(state = {
 			selectedVariablesCount:action.count,
 		}
 	}
-	break;
-
+    break;
 	case "SHOW_DATA_PREVIEW":
 	{
 		return {
@@ -363,7 +362,7 @@ export default function reducer(state = {
 			selectedMeasures:action.measures,
 			measureAllChecked:true,
 			measureChecked:action.meaChkBoxList,
-			selectedVariablesCount:state.selectedDimensions.length+action.measures.length,
+			selectedVariablesCount:state.selectedDimensions.length+action.measures.length+action.dataTimeCount,
 			dataSetMeasures:action.measures
 			
 		}
@@ -389,7 +388,7 @@ export default function reducer(state = {
 			selectedDimensions:action.dimension,
 			dimensionAllChecked:true,
 			dimensionChecked:action.diaChkBoxList,
-			selectedVariablesCount:state.selectedMeasures.length+action.dimension.length,
+			selectedVariablesCount:state.selectedMeasures.length+action.dimension.length+action.dataTimeCount,
 			dataSetDimensions: action.dimension,
 			
 		}
