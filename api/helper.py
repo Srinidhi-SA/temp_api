@@ -885,6 +885,22 @@ def convert_json_object_into_list_of_object(datas, order_type='dataset'):
     return list_of_objects
 
 
+def convert_to_humanize(size):
+    size_name = {
+        1: 'B',
+        2: 'KB',
+        3: 'MB',
+        4: 'GB',
+        5: 'TB'
+    }
+    i = 1
+    while size/1024 > 0:
+        i += 1
+        size = size/1024
+
+    return str(size) + " " + size_name[i]
+
+
 
 
 

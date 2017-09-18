@@ -1006,7 +1006,7 @@ def job_submission(
 
 class Audioset(models.Model):
     name = models.CharField(max_length=100, null=True)
-    slug = models.SlugField(null=True)
+    slug = models.SlugField(null=True, max_length=300)
     auto_update = models.BooleanField(default=False)
     auto_update_duration = models.IntegerField(default=99999)
 
@@ -1048,6 +1048,18 @@ class Audioset(models.Model):
         self.meta_data = json.dumps(dummy_audio_data)
         self.analysis_done = True
         self.save()
+
+    def get_brief_info(self):
+        brief_info = dict()
+        from api.helper import convert_to_humanize
+        brief_info.update(
+            {
+                'created_by': self.created_by.username,
+                'updated_at': self.updated_at,
+                'dataset': self.name,
+                'size': convert_to_humanize(self.input_file.size)
+            })
+        return brief_info
 
 dummy_audio_data = {
   "semantic_roles": [
