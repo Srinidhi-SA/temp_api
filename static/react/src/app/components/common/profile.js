@@ -96,19 +96,19 @@ export class Profile extends React.Component {
                           <table className="full-table-width no-border no-strip skills">
                             <tbody className="no-border-x no-border-y full-width">
                               <tr>
-                                <td className="item xs-p-10" width="20">
+                                <td className="item xs-pt-5" width="30">
                                   <span className="fa fa-envelope-o fa-lg"></span>
                                 </td>
-                                <td>
+                                <td className="xs-pt-5">
                                   <b>
                                     {sessionStorage.email}</b>
                                 </td>
                               </tr>
                               <tr>
-                                <td className="item xs-p-10">
+                                <td className="item xs-pt-5">
                                   <span className="fa fa-phone fa-lg"></span>
                                 </td>
-                                <td>
+                                <td className="xs-pt-5">
                                   <b>
                                     (999) 999-9999
                                   </b>
@@ -136,8 +136,8 @@ export class Profile extends React.Component {
 
             <div className="row">
               <div className="col-md-4">
-                <div className="panel minHP">
-                  <h4 class="text-center xs-p-20">TOTAL SPACE</h4>
+                <div className="minHP">
+                  <h5 class="text-center xs-pt-20">TOTAL SPACE</h5>
                   <C3Chart classId="_profile" data={this.props.profileInfo.chart_c3}/> {/*
               <img src="images/userProfileGraph.png" className="img-responsive"/>*/}
                 </div>
@@ -147,8 +147,7 @@ export class Profile extends React.Component {
                   <div className="col-md-12 text-right">
                     <p className="xs-p-20">
                       First Login :
-                      <b>
-                        {dateFormat(sessionStorage.date, "mmm d,yyyy")}</b>
+                      <b> {dateFormat(sessionStorage.date, "mmm d,yyyy")}</b>
                       {/*<br/>
                     Subscription Left :
                     <b>25 Days</b>*/}
