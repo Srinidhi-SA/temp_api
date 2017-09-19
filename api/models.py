@@ -1045,7 +1045,7 @@ class Audioset(models.Model):
         super(Audioset, self).save(*args, **kwargs)
 
     def create(self):
-        self.meta_data = json.dumps(dummy_audio_data)
+        self.meta_data = json.dumps(dummy_audio_data_2)
         self.analysis_done = True
         self.status = 'SUCCESS'
         self.save()
@@ -1057,10 +1057,10 @@ class Audioset(models.Model):
             {
                 'created_by': self.created_by.username,
                 'updated_at': self.updated_at,
-                'dataset': self.name,
-                'size': convert_to_humanize(self.input_file.size)
+                'audioset': self.name,
+                'file_size': convert_to_humanize(self.input_file.size)
             })
-        return brief_info
+        return convert_json_object_into_list_of_object(brief_info, 'audioset')
 
 dummy_audio_data = {
   "semantic_roles": [
@@ -1273,3 +1273,2349 @@ class SaveData(models.Model):
 
     def get_url(self):
         return "/api/download_data/" + self.slug
+
+
+dummy_audio_data_2 = {
+        "listOfNodes": [
+            {
+                "listOfNodes": [],
+                "listOfCards": [
+                    {
+                        "name": "Distribution of Product Category",
+                        "cardType": "normal",
+                        "cardData": [
+                            {
+                                "dataType": "html",
+                                "data": "<p class=\"txt-justify\"> The Product Category variable has only two values, i.e. Olien Consumer and Olien Bulk. Olien Consumer is the <b>largest</b> with 106 observations, whereas Olien Bulk is the <b>smallest</b> with just 56 observations. </p>"
+                            },
+                            {
+                                "dataType": "c3Chart",
+                                "data": {
+                                    "chart_c3": {
+                                        "bar": {
+                                            "width": 40
+                                        },
+                                        "point": None,
+                                        "color": {
+                                            "pattern": [
+                                                "#0fc4b5",
+                                                "#005662",
+                                                "#148071",
+                                                "#6cba86",
+                                                "#bcf3a2"
+                                            ]
+                                        },
+                                        "tooltip": {
+                                            "show": True,
+                                            "format": {
+                                                "title": ".2s"
+                                            }
+                                        },
+                                        "padding": {
+                                            "top": 40
+                                        },
+                                        "grid": {
+                                            "y": {
+                                                "show": True
+                                            },
+                                            "x": {
+                                                "show": True
+                                            }
+                                        },
+                                        "subchart": None,
+                                        "axis": {
+                                            "y": {
+                                                "tick": {
+                                                    "count": 7,
+                                                    "outer": False,
+                                                    "multiline": True,
+                                                    "format": ".2s"
+                                                },
+                                                "label": {
+                                                    "text": "",
+                                                    "position": "outer-middle"
+                                                }
+                                            },
+                                            "x": {
+                                                "height": 90,
+                                                "tick": {
+                                                    "rotate": -45,
+                                                    "multiline": False,
+                                                    "fit": False,
+                                                    "format": ".2s"
+                                                },
+                                                "type": "category",
+                                                "label": {
+                                                    "text": "",
+                                                    "position": "outer-center"
+                                                }
+                                            }
+                                        },
+                                        "data": {
+                                            "x": "key",
+                                            "axes": {
+                                                "value": "y"
+                                            },
+                                            "type": "bar",
+                                            "columns": [
+                                                [
+                                                    "value",
+                                                    106,
+                                                    56
+                                                ],
+                                                [
+                                                    "key",
+                                                    "Olien Consumer",
+                                                    "Olien Bulk"
+                                                ]
+                                            ]
+                                        },
+                                        "legend": {
+                                            "show": False
+                                        },
+                                        "size": {
+                                            "height": 340
+                                        }
+                                    },
+                                    "yformat": ".2s",
+                                    "table_c3": [
+                                        [
+                                            "value",
+                                            106,
+                                            56
+                                        ],
+                                        [
+                                            "key",
+                                            "Olien Consumer",
+                                            "Olien Bulk"
+                                        ]
+                                    ],
+                                    "download_url": "/api/download_data/jis96dzhpyd55zsx",
+                                    "xdata": [
+                                        "Olien Consumer",
+                                        "Olien Bulk"
+                                    ]
+                                }
+                            },
+                            {
+                                "dataType": "html",
+                                "data": "<p class = \"txt-justify\"> The segment Olien Consumer accounts for 65.43% of the overall observations. </p>"
+                            },
+                            {
+                                "dataType": "html",
+                                "data": "<div class='col-md-6 col-xs-12'><h2 class='text-center'><span>65.43%</span><br /><small> Olien Consumer is the largest with 106 observations</small></h2></div><div class='col-md-6 col-xs-12'><h2 class='text-center'><span>34.57%</span><br /><small> Olien Bulk is the smallest with 56 observations</small></h2></div>"
+                            }
+                        ],
+                        "slug": "distribution-of-product-category-j8no17sj87",
+                        "cardWidth": 100
+                    }
+                ],
+                "name": "Overview",
+                "slug": "overview-eerm9f6uuh"
+            },
+            {
+                "listOfNodes": [],
+                "listOfCards": [
+                    {
+                        "name": "Trend Analysis",
+                        "cardType": "normal",
+                        "cardData": [
+                            {
+                                "dataType": "html",
+                                "data": "<h3>How Product Category is Changing over Time</h3> "
+                            },
+                            {
+                                "dataType": "c3Chart",
+                                "data": {
+                                    "download_url": "/api/download_data/jhqhvtigr2dfwh9f",
+                                    "y2format": ".2s",
+                                    "xdata": [
+                                        "Aug-16",
+                                        "Sep-16",
+                                        "Oct-16",
+                                        "Nov-16",
+                                        "Dec-16",
+                                        "Feb-17",
+                                        "Mar-17",
+                                        "Apr-17",
+                                        "May-17",
+                                        "Jul-17"
+                                    ],
+                                    "chart_c3": {
+                                        "bar": {
+                                            "width": {
+                                                "ratio": 0.5
+                                            }
+                                        },
+                                        "point": None,
+                                        "color": {
+                                            "pattern": [
+                                                "#0fc4b5",
+                                                "#005662",
+                                                "#148071",
+                                                "#6cba86",
+                                                "#bcf3a2"
+                                            ]
+                                        },
+                                        "tooltip": {
+                                            "show": True,
+                                            "format": {
+                                                "title": ".2s"
+                                            }
+                                        },
+                                        "padding": {
+                                            "top": 40
+                                        },
+                                        "grid": {
+                                            "y": {
+                                                "show": True
+                                            },
+                                            "x": {
+                                                "show": True
+                                            }
+                                        },
+                                        "subchart": None,
+                                        "axis": {
+                                            "y": {
+                                                "tick": {
+                                                    "count": 7,
+                                                    "outer": False,
+                                                    "multiline": True,
+                                                    "format": ".2s"
+                                                },
+                                                "label": {
+                                                    "text": "Percentage of Olien Consumer",
+                                                    "position": "outer-middle"
+                                                }
+                                            },
+                                            "x": {
+                                                "height": 90,
+                                                "tick": {
+                                                    "rotate": -45,
+                                                    "multiline": False,
+                                                    "fit": False,
+                                                    "format": ".2s"
+                                                },
+                                                "type": "category",
+                                                "label": {
+                                                    "text": "Time",
+                                                    "position": "outer-center"
+                                                }
+                                            },
+                                            "y2": {
+                                                "show": True,
+                                                "tick": {
+                                                    "count": 7,
+                                                    "multiline": True,
+                                                    "format": ".2s"
+                                                },
+                                                "label": {
+                                                    "text": "Percentage of Olien Bulk",
+                                                    "position": "outer-middle"
+                                                }
+                                            }
+                                        },
+                                        "data": {
+                                            "x": "key",
+                                            "axes": {
+                                                "Olien Bulk": "y2"
+                                            },
+                                            "type": "line",
+                                            "names": {
+                                                "k3": "Olien Bulk",
+                                                "k2": "Olien Consumer",
+                                                "k1": "key",
+                                                "y": "Olien Consumer",
+                                                "x": "key",
+                                                "y2": "Olien Bulk"
+                                            },
+                                            "columns": [
+                                                [
+                                                    "Olien Consumer",
+                                                    36.8,
+                                                    100,
+                                                    100,
+                                                    75,
+                                                    37.5,
+                                                    92.9,
+                                                    100,
+                                                    100,
+                                                    42.9,
+                                                    100
+                                                ],
+                                                [
+                                                    "key",
+                                                    "Aug-16",
+                                                    "Sep-16",
+                                                    "Oct-16",
+                                                    "Nov-16",
+                                                    "Dec-16",
+                                                    "Feb-17",
+                                                    "Mar-17",
+                                                    "Apr-17",
+                                                    "May-17",
+                                                    "Jul-17"
+                                                ],
+                                                [
+                                                    "Olien Bulk",
+                                                    63.2,
+                                                    25,
+                                                    62.5,
+                                                    100,
+                                                    7.1,
+                                                    57.1,
+                                                    100,
+                                                    0,
+                                                    0,
+                                                    0
+                                                ]
+                                            ]
+                                        },
+                                        "legend": {
+                                            "show": True
+                                        },
+                                        "size": {
+                                            "height": 340
+                                        }
+                                    },
+                                    "yformat": ".2s",
+                                    "table_c3": [
+                                        [
+                                            "Olien Consumer",
+                                            36.8,
+                                            100,
+                                            100,
+                                            75,
+                                            37.5,
+                                            92.9,
+                                            100,
+                                            100,
+                                            42.9,
+                                            100
+                                        ],
+                                        [
+                                            "key",
+                                            "Aug-16",
+                                            "Sep-16",
+                                            "Oct-16",
+                                            "Nov-16",
+                                            "Dec-16",
+                                            "Feb-17",
+                                            "Mar-17",
+                                            "Apr-17",
+                                            "May-17",
+                                            "Jul-17"
+                                        ],
+                                        [
+                                            "Olien Bulk",
+                                            63.2,
+                                            25,
+                                            62.5,
+                                            100,
+                                            7.1,
+                                            57.1,
+                                            100,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    ]
+                                }
+                            },
+                            {
+                                "dataType": "html",
+                                "data": " <p class=\"txt-justify\"> This section provides insights on how Product Category categories are trending over time and captures the most significant moments that defined the overall pattern or trend over the observation period. </p> "
+                            },
+                            {
+                                "dataType": "html",
+                                "data": " <h4>Olien Consumer</h4> "
+                            },
+                            {
+                                "dataType": "html",
+                                "data": " <p class=\"txt-justify\"> The percentage of Olien Consumer <b>increased</b> from <b> 36.8% </b> in Aug-16 to <b>100.0%</b> in Jul-17. The total number of observations for Olien Consumer was 106 for the last 12 months, and the <b> average rate</b> of Olien Consumer was <b>78.5%</b>. </p> "
+                            },
+                            {
+                                "dataType": "html",
+                                "data": " <p class=\"txt-justify\"> Olien Consumer category hit a peak of <b>100.0%</b> in <b>Sep-16</b>, when the total number of Olien Consumer observations was 3. The most significant factor that fuelled this strong run is the <b>Product</b> category,6x2 ltr c.tray. The Olien Consumer rate for <b>6x2 ltr c.tray</b> in Sep-16, increased by over <b>92.78</b> percentage points (100.0 vis-a-vis 7.22) compared to rest of the observation period. </p> "
+                            },
+                            {
+                                "dataType": "html",
+                                "data": " <h4>Olien Bulk</h4> "
+                            },
+                            {
+                                "dataType": "html",
+                                "data": " <p class=\"txt-justify\"> There was a significant <b>increase</b> in Olien Bulk, as it increased from <b> 63.2% </b> in Aug-16 to <b>100.0%</b> in Jun-17. The total number of observations for Olien Bulk was 56 for the last 12 months, and the <b> average rate</b> of Olien Bulk was <b>59.3%</b>. </p> "
+                            },
+                            {
+                                "dataType": "html",
+                                "data": " <p class=\"txt-justify\"> The percentage of Olien Bulk hit a peak of 100.0% in Jan-17, when the total number of Olien Bulk observations was 9. The most significant factor that fuelled this strong run is the <b>Sales Office</b> category,Nairobi - Local. The Olien Bulk rate for <b>Nairobi - Local</b> in Jan-17, increased by over <b>54.08</b> percentage points (100.0 vis-a-vis 45.92) compared to rest of the observation period. </p> "
+                            }
+                        ],
+                        "slug": "trend-analysis-y9yubuk1a3",
+                        "cardWidth": 100
+                    }
+                ],
+                "name": "Trend",
+                "slug": "trend-m98773khm2"
+            },
+            {
+                "listOfNodes": [
+                    {
+                        "listOfNodes": [],
+                        "listOfCards": [
+                            {
+                                "cardWidth": 100,
+                                "cardType": "normal",
+                                "cardData": [
+                                    {
+                                        "dataType": "html",
+                                        "data": "<h3>Relationship between Product Category  and Product</h3>"
+                                    },
+                                    {
+                                        "dataType": "table",
+                                        "data": {
+                                            "tableType": "heatMap",
+                                            "tableData": [
+                                                [
+                                                    "Product",
+                                                    "Olien Consumer",
+                                                    "Olien Bulk"
+                                                ],
+                                                [
+                                                    "10 ltr j.can",
+                                                    0,
+                                                    100
+                                                ],
+                                                [
+                                                    "18kg j.can",
+                                                    0,
+                                                    100
+                                                ],
+                                                [
+                                                    "4x5 ltr rpc",
+                                                    100,
+                                                    0
+                                                ],
+                                                [
+                                                    "6x2 ltr c.tray",
+                                                    100,
+                                                    0
+                                                ],
+                                                [
+                                                    "6x3 ltr c.tray",
+                                                    100,
+                                                    0
+                                                ],
+                                                [
+                                                    "12x1 ltr c.tray",
+                                                    100,
+                                                    0
+                                                ],
+                                                [
+                                                    "72x50ml sachet",
+                                                    100,
+                                                    0
+                                                ],
+                                                [
+                                                    "12x500ml c.tray",
+                                                    100,
+                                                    0
+                                                ],
+                                                [
+                                                    "24x200ml sachet",
+                                                    100,
+                                                    0
+                                                ],
+                                                [
+                                                    "36x100ml sachet",
+                                                    100,
+                                                    0
+                                                ]
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": "<h4>Overview</h4> "
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": " <p class = \"txt-justify\"> Product is one of <b>the most significant influencers</b> of Product Category and displays significant variation in distribution of Product Category categories. The top 7 Products including segment 10 ltr j.can and segment 6x2 ltr c.tray account for <b> 96.3% </b>of the total observations. <b>Segment 36x100ml sachet and segment 24x200ml sachet</b> are the smallest with <b>just 0.62%</b> of the total observations. </p> "
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": " <h4>Key segments of Olien Bulk</h4> "
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": " <p class = \"txt-justify\"> The <b>percentage of Olien Bulk</b> is the <b> lowest(0.0%) for 8 segments including 4x5 ltr rpc and 6x2 ltr c.tray</b>. The segments <b> 10 ltr j.can and 18kg j.can</b> have the <b>highest rate of Olien Bulk</b> (100.0%), which is 189.3% higher than the overall Olien Bulk rate. Interestingly, the <b>segment 6x2 ltr c.tray and segment 12x1 ltr c.tray</b>, which cumulatively account for <b> 29.0% of the total </b>observations, has contributed to <b> 0.0% of total Olien Bulk</b>. On the other hand, the segments <b>18kg j.can and 10 ltr j.can</b> cumulatively account for <b>34.6% of the total</b> observations, but it has contributed to <b>100.0% of total Olien Bulk</b>. </p> "
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": " <h4>Key segments of Olien Consumer</h4> "
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": " <p class = \"txt-justify\"> When it comes to <b>Olien Consumer, both segment 10 ltr j.can and segment 18kg j.can</b> seems to be the least dominant segment with 0.0% of their total observations from each of the categories. But, there are <b>8 categories</b>(including segment 4x5 ltr rpc and segment 6x2 ltr c.tray) have the <b>highest rate of Olien Consumer</b> (100.0%). Interestingly, <b>segment 10 ltr j.can and segment 18kg j.can</b>, which cumulatively account for <b> 34.6% of the total </b>observations, have contributed to <b> 0.0% of total Olien Consumer</b>. On the other hand, the segments <b>12x1 ltr c.tray and 6x2 ltr c.tray</b> cumulatively account for <b>29.0% of the total</b> observations, but it has contributed to <b>44.3% of total Olien Consumer</b>. </p>"
+                                    }
+                                ],
+                                "name": "Product: Relationship with Product Category",
+                                "slug": "product-relationship-with-product-category-utapxjwvnf"
+                            },
+                            {
+                                "cardWidth": 100,
+                                "cardType": "normal",
+                                "cardData": [
+                                    {
+                                        "dataType": "html",
+                                        "data": "<h3>Distribution of Product Category (Olien Bulk) across Product</h3>"
+                                    },
+                                    {
+                                        "dataType": "c3Chart",
+                                        "data": {
+                                            "download_url": "/api/download_data/o90t66t1yhq95r8c",
+                                            "y2format": ".2s",
+                                            "xdata": [
+                                                "10 ltr j.can",
+                                                "18kg j.can",
+                                                "4x5 ltr rpc",
+                                                "6x2 ltr c.tray",
+                                                "6x3 ltr c.tray",
+                                                "12x1 ltr c.tray",
+                                                "72x50ml sachet",
+                                                "12x500ml c.tray",
+                                                "24x200ml sachet",
+                                                "36x100ml sachet"
+                                            ],
+                                            "chart_c3": {
+                                                "bar": {
+                                                    "width": {
+                                                        "ratio": 0.5
+                                                    }
+                                                },
+                                                "point": None,
+                                                "color": {
+                                                    "pattern": [
+                                                        "#005662",
+                                                        "#0fc4b5",
+                                                        "#148071",
+                                                        "#6cba86",
+                                                        "#bcf3a2"
+                                                    ]
+                                                },
+                                                "tooltip": {
+                                                    "show": True,
+                                                    "format": {
+                                                        "title": ".2s"
+                                                    }
+                                                },
+                                                "padding": {
+                                                    "top": 40
+                                                },
+                                                "grid": {
+                                                    "y": {
+                                                        "show": True
+                                                    },
+                                                    "x": {
+                                                        "show": True
+                                                    }
+                                                },
+                                                "subchart": None,
+                                                "axis": {
+                                                    "y": {
+                                                        "tick": {
+                                                            "count": 7,
+                                                            "outer": False,
+                                                            "multiline": True,
+                                                            "format": ".2s"
+                                                        },
+                                                        "label": {
+                                                            "text": "",
+                                                            "position": "outer-middle"
+                                                        }
+                                                    },
+                                                    "x": {
+                                                        "height": 90,
+                                                        "tick": {
+                                                            "rotate": -45,
+                                                            "multiline": False,
+                                                            "fit": False,
+                                                            "format": ".2s"
+                                                        },
+                                                        "type": "category",
+                                                        "label": {
+                                                            "text": "",
+                                                            "position": "outer-center"
+                                                        }
+                                                    },
+                                                    "y2": {
+                                                        "show": True,
+                                                        "tick": {
+                                                            "count": 7,
+                                                            "multiline": True,
+                                                            "format": ".2s"
+                                                        },
+                                                        "label": {
+                                                            "text": "",
+                                                            "position": "outer-middle"
+                                                        }
+                                                    }
+                                                },
+                                                "data": {
+                                                    "axes": {
+                                                        "percentage": "y2"
+                                                    },
+                                                    "columns": [
+                                                        [
+                                                            "percentage",
+                                                            100,
+                                                            100,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0
+                                                        ],
+                                                        [
+                                                            "total",
+                                                            35,
+                                                            21,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0
+                                                        ],
+                                                        [
+                                                            "key",
+                                                            "10 ltr j.can",
+                                                            "18kg j.can",
+                                                            "4x5 ltr rpc",
+                                                            "6x2 ltr c.tray",
+                                                            "6x3 ltr c.tray",
+                                                            "12x1 ltr c.tray",
+                                                            "72x50ml sachet",
+                                                            "12x500ml c.tray",
+                                                            "24x200ml sachet",
+                                                            "36x100ml sachet"
+                                                        ]
+                                                    ],
+                                                    "x": "key",
+                                                    "type": "combination",
+                                                    "types": {
+                                                        "percentage": "line",
+                                                        "total": "bar"
+                                                    },
+                                                    "names": {
+                                                        "percentage": "% of Olien Bulk",
+                                                        "total": "# of Olien Bulk"
+                                                    }
+                                                },
+                                                "legend": {
+                                                    "show": True
+                                                },
+                                                "size": {
+                                                    "height": 340
+                                                }
+                                            },
+                                            "yformat": ".2s",
+                                            "table_c3": [
+                                                [
+                                                    "percentage",
+                                                    100,
+                                                    100,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0
+                                                ],
+                                                [
+                                                    "total",
+                                                    35,
+                                                    21,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0
+                                                ],
+                                                [
+                                                    "key",
+                                                    "10 ltr j.can",
+                                                    "18kg j.can",
+                                                    "4x5 ltr rpc",
+                                                    "6x2 ltr c.tray",
+                                                    "6x3 ltr c.tray",
+                                                    "12x1 ltr c.tray",
+                                                    "72x50ml sachet",
+                                                    "12x500ml c.tray",
+                                                    "24x200ml sachet",
+                                                    "36x100ml sachet"
+                                                ]
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": "<p class = \"txt-justify\"> The top 2 Products(segment 10 ltr j.can and segment 18kg j.can) account for 100.0% of the total Olien Bulk observations. Being the largest contributor, total Olien Bulk from 10 ltr j.can amounts to 35.0 that accounts for about 62.5% of the total Olien Bulk. On the other hand, 4x5 ltr rpc contributes to just 0.0% of the total Olien Bulk. </p> "
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": " <h4>Key Factors influencing Olien Bulk from 10 ltr j.can</h4> "
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": " <p class = \"txt-justify\"> High concentration of Olien Bulk from segment 10 ltr j.can is characterized by the influence of key dimensions, such as Sales Office. Certain specific segments from those factors are more likely to explain segment 10 ltr j.can's significant rate of Olien Bulk. </p> "
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": " <p class = \"txt-justify\"> <ul> <li> <b>Sales Office</b>: Among the Sales Offices, Nairobi - Local has got the major chunk of Olien Bulk from segment 10 ltr j.can, accounting for 45.7%. The percentage of Olien Bulk for Nairobi - Local is 100.0%. </li> </li> </p> "
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": "<div class='col-md-6 col-xs-12'><h2 class='text-center'><span>62.5%</span><br /><small>Overall Olien Bulk comes from 10 ltr j.can</small></h2></div><div class='col-md-6 col-xs-12'><h2 class='text-center'><span>100.0%</span><br /><small>10 ltr j.can has the highest rate of Olien Bulk</small></h2></div>"
+                                    }
+                                ],
+                                "name": "Product : Distribution of Olien Consumer",
+                                "slug": "product-distribution-of-olien-consumer-nmirq83361"
+                            },
+                            {
+                                "cardWidth": 100,
+                                "cardType": "normal",
+                                "cardData": [
+                                    {
+                                        "dataType": "html",
+                                        "data": "<h3>Distribution of Product Category (Olien Consumer) across Product</h3>"
+                                    },
+                                    {
+                                        "dataType": "c3Chart",
+                                        "data": {
+                                            "download_url": "/api/download_data/8qx8p4cb4u4pldhk",
+                                            "y2format": ".2s",
+                                            "xdata": [
+                                                "10 ltr j.can",
+                                                "18kg j.can",
+                                                "4x5 ltr rpc",
+                                                "6x2 ltr c.tray",
+                                                "6x3 ltr c.tray",
+                                                "12x1 ltr c.tray",
+                                                "72x50ml sachet",
+                                                "12x500ml c.tray",
+                                                "24x200ml sachet",
+                                                "36x100ml sachet"
+                                            ],
+                                            "chart_c3": {
+                                                "bar": {
+                                                    "width": {
+                                                        "ratio": 0.5
+                                                    }
+                                                },
+                                                "point": None,
+                                                "color": {
+                                                    "pattern": [
+                                                        "#005662",
+                                                        "#0fc4b5",
+                                                        "#148071",
+                                                        "#6cba86",
+                                                        "#bcf3a2"
+                                                    ]
+                                                },
+                                                "tooltip": {
+                                                    "show": True,
+                                                    "format": {
+                                                        "title": ".2s"
+                                                    }
+                                                },
+                                                "padding": {
+                                                    "top": 40
+                                                },
+                                                "grid": {
+                                                    "y": {
+                                                        "show": True
+                                                    },
+                                                    "x": {
+                                                        "show": True
+                                                    }
+                                                },
+                                                "subchart": None,
+                                                "axis": {
+                                                    "y": {
+                                                        "tick": {
+                                                            "count": 7,
+                                                            "outer": False,
+                                                            "multiline": True,
+                                                            "format": ".2s"
+                                                        },
+                                                        "label": {
+                                                            "text": "",
+                                                            "position": "outer-middle"
+                                                        }
+                                                    },
+                                                    "x": {
+                                                        "height": 90,
+                                                        "tick": {
+                                                            "rotate": -45,
+                                                            "multiline": False,
+                                                            "fit": False,
+                                                            "format": ".2s"
+                                                        },
+                                                        "type": "category",
+                                                        "label": {
+                                                            "text": "",
+                                                            "position": "outer-center"
+                                                        }
+                                                    },
+                                                    "y2": {
+                                                        "show": True,
+                                                        "tick": {
+                                                            "count": 7,
+                                                            "multiline": True,
+                                                            "format": ".2s"
+                                                        },
+                                                        "label": {
+                                                            "text": "",
+                                                            "position": "outer-middle"
+                                                        }
+                                                    }
+                                                },
+                                                "data": {
+                                                    "axes": {
+                                                        "percentage": "y2"
+                                                    },
+                                                    "columns": [
+                                                        [
+                                                            "percentage",
+                                                            0,
+                                                            0,
+                                                            100,
+                                                            100,
+                                                            100,
+                                                            100,
+                                                            100,
+                                                            100,
+                                                            100,
+                                                            100
+                                                        ],
+                                                        [
+                                                            "total",
+                                                            0,
+                                                            0,
+                                                            14,
+                                                            26,
+                                                            20,
+                                                            21,
+                                                            4,
+                                                            19,
+                                                            1,
+                                                            1
+                                                        ],
+                                                        [
+                                                            "key",
+                                                            "10 ltr j.can",
+                                                            "18kg j.can",
+                                                            "4x5 ltr rpc",
+                                                            "6x2 ltr c.tray",
+                                                            "6x3 ltr c.tray",
+                                                            "12x1 ltr c.tray",
+                                                            "72x50ml sachet",
+                                                            "12x500ml c.tray",
+                                                            "24x200ml sachet",
+                                                            "36x100ml sachet"
+                                                        ]
+                                                    ],
+                                                    "x": "key",
+                                                    "type": "combination",
+                                                    "types": {
+                                                        "percentage": "line",
+                                                        "total": "bar"
+                                                    },
+                                                    "names": {
+                                                        "percentage": "% of Olien Consumer",
+                                                        "total": "# of Olien Consumer"
+                                                    }
+                                                },
+                                                "legend": {
+                                                    "show": True
+                                                },
+                                                "size": {
+                                                    "height": 340
+                                                }
+                                            },
+                                            "yformat": ".2s",
+                                            "table_c3": [
+                                                [
+                                                    "percentage",
+                                                    0,
+                                                    0,
+                                                    100,
+                                                    100,
+                                                    100,
+                                                    100,
+                                                    100,
+                                                    100,
+                                                    100,
+                                                    100
+                                                ],
+                                                [
+                                                    "total",
+                                                    0,
+                                                    0,
+                                                    14,
+                                                    26,
+                                                    20,
+                                                    21,
+                                                    4,
+                                                    19,
+                                                    1,
+                                                    1
+                                                ],
+                                                [
+                                                    "key",
+                                                    "10 ltr j.can",
+                                                    "18kg j.can",
+                                                    "4x5 ltr rpc",
+                                                    "6x2 ltr c.tray",
+                                                    "6x3 ltr c.tray",
+                                                    "12x1 ltr c.tray",
+                                                    "72x50ml sachet",
+                                                    "12x500ml c.tray",
+                                                    "24x200ml sachet",
+                                                    "36x100ml sachet"
+                                                ]
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": "<p class = \"txt-justify\"> The top 5 Products(including segment 6x2 ltr c.tray and segment 12x1 ltr c.tray) account for 94.3% of the total Olien Consumer observations. Being the largest contributor, total Olien Consumer from 6x2 ltr c.tray amounts to 26.0 that accounts for about 24.5% of the total Olien Consumer. On the other hand, 10 ltr j.can contributes to just 0.0% of the total Olien Consumer. </p> "
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": " <h4>Key Factors influencing Olien Consumer from 6x2 ltr c.tray</h4> "
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": " <p class = \"txt-justify\"> High concentration of Olien Consumer from segment 6x2 ltr c.tray is characterized by the influence of key dimensions, such as Sales Office. Certain specific segments from those factors are more likely to explain segment 6x2 ltr c.tray's significant rate of Olien Consumer. </p> "
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": " <p class = \"txt-justify\"> <ul> <li> <b>Sales Office</b>: Some of the Sales Office(Nairobi - Local(30.77%) and Trans Nzoia(26.92%)) account of a significant portion of Olien Consumer observations from segment 6x2 ltr c.tray. They cumulatively account for about 57.7% of the total Olien Consumer from segment 6x2 ltr c.tray. The percentage of Olien Consumer for Nairobi - Local and Trans Nzoia are 100.0% and 100.0% respectively. </li> </li> </p> "
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": "<div class='col-md-6 col-xs-12'><h2 class='text-center'><span>24.5%</span><br /><small>Overall Olien Consumer comes from 6x2 ltr c.tray</small></h2></div><div class='col-md-6 col-xs-12'><h2 class='text-center'><span>100.0%</span><br /><small>4x5 ltr rpc has the highest rate of Olien Consumer</small></h2></div>"
+                                    }
+                                ],
+                                "name": "Product : Distribution of Olien Bulk",
+                                "slug": "product-distribution-of-olien-bulk-uxbpds059u"
+                            }
+                        ],
+                        "name": "Product",
+                        "slug": "product-sjwuqr7kgs"
+                    },
+                    {
+                        "listOfNodes": [],
+                        "listOfCards": [
+                            {
+                                "cardWidth": 100,
+                                "cardType": "normal",
+                                "cardData": [
+                                    {
+                                        "dataType": "html",
+                                        "data": "<h3>Relationship between Product Category  and Gross Margin</h3>"
+                                    },
+                                    {
+                                        "dataType": "table",
+                                        "data": {
+                                            "tableType": "heatMap",
+                                            "tableData": [
+                                                [
+                                                    "Gross Margin",
+                                                    "Olien Consumer",
+                                                    "Olien Bulk"
+                                                ],
+                                                [
+                                                    "0 to 0.19",
+                                                    20,
+                                                    80
+                                                ],
+                                                [
+                                                    "0.19 to 0.23",
+                                                    100,
+                                                    0
+                                                ],
+                                                [
+                                                    "0.23 to 0.27",
+                                                    100,
+                                                    0
+                                                ],
+                                                [
+                                                    "0.27 to 0.31",
+                                                    100,
+                                                    0
+                                                ],
+                                                [
+                                                    "0.31 to 1",
+                                                    100,
+                                                    0
+                                                ]
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": "<h4>Overview</h4> "
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": " <p class = \"txt-justify\"> Gross Margin is one of <b>the most significant influencers</b> of Product Category and displays significant variation in distribution of Product Category categories. <b>Segment 0 to 0.19 and segment 0.23 to 0.27 </b> are the two largest Gross Margins, accounting for <b> 72.2% </b> of the total observations. <b>Segment 0.31 to 1</b> is the smallest with <b>just 3.09%</b> of the total observations. </p> "
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": " <h4>Key segments of Olien Bulk</h4> "
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": " <p class = \"txt-justify\"> The <b>percentage of Olien Bulk</b> is the <b> lowest(0.0%) for 4 segments including 0.19 to 0.23 and 0.23 to 0.27</b>. The segment <b> 0 to 0.19</b> has the <b>highest rate of Olien Bulk</b> (80.0%), which is 131.4% higher than the overall Olien Bulk rate. Interestingly, the <b>segment 0.23 to 0.27 and segment 0.19 to 0.23</b>, which cumulatively account for <b> 42.0% of the total </b>observations, has contributed to <b> 0.0% of total Olien Bulk</b>. On the other hand, the segment <b>0 to 0.19</b> accounts for <b>43.2% of the total</b> observations, but it has contributed to <b>100.0% of total Olien Bulk</b>. </p> "
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": " <h4>Key segments of Olien Consumer</h4> "
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": " <p class = \"txt-justify\"> When it comes to <b>Olien Consumer, segment 0 to 0.19</b> seems to be the <b>least dominant segment</b> since 20.0% of its total observations are into Olien Consumer category. But, there are <b>4 categories</b>(including segment 0.19 to 0.23 and segment 0.23 to 0.27) have the <b>highest rate of Olien Consumer</b> (100.0%). Interestingly, <b>segment 0 to 0.19</b>, which accounts for <b>43.2% of the total </b>observations, has contributed to <b>13.2% of total Olien Consumer</b>. On the other hand, the segment <b>0.23 to 0.27</b> accounts for <b>29.0% of the total</b> observations, but it has contributed to <b>44.3% of total Olien Consumer</b>. </p>"
+                                    }
+                                ],
+                                "name": "Gross Margin: Relationship with Product Category",
+                                "slug": "gross-margin-relationship-with-product-category-y986vj6bal"
+                            },
+                            {
+                                "cardWidth": 100,
+                                "cardType": "normal",
+                                "cardData": [
+                                    {
+                                        "dataType": "html",
+                                        "data": "<h3>Distribution of Product Category (Olien Bulk) across Gross Margin</h3>"
+                                    },
+                                    {
+                                        "dataType": "c3Chart",
+                                        "data": {
+                                            "download_url": "/api/download_data/v2hz18iktsnst9f2",
+                                            "y2format": ".2s",
+                                            "xdata": [
+                                                "0 to 0.19",
+                                                "0.19 to 0.23",
+                                                "0.23 to 0.27",
+                                                "0.27 to 0.31",
+                                                "0.31 to 1"
+                                            ],
+                                            "chart_c3": {
+                                                "bar": {
+                                                    "width": {
+                                                        "ratio": 0.5
+                                                    }
+                                                },
+                                                "point": None,
+                                                "color": {
+                                                    "pattern": [
+                                                        "#005662",
+                                                        "#0fc4b5",
+                                                        "#148071",
+                                                        "#6cba86",
+                                                        "#bcf3a2"
+                                                    ]
+                                                },
+                                                "tooltip": {
+                                                    "show": True,
+                                                    "format": {
+                                                        "title": ".2s"
+                                                    }
+                                                },
+                                                "padding": {
+                                                    "top": 40
+                                                },
+                                                "grid": {
+                                                    "y": {
+                                                        "show": True
+                                                    },
+                                                    "x": {
+                                                        "show": True
+                                                    }
+                                                },
+                                                "subchart": None,
+                                                "axis": {
+                                                    "y": {
+                                                        "tick": {
+                                                            "count": 7,
+                                                            "outer": False,
+                                                            "multiline": True,
+                                                            "format": ".2s"
+                                                        },
+                                                        "label": {
+                                                            "text": "",
+                                                            "position": "outer-middle"
+                                                        }
+                                                    },
+                                                    "x": {
+                                                        "height": 90,
+                                                        "tick": {
+                                                            "rotate": -45,
+                                                            "multiline": False,
+                                                            "fit": False,
+                                                            "format": ".2s"
+                                                        },
+                                                        "type": "category",
+                                                        "label": {
+                                                            "text": "",
+                                                            "position": "outer-center"
+                                                        }
+                                                    },
+                                                    "y2": {
+                                                        "show": True,
+                                                        "tick": {
+                                                            "count": 7,
+                                                            "multiline": True,
+                                                            "format": ".2s"
+                                                        },
+                                                        "label": {
+                                                            "text": "",
+                                                            "position": "outer-middle"
+                                                        }
+                                                    }
+                                                },
+                                                "data": {
+                                                    "axes": {
+                                                        "percentage": "y2"
+                                                    },
+                                                    "columns": [
+                                                        [
+                                                            "percentage",
+                                                            80,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0
+                                                        ],
+                                                        [
+                                                            "total",
+                                                            56,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0
+                                                        ],
+                                                        [
+                                                            "key",
+                                                            "0 to 0.19",
+                                                            "0.19 to 0.23",
+                                                            "0.23 to 0.27",
+                                                            "0.27 to 0.31",
+                                                            "0.31 to 1"
+                                                        ]
+                                                    ],
+                                                    "x": "key",
+                                                    "type": "combination",
+                                                    "types": {
+                                                        "percentage": "line",
+                                                        "total": "bar"
+                                                    },
+                                                    "names": {
+                                                        "percentage": "% of Olien Bulk",
+                                                        "total": "# of Olien Bulk"
+                                                    }
+                                                },
+                                                "legend": {
+                                                    "show": True
+                                                },
+                                                "size": {
+                                                    "height": 340
+                                                }
+                                            },
+                                            "yformat": ".2s",
+                                            "table_c3": [
+                                                [
+                                                    "percentage",
+                                                    80,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0
+                                                ],
+                                                [
+                                                    "total",
+                                                    56,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0
+                                                ],
+                                                [
+                                                    "key",
+                                                    "0 to 0.19",
+                                                    "0.19 to 0.23",
+                                                    "0.23 to 0.27",
+                                                    "0.27 to 0.31",
+                                                    "0.31 to 1"
+                                                ]
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": "<p class = \"txt-justify\"> The top Gross Margin(segment 0 to 0.19) accounts for 100.0% of the total Olien Bulk observations. The segment 0.19 to 0.23 contributes to just 0.0% of the total Olien Bulk. </p> "
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": " <h4>Key Factors influencing Olien Bulk from 0 to 0.19</h4> "
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": " <p class = \"txt-justify\"> There are some key factors(Product and Sales Office) that explain why the concentration of Olien Bulk from segment 0 to 0.19 is very high. </p> "
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": " <p class = \"txt-justify\"> <ul> <li> <b>Product</b>: Among the Products, 10 ltr j.can has got the major chunk of Olien Bulk from segment 0 to 0.19, accounting for 62.5%. The percentage of Olien Bulk for 10 ltr j.can is 100.0%. </li> </li> <li> <b>Sales Office</b>: Nairobi - Local plays a key role in explaining the high concentration of Olien Bulk from segment 0 to 0.19. It accounts for 46.4% of total Olien Bulk from segment 0 to 0.19. The percentage of Olien Bulk for Nairobi - Local is 78.8%. </li> </li> </p> "
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": "<div class='col-md-6 col-xs-12'><h2 class='text-center'><span>100.0%</span><br /><small>Overall Olien Bulk comes from 0 to 0.19</small></h2></div><div class='col-md-6 col-xs-12'><h2 class='text-center'><span>80.0%</span><br /><small>0 to 0.19 has the highest rate of Olien Bulk</small></h2></div>"
+                                    }
+                                ],
+                                "name": "Gross Margin : Distribution of Olien Consumer",
+                                "slug": "gross-margin-distribution-of-olien-consumer-j5orvr7qrj"
+                            },
+                            {
+                                "cardWidth": 100,
+                                "cardType": "normal",
+                                "cardData": [
+                                    {
+                                        "dataType": "html",
+                                        "data": "<h3>Distribution of Product Category (Olien Consumer) across Gross Margin</h3>"
+                                    },
+                                    {
+                                        "dataType": "c3Chart",
+                                        "data": {
+                                            "download_url": "/api/download_data/po2wmhv6l8uw92jz",
+                                            "y2format": ".2s",
+                                            "xdata": [
+                                                "0 to 0.19",
+                                                "0.19 to 0.23",
+                                                "0.23 to 0.27",
+                                                "0.27 to 0.31",
+                                                "0.31 to 1"
+                                            ],
+                                            "chart_c3": {
+                                                "bar": {
+                                                    "width": {
+                                                        "ratio": 0.5
+                                                    }
+                                                },
+                                                "point": None,
+                                                "color": {
+                                                    "pattern": [
+                                                        "#005662",
+                                                        "#0fc4b5",
+                                                        "#148071",
+                                                        "#6cba86",
+                                                        "#bcf3a2"
+                                                    ]
+                                                },
+                                                "tooltip": {
+                                                    "show": True,
+                                                    "format": {
+                                                        "title": ".2s"
+                                                    }
+                                                },
+                                                "padding": {
+                                                    "top": 40
+                                                },
+                                                "grid": {
+                                                    "y": {
+                                                        "show": True
+                                                    },
+                                                    "x": {
+                                                        "show": True
+                                                    }
+                                                },
+                                                "subchart": None,
+                                                "axis": {
+                                                    "y": {
+                                                        "tick": {
+                                                            "count": 7,
+                                                            "outer": False,
+                                                            "multiline": True,
+                                                            "format": ".2s"
+                                                        },
+                                                        "label": {
+                                                            "text": "",
+                                                            "position": "outer-middle"
+                                                        }
+                                                    },
+                                                    "x": {
+                                                        "height": 90,
+                                                        "tick": {
+                                                            "rotate": -45,
+                                                            "multiline": False,
+                                                            "fit": False,
+                                                            "format": ".2s"
+                                                        },
+                                                        "type": "category",
+                                                        "label": {
+                                                            "text": "",
+                                                            "position": "outer-center"
+                                                        }
+                                                    },
+                                                    "y2": {
+                                                        "show": True,
+                                                        "tick": {
+                                                            "count": 7,
+                                                            "multiline": True,
+                                                            "format": ".2s"
+                                                        },
+                                                        "label": {
+                                                            "text": "",
+                                                            "position": "outer-middle"
+                                                        }
+                                                    }
+                                                },
+                                                "data": {
+                                                    "axes": {
+                                                        "percentage": "y2"
+                                                    },
+                                                    "columns": [
+                                                        [
+                                                            "percentage",
+                                                            20,
+                                                            100,
+                                                            100,
+                                                            100,
+                                                            100
+                                                        ],
+                                                        [
+                                                            "total",
+                                                            14,
+                                                            21,
+                                                            47,
+                                                            19,
+                                                            5
+                                                        ],
+                                                        [
+                                                            "key",
+                                                            "0 to 0.19",
+                                                            "0.19 to 0.23",
+                                                            "0.23 to 0.27",
+                                                            "0.27 to 0.31",
+                                                            "0.31 to 1"
+                                                        ]
+                                                    ],
+                                                    "x": "key",
+                                                    "type": "combination",
+                                                    "types": {
+                                                        "percentage": "line",
+                                                        "total": "bar"
+                                                    },
+                                                    "names": {
+                                                        "percentage": "% of Olien Consumer",
+                                                        "total": "# of Olien Consumer"
+                                                    }
+                                                },
+                                                "legend": {
+                                                    "show": True
+                                                },
+                                                "size": {
+                                                    "height": 340
+                                                }
+                                            },
+                                            "yformat": ".2s",
+                                            "table_c3": [
+                                                [
+                                                    "percentage",
+                                                    20,
+                                                    100,
+                                                    100,
+                                                    100,
+                                                    100
+                                                ],
+                                                [
+                                                    "total",
+                                                    14,
+                                                    21,
+                                                    47,
+                                                    19,
+                                                    5
+                                                ],
+                                                [
+                                                    "key",
+                                                    "0 to 0.19",
+                                                    "0.19 to 0.23",
+                                                    "0.23 to 0.27",
+                                                    "0.27 to 0.31",
+                                                    "0.31 to 1"
+                                                ]
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": "<p class = \"txt-justify\"> The top Gross Margin(segment 0.23 to 0.27) account for 44.3% of the total Olien Consumer observations. The segment 0.31 to 1 contributes to just 4.7% of the total Olien Consumer. </p> "
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": " <h4>Key Factors influencing Olien Consumer from 0.23 to 0.27</h4> "
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": " <p class = \"txt-justify\"> There are some key factors(Sales Office and Product) that explain why the concentration of Olien Consumer from segment 0.23 to 0.27 is very high. </p> "
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": " <p class = \"txt-justify\"> <ul> <li> <b>Sales Office</b>: Nairobi - Local plays a key role in explaining the high concentration of Olien Consumer from segment 0.23 to 0.27. It accounts for 38.3% of total Olien Consumer from segment 0.23 to 0.27. The percentage of Olien Consumer for Nairobi - Local is 100.0%. </li> </li> <li> <b>Product</b>: 6x2 ltr c.tray plays a key role in explaining the high concentration of Olien Consumer from segment 0.23 to 0.27. It accounts for 55.3% of total Olien Consumer from segment 0.23 to 0.27. The percentage of Olien Consumer for 6x2 ltr c.tray is 100.0%. </li> </li> </p> "
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": "<div class='col-md-6 col-xs-12'><h2 class='text-center'><span>44.3%</span><br /><small>Overall Olien Consumer comes from 0.23 to 0.27</small></h2></div><div class='col-md-6 col-xs-12'><h2 class='text-center'><span>100.0%</span><br /><small>0.19 to 0.23 has the highest rate of Olien Consumer</small></h2></div>"
+                                    }
+                                ],
+                                "name": "Gross Margin : Distribution of Olien Bulk",
+                                "slug": "gross-margin-distribution-of-olien-bulk-srs9z5jjeo"
+                            }
+                        ],
+                        "name": "Gross Margin",
+                        "slug": "gross-margin-k7103q8o1i"
+                    },
+                    {
+                        "listOfNodes": [],
+                        "listOfCards": [
+                            {
+                                "cardWidth": 100,
+                                "cardType": "normal",
+                                "cardData": [
+                                    {
+                                        "dataType": "html",
+                                        "data": "<h3>Relationship between Product Category  and Sales Office</h3>"
+                                    },
+                                    {
+                                        "dataType": "table",
+                                        "data": {
+                                            "tableType": "heatMap",
+                                            "tableData": [
+                                                [
+                                                    "Sales Office",
+                                                    "Olien Consumer",
+                                                    "Olien Bulk"
+                                                ],
+                                                [
+                                                    "Central",
+                                                    100,
+                                                    0
+                                                ],
+                                                [
+                                                    "Coast",
+                                                    66.67,
+                                                    33.33
+                                                ],
+                                                [
+                                                    "Internal",
+                                                    0,
+                                                    100
+                                                ],
+                                                [
+                                                    "Lake",
+                                                    80,
+                                                    20
+                                                ],
+                                                [
+                                                    "Nairobi - Local",
+                                                    63.38,
+                                                    36.62
+                                                ],
+                                                [
+                                                    "Nyanza",
+                                                    71.43,
+                                                    28.57
+                                                ],
+                                                [
+                                                    "Rift Valley",
+                                                    58.33,
+                                                    41.67
+                                                ],
+                                                [
+                                                    "Trans Nzoia",
+                                                    60,
+                                                    40
+                                                ],
+                                                [
+                                                    "Western",
+                                                    42.86,
+                                                    57.14
+                                                ]
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": "<h4>Overview</h4> "
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": " <p class = \"txt-justify\"> Sales Office is one of <b>the most significant influencers</b> of Product Category and displays significant variation in distribution of Product Category categories. <b>Segment Nairobi - Local </b> is the largest Sales Office, accounting for almost<b> 43.8% of the total </b>observations. <b>Segment Internal</b> is the smallest with <b>just 1.85%</b> of the total observations. </p> "
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": " <h4>Key segments of Olien Bulk</h4> "
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": " <p class = \"txt-justify\"> The <b>percentage of Olien Bulk</b> is the <b> lowest for the segment Central</b> (0.0%). The segment <b> Internal</b> has the <b>highest rate of Olien Bulk</b> (100.0%), which is 189.3% higher than the overall Olien Bulk rate. Interestingly, the <b>segment Central and segment Lake</b>, which cumulatively account for <b> 14.8% of the total </b>observations, has contributed to <b> 3.6% of total Olien Bulk</b>. On the other hand, the segments <b>Western and Internal</b> cumulatively account for <b>6.2% of the total</b> observations, but it has contributed to <b>12.5% of total Olien Bulk</b>. </p> "
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": " <h4>Key segments of Olien Consumer</h4> "
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": " <p class = \"txt-justify\"> When it comes to <b>Olien Consumer, segment Internal</b> seems to be the <b>least dominant segment</b> since 0.0% of its total observations are into Olien Consumer category. But,<b> segment Central</b> has the <b>highest rate of Olien Consumer</b> (100.0%). Interestingly, <b>segment Internal and segment Western</b>, which cumulatively account for <b> 6.2% of the total </b>observations, have contributed to <b> 2.8% of total Olien Consumer</b>. On the other hand, the segments <b>Lake and Central</b> cumulatively account for <b>14.8% of the total</b> observations, but it has contributed to <b>20.8% of total Olien Consumer</b>. </p>"
+                                    }
+                                ],
+                                "name": "Sales Office: Relationship with Product Category",
+                                "slug": "sales-office-relationship-with-product-category-p06si2n10q"
+                            },
+                            {
+                                "cardWidth": 100,
+                                "cardType": "normal",
+                                "cardData": [
+                                    {
+                                        "dataType": "html",
+                                        "data": "<h3>Distribution of Product Category (Olien Bulk) across Sales Office</h3>"
+                                    },
+                                    {
+                                        "dataType": "c3Chart",
+                                        "data": {
+                                            "download_url": "/api/download_data/jnlnbx9hz9hv8cta",
+                                            "y2format": ".2s",
+                                            "xdata": [
+                                                "Central",
+                                                "Coast",
+                                                "Internal",
+                                                "Lake",
+                                                "Nairobi - Local",
+                                                "Nyanza",
+                                                "Rift Valley",
+                                                "Trans Nzoia",
+                                                "Western"
+                                            ],
+                                            "chart_c3": {
+                                                "bar": {
+                                                    "width": {
+                                                        "ratio": 0.5
+                                                    }
+                                                },
+                                                "point": None,
+                                                "color": {
+                                                    "pattern": [
+                                                        "#005662",
+                                                        "#0fc4b5",
+                                                        "#148071",
+                                                        "#6cba86",
+                                                        "#bcf3a2"
+                                                    ]
+                                                },
+                                                "tooltip": {
+                                                    "show": True,
+                                                    "format": {
+                                                        "title": ".2s"
+                                                    }
+                                                },
+                                                "padding": {
+                                                    "top": 40
+                                                },
+                                                "grid": {
+                                                    "y": {
+                                                        "show": True
+                                                    },
+                                                    "x": {
+                                                        "show": True
+                                                    }
+                                                },
+                                                "subchart": None,
+                                                "axis": {
+                                                    "y": {
+                                                        "tick": {
+                                                            "count": 7,
+                                                            "outer": False,
+                                                            "multiline": True,
+                                                            "format": ".2s"
+                                                        },
+                                                        "label": {
+                                                            "text": "",
+                                                            "position": "outer-middle"
+                                                        }
+                                                    },
+                                                    "x": {
+                                                        "height": 90,
+                                                        "tick": {
+                                                            "rotate": -45,
+                                                            "multiline": False,
+                                                            "fit": False,
+                                                            "format": ".2s"
+                                                        },
+                                                        "type": "category",
+                                                        "label": {
+                                                            "text": "",
+                                                            "position": "outer-center"
+                                                        }
+                                                    },
+                                                    "y2": {
+                                                        "show": True,
+                                                        "tick": {
+                                                            "count": 7,
+                                                            "multiline": True,
+                                                            "format": ".2s"
+                                                        },
+                                                        "label": {
+                                                            "text": "",
+                                                            "position": "outer-middle"
+                                                        }
+                                                    }
+                                                },
+                                                "data": {
+                                                    "axes": {
+                                                        "percentage": "y2"
+                                                    },
+                                                    "columns": [
+                                                        [
+                                                            "percentage",
+                                                            0,
+                                                            33.333333333333336,
+                                                            100,
+                                                            20,
+                                                            36.61971830985915,
+                                                            28.571428571428573,
+                                                            41.666666666666664,
+                                                            40,
+                                                            57.142857142857146
+                                                        ],
+                                                        [
+                                                            "total",
+                                                            0,
+                                                            2,
+                                                            3,
+                                                            2,
+                                                            26,
+                                                            4,
+                                                            5,
+                                                            10,
+                                                            4
+                                                        ],
+                                                        [
+                                                            "key",
+                                                            "Central",
+                                                            "Coast",
+                                                            "Internal",
+                                                            "Lake",
+                                                            "Nairobi - Local",
+                                                            "Nyanza",
+                                                            "Rift Valley",
+                                                            "Trans Nzoia",
+                                                            "Western"
+                                                        ]
+                                                    ],
+                                                    "x": "key",
+                                                    "type": "combination",
+                                                    "types": {
+                                                        "percentage": "line",
+                                                        "total": "bar"
+                                                    },
+                                                    "names": {
+                                                        "percentage": "% of Olien Bulk",
+                                                        "total": "# of Olien Bulk"
+                                                    }
+                                                },
+                                                "legend": {
+                                                    "show": True
+                                                },
+                                                "size": {
+                                                    "height": 340
+                                                }
+                                            },
+                                            "yformat": ".2s",
+                                            "table_c3": [
+                                                [
+                                                    "percentage",
+                                                    0,
+                                                    33.333333333333336,
+                                                    100,
+                                                    20,
+                                                    36.61971830985915,
+                                                    28.571428571428573,
+                                                    41.666666666666664,
+                                                    40,
+                                                    57.142857142857146
+                                                ],
+                                                [
+                                                    "total",
+                                                    0,
+                                                    2,
+                                                    3,
+                                                    2,
+                                                    26,
+                                                    4,
+                                                    5,
+                                                    10,
+                                                    4
+                                                ],
+                                                [
+                                                    "key",
+                                                    "Central",
+                                                    "Coast",
+                                                    "Internal",
+                                                    "Lake",
+                                                    "Nairobi - Local",
+                                                    "Nyanza",
+                                                    "Rift Valley",
+                                                    "Trans Nzoia",
+                                                    "Western"
+                                                ]
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": "<p class = \"txt-justify\"> The top Sales Office(segment Nairobi - Local) accounts for 46.4% of the total Olien Bulk observations. The segment Central contributes to just 0.0% of the total Olien Bulk. </p> "
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": " <h4>Key Factors influencing Olien Bulk from Nairobi - Local</h4> "
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": " <p class = \"txt-justify\"> There are some key factors(Product) that explain why the concentration of Olien Bulk from segment Nairobi - Local is very high. </p> "
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": " <p class = \"txt-justify\"> <ul> <li> <b>Product</b>: Among the Products, 10 ltr j.can has got the major chunk of Olien Bulk from segment Nairobi - Local, accounting for 61.5%. The percentage of Olien Bulk for 10 ltr j.can is 100.0%. </li> </li> </p> "
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": "<div class='col-md-6 col-xs-12'><h2 class='text-center'><span>46.4%</span><br /><small>Overall Olien Bulk comes from Nairobi - Local</small></h2></div><div class='col-md-6 col-xs-12'><h2 class='text-center'><span>100.0%</span><br /><small>Internal has the highest rate of Olien Bulk</small></h2></div>"
+                                    }
+                                ],
+                                "name": "Sales Office : Distribution of Olien Consumer",
+                                "slug": "sales-office-distribution-of-olien-consumer-ijrexvuikx"
+                            },
+                            {
+                                "cardWidth": 100,
+                                "cardType": "normal",
+                                "cardData": [
+                                    {
+                                        "dataType": "html",
+                                        "data": "<h3>Distribution of Product Category (Olien Consumer) across Sales Office</h3>"
+                                    },
+                                    {
+                                        "dataType": "c3Chart",
+                                        "data": {
+                                            "download_url": "/api/download_data/krvkxlgpz95k8rzn",
+                                            "y2format": ".2s",
+                                            "xdata": [
+                                                "Central",
+                                                "Coast",
+                                                "Internal",
+                                                "Lake",
+                                                "Nairobi - Local",
+                                                "Nyanza",
+                                                "Rift Valley",
+                                                "Trans Nzoia",
+                                                "Western"
+                                            ],
+                                            "chart_c3": {
+                                                "bar": {
+                                                    "width": {
+                                                        "ratio": 0.5
+                                                    }
+                                                },
+                                                "point": None,
+                                                "color": {
+                                                    "pattern": [
+                                                        "#005662",
+                                                        "#0fc4b5",
+                                                        "#148071",
+                                                        "#6cba86",
+                                                        "#bcf3a2"
+                                                    ]
+                                                },
+                                                "tooltip": {
+                                                    "show": True,
+                                                    "format": {
+                                                        "title": ".2s"
+                                                    }
+                                                },
+                                                "padding": {
+                                                    "top": 40
+                                                },
+                                                "grid": {
+                                                    "y": {
+                                                        "show": True
+                                                    },
+                                                    "x": {
+                                                        "show": True
+                                                    }
+                                                },
+                                                "subchart": None,
+                                                "axis": {
+                                                    "y": {
+                                                        "tick": {
+                                                            "count": 7,
+                                                            "outer": False,
+                                                            "multiline": True,
+                                                            "format": ".2s"
+                                                        },
+                                                        "label": {
+                                                            "text": "",
+                                                            "position": "outer-middle"
+                                                        }
+                                                    },
+                                                    "x": {
+                                                        "height": 90,
+                                                        "tick": {
+                                                            "rotate": -45,
+                                                            "multiline": False,
+                                                            "fit": False,
+                                                            "format": ".2s"
+                                                        },
+                                                        "type": "category",
+                                                        "label": {
+                                                            "text": "",
+                                                            "position": "outer-center"
+                                                        }
+                                                    },
+                                                    "y2": {
+                                                        "show": True,
+                                                        "tick": {
+                                                            "count": 7,
+                                                            "multiline": True,
+                                                            "format": ".2s"
+                                                        },
+                                                        "label": {
+                                                            "text": "",
+                                                            "position": "outer-middle"
+                                                        }
+                                                    }
+                                                },
+                                                "data": {
+                                                    "axes": {
+                                                        "percentage": "y2"
+                                                    },
+                                                    "columns": [
+                                                        [
+                                                            "percentage",
+                                                            100,
+                                                            66.66666666666667,
+                                                            0,
+                                                            80,
+                                                            63.38028169014085,
+                                                            71.42857142857143,
+                                                            58.333333333333336,
+                                                            60,
+                                                            42.857142857142854
+                                                        ],
+                                                        [
+                                                            "total",
+                                                            14,
+                                                            4,
+                                                            0,
+                                                            8,
+                                                            45,
+                                                            10,
+                                                            7,
+                                                            15,
+                                                            3
+                                                        ],
+                                                        [
+                                                            "key",
+                                                            "Central",
+                                                            "Coast",
+                                                            "Internal",
+                                                            "Lake",
+                                                            "Nairobi - Local",
+                                                            "Nyanza",
+                                                            "Rift Valley",
+                                                            "Trans Nzoia",
+                                                            "Western"
+                                                        ]
+                                                    ],
+                                                    "x": "key",
+                                                    "type": "combination",
+                                                    "types": {
+                                                        "percentage": "line",
+                                                        "total": "bar"
+                                                    },
+                                                    "names": {
+                                                        "percentage": "% of Olien Consumer",
+                                                        "total": "# of Olien Consumer"
+                                                    }
+                                                },
+                                                "legend": {
+                                                    "show": True
+                                                },
+                                                "size": {
+                                                    "height": 340
+                                                }
+                                            },
+                                            "yformat": ".2s",
+                                            "table_c3": [
+                                                [
+                                                    "percentage",
+                                                    100,
+                                                    66.66666666666667,
+                                                    0,
+                                                    80,
+                                                    63.38028169014085,
+                                                    71.42857142857143,
+                                                    58.333333333333336,
+                                                    60,
+                                                    42.857142857142854
+                                                ],
+                                                [
+                                                    "total",
+                                                    14,
+                                                    4,
+                                                    0,
+                                                    8,
+                                                    45,
+                                                    10,
+                                                    7,
+                                                    15,
+                                                    3
+                                                ],
+                                                [
+                                                    "key",
+                                                    "Central",
+                                                    "Coast",
+                                                    "Internal",
+                                                    "Lake",
+                                                    "Nairobi - Local",
+                                                    "Nyanza",
+                                                    "Rift Valley",
+                                                    "Trans Nzoia",
+                                                    "Western"
+                                                ]
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": "<p class = \"txt-justify\"> The top Sales Office(segment Nairobi - Local) account for 42.5% of the total Olien Consumer observations. The segment Internal contributes to just 0.0% of the total Olien Consumer. </p> "
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": " <h4>Key Factors influencing Olien Consumer from Nairobi - Local</h4> "
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": " <p class = \"txt-justify\"> There are some key factors(Product) that explain why the concentration of Olien Consumer from segment Nairobi - Local is very high. </p> "
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": " <p class = \"txt-justify\"> <ul> <li> <b>Product</b>: The top 5 Products, including 12x1 ltr c.tray(22.22%) and 12x500ml c.tray(22.22%), account for 91.1% of the total Olien Consumer observations from segment Nairobi - Local. The percentage of Olien Consumer for 12x1 ltr c.tray and 12x500ml c.tray are 100.0% and 100.0% respectively. </li> </li> </p> "
+                                    },
+                                    {
+                                        "dataType": "html",
+                                        "data": "<div class='col-md-6 col-xs-12'><h2 class='text-center'><span>42.5%</span><br /><small>Overall Olien Consumer comes from Nairobi - Local</small></h2></div><div class='col-md-6 col-xs-12'><h2 class='text-center'><span>100.0%</span><br /><small>Central has the highest rate of Olien Consumer</small></h2></div>"
+                                    }
+                                ],
+                                "name": "Sales Office : Distribution of Olien Bulk",
+                                "slug": "sales-office-distribution-of-olien-bulk-1pmyhvq2ev"
+                            }
+                        ],
+                        "name": "Sales Office",
+                        "slug": "sales-office-8yqbflo7z0"
+                    }
+                ],
+                "listOfCards": [
+                    {
+                        "name": "Key Influencers",
+                        "cardType": "normal",
+                        "cardData": [
+                            {
+                                "dataType": "html",
+                                "data": "<h3>Strength of association between Product Category and other dimensions</h3>"
+                            },
+                            {
+                                "dataType": "html",
+                                "data": "<p class=\"txt-justify\"> There are <b>6 factors</b> in the dataset and <b> 3 of them </b> (including Product, Gross Margin) have <b>significant association</b> with Product Category. It implies that specific categories within each of the dimensions show <b>considerable amount of variation </b> in distribution of Product Category categories. The chart above displays the<b> impact of key dimensions </b> on Product Category, as measured by effect size. Let us take a deeper look at some of the most important relationships. </p>"
+                            },
+                            {
+                                "dataType": "c3Chart",
+                                "data": {
+                                    "chart_c3": {
+                                        "bar": {
+                                            "width": 40
+                                        },
+                                        "point": None,
+                                        "color": {
+                                            "pattern": [
+                                                "#0fc4b5",
+                                                "#005662",
+                                                "#148071",
+                                                "#6cba86",
+                                                "#bcf3a2"
+                                            ]
+                                        },
+                                        "tooltip": {
+                                            "show": True,
+                                            "format": {
+                                                "title": ".2s"
+                                            }
+                                        },
+                                        "padding": {
+                                            "top": 40
+                                        },
+                                        "grid": {
+                                            "y": {
+                                                "show": True
+                                            },
+                                            "x": {
+                                                "show": True
+                                            }
+                                        },
+                                        "subchart": None,
+                                        "axis": {
+                                            "y": {
+                                                "tick": {
+                                                    "count": 7,
+                                                    "outer": False,
+                                                    "multiline": True,
+                                                    "format": ".2s"
+                                                },
+                                                "label": {
+                                                    "text": "Effect Size (Cramers-V)",
+                                                    "position": "outer-middle"
+                                                }
+                                            },
+                                            "x": {
+                                                "height": 90,
+                                                "tick": {
+                                                    "rotate": -45,
+                                                    "multiline": False,
+                                                    "fit": False,
+                                                    "format": ".2s"
+                                                },
+                                                "type": "category",
+                                                "label": {
+                                                    "text": "Dimensions",
+                                                    "position": "outer-center"
+                                                }
+                                            }
+                                        },
+                                        "data": {
+                                            "x": "key",
+                                            "axes": {
+                                                "value": "y"
+                                            },
+                                            "type": "bar",
+                                            "columns": [
+                                                [
+                                                    "value",
+                                                    0.7071067811865476,
+                                                    0.5892111771858666,
+                                                    0.22595840851513502
+                                                ],
+                                                [
+                                                    "key",
+                                                    "Product",
+                                                    "Gross Margin",
+                                                    "Sales Office"
+                                                ]
+                                            ]
+                                        },
+                                        "legend": {
+                                            "show": False
+                                        },
+                                        "size": {
+                                            "height": 340
+                                        }
+                                    },
+                                    "yformat": ".2f",
+                                    "table_c3": [
+                                        [
+                                            "value",
+                                            0.7071067811865476,
+                                            0.5892111771858666,
+                                            0.22595840851513502
+                                        ],
+                                        [
+                                            "key",
+                                            "Product",
+                                            "Gross Margin",
+                                            "Sales Office"
+                                        ]
+                                    ],
+                                    "download_url": "/api/download_data/hfsoi3nso6rii0bu",
+                                    "xdata": [
+                                        "Product",
+                                        "Gross Margin",
+                                        "Sales Office"
+                                    ]
+                                }
+                            }
+                        ],
+                        "slug": "key-influencers-jari6il0p6",
+                        "cardWidth": 100
+                    }
+                ],
+                "name": "Association",
+                "slug": "association-nqq62xqn2r"
+            },
+            {
+                "listOfNodes": [],
+                "listOfCards": [
+                    {
+                        "name": "Predicting Key Drivers of Product Category",
+                        "cardType": "normal",
+                        "cardData": [
+                            {
+                                "dataType": "html",
+                                "data": "<p class = \"txt-justify\"> Please select any Product Category category from the drop down below to view it's most significant decision rules. These rules capture sets of observations that are most likely to be from the chosen Product Category. </p>"
+                            },
+                            {
+                                "dataType": "tree",
+                                "data": {
+                                    "name": "Root",
+                                    "children": [
+                                        {
+                                            "name": "Product in (12x500ml c.tray,6x2 ltr c.tray,4x5 ltr rpc,24x200ml sachet,12x1 ltr c.tray,72x50ml sachet,36x100ml sachet,6x3 ltr c.tray)",
+                                            "children": [
+                                                {
+                                                    "name": "Predict: Olien Consumer"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Product not in (12x500ml c.tray,6x2 ltr c.tray,4x5 ltr rpc,24x200ml sachet,12x1 ltr c.tray,72x50ml sachet,36x100ml sachet,6x3 ltr c.tray)",
+                                            "children": [
+                                                {
+                                                    "name": "Predict: Olien Bulk"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "dataType": "table",
+                                "data": {
+                                    "tableType": "decisionTreeTable",
+                                    "tableData": [
+                                        [
+                                            "PREDICTION",
+                                            "RULES",
+                                            "PERCENTAGE"
+                                        ],
+                                        [
+                                            "Olien Consumer",
+                                            [
+                                                "Product in (12x500ml c.tray,6x2 ltr c.tray,4x5 ltr rpc,24x200ml sachet,12x1 ltr c.tray,72x50ml sachet,36x100ml sachet,6x3 ltr c.tray)"
+                                            ],
+                                            [
+                                                100
+                                            ]
+                                        ],
+                                        [
+                                            "Olien Bulk",
+                                            [
+                                                "Product not in (12x500ml c.tray,6x2 ltr c.tray,4x5 ltr rpc,24x200ml sachet,12x1 ltr c.tray,72x50ml sachet,36x100ml sachet,6x3 ltr c.tray)"
+                                            ],
+                                            [
+                                                100
+                                            ]
+                                        ]
+                                    ]
+                                }
+                            }
+                        ],
+                        "slug": "predicting-key-drivers-of-product-category-80m93vi9na",
+                        "cardWidth": 100
+                    },
+                    {
+                        "name": "Decision Rules for Product Category",
+                        "cardType": "normal",
+                        "cardData": [
+                            {
+                                "dataType": "html",
+                                "data": "<h3>Predicting the Drivers of Product Category</h3> "
+                            },
+                            {
+                                "dataType": "c3Chart",
+                                "data": {
+                                    "chart_c3": {
+                                        "bar": {
+                                            "width": 40
+                                        },
+                                        "point": None,
+                                        "color": {
+                                            "pattern": [
+                                                "#0fc4b5",
+                                                "#005662",
+                                                "#148071",
+                                                "#6cba86",
+                                                "#bcf3a2"
+                                            ]
+                                        },
+                                        "tooltip": {
+                                            "show": True,
+                                            "format": {
+                                                "title": ".2s"
+                                            }
+                                        },
+                                        "padding": {
+                                            "top": 40
+                                        },
+                                        "grid": {
+                                            "y": {
+                                                "show": True
+                                            },
+                                            "x": {
+                                                "show": True
+                                            }
+                                        },
+                                        "subchart": None,
+                                        "axis": {
+                                            "y": {
+                                                "tick": {
+                                                    "count": 7,
+                                                    "outer": False,
+                                                    "multiline": True,
+                                                    "format": ".2s"
+                                                },
+                                                "label": {
+                                                    "text": "",
+                                                    "position": "outer-middle"
+                                                }
+                                            },
+                                            "x": {
+                                                "height": 90,
+                                                "tick": {
+                                                    "rotate": -45,
+                                                    "multiline": False,
+                                                    "fit": False,
+                                                    "format": ".2s"
+                                                },
+                                                "type": "category",
+                                                "label": {
+                                                    "text": "",
+                                                    "position": "outer-center"
+                                                }
+                                            }
+                                        },
+                                        "data": {
+                                            "x": "key",
+                                            "axes": {
+                                                "value": "y"
+                                            },
+                                            "type": "bar",
+                                            "columns": [
+                                                [
+                                                    "value",
+                                                    106,
+                                                    56
+                                                ],
+                                                [
+                                                    "key",
+                                                    "Olien Consumer",
+                                                    "Olien Bulk"
+                                                ]
+                                            ]
+                                        },
+                                        "legend": {
+                                            "show": False
+                                        },
+                                        "size": {
+                                            "height": 340
+                                        }
+                                    },
+                                    "yformat": ".2s",
+                                    "table_c3": [
+                                        [
+                                            "value",
+                                            106,
+                                            56
+                                        ],
+                                        [
+                                            "key",
+                                            "Olien Consumer",
+                                            "Olien Bulk"
+                                        ]
+                                    ],
+                                    "download_url": "/api/download_data/98azd1dbrjvhvnn0",
+                                    "xdata": [
+                                        "Olien Consumer",
+                                        "Olien Bulk"
+                                    ]
+                                }
+                            },
+                            {
+                                "dataType": "html",
+                                "data": " <h4>Olien Consumer</h4> "
+                            },
+                            {
+                                "dataType": "html",
+                                "data": " <p class = \"txt-justify\"> Key variable that characterize the segment of Olien Consumer Product Category is Product. </p> "
+                            },
+                            {
+                                "dataType": "html",
+                                "data": " <p class = \"txt-justify\"> <ul> <li> If the Product falls among (12x500ml c.tray,6x2 ltr c.tray,4x5 ltr rpc,24x200ml sachet,12x1 ltr c.tray,72x50ml sachet,36x100ml sachet,6x3 ltr c.tray), it is <b>100%</b> likely that the observations are Olien Consumer segment. </ul> </p> <h4>Olien Bulk</h4> "
+                            },
+                            {
+                                "dataType": "html",
+                                "data": " <p class = \"txt-justify\"> Key variable that characterize the segment of Olien Bulk Product Category is Product. </p> "
+                            },
+                            {
+                                "dataType": "html",
+                                "data": " <p class = \"txt-justify\"> <ul> <li> There is a very high chance(<b>100%</b>) that product category would be relatively Olien Bulk when, the Product does not fall in (12x500ml c.tray,6x2 ltr c.tray,4x5 ltr rpc,24x200ml sachet,12x1 ltr c.tray,72x50ml sachet,36x100ml sachet,6x3 ltr c.tray). </ul> </p> "
+                            }
+                        ],
+                        "slug": "decision-rules-for-product-category-cy7bmy7944",
+                        "cardWidth": 100
+                    }
+                ],
+                "name": "Prediction",
+                "slug": "prediction-dtzrdjlqre"
+            }
+        ],
+        "listOfCards": [
+            {
+                "cardWidth": 100,
+                "cardType": "summary",
+                "cardData": {
+                    "noOfMeasures": 4,
+                    "quotesHtml": None,
+                    "summaryHtml": [
+                        {
+                            "dataType": "html",
+                            "data": "<p class=\"lead txt-justify\"> mAdvisor has analyzed the dataset, which contains<b> 8</b> variables and <b>162</b> observations. Please click next to find the insights from our analysis of <b>product category</b>, that describes how it is distributed, what drives it, and how we can predict it. </p>"
+                        }
+                    ],
+                    "noOfTimeDimensions": 1,
+                    "noOfDimensions": 3
+                },
+                "name": "overall summary card",
+                "slug": "overall-summary-card-b2lc5nsnpg"
+            }
+        ],
+        "name": "testt",
+        "slug": "testt-wzi3knp354"
+    }

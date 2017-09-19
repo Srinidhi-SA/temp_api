@@ -392,7 +392,8 @@ BRIEF_INFO_CONFIG = {
     'train_test_split': 'Train Test Split',
     'algorithm name': 'Algorithm Name',
     'model': 'Model',
-    'file_size': 'File Size'
+    'file_size': 'File Size',
+    'audioset': 'Audio'
 }
 
 FIRST_ORDER = [
@@ -404,6 +405,7 @@ SECOND_ORDER = [
     'dataset',
     'variable selected',
     'variable type',
+    'audioset'
 ]
 
 DATASET_ORDER = [
@@ -431,6 +433,7 @@ ORDER_DICT = {
     'dataset': ORDER_DATASET,
     'signal': ORDER_SIGNAL,
     'trainer': ORDER_TRAINER,
-    'score': ORDER_SCORE
+    'score': ORDER_SCORE,
+    'audioset': ORDER_DATASET
 }
 
