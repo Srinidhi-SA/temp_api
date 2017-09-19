@@ -14493,8 +14493,9 @@ a.disabled { color:#ccc !important; }
 .fa.fa-table.pull-right { cursor: pointer; color: #747474; }
 .full-table-width { width:100%; }
 .minHP { min-height:120px; }
-.img-responsive.img-center { margin:0 auto; }
+.img-responsive.img-center { margin: 0 0 0 auto; }
 .user-info h3 { margin-top:6px; }
+.user-profile small { text-transform: uppercase; font-size: 50%;color: #333333;}
 /**************** Css realated to developers, keep the source down ***/
 
 
