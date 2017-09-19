@@ -96,13 +96,9 @@ export class C3Chart extends React.Component {
 				data.axis.y.tick.format = d3.format('');
 			}
 
-			if(this.props.tabledownload){
-				this.tableDownload = API + this.props.tabledownload;
-
-			}
-
-
 		}
+		
+
 
 		if(this.props.y2format){
 			let formats= ['.2s','$','$,.2s','.2f'];
@@ -209,10 +205,16 @@ export class C3Chart extends React.Component {
 			$(".chart-data-icon").empty();
 
 		 }
-
+           //alert(API + that.props.tabledownload);
+		// $("#cddownload").attr("href", API + that.props.tabledownload);
+		
 	  });
 
+		if(that.props.tabledownload){
+				
+				that.tableDownload = API + that.props.tabledownload;
 
+			}
      //var classId = "chart"+this.props.classId + " ct col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 xs-mb-20";
 
       return(
