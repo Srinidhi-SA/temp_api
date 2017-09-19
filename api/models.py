@@ -1045,7 +1045,7 @@ class Audioset(models.Model):
         super(Audioset, self).save(*args, **kwargs)
 
     def create(self):
-        self.meta_data = json.dumps(dummy_audio_data_2)
+        self.meta_data = json.dumps(dummy_audio_data_3)
         self.analysis_done = True
         self.status = 'SUCCESS'
         self.save()
@@ -3615,6 +3615,617 @@ dummy_audio_data_2 = {
                 "name": "overall summary card",
                 "slug": "overall-summary-card-b2lc5nsnpg"
             }
+        ],
+        "name": "testt",
+        "slug": "testt-wzi3knp354"
+    }
+
+dummy_audio_data_3 =  {
+        "listOfNodes": [
+
+        ],
+        "listOfCards": [
+        	 {
+                        "slug": "trend-analysis-y9yubuk1a3",
+                        "cardType": "normal",
+                        "cardData": [
+                            {
+                                "dataType": "c3Chart",
+                                "data": {
+                                    "download_url": "/api/download_data/jhqhvtigr2dfwh9f",
+
+                                    "xdata": [
+                                        "Aug-16",
+                                        "Sep-16",
+                                        "Oct-16",
+                                        "Nov-16",
+                                        "Dec-16",
+                                        "Feb-17",
+                                        "Mar-17",
+                                        "Apr-17",
+                                        "May-17",
+                                        "Jul-17"
+                                    ],
+                                    "chart_c3": {
+									    "data": {
+									        "columns": [
+									            ["data", 911.4]
+									        ],
+									        "type": "gauge"
+									    },
+									    "gauge": {
+										    "min": 0,
+										    "max": 1000,
+										    "width": 39
+									    },
+									    "color": {
+									        "pattern": ["#FF0000", "#F97600", "#F6C600", "#60B044"],
+									        "threshold": {
+									            "unit": "value",
+									            "values": [300, 600, 900, 1000]
+									        }
+									    },
+									    "size": {
+									        "height": 180
+									    }
+									},
+
+                                    "table_c3": [
+                                        [
+                                            "Olien Consumer",
+                                            36.8,
+                                            100,
+                                            100,
+                                            75,
+                                            37.5,
+                                            92.9,
+                                            100,
+                                            100,
+                                            42.9,
+                                            100
+                                        ],
+                                        [
+                                            "key",
+                                            "Aug-16",
+                                            "Sep-16",
+                                            "Oct-16",
+                                            "Nov-16",
+                                            "Dec-16",
+                                            "Feb-17",
+                                            "Mar-17",
+                                            "Apr-17",
+                                            "May-17",
+                                            "Jul-17"
+                                        ],
+                                        [
+                                            "Olien Bulk",
+                                            63.2,
+                                            25,
+                                            62.5,
+                                            100,
+                                            7.1,
+                                            57.1,
+                                            100,
+                                            0,
+                                            0,
+                                            0
+                                        ]
+                                    ]
+                                }
+                            }
+
+
+                        ],
+                        "name": "Trend Analysis",
+                        "cardWidth": 100
+                    },
+             {
+                                "cardWidth": 100,
+                                "cardType": "normal",
+                                "cardData": [
+                                    {
+                                        "dataType": "html",
+                                        "data": "<h3>Distribution of Product Category (Olien Bulk) across Product</h3>"
+                                    },
+                                    {
+                                        "dataType": "c3Chart",
+                                        "data": {
+                                            "download_url": "/api/download_data/o90t66t1yhq95r8c",
+                                            "y2format": ".2s",
+                                            "xdata": [
+                                                "10 ltr j.can",
+                                                "18kg j.can",
+                                                "4x5 ltr rpc",
+                                                "6x2 ltr c.tray",
+                                                "6x3 ltr c.tray",
+                                                "12x1 ltr c.tray",
+                                                "72x50ml sachet",
+                                                "12x500ml c.tray",
+                                                "24x200ml sachet",
+                                                "36x100ml sachet"
+                                            ],
+                                            "chart_c3": {
+                                                "bar": {
+                                                    "width": {
+                                                        "ratio": 0.5
+                                                    }
+                                                },
+                                                "point": None,
+                                                "color": {
+                                                    "pattern": [
+                                                        "#005662",
+                                                        "#0fc4b5",
+                                                        "#148071",
+                                                        "#6cba86",
+                                                        "#bcf3a2"
+                                                    ]
+                                                },
+                                                "tooltip": {
+                                                    "show": True,
+                                                    "format": {
+                                                        "title": ".2s"
+                                                    }
+                                                },
+                                                "padding": {
+                                                    "top": 40
+                                                },
+                                                "grid": {
+                                                    "y": {
+                                                        "show": True
+                                                    },
+                                                    "x": {
+                                                        "show": True
+                                                    }
+                                                },
+                                                "subchart": None,
+                                                "axis": {
+                                                    "y": {
+                                                        "tick": {
+                                                            "count": 7,
+                                                            "outer": False,
+                                                            "multiline": True,
+                                                            "format": ".2s"
+                                                        },
+                                                        "label": {
+                                                            "text": "",
+                                                            "position": "outer-middle"
+                                                        }
+                                                    },
+                                                    "x": {
+                                                        "height": 90,
+                                                        "tick": {
+                                                            "rotate": -45,
+                                                            "multiline": False,
+                                                            "fit": False,
+                                                            "format": ".2s"
+                                                        },
+                                                        "type": "category",
+                                                        "label": {
+                                                            "text": "",
+                                                            "position": "outer-center"
+                                                        }
+                                                    },
+                                                    "y2": {
+                                                        "show": True,
+                                                        "tick": {
+                                                            "count": 7,
+                                                            "multiline": True,
+                                                            "format": ".2s"
+                                                        },
+                                                        "label": {
+                                                            "text": "",
+                                                            "position": "outer-middle"
+                                                        }
+                                                    }
+                                                },
+                                                "data": {
+                                                    "axes": {
+                                                        "percentage": "y2"
+                                                    },
+                                                    "columns": [
+                                                        [
+                                                            "percentage",
+                                                            100,
+                                                            100,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0
+                                                        ],
+                                                        [
+                                                            "total",
+                                                            35,
+                                                            21,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0
+                                                        ],
+                                                        [
+                                                            "key",
+                                                            "10 ltr j.can",
+                                                            "18kg j.can",
+                                                            "4x5 ltr rpc",
+                                                            "6x2 ltr c.tray",
+                                                            "6x3 ltr c.tray",
+                                                            "12x1 ltr c.tray",
+                                                            "72x50ml sachet",
+                                                            "12x500ml c.tray",
+                                                            "24x200ml sachet",
+                                                            "36x100ml sachet"
+                                                        ]
+                                                    ],
+                                                    "x": "key",
+                                                    "type": "combination",
+                                                    "types": {
+                                                        "percentage": "line",
+                                                        "total": "bar"
+                                                    },
+                                                    "names": {
+                                                        "percentage": "% of Olien Bulk",
+                                                        "total": "# of Olien Bulk"
+                                                    }
+                                                },
+                                                "legend": {
+                                                    "show": True
+                                                },
+                                                "size": {
+                                                    "height": 340
+                                                }
+                                            },
+                                            "yformat": ".2s",
+                                            "table_c3": [
+                                                [
+                                                    "percentage",
+                                                    100,
+                                                    100,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0
+                                                ],
+                                                [
+                                                    "total",
+                                                    35,
+                                                    21,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0
+                                                ],
+                                                [
+                                                    "key",
+                                                    "10 ltr j.can",
+                                                    "18kg j.can",
+                                                    "4x5 ltr rpc",
+                                                    "6x2 ltr c.tray",
+                                                    "6x3 ltr c.tray",
+                                                    "12x1 ltr c.tray",
+                                                    "72x50ml sachet",
+                                                    "12x500ml c.tray",
+                                                    "24x200ml sachet",
+                                                    "36x100ml sachet"
+                                                ]
+                                            ]
+                                        }
+                                    }
+
+                                ],
+                                "slug": "product-distribution-of-olien-consumer-nmirq83361",
+                                "name": "Product : Distribution of Olien Consumer"
+                            },
+             {
+                                "cardWidth": 100,
+                                "cardType": "normal",
+                                "cardData": [
+                                    {
+                                        "dataType": "html",
+                                        "data": "<h3>Distribution of Product Category (Olien Bulk) across Product</h3>"
+                                    },
+                                    {
+                                        "dataType": "c3Chart",
+                                        "data": {
+                                            "download_url": "/api/download_data/o90t66t1yhq95r8c",
+                                            "y2format": ".2s",
+                                            "xdata": [
+                                                "10 ltr j.can",
+                                                "18kg j.can",
+                                                "4x5 ltr rpc",
+                                                "6x2 ltr c.tray",
+                                                "6x3 ltr c.tray",
+                                                "12x1 ltr c.tray",
+                                                "72x50ml sachet",
+                                                "12x500ml c.tray",
+                                                "24x200ml sachet",
+                                                "36x100ml sachet"
+                                            ],
+                                            "chart_c3": {
+                                                "bar": {
+                                                    "width": {
+                                                        "ratio": 0.5
+                                                    }
+                                                },
+                                                "point": None,
+                                                "color": {
+                                                    "pattern": [
+                                                        "#005662",
+                                                        "#0fc4b5",
+                                                        "#148071",
+                                                        "#6cba86",
+                                                        "#bcf3a2"
+                                                    ]
+                                                },
+                                                "tooltip": {
+                                                    "show": True,
+                                                    "format": {
+                                                        "title": ".2s"
+                                                    }
+                                                },
+                                                "padding": {
+                                                    "top": 40
+                                                },
+                                                "grid": {
+                                                    "y": {
+                                                        "show": True
+                                                    },
+                                                    "x": {
+                                                        "show": True
+                                                    }
+                                                },
+                                                "subchart": None,
+                                                "axis": {
+                                                    "y": {
+                                                        "tick": {
+                                                            "count": 7,
+                                                            "outer": False,
+                                                            "multiline": True,
+                                                            "format": ".2s"
+                                                        },
+                                                        "label": {
+                                                            "text": "",
+                                                            "position": "outer-middle"
+                                                        }
+                                                    },
+                                                    "x": {
+                                                        "height": 90,
+                                                        "tick": {
+                                                            "rotate": -45,
+                                                            "multiline": False,
+                                                            "fit": False,
+                                                            "format": ".2s"
+                                                        },
+                                                        "type": "category",
+                                                        "label": {
+                                                            "text": "",
+                                                            "position": "outer-center"
+                                                        }
+                                                    },
+                                                    "y2": {
+                                                        "show": True,
+                                                        "tick": {
+                                                            "count": 7,
+                                                            "multiline": True,
+                                                            "format": ".2s"
+                                                        },
+                                                        "label": {
+                                                            "text": "",
+                                                            "position": "outer-middle"
+                                                        }
+                                                    }
+                                                },
+                                                "data": {
+                                                    "axes": {
+                                                        "percentage": "y2"
+                                                    },
+                                                    "columns": [
+                                                        [
+                                                            "percentage",
+                                                            100,
+                                                            100,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0
+                                                        ],
+                                                        [
+                                                            "total",
+                                                            35,
+                                                            21,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0
+                                                        ],
+                                                        [
+                                                            "key",
+                                                            "10 ltr j.can",
+                                                            "18kg j.can",
+                                                            "4x5 ltr rpc",
+                                                            "6x2 ltr c.tray",
+                                                            "6x3 ltr c.tray",
+                                                            "12x1 ltr c.tray",
+                                                            "72x50ml sachet",
+                                                            "12x500ml c.tray",
+                                                            "24x200ml sachet",
+                                                            "36x100ml sachet"
+                                                        ]
+                                                    ],
+                                                    "x": "key",
+                                                    "type": "combination",
+                                                    "types": {
+                                                        "percentage": "line",
+                                                        "total": "bar"
+                                                    },
+                                                    "names": {
+                                                        "percentage": "% of Olien Bulk",
+                                                        "total": "# of Olien Bulk"
+                                                    }
+                                                },
+                                                "legend": {
+                                                    "show": True
+                                                },
+                                                "size": {
+                                                    "height": 340
+                                                }
+                                            },
+                                            "yformat": ".2s",
+                                            "table_c3": [
+                                                [
+                                                    "percentage",
+                                                    100,
+                                                    100,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0
+                                                ],
+                                                [
+                                                    "total",
+                                                    35,
+                                                    21,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0
+                                                ],
+                                                [
+                                                    "key",
+                                                    "10 ltr j.can",
+                                                    "18kg j.can",
+                                                    "4x5 ltr rpc",
+                                                    "6x2 ltr c.tray",
+                                                    "6x3 ltr c.tray",
+                                                    "12x1 ltr c.tray",
+                                                    "72x50ml sachet",
+                                                    "12x500ml c.tray",
+                                                    "24x200ml sachet",
+                                                    "36x100ml sachet"
+                                                ]
+                                            ]
+                                        }
+                                    }
+
+                                ],
+                                "slug": "product-distribution-of-olien-consumer-nmirq83361",
+                                "name": "Product : Distribution of Olien Consumer"
+                            },
+             {
+                                "cardWidth": 100,
+                                "cardType": "normal",
+                                "cardData": [
+                                    {
+                                        "dataType": "html",
+                                        "data": "<h3>Distribution of Product Category (Olien Bulk) across Product</h3>"
+                                    },
+                                    {
+                                        "dataType": "c3Chart",
+                                        "data": {
+                                            "download_url": "/api/download_data/o90t66t1yhq95r8c",
+
+                                            "xdata": [
+                                                "10 ltr j.can",
+                                                "18kg j.can",
+                                                "4x5 ltr rpc",
+                                                "6x2 ltr c.tray",
+                                                "6x3 ltr c.tray",
+                                                "12x1 ltr c.tray",
+                                                "72x50ml sachet",
+                                                "12x500ml c.tray",
+                                                "24x200ml sachet",
+                                                "36x100ml sachet"
+                                            ],
+                                            "chart_c3": {
+											    "data": {
+											        "columns": [
+											            ["data1", 30, 200, 100, 400, 150, 250]
+											        ],
+											        "type": "bar"
+											    },
+											    "axis": {
+											        "rotated": True
+											    }
+											},
+
+                                            "table_c3": [
+                                                [
+                                                    "percentage",
+                                                    100,
+                                                    100,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0
+                                                ],
+                                                [
+                                                    "total",
+                                                    35,
+                                                    21,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0
+                                                ],
+                                                [
+                                                    "key",
+                                                    "10 ltr j.can",
+                                                    "18kg j.can",
+                                                    "4x5 ltr rpc",
+                                                    "6x2 ltr c.tray",
+                                                    "6x3 ltr c.tray",
+                                                    "12x1 ltr c.tray",
+                                                    "72x50ml sachet",
+                                                    "12x500ml c.tray",
+                                                    "24x200ml sachet",
+                                                    "36x100ml sachet"
+                                                ]
+                                            ]
+                                        }
+                                    }
+
+                                ],
+                                "slug": "product-distribution-of-olien-consumer-nmirq83361",
+                                "name": "Product : Distribution of Olien Consumer"
+                            }
         ],
         "name": "testt",
         "slug": "testt-wzi3knp354"
