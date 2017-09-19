@@ -294,7 +294,12 @@ class SpeechAnalyzer:
         )
         details = c3.get_details()
 
-        return decode_and_convert_chart_raw_data(details)
+        decoded_chart =  decode_and_convert_chart_raw_data(details)
+        
+        del decoded_chart['chart_c3']['axis']['x']['tick']['format']
+        del decoded_chart['chart_c3']['axis']['y']['tick']['format']
+        del decoded_chart['yformat']
+        return decoded_chart
 
     def get_categories_bar(self, categories):
 
