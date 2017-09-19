@@ -34,9 +34,9 @@ export class Profile extends React.Component {
         <div className="side-body">
           {/*<!-- Page Title and Breadcrumbs -->*/}
           <div className="page-head">
-            
-                <h3>User Profile</h3>
-           
+
+            <h3>User Profile</h3>
+
           </div>
           <div className="main-content">
             <div>
@@ -52,7 +52,7 @@ export class Profile extends React.Component {
       let statsList = this.props.profileInfo.info.map((analysis, i) => {
         console.log(analysis)
         return (
-          <div key = {i} className="col-md-2 co-sm-4 col-xs-6">
+          <div key={i} className="col-md-2 co-sm-4 col-xs-6">
             <h2 className="text-center text-primary">{analysis.count}<br/>
               <small>{analysis.displayName}
               </small>
@@ -79,83 +79,89 @@ export class Profile extends React.Component {
           </div>
           {/*<!-- /.Page Title and Breadcrumbs -->
 
-      <!-- Page Content Area -->*/}
+            <!-- Page Content Area -->*/}
           <div className="main-content">
 
             <div className="user-profile">
               <div className="user-display xs-p-10">
-                
-                  <div className="user-avatar col-md-2 text-center"><img src={STATIC_URL + "assets/images/avatar.png"} className="img-responsive img-center img-circle"/></div>
-                  <div className="user-info col-md-10">
 
-                    <div className="panel-default">
+                <div className="user-avatar col-md-2 text-center"><img src={STATIC_URL + "assets/images/avatar.png"} className="img-responsive img-center img-circle"/></div>
+                <div className="user-info col-md-10">
 
-                      <div className="panel-body">
-                        <div className="row">
-                          <div className="col-md-12">
-                            <h3>{sessionStorage.userName}</h3>
-                            <table className="full-table-width no-border no-strip skills">
-                              <tbody className="no-border-x no-border-y full-width">
-                                <tr>
-                                  <td className="item xs-p-10" width="20">
-                                    <span className="fa fa-envelope-o fa-lg"></span> 
-                                  </td>
-									<td><b>  {sessionStorage.email}</b></td>
-                                </tr>
-                                <tr>
-                                  <td className="item xs-p-10">
-                                    <span className="fa fa-phone fa-lg"></span>
-                                  </td>
-								  <td><b> (999) 999-9999 </b></td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </div>
-                          {/*<div className="col-md-4 text-right xs-p-20">
-                          <a href="#" className="btn btn-primary">Edit Profile</a>
-                        </div>*/}
+                  <div className="panel-default">
+
+                    <div className="panel-body">
+                      <div className="row">
+                        <div className="col-md-12">
+                          <h3>{sessionStorage.userName}</h3>
+                          <table className="full-table-width no-border no-strip skills">
+                            <tbody className="no-border-x no-border-y full-width">
+                              <tr>
+                                <td className="item xs-p-10" width="20">
+                                  <span className="fa fa-envelope-o fa-lg"></span>
+                                </td>
+                                <td>
+                                  <b>
+                                    {sessionStorage.email}</b>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td className="item xs-p-10">
+                                  <span className="fa fa-phone fa-lg"></span>
+                                </td>
+                                <td>
+                                  <b>
+                                    (999) 999-9999
+                                  </b>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
                         </div>
-
+                        {/*<div className="col-md-4 text-right xs-p-20">
+                                 <a href="#" className="btn btn-primary">Edit Profile</a>
+                               </div>*/}
                       </div>
+
                     </div>
                   </div>
-                  <div className="clearfix"></div>
-                
-              
+                </div>
+                <div className="clearfix"></div>
+
               </div>
               <div className="clearfix"></div>
               <div className="row">
                 {statsList}
               </div>
             </div>
-             
+
             <div className="row">
-            <div className="col-md-4">
-			 <div className="panel minHP">
-            <h4 class="text-center xs-p-20">TOTAL SPACE</h4>
-            <C3Chart classId="_profile" data={this.props.profileInfo.chart_c3}/>
-              {/*
+              <div className="col-md-4">
+                <div className="panel minHP">
+                  <h4 class="text-center xs-p-20">TOTAL SPACE</h4>
+                  <C3Chart classId="_profile" data={this.props.profileInfo.chart_c3}/> {/*
               <img src="images/userProfileGraph.png" className="img-responsive"/>*/}
-			   </div>
-            </div>
-            <div className="col-md-8">
-              <div className="row">
-                <div className="col-md-12 text-right">
-                  <p className="xs-p-20">
-                    First Login : <b> {sessionStorage.date}</b>
-                    {/*<br/>
+                </div>
+              </div>
+              <div className="col-md-8">
+                <div className="row">
+                  <div className="col-md-12 text-right">
+                    <p className="xs-p-20">
+                      First Login :
+                      <b>
+                        {dateFormat(sessionStorage.date, "mmm d,yyyy")}</b>
+                      {/*<br/>
                     Subscription Left :
                     <b>25 Days</b>*/}
-                  </p>
-                </div>
-                <div className="clearfix"></div>
-                <div className="col-md-12">
-                  <div className="panel xs-p-30 minHP">
-                    <p>{renderHTML(this.props.profileInfo.comment)}</p>
+                    </p>
                   </div>
-
-                </div>
-              {/*  <div className="col-md-4">
+                  <div className="clearfix"></div>
+                  <div className="col-md-12">
+                    <div className="panel xs-p-30 minHP">
+                      <p>{renderHTML(this.props.profileInfo.comment)}</p>
+                    </div>
+                  </div>
+                  {/*  <div className="col-md-4">
                   <div className="panel text-center xs-p-20 minHP">
                     <a href="#">
                       <img src="images/launch_icon.png"/><br/>
@@ -163,58 +169,12 @@ export class Profile extends React.Component {
                     </a>
                   </div>
                 </div>*/}
-                <div className="clearfix"></div>
-              </div>
-            </div>
-          </div>
-
-          </div>
-          {/*<!-- /.Page Content Area --> */}
-          {/*<div className="side-body">
-          <div className="main-content">
-            <div className="user-profile">
-              <div className="user-display">
-                <div className="photo">&nbsp;</div>
-                <div className="bottom">
-                  <div className="user-avatar"><img src="../assets/images/avatar.png"/></div>
-                  <div className="user-info">
-
-                    <div className="info-block panel panel-default">
-                      <div className="panel-heading">
-                        <h4>{sessionStorage.userName}</h4>
-                      </div>
-                      <div className="panel-body">
-                        <table className="no-border no-strip skills">
-                          <tbody className="no-border-x no-border-y">
-                            <tr>
-                              <td className="item">
-                                <span className="fa fa-envelope fa-lg"></span>{sessionStorage.email}</td>
-
-                            </tr>
-                            <tr>
-                              <td className="item">
-                                <span className="fa fa-user fa-lg"></span>
-                                {dateFormat(sessionStorage.date, "dd mmmm yyyy")}</td>
-
-                            </tr>
-                            <tr>
-                              <td className="item">
-                                <span className="fa fa-phone-square fa-lg"></span>
-                                (999) 999-9999</td>
-
-                            </tr>
-
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
+                  <div className="clearfix"></div>
                 </div>
               </div>
 
             </div>
           </div>
-        </div>*/}
         </div>
 
       );
