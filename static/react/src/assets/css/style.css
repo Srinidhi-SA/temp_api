@@ -331,6 +331,9 @@ address, blockquote .small, blockquote footer, blockquote small, dd, dt, pre {
 	padding-left: 0;
 	list-style: none
 }
+.text-bold {
+	font-weight: bold
+}
 .text-left {
 	text-align: left
 }
@@ -14495,6 +14498,7 @@ a.disabled { color:#ccc !important; }
 .minHP { min-height:120px; }
 .img-responsive.img-center { margin:0 auto; }
 .user-info h3 { margin-top:6px; }
+.user-profile small { text-transform:uppercase; color:#333333; font-size:12px; }
 /**************** Css realated to developers, keep the source down ***/
 
 
