@@ -13849,7 +13849,10 @@ background:#ededed; color:#7dac02
 .panel-mAd .panel-body { padding:0;}
 .panel-mAd div h2 small { font-size:50%; }
 /** For Card Tabs **/
-.panel-mAd .nav-tabs { background: #00bfb2;}
+.panel-mAd .nav-tabs {
+    background: #ffffff;
+    border-bottom: 1px solid #e8e8e8;
+}
  /*.full-width-tabs > ul.nav.nav-tabs {
    display: table;
     width: 100%;
@@ -13863,12 +13866,14 @@ box-shadow: 0px 6px 9px 0px rgba(240,255,246,1);  }
     float: none;
     display: table-cell;
 }
-.full-width-tabs > ul.nav.nav-tabs > li > a { text-align: center; padding: 8px; text-transform: capitalize; display: block; border-top:2px solid #00bfb2; border-left:2px solid #00bfb2; color:#FFFFFF; text-transform:uppercase}
+.full-width-tabs > ul.nav.nav-tabs > li > a { text-align: center; padding: 8px; text-transform: capitalize; display: block;/* border-top:2px solid #00bfb2; border-left:2px solid #00bfb2;  color:#FFFFFF; */text-transform:uppercase}
 
 .panel-mAd .nav-tabs { background;none; }
 .full-width-tabs > ul.nav.nav-tabs > li.active a, .full-width-tabs > ul.nav.nav-tabs > li > a.active {
-	color:#00998c;
-	background:#FFFFFF;
+    color: #00998c;
+    /* background: #00998c; */
+    /* border: 1px solid #00998c; */
+    border-bottom: 2px solid #00998c;
 }
 /*.panel-mAd .full-width-tabs > ul.nav.nav-tabs > li > a   span { display:block; }*/
 
@@ -13879,12 +13884,12 @@ box-shadow: 0px 6px 9px 0px rgba(240,255,246,1);  }
 .mAd_icons.ic_dime_s { background-position:-281px -11px }
 
 .mAd_icons.tab_overview{ background-position: 0 -3px;}
-.nav-tabs li a:hover .mAd_icons.tab_overview, .active .mAd_icons.tab_overview { background-position: 0 -28px;}
+.nav-tabs li a:hover .mAd_icons.tab_overview, .active .mAd_icons.tab_overview { background-position: 0 -27px;}
 
 .mAd_icons.tab_summary{ background-position: -142px -70px}
 .nav-tabs li a:hover .mAd_icons.tab_summary, .active .mAd_icons.tab_summary { background-position: -142px -100px}
 
-.mAd_icons.tab_decision-tree, .mAd_icons.tab_prediction{  background-position: -144px -4px;}
+.mAd_icons.tab_decision-tree, .mAd_icons.tab_prediction{  background-position: -144px -5px;}
 .nav-tabs li a:hover .mAd_icons.tab_decision-tree, .nav-tabs li a:hover .mAd_icons.tab_prediction, .active .mAd_icons.tab_decision-tree, .active .mAd_icons.tab_prediction { background-position: -144px -30px;}
 
 
@@ -13892,19 +13897,19 @@ box-shadow: 0px 6px 9px 0px rgba(240,255,246,1);  }
 .nav-tabs li a:hover .mAd_icons.tab_chi-square, .nav-tabs li a:hover .mAd_icons.tab_association, .active .mAd_icons.tab_chi-square, .active .mAd_icons.tab_association { background-position: -108px -89px}
 
 .mAd_icons.tab_performance { background-position: -35px -3px;}
-.nav-tabs li a:hover .mAd_icons.tab_performance, .active .mAd_icons.tab_performance{ background-position: -35px -30px;}
+.nav-tabs li a:hover .mAd_icons.tab_performance, .active .mAd_icons.tab_performance{ background-position: -34px -28px;}
 
 .mAd_icons.tab_trend  { background-position: -70px -3px;}
 .nav-tabs li a:hover .mAd_icons.tab_trend,.active .mAd_icons.tab_trend { background-position: -70px -27px;}
 
-.mAd_icons.tab_influencers { background-position: -108px -3px; }
+.mAd_icons.tab_influencers { background-position: -108px -4px; }
 .nav-tabs li a:hover .mAd_icons.tab_influencers, .active .mAd_icons.tab_influencers{ background-position: -108px -27px}
 .mAd_icons.tab_predictions { background-position: -144px 0px;}
 .nav-tabs li a:hover .mAd_icons.tab_predictions, .active .mAd_icons.tab_predictions{ background-position: -144px -30px;}
 .mAd_icons.oppr_icon { width: 80px; height: 80px; background-position: 0 -65px; margin: 0 auto; }
 
-.mAd_icons.ic_perf { width: 26px; height: 22px; background-position: -234px -5px; display: inline-block; margin: 0 5px 0 5px; vertical-align: middle; }
-a.active .mAd_icons.ic_perf,.mAd_icons.ic_perf.active { background-position: -235px -27px; margin-right: 5px;}
+.mAd_icons.ic_perf { width: 26px; height: 22px; background-position: -236px -6px; display: inline-block; margin: 0 5px 0 5px; vertical-align: middle; }
+a.active .mAd_icons.ic_perf,.mAd_icons.ic_perf.active { background-position: -236px -27px; margin-right: 5px;}
 .mAd_icons.ic_inflnce { width: 26px; height: 22px; margin: 0 auto; background-position: -184px -5px; display: inline-block;}
 a.active .mAd_icons.ic_inflnce, .mAd_icons.ic_inflnce.active { background-position: -184px -27px; margin-right: 5px;}
 
@@ -13991,10 +13996,8 @@ a.tabs-control.right span { right: 5px; }
 /** slide panel **/
 .panel-mAd .tab-pane { overflow:hidden; }
 .sb_navigation {
-    background: #FFFFFF;
-    border-left: 1px solid #00bfb2;
-    border-right: 1px solid #00bfb2;
-    border-bottom: 1px solid #00bfb2;
+    background: #FFFFFF; 
+    border-bottom: 1px solid #e8e8e8;
 }
 .sb_navigation li a { padding: 7px; /* margin: 0 5px; text-align: center; */ display: block; color:#636363; }
 .sb_navigation li a span {white-space: nowrap; width: 156px; overflow: hidden; text-overflow: ellipsis; display: inline-block; vertical-align: middle; }
@@ -14500,7 +14503,7 @@ a.disabled { color:#ccc !important; }
 .img-responsive.img-center { margin:0 auto; }
 .user-info h3 { margin-top:6px; }
 .user-profile small { text-transform:uppercase; color:#333333; font-size: 50% }
- 
+.slick-prev, .slick-next {border:0;}
 /**************** Css realated to developers, keep the source down ***/
 
 

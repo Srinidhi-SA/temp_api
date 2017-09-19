@@ -297,7 +297,7 @@
                      </div>
 					 <!-- ./ End Tab Visualizations -->
 					 
-					 <!-- Start Tab Subsettings - ->
+					 <!-- Start Tab Subsettings -->
 					 <div id="tab_subsettings" class="panel-group accordion accordion-semi">
                         <div class="panel panel-default">
                            <div class="panel-heading">
@@ -345,11 +345,13 @@
       <!-- Placed at the end of the document so the pages load faster --> 
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> 
       <script src="js/bootstrap.min.js"></script>
-      
+      <script src="js/bootstrap-slider.js"></script>
 	  <style>
 	  .hover { border:2px solid blue; }
 	  </style>
+	  
       <script>
+	  $('.bslider').slider();
 $("table").delegate('td','mouseover mouseleave', function(e) {
     if (e.type == 'mouseover') {
      // $(this).parent().addClass("hover");
