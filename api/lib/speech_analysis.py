@@ -78,7 +78,7 @@ class SpeechAnalyzer:
         emotions_card = ""
         if "emotion" in self.nl_understanding:
             try:
-                emotions_html = "".join([ self.__get_emotions_html(item.get(), item.get("") ) for item in self.nl_understanding.get("emotion").get("document").get("emotion").items()])
+                emotions_html = "".join([ self.__get_emotions_html(k, v ) for (k,v) in self.nl_understanding.get("emotion").get("document").get("emotion").items()])
                 emotions_card = self.__generate_normal_card("Emotions", emotions_html)
             except:
                 pass
