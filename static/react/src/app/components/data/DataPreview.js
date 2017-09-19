@@ -161,7 +161,7 @@ export class DataPreview extends React.Component {
 			if(chkClass.indexOf(item.slug) !== -1){
                 console.log(item);
 				$("#side-chart").empty();
-				showHideSideChart(item.columnType); // hide side chart on datetime selection
+				showHideSideChart(item.columnType,item.chartData); // hide side chart on datetime selection
 				if(!$.isEmptyObject(item.chartData)){
 				const sideChartUpdate = item.chartData.chart_c3;
 				let yformat = item.chartData.yformat;
