@@ -30,7 +30,7 @@ export class AudioFileUpload extends React.Component {
 		this.props.dispatch(uploadAudioFileToStore(files))
 	}
 	showMsg(){
-		bootbox.alert("Only CSV files are allowed to upload")
+		bootbox.alert("Only WAV files are allowed to upload")
 	}
 	mediaFileUpload(){
 		this.props.dispatch(uploadAudioFile())
@@ -71,7 +71,7 @@ export class AudioFileUpload extends React.Component {
 					<div className="clearfix"></div>
 					<div className="xs-pt-20"></div>
 					<div className="dropzone ">
-					<Dropzone id={2} onDrop={this.onDropAudioFile} onDropRejected={this.showMsg} accept=".mp3,.wav,.flac" >
+					<Dropzone id={2} onDrop={this.onDropAudioFile} onDropRejected={this.showMsg} accept=".wav" >
 					<p>Try dropping some files here, or click to select files to upload.</p>
 					</Dropzone>
 					<aside>

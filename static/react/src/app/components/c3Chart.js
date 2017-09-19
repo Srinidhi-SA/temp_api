@@ -113,7 +113,11 @@ export class C3Chart extends React.Component {
 			}
 
 		}
-
+		if(this.props.guage){
+			data.gauge.label.format= function(value, ratio) {
+				return value;
+			}
+		}
 		if(this.props.tooltip){
 			//alert("working");
 			var tooltip = this.props.tooltip;

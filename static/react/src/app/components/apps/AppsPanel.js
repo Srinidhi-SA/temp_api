@@ -53,7 +53,7 @@ export class AppsPanel extends React.Component {
 							<div className="col-md-8 col-sm-9 col-xs-7">
 								<h4>OPPORTUNITY SCORING</h4>
 								<p>
-									Business Goals by understading the top-level business goals, we can infer the investment climate.
+								To predict sales opportunities that are more likely to win/lose.
 								</p>
 							</div>
 							<div class="clearfix"></div>
@@ -61,7 +61,6 @@ export class AppsPanel extends React.Component {
 
 							<div className="card-footer">
 							<ul className="app_labels">
-								<li className="xs-p-10 text-primary"><i className="fa fa-tag fa-1x"></i></li>
 								<li><a href="#"><i className="fa fa-tag"></i> Marketing</a></li>
 								<li><a href="#"><i className="fa fa-tag"></i> Sales</a></li>
 							</ul>
@@ -86,7 +85,7 @@ export class AppsPanel extends React.Component {
 							<div className="col-md-8 col-sm-9 col-xs-7">
 								<h4>AUTOMATED PREDICTION</h4>
 								<p>
-									Machine-learning alogrithms are applied to explore the relation between significant flares and...
+								To build machine learning models to predict the outcome of any target attribute.
 								</p>
 							</div>
 							<div class="clearfix"></div>
@@ -95,7 +94,7 @@ export class AppsPanel extends React.Component {
 							<ul className="app_labels">
 								<li className="xs-p-10 text-primary"><i className="fa fa-tag fa-1x"></i></li>
 								<li><a href="#"><i className="fa fa-tag"></i> Marketing</a></li>
-								<li><a href="#"><i className="fa fa-tag"></i> Sales</a></li>
+								<li><a href="#"><i className="fa fa-tag"></i> Operations</a></li>
 
 							</ul>
 						{/*<div className="card-deatils">
@@ -118,15 +117,16 @@ export class AppsPanel extends React.Component {
 							<div className="col-md-8 col-sm-9 col-xs-7">
 								<h4>ROBO-ADVISOR INSIGHTS</h4>
 								<p>
-									Machine-learning alogrithms are applied to explore the relation between significant flares and...
+								To help wealth managers  and investment advisors to analyze customer portfolio.
 								</p>
 							</div>
 <div class="clearfix"></div>
 							</Link>
 							<div className="card-footer">
 							<ul className="app_labels">
-								<li className="xs-p-10 text-primary"><i className="fa fa-tag fa-1x"></i></li>
+								{/* <li className="xs-p-10 text-primary"><i className="fa fa-tag fa-1x"></i></li> */}
 								<li><a href="#"><i className="fa fa-tag"></i> Finance</a></li>
+								<li><a href="#"><i className="fa fa-tag"></i> Wealth Management</a></li>
 
 							</ul>
 
@@ -155,7 +155,7 @@ export class AppsPanel extends React.Component {
 						<div className="col-md-8 col-sm-9 col-xs-7">
 							<h4>Speech Analytics</h4>
 							<p>
-								Business Goals by understading the top-level business goals, we can infer the investment climate.
+							To extract sentiments, emotions and context from audio/voice.
 							</p>
 						</div>
 						<div class="clearfix"></div>
@@ -165,7 +165,7 @@ export class AppsPanel extends React.Component {
 						<ul className="app_labels">
 							<li className="xs-p-10 text-primary"><i className="fa fa-tag fa-1x"></i></li>
 							<li><a href="#"><i className="fa fa-tag"></i> Marketing</a></li>
-							<li><a href="#"><i className="fa fa-tag"></i> Customer</a></li>
+							<li><a href="#"><i className="fa fa-tag"></i> Customer Service</a></li>
 						</ul>
 
 					{/*<div className="card-deatils">
