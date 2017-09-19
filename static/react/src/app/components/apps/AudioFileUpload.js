@@ -84,7 +84,7 @@ export class AudioFileUpload extends React.Component {
 				</Modal.Body>
 				<Modal.Footer>
 				<Button className="btn btn-primary md-close" onClick={this.closeAudioFUPopup.bind(this)}>Close</Button>
-                <Button bsStyle="primary" onClick={this.mediaFileUpload.bind(this)}>Upload and Analyse</Button>
+                <Button bsStyle="primary" onClick={this.mediaFileUpload.bind(this)}>Analyse</Button>
 				</Modal.Footer>
 				</Modal>
 				</div>
