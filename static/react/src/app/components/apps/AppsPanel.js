@@ -92,7 +92,6 @@ export class AppsPanel extends React.Component {
 							</Link>
 						<div className="card-footer">
 							<ul className="app_labels">
-								<li className="xs-p-10 text-primary"><i className="fa fa-tag fa-1x"></i></li>
 								<li><a href="#"><i className="fa fa-tag"></i> Marketing</a></li>
 								<li><a href="#"><i className="fa fa-tag"></i> Operations</a></li>
 
@@ -153,7 +152,7 @@ export class AppsPanel extends React.Component {
 							<img src={STATIC_URL + "assets/images/icon_speak.png"} className="img-responsive"/>
 						</div>
 						<div className="col-md-8 col-sm-9 col-xs-7">
-							<h4>Speech Analytics</h4>
+							<h4>SPEECH ANALYTICS</h4>
 							<p>
 							To extract sentiments, emotions and context from audio/voice.
 							</p>
@@ -163,7 +162,6 @@ export class AppsPanel extends React.Component {
 
 						<div className="card-footer">
 						<ul className="app_labels">
-							<li className="xs-p-10 text-primary"><i className="fa fa-tag fa-1x"></i></li>
 							<li><a href="#"><i className="fa fa-tag"></i> Marketing</a></li>
 							<li><a href="#"><i className="fa fa-tag"></i> Customer Service</a></li>
 						</ul>

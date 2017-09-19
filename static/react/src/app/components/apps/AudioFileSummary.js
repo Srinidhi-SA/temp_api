@@ -32,8 +32,8 @@ export class AudioFileSummary extends React.Component {
 	}
 
 	componentDidMount() {
-		if(!isEmpty(store.getState().apps.audioFileSummary)){
-			if(store.getState().apps.audioSummary.slug != store.getState().apps.audioFileSlug)
+		if(!$.isEmptyObject(store.getState().apps.audioFileSummary)){
+			if(store.getState().apps.audioFileSummary.slug != store.getState().apps.audioFileSlug)
 				this.props.dispatch(getAudioFile(store.getState().apps.audioFileSlug));
 		}else{
 			this.props.dispatch(getAudioFile(store.getState().apps.audioFileSlug));

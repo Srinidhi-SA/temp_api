@@ -976,7 +976,7 @@ export function uploadAudioFileToStore(files){
 export function uploadAudioFile(){
 	return (dispatch) => {
 		  dispatch(hideAudioFUModal());
-		  dispatch(openAppsLoader(DULOADERPERVALUE,"Please wait while mAdvisor analyse your audio file... "));
+		  dispatch(openAppsLoader(DULOADERPERVALUE,"Please wait while mAdvisor analyzes the audio file... "));
 			return triggerAudioUpload(sessionStorage.userToken).then(([response, json]) =>{
 				if(response.status === 200){
 
