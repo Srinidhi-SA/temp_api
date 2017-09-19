@@ -437,3 +437,17 @@ ORDER_DICT = {
     'audioset': ORDER_DATASET
 }
 
+
+
+NATURAL_LANGUAGE_UNDERSTANDING_SETTINGS = {
+          "url": "https://gateway.watsonplatform.net/natural-language-understanding/api",
+          "username": "77961f39-ccaa-4cd7-b6cb-68d544f91ffb",
+          "password": "hDbkLtb8rWgh"
+        }
+    
+VOICE_TO_TEXT_SETTINGS = { 
+        "url": "https://stream.watsonplatform.net/speech-to-text/api",
+        "username": "3d7b6be9-17eb-4208-ad56-3d873700d5e7",
+        "password": "UXiMa7qNp68f"
+        }
+
