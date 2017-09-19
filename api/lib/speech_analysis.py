@@ -296,9 +296,9 @@ class SpeechAnalyzer:
 
         decoded_chart =  decode_and_convert_chart_raw_data(details)
 
-        del decoded_chart['chart_c3']['axis']['x']['tick']['format']
-        del decoded_chart['chart_c3']['axis']['y']['tick']['format']
-        del decoded_chart['yformat']
+        # del decoded_chart['chart_c3']['axis']['x']['tick']['format']
+        # del decoded_chart['chart_c3']['axis']['y']['tick']['format']
+        # del decoded_chart['yformat']
 
         return {
             "dataType": "c3Chart",
