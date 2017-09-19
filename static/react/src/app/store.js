@@ -14,7 +14,7 @@ const err = (store) => (next) => (action) => {
     console.log("Error", e);
     let expiredSignMsg = "Signature has expired."
     if (action.json["exception"] == expiredSignMsg) {
-      bootbox.alert(action.json["exception"],function(){
+      bootbox.alert("Session has expired.",function(){
     	  sessionStorage.clear();
     	  location.reload();  
       })

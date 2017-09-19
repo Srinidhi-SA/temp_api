@@ -199,7 +199,7 @@ export function unselectAllPossibleAnalysis(){
 				type: "UNSELECT_All_ANALYSIS_TYPE",
 				unselectAll
 			}
-	
+
 }
 
 export function updateSelectedVariables(evt){
@@ -608,4 +608,3 @@ export function handleSelectAll(evt){
 		break;
 	}
 }
-

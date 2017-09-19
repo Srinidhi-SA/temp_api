@@ -9,7 +9,7 @@ import {CardHtml} from "./CardHtml";
 import {CardTable} from "../common/CardTable";
 import {PredictionDropDown} from "../common/predictionDropdown";
 //import Tree from 'react-d3-tree';
-import {ReactD3} from "../reactD3";
+//import {ReactD3} from "../reactD3";
 import { Scrollbars } from 'react-custom-scrollbars';
 //import Tree from 'react-tree-graph';
 

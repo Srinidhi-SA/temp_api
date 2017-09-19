@@ -61,10 +61,10 @@ export class C3Chart extends React.Component {
 
 
 	}
-	
+
 
 	downloadSVG(){
-		
+
 		var nodeList = document.querySelector(".chart"+this.props.classId +">svg").querySelectorAll('.c3-chart .c3-chart-lines path');
 		//var nodeList1 = document.querySelector(".chart"+this.props.classId +">svg").querySelectorAll('.c3 line');
 		var nodeList2 = document.querySelector(".chart"+this.props.classId +">svg").querySelectorAll('.c3-axis path');
@@ -78,7 +78,7 @@ export class C3Chart extends React.Component {
 			element.style.stroke = "black";
         });
 		saveSvgAsPng(document.querySelector(".chart"+this.props.classId +">svg"), "chart.png");
-		
+
 	}
 
 	updateChart() {
@@ -96,13 +96,9 @@ export class C3Chart extends React.Component {
 				data.axis.y.tick.format = d3.format('');
 			}
 
-			if(this.props.tabledownload){
-				this.tableDownload = API + this.props.tabledownload;
-
-			}
-
-
 		}
+		
+
 
 		if(this.props.y2format){
 			let formats= ['.2s','$','$,.2s','.2f'];
@@ -209,14 +205,20 @@ export class C3Chart extends React.Component {
 
 		 // alert("render");
 		  that.updateChart();
-	     if(that.props.classId =='_side'){
+	     if(that.props.classId =='_side' || that.props.classId =='_profile'){
 			$(".chart-data-icon").empty();
 
 		 }
-
+           //alert(API + that.props.tabledownload);
+		// $("#cddownload").attr("href", API + that.props.tabledownload);
+		
 	  });
 
+		if(that.props.tabledownload){
+				
+				that.tableDownload = API + that.props.tabledownload;
 
+			}
      //var classId = "chart"+this.props.classId + " ct col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 xs-mb-20";
 
       return(
@@ -236,7 +238,7 @@ export class C3Chart extends React.Component {
 	       <div className="clearfix"></div>
 		   <div className={this.classId}></div>
 		   <div className="clearfix"></div>
-		  
+
      </div>
 		   {/* chart data Popup */}
 		   <div id="" className={this.modalCls} role="dialog">
