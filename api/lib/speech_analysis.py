@@ -144,6 +144,7 @@ class SpeechAnalyzer:
         simple_html_card = self.__generate_normal_card("", self.generate_para_html())
 
 
+
         if emotions_card:
             list_of_cards.append(emotions_card)
         if keywords_card:
@@ -173,7 +174,7 @@ class SpeechAnalyzer:
 
         return """
          <div class="col-md-4">
-                 <img src="/static/assessts/images/{}.png" width="80" class="pull-left" >
+                 <img src="/static/assets/images/{}.png" width="80" class="pull-left" >
                  <h2 class="pull-left"><small>{}</small><br> {}% </h2>
          </div>
          """.format(emo, emo, int(val * 100))
