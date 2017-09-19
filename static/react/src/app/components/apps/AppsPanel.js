@@ -5,7 +5,7 @@ import {connect} from "react-redux";
 import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab} from "react-bootstrap";
 import {Link, Redirect} from "react-router-dom";
-import {updateSelectedApp,updateModelSummaryFlag,updateScoreSummaryFlag,showRoboDataUploadPreview} from "../../actions/appActions";
+import {updateSelectedApp,updateModelSummaryFlag,updateScoreSummaryFlag,showRoboDataUploadPreview,updateAudioFileSummaryFlag} from "../../actions/appActions";
 import {STATIC_URL} from "../../helpers/env.js"
 import {APPID1,APPID2,APPID3,APPID4,APPNAME1,APPNAME2,APPNAME3,APPNAME4} from "../../helpers/helper.js"
 
@@ -28,6 +28,7 @@ export class AppsPanel extends React.Component {
 	  this.props.dispatch(updateModelSummaryFlag(false));
 	  this.props.dispatch(updateScoreSummaryFlag(false));
 	  this.props.dispatch(showRoboDataUploadPreview(false));
+	  this.props.dispatch(updateAudioFileSummaryFlag(false));
   }
   render() {
     console.log("Apps panel is called##########3");
@@ -149,10 +150,10 @@ export class AppsPanel extends React.Component {
 						<Link onClick={this.gotoAppsList.bind(this,APPID4,APPNAME4)} className="app-link" to='/apps/audio'>
 
 						<div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
-							<img src={STATIC_URL + "assets/images/icon_oppr.png"} className="img-responsive"/>
+							<img src={STATIC_URL + "assets/images/icon_speak.png"} className="img-responsive"/>
 						</div>
 						<div className="col-md-8 col-sm-9 col-xs-7">
-							<h4>Audio file Upload</h4>
+							<h4>Speech Analytics</h4>
 							<p>
 								Business Goals by understading the top-level business goals, we can infer the investment climate.
 							</p>
@@ -164,7 +165,7 @@ export class AppsPanel extends React.Component {
 						<ul className="app_labels">
 							<li className="xs-p-10 text-primary"><i className="fa fa-tag fa-1x"></i></li>
 							<li><a href="#"><i className="fa fa-tag"></i> Marketing</a></li>
-							<li><a href="#"><i className="fa fa-tag"></i> Sales</a></li>
+							<li><a href="#"><i className="fa fa-tag"></i> Customer</a></li>
 						</ul>
 
 					{/*<div className="card-deatils">

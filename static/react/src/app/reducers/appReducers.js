@@ -42,6 +42,9 @@ export default function reducer(state = {
 		appsLoaderImage:"pe-7s-science pe-spin pe-5x pe-va text-primary",
 		audioFileSummary:{},
 		audioFileSlug :"",
+		audioFileSummaryFlag:false,
+		audioList:{},
+		audio_search_element:""
 		
 }, action) {
 	console.log("In APPs reducer!!");
@@ -477,6 +480,40 @@ export default function reducer(state = {
 		}
 	}
 	break;
+	case "UPDATE_AUDIO_FILE_SUMMARY_FLAG":
+	{
+		return{
+			...state,
+			audioFileSummaryFlag:action.flag,
+		}
+	}
+	break;
+	
+	case "AUDIO_LIST":
+	{
+		return {
+			...state,
+			audioList: action.data,
+			current_page:action.current_page,
+		}
+	}
+	break;
+
+	case "AUDIO_LIST_ERROR":
+	{
+		//alert(action.json.non_field_errors);
+		throw new Error("Unable to fetch audio list!!");
+	}
+	break;
+	case "SEARCH_AUDIO_FILE":
+	{
+		return{
+			...state,
+			audio_search_element:action.search_element
+		}
+	}
+	break;
+	
  }
 return state
 }

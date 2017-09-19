@@ -2,7 +2,7 @@ import {API} from "../helpers/env";
 import {PERPAGE,isEmpty} from "../helpers/helper";
 import store from "../store";
 import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,CUSTOMERDATA,HISTORIALDATA,EXTERNALDATA,DELETEMODEL,
-	RENAMEMODEL,DELETESCORE,RENAMESCORE,DELETEINSIGHT,RENAMEINSIGHT,SUCCESS,FAILED} from "../helpers/helper";
+	RENAMEMODEL,DELETESCORE,RENAMESCORE,DELETEINSIGHT,RENAMEINSIGHT,SUCCESS,FAILED,DELETEAUDIO,RENAMEAUDIO} from "../helpers/helper";
 import {hideDataPreview,getDataSetPreview,showDataPreview} from "./dataActions";
 import {getHeaderWithoutContent} from "./dataUploadActions";
 import Dialog from 'react-bootstrap-dialog';
@@ -682,6 +682,8 @@ export function updateRoboAnalysisData(roboData,urlPrefix){
 		    	deleteModel(slug,dialog,dispatch)
 		    	else if(title ==  DELETEINSIGHT)
 		    	deleteInsight(slug,dialog,dispatch)
+		    	else if(title ==  DELETEAUDIO)
+		    	deleteAudio(slug,dialog,dispatch)
 		    	else
 		    	deleteScore(slug,dialog,dispatch)
 
@@ -696,7 +698,7 @@ export function updateRoboAnalysisData(roboData,urlPrefix){
 }
 export function handleModelDelete(slug,dialog) {
 	return (dispatch) => {
-		showDialogBox(slug,dialog,dispatch,"Delete Model","Are you sure, you want to delete model?")
+		showDialogBox(slug,dialog,dispatch,DELETEMODEL,"Are you sure, you want to delete model?")
 	}
 }
 function deleteModel(slug,dialog,dispatch){
@@ -747,6 +749,8 @@ function showRenameDialogBox(slug,dialog,dispatch,title,customBody){
 		    	renameModel(slug,dialog,$("#idRenameModel").val(),dispatch)
 		    	else if(title ==  RENAMEINSIGHT)
 		    	renameInsight(slug,dialog,$("#idRenameInsight").val(),dispatch)
+		    	else if(title ==  RENAMEAUDIO)
+		    	renameAudio(slug,dialog,$("#idRenameAudio").val(),dispatch)
 		    	else
 		    	renameScore(slug,dialog,$("#idRenameScore").val(),dispatch)
 		    })
@@ -1021,12 +1025,14 @@ export function getAudioFile(slug) {
 		return fetchAudioFileSummary(sessionStorage.userToken,slug).then(([response, json]) =>{
 			if(response.status === 200){
 				if(json.status == SUCCESS){
+					dispatch(fetchAFSummarySuccess(json));
 					clearInterval(appsInterval);
 					dispatch(closeAppsLoaderValue());
-					dispatch(clearAudioFile())
+					dispatch(clearAudioFile());
+					dispatch(updateAudioFileSummaryFlag(true));
 				}else if(json.status == FAILED){
 					bootbox.alert("Your audio file could not analysed.Please try later.",function(result){
-						window.history.go(-1);
+						dispatch(updateAudioFileSummaryFlag(false));
 					});
 					clearInterval(appsInterval);
 					dispatch(closeAppsLoaderValue());
@@ -1060,8 +1066,172 @@ function fetchAFSummaryError(data){
 	}
 }
 
-function clearAudioFile(){
+export function clearAudioFile(){
 	return {
 		type: "CLEAR_AUDIO_UPLOAD_FILE",
+	}
+}
+
+export function updateAudioFileSummaryFlag(flag){
+	return {
+		type: "UPDATE_AUDIO_FILE_SUMMARY_FLAG",
+		flag
+	}
+}
+
+export function getAudioFileList(pageNo){
+	return (dispatch) => {
+		return fetchAudioList(pageNo,sessionStorage.userToken).then(([response, json]) =>{
+			if(response.status === 200){
+				dispatch(fetchAudioListSuccess(json))
+			}
+			else{
+				dispatch(fetchAudioListError(json))
+			}
+		})
+	}
+}
+
+function fetchAudioList(pageNo,token) {
+
+	console.log(token)
+	let search_element = store.getState().apps.audio_search_element
+	console.log(search_element)
+	if(search_element!=""&&search_element!=null){
+		console.log("calling for search element!!")
+		return fetch(API+'/api/audioset/?name='+search_element+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
+			method: 'get',
+			headers: getHeader(token)
+			}).then( response => Promise.all([response, response.json()]));
+	}else{
+		return fetch(API+'/api/audioset/?page_number='+pageNo+'&page_size='+PERPAGE+'',{
+			method: 'get',
+			headers: getHeader(token)
+		}).then( response => Promise.all([response, response.json()]));
+	}
+
+
+}
+
+function fetchAudioListError(json) {
+	return {
+		type: "AUDIO_LIST_ERROR",
+		json
+	}
+}
+export function fetchAudioListSuccess(doc){
+	var data = doc;
+	var current_page =  doc.current_page
+	return {
+		type: "AUDIO_LIST",
+		data,
+		current_page,
+	}
+}
+export function storeAudioSearchElement(search_element){
+	return {
+		type: "SEARCH_AUDIO_FILE",
+		search_element
+	}
+}
+
+//Rename and Delete Audio files
+
+
+export function handleAudioDelete(slug,dialog) {
+	return (dispatch) => {
+		showDialogBox(slug,dialog,dispatch,DELETEAUDIO,"Are you sure, you want to delete media file?")
+	}
+}
+function deleteAudio(slug,dialog,dispatch){
+	dispatch(showLoading());
+	Dialog.resetOptions();
+	return deleteAudioAPI(slug).then(([response, json]) =>{
+		if(response.status === 200){
+			dispatch(getAudioFileList(store.getState().apps.current_page));
+			dispatch(hideLoading());
+		}
+		else{
+			dialog.showAlert("Error occured , Please try after sometime.");
+			dispatch(hideLoading());
+		}
+	})
+}
+function deleteAudioAPI(slug){
+	return fetch(API+'/api/audioset/'+slug+'/',{
+		method: 'put',
+		headers: getHeader(sessionStorage.userToken),
+		body:JSON.stringify({
+			deleted:true,
+		}),
+	}).then( response => Promise.all([response, response.json()]));
+
+	}
+
+
+export function handleAudioRename(slug,dialog,name){
+	const customBody = (
+		      <div className="form-group">
+		      <label for="fl1" className="col-sm-6 control-label">Enter Media file name</label>
+		      <input className="form-control"  id="idRenameAudio" type="text" defaultValue={name}/>
+		      </div>
+		    )
+	return (dispatch) => {
+		showRenameDialogBox(slug,dialog,dispatch,RENAMEAUDIO,customBody)
+	}
+}
+
+function renameAudio(slug,dialog,newName,dispatch){
+	dispatch(showLoading());
+	Dialog.resetOptions();
+	return renameAudioAPI(slug,newName).then(([response, json]) =>{
+		if(response.status === 200){
+			dispatch(getAudioFileList(store.getState().apps.current_page));
+			dispatch(hideLoading());
+		}
+		else{
+			dialog.showAlert("Error occured , Please try after sometime.");
+			dispatch(hideLoading());
+		}
+	})
+}
+
+function renameAudioAPI(slug,newName){
+	return fetch(API+'/api/audioset/'+slug+'/',{
+		method: 'put',
+		headers: getHeader(sessionStorage.userToken),
+		body:JSON.stringify({
+			name:newName,
+		}),
+	}).then( response => Promise.all([response, response.json()]));
+
+	}
+
+export function playAudioFile(){
+	if(!isEmpty(store.getState().apps.audioFileUpload)){
+		var audioEle =  document.getElementById("myAudio"); 
+		audioEle.src = store.getState().apps.audioFileUpload.preview;
+		$("#audioPause").addClass("show");
+		$("#audioPause").removeClass("hide");
+		$("#audioPlay").removeClass("show");
+		$("#audioPlay").addClass("hide");
+		audioEle.play();
+	}else{
+		bootbox.alert("Please upload audio file to play.");
+	}
+	
+}
+
+export function pauseAudioFile(){
+	if(!isEmpty(store.getState().apps.audioFileUpload)){
+	var audioEle =  document.getElementById("myAudio"); 
+	audioEle.src = store.getState().apps.audioFileUpload.preview;
+	$("#audioPlay").addClass("show");
+	$("#audioPlay").removeClass("hide");
+	$("#audioPause").addClass("hide");
+	$("#audioPause").removeClass("show");
+	audioEle.pause();
+	}else{
+		bootbox.alert("Please upload audio file to play.");
 	}
 }

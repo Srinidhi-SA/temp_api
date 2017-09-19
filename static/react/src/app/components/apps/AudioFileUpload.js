@@ -4,7 +4,7 @@ import {Link, Redirect} from "react-router-dom";
 import {push} from "react-router-redux";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
 import store from "../../store";
-import {showAudioFUModal,hideAudioFUModal,uploadAudioFileToStore,uploadAudioFile,clearAudioFile} from "../../actions/appActions";
+import {showAudioFUModal,hideAudioFUModal,uploadAudioFileToStore,uploadAudioFile,clearAudioFile,pauseAudioFile,playAudioFile} from "../../actions/appActions";
 import Dropzone from 'react-dropzone'
 
 @connect((store) => {
@@ -35,6 +35,12 @@ export class AudioFileUpload extends React.Component {
 	mediaFileUpload(){
 		this.props.dispatch(uploadAudioFile())
 	}
+	playUploadedFile(){
+		playAudioFile();
+	}
+	pauseUploadedFile(){
+		pauseAudioFile();	
+	}
 	render() {
 		console.log("audio file list is called##########3");
 		console.log(this.props)
@@ -46,7 +52,7 @@ export class AudioFileUpload extends React.Component {
 				<div class="newCardStyle firstCard">
 				<div class="card-header"></div>
 				<div class="card-center newStoryCard">
-				<div class="col-xs-12 text-center">Upload Audio File</div>
+				<div class="col-xs-12 text-center">Analyse Speech</div>
 				</div>
 				</div>
 				
@@ -58,12 +64,14 @@ export class AudioFileUpload extends React.Component {
 				<Modal.Body>
 				  <div className="form-group">
 				  <div className="pull-right">
-					<div><i className="fa fa-file-audio-o fa-3x" aria-hidden="true"></i></div>
+				  <audio id="myAudio" />
+					<div ><i className="fa fa-play fa-3x cursor xs-p-5" id="audioPlay" onClick={this.playUploadedFile.bind(this)} aria-hidden="true"></i>
+					<i className="fa fa-pause fa-3x cursor xs-p-5 hide" id="audioPause" onClick={this.pauseUploadedFile.bind(this)} aria-hidden="true"></i></div>
 					</div>
 					<div className="clearfix"></div>
 					<div className="xs-pt-20"></div>
 					<div className="dropzone ">
-					<Dropzone id={2} onDrop={this.onDropAudioFile} onDropRejected={this.showMsg} accept=".csv" >
+					<Dropzone id={2} onDrop={this.onDropAudioFile} onDropRejected={this.showMsg} accept=".mp3,.wav,.flac" >
 					<p>Try dropping some files here, or click to select files to upload.</p>
 					</Dropzone>
 					<aside>

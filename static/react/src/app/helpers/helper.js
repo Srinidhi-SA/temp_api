@@ -53,7 +53,9 @@ const CUSTOMER = "customer";
 const HISTORIAL = "historial";
 const EXTERNAL = "external";
 const APPID4 = 4;
-const APPNAME4 = "Audio File Upload"
+const APPNAME4 = "Speech Analytics";
+const DELETEAUDIO = "Delete Media File";
+const RENAMEAUDIO = "Rename Media File";
 
 
 
@@ -253,4 +255,6 @@ export{
 	EXTERNAL,
 	APPID4,
 	APPNAME4,
+	RENAMEAUDIO,
+	DELETEAUDIO,
 	}

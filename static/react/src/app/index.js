@@ -79,6 +79,7 @@ class App extends React.Component {
             <Route exact path="/apps-robo-list" component={RoboInsightList} />
             <Route exact path="/apps/audio" component={AudioFileList} />
             <Route exact path="/apps/audio/:audioSlug" component={AudioFileSummary} />				
+            <Route exact path="/apps/audio?page=:pageNo" component={AudioFileList} />
             </Main>
       </Switch>
       </BrowserRouter>

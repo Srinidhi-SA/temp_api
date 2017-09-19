@@ -41,6 +41,7 @@ export class AppsScoreDetail extends React.Component {
   render() {
     console.log("apps Score Detail View is called##########3");
     const scoreSummary = store.getState().apps.scoreSummary;
+    const scoreLink = "/apps/"+store.getState().apps.currentAppId+"/scores";
     console.log(scoreSummary)
 	if (!$.isEmptyObject(scoreSummary)) {
 		console.log(this.props)
@@ -61,6 +62,22 @@ export class AppsScoreDetail extends React.Component {
 		                <div className="panel panel-mAd documentModeSpacing ">
 		                    <div className="panel-heading">
 		                      <h2>{store.getState().apps.scoreSummary.name}</h2>
+		                      
+		                      <div className="btn-toolbar pull-right">
+		                        <div className="btn-group btn-space">
+		                        
+		                          <button type="button" className="btn btn-default" disabled = "true" title="Document Mode">
+		                              <i className="pe-7s-news-paper pe-lg"></i>
+		                            </button>
+							   <Link className="tabs-control right grp_legends_green continue" to={scoreLink}>
+		                          <button type="button" className="btn btn-default">
+		                            <i className="pe-7s-close pe-lg"></i>
+		                          </button>
+								 </Link>
+		                        </div>
+		                      </div>
+		                      
+		                      
 		                      <div className="clearfix"></div>
 		                    </div>
 		                   <div className="panel-body">
