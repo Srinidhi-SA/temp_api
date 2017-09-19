@@ -196,10 +196,11 @@ class SpeechAnalyzer:
                     "size": {
                         "height": 180
                     }
-                }
+                },
+                "gauge_format": True
             }
         }
-        
+
         return gauge_c3_chart_data
 
 
