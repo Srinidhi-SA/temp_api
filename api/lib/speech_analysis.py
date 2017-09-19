@@ -20,6 +20,7 @@ class SpeechAnalyzer:
     converted_text = ""
     nl_understanding = None # will store the understanding
     nl_understanding_nodestructure = None
+    sentiment_score = None
     
     def __init__(self, filepath):
         self.filepath = filepath
@@ -86,7 +87,14 @@ class SpeechAnalyzer:
             try:
                 sentiment = self.nl_understanding.get("sentiment").get("document")
                 sentiment_html = '<div class="sentiment-{}">Sentiment score: {}</div>'.format(sentiment.get("label"), sentiment.get("score") )
-                sentiment_card = self.__generate_normal_card("Sentiment",sentiment_html) 
+                sentiment_card = self.__generate_normal_card("Sentiment",sentiment_html)
+                temp_card_data = sentiment_card.get("cardData")
+
+                temp_card_data.append(self.__generate_c3_gauge_chart_card("Sentiment",sentiment.get("score")))
+                sentiment_card["cardData"] = temp_card_data
+
+                self.sentiment_score = sentiment.get("score")
+                self.sentiment_score = sentiment.get("score")
             except:
                 pass
 
@@ -123,18 +131,19 @@ class SpeechAnalyzer:
                 "listOfNodes" : [],
                 "listOfCards" : list_of_cards
             }
-        
-        
+
         return self.nl_understanding_nodestructure
-    
+
+
     def __get_emotions_html(self, emo, val):
         return '<div class="emotion-{}"><span class="emotion-title">{}</span><span class="emotion-percent">{}%</span></div>'.format(emo,emo,val*100)
+
 
     def __generate_normal_card(self, name, html):
         return {
                 "cardType": "normal",
                 "name": name,
-                "slug": "",
+                "slug": self.genarate_slug(name),
                 "cardData": [
                     {
                         "dataType": "html",
@@ -142,6 +151,67 @@ class SpeechAnalyzer:
                     }
                 ]
             }
+
+    def __generate_c3_gauge_chart_card(self, name, score):
+
+        score = round(score, 2)
+        gauge_c3_chart_data = {
+            "dataType": "c3Chart",
+            "data": {
+                "chart_c3": {
+                    "color": {
+                        "threshold": {
+                            "values": [
+                                -1,
+                                0,
+                                0.5,
+                                1
+                            ],
+                            "unit": "value"
+                        },
+                        # "pattern": [
+                        #     "#FF0000",
+                        #     "#F97600",
+                        #     "#F6C600",
+                        #     "#60B044"
+                        # ]
+                    },
+                    "data": {
+                        "type": "gauge",
+                        "columns": [
+                            [
+                                "data",
+                                score
+                            ]
+                        ]
+                    },
+                    "gauge": {
+                        "label": {
+                            "format" : ""
+                        },
+                        "max": 1,
+                        "min": -1,
+                        "width": 39
+                    },
+                    "size": {
+                        "height": 180
+                    }
+                }
+            }
+        }
+        
+        return gauge_c3_chart_data
+
+
+    def genarate_slug(self, name):
+        from django.template.defaultfilters import slugify
+        import random
+        import string
+        return slugify(str(name) + "-" + ''.join(
+            random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
+
+
+
 class SpeechAnalyzerTest:
     def testSpeechToText(self):
         sa = SpeechAnalyzer("test/mohanbi.wav")
@@ -170,11 +240,8 @@ if __name__ == "__main__":
     sa.generate_node_structure()
     print "=" * 100
     print(json.dumps(sa.nl_understanding_nodestructure))
-    
-    
-    
-        
-    
+
+
     
     
     
