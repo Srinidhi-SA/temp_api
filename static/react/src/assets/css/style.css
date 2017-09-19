@@ -14503,7 +14503,7 @@ a.disabled { color:#ccc !important; }
 .img-responsive.img-center { margin:0 auto; }
 .user-info h3 { margin-top:6px; }
 .user-profile small { text-transform:uppercase; color:#333333; font-size: 50% }
-.slick-prev, .slick-next {border:0;}
+.slick-prev, .slick-next { border-bottom: 1px solid #e8e8e8; height: 37px;}
 /**************** Css realated to developers, keep the source down ***/
 
 
