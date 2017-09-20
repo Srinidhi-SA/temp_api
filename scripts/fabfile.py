@@ -1,12 +1,10 @@
 """
-Strictly for madvisordev.marlabsai.com
-screen: p_9012
+Usage
+        fab <function_name>:[arg,arg1=val1]
+        e.g. fab deploy_api_development
 
-usage: go to scripts folder
-fab <function_name>
-
-or just use
-fab -list
+List
+        fab -list
 """
 
 from fabric.api import *
@@ -38,7 +36,7 @@ def dev():
     env.key_filename=[key_file]    
     env.host_string="{0}@{1}".format(server_details.get('username'), server_details.get('host'))
 
-    return {'server_details': server_details, 'path_details': path_details}
+    return {'server_details': server_details, 'path_details': path_details, 'type': 'development'}
 
 
     
@@ -60,11 +58,13 @@ def prod():
         "api_branch": "trainer/vivek_product_revamp"
     }
 
+
+
     key_file = BASE_DIR + "/config/keyfiles/TIAA.pem"
     env.key_filename = [key_file]
     env.host_string = "{0}@{1}".format(server_details.get('username'), server_details.get('host'))
 
-    return {'server_details':server_details, 'path_details':path_details}
+    return {'server_details':server_details, 'path_details':path_details, 'type':'production'}
 
 BRANCH_FUNCTION_MAPPING = {
     'development': dev(),
@@ -74,20 +74,30 @@ BRANCH_FUNCTION_MAPPING = {
     'trainer/vivek_product_revamp': dev()
 }
     
-
-def deploy_react(type="development"):
-    details = BRANCH_FUNCTION_MAPPING[type]
+@task
+def deploy_react(branch="development"):
+    """
+    Default deploy to development. Other options are production
+    """
+    details = BRANCH_FUNCTION_MAPPING[branch]
     path_details= details['path_details']
     server_details= details['server_details']
+    k = details['type']
 
     npm_install_and_deploy(
         server_details=server_details,
         path_details=path_details,
-        type=type
+        type=k
     )
 
 
+@task
 def deploy_api(type="development"):
+    """
+    Default deploy to development
+    :param type:
+    :return:
+    """
 
     details = BRANCH_FUNCTION_MAPPING[type]
     path_details= details['path_details']
