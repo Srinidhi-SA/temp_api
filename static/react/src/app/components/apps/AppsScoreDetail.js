@@ -10,6 +10,7 @@ import {Button} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js";
 import {isEmpty} from "../../helpers/helper";
 import {API} from "../../helpers/env";
+import {Link} from "react-router-dom";
 
 @connect((store) => {
 	return {login_response: store.login.login_response, 
