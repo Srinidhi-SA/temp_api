@@ -177,7 +177,7 @@ class SpeechAnalyzer:
 
         return """
          <div className="col-md-2">
-                 <h2><small>{}</small><br> {}% </h2>
+                 <h3><small><b>{}</b></small><br> {}% </h3>
          </div>
          """.format(emo.upper(), int(val * 100))
 
