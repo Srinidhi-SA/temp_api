@@ -39,7 +39,7 @@ export class DataSourceList extends React.Component {
 		this.props.dispatch(saveFileToStore(files))
 	}
 	popupMsg(){
-		alert("Only CSV files are allowed to upload")
+		bootbox.alert("Only CSV files are allowed to upload")
 	}
 	handleSelect(key){
 		this.props.dispatch(updateSelectedDataSrc(key))
@@ -74,7 +74,7 @@ export class DataSourceList extends React.Component {
 						<div className="clearfix"></div>
 						<div className="xs-pt-20"></div>
 						<div className="dropzone ">
-						<Dropzone onDrop={this.onDrop} accept=".csv" onDropRejected={this.popupMsg}>
+						<Dropzone id={1} onDrop={this.onDrop} accept=".csv" onDropRejected={this.popupMsg}>
 						<p>Try dropping some files here, or click to select files to upload.</p>
 						</Dropzone>
 						<aside>

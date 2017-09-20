@@ -10,11 +10,13 @@ import {storeSignalMeta} from "../../actions/dataActions";
 import CircularProgressbar from 'react-circular-progressbar';
 import {STATIC_URL} from "../../helpers/env.js"
 import {isEmpty} from "../../helpers/helper";
+import {Link} from "react-router-dom";
 
 @connect((store) => {
 	return {login_response: store.login.login_response, 
 		modelList:store.apps.modelList,modelSummary:store.apps.modelSummary,
 		modelSlug:store.apps.modelSlug,
+		currentAppId:store.apps.currentAppId
 		};
 })
 
@@ -42,6 +44,7 @@ export class AppsModelDetail extends React.Component {
   render() {
     console.log("apps Model Detail View is called##########3");
     const modelSummary = store.getState().apps.modelSummary;
+    const modelLink = "/apps/"+store.getState().apps.currentAppId+"/models";
 	if (!$.isEmptyObject(modelSummary)) {
 		console.log(this.props)
 		let listOfCardList = getListOfCards(modelSummary.data.model_summary.listOfCards)
@@ -66,6 +69,21 @@ export class AppsModelDetail extends React.Component {
 		                <div className="panel panel-mAd documentModeSpacing ">
 		                    <div className="panel-heading">
 		                      <h2>{store.getState().apps.modelSummary.name}</h2>
+		                      
+		                      <div className="btn-toolbar pull-right">
+		                        <div className="btn-group btn-space">
+		                        
+		                          <button type="button" className="btn btn-default" disabled = "true" title="Document Mode">
+		                              <i className="pe-7s-news-paper pe-lg"></i>
+		                            </button>
+							   <Link className="tabs-control right grp_legends_green continue" to={modelLink}>
+		                          <button type="button" className="btn btn-default">
+		                            <i className="pe-7s-close pe-lg"></i>
+		                          </button>
+								 </Link>
+		                        </div>
+		                      </div>
+		                      
 		                      <div className="clearfix"></div>
 		                    </div>
 		                   <div className="panel-body">

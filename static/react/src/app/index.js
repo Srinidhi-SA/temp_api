@@ -29,6 +29,8 @@ import {RoboInsightList} from "./components/apps/RoboInsightList";
 import {RoboDataUploadPreview} from "./components/apps/RoboDataUploadPreview";
 import {RoboDocumentMode} from "./components/apps/RoboDocumentMode";
 import {Profile} from "./components/common/profile";
+import {AudioFileList} from "./components/apps/AudioFileList";
+import {AudioFileSummary} from "./components/apps/AudioFileSummary";
 class App extends React.Component {
 
   render() {
@@ -75,6 +77,9 @@ class App extends React.Component {
             <Route exact path="/apps/:AppId/models/:modelSlug/data/:slug" component={DataPreview} />
             <Route exact path="/apps-robo/:roboSlug" component={RoboDataUploadPreview} />
             <Route exact path="/apps-robo-list" component={RoboInsightList} />
+            <Route exact path="/apps/audio" component={AudioFileList} />
+            <Route exact path="/apps/audio/:audioSlug" component={AudioFileSummary} />				
+            <Route exact path="/apps/audio?page=:pageNo" component={AudioFileList} />
             </Main>
       </Switch>
       </BrowserRouter>
