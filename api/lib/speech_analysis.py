@@ -215,6 +215,8 @@ class SpeechAnalyzer:
 
         }
 
+        return gauge_c3_chart_data
+
     def __generate_c3_gauge_chart_card(self, name, score):
 
         score = round(score, 2)
