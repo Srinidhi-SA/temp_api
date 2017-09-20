@@ -108,6 +108,26 @@ def deploy_api(type="development"):
         path_details=path_details
     )
 
+@task
+def deploy_api_and_migrate(type="development"):
+    """
+    Default deploy to development
+    :param type:
+    :return:
+    """
+
+    details = BRANCH_FUNCTION_MAPPING[type]
+    path_details= details['path_details']
+    server_details= details['server_details']
+
+    only_for_api_push_and_pull(
+        server_details=server_details,
+        path_details=path_details
+    )
+    pip_install_and_deploy_remote(
+        base_remote_path=path_details['base_remote_path']
+    )
+
 
 def deploy_ml(branch="development"):
     pass
@@ -159,16 +179,10 @@ def npm_install_and_deploy(server_details, path_details, type="development"):
     )
 
 
-def pip_install_and_deploy_remote():
+def pip_install_and_deploy_remote(base_remote_path):
     with cd(base_remote_path):
         sudo('pip install -r requirements.txt')
         run('python manage.py migrate')
-
-
-def final_everything():
-    pull_ui_and_merge_to_api()
-    npm_install_and_deploy_local()
-    pip_install_and_deploy_remote()
 
 
 def pull_ui_and_merge_to_api():
@@ -257,7 +271,6 @@ def only_for_api_push_and_pull(server_details, path_details):
 
 def apt_get(*packages):
     sudo('apt-get -y --no-upgrade install %s' % ' '.join(packages), shell=False)
-
 
 def install_mysql():
     with settings(hide('warnings', 'stderr'), warn_only=True):
