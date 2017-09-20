@@ -119,7 +119,11 @@ class SpeechAnalyzer:
                 categories_html = ""
                 categories_card = self.__generate_normal_card("Categories", categories_html)
 
-                categories = self.nl_understanding.get("categories")
+                categorires = []
+                for item in self.nl_understanding.get("categories"):
+                    item["label"]=item.get("label").split("/")[-1]
+                    categorires.append(item)
+                
                 temp_card_data = categories_card.get("cardData")
                 temp_card_data.append(self.get_categories_bar(categories))
                 categories_card["cardData"] = temp_card_data
@@ -177,7 +181,7 @@ class SpeechAnalyzer:
 
         return """
          <div className="col-md-2">
-                 <h3><small><b>{}</b></small><br> {}% </h3>
+                 <h2>{}%</h2><br><h3><small><b>{}</b></small></h3>
          </div>
          """.format(emo.upper(), int(val * 100))
 
