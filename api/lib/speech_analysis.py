@@ -86,15 +86,13 @@ class SpeechAnalyzer:
         if "sentiment" in self.nl_understanding:
             try:
                 sentiment = self.nl_understanding.get("sentiment").get("document")
-                sentiment_html = '<div class="sentiment-{}">Sentiment score: {}</div>'.format(sentiment.get("label"), sentiment.get("score") )
+                sentiment_html = ""
                 sentiment_card = self.__generate_normal_card("Sentiment",sentiment_html)
                 temp_card_data = sentiment_card.get("cardData")
 
                 temp_card_data.append(self.__generate_c3_gauge_chart_card("Sentiment",sentiment.get("score")))
                 sentiment_card["cardData"] = temp_card_data
 
-                self.sentiment_score = sentiment.get("score")
-                self.sentiment_score = sentiment.get("score")
             except:
                 pass
 
@@ -102,7 +100,7 @@ class SpeechAnalyzer:
         if "keywords" in self.nl_understanding:
             try:
                 keywords = self.nl_understanding.get("keywords")
-                keywods_html = " ".join( [ "<span>{}</span>".format(item.get("text")) for item in keywords])
+                keywords_html = ""
                 keywords_card = self.__generate_normal_card("Keywords",keywods_html)
 
 
@@ -116,7 +114,7 @@ class SpeechAnalyzer:
         categories_card = ""
         if "categories" in self.nl_understanding:
             try:
-                categories_html = "".join([ "<span>{}</span> <span>{}</span>".format(item.get("label").split("/")[-1], item.get("score")) for item in self.nl_understanding.get("categories")])
+                categories_html = ""
                 categories_card = self.__generate_normal_card("Categories", categories_html)
 
                 categories = self.nl_understanding.get("categories")
@@ -144,19 +142,22 @@ class SpeechAnalyzer:
         simple_html_card = self.__generate_normal_card("", self.generate_para_html())
 
 
-
-        if emotions_card:
-            list_of_cards.append(emotions_card)
-        if keywords_card:
-            list_of_cards.append(keywords_card)
-        if sentiment_card:
-            list_of_cards.append(sentiment_card)
-        if categories_card:
-            list_of_cards.append(categories_card)
-
         if simple_html_card:
             list_of_cards.append(simple_html_card)
 
+        if sentiment_card:
+            list_of_cards.append(sentiment_card)
+        
+        if emotions_card:
+            list_of_cards.append(emotions_card)
+            
+        if keywords_card:
+            list_of_cards.append(keywords_card)
+       
+        if categories_card:
+            list_of_cards.append(categories_card)
+
+        
         self.nl_understanding_nodestructure = {
                 "name": "Overview card",
                 "slug": "fdfdfd_overview",
@@ -173,7 +174,7 @@ class SpeechAnalyzer:
     def __get_emotions_html(self, emo, val):
 
         return """
-         <div class="col-md-4">
+         <div className="col-md-4">
                  <img src="/static/assets/images/{}.png" width="80" class="pull-left" >
                  <h2 class="pull-left"><small>{}</small><br> {}% </h2>
          </div>
@@ -187,7 +188,7 @@ class SpeechAnalyzer:
                 "cardData": [
                     {
                         "dataType": "html",
-                        "data": "<h1>{}</h1>{}".format(name, html)   
+                        "data": '<p><h2>{}</h2>{}</p>'.format(name, html)   
                     }
                 ]
             }
@@ -255,13 +256,13 @@ class SpeechAnalyzer:
         categories_html = " and ".join(["<strong>{}</strong>".format(item.get("label").split("/")[-1]) for item in
                                     self.nl_understanding.get("categories")[:2]])
 
-        return """The overall sentiment in the speech seems to be {} {}.
+        return """<p>The overall sentiment in the speech seems to be {} {}.
             The most predominant emotion is <strong>{}</strong> at around {}%.
             Another important emotion identified is  <strong>{}</strong> at {}%.
            mAdvisor identified {} keywords in the speech,
             {}
             having the highest relevance.
-           The major categories are {}.
+           The major categories are {}.</p>
              """.format(self.nl_understanding.get("sentiment").get("document").get("label"),
                         round(self.nl_understanding.get("sentiment").get("document").get("score"), 2),
                         best_emotion, int(best_value * 100),
