@@ -243,10 +243,10 @@ class SpeechAnalyzer:
                     }
                 },
                 "gauge_format": True,
-                "xdata":["score"],
-                "table_c3": [
-                    ['score', score]
-                ]
+                # "xdata":["score"],
+                # "table_c3": [
+                #     ['score', score]
+                # ]
             }
         }
 
