@@ -235,12 +235,12 @@ class SpeechAnalyzer:
                             ],
                             "unit": "value"
                         },
-                        # "pattern": [
-                        #     "#FF0000",
-                        #     "#F97600",
-                        #     "#F6C600",
-                        #     "#60B044"
-                        # ]
+                        "pattern": [
+                            '#0fc4b5',
+                            '#005662',
+                            '#148071',
+                            '#6cba86'
+                        ]
                     },
                     "data": {
                         "type": "gauge",
@@ -309,17 +309,14 @@ class SpeechAnalyzer:
             random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
 
 
-    def get_bar_chart(self, data, rotate=False, x="label", y="score"):
+    def get_bar_chart(self, data, rotate=False, x="label", y="score", label_text=None):
 
         c3 = C3chart_ML(
             axes={
                 "x": x,
                 "y": y
             },
-            label_text={
-                "x": x,
-                "y": y
-            },
+            label_text=label_text,
             data=data,
             axisRotation=rotate
         )
@@ -341,7 +338,11 @@ class SpeechAnalyzer:
 
         data = categories
         return self.get_bar_chart(
-            data=data
+            data=data,
+            label_text={
+                "x": "category",
+                "y": "score"
+            }
         )
 
     def get_keywords_bar(self, keywords):
@@ -357,7 +358,11 @@ class SpeechAnalyzer:
         return self.get_bar_chart(
             data=data,
             x='text',
-            y='score'
+            y='score',
+            label_text={
+                "x": "keyword",
+                "y": "score"
+            }
         )
 
     def get_entities_bar(self, entities):
@@ -373,7 +378,11 @@ class SpeechAnalyzer:
         return self.get_bar_chart(
             data=data,
             x='type',
-            y='relevance'
+            y='relevance',
+            label_text={
+                "x": "entity",
+                "y": "relevance"
+            }
         )
 
 
