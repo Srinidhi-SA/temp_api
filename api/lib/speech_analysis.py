@@ -103,8 +103,7 @@ class SpeechAnalyzer:
             try:
                 keywords = self.nl_understanding.get("keywords")
                 keywords_html = ""
-                keywords_card = self.__generate_normal_card("Keywords",keywods_html)
-
+                keywords_card = self.__generate_normal_card("Keywords",keywords_html)
 
                 temp_card_data = keywords_card.get("cardData")
                 temp_card_data.append(self.get_keywords_bar(keywords))
@@ -244,7 +243,7 @@ class SpeechAnalyzer:
                     }
                 },
                 "gauge_format": True,
-                "xdata":"score",
+                "xdata":["score"],
                 "table_c3": [
                     ['score', score]
                 ]
