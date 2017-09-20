@@ -9,7 +9,9 @@ import watson_developer_cloud.natural_language_understanding.features.v1 \
   as Features
 from watson_developer_cloud.natural_language_understanding_v1 import NaturalLanguageUnderstandingV1
 
+from api.helper import decode_and_convert_chart_raw_data
 from django.conf import settings
+
 
 nlu_settings = settings.NATURAL_LANGUAGE_UNDERSTANDING_SETTINGS
 VOICE_TO_TEXT_SETTINGS = settings.VOICE_TO_TEXT_SETTINGS
@@ -348,7 +350,6 @@ class SpeechAnalyzer:
         )
 
 
-from api.helper import decode_and_convert_chart_raw_data
 
 
 class C3chart_ML(object):
