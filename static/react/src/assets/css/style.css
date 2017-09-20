@@ -14000,7 +14000,7 @@ a.tabs-control.right span { right: 5px; }
     border-bottom: 1px solid #e8e8e8;
 }
 .sb_navigation li a { padding: 7px; /* margin: 0 5px; text-align: center; */ display: block; color:#636363; }
-.sb_navigation li a span {white-space: nowrap; width: 156px; overflow: hidden; text-overflow: ellipsis; display: inline-block; vertical-align: middle; }
+.sb_navigation li a span {white-space: nowrap; width: 143px; overflow: hidden; text-overflow: ellipsis; display: inline-block; vertical-align: middle; }
 .sb_navigation li a.active { color: #00998c;}
 
 /*************************/
