@@ -130,6 +130,7 @@ class SpeechAnalyzer:
                 pass
 
         entities_card = ""
+        entity_chart = False
         if "entities" in self.nl_understanding:
             try:
                 entities_html = ""
@@ -138,7 +139,10 @@ class SpeechAnalyzer:
                 entities = self.nl_understanding.get("entities")
 
                 temp_card_data = entities_card.get("cardData")
-                temp_card_data.append(self.get_entities_bar(entities))
+                chart_card = self.get_entities_bar(entities)
+                if chart_card:
+                    entity_chart = True
+                temp_card_data.append(chart_card)
                 entities_card["cardData"] = temp_card_data
             except:
                 pass
@@ -161,10 +165,9 @@ class SpeechAnalyzer:
         if categories_card:
             list_of_cards.append(categories_card)
 
-        if entities_card:
+        if entities_card and entity_chart:
             list_of_cards.append(entities_card)
 
-        
         self.nl_understanding_nodestructure = {
                 "name": "Overview card",
                 "slug": "fdfdfd_overview",
