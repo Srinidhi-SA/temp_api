@@ -92,7 +92,8 @@ class SpeechAnalyzer:
                 sentiment_card = self.__generate_normal_card("Sentiment",sentiment_html)
                 temp_card_data = sentiment_card.get("cardData")
 
-                temp_card_data.append(self.__generate_react_gauge_chart_card("Sentiment",sentiment.get("score")))
+                # temp_card_data.append(self.__generate_react_gauge_chart_card("Sentiment",sentiment.get("score")))
+                temp_card_data.append(self.__generate_c3_gauge_chart_card("Sentiment",sentiment.get("score")))
                 sentiment_card["cardData"] = temp_card_data
 
             except:
