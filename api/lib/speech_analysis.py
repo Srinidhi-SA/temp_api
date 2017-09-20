@@ -128,21 +128,20 @@ class SpeechAnalyzer:
                 categories_card["cardData"] = temp_card_data
             except:
                 pass
-        #
-        # entities_card = ""
-        # if "entities" in self.nl_understanding:
-        #     try:
-        #         categories_html = "".join(
-        #             ["<span>{}</span> <span>{}</span>".format(item.get("label").split("/")[-1], item.get("score")) for
-        #              item in self.nl_understanding.get("categories")])
-        #         categories_card = self.__generate_normal_card("Categories", categories_html)
-        #
-        #         categories = self.nl_understanding.get("categories")
-        #         temp_card_data = categories_card.get("cardData")
-        #         temp_card_data.append(self.get_categories_bar(categories))
-        #         categories_card["cardData"] = temp_card_data
-        #     except:
-        #         pass
+
+        entities_card = ""
+        if "entities" in self.nl_understanding:
+            try:
+                entities_html = ""
+                entities_card = self.__generate_normal_card("Entities", entities_html)
+
+                entities = self.nl_understanding.get("entities")
+
+                temp_card_data = entities_card.get("cardData")
+                temp_card_data.append(self.get_entities_bar(entities))
+                entities_card["cardData"] = temp_card_data
+            except:
+                pass
 
         simple_html_card = self.__generate_normal_card("", self.generate_para_html())
 
@@ -161,6 +160,9 @@ class SpeechAnalyzer:
        
         if categories_card:
             list_of_cards.append(categories_card)
+
+        if entities_card:
+            list_of_cards.append(entities_card)
 
         
         self.nl_understanding_nodestructure = {
@@ -345,13 +347,13 @@ class SpeechAnalyzer:
 
         for d in entities:
             temp = {}
-            temp['text'] = d.get('text')
+            temp['type'] = d.get('type')
             temp['relevance'] = d.get('relevance')
             data.append(temp)
 
         return self.get_bar_chart(
             data=data,
-            x='text',
+            x='type',
             y='relevance'
         )
 
