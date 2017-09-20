@@ -80,7 +80,7 @@ class SpeechAnalyzer:
         emotions_card = ""
         if "emotion" in self.nl_understanding:
             try:
-                emotions_html = "".join([ self.__get_emotions_html(k, v ) for (k,v) in self.nl_understanding.get("emotion").get("document").get("emotion").items()])
+                emotions_html = '<div className="row">{}</div>'.format( "".join([ self.__get_emotions_html(k, v ) for (k,v) in self.nl_understanding.get("emotion").get("document").get("emotion").items()]))
                 emotions_card = self.__generate_normal_card("Emotions", emotions_html)
             except:
                 pass
@@ -179,7 +179,7 @@ class SpeechAnalyzer:
          <div className="col-md-4">
                  <h2><small>{}</small><br> {}% </h2>
          </div>
-         """.format(emo, int(val * 100))
+         """.format(emo.upper(), int(val * 100))
 
     def __generate_normal_card(self, name, html):
         return {
