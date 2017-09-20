@@ -75,8 +75,17 @@ BRANCH_FUNCTION_MAPPING = {
 }
     
 
-def deploy_react(branch="development"):
-    pass
+def deploy_react(type="development"):
+    details = BRANCH_FUNCTION_MAPPING[type]
+    path_details= details['path_details']
+    server_details= details['server_details']
+
+    npm_install_and_deploy(
+        server_details=server_details,
+        path_details=path_details,
+        type=type
+    )
+
 
 def deploy_api(type="development"):
 
@@ -100,14 +109,24 @@ def restart_gunicorn():
 def remote_uname():
     run('uname -a')
 
-def do_npm():
+
+def do_npm_install(react_path):
     with lcd(BASE_DIR + react_path):
         local("rm -rf dist")
         local("npm install")
+
+
+def do_npm_run(branch):
+
+    if "development" == branch:
         local("npm run buildDev")
+    elif "production" == branch:
+        local("npm run buildProd")
+    elif "local" == branch:
+        local("npm run buildLinux")
 
 
-def deploy_dist_to_destination():
+def deploy_dist_to_destination(base_remote_path, react_path):
     import random
     with cd(base_remote_path + react_path):
         run("cp -r dist dist_{0}".format(random.randint(10,100)))
@@ -118,9 +137,13 @@ def deploy_dist_to_destination():
     )
 
 
-def npm_install_and_deploy_local():
-    do_npm()
-    deploy_dist_to_destination()
+def npm_install_and_deploy(server_details, path_details, type="development"):
+    do_npm_install(path_details['react_path'])
+    do_npm_run(type)
+    deploy_dist_to_destination(
+        base_remote_path=path_details['base_remote_path'],
+        react_path=path_details['react_path']
+    )
 
 
 def pip_install_and_deploy_remote():
