@@ -20,30 +20,71 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 print BASE_DIR
 
 # BASEDIR = settings.BASE_DIR
-key_file = BASE_DIR + "/config/keyfiles/TIAA.pem"
 
-server_details = {
-    "known name": "madvisordev.marlabsai.com",
-    "username": "ubuntu",
-    "host": "34.196.204.54",
-    "port": "9012",
-    "initail_domain": "/api"
-}
 
+# server_details = {
+#     "known name": "madvisordev.marlabsai.com",
+#     "username": "ubuntu",
+#     "host": "34.196.204.54",
+#     "port": "9012",
+#     "initail_domain": "/api"
+# }
+
+server_details = {}
 react_path = "/static/react"
 asset_path = "/static/asset"
 base_remote_path = "/home/ubuntu/codebase/mAdvisor-api"
+# 
+# ui_branch = "react-ui-development"
+# api_branch = "trainer/vivek_product_revamp"
+# 
+# 
+# 
 
-ui_branch = "react-ui-development"
-api_branch = "trainer/vivek_product_revamp"
 
-env.key_filename=[key_file]
-env.host_string="{0}@{1}".format(server_details.get('username'), server_details.get('host'))
+def dev():
+    """Set dev related variables"""
+    server_details = {
+        "known name": "madvisordev.marlabsai.com",
+        "username": "ubuntu",
+        "host": "34.196.204.54",
+        "port": "9012",
+        "initail_domain": "/api"
+    }
+    key_file = BASE_DIR + "/config/keyfiles/TIAA.pem"
+    env.key_filename=[key_file]    
+    env.host_string="{0}@{1}".format(server_details.get('username'), server_details.get('host'))
+    
+def prod():
+    """Set prod related variables"""
+    server_details = {
+        "known name": "madvisor.marlabsai.com",
+        "username": "ubuntu",
+        "host": "something",
+        "port": "9012",
+        "initail_domain": "/api"
+    }
+    key_file = BASE_DIR + "/config/keyfiles/TIAA.pem"
+    env.key_filename=[key_file]    
+    env.host_string="{0}@{1}".format(server_details.get('username'), server_details.get('host'))
+    
+
+def deploy_react(branch="development"):
+    pass
+
+def deploy_api(branch="development"):
+    print(branch)
+    pass
+
+def deploy_ml(branch="development"):
+    pass
+
+def restart_gunicorn():
+    pass
 
 
 def remote_uname():
     run('uname -a')
-
 
 def do_npm():
     with lcd(BASE_DIR + react_path):
