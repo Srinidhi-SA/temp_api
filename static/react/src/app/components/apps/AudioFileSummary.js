@@ -26,7 +26,7 @@ export class AudioFileSummary extends React.Component {
 	}
 	componentWillMount() {
 		//It will trigger when refresh happens on url
-		if(isEmpty(this.props.audioSummary)){
+		if(isEmpty(this.props.audioFileSummary)){
 			this.props.dispatch(getAudioFile(this.props.match.params.audioSlug));   
 		}
 	}
@@ -112,7 +112,7 @@ export class AudioFileSummary extends React.Component {
 						<div className="row-fluid"> 
 
 						{cardDataList}
-
+						<div className="clearfix"></div>
 						</div>
 
 						</div>
