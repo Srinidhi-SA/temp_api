@@ -22,24 +22,28 @@ print BASE_DIR
 # BASEDIR = settings.BASE_DIR
 
 
-# server_details = {
-#     "known name": "madvisordev.marlabsai.com",
-#     "username": "ubuntu",
-#     "host": "34.196.204.54",
-#     "port": "9012",
-#     "initail_domain": "/api"
-# }
+server_details = {
+    "known name": "madvisordev.marlabsai.com",
+    "username": "ubuntu",
+    "host": "34.196.204.54",
+    "port": "9012",
+    "initail_domain": "/api"
+}
 
-server_details = {}
+key_file = BASE_DIR + "/config/keyfiles/TIAA.pem"
+env.key_filename = [key_file]
+env.host_string = "{0}@{1}".format(server_details.get('username'), server_details.get('host'))
+
+# server_details = {}
 react_path = "/static/react"
 asset_path = "/static/asset"
 base_remote_path = "/home/ubuntu/codebase/mAdvisor-api"
-# 
-# ui_branch = "react-ui-development"
-# api_branch = "trainer/vivek_product_revamp"
-# 
-# 
-# 
+
+ui_branch = "react-ui-development"
+api_branch = "trainer/vivek_product_revamp"
+
+
+
 
 
 def dev():
