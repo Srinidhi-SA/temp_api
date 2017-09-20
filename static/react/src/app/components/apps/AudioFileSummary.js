@@ -112,7 +112,7 @@ export class AudioFileSummary extends React.Component {
 						<div className="row-fluid"> 
 
 						{cardDataList}
-						<div className="clearfix"></div>
+
 						</div>
 
 						</div>
