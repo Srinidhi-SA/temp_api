@@ -14734,3 +14734,10 @@ svg[class^='chart']{
 #tab_visualizations .panel-body {
     min-height: 244px;
 }
+.gauageMeter{
+height: 200px !important;
+background: #FFF;
+text-align:center !important;	
+}
+
+ 

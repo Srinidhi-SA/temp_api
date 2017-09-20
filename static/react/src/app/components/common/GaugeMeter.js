@@ -16,11 +16,7 @@ export class GaugeMeter extends React.Component {
    var data = this.props.jsonData;
    console.log("checking GaugeMeter element");
    return (
-          <div style={{
-        	    width: "500px",
-        	    height: "200px",
-        	    background: "#FFF"
-        	}}>
+          <div className="gauageMeter">
         	    <ReactSpeedometer
         	        minValue={data.min}
         	        maxValue={data.max}
