@@ -330,7 +330,7 @@ class SpeechAnalyzer:
         for d in keywords:
             temp = {}
             temp['text'] = d.get('text')
-            temp['score'] = d.get('sentiment').get('score')
+            temp['score'] = d.get('relevance')
             data.append(temp)
 
         return self.get_bar_chart(
