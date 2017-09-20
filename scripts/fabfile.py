@@ -116,14 +116,14 @@ def do_npm_install(react_path):
         local("npm install")
 
 
-def do_npm_run(branch):
-
-    if "development" == branch:
-        local("npm run buildDev")
-    elif "production" == branch:
-        local("npm run buildProd")
-    elif "local" == branch:
-        local("npm run buildLinux")
+def do_npm_run(branch, react_path):
+    with lcd(BASE_DIR + react_path):
+        if "development" == branch:
+            local("npm run buildDev")
+        elif "production" == branch:
+            local("npm run buildProd")
+        elif "local" == branch:
+            local("npm run buildLinux")
 
 
 def deploy_dist_to_destination(base_remote_path, react_path):
@@ -139,7 +139,10 @@ def deploy_dist_to_destination(base_remote_path, react_path):
 
 def npm_install_and_deploy(server_details, path_details, type="development"):
     do_npm_install(path_details['react_path'])
-    do_npm_run(type)
+    do_npm_run(
+        branch=type,
+        react_path=path_details['react_path']
+    )
     deploy_dist_to_destination(
         base_remote_path=path_details['base_remote_path'],
         react_path=path_details['react_path']
