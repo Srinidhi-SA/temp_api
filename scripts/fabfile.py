@@ -16,36 +16,6 @@ from fabric.contrib import files
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# BASE_DIR starts at madvisor_api
-print BASE_DIR
-
-# BASEDIR = settings.BASE_DIR
-
-
-server_details = {
-    "known name": "madvisordev.marlabsai.com",
-    "username": "ubuntu",
-    "host": "34.196.204.54",
-    "port": "9012",
-    "initail_domain": "/api"
-}
-
-key_file = BASE_DIR + "/config/keyfiles/TIAA.pem"
-env.key_filename = [key_file]
-env.host_string = "{0}@{1}".format(server_details.get('username'), server_details.get('host'))
-
-# server_details = {}
-react_path = "/static/react"
-asset_path = "/static/asset"
-base_remote_path = "/home/ubuntu/codebase/mAdvisor-api"
-
-ui_branch = "react-ui-development"
-api_branch = "trainer/vivek_product_revamp"
-
-
-
-
-
 def dev():
     """Set dev related variables"""
     server_details = {
@@ -55,30 +25,70 @@ def dev():
         "port": "9012",
         "initail_domain": "/api"
     }
+
+    path_details = {
+        "react_path" : "/static/react",
+        "asset_path" : "/static/asset",
+        "base_remote_path" : "/home/ubuntu/codebase/mAdvisor-api",
+        "ui_branch" : "react-ui-development",
+        "api_branch" : "trainer/vivek_product_revamp"
+    }
+
     key_file = BASE_DIR + "/config/keyfiles/TIAA.pem"
     env.key_filename=[key_file]    
     env.host_string="{0}@{1}".format(server_details.get('username'), server_details.get('host'))
+
+    return {'server_details': server_details, 'path_details': path_details}
+
+
     
 def prod():
-    """Set prod related variables"""
+    """Set dev related variables"""
     server_details = {
-        "known name": "madvisor.marlabsai.com",
+        "known name": "madvisordev.marlabsai.com",
         "username": "ubuntu",
-        "host": "something",
+        "host": "34.196.204.54",
         "port": "9012",
         "initail_domain": "/api"
     }
+
+    path_details = {
+        "react_path": "/static/react",
+        "asset_path": "/static/asset",
+        "base_remote_path": "/home/ubuntu/codebase/mAdvisor-api",
+        "ui_branch": "react-ui-development",
+        "api_branch": "trainer/vivek_product_revamp"
+    }
+
     key_file = BASE_DIR + "/config/keyfiles/TIAA.pem"
-    env.key_filename=[key_file]    
-    env.host_string="{0}@{1}".format(server_details.get('username'), server_details.get('host'))
+    env.key_filename = [key_file]
+    env.host_string = "{0}@{1}".format(server_details.get('username'), server_details.get('host'))
+
+    return {'server_details':server_details, 'path_details':path_details}
+
+BRANCH_FUNCTION_MAPPING = {
+    'development': dev(),
+    'dev': dev(),
+    'production': prod(),
+    'prod': prod(),
+    'trainer/vivek_product_revamp': dev()
+}
     
 
 def deploy_react(branch="development"):
     pass
 
-def deploy_api(branch="development"):
-    print(branch)
-    pass
+def deploy_api(type="development"):
+
+    details = BRANCH_FUNCTION_MAPPING[type]
+    path_details= details['path_details']
+    server_details= details['server_details']
+
+    only_for_api_push_and_pull(
+        server_details=server_details,
+        path_details=path_details
+    )
+
 
 def deploy_ml(branch="development"):
     pass
@@ -157,7 +167,7 @@ def pull_ui_and_merge_to_api():
         print "Keep Calm. Wait. Take a Breath. Remember Absurdism."
 
 
-def push_api_to_remote():
+def push_api_to_remote(api_branch):
 
     try:
         with lcd(BASE_DIR):
@@ -179,7 +189,7 @@ def push_api_to_remote():
         print "finally loop."
 
 
-def pull_api_at_remote():
+def pull_api_at_remote(base_remote_path, api_branch):
 
     try:
         with cd(base_remote_path):
@@ -199,9 +209,14 @@ def pull_api_at_remote():
     finally:
         print "finally loop."
 
-def only_for_api_push_and_pull():
-    push_api_to_remote()
-    pull_api_at_remote()
+def only_for_api_push_and_pull(server_details, path_details):
+    push_api_to_remote(
+        path_details['api_branch']
+    )
+    pull_api_at_remote(
+        path_details['base_remote_path'],
+        path_details['api_branch']
+    )
 
 
 def apt_get(*packages):
