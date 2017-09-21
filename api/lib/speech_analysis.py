@@ -185,9 +185,9 @@ class SpeechAnalyzer:
     def __get_emotions_html(self, emo, val):
 
         return """
-         <div className="col-md-2">
-                 <img src="/static/assets/images/emotions/{}.png"
+         <div className="col-md-2 text-center">
                  <h2>{}%<br><small><b>{}</b></small></h2>
+                 <img src="/static/assets/images/emotions/{}.png" />
          </div>
          """.format(emo.lower(), int(val * 100), emo.upper())
 
