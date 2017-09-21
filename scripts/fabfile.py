@@ -259,6 +259,7 @@ def pull_api_at_remote(base_remote_path, api_branch):
     finally:
         print "finally loop."
 
+
 def only_for_api_push_and_pull(server_details, path_details):
     push_api_to_remote(
         path_details['api_branch']
@@ -284,3 +285,10 @@ def install_mysql():
     sudo('echo "mysql-server-5.0 mysql-server/root_password_again password ' \
                               '%s" | debconf-set-selections' % mysql_password)
     apt_get('mysql-server')
+
+
+def save_db_copy(branch="local"):
+    pass
+
+def get_remote_db(branch="development"):
+    pass
