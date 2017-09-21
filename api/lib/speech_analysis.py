@@ -189,7 +189,7 @@ class SpeechAnalyzer:
                  <h2>{}%<br><small><b>{}</b></small></h2>
                  <img src="/static/assets/images/emotions/{}.png" />
          </div>
-         """.format(emo.lower(), int(val * 100), emo.upper())
+         """.format(emo.upper(), int(val * 100), emo.lower())
 
     def __generate_normal_card(self, name, html):
         return {
