@@ -51,9 +51,9 @@ export class AudioFileSummary extends React.Component {
 			let listOfCardList = getListOfCards(audioSummary.meta_data.listOfCards)
 			let cardDataList = listOfCardList.map((data, i) => {
 				if(i == 1)
-					return (<div className="col-md-4"><Card cardData={data} /></div>)
+					return (<div className="col-md-4"><Card key={i} cardData={data} /></div>)
 			    if(i == 2)
-					return (<div><div className="col-md-8"><Card cardData={data} /></div><div class="clearfix"></div></div>)
+					return (<div><div className="col-md-8"><Card key={i} cardData={data} /></div><div class="clearfix"></div></div>)
 				else return (<Card key={i} cardData={data} />)
 
 			});
