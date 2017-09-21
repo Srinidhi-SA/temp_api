@@ -14,8 +14,9 @@ from fabric.contrib import files
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+@task
 def dev():
-    """Set dev related variables"""
+    """Set dev environemnt"""
     server_details = {
         "known name": "madvisordev.marlabsai.com",
         "username": "ubuntu",
@@ -39,9 +40,9 @@ def dev():
     return {'server_details': server_details, 'path_details': path_details, 'type': 'development'}
 
 
-    
+@task
 def prod():
-    """Set dev related variables"""
+    """Set prod environemnt"""
     server_details = {
         "known name": "madvisordev.marlabsai.com",
         "username": "ubuntu",
