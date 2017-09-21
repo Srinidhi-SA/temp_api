@@ -14502,7 +14502,7 @@ a.disabled { color:#ccc !important; }
 .search-box:not(:valid) ~ .close-icon {
 	display: none;
 }
-.fa.fa-table.pull-right { cursor: pointer; color: #747474; }
+.fa.fa-table.pull-right { cursor: pointer; color: #747474; font-size: 15px;}
 .full-table-width { width:100%; }
 .minHP { min-height:120px; }
 
