@@ -103,9 +103,9 @@ export class RoboDataUploadPreview extends React.Component {
     		<div className="side-body">
             <div className="main-content">
             <Tabs activeKey={store.getState().apps.roboUploadTabId} onSelect={this.handleTabSelect.bind(this)} id="controlled-tab-example" >
-            <Tab eventKey={CUSTOMER} title="Customer Data"><div class="tab-div" id={CUSTOMER}></div></Tab>
-            <Tab eventKey={HISTORIAL} title="Historial Data"><div class="tab-div" id={HISTORIAL}></div></Tab>
-            <Tab eventKey={EXTERNAL} title="External Data"><div  class="tab-div" id={EXTERNAL}></div></Tab>
+            <Tab eventKey={CUSTOMER} title="Customer Data"><div className="tab-div" id={CUSTOMER}></div></Tab>
+            <Tab eventKey={HISTORIAL} title="Historial Data"><div className="tab-div" id={HISTORIAL}></div></Tab>
+            <Tab eventKey={EXTERNAL} title="External Data"><div  className="tab-div" id={EXTERNAL}></div></Tab>
           </Tabs>
         </div>
         </div>

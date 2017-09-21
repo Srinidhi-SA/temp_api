@@ -594,6 +594,7 @@ export function getRoboDataset(slug) {
 				if(json.status == SUCCESS){
 					clearInterval(appsInterval);
 					dispatch(fetchRoboSummarySuccess(json));
+					dispatch(getDataSetPreview(json.customer_dataset.slug))
 					dispatch(updateRoboAnalysisData(json,"/apps-robo"));
 					dispatch(closeAppsLoaderValue());
 					dispatch(showRoboDataUploadPreview(true));
