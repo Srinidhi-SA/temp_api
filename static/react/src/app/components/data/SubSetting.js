@@ -57,6 +57,7 @@ export class SubSetting extends React.Component {
           return (
             <div>
               <div id="measure_subsetting">
+							<h4>{this.props.item.name}</h4>
                 <div className="col-xs-4">
                   <input type="text" className="form-control" id="from_value" value={this.state.min}/>
                 </div>
@@ -91,6 +92,7 @@ export class SubSetting extends React.Component {
               {/* for dimention */}
               <div id="dimention_subsetting">
                 <div className="row">
+								<h4>{this.props.item.name}</h4>
 								<div class="col-md-12 cst-scroll-panel">
 										<div class="table-responsive">
 											<table class="table table-condensed table-hover table-bordered">
@@ -123,7 +125,8 @@ export class SubSetting extends React.Component {
           return (
             <div>{/*for date*/}
               <div id="date_subsetting">
-                date subsetting
+							<h4>{this.props.item.name}</h4>
+              date subsetting
               </div>
             </div>
           );
@@ -174,6 +177,7 @@ export class SubSetting extends React.Component {
             <div id="pnl_tbset" className="panel-collapse collapse in" aria-expanded="true">
               <div className="panel-body">
   							{subsettingsTemplate}
+								<hr />
                 <div class="text-right" id="saveSubSetting">
                   <Button class="btn btn-alt4" onClick={this.saveSubSetting.bind(this)}>
                     Save
