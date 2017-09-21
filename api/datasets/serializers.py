@@ -43,6 +43,7 @@ class DatasetSerializer(serializers.ModelSerializer):
         meta_data = ret.get('meta_data')
         if 'possibleAnalysis' in meta_data:
             meta_data['possibleAnalysis'] = settings.ANALYSIS_FOR_TARGET_VARIABLE
+        meta_data['advanced_settings'] = settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS
 
         return ret
 

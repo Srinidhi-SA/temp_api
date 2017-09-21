@@ -451,4 +451,122 @@ VOICE_TO_TEXT_SETTINGS = {
         "password": "UXiMa7qNp68f"
         }
 
+ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS = {
+        "analysis": [{
+                "name": "overview",
+                "displayName": "Overview",
+                "status": False,
+                "variableCount": [],
+                "analysisSubTypes": []
+            },
+            {
+                "name": "trend analysis",
+                "displayName": "Trend Analysis",
+                "status": False,
+                "variableCount": [],
+                "analysisSubTypes": [{
+                        "name": "overview",
+                        "displayName": "Overview",
+                        "status": False
+                    },
+                    {
+                        "name": "factors that drive up",
+                        "displayName": "Factors that drive up",
+                        "status": False
+                    },
+                    {
+                        "name": "factors that drive down",
+                        "displayName": "Factors that drive down",
+                        "status": False
+                    },
+                    {
+                        "name": "forecast",
+                        "displayName": "Forecast",
+                        "status": False
+                    }
 
+                ]
+            },
+            {
+                "name": "Performance Analysis",
+                "displayName": "Performance Analysis",
+                "status": False,
+                "variableCount": [{
+                        "name": "Low",
+                        "value": 3,
+                        "status": True
+                    },
+                    {
+                        "name": "Medium",
+                        "value": 5,
+                        "status": False
+                    },
+                    {
+                        "name": "High",
+                        "value": 10,
+                        "status": False
+                    }
+                ],
+                "analysisSubTypes": [{
+                        "name": "overview",
+                        "displayName": "Overview",
+                        "status": False
+                    },
+                    {
+                        "name": "Top Sublevel",
+                        "displayName": "Top Sublevel",
+                        "status": False
+                    },
+                    {
+                        "name": "Trend for top Sublevel",
+                        "displayName": "Trend for top Sublevel",
+                        "status": False
+                    }
+                ]
+            },
+            {
+                "name": "influencers",
+                "displayName": "Influencers",
+                "status": False,
+                "variableCount": [{
+                        "name": "Low",
+                        "value": 3,
+                        "status": True
+                    },
+                    {
+                        "name": "Medium",
+                        "value": 5,
+                        "status": False
+                    },
+                    {
+                        "name": "High",
+                        "value": 10,
+                        "status": False
+                    }
+                ],
+                "analysisSubTypes": [{
+                        "name": "overview",
+                        "displayName": "Overview",
+                        "status": False
+                    },
+                    {
+                        "name": "Key areas of Impact",
+                        "displayName": "Key areas of Impact",
+                        "status": False
+                    },
+                    {
+                        "name": "Trend analysis",
+                        "displayName": "Trend analysis",
+                        "status": False
+                    }
+                ]
+            },
+            {
+                "name": "Prediction",
+                "displayName": "Prediction",
+                "status": False,
+                "variableCount": [],
+                "analysisSubTypes": []
+            }
+        ]
+    }

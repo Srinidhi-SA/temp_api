@@ -427,8 +427,8 @@ class Insight(models.Model):
         self.generate_slug()
         super(Insight, self).save(*args, **kwargs)
 
-    def create(self):
-        self.add_to_job()
+    def create(self,  *args, **kwargs):
+        self.add_to_job( *args, **kwargs)
 
     def add_to_job(self, *args, **kwargs):
 
@@ -457,6 +457,9 @@ class Insight(models.Model):
         config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
         config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
         config['config']["DATA_SOURCE"] = self.dataset.get_datasource_info()
+
+        if 'advanced_settings' in kwargs:
+            config['config']["ADVANCED_SETTINGS"] = kwargs.get('advanced_settings')
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
         # config['config']["META_HELPER"] = self.create_configuration_meta_data()
 
