@@ -13,6 +13,7 @@ import {Button} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"
 import {showHideSideChart,showHideSideTable} from "../../helpers/helper.js"
 import {isEmpty} from "../../helpers/helper";
+import {SubSetting} from "./SubSetting"
 
 
 
@@ -185,6 +186,12 @@ export class DataPreview extends React.Component {
 				$("#side-table").empty();
 				ReactDOM.render( <tbody className="no-border-x no-border-y">{sideTableUpdatedTemplate}</tbody>, document.getElementById('side-table'));
 
+				// column subsetting starts
+				const sideSubsetting = item.columnStats;
+				$("#sub_settings").empty();
+				ReactDOM.render(<Provider store={store}><SubSetting item = {item}/></Provider>, document.getElementById('sub_settings'));
+
+				// column subsetting ends
 			}
 		});
 	}
@@ -419,32 +426,8 @@ export class DataPreview extends React.Component {
 					{/*<!-- ./ End Tab Visualizations -->*/}
 
 					{/*<!-- Start Tab Subsettings - ->*/}
-					{/*<div id="tab_subsettings" className="panel-group accordion accordion-semi">
-                 <div className="panel panel-default">
-                    <div className="panel-heading">
-                       <h4 className="panel-title"><a data-toggle="collapse" data-parent="#tab_subsettings" href="#pnl_tbset" aria-expanded="true" className="">Sub Setting <i className="fa fa-angle-down pull-right"></i></a></h4>
-                    </div>
-                    <div id="pnl_tbset" className="panel-collapse collapse in" aria-expanded="true">
-                       <div className="panel-body">
-                       <div className="row">
-                          <div className="col-xs-4">
-                             <input type="text" className="form-control" id="from_value" value="0" />
-                          </div>
-                          <div className="col-xs-3">
-                             <label>To</label>
-                          </div>
-                          <div className="col-xs-4">
-                             <input type="text" className="form-control" id="to_value" value="10" />
-                          </div>
-                       </div>
-                       <div className="form-group">
-                          <input type="text" data-slider-value="[250,450]" data-slider-step="5" data-slider-max="1000" data-slider-min="10" value="" className="bslider form-control"/>
-                       </div>
-                    </div>
-                    </div>
-                 </div>
-              </div>*/}
-					{/*<!-- ./ End Tab Subsettings -->*/}
+					<div id = "sub_settings"></div>
+					{/* End Tab Subsettings */}
 					</div>
 					</div>
 					<div className="row buttonRow">
