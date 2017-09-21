@@ -21,7 +21,7 @@ export class GaugeMeter extends React.Component {
         	        minValue={data.min}
         	        maxValue={data.max}
         	        value={data.value}
-        	    segments={2}
+        	    segments={data.segments}
         	        needleColor="#333"
         	        endColor="#005662"
         	         startColor="#0fc4b5"
