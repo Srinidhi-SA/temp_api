@@ -7,7 +7,7 @@ from sjsclient import client
 
 from api.helper import JobserverDetails, get_jobserver_status
 from api.user_helper import UserSerializer
-from models import Insight, Dataset, Trainer, Score, Job, Robo
+from models import Insight, Dataset, Trainer, Score, Job, Robo, Audioset
 
 
 def submit_job(
@@ -51,7 +51,7 @@ def submit_job(
 
 
 def convert_to_string(data):
-    keys = ['compare_type', 'column_data_raw', 'config', 'data', 'model_data']
+    keys = ['compare_type', 'column_data_raw', 'config', 'data', 'model_data', 'meta_data']
 
     for key in keys:
         if key in data:
@@ -65,7 +65,7 @@ def convert_to_string(data):
 
 
 def convert_to_json(data):
-    keys = ['compare_type', 'column_data_raw', 'config', 'data', 'model_data']
+    keys = ['compare_type', 'column_data_raw', 'config', 'data', 'model_data', 'meta_data']
 
     for key in keys:
         if key in data:
@@ -278,7 +278,7 @@ class RoboSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
 
-        print get_jobserver_status(instance)
+        # print get_jobserver_status(instance)
         from api.datasets.serializers import DatasetSerializer
         ret = super(RoboSerializer, self).to_representation(instance)
 
@@ -298,8 +298,18 @@ class RoboSerializer(serializers.ModelSerializer):
                 instance.dataset_analysis_done = True
                 instance.save()
 
+
         if instance.robo_analysis_done and instance.dataset_analysis_done:
             instance.analysis_done = True
+
+            if 'FAILED' in [
+                customer_dataset_object.status,
+                historical_dataset_object.status,
+                market_dataset_object.status
+                ]:
+                instance.status = 'FAILED'
+            else:
+                instance.status = "SUCCESS"
             instance.save()
 
         ret = convert_to_json(ret)
@@ -347,5 +357,63 @@ class RoboListSerializer(serializers.ModelSerializer):
             'data'
         )
 
+
+
+class AudiosetSerializer(serializers.ModelSerializer):
+
+    # name = serializers.CharField(max_length=100,
+    #                              validators=[UniqueValidator(queryset=Dataset.objects.all())]
+    #                              )
+
+    input_file = serializers.FileField(allow_null=True)
+
+    def update(self, instance, validated_data):
+        instance.meta_data = validated_data.get('meta_data', instance.meta_data)
+        instance.name = validated_data.get('name', instance.name)
+        instance.created_by = validated_data.get('created_by', instance.created_by)
+        instance.deleted = validated_data.get('deleted', instance.deleted)
+        instance.bookmarked = validated_data.get('bookmarked', instance.bookmarked)
+        instance.auto_update = validated_data.get('auto_update', instance.auto_update)
+        instance.auto_update_duration = validated_data.get('auto_update_duration', instance.auto_update_duration)
+        instance.datasource_details = validated_data.get('datasource_details', instance.datasource_details)
+        instance.datasource_type = validated_data.get('datasource_type', instance.datasource_type)
+
+        instance.save()
+        return instance
+
+    def to_representation(self, instance):
+        print get_jobserver_status(instance)
+        ret = super(AudiosetSerializer, self).to_representation(instance)
+        ret = convert_to_json(ret)
+        ret = convert_time_to_human(ret)
+        ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+
+        return ret
+
+    class Meta:
+        model = Audioset
+        exclude = ( 'id', 'updated_at')
+
+
+class AudioListSerializer(serializers.ModelSerializer):
+
+    def to_representation(self, instance):
+        ret = super(AudioListSerializer, self).to_representation(instance)
+        ret['brief_info'] = instance.get_brief_info()
+        return ret
+
+    class Meta:
+        model = Audioset
+        fields = (
+            "slug",
+            "name",
+            "created_at",
+            "updated_at",
+            "input_file",
+            "datasource_type",
+            "bookmarked",
+            "analysis_done",
+            "file_remote"
+        )
 
 

@@ -11,6 +11,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
+from rest_framework.decorators import api_view
 
 from api.pagination import CustomPagination
 from api.exceptions import creation_failed_exception, update_failed_exception
@@ -24,7 +25,7 @@ from api.utils import \
     ScoreListSerializer, \
     RoboSerializer, \
     RoboListSerializer
-from models import Insight, Dataset, Job, Trainer, Score, Robo
+from models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData
 
 from api.query_filtering import get_listed_data, get_retrieve_data
 
@@ -312,6 +313,7 @@ class RoboView(viewsets.ModelViewSet):
             dataset['input_file'] = input_file
             dataset['name'] = input_file.name
             dataset['created_by'] = request.user.id
+            dataset['datasource_type'] = 'fileUpload'
             from api.datasets.serializers import DatasetSerializer
             serializer = DatasetSerializer(data=dataset)
             if serializer.is_valid():
@@ -362,6 +364,98 @@ class RoboView(viewsets.ModelViewSet):
             request=request,
             list_serializer=RoboListSerializer
         )
+
+from api.models import Audioset
+from api.utils import AudiosetSerializer, AudioListSerializer
+
+
+class AudiosetView(viewsets.ModelViewSet):
+
+    def get_queryset(self):
+        queryset = Audioset.objects.filter(
+            created_by=self.request.user,
+            deleted=False,
+            analysis_done=True
+        )
+        return queryset
+
+    def get_object_from_all(self):
+        return Audioset.objects.get(slug=self.kwargs.get('slug'))
+
+    serializer_class = AudiosetSerializer
+    lookup_field = 'slug'
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = ('bookmarked', 'deleted', 'datasource_type', 'name')
+    pagination_class = CustomPagination
+
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        data = convert_to_string(data)
+
+        if 'input_file' in data:
+            data['input_file'] =  request.FILES.get('input_file')
+            data['datasource_type'] = 'fileUpload'
+            if data['input_file'] is None:
+                data['name'] = data.get('name', data.get('datasource_type', "H") + "_"+ str(random.randint(1000000,10000000)))
+            else:
+                data['name'] = data.get('name', data['input_file'].name)
+        elif 'datasource_details' in data:
+            data['input_file'] = None
+            if "Dataset Name" in data['datasource_details']:
+                data['name'] = data['datasource_details']['Dataset Name']
+            else:
+                data['name'] = data.get('name', data.get('datasource_type', "H") + "_" + str(random.randint(1000000, 10000000)))
+
+        # question: why to use user.id when it can take, id, pk, object.
+        # answer: I tried. Sighhh but it gave this error "Incorrect type. Expected pk value, received User."
+        data['created_by'] = request.user.id
+        try:
+            serializer = AudiosetSerializer(data=data)
+            if serializer.is_valid():
+                audioset_object = serializer.save()
+                audioset_object.create()
+                return Response(serializer.data)
+        except Exception as err:
+            return creation_failed_exception(err)
+        return creation_failed_exception(serializer.errors)
+
+    def retrieve(self, request, *args, **kwargs):
+        try:
+            instance = self.get_object_from_all()
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
+        if instance is None:
+            return creation_failed_exception("File Doesn't exist.")
+
+        serializer = AudiosetSerializer(instance=instance)
+        return Response(serializer.data)
+
+    def list(self, request, *args, **kwargs):
+        return get_listed_data(
+            viewset=self,
+            request=request,
+            list_serializer=AudioListSerializer
+        )
+
+    def update(self, request, *args, **kwargs):
+        data = request.data
+        data = convert_to_string(data)
+        # instance = self.get_object()
+
+        try:
+            instance = self.get_object_from_all()
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
+        # question: do we need update method in views/ as well as in serializers?
+        # answer: Yes. LoL
+        serializer = self.serializer_class(instance=instance, data=data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+
+        return update_failed_exception(serializer.errors)
 
 
 def get_datasource_config_list(request):
@@ -428,7 +522,13 @@ def write_into_databases(job_type, object_slug, results):
         dataset_object = Dataset.objects.get(slug=object_slug)
         columnData = results['columnData']
         for data in columnData:
-            data["chartData"] = helper.find_chart_data_and_replace_with_chart_data(data["chartData"])
+            # data["chartData"] = helper.find_chart_data_and_replace_with_chart_data(data["chartData"])
+            card_data = data["chartData"]
+            if 'dataType' in card_data and card_data['dataType'] == 'c3Chart':
+                chart_data = card_data['data']
+                final_chart_data = helper.decode_and_convert_chart_raw_data(chart_data)
+                data["chartData"] = chart_changes_in_metadata_chart(final_chart_data)
+
         results['columnData'] = columnData
         results['possibleAnalysis'] = settings.ANALYSIS_FOR_TARGET_VARIABLE
         da = []
@@ -468,6 +568,19 @@ def write_into_databases(job_type, object_slug, results):
         robo_object.save()
         return results
     print "written to the database."
+
+def chart_changes_in_metadata_chart(chart_data):
+    from api import helper
+    chart_data = helper.remove_tooltip_format_from_chart_data(chart_data)
+    chart_data = helper.remove_chart_height_from_chart_data(chart_data)
+    chart_data = helper.remove_padding_from_chart_data(chart_data)
+    chart_data = helper.remove_subchart_from_chart_data(chart_data)
+    # chart_data = helper.remove_legend_from_chart_data(chart_data)
+    chart_data = helper.remove_grid_from_chart_data(chart_data)
+    chart_data = helper.remove_xdata_from_chart_data(chart_data)
+    chart_data = helper.remove_chart_height_from_x_chart_data(chart_data)
+    chart_data = helper.keep_bar_width_in_ratio(chart_data)
+    return chart_data
 
 
 @csrf_exempt
@@ -519,6 +632,94 @@ def home(request):
 
     context = {"UI_VERSION":settings.UI_VERSION}
     return render(request, 'home.html', context)
+
+@api_view(['GET'])
+def get_info(request):
+
+    user = request.user
+    from api.helper import convert_to_humanize
+    def get_all_info_related_to_user(user):
+        things = ['dataset', 'insight', 'trainer', 'score', 'robo', 'audioset']
+        all_data = []
+        for t in things:
+            all_data.append(get_all_objects(user, t))
+        return all_data
+
+    def get_all_objects(user, type):
+        from api.models import Dataset, Insight, Trainer, Score, Robo
+        t = {
+            'dataset': Dataset,
+            'insight': Insight,
+            'trainer': Trainer,
+            'score': Score,
+            'robo': Robo,
+            'audioset': Audioset
+        }
+        display = {
+            'dataset': 'Data Set Uploaded',
+            'insight': 'Signals Created',
+            'trainer': 'Models Created',
+            'score': 'Score Created',
+            'robo': 'Robo Created',
+            'audioset': 'Audioset Created'
+        }
+
+        all_objects = t[type].objects.filter(created_by=user)
+        return {
+            'count': len(all_objects),
+            'displayName': display[type]
+        }
+
+    def get_total_size(user):
+        from api.models import Dataset
+        all_dataset = Dataset.objects.filter(created_by=user)
+        size = 0
+        for dataset in all_dataset:
+            try:
+                size += dataset.input_file.size
+            except Exception as err:
+                pass
+                # print err
+
+        return size
+
+    def get_size_pie_chart(size):
+        from api.helper import \
+            decode_and_convert_chart_raw_data, \
+            convert_to_GB
+
+        in_GB = convert_to_GB(size)
+        chart_data = {
+            'data': {
+                'columns': [
+                         ['Used (in GB)', in_GB],
+                         ['Available (in GB)', 5 - in_GB],
+                     ],
+                'type': 'pie',
+            },
+            # 'legend': {
+            #     'position': 'right'
+            # },
+            'size': {
+                'height': 225
+            },
+            'color': {
+                "pattern": ['#0fc4b5' , '#005662' , '#148071' , '#6cba86' , '#bcf3a2']
+            }
+        }
+        return chart_data
+
+    def get_html_template():
+        return """<p> Your maximum file upload size is <b>5 GB</b> and maximum number of columns allowed in your data set is 50 columns."""
+
+    used_data_size = get_total_size(user)
+
+    return JsonResponse({
+        'info': get_all_info_related_to_user(user),
+        'used_size': convert_to_humanize(used_data_size),
+        'chart_c3': get_size_pie_chart(used_data_size),
+        'comment': get_html_template(),
+    })
 
 dummy_robo_data = {
         "listOfNodes": [],
@@ -4056,6 +4257,21 @@ dummy_robo_data = {
         "slug": "dsds-lkdzu1oaql"
     }
 
+@csrf_exempt
+def get_chart_or_small_data(request, slug=None):
 
+    data_object = SaveData.objects.get(slug=slug)
+    if data_object is None:
+        return Response({'Message': 'Failed'})
 
+    csv_data = data_object.get_data()
+    csv_data = map(list, zip(*csv_data))
+    from django.http import HttpResponse
+    import csv
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="{0}.csv"'.format(slug)
+    writer = csv.writer(response)
+    for row in csv_data:
+        writer.writerow(row)
 
+    return response

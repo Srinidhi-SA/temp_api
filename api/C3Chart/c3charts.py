@@ -390,6 +390,47 @@ class C3Chart(object):
     def hide_multipline_x(self):
         pass
 
+    # TODO: make it proper code. remove unnecessary checks. better ask from backend
+    def add_additional_grid_line_at_zero(self, datas = None):
+        # negative = False
+        # if datas is None:
+        #     datas = self._data_data
+        #     for data in datas:
+        #         for d in data:
+        #             if (isinstance(d, int) or isinstance(d, float)) and d < 0:
+        #                 negative = True
+        #                 break
+        # else:
+        #     for d in datas:
+        #         if (isinstance(d, int) or isinstance(d, float)) and d < 0:
+        #             negative = True
+        #             break
+        #
+        # if negative is False:
+        #     print "no negative"
+        #     return ""
+
+        zero_data = {"value": 0, "text": ''}
+        if self._grid:
+            if 'y' in self._grid:
+                if 'lines' in self._grid['y']:
+                    if isinstance(self._grid['y']['lines'], list):
+                        self._grid['y']['lines'].append(zero_data)
+                    else:
+                        self._grid['y']['lines'] = [zero_data]
+                else:
+                    self._grid['y']['lines'] = [zero_data]
+            else:
+                self._grid['y'] = {
+                    "lines": [zero_data]
+                }
+        else:
+            self._grid = {
+                'y': {
+                    "lines": [zero_data]
+                }
+            }
+
     def add_groups_to_data(self, list_of_y):
         self._data['groups'] = [list_of_y]
 
@@ -452,10 +493,31 @@ class C3Chart(object):
             if types is not None:
                 self._data['types'] = types
 
-
     def hide_label(self, axis='x'):
         if self._axis:
             self._axis[axis]['label'] = None
+
+    def hide_x_tick(self):
+        tick_data = {
+            'values': []
+        }
+        if self._axis:
+            if 'x' in self._axis:
+                if 'tick' in self._axis['x']:
+                    if 'values' in self._axis['x']['tick']:
+                        self._axis['x']['tick']['values'] = []
+                    else:
+                        self._axis['x']['tick'] = tick_data
+                else:
+                    self._axis['x'] = {
+                        'tick': tick_data
+                    }
+            else:
+                self._axis = {
+                    'x' : {
+                        'tick': tick_data
+                    }
+                }
 
     def set_xs(self, xs):
         self._data['x'] = None
@@ -500,7 +562,6 @@ class C3Chart(object):
                     'ratio': bar_width_ration
             }
         }
-
 
     def get_some_related_info_printed(self):
         print "x max string length", self._x_max_string_length

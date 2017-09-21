@@ -105,7 +105,7 @@ export function  generateCircularChartRows(table) {
 var tbodyData = table.tableData.map(function(rowData,i){
 	if(i != 0){
 		var rows = rowData.map(function(colData,j) {
-			if(j == 0)
+			if(isNaN(colData))
   	           return<td key={j}>{colData}</td>;
   	           else
   	        	    return<td key={j}><CircularProgressbar percentage={colData} initialAnimation={true}/></td>;

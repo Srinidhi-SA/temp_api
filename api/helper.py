@@ -84,7 +84,6 @@ def metadata_chart_conversion(data):
         "color":{
             "pattern": ['#0fc4b5' , '#005662', '#148071' , '#6cba86' , '#bcf3a2']
         }
-
     }
     values = ["data1"]
     for obj in data:
@@ -117,6 +116,76 @@ chartData = {
 }
 
 
+def remove_tooltip_format_from_chart_data(chart_data):
+
+    if 'chart_c3' in chart_data:
+        if 'tooltip' in chart_data['chart_c3']:
+            del chart_data['chart_c3']['tooltip']
+    return chart_data
+
+def remove_chart_height_from_chart_data(chart_data):
+    if 'chart_c3' in chart_data:
+        if "size" in chart_data['chart_c3']:
+            del chart_data['chart_c3']['size']
+    return chart_data
+
+def remove_chart_height_from_x_chart_data(chart_data):
+    if 'chart_c3' in chart_data:
+        if "axis" in chart_data['chart_c3']:
+            if "x" in chart_data['chart_c3']["axis"]:
+                if "height" in chart_data['chart_c3']["axis"]["x"]:
+                    del chart_data['chart_c3']["axis"]["x"]["height"]
+    return chart_data
+
+def keep_bar_width_in_ratio(chart_data):
+    count_x = 0
+    if 'chart_c3' in chart_data:
+        if 'data' in chart_data['chart_c3']:
+            if 'columns' in chart_data['chart_c3']['data']:
+                columns_data = chart_data['chart_c3']['data']['columns']
+                count_x = len(columns_data[0])
+        if 'bar' in chart_data['chart_c3']:
+            if count_x < 5:
+                chart_data['chart_c3']['bar'] = {
+                    'width': 20
+                }
+            else:
+                chart_data['chart_c3']['bar'] =  {
+                                "width": {
+                                    "ratio": 0.5
+                                }
+                            }
+    return chart_data
+
+def remove_padding_from_chart_data(chart_data):
+    if 'chart_c3' in chart_data:
+        if "padding" in chart_data['chart_c3']:
+            del chart_data['chart_c3']['padding']
+    return chart_data
+
+def remove_subchart_from_chart_data(chart_data):
+    if 'chart_c3' in chart_data:
+        if "subchart" in chart_data['chart_c3']:
+            del chart_data['chart_c3']['subchart']
+    return chart_data
+
+def remove_legend_from_chart_data(chart_data):
+    if 'chart_c3' in chart_data:
+        if "legend" in chart_data['chart_c3']:
+            del chart_data['chart_c3']['legend']
+    return chart_data
+
+def remove_grid_from_chart_data(chart_data):
+    if 'chart_c3' in chart_data:
+        if "grid" in chart_data['chart_c3']:
+            del chart_data['chart_c3']['grid']
+    return chart_data
+
+def remove_xdata_from_chart_data(chart_data):
+    if 'xdata' in chart_data:
+        del chart_data['xdata']
+    return chart_data
+
 def decode_and_convert_chart_raw_data(data):
     if not check_chart_data_format(data):
         return {}
@@ -129,6 +198,8 @@ def decode_and_convert_chart_raw_data(data):
     axisRotation = data.get('axisRotation', None)
     yAxisNumberFormat = data.get('yAxisNumberFormat', None)
     y2AxisNumberFormat = data.get('y2AxisNumberFormat', None)
+    showLegend = data.get('show_legend', True)
+    hide_xtick = data.get('hide_xtick', False)
     if y2AxisNumberFormat == "":
         y2AxisNumberFormat = ".2s"
     subchart = data.get('subchart', True)
@@ -138,9 +209,14 @@ def decode_and_convert_chart_raw_data(data):
     print legend
     c3_chart_details = dict()
 
+    from api.models import SaveData
+    sd = SaveData()
+    sd.save()
     if chart_type in ["bar", "line", "spline"]:
         chart_data = replace_chart_data(data['data'])
         c3_chart_details['table_c3'] = chart_data
+        sd.set_data(data=chart_data)
+        c3_chart_details['download_url'] = sd.get_url()
         c3 = C3Chart(
             data=chart_data,
             chart_type=chart_type,
@@ -174,8 +250,10 @@ def decode_and_convert_chart_raw_data(data):
 
         if subchart is False:
             c3.hide_subchart()
-        if legend:
+        if showLegend is True and legend:
             c3.set_name_to_data(legend)
+        else:
+            c3.hide_basic_legends()
 
         if rotate is True:
             c3.rotate_axis()
@@ -186,6 +264,10 @@ def decode_and_convert_chart_raw_data(data):
             c3.set_tick_format_x()
             c3.set_tooltip_format()
 
+        if hide_xtick is True:
+            c3.hide_x_tick()
+        # c3.add_additional_grid_line_at_zero()
+
         c3_chart_details["chart_c3"] = c3.get_json()
 
         return c3_chart_details
@@ -194,7 +276,8 @@ def decode_and_convert_chart_raw_data(data):
 
         chart_data = replace_chart_data(data['data'])
         c3_chart_details['table_c3'] = chart_data
-
+        sd.set_data(data=chart_data)
+        c3_chart_details['download_url'] = sd.get_url()
         c3 = C3Chart(
             data=chart_data,
             chart_type=chart_type,
@@ -232,8 +315,13 @@ def decode_and_convert_chart_raw_data(data):
         if axisRotation:
             c3.rotate_axis()
 
-        if legend:
+        if hide_xtick is True:
+            c3.hide_x_tick()
+
+        if showLegend is True and legend:
             c3.set_name_to_data(legend)
+        else:
+            c3.hide_basic_legends()
 
         xdata = get_x_column_from_chart_data_without_xs(chart_data, axes)
         if len(xdata) > 1:
@@ -246,6 +334,7 @@ def decode_and_convert_chart_raw_data(data):
 
         if subchart is False:
             c3.hide_subchart()
+        # c3.add_additional_grid_line_at_zero()
 
         c3_chart_details["chart_c3"] = c3.get_json()
         return c3_chart_details
@@ -254,7 +343,8 @@ def decode_and_convert_chart_raw_data(data):
         data_c3 = data['data']
         chart_data, xs = replace_chart_data(data_c3, data['axes'])
         c3_chart_details['table_c3'] = chart_data
-
+        sd.set_data(data=chart_data)
+        c3_chart_details['download_url'] = sd.get_url()
         c3 = ScatterChart(
             data=chart_data,
             data_type='columns'
@@ -289,11 +379,16 @@ def decode_and_convert_chart_raw_data(data):
         if subchart is False:
             c3.hide_subchart()
 
-        if legend:
+        if showLegend is True and legend:
             c3.set_name_to_data(legend)
+        else:
+            c3.hide_basic_legends()
 
         c3.set_x_type_as_index()
 
+        if hide_xtick is True:
+            c3.hide_x_tick()
+        # c3.add_additional_grid_line_at_zero()
         c3_chart_details["chart_c3"] = c3.get_json()
         return c3_chart_details
 
@@ -302,6 +397,8 @@ def decode_and_convert_chart_raw_data(data):
         chart_data, xs = replace_chart_data(data_c3, data['axes'])
 
         c3_chart_details['table_c3'] =  chart_data
+        sd.set_data(data=chart_data)
+        c3_chart_details['download_url'] = sd.get_url()
         c3 = ScatterChart(
             data=chart_data,
             data_type='columns'
@@ -341,9 +438,14 @@ def decode_and_convert_chart_raw_data(data):
         if subchart is False:
             c3.hide_subchart()
 
-        if legend:
+        if showLegend is True and legend:
             c3.set_name_to_data(legend)
+        else:
+            c3.hide_basic_legends()
 
+        if hide_xtick is True:
+            c3.hide_x_tick()
+        # c3.add_additional_grid_line_at_zero()
         c3_chart_details["chart_c3"] = c3.get_json()
         return c3_chart_details
 
@@ -352,7 +454,8 @@ def decode_and_convert_chart_raw_data(data):
         data_c3 = data['data']
         card3_data, xs = convert_column_data_with_array_of_category_into_column_data_stright_xy(data_c3, 3)
         c3_chart_details['table_c3'] = data_c3
-
+        sd.set_data(data=data_c3)
+        c3_chart_details['download_url'] = sd.get_url()
         c3 = ScatterChart(
             data=card3_data,
             data_type='columns'
@@ -391,14 +494,21 @@ def decode_and_convert_chart_raw_data(data):
         if subchart is False:
             c3.hide_subchart()
 
-        if legend:
+        if showLegend is True and legend:
             c3.set_name_to_data(legend)
+        else:
+            c3.hide_basic_legends()
 
+        if hide_xtick is True:
+            c3.hide_x_tick()
+        # c3.add_additional_grid_line_at_zero()
         c3_chart_details["chart_c3"] = c3.get_json()
         c3_chart_details["tooltip_c3"] = [data_c3[0], data_c3[1], data_c3[2]]
         return c3_chart_details
     elif chart_type in ['donut']:
         chart_data = replace_chart_data(data['data'])
+        sd.set_data(data=chart_data)
+        c3_chart_details['download_url'] = sd.get_url()
         pie_chart_data = convert_chart_data_to_pie_chart(chart_data)
         c3 = DonutChart(data=pie_chart_data)
         c3.set_all_basics()
@@ -411,13 +521,14 @@ def decode_and_convert_chart_raw_data(data):
     elif chart_type in ['pie']:
         chart_data = replace_chart_data(data['data'])
         pie_chart_data = convert_chart_data_to_pie_chart(chart_data)
+        sd.set_data(data=chart_data)
+        c3_chart_details['download_url'] = sd.get_url()
         c3 = PieChart(data=pie_chart_data)
         c3.set_all_basics()
 
         c3_chart_details['table_c3'] = pie_chart_data
         c3_chart_details["chart_c3"] = c3.get_json()
         return c3_chart_details
-
 
 
 def replace_chart_data(data, axes=None):
@@ -662,7 +773,7 @@ def convert_column_data_with_array_of_category_into_column_data_stright_xy(colum
                         'orange': 'Cluster3',
                         'yellow': 'Cluster4'
                     }
-
+    
     unique_category_name = get_all_unique(category_data_list)
 
     end_data = []
@@ -674,11 +785,13 @@ def convert_column_data_with_array_of_category_into_column_data_stright_xy(colum
         if name == columns_data[category_data_index][0]:
             continue
 
-        name_x = name
+        # name_x = name
+        name_x = name + '_'
         try:
             name_y = color_naming_scheme[name_x]
         except:
-            name_y = name + '_'
+            # name_y = name + '_'
+            name_y = name
 
         end_data.append([name_x])
         name_indexs[name_x] = i
@@ -691,11 +804,13 @@ def convert_column_data_with_array_of_category_into_column_data_stright_xy(colum
         xs[name_y] = name_x
 
     for index, name in enumerate(columns_data[category_data_index][1:]):
-        name_x = name
+        # name_x = name
+        name_x = name + '_'
         try:
             name_y = color_naming_scheme[name_x]
         except:
-            name_y = name + '_'
+            # name_y = name + '_'
+            name_y = name
 
         end_data[name_indexs[name_x]].append(columns_data[0][index + 1])
         end_data[name_indexs[name_y]].append(columns_data[1][index + 1])
@@ -718,8 +833,15 @@ def get_x_column_from_chart_data_without_xs(chart_data, axes):
 def get_jobserver_status(
         instance=None
 ):
+    if instance is None:
+
+        return "no instance ---!!"
+
+    if instance.job is None:
+        print "no job---!!"
+        return ""
     job_url = instance.job.url
-    if instance.status in ['SUCCESS']:
+    if instance.status in ['SUCCESS', 'FAILED']:
         return instance.status
     try:
         live_status = return_status_of_job_log(job_url)
@@ -742,6 +864,8 @@ def return_status_of_job_log(job_url):
         final_status = data.get("status")
     elif data.get("status") == "RUNNING":
         final_status = data.get("status")
+    elif data.get("status") == "KILLED":
+        final_status = data.get("status")
     else:
         pass
 
@@ -752,15 +876,11 @@ def return_status_of_job_log(job_url):
 
 def convert_json_object_into_list_of_object(datas, order_type='dataset'):
     from django.conf import settings
-    # import pdb;pdb.set_trace()
-
     order_dict = settings.ORDER_DICT
+    analysis_list = settings.ANALYSIS_LIST
     order_by = order_dict[order_type]
 
     brief_name = settings.BRIEF_INFO_CONFIG
-    # ordered_datas = dict()
-    # for item in order_by:
-    #     ordered_datas[item] = datas[item]
 
     list_of_objects = []
     for key in order_by:
@@ -768,10 +888,40 @@ def convert_json_object_into_list_of_object(datas, order_type='dataset'):
             temp = dict()
             temp['name'] = key
             temp['displayName'] = brief_name[key]
-            temp['value'] = datas[key]
+
+            if key in ['analysis_list', 'analysis list']:
+                temp['value'] = [analysis_list[item] for item in datas[key]]
+            else:
+                temp['value'] = datas[key]
             list_of_objects.append(temp)
 
     return list_of_objects
+
+
+def convert_to_humanize(size):
+    size_name = {
+        1: 'B',
+        2: 'KB',
+        3: 'MB',
+        4: 'GB',
+        5: 'TB'
+    }
+    i = 1
+    while size/1024 > 0:
+        i += 1
+        size = size/1024
+
+    return str(size) + " " + size_name[i]
+
+def convert_to_GB(size):
+
+    count = 3
+
+    while count > 0:
+        size = float(size)/1024
+        count -= 1
+
+    return size
 
 
 

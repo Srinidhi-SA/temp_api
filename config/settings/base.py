@@ -331,6 +331,16 @@ ANALYSIS_FOR_TARGET_VARIABLE = {
                        "help_text" : "Enable this analysis type only if date columns is present in selected variables",
                        "display": "Trend"}
 }
+
+ANALYSIS_LIST = {
+    "Descriptive analysis": "Overview",
+    "Dimension vs. Dimension": "Association",
+    "Predictive modeling": "Prediction",
+    "Measure vs. Dimension": "Performance",
+    "Measure vs. Measure": "Influencer",
+    "Trend":"Trend",
+    "Trend Analysis": "Trend"
+}
 # {"name":"Trend":"id":4} will be added to the above lists based on the logic(if date columns is present or not)
 
 CORS_ORIGIN_ALLOW_ALL = True
@@ -357,10 +367,11 @@ JOBSERVER_STATUS = {
     'RUNNING': 'INPROGRESS',
     'FINISHED': 'SUCCESS',
     'ERROR': 'FAILED',
-    'UNKNOWN': 'UNKNOWN'
+    'UNKNOWN': 'UNKNOWN',
+    'KILLED': 'FAILED'
 }
 
-UI_VERSION = "0.8"
+UI_VERSION = "0.1002"
 
 ERROR_MESSAGE = {
     'upload_error': 'Code had a weakness. Now it is broken.'
@@ -381,7 +392,8 @@ BRIEF_INFO_CONFIG = {
     'train_test_split': 'Train Test Split',
     'algorithm name': 'Algorithm Name',
     'model': 'Model',
-    'file_size': 'File Size'
+    'file_size': 'File Size',
+    'audioset': 'Audio'
 }
 
 FIRST_ORDER = [
@@ -393,6 +405,7 @@ SECOND_ORDER = [
     'dataset',
     'variable selected',
     'variable type',
+    'audioset'
 ]
 
 DATASET_ORDER = [
@@ -420,6 +433,21 @@ ORDER_DICT = {
     'dataset': ORDER_DATASET,
     'signal': ORDER_SIGNAL,
     'trainer': ORDER_TRAINER,
-    'score': ORDER_SCORE
+    'score': ORDER_SCORE,
+    'audioset': ORDER_DATASET
 }
+
+
+
+NATURAL_LANGUAGE_UNDERSTANDING_SETTINGS = {
+          "url": "https://gateway.watsonplatform.net/natural-language-understanding/api",
+          "username": "77961f39-ccaa-4cd7-b6cb-68d544f91ffb",
+          "password": "hDbkLtb8rWgh"
+        }
+    
+VOICE_TO_TEXT_SETTINGS = { 
+        "url": "https://stream.watsonplatform.net/speech-to-text/api",
+        "username": "3d7b6be9-17eb-4208-ad56-3d873700d5e7",
+        "password": "UXiMa7qNp68f"
+        }
 

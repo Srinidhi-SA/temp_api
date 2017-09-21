@@ -130,7 +130,11 @@ class Dataset(models.Model):
         )
 
         self.job = job
-        self.status = "INPROGRESS"
+
+        if job is None:
+            self.status = "FAILED"
+        else:
+            self.status = "INPROGRESS"
         self.save()
 
     def generate_config(self, *args, **kwrgs):
@@ -386,7 +390,11 @@ class Insight(models.Model):
         )
 
         self.job = job
-        self.status = "INPROGRESS"
+        if job is None:
+            self.status = "FAILED"
+        else:
+            self.status = "INPROGRESS"
+
         self.save()
 
     def generate_config(self, *args, **kwargs):
@@ -643,7 +651,10 @@ class Trainer(models.Model):
         )
 
         self.job = job
-        self.status = "INPROGRESS"
+        if job is None:
+            self.status = "FAILED"
+        else:
+            self.status = "INPROGRESS"
         self.save()
 
     def get_config(self):
@@ -749,7 +760,10 @@ class Score(models.Model):
         )
 
         self.job = job
-        self.status = "INPROGRESS"
+        if job is None:
+            self.status = "FAILED"
+        else:
+            self.status = "INPROGRESS"
         self.save()
 
     def generate_config(self, *args, **kwargs):
@@ -888,7 +902,7 @@ class Score(models.Model):
 class Robo(models.Model):
 
     name = models.CharField(max_length=300, default="", blank=True)
-    slug = models.SlugField(null=False, blank=True)
+    slug = models.SlugField(null=False, blank=True, max_length=300)
 
     customer_dataset = models.ForeignKey(Dataset, null=False, default="", related_name='customer_dataset')
     historical_dataset = models.ForeignKey(Dataset, null=False, default="", related_name='historical_dataset')
@@ -943,7 +957,10 @@ class Robo(models.Model):
         )
 
         self.job = job
-        self.status = "INPROGRESS"
+        if job is None:
+            self.status = "FAILED"
+        else:
+            self.status = "INPROGRESS"
         self.save()
 
 
@@ -982,5 +999,106 @@ def job_submission(
     except Exception as exc:
         print "Unable to submit job."
         print exc
+        return None
 
     return job
+
+
+class Audioset(models.Model):
+    name = models.CharField(max_length=100, null=True)
+    slug = models.SlugField(null=True, max_length=300)
+    auto_update = models.BooleanField(default=False)
+    auto_update_duration = models.IntegerField(default=99999)
+
+    input_file = models.FileField(upload_to='audioset', null=True)
+    datasource_type = models.CharField(max_length=100, null=True)
+    datasource_details = models.TextField(default="{}")
+    preview = models.TextField(default="{}")
+
+    meta_data = models.TextField(default="{}")
+
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
+    created_by = models.ForeignKey(User, null=False)
+    deleted = models.BooleanField(default=False)
+
+    job = models.ForeignKey(Job, null=True)
+
+    bookmarked = models.BooleanField(default=False)
+    file_remote = models.CharField(max_length=100, null=True)
+    analysis_done = models.BooleanField(default=False)
+    status = models.CharField(max_length=100, null=True, default="Not Registered")
+
+    class Meta:
+        ordering = ['-created_at', '-updated_at']
+
+    def __str__(self):
+        return " : ".join(["{}".format(x) for x in [self.name, self.datasource_type, self.slug]])
+
+    def generate_slug(self):
+        if not self.slug:
+            self.slug = slugify(str(self.name) + "-" + ''.join(
+                random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
+
+    def save(self, *args, **kwargs):
+        self.generate_slug()
+        super(Audioset, self).save(*args, **kwargs)
+
+    def create(self):
+
+        # self.meta_data = json.dumps(dummy_audio_data_3)
+        self.meta_data = self.get_speech_data()
+        self.analysis_done = True
+        self.status = 'SUCCESS'
+        self.save()
+
+    def get_speech_data(self):
+        from api.lib.speech_analysis import SpeechAnalyzer
+        sa = SpeechAnalyzer(self.input_file.path)
+        sa.convert_speech_to_text()
+        sa.understand_text()
+        sa.generate_node_structure()
+        return json.dumps(sa.nl_understanding_nodestructure)
+
+    def get_brief_info(self):
+        brief_info = dict()
+        from api.helper import convert_to_humanize
+        brief_info.update(
+            {
+                'created_by': self.created_by.username,
+                'updated_at': self.updated_at,
+                'audioset': self.name,
+                'file_size': convert_to_humanize(self.input_file.size)
+            })
+        return convert_json_object_into_list_of_object(brief_info, 'audioset')
+
+
+class SaveData(models.Model):
+    slug = models.SlugField(null=False, blank=True)
+    data = models.TextField(default="{}")
+
+    def get_data(self):
+        data = self.data
+        json_data = json.loads(data)
+        csv_data = json_data.get('data')
+        return csv_data
+
+    def set_data(self, data):
+        json_data = {
+            "data": data
+        }
+        self.data = json.dumps(json_data)
+        self.save()
+        return True
+
+    def generate_slug(self):
+        if not self.slug:
+            self.slug = slugify(''.join(
+                random.choice(string.ascii_uppercase + string.digits) for _ in range(16)))
+
+    def save(self, *args, **kwargs):
+        self.generate_slug()
+        super(SaveData, self).save(*args, **kwargs)
+
+    def get_url(self):
+        return "/api/download_data/" + self.slug
