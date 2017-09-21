@@ -102,7 +102,7 @@ class DatasetView(viewsets.ModelViewSet):
     @detail_route(methods=['get'])
     def get_meta(self, request, slug=None):
         user = request.user
-        instance = self.get_object()
+        instance = self.get_object_from_all()
         serializer = self.serializer_class(instance=instance)
         return Response({
             'meta_data': serializer.data.get('meta_data'),
@@ -142,3 +142,42 @@ class DatasetView(viewsets.ModelViewSet):
 
         serializer = DatasetSerializer(instance=instance)
         return Response(serializer.data)
+
+    @detail_route(methods=['post'])
+    def subsetting(self, request, slug=None):
+        try:
+            instance = self.get_object_from_all()
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
+        if instance is None:
+            return creation_failed_exception("File Doesn't exist.")
+
+        data = request.data
+        data = convert_to_string(data)
+
+        temp_details = dict()
+        if instance.datasource_type == "fileUpload":
+            temp_details['input_file'] = instance.input_file
+            temp_details['datasource_type'] = instance.datasource_type
+            temp_details['file_remote'] = instance.file_remote
+            temp_details['name'] = data.get('name', temp_details['input_file'].name)
+        else:
+            temp_details['input_file'] = None
+            temp_details['datasource_details'] = instance.datasource_details
+            temp_details['datasource_type'] = instance.datasource_type
+            temp_details['name'] = data.get('name', temp_details['input_file'].name)
+        temp_details['created_by'] = request.user.id
+
+        try:
+            serializer = DatasetSerializer(data=temp_details)
+            if serializer.is_valid():
+                dataset_object = serializer.save()
+                dataset_object.create_for_subsetting(
+                    data['filter_settings'],
+                    instance.get_input_file()
+                )
+                return Response(serializer.data)
+        except Exception as err:
+            return creation_failed_exception(err)
+        return creation_failed_exception(serializer.errors)

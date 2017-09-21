@@ -117,6 +117,38 @@ class Dataset(models.Model):
             self.copy_file_to_destination()
         self.add_to_job()
 
+    def create_for_subsetting(
+            self,
+            filter_subsetting,
+            inputfile,
+
+    ):
+        jobConfig = self.add_subsetting_to_config(
+                                filter_subsetting
+                                )
+        print jobConfig
+        print "Dataset realted config generated."
+
+        if inputfile:
+            jobConfig = self.add_inputfile_outfile_to_config(
+                                        inputfile,
+                                        jobConfig
+                                    )
+
+        job = job_submission(
+            instance=self,
+            jobConfig=jobConfig,
+            job_type='metadata'
+        )
+
+        self.job = job
+
+        if job is None:
+            self.status = "FAILED"
+        else:
+            self.status = "INPROGRESS"
+        self.save()
+
     def add_to_job(self):
 
         jobConfig = self.generate_config()
@@ -136,6 +168,24 @@ class Dataset(models.Model):
         else:
             self.status = "INPROGRESS"
         self.save()
+
+    def add_subsetting_to_config(self, filter_subsetting):
+
+        jobConfig = self.generate_config()
+        print jobConfig
+        print "Dataset realted config genarated."
+        jobConfig["config"]["FILTER_SETTINGS"] = filter_subsetting
+
+
+        return jobConfig
+
+    def add_inputfile_outfile_to_config(self, inputfile, jobConfig):
+        jobConfig["config"]["FILE_SETTINGS"] = {
+            "inputfile": [inputfile],
+            "outputfile": [self.get_input_file()],
+        }
+
+        return jobConfig
 
     def generate_config(self, *args, **kwrgs):
         inputFile = ""
@@ -329,6 +379,8 @@ class Dataset(models.Model):
             }
         )
         return convert_json_object_into_list_of_object(brief_info, 'dataset')
+
+
 
 
 class Insight(models.Model):

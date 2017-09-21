@@ -69,5 +69,6 @@ class DataListSerializer(serializers.ModelSerializer):
             "datasource_type",
             "bookmarked",
             "analysis_done",
-            "file_remote"
+            "file_remote",
+            "status"
         )

@@ -26,8 +26,7 @@ class SpeechAnalyzer:
     
     def __init__(self, filepath):
         self.filepath = filepath
-        
-    
+
     def convert_speech_to_text(self):
 
         stt = SpeechToTextV1(username=VOICE_TO_TEXT_SETTINGS.get("username"), password=VOICE_TO_TEXT_SETTINGS.get("password"))
