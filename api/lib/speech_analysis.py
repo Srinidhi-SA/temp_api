@@ -281,15 +281,15 @@ class SpeechAnalyzer:
         (second_best_emotion, second_best_value) = emotions_sorted[1]
         keywords = self.nl_understanding.get("keywords")
         keywords_html = " and ".join(
-            ["{} ({})".format(item.get("text"), round(item.get("relevance"), 2)) for item in keywords[:2]])
+            ["<strong>{} ({})</strong>".format(item.get("text"), round(item.get("relevance"), 2)) for item in keywords[:2]])
 
         categories_html = " and ".join(["<strong>{}</strong>".format(item.get("label").split("/")[-1]) for item in
                                     self.nl_understanding.get("categories")[:2]])
 
-        return """<p>The overall sentiment in the speech seems to be {} {}.
-            The most predominant emotion is <strong>{}</strong> at around {}%.
-            Another important emotion identified is  <strong>{}</strong> at {}%.
-           mAdvisor identified {} keywords in the speech,
+        return """<p>The overall sentiment in the speech seems to be <strong>{} {}</strong>.
+            The most predominant emotion is <strong>{}</strong> at around <strong>{}%</strong>.
+            Another important emotion identified is  <strong>{}</strong> at <strong>{}%</strong>.
+           mAdvisor identified <strong>{} keywords</strong> in the speech,
             {}
             having the highest relevance.
            The major categories are {}.</p>
