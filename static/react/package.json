@@ -16,6 +16,7 @@
   ],
   "author": "Marlabs AI team",
   "license": "Private",
+
   "dependencies": {
     "bootbox": "^4.4.0",
     "dateformat": "^2.0.0",
@@ -52,6 +53,38 @@
     "jquery": "^3.2.1",
     "redux-logger": "^3.0.6",
     "webpack": "^3.4.1",
-    "webpack-dev-server": "^2.6.1"
+    "webpack-dev-server": "^2.6.1",
+    "d3-array": "1.2.0",
+    "d3-axis": "1.0.8",
+    "d3-brush": "1.0.4",
+    "d3-chord": "1.0.4",
+    "d3-collection": "1.0.4",
+    "d3-color": "1.0.3",
+    "d3-dispatch": "1.0.3",
+    "d3-drag": "1.1.1",
+    "d3-dsv": "1.0.7",
+    "d3-ease": "1.0.3",
+    "d3-force": "1.0.6",
+    "d3-format": "1.2.0",
+    "d3-geo": "1.6.4",
+    "d3-hierarchy": "1.1.5",
+    "d3-interpolate": "1.1.5",
+    "d3-path": "1.0.5",
+    "d3-polygon": "1.0.3",
+    "d3-quadtree": "1.0.3",
+    "d3-queue": "3.0.7",
+    "d3-random": "1.1.0",
+    "d3-request": "1.0.6",
+    "d3-scale": "1.0.6",
+    "d3-selection": "1.1.0",
+    "d3-shape": "1.2.0",
+    "d3-time": "1.0.7",
+    "d3-time-format": "2.0.5",
+    "d3-timer": "1.0.7",
+    "d3-transition": "1.1.0",
+    "d3-voronoi": "1.1.2",
+    "d3-zoom": "1.5.0"
+
+
   }
 }

@@ -5,7 +5,7 @@ import store from "../../store";
 import renderHTML from 'react-render-html';
 import HeatMap from '../../helpers/heatmap';
 import {generateHeaders,generateCircularChartRows} from "../../helpers/helper";
-import ReactSpeedometer from "../../local_modules/react-d3-speedometer-enabled-decimals";
+import ReactSpeedometer from "../../local_modules/react-d3-speedometer-removeformating";
 
 export class GaugeMeter extends React.Component {
   constructor(){
