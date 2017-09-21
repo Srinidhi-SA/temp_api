@@ -27,6 +27,7 @@ export default function reducer(state = {
 		dimensionAllChecked:true,
 		dimensionChecked:[],
 		dateTimeChecked:[],
+		dataLoaderText:"Please wait while mAdvisor is uploading your data....."
 
 }, action) {
 	console.log("In DATA reducer!!");

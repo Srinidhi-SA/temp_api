@@ -13,6 +13,7 @@ import HeatMap from '../../helpers/heatmap';
 	return {login_response: store.login.login_response,
 		createSignalLoaderModal:store.signals.createSignalLoaderModal,
 		createSignalLoaderValue:store.signals.createSignalLoaderValue,
+		loaderText:store.signals.loaderText,
 	};
 })
 
@@ -40,7 +41,7 @@ export class CreateSignalLoader extends React.Component {
 			<p className="text-center"><br/>
 			<i className="pe-7s-science pe-spin pe-5x pe-va text-primary" ></i><br/>
 			<br/>
-			Please wait while<br/>mAdvisor is creating signal.....
+			{store.getState().signals.loaderText}
 			</p><br/>
 			
 			<div className="p_bar_body">
