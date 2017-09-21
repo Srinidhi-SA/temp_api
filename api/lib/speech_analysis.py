@@ -92,7 +92,8 @@ class SpeechAnalyzer:
                 sentiment_card = self.__generate_normal_card("Sentiment",sentiment_html)
                 temp_card_data = sentiment_card.get("cardData")
 
-                temp_card_data.append(self.__generate_c3_gauge_chart_card("Sentiment",sentiment.get("score")))
+                temp_card_data.append(self.__generate_react_gauge_chart_card("Sentiment",sentiment.get("score")))
+                # temp_card_data.append(self.__generate_c3_gauge_chart_card("Sentiment",sentiment.get("score")))
                 sentiment_card["cardData"] = temp_card_data
 
             except:
@@ -184,10 +185,11 @@ class SpeechAnalyzer:
     def __get_emotions_html(self, emo, val):
 
         return """
-         <div className="col-md-2">
+         <div className="col-md-2 text-center">
                  <h2>{}%<br><small><b>{}</b></small></h2>
+                 <img src="/static/assets/images/emotions/{}.png" />
          </div>
-         """.format(int(val * 100), emo.upper())
+         """.format(int(val * 100),emo.upper(),  emo.lower())
 
     def __generate_normal_card(self, name, html):
         return {
@@ -201,6 +203,21 @@ class SpeechAnalyzer:
                     }
                 ]
             }
+
+    def __generate_react_gauge_chart_card(self, name, score):
+        score = round(score, 2)
+        gauge_c3_chart_data = {
+            "dataType": "gauge",
+            "data": {
+                    "min" : -1,
+                    "max" : 1,
+                    "value" : score,
+                    "segments" : 2
+                }
+
+        }
+
+        return gauge_c3_chart_data
 
     def __generate_c3_gauge_chart_card(self, name, score):
 
@@ -219,12 +236,12 @@ class SpeechAnalyzer:
                             ],
                             "unit": "value"
                         },
-                        # "pattern": [
-                        #     "#FF0000",
-                        #     "#F97600",
-                        #     "#F6C600",
-                        #     "#60B044"
-                        # ]
+                        "pattern": [
+                            '#0fc4b5',
+                            '#005662',
+                            '#148071',
+                            '#6cba86'
+                        ]
                     },
                     "data": {
                         "type": "gauge",
@@ -264,15 +281,15 @@ class SpeechAnalyzer:
         (second_best_emotion, second_best_value) = emotions_sorted[1]
         keywords = self.nl_understanding.get("keywords")
         keywords_html = " and ".join(
-            ["{} ({})".format(item.get("text"), round(item.get("relevance"), 2)) for item in keywords[:2]])
+            ["<strong>{} ({})</strong>".format(item.get("text"), round(item.get("relevance"), 2)) for item in keywords[:2]])
 
         categories_html = " and ".join(["<strong>{}</strong>".format(item.get("label").split("/")[-1]) for item in
                                     self.nl_understanding.get("categories")[:2]])
 
-        return """<p>The overall sentiment in the speech seems to be {} {}.
-            The most predominant emotion is <strong>{}</strong> at around {}%.
-            Another important emotion identified is  <strong>{}</strong> at {}%.
-           mAdvisor identified {} keywords in the speech,
+        return """<p>The overall sentiment in the speech seems to be <strong>{} {}</strong>.
+            The most predominant emotion is <strong>{}</strong> at around <strong>{}%</strong>.
+            Another important emotion identified is  <strong>{}</strong> at <strong>{}%</strong>.
+           mAdvisor identified <strong>{} keywords</strong> in the speech,
             {}
             having the highest relevance.
            The major categories are {}.</p>
@@ -293,17 +310,14 @@ class SpeechAnalyzer:
             random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
 
 
-    def get_bar_chart(self, data, rotate=False, x="label", y="score"):
+    def get_bar_chart(self, data, rotate=False, x="label", y="score", label_text=None):
 
         c3 = C3chart_ML(
             axes={
                 "x": x,
                 "y": y
             },
-            label_text={
-                "x": x,
-                "y": y
-            },
+            label_text=label_text,
             data=data,
             axisRotation=rotate
         )
@@ -325,7 +339,11 @@ class SpeechAnalyzer:
 
         data = categories
         return self.get_bar_chart(
-            data=data
+            data=data,
+            label_text={
+                "x": "category",
+                "y": "score"
+            }
         )
 
     def get_keywords_bar(self, keywords):
@@ -341,7 +359,11 @@ class SpeechAnalyzer:
         return self.get_bar_chart(
             data=data,
             x='text',
-            y='score'
+            y='score',
+            label_text={
+                "x": "keyword",
+                "y": "score"
+            }
         )
 
     def get_entities_bar(self, entities):
@@ -357,7 +379,11 @@ class SpeechAnalyzer:
         return self.get_bar_chart(
             data=data,
             x='type',
-            y='relevance'
+            y='relevance',
+            label_text={
+                "x": "entity",
+                "y": "relevance"
+            }
         )
 
 

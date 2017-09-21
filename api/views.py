@@ -737,8 +737,8 @@ dummy_robo_data = {
                 ],
                 "cardType": "normal",
                 "cardWidth": 100,
-                "name": "Dora Howard",
-                "slug": "dora-howard-b288eodae7"
+                "name": "Overview",
+                "slug": "overview-b288eodae7"
             },
             {
                 "cardData": [
@@ -938,8 +938,8 @@ dummy_robo_data = {
                 ],
                 "cardType": "normal",
                 "cardWidth": 100,
-                "name": "Dwayne Willis",
-                "slug": "dwayne-willis-wg757ucj2s"
+                "name": "Portfolio Snapshot",
+                "slug": "portfolio-snapshot-wg757ucj2s"
             },
             {
                 "cardData": [
@@ -1833,8 +1833,8 @@ dummy_robo_data = {
                 ],
                 "cardType": "normal",
                 "cardWidth": 100,
-                "name": "Henrietta Robbins",
-                "slug": "henrietta-robbins-a7twt6s2pk"
+                "name": "Portfolio Performance",
+                "slug": "portfolio-performance-a7twt6s2pk"
             },
             {
                 "cardData": [
@@ -3855,8 +3855,8 @@ dummy_robo_data = {
                 ],
                 "cardType": "normal",
                 "cardWidth": 100,
-                "name": "Desiree Smith",
-                "slug": "desiree-smith-xuh8tzrfnz"
+                "name": "Portfolio Growth",
+                "slug": "portfolio-growth-xuh8tzrfnz"
             },
             {
                 "cardData": [
@@ -4051,8 +4051,8 @@ dummy_robo_data = {
                 ],
                 "cardType": "normal",
                 "cardWidth": 100,
-                "name": "Iris Mack",
-                "slug": "iris-mack-ohyv1ywxy6"
+                "name": "Sector Allocation",
+                "slug": "sector-allocation-ohyv1ywxy6"
             },
             {
                 "cardData": [
@@ -4229,8 +4229,8 @@ dummy_robo_data = {
                 ],
                 "cardType": "normal",
                 "cardWidth": 100,
-                "name": "Bryan Gordon",
-                "slug": "bryan-gordon-a57gpus6n9"
+                "name": "Portfolio Projection",
+                "slug": "portfolio-projection-a57gpus6n9"
             },
             {
                 "cardData": [
@@ -4249,12 +4249,12 @@ dummy_robo_data = {
                 ],
                 "cardType": "normal",
                 "cardWidth": 100,
-                "name": "Matt Sims",
-                "slug": "matt-sims-riyxg0d5sy"
+                "name": "Recommendation",
+                "slug": "recomendation-riyxg0d5sy"
             }
         ],
-        "name": "DSDS",
-        "slug": "dsds-lkdzu1oaql"
+        "name": "Portfolio Analysis",
+        "slug": "portfolio-analysis-lkdzu1oaql"
     }
 
 @csrf_exempt
