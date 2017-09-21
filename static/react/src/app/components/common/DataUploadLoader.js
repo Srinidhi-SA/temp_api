@@ -15,6 +15,7 @@ import HeatMap from '../../helpers/heatmap';
 		dataPreview: store.datasets.dataPreview,
 		dataUploadLoaderModal:store.datasets.dataUploadLoaderModal,
 		dULoaderValue:store.datasets.dULoaderValue,
+		dataLoaderText:store.datasets.dataLoaderText,
 	};
 })
 
@@ -40,7 +41,7 @@ export class DataUploadLoader extends React.Component {
 				<p className="text-center"><br/>
 				<i className="pe-7s-science pe-spin pe-5x pe-va text-primary" ></i><br/>
 				<br/>
-				Please wait while<br/>mAdvisor is uploading your data.....
+                 {store.getState().datasets.dataLoaderText}
 				</p><br/>
 			
 				<div className="p_bar_body">

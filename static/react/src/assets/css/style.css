@@ -14739,5 +14739,17 @@ height: 200px !important;
 background: #FFF;
 text-align:center !important;	
 }
+.gauageMeter svg{
+height: 156px !important;
+}
 
+.gauageMeter svg .current-value{
+visibility:hidden !important;
+}
+.guageMeterValue{
+	margin-top: -3%;
+    font-size: 20px;
+    font-weight:bold;
+
+}
  

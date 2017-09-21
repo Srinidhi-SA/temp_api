@@ -17,6 +17,7 @@ export default function reducer(state = {
   current_page: 1,
   signal_search_element:"",
   sideCardListFlag:null,
+  loaderText:"Please wait while mAdvisor is creating signal....."
 }, action) {
   console.log("in SIGNAL reducer!!");
   console.log(action);
