@@ -135,10 +135,14 @@ def deploy_api_and_migrate(type="development"):
 def deploy_ml(branch="development"):
     pass
 
+
 @task
-def restart_gunicorn():
-    dev()
-    gunicorn.restart()
+def restart_gunicorn(type="dev"):
+    if "dev" == type:
+        dev()
+    elif "prod" == type:
+        prod()
+    gunicorn.reload()
 
 
 def remote_uname():
