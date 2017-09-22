@@ -460,6 +460,8 @@ class Insight(models.Model):
 
         if 'advanced_settings' in kwargs:
             config['config']["ADVANCED_SETTINGS"] = kwargs.get('advanced_settings')
+        else:
+            config['config']["ADVANCED_SETTINGS"] = {}
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
         # config['config']["META_HELPER"] = self.create_configuration_meta_data()
 

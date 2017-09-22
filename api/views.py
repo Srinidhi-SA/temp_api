@@ -58,7 +58,8 @@ class SignalView(viewsets.ModelViewSet):
         serializer = InsightSerializer(data=data)
         if serializer.is_valid():
             signal_object = serializer.save()
-            signal_object.create(advanced_settings=data['advanced_settings'])
+            if 'advanced_settings' in data:
+                signal_object.create(advanced_settings=data.get('advanced_settings', {}))
             return Response(serializer.data)
 
         return Response(serializer.errors)
