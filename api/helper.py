@@ -34,7 +34,8 @@ class JobserverDetails(object):
             "master": "story",
             "model":"training",
             "score": "prediction",
-            "robo": "robo"
+            "robo": "robo",
+            "subSetting": "subSetting"
         }
 
         return {

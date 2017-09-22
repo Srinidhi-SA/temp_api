@@ -138,7 +138,7 @@ class Dataset(models.Model):
         job = job_submission(
             instance=self,
             jobConfig=jobConfig,
-            job_type='metadata'
+            job_type='subSetting'
         )
 
         self.job = job

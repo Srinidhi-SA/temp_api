@@ -56,6 +56,7 @@ JOBSERVER = {
     'score': 'bi.sparkjobs.JobScript',
     'filter': 'bi.sparkjobs.filter.JobScript',
     'robo': 'bi.sparkjobs.JobScript',
+    'subSetting': 'bi.sparkjobs.JobScript'
 }
 
 THIS_SERVER_DETAILS = {
