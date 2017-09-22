@@ -14,4 +14,5 @@ gunicorn --bind $IP:$PORT \
          -t $TIMEOUT config.wsgi:application \
          -p $PID_FILE \
          --access-logfile $ACCESS_LOG \
-         --error-logfile $ERROR_LOG
+         --error-logfile $ERROR_LOG \
+         --daemon

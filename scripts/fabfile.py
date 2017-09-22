@@ -137,7 +137,7 @@ def deploy_ml(branch="development"):
 
 
 @task
-def restart_gunicorn(type="dev"):
+def reload_gunicorn(type="dev"):
     if "dev" == type:
         dev()
     elif "prod" == type:
