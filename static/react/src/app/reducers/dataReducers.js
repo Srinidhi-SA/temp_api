@@ -1575,6 +1575,11 @@
   "job": 1134
 }
 */}
+let default_updatedSubSetting = {
+          "measureColumnFilters" : [],
+          "dimensionColumnFilters" : [],
+          "timeDimensionColumnFilters" : []
+  }
 export default function reducer(state = {
   dataList: {},
   selectedDataSet: "",
@@ -1602,7 +1607,8 @@ export default function reducer(state = {
   measureChecked: [],
   dimensionAllChecked: true,
   dimensionChecked: [],
-  dateTimeChecked: []
+  dateTimeChecked: [],
+  updatedSubSetting:default_updatedSubSetting
 }, action) {
   console.log("In DATA reducer!!");
   console.log(action);
@@ -1985,6 +1991,14 @@ export default function reducer(state = {
         }
       }
       break;
+    case "UPDATE_SUBSETTING":
+    {
+      return{
+        ...state,
+        updatedSubSetting: action.updatedSubSetting
+      }
+    }
+    break;
   }
 
   return state

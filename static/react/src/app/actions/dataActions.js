@@ -608,3 +608,13 @@ export function handleSelectAll(evt){
 		break;
 	}
 }
+
+
+export function updateSubSetting(updatedSubSetting){
+
+	return {
+		type: "UPDATE_SUBSETTING",
+		updatedSubSetting
+
+	}
+}
