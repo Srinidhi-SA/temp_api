@@ -3,5 +3,12 @@ IP=0.0.0.0
 PORT=9012
 WORKERS=5
 TIMEOUT=3000
+PID_FILE=gunicorn.pid
+ACCESS_LOG=gunicorn_access.log
+ACCESS_LOG_FORMAT='%(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"'
 
-gunicorn --bind $IP:$PORT -w $WORKERS -t $TIMEOUT config.wsgi:application
+gunicorn --bind $IP:$PORT \
+         -w $WORKERS \
+         -t $TIMEOUT config.wsgi:application \
+         -p $PID_FILE \
+         --access-logfile $ACCESS_LOG

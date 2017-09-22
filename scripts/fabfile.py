@@ -10,6 +10,7 @@ List
 from fabric.api import *
 import os
 from fabric.contrib import files
+import fabric_gunicorn as gunicorn
 # from django.conf import settings
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -36,7 +37,9 @@ def dev():
     key_file = BASE_DIR + "/config/keyfiles/TIAA.pem"
     env.key_filename=[key_file]    
     env.host_string="{0}@{1}".format(server_details.get('username'), server_details.get('host'))
-
+    env.gunicorn_wsgi_app = 'config.wsgi:application'
+    env.gunicorn_pidpath = path_details["base_remote_path"] + "/gunicorn.pid"
+    env.gunicorn_bind = "0.0.0.0:9012"
     return {'server_details': server_details, 'path_details': path_details, 'type': 'development'}
 
 
@@ -58,8 +61,6 @@ def prod():
         "ui_branch": "react-ui-development",
         "api_branch": "trainer/vivek_product_revamp"
     }
-
-
 
     key_file = BASE_DIR + "/config/keyfiles/TIAA.pem"
     env.key_filename = [key_file]
@@ -109,6 +110,7 @@ def deploy_api(type="development"):
         path_details=path_details
     )
 
+
 @task
 def deploy_api_and_migrate(type="development"):
     """
@@ -133,8 +135,10 @@ def deploy_api_and_migrate(type="development"):
 def deploy_ml(branch="development"):
     pass
 
+@task
 def restart_gunicorn():
-    pass
+    dev()
+    gunicorn.restart()
 
 
 def remote_uname():
