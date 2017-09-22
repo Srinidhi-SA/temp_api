@@ -409,6 +409,16 @@ export default function reducer(state = {
 		}
 	}
 	break;	
+	
+	case "UPDATE_ANALYSIS_LIST":
+	{
+		return{
+     ...state,
+     dataSetAnalysisList: action.renderList,
+	  }
+	}
+	break;
+	
 	}
 	
 	return state

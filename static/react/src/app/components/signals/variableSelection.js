@@ -12,7 +12,7 @@ import {DataVariableSelection} from "../data/DataVariableSelection";
 import {CreateSignalLoader} from "../common/CreateSignalLoader";
 import {openCsLoaderModal,closeCsLoaderModal} from "../../actions/createSignalActions";
 import {AdvanceSettings} from "./AdvanceSettings";
-import LinkedStateMixin from 'react-addons-linked-state-mixin';
+
 
 var selectedVariables = {measures:[],dimensions:[],date:null};  // pass selectedVariables to config
 
@@ -44,6 +44,8 @@ export class VariableSelection extends React.Component {
         this.prevSelectedVar = null;
         
         props.dispatch(emptySignalAnalysis());
+  
+       
     } 
     
     handleAnlysisList(e){
@@ -91,11 +93,11 @@ export class VariableSelection extends React.Component {
     }
     componentWillUpdate(){
         console.log("trend disbale check:::: ");
-        if(this.props.dataSetTimeDimensions.length == 0){
+      /*  if(this.props.dataSetTimeDimensions.length == 0){
             $('#analysisList input[type="checkbox"]').last().attr("disabled", true);
         }else{
             $('#analysisList input[type="checkbox"]').last().attr("disabled", false);
-        }
+        }*/
     }
     componentDidUpdate(){
         var that = this;
@@ -104,6 +106,14 @@ export class VariableSelection extends React.Component {
         });
         
     }
+    renderAnalysisList(analysisList){
+   	 let list =  analysisList.map((metaItem,metaIndex) =>{
+             let id = "chk_analysis"+ metaIndex;
+             return(<div key={metaIndex} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisList.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>);
+             
+         });
+   	 return list;
+     }
     render(){
         var that= this;
         if(!$.isEmptyObject(this.props.selectedSignal) && !that.signalFlag){
@@ -133,14 +143,16 @@ export class VariableSelection extends React.Component {
             }
             
             //AnalysisList
-            let possibleAnalysis = this.props.dataSetAnalysisList.analysis;
-            if(possibleAnalysis){
-            	
-            	 renderSubList = possibleAnalysis.map((metaItem,metaIndex) =>{
-                     let id = "chk_analysis"+ metaIndex;
-                     return(<div key={metaIndex} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.displayName} checked={metaItem.status} onChange={this.handleAnlysisList.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>);
-                     
-                 });
+            let possibleAnalysis = store.getState().datasets.dataSetAnalysisList;
+            if(!$.isEmptyObject(possibleAnalysis)){
+            	 if(that.props.getVarType == "dimension"){
+            	possibleAnalysis = possibleAnalysis.dimensions.analysis;
+            	 renderSubList = this.renderAnalysisList(possibleAnalysis);
+            	 }else{
+            		 possibleAnalysis = possibleAnalysis.measures.analysis;
+                	 renderSubList = this.renderAnalysisList(possibleAnalysis);
+            	 }
+            	 
             	
             }
             
@@ -187,11 +199,11 @@ export class VariableSelection extends React.Component {
             }
             */}
         }
-        if(this.props.dataSetTimeDimensions.length == 0){
+      /*  if(this.props.dataSetTimeDimensions.length == 0){
             $('#analysisList input[type="checkbox"]').last().attr("disabled", true);
         }else{
             $('#analysisList input[type="checkbox"]').last().attr("disabled", false);
-        }
+        }*/
         // end of possible analysis list ------------------------------------
         return (
                 <div className="side-body">
