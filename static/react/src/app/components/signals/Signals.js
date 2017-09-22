@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import ReactDOM from "react-dom";
 import {Link} from "react-router-dom";
 import store from "../../store";
-import {getList, emptySignalAnalysis, handleDelete, handleRename, storeSearchElement} from "../../actions/signalActions";
+import {getList, emptySignalAnalysis, handleDelete, handleRename, storeSearchElement,storeSortElements} from "../../actions/signalActions";
 import {
   Pagination,
   Tooltip,
@@ -24,7 +24,7 @@ import {DetailOverlay} from "../common/DetailOverlay";
 import {getAllDataList} from "../../actions/dataActions";
 
 @connect((store) => {
-  return {login_response: store.login.login_response, signalList: store.signals.signalList.data, selectedSignal: store.signals.signalAnalysis, signal_search_element: store.signals.signal_search_element};
+  return {login_response: store.login.login_response, signalList: store.signals.signalList.data, selectedSignal: store.signals.signalAnalysis, signal_search_element: store.signals.signal_search_element, signal_sorton:store.signals.signal_sorton,signal_sorttype:store.signals.signal_sorttype};
 })
 
 export class Signals extends React.Component {
@@ -67,7 +67,9 @@ export class Signals extends React.Component {
   handleSelect(eventKey) {
     if (this.props.signal_search_element) {
       this.props.history.push('/signals?search=' + this.props.signal_search_element + '&page=' + eventKey + '');
-    } else
+    } else if(this.props.signal_sorton){
+	     this.props.history.push('/signals?sort=' + this.props.signal_sorton +'&type='+this.props.signal_sorttype+'&page=' + eventKey + '');
+	}else
       this.props.history.push('/signals?page=' + eventKey + '');
     this.props.dispatch(getList(sessionStorage.userToken, eventKey));
   }
@@ -81,6 +83,12 @@ export class Signals extends React.Component {
       this.props.dispatch(storeSearchElement(e.target.value));
       this.props.dispatch(getList(sessionStorage.userToken, 1));
     }
+  }
+  doSorting(sortOn, type){
+	     this.props.history.push('/signals?sort=' + sortOn + '&type='+type);
+    
+	 this.props.dispatch(storeSortElements(sortOn,type));
+	this.props.dispatch(getList(sessionStorage.userToken, 1));
   }
 
   handleDelete(slug) {
@@ -123,6 +131,9 @@ export class Signals extends React.Component {
       if (search_element)
         document.getElementById('search_signals').value = "";
       }
+	  if(this.props.location.sort == "" || this.props.location.sort == null){
+		  this.props.dispatch(storeSortElements("",null));
+	  }
     //search element ends..
 
     console.log(this.props);
@@ -228,7 +239,7 @@ export class Signals extends React.Component {
                     <button className="close-icon" type="reset"></button>
 					</form>
 					</div>
-                    {/*<span class="input-group-btn">
+                      <span class="input-group-btn">
                       <button type="button" class="btn btn-default" title="Select All Card">
                         <i class="fa fa-address-card-o fa-lg"></i>
                       </button>
@@ -238,19 +249,19 @@ export class Signals extends React.Component {
                       </button>
                       <ul role="menu" class="dropdown-menu dropdown-menu-right">
                         <li>
-                          <a href="#">Name Ascending</a>
+                          <a href="#" onClick={this.doSorting.bind(this,'name','asc')}>Name Ascending</a>
                         </li>
                         <li>
-                          <a href="#">Name Descending</a>
+                          <a href="#" onClick={this.doSorting.bind(this,'name','desc')}>Name Descending</a>
                         </li>
                         <li>
-                          <a href="#">Date Ascending</a>
+                          <a href="#" onClick={this.doSorting.bind(this,'created_at','asc')}>Date Ascending</a>
                         </li>
                         <li>
-                          <a href="#">Date Descending</a>
+                          <a href="#" onClick={this.doSorting.bind(this,'created_at','desc')}>Date Descending</a>
                         </li>
                       </ul>
-                    </span>*/}
+                    </span>
                   </div>
 
                 </div>

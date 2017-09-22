@@ -16,6 +16,8 @@ export default function reducer(state = {
   createSignalLoaderValue: 10,
   current_page: 1,
   signal_search_element:"",
+  signal_sorton:null,
+  signal_sorttype:null,
   sideCardListFlag:null,
   loaderText:"Please wait while mAdvisor is creating signal....."
 }, action) {
@@ -153,6 +155,17 @@ export default function reducer(state = {
       }
     }
     break;
+	
+	case "SORT_SIGNAL":
+	{
+      return{
+        ...state,
+        signal_sorton:action.sorton,
+		signal_sorttype:action.sorttype
+      }
+    }
+    break;
+	
 	case "SET_SIDECARDLIST_FLAG":
 	{
 		return{

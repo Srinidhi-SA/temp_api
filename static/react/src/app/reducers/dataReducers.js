@@ -27,7 +27,9 @@ export default function reducer(state = {
 		dimensionAllChecked:true,
 		dimensionChecked:[],
 		dateTimeChecked:[],
-		dataLoaderText:"Please wait while mAdvisor is uploading your data....."
+		dataLoaderText:"Please wait while mAdvisor is uploading your data.....",
+		data_sorton:null,
+		data_sorttype:null,
 
 }, action) {
 	console.log("In DATA reducer!!");
@@ -407,6 +409,15 @@ export default function reducer(state = {
 		}
 	}
 	break;	
+		case "SORT_DATA":
+	{
+      return{
+        ...state,
+        data_sorton:action.sorton,
+		data_sorttype:action.sorttype
+      }
+    }
+	break;
 	}
 	
 	return state

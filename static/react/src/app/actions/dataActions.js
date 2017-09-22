@@ -32,7 +32,14 @@ export function getDataList(pageNo) {
 function fetchDataList(pageNo,token) {
 
 	console.log(token)
-	let search_element = store.getState().datasets.data_search_element
+	let search_element = store.getState().datasets.data_search_element;
+	let data_sorton =  store.getState().datasets.data_sorton;
+  let data_sorttype = store.getState().datasets.data_sorttype;
+    if(data_sorttype=='asc')
+		data_sorttype = ""
+	else if(data_sorttype=='desc')
+		data_sorttype="-"
+	
 	console.log(search_element)
 	if(search_element!=""&&search_element!=null){
 		console.log("calling for search element!!")
@@ -40,7 +47,12 @@ function fetchDataList(pageNo,token) {
 			method: 'get',
 			headers: getHeader(token)
 			}).then( response => Promise.all([response, response.json()]));
-	}else{
+	}else if((data_sorton!=""&& data_sorton!=null) && (data_sorttype!=null)){
+	    return fetch(API+'/api/datasets/?sorted_by='+data_sorton+'&ordering='+data_sorttype+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
+      method: 'get',
+      headers: getHeader(token)
+      }).then( response => Promise.all([response, response.json()]));
+  }else{
 		return fetch(API+'/api/datasets/?page_number='+pageNo+'&page_size='+PERPAGE+'',{
 			method: 'get',
 			headers: getHeader(token)
@@ -456,7 +468,14 @@ function renameDatasetAPI(slug,newName){
 			search_element
 		}
 	}
-
+	
+export function storeSortElements(sorton,sorttype){
+	  return {
+		type: "SORT_DATA",
+		sorton,
+		sorttype
+	}
+}
 
 
 export function updateDatasetVariables(measures,dimensions,timeDimensions,measureChkBoxList,dimChkBoxList,dateTimeChkBoxList){

@@ -16,7 +16,7 @@ import {DetailOverlay} from "../common/DetailOverlay";
 import {MainHeader} from "../common/MainHeader";
 import {BreadCrumb} from "../common/BreadCrumb";
 import {getDataList, getDataSetPreview, storeSignalMeta, handleDelete, handleRename} from "../../actions/dataActions";
-import {fetchProductList, openDULoaderPopup, closeDULoaderPopup, storeSearchElement} from "../../actions/dataActions";
+import {fetchProductList, openDULoaderPopup, closeDULoaderPopup, storeSearchElement,storeSortElements} from "../../actions/dataActions";
 import {DataUpload} from "./DataUpload";
 import {open, close} from "../../actions/dataUploadActions";
 import {STATIC_URL} from "../../helpers/env.js"
@@ -36,6 +36,8 @@ var dateFormat = require('dateformat');
     dataPreviewFlag: store.datasets.dataPreviewFlag,
     dataUploadLoaderModal: store.datasets.dataUploadLoaderModal,
     data_search_element: store.datasets.data_search_element,
+	data_sorton:store.datasets.data_sorton,
+	data_sorttype:store.datasets.data_sorttype,
     dialogBox:store.datasets.dataDialogBox,
   };
 })
@@ -96,7 +98,14 @@ export class Data extends React.Component {
     this.props.dispatch(getDataList(1));
     }
   }
-
+  
+  doSorting(sortOn, type){
+	     this.props.history.push('/data?sort=' + sortOn + '&type='+type);
+    
+	 this.props.dispatch(storeSortElements(sortOn,type));
+	this.props.dispatch(getDataList(1));
+  }
+  
   render() {
     console.log("data is called");
     console.log(this.props);
@@ -108,6 +117,9 @@ export class Data extends React.Component {
 			if (search_element)
 			document.getElementById('search_data').value = "";
 		}
+     if(this.props.location.sort == "" || this.props.location.sort == null){
+		  this.props.dispatch(storeSortElements("",null));
+	  }
 		//search element ends..
     if (store.getState().datasets.dataPreviewFlag) {
       let _link = "/data/" + store.getState().datasets.selectedDataSet;
@@ -195,7 +207,7 @@ export class Data extends React.Component {
                 <div class="input-group pull-right">
                   <input type="text" name="search_data" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search Data" id="search_data" class="form-control" placeholder="Search data..."/>
 
-                  {/*<span class="input-group-btn">
+                  <span class="input-group-btn">
                     <button type="button" class="btn btn-default" title="Select All Card">
                       <i class="fa fa-address-card-o fa-lg"></i>
                     </button>
@@ -204,20 +216,20 @@ export class Data extends React.Component {
                       <span class="caret"></span>
                     </button>
                     <ul role="menu" class="dropdown-menu dropdown-menu-right">
-                      <li>
-                        <a href="#">Name Ascending</a>
-                      </li>
-                      <li>
-                        <a href="#">Name Descending</a>
-                      </li>
-                      <li>
-                        <a href="#">Date Ascending</a>
-                      </li>
-                      <li>
-                        <a href="#">Date Descending</a>
-                      </li>
+                        <li>
+                          <a href="#" onClick={this.doSorting.bind(this,'name','asc')}>Name Ascending</a>
+                        </li>
+                        <li>
+                          <a href="#" onClick={this.doSorting.bind(this,'name','desc')}>Name Descending</a>
+                        </li>
+                        <li>
+                          <a href="#" onClick={this.doSorting.bind(this,'created_at','asc')}>Date Ascending</a>
+                        </li>
+                        <li>
+                          <a href="#" onClick={this.doSorting.bind(this,'created_at','desc')}>Date Descending</a>
+                        </li>
                     </ul>
-                  </span>*/}
+                  </span>
                 </div>
               </div>
             </div>
@@ -252,7 +264,9 @@ export class Data extends React.Component {
   handleSelect(eventKey) {
 		if (this.props.data_search_element) {
       this.props.history.push('/data?search=' + this.props.data_search_element + '&page=' + eventKey + '');
-    } else
+    } else if(this.props.data_sorton){
+	     this.props.history.push('/data?sort=' + this.props.data_sorton +'&type='+this.props.data_sorttype+'&page=' + eventKey + '');
+	}else
 this.props.history.push('/data?page=' + eventKey + '');
 
     this.props.dispatch(getDataList(eventKey));

@@ -88,11 +88,22 @@ export function getList(token,pageNo) {
 
 function fetchPosts(token,pageNo) {
   //console.log(token)
-  let search_element = store.getState().signals.signal_search_element
+  let search_element = store.getState().signals.signal_search_element;
+  let signal_sorton =  store.getState().signals.signal_sorton;
+  let signal_sorttype = store.getState().signals.signal_sorttype;
+    if(signal_sorttype=='asc')
+		signal_sorttype = ""
+	else if(signal_sorttype=='desc')
+		signal_sorttype="-"
   //console.log(search_element)
   if(search_element!=""&&search_element!=null){
     //console.log("calling for search element!!")
     return fetch(API+'/api/signals/?name='+search_element+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
+      method: 'get',
+      headers: getHeader(token)
+      }).then( response => Promise.all([response, response.json()]));
+  }else if((signal_sorton!=""&&signal_sorton!=null) && (signal_sorttype!=null)){
+	    return fetch(API+'/api/signals/?sorted_by='+signal_sorton+'&ordering='+signal_sorttype+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
       method: 'get',
       headers: getHeader(token)
       }).then( response => Promise.all([response, response.json()]));
@@ -265,6 +276,13 @@ export function storeSearchElement(search_element){
   return {
 		type: "SEARCH_SIGNAL",
 		search_element
+	}
+}
+export function storeSortElements(sorton,sorttype){
+	  return {
+		type: "SORT_SIGNAL",
+		sorton,
+		sorttype
 	}
 }
 
