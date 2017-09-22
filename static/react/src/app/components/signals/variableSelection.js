@@ -7,10 +7,12 @@ import {Modal,Button,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "r
 import store from "../../store";
 import {selectedAnalysisList,resetSelectedVariables,unselectAllPossibleAnalysis,getDataSetPreview} from "../../actions/dataActions";
 import {openCreateSignalModal,closeCreateSignalModal,updateCsLoaderValue} from "../../actions/createSignalActions";
-import {createSignal,setPossibleAnalysisList,emptySignalAnalysis} from "../../actions/signalActions";
+import {createSignal,setPossibleAnalysisList,emptySignalAnalysis,advanceSettingsModal} from "../../actions/signalActions";
 import {DataVariableSelection} from "../data/DataVariableSelection";
 import {CreateSignalLoader} from "../common/CreateSignalLoader";
 import {openCsLoaderModal,closeCsLoaderModal} from "../../actions/createSignalActions";
+import {AdvanceSettings} from "./AdvanceSettings";
+import LinkedStateMixin from 'react-addons-linked-state-mixin';
 
 var selectedVariables = {measures:[],dimensions:[],date:null};  // pass selectedVariables to config
 
@@ -28,6 +30,7 @@ var selectedVariables = {measures:[],dimensions:[],date:null};  // pass selected
         getVarType: store.signals.getVarType,
         dataSetTimeDimensions:store.datasets.dataSetTimeDimensions,
         selectedVariablesCount: store.datasets.selectedVariablesCount,
+        dataSetAnalysisList:store.datasets.dataSetAnalysisList,
     };
 })
 
@@ -41,13 +44,14 @@ export class VariableSelection extends React.Component {
         this.prevSelectedVar = null;
         
         props.dispatch(emptySignalAnalysis());
-    }
-    
-    
+    } 
     
     handleAnlysisList(e){
         this.props.dispatch(selectedAnalysisList(e))
         
+    }
+    openAdvanceSettingsModal(){
+    	this.child.openAdvanceSettingsModal();
     }
     createSignal(event){
         event.preventDefault();
@@ -128,15 +132,26 @@ export class VariableSelection extends React.Component {
                 renderSelectBox = <option>No Variables</option>
             }
             
+            //AnalysisList
+            let possibleAnalysis = this.props.dataSetAnalysisList.analysis;
+            if(possibleAnalysis){
+            	
+            	 renderSubList = possibleAnalysis.map((metaItem,metaIndex) =>{
+                     let id = "chk_analysis"+ metaIndex;
+                     return(<div key={metaIndex} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.displayName} checked={metaItem.status} onChange={this.handleAnlysisList.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>);
+                     
+                 });
+            	
+            }
+            
             // possible analysis list -------------------------------------
-            let possibleAnalysis = dataPrev.meta_data.possibleAnalysis.target_variable;
+            {/* let possibleAnalysis = dataPrev.meta_data.possibleAnalysis.target_variable;
             // possible analysis options -----
             if(possibleAnalysis){
                 if(that.prevSelectedVar != that.props.getVarType){
                     $(".possibleAnalysis").prop("checked",false);
                     that.props.dispatch(unselectAllPossibleAnalysis());
                 }
-                // if($('#signalVariableList option:selected').val() == "dimension"){
                 if(that.props.getVarType == "dimension"){
                     that.prevSelectedVar ="dimension";
                     renderSubList = possibleAnalysis.dimension.map((metaItem,metaIndex) =>{
@@ -170,6 +185,7 @@ export class VariableSelection extends React.Component {
             }else{
                 renderPossibleAnalysis = <div>No Variables</div>
             }
+            */}
         }
         if(this.props.dataSetTimeDimensions.length == 0){
             $('#analysisList input[type="checkbox"]').last().attr("disabled", true);
@@ -177,7 +193,6 @@ export class VariableSelection extends React.Component {
             $('#analysisList input[type="checkbox"]').last().attr("disabled", false);
         }
         // end of possible analysis list ------------------------------------
-        
         return (
                 <div className="side-body">
                 <div className="main-content">
@@ -199,13 +214,17 @@ export class VariableSelection extends React.Component {
                 <br/>
                 {/*  adding selection component */}
                 <DataVariableSelection/>
+                <AdvanceSettings  onRef={ref => (this.child = ref)}  />
                 {/*---------end of selection component----------------------*/}
                 <div className="row">
                 <div className="col-md-12">
                 <div className="panel panel-alt4 panel-borders">
                 <div className="panel-heading text-center">Type of Signals</div>
                 <div className="panel-body text-center" id="analysisList" >
-                {renderPossibleAnalysis}
+                {renderSubList}
+                <div className="pull-right cursor">
+				<a className="cursor" onClick={this.openAdvanceSettingsModal.bind(this)}>Advanced Settings</a>
+				</div>
                 </div>
                 
                 </div>
@@ -230,6 +249,7 @@ export class VariableSelection extends React.Component {
                 </div>
                 </div>
                 <CreateSignalLoader />
+               
                 </div>
                 </div>
                 

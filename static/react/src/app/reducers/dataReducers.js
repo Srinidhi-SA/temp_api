@@ -27,7 +27,8 @@ export default function reducer(state = {
 		dimensionAllChecked:true,
 		dimensionChecked:[],
 		dateTimeChecked:[],
-		dataLoaderText:"Please wait while mAdvisor is uploading your data....."
+		dataLoaderText:"Please wait while mAdvisor is uploading your data.....",
+		dataSetAnalysisList:{},
 
 }, action) {
 	console.log("In DATA reducer!!");
@@ -288,6 +289,7 @@ export default function reducer(state = {
 			measureAllChecked:true,
 			dimensionAllChecked:true,
 			dateTimeChecked:action.dateTimeChkBoxList,
+			dataSetAnalysisList:action.possibleAnalysisList
 			
 		}
 	}

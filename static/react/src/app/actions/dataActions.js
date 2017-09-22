@@ -459,7 +459,7 @@ function renameDatasetAPI(slug,newName){
 
 
 
-export function updateDatasetVariables(measures,dimensions,timeDimensions,measureChkBoxList,dimChkBoxList,dateTimeChkBoxList){
+export function updateDatasetVariables(measures,dimensions,timeDimensions,measureChkBoxList,dimChkBoxList,dateTimeChkBoxList,possibleAnalysisList){
 
 	return {
 		type: "DATASET_VARIABLES",
@@ -468,7 +468,8 @@ export function updateDatasetVariables(measures,dimensions,timeDimensions,measur
 		timeDimensions,
 		measureChkBoxList,
 		dimChkBoxList,
-		dateTimeChkBoxList
+		dateTimeChkBoxList,
+		possibleAnalysisList
 
 	}
 }

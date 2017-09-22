@@ -17,7 +17,8 @@ export default function reducer(state = {
   current_page: 1,
   signal_search_element:"",
   sideCardListFlag:null,
-  loaderText:"Please wait while mAdvisor is creating signal....."
+  loaderText:"Please wait while mAdvisor is creating signal.....",
+  advanceSettingsModal:false,
 }, action) {
   console.log("in SIGNAL reducer!!");
   console.log(action);
@@ -158,6 +159,15 @@ export default function reducer(state = {
 		return{
 			...state,
 			sideCardListFlag:action.sideCardListClass
+		}
+		
+	}
+    break;
+	case "ADVANCE_SETTINGS_MODAL":
+	{
+		return{
+			...state,
+			advanceSettingsModal:action.flag
 		}
 		
 	}

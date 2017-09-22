@@ -329,4 +329,10 @@ function renameSignalAPI(slug,newName){
 		}),
 	}).then( response => Promise.all([response, response.json()]));
 
-	}
+}
+export function advanceSettingsModal(flag){
+	 return {
+			type: "ADVANCE_SETTINGS_MODAL",
+		    flag
+		}
+}
