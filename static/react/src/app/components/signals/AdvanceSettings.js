@@ -52,11 +52,12 @@ export class AdvanceSettings extends React.Component {
      return list;*/
 	  var that = this;
 	  let list =   analysisList.map((metaItem,metaIndex) =>{
+		  let id = "chk_analysis"+ metaIndex;
 	  return(
-		<li><div key={metaIndex} className="ma-checkbox inline"><input id={metaIndex} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisList.bind(this)}  /><label htmlFor={metaIndex}>{metaItem.displayName}</label></div>;
-		{metaItem.analysisSubTypes.map((subItem,subIndex)=>{
+		<li><div key={metaIndex} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisList.bind(this)}  /><label htmlFor={metaIndex}>{metaItem.displayName}</label></div>;
+		<ul className="list-unstyled">{metaItem.analysisSubTypes.map((subItem,subIndex)=>{
 			  return(<li>{subItem.name}</li>)
-		  })}
+		  })}</ul>
 		</li>);
 	  });
 	  return list;
