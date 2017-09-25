@@ -518,7 +518,7 @@ def use_set_result(request, slug=None):
 def write_into_databases(job_type, object_slug, results):
     from api import helper
     import json
-    if job_type == "metadata":
+    if job_type in ["metadata", "subSetting"]:
         dataset_object = Dataset.objects.get(slug=object_slug)
         columnData = results['columnData']
         for data in columnData:
@@ -567,6 +567,8 @@ def write_into_databases(job_type, object_slug, results):
         robo_object.robo_analysis_done = True
         robo_object.save()
         return results
+    else:
+        print "No where to write"
     print "written to the database."
 
 def chart_changes_in_metadata_chart(chart_data):
