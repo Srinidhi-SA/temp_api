@@ -1574,12 +1574,13 @@
   },
   "job": 1134
 }
-*/}
+*/
+}
 let default_updatedSubSetting = {
-          "measureColumnFilters" : [],
-          "dimensionColumnFilters" : [],
-          "timeDimensionColumnFilters" : []
-  }
+  "measureColumnFilters": [],
+  "dimensionColumnFilters": [],
+  "timeDimensionColumnFilters": []
+}
 export default function reducer(state = {
   dataList: {},
   selectedDataSet: "",
@@ -1608,7 +1609,9 @@ export default function reducer(state = {
   dimensionAllChecked: true,
   dimensionChecked: [],
   dateTimeChecked: [],
-  updatedSubSetting:default_updatedSubSetting
+  updatedSubSetting: default_updatedSubSetting,
+  subsettingDone: false,
+  subsettedSlug:""
 }, action) {
   console.log("In DATA reducer!!");
   console.log(action);
@@ -1635,7 +1638,9 @@ export default function reducer(state = {
           ...state,
           dataPreview: action.dataPreview,
           dataPreviewFlag: true,
-          selectedDataSet: action.slug
+          selectedDataSet: action.slug,
+          subsettedSlug:"",
+          subsettingDone:false
         }
       }
       break;
@@ -1644,7 +1649,9 @@ export default function reducer(state = {
         return {
           ...state,
           dataPreview: action.dataPreview,
-          selectedDataSet: action.slug
+          selectedDataSet: action.slug,
+          subsettingDone:false,
+          subsettedSlug:""
         }
       }
       break;
@@ -1854,7 +1861,9 @@ export default function reducer(state = {
           ...state,
           dataPreview: {},
           dataPreviewFlag: false,
-          selectedDataSet: ""
+          selectedDataSet: "",
+          subsettingDone:false,
+          subsettedSlug:""
         }
       }
       break;
@@ -1992,13 +2001,20 @@ export default function reducer(state = {
       }
       break;
     case "UPDATE_SUBSETTING":
-    {
+      {
+        return {
+          ...state,
+          updatedSubSetting: action.updatedSubSetting,
+          subsettingDone: true
+        }
+      }
+      break;
+    case "SUBSETTED_DATASET":{
       return{
         ...state,
-        updatedSubSetting: action.updatedSubSetting
+        subsettedSlug:action.subsetRs.slug
       }
     }
-    break;
   }
 
   return state

@@ -6,7 +6,7 @@ import store from "../../store";
 import {updateSubSetting} from "../../actions/dataActions";
 
 @connect((store) => {
-  return {updatedSubSetting: store.datasets.updatedSubSetting};
+  return {updatedSubSetting: store.datasets.updatedSubSetting,subsettingDone:store.datasets.subsettingDone};
 })
 
 export class SubSetting extends React.Component {
@@ -250,6 +250,7 @@ export class SubSetting extends React.Component {
 						this.state.subSettingRs.measureColumnFilters=measureColumnFilter;
 					}else{
           this.state.subSettingRs.measureColumnFilters.push({"colname": this.props.item.name, "upperBound": this.state.curmax, "lowerBound": this.state.curmin, "filterType": "valueRange"});
+					this.state.alreadyUpdated = true
 				}
         }
         break;
@@ -268,6 +269,7 @@ export class SubSetting extends React.Component {
 
 					}else{
           this.state.subSettingRs.dimensionColumnFilters.push({"colname": this.props.item.name, "values": this.state.curdimention, "filterType": "valueIn"});
+					this.state.alreadyUpdated = true
         }
 			}
         break;

@@ -8,12 +8,13 @@ import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {C3Chart} from "../c3Chart";
 import ReactDOM from 'react-dom';
-import {hideDataPreview,getDataSetPreview} from "../../actions/dataActions";
+import {hideDataPreview,getDataSetPreview,getSubSettedDataset} from "../../actions/dataActions";
 import {Button} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"
 import {showHideSideChart,showHideSideTable} from "../../helpers/helper.js"
 import {isEmpty} from "../../helpers/helper";
 import {SubSetting} from "./SubSetting"
+
 
 
 
@@ -24,7 +25,9 @@ import {SubSetting} from "./SubSetting"
 		currentAppId:store.apps.currentAppId,
 		roboDatasetSlug:store.apps.roboDatasetSlug,
 		modelSlug:store.apps.modelSlug,
-		signal: store.signals.signalAnalysis};
+		signal: store.signals.signalAnalysis,
+		subsettingDone:store.datasets.subsettingDone,
+		subsettedSlug:store.datasets.subsettedSlug};
 })
 
 
@@ -33,7 +36,7 @@ export class DataPreview extends React.Component {
 
 	constructor(props) {
 		super(props);
-		console.log("checking slug");
+		console.log("in data");
 		console.log(props);
 		this.buttons={};
 		//this.buttonsTemplate=null;
@@ -42,6 +45,7 @@ export class DataPreview extends React.Component {
 		this.firstTimeSideTable = [];
 		this.firstTimeSideChart = {};
 		this.firstTimeColTypeForChart = null;
+		this.isSubsetted = false;
 	}
 
 	hideDataPreview(){
@@ -55,7 +59,7 @@ export class DataPreview extends React.Component {
 		console.log("------------------");
 		console.log(this.props);
 		 if (this.props.dataPreview == null || isEmpty(this.props.dataPreview)) {
-		      this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
+			 				      this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
 		    }
 		console.log("data prevvvvv");
 		console.log(store.getState().datasets.curUrl.indexOf("models"));
@@ -215,11 +219,25 @@ export class DataPreview extends React.Component {
 		this.props.history.push(url);
 	}
 
+	applyDataSubset(){
+		//alert("working");
+		let subSettingRq = {'filter_settings':store.getState().datasets.updatedSubSetting,
+													'name':'testing2'};
+		console.log(JSON.stringify(subSettingRq))
+		this.props.dispatch(getSubSettedDataset(subSettingRq,this.props.dataPreview.slug))
+	}
+
 	render() {
 
 		console.log("data prev is called##########3");
 		console.log(this.props);
+		if(this.props.subsettedSlug&&(store.getState().datasets.subsettedSlug!=this.props.match.params.slug)){
+			alert("in will mount")
+			let url = '/data/'+store.getState().datasets.subsettedSlug
+			return(<Redirect to={url}/> )
+		}
 		$('body').pleaseWait('stop');
+		this.isSubsetted = this.props.subsettingDone;
 		//  const data = store.getState().data.dataPreview.meta_data.data;
 
 		// const buttonsTemplate = <div className="col-md-12 text-right">
@@ -436,7 +454,13 @@ export class DataPreview extends React.Component {
 					<div className="panel">
 					<div className="panel-body">
 					<Button onClick={this.closePreview.bind(this)}> {this.buttons.close.text} </Button>
-					<Button onClick={this.moveToVariableSelection.bind(this)} bsStyle="primary"> {this.buttons.create.text}</Button>
+					{
+						(this.isSubsetted)
+						?(<Button onClick={this.applyDataSubset.bind(this)} bsStyle="primary">Save Subset</Button>)
+						:(<Button onClick={this.moveToVariableSelection.bind(this)} bsStyle="primary"> {this.buttons.create.text}</Button>)
+
+					}
+
 					</div>
 					</div>
 					</div>
