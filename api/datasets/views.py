@@ -76,11 +76,15 @@ class DatasetView(viewsets.ModelViewSet):
         data = request.data
         data = convert_to_string(data)
         # instance = self.get_object()
-
+        
         try:
             instance = self.get_object_from_all()
         except:
             return creation_failed_exception("File Doesn't exist.")
+
+        if 'subsetting' in data:
+            if data['subsetting'] == True:
+                return self.subsetting(request, instance)
 
         # question: do we need update method in views/ as well as in serializers?
         # answer: Yes. LoL
@@ -146,12 +150,8 @@ class DatasetView(viewsets.ModelViewSet):
         serializer = DatasetSerializer(instance=instance)
         return Response(serializer.data)
 
-    @detail_route(methods=['put'])
-    def subsetting(self, request, slug=None):
-        try:
-            instance = self.get_object_from_all()
-        except:
-            return creation_failed_exception("File Doesn't exist.")
+
+    def subsetting(self, request, instance=None):
 
         if instance is None:
             return creation_failed_exception("File Doesn't exist.")
@@ -176,10 +176,13 @@ class DatasetView(viewsets.ModelViewSet):
             serializer = DatasetSerializer(data=temp_details)
             if serializer.is_valid():
                 dataset_object = serializer.save()
-                dataset_object.create_for_subsetting(
-                    data['filter_settings'],
-                    instance.get_input_file()
-                )
+                if 'filter_settings' in data:
+                    dataset_object.create_for_subsetting(
+                        data['filter_settings'],
+                        instance.get_input_file()
+                    )
+                else:
+                    return creation_failed_exception({'error': 'no filter_settings'})
                 return Response(serializer.data)
         except Exception as err:
             return creation_failed_exception(err)
