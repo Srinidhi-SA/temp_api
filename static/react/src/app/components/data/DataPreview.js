@@ -222,7 +222,7 @@ export class DataPreview extends React.Component {
 	applyDataSubset(){
 		//alert("working");
 		let subSettingRq = {'filter_settings':store.getState().datasets.updatedSubSetting,
-													'name':'testing2'};
+													'name':'testing2','subsetting':true};
 		console.log(JSON.stringify(subSettingRq))
 		this.props.dispatch(getSubSettedDataset(subSettingRq,this.props.dataPreview.slug))
 	}
@@ -232,8 +232,9 @@ export class DataPreview extends React.Component {
 		console.log("data prev is called##########3");
 		console.log(this.props);
 		if(this.props.subsettedSlug&&(store.getState().datasets.subsettedSlug!=this.props.match.params.slug)){
-			alert("in will mount")
-			let url = '/data/'+store.getState().datasets.subsettedSlug
+			// alert("in will mount")
+			this.props.dispatch(getDataSetPreview(this.props.subsettedSlug))
+			let url = '/data/'+this.props.subsettedSlug
 			return(<Redirect to={url}/> )
 		}
 		$('body').pleaseWait('stop');
@@ -270,8 +271,8 @@ export class DataPreview extends React.Component {
 
 
 			const tableThTemplate=dataPrev.columnData.map((thElement, thIndex) => {
-				console.log("th check::");
-				console.log(thElement);
+				// console.log("th check::");
+				// console.log(thElement);
 				let cls = thElement.slug + " dropdown";
 				let iconCls =null;
 				switch(thElement.columnType){
@@ -357,6 +358,9 @@ export class DataPreview extends React.Component {
 			 if(!$.isEmptyObject(this.firstTimeSideChart)){
 				 firstChart = <C3Chart classId={this.chartId} data={sideChart} yformat={yformat} xdata={xdata} sideChart={true}/> ;
 			 }
+			 let firstTimeSubSetting = ""
+			 if(!isEmpty(dataPrev.columnData[0]))
+			 firstTimeSubSetting = dataPrev.columnData[0]
 			console.log("checking side table data:; ");
 			console.log(sideTable);
 			const sideTableTemaplte=sideTable.map((tableItem,tableIndex)=>{
@@ -444,7 +448,9 @@ export class DataPreview extends React.Component {
 					{/*<!-- ./ End Tab Visualizations -->*/}
 
 					{/*<!-- Start Tab Subsettings - ->*/}
-					<div id = "sub_settings"></div>
+					<div id = "sub_settings">
+					<SubSetting item = {firstTimeSubSetting}/>
+					</div>
 					{/* End Tab Subsettings */}
 					</div>
 					</div>

@@ -39,7 +39,7 @@ function fetchDataList(pageNo,token) {
 		data_sorttype = ""
 	else if(data_sorttype=='desc')
 		data_sorttype="-"
-	
+
 	console.log(search_element)
 	if(search_element!=""&&search_element!=null){
 		console.log("calling for search element!!")
@@ -468,7 +468,7 @@ function renameDatasetAPI(slug,newName){
 			search_element
 		}
 	}
-	
+
 export function storeSortElements(sorton,sorttype){
 	  return {
 		type: "SORT_DATA",
@@ -642,307 +642,34 @@ export function updateSubSetting(updatedSubSetting){
 export function getSubSettedDataset(subset,slug) {
     return (dispatch) => {
     return fetchsubset(subset,slug).then(([response, json]) =>{
-        if(response.status){
-          //console.log(json)
+        if(response.status ===200){
+          console.log(json)
         dispatch(fetchsubsetSuccess(json))
       }
       else{
-        dispatch(fetchfetchsubsetError(json))
+				dispatch(hideDULoaderPopup());
+				dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
+        dispatch(fetchsubsetError(json))
       }
     })
   }
 }
 
-let json_dummy = {
-    "input_file": "/media/datasets/myTestFile_bwsVTG8.csv",
-    "name": "testin g2",
-    "slug": "",
-    "auto_update": false,
-    "auto_update_duration": 99999,
-    "datasource_type": "fileUpload",
-    "datasource_details": {},
-    "preview": {},
-    "meta_data": {
-        "advanced_settings": {
-            "measures": {
-                "analysis": [
-                    {
-                        "status": false,
-                        "variableCount": [],
-                        "analysisSubTypes": [],
-                        "displayName": "Overview",
-                        "name": "overview"
-                    },
-                    {
-                        "status": false,
-                        "variableCount": [],
-                        "analysisSubTypes": [
-                            {
-                                "status": false,
-                                "displayName": "Overview",
-                                "name": "overview"
-                            },
-                            {
-                                "status": false,
-                                "displayName": "Factors that drive up",
-                                "name": "factors that drive up"
-                            },
-                            {
-                                "status": false,
-                                "displayName": "Factors that drive down",
-                                "name": "factors that drive down"
-                            },
-                            {
-                                "status": false,
-                                "displayName": "Forecast",
-                                "name": "forecast"
-                            }
-                        ],
-                        "displayName": "Trend Analysis",
-                        "name": "trend analysis"
-                    },
-                    {
-                        "status": false,
-                        "variableCount": [
-                            {
-                                "status": true,
-                                "name": "Low",
-                                "value": 3
-                            },
-                            {
-                                "status": false,
-                                "name": "Medium",
-                                "value": 5
-                            },
-                            {
-                                "status": false,
-                                "name": "High",
-                                "value": 10
-                            }
-                        ],
-                        "analysisSubTypes": [
-                            {
-                                "status": false,
-                                "displayName": "Overview",
-                                "name": "overview"
-                            },
-                            {
-                                "status": false,
-                                "displayName": "Top Sublevel",
-                                "name": "Top Sublevel"
-                            },
-                            {
-                                "status": false,
-                                "displayName": "Trend for top Sublevel",
-                                "name": "Trend for top Sublevel"
-                            }
-                        ],
-                        "displayName": "Performance Analysis",
-                        "name": "Performance Analysis"
-                    },
-                    {
-                        "status": false,
-                        "variableCount": [
-                            {
-                                "status": true,
-                                "name": "Low",
-                                "value": 3
-                            },
-                            {
-                                "status": false,
-                                "name": "Medium",
-                                "value": 5
-                            },
-                            {
-                                "status": false,
-                                "name": "High",
-                                "value": 10
-                            }
-                        ],
-                        "analysisSubTypes": [
-                            {
-                                "status": false,
-                                "displayName": "Overview",
-                                "name": "overview"
-                            },
-                            {
-                                "status": false,
-                                "displayName": "Key areas of Impact",
-                                "name": "Key areas of Impact"
-                            },
-                            {
-                                "status": false,
-                                "displayName": "Trend analysis",
-                                "name": "Trend analysis"
-                            }
-                        ],
-                        "displayName": "Influencers",
-                        "name": "influencers"
-                    },
-                    {
-                        "status": false,
-                        "variableCount": [],
-                        "analysisSubTypes": [],
-                        "displayName": "Prediction",
-                        "name": "Prediction"
-                    }
-                ]
-            },
-            "dimensions": {
-                "analysis": [
-                    {
-                        "status": false,
-                        "variableCount": [],
-                        "analysisSubTypes": [],
-                        "displayName": "Overview",
-                        "name": "overview"
-                    },
-                    {
-                        "status": false,
-                        "variableCount": [],
-                        "analysisSubTypes": [
-                            {
-                                "status": false,
-                                "displayName": "Overview",
-                                "name": "overview"
-                            },
-                            {
-                                "status": false,
-                                "displayName": "Factors that drive up",
-                                "name": "factors that drive up"
-                            },
-                            {
-                                "status": false,
-                                "displayName": "Factors that drive down",
-                                "name": "factors that drive down"
-                            },
-                            {
-                                "status": false,
-                                "displayName": "Forecast",
-                                "name": "forecast"
-                            }
-                        ],
-                        "displayName": "Trend Analysis",
-                        "name": "trend analysis"
-                    },
-                    {
-                        "status": false,
-                        "variableCount": [
-                            {
-                                "status": true,
-                                "name": "Low",
-                                "value": 3
-                            },
-                            {
-                                "status": false,
-                                "name": "Medium",
-                                "value": 5
-                            },
-                            {
-                                "status": false,
-                                "name": "High",
-                                "value": 10
-                            }
-                        ],
-                        "analysisSubTypes": [
-                            {
-                                "status": false,
-                                "displayName": "Overview",
-                                "name": "overview"
-                            },
-                            {
-                                "status": false,
-                                "displayName": "Top Sublevel",
-                                "name": "Top Sublevel"
-                            },
-                            {
-                                "status": false,
-                                "displayName": "Trend for top Sublevel",
-                                "name": "Trend for top Sublevel"
-                            }
-                        ],
-                        "displayName": "Performance Analysis",
-                        "name": "Performance Analysis"
-                    },
-                    {
-                        "status": false,
-                        "variableCount": [
-                            {
-                                "status": true,
-                                "name": "Low",
-                                "value": 3
-                            },
-                            {
-                                "status": false,
-                                "name": "Medium",
-                                "value": 5
-                            },
-                            {
-                                "status": false,
-                                "name": "High",
-                                "value": 10
-                            }
-                        ],
-                        "analysisSubTypes": [
-                            {
-                                "status": false,
-                                "displayName": "Overview",
-                                "name": "overview"
-                            },
-                            {
-                                "status": false,
-                                "displayName": "Key areas of Impact",
-                                "name": "Key areas of Impact"
-                            },
-                            {
-                                "status": false,
-                                "displayName": "Trend analysis",
-                                "name": "Trend analysis"
-                            }
-                        ],
-                        "displayName": "Influencers",
-                        "name": "influencers"
-                    },
-                    {
-                        "status": false,
-                        "variableCount": [],
-                        "analysisSubTypes": [],
-                        "displayName": "Prediction",
-                        "name": "Prediction"
-                    }
-                ]
-            }
-        }
-    },
-    "created_at": "2017-09-23T09:35:48.093986Z",
-    "deleted": false,
-    "bookmarked": false,
-    "file_remote": "hdfs",
-    "analysis_done": false,
-    "status": "INPROGRESS",
-    "created_by": {
-        "username": "marlabs",
-        "first_name": "Ankush",
-        "last_name": "Patel",
-        "email": "ankush.patel@marlabs.com",
-        "date_joined": "2017-08-16T11:46:35Z"
-    },
-    "job": 1177
-}
 function fetchsubset(subset,slug) {
 
-    return fetch(API+'/datasets/'+slug+'/subsetting/',{
-      method: 'PUT',
-      headers: getHeader(sessionStorage.userToken),
-			body: JSON.stringify(subset)
-		}).then( response => Promise.all([response, json_dummy]));
+	return fetch(API+'/api/datasets/'+slug+'/',{
+		method: 'put',
+		headers: getHeader(sessionStorage.userToken),
+		body:JSON.stringify(subset)
+	}).then( response => Promise.all([response,response.json()]));
 
 }
 
-
 function fetchsubsetSuccess(subsetRs) {
-//alert("success")
-console.log(subsetRs)
+	console.log("data subset from api to store")
+	//console.log(subsetRs)
+	//getDataSetPreview(subsetRs.slug)
+	//alert("success")
   return {
     type: "SUBSETTED_DATASET",
 		subsetRs
@@ -952,8 +679,8 @@ console.log(subsetRs)
 
 function fetchsubsetError(json) {
 console.log("fetching list error!!",json)
-  // return {
-  //   type: "SIGNAL_LIST_ERROR",
-  //   json
-  // }
+  return {
+    type: "SIGNAL_LIST_ERROR",
+    json
+  }
 }

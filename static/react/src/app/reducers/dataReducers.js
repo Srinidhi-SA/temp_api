@@ -431,7 +431,11 @@ export default function reducer(state = {
     case "SUBSETTED_DATASET":{
       return{
         ...state,
-        subsettedSlug:action.subsetRs.slug
+        subsettedSlug:action.subsetRs.slug,
+        updatedSubSetting:default_updatedSubSetting,
+        dataPreview:{},
+        dataPreviewFlag: false,
+        selectedDataSet: ""
       }
     }
   }
