@@ -9,6 +9,8 @@ from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
 from django.http import Http404
 
+from django.views.decorators.csrf import csrf_exempt
+
 from api.exceptions import creation_failed_exception, update_failed_exception
 from api.models import Dataset
 from api.pagination import CustomPagination
@@ -143,7 +145,9 @@ class DatasetView(viewsets.ModelViewSet):
         serializer = DatasetSerializer(instance=instance)
         return Response(serializer.data)
 
-    @detail_route(methods=['put'])
+
+    @csrf_exempt
+    @detail_route(methods=['post'])
     def subsetting(self, request, slug=None):
         try:
             instance = self.get_object_from_all()
