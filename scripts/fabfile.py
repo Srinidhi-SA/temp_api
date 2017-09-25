@@ -109,6 +109,7 @@ def deploy_api(type="development"):
         server_details=server_details,
         path_details=path_details
     )
+    reload_gunicorn("dev")
 
 
 @task
@@ -303,3 +304,7 @@ def save_db_copy(branch="local"):
 
 def get_remote_db(branch="development"):
     pass
+
+@task
+def uptime():
+    res = run('cat /proc/uptime')

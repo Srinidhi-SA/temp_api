@@ -143,7 +143,7 @@ class DatasetView(viewsets.ModelViewSet):
         serializer = DatasetSerializer(instance=instance)
         return Response(serializer.data)
 
-    @detail_route(methods=['post'])
+    @detail_route(methods=['put'])
     def subsetting(self, request, slug=None):
         try:
             instance = self.get_object_from_all()
