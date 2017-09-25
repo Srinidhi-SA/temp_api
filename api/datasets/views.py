@@ -16,7 +16,7 @@ from api.exceptions import creation_failed_exception, update_failed_exception
 from api.models import Dataset
 from api.pagination import CustomPagination
 from helper import convert_to_string
-from serializers import DatasetSerializer, DataListSerializer
+from serializers import DatasetSerializer, DataListSerializer, DataNameListSerializer
 from api.query_filtering import get_listed_data, get_retrieve_data
 
 # Create your views here.
@@ -76,7 +76,7 @@ class DatasetView(viewsets.ModelViewSet):
         data = request.data
         data = convert_to_string(data)
         # instance = self.get_object()
-        
+
         try:
             instance = self.get_object_from_all()
         except:
@@ -124,7 +124,7 @@ class DatasetView(viewsets.ModelViewSet):
     @list_route(methods=['get'])
     def all(self, request):
         query_set = self.get_queryset()
-        serializer = DataListSerializer(query_set, many=True)
+        serializer = DataNameListSerializer(query_set, many=True)
         return Response({
             "data": serializer.data
         })

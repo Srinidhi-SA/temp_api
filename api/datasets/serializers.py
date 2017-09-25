@@ -73,3 +73,17 @@ class DataListSerializer(serializers.ModelSerializer):
             "file_remote",
             "status"
         )
+
+
+class DataNameListSerializer(serializers.ModelSerializer):
+
+    def to_representation(self, instance):
+        ret = super(DataNameListSerializer, self).to_representation(instance)
+        return ret
+
+    class Meta:
+        model = Dataset
+        fields = (
+            "slug",
+            "name"
+        )
