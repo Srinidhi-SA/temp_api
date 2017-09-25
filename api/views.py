@@ -4277,3 +4277,19 @@ def get_chart_or_small_data(request, slug=None):
         writer.writerow(row)
 
     return response
+
+@csrf_exempt
+def set_messages(request, slug=None):
+
+    if slug is None:
+        return JsonResponse({"message": "Failed"})
+    data = request.body
+    data = json.loads(data)
+    if isinstance(data, list):
+        data = data
+    else:
+        data = data.get('data')
+    from api.redis_access import AccessRedis
+    ac = AccessRedis()
+    data = ac.append_using_key(slug, data)
+    return JsonResponse({'message': data})

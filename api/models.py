@@ -1061,7 +1061,8 @@ def job_submission(
             slug=job.slug,
             class_name=job_type,
             job_config=jobConfig,
-            job_name=instance.name
+            job_name=instance.name,
+            message_slug=get_message_slug(instance)
         )
         print "Job submitted."
 
@@ -1074,6 +1075,11 @@ def job_submission(
 
     return job
 
+def get_message_slug(instance):
+    from api.redis_access import AccessRedis
+    ac = AccessRedis()
+    slug = ac.get_cache_name(instance)
+    return slug
 
 class Audioset(models.Model):
     name = models.CharField(max_length=100, null=True)
@@ -1175,3 +1181,4 @@ class SaveData(models.Model):
 
     def get_url(self):
         return "/api/download_data/" + self.slug
+

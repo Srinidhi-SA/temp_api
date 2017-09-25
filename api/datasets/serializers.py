@@ -9,7 +9,7 @@ from django.conf import settings
 
 from api.models import Dataset
 from helper import convert_to_json, convert_time_to_human
-from api.helper import get_jobserver_status
+from api.helper import get_jobserver_status, get_message
 
 
 class DatasetSerializer(serializers.ModelSerializer):
@@ -44,8 +44,13 @@ class DatasetSerializer(serializers.ModelSerializer):
         if 'possibleAnalysis' in meta_data:
             meta_data['possibleAnalysis'] = settings.ANALYSIS_FOR_TARGET_VARIABLE
         meta_data['advanced_settings'] = settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS
+        try:
+            ret['message'] = get_message(instance)
+        except:
+            ret['message'] = None
 
         return ret
+
 
     class Meta:
         model = Dataset

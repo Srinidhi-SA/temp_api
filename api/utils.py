@@ -14,7 +14,8 @@ def submit_job(
         slug,
         class_name,
         job_config,
-        job_name=None
+        job_name=None,
+        message_slug=None
 ):
     sjs = client.Client(
         JobserverDetails.get_jobserver_url()
@@ -35,7 +36,8 @@ def submit_job(
     # here
     config1 = JobserverDetails.get_config(slug=slug,
                                          class_name=class_name,
-                                          job_name=job_name
+                                          job_name=job_name,
+                                          message_slug=message_slug
                                           )
     config = {}
     config['job_config'] = job_config
