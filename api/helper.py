@@ -26,7 +26,8 @@ class JobserverDetails(object):
     def get_config(cls,
                    slug,
                    class_name,
-                   job_name=None
+                   job_name=None,
+                   message_slug=None
                    ):
 
         job_type = {
@@ -44,6 +45,9 @@ class JobserverDetails(object):
                 "job_url" : "http://{0}:{1}/api/job/{2}/".format(THIS_SERVER_DETAILS.get('host'),
                                                                     THIS_SERVER_DETAILS.get('port'),
                                                                     slug),
+                "message_url": "http://{0}:{1}/api/messages/{2}/".format(THIS_SERVER_DETAILS.get('host'),
+                                                                THIS_SERVER_DETAILS.get('port'),
+                                                                message_slug),
                 "job_name": job_name,
                 "get_config" :
                     {
@@ -923,6 +927,12 @@ def convert_to_GB(size):
         count -= 1
 
     return size
+
+
+def get_message(instance):
+    from api.redis_access import AccessRedis
+    ac = AccessRedis()
+    return ac.get_using_obj(instance)
 
 
 
