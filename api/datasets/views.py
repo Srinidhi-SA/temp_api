@@ -7,6 +7,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from django.http import Http404
 
 from django.views.decorators.csrf import csrf_exempt
@@ -145,9 +146,7 @@ class DatasetView(viewsets.ModelViewSet):
         serializer = DatasetSerializer(instance=instance)
         return Response(serializer.data)
 
-
-    @csrf_exempt
-    @detail_route(methods=['post'])
+    @detail_route(methods=['put'])
     def subsetting(self, request, slug=None):
         try:
             instance = self.get_object_from_all()

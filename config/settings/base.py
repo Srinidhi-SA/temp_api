@@ -112,8 +112,8 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.BasicAuthentication',
     ),
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
@@ -489,82 +489,15 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS = {
                 ]
             },
             {
-                "name": "Performance Analysis",
-                "displayName": "Performance Analysis",
-                "status": False,
-                "variableCount": [{
-                        "name": "Low",
-                        "value": 3,
-                        "status": True
-                    },
-                    {
-                        "name": "Medium",
-                        "value": 5,
-                        "status": False
-                    },
-                    {
-                        "name": "High",
-                        "value": 10,
-                        "status": False
-                    }
-                ],
-                "analysisSubTypes": [{
-                        "name": "overview",
-                        "displayName": "Overview",
-                        "status": False
-                    },
-                    {
-                        "name": "Top Sublevel",
-                        "displayName": "Top Sublevel",
-                        "status": False
-                    },
-                    {
-                        "name": "Trend for top Sublevel",
-                        "displayName": "Trend for top Sublevel",
-                        "status": False
-                    }
-                ]
-            },
-            {
-                "name": "influencers",
-                "displayName": "Influencers",
-                "status": False,
-                "variableCount": [{
-                        "name": "Low",
-                        "value": 3,
-                        "status": True
-                    },
-                    {
-                        "name": "Medium",
-                        "value": 5,
-                        "status": False
-                    },
-                    {
-                        "name": "High",
-                        "value": 10,
-                        "status": False
-                    }
-                ],
-                "analysisSubTypes": [{
-                        "name": "overview",
-                        "displayName": "Overview",
-                        "status": False
-                    },
-                    {
-                        "name": "Key areas of Impact",
-                        "displayName": "Key areas of Impact",
-                        "status": False
-                    },
-                    {
-                        "name": "Trend analysis",
-                        "displayName": "Trend analysis",
-                        "status": False
-                    }
-                ]
-            },
-            {
                 "name": "Prediction",
                 "displayName": "Prediction",
+                "status": False,
+                "variableCount": [],
+                "analysisSubTypes": []
+            },
+            {
+                "name": "Association",
+                "displayName": "Association",
                 "status": False,
                 "variableCount": [],
                 "analysisSubTypes": []
