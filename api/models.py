@@ -76,6 +76,7 @@ class Dataset(models.Model):
     updated_at = models.DateTimeField(auto_now=True, null=True)
     created_by = models.ForeignKey(User, null=False)
     deleted = models.BooleanField(default=False)
+    subsetting = models.BooleanField(default=False, blank=True)
 
     job = models.ForeignKey(Job, null=True)
 
@@ -123,6 +124,7 @@ class Dataset(models.Model):
             inputfile,
 
     ):
+        self.set_subesetting_true()
         jobConfig = self.add_subsetting_to_config(
                                 filter_subsetting
                                 )
@@ -147,6 +149,11 @@ class Dataset(models.Model):
             self.status = "FAILED"
         else:
             self.status = "INPROGRESS"
+
+        self.save()
+
+    def set_subesetting_true(self):
+        self.subsetting = True
         self.save()
 
     def add_to_job(self):
@@ -279,6 +286,10 @@ class Dataset(models.Model):
         return os.path.join(settings.HDFS.get('base_path'), self.slug)
 
     def get_hdfs_relative_file_path(self):
+
+        if self.subsetting is True:
+            return os.path.join(settings.HDFS.get('base_path'), self.slug)
+
         return os.path.join(settings.HDFS.get('base_path'), self.slug, os.path.basename(self.input_file.path))
 
     def emr_local(self):
@@ -291,11 +302,14 @@ class Dataset(models.Model):
             if type == 'emr_file':
                 return "file://{}".format(self.input_file.path)
             elif type == 'hdfs':
-                # return "file:///home/hadoop/data_date.csv"
-                return "hdfs://{}:{}{}".format(
+                dir_path = "hdfs://{}:{}".format(
                     settings.HDFS.get("host"),
-                    settings.HDFS.get("hdfs_port"),
-                    self.get_hdfs_relative_file_path())
+                    settings.HDFS.get("hdfs_port")
+                )
+                file_name = self.get_hdfs_relative_file_path()
+
+                return dir_path + file_name
+
             elif type == 'fake':
                 return "file:///asdasdasdasd"
         else:

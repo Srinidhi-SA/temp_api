@@ -458,7 +458,9 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS = {
                 "displayName": "Overview",
                 "status": False,
                 "variableCount": [],
-                "analysisSubTypes": []
+                "analysisSubTypes": [],
+                "analysisLevel":None,
+                "analysisLevelValue":None
             },
             {
                 "name": "trend analysis",
@@ -486,21 +488,27 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS = {
                         "status": False
                     }
 
-                ]
+                ],
+                "analysisLevel": None,
+                "analysisLevelValue": None
             },
             {
                 "name": "Prediction",
                 "displayName": "Prediction",
                 "status": False,
                 "variableCount": [],
-                "analysisSubTypes": []
+                "analysisSubTypes": [],
+                "analysisLevel": None,
+                "analysisLevelValue": None
             },
             {
                 "name": "Association",
                 "displayName": "Association",
                 "status": False,
                 "variableCount": [],
-                "analysisSubTypes": []
+                "analysisSubTypes": [],
+                "analysisLevel": {"Low":True,"High":False,"Medium":True,"Custom":False},
+                "analysisLevelValue": None
             }
         ]},
         "measures": {"analysis": [
@@ -509,7 +517,9 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS = {
                 "displayName": "Overview",
                 "status": False,
                 "variableCount": [],
-                "analysisSubTypes": []
+                "analysisSubTypes": [],
+                "analysisLevel": None,
+                "analysisLevelValue": None
             },
             {
                 "name": "trend analysis",
@@ -537,7 +547,9 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS = {
                         "status": False
                     }
 
-                ]
+                ],
+                "analysisLevel": None,
+                "analysisLevelValue": None
             },
             {
                 "name": "Performance Analysis",
@@ -574,7 +586,9 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS = {
                         "displayName": "Trend for top Sublevel",
                         "status": False
                     }
-                ]
+                ],
+                "analysisLevel": {"Low":True,"High":False,"Medium":True,"Custom":False},
+                "analysisLevelValue": None
             },
             {
                 "name": "influencers",
@@ -611,14 +625,18 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS = {
                         "displayName": "Trend analysis",
                         "status": False
                     }
-                ]
+                ],
+                "analysisLevel": {"Low":True,"High":False,"Medium":True,"Custom":False},
+                "analysisLevelValue": None
             },
             {
                 "name": "Prediction",
                 "displayName": "Prediction",
                 "status": False,
                 "variableCount": [],
-                "analysisSubTypes": []
+                "analysisSubTypes": [],
+                "analysisLevel": None,
+                "analysisLevelValue": None
             }
         ]},
     }
