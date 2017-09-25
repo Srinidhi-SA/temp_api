@@ -16,7 +16,7 @@ function getHeader(token){
 	};
 }
 export function dataUpload() {
-	
+
 	return (dispatch) => {
 		dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
 		dispatch(close());
@@ -107,6 +107,3 @@ export function dataUploadLoaderValue(value){
 		value,
 	}
 }
-
-
-
