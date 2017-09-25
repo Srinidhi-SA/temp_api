@@ -65,6 +65,19 @@ THIS_SERVER_DETAILS = {
     "initail_domain": "/api"
 }
 
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient"
+        },
+        "KEY_PREFIX": "local"
+    }
+}
+CACHE_TTL = 60 * 15
+REDIS_SALT = "123"
+
 
 APPEND_SLASH=False
 DATA_UPLOAD_MAX_MEMORY_SIZE = 1024*1024*1024
