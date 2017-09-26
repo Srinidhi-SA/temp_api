@@ -168,7 +168,7 @@ export class SubSetting extends React.Component {
                             <td>
                               <div class="ma-checkbox inline">
                                 <input id="dim" type="checkbox" className="dimention" defaultChecked={selectAll}/>
-                                <label htmlFor="dim">SELECT ALL</label>
+                                <label htmlFor="dim"></label>
                               </div>
                             </td>
                             <td>

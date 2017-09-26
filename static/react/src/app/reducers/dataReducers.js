@@ -31,9 +31,14 @@ export default function reducer(state = {
   dimensionAllChecked: true,
   dimensionChecked: [],
   dateTimeChecked: [],
+  dataLoaderText: "Please wait while mAdvisor is uploading your data.....",
+  dataSetAnalysisList: {},
+  selectedDimensionSubLevels: null,
+  selectedTrendSub: [],
+  dimensionSubLevel: [],
   updatedSubSetting: default_updatedSubSetting,
   subsettingDone: false,
-  subsettedSlug:""
+  subsettedSlug: ""
 }, action) {
   console.log("In DATA reducer!!");
   console.log(action);
@@ -61,8 +66,8 @@ export default function reducer(state = {
           dataPreview: action.dataPreview,
           dataPreviewFlag: true,
           selectedDataSet: action.slug,
-          subsettedSlug:"",
-          subsettingDone:false
+          subsettedSlug: "",
+          subsettingDone: false
         }
       }
       break;
@@ -91,7 +96,6 @@ export default function reducer(state = {
         }
       }
       break;
-
     case "DATA_ALL_LIST_ERROR":
       {
         throw new Error("Unable to fetch data list!!");
@@ -308,7 +312,9 @@ export default function reducer(state = {
           dimensionChecked: action.dimChkBoxList,
           measureAllChecked: true,
           dimensionAllChecked: true,
-          dateTimeChecked: action.dateTimeChkBoxList
+          dateTimeChecked: action.dateTimeChkBoxList,
+          dataSetAnalysisList: action.possibleAnalysisList
+
         }
       }
       break;
@@ -419,6 +425,59 @@ export default function reducer(state = {
         }
       }
       break;
+
+    case "UPDATE_ANALYSIS_LIST":
+      {
+        return {
+          ...state,
+          dataSetAnalysisList: action.renderList
+        }
+      }
+      break;
+
+    case "UPDATE_ANALYSIS_LIST_FOR_LEVELS":
+      {
+        return {
+          ...state,
+          dataSetAnalysisList: action.renderList
+        }
+      }
+      break;
+
+    case "SELECTED_DIMENSION_SUBLEVELS":
+      {
+        return {
+          ...state,
+          selectedDimensionSubLevels: action.selectedDimensionSubLevels
+        }
+      }
+      break;
+    case "SELECTED_TREND_SUB_LIST":
+      {
+        return {
+          ...state,
+          selectedTrendSub: action.selectedTrendSub
+        }
+      }
+      break;
+
+    case "UNSELECTED_TREND_SUB_LIST":
+      {
+        return {
+          ...state,
+          selectedTrendSub: state.selectedTrendSub.filter(item => action.selectedTrendSub !== item)
+        }
+      }
+      break;
+
+    case "SELECTED_DIMENSION_SUB_LEVEL":
+      {
+        return {
+          ...state,
+          dimensionSubLevel: action.dimensionSubLevel
+        }
+      }
+      break;
     case "UPDATE_SUBSETTING":
       {
         return {
@@ -428,18 +487,20 @@ export default function reducer(state = {
         }
       }
       break;
-    case "SUBSETTED_DATASET":{
-      return{
-        ...state,
-        subsettedSlug:action.subsetRs.slug,
-        updatedSubSetting:default_updatedSubSetting,
-        dataPreview:{},
-        dataPreviewFlag: true,
-        selectedDataSet: action.subsetRs.slug
+    case "SUBSETTED_DATASET":
+      {
+        return {
+          ...state,
+          subsettedSlug: action.subsetRs.slug,
+          updatedSubSetting: default_updatedSubSetting,
+          dataPreview: {},
+          dataPreviewFlag: true,
+          selectedDataSet: action.subsetRs.slug
 
+        }
       }
-    }
+      break;
   }
-
   return state
+
 }
