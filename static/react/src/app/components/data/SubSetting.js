@@ -5,6 +5,7 @@ import ReactBootstrapSlider from 'react-bootstrap-slider'
 import store from "../../store";
 import {updateSubSetting} from "../../actions/dataActions";
 
+
 @connect((store) => {
   return {updatedSubSetting: store.datasets.updatedSubSetting,subsettingDone:store.datasets.subsettingDone};
 })
@@ -305,6 +306,7 @@ export class SubSetting extends React.Component {
     if (this.state.alreadyUpdated == false) {
       this.state.curmax = this.state.max
       this.state.curmin = this.state.min
+      if(this.state.dimentionList)
 			this.state.curdimention = Object.keys(this.state.dimentionList);
     }
     console.log("after assign")
@@ -332,7 +334,6 @@ export class SubSetting extends React.Component {
                     Save
                   </Button>
                 </div>
-
               </div>
             </div>
           </div>

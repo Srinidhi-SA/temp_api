@@ -71,8 +71,8 @@ export default function reducer(state = {
         return {
           ...state,
           dataPreview: action.dataPreview,
-          selectedDataSet: action.slug,
-          subs
+          selectedDataSet: action.slug
+
         }
       }
       break;
@@ -434,8 +434,9 @@ export default function reducer(state = {
         subsettedSlug:action.subsetRs.slug,
         updatedSubSetting:default_updatedSubSetting,
         dataPreview:{},
-        dataPreviewFlag: false,
-        selectedDataSet: ""
+        dataPreviewFlag: true,
+        selectedDataSet: action.subsetRs.slug
+
       }
     }
   }

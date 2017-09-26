@@ -104,6 +104,7 @@ function fetchDataPreview(slug) {
 //get preview data
 function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
 	console.log("data preview from api to store")
+	console.log(dataPreview)
 	var slug = "";
 	if(dataPreview.status == SUCCESS){
 		slug = dataPreview.slug;
@@ -636,51 +637,4 @@ export function updateSubSetting(updatedSubSetting){
 		updatedSubSetting
 
 	}
-}
-
-//data subsetting actions
-export function getSubSettedDataset(subset,slug) {
-    return (dispatch) => {
-    return fetchsubset(subset,slug).then(([response, json]) =>{
-        if(response.status ===200){
-          console.log(json)
-        dispatch(fetchsubsetSuccess(json))
-      }
-      else{
-				dispatch(hideDULoaderPopup());
-				dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
-        dispatch(fetchsubsetError(json))
-      }
-    })
-  }
-}
-
-function fetchsubset(subset,slug) {
-
-	return fetch(API+'/api/datasets/'+slug+'/',{
-		method: 'put',
-		headers: getHeader(sessionStorage.userToken),
-		body:JSON.stringify(subset)
-	}).then( response => Promise.all([response,response.json()]));
-
-}
-
-function fetchsubsetSuccess(subsetRs) {
-	console.log("data subset from api to store")
-	//console.log(subsetRs)
-	//getDataSetPreview(subsetRs.slug)
-	//alert("success")
-  return {
-    type: "SUBSETTED_DATASET",
-		subsetRs
-
-  }
-}
-
-function fetchsubsetError(json) {
-console.log("fetching list error!!",json)
-  return {
-    type: "SIGNAL_LIST_ERROR",
-    json
-  }
 }

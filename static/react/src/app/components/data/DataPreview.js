@@ -8,12 +8,15 @@ import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {C3Chart} from "../c3Chart";
 import ReactDOM from 'react-dom';
-import {hideDataPreview,getDataSetPreview,getSubSettedDataset} from "../../actions/dataActions";
+import {hideDataPreview,getDataSetPreview} from "../../actions/dataActions";
+import {dataSubsetting} from "../../actions/dataUploadActions"
 import {Button} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"
 import {showHideSideChart,showHideSideTable} from "../../helpers/helper.js"
 import {isEmpty} from "../../helpers/helper";
-import {SubSetting} from "./SubSetting"
+import {SubSetting} from "./SubSetting";
+import {DataUploadLoader} from "../common/DataUploadLoader";
+
 
 
 
@@ -46,6 +49,7 @@ export class DataPreview extends React.Component {
 		this.firstTimeSideChart = {};
 		this.firstTimeColTypeForChart = null;
 		this.isSubsetted = false;
+		this.new_subset = ""
 	}
 
 	hideDataPreview(){
@@ -58,7 +62,7 @@ export class DataPreview extends React.Component {
 	componentWillMount(){
 		console.log("------------------");
 		console.log(this.props);
-		 if (this.props.dataPreview == null || isEmpty(this.props.dataPreview)) {
+		 if (this.props.dataPreview == null || isEmpty(this.props.dataPreview)||this.props.dataPreview.status == 'FAILED') {
 			 				      this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
 		    }
 		console.log("data prevvvvv");
@@ -221,10 +225,12 @@ export class DataPreview extends React.Component {
 
 	applyDataSubset(){
 		//alert("working");
+		this.new_subset = $("#newSubsetName").val()
+		//alert(this.new_subset)
 		let subSettingRq = {'filter_settings':store.getState().datasets.updatedSubSetting,
-													'name':'testing2','subsetting':true};
+													'name':this.new_subset,'subsetting':true};
 		console.log(JSON.stringify(subSettingRq))
-		this.props.dispatch(getSubSettedDataset(subSettingRq,this.props.dataPreview.slug))
+		this.props.dispatch(dataSubsetting(subSettingRq,this.props.dataPreview.slug))
 	}
 
 	render() {
@@ -233,9 +239,18 @@ export class DataPreview extends React.Component {
 		console.log(this.props);
 		if(this.props.subsettedSlug&&(store.getState().datasets.subsettedSlug!=this.props.match.params.slug)){
 			// alert("in will mount")
-			this.props.dispatch(getDataSetPreview(this.props.subsettedSlug))
-			let url = '/data/'+this.props.subsettedSlug
+			//this.props.dispatch(getDataSetPreview(this.props.subsettedSlug))
+				if(!isEmpty(this.props.dataPreview)&&(this.props.dataPreview.status!='FAILED')){
+					console.log("goitn to change url")
+					console.log(this.props)
+					//alert("going to change url")
+					let url = '/data/'
 			return(<Redirect to={url}/> )
+		}else{
+			// if(!isEmpty(this.props.dataPreview)&&this.props.dataPreview.status == 'FAILED')
+			// {	let url = '/data/'
+			// 	return(<Redirect to={url}/> )
+		 }
 		}
 		$('body').pleaseWait('stop');
 		this.isSubsetted = this.props.subsettingDone;
@@ -373,6 +388,7 @@ export class DataPreview extends React.Component {
 				}
 			});
 
+
 			return(
 					<div className="side-body">
 					{/* <!-- Page Title and Breadcrumbs -->*/}
@@ -459,6 +475,13 @@ export class DataPreview extends React.Component {
 
 					<div className="panel">
 					<div className="panel-body">
+					{
+						(this.isSubsetted)
+						?(  <div className="htmlForm-group">
+				        <input type="text" name="newSubsetName" id="newSubsetName" className="htmlForm-control input-sm" placeholder="new subset name"/>
+				      </div>)
+						:(<div/>)
+					}
 					<Button onClick={this.closePreview.bind(this)}> {this.buttons.close.text} </Button>
 					{
 						(this.isSubsetted)
@@ -466,7 +489,7 @@ export class DataPreview extends React.Component {
 						:(<Button onClick={this.moveToVariableSelection.bind(this)} bsStyle="primary"> {this.buttons.create.text}</Button>)
 
 					}
-
+					<DataUploadLoader/>
 					</div>
 					</div>
 					</div>
@@ -482,7 +505,7 @@ export class DataPreview extends React.Component {
 			);
 		} else {
 			return (
-					 <div>
+					 <div>	<DataUploadLoader/>
 			            <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif"} />
 			          </div>
 			);

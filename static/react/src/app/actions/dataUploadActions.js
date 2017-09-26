@@ -107,3 +107,44 @@ export function dataUploadLoaderValue(value){
 		value,
 	}
 }
+
+//for subsetting
+
+export function dataSubsetting(subsetRq,slug) {
+
+	return (dispatch) => {
+		dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
+		dispatch(close());
+		dispatch(openDULoaderPopup());
+		return triggerDataSubsetting(subsetRq,slug).then(([response, json]) =>{
+			dispatch(dataUploadLoaderValue(store.getState().datasets.dULoaderValue+DULOADERPERVALUE));
+			if(response.status === 200){
+				console.log(json.slug)
+				dispatch(updateDatasetName(json.slug))
+				dispatch(dataUploadSuccess(json,dispatch))
+				dispatch(updateSubsetSuccess(json))
+			}
+			else{
+				dispatch(dataUploadError(json))
+			}
+		});
+	}
+}
+
+function triggerDataSubsetting(subsetRq,slug) {
+	return fetch(API+'/api/datasets/'+slug+'/',{
+		method: 'put',
+		headers: getHeader(sessionStorage.userToken),
+		body:JSON.stringify(subsetRq)
+	}).then( response => Promise.all([response, response.json()]));
+
+}
+function updateSubsetSuccess(subsetRs) {
+	console.log("data subset from api to store")
+	//console.log(subsetRs)
+  return {
+    type: "SUBSETTED_DATASET",
+		subsetRs
+
+  }
+}
