@@ -34,7 +34,7 @@ class Job(models.Model):
     job_type = models.CharField(max_length=300, null=False)
     object_id = models.CharField(max_length=300, null=False)
     name = models.CharField(max_length=300, null=False, default="")
-    slug = models.SlugField(null=True)
+    slug = models.SlugField(null=True, max_length=300)
     config = models.TextField(default="{}")
     results = models.TextField(default="{}")
     url = models.TextField(default="")
@@ -61,7 +61,7 @@ class Job(models.Model):
 
 class Dataset(models.Model):
     name = models.CharField(max_length=100, null=True)
-    slug = models.SlugField(null=True)
+    slug = models.SlugField(null=True, max_length=300)
     auto_update = models.BooleanField(default=False)
     auto_update_duration = models.IntegerField(default=99999)
 
@@ -399,7 +399,7 @@ class Dataset(models.Model):
 
 class Insight(models.Model):
     name = models.CharField(max_length=300, null=True)
-    slug = models.SlugField(null=False, blank=True)
+    slug = models.SlugField(null=False, blank=True, max_length=300)
     type = models.CharField(max_length=300, null=True)  # dimension/measure
     target_column = models.CharField(max_length=300, null=True, blank=True)
 
@@ -605,7 +605,7 @@ class Insight(models.Model):
 
 class Trainer(models.Model):
     name = models.CharField(max_length=300, null=True)
-    slug = models.SlugField(null=False, blank=True)
+    slug = models.SlugField(null=False, blank=True, max_length=300)
     dataset = models.ForeignKey(Dataset, null=False)
     column_data_raw = models.TextField(default="{}")
     config = models.TextField(default="{}")
@@ -782,7 +782,7 @@ class Trainer(models.Model):
 # TODO: Add set_result function: it will be contain many things.
 class Score(models.Model):
     name = models.CharField(max_length=300, null=True)
-    slug = models.SlugField(null=False, blank=True)
+    slug = models.SlugField(null=False, blank=True, max_length=300)
     trainer = models.ForeignKey(Trainer, null=False)
     dataset = models.ForeignKey(Dataset, null=False , default="")
     config = models.TextField(default="{}")
@@ -1076,8 +1076,8 @@ def job_submission(
     return job
 
 def get_message_slug(instance):
-    from api.redis_access import AccessRedis
-    ac = AccessRedis()
+    from api.redis_access import AccessFeedbackMessage
+    ac = AccessFeedbackMessage()
     slug = ac.get_cache_name(instance)
     return slug
 
@@ -1153,7 +1153,7 @@ class Audioset(models.Model):
 
 
 class SaveData(models.Model):
-    slug = models.SlugField(null=False, blank=True)
+    slug = models.SlugField(null=False, blank=True, max_length=300)
     data = models.TextField(default="{}")
 
     def get_data(self):
@@ -1181,4 +1181,30 @@ class SaveData(models.Model):
 
     def get_url(self):
         return "/api/download_data/" + self.slug
+
+
+class SaveAnyData(models.Model):
+
+    slug = models.SlugField(null=False, blank=True, max_length=300)
+    data = models.TextField(default="{}")
+
+    def get_url(self):
+        return "/api/download_data/" + self.slug
+
+    def get_data(self):
+        data = self.data
+        json_data = json.loads(data)
+        rdata = json_data.get('data')
+        return rdata
+
+    def set_slug(self, slug):
+        self.slug = slug
+
+    def set_data(self, data):
+        json_data = {
+            "data": data
+        }
+        self.data = json.dumps(json_data)
+        self.save()
+        return True
 

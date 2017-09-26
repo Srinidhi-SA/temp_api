@@ -4285,7 +4285,7 @@ def set_messages(request, slug=None):
         return JsonResponse({"message": "Failed"})
     data = request.body
     data = json.loads(data)
-    from api.redis_access import AccessRedis
-    ac = AccessRedis()
+    from api.redis_access import AccessFeedbackMessage
+    ac = AccessFeedbackMessage()
     data = ac.append_using_key(slug, data)
     return JsonResponse({'message': data})

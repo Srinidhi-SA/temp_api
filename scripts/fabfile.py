@@ -131,6 +131,7 @@ def deploy_api_and_migrate(type="development"):
     pip_install_and_deploy_remote(
         base_remote_path=path_details['base_remote_path']
     )
+    reload_gunicorn("dev")
 
 
 def deploy_ml(branch="development"):

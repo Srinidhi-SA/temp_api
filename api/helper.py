@@ -930,8 +930,8 @@ def convert_to_GB(size):
 
 
 def get_message(instance):
-    from api.redis_access import AccessRedis
-    ac = AccessRedis()
+    from api.redis_access import AccessFeedbackMessage
+    ac = AccessFeedbackMessage()
     return ac.get_using_obj(instance)
 
 
