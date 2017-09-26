@@ -5,7 +5,7 @@ from rest_framework import serializers
 from rest_framework.utils import humanize_datetime
 from sjsclient import client
 
-from api.helper import JobserverDetails, get_jobserver_status
+from api.helper import JobserverDetails, get_jobserver_status, get_message
 from api.user_helper import UserSerializer
 from models import Insight, Dataset, Trainer, Score, Job, Robo, Audioset
 
@@ -97,6 +97,11 @@ class InsightSerializer(serializers.ModelSerializer):
         ret['dataset_name'] = dataset_object.name
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+
+        try:
+            ret['message'] = get_message(instance)
+        except:
+            ret['message'] = None
         return ret
 
     def update(self, instance, validated_data):
@@ -157,6 +162,10 @@ class TrainerSerlializer(serializers.ModelSerializer):
         ret['dataset_name'] = dataset_object.name
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        try:
+            ret['message'] = get_message(instance)
+        except:
+            ret['message'] = None
         return ret
 
     def update(self, instance, validated_data):
@@ -212,6 +221,10 @@ class ScoreSerlializer(serializers.ModelSerializer):
         ret['dataset_name'] = trainer_object.dataset.name
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        try:
+            ret['message'] = get_message(instance)
+        except:
+            ret['message'] = None
         return ret
 
     def update(self, instance, validated_data):
@@ -317,6 +330,11 @@ class RoboSerializer(serializers.ModelSerializer):
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
         ret['analysis_done'] = instance.analysis_done
+
+        try:
+            ret['message'] = get_message(instance)
+        except:
+            ret['message'] = None
         return ret
 
 
@@ -389,6 +407,11 @@ class AudiosetSerializer(serializers.ModelSerializer):
         ret = convert_to_json(ret)
         ret = convert_time_to_human(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+
+        try:
+            ret['message'] = get_message(instance)
+        except:
+            ret['message'] = None
 
         return ret
 
