@@ -29,6 +29,9 @@ export default function reducer(state = {
 		dateTimeChecked:[],
 		dataLoaderText:"Please wait while mAdvisor is uploading your data.....",
 		dataSetAnalysisList:{},
+		selectedDimensionSubLevels:null,
+		selectedTrendSub:[], 
+		dimensionSubLevel:[],
 
 }, action) {
 	console.log("In DATA reducer!!");
@@ -419,6 +422,49 @@ export default function reducer(state = {
 	}
 	break;
 	
+	case "UPDATE_ANALYSIS_LIST_FOR_LEVELS":
+	{
+		return{
+     ...state,
+      dataSetAnalysisList: action.renderList,
+	  }
+	}
+	break;
+	
+	case "SELECTED_DIMENSION_SUBLEVELS":
+	{
+		return{
+     ...state,
+     selectedDimensionSubLevels: action.selectedDimensionSubLevels,
+	  }
+	}
+	break;
+	case "SELECTED_TREND_SUB_LIST":
+	{
+	  return{
+       ...state,
+        selectedTrendSub: action.selectedTrendSub,
+	  }
+	}
+	break;
+	
+	case "UNSELECTED_TREND_SUB_LIST":
+	{
+	  return{
+       ...state,
+        selectedTrendSub: state.selectedTrendSub.filter(item => action.selectedTrendSub !== item)
+	  }
+	}
+	break;
+	
+	case "SELECTED_DIMENSION_SUB_LEVEL":
+		{
+			return{
+			 ...state,
+			dimensionSubLevel: action.dimensionSubLevel
+			}
+		}
+		break;
 	}
 	
 	return state

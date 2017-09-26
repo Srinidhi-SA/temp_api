@@ -216,6 +216,50 @@ export function selectedAnalysisList(evt){
 		}
 	}
 }
+
+
+export function setAnalysisLevel(level,levelVal, analysisName){
+	var totalAnalysisList = store.getState().datasets.dataSetAnalysisList;
+	var analysisList = [];
+	var renderList = {};
+	//var chkAnalysis = id.split("-");
+	if(store.getState().signals.getVarType == "measure"){
+		analysisList = totalAnalysisList.measures.analysis.slice();
+	}else{
+		analysisList = totalAnalysisList.dimensions.analysis.slice();
+	}
+	  for(var i=0;i<analysisList.length;i++){
+			if(analysisList[i].name.toLowerCase() == analysisName){
+			  if(level == "custom"){
+				analysisList[i].analysisLevel = level;
+				analysisList[i].analysisLevelValue = levelVal;
+			  }else{
+				 analysisList[i].analysisLevel = level;
+				analysisList[i].analysisLevelValue = levelVal;
+			  }
+			}
+		}
+		if(store.getState().signals.getVarType == "measure"){
+			totalAnalysisList.measures.analysis = analysisList
+		}else{
+			totalAnalysisList.dimensions.analysis = analysisList
+		}
+		
+		renderList.measures = totalAnalysisList.measures;
+		renderList.dimensions = totalAnalysisList.dimensions;
+		return {
+			type: "UPDATE_ANALYSIS_LIST_FOR_LEVELS",
+			renderList
+		}
+				 
+	}
+	
+
+
+
+
+
+
 export function unselectAllPossibleAnalysis(){
 	let unselectAll =[];
 	return {
@@ -495,6 +539,28 @@ export function updateDatasetVariables(measures,dimensions,timeDimensions,measur
 		possibleAnalysisList
 
 	}
+}
+
+export function setDimensionSubLevels(selectedDimensionSubLevels){
+	return {
+		type: "SELECTED_DIMENSION_SUBLEVELS",
+		selectedDimensionSubLevels
+	}
+}
+export function selectedTrendSubList(selectedTrendSub){
+	
+		return {
+			type: "SELECTED_TREND_SUB_LIST",
+			selectedTrendSub
+		}
+	
+}
+export function  selectedDimensionSubLevel(dimensionSubLevel){
+	
+	return {
+			type: "SELECTED_DIMENSION_SUB_LEVEL",
+			dimensionSubLevel
+		}
 }
 
 export function handleDVSearch(evt){

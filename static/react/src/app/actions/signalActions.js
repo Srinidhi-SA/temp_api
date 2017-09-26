@@ -187,10 +187,11 @@ function fetchPostsError_analysis(json) {
 }
 
 
-export function setPossibleAnalysisList(varType) {
+export function setPossibleAnalysisList(varType,varText) {
 	return {
 		type: "SET_POSSIBLE_LIST",
-		varType
+		varType,
+		varText
 	}
 }
 export function showPredictions(predictionSelected) {
