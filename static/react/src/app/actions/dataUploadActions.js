@@ -148,3 +148,8 @@ function updateSubsetSuccess(subsetRs) {
 
   }
 }
+export function clearDataPreview(){
+	return{
+		type:"CLEAR_DATA_PREVIEW"
+	}
+}
