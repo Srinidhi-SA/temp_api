@@ -237,21 +237,17 @@ export class DataPreview extends React.Component {
 
 		console.log("data prev is called##########3");
 		console.log(this.props);
-		if(this.props.subsettedSlug&&(store.getState().datasets.subsettedSlug!=this.props.match.params.slug)){
-			// alert("in will mount")
-			//this.props.dispatch(getDataSetPreview(this.props.subsettedSlug))
-				if(!isEmpty(this.props.dataPreview)&&(this.props.dataPreview.status!='FAILED')){
-					console.log("goitn to change url")
-					console.log(this.props)
-					//alert("going to change url")
-					let url = '/data/'
-			return(<Redirect to={url}/> )
-		}else{
-			// if(!isEmpty(this.props.dataPreview)&&this.props.dataPreview.status == 'FAILED')
-			// {	let url = '/data/'
-			// 	return(<Redirect to={url}/> )
-		 }
-		}
+		// if(this.props.subsettedSlug&&(store.getState().datasets.subsettedSlug!=this.props.match.params.slug)){
+		// 	// alert("in will mount")
+		// 	//this.props.dispatch(getDataSetPreview(this.props.subsettedSlug))
+		// 		if(!isEmpty(this.props.dataPreview)&&(this.props.dataPreview.status!='FAILED')){
+		// 			console.log("goitn to change url")
+		// 			console.log(this.props)
+		// 			//alert("going to change url")
+		// 			let url = '/data/'
+		// 	return(<Redirect to={url}/> )
+		// }
+		// }
 		$('body').pleaseWait('stop');
 		this.isSubsetted = this.props.subsettingDone;
 		//  const data = store.getState().data.dataPreview.meta_data.data;

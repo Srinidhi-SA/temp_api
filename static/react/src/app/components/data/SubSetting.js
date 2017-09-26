@@ -127,7 +127,10 @@ export class SubSetting extends React.Component {
           let dimList = this.state.dimentionList
 					let curDim = this.state.curdimention
 					let checked = false
-          let dimTemplate = Object.keys(dimList).map((item, i) => {
+          let dimTemplate = ""
+          let selectAll = false
+          if(dimList){
+          dimTemplate = Object.keys(dimList).map((item, i) => {
 						checked = false;
 						if(curDim.indexOf(item)>-1){
 							checked = true
@@ -146,12 +149,11 @@ export class SubSetting extends React.Component {
             )
           });
 
-					let selectAll = false
-
 					if(curDim.length == Object.keys(dimList).length){
 						//alert("true")
 						selectAll = true
 					}
+          }
           return (
             <div>
               {/* for dimention */}
