@@ -38,7 +38,11 @@ class AccessFeedbackMessage:
         return data
 
     def get_using_key_db(self, key):
-        sd = SaveAnyData.objects.get(slug=key)
+        try:
+            sd = SaveAnyData.objects.get(slug=key)
+        except:
+            sd = None
+
         if sd is not None:
             return sd.get_data()
         else:
