@@ -309,3 +309,11 @@ def get_remote_db(branch="development"):
 @task
 def uptime():
     res = run('cat /proc/uptime')
+
+@task
+def remember_git_cache_local_and_remote(type="development"):
+    dev()
+    local("git config --global credential.helper cache")
+    local("git config --global credential.helper 'cache --timeout=360000'")
+    run("git config --global credential.helper cache")
+    run("git config --global credential.helper 'cache --timeout=360000'")
