@@ -500,6 +500,13 @@ export default function reducer(state = {
         }
       }
       break;
+    case "DATA_UPLOAD_LOADER_MSG":
+    {
+      return{
+        ...state,
+        dataLoaderText: action.message
+      }
+    }
   }
   return state
 

@@ -1,6 +1,6 @@
 import {API} from "../helpers/env";
 import store from "../store";
-import {FILEUPLOAD,DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL} from "../helpers/helper";
+import {FILEUPLOAD,DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,DULOADERPERMSG} from "../helpers/helper";
 import {getDataList,getDataSetPreview,updateDatasetName,openDULoaderPopup} from "./dataActions";
 export var dataPreviewInterval = null;
 
@@ -19,10 +19,13 @@ export function dataUpload() {
 
 	return (dispatch) => {
 		dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
+		dispatch(dataUploadLoaderMsg(DULOADERPERMSG));
 		dispatch(close());
 		dispatch(openDULoaderPopup());
 		return triggerDataUpload(sessionStorage.userToken).then(([response, json]) =>{
-			dispatch(dataUploadLoaderValue(store.getState().datasets.dULoaderValue+DULOADERPERVALUE));
+
+			// dispatch(dataUploadLoaderValue(json.message[json.message.length-1].globalCompletionPercentage));
+			// dispatch()
 			if(response.status === 200){
 				console.log(json.slug)
 				dispatch(updateDatasetName(json.slug))
@@ -70,9 +73,17 @@ function triggerDataUpload(token) {
 }
 
 function dataUploadSuccess(data,dispatch) {
+	let msg = store.getState().datasets.dataLoaderText
+	let loaderVal = store.getState().datasets.dULoaderValue
+	let dataprev = store.getState().datasets.dataPreview
 	dataPreviewInterval = setInterval(function(){
-			if(store.getState().datasets.dULoaderValue < LOADERMAXPERVALUE){
-				dispatch(dataUploadLoaderValue(store.getState().datasets.dULoaderValue+DULOADERPERVALUE));
+					if(store.getState().datasets.dULoaderValue < LOADERMAXPERVALUE){
+						if(dataprev.message&&dataprev.message.length>0){
+							msg = dataprev.message[json.message.length-1].shortExplanation
+							loaderVal = dataprev.message[data.message.length-1].globalCompletionPercentage
+						}
+				dispatch(dataUploadLoaderValue(loaderVal));
+				dispatch(dataUploadLoaderMsg(msg));
 			}
 			dispatch(getDataSetPreview(data.slug,dataPreviewInterval));
 	},DEFAULTINTERVAL);
@@ -108,16 +119,24 @@ export function dataUploadLoaderValue(value){
 	}
 }
 
+export function dataUploadLoaderMsg(message){
+	return{
+		type:"DATA_UPLOAD_LOADER_MSG",
+		message
+	}
+}
+
 //for subsetting
 
 export function dataSubsetting(subsetRq,slug) {
 
 	return (dispatch) => {
 		dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
+		dispatch(dataUploadLoaderMsg(DULOADERPERMSG));
 		dispatch(close());
 		dispatch(openDULoaderPopup());
 		return triggerDataSubsetting(subsetRq,slug).then(([response, json]) =>{
-			dispatch(dataUploadLoaderValue(store.getState().datasets.dULoaderValue+DULOADERPERVALUE));
+			//dispatch(dataUploadLoaderValue(store.getState().datasets.dULoaderValue+DULOADERPERVALUE));
 			if(response.status === 200){
 				console.log(json.slug)
 				dispatch(updateDatasetName(json.slug))

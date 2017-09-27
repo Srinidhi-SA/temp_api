@@ -25,9 +25,9 @@ const CONFUSIONMATRIX = "confusionMatrix";
 const HEATMAPTABLE = "heatMap";
 const CIRCULARCHARTTABLE = "circularChartTable";
 const DECISIONTREETABLE = "decisionTreeTable"
-const DULOADERPERVALUE = 10;
+const DULOADERPERVALUE = 3;
 const CSLOADERPERVALUE = 10;
-const LOADERMAXPERVALUE = 90;
+const LOADERMAXPERVALUE = 99;
 const DEFAULTINTERVAL = 20000;
 const APPSDEFAULTINTERVAL = 15000;
 const CUSTOMERDATA = "Customer Data";
@@ -56,7 +56,7 @@ const APPID4 = 4;
 const APPNAME4 = "Speech Analytics";
 const DELETEAUDIO = "Delete Media File";
 const RENAMEAUDIO = "Rename Media File";
-
+const DULOADERPERMSG = "initialized the filter parameters"
 
 
 export function generateHeaders(table) {
@@ -278,4 +278,5 @@ export{
 	APPNAME4,
 	RENAMEAUDIO,
 	DELETEAUDIO,
+  DULOADERPERMSG,
 	}
