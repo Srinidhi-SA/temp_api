@@ -19,7 +19,7 @@ const SCHEMA = "Schema";
 const USERNAME = "Username";
 const PASSWORD = "Password";
 const TABLENAME = "Table Name";
-const PERPAGE = 11; 
+const PERPAGE = 11;
 const NORMALTABLE = "normal";
 const CONFUSIONMATRIX = "confusionMatrix";
 const HEATMAPTABLE = "heatMap";
@@ -129,7 +129,7 @@ export function  generateRows(table) {
 
 export function  subTreeSetting(urlLength, length,paramL2) {
 	  $(function(){
-	  
+
 	    if(urlLength == length ){  //show -hide subtree and active class of subtree element
 		  $(".sb_navigation").show();
 		   $(".sb_navigation #subTab i.mAd_icons.ic_perf ~ span").each(function(){
@@ -173,7 +173,7 @@ export function  subTreeSetting(urlLength, length,paramL2) {
 
 
 	export function  showHideSideChart(colType,chartData) {
-		
+
 		if(colType =="datetime" || $.isEmptyObject(chartData)){
 				$(function(){
 			       $("#tab_visualizations #pnl_visl").removeClass("in");
@@ -185,7 +185,7 @@ export function  subTreeSetting(urlLength, length,paramL2) {
                    $("#tab_visualizations a").removeClass("collapsed");
 				});
 			}
-		
+
 
 	}
 
@@ -210,6 +210,27 @@ export function  subTreeSetting(urlLength, length,paramL2) {
 		}
 
 	}
+
+  export function  showHideSubsetting(colType,subsetData,dateflag) {
+
+		if((colType =="datetime" ||dateflag == true)||(colType == "dimension" && $.isEmptyObject(subsetData))){
+				$(function(){
+			       $("#tab_subsettings #pnl_tbset").removeClass("in");
+                   $("#tab_subsettings a").addClass("collapsed");
+                   $("#saveSubSetting").hide();
+				});
+			}else{
+      				$(function(){
+			       $("#tab_subsettings #pnl_tbset").addClass("in");
+                   $("#tab_subsettings a").removeClass("collapsed");
+                   $("#saveSubSetting").show();
+				});
+
+    }
+
+
+	}
+
 export{
 	FILEUPLOAD,
 	MYSQL,

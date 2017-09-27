@@ -198,10 +198,11 @@ function fetchPostsError_analysis(json) {
 }
 
 
-export function setPossibleAnalysisList(varType) {
+export function setPossibleAnalysisList(varType,varText) {
 	return {
 		type: "SET_POSSIBLE_LIST",
-		varType
+		varType,
+		varText
 	}
 }
 export function showPredictions(predictionSelected) {
@@ -347,4 +348,10 @@ function renameSignalAPI(slug,newName){
 		}),
 	}).then( response => Promise.all([response, response.json()]));
 
-	}
+}
+export function advanceSettingsModal(flag){
+	 return {
+			type: "ADVANCE_SETTINGS_MODAL",
+		    flag
+		}
+}

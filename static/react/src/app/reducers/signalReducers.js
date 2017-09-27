@@ -19,7 +19,10 @@ export default function reducer(state = {
   signal_sorton:null,
   signal_sorttype:null,
   sideCardListFlag:null,
-  loaderText:"Please wait while mAdvisor is creating signal....."
+  loaderText:"Please wait while mAdvisor is creating signal.....",
+  advanceSettingsModal:false,
+  getVarType:null,
+  getVarText:null,
 }, action) {
   console.log("in SIGNAL reducer!!");
   console.log(action);
@@ -92,7 +95,8 @@ export default function reducer(state = {
       {
         return {
           ...state,
-          getVarType: action.varType
+          getVarType: action.varType,
+		  getVarText: action.varText
         }
       }
       break;
@@ -171,6 +175,15 @@ export default function reducer(state = {
 		return{
 			...state,
 			sideCardListFlag:action.sideCardListClass
+		}
+		
+	}
+    break;
+	case "ADVANCE_SETTINGS_MODAL":
+	{
+		return{
+			...state,
+			advanceSettingsModal:action.flag
 		}
 		
 	}
