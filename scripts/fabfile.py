@@ -40,6 +40,8 @@ def dev():
     env.gunicorn_wsgi_app = 'config.wsgi:application'
     env.gunicorn_pidpath = path_details["base_remote_path"] + "/gunicorn.pid"
     env.gunicorn_bind = "0.0.0.0:9012"
+    env["server_details"] = server_details
+    env["path_details"] = path_details
     return {'server_details': server_details, 'path_details': path_details, 'type': 'development'}
 
 
@@ -140,6 +142,9 @@ def deploy_ml(branch="development"):
 
 @task
 def reload_gunicorn(type="dev"):
+    """
+    reload Gunicorn. gracefully kill and restart.
+    """
     if "dev" == type:
         dev()
     elif "prod" == type:
@@ -312,8 +317,64 @@ def uptime():
 
 @task
 def remember_git_cache_local_and_remote(type="development"):
-    dev()
+    """
+    remember git password.
+    """
+    if type == "development":
+        dev()
+    elif type == "production":
+        prod()
+
     local("git config --global credential.helper cache")
     local("git config --global credential.helper 'cache --timeout=360000'")
     run("git config --global credential.helper cache")
     run("git config --global credential.helper 'cache --timeout=360000'")
+
+@task
+def cleanup_static_react_old_dist(type="development"):
+    """
+    cleaup dist_files from static_react
+    """
+    if type == "development":
+        dev()
+    elif type == "production":
+        prod()
+
+    server_details = env.get('server_details')
+    path_details = env.get('path_details')
+    base_remote_path = path_details.get('base_remote_path')
+    react_path = path_details.get('react_path')
+
+    with cd(base_remote_path + react_path):
+        run('mv dist_* ~/old_dist')
+
+
+def create_database(type="development"):
+    if type == "development":
+        dev()
+    elif type == "production":
+        prod()
+
+    server_details = env.get('server_details')
+    path_details = env.get('path_details')
+
+    db_name = "madvisor"
+    user_name = "marlabs"
+    host= "localhost"
+    passowrd = "Password@123"
+
+    # CREATE DATABASE myproject CHARACTER SET UTF8;
+    run("CREATE DATABASE {0} CHARACTER SET UTF8;".format(db_name))
+
+    # CREATE USER marlabs@localhost IDENTIFIED BY 'Password@123';
+    run("CREATE USER {0}@{1} IDENTIFIED BY '{2}';".format(user_name, host, passowrd))
+
+    # GRANT ALL PRIVILEGES ON madvisor.* TO marlabs@localhost;
+    run("GRANT ALL PRIVILEGES ON {0}.* TO {1}@{2};".format(db_name, user_name, host))
+
+
+
+
+
+
+
