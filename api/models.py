@@ -535,7 +535,7 @@ class Insight(models.Model):
         analysis = advanced_settings['analysis']
         for data in analysis:
             if data['status'] == True:
-                script_to_run.append([REVERSE_ANALYSIS_LIST[data['name']]])
+                script_to_run.append(REVERSE_ANALYSIS_LIST[data['name']])
 
         return {
             'script_to_run': script_to_run,
