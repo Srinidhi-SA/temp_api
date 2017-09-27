@@ -79,8 +79,8 @@ function dataUploadSuccess(data,dispatch) {
 	dataPreviewInterval = setInterval(function(){
 					if(store.getState().datasets.dULoaderValue < LOADERMAXPERVALUE){
 						if(dataprev.message&&dataprev.message.length>0){
-							msg = dataprev.message[json.message.length-1].shortExplanation
-							loaderVal = dataprev.message[data.message.length-1].globalCompletionPercentage
+							msg = dataprev.message[dataprev.message.length-1].shortExplanation
+							loaderVal = dataprev.message[dataprev.message.length-1].globalCompletionPercentage
 						}
 				dispatch(dataUploadLoaderValue(loaderVal));
 				dispatch(dataUploadLoaderMsg(msg));

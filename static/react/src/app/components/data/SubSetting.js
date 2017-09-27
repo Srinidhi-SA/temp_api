@@ -107,26 +107,20 @@ export class SubSetting extends React.Component {
             <div>
               <div id="measure_subsetting">
                 <h4>{this.props.item.name}</h4>
-				<div className="row">
-                <div className="col-xs-5">
+                <div className="col-xs-4">
                   <input type="text" className="form-control" id="from_value" value={this.state.curmin}/>
                 </div>
-                <div className="col-xs-2">
+                <div className="col-xs-3">
                   <label>To</label>
                 </div>
-                <div className="col-xs-5">
+                <div className="col-xs-4">
                   <input type="text" className="form-control" id="to_value" value={this.state.curmax}/>
                 </div>
-				<div className="clearfix"></div>
-				</div>
               </div>
-			  <div className="xs-p-10"></div>
-			 
-              <div className="text-center">
+              <div className="form-group">
                 <ReactBootstrapSlider value={value} change={this.changeSliderValue.bind(this)} max={this.state.max} min={this.state.min} range="true" tooltip="hide"/>
               </div>
-            <div className="clearfix"></div><hr />
-			</div>
+            </div>
           );
         }
         break;
@@ -147,7 +141,7 @@ export class SubSetting extends React.Component {
             const dId = "chk_mes1_" + i;
             return (
               <tr key={i}>
-                <td className="text-center">
+                <td>
                   <div class="ma-checkbox inline"><input id={dId} type="checkbox" className="dimension" value={item} defaultChecked={checked}/>
                     <label htmlFor={dId}></label>
                   </div>
@@ -167,24 +161,24 @@ export class SubSetting extends React.Component {
             <div>
               {/* for dimention */}
               <div id="dimention_subsetting">
-                
+                <div className="row">
                   <h4>{this.props.item.name}</h4>
-                 
-                    <div className="table-responsive cst-scroll-panel">
-                      <table className="table table-hover table-bordered table-striped cst_table">
+                  <div class="col-md-12 cst-scroll-panel">
+                    <div class="table-responsive">
+                      <table class="table table-condensed table-hover table-bordered">
                         <thead>
                           <tr>
-                            <td className="text-center">
-                              <div className="ma-checkbox inline">
+                            <td>
+                              <div class="ma-checkbox inline">
                                 <input id="dim" type="checkbox" className="dimention" defaultChecked={selectAll}/>
                                 <label htmlFor="dim"></label>
                               </div>
                             </td>
                             <td>
-                              {this.props.item.name}
+                              <b>{this.props.item.name}</b>
                             </td>
                             <td>
-                              Count
+                              <b>Count</b>
                             </td>
                           </tr>
                         </thead>
@@ -193,8 +187,8 @@ export class SubSetting extends React.Component {
                         </tbody>
                       </table>
                     </div>
-                 <hr />
-               
+                  </div>
+                </div>
               </div>
             </div>
           );
@@ -346,8 +340,7 @@ export class SubSetting extends React.Component {
             <div id="pnl_tbset" className="panel-collapse collapse in" aria-expanded="true">
               <div className="panel-body">
                 {subsettingsTemplate}
-                <div className="clearfix"></div>
-				 
+                <hr/>
                 <div class="text-right" id="saveSubSetting">
                   <Button class="btn btn-alt4" onClick={this.saveSubSetting.bind(this)}>
                     Save
