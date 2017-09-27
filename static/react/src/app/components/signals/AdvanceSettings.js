@@ -165,14 +165,20 @@ export class AdvanceSettings extends React.Component {
 			   return(
 				<li><div key={metaIndex} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisList.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>
 					<ul className="list-unstyled">
-					  <li ><div className="ma-checkbox inline sub-analysis"><input className="possibleSubAnalysis" id="trend-count" type="checkbox" value="Count"   /><label htmlFor="trend-count">Count</label></div></li>
-					  <li ><div className="ma-checkbox inline sub-analysis"><input className="possibleSubAnalysis" id="trend-specific-measure" type="checkbox" value="Specific Measure" /><label htmlFor="trend-specific-measure">Specific Measure</label></div></li>
-					  <select id="select-measure">
+					  <li ><div className="col-md-4"><div className="ma-checkbox inline sub-analysis"><input className="possibleSubAnalysis" id="trend-count" type="checkbox" value="Count"   /><label htmlFor="trend-count">Count</label></div></div><div class="clearfix"></div></li>
+					  <li >
+					  <div className="col-md-4">
+					  <div className="ma-checkbox inline sub-analysis"><input className="possibleSubAnalysis" id="trend-specific-measure" type="checkbox" value="Specific Measure" /><label htmlFor="trend-specific-measure">Specific Measure</label></div> 
+					  </div>
+					  <div className="col-md-8"> <select id="select-measure" className="form-control ">
 					  {store.getState().datasets.dataSetMeasures.map(function(item,index){
 						 return(<option>{item}</option>)
 					  })
 					  }
 					  </select>
+					  </div>
+					 </li>
+					 
 					</ul>
 				
 				 </li>);
@@ -184,13 +190,17 @@ export class AdvanceSettings extends React.Component {
 					  return(<li ><div key={subIndex} className="ma-checkbox inline sub-analysis"><input id={id} type="checkbox" className="possibleSubAnalysis" value={subItem.name} /><label htmlFor={metaIndex}>{subItem.name}</label></div></li>)
 					})}</ul>*/}
 					<div class="clearfix"></div>
+					<div className="col-md-7 md-pl-20">
 					<div class="btn-group radioBtn" data-toggle="buttons">
 						<label class="btn btn-default active" ><input type="radio"  className="performance-level"  id="performance-level-low" name="performance-level" value="Low" /> Low</label> 
 						<label class="btn btn-default"  ><input type="radio"  className="performance-level"  id="performance-level-med" name="performance-level" value="Medium" /> Medium</label> 
 						<label class="btn btn-default"  ><input type="radio"  className="performance-level" id="performance-level-high"  name="performance-level" value="High" /> High</label> 
 						<label class="btn btn-default" ><input type="radio"   className="performance-level" id="performance-level-all"  name="performance-level" value="All" /> All</label>
-						<label class="btn btn-default" ><input type="radio"   className="performance-level"  id="performance-level-custom" name="performance-level" value="Custom" /> Custom</label>&nbsp;<input type="text" placeholder={performancePlaceholder} className="performance-level" id="performance-level-custom-val" name="performance-level-custom-val"/>
-					</div>
+						<label class="btn btn-default" ><input type="radio"   className="performance-level"  id="performance-level-custom" name="performance-level" value="Custom" /> Custom</label>
+					</div></div>
+					<div className="col-md-5 md-p-0">
+						<input type="text" placeholder={performancePlaceholder} className="performance-level form-control" id="performance-level-custom-val" name="performance-level-custom-val"/></div>
+
 				 </li>);
 	        
 		  }else if(metaItem.displayName.indexOf("Influencers") != -1){
@@ -200,13 +210,16 @@ export class AdvanceSettings extends React.Component {
 					  return(<li ><div key={subIndex} className="ma-checkbox inline sub-analysis"><input id={id} type="checkbox" className="possibleSubAnalysis" value={subItem.name} /><label htmlFor={metaIndex}>{subItem.name}</label></div></li>)
 					})}</ul>*/}
 				<div class="clearfix"></div>
+				<div className="col-md-7 md-pl-20">
 					<div class="btn-group radioBtn" data-toggle="buttons">
 						<label class="btn btn-default active"><input type="radio" className="influencers-level" id="influencers-level-low" name="influencers-level" value="Low" /> Low</label> 
 						<label class="btn btn-default"><input type="radio" className="influencers-level" id="influencers-level-med" name="influencers-level" value="Medium" /> Medium</label> 
 						<label class="btn btn-default"><input type="radio" className="influencers-level" id="influencers-level-high" name="influencers-level" value="High" /> High</label> 
 						<label class="btn btn-default"><input type="radio" className="influencers-level" id="influencers-level-all" name="influencers-level" value="All" /> All</label>
-						<label class="btn btn-default"><input type="radio"  className="influencers-level" id="influencers-level-custom" name="influencers-level" value="Custom" /> Custom</label>&nbsp;<input type="text" placeholder={influencersPlaceholder} className="influencers-level" id="influencers-level-custom-val" name="influencers-level-custom-val"/>
-					</div>
+						<label class="btn btn-default"><input type="radio"  className="influencers-level" id="influencers-level-custom" name="influencers-level" value="Custom" /> Custom</label>
+					</div></div>
+					<div className="col-md-5 md-p-0">
+						<input type="text" placeholder={influencersPlaceholder} className="influencers-level form-control" id="influencers-level-custom-val" name="influencers-level-custom-val"/></div>
 				 </li>);
 	       
 		  }else if(metaItem.displayName.indexOf("Association") != -1){
@@ -215,14 +228,19 @@ export class AdvanceSettings extends React.Component {
 					{/*<ul className="list-unstyled">{metaItem.analysisSubTypes.map((subItem,subIndex)=>{
 					  return(<li ><div key={subIndex} className="ma-checkbox inline sub-analysis"><input id={id} type="checkbox" className="possibleSubAnalysis" value={subItem.name} /><label htmlFor={metaIndex}>{subItem.name}</label></div></li>)
 					})}</ul>*/}
-				<div class="clearfix"></div>
+				<div className="clearfix"></div>
+				
+				<div className="col-md-7 md-pl-20">
 					<div class="btn-group radioBtn" data-toggle="buttons">
 						<label class="btn btn-default active"><input type="radio" className="association-level" id="association-level-low" name="association-level" value="Low" /> Low</label> 
 						<label class="btn btn-default"><input type="radio" className="association-level" id="association-level-med" name="association-level" value="Medium" /> Medium</label> 
 						<label class="btn btn-default"><input type="radio" className="association-level" id="association-level-high" name="association-level" value="High" /> High</label> 
 						<label class="btn btn-default"><input type="radio" className="association-level" id="association-level-all" name="association-level" value="All" /> All</label>
-						<label class="btn btn-default"><input type="radio"  className="association-level" id="association-level-custom" name="association-level" value="Custom" /> Custom</label>&nbsp;<input type="text" placeholder={associationPlaceholder} className="association-level" id="association-level-custom-val" name="association-level-custom-val"/>
-					</div>
+						<label class="btn btn-default"><input type="radio"  className="association-level" id="association-level-custom" name="association-level" value="Custom" /> Custom</label>
+						</div></div>
+						<div className="col-md-5 md-p-0">
+						<input type="text" placeholder={associationPlaceholder} className="association-level form-control" id="association-level-custom-val" name="association-level-custom-val"/></div>
+					
 				 </li>);
 	       
 		  }else{
@@ -246,16 +264,17 @@ export class AdvanceSettings extends React.Component {
 			  let val= key[0];
 			  let chkStatus = item[id];
 			  return(
-			     <div key={index} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis dimension-sub-level" value={val} checked={chkStatus}   /><label htmlFor={id}>{val}</label></div>
+			     <div key={index} className="ma-checkbox"><input id={id} type="checkbox" className="possibleAnalysis dimension-sub-level" value={val} checked={chkStatus}   /><label htmlFor={id}>{val}</label></div>
 			  );
 		  })
 		  
 		this.dimensionSubLevel = (function(){
 			let varText = that.props.getVarText;
 		   return(
-			  <li><label >{displayName}</label>
-			       <div className="row">
-                        <div className="col-lg-4">
+			  
+			  <div className="form-group">
+				 <label className="col-md-4">{displayName}</label>
+				 <div className="col-lg-8">
                             <div className="panel panel-primary-p1 cst-panel-shadow">
                                 <div className="panel-heading"> {varText}</div>
                                 <div className="panel-body">
@@ -272,10 +291,8 @@ export class AdvanceSettings extends React.Component {
                                 </div>
                             </div>
 
-                        </div>{/*<!-- /.col-lg-4 -->*/}
-					</div>
-				
-			 </li>
+                        </div>
+			  </div>
 		   );
         })();
   
@@ -313,12 +330,12 @@ export class AdvanceSettings extends React.Component {
 		</Modal.Header>
 		
       	<Modal.Body>
-		<div className="model-body">
+		
 		{this.dimensionSubLevel}
 		<ul className="list-unstyled">
 		{renderPossibleAnalysis}
 		</ul>
-	</div>
+	
 		</Modal.Body>
 		
 		<Modal.Footer>
