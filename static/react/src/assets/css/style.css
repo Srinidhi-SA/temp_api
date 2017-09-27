@@ -12262,7 +12262,7 @@ form.dropzone .note {
 	transition: box-shadow 200ms ease-in-out
 }
 .slider.slider-horizontal .slider-handle {
-	margin-top: -7px
+	margin-top: -2px
 }
 .slider.slider-vertical .slider-handle {
 	margin-left: -6px
@@ -14504,6 +14504,10 @@ a.disabled { color:#ccc !important; }
 .user-info h3 { margin-top:6px; }
 .user-profile small { text-transform:uppercase; color:#333333; font-size: 50% }
 .slick-prev, .slick-next { border-bottom: 1px solid #e8e8e8; height: 37px;}
+#dimention_subsetting table.table-striped.cst_table td {
+    padding: 3px;
+    vertical-align: middle;
+}
 /**************** Css realated to developers, keep the source down ***/
 
 
