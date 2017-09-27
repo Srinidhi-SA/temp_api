@@ -454,6 +454,7 @@ export class DataPreview extends React.Component {
 					<div className="panel-body" id="side-chart">
 					{/*<img src="../assets/images/data_preview_graph.png" className="img-responsive" />*/}
 						{firstChart}
+						<div className="clearfix"></div>
 					</div>
 					</div>
 					</div>
