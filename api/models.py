@@ -1194,7 +1194,7 @@ class SaveData(models.Model):
 
 class SaveAnyData(models.Model):
 
-    slug = models.SlugField(null=False, blank=True, max_length=300, unique=True)
+    slug = models.SlugField(null=False, blank=True, max_length=255, unique=True)
     data = models.TextField(default="{}")
 
     def get_url(self):
