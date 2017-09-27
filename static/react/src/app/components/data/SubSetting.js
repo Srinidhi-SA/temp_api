@@ -4,6 +4,7 @@ import {Button} from "react-bootstrap";
 import ReactBootstrapSlider from 'react-bootstrap-slider'
 import store from "../../store";
 import {updateSubSetting} from "../../actions/dataActions";
+import {showHideSubsetting} from "../../helpers/helper.js"
 
 
 @connect((store) => {
@@ -84,6 +85,7 @@ export class SubSetting extends React.Component {
         console.log(that.state.selectedDimention);
       });
     });
+    showHideSubsetting(this.props.item.columnType,this.state.dimentionList,this.props.item.dateSuggestionFlag)
 
   }
   changeSliderValue(e) {
@@ -124,6 +126,7 @@ export class SubSetting extends React.Component {
         break;
       case "dimension":
         {
+          if(this.props.item.dateSuggestionFlag == false){
           let dimList = this.state.dimentionList
 					let curDim = this.state.curdimention
 					let checked = false
@@ -189,7 +192,12 @@ export class SubSetting extends React.Component {
               </div>
             </div>
           );
+        }else{
+          return(
+            <div id="dimention_subsetting"/>
+          );
         }
+      }
         break;
       case "timedimention":
         {
@@ -315,6 +323,8 @@ export class SubSetting extends React.Component {
     console.log(this.state)
 
     let subsettingsTemplate = this.getSubSettings(this.props.item.columnType)
+
+
     return (
       <div>
         {/*Start Tab Subsettings*/}
