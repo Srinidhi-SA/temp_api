@@ -532,7 +532,8 @@ class Insight(models.Model):
         REVERSE_ANALYSIS_LIST = settings.REVERSE_ANALYSIS_LIST
 
         script_to_run= []
-        for data in advanced_settings:
+        analysis = advanced_settings['analysis']
+        for data in analysis:
             if data['status'] == True:
                 script_to_run.append([REVERSE_ANALYSIS_LIST[data['name']]])
 
