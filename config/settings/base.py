@@ -344,12 +344,19 @@ ANALYSIS_LIST = {
 
 REVERSE_ANALYSIS_LIST = {
     "Overview": "Descriptive analysis",
+    "overview": "Descriptive analysis",
     "Association": "Dimension vs. Dimension",
+    "association": "Dimension vs. Dimension",
     "Prediction": "Predictive modeling",
+    "prediction": "Predictive modeling",
     "Performance": "Measure vs. Dimension",
+    "performance": "Measure vs. Dimension",
     "Influencer": "Measure vs. Measure",
+    "influencer": "Measure vs. Measure",
     "Trend": "Trend",
-    "Trend Analysis": "Trend"
+    "trend": "Trend",
+    "Trend Analysis": "Trend",
+    "trend analysis": "Trend"
 }
 # {"name":"Trend":"id":4} will be added to the above lists based on the logic(if date columns is present or not)
 
@@ -503,7 +510,7 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS = {
                 "analysisLevelValue": None
             },
             {
-                "name": "Prediction",
+                "name": "prediction",
                 "displayName": "Prediction",
                 "status": False,
                 "variableCount": [],
@@ -512,7 +519,7 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS = {
                 "analysisLevelValue": None
             },
             {
-                "name": "Association",
+                "name": "association",
                 "displayName": "Association",
                 "status": False,
                 "variableCount": [],
@@ -562,8 +569,8 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS = {
                 "analysisLevelValue": None
             },
             {
-                "name": "Performance Analysis",
-                "displayName": "Performance Analysis",
+                "name": "performance",
+                "displayName": "Performance",
                 "status": False,
                 "variableCount": [{
                         "name": "Low",
@@ -640,7 +647,7 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS = {
                 "analysisLevelValue": None
             },
             {
-                "name": "Prediction",
+                "name": "prediction",
                 "displayName": "Prediction",
                 "status": False,
                 "variableCount": [],
