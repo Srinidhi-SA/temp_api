@@ -30,6 +30,7 @@ class AccessFeedbackMessage:
             data = self.get_using_key_cache(key)
             if data is None:
                 return self.get_using_key_db(key)
+            return data
         except:
             return self.get_using_key_db(key)
 
@@ -52,10 +53,11 @@ class AccessFeedbackMessage:
 
     def get_or_set_using_key(self, key, default_value=list()):
         data = self.get_using_key(key)
+
         if data is None:
             data = default_value
             self.set_using_key(key, data)
-        return
+        return data
 
     # ------------------------
 
@@ -76,11 +78,15 @@ class AccessFeedbackMessage:
         return cache.set(key, value)
 
     def set_using_key_db(self, key, value):
-        sd = SaveAnyData()
-        sd.set_slug(slug=key)
+
+        try:
+            sd = SaveAnyData.objects.get(slug=key)
+        except:
+            sd = SaveAnyData()
+            sd.set_slug(slug=key)
+
         sd.set_data(data=value)
         sd.save()
-
 
     def append_using_key(self, key, value):
         data = self.get_or_set_using_key(key)
@@ -89,5 +95,5 @@ class AccessFeedbackMessage:
         elif isinstance(value, dict):
             data.append(value)
 
-        self.set_using_key(key, data)
+        self.set_using_key(key=key, value=data)
         return self.get_using_key(key)
