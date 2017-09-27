@@ -608,8 +608,8 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS = {
                 "analysisLevelValue": None
             },
             {
-                "name": "influencers",
-                "displayName": "Influencers",
+                "name": "influencer",
+                "displayName": "Influencer",
                 "status": False,
                 "variableCount": [{
                         "name": "Low",
