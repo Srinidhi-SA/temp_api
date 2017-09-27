@@ -467,8 +467,8 @@ class Insight(models.Model):
         config = {
             "config": {}
         }
-
-        config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
+        advanced_settings = kwargs.get('advanced_settings')
+        config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings(advanced_settings=advanced_settings)
         config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
         config['config']["DATA_SOURCE"] = self.dataset.get_datasource_info()
 
@@ -512,21 +512,29 @@ class Insight(models.Model):
         }
         return ret
 
-    def create_configuration_url_settings(self):
-        default_scripts_to_run = [
-            'Descriptive analysis',
-            'Measure vs. Dimension',
-            'Dimension vs. Dimension',
-            'Trend'
-        ]
-        config = json.loads(self.config)
-        script_to_run = config.get('possibleAnalysis', default_scripts_to_run)
-        for index, value in enumerate(script_to_run):
-            if value == 'Trend Analysis':
-                script_to_run[index] = 'Trend'
+    def create_configuration_url_settings(self, advanced_settings):
+        # default_scripts_to_run = [
+        #     'Descriptive analysis',
+        #     'Measure vs. Dimension',
+        #     'Dimension vs. Dimension',
+        #     'Trend'
+        # ]
+        # config = json.loads(self.config)
+        # script_to_run = config.get('possibleAnalysis', default_scripts_to_run)
+        # for index, value in enumerate(script_to_run):
+        #     if value == 'Trend Analysis':
+        #         script_to_run[index] = 'Trend'
+        #
+        # if script_to_run is [] or script_to_run is "":
+        #     script_to_run = default_scripts_to_run
 
-        if script_to_run is [] or script_to_run is "":
-            script_to_run = default_scripts_to_run
+        from django.conf import settings
+        REVERSE_ANALYSIS_LIST = settings.REVERSE_ANALYSIS_LIST
+
+        script_to_run= []
+        for data in advanced_settings:
+            if data['status'] == True:
+                script_to_run.append([REVERSE_ANALYSIS_LIST[data['name']]])
 
         return {
             'script_to_run': script_to_run,

@@ -341,6 +341,16 @@ ANALYSIS_LIST = {
     "Trend":"Trend",
     "Trend Analysis": "Trend"
 }
+
+REVERSE_ANALYSIS_LIST = {
+    "Overview": "Descriptive analysis",
+    "Association": "Dimension vs. Dimension",
+    "Prediction": "Predictive modeling",
+    "Performance": "Measure vs. Dimension",
+    "Influencer": "Measure vs. Measure",
+    "Trend": "Trend",
+    "Trend Analysis": "Trend"
+}
 # {"name":"Trend":"id":4} will be added to the above lists based on the logic(if date columns is present or not)
 
 CORS_ORIGIN_ALLOW_ALL = True
@@ -463,8 +473,8 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS = {
                 "analysisLevelValue":None
             },
             {
-                "name": "trend analysis",
-                "displayName": "Trend Analysis",
+                "name": "trend",
+                "displayName": "Trend",
                 "status": False,
                 "variableCount": [],
                 "analysisSubTypes": [{
@@ -522,8 +532,8 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS = {
                 "analysisLevelValue": None
             },
             {
-                "name": "trend analysis",
-                "displayName": "Trend Analysis",
+                "name": "trend",
+                "displayName": "Trend",
                 "status": False,
                 "variableCount": [],
                 "analysisSubTypes": [{
