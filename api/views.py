@@ -51,17 +51,22 @@ class SignalView(viewsets.ModelViewSet):
     pagination_class = CustomPagination
 
     def create(self, request, *args, **kwargs):
-        data = request.data
-        data = convert_to_string(data)
-        data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
-        data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
-        serializer = InsightSerializer(data=data)
-        if serializer.is_valid():
-            signal_object = serializer.save()
-            signal_object.create(advanced_settings=data.get('advanced_settings', {}))
-            return Response(serializer.data)
 
-        return Response(serializer.errors)
+        try:
+            data = request.data
+            data = convert_to_string(data)
+            data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
+            data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
+            serializer = InsightSerializer(data=data)
+            if serializer.is_valid():
+                signal_object = serializer.save()
+                signal_object.create(advanced_settings=data.get('advanced_settings', {}))
+                return Response(serializer.data)
+
+            return creation_failed_exception(serializer.errors)
+        except Exception as error:
+            creation_failed_exception(error)
+
 
     def update(self, request, *args, **kwargs):
         data = request.data
@@ -120,17 +125,21 @@ class TrainerView(viewsets.ModelViewSet):
     pagination_class = CustomPagination
 
     def create(self, request, *args, **kwargs):
-        data = request.data
-        data = convert_to_string(data)
-        data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
-        data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
-        serializer = TrainerSerlializer(data=data)
-        if serializer.is_valid():
-            trainer_object = serializer.save()
-            trainer_object.create()
-            return Response(serializer.data)
+        try:
+            data = request.data
+            data = convert_to_string(data)
+            data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
+            data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
+            serializer = TrainerSerlializer(data=data)
+            if serializer.is_valid():
+                trainer_object = serializer.save()
+                trainer_object.create()
+                return Response(serializer.data)
 
-        return Response(serializer.errors)
+            return creation_failed_exception(serializer.errors)
+        except Exception as error:
+            creation_failed_exception(error)
+
 
     def update(self, request, *args, **kwargs):
         data = request.data
@@ -189,18 +198,21 @@ class ScoreView(viewsets.ModelViewSet):
     pagination_class = CustomPagination
 
     def create(self, request, *args, **kwargs):
-        data = request.data
-        data = convert_to_string(data)
-        data['trainer'] = Trainer.objects.filter(slug=data['trainer'])
-        data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
-        data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
-        serializer = ScoreSerlializer(data=data)
-        if serializer.is_valid():
-            score_object = serializer.save()
-            score_object.create()
-            return Response(serializer.data)
+        try:
+            data = request.data
+            data = convert_to_string(data)
+            data['trainer'] = Trainer.objects.filter(slug=data['trainer'])
+            data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
+            data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
+            serializer = ScoreSerlializer(data=data)
+            if serializer.is_valid():
+                score_object = serializer.save()
+                score_object.create()
+                return Response(serializer.data)
 
-        return Response(serializer.errors)
+            return creation_failed_exception(serializer.errors)
+        except Exception as error:
+            creation_failed_exception(error)
 
     def update(self, request, *args, **kwargs):
         data = request.data
@@ -298,36 +310,39 @@ class RoboView(viewsets.ModelViewSet):
     # TODO: config missing
     def create(self, request, *args, **kwargs):
 
-        data =request.data
-        data = convert_to_string(data)
-        files = request.FILES
-        name = data.get('name', "robo" + "_"+ str(random.randint(1000000,10000000)))
-        real_data = {
-            'name': name,
-            'created_by': request.user.id
-        }
+        try:
+            data =request.data
+            data = convert_to_string(data)
+            files = request.FILES
+            name = data.get('name', "robo" + "_"+ str(random.randint(1000000,10000000)))
+            real_data = {
+                'name': name,
+                'created_by': request.user.id
+            }
 
-        for file in files:
-            dataset = dict()
-            input_file = files[file]
-            dataset['input_file'] = input_file
-            dataset['name'] = input_file.name
-            dataset['created_by'] = request.user.id
-            dataset['datasource_type'] = 'fileUpload'
-            from api.datasets.serializers import DatasetSerializer
-            serializer = DatasetSerializer(data=dataset)
+            for file in files:
+                dataset = dict()
+                input_file = files[file]
+                dataset['input_file'] = input_file
+                dataset['name'] = input_file.name
+                dataset['created_by'] = request.user.id
+                dataset['datasource_type'] = 'fileUpload'
+                from api.datasets.serializers import DatasetSerializer
+                serializer = DatasetSerializer(data=dataset)
+                if serializer.is_valid():
+                    dataset_object = serializer.save()
+                    dataset_object.create()
+                    real_data[self.dataset_name_mapping[file]] = dataset_object.id
+            serializer = RoboSerializer(data=real_data)
             if serializer.is_valid():
-                dataset_object = serializer.save()
-                dataset_object.create()
-                real_data[self.dataset_name_mapping[file]] = dataset_object.id
-        serializer = RoboSerializer(data=real_data)
-        if serializer.is_valid():
-            robo_object = serializer.save()
-            robo_object.create()
-            robo_object.data = json.dumps(dummy_robo_data)
-            robo_object.save()
-            return Response(serializer.data)
-        return Response(serializer.errors)
+                robo_object = serializer.save()
+                robo_object.create()
+                robo_object.data = json.dumps(dummy_robo_data)
+                robo_object.save()
+                return Response(serializer.data)
+            return creation_failed_exception(serializer.errors)
+        except Exception as error:
+            creation_failed_exception(error)
 
     def update(self, request, *args, **kwargs):
         data = request.data
@@ -389,35 +404,39 @@ class AudiosetView(viewsets.ModelViewSet):
     pagination_class = CustomPagination
 
     def create(self, request, *args, **kwargs):
-        data = request.data
-        data = convert_to_string(data)
 
-        if 'input_file' in data:
-            data['input_file'] =  request.FILES.get('input_file')
-            data['datasource_type'] = 'fileUpload'
-            if data['input_file'] is None:
-                data['name'] = data.get('name', data.get('datasource_type', "H") + "_"+ str(random.randint(1000000,10000000)))
-            else:
-                data['name'] = data.get('name', data['input_file'].name)
-        elif 'datasource_details' in data:
-            data['input_file'] = None
-            if "Dataset Name" in data['datasource_details']:
-                data['name'] = data['datasource_details']['Dataset Name']
-            else:
-                data['name'] = data.get('name', data.get('datasource_type', "H") + "_" + str(random.randint(1000000, 10000000)))
-
-        # question: why to use user.id when it can take, id, pk, object.
-        # answer: I tried. Sighhh but it gave this error "Incorrect type. Expected pk value, received User."
-        data['created_by'] = request.user.id
         try:
-            serializer = AudiosetSerializer(data=data)
-            if serializer.is_valid():
-                audioset_object = serializer.save()
-                audioset_object.create()
-                return Response(serializer.data)
-        except Exception as err:
-            return creation_failed_exception(err)
-        return creation_failed_exception(serializer.errors)
+            data = request.data
+            data = convert_to_string(data)
+
+            if 'input_file' in data:
+                data['input_file'] =  request.FILES.get('input_file')
+                data['datasource_type'] = 'fileUpload'
+                if data['input_file'] is None:
+                    data['name'] = data.get('name', data.get('datasource_type', "H") + "_"+ str(random.randint(1000000,10000000)))
+                else:
+                    data['name'] = data.get('name', data['input_file'].name)
+            elif 'datasource_details' in data:
+                data['input_file'] = None
+                if "Dataset Name" in data['datasource_details']:
+                    data['name'] = data['datasource_details']['Dataset Name']
+                else:
+                    data['name'] = data.get('name', data.get('datasource_type', "H") + "_" + str(random.randint(1000000, 10000000)))
+
+            # question: why to use user.id when it can take, id, pk, object.
+            # answer: I tried. Sighhh but it gave this error "Incorrect type. Expected pk value, received User."
+            data['created_by'] = request.user.id
+            try:
+                serializer = AudiosetSerializer(data=data)
+                if serializer.is_valid():
+                    audioset_object = serializer.save()
+                    audioset_object.create()
+                    return Response(serializer.data)
+            except Exception as err:
+                return creation_failed_exception(err)
+            return creation_failed_exception(serializer.errors)
+        except Exception as error:
+            creation_failed_exception(error)
 
     def retrieve(self, request, *args, **kwargs):
         try:

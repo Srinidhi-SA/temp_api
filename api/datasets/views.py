@@ -42,35 +42,37 @@ class DatasetView(viewsets.ModelViewSet):
     pagination_class = CustomPagination
 
     def create(self, request, *args, **kwargs):
-        data = request.data
-        data = convert_to_string(data)
 
-        if 'input_file' in data:
-            data['input_file'] =  request.FILES.get('input_file')
-            data['datasource_type'] = 'fileUpload'
-            if data['input_file'] is None:
-                data['name'] = data.get('name', data.get('datasource_type', "H") + "_"+ str(random.randint(1000000,10000000)))
-            else:
-                data['name'] = data.get('name', data['input_file'].name)
-        elif 'datasource_details' in data:
-            data['input_file'] = None
-            if "Dataset Name" in data['datasource_details']:
-                data['name'] = data['datasource_details']['Dataset Name']
-            else:
-                data['name'] = data.get('name', data.get('datasource_type', "H") + "_" + str(random.randint(1000000, 10000000)))
-
-        # question: why to use user.id when it can take, id, pk, object.
-        # answer: I tried. Sighhh but it gave this error "Incorrect type. Expected pk value, received User."
-        data['created_by'] = request.user.id
         try:
+            data = request.data
+            data = convert_to_string(data)
+
+            if 'input_file' in data:
+                data['input_file'] =  request.FILES.get('input_file')
+                data['datasource_type'] = 'fileUpload'
+                if data['input_file'] is None:
+                    data['name'] = data.get('name', data.get('datasource_type', "H") + "_"+ str(random.randint(1000000,10000000)))
+                else:
+                    data['name'] = data.get('name', data['input_file'].name)
+            elif 'datasource_details' in data:
+                data['input_file'] = None
+                if "Dataset Name" in data['datasource_details']:
+                    data['name'] = data['datasource_details']['Dataset Name']
+                else:
+                    data['name'] = data.get('name', data.get('datasource_type', "H") + "_" + str(random.randint(1000000, 10000000)))
+
+            # question: why to use user.id when it can take, id, pk, object.
+            # answer: I tried. Sighhh but it gave this error "Incorrect type. Expected pk value, received User."
+            data['created_by'] = request.user.id
+
             serializer = DatasetSerializer(data=data)
             if serializer.is_valid():
                 dataset_object = serializer.save()
                 dataset_object.create()
                 return Response(serializer.data)
+            return creation_failed_exception(serializer.errors)
         except Exception as err:
             return creation_failed_exception(err)
-        return creation_failed_exception(serializer.errors)
 
     def update(self, request, *args, **kwargs):
         data = request.data
