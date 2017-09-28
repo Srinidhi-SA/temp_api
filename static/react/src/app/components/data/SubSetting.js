@@ -108,6 +108,7 @@ export class SubSetting extends React.Component {
               <div id="measure_subsetting">
                 <h4>{this.props.item.name}</h4>
                 <div className="col-xs-4">
+
                   <input type="text" className="form-control" id="from_value" value={this.state.curmin}/>
                 </div>
                 <div className="col-xs-3">
