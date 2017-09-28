@@ -342,9 +342,9 @@ export class SubSetting extends React.Component {
                 {subsettingsTemplate}
                 <hr/>
                 <div class="text-right" id="saveSubSetting">
-                  <Button class="btn btn-alt4" onClick={this.saveSubSetting.bind(this)}>
+                  <a href="javascript:void(0)" class="btn btn-primary" onClick={this.saveSubSetting.bind(this)}>
                     Save
-                  </Button>
+                  </a>
                 </div>
               </div>
             </div>
