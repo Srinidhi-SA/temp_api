@@ -218,6 +218,47 @@ export function selectedAnalysisList(evt){
 }
 
 
+export function selectAllAnalysisList(evt){
+	//var selectedAnalysis = evt.target.checked;
+	var totalAnalysisList = store.getState().datasets.dataSetAnalysisList;
+	var analysisList = [];
+	var renderList = {};
+	if(store.getState().signals.getVarType == "measure"){
+		analysisList = totalAnalysisList.measures.analysis.slice();
+	}else{
+		analysisList = totalAnalysisList.dimensions.analysis.slice();
+	}
+	if(evt.target.className == "allAnalysis"){
+		for(var i=0;i<analysisList.length;i++){
+			//if(analysisList[i].name == evt.target.value)
+				analysisList[i].status = evt.target.checked;
+		}
+		/*if(evt.target.checked){
+			return {
+				type: "SELECTED_ANALYSIS_TYPE",
+				selectedAnalysis
+			}
+		}else{
+			return {
+				type: "UNSELECT_ANALYSIS_TYPE",
+				selectedAnalysis
+			}
+		}*/
+		if(store.getState().signals.getVarType == "measure"){
+			totalAnalysisList.measures.analysis = analysisList
+		}else{
+			totalAnalysisList.dimensions.analysis = analysisList
+		}
+		renderList.measures = totalAnalysisList.measures;
+		renderList.dimensions = totalAnalysisList.dimensions;
+		return {
+			type: "UPDATE_ANALYSIS_LIST",
+			renderList
+		}
+	}
+}
+
+
 export function setAnalysisLevel(level,levelVal, analysisName){
 	var totalAnalysisList = store.getState().datasets.dataSetAnalysisList;
 	var analysisList = [];

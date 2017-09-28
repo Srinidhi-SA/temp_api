@@ -120,6 +120,7 @@ export class AdvanceSettings extends React.Component {
       this.props.dispatch(selectedAnalysisList(e))
       
   }
+ 
   getSubAnalysisList(subAnalysis){
 	  let subList = metaItem.analysisSubTypes.map((subItem,subIndex)=>{
 		  <li>{subItem.name}</li>
@@ -203,7 +204,7 @@ export class AdvanceSettings extends React.Component {
 
 				 </li>);
 	        
-		  }else if(metaItem.displayName.indexOf("Influencers") != -1){
+		  }else if(metaItem.displayName.indexOf("Influencer") != -1){
 			   return(
 				<li><div key={metaIndex} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisList.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>
 					{/*<ul className="list-unstyled">{metaItem.analysisSubTypes.map((subItem,subIndex)=>{
@@ -264,7 +265,7 @@ export class AdvanceSettings extends React.Component {
 			  let val= key[0];
 			  let chkStatus = item[id];
 			  return(
-			     <div key={index} className="ma-checkbox"><input id={id} type="checkbox" className="possibleAnalysis dimension-sub-level" value={val} checked={chkStatus}   /><label htmlFor={id}>{val}</label></div>
+			     <div key={index} className="ma-checkbox"><input id={id} type="checkbox" className="possibleSubAnalysis dimension-sub-level" value={val} checked={chkStatus}   /><label htmlFor={id}>{val}</label></div>
 			  );
 		  })
 		  
@@ -274,7 +275,7 @@ export class AdvanceSettings extends React.Component {
 			  
 			  <div className="form-group">
 				 <label className="col-md-4">{displayName}</label>
-				 <div className="col-lg-8">
+				 <div className="col-lg-5">
                             <div className="panel panel-primary-p1 cst-panel-shadow">
                                 <div className="panel-heading"> {varText}</div>
                                 <div className="panel-body">
@@ -292,6 +293,7 @@ export class AdvanceSettings extends React.Component {
                             </div>
 
                         </div>
+						<div className="clearfix"></div>
 			  </div>
 		   );
         })();
@@ -307,6 +309,14 @@ export class AdvanceSettings extends React.Component {
   
   render() {
 	 
+	 $(function(){
+			if($("input[value='trend']").is(":checked")){
+				$("#trend-count").prop("checked",true);
+			}else{
+				$("#trend-count").prop("checked",false);
+			}
+		});
+		
 	  let dataPrev = store.getState().datasets.dataPreview;
 	  let renderPossibleAnalysis = null, renderSubList=null;
 	  if(dataPrev){

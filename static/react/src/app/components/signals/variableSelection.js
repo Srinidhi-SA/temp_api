@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 import {push} from "react-router-redux";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "react-bootstrap";
 import store from "../../store";
-import {selectedAnalysisList,resetSelectedVariables,unselectAllPossibleAnalysis,getDataSetPreview,setDimensionSubLevels} from "../../actions/dataActions";
+import {selectedAnalysisList,resetSelectedVariables,unselectAllPossibleAnalysis,getDataSetPreview,setDimensionSubLevels,selectAllAnalysisList} from "../../actions/dataActions";
 import {openCreateSignalModal,closeCreateSignalModal,updateCsLoaderValue} from "../../actions/createSignalActions";
 import {createSignal,setPossibleAnalysisList,emptySignalAnalysis,advanceSettingsModal} from "../../actions/signalActions";
 import {DataVariableSelection} from "../data/DataVariableSelection";
@@ -63,6 +63,10 @@ export class VariableSelection extends React.Component {
         this.props.dispatch(selectedAnalysisList(e))
         
     }
+	 handleAllAnlysis(e){
+      this.props.dispatch(selectAllAnalysisList(e))
+      
+  }
     openAdvanceSettingsModal(){
     	this.child.openAdvanceSettingsModal();
     }
@@ -130,6 +134,7 @@ export class VariableSelection extends React.Component {
         var that = this;
        $(function(){
        that.props.dispatch(setPossibleAnalysisList($('#signalVariableList option:selected').val(),$('#signalVariableList option:selected').text()));
+	   
         });
         
     }
@@ -143,6 +148,8 @@ export class VariableSelection extends React.Component {
      }
     render(){
         var that= this;
+		
+		
 		
 	if(that.props.getVarText && that.props.getVarType){ //getting selected dimension's sub levels
 					
@@ -304,6 +311,7 @@ export class VariableSelection extends React.Component {
                 <div className="panel panel-alt4 panel-borders">
                 <div className="panel-heading text-center">Type of Signals</div>
                 <div className="panel-body text-center" id="analysisList" >
+				<div className="ma-checkbox inline"><input id="allAnalysis" type="checkbox" className="allAnalysis" onClick={this.handleAllAnlysis.bind(this)}  /><label htmlFor="allAnalysis">Select All</label></div>
                 {renderSubList}
                 <div className="pull-right cursor">
 				<a className="cursor" onClick={this.openAdvanceSettingsModal.bind(this)}>Advanced Settings</a>
