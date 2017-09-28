@@ -551,6 +551,12 @@ def write_into_databases(job_type, object_slug, results):
     import json
     if job_type in ["metadata", "subSetting"]:
         dataset_object = Dataset.objects.get(slug=object_slug)
+
+        if "error_message" in results:
+            dataset_object.status = "FAILED"
+            dataset_object.save()
+            return results
+            
         columnData = results['columnData']
         for data in columnData:
             # data["chartData"] = helper.find_chart_data_and_replace_with_chart_data(data["chartData"])
@@ -566,8 +572,7 @@ def write_into_databases(job_type, object_slug, results):
         for d in results.get('sampleData'):
             da.append(map(str, d))
         results['sampleData'] = da
-        if "error_message" in results:
-            dataset_object.status = "FAILED"
+
         dataset_object.meta_data = json.dumps(results)
         dataset_object.analysis_done = True
         dataset_object.save()
