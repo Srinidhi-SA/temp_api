@@ -106,7 +106,7 @@ export class SubSetting extends React.Component {
           return (
             <div>
               <div id="measure_subsetting">
-                <h4>{this.props.item.name}</h4>
+                <h5>{this.props.item.name}</h5>
 				<div className="row">
                 <div className="col-xs-5">
                   <input type="text" className="form-control" id="from_value" value={this.state.curmin}/>
@@ -168,7 +168,7 @@ export class SubSetting extends React.Component {
               {/* for dimention */}
               <div id="dimention_subsetting">
                 
-                  <h4>{this.props.item.name}</h4>
+                  <h5>{this.props.item.name}</h5>
                  
                     <div className="table-responsive cst-scroll-panel">
                       <table className="table table-hover table-bordered table-striped cst_table">
