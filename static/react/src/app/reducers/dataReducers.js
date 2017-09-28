@@ -1,4 +1,4 @@
-let default_updatedSubSetting = {
+const default_updatedSubSetting = {
   "measureColumnFilters": [],
   "dimensionColumnFilters": [],
   "timeDimensionColumnFilters": []
@@ -18,7 +18,7 @@ export default function reducer(state = {
   signalMeta: {},
   curUrl: "",
   dataUploadLoaderModal: false,
-  dULoaderValue: 10,
+  dULoaderValue: 3,
   data_search_element: "",
   dataSetMeasures: [],
   dataSetDimensions: [],
@@ -31,14 +31,15 @@ export default function reducer(state = {
   dimensionAllChecked: true,
   dimensionChecked: [],
   dateTimeChecked: [],
-  dataLoaderText: "Please wait while mAdvisor is uploading your data.....",
+  dataLoaderText: "initialized the filter parameters",
   dataSetAnalysisList: {},
   selectedDimensionSubLevels: null,
   selectedTrendSub: [],
   dimensionSubLevel: [],
   updatedSubSetting: default_updatedSubSetting,
   subsettingDone: false,
-  subsettedSlug: ""
+  subsettedSlug: "",
+  loading_message:[]
 }, action) {
   console.log("In DATA reducer!!");
   console.log(action);
@@ -286,7 +287,10 @@ export default function reducer(state = {
           ...state,
           dataPreview: {},
           dataPreviewFlag: false,
-          selectedDataSet: ""
+          selectedDataSet: "",
+          dataLoaderText:"initialized the filter parameters",
+          dULoaderValue: 3,
+          loading_message:[]
         }
       }
       break;
@@ -492,9 +496,12 @@ export default function reducer(state = {
         return {
           ...state,
           subsettedSlug: action.subsetRs.slug,
-          updatedSubSetting: default_updatedSubSetting,
-          dataPreview: {},
-          dataPreviewFlag: true,
+          updatedSubSetting: {
+            "measureColumnFilters": [],
+            "dimensionColumnFilters": [],
+            "timeDimensionColumnFilters": []
+          },
+          subsettingDone: false,
           selectedDataSet: action.subsetRs.slug
 
         }
@@ -507,6 +514,23 @@ export default function reducer(state = {
         dataLoaderText: action.message
       }
     }
+    break;
+    case "CHANGE_LOADING_MSG":
+    {
+      return {...state,
+      loading_message:action.message}
+    }
+    break;
+    case "CLEAR_LOADING_MSG":
+    {
+      return{
+        ...state,
+        loading_message:[],
+        dULoaderValue:3,
+        dataLoaderText:"initialized the filter parameters"
+      }
+    }
+    break;
   }
   return state
 

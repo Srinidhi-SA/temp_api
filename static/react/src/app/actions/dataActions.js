@@ -2,7 +2,7 @@ import React from "react";
 import {API} from "../helpers/env";
 import {PERPAGE,DULOADERPERVALUE,DEFAULTINTERVAL,SUCCESS,FAILED} from "../helpers/helper";
 import store from "../store";
-import {dataPreviewInterval,dataUploadLoaderValue} from "./dataUploadActions";
+import {dataPreviewInterval,dataUploadLoaderValue,clearLoadingMsg} from "./dataUploadActions";
 import Dialog from 'react-bootstrap-dialog'
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
 import {isEmpty} from "../helpers/helper";
@@ -116,6 +116,7 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
 		} else{
 			dispatch(dispatchDataPreview(dataPreview,slug));
 		}
+		dispatch(clearLoadingMsg())
 		return {
 			type: "DATA_PREVIEW",
 			dataPreview,
@@ -126,11 +127,15 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
 		dispatch(hideDULoaderPopup());
 		 bootbox.alert("The uploaded file does not contain data in readable format. Please check the source file.")
 		dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
+		dispatch(clearLoadingMsg())
+
 		return {
 			type: "DATA_PREVIEW_FOR_LOADER",
 			dataPreview,
 			slug,
 		}
+	}else if(dataPreview.status == "INPROGRESS"){
+		dispatch(dispatchDataPreviewLoadingMsg(dataPreview));
 	}
 }
 
@@ -139,6 +144,16 @@ function dispatchDataPreview(dataPreview,slug){
 		type: "DATA_PREVIEW",
 		dataPreview,
 		slug,
+	}
+}
+
+function dispatchDataPreviewLoadingMsg(dataPreview){
+	let message = dataPreview.message
+	console.log("loading message########")
+	console.log(message)
+	return {
+		type: "CHANGE_LOADING_MSG",
+		message
 	}
 }
 function fetchDataPreviewError(json) {
@@ -257,16 +272,16 @@ export function setAnalysisLevel(level,levelVal, analysisName){
 		}else{
 			totalAnalysisList.dimensions.analysis = analysisList
 		}
-		
+
 		renderList.measures = totalAnalysisList.measures;
 		renderList.dimensions = totalAnalysisList.dimensions;
 		return {
 			type: "UPDATE_ANALYSIS_LIST_FOR_LEVELS",
 			renderList
 		}
-				 
+
 	}
-	
+
 
 
 
@@ -568,15 +583,15 @@ export function setDimensionSubLevels(selectedDimensionSubLevels){
 	}
 }
 export function selectedTrendSubList(selectedTrendSub){
-	
+
 		return {
 			type: "SELECTED_TREND_SUB_LIST",
 			selectedTrendSub
 		}
-	
+
 }
 export function  selectedDimensionSubLevel(dimensionSubLevel){
-	
+
 	return {
 			type: "SELECTED_DIMENSION_SUB_LEVEL",
 			dimensionSubLevel

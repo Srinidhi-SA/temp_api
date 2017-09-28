@@ -9,7 +9,7 @@ import store from "../../store";
 import {C3Chart} from "../c3Chart";
 import ReactDOM from 'react-dom';
 import {hideDataPreview,getDataSetPreview} from "../../actions/dataActions";
-import {dataSubsetting,clearDataPreview} from "../../actions/dataUploadActions"
+import {dataSubsetting,clearDataPreview,clearLoadingMsg} from "../../actions/dataUploadActions"
 import {Button} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"
 import {showHideSideChart,showHideSideTable} from "../../helpers/helper.js"
@@ -246,6 +246,7 @@ export class DataPreview extends React.Component {
 				if(!isEmpty(this.props.dataPreview)&&this.props.dataPreview!=null&&this.props.dataPreview.status=='FAILED'){
 						console.log("goitn to data url")
 						this.props.dispatch(clearDataPreview())
+						this.props.dispatch(clearLoadingMsg())
 						let url = '/data/'
 				return(<Redirect to={url}/> )
 			}
