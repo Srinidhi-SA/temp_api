@@ -518,7 +518,7 @@ def set_result(request, slug=None):
         results = write_into_databases(
             job_type=job.job_type,
             object_slug=job.object_id,
-            results=json.loads(results)
+            results=results
         )
     else:
         results = write_into_databases(
