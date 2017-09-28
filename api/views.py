@@ -507,13 +507,25 @@ def set_result(request, slug=None):
 
     print "data----------->"
     print request.body
+
+
+
     job.save()
     print "Data has been saved to job table."
-    results = write_into_databases(
-        job_type=job.job_type,
-        object_slug=job.object_id,
-        results=json.loads(results)
-    )
+
+    if "status=failed" in request.body:
+        results = {'error_message': 'Failed'}
+        results = write_into_databases(
+            job_type=job.job_type,
+            object_slug=job.object_id,
+            results=json.loads(results)
+        )
+    else:
+        results = write_into_databases(
+            job_type=job.job_type,
+            object_slug=job.object_id,
+            results=json.loads(results)
+        )
     return JsonResponse({'result': "success"})
     
 
@@ -554,6 +566,8 @@ def write_into_databases(job_type, object_slug, results):
         for d in results.get('sampleData'):
             da.append(map(str, d))
         results['sampleData'] = da
+        if "error_message" in results:
+            dataset_object.status = "FAILED"
         dataset_object.meta_data = json.dumps(results)
         dataset_object.analysis_done = True
         dataset_object.save()
