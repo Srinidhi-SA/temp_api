@@ -134,6 +134,27 @@ export class DataPreview extends React.Component {
 
 
 	componentDidMount() {
+		$(function(){
+			console.log($(".cst_table"));
+			let initialCol= $(".cst_table td").first();
+			let initialColCls = $(initialCol).attr("class");
+			$(" td."+initialColCls).addClass("activeColumn");
+
+			$(".cst_table td,.cst_table th").click(function(){
+				$(".cst_table td").removeClass("activeColumn");
+				let cls = $(this).attr("class");
+				if(cls.indexOf(" ") !== -1){
+					let tmp =[];
+					tmp = cls.split(" ");
+					cls = tmp[0];
+				}
+				$(" td."+cls).addClass("activeColumn");
+			});
+
+
+
+		});
+
 		showHideSideTable(this.firstTimeSideTable);
 		showHideSideChart(this.firstTimeColTypeForChart,this.firstTimeSideChart);
 
@@ -143,6 +164,7 @@ export class DataPreview extends React.Component {
 
 	setSideElements(e){
 		//renderFlag=true;
+		//alert("setting side element!!")
 		const chkClass = $(e.target).attr('class');
 		let dataPrev = this.props.dataPreview.meta_data;
 		dataPrev.columnData.map((item, i) => {
@@ -217,31 +239,11 @@ export class DataPreview extends React.Component {
 
 		console.log("data prev is called##########3");
 		console.log(this.props);
-		$(function(){
-			console.log($(".cst_table"));
-			let initialCol= $(".cst_table td").first();
-			let initialColCls = $(initialCol).attr("class");
-			$(" td."+initialColCls).addClass("activeColumn");
-
-			$(".cst_table td,.cst_table th").click(function(){
-				$(".cst_table td").removeClass("activeColumn");
-				let cls = $(this).attr("class");
-				if(cls.indexOf(" ") !== -1){
-					let tmp =[];
-					tmp = cls.split(" ");
-					cls = tmp[0];
-				}
-				$(" td."+cls).addClass("activeColumn");
-			});
-
-
-
-		});
 
 		let currentDataset = store.getState().datasets.selectedDataSet
 		if(!isEmpty(this.props.dataPreview)&&currentDataset!=this.props.match.params.slug&&this.props.dataPreview!=null&&this.props.dataPreview.status!='FAILED'){
 			let url = '/data/'+currentDataset
-			this.props.history.push(url)
+			return(<Redirect to={url}/> )
 			}
 				if(!isEmpty(this.props.dataPreview)&&this.props.dataPreview!=null&&this.props.dataPreview.status=='FAILED'){
 						console.log("goitn to data url")
@@ -493,9 +495,9 @@ export class DataPreview extends React.Component {
 
 					}
 						</div>
-					</div>		
-					
-					<DataUploadLoader/>				
+					</div>
+
+					<DataUploadLoader/>
 					</div>
 					</div>
 					</div>
