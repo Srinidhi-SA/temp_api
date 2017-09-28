@@ -106,19 +106,22 @@ export class SubSetting extends React.Component {
           return (
             <div>
               <div id="measure_subsetting">
-                <h4>{this.props.item.name}</h4>
-                <div className="col-xs-4">
-
+                <h5>{this.props.item.name}</h5>
+                <div className="row">
+				<div className="col-xs-5">
                   <input type="text" className="form-control" id="from_value" value={this.state.curmin}/>
                 </div>
-                <div className="col-xs-3">
+                <div className="col-xs-2 text-center">
                   <label>To</label>
                 </div>
-                <div className="col-xs-4">
+                <div className="col-xs-5">
                   <input type="text" className="form-control" id="to_value" value={this.state.curmax}/>
                 </div>
+				<div className="clearfix"></div>
+				</div>
               </div>
-              <div className="form-group">
+			  <div className="xs-p-10"></div>
+              <div className="form-group text-center">
                 <ReactBootstrapSlider value={value} change={this.changeSliderValue.bind(this)} max={this.state.max} min={this.state.min} range="true" tooltip="hide"/>
               </div>
             </div>
@@ -162,10 +165,10 @@ export class SubSetting extends React.Component {
             <div>
               {/* for dimention */}
               <div id="dimention_subsetting">
-                <div className="row">
-                  <h4>{this.props.item.name}</h4>
-                  <div class="col-md-12 cst-scroll-panel">
-                    <div class="table-responsive">
+               
+                  <h5>{this.props.item.name}</h5>
+                  
+                    <div class="table-responsive cst-scroll-panel">
                       <table class="table table-condensed table-hover table-bordered">
                         <thead>
                           <tr>
@@ -188,8 +191,8 @@ export class SubSetting extends React.Component {
                         </tbody>
                       </table>
                     </div>
-                  </div>
-                </div>
+                   
+                
               </div>
             </div>
           );
@@ -205,7 +208,7 @@ export class SubSetting extends React.Component {
           return (
             <div>{/*for date*/}
               <div id="date_subsetting">
-                <h4>{this.props.item.name}</h4>
+                <h5>{this.props.item.name}</h5>
                 date subsetting
               </div>
             </div>
