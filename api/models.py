@@ -513,12 +513,12 @@ class Insight(models.Model):
         return ret
 
     def create_configuration_url_settings(self, advanced_settings):
-        # default_scripts_to_run = [
-        #     'Descriptive analysis',
-        #     'Measure vs. Dimension',
-        #     'Dimension vs. Dimension',
-        #     'Trend'
-        # ]
+        default_scripts_to_run = [
+            'Descriptive analysis',
+            'Measure vs. Dimension',
+            'Dimension vs. Dimension',
+            'Trend'
+        ]
         # config = json.loads(self.config)
         # script_to_run = config.get('possibleAnalysis', default_scripts_to_run)
         # for index, value in enumerate(script_to_run):
@@ -536,6 +536,9 @@ class Insight(models.Model):
         for data in analysis:
             if data['status'] == True:
                 script_to_run.append(REVERSE_ANALYSIS_LIST[data['name']])
+
+        if len(script_to_run) < 1:
+            script_to_run = default_scripts_to_run
 
         return {
             'script_to_run': script_to_run,
