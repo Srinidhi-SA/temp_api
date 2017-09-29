@@ -98,14 +98,14 @@ export class Data extends React.Component {
     this.props.dispatch(getDataList(1));
     }
   }
-  
+
   doSorting(sortOn, type){
 	     this.props.history.push('/data?sort=' + sortOn + '&type='+type);
-    
+
 	 this.props.dispatch(storeSortElements(sortOn,type));
 	this.props.dispatch(getDataList(1));
   }
-  
+
   render() {
     console.log("data is called");
     console.log(this.props);
@@ -140,6 +140,12 @@ export class Data extends React.Component {
       }
       const dataSetList = dataSets.map((data, i) => {
         var dataSetLink = "/data/" + data.slug;
+        let src = STATIC_URL + "assets/images/File_Icon.png"
+        if(data.datasource_type=="Hana"){
+          src = STATIC_URL + "assets/images/sapHana_Icon.png"
+        }else if (data.datasource_type == "Mysql") {
+          src = STATIC_URL + "assets/images/mySQL_Icon.png"
+        }
         return (
           <div className="col-md-3 top20 list-boxes" key={i}>
             <div className="rep_block newCardStyle" name={data.name}>
@@ -152,7 +158,7 @@ export class Data extends React.Component {
                     </h4>
                   </div>
                   <div className="col-xs-3">
-                    <img src={STATIC_URL + "assets/images/data_cardIcon.png"} className="img-responsive" alt="LOADING"/>
+                    <img src={src} className="img-responsive" alt="LOADING"/>
                   </div>
                 </div>
               </div>
