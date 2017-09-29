@@ -72,6 +72,7 @@ export class VariableSelection extends React.Component {
     }
     createSignal(event){
         event.preventDefault();
+		if($('#signalVariableList option:selected').val() != ""){
         console.log(this.props);
         this.signalFlag = false;
         this.props.dispatch(updateCsLoaderValue(10))
@@ -101,6 +102,9 @@ export class VariableSelection extends React.Component {
 	   }
 	   console.log(postData);
         this.props.dispatch(createSignal(postData));
+		}else{
+			alert("Please select a variable to analyze...")
+		}
     }
     
     setPossibleList(e){
@@ -118,6 +122,7 @@ export class VariableSelection extends React.Component {
         var that = this;
 		
         $(function(){
+			//alert($('#signalVariableList option:selected').val());
             that.props.dispatch(setPossibleAnalysisList($('#signalVariableList option:selected').val(),$('#signalVariableList option:selected').text()));
 	  });
     }
@@ -129,13 +134,27 @@ export class VariableSelection extends React.Component {
         }else{
             $('#analysisList input[type="checkbox"]').last().attr("disabled", false);
         }*/
+		  if(!this.props.getVarType){
+			$("#allAnalysis").prop("disabled",true);
+			$("#advance-setting-link").hide();
+		 }else{
+			 $("#allAnalysis").prop("disabled",false);
+			 $("#advance-setting-link").show();
+		 }
     }
     componentDidUpdate(){
         var that = this;
        $(function(){
-       that.props.dispatch(setPossibleAnalysisList($('#signalVariableList option:selected').val(),$('#signalVariableList option:selected').text()));
-	   
+           that.props.dispatch(setPossibleAnalysisList($('#signalVariableList option:selected').val(),$('#signalVariableList option:selected').text()));
         });
+		
+	     if(!this.props.getVarType){
+			$("#allAnalysis").prop("disabled",true);
+			$("#advance-setting-link").hide();
+		 }else{
+			 $("#allAnalysis").prop("disabled",false);
+			 $("#advance-setting-link").show();
+		 }
         
     }
     renderAnalysisList(analysisList){
@@ -224,7 +243,7 @@ export class VariableSelection extends React.Component {
             	possibleAnalysis = possibleAnalysis.dimensions.analysis;
 				 console.log("dimensions possible analysis list");
             	 renderSubList = this.renderAnalysisList(possibleAnalysis);
-            	 }else{
+            	 }else if(that.props.getVarType == "measure"){
             		 possibleAnalysis = possibleAnalysis.measures.analysis;
 					 console.log("measures possible analysis list");
 					 console.log(possibleAnalysis);
@@ -295,6 +314,7 @@ export class VariableSelection extends React.Component {
                 <div className="col-lg-4">
                 <div className="htmlForm-group">
                 <select className="form-control" id="signalVariableList" onChange={this.setPossibleList.bind(this)}>
+				<option value=""></option>
                 {renderSelectBox}
                 </select>
                 </div>
@@ -314,7 +334,7 @@ export class VariableSelection extends React.Component {
 				<div className="ma-checkbox inline"><input id="allAnalysis" type="checkbox" className="allAnalysis" onClick={this.handleAllAnlysis.bind(this)}  /><label htmlFor="allAnalysis">Select All</label></div>
                 {renderSubList}
                 <div className="pull-right cursor">
-				<a className="cursor" onClick={this.openAdvanceSettingsModal.bind(this)}>Advanced Settings</a>
+				<a className="cursor" id="advance-setting-link" onClick={this.openAdvanceSettingsModal.bind(this)}>Advanced Settings</a>
 				</div>
                 </div>
                 

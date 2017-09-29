@@ -325,7 +325,7 @@ export class AdvanceSettings extends React.Component {
 			  if(this.props.getVarType == "dimension"){
 				  possibleAnalysis = possibleAnalysis.dimensions.analysis;
 				  renderPossibleAnalysis = this.renderAnalysisList(possibleAnalysis);
-			  }else{
+			  }else if(this.props.getVarType == "measure"){
 				  possibleAnalysis = possibleAnalysis.measures.analysis;
 				  renderPossibleAnalysis = this.renderAnalysisList(possibleAnalysis);
 			  }
