@@ -388,7 +388,7 @@ JOBSERVER_STATUS = {
     'KILLED': 'FAILED'
 }
 
-UI_VERSION = "0.1021"
+UI_VERSION = "0.1022"
 
 ERROR_MESSAGE = {
     'upload_error': 'Code had a weakness. Now it is broken.'
