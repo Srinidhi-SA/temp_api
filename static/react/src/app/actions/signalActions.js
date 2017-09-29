@@ -3,7 +3,7 @@ import {API} from "../helpers/env";
 import {CSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,PERPAGE,SUCCESS,FAILED} from "../helpers/helper";
 import {connect} from "react-redux";
 import store from "../store";
-import {openCsLoaderModal,closeCsLoaderModal,updateCsLoaderValue} from "./createSignalActions";
+import {openCsLoaderModal,closeCsLoaderModal,updateCsLoaderValue,updateCsLoaderMsg} from "./createSignalActions";
 import Dialog from 'react-bootstrap-dialog'
 import { showLoading, hideLoading } from 'react-redux-loading-bar'
 
@@ -46,16 +46,44 @@ function fetchCreateSignal(metaData) {
     body: JSON.stringify(metaData)
 		}).then( response => Promise.all([response, response.json()]));
 }
-function fetchCreateSignalSuccess(signalData,dispatch) {
-  //console.log("signal list from api to store")
-   dispatch(updateCsLoaderValue(store.getState().signals.createSignalLoaderValue+CSLOADERPERVALUE))
-    createSignalInterval = setInterval(function(){
-    	if(store.getState().signals.createSignalLoaderValue < LOADERMAXPERVALUE){
-    	  dispatch(updateCsLoaderValue(store.getState().signals.createSignalLoaderValue+CSLOADERPERVALUE))
-    	}
-          dispatch(getSignalAnalysis(sessionStorage.userToken,signalData.slug));
 
-  },DEFAULTINTERVAL);
+function fetchCreateSignalSuccess(signalData, dispatch) {
+  //console.log("signal list from api to store")
+  if(signalData.type == "dimension"){
+    console.log("created in progress slug is:")
+    console.log(signalData)
+
+    let msg = store.getState().signals.loaderText
+    let loaderVal = store.getState().signals.createSignalLoaderValue
+
+    createSignalInterval = setInterval(function() {
+
+      let loading_message = store.getState().signals.loading_message
+      dispatch(getSignalAnalysis(sessionStorage.userToken,signalData.slug));
+      if(store.getState().signals.createSignalLoaderValue < LOADERMAXPERVALUE){
+        if (loading_message && loading_message.length > 0) {
+          msg = loading_message[loading_message.length - 1].shortExplanation
+          loaderVal = loading_message[loading_message.length - 1].globalCompletionPercentage
+          //alert(msg + "  " + loaderVal)
+        }
+        dispatch(updateCsLoaderValue(loaderVal));
+        dispatch(updateCsLoaderMsg(msg));
+      } else {
+        dispatch(clearLoadingMsg())
+      }
+
+    }, DEFAULTINTERVAL);
+
+    }else{
+     dispatch(updateCsLoaderValue(store.getState().signals.createSignalLoaderValue+CSLOADERPERVALUE))
+      createSignalInterval = setInterval(function(){
+      	if(store.getState().signals.createSignalLoaderValue < LOADERMAXPERVALUE){
+      	  dispatch(updateCsLoaderValue(store.getState().signals.createSignalLoaderValue+CSLOADERPERVALUE))
+      	}
+            dispatch(getSignalAnalysis(sessionStorage.userToken,signalData.slug));
+
+    },DEFAULTINTERVAL);
+  }
 
   return {
     type: "CREATE_SUCCESS",
@@ -176,12 +204,16 @@ function fetchPostsSuccess_analysis(signalAnalysis, errandId,dispatch) {
     clearInterval(createSignalInterval);
     dispatch(closeCsLoaderModal())
     dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
-  }else if(signalAnalysis.status == FAILED){
+    dispatch(clearLoadingMsg())
+  }else if(signalAnalysis.status == FAILED||signalAnalysis.status == false){
 	  bootbox.alert("Your signal could not be created. Please try later.")
 	    clearInterval(createSignalInterval);
 	    dispatch(closeCsLoaderModal())
 	    dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
-  }
+      dispatch(clearLoadingMsg())
+  }else if(signalAnalysis.status == "INPROGRESS"){
+		dispatch(dispatchSignalLoadingMsg(signalAnalysis));
+	}
   return {
     type: "SIGNAL_ANALYSIS",
     signalAnalysis,
@@ -354,4 +386,17 @@ export function advanceSettingsModal(flag){
 			type: "ADVANCE_SETTINGS_MODAL",
 		    flag
 		}
+}
+
+function dispatchSignalLoadingMsg(signalAnalysis){
+	let message = signalAnalysis.message
+	console.log("loading message########")
+	console.log(message)
+	return {
+		type: "CHANGE_LOADING_MSG",
+		message
+	}
+}
+export function clearLoadingMsg() {
+  return {type: "CLEAR_LOADING_MSG"}
 }
