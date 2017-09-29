@@ -89,7 +89,7 @@ export class AdvanceSettings extends React.Component {
 		  this.props.dispatch(setAnalysisLevel(e,null)); 
 	  }*/
 	  let trendInfo={}
-	   if($("[value='trend analysis']").is(":checked")){
+	   if($("[value^='trend']").is(":checked") || $("[value^='Trend']").is(":checked")){
 		   if($("#trend-count").is(":checked")){
 			   trendInfo['count'] = null;
 		   }
@@ -256,12 +256,18 @@ export class AdvanceSettings extends React.Component {
 	  
 	  if(this.props.getVarType=="dimension"){
 	  if(this.props.selectedDimensionSubLevels != null ){
-		  let val ="sub-level";
+		  //let val ="sub-level";
 		  let displayName = "Specify Sub-Level to Analyse";
 		  
 		  let subLevelLi = this.props.selectedDimensionSubLevels.map(function(item,index){
 			  let key = Object.keys(item);
-			  let id= key[0].split(" ").join("_");
+			  let id=null;
+			  if(key[0].trim().indexOf(" ") != -1){
+				  id= key[0].trim().split(" ").join("_");
+			  }else{
+				  id= key[0]+"_id";
+			  }
+			  
 			  let val= key[0];
 			  let chkStatus = item[id];
 			  return(
