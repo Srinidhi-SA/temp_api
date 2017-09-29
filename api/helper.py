@@ -253,6 +253,8 @@ def decode_and_convert_chart_raw_data(data):
             label_text=label_text
         )
 
+        c3.add_additional_grid_line_at_zero()
+
         if subchart is False:
             c3.hide_subchart()
         if showLegend is True and legend:
@@ -333,6 +335,7 @@ def decode_and_convert_chart_raw_data(data):
             c3_chart_details["xdata"] = get_x_column_from_chart_data_without_xs(chart_data, axes)
             c3.set_tick_format_x()
             c3.set_tooltip_format()
+        c3.add_additional_grid_line_at_zero()
 
         from api.C3Chart import config
         c3.set_basic_color_pattern(config.SECOND_FLIP_PATTERN)
