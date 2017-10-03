@@ -5,6 +5,7 @@ import ReactBootstrapSlider from 'react-bootstrap-slider'
 import store from "../../store";
 import {updateSubSetting} from "../../actions/dataActions";
 import {showHideSubsetting} from "../../helpers/helper.js"
+import { Scrollbars } from 'react-custom-scrollbars';
 
 
 @connect((store) => {
@@ -67,6 +68,9 @@ export class SubSetting extends React.Component {
 	          }
 	        });
 	        console.log(that.state.selectedDimention);
+          $("#saveButton").removeClass('btn-alt4')
+          $("#saveButton").addClass('btn-primary')
+          $("#saveButton").removeAttr('disabled')
 	      });
 
       $('#saveSubSetting').click(function() {
@@ -83,6 +87,9 @@ export class SubSetting extends React.Component {
         });
 				that.state.curdimention = that.state.selectedDimention
         console.log(that.state.selectedDimention);
+        $('#saveButton').removeClass('btn-primary')
+        $('#saveButton').addClass('btn-alt4')
+        $('#saveButton').attr('disabled',true);
       });
     });
     showHideSubsetting(this.props.item.columnType,this.state.dimentionList,this.props.item.dateSuggestionFlag)
@@ -94,6 +101,9 @@ export class SubSetting extends React.Component {
     $("#from_value").val(this.state.curmin)
     this.state.curmax = e.target.value[1]
     $("#to_value").val(this.state.curmax)
+    $("#saveButton").removeClass('btn-alt4')
+    $("#saveButton").addClass('btn-primary')
+    $("#saveButton").removeAttr('disabled')
 
   }
   getSubSettings(columnType) {
@@ -106,18 +116,22 @@ export class SubSetting extends React.Component {
           return (
             <div>
               <div id="measure_subsetting">
-                <h4>{this.props.item.name}</h4>
-                <div className="col-xs-4">
+                <h5>{this.props.item.name}</h5>
+                <div className="row">
+				<div className="col-xs-5">
                   <input type="text" className="form-control" id="from_value" value={this.state.curmin}/>
                 </div>
-                <div className="col-xs-3">
+                <div className="col-xs-2 text-center">
                   <label>To</label>
                 </div>
-                <div className="col-xs-4">
+                <div className="col-xs-5">
                   <input type="text" className="form-control" id="to_value" value={this.state.curmax}/>
                 </div>
+				<div className="clearfix"></div>
+				</div>
               </div>
-              <div className="form-group">
+			  <div className="xs-p-10"></div>
+              <div className="form-group text-center">
                 <ReactBootstrapSlider value={value} change={this.changeSliderValue.bind(this)} max={this.state.max} min={this.state.min} range="true" tooltip="hide"/>
               </div>
             </div>
@@ -161,10 +175,11 @@ export class SubSetting extends React.Component {
             <div>
               {/* for dimention */}
               <div id="dimention_subsetting">
-                <div className="row">
-                  <h4>{this.props.item.name}</h4>
-                  <div class="col-md-12 cst-scroll-panel">
-                    <div class="table-responsive">
+
+                  <h5>{this.props.item.name}</h5>
+
+                    <div class="table-responsive cst-scroll-panel">
+                    <Scrollbars>
                       <table class="table table-condensed table-hover table-bordered">
                         <thead>
                           <tr>
@@ -186,9 +201,10 @@ export class SubSetting extends React.Component {
                           {dimTemplate}
                         </tbody>
                       </table>
+                      </Scrollbars>
                     </div>
-                  </div>
-                </div>
+
+
               </div>
             </div>
           );
@@ -204,7 +220,7 @@ export class SubSetting extends React.Component {
           return (
             <div>{/*for date*/}
               <div id="date_subsetting">
-                <h4>{this.props.item.name}</h4>
+                <h5>{this.props.item.name}</h5>
                 date subsetting
               </div>
             </div>
@@ -289,8 +305,11 @@ export class SubSetting extends React.Component {
           this.state.subSettingRs.timeDimensionColumnFilters.push({"colname": "col1", "upperBound": 34, "lowerBound": 3, "filterType": "valueRange"});
         }
         break;
-    }
 
+    }
+    $('#saveButton').removeClass('btn-primary')
+    $('#saveButton').addClass('btn-alt4')
+    $('#saveButton').attr('disabled',true);
     this.props.dispatch(updateSubSetting(this.state.subSettingRs));
 
   }
@@ -342,7 +361,7 @@ export class SubSetting extends React.Component {
                 {subsettingsTemplate}
                 <hr/>
                 <div class="text-right" id="saveSubSetting">
-                  <a href="javascript:void(0)" class="btn btn-primary" onClick={this.saveSubSetting.bind(this)}>
+                  <a href="javascript:void(0)" class="btn btn-alt4" id = "saveButton" disabled onClick={this.saveSubSetting.bind(this)}>
                     Save
                   </a>
                 </div>

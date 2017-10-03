@@ -134,7 +134,7 @@ export class DataPreview extends React.Component {
 
 
 	componentDidMount() {
-		$(function(){
+		{/*}$(function(){
 			console.log($(".cst_table"));
 			let initialCol= $(".cst_table td").first();
 			let initialColCls = $(initialCol).attr("class");
@@ -153,7 +153,7 @@ export class DataPreview extends React.Component {
 
 
 
-		});
+		});*/}
 
 		showHideSideTable(this.firstTimeSideTable);
 		showHideSideChart(this.firstTimeColTypeForChart,this.firstTimeSideChart);
@@ -239,6 +239,26 @@ export class DataPreview extends React.Component {
 
 		console.log("data prev is called##########3");
 		console.log(this.props);
+
+		//for active select in columnName
+		$(function(){
+			console.log($(".cst_table"));
+			let initialCol= $(".cst_table td").first();
+			let initialColCls = $(initialCol).attr("class");
+			$(" td."+initialColCls).addClass("activeColumn");
+
+			$(".cst_table td,.cst_table th").click(function(){
+				$(".cst_table td").removeClass("activeColumn");
+				let cls = $(this).attr("class");
+				if(cls.indexOf(" ") !== -1){
+					let tmp =[];
+					tmp = cls.split(" ");
+					cls = tmp[0];
+				}
+				$(" td."+cls).addClass("activeColumn");
+			});
+		});
+
 
 		let currentDataset = store.getState().datasets.selectedDataSet
 		if(!isEmpty(this.props.dataPreview)&&currentDataset!=this.props.match.params.slug&&this.props.dataPreview!=null&&this.props.dataPreview.status!='FAILED'){
