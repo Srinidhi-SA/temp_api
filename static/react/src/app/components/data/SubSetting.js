@@ -5,6 +5,7 @@ import ReactBootstrapSlider from 'react-bootstrap-slider'
 import store from "../../store";
 import {updateSubSetting} from "../../actions/dataActions";
 import {showHideSubsetting} from "../../helpers/helper.js"
+import { Scrollbars } from 'react-custom-scrollbars';
 
 
 @connect((store) => {
@@ -174,10 +175,11 @@ export class SubSetting extends React.Component {
             <div>
               {/* for dimention */}
               <div id="dimention_subsetting">
-               
+
                   <h5>{this.props.item.name}</h5>
-                  
+
                     <div class="table-responsive cst-scroll-panel">
+                    <Scrollbars>
                       <table class="table table-condensed table-hover table-bordered">
                         <thead>
                           <tr>
@@ -199,9 +201,10 @@ export class SubSetting extends React.Component {
                           {dimTemplate}
                         </tbody>
                       </table>
+                      </Scrollbars>
                     </div>
-                   
-                
+
+
               </div>
             </div>
           );
