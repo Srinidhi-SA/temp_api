@@ -468,8 +468,10 @@ VOICE_TO_TEXT_SETTINGS = {
         "password": "UXiMa7qNp68f"
         }
 
+
 ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS = {
-        "dimensions": {"analysis": [
+        "dimensions": {
+            "analysis": [
             {
                 "name": "overview",
                 "displayName": "Overview",
@@ -527,8 +529,15 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS = {
                 "analysisLevel": {"Low":True,"High":False,"Medium":True,"Custom":False},
                 "analysisLevelValue": None
             }
-        ]},
-        "measures": {"analysis": [
+        ],
+            "targetLevels":[],
+            "trendSettings":[
+                {"name":"Count","status":True},
+                {"name":"Specific Measure","status":False,"selectedMeasure":None}
+            ]
+        },
+        "measures": {
+            "analysis": [
             {
                 "name": "overview",
                 "displayName": "Overview",
@@ -655,5 +664,11 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS = {
                 "analysisLevel": None,
                 "analysisLevelValue": None
             }
-        ]},
+        ],
+            "trendSettings":[
+                {"name":"Count","status":False},
+                {"name":"Specific Measure","status":True,"selectedMeasure":None}
+            ]
+        },
     }
+
