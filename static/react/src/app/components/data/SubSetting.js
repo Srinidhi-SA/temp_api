@@ -67,6 +67,9 @@ export class SubSetting extends React.Component {
 	          }
 	        });
 	        console.log(that.state.selectedDimention);
+          $("#saveButton").removeClass('btn-alt4')
+          $("#saveButton").addClass('btn-primary')
+          $("#saveButton").removeAttr('disabled')
 	      });
 
       $('#saveSubSetting').click(function() {
@@ -83,6 +86,9 @@ export class SubSetting extends React.Component {
         });
 				that.state.curdimention = that.state.selectedDimention
         console.log(that.state.selectedDimention);
+        $('#saveButton').removeClass('btn-primary')
+        $('#saveButton').addClass('btn-alt4')
+        $('#saveButton').attr('disabled',true);
       });
     });
     showHideSubsetting(this.props.item.columnType,this.state.dimentionList,this.props.item.dateSuggestionFlag)
@@ -94,6 +100,9 @@ export class SubSetting extends React.Component {
     $("#from_value").val(this.state.curmin)
     this.state.curmax = e.target.value[1]
     $("#to_value").val(this.state.curmax)
+    $("#saveButton").removeClass('btn-alt4')
+    $("#saveButton").addClass('btn-primary')
+    $("#saveButton").removeAttr('disabled')
 
   }
   getSubSettings(columnType) {
@@ -293,8 +302,11 @@ export class SubSetting extends React.Component {
           this.state.subSettingRs.timeDimensionColumnFilters.push({"colname": "col1", "upperBound": 34, "lowerBound": 3, "filterType": "valueRange"});
         }
         break;
-    }
 
+    }
+    $('#saveButton').removeClass('btn-primary')
+    $('#saveButton').addClass('btn-alt4')
+    $('#saveButton').attr('disabled',true);
     this.props.dispatch(updateSubSetting(this.state.subSettingRs));
 
   }
@@ -346,7 +358,7 @@ export class SubSetting extends React.Component {
                 {subsettingsTemplate}
                 <hr/>
                 <div class="text-right" id="saveSubSetting">
-                  <a href="javascript:void(0)" class="btn btn-primary" onClick={this.saveSubSetting.bind(this)}>
+                  <a href="javascript:void(0)" class="btn btn-alt4" id = "saveButton" disabled onClick={this.saveSubSetting.bind(this)}>
                     Save
                   </a>
                 </div>
