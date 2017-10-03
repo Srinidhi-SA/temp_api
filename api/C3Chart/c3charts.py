@@ -391,7 +391,8 @@ class C3Chart(object):
         pass
 
     # TODO: make it proper code. remove unnecessary checks. better ask from backend
-    def add_additional_grid_line_at_zero(self, datas = None):
+    def add_additional_grid_line_at_zero(self, datas=None):
+
         negative = False
         if datas is None:
             datas = self._data_data

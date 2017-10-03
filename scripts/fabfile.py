@@ -372,6 +372,40 @@ def create_database(type="development"):
     # GRANT ALL PRIVILEGES ON madvisor.* TO marlabs@localhost;
     run("GRANT ALL PRIVILEGES ON {0}.* TO {1}@{2};".format(db_name, user_name, host))
 
+@task
+def download_sql_and_dump(type='development'):
+
+    if type == "development":
+        dev()
+    elif type == "production":
+        prod()
+
+    server_details = env.get('server_details')
+    path_details = env.get('path_details')
+
+    base_remote_path = path_details.get('base_remote_path')
+    with cd(base_remote_path):
+        run("python manage.py dumpdata -e contenttypes -e auth.Permission > datadump.json")
+        path_json = base_remote_path + "/" + "datadump.json"
+        get(path_json, "/home/ankush/codebase/code_revamp/madvisor_api/")
+
+    local("cat 'Done.'")
+
+@task
+def recreate_database(type='local'):
+
+
+    db_name = "madvisor"
+    user_name = "marlabs"
+    host= "localhost"
+    passowrd = "Password@123"
+
+
+
+
+
+
+
 
 
 

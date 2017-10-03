@@ -801,6 +801,7 @@ class Score(models.Model):
     data = models.TextField(default="{}")
     model_data = models.TextField(default="{}")
     column_data_raw = models.TextField(default="{}")
+    app_id = models.IntegerField(null=True, default=1)
 
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
