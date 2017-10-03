@@ -476,17 +476,15 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS = {
                 "name": "overview",
                 "displayName": "Overview",
                 "status": False,
-                "variableCount": [],
                 "analysisSubTypes": [],
-                "analysisLevel":None,
-                "analysisLevelValue":None
+                "noOfColumnsToUse":None
             },
             {
                 "name": "trend",
                 "displayName": "Trend",
                 "status": False,
-                "variableCount": [],
-                "analysisSubTypes": [{
+                "analysisSubTypes": [
+                    {
                         "name": "overview",
                         "displayName": "Overview",
                         "status": False
@@ -508,26 +506,47 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS = {
                     }
 
                 ],
-                "analysisLevel": None,
-                "analysisLevelValue": None
+                "noOfColumnsToUse": None
             },
             {
                 "name": "prediction",
                 "displayName": "Prediction",
                 "status": False,
-                "variableCount": [],
                 "analysisSubTypes": [],
-                "analysisLevel": None,
-                "analysisLevelValue": None
+                "noOfColumnsToUse": None
             },
             {
                 "name": "association",
                 "displayName": "Association",
                 "status": False,
-                "variableCount": [],
                 "analysisSubTypes": [],
-                "analysisLevel": {"Low":True,"High":False,"Medium":True,"Custom":False},
-                "analysisLevelValue": None
+                "noOfColumnsToUse": [
+                    {
+                        "name": "low",
+                        "displayName": "Low",
+                        "status": True,
+                        "defaultValue":3
+                    },
+                    {
+                        "name": "medium",
+                        "displayName": "Medium",
+                        "status": False,
+                        "defaultValue":5
+                    },
+                    {
+                        "name": "high",
+                        "displayName": "High",
+                        "status": False,
+                        "defaultValue":8
+                    },
+                    {
+                        "name": "custom",
+                        "displayName": "Custom",
+                        "status": False,
+                        "defaultValue":3,
+                        "value":None
+                    }
+                ]
             }
         ],
             "targetLevels":[],
@@ -542,17 +561,15 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS = {
                 "name": "overview",
                 "displayName": "Overview",
                 "status": False,
-                "variableCount": [],
                 "analysisSubTypes": [],
-                "analysisLevel": None,
-                "analysisLevelValue": None
+                "noOfColumnsToUse": None
             },
             {
                 "name": "trend",
                 "displayName": "Trend",
                 "status": False,
-                "variableCount": [],
-                "analysisSubTypes": [{
+                "analysisSubTypes": [
+                    {
                         "name": "overview",
                         "displayName": "Overview",
                         "status": False
@@ -574,30 +591,14 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS = {
                     }
 
                 ],
-                "analysisLevel": None,
-                "analysisLevelValue": None
+                "noOfColumnsToUse": None
             },
             {
                 "name": "performance",
                 "displayName": "Performance",
                 "status": False,
-                "variableCount": [{
-                        "name": "Low",
-                        "value": 3,
-                        "status": True
-                    },
+                "analysisSubTypes": [
                     {
-                        "name": "Medium",
-                        "value": 5,
-                        "status": False
-                    },
-                    {
-                        "name": "High",
-                        "value": 10,
-                        "status": False
-                    }
-                ],
-                "analysisSubTypes": [{
                         "name": "overview",
                         "displayName": "Overview",
                         "status": False
@@ -613,30 +614,40 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS = {
                         "status": False
                     }
                 ],
-                "analysisLevel": {"Low":True,"High":False,"Medium":True,"Custom":False},
-                "analysisLevelValue": None
+                "noOfColumnsToUse": [
+                    {
+                        "name": "low",
+                        "displayName": "Low",
+                        "status": True,
+                        "defaultValue":3
+                    },
+                    {
+                        "name": "medium",
+                        "displayName": "Medium",
+                        "status": False,
+                        "defaultValue":5
+                    },
+                    {
+                        "name": "high",
+                        "displayName": "High",
+                        "status": False,
+                        "defaultValue":8
+                    },
+                    {
+                        "name": "custom",
+                        "displayName": "Custom",
+                        "status": False,
+                        "defaultValue":3,
+                        "value":None
+                    }
+                ],
             },
             {
                 "name": "influencer",
                 "displayName": "Influencer",
                 "status": False,
-                "variableCount": [{
-                        "name": "Low",
-                        "value": 3,
-                        "status": True
-                    },
+                "analysisSubTypes": [
                     {
-                        "name": "Medium",
-                        "value": 5,
-                        "status": False
-                    },
-                    {
-                        "name": "High",
-                        "value": 10,
-                        "status": False
-                    }
-                ],
-                "analysisSubTypes": [{
                         "name": "overview",
                         "displayName": "Overview",
                         "status": False
@@ -652,17 +663,40 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS = {
                         "status": False
                     }
                 ],
-                "analysisLevel": {"Low":True,"High":False,"Medium":True,"Custom":False},
-                "analysisLevelValue": None
+                "noOfColumnsToUse": [
+                    {
+                        "name": "low",
+                        "displayName": "Low",
+                        "status": True,
+                        "defaultValue":3
+                    },
+                    {
+                        "name": "medium",
+                        "displayName": "Medium",
+                        "status": False,
+                        "defaultValue":5
+                    },
+                    {
+                        "name": "high",
+                        "displayName": "High",
+                        "status": False,
+                        "defaultValue":8
+                    },
+                    {
+                        "name": "custom",
+                        "displayName": "Custom",
+                        "status": False,
+                        "defaultValue":3,
+                        "value":None
+                    }
+                ]
             },
             {
                 "name": "prediction",
                 "displayName": "Prediction",
                 "status": False,
-                "variableCount": [],
                 "analysisSubTypes": [],
-                "analysisLevel": None,
-                "analysisLevelValue": None
+                "noOfColumnsToUse": None
             }
         ],
             "trendSettings":[

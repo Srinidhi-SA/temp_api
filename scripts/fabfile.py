@@ -391,7 +391,7 @@ def download_sql_and_dump(type='development'):
 
     local("cat 'Done.'")
 
-@task
+
 def recreate_database(type='local'):
 
 
@@ -399,6 +399,28 @@ def recreate_database(type='local'):
     user_name = "marlabs"
     host= "localhost"
     passowrd = "Password@123"
+
+def move_css_from_react_css_to_static_assets_css(type='development'):
+
+    if type == "development":
+        dev()
+    elif type == "production":
+        prod()
+
+    server_details = env.get('server_details')
+    path_details = env.get('path_details')
+
+    react_path = path_details['react_path']
+    style_css = react_path + "/css/style.css"
+    asset_path = path_details['asset_path']
+    asset_css = asset_path + "/css"
+    run("mv {0} {1}".format(style_css, asset_css))
+
+# api_ui_dev
+
+
+
+
 
 
 
