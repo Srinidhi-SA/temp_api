@@ -173,10 +173,8 @@ h2, h3 {
 }
 .side-menu, .navbar-default , .page-head, .btn-toolbar.pull-right { display:none; }
 .side-body { margin:0 !important}
-@page {
-    margin: 0;
-}
-
+@page {  margin: 0; size:297mm 210mm;  }
+div.col-md-6.col-xs-12{ display:inline-block; float:left; width:48%; margin-bottom:20px; }
 }
 
 .btn, .btn-danger.active, .btn-danger:active, .btn-info.active, .btn-info:active, .btn-primary.active, .btn-primary:active, .btn-warning.active, .btn-warning:active, .btn.active, .btn:active, .dropdown-menu>.disabled>a:focus, .dropdown-menu>.disabled>a:hover, .form-control, .navbar-toggle, .open>.dropdown-toggle.btn-danger, .open>.dropdown-toggle.btn-info, .open>.dropdown-toggle.btn-primary, .open>.dropdown-toggle.btn-warning {
