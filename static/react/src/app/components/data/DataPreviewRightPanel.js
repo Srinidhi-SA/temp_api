@@ -62,6 +62,7 @@ export class DataPreviewRightPanel extends React.Component {
 				<div className="panel-body" id="side-chart">
 				{/*<img src="../assets/images/data_preview_graph.png" className="img-responsive" />*/}
 				<C3Chart classId={"_side"} data={sideChart} yformat={false} sideChart={true}/>
+				<div className="clearfix"></div>
 				</div>
 				</div>
 				</div>

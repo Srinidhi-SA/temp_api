@@ -27,6 +27,7 @@ import {updateSelectedVariables, resetSelectedVariables, setSelectedVariables,up
         dimensionAllChecked:store.datasets.dimensionAllChecked,
         dimensionChecked:store.datasets.dimensionChecked,
         dateTimeChecked:store.datasets.dateTimeChecked,
+        dataSetAnalysisList:store.datasets.dataSetAnalysisList,
     };
 } )
 
@@ -45,6 +46,7 @@ export class DataVariableSelection extends React.Component {
         this.dimensionDateTime = [];
         this.dateTimeChkBoxList = [];
         this.selectedTimeDimension = "";
+        this.possibleAnalysisList = {};
     }
     handleCheckboxEvents( e ) {
         this.props.dispatch( updateSelectedVariables( e ) )
@@ -57,7 +59,7 @@ export class DataVariableSelection extends React.Component {
     componentDidMount() {
         this.props.dispatch( resetSelectedVariables() );
         this.setVariables( this.dimensions, this.measures, this.selectedTimeDimension );
-        this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.measureChkBoxList,this.dimensionChkBoxList,this.dateTimeChkBoxList));
+        this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.measureChkBoxList,this.dimensionChkBoxList,this.dateTimeChkBoxList,this.possibleAnalysisList));
         
     }
     handleDVSearch(evt){
@@ -74,6 +76,7 @@ export class DataVariableSelection extends React.Component {
         console.log( "data variableSelection is called##########3" );
 
         let dataPrev = store.getState().datasets.dataPreview;
+       
         var that = this;
         const popoverLeft = (
         		  <Popover id="popover-trigger-hover-focus">
@@ -90,7 +93,7 @@ export class DataVariableSelection extends React.Component {
         if ( dataPrev ) {
             console.log( "data variable selection" );
             console.log( dataPrev );
-            
+            this.possibleAnalysisList = dataPrev.meta_data.advanced_settings;
             const metaData = dataPrev.meta_data.columnData;
             // var measures =[], dimensions =[],datetime =[];
             metaData.map(( metaItem, metaIndex ) => {
@@ -131,7 +134,7 @@ export class DataVariableSelection extends React.Component {
             }
             this.props.dispatch( resetSelectedVariables() );
             this.setVariables( this.dimensions, this.measures, this.selectedTimeDimension);
-            this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.measureChkBoxList,this.dimensionChkBoxList,this.dateTimeChkBoxList));
+            this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.measureChkBoxList,this.dimensionChkBoxList,this.dateTimeChkBoxList,this.possibleAnalysisList));
               
             }
 

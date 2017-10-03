@@ -27,7 +27,9 @@ export class Signal extends React.Component {
     super();
   }
   componentWillMount() {
+
 	  if(isEmpty(this.props.signal)){
+      //alert("in will mount!!")
 	  this.props.dispatch(getSignalAnalysis(sessionStorage.userToken, this.props.match.params.slug));
 	  }
   }
@@ -54,7 +56,7 @@ export class Signal extends React.Component {
             ]}/>*/}
             </div>
             <div class="col-md-8">
-              <h2>{this.props.signal.name}</h2>
+              {/*<h2>{this.props.signal.name}</h2>*/}
             </div>
             </div>
           <div class="clearfix"></div>

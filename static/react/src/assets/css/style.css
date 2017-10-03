@@ -5593,8 +5593,8 @@ button:focus {
     /* margin-left: 20px; */
 }
 .side-menu li a span {
-	width: 45px;
-	height: 45px;
+    width: 45px;
+    height: 41px;
 	margin: 5px auto;
 	display: block;
 }
@@ -5605,23 +5605,30 @@ button:focus {
 	background: url('../images/ico_story.png') no-repeat 0 0;
 }
 .side-menu li a.sdb_data span {
-	background: url('../images/ico_data.png') no-repeat 0 -45px;
+    background: url(../images/ico_data.png) no-repeat 3px -40px;
+    background-size: 41px;
 }
-.side-menu li a.sdb_data:hover span, .side-menu li.active a.sdb_data span {
-	background: url('../images/ico_data.png') no-repeat 0 0;
+li a.sdb_data:hover span, li a.active.sdb_data span {
+    background-position: 3px 1px;
 }
 .side-menu li a.sdb_app span {
-	background: url('../images/ico_apps.png') no-repeat 0 -45px;
+	background: url(../images/ico_apps.png) no-repeat 8px -39px;
+    background-size: 40px;
 }
-.side-menu li a.sdb_app:hover span, .side-menu li.active a.sdb_app span {
-	background: url('../images/ico_apps.png') no-repeat 0 0;
+
+li a.sdb_app:hover span, li a.active.sdb_app span {
+    background-position: 8px 1px;
 }
+
 .side-menu li a.sdb_settings span {
-	background: url('../images/ico_settings.png') no-repeat 0 -45px;
+	background: url('../images/ico_settings.png') no-repeat 2px -38px;
+	background-size: 40px;
 }
-.side-menu li a.sdb_settings:hover span, .side-menu li.active a.sdb_settings span {
-	background: url('../images/ico_settings.png') no-repeat 0 0;
+ 
+li a.sdb_settings:hover span, li a.active.sdb_settings span {
+    background-position: 2px 1px;
 }
+
 .side-menu li a.sdb_signal span {
 	background: url('../images/ico_signal.png') no-repeat 0 -45px;
 }
@@ -12262,7 +12269,7 @@ form.dropzone .note {
 	transition: box-shadow 200ms ease-in-out
 }
 .slider.slider-horizontal .slider-handle {
-	margin-top: -7px
+	margin-top: -2px
 }
 .slider.slider-vertical .slider-handle {
 	margin-left: -6px
@@ -14193,8 +14200,8 @@ progress { width: 100%; }
 
 .modal-body .tab-content {  margin-bottom: inherit; margin-top: 0; }
 .modal-body .tab-content h3 { margin-top:0; }
-.db_images { width: 190px; height: 92px; background: url(../../assets/images/db_images.png) no-repeat 0 0;}
-.db_images.db_file_upload { background-position: -380px -184px}
+.db_images { width: 122px; height: 56px; background: url(../../assets/images/db_images.png) no-repeat 0 0; background-size: 360px; }
+.db_images.db_file_upload { background-position: -240px -120px}
 .db_images.db_sql_server { background-position: 0 0}
 .db_images.db_my_sql { background-position: -196px 0  }
 .db_images.db_oracle { background-position: -380px 0}
@@ -14504,6 +14511,10 @@ a.disabled { color:#ccc !important; }
 .user-info h3 { margin-top:6px; }
 .user-profile small { text-transform:uppercase; color:#333333; font-size: 50% }
 .slick-prev, .slick-next { border-bottom: 1px solid #e8e8e8; height: 37px;}
+#dimention_subsetting table.table-striped.cst_table td {
+    padding: 3px;
+    vertical-align: middle;
+}
 /**************** Css realated to developers, keep the source down ***/
 
 
@@ -14753,3 +14764,7 @@ visibility:hidden !important;
 
 }
  
+ 
+.sub-analysis{
+	margin-left: 5%;
+}

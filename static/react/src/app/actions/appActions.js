@@ -45,14 +45,26 @@ export function getAppsModelList(pageNo) {
 }
 
 function fetchModelList(pageNo,token) {
-	let search_element = store.getState().apps.model_search_element
+	let search_element = store.getState().apps.model_search_element;
+	let apps_model_sorton =  store.getState().apps.apps_model_sorton;
+    let apps_model_sorttype = store.getState().apps.apps_model_sorttype;
+    if(apps_model_sorttype=='asc')
+		apps_model_sorttype = ""
+	else if(apps_model_sorttype=='desc')
+		apps_model_sorttype="-"
+	
 	if(search_element!=""&&search_element!=null){
 		console.log("calling for model search element!!")
 		return fetch(API+'/api/trainer/?app_id='+store.getState().apps.currentAppId+'&name='+search_element+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
 			method: 'get',
 			headers: getHeader(token)
 			}).then( response => Promise.all([response, response.json()]));
-	}else{
+	}else if((apps_model_sorton!=""&& apps_model_sorton!=null) && (apps_model_sorttype!=null)){
+	    return fetch(API+'/api/trainer/?app_id='+store.getState().apps.currentAppId+'&sorted_by='+apps_model_sorton+'&ordering='+apps_model_sorttype+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
+      method: 'get',
+      headers: getHeader(token)
+      }).then( response => Promise.all([response, response.json()]));
+  }else{
 		return fetch(API+'/api/trainer/?app_id='+store.getState().apps.currentAppId+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
 			method: 'get',
 			headers: getHeader(token)
@@ -158,14 +170,26 @@ export function getAppsScoreList(pageNo) {
 }
 
 function fetchScoreList(pageNo,token) {
-	let search_element = store.getState().apps.score_search_element
+	let search_element = store.getState().apps.score_search_element;
+	let apps_score_sorton =  store.getState().apps.apps_score_sorton;
+    let apps_score_sorttype = store.getState().apps.apps_score_sorttype;
+    if(apps_score_sorttype=='asc')
+		apps_score_sorttype = ""
+	else if(apps_score_sorttype=='desc')
+		apps_score_sorttype="-"
+	
 	if(search_element!=""&&search_element!=null){
 		console.log("calling for score search element!!")
 		return fetch(API+'/api/score/?apps_id='+store.getState().apps.currentAppId+'&name='+search_element+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
 			method: 'get',
 			headers: getHeader(token)
 			}).then( response => Promise.all([response, response.json()]));
-	}else{
+	}else if((apps_score_sorton!=""&& apps_score_sorton!=null) && (apps_score_sorttype!=null)){
+	    return fetch(API+'/api/score/?apps_id='+store.getState().apps.currentAppId+'&sorted_by='+apps_score_sorton+'&ordering='+apps_score_sorttype+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
+      method: 'get',
+      headers: getHeader(token)
+      }).then( response => Promise.all([response, response.json()]));
+  }else{
 		return fetch(API+'/api/score/?apps_id='+store.getState().apps.currentAppId+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
 			method: 'get',
 			headers: getHeader(token)
@@ -456,14 +480,25 @@ export function getAppsRoboList(pageNo) {
 }
 
 function fetchRoboList(pageNo,token) {
-	let search_element = store.getState().apps.robo_search_element
+	let search_element = store.getState().apps.robo_search_element;
+	let robo_sorton =  store.getState().apps.robo_sorton;
+    let robo_sorttype = store.getState().apps.robo_sorttype;
+    if(robo_sorttype=='asc')
+		robo_sorttype = ""
+	else if(robo_sorttype=='desc')
+		robo_sorttype="-"
 	if(search_element!=""&&search_element!=null){
 		//console.log("calling for robo search element!!")
 		return fetch(API+'/api/robo/?name='+search_element+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
 			method: 'get',
 			headers: getHeader(token)
 			}).then( response => Promise.all([response, response.json()]));
-	}else{
+	}else if((robo_sorton!=""&& robo_sorton!=null) && (robo_sorttype!=null)){
+	    return fetch(API+'/api/robo/?sorted_by='+robo_sorton+'&ordering='+robo_sorttype+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
+      method: 'get',
+      headers: getHeader(token)
+      }).then( response => Promise.all([response, response.json()]));
+  }else{
 		return fetch(API+'/api/robo/?page_number='+pageNo+'&page_size='+PERPAGE+'',{
 			method: 'get',
 			headers: getHeader(token)
@@ -1234,5 +1269,27 @@ export function pauseAudioFile(){
 	audioEle.pause();
 	}else{
 		bootbox.alert("Please upload audio file to play.");
+	}
+}
+
+export function storeRoboSortElements(roboSorton,roboSorttype){
+	  return {
+		type: "SORT_ROBO",
+		roboSorton,
+		roboSorttype
+	}
+}
+export function storeAppsModelSortElements(appsModelSorton,appsModelSorttype){
+	  return {
+		type: "SORT_APPS_MODEL",
+		appsModelSorton,
+		appsModelSorttype
+	}
+}
+export function storeAppsScoreSortElements(appsScoreSorton,appsScoreSorttype){
+	  return {
+		type: "SORT_APPS_SCORE",
+		appsScoreSorton,
+		appsScoreSorttype
 	}
 }

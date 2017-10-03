@@ -21,7 +21,8 @@ import {
   handleScoreRename,
   handleScoreDelete,
   activateModelScoreTabs,
-  storeScoreSearchElement
+  storeScoreSearchElement,
+  storeAppsScoreSortElements
 } from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {STATIC_URL} from "../../helpers/env.js"
@@ -31,7 +32,7 @@ import Dialog from 'react-bootstrap-dialog'
 var dateFormat = require('dateformat');
 
 @connect((store) => {
-  return {login_response: store.login.login_response, scoreList: store.apps.scoreList, scoreSlug: store.apps.scoreSlug, currentAppId: store.apps.currentAppId, score_search_element: store.apps.score_search_element};
+  return {login_response: store.login.login_response, scoreList: store.apps.scoreList, scoreSlug: store.apps.scoreSlug, currentAppId: store.apps.currentAppId, score_search_element: store.apps.score_search_element,apps_score_sorton:store.apps.apps_score_sorton, apps_score_sorttype:store.apps.apps_score_sorttype};
 })
 
 export class AppsScoreList extends React.Component {
@@ -86,6 +87,14 @@ export class AppsScoreList extends React.Component {
       this.props.dispatch(getAppsScoreList(1));
     }
   }
+  
+   doSorting(sortOn, type){
+	     this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/scores?sort=' + sortOn + '&type='+type);
+    
+	    this.props.dispatch(storeAppsScoreSortElements(sortOn,type));
+	    this.props.dispatch(getAppsScoreList(1));
+     }
+	 
 
   render() {
     console.log("apps score list is called##########3");
@@ -102,6 +111,11 @@ export class AppsScoreList extends React.Component {
         document.getElementById('score_insights').value = "";
       }
     //search element ends..
+	
+	 if(this.props.history.location.sort == "" || this.props.history.location.sort == null){
+		          this.props.dispatch(storeAppsScoreSortElements("",null));
+	          }
+			  
     const scoreList = store.getState().apps.scoreList.data;
     if (scoreList) {
       const pages = store.getState().apps.scoreList.total_number_of_pages;
@@ -181,7 +195,7 @@ export class AppsScoreList extends React.Component {
                 <div className="input-group pull-right">
 
                   <input type="text" name="score_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Score Insights" id="score_insights" className="form-control" placeholder="Search Score insights..."/>
-                  {/*<span className="input-group-btn">
+                  <span className="input-group-btn">
                     <button type="button" className="btn btn-default" title="Select All Card">
                       <i className="fa fa-address-card-o fa-lg"></i>
                     </button>
@@ -190,20 +204,20 @@ export class AppsScoreList extends React.Component {
                       <span className="caret"></span>
                     </button>
                     <ul role="menu" className="dropdown-menu dropdown-menu-right">
-                      <li>
-                        <a href="#">Name Ascending</a>
-                      </li>
-                      <li>
-                        <a href="#">Name Descending</a>
-                      </li>
-                      <li>
-                        <a href="#">Date Ascending</a>
-                      </li>
-                      <li>
-                        <a href="#">Date Descending</a>
-                      </li>
+										 <li>
+										  <a href="#" onClick={this.doSorting.bind(this,'name','asc')}>Name Ascending</a>
+										</li>
+										<li>
+										  <a href="#" onClick={this.doSorting.bind(this,'name','desc')}>Name Descending</a>
+										</li>
+										<li>
+										  <a href="#" onClick={this.doSorting.bind(this,'created_at','asc')}>Date Ascending</a>
+										</li>
+										<li>
+										  <a href="#" onClick={this.doSorting.bind(this,'created_at','desc')}>Date Descending</a>
+										</li>
                     </ul>
-                  </span>*/}
+                  </span>
                 </div>
               </div>
             </div>
@@ -234,7 +248,9 @@ export class AppsScoreList extends React.Component {
   handleSelect(eventKey) {
     if (this.props.score_search_element) {
       this.props.history.push('/apps/' + store.getState().apps.currentAppId + '/scores?search=' + this.props.score_search_element + '?page=' + eventKey + '')
-    } else
+    }  else if(this.props.apps_score_sorton){
+	           this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/score?sort=' + this.props.apps_score_sorton +'&type='+this.props.apps_score_sorttype+'&page=' + eventKey + '');
+	     }else
       this.props.history.push('/apps/' + store.getState().apps.currentAppId + '/scores?page=' + eventKey + '')
 
     this.props.dispatch(activateModelScoreTabs(2));

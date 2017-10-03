@@ -300,7 +300,7 @@
         clone.removeAttribute('height');
         clone.setAttribute('preserveAspectRatio', 'xMinYMin meet');
       } else {
-        clone.setAttribute("width", width * options.scale);
+        clone.setAttribute("width", (width * options.scale)+40);
         clone.setAttribute("height", height * options.scale);
       }
 

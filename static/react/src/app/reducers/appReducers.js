@@ -44,7 +44,14 @@ export default function reducer(state = {
 		audioFileSlug :"",
 		audioFileSummaryFlag:false,
 		audioList:{},
-		audio_search_element:""
+		audio_search_element:"",
+		robo_sorton:null,
+		robo_sorttype:null,
+		apps_model_sorton:null,
+		apps_model_sorttype:null,
+		apps_score_sorton:null,
+		apps_score_sorttype:null,
+		
 		
 }, action) {
 	console.log("In APPs reducer!!");
@@ -513,7 +520,33 @@ export default function reducer(state = {
 		}
 	}
 	break;
-	
+
+	case "SORT_ROBO":
+	{
+      return{
+        ...state,
+        robo_sorton:action.roboSorton,
+		robo_sorttype:action.roboSorttype
+      }
+    }
+	break;	case "SORT_APPS_MODEL":
+	{
+      return{
+        ...state,
+        apps_model_sorton:action.appsModelSorton,
+		apps_model_sorttype:action.appsModelSorttype
+      }
+    }
+	break;
+		case "SORT_APPS_SCORE":
+	{
+      return{
+        ...state,
+        apps_score_sorton:action.appsScoreSorton,
+		apps_score_sorttype:action.appsScoreSorttype
+      }
+    }
+	break;
  }
 return state
 }

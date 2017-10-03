@@ -5,7 +5,7 @@
   "main": "index.js",
   "experimentalDecorators": true,
   "scripts": {
-    "start": "npm run build",
+    "start": "npm run buildLinux",
     "buildLinux": "webpack -d && cp src/index.html dist/index.html && webpack-dev-server --content-base src/ --inline --hot --history-api-fallback",
     "build": "webpack -d && copy src\\index.html dist\\index.html && webpack-dev-server --content-base src/ --inline --hot --history-api-fallback",
     "buildDev": "cp confs/dev/env.js src/app/helpers/env.js &&webpack -p && cp src/index.html dist/index.html ",
@@ -23,6 +23,7 @@
     "react": "^15.6.1",
     "react-bootstrap": "^0.31.2",
     "react-bootstrap-dialog": "^0.9.1",
+    "react-bootstrap-slider": "^2.0.1",
     "react-breadcrumb": "^1.0.0",
     "react-circular-progressbar": "^0.1.5",
     "react-custom-scrollbars": "^4.1.2",
