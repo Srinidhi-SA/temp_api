@@ -77,7 +77,7 @@ export class C3Chart extends React.Component {
 			element.style.fill = "none";
 			element.style.stroke = "black";
         });
-		saveSvgAsPng(document.querySelector(".chart"+this.props.classId +">svg"), "chart.png");
+		saveSvgAsPng(document.querySelector(".chart"+this.props.classId +">svg"), "chart.png", {backgroundColor: "white",height:"450"});
 
 	}
 

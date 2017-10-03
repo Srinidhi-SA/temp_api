@@ -8,7 +8,7 @@ import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstrap";
 import {AppsCreateModel} from "./AppsCreateModel";
 import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryFlag,
-	updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement} from "../../actions/appActions";
+	updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,storeAppsModelSortElements} from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {SEARCHCHARLIMIT} from  "../../helpers/helper"
 import {STATIC_URL} from "../../helpers/env.js";
@@ -24,7 +24,9 @@ import Dialog from 'react-bootstrap-dialog'
 			modelSummaryFlag:store.apps.modelSummaryFlag,
 			modelSlug:store.apps.modelSlug,
 			currentAppId:store.apps.currentAppId,
-			model_search_element: store.apps.model_search_element
+			model_search_element: store.apps.model_search_element,
+			apps_model_sorton:store.apps.apps_model_sorton,
+			apps_model_sorttype:store.apps.apps_model_sorttype
 		};
 	})
 
@@ -77,6 +79,14 @@ import Dialog from 'react-bootstrap-dialog'
 				this.props.dispatch(getAppsModelList(1));
 			}
 		}
+		
+	 doSorting(sortOn, type){
+	     this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models?sort=' + sortOn + '&type='+type);
+    
+	    this.props.dispatch(storeAppsModelSortElements(sortOn,type));
+	    this.props.dispatch(getAppsModelList(1));
+     }
+  
 		render() {
 			console.log("apps model list is called##########3");
 			console.log(this.props);
@@ -93,6 +103,10 @@ import Dialog from 'react-bootstrap-dialog'
 					document.getElementById('model_insights').value = "";
 			}
 			//search element ends..
+			
+			 if(this.props.history.location.sort == "" || this.props.history.location.sort == null){
+		          this.props.dispatch(storeAppsModelSortElements("",null));
+	          }
 
 
 			const modelList = store.getState().apps.modelList.data;
@@ -174,7 +188,7 @@ import Dialog from 'react-bootstrap-dialog'
 
 						<input type="text" name="model_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Model Insights" id="model_insights" className="form-control" placeholder="Search Model insights..."/>
 
-						{/*<span className="input-group-btn">
+						<span className="input-group-btn">
 									<button type="button" className="btn btn-default" title="Select All Card">
 										<i className="fa fa-address-card-o fa-lg"></i>
 									</button>
@@ -183,20 +197,20 @@ import Dialog from 'react-bootstrap-dialog'
 										<span className="caret"></span>
 									</button>
 									<ul role="menu" className="dropdown-menu dropdown-menu-right">
-										<li>
-											<a href="#">Name Ascending</a>
+										 <li>
+										  <a href="#" onClick={this.doSorting.bind(this,'name','asc')}>Name Ascending</a>
 										</li>
 										<li>
-											<a href="#">Name Descending</a>
+										  <a href="#" onClick={this.doSorting.bind(this,'name','desc')}>Name Descending</a>
 										</li>
 										<li>
-											<a href="#">Date Ascending</a>
+										  <a href="#" onClick={this.doSorting.bind(this,'created_at','asc')}>Date Ascending</a>
 										</li>
 										<li>
-											<a href="#">Date Descending</a>
+										  <a href="#" onClick={this.doSorting.bind(this,'created_at','desc')}>Date Descending</a>
 										</li>
 									</ul>
-								</span>*/}
+								</span>
 						</div>
 						</div>
 						</div>
@@ -231,7 +245,9 @@ import Dialog from 'react-bootstrap-dialog'
 
 			if (this.props.model_search_element) {
 				this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models?search=' + this.props.model_search_element+'?page='+eventKey+'')
-			} else
+			}  else if(this.props.apps_model_sorton){
+	           this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models?sort=' + this.props.apps_model_sorton +'&type='+this.props.apps_model_sorttype+'&page=' + eventKey + '');
+	     }else
 				this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models?page='+eventKey+'')
 
 				this.props.dispatch(getAppsModelList(eventKey));

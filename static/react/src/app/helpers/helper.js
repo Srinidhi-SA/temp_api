@@ -19,16 +19,16 @@ const SCHEMA = "Schema";
 const USERNAME = "Username";
 const PASSWORD = "Password";
 const TABLENAME = "Table Name";
-const PERPAGE = 11; 
+const PERPAGE = 11;
 const NORMALTABLE = "normal";
 const CONFUSIONMATRIX = "confusionMatrix";
 const HEATMAPTABLE = "heatMap";
 const CIRCULARCHARTTABLE = "circularChartTable";
 const DECISIONTREETABLE = "decisionTreeTable"
-const DULOADERPERVALUE = 10;
-const CSLOADERPERVALUE = 10;
-const LOADERMAXPERVALUE = 90;
-const DEFAULTINTERVAL = 20000;
+const DULOADERPERVALUE = 3;
+const CSLOADERPERVALUE = 1;
+const LOADERMAXPERVALUE = 99;
+const DEFAULTINTERVAL = 10000;
 const APPSDEFAULTINTERVAL = 15000;
 const CUSTOMERDATA = "Customer Data";
 const HISTORIALDATA = "Historial Data";
@@ -56,7 +56,7 @@ const APPID4 = 4;
 const APPNAME4 = "Speech Analytics";
 const DELETEAUDIO = "Delete Media File";
 const RENAMEAUDIO = "Rename Media File";
-
+const DULOADERPERMSG = "initialized the filter parameters"
 
 
 export function generateHeaders(table) {
@@ -129,7 +129,7 @@ export function  generateRows(table) {
 
 export function  subTreeSetting(urlLength, length,paramL2) {
 	  $(function(){
-	  
+
 	    if(urlLength == length ){  //show -hide subtree and active class of subtree element
 		  $(".sb_navigation").show();
 		   $(".sb_navigation #subTab i.mAd_icons.ic_perf ~ span").each(function(){
@@ -173,7 +173,7 @@ export function  subTreeSetting(urlLength, length,paramL2) {
 
 
 	export function  showHideSideChart(colType,chartData) {
-		
+
 		if(colType =="datetime" || $.isEmptyObject(chartData)){
 				$(function(){
 			       $("#tab_visualizations #pnl_visl").removeClass("in");
@@ -185,7 +185,7 @@ export function  subTreeSetting(urlLength, length,paramL2) {
                    $("#tab_visualizations a").removeClass("collapsed");
 				});
 			}
-		
+
 
 	}
 
@@ -210,6 +210,27 @@ export function  subTreeSetting(urlLength, length,paramL2) {
 		}
 
 	}
+
+  export function  showHideSubsetting(colType,subsetData,dateflag) {
+
+		if((colType =="datetime" ||dateflag == true)||(colType == "dimension" && $.isEmptyObject(subsetData))){
+				$(function(){
+			       $("#tab_subsettings #pnl_tbset").removeClass("in");
+                   $("#tab_subsettings a").addClass("collapsed");
+                   $("#saveSubSetting").hide();
+				});
+			}else{
+      				$(function(){
+			       $("#tab_subsettings #pnl_tbset").addClass("in");
+                   $("#tab_subsettings a").removeClass("collapsed");
+                   $("#saveSubSetting").show();
+				});
+
+    }
+
+
+	}
+
 export{
 	FILEUPLOAD,
 	MYSQL,
@@ -257,4 +278,5 @@ export{
 	APPNAME4,
 	RENAMEAUDIO,
 	DELETEAUDIO,
+  DULOADERPERMSG,
 	}

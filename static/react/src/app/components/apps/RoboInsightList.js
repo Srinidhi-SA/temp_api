@@ -13,7 +13,7 @@ import {
   OverlayTrigger,
   Popover
 } from "react-bootstrap";
-import {getAppsRoboList, getRoboDataset, handleInsightDelete, handleInsightRename, storeRoboSearchElement,clearRoboSummary} from "../../actions/appActions";
+import {getAppsRoboList, getRoboDataset, handleInsightDelete, handleInsightRename, storeRoboSearchElement,clearRoboSummary,storeRoboSortElements} from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {STATIC_URL} from "../../helpers/env.js";
 import {RoboDataUpload} from "./RoboDataUpload";
@@ -36,6 +36,8 @@ var dateFormat = require('dateformat');
     customerDataset_slug:store.apps.customerDataset_slug,
 	historialDataset_slug:store.apps.historialDataset_slug,
 	externalDataset_slug:store.apps.externalDataset_slug,
+	robo_sorton:store.apps.robo_sorton,
+	robo_sorttype:store.apps.robo_sorttype
   };
 })
 
@@ -85,6 +87,13 @@ export class RoboInsightList extends React.Component {
       this.props.dispatch(getAppsRoboList(1));
     }
   }
+  
+    doSorting(sortOn, type){
+	     this.props.history.push('/apps-robo?sort=' + sortOn + '&type='+type);
+    
+	 this.props.dispatch(storeRoboSortElements(sortOn,type));
+	this.props.dispatch(getAppsRoboList(1));
+  }
   render() {
     console.log("apps robo list is called##########3");
     console.log(this.props);
@@ -97,6 +106,9 @@ export class RoboInsightList extends React.Component {
         document.getElementById('robo_insights').value = "";
       }
     //search element ends..
+	 if(this.props.location.sort == "" || this.props.location.sort == null){
+		  this.props.dispatch(storeRoboSortElements("",null));
+	  }
 
     if (store.getState().datasets.dataPreviewFlag) {
       let _link = "/apps-robo-list/" + store.getState().apps.roboDatasetSlug+"/customer/data/"+store.getState().apps.customerDataset_slug
@@ -186,7 +198,9 @@ export class RoboInsightList extends React.Component {
               <div className="col-md-4">
                 <div className="input-group pull-right">
 
-                  <input type="text" name="robo_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Robo Insights" id="robo_insights" class="form-control" placeholder="Search robo insights..."/> {/*<span className="input-group-btn">
+                  <input type="text" name="robo_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Robo Insights" id="robo_insights" class="form-control" placeholder="Search robo insights..."/> 
+				  
+				  <span className="input-group-btn">
 					<button type="button" className="btn btn-default" title="Select All Card">
 					<i className="fa fa-address-card-o fa-lg"></i>
 					</button>
@@ -195,20 +209,20 @@ export class RoboInsightList extends React.Component {
 					<span className="caret"></span>
 					</button>
 					<ul role="menu" className="dropdown-menu dropdown-menu-right">
-					<li>
-					<a href="#">Name Ascending</a>
-					</li>
-					<li>
-					<a href="#">Name Descending</a>
-					</li>
-					<li>
-					<a href="#">Date Ascending</a>
-					</li>
-					<li>
-					<a href="#">Date Descending</a>
-					</li>
+					     <li>
+                          <a href="#" onClick={this.doSorting.bind(this,'name','asc')}>Name Ascending</a>
+                        </li>
+                        <li>
+                          <a href="#" onClick={this.doSorting.bind(this,'name','desc')}>Name Descending</a>
+                        </li>
+                        <li>
+                          <a href="#" onClick={this.doSorting.bind(this,'created_at','asc')}>Date Ascending</a>
+                        </li>
+                        <li>
+                          <a href="#" onClick={this.doSorting.bind(this,'created_at','desc')}>Date Descending</a>
+                        </li>
 					</ul>
-					</span>*/}
+					</span>
                 </div>
               </div>
             </div>
@@ -243,7 +257,9 @@ export class RoboInsightList extends React.Component {
   handleSelect(eventKey) {
     if (this.props.robo_search_element) {
       this.props.history.push('/apps-robo?search=' + this.props.robo_search_element + '?page=' + eventKey + '')
-    } else
+    } else if(this.props.robo_sorton){
+	     this.props.history.push('/apps-robo?sort=' + this.props.robo_sorton +'&type='+this.props.robo_sorttype+'&page=' + eventKey + '');
+	}else
       this.props.history.push('/apps-robo?page=' + eventKey + '')
 
     this.props.dispatch(getAppsRoboList(eventKey));

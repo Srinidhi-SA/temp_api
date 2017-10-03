@@ -2,7 +2,7 @@ import React from "react";
 import {API} from "../helpers/env";
 import {PERPAGE,DULOADERPERVALUE,DEFAULTINTERVAL,SUCCESS,FAILED} from "../helpers/helper";
 import store from "../store";
-import {dataPreviewInterval,dataUploadLoaderValue} from "./dataUploadActions";
+import {dataPreviewInterval,dataUploadLoaderValue,clearLoadingMsg} from "./dataUploadActions";
 import Dialog from 'react-bootstrap-dialog'
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
 import {isEmpty} from "../helpers/helper";
@@ -32,7 +32,14 @@ export function getDataList(pageNo) {
 function fetchDataList(pageNo,token) {
 
 	console.log(token)
-	let search_element = store.getState().datasets.data_search_element
+	let search_element = store.getState().datasets.data_search_element;
+	let data_sorton =  store.getState().datasets.data_sorton;
+  let data_sorttype = store.getState().datasets.data_sorttype;
+    if(data_sorttype=='asc')
+		data_sorttype = ""
+	else if(data_sorttype=='desc')
+		data_sorttype="-"
+
 	console.log(search_element)
 	if(search_element!=""&&search_element!=null){
 		console.log("calling for search element!!")
@@ -40,7 +47,12 @@ function fetchDataList(pageNo,token) {
 			method: 'get',
 			headers: getHeader(token)
 			}).then( response => Promise.all([response, response.json()]));
-	}else{
+	}else if((data_sorton!=""&& data_sorton!=null) && (data_sorttype!=null)){
+	    return fetch(API+'/api/datasets/?sorted_by='+data_sorton+'&ordering='+data_sorttype+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
+      method: 'get',
+      headers: getHeader(token)
+      }).then( response => Promise.all([response, response.json()]));
+  }else{
 		return fetch(API+'/api/datasets/?page_number='+pageNo+'&page_size='+PERPAGE+'',{
 			method: 'get',
 			headers: getHeader(token)
@@ -92,6 +104,7 @@ function fetchDataPreview(slug) {
 //get preview data
 function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
 	console.log("data preview from api to store")
+	console.log(dataPreview)
 	var slug = "";
 	if(dataPreview.status == SUCCESS){
 		slug = dataPreview.slug;
@@ -103,6 +116,7 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
 		} else{
 			dispatch(dispatchDataPreview(dataPreview,slug));
 		}
+		dispatch(clearLoadingMsg())
 		return {
 			type: "DATA_PREVIEW",
 			dataPreview,
@@ -113,11 +127,15 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
 		dispatch(hideDULoaderPopup());
 		 bootbox.alert("The uploaded file does not contain data in readable format. Please check the source file.")
 		dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
+		dispatch(clearLoadingMsg())
+
 		return {
 			type: "DATA_PREVIEW_FOR_LOADER",
 			dataPreview,
 			slug,
 		}
+	}else if(dataPreview.status == "INPROGRESS"){
+		dispatch(dispatchDataPreviewLoadingMsg(dataPreview));
 	}
 }
 
@@ -126,6 +144,16 @@ function dispatchDataPreview(dataPreview,slug){
 		type: "DATA_PREVIEW",
 		dataPreview,
 		slug,
+	}
+}
+
+function dispatchDataPreviewLoadingMsg(dataPreview){
+	let message = dataPreview.message
+	console.log("loading message########")
+	console.log(message)
+	return {
+		type: "CHANGE_LOADING_MSG",
+		message
 	}
 }
 function fetchDataPreviewError(json) {
@@ -179,8 +207,20 @@ export function fetchAllDataSuccess(doc){
 }
 export function selectedAnalysisList(evt){
 	var selectedAnalysis = evt.target.value;
+	var totalAnalysisList = store.getState().datasets.dataSetAnalysisList;
+	var analysisList = [];
+	var renderList = {};
+	if(store.getState().signals.getVarType == "measure"){
+		analysisList = totalAnalysisList.measures.analysis.slice();
+	}else{
+		analysisList = totalAnalysisList.dimensions.analysis.slice();
+	}
 	if(evt.target.className == "possibleAnalysis"){
-		if(evt.target.checked){
+		for(var i=0;i<analysisList.length;i++){
+			if(analysisList[i].name == evt.target.value)
+				analysisList[i].status = evt.target.checked;
+		}
+		/*if(evt.target.checked){
 			return {
 				type: "SELECTED_ANALYSIS_TYPE",
 				selectedAnalysis
@@ -190,9 +230,105 @@ export function selectedAnalysisList(evt){
 				type: "UNSELECT_ANALYSIS_TYPE",
 				selectedAnalysis
 			}
+		}*/
+		if(store.getState().signals.getVarType == "measure"){
+			totalAnalysisList.measures.analysis = analysisList
+		}else{
+			totalAnalysisList.dimensions.analysis = analysisList
+		}
+		renderList.measures = totalAnalysisList.measures;
+		renderList.dimensions = totalAnalysisList.dimensions;
+		return {
+			type: "UPDATE_ANALYSIS_LIST",
+			renderList
 		}
 	}
 }
+
+
+export function selectAllAnalysisList(evt){
+	//var selectedAnalysis = evt.target.checked;
+	var totalAnalysisList = store.getState().datasets.dataSetAnalysisList;
+	var analysisList = [];
+	var renderList = {};
+	if(store.getState().signals.getVarType == "measure"){
+		analysisList = totalAnalysisList.measures.analysis.slice();
+	}else{
+		analysisList = totalAnalysisList.dimensions.analysis.slice();
+	}
+	if(evt.target.className == "allAnalysis"){
+		for(var i=0;i<analysisList.length;i++){
+			//if(analysisList[i].name == evt.target.value)
+				analysisList[i].status = evt.target.checked;
+		}
+		/*if(evt.target.checked){
+			return {
+				type: "SELECTED_ANALYSIS_TYPE",
+				selectedAnalysis
+			}
+		}else{
+			return {
+				type: "UNSELECT_ANALYSIS_TYPE",
+				selectedAnalysis
+			}
+		}*/
+		if(store.getState().signals.getVarType == "measure"){
+			totalAnalysisList.measures.analysis = analysisList
+		}else{
+			totalAnalysisList.dimensions.analysis = analysisList
+		}
+		renderList.measures = totalAnalysisList.measures;
+		renderList.dimensions = totalAnalysisList.dimensions;
+		return {
+			type: "UPDATE_ANALYSIS_LIST",
+			renderList
+		}
+	}
+}
+
+
+export function setAnalysisLevel(level,levelVal, analysisName){
+	var totalAnalysisList = store.getState().datasets.dataSetAnalysisList;
+	var analysisList = [];
+	var renderList = {};
+	//var chkAnalysis = id.split("-");
+	if(store.getState().signals.getVarType == "measure"){
+		analysisList = totalAnalysisList.measures.analysis.slice();
+	}else{
+		analysisList = totalAnalysisList.dimensions.analysis.slice();
+	}
+	  for(var i=0;i<analysisList.length;i++){
+			if(analysisList[i].name.toLowerCase() == analysisName){
+			  if(level == "custom"){
+				analysisList[i].analysisLevel = level;
+				analysisList[i].analysisLevelValue = levelVal;
+			  }else{
+				 analysisList[i].analysisLevel = level;
+				analysisList[i].analysisLevelValue = levelVal;
+			  }
+			}
+		}
+		if(store.getState().signals.getVarType == "measure"){
+			totalAnalysisList.measures.analysis = analysisList
+		}else{
+			totalAnalysisList.dimensions.analysis = analysisList
+		}
+
+		renderList.measures = totalAnalysisList.measures;
+		renderList.dimensions = totalAnalysisList.dimensions;
+		return {
+			type: "UPDATE_ANALYSIS_LIST_FOR_LEVELS",
+			renderList
+		}
+
+	}
+
+
+
+
+
+
+
 export function unselectAllPossibleAnalysis(){
 	let unselectAll =[];
 	return {
@@ -457,9 +593,16 @@ function renameDatasetAPI(slug,newName){
 		}
 	}
 
+export function storeSortElements(sorton,sorttype){
+	  return {
+		type: "SORT_DATA",
+		sorton,
+		sorttype
+	}
+}
 
 
-export function updateDatasetVariables(measures,dimensions,timeDimensions,measureChkBoxList,dimChkBoxList,dateTimeChkBoxList){
+export function updateDatasetVariables(measures,dimensions,timeDimensions,measureChkBoxList,dimChkBoxList,dateTimeChkBoxList,possibleAnalysisList){
 
 	return {
 		type: "DATASET_VARIABLES",
@@ -468,9 +611,32 @@ export function updateDatasetVariables(measures,dimensions,timeDimensions,measur
 		timeDimensions,
 		measureChkBoxList,
 		dimChkBoxList,
-		dateTimeChkBoxList
+		dateTimeChkBoxList,
+		possibleAnalysisList
 
 	}
+}
+
+export function setDimensionSubLevels(selectedDimensionSubLevels){
+	return {
+		type: "SELECTED_DIMENSION_SUBLEVELS",
+		selectedDimensionSubLevels
+	}
+}
+export function selectedTrendSubList(selectedTrendSub){
+
+		return {
+			type: "SELECTED_TREND_SUB_LIST",
+			selectedTrendSub
+		}
+
+}
+export function  selectedDimensionSubLevel(dimensionSubLevel){
+
+	return {
+			type: "SELECTED_DIMENSION_SUB_LEVEL",
+			dimensionSubLevel
+		}
 }
 
 export function handleDVSearch(evt){
@@ -606,5 +772,15 @@ export function handleSelectAll(evt){
 	case "datetime":
 
 		break;
+	}
+}
+
+
+export function updateSubSetting(updatedSubSetting){
+
+	return {
+		type: "UPDATE_SUBSETTING",
+		updatedSubSetting
+
 	}
 }

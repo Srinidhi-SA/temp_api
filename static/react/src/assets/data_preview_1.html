@@ -15,7 +15,7 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
       <![endif]-->
-      <!-- Custom styles for this template
+      <!-- Custom styles for this template 
          <link href="css/nanoscroller.css" rel="stylesheet">-->
       <link href="css/bootstrap-slider.css" rel="stylesheet">
       <link href="css/style.css" rel="stylesheet">
@@ -43,7 +43,7 @@
             </div>
             <div class="clearfix"></div>
          </nav>
-         <!--/.Header Menu -->
+         <!--/.Header Menu --> 
          <!-- Side bar Main Menu -->
          <div class="side-menu">
             <div class="side-menu-container">
@@ -55,16 +55,16 @@
                   <li><a href="settings.html" class="sdb_settings"> <span></span> SETTINGS</a></li>
                </ul>
             </div>
-            <!-- /.Side bar Main Menu  -->
+            <!-- /.Side bar Main Menu  --> 
          </div>
-         <!-- ./Side bar Main Menu -->
+         <!-- ./Side bar Main Menu --> 
          <!-- Main Content starts with side-body -->
          <div class="side-body">
             <!-- Page Title and Breadcrumbs -->
             <div class="page-head">
                <!-- <ol class="breadcrumb">
                   <li><a href="#">Story</a></li>
-                  <li class="active">Sales Performance Report</li>
+                  <li class="active">Sales Performance Report</li> 
                   </ol> -->
                <div class="row">
                   <div class="col-md-8">
@@ -73,7 +73,7 @@
                </div>
                <div class="clearfix"></div>
             </div>
-            <!-- /.Page Title and Breadcrumbs -->
+            <!-- /.Page Title and Breadcrumbs --> 
             <!-- Page Content Area -->
             <div class="main-content">
                <div class="row">
@@ -296,7 +296,8 @@
                         </div>
                      </div>
 					 <!-- ./ End Tab Visualizations -->
-					 <!-- Start Tab Subsettings - -->
+					 
+					 <!-- Start Tab Subsettings -->
 					 <div id="tab_subsettings" class="panel-group accordion accordion-semi">
                         <div class="panel panel-default">
                            <div class="panel-heading">
@@ -318,14 +319,111 @@
                               <div class="form-group">
                                  <input type="text" data-slider-value="[250,450]" data-slider-step="5" data-slider-max="1000" data-slider-min="10" value="" class="bslider form-control">
                               </div>
+							  <hr />
+							 <div class="text-right">
+                                 <button class="btn btn-alt4">Save</button>
+                              </div>
                            </div>
                            </div>
                         </div>
-                     </div>
+                     </div> 
 					 <!-- ./ End Tab Subsettings -->
+					 
+					 <!-- Age Category -->
+					 <div id="tab_ageCategory" class="panel-group accordion accordion-semi">
+                        <div class="panel panel-default">
+                           <div class="panel-heading">
+                              <h4 class="panel-title"><a data-toggle="collapse" data-parent="#tab_ageCategory" href="#pnl_tbCat" aria-expanded="true">Age Category <i class="fa fa-angle-down pull-right"></i></a></h4>
+                           </div>
+                           <div id="pnl_tbCat" class="panel-collapse collapse in" aria-expanded="true">
+                              <div class="panel-body">
+                        
+							<div class="row">
+								<div class="col-md-12 cst-scroll-panel">									
+									<div class="table-responsive">
+										<table class="table table-condensed table-hover table-bordered">
+											<thead>
+												<tr>
+												<td>
+												<div class="ma-checkbox inline">
+												<input id="check1" type="checkbox" class="needsclick">
+												<label for="check1"></label>
+												</div>												
+												</td>
+												<td> <b>AGE CATEGORY</b> </td>
+												<td><b>Count</b> </td>
+											</tr>
+											</thead>
+											<tbody>
+											<tr>
+												<td><div class="ma-checkbox inline"><input id="chk_mes1" type="checkbox" class="needsclick"><label for="chk_mes1"></label></div></td>
+												<td>41-50</td>
+												<td>996</td>
+											</tr>
+											<tr>
+												<td><div class="ma-checkbox inline"><input id="chk_mes2" type="checkbox" class="needsclick"><label for="chk_mes2"></label></div></td>
+												<td>Above 50</td>
+												<td>374</td>
+											</tr>
+											<tr>
+												<td><div class="ma-checkbox inline"><input id="chk_mes3" type="checkbox" class="needsclick"><label for="chk_mes3"></label></div></td>
+												<td>21-30</td>
+												<td>1862</td>
+											</tr>
+											<tr>
+												<td><div class="ma-checkbox inline"><input id="chk_mes4" type="checkbox" class="needsclick"><label for="chk_mes4"></label></div></td>
+												<td>31-40</td>
+												<td>1796</td>
+											</tr>
+											</tbody>
+										</table>
+									</div>									 
+								</div>
+							</div>
+							<hr />
+							 <div class="text-right">
+                                 <button class="btn btn-alt4">Save</button>
+                              </div>
+							<!-- End -->
+                           </div>
+                           </div>
+                        </div>
+                     </div> 
+					 <!-- ./ End Age Category -->
+					 
+					 
+					 
+					 <!-- Date Range -->
+					 <div id="tab_dateRange" class="panel-group accordion accordion-semi">
+                        <div class="panel panel-default">
+                           <div class="panel-heading">
+                              <h4 class="panel-title"><a data-toggle="collapse" data-parent="#tab_dateRange" href="#pnl_tbtbr" aria-expanded="true">Date <i class="fa fa-angle-down pull-right"></i></a></h4>
+                           </div>
+                           <div id="pnl_tbtbr" class="panel-collapse collapse in" aria-expanded="true">
+                              <div class="panel-body">
+							
+								<div class="input-daterange input-group" id="datepicker">
+								<input type="text" class="input-sm form-control" placeholder="From Date" name="start" />
+								<span class="input-group-addon">to</span>
+								<input type="text" class="input-sm form-control" placeholder="To Date" name="end" />
+								</div>
+							
+							
+							<hr />
+							 <div class="text-right">
+                                 <button class="btn btn-alt4">Save</button>
+                              </div>
+							<!-- End -->
+                           </div>
+                           </div>
+                        </div>
+                     </div> 
+					 <!-- ./ End Date Range -->
+					 
+					 
                   </div>
                </div>
-
+			   
 			   <div class="row">
 				<div class="col-md-12 text-right">
 					<button class="btn btn-default"> Close </button>
@@ -334,23 +432,34 @@
 				</div>
 			   </div>
             </div>
-            <!-- /.Page Content Area -->
+            <!-- /.Page Content Area --> 
          </div>
          <!-- /. Main Content ends with side-body -->
       </div>
-      <!-- /. Main Wrapper ** Mandatory -->
+      <!-- /. Main Wrapper ** Mandatory --> 
       <!-- Bootstrap core JavaScript
-         ================================================== -->
-      <!-- Placed at the end of the document so the pages load faster -->
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+         ================================================== --> 
+      <!-- Placed at the end of the document so the pages load faster --> 
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> 
       <script src="js/bootstrap.min.js"></script>
       <script src="js/bootstrap-slider.js"></script>
 	  <style>
 	  .hover { border:2px solid blue; }
 	  </style>
-
+	  
       <script>
-	  $('.bslider').slider();
+
+	var min = parseInt($("#from_value").val());
+	var max = parseInt($("#to_value").val());
+	  $('.bslider').slider({ 
+		 min: 0,
+    max: 100,
+    step: 1,
+    range: true,
+    values: [10, 90],
+	  });
+	  
+	  /*
 $("table").delegate('td','mouseover mouseleave', function(e) {
     if (e.type == 'mouseover') {
      // $(this).parent().addClass("hover");
@@ -360,8 +469,23 @@ $("table").delegate('td','mouseover mouseleave', function(e) {
       $(this).parent().removeClass("hover");
       $("colgroup").eq($(this).index()).removeClass("hover");
     }
-});
+}); */
+
+	//$("#from_value").value(0);
+	//$("#to_value").value(0);
+ 
+	$(".bslider").on("slide", function(slideEvt) {
+	$("#from_value").val(slideEvt.value);
+	}); 
+ 
+	 
       </script>
+	  <script>
+		$('#sandbox-container .input-daterange').datepicker({
+			autoclose: true,
+			todayHighlight: true
+		});
+	  </script>
       <script src="js/uiScripts.js"></script>
    </body>
 </html>

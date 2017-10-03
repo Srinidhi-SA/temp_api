@@ -9,10 +9,15 @@ import store from "../../store";
 import {C3Chart} from "../c3Chart";
 import ReactDOM from 'react-dom';
 import {hideDataPreview,getDataSetPreview} from "../../actions/dataActions";
+import {dataSubsetting,clearDataPreview,clearLoadingMsg} from "../../actions/dataUploadActions"
 import {Button} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"
 import {showHideSideChart,showHideSideTable} from "../../helpers/helper.js"
 import {isEmpty} from "../../helpers/helper";
+import {SubSetting} from "./SubSetting";
+import {DataUploadLoader} from "../common/DataUploadLoader";
+
+
 
 
 
@@ -23,7 +28,9 @@ import {isEmpty} from "../../helpers/helper";
 		currentAppId:store.apps.currentAppId,
 		roboDatasetSlug:store.apps.roboDatasetSlug,
 		modelSlug:store.apps.modelSlug,
-		signal: store.signals.signalAnalysis};
+		signal: store.signals.signalAnalysis,
+		subsettingDone:store.datasets.subsettingDone,
+		subsettedSlug:store.datasets.subsettedSlug};
 })
 
 
@@ -32,7 +39,7 @@ export class DataPreview extends React.Component {
 
 	constructor(props) {
 		super(props);
-		console.log("checking slug");
+		console.log("in data");
 		console.log(props);
 		this.buttons={};
 		//this.buttonsTemplate=null;
@@ -41,6 +48,8 @@ export class DataPreview extends React.Component {
 		this.firstTimeSideTable = [];
 		this.firstTimeSideChart = {};
 		this.firstTimeColTypeForChart = null;
+		this.isSubsetted = false;
+		this.new_subset = ""
 	}
 
 	hideDataPreview(){
@@ -53,8 +62,8 @@ export class DataPreview extends React.Component {
 	componentWillMount(){
 		console.log("------------------");
 		console.log(this.props);
-		 if (this.props.dataPreview == null || isEmpty(this.props.dataPreview)) {
-		      this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
+		 if (this.props.dataPreview == null || isEmpty(this.props.dataPreview)||this.props.dataPreview.status == 'FAILED') {
+			 				      this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
 		    }
 		console.log("data prevvvvv");
 		console.log(store.getState().datasets.curUrl.indexOf("models"));
@@ -125,8 +134,8 @@ export class DataPreview extends React.Component {
 
 
 	componentDidMount() {
-		//alert("working")
-		$(function(){
+		{/*}$(function(){
+			console.log($(".cst_table"));
 			let initialCol= $(".cst_table td").first();
 			let initialColCls = $(initialCol).attr("class");
 			$(" td."+initialColCls).addClass("activeColumn");
@@ -144,7 +153,8 @@ export class DataPreview extends React.Component {
 
 
 
-		});
+		});*/}
+
 		showHideSideTable(this.firstTimeSideTable);
 		showHideSideChart(this.firstTimeColTypeForChart,this.firstTimeSideChart);
 
@@ -154,6 +164,7 @@ export class DataPreview extends React.Component {
 
 	setSideElements(e){
 		//renderFlag=true;
+		//alert("setting side element!!")
 		const chkClass = $(e.target).attr('class');
 		let dataPrev = this.props.dataPreview.meta_data;
 		dataPrev.columnData.map((item, i) => {
@@ -185,6 +196,12 @@ export class DataPreview extends React.Component {
 				$("#side-table").empty();
 				ReactDOM.render( <tbody className="no-border-x no-border-y">{sideTableUpdatedTemplate}</tbody>, document.getElementById('side-table'));
 
+				// column subsetting starts
+				const sideSubsetting = item.columnStats;
+				$("#sub_settings").empty();
+				ReactDOM.render(<Provider store={store}><SubSetting item = {item}/></Provider>, document.getElementById('sub_settings'));
+
+				// column subsetting ends
 			}
 		});
 	}
@@ -208,11 +225,55 @@ export class DataPreview extends React.Component {
 		this.props.history.push(url);
 	}
 
+	applyDataSubset(){
+		//alert("working");
+		this.new_subset = $("#newSubsetName").val()
+		//alert(this.new_subset)
+		let subSettingRq = {'filter_settings':store.getState().datasets.updatedSubSetting,
+													'name':this.new_subset,'subsetting':true};
+		console.log(JSON.stringify(subSettingRq))
+		this.props.dispatch(dataSubsetting(subSettingRq,this.props.dataPreview.slug))
+	}
+
 	render() {
 
 		console.log("data prev is called##########3");
 		console.log(this.props);
+
+		//for active select in columnName
+		$(function(){
+			console.log($(".cst_table"));
+			let initialCol= $(".cst_table td").first();
+			let initialColCls = $(initialCol).attr("class");
+			$(" td."+initialColCls).addClass("activeColumn");
+
+			$(".cst_table td,.cst_table th").click(function(){
+				$(".cst_table td").removeClass("activeColumn");
+				let cls = $(this).attr("class");
+				if(cls.indexOf(" ") !== -1){
+					let tmp =[];
+					tmp = cls.split(" ");
+					cls = tmp[0];
+				}
+				$(" td."+cls).addClass("activeColumn");
+			});
+		});
+
+
+		let currentDataset = store.getState().datasets.selectedDataSet
+		if(!isEmpty(this.props.dataPreview)&&currentDataset!=this.props.match.params.slug&&this.props.dataPreview!=null&&this.props.dataPreview.status!='FAILED'){
+			let url = '/data/'+currentDataset
+			return(<Redirect to={url}/> )
+			}
+				if(!isEmpty(this.props.dataPreview)&&this.props.dataPreview!=null&&this.props.dataPreview.status=='FAILED'){
+						console.log("goitn to data url")
+						this.props.dispatch(clearDataPreview())
+						this.props.dispatch(clearLoadingMsg())
+						let url = '/data/'
+				return(<Redirect to={url}/> )
+			}
 		$('body').pleaseWait('stop');
+		this.isSubsetted = this.props.subsettingDone;
 		//  const data = store.getState().data.dataPreview.meta_data.data;
 
 		// const buttonsTemplate = <div className="col-md-12 text-right">
@@ -245,8 +306,8 @@ export class DataPreview extends React.Component {
 
 
 			const tableThTemplate=dataPrev.columnData.map((thElement, thIndex) => {
-				console.log("th check::");
-				console.log(thElement);
+				// console.log("th check::");
+				// console.log(thElement);
 				let cls = thElement.slug + " dropdown";
 				let iconCls =null;
 				switch(thElement.columnType){
@@ -332,6 +393,9 @@ export class DataPreview extends React.Component {
 			 if(!$.isEmptyObject(this.firstTimeSideChart)){
 				 firstChart = <C3Chart classId={this.chartId} data={sideChart} yformat={yformat} xdata={xdata} sideChart={true}/> ;
 			 }
+			 let firstTimeSubSetting = ""
+			 if(!isEmpty(dataPrev.columnData[0]))
+			 firstTimeSubSetting = dataPrev.columnData[0]
 			console.log("checking side table data:; ");
 			console.log(sideTable);
 			const sideTableTemaplte=sideTable.map((tableItem,tableIndex)=>{
@@ -343,6 +407,7 @@ export class DataPreview extends React.Component {
 					);
 				}
 			});
+
 
 			return(
 					<div className="side-body">
@@ -412,6 +477,7 @@ export class DataPreview extends React.Component {
 					<div className="panel-body" id="side-chart">
 					{/*<img src="../assets/images/data_preview_graph.png" className="img-responsive" />*/}
 						{firstChart}
+						<div className="clearfix"></div>
 					</div>
 					</div>
 					</div>
@@ -419,41 +485,39 @@ export class DataPreview extends React.Component {
 					{/*<!-- ./ End Tab Visualizations -->*/}
 
 					{/*<!-- Start Tab Subsettings - ->*/}
-					{/*<div id="tab_subsettings" className="panel-group accordion accordion-semi">
-                 <div className="panel panel-default">
-                    <div className="panel-heading">
-                       <h4 className="panel-title"><a data-toggle="collapse" data-parent="#tab_subsettings" href="#pnl_tbset" aria-expanded="true" className="">Sub Setting <i className="fa fa-angle-down pull-right"></i></a></h4>
-                    </div>
-                    <div id="pnl_tbset" className="panel-collapse collapse in" aria-expanded="true">
-                       <div className="panel-body">
-                       <div className="row">
-                          <div className="col-xs-4">
-                             <input type="text" className="form-control" id="from_value" value="0" />
-                          </div>
-                          <div className="col-xs-3">
-                             <label>To</label>
-                          </div>
-                          <div className="col-xs-4">
-                             <input type="text" className="form-control" id="to_value" value="10" />
-                          </div>
-                       </div>
-                       <div className="form-group">
-                          <input type="text" data-slider-value="[250,450]" data-slider-step="5" data-slider-max="1000" data-slider-min="10" value="" className="bslider form-control"/>
-                       </div>
-                    </div>
-                    </div>
-                 </div>
-              </div>*/}
-					{/*<!-- ./ End Tab Subsettings -->*/}
+					<div id = "sub_settings">
+					<SubSetting item = {firstTimeSubSetting}/>
+					</div>
+					{/* End Tab Subsettings */}
 					</div>
 					</div>
 					<div className="row buttonRow">
-					<div className="col-md-12 text-right">
+					<div className="col-md-12">
 
 					<div className="panel">
 					<div className="panel-body">
-					<Button onClick={this.closePreview.bind(this)}> {this.buttons.close.text} </Button>
-					<Button onClick={this.moveToVariableSelection.bind(this)} bsStyle="primary"> {this.buttons.create.text}</Button>
+					<div class="row">
+						<div className="col-md-3 col-md-offset-7 text-right">
+						{
+						(this.isSubsetted)
+						?(  <div className="form-group">
+						<input type="text" name="newSubsetName" id="newSubsetName" className="form-control input-sm" placeholder="new subset name"/>
+						</div>)
+						:(<div/>)
+						}
+						</div>
+						<div className="col-md-2 text-right">
+						<Button onClick={this.closePreview.bind(this)}> {this.buttons.close.text} </Button>
+					{
+						(this.isSubsetted)
+						?(<Button onClick={this.applyDataSubset.bind(this)} bsStyle="primary">Save Subset</Button>)
+						:(<Button onClick={this.moveToVariableSelection.bind(this)} bsStyle="primary"> {this.buttons.create.text}</Button>)
+
+					}
+						</div>
+					</div>
+
+					<DataUploadLoader/>
 					</div>
 					</div>
 					</div>
@@ -469,7 +533,7 @@ export class DataPreview extends React.Component {
 			);
 		} else {
 			return (
-					 <div>
+					 <div>	<DataUploadLoader/>
 			            <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif"} />
 			          </div>
 			);

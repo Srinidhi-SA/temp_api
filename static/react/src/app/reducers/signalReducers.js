@@ -5,7 +5,7 @@ export default function reducer(state = {
   newSignalShowModal:false,
   signalData:null,
   createSignalLoaderModal:false,
-  createSignalLoaderValue:10,
+  createSignalLoaderValue:1,
   current_page:1,
   urlPrefix:"/signals",
   signalAnalysis: {},
@@ -13,10 +13,16 @@ export default function reducer(state = {
   newSignalShowModal: false,
   signalData: null,
   createSignalLoaderModal: false,
-  createSignalLoaderValue: 10,
   current_page: 1,
   signal_search_element:"",
+  signal_sorton:null,
+  signal_sorttype:null,
   sideCardListFlag:null,
+  loaderText:"Please wait while mAdvisor is creating signal.....",
+  advanceSettingsModal:false,
+  getVarType:null,
+  getVarText:null,
+  loading_message:[]
 }, action) {
   console.log("in SIGNAL reducer!!");
   console.log(action);
@@ -76,7 +82,8 @@ export default function reducer(state = {
       {
         return {
           ...state,
-          signalData: action.signalData
+          signalData: action.signalData,
+          loading_message:[]
         }
       }
       break;
@@ -89,7 +96,8 @@ export default function reducer(state = {
       {
         return {
           ...state,
-          getVarType: action.varType
+          getVarType: action.varType,
+		  getVarText: action.varText
         }
       }
       break;
@@ -152,15 +160,59 @@ export default function reducer(state = {
       }
     }
     break;
+
+	case "SORT_SIGNAL":
+	{
+      return{
+        ...state,
+        signal_sorton:action.sorton,
+		signal_sorttype:action.sorttype
+      }
+    }
+    break;
+
 	case "SET_SIDECARDLIST_FLAG":
 	{
 		return{
 			...state,
 			sideCardListFlag:action.sideCardListClass
 		}
-		
+
 	}
     break;
+	case "ADVANCE_SETTINGS_MODAL":
+	{
+		return{
+			...state,
+			advanceSettingsModal:action.flag
+		}
+
+	}
+    break;
+    case "CHANGE_LOADING_MSG":
+    {
+      return {...state,
+      loading_message:action.message}
+    }
+    break;
+    case "CLEAR_LOADING_MSG":
+    {
+      return{
+        ...state,
+        loading_message:[],
+        createSignalLoaderValue:1,
+        loaderText:"Please wait while mAdvisor is creating signal....."
+      }
+    }
+    break;
+    case "CREATE_SIGNAL_LOADER_MSG":
+      {
+        return {
+          ...state,
+          loaderText: action.message
+        }
+      }
+      break;
   }
   return state
 }
