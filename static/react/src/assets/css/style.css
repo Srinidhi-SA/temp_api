@@ -14514,6 +14514,7 @@ a.disabled { color:#ccc !important; }
     padding: 3px;
     vertical-align: middle;
 }
+.slider.slider-horizontal { width: 94%; }
 /**************** Css realated to developers, keep the source down ***/
 
 
