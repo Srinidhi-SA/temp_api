@@ -39,7 +39,9 @@ export default function reducer(state = {
   updatedSubSetting: default_updatedSubSetting,
   subsettingDone: false,
   subsettedSlug: "",
-  loading_message:[]
+  loading_message:[],
+	data_sorton:"",
+	data_sorttype:""
 }, action) {
   console.log("In DATA reducer!!");
   console.log(action);
@@ -531,6 +533,13 @@ export default function reducer(state = {
       }
     }
     break;
+		case "SORT_DATA":{
+			return{
+				...state,
+				data_sorton:action.sorton,
+				data_sorttype:action.sorttype
+			}
+		}
   }
   return state
 

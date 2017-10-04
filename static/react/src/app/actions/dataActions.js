@@ -40,6 +40,8 @@ function fetchDataList(pageNo,token) {
 	else if(data_sorttype=='desc')
 		data_sorttype="-"
 
+		console.log(data_sorton+" "+data_sorttype)
+
 	console.log(search_element)
 	if(search_element!=""&&search_element!=null){
 		console.log("calling for search element!!")
