@@ -14125,7 +14125,7 @@ a.tabs-control.right span { right: 5px; }
 .mAd_icons.sw_off { width: 25px; height: 34px; background-position: -211px -30px; display: block; }
 .side_panel .panel-heading .title { font-size: 15px; padding: 5px 0px;}
 .side_panel .panel-heading .title .fa {margin-right: 5px;}
-.list-group-item span { display: inline-block; width: 232px; vertical-align: top;}
+.list-group-item span { display: inline-block; width: 87%; vertical-align: top;}
 .panel-mAd .side_panel div.panel {padding: 0;}
 .side_panel { 	-webkit-box-shadow: -5px 0px 10px 0px rgba(0,0,0,0.2);
 	-moz-box-shadow: -5px 0px 10px 0px rgba(0,0,0,0.2);
