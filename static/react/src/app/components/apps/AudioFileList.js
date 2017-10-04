@@ -80,7 +80,7 @@ export class AudioFileList extends React.Component {
         return(<Redirect to={_link}/>);
     }
     const audioList = store.getState().apps.audioList.data;
-    
+
     if (audioList) {
 		const pages = store.getState().apps.audioList.total_number_of_pages;
 		const current_page = store.getState().apps.current_page;
@@ -113,7 +113,7 @@ export class AudioFileList extends React.Component {
 					<div className="card-footer">
 					<div className="left_div">
 					<span className="footerTitle"></span>{sessionStorage.userName}
-					<span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy h:MM")}</span>
+					<span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy HH:MM")}</span>
 					</div>
 
 					<div className="card-deatils">
@@ -164,7 +164,7 @@ export class AudioFileList extends React.Component {
 	                </div>
 	              </div>
 	              <div class="clearfix"></div>
-	              
+
 					<div className="row">
 					<div className="col-md-8">
 					 <h4>Media Files</h4>
@@ -228,7 +228,7 @@ export class AudioFileList extends React.Component {
 		)
 	}
   }
-  
+
   handleSelect(eventKey) {
 
 	  if (this.props.audio_search_element) {
@@ -238,5 +238,5 @@ export class AudioFileList extends React.Component {
 
 		  this.props.dispatch(getAudioFileList(eventKey));
   }
-  
+
 }

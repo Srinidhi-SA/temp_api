@@ -86,7 +86,7 @@ export class Signals extends React.Component {
   }
   doSorting(sortOn, type){
 	     this.props.history.push('/signals?sort=' + sortOn + '&type='+type);
-    
+
 	 this.props.dispatch(storeSortElements(sortOn,type));
 	this.props.dispatch(getList(sessionStorage.userToken, 1));
   }
@@ -180,7 +180,7 @@ export class Signals extends React.Component {
               <div className="card-footer">
                 <div className="left_div">
                   <span className="footerTitle"></span>{story.username}
-                  <span className="footerTitle">{dateFormat(story.created_at, "mmm d,yyyy h:MM")}</span>
+                  <span className="footerTitle">{dateFormat(story.created_at, "mmm d,yyyy HH:MM")}</span>
                 </div>
 
                 <div className="card-deatils">
@@ -240,9 +240,9 @@ export class Signals extends React.Component {
 					</form>
 					</div>
                       <span class="input-group-btn">
-                      <button type="button" class="btn btn-default" title="Select All Card">
+                      {/*<button type="button" class="btn btn-default" title="Select All Card">
                         <i class="fa fa-address-card-o fa-lg"></i>
-                      </button>
+                      </button>*/}
                       <button type="button" data-toggle="dropdown" title="Sorting" class="btn btn-default dropdown-toggle" aria-expanded="false">
                         <i class="fa fa-sort-alpha-asc fa-lg"></i>
                         <span class="caret"></span>
