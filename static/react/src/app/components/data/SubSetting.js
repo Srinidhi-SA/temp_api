@@ -5,11 +5,10 @@ import ReactBootstrapSlider from 'react-bootstrap-slider'
 import store from "../../store";
 import {updateSubSetting} from "../../actions/dataActions";
 import {showHideSubsetting} from "../../helpers/helper.js"
-import { Scrollbars } from 'react-custom-scrollbars';
-
+import {Scrollbars} from 'react-custom-scrollbars';
 
 @connect((store) => {
-  return {updatedSubSetting: store.datasets.updatedSubSetting,subsettingDone:store.datasets.subsettingDone};
+  return {updatedSubSetting: store.datasets.updatedSubSetting, subsettingDone: store.datasets.subsettingDone};
 })
 
 export class SubSetting extends React.Component {
@@ -21,7 +20,7 @@ export class SubSetting extends React.Component {
       curmin: 0,
       curmax: 0,
       dimentionList: {},
-			curdimention:[],
+      curdimention: [],
       selectedDimention: [],
       startDate: "",
       endDate: "",
@@ -33,45 +32,45 @@ export class SubSetting extends React.Component {
     $(".bslider").slider();
     var that = this;
     $(function() {
-      $("#dim").click(function(){     // select all dimension clicked
-				//alert("workig")
-			let count=0;
-			 if($(this).is(":checked")){
-					$('.dimension[type="checkbox"]').prop('checked', true);
-			 }else{
-					$('.dimension[type="checkbox"]').prop('checked', false);
-			 }
+      $("#dim").click(function() { // select all dimension clicked
+        //alert("workig")
+        let count = 0;
+        if ($(this).is(":checked")) {
+          $('.dimension[type="checkbox"]').prop('checked', true);
+        } else {
+          $('.dimension[type="checkbox"]').prop('checked', false);
+        }
 
-			 that.state.selectedDimention=[];
-			 $('.dimension[type="checkbox"]').each(function(){
+        that.state.selectedDimention = [];
+        $('.dimension[type="checkbox"]').each(function() {
 
-					if($(this).is(":checked")){
-						count++;
-						that.state.selectedDimention.push($(this).val());
-					}
-			 });
-			 that.state.curdimention = that.state.selectedDimention
-		 console.log(that.state.selectedDimention);
-		});
+          if ($(this).is(":checked")) {
+            count++;
+            that.state.selectedDimention.push($(this).val());
+          }
+        });
+        that.state.curdimention = that.state.selectedDimention
+        console.log(that.state.selectedDimention);
+      });
 
-			//Note:following will be called when we need to persist checklist on click of checkbox
+      //Note:following will be called when we need to persist checklist on click of checkbox
 
-	      $('.dimension[type="checkbox"]').click(function() {
-	        let count = 0;
-	        that.state.selectedDimention = [];
-	        $('.dimension[type="checkbox"]').each(function() {
-	          if (!$(this).is(":checked")) {
-	            $('#dim[type="checkbox"]').prop('checked', false);
-	          } else {
-	            count++;
-	            that.state.selectedDimention.push($(this).val());
-	          }
-	        });
-	        console.log(that.state.selectedDimention);
-          $("#saveButton").removeClass('btn-alt4')
-          $("#saveButton").addClass('btn-primary')
-          $("#saveButton").removeAttr('disabled')
-	      });
+      $('.dimension[type="checkbox"]').click(function() {
+        let count = 0;
+        that.state.selectedDimention = [];
+        $('.dimension[type="checkbox"]').each(function() {
+          if (!$(this).is(":checked")) {
+            $('#dim[type="checkbox"]').prop('checked', false);
+          } else {
+            count++;
+            that.state.selectedDimention.push($(this).val());
+          }
+        });
+        console.log(that.state.selectedDimention);
+        $("#saveButton").removeClass('btn-alt4')
+        $("#saveButton").addClass('btn-primary')
+        $("#saveButton").removeAttr('disabled')
+      });
 
       $('#saveSubSetting').click(function() {
         let count = 0;
@@ -85,14 +84,14 @@ export class SubSetting extends React.Component {
             that.state.selectedDimention.push($(this).val());
           }
         });
-				that.state.curdimention = that.state.selectedDimention
+        that.state.curdimention = that.state.selectedDimention
         console.log(that.state.selectedDimention);
         $('#saveButton').removeClass('btn-primary')
         $('#saveButton').addClass('btn-alt4')
-        $('#saveButton').attr('disabled',true);
+        $('#saveButton').attr('disabled', true);
       });
     });
-    showHideSubsetting(this.props.item.columnType,this.state.dimentionList,this.props.item.dateSuggestionFlag)
+    showHideSubsetting(this.props.item.columnType, this.state.dimentionList, this.props.item.dateSuggestionFlag)
 
   }
   changeSliderValue(e) {
@@ -118,19 +117,19 @@ export class SubSetting extends React.Component {
               <div id="measure_subsetting">
                 <h5>{this.props.item.name}</h5>
                 <div className="row">
-				<div className="col-xs-5">
-                  <input type="text" className="form-control" id="from_value" value={this.state.curmin}/>
+                  <div className="col-xs-5">
+                    <input type="text" className="form-control" id="from_value" value={this.state.curmin}/>
+                  </div>
+                  <div className="col-xs-2 text-center">
+                    <label>To</label>
+                  </div>
+                  <div className="col-xs-5">
+                    <input type="text" className="form-control" id="to_value" value={this.state.curmax}/>
+                  </div>
+                  <div className="clearfix"></div>
                 </div>
-                <div className="col-xs-2 text-center">
-                  <label>To</label>
-                </div>
-                <div className="col-xs-5">
-                  <input type="text" className="form-control" id="to_value" value={this.state.curmax}/>
-                </div>
-				<div className="clearfix"></div>
-				</div>
               </div>
-			  <div className="xs-p-10"></div>
+              <div className="xs-p-10"></div>
               <div className="form-group text-center">
                 <ReactBootstrapSlider value={value} change={this.changeSliderValue.bind(this)} max={this.state.max} min={this.state.min} range="true" tooltip="hide"/>
               </div>
@@ -140,80 +139,77 @@ export class SubSetting extends React.Component {
         break;
       case "dimension":
         {
-          if(this.props.item.dateSuggestionFlag == false){
-          let dimList = this.state.dimentionList
-					let curDim = this.state.curdimention
-					let checked = false
-          let dimTemplate = ""
-          let selectAll = false
-          if(dimList){
-          dimTemplate = Object.keys(dimList).map((item, i) => {
-						checked = false;
-						if(curDim.indexOf(item)>-1){
-							checked = true
-						}
-            const dId = "chk_mes1_" + i;
-            return (
-              <tr key={i}>
-                <td>
-                  <div class="ma-checkbox inline"><input id={dId} type="checkbox" className="dimension" value={item} defaultChecked={checked}/>
-                    <label htmlFor={dId}></label>
-                  </div>
-                </td>
-                <td>{item}</td>
-                <td>{dimList[item]}</td>
-              </tr>
-            )
-          });
+          if (this.props.item.dateSuggestionFlag == false) {
+            let dimList = this.state.dimentionList
+            let curDim = this.state.curdimention
+            let checked = false
+            let dimTemplate = ""
+            let selectAll = false
+            if (dimList) {
+              dimTemplate = Object.keys(dimList).map((item, i) => {
+                checked = false;
+                if (curDim.indexOf(item) > -1) {
+                  checked = true
+                }
+                const dId = "chk_mes1_" + i;
+                return (
+                  <tr key={i}>
+                    <td>
+                      <div className="ma-checkbox inline"><input id={dId} type="checkbox" className="dimension" value={item} defaultChecked={checked}/>
+                        <label htmlFor={dId}></label>
+                      </div>
+                    </td>
+                    <td>{item}</td>
+                    <td className="pts">{dimList[item]}</td>
+                  </tr>
+                )
+              });
 
-					if(curDim.length == Object.keys(dimList).length){
-						//alert("true")
-						selectAll = true
-					}
-          }
-          return (
-            <div>
-              {/* for dimention */}
-              <div id="dimention_subsetting">
+              if (curDim.length == Object.keys(dimList).length) {
+                //alert("true")
+                selectAll = true
+              }
+            }
+            return (
+              <div>
+                {/* for dimention */}
+                <div id="dimention_subsetting">
 
                   <h5>{this.props.item.name}</h5>
 
-                    <div class="table-responsive cst-scroll-panel">
+                  <div class="table-responsive cst-scroll-panel">
                     <Scrollbars>
-                      <table class="table table-condensed table-hover table-bordered">
+                      <table id="subset" className="tablesorter table table-condensed table-hover table-bordered">
                         <thead>
                           <tr>
-                            <td>
+                            <th>
                               <div class="ma-checkbox inline">
                                 <input id="dim" type="checkbox" className="dimention" defaultChecked={selectAll}/>
                                 <label htmlFor="dim"></label>
                               </div>
-                            </td>
-                            <td>
+                            </th>
+                            <th>
                               <b>{this.props.item.name}</b>
-                            </td>
-                            <td>
+                            </th>
+                            <th>
                               <b>Count</b>
-                            </td>
+                            </th>
                           </tr>
                         </thead>
                         <tbody>
                           {dimTemplate}
                         </tbody>
                       </table>
-                      </Scrollbars>
-                    </div>
+                    </Scrollbars>
+                  </div>
 
-
+                </div>
               </div>
-            </div>
-          );
-        }else{
-          return(
-            <div id="dimention_subsetting"/>
-          );
+            );
+          } else {
+            return (<div id="dimention_subsetting"/>);
+          }
         }
-      }
         break;
       case "timedimention":
         {
@@ -248,12 +244,12 @@ export class SubSetting extends React.Component {
         break;
       case "dimension":
         {
-					this.props.updatedSubSetting.dimensionColumnFilters.map((changeditem) => {
-						if (changeditem.colname == columnName) {
-							this.state.curdimention = changeditem.values
-							this.state.alreadyUpdated = true
-						}
-					});
+          this.props.updatedSubSetting.dimensionColumnFilters.map((changeditem) => {
+            if (changeditem.colname == columnName) {
+              this.state.curdimention = changeditem.values
+              this.state.alreadyUpdated = true
+            }
+          });
         }
         break;
       case "timedimension":
@@ -267,38 +263,47 @@ export class SubSetting extends React.Component {
     switch (this.props.item.columnType) {
       case "measure":
         {
-					let measureColumnFilter = this.props.updatedSubSetting.measureColumnFilters
-					if(this.state.alreadyUpdated==true){
-						this.props.updatedSubSetting.measureColumnFilters.map((changeditem,i) => {
-							if (changeditem.colname == this.props.item.name) {
-								measureColumnFilter[i] = {"colname": this.props.item.name, "upperBound": this.state.curmax, "lowerBound": this.state.curmin, "filterType": "valueRange"};
-								}
-						});
-						this.state.subSettingRs.measureColumnFilters=measureColumnFilter;
-					}else{
-          this.state.subSettingRs.measureColumnFilters.push({"colname": this.props.item.name, "upperBound": this.state.curmax, "lowerBound": this.state.curmin, "filterType": "valueRange"});
-					this.state.alreadyUpdated = true
-				}
+          let measureColumnFilter = this.props.updatedSubSetting.measureColumnFilters
+          if (this.state.alreadyUpdated == true) {
+            this.props.updatedSubSetting.measureColumnFilters.map((changeditem, i) => {
+              if (changeditem.colname == this.props.item.name) {
+                measureColumnFilter[i] = {
+                  "colname": this.props.item.name,
+                  "upperBound": this.state.curmax,
+                  "lowerBound": this.state.curmin,
+                  "filterType": "valueRange"
+                };
+              }
+            });
+            this.state.subSettingRs.measureColumnFilters = measureColumnFilter;
+          } else {
+            this.state.subSettingRs.measureColumnFilters.push({"colname": this.props.item.name, "upperBound": this.state.curmax, "lowerBound": this.state.curmin, "filterType": "valueRange"});
+            this.state.alreadyUpdated = true
+          }
         }
         break;
       case "dimension":
         {
           //this.getSelectedDimention();
-					let dimensionColumnFilter = this.props.updatedSubSetting.dimensionColumnFilters
+          let dimensionColumnFilter = this.props.updatedSubSetting.dimensionColumnFilters
 
-						if(this.state.alreadyUpdated==true){
-							this.props.updatedSubSetting.dimensionColumnFilters.map((changeditem,i) => {
-								if (changeditem.colname == this.props.item.name) {
-									dimensionColumnFilter[i] = {"colname": this.props.item.name, "values": this.state.curdimention, "filterType": "valueIn"};
-									}
-							});
-							this.state.subSettingRs.dimensionColumnFilters=dimensionColumnFilter;
+          if (this.state.alreadyUpdated == true) {
+            this.props.updatedSubSetting.dimensionColumnFilters.map((changeditem, i) => {
+              if (changeditem.colname == this.props.item.name) {
+                dimensionColumnFilter[i] = {
+                  "colname": this.props.item.name,
+                  "values": this.state.curdimention,
+                  "filterType": "valueIn"
+                };
+              }
+            });
+            this.state.subSettingRs.dimensionColumnFilters = dimensionColumnFilter;
 
-					}else{
-          this.state.subSettingRs.dimensionColumnFilters.push({"colname": this.props.item.name, "values": this.state.curdimention, "filterType": "valueIn"});
-					this.state.alreadyUpdated = true
+          } else {
+            this.state.subSettingRs.dimensionColumnFilters.push({"colname": this.props.item.name, "values": this.state.curdimention, "filterType": "valueIn"});
+            this.state.alreadyUpdated = true
+          }
         }
-			}
         break;
       case "timedimention":
         {
@@ -309,7 +314,7 @@ export class SubSetting extends React.Component {
     }
     $('#saveButton').removeClass('btn-primary')
     $('#saveButton').addClass('btn-alt4')
-    $('#saveButton').attr('disabled',true);
+    $('#saveButton').attr('disabled', true);
     this.props.dispatch(updateSubSetting(this.state.subSettingRs));
 
   }
@@ -318,6 +323,15 @@ export class SubSetting extends React.Component {
     console.log(this.props)
     console.log("state is")
     console.log(this.state)
+    $(function() {
+    $('#subset').tablesorter({
+        theme: 'ice',
+        headers: {
+            0: { sorter: false }
+        }
+       });
+       $("#dim").click();
+    });
     if (this.props.updatedSubSetting.measureColumnFilters.length > 0 || this.props.updatedSubSetting.dimensionColumnFilters.length > 0 || this.props.updatedSubSetting.timeDimensionColumnFilters.length > 0) {
       this.getColumnData(this.props.item.columnType, this.props.item.name)
     }
@@ -335,14 +349,13 @@ export class SubSetting extends React.Component {
     if (this.state.alreadyUpdated == false) {
       this.state.curmax = this.state.max
       this.state.curmin = this.state.min
-      if(this.state.dimentionList)
-			this.state.curdimention = Object.keys(this.state.dimentionList);
-    }
+      if (this.state.dimentionList)
+        this.state.curdimention = Object.keys(this.state.dimentionList);
+      }
     console.log("after assign")
     console.log(this.state)
 
     let subsettingsTemplate = this.getSubSettings(this.props.item.columnType)
-
 
     return (
       <div>
@@ -361,7 +374,7 @@ export class SubSetting extends React.Component {
                 {subsettingsTemplate}
                 <hr/>
                 <div class="text-right" id="saveSubSetting">
-                  <a href="javascript:void(0)" class="btn btn-alt4" id = "saveButton" disabled onClick={this.saveSubSetting.bind(this)}>
+                  <a href="javascript:void(0)" class="btn btn-alt4" id="saveButton" disabled onClick={this.saveSubSetting.bind(this)}>
                     Save
                   </a>
                 </div>
