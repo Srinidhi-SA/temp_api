@@ -41,9 +41,7 @@ class DatasetSerializer(serializers.ModelSerializer):
         ret = convert_time_to_human(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
         meta_data = ret.get('meta_data')
-        if 'possibleAnalysis' in meta_data:
-            meta_data['possibleAnalysis'] = settings.ANALYSIS_FOR_TARGET_VARIABLE
-        meta_data['advanced_settings'] = settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS
+        self.changes_to_metadata(meta_data)
         try:
             ret['message'] = get_message(instance)
         except:
@@ -51,6 +49,27 @@ class DatasetSerializer(serializers.ModelSerializer):
 
         return ret
 
+    def changes_to_metadata(self, meta_data):
+
+        if 'possibleAnalysis' in meta_data:
+            meta_data['possibleAnalysis'] = settings.ANALYSIS_FOR_TARGET_VARIABLE
+        meta_data['advanced_settings'] = settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS
+
+        transformation_data = []
+        if 'headers' in meta_data:
+            headers = meta_data['headers']
+            transformation_settings = settings.TRANSFORMATION_SETTINGS_CONSTANT
+
+            for head in headers:
+                temp = dict()
+                temp['name'] = head.get('name')
+                temp['slug'] = head.get('slug')
+                temp['columnSetting'] = transformation_settings.get('columnSetting')
+                transformation_data.append(temp)
+
+            temp = {"new_columns": transformation_settings.get('new_columns')}
+            transformation_data.append(temp)
+            meta_data['transformation_settings'] = transformation_data
 
     class Meta:
         model = Dataset

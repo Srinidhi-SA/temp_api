@@ -706,3 +706,33 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS = {
         },
     }
 
+TRANSFORMATION_SETTINGS_CONSTANT = {
+    "columnSetting":
+        [
+            {"actionName":"delete","displayName":"Delete Column","status":False},
+            {"actionName":"rename","displayName":"Rename Column","status":False,"newName":None},
+            {"actionName":"replace","displayName":"Replace Values","status":False,"replacementValues":[]},
+            {
+                "actionName":"data_type",
+                "displayName":"Change Datatype",
+                "status":False,
+                "listOfDataTypes":[
+                    {"name":"numeric","displayName":"Numeric","status":False},
+                    {"name":"text","displayName":"Text","status":False},
+                ]
+            }
+        ],
+    "new_columns":
+        [
+            {
+            "newColName":None,
+            "orderedColNames":[],
+            "operators":[
+                {"name":"+","displayName":"Addition","status":True},
+                {"name":"-","displayName":"Sub dsada","status":False},
+            ]
+}
+        ]
+
+}
+
