@@ -165,7 +165,7 @@ export class Data extends React.Component {
               <div className="card-footer">
                 <div className="left_div">
                   <span className="footerTitle"></span>{sessionStorage.userName}
-                  <span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy h:MM")}</span>
+                  <span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy HH:MM")}</span>
                 </div>
 
                 <div className="card-deatils">
@@ -214,9 +214,9 @@ export class Data extends React.Component {
                   <input type="text" name="search_data" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search Data" id="search_data" class="form-control" placeholder="Search data..."/>
 
                   <span class="input-group-btn">
-                    <button type="button" class="btn btn-default" title="Select All Card">
+                    {/*<button type="button" class="btn btn-default" title="Select All Card">
                       <i class="fa fa-address-card-o fa-lg"></i>
-                    </button>
+                    </button>*/}
                     <button type="button" data-toggle="dropdown" title="Sorting" class="btn btn-default dropdown-toggle" aria-expanded="false">
                       <i class="fa fa-sort-alpha-asc fa-lg"></i>
                       <span class="caret"></span>
