@@ -14236,7 +14236,7 @@ table.table.table-condensed.table-hover.table-bordered.table-striped {
 .cst_table thead th a { display:block; color:#424242; white-space: nowrap; }
 .cst_table thead th a:hover { color:#00998c;  }
 .cst_table thead th .dropdown-menu a:hover { color:#FFF;  }
-.cst_table thead th a .caret { position: absolute; top: 20px; right: 15px;}
+.cst_table thead th a .caret { /*position: absolute; top: 20px; right: 15px;*/margin-left: 10px;}
 .cst_table tbody td { white-space: nowrap;
     text-overflow: ellipsis;
     max-width: 140px;

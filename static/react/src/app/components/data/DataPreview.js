@@ -8,7 +8,7 @@ import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {C3Chart} from "../c3Chart";
 import ReactDOM from 'react-dom';
-import {hideDataPreview,getDataSetPreview} from "../../actions/dataActions";
+import {hideDataPreview,getDataSetPreview,renameMetaDataColumn} from "../../actions/dataActions";
 import {dataSubsetting,clearDataPreview,clearLoadingMsg} from "../../actions/dataUploadActions"
 import {Button} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"
@@ -16,7 +16,8 @@ import {showHideSideChart,showHideSideTable} from "../../helpers/helper.js"
 import {isEmpty} from "../../helpers/helper";
 import {SubSetting} from "./SubSetting";
 import {DataUploadLoader} from "../common/DataUploadLoader";
-
+import {DataValidation} from "./DataValidation";
+import {DataValidationVariableTypes} from "./DataValidationVariableTypes";
 
 
 
@@ -163,6 +164,7 @@ export class DataPreview extends React.Component {
 
 
 	setSideElements(e){
+		
 		//renderFlag=true;
 		//alert("setting side element!!")
 		const chkClass = $(e.target).attr('class');
@@ -234,7 +236,8 @@ export class DataPreview extends React.Component {
 		console.log(JSON.stringify(subSettingRq))
 		this.props.dispatch(dataSubsetting(subSettingRq,this.props.dataPreview.slug))
 	}
-
+	
+	
 	render() {
 
 		console.log("data prev is called##########3");
@@ -311,27 +314,15 @@ export class DataPreview extends React.Component {
 
 				return(
 						<th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)} title={thElement.ignoreSuggestionMsg}>
-						<a href="#" data-toggle="dropdown" className={anchorCls}><i className={iconCls}></i> {thElement.name}</a>
-						{/*<ul className="dropdown-menu">
-               <li><a href="#">Ascending</a></li>
-               <li><a href="#">Descending</a></li>
-               <li><a href="#">Measures</a></li>
-               <li><a href="#">Dimensions</a></li>
-            </ul>*/}
-
+						<a href="#" data-toggle="dropdown" className={anchorCls}><i className={iconCls}></i> {thElement.name}<b className="caret"></b></a>
+                         <DataValidation name={thElement.name} slug={thElement.slug} />
 						</th>
 				);
 			}else{
 				return(
 						<th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)}>
-						<a href="#" data-toggle="dropdown" className={anchorCls}><i className={iconCls}></i> {thElement.name}</a>
-						{/*<ul className="dropdown-menu">
-               <li><a href="#">Ascending</a></li>
-               <li><a href="#">Descending</a></li>
-               <li><a href="#">Measures</a></li>
-               <li><a href="#">Dimensions</a></li>
-            </ul>*/}
-
+						<a href="#" data-toggle="dropdown" className={anchorCls}><i className={iconCls}></i> {thElement.name}<b className="caret"></b></a>
+						<DataValidation name={thElement.name} slug={thElement.slug} />
 						</th>
 				);
 
@@ -506,9 +497,8 @@ export class DataPreview extends React.Component {
 					</div>
 
 					</div>
-
-
 					{/*<!-- /.Page Content Area --> */}
+					<DataValidationVariableTypes/>
 					 </div>
 			);
 		} else {

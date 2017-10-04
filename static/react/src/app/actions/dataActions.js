@@ -5,7 +5,7 @@ import store from "../store";
 import {dataPreviewInterval,dataUploadLoaderValue,clearLoadingMsg} from "./dataUploadActions";
 import Dialog from 'react-bootstrap-dialog'
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
-import {isEmpty} from "../helpers/helper";
+import {isEmpty,RENAME,DELETE,REPLACE,DATA_TYPE} from "../helpers/helper";
 let refDialogBox = "";
 
 function getHeader(token){
@@ -782,5 +782,87 @@ export function updateSubSetting(updatedSubSetting){
 		type: "UPDATE_SUBSETTING",
 		updatedSubSetting
 
+	}
+}
+
+//Rename Metadata column
+export function renameMetaDataColumn(dialog,colName,colSlug,dispatch,actionName){
+	const customBody = (
+		      <div className="form-group">
+		      <label for="fl1" className="col-sm-6 control-label">Enter New Column Name : </label>
+		      <input className="form-control"  id="idRenameMetaCloumn" type="text" defaultValue={colName}/>
+		      </div>
+		    )
+
+	dialog.show({
+		  title: 'Rename Column',
+		  body: customBody,
+		  actions: [
+		    Dialog.CancelAction(),
+		    Dialog.OKAction(() => {
+		    	updateColumnStatus(dispatch,colSlug,$("#idRenameMetaCloumn").val(),actionName)
+		    })
+		  ],
+		  bsSize: 'medium',
+		  onHide: (dialogBox) => {
+		    dialogBox.hide()
+		    //console.log('closed by clicking background.')
+		  }
+		});
+}
+export function handleColumnClick(dialog,actionName,colName,colSlug){
+	return (dispatch) => {
+		if(actionName == RENAME){
+			renameMetaDataColumn(dialog,colName,colSlug,dispatch,actionName)
+		}else if(actionName == DELETE){
+			deleteMetaDataColumn(dialog,colName,colSlug,dispatch,actionName)
+		}else if(actionName == DATA_TYPE){
+			dispatch(updateVLPopup(true));
+		}
+	}
+}
+
+function deleteMetaDataColumn(dialog,colName,colSlug,dispatch,actionName){
+
+	bootbox.alert("Are you sure, you want to delete column ?",function(){
+		updateColumnStatus(dispatch,colSlug,colName,actionName)
+	})
+}
+export function updateVLPopup(flag){
+	return{
+		type: "UPDATE_VARIABLES_TYPES_MODAL",
+		flag
+	}
+}
+function updateColumnStatus(dispatch,colSlug,colName,actionName){
+	var transformSettings = store.getState().datasets.dataTransformSettings.slice();
+	for(var i =0;i<transformSettings.length;i++){
+		if(transformSettings[i].slug == colSlug){
+			for(var j=0;j<transformSettings[i].columnSetting.length;j++){
+				if(transformSettings[i].columnSetting[j].actionName == actionName){
+					transformSettings[i].columnSetting[j].status=true;
+					if(actionName == RENAME){
+						transformSettings[i].columnSetting[j].newName = colName;
+						break;
+					}
+					
+				}
+			}//end of for columnsettings
+			break;
+		}
+	}
+	dispatch(updateTransformSettings(transformSettings))
+}
+function updateTransformSettings(transformSettings){
+	return{
+		type: "UPDATE_DATA_TRANSFORM_SETTINGS",
+		transformSettings
+	}
+}
+
+export function updateColSlug(slug){
+	return{
+		type: "DATASET_SELECTED_COLUMN_SLUG",
+		slug
 	}
 }

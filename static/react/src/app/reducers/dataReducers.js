@@ -39,7 +39,10 @@ export default function reducer(state = {
   updatedSubSetting: default_updatedSubSetting,
   subsettingDone: false,
   subsettedSlug: "",
-  loading_message:[]
+  loading_message:[],
+  dataTransformSettings:[],
+  variableTypeListModal:false,
+  selectedColSlug:"",
 }, action) {
   console.log("In DATA reducer!!");
   console.log(action);
@@ -68,7 +71,8 @@ export default function reducer(state = {
           dataPreviewFlag: true,
           selectedDataSet: action.slug,
           subsettedSlug: "",
-          subsettingDone: false
+          subsettingDone: false,
+          dataTransformSettings:action.dataPreview.meta_data.transformation_settings,
         }
       }
       break;
@@ -317,8 +321,7 @@ export default function reducer(state = {
           measureAllChecked: true,
           dimensionAllChecked: true,
           dateTimeChecked: action.dateTimeChkBoxList,
-          dataSetAnalysisList: action.possibleAnalysisList
-
+          dataSetAnalysisList: action.possibleAnalysisList,
         }
       }
       break;
@@ -531,6 +534,29 @@ export default function reducer(state = {
       }
     }
     break;
+    case "UPDATE_DATA_TRANSFORM_SETTINGS":
+    {
+    	return{
+    		...state,
+    		dataTransformSettings:action.transformSettings
+    	}
+    }
+    break;
+    case "UPDATE_VARIABLES_TYPES_MODAL":
+    {
+         return{
+        	 ...state,
+        	 variableTypeListModal:action.flag,
+         }
+    }
+    break;
+    case "DATASET_SELECTED_COLUMN_SLUG":
+    {
+    	 return{
+        	 ...state,
+        	 selectedColSlug:action.slug,
+         }
+    }
   }
   return state
 
