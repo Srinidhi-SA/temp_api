@@ -118,11 +118,20 @@ def upload_photo(request):
     user = request.user
 
     image = request.FILES.get('image')
+    other_details = request.POST
+    print other_details.get('website')
 
     data = dict()
     data['image'] = image
-    data['website'] = "www.google.com"
-    data['bio'] = "Life is whack."
+    if 'website' in other_details:
+        data['website'] = other_details.get('website')
+
+    if 'bio' in other_details:
+        data['bio'] = other_details.get('bio')
+
+    if 'phone' in other_details:
+        data['phone'] = other_details.get('phone')
+
     # data['user'] = user
     obj = Profile.objects.filter(user=user).first()
 
@@ -133,6 +142,7 @@ def upload_photo(request):
     obj.photo = image
     obj.website = data['website']
     obj.bio = data['bio']
+    obj.phone = data['phone']
     obj.save()
 
 
