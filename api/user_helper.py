@@ -3,58 +3,17 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from rest_framework import request, response
 import uuid
+from django.conf import settings
 
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 
 
-class UserSerializer(serializers.ModelSerializer):
-    user_profile = UserProfileSerializer(required=True)
-
-    class Meta:
-        model = User
-        fields = ("username", "first_name", "last_name", "email", "date_joined", 'user_profile')
-
-
-def jwt_response_payload_handler(token, user=None, request=None):
-
-    # print user.date_joined - datetime.datetime.now(tz=)
-    # if  (timezone.now() - user.date_joined).days > 30:
-    #     return {
-    #         'error': "Subscription expired."
-    #     }
-    return {
-        'token': "JWT " + token,
-        'user': UserSerializer(user, context={'request': request}).data
-    }
-
-
-class UserProfileSerializer(serializers.Serializer):
-
-    class Meta:
-        model = UserProfile
-        field = ('photo', 'website', 'bio', 'phone', 'city', 'country', 'organization')
-
-    def create(self, validated_data):  #
-        userprofile_data = validated_data.pop('userprofile')
-        user = User.objects.create(**validated_data)  # Create the user object instance before store in the DB
-        user.set_password(validated_data['password'])  # Hash to the Password of the user instance
-        user.save()  # Save the Hashed Password
-        UserProfile.objects.create(user=user, **userprofile_data)
-        return user  # Return user object
-
-    def update(self, instance, validated_data):
-        pass
-
-
-
-class UserProfile(models.Model):
-    user = models.OneToOneField(User, related_name='user')
+class Profile(models.Model):
+    user = models.OneToOneField(User, related_name='profile', primary_key=True, on_delete=models.CASCADE)
     photo = models.FileField(
-        verbose_name=("Profile Picture"),
         upload_to="profiles",
-        format="Image",
         max_length=255,
         null=True,
         blank=True
@@ -66,10 +25,77 @@ class UserProfile(models.Model):
     country = models.CharField(max_length=100, default='', blank=True)
     organization = models.CharField(max_length=100, default='', blank=True)
 
+    def json_serialized(self):
+        image_url = settings.IMAGE_URL
+        user_profile = {
+            "photo": self.photo.path,
+            "image_url": image_url,
+            "website": self.website,
+            "bio": self.bio,
+            "phone": self.phone
+        }
+
+        # user_profile.update(self.user)
+        return user_profile
+
+
+
+class UserProfileSerializer(serializers.Serializer):
+
+    class Meta:
+        model = Profile
+        field = ('photo', 'website', 'bio', 'phone', 'city', 'country', 'organization')
+
+    def create(self, validated_data):  #
+        userprofile_data = validated_data.pop('userprofile')
+        user = User.objects.create(**validated_data)  # Create the user object instance before store in the DB
+        user.set_password(validated_data['password'])  # Hash to the Password of the user instance
+        user.save()  # Save the Hashed Password
+        Profile.objects.create(user=user, **userprofile_data)
+        return user  # Return user object
+
+    # def update(self, instance, validated_data):
+    #     instance.photo = validated_data.get('image', instance.photo)
+    #     instance.website = validated_data.get('website', instance.website)
+    #     instance.phone = validated_data.get('phone', instance.phone)
+    #
+    #     instance.save()
+    #     return instance
+
+
+    def to_representation(self, instance):
+        ret = super(UserProfileSerializer, self).to_representation(instance)
+        ret['photo'] = instance.photo.path
+        return ret
+
+
+class UserSerializer(serializers.ModelSerializer):
+    # user_profile = UserProfileSerializer(allow_null=True)
+
+    class Meta:
+        model = User
+        fields = ("username", "first_name", "last_name", "email", "date_joined")
+
+
+def jwt_response_payload_handler(token, user=None, request=None):
+
+    # print user.date_joined - datetime.datetime.now(tz=)
+    # if  (timezone.now() - user.date_joined).days > 30:
+    #     return {
+    #         'error': "Subscription expired."
+    #     }
+    profile = Profile.objects.filter(user=user).first()
+    return {
+        'token': "JWT " + token,
+        'user': UserSerializer(user, context={'request': request}).data,
+        'profile': profile.json_serialized()
+    }
+
+
 def create_profile(sender, **kwargs):
     user = kwargs["instance"]
     if kwargs["created"]:
-        user_profile = UserProfile(user=user)
+        user_profile = Profile(user=user)
         user_profile.save()
 
 post_save.connect(create_profile, sender=User)
@@ -78,13 +104,73 @@ post_save.connect(create_profile, sender=User)
 from rest_framework import viewsets, generics
 from rest_framework.response import Response
 
+from rest_framework.decorators import api_view
+
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
+@api_view(['PUT'])
+def upload_photo(request):
+    user = request.user
+
+    image = request.FILES.get('image')
+
+    data = dict()
+    data['image'] = image
+    data['website'] = "www.google.com"
+    data['bio'] = "Life is whack."
+    # data['user'] = user
+    obj = Profile.objects.filter(user=user).first()
+    obj.photo = image
+    obj.website = data['website']
+    obj.bio = data['bio']
+    obj.save()
+
+
+    # serializer = UserProfileSerializer(
+    #     instance=obj,
+    #     data=data,
+    #     partial=True
+    # )
+    #
+    # if serializer.is_valid():
+    #     obj = serializer.save()
+    #     return Response(serializer.data)
+
+    # user.user_profile.photo = image
+    # user.save()
+    return Response(obj.json_serialized())
+
+
+@csrf_exempt
+@api_view(['GET'])
+def get_profile_image(request):
+
+    import magic
+    from django.http import HttpResponse
+    import os
+
+    image = request.user.profile.photo
+    image_buffer = open(
+        name=image.path,
+        mode="rb"
+    ).read()
+    content_type = magic.from_buffer(image_buffer, mime=True)
+    response = HttpResponse(image_buffer, content_type=content_type)
+    response['Content-Disposition'] = 'attachment; filename="%s"' % os.path.basename(image.path)
+    return response
+
+
+
+
+
 class UserProfileView(generics.CreateAPIView, generics.UpdateAPIView):
 
     def get_queryset(self):
         pass
 
     def get_serializer(self, *args, **kwargs):
-        return UserProfile
+        return Profile
 
     def create(self, request, *args, **kwargs):
         data = request.data

@@ -20,8 +20,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'madvisor',
-        'USER': 'marlabs',
-        'PASSWORD': 'Password@123',
+        'USER': 'root',
+        'PASSWORD': 'root',
         'HOST': 'localhost',
         'PORT': '',
     }
@@ -94,3 +94,4 @@ APPEND_SLASH=False
 DATA_UPLOAD_MAX_MEMORY_SIZE = 1024*1024*1024
 
 mAdvisorScores = '/home/hadoop/mAdvisorScores/'
+IMAGE_URL = "/api/get_profile_image/"

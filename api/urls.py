@@ -52,6 +52,7 @@ router.register(
     base_name='audioset'
 )
 
+from api.user_helper import upload_photo, get_profile_image
 urlpatterns = [
     url(r'^datasource/get_config_list$',get_datasource_config_list , name="datasource_get_config_list"),
     url(r'^job/(?P<slug>[^/.]+)/get_config$',views.get_config , name="get_config"),
@@ -61,7 +62,10 @@ urlpatterns = [
     url(r'^random_test_api',views.random_test_api , name="random_test_api"),
     url(r'^get_info',views.get_info , name="get_info"),
     url(r'^messages/(?P<slug>[^/.]+)/',views.set_messages , name="set_messages"),
+    url(r'^upload_photo',upload_photo , name="upload_photo"),
+    url(r'^get_profile_image',get_profile_image , name="get_profile_image"),
 ]
+
 
 urlpatterns += router.urls
 # print urlpatterns
