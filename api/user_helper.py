@@ -85,10 +85,11 @@ def jwt_response_payload_handler(token, user=None, request=None):
     #         'error': "Subscription expired."
     #     }
     profile = Profile.objects.filter(user=user).first()
+
     return {
         'token': "JWT " + token,
         'user': UserSerializer(user, context={'request': request}).data,
-        'profile': profile.json_serialized()
+        'profile': profile.json_serialized() if profile is not None else None
     }
 
 
