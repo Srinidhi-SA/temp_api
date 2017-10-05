@@ -34,7 +34,7 @@ export default function reducer(state = {
   dataLoaderText: "initialized the filter parameters",
   dataSetAnalysisList: {},
   selectedDimensionSubLevels: null,
-  selectedTrendSub: [],
+ // selectedTrendSub: [],
   dimensionSubLevel: [],
   updatedSubSetting: default_updatedSubSetting,
   subsettingDone: false,
@@ -466,7 +466,8 @@ export default function reducer(state = {
       {
         return {
           ...state,
-          selectedTrendSub: action.selectedTrendSub
+         // selectedTrendSub: action.selectedTrendSub
+		  dataSetAnalysisList: action.analysisList
         }
       }
       break;
