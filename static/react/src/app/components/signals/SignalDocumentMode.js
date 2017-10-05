@@ -51,6 +51,7 @@ export class SignalDocumentMode extends React.Component {
   }
 
   closeDocumentMode(){
+    console.log("closing document mode")
     this.props.dispatch(hideDataPreview());
     this.props.history.push("/signals");
   }
