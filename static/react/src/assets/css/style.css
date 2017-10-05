@@ -14513,6 +14513,16 @@ a.disabled { color:#ccc !important; }
     vertical-align: middle;
 }
 .slider.slider-horizontal { width: 94%; }
+.scrollable-menu {
+    height: auto;
+    max-height: 200px;
+    overflow-x: hidden;
+	padding:10px 0px 0px 10px;
+}
+.scrollable-menu li { font-weight:bold; }
+.scrollable-menu li ul { list-style-type:none; padding:0; margin:0; }
+.scrollable-menu li ul li a { font-weight:normal; display:block; padding: 5px 5px 5px 0; color:#00998c; }
+.scrollable-menu li ul li a:hover { color:#00665e !important}
 /**************** Css realated to developers, keep the source down ***/
 
 
