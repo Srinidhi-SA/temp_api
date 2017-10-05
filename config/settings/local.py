@@ -20,8 +20,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'madvisor',
-        'USER': 'root',
-        'PASSWORD': 'root',
+        'USER': 'marlabs',
+        'PASSWORD': 'Password@123',
         'HOST': 'localhost',
         'PORT': '',
     }

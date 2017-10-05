@@ -197,7 +197,7 @@ def npm_install_and_deploy(server_details, path_details, type="development"):
 
 def pip_install_and_deploy_remote(base_remote_path):
     with cd(base_remote_path):
-        sudo('pip install -r requirements.txt')
+        # sudo('pip install -r requirements.txt')
         run('python manage.py migrate')
 
 
