@@ -802,7 +802,6 @@ export function renameMetaDataColumn(dialog,colName,colSlug,dispatch,actionName)
 		  actions: [
 		    Dialog.CancelAction(),
 		    Dialog.OKAction(() => {
-		    	$(".cst_table").find("thead").find("."+colSlug).addClass("dataPreviewUpdateCol");
 		    	updateColumnName(dispatch,colSlug,$("#idRenameMetaCloumn").val());
 		    	updateColumnStatus(dispatch,colSlug,$("#idRenameMetaCloumn").val(),actionName);
 		    	
@@ -825,16 +824,7 @@ function updateColumnName(dispatch,colSlug,newColName){
 			break;
 		}
 	}
-	//dataPreview.meta_data.columnData = null;
 	metaData.meta_data.columnData = colData;
-	//return {
-	//	type: "DATA_PREVIEW_VALIDATION",
-	//	dataPreview,
-	//}
-	//let dataPreview = {};
-	//dataPreview = new Object(metaData);
-	//console.log(metaData.meta_data);
-	//dataPreview.meta_data = metaData.meta_data;
 	let dataPreview = Object.assign({}, metaData);
 	dispatch(dispatchDataPreview(dataPreview,slug))
 }

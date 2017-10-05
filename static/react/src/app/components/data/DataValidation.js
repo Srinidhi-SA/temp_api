@@ -4,6 +4,7 @@ import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import Dialog from 'react-bootstrap-dialog';
 import {handleColumnClick,updateColSlug} from "../../actions/dataActions";
+import {DATA_TYPE} from "../../helpers/helper";
 @connect((store) => {
 	return {
 		login_response: store.login.login_response,
@@ -25,7 +26,16 @@ export class DataValidation extends React.Component {
 	}
    renderDropdownList(colData){
 	   let list = colData.map((actionNames,index)=>{
-   		return (<li onClick={this.handleClickEvent.bind(this)} key={index}><a className="cursor" name={actionNames.actionName}>{actionNames.displayName}</a></li>)  
+		   if(actionNames.actionName == DATA_TYPE){
+			 return (
+			<li key={index}>{actionNames.displayName}
+			<ul>{actionNames.listOfDataTypes.map((subItem,subIndex)=>{
+				var id="dv_"+subIndex;
+				  return(<li key={id}><div key={id} className="ma-radio inline"><input id={id} type="radio"  name="dataValidation" onClick={this.handleClickEvent.bind(this)}  value={subItem.displayName} /><label htmlFor={id}>{subItem.displayName}</label></div></li>)
+				})}</ul>
+			 </li>)     
+		   }
+		   else return (<li onClick={this.handleClickEvent.bind(this)} key={index}><a className="cursor" name={actionNames.actionName}>{actionNames.displayName}</a></li>)  
    	  })
    	  return list;
    }

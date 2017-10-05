@@ -18,7 +18,7 @@ import {SubSetting} from "./SubSetting";
 import {DataUploadLoader} from "../common/DataUploadLoader";
 import {DataValidation} from "./DataValidation";
 import {DataValidationVariableTypes} from "./DataValidationVariableTypes";
-
+import Dialog from 'react-bootstrap-dialog';
 
 
 
@@ -522,6 +522,7 @@ export class DataPreview extends React.Component {
 					</div>
 					{/*<!-- /.Page Content Area --> */}
 					<DataValidationVariableTypes/>
+					  <Dialog ref="dialog"/>
 					 </div>
 			);
 		} else {

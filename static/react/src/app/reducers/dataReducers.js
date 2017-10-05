@@ -40,14 +40,12 @@ export default function reducer(state = {
   subsettingDone: false,
   subsettedSlug: "",
   loading_message:[],
-<<<<<<< HEAD
   dataTransformSettings:[],
   variableTypeListModal:false,
   selectedColSlug:"",
-=======
-	data_sorton:"",
-	data_sorttype:""
->>>>>>> origin/react-ui-development
+  data_sorton:"",
+  data_sorttype:""
+
 }, action) {
   console.log("In DATA reducer!!");
   console.log(action);
