@@ -14520,11 +14520,13 @@ a.disabled { color:#ccc !important; }
 	padding:10px 0px 0px 10px;
 }
 .scrollable-menu li { font-weight:bold; }
-.scrollable-menu li a {font-weight:bold;  padding: 5px 5px 5px 0; background:none;}
+.scrollable-menu li a, .scrollable-menu li span {font-weight:bold;  padding: 5px 5px 5px 0; background:none;}
 .scrollable-menu li a:hover {  background:none; color:#00665e !important }
 .scrollable-menu li ul { list-style-type:none; padding:0; margin:0; }
 .scrollable-menu li ul li a { font-weight:normal; display:block; padding: 5px 5px 5px 0; color:#00998c; }
 .scrollable-menu li ul li a:hover { color:#00665e !important}
+.scrollable-menu li ul li .cursor { cursor:auto; }
+.scrollable-menu li ul li.cursor label, .scrollable-menu li a { font-weight:bold;color:#00998c !important; }
 /**************** Css realated to developers, keep the source down ***/
 
 

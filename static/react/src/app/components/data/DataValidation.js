@@ -24,14 +24,19 @@ export class DataValidation extends React.Component {
 		this.props.dispatch(updateColSlug(this.props.slug));
 		this.props.dispatch(handleColumnClick(this.refs.dialog,event.target.name,this.props.name,this.props.slug));
 	}
+	handleChangeTypeEvent(actionName,event){
+		event.stopPropagation();
+		this.props.dispatch(updateColSlug(this.props.slug));
+		this.props.dispatch(handleColumnClick(this.refs.dialog,actionName,this.props.name,this.props.slug,event.target.value));
+	}
    renderDropdownList(colData){
 	   let list = colData.map((actionNames,index)=>{
 		   if(actionNames.actionName == DATA_TYPE){
 			 return (
-			<li key={index}>{actionNames.displayName}
+			<li key={index}><span>{actionNames.displayName}</span>
 			<ul>{actionNames.listOfDataTypes.map((subItem,subIndex)=>{
 				var id="dv_"+subIndex;
-				  return(<li key={id}><div key={id} className="ma-radio inline"><input id={id} type="radio"  name="dataValidation" onClick={this.handleClickEvent.bind(this)}  value={subItem.displayName} /><label htmlFor={id}>{subItem.displayName}</label></div></li>)
+				  return(<li key={id} className="cursor" onClick={this.handleChangeTypeEvent.bind(this,actionNames.actionName)} ><div key={id} className="ma-radio inlinev"><input id={id} type="radio"  name="dataValidation"  value={subItem.name} /><label htmlFor={id}>{subItem.displayName}</label></div></li>)
 				})}</ul>
 			 </li>)     
 		   }
@@ -53,7 +58,7 @@ export class DataValidation extends React.Component {
 			 });
 			return (
 				
-					<ul  className="dropdown-menu">
+					<ul  className="dropdown-menu scrollable-menu">
 					  <Dialog ref="dialog"/>
 					{settingsTemplate}</ul>
 					
