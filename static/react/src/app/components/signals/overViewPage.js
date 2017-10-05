@@ -19,6 +19,8 @@ import {getSignalAnalysis,setSideCardListFlag} from "../../actions/signalActions
 import {STATIC_URL} from "../../helpers/env.js"
 import Slider from "react-slick";
 import {getRoboDataset} from "../../actions/appActions";
+import {hideDataPreview} from "../../actions/dataActions";
+
 
 //import {SignalAnalysisPage} from "./signals/SignalAnalysisPage";
 //let showSubTree=false;
@@ -42,12 +44,12 @@ setSideListFlag(e){
 }
   //componentWillReceiveProps(nextProps) {}
   componentWillMount() {
-	  
+
     if (isEmpty(this.props.signal)) {
     	if(this.props.match.url.indexOf("apps-robo") != -1){
     		this.props.dispatch(getRoboDataset(this.props.match.params.slug));
     	}else{
-    		this.props.dispatch(getSignalAnalysis(sessionStorage.userToken, this.props.match.params.slug));	
+    		this.props.dispatch(getSignalAnalysis(sessionStorage.userToken, this.props.match.params.slug));
     	}
     }
   }
@@ -153,6 +155,12 @@ setScrollActive(){
 		let index = $(".sb_navigation li>a.active").parent().index();
 		that.refs.slider.slickGoTo(index);
 	});
+}
+
+closeDocumentMode(){
+  console.log("closing document mode")
+  this.props.dispatch(hideDataPreview());
+  this.props.history.push("/signals");
 }
 
   render() {
@@ -386,9 +394,9 @@ setScrollActive(){
                 <div className="col-md-12">
                   <div className="panel panel-mAd">
                     <div className="panel-heading">
- 
+
                       <h2 class="pull-left">{storyName}</h2>
- 
+
                       <div className="btn-toolbar pull-right">
                         <div className="btn-group btn-space">
 
@@ -405,11 +413,11 @@ setScrollActive(){
                               <i className="pe-7s-news-paper pe-lg"></i>
                             </button>
                           </Link>
-                          <Link className="tabs-control right grp_legends_green continue" to={that.urlPrefix}>
-                            <button type="button" className="btn btn-default">
+                          {/*<Link className="tabs-control right grp_legends_green continue" to={that.urlPrefix}>*/}
+                            <button type="button" className="btn btn-default" onClick = {this.closeDocumentMode.bind(this)}>
                               <i className="pe-7s-close pe-lg"></i>
                             </button>
-                          </Link>
+                          {/*</Link>*/}
                         </div>
                       </div>
                       <div className="clearfix"></div>
