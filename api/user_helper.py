@@ -27,8 +27,8 @@ class Profile(models.Model):
 
     def json_serialized(self):
         image_url = settings.IMAGE_URL
+
         user_profile = {
-            "photo": self.photo.path,
             "image_url": image_url,
             "website": self.website,
             "bio": self.bio,
@@ -37,7 +37,6 @@ class Profile(models.Model):
 
         # user_profile.update(self.user)
         return user_profile
-
 
 
 class UserProfileSerializer(serializers.Serializer):
@@ -86,6 +85,10 @@ def jwt_response_payload_handler(token, user=None, request=None):
     #     }
     profile = Profile.objects.filter(user=user).first()
 
+    if profile is None:
+        profile = Profile(user=user)
+        profile.save()
+
     return {
         'token': "JWT " + token,
         'user': UserSerializer(user, context={'request': request}).data,
@@ -122,6 +125,11 @@ def upload_photo(request):
     data['bio'] = "Life is whack."
     # data['user'] = user
     obj = Profile.objects.filter(user=user).first()
+
+    if obj is None:
+        obj = Profile(user=user)
+        obj.save()
+
     obj.photo = image
     obj.website = data['website']
     obj.bio = data['bio']
@@ -147,6 +155,8 @@ def upload_photo(request):
 @api_view(['GET'])
 def get_profile_image(request):
 
+    if request.user.profile is None:
+        return Response({'message': 'No Image. Upload an image.'})
     import magic
     from django.http import HttpResponse
     import os
