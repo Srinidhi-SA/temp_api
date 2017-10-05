@@ -40,9 +40,14 @@ export default function reducer(state = {
   subsettingDone: false,
   subsettedSlug: "",
   loading_message:[],
+<<<<<<< HEAD
   dataTransformSettings:[],
   variableTypeListModal:false,
   selectedColSlug:"",
+=======
+	data_sorton:"",
+	data_sorttype:""
+>>>>>>> origin/react-ui-development
 }, action) {
   console.log("In DATA reducer!!");
   console.log(action);
@@ -558,12 +563,12 @@ export default function reducer(state = {
          }
     }
     break;
-    case "DATA_PREVIEW_VALIDATION":
-    {
-      return {
-        ...state,
-        dataPreview: action.dataPreview,
-      }
+    case "SORT_DATA":{
+    	return{
+    		...state,
+    		data_sorton:action.sorton,
+    		data_sorttype:action.sorttype
+    	}
     }
     break;
   }

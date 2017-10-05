@@ -87,10 +87,10 @@ export class RoboInsightList extends React.Component {
       this.props.dispatch(getAppsRoboList(1));
     }
   }
-  
+
     doSorting(sortOn, type){
 	     this.props.history.push('/apps-robo?sort=' + sortOn + '&type='+type);
-    
+
 	 this.props.dispatch(storeRoboSortElements(sortOn,type));
 	this.props.dispatch(getAppsRoboList(1));
   }
@@ -150,7 +150,7 @@ export class RoboInsightList extends React.Component {
               <div className="card-footer">
                 <div className="left_div">
                   <span className="footerTitle"></span>{sessionStorage.userName}
-                  <span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy h:MM")}</span>
+                  <span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy HH:MM")}</span>
                 </div>
 
                 <div className="card-deatils">
@@ -198,12 +198,12 @@ export class RoboInsightList extends React.Component {
               <div className="col-md-4">
                 <div className="input-group pull-right">
 
-                  <input type="text" name="robo_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Robo Insights" id="robo_insights" class="form-control" placeholder="Search robo insights..."/> 
-				  
+                  <input type="text" name="robo_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Robo Insights" id="robo_insights" class="form-control" placeholder="Search robo insights..."/>
+
 				  <span className="input-group-btn">
-					<button type="button" className="btn btn-default" title="Select All Card">
+					{/*<button type="button" className="btn btn-default" title="Select All Card">
 					<i className="fa fa-address-card-o fa-lg"></i>
-					</button>
+					</button>*/}
 					<button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false">
 					<i className="fa fa-sort-alpha-asc fa-lg"></i>
 					<span className="caret"></span>

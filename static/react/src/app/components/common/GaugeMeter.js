@@ -7,6 +7,7 @@ import HeatMap from '../../helpers/heatmap';
 import {generateHeaders,generateCircularChartRows} from "../../helpers/helper";
 import ReactSpeedometer from "react-d3-speedometer";
 
+
 export class GaugeMeter extends React.Component {
   constructor(){
     super();

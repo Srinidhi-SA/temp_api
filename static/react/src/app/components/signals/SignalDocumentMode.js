@@ -7,7 +7,7 @@ import {Card} from "./Card";
 import {STATIC_URL} from "../../helpers/env.js";
 import {getSignalAnalysis} from "../../actions/signalActions";
 import {isEmpty, subTreeSetting} from "../../helpers/helper";
-
+import {hideDataPreview} from "../../actions/dataActions";
 
 @connect((store) => {
   return {signal: store.signals.signalAnalysis};
@@ -16,7 +16,7 @@ import {isEmpty, subTreeSetting} from "../../helpers/helper";
 export class SignalDocumentMode extends React.Component {
   constructor() {
     super();
-	//this.docFlag = true;
+    //this.docFlag = true;
   }
   componentWillMount() {
     // alert("in will mount!!!")
@@ -27,10 +27,10 @@ export class SignalDocumentMode extends React.Component {
     // console.log(this.props.signal)
   }
 
-  print(){
-     window.print();
+  print() {
+    window.print();
   }
-  
+
   searchTree(_Node, cardLists, lastVar) {
     if (_Node.listOfCards[_Node.listOfCards.length - 1].slug == lastVar) {
       console.log("cardlist if no cards in node:");
@@ -49,136 +49,142 @@ export class SignalDocumentMode extends React.Component {
       return result;
     }
   }
+
+  closeDocumentMode(){
+    console.log("closing document mode")
+    this.props.dispatch(hideDataPreview());
+    this.props.history.push("/signals");
+  }
   render() {
 
     console.log("document mode is called$$$$$$$$$$$$$$!!");
     console.log(this.props);
 
     let cardList = [];
-    if(!isEmpty(this.props.signal)){
-    let lastCard = this.props.history.location.state.lastVar;
-    cardList = this.searchTree(this.props.signal, cardList, lastCard);
-    console.log("card list is...");
-    console.log(cardList);
-    let docObj = [];
-    for (let card of cardList) {
-      console.log("card is:")
-      console.log(card);
-      for (let _card of card) {
-        console.log("_card is :" + _card);
-        docObj.push(_card);
+    if (!isEmpty(this.props.signal)) {
+      let lastCard = this.props.history.location.state.lastVar;
+      cardList = this.searchTree(this.props.signal, cardList, lastCard);
+      console.log("card list is...");
+      console.log(cardList);
+      let docObj = [];
+      for (let card of cardList) {
+        console.log("card is:")
+        console.log(card);
+        for (let _card of card) {
+          console.log("_card is :" + _card);
+          docObj.push(_card);
+        }
       }
-    }
-    console.log(docObj);
-    docObj.splice(0, 1);
+      console.log(docObj);
+      docObj.splice(0, 1);
 
-    let objs = [];
-    docObj.map(function(item, i) {
-      let len = item.cardData.length;
+      let objs = [];
+      docObj.map(function(item, i) {
+        let len = item.cardData.length;
 
-      for (var i = 0; i < len; i++) {
-        objs.push(item.cardData[i]);
+        for (var i = 0; i < len; i++) {
+          objs.push(item.cardData[i]);
 
-      }
+        }
 
-    })
-    console.log(objs);
-    let firstOverviewSlug = this.props.signal.listOfNodes[0].slug;
-    let cardModeLink = "/signals/" + this.props.match.params.slug + "/"+ firstOverviewSlug;
+      })
+      console.log(objs);
+      let firstOverviewSlug = this.props.signal.listOfNodes[0].slug;
+      let cardModeLink = "/signals/" + this.props.match.params.slug + "/" + firstOverviewSlug;
 
-    if (objs) {
-      return (
-        <div>
-          <div className="side-body" id="side-body">
-            {/* Page Title and Breadcrumbs */}
-            <div className="page-head">
-              <div class="row">
-                <div class="col-md-12">
-                  <Breadcrumb path={[
-                    {
-                      path: '/signals',
-                      label: 'Signals'
-                    }, {
-                      path: '/signaldocumentMode/' + this.props.match.params.slug,
-                      label: this.props.signal.name
-                    }
-                  ]}/>
+      if (objs) {
+        return (
+          <div>
+            <div className="side-body" id="side-body">
+              {/* Page Title and Breadcrumbs */}
+              <div className="page-head">
+                <div class="row">
+                  <div class="col-md-12">
+                    <Breadcrumb path={[
+                      {
+                        path: '/signals',
+                        label: 'Signals'
+                      }, {
+                        path: '/signaldocumentMode/' + this.props.match.params.slug,
+                        label: this.props.signal.name
+                      }
+                    ]}/>
+                  </div>
                 </div>
+                <div class="clearfix"></div>
               </div>
-              <div class="clearfix"></div>
-            </div>
-            {/* Page Content Area */}
-            <div className="main-content">
-              <div className="row">
-                <div className="col-md-12">
-                  <div className="panel panel-mAd">
-                    <div className="panel-heading">
-                      <h2 class="pull-left">{this.props.signal.name}</h2>
-                      <div className="btn-toolbar pull-right">
-                        <div className="btn-group btn-space">
-                        <Link className="tabs-control right grp_legends_green continue" to={cardModeLink}>
-                          <button type="button" className="btn btn-default" title="Card mode">
-                            <i className="pe-7s-display2 pe-lg"></i>
-                          </button>
-                          </Link>
-                          <button type="button" className="btn btn-default" disabled = "true" title="Document Mode">
+              {/* Page Content Area */}
+              <div className="main-content">
+                <div className="row">
+                  <div className="col-md-12">
+                    <div className="panel panel-mAd">
+                      <div className="panel-heading">
+                        <h2 class="pull-left">{this.props.signal.name}</h2>
+                        <div className="btn-toolbar pull-right">
+                          <div className="btn-group btn-space">
+                            <Link className="tabs-control right grp_legends_green continue" to={cardModeLink}>
+                              <button type="button" className="btn btn-default" title="Card mode">
+                                <i className="pe-7s-display2 pe-lg"></i>
+                              </button>
+                            </Link>
+                            <button type="button" className="btn btn-default" disabled="true" title="Document Mode">
                               <i className="pe-7s-news-paper pe-lg"></i>
                             </button>
-					   <Link className="tabs-control right grp_legends_green continue" to="/signals">
-                          <button type="button" className="btn btn-default">
-                            <i className="pe-7s-close pe-lg"></i>
+                            {/*<Link className="tabs-control right grp_legends_green continue" to="/signals">*/}
+                              <button type="button" className="btn btn-default" onClick = {this.closeDocumentMode.bind(this)}>
+                                <i className="pe-7s-close pe-lg"></i>
+                              </button>
+                            {/*</Link>*/}
+                          </div>
+                        </div>
+                        <div className="clearfix"></div>
+                      </div>
+                      <div className="btn-toolbar pull-right">
+                        <div className="btn-group btn-space">
+
+                          <button className="btn btn-default" type="button" onClick={this.print.bind(this)} title="Print Document">
+                            <i class="fa fa-print" aria-hidden="true"></i>
                           </button>
-						 </Link>
+
                         </div>
                       </div>
                       <div className="clearfix"></div>
-                    </div>
-					<div className="btn-toolbar pull-right">
-				       <div className="btn-group btn-space">
-                      
-                          <button type="button" onClick={this.print.bind(this)}className="btn btn-default" title="Print Document">
-                              <i class="fa fa-print" aria-hidden="true"></i>
-                            </button>
-					
-                        </div>
-					</div>
-					 <div className="clearfix"></div>
-					 <br/>
-                    <div className="panel-body documentModeSpacing">
-                      <Card cardData={objs} />
+                      <br/>
+                      <div className="panel-body documentModeSpacing">
+                        <Card cardData={objs}/>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+        );
+      }
+    } else {
+
+      return (
+        <div className="side-body">
+          <div className="page-head">
+            <div class="row">
+              <div class="col-md-12">
+                <Breadcrumb path={[{
+                    path: '/signals',
+                    label: 'Signals'
+                  }
+                ]}/>
+              </div>
+              <div class="col-md-8">
+                <h2>{this.props.signal.name}</h2>
+              </div>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+          <div className="main-content">
+            <img id="loading" src={STATIC_URL + "assets/images/Preloader_2.gif"}/>
+          </div>
         </div>
       );
     }
-  }else{
-
-    return (
-      <div className="side-body">
-        <div className="page-head">
-          <div class="row">
-            <div class="col-md-12">
-              <Breadcrumb path={[{
-                  path: '/signals',
-                  label: 'Signals'
-                }
-              ]}/>
-            </div>
-            <div class="col-md-8">
-              <h2>{this.props.signal.name}</h2>
-            </div>
-          </div>
-          <div class="clearfix"></div>
-        </div>
-        <div className="main-content">
-          <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif" } />
-        </div>
-      </div>
-    );
   }
-}
 }

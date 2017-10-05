@@ -79,14 +79,14 @@ import Dialog from 'react-bootstrap-dialog'
 				this.props.dispatch(getAppsModelList(1));
 			}
 		}
-		
+
 	 doSorting(sortOn, type){
 	     this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models?sort=' + sortOn + '&type='+type);
-    
+
 	    this.props.dispatch(storeAppsModelSortElements(sortOn,type));
 	    this.props.dispatch(getAppsModelList(1));
      }
-  
+
 		render() {
 			console.log("apps model list is called##########3");
 			console.log(this.props);
@@ -103,7 +103,7 @@ import Dialog from 'react-bootstrap-dialog'
 					document.getElementById('model_insights').value = "";
 			}
 			//search element ends..
-			
+
 			 if(this.props.history.location.sort == "" || this.props.history.location.sort == null){
 		          this.props.dispatch(storeAppsModelSortElements("",null));
 	          }
@@ -142,7 +142,7 @@ import Dialog from 'react-bootstrap-dialog'
 							<div className="card-footer">
 							<div className="left_div">
 							<span className="footerTitle"></span>{sessionStorage.userName}
-							<span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy h:MM")}</span>
+							<span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy HH:MM")}</span>
 							</div>
 
 							<div className="card-deatils">
@@ -189,9 +189,9 @@ import Dialog from 'react-bootstrap-dialog'
 						<input type="text" name="model_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Model Insights" id="model_insights" className="form-control" placeholder="Search Model insights..."/>
 
 						<span className="input-group-btn">
-									<button type="button" className="btn btn-default" title="Select All Card">
+									{/*<button type="button" className="btn btn-default" title="Select All Card">
 										<i className="fa fa-address-card-o fa-lg"></i>
-									</button>
+									</button>*/}
 									<button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false">
 										<i className="fa fa-sort-alpha-asc fa-lg"></i>
 										<span className="caret"></span>
