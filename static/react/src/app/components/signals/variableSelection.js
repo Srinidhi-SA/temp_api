@@ -33,7 +33,7 @@ var selectedVariables = {measures:[],dimensions:[],date:null};  // pass selected
         dataSetTimeDimensions:store.datasets.dataSetTimeDimensions,
         selectedVariablesCount: store.datasets.selectedVariablesCount,
         dataSetAnalysisList:store.datasets.dataSetAnalysisList,
-		selectedTrendSub:store.datasets.selectedTrendSub,
+		//selectedTrendSub:store.datasets.selectedTrendSub,
 		dataSetAnalysisList:store.datasets.dataSetAnalysisList,
 		dimensionSubLevel:store.datasets.dimensionSubLevel,
 
@@ -76,8 +76,8 @@ export class VariableSelection extends React.Component {
 		if($('#signalVariableList option:selected').val() != ""){
         console.log("while creating signal")
         console.log(this.props);
-        this.signalFlag = false;
-        this.props.dispatch(updateCsLoaderValue(3))
+       this.signalFlag = false;
+       this.props.dispatch(updateCsLoaderValue(3))
         this.props.dispatch(openCsLoaderModal())
         let analysisList =[],config={}, postData={};
        config['possibleAnalysis'] = this.props.selectedAnalysis;
@@ -93,18 +93,20 @@ export class VariableSelection extends React.Component {
        // console.log(postData);
        // po
 	   if(this.props.getVarType.toLowerCase() == "measure"){
-		   postData['trend-sub'] = this.props.selectedTrendSub;
+		  // postData['trend-sub'] = this.props.selectedTrendSub;
 		   postData['advanced_settings'] = this.props.dataSetAnalysisList.measures;
 
 	   }else if(this.props.getVarType.toLowerCase() == "dimension"){
-		   postData['trend-sub'] = this.props.selectedTrendSub;
+		   //postData['trend-sub'] = this.props.selectedTrendSub;
 		   postData['advanced_settings'] = this.props.dataSetAnalysisList.dimensions;
-		   postData['dimension-sub-level'] = this.props.dimensionSubLevel;
+		   this.props.dataSetAnalysisList.dimensions.targetLevels.push(this.props.dimensionSubLevel);
+		   //postData['dimension-sub-level'] = this.props.dimensionSubLevel;
 
 	   }
 	   console.log(postData);
         this.props.dispatch(createSignal(postData));
 		}else{
+			
 			alert("Please select a variable to analyze...")
 		}
     }

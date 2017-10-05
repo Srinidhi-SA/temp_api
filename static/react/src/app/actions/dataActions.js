@@ -297,7 +297,28 @@ export function setAnalysisLevel(level,levelVal, analysisName){
 	}else{
 		analysisList = totalAnalysisList.dimensions.analysis.slice();
 	}
-	  for(var i=0;i<analysisList.length;i++){
+	
+	   for(var i=0;i<analysisList.length;i++){
+		   //analysisList[i].noOfColumnsToUse
+		   if((analysisList[i].name == analysisName) && (analysisList[i].noOfColumnsToUse != null)){
+			   let noOfCols = analysisList[i].noOfColumnsToUse;
+			   for(var j=0; j<noOfCols.length;j++){
+				   if(noOfCols[j].name == level){
+					  noOfCols[j].status = true; 
+					  if(level=="custom" && levelVal != null){
+						 noOfCols[j].value= levelVal;
+					  }
+				   }else{
+					  noOfCols[j].status = false; 
+					  if(noOfCols[j].name=="custom"){
+						 noOfCols[j].value= null;
+					  }
+				   }
+			   }
+			   analysisList[i].noOfColumnsToUse = noOfCols;
+		   }
+	   }
+	  /*for(var i=0;i<analysisList.length;i++){
 			if(analysisList[i].name.toLowerCase() == analysisName){
 			  if(level == "custom"){
 				analysisList[i].analysisLevel = level;
@@ -307,7 +328,7 @@ export function setAnalysisLevel(level,levelVal, analysisName){
 				analysisList[i].analysisLevelValue = levelVal;
 			  }
 			}
-		}
+		}*/
 		if(store.getState().signals.getVarType == "measure"){
 			totalAnalysisList.measures.analysis = analysisList
 		}else{
@@ -624,10 +645,58 @@ export function setDimensionSubLevels(selectedDimensionSubLevels){
 	}
 }
 export function selectedTrendSubList(selectedTrendSub){
-
+     //store.getState().datasets.dataSetAnalysisList
+	 //store.getState().datasets.getVarType
+	 var analysisList = store.getState().datasets.dataSetAnalysisList;
+	 
+	 if(store.getState().signals.getVarType == "dimension"){
+		 
+		
+			let keys = Object.keys(selectedTrendSub);
+		
+       for(var i in analysisList.dimensions.trendSettings){
+			  let name = analysisList.dimensions.trendSettings[i].name.toLowerCase();
+			
+			if(keys.indexOf(name) >=0){ 
+			    analysisList.dimensions.trendSettings[i].status = true;
+				 
+		     if(name.indexOf("specific measure") != -1)
+					analysisList.dimensions.trendSettings[i].selectedMeasure = selectedTrendSub[name];
+					
+			 }else{
+					 analysisList.dimensions.trendSettings[i].status = false;
+					 
+			if(name.indexOf("specific measure") != -1)
+					analysisList.dimensions.trendSettings[i].selectedMeasure = null;
+			 }
+		 }
+		 
+	    } else if(store.getState().signals.getVarType == "measure"){
+	         
+			let keys = Object.keys(selectedTrendSub);
+	
+            for(var i in analysisList.measures.trendSettings){
+			  let name = analysisList.measures.trendSettings[i].name.toLowerCase();
+			
+			if(keys.indexOf(name) >=0){ 
+			    analysisList.measures.trendSettings[i].status = true;
+				 
+		     if(name.indexOf("specific measure") != -1)
+					analysisList.measures.trendSettings[i].selectedMeasure = selectedTrendSub[name];
+					
+			 }else{
+					 analysisList.measures.trendSettings[i].status = false;
+					 
+			if(name.indexOf("specific measure") != -1)
+					analysisList.measures.trendSettings[i].selectedMeasure = null;
+			 }
+		 }
+	 }
+	 console.log(analysisList);
 		return {
 			type: "SELECTED_TREND_SUB_LIST",
-			selectedTrendSub
+			//selectedTrendSub
+			analysisList
 		}
 
 }
