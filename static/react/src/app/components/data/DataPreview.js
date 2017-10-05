@@ -236,7 +236,10 @@ export class DataPreview extends React.Component {
 		console.log(JSON.stringify(subSettingRq))
 		this.props.dispatch(dataSubsetting(subSettingRq,this.props.dataPreview.slug))
 	}
-	
+	shouldComponentUpdate(nextProps) {
+     return true;
+    }
+
 	
 	render() {
 

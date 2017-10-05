@@ -800,7 +800,10 @@ export function renameMetaDataColumn(dialog,colName,colSlug,dispatch,actionName)
 		  actions: [
 		    Dialog.CancelAction(),
 		    Dialog.OKAction(() => {
-		    	updateColumnStatus(dispatch,colSlug,$("#idRenameMetaCloumn").val(),actionName)
+		    	$(".cst_table").find("thead").find("."+colSlug).addClass("dataPreviewUpdateCol");
+		    	updateColumnName(dispatch,colSlug,$("#idRenameMetaCloumn").val());
+		    	updateColumnStatus(dispatch,colSlug,$("#idRenameMetaCloumn").val(),actionName);
+		    	
 		    })
 		  ],
 		  bsSize: 'medium',
@@ -809,6 +812,29 @@ export function renameMetaDataColumn(dialog,colName,colSlug,dispatch,actionName)
 		    //console.log('closed by clicking background.')
 		  }
 		});
+}
+function updateColumnName(dispatch,colSlug,newColName){
+	var metaData = store.getState().datasets.dataPreview;
+	var slug = store.getState().datasets.selectedDataSet;
+	var colData = metaData.meta_data.columnData;
+	for(var i=0;i<colData.length;i++){
+		if(colData[i].slug == colSlug){
+			colData[i].name = newColName;
+			break;
+		}
+	}
+	//dataPreview.meta_data.columnData = null;
+	metaData.meta_data.columnData = colData;
+	//return {
+	//	type: "DATA_PREVIEW_VALIDATION",
+	//	dataPreview,
+	//}
+	//let dataPreview = {};
+	//dataPreview = new Object(metaData);
+	//console.log(metaData.meta_data);
+	//dataPreview.meta_data = metaData.meta_data;
+	let dataPreview = Object.assign({}, metaData);
+	dispatch(dispatchDataPreview(dataPreview,slug))
 }
 export function handleColumnClick(dialog,actionName,colName,colSlug){
 	return (dispatch) => {
@@ -825,6 +851,7 @@ export function handleColumnClick(dialog,actionName,colName,colSlug){
 function deleteMetaDataColumn(dialog,colName,colSlug,dispatch,actionName){
 
 	bootbox.alert("Are you sure, you want to delete column ?",function(){
+		$("."+colSlug).addClass("dataPreviewUpdateCol");
 		updateColumnStatus(dispatch,colSlug,colName,actionName)
 	})
 }

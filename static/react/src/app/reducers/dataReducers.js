@@ -557,6 +557,15 @@ export default function reducer(state = {
         	 selectedColSlug:action.slug,
          }
     }
+    break;
+    case "DATA_PREVIEW_VALIDATION":
+    {
+      return {
+        ...state,
+        dataPreview: action.dataPreview,
+      }
+    }
+    break;
   }
   return state
 

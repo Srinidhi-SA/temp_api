@@ -14767,3 +14767,6 @@ visibility:hidden !important;
 .sub-analysis{
 	margin-left: 5%;
 }
+.dataPreviewUpdateCol{
+	background-color:red;
+}

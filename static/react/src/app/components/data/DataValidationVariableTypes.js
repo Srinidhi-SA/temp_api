@@ -30,6 +30,13 @@ export class DataValidationVariableTypes extends React.Component {
 	  this.props.dispatch(updateVLPopup(false))
   }
   render() {
+	  /*var that = this;
+	  let transformationSettings = store.getState().datasets.dataTransformSettings;
+		 transformationSettings.map((columnData,columnIndex) =>{
+       if(that.props.slug == columnData.slug){
+     	  settingsTemplate = that.renderDropdownList(columnData.columnSetting)
+       }	 
+		 });*/
    return (
           <div id="idVariableTypeList">
       	<Modal show={store.getState().datasets.variableTypeListModal} backdrop="static" onHide={this.hidePopup.bind(this)} dialogClassName="modal-colored-header">
