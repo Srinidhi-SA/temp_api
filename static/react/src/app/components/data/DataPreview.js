@@ -205,6 +205,7 @@ export class DataPreview extends React.Component {
 				ReactDOM.render(<Provider store={store}><SubSetting item = {item}/></Provider>, document.getElementById('sub_settings'));
 
 				// column subsetting ends
+
 			}
 		});
 	}
@@ -345,7 +346,7 @@ export class DataPreview extends React.Component {
 			}else{
 				return(
 						<th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)}>
-						<a href="#" data-toggle="dropdown" className={anchorCls}><i className={iconCls}></i> {thElement.name}<b className="caret"></b></a>
+						<a href="#" id={thElement.slug} data-toggle="dropdown" className={anchorCls}><i className={iconCls}></i> {thElement.name}<b className="caret"></b></a>
 						<DataValidation name={thElement.name} slug={thElement.slug} />
 						</th>
 				);

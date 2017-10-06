@@ -897,7 +897,7 @@ function updateColumnName(dispatch,colSlug,newColName){
 	let dataPreview = Object.assign({}, metaData);
 	dispatch(dispatchDataPreview(dataPreview,slug))
 }
-export function handleColumnClick(dialog,actionName,colName,colSlug,subActionName){
+export function handleColumnClick(dialog,actionName,colSlug,colName,subActionName){
 	return (dispatch) => {
 		if(actionName == RENAME){
 			renameMetaDataColumn(dialog,colName,colSlug,dispatch,actionName)
@@ -913,7 +913,8 @@ export function handleColumnClick(dialog,actionName,colName,colSlug,subActionNam
 function deleteMetaDataColumn(dialog,colName,colSlug,dispatch,actionName){
 
 	bootbox.alert("Are you sure, you want to delete column ?",function(){
-		$("."+colSlug).addClass("dataPreviewUpdateCol");
+		$(".cst_table").find("thead").find("."+colSlug).first().addClass("dataPreviewUpdateCol");
+		$(".cst_table").find("tbody").find("tr").find("."+colSlug).addClass("dataPreviewUpdateCol");
 		updateColumnStatus(dispatch,colSlug,colName,actionName)
 	})
 }
@@ -937,7 +938,6 @@ function updateColumnStatus(dispatch,colSlug,colName,actionName,subActionName){
 						for(var k=0;k<transformSettings[i].columnSetting[j].listOfDataTypes.length;k++){
 							if(transformSettings[i].columnSetting[j].listOfDataTypes[k].name == subActionName){
 								transformSettings[i].columnSetting[j].listOfDataTypes[k].status = true;
-								break;
 							}else{
 								transformSettings[i].columnSetting[j].listOfDataTypes[k].status = false;
 							}
