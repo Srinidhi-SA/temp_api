@@ -2920,7 +2920,7 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:focus, a.list-g
 .panel>.table-responsive {
 	border: 0;
 	margin-bottom: 0;
-	height:425px;
+	height: 751px;
 }
 .panel-group {
 	margin-bottom: 18px
@@ -14519,7 +14519,12 @@ a.disabled { color:#ccc !important; }
     overflow-x: hidden;
 	padding:10px 0px 0px 10px;
 }
-.scrollable-menu li { font-weight:bold; }
+.col-md-9 .panel { margin-bottom: 0px; }
+#tab_subsettings .panel-body { height:230px; }
+#tab_subsettings h5 { margin-top: 0; }
+#tab_subsettings .panel-footer { padding:5px 15px 5px}
+
+.scrollable-menu li { font-weight:bold; padding: 5px 5px 5px 0; }
 .scrollable-menu li a {font-weight:bold;  padding: 5px 5px 5px 0; background:none;}
 .scrollable-menu li a:hover {  background:none; color:#00665e !important }
 .scrollable-menu li ul { list-style-type:none; padding:0; margin:0; }
@@ -14753,7 +14758,7 @@ svg[class^='chart']{
     min-height: 156px;
 }
 #tab_visualizations .panel-body {
-    min-height: 244px;
+    min-height: 248px; padding-left: 0 !important;
 }
 .gauageMeter{
 height: 200px !important;
