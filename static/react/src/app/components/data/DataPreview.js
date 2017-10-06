@@ -496,26 +496,28 @@ export class DataPreview extends React.Component {
 
 					<div className="panel">
 					<div className="panel-body">
-					<div class="row">
-						<div className="col-md-3 col-md-offset-7 text-right">
-						{
+					<div className="row">
+						<div className="col-md-12">
+							<ul className="nav navbar-nav navbar-right">
+								{
 						(this.isSubsetted)
-						?(  <div className="form-group">
+						?( <li> <div className="form-group">
 						<input type="text" name="newSubsetName" id="newSubsetName" className="form-control input-sm" placeholder="new subset name"/>
-						</div>)
+						</div></li>)
 						:(<div/>)
 						}
-						</div>
-						<div className="col-md-2 text-right">
-						<Button onClick={this.closePreview.bind(this)}> {this.buttons.close.text} </Button>
-					{
+								
+								<li><Button onClick={this.closePreview.bind(this)}> {this.buttons.close.text} </Button></li>
+								<li>{
 						(this.isSubsetted)
 						?(<Button onClick={this.applyDataSubset.bind(this)} bsStyle="primary">Save Subset</Button>)
 						:(<Button onClick={this.moveToVariableSelection.bind(this)} bsStyle="primary"> {this.buttons.create.text}</Button>)
 
-					}
+					}</li>
+							</ul>
 						</div>
 					</div>
+					 
 
 					<DataUploadLoader/>
 					</div>
