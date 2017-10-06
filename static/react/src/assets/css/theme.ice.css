@@ -20,17 +20,14 @@
  
 	vertical-align: top;
 }
-th .ma-checkbox.inline {
-    padding-left: 4px;
-}
+ .cst-scroll-panel th .ma-checkbox { padding: 0 4px;}
 .tablesorter-ice .header,
 .tablesorter-ice .tablesorter-header {
 	background-color: #f6f8f9;
 	background-position: center right;
 	background-repeat: no-repeat;
 	/*background-image: url(data:image/gif;base64,R0lGODlhDAAMAMQAAAJEjAJCiwJBigJAiANFjgNGjgNEjQRIkQRHkANIkAVMlAVQmAZWnQZUnAdYoAhdpAhZoAlhqQlepQliqQppsApmrQxutgtutQtutAxwtwxwtg1yug1zugxtsw1yuP8A/yH5BAEAAB8ALAAAAAAMAAwAAAUx4Cd+3GiOW4ado2d9VMVm1xg9ptadTsP+QNZEcjoQTBDGCAFgLRSfQgCYMAiCn8EvBAA7);*/
-	 background-image: url(../images/ice-unsorted.gif);
-	padding: 0px 15px 10px 5px;
+	 background-image: url(../images/ice-unsorted.gif);	 
 	white-space: normal;
 	cursor: pointer;
 }
