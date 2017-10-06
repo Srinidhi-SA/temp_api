@@ -14523,6 +14523,9 @@ a.disabled { color:#ccc !important; }
 #tab_subsettings .panel-body { height:230px; }
 #tab_subsettings h5 { margin-top: 0; }
 #tab_subsettings .panel-footer { padding:5px 15px 5px}
+.panel-body .navbar-right { margin-right: 0px; }
+.panel-body .navbar-right li { padding: 5px;  }
+.panel-body .navbar-right li .form-group { margin-bottom:0; }
 
 .scrollable-menu li { font-weight:bold; padding: 5px 5px 5px 0; }
 .scrollable-menu li a {font-weight:bold;  padding: 5px 5px 5px 0; background:none;}
