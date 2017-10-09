@@ -338,15 +338,15 @@ export class DataPreview extends React.Component {
 					cls = cls + " greyout-col";
 
 				return(
-						<th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)} title={thElement.ignoreSuggestionMsg}>
+						<th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)} title={thElement.ignoreSuggestionMsg} className="dropdown">
 						<a href="#" data-toggle="dropdown" className={anchorCls}><i className={iconCls}></i> {thElement.name}<b className="caret"></b></a>
                          <DataValidation name={thElement.name} slug={thElement.slug} />
 						</th>
 				);
 			}else{
 				return(
-						<th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)}>
-						<a href="#" id={thElement.slug} data-toggle="dropdown" className={anchorCls}><i className={iconCls}></i> {thElement.name}<b className="caret"></b></a>
+						<th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)} className="dropdown">
+						<a href="#" data-toggle="dropdown" id={thElement.slug} className={anchorCls}><i className={iconCls}></i> {thElement.name}<b className="caret"></b></a>
 						<DataValidation name={thElement.name} slug={thElement.slug} />
 						</th>
 				);
