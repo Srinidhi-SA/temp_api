@@ -371,14 +371,16 @@ export class SubSetting extends React.Component {
             </div>
             <div id="pnl_tbset" className="panel-collapse collapse in" aria-expanded="true">
               <div className="panel-body">
-                {subsettingsTemplate}
-                <hr/>
-                <div class="text-right" id="saveSubSetting">
+                {subsettingsTemplate}                
+              </div>
+			  <div class="panel-footer">
+			  <div class="text-right" id="saveSubSetting">
                   <a href="javascript:void(0)" class="btn btn-alt4" id="saveButton" disabled onClick={this.saveSubSetting.bind(this)}>
                     Save
                   </a>
                 </div>
-              </div>
+			  </div>
+			  
             </div>
           </div>
         </div>
