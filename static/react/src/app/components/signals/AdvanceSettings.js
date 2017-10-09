@@ -41,9 +41,12 @@ export class AdvanceSettings extends React.Component {
 	  //console.log(e.target.id);
          var that = this;
 		var checkedElments= $('.possibleAnalysis:checked');
+		
 		var level=null, levelVal=null,analysisName="null";
 		  checkedElments.each(function(){
+			  
 			  switch($(this).val().toLowerCase()){
+				  
 				  case "association":
 				      level = $("input[name='association-level']:checked").val();
 					  levelVal = null;
@@ -51,30 +54,34 @@ export class AdvanceSettings extends React.Component {
 					 if(level.trim().toLowerCase() == "custom"){
 						 levelVal = $("#association-level-custom-val").val();
 					 }
-					// alert(level + " " + levelVal);
+					//alert(level + " " + levelVal + " " + analysisName);
 				     that.props.dispatch(setAnalysisLevel(level,levelVal,analysisName));
 				  break;
-				  case "performance analysis":
+				  
+				  case "performance":
+				 // case "performance analysis":
 				  
 				      level = $("input[name='performance-level']:checked").val();
+					  //alert($("input[name='performance-level']:checked").val())
 					  levelVal = null;
-					  analysisName ="performance analysis";
+					  analysisName ="performance";
 					 if(level.trim().toLowerCase() == "custom"){
 						 levelVal = $("#performance-level-custom-val").val();
 					 }
-					 //alert(level + " " + levelVal);
+					 //alert(level + " " + levelVal + " " + analysisName);
 					 that.props.dispatch(setAnalysisLevel(level,levelVal,analysisName));
 				  break;
 				  
-				  case "influencers":
+				  case "influencer":
+				  //case "influencers":
 				  
-				      level = $("input[name='influencers-level']:checked").val();
+				      level = $("input[name='influencer-level']:checked").val();
 					  levelVal = null;
-					  analysisName ="influencers";
+					  analysisName ="influencer";
 					 if(level.trim().toLowerCase() == "custom"){
-						 levelVal = $("#influencers-level-custom-val").val();
+						 levelVal = $("#influencer-level-custom-val").val();
 					 }
-					// alert(level + " " + levelVal);
+					 //alert(level + " " + levelVal + " " + analysisName);
 				     that.props.dispatch(setAnalysisLevel(level,levelVal,analysisName));
 				  break;
 			  }
@@ -142,7 +149,7 @@ export class AdvanceSettings extends React.Component {
 	 
 	 
   }
-  renderAnalysisList(analysisList){
+  renderAnalysisList(analysisList,trendSettings){
 	/*  let list =  analysisList.map((metaItem,metaIndex) =>{
 		  let id = "chk_analysis"+ metaIndex;
 		return(<li><div key={metaIndex} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisList.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div></li>); 
@@ -159,17 +166,21 @@ export class AdvanceSettings extends React.Component {
 		
 	  var that = this;
 	  let list =   analysisList.map((metaItem,metaIndex) =>{
+		  console.log(metaItem);
 		  let id = "chk_analysis"+ metaIndex;
 		  
-		  if(metaItem.displayName.indexOf("Trend") != -1){
+		  if(metaItem.name.indexOf("trend") != -1){
 			  
-			   return(
-				<li><div key={metaIndex} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisList.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>
-					<ul className="list-unstyled">
-					  <li ><div className="col-md-4"><div className="ma-checkbox inline sub-analysis"><input className="possibleSubAnalysis" id="trend-count" type="checkbox" value="Count"   /><label htmlFor="trend-count">Count</label></div></div><div class="clearfix"></div></li>
-					  <li >
-					  <div className="col-md-4">
-					  <div className="ma-checkbox inline sub-analysis"><input className="possibleSubAnalysis" id="trend-specific-measure" type="checkbox" value="Specific Measure" /><label htmlFor="trend-specific-measure">Specific Measure</label></div> 
+			  let trendSub = trendSettings.map((trendSubItem,trendSubIndex)=>{
+				  let val = trendSubItem.name;
+				  if(trendSubItem.name.toLowerCase() == "count"){
+					  return(
+					     <li ><div className="col-md-4"><div className="ma-checkbox inline sub-analysis"><input className="possibleSubAnalysis" id="trend-count" type="checkbox" value="count"   /><label htmlFor="trend-count">Count</label></div></div><div class="clearfix"></div></li>
+					  );
+				  }else if(trendSubItem.name.toLowerCase().indexOf("specific measure") != -1){
+					  return(
+					  <li ><div className="col-md-4">
+					  <div className="ma-checkbox inline sub-analysis"><input className="possibleSubAnalysis" id="trend-specific-measure" type="checkbox" value="specific measure" /><label htmlFor="trend-specific-measure">Specific Measure</label></div> 
 					  </div>
 					  <div className="col-md-8"> <select id="select-measure" className="form-control ">
 					  {store.getState().datasets.dataSetMeasures.map(function(item,index){
@@ -179,77 +190,77 @@ export class AdvanceSettings extends React.Component {
 					  </select>
 					  </div>
 					 </li>
+					 );
+				  }
+			  })
+			   return(
+				<li><div key={metaIndex} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisList.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>
+					<ul className="list-unstyled">
+					
+					{trendSub}
+					  
 					 
 					</ul>
 				
 				 </li>);
 	        
-		  }else if(metaItem.displayName.indexOf("Performance") != -1){
-			   return(
-				<li><div key={metaIndex} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisList.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>
-					{/*<ul className="list-unstyled">{metaItem.analysisSubTypes.map((subItem,subIndex)=>{
-					  return(<li ><div key={subIndex} className="ma-checkbox inline sub-analysis"><input id={id} type="checkbox" className="possibleSubAnalysis" value={subItem.name} /><label htmlFor={metaIndex}>{subItem.name}</label></div></li>)
-					})}</ul>*/}
-					<div class="clearfix"></div>
-					<div className="col-md-7 md-pl-20">
-					<div class="btn-group radioBtn" data-toggle="buttons">
-						<label class="btn btn-default active" ><input type="radio"  className="performance-level"  id="performance-level-low" name="performance-level" value="Low" /> Low</label> 
-						<label class="btn btn-default"  ><input type="radio"  className="performance-level"  id="performance-level-med" name="performance-level" value="Medium" /> Medium</label> 
-						<label class="btn btn-default"  ><input type="radio"  className="performance-level" id="performance-level-high"  name="performance-level" value="High" /> High</label> 
-						<label class="btn btn-default" ><input type="radio"   className="performance-level" id="performance-level-all"  name="performance-level" value="All" /> All</label>
-						<label class="btn btn-default" ><input type="radio"   className="performance-level"  id="performance-level-custom" name="performance-level" value="Custom" /> Custom</label>
-					</div></div>
-					<div className="col-md-5 md-p-0">
-						<input type="text" placeholder={performancePlaceholder} className="performance-level form-control" id="performance-level-custom-val" name="performance-level-custom-val"/></div>
-
-				 </li>);
-	        
-		  }else if(metaItem.displayName.indexOf("Influencer") != -1){
-			   return(
-				<li><div key={metaIndex} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisList.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>
-					{/*<ul className="list-unstyled">{metaItem.analysisSubTypes.map((subItem,subIndex)=>{
-					  return(<li ><div key={subIndex} className="ma-checkbox inline sub-analysis"><input id={id} type="checkbox" className="possibleSubAnalysis" value={subItem.name} /><label htmlFor={metaIndex}>{subItem.name}</label></div></li>)
-					})}</ul>*/}
-				<div class="clearfix"></div>
-				<div className="col-md-7 md-pl-20">
-					<div class="btn-group radioBtn" data-toggle="buttons">
-						<label class="btn btn-default active"><input type="radio" className="influencers-level" id="influencers-level-low" name="influencers-level" value="Low" /> Low</label> 
-						<label class="btn btn-default"><input type="radio" className="influencers-level" id="influencers-level-med" name="influencers-level" value="Medium" /> Medium</label> 
-						<label class="btn btn-default"><input type="radio" className="influencers-level" id="influencers-level-high" name="influencers-level" value="High" /> High</label> 
-						<label class="btn btn-default"><input type="radio" className="influencers-level" id="influencers-level-all" name="influencers-level" value="All" /> All</label>
-						<label class="btn btn-default"><input type="radio"  className="influencers-level" id="influencers-level-custom" name="influencers-level" value="Custom" /> Custom</label>
-					</div></div>
-					<div className="col-md-5 md-p-0">
-						<input type="text" placeholder={influencersPlaceholder} className="influencers-level form-control" id="influencers-level-custom-val" name="influencers-level-custom-val"/></div>
-				 </li>);
-	       
-		  }else if(metaItem.displayName.indexOf("Association") != -1){
-			   return(
-				<li><div key={metaIndex} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisList.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>
-					{/*<ul className="list-unstyled">{metaItem.analysisSubTypes.map((subItem,subIndex)=>{
-					  return(<li ><div key={subIndex} className="ma-checkbox inline sub-analysis"><input id={id} type="checkbox" className="possibleSubAnalysis" value={subItem.name} /><label htmlFor={metaIndex}>{subItem.name}</label></div></li>)
-					})}</ul>*/}
-				<div className="clearfix"></div>
-				
-				<div className="col-md-7 md-pl-20">
-					<div class="btn-group radioBtn" data-toggle="buttons">
-						<label class="btn btn-default active"><input type="radio" className="association-level" id="association-level-low" name="association-level" value="Low" /> Low</label> 
-						<label class="btn btn-default"><input type="radio" className="association-level" id="association-level-med" name="association-level" value="Medium" /> Medium</label> 
-						<label class="btn btn-default"><input type="radio" className="association-level" id="association-level-high" name="association-level" value="High" /> High</label> 
-						<label class="btn btn-default"><input type="radio" className="association-level" id="association-level-all" name="association-level" value="All" /> All</label>
-						<label class="btn btn-default"><input type="radio"  className="association-level" id="association-level-custom" name="association-level" value="Custom" /> Custom</label>
-						</div></div>
-						<div className="col-md-5 md-p-0">
-						<input type="text" placeholder={associationPlaceholder} className="association-level form-control" id="association-level-custom-val" name="association-level-custom-val"/></div>
-					
-				 </li>);
-	       
 		  }else{
+			  
+			  var countOptions=null, options=[],customValueInput=null;
+			  
+			  if(metaItem.noOfColumnsToUse!= null){
+				  
+				  options = metaItem.noOfColumnsToUse.map((subItem,subIndex)=>{
+					  let clsName = metaItem.name +"-level";
+					  let idName = metaItem.name +"-level-"+subItem.name;
+					  let labelCls ="btn btn-default";
+					  if(subIndex == 0){
+						  labelCls ="btn btn-default active";
+					  }
+					 // console.log(metaItem.name +"-level-"+subItem.name)
+					  if(subItem.name.indexOf("custom") !=-1){
+						  let  customClsName = metaItem.name +"-level form-control";
+						  let customIdName = metaItem.name +"-level-custom-val";
+						  
+			          customValueInput =   <input type="text" placeholder={associationPlaceholder} className={customClsName} id={customIdName} name={customIdName}/>
+					  }
+					  
+				      return(
+					     <label key={subIndex} class={labelCls}><input type="radio" className={clsName} id={idName} name={clsName} value={subItem.name} />{subItem.displayName}</label> 
+					  );
+					  
+					  
+					  
+				  });
+				  
+			  
+			  
+			  
+			 countOptions  = (function(){
+				 return(
+				<div>
+				   <div className="col-md-7 md-pl-20">
+					<div class="btn-group radioBtn" data-toggle="buttons">
+					    {options}
+						
+						</div>
+					</div>
+					<div className="col-md-5 md-p-0">
+					   {customValueInput}
+					</div>
+		     	</div>
+				);
+			})();
+		}
+			  
 	  return(
 		<li><div key={metaIndex} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisList.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>
 			{/*<ul className="list-unstyled">{metaItem.analysisSubTypes.map((subItem,subIndex)=>{
 			  return(<li ><div key={subIndex} className="ma-checkbox inline sub-analysis"><input id={id} type="checkbox" className="possibleSubAnalysis" value={subItem.name} /><label htmlFor={metaIndex}>{subItem.name}</label></div></li>)
 			})}</ul>*/}
+			<div className="clearfix"></div>
+			{countOptions}
+			
          </li>);
 	    }
 	  });
@@ -327,13 +338,16 @@ export class AdvanceSettings extends React.Component {
 	  let renderPossibleAnalysis = null, renderSubList=null;
 	  if(dataPrev){
 		  let possibleAnalysis = store.getState().datasets.dataSetAnalysisList;
+		  let trendSettings = null;
 		  if(!$.isEmptyObject(possibleAnalysis)){
 			  if(this.props.getVarType == "dimension"){
 				  possibleAnalysis = possibleAnalysis.dimensions.analysis;
-				  renderPossibleAnalysis = this.renderAnalysisList(possibleAnalysis);
+				 trendSettings = store.getState().datasets.dataSetAnalysisList.dimensions.trendSettings;
+				  renderPossibleAnalysis = this.renderAnalysisList(possibleAnalysis,trendSettings);
 			  }else if(this.props.getVarType == "measure"){
 				  possibleAnalysis = possibleAnalysis.measures.analysis;
-				  renderPossibleAnalysis = this.renderAnalysisList(possibleAnalysis);
+				  trendSettings = store.getState().datasets.dataSetAnalysisList.measures.trendSettings;
+				  renderPossibleAnalysis = this.renderAnalysisList(possibleAnalysis,trendSettings);
 			  }
 
 		  }

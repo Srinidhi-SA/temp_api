@@ -183,6 +183,7 @@ export function  subTreeSetting(urlLength, length,paramL2) {
 				$(function(){
 			       $("#tab_visualizations #pnl_visl").addClass("in");
                    $("#tab_visualizations a").removeClass("collapsed");
+                   $("#tab_visualizations #pnl_visl").removeAttr("style");
 				});
 			}
 
@@ -207,6 +208,9 @@ export function  subTreeSetting(urlLength, length,paramL2) {
 
 			$("#tab_statistics #pnl_stc").addClass("in");
 			$("#tab_statistics a").removeClass("collapsed");
+      $("#tab_statistics #pnl_stc").removeAttr("style");
+
+
 		}
 
 	}
@@ -223,6 +227,7 @@ export function  subTreeSetting(urlLength, length,paramL2) {
       				$(function(){
 			       $("#tab_subsettings #pnl_tbset").addClass("in");
                    $("#tab_subsettings a").removeClass("collapsed");
+                    $("#tab_subsettings #pnl_tbset").removeAttr("style");
                    $("#saveSubSetting").show();
 				});
 

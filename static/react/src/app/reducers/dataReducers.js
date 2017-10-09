@@ -34,12 +34,14 @@ export default function reducer(state = {
   dataLoaderText: "initialized the filter parameters",
   dataSetAnalysisList: {},
   selectedDimensionSubLevels: null,
-  selectedTrendSub: [],
+ // selectedTrendSub: [],
   dimensionSubLevel: [],
   updatedSubSetting: default_updatedSubSetting,
   subsettingDone: false,
   subsettedSlug: "",
-  loading_message:[]
+  loading_message:[],
+	data_sorton:"",
+	data_sorttype:""
 }, action) {
   console.log("In DATA reducer!!");
   console.log(action);
@@ -460,7 +462,8 @@ export default function reducer(state = {
       {
         return {
           ...state,
-          selectedTrendSub: action.selectedTrendSub
+         // selectedTrendSub: action.selectedTrendSub
+		  dataSetAnalysisList: action.analysisList
         }
       }
       break;
@@ -531,6 +534,13 @@ export default function reducer(state = {
       }
     }
     break;
+		case "SORT_DATA":{
+			return{
+				...state,
+				data_sorton:action.sorton,
+				data_sorttype:action.sorttype
+			}
+		}
   }
   return state
 

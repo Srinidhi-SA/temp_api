@@ -87,14 +87,14 @@ export class AppsScoreList extends React.Component {
       this.props.dispatch(getAppsScoreList(1));
     }
   }
-  
+
    doSorting(sortOn, type){
 	     this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/scores?sort=' + sortOn + '&type='+type);
-    
+
 	    this.props.dispatch(storeAppsScoreSortElements(sortOn,type));
 	    this.props.dispatch(getAppsScoreList(1));
      }
-	 
+
 
   render() {
     console.log("apps score list is called##########3");
@@ -111,11 +111,11 @@ export class AppsScoreList extends React.Component {
         document.getElementById('score_insights').value = "";
       }
     //search element ends..
-	
+
 	 if(this.props.history.location.sort == "" || this.props.history.location.sort == null){
 		          this.props.dispatch(storeAppsScoreSortElements("",null));
 	          }
-			  
+
     const scoreList = store.getState().apps.scoreList.data;
     if (scoreList) {
       const pages = store.getState().apps.scoreList.total_number_of_pages;
@@ -147,7 +147,7 @@ export class AppsScoreList extends React.Component {
               <div className="card-footer">
                 <div className="left_div">
                   <span className="footerTitle"></span>{sessionStorage.userName}
-                  <span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy h:MM")}</span>
+                  <span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy HH:MM")}</span>
                 </div>
 
                 <div className="card-deatils">
@@ -196,9 +196,9 @@ export class AppsScoreList extends React.Component {
 
                   <input type="text" name="score_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Score Insights" id="score_insights" className="form-control" placeholder="Search Score insights..."/>
                   <span className="input-group-btn">
-                    <button type="button" className="btn btn-default" title="Select All Card">
+                    {/*<button type="button" className="btn btn-default" title="Select All Card">
                       <i className="fa fa-address-card-o fa-lg"></i>
-                    </button>
+                    </button>*/}
                     <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false">
                       <i className="fa fa-sort-alpha-asc fa-lg"></i>
                       <span className="caret"></span>

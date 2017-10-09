@@ -17,7 +17,8 @@ export class Login extends React.Component {
     super();
     this.state = {
       uId: '',
-      pwd: ''
+      pwd: '',
+      errmsg:""
     };
 	document.body.className = "ma-splash-screen";
   }
@@ -34,11 +35,21 @@ export class Login extends React.Component {
     //this.props.dispatch(authenticateFunc($("#username").val(),$("#password").val()))
     console.log("checking login form fields");
     // console.log(this.state.uId);
+    if(this.state.uId==""||this.state.uId==null){
+    this.state.errmsg = "Please enter the username!"
+    $("#errormsg").text(this.state.errmsg);
+  }else if(this.state.pwd==""||this.state.pwd==null){
+    this.state.errmsg = "Please enter the password!"
+    $("#errormsg").text(this.state.errmsg);
+  }else{
     this.props.dispatch(authenticateFunc(this.state.uId, this.state.pwd))
+    $("#errormsg").text(this.state.errmsg);
+  }
   }
   render() {
     console.log("login is called!!")
-    // console.log(this.props.login_response)
+    console.log(this.props)
+    this.state.errmsg = this.props.errmsg
 
     if (sessionStorage.userToken) {
       console.log("authorized!!!");
@@ -91,7 +102,7 @@ export class Login extends React.Component {
                         <div className="form-group login-submit">
                           <button onClick={this.doAuth.bind(this)} className="btn btn-primary">SIGN IN</button>
                         </div>
-                        <div className = "text-danger text-center">{this.props.errmsg}</div>
+                        <div className = "text-danger text-center" id="errormsg">{this.state.errmsg}</div>
 
                       </div>
                     </div>
