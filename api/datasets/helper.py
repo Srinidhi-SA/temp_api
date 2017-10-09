@@ -48,4 +48,5 @@ def convert_metadata_according_to_transformation_setting(meta_data, transformati
         pass
 
     meta_data['modified'] = True
+    meta_data["transformation_setting"] = transformation_setting
     return meta_data

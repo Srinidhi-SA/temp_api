@@ -196,7 +196,8 @@ class DatasetView(viewsets.ModelViewSet):
 
     @detail_route(methods=['put'])
     def meta_data_modifications(self, request, slug=None):
-    
+
+
         try:
             instance = self.get_object_from_all()
         except:
@@ -204,7 +205,10 @@ class DatasetView(viewsets.ModelViewSet):
 
         from helper import convert_metadata_according_to_transformation_setting
 
-        meta_data = convert_metadata_according_to_transformation_setting(instance.meta_data)
+        data = request.data
+        ts = data.get('config')
+
+        meta_data = convert_metadata_according_to_transformation_setting(instance.meta_data, transformation_setting=ts)
         return Response(meta_data)
 
 
