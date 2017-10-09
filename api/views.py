@@ -572,6 +572,7 @@ def write_into_databases(job_type, object_slug, results):
         for d in results.get('sampleData'):
             da.append(map(str, d))
         results['sampleData'] = da
+        results["modified"] = False
 
         dataset_object.meta_data = json.dumps(results)
         dataset_object.analysis_done = True
@@ -704,7 +705,11 @@ def get_info(request):
             'audioset': 'Audioset Created'
         }
 
-        all_objects = t[type].objects.filter(created_by=user)
+        all_objects = t[type].objects.filter(
+            created_by=user,
+            analysis_done=True
+        )
+
         return {
             'count': len(all_objects),
             'displayName': display[type]

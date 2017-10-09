@@ -179,7 +179,6 @@ class DatasetView(viewsets.ModelViewSet):
                 )
             temp_details['created_by'] = request.user.id
 
-
             serializer = DatasetSerializer(data=temp_details)
             if serializer.is_valid():
                 dataset_object = serializer.save()
@@ -194,3 +193,18 @@ class DatasetView(viewsets.ModelViewSet):
         except Exception as err:
             return creation_failed_exception(err)
         return creation_failed_exception(serializer.errors)
+
+    @detail_route(methods=['put'])
+    def meta_data_modifications(self, request, slug=None):
+    
+        try:
+            instance = self.get_object_from_all()
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
+        from helper import convert_metadata_according_to_transformation_setting
+
+        meta_data = convert_metadata_according_to_transformation_setting(instance.meta_data)
+        return Response(meta_data)
+
+

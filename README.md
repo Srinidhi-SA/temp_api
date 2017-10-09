@@ -19,15 +19,26 @@ python manage.py startapp <app_name>
 ```bash
 #> ls
 api---
-  app_name---
+  datasets---
     |----- __init__.py
     |----- views.py
-    |----- models.py
-    etc.
-  model.py
-  utils.py
-  views.py
+    |----- serializer.py
+    |----- urls.py
+  C3Chart----
+    |----- __init__.py
+    |----- c3charts.py
+    |----- config.py
+  lib--------
+    |----- fab
+  model.py           # model
+  utils.py           # serializers and other classes
+  views.py           # views
   test.py
+  helper.py          # some helper function
+  exceptions.py      # creation and updation exceptions
+  pagination.py      # how to paginate
+  query_filtering.py # filter model
+  redis_access.py
 ```
 ```python
 # Make changes in models, serializers, views, test
@@ -41,6 +52,6 @@ api---
 
 # use makemigrations and migrate to create models DB
 
-# use api/usrls.py to register routers
+# use api/urls.py to register routers
 
 ```

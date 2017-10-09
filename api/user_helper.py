@@ -117,47 +117,37 @@ from django.views.decorators.csrf import csrf_exempt
 def upload_photo(request):
     user = request.user
 
-    image = request.FILES.get('image')
+
     other_details = request.POST
     print other_details.get('website')
 
     data = dict()
-    data['image'] = image
-    if 'website' in other_details:
-        data['website'] = other_details.get('website')
 
-    if 'bio' in other_details:
-        data['bio'] = other_details.get('bio')
-
-    if 'phone' in other_details:
-        data['phone'] = other_details.get('phone')
-
-    # data['user'] = user
     obj = Profile.objects.filter(user=user).first()
 
     if obj is None:
         obj = Profile(user=user)
         obj.save()
 
-    obj.photo = image
-    obj.website = data['website']
-    obj.bio = data['bio']
-    obj.phone = data['phone']
+    if 'image' in request.FILES:
+        image = request.FILES.get('image')
+        data['image'] = image
+        obj.photo = image
+
+    if 'website' in other_details:
+        data['website'] = other_details.get('website')
+        obj.website = data['website']
+
+    if 'bio' in other_details:
+        data['bio'] = other_details.get('bio')
+        obj.bio = data['bio']
+
+    if 'phone' in other_details:
+        data['phone'] = other_details.get('phone')
+        obj.phone = data['phone']
+
     obj.save()
 
-
-    # serializer = UserProfileSerializer(
-    #     instance=obj,
-    #     data=data,
-    #     partial=True
-    # )
-    #
-    # if serializer.is_valid():
-    #     obj = serializer.save()
-    #     return Response(serializer.data)
-
-    # user.user_profile.photo = image
-    # user.save()
     return Response(obj.json_serialized())
 
 
@@ -180,9 +170,6 @@ def get_profile_image(request):
     response = HttpResponse(image_buffer, content_type=content_type)
     response['Content-Disposition'] = 'attachment; filename="%s"' % os.path.basename(image.path)
     return response
-
-
-
 
 
 class UserProfileView(generics.CreateAPIView, generics.UpdateAPIView):

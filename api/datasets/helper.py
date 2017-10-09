@@ -39,3 +39,13 @@ def convert_time_to_human(data):
             value = data[key]
             data[key] = humanize_datetime.humanize_strptime(value)
     return data
+
+
+def convert_metadata_according_to_transformation_setting(meta_data, transformation_setting=None):
+    meta_data = json.loads(meta_data)
+
+    if transformation_setting is None:
+        pass
+
+    meta_data['modified'] = True
+    return meta_data
