@@ -895,7 +895,7 @@ function updateColumnName(dispatch,colSlug,newColName){
 	}
 	metaData.meta_data.columnData = colData;
 	let dataPreview = Object.assign({}, metaData);
-	dispatch(dispatchDataPreview(dataPreview,slug))
+	//handleColumnActions(dataPreview,slug,dispatch)
 }
 export function handleColumnClick(dialog,actionName,colSlug,colName,subActionName){
 	return (dispatch) => {
@@ -926,6 +926,7 @@ export function updateVLPopup(flag){
 }
 function updateColumnStatus(dispatch,colSlug,colName,actionName,subActionName){
 	var transformSettings = store.getState().datasets.dataTransformSettings.slice();
+	var slug = store.getState().datasets.selectedDataSet;
 	for(var i =0;i<transformSettings.length;i++){
 		if(transformSettings[i].slug == colSlug){
 			for(var j=0;j<transformSettings[i].columnSetting.length;j++){
@@ -950,7 +951,9 @@ function updateColumnStatus(dispatch,colSlug,colName,actionName,subActionName){
 			break;
 		}
 	}
-	dispatch(updateTransformSettings(transformSettings))
+	dispatch(handleColumnActions(transformSettings,slug))
+	dispatch(updateTransformSettings(transformSettings));
+	
 }
 function updateTransformSettings(transformSettings){
 	return{
@@ -964,4 +967,47 @@ export function updateColSlug(slug){
 		type: "DATASET_SELECTED_COLUMN_SLUG",
 		slug
 	}
+}
+
+export function handleColumnActions(transformSettings,slug) {
+	return (dispatch) => {
+		return fetchModifiedMetaData(transformSettings,slug).then(([response, json]) =>{
+			if(response.status === 200){
+				dispatch(fetchDataValidationSuccess(json))
+			}
+			else{
+				dispatch(fetchDataPreviewError(json))
+			}
+		})
+	}
+}
+
+function fetchModifiedMetaData(transformSettings,slug) {
+	var tran_settings = {};
+	tran_settings.existingColumns = transformSettings;
+	return fetch(API+'/api/datasets/'+slug+'/meta_data_modifications/',{
+		method: 'put',
+		headers: getHeader(sessionStorage.userToken),
+		body:JSON.stringify({
+			config:tran_settings,
+		}),
+	}).then( response => Promise.all([response, response.json()]));
+}
+
+export function fetchDataValidationSuccess(dataPreview){
+	return{
+		type: "DATA_VALIDATION_PREVIEW",
+		dataPreview
+	}
+}
+export function updateTranformColumns(){
+	var transformSettings = store.getState().datasets.dataTransformSettings;
+		$(".cst_table").find("thead").find("tr").find("th").each(function(){
+			for(var i =0;i<transformSettings.length;i++){
+				if(transformSettings[i].name == this.innerText && transformSettings[i].status == true){
+				//$(this).addClass("dataPreviewUpdateCol");
+			}
+		}
+	});
+	
 }

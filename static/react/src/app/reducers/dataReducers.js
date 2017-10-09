@@ -75,7 +75,7 @@ export default function reducer(state = {
           selectedDataSet: action.slug,
           subsettedSlug: "",
           subsettingDone: false,
-          dataTransformSettings:action.dataPreview.meta_data.transformation_settings,
+          dataTransformSettings:action.dataPreview.meta_data.transformation_settings.existingColumns,
         }
       }
       break;
@@ -570,6 +570,19 @@ export default function reducer(state = {
     	}
     }
     break;
+    
+    case "DATA_VALIDATION_PREVIEW":
+    {
+      return {
+        ...state,
+        dataPreview: action.dataPreview,
+        subsettedSlug: "",
+        subsettingDone: true,
+        dataTransformSettings:action.dataPreview.meta_data.transformation_settings.existingColumns,
+      }
+    }
+    break;
+    
   }
   return state
 

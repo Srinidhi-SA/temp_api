@@ -36,7 +36,6 @@ export class DataValidation extends React.Component {
 			<li key={index}><span>{actionNames.displayName}</span>
 			<ul>{actionNames.listOfDataTypes.map((subItem,subIndex)=>{
 				var id=colSlug+subIndex;
-				console.log(colName);
 				  return(<li key={id} className="cursor"><div key={id} className="ma-radio inlinev"><input id={id} type="radio"   onClick={this.handleChangeTypeEvent.bind(this,actionNames.actionName,colSlug,colName,subItem.name)} checked={subItem.status} name={colSlug}  value={subItem.name} /><label htmlFor={id}>{subItem.displayName}</label></div></li>)
 				})}</ul>
 			 </li>)     

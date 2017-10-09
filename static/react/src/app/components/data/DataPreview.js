@@ -8,9 +8,9 @@ import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {C3Chart} from "../c3Chart";
 import ReactDOM from 'react-dom';
-import {hideDataPreview,getDataSetPreview,renameMetaDataColumn} from "../../actions/dataActions";
+import {hideDataPreview,getDataSetPreview,renameMetaDataColumn,updateTranformColumns} from "../../actions/dataActions";
 import {dataSubsetting,clearDataPreview,clearLoadingMsg} from "../../actions/dataUploadActions"
-import {Button} from "react-bootstrap";
+import {Button,Dropdown,Menu,MenuItem} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"
 import {showHideSideChart,showHideSideTable} from "../../helpers/helper.js"
 import {isEmpty} from "../../helpers/helper";
@@ -31,7 +31,8 @@ import Dialog from 'react-bootstrap-dialog';
 		modelSlug:store.apps.modelSlug,
 		signal: store.signals.signalAnalysis,
 		subsettingDone:store.datasets.subsettingDone,
-		subsettedSlug:store.datasets.subsettedSlug};
+		subsettedSlug:store.datasets.subsettedSlug,
+		dataTransformSettings:store.datasets.dataTransformSettings};
 })
 
 
@@ -161,8 +162,9 @@ export class DataPreview extends React.Component {
 
 	}
 
-
-
+  componentDidUpdate(){
+	updateTranformColumns();
+  }
 	setSideElements(e){
 		
 		//renderFlag=true;
@@ -234,7 +236,8 @@ export class DataPreview extends React.Component {
 		this.new_subset = $("#newSubsetName").val()
 		//alert(this.new_subset)
 		let subSettingRq = {'filter_settings':store.getState().datasets.updatedSubSetting,
-													'name':this.new_subset,'subsetting':true};
+													'name':this.new_subset,'subsetting':true,
+													'transform_settings':store.getState().datasets.dataTransformSettings};
 		console.log(JSON.stringify(subSettingRq))
 		this.props.dispatch(dataSubsetting(subSettingRq,this.props.dataPreview.slug))
 	}
@@ -332,22 +335,22 @@ export class DataPreview extends React.Component {
 				}
 
 
-				const anchorCls =thElement.slug + " dropdown-toggle";
+				const anchorCls =thElement.slug + " dropdown-toggle cursor";
 
 				if(thElement.ignoreSuggestionFlag){
 					cls = cls + " greyout-col";
 
 				return(
-						<th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)} title={thElement.ignoreSuggestionMsg}>
-						<a href="#" data-toggle="dropdown" className={anchorCls}><i className={iconCls}></i> {thElement.name}<b className="caret"></b></a>
+						<th key={thIndex}  className={cls} onClick={this.setSideElements.bind(this)} title={thElement.ignoreSuggestionMsg}>
+						<a className={anchorCls} data-toggle="dropdown" href="javascript:void(0)"><i className={iconCls}></i>{thElement.name}<b className="caret"></b></a>
                          <DataValidation name={thElement.name} slug={thElement.slug} />
 						</th>
 				);
 			}else{
 				return(
 						<th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)}>
-						<a href="#" id={thElement.slug} data-toggle="dropdown" className={anchorCls}><i className={iconCls}></i> {thElement.name}<b className="caret"></b></a>
-						<DataValidation name={thElement.name} slug={thElement.slug} />
+						<a className={anchorCls} data-toggle="dropdown" href="javascript:void(0)"><i className={iconCls}></i>{thElement.name}<b className="caret"></b></a>
+                        <DataValidation name={thElement.name} slug={thElement.slug} />
 						</th>
 				);
 
@@ -497,7 +500,7 @@ export class DataPreview extends React.Component {
 						{
 						(this.isSubsetted)
 						?(  <div className="form-group">
-						<input type="text" name="newSubsetName" id="newSubsetName" className="form-control input-sm" placeholder="new subset name"/>
+						<input type="text" name="newSubsetName" id="newSubsetName" className="form-control input-sm" placeholder="New Datset Name"/>
 						</div>)
 						:(<div/>)
 						}
@@ -506,7 +509,7 @@ export class DataPreview extends React.Component {
 						<Button onClick={this.closePreview.bind(this)}> {this.buttons.close.text} </Button>
 					{
 						(this.isSubsetted)
-						?(<Button onClick={this.applyDataSubset.bind(this)} bsStyle="primary">Save Subset</Button>)
+						?(<Button onClick={this.applyDataSubset.bind(this)} bsStyle="primary">Save Config</Button>)
 						:(<Button onClick={this.moveToVariableSelection.bind(this)} bsStyle="primary"> {this.buttons.create.text}</Button>)
 
 					}
