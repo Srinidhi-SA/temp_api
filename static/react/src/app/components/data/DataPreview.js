@@ -341,16 +341,16 @@ export class DataPreview extends React.Component {
 					cls = cls + " greyout-col";
 
 				return(
-						<th key={thIndex}  className={cls} onClick={this.setSideElements.bind(this)} title={thElement.ignoreSuggestionMsg}>
-						<a className={anchorCls} data-toggle="dropdown" href="javascript:void(0)"><i className={iconCls}></i>{thElement.name}<b className="caret"></b></a>
+						<th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)} title={thElement.ignoreSuggestionMsg}>
+						<a href="#" data-toggle="dropdown" className={anchorCls}><i className={iconCls}></i> {thElement.name}<b className="caret"></b></a>
                          <DataValidation name={thElement.name} slug={thElement.slug} />
 						</th>
 				);
 			}else{
 				return(
 						<th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)}>
-						<a className={anchorCls} data-toggle="dropdown" href="javascript:void(0)"><i className={iconCls}></i>{thElement.name}<b className="caret"></b></a>
-                        <DataValidation name={thElement.name} slug={thElement.slug} />
+						<a href="#" data-toggle="dropdown" id={thElement.slug} className={anchorCls}><i className={iconCls}></i> {thElement.name}<b className="caret"></b></a>
+						<DataValidation name={thElement.name} slug={thElement.slug} />
 						</th>
 				);
 
