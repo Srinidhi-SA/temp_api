@@ -55,6 +55,7 @@ class DatasetSerializer(serializers.ModelSerializer):
             meta_data['possibleAnalysis'] = settings.ANALYSIS_FOR_TARGET_VARIABLE
         meta_data['advanced_settings'] = settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS
 
+        transformation_final_obj = {"existingColumns":None,"newColumns":None}
         transformation_data = []
         if 'headers' in meta_data:
             headers = meta_data['headers']
@@ -67,9 +68,9 @@ class DatasetSerializer(serializers.ModelSerializer):
                 temp['columnSetting'] = transformation_settings.get('columnSetting')
                 transformation_data.append(temp)
 
-            temp = {"new_columns": transformation_settings.get('new_columns')}
-            transformation_data.append(temp)
-            meta_data['transformation_settings'] = transformation_data
+            transformation_final_obj["existingColumns"] = transformation_data
+            transformation_final_obj["newColumns"] = transformation_settings.get('new_columns')
+            meta_data['transformation_settings'] = transformation_final_obj
 
     class Meta:
         model = Dataset

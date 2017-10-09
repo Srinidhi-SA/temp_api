@@ -205,12 +205,12 @@ class DatasetView(viewsets.ModelViewSet):
         from helper import convert_metadata_according_to_transformation_setting
 
         data = request.data
-        ts = data.get('config')
 
+        if 'config' not in data:
+            return Response({'messgae': 'No config in request body.'})
+        ts = data.get('config')
         meta_data = convert_metadata_according_to_transformation_setting(instance.meta_data, transformation_setting=ts)
         serializer = DatasetSerializer(instance=instance)
         data = serializer.data
         data['meta_data'] = meta_data
         return Response(data)
-
-
