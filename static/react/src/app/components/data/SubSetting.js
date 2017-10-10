@@ -138,6 +138,7 @@ export class SubSetting extends React.Component {
               <div>
                 <div id="measure_subsetting">
                   <h5>{this.props.item.name}</h5>
+				  <div className="xs-pt-20"></div>
                   <div className="row">
                     <div className="col-xs-5">
                       <input type="text" className="form-control" id="from_value" value={this.state.curmin}/>
@@ -151,7 +152,7 @@ export class SubSetting extends React.Component {
                     <div className="clearfix"></div>
                   </div>
                 </div>
-                <div className="xs-p-10"></div>
+                <div className="xs-p-20"></div>
                 <div className="form-group text-center">
                   <ReactBootstrapSlider value={value} change={this.changeSliderValue.bind(this)} max={this.state.max} min={this.state.min} range="true" tooltip="hide"/>
                 </div>
@@ -238,8 +239,21 @@ export class SubSetting extends React.Component {
             return (
               <div>{/*for date*/}
                 <div id="date_subsetting">
-                  <DatePicker selected={this.state.startDate} onChange={this.handleStartDateChange.bind(this)} dateFormat="DD/MM/YYYY"/>
-                  <DatePicker selected={this.state.endDate} selectsEnd startDate={this.state.startDate} endDate={this.state.endDate} onChange={this.handleEndDateChange.bind(this)} dateFormat="DD/MM/YYYY"/>
+				<h5>From</h5>
+				<div className="row">
+				<div className="col-xs-12">
+                  <DatePicker selected={this.state.startDate} className="form-control" onChange={this.handleStartDateChange.bind(this)} dateFormat="DD/MM/YYYY"/>
+				</div>
+				</div>
+				<div className="clearfix"></div>
+                 <div className="xs-p-20"></div>
+				<h5>To</h5>
+				<div className="row">
+				<div className="col-xs-12">
+				  <DatePicker selected={this.state.endDate} className="form-control" selectsEnd startDate={this.state.startDate} endDate={this.state.endDate} onChange={this.handleEndDateChange.bind(this)} dateFormat="DD/MM/YYYY"/>
+				</div>
+				</div>
+				<div className="clearfix"></div>
                 </div>
               </div>
             );
