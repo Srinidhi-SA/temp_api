@@ -124,10 +124,16 @@ export class Profile extends React.Component {
                 <h3 className="modal-title">Upload Image</h3>
                 </Modal.Header>
                 <Modal.Body>
-                <div class="tab-pane active cont fade in">
+				
+				
+				
+               
+				<div className="row">
+					<div className="col-md-9 col-md-offset-1 col-xs-12">
                 <div className="clearfix"></div>
                 <div className="xs-pt-20"></div>
-                <div className="dropzone ">
+				
+						 <div className="dropzone md-pl-50">
                 <Dropzone id={1} onDrop={this.onDrop.bind(this)} accept=".png, .jpg" onDropRejected={this.popupMsg}>
                 <p>Try dropping some files here, or click to select files to upload.</p>
                 </Dropzone>
@@ -142,8 +148,13 @@ export class Profile extends React.Component {
                           </ul>
                         </aside>
                 </div>
-                <div className="xs-pt-20"></div>
-                </div>
+				
+				 <div className="xs-pt-10"></div>
+               <div className="clearfix"></div>
+				
+                 
+                </div>				 
+				</div>
                 </Modal.Body>
                 <Modal.Footer>
                 <Button onClick={this.closePopup.bind(this)}>Close</Button>
