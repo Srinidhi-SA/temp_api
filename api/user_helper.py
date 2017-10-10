@@ -42,7 +42,7 @@ class Profile(models.Model):
         image_url = settings.IMAGE_URL
         if not self.slug:
             return None
-        return image_url + self.slug
+        return image_url + self.slug + "/"
 
     def json_serialized(self):
 
