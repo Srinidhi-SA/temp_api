@@ -1,5 +1,6 @@
 export default function reducer(state = {
 		dataUploadShowModal:false,
+		imgUploadShowModal:false,
 }, action) {
 	console.log("In DATA UPLOAD reducer!!");
 	console.log(action);
@@ -22,7 +23,23 @@ export default function reducer(state = {
 		}
 	}
 	break;
-	
+	case "SHOW_IMG_MODAL":
+	{
+		return {
+			...state,
+			imgUploadShowModal:true,
+		}
+	}
+	break;
+	case "HIDE_IMG_MODAL":
+	{
+		return {
+			...state,
+			imgUploadShowModal:false,
+		}
+	}
+	break;
+
  }
 return state
 }

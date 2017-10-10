@@ -5,7 +5,7 @@
   "main": "index.js",
   "experimentalDecorators": true,
   "scripts": {
-    "start": "npm run buildLinux",
+    "start": "npm run build",
     "buildLinux": "webpack -d && cp src/index.html dist/index.html && webpack-dev-server --content-base src/ --inline --hot --history-api-fallback",
     "build": "webpack -d && copy src\\index.html dist\\index.html && webpack-dev-server --content-base src/ --inline --hot --history-api-fallback",
     "buildDev": "cp confs/dev/env.js src/app/helpers/env.js &&webpack -p && cp src/index.html dist/index.html ",
@@ -16,11 +16,11 @@
   ],
   "author": "Marlabs AI team",
   "license": "Private",
-
   "dependencies": {
     "bootbox": "^4.4.0",
     "dateformat": "^2.0.0",
     "react": "^15.6.1",
+    "react-addons-shallow-compare": "^15.6.2",
     "react-bootstrap": "^0.31.2",
     "react-bootstrap-dialog": "^0.9.1",
     "react-bootstrap-slider": "^2.0.1",
@@ -28,6 +28,8 @@
     "react-circular-progressbar": "^0.1.5",
     "react-custom-scrollbars": "^4.1.2",
     "react-d3-speedometer": "^0.1.11",
+    "react-datepicker": "^0.55.0",
+    "react-dates": "^13.0.2",
     "react-dom": "^15.6.1",
     "react-dropzone": "^4.0.0",
     "react-redux": "^5.0.5",
@@ -86,7 +88,5 @@
     "d3-transition": "1.1.0",
     "d3-voronoi": "1.1.2",
     "d3-zoom": "1.5.0"
-
-
   }
 }

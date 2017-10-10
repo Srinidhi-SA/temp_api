@@ -6,6 +6,10 @@ import store from "../../store";
 import {updateSubSetting} from "../../actions/dataActions";
 import {showHideSubsetting} from "../../helpers/helper.js"
 import {Scrollbars} from 'react-custom-scrollbars';
+import 'react-dates/initialize';
+import {DateRangePicker, SingleDatePicker, DayPickerRangeController} from 'react-dates';
+import DatePicker from 'react-datepicker';
+import moment from 'moment';
 
 @connect((store) => {
   return {updatedSubSetting: store.datasets.updatedSubSetting, subsettingDone: store.datasets.subsettingDone};
@@ -14,6 +18,9 @@ import {Scrollbars} from 'react-custom-scrollbars';
 export class SubSetting extends React.Component {
   constructor(props) {
     super(props);
+    let startDate = new Date()
+    if (this.props.item.columnType == "datetime")
+      startDate = this.props.item.columnStats[6].value
     this.state = {
       min: 0,
       max: 0,
@@ -22,11 +29,17 @@ export class SubSetting extends React.Component {
       dimentionList: {},
       curdimention: [],
       selectedDimention: [],
-      startDate: "",
-      endDate: "",
+      startDate: moment(),
+      endDate: moment(),
       subSettingRs: this.props.updatedSubSetting,
       alreadyUpdated: false
     };
+  }
+  handleStartDateChange(date) {
+    this.setState({startDate: date});
+  }
+  handleEndDateChange(date) {
+    this.setState({endDate: date});
   }
   componentDidMount() {
     $(".bslider").slider();
@@ -106,125 +119,144 @@ export class SubSetting extends React.Component {
 
   }
   getSubSettings(columnType) {
-    switch (columnType) {
-      case "measure":
-        {
-          //this.state.min = this.props.item.subsetting.measureSetting.minimumValue;
-          //this.state.max = this.props.item.subsetting.measureSetting.maxValue;
-          let value = [this.state.curmin, this.state.curmax]
-          return (
-            <div>
-              <div id="measure_subsetting">
-                <h5>{this.props.item.name}</h5>
-                <div className="row">
-                  <div className="col-xs-5">
-                    <input type="text" className="form-control" id="from_value" value={this.state.curmin}/>
-                  </div>
-                  <div className="col-xs-2 text-center">
-                    <label>To</label>
-                  </div>
-                  <div className="col-xs-5">
-                    <input type="text" className="form-control" id="to_value" value={this.state.curmax}/>
-                  </div>
-                  <div className="clearfix"></div>
-                </div>
-              </div>
-              <div className="xs-p-10"></div>
-              <div className="form-group text-center">
-                <ReactBootstrapSlider value={value} change={this.changeSliderValue.bind(this)} max={this.state.max} min={this.state.min} range="true" tooltip="hide"/>
-              </div>
-            </div>
-          );
-        }
-        break;
-      case "dimension":
-        {
-          if (this.props.item.dateSuggestionFlag == false) {
-            let dimList = this.state.dimentionList
-            let curDim = this.state.curdimention
-            let checked = false
-            let dimTemplate = ""
-            let selectAll = false
-            if (dimList) {
-              dimTemplate = Object.keys(dimList).map((item, i) => {
-                checked = false;
-                if (curDim.indexOf(item) > -1) {
-                  checked = true
-                }
-                const dId = "chk_mes1_" + i;
-                return (
-                  <tr key={i}>
-                    <td>
-                      <div className="ma-checkbox inline"><input id={dId} type="checkbox" className="dimension" value={item} defaultChecked={checked}/>
-                        <label htmlFor={dId}></label>
-                      </div>
-                    </td>
-                    <td>{item}</td>
-                    <td className="pts">{dimList[item]}</td>
-                  </tr>
-                )
-              });
-
-              if (curDim.length == Object.keys(dimList).length) {
-                //alert("true")
-                selectAll = true
-              }
-            }
+    if (columnType == "datetime")
+    console.log("---------------------")
+    console.log(this.state)
+      //this.state.startDate= moment(new Date(this.props.item.columnStats[6].value))
+      //alert(this.state.startDate)
+      switch (columnType) {
+        case "measure":
+          {
+            //this.state.min = this.props.item.subsetting.measureSetting.minimumValue;
+            //this.state.max = this.props.item.subsetting.measureSetting.maxValue;
+            let value = [this.state.curmin, this.state.curmax]
             return (
               <div>
-                {/* for dimention */}
-                <div id="dimention_subsetting">
-
+                <div id="measure_subsetting">
                   <h5>{this.props.item.name}</h5>
-
-                  <div class="table-responsive cst-scroll-panel">
-                    <Scrollbars>
-                      <table id="subset" className="tablesorter table table-condensed table-hover table-bordered">
-                        <thead>
-                          <tr>
-                            <th>
-                              <div class="ma-checkbox inline">
-                                <input id="dim" type="checkbox" className="dimention" defaultChecked={selectAll}/>
-                                <label htmlFor="dim"></label>
-                              </div>
-                            </th>
-                            <th>
-                              <b>{this.props.item.name}</b>
-                            </th>
-                            <th>
-                              <b>Count</b>
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {dimTemplate}
-                        </tbody>
-                      </table>
-                    </Scrollbars>
+				  <div className="xs-pt-20"></div>
+                  <div className="row">
+                    <div className="col-xs-5">
+                      <input type="text" className="form-control" id="from_value" value={this.state.curmin}/>
+                    </div>
+                    <div className="col-xs-2 text-center">
+                      <label>To</label>
+                    </div>
+                    <div className="col-xs-5">
+                      <input type="text" className="form-control" id="to_value" value={this.state.curmax}/>
+                    </div>
+                    <div className="clearfix"></div>
                   </div>
-
+                </div>
+                <div className="xs-p-20"></div>
+                <div className="form-group text-center">
+                  <ReactBootstrapSlider value={value} change={this.changeSliderValue.bind(this)} max={this.state.max} min={this.state.min} range="true" tooltip="hide"/>
                 </div>
               </div>
             );
-          } else {
-            return (<div id="dimention_subsetting"/>);
           }
-        }
-        break;
-      case "timedimention":
-        {
-          return (
-            <div>{/*for date*/}
-              <div id="date_subsetting">
-                <h5>{this.props.item.name}</h5>
-                date subsetting
+          break;
+        case "dimension":
+          {
+            if (this.props.item.dateSuggestionFlag == false) {
+              let dimList = this.state.dimentionList
+              let curDim = this.state.curdimention
+              let checked = false
+              let dimTemplate = ""
+              let selectAll = false
+              if (dimList) {
+                dimTemplate = Object.keys(dimList).map((item, i) => {
+                  checked = false;
+                  if (curDim.indexOf(item) > -1) {
+                    checked = true
+                  }
+                  const dId = "chk_mes1_" + i;
+                  return (
+                    <tr key={i}>
+                      <td>
+                        <div className="ma-checkbox inline"><input id={dId} type="checkbox" className="dimension" value={item} defaultChecked={checked}/>
+                          <label htmlFor={dId}></label>
+                        </div>
+                      </td>
+                      <td>{item}</td>
+                      <td className="pts">{dimList[item]}</td>
+                    </tr>
+                  )
+                });
+
+                if (curDim.length == Object.keys(dimList).length) {
+                  //alert("true")
+                  selectAll = true
+                }
+              }
+              return (
+                <div>
+                  {/* for dimention */}
+                  <div id="dimention_subsetting">
+
+                    <h5>{this.props.item.name}</h5>
+
+                    <div class="table-responsive cst-scroll-panel">
+                      <Scrollbars>
+                        <table id="subset" className="tablesorter table table-condensed table-hover table-bordered">
+                          <thead>
+                            <tr>
+                              <th>
+                                <div class="ma-checkbox inline">
+                                  <input id="dim" type="checkbox" className="dimention" defaultChecked={selectAll}/>
+                                  <label htmlFor="dim"></label>
+                                </div>
+                              </th>
+                              <th>
+                                <b>{this.props.item.name}</b>
+                              </th>
+                              <th>
+                                <b>Count</b>
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {dimTemplate}
+                          </tbody>
+                        </table>
+                      </Scrollbars>
+                    </div>
+
+                  </div>
+                </div>
+              );
+            } else {
+              return (<div id="dimention_subsetting"/>);
+            }
+          }
+          break;
+        case "datetime":
+          {
+            return (
+              <div>{/*for date*/}
+                <div id="date_subsetting">
+				<h5>From</h5>
+				<div className="row">
+				<div className="col-xs-12">
+                  <DatePicker selected={this.state.startDate} className="form-control" onChange={this.handleStartDateChange.bind(this)} dateFormat="DD/MM/YYYY"/>
+				</div>
+				</div>
+				<div className="clearfix"></div>
+                 <div className="xs-p-20"></div>
+				<h5>To</h5>
+				<div className="row">
+				<div className="col-xs-12">
+				  <DatePicker selected={this.state.endDate} className="form-control" selectsEnd startDate={this.state.startDate} endDate={this.state.endDate} onChange={this.handleEndDateChange.bind(this)} dateFormat="DD/MM/YYYY"/>
+				</div>
+				</div>
+				<div className="clearfix"></div>
+                </div>
               </div>
-            </div>
-          );
-        }
-        break;
+            );
+          }
+          break;
+      }
     }
-  }
   getSelectedDimention() {
     //alert("working")
   }
@@ -252,7 +284,7 @@ export class SubSetting extends React.Component {
           });
         }
         break;
-      case "timedimension":
+      case "datetime":
         {}
         break;
 
@@ -305,7 +337,7 @@ export class SubSetting extends React.Component {
           }
         }
         break;
-      case "timedimention":
+      case "datetime":
         {
           this.state.subSettingRs.timeDimensionColumnFilters.push({"colname": "col1", "upperBound": 34, "lowerBound": 3, "filterType": "valueRange"});
         }
@@ -324,13 +356,15 @@ export class SubSetting extends React.Component {
     console.log("state is")
     console.log(this.state)
     $(function() {
-    $('#subset').tablesorter({
+      $('#subset').tablesorter({
         theme: 'ice',
         headers: {
-            0: { sorter: false }
+          0: {
+            sorter: false
+          }
         }
-       });
-       $("#dim").click();
+      });
+      $("#dim").click();
     });
     if (this.props.updatedSubSetting.measureColumnFilters.length > 0 || this.props.updatedSubSetting.dimensionColumnFilters.length > 0 || this.props.updatedSubSetting.timeDimensionColumnFilters.length > 0) {
       this.getColumnData(this.props.item.columnType, this.props.item.name)
@@ -343,8 +377,14 @@ export class SubSetting extends React.Component {
         this.state.max = stats.value
       } else if (stats.name == "LevelCount") {
         this.state.dimentionList = stats.value
+      }else if (stats.name == "firstDate") {
+        this.state.startDate = moment(new Date(stats.value.toString()))
+        console.log("#########"+stats.value)
+      }else if(stats.name == "endDate"){
+        this.state.endDate = moment(stats.value.toString())
       }
     });
+
 
     if (this.state.alreadyUpdated == false) {
       this.state.curmax = this.state.max
@@ -356,6 +396,7 @@ export class SubSetting extends React.Component {
     console.log(this.state)
 
     let subsettingsTemplate = this.getSubSettings(this.props.item.columnType)
+    //console.log(subsettingsTemplate)
 
     return (
       <div>
@@ -372,13 +413,15 @@ export class SubSetting extends React.Component {
             <div id="pnl_tbset" className="panel-collapse collapse in" aria-expanded="true">
               <div className="panel-body">
                 {subsettingsTemplate}
-                <hr/>
+              </div>
+              <div class="panel-footer">
                 <div class="text-right" id="saveSubSetting">
                   <a href="javascript:void(0)" class="btn btn-alt4" id="saveButton" disabled onClick={this.saveSubSetting.bind(this)}>
                     Save
                   </a>
                 </div>
               </div>
+
             </div>
           </div>
         </div>
