@@ -89,6 +89,7 @@ def read_and_change_metadata(ts, metaData, headers, columnData):
                                 pass
                         else:
                             colset['modified'] = True
+                            colset['displayName'] = 'UnDelete Column'
 
                         mdc.changes_on_delete(col.get("name"), type='delete')
 
@@ -100,10 +101,11 @@ def read_and_change_metadata(ts, metaData, headers, columnData):
                         if 'modified' in colset:
                             if colset.get('modified') == True:
                                 colName = colset.get('prevName')
+                            colset['prevName'] = newName
                         else:
                             colset['modified'] = True
-
-                        colset['prevName'] = newName
+                            colset['prevName'] = colName
+                        
                         mdc.changes_on_rename(
                             colName=colName,
                             newName=newName
@@ -125,6 +127,7 @@ def read_and_change_metadata(ts, metaData, headers, columnData):
                             if colset.get('modified') == True:
                                 mdc.changes_on_delete(col.get("name"), type='undelete')
                                 colset['modified'] = False
+                                colset['displayName'] = 'Delete Column'
 
     return metaData, headers
 
