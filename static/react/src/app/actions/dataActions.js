@@ -931,11 +931,21 @@ function updateColumnStatus(dispatch,colSlug,colName,actionName,subActionName){
 		if(transformSettings[i].slug == colSlug){
 			for(var j=0;j<transformSettings[i].columnSetting.length;j++){
 				if(transformSettings[i].columnSetting[j].actionName == actionName){
-					transformSettings[i].columnSetting[j].status=true;
+					
 					if(actionName == RENAME){
 						transformSettings[i].columnSetting[j].newName = colName;
+						transformSettings[i].columnSetting[j].status=true;
+						break;
+					}else if(actionName == DELETE){
+						if(transformSettings[i].columnSetting[j].status){
+							transformSettings[i].columnSetting[j].status = false;
+							$(".cst_table").find("thead").find("."+colSlug).first().removeClass("dataPreviewUpdateCol");
+							$(".cst_table").find("tbody").find("tr").find("."+colSlug).removeClass("dataPreviewUpdateCol");
+						}
+						else transformSettings[i].columnSetting[j].status = true;
 						break;
 					}else if(actionName == DATA_TYPE){
+						transformSettings[i].columnSetting[j].status=true;
 						for(var k=0;k<transformSettings[i].columnSetting[j].listOfDataTypes.length;k++){
 							if(transformSettings[i].columnSetting[j].listOfDataTypes[k].name == subActionName){
 								transformSettings[i].columnSetting[j].listOfDataTypes[k].status = true;
