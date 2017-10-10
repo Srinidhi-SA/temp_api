@@ -8,6 +8,9 @@ from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
+from django.template.defaultfilters import slugify
+import random
+import string
 
 
 class Profile(models.Model):
@@ -24,12 +27,28 @@ class Profile(models.Model):
     city = models.CharField(max_length=100, default='', blank=True)
     country = models.CharField(max_length=100, default='', blank=True)
     organization = models.CharField(max_length=100, default='', blank=True)
+    slug = models.SlugField(null=True, max_length=300)
+
+    def generate_slug(self):
+        if not self.slug:
+            self.slug = slugify(str(self.user.username) + "-" + ''.join(
+                random.choice(string.ascii_uppercase + string.digits) for _ in range(30)))
+
+    def save(self, *args, **kwargs):
+        self.generate_slug()
+        super(Profile, self).save(*args, **kwargs)
+
+    def get_image_url(self):
+        image_url = settings.IMAGE_URL
+        if not self.slug:
+            return None
+        return image_url + self.slug
 
     def json_serialized(self):
-        image_url = settings.IMAGE_URL
+
 
         user_profile = {
-            "image_url": image_url,
+            "image_url": self.get_image_url(),
             "website": self.website,
             "bio": self.bio,
             "phone": self.phone
@@ -152,16 +171,16 @@ def upload_photo(request):
 
 
 @csrf_exempt
-@api_view(['GET'])
-def get_profile_image(request):
+def get_profile_image(request, slug=None):
 
-    if request.user.profile is None:
+    profile = Profile.objects.filter(slug=slug).first()
+    if profile is None:
         return Response({'message': 'No Image. Upload an image.'})
     import magic
     from django.http import HttpResponse
     import os
 
-    image = request.user.profile.photo
+    image = profile.photo
     image_buffer = open(
         name=image.path,
         mode="rb"
