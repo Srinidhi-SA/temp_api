@@ -52,33 +52,79 @@ def convert_metadata_according_to_transformation_setting(meta_data=None, transfo
     metaData = the_meta_data.get("metaData")
     sampleData = the_meta_data.get("sampleData")
     headers = the_meta_data.get("headers")
+    columnData = the_meta_data.get("columnData")
+
+
     a,b = read_and_change_metadata(
         ts=ts,
         metaData=metaData,
-        headers=headers
+        headers=headers,
+        columnData=columnData
     )
     the_meta_data['modified'] = True
     the_meta_data["transformation_settings"] = transformation_setting
     return the_meta_data
 
 
-def read_and_change_metadata(ts, metaData, headers):
-    mdc = MetaDataChange(metaData=metaData, headers=headers, ts=ts)
+def read_and_change_metadata(ts, metaData, headers, columnData):
+
+    mdc = MetaDataChange(metaData=metaData, headers=headers, ts=ts, columnData=columnData)
+
     ts = ts.get('existingColumns')
+
     for col in ts:
+
         if "columnSetting" in col:
             columnSetting = col.get("columnSetting")
             for colset in columnSetting:
+
                 if colset.get("status") == True:
+
                     if colset.get("actionName") == "delete":
-                        mdc.changes_on_delete(col.get("name"))
+
+                        if 'modified' in colset:
+                            if colset.get('modified') == True:
+                                pass
+                            else:
+                                pass
+                        else:
+                            colset['modified'] = True
+
+                        mdc.changes_on_delete(col.get("name"), type='delete')
+
                     if colset.get("actionName") == "rename":
+
+                        colName = col.get('name')
+                        newName = colset.get('newName')
+
+                        if 'modified' in colset:
+                            if colset.get('modified') == True:
+                                colName = colset.get('prevName')
+                        else:
+                            colset['modified'] = True
+
+                        colset['prevName'] = newName
                         mdc.changes_on_rename(
-                            colName=col.get('name'),
-                            newName=col.get('newName')
+                            colName=colName,
+                            newName=newName
                         )
+
                     if colset.get("actionName") == "data_type":
+                        listOfDataTypes = colset.get('listOfDataTypes')
+                        data_type = {}
+                        for data in listOfDataTypes:
+                            if data.get('status') == True:
+                                data_type = data
+                                break
                         pass
+
+                elif colset.get("status") == False:
+
+                    if colset.get("actionName") == "delete":
+                        if 'modified' in colset:
+                            if colset.get('modified') == True:
+                                mdc.changes_on_delete(col.get("name"), type='undelete')
+                                colset['modified'] = False
 
     return metaData, headers
 
@@ -87,11 +133,13 @@ def read_and_change_metadata(ts, metaData, headers):
 class MetaDataChange(object):
 
     def __init__(self, **kwargs):
+
         self.metaData = kwargs.get("metaData")
         self.headers = kwargs.get("headers")
         self.ts = kwargs.get("ts")
+        self.columnData = kwargs.get("columnData")
 
-    def changes_on_delete(self, colName=None):
+    def changes_on_delete(self, colName=None, type='delete'):
         """
         metaData - *
         :return:
@@ -100,18 +148,20 @@ class MetaDataChange(object):
         if colName is None:
             return
 
-        self.delete_col_from_noOfColumns(colName)
-        self.delete_from_measure_or_dimension_or_timeDimension_also_count(colName)
+        self.change_col_from_noOfColumns(colName, type=type)
+        self.changes_from_measure_or_dimension_or_timeDimension_also_count(colName, type=type)
 
-    def delete_col_from_noOfColumns(self, colName=None):
+    def change_col_from_noOfColumns(self, colName=None, type=None):
 
         for data in self.metaData:
             if data.get("name") == "noOfColumns":
-                data['value'] = data['value'] - 1
+                if type == 'delete':
+                    data['value'] = data['value'] - 1
+                elif type == 'undelete':
+                    data['value'] = data['value'] + 1
                 break
 
-    def delete_from_measure_or_dimension_or_timeDimension_also_count(self, colName=None):
-
+    def changes_from_measure_or_dimension_or_timeDimension_also_count(self, colName=None, type=None):
         indexes = {
             "measures": None,
             "dimensions": None,
@@ -122,6 +172,20 @@ class MetaDataChange(object):
 
         }
 
+        match_for_name = {
+            "measure": 'measures',
+            "dimension": 'dimensions',
+            "timeDimension": 'timeDimension',
+        }
+
+        match_for_column = {
+            "measures": 'measureColumns',
+            "dimensions": 'dimensionColumns',
+            "timeDimension": 'timeDimensionColumns',
+            "measure": 'measureColumns',
+            "dimension": 'dimensionColumns'
+        }
+
         for i, data in enumerate(self.metaData):
             if data['name'] in indexes:
                 indexes[data["name"]] = i
@@ -130,27 +194,53 @@ class MetaDataChange(object):
         dimensions_array = self.metaData[indexes["dimensionColumns"]].get("value")
         time_dimensions_array = self.metaData[indexes["timeDimensionColumns"]].get("value")
 
-        if colName in measures_array:
-            measures_array.remove(colName)
-            self.metaData[indexes["measures"]]["value"] = self.metaData[indexes["measures"]]["value"] - 1
-        elif colName in dimensions_array:
-            dimensions_array.remove(colName)
-            self.metaData[indexes["dimensions"]]["value"] = self.metaData[indexes["dimensions"]]["value"] - 1
-        elif colName in time_dimensions_array:
-            time_dimensions_array.remove(colName)
-            self.metaData[indexes["timeDimension"]]["value"] = self.metaData[indexes["timeDimension"]]["value"] - 1
+        type_of_col = None
+        if type == "undelete":
+            for data in self.columnData:
+                if data.get('name') == colName:
+                    type_of_col = data.get('columnType')
+                    break
 
-    def changes_on_rename(self, colName=None, newName=None):
+        if type_of_col is not None:
+            self.metaData[indexes[match_for_name[type_of_col]]]["value"] = self.metaData[indexes[match_for_name[type_of_col]]]["value"] + 1
+            self.metaData[indexes[match_for_column[type_of_col]]]["value"].append(colName)
+            return ""
+
+        if colName in measures_array:
+            if type == 'delete':
+                measures_array.remove(colName)
+                self.metaData[indexes["measures"]]["value"] = self.metaData[indexes["measures"]]["value"] - 1
+        elif colName in dimensions_array:
+            if type == 'delete':
+                dimensions_array.remove(colName)
+                self.metaData[indexes["dimensions"]]["value"] = self.metaData[indexes["dimensions"]]["value"] - 1
+        elif colName in time_dimensions_array:
+            if type == 'delete':
+                time_dimensions_array.remove(colName)
+                self.metaData[indexes["timeDimension"]]["value"] = self.metaData[indexes["timeDimension"]]["value"] - 1
+
+
+    def changes_on_rename(self, colName=None, newName=None, type='name'):
         """
         metaData - *
         headers - *
         :return:
         """
+        if colName is None:
+            raise Exception("no col name>changes_on_rename")
+
+        if newName is None:
+            raise Exception("no new name>changes_on_rename")
 
         self.rename_in_measure_or_dimension_or_timeDimension(colName, newName)
         self.rename_in_headers(colName, newName)
 
     def rename_in_measure_or_dimension_or_timeDimension(self, colName=None, newName=None):
+        if colName is None :
+            raise Exception("no col name > rename_in_measure_or_dimension_or_timeDimension")
+
+        if newName is None:
+            raise Exception("no new name > rename_in_measure_or_dimension_or_timeDimension")
 
         indexes = {
             "measures": None,
@@ -159,7 +249,6 @@ class MetaDataChange(object):
             "measureColumns": None,
             "dimensionColumns": None,
             "timeDimensionColumns": None
-
         }
 
         for i, data in enumerate(self.metaData):
@@ -185,7 +274,10 @@ class MetaDataChange(object):
 
     def rename_in_headers(self, colName=None, newName=None):
 
-        for head in self.headers:
+        if colName is None or newName is None:
+            raise Exception("no name")
+
+        for head in self.columnData:
             if head.get('name') == colName:
                 head['name'] = newName
 
@@ -195,9 +287,9 @@ class MetaDataChange(object):
         :return:
         """
 
-        def change_and_swap_and_change_count():
-            pass
+        pass
 
+    def change_and_swap_and_change_count(self):
         pass
 
 
