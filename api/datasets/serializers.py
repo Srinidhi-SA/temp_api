@@ -53,7 +53,7 @@ class DatasetSerializer(serializers.ModelSerializer):
 
         if 'possibleAnalysis' in meta_data:
             meta_data['possibleAnalysis'] = settings.ANALYSIS_FOR_TARGET_VARIABLE
-        meta_data['advanced_settings'] = settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS
+        meta_data['advanced_settings'] = self.get_advanced_setting(meta_data)
 
         transformation_final_obj = {"existingColumns":None,"newColumns":None}
         transformation_data = []
@@ -71,6 +71,22 @@ class DatasetSerializer(serializers.ModelSerializer):
             transformation_final_obj["existingColumns"] = transformation_data
             transformation_final_obj["newColumns"] = transformation_settings.get('new_columns')
             meta_data['transformation_settings'] = transformation_final_obj
+
+    def get_advanced_setting(self, meta_data):
+        metaData = meta_data.get('metaData')
+        time_count = 0
+        for data in metaData:
+            if data.get('name') == 'timeDimension':
+                time_count += data.get('value')
+            if data.get('name') == 'dateTimeSuggestions':
+                time_count += len(data.get('value').keys())
+
+        print "get_advanced_setting    ", time_count
+        if time_count > 0:
+            return settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS
+        else:
+            return settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITH_TREND
+
 
     class Meta:
         model = Dataset

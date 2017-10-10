@@ -706,6 +706,185 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS = {
         },
     }
 
+ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITH_TREND = {
+        "dimensions": {
+            "analysis": [
+            {
+                "name": "overview",
+                "displayName": "Overview",
+                "status": False,
+                "analysisSubTypes": [],
+                "noOfColumnsToUse":None
+            },
+            {
+                "name": "prediction",
+                "displayName": "Prediction",
+                "status": False,
+                "analysisSubTypes": [],
+                "noOfColumnsToUse": None
+            },
+            {
+                "name": "association",
+                "displayName": "Association",
+                "status": False,
+                "analysisSubTypes": [],
+                "noOfColumnsToUse": [
+                    {
+                        "name": "low",
+                        "displayName": "Low",
+                        "status": True,
+                        "defaultValue":3
+                    },
+                    {
+                        "name": "medium",
+                        "displayName": "Medium",
+                        "status": False,
+                        "defaultValue":5
+                    },
+                    {
+                        "name": "high",
+                        "displayName": "High",
+                        "status": False,
+                        "defaultValue":8
+                    },
+                    {
+                        "name": "custom",
+                        "displayName": "Custom",
+                        "status": False,
+                        "defaultValue":3,
+                        "value":None
+                    }
+                ]
+            }
+        ],
+            "targetLevels":[],
+            "trendSettings":[
+                {"name":"Count","status":True},
+                {"name":"Specific Measure","status":False,"selectedMeasure":None}
+            ]
+        },
+        "measures": {
+            "analysis": [
+            {
+                "name": "overview",
+                "displayName": "Overview",
+                "status": False,
+                "analysisSubTypes": [],
+                "noOfColumnsToUse": None
+            },
+            {
+                "name": "performance",
+                "displayName": "Performance",
+                "status": False,
+                "analysisSubTypes": [
+                    {
+                        "name": "overview",
+                        "displayName": "Overview",
+                        "status": False
+                    },
+                    {
+                        "name": "Top Sublevel",
+                        "displayName": "Top Sublevel",
+                        "status": False
+                    },
+                    {
+                        "name": "Trend for top Sublevel",
+                        "displayName": "Trend for top Sublevel",
+                        "status": False
+                    }
+                ],
+                "noOfColumnsToUse": [
+                    {
+                        "name": "low",
+                        "displayName": "Low",
+                        "status": True,
+                        "defaultValue":3
+                    },
+                    {
+                        "name": "medium",
+                        "displayName": "Medium",
+                        "status": False,
+                        "defaultValue":5
+                    },
+                    {
+                        "name": "high",
+                        "displayName": "High",
+                        "status": False,
+                        "defaultValue":8
+                    },
+                    {
+                        "name": "custom",
+                        "displayName": "Custom",
+                        "status": False,
+                        "defaultValue":3,
+                        "value":None
+                    }
+                ],
+            },
+            {
+                "name": "influencer",
+                "displayName": "Influencer",
+                "status": False,
+                "analysisSubTypes": [
+                    {
+                        "name": "overview",
+                        "displayName": "Overview",
+                        "status": False
+                    },
+                    {
+                        "name": "Key areas of Impact",
+                        "displayName": "Key areas of Impact",
+                        "status": False
+                    },
+                    {
+                        "name": "Trend analysis",
+                        "displayName": "Trend analysis",
+                        "status": False
+                    }
+                ],
+                "noOfColumnsToUse": [
+                    {
+                        "name": "low",
+                        "displayName": "Low",
+                        "status": True,
+                        "defaultValue":3
+                    },
+                    {
+                        "name": "medium",
+                        "displayName": "Medium",
+                        "status": False,
+                        "defaultValue":5
+                    },
+                    {
+                        "name": "high",
+                        "displayName": "High",
+                        "status": False,
+                        "defaultValue":8
+                    },
+                    {
+                        "name": "custom",
+                        "displayName": "Custom",
+                        "status": False,
+                        "defaultValue":3,
+                        "value":None
+                    }
+                ]
+            },
+            {
+                "name": "prediction",
+                "displayName": "Prediction",
+                "status": False,
+                "analysisSubTypes": [],
+                "noOfColumnsToUse": None
+            }
+        ],
+            "trendSettings":[
+                {"name":"Count","status":False},
+                {"name":"Specific Measure","status":True,"selectedMeasure":None}
+            ]
+        },
+    }
+
 TRANSFORMATION_SETTINGS_CONSTANT = {
     "columnSetting":
         [
