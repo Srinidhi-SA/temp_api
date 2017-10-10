@@ -52,6 +52,14 @@ export default function reducer(state = {
         }
       }
       break;
+      case "CLEAR_PROFILE_IMAGE":
+      {
+        return{
+          ...state,
+          profileImgURL:""
+        }
+      }
+      break;
 
   }
   return state

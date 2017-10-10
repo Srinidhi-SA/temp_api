@@ -36,7 +36,11 @@ export class SubSetting extends React.Component {
     };
   }
   handleStartDateChange(date) {
+    console.log("handle start...")
+    console.log(date)
+    console.log("moment.."+moment(new Date(date)))
     this.setState({startDate: date});
+    console.log(this.state.startDate)
   }
   handleEndDateChange(date) {
     this.setState({endDate: date});

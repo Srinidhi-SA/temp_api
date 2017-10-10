@@ -12,7 +12,7 @@ import renderHTML from 'react-render-html';
 import {saveFileToStore} from "../../actions/dataSourceListActions";
 import Dropzone from 'react-dropzone'
 import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
-import {openImg,closeImg,uploadImg,getUserProfile} from "../../actions/loginActions";
+import {openImg,closeImg,uploadImg,getUserProfile,saveProfileImage} from "../../actions/loginActions";
 
 
 
@@ -33,6 +33,8 @@ export class Profile extends React.Component {
   componentWillMount() {
     if (isEmpty(this.props.profileInfo))
       this.props.dispatch(getUserProfile(sessionStorage.userToken))
+    if(this.props.profileImgURL=="")
+    this.props.dispatch(saveProfileImage(sessionStorage.image_url))
   }
 
   componentDidMount() {}
@@ -80,13 +82,13 @@ export class Profile extends React.Component {
     } else {
       console.log("profile info!!")
       console.log(this.props)
-      console.log(this.props.profileInfo.info)
+      //console.log(this.props.profileInfo.info)
       var fileName = store.getState().dataSource.fileUpload.name;
       var fileSize = store.getState().dataSource.fileUpload.size;
       let fileSizeInKB = (fileSize / 1024).toFixed(3)
       if(fileSizeInKB>2000)
       this.popupMsgForSize()
-      let imgSrc = API+this.props.profileImgURL
+      let imgSrc = API+this.props.profileImgURL+fileSizeInKB+new Date().getTime();
       if(!this.props.profileImgURL)
       imgSrc = STATIC_URL + "assets/images/avatar.png"
       let statsList = this.props.profileInfo.info.map((analysis, i) => {
@@ -214,11 +216,19 @@ export class Profile extends React.Component {
                 <div className="row">
                   <div className="col-md-12 text-right">
                     <p className="xs-p-20">
-                      First Login :
+                    <br/>
+                      Date Joined :
                       <b> {dateFormat(sessionStorage.date, "mmm d,yyyy")}</b>
+                      <br/>
+                      Last Login :
+                      <b>{dateFormat(sessionStorage.last_login, "mmm d,yyyy")}</b>
                       {/*<br/>
                     Subscription Left :
                     <b>25 Days</b>*/}
+                    <br/>
+                    Superuser status:
+                    <b>{sessionStorage.is_superuser}</b>
+
                     </p>
                   </div>
                   <div className="clearfix"></div>

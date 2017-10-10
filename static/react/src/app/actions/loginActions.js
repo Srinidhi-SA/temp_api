@@ -103,17 +103,27 @@ function fetchProfileError(json) {
 
 export function uploadImg(){
     return (dispatch) => {
-      dispatch(closeImg());
+      //dispatch(closeImg());
+      //dispatch(clearImageURL());
       return triggerImgUpload().then(([response, json]) => {
         if (response.status === 200) {
         //  dispatch(retrieveProfileImg(json.image_url))
            dispatch(saveProfileImage(json.image_url))
            console.log(json)
+           dispatch(closeImg());
               } else {
           dispatch(imgUploadError(json))
         }
       });
     }
+  }
+
+  function clearImageURL(){
+    return{
+      type:"CLEAR_PROFILE_IMAGE"
+
+    }
+
   }
   function triggerImgUpload() {
     var data = new FormData();
@@ -159,7 +169,7 @@ export function uploadImg(){
 
 
 
-function saveProfileImage(imageURL) {
+export function saveProfileImage(imageURL) {
 //  alert("in save profile img")
   console.log(imageURL)
 //  imageURL = "https://media.licdn.com/mpr/mpr/shrinknp_400_400/AAEAAQAAAAAAAAyCAAAAJGQ4YTE4MDc2LTZmNjgtNDIxZC1iMTA2LTVjMDkyNjZjNGFkOA.jpg"
