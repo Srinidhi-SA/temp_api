@@ -4,16 +4,15 @@ import ReactDOM from "react-dom";
 import {Link} from "react-router-dom";
 import store from "../../store";
 import {isEmpty} from "../../helpers/helper";
-import {getUserProfile} from "../../actions/loginActions";
 var dateFormat = require('dateformat');
 import Breadcrumb from 'react-breadcrumb';
-import {STATIC_URL} from "../../helpers/env";
+import {STATIC_URL,API} from "../../helpers/env";
 import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
 import {saveFileToStore} from "../../actions/dataSourceListActions";
 import Dropzone from 'react-dropzone'
 import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
-import {openImg,closeImg,uploadImg} from "../../actions/dataUploadActions";
+import {openImg,closeImg,uploadImg,getUserProfile} from "../../actions/loginActions";
 
 
 
@@ -38,8 +37,11 @@ export class Profile extends React.Component {
 
   componentDidMount() {}
   popupMsg(){
-		bootbox.alert("Only PNG files are allowed to upload")
+		bootbox.alert("Only PNG and JPEG files are allowed to upload")
 	}
+  popupMsgForSize(){
+    bootbox.alert("Maximum allowed file size is 2MB")
+  }
   onDrop(files) {
 		this.props.dispatch(saveFileToStore(files))
 	}
@@ -81,7 +83,10 @@ export class Profile extends React.Component {
       console.log(this.props.profileInfo.info)
       var fileName = store.getState().dataSource.fileUpload.name;
       var fileSize = store.getState().dataSource.fileUpload.size;
-      let imgSrc = this.props.profileImgURL
+      let fileSizeInKB = (fileSize / 1024).toFixed(3)
+      if(fileSizeInKB>2000)
+      this.popupMsgForSize()
+      let imgSrc = API+this.props.profileImgURL
       if(!this.props.profileImgURL)
       imgSrc = STATIC_URL + "assets/images/avatar.png"
       let statsList = this.props.profileInfo.info.map((analysis, i) => {
@@ -123,14 +128,19 @@ export class Profile extends React.Component {
                 <div className="clearfix"></div>
                 <div className="xs-pt-20"></div>
                 <div className="dropzone ">
-                <Dropzone id={1} onDrop={this.onDrop.bind(this)} accept=".png" onDropRejected={this.popupMsg}>
+                <Dropzone id={1} onDrop={this.onDrop.bind(this)} accept=".png, .jpg" onDropRejected={this.popupMsg}>
                 <p>Try dropping some files here, or click to select files to upload.</p>
                 </Dropzone>
-                <aside>
+                {/*<aside>
                       <ul className={fileName != "" ? "list-unstyled bullets_primary":"list-unstyled"}>
-                          <li>{fileName}{fileName != "" ? " - ":""}{fileSize}{fileName != "" ? " bytes ":""}</li>
+                          <li>{fileName}{fileName != "" ? " - ":""}{fileSizeInKB}{fileName != "" ? " KB ":""}</li>
                       </ul>
-                    </aside>
+                    </aside>*/}
+                    <aside>
+                          <ul className={fileName != "" ? "list-unstyled bullets_primary":"list-unstyled"}>
+                              <li>{fileName}</li>
+                          </ul>
+                        </aside>
                 </div>
                 <div className="xs-pt-20"></div>
                 </div>
