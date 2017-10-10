@@ -14542,7 +14542,7 @@ a.disabled { color:#ccc !important; }
 .user-avatar:hover a i { top: 50%; position: absolute; left: 0; right: 0; transform: translateY(-50%); }
 .user-avatar a { display: block; position: absolute; top: 0; opacity: 0; left: 0px; bottom: 0; right: 0; text-align: center; color: inherit; }
 
-
+#date_subsetting .react-datepicker-wrapper, #date_subsetting .react-datepicker__input-container { display:block; }
 /**************** Css realated to developers, keep the source down ***/
 
 
