@@ -73,7 +73,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ("username", "first_name", "last_name", "email", "date_joined")
+        fields = ("username", "first_name", "last_name", "email", "date_joined", "last_login", "is_superuser")
 
 
 def jwt_response_payload_handler(token, user=None, request=None):
