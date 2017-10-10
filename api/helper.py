@@ -168,6 +168,14 @@ def remove_padding_from_chart_data(chart_data):
             del chart_data['chart_c3']['padding']
     return chart_data
 
+def add_side_padding_to_chart_data(chart_data):
+    if 'chart_c3' in chart_data:
+        chart_data['chart_c3']['padding'] = {
+            'right': 20
+        }
+
+    return chart_data
+
 def remove_subchart_from_chart_data(chart_data):
     if 'chart_c3' in chart_data:
         if "subchart" in chart_data['chart_c3']:

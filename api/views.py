@@ -615,6 +615,8 @@ def chart_changes_in_metadata_chart(chart_data):
     chart_data = helper.remove_tooltip_format_from_chart_data(chart_data)
     chart_data = helper.remove_chart_height_from_chart_data(chart_data)
     chart_data = helper.remove_padding_from_chart_data(chart_data)
+    chart_data = helper.add_side_padding_to_chart_data(chart_data)
+
     chart_data = helper.remove_subchart_from_chart_data(chart_data)
     # chart_data = helper.remove_legend_from_chart_data(chart_data)
     chart_data = helper.remove_grid_from_chart_data(chart_data)
