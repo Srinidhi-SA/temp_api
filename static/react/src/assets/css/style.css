@@ -5622,7 +5622,7 @@ li a.sdb_app:hover span, li a.active.sdb_app span {
 	background: url('../images/ico_settings.png') no-repeat 2px -38px;
 	background-size: 40px;
 }
- 
+
 li a.sdb_settings:hover span, li a.active.sdb_settings span {
     background-position: 2px 1px;
 }
@@ -14000,7 +14000,7 @@ a.tabs-control.right span { right: 5px; }
 /** slide panel **/
 .panel-mAd .tab-pane { overflow:hidden; }
 .sb_navigation {
-    background: #FFFFFF; 
+    background: #FFFFFF;
     border-bottom: 1px solid #e8e8e8;
 }
 .sb_navigation li a { padding: 7px; /* margin: 0 5px; text-align: center; */ display: block; color:#636363; }
@@ -14503,7 +14503,7 @@ a.disabled { color:#ccc !important; }
 .fa.fa-table.pull-right { cursor: pointer; color: #747474; }
 .full-table-width { width:100%; }
 .minHP { min-height:120px; }
- 
+
 .img-responsive.img-center { margin:0 auto; }
 .user-info h3 { margin-top:6px; }
 .user-profile small { text-transform:uppercase; color:#333333; font-size: 50% }
@@ -14766,7 +14766,7 @@ svg[class^='chart']{
 .gauageMeter{
 height: 200px !important;
 background: #FFF;
-text-align:center !important;	
+text-align:center !important;
 }
 .gauageMeter svg{
 height: 156px !important;
@@ -14781,8 +14781,8 @@ visibility:hidden !important;
     font-weight:bold;
 
 }
- 
- 
+
+
 .sub-analysis{
 	margin-left: 5%;
 }
