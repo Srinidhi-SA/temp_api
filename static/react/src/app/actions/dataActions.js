@@ -5,7 +5,7 @@ import store from "../store";
 import {dataPreviewInterval,dataUploadLoaderValue,clearLoadingMsg} from "./dataUploadActions";
 import Dialog from 'react-bootstrap-dialog'
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
-import {isEmpty,RENAME,DELETE,REPLACE,DATA_TYPE} from "../helpers/helper";
+import {isEmpty,RENAME,DELETE,REPLACE,DATA_TYPE,REMOVE} from "../helpers/helper";
 let refDialogBox = "";
 
 function getHeader(token){
@@ -908,6 +908,7 @@ export function handleColumnClick(dialog,actionName,colSlug,colName,subActionNam
 			updateColumnStatus(dispatch,colSlug,colName,actionName,subActionName);
 		}else if(actionName == REPLACE){
 			dispatch(updateVLPopup(true));
+			dispatch(addComponents());
 			//updateColumnStatus(dispatch,colSlug,colName,actionName,subActionName);
 		}
 	}
@@ -927,14 +928,14 @@ export function updateVLPopup(flag){
 		flag
 	}
 }
-function updateColumnStatus(dispatch,colSlug,colName,actionName,subActionName){
+export function updateColumnStatus(dispatch,colSlug,colName,actionName,subActionName){
 	var transformSettings = store.getState().datasets.dataTransformSettings.slice();
 	var slug = store.getState().datasets.selectedDataSet;
 	for(var i =0;i<transformSettings.length;i++){
 		if(transformSettings[i].slug == colSlug){
 			for(var j=0;j<transformSettings[i].columnSetting.length;j++){
 				if(transformSettings[i].columnSetting[j].actionName == actionName){
-					
+
 					if(actionName == RENAME){
 						transformSettings[i].columnSetting[j].newName = colName;
 						transformSettings[i].columnSetting[j].status=true;
@@ -958,6 +959,13 @@ function updateColumnStatus(dispatch,colSlug,colName,actionName,subActionName){
 						}
 						break;
 					}
+					else if(actionName == REPLACE){
+						transformSettings[i].columnSetting[j].status=true;
+						var removeValues =  store.getState().datasets.dataSetColumnRemoveValues.slice();
+						var replaceValues =  store.getState().datasets.dataSetColumnReplaceValues.slice();
+						replaceValues = replaceValues.concat(removeValues);
+						transformSettings[i].columnSetting[j].replacementValues = replaceValues;
+					}
 
 				}
 			}//end of for columnsettings
@@ -965,8 +973,14 @@ function updateColumnStatus(dispatch,colSlug,colName,actionName,subActionName){
 		}
 	}
 	dispatch(handleColumnActions(transformSettings,slug))
-	dispatch(updateTransformSettings(transformSettings));
-	
+	dispatch(updateVLPopup(false));
+	//dispatch(updateTransformSettings(transformSettings));
+
+}
+export function handleSaveEditValues(colSlug){
+	return (dispatch) => {
+	updateColumnStatus(dispatch,colSlug,"",REPLACE,"");
+	}
 }
 function updateTransformSettings(transformSettings){
 	return{
@@ -1017,31 +1031,128 @@ export function fetchDataValidationSuccess(dataPreview){
 //Need to remove this function
 export function updateTranformColumns(){
 	var transformSettings = store.getState().datasets.dataTransformSettings;
-		$(".cst_table").find("thead").find("tr").find("th").each(function(){
-			for(var i =0;i<transformSettings.length;i++){
-				if(transformSettings[i].name == this.innerText && transformSettings[i].status == true){
+	$(".cst_table").find("thead").find("tr").find("th").each(function(){
+		for(var i =0;i<transformSettings.length;i++){
+			if(transformSettings[i].name == this.innerText && transformSettings[i].status == true){
 				//$(this).addClass("dataPreviewUpdateCol");
 			}
 		}
 	});
-	
+
 }
 
-export function addComponents(){
+export function addComponents(editType){
 	return (dispatch) => {
 		var dataColumnRemoveValues = [];
-	    dataColumnRemoveValues.push({"id":1,"name":"remove1","value":""});
-	    dataColumnRemoveValues.push({"id":2,"name":"remove2","value":""});
-	    dataColumnRemoveValues.push({"id":3,"name":"remove3","value":""});
-	    dataColumnRemoveValues.push({"id":4,"name":"remove4","value":""});
-	    dispatch(updateColumnRemoveValues(dataColumnRemoveValues))
+		dataColumnRemoveValues.push({"id":1,"name":"remove1","valueToReplace":"","replacedValue":""});
+		dataColumnRemoveValues.push({"id":2,"name":"remove2","valueToReplace":"","replacedValue":""});
+		dataColumnRemoveValues.push({"id":3,"name":"remove3","valueToReplace":"","replacedValue":""});
+		dataColumnRemoveValues.push({"id":4,"name":"remove4","valueToReplace":"","replacedValue":""});
+		var dataColumnReplaceValues = [];
+		dataColumnReplaceValues.push({"replaceId":1,"name":"replace1","valueToReplace":"","replacedValue":""});
+		dataColumnReplaceValues.push({"replaceId":2,"name":"replace2","valueToReplace":"","replacedValue":""});
+		dataColumnReplaceValues.push({"replaceId":3,"name":"replace3","valueToReplace":"","replacedValue":""});
+		dataColumnReplaceValues.push({"replaceId":4,"name":"replace4","valueToReplace":"","replacedValue":""});
+		if(editType === REMOVE){
+			dispatch(updateColumnRemoveValues(dataColumnRemoveValues))
+		}
+		else if(editType === REPLACE){
+			dispatch(updateColumnReplaceValues(dataColumnReplaceValues))
+		}
+		else{
+			dispatch(updateColumnReplaceValues(dataColumnReplaceValues))
+			dispatch(updateColumnRemoveValues(dataColumnRemoveValues))	
+		}
 	}
-	
+
 }
 function updateColumnRemoveValues(removeValues){
 	return{
 		type: "DATA_VALIDATION_REMOVE_VALUES",
 		removeValues
+	}
+}
+function updateColumnReplaceValues(replaceValues){
+	return{
+		type: "DATA_VALIDATION_REPLACE_VALUES",
+		replaceValues
+	}
+}
+export function addMoreComponentsToReplace(editType){
+	return (dispatch) => {
+		if(editType == REMOVE){
+			var dataColumnRemoveValues = store.getState().datasets.dataSetColumnRemoveValues.slice();
+			var max = dataColumnRemoveValues.reduce(function(prev, current) { 
+				return (prev.id > current.id) ? prev : current
+
+			});
+			let length = max.id+1;
+			dataColumnRemoveValues.push({"id":length,"name":"remove"+length,"valueToReplace":"","replacedValue":""});
+			dispatch(updateColumnRemoveValues(dataColumnRemoveValues))
+		}else{
+			var dataColumnReplaceValues = store.getState().datasets.dataSetColumnReplaceValues.slice();
+			var max = dataColumnReplaceValues.reduce(function(prev, current) { 
+				return (prev.replaceId > current.replaceId) ? prev : current
+
+			});
+			let length = max.replaceId+1;
+			dataColumnReplaceValues.push({"replaceId":length,"name":"replace"+length,"valueToReplace":"","replacedValue":""});
+			dispatch(updateColumnReplaceValues(dataColumnReplaceValues))	
+		}
+		
+	}
+}
+export function removeComponents(data,editType){
+	return (dispatch) => {
+		if(editType == REMOVE){
+		var dataColumnRemoveValues = store.getState().datasets.dataSetColumnRemoveValues.slice();
+		for (var i=0;i<dataColumnRemoveValues.length;i++) {
+			if(dataColumnRemoveValues[i].id == data.id){
+				dataColumnRemoveValues.splice(i,1);
+				break;
+			}
+		}
+		dispatch(updateColumnRemoveValues(dataColumnRemoveValues))
+		}else{
+			var dataColumnReplaceValues = store.getState().datasets.dataSetColumnReplaceValues.slice();
+			for (var i=0;i<dataColumnReplaceValues.length;i++) {
+				if(dataColumnReplaceValues[i].replaceId == data.replaceId){
+					dataColumnReplaceValues.splice(i,1);
+					break;
+				}
+			}
+			dispatch(updateColumnReplaceValues(dataColumnReplaceValues))
+		}
+	}
+}
+export function handleInputChange(event){
+	return (dispatch) => {
+		var dataColumnRemoveValues = store.getState().datasets.dataSetColumnRemoveValues.slice();
+		for (var i=0;i<dataColumnRemoveValues.length;i++) {
+			if(dataColumnRemoveValues[i].id == event.target.id){
+				dataColumnRemoveValues[i].valueToReplace = event.target.value;
+				break;
+			}
+		}
+		dispatch(updateColumnRemoveValues(dataColumnRemoveValues))
+	}
+}
+export function handleInputChangeReplace(targetTextBox,event){
+	return (dispatch) => {
+		var dataSetColumnReplaceValues = store.getState().datasets.dataSetColumnReplaceValues.slice();
+		for (var i=0;i<dataSetColumnReplaceValues.length;i++) {
+			if(dataSetColumnReplaceValues[i].replaceId == event.target.id){
+				if(targetTextBox == REPLACE){
+					dataSetColumnReplaceValues[i].replacedValue = event.target.value;
+					break;
+				}	
+				else{
+					dataSetColumnReplaceValues[i].valueToReplace = event.target.value;
+					break;
+				}
+			}
+		}
+		dispatch(updateColumnReplaceValues(dataSetColumnReplaceValues))
 	}
 }
 

@@ -61,6 +61,7 @@ const RENAME = "rename";
 const DELETE = "delete";
 const REPLACE = "replace";
 const DATA_TYPE = "data_type";
+const REMOVE = "remove"
 
 
 export function generateHeaders(table) {
@@ -292,4 +293,5 @@ export{
 	DELETE,
 	REPLACE,
 	DATA_TYPE,
+	REMOVE,
 	}

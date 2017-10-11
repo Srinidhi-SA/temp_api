@@ -3,8 +3,8 @@ import { connect } from "react-redux";
 import { Redirect } from "react-router";
 import store from "../../store";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
-import {updateVLPopup,addComponents} from "../../actions/dataActions";
-
+import {updateVLPopup,addComponents,addMoreComponentsToReplace,removeComponents,handleSaveEditValues,handleInputChange,handleInputChangeReplace} from "../../actions/dataActions";
+import {REPLACE,REMOVE} from "../../helpers/helper.js"
 
 
 
@@ -16,6 +16,7 @@ import {updateVLPopup,addComponents} from "../../actions/dataActions";
 		dataTransformSettings:store.datasets.dataTransformSettings,
 		selectedColSlug:store.datasets.selectedColSlug,
 		dataSetColumnRemoveValues:store.datasets.dataSetColumnRemoveValues,
+		dataSetColumnReplaceValues:store.datasets.dataSetColumnReplaceValues,
 
 	};
 })
@@ -33,6 +34,21 @@ export class DataValidationEditValues extends React.Component {
   componentWillMount(){
 	  this.props.dispatch(addComponents());
   }
+  addMoreComponents(editType){
+	  this.props.dispatch(addMoreComponentsToReplace(editType)); 
+  }
+  removeComponents(data,editType){
+	  this.props.dispatch(removeComponents(data,editType)); 
+  }
+  handleInputChange(event){
+	  this.props.dispatch(handleInputChange(event))
+  }
+  handleInputChangeReplace(targetBox,event){
+	  this.props.dispatch(handleInputChangeReplace(targetBox,event))
+  }
+  handleSaveEditValues(){
+	  this.props.dispatch(handleSaveEditValues(this.props.selectedColSlug))
+  }
   render() {
 	  /*var that = this;
 	  let transformationSettings = store.getState().datasets.dataTransformSettings;
@@ -42,13 +58,26 @@ export class DataValidationEditValues extends React.Component {
        }	 
 		 });*/
 	  let dataSetColumnRemoveValues = this.props.dataSetColumnRemoveValues;
-	  let templateTextBoxes = dataSetColumnRemoveValues.map((data,id) =>{
+	  let dataSetColumnReplaceValues = this.props.dataSetColumnReplaceValues;
+	  const templateTextBoxes = dataSetColumnRemoveValues.map((data,id) =>{
 		  return (<div className="form-group" id={data.id}>
 			<label for="fl1" className="col-sm-1 control-label"><b>{id+1}.</b></label>
 			<div className="col-sm-8">
-			<input  id={data.id} type="text" name={data.id}  value={data.value} className="form-control"/>
+			<input  id={data.id} type="text" name={data.name}  onChange={this.handleInputChange.bind(this)} value={data.valueToReplace} className="form-control"/>
 			</div>
-			<div className="col-sm-1 cursor"><i className="fa fa-times"></i></div>
+			<div className="col-sm-1 cursor" onClick={this.removeComponents.bind(this,data,REMOVE)}><i className="fa fa-minus-square-o text-muted"></i></div>
+			</div>);
+	  });
+	 const replaceTextBoxes = dataSetColumnReplaceValues.map((data,id) =>{
+		  return (<div className="form-group" id={data.replaceId}>
+			<label for="fl1" className="col-sm-1 control-label"><b>{id+1}.</b></label>
+			<div className="col-sm-5">
+			<input  id={data.replaceId} type="text" name={data.name}  onChange={this.handleInputChangeReplace.bind(this,"value")} value={data.valueToReplace} className="form-control"/>
+			</div>
+			<div className="col-sm-5">
+			<input  id={data.replaceId} type="text" name={data.name}  onChange={this.handleInputChangeReplace.bind(this,"replace")} value={data.replacedValue} className="form-control"/>
+			</div>
+			<div className="col-sm-1 cursor" onClick={this.removeComponents.bind(this,data,REPLACE)}><i className="fa fa-minus-square-o"></i></div>
 			</div>);
 	  });
    return (
@@ -59,7 +88,8 @@ export class DataValidationEditValues extends React.Component {
 		</Modal.Header>
       	
       	<Modal.Body>
-      	<div className="row">
+      	 
+      	<div>
 		<Tab.Container id="left-tabs-example" defaultActiveKey="Remove">
 		<Row className="clearfix">
 		<Col sm={3}>
@@ -81,7 +111,7 @@ export class DataValidationEditValues extends React.Component {
 		<form role="form" className="form-horizontal">
 		{templateTextBoxes}
 		<div className="dataTransformValues">
-		 <Button bsStyle="primary" onClick={this.hidePopup.bind(this)}>Add More&nbsp;<i className="fa fa-plus"></i></Button>
+		 <Button bsStyle="primary" onClick={this.addMoreComponents.bind(this,REMOVE)}>Add More&nbsp;<i className="fa fa-plus"></i></Button>
 		</div>
 		</form>
 		
@@ -89,7 +119,17 @@ export class DataValidationEditValues extends React.Component {
 		</div>
 		</Tab.Pane>
 		<Tab.Pane eventKey="Replace">
-		<div className="tab-pane active cont fade in"> Replace Values </div>
+		<div className="tab-pane active cont fade in">
+		<div id="replaceValues">
+		<form role="form" className="form-horizontal">
+		{replaceTextBoxes}
+		<div className="dataTransformValues">
+		 <Button bsStyle="primary" onClick={this.addMoreComponents.bind(this,REPLACE)}>Add More&nbsp;<i className="fa fa-plus"></i></Button>
+		</div>
+		</form>
+		
+		</div>
+		</div>
 		</Tab.Pane>
 		</Tab.Content>
 		</Col>
@@ -104,7 +144,7 @@ export class DataValidationEditValues extends React.Component {
 		
 		<Modal.Footer>
 		<Button onClick={this.hidePopup.bind(this)}>Close</Button>
-	    <Button bsStyle="primary" onClick={this.hidePopup.bind(this)}>Save</Button>
+	    <Button bsStyle="primary" onClick={this.handleSaveEditValues.bind(this)}>Save</Button>
 		</Modal.Footer>
 		
 		</Modal>

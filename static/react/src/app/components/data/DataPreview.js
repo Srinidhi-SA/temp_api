@@ -237,7 +237,7 @@ export class DataPreview extends React.Component {
 		//alert(this.new_subset)
 		let subSettingRq = {'filter_settings':store.getState().datasets.updatedSubSetting,
 													'name':this.new_subset,'subsetting':true,
-													'transform_settings':store.getState().datasets.dataTransformSettings};
+													'transformation_settings':store.getState().datasets.dataTransformSettings};
 		console.log(JSON.stringify(subSettingRq))
 		this.props.dispatch(dataSubsetting(subSettingRq,this.props.dataPreview.slug))
 	}
