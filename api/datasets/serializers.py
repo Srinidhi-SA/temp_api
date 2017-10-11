@@ -74,12 +74,16 @@ class DatasetSerializer(serializers.ModelSerializer):
 
     def get_advanced_setting(self, meta_data):
         metaData = meta_data.get('metaData')
+
         time_count = 0
-        for data in metaData:
-            if data.get('name') == 'timeDimension':
-                time_count += data.get('value')
-            if data.get('name') == 'dateTimeSuggestions':
-                time_count += len(data.get('value').keys())
+        try:
+            for data in metaData:
+                if data.get('name') == 'timeDimension':
+                    time_count += data.get('value')
+                if data.get('name') == 'dateTimeSuggestions':
+                    time_count += len(data.get('value').keys())
+        except:
+            pass
 
         print "get_advanced_setting    ", time_count
         if time_count > 0:
