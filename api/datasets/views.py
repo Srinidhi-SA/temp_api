@@ -187,7 +187,6 @@ class DatasetView(viewsets.ModelViewSet):
                         data.get('transformation_settings', {}),
                         instance.get_input_file()
                     )
-                    serializer.save()
                 else:
                     return creation_failed_exception({'error': 'no filter_settings'})
                 return Response(serializer.data)
