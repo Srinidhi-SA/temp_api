@@ -17,7 +17,7 @@ import {isEmpty} from "../../helpers/helper";
 import {SubSetting} from "./SubSetting";
 import {DataUploadLoader} from "../common/DataUploadLoader";
 import {DataValidation} from "./DataValidation";
-import {DataValidationVariableTypes} from "./DataValidationVariableTypes";
+import {DataValidationEditValues} from "./DataValidationEditValues";
 import Dialog from 'react-bootstrap-dialog';
 
 
@@ -526,7 +526,7 @@ export class DataPreview extends React.Component {
 
 					</div>
 					{/*<!-- /.Page Content Area --> */}
-					<DataValidationVariableTypes/>
+					<DataValidationEditValues/>
 					  <Dialog ref="dialog"/>
 					 </div>
 			);

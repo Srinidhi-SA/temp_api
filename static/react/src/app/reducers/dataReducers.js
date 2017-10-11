@@ -44,7 +44,8 @@ export default function reducer(state = {
   variableTypeListModal:false,
   selectedColSlug:"",
   data_sorton:"",
-  data_sorttype:""
+  data_sorttype:"",
+  dataSetColumnRemoveValues:[],
 
 }, action) {
   console.log("In DATA reducer!!");
@@ -582,7 +583,14 @@ export default function reducer(state = {
       }
     }
     break;
-    
+    case "DATA_VALIDATION_REMOVE_VALUES":
+    {
+      return {
+        ...state,
+        dataSetColumnRemoveValues:action.removeValues,
+      }
+    }
+    break;
   }
   return state
 

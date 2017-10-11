@@ -49,7 +49,7 @@ export class SubSetting extends React.Component {
             that.state.selectedDimention.push($(this).val());
           }
         });
-        that.state.curdimention = that.state.selectedDimention
+       that.state.curdimention = that.state.selectedDimention
         console.log(that.state.selectedDimention);
       });
 

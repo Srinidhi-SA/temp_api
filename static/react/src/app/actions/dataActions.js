@@ -906,6 +906,9 @@ export function handleColumnClick(dialog,actionName,colSlug,colName,subActionNam
 		}else if(actionName == DATA_TYPE){
 			//dispatch(updateVLPopup(true));
 			updateColumnStatus(dispatch,colSlug,colName,actionName,subActionName);
+		}else if(actionName == REPLACE){
+			dispatch(updateVLPopup(true));
+			//updateColumnStatus(dispatch,colSlug,colName,actionName,subActionName);
 		}
 	}
 }
@@ -1010,6 +1013,8 @@ export function fetchDataValidationSuccess(dataPreview){
 		dataPreview
 	}
 }
+
+//Need to remove this function
 export function updateTranformColumns(){
 	var transformSettings = store.getState().datasets.dataTransformSettings;
 		$(".cst_table").find("thead").find("tr").find("th").each(function(){
@@ -1021,3 +1026,22 @@ export function updateTranformColumns(){
 	});
 	
 }
+
+export function addComponents(){
+	return (dispatch) => {
+		var dataColumnRemoveValues = [];
+	    dataColumnRemoveValues.push({"id":1,"name":"remove1","value":""});
+	    dataColumnRemoveValues.push({"id":2,"name":"remove2","value":""});
+	    dataColumnRemoveValues.push({"id":3,"name":"remove3","value":""});
+	    dataColumnRemoveValues.push({"id":4,"name":"remove4","value":""});
+	    dispatch(updateColumnRemoveValues(dataColumnRemoveValues))
+	}
+	
+}
+function updateColumnRemoveValues(removeValues){
+	return{
+		type: "DATA_VALIDATION_REMOVE_VALUES",
+		removeValues
+	}
+}
+

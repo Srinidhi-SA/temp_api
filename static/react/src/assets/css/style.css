@@ -14783,3 +14783,7 @@ visibility:hidden !important;
 .dataPreviewUpdateCol{
 	border:1px solid red !important;
 }
+.dataTransformValues{
+	text-align: right;
+    padding-right: 10px;
+}
