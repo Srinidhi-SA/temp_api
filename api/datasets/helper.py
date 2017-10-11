@@ -53,22 +53,30 @@ def convert_metadata_according_to_transformation_setting(meta_data=None, transfo
     sampleData = the_meta_data.get("sampleData")
     headers = the_meta_data.get("headers")
     columnData = the_meta_data.get("columnData")
+    sampleData = the_meta_data.get("sampleData")
 
 
     a,b = read_and_change_metadata(
         ts=ts,
         metaData=metaData,
         headers=headers,
-        columnData=columnData
+        columnData=columnData,
+        sampleData=sampleData
     )
     the_meta_data['modified'] = True
     the_meta_data["transformation_settings"] = transformation_setting
     return the_meta_data
 
 
-def read_and_change_metadata(ts, metaData, headers, columnData):
+def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
 
-    mdc = MetaDataChange(metaData=metaData, headers=headers, ts=ts, columnData=columnData)
+    mdc = MetaDataChange(
+        metaData=metaData,
+        headers=headers,
+        ts=ts,
+        columnData=columnData,
+        sampleData=sampleData
+    )
 
     ts = ts.get('existingColumns')
 
@@ -117,14 +125,25 @@ def read_and_change_metadata(ts, metaData, headers, columnData):
                         data_type = {}
                         for data in listOfDataTypes:
                             if data.get('status') == True:
-                                data_type = data
-                                break
-                        pass
+                                mdc.changes_on_data_type(
+                                    colName=col.get('name'),
+                                    type=data.get('name')
+                                )
+
+                    if colset.get('actionName') == 'replace':
+                        colName = col.get('name')
+                        replacementValues = colset.get('replacementValues')
+                        mdc.replace_values(
+                            colName=colName,
+                            replace_match_array=replacementValues
+                        )
 
                 elif colset.get("status") == False:
 
                     if colset.get("actionName") == "delete":
+
                         if 'modified' in colset:
+
                             if colset.get('modified') == True:
                                 mdc.changes_on_delete(col.get("name"), type='undelete')
                                 colset['modified'] = False
@@ -142,6 +161,7 @@ class MetaDataChange(object):
         self.headers = kwargs.get("headers")
         self.ts = kwargs.get("ts")
         self.columnData = kwargs.get("columnData")
+        self.sampleData = kwargs.get("sampleData")
 
     def changes_on_delete(self, colName=None, type='delete'):
         """
@@ -285,19 +305,71 @@ class MetaDataChange(object):
             if head.get('name') == colName:
                 head['name'] = newName
 
-    def changes_on_data_type(self):
+    def changes_on_data_type(self, colName=None, type=None):
         """
         metaData - *
+        columnsData - *
         :return:
         """
+        if colName is None or type is None:
+            raise Exception("No colName or Type")
 
-        pass
+        match_in_columnstats = {
+            'numeric': 'measure',
+            'text': 'dimension'
+        }
 
-    def change_and_swap_and_change_count(self):
-        pass
+        match_in_row_metaData = {
+            'numeric': 'measures',
+            'text': 'dimensions'
+        }
+
+        match_in_array_metaData = {
+            'numeric': 'measureColumns',
+            'text': 'dimensionColumns'
+        }
+
+        for data in self.columnData:
+            if data.get('name') == colName:
+                data['columnType'] = match_in_columnstats[type]
+
+        if type == 'numeric':
+            for data in self.metaData:
+                if data.get('name') == 'measures':
+                    data['value'] = data['value'] + 1
+                if data.get('name') == 'measureColumns':
+                    data['value'].append(colName)
+                if data.get('name') == 'dimensions':
+                    data['value'] = data['value'] - 1
+                if data.get('name') == 'dimensionColumns':
+                    data['value'].remove(colName)
+        elif type == 'text':
+            for data in self.metaData:
+                if data.get('name') == 'measures':
+                    data['value'] = data['value'] - 1
+                if data.get('name') == 'measureColumns':
+                    data['value'].remove(colName)
+                if data.get('name') == 'dimesions':
+                    data['value'] = data['value'] + 1
+                if data.get('name') == 'dimensionColumns':
+                    data['value'].append(colName)
+
+    def replace_values(self, colName=None, replace_match_array=None):
+        if replace_match_array is None:
+            raise Exception('Nothing to replace. >> replace_values')
+        if colName is None:
+            raise Exception('No colname. >> replace_values')
+
+        index = None
+        for i, head in enumerate(self.headers):
+            if head.get('name') == colName:
+                index = i
+                break
 
 
-
+        for data in self.sampleData:
+            for r in replace_match_array:
+                data[index] = data[index].replace(r['valueToReplace'], r['replacedValue'])
 
 dummy_meta_data = {
         "transformation_settings": [
