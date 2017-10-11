@@ -121,6 +121,7 @@ class Dataset(models.Model):
     def create_for_subsetting(
             self,
             filter_subsetting,
+            transformation_settings,
             inputfile,
 
     ):
@@ -128,6 +129,7 @@ class Dataset(models.Model):
         jobConfig = self.add_subsetting_to_config(
                                 filter_subsetting
                                 )
+        jobConfig = self.add_transformation_settings_to_config(transformation_settings=transformation_settings)
         print jobConfig
         print "Dataset realted config generated."
 
@@ -180,9 +182,16 @@ class Dataset(models.Model):
 
         jobConfig = self.generate_config()
         print jobConfig
-        print "Dataset realted config genarated."
         jobConfig["config"]["FILTER_SETTINGS"] = filter_subsetting
 
+
+        return jobConfig
+
+    def add_transformation_settings_to_config(self, transformation_settings):
+
+        jobConfig = self.generate_config()
+        print jobConfig
+        jobConfig["config"]["TRANSFORMATION_SETTINGS"] = transformation_settings
 
         return jobConfig
 

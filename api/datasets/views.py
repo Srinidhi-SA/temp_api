@@ -152,7 +152,6 @@ class DatasetView(viewsets.ModelViewSet):
         serializer = DatasetSerializer(instance=instance)
         return Response(serializer.data)
 
-
     def subsetting(self, request, instance=None):
 
         if instance is None:
@@ -185,6 +184,7 @@ class DatasetView(viewsets.ModelViewSet):
                 if 'filter_settings' in data:
                     dataset_object.create_for_subsetting(
                         data['filter_settings'],
+                        data.get('transformation_settings', {}),
                         instance.get_input_file()
                     )
                 else:
@@ -194,6 +194,7 @@ class DatasetView(viewsets.ModelViewSet):
             return creation_failed_exception(err)
         return creation_failed_exception(serializer.errors)
 
+    # TODO: add replace and exchange in meta_data_modifictaion
     @detail_route(methods=['put'])
     def meta_data_modifications(self, request, slug=None):
 
@@ -208,6 +209,7 @@ class DatasetView(viewsets.ModelViewSet):
 
         if 'config' not in data:
             return Response({'messgae': 'No config in request body.'})
+
         ts = data.get('config')
         meta_data = convert_metadata_according_to_transformation_setting(instance.meta_data, transformation_setting=ts)
         serializer = DatasetSerializer(instance=instance)
