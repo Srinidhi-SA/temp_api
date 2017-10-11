@@ -331,6 +331,8 @@ class MetaDataChange(object):
 
         for data in self.columnData:
             if data.get('name') == colName:
+                if data['columnType'] == match_in_columnstats[type]:
+                    return ""
                 data['columnType'] = match_in_columnstats[type]
 
         if type == 'numeric':
@@ -342,13 +344,15 @@ class MetaDataChange(object):
                 if data.get('name') == 'dimensions':
                     data['value'] = data['value'] - 1
                 if data.get('name') == 'dimensionColumns':
-                    data['value'].remove(colName)
+                    if 'colName' in data['value']:
+                        data['value'].remove(colName)
         elif type == 'text':
             for data in self.metaData:
                 if data.get('name') == 'measures':
                     data['value'] = data['value'] - 1
                 if data.get('name') == 'measureColumns':
-                    data['value'].remove(colName)
+                    if 'colName' in data['value']:
+                        data['value'].remove(colName)
                 if data.get('name') == 'dimesions':
                     data['value'] = data['value'] + 1
                 if data.get('name') == 'dimensionColumns':
