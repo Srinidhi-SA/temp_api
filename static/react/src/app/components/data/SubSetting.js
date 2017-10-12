@@ -7,11 +7,7 @@ import {updateSubSetting} from "../../actions/dataActions";
 import {showHideSubsetting} from "../../helpers/helper.js"
 import {Scrollbars} from 'react-custom-scrollbars';
 import dateFormat from 'dateformat';
-
-//import 'react-dates/initialize';
-//import {DateRangePicker, SingleDatePicker, DayPickerRangeController} from 'react-dates';
 import DatePicker from 'react-bootstrap-date-picker';
-import moment from 'moment';
 
 @connect((store) => {
   return {updatedSubSetting: store.datasets.updatedSubSetting, subsettingDone: store.datasets.subsettingDone};
@@ -20,9 +16,6 @@ import moment from 'moment';
 export class SubSetting extends React.Component {
   constructor(props) {
     super(props);
-    // let startDate = new Date()
-    // if (this.props.item.columnType == "datetime")
-    //   startDate = this.props.item.columnStats[6].value
     this.state = {
       min: 0,
       max: 0,
@@ -40,24 +33,22 @@ export class SubSetting extends React.Component {
     };
   }
   handleStartDateChange(value, formattedValue) {
-    // console.log("handle start...")
-    // console.log(value)
-    //  console.log(formattedValue)
-  //  let selectedDate = dateFormat(formattedValue, "yyyy-dd-mm")
-    //alert(selectedDate)
-    this.setState({curstartDate: formattedValue});
-    //console.log(this.state.curstartDate)
+      this.state.curstartDate= formattedValue
+      $("#saveButton").removeClass('btn-alt4')
+      $("#saveButton").addClass('btn-primary')
+      $("#saveButton").removeAttr('disabled')
   }
   handleEndDateChange(value, formattedValue) {
-    //let selectedDate = dateFormat(formattedValue, "yyyy-dd-mm")
-    this.setState({curendDate: formattedValue});
+    this.state.curendDate= formattedValue
+    $("#saveButton").removeClass('btn-alt4')
+    $("#saveButton").addClass('btn-primary')
+    $("#saveButton").removeAttr('disabled')
   }
   componentDidMount() {
     $(".bslider").slider();
     var that = this;
     $(function() {
       $("#dim").click(function() { // select all dimension clicked
-        //alert("workig")
         let count = 0;
         if ($(this).is(":checked")) {
           $('.dimension[type="checkbox"]').prop('checked', true);
@@ -130,11 +121,7 @@ export class SubSetting extends React.Component {
 
   }
   getSubSettings(columnType) {
-    if (columnType == "datetime")
-      console.log("---------------------")
-    console.log(this.state)
-    //this.state.startDate= moment(new Date(this.props.item.columnStats[6].value))
-    //alert(this.state.startDate)
+
     switch (columnType) {
       case "measure":
         {
@@ -242,12 +229,12 @@ export class SubSetting extends React.Component {
         }
         break;
       case "datetime":
-        { //alert(curstartDate)
-          if (this.state.curstartDate == "")
-            this.state.curstartDate = this.state.startDate
-
-            if (this.state.curendDate == "")
-              this.state.curendDate = this.state.endDate
+        {
+          // if (this.state.curstartDate == "")
+          //   this.state.curstartDate = this.state.startDate
+          //
+          //   if (this.state.curendDate == "")
+          //     this.state.curendDate = this.state.endDate
 
           return (
             <div>{/*for date*/}
@@ -255,7 +242,7 @@ export class SubSetting extends React.Component {
                 <h5>From</h5>
                 <div className="row">
                   <div className="col-xs-12">
-                    <DatePicker key = {this.state.startDate} id="start-datepicker" className="form-control" value={this.state.curstartDate} onChange={this.handleStartDateChange.bind(this)} showClearButton={false} dateFormat = "YYYY-MM-DD" /> {/*<DatePicker selected={this.state.curstartDate} className="form-control" onChange={this.handleStartDateChange.bind(this)} dateFormat="DD/MM/YYYY"/>*/}
+                    <DatePicker key = {this.state.startDate} id="start-datepicker" className="form-control" value={this.state.curstartDate} onChange={this.handleStartDateChange.bind(this)} showClearButton={false} dateFormat = "YYYY-MM-DD" />
                   </div>
                 </div>
                 <div className="clearfix"></div>
@@ -273,9 +260,6 @@ export class SubSetting extends React.Component {
         }
         break;
     }
-  }
-  getSelectedDimention() {
-    //alert("working")
   }
   getColumnData(columnType, columnName) {
     switch (columnType) {
@@ -302,7 +286,22 @@ export class SubSetting extends React.Component {
         }
         break;
       case "datetime":
-        {}
+        {
+          // {
+          //      "colname" : "col1",
+          //      "upperBound" : 34,
+          //      "lowerBound" : 3,
+          //      "filterType" : "valueRange"
+          //    }
+          this.props.updatedSubSetting.timeDimensionColumnFilters.map((changeditem) => {
+            if (changeditem.colname == columnName) {
+              this.state.curstartDate = changeditem.lowerBound
+              this.state.curendDate = changeditem.upperBound
+
+              this.state.alreadyUpdated = true
+            }
+          });
+        }
         break;
 
     }
@@ -356,7 +355,23 @@ export class SubSetting extends React.Component {
         break;
       case "datetime":
         {
-          this.state.subSettingRs.timeDimensionColumnFilters.push({"colname": "col1", "upperBound": 34, "lowerBound": 3, "filterType": "valueRange"});
+          let timeDimensionColumnFilters = this.props.updatedSubSetting.timeDimensionColumnFilters
+          if (this.state.alreadyUpdated == true) {
+            this.props.updatedSubSetting.timeDimensionColumnFilters.map((changeditem, i) => {
+              if (changeditem.colname == this.props.item.name) {
+                timeDimensionColumnFilters[i] = {
+                  "colname": this.props.item.name,
+                  "upperBound": this.state.curendDate,
+                  "lowerBound": this.state.curstartDate,
+                  "filterType": "valueRange"
+                };
+              }
+            });
+            this.state.subSettingRs.timeDimensionColumnFilters = timeDimensionColumnFilters;
+          } else {
+            this.state.subSettingRs.timeDimensionColumnFilters.push({"colname": this.props.item.name, "upperBound": this.state.curendDate, "lowerBound": this.state.curstartDate, "filterType": "valueRange"});
+            this.state.alreadyUpdated = true
+          }          
         }
         break;
 
@@ -367,11 +382,7 @@ export class SubSetting extends React.Component {
     this.props.dispatch(updateSubSetting(this.state.subSettingRs));
 
   }
-  render() {
-    console.log("subsetting is called!!");
-    console.log(this.props)
-    console.log("state is")
-    console.log(this.state)
+  callSubsetTableSorter(){
     $(function() {
       $('#subset').tablesorter({
         theme: 'ice',
@@ -383,6 +394,14 @@ export class SubSetting extends React.Component {
       });
       $("#dim").click();
     });
+  }
+  render() {
+    console.log("subsetting is called!!");
+    console.log(this.props)
+    console.log("state is")
+    console.log(this.state)
+    this.callSubsetTableSorter()
+
     if (this.props.updatedSubSetting.measureColumnFilters.length > 0 || this.props.updatedSubSetting.dimensionColumnFilters.length > 0 || this.props.updatedSubSetting.timeDimensionColumnFilters.length > 0) {
       this.getColumnData(this.props.item.columnType, this.props.item.name)
     }
@@ -396,7 +415,6 @@ export class SubSetting extends React.Component {
         this.state.dimentionList = stats.value
       } else if (stats.name == "firstDate") {
         this.state.startDate = stats.value
-        //console.log("#########" + stats.value)
       } else if (stats.name == "lastDate") {
         this.state.endDate = stats.value
       }
@@ -405,6 +423,8 @@ export class SubSetting extends React.Component {
     if (this.state.alreadyUpdated == false) {
       this.state.curmax = this.state.max
       this.state.curmin = this.state.min
+      this.state.curstartDate = this.state.startDate
+      this.state.curendDate = this.state.endDate
       if (this.state.dimentionList)
         this.state.curdimention = Object.keys(this.state.dimentionList);
       }
