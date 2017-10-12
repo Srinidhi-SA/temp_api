@@ -194,7 +194,6 @@ class DatasetView(viewsets.ModelViewSet):
             return creation_failed_exception(err)
         return creation_failed_exception(serializer.errors)
 
-    # TODO: add replace and exchange in meta_data_modifictaion
     @detail_route(methods=['put'])
     def meta_data_modifications(self, request, slug=None):
 
