@@ -235,10 +235,11 @@ export class DataPreview extends React.Component {
 		//alert("working");
 		this.new_subset = $("#newSubsetName").val()
 		//alert(this.new_subset)
+		let transformationSettings = {};
+		transformationSettings.existingColumns = store.getState().datasets.dataTransformSettings;
 		let subSettingRq = {'filter_settings':store.getState().datasets.updatedSubSetting,
 													'name':this.new_subset,'subsetting':true,
-													'transformation_settings':store.getState().datasets.dataTransformSettings};
-		console.log(JSON.stringify(subSettingRq))
+													'transformation_settings':transformationSettings};
 		this.props.dispatch(dataSubsetting(subSettingRq,this.props.dataPreview.slug))
 	}
 	shouldComponentUpdate(nextProps) {
@@ -249,8 +250,6 @@ export class DataPreview extends React.Component {
 	render() {
 
 		console.log("data prev is called##########3");
-		console.log(this.props);
-
 		//for active select in columnName
 		$(function(){
 			console.log($(".cst_table"));

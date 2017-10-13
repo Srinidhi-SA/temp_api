@@ -4,7 +4,7 @@ import { Redirect } from "react-router";
 import store from "../../store";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
 import {updateVLPopup,addComponents,addMoreComponentsToReplace,removeComponents,handleSaveEditValues,handleInputChange,handleInputChangeReplace} from "../../actions/dataActions";
-import {REPLACE,REMOVE} from "../../helpers/helper.js"
+import {REPLACE,REMOVE,	CURRENTVALUE,NEWVALUE} from "../../helpers/helper.js"
 
 
 
@@ -17,6 +17,7 @@ import {REPLACE,REMOVE} from "../../helpers/helper.js"
 		selectedColSlug:store.datasets.selectedColSlug,
 		dataSetColumnRemoveValues:store.datasets.dataSetColumnRemoveValues,
 		dataSetColumnReplaceValues:store.datasets.dataSetColumnReplaceValues,
+		dataTransformSettings:store.datasets.dataTransformSettings,
 
 	};
 })
@@ -49,20 +50,32 @@ export class DataValidationEditValues extends React.Component {
   handleSaveEditValues(){
 	  this.props.dispatch(handleSaveEditValues(this.props.selectedColSlug))
   }
+  renderReplaceList(colSlug,colName,colData){
+	  let optionList = null;
+	   let list = colData.map((actionNames,index)=>{
+		   if(actionNames.actionName == REPLACE){
+			   optionList = actionNames.replaceTypeList.map((subItem,subIndex)=>{
+		  return (<option key={subIndex+index} value={subItem}>{subItem}</option>);
+		   })
+  }
+	   });
+	  	  return optionList;
+  }
   render() {
-	  /*var that = this;
+	  var that = this;
 	  let transformationSettings = store.getState().datasets.dataTransformSettings;
+	  let replaceTypeList = "";
 		 transformationSettings.map((columnData,columnIndex) =>{
-       if(that.props.slug == columnData.slug){
-     	  settingsTemplate = that.renderDropdownList(columnData.columnSetting)
+       if(that.props.selectedColSlug == columnData.slug){
+     	  replaceTypeList = that.renderReplaceList(columnData.slug,columnData.name,columnData.columnSetting)
        }	 
-		 });*/
+		 });
 	  let dataSetColumnRemoveValues = this.props.dataSetColumnRemoveValues;
 	  let dataSetColumnReplaceValues = this.props.dataSetColumnReplaceValues;
 	  const templateTextBoxes = dataSetColumnRemoveValues.map((data,id) =>{
 		  return (<div className="form-group" id={data.id}>
 			<label for="fl1" className="col-sm-1 control-label"><b>{id+1}.</b></label>
-			<div className="col-sm-8">
+			<div className="col-sm-5">
 			<input  id={data.id} type="text" name={data.name}  onChange={this.handleInputChange.bind(this)} value={data.valueToReplace} className="form-control"/>
 			</div>
 			<div className="col-sm-1 cursor" onClick={this.removeComponents.bind(this,data,REMOVE)}><i className="fa fa-minus-square-o text-muted"></i></div>
@@ -71,23 +84,29 @@ export class DataValidationEditValues extends React.Component {
 	 const replaceTextBoxes = dataSetColumnReplaceValues.map((data,id) =>{
 		  return (<div className="form-group" id={data.replaceId}>
 			<label for="fl1" className="col-sm-1 control-label"><b>{id+1}.</b></label>
-			<div className="col-sm-5">
-			<input  id={data.replaceId} type="text" name={data.name}  onChange={this.handleInputChangeReplace.bind(this,"value")} value={data.valueToReplace} className="form-control"/>
+			<div className="col-sm-3">
+			<input  id={data.replaceId} placeholder="Current Value" type="text" name={data.name}  onChange={this.handleInputChangeReplace.bind(this,CURRENTVALUE)} value={data.valueToReplace} className="form-control"/>
 			</div>
-			<div className="col-sm-5">
-			<input  id={data.replaceId} type="text" name={data.name}  onChange={this.handleInputChangeReplace.bind(this,"replace")} value={data.replacedValue} className="form-control"/>
+			<div className="col-sm-3">
+			<input  id={data.replaceId} placeholder="New Value" type="text" name={data.name}  onChange={this.handleInputChangeReplace.bind(this,NEWVALUE)} value={data.replacedValue} className="form-control"/>
 			</div>
+			<div className="col-sm-3">
+			 <select className="form-control" id={data.replaceId} onChange={this.handleInputChangeReplace.bind(this,data.replaceId)}>
+			{replaceTypeList}
+			 </select>
+			</div>
+			
 			<div className="col-sm-1 cursor" onClick={this.removeComponents.bind(this,data,REPLACE)}><i className="fa fa-minus-square-o"></i></div>
 			</div>);
 	  });
    return (
           <div id="idVariableTypeList" role="dialog" className="modal fade modal-colored-header">
-      	<Modal show={store.getState().datasets.variableTypeListModal} backdrop="static" onHide={this.hidePopup.bind(this)} dialogClassName="modal-colored-header uploadData">
+      	<Modal show={store.getState().datasets.variableTypeListModal} backdrop="static" onHide={this.hidePopup.bind(this)} dialogClassName="modal-colored-header uploadData modal-lg">
       	<Modal.Header closeButton>
 		<h3 className="modal-title">Edit Values</h3>
 		</Modal.Header>
       	
-      	<Modal.Body>
+      	<Modal.Body className="dataTransformModal">
       	 
       	<div>
 		<Tab.Container id="left-tabs-example" defaultActiveKey="Remove">
@@ -107,6 +126,8 @@ export class DataValidationEditValues extends React.Component {
 		<Tab.Content animation>
 		<Tab.Pane eventKey="Remove">
 		<div className="tab-pane active cont fade in">
+		<p>Please enter symbols, phrases or values that you want to remove from the selected column
+		</p>
 		<div id="removeValues">
 		<form role="form" className="form-horizontal">
 		{templateTextBoxes}
@@ -120,6 +141,9 @@ export class DataValidationEditValues extends React.Component {
 		</Tab.Pane>
 		<Tab.Pane eventKey="Replace">
 		<div className="tab-pane active cont fade in">
+		<p>Please enter symbols, phrases or values that you want to replace along with the values to replace it with, from the selected column
+        </p>
+		
 		<div id="replaceValues">
 		<form role="form" className="form-horizontal">
 		{replaceTextBoxes}

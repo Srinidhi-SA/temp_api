@@ -5,7 +5,7 @@ import store from "../store";
 import {dataPreviewInterval,dataUploadLoaderValue,clearLoadingMsg} from "./dataUploadActions";
 import Dialog from 'react-bootstrap-dialog'
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
-import {isEmpty,RENAME,DELETE,REPLACE,DATA_TYPE,REMOVE} from "../helpers/helper";
+import {isEmpty,RENAME,DELETE,REPLACE,DATA_TYPE,REMOVE,CURRENTVALUE,NEWVALUE} from "../helpers/helper";
 let refDialogBox = "";
 
 function getHeader(token){
@@ -1044,15 +1044,11 @@ export function updateTranformColumns(){
 export function addComponents(editType){
 	return (dispatch) => {
 		var dataColumnRemoveValues = [];
-		dataColumnRemoveValues.push({"id":1,"name":"remove1","valueToReplace":"","replacedValue":""});
-		dataColumnRemoveValues.push({"id":2,"name":"remove2","valueToReplace":"","replacedValue":""});
-		dataColumnRemoveValues.push({"id":3,"name":"remove3","valueToReplace":"","replacedValue":""});
-		dataColumnRemoveValues.push({"id":4,"name":"remove4","valueToReplace":"","replacedValue":""});
+		dataColumnRemoveValues.push({"id":1,"name":"remove1","valueToReplace":"","replacedValue":"","replaceType":""});
+		dataColumnRemoveValues.push({"id":2,"name":"remove2","valueToReplace":"","replacedValue":"","replaceType":""});
 		var dataColumnReplaceValues = [];
-		dataColumnReplaceValues.push({"replaceId":1,"name":"replace1","valueToReplace":"","replacedValue":""});
-		dataColumnReplaceValues.push({"replaceId":2,"name":"replace2","valueToReplace":"","replacedValue":""});
-		dataColumnReplaceValues.push({"replaceId":3,"name":"replace3","valueToReplace":"","replacedValue":""});
-		dataColumnReplaceValues.push({"replaceId":4,"name":"replace4","valueToReplace":"","replacedValue":""});
+		dataColumnReplaceValues.push({"replaceId":1,"name":"replace1","valueToReplace":"","replacedValue":"","replaceType":""});
+		dataColumnReplaceValues.push({"replaceId":2,"name":"replace2","valueToReplace":"","replacedValue":"","replaceType":""});
 		if(editType === REMOVE){
 			dispatch(updateColumnRemoveValues(dataColumnRemoveValues))
 		}
@@ -1087,7 +1083,7 @@ export function addMoreComponentsToReplace(editType){
 
 			});
 			let length = max.id+1;
-			dataColumnRemoveValues.push({"id":length,"name":"remove"+length,"valueToReplace":"","replacedValue":""});
+			dataColumnRemoveValues.push({"id":length,"name":"remove"+length,"valueToReplace":"","replacedValue":"","replaceType":""});
 			dispatch(updateColumnRemoveValues(dataColumnRemoveValues))
 		}else{
 			var dataColumnReplaceValues = store.getState().datasets.dataSetColumnReplaceValues.slice();
@@ -1096,7 +1092,7 @@ export function addMoreComponentsToReplace(editType){
 
 			});
 			let length = max.replaceId+1;
-			dataColumnReplaceValues.push({"replaceId":length,"name":"replace"+length,"valueToReplace":"","replacedValue":""});
+			dataColumnReplaceValues.push({"replaceId":length,"name":"replace"+length,"valueToReplace":"","replacedValue":"","replaceType":""});
 			dispatch(updateColumnReplaceValues(dataColumnReplaceValues))	
 		}
 		
@@ -1142,12 +1138,15 @@ export function handleInputChangeReplace(targetTextBox,event){
 		var dataSetColumnReplaceValues = store.getState().datasets.dataSetColumnReplaceValues.slice();
 		for (var i=0;i<dataSetColumnReplaceValues.length;i++) {
 			if(dataSetColumnReplaceValues[i].replaceId == event.target.id){
-				if(targetTextBox == REPLACE){
+				if(targetTextBox == NEWVALUE){
 					dataSetColumnReplaceValues[i].replacedValue = event.target.value;
 					break;
 				}	
-				else{
+				else if(targetTextBox == CURRENTVALUE){
 					dataSetColumnReplaceValues[i].valueToReplace = event.target.value;
+					break;
+				}else{
+					dataSetColumnReplaceValues[i].replaceType = event.target.value;
 					break;
 				}
 			}
@@ -1155,4 +1154,6 @@ export function handleInputChangeReplace(targetTextBox,event){
 		dispatch(updateColumnReplaceValues(dataSetColumnReplaceValues))
 	}
 }
+
+
 

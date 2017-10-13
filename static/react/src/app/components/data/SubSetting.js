@@ -330,7 +330,7 @@ export class SubSetting extends React.Component {
             0: { sorter: false }
         }
        });
-       $("#dim").click();
+       //$("#dim").click();
     });
     if (this.props.updatedSubSetting.measureColumnFilters.length > 0 || this.props.updatedSubSetting.dimensionColumnFilters.length > 0 || this.props.updatedSubSetting.timeDimensionColumnFilters.length > 0) {
       this.getColumnData(this.props.item.columnType, this.props.item.name)

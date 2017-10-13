@@ -14781,9 +14781,18 @@ visibility:hidden !important;
 	margin-left: 5%;
 }
 .dataPreviewUpdateCol{
-	border:1px solid red !important;
+	border:2px solid #e0b2b2 !important;
 }
 .dataTransformValues{
 	text-align: right;
     padding-right: 10px;
+}
+
+.dataTransformModal{
+	height:300px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+.dataTransformModalWidth{
+	width:750px !important;
 }
