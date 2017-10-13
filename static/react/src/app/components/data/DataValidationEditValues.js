@@ -55,7 +55,7 @@ export class DataValidationEditValues extends React.Component {
 	   let list = colData.map((actionNames,index)=>{
 		   if(actionNames.actionName == REPLACE){
 			   optionList = actionNames.replaceTypeList.map((subItem,subIndex)=>{
-		  return (<option key={subIndex+index} value={subItem.name}>{subItem.displayName}</option>);
+		  return (<option key={subIndex} value={subItem.name}>{subItem.displayName}</option>);
 		   })
   }
 	   });
@@ -75,8 +75,13 @@ export class DataValidationEditValues extends React.Component {
 	  const templateTextBoxes = dataSetColumnRemoveValues.map((data,id) =>{
 		  return (<div className="form-group" id={data.id}>
 			<label for="fl1" className="col-sm-1 control-label"><b>{id+1}.</b></label>
-			<div className="col-sm-5">
+			<div className="col-sm-4">
 			<input  id={data.id} type="text" name={data.name}  onChange={this.handleInputChange.bind(this)} value={data.valueToReplace} className="form-control"/>
+			</div>
+			<div className="col-sm-3">
+			 <select className="form-control" id={data.id} onChange={this.handleInputChange.bind(this)}>
+			{replaceTypeList}
+			 </select>
 			</div>
 			<div className="col-sm-1 cursor" onClick={this.removeComponents.bind(this,data,REMOVE)}><i className="fa fa-minus-square-o text-muted"></i></div>
 			</div>);

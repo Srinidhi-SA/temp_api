@@ -1126,8 +1126,14 @@ export function handleInputChange(event){
 		var dataColumnRemoveValues = store.getState().datasets.dataSetColumnRemoveValues.slice();
 		for (var i=0;i<dataColumnRemoveValues.length;i++) {
 			if(dataColumnRemoveValues[i].id == event.target.id){
-				dataColumnRemoveValues[i].valueToReplace = event.target.value;
-				break;
+				if(event.target.type == "text"){
+					dataColumnRemoveValues[i].valueToReplace = event.target.value;
+					break;
+				}else {
+					dataColumnRemoveValues[i].replaceType = event.target.value;
+					break;
+				}
+
 			}
 		}
 		dispatch(updateColumnRemoveValues(dataColumnRemoveValues))

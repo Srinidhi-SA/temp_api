@@ -14517,7 +14517,7 @@ a.disabled { color:#ccc !important; }
 .slider.slider-horizontal { width: 94%; }
 .scrollable-menu {
     height: auto;
-    max-height: 200px;
+    max-height: 250px;
     overflow-x: hidden;
 	padding:10px 0px 0px 10px;
 }
@@ -14827,7 +14827,7 @@ visibility:hidden !important;
 .dataTransformModal{
 	height:300px;
     overflow-y: scroll;
-    overflow-x: hidden;
+    overflow-x:hidden;
 }
 .dataTransformModalWidth{
 	width:750px !important;
