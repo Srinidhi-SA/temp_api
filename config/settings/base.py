@@ -468,245 +468,37 @@ VOICE_TO_TEXT_SETTINGS = {
         "password": "UXiMa7qNp68f"
         }
 
+ADANCED_SETTING_FOR_POSSIBLE_ANALYSIS_TREND = {
+                    "name": "trend",
+                    "displayName": "Trend",
+                    "status": False,
+                    "analysisSubTypes": [
+                        {
+                            "name": "overview",
+                            "displayName": "Overview",
+                            "status": False
+                        },
+                        {
+                            "name": "factors that drive up",
+                            "displayName": "Factors that drive up",
+                            "status": False
+                        },
+                        {
+                            "name": "factors that drive down",
+                            "displayName": "Factors that drive down",
+                            "status": False
+                        },
+                        {
+                            "name": "forecast",
+                            "displayName": "Forecast",
+                            "status": False
+                        }
 
-ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS = {
-        "dimensions": {
-            "analysis": [
-            {
-                "name": "overview",
-                "displayName": "Overview",
-                "status": False,
-                "analysisSubTypes": [],
-                "noOfColumnsToUse":None
-            },
-            {
-                "name": "trend",
-                "displayName": "Trend",
-                "status": False,
-                "analysisSubTypes": [
-                    {
-                        "name": "overview",
-                        "displayName": "Overview",
-                        "status": False
-                    },
-                    {
-                        "name": "factors that drive up",
-                        "displayName": "Factors that drive up",
-                        "status": False
-                    },
-                    {
-                        "name": "factors that drive down",
-                        "displayName": "Factors that drive down",
-                        "status": False
-                    },
-                    {
-                        "name": "forecast",
-                        "displayName": "Forecast",
-                        "status": False
-                    }
+                    ],
+                    "noOfColumnsToUse": None
+                }
 
-                ],
-                "noOfColumnsToUse": None
-            },
-            {
-                "name": "prediction",
-                "displayName": "Prediction",
-                "status": False,
-                "analysisSubTypes": [],
-                "noOfColumnsToUse": None
-            },
-            {
-                "name": "association",
-                "displayName": "Association",
-                "status": False,
-                "analysisSubTypes": [],
-                "noOfColumnsToUse": [
-                    {
-                        "name": "low",
-                        "displayName": "Low",
-                        "status": True,
-                        "defaultValue":3
-                    },
-                    {
-                        "name": "medium",
-                        "displayName": "Medium",
-                        "status": False,
-                        "defaultValue":5
-                    },
-                    {
-                        "name": "high",
-                        "displayName": "High",
-                        "status": False,
-                        "defaultValue":8
-                    },
-                    {
-                        "name": "custom",
-                        "displayName": "Custom",
-                        "status": False,
-                        "defaultValue":3,
-                        "value":None
-                    }
-                ]
-            }
-        ],
-            "targetLevels":[],
-            "trendSettings":[
-                {"name":"Count","status":True},
-                {"name":"Specific Measure","status":False,"selectedMeasure":None}
-            ]
-        },
-        "measures": {
-            "analysis": [
-            {
-                "name": "overview",
-                "displayName": "Overview",
-                "status": False,
-                "analysisSubTypes": [],
-                "noOfColumnsToUse": None
-            },
-            {
-                "name": "trend",
-                "displayName": "Trend",
-                "status": False,
-                "analysisSubTypes": [
-                    {
-                        "name": "overview",
-                        "displayName": "Overview",
-                        "status": False
-                    },
-                    {
-                        "name": "factors that drive up",
-                        "displayName": "Factors that drive up",
-                        "status": False
-                    },
-                    {
-                        "name": "factors that drive down",
-                        "displayName": "Factors that drive down",
-                        "status": False
-                    },
-                    {
-                        "name": "forecast",
-                        "displayName": "Forecast",
-                        "status": False
-                    }
-
-                ],
-                "noOfColumnsToUse": None
-            },
-            {
-                "name": "performance",
-                "displayName": "Performance",
-                "status": False,
-                "analysisSubTypes": [
-                    {
-                        "name": "overview",
-                        "displayName": "Overview",
-                        "status": False
-                    },
-                    {
-                        "name": "Top Sublevel",
-                        "displayName": "Top Sublevel",
-                        "status": False
-                    },
-                    {
-                        "name": "Trend for top Sublevel",
-                        "displayName": "Trend for top Sublevel",
-                        "status": False
-                    }
-                ],
-                "noOfColumnsToUse": [
-                    {
-                        "name": "low",
-                        "displayName": "Low",
-                        "status": True,
-                        "defaultValue":3
-                    },
-                    {
-                        "name": "medium",
-                        "displayName": "Medium",
-                        "status": False,
-                        "defaultValue":5
-                    },
-                    {
-                        "name": "high",
-                        "displayName": "High",
-                        "status": False,
-                        "defaultValue":8
-                    },
-                    {
-                        "name": "custom",
-                        "displayName": "Custom",
-                        "status": False,
-                        "defaultValue":3,
-                        "value":None
-                    }
-                ],
-            },
-            {
-                "name": "influencer",
-                "displayName": "Influencer",
-                "status": False,
-                "analysisSubTypes": [
-                    {
-                        "name": "overview",
-                        "displayName": "Overview",
-                        "status": False
-                    },
-                    {
-                        "name": "Key areas of Impact",
-                        "displayName": "Key areas of Impact",
-                        "status": False
-                    },
-                    {
-                        "name": "Trend analysis",
-                        "displayName": "Trend analysis",
-                        "status": False
-                    }
-                ],
-                "noOfColumnsToUse": [
-                    {
-                        "name": "low",
-                        "displayName": "Low",
-                        "status": True,
-                        "defaultValue":3
-                    },
-                    {
-                        "name": "medium",
-                        "displayName": "Medium",
-                        "status": False,
-                        "defaultValue":5
-                    },
-                    {
-                        "name": "high",
-                        "displayName": "High",
-                        "status": False,
-                        "defaultValue":8
-                    },
-                    {
-                        "name": "custom",
-                        "displayName": "Custom",
-                        "status": False,
-                        "defaultValue":3,
-                        "value":None
-                    }
-                ]
-            },
-            {
-                "name": "prediction",
-                "displayName": "Prediction",
-                "status": False,
-                "analysisSubTypes": [],
-                "noOfColumnsToUse": None
-            }
-        ],
-            "trendSettings":[
-                {"name":"Count","status":False},
-                {"name":"Specific Measure","status":True,"selectedMeasure":None}
-            ]
-        },
-    }
-
-ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITH_TREND = {
+ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND = {
         "dimensions": {
             "analysis": [
             {
@@ -892,8 +684,8 @@ TRANSFORMATION_SETTINGS_CONSTANT = {
             {"actionName":"rename","displayName":"Rename Column","status":False,"newName":None},
             {"actionName":"replace","displayName":"Replace Values","status":False,"replacementValues":[],
              "replaceTypeList":[
-                {"name":"equals","displayName":"Equal To"},
                 {"name":"contains","displayName":"Contains"},
+                {"name":"equals","displayName":"Equal To"},
                 {"name":"startsWith","displayName":"Starts With"},
                 {"name":"endsWith","displayName":"Ends With"}
             ]},

@@ -86,10 +86,20 @@ class DatasetSerializer(serializers.ModelSerializer):
             pass
 
         print "get_advanced_setting    ", time_count
+
+        return self.add_trend_in_advanced_setting(time_count)
+
+
+    def add_trend_in_advanced_setting(self, time_count):
+
         if time_count > 0:
-            return settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS
+            main_setting = settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND
+            trend_setting = settings.ADANCED_SETTING_FOR_POSSIBLE_ANALYSIS_TREND
+            main_setting["dimensions"]["analysis"].append(trend_setting)
+            main_setting["measures"]["analysis"].append(trend_setting)
+            return main_setting
         else:
-            return settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITH_TREND
+            return settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND
 
 
     class Meta:
