@@ -133,9 +133,11 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
                     if colset.get('actionName') == 'replace':
                         colName = col.get('name')
                         replacementValues = colset.get('replacementValues')
+                        replaceType = colset.get('replaceType')
                         mdc.replace_values(
                             colName=colName,
-                            replace_match_array=replacementValues
+                            replace_match_array=replacementValues,
+                            replaceType=replaceType
                         )
 
                 elif colset.get("status") == False:
@@ -358,7 +360,7 @@ class MetaDataChange(object):
                 if data.get('name') == 'dimensionColumns':
                     data['value'].append(colName)
 
-    def replace_values(self, colName=None, replace_match_array=None):
+    def replace_values(self, colName=None, replace_match_array=None, replaceType=None):
         if replace_match_array is None:
             raise Exception('Nothing to replace. >> replace_values')
         if colName is None:
@@ -370,10 +372,23 @@ class MetaDataChange(object):
                 index = i
                 break
 
-
         for data in self.sampleData:
             for r in replace_match_array:
-                data[index] = data[index].replace(r['valueToReplace'], r['replacedValue'])
+                if replaceType == "Contains":
+                    data[index] = data[index].replace(r['valueToReplace'], r['replacedValue'])
+                elif replaceType == "Starts With":
+                    if data[index].startswith(r['valueToReplace']):
+                        data[index] = r['replacedValue']+data[index][len(r['valueToReplace']):]
+                elif replaceType == "Ends With":
+                    if data[index].endswith(r['valueToReplace']):
+                        data[index] = data[index][:-len(r['valueToReplace'])]+r['replacedValue']
+                elif replaceType == "Equal To":
+                    if data[index] == r['valueToReplace']:
+                        data[index] = data[index].replace(r['valueToReplace'], r['replacedValue'])
+
+
+                elif replaceType == "":
+                    pass
 
 dummy_meta_data = {
         "transformation_settings": [

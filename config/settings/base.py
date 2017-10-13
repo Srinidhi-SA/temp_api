@@ -890,7 +890,8 @@ TRANSFORMATION_SETTINGS_CONSTANT = {
         [
             {"actionName":"delete","displayName":"Delete Column","status":False},
             {"actionName":"rename","displayName":"Rename Column","status":False,"newName":None},
-            {"actionName":"replace","displayName":"Replace Values","status":False,"replacementValues":[]},
+            {"actionName":"replace","displayName":"Replace Values","status":False,"replacementValues":[],
+             "replaceTypeList":["Contains","Starts With","Ends With","Equal To"]},
             {
                 "actionName":"data_type",
                 "displayName":"Change Datatype",
