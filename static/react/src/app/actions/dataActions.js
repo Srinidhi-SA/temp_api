@@ -1044,11 +1044,11 @@ export function updateTranformColumns(){
 export function addComponents(editType){
 	return (dispatch) => {
 		var dataColumnRemoveValues = [];
-		dataColumnRemoveValues.push({"id":1,"name":"remove1","valueToReplace":"","replacedValue":"","replaceType":""});
-		dataColumnRemoveValues.push({"id":2,"name":"remove2","valueToReplace":"","replacedValue":"","replaceType":""});
+		dataColumnRemoveValues.push({"id":1,"name":"remove1","valueToReplace":"","replacedValue":"","replaceType":"contains"});
+		dataColumnRemoveValues.push({"id":2,"name":"remove2","valueToReplace":"","replacedValue":"","replaceType":"contains"});
 		var dataColumnReplaceValues = [];
-		dataColumnReplaceValues.push({"replaceId":1,"name":"replace1","valueToReplace":"","replacedValue":"","replaceType":""});
-		dataColumnReplaceValues.push({"replaceId":2,"name":"replace2","valueToReplace":"","replacedValue":"","replaceType":""});
+		dataColumnReplaceValues.push({"replaceId":1,"name":"replace1","valueToReplace":"","replacedValue":"","replaceType":"contains"});
+		dataColumnReplaceValues.push({"replaceId":2,"name":"replace2","valueToReplace":"","replacedValue":"","replaceType":"contains"});
 		if(editType === REMOVE){
 			dispatch(updateColumnRemoveValues(dataColumnRemoveValues))
 		}
@@ -1083,7 +1083,7 @@ export function addMoreComponentsToReplace(editType){
 
 			});
 			let length = max.id+1;
-			dataColumnRemoveValues.push({"id":length,"name":"remove"+length,"valueToReplace":"","replacedValue":"","replaceType":""});
+			dataColumnRemoveValues.push({"id":length,"name":"remove"+length,"valueToReplace":"","replacedValue":"","replaceType":"contains"});
 			dispatch(updateColumnRemoveValues(dataColumnRemoveValues))
 		}else{
 			var dataColumnReplaceValues = store.getState().datasets.dataSetColumnReplaceValues.slice();
@@ -1092,7 +1092,7 @@ export function addMoreComponentsToReplace(editType){
 
 			});
 			let length = max.replaceId+1;
-			dataColumnReplaceValues.push({"replaceId":length,"name":"replace"+length,"valueToReplace":"","replacedValue":"","replaceType":""});
+			dataColumnReplaceValues.push({"replaceId":length,"name":"replace"+length,"valueToReplace":"","replacedValue":"","replaceType":"contains"});
 			dispatch(updateColumnReplaceValues(dataColumnReplaceValues))	
 		}
 		

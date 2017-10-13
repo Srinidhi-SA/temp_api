@@ -55,7 +55,7 @@ export class DataValidationEditValues extends React.Component {
 	   let list = colData.map((actionNames,index)=>{
 		   if(actionNames.actionName == REPLACE){
 			   optionList = actionNames.replaceTypeList.map((subItem,subIndex)=>{
-		  return (<option key={subIndex+index} value={subItem}>{subItem}</option>);
+		  return (<option key={subIndex+index} value={subItem.name}>{subItem.displayName}</option>);
 		   })
   }
 	   });

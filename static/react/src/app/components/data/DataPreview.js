@@ -494,26 +494,27 @@ export class DataPreview extends React.Component {
 
 					<div className="panel">
 					<div className="panel-body">
-					<div class="row">
-						<div className="col-md-3 col-md-offset-7 text-right">
-						{
-						(this.isSubsetted)
-						?(  <div className="form-group">
-						<input type="text" name="newSubsetName" id="newSubsetName" className="form-control input-sm" placeholder="New Datset Name"/>
-						</div>)
-						:(<div/>)
-						}
-						</div>
-						<div className="col-md-2 text-right">
-						<Button onClick={this.closePreview.bind(this)}> {this.buttons.close.text} </Button>
+					<div className="row">
+					<div className="col-md-3 col-md-offset-7 text-right">
 					{
-						(this.isSubsetted)
-						?(<Button onClick={this.applyDataSubset.bind(this)} bsStyle="primary">Save Config</Button>)
-						:(<Button onClick={this.moveToVariableSelection.bind(this)} bsStyle="primary"> {this.buttons.create.text}</Button>)
-
+					(this.isSubsetted)
+					?(  <div className="form-group">
+					<input type="text" name="newSubsetName" id="newSubsetName" className="form-control input-sm" placeholder="New Datset Name"/>
+					</div>)
+					:(<div/>)
 					}
-						</div>
 					</div>
+					<div className="col-md-2 text-right">
+					<Button onClick={this.closePreview.bind(this)}> {this.buttons.close.text} </Button>
+				{
+					(this.isSubsetted)
+					?(<Button onClick={this.applyDataSubset.bind(this)} bsStyle="primary">Save Config</Button>)
+					:(<Button onClick={this.moveToVariableSelection.bind(this)} bsStyle="primary"> {this.buttons.create.text}</Button>)
+
+				}
+					</div>
+					</div>
+					 
 
 					<DataUploadLoader/>
 					</div>

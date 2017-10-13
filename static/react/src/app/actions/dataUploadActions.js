@@ -36,6 +36,7 @@ function triggerDataUpload(token) {
   if (store.getState().dataSource.selectedDataSrcType == "fileUpload") {
     var data = new FormData();
     data.append("input_file", store.getState().dataSource.fileUpload);
+    console.log(data)
     return fetch(API + '/api/datasets/', {
       method: 'post',
       headers: getHeaderWithoutContent(token),
@@ -103,6 +104,14 @@ export function close() {
   return {type: "HIDE_MODAL"}
 }
 
+export function openImg() {
+  return {type: "SHOW_IMG_MODAL"}
+}
+
+export function closeImg() {
+  return {type: "HIDE_IMG_MODAL"}
+}
+
 export function dataUploadLoaderValue(value) {
   return {type: "DATA_UPLOAD_LOADER_VALUE", value}
 }
@@ -129,7 +138,7 @@ export function dataSubsetting(subsetRq, slug) {
         dispatch(updateSubsetSuccess(json))
       } else {
 				dispatch(clearLoadingMsg())
-				dispatch(dataUploadError(json))				
+				dispatch(dataUploadError(json))
       }
     });
   }
