@@ -374,19 +374,17 @@ class MetaDataChange(object):
 
         for data in self.sampleData:
             for r in replace_match_array:
-                if replaceType == "Contains":
+                if replaceType == "contains":
                     data[index] = data[index].replace(r['valueToReplace'], r['replacedValue'])
-                elif replaceType == "Starts With":
+                elif replaceType == "startsWith":
                     if data[index].startswith(r['valueToReplace']):
                         data[index] = r['replacedValue']+data[index][len(r['valueToReplace']):]
-                elif replaceType == "Ends With":
+                elif replaceType == "endsWith":
                     if data[index].endswith(r['valueToReplace']):
                         data[index] = data[index][:-len(r['valueToReplace'])]+r['replacedValue']
-                elif replaceType == "Equal To":
+                elif replaceType == "equals":
                     if data[index] == r['valueToReplace']:
                         data[index] = data[index].replace(r['valueToReplace'], r['replacedValue'])
-
-
                 elif replaceType == "":
                     pass
 

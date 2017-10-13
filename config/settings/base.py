@@ -891,7 +891,12 @@ TRANSFORMATION_SETTINGS_CONSTANT = {
             {"actionName":"delete","displayName":"Delete Column","status":False},
             {"actionName":"rename","displayName":"Rename Column","status":False,"newName":None},
             {"actionName":"replace","displayName":"Replace Values","status":False,"replacementValues":[],
-             "replaceTypeList":["Contains","Starts With","Ends With","Equal To"]},
+             "replaceTypeList":[
+                {"name":"equals","displayName":"Equal To"},
+                {"name":"contains","displayName":"Contains"},
+                {"name":"startsWith","displayName":"Starts With"},
+                {"name":"endsWith","displayName":"Ends With"}
+            ]},
             {
                 "actionName":"data_type",
                 "displayName":"Change Datatype",
