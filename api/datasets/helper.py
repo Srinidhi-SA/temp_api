@@ -133,11 +133,9 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
                     if colset.get('actionName') == 'replace':
                         colName = col.get('name')
                         replacementValues = colset.get('replacementValues')
-                        replaceType = colset.get('replaceType')
                         mdc.replace_values(
                             colName=colName,
-                            replace_match_array=replacementValues,
-                            replaceType=replaceType
+                            replace_match_array=replacementValues
                         )
 
                 elif colset.get("status") == False:
@@ -360,7 +358,7 @@ class MetaDataChange(object):
                 if data.get('name') == 'dimensionColumns':
                     data['value'].append(colName)
 
-    def replace_values(self, colName=None, replace_match_array=None, replaceType=None):
+    def replace_values(self, colName=None, replace_match_array=None):
         if replace_match_array is None:
             raise Exception('Nothing to replace. >> replace_values')
         if colName is None:
@@ -374,6 +372,7 @@ class MetaDataChange(object):
 
         for data in self.sampleData:
             for r in replace_match_array:
+                replaceType = r.get('replaceType')
                 if replaceType == "contains":
                     data[index] = data[index].replace(r['valueToReplace'], r['replacedValue'])
                 elif replaceType == "startsWith":
