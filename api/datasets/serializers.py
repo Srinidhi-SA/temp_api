@@ -95,8 +95,8 @@ class DatasetSerializer(serializers.ModelSerializer):
         if time_count > 0:
             main_setting = settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND
             trend_setting = settings.ADANCED_SETTING_FOR_POSSIBLE_ANALYSIS_TREND
-            main_setting["dimensions"]["analysis"].append(trend_setting)
-            main_setting["measures"]["analysis"].append(trend_setting)
+            main_setting["dimensions"]["analysis"].insert(1, trend_setting)
+            main_setting["measures"]["analysis"].insert(1, trend_setting)
             return main_setting
         else:
             return settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND
