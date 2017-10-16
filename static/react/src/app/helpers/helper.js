@@ -56,7 +56,15 @@ const APPID4 = 4;
 const APPNAME4 = "Speech Analytics";
 const DELETEAUDIO = "Delete Media File";
 const RENAMEAUDIO = "Rename Media File";
-const DULOADERPERMSG = "initialized the filter parameters"
+const DULOADERPERMSG = "initialized the filter parameters";
+const RENAME = "rename";
+const DELETE = "delete";
+const REPLACE = "replace";
+const DATA_TYPE = "data_type";
+const REMOVE = "remove";
+const CURRENTVALUE = "current value";
+const NEWVALUE = "new value"
+	
 
 
 export function generateHeaders(table) {
@@ -283,5 +291,12 @@ export{
 	APPNAME4,
 	RENAMEAUDIO,
 	DELETEAUDIO,
-  DULOADERPERMSG,
+    DULOADERPERMSG,
+    RENAME,
+	DELETE,
+	REPLACE,
+	DATA_TYPE,
+	REMOVE,
+	CURRENTVALUE,
+	NEWVALUE
 	}
