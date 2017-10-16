@@ -62,7 +62,14 @@ export class Profile extends React.Component {
   }
 
   render() {
-
+	   let lastLogin = null;
+	  // alert(sessionStorage.last_login)
+	  if(sessionStorage.last_login != "null"){
+		  lastLogin = dateFormat(sessionStorage.last_login, "mmm d,yyyy");
+	  }else{
+		  lastLogin = dateFormat(new Date(), "mmm d,yyyy");
+	  }
+  
     if (isEmpty(this.props.profileInfo)) {
       return (
         <div className="side-body">
@@ -232,7 +239,7 @@ export class Profile extends React.Component {
                       <b> {dateFormat(sessionStorage.date, "mmm d,yyyy")}</b>
                       <br/>
                       Last Login :
-                      <b>{dateFormat(sessionStorage.last_login, "mmm d,yyyy")}</b>
+                      <b>{lastLogin}</b>
                       {/*<br/>
                     Subscription Left :
                     <b>25 Days</b>*/}
