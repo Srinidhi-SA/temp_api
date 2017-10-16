@@ -217,7 +217,7 @@ export function  subTreeSetting(urlLength, length,paramL2) {
 
   export function  showHideSubsetting(colType,subsetData,dateflag) {
 
-		if((colType =="datetime" ||dateflag == true)||(colType == "dimension" && $.isEmptyObject(subsetData))){
+		if(dateflag == true||(colType == "dimension" && $.isEmptyObject(subsetData))){
 				$(function(){
 			       $("#tab_subsettings #pnl_tbset").removeClass("in");
                    $("#tab_subsettings a").addClass("collapsed");
