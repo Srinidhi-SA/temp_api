@@ -14824,10 +14824,15 @@ visibility:hidden !important;
     padding-right: 10px;
 }
 
-.dataTransformModal{
-	height:300px;
-    overflow-y: scroll;
-    overflow-x:hidden;
+.dataTransformModal .tab-content .tab-pane .tb_content{
+    height: 240px;
+    overflow: auto;
+    overflow-x: hidden;
+}
+ .dataTransformModal .tab-content .tab-pane .tb_content div div:nth-child(2) div{ background-color: rgba(255, 255, 255, 0) !important }
+ .dataTransformModal .tab-content .page-header { margin: 0 0 18px; }
+.dataTransformModal.modal-body {
+    padding: 0 5px;
 }
 .dataTransformModalWidth{
 	width:750px !important;
