@@ -1,3 +1,4 @@
+import {Redirect} from 'react-router';
 export const cookieObj = {
   storeCookies: function(userDetail) {
       document.cookie = "userToken="+userDetail.token;
@@ -8,6 +9,7 @@ export const cookieObj = {
       document.cookie = "last_login="+userDetail.user.last_login;
       document.cookie = "is_superuser="+userDetail.user.is_superuser;
       document.cookie = "image_url="+userDetail.profile.image_url;
+      document.cookie = "expires=";
   },
 
   clearCookies: function() {
@@ -21,5 +23,6 @@ export const cookieObj = {
       document.cookie = "is_superuser=;";
       document.cookie = "image_url=;";
       document.cookie = "expires=" + now.toUTCString() + ";"
+      location.reload();
   }
 }

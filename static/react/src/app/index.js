@@ -34,7 +34,7 @@ import {AudioFileSummary} from "./components/apps/AudioFileSummary";
 class App extends React.Component {
 
   render() {
-
+	  sessionStorage.url = window.location.pathname;
     return (
       <BrowserRouter>
       <Switch>

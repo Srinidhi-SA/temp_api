@@ -52,7 +52,7 @@ export class Login extends React.Component {
     console.log("login is called!!")
     console.log(this.props)
     this.state.errmsg = this.props.errmsg;
-    if (document.cookie.indexOf("userToken=") >= 0 ) {
+    if (document.cookie.indexOf("JWT ") > 0 ) {
       console.log("authorized!!!");
       sessionObject.manageSession();
       return (<Redirect to={"/"}/>);
