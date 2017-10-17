@@ -13,6 +13,13 @@ export const cookieObj = {
   clearCookies: function() {
 	  var now = new Date();
       document.cookie = "userToken=;";
+      document.cookie = "userName=;";
+      document.cookie = "email=;";
+      document.cookie = "date=;";
+      document.cookie = "phone=;";
+      document.cookie = "last_login=;";
+      document.cookie = "is_superuser=;";
+      document.cookie = "image_url=;";
       document.cookie = "expires=" + now.toUTCString() + ";"
   }
 }
