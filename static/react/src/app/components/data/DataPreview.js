@@ -8,16 +8,17 @@ import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {C3Chart} from "../c3Chart";
 import ReactDOM from 'react-dom';
-import {hideDataPreview,getDataSetPreview} from "../../actions/dataActions";
+import {hideDataPreview,getDataSetPreview,renameMetaDataColumn,updateTranformColumns} from "../../actions/dataActions";
 import {dataSubsetting,clearDataPreview,clearLoadingMsg} from "../../actions/dataUploadActions"
-import {Button} from "react-bootstrap";
+import {Button,Dropdown,Menu,MenuItem} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"
 import {showHideSideChart,showHideSideTable} from "../../helpers/helper.js"
 import {isEmpty} from "../../helpers/helper";
 import {SubSetting} from "./SubSetting";
 import {DataUploadLoader} from "../common/DataUploadLoader";
-
-
+import {DataValidation} from "./DataValidation";
+import {DataValidationEditValues} from "./DataValidationEditValues";
+import Dialog from 'react-bootstrap-dialog';
 
 
 
@@ -30,7 +31,8 @@ import {DataUploadLoader} from "../common/DataUploadLoader";
 		modelSlug:store.apps.modelSlug,
 		signal: store.signals.signalAnalysis,
 		subsettingDone:store.datasets.subsettingDone,
-		subsettedSlug:store.datasets.subsettedSlug};
+		subsettedSlug:store.datasets.subsettedSlug,
+		dataTransformSettings:store.datasets.dataTransformSettings};
 })
 
 
@@ -160,9 +162,11 @@ export class DataPreview extends React.Component {
 
 	}
 
-
-
+  componentDidUpdate(){
+	updateTranformColumns();
+  }
 	setSideElements(e){
+		
 		//renderFlag=true;
 		//alert("setting side element!!")
 		const chkClass = $(e.target).attr('class');
@@ -203,6 +207,7 @@ export class DataPreview extends React.Component {
 				ReactDOM.render(<Provider store={store}><SubSetting item = {item}/></Provider>, document.getElementById('sub_settings'));
 
 				// column subsetting ends
+
 			}
 		});
 	}
@@ -230,17 +235,21 @@ export class DataPreview extends React.Component {
 		//alert("working");
 		this.new_subset = $("#newSubsetName").val()
 		//alert(this.new_subset)
+		let transformationSettings = {};
+		transformationSettings.existingColumns = store.getState().datasets.dataTransformSettings;
 		let subSettingRq = {'filter_settings':store.getState().datasets.updatedSubSetting,
-													'name':this.new_subset,'subsetting':true};
-		console.log(JSON.stringify(subSettingRq))
+													'name':this.new_subset,'subsetting':true,
+													'transformation_settings':transformationSettings};
 		this.props.dispatch(dataSubsetting(subSettingRq,this.props.dataPreview.slug))
 	}
+	shouldComponentUpdate(nextProps) {
+     return true;
+    }
 
+	
 	render() {
 
 		console.log("data prev is called##########3");
-		console.log(this.props);
-
 		//for active select in columnName
 		$(function(){
 			console.log($(".cst_table"));
@@ -325,34 +334,22 @@ export class DataPreview extends React.Component {
 				}
 
 
-				const anchorCls =thElement.slug + " dropdown-toggle";
+				const anchorCls =thElement.slug + " dropdown-toggle cursor";
 
 				if(thElement.ignoreSuggestionFlag){
 					cls = cls + " greyout-col";
 
 				return(
 						<th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)} title={thElement.ignoreSuggestionMsg}>
-						<a href="#" data-toggle="dropdown" className={anchorCls}><i className={iconCls}></i> {thElement.name}</a>
-						{/*<ul className="dropdown-menu">
-               <li><a href="#">Ascending</a></li>
-               <li><a href="#">Descending</a></li>
-               <li><a href="#">Measures</a></li>
-               <li><a href="#">Dimensions</a></li>
-            </ul>*/}
-
+						<a href="#" data-toggle="dropdown" className={anchorCls}><i className={iconCls}></i> {thElement.name}<b className="caret"></b></a>
+                         <DataValidation name={thElement.name} slug={thElement.slug} />
 						</th>
 				);
 			}else{
 				return(
 						<th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)}>
-						<a href="#" data-toggle="dropdown" className={anchorCls}><i className={iconCls}></i> {thElement.name}</a>
-						{/*<ul className="dropdown-menu">
-               <li><a href="#">Ascending</a></li>
-               <li><a href="#">Descending</a></li>
-               <li><a href="#">Measures</a></li>
-               <li><a href="#">Dimensions</a></li>
-            </ul>*/}
-
+						<a href="#" data-toggle="dropdown" id={thElement.slug} className={anchorCls}><i className={iconCls}></i> {thElement.name}<b className="caret"></b></a>
+						<DataValidation name={thElement.name} slug={thElement.slug} />
 						</th>
 				);
 
@@ -498,25 +495,24 @@ export class DataPreview extends React.Component {
 					<div className="panel">
 					<div className="panel-body">
 					<div className="row">
-						<div className="col-md-12">
-							<ul className="nav navbar-nav navbar-right">
-								{
-						(this.isSubsetted)
-						?( <li> <div className="form-group">
-						<input type="text" name="newSubsetName" id="newSubsetName" className="form-control input-sm" placeholder="new subset name"/>
-						</div></li>)
-						:(<div/>)
-						}
-								
-								<li><Button onClick={this.closePreview.bind(this)}> {this.buttons.close.text} </Button></li>
-								<li>{
-						(this.isSubsetted)
-						?(<Button onClick={this.applyDataSubset.bind(this)} bsStyle="primary">Save Subset</Button>)
-						:(<Button onClick={this.moveToVariableSelection.bind(this)} bsStyle="primary"> {this.buttons.create.text}</Button>)
+					<div className="col-md-3 col-md-offset-7 text-right">
+					{
+					(this.isSubsetted)
+					?(  <div className="form-group">
+					<input type="text" name="newSubsetName" id="newSubsetName" className="form-control input-sm" placeholder="New Datset Name"/>
+					</div>)
+					:(<div/>)
+					}
+					</div>
+					<div className="col-md-2 text-right">
+					<Button onClick={this.closePreview.bind(this)}> {this.buttons.close.text} </Button>
+				{
+					(this.isSubsetted)
+					?(<Button onClick={this.applyDataSubset.bind(this)} bsStyle="primary">Save Config</Button>)
+					:(<Button onClick={this.moveToVariableSelection.bind(this)} bsStyle="primary"> {this.buttons.create.text}</Button>)
 
-					}</li>
-							</ul>
-						</div>
+				}
+					</div>
 					</div>
 					 
 
@@ -529,9 +525,9 @@ export class DataPreview extends React.Component {
 					</div>
 
 					</div>
-
-
 					{/*<!-- /.Page Content Area --> */}
+					<DataValidationEditValues/>
+					  <Dialog ref="dialog"/>
 					 </div>
 			);
 		} else {

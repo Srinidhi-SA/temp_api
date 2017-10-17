@@ -64,7 +64,7 @@ export class SubSetting extends React.Component {
             that.state.selectedDimention.push($(this).val());
           }
         });
-        that.state.curdimention = that.state.selectedDimention
+       that.state.curdimention = that.state.selectedDimention
         console.log(that.state.selectedDimention);
       });
 
@@ -383,18 +383,18 @@ export class SubSetting extends React.Component {
 
   }
   callSubsetTableSorter(){
-    $(function() {
-      $('#subset').tablesorter({
-        theme: 'ice',
-        headers: {
-          0: {
-            sorter: false
-          }
-        }
-      });
-      $("#dim").click();
-    });
-  }
+	  $(function() {
+	      $('#subset').tablesorter({
+	        theme: 'ice',
+	        headers: {
+	          0: {
+	            sorter: false
+	          }
+	        }
+	      });
+	     // $("#dim").click();
+	    });
+    }
   render() {
     console.log("subsetting is called!!");
     console.log(this.props)
