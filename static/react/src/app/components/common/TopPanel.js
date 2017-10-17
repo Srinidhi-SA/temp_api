@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import {sessionObject} from '../../helpers/manageSessionStorage';
 import LoadingBar from 'react-redux-loading-bar';
 import {Link} from "react-router-dom";
+import {cookieObj} from '../../helpers/cookiesHandler';
 // import $ from 'jquery';
 
 // import store from "../../store";
@@ -24,6 +25,7 @@ export default class TopPanel extends React.Component {
              loginFlag: false
          });
          sessionObject.clearSession();
+         cookieObj.clearCookies();
          location.reload();
 	}
 	render(){

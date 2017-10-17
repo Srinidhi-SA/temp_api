@@ -1,6 +1,10 @@
 import store from "../store";
 import {sessionObject} from '../helpers/manageSessionStorage';
 import {API} from "../helpers/env";
+import { sessionService } from 'redux-react-session';
+import { browserHistory } from 'react-router';
+import {cookieObj} from '../helpers/cookiesHandler';
+
 export function getHeaderWithoutContent(token) {
   return {'Authorization': token};
 }
@@ -36,7 +40,9 @@ function fetchPosts(username,password) {
 
 
 function fetchPostsSuccess(payload) {
-  sessionObject.manageSession(payload);
+var token = payload.token;
+//sessionObject.manageSession(payload);
+cookieObj.storeCookies(payload)
   return {
     type: "AUTHENTICATE_USER",
     payload

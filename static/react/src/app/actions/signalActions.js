@@ -400,3 +400,5 @@ function dispatchSignalLoadingMsg(signalAnalysis){
 export function clearLoadingMsg() {
   return {type: "CLEAR_LOADING_MSG"}
 }
+
+
