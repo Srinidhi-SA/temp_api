@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css?family=Quicksand');
+/*@import url('https://fonts.googleapis.com/css?family=Quicksand');*/
+
 @import 'font-awesome.min.css';
 @import 'pe-icon-7-stroke.css';
 @import 'helper.css';
@@ -6,6 +7,16 @@
 @import 'slick-theme.min.css';
 .mAd_icons { background:url(../images/mAd_image.png) no-repeat }
 /*@import url('https://fonts.googleapis.com/css?family=Open+Sans');*/
+
+@font-face {
+	font-family: 'Quicksand';
+	src: url('../fonts/Quicksand-Regular.eot');
+	src: url('../fonts/Quicksand-Regular.eot?#iefix') format('embedded-opentype'),
+		url('../fonts/Quicksand-Regular.woff') format('woff'),
+		url('../fonts/Quicksand-Regular.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
 
 .label, sub, sup {
 	vertical-align: baseline
@@ -14562,7 +14573,10 @@ a.disabled { color:#ccc !important; }
     height: 40px; }
 
 #date_subsetting .react-datepicker-wrapper, #date_subsetting .react-datepicker__input-container { display:block; }
->>>>>>> origin/react-ui-development
+.apps_list .tab-content, #controlled-tab-example  .tab-content{ padding:0; }
+.sel-dataset.check {     background-color: #03998c;  border-color: #03998c; color: #FFFFFF;}
+.d-mashup-1 .form-group .col-md-3 { margin: 0; padding: 5px;}
+.d-mashup-1 .form-group label.sel-dataset{ overflow:hidden; }
 /**************** Css realated to developers, keep the source down ***/
 
 
