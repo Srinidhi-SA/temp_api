@@ -31,6 +31,7 @@ import {RoboDocumentMode} from "./components/apps/RoboDocumentMode";
 import {Profile} from "./components/common/profile";
 import {AudioFileList} from "./components/apps/AudioFileList";
 import {AudioFileSummary} from "./components/apps/AudioFileSummary";
+import {AppsStockAdvisorList} from "./components/apps/AppsStockAdvisorList";
 class App extends React.Component {
 
   render() {
@@ -80,6 +81,7 @@ class App extends React.Component {
             <Route exact path="/apps/audio" component={AudioFileList} />
             <Route exact path="/apps/audio/:audioSlug" component={AudioFileSummary} />				
             <Route exact path="/apps/audio?page=:pageNo" component={AudioFileList} />
+            <Route exact path="/apps-stock-advisor" component={AppsStockAdvisorList} />	
             </Main>
       </Switch>
       </BrowserRouter>

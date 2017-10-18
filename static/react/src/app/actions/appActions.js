@@ -1293,3 +1293,9 @@ export function storeAppsScoreSortElements(appsScoreSorton,appsScoreSorttype){
 		appsScoreSorttype
 	}
 }
+export function updateCreateStockPopup(flag){
+	 return {
+			type: "CREATE_STOCK_MODAL",
+			flag
+		}
+}

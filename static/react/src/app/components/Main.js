@@ -22,7 +22,7 @@ export class Main extends React.Component {
   render() {
 
     console.log("Main is called!!");
-    // console.log(this.props);
+    console.log(this.props);
     // console.log(this.props.login_response);
     if (sessionStorage.userToken) {
       console.log("authorized!!!");

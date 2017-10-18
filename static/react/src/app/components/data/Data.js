@@ -110,20 +110,20 @@ export class Data extends React.Component {
     console.log("data is called");
     console.log(this.props);
 		//empty search element
-		if (this.props.data_search_element != "" && (this.props.location.search == "" || this.props.location.search == null)) {
-			console.log("search is empty");
-			this.props.dispatch(storeSearchElement(""));
-			let search_element = document.getElementById('search_data');
-			if (search_element)
-			document.getElementById('search_data').value = "";
-		}
-     if(this.props.location.sort == "" || this.props.location.sort == null){
-		  this.props.dispatch(storeSortElements("",null));
-	  }
-		//search element ends..
+    if (this.props.data_search_element != "" && (this.props.location.search == "" || this.props.location.search == null)) {
+    	console.log("search is empty");
+    	this.props.dispatch(storeSearchElement(""));
+    	let search_element = document.getElementById('search_data');
+    	if (search_element)
+    		document.getElementById('search_data').value = "";
+    }
+    if(this.props.location.sort == "" || this.props.location.sort == null){
+    	this.props.dispatch(storeSortElements("",null));
+    }
+    //search element ends..
     if (store.getState().datasets.dataPreviewFlag) {
-      let _link = "/data/" + store.getState().datasets.selectedDataSet;
-      return (<Redirect to={_link}/>);
+    	let _link = "/data/" + store.getState().datasets.selectedDataSet;
+    	return (<Redirect to={_link}/>);
     }
 
     const dataSets = store.getState().datasets.dataList.data;

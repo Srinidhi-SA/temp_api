@@ -7,7 +7,7 @@ import {Tabs,Tab} from "react-bootstrap";
 import {Link, Redirect} from "react-router-dom";
 import {updateSelectedApp,updateModelSummaryFlag,updateScoreSummaryFlag,showRoboDataUploadPreview,updateAudioFileSummaryFlag} from "../../actions/appActions";
 import {STATIC_URL} from "../../helpers/env.js"
-import {APPID1,APPID2,APPID3,APPID4,APPNAME1,APPNAME2,APPNAME3,APPNAME4} from "../../helpers/helper.js"
+import {APPID1,APPID2,APPID3,APPID4,APPNAME1,APPNAME2,APPNAME3,APPNAME4,APPNAME5,APPID5} from "../../helpers/helper.js"
 
 @connect((store) => {
 	return {login_response: store.login.login_response,
@@ -182,7 +182,7 @@ export class AppsPanel extends React.Component {
 
 				
 				<div className="app-block"> 
-					<Link onClick={this.gotoAppsList.bind(this,APPID4,APPNAME4)} className="app-link" to='/apps/audio'>
+					<Link onClick={this.gotoAppsList.bind(this,APPID5,APPNAME5)} className="app-link" to='/apps-stock-advisor'>
 
 					<div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
 						<img src={STATIC_URL + "assets/images/icon_speak.png"} className="img-responsive"/>

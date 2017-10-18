@@ -131,7 +131,7 @@ import Dialog from 'react-bootstrap-dialog'
 							<div className="row">
 							<div className="col-xs-9">
 							<h4 className="title newCardTitle">
-							<a href="javascript:void(0);" id= {data.slug} onClick={this.getModelSummary.bind(this,data.slug)}><Link to={modelLink}>{data.name}</Link></a>
+							<a href="javascript:void(0);" id= {data.slug} ><Link to={modelLink}>{data.name}</Link></a>
 							</h4>
 							</div>
 							<div className="col-xs-3">

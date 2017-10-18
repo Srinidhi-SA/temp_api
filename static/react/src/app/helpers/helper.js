@@ -46,9 +46,11 @@ const INPROGRESS  = "INPROGRESS";
 const APPNAME1 = "OPPORTUNITY SCORING";
 const APPNAME2 ="AUTOMATED PREDICTION";
 const APPNAME3 = "ROBO INSIGHTS";
+const APPNAME5 = "STOCK ADVISOR";
 const APPID1 = 1;
 const APPID2 = 2;
 const APPID3 = 3;
+const APPID5 = 5;
 const CUSTOMER = "customer";
 const HISTORIAL = "historial";
 const EXTERNAL = "external";
@@ -298,5 +300,7 @@ export{
 	DATA_TYPE,
 	REMOVE,
 	CURRENTVALUE,
-	NEWVALUE
+	NEWVALUE,
+	APPID5,
+	APPNAME5,
 	}

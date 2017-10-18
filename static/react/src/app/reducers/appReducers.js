@@ -51,8 +51,9 @@ export default function reducer(state = {
 		apps_model_sorttype:null,
 		apps_score_sorton:null,
 		apps_score_sorttype:null,
-		
-		
+		appsCreateStockModal:false,
+
+
 }, action) {
 	console.log("In APPs reducer!!");
 	console.log(action);
@@ -495,7 +496,7 @@ export default function reducer(state = {
 		}
 	}
 	break;
-	
+
 	case "AUDIO_LIST":
 	{
 		return {
@@ -523,30 +524,40 @@ export default function reducer(state = {
 
 	case "SORT_ROBO":
 	{
-      return{
-        ...state,
-        robo_sorton:action.roboSorton,
-		robo_sorttype:action.roboSorttype
-      }
-    }
+		return{
+			...state,
+			robo_sorton:action.roboSorton,
+			robo_sorttype:action.roboSorttype
+		}
+	}
 	break;	case "SORT_APPS_MODEL":
 	{
-      return{
-        ...state,
-        apps_model_sorton:action.appsModelSorton,
-		apps_model_sorttype:action.appsModelSorttype
-      }
-    }
+		return{
+			...state,
+			apps_model_sorton:action.appsModelSorton,
+			apps_model_sorttype:action.appsModelSorttype
+		}
+	}
 	break;
-		case "SORT_APPS_SCORE":
+	case "SORT_APPS_SCORE":
 	{
-      return{
-        ...state,
-        apps_score_sorton:action.appsScoreSorton,
-		apps_score_sorttype:action.appsScoreSorttype
-      }
-    }
+		return{
+			...state,
+			apps_score_sorton:action.appsScoreSorton,
+			apps_score_sorttype:action.appsScoreSorttype
+		}
+	}
 	break;
- }
-return state
+
+	case "CREATE_STOCK_MODAL":
+	{
+		return{
+			...state,
+			appsCreateStockModal:action.flag
+
+		}
+	}
+	break;
+	}
+	return state
 }
