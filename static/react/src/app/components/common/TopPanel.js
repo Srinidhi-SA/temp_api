@@ -30,7 +30,6 @@ export default class TopPanel extends React.Component {
          //location.reload();
 	}
 	render(){
-		alert("Top Panel")
 		if(!this.state.loginFlag){
 			return(<Redirect to="/login" />);
 		}else{

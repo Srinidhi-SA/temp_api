@@ -12,7 +12,7 @@ import { showLoading, hideLoading } from 'react-redux-loading-bar'
 //   return {signal: store.signals.signalAnalysis};
 // })
 var createSignalInterval = null;
-alert(USERDETAILS.userToken)
+
 function getHeader(token){
   return {
     'Authorization': token,
