@@ -5,7 +5,7 @@ import {Redirect} from 'react-router';
 import {authenticateFunc} from "../actions/loginActions";
 import store from "../store";
 import {STATIC_URL} from "../helpers/env";
-import {isEmpty} from "../helpers/helper";
+import {isEmpty,setUserDetails,USERDETAILS} from "../helpers/helper";
 import {sessionObject} from '../helpers/manageSessionStorage';
 // import $ from "jquery";
 
@@ -54,8 +54,13 @@ export class Login extends React.Component {
     this.state.errmsg = this.props.errmsg;
     if (document.cookie.indexOf("JWT ") > 0 ) {
       console.log("authorized!!!");
-      sessionObject.manageSession();
-      return (<Redirect to={"/"}/>);
+      var data = setUserDetails.manageSession();
+      console.log(USERDETAILS)
+      //sessionObject.manageSession();
+     // var url =  sessionStorage.url ;
+      //if(url == "" || url  == undefined || url == "/login")url = "/";
+      //console.log(url);
+      return (<Redirect to={"/"} />);
     } else {
       return (
 

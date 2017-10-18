@@ -3,7 +3,7 @@ import {NavLink,withRouter} from "react-router-dom";
 import {connect} from "react-redux";
 import {hideDataPreview,getDataList} from "../../actions/dataActions";
 import {getList} from "../../actions/signalActions";
-
+import {USERDETAILS} from  "../../helpers/helper"
 
 
 @connect((store) => {
@@ -27,7 +27,7 @@ componentDidMount(){
 
 hideDataPrev(e){
 	this.props.dispatch(hideDataPreview());
-  this.props.dispatch(getList(sessionStorage.userToken, 1));
+  this.props.dispatch(getList(USERDETAILS.userToken, 1));
   this.props.dispatch(getDataList(1));
 	/*$("."+e.target).addClass("active");
 	$(".sdb").each(function(){
@@ -56,7 +56,7 @@ hideDataPrev(e){
                       STORY</NavLink>
                   </li>*/}
 
-                <li>
+               {/* <li>
                     <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" className=" sdb sdb_app" to ="/apps">
                       <span></span>
                       APPS</NavLink>
@@ -66,7 +66,7 @@ hideDataPrev(e){
                     <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" className="sdb sdb_data" to ="/data">
                       <span></span>
                       DATA</NavLink>
-                  </li>
+                  </li> */} 
                   {/* <li>
                     <NavLink  onClick={this.hideDataPrev.bind(this)} activeClassName="active" className="sdb sdb_settings" to ="/settings">
                       <span></span>
