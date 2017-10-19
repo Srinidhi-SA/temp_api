@@ -489,7 +489,7 @@ export class DataPreview extends React.Component {
 					{/* End Tab Subsettings */}
 					</div>
 					</div>
-					<div className="row buttonRow">
+					<div className="row buttonRow" id="dataPreviewButton">
 					<div className="col-md-12">
 
 					<div className="panel">

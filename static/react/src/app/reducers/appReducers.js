@@ -52,6 +52,8 @@ export default function reducer(state = {
 		apps_score_sorton:null,
 		apps_score_sorttype:null,
 		appsCreateStockModal:false,
+		appsStockSymbolsInputs:[],
+		stockAnalysisList:{},
 
 
 }, action) {
@@ -557,7 +559,34 @@ export default function reducer(state = {
 
 		}
 	}
+	case "ADD_STOCK_SYMBOLS":
+	{
+		return{
+			...state,
+			appsStockSymbolsInputs:action.stockSymbolsArray
+
+		}
+	}
 	break;
+	
+	
+	case "STOCK_LIST":
+	{
+		return {
+			...state,
+			stockAnalysisList: action.data,
+			current_page:action.current_page,
+		}
+	}
+	break;
+
+	case "STOCK_LIST_ERROR":
+	{
+		//alert(action.json.non_field_errors);
+		throw new Error("Unable to fetch stock list!!");
+	}
+	break;
+	
 	}
 	return state
 }

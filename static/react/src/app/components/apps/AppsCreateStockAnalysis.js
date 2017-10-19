@@ -4,13 +4,15 @@ import {Link, Redirect} from "react-router-dom";
 import {push} from "react-router-redux";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
 import store from "../../store";
-import {updateCreateStockPopup} from "../../actions/appActions";
+import {updateCreateStockPopup,addDefaultStockSymbolsComp,crawlDataForAnalysis,addMoreStockSymbols,removeStockSymbolsComponents,handleInputChange} from "../../actions/appActions";
+import {storeSignalMeta} from "../../actions/dataActions";
 
 
 @connect((store) => {
 	return {login_response: store.login.login_response, 
 		currentAppId:store.apps.currentAppId,
 		appsCreateStockModal:store.apps.appsCreateStockModal,
+		appsStockSymbolsInputs:store.apps.appsStockSymbolsInputs,
 		};
 })
 
@@ -22,13 +24,38 @@ export class AppsCreateStockAnalysis extends React.Component {
 	}
 	componentWillMount() {
 		this.props.dispatch(updateCreateStockPopup(false));
+		this.props.dispatch(storeSignalMeta(null,this.props.match.url));
+		this.props.dispatch(addDefaultStockSymbolsComp())
 	}
 	updateCreateStockPopup(flag){
     	this.props.dispatch(updateCreateStockPopup(flag))
     }
+	handleInputChange(event){
+		this.props.dispatch(handleInputChange(event))
+	}
+	removeStockSymbolsComponents(data,event){
+		this.props.dispatch(removeStockSymbolsComponents(data));
+	}
+	addMoreStockSymbols(event){
+		this.props.dispatch(addMoreStockSymbols(event));
+	}
+	crawlDataForAnalysis(){
+		var url = $("#createStockUrl").val();
+		var analysisName = $("#createStockAnalysisName").val();
+		this.props.dispatch(crawlDataForAnalysis(url,analysisName));
+	}
 	render() {
 		 console.log("apps create score list is called##########3");
-		
+		  let stockSymbolsList = this.props.appsStockSymbolsInputs;
+		  const templateTextBoxes = stockSymbolsList.map((data,id) =>{
+			  return (<div className="row"><div className="form-group" id={data.id}>
+				<label for="fl1" className="col-sm-1 control-label"><b>{id+1}.</b></label>
+				<div className="col-sm-5">
+				<input  id={data.id} type="text" name={data.name}  onChange={this.handleInputChange.bind(this)} value={data.value} className="form-control"/>
+				</div>
+				<div className="col-sm-1 cursor" onClick={this.removeStockSymbolsComponents.bind(this,data)}><i className="fa fa-minus-square-o text-muted"></i></div>
+				</div></div>);
+		  });
 		return (
 				<div class="col-md-3 top20 list-boxes" onClick={this.updateCreateStockPopup.bind(this,true)}>
 				<div class="newCardStyle firstCard">
@@ -44,18 +71,28 @@ export class AppsCreateStockAnalysis extends React.Component {
 				<h3 className="modal-title">Crawling Input</h3>
 				</Modal.Header>
 				<Modal.Body>
-				  <div class="form-group">
+				<form role="form" className="form-horizontal">
 	              <label>Enter Url : </label>
-	              <input type="text" name="createStock" id="createStock"  required={true} className="form-control input-sm" />
+	              <input type="text" name="createStock" id="createStockUrl"  required={true} className="form-control input-sm" />
 				 <br/>
 	              <label>Enter Text/Symbols to Analyze:</label>
-				  
+	             
+	              {templateTextBoxes}
 	              
-	              </div>
+	              <div className="dataTransformValues">
+		     		 <Button bsStyle="primary" onClick={this.addMoreStockSymbols.bind(this)}>Add More&nbsp;<i className="fa fa-plus"></i></Button>
+		     		</div>
+		     		
+	              <label>Enter Name for Analysis : </label>
+	              <input type="text" name="createStockAnalysisName" id="createStockAnalysisName"  required={true} className="form-control input-sm" />
+	              
+	              
+	             
+	              </form>
 				</Modal.Body>
 				<Modal.Footer>
 				<Button className="btn btn-primary md-close" onClick={this.updateCreateStockPopup.bind(this,false)}>Close</Button>
-                <Button bsStyle="primary" onClick={this.updateCreateStockPopup.bind(this,false)}>Create</Button>
+                <Button bsStyle="primary" onClick={this.crawlDataForAnalysis.bind(this,false)}>Extract Data</Button>
 				</Modal.Footer>
 				</Modal>
 				</div>

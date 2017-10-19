@@ -7,18 +7,20 @@ import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {connect} from "react-redux";
 import {APPID1,APPID2,APPID3,APPNAME1,APPNAME2,APPNAME3} from "../../helpers/helper.js"
-import {getAppsModelList} from "../../actions/appActions";
+import {getAppsStockList} from "../../actions/appActions";
 import Dialog from 'react-bootstrap-dialog'
 import {AppsCreateStockAnalysis} from "./AppsCreateStockAnalysis";
 import {STATIC_URL} from "../../helpers/env.js";
 import {DetailOverlay} from "../common/DetailOverlay";
+import {AppsLoader} from "../common/AppsLoader";
+
 var dateFormat = require('dateformat');
 
 @connect((store) => {
 	return {login_response: store.login.login_response,
 		currentAppId:store.apps.currentAppId,
-		stockList: store.apps.modelList,
-
+		stockList: store.apps.stockAnalysisList,
+		 dataPreviewFlag: store.datasets.dataPreviewFlag,
 	};
 })
 
@@ -31,10 +33,11 @@ export class AppsStockAdvisorList extends React.Component {
 		var pageNo = 1;
 		if(this.props.history.location.pathname.indexOf("page") != -1){
 			pageNo = this.props.history.location.pathname.split("page=")[1];
-			this.props.dispatch(getAppsModelList(pageNo));
+			this.props.dispatch(getAppsStockList(pageNo));
 		}else{
-			this.props.dispatch(getAppsModelList(pageNo));
+			this.props.dispatch(getAppsStockList(pageNo));
 		}
+		
 	}
 	getPreviewData(e) {
 		console.log(e)
@@ -76,7 +79,10 @@ export class AppsStockAdvisorList extends React.Component {
 	}
 
 	render() {
-
+		 if (store.getState().datasets.dataPreviewFlag) {
+		    	let _link = "/apps-stock-advisor-analyze/data/" + store.getState().datasets.selectedDataSet;
+		    	return (<Redirect to={_link}/>);
+		    }
 		const stockAnalysisList = this.props.stockList.data;
 		if (stockAnalysisList) {
 			const pages = this.props.stockList.total_number_of_pages;
@@ -197,7 +203,7 @@ export class AppsStockAdvisorList extends React.Component {
 					{paginationTag}
 					</div>
 					</div>
-
+                    <AppsLoader/>
 					<Dialog ref="dialog"/>
 					</div>
 					</div>
