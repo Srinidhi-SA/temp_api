@@ -49,7 +49,7 @@ function fetchCreateSignal(metaData) {
 
 function fetchCreateSignalSuccess(signalData, dispatch) {
   //console.log("signal list from api to store")
-  if(signalData.type == "dimension"){
+  // if(signalData.type == "dimension"){
     console.log("created in progress slug is:")
     console.log(signalData)
 
@@ -74,16 +74,16 @@ function fetchCreateSignalSuccess(signalData, dispatch) {
 
     }, DEFAULTINTERVAL);
 
-    }else{
-     dispatch(updateCsLoaderValue(store.getState().signals.createSignalLoaderValue+CSLOADERPERVALUE))
-      createSignalInterval = setInterval(function(){
-      	if(store.getState().signals.createSignalLoaderValue < LOADERMAXPERVALUE){
-      	  dispatch(updateCsLoaderValue(store.getState().signals.createSignalLoaderValue+CSLOADERPERVALUE))
-      	}
-            dispatch(getSignalAnalysis(sessionStorage.userToken,signalData.slug));
-
-    },DEFAULTINTERVAL);
-  }
+  //   }else{
+  //    dispatch(updateCsLoaderValue(store.getState().signals.createSignalLoaderValue+CSLOADERPERVALUE))
+  //     createSignalInterval = setInterval(function(){
+  //     	if(store.getState().signals.createSignalLoaderValue < LOADERMAXPERVALUE){
+  //     	  dispatch(updateCsLoaderValue(store.getState().signals.createSignalLoaderValue+CSLOADERPERVALUE))
+  //     	}
+  //           dispatch(getSignalAnalysis(sessionStorage.userToken,signalData.slug));
+  //
+  //   },DEFAULTINTERVAL);
+  // }
 
   return {
     type: "CREATE_SUCCESS",

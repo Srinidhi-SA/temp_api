@@ -145,6 +145,8 @@ export function dataSubsetting(subsetRq, slug) {
 }
 
 function triggerDataSubsetting(subsetRq, slug) {
+  console.log("subsetRq is-----------")
+  console.log(subsetRq)
   return fetch(API + '/api/datasets/' + slug + '/', {
     method: 'put',
     headers: getHeader(sessionStorage.userToken),
