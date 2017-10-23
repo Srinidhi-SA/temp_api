@@ -7,7 +7,7 @@ from sjsclient import client
 
 from api.helper import JobserverDetails, get_jobserver_status, get_message
 from api.user_helper import UserSerializer
-from models import Insight, Dataset, Trainer, Score, Job, Robo, Audioset
+from models import Insight, Dataset, Trainer, Score, Job, Robo, Audioset, StockDataset
 
 
 def submit_job(
@@ -377,6 +377,43 @@ class RoboListSerializer(serializers.ModelSerializer):
             'data'
         )
 
+class StockDatasetSerializer(serializers.ModelSerializer):
+
+    # name = serializers.CharField(max_length=100,
+    #                              validators=[UniqueValidator(queryset=Dataset.objects.all())]
+    #                              )
+
+    input_file = serializers.FileField(allow_null=True)
+
+    def update(self, instance, validated_data):
+        instance.meta_data = validated_data.get('meta_data', instance.meta_data)
+        instance.name = validated_data.get('name', instance.name)
+        instance.created_by = validated_data.get('created_by', instance.created_by)
+        instance.deleted = validated_data.get('deleted', instance.deleted)
+        instance.bookmarked = validated_data.get('bookmarked', instance.bookmarked)
+        instance.auto_update = validated_data.get('auto_update', instance.auto_update)
+        instance.auto_update_duration = validated_data.get('auto_update_duration', instance.auto_update_duration)
+
+        instance.save()
+        return instance
+
+    def to_representation(self, instance):
+        print get_jobserver_status(instance)
+        ret = super(StockDatasetSerializer, self).to_representation(instance)
+        ret = convert_to_json(ret)
+        ret = convert_time_to_human(ret)
+        ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+
+        try:
+            ret['message'] = get_message(instance)
+        except:
+            ret['message'] = None
+
+        return ret
+
+    class Meta:
+        model = StockDataset
+        exclude = ( 'id', 'updated_at')
 
 
 class AudiosetSerializer(serializers.ModelSerializer):

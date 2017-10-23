@@ -9,12 +9,13 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
+from rest_framework.decorators import api_view
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
 
-from api.pagination import CustomPagination
 from api.exceptions import creation_failed_exception, update_failed_exception
+from api.pagination import CustomPagination
+from api.query_filtering import get_listed_data
 from api.utils import \
     convert_to_string, \
     InsightSerializer, \
@@ -25,9 +26,7 @@ from api.utils import \
     ScoreListSerializer, \
     RoboSerializer, \
     RoboListSerializer
-from models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData
-
-from api.query_filtering import get_listed_data, get_retrieve_data
+from models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData, StockDataset
 
 
 class SignalView(viewsets.ModelViewSet):
@@ -384,6 +383,33 @@ from api.models import Audioset
 from api.utils import AudiosetSerializer, AudioListSerializer
 
 
+class StockDatasetView(viewsets.ModelViewSet):
+
+    def get_queryset(self):
+        queryset = StockDataset.objects.filter(
+            created_by=self.request.user,
+            deleted=False,
+            analysis_done=True
+        )
+        return queryset
+
+    def get_object_from_all(self):
+        return StockDataset.objects.get(slug=self.kwargs.get('slug'))
+
+    lookup_field = 'slug'
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = ('deleted', 'name')
+    pagination_class = CustomPagination
+
+
+    def create(self, request, *args, **kwargs):
+
+        try:
+            data = request.data
+            data = convert_to_string(data)
+        except:
+            pass
+
 class AudiosetView(viewsets.ModelViewSet):
 
     def get_queryset(self):
@@ -732,7 +758,6 @@ def get_info(request):
 
     def get_size_pie_chart(size):
         from api.helper import \
-            decode_and_convert_chart_raw_data, \
             convert_to_GB
 
         in_GB = convert_to_GB(size)

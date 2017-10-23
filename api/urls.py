@@ -6,7 +6,7 @@ from rest_framework import routers
 
 from api import views
 from datasets.views import DatasetView
-from views import ScoreView
+from views import ScoreView, StockDatasetView
 from views import SignalView, get_datasource_config_list
 from views import TrainerView
 from views import RoboView
@@ -50,6 +50,12 @@ router.register(
     'audioset',
     AudiosetView,
     base_name='audioset'
+)
+
+router.register(
+    'stockdataset',
+    StockDatasetView,
+    base_name='stockdataset'
 )
 
 from api.user_helper import upload_photo, get_profile_image

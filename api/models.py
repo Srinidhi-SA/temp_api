@@ -1102,6 +1102,71 @@ def get_message_slug(instance):
     slug = ac.get_cache_name(instance)
     return slug
 
+
+class StockDataset(models.Model):
+    name = models.CharField(max_length=100, null=True)
+    stock_symbols = models.CharField(max_length=500, null=True, blank=True)
+    slug = models.SlugField(null=True, max_length=300)
+    auto_update = models.BooleanField(default=False)
+
+    input_file = models.FileField(upload_to='conceptsfiles', null=True)
+
+    meta_data = models.TextField(default="{}")
+
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
+    created_by = models.ForeignKey(User, null=False)
+    deleted = models.BooleanField(default=False)
+    bookmarked = models.BooleanField(default=False)
+
+    job = models.ForeignKey(Job, null=True)
+    analysis_done = models.BooleanField(default=False)
+    status = models.CharField(max_length=100, null=True, default="Not Registered")
+
+    class Meta:
+        ordering = ['-created_at', '-updated_at']
+
+    def __str__(self):
+        return " : ".join(["{}".format(x) for x in [self.name, self.slug]])
+
+    def generate_slug(self):
+        if not self.slug:
+            self.slug = slugify(str(self.name) + "-" + ''.join(
+                random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
+
+    def save(self, *args, **kwargs):
+        self.generate_slug()
+        super(StockDataset, self).save(*args, **kwargs)
+
+    def create(self):
+        # self.meta_data = json.dumps(dummy_audio_data_3)
+        self.meta_data = self.generate_meta_data()
+        self.analysis_done = False
+        self.status = 'INPROGRESS'
+        self.save()
+
+    def crawl_data(self):
+        pass
+
+    def generate_meta_data(self):
+        self.crawl_data()
+
+        pass
+
+    def get_brief_info(self):
+        brief_info = dict()
+        from api.helper import convert_to_humanize
+        brief_info.update(
+            {
+                'created_by': self.created_by.username,
+                'updated_at': self.updated_at,
+                'stockdataset': self.name,
+                'file_size': convert_to_humanize(self.input_file.size)
+            })
+        return convert_json_object_into_list_of_object(brief_info, 'stockdataset')
+
+    pass
+
 class Audioset(models.Model):
     name = models.CharField(max_length=100, null=True)
     slug = models.SlugField(null=True, max_length=300)
