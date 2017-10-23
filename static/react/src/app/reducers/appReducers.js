@@ -54,6 +54,7 @@ export default function reducer(state = {
 		appsCreateStockModal:false,
 		appsStockSymbolsInputs:[],
 		stockAnalysisList:{},
+		stockUploadDomainModal:false,
 
 
 }, action) {
@@ -559,6 +560,7 @@ export default function reducer(state = {
 
 		}
 	}
+	break;
 	case "ADD_STOCK_SYMBOLS":
 	{
 		return{
@@ -568,8 +570,8 @@ export default function reducer(state = {
 		}
 	}
 	break;
-	
-	
+
+
 	case "STOCK_LIST":
 	{
 		return {
@@ -586,7 +588,15 @@ export default function reducer(state = {
 		throw new Error("Unable to fetch stock list!!");
 	}
 	break;
-	
+	case "UPLOAD_STOCK_MODAL":
+	{
+		return{
+			...state,
+			stockUploadDomainModal:action.flag
+
+		}
+	}
+	break;
 	}
 	return state
 }

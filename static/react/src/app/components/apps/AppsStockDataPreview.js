@@ -2,11 +2,12 @@ import React from "react";
 import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Button} from "react-bootstrap";
 import {DataPreview} from "../data/DataPreview";
+import {StockUploadDomainModel} from "../apps/StockUploadDomainModel";
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {connect} from "react-redux";
 import {APPID1,APPID2,APPID3,APPNAME1,APPNAME2,APPNAME3} from "../../helpers/helper.js"
-import {hideDataPreviewRightPanels} from "../../actions/appActions";
+import {hideDataPreviewRightPanels,updateUploadStockPopup} from "../../actions/appActions";
 import {STATIC_URL} from "../../helpers/env.js"
 import {isEmpty} from "../../helpers/helper";
 import {getDataSetPreview} from "../../actions/dataActions";
@@ -15,6 +16,7 @@ import {getDataSetPreview} from "../../actions/dataActions";
 	return {login_response: store.login.login_response,
 		currentAppId:store.apps.currentAppId,
 		dataPreview: store.datasets.dataPreview,
+		stockUploadDomainModal:store.apps.stockUploadDomainModal
 		};
 })
 
@@ -38,6 +40,9 @@ export class AppsStockDataPreview extends React.Component {
   componentDidUpdate(){
 	  hideDataPreviewRightPanels();
   }
+  updateUploadStockPopup(flag){
+  	this.props.dispatch(updateUploadStockPopup(flag))
+  }
   render() {
 	  let dataPreview = store.getState().datasets.dataPreview;
 		if(dataPreview){
@@ -51,16 +56,16 @@ export class AppsStockDataPreview extends React.Component {
 				<div className="row">
 				
 				<div className="col-md-1 col-md-offset-10 text-right">
-				<Button> <Link to="/apps-stock-advisor">Close</Link></Button>
+				<Link to="/apps"><Button>Close</Button></Link>
 				</div>
 				<div className="col-md-1 text-right">
-				<Button> Proceed</Button>
+				<Button onClick={this.updateUploadStockPopup.bind(this,true)}> Proceed</Button>
 				</div>
 				</div>
 				</div>
 				</div>
 				</div>
-				
+				<StockUploadDomainModel/>
 				
 				
 	        </div>

@@ -1432,3 +1432,9 @@ export function hideDataPreviewRightPanels(){
 	  $("#sub_settings").hide();
 	  $("#dataPreviewButton").hide();
 }
+export function updateUploadStockPopup(flag){
+	return {
+		type: "UPLOAD_STOCK_MODAL",
+		flag
+	}
+}
