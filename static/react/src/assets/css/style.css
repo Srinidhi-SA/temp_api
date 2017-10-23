@@ -14836,6 +14836,11 @@ visibility:hidden !important;
     padding-left: 20px;
     padding-bottom: 20px;	
 }
+.createStockModal{
+	height:480px;
+    overflow-y: scroll;
+    overflow-x:hidden;
+}
 .stockDropzone div { width: inherit !important; text-align: center; height: 30px !important; display: table-cell; vertical-align: middle;     padding-left: 10px;
     padding-right: 10px;
     padding-top: 5px; }

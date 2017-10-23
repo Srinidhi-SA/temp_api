@@ -6,6 +6,7 @@ import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
 import store from "../../store";
 import {updateCreateStockPopup,addDefaultStockSymbolsComp,crawlDataForAnalysis,addMoreStockSymbols,removeStockSymbolsComponents,handleInputChange} from "../../actions/appActions";
 import {storeSignalMeta} from "../../actions/dataActions";
+import { Scrollbars } from 'react-custom-scrollbars';
 
 
 @connect((store) => {
@@ -42,7 +43,8 @@ export class AppsCreateStockAnalysis extends React.Component {
 	crawlDataForAnalysis(){
 		var url = $("#createStockUrl").val();
 		var analysisName = $("#createStockAnalysisName").val();
-		this.props.dispatch(crawlDataForAnalysis(url,analysisName));
+		var urlForNews = $("#createStockUrlNews").val();
+		this.props.dispatch(crawlDataForAnalysis(url,analysisName,urlForNews));
 	}
 	render() {
 		 console.log("apps create score list is called##########3");
@@ -70,25 +72,30 @@ export class AppsCreateStockAnalysis extends React.Component {
 				<Modal.Header closeButton>
 				<h3 className="modal-title">Crawling Input</h3>
 				</Modal.Header>
-				<Modal.Body>
+				<Modal.Body className="createStockModal">
 				<form role="form" className="form-horizontal">
-	              <label>Enter Url : </label>
+	              <label>Enter Url for Stock Prices : </label>
 	              <input type="text" name="createStock" id="createStockUrl"  required={true} className="form-control input-sm" />
 				 <br/>
-	              <label>Enter Text/Symbols to Analyze:</label>
-	             
+				 
+				   <label>Enter Url for News : </label>
+		              <input type="text" name="createStockNews" id="createStockUrlNews"  required={true} className="form-control input-sm" />
+					 <br/>
+					 
+	              <label>Enter Stocks to Analyze:</label>
 	              {templateTextBoxes}
-	              
-	              <div className="dataTransformValues">
-		     		 <Button bsStyle="primary" onClick={this.addMoreStockSymbols.bind(this)}>Add More&nbsp;<i className="fa fa-plus"></i></Button>
-		     		</div>
-		     		
+	              <div className="row">
+	              <div className="col-md-2 col-md-offset-9 text-right">
+		         <Button className="text-right" bsStyle="primary" onClick={this.addMoreStockSymbols.bind(this)}>Add More&nbsp;<i className="fa fa-plus"></i></Button>
+		         </div> 
+		         </div>
 	              <label>Enter Name for Analysis : </label>
 	              <input type="text" name="createStockAnalysisName" id="createStockAnalysisName"  required={true} className="form-control input-sm" />
 	              
 	              
 	             
 	              </form>
+	             
 				</Modal.Body>
 				<Modal.Footer>
 				<Button className="btn btn-primary md-close" onClick={this.updateCreateStockPopup.bind(this,false)}>Close</Button>
