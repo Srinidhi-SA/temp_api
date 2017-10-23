@@ -1438,3 +1438,9 @@ export function updateUploadStockPopup(flag){
 		flag
 	}
 }
+export function uploadStockFiles(files){
+	return {
+		type: "UPLOAD_STOCK_FILES",
+		files
+	}
+}

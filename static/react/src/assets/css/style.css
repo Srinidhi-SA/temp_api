@@ -14832,3 +14832,11 @@ visibility:hidden !important;
 .dataTransformModalWidth{
 	width:750px !important;
 }
+.stockDropzone{
+    padding-left: 20px;
+    padding-bottom: 20px;	
+}
+.stockDropzone div { width: inherit !important; text-align: center; height: 30px !important; display: table-cell; vertical-align: middle;     padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 5px; }
+.stockDropzone div:hover{ border-color: rgb(0, 153, 140) !important;}

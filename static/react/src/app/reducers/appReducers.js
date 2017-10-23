@@ -55,6 +55,7 @@ export default function reducer(state = {
 		appsStockSymbolsInputs:[],
 		stockAnalysisList:{},
 		stockUploadDomainModal:false,
+		stockUploadDomainFiles:[]
 
 
 }, action) {
@@ -593,6 +594,15 @@ export default function reducer(state = {
 		return{
 			...state,
 			stockUploadDomainModal:action.flag
+
+		}
+	}
+	break;
+	case "UPLOAD_STOCK_FILES":
+	{
+		return{
+			...state,
+			stockUploadDomainFiles:action.files
 
 		}
 	}

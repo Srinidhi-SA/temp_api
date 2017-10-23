@@ -7,23 +7,35 @@ import Dropzone from 'react-dropzone'
 import store from "../../store";
 import $ from "jquery";
 
-import {updateUploadStockPopup} from "../../actions/appActions";
+import {updateUploadStockPopup,uploadStockFiles} from "../../actions/appActions";
 
 
 @connect((store) => {
-	return {login_response: store.login.login_response, stockUploadDomainModal:store.apps.stockUploadDomainModal};
+	return {login_response: store.login.login_response, 
+		stockUploadDomainModal:store.apps.stockUploadDomainModal,
+		stockUploadDomainFiles:store.apps.stockUploadDomainFiles};
 })
 
 export class StockUploadDomainModel extends React.Component {
 	constructor(props) {
 		super(props);
+		this.onDrop = this.onDrop.bind(this);
 	}
   
     updateUploadStockPopup(flag){
     	this.props.dispatch(updateUploadStockPopup(flag))
     }
+    onDrop(files) {
+	 this.props.dispatch(uploadStockFiles(files))
+	}
 	
 	render() {
+		var fileName = "";
+		var fileSize = "";
+		if(this.props.stockUploadDomainFiles[0]){
+			fileName = this.props.stockUploadDomainFiles[0].name;
+			fileSize = this.props.stockUploadDomainFiles[0].size;	
+		}
 			return (
 					
 					<div id="uploadDomainModel"  role="dialog" className="modal fade modal-colored-header">
@@ -32,7 +44,24 @@ export class StockUploadDomainModel extends React.Component {
 					<h3 className="modal-title">Build Domain Model</h3>
 					</Modal.Header>
 					<Modal.Body>
-				Testing..
+				    <div className="row">
+					<div className="col-md-9">
+				    <div className="xs-pt-20"></div>
+					<div className="stockDropzone">
+					<Dropzone id={1} onDrop={this.onDrop} accept=".csv" >
+					<p>Try dropping some files here, or click to select files to upload.</p>
+					</Dropzone>
+					<aside>
+			          <ul className={fileName != "" ? "list-unstyled bullets_primary":"list-unstyled"}>
+			            	<li>{fileName}{fileName != "" ? " - ":""}{fileSize}{fileName != "" ? " bytes ":""}</li>
+			          </ul>
+			        </aside>
+					</div>
+					</div>
+					{/*  <div className="col-md-2 xs-pt-20">
+					<Button>Upload</Button>
+					</div> */}
+				</div>
 					</Modal.Body>
 					<Modal.Footer>
 					<Button onClick={this.updateUploadStockPopup.bind(this,false)}>Close</Button>

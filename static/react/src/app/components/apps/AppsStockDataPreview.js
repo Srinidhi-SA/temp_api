@@ -16,7 +16,7 @@ import {getDataSetPreview} from "../../actions/dataActions";
 	return {login_response: store.login.login_response,
 		currentAppId:store.apps.currentAppId,
 		dataPreview: store.datasets.dataPreview,
-		stockUploadDomainModal:store.apps.stockUploadDomainModal
+		stockUploadDomainModal:store.apps.stockUploadDomainModal,
 		};
 })
 
