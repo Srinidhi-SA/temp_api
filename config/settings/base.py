@@ -669,11 +669,7 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND = {
                 "analysisSubTypes": [],
                 "noOfColumnsToUse": None
             }
-        ],
-            "trendSettings":[
-                {"name":"Count","status":False},
-                {"name":"Specific Measure","status":True,"selectedMeasure":None}
-            ]
+        ]
         },
     }
 
