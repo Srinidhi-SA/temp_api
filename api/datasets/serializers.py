@@ -10,7 +10,7 @@ from django.conf import settings
 from api.models import Dataset
 from helper import convert_to_json, convert_time_to_human
 from api.helper import get_jobserver_status, get_message
-
+import copy
 
 class DatasetSerializer(serializers.ModelSerializer):
 
@@ -93,8 +93,9 @@ class DatasetSerializer(serializers.ModelSerializer):
     def add_trend_in_advanced_setting(self, time_count):
 
         if time_count > 0:
-            main_setting = settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND
-            trend_setting = settings.ADANCED_SETTING_FOR_POSSIBLE_ANALYSIS_TREND
+            main_setting = copy.deepcopy(settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND)
+            trend_setting = copy.deepcopy(settings.ADANCED_SETTING_FOR_POSSIBLE_ANALYSIS_TREND)
+
             main_setting["dimensions"]["analysis"].insert(1, trend_setting)
             main_setting["measures"]["analysis"].insert(1, trend_setting)
             return main_setting
