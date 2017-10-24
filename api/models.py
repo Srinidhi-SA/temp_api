@@ -1141,17 +1141,21 @@ class StockDataset(models.Model):
     def create(self):
         # self.meta_data = json.dumps(dummy_audio_data_3)
         self.meta_data = self.generate_meta_data()
-        self.analysis_done = False
-        self.status = 'INPROGRESS'
+        self.analysis_done = True
+        self.status = 'SUCCESS'
         self.save()
 
     def crawl_data(self):
-        pass
+        crawled_data = {
+            "metadata_sample": {
+                "a": "a",
+                "b": "b"
+            }
+        }
+        return json.dumps(crawled_data)
 
     def generate_meta_data(self):
-        self.crawl_data()
-
-        pass
+        return self.crawl_data()
 
     def get_brief_info(self):
         brief_info = dict()
@@ -1161,11 +1165,10 @@ class StockDataset(models.Model):
                 'created_by': self.created_by.username,
                 'updated_at': self.updated_at,
                 'stockdataset': self.name,
-                'file_size': convert_to_humanize(self.input_file.size)
+                # 'file_size': convert_to_humanize(self.input_file.size)
             })
         return convert_json_object_into_list_of_object(brief_info, 'stockdataset')
 
-    pass
 
 class Audioset(models.Model):
     name = models.CharField(max_length=100, null=True)

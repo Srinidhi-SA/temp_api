@@ -25,7 +25,10 @@ from api.utils import \
     TrainerListSerializer, \
     ScoreListSerializer, \
     RoboSerializer, \
-    RoboListSerializer
+    RoboListSerializer, \
+    StockDatasetListSerializer, \
+    StockDatasetSerializer
+
 from models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData, StockDataset
 
 
@@ -396,6 +399,7 @@ class StockDatasetView(viewsets.ModelViewSet):
     def get_object_from_all(self):
         return StockDataset.objects.get(slug=self.kwargs.get('slug'))
 
+    serializer_class = StockDatasetSerializer
     lookup_field = 'slug'
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('deleted', 'name')
@@ -404,11 +408,86 @@ class StockDatasetView(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
 
+        data = request.data
+        data = convert_to_string(data)
+        data = json.loads(json.dumps(data))
+
+        if 'input_file' in data:
+            data['input_file'] =  request.FILES.get('input_file')
+        else:
+            data['input_file'] = None
+
+        data['created_by'] = request.user.id
+
+        serializer = StockDatasetSerializer(data=data)
+        if serializer.is_valid():
+            stock_object = serializer.save()
+            stock_object.create()
+            return Response(serializer.data)
+        return creation_failed_exception(serializer.errors)
+
+        # try:
+        #     data = request.data
+        #     data = convert_to_string(data)
+        #
+        #     if 'input_file' in data:
+        #         data['input_file'] =  request.FILES.get('input_file')
+        #     else:
+        #         data['input_file'] = None
+        #
+        #     data['created_by'] = request.user.id
+        #
+        #     try:
+        #         serializer = StockDatasetSerializer(data=data)
+        #         if serializer.is_valid():
+        #             audioset_object = serializer.save()
+        #             audioset_object.create()
+        #             return Response(serializer.data)
+        #     except Exception as err:
+        #         return creation_failed_exception(err)
+        #     return creation_failed_exception(serializer.errors)
+        # except Exception as error:
+        #     creation_failed_exception(error)
+
+
+    def retrieve(self, request, *args, **kwargs):
         try:
-            data = request.data
-            data = convert_to_string(data)
+            instance = self.get_object_from_all()
         except:
-            pass
+            return creation_failed_exception("File Doesn't exist.")
+
+        if instance is None:
+            return creation_failed_exception("File Doesn't exist.")
+
+        serializer = StockDatasetSerializer(instance=instance)
+        return Response(serializer.data)
+
+    def list(self, request, *args, **kwargs):
+        return get_listed_data(
+            viewset=self,
+            request=request,
+            list_serializer=StockDatasetListSerializer
+        )
+
+    def update(self, request, *args, **kwargs):
+        data = request.data
+        data = convert_to_string(data)
+        # instance = self.get_object()
+
+        try:
+            instance = self.get_object_from_all()
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
+        # question: do we need update method in views/ as well as in serializers?
+        # answer: Yes. LoL
+        serializer = self.serializer_class(instance=instance, data=data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+
+        return update_failed_exception(serializer.errors)
+
 
 class AudiosetView(viewsets.ModelViewSet):
 

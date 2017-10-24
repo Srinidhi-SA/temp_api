@@ -415,6 +415,26 @@ class StockDatasetSerializer(serializers.ModelSerializer):
         model = StockDataset
         exclude = ( 'id', 'updated_at')
 
+class StockDatasetListSerializer(serializers.ModelSerializer):
+
+    def to_representation(self, instance):
+        ret = super(StockDatasetListSerializer, self).to_representation(instance)
+        ret['brief_info'] = instance.get_brief_info()
+        return ret
+
+    class Meta:
+        model = StockDataset
+        fields = (
+            "slug",
+            "name",
+            "created_at",
+            "updated_at",
+            "input_file",
+            "bookmarked",
+            "analysis_done"
+        )
+
+
 
 class AudiosetSerializer(serializers.ModelSerializer):
 
