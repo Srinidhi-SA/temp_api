@@ -1159,6 +1159,7 @@ class StockDataset(models.Model):
             regex_dict=get_regex(GOOGLE_REGEX_FILE)
         )
         meta_data = convert_crawled_data_to_metadata_format(news_data=extracted_data)
+        meta_data['extracted_data'] = extracted_data
 
         return json.dumps(meta_data)
 
