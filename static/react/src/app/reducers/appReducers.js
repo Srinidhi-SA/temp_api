@@ -57,6 +57,7 @@ export default function reducer(state = {
 		stockUploadDomainModal:false,
 		stockUploadDomainFiles:[],
 		stockSlug:"",
+		stockAnalysisFlag:false,
 
 
 }, action) {
@@ -620,6 +621,14 @@ export default function reducer(state = {
 		return{
 			...state,
 			stockSlug:action.slug,
+		}
+	}
+	break;
+	case "UPDATE_STOCK_ANALYSIS_FLAG":
+	{
+		return{
+			...state,
+			stockAnalysisFlag:action.flag,
 		}
 	}
 	break;

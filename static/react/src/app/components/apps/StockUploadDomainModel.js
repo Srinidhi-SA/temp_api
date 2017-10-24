@@ -7,13 +7,14 @@ import Dropzone from 'react-dropzone'
 import store from "../../store";
 import $ from "jquery";
 
-import {updateUploadStockPopup,uploadStockFiles} from "../../actions/appActions";
+import {updateUploadStockPopup,uploadStockFiles,triggerStockAnalysis} from "../../actions/appActions";
 
 
 @connect((store) => {
 	return {login_response: store.login.login_response, 
 		stockUploadDomainModal:store.apps.stockUploadDomainModal,
-		stockUploadDomainFiles:store.apps.stockUploadDomainFiles};
+		stockUploadDomainFiles:store.apps.stockUploadDomainFiles,
+		stockSlug:store.apps.stockSlug,};
 })
 
 export class StockUploadDomainModel extends React.Component {
@@ -22,8 +23,8 @@ export class StockUploadDomainModel extends React.Component {
 		this.onDrop = this.onDrop.bind(this);
 	}
   
-    updateUploadStockPopup(flag){
-    	this.props.dispatch(updateUploadStockPopup(flag))
+	triggerStockAnalysis(){
+    	this.props.dispatch(triggerStockAnalysis(store.getState().apps.stockSlug))
     }
     onDrop(files) {
 	 this.props.dispatch(uploadStockFiles(files))
@@ -65,7 +66,7 @@ export class StockUploadDomainModel extends React.Component {
 					</Modal.Body>
 					<Modal.Footer>
 					<Button onClick={this.updateUploadStockPopup.bind(this,false)}>Close</Button>
-				    <Button bsStyle="primary" onClick={this.updateUploadStockPopup.bind(this,false)}>Analyse</Button>
+				    <Button bsStyle="primary" onClick={this.triggerStockAnalysis.bind(this,false)}>Analyse</Button>
 					</Modal.Footer>
 					</Modal>
 					</div>

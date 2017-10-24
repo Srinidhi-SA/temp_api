@@ -17,6 +17,7 @@ import {getStockDataSetPreview} from "../../actions/dataActions";
 		currentAppId:store.apps.currentAppId,
 		dataPreview: store.datasets.dataPreview,
 		stockUploadDomainModal:store.apps.stockUploadDomainModal,
+		stockSlug:store.apps.stockSlug,
 		};
 })
 
@@ -44,6 +45,10 @@ export class AppsStockDataPreview extends React.Component {
   	this.props.dispatch(updateUploadStockPopup(flag))
   }
   render() {
+	  if(store.getState().apps.stockAnalysisFlag){
+			let _linkAnalysis = "/apps-stock-advisor/"+store.getState().apps.stockSlug;
+	    	return (<Redirect to={_linkAnalysis}/>);
+	 }
 	  let dataPreview = store.getState().datasets.dataPreview;
 		if(dataPreview){
 			return (   
@@ -59,7 +64,7 @@ export class AppsStockDataPreview extends React.Component {
 				<Link to="/apps"><Button>Close</Button></Link>
 				</div>
 				<div className="col-md-1 text-right">
-				<Button onClick={this.updateUploadStockPopup.bind(this,true)}> Proceed</Button>
+				<Button bsStyle="primary" onClick={this.updateUploadStockPopup.bind(this,true)}> Proceed</Button>
 				</div>
 				</div>
 				</div>

@@ -3,7 +3,7 @@ import {PERPAGE,isEmpty} from "../helpers/helper";
 import store from "../store";
 import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,CUSTOMERDATA,HISTORIALDATA,EXTERNALDATA,DELETEMODEL,
 	RENAMEMODEL,DELETESCORE,RENAMESCORE,DELETEINSIGHT,RENAMEINSIGHT,SUCCESS,FAILED,DELETEAUDIO,RENAMEAUDIO} from "../helpers/helper";
-	import {hideDataPreview,getStockDataSetPreview,showDataPreview} from "./dataActions";
+	import {hideDataPreview,getStockDataSetPreview,showDataPreview,getDataSetPreview} from "./dataActions";
 	import {getHeaderWithoutContent} from "./dataUploadActions";
 	import Dialog from 'react-bootstrap-dialog';
 	import React from "react";
@@ -1406,7 +1406,7 @@ import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,C
 		if(found){
 			return (dispatch) => {
 				dispatch(updateCreateStockPopup(false))
-				dispatch(openAppsLoader(DULOADERPERVALUE,"Please wait while mAdvisor is extracting data from websites... "));
+				dispatch(openAppsLoader(DULOADERPERVALUE+7,"Please wait while mAdvisor is extracting data from websites... "));
 				return triggerCrawlingAPI(url,urlForNews,analysisName).then(([response, json]) => {
 					if (response.status === 200) {
 						console.log(json.slug)
@@ -1424,9 +1424,10 @@ import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,C
 	export function crawlSuccess(json, dispatch){
 		var slug = json.slug;
 		appsInterval = setInterval(function() {
+			dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7));
 			dispatch(getStockDataSetPreview(slug,appsInterval))
 			if(store.getState().apps.appsLoaderPerValue < LOADERMAXPERVALUE){
-				dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE));
+				dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7));
 			}
 
 		}, DEFAULTINTERVAL);
@@ -1469,3 +1470,57 @@ import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,C
 			files
 		}
 	}
+	export function uploadStockAnalysisFlag(flag){
+		return {
+			type: "UPDATE_STOCK_ANALYSIS_FLAG",
+			flag
+		}
+	}
+	
+	export function triggerStockAnalysis(slug){
+		return (dispatch) => {
+		dispatch(updateUploadStockPopup(false));
+		dispatch(openAppsLoader(DULOADERPERVALUE+7,"Please wait while mAdvisor is analysing the data... "));
+		appsInterval = setInterval(function() {
+			dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7));
+			dispatch(getStockAnalysis(slug));
+			if(store.getState().apps.appsLoaderPerValue < LOADERMAXPERVALUE){
+				dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7));
+			}
+
+		}, DEFAULTINTERVAL)
+		}
+	}
+	export function getStockAnalysis(slug) {
+		return (dispatch) => {
+			return fetchStockAnalysisAPI(sessionStorage.userToken,slug).then(([response, json]) =>{
+				if(response.status === 200){
+					if(json.status == SUCCESS){
+						clearInterval(appsInterval);
+						dispatch(updateRoboAnalysisData(json,"/apps-stock-advisor"));
+						dispatch(uploadStockAnalysisFlag(true));
+						dispatch(closeAppsLoaderValue());
+					}else if(json.status == FAILED){
+						bootbox.alert("Your stock analysis could not created.Please try later.",function(result){
+							window.history.go(-2);
+						});
+						clearInterval(appsInterval);
+						dispatch(closeAppsLoaderValue());
+					}
+				}
+				else{
+					dispatch(closeAppsLoaderValue());
+				}
+			})
+		}
+	}
+
+	function fetchStockAnalysisAPI(token,slug) {
+		return fetch(API+'/api/stockdataset/'+slug+'/',{
+			method: 'get',
+			headers: getHeader(token)
+		}).then( response => Promise.all([response, response.json()]));
+	}
+
+
+	

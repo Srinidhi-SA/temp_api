@@ -21,6 +21,8 @@ var dateFormat = require('dateformat');
 		currentAppId:store.apps.currentAppId,
 		stockList: store.apps.stockAnalysisList,
 		 dataPreviewFlag: store.datasets.dataPreviewFlag,
+		 stockAnalysisFlag:store.apps.stockAnalysisFlag,
+		 stockSlug:store.apps.stockSlug,
 	};
 })
 
