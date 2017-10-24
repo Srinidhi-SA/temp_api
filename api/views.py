@@ -409,17 +409,16 @@ class StockDatasetView(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
 
         data = request.data
-        data = convert_to_string(data)
-        data = json.loads(json.dumps(data))
+        config = data.get('config')
+        stock_symbol = config.get('stock_symbols')
+        stock_values = [item.get('value') for item in stock_symbol if item.get('value') != ""]
+        new_data = {}
+        new_data['stock_symbols'] = (", ").join(stock_values)
+        new_data['name'] = config.get('name')
+        new_data['input_file'] = None
+        new_data['created_by'] = request.user.id
 
-        if 'input_file' in data:
-            data['input_file'] =  request.FILES.get('input_file')
-        else:
-            data['input_file'] = None
-
-        data['created_by'] = request.user.id
-
-        serializer = StockDatasetSerializer(data=data)
+        serializer = StockDatasetSerializer(data=new_data)
         if serializer.is_valid():
             stock_object = serializer.save()
             stock_object.create()

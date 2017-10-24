@@ -73,6 +73,13 @@ def convert_to_json(data):
         if key in data:
             value = data[key]
             data[key] = json.loads(value)
+
+    string_to_list_keys = ['stock_symbols']
+
+    for key in string_to_list_keys:
+        if key in data:
+            value = data[key]
+            data[key] = value.split(',')
     return data
 
 
