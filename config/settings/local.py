@@ -36,7 +36,6 @@ INSTALLED_APPS += PROJECT_APP
 
 
 HDFS = {
-
     # Give host name without http
     'host': 'ec2-34-205-203-38.compute-1.amazonaws.com',
     'port': '14000', #webhdfs port

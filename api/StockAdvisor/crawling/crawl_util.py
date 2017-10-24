@@ -29,12 +29,15 @@ def crawl_extract(urls,regex_dict={},remove_tags=[]):
 	fobj.close()
 	return all_data
 
-def generate_urls(list_of_company_name):
+def generate_urls_historicdata(list_of_company_name):
 	STATIC_URL = "http://www.nasdaq.com/symbol/{0}/historical"
 	urls = []
 	for name in list_of_company_name:
 		urls.append(STATIC_URL.format(name))
 	return urls
+
+def generate_urls_for_crawl_news(stock_symbols):
+	return ["https://finance.google.com/finance/company_news?q=NASDAQ:{}".format(stock_symbol.upper()) for stock_symbol in stock_symbols]
 
 if __name__ == '__main__':
 	urls_file=sys.argv[1]
