@@ -1,5 +1,5 @@
 import csv
-import utils as myutils
+import api.StockAdvisor.utils as myutils
 import json
 
 input_file_name = "data/stockCategories.csv"

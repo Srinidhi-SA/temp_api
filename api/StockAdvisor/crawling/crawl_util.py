@@ -7,7 +7,7 @@ import sys
 from django.template.defaultfilters import slugify
 import random
 import string
-# import utils as myutils
+import api.StockAdvisor.utils as myutils
 
 def crawl_extract(urls,regex_dict={},remove_tags=[]):
 	all_data=[]
@@ -24,44 +24,31 @@ def crawl_extract(urls,regex_dict={},remove_tags=[]):
 		for json_obj in json_list:
 			if not json_obj.get("url"):
 				continue
-			# if "date" in json_obj:
-			# 	json_obj["date"] = myutils.normalize_date_time(json_obj.get("date","1 min ago")).strftime("%Y%m%d")
+			if "date" in json_obj:
+				json_obj["date"] = myutils.normalize_date_time(json_obj.get("date","1 min ago")).strftime("%Y%m%d")
 			fobj.write(json.dumps(json_obj)+"\n")
 			all_data.append(json_obj)
 	fobj.close()
 	return all_data
 
-def generate_urls_historicdata(list_of_company_name):
-	STATIC_URL = "http://www.nasdaq.com/symbol/{0}/historical"
-	urls = []
-	for name in list_of_company_name:
-		urls.append(STATIC_URL.format(name))
-	return urls
+def generate_urls_for_historic_data(list_of_company_name):
+	return ["http://www.nasdaq.com/symbol/{0}/historical".format(name) for name in list_of_company_name]
 
 def generate_urls_for_crawl_news(stock_symbols):
 	return ["https://finance.google.com/finance/company_news?q=NASDAQ:{}".format(stock_symbol.upper()) for stock_symbol in stock_symbols]
-
-if __name__ == '__main__':
-	urls_file=sys.argv[1]
-	regex_file=sys.argv[2]
-	urls=[]
-	for line in open(urls_file).readlines():
-		line=line.strip()
-		urls.append(line)
-	regex_dict=common_utils.get_regex(regex_file)
-	remove_tags=["script","head","noscript","style"]
-	#remove_tags=[]
-	#crawl_extract(urls,regex_dict=regex_dict)
-	crawl_extract(urls,regex_dict)
 
 
 
 # columnData, headers, sampledata, metadata
 def convert_crawled_data_to_metadata_format(news_data, other_details=None):
+    if other_details is None:
+        type = 'news_data'
+    else:
+        type= other_details['type']
 
-    headers = find_headers(news_data=news_data)
+    headers = find_headers(news_data=news_data, type=type)
     columnData = get_column_data_for_metadata(headers)
-    sampleData = get_sample_data(news_data=news_data)
+    sampleData = get_sample_data(news_data=news_data, type=type)
     metaData = get_metaData(news_data=news_data)
 
     return {
@@ -73,9 +60,9 @@ def convert_crawled_data_to_metadata_format(news_data, other_details=None):
     }
 
 
-def find_headers(news_data):
+def find_headers(news_data, type='historical_data'):
     headers_name = news_data[0].keys()
-    required_fields = ['url',  'source', 'date', 'title','desc']
+    required_fields = get_required_fields(type)
 
     headers_name = list(set(required_fields).intersection(set(headers_name)))
     headers = []
@@ -109,8 +96,8 @@ def get_column_data_for_metadata(headers):
 
     return columnData
 
-def get_sample_data(news_data):
-    required_fields = ['url',  'source', 'date', 'title','desc']
+def get_sample_data(news_data, type='historical_data'):
+    required_fields = get_required_fields(type)
     return [ [row[key] for key in required_fields] for row in news_data ]
 
 def get_metaData(news_data):
@@ -128,6 +115,14 @@ def get_metaData(news_data):
         },
 
              ]
+
+def get_required_fields(type='historical_data'):
+    matching = {
+        'historical_data': [],
+        'news_data': ['url',  'source', 'date', 'title','desc'],
+    }
+
+    return matching[type]
 
 def generate_slug(name=None):
 

@@ -485,7 +485,8 @@ class StockDatasetView(viewsets.ModelViewSet):
         serializer = self.serializer_class(instance=instance, data=new_data, partial=True)
         if serializer.is_valid():
             stock_instance = serializer.save()
-            stock_instance.stats(file=new_data['input_file'])
+            # stock_instance.stats(file=new_data['input_file'])
+            stock_instance.call_mlscripts()
             return Response(serializer.data)
 
         serializer = StockDatasetSerializer(instance=instance)
@@ -504,6 +505,11 @@ class StockDatasetView(viewsets.ModelViewSet):
 
         serializer = StockDatasetSerializer(instance=instance)
         return Response(serializer.data)
+
+    """
+    historic data
+    data from bluemix -- natural language understanding
+    """
 
 
 class AudiosetView(viewsets.ModelViewSet):
@@ -4455,3 +4461,35 @@ def set_messages(request, slug=None):
     ac = AccessFeedbackMessage()
     data = ac.append_using_key(slug, data)
     return JsonResponse({'message': data})
+
+@csrf_exempt
+def get_stockdatasetfiles(request, slug=None):
+
+    # if slug is None:
+    #     return JsonResponse({"message": "Failed"})
+    import pdb;pdb.set_trace()
+    stockDataType = request.GET.get('stockDataType')
+    stockName = request.GET.get('stockName')
+
+    return return_json_data(stockDataType, slug)
+
+
+def return_json_data(stockDataType, slug):
+    base_path = "/home/ankush/codebase/code_revamp/madvisor_api/scripts/data/"
+    matching = {
+        "bluemix": "amzn.json",
+        "historical": "amzn_historic.json",
+        "concepts": "amzn.json"
+    }
+
+    path = base_path + '/' + slug + '/' + matching[stockDataType]
+    temp_path = base_path + matching[stockDataType]
+
+    from django.http import HttpResponse
+
+    file_content = open(temp_path).read()
+    response = HttpResponse(file_content, content_type='application/json')
+    response['Content-Disposition'] = 'attachment; filename="{0}.json"'.format(path)
+
+    return response
+

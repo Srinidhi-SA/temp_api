@@ -14,6 +14,11 @@ from django.template.defaultfilters import slugify
 
 from api.lib import hadoop, fab_helper
 from api.helper import convert_json_object_into_list_of_object
+from StockAdvisor.crawling.crawl_util import crawl_extract, \
+    generate_urls_for_crawl_news, \
+    convert_crawled_data_to_metadata_format, \
+    generate_urls_for_historic_data
+from StockAdvisor.crawling.common_utils import get_regex
 
 # Create your models here.
 
@@ -1147,10 +1152,7 @@ class StockDataset(models.Model):
         self.save()
 
     def crawl_data(self):
-        from StockAdvisor.crawling.crawl_util import crawl_extract, \
-            generate_urls_for_crawl_news, \
-            convert_crawled_data_to_metadata_format
-        from StockAdvisor.crawling.common_utils import get_regex
+
         stock_symbols = self.get_stock_symbol_names()
         GOOGLE_REGEX_FILE = "google_regex.json"
         print "stock_symbols  ---> ", stock_symbols
@@ -1161,10 +1163,39 @@ class StockDataset(models.Model):
         if len(extracted_data) < 1:
             print "No news_data"
             return {}
-        meta_data = convert_crawled_data_to_metadata_format(news_data=extracted_data)
+        meta_data = convert_crawled_data_to_metadata_format(
+            news_data=extracted_data,
+            other_details={
+                'type': 'news_data'
+            }
+        )
         meta_data['extracted_data'] = extracted_data
 
         return json.dumps(meta_data)
+
+    def crawl_for_historic_data(self):
+        stock_symbols = self.get_stock_symbol_names()
+        GOOGLE_REGEX_FILE = "nasdaq_stock.json"
+        print "stock_symbols  ---> ", stock_symbols
+        extracted_data = crawl_extract(
+            urls=generate_urls_for_historic_data(stock_symbols),
+            regex_dict=get_regex(GOOGLE_REGEX_FILE)
+        )
+        if len(extracted_data) < 1:
+            print "No news_data"
+            return {}
+        meta_data = convert_crawled_data_to_metadata_format(
+            news_data=extracted_data,
+            other_details={
+                'type': 'historical_data'
+            }
+        )
+        meta_data['extracted_data'] = extracted_data
+
+        return meta_data
+
+    def get_bluemix_natural_language_understanding(self):
+        pass
 
     def generate_meta_data(self):
         return self.crawl_data()
@@ -1203,6 +1234,64 @@ class StockDataset(models.Model):
                 # 'file_size': convert_to_humanize(self.input_file.size)
             })
         return convert_json_object_into_list_of_object(brief_info, 'stockdataset')
+
+    def call_mlscripts(self):
+        self.add_to_job()
+        self.analysis_done = False
+        self.status = 'INPROGRESS'
+        self.save()
+
+    def generate_config(self, *args, **kwargs):
+        inputFile = ""
+        datasource_details = ""
+        stockSymbolList = self.get_stock_symbol_names()
+
+        THIS_SERVER_DETAILS = settings.THIS_SERVER_DETAILS
+        data_api = "http://{0}:{1}/api/stockdatasetfiles/{2}/".format(THIS_SERVER_DETAILS.get('host'),
+                                                        THIS_SERVER_DETAILS.get('port'),
+                                                        self.get_data_api()),
+
+        return {
+                "config": {
+                    "FILE_SETTINGS": {
+                        "inputfile": [inputFile],
+                    },
+                    "COLUMN_SETTINGS": {
+                        "analysis_type": ["metaData"],
+                    },
+                    "DATE_SETTINGS": {
+
+                    },
+                    "DATA_SOURCE": {
+                        "datasource_details": datasource_details
+                    },
+                    "STOCK_SETTINGS":{
+                        "stockSymbolList": stockSymbolList,
+                        "dataAPI": data_api # + "?" + 'stockDataType = "bluemix"' + '&' + 'stockName = "googl"'
+                    }
+                }
+            }
+
+    def get_data_api(self):
+        return str(self.slug)
+
+    def add_to_job(self, *args, **kwargs):
+        import pdb;pdb.set_trace()
+
+        jobConfig = self.generate_config(*args, **kwargs)
+
+        job = job_submission(
+            instance=self,
+            jobConfig=jobConfig,
+            job_type='stockAdvisor'
+        )
+
+        self.job = job
+        if job is None:
+            self.status = "FAILED"
+        else:
+            self.status = "INPROGRESS"
+        self.save()
 
 
 class Audioset(models.Model):

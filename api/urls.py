@@ -70,9 +70,10 @@ urlpatterns = [
     url(r'^messages/(?P<slug>[^/.]+)/',views.set_messages , name="set_messages"),
     url(r'^upload_photo',upload_photo , name="upload_photo"),
     url(r'^get_profile_image/(?P<slug>[^/.]+)/',get_profile_image , name="get_profile_image"),
+    url(r'^stockdatasetfiles/(?P<slug>[^/.]+)/',views.get_stockdatasetfiles , name="get_stockdatasetfiles"),
 ]
 
 
 urlpatterns += router.urls
-# print urlpatterns
+print urlpatterns
 

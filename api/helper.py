@@ -36,7 +36,8 @@ class JobserverDetails(object):
             "model":"training",
             "score": "prediction",
             "robo": "robo",
-            "subSetting": "subSetting"
+            "subSetting": "subSetting",
+            "stockAdvisor": "stockAdvisor"
         }
 
         return {
