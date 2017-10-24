@@ -170,7 +170,7 @@ export class AdvanceSettings extends React.Component {
 		  let id = "chk_analysis"+ metaIndex;
 		  
 		  if(metaItem.name.indexOf("trend") != -1){
-			  
+			  if(trendSettings){
 			  let trendSub = trendSettings.map((trendSubItem,trendSubIndex)=>{
 				  let val = trendSubItem.name;
 				  if(trendSubItem.name.toLowerCase() == "count"){
@@ -203,7 +203,11 @@ export class AdvanceSettings extends React.Component {
 					</ul>
 				
 				 </li>);
-	        
+		      }else{
+				 return(
+				<li><div key={metaIndex} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisList.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>
+				 </li>)
+			  }//end of trendsetting check
 		  }else{
 			  
 			  var countOptions=null, options=[],customValueInput=null;
