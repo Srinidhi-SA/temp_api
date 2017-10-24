@@ -3,7 +3,7 @@ import {PERPAGE,isEmpty} from "../helpers/helper";
 import store from "../store";
 import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,CUSTOMERDATA,HISTORIALDATA,EXTERNALDATA,DELETEMODEL,
 	RENAMEMODEL,DELETESCORE,RENAMESCORE,DELETEINSIGHT,RENAMEINSIGHT,SUCCESS,FAILED,DELETEAUDIO,RENAMEAUDIO} from "../helpers/helper";
-	import {hideDataPreview,getDataSetPreview,showDataPreview} from "./dataActions";
+	import {hideDataPreview,getStockDataSetPreview,showDataPreview} from "./dataActions";
 	import {getHeaderWithoutContent} from "./dataUploadActions";
 	import Dialog from 'react-bootstrap-dialog';
 	import React from "react";
@@ -423,8 +423,6 @@ import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,C
 			type: "CREATE_MODEL_ERROR",
 		}
 	}
-
-
 	function updateAppsLoaderValue(value){
 		return {
 			type: "UPDATE_APPS_LOADER_VALUE",
@@ -1371,9 +1369,9 @@ import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,C
 	}
 
 	function fetchStockList(pageNo,token) {
-		return fetch(API+'/api/trainer/?app_id=1&page_number='+pageNo+'&page_size='+PERPAGE+'',{
+		return fetch(API+'/api/stockdataset/?page_number='+pageNo+'&page_size='+PERPAGE+'',{
 			method: 'get',
-			headers: getHeader(token)
+			headers: getHeader(sessionStorage.userToken)
 		}).then( response => Promise.all([response, response.json()]));
 
 	}
@@ -1409,38 +1407,70 @@ import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,C
 			return (dispatch) => {
 				dispatch(updateCreateStockPopup(false))
 				dispatch(openAppsLoader(DULOADERPERVALUE,"Please wait while mAdvisor is extracting data from websites... "));
-               //Updating loader value
-				setTimeout(function(){ 
+				//Updating loader value
+				/*setTimeout(function(){ 
 					dispatch(updateAppsLoaderValue(50));
-				}, 3000);
-				
-				appsInterval = setInterval(function() {
-					setTimeout(function(){ 
-						dispatch(closeAppsLoaderValue());
-					}, 3000);
-					dispatch(getDataSetPreview("check-combo-0sts30c3kz", appsInterval));
-				}, DEFAULTINTERVAL);
+				}, 3000);*/
+				return triggerCrawlingAPI(sessionStorage.userToken).then(([response, json]) => {
 
-
+					if (response.status === 200) {
+						console.log(json.slug)
+						dispatch(crawlSuccess(json, dispatch))
+					} else {
+						dispatch(crawlError(json))
+					}
+				});
 			}	
 		}else{
 			bootbox.alert("Please enter text/symbols to analyze stocks")
 		}
 	}
-export function hideDataPreviewRightPanels(){
-	  $("#tab_visualizations").hide();
-	  $("#sub_settings").hide();
-	  $("#dataPreviewButton").hide();
-}
-export function updateUploadStockPopup(flag){
-	return {
-		type: "UPLOAD_STOCK_MODAL",
-		flag
+
+	export function crawlSuccess(json, dispatch){
+		var slug = json.slug;
+		appsInterval = setInterval(function() {
+			dispatch(getStockDataSetPreview(slug,appsInterval))
+			if(store.getState().apps.appsLoaderPerValue < LOADERMAXPERVALUE){
+				dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE));
+			}
+
+		}, DEFAULTINTERVAL);
+		return {
+			type: "STOCK_CRAWL_SUCCESS",
+			slug,
+		}
 	}
-}
-export function uploadStockFiles(files){
-	return {
-		type: "UPLOAD_STOCK_FILES",
-		files
+	function triggerCrawlingAPI(urlForPrices,urlForNews,analysisName) {
+
+			var details = {
+                  "url1":urlForPrices,
+                  "url2":urlForNews,
+                  "name":analysisName,
+                  "stock_symbols":store.getState().apps.appsStockSymbolsInputs
+                  
+			}
+			return fetch(API + '/api/stockdataset/', {
+				method: 'post',
+				headers: getHeader(sessionStorage.userToken),
+				body: JSON.stringify({config: details})
+			}).then(response => Promise.all([response, response.json()]));
+
 	}
-}
+	
+	export function hideDataPreviewRightPanels(){
+		$("#tab_visualizations").hide();
+		$("#sub_settings").hide();
+		$("#dataPreviewButton").hide();
+	}
+	export function updateUploadStockPopup(flag){
+		return {
+			type: "UPLOAD_STOCK_MODAL",
+			flag
+		}
+	}
+	export function uploadStockFiles(files){
+		return {
+			type: "UPLOAD_STOCK_FILES",
+			files
+		}
+	}

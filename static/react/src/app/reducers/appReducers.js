@@ -55,7 +55,8 @@ export default function reducer(state = {
 		appsStockSymbolsInputs:[],
 		stockAnalysisList:{},
 		stockUploadDomainModal:false,
-		stockUploadDomainFiles:[]
+		stockUploadDomainFiles:[],
+		stockSlug:"",
 
 
 }, action) {
@@ -604,6 +605,21 @@ export default function reducer(state = {
 			...state,
 			stockUploadDomainFiles:action.files
 
+		}
+	}
+	break;
+	case "CRAWL_ERROR":
+	{
+		//alert(action.json.non_field_errors);
+		throw new Error("Unable to crawl data!!");
+	}
+	break;
+	
+	case "STOCK_CRAWL_SUCCESS":
+	{
+		return{
+			...state,
+			stockSlug:action.slug,
 		}
 	}
 	break;

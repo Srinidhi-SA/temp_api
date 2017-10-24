@@ -190,7 +190,7 @@ export class AppsPanel extends React.Component {
 					<div className="col-md-8 col-sm-9 col-xs-7">
 						<h4>STOCK  ADVISOR</h4>
 						<p>
-						To extract sentiments, emotions and context from audio/voice.
+						To find and analyze correlation between contents of news articles and stock prices and extract meaningful insights
 						</p>
 					</div>
 					<div class="clearfix"></div>
@@ -198,8 +198,8 @@ export class AppsPanel extends React.Component {
 
 					<div className="card-footer">
 					<ul className="app_labels">
-						<li><a href="#"><i className="fa fa-tag"></i> Marketing</a></li>
-						<li><a href="#"><i className="fa fa-tag"></i> Customer Service</a></li>
+						<li><a href="#"><i className="fa fa-tag"></i> Finance</a></li>
+						<li><a href="#"><i className="fa fa-tag"></i>Investment Banking</a></li>
 					</ul>
 
 				{/*<div className="card-deatils">
