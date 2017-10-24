@@ -68,7 +68,8 @@ def convert_crawled_data_to_metadata_format(news_data, other_details=None):
         "headers": headers,
         "sampleData": sampleData,
         "columnData": columnData,
-        "metaData": metaData
+        "metaData": metaData,
+        "transformation_settings": {}
     }
 
 
