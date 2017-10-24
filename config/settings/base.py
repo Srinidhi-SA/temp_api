@@ -388,7 +388,7 @@ JOBSERVER_STATUS = {
     'KILLED': 'FAILED'
 }
 
-UI_VERSION = "0.1013"
+UI_VERSION = "0.1034"
 
 ERROR_MESSAGE = {
     'upload_error': 'Code had a weakness. Now it is broken.'
@@ -710,4 +710,3 @@ TRANSFORMATION_SETTINGS_CONSTANT = {
         ]
 
 }
-
