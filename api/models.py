@@ -1244,6 +1244,7 @@ class StockDataset(models.Model):
     def generate_config(self, *args, **kwargs):
         inputFile = ""
         datasource_details = ""
+        datasource_type = ""
         stockSymbolList = self.get_stock_symbol_names()
 
         THIS_SERVER_DETAILS = settings.THIS_SERVER_DETAILS
@@ -1263,7 +1264,8 @@ class StockDataset(models.Model):
 
                     },
                     "DATA_SOURCE": {
-                        "datasource_details": datasource_details
+                        "datasource_details": datasource_details,
+                        "datasource_type": datasource_type
                     },
                     "STOCK_SETTINGS":{
                         "stockSymbolList": stockSymbolList,
