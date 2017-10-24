@@ -170,17 +170,17 @@ export class AdvanceSettings extends React.Component {
 		  let id = "chk_analysis"+ metaIndex;
 		  
 		  if(metaItem.name.indexOf("trend") != -1){
-			  
+			  if(trendSettings){
 			  let trendSub = trendSettings.map((trendSubItem,trendSubIndex)=>{
 				  let val = trendSubItem.name;
 				  if(trendSubItem.name.toLowerCase() == "count"){
 					  return(
-					     <li ><div className="col-md-4"><div className="ma-checkbox inline sub-analysis"><input className="possibleSubAnalysis" id="trend-count" type="checkbox" value="count"   /><label htmlFor="trend-count">Count</label></div></div><div class="clearfix"></div></li>
+					     <li ><div className="col-md-4"><div className="ma-checkbox inline sub-analysis"><input className="possibleSubAnalysis" id="trend-count" type="radio" value="count" name="trend-sub"  /><label htmlFor="trend-count">Count</label></div></div><div class="clearfix"></div></li>
 					  );
 				  }else if(trendSubItem.name.toLowerCase().indexOf("specific measure") != -1){
 					  return(
 					  <li ><div className="col-md-4">
-					  <div className="ma-checkbox inline sub-analysis"><input className="possibleSubAnalysis" id="trend-specific-measure" type="checkbox" value="specific measure" /><label htmlFor="trend-specific-measure">Specific Measure</label></div> 
+					  <div className="ma-checkbox inline sub-analysis"><input className="possibleSubAnalysis" id="trend-specific-measure" type="radio" value="specific measure" name="trend-sub" /><label htmlFor="trend-specific-measure">Specific Measure</label></div> 
 					  </div>
 					  <div className="col-md-8"> <select id="select-measure" className="form-control ">
 					  {store.getState().datasets.dataSetMeasures.map(function(item,index){
@@ -203,7 +203,11 @@ export class AdvanceSettings extends React.Component {
 					</ul>
 				
 				 </li>);
-	        
+		      }else{
+				 return(
+				<li><div key={metaIndex} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisList.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>
+				 </li>)
+			  }//end of trendsetting check
 		  }else{
 			  
 			  var countOptions=null, options=[],customValueInput=null;
@@ -214,8 +218,10 @@ export class AdvanceSettings extends React.Component {
 					  let clsName = metaItem.name +"-level";
 					  let idName = metaItem.name +"-level-"+subItem.name;
 					  let labelCls ="btn btn-default";
+					  let status = false;
 					  if(subIndex == 0){
 						  labelCls ="btn btn-default active";
+						  status = true;
 					  }
 					 // console.log(metaItem.name +"-level-"+subItem.name)
 					  if(subItem.name.indexOf("custom") !=-1){
@@ -226,7 +232,7 @@ export class AdvanceSettings extends React.Component {
 					  }
 					  
 				      return(
-					     <label key={subIndex} class={labelCls}><input type="radio" className={clsName} id={idName} name={clsName} value={subItem.name} />{subItem.displayName}</label> 
+					     <label key={subIndex} class={labelCls}><input type="radio" className={clsName} id={idName} name={clsName} value={subItem.name} checked={status}/>{subItem.displayName}</label> 
 					  );
 					  
 					  
@@ -328,7 +334,9 @@ export class AdvanceSettings extends React.Component {
 	 
 	 $(function(){
 			if($("input[value='trend']").is(":checked")){
-				$("#trend-count").prop("checked",true);
+				if(!$("#trend-specific-measure").is(":checked")){
+				   $("#trend-count").prop("checked",true);
+				}
 			}else{
 				$("#trend-count").prop("checked",false);
 			}
