@@ -734,6 +734,14 @@ def write_into_databases(job_type, object_slug, results):
         robo_object.robo_analysis_done = True
         robo_object.save()
         return results
+    elif job_type == 'stockAdvisor':
+        stock_objects = StockDataset.objects.get(slug=object_slug)
+        results = add_slugs(results)
+        stock_objects.data = json.dumps(results)
+        stock_objects.analysis_done = True
+        stock_objects.status = 'SUCCESS'
+        stock_objects.save()
+        return results
     else:
         print "No where to write"
     print "written to the database."
@@ -4480,7 +4488,7 @@ def return_json_data(stockDataType, slug):
     matching = {
         "bluemix": "amzn.json",
         "historical": "amzn_historic.json",
-        "concepts": "amzn.json"
+        "concepts": "concepts.json"
     }
 
     path = base_path + '/' + slug + '/' + matching[stockDataType]
