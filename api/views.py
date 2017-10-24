@@ -4467,7 +4467,6 @@ def get_stockdatasetfiles(request, slug=None):
 
     # if slug is None:
     #     return JsonResponse({"message": "Failed"})
-    import pdb;pdb.set_trace()
     stockDataType = request.GET.get('stockDataType')
     stockName = request.GET.get('stockName')
 

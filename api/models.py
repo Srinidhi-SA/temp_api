@@ -1276,8 +1276,6 @@ class StockDataset(models.Model):
         return str(self.slug)
 
     def add_to_job(self, *args, **kwargs):
-        import pdb;pdb.set_trace()
-
         jobConfig = self.generate_config(*args, **kwargs)
 
         job = job_submission(
