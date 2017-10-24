@@ -1153,11 +1153,14 @@ class StockDataset(models.Model):
         from StockAdvisor.crawling.common_utils import get_regex
         stock_symbols = self.get_stock_symbol_names()
         GOOGLE_REGEX_FILE = "google_regex.json"
-
+        print "stock_symbols  ---> ", stock_symbols
         extracted_data = crawl_extract(
             urls=generate_urls_for_crawl_news(stock_symbols),
             regex_dict=get_regex(GOOGLE_REGEX_FILE)
         )
+        if len(extracted_data) < 1:
+            print "No news_data"
+            return {}
         meta_data = convert_crawled_data_to_metadata_format(news_data=extracted_data)
         meta_data['extracted_data'] = extracted_data
 

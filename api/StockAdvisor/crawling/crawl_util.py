@@ -26,7 +26,6 @@ def crawl_extract(urls,regex_dict={},remove_tags=[]):
 				continue
 			# if "date" in json_obj:
 			# 	json_obj["date"] = myutils.normalize_date_time(json_obj.get("date","1 min ago")).strftime("%Y%m%d")
-			print json_obj
 			fobj.write(json.dumps(json_obj)+"\n")
 			all_data.append(json_obj)
 	fobj.close()
