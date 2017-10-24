@@ -55,7 +55,7 @@ if __name__ == '__main__':
 
 
 # columnData, headers, sampledata, metadata
-def convert_crawled_data_to_metadata_format(news_data, other_details):
+def convert_crawled_data_to_metadata_format(news_data, other_details=None):
 
     headers = find_headers(news_data=news_data)
     columnData = get_column_data_for_metadata(headers)
