@@ -474,7 +474,6 @@ class StockDatasetView(viewsets.ModelViewSet):
         else:
             new_data['input_file'] = None
 
-        import pdb;pdb.set_trace()
         try:
             instance = self.get_object_from_all()
         except:
