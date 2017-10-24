@@ -125,7 +125,7 @@ def get_metaData(news_data):
 
 def generate_slug(name=None):
     from django.template.defaultfilters import slugify
-    from random import random
+    import random
 
     return slugify(str(name) + "-" + ''.join(
         random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
