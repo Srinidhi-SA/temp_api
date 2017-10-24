@@ -4488,7 +4488,7 @@ def return_json_data(stockDataType, slug):
     matching = {
         "bluemix": "amzn.json",
         "historical": "amzn_historic.json",
-        "concepts": "concepts.json"
+        "concepts": "old_concepts.json"
     }
 
     path = base_path + '/' + slug + '/' + matching[stockDataType]
