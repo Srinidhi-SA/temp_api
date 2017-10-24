@@ -25,7 +25,7 @@ const CONFUSIONMATRIX = "confusionMatrix";
 const HEATMAPTABLE = "heatMap";
 const CIRCULARCHARTTABLE = "circularChartTable";
 const DECISIONTREETABLE = "decisionTreeTable"
-const DULOADERPERVALUE = 3;
+const DULOADERPERVALUE = 1;
 const CSLOADERPERVALUE = 1;
 const LOADERMAXPERVALUE = 99;
 const DEFAULTINTERVAL = 10000;
@@ -64,7 +64,7 @@ const DATA_TYPE = "data_type";
 const REMOVE = "remove";
 const CURRENTVALUE = "current value";
 const NEWVALUE = "new value"
-	
+
 
 
 export function generateHeaders(table) {
