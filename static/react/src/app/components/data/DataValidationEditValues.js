@@ -65,11 +65,14 @@ export class DataValidationEditValues extends React.Component {
 	  var that = this;
 	  let transformationSettings = store.getState().datasets.dataTransformSettings;
 	  let replaceTypeList = "";
-		 transformationSettings.map((columnData,columnIndex) =>{
-       if(that.props.selectedColSlug == columnData.slug){
-     	  replaceTypeList = that.renderReplaceList(columnData.slug,columnData.name,columnData.columnSetting)
-       }	 
-		 });
+	  if(transformationSettings != undefined){
+		  transformationSettings.map((columnData,columnIndex) =>{
+		       if(that.props.selectedColSlug == columnData.slug){
+		     	  replaceTypeList = that.renderReplaceList(columnData.slug,columnData.name,columnData.columnSetting)
+		       }	 
+				 }); 
+	  }
+		
 	  let dataSetColumnRemoveValues = this.props.dataSetColumnRemoveValues;
 	  let dataSetColumnReplaceValues = this.props.dataSetColumnReplaceValues;
 	  const templateTextBoxes = dataSetColumnRemoveValues.map((data,id) =>{

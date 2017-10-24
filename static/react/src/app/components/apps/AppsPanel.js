@@ -5,7 +5,7 @@ import {connect} from "react-redux";
 import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab} from "react-bootstrap";
 import {Link, Redirect} from "react-router-dom";
-import {updateSelectedApp,updateModelSummaryFlag,updateScoreSummaryFlag,showRoboDataUploadPreview,updateAudioFileSummaryFlag} from "../../actions/appActions";
+import {updateSelectedApp,updateModelSummaryFlag,closeAppsLoaderValue,updateScoreSummaryFlag,showRoboDataUploadPreview,updateAudioFileSummaryFlag} from "../../actions/appActions";
 import {STATIC_URL} from "../../helpers/env.js"
 import {APPID1,APPID2,APPID3,APPID4,APPNAME1,APPNAME2,APPNAME3,APPNAME4,APPNAME5,APPID5} from "../../helpers/helper.js"
 
@@ -29,6 +29,7 @@ export class AppsPanel extends React.Component {
 	  this.props.dispatch(updateScoreSummaryFlag(false));
 	  this.props.dispatch(showRoboDataUploadPreview(false));
 	  this.props.dispatch(updateAudioFileSummaryFlag(false));
+	  this.props.dispatch(closeAppsLoaderValue());
   }
   render() {
     console.log("Apps panel is called##########3");

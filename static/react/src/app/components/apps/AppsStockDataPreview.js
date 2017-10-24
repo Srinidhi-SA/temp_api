@@ -10,7 +10,7 @@ import {APPID1,APPID2,APPID3,APPNAME1,APPNAME2,APPNAME3} from "../../helpers/hel
 import {hideDataPreviewRightPanels,updateUploadStockPopup} from "../../actions/appActions";
 import {STATIC_URL} from "../../helpers/env.js"
 import {isEmpty} from "../../helpers/helper";
-import {getDataSetPreview} from "../../actions/dataActions";
+import {getStockDataSetPreview} from "../../actions/dataActions";
 
 @connect((store) => {
 	return {login_response: store.login.login_response,
@@ -28,7 +28,7 @@ export class AppsStockDataPreview extends React.Component {
   }
   componentWillMount(){
 	  if (this.props.dataPreview == null || isEmpty(this.props.dataPreview)||this.props.dataPreview.status == 'FAILED') {
-		  this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
+		  this.props.dispatch(getStockDataSetPreview(this.props.match.params.slug));
 	  }
   }
   componentDidMount(){

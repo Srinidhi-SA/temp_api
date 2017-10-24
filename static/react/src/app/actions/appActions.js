@@ -1393,7 +1393,7 @@ import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,C
 		}
 	}
 
-	export function crawlDataForAnalysis(url,analysisName){
+	export function crawlDataForAnalysis(url,analysisName,urlForNews){
 
 		var found = false;
 		var stockSymbolsArray = store.getState().apps.appsStockSymbolsInputs;
@@ -1407,16 +1407,11 @@ import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,C
 			return (dispatch) => {
 				dispatch(updateCreateStockPopup(false))
 				dispatch(openAppsLoader(DULOADERPERVALUE,"Please wait while mAdvisor is extracting data from websites... "));
-				//Updating loader value
-				/*setTimeout(function(){ 
-					dispatch(updateAppsLoaderValue(50));
-				}, 3000);*/
-				return triggerCrawlingAPI(sessionStorage.userToken).then(([response, json]) => {
-
+				return triggerCrawlingAPI(url,urlForNews,analysisName).then(([response, json]) => {
 					if (response.status === 200) {
 						console.log(json.slug)
 						dispatch(crawlSuccess(json, dispatch))
-					} else {
+					}else {
 						dispatch(crawlError(json))
 					}
 				});
