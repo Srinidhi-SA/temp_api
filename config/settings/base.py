@@ -388,7 +388,7 @@ JOBSERVER_STATUS = {
     'KILLED': 'FAILED'
 }
 
-UI_VERSION = "0.1032"
+UI_VERSION = "0.1013"
 
 ERROR_MESSAGE = {
     'upload_error': 'Code had a weakness. Now it is broken.'
@@ -463,8 +463,8 @@ NATURAL_LANGUAGE_UNDERSTANDING_SETTINGS = {
           "username": "77961f39-ccaa-4cd7-b6cb-68d544f91ffb",
           "password": "hDbkLtb8rWgh"
         }
-    
-VOICE_TO_TEXT_SETTINGS = { 
+
+VOICE_TO_TEXT_SETTINGS = {
         "url": "https://stream.watsonplatform.net/speech-to-text/api",
         "username": "3d7b6be9-17eb-4208-ad56-3d873700d5e7",
         "password": "UXiMa7qNp68f"
