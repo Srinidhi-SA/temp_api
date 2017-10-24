@@ -1147,10 +1147,10 @@ class StockDataset(models.Model):
         self.save()
 
     def crawl_data(self):
-        from StockAdvisor.crawling.crawl_util import crawl_extract, generate_urls_for_crawl_news
+        from StockAdvisor.crawling.crawl_util import crawl_extract, \
+            generate_urls_for_crawl_news, \
+            convert_crawled_data_to_metadata_format
         from StockAdvisor.crawling.common_utils import get_regex
-        from StockAdvisor.crawling.utils import convert_crawled_data_to_metadata_format
-
         stock_symbols = self.get_stock_symbol_names()
         GOOGLE_REGEX_FILE = "google_regex.json"
 
