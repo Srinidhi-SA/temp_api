@@ -4,6 +4,9 @@ import common_utils
 import simplejson as json
 import urllib
 import sys
+from django.template.defaultfilters import slugify
+import random
+import string
 # import utils as myutils
 
 def crawl_extract(urls,regex_dict={},remove_tags=[]):
@@ -124,8 +127,6 @@ def get_metaData(news_data):
              ]
 
 def generate_slug(name=None):
-    from django.template.defaultfilters import slugify
-    import random
 
     return slugify(str(name) + "-" + ''.join(
         random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
