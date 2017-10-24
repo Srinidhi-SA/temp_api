@@ -4474,7 +4474,9 @@ def get_stockdatasetfiles(request, slug=None):
 
 
 def return_json_data(stockDataType, slug):
-    base_path = "/home/ankush/codebase/code_revamp/madvisor_api/scripts/data/"
+    import os
+    base_path = os.path.dirname(os.path.dirname(__file__))
+    base_path = base_path + "/scripts/data/"
     matching = {
         "bluemix": "amzn.json",
         "historical": "amzn_historic.json",

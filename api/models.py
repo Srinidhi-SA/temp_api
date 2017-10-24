@@ -1249,7 +1249,7 @@ class StockDataset(models.Model):
         THIS_SERVER_DETAILS = settings.THIS_SERVER_DETAILS
         data_api = "http://{0}:{1}/api/stockdatasetfiles/{2}/".format(THIS_SERVER_DETAILS.get('host'),
                                                         THIS_SERVER_DETAILS.get('port'),
-                                                        self.get_data_api()),
+                                                        self.get_data_api())
 
         return {
                 "config": {
