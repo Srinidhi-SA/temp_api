@@ -405,7 +405,6 @@ class StockDatasetView(viewsets.ModelViewSet):
     filter_fields = ('deleted', 'name')
     pagination_class = CustomPagination
 
-
     def create(self, request, *args, **kwargs):
 
         data = request.data
