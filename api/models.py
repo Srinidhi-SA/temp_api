@@ -1149,6 +1149,7 @@ class StockDataset(models.Model):
     def crawl_data(self):
         from StockAdvisor.crawling.crawl_util import crawl_extract, generate_urls_for_crawl_news
         from StockAdvisor.crawling.common_utils import get_regex
+        from StockAdvisor.crawling.utils import convert_crawled_data_to_metadata_format
 
         stock_symbols = self.get_stock_symbol_names()
         GOOGLE_REGEX_FILE = "google_regex.json"
@@ -1157,16 +1158,9 @@ class StockDataset(models.Model):
             urls=generate_urls_for_crawl_news(stock_symbols),
             regex_dict=get_regex(GOOGLE_REGEX_FILE)
         )
+        meta_data = convert_crawled_data_to_metadata_format(news_data=extracted_data)
 
-
-        crawled_data = {
-            "metadata_sample": {
-                "a": "a",
-                "b": "b"
-            },
-            "extracted_data": extracted_data
-        }
-        return json.dumps(crawled_data)
+        return json.dumps(meta_data)
 
     def generate_meta_data(self):
         return self.crawl_data()

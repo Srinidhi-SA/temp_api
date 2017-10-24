@@ -100,3 +100,83 @@ def cache_get(key):
 def cache_put(key, obj):
 
     pickle.dump(obj, open(get_cache_file_name(key), "wb"))
+
+
+# columnData, headers, sampledata, metadata
+def convert_crawled_data_to_metadata_format(news_data, other_details):
+
+    headers = find_headers(news_data=news_data)
+    columnData = get_column_data_for_metadata(headers)
+    sampleData = get_sample_data(news_data=news_data)
+    metaData = get_metaData(news_data=news_data)
+
+    return {
+        "headers": headers,
+        "sampleData": sampleData,
+        "columnData": columnData,
+        "metaData": metaData
+    }
+
+
+def find_headers(news_data):
+    headers_name = news_data[0].keys()
+    headers = []
+    for header in headers_name:
+        temp = {}
+        temp['name'] = header
+        temp['slug'] = generate_slug(header)
+        headers.append(temp)
+    return headers
+
+def get_column_data_for_metadata(headers):
+    import copy
+    sample_column_data = {
+                "ignoreSuggestionFlag": False,
+                "name": None,
+                "chartData": None,
+                "dateSuggestionFlag": False,
+                "columnStats": None,
+                "columnType": None,
+                "ignoreSuggestionMsg": None,
+                "slug": None
+
+            }
+
+    columnData = []
+    for header in headers:
+        temp = copy.deepcopy(sample_column_data)
+        temp['name'] = header['name']
+        temp['slug'] = header['slug']
+        columnData.append(temp)
+
+    return columnData
+
+def get_sample_data(news_data):
+    required_fields = ['url',  'source', 'date', 'title','desc']
+    return [ [row[key] for key in required_fields] for row in news_data ]
+
+def get_metaData(news_data):
+    return  [{
+                "displayName": "Number of records",
+                "name": "noOfRows",
+                "value": len(news_data),
+                "display": True
+            },
+        {
+            "displayName": "Source",
+            "name": "source",
+            "value": "Google Finance",
+            "display": True
+        },
+
+             ]
+
+
+
+
+def generate_slug(name=None):
+    from django.template.defaultfilters import slugify
+    from random import random
+
+    return slugify(str(name) + "-" + ''.join(
+        random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
