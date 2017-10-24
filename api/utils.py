@@ -399,7 +399,7 @@ class StockDatasetSerializer(serializers.ModelSerializer):
         instance.deleted = validated_data.get('deleted', instance.deleted)
         instance.bookmarked = validated_data.get('bookmarked', instance.bookmarked)
         instance.auto_update = validated_data.get('auto_update', instance.auto_update)
-        instance.auto_update_duration = validated_data.get('auto_update_duration', instance.auto_update_duration)
+        # instance.auto_update_duration = validated_data.get('auto_update_duration', instance.auto_update_duration)
 
         instance.save()
         return instance

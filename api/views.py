@@ -424,29 +424,6 @@ class StockDatasetView(viewsets.ModelViewSet):
             return Response(serializer.data)
         return creation_failed_exception(serializer.errors)
 
-        # try:
-        #     data = request.data
-        #     data = convert_to_string(data)
-        #
-        #     if 'input_file' in data:
-        #         data['input_file'] =  request.FILES.get('input_file')
-        #     else:
-        #         data['input_file'] = None
-        #
-        #     data['created_by'] = request.user.id
-        #
-        #     try:
-        #         serializer = StockDatasetSerializer(data=data)
-        #         if serializer.is_valid():
-        #             audioset_object = serializer.save()
-        #             audioset_object.create()
-        #             return Response(serializer.data)
-        #     except Exception as err:
-        #         return creation_failed_exception(err)
-        #     return creation_failed_exception(serializer.errors)
-        # except Exception as error:
-        #     creation_failed_exception(error)
-
 
     def retrieve(self, request, *args, **kwargs):
         try:
@@ -485,6 +462,52 @@ class StockDatasetView(viewsets.ModelViewSet):
             return Response(serializer.data)
 
         return update_failed_exception(serializer.errors)
+
+    @detail_route(methods=['put'])
+    def create_stats(self, request, slug=None):
+
+        data = request.data
+
+        new_data = {}
+        if 'input_file' in data:
+            new_data['input_file'] = request.FILES.get('input_file')
+        else:
+            new_data['input_file'] = None
+
+        try:
+            instance = self.get_object_from_all()
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
+        if instance is None:
+            return creation_failed_exception("File Doesn't exist.")
+
+        serializer = self.serializer_class(instance=instance, data=new_data, partial=True)
+        if serializer.is_valid():
+            stock_instance = serializer.save()
+            stock_instance.stats()
+            return Response(serializer.data)
+
+        serializer = StockDatasetSerializer(instance=instance)
+        return Response(serializer.data)
+
+    @detail_route(methods=['get'])
+    def read_stats(self, request, slug=None):
+
+        try:
+            instance = self.get_object_from_all()
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
+        if instance is None:
+            return creation_failed_exception("File Doesn't exist.")
+
+        serializer = StockDatasetSerializer(instance=instance)
+        return Response(serializer.data)
+
+
+
+
 
 
 class AudiosetView(viewsets.ModelViewSet):

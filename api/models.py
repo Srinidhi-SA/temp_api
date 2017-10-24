@@ -1112,6 +1112,7 @@ class StockDataset(models.Model):
     input_file = models.FileField(upload_to='conceptsfiles', null=True)
 
     meta_data = models.TextField(default="{}")
+    data = models.TextField(default="{}")
 
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
@@ -1156,6 +1157,24 @@ class StockDataset(models.Model):
 
     def generate_meta_data(self):
         return self.crawl_data()
+
+    def stats(self):
+        self.data = self.generate_stats()
+        self.analysis_done = True
+        self.status = 'SUCCESS'
+        self.save()
+
+    def crawl_stats(self):
+        crawled_stats = {
+            "stats_sample": {
+                "a": "a",
+                "b": "b"
+            }
+        }
+        return json.dumps(crawled_stats)
+
+    def generate_stats(self):
+        return self.crawl_stats()
 
     def get_brief_info(self):
         brief_info = dict()
