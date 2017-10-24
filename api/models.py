@@ -1158,7 +1158,8 @@ class StockDataset(models.Model):
     def generate_meta_data(self):
         return self.crawl_data()
 
-    def stats(self):
+    def stats(self, file):
+        self.input_file = file
         self.data = self.generate_stats()
         self.analysis_done = True
         self.status = 'SUCCESS'

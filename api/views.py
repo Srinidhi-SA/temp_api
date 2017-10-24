@@ -474,6 +474,7 @@ class StockDatasetView(viewsets.ModelViewSet):
         else:
             new_data['input_file'] = None
 
+        import pdb;pdb.set_trace()
         try:
             instance = self.get_object_from_all()
         except:
@@ -485,7 +486,7 @@ class StockDatasetView(viewsets.ModelViewSet):
         serializer = self.serializer_class(instance=instance, data=new_data, partial=True)
         if serializer.is_valid():
             stock_instance = serializer.save()
-            stock_instance.stats()
+            stock_instance.stats(file=new_data['input_file'])
             return Response(serializer.data)
 
         serializer = StockDatasetSerializer(instance=instance)
@@ -504,10 +505,6 @@ class StockDatasetView(viewsets.ModelViewSet):
 
         serializer = StockDatasetSerializer(instance=instance)
         return Response(serializer.data)
-
-
-
-
 
 
 class AudiosetView(viewsets.ModelViewSet):
