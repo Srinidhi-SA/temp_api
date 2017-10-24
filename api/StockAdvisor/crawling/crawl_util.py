@@ -77,7 +77,7 @@ def find_headers(news_data):
     headers_name = news_data[0].keys()
     required_fields = ['url',  'source', 'date', 'title','desc']
 
-    headers_name = list(set(required_fields) - set(headers_name))
+    headers_name = list(set(required_fields).intersection(set(headers_name)))
     headers = []
     for header in headers_name:
         temp = {}
