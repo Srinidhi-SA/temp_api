@@ -43,7 +43,7 @@ export class StockUploadDomainModel extends React.Component {
   }
 
 	triggerStockAnalysis(){
-			this.props.dispatch(triggerStockAnalysis(store.getState().apps.stockSlug))
+			this.props.dispatch(uploadStockFile(store.getState().apps.stockSlug))
 		}
 
   render() {

@@ -14,6 +14,7 @@ import { Scrollbars } from 'react-custom-scrollbars';
 //import Tree from 'react-tree-graph';
 import {GaugeMeter} from "../common/GaugeMeter";
 import {DataBox} from "../common/DataBox";
+import {WordCloud} from "../common/WordCloud";
 import $ from "jquery";
 
 
@@ -99,6 +100,9 @@ export class Card extends React.Component {
 		 case "dataBox":
 			 return (<DataBox key = {i} jsonData={story.data} type={story.dataType}/>);
 			 break;
+			 case "wordCloud":
+				 return (<WordCloud key = {i} jsonData={story.data} type={story.dataType}/>);
+				 break;
       }
 
     });

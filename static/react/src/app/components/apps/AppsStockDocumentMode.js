@@ -32,22 +32,25 @@ export class AppsStockDocumentMode extends React.Component {
   }
 
   searchTree(_Node, cardLists, lastVar) {
-    if (_Node.listOfCards[_Node.listOfCards.length - 1].slug == lastVar) {
-      console.log("cardlist if no cards in node:");
-      console.log(cardLists);
-      cardLists.push(_Node.listOfCards);
-      return cardLists;
-    } else {
-      var i;
-      var result = null;
-      cardLists.push(_Node.listOfCards);
-      for (i = 0; i < _Node.listOfNodes.length; i++) {
-        result = this.searchTree(_Node.listOfNodes[i], cardLists, lastVar);
-      }
-      console.log("cardLists is:");
-      console.log(cardLists);
-      return result;
-    }
+	  if(_Node.listOfCards.length > 0){
+		  if (_Node.listOfCards[_Node.listOfCards.length - 1].slug == lastVar) {
+		      console.log("cardlist if no cards in node:");
+		      console.log(cardLists);
+		      cardLists.push(_Node.listOfCards);
+		      return cardLists;
+		    } else {
+		      var i;
+		      var result = null;
+		      cardLists.push(_Node.listOfCards);
+		      for (i = 0; i < _Node.listOfNodes.length; i++) {
+		        result = this.searchTree(_Node.listOfNodes[i], cardLists, lastVar);
+		      }
+		      console.log("cardLists is:");
+		      console.log(cardLists);
+		      return result;
+		    } 
+	  }
+    
   }
 
   closeDocumentMode(){
