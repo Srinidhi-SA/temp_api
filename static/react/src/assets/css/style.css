@@ -14836,11 +14836,12 @@ visibility:hidden !important;
     padding-left: 20px;
     padding-bottom: 20px;	
 }
+
 .createStockModal{
-	height:480px;
-    overflow-y: scroll;
-    overflow-x:hidden;
+	height:292px;
+    overflow: auto;
 }
+
 .stockDropzone div { width: inherit !important; text-align: center; height: 30px !important; display: table-cell; vertical-align: middle;     padding-left: 10px;
     padding-right: 10px;
     padding-top: 5px; }
@@ -14853,5 +14854,18 @@ visibility:hidden !important;
     padding: 10px;
     margin: 0;  
     } 
- 
-
+.bgStockBox h3 small { font-size: 58%; }
+.list-boxes .rep_block  { text-transform: capitalize; }
+.ov_card_boxes .row { text-align:center }
+.bgStockBox {
+margin-bottom: 10px;
+float: inherit;
+display: inline-block;
+}
+.navbar.xs-mb-0 { min-height:inherit; }
+.col-md-11.col-md-offset-1.xs-pl-0 {
+    margin-left: 110px;
+}
+.rep_block.newCardStyle h4.title.newCardTitle {
+    font-weight: normal;
+}

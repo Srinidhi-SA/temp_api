@@ -51,8 +51,8 @@ export class AppsCreateStockAnalysis extends React.Component {
 		  let stockSymbolsList = this.props.appsStockSymbolsInputs;
 		  const templateTextBoxes = stockSymbolsList.map((data,id) =>{
 			  return (<div className="row"><div className="form-group" id={data.id}>
-				<label for="fl1" className="col-sm-1 control-label"><b>{id+1}.</b></label>
-				<div className="col-sm-5">
+				<label for="fl1" className="col-sm-2 control-label"><b>{id+1}.</b></label>
+				<div className="col-sm-7">
 				<input  id={data.id} type="text" name={data.name}  onChange={this.handleInputChange.bind(this)} value={data.value} className="form-control"/>
 				</div>
 				<div className="col-sm-1 cursor" onClick={this.removeStockSymbolsComponents.bind(this,data)}><i className="fa fa-minus-square-o text-muted"></i></div>
@@ -70,32 +70,50 @@ export class AppsCreateStockAnalysis extends React.Component {
 				<div id="newCreateStock"  role="dialog" className="modal fade modal-colored-header">
 				<Modal show={store.getState().apps.appsCreateStockModal} onHide={this.updateCreateStockPopup.bind(this,false)} dialogClassName="modal-colored-header">
 				<Modal.Header closeButton>
-				<h3 className="modal-title">Crawling Input</h3>
+				<h3 className="modal-title">Input - Stocks and Data </h3>
 				</Modal.Header>
-				<Modal.Body className="createStockModal">
-				<form role="form" className="form-horizontal">
-	              <label>Enter Url for Stock Prices : </label>
+				<Modal.Body>
+				<form role="form" className="form-horizontal col-md-12">
+			 
+				<label className="control-label">URL for Stock Prices </label>
+			 
 	              <input type="text" name="createStock" id="createStockUrl"  required={true} className="form-control input-sm" />
-				 <br/>
 				 
-				   <label>Enter Url for News : </label>
-		              <input type="text" name="createStockNews" id="createStockUrlNews"  required={true} className="form-control input-sm" />
-					 <br/>
-					 
-	              <label>Enter Stocks to Analyze:</label>
-	              {templateTextBoxes}
-	              <div className="row">
-	              <div className="col-md-2 col-md-offset-9 text-right">
-		         <Button className="text-right" bsStyle="primary" onClick={this.addMoreStockSymbols.bind(this)}>Add More&nbsp;<i className="fa fa-plus"></i></Button>
+			  <div className="xs-pb-20 clearfix"></div>
+				 
+				<label className="control-label">URL for News Articles </label>
+				 
+	             <input type="text" name="createStockNews" id="createStockUrlNews"  required={true} className="form-control input-sm" />
+				  
+				  <div className="xs-pb-20 clearfix"></div>
+				 
+				<label className=" control-label">Ticker Symbols to Analyze </label>
+				
+				<div class="col-md-10 col-md-offset-2">
+				 <div className="row">
+	              <div className="col-md-12 text-right">
+		         <Button bsStyle="info" onClick={this.addMoreStockSymbols.bind(this)}> <i className="fa fa-plus"></i></Button>
 		         </div> 
 		         </div>
-	              <label>Enter Name for Analysis : </label>
-	              <input type="text" name="createStockAnalysisName" id="createStockAnalysisName"  required={true} className="form-control input-sm" />
-	              
-	              
+				<div class="createStockModal">
+				<Scrollbars>
+	             {templateTextBoxes}
+				 </Scrollbars>
+				 </div>
 	             
+				 
+				  </div>
+			 
+					 <div className="xs-pb-25 clearfix"></div>
+					 
+				<label className="control-label">Name your Analysis </label>
+				 
+	             <input type="text" name="createStockAnalysisName" id="createStockAnalysisName"  required={true} className="form-control input-sm" />
+				 
+				 
+	             <div className="clearfix"></div>
 	              </form>
-	             
+	              <div className="clearfix"></div>
 				</Modal.Body>
 				<Modal.Footer>
 				<Button className="btn btn-primary md-close" onClick={this.updateCreateStockPopup.bind(this,false)}>Close</Button>

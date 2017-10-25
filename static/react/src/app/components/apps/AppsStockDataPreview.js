@@ -58,22 +58,31 @@ export class AppsStockDataPreview extends React.Component {
 			return (
 					<div >
 	            <DataPreview history={this.props.history} match={this.props.match}/>" +
-	            <div className="main-content">
+	            
 	            <div className="row buttonRow" >
-				<div className="col-md-12">
-
-				<div className="row">
-
-				<div className="col-md-1 col-md-offset-10 text-right">
-				<Link to="/apps"><Button>Close</Button></Link>
+				
+				
+				<div class="col-md-11 col-md-offset-1 xs-pl-0">
+				<div class="panel">
+				<div class="panel-body">
+				
+				<div className="navbar xs-mb-0">
+						<ul className="nav navbar-nav navbar-right">
+						 
+						<li className="text-right"><Button to="/apps"> Close </Button> 
+						</li>
+						<li className="text-right">
+							<Button bsStyle="primary" onClick={this.updateUploadStockPopup.bind(this,true)}> Proceed</Button>
+						</li>
+						</ul>
+						</div> 
+				
 				</div>
-				<div className="col-md-1 text-right">
-				<Button bsStyle="primary" onClick={this.updateUploadStockPopup.bind(this,true)}> Proceed</Button>
 				</div>
 				</div>
+				 
 				</div>
-				</div>
-				</div>
+				 
 				<StockUploadDomainModel/>
 				 <AppsLoader/>
 	        </div>

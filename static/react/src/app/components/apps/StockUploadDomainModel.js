@@ -55,7 +55,7 @@ export class StockUploadDomainModel extends React.Component {
 		}
 		let conceptRs = this.props.conceptList
     let concepts = Object.keys(conceptRs)
-    var imgLink = STATIC_URL + "assets/images/d_cardIcon.png"
+    var imgLink = STATIC_URL + "assets/images/m_carIcon.png"
     const conceptList = concepts.map((concept, i) => {
         let subconcepts = capitalizeArray(conceptRs[concept])
       subconcepts = subconcepts.join(", ")
@@ -71,12 +71,13 @@ export class StockUploadDomainModel extends React.Component {
                   </h4>
                 </div>
                 <div className="col-xs-3">
-                  {/*<img src={imgLink} className="img-responsive" alt="LOADING"/>*/}
-                  <i class="fa fa-bullseye fa-4x" aria-hidden="true" style={{color:"rgba(128, 128, 128, 0.78)"}}></i>
+                  <img src={imgLink} className="img-responsive" alt="LOADING"/>
+                 {/* <i class="fa fa-bullseye fa-4x" aria-hidden="true" style={{color:"rgba(128, 128, 128, 0.78)"}}></i>*/}
                 </div>
               </div>
             </div>
             <div className="card-footer">
+			<div className="xs-pt-10"></div>
               {/*<div className="left_div">
 								<span className="footerTitle"></span>{story.username}
 								<span className="footerTitle">{dateFormat(story.created_at, "mmm d,yyyy HH:MM")}</span>
@@ -84,7 +85,7 @@ export class StockUploadDomainModel extends React.Component {
 
               <div>
                 {/*<!-- Popover Content link -->*/}
-                <OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <h4>Sub-Concepts:</h4><br/><p>{subconcepts}</p> < /Popover>}>
+                <OverlayTrigger trigger="click" rootClose placement="right" overlay={< Popover id = "popover-trigger-focus" > <h4>Sub-Concepts:</h4><br/><p>{subconcepts}</p> < /Popover>}>
                   <a>
                   View Sub-Concepts
                     {/*<i className="ci pe-7s-info pe-2x"></i>*/}
@@ -105,9 +106,10 @@ export class StockUploadDomainModel extends React.Component {
       <div id="uploadDomainModel" role="dialog" className="modal fade modal-colored-header">
         <Modal show={store.getState().apps.stockUploadDomainModal} onHide={this.updateUploadStockPopup.bind(this, false)} dialogClassName="modal-colored-header modal-lg uploadData">
           <Modal.Header closeButton>
-            <h3 className="modal-title">Concepts Identified for Stock Performance Analysis</h3>
+            <h3 className="modal-title">Concepts for Stock Performance Analysis</h3>
           </Modal.Header>
           <Modal.Body>
+		  <div className="xs-p-20">
             <div className="row">
               <div className="col-md-12">
                 <div className="xs-pt-20"></div>
@@ -127,7 +129,8 @@ export class StockUploadDomainModel extends React.Component {
 					<Button>Upload</Button>
 					</div> */}
             </div>
-          </Modal.Body>
+          </div>
+		  </Modal.Body>
           <Modal.Footer>
             {/*<Button onClick={this.updateUploadStockPopup.bind(this,false)}>Close</Button>*/}
            <Button bsStyle="primary" onClick={this.triggerStockAnalysis.bind(this,false)}>Analyse</Button>

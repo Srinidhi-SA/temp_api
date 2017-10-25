@@ -458,7 +458,7 @@ closeDocumentMode(){
                             <div className="row row-offcanvas row-offcanvas-left">
 
                               {/*/span*/}
-                              <div className="col-xs-12 col-sm-9 content">
+                              <div className="col-xs-12 col-sm-9 content ov_card_boxes">
                                 <Card cardData={card.cardData}/>
                               </div>
                               {/*/span*/}
