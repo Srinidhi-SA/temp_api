@@ -74,7 +74,7 @@ export class AppsCreateStockAnalysis extends React.Component {
 				</Modal.Header>
 				<Modal.Body className="createStockModal">
 				<form role="form" className="form-horizontal">
-	              <label>Enter Url for Stock Prices : </label>
+	             <label>Enter Url for Stock Prices : </label>
 	              <input type="text" name="createStock" id="createStockUrl"  required={true} className="form-control input-sm" />
 				 <br/>
 				 

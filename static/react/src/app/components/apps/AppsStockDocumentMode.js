@@ -32,7 +32,6 @@ export class AppsStockDocumentMode extends React.Component {
   }
 
   searchTree(_Node, cardLists, lastVar) {
-	  if(_Node.listOfCards.length > 0){
 		  if (_Node.listOfCards[_Node.listOfCards.length - 1].slug == lastVar) {
 		      console.log("cardlist if no cards in node:");
 		      console.log(cardLists);
@@ -48,9 +47,7 @@ export class AppsStockDocumentMode extends React.Component {
 		      console.log("cardLists is:");
 		      console.log(cardLists);
 		      return result;
-		    } 
-	  }
-    
+		    }     
   }
 
   closeDocumentMode(){

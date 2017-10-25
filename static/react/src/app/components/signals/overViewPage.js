@@ -18,7 +18,7 @@ import store from "../../store";
 import {getSignalAnalysis,setSideCardListFlag} from "../../actions/signalActions";
 import {STATIC_URL} from "../../helpers/env.js"
 import Slider from "react-slick";
-import {getRoboDataset} from "../../actions/appActions";
+import {getRoboDataset,getStockAnalysis} from "../../actions/appActions";
 import {hideDataPreview} from "../../actions/dataActions";
 
 
@@ -48,6 +48,8 @@ setSideListFlag(e){
     if (isEmpty(this.props.signal)) {
     	if(this.props.match.url.indexOf("apps-robo") != -1){
     		this.props.dispatch(getRoboDataset(this.props.match.params.slug));
+    	}else if(this.props.match.url.indexOf("apps-stock") != -1){
+    		this.props.dispatch(getStockAnalysis(this.props.match.params.slug));
     	}else{
     		this.props.dispatch(getSignalAnalysis(sessionStorage.userToken, this.props.match.params.slug));
     	}
@@ -322,7 +324,7 @@ closeDocumentMode(){
     	  documentModeLink = "/signaldocumentMode/" + this.props.match.params.slug;
       }
       else if (that.urlPrefix.indexOf("stock") != -1) {
-    	  documentModeLink = "/apps-stock-document-mode/" + this.props.match.params.slug;
+    	  documentModeLink = "/apps-stock-advisor"
       }
       else {
     	  documentModeLink = "/apps-robo-document-mode/" + this.props.match.params.slug;

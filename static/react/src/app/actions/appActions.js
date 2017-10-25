@@ -1394,7 +1394,6 @@ import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,C
 	}
 
 	export function crawlDataForAnalysis(url,analysisName,urlForNews){
-
 		var found = false;
 		var stockSymbolsArray = store.getState().apps.appsStockSymbolsInputs;
 		for(var i = 0; i < stockSymbolsArray.length; i++) {
@@ -1403,10 +1402,16 @@ import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,C
 				break;
 			}
 		}
-		if(found){
+		/*if(analysisName == ""){
+			bootbox.alert("Please enter stock analysis name.");
+		}
+		else if(url == ""){
+			bootbox.alert("Please enter stock analysis url.");
+		}*/
+     if(found){
 			return (dispatch) => {
 				dispatch(updateCreateStockPopup(false))
-				dispatch(openAppsLoader(DULOADERPERVALUE+7,"Please wait while mAdvisor is extracting data from websites... "));
+				dispatch(openAppsLoader(DULOADERPERVALUE+7,"Extracting historic stock prices.... "));
 				return triggerCrawlingAPI(url,urlForNews,analysisName).then(([response, json]) => {
 					if (response.status === 200) {
 						console.log(json.slug)
@@ -1420,17 +1425,25 @@ import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,C
 			bootbox.alert("Please enter text/symbols to analyze stocks")
 		}
 	}
-
+	export function updateAppsLoaderText(text){
+		return {
+			type: "UPDATE_LOADER_TEXT",
+			text,
+		}
+	}
 	export function crawlSuccess(json, dispatch){
 		var slug = json.slug;
 		dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7));
+		setTimeout(function(){ dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7));dispatch(updateAppsLoaderText("Fetching metadata information for news portals....")) }, 10000);
+		setTimeout(function(){ dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7));dispatch(updateAppsLoaderText("Extracting articles from news portals.....")) }, 30000);
+		setTimeout(function(){ dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7));dispatch(updateAppsLoaderText("Creating dataset....")) }, 40000);
 		appsInterval = setInterval(function() {
 			dispatch(getStockDataSetPreview(slug,appsInterval))
 			if(store.getState().apps.appsLoaderPerValue+10 < LOADERMAXPERVALUE){
 				dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7));
 			}
 
-		}, DEFAULTINTERVAL);
+		}, 60000);
 		return {
 			type: "STOCK_CRAWL_SUCCESS",
 			slug,
@@ -1480,7 +1493,7 @@ import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,C
 	export function uploadStockFile(slug){
 		return (dispatch) => {
 			dispatch(updateUploadStockPopup(false));
-			dispatch(openAppsLoader(DULOADERPERVALUE+7,"Please wait while mAdvisor is analysing the data... "));
+			dispatch(openAppsLoader(DULOADERPERVALUE+7,"Preparing data for analysis... "));
 			  return triggerStockUpload(sessionStorage.userToken,slug).then(([response, json]) => {
 				  if (response.status === 200) {
 					  dispatch(triggerStockAnalysis(slug));
@@ -1498,13 +1511,19 @@ import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,C
 	}
 	export function triggerStockAnalysis(slug){
 		return (dispatch) => {
-		dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7));
+		//dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7));
+		setTimeout(function(){ dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7));dispatch(updateAppsLoaderText("Applying domain model for stock analysis....")) }, 10000);
+		setTimeout(function(){ dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7));dispatch(updateAppsLoaderText("Extracting relevant entities and keywords.....")) }, 20000);
+		setTimeout(function(){ dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7));dispatch(updateAppsLoaderText("Tagging articles to relevant concepts ....")) }, 30000);
+		setTimeout(function(){ dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7));dispatch(updateAppsLoaderText("Performing sentiment analysis....")) }, 40000);
+		setTimeout(function(){ dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7));dispatch(updateAppsLoaderText("Identifying key events during the selected period.....")) }, 50000);
+		setTimeout(function(){ dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7));dispatch(updateAppsLoaderText("Analyze the impact of concepts on stock performance....")) }, 60000);
 		appsInterval = setInterval(function() {
 			dispatch(getStockAnalysis(slug));
 			if(store.getState().apps.appsLoaderPerValue+10 < LOADERMAXPERVALUE){
 				dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7));
 			}
-		}, DEFAULTINTERVAL)
+		}, 60000)
 		}
 	}
 	export function getStockAnalysis(slug) {

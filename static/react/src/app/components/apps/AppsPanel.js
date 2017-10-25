@@ -190,7 +190,7 @@ export class AppsPanel extends React.Component {
 						<img src={STATIC_URL + "assets/images/apps_icon1.png"} className="img-responsive"/>
 					</div>
 					<div className="col-md-8 col-sm-9 col-xs-7">
-						<h4>STOCK  ADVISOR</h4>
+						<h4>STOCK  SENSE</h4>
 						<p>
 						To find and analyze correlation between contents of news articles and stock prices and extract meaningful insights
 						</p>

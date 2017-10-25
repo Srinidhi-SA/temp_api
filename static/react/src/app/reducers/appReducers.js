@@ -641,6 +641,16 @@ export default function reducer(state = {
 		}
 	}
 	break;
+	
+	case "UPDATE_LOADER_TEXT":
+	{
+		return{
+			...state,
+			appsLoaderText:action.text
+		}
+	}
+	break;
+	
 	}
 	return state
 }
