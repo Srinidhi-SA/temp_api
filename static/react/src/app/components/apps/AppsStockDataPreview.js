@@ -7,7 +7,7 @@ import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {connect} from "react-redux";
 import {APPID1,APPID2,APPID3,APPNAME1,APPNAME2,APPNAME3} from "../../helpers/helper.js"
-import {hideDataPreviewRightPanels,updateUploadStockPopup} from "../../actions/appActions";
+import {hideDataPreviewRightPanels,updateUploadStockPopup,getConceptsList} from "../../actions/appActions";
 import {STATIC_URL} from "../../helpers/env.js"
 import {isEmpty} from "../../helpers/helper";
 import {getStockDataSetPreview} from "../../actions/dataActions";
@@ -37,6 +37,7 @@ export class AppsStockDataPreview extends React.Component {
   }
   componentDidMount(){
       hideDataPreviewRightPanels();
+			this.props.dispatch(getConceptsList());
   }
   componentWillUpdate(){
 	  hideDataPreviewRightPanels();
@@ -54,7 +55,7 @@ export class AppsStockDataPreview extends React.Component {
 	 }
 	  let dataPreview = store.getState().datasets.dataPreview;
 		if(dataPreview){
-			return (   
+			return (
 					<div >
 	            <DataPreview history={this.props.history} match={this.props.match}/>" +
 	            <div className="main-content">
@@ -62,7 +63,7 @@ export class AppsStockDataPreview extends React.Component {
 				<div className="col-md-12">
 
 				<div className="row">
-				
+
 				<div className="col-md-1 col-md-offset-10 text-right">
 				<Link to="/apps"><Button>Close</Button></Link>
 				</div>
@@ -75,7 +76,6 @@ export class AppsStockDataPreview extends React.Component {
 				</div>
 				<StockUploadDomainModel/>
 				 <AppsLoader/>
-				
 	        </div>
 	        );
 		}else{

@@ -58,6 +58,7 @@ export default function reducer(state = {
 		stockUploadDomainFiles:[],
 		stockSlug:"",
 		stockAnalysisFlag:false,
+		conceptList:{},
 
 
 }, action) {
@@ -615,7 +616,7 @@ export default function reducer(state = {
 		throw new Error("Unable to crawl data!!");
 	}
 	break;
-	
+
 	case "STOCK_CRAWL_SUCCESS":
 	{
 		return{
@@ -629,6 +630,14 @@ export default function reducer(state = {
 		return{
 			...state,
 			stockAnalysisFlag:action.flag,
+		}
+	}
+	break;
+	case "CONCEPTSLIST":
+	{
+		return{
+			...state,
+			conceptList:action.concepts
 		}
 	}
 	break;
