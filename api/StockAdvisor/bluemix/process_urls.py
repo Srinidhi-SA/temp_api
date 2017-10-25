@@ -2,14 +2,14 @@ import csv
 import unittest
 import urllib2
 import json
-import utils as myutils
+import api.StockAdvisor.utils as myutils
 
 from watson_developer_cloud import SpeechToTextV1
 import watson_developer_cloud.natural_language_understanding.features.v1 \
     as Features
 from watson_developer_cloud.natural_language_understanding_v1 import NaturalLanguageUnderstandingV1
 
-from settings import natural_language_understanding_settings as nlu_settings
+from api.StockAdvisor.settings import natural_language_understanding_settings as nlu_settings
 from time import sleep
 from bs4 import BeautifulSoup
 
@@ -46,7 +46,7 @@ class ProcessUrls:
         reader = csv.reader(f)
         for (i, row) in enumerate(reader):
 
-            if DEBUG and i > 100:
+            if DEBUG and i > 10:
                 break
             if i == 0:
                 self.csv_header = row
@@ -77,6 +77,8 @@ class ProcessUrls:
 
                 cur_json_array = self.get_json_array_for_stock_symbol(myutils.clean_key(row[0]))
                 cur_json_array.append(cur_dictionary)
+
+        return self.json_arrays
         self.write_data()
 
 
