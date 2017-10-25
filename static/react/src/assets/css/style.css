@@ -14845,3 +14845,6 @@ visibility:hidden !important;
     padding-right: 10px;
     padding-top: 5px; }
 .stockDropzone div:hover{ border-color: rgb(0, 153, 140) !important;}
+.dataBoxBg{
+	background-color:#dddddd
+}

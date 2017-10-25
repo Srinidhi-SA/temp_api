@@ -20,6 +20,7 @@ import {AppsLoader} from "../common/AppsLoader";
 		stockUploadDomainModal:store.apps.stockUploadDomainModal,
 		stockSlug:store.apps.stockSlug,
 		stockAnalysisFlag:store.apps.stockAnalysisFlag,
+		signal: store.signals.signalAnalysis,
 		};
 })
 
@@ -48,7 +49,7 @@ export class AppsStockDataPreview extends React.Component {
   }
   render() {
 	  if(store.getState().apps.stockAnalysisFlag){
-			let _linkAnalysis = "/apps-stock-advisor/"+store.getState().apps.stockSlug;
+			let _linkAnalysis = "/apps-stock-advisor/"+store.getState().apps.stockSlug+ "/" + this.props.signal.listOfNodes[0].slug;
 	    	return (<Redirect to={_linkAnalysis}/>);
 	 }
 	  let dataPreview = store.getState().datasets.dataPreview;
