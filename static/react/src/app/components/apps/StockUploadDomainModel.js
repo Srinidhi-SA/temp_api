@@ -18,7 +18,7 @@ import store from "../../store";
 import $ from "jquery";
 import {STATIC_URL} from "../../helpers/env";
 import {capitalizeArray} from "../../helpers/helper.js";
-import {updateUploadStockPopup,uploadStockFiles,triggerStockAnalysis} from "../../actions/appActions";
+import {updateUploadStockPopup,uploadStockFiles,triggerStockAnalysis,uploadStockFile} from "../../actions/appActions";
 
 @connect((store) => {
   return {login_response: store.login.login_response,
@@ -29,6 +29,7 @@ import {updateUploadStockPopup,uploadStockFiles,triggerStockAnalysis} from "../.
 })
 
 export class StockUploadDomainModel extends React.Component {
+
   constructor(props) {
     super(props);
     this.onDrop = this.onDrop.bind(this);
@@ -71,7 +72,7 @@ export class StockUploadDomainModel extends React.Component {
                 </div>
                 <div className="col-xs-3">
                   {/*<img src={imgLink} className="img-responsive" alt="LOADING"/>*/}
-                  <i class="fa fa-bullseye fa-4x" aria-hidden="true"></i>
+                  <i class="fa fa-bullseye fa-4x" aria-hidden="true" style={{color:"rgba(128, 128, 128, 0.78)"}}></i>
                 </div>
               </div>
             </div>

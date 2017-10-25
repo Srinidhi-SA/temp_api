@@ -319,9 +319,13 @@ closeDocumentMode(){
       });
       let documentModeLink = "";
       if (that.urlPrefix.indexOf("signals") != -1) {
-        documentModeLink = "/signaldocumentMode/" + this.props.match.params.slug;
-      } else {
-        documentModeLink = "/apps-robo-document-mode/" + this.props.match.params.slug;
+    	  documentModeLink = "/signaldocumentMode/" + this.props.match.params.slug;
+      }
+      else if (that.urlPrefix.indexOf("stock") != -1) {
+    	  documentModeLink = "/apps-stock-document-mode/" + this.props.match.params.slug;
+      }
+      else {
+    	  documentModeLink = "/apps-robo-document-mode/" + this.props.match.params.slug;
       }
 
       let expectedURL = this.prevNext(this.props);
@@ -329,11 +333,18 @@ closeDocumentMode(){
       let nextURL = that.urlPrefix + "/" + this.props.match.params.slug + "/" + expectedURL.next;
       this.nextRedirect = nextURL;
       //handler when previous is null
-      if (expectedURL.prev == this.props.signal.listOfCards[0].slug || expectedURL.prev == null) {
-        prevURL = that.urlPrefix + "/" + this.props.match.params.slug;
-      } else if (expectedURL.next == null) {
-        nextURL = documentModeLink;
+      if(expectedURL.prev == null){
+    	  if(this.props.signal.listOfCards.length > 0){
+    		  if (expectedURL.prev == this.props.signal.listOfCards[0].slug) {
+            	  prevURL = that.urlPrefix + "/" + this.props.match.params.slug;
+              }  
+    	  }else{
+    		  prevURL = that.urlPrefix;
+    	  }
       }
+     /* else if (expectedURL.next == null) {
+    	  nextURL = documentModeLink;
+      }*/
 
       //for sigma release below code is written seperately, later we have to merge this with above if else
       if (expectedURL.next == null) {
@@ -357,6 +368,8 @@ closeDocumentMode(){
       let nameLink = that.urlPrefix + "/" + this.props.match.params.slug;
       if(that.urlPrefix == "/apps-robo"){
     	  nameLink = that.urlPrefix+"-list" + "/" + this.props.match.params.slug+"/customer"+"/data/"+store.getState().apps.customerDataset_slug;
+      }else if(that.urlPrefix == "/apps-stock-advisor"){
+    	  nameLink = that.urlPrefix + "/" + this.props.match.params.slug+"/" + params.l1;
       }
 
       return (

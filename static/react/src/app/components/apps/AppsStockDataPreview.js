@@ -19,6 +19,7 @@ import {AppsLoader} from "../common/AppsLoader";
 		dataPreview: store.datasets.dataPreview,
 		stockUploadDomainModal:store.apps.stockUploadDomainModal,
 		stockSlug:store.apps.stockSlug,
+		stockAnalysisFlag:store.apps.stockAnalysisFlag,
 		};
 })
 

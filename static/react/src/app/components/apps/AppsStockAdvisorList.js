@@ -7,7 +7,7 @@ import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {connect} from "react-redux";
 import {APPID1,APPID2,APPID3,APPNAME1,APPNAME2,APPNAME3} from "../../helpers/helper.js"
-import {getAppsStockList} from "../../actions/appActions";
+import {getAppsStockList,getStockAnalysis,updateStockSlug} from "../../actions/appActions";
 import Dialog from 'react-bootstrap-dialog'
 import {AppsCreateStockAnalysis} from "./AppsCreateStockAnalysis";
 import {STATIC_URL} from "../../helpers/env.js";
@@ -23,6 +23,7 @@ var dateFormat = require('dateformat');
 		 dataPreviewFlag: store.datasets.dataPreviewFlag,
 		 stockAnalysisFlag:store.apps.stockAnalysisFlag,
 		 stockSlug:store.apps.stockSlug,
+		signal: store.signals.signalAnalysis,
 	};
 })
 
@@ -42,7 +43,8 @@ export class AppsStockAdvisorList extends React.Component {
 		
 	}
 	getPreviewData(e) {
-		console.log(e)
+		this.props.dispatch(updateStockSlug(e.target.id))
+		this.props.dispatch(getStockAnalysis(e.target.id))
 	}
 	handleDelete(slug){
 
@@ -85,6 +87,10 @@ export class AppsStockAdvisorList extends React.Component {
 		    	let _link = "/apps-stock-advisor-analyze/data/" + store.getState().datasets.selectedDataSet;
 		    	return (<Redirect to={_link}/>);
 		    }
+		 if(store.getState().apps.stockAnalysisFlag){
+				let _linkAnalysis = "/apps-stock-advisor/"+store.getState().apps.stockSlug+"/"+this.props.signal.listOfNodes[0].slug;
+		    	return (<Redirect to={_linkAnalysis}/>);
+		 }
 		const stockAnalysisList = this.props.stockList.data;
 		if (stockAnalysisList) {
 			const pages = this.props.stockList.total_number_of_pages;
