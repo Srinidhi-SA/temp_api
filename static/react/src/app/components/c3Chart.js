@@ -33,7 +33,9 @@ export class C3Chart extends React.Component {
 	getChartElement(){
 		if(this.props.classId=='_side'){
 			return $(".chart", this.element);
-		}
+		}else if(this.props.widthPercent){
+      return $(".chart"+this.props.classId, this.element);
+    }
 		return $(".chart"+this.props.classId, this.element);
 	}
 
@@ -49,7 +51,9 @@ export class C3Chart extends React.Component {
 
 		if(this.props.classId =='_side'){
 			this.classId = "chart";
-		}
+		}else if(this.props.widthPercent){
+      this.classId = "chart"+this.props.classId ;
+    }
 
 	}
 	componentDidMount() {
@@ -97,7 +101,7 @@ export class C3Chart extends React.Component {
 			}
 
 		}
-		
+
 
 
 		if(this.props.y2format){
@@ -143,7 +147,7 @@ export class C3Chart extends React.Component {
 		}
 
 		data['bindto'] = this.getChartElement().get(0); // binding chart to html element
-		//console.log(data);
+		console.log(data);
 
 		let chart = c3.generate(data);
 		chart.destroy();
@@ -160,6 +164,10 @@ export class C3Chart extends React.Component {
 			if(that.props.classId != '_side'){
 				$('.chart-data-icon').css('visibility','visible');
 			}
+
+      if(!that.props.widthPercent){
+        $('.chart-data-icon').css('visibility','visible');
+      }
 		}).mouseleave(function(){
 			$('.chart-data-icon').css('visibility','hidden');
 		});
@@ -195,11 +203,12 @@ export class C3Chart extends React.Component {
 	 render() {
 	  var that = this;
 	  console.log(this.props);
-	  if(this.props.classId !='_side'){
+	  if(this.props.classId !='_side' && !this.props.widthPercent){
 		this.classId = "chart"+this.props.classId + " ct col-md-7 col-md-offset-2  xs-mb-20";
 		this.modalCls = "modal fade chart-modal"+this.props.classId;
 		this.tableCls = "table-responsive table-area table"+this.props.classId;
 		}
+
 
 	  $(function(){
 
@@ -211,18 +220,18 @@ export class C3Chart extends React.Component {
 		 }
            //alert(API + that.props.tabledownload);
 		// $("#cddownload").attr("href", API + that.props.tabledownload);
-		
+
 	  });
 
 		if(that.props.tabledownload){
-				
+
 				that.tableDownload = API + that.props.tabledownload;
 
 			}
      //var classId = "chart"+this.props.classId + " ct col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 xs-mb-20";
 
       return(
-<div className="chart-area">
+<div className="chart-area" >
 
 {/*<div className="row">
   	<div className="chart-data-icon col-md-7 col-md-offset-2  xs-mb-20">
