@@ -14576,7 +14576,10 @@ a.disabled { color:#ccc !important; }
 .apps_list .tab-content, #controlled-tab-example  .tab-content{ padding:0; }
 .sel-dataset.check {     background-color: #03998c;  border-color: #03998c; color: #FFFFFF;}
 .d-mashup-1 .form-group .col-md-3 { margin: 0; padding: 5px;}
-.d-mashup-1 .form-group label.sel-dataset{ overflow:hidden; }
+.d-mashup-1 .form-group label.sel-dataset { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sel_dset label.btn.btn-default { display: inline-block; margin-bottom: 10px; }
+.sel_dset  .btn+.btn{ margin-left: inherit; }
+.sel_dset .col-md-10 { padding-left: 0; }
 /**************** Css realated to developers, keep the source down ***/
 
 
