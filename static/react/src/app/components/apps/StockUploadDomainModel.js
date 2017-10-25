@@ -14,7 +14,7 @@ import {updateUploadStockPopup,uploadStockFiles,triggerStockAnalysis} from "../.
 	return {login_response: store.login.login_response, 
 		stockUploadDomainModal:store.apps.stockUploadDomainModal,
 		stockUploadDomainFiles:store.apps.stockUploadDomainFiles,
-		stockSlug:store.apps.stockSlug,};
+		stockSlug:store.apps.stockSlug};
 })
 
 export class StockUploadDomainModel extends React.Component {
@@ -23,7 +23,10 @@ export class StockUploadDomainModel extends React.Component {
 		this.onDrop = this.onDrop.bind(this);
 	}
   
-	triggerStockAnalysis(){
+    updateUploadStockPopup(flag){
+    	this.props.dispatch(updateUploadStockPopup(flag))
+    }
+    triggerStockAnalysis(){
     	this.props.dispatch(triggerStockAnalysis(store.getState().apps.stockSlug))
     }
     onDrop(files) {
@@ -66,7 +69,7 @@ export class StockUploadDomainModel extends React.Component {
 					</Modal.Body>
 					<Modal.Footer>
 					<Button onClick={this.updateUploadStockPopup.bind(this,false)}>Close</Button>
-				    <Button bsStyle="primary" onClick={this.triggerStockAnalysis.bind(this,false)}>Analyse</Button>
+				    <Button bsStyle="primary" onClick={this.triggerStockAnalysis.bind(this)}>Analyse</Button>
 					</Modal.Footer>
 					</Modal>
 					</div>
