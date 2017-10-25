@@ -4508,3 +4508,6 @@ def return_json_data(stockDataType, slug):
 
 
 
+@csrf_exempt
+def get_concepts_to_show_in_ui(request):
+    return JsonResponse(settings.CONCEPTS)

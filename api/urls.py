@@ -6,7 +6,7 @@ from rest_framework import routers
 
 from api import views
 from datasets.views import DatasetView
-from views import ScoreView, StockDatasetView
+from views import ScoreView, StockDatasetView, get_concepts_to_show_in_ui
 from views import SignalView, get_datasource_config_list
 from views import TrainerView
 from views import RoboView
@@ -71,6 +71,8 @@ urlpatterns = [
     url(r'^upload_photo',upload_photo , name="upload_photo"),
     url(r'^get_profile_image/(?P<slug>[^/.]+)/',get_profile_image , name="get_profile_image"),
     url(r'^stockdatasetfiles/(?P<slug>[^/.]+)/',views.get_stockdatasetfiles , name="get_stockdatasetfiles"),
+    url(r'^get_profile_image/(?P<slug>[^/.]+)/', get_profile_image, name="get_profile_image"),
+    url(r'^get_concepts/', get_concepts_to_show_in_ui, name="get_concepts"),
 ]
 
 

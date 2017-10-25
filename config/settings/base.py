@@ -710,3 +710,26 @@ TRANSFORMATION_SETTINGS_CONSTANT = {
         ]
 
 }
+
+
+CONCEPTS = {'corporate': ['leadership change', 'public relations'],
+ 'expansion - geography/segment': ['acquisition',
+  'resources / staffing ',
+  'operations & logistics',
+  'new geography',
+  'strategic partnerships',
+  'new segment'],
+ 'financial & market performance': ['investment',
+  'financial performance',
+  'stock performance',
+  'revenue growth'],
+ 'innovation & product launch': ['tech alliance',
+  'partnerships',
+  'new feature',
+  'new product',
+  'innovation'],
+ 'legal': ['corporate ethics', 'lawsuit', 'compliance'],
+ 'market potential & growth': ['market potential',
+  'market share',
+  'risks & inhibitors',
+  'product performance']}
