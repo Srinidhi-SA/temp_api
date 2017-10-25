@@ -4939,21 +4939,21 @@ def change_name_and_slug_in_individual(name):
                 chart = change_data_in_chart(
                     data=details_data[cardD],
                     chart=horizontal_bar_chart,
-                    x="Stock",
+                    x="Source",
                     axes={"No. of Articles": "y"}
                 )
             if cardD == "articles_and_sentiments_by_concepts":
                 chart = change_data_in_chart(
                     data=details_data[cardD],
                     chart=horizontal_bar_chart,
-                    x="Stock",
+                    x="Concept",
                     axes={"No. of Articles": "y"}
                 )
             if cardD == 'stock_performance_vs_sentiment_score':
                 chart = change_data_in_chart(
                     data=details_data[cardD],
                     chart=line_chart,
-                    x="DATE",
+                    x="Date",
                     axes={}
                 )
             if cardD == 'statistical_significance_of_concepts':
@@ -5068,19 +5068,20 @@ node1 = {
                     chart=horizontal_bar_chart,
                     x="Stock",
                     axes={"No. of Articles": "y"},
-                    widthPercent=33
+                    widthPercent=50
+                ),
+
+                change_data_in_pie_chart(
+                    data=number_of_articles_by_concept,
+                    chart=pie_chart,
+                    widthPercent=50
                 ),
                 change_data_in_chart(
                     data=article_by_source,
                     chart=horizontal_bar_chart,
                     x="Source",
                     axes={"No. of Articles": "y"},
-                    widthPercent=33
-                ),
-                change_data_in_pie_chart(
-                    data=number_of_articles_by_concept,
-                    chart=pie_chart,
-                    widthPercent=33
+                    # widthPercent=33
                 ),
                 change_data_in_chart(
                     data=stock_performace_card1,
