@@ -3665,7 +3665,9 @@ horizontal_bar_chart = {
     "data":{
     "chart_c3": {
         "bar": {
-            "width": 40
+            "width": {
+            "ratio": 0.5
+        }
         },
         "point": None,
         "color": {
@@ -3822,9 +3824,7 @@ line_chart = {
                     "show": True
                 }
             },
-            "subchart": {
-                "show": True
-            },
+            "subchart": None,
             "data": {
                 "x": "date",
                 "axes": {
@@ -4823,6 +4823,11 @@ table2 = {
 				}
 }
 
+def change_html_data(content=''):
+    return {
+        "dataType": "html",
+        "data": content
+    }
 
 individual_company = {
     "listOfNodes": [
@@ -4841,31 +4846,31 @@ individual_company = {
                 'top_entities', # word_cloud
             ]
         },
-        {
-            "cardType": "normal",
-            "name": "node2-card2",
-            "slug": "node2-card2",
-            "cardData": [
-                # 'top_positive_and_negative_statement', # table2,
-                # 'articles_with_highest_and_lowest_sentiments_score', #table2
-            ]
-        },
-        {
-            "cardType": "normal",
-            "name": "node2-card3",
-            "slug": "node2-card3",
-            "cardData": [
-                # "segment_by_concept_and_keyword", # heat_map,
-                # 'key_parameter_that_impact_stock_prices', # bar_chart
-            ]
-        }
+        # {
+        #     "cardType": "normal",
+        #     "name": "node2-card2",
+        #     "slug": "node2-card2",
+        #     "cardData": [
+        #         # 'html_random'# 'top_positive_and_negative_statement', # table2,
+        #         # 'articles_with_highest_and_lowest_sentiments_score', #table2
+        #     ]
+        # },
+        # {
+        #     "cardType": "normal",
+        #     "name": "node2-card3",
+        #     "slug": "node2-card3",
+        #     "cardData": [
+        #         # 'html_random' # "segment_by_concept_and_keyword", # heat_map,
+        #         # 'key_parameter_that_impact_stock_prices', # bar_chart
+        #     ]
+        # }
     ],
     "name": "",
     "slug": ""
 }
 
 
-def change_data_in_chart(data, chart, x=None, axes=None, widthPercent=None):
+def change_data_in_chart(data, chart, x=None, axes=None, widthPercent=None, title=None):
     import copy
     chart = copy.deepcopy(chart)
     chart["data"]["chart_c3"]["data"]["columns"] = data
@@ -4873,6 +4878,14 @@ def change_data_in_chart(data, chart, x=None, axes=None, widthPercent=None):
     chart["data"]["chart_c3"]["data"]["axes"] = axes
     chart["data"]["xdata"] = data[0][1:]
     chart["data"]["table_c3"] = data
+    if title:
+        chart["data"]["chart_c3"]["title"] = {"text" : title}
+
+    if x:
+        chart["data"]["chart_c3"]["axis"]["x"]["label"]["text"] = x
+
+    if axes:
+        chart["data"]["chart_c3"]["axis"]["y"]["label"]["text"] = axes.keys()[0]
 
     if widthPercent is not None:
         chart["widthPercent"] = widthPercent
@@ -4880,11 +4893,14 @@ def change_data_in_chart(data, chart, x=None, axes=None, widthPercent=None):
     return chart
 
 
-def change_data_in_pie_chart(data, chart, widthPercent=None):
+def change_data_in_pie_chart(data, chart, widthPercent=None, title=None):
     import copy
     chart = copy.deepcopy(chart)
     chart["data"]["chart_c3"]["data"]["columns"] = data
     chart["data"]["table_c3"] = data
+
+    if title:
+        chart["data"]["chart_c3"]["title"] = {"text" : title}
 
     if widthPercent is not None:
         chart["widthPercent"] = widthPercent
@@ -4927,6 +4943,7 @@ def change_name_and_slug_in_individual(name):
 
         cardData = cards['cardData']
         temp_card_data = []
+
         details_data = stock_name_match_with_data[name]
         for cardD in cardData:
             chart = None
@@ -4940,47 +4957,56 @@ def change_name_and_slug_in_individual(name):
                     data=details_data[cardD],
                     chart=horizontal_bar_chart,
                     x="Source",
-                    axes={"No. of Articles": "y"}
+                    axes={"No. of Articles": "y"},
+                    widthPercent=100
                 )
             if cardD == "articles_and_sentiments_by_concepts":
                 chart = change_data_in_chart(
                     data=details_data[cardD],
                     chart=horizontal_bar_chart,
                     x="Concept",
-                    axes={"No. of Articles": "y"}
+                    axes={"No. of Articles": "y"},
+                    widthPercent=100
                 )
             if cardD == 'stock_performance_vs_sentiment_score':
                 chart = change_data_in_chart(
                     data=details_data[cardD],
                     chart=line_chart,
                     x="Date",
-                    axes={}
+                    axes={},
+                    widthPercent=100
                 )
             if cardD == 'statistical_significance_of_concepts':
                 chart = change_data_in_chart(
                     data=details_data[cardD],
                     chart=bar_chart,
                     x="Score",
-                    axes={"Avg. Sentiment Score": "y"}
+                    axes={"Avg. Sentiment Score": "y"},
+                    widthPercent=100
                 )
             if cardD == 'top_keywords':
                 chart = change_data_in_wordcloud(
                     data=details_data[cardD],
                     wordcloud=word_cloud
                 )
-            if cardD == "stock_performance_vs_sentiment_score":
-                chart = change_data_inheatmap(details_data[cardD])
+            # if cardD == "stock_performance_vs_sentiment_score":
+            #     chart = change_data_inheatmap(details_data[cardD])
             if cardD == 'key_parameter_that_impact_stock_prices':
                 chart = change_data_in_chart(
                     data=details_data[cardD],
                     chart=bar_chart,
                     x="Score",
-                    axes={"Avg. Sentiment Score": "y"}
+                    axes={"Avg. Sentiment Score": "y"},
+                    widthPercent=100
                 )
             if cardD == "segment_by_concept_and_keyword":
                 chart = change_data_inheatmap(details_data[cardD])
             if cardD in ['top_positive_and_negative_statement']:
                 chart = change_data_in_table(details_data[cardD])
+
+            if cardD == 'html_random':
+                chart = change_html_data('<p><h2>{}</h2>{}</p>'.format("Test", "Test content"))
+                return chart
 
             if chart is not None:
                 temp_card_data.append(chart)
@@ -5000,8 +5026,7 @@ def smaller_name_and_slug_in_individual(name):
             "name": "node2-caasdasd",
             "slug": "node2-card2asda",
             "cardData": [
-                table2,
-                table2
+                change_html_data('<p><h2>{}</h2>{}</p>'.format("Test", "Test content"))
             ]
         }
 
@@ -5012,7 +5037,7 @@ node1_databox_data = [{
         "name": "Total Articles",
         "value": "583"
       }, {
-        "name": "Total Source",
+        "name": "Total Sources",
         "value": "68"
       }, {
         "name": "Average Sentiment Score",
@@ -5022,13 +5047,10 @@ node1_databox_data = [{
         "value": "4.5 %"
       }, {
         "name": "Overall Stock Value Change",
-        "value": "$137.1B"
+        "value": "$137.1 Bn"
       }, {
         "name": "Max Change in Price",
         "value": "12.5% (MSFT)"
-      }, {
-        "name": "Max Change in Sentiment",
-        "value": "-0.80 (AAPL)"
       }]
 
 
@@ -5039,11 +5061,15 @@ number_of_articles_by_stock = [
 
 
 
-article_by_source = [
+article_by_source1 = [
     ['Source', '24/7 Wall St.','9to5Mac','Amigobulls','Argus Journal','Benzinga','Bloomberg','Bloomberg BNA','Business Wire (press release)','BZ Weekly','Crains Detroit Business','DirectorsTalk Interviews','Dispatch Tribunal','Economic News','Engadget','Equities.com','Forbes','Fox News','GuruFocus.com','GuruFocus.com (blog)','Inc.com','insideBIGDATA','Investopedia (blog)','Investorplace.com','Investorplace.com (blog)','LearnBonds','Library For Smart Investors','Live Trading News','Los Angeles Times','Madison.com','Market Exclusive','MarketWatch','Motley Fool','Nasdaq','NBC Southern California','New York Law Journal (registration)','NY Stock News','Post Analyst','PR Newswire (press release)','Proactive Investors UK','Reuters','Reuters Key Development','Reuters.com','San Antonio Business Journal','Seeking Alpha','Silicon Valley Business Journal','Simply Wall St','Stock Press Daily','Stock Talker','StockNews.com (blog)','StockNewsGazette','StockNewsJournal','Street Observer (press release)','The Ledger Gazette','The Recorder','The Wall Street Transcript','TheStreet.com','Times of India','TopChronicle','TRA','Triangle Business Journal','TrueBlueTribune','USA Commerce Daily','ValueWalk','Voice Of Analysts','Wall Street Journal','Yahoo Finance','Yahoo News','Zacks.com'],
     ['No. of Articles', 1,1,6,1,5,10,1,1,1,1,2,2,9,1,12,1,1,2,1,1,1,1,53,10,1,1,3,2,2,2,4,43,11,1,1,8,3,2,3,9,217,1,1,63,2,1,1,1,17,2,16,2,6,1,1,5,1,1,1,1,1,1,8,1,3,3,2,2]
 ]
 
+article_by_source = [
+['Source', 'Reuters Key Development', 'Seeking Alpha', 'Investorplace.com', 'Motley Fool', 'StockNews.com (blog)', 'StockNewsJournal', 'Equities.com', 'Nasdaq', 'Bloomberg', 'Investorplace.com (blog)', 'Economic News', 'Reuters', 'NY Stock News', 'ValueWalk', 'Amigobulls', 'The Ledger Gazette', 'Benzinga', 'TheStreet.com', 'MarketWatch', 'Live Trading News', 'Post Analyst', 'Proactive Investors UK', 'Wall Street Journal', 'Yahoo Finance', 'DirectorsTalk Interviews', 'Dispatch Tribunal', 'GuruFocus.com', 'Los Angeles Times', 'Madison.com', 'Market Exclusive'],
+['No. of Articles', 217, 63, 53, 43, 17, 16, 12, 11, 10, 10, 9, 9, 8, 8, 6, 6, 5, 5, 4, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2]
+]
 
 from sample_stock_data import stock_performace_card1, \
     stock_by_sentiment_score, \
@@ -5068,32 +5094,39 @@ node1 = {
                     chart=horizontal_bar_chart,
                     x="Stock",
                     axes={"No. of Articles": "y"},
-                    widthPercent=50
+                    widthPercent=50,
+                    title="Articles by Stock"
                 ),
 
                 change_data_in_pie_chart(
                     data=number_of_articles_by_concept,
                     chart=pie_chart,
-                    widthPercent=50
+                    widthPercent=50,
+                    title="Articles by Concept"
                 ),
                 change_data_in_chart(
                     data=article_by_source,
                     chart=horizontal_bar_chart,
                     x="Source",
                     axes={"No. of Articles": "y"},
-                    # widthPercent=33
+                    widthPercent=100,
+                    title="Top Sources"
                 ),
                 change_data_in_chart(
                     data=stock_performace_card1,
                     chart=line_chart,
                     x="DATE",
-                    axes={}
+                    axes={},
+                    widthPercent=100,
+                    title="Stock Trend"
                 ),
                 change_data_in_chart(
                     data=stock_by_sentiment_score,
                     chart=bar_chart,
-                    x="Score",
-                    axes={"Avg. Sentiment Score": "y"}
+                    x="Stock",
+                    axes={"Avg. Sentiment Score": "y"},
+                    widthPercent=100,
+                    title="Sentiment Score by Stocks"
                 ),
                 change_data_in_wordcloud(card1_total_entities, word_cloud)
             ]
@@ -5112,7 +5145,7 @@ node2 = {
     "listOfCards": [
         smaller_name_and_slug_in_individual(name='unknown')
     ],
-    "name": "node2-overview",
+    "name": "Single Stock Analysis",
     "slug": "node2-overview"
 }
 
@@ -5121,7 +5154,7 @@ node2 = {
 sample_dummy_data_for_stock = {
     "listOfNodes": [
         node1,
-        node2
+        # node2
     ],
     "listOfCards": [],
     "name": "Overview card",
