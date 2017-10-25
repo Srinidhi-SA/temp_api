@@ -4495,7 +4495,10 @@ def return_json_data(stockDataType, stockName, slug):
         "concepts": "old_concepts.json"
     }
 
-    path = base_path + matching[stockDataType]
+    if stockDataType in  ["bluemix", "historical"]:
+        path = base_path + matching[stockDataType]
+    else:
+        path = base_path + "/scripts/data/" + matching[stockDataType]
     temp_path = base_path + matching[stockDataType]
 
     from django.http import HttpResponse
