@@ -1437,6 +1437,9 @@ import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,C
 		setTimeout(function(){ dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7));dispatch(updateAppsLoaderText("Fetching metadata information for news portals....")) }, 10000);
 		setTimeout(function(){ dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7));dispatch(updateAppsLoaderText("Extracting articles from news portals.....")) }, 30000);
 		setTimeout(function(){ dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7));dispatch(updateAppsLoaderText("Creating dataset....")) }, 40000);
+		setTimeout(function(){ dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7)); }, 45000);
+		setTimeout(function(){ dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7)); }, 50000);
+		setTimeout(function(){ dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7)); }, 55000);
 		appsInterval = setInterval(function() {
 			dispatch(getStockDataSetPreview(slug,appsInterval))
 			if(store.getState().apps.appsLoaderPerValue+10 < LOADERMAXPERVALUE){
