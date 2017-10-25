@@ -66,7 +66,7 @@ const DATA_TYPE = "data_type";
 const REMOVE = "remove";
 const CURRENTVALUE = "current value";
 const NEWVALUE = "new value"
-	
+
 
 
 export function generateHeaders(table) {
@@ -304,3 +304,11 @@ export{
 	APPID5,
 	APPNAME5,
 	}
+export function capitalizeArray(array){
+  let a =[]
+  let i=0
+  for (var val in array){
+    a[i]= array[val].charAt(0).toUpperCase() + array[val].slice(1);i++;
+  }
+  return a
+}

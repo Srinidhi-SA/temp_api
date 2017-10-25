@@ -1243,7 +1243,7 @@ import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,C
 
 	export function playAudioFile(){
 		if(!isEmpty(store.getState().apps.audioFileUpload)){
-			var audioEle =  document.getElementById("myAudio"); 
+			var audioEle =  document.getElementById("myAudio");
 			audioEle.src = store.getState().apps.audioFileUpload.preview;
 			$("#audioPause").addClass("show");
 			$("#audioPause").removeClass("hide");
@@ -1258,7 +1258,7 @@ import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,C
 
 	export function pauseAudioFile(){
 		if(!isEmpty(store.getState().apps.audioFileUpload)){
-			var audioEle =  document.getElementById("myAudio"); 
+			var audioEle =  document.getElementById("myAudio");
 			audioEle.src = store.getState().apps.audioFileUpload.preview;
 			$("#audioPlay").addClass("show");
 			$("#audioPlay").removeClass("hide");
@@ -1317,7 +1317,7 @@ import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,C
 	export function addMoreStockSymbols(){
 		return (dispatch) => {
 			var stockSymbolsArray = store.getState().apps.appsStockSymbolsInputs.slice();
-			var max = stockSymbolsArray.reduce(function(prev, current) { 
+			var max = stockSymbolsArray.reduce(function(prev, current) {
 				return (prev.id > current.id) ? prev : current
 
 			});
@@ -1415,7 +1415,7 @@ import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,C
 						dispatch(crawlError(json))
 					}
 				});
-			}	
+			}
 		}else{
 			bootbox.alert("Please enter text/symbols to analyze stocks")
 		}
@@ -1443,7 +1443,7 @@ import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,C
                   "url2":urlForNews,
                   "name":analysisName,
                   "stock_symbols":store.getState().apps.appsStockSymbolsInputs
-                  
+
 			}
 			return fetch(API + '/api/stockdataset/', {
 				method: 'post',
@@ -1452,7 +1452,7 @@ import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,C
 			}).then(response => Promise.all([response, response.json()]));
 
 	}
-	
+
 	export function hideDataPreviewRightPanels(){
 		$("#tab_visualizations").hide();
 		$("#sub_settings").hide();
@@ -1476,7 +1476,7 @@ import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,C
 			flag
 		}
 	}
-	
+
 	export function triggerStockAnalysis(slug){
 		return (dispatch) => {
 		dispatch(updateUploadStockPopup(false));
@@ -1523,4 +1523,39 @@ import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,C
 	}
 
 
-	
+
+
+	export function getConceptsList() {
+		return (dispatch) => {
+			return fetchConceptList().then(([response, json]) =>{
+				if(response.status === 200){
+					console.log(json)
+					dispatch(fetchConceptListSuccess(json))
+				}
+				else{
+					dispatch(fetchConceptListError(json))
+				}
+			})
+		}
+	}
+function fetchConceptList(){
+	return fetch(API+'/api/get_concepts/',{
+		method: 'get',
+		headers: getHeader(sessionStorage.userToken)
+	}).then( response => Promise.all([response, response.json()]));
+}
+
+	function fetchConceptListSuccess(concepts) {
+		return{
+			type:"CONCEPTSLIST",
+			concepts
+		}
+
+	}
+
+	function fetchConceptListError(json) {
+		// return {
+		// 	type: "MODEL_LIST_ERROR",
+		// 	json
+		// }
+	}
