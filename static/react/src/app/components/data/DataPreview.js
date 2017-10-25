@@ -161,10 +161,6 @@ export class DataPreview extends React.Component {
 		showHideSideChart(this.firstTimeColTypeForChart,this.firstTimeSideChart);
 
 	}
-
-  componentDidUpdate(){
-	updateTranformColumns();
-  }
 	setSideElements(e){
 		
 		//renderFlag=true;
@@ -187,17 +183,20 @@ export class DataPreview extends React.Component {
 				ReactDOM.render(<Provider store={store}><C3Chart classId={"_side"} data={sideChartUpdate} yformat={yformat} xdata={xdata} sideChart={true}/></Provider>, document.getElementById('side-chart'));
                 }
 				const sideTableUpdate = item.columnStats;
-				showHideSideTable(sideTableUpdate); // hide side table on blank or all display false
-				const sideTableUpdatedTemplate=sideTableUpdate.map((tableItem,tableIndex)=>{
-					if(tableItem.display){
-						return(  <tr key={tableIndex}>
-						<td className="item">{tableItem.displayName}</td>
-						<td>&nbsp; : &nbsp;</td>
-						<td>{tableItem.value}</td>
-						</tr>
-						);
-					}
-				});
+				let sideTableUpdatedTemplate = "";
+				if(sideTableUpdate != null){
+					showHideSideTable(sideTableUpdate); // hide side table on blank or all display false
+					sideTableUpdatedTemplate=sideTableUpdate.map((tableItem,tableIndex)=>{
+						if(tableItem.display){
+							return(  <tr key={tableIndex}>
+							<td className="item">{tableItem.displayName}</td>
+							<td>&nbsp; : &nbsp;</td>
+							<td>{tableItem.value}</td>
+							</tr>
+							);
+						}
+					});	
+				}
 				$("#side-table").empty();
 				ReactDOM.render( <tbody className="no-border-x no-border-y">{sideTableUpdatedTemplate}</tbody>, document.getElementById('side-table'));
 

@@ -11,6 +11,7 @@ import {hideDataPreviewRightPanels,updateUploadStockPopup,getConceptsList} from 
 import {STATIC_URL} from "../../helpers/env.js"
 import {isEmpty} from "../../helpers/helper";
 import {getStockDataSetPreview} from "../../actions/dataActions";
+import {AppsLoader} from "../common/AppsLoader";
 
 @connect((store) => {
 	return {login_response: store.login.login_response,
@@ -72,8 +73,7 @@ export class AppsStockDataPreview extends React.Component {
 				</div>
 				</div>
 				<StockUploadDomainModel/>
-
-
+				 <AppsLoader/>
 	        </div>
 	        );
 		}else{
