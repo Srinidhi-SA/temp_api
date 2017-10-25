@@ -187,7 +187,7 @@ export class AppsPanel extends React.Component {
 					<Link onClick={this.gotoAppsList.bind(this,APPID5,APPNAME5)} className="app-link" to='/apps-stock-advisor'>
 
 					<div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
-						<img src={STATIC_URL + "assets/images/icon_speak.png"} className="img-responsive"/>
+						<img src={STATIC_URL + "assets/images/apps_icon1.png"} className="img-responsive"/>
 					</div>
 					<div className="col-md-8 col-sm-9 col-xs-7">
 						<h4>STOCK  ADVISOR</h4>

@@ -13,6 +13,7 @@ import {PredictionDropDown} from "../common/predictionDropdown";
 import { Scrollbars } from 'react-custom-scrollbars';
 //import Tree from 'react-tree-graph';
 import {GaugeMeter} from "../common/GaugeMeter";
+import {DataBox} from "../common/DataBox";
 import $ from "jquery";
 
 
@@ -95,6 +96,9 @@ export class Card extends React.Component {
 		 case "gauge":
 		 return (<GaugeMeter key = {i} jsonData={story.data} type={story.dataType}/>);
 		 break;
+		 case "dataBox":
+			 return (<DataBox key = {i} jsonData={story.data} type={story.dataType}/>);
+			 break;
       }
 
     });

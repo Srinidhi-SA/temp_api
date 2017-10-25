@@ -1423,10 +1423,10 @@ import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,C
 
 	export function crawlSuccess(json, dispatch){
 		var slug = json.slug;
+		dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7));
 		appsInterval = setInterval(function() {
-			dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7));
 			dispatch(getStockDataSetPreview(slug,appsInterval))
-			if(store.getState().apps.appsLoaderPerValue < LOADERMAXPERVALUE){
+			if(store.getState().apps.appsLoaderPerValue+10 < LOADERMAXPERVALUE){
 				dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7));
 			}
 
@@ -1476,18 +1476,33 @@ import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,C
 			flag
 		}
 	}
-	
+	export function uploadStockFile(slug){
+		return (dispatch) => {
+			dispatch(updateUploadStockPopup(false));
+			dispatch(openAppsLoader(DULOADERPERVALUE+7,"Please wait while mAdvisor is analysing the data... "));
+			  return triggerStockUpload(sessionStorage.userToken,slug).then(([response, json]) => {
+				  if (response.status === 200) {
+					  dispatch(triggerStockAnalysis(slug));
+				  }else{
+					  dispatch(closeAppsLoaderValue()); 
+				  }
+			  });
+		}
+	}
+	function triggerStockUpload(token,slug) {
+		return fetch(API+"/api/stockdataset/"+slug+"/create_stats/",{
+			method: 'put',
+			headers: getHeader(token)
+		}).then( response => Promise.all([response, response.json()]));
+	}
 	export function triggerStockAnalysis(slug){
 		return (dispatch) => {
-		dispatch(updateUploadStockPopup(false));
-		dispatch(openAppsLoader(DULOADERPERVALUE+7,"Please wait while mAdvisor is analysing the data... "));
+		dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7));
 		appsInterval = setInterval(function() {
-			dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7));
 			dispatch(getStockAnalysis(slug));
-			if(store.getState().apps.appsLoaderPerValue < LOADERMAXPERVALUE){
+			if(store.getState().apps.appsLoaderPerValue+10 < LOADERMAXPERVALUE){
 				dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7));
 			}
-
 		}, DEFAULTINTERVAL)
 		}
 	}
@@ -1516,11 +1531,17 @@ import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,C
 	}
 
 	function fetchStockAnalysisAPI(token,slug) {
-		return fetch(API+'/api/stockdataset/'+slug+'/',{
+		return fetch(API+"/api/stockdataset/"+slug+"/read_stats/",{
 			method: 'get',
 			headers: getHeader(token)
 		}).then( response => Promise.all([response, response.json()]));
 	}
 
+	export function updateStockSlug(slug){
+		return {
+			type: "STOCK_CRAWL_SUCCESS",
+			slug,
+		}
+	}
 
 	

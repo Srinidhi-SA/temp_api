@@ -7,7 +7,7 @@ import Dropzone from 'react-dropzone'
 import store from "../../store";
 import $ from "jquery";
 
-import {updateUploadStockPopup,uploadStockFiles,triggerStockAnalysis} from "../../actions/appActions";
+import {updateUploadStockPopup,uploadStockFiles,triggerStockAnalysis,uploadStockFile} from "../../actions/appActions";
 
 
 @connect((store) => {
@@ -27,7 +27,7 @@ export class StockUploadDomainModel extends React.Component {
     	this.props.dispatch(updateUploadStockPopup(flag))
     }
     triggerStockAnalysis(){
-    	this.props.dispatch(triggerStockAnalysis(store.getState().apps.stockSlug))
+    	this.props.dispatch(uploadStockFile(store.getState().apps.stockSlug))
     }
     onDrop(files) {
 	 this.props.dispatch(uploadStockFiles(files))
