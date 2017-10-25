@@ -465,8 +465,9 @@ class StockDatasetView(viewsets.ModelViewSet):
 
     @detail_route(methods=['put'])
     def create_stats(self, request, slug=None):
-
         data = request.data
+
+        fake = request.GET.get('fake', None)
 
         new_data = {}
         if 'input_file' in data:
@@ -486,7 +487,10 @@ class StockDatasetView(viewsets.ModelViewSet):
         if serializer.is_valid():
             stock_instance = serializer.save()
             # stock_instance.stats(file=new_data['input_file'])
-            stock_instance.call_mlscripts()
+            if fake is None:
+                stock_instance.fake_call_mlscripts()
+            else:
+                stock_instance.call_mlscripts()
             return Response(serializer.data)
 
         serializer = StockDatasetSerializer(instance=instance)
@@ -4501,4 +4505,6 @@ def return_json_data(stockDataType, slug):
     response['Content-Disposition'] = 'attachment; filename="{0}.json"'.format(path)
 
     return response
+
+
 

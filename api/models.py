@@ -1241,6 +1241,13 @@ class StockDataset(models.Model):
         self.status = 'INPROGRESS'
         self.save()
 
+    def fake_call_mlscripts(self):
+        self.data = json.dumps(sample_stockdataset_data)
+        self.analysis_done = True
+        self.status = 'SUCCESS'
+        self.save()
+
+
     def generate_config(self, *args, **kwargs):
         inputFile = ""
         datasource_details = ""
@@ -1421,3 +1428,452 @@ class SaveAnyData(models.Model):
         self.save()
         return True
 
+
+
+sample_stockdataset_data = {
+        "listOfNodes": [],
+        "listOfCards": [
+            {
+                "cardType": "normal",
+                "cardData": [
+                    {
+                        "dataType": "html",
+                        "data": "<p><h2></h2><p>The overall sentiment in the speech seems to be <strong>positive 0.73</strong>.\n            The most predominant emotion is <strong>joy</strong> at around <strong>27%</strong>.\n            Another important emotion identified is  <strong>sadness</strong> at <strong>14%</strong>.\n           mAdvisor identified <strong>7 keywords</strong> in the speech,\n            <strong>bank account number (0.94)</strong> and <strong>credit card (0.74)</strong>\n            having the highest relevance.\n           The major categories are <strong>credit cards</strong> and <strong>bank account</strong>.</p>\n             </p>"
+                    }
+                ],
+                "slug": "-cghqhnyp09",
+                "name": ""
+            },
+            {
+                "cardType": "normal",
+                "cardData": [
+                    {
+                        "dataType": "html",
+                        "data": "<p><h2>Sentiment</h2></p>"
+                    },
+                    {
+                        "dataType": "gauge",
+                        "data": {
+                            "max": 1,
+                            "segments": 2,
+                            "value": 0.73,
+                            "min": -1
+                        }
+                    }
+                ],
+                "slug": "sentiment-emk5tp1f12",
+                "name": "Sentiment"
+            },
+            {
+                "cardType": "normal",
+                "cardData": [
+                    {
+                        "dataType": "html",
+                        "data": "<p><h2>Emotions</h2><div className=\"row\">\n         <div className=\"col-md-2 text-center\">\n                 <h2>5%<br><small><b>ANGER</b></small></h2>\n                 <img src=\"/static/assets/images/emotions/anger.png\" />\n         </div>\n         \n         <div className=\"col-md-2 text-center\">\n                 <h2>27%<br><small><b>JOY</b></small></h2>\n                 <img src=\"/static/assets/images/emotions/joy.png\" />\n         </div>\n         \n         <div className=\"col-md-2 text-center\">\n                 <h2>14%<br><small><b>SADNESS</b></small></h2>\n                 <img src=\"/static/assets/images/emotions/sadness.png\" />\n         </div>\n         \n         <div className=\"col-md-2 text-center\">\n                 <h2>5%<br><small><b>FEAR</b></small></h2>\n                 <img src=\"/static/assets/images/emotions/fear.png\" />\n         </div>\n         \n         <div className=\"col-md-2 text-center\">\n                 <h2>0%<br><small><b>DISGUST</b></small></h2>\n                 <img src=\"/static/assets/images/emotions/disgust.png\" />\n         </div>\n         </div></p>"
+                    }
+                ],
+                "slug": "emotions-ltdkiv00vd",
+                "name": "Emotions"
+            },
+            {
+                "cardType": "normal",
+                "cardData": [
+                    {
+                        "dataType": "html",
+                        "data": "<p><h2>Keywords</h2></p>"
+                    },
+                    {
+                        "dataType": "c3Chart",
+                        "data": {
+                            "chart_c3": {
+                                "bar": {
+                                    "width": 40
+                                },
+                                "point": None,
+                                "color": {
+                                    "pattern": [
+                                        "#0fc4b5",
+                                        "#005662",
+                                        "#148071",
+                                        "#6cba86",
+                                        "#bcf3a2"
+                                    ]
+                                },
+                                "tooltip": {
+                                    "show": True,
+                                    "format": {
+                                        "title": ".2s"
+                                    }
+                                },
+                                "padding": {
+                                    "top": 40
+                                },
+                                "grid": {
+                                    "y": {
+                                        "show": True
+                                    },
+                                    "x": {
+                                        "show": True
+                                    }
+                                },
+                                "subchart": None,
+                                "axis": {
+                                    "y": {
+                                        "tick": {
+                                            "count": 7,
+                                            "outer": False,
+                                            "multiline": True,
+                                            "format": ".2s"
+                                        },
+                                        "label": {
+                                            "text": "score",
+                                            "position": "outer-middle"
+                                        }
+                                    },
+                                    "x": {
+                                        "height": 90,
+                                        "tick": {
+                                            "rotate": -45,
+                                            "multiline": False,
+                                            "fit": False,
+                                            "format": ".2s"
+                                        },
+                                        "type": "category",
+                                        "extent": None,
+                                        "label": {
+                                            "text": "keyword",
+                                            "position": "outer-center"
+                                        }
+                                    }
+                                },
+                                "data": {
+                                    "x": "text",
+                                    "axes": {
+                                        "score": "y"
+                                    },
+                                    "type": "bar",
+                                    "columns": [
+                                        [
+                                            "text",
+                                            "bank account number",
+                                            "credit card",
+                                            "New York",
+                                            "America",
+                                            "money",
+                                            "John",
+                                            "numbers"
+                                        ],
+                                        [
+                                            "score",
+                                            0.940398,
+                                            0.742339,
+                                            0.737608,
+                                            0.366456,
+                                            0.365641,
+                                            0.361568,
+                                            0.361102
+                                        ]
+                                    ]
+                                },
+                                "legend": {
+                                    "show": False
+                                },
+                                "size": {
+                                    "height": 340
+                                }
+                            },
+                            "yformat": ".2f",
+                            "table_c3": [
+                                [
+                                    "text",
+                                    "bank account number",
+                                    "credit card",
+                                    "New York",
+                                    "America",
+                                    "money",
+                                    "John",
+                                    "numbers"
+                                ],
+                                [
+                                    "score",
+                                    0.940398,
+                                    0.742339,
+                                    0.737608,
+                                    0.366456,
+                                    0.365641,
+                                    0.361568,
+                                    0.361102
+                                ]
+                            ],
+                            "download_url": "/api/download_data/bkz2oyjih4iczk95",
+                            "xdata": [
+                                "bank account number",
+                                "credit card",
+                                "New York",
+                                "America",
+                                "money",
+                                "John",
+                                "numbers"
+                            ]
+                        }
+                    }
+                ],
+                "slug": "keywords-snuibsux3z",
+                "name": "Keywords"
+            },
+            {
+                "cardType": "normal",
+                "cardData": [
+                    {
+                        "dataType": "html",
+                        "data": "<p><h2>Categories</h2></p>"
+                    },
+                    {
+                        "dataType": "c3Chart",
+                        "data": {
+                            "chart_c3": {
+                                "bar": {
+                                    "width": 40
+                                },
+                                "point": None,
+                                "color": {
+                                    "pattern": [
+                                        "#0fc4b5",
+                                        "#005662",
+                                        "#148071",
+                                        "#6cba86",
+                                        "#bcf3a2"
+                                    ]
+                                },
+                                "tooltip": {
+                                    "show": True,
+                                    "format": {
+                                        "title": ".2s"
+                                    }
+                                },
+                                "padding": {
+                                    "top": 40
+                                },
+                                "grid": {
+                                    "y": {
+                                        "show": True
+                                    },
+                                    "x": {
+                                        "show": True
+                                    }
+                                },
+                                "subchart": None,
+                                "axis": {
+                                    "y": {
+                                        "tick": {
+                                            "count": 7,
+                                            "outer": False,
+                                            "multiline": True,
+                                            "format": ".2s"
+                                        },
+                                        "label": {
+                                            "text": "score",
+                                            "position": "outer-middle"
+                                        }
+                                    },
+                                    "x": {
+                                        "height": 90,
+                                        "tick": {
+                                            "rotate": -45,
+                                            "multiline": False,
+                                            "fit": False,
+                                            "format": ".2s"
+                                        },
+                                        "type": "category",
+                                        "extent": None,
+                                        "label": {
+                                            "text": "category",
+                                            "position": "outer-center"
+                                        }
+                                    }
+                                },
+                                "data": {
+                                    "x": "label",
+                                    "axes": {
+                                        "score": "y"
+                                    },
+                                    "type": "bar",
+                                    "columns": [
+                                        [
+                                            "score",
+                                            0.624982,
+                                            0.509207,
+                                            0.10212
+                                        ],
+                                        [
+                                            "label",
+                                            "credit cards",
+                                            "bank account",
+                                            "business and industrial"
+                                        ]
+                                    ]
+                                },
+                                "legend": {
+                                    "show": False
+                                },
+                                "size": {
+                                    "height": 340
+                                }
+                            },
+                            "yformat": ".2f",
+                            "table_c3": [
+                                [
+                                    "score",
+                                    0.624982,
+                                    0.509207,
+                                    0.10212
+                                ],
+                                [
+                                    "label",
+                                    "credit cards",
+                                    "bank account",
+                                    "business and industrial"
+                                ]
+                            ],
+                            "download_url": "/api/download_data/2zsctfvmpmv7dxqp",
+                            "xdata": [
+                                "credit cards",
+                                "bank account",
+                                "business and industrial"
+                            ]
+                        }
+                    }
+                ],
+                "slug": "categories-wu0xme04lg",
+                "name": "Categories"
+            },
+            {
+                "cardType": "normal",
+                "cardData": [
+                    {
+                        "dataType": "html",
+                        "data": "<p><h2>Entities</h2></p>"
+                    },
+                    {
+                        "dataType": "c3Chart",
+                        "data": {
+                            "chart_c3": {
+                                "bar": {
+                                    "width": 40
+                                },
+                                "point": None,
+                                "color": {
+                                    "pattern": [
+                                        "#0fc4b5",
+                                        "#005662",
+                                        "#148071",
+                                        "#6cba86",
+                                        "#bcf3a2"
+                                    ]
+                                },
+                                "tooltip": {
+                                    "show": True,
+                                    "format": {
+                                        "title": ".2s"
+                                    }
+                                },
+                                "padding": {
+                                    "top": 40
+                                },
+                                "grid": {
+                                    "y": {
+                                        "show": True
+                                    },
+                                    "x": {
+                                        "show": True
+                                    }
+                                },
+                                "subchart": None,
+                                "axis": {
+                                    "y": {
+                                        "tick": {
+                                            "count": 7,
+                                            "outer": False,
+                                            "multiline": True,
+                                            "format": ".2s"
+                                        },
+                                        "label": {
+                                            "text": "relevance",
+                                            "position": "outer-middle"
+                                        }
+                                    },
+                                    "x": {
+                                        "height": 90,
+                                        "tick": {
+                                            "rotate": -45,
+                                            "multiline": False,
+                                            "fit": False,
+                                            "format": ".2s"
+                                        },
+                                        "type": "category",
+                                        "extent": None,
+                                        "label": {
+                                            "text": "entity",
+                                            "position": "outer-center"
+                                        }
+                                    }
+                                },
+                                "data": {
+                                    "x": "type",
+                                    "axes": {
+                                        "relevance": "y"
+                                    },
+                                    "type": "bar",
+                                    "columns": [
+                                        [
+                                            "relevance",
+                                            0.33,
+                                            0.33,
+                                            0.33
+                                        ],
+                                        [
+                                            "type",
+                                            "Location",
+                                            "Person",
+                                            "Company"
+                                        ]
+                                    ]
+                                },
+                                "legend": {
+                                    "show": False
+                                },
+                                "size": {
+                                    "height": 340
+                                }
+                            },
+                            "yformat": ".2f",
+                            "table_c3": [
+                                [
+                                    "relevance",
+                                    0.33,
+                                    0.33,
+                                    0.33
+                                ],
+                                [
+                                    "type",
+                                    "Location",
+                                    "Person",
+                                    "Company"
+                                ]
+                            ],
+                            "download_url": "/api/download_data/ujnqc37mxd5dmpzc",
+                            "xdata": [
+                                "Location",
+                                "Person",
+                                "Company"
+                            ]
+                        }
+                    }
+                ],
+                "slug": "entities-03cfgpu4gd",
+                "name": "Entities"
+            }
+        ],
+        "name": "Overview card",
+        "slug": "fdfdfd_overview"
+    }
