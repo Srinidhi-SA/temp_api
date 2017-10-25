@@ -72,11 +72,12 @@ export class AppsCreateStockAnalysis extends React.Component {
 				<Modal.Header closeButton>
 				<h3 className="modal-title">Input - Stocks and Data </h3>
 				</Modal.Header>
+
+
 				<Modal.Body>
-				<form role="form" className="form-horizontal col-md-12">
-			 
-				<label className="control-label">URL for Stock Prices </label>
-			 
+				<form role="form" className="form-horizontal">
+	             <label>Url for Stock Prices : </label>
+
 	              <input type="text" name="createStock" id="createStockUrl"  required={true} className="form-control input-sm" />
 				 
 			  <div className="xs-pb-20 clearfix"></div>

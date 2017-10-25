@@ -28,6 +28,7 @@
     "react-breadcrumb": "^1.0.0",
     "react-circular-progressbar": "^0.1.5",
     "react-custom-scrollbars": "^4.1.2",
+    "react-d3-cloud": "^0.5.0",
     "react-d3-speedometer": "^0.1.11",
     "react-dom": "^15.6.1",
     "react-dropzone": "^4.0.0",

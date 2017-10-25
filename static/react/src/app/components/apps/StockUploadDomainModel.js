@@ -105,9 +105,9 @@ export class StockUploadDomainModel extends React.Component {
 
       <div id="uploadDomainModel" role="dialog" className="modal fade modal-colored-header">
         <Modal show={store.getState().apps.stockUploadDomainModal} onHide={this.updateUploadStockPopup.bind(this, false)} dialogClassName="modal-colored-header modal-lg uploadData">
-          <Modal.Header closeButton>
-            <h3 className="modal-title">Concepts for Stock Performance Analysis</h3>
-          </Modal.Header>
+        <Modal.Header closeButton>
+		<h3 className="modal-title">Concepts - Stock Performance Analysis</h3>
+		</Modal.Header>
           <Modal.Body>
 		  <div className="xs-p-20">
             <div className="row">
