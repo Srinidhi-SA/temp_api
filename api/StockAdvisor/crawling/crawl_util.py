@@ -101,20 +101,26 @@ def get_sample_data(news_data, type='historical_data'):
     return [ [row[key] for key in required_fields] for row in news_data ]
 
 def get_metaData(news_data):
-    return  [{
-                "displayName": "Number of records",
-                "name": "noOfRows",
-                "value": len(news_data),
-                "display": True
-            },
-        {
-            "displayName": "Source",
-            "name": "source",
-            "value": "Google Finance",
-            "display": True
-        },
+    # return  [{
+    #             "displayName": "Number of records",
+    #             "name": "noOfRows",
+    #             "value": len(news_data),
+    #             "display": True
+    #         },
+    #     {
+    #         "displayName": "Source",
+    #         "name": "source",
+    #         "value": "Google Finance",
+    #         "display": True
+    #     },
+    #
+    #          ]
 
-             ]
+    return [
+        {"displayName": "News source", "name": "newsSource", "value": "Google Finance", "display": True},
+        {"displayName": "Stock Prices", "name": "stockPrices", "value": "NASDAQ", "display": True},
+        {"displayName": "Number of Articles", "name": "numberOfArticles", "value": 1249 , "display": True},
+    ]
 
 def get_required_fields(type='historical_data'):
     matching = {
