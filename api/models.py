@@ -5301,8 +5301,8 @@ article_by_source1 = [
 ]
 
 article_by_source = [
-['Source', 'Reuters Key Development', 'Seeking Alpha', 'Investorplace.com', 'Motley Fool', 'StockNews.com (blog)', 'StockNewsJournal', 'Equities.com', 'Nasdaq', 'Bloomberg', 'Investorplace.com (blog)', 'Economic News', 'Reuters', 'NY Stock News', 'ValueWalk', 'Amigobulls', 'The Ledger Gazette', 'Benzinga', 'TheStreet.com', 'MarketWatch', 'Live Trading News', 'Post Analyst', 'Proactive Investors UK', 'Wall Street Journal', 'Yahoo Finance', 'DirectorsTalk Interviews', 'Dispatch Tribunal', 'GuruFocus.com', 'Los Angeles Times', 'Madison.com', 'Market Exclusive'],
-['No. of Articles', 217, 63, 53, 43, 17, 16, 12, 11, 10, 10, 9, 9, 8, 8, 6, 6, 5, 5, 4, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2]
+['Source', 'Reuters Key Development', 'Seeking Alpha', 'Investorplace.com', 'Motley Fool', 'StockNews.com (blog)', 'StockNewsJournal', 'Equities.com', 'Nasdaq', 'Bloomberg', 'Investorplace.com (blog)', 'Economic News', 'Reuters', 'NY Stock News', 'ValueWalk', 'Amigobulls', 'The Ledger Gazette', 'Benzinga', 'TheStreet.com', 'MarketWatch', 'Live Trading News', 'Post Analyst', 'Proactive Investors UK', 'Wall Street Journal', 'Yahoo Finance', 'DirectorsTalk Interviews', 'Dispatch Tribunal', 'GuruFocus.com', 'Los Angeles Times', 'Madison.com', 'Market Exclusive'][:7],
+['No. of Articles', 217, 63, 53, 43, 17, 16, 12, 11, 10, 10, 9, 9, 8, 8, 6, 6, 5, 5, 4, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2][:7]
 ]
 
 from sample_stock_data import stock_performace_card1, \
@@ -5352,7 +5352,7 @@ node1 = {
                     chart=horizontal_bar_chart,
                     x="Source",
                     axes={"No. of Articles": "y"},
-                    widthPercent=100,
+                    widthPercent=50,
                     title="Top Sources"
                 ),
 
@@ -5361,7 +5361,7 @@ node1 = {
                     chart=bar_chart,
                     x="Stock",
                     axes={"Avg. Sentiment Score": "y"},
-                    widthPercent=100,
+                    widthPercent=50,
                     title="Sentiment Score by Stocks"
                 ),
                 # change_data_in_wordcloud(card1_total_entities, word_cloud)
