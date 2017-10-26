@@ -5147,7 +5147,8 @@ def change_data_in_heatmap(data):
 def change_name_and_slug_in_individual(name):
     card_name = [ "Analysis Overview", "Event Analysis", "Impact Analysis"]
     # temp_node = copy.deepcopy(individual_company)
-    temp_node = individual_company
+    import copy
+    temp_node = copy.deepcopy(individual_company)
     temp_node['name'] = name
     temp_node['slug'] = name
     listOfCards = temp_node['listOfCards']
@@ -5409,9 +5410,9 @@ node1 = {
 
 node2 = {
     "listOfNodes": [
-        # change_name_and_slug_in_individual(name='googl'),
-        change_name_and_slug_in_individual(name='amzn'),
-        # change_name_and_slug_in_individual(name='ibm')
+        change_name_and_slug_in_individual(name='GOOGL'),
+        change_name_and_slug_in_individual(name='AMZN'),
+        change_name_and_slug_in_individual(name='FB')
     ],
     "listOfCards": [
         smaller_name_and_slug_in_individual(name='unknown')
