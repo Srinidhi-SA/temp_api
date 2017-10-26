@@ -4967,6 +4967,7 @@ individual_company = {
                 'stock_performance_vs_sentiment_score', # line_chart,
                 # 'statistical_significance_of_keywords', # bar_chart,
                 # 'top_entities', # word_cloud
+                'stock_word_cloud_title',
                 'stock_word_cloud'
             ]
         },
@@ -4975,7 +4976,9 @@ individual_company = {
             "name": "node2-card2",
             "slug": "node2-card2",
             "cardData": [
+                'decisionTreeTable_title',
                 'decisionTreeTable',  # decisionTreeTable
+                'key_events_title',
                 'key_events',
             ]
         },{
@@ -4983,6 +4986,7 @@ individual_company = {
             "name": "node2-card3",
             "slug": "node2-card3",
             "cardData": [
+                'sentiments_by_concepts_title',
                 'sentiments_by_concepts' # decisionTreeTable
             ]
         },
@@ -5215,14 +5219,25 @@ def change_name_and_slug_in_individual(name):
             if cardD == 'html_random':
                 chart = change_html_data('<p><h2>{}</h2>{}</p>'.format("Test", "Test content"))
                 return chart
+
             if cardD == "stock_word_cloud":
                 chart = change_data_in_wordcloud(details_data[cardD])
+
+            if cardD == "stock_word_cloud_title":
+                chart = change_html_data("<h3>Top Entities</h3>")
+            if cardD == "decisionTreeTable_title":
+                chart = change_html_data("<h3>Key Days and Impactful Articles</h3>")
+            if cardD == "key_events_title":
+                chart = change_html_data("<h3>Top Articles</h3>")
 
             if cardD == 'decisionTreeTable':
                 chart = change_data_in_table(details_data[cardD])
 
             if cardD == "key_events":
                 chart = change_data_in_table(details_data[cardD])
+
+            if cardD == "sentiments_by_concepts_title":
+                chart = change_html_data("<h3>Sentiment by Concept</h3>")
 
             if cardD == 'sentiments_by_concepts':
                 chart = change_data_in_heatmap(details_data[cardD])
