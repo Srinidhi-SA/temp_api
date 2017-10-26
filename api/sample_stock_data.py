@@ -3,8 +3,8 @@ stock_performace_card1 =  [["DATE", "01-06-2017", "02-06-2017", "05-06-2017", "0
 
 
 stock_by_sentiment_score = [
-    ['Stock', 'FB','GOOG','IBM','MSFT','AAPL','AMZN'],
-    ['Avg. Sentiment Score', 0.30451093364486,0.219543964752475,0.224984568387097,0.224984568387097,0.280333322314815,0.313312064153846,]
+    ['Stock', 'FB','GOOG','IBM','AAPL','AMZN'],
+    ['Avg. Sentiment Score', 0.30,0.22,0.22,0.28,0.31,]
 ]
 
 card1_total_entities = [
