@@ -1418,6 +1418,7 @@ import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,C
 						dispatch(crawlSuccess(json, dispatch))
 					}else {
 						dispatch(crawlError(json))
+						dispatch(closeAppsLoaderValue());
 					}
 				});
 			}
