@@ -18,7 +18,7 @@ export default function reducer(state = {
   signalMeta: {},
   curUrl: "",
   dataUploadLoaderModal: false,
-  dULoaderValue: 3,
+  dULoaderValue: 1,
   data_search_element: "",
   dataSetMeasures: [],
   dataSetDimensions: [],
@@ -572,7 +572,7 @@ export default function reducer(state = {
     	}
     }
     break;
-    
+
     case "DATA_VALIDATION_PREVIEW":
     {
       return {

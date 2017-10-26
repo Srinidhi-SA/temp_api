@@ -162,6 +162,7 @@ export class VariableSelection extends React.Component {
 
     }
     renderAnalysisList(analysisList){
+		console.log(analysisList);
    	 let list =  analysisList.map((metaItem,metaIndex) =>{
              let id = "chk_analysis"+ metaIndex;
              return(<div key={metaIndex} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisList.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>);

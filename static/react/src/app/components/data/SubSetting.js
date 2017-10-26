@@ -371,7 +371,7 @@ export class SubSetting extends React.Component {
           } else {
             this.state.subSettingRs.timeDimensionColumnFilters.push({"colname": this.props.item.name, "upperBound": this.state.curendDate, "lowerBound": this.state.curstartDate, "filterType": "valueRange"});
             this.state.alreadyUpdated = true
-          }          
+          }
         }
         break;
 
@@ -396,7 +396,7 @@ export class SubSetting extends React.Component {
 	    });
     }
   render() {
-    console.log("subsetting is called!!");
+    console.log("subsetting is called####$$$$!!");
     console.log(this.props)
     console.log("state is")
     console.log(this.state)

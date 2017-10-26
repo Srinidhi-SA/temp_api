@@ -51,7 +51,7 @@ class QueryCommonFiltering(object):
     def execute_common_filtering_and_sorting_and_ordering(self):
 
         if self.name is not None:
-            self.query_set = self.query_set.filter(name__contains=self.name)
+            self.query_set = self.query_set.filter(name__icontains=self.name)
 
         if self.app_id is not None:
             self.query_set = self.query_set.filter(app_id=self.app_id)
