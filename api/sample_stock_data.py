@@ -711,40 +711,41 @@ amzn = {
     [-0.321173, 0, 0.4190155, 0.521027857, 0.098543571, 0.242415, 0.1702598, 0.711370923, 0.231899571, 0.027166571, 0.692694, -0.059662857, -0.27856, 0.540145444, 0.59759425, 0.394379, 0.801072857, 0.7165695, 0, 0.83784, 0, 0.3079695, -0.13928, 0.68561, 0.3906345]
   ],
   "key_parameter_that_impact_stock_prices": [],
-  "decisionTreeTable" : [["Date", "% change in stock Price", "Source", "Title", "Sentiment"], ["16-10-2017", ["1.84%"], ["Investorplace.com (blog)", "Yahoo Finance"], ["Apple Pay Cash Will Boost Apple Inc. Stock  With Time", "3 Big Stock Charts for Monday: Apple Inc., Adobe Systems Incorporated and ..."], ["0.339797", "-0.0270197"]], ["26-09-2017", ["1.72%"], ["Motley Fool", "Motley Fool"], ["Apple, Incs Siri Wont Bing It for You Anymore", "Why Apple, Inc. Jacked Up iPhone 8 and 8 Plus Prices"], ["0.772074", "0.0991819"]], ["22-09-2017", ["-0.98%"], ["Reuters Key Development", "Motley Fool"], ["Quanta Computer clarifies media reports regarding manufacturing of Apple products", "Will Apple, Inc. Hit Its Guidance After All?"], ["0.859435", "0.0704407"]], ["14-06-2017", ["-0.98%"], ["Reuters Key Development"], ["Apple files for notes offering of up to $1.0 billion"], ["0.830784"]]],
+  "decisionTreeTable" : [["Date", "% change in Stock Price", "Source", "Title", "Sentiment"], ["16-10-2017", ["1.84%"], ["Investorplace.com (blog)", "Yahoo Finance"], ["Apple Pay Cash Will Boost Apple Inc. Stock  With Time", "3 Big Stock Charts for Monday: Apple Inc., Adobe Systems Incorporated and ..."], ["0.339797", "-0.0270197"]], ["26-09-2017", ["1.72%"], ["Motley Fool", "Motley Fool"], ["Apple, Incs Siri Wont Bing It for You Anymore", "Why Apple, Inc. Jacked Up iPhone 8 and 8 Plus Prices"], ["0.772074", "0.0991819"]], ["22-09-2017", ["-0.98%"], ["Reuters Key Development", "Motley Fool"], ["Quanta Computer clarifies media reports regarding manufacturing of Apple products", "Will Apple, Inc. Hit Its Guidance After All?"], ["0.859435", "0.0704407"]], ["14-06-2017", ["-0.98%"], ["Reuters Key Development"], ["Apple files for notes offering of up to $1.0 billion"], ["0.830784"]]],
+  "key_events" : [["Date", "% change in Stock Price", "Source", "Title", "Sentiment"], ["16-10-2017", ["1.84%", ""], ["Investorplace.com (blog)", "Yahoo Finance"], ["Apple Pay Cash Will Boost Apple Inc. Stock  With Time", "3 Big Stock Charts for Monday: Apple Inc., Adobe Systems Incorporated and ..."], ["0.339797", "-0.0270197"]], ["26-09-2017", ["1.72%", ""], ["Motley Fool", "Motley Fool"], ["Apple, Incs Siri Wont Bing It for You Anymore", "Why Apple, Inc. Jacked Up iPhone 8 and 8 Plus Prices"], ["0.772074", "0.0991819"]], ["22-09-2017", ["-0.98%", ""], ["Reuters Key Development", "Motley Fool"], ["Quanta Computer clarifies media reports regarding manufacturing of Apple products", "Will Apple, Inc. Hit Its Guidance After All?"], ["0.859435", "0.0704407"]], ["14-06-2017", ["-0.98%"], ["Reuters Key Development"], ["Apple files for notes offering of up to $1.0 billion"], ["0.830784"]]],
   "sentiments_by_concepts" : [['Market Potential & Growth',
   'Legal',
   'Innovation & Product Launch',
   'Financial & Market Performance',
   'Corporate',
   'Expansion - geography/segment'],
- [{'text': 'Market Potential', 'value': 0.0},
+ [{'text': 'Markey Rating', 'value': 0.68561},
+  {'text': 'Lawsuit', 'value': 0.83784},
+  {'text': 'Tech Alliance', 'value': 0.801072857},
+  {'text': 'Revenue Growth', 'value': 0.692694},
+  {'text': 'Public Relations', 'value': 0.0},
+  {'text': 'Strategic Partnerships', 'value': 0.711370923}],
+ [{'text': 'Product Performance', 'value': 0.3906345},
   {'text': 'Compliance', 'value': 0.7165695},
-  {'text': 'Innovation', 'value': -0.27856},
+  {'text': 'New Product', 'value': 0.59759425},
   {'text': 'Financial Performance', 'value': 0.231899571},
   {'text': 'Leadership Change', 'value': -0.321173},
-  {'text': 'Acquisition', 'value': 0.4190155}],
+  {'text': 'New Geography', 'value': 0.521027857}],
  [{'text': 'Market Rating', 'value': 0.3079695},
   {'text': 'Corporate Ethics', 'value': 0.0},
   {'text': 'New Feature', 'value': 0.540145444},
   {'text': 'Investment', 'value': 0.027166571},
-  {'text': 'Public Relations', 'value': 0.0},
-  {'text': 'New Geography', 'value': 0.521027857}],
- [{'text': 'Market Share', 'value': -0.13928},
-  {'text': 'Lawsuit', 'value': 0.83784},
-  {'text': 'New Product', 'value': 0.59759425},
-  {'text': 'Revenue Growth', 'value': 0.692694},
   {'text': '', 'value': 0},
-  {'text': 'New Segment', 'value': 0.098543571}],
- [{'text': 'Markey Rating', 'value': 0.68561},
+  {'text': 'Acquisition', 'value': 0.4190155}],
+ [{'text': 'Market Potential', 'value': 0.0},
   {'text': '', 'value': 0},
   {'text': 'Partnerships', 'value': 0.394379},
   {'text': 'Stock Performance', 'value': -0.059662857},
   {'text': '', 'value': 0},
   {'text': 'Operations & Logistics', 'value': 0.242415}],
- [{'text': 'Product Performance', 'value': 0.3906345},
+ [{'text': 'Market Share', 'value': -0.13928},
   {'text': '', 'value': 0},
-  {'text': 'Tech Alliance', 'value': 0.801072857},
+  {'text': 'Innovation', 'value': -0.27856},
   {'text': '', 'value': 0},
   {'text': '', 'value': 0},
   {'text': 'Resources / Staffing ', 'value': 0.1702598}],
@@ -753,7 +754,116 @@ amzn = {
   {'text': '', 'value': 0},
   {'text': '', 'value': 0},
   {'text': '', 'value': 0},
-  {'text': 'Strategic Partnerships', 'value': 0.711370923}]]
+  {'text': 'New Segment', 'value': 0.098543571}]],
+  "stock_word_cloud" : [{
+    "text": "Foods Market",
+    "value": "37"
+  }, {
+    "text": "North America",
+    "value": "35"
+  }, {
+    "text": "Amazon",
+    "value": "33"
+  }, {
+    "text": "law enforcement",
+    "value": "33"
+  }, {
+    "text": "Microsoft",
+    "value": "33"
+  }, {
+    "text": "unauthorized access",
+    "value": "32"
+  }, {
+    "text": "tax breaks",
+    "value": "32"
+  }, {
+    "text": "Introduced new way",
+    "value": "32"
+  }, {
+    "text": "Amazon household account",
+    "value": "32"
+  }, {
+    "text": "all-new Echo",
+    "value": "32"
+  }, {
+    "text": "Amazon Prime Video",
+    "value": "32"
+  }, {
+    "text": "appropriate measures",
+    "value": "32"
+  }, {
+    "text": "Amazon web services",
+    "value": "31"
+  }, {
+    "text": "Life360",
+    "value": "31"
+  }, {
+    "text": "Amazon Business Team",
+    "value": "31"
+  }, {
+    "text": "deep learning",
+    "value": "31"
+  }, {
+    "text": "dhx media",
+    "value": "31"
+  }, {
+    "text": "pre-approved spending limits.",
+    "value": "31"
+  }, {
+    "text": "subsidies",
+    "value": "31"
+  }, {
+    "text": "Article",
+    "value": "31"
+  }, {
+    "text": "Diane Greene",
+    "value": "31"
+  }, {
+    "text": "DHX Media kids",
+    "value": "31"
+  }, {
+    "text": "United",
+    "value": "31"
+  }, {
+    "text": "Intuit board",
+    "value": "31"
+  }, {
+    "text": "Alexa-enabled devices.",
+    "value": "31"
+  }, {
+    "text": "largest deal",
+    "value": "31"
+  }, {
+    "text": "amazon.com CFO Thomas",
+    "value": "31"
+  }, {
+    "text": "Gluon",
+    "value": "31"
+  }, {
+    "text": "aws",
+    "value": "31"
+  }, {
+    "text": "company contest",
+    "value": "31"
+  }, {
+    "text": "automation tools",
+    "value": "16"
+  }, {
+    "text": "robot",
+    "value": "16"
+  }, {
+    "text": "shares",
+    "value": "12"
+  }, {
+    "text": "optimism",
+    "value": "5"
+  }, {
+    "text": "Alphabet Inc.",
+    "value": "5"
+  }, {
+    "text": "profitability",
+    "value": "4"
+  }]
 }
 
 AMZN = {

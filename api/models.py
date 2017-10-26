@@ -4966,7 +4966,8 @@ individual_company = {
                 'articles_and_sentiments_by_concepts', # horizontal_bar_chart,
                 'stock_performance_vs_sentiment_score', # line_chart,
                 # 'statistical_significance_of_keywords', # bar_chart,
-                'top_entities', # word_cloud
+                # 'top_entities', # word_cloud
+                'stock_word_cloud'
             ]
         },
         {
@@ -4974,7 +4975,8 @@ individual_company = {
             "name": "node2-card2",
             "slug": "node2-card2",
             "cardData": [
-                'decisionTreeTable'  # decisionTreeTable
+                'decisionTreeTable',  # decisionTreeTable
+                'key_events',
             ]
         },{
             "cardType": "normal",
@@ -5086,17 +5088,30 @@ def change_data_in_databox(data, databox):
     databox["data"] = data
     return databox
 
-def change_data_in_wordcloud(data, wordcloud):
-    import copy
-    wordcloud = copy.deepcopy(wordcloud)
-    wordcloud['data'] = data
-    return wordcloud
+def change_data_in_wordcloud(data, wordcloud=None):
+    if wordcloud:
+        import copy
+        t_wordcloud = copy.deepcopy(wordcloud)
+    else:
+        t_wordcloud = {
+                "dataType": "wordCloud",
+                "data": None
+            }
+
+    t_wordcloud['data'] = data
+    return t_wordcloud
 
 def change_data_inheatmap(data):
     return data
 
 def change_data_in_table(data):
-    return data
+    return {
+        "dataType": "table",
+        "data": {
+            "tableData": data,
+            "tableType": "normal",
+        }
+    }
 
 def change_data_in_decision_tree_table(data):
     return {"dataType": "table", "data": {"tableType": "decisionTreeTable", "tableData": data }}
@@ -5200,8 +5215,14 @@ def change_name_and_slug_in_individual(name):
             if cardD == 'html_random':
                 chart = change_html_data('<p><h2>{}</h2>{}</p>'.format("Test", "Test content"))
                 return chart
+            if cardD == "stock_word_cloud":
+                chart = change_data_in_wordcloud(details_data[cardD])
+
             if cardD == 'decisionTreeTable':
                 chart = change_data_in_decision_tree_table(details_data[cardD])
+
+            if cardD == "key_events":
+                chart = change_data_in_table(details_data[cardD])
 
             if cardD == 'sentiments_by_concepts':
                 chart = change_data_in_heatmap(details_data[cardD])
