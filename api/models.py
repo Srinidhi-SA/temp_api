@@ -5362,7 +5362,7 @@ node1 = {
                     widthPercent=100,
                     title="Sentiment Score by Stocks"
                 ),
-                change_data_in_wordcloud(card1_total_entities, word_cloud)
+                # change_data_in_wordcloud(card1_total_entities, word_cloud)
             ]
         }
     ],
