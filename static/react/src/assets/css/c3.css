@@ -204,3 +204,7 @@
 .c3 .c3-axis-y2 path, .c3 .c3-axis-y2 line {
  stroke: #a1a1a1;
 }
+.c3-title{
+	font-size:13px;
+	color:#848484 !important;
+}

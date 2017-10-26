@@ -19,7 +19,7 @@ export class DataBox extends React.Component {
 	render() {
 		var dataBox = this.props.jsonData;
 		let  columnsTemplates = dataBox.map((data,index)=>{
-			return (<div className="col-md-3 col-sm-4 col-xs-12 bgStockBox">
+			return (<div className="col-md-4 col-sm-8 col-xs-12 bgStockBox">
 			<h3 className="text-center">{data.value}<br/><small>{data.name}</small></h3>
 			</div>);
 		});
