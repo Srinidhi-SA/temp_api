@@ -4974,7 +4974,14 @@ individual_company = {
             "name": "node2-card2",
             "slug": "node2-card2",
             "cardData": [
-                'decisionTreeTable' # decisionTreeTable
+                'decisionTreeTable'  # decisionTreeTable
+            ]
+        },{
+            "cardType": "normal",
+            "name": "node2-card3",
+            "slug": "node2-card3",
+            "cardData": [
+                'sentiments_by_concepts' # decisionTreeTable
             ]
         },
         # {
@@ -5095,6 +5102,19 @@ def change_data_in_decision_tree_table(data):
     return {"dataType": "table", "data": {"tableType": "decisionTreeTable", "tableData": data }}
     pass
 
+
+def change_data_in_heatmap(data):
+    return {
+        "dataType": "table",
+        "data": {
+            "tableData": data,
+            "tableType": "textHeatMapTable",
+        }
+    }
+
+    pass
+
+
 def change_name_and_slug_in_individual(name):
     card_name = [ "Analysis Overview", "Event Analysis", "Impact Analysis"]
     # temp_node = copy.deepcopy(individual_company)
@@ -5182,6 +5202,10 @@ def change_name_and_slug_in_individual(name):
                 return chart
             if cardD == 'decisionTreeTable':
                 chart = change_data_in_decision_tree_table(details_data[cardD])
+
+            if cardD == 'sentiments_by_concepts':
+                chart = change_data_in_heatmap(details_data[cardD])
+
             if chart is not None:
                 temp_card_data.append(chart)
 
