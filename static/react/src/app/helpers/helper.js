@@ -121,7 +121,7 @@ export function generateTextHeatMapRows(table) {
 					  return<td key={j} value={colData.value}></td>;
 				  }else{
 					 //return<td key={j}>{colData.text}<br/>{colData.value}</td>;
-           return<td key={j} value={colData.value}>{colData.text}<br/>{colData.value}</td>;
+           return<td key={j} value={colData.value}>{colData.text}<br/><b>{colData.value}</b></td>;
 				  }
 
     	       });
