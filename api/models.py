@@ -5060,6 +5060,16 @@ def change_data_in_chart(data, chart, x=None, axes=None, widthPercent=None, titl
 
     return t_chart
 
+def change_data_in_chart_time_series(data, chart, x=None, axes=None, widthPercent=None, title=None):
+    t_chart = change_data_in_chart(data, chart, x, axes, widthPercent, title)
+    t_chart["axis"]["x"] = {
+            'type': 'timeseries',
+            'tick': {
+                'format': '%d-%m-%Y'
+            }
+        }
+    return t_chart
+
 def change_data_in_chart_no_zoom(data, chart, x=None, axes=None, widthPercent=None, title=None):
     t_chart = set_axis_and_data(axes, chart, data, x)
     set_label_and_title(axes, t_chart, title, widthPercent, x)
