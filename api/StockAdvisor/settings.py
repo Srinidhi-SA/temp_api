@@ -16,4 +16,4 @@ NUMBEROFTRIES = 10
 
 CACHESALT = "vivek"
 
-TEMPDIR = "/tmp/"
+TEMPDIR = "temp/"
