@@ -700,8 +700,175 @@ amzn = {
     [-0.321173, 0, 0.4190155, 0.521027857, 0.098543571, 0.242415, 0.1702598, 0.711370923, 0.231899571, 0.027166571, 0.692694, -0.059662857, -0.27856, 0.540145444, 0.59759425, 0.394379, 0.801072857, 0.7165695, 0, 0.83784, 0, 0.3079695, -0.13928, 0.68561, 0.3906345]
   ],
   "key_parameter_that_impact_stock_prices": [],
-  "decisionTreeTable" : [["Date", "% change in Stock Price", "Source", "Title", "Sentiment"], ["16-10-2017", ["1.84%"], ["Investorplace.com (blog)", "Yahoo Finance"], ["Apple Pay Cash Will Boost Apple Inc. Stock  With Time", "3 Big Stock Charts for Monday: Apple Inc., Adobe Systems Incorporated and ..."], ["0.339797", "-0.0270197"]], ["26-09-2017", ["1.72%"], ["Motley Fool", "Motley Fool"], ["Apple, Incs Siri Wont Bing It for You Anymore", "Why Apple, Inc. Jacked Up iPhone 8 and 8 Plus Prices"], ["0.772074", "0.0991819"]], ["22-09-2017", ["-0.98%"], ["Reuters Key Development", "Motley Fool"], ["Quanta Computer clarifies media reports regarding manufacturing of Apple products", "Will Apple, Inc. Hit Its Guidance After All?"], ["0.859435", "0.0704407"]], ["14-06-2017", ["-0.98%"], ["Reuters Key Development"], ["Apple files for notes offering of up to $1.0 billion"], ["0.830784"]]],
-  "key_events" : [["Date", "Source", "Title", "Sentiment", "% increase/ Decrease"], ["24-08-2017", ["Reuters Key Development"], ["Amazon, Whole Foods acquisition to close on Aug 28"], ["0.88632"], ["-0.579%"]], ["05-09-2017", ["Reuters Key Development"], ["United Airlines says to offer Alexa skill for customers"], ["0.879394"], ["-1.327%"]], ["19-07-2017", ["Reuters Key Development"], ["Amazon has launched Amazon Pay Places at TGI Fridays via Amazon app"], ["0.868229"], ["0.236%"]], ["16-10-2017", ["Seeking Alpha"], ["Alibaba Vs. Amazon: Cloud Wars"], ["-0.278506"], ["0.34%"]], ["13-10-2017", ["MarketWatch"], ["Amazon suspends studio head over sexual harassment allegations"], ["-0.642346"], ["0.201%"]], ["02-10-2017", ["Seeking Alpha"], ["Will Amazon Make Money Next Year?"], ["-0.278506"], ["-0.225%"]]],
+  "decisionTreeTable": [
+    [
+      "Date",
+      "% change in Stock Price",
+      "Source",
+      "Title",
+      "Sentiment"
+    ],
+    [
+      "16-10-2017",
+      [
+        "1.84%"
+      ],
+      [
+        "Investorplace.com (blog)"
+      ],
+      [
+        "Apple Pay Cash Will Boost Apple Inc. Stock  With Time"
+      ],
+      [
+        "0.34"
+
+      ]
+    ],
+    [
+      "26-09-2017",
+      [
+        "1.72%"
+      ],
+      [
+        "Motley Fool"
+      ],
+      [
+        "Apple, Incs Siri Wont Bing It for You Anymore"
+      ],
+      [
+        "0.77"
+      ]
+    ],
+    [
+      "22-09-2017",
+      [
+        "-0.98%"
+      ],
+      [
+        "Reuters Key Development"
+      ],
+      [
+        "Quanta Computer clarifies media reports regarding manufacturing of Apple products"
+      ],
+      [
+        "0.86"
+      ]
+    ],
+    [
+      "14-06-2017",
+      [
+        "-0.98%"
+      ],
+      [
+        "Reuters Key Development"
+      ],
+      [
+        "Apple files for notes offering of up to $1.0 billion"
+      ],
+      [
+        "0.83"
+      ]
+    ]
+  ],
+"key_events": [
+    [
+      "Date",
+      "Source",
+      "Title",
+      "Sentiment",
+      "% increase/ Decrease"
+    ],
+    [
+      "24-08-2017",
+      [
+        "Reuters Key Development"
+      ],
+      [
+        "Amazon, Whole Foods acquisition to close on Aug 28"
+      ],
+      [
+        "0.87"
+      ],
+      [
+        "-0.579%"
+      ]
+    ],
+    [
+      "05-09-2017",
+      [
+        "Reuters Key Development"
+      ],
+      [
+        "United Airlines says to offer Alexa skill for customers"
+      ],
+      [
+        "0.88"
+      ],
+      [
+        "-1.33%"
+      ]
+    ],
+    [
+      "19-07-2017",
+      [
+        "Reuters Key Development"
+      ],
+      [
+        "Amazon has launched Amazon Pay Places at TGI Fridays via Amazon app"
+      ],
+      [
+        "0.87"
+      ],
+      [
+        "0.24%"
+      ]
+    ],
+    [
+      "16-10-2017",
+      [
+        "Seeking Alpha"
+      ],
+      [
+        "Alibaba Vs. Amazon: Cloud Wars"
+      ],
+      [
+        "-0.28"
+      ],
+      [
+        "0.34%"
+      ]
+    ],
+    [
+      "13-10-2017",
+      [
+        "MarketWatch"
+      ],
+      [
+        "Amazon suspends studio head over sexual harassment allegations"
+      ],
+      [
+        "-0.64"
+      ],
+      [
+        "0.20%"
+      ]
+    ],
+    [
+      "02-10-2017",
+      [
+        "Seeking Alpha"
+      ],
+      [
+        "Will Amazon Make Money Next Year?"
+      ],
+      [
+        "-0.28"
+      ],
+      [
+        "-0.23%"
+      ]
+    ]
+  ],
 
 
   "sentiments_by_concepts" : [['Expansion - geography/segment',
@@ -710,37 +877,37 @@ amzn = {
   'Financial & Market Performance',
   'Legal',
   'Corporate'],
- [{'text': 'Strategic Partnerships', 'value': 0.711370923},
-  {'text': 'Markey Rating', 'value': 0.68561},
-  {'text': 'Tech Alliance', 'value': 0.801072857},
-  {'text': 'Revenue Growth', 'value': 0.692694},
-  {'text': 'Lawsuit', 'value': 0.83784},
+ [{'text': 'Strategic Partnerships', 'value': 0.711},
+  {'text': 'Markey Rating', 'value': 0.686},
+  {'text': 'Tech Alliance', 'value': 0.801},
+  {'text': 'Revenue Growth', 'value': 0.693},
+  {'text': 'Lawsuit', 'value': 0.838},
   {'text': 'Public Relations', 'value': 0.0}],
- [{'text': 'New Geography', 'value': 0.521027857},
-  {'text': 'Product Performance', 'value': 0.3906345},
-  {'text': 'New Product', 'value': 0.59759425},
-  {'text': 'Financial Performance', 'value': 0.231899571},
-  {'text': 'Compliance', 'value': 0.7165695},
-  {'text': 'Leadership Change', 'value': -0.321173}],
- [{'text': 'Acquisition', 'value': 0.4190155},
-  {'text': 'Market Rating', 'value': 0.3079695},
-  {'text': 'New Feature', 'value': 0.540145444},
-  {'text': 'Investment', 'value': 0.027166571},
+ [{'text': 'New Geography', 'value': 0.521},
+  {'text': 'Product Performance', 'value': 0.391},
+  {'text': 'New Product', 'value': 0.598},
+  {'text': 'Financial Performance', 'value': 0.232},
+  {'text': 'Compliance', 'value': 0.717},
+  {'text': 'Leadership Change', 'value': -0.321}],
+ [{'text': 'Acquisition', 'value': 0.419},
+  {'text': 'Market Rating', 'value': 0.308},
+  {'text': 'New Feature', 'value': 0.54},
+  {'text': 'Investment', 'value': 0.027},
   {'text': 'Corporate Ethics', 'value': 0.0},
   {'text': '', 'value': 0}],
- [{'text': 'Operations & Logistics', 'value': 0.242415},
+ [{'text': 'Operations & Logistics', 'value': 0.242},
   {'text': 'Market Potential', 'value': 0.0},
-  {'text': 'Partnerships', 'value': 0.394379},
-  {'text': 'Stock Performance', 'value': -0.059662857},
+  {'text': 'Partnerships', 'value': 0.394},
+  {'text': 'Stock Performance', 'value': -0.06},
   {'text': '', 'value': 0},
   {'text': '', 'value': 0}],
- [{'text': 'Resources / Staffing ', 'value': 0.1702598},
-  {'text': 'Market Share', 'value': -0.13928},
-  {'text': 'Innovation', 'value': -0.27856},
+ [{'text': 'Resources / Staffing ', 'value': 0.17},
+  {'text': 'Market Share', 'value': -0.139},
+  {'text': 'Innovation', 'value': -0.279},
   {'text': '', 'value': 0},
   {'text': '', 'value': 0},
   {'text': '', 'value': 0}],
- [{'text': 'New Segment', 'value': 0.098543571},
+ [{'text': 'New Segment', 'value': 0.099},
   {'text': '', 'value': 0},
   {'text': '', 'value': 0},
   {'text': '', 'value': 0},
