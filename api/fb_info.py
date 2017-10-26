@@ -24,22 +24,33 @@ fb = {
   ],
 
   "articles_and_sentiments_by_source":[
-    ['Source', 'Argus Journal', 'Dispatch Tribunal', 'Economic News', 'Engadget', 'Forbes', 'Investopedia (blog)', 'Investorplace.com', 'Live Trading News', 'Los Angeles Times', 'Market Exclusive', 'MarketWatch', 'Motley Fool', 'Nasdaq', 'PR Newswire (press release)', 'Proactive Investors UK', 'Reuters', 'Reuters Key Development', 'Seeking Alpha', 'StockNews.com (blog)', 'StockNewsJournal', 'The Ledger Gazette', 'TheStreet.com', 'Times of India', 'TRA', 'TrueBlueTribune', 'USA Commerce Daily', 'Wall Street Journal'],
-    ['No of Articles', 1, 1, 2, 1, 1, 1, 11, 1, 1, 1, 2, 2, 3, 1, 2, 1, 31, 13, 6, 5, 1, 1, 1, 1, 1, 1, 1],
-    ['Average Sentiment Score', 0.28, 0, 0, 0, 0, 0, -0.05, -0.67, 0, -0.13, 0.05, 0.43, -0.39, 0.12, 0, -0.25, 0.75, -0.17, -0.017, 0.5, 0, 0, 0, -0.25, 0, 0.17, 0]
-  ],
+    ['Source',
+  'Reuters Key Development',
+  'Seeking Alpha',
+  'Investorplace.com',
+  'StockNews.com (blog)',
+  'StockNewsJournal',
+  'Nasdaq'],
+  ['No of Articles', 31, 13, 11, 6, 5, 3],
+  ['Average Sentiment Score', 0.75, -0.17, -0.05, -0.017, 0.5, -0.39]],
 
   "articles_and_sentiments_by_concepts": [
-    ['Concept', 'Amigobulls', 'Benzinga', 'Bloomberg', 'Economic News', 'Fox News', 'GuruFocus.com', 'Investorplace.com', 'Investorplace.com (blog)', 'Live Trading News', 'Motley Fool', 'Nasdaq', 'NBC Southern California', 'Post Analyst', 'Reuters', 'Reuters Key Development', 'Reuters.com', 'Silicon Valley Business Journal', 'Stock Press Daily', 'Stock Talker', 'StockNews.com (blog)', 'StockNewsJournal', 'The Ledger Gazette', 'TheStreet.com', 'ValueWalk', 'Voice Of Analysts', 'Wall Street Journal', 'Yahoo News'],
-    ['No of Articles', 2, 1, 3, 1, 1, 1, 14, 2, 1, 3, 1, 1, 1, 4, 35, 1, 1, 1, 1, 6, 3, 1, 2, 2, 1, 1, 1],
-    ['Average Sentiment Score', 0.09, 0.22, -0.14, 0.73, 0, -0.11, -0.14, -0.14, -0.25, 0.49, -0.37, -0.42, -0.16, -0.09, 0.80, -0.17, 0, -0.76, 0.3, 0.03, 0.17, 0, 0, -0.15, 0.25, 0, 0.3]
+    ['Concept',
+    'Reuters Key Development',
+    'Investorplace.com',
+    'StockNews.com (blog)',
+    'Reuters',
+    'Bloomberg',
+    'Motley Fool'],
+   ['No of Articles', 35, 14, 6, 4, 3, 3],
+   ['Average Sentiment Score', 0.8, -0.14, 0.03, -0.09, -0.14, 0.49]
   ],
 
   "stock_performance_vs_sentiment_score": [
-['Date', '01-06-2017','07-06-2017','13-06-2017','15-06-2017','16-06-2017','28-06-2017','29-06-2017','05-07-2017','07-07-2017','11-07-2017','17-07-2017','19-07-2017','20-07-2017','26-07-2017','27-07-2017','31-07-2017','10-08-2017','11-08-2017','14-08-2017','15-08-2017','24-08-2017','30-08-2017','05-09-2017','06-09-2017','08-09-2017','18-09-2017','19-09-2017','21-09-2017','22-09-2017','25-09-2017','27-09-2017','28-09-2017','29-09-2017','30-09-2017','01-10-2017','02-10-2017','03-10-2017','04-10-2017','05-10-2017','06-10-2017','07-10-2017','09-10-2017','10-10-2017','11-10-2017','12-10-2017','13-10-2017','14-10-2017'],
-['Stock Value', 995.95,1010.07,980.79,964.17,987.71,990.33,975.93,971.4,978.76,994.13,1010.04,1026.87,1028.7,1052.8,1046,987.78,956.92,967.99,983.3,982.74,952.45,967.59,965.27,967.8,965.9,974.19,969.86,964.65,955.1,939.79,950.87,956.4,961.35,959.19,957.1,965.45,980.85,989.58,990.99,987.2,995,1000.93,1002.94],
-['Sentiment Score', 0.81,0.80,0.83,0.78,0.78,0.13,0.33,0.82,0.84,0.78,0.84,0.87,0.78,0.84,0.94,0.78,0.83,0.83,0.29,0.79,0.82,0.78,0.83,0.80,0.87,0.59,0.59,0.23,0.55,0.79,0.66,0.41,0.25,0.43,-0.47,-0.13,-0.10,0.83,0.17,0.07,-0.56,-0.23,-0.24,0.07,0.16,-0.11,-0.32,]
-],
+    ['Date', '01-06-2017','07-06-2017','13-06-2017','15-06-2017','16-06-2017','28-06-2017','29-06-2017','05-07-2017','07-07-2017','11-07-2017','17-07-2017','19-07-2017','20-07-2017','26-07-2017','27-07-2017','31-07-2017','10-08-2017','11-08-2017','14-08-2017','15-08-2017','24-08-2017','30-08-2017','05-09-2017','06-09-2017','08-09-2017','18-09-2017','19-09-2017','21-09-2017','22-09-2017','25-09-2017','27-09-2017','28-09-2017','29-09-2017','30-09-2017','01-10-2017','02-10-2017','03-10-2017','04-10-2017','05-10-2017','06-10-2017','07-10-2017','09-10-2017','10-10-2017','11-10-2017','12-10-2017','13-10-2017','14-10-2017'],
+    ['Stock Value', 995.95,1010.07,980.79,964.17,987.71,990.33,975.93,971.4,978.76,994.13,1010.04,1026.87,1028.7,1052.8,1046,987.78,956.92,967.99,983.3,982.74,952.45,967.59,965.27,967.8,965.9,974.19,969.86,964.65,955.1,939.79,950.87,956.4,961.35,959.19,957.1,965.45,980.85,989.58,990.99,987.2,995,1000.93,1002.94],
+    ['Sentiment Score', 0.81,0.80,0.83,0.78,0.78,0.13,0.33,0.82,0.84,0.78,0.84,0.87,0.78,0.84,0.94,0.78,0.83,0.83,0.29,0.79,0.82,0.78,0.83,0.80,0.87,0.59,0.59,0.23,0.55,0.79,0.66,0.41,0.25,0.43,-0.47,-0.13,-0.10,0.83,0.17,0.07,-0.56,-0.23,-0.24,0.07,0.16,-0.11,-0.32,]
+  ],
 
   "statistical_significance_of_concepts": [],
 
@@ -165,116 +176,7 @@ fb = {
   {'text': '', 'value': 0},
   {'text': '', 'value': 0}]],
 
-  "stock_word_cloud" : [
-    {
-    "text": "Foods Market",
-    "value": "37"
-  }, {
-    "text": "North America",
-    "value": "35"
-  }, {
-    "text": "Amazon",
-    "value": "33"
-  }, {
-    "text": "law enforcement",
-    "value": "33"
-  }, {
-    "text": "Microsoft",
-    "value": "33"
-  }, {
-    "text": "unauthorized access",
-    "value": "32"
-  }, {
-    "text": "tax breaks",
-    "value": "32"
-  }, {
-    "text": "Introduced new way",
-    "value": "32"
-  }, {
-    "text": "Amazon household account",
-    "value": "32"
-  }, {
-    "text": "all-new Echo",
-    "value": "32"
-  }, {
-    "text": "Amazon Prime Video",
-    "value": "32"
-  }, {
-    "text": "appropriate measures",
-    "value": "32"
-  }, {
-    "text": "Amazon web services",
-    "value": "31"
-  }, {
-    "text": "Life360",
-    "value": "31"
-  }, {
-    "text": "Amazon Business Team",
-    "value": "31"
-  }, {
-    "text": "deep learning",
-    "value": "31"
-  }, {
-    "text": "dhx media",
-    "value": "31"
-  }, {
-    "text": "pre-approved spending limits.",
-    "value": "31"
-  }, {
-    "text": "subsidies",
-    "value": "31"
-  }, {
-    "text": "Article",
-    "value": "31"
-  }, {
-    "text": "Diane Greene",
-    "value": "31"
-  }, {
-    "text": "DHX Media kids",
-    "value": "31"
-  }, {
-    "text": "United",
-    "value": "31"
-  }, {
-    "text": "Intuit board",
-    "value": "31"
-  }, {
-    "text": "Alexa-enabled devices.",
-    "value": "31"
-  }, {
-    "text": "largest deal",
-    "value": "31"
-  }, {
-    "text": "amazon.com CFO Thomas",
-    "value": "31"
-  }, {
-    "text": "Gluon",
-    "value": "31"
-  }, {
-    "text": "aws",
-    "value": "31"
-  }, {
-    "text": "company contest",
-    "value": "31"
-  }, {
-    "text": "automation tools",
-    "value": "16"
-  }, {
-    "text": "robot",
-    "value": "16"
-  }, {
-    "text": "shares",
-    "value": "12"
-  }, {
-    "text": "optimism",
-    "value": "5"
-  }, {
-    "text": "Alphabet Inc.",
-    "value": "5"
-  }, {
-    "text": "profitability",
-    "value": "4"
-  }],
+  "stock_word_cloud" : card1_total_entities,
 
   "factors_that_impact_stock_price" :[
     ["Key Factors", 'Fin & Mkt Performance Article Count','Corporate Article Count',' Expansion Article count','Revenue Growth Sentiment','Resources / Staffing Sentiment','Innovation  Sentiment','Market Share Sentiment','Overall Sentiment Score','New Feature Sentiment','IBM Sentiment'],
