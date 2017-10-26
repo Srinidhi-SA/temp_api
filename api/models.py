@@ -4987,7 +4987,8 @@ individual_company = {
             "slug": "node2-card3",
             "cardData": [
                 'sentiments_by_concepts_title',
-                'sentiments_by_concepts' # decisionTreeTable
+                'sentiments_by_concepts', # decisionTreeTable
+                'factors_that_impact_stock_price',
             ]
         },
         # {
@@ -5250,6 +5251,16 @@ def change_name_and_slug_in_individual(name):
 
             if cardD == 'sentiments_by_concepts':
                 chart = change_data_in_heatmap(details_data[cardD])
+
+            if cardD == 'factors_that_impact_stock_price':
+                chart = change_data_in_chart(
+                    data=details_data[cardD],
+                    chart=bar_chart,
+                    x="Key Factors",
+                    axes={"Correlation Coefficient": "y"},
+                    widthPercent=100,
+                    title = "Factors Influencing Stock Price"
+                )
 
             if chart is not None:
                 temp_card_data.append(chart)

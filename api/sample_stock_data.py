@@ -855,7 +855,12 @@ amzn = {
   }, {
     "text": "profitability",
     "value": "4"
-  }]
+  }],
+  "factors_that_impact_stock_price" :[
+    ["Key Factors", 'Resources / Staffing Sentiment','Fin & Mkt Performance Sentiment','Financial Performance Sentiment','Fin& Mkt Performance Article Count','Stock Performance Sentiment','Legal Article Count','Acquisition Sentiment','Operations & Logistics Sentiment','Expansion Sentiment','AAPL Sentiment'],
+    ["Correlation Coefficient", 0.44,0.33,0.3,0.23,0.2,-0.08,-0.16,-0.17,-0.2,-0.21]
+  ]
+
 }
 
 AMZN = {
