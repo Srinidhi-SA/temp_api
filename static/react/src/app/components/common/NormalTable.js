@@ -19,8 +19,8 @@ export class NormalTable extends React.Component {
    var headerComponents = generateHeaders(data);
    var rowComponents = generateNormalTableRows(data);
    return (
-           <table className="table table-bordered">
-               <thead>{headerComponents}</thead>
+           <table className="table table-bordered idDecisionTreeTable">
+               <thead><tr>{headerComponents}</tr></thead>
                <tbody>{rowComponents}</tbody>
            </table>
        );
