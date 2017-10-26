@@ -15,7 +15,7 @@ export class WordCloud extends React.Component {
   render() {
 	let data =  this.props.jsonData;
 	  const fontSizeMapper = word => Math.log2(word.value) * 5;
-	  const rotate = word => word.value % 45;
+	  const rotate = word => [0,0,0,90][word.value % 4];
    return (
           <div className="text-center" style={{margin:"45px"}}>
           <D3WordCloud
