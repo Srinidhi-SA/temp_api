@@ -156,6 +156,21 @@ export function  generateRows(table) {
 	return tbodyData;
 	}
 
+export function  generateNormalTableRows(table) {
+	var tbodyData = table.tableData.map(function(rowData,i){
+		if(i != 0){
+			var rows = rowData.map(function(colData,j) {
+				if(j == 0)
+	  	           return<td key={j} width="15%">{colData}</td>;
+	  	           else
+	  	        	return<td key={j}>{colData}</td>;   
+	  	       });
+			return<tr key={i}>{rows}</tr>;
+		}
+	  })
+	return tbodyData;
+	}
+
 export function  subTreeSetting(urlLength, length,paramL2) {
 	  $(function(){
 

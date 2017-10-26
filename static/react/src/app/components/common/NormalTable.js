@@ -6,7 +6,7 @@ import {getSignalAnalysis} from "../../actions/signalActions";
 import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
 import HeatMap from '../../helpers/heatmap';
-import {generateHeaders,generateCircularChartRows} from "../../helpers/helper";
+import {generateHeaders,generateNormalTableRows} from "../../helpers/helper";
 
 export class NormalTable extends React.Component {
   constructor(){
@@ -17,9 +17,9 @@ export class NormalTable extends React.Component {
    var data = this.props.tableData;
    console.log("checking normal tabletable element");
    var headerComponents = generateHeaders(data);
-   var rowComponents = generateRows(data);
+   var rowComponents = generateNormalTableRows(data);
    return (
-           <table className="table table_border">
+           <table className="table table-bordered">
                <thead>{headerComponents}</thead>
                <tbody>{rowComponents}</tbody>
            </table>
