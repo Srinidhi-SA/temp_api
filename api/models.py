@@ -5412,7 +5412,8 @@ node2 = {
     "listOfNodes": [
         change_name_and_slug_in_individual(name='GOOGL'),
         change_name_and_slug_in_individual(name='AMZN'),
-        change_name_and_slug_in_individual(name='FB')
+        change_name_and_slug_in_individual(name='FB'),
+        change_name_and_slug_in_individual(name='AAPL'),
     ],
     "listOfCards": [
         smaller_name_and_slug_in_individual(name='unknown')

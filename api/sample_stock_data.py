@@ -1033,6 +1033,7 @@ amzn = {
 
 from googl_info import googl
 from fb_info import fb
+from appl_info import appl
 
 
 AMZN = {
@@ -1043,6 +1044,7 @@ import copy
 stock_name_match_with_data = {
   "AMZN": amzn,
   "GOOGL": googl,
-  "FB": fb
+  "FB": fb,
+  "AAPL": appl
 }
 
