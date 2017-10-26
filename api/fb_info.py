@@ -616,7 +616,7 @@ fb = {
         "name": "Average Sentiment Score",
         "value": "0.31"
       },{
-        "name": "Change in Stock %",
+        "name": "Change in Stock Value",
         "value": "-$7.24B"
       },{
         "name": "Change in Sentiment Score",
