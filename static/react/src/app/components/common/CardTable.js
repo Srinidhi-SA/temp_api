@@ -6,11 +6,12 @@ import {getSignalAnalysis} from "../../actions/signalActions";
 import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
 import HeatMap from '../../helpers/heatmap';
-import {NORMALTABLE,CONFUSIONMATRIX,HEATMAPTABLE,CIRCULARCHARTTABLE,DECISIONTREETABLE} from "../../helpers/helper";
+import {NORMALTABLE,CONFUSIONMATRIX,HEATMAPTABLE,CIRCULARCHARTTABLE,DECISIONTREETABLE,TEXTHEATMAPTABLE} from "../../helpers/helper";
 import {CircularChartTable} from "./CircularChartTable";
 import {ConfusionMatrix} from "./ConfusionMatrix";
 import {DecisionTreeTable} from "./decisionTreeTable";
 import {HeatMapTable} from "./heatmap";
+import {TextHeatMapTable} from "./TextHeatMapTable";
 
 export class CardTable extends React.Component {
   constructor(){
@@ -33,6 +34,9 @@ export class CardTable extends React.Component {
 	 if(element.tableType == HEATMAPTABLE){
 	   tableEle = <HeatMapTable tableData={element}/>;
 	 }
+	 if(element.tableType == TEXTHEATMAPTABLE){
+		   tableEle = <TextHeatMapTable tableData={element}/>;
+		 }
    return (
 		      <div>
 		        {tableEle}

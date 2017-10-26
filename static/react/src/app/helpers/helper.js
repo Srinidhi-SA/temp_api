@@ -65,7 +65,8 @@ const REPLACE = "replace";
 const DATA_TYPE = "data_type";
 const REMOVE = "remove";
 const CURRENTVALUE = "current value";
-const NEWVALUE = "new value"
+const NEWVALUE = "new value";
+const TEXTHEATMAPTABLE = "textHeatMapTable"
 
 
 
@@ -101,6 +102,24 @@ export function generateHeatMapRows(table) {
 					  return<td key={j} className="stats-title">{colData}</td>;
 				  }else{
 					 return<td key={j}>{colData}</td>;
+				  }
+
+    	       });
+		  return<tr key={i} className="stats-row">{row}</tr>
+  	  }
+    })
+
+  return cols;
+}
+
+export function generateTextHeatMapRows(table) {
+    var cols = table.tableData.map(function(rowData,i){
+  	  if(i!= 0){
+  		  var row=rowData.map(function(colData,j) {
+			      if(colData.value == 0){
+					  return<td key={j}></td>;
+				  }else{
+					 return<td key={j}>{colData.text}<br/>{colData.value}</td>;
 				  }
 
     	       });
@@ -303,6 +322,7 @@ export{
 	NEWVALUE,
 	APPID5,
 	APPNAME5,
+	TEXTHEATMAPTABLE,
 	}
 export function capitalizeArray(array){
   let a =[]
