@@ -52,7 +52,13 @@ fb = {
 
   "top_entities": card1_total_entities,
 
-  "top_positive_and_negative_statement": [["Date", "% increase/ Decrease stock Price", "Source", "Title", "Sentiment"], ["27-07-2017", ["2.92%"], ["Reuters Key Development"], ["Facebook Q2 earnings per share $1.32"], ["0.83"]], ["28-06-2017", ["1.77%"], ["Reuters Key Development"], ["Facebook over the last 2 months deleted around 66,000 posts reported as hate speech per week - blog"], ["0.83"]], ["23-10-2017", ["-2.12%"], ["Wall Street Morning"], ["Technical indicators take into account for Facebook, Inc. (FB)"], ["-0.86"]], ["17-08-2017", ["-1.82%"], ["Reuters Key Development"], ["Net Elements PayOnline launches payment acceptance module for instant messaging apps"], ["-0.03"]]],
+  "top_positive_and_negative_statement": [
+    ["Date", "% increase/ Decrease stock Price", "Source", "Title", "Sentiment"],
+    ["27-07-2017", ["2.92%"], ["Reuters Key Development"], ["Facebook Q2 earnings per share $1.32"], ["0.83"]],
+    ["28-06-2017", ["1.77%"], ["Reuters Key Development"], ["Facebook over the last 2 months deleted around 66,000 posts reported as hate speech per week - blog"], ["0.83"]],
+    ["23-10-2017", ["-2.12%"], ["Wall Street Morning"], ["Technical indicators take into account for Facebook, Inc. (FB)"], ["-0.86"]],
+    ["17-08-2017", ["-1.82%"], ["Reuters Key Development"], ["Net Elements PayOnline launches payment acceptance module for instant messaging apps"], ["-0.03"]]
+  ],
 
   "segment_by_concept_and_keyword": [
     ['Corporate', 'Corporate', 'Expansion - geography/segment', 'Expansion - geography/segment', 'Expansion - geography/segment', 'Expansion - geogra phy/segment', 'Expansion - geography/segment', 'Expansion - geography/segment', 'Financial & Market Performance', 'Financial & Market Performanc e', 'Financial & Market Performance', 'Financial & Market Performance', 'Innovation & Product Launch', 'Innovation & Product Launch', 'Innovatio n & Product Launch', 'Innovation & Product Launch', 'Innovation & Product Launch', 'Legal', 'Legal', 'Legal', 'Market Potential & Growth', 'Mark et Potential & Growth', 'Market Potential & Growth', 'Market Potential & Growth', 'Market Potential & Growth', 'Leadership Change', 'Public Relations', 'Acquisition', 'New Geography', 'New Segment', 'Operations & Logistics', 'Resources / Staffing', 'Strat egic Partnerships', 'Financial Performance', 'Investment', 'Revenue Growth', 'Stock Performance', 'Innovation', 'New Feature', 'New Product', 'P artnerships', 'Tech Alliance', 'Compliance', 'Corporate Ethics', 'Lawsuit', 'Market Potential', 'Market Rating', 'Market Share', 'Markey Rating' , 'Product Performance'],
@@ -62,77 +68,21 @@ fb = {
   "key_parameter_that_impact_stock_prices": [],
 
   "decisionTreeTable": [
-    [
-      "Date",
-      "% change in Stock Price",
-      "Source",
-      "Title",
-      "Sentiment"
-    ],
-    [
-      "16-10-2017",
-      [
-        "1.84%"
-      ],
-      [
-        "Investorplace.com (blog)"
-      ],
-      [
-        "Apple Pay Cash Will Boost Apple Inc. Stock  With Time"
-      ],
-      [
-        "0.34"
-
-      ]
-    ],
-    [
-      "26-09-2017",
-      [
-        "1.72%"
-      ],
-      [
-        "Motley Fool"
-      ],
-      [
-        "Apple, Incs Siri Wont Bing It for You Anymore"
-      ],
-      [
-        "0.77"
-      ]
-    ],
-    [
-      "22-09-2017",
-      [
-        "-0.98%"
-      ],
-      [
-        "Reuters Key Development"
-      ],
-      [
-        "Quanta Computer clarifies media reports regarding manufacturing of Apple products"
-      ],
-      [
-        "0.86"
-      ]
-    ],
-    [
-      "14-06-2017",
-      [
-        "-0.98%"
-      ],
-      [
-        "Reuters Key Development"
-      ],
-      [
-        "Apple files for notes offering of up to $1.0 billion"
-      ],
-      [
-        "0.83"
-      ]
-    ]
+    ["Date", "% increase/ Decrease stock Price", "Source", "Title", "Sentiment"],
+    ["27-07-2017", ["2.92%"], ["Reuters Key Development"], ["Facebook Q2 earnings per share $1.32"], ["0.83"]],
+    ["28-06-2017", ["1.77%"], ["Reuters Key Development"], ["Facebook over the last 2 months deleted around 66,000 posts reported as hate speech per week - blog"], ["0.83"]],
+    ["23-10-2017", ["-2.12%"], ["Wall Street Morning"], ["Technical indicators take into account for Facebook, Inc. (FB)"], ["-0.86"]],
+    ["17-08-2017", ["-1.82%"], ["Reuters Key Development"], ["Net Elements PayOnline launches payment acceptance module for instant messaging apps"], ["-0.03"]]
   ],
 
-  "key_events": [["Date", "Source", "Title", "Sentiment", "% increase/ Decrease"], ["15-08-2017", "Reuters Key Development", "Facebook says making updates to its News Feed design", "0.898275", "0.15%"], ["14-09-2017", "Reuters Key Development", "Facebook introduces a new center for crisis response on Facebook", "0.881142", "-1.21%"], ["05-09-2017", "Reuters Key Development", "WhatsApp says testing new ways for people to connect with businesses", "0.893773", "-0.76%"], ["11-10-2017", "NBC Southern California", "Not Just You: Facebook, Instagram Go Down Wednesday", "-0.420686", "0.67%"], ["26-09-2017", "Bloomberg", "How Russias Election Meddling Became Facebooks Problem", "-0.424168", "0.82%"], ["11-10-2017", "Investorplace.com", "Facebook Inc (FB) Stock: Its Clear That the Zuckerberg Honeymoon is Over", "-0.451897", "0.67%"]],
+  "key_events": [
+    ["Date", "Source", "Title", "Sentiment", "% increase/ Decrease"],
+    ["15-08-2017", "Reuters Key Development", "Facebook says making updates to its News Feed design", "0.898275", "0.15%"],
+    ["14-09-2017", "Reuters Key Development", "Facebook introduces a new center for crisis response on Facebook", "0.881142", "-1.21%"],
+    ["05-09-2017", "Reuters Key Development", "WhatsApp says testing new ways for people to connect with businesses", "0.893773", "-0.76%"],
+    ["11-10-2017", "NBC Southern California", "Not Just You: Facebook, Instagram Go Down Wednesday", "-0.420686", "0.67%"], ["26-09-2017", "Bloomberg", "How Russias Election Meddling Became Facebooks Problem", "-0.424168", "0.82%"],
+    ["11-10-2017", "Investorplace.com", "Facebook Inc (FB) Stock: Its Clear That the Zuckerberg Honeymoon is Over", "-0.451897", "0.67%"]
+  ],
 
   "sentiments_by_concepts" : [
     ['Financial & Market Performance',
