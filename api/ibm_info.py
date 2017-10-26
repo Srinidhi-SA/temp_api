@@ -1,5 +1,4 @@
-card1_total_entities = [{"text": "people", "value": "55"}, {"text": "largest international multimedia", "value": "54"}, {"text": "EDT", "value": "49"}, {"text": "consumers", "value": "48"}, {"text": "intuitive desktop", "value": "46"}, {"text": "financial markets", "value": "45"}, {"text": "mobile interface", "value": "44"}, {"text": "exclusive news", "value": "44"}, {"text": "attorney-editor expertise", "value": "42"}, {"text": "strongest argument", "value": "42"}, {"text": "authoritative content", "value": "42"}, {"text": "China", "value": "41"}, {"text": "iphone", "value": "60"}, {"text": "eligible trade-in", "value": "38"}, {"text": "Chongqing site", "value": "37"}, {"text": "apple watch series", "value": "37"}, {"text": "products Quanta", "value": "25"}, {"text": "government device requests", "value": "37"}, {"text": "built-in cellular arrive", "value": "23"}, {"text": "strict standards", "value": "18"}, {"text": "student internship programs", "value": "37"}, {"text": "general counsel", "value": "37"}, {"text": "bell", "value": "37"}, {"text": "three-month cellular plan", "value": "32"}, {"text": "Honeywell", "value": "36"}, {"text": "iPad.Apple", "value": "36"}, {"text": "industrial IOT analytics", "value": "20"}, {"text": "Predix industrial apps", "value": "36"}, {"text": "NEW YORK", "value": "21"}, {"text": "Rite Aid Corp", "value": "36"}, {"text": "Fair Labor Association.", "value": "36"}, {"text": "Global", "value": "15"}, {"text": "Legal", "value": "36"}, {"text": "Article", "value": "10"}, {"text": "Apple Pay?.", "value": "54"}, {"text": "Oct", "value": "36"}, {"text": "enterprise data management", "value": "36"}, {"text": "U.S. court", "value": "7"}, {"text": "IOT platform", "value": "36"}, {"text": "U.S. technology company", "value": "36"}]
-
+card1_total_entities = [{"text": "free cash flow", "value": "23"}{"text": "previous quarter", "value": "17"}{"text": "strategic imperatives revenue", "value": "20"}{"text": "Logistics Support Activity", "value": "10"}{"text": "cloud services", "value": "55"}{"text": "GAAP earnings", "value": "30"}{"text": "Finjan Holdings", "value": "27"}{"text": "patent assignment", "value": "27"}{"text": "expectations?.IBM", "value": "10"}{"text": "?maintains full-year EPS", "value": "17"}{"text": "IBM Z revenue", "value": "42"}{"text": "security sector", "value": "52"}{"text": "irrevocable guarantee", "value": "14"}{"text": "patent acquisition", "value": "40"}{"text": "IBM stockholders", "value": "14"}{"text": "share stake", "value": "14"}{"text": "Baker Mills", "value": "35"}{"text": "development agreement", "value": "14"}{"text": "support agreement", "value": "14"}{"text": "cloud revenues", "value": "30"}{"text": "shares.Soros Fund Management", "value": "14"}{"text": "stronger sequential performance", "value": "14"}{"text": "BakerS mini-tender", "value": "14"}{"text": "Anthony Farah", "value": "20"}{"text": "margins", "value": "14"}{"text": "security software", "value": "14"}{"text": "IBM?.Finjan Holdings", "value": "14"}{"text": "Soros Fund Management", "value": "40"}{"text": "mainframe cycle", "value": "20"}{"text": "mini-tender offer", "value": "14"}{"text": "new subsidiary", "value": "14"}{"text": "Z14 program", "value": "25"}]
 
 appl = {
   "databox": [
@@ -48,8 +47,7 @@ appl = {
  ['No of Articles', 51, 9, 7, 4],
  ['Average Sentiment Score', 0.23, 0.61, 0.7, -0.01]],
 
-  "stock_performance_vs_sentiment_score": [["Date", "07-06-2017", "14-06-2017", "23-06-2017", "26-06-2017", "19-07-2017", "21-07-2017", "24-07-2017", "07-08-2017", "15-08-2017", "16-08-2017", "29-08-2017", "30-08-2017", "05-09-2017", "06-09-2017", "11-09-2017", "12-09-2017", "13-09-2017", "14-09-2017", "15-09-2017", "18-09-2017", "19-09-2017", "22-09-2017", "25-09-2017", "26-09-2017", "28-09-2017", "29-09-2017", "01-10-2017", "02-10-2017", "04-10-2017", "05-10-2017", "06-10-2017", "07-10-2017", "08-10-2017", "09-10-2017", "10-10-2017", "11-10-2017", "12-10-2017", "13-10-2017", "14-10-2017", "15-10-2017", "16-10-2017"], ["Stock Value", 155.37, 145.16, 146.28, 145.82, 151.02, 150.27, 152.09, 158.81, 161.6, 160.95, 162.91, 163.35, 162.08, 161.91, 161.5, 160.86, 159.65, 158.28, 159.88, 158.67, 158.73, 151.89, 150.55, 153.14, 153.28, 154.12, 0.0, 153.81, 153.48, 155.39, 155.3, 0.0, 0.0, 155.84, 155.9, 156.55, 156.0, 156.99, 0.0, 0.0, 159.88], ["Sentiment Score", 0.781269, 0.83784, 0.83784, 0.781269, 0.657, 0.781269, 0.800126, 0.56658, 0.781269, 0.781269, 0.83784, 0.781269, 0.781269, 0.83784, -0.24745, 0.62741975, 0.773785, 0.697341, 0.83784, 0.493611, 0.161198, 0.8020675, 0.38967, 0.8822795, 0.686519, 0.343738333, 0.341720667, 0.152927, 0.278492, 0.110225667, 0.122952167, 0.102098, 0.394987, 0.06051675, 0.0312315, -0.31961175, -0.1464416, 0.092649833, -0.5351745, -0.992298, -0.168102625]],
-
+  "stock_performance_vs_sentiment_score": [["Date", "01-06-2017", "07-06-2017", "13-06-2017", "26-06-2017", "30-06-2017", "12-07-2017", "13-07-2017", "18-07-2017", "25-07-2017", "28-07-2017", "04-08-2017", "07-08-2017", "14-08-2017", "28-08-2017", "05-09-2017", "06-09-2017", "17-09-2017", "18-09-2017", "20-09-2017", "22-09-2017", "26-09-2017", "28-09-2017", "29-09-2017", "01-10-2017", "02-10-2017", "03-10-2017", "04-10-2017", "05-10-2017", "06-10-2017", "09-10-2017", "10-10-2017", "11-10-2017", "13-10-2017", "16-10-2017"], ["Stock Value", 152.67, 150.98, 154.25, 155.23, 153.83, 153.7, 153.63, 154.0, 146.19, 144.29, 145.16, 143.47, 142.32, 142.51, 143.04, 143.82, 0.0, 144.55, 145.88, 145.13, 146.56, 145.66, 145.08, 0.0, 146.66, 146.78, 146.48, 146.72, 146.48, 147.39, 148.5, 147.62, 147.1, 146.83], ["Sentiment Score", 0.632259, 0.8962, 0.781269, 0.825275, 0.85542, 0.83784, 0.803272, 0.75353, 0.8095545, 0.83784, 0.83784, 0.37732, 0.21125, 0.4754515, 0.825275, 0.83784, 0.0, -0.469967, 0.0, 0.208803333, 0.492141, 0.166511667, -0.73642, -0.27856, 0.0, 0.3205465, 0.393409, -0.187855, 0.293474, 0.0, 0.376473333, 0.1233906, 0.1126584, 0.414621143]],
   "statistical_significance_of_concepts": [],
 
   "top_entities": card1_total_entities,
@@ -63,126 +61,35 @@ appl = {
 
   "key_parameter_that_impact_stock_prices": [],
 
-  "decisionTreeTable": [
-    [
-      "Date",
-      "% change in Stock Price",
-      "Source",
-      "Title",
-      "Sentiment"
-    ],
-    [
-      "16-10-2017",
-      [
-        "1.84%"
-      ],
-      [
-        "Investorplace.com (blog)"
-      ],
-      [
-        "Apple Pay Cash Will Boost Apple Inc. Stock  With Time"
-      ],
-      [
-        "0.34"
+  "decisionTreeTable": [["Date", "% increase/ Decrease stock Price", "Source", "Title", "Sentiment"], ["10-10-2017", ["0.75%"], ["Reuters Key Development"], ["Oracle names IBM as strategic HR BPO provider"], ["0.83"]], ["06-09-2017", ["0.55%"], ["Reuters Key Development"], ["IBM awarded $135 mln U.S. Army contract"], ["0.83"]], ["23-10-2017", ["-1.55%"], ["Nasdaq"], ["IBM reports marginal dip in quarterly revenue"], ["-0.55"]], ["11-10-2017", ["-0.59%"], ["Seeking Alpha"], ["IBM Shareholders Are Not Going To Be Rewarded"], ["-0.28"]]],
 
-      ]
-    ],
-    [
-      "26-09-2017",
-      [
-        "1.72%"
-      ],
-      [
-        "Motley Fool"
-      ],
-      [
-        "Apple, Incs Siri Wont Bing It for You Anymore"
-      ],
-      [
-        "0.77"
-      ]
-    ],
-    [
-      "22-09-2017",
-      [
-        "-0.98%"
-      ],
-      [
-        "Reuters Key Development"
-      ],
-      [
-        "Quanta Computer clarifies media reports regarding manufacturing of Apple products"
-      ],
-      [
-        "0.86"
-      ]
-    ],
-    [
-      "14-06-2017",
-      [
-        "-0.98%"
-      ],
-      [
-        "Reuters Key Development"
-      ],
-      [
-        "Apple files for notes offering of up to $1.0 billion"
-      ],
-      [
-        "0.83"
-      ]
-    ]
-  ],
+  "key_events": [["Date", "Source", "Title", "Sentiment", "% increase/ Decrease"], ["30-06-2017", "Reuters Key Development", "Certent acquires IBM Cognos Disclosure Management, Clarity 7 solutions", "0.850542", "-0.19%"], ["10-10-2017", "Reuters Key Development", "Oracle names IBM as strategic HR BPO provider", "0.830784", "0.75%"], ["04-10-2017", "Reuters Key Development", "IBM acquires Vivant Digital business in Australia", "0.830784", "-0.20%"], ["22-10-2017", "Nasdaq", "IBM reports marginal dip in quarterly revenue", "-0.549145", ""], ["11-10-2017", "Seeking Alpha", "IBM Shareholders Are Not Going To Be Rewarded", "-0.278506", "-0.59%"], ["29-09-2017", "Post Analyst", "Analysts Are Gushing Over International Business Machines Corporation (IBM ...", "-0.0703642", "-0.40%"]],
 
-  "key_events": [["Date", "Source", "Title", "Sentiment", "% increase/ Decrease"], ["06-10-2017", "Reuters Key Development", "Apple names Katherine Adams general counsel and SVP", "0.830784", "0.58%"], ["28-09-2017", "Reuters Key Development", "Apple says received 30,814 government device requests for H1 2017", "0.830784", "0.63%"], ["15-09-2017", "Reuters Key Development", "BCE Inc says iphone 8, iphone 8 plus, apple watch series 3 arrive at bell on Sept 22", "0.830784", "0.40%"], ["11-10-2017", "Investorplace.com", "Did Apple Inc. Mac Sales Fall AGAIN Amid Ongoing PC Sales Decline?", "-0.464754", "0.67%"], ["22-10-2017", "Bloomberg", "Qualcomms Apple Suit to Play Out in Specialist Beijing Court", "-0.490522", ""], ["16-10-2017", "9to5Mac", "Apple hit with $439.7M in damages over VirnetX patent case after court denies ...", "-0.720467", "0.45%"]],
-
-  "sentiments_by_concepts" : [['Innovation & Product Launch',
-  'Market Potential & Growth',
-  'Financial & Market Performance',
-  'Legal',
+  "sentiments_by_concepts" : [['Financial & Market Performance',
   'Expansion - geography/segment',
-  'Corporate'],
- [{'text': 'Tech Alliance', 'value': 0.658},
-  {'text': 'New Product', 'value': 0.473},
-  {'text': 'Financial Performance', 'value': 0.48},
-  {'text': 'Compliance', 'value': 0.781},
-  {'text': 'Operations & Logistics', 'value': 0.781},
-  {'text': 'Leadership Change', 'value': 0.479}],
- [{'text': 'Operations & Logistics', 'value': 0.657},
-  {'text': 'Market Potential', 'value': 0.313},
-  {'text': 'Stock Performance', 'value': -0.122},
-  {'text': 'Lawsuit', 'value': 0.169},
-  {'text': 'Strategic Partnerships', 'value': 0.583},
+  'Innovation & Product Launch',
+  'Legal'],
+ [{'text': 'Revenue Growth', 'value': 0.838},
+  {'text': 'Acquisition', 'value': 0.82},
+  {'text': 'Tech Alliance', 'value': 0.787},
+  {'text': 'Corporate Ethics', 'value': 0.0}],
+ [{'text': 'Financial Performance', 'value': 0.448},
+  {'text': 'Strategic Partnerships', 'value': 0.772},
+  {'text': 'New Feature', 'value': 0.701},
+  {'text': 'Lawsuit', 'value': -0.038}],
+ [{'text': 'Investment', 'value': 0.236},
+  {'text': 'New Segment', 'value': 0.236},
+  {'text': 'Innovation', 'value': 0.361},
   {'text': '', 'value': 0}],
- [{'text': 'New Feature', 'value': 0.467},
-  {'text': 'Product Performance', 'value': 0.085},
-  {'text': 'Investment', 'value': -0.277},
-  {'text': '', 'value': 0},
-  {'text': '', 'value': 0},
-  {'text': '', 'value': 0}],
- [{'text': 'New Product', 'value': 0.456},
-  {'text': 'Market Share', 'value': 0.0},
-  {'text': '', 'value': 0},
-  {'text': '', 'value': 0},
-  {'text': '', 'value': 0},
-  {'text': '', 'value': 0}],
- [{'text': 'Innovation', 'value': 0.439},
-  {'text': 'Risks & Inhibitors', 'value': 0.0},
-  {'text': '', 'value': 0},
-  {'text': '', 'value': 0},
-  {'text': '', 'value': 0},
-  {'text': '', 'value': 0}],
- [{'text': 'Partnerships', 'value': -0.139},
-  {'text': '', 'value': 0},
-  {'text': '', 'value': 0},
-  {'text': '', 'value': 0},
+ [{'text': 'Stock Performance', 'value': 0.175},
+  {'text': 'Resources / Staffing ', 'value': -0.279},
   {'text': '', 'value': 0},
   {'text': '', 'value': 0}]],
 
   "stock_word_cloud" : card1_total_entities,
 
   "factors_that_impact_stock_price" :[
-    ["Key Factors", 'Innovation Article Count','Tech Alliance Sentiment','Compliance Sentiment','Fin Performance Sentiment','AMZN.Sentiment','Lawsuit Sentiment','Stock Performance Sentiment','Innovation Sentiment','GOOG Stock Price','IBM Stock Price'],
-    ["Correlation Coefficient", 0.33,0.28,0.26,0.12,0.12,-0.19,-0.19,-0.32,-0.4,-0.79]
+    ["Key Factors", 'Overall Sentiment Score','New Feature Sentiment','Financial Performance Sentiment','Strategic Partnerships Sentiment','Acquisition Sentiment','Tech Alliance sentiment','Legal Article sentiment','GOOGL Stock Price','Fin & Mkt Performance Article count','New Segment sentiment'],
+    ["Correlation Coefficient", 0.42,0.3,0.23,0.21,0.19,-0.09,-0.12,-0.19,-0.2,-0.24]
   ]
 }
