@@ -5219,7 +5219,7 @@ def change_name_and_slug_in_individual(name):
                 chart = change_data_in_wordcloud(details_data[cardD])
 
             if cardD == 'decisionTreeTable':
-                chart = change_data_in_decision_tree_table(details_data[cardD])
+                chart = change_data_in_table(details_data[cardD])
 
             if cardD == "key_events":
                 chart = change_data_in_table(details_data[cardD])
