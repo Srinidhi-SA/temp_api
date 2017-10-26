@@ -633,16 +633,13 @@ overview_of_second_node_databox_data = [{
       }, {
         "name": "",
         "value": "IBM"
-      }, {
-        "name": "",
-        "value": "MSFT"
-      }, {
+      },  {
         "name": "",
         "value": "FB"
       }
 ]
 
-text_overview = "Click next to view the Single Stock Analysis for the above stocks."
+text_overview = "Click next to view the Single Stock Analysis for the below stocks."
 
 amzn = {
   "databox": [

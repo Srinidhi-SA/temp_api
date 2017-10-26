@@ -5255,12 +5255,13 @@ def smaller_name_and_slug_in_individual(name):
             "name": "node2-caasdasd",
             "slug": "node2-card2asda",
             "cardData": [
+                change_html_data('<br/><br/><div style="text-align:center"><h2>{}</h2></div><br/><br/>'.format(text_overview)),
+
                 change_data_in_databox(
                     data=overview_of_second_node_databox_data,
                     databox=databox_chart
-                ),
-                change_html_data('<br/><br/><div style="text-align:center"><h2>{}</h2></div>'.format(text_overview))
-            ]
+                )
+                            ]
         }
 
     return card_1
@@ -5277,13 +5278,13 @@ node1_databox_data = [{
         "value": "0.27"
       }, {
         "name": "Overall Stock % Change",
-        "value": "4.5 %"
+        "value": "3.2 %"
       }, {
-        "name": "Overall Stock Value Change",
-        "value": "$137.1 Bn"
+        "name": "Max Increase in Price",
+        "value": "13.4% (FB)"
       }, {
-        "name": "Max Change in Price",
-        "value": "12.5% (MSFT)"
+        "name": "Max Decrease in Price",
+        "value": "-2.0% (AMZN)"
       }]
 
 
@@ -5339,14 +5340,6 @@ node1 = {
                     title="Articles by Concept"
                 ),
                 change_data_in_chart(
-                    data=article_by_source,
-                    chart=horizontal_bar_chart,
-                    x="Source",
-                    axes={"No. of Articles": "y"},
-                    widthPercent=100,
-                    title="Top Sources"
-                ),
-                change_data_in_chart(
                     data=stock_performace_card1,
                     chart=line_chart,
                     x="DATE",
@@ -5354,6 +5347,15 @@ node1 = {
                     widthPercent=100,
                     title="Stock Trend"
                 ),
+                change_data_in_chart(
+                    data=article_by_source,
+                    chart=horizontal_bar_chart,
+                    x="Source",
+                    axes={"No. of Articles": "y"},
+                    widthPercent=100,
+                    title="Top Sources"
+                ),
+
                 change_data_in_chart(
                     data=stock_by_sentiment_score,
                     chart=bar_chart,
