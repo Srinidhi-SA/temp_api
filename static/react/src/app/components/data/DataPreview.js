@@ -162,7 +162,7 @@ export class DataPreview extends React.Component {
 
 	}
 	setSideElements(e){
-		
+
 		//renderFlag=true;
 		//alert("setting side element!!")
 		const chkClass = $(e.target).attr('class');
@@ -234,6 +234,9 @@ export class DataPreview extends React.Component {
 		//alert("working");
 		this.new_subset = $("#newSubsetName").val()
 		//alert(this.new_subset)
+		if(this.new_subset==""||this.new_subset==null){
+			bootbox.alert("Please enter new config name!")
+		}else{
 		let transformationSettings = {};
 		transformationSettings.existingColumns = store.getState().datasets.dataTransformSettings;
 		let subSettingRq = {'filter_settings':store.getState().datasets.updatedSubSetting,
@@ -241,11 +244,12 @@ export class DataPreview extends React.Component {
 													'transformation_settings':transformationSettings};
 		this.props.dispatch(dataSubsetting(subSettingRq,this.props.dataPreview.slug))
 	}
+}
 	shouldComponentUpdate(nextProps) {
      return true;
     }
 
-	
+
 	render() {
 
 		console.log("data prev is called##########3");
@@ -524,7 +528,7 @@ export class DataPreview extends React.Component {
 				}
 					</div>
 					</div>
-					 
+
 
 					<DataUploadLoader/>
 					</div>

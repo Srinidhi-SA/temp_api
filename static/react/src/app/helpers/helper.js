@@ -25,7 +25,7 @@ const CONFUSIONMATRIX = "confusionMatrix";
 const HEATMAPTABLE = "heatMap";
 const CIRCULARCHARTTABLE = "circularChartTable";
 const DECISIONTREETABLE = "decisionTreeTable"
-const DULOADERPERVALUE = 3;
+const DULOADERPERVALUE = 1;
 const CSLOADERPERVALUE = 1;
 const LOADERMAXPERVALUE = 99;
 const DEFAULTINTERVAL = 10000;
@@ -151,6 +151,21 @@ export function  generateRows(table) {
 		if(i != 0){
 			var rows = rowData.map(function(colData,j) {
 	  	           return<td key={j}>{colData}</td>;
+	  	       });
+			return<tr key={i}>{rows}</tr>;
+		}
+	  })
+	return tbodyData;
+	}
+
+export function  generateNormalTableRows(table) {
+	var tbodyData = table.tableData.map(function(rowData,i){
+		if(i != 0){
+			var rows = rowData.map(function(colData,j) {
+				if(j == 0)
+	  	           return<td key={j} width="15%">{colData}</td>;
+	  	           else
+	  	        	return<td key={j}>{colData}</td>;   
 	  	       });
 			return<tr key={i}>{rows}</tr>;
 		}

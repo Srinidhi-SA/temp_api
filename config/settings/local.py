@@ -9,10 +9,23 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'madvisor',
+        'USER': 'marlabs',
+        'PASSWORD': 'Password@123',
+        # 'USER': 'root',
+        # 'PASSWORD': 'root',
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 
@@ -23,7 +36,6 @@ INSTALLED_APPS += PROJECT_APP
 
 
 HDFS = {
-
     # Give host name without http
     'host': 'ec2-34-205-203-38.compute-1.amazonaws.com',
     'port': '14000', #webhdfs port
@@ -56,6 +68,8 @@ JOBSERVER = {
     'score': 'bi.sparkjobs.JobScript',
     'filter': 'bi.sparkjobs.filter.JobScript',
     'robo': 'bi.sparkjobs.JobScript',
+    'subSetting': 'bi.sparkjobs.JobScript',
+    'stockAdvisor': 'bi.sparkjobs.JobScript'
 }
 
 THIS_SERVER_DETAILS = {
@@ -64,8 +78,22 @@ THIS_SERVER_DETAILS = {
     "initail_domain": "/api"
 }
 
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient"
+        },
+        "KEY_PREFIX": "local"
+    }
+}
+CACHE_TTL = 60 * 15
+REDIS_SALT = "123"
+
 
 APPEND_SLASH=False
 DATA_UPLOAD_MAX_MEMORY_SIZE = 1024*1024*1024
 
 mAdvisorScores = '/home/hadoop/mAdvisorScores/'
+IMAGE_URL = "/api/get_profile_image/"
