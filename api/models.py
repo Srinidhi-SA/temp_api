@@ -5059,6 +5059,15 @@ def change_data_in_chart(data, chart, x=None, axes=None, widthPercent=None, titl
 
     return t_chart
 
+def change_data_in_chart_no_zoom(data, chart, x=None, axes=None, widthPercent=None, title=None):
+    t_chart = set_axis_and_data(axes, chart, data, x)
+    set_label_and_title(axes, t_chart, title, widthPercent, x)
+
+    make_y2axis(axes, t_chart)
+
+    t_chart["data"]["chart_c3"]["subchart"]= None
+    return t_chart
+
 
 def set_label_and_title(axes, chart, title, widthPercent, x):
     if title:
@@ -5354,14 +5363,14 @@ node1 = {
                     widthPercent=50,
                     title="Articles by Concept"
                 ),
-                change_data_in_chart(
-                    data=stock_performace_card1,
-                    chart=line_chart,
-                    x="DATE",
-                    axes={},
-                    widthPercent=100,
-                    title="Stock Trend"
-                ),
+                # change_data_in_chart_no_zoom(
+                #     data=stock_performace_card1,
+                #     chart=line_chart,
+                #     x="DATE",
+                #     axes={},
+                #     widthPercent=100,
+                #     title="Stock Performance Analysis"
+                # ),
                 change_data_in_chart(
                     data=article_by_source,
                     chart=horizontal_bar_chart,
