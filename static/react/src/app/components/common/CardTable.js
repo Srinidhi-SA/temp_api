@@ -12,35 +12,38 @@ import {ConfusionMatrix} from "./ConfusionMatrix";
 import {DecisionTreeTable} from "./decisionTreeTable";
 import {HeatMapTable} from "./heatmap";
 import {TextHeatMapTable} from "./TextHeatMapTable";
+import {NormalTable} from "/NormalTable";
 
 export class CardTable extends React.Component {
-  constructor(){
-    super();
-  }
- 
-  render() {
-   var element = this.props.jsonData;
-   console.log("checking table element");
-   let tableEle = "";
-   if(element.tableType == CIRCULARCHARTTABLE){
-	   tableEle =  <CircularChartTable  tableData={element} />;
-   }
-   if(element.tableType == CONFUSIONMATRIX){
-	   tableEle = <ConfusionMatrix tableData={element}/>;
-       }
-   if(element.tableType == DECISIONTREETABLE){
-	   tableEle = <DecisionTreeTable tableData={element}/>;
-       }
-	 if(element.tableType == HEATMAPTABLE){
-	   tableEle = <HeatMapTable tableData={element}/>;
-	 }
-	 if(element.tableType == TEXTHEATMAPTABLE){
-		   tableEle = <TextHeatMapTable tableData={element}/>;
-		 }
-   return (
-		      <div>
-		        {tableEle}
-		      </div>
-		    );
-  }
+	constructor(){
+		super();
+	}
+
+	render() {
+		var element = this.props.jsonData;
+		console.log("checking table element");
+		let tableEle = "";
+		if(element.tableType == CIRCULARCHARTTABLE){
+			tableEle =  <CircularChartTable  tableData={element} />;
+		}
+		if(element.tableType == CONFUSIONMATRIX){
+			tableEle = <ConfusionMatrix tableData={element}/>;
+		}
+		if(element.tableType == DECISIONTREETABLE){
+			tableEle = <DecisionTreeTable tableData={element}/>;
+		}
+		if(element.tableType == HEATMAPTABLE){
+			tableEle = <HeatMapTable tableData={element}/>;
+		}
+		if(element.tableType == NORMALTABLE){
+			tableEle = <NormalTable tableData={element}/>;
+		}if(){
+			
+		}
+		return (
+				<div>
+				{tableEle}
+				</div>
+		);
+	}
 }
