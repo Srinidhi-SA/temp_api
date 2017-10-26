@@ -7,6 +7,7 @@ import os
 import random
 import string
 
+from __builtin__ import list
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
@@ -4929,12 +4930,14 @@ def change_data_in_table(data):
 
 def change_name_and_slug_in_individual(name):
     import copy
-    temp_node = copy.deepcopy(individual_company)
+    # temp_node = copy.deepcopy(individual_company)
+    temp_node = individual_company
     temp_node['name'] = name
     temp_node['slug'] = name
     listOfCards = temp_node['listOfCards']
+    new_list_of_cards = []
     final_list_of_cards = []
-    for cards in listOfCards:
+    for i, cards in enumerate(listOfCards):
         this_card = {}
         cards["name"] = ''.join(
                 random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
@@ -5011,13 +5014,23 @@ def change_name_and_slug_in_individual(name):
             if chart is not None:
                 temp_card_data.append(chart)
 
+        print temp_card_data
         cards['cardData'] = temp_card_data
+        print "temp_card_data"
+        print cards['cardData']
+        new_list_of_cards.append(cards)
 
+    print new_list_of_cards
+    print "new_list_of_cards"
+    temp_node['listOfCards'] = new_list_of_cards
+
+    print temp_node
     return temp_node
 
 def smaller_name_and_slug_in_individual(name):
-    import copy
-    temp_node = copy.deepcopy(individual_company)
+    # import copy
+    # temp_node = copy.deepcopy(individual_company)
+    temp_node = {}
     temp_node['name'] = name
     temp_node['slug'] = name
 
@@ -5026,11 +5039,15 @@ def smaller_name_and_slug_in_individual(name):
             "name": "node2-caasdasd",
             "slug": "node2-card2asda",
             "cardData": [
-                change_html_data('<p><h2>{}</h2>{}</p>'.format("Test", "Test content"))
+                change_data_in_databox(
+                    data=overview_of_second_node_databox_data,
+                    databox=databox_chart
+                ),
+                change_html_data('<br/><br/><div style="text-align:center"><h2>{}</h2></div>'.format(text_overview))
             ]
         }
 
-    return temp_node['listOfCards'][0]
+    return card_1
 
 
 node1_databox_data = [{
@@ -5076,7 +5093,8 @@ from sample_stock_data import stock_performace_card1, \
     card1_total_entities, \
     number_of_articles_by_concept, \
     overview_of_second_node_databox_data, \
-    stock_name_match_with_data
+    stock_name_match_with_data, \
+    text_overview
 
 
 node1 = {
@@ -5154,7 +5172,7 @@ node2 = {
 sample_dummy_data_for_stock = {
     "listOfNodes": [
         node1,
-        # node2
+        node2
     ],
     "listOfCards": [],
     "name": "Overview card",

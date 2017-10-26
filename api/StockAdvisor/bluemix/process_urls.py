@@ -46,7 +46,7 @@ class ProcessUrls:
         reader = csv.reader(f)
         for (i, row) in enumerate(reader):
 
-            if DEBUG and i > 10:
+            if DEBUG and i > 100:
                 break
             if i == 0:
                 self.csv_header = row
