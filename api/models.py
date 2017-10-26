@@ -5337,8 +5337,8 @@ node1_databox_data = [{
 
 
 number_of_articles_by_stock = [
-    ['Stock', "FB", "GOOGL", "IBM", "AMZN", "MSFT", "AAPL"],
-    ['No. of Articles', 92, 94, 71, 128, 97, 101]
+    ['Stock', "FB", "GOOGL", "IBM", "AMZN", "AAPL"],
+    ['No. of Articles', 92, 94, 71, 128, 101]
 ]
 
 
