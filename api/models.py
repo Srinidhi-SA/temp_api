@@ -3823,7 +3823,9 @@ line_chart = {
                     "show": True
                 }
             },
-            "subchart": None,
+            "subchart": {
+                    "show": True
+                },
             "data": {
                 "x": "date",
                 "axes": {
@@ -5060,6 +5062,16 @@ def change_data_in_chart(data, chart, x=None, axes=None, widthPercent=None, titl
 
     return t_chart
 
+def change_data_in_chart_time_series(data, chart, x=None, axes=None, widthPercent=None, title=None):
+    t_chart = change_data_in_chart(data, chart, x, axes, widthPercent, title)
+    t_chart["axis"]={"x": {
+            'type': 'timeseries',
+            'tick': {
+                'format': '%d-%m-%Y'
+            }
+        }}
+    return t_chart
+
 def change_data_in_chart_no_zoom(data, chart, x=None, axes=None, widthPercent=None, title=None):
     t_chart = set_axis_and_data(axes, chart, data, x)
     set_label_and_title(axes, t_chart, title, widthPercent, x)
@@ -5191,7 +5203,7 @@ def change_name_and_slug_in_individual(name):
 
                 )
             if cardD == 'stock_performance_vs_sentiment_score':
-                chart = change_data_in_chart(
+                chart = change_data_in_chart_time_series (
                     data=details_data[cardD],
                     chart=line_chart,
                     x="Date",
@@ -5375,14 +5387,14 @@ node1 = {
                     widthPercent=50,
                     title="Articles by Concept"
                 ),
-                # change_data_in_chart_no_zoom(
-                #     data=stock_performace_card1,
-                #     chart=line_chart,
-                #     x="DATE",
-                #     axes={},
-                #     widthPercent=100,
-                #     title="Stock Performance Analysis"
-                # ),
+                change_data_in_chart(
+                    data=stock_performace_card1,
+                    chart=line_chart,
+                    x="DATE",
+                    axes={},
+                    widthPercent=100,
+                    title="Stock Performance Analysis"
+                ),
                 change_data_in_chart(
                     data=article_by_source,
                     chart=horizontal_bar_chart,
