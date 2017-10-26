@@ -15,7 +15,7 @@ export default function(divId){
    /*  var yr = 0;
    var yg = 100;
    var yb = 0*/
-    
+
 	var yr = 0;
    var yg = 153;
    var yb = 140
@@ -23,7 +23,7 @@ export default function(divId){
    var n = 100;
   var counts= $("."+divId).find('tbody td').not('.stats-title').map(function() {
       if($(this).text() != '')
-        return parseInt($(this).text());
+        return parseFloat($(this).attr("value"));
         // .replace('%','').trim()
     }).get();
 
@@ -32,11 +32,22 @@ export default function(divId){
 
     // add classes to cells based on nearest 10 value
     $("."+divId).find('tbody td').not('.stats-title').each(function(){
-        var val = parseInt($(this).text());
-        var pos = parseInt((Math.round((val/max)*100)).toFixed(0));
-        red = parseInt((xr + (( pos * (yr - xr)) / (n-1))).toFixed(0));
-        green = parseInt((xg + (( pos * (yg - xg)) / (n-1))).toFixed(0));
-        blue = parseInt((xb + (( pos * (yb - xb)) / (n-1))).toFixed(0));
+       //var val = parseFloat($(this).text());
+      let val = $(this).text();
+      var digitExp = /\d+/g;
+
+      var exp = /[a-z]/i;
+      if(exp.test(val)){
+        val = parseFloat($(this).attr("value"));
+      //  val = parseFloat(val.match(digitExp));
+      }else{
+         val = parseFloat(val);
+      }
+
+        var pos = parseFloat((Math.round((val/max)*100)).toFixed(0));
+        red = parseFloat((xr + (( pos * (yr - xr)) / (n-1))).toFixed(0));
+        green = parseFloat((xg + (( pos * (yg - xg)) / (n-1))).toFixed(0));
+        blue = parseFloat((xb + (( pos * (yb - xb)) / (n-1))).toFixed(0));
         clr = 'rgb('+red+','+green+','+blue+')';
         $(this).css({backgroundColor:clr});
     });

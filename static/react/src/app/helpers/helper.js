@@ -116,10 +116,12 @@ export function generateTextHeatMapRows(table) {
     var cols = table.tableData.map(function(rowData,i){
   	  if(i!= 0){
   		  var row=rowData.map(function(colData,j) {
-			      if(colData.value == 0){
-					  return<td key={j}></td>;
+          console.log(colData)
+			      if(colData.value == 0 && colData.text == "" ){
+					  return<td key={j} value={colData.value}></td>;
 				  }else{
-					 return<td key={j}>{colData.text}<br/>{colData.value}</td>;
+					 //return<td key={j}>{colData.text}<br/>{colData.value}</td>;
+           return<td key={j} value={colData.value}>{colData.text}<br/>{colData.value}</td>;
 				  }
 
     	       });

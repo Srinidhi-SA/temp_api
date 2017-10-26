@@ -12,13 +12,15 @@ export class TextHeatMapTable extends React.Component {
   constructor(){
     super();
   }
-  
+
   componentDidMount(){
 	  HeatMap("heat-table-map");
   }
- 
+
   render() {
    var data = this.props.tableData;
+   console.log("##########")
+   console.log(data)
    var tableTitle ="";
    if(this.props.tableData.topHeader){
    tableTitle = this.props.tableData.topHeader;
