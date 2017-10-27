@@ -701,76 +701,37 @@ amzn = {
     [-0.321173, 0, 0.4190155, 0.521027857, 0.098543571, 0.242415, 0.1702598, 0.711370923, 0.231899571, 0.027166571, 0.692694, -0.059662857, -0.27856, 0.540145444, 0.59759425, 0.394379, 0.801072857, 0.7165695, 0, 0.83784, 0, 0.3079695, -0.13928, 0.68561, 0.3906345]
   ],
   "key_parameter_that_impact_stock_prices": [],
-  "decisionTreeTable": [
-    [
-      "Date",
-      "% change in Stock Price",
-      "Source",
-      "Title",
-      "Sentiment"
-    ],
-    [
-      "16-10-2017",
-      [
-        "1.84%"
-      ],
-      [
-        "Investorplace.com (blog)"
-      ],
-      [
-        "Apple Pay Cash Will Boost Apple Inc. Stock  With Time"
-      ],
-      [
-        "0.34"
-
-      ]
-    ],
-    [
-      "26-09-2017",
-      [
-        "1.72%"
-      ],
-      [
-        "Motley Fool"
-      ],
-      [
-        "Apple, Incs Siri Wont Bing It for You Anymore"
-      ],
-      [
-        "0.77"
-      ]
-    ],
-    [
-      "22-09-2017",
-      [
-        "-0.98%"
-      ],
-      [
-        "Reuters Key Development"
-      ],
-      [
-        "Quanta Computer clarifies media reports regarding manufacturing of Apple products"
-      ],
-      [
-        "0.86"
-      ]
-    ],
-    [
-      "14-06-2017",
-      [
-        "-0.98%"
-      ],
-      [
-        "Reuters Key Development"
-      ],
-      [
-        "Apple files for notes offering of up to $1.0 billion"
-      ],
-      [
-        "0.83"
-      ]
-    ]
-  ],
+  "decisionTreeTable":  [['Date', 'Source', 'Title', 'Sentiment', 'Stock Value Change(%)'],
+ ['24-08-2017',
+  'Reuters Key Development',
+  'Amazon, Whole Foods acquisition to close on Aug 28',
+  0.886,
+  -0.006],
+ ['05-09-2017',
+  'Reuters Key Development',
+  'United Airlines says to offer Alexa skill for customers',
+  0.879,
+  -0.013],
+ ['19-07-2017',
+  'Reuters Key Development',
+  'Amazon has launched Amazon Pay Places at TGI Fridays via Amazon app',
+  0.868,
+  0.002],
+ ['16-10-2017',
+  'Seeking Alpha',
+  'Alibaba Vs. Amazon: Cloud Wars',
+  -0.279,
+  0.003],
+ ['13-10-2017',
+  'MarketWatch',
+  'Amazon suspends studio head over sexual harassment allegations',
+  -0.642,
+  0.002],
+ ['02-10-2017',
+  'Seeking Alpha',
+  'Will Amazon Make Money Next Year?',
+  -0.279,
+  -0.002]],
 "key_events": [
     [
       "Date",
@@ -1033,6 +994,8 @@ amzn = {
 
 from googl_info import googl
 from fb_info import fb
+from appl_info import appl
+from ibm_info import ibm
 
 
 AMZN = {
@@ -1043,6 +1006,8 @@ import copy
 stock_name_match_with_data = {
   "AMZN": amzn,
   "GOOGL": googl,
-  "FB": fb
+  "FB": fb,
+  "AAPL": appl,
+  "IBM": ibm
 }
 

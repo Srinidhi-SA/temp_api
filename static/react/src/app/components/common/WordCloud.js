@@ -23,6 +23,7 @@ export class WordCloud extends React.Component {
           fontSizeMapper={fontSizeMapper}
           rotate={rotate}
           width="900"
+          height="400"
           />
         	</div>
        );
