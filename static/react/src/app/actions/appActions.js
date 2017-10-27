@@ -987,7 +987,7 @@ export function storeModelSearchElement(search_element){
 }
 export function clearRoboSummary(){
 	return {
-		type: "ROBO_SUMMARY_SUCCESS",
+		type: "CLEAR_ROBO_SUMMARY_SUCCESS",
 	}
 }
 export function showAudioFUModal(){
