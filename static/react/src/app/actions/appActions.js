@@ -1,8 +1,8 @@
 import {API} from "../helpers/env";
-import {PERPAGE,isEmpty,USERDETAILS} from "../helpers/helper";
+import {PERPAGE,isEmpty} from "../helpers/helper";
 import store from "../store";
 import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,CUSTOMERDATA,HISTORIALDATA,EXTERNALDATA,DELETEMODEL,
-	RENAMEMODEL,DELETESCORE,RENAMESCORE,DELETEINSIGHT,RENAMEINSIGHT,SUCCESS,FAILED,DELETEAUDIO,RENAMEAUDIO} from "../helpers/helper";
+	RENAMEMODEL,DELETESCORE,RENAMESCORE,DELETEINSIGHT,RENAMEINSIGHT,SUCCESS,FAILED,DELETEAUDIO,RENAMEAUDIO,USERDETAILS} from "../helpers/helper";
 import {hideDataPreview,getDataSetPreview,showDataPreview} from "./dataActions";
 import {getHeaderWithoutContent} from "./dataUploadActions";
 import Dialog from 'react-bootstrap-dialog';
@@ -32,7 +32,7 @@ export function closeModelPopup() {
 
 export function getAppsModelList(pageNo) {
 	return (dispatch) => {
-		return fetchModelList(pageNo,sessionStorage.userToken).then(([response, json]) =>{
+		return fetchModelList(pageNo,USERDETAILS.userToken).then(([response, json]) =>{
 			if(response.status === 200){
 				console.log(json)
 				dispatch(fetchModelListSuccess(json))
@@ -104,7 +104,7 @@ export function createModel(modelName,targetVariable) {
 	console.log(targetVariable);
 	  return (dispatch) => {
 		  dispatch(openAppsLoader(DULOADERPERVALUE,"Please wait while mAdvisor is creating model... "));
-			return triggerCreateModel(sessionStorage.userToken,modelName,targetVariable).then(([response, json]) =>{
+			return triggerCreateModel(USERDETAILS.userToken,modelName,targetVariable).then(([response, json]) =>{
 				if(response.status === 200){
 					console.log(json)
 					dispatch(createModelSuccess(json,dispatch))
@@ -157,7 +157,7 @@ function createModelSuccess(data,dispatch){
 }
 export function getAppsScoreList(pageNo) {
 	return (dispatch) => {
-		return fetchScoreList(pageNo,sessionStorage.userToken).then(([response, json]) =>{
+		return fetchScoreList(pageNo,USERDETAILS.userToken).then(([response, json]) =>{
 			if(response.status === 200){
 				console.log(json)
 				dispatch(fetchScoreListSuccess(json));
@@ -229,7 +229,7 @@ export function hideCreateScorePopup() {
 
 export function getAppsModelSummary(slug) {
 	return (dispatch) => {
-		return fetchModelSummary(sessionStorage.userToken,slug).then(([response, json]) =>{
+		return fetchModelSummary(USERDETAILS.userToken,slug).then(([response, json]) =>{
 			if(response.status === 200){
 				if(json.status == SUCCESS){
 					clearInterval(appsInterval);
@@ -297,7 +297,7 @@ export function createScore(scoreName,targetVariable) {
 	console.log(targetVariable);
 	  return (dispatch) => {
 		  dispatch(openAppsLoader(DULOADERPERVALUE,"Please wait while mAdvisor is scoring your model... "));
-			return triggerCreateScore(sessionStorage.userToken,scoreName,targetVariable).then(([response, json]) =>{
+			return triggerCreateScore(USERDETAILS.userToken,scoreName,targetVariable).then(([response, json]) =>{
 				if(response.status === 200){
 
 					dispatch(createScoreSuccess(json,dispatch))
@@ -352,7 +352,7 @@ function createScoreSuccess(data,dispatch){
 
 export function getAppsScoreSummary(slug) {
 	return (dispatch) => {
-		return fetchScoreSummary(sessionStorage.userToken,slug).then(([response, json]) =>{
+		return fetchScoreSummary(USERDETAILS.userToken,slug).then(([response, json]) =>{
 			if(response.status === 200){
 				if(json.status == SUCCESS){
 					clearInterval(appsInterval);
@@ -467,7 +467,7 @@ export function updateScoreSlug(slug){
 
 export function getAppsRoboList(pageNo) {
 	return (dispatch) => {
-		return fetchRoboList(pageNo,sessionStorage.userToken).then(([response, json]) =>{
+		return fetchRoboList(pageNo,USERDETAILS.userToken).then(([response, json]) =>{
 			if(response.status === 200){
 				console.log(json)
 				dispatch(fetchRoboListSuccess(json))
@@ -565,7 +565,7 @@ if(!isEmpty(store.getState().apps.customerDataUpload) && !isEmpty(store.getState
 	return (dispatch) => {
 		  dispatch(closeRoboDataPopup());
 		  dispatch(openAppsLoader(DULOADERPERVALUE,"Please wait while mAdvisor is processing data... "));
-			return triggerDataUpload(sessionStorage.userToken,insightName).then(([response, json]) =>{
+			return triggerDataUpload(USERDETAILS.userToken,insightName).then(([response, json]) =>{
 				if(response.status === 200){
 
 					dispatch(dataUploadFilesSuccess(json,dispatch))
@@ -624,7 +624,7 @@ export function updateRoboSlug(slug){
 export function getRoboDataset(slug) {
 	return (dispatch) => {
 		dispatch(updateRoboSlug(slug));
-		return fetchRoboDataset(sessionStorage.userToken,slug).then(([response, json]) =>{
+		return fetchRoboDataset(USERDETAILS.userToken,slug).then(([response, json]) =>{
 			if(response.status === 200){
 				if(json.status == SUCCESS){
 					clearInterval(appsInterval);
@@ -754,7 +754,7 @@ function deleteModel(slug,dialog,dispatch){
 function deleteModelAPI(slug){
 	return fetch(API+'/api/trainer/'+slug+'/',{
 		method: 'put',
-		headers: getHeader(sessionStorage.userToken),
+		headers: getHeader(USERDETAILS.userToken),
 		body:JSON.stringify({
 			deleted:true,
 		}),
@@ -816,7 +816,7 @@ function renameModel(slug,dialog,newName,dispatch){
 function renameModelAPI(slug,newName){
 	return fetch(API+'/api/trainer/'+slug+'/',{
 		method: 'put',
-		headers: getHeader(sessionStorage.userToken),
+		headers: getHeader(USERDETAILS.userToken),
 		body:JSON.stringify({
 			name:newName,
 		}),
@@ -847,7 +847,7 @@ function deleteScore(slug,dialog,dispatch){
 function deleteScoreAPI(slug){
 	return fetch(API+'/api/score/'+slug+'/',{
 		method: 'put',
-		headers: getHeader(sessionStorage.userToken),
+		headers: getHeader(USERDETAILS.userToken),
 		body:JSON.stringify({
 			deleted:true,
 		}),
@@ -885,7 +885,7 @@ function renameScore(slug,dialog,newName,dispatch){
 function renameScoreAPI(slug,newName){
 	return fetch(API+'/api/score/'+slug+'/',{
 		method: 'put',
-		headers: getHeader(sessionStorage.userToken),
+		headers: getHeader(USERDETAILS.userToken),
 		body:JSON.stringify({
 			name:newName,
 		}),
@@ -922,7 +922,7 @@ function deleteInsight(slug,dialog,dispatch){
 function deleteInsightAPI(slug){
 	return fetch(API+'/api/robo/'+slug+'/',{
 		method: 'put',
-		headers: getHeader(sessionStorage.userToken),
+		headers: getHeader(USERDETAILS.userToken),
 		body:JSON.stringify({
 			deleted:true,
 		}),
@@ -960,7 +960,7 @@ function renameInsight(slug,dialog,newName,dispatch){
 function renameInsightAPI(slug,newName){
 	return fetch(API+'/api/robo/'+slug+'/',{
 		method: 'put',
-		headers: getHeader(sessionStorage.userToken),
+		headers: getHeader(USERDETAILS.userToken),
 		body:JSON.stringify({
 			name:newName,
 		}),
@@ -1013,7 +1013,7 @@ export function uploadAudioFile(){
 	return (dispatch) => {
 		  dispatch(hideAudioFUModal());
 		  dispatch(openAppsLoader(DULOADERPERVALUE,"Please wait while mAdvisor analyzes the audio file... "));
-			return triggerAudioUpload(sessionStorage.userToken).then(([response, json]) =>{
+			return triggerAudioUpload(USERDETAILS.userToken).then(([response, json]) =>{
 				if(response.status === 200){
 
 					dispatch(audioUploadFilesSuccess(json,dispatch))
@@ -1058,7 +1058,7 @@ function audioUploadFilesError(){
 
 export function getAudioFile(slug) {
 	return (dispatch) => {
-		return fetchAudioFileSummary(sessionStorage.userToken,slug).then(([response, json]) =>{
+		return fetchAudioFileSummary(USERDETAILS.userToken,slug).then(([response, json]) =>{
 			if(response.status === 200){
 				if(json.status == SUCCESS){
 					dispatch(fetchAFSummarySuccess(json));
@@ -1117,7 +1117,7 @@ export function updateAudioFileSummaryFlag(flag){
 
 export function getAudioFileList(pageNo){
 	return (dispatch) => {
-		return fetchAudioList(pageNo,sessionStorage.userToken).then(([response, json]) =>{
+		return fetchAudioList(pageNo,USERDETAILS.userToken).then(([response, json]) =>{
 			if(response.status === 200){
 				dispatch(fetchAudioListSuccess(json))
 			}
@@ -1196,7 +1196,7 @@ function deleteAudio(slug,dialog,dispatch){
 function deleteAudioAPI(slug){
 	return fetch(API+'/api/audioset/'+slug+'/',{
 		method: 'put',
-		headers: getHeader(sessionStorage.userToken),
+		headers: getHeader(USERDETAILS.userToken),
 		body:JSON.stringify({
 			deleted:true,
 		}),
@@ -1235,7 +1235,7 @@ function renameAudio(slug,dialog,newName,dispatch){
 function renameAudioAPI(slug,newName){
 	return fetch(API+'/api/audioset/'+slug+'/',{
 		method: 'put',
-		headers: getHeader(sessionStorage.userToken),
+		headers: getHeader(USERDETAILS.userToken),
 		body:JSON.stringify({
 			name:newName,
 		}),

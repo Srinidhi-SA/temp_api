@@ -1,6 +1,7 @@
 import store from "../store";
 import {sessionObject} from '../helpers/manageSessionStorage';
 import {API} from "../helpers/env";
+import {USERDETAILS} from "../helpers/env";
 import { sessionService } from 'redux-react-session';
 import { browserHistory } from 'react-router';
 import {cookieObj} from '../helpers/cookiesHandler';
@@ -24,8 +25,6 @@ export function authenticateFunc(username,password) {
 }
 
 function fetchPosts(username,password) {
-  // console.log("user and pass is:");
-  // console.log(username+" "+password);
   return fetch(API+'/api-token-auth/',{
 		method: 'POST',
 		headers: {
@@ -140,7 +139,7 @@ export function uploadImg(){
 
     return fetch(API + '/api/upload_photo/', {
       method: 'put',
-      headers: getHeaderWithoutContent(sessionStorage.userToken),
+      headers: getHeaderWithoutContent(USERDETAILS.userToken),
       body: data
     }).then(response => Promise.all([response, response.json()]));
 

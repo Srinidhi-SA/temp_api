@@ -54,12 +54,9 @@ export class Login extends React.Component {
     this.state.errmsg = this.props.errmsg;
     if (document.cookie.indexOf("JWT ") > 0 ) {
       console.log("authorized!!!");
-      var data = setUserDetails.manageSession();
+      var data = setUserDetails.user();
       console.log(USERDETAILS)
       //sessionObject.manageSession();
-     // var url =  sessionStorage.url ;
-      //if(url == "" || url  == undefined || url == "/login")url = "/";
-      //console.log(url);
       return (<Redirect to={"/"} />);
     } else {
       return (

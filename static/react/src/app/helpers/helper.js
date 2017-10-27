@@ -14,7 +14,7 @@ export function isEmpty(obj) {
 var  USERDETAILS = {};
 
 export const setUserDetails = {
-		manageSession: function() {
+		user: function() {
 			let  userDetail = {};
 			let allCookies = document.cookie.split(";");
 			for(let i=0;i<allCookies.length;i++){

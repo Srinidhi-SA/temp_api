@@ -1,6 +1,6 @@
 import {API} from "../helpers/env";
 import store from "../store";
-import {FILEUPLOAD, DULOADERPERVALUE, LOADERMAXPERVALUE, DEFAULTINTERVAL, DULOADERPERMSG} from "../helpers/helper";
+import {FILEUPLOAD, DULOADERPERVALUE, LOADERMAXPERVALUE, DEFAULTINTERVAL, DULOADERPERMSG,USERDETAILS} from "../helpers/helper";
 import {getDataList, getDataSetPreview, updateDatasetName, openDULoaderPopup} from "./dataActions";
 export var dataPreviewInterval = null;
 
@@ -17,7 +17,7 @@ export function dataUpload() {
     dispatch(dataUploadLoaderMsg(DULOADERPERMSG));
     dispatch(close());
     dispatch(openDULoaderPopup());
-    return triggerDataUpload(sessionStorage.userToken).then(([response, json]) => {
+    return triggerDataUpload(USERDETAILS.userToken).then(([response, json]) => {
 
       // dispatch(dataUploadLoaderValue(json.message[json.message.length-1].globalCompletionPercentage));
       // dispatch()
@@ -147,7 +147,7 @@ export function dataSubsetting(subsetRq, slug) {
 function triggerDataSubsetting(subsetRq, slug) {
   return fetch(API + '/api/datasets/' + slug + '/', {
     method: 'put',
-    headers: getHeader(sessionStorage.userToken),
+    headers: getHeader(USERDETAILS.userToken),
     body: JSON.stringify(subsetRq)
   }).then(response => Promise.all([response, response.json()]));
 
