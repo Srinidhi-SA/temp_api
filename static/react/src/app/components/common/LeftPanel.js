@@ -56,7 +56,7 @@ hideDataPrev(e){
                       STORY</NavLink>
                   </li>*/}
 
-               {/* <li>
+                <li>
                     <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" className=" sdb sdb_app" to ="/apps">
                       <span></span>
                       APPS</NavLink>
@@ -66,7 +66,7 @@ hideDataPrev(e){
                     <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" className="sdb sdb_data" to ="/data">
                       <span></span>
                       DATA</NavLink>
-                  </li> */} 
+                  </li> 
                   {/* <li>
                     <NavLink  onClick={this.hideDataPrev.bind(this)} activeClassName="active" className="sdb sdb_settings" to ="/settings">
                       <span></span>

@@ -11,7 +11,7 @@ import {
   getLastCardOfTree
 } from "../../helpers/processStory";
 import {connect} from "react-redux";
-import {isEmpty, subTreeSetting} from "../../helpers/helper";
+import {isEmpty, subTreeSetting,USERDETAILS} from "../../helpers/helper";
 import {MainHeader} from "../../components/common/MainHeader";
 import {Card} from "./Card";
 import store from "../../store";
@@ -49,7 +49,7 @@ setSideListFlag(e){
     	if(this.props.match.url.indexOf("apps-robo") != -1){
     		this.props.dispatch(getRoboDataset(this.props.match.params.slug));
     	}else{
-    		this.props.dispatch(getSignalAnalysis(sessionStorage.userToken, this.props.match.params.slug));
+    		this.props.dispatch(getSignalAnalysis(USERDETAILS.userToken, this.props.match.params.slug));
     	}
     }
   }
