@@ -1,7 +1,7 @@
 import {API} from "../helpers/env";
 import {PERPAGE,isEmpty} from "../helpers/helper";
 import store from "../store";
-import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,CUSTOMERDATA,HISTORIALDATA,EXTERNALDATA,DELETEMODEL,
+import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,CUSTOMERDATA,HISTORIALDATA,EXTERNALDATA,DELETEMODEL,
 	RENAMEMODEL,DELETESCORE,RENAMESCORE,DELETEINSIGHT,RENAMEINSIGHT,SUCCESS,FAILED,DELETEAUDIO,RENAMEAUDIO} from "../helpers/helper";
 	import {hideDataPreview,getStockDataSetPreview,showDataPreview,getDataSetPreview} from "./dataActions";
 	import {getHeaderWithoutContent} from "./dataUploadActions";
@@ -103,7 +103,7 @@ import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,C
 		console.log(modelName);
 		console.log(targetVariable);
 		return (dispatch) => {
-			dispatch(openAppsLoader(DULOADERPERVALUE,"Please wait while mAdvisor is creating model... "));
+			dispatch(openAppsLoader(APPSLOADERPERVALUE,"Please wait while mAdvisor is creating model... "));
 			return triggerCreateModel(sessionStorage.userToken,modelName,targetVariable).then(([response, json]) =>{
 				if(response.status === 200){
 					console.log(json)
@@ -142,7 +142,7 @@ import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,C
 		var slug = data.slug;
 		appsInterval = setInterval(function(){
 			if(store.getState().apps.appsLoaderPerValue < LOADERMAXPERVALUE){
-				dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE));
+				dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+APPSLOADERPERVALUE));
 			}
 			dispatch(getAppsModelSummary(data.slug));
 			return {
@@ -296,7 +296,7 @@ import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,C
 		console.log(scoreName);
 		console.log(targetVariable);
 		return (dispatch) => {
-			dispatch(openAppsLoader(DULOADERPERVALUE,"Please wait while mAdvisor is scoring your model... "));
+			dispatch(openAppsLoader(APPSLOADERPERVALUE,"Please wait while mAdvisor is scoring your model... "));
 			return triggerCreateScore(sessionStorage.userToken,scoreName,targetVariable).then(([response, json]) =>{
 				if(response.status === 200){
 
@@ -336,7 +336,7 @@ import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,C
 		var slug = data.slug;
 		appsInterval = setInterval(function(){
 			if(store.getState().apps.appsLoaderPerValue < LOADERMAXPERVALUE){
-				dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE));
+				dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+APPSLOADERPERVALUE));
 			}
 			dispatch(getAppsScoreSummary(data.slug));
 			return {
@@ -562,7 +562,7 @@ import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,C
 		if(!isEmpty(store.getState().apps.customerDataUpload) && !isEmpty(store.getState().apps.historialDataUpload) && !isEmpty(store.getState().apps.externalDataUpload)){
 			return (dispatch) => {
 				dispatch(closeRoboDataPopup());
-				dispatch(openAppsLoader(DULOADERPERVALUE,"Please wait while mAdvisor is processing data... "));
+				dispatch(openAppsLoader(APPSLOADERPERVALUE,"Please wait while mAdvisor is processing data... "));
 				return triggerDataUpload(sessionStorage.userToken,insightName).then(([response, json]) =>{
 					if(response.status === 200){
 
@@ -597,7 +597,7 @@ import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,C
 		var slug = data.slug;
 		appsInterval = setInterval(function(){
 			if(store.getState().apps.appsLoaderPerValue < LOADERMAXPERVALUE){
-				dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE));
+				dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+APPSLOADERPERVALUE));
 			}
 			dispatch(getRoboDataset(data.slug));
 		},APPSDEFAULTINTERVAL);
@@ -1010,7 +1010,7 @@ import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,C
 	export function uploadAudioFile(){
 		return (dispatch) => {
 			dispatch(hideAudioFUModal());
-			dispatch(openAppsLoader(DULOADERPERVALUE,"Please wait while mAdvisor analyzes the audio file... "));
+			dispatch(openAppsLoader(APPSLOADERPERVALUE,"Please wait while mAdvisor analyzes the audio file... "));
 			return triggerAudioUpload(sessionStorage.userToken).then(([response, json]) =>{
 				if(response.status === 200){
 
@@ -1038,7 +1038,7 @@ import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,C
 		var slug = data.slug;
 		appsInterval = setInterval(function(){
 			if(store.getState().apps.appsLoaderPerValue < LOADERMAXPERVALUE){
-				dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE));
+				dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+APPSLOADERPERVALUE));
 			}
 			dispatch(getAudioFile(data.slug));
 		},APPSDEFAULTINTERVAL);
@@ -1411,7 +1411,7 @@ import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,C
      if(found){
 			return (dispatch) => {
 				dispatch(updateCreateStockPopup(false))
-				dispatch(openAppsLoader(DULOADERPERVALUE+7,"Extracting historic stock prices.... "));
+				dispatch(openAppsLoader(APPSLOADERPERVALUE,"Extracting historic stock prices.... "));
 				return triggerCrawlingAPI(url,urlForNews,analysisName).then(([response, json]) => {
 					if (response.status === 200) {
 						console.log(json.slug)
@@ -1434,17 +1434,17 @@ import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,C
 	}
 	export function crawlSuccess(json, dispatch){
 		var slug = json.slug;
-		dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7));
-		setTimeout(function(){ dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7));dispatch(updateAppsLoaderText("Fetching metadata information for news portals....")) }, 10000);
-		setTimeout(function(){ dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7));dispatch(updateAppsLoaderText("Extracting articles from news portals.....")) }, 30000);
-		setTimeout(function(){ dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7));dispatch(updateAppsLoaderText("Creating dataset....")) }, 40000);
-		setTimeout(function(){ dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7)); }, 45000);
-		setTimeout(function(){ dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7)); }, 50000);
-		setTimeout(function(){ dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7)); }, 55000);
+		//dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+APPSLOADERPERVALUE));
+		setTimeout(function(){ dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+APPSLOADERPERVALUE));dispatch(updateAppsLoaderText("Fetching metadata information for news portals....")) }, 10000);
+		setTimeout(function(){ dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+APPSLOADERPERVALUE));dispatch(updateAppsLoaderText("Extracting articles from news portals.....")) }, 30000);
+		setTimeout(function(){ dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+APPSLOADERPERVALUE));dispatch(updateAppsLoaderText("Creating dataset....")) }, 40000);
+		setTimeout(function(){ dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+APPSLOADERPERVALUE)); }, 45000);
+		setTimeout(function(){ dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+APPSLOADERPERVALUE)); }, 50000);
+		setTimeout(function(){ dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+APPSLOADERPERVALUE)); }, 55000);
 		appsInterval = setInterval(function() {
 			dispatch(getStockDataSetPreview(slug,appsInterval))
 			if(store.getState().apps.appsLoaderPerValue+10 < LOADERMAXPERVALUE){
-				dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7));
+				dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+APPSLOADERPERVALUE));
 			}
 
 		}, 60000);
@@ -1497,7 +1497,7 @@ import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,C
 	export function uploadStockFile(slug){
 		return (dispatch) => {
 			dispatch(updateUploadStockPopup(false));
-			dispatch(openAppsLoader(DULOADERPERVALUE+7,"Preparing data for analysis... "));
+			dispatch(openAppsLoader(APPSLOADERPERVALUE,"Preparing data for analysis... "));
 			  return triggerStockUpload(sessionStorage.userToken,slug).then(([response, json]) => {
 				  if (response.status === 200) {
 					  dispatch(triggerStockAnalysis(slug));
@@ -1515,17 +1515,17 @@ import {DULOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,C
 	}
 	export function triggerStockAnalysis(slug){
 		return (dispatch) => {
-		//dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7));
-		setTimeout(function(){ dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7));dispatch(updateAppsLoaderText("Applying domain model for stock analysis....")) }, 10000);
-		setTimeout(function(){ dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7));dispatch(updateAppsLoaderText("Extracting relevant entities and keywords.....")) }, 20000);
-		setTimeout(function(){ dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7));dispatch(updateAppsLoaderText("Tagging articles to relevant concepts ....")) }, 30000);
-		setTimeout(function(){ dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7));dispatch(updateAppsLoaderText("Performing sentiment analysis....")) }, 40000);
-		setTimeout(function(){ dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7));dispatch(updateAppsLoaderText("Identifying key events during the selected period.....")) }, 50000);
-		setTimeout(function(){ dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7));dispatch(updateAppsLoaderText("Analyze the impact of concepts on stock performance....")) }, 60000);
+		//dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+APPSLOADERPERVALUE+7));
+		setTimeout(function(){ dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+APPSLOADERPERVALUE));dispatch(updateAppsLoaderText("Applying domain model for stock analysis....")) }, 10000);
+		setTimeout(function(){ dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+APPSLOADERPERVALUE));dispatch(updateAppsLoaderText("Extracting relevant entities and keywords.....")) }, 20000);
+		setTimeout(function(){ dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+APPSLOADERPERVALUE));dispatch(updateAppsLoaderText("Tagging articles to relevant concepts ....")) }, 30000);
+		setTimeout(function(){ dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+APPSLOADERPERVALUE));dispatch(updateAppsLoaderText("Performing sentiment analysis....")) }, 40000);
+		setTimeout(function(){ dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+APPSLOADERPERVALUE));dispatch(updateAppsLoaderText("Identifying key events during the selected period.....")) }, 50000);
+		setTimeout(function(){ dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+APPSLOADERPERVALUE));dispatch(updateAppsLoaderText("Analyze the impact of concepts on stock performance....")) }, 60000);
 		appsInterval = setInterval(function() {
 			dispatch(getStockAnalysis(slug));
 			if(store.getState().apps.appsLoaderPerValue+10 < LOADERMAXPERVALUE){
-				dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+DULOADERPERVALUE+7));
+				dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+APPSLOADERPERVALUE));
 			}
 		}, 60000)
 		}

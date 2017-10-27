@@ -83,9 +83,9 @@ export class Card extends React.Component {
           if(!$.isEmptyObject(story.data)){
             if(story.widthPercent){
               let width  = story.widthPercent+"%"
-           return (<div key={i} style={{width:width, display:"inline-block",paddingLeft:"30px"}}><C3Chart classId={randomNum} widthPercent = {story.widthPercent} data={story.data.chart_c3} yformat={story.data.yformat} y2format={story.data.y2format} guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div>);
+           return (<div key={randomNum} style={{width:width, display:"inline-block",paddingLeft:"30px"}}><C3Chart classId={randomNum} widthPercent = {story.widthPercent} data={story.data.chart_c3} yformat={story.data.yformat} y2format={story.data.y2format} guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div>);
            }else{
-             return (<div key={i}><C3Chart classId={randomNum} data={story.data.chart_c3} yformat={story.data.yformat} y2format={story.data.y2format} guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div>);
+             return (<div key={randomNum}><C3Chart classId={randomNum} data={story.data.chart_c3} yformat={story.data.yformat} y2format={story.data.y2format} guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div>);
            }
          }
           break;
