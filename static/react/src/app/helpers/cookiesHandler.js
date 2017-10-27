@@ -12,12 +12,13 @@ export const cookieObj = {
       document.cookie = "last_login="+userDetail.user.last_login;
       document.cookie = "is_superuser="+userDetail.user.is_superuser;
       document.cookie = "image_url="+userDetail.profile.image_url;
-      document.cookie = "expires="+expires;
   },
 
   clearCookies: function() {
 	  var now = new Date();
-      document.cookie = "userToken=;";
+	  var exp = new Date(now.getTime());
+	   var expires =  exp.toUTCString();
+      document.cookie = "userToken=;"+"; "+"expires="+expires;;
       document.cookie = "userName=;";
       document.cookie = "email=;";
       document.cookie = "date=;";
@@ -25,7 +26,6 @@ export const cookieObj = {
       document.cookie = "last_login=;";
       document.cookie = "is_superuser=;";
       document.cookie = "image_url=;";
-      document.cookie = "expires=" + now.toUTCString() + ";"
       location.reload();
   }
 }
