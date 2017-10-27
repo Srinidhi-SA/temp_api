@@ -701,7 +701,7 @@ amzn = {
     [-0.321173, 0, 0.4190155, 0.521027857, 0.098543571, 0.242415, 0.1702598, 0.711370923, 0.231899571, 0.027166571, 0.692694, -0.059662857, -0.27856, 0.540145444, 0.59759425, 0.394379, 0.801072857, 0.7165695, 0, 0.83784, 0, 0.3079695, -0.13928, 0.68561, 0.3906345]
   ],
   "key_parameter_that_impact_stock_prices": [],
-  "decisionTreeTable":  [['Date', 'Stock Value Change(%)', 'Source', 'Title', 'Sentiment'],
+  "decisionTreeTable":  [['Date', '% increase/ Decrease stock Price', 'Source', 'Title', 'Sentiment'],
  ['16-06-2017',
   2.44,
   'Reuters Key Development',
