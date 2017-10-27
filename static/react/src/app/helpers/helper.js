@@ -27,6 +27,7 @@ const CIRCULARCHARTTABLE = "circularChartTable";
 const DECISIONTREETABLE = "decisionTreeTable"
 const DULOADERPERVALUE = 1;
 const CSLOADERPERVALUE = 1;
+const APPSLOADERPERVALUE = 10;
 const LOADERMAXPERVALUE = 99;
 const DEFAULTINTERVAL = 10000;
 const APPSDEFAULTINTERVAL = 15000;
@@ -341,6 +342,7 @@ export{
 	APPID5,
 	APPNAME5,
 	TEXTHEATMAPTABLE,
+	APPSLOADERPERVALUE
 	}
 export function capitalizeArray(array){
   let a =[]
