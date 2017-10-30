@@ -96,8 +96,9 @@ export class AppsCreateStockAnalysis extends React.Component {
 		         <Button bsStyle="info" onClick={this.addMoreStockSymbols.bind(this)}> <i className="fa fa-plus"></i></Button>
 		         </div> 
 		         </div>
-				<div class="createStockModal">
-				<Scrollbars>
+				<div >
+				<Scrollbars style={{ height: 300 }} renderTrackHorizontal={props => <div {...props} className="track-horizontal" style={{display:"none"}}/>}
+		        renderThumbHorizontal={props => <div {...props} className="thumb-horizontal" style={{display:"none"}}/>}>
 	             {templateTextBoxes}
 				 </Scrollbars>
 				 </div>
