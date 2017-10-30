@@ -11,7 +11,7 @@ import {
   getLastCardOfTree
 } from "../../helpers/processStory";
 import {connect} from "react-redux";
-import {isEmpty, subTreeSetting} from "../../helpers/helper";
+import {isEmpty, subTreeSetting,USERDETAILS} from "../../helpers/helper";
 import {MainHeader} from "../../components/common/MainHeader";
 import {Card} from "./Card";
 import store from "../../store";
@@ -51,7 +51,7 @@ setSideListFlag(e){
     	}else if(this.props.match.url.indexOf("apps-stock") != -1){
     		this.props.dispatch(getStockAnalysis(this.props.match.params.slug));
     	}else{
-    		this.props.dispatch(getSignalAnalysis(sessionStorage.userToken, this.props.match.params.slug));
+    		this.props.dispatch(getSignalAnalysis(USERDETAILS.userToken, this.props.match.params.slug));
     	}
     }
   }

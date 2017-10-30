@@ -38,7 +38,7 @@ import {AppsStockDocumentMode} from "./components/apps/AppsStockDocumentMode";
 class App extends React.Component {
 
   render() {
-
+	  sessionStorage.url = window.location.pathname;
     return (
       <BrowserRouter>
       <Switch>

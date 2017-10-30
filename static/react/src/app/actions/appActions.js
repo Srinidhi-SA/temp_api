@@ -1,5 +1,6 @@
+
 import {API} from "../helpers/env";
-import {PERPAGE,isEmpty} from "../helpers/helper";
+import {PERPAGE,isEmpty,USERDETAILS} from "../helpers/helper";
 import store from "../store";
 import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,CUSTOMERDATA,HISTORIALDATA,EXTERNALDATA,DELETEMODEL,
 	RENAMEMODEL,DELETESCORE,RENAMESCORE,DELETEINSIGHT,RENAMEINSIGHT,SUCCESS,FAILED,DELETEAUDIO,RENAMEAUDIO} from "../helpers/helper";
@@ -32,7 +33,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 
 	export function getAppsModelList(pageNo) {
 		return (dispatch) => {
-			return fetchModelList(pageNo,sessionStorage.userToken).then(([response, json]) =>{
+			return fetchModelList(pageNo,USERDETAILS.userToken).then(([response, json]) =>{
 				if(response.status === 200){
 					console.log(json)
 					dispatch(fetchModelListSuccess(json))
@@ -104,7 +105,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 		console.log(targetVariable);
 		return (dispatch) => {
 			dispatch(openAppsLoader(APPSLOADERPERVALUE,"Please wait while mAdvisor is creating model... "));
-			return triggerCreateModel(sessionStorage.userToken,modelName,targetVariable).then(([response, json]) =>{
+			return triggerCreateModel(USERDETAILS.userToken,modelName,targetVariable).then(([response, json]) =>{
 				if(response.status === 200){
 					console.log(json)
 					dispatch(createModelSuccess(json,dispatch))
@@ -157,7 +158,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 	}
 	export function getAppsScoreList(pageNo) {
 		return (dispatch) => {
-			return fetchScoreList(pageNo,sessionStorage.userToken).then(([response, json]) =>{
+			return fetchScoreList(pageNo,USERDETAILS.userToken).then(([response, json]) =>{
 				if(response.status === 200){
 					console.log(json)
 					dispatch(fetchScoreListSuccess(json));
@@ -229,7 +230,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 
 	export function getAppsModelSummary(slug) {
 		return (dispatch) => {
-			return fetchModelSummary(sessionStorage.userToken,slug).then(([response, json]) =>{
+			return fetchModelSummary(USERDETAILS.userToken,slug).then(([response, json]) =>{
 				if(response.status === 200){
 					if(json.status == SUCCESS){
 						clearInterval(appsInterval);
@@ -297,7 +298,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 		console.log(targetVariable);
 		return (dispatch) => {
 			dispatch(openAppsLoader(APPSLOADERPERVALUE,"Please wait while mAdvisor is scoring your model... "));
-			return triggerCreateScore(sessionStorage.userToken,scoreName,targetVariable).then(([response, json]) =>{
+			return triggerCreateScore(USERDETAILS.userToken,scoreName,targetVariable).then(([response, json]) =>{
 				if(response.status === 200){
 
 					dispatch(createScoreSuccess(json,dispatch))
@@ -352,7 +353,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 
 	export function getAppsScoreSummary(slug) {
 		return (dispatch) => {
-			return fetchScoreSummary(sessionStorage.userToken,slug).then(([response, json]) =>{
+			return fetchScoreSummary(USERDETAILS.userToken,slug).then(([response, json]) =>{
 				if(response.status === 200){
 					if(json.status == SUCCESS){
 						clearInterval(appsInterval);
@@ -465,7 +466,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 
 	export function getAppsRoboList(pageNo) {
 		return (dispatch) => {
-			return fetchRoboList(pageNo,sessionStorage.userToken).then(([response, json]) =>{
+			return fetchRoboList(pageNo,USERDETAILS.userToken).then(([response, json]) =>{
 				if(response.status === 200){
 					console.log(json)
 					dispatch(fetchRoboListSuccess(json))
@@ -563,7 +564,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 			return (dispatch) => {
 				dispatch(closeRoboDataPopup());
 				dispatch(openAppsLoader(APPSLOADERPERVALUE,"Please wait while mAdvisor is processing data... "));
-				return triggerDataUpload(sessionStorage.userToken,insightName).then(([response, json]) =>{
+				return triggerDataUpload(USERDETAILS.userToken,insightName).then(([response, json]) =>{
 					if(response.status === 200){
 
 						dispatch(dataUploadFilesSuccess(json,dispatch))
@@ -622,7 +623,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 	export function getRoboDataset(slug) {
 		return (dispatch) => {
 			dispatch(updateRoboSlug(slug));
-			return fetchRoboDataset(sessionStorage.userToken,slug).then(([response, json]) =>{
+			return fetchRoboDataset(USERDETAILS.userToken,slug).then(([response, json]) =>{
 				if(response.status === 200){
 					if(json.status == SUCCESS){
 						clearInterval(appsInterval);
@@ -752,7 +753,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 	function deleteModelAPI(slug){
 		return fetch(API+'/api/trainer/'+slug+'/',{
 			method: 'put',
-			headers: getHeader(sessionStorage.userToken),
+			headers: getHeader(USERDETAILS.userToken),
 			body:JSON.stringify({
 				deleted:true,
 			}),
@@ -814,7 +815,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 	function renameModelAPI(slug,newName){
 		return fetch(API+'/api/trainer/'+slug+'/',{
 			method: 'put',
-			headers: getHeader(sessionStorage.userToken),
+			headers: getHeader(USERDETAILS.userToken),
 			body:JSON.stringify({
 				name:newName,
 			}),
@@ -845,7 +846,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 	function deleteScoreAPI(slug){
 		return fetch(API+'/api/score/'+slug+'/',{
 			method: 'put',
-			headers: getHeader(sessionStorage.userToken),
+			headers: getHeader(USERDETAILS.userToken),
 			body:JSON.stringify({
 				deleted:true,
 			}),
@@ -883,7 +884,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 	function renameScoreAPI(slug,newName){
 		return fetch(API+'/api/score/'+slug+'/',{
 			method: 'put',
-			headers: getHeader(sessionStorage.userToken),
+			headers: getHeader(USERDETAILS.userToken),
 			body:JSON.stringify({
 				name:newName,
 			}),
@@ -920,7 +921,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 	function deleteInsightAPI(slug){
 		return fetch(API+'/api/robo/'+slug+'/',{
 			method: 'put',
-			headers: getHeader(sessionStorage.userToken),
+			headers: getHeader(USERDETAILS.userToken),
 			body:JSON.stringify({
 				deleted:true,
 			}),
@@ -958,7 +959,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 	function renameInsightAPI(slug,newName){
 		return fetch(API+'/api/robo/'+slug+'/',{
 			method: 'put',
-			headers: getHeader(sessionStorage.userToken),
+			headers: getHeader(USERDETAILS.userToken),
 			body:JSON.stringify({
 				name:newName,
 			}),
@@ -985,7 +986,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 	}
 	export function clearRoboSummary(){
 		return {
-			type: "ROBO_SUMMARY_SUCCESS",
+			type: "CLEAR_ROBO_SUMMARY_SUCCESS",
 		}
 	}
 	export function showAudioFUModal(){
@@ -1011,7 +1012,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 		return (dispatch) => {
 			dispatch(hideAudioFUModal());
 			dispatch(openAppsLoader(APPSLOADERPERVALUE,"Please wait while mAdvisor analyzes the audio file... "));
-			return triggerAudioUpload(sessionStorage.userToken).then(([response, json]) =>{
+			return triggerAudioUpload(USERDETAILS.userToken).then(([response, json]) =>{
 				if(response.status === 200){
 
 					dispatch(audioUploadFilesSuccess(json,dispatch))
@@ -1056,7 +1057,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 
 	export function getAudioFile(slug) {
 		return (dispatch) => {
-			return fetchAudioFileSummary(sessionStorage.userToken,slug).then(([response, json]) =>{
+			return fetchAudioFileSummary(USERDETAILS.userToken,slug).then(([response, json]) =>{
 				if(response.status === 200){
 					if(json.status == SUCCESS){
 						dispatch(fetchAFSummarySuccess(json));
@@ -1115,7 +1116,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 
 	export function getAudioFileList(pageNo){
 		return (dispatch) => {
-			return fetchAudioList(pageNo,sessionStorage.userToken).then(([response, json]) =>{
+			return fetchAudioList(pageNo,USERDETAILS.userToken).then(([response, json]) =>{
 				if(response.status === 200){
 					dispatch(fetchAudioListSuccess(json))
 				}
@@ -1194,7 +1195,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 	function deleteAudioAPI(slug){
 		return fetch(API+'/api/audioset/'+slug+'/',{
 			method: 'put',
-			headers: getHeader(sessionStorage.userToken),
+			headers: getHeader(USERDETAILS.userToken),
 			body:JSON.stringify({
 				deleted:true,
 			}),
@@ -1233,7 +1234,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 	function renameAudioAPI(slug,newName){
 		return fetch(API+'/api/audioset/'+slug+'/',{
 			method: 'put',
-			headers: getHeader(sessionStorage.userToken),
+			headers: getHeader(USERDETAILS.userToken),
 			body:JSON.stringify({
 				name:newName,
 			}),
@@ -1356,7 +1357,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 
 	export function getAppsStockList(pageNo) {
 		return (dispatch) => {
-			return fetchStockList(pageNo,sessionStorage.userToken).then(([response, json]) =>{
+			return fetchStockList(pageNo,USERDETAILS.userToken).then(([response, json]) =>{
 				if(response.status === 200){
 					console.log(json)
 					dispatch(fetchStockListSuccess(json))
@@ -1371,7 +1372,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 	function fetchStockList(pageNo,token) {
 		return fetch(API+'/api/stockdataset/?page_number='+pageNo+'&page_size='+PERPAGE+'',{
 			method: 'get',
-			headers: getHeader(sessionStorage.userToken)
+			headers: getHeader(USERDETAILS.userToken)
 		}).then( response => Promise.all([response, response.json()]));
 
 	}
@@ -1464,7 +1465,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 			}
 			return fetch(API + '/api/stockdataset/', {
 				method: 'post',
-				headers: getHeader(sessionStorage.userToken),
+				headers: getHeader(USERDETAILS.userToken),
 				body: JSON.stringify({config: details})
 			}).then(response => Promise.all([response, response.json()]));
 
@@ -1498,7 +1499,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 		return (dispatch) => {
 			dispatch(updateUploadStockPopup(false));
 			dispatch(openAppsLoader(APPSLOADERPERVALUE,"Preparing data for analysis... "));
-			  return triggerStockUpload(sessionStorage.userToken,slug).then(([response, json]) => {
+			  return triggerStockUpload(USERDETAILS.userToken,slug).then(([response, json]) => {
 				  if (response.status === 200) {
 					  dispatch(triggerStockAnalysis(slug));
 				  }else{
@@ -1532,7 +1533,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 	}
 	export function getStockAnalysis(slug) {
 		return (dispatch) => {
-			return fetchStockAnalysisAPI(sessionStorage.userToken,slug).then(([response, json]) =>{
+			return fetchStockAnalysisAPI(USERDETAILS.userToken,slug).then(([response, json]) =>{
 				if(response.status === 200){
 					if(json.status == SUCCESS){
 						clearInterval(appsInterval);
@@ -1586,7 +1587,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 function fetchConceptList(){
 	return fetch(API+'/api/get_concepts/',{
 		method: 'get',
-		headers: getHeader(sessionStorage.userToken)
+		headers: getHeader(USERDETAILS.userToken)
 	}).then( response => Promise.all([response, response.json()]));
 }
 
