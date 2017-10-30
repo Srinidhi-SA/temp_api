@@ -4,7 +4,8 @@ const API = "http://madvisordev.marlabsai.com"; //dev
 
 //const API = ""; //vivek
 const STATIC_URL = "/";
+const COOKIEEXPIRETIMEINDAYS = 1;
 
 export{
-  API, STATIC_URL
+  API, STATIC_URL,COOKIEEXPIRETIMEINDAYS
 }
