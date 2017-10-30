@@ -388,7 +388,9 @@ JOBSERVER_STATUS = {
     'KILLED': 'FAILED'
 }
 
-UI_VERSION = "0.1035"
+
+UI_VERSION = "0.1003"
+
 
 ERROR_MESSAGE = {
     'upload_error': 'Code had a weakness. Now it is broken.'
@@ -469,6 +471,7 @@ VOICE_TO_TEXT_SETTINGS = {
         "username": "3d7b6be9-17eb-4208-ad56-3d873700d5e7",
         "password": "UXiMa7qNp68f"
         }
+
 
 ADANCED_SETTING_FOR_POSSIBLE_ANALYSIS_TREND = {
                     "name": "trend",
@@ -733,3 +736,4 @@ CONCEPTS = {'corporate': ['leadership change', 'public relations'],
   'market share',
   'risks & inhibitors',
   'product performance']}
+
