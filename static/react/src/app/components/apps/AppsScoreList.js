@@ -224,6 +224,7 @@ export class AppsScoreList extends React.Component {
 
             <div className="clearfix"></div>
           </div>
+		  <div class="main-content">
           <div className="row">
             {appsScoreList}
             <div className="clearfix"></div>
@@ -233,6 +234,7 @@ export class AppsScoreList extends React.Component {
               {paginationTag}
             </div>
           </div>
+		  </div>
           <Dialog ref="dialog"/>
         </div>
 

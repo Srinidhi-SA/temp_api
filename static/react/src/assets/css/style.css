@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css?family=Quicksand');
+/*@import url('https://fonts.googleapis.com/css?family=Quicksand');*/
+
 @import 'font-awesome.min.css';
 @import 'pe-icon-7-stroke.css';
 @import 'helper.css';
@@ -6,6 +7,16 @@
 @import 'slick-theme.min.css';
 .mAd_icons { background:url(../images/mAd_image.png) no-repeat }
 /*@import url('https://fonts.googleapis.com/css?family=Open+Sans');*/
+
+@font-face {
+	font-family: 'Quicksand';
+	src: url('../fonts/Quicksand-Regular.eot');
+	src: url('../fonts/Quicksand-Regular.eot?#iefix') format('embedded-opentype'),
+		url('../fonts/Quicksand-Regular.woff') format('woff'),
+		url('../fonts/Quicksand-Regular.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
 
 .label, sub, sup {
 	vertical-align: baseline
@@ -14562,7 +14573,13 @@ a.disabled { color:#ccc !important; }
     height: 40px; }
 
 #date_subsetting .react-datepicker-wrapper, #date_subsetting .react-datepicker__input-container { display:block; }
->>>>>>> origin/react-ui-development
+.apps_list .tab-content, #controlled-tab-example  .tab-content{ padding:0; }
+.sel-dataset.check {     background-color: #03998c;  border-color: #03998c; color: #FFFFFF;}
+.d-mashup-1 .form-group .col-md-3 { margin: 0; padding: 5px;}
+.d-mashup-1 .form-group label.sel-dataset { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sel_dset label.btn.btn-default { display: inline-block; margin-bottom: 10px; }
+.sel_dset  .btn+.btn{ margin-left: inherit; }
+.sel_dset .col-md-10 { padding-left: 0; }
 /**************** Css realated to developers, keep the source down ***/
 
 
@@ -14824,10 +14841,15 @@ visibility:hidden !important;
     padding-right: 10px;
 }
 
-.dataTransformModal{
-	height:300px;
-    overflow-y: scroll;
-    overflow-x:hidden;
+.dataTransformModal .tab-content .tab-pane .tb_content{
+    height: 240px;
+    overflow: auto;
+    overflow-x: hidden;
+}
+ .dataTransformModal .tab-content .tab-pane .tb_content div div:nth-child(2) div{ background-color: rgba(255, 255, 255, 0) !important }
+ .dataTransformModal .tab-content .page-header { margin: 0 0 18px; }
+.dataTransformModal.modal-body {
+    padding: 0 5px;
 }
 .dataTransformModalWidth{
 	width:750px !important;

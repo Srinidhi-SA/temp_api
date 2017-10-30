@@ -62,7 +62,7 @@ export class Apps extends React.Component {
     return (
           <div className="side-body">
             <div className="main-content">
-            <Tabs defaultActiveKey="score" activeKey={store.getState().apps.appsSelectedTabId} onSelect={this.modifyUrl.bind(this)} >
+            <Tabs defaultActiveKey="score" activeKey={store.getState().apps.appsSelectedTabId} onSelect={this.modifyUrl.bind(this)} className="apps_list">
             <Tab  eventKey="model" id="model" title="Models">{models}</Tab>
             <Tab eventKey="score" id="score" title="Scores">{scores}</Tab>
           </Tabs>
