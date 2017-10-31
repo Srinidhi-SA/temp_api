@@ -204,3 +204,8 @@
 .c3 .c3-axis-y2 path, .c3 .c3-axis-y2 line {
  stroke: #a1a1a1;
 }
+.c3 svg .c3-title{
+	font-size:15px;
+	fill:#848484 !important;
+	font-family:quicksand;
+}

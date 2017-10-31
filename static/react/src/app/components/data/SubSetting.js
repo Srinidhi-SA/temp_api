@@ -371,7 +371,7 @@ export class SubSetting extends React.Component {
           } else {
             this.state.subSettingRs.timeDimensionColumnFilters.push({"colname": this.props.item.name, "upperBound": this.state.curendDate, "lowerBound": this.state.curstartDate, "filterType": "valueRange"});
             this.state.alreadyUpdated = true
-          }          
+          }
         }
         break;
 
@@ -396,42 +396,45 @@ export class SubSetting extends React.Component {
 	    });
     }
   render() {
-    console.log("subsetting is called!!");
+    console.log("subsetting is called####$$$$!!");
     console.log(this.props)
     console.log("state is")
     console.log(this.state)
     this.callSubsetTableSorter()
-
+let subsettingsTemplate = "";
     if (this.props.updatedSubSetting.measureColumnFilters.length > 0 || this.props.updatedSubSetting.dimensionColumnFilters.length > 0 || this.props.updatedSubSetting.timeDimensionColumnFilters.length > 0) {
       this.getColumnData(this.props.item.columnType, this.props.item.name)
     }
-    this.props.item.columnStats.map((stats) => {
-      //  console.log(stats)
-      if (stats.name == "min")
-        this.state.min = stats.value
-      else if (stats.name == "max") {
-        this.state.max = stats.value
-      } else if (stats.name == "LevelCount") {
-        this.state.dimentionList = stats.value
-      } else if (stats.name == "firstDate") {
-        this.state.startDate = stats.value
-      } else if (stats.name == "lastDate") {
-        this.state.endDate = stats.value
-      }
-    });
+    if(this.props.item.columnStats != undefined){
+    	 this.props.item.columnStats.map((stats) => {
+    	      //  console.log(stats)
+    	      if (stats.name == "min")
+    	        this.state.min = stats.value
+    	      else if (stats.name == "max") {
+    	        this.state.max = stats.value
+    	      } else if (stats.name == "LevelCount") {
+    	        this.state.dimentionList = stats.value
+    	      } else if (stats.name == "firstDate") {
+    	        this.state.startDate = stats.value
+    	      } else if (stats.name == "lastDate") {
+    	        this.state.endDate = stats.value
+    	      }
+    	    });
 
-    if (this.state.alreadyUpdated == false) {
-      this.state.curmax = this.state.max
-      this.state.curmin = this.state.min
-      this.state.curstartDate = this.state.startDate
-      this.state.curendDate = this.state.endDate
-      if (this.state.dimentionList)
-        this.state.curdimention = Object.keys(this.state.dimentionList);
-      }
-    console.log("after assign")
-    console.log(this.state)
+    	    if (this.state.alreadyUpdated == false) {
+    	      this.state.curmax = this.state.max
+    	      this.state.curmin = this.state.min
+    	      this.state.curstartDate = this.state.startDate
+    	      this.state.curendDate = this.state.endDate
+    	      if (this.state.dimentionList)
+    	        this.state.curdimention = Object.keys(this.state.dimentionList);
+    	      }
+    	    console.log("after assign")
+    	    console.log(this.state)
 
-    let subsettingsTemplate = this.getSubSettings(this.props.item.columnType)
+    	    subsettingsTemplate = this.getSubSettings(this.props.item.columnType)
+    }
+   
     //console.log(subsettingsTemplate)
 
     return (

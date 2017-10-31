@@ -10,6 +10,22 @@ export function isEmpty(obj) {
 
     return JSON.stringify(obj) === JSON.stringify({});
 }
+
+var  USERDETAILS = {};
+
+export const setUserDetails = {
+		user: function() {
+			let  userDetail = {};
+			let allCookies = document.cookie.split(";");
+			for(let i=0;i<allCookies.length;i++){
+				let cur = allCookies[i].split('=');
+				userDetail[cur[0].replace(/\s/g, '')] = cur[1];
+			}
+			USERDETAILS = userDetail;
+		   return userDetail;
+		},
+}
+		  
 const FILEUPLOAD = "File Upload";
 const MYSQL = "MySQL";
 const INPUT = "Input";
@@ -27,6 +43,7 @@ const CIRCULARCHARTTABLE = "circularChartTable";
 const DECISIONTREETABLE = "decisionTreeTable"
 const DULOADERPERVALUE = 1;
 const CSLOADERPERVALUE = 1;
+const APPSLOADERPERVALUE = 10;
 const LOADERMAXPERVALUE = 99;
 const DEFAULTINTERVAL = 10000;
 const APPSDEFAULTINTERVAL = 15000;
@@ -46,9 +63,11 @@ const INPROGRESS  = "INPROGRESS";
 const APPNAME1 = "OPPORTUNITY SCORING";
 const APPNAME2 ="AUTOMATED PREDICTION";
 const APPNAME3 = "ROBO INSIGHTS";
+const APPNAME5 = "STOCK ADVISOR";
 const APPID1 = 1;
 const APPID2 = 2;
 const APPID3 = 3;
+const APPID5 = 5;
 const CUSTOMER = "customer";
 const HISTORIAL = "historial";
 const EXTERNAL = "external";
@@ -63,8 +82,8 @@ const REPLACE = "replace";
 const DATA_TYPE = "data_type";
 const REMOVE = "remove";
 const CURRENTVALUE = "current value";
-const NEWVALUE = "new value"
-
+const NEWVALUE = "new value";
+const TEXTHEATMAPTABLE = "textHeatMapTable"
 
 
 export function generateHeaders(table) {
@@ -109,6 +128,26 @@ export function generateHeatMapRows(table) {
   return cols;
 }
 
+export function generateTextHeatMapRows(table) {
+    var cols = table.tableData.map(function(rowData,i){
+  	  if(i!= 0){
+  		  var row=rowData.map(function(colData,j) {
+          console.log(colData)
+			      if(colData.value == 0 && colData.text == "" ){
+					  return<td key={j} value={colData.value}></td>;
+				  }else{
+					 //return<td key={j}>{colData.text}<br/>{colData.value}</td>;
+           return<td key={j} value={colData.value}>{colData.text}<br/><b>{colData.value}</b></td>;
+				  }
+
+    	       });
+		  return<tr key={i} className="stats-row">{row}</tr>
+  	  }
+    })
+
+  return cols;
+}
+
 export function  generateCircularChartRows(table) {
 var tbodyData = table.tableData.map(function(rowData,i){
 	if(i != 0){
@@ -128,6 +167,22 @@ export function  generateRows(table) {
 		if(i != 0){
 			var rows = rowData.map(function(colData,j) {
 	  	           return<td key={j}>{colData}</td>;
+	  	       });
+			return<tr key={i}>{rows}</tr>;
+		}
+	  })
+	return tbodyData;
+	}
+
+export function  generateNormalTableRows(table) {
+	var tbodyData = table.tableData.map(function(rowData,i){
+		if(i != 0){
+			var rows = rowData.map(function(colData,j) {
+				if(j == 0 || j == 1)
+	  	           return<td key={j} width="15%">{colData}</td>;
+	  	           
+	  	           else
+	  	        	return<td key={j}>{colData}</td>;   
 	  	       });
 			return<tr key={i}>{rows}</tr>;
 		}
@@ -298,5 +353,18 @@ export{
 	DATA_TYPE,
 	REMOVE,
 	CURRENTVALUE,
-	NEWVALUE
+	NEWVALUE,
+	APPID5,
+	APPNAME5,
+	TEXTHEATMAPTABLE,
+	APPSLOADERPERVALUE,
+	USERDETAILS,
 	}
+export function capitalizeArray(array){
+  let a =[]
+  let i=0
+  for (var val in array){
+    a[i]= array[val].charAt(0).toUpperCase() + array[val].slice(1);i++;
+  }
+  return a
+}

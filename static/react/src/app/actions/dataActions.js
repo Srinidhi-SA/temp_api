@@ -1,8 +1,9 @@
 import React from "react";
 import {API} from "../helpers/env";
-import {PERPAGE,DULOADERPERVALUE,DEFAULTINTERVAL,SUCCESS,FAILED} from "../helpers/helper";
+import {PERPAGE,DULOADERPERVALUE,DEFAULTINTERVAL,SUCCESS,FAILED,USERDETAILS} from "../helpers/helper";
 import store from "../store";
 import {dataPreviewInterval,dataUploadLoaderValue,clearLoadingMsg} from "./dataUploadActions";
+import {closeAppsLoaderValue} from "./appActions";
 import Dialog from 'react-bootstrap-dialog'
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
 import {isEmpty,RENAME,DELETE,REPLACE,DATA_TYPE,REMOVE,CURRENTVALUE,NEWVALUE} from "../helpers/helper";
@@ -18,7 +19,7 @@ function getHeader(token){
 
 export function getDataList(pageNo) {
 	return (dispatch) => {
-		return fetchDataList(pageNo,sessionStorage.userToken).then(([response, json]) =>{
+		return fetchDataList(pageNo,USERDETAILS.userToken).then(([response, json]) =>{
 			if(response.status === 200){
 				dispatch(fetchDataSuccess(json))
 			}
@@ -79,8 +80,28 @@ export function fetchDataSuccess(doc){
 		current_page,
 	}
 }
-
-
+//fetch stock dataset Preview
+export function getStockDataSetPreview(slug,interval) {
+	return (dispatch) => {
+		return fetchStockDataPreview(slug).then(([response, json]) =>{
+			if(response.status === 200){
+				console.log(json)
+				dispatch(fetchDataPreviewSuccess(json,interval,dispatch))
+			}
+			else{
+				dispatch(hideDULoaderPopup());
+				dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
+				dispatch(fetchDataPreviewError(json))
+			}
+		})
+	}
+}
+function fetchStockDataPreview(slug) {
+	return fetch(API+'/api/stockdataset/'+slug+'/',{
+		method: 'get',
+		headers: getHeader(sessionStorage.userToken)
+	}).then( response => Promise.all([response, response.json()]));
+}
 export function getDataSetPreview(slug,interval) {
 	return (dispatch) => {
 		return fetchDataPreview(slug).then(([response, json]) =>{
@@ -97,10 +118,11 @@ export function getDataSetPreview(slug,interval) {
 	}
 }
 
+
 function fetchDataPreview(slug) {
 	return fetch(API+'/api/datasets/'+slug+'/',{
 		method: 'get',
-		headers: getHeader(sessionStorage.userToken)
+		headers: getHeader(USERDETAILS.userToken)
 	}).then( response => Promise.all([response, response.json()]));
 }
 //get preview data
@@ -115,6 +137,7 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
 			dispatch(dispatchDataPreview(dataPreview,slug));
 			dispatch(hideDULoaderPopup());
 			dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
+			dispatch(closeAppsLoaderValue());
 		} else{
 			dispatch(dispatchDataPreview(dataPreview,slug));
 		}
@@ -168,7 +191,7 @@ function fetchDataPreviewError(json) {
 
 export function getAllDataList(pageNo) {
 	return (dispatch) => {
-		return fetchAllDataList(sessionStorage.userToken).then(([response, json]) =>{
+		return fetchAllDataList(USERDETAILS.userToken).then(([response, json]) =>{
 			if(response.status === 200){
 				console.log(json)
 				dispatch(fetchAllDataSuccess(json))
@@ -545,7 +568,7 @@ function deleteDataset(slug,dialog,dispatch){
 function deleteDatasetAPI(slug){
 	return fetch(API+'/api/datasets/'+slug+'/',{
 		method: 'put',
-		headers: getHeader(sessionStorage.userToken),
+		headers: getHeader(USERDETAILS.userToken),
 		body:JSON.stringify({
 			deleted:true,
 		}),
@@ -602,7 +625,7 @@ function renameDataset(slug,dialog,newName,dispatch){
 function renameDatasetAPI(slug,newName){
 	return fetch(API+'/api/datasets/'+slug+'/',{
 		method: 'put',
-		headers: getHeader(sessionStorage.userToken),
+		headers: getHeader(USERDETAILS.userToken),
 		body:JSON.stringify({
 			name:newName,
 		}),
@@ -1014,7 +1037,7 @@ function fetchModifiedMetaData(transformSettings,slug) {
 	tran_settings.existingColumns = transformSettings;
 	return fetch(API+'/api/datasets/'+slug+'/meta_data_modifications/',{
 		method: 'put',
-		headers: getHeader(sessionStorage.userToken),
+		headers: getHeader(USERDETAILS.userToken),
 		body:JSON.stringify({
 			config:tran_settings,
 		}),

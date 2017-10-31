@@ -4,7 +4,7 @@ import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import Dialog from 'react-bootstrap-dialog';
 import {handleColumnClick,updateColSlug} from "../../actions/dataActions";
-import {DATA_TYPE} from "../../helpers/helper";
+import {DATA_TYPE,isEmpty} from "../../helpers/helper";
 @connect((store) => {
 	return {
 		login_response: store.login.login_response,
@@ -50,11 +50,13 @@ export class DataValidation extends React.Component {
 		let settingsTemplate = null;
 		if(dataPrev){
 			 let transformationSettings = store.getState().datasets.dataTransformSettings;
-			 transformationSettings.map((columnData,columnIndex) =>{
-              if(that.props.slug == columnData.slug){
-            	settingsTemplate = that.renderDropdownList(columnData.slug,columnData.name,columnData.columnSetting)
-              }	 
-			 });
+			 if(transformationSettings != undefined){
+				 transformationSettings.map((columnData,columnIndex) =>{
+		              if(that.props.slug == columnData.slug){
+		            	settingsTemplate = that.renderDropdownList(columnData.slug,columnData.name,columnData.columnSetting)
+		              }	 
+					 }); 
+			 }
 			return (
 				
 					<ul  className="dropdown-menu scrollable-menu">

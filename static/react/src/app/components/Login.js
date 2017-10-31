@@ -4,7 +4,9 @@ import {Redirect} from 'react-router';
 // import {authenticateFunc,getList,storyList} from "../../services/ajax.js";
 import {authenticateFunc} from "../actions/loginActions";
 import store from "../store";
-import {STATIC_URL} from "../helpers/env"
+import {STATIC_URL} from "../helpers/env";
+import {isEmpty,setUserDetails,USERDETAILS} from "../helpers/helper";
+import {sessionObject} from '../helpers/manageSessionStorage';
 // import $ from "jquery";
 
 @connect((store) => {
@@ -49,12 +51,13 @@ export class Login extends React.Component {
   render() {
     console.log("login is called!!")
     console.log(this.props)
-    this.state.errmsg = this.props.errmsg
-
-    if (sessionStorage.userToken) {
+    this.state.errmsg = this.props.errmsg;
+    if (document.cookie.indexOf("JWT ") > 0 ) {
       console.log("authorized!!!");
-      //  return (<Home/>);
-      return (<Redirect to={"/"}/>);
+      var data = setUserDetails.user();
+      console.log(USERDETAILS)
+      //sessionObject.manageSession();
+      return (<Redirect to={"/"} />);
     } else {
       return (
 

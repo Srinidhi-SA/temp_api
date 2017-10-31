@@ -4,6 +4,8 @@ import ReactDOM from 'react-dom';
 import {sessionObject} from '../../helpers/manageSessionStorage';
 import LoadingBar from 'react-redux-loading-bar';
 import {Link} from "react-router-dom";
+import {cookieObj} from '../../helpers/cookiesHandler';
+import {USERDETAILS} from  "../../helpers/helper"
 // import $ from 'jquery';
 
 // import store from "../../store";
@@ -24,13 +26,14 @@ export default class TopPanel extends React.Component {
              loginFlag: false
          });
          sessionObject.clearSession();
-         location.reload();
+         cookieObj.clearCookies();
+         //location.reload();
 	}
 	render(){
 		if(!this.state.loginFlag){
 			return(<Redirect to="/login" />);
 		}else{
-		console.log("top panel & user name"+sessionStorage.username);
+		console.log("top panel & user name"+USERDETAILS.username);
 			return(
 		            <div>
 								{/* // Header Menu*/}
@@ -56,9 +59,9 @@ export default class TopPanel extends React.Component {
 									</div>
 									<div className="dropdown ma-user-nav">
 										<a className="dropdown-toggle" href="#" data-toggle="dropdown">
-											<i className="avatar-img img-circle">{sessionStorage.userName.substr(0,1).toUpperCase()}</i>
+											<i className="avatar-img img-circle">{USERDETAILS.userName.substr(0,1).toUpperCase()}</i>
 											<img src="" alt="M" className="avatar-img img-circle hide"/>&nbsp;
-											<span className="user-name">{sessionStorage.userName}</span>
+											<span className="user-name">{USERDETAILS.userName}</span>
 											<span className="caret"></span>
 										</a>
 										<ul className="dropdown-menu dropdown-menu-right">

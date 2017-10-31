@@ -26,7 +26,8 @@ class JobserverDetails(object):
     def get_config(cls,
                    slug,
                    class_name,
-                   job_name=None
+                   job_name=None,
+                   message_slug=None
                    ):
 
         job_type = {
@@ -34,7 +35,9 @@ class JobserverDetails(object):
             "master": "story",
             "model":"training",
             "score": "prediction",
-            "robo": "robo"
+            "robo": "robo",
+            "subSetting": "subSetting",
+            "stockAdvisor": "stockAdvisor"
         }
 
         return {
@@ -43,6 +46,9 @@ class JobserverDetails(object):
                 "job_url" : "http://{0}:{1}/api/job/{2}/".format(THIS_SERVER_DETAILS.get('host'),
                                                                     THIS_SERVER_DETAILS.get('port'),
                                                                     slug),
+                "message_url": "http://{0}:{1}/api/messages/{2}/".format(THIS_SERVER_DETAILS.get('host'),
+                                                                THIS_SERVER_DETAILS.get('port'),
+                                                                message_slug),
                 "job_name": job_name,
                 "get_config" :
                     {
@@ -163,6 +169,14 @@ def remove_padding_from_chart_data(chart_data):
             del chart_data['chart_c3']['padding']
     return chart_data
 
+def add_side_padding_to_chart_data(chart_data):
+    if 'chart_c3' in chart_data:
+        chart_data['chart_c3']['padding'] = {
+            'right': 20
+        }
+
+    return chart_data
+
 def remove_subchart_from_chart_data(chart_data):
     if 'chart_c3' in chart_data:
         if "subchart" in chart_data['chart_c3']:
@@ -248,6 +262,8 @@ def decode_and_convert_chart_raw_data(data):
             label_text=label_text
         )
 
+        c3.add_additional_grid_line_at_zero()
+
         if subchart is False:
             c3.hide_subchart()
         if showLegend is True and legend:
@@ -328,6 +344,7 @@ def decode_and_convert_chart_raw_data(data):
             c3_chart_details["xdata"] = get_x_column_from_chart_data_without_xs(chart_data, axes)
             c3.set_tick_format_x()
             c3.set_tooltip_format()
+        c3.add_additional_grid_line_at_zero()
 
         from api.C3Chart import config
         c3.set_basic_color_pattern(config.SECOND_FLIP_PATTERN)
@@ -922,6 +939,12 @@ def convert_to_GB(size):
         count -= 1
 
     return size
+
+
+def get_message(instance):
+    from api.redis_access import AccessFeedbackMessage
+    ac = AccessFeedbackMessage()
+    return ac.get_using_obj(instance)
 
 
 

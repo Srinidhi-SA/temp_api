@@ -13,10 +13,8 @@ import store from "../store";
 export class Home extends React.Component {
   constructor(){
     super();
-	
   }
   render() {
-
     return(
       <div>
     <Redirect to ="/signals"/>

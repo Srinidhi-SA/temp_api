@@ -161,10 +161,6 @@ export class DataPreview extends React.Component {
 		showHideSideChart(this.firstTimeColTypeForChart,this.firstTimeSideChart);
 
 	}
-
-  componentDidUpdate(){
-	updateTranformColumns();
-  }
 	setSideElements(e){
 
 		//renderFlag=true;
@@ -187,17 +183,20 @@ export class DataPreview extends React.Component {
 				ReactDOM.render(<Provider store={store}><C3Chart classId={"_side"} data={sideChartUpdate} yformat={yformat} xdata={xdata} sideChart={true}/></Provider>, document.getElementById('side-chart'));
                 }
 				const sideTableUpdate = item.columnStats;
-				showHideSideTable(sideTableUpdate); // hide side table on blank or all display false
-				const sideTableUpdatedTemplate=sideTableUpdate.map((tableItem,tableIndex)=>{
-					if(tableItem.display){
-						return(  <tr key={tableIndex}>
-						<td className="item">{tableItem.displayName}</td>
-						<td>&nbsp; : &nbsp;</td>
-						<td>{tableItem.value}</td>
-						</tr>
-						);
-					}
-				});
+				let sideTableUpdatedTemplate = "";
+				if(sideTableUpdate != null){
+					showHideSideTable(sideTableUpdate); // hide side table on blank or all display false
+					sideTableUpdatedTemplate=sideTableUpdate.map((tableItem,tableIndex)=>{
+						if(tableItem.display){
+							return(  <tr key={tableIndex}>
+							<td className="item">{tableItem.displayName}</td>
+							<td>&nbsp; : &nbsp;</td>
+							<td>{tableItem.value}</td>
+							</tr>
+							);
+						}
+					});	
+				}
 				$("#side-table").empty();
 				ReactDOM.render( <tbody className="no-border-x no-border-y">{sideTableUpdatedTemplate}</tbody>, document.getElementById('side-table'));
 
@@ -339,25 +338,33 @@ export class DataPreview extends React.Component {
 
 
 				const anchorCls =thElement.slug + " dropdown-toggle cursor";
+               if(thElement.chartData != null){
+            		if(thElement.ignoreSuggestionFlag){
+    					cls = cls + " greyout-col";
 
-				if(thElement.ignoreSuggestionFlag){
-					cls = cls + " greyout-col";
+    				return(
+    						<th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)} title={thElement.ignoreSuggestionMsg}>
+    						<a href="#" data-toggle="dropdown" className={anchorCls}><i className={iconCls}></i> {thElement.name}<b className="caret"></b></a>
+                             <DataValidation name={thElement.name} slug={thElement.slug} />
+    						</th>
+    				);
+    			}else{
+    				return(
+    						<th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)}>
+    						<a href="#" data-toggle="dropdown" id={thElement.slug} className={anchorCls}><i className={iconCls}></i> {thElement.name}<b className="caret"></b></a>
+    						<DataValidation name={thElement.name} slug={thElement.slug} />
+    						</th>
+    				);
 
-				return(
-						<th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)} title={thElement.ignoreSuggestionMsg}>
-						<a href="#" data-toggle="dropdown" className={anchorCls}><i className={iconCls}></i> {thElement.name}<b className="caret"></b></a>
-                         <DataValidation name={thElement.name} slug={thElement.slug} />
-						</th>
-				);
-			}else{
-				return(
-						<th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)}>
-						<a href="#" data-toggle="dropdown" id={thElement.slug} className={anchorCls}><i className={iconCls}></i> {thElement.name}<b className="caret"></b></a>
-						<DataValidation name={thElement.name} slug={thElement.slug} />
-						</th>
-				);
-
-			}
+    			}
+               }else{
+            	   return(
+   						<th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)}>
+   						<a href="#"  id={thElement.slug} className={anchorCls}><i className={iconCls}></i> {thElement.name}</a>
+   						</th>
+   				);
+               }
+			
 			});
 			//  data.splice(0,1);
 			const tableRowsTemplate = dataPrev.sampleData.map((trElement, trIndex) => {
@@ -382,33 +389,36 @@ export class DataPreview extends React.Component {
 
 				);
 			});
-
-			const sideChart = dataPrev.columnData[0].chartData.chart_c3;
-			let yformat = dataPrev.columnData[0].chartData.yformat;
-			let xdata = dataPrev.columnData[0].chartData.xdata;
-			console.log("chart-----------")
-			const sideTable = dataPrev.columnData[0].columnStats;
-			this.firstTimeSideTable = sideTable; //show hide side table
-			this.firstTimeSideChart = dataPrev.columnData[0].chartData;
-			this.firstTimeColTypeForChart = dataPrev.columnData[0].columnType;
+			let  sideTableTemaplte = "";
 			let firstChart = "";
-			 if(!$.isEmptyObject(this.firstTimeSideChart)){
-				 firstChart = <C3Chart classId={this.chartId} data={sideChart} yformat={yformat} xdata={xdata} sideChart={true}/> ;
-			 }
 			 let firstTimeSubSetting = ""
-			 if(!isEmpty(dataPrev.columnData[0]))
-			 firstTimeSubSetting = dataPrev.columnData[0]
-			console.log("checking side table data:; ");
-			console.log(sideTable);
-			const sideTableTemaplte=sideTable.map((tableItem,tableIndex)=>{
-				if(tableItem.display){
-					return(  <tr key={tableIndex}>
-					<td className="item">{tableItem.displayName}</td>
-					<td>&nbsp; : {tableItem.value}</td>
-					</tr>
-					);
-				}
-			});
+            if(dataPrev.columnData[0].chartData != null){
+            	const sideChart = dataPrev.columnData[0].chartData.chart_c3;
+    			let yformat = dataPrev.columnData[0].chartData.yformat;
+    			let xdata = dataPrev.columnData[0].chartData.xdata;
+    			console.log("chart-----------")
+    			const sideTable = dataPrev.columnData[0].columnStats;
+    			this.firstTimeSideTable = sideTable; //show hide side table
+    			this.firstTimeSideChart = dataPrev.columnData[0].chartData;
+    			this.firstTimeColTypeForChart = dataPrev.columnData[0].columnType;
+    			 if(!$.isEmptyObject(this.firstTimeSideChart)){
+    				 firstChart = <C3Chart classId={this.chartId} data={sideChart} yformat={yformat} xdata={xdata} sideChart={true}/> ;
+    			 }
+    			 if(!isEmpty(dataPrev.columnData[0]))
+    			 firstTimeSubSetting = dataPrev.columnData[0]
+    			console.log("checking side table data:; ");
+    			console.log(sideTable);
+    			sideTableTemaplte=sideTable.map((tableItem,tableIndex)=>{
+    				if(tableItem.display){
+    					return(  <tr key={tableIndex}>
+    					<td className="item">{tableItem.displayName}</td>
+    					<td>&nbsp; : {tableItem.value}</td>
+    					</tr>
+    					);
+    				}
+    			});
+            }
+			
 
 
 			return(
@@ -493,7 +503,7 @@ export class DataPreview extends React.Component {
 					{/* End Tab Subsettings */}
 					</div>
 					</div>
-					<div className="row buttonRow">
+					<div className="row buttonRow" id="dataPreviewButton">
 					<div className="col-md-12">
 
 					<div className="panel">

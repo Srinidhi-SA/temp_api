@@ -31,10 +31,14 @@ import {RoboDocumentMode} from "./components/apps/RoboDocumentMode";
 import {Profile} from "./components/common/profile";
 import {AudioFileList} from "./components/apps/AudioFileList";
 import {AudioFileSummary} from "./components/apps/AudioFileSummary";
+import {AppsStockAdvisorList} from "./components/apps/AppsStockAdvisorList";
+import {AppsStockDataPreview} from "./components/apps/AppsStockDataPreview";
+import {AppsStockDocumentMode} from "./components/apps/AppsStockDocumentMode";
+
 class App extends React.Component {
 
   render() {
-
+	  sessionStorage.url = window.location.pathname;
     return (
       <BrowserRouter>
       <Switch>
@@ -80,6 +84,13 @@ class App extends React.Component {
             <Route exact path="/apps/audio" component={AudioFileList} />
             <Route exact path="/apps/audio/:audioSlug" component={AudioFileSummary} />				
             <Route exact path="/apps/audio?page=:pageNo" component={AudioFileList} />
+            <Route exact path="/apps-stock-advisor" component={AppsStockAdvisorList} />
+            <Route exact path="/apps-stock-advisor-analyze/data/:slug" component={AppsStockDataPreview} />" +
+            <Route exact path="/apps-stock-advisor/:slug" component={OverViewPage}/>
+            <Route exact path="/apps-stock-advisor/:slug/:l1" component={OverViewPage}/>
+            <Route exact path="/apps-stock-advisor/:slug/:l1/:l2/:l3" component={OverViewPage}/>
+            <Route exact path="/apps-stock-advisor/:slug/:l1/:l2" component={OverViewPage}/>
+            <Route exact path="/apps-stock-document-mode/:slug" component={AppsStockDocumentMode}/>			
             </Main>
       </Switch>
       </BrowserRouter>

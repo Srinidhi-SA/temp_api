@@ -112,8 +112,8 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.BasicAuthentication',
     ),
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
@@ -341,6 +341,23 @@ ANALYSIS_LIST = {
     "Trend":"Trend",
     "Trend Analysis": "Trend"
 }
+
+REVERSE_ANALYSIS_LIST = {
+    "Overview": "Descriptive analysis",
+    "overview": "Descriptive analysis",
+    "Association": "Dimension vs. Dimension",
+    "association": "Dimension vs. Dimension",
+    "Prediction": "Predictive modeling",
+    "prediction": "Predictive modeling",
+    "Performance": "Measure vs. Dimension",
+    "performance": "Measure vs. Dimension",
+    "Influencer": "Measure vs. Measure",
+    "influencer": "Measure vs. Measure",
+    "Trend": "Trend",
+    "trend": "Trend",
+    "Trend Analysis": "Trend",
+    "trend analysis": "Trend"
+}
 # {"name":"Trend":"id":4} will be added to the above lists based on the logic(if date columns is present or not)
 
 CORS_ORIGIN_ALLOW_ALL = True
@@ -372,6 +389,8 @@ JOBSERVER_STATUS = {
 }
 
 UI_VERSION = "0.1035"
+
+
 
 ERROR_MESSAGE = {
     'upload_error': 'Code had a weakness. Now it is broken.'
@@ -428,13 +447,15 @@ ORDER_DATASET = FIRST_ORDER + SECOND_ORDER + DATASET_ORDER
 ORDER_SIGNAL = FIRST_ORDER + SECOND_ORDER + THIRD_ORDER
 ORDER_TRAINER = FIRST_ORDER + SECOND_ORDER + THIRD_ORDER
 ORDER_SCORE = FIRST_ORDER + SECOND_ORDER + THIRD_ORDER
+ORDER_STOCK = FIRST_ORDER
 
 ORDER_DICT = {
     'dataset': ORDER_DATASET,
     'signal': ORDER_SIGNAL,
     'trainer': ORDER_TRAINER,
     'score': ORDER_SCORE,
-    'audioset': ORDER_DATASET
+    'audioset': ORDER_DATASET,
+    'stockdataset': ORDER_STOCK
 }
 
 
@@ -450,3 +471,268 @@ VOICE_TO_TEXT_SETTINGS = {
         "username": "3d7b6be9-17eb-4208-ad56-3d873700d5e7",
         "password": "UXiMa7qNp68f"
         }
+
+
+ADANCED_SETTING_FOR_POSSIBLE_ANALYSIS_TREND = {
+                    "name": "trend",
+                    "displayName": "Trend",
+                    "status": False,
+                    "analysisSubTypes": [
+                        {
+                            "name": "overview",
+                            "displayName": "Overview",
+                            "status": False
+                        },
+                        {
+                            "name": "factors that drive up",
+                            "displayName": "Factors that drive up",
+                            "status": False
+                        },
+                        {
+                            "name": "factors that drive down",
+                            "displayName": "Factors that drive down",
+                            "status": False
+                        },
+                        {
+                            "name": "forecast",
+                            "displayName": "Forecast",
+                            "status": False
+                        }
+
+                    ],
+                    "noOfColumnsToUse": None
+                }
+
+ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND = {
+        "dimensions": {
+            "analysis": [
+            {
+                "name": "overview",
+                "displayName": "Overview",
+                "status": False,
+                "analysisSubTypes": [],
+                "noOfColumnsToUse":None
+            },
+            {
+                "name": "prediction",
+                "displayName": "Prediction",
+                "status": False,
+                "analysisSubTypes": [],
+                "noOfColumnsToUse": None
+            },
+            {
+                "name": "association",
+                "displayName": "Association",
+                "status": False,
+                "analysisSubTypes": [],
+                "noOfColumnsToUse": [
+                    {
+                        "name": "low",
+                        "displayName": "Low",
+                        "status": True,
+                        "defaultValue":3
+                    },
+                    {
+                        "name": "medium",
+                        "displayName": "Medium",
+                        "status": False,
+                        "defaultValue":5
+                    },
+                    {
+                        "name": "high",
+                        "displayName": "High",
+                        "status": False,
+                        "defaultValue":8
+                    },
+                    {
+                        "name": "custom",
+                        "displayName": "Custom",
+                        "status": False,
+                        "defaultValue":3,
+                        "value":None
+                    }
+                ]
+            }
+        ],
+            "targetLevels":[],
+            "trendSettings":[
+                {"name":"Count","status":True},
+                {"name":"Specific Measure","status":False,"selectedMeasure":None}
+            ]
+        },
+        "measures": {
+            "analysis": [
+            {
+                "name": "overview",
+                "displayName": "Overview",
+                "status": False,
+                "analysisSubTypes": [],
+                "noOfColumnsToUse": None
+            },
+            {
+                "name": "performance",
+                "displayName": "Performance",
+                "status": False,
+                "analysisSubTypes": [
+                    {
+                        "name": "overview",
+                        "displayName": "Overview",
+                        "status": False
+                    },
+                    {
+                        "name": "Top Sublevel",
+                        "displayName": "Top Sublevel",
+                        "status": False
+                    },
+                    {
+                        "name": "Trend for top Sublevel",
+                        "displayName": "Trend for top Sublevel",
+                        "status": False
+                    }
+                ],
+                "noOfColumnsToUse": [
+                    {
+                        "name": "low",
+                        "displayName": "Low",
+                        "status": True,
+                        "defaultValue":3
+                    },
+                    {
+                        "name": "medium",
+                        "displayName": "Medium",
+                        "status": False,
+                        "defaultValue":5
+                    },
+                    {
+                        "name": "high",
+                        "displayName": "High",
+                        "status": False,
+                        "defaultValue":8
+                    },
+                    {
+                        "name": "custom",
+                        "displayName": "Custom",
+                        "status": False,
+                        "defaultValue":3,
+                        "value":None
+                    }
+                ],
+            },
+            {
+                "name": "influencer",
+                "displayName": "Influencer",
+                "status": False,
+                "analysisSubTypes": [
+                    {
+                        "name": "overview",
+                        "displayName": "Overview",
+                        "status": False
+                    },
+                    {
+                        "name": "Key areas of Impact",
+                        "displayName": "Key areas of Impact",
+                        "status": False
+                    },
+                    {
+                        "name": "Trend analysis",
+                        "displayName": "Trend analysis",
+                        "status": False
+                    }
+                ],
+                "noOfColumnsToUse": [
+                    {
+                        "name": "low",
+                        "displayName": "Low",
+                        "status": True,
+                        "defaultValue":3
+                    },
+                    {
+                        "name": "medium",
+                        "displayName": "Medium",
+                        "status": False,
+                        "defaultValue":5
+                    },
+                    {
+                        "name": "high",
+                        "displayName": "High",
+                        "status": False,
+                        "defaultValue":8
+                    },
+                    {
+                        "name": "custom",
+                        "displayName": "Custom",
+                        "status": False,
+                        "defaultValue":3,
+                        "value":None
+                    }
+                ]
+            },
+            {
+                "name": "prediction",
+                "displayName": "Prediction",
+                "status": False,
+                "analysisSubTypes": [],
+                "noOfColumnsToUse": None
+            }
+        ]
+        },
+    }
+
+TRANSFORMATION_SETTINGS_CONSTANT = {
+    "columnSetting":
+        [
+            {"actionName":"delete","displayName":"Delete Column","status":False},
+            {"actionName":"rename","displayName":"Rename Column","status":False,"newName":None},
+            {"actionName":"replace","displayName":"Replace Values","status":False,"replacementValues":[],
+             "replaceTypeList":[
+                {"name":"contains","displayName":"Contains"},
+                {"name":"equals","displayName":"Equal To"},
+                {"name":"startsWith","displayName":"Starts With"},
+                {"name":"endsWith","displayName":"Ends With"}
+            ]},
+            {
+                "actionName":"data_type",
+                "displayName":"Change Datatype",
+                "status":False,
+                "listOfDataTypes":[
+                    {"name":"numeric","displayName":"Numeric","status":False},
+                    {"name":"text","displayName":"Text","status":False},
+                ]
+            }
+        ],
+    "new_columns":
+        [
+            {
+            "newColName":None,
+            "orderedColNames":[],
+            "operators":[
+                {"name":"+","displayName":"Addition","status":True},
+                {"name":"-","displayName":"Sub dsada","status":False},
+            ]
+}
+        ]
+
+}
+
+
+CONCEPTS = {'corporate': ['leadership change', 'public relations'],
+ 'expansion - geography/segment': ['acquisition',
+  'resources / staffing ',
+  'operations & logistics',
+  'new geography',
+  'strategic partnerships',
+  'new segment'],
+ 'financial & market performance': ['investment',
+  'financial performance',
+  'stock performance',
+  'revenue growth'],
+ 'innovation & product launch': ['tech alliance',
+  'partnerships',
+  'new feature',
+  'new product',
+  'innovation'],
+ 'legal': ['corporate ethics', 'lawsuit', 'compliance'],
+ 'market potential & growth': ['market potential',
+  'market share',
+  'risks & inhibitors',
+  'product performance']}
