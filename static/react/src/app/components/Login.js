@@ -22,7 +22,6 @@ export class Login extends React.Component {
       pwd: '',
       errmsg:""
     };
-	document.body.className = "ma-splash-screen";
   }
   onChangeUId(e) {
     const userId = e.target.value;
@@ -55,10 +54,9 @@ export class Login extends React.Component {
     if (document.cookie.indexOf("JWT ") > 0 ) {
       console.log("authorized!!!");
       var data = setUserDetails.user();
-      console.log(USERDETAILS)
-      //sessionObject.manageSession();
       return (<Redirect to={"/"} />);
     } else {
+    	document.body.className = "ma-splash-screen";
       return (
 
           <div className="ma-wrapper am-login">
