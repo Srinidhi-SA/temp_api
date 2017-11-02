@@ -201,6 +201,7 @@ export class AdvanceSettings extends React.Component {
 							customValueInput =   <input type="text" placeholder={associationPlaceholder} className={customClsName} id={customIdName} name={customIdName}/>
 						}
 						return(
+						<label key={subIndex} class={labelCls}><input type="radio" className={clsName} id={idName} name={clsName} value={subItem.name} checked={status}/>{subItem.displayName}</label> 
 						);
 					});
 					countOptions  = (function(){
