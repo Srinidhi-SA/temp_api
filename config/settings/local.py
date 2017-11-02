@@ -108,7 +108,10 @@ EMAIL_USE_SSL = ""
 
 JOBSERVER_FROM_EMAIL = "ankush.patel@marlabs.com"
 JOBSERVER_SENDTO_EMAIL_LIST = [
-    'ankush.patel@marlabs.com'
+    'ankush.patel@marlabs.com',
+    'vivekananda.tadala@marlabs.com',
+    'gulshan.gaurav@marlabs.com',
+    'mukesh.kumar@marlabs.com'
 ]
 
 JOBSERVER_EMAIL_TEMPLATE = "Please restart jobserver- IP-"
