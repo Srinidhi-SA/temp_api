@@ -137,7 +137,6 @@ export class AdvanceSettings extends React.Component {
 		let performancePlaceholder = "0-"+store.getState().datasets.dataSetDimensions.length;
 		let influencersPlaceholder = "0-"+ (store.getState().datasets.dataSetMeasures.length -1);
 		let associationPlaceholder = "0-"+ store.getState().datasets.dataSetDimensions.length;
-		console.log(store.getState().datasets.dataSetMeasures);
 
 		var that = this;
 		let list =   analysisList.map((metaItem,metaIndex) =>{
@@ -186,10 +185,8 @@ export class AdvanceSettings extends React.Component {
 			}else{
 
 				var countOptions=null, options=[],customValueInput=null;
-
 				if(metaItem.noOfColumnsToUse!= null){
-
-					options = metaItem.noOfColumnsToUse.map((subItem,subIndex)=>{
+				options = metaItem.noOfColumnsToUse.map((subItem,subIndex)=>{
 						let clsName = metaItem.name +"-level";
 						let idName = metaItem.name +"-level-"+subItem.name;
 						let labelCls ="btn btn-default";
@@ -198,32 +195,21 @@ export class AdvanceSettings extends React.Component {
 							labelCls ="btn btn-default active";
 							status = true;
 						}
-						// console.log(metaItem.name +"-level-"+subItem.name)
 						if(subItem.name.indexOf("custom") !=-1){
 							let  customClsName = metaItem.name +"-level form-control";
 							let customIdName = metaItem.name +"-level-custom-val";
-
 							customValueInput =   <input type="text" placeholder={associationPlaceholder} className={customClsName} id={customIdName} name={customIdName}/>
 						}
-
 						return(
-								<label key={subIndex} class={labelCls}><input type="radio" className={clsName} id={idName} name={clsName} value={subItem.name} checked={status}/>{subItem.displayName}</label> 
+						<label key={subIndex} class={labelCls}><input type="radio" className={clsName} id={idName} name={clsName} value={subItem.name} checked={status}/>{subItem.displayName}</label> 
 						);
-
-
-
 					});
-
-
-
-
 					countOptions  = (function(){
 						return(
 								<div>
 								<div className="col-md-7 md-pl-20">
-								<div class="btn-group radioBtn" data-toggle="buttons">
+								<div className="btn-group radioBtn" data-toggle="buttons">
 								{options}
-
 								</div>
 								</div>
 								<div className="col-md-5 md-p-0">
@@ -238,7 +224,6 @@ export class AdvanceSettings extends React.Component {
 						<li><div key={metaIndex} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisList.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>
 						<div className="clearfix"></div>
 						{countOptions}
-
 						</li>);
 			}
 		});

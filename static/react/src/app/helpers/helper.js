@@ -1,6 +1,6 @@
 import React from "react";
 import CircularProgressbar from 'react-circular-progressbar';
-
+import {Redirect} from 'react-router';
 
 export function isEmpty(obj) {
     for(var prop in obj) {
@@ -30,11 +30,10 @@ export const getUserDetailsOrRestart = {
 		}
 }
 
-export const redirectToLogin = {
-		run : function(){
-			location.reaload()
-			
-		} 
+function redirectToLogin() {
+	var noOfUrls = window.history.length;
+	window.history.go("-"+noOfUrls-1);
+	//window.history.replaceState(null,null,"login");
 }
 
 export const getUserDetails = {

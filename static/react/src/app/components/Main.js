@@ -24,7 +24,7 @@ export class Main extends React.Component {
     console.log("Main is called!!");
     console.log(this.props);
     // console.log(this.props.login_response);
-    if (getUserDetailsOrRestart.get().userToken) {
+    if (document.cookie.indexOf("JWT ") > 0 ) {
       return (
         <div className="main_wrapper">
           <LeftPanel/>
