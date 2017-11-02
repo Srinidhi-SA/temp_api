@@ -5,7 +5,7 @@ import {Redirect} from 'react-router';
 import {authenticateFunc} from "../actions/loginActions";
 import store from "../store";
 import {STATIC_URL} from "../helpers/env";
-import {isEmpty,setUserDetails,USERDETAILS} from "../helpers/helper";
+import {isEmpty,getUserDetailsOrRestart,USERDETAILS} from "../helpers/helper";
 import {sessionObject} from '../helpers/manageSessionStorage';
 // import $ from "jquery";
 
@@ -51,9 +51,8 @@ export class Login extends React.Component {
     console.log("login is called!!")
     console.log(this.props)
     this.state.errmsg = this.props.errmsg;
-    if (document.cookie.indexOf("JWT ") > 0 ) {
+    if (getUserDetailsOrRestart.get().userToken) {
       console.log("authorized!!!");
-      var data = setUserDetails.user();
       return (<Redirect to={"/"} />);
     } else {
     	document.body.className = "ma-splash-screen";

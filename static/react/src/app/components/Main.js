@@ -5,7 +5,7 @@ import {Login} from "./Login";
 import { connect } from "react-redux";
 import { Redirect } from "react-router";
 import store from "../store";
-import {isEmpty,setUserDetails,USERDETAILS} from "../helpers/helper";
+import {isEmpty,setUserDetails,getUserDetailsOrRestart} from "../helpers/helper";
 
 
 @connect((store) => {
@@ -24,8 +24,7 @@ export class Main extends React.Component {
     console.log("Main is called!!");
     console.log(this.props);
     // console.log(this.props.login_response);
-    if (USERDETAILS.userToken) {
-      console.log(USERDETAILS);
+    if (getUserDetailsOrRestart.get().userToken) {
       return (
         <div className="main_wrapper">
           <LeftPanel/>

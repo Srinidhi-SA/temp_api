@@ -1,7 +1,7 @@
 import store from "../store";
 import {sessionObject} from '../helpers/manageSessionStorage';
 import {API} from "../helpers/env";
-import {USERDETAILS} from "../helpers/env";
+import {getUserDetailsOrRestart} from "../helpers/helper";
 import { sessionService } from 'redux-react-session';
 import { browserHistory } from 'react-router';
 import {cookieObj} from '../helpers/cookiesHandler';
@@ -139,7 +139,7 @@ export function uploadImg(){
 
     return fetch(API + '/api/upload_photo/', {
       method: 'put',
-      headers: getHeaderWithoutContent(USERDETAILS.userToken),
+      headers: getHeaderWithoutContent(getUserDetailsOrRestart.get().userToken),
       body: data
     }).then(response => Promise.all([response, response.json()]));
 

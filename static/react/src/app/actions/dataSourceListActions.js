@@ -1,5 +1,5 @@
 import {API} from "../helpers/env";
-import {HOST,PORT,SCHEMA,USERNAME,PASSWORD,TABLENAME,USERDETAILS} from "../helpers/helper";
+import {HOST,PORT,SCHEMA,USERNAME,PASSWORD,TABLENAME,getUserDetailsOrRestart} from "../helpers/helper";
 
 function getHeader(token){
 	return {
@@ -10,7 +10,7 @@ function getHeader(token){
 
 export function getDataSourceList(){
 	return (dispatch) => {
-		return fetchDataSourceList(USERDETAILS.userToken).then(([response, json]) =>{
+		return fetchDataSourceList(getUserDetailsOrRestart.get().userToken).then(([response, json]) =>{
 			if(response.status === 200){
 				dispatch(fetchDataSrcSuccess(json))
 			}
@@ -41,7 +41,7 @@ function fetchDataSrcError(json) {
 }
 export function fileUpload(file){
 	return (dispatch) => {
-		return dataUpload(USERDETAILS.userToken,file).then(([response, json]) =>{
+		return dataUpload(getUserDetailsOrRestart.get().userToken,file).then(([response, json]) =>{
 			if(response.status === 200){
 				dispatch(fileUploadSuccess(json))
 			}

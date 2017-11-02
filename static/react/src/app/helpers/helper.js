@@ -13,15 +13,39 @@ export function isEmpty(obj) {
 
 var  USERDETAILS = {};
 
-export const setUserDetails = {
-		user: function() {
+export const getUserDetailsOrRestart = {
+		get : function(){
+			let  userDetails = {};
+			if(document.cookie){
+				let allCookies = document.cookie.split(";");
+				for(let i=0;i<allCookies.length;i++){
+					let cur = allCookies[i].split('=');
+					userDetails[cur[0].replace(/\s/g, '')] = cur[1];
+				}
+				return userDetails;
+			}else{
+				redirectToLogin();
+			}
+			
+		}
+}
+
+export const redirectToLogin = {
+		run : function(){
+			location.reaload()
+			
+		} 
+}
+
+export const getUserDetails = {
+		get: function() {
 			let  userDetail = {};
 			let allCookies = document.cookie.split(";");
 			for(let i=0;i<allCookies.length;i++){
 				let cur = allCookies[i].split('=');
 				userDetail[cur[0].replace(/\s/g, '')] = cur[1];
 			}
-			USERDETAILS = userDetail;
+USERDETAILS = userDetail;
 		   return userDetail;
 		},
 }
