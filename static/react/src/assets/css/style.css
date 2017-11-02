@@ -14580,6 +14580,15 @@ a.disabled { color:#ccc !important; }
 .sel_dset label.btn.btn-default { display: inline-block; margin-bottom: 10px; }
 .sel_dset  .btn+.btn{ margin-left: inherit; }
 .sel_dset .col-md-10 { padding-left: 0; }
+
+.buttonRow .panel .navbar { min-height:auto; margin-bottom:inherit; }
+
+@media only screen and (max-width: 412px) {
+.navbar-nav.navbar-right {
+    float: none;
+	margin-left: 0;
+} }
+ {}
 /**************** Css realated to developers, keep the source down ***/
 
 
@@ -14840,12 +14849,12 @@ visibility:hidden !important;
 	text-align: right;
     padding-right: 10px;
 }
-
+/*
 .dataTransformModal .tab-content .tab-pane .tb_content{
     height: 240px;
     overflow: auto;
     overflow-x: hidden;
-}
+}*/
  .dataTransformModal .tab-content .tab-pane .tb_content div div:nth-child(2) div{ background-color: rgba(255, 255, 255, 0) !important }
  .dataTransformModal .tab-content .page-header { margin: 0 0 18px; }
 .dataTransformModal.modal-body {
