@@ -140,7 +140,8 @@ export class DataValidationEditValues extends React.Component {
 		<p className="page-header">Please enter symbols, phrases or values that you want to remove from the selected column
 		</p>
 		<div className="tb_content">
-		<Scrollbars>
+		<Scrollbars style={{ height: 300 }} renderTrackHorizontal={props => <div {...props} className="track-horizontal" style={{display:"none"}}/>}
+        renderThumbHorizontal={props => <div {...props} className="thumb-horizontal" style={{display:"none"}}/>}>
 		
 		<div id="removeValues">
 		<form role="form" className="form-horizontal">
@@ -162,7 +163,8 @@ export class DataValidationEditValues extends React.Component {
         </p>
 		
 		<div className="tb_content">
-		<Scrollbars>
+		<Scrollbars style={{ height: 300 }} renderTrackHorizontal={props => <div {...props} className="track-horizontal" style={{display:"none"}}/>}
+        renderThumbHorizontal={props => <div {...props} className="thumb-horizontal" style={{display:"none"}}/>}>
 		<div id="replaceValues">
 		<form role="form" className="form-horizontal">
 		{replaceTextBoxes}

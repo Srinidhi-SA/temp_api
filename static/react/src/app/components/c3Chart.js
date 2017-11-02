@@ -265,7 +265,8 @@ export class C3Chart extends React.Component {
 					<div className="row" >
 					<div className="col-md-12">
 					<div className={this.tableCls}>
-					<Scrollbars autoHide={true}>
+					<Scrollbars style={{ height: 300 }} renderTrackHorizontal={props => <div {...props} className="track-horizontal" style={{display:"none"}}/>}
+        renderThumbHorizontal={props => <div {...props} className="thumb-horizontal" style={{display:"none"}}/>}>
 					<table className='table chart-table'>
 					</table>
 					{/*<div class="form-group col-md-7;">*/}
