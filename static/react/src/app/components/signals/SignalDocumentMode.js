@@ -6,7 +6,7 @@ import Breadcrumb from 'react-breadcrumb';
 import {Card} from "./Card";
 import {STATIC_URL} from "../../helpers/env.js";
 import {getSignalAnalysis} from "../../actions/signalActions";
-import {isEmpty, subTreeSetting,USERDETAILS} from "../../helpers/helper";
+import {isEmpty, subTreeSetting,getUserDetailsOrRestart} from "../../helpers/helper";
 import {hideDataPreview} from "../../actions/dataActions";
 
 @connect((store) => {
@@ -22,7 +22,7 @@ export class SignalDocumentMode extends React.Component {
     // alert("in will mount!!!")
     // console.log("in will mount!!!")
     if (isEmpty(this.props.signal)) {
-      this.props.dispatch(getSignalAnalysis(USERDETAILS.userToken, this.props.match.params.slug));
+      this.props.dispatch(getSignalAnalysis(getUserDetailsOrRestart.get().userToken, this.props.match.params.slug));
     }
     // console.log(this.props.signal)
   }

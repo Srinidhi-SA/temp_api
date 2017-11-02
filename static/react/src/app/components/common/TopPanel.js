@@ -33,7 +33,7 @@ export default class TopPanel extends React.Component {
 		if(!this.state.loginFlag){
 			return(<Redirect to="/login" />);
 		}else{
-		console.log("top panel & user name"+getUserDetailsOrRestart.get().username);
+		console.log("top panel & user name"+getUserDetailsOrRestart.get().userName);
 			return(
 		            <div>
 								{/* // Header Menu*/}

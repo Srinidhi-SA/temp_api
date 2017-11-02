@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import ReactDOM from "react-dom";
 import {Link} from "react-router-dom";
 import store from "../../store";
-import {isEmpty,USERDETAILS} from "../../helpers/helper";
+import {isEmpty,getUserDetailsOrRestart} from "../../helpers/helper";
 var dateFormat = require('dateformat');
 import Breadcrumb from 'react-breadcrumb';
 import {STATIC_URL,API} from "../../helpers/env";
@@ -32,9 +32,9 @@ export class Profile extends React.Component {
   }
   componentWillMount() {
     if (isEmpty(this.props.profileInfo))
-      this.props.dispatch(getUserProfile(USERDETAILS.userToken))
+      this.props.dispatch(getUserProfile(getUserDetailsOrRestart.get().userToken))
     if(this.props.profileImgURL=="")
-    this.props.dispatch(saveProfileImage(USERDETAILS.image_url))
+    this.props.dispatch(saveProfileImage(getUserDetailsOrRestart.get().image_url))
   }
 
   componentDidMount() {}
@@ -64,8 +64,8 @@ export class Profile extends React.Component {
   render() {
 	   let lastLogin = null;
 	  // alert(sessionStorage.last_login)
-	  if(USERDETAILS.last_login != "null"){
-		  lastLogin = dateFormat(USERDETAILS.last_login, "mmm d,yyyy");
+	  if(getUserDetailsOrRestart.get().last_login != "null"){
+		  lastLogin = dateFormat(getUserDetailsOrRestart.get().last_login, "mmm d,yyyy");
 	  }else{
 		  lastLogin = dateFormat(new Date(), "mmm d,yyyy");
 	  }
@@ -180,7 +180,7 @@ export class Profile extends React.Component {
                     <div className="panel-body">
                       <div className="row">
                         <div className="col-md-12">
-                          <h3>{USERDETAILS.userName}</h3>
+                          <h3>{getUserDetailsOrRestart.get().userName}</h3>
                           <table className="full-table-width no-border no-strip skills">
                             <tbody className="no-border-x no-border-y full-width">
                               <tr>
@@ -189,7 +189,7 @@ export class Profile extends React.Component {
                                 </td>
                                 <td className="xs-pt-5">
                                   <b>
-                                    {USERDETAILS.email}</b>
+                                    {getUserDetailsOrRestart.get().email}</b>
                                 </td>
                               </tr>
                               <tr>
@@ -198,7 +198,7 @@ export class Profile extends React.Component {
                                 </td>
                                 <td className="xs-pt-5">
                                   <b>
-                                    {USERDETAILS.phone}
+                                    {getUserDetailsOrRestart.get().phone}
                                   </b>
                                 </td>
                               </tr>
@@ -236,7 +236,7 @@ export class Profile extends React.Component {
                     <p className="xs-p-20">
                     <br/>
                       Date Joined :
-                      <b> {dateFormat(USERDETAILS.date, "mmm d,yyyy")}</b>
+                      <b> {dateFormat(getUserDetailsOrRestart.get().date, "mmm d,yyyy")}</b>
                       <br/>
                       Last Login :
                       <b>{lastLogin}</b>
@@ -245,7 +245,7 @@ export class Profile extends React.Component {
                     <b>25 Days</b>*/}
                     <br/>
                     Superuser status:
-                    <b>{USERDETAILS.is_superuser}</b>
+                    <b>{getUserDetailsOrRestart.get().is_superuser}</b>
 
                     </p>
                   </div>
