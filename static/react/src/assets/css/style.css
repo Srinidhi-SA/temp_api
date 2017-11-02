@@ -14588,7 +14588,7 @@ a.disabled { color:#ccc !important; }
     float: none;
 	margin-left: 0;
 } }
- {}
+
 /**************** Css realated to developers, keep the source down ***/
 
 
@@ -14724,8 +14724,9 @@ html{
 
 /* chart table popup*/
 .table-area{
+	/*
 height: 282px;
-width: 99%;
+width: 99%;*/
 padding: 0px 15px 15px;
 }
 
