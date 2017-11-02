@@ -240,33 +240,24 @@ export function selectedAnalysisList(evt){
 	}else{
 		analysisList = totalAnalysisList.dimensions.analysis.slice();
 	}
+	//For top level analysis update like tren,prediction,association
 	if(evt.target.className == "possibleAnalysis"){
 		for(var i=0;i<analysisList.length;i++){
 			if(analysisList[i].name == evt.target.value)
 				analysisList[i].status = evt.target.checked;
 		}
-		/*if(evt.target.checked){
-			return {
-				type: "SELECTED_ANALYSIS_TYPE",
-				selectedAnalysis
-			}
-		}else{
-			return {
-				type: "UNSELECT_ANALYSIS_TYPE",
-				selectedAnalysis
-			}
-		}*/
-		if(store.getState().signals.getVarType == "measure"){
-			totalAnalysisList.measures.analysis = analysisList
-		}else{
-			totalAnalysisList.dimensions.analysis = analysisList
-		}
-		renderList.measures = totalAnalysisList.measures;
-		renderList.dimensions = totalAnalysisList.dimensions;
-		return {
-			type: "UPDATE_ANALYSIS_LIST",
-			renderList
-		}
+	}
+	
+	if(store.getState().signals.getVarType == "measure"){
+		totalAnalysisList.measures.analysis = analysisList
+	}else{
+		totalAnalysisList.dimensions.analysis = analysisList
+	}
+	renderList.measures = totalAnalysisList.measures;
+	renderList.dimensions = totalAnalysisList.dimensions;
+	return {
+		type: "UPDATE_ANALYSIS_LIST",
+		renderList
 	}
 }
 
@@ -343,17 +334,6 @@ export function setAnalysisLevel(level,levelVal, analysisName){
 			analysisList[i].noOfColumnsToUse = noOfCols;
 		}
 	}
-	/*for(var i=0;i<analysisList.length;i++){
-			if(analysisList[i].name.toLowerCase() == analysisName){
-			  if(level == "custom"){
-				analysisList[i].analysisLevel = level;
-				analysisList[i].analysisLevelValue = levelVal;
-			  }else{
-				 analysisList[i].analysisLevel = level;
-				analysisList[i].analysisLevelValue = levelVal;
-			  }
-			}
-		}*/
 	if(store.getState().signals.getVarType == "measure"){
 		totalAnalysisList.measures.analysis = analysisList
 	}else{
@@ -368,12 +348,6 @@ export function setAnalysisLevel(level,levelVal, analysisName){
 	}
 
 }
-
-
-
-
-
-
 
 export function unselectAllPossibleAnalysis(){
 	let unselectAll =[];
