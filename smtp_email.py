@@ -2,9 +2,10 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
+from django.conf import settings
 
-username = 'product@marlabs.com'  # Email Address from the email you want to send an email
-password = 'BImarlabs@123'  # Password)
+username = 'ankush.patel@marlabs.com'  # Email Address from the email you want to send an email
+password = 'Marlabs@123'  # Password)
 
 """
 SMTP Server Information
@@ -15,7 +16,7 @@ Please verify your SMTP settings info.
 """
 
 # Create the body of the message (a HTML version for formatting).
-html = """Add you email body here"""
+html = """There is some error."""
 
 from_addr = username
 # Function that send email.
@@ -59,3 +60,38 @@ for to_addrs in email_list:
     except smtplib.SMTPAuthenticationError:
         print 'SMTPAuthenticationError'
         print "Email not sent to", to_addrs
+
+
+def send_jobserver_error(error=None):
+    joserver_email_list = settings.JOBSERVER_EMAIL_LIST
+    joserver_sender_email = settings.JOBSERVER_FROM_EMAIL
+    jobserver_email_template = settings.JOBSERVER_EMAIL_TEMPLATE
+
+    for to_addrs in joserver_email_list:
+        msg = MIMEMultipart()
+
+        msg['Subject'] = "MARLABS-ERROR"
+        msg['From'] = joserver_sender_email
+        msg['To'] = to_addrs
+
+        html =  jobserver_email_template + "  {0}".format(error)
+        # Attach HTML to the email
+        body = MIMEText(html, 'html')
+        msg.attach(body)
+
+        # Attach Cover Letter to the email
+        # cover_letter = MIMEApplication(open("file1.pdf", "rb").read())
+        # cover_letter.add_header('Content-Disposition', 'attachment', filename="file1.pdf")
+        # msg.attach(cover_letter)
+
+        # Attach Resume to the email
+        # cover_letter = MIMEApplication(open("file2.pdf", "rb").read())
+        # cover_letter.add_header('Content-Disposition', 'attachment', filename="file2.pdf")
+        # msg.attach(cover_letter)
+
+        try:
+            send_mail(username, password, from_addr, to_addrs, msg)
+            print "Email successfully sent to", to_addrs
+        except smtplib.SMTPAuthenticationError:
+            print 'SMTPAuthenticationError'
+            print "Email not sent to", to_addrs

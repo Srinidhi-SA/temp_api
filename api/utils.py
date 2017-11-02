@@ -45,7 +45,12 @@ def submit_job(
 
     print "overall---------config"
     print config
-    job = sjs.jobs.create(app, class_path, ctx=ctx, conf=json.dumps(config))
+    try:
+        job = sjs.jobs.create(app, class_path, ctx=ctx, conf=json.dumps(config))
+    except:
+        from smtp_email import send_jobserver_error
+        send_jobserver_error()
+        return None
 
     # print
     job_url = JobserverDetails.print_job_details(job)
