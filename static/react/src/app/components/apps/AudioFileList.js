@@ -9,7 +9,7 @@ import {AudioFileUpload} from "./AudioFileUpload";
 import {AppsLoader} from "../common/AppsLoader";
 import {getAudioFile,getAudioFileList,storeAudioSearchElement,handleAudioDelete,handleAudioRename} from "../../actions/appActions";
 import {STATIC_URL} from "../../helpers/env.js"
-import {isEmpty,SEARCHCHARLIMIT,USERDETAILS} from "../../helpers/helper";
+import {isEmpty,SEARCHCHARLIMIT,getUserDetailsOrRestart} from "../../helpers/helper";
 import {DetailOverlay} from "../common/DetailOverlay";
 import Dialog from 'react-bootstrap-dialog'
 import Breadcrumb from 'react-breadcrumb';
@@ -112,7 +112,7 @@ export class AudioFileList extends React.Component {
 					</div>
 					<div className="card-footer">
 					<div className="left_div">
-					<span className="footerTitle"></span>{USERDETAILS.userName}
+					<span className="footerTitle"></span>{getUserDetailsOrRestart.get().userName}
 					<span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy HH:MM")}</span>
 					</div>
 

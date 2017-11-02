@@ -1,6 +1,6 @@
 import React from "react";
 import {API} from "../helpers/env";
-import {CSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,PERPAGE,SUCCESS,FAILED,USERDETAILS} from "../helpers/helper";
+import {CSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,PERPAGE,SUCCESS,FAILED,getUserDetailsOrRestart} from "../helpers/helper";
 import {connect} from "react-redux";
 import store from "../store";
 import {openCsLoaderModal,closeCsLoaderModal,updateCsLoaderValue,updateCsLoaderMsg} from "./createSignalActions";
@@ -41,7 +41,7 @@ function fetchCreateSignal(metaData) {
 
   return fetch(API+'/api/signals/',{
 		method: 'POST',
-    headers: getHeader(USERDETAILS.userToken),
+    headers: getHeader(getUserDetailsOrRestart.userToken),
     body: JSON.stringify(metaData)
 		}).then( response => Promise.all([response, response.json()]));
 }
@@ -58,7 +58,7 @@ function fetchCreateSignalSuccess(signalData, dispatch) {
     createSignalInterval = setInterval(function() {
 
       let loading_message = store.getState().signals.loading_message
-      dispatch(getSignalAnalysis(USERDETAILS.userToken,signalData.slug));
+      dispatch(getSignalAnalysis(getUserDetailsOrRestart.userToken,signalData.slug));
       if(store.getState().signals.createSignalLoaderValue < LOADERMAXPERVALUE){
         if (loading_message && loading_message.length > 0) {
           msg = loading_message[loading_message.length - 1].shortExplanation
@@ -269,7 +269,7 @@ function deleteSignal(slug,dialog,dispatch){
 	Dialog.resetOptions();
 	return deleteSignalAPI(slug).then(([response, json]) =>{
 		if(response.status === 200){
-			dispatch(getList(USERDETAILS.userToken,store.getState().signals.signalList.current_page));
+			dispatch(getList(getUserDetailsOrRestart.userToken,store.getState().signals.signalList.current_page));
 			dispatch(hideLoading());
 		}
 		else{
@@ -283,7 +283,7 @@ function deleteSignalAPI(slug){
 	//console.log(slug);
 	return fetch(API+'/api/signals/'+slug+'/',{
 		method: 'put',
-		headers: getHeader(USERDETAILS.userToken),
+		headers: getHeader(getUserDetailsOrRestart.userToken),
 		body:JSON.stringify({
 			deleted:true,
 		}),
@@ -350,7 +350,7 @@ function renameSignal(slug,dialog,newName,dispatch){
 	Dialog.resetOptions();
 	return renameSignalAPI(slug,newName).then(([response, json]) =>{
 		if(response.status === 200){
-			dispatch(getList(USERDETAILS.userToken,store.getState().datasets.current_page));
+			dispatch(getList(getUserDetailsOrRestart.userToken,store.getState().datasets.current_page));
 			dispatch(hideLoading());
 		}
 		else{
@@ -362,7 +362,7 @@ function renameSignal(slug,dialog,newName,dispatch){
 function renameSignalAPI(slug,newName){
 	return fetch(API+'/api/signals/'+slug+'/',{
 		method: 'put',
-		headers: getHeader(USERDETAILS.userToken),
+		headers: getHeader(getUserDetailsOrRestart.userToken),
 		body:JSON.stringify({
 			name:newName,
 		}),
