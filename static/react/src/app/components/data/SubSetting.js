@@ -4,7 +4,7 @@ import {Button} from "react-bootstrap";
 import ReactBootstrapSlider from 'react-bootstrap-slider'
 import store from "../../store";
 import {updateSubSetting} from "../../actions/dataActions";
-import {showHideSubsetting} from "../../helpers/helper.js"
+import {showHideSubsetting,decimalPlaces} from "../../helpers/helper.js"
 import {Scrollbars} from 'react-custom-scrollbars';
 import dateFormat from 'dateformat';
 import DatePicker from 'react-bootstrap-date-picker';
@@ -27,19 +27,19 @@ export class SubSetting extends React.Component {
       startDate: "",
       curstartDate: "",
       endDate: '',
-      curendDate:"",
+      curendDate: "",
       subSettingRs: this.props.updatedSubSetting,
       alreadyUpdated: false
     };
   }
   handleStartDateChange(value, formattedValue) {
-      this.state.curstartDate= formattedValue
-      $("#saveButton").removeClass('btn-alt4')
-      $("#saveButton").addClass('btn-primary')
-      $("#saveButton").removeAttr('disabled')
+    this.state.curstartDate = formattedValue
+    $("#saveButton").removeClass('btn-alt4')
+    $("#saveButton").addClass('btn-primary')
+    $("#saveButton").removeAttr('disabled')
   }
   handleEndDateChange(value, formattedValue) {
-    this.state.curendDate= formattedValue
+    this.state.curendDate = formattedValue
     $("#saveButton").removeClass('btn-alt4')
     $("#saveButton").addClass('btn-primary')
     $("#saveButton").removeAttr('disabled')
@@ -64,7 +64,7 @@ export class SubSetting extends React.Component {
             that.state.selectedDimention.push($(this).val());
           }
         });
-       that.state.curdimention = that.state.selectedDimention
+        that.state.curdimention = that.state.selectedDimention
         console.log(that.state.selectedDimention);
       });
 
@@ -110,7 +110,7 @@ export class SubSetting extends React.Component {
 
   }
   changeSliderValue(e) {
-
+    //alert("coming")
     this.state.curmin = e.target.value[0]
     $("#from_value").val(this.state.curmin)
     this.state.curmax = e.target.value[1]
@@ -120,6 +120,14 @@ export class SubSetting extends React.Component {
     $("#saveButton").removeAttr('disabled')
 
   }
+  changeSliderValueFromText(e) {
+    this.state.curmin = e.target.value
+    console.log(e.target.value)
+    $("#saveButton").removeClass('btn-alt4')
+    $("#saveButton").addClass('btn-primary')
+    $("#saveButton").removeAttr('disabled')
+  }
+
   getSubSettings(columnType) {
 
     switch (columnType) {
@@ -127,7 +135,10 @@ export class SubSetting extends React.Component {
         {
           //this.state.min = this.props.item.subsetting.measureSetting.minimumValue;
           //this.state.max = this.props.item.subsetting.measureSetting.maxValue;
-          let value = [this.state.curmin, this.state.curmax]
+          //  let value = [this.state.curmin, this.state.curmax]
+          let precision =decimalPlaces(this.state.curmax)
+          let step = (1 / Math.pow(10, precision))
+          //alert(step)
           return (
             <div>
               <div id="measure_subsetting">
@@ -148,7 +159,7 @@ export class SubSetting extends React.Component {
               </div>
               <div className="xs-p-20"></div>
               <div className="form-group text-center">
-                <ReactBootstrapSlider value={value} change={this.changeSliderValue.bind(this)} max={this.state.max} min={this.state.min} range="true" tooltip="hide"/>
+                <ReactBootstrapSlider value={[this.state.curmin, this.state.curmax]} triggerSlideEvent="true" change={this.changeSliderValue.bind(this)} step={step} max={this.state.max} min={this.state.min} range="true" tooltip="hide"/>
               </div>
             </div>
           );
@@ -242,7 +253,7 @@ export class SubSetting extends React.Component {
                 <h5>From</h5>
                 <div className="row">
                   <div className="col-xs-12">
-                    <DatePicker key = {this.state.startDate} id="start-datepicker" className="form-control" value={this.state.curstartDate} onChange={this.handleStartDateChange.bind(this)} showClearButton={false} dateFormat = "YYYY-MM-DD" />
+                    <DatePicker key={this.state.startDate} id="start-datepicker" className="form-control" value={this.state.curstartDate} onChange={this.handleStartDateChange.bind(this)} showClearButton={false} dateFormat="YYYY-MM-DD"/>
                   </div>
                 </div>
                 <div className="clearfix"></div>
@@ -250,7 +261,7 @@ export class SubSetting extends React.Component {
                 <h5>To</h5>
                 <div className="row">
                   <div className="col-xs-12">
-                  <DatePicker key = {this.state.endDate} id="end-datepicker" className="form-control" value={this.state.curendDate} onChange={this.handleEndDateChange.bind(this)} showClearButton = {false} dateFormat = "YYYY-MM-DD" />
+                    <DatePicker key={this.state.endDate} id="end-datepicker" className="form-control" value={this.state.curendDate} onChange={this.handleEndDateChange.bind(this)} showClearButton={false} dateFormat="YYYY-MM-DD"/>
                   </div>
                 </div>
                 <div className="clearfix"></div>
@@ -382,59 +393,59 @@ export class SubSetting extends React.Component {
     this.props.dispatch(updateSubSetting(this.state.subSettingRs));
 
   }
-  callSubsetTableSorter(){
-	  $(function() {
-	      $('#subset').tablesorter({
-	        theme: 'ice',
-	        headers: {
-	          0: {
-	            sorter: false
-	          }
-	        }
-	      });
-	     // $("#dim").click();
-	    });
-    }
+  callSubsetTableSorter() {
+    $(function() {
+      $('#subset').tablesorter({
+        theme: 'ice',
+        headers: {
+          0: {
+            sorter: false
+          }
+        }
+      });
+      // $("#dim").click();
+    });
+  }
   render() {
     console.log("subsetting is called####$$$$!!");
     console.log(this.props)
     console.log("state is")
     console.log(this.state)
     this.callSubsetTableSorter()
-let subsettingsTemplate = "";
+    let subsettingsTemplate = "";
     if (this.props.updatedSubSetting.measureColumnFilters.length > 0 || this.props.updatedSubSetting.dimensionColumnFilters.length > 0 || this.props.updatedSubSetting.timeDimensionColumnFilters.length > 0) {
       this.getColumnData(this.props.item.columnType, this.props.item.name)
     }
-    if(this.props.item.columnStats != undefined){
-    	 this.props.item.columnStats.map((stats) => {
-    	      //  console.log(stats)
-    	      if (stats.name == "min")
-    	        this.state.min = stats.value
-    	      else if (stats.name == "max") {
-    	        this.state.max = stats.value
-    	      } else if (stats.name == "LevelCount") {
-    	        this.state.dimentionList = stats.value
-    	      } else if (stats.name == "firstDate") {
-    	        this.state.startDate = stats.value
-    	      } else if (stats.name == "lastDate") {
-    	        this.state.endDate = stats.value
-    	      }
-    	    });
+    if (this.props.item.columnStats != undefined) {
+      this.props.item.columnStats.map((stats) => {
+        //  console.log(stats)
+        if (stats.name == "min")
+          this.state.min = stats.value
+        else if (stats.name == "max") {
+          this.state.max = stats.value
+        } else if (stats.name == "LevelCount") {
+          this.state.dimentionList = stats.value
+        } else if (stats.name == "firstDate") {
+          this.state.startDate = stats.value
+        } else if (stats.name == "lastDate") {
+          this.state.endDate = stats.value
+        }
+      });
 
-    	    if (this.state.alreadyUpdated == false) {
-    	      this.state.curmax = this.state.max
-    	      this.state.curmin = this.state.min
-    	      this.state.curstartDate = this.state.startDate
-    	      this.state.curendDate = this.state.endDate
-    	      if (this.state.dimentionList)
-    	        this.state.curdimention = Object.keys(this.state.dimentionList);
-    	      }
-    	    console.log("after assign")
-    	    console.log(this.state)
+      if (this.state.alreadyUpdated == false) {
+        this.state.curmax = this.state.max
+        this.state.curmin = this.state.min
+        this.state.curstartDate = this.state.startDate
+        this.state.curendDate = this.state.endDate
+        if (this.state.dimentionList)
+          this.state.curdimention = Object.keys(this.state.dimentionList);
+        }
+      console.log("after assign")
+      console.log(this.state)
 
-    	    subsettingsTemplate = this.getSubSettings(this.props.item.columnType)
+      subsettingsTemplate = this.getSubSettings(this.props.item.columnType)
     }
-   
+
     //console.log(subsettingsTemplate)
 
     return (
