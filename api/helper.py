@@ -1,4 +1,7 @@
 from django.conf import settings
+
+from math import floor, log10
+
 JOBSERVER = settings.JOBSERVER
 THIS_SERVER_DETAILS = settings.THIS_SERVER_DETAILS
 
@@ -520,7 +523,7 @@ def decode_and_convert_chart_raw_data(data):
             c3.hide_x_tick()
         # c3.add_additional_grid_line_at_zero()
         c3_chart_details["chart_c3"] = c3.get_json()
-        c3_chart_details["tooltip_c3"] = [data_c3[0], data_c3[1], data_c3[2]]
+        c3_chart_details["tooltip_c3"] = format_tooltip_data([data_c3[0], data_c3[1], data_c3[2]])
         return c3_chart_details
     elif chart_type in ['donut']:
         chart_data = replace_chart_data(data['data'])
@@ -930,6 +933,7 @@ def convert_to_humanize(size):
 
     return str(size) + " " + size_name[i]
 
+
 def convert_to_GB(size):
 
     count = 3
@@ -939,6 +943,27 @@ def convert_to_GB(size):
         count -= 1
 
     return size
+
+
+def format_tooltip_data(datas):
+
+    for data in datas:
+        for index, value in enumerate(data):
+            if type(value) in ['int', 'float']:
+                data[index] = round_sig(value)
+
+    return datas
+
+
+def round_sig(x, sig=3):
+    try:
+        if abs(x)>=1:
+            x = round(x,sig)
+        else:
+            x = round(x, sig-int(floor(log10(abs(x))))-1)
+    except:
+        pass
+    return x
 
 
 def get_message(instance):
