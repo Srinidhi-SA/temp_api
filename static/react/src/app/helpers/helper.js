@@ -71,6 +71,8 @@ const TEXTHEATMAPTABLE = "textHeatMapTable"
 
 
 
+
+
 export function generateHeaders(table) {
     var cols = table.tableData.map(function(rowData,i){
   	  if(i== 0){
