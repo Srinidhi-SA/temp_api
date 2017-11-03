@@ -203,6 +203,18 @@ def remove_xdata_from_chart_data(chart_data):
         del chart_data['xdata']
     return chart_data
 
+def limit_chart_data_length(chart_data, limit=None):
+    if limit != None:
+        if 'chart_c3' in chart_data:
+            tempData = []
+            if "columns" in chart_data["chart_c3"]["data"]:
+                for row in chart_data["chart_c3"]["data"]["columns"]:
+                    tempData.append(row[:limit+1])
+                    chart_data["chart_c3"]["data"]["columns"] = tempData
+
+    return chart_data
+
+
 def decode_and_convert_chart_raw_data(data):
     if not check_chart_data_format(data):
         return {}
