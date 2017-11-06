@@ -107,11 +107,21 @@ export class AdvanceSettings extends React.Component {
 		this.props.dispatch(selectedDimensionSubLevel(dimensionSubLevel)); 
 	}
 
-	handleAnlysisList(e){
+	handleAnlysisListActions(e){
 		this.props.dispatch(selectedAnalysisList(e))
-
 	}
-
+	handleSubLevelAnalysis(evt){
+		var id = evt.target.childNodes[0].id;
+		if(evt.target.childNodes[0].value == "custom"){
+			$("#"+id+"-val").closest("div").removeClass("visibilityHidden");
+		}else{
+			$("#"+id+"-val").closest("div").addClass("visibilityHidden");
+		}
+		this.props.dispatch(selectedAnalysisList(evt.target.childNodes[0],"noOfColumnsToUse"))
+	}
+	handleCustomInput(evt){
+		this.props.dispatch(selectedAnalysisList(evt.target,"noOfColumnsToUse"))
+	}
 	getSubAnalysisList(subAnalysis){
 		let subList = metaItem.analysisSubTypes.map((subItem,subIndex)=>{
 			<li>{subItem.name}</li>
@@ -140,7 +150,6 @@ export class AdvanceSettings extends React.Component {
 
 		var that = this;
 		let list =   analysisList.map((metaItem,metaIndex) =>{
-			console.log(metaItem);
 			let id = "chk_analysis"+ metaIndex;
 
 			if(metaItem.name.indexOf("trend") != -1){
@@ -168,7 +177,7 @@ export class AdvanceSettings extends React.Component {
 						}
 					})
 					return(
-							<li><div key={metaIndex} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisList.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>
+							<li><div key={metaIndex} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisListActions.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>
 							<ul className="list-unstyled">
 
 							{trendSub}
@@ -179,29 +188,39 @@ export class AdvanceSettings extends React.Component {
 							</li>);
 				}else{
 					return(
-							<li><div key={metaIndex} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisList.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>
+							<li><div key={metaIndex} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisListActions.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>
 							</li>)
 				}//end of trendsetting check
 			}else{
 
-				var countOptions=null, options=[],customValueInput=null;
+				var countOptions=null, options=[],customValueInput=null,customInputDivClass="col-md-5 md-p-0 visibilityHidden";
 				if(metaItem.noOfColumnsToUse!= null){
 				options = metaItem.noOfColumnsToUse.map((subItem,subIndex)=>{
-						let clsName = metaItem.name +"-level";
+						let clsName = "sub-level-analysis-count";
+						let name = metaItem.name
 						let idName = metaItem.name +"-level-"+subItem.name;
 						let labelCls ="btn btn-default";
 						let status = false;
-						if(subIndex == 0){
+						/*if(subIndex == 0){
+							labelCls ="btn btn-default active";
+							status = true;
+						}*/
+						if(subItem.name.indexOf("custom") !=-1){
+							let  customClsName = metaItem.name +"-level form-control";
+							let customName = metaItem.name;
+							let customIdName = metaItem.name +"-level-custom-val";
+							if(subItem.status){
+								customInputDivClass = "col-md-5 md-p-0";
+							}
+							customValueInput =   <input type="text" value={subItem.value} onChange={this.handleCustomInput.bind(this)} placeholder={associationPlaceholder} className={customClsName} id={customIdName} name={customName}/>
+						   
+						}
+						if(subItem.status){
 							labelCls ="btn btn-default active";
 							status = true;
 						}
-						if(subItem.name.indexOf("custom") !=-1){
-							let  customClsName = metaItem.name +"-level form-control";
-							let customIdName = metaItem.name +"-level-custom-val";
-							customValueInput =   <input type="text" placeholder={associationPlaceholder} className={customClsName} id={customIdName} name={customIdName}/>
-						}
 						return(
-						<label key={subIndex} class={labelCls}><input type="radio" className={clsName} id={idName} name={clsName} value={subItem.name} checked={status}/>{subItem.displayName}</label> 
+						<label key={subIndex} class={labelCls} onClick={this.handleSubLevelAnalysis.bind(this)}><input type="radio" className={clsName} id={idName} name={name} value={subItem.name} checked={status}/>{subItem.displayName}</label> 
 						);
 					});
 					countOptions  = (function(){
@@ -212,7 +231,7 @@ export class AdvanceSettings extends React.Component {
 								{options}
 								</div>
 								</div>
-								<div className="col-md-5 md-p-0">
+								<div className={customInputDivClass} id="divCustomInput">
 								{customValueInput}
 								</div>
 								</div>
@@ -221,7 +240,7 @@ export class AdvanceSettings extends React.Component {
 				}
 
 				return(
-						<li><div key={metaIndex} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisList.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>
+						<li><div key={metaIndex} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisListActions.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>
 						<div className="clearfix"></div>
 						{countOptions}
 						</li>);

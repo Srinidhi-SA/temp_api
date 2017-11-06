@@ -14891,3 +14891,6 @@ display: inline-block;
 .rep_block.newCardStyle h4.title.newCardTitle {
     font-weight: normal;
 }
+.visibilityHidden{
+	visibility:hidden;
+}

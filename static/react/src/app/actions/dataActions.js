@@ -230,8 +230,8 @@ export function fetchAllDataSuccess(doc){
 		slug
 	}
 }
-export function selectedAnalysisList(evt){
-	var selectedAnalysis = evt.target.value;
+export function selectedAnalysisList(evt,noOfColumnsToUse){
+
 	var totalAnalysisList = store.getState().datasets.dataSetAnalysisList;
 	var analysisList = [];
 	var renderList = {};
@@ -240,11 +240,45 @@ export function selectedAnalysisList(evt){
 	}else{
 		analysisList = totalAnalysisList.dimensions.analysis.slice();
 	}
-	//For top level analysis update like tren,prediction,association
-	if(evt.target.className == "possibleAnalysis"){
-		for(var i=0;i<analysisList.length;i++){
-			if(analysisList[i].name == evt.target.value)
-				analysisList[i].status = evt.target.checked;
+	//For updating low,medium,high values
+	if(noOfColumnsToUse){
+		if(evt.type == "radio"){
+			for(var i=0;i<analysisList.length;i++){
+				if(analysisList[i].name == evt.name){
+					analysisList[i].status = true;	
+					for(var j=0;j<analysisList[i].noOfColumnsToUse.length;j++){
+						if(analysisList[i].noOfColumnsToUse[j].name == evt.value){
+							analysisList[i].noOfColumnsToUse[j].status = true;
+						}else{
+							analysisList[i].noOfColumnsToUse[j].status = false;
+						}
+					}
+					break;
+				}
+			}	
+		}else{
+			//for updating custom input value
+			for(var i=0;i<analysisList.length;i++){
+				if(analysisList[i].name == evt.name){
+					for(var j=0;j<analysisList[i].noOfColumnsToUse.length;j++){
+						if(analysisList[i].noOfColumnsToUse[j].name == "custom"){
+							analysisList[i].noOfColumnsToUse[j].value = $("#"+evt.id).val();
+						}
+					}
+					break;
+				}
+			}
+		}
+	}
+	//For top level analysis update like trend,prediction,association
+	else {
+		if(evt.target.className == "possibleAnalysis"){
+			for(var i=0;i<analysisList.length;i++){
+				if(analysisList[i].name == evt.target.value){
+					analysisList[i].status = evt.target.checked;
+					break;
+				}
+			}
 		}
 	}
 	
