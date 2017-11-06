@@ -4,7 +4,7 @@ import {Button} from "react-bootstrap";
 import ReactBootstrapSlider from 'react-bootstrap-slider'
 import store from "../../store";
 import {updateSubSetting} from "../../actions/dataActions";
-import {showHideSubsetting,decimalPlaces} from "../../helpers/helper.js"
+import {showHideSubsetting, decimalPlaces} from "../../helpers/helper.js"
 import {Scrollbars} from 'react-custom-scrollbars';
 import dateFormat from 'dateformat';
 import DatePicker from 'react-bootstrap-date-picker';
@@ -29,7 +29,8 @@ export class SubSetting extends React.Component {
       endDate: '',
       curendDate: "",
       subSettingRs: this.props.updatedSubSetting,
-      alreadyUpdated: false
+      alreadyUpdated: false,
+      textboxUpdated: false
     };
   }
   handleStartDateChange(value, formattedValue) {
@@ -121,11 +122,34 @@ export class SubSetting extends React.Component {
 
   }
   changeSliderValueFromText(e) {
-    this.state.curmin = e.target.value
-    console.log(e.target.value)
-    $("#saveButton").removeClass('btn-alt4')
-    $("#saveButton").addClass('btn-primary')
-    $("#saveButton").removeAttr('disabled')
+    if (isNaN(e.target.value))
+      alert("please enter a valid number")
+    else {
+      this.setState({
+        curmin: e.target.value,
+        textboxUpdated: true
+      })
+      //this.state.curmin = Number(e.target.value)
+      console.log(e.target.value)
+      $("#saveButton").removeClass('btn-alt4')
+      $("#saveButton").addClass('btn-primary')
+      $("#saveButton").removeAttr('disabled')
+    }
+  }
+  changeSliderValueToText(e) {
+    if (isNaN(e.target.value))
+      alert("please enter a valid number")
+    else {
+      this.setState({
+        curmax: e.target.value,
+        textboxUpdated: true
+      })
+      //this.state.curmin = Number(e.target.value)
+      console.log(e.target.value)
+      $("#saveButton").removeClass('btn-alt4')
+      $("#saveButton").addClass('btn-primary')
+      $("#saveButton").removeAttr('disabled')
+    }
   }
 
   getSubSettings(columnType) {
@@ -136,9 +160,15 @@ export class SubSetting extends React.Component {
           //this.state.min = this.props.item.subsetting.measureSetting.minimumValue;
           //this.state.max = this.props.item.subsetting.measureSetting.maxValue;
           //  let value = [this.state.curmin, this.state.curmax]
-          let precision =decimalPlaces(this.state.curmax)
+          let precision = decimalPlaces(this.state.curmax)
           let step = (1 / Math.pow(10, precision))
           //alert(step)
+          let value = [Number(this.state.curmin), Number(this.state.curmax)]
+          if(this.state.curmin=="")
+          value=[0,Number(this.state.curmax)]
+          else if (this.state.curmax=="") {
+            value=[Number(this.state.curmin),0]
+          }
           return (
             <div>
               <div id="measure_subsetting">
@@ -146,20 +176,20 @@ export class SubSetting extends React.Component {
                 <div className="xs-pt-20"></div>
                 <div className="row">
                   <div className="col-xs-5">
-                    <input type="text" className="form-control" id="from_value" value={this.state.curmin}/>
+                    <input type="number" step = {step} min = {this.state.min} max = {this.state.curmax} className="form-control" id="from_value" value={this.state.curmin} onChange={this.changeSliderValueFromText.bind(this)}/>
                   </div>
                   <div className="col-xs-2 text-center">
                     <label>To</label>
                   </div>
                   <div className="col-xs-5">
-                    <input type="text" className="form-control" id="to_value" value={this.state.curmax}/>
+                    <input type="number" step = {step} min = {this.state.curmin} max = {this.state.max} className="form-control" id="to_value" value={this.state.curmax} onChange={this.changeSliderValueToText.bind(this)}/>
                   </div>
                   <div className="clearfix"></div>
                 </div>
               </div>
               <div className="xs-p-20"></div>
               <div className="form-group text-center">
-                <ReactBootstrapSlider value={[this.state.curmin, this.state.curmax]} triggerSlideEvent="true" change={this.changeSliderValue.bind(this)} step={step} max={this.state.max} min={this.state.min} range="true" tooltip="hide"/>
+                <ReactBootstrapSlider value={value} triggerSlideEvent="true" change={this.changeSliderValue.bind(this)} step={step} max={this.state.max} min={this.state.min} range="true" tooltip="hide"/>
               </div>
             </div>
           );
@@ -278,9 +308,10 @@ export class SubSetting extends React.Component {
         {
           this.props.updatedSubSetting.measureColumnFilters.map((changeditem) => {
             if (changeditem.colname == columnName) {
+              if(!this.state.textboxUpdated){
               this.state.curmin = changeditem.lowerBound
               this.state.curmax = changeditem.upperBound
-
+            }
               this.state.alreadyUpdated = true
             }
           });
@@ -328,16 +359,18 @@ export class SubSetting extends React.Component {
               if (changeditem.colname == this.props.item.name) {
                 measureColumnFilter[i] = {
                   "colname": this.props.item.name,
-                  "upperBound": this.state.curmax,
-                  "lowerBound": this.state.curmin,
+                  "upperBound": Number(this.state.curmax),
+                  "lowerBound": Number(this.state.curmin),
                   "filterType": "valueRange"
                 };
               }
             });
             this.state.subSettingRs.measureColumnFilters = measureColumnFilter;
           } else {
-            this.state.subSettingRs.measureColumnFilters.push({"colname": this.props.item.name, "upperBound": this.state.curmax, "lowerBound": this.state.curmin, "filterType": "valueRange"});
-            this.state.alreadyUpdated = true
+
+              this.state.subSettingRs.measureColumnFilters.push({"colname": this.props.item.name, "upperBound": Number(this.state.curmax), "lowerBound": Number(this.state.curmin), "filterType": "valueRange"});
+              this.state.alreadyUpdated = true
+
           }
         }
         break;
@@ -387,10 +420,17 @@ export class SubSetting extends React.Component {
         break;
 
     }
+    if ((this.state.curmin < this.state.min) || (this.state.curmax > this.state.max)) {
+      alert("please select a range between " + this.state.min + " and " + this.state.max)
+      $("#saveButton").removeClass('btn-alt4')
+      $("#saveButton").addClass('btn-primary')
+      $("#saveButton").removeAttr('disabled')
+    }else{
     $('#saveButton').removeClass('btn-primary')
     $('#saveButton').addClass('btn-alt4')
     $('#saveButton').attr('disabled', true);
     this.props.dispatch(updateSubSetting(this.state.subSettingRs));
+  }
 
   }
   callSubsetTableSorter() {
@@ -433,8 +473,10 @@ export class SubSetting extends React.Component {
       });
 
       if (this.state.alreadyUpdated == false) {
-        this.state.curmax = this.state.max
-        this.state.curmin = this.state.min
+        if (this.state.textboxUpdated == false) {
+          this.state.curmax = this.state.max
+          this.state.curmin = this.state.min
+        }
         this.state.curstartDate = this.state.startDate
         this.state.curendDate = this.state.endDate
         if (this.state.dimentionList)

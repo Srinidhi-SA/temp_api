@@ -390,8 +390,6 @@ JOBSERVER_STATUS = {
 
 UI_VERSION = "0.1035"
 
-
-
 ERROR_MESSAGE = {
     'upload_error': 'Code had a weakness. Now it is broken.'
 }

@@ -97,3 +97,21 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 1024*1024*1024
 
 mAdvisorScores = '/home/hadoop/mAdvisorScores/'
 IMAGE_URL = "/api/get_profile_image/"
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = "smtp.office365.com"
+EMAIL_PORT = 587
+EMAIL_HOST_USER = "product@marlabs.com"
+EMAIL_HOST_PASSWORD = "BImarlabs@123"
+EMAIL_USE_TLS = ""
+EMAIL_USE_SSL = ""
+
+JOBSERVER_FROM_EMAIL = "ankush.patel@marlabs.com"
+JOBSERVER_SENDTO_EMAIL_LIST = [
+    'ankush.patel@marlabs.com',
+    'vivekananda.tadala@marlabs.com',
+    'gulshan.gaurav@marlabs.com',
+    'mukesh.kumar@marlabs.com'
+]
+
+JOBSERVER_EMAIL_TEMPLATE = "Please restart jobserver- IP-"
