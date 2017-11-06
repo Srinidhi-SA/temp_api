@@ -122,12 +122,6 @@ export class AdvanceSettings extends React.Component {
 	handleCustomInput(evt){
 		this.props.dispatch(selectedAnalysisList(evt.target,"noOfColumnsToUse"))
 	}
-	getSubAnalysisList(subAnalysis){
-		let subList = metaItem.analysisSubTypes.map((subItem,subIndex)=>{
-			<li>{subItem.name}</li>
-		});
-		return subList;
-	}
 	updateTrendSubList(e){
 		this.props.dispatch(selectedTrendSubList(e));
 	}
@@ -195,16 +189,12 @@ export class AdvanceSettings extends React.Component {
 
 				var countOptions=null, options=[],customValueInput=null,customInputDivClass="col-md-5 md-p-0 visibilityHidden";
 				if(metaItem.noOfColumnsToUse!= null){
-				options = metaItem.noOfColumnsToUse.map((subItem,subIndex)=>{
+					options = metaItem.noOfColumnsToUse.map((subItem,subIndex)=>{
 						let clsName = "sub-level-analysis-count";
 						let name = metaItem.name
 						let idName = metaItem.name +"-level-"+subItem.name;
 						let labelCls ="btn btn-default";
 						let status = false;
-						/*if(subIndex == 0){
-							labelCls ="btn btn-default active";
-							status = true;
-						}*/
 						if(subItem.name.indexOf("custom") !=-1){
 							let  customClsName = metaItem.name +"-level form-control";
 							let customName = metaItem.name;
@@ -213,14 +203,14 @@ export class AdvanceSettings extends React.Component {
 								customInputDivClass = "col-md-5 md-p-0";
 							}
 							customValueInput =   <input type="text" value={subItem.value} onChange={this.handleCustomInput.bind(this)} placeholder={associationPlaceholder} className={customClsName} id={customIdName} name={customName}/>
-						   
+
 						}
 						if(subItem.status){
 							labelCls ="btn btn-default active";
 							status = true;
 						}
 						return(
-						<label key={subIndex} class={labelCls} onClick={this.handleSubLevelAnalysis.bind(this)}><input type="radio" className={clsName} id={idName} name={name} value={subItem.name} checked={status}/>{subItem.displayName}</label> 
+								<label key={subIndex} class={labelCls} onClick={this.handleSubLevelAnalysis.bind(this)}><input type="radio" className={clsName} id={idName} name={name} value={subItem.name} checked={status}/>{subItem.displayName}</label> 
 						);
 					});
 					countOptions  = (function(){
@@ -246,60 +236,6 @@ export class AdvanceSettings extends React.Component {
 						</li>);
 			}
 		});
-
-		if(this.props.getVarType=="dimension"){
-			if(this.props.selectedDimensionSubLevels != null ){
-				let displayName = "Specify Sub-Level to Analyse";
-
-				let subLevelLi = this.props.selectedDimensionSubLevels.map(function(item,index){
-					let key = Object.keys(item);
-					let id=null;
-					if(key[0].trim().indexOf(" ") != -1){
-						id= key[0].trim().split(" ").join("_");
-					}else{
-						id= key[0]+"_id";
-					}
-
-					let val= key[0];
-					let chkStatus = item[id];
-					return(
-							<div key={index} className="ma-checkbox"><input id={id} type="checkbox" className="possibleSubAnalysis dimension-sub-level" value={val} checked={chkStatus}   /><label htmlFor={id}>{val}</label></div>
-					);
-				})
-
-				this.dimensionSubLevel = (function(){
-					let varText = that.props.getVarText;
-					return(
-
-							<div className="form-group">
-							<label className="col-md-4">{displayName}</label>
-							<div className="col-lg-5">
-							<div className="panel panel-primary-p1 cst-panel-shadow">
-							<div className="panel-heading"> {varText}</div>
-							<div className="panel-body">
-							{/*  <!-- Row for select all-->*/}
-							<div className="row">
-							<div className="col-md-12 cst-scroll-panel">
-
-							<ul className="list-unstyled">
-							{subLevelLi}
-							</ul>
-							</div>
-							</div>
-							{/*  <!-- End Row for list of variables-->*/}
-							</div>
-							</div>
-
-							</div>
-							<div className="clearfix"></div>
-							</div>
-					);
-				})();
-			}
-		}else{
-			this.dimensionSubLevel=[]
-		}
-
 		return list;
 	}
 

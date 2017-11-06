@@ -296,7 +296,7 @@ export function selectedAnalysisList(evt,noOfColumnsToUse){
 }
 
 
-export function selectAllAnalysisList(evt){
+export function selectAllAnalysisList(flag){
 	//var selectedAnalysis = evt.target.checked;
 	var totalAnalysisList = store.getState().datasets.dataSetAnalysisList;
 	var analysisList = [];
@@ -306,22 +306,9 @@ export function selectAllAnalysisList(evt){
 	}else{
 		analysisList = totalAnalysisList.dimensions.analysis.slice();
 	}
-	if(evt.target.className == "allAnalysis"){
 		for(var i=0;i<analysisList.length;i++){
-			//if(analysisList[i].name == evt.target.value)
-			analysisList[i].status = evt.target.checked;
+			analysisList[i].status = flag;
 		}
-		/*if(evt.target.checked){
-			return {
-				type: "SELECTED_ANALYSIS_TYPE",
-				selectedAnalysis
-			}
-		}else{
-			return {
-				type: "UNSELECT_ANALYSIS_TYPE",
-				selectedAnalysis
-			}
-		}*/
 		if(store.getState().signals.getVarType == "measure"){
 			totalAnalysisList.measures.analysis = analysisList
 		}else{
@@ -333,7 +320,6 @@ export function selectAllAnalysisList(evt){
 			type: "UPDATE_ANALYSIS_LIST",
 			renderList
 		}
-	}
 }
 
 
@@ -1189,5 +1175,10 @@ export function handleInputChangeReplace(targetTextBox,event){
 	}
 }
 
-
+export function updateSelectAllAnlysis(flag){
+	return{
+		type: "DATA_SET_SELECT_ALL_ANALYSIS",
+		flag
+	}
+}
 

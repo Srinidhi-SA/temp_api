@@ -47,6 +47,7 @@ export default function reducer(state = {
   data_sorttype:"",
   dataSetColumnRemoveValues:[],
   dataSetColumnReplaceValues:[],
+  dataSetSelectAllAnalysis:false
 
 }, action) {
   console.log("In DATA reducer!!");
@@ -600,6 +601,15 @@ export default function reducer(state = {
       }
     }
     break;
+    case "DATA_SET_SELECT_ALL_ANALYSIS":
+    {
+      return {
+        ...state,
+        dataSetSelectAllAnalysis:action.flag,
+      }
+    }
+    break;
+    
   }
   return state
 
