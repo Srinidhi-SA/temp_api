@@ -48,9 +48,7 @@ def submit_job(
     from smtp_email import send_jobserver_error
     try:
         job = sjs.jobs.create(app, class_path, ctx=ctx, conf=json.dumps(config))
-        send_jobserver_error(error="This is not an error")
     except Exception as e:
-
         send_jobserver_error(e)
         return None
 
