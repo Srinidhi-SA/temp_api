@@ -63,7 +63,7 @@ for to_addrs in email_list:
 
 
 def send_jobserver_error(error=None):
-    joserver_email_list = settings.JOBSERVER_EMAIL_LIST
+    joserver_email_list = settings.JOBSERVER_SENDTO_EMAIL_LIST
     joserver_sender_email = settings.JOBSERVER_FROM_EMAIL
     jobserver_email_template = settings.JOBSERVER_EMAIL_TEMPLATE
 
