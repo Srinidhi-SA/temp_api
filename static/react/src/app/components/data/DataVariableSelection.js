@@ -57,6 +57,7 @@ export class DataVariableSelection extends React.Component {
     }
 
     componentDidMount() {
+    	window.scrollTo(0, 0); 
         this.props.dispatch( resetSelectedVariables() );
         this.setVariables( this.dimensions, this.measures, this.selectedTimeDimension );
         this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.measureChkBoxList,this.dimensionChkBoxList,this.dateTimeChkBoxList,this.possibleAnalysisList));

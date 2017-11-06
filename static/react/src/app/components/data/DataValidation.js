@@ -19,10 +19,10 @@ export class DataValidation extends React.Component {
 	constructor(props) {
 		super(props);
 	}
-	handleClickEvent(colSlug,colName,event){
+	handleClickEvent(colSlug,colName,colStatus,event){
 		event.stopPropagation();
 		this.props.dispatch(updateColSlug(colSlug));
-		this.props.dispatch(handleColumnClick(this.refs.dialog,event.target.name,colSlug,colName));
+		this.props.dispatch(handleColumnClick(this.refs.dialog,event.target.name,colSlug,colName,"",colStatus));
 	}
 	handleChangeTypeEvent(actionName,colSlug,colName,subActionName,event){
 		event.stopPropagation();
@@ -40,7 +40,7 @@ export class DataValidation extends React.Component {
 				})}</ul>
 			 </li>)     
 		   }
-		   else return (<li onClick={this.handleClickEvent.bind(this,colSlug,colName)} key={index}><a className="cursor" name={actionNames.actionName}>{actionNames.displayName}</a></li>)  
+		   else return (<li onClick={this.handleClickEvent.bind(this,colSlug,colName,actionNames.status)} key={index}><a className="cursor" name={actionNames.actionName}>{actionNames.displayName}</a></li>)  
    	  })
    	  return list;
    }

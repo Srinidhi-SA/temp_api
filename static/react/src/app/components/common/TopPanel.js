@@ -25,7 +25,7 @@ export default class TopPanel extends React.Component {
 		  this.setState({
              loginFlag: false
          });
-         sessionObject.clearSession();
+         //sessionObject.clearSession();
          cookieObj.clearCookies();
          //location.reload();
 	}
