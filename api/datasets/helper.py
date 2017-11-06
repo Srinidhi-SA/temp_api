@@ -77,7 +77,7 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
         columnData=columnData,
         sampleData=sampleData
     )
-
+    
     ts = ts.get('existingColumns')
 
     for col in ts:
@@ -103,23 +103,19 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
                         mdc.changes_on_delete(col.get("name"), type='delete')
 
                     if colset.get("actionName") == "rename":
-
                         colName = col.get('name')
                         newName = colset.get('newName')
 
                         if 'modified' in colset:
                             if colset.get('modified') == True:
-                                colName = colset.get('prevName')
-                            colset['prevName'] = newName
+                                colset['prevName'] = newName
                         else:
                             colset['modified'] = True
                             colset['prevName'] = colName
-
                         mdc.changes_on_rename(
                             colName=colName,
                             newName=newName
                         )
-
                     if colset.get("actionName") == "data_type":
                         listOfDataTypes = colset.get('listOfDataTypes')
                         data_type = {}
@@ -302,8 +298,10 @@ class MetaDataChange(object):
             raise Exception("no name")
 
         for head in self.columnData:
+
             if head.get('name') == colName:
                 head['name'] = newName
+                break
 
     def changes_on_data_type(self, colName=None, type=None):
         """
