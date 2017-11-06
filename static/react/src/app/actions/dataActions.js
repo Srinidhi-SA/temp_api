@@ -894,12 +894,12 @@ function updateColumnName(dispatch,colSlug,newColName){
 	let dataPreview = Object.assign({}, metaData);
 	//handleColumnActions(dataPreview,slug,dispatch)
 }
-export function handleColumnClick(dialog,actionName,colSlug,colName,subActionName){
+export function handleColumnClick(dialog,actionName,colSlug,colName,subActionName,colStatus){
 	return (dispatch) => {
 		if(actionName == RENAME){
 			renameMetaDataColumn(dialog,colName,colSlug,dispatch,actionName)
 		}else if(actionName == DELETE){
-			deleteMetaDataColumn(dialog,colName,colSlug,dispatch,actionName)
+			deleteMetaDataColumn(dialog,colName,colSlug,dispatch,actionName,colStatus)
 		}else if(actionName == DATA_TYPE){
 			//dispatch(updateVLPopup(true));
 			updateColumnStatus(dispatch,colSlug,colName,actionName,subActionName);
@@ -911,13 +911,18 @@ export function handleColumnClick(dialog,actionName,colSlug,colName,subActionNam
 	}
 }
 
-function deleteMetaDataColumn(dialog,colName,colSlug,dispatch,actionName){
-
-	bootbox.alert("Are you sure, you want to delete column ?",function(){
-		$(".cst_table").find("thead").find("."+colSlug).first().addClass("dataPreviewUpdateCol");
-		$(".cst_table").find("tbody").find("tr").find("."+colSlug).addClass("dataPreviewUpdateCol");
-		updateColumnStatus(dispatch,colSlug,colName,actionName)
-	})
+function deleteMetaDataColumn(dialog,colName,colSlug,dispatch,actionName,colStatus){
+	var text = "Are you sure, you want to delete column ?";
+	if(colStatus == true){
+		text = "Are you sure, you want to undelete column ?"
+	}
+	bootbox.confirm(text,function(result){
+		if(result){
+			$(".cst_table").find("thead").find("."+colSlug).first().addClass("dataPreviewUpdateCol");
+			$(".cst_table").find("tbody").find("tr").find("."+colSlug).addClass("dataPreviewUpdateCol");
+			updateColumnStatus(dispatch,colSlug,colName,actionName)	
+		}
+	});
 }
 export function updateVLPopup(flag){
 	return{
@@ -926,6 +931,7 @@ export function updateVLPopup(flag){
 	}
 }
 export function updateColumnStatus(dispatch,colSlug,colName,actionName,subActionName){
+	dispatch(showLoading());
 	var transformSettings = store.getState().datasets.dataTransformSettings.slice();
 	var slug = store.getState().datasets.selectedDataSet;
 	for(var i =0;i<transformSettings.length;i++){
@@ -997,10 +1003,12 @@ export function handleColumnActions(transformSettings,slug) {
 	return (dispatch) => {
 		return fetchModifiedMetaData(transformSettings,slug).then(([response, json]) =>{
 			if(response.status === 200){
-				dispatch(fetchDataValidationSuccess(json))
+				dispatch(fetchDataValidationSuccess(json));
+				dispatch(hideLoading());
 			}
 			else{
-				dispatch(fetchDataPreviewError(json))
+				dispatch(fetchDataPreviewError(json));
+				dispatch(hideLoading());
 			}
 		})
 	}
@@ -1025,18 +1033,7 @@ export function fetchDataValidationSuccess(dataPreview){
 	}
 }
 
-//Need to remove this function
-export function updateTranformColumns(){
-	var transformSettings = store.getState().datasets.dataTransformSettings;
-	$(".cst_table").find("thead").find("tr").find("th").each(function(){
-		for(var i =0;i<transformSettings.length;i++){
-			if(transformSettings[i].name == this.innerText && transformSettings[i].status == true){
-				//$(this).addClass("dataPreviewUpdateCol");
-			}
-		}
-	});
 
-}
 
 export function addComponents(editType){
 	return (dispatch) => {

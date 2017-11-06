@@ -53,6 +53,7 @@ export class Login extends React.Component {
     this.state.errmsg = this.props.errmsg;
     if (document.cookie.indexOf("JWT ") > 0 ) {
       console.log("authorized!!!");
+      document.body.className = "";
       return (<Redirect to={"/"} />);
     } else {
     	document.body.className = "ma-splash-screen";

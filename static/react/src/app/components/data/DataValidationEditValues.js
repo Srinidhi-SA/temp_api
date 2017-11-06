@@ -193,7 +193,7 @@ export class DataValidationEditValues extends React.Component {
 	 </Modal.Body>
 		
 		<Modal.Footer>
-		<Button onClick={this.hidePopup.bind(this)}>Close</Button>
+		<Button onClick={this.hidePopup.bind(this)}>Cancel</Button>
 	    <Button bsStyle="primary" onClick={this.handleSaveEditValues.bind(this)}>Save</Button>
 		</Modal.Footer>
 		
