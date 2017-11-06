@@ -389,7 +389,7 @@ JOBSERVER_STATUS = {
 }
 
 
-UI_VERSION = "0.1004"
+UI_VERSION = "0.1037"
 
 
 ERROR_MESSAGE = {
@@ -736,4 +736,3 @@ CONCEPTS = {'corporate': ['leadership change', 'public relations'],
   'market share',
   'risks & inhibitors',
   'product performance']}
-
