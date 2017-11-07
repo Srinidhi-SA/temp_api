@@ -529,7 +529,7 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND = {
                     {
                         "name": "low",
                         "displayName": "Low",
-                        "status": True,
+                        "status": False,
                         "defaultValue":3
                     },
                     {
@@ -556,7 +556,7 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND = {
         ],
             "targetLevels":[],
             "trendSettings":[
-                {"name":"Count","status":True},
+                {"name":"Count","status":False},
                 {"name":"Specific Measure","status":False,"selectedMeasure":None}
             ]
         },
@@ -594,7 +594,7 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND = {
                     {
                         "name": "low",
                         "displayName": "Low",
-                        "status": True,
+                        "status": False,
                         "defaultValue":3
                     },
                     {
@@ -643,7 +643,7 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND = {
                     {
                         "name": "low",
                         "displayName": "Low",
-                        "status": True,
+                        "status": False,
                         "defaultValue":3
                     },
                     {
