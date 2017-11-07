@@ -57,15 +57,26 @@ class DatasetSerializer(serializers.ModelSerializer):
 
         transformation_final_obj = {"existingColumns":None,"newColumns":None}
         transformation_data = []
-        if 'headers' in meta_data:
-            headers = meta_data['headers']
+        if 'columnData' in meta_data:
+            columnData = meta_data['columnData']
             transformation_settings = settings.TRANSFORMATION_SETTINGS_CONSTANT
 
-            for head in headers:
+            for head in columnData:
+                import copy
                 temp = dict()
                 temp['name'] = head.get('name')
                 temp['slug'] = head.get('slug')
-                temp['columnSetting'] = transformation_settings.get('columnSetting')
+                columnSettingCopy = copy.deepcopy(transformation_settings.get('columnSetting'))
+                columnType = head.get('columnType')
+
+                if "measure" == columnType:
+                    temp['columnSetting'] = columnSettingCopy[:3]
+                elif "dimension" == columnType:
+                    datatype_element = columnSettingCopy[3]
+                    datatype_element['listOfDataTypes'][1]["status"] = True
+                    temp['columnSetting'] = columnSettingCopy
+                elif "datetime" == columnType:
+                    temp['columnSetting'] = columnSettingCopy[:3]
                 transformation_data.append(temp)
 
             transformation_final_obj["existingColumns"] = transformation_data
