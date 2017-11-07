@@ -30,16 +30,52 @@ def send_mail(username, password, from_addr, to_addrs, msg):
     server.quit()
 
 # Read email list txt
-email_list = ['sabretooth.rog@gmail.com', 'polex@datum2.com']
-# email_list = [line.strip() for line in open('email.txt')]
+# email_list = ['sabretooth.rog@gmail.com', 'polex@datum2.com']
+# # email_list = [line.strip() for line in open('email.txt')]
+#
+# for to_addrs in email_list:
+#     msg = MIMEMultipart()
+#
+#     msg['Subject'] = "Hello How are you ?"
+#     msg['From'] = from_addr
+#     msg['To'] = to_addrs
+#
+#     # Attach HTML to the email
+#     body = MIMEText(html, 'html')
+#     msg.attach(body)
+#
+#     # Attach Cover Letter to the email
+#     # cover_letter = MIMEApplication(open("file1.pdf", "rb").read())
+#     # cover_letter.add_header('Content-Disposition', 'attachment', filename="file1.pdf")
+#     # msg.attach(cover_letter)
+#
+#     # Attach Resume to the email
+#     # cover_letter = MIMEApplication(open("file2.pdf", "rb").read())
+#     # cover_letter.add_header('Content-Disposition', 'attachment', filename="file2.pdf")
+#     # msg.attach(cover_letter)
+#
+#     try:
+#         send_mail(username, password, from_addr, to_addrs, msg)
+#         print "Email successfully sent to", to_addrs
+#     except smtplib.SMTPAuthenticationError:
+#         print 'SMTPAuthenticationError'
+#         print "Email not sent to", to_addrs
 
-for to_addrs in email_list:
+
+def send_jobserver_error(error=None):
+    joserver_email_list = settings.JOBSERVER_SENDTO_EMAIL_LIST
+    # jobserver_email_list = settings.FUNNY_EMAIL_LIST
+    jobserver_sender_email = settings.JOBSERVER_FROM_EMAIL
+    jobserver_email_template = settings.JOBSERVER_EMAIL_TEMPLATE
+
+    # for to_addrs in joserver_email_list:
     msg = MIMEMultipart()
 
-    msg['Subject'] = "Hello How are you ?"
-    msg['From'] = from_addr
-    msg['To'] = to_addrs
+    msg['Subject'] = "MARLABS-ERROR"
+    msg['From'] = jobserver_sender_email
+    msg['To'] = " ,".join(jobserver_email_list)
 
+    html =  jobserver_email_template + "  {0}".format(error)
     # Attach HTML to the email
     body = MIMEText(html, 'html')
     msg.attach(body)
@@ -55,43 +91,8 @@ for to_addrs in email_list:
     # msg.attach(cover_letter)
 
     try:
-        send_mail(username, password, from_addr, to_addrs, msg)
-        print "Email successfully sent to", to_addrs
+        send_mail(username, password, from_addr, jobserver_email_list, msg)
+        print "Email successfully sent to", " ,".join(jobserver_email_list)
     except smtplib.SMTPAuthenticationError:
         print 'SMTPAuthenticationError'
-        print "Email not sent to", to_addrs
-
-
-def send_jobserver_error(error=None):
-    joserver_email_list = settings.JOBSERVER_EMAIL_LIST
-    joserver_sender_email = settings.JOBSERVER_FROM_EMAIL
-    jobserver_email_template = settings.JOBSERVER_EMAIL_TEMPLATE
-
-    for to_addrs in joserver_email_list:
-        msg = MIMEMultipart()
-
-        msg['Subject'] = "MARLABS-ERROR"
-        msg['From'] = joserver_sender_email
-        msg['To'] = to_addrs
-
-        html =  jobserver_email_template + "  {0}".format(error)
-        # Attach HTML to the email
-        body = MIMEText(html, 'html')
-        msg.attach(body)
-
-        # Attach Cover Letter to the email
-        # cover_letter = MIMEApplication(open("file1.pdf", "rb").read())
-        # cover_letter.add_header('Content-Disposition', 'attachment', filename="file1.pdf")
-        # msg.attach(cover_letter)
-
-        # Attach Resume to the email
-        # cover_letter = MIMEApplication(open("file2.pdf", "rb").read())
-        # cover_letter.add_header('Content-Disposition', 'attachment', filename="file2.pdf")
-        # msg.attach(cover_letter)
-
-        try:
-            send_mail(username, password, from_addr, to_addrs, msg)
-            print "Email successfully sent to", to_addrs
-        except smtplib.SMTPAuthenticationError:
-            print 'SMTPAuthenticationError'
-            print "Email not sent to", to_addrs
+        print "Email not sent to", jobserver_email_list

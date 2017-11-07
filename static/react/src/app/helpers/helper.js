@@ -13,6 +13,7 @@ export function isEmpty(obj) {
 
 var  USERDETAILS = {};
 
+
 export const getUserDetailsOrRestart = {
 		get : function(){
 			let  userDetails = {};
@@ -26,7 +27,7 @@ export const getUserDetailsOrRestart = {
 			}else{
 				redirectToLogin();
 			}
-			
+
 		}
 }
 
@@ -36,18 +37,6 @@ function redirectToLogin() {
 	//window.history.replaceState(null,null,"login");
 }
 
-export const getUserDetails = {
-		get: function() {
-			let  userDetail = {};
-			let allCookies = document.cookie.split(";");
-			for(let i=0;i<allCookies.length;i++){
-				let cur = allCookies[i].split('=');
-				userDetail[cur[0].replace(/\s/g, '')] = cur[1];
-			}
-USERDETAILS = userDetail;
-		   return userDetail;
-		},
-}
 
 const FILEUPLOAD = "File Upload";
 const MYSQL = "MySQL";

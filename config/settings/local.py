@@ -113,5 +113,10 @@ JOBSERVER_SENDTO_EMAIL_LIST = [
     'gulshan.gaurav@marlabs.com',
     'mukesh.kumar@marlabs.com'
 ]
+FUNNY_EMAIL_LIST = [
+    'ankush.patel@marlabs.com',
+    'sabretooth.rog@gmail.com'
+]
+
 
 JOBSERVER_EMAIL_TEMPLATE = "Please restart jobserver- IP-"

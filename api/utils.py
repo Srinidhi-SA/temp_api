@@ -45,10 +45,10 @@ def submit_job(
 
     print "overall---------config"
     print config
+    from smtp_email import send_jobserver_error
     try:
         job = sjs.jobs.create(app, class_path, ctx=ctx, conf=json.dumps(config))
     except Exception as e:
-        from smtp_email import send_jobserver_error
         send_jobserver_error(e)
         return None
 

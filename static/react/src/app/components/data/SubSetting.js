@@ -283,7 +283,7 @@ export class SubSetting extends React.Component {
                 <h5>From</h5>
                 <div className="row">
                   <div className="col-xs-12">
-                    <DatePicker key={this.state.startDate} id="start-datepicker" className="form-control" value={this.state.curstartDate} onChange={this.handleStartDateChange.bind(this)} showClearButton={false} dateFormat="YYYY-MM-DD"/>
+                    <DatePicker key={this.state.startDate} minDate = {this.state.startDate} maxDate = {this.state.curendDate} id="start-datepicker" className="form-control" value={this.state.curstartDate} onChange={this.handleStartDateChange.bind(this)} showClearButton={false} dateFormat="YYYY-MM-DD"/>
                   </div>
                 </div>
                 <div className="clearfix"></div>
@@ -291,7 +291,7 @@ export class SubSetting extends React.Component {
                 <h5>To</h5>
                 <div className="row">
                   <div className="col-xs-12">
-                    <DatePicker key={this.state.endDate} id="end-datepicker" className="form-control" value={this.state.curendDate} onChange={this.handleEndDateChange.bind(this)} showClearButton={false} dateFormat="YYYY-MM-DD"/>
+                    <DatePicker key={this.state.endDate} minDate = {this.state.curstartDate} maxDate = {this.state.endDate} id="end-datepicker" className="form-control" value={this.state.curendDate} onChange={this.handleEndDateChange.bind(this)} showClearButton={false} dateFormat="YYYY-MM-DD"/>
                   </div>
                 </div>
                 <div className="clearfix"></div>

@@ -14866,7 +14866,7 @@ visibility:hidden !important;
 }
 .stockDropzone{
     padding-left: 20px;
-    padding-bottom: 20px;	
+    padding-bottom: 20px;
 }
 
 .createStockModal{
@@ -14879,13 +14879,13 @@ visibility:hidden !important;
     padding-top: 5px; }
 .stockDropzone div:hover{ border-color: rgb(0, 153, 140) !important;}
 .bgStockBox { margin-bottom:10px;}
-.bgStockBox h3 { 
+.bgStockBox h3 {
 	background: #f6f6f6;
     color: #9e9e9e;
     border: 1px solid #dedede;
     padding: 10px;
-    margin: 0;  
-    } 
+    margin: 0;
+    }
 .bgStockBox h3 small { font-size: 58%; }
 .list-boxes .rep_block  { text-transform: capitalize; }
 .ov_card_boxes .row { text-align:center }
@@ -14900,4 +14900,7 @@ display: inline-block;
 }
 .rep_block.newCardStyle h4.title.newCardTitle {
     font-weight: normal;
+}
+#measure_subsetting input[type=number]{
+	padding:  0 0 0 5px;
 }
