@@ -31,7 +31,7 @@ def dev():
         "asset_path" : "/static/asset",
         "base_remote_path" : "/home/ubuntu/codebase/mAdvisor-api",
         "ui_branch" : "react-ui-development",
-        "api_branch" : "trainer/vivek_product_revamp"
+        "api_branch" : "stock-sense"
     }
 
     key_file = BASE_DIR + "/config/keyfiles/TIAA.pem"
