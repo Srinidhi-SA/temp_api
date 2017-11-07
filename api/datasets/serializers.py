@@ -73,7 +73,7 @@ class DatasetSerializer(serializers.ModelSerializer):
                     temp['columnSetting'] = columnSettingCopy[:3]
                 elif "measure" == columnType:
                     datatype_element = columnSettingCopy[3]
-                    datatype_element['listOfDataTypes'][1]["status"] = True
+                    datatype_element['listOfDataTypes'][0]["status"] = True
                     temp['columnSetting'] = columnSettingCopy
                 elif "datetime" == columnType:
                     temp['columnSetting'] = columnSettingCopy[:3]
