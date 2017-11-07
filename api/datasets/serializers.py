@@ -69,9 +69,9 @@ class DatasetSerializer(serializers.ModelSerializer):
                 columnSettingCopy = copy.deepcopy(transformation_settings.get('columnSetting'))
                 columnType = head.get('columnType')
 
-                if "measure" == columnType:
+                if "dimension" == columnType:
                     temp['columnSetting'] = columnSettingCopy[:3]
-                elif "dimension" == columnType:
+                elif "measure" == columnType:
                     datatype_element = columnSettingCopy[3]
                     datatype_element['listOfDataTypes'][1]["status"] = True
                     temp['columnSetting'] = columnSettingCopy
