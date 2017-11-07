@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 import {push} from "react-router-redux";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "react-bootstrap";
 import store from "../../store";
-import {selectedAnalysisList,resetSelectedVariables,unselectAllPossibleAnalysis,getDataSetPreview,setDimensionSubLevels,selectAllAnalysisList,updateSelectAllAnlysis} from "../../actions/dataActions";
+import {selectedAnalysisList,resetSelectedVariables,unselectAllPossibleAnalysis,getDataSetPreview,setDimensionSubLevels,selectAllAnalysisList,updateSelectAllAnlysis,saveAdvanceSettings} from "../../actions/dataActions";
 import {openCreateSignalModal,closeCreateSignalModal,updateCsLoaderValue} from "../../actions/createSignalActions";
 import {createSignal,setPossibleAnalysisList,emptySignalAnalysis,advanceSettingsModal} from "../../actions/signalActions";
 import {DataVariableSelection} from "../data/DataVariableSelection";
@@ -62,7 +62,8 @@ export class VariableSelection extends React.Component {
 	}
 
 	handleAnlysisList(e){
-		this.props.dispatch(selectedAnalysisList(e))
+		this.props.dispatch(selectedAnalysisList(e));
+		this.props.dispatch(saveAdvanceSettings());
 
 	}
 	handleAllAnlysis(evt){
@@ -71,7 +72,7 @@ export class VariableSelection extends React.Component {
 
 	}
 	openAdvanceSettingsModal(){
-		this.child.openAdvanceSettingsModal();
+		this.props.dispatch(advanceSettingsModal(true));
 	}
 	createSignal(event){
 		event.preventDefault();
@@ -165,7 +166,6 @@ export class VariableSelection extends React.Component {
 
 	}
 	renderAnalysisList(analysisList){
-		console.log(analysisList);
 		let list =  analysisList.map((metaItem,metaIndex) =>{
 			let id = "chk_analysis"+ metaIndex;
 			return(<div key={metaIndex} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisList.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>);
@@ -277,7 +277,7 @@ export class VariableSelection extends React.Component {
 				<br/>
 				{/*  adding selection component */}
 				<DataVariableSelection/>
-				<AdvanceSettings  onRef={ref => (this.child = ref)}  />
+				<AdvanceSettings   />
 				{/*---------end of selection component----------------------*/}
 				<div className="row">
 				<div className="col-md-12">

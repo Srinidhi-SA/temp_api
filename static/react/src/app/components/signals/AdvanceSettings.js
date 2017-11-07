@@ -4,7 +4,7 @@ import { Redirect } from "react-router";
 import store from "../../store";
 import {Modal,Button} from "react-bootstrap";
 import {advanceSettingsModal} from "../../actions/signalActions";
-import {selectedAnalysisList,selectedTrendSubList,setAnalysisLevel,selectedDimensionSubLevel,cancelAdvanceSettings,saveAdvanceSettings} from "../../actions/dataActions";
+import {selectedAnalysisList,selectedDimensionSubLevel,cancelAdvanceSettings,saveAdvanceSettings} from "../../actions/dataActions";
 
 
 @connect((store) => {
@@ -28,18 +28,6 @@ export class AdvanceSettings extends React.Component {
 		//this.dimensionCountForMeasure = 
 
 	}
-	componentWillMount() {
-		this.props.onRef(this)
-	}
-	componentDidUpdate(prevProps, prevState){
-	    console.log("In Advance settings Component Did Update");
-	    console.log(prevProps);
-	    console.log(prevState);
-	}
-	componentWillReceiveProps(nextProps) {
-		 console.log("In Advance settings Component Will Receive Props");
-		 console.log(nextProps);
-	}
 			
 	openAdvanceSettingsModal(){
 		this.props.dispatch(advanceSettingsModal(true));
@@ -51,74 +39,6 @@ export class AdvanceSettings extends React.Component {
 	updateAdvanceSettings(){
 		this.props.dispatch(saveAdvanceSettings());
 		this.props.dispatch(advanceSettingsModal(false));
-		//alert("You clicked save.")
-		//console.log(e.target.id);
-		/*var that = this;
-		var checkedElments= $('.possibleAnalysis:checked');
-
-		var level=null, levelVal=null,analysisName="null";
-		checkedElments.each(function(){
-
-			switch($(this).val().toLowerCase()){
-
-			case "association":
-				level = $("input[name='association-level']:checked").val();
-				levelVal = null;
-				analysisName ="association";
-				if(level.trim().toLowerCase() == "custom"){
-					levelVal = $("#association-level-custom-val").val();
-				}
-				that.props.dispatch(setAnalysisLevel(level,levelVal,analysisName));
-				break;
-
-			case "performance":	  
-				level = $("input[name='performance-level']:checked").val();
-				levelVal = null;
-				analysisName ="performance";
-				if(level.trim().toLowerCase() == "custom"){
-					levelVal = $("#performance-level-custom-val").val();
-				}
-				that.props.dispatch(setAnalysisLevel(level,levelVal,analysisName));
-				break;
-
-			case "influencer":
-				level = $("input[name='influencer-level']:checked").val();
-				levelVal = null;
-				analysisName ="influencer";
-				if(level.trim().toLowerCase() == "custom"){
-					levelVal = $("#influencer-level-custom-val").val();
-				}
-				that.props.dispatch(setAnalysisLevel(level,levelVal,analysisName));
-				break;
-			}
-		});
-
-		let trendInfo={}
-		if($("[value^='trend']").is(":checked") || $("[value^='Trend']").is(":checked")){
-			if($("#trend-count").is(":checked")){
-				trendInfo['count'] = null;
-			}
-			if($("#trend-specific-measure").is(":checked")){
-				trendInfo['specific measure'] = $("#select-measure").val();
-			}
-		}
-		this.props.dispatch(selectedTrendSubList(trendInfo)); 
-
-		let dimensionSubLevel= [],tmpObj={};
-		let chkedDimensionSubLevel = $(".dimension-sub-level");
-		chkedDimensionSubLevel.each(function(){
-			if($(this).is(":checked")){
-				tmpObj[$(this).val()] = true;
-				dimensionSubLevel.push(tmpObj);
-				tmpObj={};
-			}else{
-				tmpObj[$(this).val()] = false;
-				dimensionSubLevel.push(tmpObj);
-				tmpObj={};
-			}
-
-		});
-		this.props.dispatch(selectedDimensionSubLevel(dimensionSubLevel)); */
 	}
 
 	handleAnlysisListActions(e){
@@ -126,44 +46,27 @@ export class AdvanceSettings extends React.Component {
 	}
 	handleSubLevelAnalysis(evt){
 		var id = evt.target.childNodes[0].id;
-		if(evt.target.childNodes[0].value == "custom"){
-			$("#"+id+"-val").closest("div").removeClass("visibilityHidden");
-		}else{
-			$("#"+id+"-val").closest("div").addClass("visibilityHidden");
-		}
 		this.props.dispatch(selectedAnalysisList(evt.target.childNodes[0],"noOfColumnsToUse"))
 	}
 	handleCustomInput(evt){
 		this.props.dispatch(selectedAnalysisList(evt.target,"noOfColumnsToUse"))
 	}
-	updateTrendSubList(e){
-		this.props.dispatch(selectedTrendSubList(e));
-	}
 	handleTrendAnalysis(evt){
 		this.props.dispatch(selectedAnalysisList(evt.target,"trend"))
 	}
-	setAnalysisLevel(e){
-		console.log(e.target.id);
-		if(e.target.id.indexOf("custom") < 0){
-			let idOfText = e.target.id+ "-val";
-			let val =  $("#"+idOfText).val();
-			this.props.dispatch(setAnalysisLevel(e,val)); 
-		}else{
-			this.props.dispatch(setAnalysisLevel(e,null)); 
-		}
-	}
-	renderAnalysisList(analysisList,trendSettings){
+	renderAllAnalysisList(analysisList,trendSettings){
 		let performancePlaceholder = "0-"+store.getState().datasets.dataSetDimensions.length;
 		let influencersPlaceholder = "0-"+ (store.getState().datasets.dataSetMeasures.length -1);
 		let associationPlaceholder = "0-"+ store.getState().datasets.dataSetDimensions.length;
 
 		var that = this;
 		let list =   analysisList.map((metaItem,metaIndex) =>{
-			let id = "chk_analysis"+ metaIndex;
+			let id = "chk_analysis_advance"+ metaIndex;
 
 			if(metaItem.name.indexOf("trend") != -1){
 				if(trendSettings){
-					var specificMeasureClsName = "col-md-8";
+					var specificMeasureClsName = "col-md-8 visibilityHidden";
+					let specificMeasureStatus = false;
 					let trendSub = trendSettings.map((trendSubItem,trendSubIndex)=>{
 						let val = trendSubItem.name;
 						if(trendSubItem.name.toLowerCase() == "count"){
@@ -171,11 +74,15 @@ export class AdvanceSettings extends React.Component {
 									<li ><div className="col-md-4"><div className="ma-checkbox inline sub-analysis"><input className="possibleSubAnalysis" id="trend-count" type="radio" value="count" name="trend-sub"  checked={trendSubItem.status} onChange={this.handleTrendAnalysis.bind(this)}  /><label htmlFor="trend-count">Count</label></div></div><div class="clearfix"></div></li>
 							);
 						}else if(trendSubItem.name.toLowerCase().indexOf("specific measure") != -1){
+							if(trendSubItem.status){
+								specificMeasureClsName ="col-md-8";
+								specificMeasureStatus = true;
+							}
 							return(
 									<li ><div className="col-md-4">
-									<div className="ma-checkbox inline sub-analysis"><input className="possibleSubAnalysis" id="trend-specific-measure" type="radio" value="specific measure" name="trend-sub"  checked={trendSubItem.status}  onChange={this.handleTrendAnalysis.bind(this)} /><label htmlFor="trend-specific-measure">Specific Measure</label></div> 
+									<div className="ma-checkbox inline sub-analysis"><input className="possibleSubAnalysis" id="trend-specific-measure" type="radio" value="specific measure" name="trend-sub"  checked={specificMeasureStatus}  onChange={this.handleTrendAnalysis.bind(this)} /><label htmlFor="trend-specific-measure">Specific Measure</label></div> 
 									</div>
-									<div className={specificMeasureClsName}> <select id="specific-trend-measure" className="form-control ">
+									<div className={specificMeasureClsName}> <select id="specific-trend-measure" className="form-control " onChange={this.handleTrendAnalysis.bind(this)}>
 									{store.getState().datasets.dataSetMeasures.map(function(item,index){
 										return(<option>{item}</option>)
 									})
@@ -256,31 +163,20 @@ export class AdvanceSettings extends React.Component {
 	}
 
 	render() {
-
-		$(function(){
-			if($("input[value='trend']").is(":checked")){
-				if(!$("#trend-specific-measure").is(":checked")){
-					$("#trend-count").prop("checked",true);
-				}
-			}else{
-				$("#trend-count").prop("checked",false);
-			}
-		});
-
 		let dataPrev = store.getState().datasets.dataPreview;
-		let renderPossibleAnalysis = null, renderSubList=null;
+		let renderModalAnalysisList = null, renderSubList=null;
 		if(dataPrev){
-			let possibleAnalysis = store.getState().datasets.dataSetAnalysisList;
+			let possibleAnalysisList = store.getState().datasets.dataSetAnalysisList;
 			let trendSettings = null;
-			if(!$.isEmptyObject(possibleAnalysis)){
+			if(!$.isEmptyObject(possibleAnalysisList)){
 				if(this.props.getVarType == "dimension"){
-					possibleAnalysis = possibleAnalysis.dimensions.analysis;
+					possibleAnalysisList = possibleAnalysisList.dimensions.analysis;
 					trendSettings = store.getState().datasets.dataSetAnalysisList.dimensions.trendSettings;
-					renderPossibleAnalysis = this.renderAnalysisList(possibleAnalysis,trendSettings);
+					renderModalAnalysisList = this.renderAllAnalysisList(possibleAnalysisList,trendSettings);
 				}else if(this.props.getVarType == "measure"){
-					possibleAnalysis = possibleAnalysis.measures.analysis;
+					possibleAnalysisList = possibleAnalysisList.measures.analysis;
 					trendSettings = store.getState().datasets.dataSetAnalysisList.measures.trendSettings;
-					renderPossibleAnalysis = this.renderAnalysisList(possibleAnalysis,trendSettings);
+					renderModalAnalysisList = this.renderAllAnalysisList(possibleAnalysisList,trendSettings);
 				}
 
 			}
@@ -293,16 +189,14 @@ export class AdvanceSettings extends React.Component {
 				</Modal.Header>
 
 				<Modal.Body>
-
-				{this.dimensionSubLevel}
 				<ul className="list-unstyled">
-				{renderPossibleAnalysis}
+				{renderModalAnalysisList}
 				</ul>
 
 				</Modal.Body>
 
 				<Modal.Footer>
-				<Button onClick={this.closeAdvanceSettingsModal.bind(this)}>Close</Button>
+				<Button onClick={this.closeAdvanceSettingsModal.bind(this)}>Cancel</Button>
 				<Button bsStyle="primary" onClick={this.updateAdvanceSettings.bind(this)}>Save</Button>
 				</Modal.Footer>
 

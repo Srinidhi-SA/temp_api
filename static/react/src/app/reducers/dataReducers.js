@@ -466,16 +466,6 @@ export default function reducer(state = {
       }
     }
     break;
-
-    case "UPDATE_ANALYSIS_LIST_FOR_LEVELS":
-      {
-        return {
-          ...state,
-          dataSetAnalysisList: action.renderList
-        }
-      }
-      break;
-
     case "SELECTED_DIMENSION_SUBLEVELS":
       {
         return {
@@ -484,16 +474,6 @@ export default function reducer(state = {
         }
       }
       break;
-    case "SELECTED_TREND_SUB_LIST":
-      {
-        return {
-          ...state,
-         // selectedTrendSub: action.selectedTrendSub
-		  dataSetAnalysisList: action.analysisList
-        }
-      }
-      break;
-
     case "UNSELECTED_TREND_SUB_LIST":
       {
         return {
