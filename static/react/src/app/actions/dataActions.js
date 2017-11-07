@@ -252,13 +252,35 @@ export function selectedAnalysisList(evt,noOfColumnsToUse){
 	//prevAnalysisList.dimensions.analysis = Object.assign({},totalAnalysisList.dimensions.analysis)
 	var analysisList = [];
 	var renderList = {};
+	var trendSettings = [];
 	if(store.getState().signals.getVarType == "measure"){
 		analysisList = totalAnalysisList.measures.analysis;
 	}else{
 		analysisList = totalAnalysisList.dimensions.analysis;
+		trendSettings = totalAnalysisList.dimensions.trendSettings;
 	}
-	//For updating low,medium,high values
-	if(noOfColumnsToUse){
+	//For updating count,specific measure in trend
+	if(noOfColumnsToUse == "trend" ){
+		for(var i=0;i<analysisList.length;i++){
+			if(analysisList[i].name == "trend"){
+				analysisList[i].status = evt.checked;
+				break;
+			}
+		}
+		for(var i in trendSettings){
+			let name = trendSettings[i].name.toLowerCase();
+			if(name == evt.value){
+				trendSettings[i].status = evt.checked;	
+				if(name.indexOf("specific measure") != -1)
+				trendSettings[i].selectedMeasure = $("#specific-trend-measure").val();
+			}else{
+				trendSettings[i].status = false;
+				if(name.indexOf("specific measure") != -1)
+				trendSettings[i].selectedMeasure = null
+			}
+		}
+	}//For updating low,medium,high values
+	else if(noOfColumnsToUse == "noOfColumnsToUse" ){
 		if(evt.type == "radio"){
 			for(var i=0;i<analysisList.length;i++){
 				if(analysisList[i].name == evt.name){
@@ -303,6 +325,7 @@ export function selectedAnalysisList(evt,noOfColumnsToUse){
 		totalAnalysisList.measures.analysis = analysisList
 	}else{
 		totalAnalysisList.dimensions.analysis = analysisList
+		totalAnalysisList.dimensions.trendSettings = trendSettings;
 	}
 	renderList.measures = totalAnalysisList.measures;
 	renderList.dimensions = totalAnalysisList.dimensions;
@@ -327,6 +350,16 @@ export function selectAllAnalysisList(flag){
 	}
 		for(var i=0;i<analysisList.length;i++){
 			analysisList[i].status = flag;
+			if(analysisList[i].noOfColumnsToUse != null){
+				for(var j=0;j<analysisList[i].noOfColumnsToUse.length;j++){
+				 if(analysisList[i].noOfColumnsToUse[j].name == "custom"){
+						analysisList[i].noOfColumnsToUse[j].status = flag;	
+						analysisList[i].noOfColumnsToUse[j].value = null;
+					}else{
+						analysisList[i].noOfColumnsToUse[j].status = flag;		
+					}
+				}	
+			}
 		}
 		if(store.getState().signals.getVarType == "measure"){
 			totalAnalysisList.measures.analysis = analysisList

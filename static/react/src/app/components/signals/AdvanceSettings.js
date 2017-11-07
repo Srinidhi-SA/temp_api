@@ -139,6 +139,9 @@ export class AdvanceSettings extends React.Component {
 	updateTrendSubList(e){
 		this.props.dispatch(selectedTrendSubList(e));
 	}
+	handleTrendAnalysis(evt){
+		this.props.dispatch(selectedAnalysisList(evt.target,"trend"))
+	}
 	setAnalysisLevel(e){
 		console.log(e.target.id);
 		if(e.target.id.indexOf("custom") < 0){
@@ -148,8 +151,6 @@ export class AdvanceSettings extends React.Component {
 		}else{
 			this.props.dispatch(setAnalysisLevel(e,null)); 
 		}
-
-
 	}
 	renderAnalysisList(analysisList,trendSettings){
 		let performancePlaceholder = "0-"+store.getState().datasets.dataSetDimensions.length;
@@ -162,18 +163,19 @@ export class AdvanceSettings extends React.Component {
 
 			if(metaItem.name.indexOf("trend") != -1){
 				if(trendSettings){
+					var specificMeasureClsName = "col-md-8";
 					let trendSub = trendSettings.map((trendSubItem,trendSubIndex)=>{
 						let val = trendSubItem.name;
 						if(trendSubItem.name.toLowerCase() == "count"){
 							return(
-									<li ><div className="col-md-4"><div className="ma-checkbox inline sub-analysis"><input className="possibleSubAnalysis" id="trend-count" type="radio" value="count" name="trend-sub"  /><label htmlFor="trend-count">Count</label></div></div><div class="clearfix"></div></li>
+									<li ><div className="col-md-4"><div className="ma-checkbox inline sub-analysis"><input className="possibleSubAnalysis" id="trend-count" type="radio" value="count" name="trend-sub"  checked={trendSubItem.status} onChange={this.handleTrendAnalysis.bind(this)}  /><label htmlFor="trend-count">Count</label></div></div><div class="clearfix"></div></li>
 							);
 						}else if(trendSubItem.name.toLowerCase().indexOf("specific measure") != -1){
 							return(
 									<li ><div className="col-md-4">
-									<div className="ma-checkbox inline sub-analysis"><input className="possibleSubAnalysis" id="trend-specific-measure" type="radio" value="specific measure" name="trend-sub" /><label htmlFor="trend-specific-measure">Specific Measure</label></div> 
+									<div className="ma-checkbox inline sub-analysis"><input className="possibleSubAnalysis" id="trend-specific-measure" type="radio" value="specific measure" name="trend-sub"  checked={trendSubItem.status}  onChange={this.handleTrendAnalysis.bind(this)} /><label htmlFor="trend-specific-measure">Specific Measure</label></div> 
 									</div>
-									<div className="col-md-8"> <select id="select-measure" className="form-control ">
+									<div className={specificMeasureClsName}> <select id="specific-trend-measure" className="form-control ">
 									{store.getState().datasets.dataSetMeasures.map(function(item,index){
 										return(<option>{item}</option>)
 									})
