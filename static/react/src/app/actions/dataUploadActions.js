@@ -1,6 +1,6 @@
 import {API} from "../helpers/env";
 import store from "../store";
-import {FILEUPLOAD, DULOADERPERVALUE, LOADERMAXPERVALUE, DEFAULTINTERVAL, DULOADERPERMSG} from "../helpers/helper";
+import {FILEUPLOAD, DULOADERPERVALUE, LOADERMAXPERVALUE, DEFAULTINTERVAL, DULOADERPERMSG,getUserDetailsOrRestart} from "../helpers/helper";
 import {getDataList, getDataSetPreview, updateDatasetName, openDULoaderPopup} from "./dataActions";
 export var dataPreviewInterval = null;
 
@@ -17,7 +17,7 @@ export function dataUpload() {
     dispatch(dataUploadLoaderMsg(DULOADERPERMSG));
     dispatch(close());
     dispatch(openDULoaderPopup());
-    return triggerDataUpload(sessionStorage.userToken).then(([response, json]) => {
+    return triggerDataUpload(getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
 
       // dispatch(dataUploadLoaderValue(json.message[json.message.length-1].globalCompletionPercentage));
       // dispatch()
@@ -89,7 +89,7 @@ function dataUploadSuccess(data, dispatch) {
     }
 
   }, DEFAULTINTERVAL);
-  return {type: "HIDE_MODAL"}
+  dispatch(dataUploadLoaderValue(loaderVal));
 }
 
 export function dataUploadError(josn) {
@@ -127,8 +127,8 @@ export function dataSubsetting(subsetRq, slug) {
   return (dispatch) => {
     dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
     dispatch(dataUploadLoaderMsg(DULOADERPERMSG));
-    dispatch(close());
-    dispatch(openDULoaderPopup());
+    //dispatch(close());
+   dispatch(openDULoaderPopup());
     return triggerDataSubsetting(subsetRq, slug).then(([response, json]) => {
       //dispatch(dataUploadLoaderValue(store.getState().datasets.dULoaderValue+DULOADERPERVALUE));
       if (response.status === 200) {
@@ -149,7 +149,7 @@ function triggerDataSubsetting(subsetRq, slug) {
   console.log(subsetRq)
   return fetch(API + '/api/datasets/' + slug + '/', {
     method: 'put',
-    headers: getHeader(sessionStorage.userToken),
+    headers: getHeader(getUserDetailsOrRestart.get().userToken),
     body: JSON.stringify(subsetRq)
   }).then(response => Promise.all([response, response.json()]));
 

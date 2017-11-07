@@ -6,7 +6,7 @@ import {AppsScoreList} from "./AppsScoreList";
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {connect} from "react-redux";
-import {APPID1,APPID2,APPID3,APPNAME1,APPNAME2,APPNAME3} from "../../helpers/helper.js"
+import {APPID1,APPID2,APPID3,APPNAME1,APPNAME2,APPNAME3,getUserDetailsOrRestart} from "../../helpers/helper.js"
 import {getAppsStockList,getStockAnalysis,updateStockSlug} from "../../actions/appActions";
 import Dialog from 'react-bootstrap-dialog'
 import {AppsCreateStockAnalysis} from "./AppsCreateStockAnalysis";
@@ -123,7 +123,7 @@ export class AppsStockAdvisorList extends React.Component {
 						</div>
 						<div className="card-footer">
 						<div className="left_div">
-						<span className="footerTitle"></span>{sessionStorage.userName}
+						<span className="footerTitle"></span>{getUserDetailsOrRestart.get().userName}
 						<span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy HH:MM")}</span>
 						</div>
 

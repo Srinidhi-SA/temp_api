@@ -20,7 +20,7 @@ import {fetchProductList, openDULoaderPopup, closeDULoaderPopup, storeSearchElem
 import {DataUpload} from "./DataUpload";
 import {open, close} from "../../actions/dataUploadActions";
 import {STATIC_URL} from "../../helpers/env.js"
-import {SEARCHCHARLIMIT} from  "../../helpers/helper"
+import {SEARCHCHARLIMIT,getUserDetailsOrRestart} from  "../../helpers/helper"
 import {DataUploadLoader} from "../common/DataUploadLoader";
 import Dialog from 'react-bootstrap-dialog'
 
@@ -164,7 +164,7 @@ export class Data extends React.Component {
               </div>
               <div className="card-footer">
                 <div className="left_div">
-                  <span className="footerTitle"></span>{sessionStorage.userName}
+                  <span className="footerTitle"></span>{getUserDetailsOrRestart.get().userName}
                   <span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy HH:MM")}</span>
                 </div>
 

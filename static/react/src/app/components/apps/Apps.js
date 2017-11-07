@@ -6,7 +6,7 @@ import {AppsScoreList} from "./AppsScoreList";
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {connect} from "react-redux";
-import {APPID1,APPID2,APPID3,APPNAME1,APPNAME2,APPNAME3} from "../../helpers/helper.js"
+import {APPID1,APPID2,APPID3,APPNAME1,APPNAME2,APPNAME3,getUserDetailsOrRestart} from "../../helpers/helper.js"
 import {activateModelScoreTabs,storeModelSearchElement,storeScoreSearchElement,getAppsModelList,getAppsScoreList,updateSelectedApp} from "../../actions/appActions";
 
 @connect((store) => {
@@ -62,7 +62,7 @@ export class Apps extends React.Component {
     return (
           <div className="side-body">
             <div className="main-content">
-            <Tabs defaultActiveKey="score" activeKey={store.getState().apps.appsSelectedTabId} onSelect={this.modifyUrl.bind(this)} >
+            <Tabs defaultActiveKey="score" activeKey={store.getState().apps.appsSelectedTabId} onSelect={this.modifyUrl.bind(this)} className="apps_list">
             <Tab  eventKey="model" id="model" title="Models">{models}</Tab>
             <Tab eventKey="score" id="score" title="Scores">{scores}</Tab>
           </Tabs>

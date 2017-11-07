@@ -5,7 +5,7 @@ import thunk from "redux-thunk"
 import promise from "redux-promise-middleware"
 
 import reducer from "./reducers"
-
+import {cookieObj} from './helpers/cookiesHandler';
 //error handling for action
 const err = (store) => (next) => (action) => {
   try {
@@ -16,6 +16,7 @@ const err = (store) => (next) => (action) => {
     if (action.json["exception"] == expiredSignMsg) {
       bootbox.alert("Session has expired.",function(){
     	  sessionStorage.clear();
+    	  cookieObj.clearCookies();
     	  location.reload();  
       })
       

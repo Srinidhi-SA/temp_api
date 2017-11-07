@@ -26,7 +26,7 @@ import {
 } from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {STATIC_URL} from "../../helpers/env.js"
-import {SEARCHCHARLIMIT} from  "../../helpers/helper"
+import {SEARCHCHARLIMIT,getUserDetailsOrRestart} from  "../../helpers/helper"
 import Dialog from 'react-bootstrap-dialog'
 
 var dateFormat = require('dateformat');
@@ -146,7 +146,7 @@ export class AppsScoreList extends React.Component {
               </div>
               <div className="card-footer">
                 <div className="left_div">
-                  <span className="footerTitle"></span>{sessionStorage.userName}
+                  <span className="footerTitle"></span>{getUserDetailsOrRestart.get().userName}
                   <span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy HH:MM")}</span>
                 </div>
 
@@ -224,6 +224,7 @@ export class AppsScoreList extends React.Component {
 
             <div className="clearfix"></div>
           </div>
+		  <div class="main-content">
           <div className="row">
             {appsScoreList}
             <div className="clearfix"></div>
@@ -233,6 +234,7 @@ export class AppsScoreList extends React.Component {
               {paginationTag}
             </div>
           </div>
+		  </div>
           <Dialog ref="dialog"/>
         </div>
 

@@ -1,6 +1,6 @@
 import React from "react";
 import {API} from "../helpers/env";
-import {PERPAGE,DULOADERPERVALUE,DEFAULTINTERVAL,SUCCESS,FAILED} from "../helpers/helper";
+import {PERPAGE,DULOADERPERVALUE,DEFAULTINTERVAL,SUCCESS,FAILED,getUserDetailsOrRestart} from "../helpers/helper";
 import store from "../store";
 import {dataPreviewInterval,dataUploadLoaderValue,clearLoadingMsg} from "./dataUploadActions";
 import {closeAppsLoaderValue} from "./appActions";
@@ -19,7 +19,7 @@ function getHeader(token){
 
 export function getDataList(pageNo) {
 	return (dispatch) => {
-		return fetchDataList(pageNo,sessionStorage.userToken).then(([response, json]) =>{
+		return fetchDataList(pageNo,getUserDetailsOrRestart.get().userToken).then(([response, json]) =>{
 			if(response.status === 200){
 				dispatch(fetchDataSuccess(json))
 			}
@@ -122,7 +122,7 @@ export function getDataSetPreview(slug,interval) {
 function fetchDataPreview(slug) {
 	return fetch(API+'/api/datasets/'+slug+'/',{
 		method: 'get',
-		headers: getHeader(sessionStorage.userToken)
+		headers: getHeader(getUserDetailsOrRestart.get().userToken)
 	}).then( response => Promise.all([response, response.json()]));
 }
 //get preview data
@@ -191,7 +191,7 @@ function fetchDataPreviewError(json) {
 
 export function getAllDataList(pageNo) {
 	return (dispatch) => {
-		return fetchAllDataList(sessionStorage.userToken).then(([response, json]) =>{
+		return fetchAllDataList(getUserDetailsOrRestart.get().userToken).then(([response, json]) =>{
 			if(response.status === 200){
 				console.log(json)
 				dispatch(fetchAllDataSuccess(json))
@@ -240,33 +240,24 @@ export function selectedAnalysisList(evt){
 	}else{
 		analysisList = totalAnalysisList.dimensions.analysis.slice();
 	}
+	//For top level analysis update like tren,prediction,association
 	if(evt.target.className == "possibleAnalysis"){
 		for(var i=0;i<analysisList.length;i++){
 			if(analysisList[i].name == evt.target.value)
 				analysisList[i].status = evt.target.checked;
 		}
-		/*if(evt.target.checked){
-			return {
-				type: "SELECTED_ANALYSIS_TYPE",
-				selectedAnalysis
-			}
-		}else{
-			return {
-				type: "UNSELECT_ANALYSIS_TYPE",
-				selectedAnalysis
-			}
-		}*/
-		if(store.getState().signals.getVarType == "measure"){
-			totalAnalysisList.measures.analysis = analysisList
-		}else{
-			totalAnalysisList.dimensions.analysis = analysisList
-		}
-		renderList.measures = totalAnalysisList.measures;
-		renderList.dimensions = totalAnalysisList.dimensions;
-		return {
-			type: "UPDATE_ANALYSIS_LIST",
-			renderList
-		}
+	}
+	
+	if(store.getState().signals.getVarType == "measure"){
+		totalAnalysisList.measures.analysis = analysisList
+	}else{
+		totalAnalysisList.dimensions.analysis = analysisList
+	}
+	renderList.measures = totalAnalysisList.measures;
+	renderList.dimensions = totalAnalysisList.dimensions;
+	return {
+		type: "UPDATE_ANALYSIS_LIST",
+		renderList
 	}
 }
 
@@ -343,17 +334,6 @@ export function setAnalysisLevel(level,levelVal, analysisName){
 			analysisList[i].noOfColumnsToUse = noOfCols;
 		}
 	}
-	/*for(var i=0;i<analysisList.length;i++){
-			if(analysisList[i].name.toLowerCase() == analysisName){
-			  if(level == "custom"){
-				analysisList[i].analysisLevel = level;
-				analysisList[i].analysisLevelValue = levelVal;
-			  }else{
-				 analysisList[i].analysisLevel = level;
-				analysisList[i].analysisLevelValue = levelVal;
-			  }
-			}
-		}*/
 	if(store.getState().signals.getVarType == "measure"){
 		totalAnalysisList.measures.analysis = analysisList
 	}else{
@@ -368,12 +348,6 @@ export function setAnalysisLevel(level,levelVal, analysisName){
 	}
 
 }
-
-
-
-
-
-
 
 export function unselectAllPossibleAnalysis(){
 	let unselectAll =[];
@@ -568,7 +542,7 @@ function deleteDataset(slug,dialog,dispatch){
 function deleteDatasetAPI(slug){
 	return fetch(API+'/api/datasets/'+slug+'/',{
 		method: 'put',
-		headers: getHeader(sessionStorage.userToken),
+		headers: getHeader(getUserDetailsOrRestart.get().userToken),
 		body:JSON.stringify({
 			deleted:true,
 		}),
@@ -625,7 +599,7 @@ function renameDataset(slug,dialog,newName,dispatch){
 function renameDatasetAPI(slug,newName){
 	return fetch(API+'/api/datasets/'+slug+'/',{
 		method: 'put',
-		headers: getHeader(sessionStorage.userToken),
+		headers: getHeader(getUserDetailsOrRestart.get().userToken),
 		body:JSON.stringify({
 			name:newName,
 		}),
@@ -920,12 +894,12 @@ function updateColumnName(dispatch,colSlug,newColName){
 	let dataPreview = Object.assign({}, metaData);
 	//handleColumnActions(dataPreview,slug,dispatch)
 }
-export function handleColumnClick(dialog,actionName,colSlug,colName,subActionName){
+export function handleColumnClick(dialog,actionName,colSlug,colName,subActionName,colStatus){
 	return (dispatch) => {
 		if(actionName == RENAME){
 			renameMetaDataColumn(dialog,colName,colSlug,dispatch,actionName)
 		}else if(actionName == DELETE){
-			deleteMetaDataColumn(dialog,colName,colSlug,dispatch,actionName)
+			deleteMetaDataColumn(dialog,colName,colSlug,dispatch,actionName,colStatus)
 		}else if(actionName == DATA_TYPE){
 			//dispatch(updateVLPopup(true));
 			updateColumnStatus(dispatch,colSlug,colName,actionName,subActionName);
@@ -937,13 +911,18 @@ export function handleColumnClick(dialog,actionName,colSlug,colName,subActionNam
 	}
 }
 
-function deleteMetaDataColumn(dialog,colName,colSlug,dispatch,actionName){
-
-	bootbox.alert("Are you sure, you want to delete column ?",function(){
-		$(".cst_table").find("thead").find("."+colSlug).first().addClass("dataPreviewUpdateCol");
-		$(".cst_table").find("tbody").find("tr").find("."+colSlug).addClass("dataPreviewUpdateCol");
-		updateColumnStatus(dispatch,colSlug,colName,actionName)
-	})
+function deleteMetaDataColumn(dialog,colName,colSlug,dispatch,actionName,colStatus){
+	var text = "Are you sure, you want to delete column ?";
+	if(colStatus == true){
+		text = "Are you sure, you want to undelete column ?"
+	}
+	bootbox.confirm(text,function(result){
+		if(result){
+			$(".cst_table").find("thead").find("."+colSlug).first().addClass("dataPreviewUpdateCol");
+			$(".cst_table").find("tbody").find("tr").find("."+colSlug).addClass("dataPreviewUpdateCol");
+			updateColumnStatus(dispatch,colSlug,colName,actionName)	
+		}
+	});
 }
 export function updateVLPopup(flag){
 	return{
@@ -952,6 +931,7 @@ export function updateVLPopup(flag){
 	}
 }
 export function updateColumnStatus(dispatch,colSlug,colName,actionName,subActionName){
+	dispatch(showLoading());
 	var transformSettings = store.getState().datasets.dataTransformSettings.slice();
 	var slug = store.getState().datasets.selectedDataSet;
 	for(var i =0;i<transformSettings.length;i++){
@@ -1023,10 +1003,12 @@ export function handleColumnActions(transformSettings,slug) {
 	return (dispatch) => {
 		return fetchModifiedMetaData(transformSettings,slug).then(([response, json]) =>{
 			if(response.status === 200){
-				dispatch(fetchDataValidationSuccess(json))
+				dispatch(fetchDataValidationSuccess(json));
+				dispatch(hideLoading());
 			}
 			else{
-				dispatch(fetchDataPreviewError(json))
+				dispatch(fetchDataPreviewError(json));
+				dispatch(hideLoading());
 			}
 		})
 	}
@@ -1037,7 +1019,7 @@ function fetchModifiedMetaData(transformSettings,slug) {
 	tran_settings.existingColumns = transformSettings;
 	return fetch(API+'/api/datasets/'+slug+'/meta_data_modifications/',{
 		method: 'put',
-		headers: getHeader(sessionStorage.userToken),
+		headers: getHeader(getUserDetailsOrRestart.get().userToken),
 		body:JSON.stringify({
 			config:tran_settings,
 		}),
@@ -1051,18 +1033,7 @@ export function fetchDataValidationSuccess(dataPreview){
 	}
 }
 
-//Need to remove this function
-export function updateTranformColumns(){
-	var transformSettings = store.getState().datasets.dataTransformSettings;
-	$(".cst_table").find("thead").find("tr").find("th").each(function(){
-		for(var i =0;i<transformSettings.length;i++){
-			if(transformSettings[i].name == this.innerText && transformSettings[i].status == true){
-				//$(this).addClass("dataPreviewUpdateCol");
-			}
-		}
-	});
 
-}
 
 export function addComponents(editType){
 	return (dispatch) => {

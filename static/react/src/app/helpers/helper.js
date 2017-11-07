@@ -1,6 +1,6 @@
 import React from "react";
 import CircularProgressbar from 'react-circular-progressbar';
-
+import {Redirect} from 'react-router';
 
 export function isEmpty(obj) {
     for(var prop in obj) {
@@ -13,18 +13,30 @@ export function isEmpty(obj) {
 
 var  USERDETAILS = {};
 
-export const setUserDetails = {
-		user: function() {
-			let  userDetail = {};
-			let allCookies = document.cookie.split(";");
-			for(let i=0;i<allCookies.length;i++){
-				let cur = allCookies[i].split('=');
-				userDetail[cur[0].replace(/\s/g, '')] = cur[1];
+
+export const getUserDetailsOrRestart = {
+		get : function(){
+			let  userDetails = {};
+			if(document.cookie){
+				let allCookies = document.cookie.split(";");
+				for(let i=0;i<allCookies.length;i++){
+					let cur = allCookies[i].split('=');
+					userDetails[cur[0].replace(/\s/g, '')] = cur[1];
+				}
+				return userDetails;
+			}else{
+				redirectToLogin();
 			}
-			USERDETAILS = userDetail;
-		   return userDetail;
-		},
+
+		}
 }
+
+function redirectToLogin() {
+	var noOfUrls = window.history.length;
+	window.history.go("-"+noOfUrls-1);
+	//window.history.replaceState(null,null,"login");
+}
+
 
 const FILEUPLOAD = "File Upload";
 const MYSQL = "MySQL";

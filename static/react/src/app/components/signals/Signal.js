@@ -4,7 +4,7 @@ import {Redirect} from "react-router";
 import store from "../../store";
 import {getSignalAnalysis} from "../../actions/signalActions";
 import {MasterSummary} from "./MasterSummary";
-import {isEmpty} from "../../helpers/helper";
+import {isEmpty,getUserDetailsOrRestart} from "../../helpers/helper";
 import {MainHeader} from "../common/MainHeader";
 import Breadcrumb from 'react-breadcrumb';
 import {STATIC_URL} from "../../helpers/env.js"
@@ -30,7 +30,7 @@ export class Signal extends React.Component {
 
 	  if(isEmpty(this.props.signal)){
       //alert("in will mount!!")
-	  this.props.dispatch(getSignalAnalysis(sessionStorage.userToken, this.props.match.params.slug));
+	  this.props.dispatch(getSignalAnalysis(getUserDetailsOrRestart.get().userToken, this.props.match.params.slug));
 	  }
   }
   render() {

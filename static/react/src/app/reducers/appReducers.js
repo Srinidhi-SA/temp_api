@@ -423,7 +423,7 @@ export default function reducer(state = {
 		}
 	}
 	break;
-	case "ROBO_SUMMARY_SUCCESS":
+	case "CLEAR_ROBO_SUMMARY_SUCCESS":
 	{
 		return {
 			...state,

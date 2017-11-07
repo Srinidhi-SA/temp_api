@@ -41,6 +41,7 @@
     "react-with-addons": "0.0.1",
     "redux": "^3.7.2",
     "redux-promise-middleware": "^4.3.0",
+    "redux-react-session": "^2.1.1",
     "redux-thunk": "^2.2.0"
   },
   "devDependencies": {

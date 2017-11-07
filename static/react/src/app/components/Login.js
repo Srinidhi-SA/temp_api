@@ -4,7 +4,9 @@ import {Redirect} from 'react-router';
 // import {authenticateFunc,getList,storyList} from "../../services/ajax.js";
 import {authenticateFunc} from "../actions/loginActions";
 import store from "../store";
-import {STATIC_URL} from "../helpers/env"
+import {STATIC_URL} from "../helpers/env";
+import {isEmpty,getUserDetailsOrRestart,USERDETAILS} from "../helpers/helper";
+import {sessionObject} from '../helpers/manageSessionStorage';
 // import $ from "jquery";
 
 @connect((store) => {
@@ -20,7 +22,6 @@ export class Login extends React.Component {
       pwd: '',
       errmsg:""
     };
-	document.body.className = "ma-splash-screen";
   }
   onChangeUId(e) {
     const userId = e.target.value;
@@ -49,13 +50,13 @@ export class Login extends React.Component {
   render() {
     console.log("login is called!!")
     console.log(this.props)
-    this.state.errmsg = this.props.errmsg
-
-    if (sessionStorage.userToken) {
+    this.state.errmsg = this.props.errmsg;
+    if (document.cookie.indexOf("JWT ") > 0 ) {
       console.log("authorized!!!");
-      //  return (<Home/>);
-      return (<Redirect to={"/"}/>);
+      document.body.className = "";
+      return (<Redirect to={"/"} />);
     } else {
+    	document.body.className = "ma-splash-screen";
       return (
 
           <div className="ma-wrapper am-login">

@@ -1,4 +1,5 @@
 import React from "react";
+import { Scrollbars } from 'react-custom-scrollbars';
 import { connect } from "react-redux";
 import { Redirect } from "react-router";
 import store from "../../store";
@@ -131,41 +132,58 @@ export class DataValidationEditValues extends React.Component {
 		</Col>
 
 		<Col sm={9}>
+		
 		<Tab.Content animation>
 		<Tab.Pane eventKey="Remove">
+		
 		<div className="tab-pane active cont fade in">
-		<p>Please enter symbols, phrases or values that you want to remove from the selected column
+		<p className="page-header">Please enter symbols, phrases or values that you want to remove from the selected column
 		</p>
+		<div className="tb_content">
+		<Scrollbars style={{ height: 300 }} renderTrackHorizontal={props => <div {...props} className="track-horizontal" style={{display:"none"}}/>}
+        renderThumbHorizontal={props => <div {...props} className="thumb-horizontal" style={{display:"none"}}/>}>
+		
 		<div id="removeValues">
 		<form role="form" className="form-horizontal">
 		{templateTextBoxes}
 		<div className="dataTransformValues">
 		 <Button bsStyle="primary" onClick={this.addMoreComponents.bind(this,REMOVE)}>Add More&nbsp;<i className="fa fa-plus"></i></Button>
 		</div>
-		</form>
+		</form>		
+		</div>
+		</Scrollbars>
+		</div>
 		
 		</div>
-		</div>
+		
 		</Tab.Pane>
 		<Tab.Pane eventKey="Replace">
 		<div className="tab-pane active cont fade in">
-		<p>Please enter symbols, phrases or values that you want to replace along with the values to replace it with, from the selected column
+		<p className="page-header">Please enter symbols, phrases or values that you want to replace along with the values to replace it with, from the selected column
         </p>
 		
+		<div className="tb_content">
+		<Scrollbars style={{ height: 300 }} renderTrackHorizontal={props => <div {...props} className="track-horizontal" style={{display:"none"}}/>}
+        renderThumbHorizontal={props => <div {...props} className="thumb-horizontal" style={{display:"none"}}/>}>
 		<div id="replaceValues">
 		<form role="form" className="form-horizontal">
 		{replaceTextBoxes}
 		<div className="dataTransformValues">
 		 <Button bsStyle="primary" onClick={this.addMoreComponents.bind(this,REPLACE)}>Add More&nbsp;<i className="fa fa-plus"></i></Button>
 		</div>
-		</form>
+		</form>		
+		</div>
+		</Scrollbars>
+		</div>
+		
 		
 		</div>
-		</div>
-		</Tab.Pane>
+		</Tab.Pane> 
 		</Tab.Content>
+		
 		</Col>
 
+		
 		</Row>
 		</Tab.Container>
 		
@@ -175,7 +193,7 @@ export class DataValidationEditValues extends React.Component {
 	 </Modal.Body>
 		
 		<Modal.Footer>
-		<Button onClick={this.hidePopup.bind(this)}>Close</Button>
+		<Button onClick={this.hidePopup.bind(this)}>Cancel</Button>
 	    <Button bsStyle="primary" onClick={this.handleSaveEditValues.bind(this)}>Save</Button>
 		</Modal.Footer>
 		
