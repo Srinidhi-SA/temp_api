@@ -199,11 +199,11 @@ export class VariableSelection extends React.Component {
 					return tmpObj;
 				});
 
-				that.props.dispatch(setDimensionSubLevels(subLevels));
+				//that.props.dispatch(setDimensionSubLevels(subLevels));
 
 			}else{
 
-				that.props.dispatch(setDimensionSubLevels(null));
+				//that.props.dispatch(setDimensionSubLevels(null));
 			} // end of if dimension - code to setup sub level in popup
 
 		}

@@ -33,6 +33,7 @@ export default function reducer(state = {
   dateTimeChecked: [],
   dataLoaderText: "initialized the filter parameters",
   dataSetAnalysisList: {},
+  dataSetPrevAnalysisList:{},
   selectedDimensionSubLevels: null,
  // selectedTrendSub: [],
   dimensionSubLevel: [],
@@ -328,6 +329,7 @@ export default function reducer(state = {
           dimensionAllChecked: true,
           dateTimeChecked: action.dateTimeChkBoxList,
           dataSetAnalysisList: action.possibleAnalysisList,
+          dataSetPrevAnalysisList:action.prevAnalysisList,
         }
       }
       break;
@@ -443,10 +445,27 @@ export default function reducer(state = {
       {
         return {
           ...state,
-          dataSetAnalysisList: action.renderList
+          dataSetAnalysisList: action.renderList,
+          dataSetPrevAnalysisList:action.prevAnalysisList,
         }
       }
       break;
+    case "SAVE_UPDATE_ANALYSIS_LIST":
+    {
+      return {
+        ...state,
+        dataSetPrevAnalysisList:action.savedAnalysisList,
+      }
+    }
+    break;
+    case "CANCEL_UPDATE_ANALYSIS_LIST":
+    {
+      return {
+        ...state,
+        dataSetAnalysisList:action.prevAnalysisList,
+      }
+    }
+    break;
 
     case "UPDATE_ANALYSIS_LIST_FOR_LEVELS":
       {

@@ -230,15 +230,32 @@ export function fetchAllDataSuccess(doc){
 		slug
 	}
 }
+export function saveAdvanceSettings(){
+	var savedAnalysisList = jQuery.extend(true, {}, store.getState().datasets.dataSetAnalysisList);
+	return {
+		type: "SAVE_UPDATE_ANALYSIS_LIST",
+		savedAnalysisList,
+	}
+}
+export function cancelAdvanceSettings(){
+	var prevAnalysisList = jQuery.extend(true, {}, store.getState().datasets.dataSetPrevAnalysisList);
+	return {
+		type: "CANCEL_UPDATE_ANALYSIS_LIST",
+		prevAnalysisList
+	}
+}
 export function selectedAnalysisList(evt,noOfColumnsToUse){
 
 	var totalAnalysisList = store.getState().datasets.dataSetAnalysisList;
+	var prevAnalysisList = store.getState().datasets.dataSetPrevAnalysisList;
+	//prevAnalysisList.measures.analysis = Object.assign({},totalAnalysisList.measures.analysis)
+	//prevAnalysisList.dimensions.analysis = Object.assign({},totalAnalysisList.dimensions.analysis)
 	var analysisList = [];
 	var renderList = {};
 	if(store.getState().signals.getVarType == "measure"){
-		analysisList = totalAnalysisList.measures.analysis.slice();
+		analysisList = totalAnalysisList.measures.analysis;
 	}else{
-		analysisList = totalAnalysisList.dimensions.analysis.slice();
+		analysisList = totalAnalysisList.dimensions.analysis;
 	}
 	//For updating low,medium,high values
 	if(noOfColumnsToUse){
@@ -291,7 +308,8 @@ export function selectedAnalysisList(evt,noOfColumnsToUse){
 	renderList.dimensions = totalAnalysisList.dimensions;
 	return {
 		type: "UPDATE_ANALYSIS_LIST",
-		renderList
+		renderList,
+		prevAnalysisList
 	}
 }
 
@@ -299,6 +317,7 @@ export function selectedAnalysisList(evt,noOfColumnsToUse){
 export function selectAllAnalysisList(flag){
 	//var selectedAnalysis = evt.target.checked;
 	var totalAnalysisList = store.getState().datasets.dataSetAnalysisList;
+	var prevAnalysisList = store.getState().datasets.dataSetPrevAnalysisList;
 	var analysisList = [];
 	var renderList = {};
 	if(store.getState().signals.getVarType == "measure"){
@@ -318,7 +337,8 @@ export function selectAllAnalysisList(flag){
 		renderList.dimensions = totalAnalysisList.dimensions;
 		return {
 			type: "UPDATE_ANALYSIS_LIST",
-			renderList
+			renderList,
+			prevAnalysisList
 		}
 }
 
@@ -643,7 +663,7 @@ export function storeSortElements(sorton,sorttype){
 
 
 export function updateDatasetVariables(measures,dimensions,timeDimensions,measureChkBoxList,dimChkBoxList,dateTimeChkBoxList,possibleAnalysisList){
-
+	let prevAnalysisList = jQuery.extend(true, {}, possibleAnalysisList);
 	return {
 		type: "DATASET_VARIABLES",
 		measures,
@@ -652,7 +672,8 @@ export function updateDatasetVariables(measures,dimensions,timeDimensions,measur
 		measureChkBoxList,
 		dimChkBoxList,
 		dateTimeChkBoxList,
-		possibleAnalysisList
+		possibleAnalysisList,
+		prevAnalysisList
 
 	}
 }

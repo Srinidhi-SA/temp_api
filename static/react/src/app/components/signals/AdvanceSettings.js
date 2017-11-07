@@ -4,7 +4,7 @@ import { Redirect } from "react-router";
 import store from "../../store";
 import {Modal,Button} from "react-bootstrap";
 import {advanceSettingsModal} from "../../actions/signalActions";
-import {selectedAnalysisList,selectedTrendSubList,setAnalysisLevel,selectedDimensionSubLevel} from "../../actions/dataActions";
+import {selectedAnalysisList,selectedTrendSubList,setAnalysisLevel,selectedDimensionSubLevel,cancelAdvanceSettings,saveAdvanceSettings} from "../../actions/dataActions";
 
 
 @connect((store) => {
@@ -14,6 +14,7 @@ import {selectedAnalysisList,selectedTrendSubList,setAnalysisLevel,selectedDimen
 		getVarType: store.signals.getVarType,
 		getVarText: store.signals.getVarText,
 		dataSetAnalysisList:store.datasets.dataSetAnalysisList,
+		dataSetPrevAnalysisList:store.datasets.dataSetPrevAnalysisList,
 		selectedDimensionSubLevels:store.datasets.selectedDimensionSubLevels,
 	};
 })
@@ -30,16 +31,29 @@ export class AdvanceSettings extends React.Component {
 	componentWillMount() {
 		this.props.onRef(this)
 	}
+	componentDidUpdate(prevProps, prevState){
+	    console.log("In Advance settings Component Did Update");
+	    console.log(prevProps);
+	    console.log(prevState);
+	}
+	componentWillReceiveProps(nextProps) {
+		 console.log("In Advance settings Component Will Receive Props");
+		 console.log(nextProps);
+	}
+			
 	openAdvanceSettingsModal(){
 		this.props.dispatch(advanceSettingsModal(true));
 	}
 	closeAdvanceSettingsModal(){
+		this.props.dispatch(cancelAdvanceSettings());
 		this.props.dispatch(advanceSettingsModal(false));
 	}	
 	updateAdvanceSettings(){
+		this.props.dispatch(saveAdvanceSettings());
+		this.props.dispatch(advanceSettingsModal(false));
 		//alert("You clicked save.")
 		//console.log(e.target.id);
-		var that = this;
+		/*var that = this;
 		var checkedElments= $('.possibleAnalysis:checked');
 
 		var level=null, levelVal=null,analysisName="null";
@@ -104,7 +118,7 @@ export class AdvanceSettings extends React.Component {
 			}
 
 		});
-		this.props.dispatch(selectedDimensionSubLevel(dimensionSubLevel)); 
+		this.props.dispatch(selectedDimensionSubLevel(dimensionSubLevel)); */
 	}
 
 	handleAnlysisListActions(e){
