@@ -930,6 +930,8 @@ class Score(models.Model):
 
         # app_id = config.get('app_id', 1)
         app_id = self.trainer.app_id
+        self.app_id = app_id
+        self.save()
 
         ret = {
             'consider_columns_type': trainer_consider_column_type,
