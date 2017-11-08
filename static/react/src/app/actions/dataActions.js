@@ -973,7 +973,7 @@ export function handleColumnClick(dialog,actionName,colSlug,colName,subActionNam
 			updateColumnStatus(dispatch,colSlug,colName,actionName,subActionName);
 		}else if(actionName == REPLACE){
 			dispatch(updateVLPopup(true));
-			dispatch(addComponents());
+			dispatch(addComponents(colSlug));
 			//updateColumnStatus(dispatch,colSlug,colName,actionName,subActionName);
 		}
 	}
@@ -1103,26 +1103,52 @@ export function fetchDataValidationSuccess(dataPreview){
 
 
 
-export function addComponents(editType){
+export function addComponents(colSlug){
 	return (dispatch) => {
+		var transformSettings = store.getState().datasets.dataTransformSettings.slice();
 		var dataColumnRemoveValues = [];
-		dataColumnRemoveValues.push({"id":1,"name":"remove1","valueToReplace":"","replacedValue":"","replaceType":"contains"});
-		dataColumnRemoveValues.push({"id":2,"name":"remove2","valueToReplace":"","replacedValue":"","replaceType":"contains"});
 		var dataColumnReplaceValues = [];
-		dataColumnReplaceValues.push({"replaceId":1,"name":"replace1","valueToReplace":"","replacedValue":"","replaceType":"contains"});
-		dataColumnReplaceValues.push({"replaceId":2,"name":"replace2","valueToReplace":"","replacedValue":"","replaceType":"contains"});
-		if(editType === REMOVE){
-			dispatch(updateColumnRemoveValues(dataColumnRemoveValues))
+		
+		for(var i =0;i<transformSettings.length;i++){
+			if(transformSettings[i].slug == colSlug){
+				for(var j=0;j<transformSettings[i].columnSetting.length;j++){
+					if(transformSettings[i].columnSetting[j].actionName == REPLACE){
+						var replacementValues = transformSettings[i].columnSetting[j].replacementValues;
+						for(var k=0;k<replacementValues.length;k++){
+							//Differentiate remove/replace values
+							if(replacementValues[k].name.indexOf("remove") != -1){
+								dataColumnRemoveValues.push(replacementValues[k])
+							}else{
+								dataColumnReplaceValues.push(replacementValues[k])
+							}
+						}
+					}
+					
+				}//end of for columnsettings
+				break;
+			}
 		}
-		else if(editType === REPLACE){
-			dispatch(updateColumnReplaceValues(dataColumnReplaceValues))
+		
+		if(dataColumnRemoveValues.length == 0){
+			dataColumnRemoveValues.push({"id":1,"name":"remove1","valueToReplace":"","replacedValue":"","replaceType":"contains"});
+			dataColumnRemoveValues.push({"id":2,"name":"remove2","valueToReplace":"","replacedValue":"","replaceType":"contains"});
+			
+		}if(dataColumnReplaceValues.length == 0){
+			dataColumnReplaceValues.push({"replaceId":1,"name":"replace1","valueToReplace":"","replacedValue":"","replaceType":"contains"});
+			dataColumnReplaceValues.push({"replaceId":2,"name":"replace2","valueToReplace":"","replacedValue":"","replaceType":"contains"});
 		}
-		else{
-			dispatch(updateColumnReplaceValues(dataColumnReplaceValues))
-			dispatch(updateColumnRemoveValues(dataColumnRemoveValues))	
-		}
+		
+		dispatch(updateColumnReplaceValues(dataColumnReplaceValues))
+		dispatch(updateColumnRemoveValues(dataColumnRemoveValues))	
+	
 	}
 
+}
+export function setReplacementType(){
+	var dataColumnReplaceValues = store.getState().datasets.dataSetColumnReplaceValues.slice();
+	for(var i=0;i<dataColumnReplaceValues.length;i++){
+		document.getElementById(dataColumnReplaceValues[i].replaceId).value = dataColumnReplaceValues[i].replaceType;
+	}
 }
 function updateColumnRemoveValues(removeValues){
 	return{
@@ -1140,21 +1166,32 @@ export function addMoreComponentsToReplace(editType){
 	return (dispatch) => {
 		if(editType == REMOVE){
 			var dataColumnRemoveValues = store.getState().datasets.dataSetColumnRemoveValues.slice();
-			var max = dataColumnRemoveValues.reduce(function(prev, current) { 
-				return (prev.id > current.id) ? prev : current
+			if(dataColumnRemoveValues.length > 0){
+				var max = dataColumnRemoveValues.reduce(function(prev, current) { 
+					return (prev.id > current.id) ? prev : current
 
-			});
-			let length = max.id+1;
-			dataColumnRemoveValues.push({"id":length,"name":"remove"+length,"valueToReplace":"","replacedValue":"","replaceType":"contains"});
+				});
+				let length = max.id+1;
+				dataColumnRemoveValues.push({"id":length,"name":"remove"+length,"valueToReplace":"","replacedValue":"","replaceType":"contains"});
+					
+			}else{
+				dataColumnRemoveValues.push({"id":1,"name":"remove1","valueToReplace":"","replacedValue":"","replaceType":"contains"});
+			}
+			
 			dispatch(updateColumnRemoveValues(dataColumnRemoveValues))
 		}else{
 			var dataColumnReplaceValues = store.getState().datasets.dataSetColumnReplaceValues.slice();
-			var max = dataColumnReplaceValues.reduce(function(prev, current) { 
-				return (prev.replaceId > current.replaceId) ? prev : current
+			if(dataColumnReplaceValues.length > 0){
+				var max = dataColumnReplaceValues.reduce(function(prev, current) { 
+					return (prev.replaceId > current.replaceId) ? prev : current
 
-			});
-			let length = max.replaceId+1;
-			dataColumnReplaceValues.push({"replaceId":length,"name":"replace"+length,"valueToReplace":"","replacedValue":"","replaceType":"contains"});
+				});
+				let length = max.replaceId+1;
+				dataColumnReplaceValues.push({"replaceId":length,"name":"replace"+length,"valueToReplace":"","replacedValue":"","replaceType":"contains"});
+			}else{
+				dataColumnReplaceValues.push({"replaceId":1,"name":"replace1","valueToReplace":"","replacedValue":"","replaceType":"contains"});
+			}
+			
 			dispatch(updateColumnReplaceValues(dataColumnReplaceValues))	
 		}
 		
