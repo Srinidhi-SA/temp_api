@@ -29,6 +29,7 @@ export const cookieObj = {
       document.cookie = "last_login=;"+"; "+"expires="+expires;;
       document.cookie = "is_superuser=;"+"; "+"expires="+expires;;
       document.cookie = "image_url=;"+"; "+"expires="+expires;;
-      location.reload();
+     // location.reload();
+      window.history.replaceState(null,null,"login");
   }
 }
