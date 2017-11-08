@@ -276,6 +276,11 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 			data,
 		}
 	}
+	export function clearModelSummary(){
+		return {
+			type: "CLEAR_MODEL_SUMMARY",
+		}
+	}
 	export function getListOfCards(totalCardList){
 		console.log("In Apps Model Detail");
 		let cardList = new Array();

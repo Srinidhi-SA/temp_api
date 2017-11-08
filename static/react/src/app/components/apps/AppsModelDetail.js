@@ -5,7 +5,7 @@ import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab} from "react-bootstrap";
 import {AppsCreateScore} from "./AppsCreateScore";
 import {Card} from "../signals/Card";
-import {getListOfCards,getAppsModelSummary} from "../../actions/appActions";
+import {getListOfCards,getAppsModelSummary,updateModelSlug} from "../../actions/appActions";
 import {storeSignalMeta} from "../../actions/dataActions";
 import CircularProgressbar from 'react-circular-progressbar';
 import {STATIC_URL} from "../../helpers/env.js"
@@ -29,7 +29,8 @@ export class AppsModelDetail extends React.Component {
 		this.props.dispatch(storeSignalMeta(null,this.props.match.url));
 		//It will trigger when refresh happens on url
 		if(isEmpty(this.props.modelSummary)){
-		    this.props.dispatch(getAppsModelSummary(this.props.match.params.slug));   
+		    this.props.dispatch(getAppsModelSummary(this.props.match.params.slug));  
+		    this.props.dispatch(updateModelSlug(this.props.match.params.slug));
 		}
 	}
   
@@ -68,17 +69,17 @@ export class AppsModelDetail extends React.Component {
 		                 
 		                <div className="panel panel-mAd documentModeSpacing ">
 		                    <div className="panel-heading">
-		                      <h2>{store.getState().apps.modelSummary.name}</h2>
+		                      <h2 className="pull-left">{store.getState().apps.modelSummary.name}</h2>
 		                      
 		                      <div className="btn-toolbar pull-right">
 		                        <div className="btn-group btn-space">
 		                        
 		                          <button type="button" className="btn btn-default" disabled = "true" title="Document Mode">
-		                              <i className="pe-7s-news-paper pe-lg"></i>
+		                             <i className="fa fa-file-text-o"></i>
 		                            </button>
-							   <Link className="tabs-control right grp_legends_green continue" to={modelLink}>
-		                          <button type="button" className="btn btn-default">
-		                            <i className="pe-7s-close pe-lg"></i>
+							   <Link className="continue" to={modelLink}>
+		                          <button type="button" className="btn  btn-close">
+		                            <i className="fa fa-times"></i>
 		                          </button>
 								 </Link>
 		                        </div>

@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { Redirect } from "react-router";
 import store from "../../store";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
-import {updateVLPopup,addComponents,addMoreComponentsToReplace,removeComponents,handleSaveEditValues,handleInputChange,handleInputChangeReplace} from "../../actions/dataActions";
+import {updateVLPopup,addComponents,addMoreComponentsToReplace,removeComponents,setReplacementType,handleSaveEditValues,handleInputChange,handleInputChangeReplace} from "../../actions/dataActions";
 import {REPLACE,REMOVE,	CURRENTVALUE,NEWVALUE} from "../../helpers/helper.js"
 
 
@@ -26,6 +26,7 @@ import {REPLACE,REMOVE,	CURRENTVALUE,NEWVALUE} from "../../helpers/helper.js"
 export class DataValidationEditValues extends React.Component {
   constructor(){
     super();
+    this.columnData = null;
   }
   showPopup(){
 	  this.props.dispatch(updateVLPopup(true))
@@ -34,7 +35,7 @@ export class DataValidationEditValues extends React.Component {
 	  this.props.dispatch(updateVLPopup(false))
   }
   componentWillMount(){
-	  this.props.dispatch(addComponents());
+	  this.props.dispatch(addComponents(this.props.selectedColSlug));
   }
   addMoreComponents(editType){
 	  this.props.dispatch(addMoreComponentsToReplace(editType)); 
@@ -51,12 +52,13 @@ export class DataValidationEditValues extends React.Component {
   handleSaveEditValues(){
 	  this.props.dispatch(handleSaveEditValues(this.props.selectedColSlug))
   }
-  renderReplaceList(colSlug,colName,colData){
+  renderReplaceList(colSlug,colName,colData,replaceType){
 	  let optionList = null;
 	   let list = colData.map((actionNames,index)=>{
 		   if(actionNames.actionName == REPLACE){
 			   optionList = actionNames.replaceTypeList.map((subItem,subIndex)=>{
-		  return (<option key={subIndex} value={subItem.name}>{subItem.displayName}</option>);
+				   if(replaceType == subItem.name)return (<option key={subIndex} value={subItem.name} selected>{subItem.displayName}</option>);  
+				   else return (<option key={subIndex} value={subItem.name}>{subItem.displayName}</option>);
 		   })
   }
 	   });
@@ -69,7 +71,8 @@ export class DataValidationEditValues extends React.Component {
 	  if(transformationSettings != undefined){
 		  transformationSettings.map((columnData,columnIndex) =>{
 		       if(that.props.selectedColSlug == columnData.slug){
-		     	  replaceTypeList = that.renderReplaceList(columnData.slug,columnData.name,columnData.columnSetting)
+		    	   this.columnData = columnData;
+		     	  //replaceTypeList = that.renderReplaceList(columnData.slug,columnData.name,columnData.columnSetting)
 		       }	 
 				 }); 
 	  }
@@ -77,6 +80,10 @@ export class DataValidationEditValues extends React.Component {
 	  let dataSetColumnRemoveValues = this.props.dataSetColumnRemoveValues;
 	  let dataSetColumnReplaceValues = this.props.dataSetColumnReplaceValues;
 	  const templateTextBoxes = dataSetColumnRemoveValues.map((data,id) =>{
+		  replaceTypeList  = (function(){
+				 var optionValues = that.renderReplaceList(that.columnData.slug,that.columnData.name,that.columnData.columnSetting,data.replaceType);
+			    return optionValues;
+			 })();
 		  return (<div className="form-group" id={data.id}>
 			<label for="fl1" className="col-sm-1 control-label"><b>{id+1}.</b></label>
 			<div className="col-sm-4">
@@ -91,6 +98,10 @@ export class DataValidationEditValues extends React.Component {
 			</div>);
 	  });
 	 const replaceTextBoxes = dataSetColumnReplaceValues.map((data,id) =>{
+		 replaceTypeList  = (function(){
+			 var optionValues = that.renderReplaceList(that.columnData.slug,that.columnData.name,that.columnData.columnSetting,data.replaceType);
+		    return optionValues;
+		 })();
 		  return (<div className="form-group" id={data.replaceId}>
 			<label for="fl1" className="col-sm-1 control-label"><b>{id+1}.</b></label>
 			<div className="col-sm-3">
@@ -101,13 +112,17 @@ export class DataValidationEditValues extends React.Component {
 			</div>
 			<div className="col-sm-3">
 			 <select className="form-control" id={data.replaceId} onChange={this.handleInputChangeReplace.bind(this,data.replaceId)}>
-			{replaceTypeList}
+			
+			 {replaceTypeList}
+			 
 			 </select>
 			</div>
 			
 			<div className="col-sm-1 cursor" onClick={this.removeComponents.bind(this,data,REPLACE)}><i className="fa fa-minus-square-o"></i></div>
 			</div>);
+		  
 	  });
+	
    return (
           <div id="idVariableTypeList" role="dialog" className="modal fade modal-colored-header">
       	<Modal show={store.getState().datasets.variableTypeListModal} backdrop="static" onHide={this.hidePopup.bind(this)} dialogClassName="modal-colored-header uploadData modal-lg">

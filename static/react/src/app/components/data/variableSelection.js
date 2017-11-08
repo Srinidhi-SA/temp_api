@@ -436,12 +436,12 @@ if(datetime.length>0){
               <div className="input-group pull-right">
               <input type="text" className="htmlForm-control" placeholder="Search dimension..." name="srch-dimension" id="srch-dimension">
               <span className="input-group-btn">
-              <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i className="fa fa-sort-alpha-asc fa-lg"></i> <span className="caret"></span></button>
+              <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i className="fa fa-sort-alpha-asc fa-lg"></i>&nbsp;<span className="caret"></span></button>
               <ul role="menu" className="dropdown-menu dropdown-menu-right">
-              <li><a href="#">Name Ascending</a></li>
-              <li><a href="#">Name Descending</a></li>
-              <li><a href="#">Date Ascending</a></li>
-              <li><a href="#">Date Descending</a></li>
+              <li><a href="#"><i class="fa fa-sort-alpha-asc" aria-hidden="true"></i> Name Ascending</a></li>
+              <li><a href="#"><i class="fa fa-sort-alpha-desc" aria-hidden="true"></i> Name Descending</a></li>
+              <li><a href="#"><i class="fa fa-sort-numeric-asc" aria-hidden="true"></i> Date Ascending</a></li>
+              <li><a href="#"><i class="fa fa-sort-numeric-desc" aria-hidden="true"></i> Date Descending</a></li>
               </ul>
               </span>
               </div>
