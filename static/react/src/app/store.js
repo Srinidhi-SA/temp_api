@@ -6,6 +6,7 @@ import promise from "redux-promise-middleware"
 
 import reducer from "./reducers"
 import {cookieObj} from './helpers/cookiesHandler';
+import {redirectToLogin} from './helpers/helper';
 //error handling for action
 const err = (store) => (next) => (action) => {
   try {
@@ -17,9 +18,11 @@ const err = (store) => (next) => (action) => {
       bootbox.alert("Session has expired.",function(){
     	  sessionStorage.clear();
     	  cookieObj.clearCookies();
-    	  location.reload();  
+    	  //window.history.replaceState(null,null,"/login");
       })
       
+    }else{
+    	bootbox.alert(e.message)
     }
   }
 }
