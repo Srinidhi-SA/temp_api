@@ -317,8 +317,8 @@ ANALYSIS_FOR_TARGET_VARIABLE = {
     "target_variable": {
         "dimension": [
         {"name": "Descriptive analysis", "id": "descriptive-analysis", "display": "Overview"},
-        {"name": "Dimension vs. Dimension", "id": "dimension-vs-dimension", "display": "Association"},
-        {"name": "Predictive modeling", "id": "predictive-modeling", "display": "Prediction"}
+        {"name": "Predictive modeling", "id": "predictive-modeling", "display": "Prediction"},
+        {"name": "Dimension vs. Dimension", "id": "dimension-vs-dimension", "display": "Association"}
     ],
         "measure": [
             {"name": "Descriptive analysis", "id": "descriptive-analysis", "display": "Overview"},
@@ -513,13 +513,6 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND = {
                 "noOfColumnsToUse":None
             },
             {
-                "name": "prediction",
-                "displayName": "Prediction",
-                "status": False,
-                "analysisSubTypes": [],
-                "noOfColumnsToUse": None
-            },
-            {
                 "name": "association",
                 "displayName": "Association",
                 "status": False,
@@ -551,6 +544,13 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND = {
                         "value":None
                     }
                 ]
+            },
+            {
+                "name": "prediction",
+                "displayName": "Prediction",
+                "status": False,
+                "analysisSubTypes": [],
+                "noOfColumnsToUse": None
             }
         ],
             "targetLevels":[],
