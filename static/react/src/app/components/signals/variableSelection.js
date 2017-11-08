@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 import {push} from "react-router-redux";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "react-bootstrap";
 import store from "../../store";
-import {selectedAnalysisList,resetSelectedVariables,unselectAllPossibleAnalysis,getDataSetPreview,setDimensionSubLevels,selectAllAnalysisList,updateSelectAllAnlysis,saveAdvanceSettings} from "../../actions/dataActions";
+import {selectedAnalysisList,resetSelectedVariables,unselectAllPossibleAnalysis,getDataSetPreview,setDimensionSubLevels,selectAllAnalysisList,updateSelectAllAnlysis,saveAdvanceSettings,checkAllAnalysisSelected} from "../../actions/dataActions";
 import {openCreateSignalModal,closeCreateSignalModal,updateCsLoaderValue} from "../../actions/createSignalActions";
 import {createSignal,setPossibleAnalysisList,emptySignalAnalysis,advanceSettingsModal} from "../../actions/signalActions";
 import {DataVariableSelection} from "../data/DataVariableSelection";
@@ -64,7 +64,7 @@ export class VariableSelection extends React.Component {
 	handleAnlysisList(e){
 		this.props.dispatch(selectedAnalysisList(e));
 		this.props.dispatch(saveAdvanceSettings());
-
+		this.props.dispatch(checkAllAnalysisSelected())
 	}
 	handleAllAnlysis(evt){
 		this.props.dispatch(updateSelectAllAnlysis(evt.target.checked));

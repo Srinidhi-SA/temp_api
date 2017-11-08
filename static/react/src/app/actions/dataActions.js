@@ -244,6 +244,28 @@ export function cancelAdvanceSettings(){
 		prevAnalysisList
 	}
 }
+export function checkAllAnalysisSelected(){
+	return (dispatch) => {
+	var totalAnalysisList = store.getState().datasets.dataSetAnalysisList;
+	var analysisList = [];
+	var flag = false;
+	if(store.getState().signals.getVarType == "measure"){
+		analysisList = totalAnalysisList.measures.analysis;
+	}else{
+		analysisList = totalAnalysisList.dimensions.analysis;
+	}
+	for(var i=0;i<analysisList.length;i++){
+		if(analysisList[i].status){
+			flag = true;
+		}else{
+			flag = false;
+			break;
+		}
+	}
+	dispatch(updateSelectAllAnlysis(flag));
+	}
+	
+}
 export function selectedAnalysisList(evt,noOfColumnsToUse){
 
 	var totalAnalysisList = store.getState().datasets.dataSetAnalysisList;
