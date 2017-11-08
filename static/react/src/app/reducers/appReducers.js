@@ -154,7 +154,15 @@ export default function reducer(state = {
 		}
 	}
 	break;
-
+	case "CLEAR_MODEL_SUMMARY":
+	{
+		return {
+			...state,
+			modelSummary: {},
+			modelSlug:"",
+		}
+	}
+	break;
 	case "MODEL_SUMMARY_ERROR":
 	{
 		//alert(action.json.non_field_errors);
