@@ -427,7 +427,7 @@ export class DataPreview extends React.Component {
 					<div className="page-head">
 					<div className="row">
 					<div className="col-md-8">
-					<h2>Data Preview</h2>
+					<h4>Data Preview</h4>
 					</div>
 					</div>
 					<div className="clearfix"></div>

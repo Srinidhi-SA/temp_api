@@ -179,21 +179,20 @@ export class AudioFileList extends React.Component {
 										<i className="fa fa-address-card-o fa-lg"></i>
 									</button>
 									<button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false">
-										<i className="fa fa-sort-alpha-asc fa-lg"></i>
-										<span className="caret"></span>
+										<i className="fa fa-sort-alpha-asc fa-lg"></i>&nbsp;<span className="caret"></span>
 									</button>
 									<ul role="menu" className="dropdown-menu dropdown-menu-right">
 										<li>
-											<a href="#">Name Ascending</a>
+											<a href="#"><i class="fa fa-sort-alpha-asc" aria-hidden="true"></i> Name Ascending</a>
 										</li>
 										<li>
-											<a href="#">Name Descending</a>
+											<a href="#"><i class="fa fa-sort-alpha-desc" aria-hidden="true"></i> Name Descending</a>
 										</li>
 										<li>
-											<a href="#">Date Ascending</a>
+											<a href="#"><i class="fa fa-sort-numeric-asc" aria-hidden="true"></i> Date Ascending</a>
 										</li>
 										<li>
-											<a href="#">Date Descending</a>
+											<a href="#"><i class="fa fa-sort-numeric-desc" aria-hidden="true"></i> Date Descending</a>
 										</li>
 									</ul>
 								</span>*/}
