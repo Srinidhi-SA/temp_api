@@ -1,4 +1,7 @@
 from django.conf import settings
+
+from math import floor, log10
+
 JOBSERVER = settings.JOBSERVER
 THIS_SERVER_DETAILS = settings.THIS_SERVER_DETAILS
 
@@ -26,7 +29,8 @@ class JobserverDetails(object):
     def get_config(cls,
                    slug,
                    class_name,
-                   job_name=None
+                   job_name=None,
+                   message_slug=None
                    ):
 
         job_type = {
@@ -34,7 +38,9 @@ class JobserverDetails(object):
             "master": "story",
             "model":"training",
             "score": "prediction",
-            "robo": "robo"
+            "robo": "robo",
+            "subSetting": "subSetting",
+            "stockAdvisor": "stockAdvisor"
         }
 
         return {
@@ -43,6 +49,9 @@ class JobserverDetails(object):
                 "job_url" : "http://{0}:{1}/api/job/{2}/".format(THIS_SERVER_DETAILS.get('host'),
                                                                     THIS_SERVER_DETAILS.get('port'),
                                                                     slug),
+                "message_url": "http://{0}:{1}/api/messages/{2}/".format(THIS_SERVER_DETAILS.get('host'),
+                                                                THIS_SERVER_DETAILS.get('port'),
+                                                                message_slug),
                 "job_name": job_name,
                 "get_config" :
                     {
@@ -163,6 +172,14 @@ def remove_padding_from_chart_data(chart_data):
             del chart_data['chart_c3']['padding']
     return chart_data
 
+def add_side_padding_to_chart_data(chart_data):
+    if 'chart_c3' in chart_data:
+        chart_data['chart_c3']['padding'] = {
+            'right': 20
+        }
+
+    return chart_data
+
 def remove_subchart_from_chart_data(chart_data):
     if 'chart_c3' in chart_data:
         if "subchart" in chart_data['chart_c3']:
@@ -185,6 +202,18 @@ def remove_xdata_from_chart_data(chart_data):
     if 'xdata' in chart_data:
         del chart_data['xdata']
     return chart_data
+
+def limit_chart_data_length(chart_data, limit=None):
+    if limit != None:
+        if 'chart_c3' in chart_data:
+            tempData = []
+            if "columns" in chart_data["chart_c3"]["data"]:
+                for row in chart_data["chart_c3"]["data"]["columns"]:
+                    tempData.append(row[:limit+1])
+                    chart_data["chart_c3"]["data"]["columns"] = tempData
+
+    return chart_data
+
 
 def decode_and_convert_chart_raw_data(data):
     if not check_chart_data_format(data):
@@ -247,6 +276,8 @@ def decode_and_convert_chart_raw_data(data):
         c3.set_axis_label_simple(
             label_text=label_text
         )
+
+        c3.add_additional_grid_line_at_zero()
 
         if subchart is False:
             c3.hide_subchart()
@@ -328,6 +359,7 @@ def decode_and_convert_chart_raw_data(data):
             c3_chart_details["xdata"] = get_x_column_from_chart_data_without_xs(chart_data, axes)
             c3.set_tick_format_x()
             c3.set_tooltip_format()
+        c3.add_additional_grid_line_at_zero()
 
         from api.C3Chart import config
         c3.set_basic_color_pattern(config.SECOND_FLIP_PATTERN)
@@ -503,7 +535,7 @@ def decode_and_convert_chart_raw_data(data):
             c3.hide_x_tick()
         # c3.add_additional_grid_line_at_zero()
         c3_chart_details["chart_c3"] = c3.get_json()
-        c3_chart_details["tooltip_c3"] = [data_c3[0], data_c3[1], data_c3[2]]
+        c3_chart_details["tooltip_c3"] = format_tooltip_data([data_c3[0], data_c3[1], data_c3[2]])
         return c3_chart_details
     elif chart_type in ['donut']:
         chart_data = replace_chart_data(data['data'])
@@ -913,6 +945,7 @@ def convert_to_humanize(size):
 
     return str(size) + " " + size_name[i]
 
+
 def convert_to_GB(size):
 
     count = 3
@@ -922,6 +955,33 @@ def convert_to_GB(size):
         count -= 1
 
     return size
+
+
+def format_tooltip_data(datas):
+
+    for data in datas:
+        for index, value in enumerate(data):
+            if type(value) in ['int', 'float']:
+                data[index] = round_sig(value)
+
+    return datas
+
+
+def round_sig(x, sig=3):
+    try:
+        if abs(x)>=1:
+            x = round(x,sig)
+        else:
+            x = round(x, sig-int(floor(log10(abs(x))))-1)
+    except:
+        pass
+    return x
+
+
+def get_message(instance):
+    from api.redis_access import AccessFeedbackMessage
+    ac = AccessFeedbackMessage()
+    return ac.get_using_obj(instance)
 
 
 

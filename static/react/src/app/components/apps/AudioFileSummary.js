@@ -8,7 +8,7 @@ import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
 import HeatMap from '../../helpers/heatmap';
 import {STATIC_URL} from "../../helpers/env.js"
-import {isEmpty} from "../../helpers/helper";
+import {isEmpty,getUserDetailsOrRestart} from "../../helpers/helper";
 import {getAudioFile,getListOfCards,updateAudioFileSummaryFlag} from "../../actions/appActions";
 import {Card} from "../signals/Card";
 import {Link} from "react-router-dom";

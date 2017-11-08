@@ -8,16 +8,17 @@ import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {C3Chart} from "../c3Chart";
 import ReactDOM from 'react-dom';
-import {hideDataPreview,getDataSetPreview} from "../../actions/dataActions";
+import {hideDataPreview,getDataSetPreview,renameMetaDataColumn,updateTranformColumns} from "../../actions/dataActions";
 import {dataSubsetting,clearDataPreview,clearLoadingMsg} from "../../actions/dataUploadActions"
-import {Button} from "react-bootstrap";
+import {Button,Dropdown,Menu,MenuItem} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"
 import {showHideSideChart,showHideSideTable} from "../../helpers/helper.js"
 import {isEmpty} from "../../helpers/helper";
 import {SubSetting} from "./SubSetting";
 import {DataUploadLoader} from "../common/DataUploadLoader";
-
-
+import {DataValidation} from "./DataValidation";
+import {DataValidationEditValues} from "./DataValidationEditValues";
+import Dialog from 'react-bootstrap-dialog';
 
 
 
@@ -30,7 +31,8 @@ import {DataUploadLoader} from "../common/DataUploadLoader";
 		modelSlug:store.apps.modelSlug,
 		signal: store.signals.signalAnalysis,
 		subsettingDone:store.datasets.subsettingDone,
-		subsettedSlug:store.datasets.subsettedSlug};
+		subsettedSlug:store.datasets.subsettedSlug,
+		dataTransformSettings:store.datasets.dataTransformSettings};
 })
 
 
@@ -159,10 +161,8 @@ export class DataPreview extends React.Component {
 		showHideSideChart(this.firstTimeColTypeForChart,this.firstTimeSideChart);
 
 	}
-
-
-
 	setSideElements(e){
+
 		//renderFlag=true;
 		//alert("setting side element!!")
 		const chkClass = $(e.target).attr('class');
@@ -183,17 +183,20 @@ export class DataPreview extends React.Component {
 				ReactDOM.render(<Provider store={store}><C3Chart classId={"_side"} data={sideChartUpdate} yformat={yformat} xdata={xdata} sideChart={true}/></Provider>, document.getElementById('side-chart'));
                 }
 				const sideTableUpdate = item.columnStats;
-				showHideSideTable(sideTableUpdate); // hide side table on blank or all display false
-				const sideTableUpdatedTemplate=sideTableUpdate.map((tableItem,tableIndex)=>{
-					if(tableItem.display){
-						return(  <tr key={tableIndex}>
-						<td className="item">{tableItem.displayName}</td>
-						<td>&nbsp; : &nbsp;</td>
-						<td>{tableItem.value}</td>
-						</tr>
-						);
-					}
-				});
+				let sideTableUpdatedTemplate = "";
+				if(sideTableUpdate != null){
+					showHideSideTable(sideTableUpdate); // hide side table on blank or all display false
+					sideTableUpdatedTemplate=sideTableUpdate.map((tableItem,tableIndex)=>{
+						if(tableItem.display){
+							return(  <tr key={tableIndex}>
+							<td className="item">{tableItem.displayName}</td>
+							<td>&nbsp; : &nbsp;</td>
+							<td>{tableItem.value}</td>
+							</tr>
+							);
+						}
+					});	
+				}
 				$("#side-table").empty();
 				ReactDOM.render( <tbody className="no-border-x no-border-y">{sideTableUpdatedTemplate}</tbody>, document.getElementById('side-table'));
 
@@ -203,6 +206,7 @@ export class DataPreview extends React.Component {
 				ReactDOM.render(<Provider store={store}><SubSetting item = {item}/></Provider>, document.getElementById('sub_settings'));
 
 				// column subsetting ends
+
 			}
 		});
 	}
@@ -230,17 +234,25 @@ export class DataPreview extends React.Component {
 		//alert("working");
 		this.new_subset = $("#newSubsetName").val()
 		//alert(this.new_subset)
+		if(this.new_subset==""||this.new_subset==null){
+			bootbox.alert("Please enter new config name!")
+		}else{
+		let transformationSettings = {};
+		transformationSettings.existingColumns = store.getState().datasets.dataTransformSettings;
 		let subSettingRq = {'filter_settings':store.getState().datasets.updatedSubSetting,
-													'name':this.new_subset,'subsetting':true};
-		console.log(JSON.stringify(subSettingRq))
+													'name':this.new_subset,'subsetting':true,
+													'transformation_settings':transformationSettings};
 		this.props.dispatch(dataSubsetting(subSettingRq,this.props.dataPreview.slug))
 	}
+}
+	shouldComponentUpdate(nextProps) {
+     return true;
+    }
+
 
 	render() {
 
 		console.log("data prev is called##########3");
-		console.log(this.props);
-
 		//for active select in columnName
 		$(function(){
 			console.log($(".cst_table"));
@@ -325,38 +337,34 @@ export class DataPreview extends React.Component {
 				}
 
 
-				const anchorCls =thElement.slug + " dropdown-toggle";
+				const anchorCls =thElement.slug + " dropdown-toggle cursor";
+               if(thElement.chartData != null){
+            		if(thElement.ignoreSuggestionFlag){
+    					cls = cls + " greyout-col";
 
-				if(thElement.ignoreSuggestionFlag){
-					cls = cls + " greyout-col";
+    				return(
+    						<th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)} title={thElement.ignoreSuggestionMsg}>
+    						<a href="#" data-toggle="dropdown" className={anchorCls}><i className={iconCls}></i> {thElement.name}<b className="caret"></b></a>
+                             <DataValidation name={thElement.name} slug={thElement.slug} />
+    						</th>
+    				);
+    			}else{
+    				return(
+    						<th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)}>
+    						<a href="#" data-toggle="dropdown" id={thElement.slug} className={anchorCls}><i className={iconCls}></i> {thElement.name}<b className="caret"></b></a>
+    						<DataValidation name={thElement.name} slug={thElement.slug} />
+    						</th>
+    				);
 
-				return(
-						<th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)} title={thElement.ignoreSuggestionMsg}>
-						<a href="#" data-toggle="dropdown" className={anchorCls}><i className={iconCls}></i> {thElement.name}</a>
-						{/*<ul className="dropdown-menu">
-               <li><a href="#">Ascending</a></li>
-               <li><a href="#">Descending</a></li>
-               <li><a href="#">Measures</a></li>
-               <li><a href="#">Dimensions</a></li>
-            </ul>*/}
-
-						</th>
-				);
-			}else{
-				return(
-						<th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)}>
-						<a href="#" data-toggle="dropdown" className={anchorCls}><i className={iconCls}></i> {thElement.name}</a>
-						{/*<ul className="dropdown-menu">
-               <li><a href="#">Ascending</a></li>
-               <li><a href="#">Descending</a></li>
-               <li><a href="#">Measures</a></li>
-               <li><a href="#">Dimensions</a></li>
-            </ul>*/}
-
-						</th>
-				);
-
-			}
+    			}
+               }else{
+            	   return(
+   						<th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)}>
+   						<a href="#"  id={thElement.slug} className={anchorCls}><i className={iconCls}></i> {thElement.name}</a>
+   						</th>
+   				);
+               }
+			
 			});
 			//  data.splice(0,1);
 			const tableRowsTemplate = dataPrev.sampleData.map((trElement, trIndex) => {
@@ -381,33 +389,36 @@ export class DataPreview extends React.Component {
 
 				);
 			});
-
-			const sideChart = dataPrev.columnData[0].chartData.chart_c3;
-			let yformat = dataPrev.columnData[0].chartData.yformat;
-			let xdata = dataPrev.columnData[0].chartData.xdata;
-			console.log("chart-----------")
-			const sideTable = dataPrev.columnData[0].columnStats;
-			this.firstTimeSideTable = sideTable; //show hide side table
-			this.firstTimeSideChart = dataPrev.columnData[0].chartData;
-			this.firstTimeColTypeForChart = dataPrev.columnData[0].columnType;
+			let  sideTableTemaplte = "";
 			let firstChart = "";
-			 if(!$.isEmptyObject(this.firstTimeSideChart)){
-				 firstChart = <C3Chart classId={this.chartId} data={sideChart} yformat={yformat} xdata={xdata} sideChart={true}/> ;
-			 }
 			 let firstTimeSubSetting = ""
-			 if(!isEmpty(dataPrev.columnData[0]))
-			 firstTimeSubSetting = dataPrev.columnData[0]
-			console.log("checking side table data:; ");
-			console.log(sideTable);
-			const sideTableTemaplte=sideTable.map((tableItem,tableIndex)=>{
-				if(tableItem.display){
-					return(  <tr key={tableIndex}>
-					<td className="item">{tableItem.displayName}</td>
-					<td>&nbsp; : {tableItem.value}</td>
-					</tr>
-					);
-				}
-			});
+            if(dataPrev.columnData[0].chartData != null){
+            	const sideChart = dataPrev.columnData[0].chartData.chart_c3;
+    			let yformat = dataPrev.columnData[0].chartData.yformat;
+    			let xdata = dataPrev.columnData[0].chartData.xdata;
+    			console.log("chart-----------")
+    			const sideTable = dataPrev.columnData[0].columnStats;
+    			this.firstTimeSideTable = sideTable; //show hide side table
+    			this.firstTimeSideChart = dataPrev.columnData[0].chartData;
+    			this.firstTimeColTypeForChart = dataPrev.columnData[0].columnType;
+    			 if(!$.isEmptyObject(this.firstTimeSideChart)){
+    				 firstChart = <C3Chart classId={this.chartId} data={sideChart} yformat={yformat} xdata={xdata} sideChart={true}/> ;
+    			 }
+    			 if(!isEmpty(dataPrev.columnData[0]))
+    			 firstTimeSubSetting = dataPrev.columnData[0]
+    			console.log("checking side table data:; ");
+    			console.log(sideTable);
+    			sideTableTemaplte=sideTable.map((tableItem,tableIndex)=>{
+    				if(tableItem.display){
+    					return(  <tr key={tableIndex}>
+    					<td className="item">{tableItem.displayName}</td>
+    					<td>&nbsp; : {tableItem.value}</td>
+    					</tr>
+    					);
+    				}
+    			});
+            }
+			
 
 
 			return(
@@ -485,38 +496,42 @@ export class DataPreview extends React.Component {
 					</div>
 					{/*<!-- ./ End Tab Visualizations -->*/}
 
-					{/*<!-- Start Tab Subsettings - ->*/}
+					{/*<!-- Start Tab Subsettings -->*/}
 					<div id = "sub_settings">
 					<SubSetting item = {firstTimeSubSetting}/>
 					</div>
 					{/* End Tab Subsettings */}
 					</div>
 					</div>
-					<div className="row buttonRow">
+					<div className="row buttonRow" id="dataPreviewButton">
 					<div className="col-md-12">
 
 					<div className="panel">
 					<div className="panel-body">
-					<div class="row">
-						<div className="col-md-3 col-md-offset-7 text-right">
-						{
-						(this.isSubsetted)
-						?(  <div className="form-group">
-						<input type="text" name="newSubsetName" id="newSubsetName" className="form-control input-sm" placeholder="new subset name"/>
-						</div>)
-						:(<div/>)
-						}
-						</div>
-						<div className="col-md-2 text-right">
-						<Button onClick={this.closePreview.bind(this)}> {this.buttons.close.text} </Button>
-					{
-						(this.isSubsetted)
-						?(<Button onClick={this.applyDataSubset.bind(this)} bsStyle="primary">Save Subset</Button>)
-						:(<Button onClick={this.moveToVariableSelection.bind(this)} bsStyle="primary"> {this.buttons.create.text}</Button>)
+					
+					<div className="navbar">
+						<ul className="nav navbar-nav navbar-right">
+						<li>
+							{
+							(this.isSubsetted)
+							?(  <div className="form-group">
+							<input type="text" name="newSubsetName" id="newSubsetName" className="form-control input-sm col-sm-12" placeholder="New Datset Name"/>
+							</div>)
+							:(<div/>)
+							}
+						</li>
+						 
+						<li className="text-right">
+							<Button onClick={this.closePreview.bind(this)}> {this.buttons.close.text} </Button>
+							{
+							(this.isSubsetted)
+							?(<Button onClick={this.applyDataSubset.bind(this)} bsStyle="primary">Save Config</Button>)
+							:(<Button onClick={this.moveToVariableSelection.bind(this)} bsStyle="primary"> {this.buttons.create.text}</Button>)
+							}
+						</li>
+						</ul>
+						</div> 
 
-					}
-						</div>
-					</div>
 
 					<DataUploadLoader/>
 					</div>
@@ -527,9 +542,9 @@ export class DataPreview extends React.Component {
 					</div>
 
 					</div>
-
-
 					{/*<!-- /.Page Content Area --> */}
+					<DataValidationEditValues/>
+					  <Dialog ref="dialog"/>
 					 </div>
 			);
 		} else {

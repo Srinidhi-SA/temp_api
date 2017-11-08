@@ -10,7 +10,7 @@ import {AppsCreateModel} from "./AppsCreateModel";
 import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryFlag,
 	updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,storeAppsModelSortElements} from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
-import {SEARCHCHARLIMIT} from  "../../helpers/helper"
+import {SEARCHCHARLIMIT,getUserDetailsOrRestart} from  "../../helpers/helper"
 import {STATIC_URL} from "../../helpers/env.js";
 import Dialog from 'react-bootstrap-dialog'
 
@@ -131,7 +131,7 @@ import Dialog from 'react-bootstrap-dialog'
 							<div className="row">
 							<div className="col-xs-9">
 							<h4 className="title newCardTitle">
-							<a href="javascript:void(0);" id= {data.slug} onClick={this.getModelSummary.bind(this,data.slug)}><Link to={modelLink}>{data.name}</Link></a>
+							<a href="javascript:void(0);" id= {data.slug} ><Link to={modelLink}>{data.name}</Link></a>
 							</h4>
 							</div>
 							<div className="col-xs-3">
@@ -141,7 +141,7 @@ import Dialog from 'react-bootstrap-dialog'
 							</div>
 							<div className="card-footer">
 							<div className="left_div">
-							<span className="footerTitle"></span>{sessionStorage.userName}
+							<span className="footerTitle"></span>{getUserDetailsOrRestart.get().userName}
 							<span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy HH:MM")}</span>
 							</div>
 

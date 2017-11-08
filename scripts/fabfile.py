@@ -10,6 +10,7 @@ List
 from fabric.api import *
 import os
 from fabric.contrib import files
+import fabric_gunicorn as gunicorn
 # from django.conf import settings
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -29,14 +30,18 @@ def dev():
         "react_path" : "/static/react",
         "asset_path" : "/static/asset",
         "base_remote_path" : "/home/ubuntu/codebase/mAdvisor-api",
-        "ui_branch" : "react-ui-development",
-        "api_branch" : "trainer/vivek_product_revamp"
+        "ui_branch" : "api_ui_dev",
+        "api_branch" : "api_ui_dev"
     }
 
     key_file = BASE_DIR + "/config/keyfiles/TIAA.pem"
     env.key_filename=[key_file]    
     env.host_string="{0}@{1}".format(server_details.get('username'), server_details.get('host'))
-
+    env.gunicorn_wsgi_app = 'config.wsgi:application'
+    env.gunicorn_pidpath = path_details["base_remote_path"] + "/gunicorn.pid"
+    env.gunicorn_bind = "0.0.0.0:9012"
+    env["server_details"] = server_details
+    env["path_details"] = path_details
     return {'server_details': server_details, 'path_details': path_details, 'type': 'development'}
 
 
@@ -58,8 +63,6 @@ def prod():
         "ui_branch": "react-ui-development",
         "api_branch": "trainer/vivek_product_revamp"
     }
-
-
 
     key_file = BASE_DIR + "/config/keyfiles/TIAA.pem"
     env.key_filename = [key_file]
@@ -108,6 +111,8 @@ def deploy_api(type="development"):
         server_details=server_details,
         path_details=path_details
     )
+    reload_gunicorn("dev")
+
 
 @task
 def deploy_api_and_migrate(type="development"):
@@ -128,13 +133,23 @@ def deploy_api_and_migrate(type="development"):
     pip_install_and_deploy_remote(
         base_remote_path=path_details['base_remote_path']
     )
+    reload_gunicorn("dev")
 
 
 def deploy_ml(branch="development"):
     pass
 
-def restart_gunicorn():
-    pass
+
+@task
+def reload_gunicorn(type="dev"):
+    """
+    reload Gunicorn. gracefully kill and restart.
+    """
+    if "dev" == type:
+        dev()
+    elif "prod" == type:
+        prod()
+    gunicorn.reload()
 
 
 def remote_uname():
@@ -182,7 +197,7 @@ def npm_install_and_deploy(server_details, path_details, type="development"):
 
 def pip_install_and_deploy_remote(base_remote_path):
     with cd(base_remote_path):
-        sudo('pip install -r requirements.txt')
+        # sudo('pip install -r requirements.txt')
         run('python manage.py migrate')
 
 
@@ -254,6 +269,8 @@ def pull_api_at_remote(base_remote_path, api_branch):
             run("git pull origin {0}".format(api_branch))
             # run("git stash apply")
 
+            sudo("pip install -r requirements.txt")
+
     except Exception as err:
         print err
 
@@ -293,3 +310,127 @@ def save_db_copy(branch="local"):
 
 def get_remote_db(branch="development"):
     pass
+
+@task
+def uptime():
+    res = run('cat /proc/uptime')
+
+@task
+def remember_git_cache_local_and_remote(type="development"):
+    """
+    remember git password.
+    """
+    if type == "development":
+        dev()
+    elif type == "production":
+        prod()
+
+    local("git config --global credential.helper cache")
+    local("git config --global credential.helper 'cache --timeout=360000'")
+    run("git config --global credential.helper cache")
+    run("git config --global credential.helper 'cache --timeout=360000'")
+
+@task
+def cleanup_static_react_old_dist(type="development"):
+    """
+    cleaup dist_files from static_react
+    """
+    if type == "development":
+        dev()
+    elif type == "production":
+        prod()
+
+    server_details = env.get('server_details')
+    path_details = env.get('path_details')
+    base_remote_path = path_details.get('base_remote_path')
+    react_path = path_details.get('react_path')
+
+    with cd(base_remote_path + react_path):
+        run('mv dist_* ~/old_dist')
+
+
+def create_database(type="development"):
+    if type == "development":
+        dev()
+    elif type == "production":
+        prod()
+
+    server_details = env.get('server_details')
+    path_details = env.get('path_details')
+
+    db_name = "madvisor"
+    user_name = "marlabs"
+    host= "localhost"
+    passowrd = "Password@123"
+
+    # CREATE DATABASE myproject CHARACTER SET UTF8;
+    run("CREATE DATABASE {0} CHARACTER SET UTF8;".format(db_name))
+
+    # CREATE USER marlabs@localhost IDENTIFIED BY 'Password@123';
+    run("CREATE USER {0}@{1} IDENTIFIED BY '{2}';".format(user_name, host, passowrd))
+
+    # GRANT ALL PRIVILEGES ON madvisor.* TO marlabs@localhost;
+    run("GRANT ALL PRIVILEGES ON {0}.* TO {1}@{2};".format(db_name, user_name, host))
+
+@task
+def download_sql_and_dump(type='development'):
+
+    if type == "development":
+        dev()
+    elif type == "production":
+        prod()
+
+    server_details = env.get('server_details')
+    path_details = env.get('path_details')
+
+    base_remote_path = path_details.get('base_remote_path')
+    with cd(base_remote_path):
+        run("python manage.py dumpdata -e contenttypes -e auth.Permission > datadump.json")
+        path_json = base_remote_path + "/" + "datadump.json"
+        get(path_json, "/home/ankush/codebase/code_revamp/madvisor_api/")
+
+    local("cat 'Done.'")
+
+
+def recreate_database(type='local'):
+
+
+    db_name = "madvisor"
+    user_name = "marlabs"
+    host= "localhost"
+    passowrd = "Password@123"
+
+def move_css_from_react_css_to_static_assets_css(type='development'):
+
+    if type == "development":
+        dev()
+    elif type == "production":
+        prod()
+
+    server_details = env.get('server_details')
+    path_details = env.get('path_details')
+
+    react_path = path_details['react_path']
+    style_css = react_path + "/src/assets/css/style.css"
+    asset_path = path_details['asset_path']
+    asset_css = asset_path + "/css"
+    run("mv {0} {1}".format(style_css, asset_css))
+
+# api_ui_dev
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

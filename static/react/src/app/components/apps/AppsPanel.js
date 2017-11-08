@@ -5,9 +5,9 @@ import {connect} from "react-redux";
 import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab} from "react-bootstrap";
 import {Link, Redirect} from "react-router-dom";
-import {updateSelectedApp,updateModelSummaryFlag,updateScoreSummaryFlag,showRoboDataUploadPreview,updateAudioFileSummaryFlag} from "../../actions/appActions";
+import {updateSelectedApp,updateModelSummaryFlag,uploadStockAnalysisFlag,closeAppsLoaderValue,updateScoreSummaryFlag,showRoboDataUploadPreview,updateAudioFileSummaryFlag} from "../../actions/appActions";
 import {STATIC_URL} from "../../helpers/env.js"
-import {APPID1,APPID2,APPID3,APPID4,APPNAME1,APPNAME2,APPNAME3,APPNAME4} from "../../helpers/helper.js"
+import {APPID1,APPID2,APPID3,APPID4,APPNAME1,APPNAME2,APPNAME3,APPNAME4,APPNAME5,APPID5} from "../../helpers/helper.js"
 
 @connect((store) => {
 	return {login_response: store.login.login_response,
@@ -29,6 +29,8 @@ export class AppsPanel extends React.Component {
 	  this.props.dispatch(updateScoreSummaryFlag(false));
 	  this.props.dispatch(showRoboDataUploadPreview(false));
 	  this.props.dispatch(updateAudioFileSummaryFlag(false));
+	  this.props.dispatch(closeAppsLoaderValue());
+	  this.props.dispatch(uploadStockAnalysisFlag(false));
   }
   render() {
     console.log("Apps panel is called##########3");
@@ -176,10 +178,49 @@ export class AppsPanel extends React.Component {
 					</div>
 
 				</div>
+				
+				
+				<div class="col-md-4">
+
+				
+				<div className="app-block"> 
+					<Link onClick={this.gotoAppsList.bind(this,APPID5,APPNAME5)} className="app-link" to='/apps-stock-advisor'>
+
+					<div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
+						<img src={STATIC_URL + "assets/images/apps_icon1.png"} className="img-responsive"/>
+					</div>
+					<div className="col-md-8 col-sm-9 col-xs-7">
+						<h4>STOCK  SENSE</h4>
+						<p>
+						To find and analyze correlation between contents of news articles and stock prices and extract meaningful insights
+						</p>
+					</div>
+					<div class="clearfix"></div>
+					</Link>
+
+					<div className="card-footer">
+					<ul className="app_labels">
+						<li><a href="#"><i className="fa fa-tag"></i> Finance</a></li>
+						<li><a href="#"><i className="fa fa-tag"></i>Investment Banking</a></li>
+					</ul>
+
+				{/*<div className="card-deatils">
+						<a href="javascript:void(0);" rel="popover" className="pover" data-popover-content="#myPopover" data-original-title="" title=""><i className="ci pe-7s-info pe-2x"></i></a>
+				</div>*/}
+				<div id="myPopover" className="pop_box hide">
+				<p>Info</p>
+				</div>
+				</div>
+				</div>
+
+			</div>
+			
 				</div>
 
 
 		   </div>
+		   
+		   
 		</div>
           </div>
         </div>

@@ -3,16 +3,26 @@ import {connect} from "react-redux";
 import ReactDOM from "react-dom";
 import {Link} from "react-router-dom";
 import store from "../../store";
-import {isEmpty} from "../../helpers/helper";
-import {getUserProfile} from "../../actions/loginActions";
+import {isEmpty,getUserDetailsOrRestart} from "../../helpers/helper";
 var dateFormat = require('dateformat');
 import Breadcrumb from 'react-breadcrumb';
-import {STATIC_URL} from "../../helpers/env";
+import {STATIC_URL,API} from "../../helpers/env";
 import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
+import {saveFileToStore} from "../../actions/dataSourceListActions";
+import Dropzone from 'react-dropzone'
+import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
+import {openImg,closeImg,uploadImg,getUserProfile,saveProfileImage} from "../../actions/loginActions";
+
+
 
 @connect((store) => {
-  return {login_response: store.login.login_response, profileInfo: store.login.profileInfo};
+  return {login_response: store.login.login_response,
+          profileInfo: store.login.profileInfo,
+          fileUpload:store.dataSource.fileUpload,
+          showModal:store.dataUpload.imgUploadShowModal,
+          profileImgURL:store.login.profileImgURL
+          };
 })
 
 export class Profile extends React.Component {
@@ -22,13 +32,44 @@ export class Profile extends React.Component {
   }
   componentWillMount() {
     if (isEmpty(this.props.profileInfo))
-      this.props.dispatch(getUserProfile(sessionStorage.userToken))
+      this.props.dispatch(getUserProfile(getUserDetailsOrRestart.get().userToken))
+    if(this.props.profileImgURL=="")
+    this.props.dispatch(saveProfileImage(getUserDetailsOrRestart.get().image_url))
   }
 
   componentDidMount() {}
+  popupMsg(){
+		bootbox.alert("Only PNG and JPEG files are allowed to upload")
+	}
+  popupMsgForSize(){
+    bootbox.alert("Maximum allowed file size is 2MB")
+  }
+  onDrop(files) {
+		this.props.dispatch(saveFileToStore(files))
+	}
+  openPopup(){
+    this.props.dispatch(openImg());
+    var files = [{name:"",size:""}]
+    this.props.dispatch(saveFileToStore(files))
+
+  }
+  closePopup(){
+    this.props.dispatch(closeImg())
+  }
+
+  uploadProfileImage(){
+    this.props.dispatch(uploadImg());
+  }
 
   render() {
-
+	   let lastLogin = null;
+	  // alert(sessionStorage.last_login)
+	  if(getUserDetailsOrRestart.get().last_login != "null"){
+		  lastLogin = dateFormat(getUserDetailsOrRestart.get().last_login, "mmm d,yyyy");
+	  }else{
+		  lastLogin = dateFormat(new Date(), "mmm d,yyyy");
+	  }
+  
     if (isEmpty(this.props.profileInfo)) {
       return (
         <div className="side-body">
@@ -48,7 +89,15 @@ export class Profile extends React.Component {
     } else {
       console.log("profile info!!")
       console.log(this.props)
-      console.log(this.props.profileInfo.info)
+      //console.log(this.props.profileInfo.info)
+      var fileName = store.getState().dataSource.fileUpload.name;
+      var fileSize = store.getState().dataSource.fileUpload.size;
+      let fileSizeInKB = (fileSize / 1024).toFixed(3)
+      if(fileSizeInKB>2000)
+      this.popupMsgForSize()
+      let imgSrc = API+this.props.profileImgURL+fileSizeInKB+new Date().getTime();
+      if(!this.props.profileImgURL)
+      imgSrc = STATIC_URL + "assets/images/avatar.png"
       let statsList = this.props.profileInfo.info.map((analysis, i) => {
         console.log(analysis)
         return (
@@ -62,29 +111,68 @@ export class Profile extends React.Component {
       });
       return (
         <div className="side-body">
-
-          {/*<!-- Page Title and Breadcrumbs -->*/}
           <div className="page-head">
-            {/*<!-- <ol className="breadcrumb">
-            <li><a href="#">Story</a></li>
-            <li className="active">Sales Performance Report</li>
-          </ol> -->*/}
             <div className="row">
               <div className="col-md-8">
                 <h2>User Profile</h2>
               </div>
-
             </div>
-
           </div>
           {/*<!-- /.Page Title and Breadcrumbs -->
 
             <!-- Page Content Area -->*/}
           <div className="main-content">
-
             <div className="user-profile">
               <div className="user-display xs-p-10">
-                <div className="user-avatar col-md-2 text-center"><img src={STATIC_URL + "assets/images/avatar.png"} className="img-responsive img-center img-circle"/></div>
+                <div className="user-avatar col-md-2 text-center">
+                <img src={imgSrc} className="img-responsive img-center img-circle"/>
+                <a onClick={this.openPopup.bind(this)} href ="javascript:void(0)"><i class="fa fa-camera" style={{fontSize:"36px",color:"grey"}}></i></a>
+                <div id="uploadImg" role="dialog" className="modal fade modal-colored-header">
+                <Modal show={store.getState().dataUpload.imgUploadShowModal} onHide={this.closePopup.bind(this)} dialogClassName="modal-colored-header uploadData">
+                <Modal.Header closeButton>
+                <h3 className="modal-title">Upload Image</h3>
+                </Modal.Header>
+                <Modal.Body>
+				
+				
+				
+               
+				<div className="row">
+					<div className="col-md-9 col-md-offset-1 col-xs-12">
+                <div className="clearfix"></div>
+                <div className="xs-pt-20"></div>
+				
+						 <div className="dropzone md-pl-50">
+                <Dropzone id={1} onDrop={this.onDrop.bind(this)} accept=".png, .jpg" onDropRejected={this.popupMsg}>
+                <p>Try dropping some files here, or click to select files to upload.</p>
+                </Dropzone>
+                {/*<aside>
+                      <ul className={fileName != "" ? "list-unstyled bullets_primary":"list-unstyled"}>
+                          <li>{fileName}{fileName != "" ? " - ":""}{fileSizeInKB}{fileName != "" ? " KB ":""}</li>
+                      </ul>
+                    </aside>*/}
+                    <aside>
+                          <ul className={fileName != "" ? "list-unstyled bullets_primary":"list-unstyled"}>
+                              <li>{fileName}</li>
+                          </ul>
+                        </aside>
+                </div>
+				
+				 <div className="xs-pt-10"></div>
+               <div className="clearfix"></div>
+				
+                 
+                </div>				 
+				</div>
+                </Modal.Body>
+                <Modal.Footer>
+                <Button onClick={this.closePopup.bind(this)}>Close</Button>
+                  <Button bsStyle="primary" onClick={this.uploadProfileImage.bind(this)}>Upload Image</Button>
+                </Modal.Footer>
+                </Modal>
+                </div>
+                </div>
+
                 <div className="user-info col-md-10">
 
                   <div className="panel-default">
@@ -92,7 +180,7 @@ export class Profile extends React.Component {
                     <div className="panel-body">
                       <div className="row">
                         <div className="col-md-12">
-                          <h3>{sessionStorage.userName}</h3>
+                          <h3>{getUserDetailsOrRestart.get().userName}</h3>
                           <table className="full-table-width no-border no-strip skills">
                             <tbody className="no-border-x no-border-y full-width">
                               <tr>
@@ -101,7 +189,7 @@ export class Profile extends React.Component {
                                 </td>
                                 <td className="xs-pt-5">
                                   <b>
-                                    {sessionStorage.email}</b>
+                                    {getUserDetailsOrRestart.get().email}</b>
                                 </td>
                               </tr>
                               <tr>
@@ -110,7 +198,7 @@ export class Profile extends React.Component {
                                 </td>
                                 <td className="xs-pt-5">
                                   <b>
-                                    (999) 999-9999
+                                    {getUserDetailsOrRestart.get().phone}
                                   </b>
                                 </td>
                               </tr>
@@ -146,11 +234,19 @@ export class Profile extends React.Component {
                 <div className="row">
                   <div className="col-md-12 text-right">
                     <p className="xs-p-20">
-                      First Login :
-                      <b> {dateFormat(sessionStorage.date, "mmm d,yyyy")}</b>
+                    <br/>
+                      Date Joined :
+                      <b> {dateFormat(getUserDetailsOrRestart.get().date, "mmm d,yyyy")}</b>
+                      <br/>
+                      Last Login :
+                      <b>{lastLogin}</b>
                       {/*<br/>
                     Subscription Left :
                     <b>25 Days</b>*/}
+                    <br/>
+                    Superuser status:
+                    <b>{getUserDetailsOrRestart.get().is_superuser}</b>
+
                     </p>
                   </div>
                   <div className="clearfix"></div>

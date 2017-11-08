@@ -5,16 +5,17 @@ from rest_framework import serializers
 from rest_framework.utils import humanize_datetime
 from sjsclient import client
 
-from api.helper import JobserverDetails, get_jobserver_status
+from api.helper import JobserverDetails, get_jobserver_status, get_message
 from api.user_helper import UserSerializer
-from models import Insight, Dataset, Trainer, Score, Job, Robo, Audioset
+from models import Insight, Dataset, Trainer, Score, Job, Robo, Audioset, StockDataset
 
 
 def submit_job(
         slug,
         class_name,
         job_config,
-        job_name=None
+        job_name=None,
+        message_slug=None
 ):
     sjs = client.Client(
         JobserverDetails.get_jobserver_url()
@@ -35,7 +36,8 @@ def submit_job(
     # here
     config1 = JobserverDetails.get_config(slug=slug,
                                          class_name=class_name,
-                                          job_name=job_name
+                                          job_name=job_name,
+                                          message_slug=message_slug
                                           )
     config = {}
     config['job_config'] = job_config
@@ -43,7 +45,12 @@ def submit_job(
 
     print "overall---------config"
     print config
-    job = sjs.jobs.create(app, class_path, ctx=ctx, conf=json.dumps(config))
+    from smtp_email import send_jobserver_error
+    try:
+        job = sjs.jobs.create(app, class_path, ctx=ctx, conf=json.dumps(config))
+    except Exception as e:
+        send_jobserver_error(e)
+        return None
 
     # print
     job_url = JobserverDetails.print_job_details(job)
@@ -71,6 +78,13 @@ def convert_to_json(data):
         if key in data:
             value = data[key]
             data[key] = json.loads(value)
+
+    string_to_list_keys = ['stock_symbols']
+
+    for key in string_to_list_keys:
+        if key in data:
+            value = data[key]
+            data[key] = value.split(',')
     return data
 
 
@@ -95,6 +109,11 @@ class InsightSerializer(serializers.ModelSerializer):
         ret['dataset_name'] = dataset_object.name
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+
+        try:
+            ret['message'] = get_message(instance)
+        except:
+            ret['message'] = None
         return ret
 
     def update(self, instance, validated_data):
@@ -155,6 +174,10 @@ class TrainerSerlializer(serializers.ModelSerializer):
         ret['dataset_name'] = dataset_object.name
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        try:
+            ret['message'] = get_message(instance)
+        except:
+            ret['message'] = None
         return ret
 
     def update(self, instance, validated_data):
@@ -210,6 +233,10 @@ class ScoreSerlializer(serializers.ModelSerializer):
         ret['dataset_name'] = trainer_object.dataset.name
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        try:
+            ret['message'] = get_message(instance)
+        except:
+            ret['message'] = None
         return ret
 
     def update(self, instance, validated_data):
@@ -315,6 +342,11 @@ class RoboSerializer(serializers.ModelSerializer):
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
         ret['analysis_done'] = instance.analysis_done
+
+        try:
+            ret['message'] = get_message(instance)
+        except:
+            ret['message'] = None
         return ret
 
 
@@ -357,6 +389,63 @@ class RoboListSerializer(serializers.ModelSerializer):
             'data'
         )
 
+class StockDatasetSerializer(serializers.ModelSerializer):
+
+    # name = serializers.CharField(max_length=100,
+    #                              validators=[UniqueValidator(queryset=Dataset.objects.all())]
+    #                              )
+
+    input_file = serializers.FileField(allow_null=True)
+
+    def update(self, instance, validated_data):
+        instance.meta_data = validated_data.get('meta_data', instance.meta_data)
+        instance.name = validated_data.get('name', instance.name)
+        instance.created_by = validated_data.get('created_by', instance.created_by)
+        instance.deleted = validated_data.get('deleted', instance.deleted)
+        instance.bookmarked = validated_data.get('bookmarked', instance.bookmarked)
+        instance.auto_update = validated_data.get('auto_update', instance.auto_update)
+        # instance.auto_update_duration = validated_data.get('auto_update_duration', instance.auto_update_duration)
+
+        instance.save()
+        return instance
+
+    def to_representation(self, instance):
+        print get_jobserver_status(instance)
+        ret = super(StockDatasetSerializer, self).to_representation(instance)
+        ret = convert_to_json(ret)
+        ret = convert_time_to_human(ret)
+        ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+
+        try:
+            ret['message'] = get_message(instance)
+        except:
+            ret['message'] = None
+
+        return ret
+
+    class Meta:
+        model = StockDataset
+        exclude = ( 'id', 'updated_at')
+
+class StockDatasetListSerializer(serializers.ModelSerializer):
+
+    def to_representation(self, instance):
+        ret = super(StockDatasetListSerializer, self).to_representation(instance)
+        ret['brief_info'] = instance.get_brief_info()
+        return ret
+
+    class Meta:
+        model = StockDataset
+        fields = (
+            "slug",
+            "name",
+            "created_at",
+            "updated_at",
+            "input_file",
+            "bookmarked",
+            "analysis_done"
+        )
+
 
 
 class AudiosetSerializer(serializers.ModelSerializer):
@@ -387,6 +476,11 @@ class AudiosetSerializer(serializers.ModelSerializer):
         ret = convert_to_json(ret)
         ret = convert_time_to_human(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+
+        try:
+            ret['message'] = get_message(instance)
+        except:
+            ret['message'] = None
 
         return ret
 

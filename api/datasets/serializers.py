@@ -9,8 +9,8 @@ from django.conf import settings
 
 from api.models import Dataset
 from helper import convert_to_json, convert_time_to_human
-from api.helper import get_jobserver_status
-
+from api.helper import get_jobserver_status, get_message
+import copy
 
 class DatasetSerializer(serializers.ModelSerializer):
 
@@ -41,10 +41,78 @@ class DatasetSerializer(serializers.ModelSerializer):
         ret = convert_time_to_human(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
         meta_data = ret.get('meta_data')
-        if 'possibleAnalysis' in meta_data:
-            meta_data['possibleAnalysis'] = settings.ANALYSIS_FOR_TARGET_VARIABLE
+        self.changes_to_metadata(meta_data)
+        try:
+            ret['message'] = get_message(instance)
+        except:
+            ret['message'] = None
 
         return ret
+
+    def changes_to_metadata(self, meta_data):
+
+        if 'possibleAnalysis' in meta_data:
+            meta_data['possibleAnalysis'] = settings.ANALYSIS_FOR_TARGET_VARIABLE
+        meta_data['advanced_settings'] = self.get_advanced_setting(meta_data)
+
+        transformation_final_obj = {"existingColumns":None,"newColumns":None}
+        transformation_data = []
+        if 'columnData' in meta_data:
+            columnData = meta_data['columnData']
+            transformation_settings = settings.TRANSFORMATION_SETTINGS_CONSTANT
+
+            for head in columnData:
+                import copy
+                temp = dict()
+                temp['name'] = head.get('name')
+                temp['slug'] = head.get('slug')
+                columnSettingCopy = copy.deepcopy(transformation_settings.get('columnSetting'))
+                columnType = head.get('columnType')
+
+                if "dimension" == columnType:
+                    temp['columnSetting'] = columnSettingCopy[:3]
+                elif "measure" == columnType:
+                    datatype_element = columnSettingCopy[3]
+                    datatype_element['listOfDataTypes'][0]["status"] = True
+                    temp['columnSetting'] = columnSettingCopy
+                elif "datetime" == columnType:
+                    temp['columnSetting'] = columnSettingCopy[:3]
+                transformation_data.append(temp)
+
+            transformation_final_obj["existingColumns"] = transformation_data
+            transformation_final_obj["newColumns"] = transformation_settings.get('new_columns')
+            meta_data['transformation_settings'] = transformation_final_obj
+
+    def get_advanced_setting(self, meta_data):
+        metaData = meta_data.get('metaData')
+
+        time_count = 0
+        try:
+            for data in metaData:
+                if data.get('name') == 'timeDimension':
+                    time_count += data.get('value')
+                if data.get('name') == 'dateTimeSuggestions':
+                    time_count += len(data.get('value').keys())
+        except:
+            pass
+
+        print "get_advanced_setting    ", time_count
+
+        return self.add_trend_in_advanced_setting(time_count)
+
+
+    def add_trend_in_advanced_setting(self, time_count):
+
+        if time_count > 0:
+            main_setting = copy.deepcopy(settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND)
+            trend_setting = copy.deepcopy(settings.ADANCED_SETTING_FOR_POSSIBLE_ANALYSIS_TREND)
+
+            main_setting["dimensions"]["analysis"].insert(1, trend_setting)
+            main_setting["measures"]["analysis"].insert(1, trend_setting)
+            return main_setting
+        else:
+            return settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND
+
 
     class Meta:
         model = Dataset
@@ -69,5 +137,20 @@ class DataListSerializer(serializers.ModelSerializer):
             "datasource_type",
             "bookmarked",
             "analysis_done",
-            "file_remote"
+            "file_remote",
+            "status"
+        )
+
+
+class DataNameListSerializer(serializers.ModelSerializer):
+
+    def to_representation(self, instance):
+        ret = super(DataNameListSerializer, self).to_representation(instance)
+        return ret
+
+    class Meta:
+        model = Dataset
+        fields = (
+            "slug",
+            "name"
         )

@@ -18,7 +18,7 @@ export default function reducer(state = {
   signalMeta: {},
   curUrl: "",
   dataUploadLoaderModal: false,
-  dULoaderValue: 3,
+  dULoaderValue: 1,
   data_search_element: "",
   dataSetMeasures: [],
   dataSetDimensions: [],
@@ -40,8 +40,14 @@ export default function reducer(state = {
   subsettingDone: false,
   subsettedSlug: "",
   loading_message:[],
-	data_sorton:"",
-	data_sorttype:""
+  dataTransformSettings:[],
+  variableTypeListModal:false,
+  selectedColSlug:"",
+  data_sorton:"",
+  data_sorttype:"",
+  dataSetColumnRemoveValues:[],
+  dataSetColumnReplaceValues:[],
+
 }, action) {
   console.log("In DATA reducer!!");
   console.log(action);
@@ -70,7 +76,8 @@ export default function reducer(state = {
           dataPreviewFlag: true,
           selectedDataSet: action.slug,
           subsettedSlug: "",
-          subsettingDone: false
+          subsettingDone: false,
+          dataTransformSettings:action.dataPreview.meta_data.transformation_settings.existingColumns,
         }
       }
       break;
@@ -319,8 +326,7 @@ export default function reducer(state = {
           measureAllChecked: true,
           dimensionAllChecked: true,
           dateTimeChecked: action.dateTimeChkBoxList,
-          dataSetAnalysisList: action.possibleAnalysisList
-
+          dataSetAnalysisList: action.possibleAnalysisList,
         }
       }
       break;
@@ -534,13 +540,66 @@ export default function reducer(state = {
       }
     }
     break;
-		case "SORT_DATA":{
-			return{
-				...state,
-				data_sorton:action.sorton,
-				data_sorttype:action.sorttype
-			}
-		}
+    case "UPDATE_DATA_TRANSFORM_SETTINGS":
+    {
+    	return{
+    		...state,
+    		dataTransformSettings:action.transformSettings
+    	}
+    }
+    break;
+    case "UPDATE_VARIABLES_TYPES_MODAL":
+    {
+         return{
+        	 ...state,
+        	 variableTypeListModal:action.flag,
+         }
+    }
+    break;
+    case "DATASET_SELECTED_COLUMN_SLUG":
+    {
+    	 return{
+        	 ...state,
+        	 selectedColSlug:action.slug,
+         }
+    }
+    break;
+    case "SORT_DATA":{
+    	return{
+    		...state,
+    		data_sorton:action.sorton,
+    		data_sorttype:action.sorttype
+    	}
+    }
+    break;
+
+    case "DATA_VALIDATION_PREVIEW":
+    {
+      return {
+        ...state,
+        dataPreview: action.dataPreview,
+        subsettedSlug: "",
+        subsettingDone: true,
+        dataTransformSettings:action.dataPreview.meta_data.transformation_settings.existingColumns,
+      }
+    }
+    break;
+    case "DATA_VALIDATION_REMOVE_VALUES":
+    {
+      return {
+        ...state,
+        dataSetColumnRemoveValues:action.removeValues,
+      }
+    }
+    break;
+    case "DATA_VALIDATION_REPLACE_VALUES":
+    {
+      return {
+        ...state,
+        dataSetColumnReplaceValues:action.replaceValues,
+      }
+    }
+    break;
   }
   return state
 

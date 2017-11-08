@@ -1,4 +1,5 @@
 var path = require("path");
+var _datepicker =  'react-dates/lib/css/_datepicker.css';
 
 var DIST_DIR = path.resolve(__dirname, "dist");
 var SRC_DIR = path.resolve(__dirname, "src");

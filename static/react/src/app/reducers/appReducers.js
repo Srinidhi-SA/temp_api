@@ -51,8 +51,16 @@ export default function reducer(state = {
 		apps_model_sorttype:null,
 		apps_score_sorton:null,
 		apps_score_sorttype:null,
-		
-		
+		appsCreateStockModal:false,
+		appsStockSymbolsInputs:[],
+		stockAnalysisList:{},
+		stockUploadDomainModal:false,
+		stockUploadDomainFiles:[],
+		stockSlug:"",
+		stockAnalysisFlag:false,
+		conceptList:{},
+
+
 }, action) {
 	console.log("In APPs reducer!!");
 	console.log(action);
@@ -415,7 +423,7 @@ export default function reducer(state = {
 		}
 	}
 	break;
-	case "ROBO_SUMMARY_SUCCESS":
+	case "CLEAR_ROBO_SUMMARY_SUCCESS":
 	{
 		return {
 			...state,
@@ -495,7 +503,7 @@ export default function reducer(state = {
 		}
 	}
 	break;
-	
+
 	case "AUDIO_LIST":
 	{
 		return {
@@ -523,30 +531,126 @@ export default function reducer(state = {
 
 	case "SORT_ROBO":
 	{
-      return{
-        ...state,
-        robo_sorton:action.roboSorton,
-		robo_sorttype:action.roboSorttype
-      }
-    }
+		return{
+			...state,
+			robo_sorton:action.roboSorton,
+			robo_sorttype:action.roboSorttype
+		}
+	}
 	break;	case "SORT_APPS_MODEL":
 	{
-      return{
-        ...state,
-        apps_model_sorton:action.appsModelSorton,
-		apps_model_sorttype:action.appsModelSorttype
-      }
-    }
+		return{
+			...state,
+			apps_model_sorton:action.appsModelSorton,
+			apps_model_sorttype:action.appsModelSorttype
+		}
+	}
 	break;
-		case "SORT_APPS_SCORE":
+	case "SORT_APPS_SCORE":
 	{
-      return{
-        ...state,
-        apps_score_sorton:action.appsScoreSorton,
-		apps_score_sorttype:action.appsScoreSorttype
-      }
-    }
+		return{
+			...state,
+			apps_score_sorton:action.appsScoreSorton,
+			apps_score_sorttype:action.appsScoreSorttype
+		}
+	}
 	break;
- }
-return state
+
+	case "CREATE_STOCK_MODAL":
+	{
+		return{
+			...state,
+			appsCreateStockModal:action.flag
+
+		}
+	}
+	break;
+	case "ADD_STOCK_SYMBOLS":
+	{
+		return{
+			...state,
+			appsStockSymbolsInputs:action.stockSymbolsArray
+
+		}
+	}
+	break;
+
+
+	case "STOCK_LIST":
+	{
+		return {
+			...state,
+			stockAnalysisList: action.data,
+			current_page:action.current_page,
+		}
+	}
+	break;
+
+	case "STOCK_LIST_ERROR":
+	{
+		//alert(action.json.non_field_errors);
+		throw new Error("Unable to fetch stock list!!");
+	}
+	break;
+	case "UPLOAD_STOCK_MODAL":
+	{
+		return{
+			...state,
+			stockUploadDomainModal:action.flag
+
+		}
+	}
+	break;
+	case "UPLOAD_STOCK_FILES":
+	{
+		return{
+			...state,
+			stockUploadDomainFiles:action.files
+
+		}
+	}
+	break;
+	case "CRAWL_ERROR":
+	{
+		//alert(action.json.non_field_errors);
+		throw new Error("Unable to crawl data!!");
+	}
+	break;
+
+	case "STOCK_CRAWL_SUCCESS":
+	{
+		return{
+			...state,
+			stockSlug:action.slug,
+		}
+	}
+	break;
+	case "UPDATE_STOCK_ANALYSIS_FLAG":
+	{
+		return{
+			...state,
+			stockAnalysisFlag:action.flag,
+		}
+	}
+	break;
+	case "CONCEPTSLIST":
+	{
+		return{
+			...state,
+			conceptList:action.concepts
+		}
+	}
+	break;
+	
+	case "UPDATE_LOADER_TEXT":
+	{
+		return{
+			...state,
+			appsLoaderText:action.text
+		}
+	}
+	break;
+	
+	}
+	return state
 }

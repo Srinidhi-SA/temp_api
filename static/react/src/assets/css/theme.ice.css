@@ -2,20 +2,7 @@
   Ice Theme (by thezoggy)
  *************/
 /* overall */
-.tablesorter-ice {
-	width: 100%;
-	background-color: #fff;
-	margin: 10px 0 15px;
-	text-align: left;
-	border-spacing: 0;
-	border: #ccc 1px solid;
-	border-width: 1px 0 0 1px;
-}
-.tablesorter-ice th,
-.tablesorter-ice td {
-	border: #ccc 1px solid;
-	border-width: 0 1px 1px 0;
-}
+ 
 
 /* header */
 .tablesorter-ice th,
@@ -24,23 +11,23 @@
 	color: #555;
 	background-color: #f6f8f9;
 	border-collapse: collapse;
-	padding: 4px;
+	 
 	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 .tablesorter-ice tbody td,
 .tablesorter-ice tfoot th,
 .tablesorter-ice tfoot td {
-	padding: 4px;
+ 
 	vertical-align: top;
 }
+ .cst-scroll-panel th .ma-checkbox { padding: 0 4px;}
 .tablesorter-ice .header,
 .tablesorter-ice .tablesorter-header {
 	background-color: #f6f8f9;
 	background-position: center right;
 	background-repeat: no-repeat;
 	/*background-image: url(data:image/gif;base64,R0lGODlhDAAMAMQAAAJEjAJCiwJBigJAiANFjgNGjgNEjQRIkQRHkANIkAVMlAVQmAZWnQZUnAdYoAhdpAhZoAlhqQlepQliqQppsApmrQxutgtutQtutAxwtwxwtg1yug1zugxtsw1yuP8A/yH5BAEAAB8ALAAAAAAMAAwAAAUx4Cd+3GiOW4ado2d9VMVm1xg9ptadTsP+QNZEcjoQTBDGCAFgLRSfQgCYMAiCn8EvBAA7);*/
-	 background-image: url(../images/ice-unsorted.gif);
-	padding: 0px 15px 10px 5px;
+	 background-image: url(../images/ice-unsorted.gif);	 
 	white-space: normal;
 	cursor: pointer;
 }

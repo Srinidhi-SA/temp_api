@@ -18,7 +18,7 @@ import Breadcrumb from 'react-breadcrumb';
 var dateFormat = require('dateformat');
 import {CreateSignal} from "./CreateSignal";
 import {STATIC_URL} from "../../helpers/env";
-import {SEARCHCHARLIMIT} from  "../../helpers/helper"
+import {SEARCHCHARLIMIT,getUserDetailsOrRestart} from  "../../helpers/helper"
 import Dialog from 'react-bootstrap-dialog';
 import {DetailOverlay} from "../common/DetailOverlay";
 import {getAllDataList} from "../../actions/dataActions";
@@ -37,9 +37,9 @@ export class Signals extends React.Component {
     this.props.dispatch(getAllDataList());
     if (this.props.history.location.pathname.indexOf("page") != -1) {
       pageNo = this.props.history.location.pathname.split("page=")[1];
-      this.props.dispatch(getList(sessionStorage.userToken, pageNo));
+      this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, pageNo));
     } else
-      this.props.dispatch(getList(sessionStorage.userToken, pageNo));
+      this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, pageNo));
     }
 
   componentDidMount() {
@@ -71,7 +71,7 @@ export class Signals extends React.Component {
 	     this.props.history.push('/signals?sort=' + this.props.signal_sorton +'&type='+this.props.signal_sorttype+'&page=' + eventKey + '');
 	}else
       this.props.history.push('/signals?page=' + eventKey + '');
-    this.props.dispatch(getList(sessionStorage.userToken, eventKey));
+    this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, eventKey));
   }
 
   _handleKeyPress = (e) => {
@@ -81,14 +81,14 @@ export class Signals extends React.Component {
         this.props.history.push('/signals?search=' + e.target.value + '')
 
       this.props.dispatch(storeSearchElement(e.target.value));
-      this.props.dispatch(getList(sessionStorage.userToken, 1));
+      this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, 1));
     }
   }
   doSorting(sortOn, type){
 	     this.props.history.push('/signals?sort=' + sortOn + '&type='+type);
 
 	 this.props.dispatch(storeSortElements(sortOn,type));
-	this.props.dispatch(getList(sessionStorage.userToken, 1));
+	this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, 1));
   }
 
   handleDelete(slug) {
@@ -108,12 +108,12 @@ export class Signals extends React.Component {
     if (e.target.value == "" || e.target.value == null) {
       this.props.dispatch(storeSearchElement(""));
       this.props.history.push('/signals');
-      this.props.dispatch(getList(sessionStorage.userToken, 1));
+      this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, 1));
 
     } else if (e.target.value.length > SEARCHCHARLIMIT) {
       this.props.history.push('/signals?search=' + e.target.value + '')
       this.props.dispatch(storeSearchElement(e.target.value));
-      this.props.dispatch(getList(sessionStorage.userToken, 1));
+      this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, 1));
     }
   }
   render() {

@@ -1,6 +1,6 @@
 import React from "react";
 import CircularProgressbar from 'react-circular-progressbar';
-
+import {Redirect} from 'react-router';
 
 export function isEmpty(obj) {
     for(var prop in obj) {
@@ -10,6 +10,34 @@ export function isEmpty(obj) {
 
     return JSON.stringify(obj) === JSON.stringify({});
 }
+
+var  USERDETAILS = {};
+
+
+export const getUserDetailsOrRestart = {
+		get : function(){
+			let  userDetails = {};
+			if(document.cookie){
+				let allCookies = document.cookie.split(";");
+				for(let i=0;i<allCookies.length;i++){
+					let cur = allCookies[i].split('=');
+					userDetails[cur[0].replace(/\s/g, '')] = cur[1];
+				}
+				return userDetails;
+			}else{
+				redirectToLogin();
+			}
+
+		}
+}
+
+function redirectToLogin() {
+	var noOfUrls = window.history.length;
+	window.history.go("-"+noOfUrls-1);
+	//window.history.replaceState(null,null,"login");
+}
+
+
 const FILEUPLOAD = "File Upload";
 const MYSQL = "MySQL";
 const INPUT = "Input";
@@ -25,8 +53,9 @@ const CONFUSIONMATRIX = "confusionMatrix";
 const HEATMAPTABLE = "heatMap";
 const CIRCULARCHARTTABLE = "circularChartTable";
 const DECISIONTREETABLE = "decisionTreeTable"
-const DULOADERPERVALUE = 3;
+const DULOADERPERVALUE = 1;
 const CSLOADERPERVALUE = 1;
+const APPSLOADERPERVALUE = 10;
 const LOADERMAXPERVALUE = 99;
 const DEFAULTINTERVAL = 10000;
 const APPSDEFAULTINTERVAL = 15000;
@@ -46,9 +75,11 @@ const INPROGRESS  = "INPROGRESS";
 const APPNAME1 = "OPPORTUNITY SCORING";
 const APPNAME2 ="AUTOMATED PREDICTION";
 const APPNAME3 = "ROBO INSIGHTS";
+const APPNAME5 = "STOCK ADVISOR";
 const APPID1 = 1;
 const APPID2 = 2;
 const APPID3 = 3;
+const APPID5 = 5;
 const CUSTOMER = "customer";
 const HISTORIAL = "historial";
 const EXTERNAL = "external";
@@ -56,7 +87,15 @@ const APPID4 = 4;
 const APPNAME4 = "Speech Analytics";
 const DELETEAUDIO = "Delete Media File";
 const RENAMEAUDIO = "Rename Media File";
-const DULOADERPERMSG = "initialized the filter parameters"
+const DULOADERPERMSG = "initialized the filter parameters";
+const RENAME = "rename";
+const DELETE = "delete";
+const REPLACE = "replace";
+const DATA_TYPE = "data_type";
+const REMOVE = "remove";
+const CURRENTVALUE = "current value";
+const NEWVALUE = "new value";
+const TEXTHEATMAPTABLE = "textHeatMapTable"
 
 
 export function generateHeaders(table) {
@@ -101,6 +140,26 @@ export function generateHeatMapRows(table) {
   return cols;
 }
 
+export function generateTextHeatMapRows(table) {
+    var cols = table.tableData.map(function(rowData,i){
+  	  if(i!= 0){
+  		  var row=rowData.map(function(colData,j) {
+          console.log(colData)
+			      if(colData.value == 0 && colData.text == "" ){
+					  return<td key={j} value={colData.value}></td>;
+				  }else{
+					 //return<td key={j}>{colData.text}<br/>{colData.value}</td>;
+           return<td key={j} value={colData.value}>{colData.text}<br/><b>{colData.value}</b></td>;
+				  }
+
+    	       });
+		  return<tr key={i} className="stats-row">{row}</tr>
+  	  }
+    })
+
+  return cols;
+}
+
 export function  generateCircularChartRows(table) {
 var tbodyData = table.tableData.map(function(rowData,i){
 	if(i != 0){
@@ -120,6 +179,22 @@ export function  generateRows(table) {
 		if(i != 0){
 			var rows = rowData.map(function(colData,j) {
 	  	           return<td key={j}>{colData}</td>;
+	  	       });
+			return<tr key={i}>{rows}</tr>;
+		}
+	  })
+	return tbodyData;
+	}
+
+export function  generateNormalTableRows(table) {
+	var tbodyData = table.tableData.map(function(rowData,i){
+		if(i != 0){
+			var rows = rowData.map(function(colData,j) {
+				if(j == 0 || j == 1)
+	  	           return<td key={j} width="15%">{colData}</td>;
+
+	  	           else
+	  	        	return<td key={j}>{colData}</td>;
 	  	       });
 			return<tr key={i}>{rows}</tr>;
 		}
@@ -217,7 +292,7 @@ export function  subTreeSetting(urlLength, length,paramL2) {
 
   export function  showHideSubsetting(colType,subsetData,dateflag) {
 
-		if((colType =="datetime" ||dateflag == true)||(colType == "dimension" && $.isEmptyObject(subsetData))){
+		if(dateflag == true||(colType == "dimension" && $.isEmptyObject(subsetData))){
 				$(function(){
 			       $("#tab_subsettings #pnl_tbset").removeClass("in");
                    $("#tab_subsettings a").addClass("collapsed");
@@ -235,6 +310,15 @@ export function  subTreeSetting(urlLength, length,paramL2) {
 
 
 	}
+
+  export function decimalPlaces(number) {
+    // toFixed produces a fixed representation accurate to 20 decimal places
+    // without an exponent.
+    // The ^-?\d*\. strips off any sign, integer portion, and decimal point
+    // leaving only the decimal fraction.
+    // The 0+$ strips off any trailing zeroes.
+    return ((+ number).toFixed(4)).replace(/^-?\d*\.?|0+$/g, '').length;
+  }
 
 export{
 	FILEUPLOAD,
@@ -283,5 +367,25 @@ export{
 	APPNAME4,
 	RENAMEAUDIO,
 	DELETEAUDIO,
-  DULOADERPERMSG,
+    DULOADERPERMSG,
+    RENAME,
+	DELETE,
+	REPLACE,
+	DATA_TYPE,
+	REMOVE,
+	CURRENTVALUE,
+	NEWVALUE,
+	APPID5,
+	APPNAME5,
+	TEXTHEATMAPTABLE,
+	APPSLOADERPERVALUE,
+	USERDETAILS,
 	}
+export function capitalizeArray(array){
+  let a =[]
+  let i=0
+  for (var val in array){
+    a[i]= array[val].charAt(0).toUpperCase() + array[val].slice(1);i++;
+  }
+  return a
+}
