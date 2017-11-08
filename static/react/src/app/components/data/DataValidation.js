@@ -29,6 +29,9 @@ export class DataValidation extends React.Component {
 		this.props.dispatch(updateColSlug(colSlug));
 		this.props.dispatch(handleColumnClick(this.refs.dialog,actionName,colSlug,colName,subActionName));
 	}
+	componentWillMount(){
+		this.props.dispatch(updateColSlug(this.props.slug));
+	}
    renderDropdownList(colSlug,colName,colData){
 	   let list = colData.map((actionNames,index)=>{
 		   if(actionNames.actionName == DATA_TYPE){
