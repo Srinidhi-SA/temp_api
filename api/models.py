@@ -928,7 +928,8 @@ class Score(models.Model):
         if len(consider_columns) < 1:
             consider_columns_type = ['excluding']
 
-        app_id = config.get('app_id', 1)
+        # app_id = config.get('app_id', 1)
+        app_id = self.trainer.app_id
 
         ret = {
             'consider_columns_type': trainer_consider_column_type,
