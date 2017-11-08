@@ -14904,3 +14904,7 @@ display: inline-block;
 #measure_subsetting input[type=number]{
 	padding:  0 0 0 5px;
 }
+.visibilityHidden{
+	visibility:hidden;
+}
+

@@ -33,6 +33,7 @@ export default function reducer(state = {
   dateTimeChecked: [],
   dataLoaderText: "initialized the filter parameters",
   dataSetAnalysisList: {},
+  dataSetPrevAnalysisList:{},
   selectedDimensionSubLevels: null,
  // selectedTrendSub: [],
   dimensionSubLevel: [],
@@ -47,6 +48,7 @@ export default function reducer(state = {
   data_sorttype:"",
   dataSetColumnRemoveValues:[],
   dataSetColumnReplaceValues:[],
+  dataSetSelectAllAnalysis:false
 
 }, action) {
   console.log("In DATA reducer!!");
@@ -327,6 +329,7 @@ export default function reducer(state = {
           dimensionAllChecked: true,
           dateTimeChecked: action.dateTimeChkBoxList,
           dataSetAnalysisList: action.possibleAnalysisList,
+          dataSetPrevAnalysisList:action.prevAnalysisList,
         }
       }
       break;
@@ -442,20 +445,27 @@ export default function reducer(state = {
       {
         return {
           ...state,
-          dataSetAnalysisList: action.renderList
+          dataSetAnalysisList: action.renderList,
+          dataSetPrevAnalysisList:action.prevAnalysisList,
         }
       }
       break;
-
-    case "UPDATE_ANALYSIS_LIST_FOR_LEVELS":
-      {
-        return {
-          ...state,
-          dataSetAnalysisList: action.renderList
-        }
+    case "SAVE_UPDATE_ANALYSIS_LIST":
+    {
+      return {
+        ...state,
+        dataSetPrevAnalysisList:action.savedAnalysisList,
       }
-      break;
-
+    }
+    break;
+    case "CANCEL_UPDATE_ANALYSIS_LIST":
+    {
+      return {
+        ...state,
+        dataSetAnalysisList:action.prevAnalysisList,
+      }
+    }
+    break;
     case "SELECTED_DIMENSION_SUBLEVELS":
       {
         return {
@@ -464,16 +474,6 @@ export default function reducer(state = {
         }
       }
       break;
-    case "SELECTED_TREND_SUB_LIST":
-      {
-        return {
-          ...state,
-         // selectedTrendSub: action.selectedTrendSub
-		  dataSetAnalysisList: action.analysisList
-        }
-      }
-      break;
-
     case "UNSELECTED_TREND_SUB_LIST":
       {
         return {
@@ -600,6 +600,15 @@ export default function reducer(state = {
       }
     }
     break;
+    case "DATA_SET_SELECT_ALL_ANALYSIS":
+    {
+      return {
+        ...state,
+        dataSetSelectAllAnalysis:action.flag,
+      }
+    }
+    break;
+    
   }
   return state
 
