@@ -230,123 +230,245 @@ export function fetchAllDataSuccess(doc){
 		slug
 	}
 }
-export function selectedAnalysisList(evt){
-	var selectedAnalysis = evt.target.value;
+export function saveAdvanceSettings(){
+	var savedAnalysisList = jQuery.extend(true, {}, store.getState().datasets.dataSetAnalysisList);
+	return {
+		type: "SAVE_UPDATE_ANALYSIS_LIST",
+		savedAnalysisList,
+	}
+}
+export function cancelAdvanceSettings(){
+	var prevAnalysisList = jQuery.extend(true, {}, store.getState().datasets.dataSetPrevAnalysisList);
+	return {
+		type: "CANCEL_UPDATE_ANALYSIS_LIST",
+		prevAnalysisList
+	}
+}
+export function checkAllAnalysisSelected(){
+	return (dispatch) => {
 	var totalAnalysisList = store.getState().datasets.dataSetAnalysisList;
 	var analysisList = [];
-	var renderList = {};
+	var flag = false;
 	if(store.getState().signals.getVarType == "measure"){
-		analysisList = totalAnalysisList.measures.analysis.slice();
+		analysisList = totalAnalysisList.measures.analysis;
 	}else{
-		analysisList = totalAnalysisList.dimensions.analysis.slice();
+		analysisList = totalAnalysisList.dimensions.analysis;
 	}
-	//For top level analysis update like tren,prediction,association
-	if(evt.target.className == "possibleAnalysis"){
-		for(var i=0;i<analysisList.length;i++){
-			if(analysisList[i].name == evt.target.value)
-				analysisList[i].status = evt.target.checked;
+	for(var i=0;i<analysisList.length;i++){
+		if(analysisList[i].status){
+			flag = true;
+		}else{
+			flag = false;
+			break;
 		}
+	}
+	dispatch(updateSelectAllAnlysis(flag));
+	}
+	
+}
+export function selectedAnalysisList(evt,noOfColumnsToUse){
+
+	var totalAnalysisList = store.getState().datasets.dataSetAnalysisList;
+	var prevAnalysisList = jQuery.extend(true, {}, store.getState().datasets.dataSetPrevAnalysisList);
+	var analysisList = [];
+	var renderList = {};
+	var trendSettings = [];
+	if(store.getState().signals.getVarType == "measure"){
+		analysisList = totalAnalysisList.measures.analysis;
+	}else{
+		analysisList = totalAnalysisList.dimensions.analysis;
+		trendSettings = totalAnalysisList.dimensions.trendSettings;
+	}
+	//For updating count,specific measure in trend
+	if(noOfColumnsToUse == "trend" ){
+		if(evt.type == "select-one"){
+			for(var i in trendSettings){
+				let name = trendSettings[i].name.toLowerCase();
+				if(name.indexOf("specific measure") != -1)
+				trendSettings[i].selectedMeasure = $("#specific-trend-measure").val();
+				
+			}
+		}
+		else{
+			for(var i=0;i<analysisList.length;i++){
+				if(analysisList[i].name == "trend"){
+					analysisList[i].status = evt.checked;
+					break;
+				}
+			}
+			for(var i in trendSettings){
+				let name = trendSettings[i].name.toLowerCase();
+				if(name == evt.value){
+					trendSettings[i].status = evt.checked;	
+					if(name.indexOf("specific measure") != -1)
+					trendSettings[i].selectedMeasure = $("#specific-trend-measure").val();
+				}else{
+					trendSettings[i].status = false;
+					if(name.indexOf("specific measure") != -1)
+					trendSettings[i].selectedMeasure = null
+				}
+			}
+		}
+	}//For updating low,medium,high values
+	else if(noOfColumnsToUse == "noOfColumnsToUse" ){
+		if(evt.type == "radio"){
+			for(var i=0;i<analysisList.length;i++){
+				if(analysisList[i].name == evt.name){
+					analysisList[i].status = true;	
+					for(var j=0;j<analysisList[i].noOfColumnsToUse.length;j++){
+						if(analysisList[i].noOfColumnsToUse[j].name == evt.value){
+							analysisList[i].noOfColumnsToUse[j].status = true;
+						}else{
+							analysisList[i].noOfColumnsToUse[j].status = false;
+						}
+					}
+					break;
+				}
+			}	
+		}else{
+			//for updating custom input value
+			for(var i=0;i<analysisList.length;i++){
+				if(analysisList[i].name == evt.name){
+					for(var j=0;j<analysisList[i].noOfColumnsToUse.length;j++){
+						if(analysisList[i].noOfColumnsToUse[j].name == "custom"){
+							analysisList[i].noOfColumnsToUse[j].value = $("#"+evt.id).val();
+						}
+					}
+					break;
+				}
+			}
+		}
+	}
+	//For top level analysis update like trend,prediction,association
+	else {
+		if(evt.target.className == "possibleAnalysis"){
+			for(var i=0;i<analysisList.length;i++){
+				if(analysisList[i].name == evt.target.value){
+					analysisList[i].status = evt.target.checked;
+					if(analysisList[i].noOfColumnsToUse != null){
+						if(!evt.target.checked){
+							for(var j=0;j<analysisList[i].noOfColumnsToUse.length;j++){
+								 if(analysisList[i].noOfColumnsToUse[j].name == "custom"){
+										analysisList[i].noOfColumnsToUse[j].status = evt.target.checked;	
+										analysisList[i].noOfColumnsToUse[j].value = null;
+									}else{
+										analysisList[i].noOfColumnsToUse[j].status = evt.target.checked;		
+									}
+								}
+						}else{
+							//when main analysis is checked , low parameter should be checked as default
+							for(var j=0;j<analysisList[i].noOfColumnsToUse.length;j++){
+								 if(analysisList[i].noOfColumnsToUse[j].name == "low"){
+										analysisList[i].noOfColumnsToUse[j].status = evt.target.checked;	
+									}
+								}
+						}
+					}
+					break;
+				}
+			}
+		}
+		
+		//For updating trend count and specific measure when trend is unchecked
+		if(evt.target.value.indexOf("trend") != -1){
+			if(store.getState().signals.getVarType != "measure"){
+				if(!evt.target.checked){
+						for(var i in trendSettings){
+						trendSettings[i].status = evt.target.checked;	
+						}	
+				}else{
+					//when trend is selected , count should be selected as default
+					for(var i in trendSettings){
+						let name = trendSettings[i].name.toLowerCase();
+						if(name.indexOf("count") != -1)
+						trendSettings[i].status = evt.target.checked;	
+						}
+				}
+			}
+		}
+		
 	}
 	
 	if(store.getState().signals.getVarType == "measure"){
 		totalAnalysisList.measures.analysis = analysisList
 	}else{
 		totalAnalysisList.dimensions.analysis = analysisList
+		totalAnalysisList.dimensions.trendSettings = trendSettings;
 	}
 	renderList.measures = totalAnalysisList.measures;
 	renderList.dimensions = totalAnalysisList.dimensions;
 	return {
 		type: "UPDATE_ANALYSIS_LIST",
-		renderList
+		renderList,
+		prevAnalysisList
 	}
 }
 
 
-export function selectAllAnalysisList(evt){
+export function selectAllAnalysisList(flag){
 	//var selectedAnalysis = evt.target.checked;
 	var totalAnalysisList = store.getState().datasets.dataSetAnalysisList;
+	var prevAnalysisList = store.getState().datasets.dataSetAnalysisList;
 	var analysisList = [];
 	var renderList = {};
+	var trendSettings = [];
 	if(store.getState().signals.getVarType == "measure"){
 		analysisList = totalAnalysisList.measures.analysis.slice();
 	}else{
 		analysisList = totalAnalysisList.dimensions.analysis.slice();
+		trendSettings = totalAnalysisList.dimensions.trendSettings;
 	}
-	if(evt.target.className == "allAnalysis"){
 		for(var i=0;i<analysisList.length;i++){
-			//if(analysisList[i].name == evt.target.value)
-			analysisList[i].status = evt.target.checked;
+			analysisList[i].status = flag;
+			if(analysisList[i].noOfColumnsToUse != null){
+				for(var j=0;j<analysisList[i].noOfColumnsToUse.length;j++){
+				 //when select all is unchecked
+					if(!flag){
+					 if(analysisList[i].noOfColumnsToUse[j].name == "custom"){
+							analysisList[i].noOfColumnsToUse[j].status = flag;	
+							analysisList[i].noOfColumnsToUse[j].value = null;
+						}else{
+							analysisList[i].noOfColumnsToUse[j].status = flag;		
+						} 
+				 }else{
+					 if(analysisList[i].noOfColumnsToUse[j].name == "low"){
+							analysisList[i].noOfColumnsToUse[j].status = flag;	
+						}else{
+							analysisList[i].noOfColumnsToUse[j].status = false;		
+						} 
+				 }
+					
+				}	
+			}
 		}
-		/*if(evt.target.checked){
-			return {
-				type: "SELECTED_ANALYSIS_TYPE",
-				selectedAnalysis
+		
+
+			if(store.getState().signals.getVarType != "measure"){
+				for(var i in trendSettings){
+					if(!flag){
+						trendSettings[i].status = flag;	
+					}else{
+						let name = trendSettings[i].name.toLowerCase();
+						if(name.indexOf("count") != -1)
+						trendSettings[i].status = flag;	
+					}
+				}	
 			}
-		}else{
-			return {
-				type: "UNSELECT_ANALYSIS_TYPE",
-				selectedAnalysis
-			}
-		}*/
+
+		
 		if(store.getState().signals.getVarType == "measure"){
 			totalAnalysisList.measures.analysis = analysisList
 		}else{
-			totalAnalysisList.dimensions.analysis = analysisList
+			totalAnalysisList.dimensions.analysis = analysisList;
+			totalAnalysisList.dimensions.trendSettings = trendSettings;
 		}
 		renderList.measures = totalAnalysisList.measures;
 		renderList.dimensions = totalAnalysisList.dimensions;
 		return {
 			type: "UPDATE_ANALYSIS_LIST",
-			renderList
+			renderList,
+			prevAnalysisList
 		}
-	}
-}
-
-
-export function setAnalysisLevel(level,levelVal, analysisName){
-	var totalAnalysisList = store.getState().datasets.dataSetAnalysisList;
-	var analysisList = [];
-	var renderList = {};
-	//var chkAnalysis = id.split("-");
-	if(store.getState().signals.getVarType == "measure"){
-		analysisList = totalAnalysisList.measures.analysis.slice();
-	}else{
-		analysisList = totalAnalysisList.dimensions.analysis.slice();
-	}
-
-	for(var i=0;i<analysisList.length;i++){
-		//analysisList[i].noOfColumnsToUse
-		if((analysisList[i].name == analysisName) && (analysisList[i].noOfColumnsToUse != null)){
-			let noOfCols = analysisList[i].noOfColumnsToUse;
-			for(var j=0; j<noOfCols.length;j++){
-				if(noOfCols[j].name == level){
-					noOfCols[j].status = true; 
-					if(level=="custom" && levelVal != null){
-						noOfCols[j].value= levelVal;
-					}
-				}else{
-					noOfCols[j].status = false; 
-					if(noOfCols[j].name=="custom"){
-						noOfCols[j].value= null;
-					}
-				}
-			}
-			analysisList[i].noOfColumnsToUse = noOfCols;
-		}
-	}
-	if(store.getState().signals.getVarType == "measure"){
-		totalAnalysisList.measures.analysis = analysisList
-	}else{
-		totalAnalysisList.dimensions.analysis = analysisList
-	}
-
-	renderList.measures = totalAnalysisList.measures;
-	renderList.dimensions = totalAnalysisList.dimensions;
-	return {
-		type: "UPDATE_ANALYSIS_LIST_FOR_LEVELS",
-		renderList
-	}
-
 }
 
 export function unselectAllPossibleAnalysis(){
@@ -623,7 +745,7 @@ export function storeSortElements(sorton,sorttype){
 
 
 export function updateDatasetVariables(measures,dimensions,timeDimensions,measureChkBoxList,dimChkBoxList,dateTimeChkBoxList,possibleAnalysisList){
-
+	let prevAnalysisList = jQuery.extend(true, {}, possibleAnalysisList);
 	return {
 		type: "DATASET_VARIABLES",
 		measures,
@@ -632,7 +754,8 @@ export function updateDatasetVariables(measures,dimensions,timeDimensions,measur
 		measureChkBoxList,
 		dimChkBoxList,
 		dateTimeChkBoxList,
-		possibleAnalysisList
+		possibleAnalysisList,
+		prevAnalysisList
 
 	}
 }
@@ -643,62 +766,7 @@ export function setDimensionSubLevels(selectedDimensionSubLevels){
 		selectedDimensionSubLevels
 	}
 }
-export function selectedTrendSubList(selectedTrendSub){
-	//store.getState().datasets.dataSetAnalysisList
-	//store.getState().datasets.getVarType
-	var analysisList = store.getState().datasets.dataSetAnalysisList;
 
-	if(store.getState().signals.getVarType == "dimension"){
-
-
-		let keys = Object.keys(selectedTrendSub);
-
-		for(var i in analysisList.dimensions.trendSettings){
-			let name = analysisList.dimensions.trendSettings[i].name.toLowerCase();
-
-			if(keys.indexOf(name) >=0){ 
-				analysisList.dimensions.trendSettings[i].status = true;
-
-				if(name.indexOf("specific measure") != -1)
-					analysisList.dimensions.trendSettings[i].selectedMeasure = selectedTrendSub[name];
-
-			}else{
-				analysisList.dimensions.trendSettings[i].status = false;
-
-				if(name.indexOf("specific measure") != -1)
-					analysisList.dimensions.trendSettings[i].selectedMeasure = null;
-			}
-		}
-
-	} else if(store.getState().signals.getVarType == "measure"){
-
-		let keys = Object.keys(selectedTrendSub);
-
-		for(var i in analysisList.measures.trendSettings){
-			let name = analysisList.measures.trendSettings[i].name.toLowerCase();
-
-			if(keys.indexOf(name) >=0){ 
-				analysisList.measures.trendSettings[i].status = true;
-
-				if(name.indexOf("specific measure") != -1)
-					analysisList.measures.trendSettings[i].selectedMeasure = selectedTrendSub[name];
-
-			}else{
-				analysisList.measures.trendSettings[i].status = false;
-
-				if(name.indexOf("specific measure") != -1)
-					analysisList.measures.trendSettings[i].selectedMeasure = null;
-			}
-		}
-	}
-	console.log(analysisList);
-	return {
-		type: "SELECTED_TREND_SUB_LIST",
-		//selectedTrendSub
-		analysisList
-	}
-
-}
 export function  selectedDimensionSubLevel(dimensionSubLevel){
 
 	return {
@@ -1155,5 +1223,10 @@ export function handleInputChangeReplace(targetTextBox,event){
 	}
 }
 
-
+export function updateSelectAllAnlysis(flag){
+	return{
+		type: "DATA_SET_SELECT_ALL_ANALYSIS",
+		flag
+	}
+}
 
