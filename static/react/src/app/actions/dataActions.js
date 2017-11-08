@@ -857,7 +857,7 @@ export function updateSubSetting(updatedSubSetting){
 export function renameMetaDataColumn(dialog,colName,colSlug,dispatch,actionName){
 	const customBody = (
 			<div className="form-group">
-			<label for="fl1" className="col-sm-6 control-label">Enter New Column Name : </label>
+			<label for="fl1" className="control-label">Enter New Name : </label>
 			<input className="form-control"  id="idRenameMetaCloumn" type="text" defaultValue={colName}/>
 			</div>
 	)

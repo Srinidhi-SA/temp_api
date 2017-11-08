@@ -183,13 +183,11 @@ export class Data extends React.Component {
                   <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                     <li onClick={this.handleRename.bind(this, data.slug, data.name)}>
                       <a className="dropdown-item" href="#renameCard" data-toggle="modal">
-                        <i className="fa fa-edit"></i>
-                        Rename</a>
+                        <i className="fa fa-edit"></i> Rename</a>
                     </li>
                     <li onClick={this.handleDelete.bind(this, data.slug)}>
                       <a className="dropdown-item" href="#deleteCard" data-toggle="modal">
-                        <i className="fa fa-trash-o"></i>
-                        Delete</a>
+                        <i className="fa fa-trash-o"></i> Delete</a>
                     </li>
                   </ul>
                   {/*<!-- End Rename and Delete BLock  -->*/}
@@ -218,21 +216,20 @@ export class Data extends React.Component {
                       <i class="fa fa-address-card-o fa-lg"></i>
                     </button>*/}
                     <button type="button" data-toggle="dropdown" title="Sorting" class="btn btn-default dropdown-toggle" aria-expanded="false">
-                      <i class="fa fa-sort-alpha-asc fa-lg"></i>
-                      <span class="caret"></span>
+                      <i class="fa fa-sort-alpha-asc fa-lg"></i>&nbsp;<span class="caret"></span>
                     </button>
                     <ul role="menu" class="dropdown-menu dropdown-menu-right">
                         <li>
-                          <a href="#" onClick={this.doSorting.bind(this,'name','asc')}>Name Ascending</a>
+                          <a href="#" onClick={this.doSorting.bind(this,'name','asc')}><i class="fa fa-sort-alpha-asc" aria-hidden="true"></i> Name Ascending</a>
                         </li>
                         <li>
-                          <a href="#" onClick={this.doSorting.bind(this,'name','desc')}>Name Descending</a>
+                          <a href="#" onClick={this.doSorting.bind(this,'name','desc')}><i class="fa fa-sort-alpha-desc" aria-hidden="true"></i> Name Descending</a>
                         </li>
                         <li>
-                          <a href="#" onClick={this.doSorting.bind(this,'created_at','asc')}>Date Ascending</a>
+                          <a href="#" onClick={this.doSorting.bind(this,'created_at','asc')}><i class="fa fa-sort-numeric-asc" aria-hidden="true"></i> Date Ascending</a>
                         </li>
                         <li>
-                          <a href="#" onClick={this.doSorting.bind(this,'created_at','desc')}>Date Descending</a>
+                          <a href="#" onClick={this.doSorting.bind(this,'created_at','desc')}><i class="fa fa-sort-numeric-desc" aria-hidden="true"></i> Date Descending</a>
                         </li>
                     </ul>
                   </span>
