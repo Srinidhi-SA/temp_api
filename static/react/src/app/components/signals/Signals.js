@@ -198,11 +198,11 @@ export class Signals extends React.Component {
                   <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                     <li onClick={this.handleRename.bind(this, story.slug, story.name)}>
                       <a className="dropdown-item" href="#renameCard" data-toggle="modal">
-                        <i className="fa fa-edit"></i> Rename</a>
+                        <i className="fa fa-edit"></i>&nbsp;&nbsp;Rename</a>
                     </li>
                     <li onClick={this.handleDelete.bind(this, story.slug)}>
                       <a className="dropdown-item" href="#deleteCard" data-toggle="modal">
-                        <i className="fa fa-trash-o"></i> Delete</a>
+                        <i className="fa fa-trash-o"></i>&nbsp;&nbsp;Delete</a>
                     </li>
                   </ul>
                   {/*<!-- End Rename and Delete BLock  -->*/}

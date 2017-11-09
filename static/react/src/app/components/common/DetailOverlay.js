@@ -16,7 +16,7 @@ export class DetailOverlay extends React.Component {
 	  return <p className="overlayTooltip">{displayName}&nbsp;:&nbsp;{value}</p> 
   }
   getDateValues(displayName,value,name){
-	  value = dateFormat(value, "mmmm d,yyyy h:MM");
+	  value = dateFormat(value, "mmm d,yyyy HH:MM");
 	 return <p className="overlayTooltip">{displayName}&nbsp;:&nbsp;{value}</p> 
   }
   getAnalysisValues(displayName,value,name){
@@ -24,7 +24,7 @@ export class DetailOverlay extends React.Component {
 		  return( <li><i class="fa fa-check"></i>&nbsp;{key}</li>);
 	  })
 	 let  analysisList = <ul class="list-unstyled">{value}</ul>;
-	   return  <p className="overlayTooltip"><h4 class="text-primary">Analysis List</h4>{analysisList}</p> 
+	   return  <p className="overlayTooltip"><h4 class="text-primary">List Of Signals</h4>{analysisList}</p> 
   }
   render() {
    var details = this.props.details.brief_info;

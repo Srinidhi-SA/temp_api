@@ -19,22 +19,45 @@ function getHeader(token){
     'Content-Type': 'application/json'
   };
 }
+export function checkIfDateTimeIsSelected(){
+    var totalAnalysisList = store.getState().datasets.dataSetAnalysisList;
+    var analysisList = [];
+    var trendIsChecked = false;
+    if(store.getState().signals.getVarType == "measure"){
+        analysisList = totalAnalysisList.measures.analysis;
+    }else{
+        analysisList = totalAnalysisList.dimensions.analysis;
+    }
+    
+    for(var i=0;i<analysisList.length;i++){
+    if(analysisList[i].name == "trend"){
+       if( analysisList[i].status){
+           trendIsChecked = true;
+       }
+       break;
+    }
+}
+   return  trendIsChecked;
+    
+}
+
 //x-www-form-urlencoded'
 export function createSignal(metaData) {
-    return (dispatch) => {
-    return fetchCreateSignal(metaData).then(([response, json]) =>{
-        if(response.status === 200){
-          //console.log(json)
-        dispatch(fetchCreateSignalSuccess(json,dispatch))
-      }
-      else{
-        dispatch(fetchCreateSignalError(json))
-         dispatch(closeCsLoaderModal())
-        dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
-      }
-    })
+   return (dispatch) => {
+         return fetchCreateSignal(metaData).then(([response, json]) =>{
+             if(response.status === 200){
+               //console.log(json)
+             dispatch(fetchCreateSignalSuccess(json,dispatch))
+           }
+           else{
+             dispatch(fetchCreateSignalError(json))
+              dispatch(closeCsLoaderModal())
+             dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
+           }
+         }) 
+     }
+ 
   }
-}
 
 function fetchCreateSignal(metaData) {
   //console.log(metaData)
@@ -323,7 +346,7 @@ export function handleRename(slug,dialog,name){
 function showRenameDialogBox(slug,dialog,dispatch,name){
 	 const customBody = (
 		      <div className="form-group">
-		      <label for="fl1" className="col-sm-6 control-label">Enter Signal New Name</label>
+		      <label for="fl1" className="col-sm-6 control-label">Enter a new name</label>
 		      <input className="form-control"  id="idRenameSignal" type="text" defaultValue={name}/>
 		      </div>
 		    )
