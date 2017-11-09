@@ -143,12 +143,12 @@ export class AppsStockAdvisorList extends React.Component {
 						<li onClick={this.handleRename.bind(this, data.slug, data.name)}>
 						<a className="dropdown-item" href="#renameCard" data-toggle="modal">
 						<i className="fa fa-edit"></i>
-						Rename</a>
+						&nbsp;&nbsp;Rename</a>
 						</li>
 						<li onClick={this.handleDelete.bind(this, data.slug)}>
 						<a className="dropdown-item" href="#deleteCard" data-toggle="modal">
 						<i className="fa fa-trash-o"></i>
-						Delete</a>
+						&nbsp;&nbsp;Delete</a>
 						</li>
 						</ul>
 						{/*<!-- End Rename and Delete BLock  -->*/}
