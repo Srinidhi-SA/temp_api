@@ -70,12 +70,40 @@ def prod():
 
     return {'server_details':server_details, 'path_details':path_details, 'type':'production'}
 
+
+@task
+def luke():
+    """Set prod environemnt"""
+    server_details = {
+        "known name": "luke.marlabsai.com",
+        "username": "ubuntu",
+        "host": "34.196.22.246",
+        "port": "9012",
+        "initail_domain": "/api"
+    }
+
+    path_details = {
+        "react_path": "/static/react",
+        "asset_path": "/static/asset",
+        "base_remote_path": "/home/ubuntu/codebase/mAdvisor-api_luke",
+        "ui_branch": "api_ui_dev",
+        "api_branch": "api_ui_dev"
+    }
+
+    key_file = BASE_DIR + "/config/keyfiles/TIAA.pem"
+    env.key_filename = [key_file]
+    env.host_string = "{0}@{1}".format(server_details.get('username'), server_details.get('host'))
+
+    return {'server_details':server_details, 'path_details':path_details, 'type':'luke'}
+
+
 BRANCH_FUNCTION_MAPPING = {
     'development': dev(),
     'dev': dev(),
     'production': prod(),
     'prod': prod(),
-    'trainer/vivek_product_revamp': dev()
+    'trainer/vivek_product_revamp': dev(),
+    'luke': luke()
 }
     
 @task
@@ -87,7 +115,7 @@ def deploy_react(branch="development"):
     path_details= details['path_details']
     server_details= details['server_details']
     k = details['type']
-
+    print details
     npm_install_and_deploy(
         server_details=server_details,
         path_details=path_details,
@@ -170,6 +198,8 @@ def do_npm_run(branch, react_path):
             local("npm run buildProd")
         elif "local" == branch:
             local("npm run buildLinux")
+        elif "luke" == branch:
+            local("npm run buildLuke")
 
 
 def deploy_dist_to_destination(base_remote_path, react_path):
@@ -189,6 +219,8 @@ def npm_install_and_deploy(server_details, path_details, type="development"):
         branch=type,
         react_path=path_details['react_path']
     )
+
+    print path_details['base_remote_path'], path_details['react_path']
     deploy_dist_to_destination(
         base_remote_path=path_details['base_remote_path'],
         react_path=path_details['react_path']
@@ -418,7 +450,30 @@ def move_css_from_react_css_to_static_assets_css(type='development'):
 
 # api_ui_dev
 
+@task
+def restart_jobserver(branch="development"):
 
+    key_file = BASE_DIR + "/config/keyfiles/TIAA.pem"
+    username = 'hadoop'
+    host = '34.205.203.38'
+    port = '8090'
+    env.key_filename=[key_file]
+    env.host_string="{0}@{1}".format(username, host)
+
+    run('ls')
+
+    run('/tmp/job-server_base/server_stop.sh')
+    sudo('/tmp/job-server_base/server_start.sh')
+    import time
+    time.sleep(2)
+    with cd('/tmp/job-server'):
+        run('''curl -X POST {0}:{1}/contexts/{2}?context-factory=spark.jobserver.python.PythonSQLContextFactory
+                '''.format(
+                        host,
+                        port
+                        ,'pysql-context'
+                    )
+        )
 
 
 
