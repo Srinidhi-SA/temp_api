@@ -411,7 +411,7 @@ class C3Chart(object):
             print "no negative"
             return ""
 
-        zero_data = {"value": 0, "text": ''}
+        zero_data = {"value": 0, "text": '',"class":"zeroAxisGrid"}
         if self._grid:
             if 'y' in self._grid:
                 if 'lines' in self._grid['y']:
