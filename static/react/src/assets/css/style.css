@@ -14918,3 +14918,7 @@ display: inline-block;
 	visibility:hidden;
 }
 
+
+.c3-ygrid-line.zeroAxisGrid line {
+    stroke: #a1a1a1;
+}
