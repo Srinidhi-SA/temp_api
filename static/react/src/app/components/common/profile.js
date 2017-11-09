@@ -76,7 +76,7 @@ export class Profile extends React.Component {
           {/*<!-- Page Title and Breadcrumbs -->*/}
           <div className="page-head">
 
-            <h3>User Profile</h3>
+            <h4>User Profile</h4>
 
           </div>
           <div className="main-content">
@@ -114,7 +114,7 @@ export class Profile extends React.Component {
           <div className="page-head">
             <div className="row">
               <div className="col-md-8">
-                <h2>User Profile</h2>
+                <h4>User Profile</h4>
               </div>
             </div>
           </div>
@@ -179,15 +179,15 @@ export class Profile extends React.Component {
 
                     <div className="panel-body">
                       <div className="row">
-                        <div className="col-md-12">
+                        <div className="col-md-6">
                           <h3>{getUserDetailsOrRestart.get().userName}</h3>
                           <table className="full-table-width no-border no-strip skills">
                             <tbody className="no-border-x no-border-y full-width">
                               <tr>
-                                <td className="item xs-pt-5" width="30">
+                                <td className="item" width="30">
                                   <span className="fa fa-envelope-o fa-lg"></span>
                                 </td>
-                                <td className="xs-pt-5">
+                                <td>
                                   <b>
                                     {getUserDetailsOrRestart.get().email}</b>
                                 </td>
@@ -205,6 +205,22 @@ export class Profile extends React.Component {
                             </tbody>
                           </table>
                         </div>
+						<div className="col-md-6 text-right">
+                    <p className="xs-pt-30"> 
+                      Date Joined :
+                      <b> {dateFormat(getUserDetailsOrRestart.get().date, "mmm d,yyyy")}</b>
+                      <br/>
+                      Last Login :
+                      <b>{lastLogin}</b>
+                      {/*<br/>
+                    Subscription Left :
+                    <b>25 Days</b>*/}
+                    <br/>
+                    Superuser status:
+                    <b>{getUserDetailsOrRestart.get().is_superuser}</b>
+
+                    </p>
+                  </div>
                         {/*<div className="col-md-4 text-right xs-p-20">
                                  <a href="#" className="btn btn-primary">Edit Profile</a>
                                </div>*/}
@@ -221,7 +237,7 @@ export class Profile extends React.Component {
                 {statsList}
               </div>
             </div>
-
+			<div className="panel">
             <div className="row">
               <div className="col-md-4">
                 <div className="minHP">
@@ -232,7 +248,7 @@ export class Profile extends React.Component {
               </div>
               <div className="col-md-8">
                 <div className="row">
-                  <div className="col-md-12 text-right">
+                  <div className="col-md-12 text-right hidden">
                     <p className="xs-p-20">
                     <br/>
                       Date Joined :
@@ -251,7 +267,7 @@ export class Profile extends React.Component {
                   </div>
                   <div className="clearfix"></div>
                   <div className="col-md-12">
-                    <div className="panel xs-p-30 minHP">
+                    <div className="xs-p-30 minHP">
                       <p>{renderHTML(this.props.profileInfo.comment)}</p>
                     </div>
                   </div>
@@ -268,7 +284,8 @@ export class Profile extends React.Component {
               </div>
 
             </div>
-          </div>
+			</div>
+		  </div>
         </div>
 
       );
