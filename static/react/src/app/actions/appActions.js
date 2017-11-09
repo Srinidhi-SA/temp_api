@@ -90,8 +90,8 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 			current_page,
 		}
 	}
-	export function updateTrainAndTest(e) {
-		var trainValue = e.target.value;
+	export function updateTrainAndTest(trainValue) {
+		//var trainValue = e.target.value;
 		var testValue = 100-trainValue;
 		return {
 			type: "UPDATE_MODEL_RANGE",

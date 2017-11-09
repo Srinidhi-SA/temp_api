@@ -30,9 +30,10 @@ export class ModelVariableSelection extends React.Component {
         if(this.props.dataPreview == null){
             this.props.dispatch(getDataSetPreview(this.props.match.params.slug));   
         }
+        this.props.dispatch(updateTrainAndTest(50))
     }
     handleRangeSlider(e){
-        this.props.dispatch(updateTrainAndTest(e))
+        this.props.dispatch(updateTrainAndTest(e.target.value))
     }
     createModel(event){
         event.preventDefault();
@@ -91,7 +92,7 @@ export class ModelVariableSelection extends React.Component {
                 <div className="col-lg-8">
                 <div id="range" >
                 <div id="rangeLeftSpan" >Train <span id="trainPercent">{store.getState().apps.trainValue}</span></div>
-                <input type="range" id="rangeElement"  onChange={this.handleRangeSlider.bind(this)} min={50} />
+                <input type="range" id="rangeElement"  onChange={this.handleRangeSlider.bind(this)}  min={50} defaultValue={50} />
                 <div id="rangeRightSpan" ><span id="testPercent">{store.getState().apps.testValue}</span> Test </div>
                 </div>
                 </div>

@@ -7,7 +7,7 @@ import {Modal,Button,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "r
 import store from "../../store";
 import {selectedAnalysisList,resetSelectedVariables,unselectAllPossibleAnalysis,getDataSetPreview,setDimensionSubLevels,selectAllAnalysisList,updateSelectAllAnlysis,saveAdvanceSettings,checkAllAnalysisSelected} from "../../actions/dataActions";
 import {openCreateSignalModal,closeCreateSignalModal,updateCsLoaderValue} from "../../actions/createSignalActions";
-import {createSignal,setPossibleAnalysisList,emptySignalAnalysis,advanceSettingsModal} from "../../actions/signalActions";
+import {createSignal,setPossibleAnalysisList,emptySignalAnalysis,advanceSettingsModal,checkIfDateTimeIsSelected} from "../../actions/signalActions";
 import {DataVariableSelection} from "../data/DataVariableSelection";
 import {CreateSignalLoader} from "../common/CreateSignalLoader";
 import {openCsLoaderModal,closeCsLoaderModal} from "../../actions/createSignalActions";
@@ -77,6 +77,11 @@ export class VariableSelection extends React.Component {
 	createSignal(event){
 		event.preventDefault();
 		if($('#signalVariableList option:selected').val() != ""){
+		    var trendIsChecked = checkIfDateTimeIsSelected();
+		    if((store.getState().datasets.selectedTimeDimensions  == "" || store.getState().datasets.selectedTimeDimensions == undefined) && trendIsChecked == true){
+		        bootbox.alert("Please select Date Time Suggestions.");
+		        return false;
+		    }
 			console.log("while creating signal")
 			console.log(this.props);
 			this.signalFlag = false;
