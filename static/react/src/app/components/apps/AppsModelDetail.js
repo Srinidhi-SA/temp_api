@@ -69,17 +69,17 @@ export class AppsModelDetail extends React.Component {
 		                 
 		                <div className="panel panel-mAd documentModeSpacing ">
 		                    <div className="panel-heading">
-		                      <h2>{store.getState().apps.modelSummary.name}</h2>
+		                      <h2 className="pull-left">{store.getState().apps.modelSummary.name}</h2>
 		                      
 		                      <div className="btn-toolbar pull-right">
 		                        <div className="btn-group btn-space">
 		                        
 		                          <button type="button" className="btn btn-default" disabled = "true" title="Document Mode">
-		                              <i className="pe-7s-news-paper pe-lg"></i>
+		                             <i className="fa fa-file-text-o"></i>
 		                            </button>
-							   <Link className="tabs-control right grp_legends_green continue" to={modelLink}>
-		                          <button type="button" className="btn btn-default">
-		                            <i className="pe-7s-close pe-lg"></i>
+							   <Link className="continue" to={modelLink}>
+		                          <button type="button" className="btn  btn-close">
+		                            <i className="fa fa-times"></i>
 		                          </button>
 								 </Link>
 		                        </div>

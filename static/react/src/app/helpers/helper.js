@@ -13,6 +13,7 @@ export function isEmpty(obj) {
 
 var  USERDETAILS = {};
 
+
 export const getUserDetailsOrRestart = {
 		get : function(){
 			let  userDetails = {};
@@ -26,7 +27,7 @@ export const getUserDetailsOrRestart = {
 			}else{
 				redirectToLogin();
 			}
-			
+
 		}
 }
 
@@ -36,19 +37,7 @@ function redirectToLogin() {
 	//window.history.replaceState(null,null,"login");
 }
 
-export const getUserDetails = {
-		get: function() {
-			let  userDetail = {};
-			let allCookies = document.cookie.split(";");
-			for(let i=0;i<allCookies.length;i++){
-				let cur = allCookies[i].split('=');
-				userDetail[cur[0].replace(/\s/g, '')] = cur[1];
-			}
-USERDETAILS = userDetail;
-		   return userDetail;
-		},
-}
-		  
+
 const FILEUPLOAD = "File Upload";
 const MYSQL = "MySQL";
 const INPUT = "Input";
@@ -203,9 +192,9 @@ export function  generateNormalTableRows(table) {
 			var rows = rowData.map(function(colData,j) {
 				if(j == 0 || j == 1)
 	  	           return<td key={j} width="15%">{colData}</td>;
-	  	           
+
 	  	           else
-	  	        	return<td key={j}>{colData}</td>;   
+	  	        	return<td key={j}>{colData}</td>;
 	  	       });
 			return<tr key={i}>{rows}</tr>;
 		}
@@ -321,6 +310,15 @@ export function  subTreeSetting(urlLength, length,paramL2) {
 
 
 	}
+
+  export function decimalPlaces(number) {
+    // toFixed produces a fixed representation accurate to 20 decimal places
+    // without an exponent.
+    // The ^-?\d*\. strips off any sign, integer portion, and decimal point
+    // leaving only the decimal fraction.
+    // The 0+$ strips off any trailing zeroes.
+    return ((+ number).toFixed(4)).replace(/^-?\d*\.?|0+$/g, '').length;
+  }
 
 export{
 	FILEUPLOAD,

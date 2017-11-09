@@ -5278,17 +5278,12 @@ def change_name_and_slug_in_individual(name):
             if chart is not None:
                 temp_card_data.append(chart)
 
-        print temp_card_data
+
         cards['cardData'] = temp_card_data
-        print "temp_card_data"
-        print cards['cardData']
         new_list_of_cards.append(cards)
 
-    print new_list_of_cards
-    print "new_list_of_cards"
     temp_node['listOfCards'] = new_list_of_cards
 
-    print temp_node
     return temp_node
 
 def smaller_name_and_slug_in_individual(name):

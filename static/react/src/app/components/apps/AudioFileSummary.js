@@ -93,11 +93,11 @@ export class AudioFileSummary extends React.Component {
 						<div className="btn-group btn-space">
 
 						<button type="button" className="btn btn-default" disabled = "true" title="Document Mode">
-						<i className="pe-7s-news-paper pe-lg"></i>
+						<i className="fa fa-file-text-o"></i>
 						</button>
-						<Link className="tabs-control right grp_legends_green continue" onClick={this.updateAudioFlag.bind(this)} to="/apps/audio">
-						<button type="button" className="btn btn-default">
-						<i className="pe-7s-close pe-lg"></i>
+						<Link className="continue" onClick={this.updateAudioFlag.bind(this)} to="/apps/audio">
+						<button type="button" className="btn btn-close">
+						<i className="fa fa-times"></i>
 						</button>
 						</Link>
 						</div>

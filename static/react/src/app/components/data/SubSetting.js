@@ -4,7 +4,7 @@ import {Button} from "react-bootstrap";
 import ReactBootstrapSlider from 'react-bootstrap-slider'
 import store from "../../store";
 import {updateSubSetting} from "../../actions/dataActions";
-import {showHideSubsetting} from "../../helpers/helper.js"
+import {showHideSubsetting, decimalPlaces} from "../../helpers/helper.js"
 import {Scrollbars} from 'react-custom-scrollbars';
 import dateFormat from 'dateformat';
 import DatePicker from 'react-bootstrap-date-picker';
@@ -27,19 +27,20 @@ export class SubSetting extends React.Component {
       startDate: "",
       curstartDate: "",
       endDate: '',
-      curendDate:"",
+      curendDate: "",
       subSettingRs: this.props.updatedSubSetting,
-      alreadyUpdated: false
+      alreadyUpdated: false,
+      textboxUpdated: false
     };
   }
   handleStartDateChange(value, formattedValue) {
-      this.state.curstartDate= formattedValue
-      $("#saveButton").removeClass('btn-alt4')
-      $("#saveButton").addClass('btn-primary')
-      $("#saveButton").removeAttr('disabled')
+    this.state.curstartDate = formattedValue
+    $("#saveButton").removeClass('btn-alt4')
+    $("#saveButton").addClass('btn-primary')
+    $("#saveButton").removeAttr('disabled')
   }
   handleEndDateChange(value, formattedValue) {
-    this.state.curendDate= formattedValue
+    this.state.curendDate = formattedValue
     $("#saveButton").removeClass('btn-alt4')
     $("#saveButton").addClass('btn-primary')
     $("#saveButton").removeAttr('disabled')
@@ -64,7 +65,7 @@ export class SubSetting extends React.Component {
             that.state.selectedDimention.push($(this).val());
           }
         });
-       that.state.curdimention = that.state.selectedDimention
+        that.state.curdimention = that.state.selectedDimention
         console.log(that.state.selectedDimention);
       });
 
@@ -110,7 +111,7 @@ export class SubSetting extends React.Component {
 
   }
   changeSliderValue(e) {
-
+    //alert("coming")
     this.state.curmin = e.target.value[0]
     $("#from_value").val(this.state.curmin)
     this.state.curmax = e.target.value[1]
@@ -120,6 +121,37 @@ export class SubSetting extends React.Component {
     $("#saveButton").removeAttr('disabled')
 
   }
+  changeSliderValueFromText(e) {
+    if (isNaN(e.target.value))
+      alert("please enter a valid number")
+    else {
+      this.setState({
+        curmin: e.target.value,
+        textboxUpdated: true
+      })
+      //this.state.curmin = Number(e.target.value)
+      console.log(e.target.value)
+      $("#saveButton").removeClass('btn-alt4')
+      $("#saveButton").addClass('btn-primary')
+      $("#saveButton").removeAttr('disabled')
+    }
+  }
+  changeSliderValueToText(e) {
+    if (isNaN(e.target.value))
+      alert("please enter a valid number")
+    else {
+      this.setState({
+        curmax: e.target.value,
+        textboxUpdated: true
+      })
+      //this.state.curmin = Number(e.target.value)
+      console.log(e.target.value)
+      $("#saveButton").removeClass('btn-alt4')
+      $("#saveButton").addClass('btn-primary')
+      $("#saveButton").removeAttr('disabled')
+    }
+  }
+
   getSubSettings(columnType) {
 
     switch (columnType) {
@@ -127,7 +159,16 @@ export class SubSetting extends React.Component {
         {
           //this.state.min = this.props.item.subsetting.measureSetting.minimumValue;
           //this.state.max = this.props.item.subsetting.measureSetting.maxValue;
-          let value = [this.state.curmin, this.state.curmax]
+          //  let value = [this.state.curmin, this.state.curmax]
+          let precision = decimalPlaces(this.state.curmax)
+          let step = (1 / Math.pow(10, precision))
+          //alert(step)
+          let value = [Number(this.state.curmin), Number(this.state.curmax)]
+          if(this.state.curmin=="")
+          value=[0,Number(this.state.curmax)]
+          else if (this.state.curmax=="") {
+            value=[Number(this.state.curmin),0]
+          }
           return (
             <div>
               <div id="measure_subsetting">
@@ -135,20 +176,20 @@ export class SubSetting extends React.Component {
                 <div className="xs-pt-20"></div>
                 <div className="row">
                   <div className="col-xs-5">
-                    <input type="text" className="form-control" id="from_value" value={this.state.curmin}/>
+                    <input type="number" step = {step} min = {this.state.min} max = {this.state.curmax} className="form-control" id="from_value" value={this.state.curmin} onChange={this.changeSliderValueFromText.bind(this)}/>
                   </div>
                   <div className="col-xs-2 text-center">
                     <label>To</label>
                   </div>
                   <div className="col-xs-5">
-                    <input type="text" className="form-control" id="to_value" value={this.state.curmax}/>
+                    <input type="number" step = {step} min = {this.state.curmin} max = {this.state.max} className="form-control" id="to_value" value={this.state.curmax} onChange={this.changeSliderValueToText.bind(this)}/>
                   </div>
                   <div className="clearfix"></div>
                 </div>
               </div>
               <div className="xs-p-20"></div>
               <div className="form-group text-center">
-                <ReactBootstrapSlider value={value} change={this.changeSliderValue.bind(this)} max={this.state.max} min={this.state.min} range="true" tooltip="hide"/>
+                <ReactBootstrapSlider value={value} triggerSlideEvent="true" change={this.changeSliderValue.bind(this)} step={step} max={this.state.max} min={this.state.min} range="true" tooltip="hide"/>
               </div>
             </div>
           );
@@ -242,7 +283,7 @@ export class SubSetting extends React.Component {
                 <h5>From</h5>
                 <div className="row">
                   <div className="col-xs-12">
-                    <DatePicker key = {this.state.startDate} id="start-datepicker" className="form-control" value={this.state.curstartDate} onChange={this.handleStartDateChange.bind(this)} showClearButton={false} dateFormat = "YYYY-MM-DD" />
+                    <DatePicker key={this.state.startDate} minDate = {this.state.startDate} maxDate = {this.state.curendDate} id="start-datepicker" className="form-control" value={this.state.curstartDate} onChange={this.handleStartDateChange.bind(this)} showClearButton={false} dateFormat="YYYY-MM-DD"/>
                   </div>
                 </div>
                 <div className="clearfix"></div>
@@ -250,7 +291,7 @@ export class SubSetting extends React.Component {
                 <h5>To</h5>
                 <div className="row">
                   <div className="col-xs-12">
-                  <DatePicker key = {this.state.endDate} id="end-datepicker" className="form-control" value={this.state.curendDate} onChange={this.handleEndDateChange.bind(this)} showClearButton = {false} dateFormat = "YYYY-MM-DD" />
+                    <DatePicker key={this.state.endDate} minDate = {this.state.curstartDate} maxDate = {this.state.endDate} id="end-datepicker" className="form-control" value={this.state.curendDate} onChange={this.handleEndDateChange.bind(this)} showClearButton={false} dateFormat="YYYY-MM-DD"/>
                   </div>
                 </div>
                 <div className="clearfix"></div>
@@ -267,9 +308,10 @@ export class SubSetting extends React.Component {
         {
           this.props.updatedSubSetting.measureColumnFilters.map((changeditem) => {
             if (changeditem.colname == columnName) {
+              if(!this.state.textboxUpdated){
               this.state.curmin = changeditem.lowerBound
               this.state.curmax = changeditem.upperBound
-
+            }
               this.state.alreadyUpdated = true
             }
           });
@@ -317,16 +359,18 @@ export class SubSetting extends React.Component {
               if (changeditem.colname == this.props.item.name) {
                 measureColumnFilter[i] = {
                   "colname": this.props.item.name,
-                  "upperBound": this.state.curmax,
-                  "lowerBound": this.state.curmin,
+                  "upperBound": Number(this.state.curmax),
+                  "lowerBound": Number(this.state.curmin),
                   "filterType": "valueRange"
                 };
               }
             });
             this.state.subSettingRs.measureColumnFilters = measureColumnFilter;
           } else {
-            this.state.subSettingRs.measureColumnFilters.push({"colname": this.props.item.name, "upperBound": this.state.curmax, "lowerBound": this.state.curmin, "filterType": "valueRange"});
-            this.state.alreadyUpdated = true
+
+              this.state.subSettingRs.measureColumnFilters.push({"colname": this.props.item.name, "upperBound": Number(this.state.curmax), "lowerBound": Number(this.state.curmin), "filterType": "valueRange"});
+              this.state.alreadyUpdated = true
+
           }
         }
         break;
@@ -376,65 +420,74 @@ export class SubSetting extends React.Component {
         break;
 
     }
+    if ((this.state.curmin < this.state.min) || (this.state.curmax > this.state.max)) {
+      alert("please select a range between " + this.state.min + " and " + this.state.max)
+      $("#saveButton").removeClass('btn-alt4')
+      $("#saveButton").addClass('btn-primary')
+      $("#saveButton").removeAttr('disabled')
+    }else{
     $('#saveButton').removeClass('btn-primary')
     $('#saveButton').addClass('btn-alt4')
     $('#saveButton').attr('disabled', true);
     this.props.dispatch(updateSubSetting(this.state.subSettingRs));
+  }
 
   }
-  callSubsetTableSorter(){
-	  $(function() {
-	      $('#subset').tablesorter({
-	        theme: 'ice',
-	        headers: {
-	          0: {
-	            sorter: false
-	          }
-	        }
-	      });
-	     // $("#dim").click();
-	    });
-    }
+  callSubsetTableSorter() {
+    $(function() {
+      $('#subset').tablesorter({
+        theme: 'ice',
+        headers: {
+          0: {
+            sorter: false
+          }
+        }
+      });
+      // $("#dim").click();
+    });
+  }
   render() {
     console.log("subsetting is called####$$$$!!");
     console.log(this.props)
     console.log("state is")
     console.log(this.state)
     this.callSubsetTableSorter()
-let subsettingsTemplate = "";
+    let subsettingsTemplate = "";
     if (this.props.updatedSubSetting.measureColumnFilters.length > 0 || this.props.updatedSubSetting.dimensionColumnFilters.length > 0 || this.props.updatedSubSetting.timeDimensionColumnFilters.length > 0) {
       this.getColumnData(this.props.item.columnType, this.props.item.name)
     }
-    if(this.props.item.columnStats != undefined){
-    	 this.props.item.columnStats.map((stats) => {
-    	      //  console.log(stats)
-    	      if (stats.name == "min")
-    	        this.state.min = stats.value
-    	      else if (stats.name == "max") {
-    	        this.state.max = stats.value
-    	      } else if (stats.name == "LevelCount") {
-    	        this.state.dimentionList = stats.value
-    	      } else if (stats.name == "firstDate") {
-    	        this.state.startDate = stats.value
-    	      } else if (stats.name == "lastDate") {
-    	        this.state.endDate = stats.value
-    	      }
-    	    });
+    if (this.props.item.columnStats != undefined) {
+      this.props.item.columnStats.map((stats) => {
+        //  console.log(stats)
+        if (stats.name == "min")
+          this.state.min = stats.value
+        else if (stats.name == "max") {
+          this.state.max = stats.value
+        } else if (stats.name == "LevelCount") {
+          this.state.dimentionList = stats.value
+        } else if (stats.name == "firstDate") {
+          this.state.startDate = stats.value
+        } else if (stats.name == "lastDate") {
+          this.state.endDate = stats.value
+        }
+      });
 
-    	    if (this.state.alreadyUpdated == false) {
-    	      this.state.curmax = this.state.max
-    	      this.state.curmin = this.state.min
-    	      this.state.curstartDate = this.state.startDate
-    	      this.state.curendDate = this.state.endDate
-    	      if (this.state.dimentionList)
-    	        this.state.curdimention = Object.keys(this.state.dimentionList);
-    	      }
-    	    console.log("after assign")
-    	    console.log(this.state)
+      if (this.state.alreadyUpdated == false) {
+        if (this.state.textboxUpdated == false) {
+          this.state.curmax = this.state.max
+          this.state.curmin = this.state.min
+        }
+        this.state.curstartDate = this.state.startDate
+        this.state.curendDate = this.state.endDate
+        if (this.state.dimentionList)
+          this.state.curdimention = Object.keys(this.state.dimentionList);
+        }
+      console.log("after assign")
+      console.log(this.state)
 
-    	    subsettingsTemplate = this.getSubSettings(this.props.item.columnType)
+      subsettingsTemplate = this.getSubSettings(this.props.item.columnType)
     }
-   
+
     //console.log(subsettingsTemplate)
 
     return (
