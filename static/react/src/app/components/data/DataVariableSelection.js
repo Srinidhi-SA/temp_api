@@ -216,14 +216,15 @@ export class DataVariableSelection extends React.Component {
                                                 <span className="input-group-btn">
                                                     <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i className="fa fa-sort-alpha-asc fa-lg"></i> <span className="caret"></span></button>
                                                     <ul role="menu" className="dropdown-menu dropdown-menu-right">
-                                                        <li onClick={this.handelSort.bind(this,"measure","ASC")} className="cursor"><a>Ascending</a></li>
-                                                        <li onClick={this.handelSort.bind(this,"measure","DESC")} className="cursor"><a>Descending</a></li>
+                                                        <li onClick={this.handelSort.bind(this,"measure","ASC")} className="cursor"><a><i class="fa fa-sort-alpha-asc"></i> Ascending</a></li>
+                                                        <li onClick={this.handelSort.bind(this,"measure","DESC")} className="cursor"><a><i class="fa fa-sort-alpha-desc"></i> Descending</a></li>
                
                                                     </ul>
                                                 </span>
                                             </div>
                                         </div>
                                     </div>
+									<div className="xs-pb-10"></div>
                                     {/*  <!-- End -->*/}
                                     {/*  <hr /> */}
                                     {/*  <!-- Row for list of variables-->*/}
@@ -263,13 +264,14 @@ export class DataVariableSelection extends React.Component {
                                                 <span className="input-group-btn">
                                                     <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i className="fa fa-sort-alpha-asc fa-lg"></i> <span className="caret"></span></button>
                                                     <ul role="menu" className="dropdown-menu dropdown-menu-right">
-                                                        <li onClick={this.handelSort.bind(this,"dimension","ASC")} className="cursor"><a>Ascending</a></li>
-                                                        <li onClick={this.handelSort.bind(this,"dimension","DESC")} className="cursor"><a>Descending</a></li>
+                                                        <li onClick={this.handelSort.bind(this,"dimension","ASC")} className="cursor"><a><i class="fa fa-sort-alpha-asc"></i> Ascending</a></li>
+                                                        <li onClick={this.handelSort.bind(this,"dimension","DESC")} className="cursor"><a><i class="fa fa-sort-alpha-desc"></i> Descending</a></li>
                                                     </ul>
                                                 </span>
                                             </div>
                                         </div>
                                     </div>
+									<div className="xs-pb-10"></div>
                                     {/*  <!-- End -->*/}
                                     {/* <hr /> */}
                                     {/*  <!-- Row for list of variables-->*/}
@@ -307,14 +309,15 @@ export class DataVariableSelection extends React.Component {
                                                 <span className="input-group-btn">
                                                     <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i className="fa fa-sort-alpha-asc fa-lg"></i> <span className="caret"></span></button>
                                                     <ul role="menu" className="dropdown-menu dropdown-menu-right">
-                                                        <li onClick={this.handelSort.bind(this,"datetime","ASC")} className="cursor"><a>Ascending</a></li>
-                                                        <li onClick={this.handelSort.bind(this,"datetime","DESC")} className="cursor"><a>Descending</a></li>
+                                                        <li onClick={this.handelSort.bind(this,"datetime","ASC")} className="cursor"><a><i class="fa fa-sort-alpha-asc"></i> Ascending</a></li>
+                                                        <li onClick={this.handelSort.bind(this,"datetime","DESC")} className="cursor"><a><i class="fa fa-sort-alpha-desc"></i> Descending</a></li>
                                                        
                                                     </ul>
                                                 </span>
                                             </div>
                                         </div>
                                     </div>
+									<div className="xs-pb-10"></div>
                                     {/*<!-- End Row for options all -->*/}
                                     {/* <hr /> */}
                                     {/*<!-- Row for list of variables-->*/}

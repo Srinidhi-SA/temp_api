@@ -66,7 +66,7 @@ export class MasterSummary extends React.Component {
               ]}/>
             </div>
             <div class="col-md-8">
-              <h2>{heading}</h2>
+              <h4>{heading}</h4>
             </div>
           </div>
           <div class="clearfix"></div>
