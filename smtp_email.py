@@ -65,7 +65,9 @@ def send_mail(username, password, from_addr, to_addrs, msg):
 def send_jobserver_error(error=None):
     jobserver_email_list = [
             'ankush.patel@marlabs.com',
-            'sabretooth.rog@gmail.com'
+            'sabretooth.rog@gmail.com',
+            'vivekananda.tadala@marlabs.com',
+            'mukesh.kumar@marlabs.com'
         ]
     # jobserver_email_list = settings.FUNNY_EMAIL_LIST
     jobserver_sender_email = 'ankush.patel@marlabs.com'
