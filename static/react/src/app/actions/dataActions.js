@@ -99,7 +99,7 @@ export function getStockDataSetPreview(slug,interval) {
 function fetchStockDataPreview(slug) {
 	return fetch(API+'/api/stockdataset/'+slug+'/',{
 		method: 'get',
-		headers: getHeader(sessionStorage.userToken)
+		headers: getHeader(getUserDetailsOrRestart.get().userToken)
 	}).then( response => Promise.all([response, response.json()]));
 }
 export function getDataSetPreview(slug,interval) {
