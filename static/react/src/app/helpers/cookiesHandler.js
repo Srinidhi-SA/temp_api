@@ -32,6 +32,6 @@ export const cookieObj = {
       sessionStorage.clear();
       var noOfUrls = window.history.length;
       window.history.go("-"+noOfUrls-1);
-      //window.history.replaceState(null,null,"login");
+      window.history.replaceState(null,null,"login");
   }
 }

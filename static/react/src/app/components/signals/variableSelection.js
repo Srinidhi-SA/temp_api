@@ -79,7 +79,7 @@ export class VariableSelection extends React.Component {
 		if($('#signalVariableList option:selected').val() != ""){
 		    var trendIsChecked = checkIfDateTimeIsSelected();
 		    if((store.getState().datasets.selectedTimeDimensions  == "" || store.getState().datasets.selectedTimeDimensions == undefined) && trendIsChecked == true){
-		        bootbox.alert("Please select Date Time Suggestions.");
+		        bootbox.alert("Please select one of the date dimensions.");
 		        return false;
 		    }
 			console.log("while creating signal")
