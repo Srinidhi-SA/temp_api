@@ -112,6 +112,7 @@ function fetchCreateSignalError(json) {
 }
 
 export function getList(token,pageNo) {
+    
     return (dispatch) => {
     return fetchPosts(token,pageNo).then(([response, json]) =>{
         if(response.status === 200){

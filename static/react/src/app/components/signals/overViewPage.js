@@ -410,13 +410,13 @@ closeDocumentMode(){
                   <div className="panel panel-mAd">
                     <div className="panel-heading">
 
-                      <h2 class="pull-left">{storyName}</h2>
+                      <h4 class="page-title-4">{storyName}
 
                       <div className="btn-toolbar pull-right">
                         <div className="btn-group btn-space">
 
                           <button type="button" className="btn btn-default" disabled="true" title="Card mode">
-                            <i className="pe-7s-display2 pe-lg"></i>
+                            <i className="fa fa-id-card-o"></i>
                           </button>
                           <Link className="tabs-control right grp_legends_green continue" to={{
                             pathname: documentModeLink,
@@ -425,16 +425,17 @@ closeDocumentMode(){
                             }
                           }}>
                             <button type="button" className="btn btn-default" title="Document mode">
-                              <i className="pe-7s-news-paper pe-lg"></i>
+                              <i className="fa fa-file-text-o"></i>
                             </button>
                           </Link>
-                          {/*<Link className="tabs-control right grp_legends_green continue" to={that.urlPrefix}>*/}
-                            <button type="button" className="btn btn-default" onClick = {this.closeDocumentMode.bind(this)}>
-                              <i className="pe-7s-close pe-lg"></i>
+                          {/*<Link className="continue" to={that.urlPrefix}>*/}
+                            <button type="button" className="btn" onClick = {this.closeDocumentMode.bind(this)}>
+                              <i className="fa fa-times"></i>
                             </button>
                           {/*</Link>*/}
                         </div>
                       </div>
+					  </h4>
                       <div className="clearfix"></div>
                     </div>
 

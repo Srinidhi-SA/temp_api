@@ -62,6 +62,8 @@ export class Login extends React.Component {
           <div className="ma-wrapper am-login">
             <div className="ma-content">
               <div className="main-content">
+			  <div className="row">
+				<div className="col-md-4 col-md-offset-7">
              <form action="javascript:void(0);">
                 <div className="login-container">
                   <div className="panel panel-default">
@@ -110,6 +112,8 @@ export class Login extends React.Component {
                   </div>
                 </div>
               </form>
+			  </div>
+			  </div>
               </div>
             </div>
           </div>

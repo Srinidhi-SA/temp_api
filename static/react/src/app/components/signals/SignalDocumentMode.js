@@ -124,15 +124,15 @@ export class SignalDocumentMode extends React.Component {
                           <div className="btn-group btn-space">
                             <Link className="tabs-control right grp_legends_green continue" to={cardModeLink}>
                               <button type="button" className="btn btn-default" title="Card mode">
-                                <i className="pe-7s-display2 pe-lg"></i>
+                                <i className="fa fa-id-card-o"></i>
                               </button>
                             </Link>
                             <button type="button" className="btn btn-default" disabled="true" title="Document Mode">
-                              <i className="pe-7s-news-paper pe-lg"></i>
+                              <i className="fa fa-file-text-o"></i>
                             </button>
-                            {/*<Link className="tabs-control right grp_legends_green continue" to="/signals">*/}
-                              <button type="button" className="btn btn-default" onClick = {this.closeDocumentMode.bind(this)}>
-                                <i className="pe-7s-close pe-lg"></i>
+                            {/*<Link className="continue" to="/signals">*/}
+                              <button type="button" className="btn" onClick = {this.closeDocumentMode.bind(this)}>
+                                 <i className="fa fa-times"></i>
                               </button>
                             {/*</Link>*/}
                           </div>
