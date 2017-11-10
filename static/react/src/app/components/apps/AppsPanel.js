@@ -143,6 +143,7 @@ export class AppsPanel extends React.Component {
 
 					</div>
 				</div>
+				
 				<div class="clearfix xs-p-20"></div>
 				<div class="row">
 				<div class="col-md-4">
@@ -216,9 +217,268 @@ export class AppsPanel extends React.Component {
 
 			</div>
 			
+			
+			<div class="col-md-4">
+
+                
+                <div className="app-block"> 
+                    <Link onClick={this.gotoAppsList.bind(this,APPID2,APPNAME2)} className="app-link" to="/apps/2/models">
+
+                    <div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
+                        <img src={STATIC_URL + "assets/images/app_empExit_icon.png"} className="img-responsive"/>
+                    </div>
+                    <div className="col-md-8 col-sm-9 col-xs-7">
+                        <h4>Churn Prediction</h4>
+                        <p>
+                       Use machine learning models to predict when a customer is going to churn
+                        </p>
+                    </div>
+                    <div class="clearfix"></div>
+                    </Link>
+
+                    <div className="card-footer">
+                    <ul className="app_labels">
+                        <li><a href="#"><i className="fa fa-tag"></i>Marketing</a></li>
+                        <li><a href="#"><i className="fa fa-tag"></i>Customer Experience</a></li>
+                    </ul>
+
+                {/*<div className="card-deatils">
+                        <a href="javascript:void(0);" rel="popover" className="pover" data-popover-content="#myPopover" data-original-title="" title=""><i className="ci pe-7s-info pe-2x"></i></a>
+                </div>*/}
+                <div id="myPopover" className="pop_box hide">
+                <p>Info</p>
+                </div>
+                </div>
+                </div>
+
+            </div>
+            
 				</div>
 
 
+				    <div class="clearfix xs-p-20"></div>
+                <div class="row">
+                <div class="col-md-4">
+
+                    
+                    <div className="app-block"> 
+                        <Link onClick={this.gotoAppsList.bind(this,APPID2,APPNAME2)} className="app-link" to='/apps/2/models'>
+
+                        <div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
+                            <img src={STATIC_URL + "assets/images/app_Hospital_icon.png"} className="img-responsive"/>
+                        </div>
+                        <div className="col-md-8 col-sm-9 col-xs-7">
+                            <h4>Readmission Prediction</h4>
+                            <p>
+                            Analyze patient data to predict the probability of readmission.
+                            </p>
+                        </div>
+                        <div class="clearfix"></div>
+                        </Link>
+
+                        <div className="card-footer">
+                        <ul className="app_labels">
+                            <li><a href="#"><i className="fa fa-tag"></i> Healthcare</a></li>
+                        </ul>
+
+                    {/*<div className="card-deatils">
+                            <a href="javascript:void(0);" rel="popover" className="pover" data-popover-content="#myPopover" data-original-title="" title=""><i className="ci pe-7s-info pe-2x"></i></a>
+                    </div>*/}
+                    <div id="myPopover" className="pop_box hide">
+                    <p>Info</p>
+                    </div>
+                    </div>
+                    </div>
+
+                </div>
+                
+                
+                <div class="col-md-4">
+
+                
+                <div className="app-block"> 
+                    <Link onClick={this.gotoAppsList.bind(this,APPID5,APPNAME5)} className="app-link" to='/apps-stock-advisor'>
+
+                    <div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
+                        <img src={STATIC_URL + "assets/images/app_stethoscope_icon.png"} className="img-responsive"/>
+                    </div>
+                    <div className="col-md-8 col-sm-9 col-xs-7">
+                        <h4>Physician Attrition</h4>
+                        <p>
+                        Analyze historical transactional and behavioral data to calculate attrition for the physicians. 
+                        </p>
+                    </div>
+                    <div class="clearfix"></div>
+                    </Link>
+
+                    <div className="card-footer">
+                    <ul className="app_labels">
+                        <li><a href="#"><i className="fa fa-tag"></i> Healthcare</a></li>
+                    </ul>
+
+                {/*<div className="card-deatils">
+                        <a href="javascript:void(0);" rel="popover" className="pover" data-popover-content="#myPopover" data-original-title="" title=""><i className="ci pe-7s-info pe-2x"></i></a>
+                </div>*/}
+                <div id="myPopover" className="pop_box hide">
+                <p>Info</p>
+                </div>
+                </div>
+                </div>
+
+            </div>
+            
+            
+            <div class="col-md-4">
+
+                
+                <div className="app-block"> 
+                    <Link onClick={this.gotoAppsList.bind(this,APPID2,APPNAME2)} className="app-link" to="/apps/2/models">
+
+                    <div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
+                        <img src={STATIC_URL + "assets/images/app_swipeCard_icon.png"} className="img-responsive"/>
+                    </div>
+                    <div className="col-md-8 col-sm-9 col-xs-7">
+                        <h4>Credit Card Fraud</h4>
+                        <p>
+                       Predict which all customers are likely to commit a credit card fraud.
+                        </p>
+                    </div>
+                    <div class="clearfix"></div>
+                    </Link>
+
+                    <div className="card-footer">
+                    <ul className="app_labels">
+                        <li><a href="#"><i className="fa fa-tag"></i> Consumer Finance</a></li>
+                    </ul>
+
+                {/*<div className="card-deatils">
+                        <a href="javascript:void(0);" rel="popover" className="pover" data-popover-content="#myPopover" data-original-title="" title=""><i className="ci pe-7s-info pe-2x"></i></a>
+                </div>*/}
+                <div id="myPopover" className="pop_box hide">
+                <p>Info</p>
+                </div>
+                </div>
+                </div>
+
+            </div>
+            
+                </div>
+
+               
+                
+                        <div class="clearfix xs-p-20"></div>
+                <div class="row">
+                <div class="col-md-4">
+
+                    
+                    <div className="app-block"> 
+                        <Link onClick={this.gotoAppsList.bind(this,APPID2,APPNAME2)} className="app-link" to='/apps/2/models'>
+
+                        <div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
+                            <img src={STATIC_URL + "assets/images/app_docPen_icon.png"} className="img-responsive"/>
+                        </div>
+                        <div className="col-md-8 col-sm-9 col-xs-7">
+                            <h4>Claims Prediction</h4>
+                            <p>
+                            Predict Insurance claim payments based on the characteristics of the insured customer.
+                            </p>
+                        </div>
+                        <div class="clearfix"></div>
+                        </Link>
+
+                        <div className="card-footer">
+                        <ul className="app_labels">
+                            <li><a href="#"><i className="fa fa-tag"></i> Insurance</a></li>
+                            <li><a href="#"><i className="fa fa-tag"></i> Finance</a></li>
+                        </ul>
+
+                    {/*<div className="card-deatils">
+                            <a href="javascript:void(0);" rel="popover" className="pover" data-popover-content="#myPopover" data-original-title="" title=""><i className="ci pe-7s-info pe-2x"></i></a>
+                    </div>*/}
+                    <div id="myPopover" className="pop_box hide">
+                    <p>Info</p>
+                    </div>
+                    </div>
+                    </div>
+
+                </div>
+                
+                
+                <div class="col-md-4">
+
+                
+                <div className="app-block"> 
+                    <Link onClick={this.gotoAppsList.bind(this,APPID5,APPNAME5)} className="app-link" to='/apps-stock-advisor'>
+
+                    <div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
+                        <img src={STATIC_URL + "assets/images/app_sifiSignal_icon.png"} className="img-responsive"/>
+                    </div>
+                    <div className="col-md-8 col-sm-9 col-xs-7">
+                        <h4>Asset Health Prediction</h4>
+                        <p>
+                       Triangulate sensor data to analyze and predict the health deterioration in devices.
+                        </p>
+                    </div>
+                    <div class="clearfix"></div>
+                    </Link>
+
+                    <div className="card-footer">
+                    <ul className="app_labels">
+                        <li><a href="#"><i className="fa fa-tag"></i> Manufacturing</a></li>
+                        <li><a href="#"><i className="fa fa-tag"></i> IOT</a></li>
+                    </ul>
+
+                {/*<div className="card-deatils">
+                        <a href="javascript:void(0);" rel="popover" className="pover" data-popover-content="#myPopover" data-original-title="" title=""><i className="ci pe-7s-info pe-2x"></i></a>
+                </div>*/}
+                <div id="myPopover" className="pop_box hide">
+                <p>Info</p>
+                </div>
+                </div>
+                </div>
+
+            </div>
+            
+            
+            <div class="col-md-4">
+
+                
+                <div className="app-block"> 
+                    <Link onClick={this.gotoAppsList.bind(this,APPID2,APPNAME2)} className="app-link" to="/apps/2/models">
+
+                    <div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
+                        <img src={STATIC_URL + "assets/images/app_empAttrition_icon.png"} className="img-responsive"/>
+                    </div>
+                    <div className="col-md-8 col-sm-9 col-xs-7">
+                        <h4>Employee Attrition</h4>
+                        <p>
+                      Analyse employee behavior over a period of time and predict who are the likely candidates for attrition.
+                        </p>
+                    </div>
+                    <div class="clearfix"></div>
+                    </Link>
+
+                    <div className="card-footer">
+                    <ul className="app_labels">
+                        <li><a href="#"><i className="fa fa-tag"></i> Human Resources</a></li>
+                    </ul>
+
+                {/*<div className="card-deatils">
+                        <a href="javascript:void(0);" rel="popover" className="pover" data-popover-content="#myPopover" data-original-title="" title=""><i className="ci pe-7s-info pe-2x"></i></a>
+                </div>*/}
+                <div id="myPopover" className="pop_box hide">
+                <p>Info</p>
+                </div>
+                </div>
+                </div>
+
+            </div>
+            
+                </div>
+				
+				
+				
+				
 		   </div>
 		   
 		   

@@ -18,7 +18,7 @@ const err = (store) => (next) => (action) => {
       bootbox.alert("Session has expired.",function(){
     	  sessionStorage.clear();
     	  cookieObj.clearCookies();
-    	 // window.history.replaceState(null,null,"/login");
+    	  location.reload();
       })
       
     }else{
