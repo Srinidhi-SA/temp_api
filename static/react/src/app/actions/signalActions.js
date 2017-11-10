@@ -112,6 +112,8 @@ function fetchCreateSignalError(json) {
 }
 
 export function getList(token,pageNo) {
+    
+    console.log("Testing API ############################################################"+API_GLOBAL)
     return (dispatch) => {
     return fetchPosts(token,pageNo).then(([response, json]) =>{
         if(response.status === 200){

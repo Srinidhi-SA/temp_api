@@ -32,6 +32,7 @@ export class AppsModelDetail extends React.Component {
 		    this.props.dispatch(getAppsModelSummary(this.props.match.params.slug));  
 		    this.props.dispatch(updateModelSlug(this.props.match.params.slug));
 		}
+		 
 	}
   
   componentDidMount() {
@@ -41,6 +42,9 @@ export class AppsModelDetail extends React.Component {
 	  }else{
 		  this.props.dispatch(getAppsModelSummary(store.getState().apps.modelSlug));
 	  }
+  }
+  componentDidUpdate(){
+      $(".chart-data-icon").next("div").next("div").removeClass("col-md-7 col-md-offset-2").addClass("col-md-10")
   }
   render() {
     console.log("apps Model Detail View is called##########3");
