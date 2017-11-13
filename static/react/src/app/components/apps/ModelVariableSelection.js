@@ -81,7 +81,7 @@ export class ModelVariableSelection extends React.Component {
                 <div className="row">			          
                 <div className="col-lg-12">
                 <div className="form-group">
-                <div className="col-lg-2"><label>I want to analyse</label></div>
+                <div className="col-lg-2"><label>I want to predict</label></div>
                 <div className="col-lg-4"> {renderSelectBox}</div>
                 </div>
                 </div>{/*<!-- /.col-lg-4 -->*/}
