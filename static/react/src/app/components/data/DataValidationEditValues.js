@@ -80,10 +80,13 @@ export class DataValidationEditValues extends React.Component {
 	  let dataSetColumnRemoveValues = this.props.dataSetColumnRemoveValues;
 	  let dataSetColumnReplaceValues = this.props.dataSetColumnReplaceValues;
 	  const templateTextBoxes = dataSetColumnRemoveValues.map((data,id) =>{
-		  replaceTypeList  = (function(){
-				 var optionValues = that.renderReplaceList(that.columnData.slug,that.columnData.name,that.columnData.columnSetting,data.replaceType);
-			    return optionValues;
-			 })();
+		if(that.columnData != null){
+		 
+		    replaceTypeList  = (function(){
+                var optionValues = that.renderReplaceList(that.columnData.slug,that.columnData.name,that.columnData.columnSetting,data.replaceType);
+               return optionValues;
+            })();
+		} 
 		  return (<div className="form-group" id={data.id}>
 			<label for="fl1" className="col-sm-1 control-label"><b>{id+1}.</b></label>
 			<div className="col-sm-4">
@@ -98,10 +101,12 @@ export class DataValidationEditValues extends React.Component {
 			</div>);
 	  });
 	 const replaceTextBoxes = dataSetColumnReplaceValues.map((data,id) =>{
-		 replaceTypeList  = (function(){
+	     if(that.columnData != null){
+	     replaceTypeList  = (function(){
 			 var optionValues = that.renderReplaceList(that.columnData.slug,that.columnData.name,that.columnData.columnSetting,data.replaceType);
 		    return optionValues;
 		 })();
+	     }
 		  return (<div className="form-group" id={data.replaceId}>
 			<label for="fl1" className="col-sm-1 control-label"><b>{id+1}.</b></label>
 			<div className="col-sm-3">

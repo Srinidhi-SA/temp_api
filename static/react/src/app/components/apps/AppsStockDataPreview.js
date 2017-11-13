@@ -7,7 +7,7 @@ import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {connect} from "react-redux";
 import {APPID1,APPID2,APPID3,APPNAME1,APPNAME2,APPNAME3} from "../../helpers/helper.js"
-import {hideDataPreviewRightPanels,updateUploadStockPopup,getConceptsList} from "../../actions/appActions";
+import {hideDataPreviewRightPanels,updateUploadStockPopup,getConceptsList,updateStockSlug} from "../../actions/appActions";
 import {STATIC_URL} from "../../helpers/env.js"
 import {isEmpty} from "../../helpers/helper";
 import {getStockDataSetPreview} from "../../actions/dataActions";
@@ -33,6 +33,7 @@ export class AppsStockDataPreview extends React.Component {
   componentWillMount(){
 	  if (this.props.dataPreview == null || isEmpty(this.props.dataPreview)||this.props.dataPreview.status == 'FAILED') {
 		  this.props.dispatch(getStockDataSetPreview(this.props.match.params.slug));
+		  this.props.dispatch(updateStockSlug(this.props.match.params.slug));
 	  }
   }
   componentDidMount(){
