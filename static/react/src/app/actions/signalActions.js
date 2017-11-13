@@ -323,7 +323,7 @@ export function handleRename(slug,dialog,name){
 function showRenameDialogBox(slug,dialog,dispatch,name){
 	 const customBody = (
 		      <div className="form-group">
-		      <label for="fl1" className="col-sm-6 control-label">Enter Signal New Name</label>
+		      <label for="fl1" className="control-label">Enter Signal New Name</label>
 		      <input className="form-control"  id="idRenameSignal" type="text" defaultValue={name}/>
 		      </div>
 		    )
