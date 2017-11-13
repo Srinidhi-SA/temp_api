@@ -22,8 +22,10 @@ export default function(divId){
 
    var n = 100;
   var counts= $("."+divId).find('tbody td').not('.stats-title').map(function() {
-      if($(this).text() != '')
-        return parseFloat($(this).attr("value"));
+      if($(this).attr("value") == undefined)
+        return parseFloat($(this).html());
+      else
+          return parseFloat($(this).attr("value"));
         // .replace('%','').trim()
     }).get();
 
