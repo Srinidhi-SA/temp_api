@@ -182,15 +182,18 @@ def get_profile_image(request, slug=None):
     from django.http import HttpResponse
     import os
 
-    image = profile.photo
-    image_buffer = open(
-        name=image.path,
-        mode="rb"
-    ).read()
-    content_type = magic.from_buffer(image_buffer, mime=True)
-    response = HttpResponse(image_buffer, content_type=content_type)
-    response['Content-Disposition'] = 'attachment; filename="%s"' % os.path.basename(image.path)
-    return response
+    try:
+        image = profile.photo
+        image_buffer = open(
+            name=image.path,
+            mode="rb"
+        ).read()
+        content_type = magic.from_buffer(image_buffer, mime=True)
+        response = HttpResponse(image_buffer, content_type=content_type)
+        response['Content-Disposition'] = 'attachment; filename="%s"' % os.path.basename(image.path)
+        return response
+    except Exception as err:
+        return Response({'message': 'No Image. Upload an image.'})
 
 
 class UserProfileView(generics.CreateAPIView, generics.UpdateAPIView):
