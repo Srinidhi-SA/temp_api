@@ -682,7 +682,7 @@ export function handleRename(slug,dialog,name){
 function showRenameDialogBox(slug,dialog,dispatch,name){
 	const customBody = (
 			<div className="form-group">
-			<label for="fl1" className="control-label">Enter Dataset New Name</label>
+			<label for="fl1" className="control-label">Enter a new  Name</label>
 			<input className="form-control"  id="idRenameDataset" type="text" defaultValue={name}/>
 			</div>
 	)
@@ -925,7 +925,7 @@ export function updateSubSetting(updatedSubSetting){
 export function renameMetaDataColumn(dialog,colName,colSlug,dispatch,actionName){
 	const customBody = (
 			<div className="form-group">
-			<label for="fl1" className="control-label">Enter New Name : </label>
+			<label for="fl1" className="control-label">Enter a new Name</label>
 			<input className="form-control"  id="idRenameMetaCloumn" type="text" defaultValue={colName}/>
 			</div>
 	)

@@ -770,7 +770,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 	export function handleModelRename(slug,dialog,name){
 		const customBody = (
 				<div className="form-group">
-				<label for="fl1" className="control-label">Enter Model New Name</label>
+				<label for="fl1" className="control-label">Enter a new Name</label>
 				<input className="form-control"  id="idRenameModel" type="text" defaultValue={name}/>
 				</div>
 		)
@@ -863,7 +863,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 	export function handleScoreRename(slug,dialog,name){
 		const customBody = (
 				<div className="form-group">
-				<label for="fl1" className="control-label">Enter Score New Name</label>
+				<label for="fl1" className="control-label">Enter a new Name</label>
 				<input className="form-control"  id="idRenameScore" type="text" defaultValue={name}/>
 				</div>
 		)
@@ -938,7 +938,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 	export function handleInsightRename(slug,dialog,name){
 		const customBody = (
 				<div className="form-group">
-				<label for="fl1" className="control-label">Enter Insight New Name</label>
+				<label for="fl1" className="control-label">Enter a new Name</label>
 				<input className="form-control"  id="idRenameInsight" type="text" defaultValue={name}/>
 				</div>
 		)
