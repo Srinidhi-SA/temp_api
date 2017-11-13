@@ -56,7 +56,9 @@ def convert_crawled_data_to_metadata_format(news_data, other_details=None):
         "sampleData": sampleData,
         "columnData": columnData,
         "metaData": metaData,
-        "transformation_settings": {}
+        "transformation_settings": {
+            "existingColumns": []
+        }
     }
 
 
