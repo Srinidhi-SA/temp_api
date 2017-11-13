@@ -454,26 +454,50 @@ def move_css_from_react_css_to_static_assets_css(type='development'):
 def restart_jobserver(branch="development"):
 
     key_file = BASE_DIR + "/config/keyfiles/TIAA.pem"
-    username = 'hadoop'
-    host = '34.205.203.38'
-    port = '8090'
+
+    if "development" == branch:
+        username = 'hadoop'
+        host = '34.205.203.38'
+        port = '8090'
+    else:
+        username = 'hadoop'
+        host = '174.129.163.0'
+        port = '8090'
     env.key_filename=[key_file]
     env.host_string="{0}@{1}".format(username, host)
 
-    run('ls')
+    server_start_process_id = sudo("netstat -nlp |grep 8090| awk  '{print $7}' |cut -f1 -d'/'")
+    print server_start_process_id, type(server_start_process_id), str(server_start_process_id),
 
-    run('/tmp/job-server_base/server_stop.sh')
-    sudo('/tmp/job-server_base/server_start.sh')
+    capture = run('/tmp/job-server/server_stop.sh')
+
+    if files.exists('/tmp/job-server/spark-jobserver.pid'):
+        run("rm /tmp/job-server/spark-jobserver.pid")
     import time
-    time.sleep(2)
-    with cd('/tmp/job-server'):
-        run('''curl -X POST {0}:{1}/contexts/{2}?context-factory=spark.jobserver.python.PythonSQLContextFactory
-                '''.format(
-                        host,
-                        port
-                        ,'pysql-context'
-                    )
-        )
+    time.sleep(10)
+    if "Job server not running" in capture:
+        if str(server_start_process_id) == "" :
+            pass
+        else:
+            print "killing server_start_process_id"
+            print "command to kill"
+            print "-------"
+            print "kill -9 {0}".format(server_start_process_id)
+            print "-------"
+            kill_capture = sudo("kill -9 {0}".format(server_start_process_id))
+
+
+    output=sudo('cd /tmp/job-server && /bin/bash server_start.sh', pty=False)
+
+    time.sleep(5)
+
+    run('''curl -X POST "{0}:{1}/contexts/{2}?context-factory=spark.jobserver.python.PythonSQLContextFactory"
+            '''.format(
+        host,
+        port
+        , 'pysql-context'
+    )
+    )
 
 
 
