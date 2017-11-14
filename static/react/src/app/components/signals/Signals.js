@@ -3,7 +3,14 @@ import {connect} from "react-redux";
 import ReactDOM from "react-dom";
 import {Link} from "react-router-dom";
 import store from "../../store";
-import {getList, emptySignalAnalysis, handleDelete, handleRename, storeSearchElement,storeSortElements} from "../../actions/signalActions";
+import {
+  getList,
+  emptySignalAnalysis,
+  handleDelete,
+  handleRename,
+  storeSearchElement,
+  storeSortElements
+} from "../../actions/signalActions";
 import {
   Pagination,
   Tooltip,
@@ -18,13 +25,20 @@ import Breadcrumb from 'react-breadcrumb';
 var dateFormat = require('dateformat');
 import {CreateSignal} from "./CreateSignal";
 import {STATIC_URL} from "../../helpers/env";
-import {SEARCHCHARLIMIT,getUserDetailsOrRestart} from  "../../helpers/helper"
+import {SEARCHCHARLIMIT, getUserDetailsOrRestart} from "../../helpers/helper"
 import Dialog from 'react-bootstrap-dialog';
 import {DetailOverlay} from "../common/DetailOverlay";
 import {getAllDataList} from "../../actions/dataActions";
 
 @connect((store) => {
-  return {login_response: store.login.login_response, signalList: store.signals.signalList.data, selectedSignal: store.signals.signalAnalysis, signal_search_element: store.signals.signal_search_element, signal_sorton:store.signals.signal_sorton,signal_sorttype:store.signals.signal_sorttype};
+  return {
+    login_response: store.login.login_response,
+    signalList: store.signals.signalList.data,
+    selectedSignal: store.signals.signalAnalysis,
+    signal_search_element: store.signals.signal_search_element,
+    signal_sorton: store.signals.signal_sorton,
+    signal_sorttype: store.signals.signal_sorttype
+  };
 })
 
 export class Signals extends React.Component {
@@ -40,6 +54,10 @@ export class Signals extends React.Component {
       this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, pageNo));
     } else
       this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, pageNo));
+
+      // if(this.props.signal_search_element==""){
+      //   this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, 1));
+      // }
     }
 
   componentDidMount() {
@@ -67,9 +85,9 @@ export class Signals extends React.Component {
   handleSelect(eventKey) {
     if (this.props.signal_search_element) {
       this.props.history.push('/signals?search=' + this.props.signal_search_element + '&page=' + eventKey + '');
-    } else if(this.props.signal_sorton){
-	     this.props.history.push('/signals?sort=' + this.props.signal_sorton +'&type='+this.props.signal_sorttype+'&page=' + eventKey + '');
-	}else
+    } else if (this.props.signal_sorton) {
+      this.props.history.push('/signals?sort=' + this.props.signal_sorton + '&type=' + this.props.signal_sorttype + '&page=' + eventKey + '');
+    } else
       this.props.history.push('/signals?page=' + eventKey + '');
     this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, eventKey));
   }
@@ -84,11 +102,11 @@ export class Signals extends React.Component {
       this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, 1));
     }
   }
-  doSorting(sortOn, type){
-	     this.props.history.push('/signals?sort=' + sortOn + '&type='+type);
+  doSorting(sortOn, type) {
+    this.props.history.push('/signals?sort=' + sortOn + '&type=' + type);
 
-	 this.props.dispatch(storeSortElements(sortOn,type));
-	this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, 1));
+    this.props.dispatch(storeSortElements(sortOn, type));
+    this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, 1));
   }
 
   handleDelete(slug) {
@@ -131,9 +149,9 @@ export class Signals extends React.Component {
       if (search_element)
         document.getElementById('search_signals').value = "";
       }
-	  if(this.props.location.sort == "" || this.props.location.sort == null){
-		  this.props.dispatch(storeSortElements("",null));
-	  }
+    if (this.props.location.sort == "" || this.props.location.sort == null) {
+      this.props.dispatch(storeSortElements("", null));
+    }
     //search element ends..
 
     console.log(this.props);
@@ -225,45 +243,53 @@ export class Signals extends React.Component {
                 <li class="active">Sales Performance Report</li>
               </ol> -->*/}
 
-              <div class="row">
-                <div class="col-md-8">
-                  <h4>Signals</h4>
-                </div>
-                <div class="col-md-4">
-                  <div class="input-group pull-right">
-<div className="search-wrapper">
-	<form>
-                    <input type="text" name="search_signals" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search Signals" id="search_signals" className="form-control search-box" placeholder="Search signals..." required />
+            <div class="row">
+              <div class="col-md-8">
+                <h4>Signals</h4>
+              </div>
+              <div class="col-md-4">
+                <div class="input-group pull-right">
+                  <div className="search-wrapper">
+                    {/*<form>*/}
+                    <input type="text" name="search_signals" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search Signals" id="search_signals" className="form-control search-box" placeholder="Search signals..." required/>
                     <button className="close-icon" type="reset"></button>
-					</form>
-					</div>
-                      <span class="input-group-btn">
-                      {/*<button type="button" class="btn btn-default" title="Select All Card">
+                    {/*</form>*/}
+                  </div>
+                  <span class="input-group-btn">
+                    {/*<button type="button" class="btn btn-default" title="Select All Card">
                         <i class="fa fa-address-card-o fa-lg"></i>
                       </button>*/}
-                      <button type="button" data-toggle="dropdown" title="Sorting" class="btn btn-default dropdown-toggle" aria-expanded="false">
-                        <i class="fa fa-sort-alpha-asc fa-lg"></i> <span class="caret"></span>
-                      </button>
-                      <ul role="menu" class="dropdown-menu dropdown-menu-right">
-                        <li>
-                          <a href="#" onClick={this.doSorting.bind(this,'name','asc')}><i class="fa fa-sort-alpha-asc" aria-hidden="true"></i> Name Ascending</a>
-                        </li>
-                        <li>
-                          <a href="#" onClick={this.doSorting.bind(this,'name','desc')}><i class="fa fa-sort-alpha-desc" aria-hidden="true"></i> Name Descending</a>
-                        </li>
-                        <li>
-                          <a href="#" onClick={this.doSorting.bind(this,'created_at','asc')}><i class="fa fa-sort-numeric-asc" aria-hidden="true"></i> Date Ascending</a>
-                        </li>
-                        <li>
-                          <a href="#" onClick={this.doSorting.bind(this,'created_at','desc')}><i class="fa fa-sort-numeric-desc" aria-hidden="true"></i> Date Descending</a>
-                        </li>
-                      </ul>
-                    </span>
-                  </div>
-
+                    <button type="button" data-toggle="dropdown" title="Sorting" class="btn btn-default dropdown-toggle" aria-expanded="false">
+                      <i class="fa fa-sort-alpha-asc fa-lg"></i>
+                      <span class="caret"></span>
+                    </button>
+                    <ul role="menu" class="dropdown-menu dropdown-menu-right">
+                      <li>
+                        <a href="#" onClick={this.doSorting.bind(this, 'name', 'asc')}>
+                          <i class="fa fa-sort-alpha-asc" aria-hidden="true"></i>
+                          Name Ascending</a>
+                      </li>
+                      <li>
+                        <a href="#" onClick={this.doSorting.bind(this, 'name', 'desc')}>
+                          <i class="fa fa-sort-alpha-desc" aria-hidden="true"></i>
+                          Name Descending</a>
+                      </li>
+                      <li>
+                        <a href="#" onClick={this.doSorting.bind(this, 'created_at', 'asc')}>
+                          <i class="fa fa-sort-numeric-asc" aria-hidden="true"></i>
+                          Date Ascending</a>
+                      </li>
+                      <li>
+                        <a href="#" onClick={this.doSorting.bind(this, 'created_at', 'desc')}>
+                          <i class="fa fa-sort-numeric-desc" aria-hidden="true"></i>
+                          Date Descending</a>
+                      </li>
+                    </ul>
+                  </span>
                 </div>
-              </div>
 
+              </div>
+            </div>
 
             <div class="clearfix"></div>
           </div>
