@@ -14696,7 +14696,16 @@ html{
     overflow-x: auto;
 }
 
-.table-style table th {
+.table-style_1 {
+    /* margin-top: 1.8%; */
+    /* padding-left: 10%; */
+    /* padding-right: 10%; */
+    max-width: 70%;
+    overflow-x: auto;
+    margin: 0 auto;
+}
+
+.table-style table th, table-style_1 table th{
 	font-weight:bold !important;
 }
 
