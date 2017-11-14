@@ -7,6 +7,7 @@ import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
 import HeatMap from '../../helpers/heatmap';
 import {generateHeaders,generateNormalTableRows} from "../../helpers/helper";
+import { Scrollbars } from 'react-custom-scrollbars';
 
 export class NormalTable extends React.Component {
   constructor(){
@@ -19,10 +20,12 @@ export class NormalTable extends React.Component {
    var headerComponents = generateHeaders(data);
    var rowComponents = generateNormalTableRows(data);
    return (
+           <div className="table-style_1">
            <table className="table table-bordered idDecisionTreeTable">
                <thead><tr>{headerComponents}</tr></thead>
                <tbody>{rowComponents}</tbody>
            </table>
+           </div>
        );
   }
 }

@@ -95,7 +95,8 @@ const DATA_TYPE = "data_type";
 const REMOVE = "remove";
 const CURRENTVALUE = "current value";
 const NEWVALUE = "new value";
-const TEXTHEATMAPTABLE = "textHeatMapTable"
+const TEXTHEATMAPTABLE = "textHeatMapTable";
+const DEFAULTANALYSISVARIABLES = "high"
 
 
 export function generateHeaders(table) {
@@ -191,7 +192,7 @@ export function  generateNormalTableRows(table) {
 		if(i != 0){
 			var rows = rowData.map(function(colData,j) {
 				if(j == 0 || j == 1)
-	  	           return<td key={j} width="15%">{colData}</td>;
+	  	           return<td key={j}>{colData}</td>;
 
 	  	           else
 	  	        	return<td key={j}>{colData}</td>;
@@ -380,6 +381,7 @@ export{
 	TEXTHEATMAPTABLE,
 	APPSLOADERPERVALUE,
 	USERDETAILS,
+	DEFAULTANALYSISVARIABLES,
 	}
 export function capitalizeArray(array){
   let a =[]
