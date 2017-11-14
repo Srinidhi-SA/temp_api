@@ -1084,7 +1084,7 @@ def job_submission(
 
     # Submitting JobServer
     from utils import submit_job
-
+    from smtp_email import send_jobserver_error
     try:
         job_url = submit_job(
             slug=job.slug,
@@ -1100,6 +1100,7 @@ def job_submission(
     except Exception as exc:
         print "Unable to submit job."
         print exc
+        send_jobserver_error(exc)
         return None
 
     return job
