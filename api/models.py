@@ -596,8 +596,14 @@ class Insight(models.Model):
     def create_configuration_meta_data(self):
         return {}
 
-    def get_list_of_scripts_to_run(self):
-        pass
+    def get_list_of_scripts_to_run(self, analysis_list):
+        analysis_list_sequence = settings.ANALYSIS_LIST_SEQUENCE
+        temp_list = []
+        for item in analysis_list_sequence:
+            if item in analysis_list:
+                temp_list.append(item)
+        return temp_list
+
 
     def get_brief_info(self):
         brief_info = dict()
@@ -614,7 +620,7 @@ class Insight(models.Model):
             if 'FILE_SETTINGS' in config:
                 file_setting = config['FILE_SETTINGS']
                 brief_info.update({
-                    'analysis list': set(file_setting.get('script_to_run'))
+                    'analysis list': self.get_list_of_scripts_to_run(list(set(file_setting.get('script_to_run'))))
                 })
 
         brief_info.update(

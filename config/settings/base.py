@@ -736,3 +736,12 @@ CONCEPTS = {'corporate': ['leadership change', 'public relations'],
   'market share',
   'risks & inhibitors',
   'product performance']}
+
+ANALYSIS_LIST_SEQUENCE = [
+    "Overview",
+    "Trend",
+    "Association"
+    "Performance",
+    "Influencers",
+    "Prediction"
+]
