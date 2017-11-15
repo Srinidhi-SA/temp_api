@@ -745,3 +745,5 @@ ANALYSIS_LIST_SEQUENCE = [
     "Influencers",
     "Prediction"
 ]
+
+ML_SECRET_KEY = 'GETMETADATAOBJECT'
