@@ -4541,3 +4541,28 @@ def get_metadata_for_mlscripts(request, slug=None):
             'headers': meta_data.get('headers')
         },
     })
+
+
+@csrf_exempt
+def get_score_data_and_return_top_n(request):
+
+    url = request.GET['url']
+    count = request.GET['count']
+    if count is None:
+        count = 100
+    try:
+        if int(count) < 10:
+            count = 100
+        else:
+            count = int(count)
+    except:
+        count = 100
+    import requests
+    data = requests.get(url)
+    text_data = data.text
+    csv_data = text_data.split('\n')
+
+    return JsonResponse({
+        'Message': 'Success',
+        'csv_data': csv_data[:count]
+    })
