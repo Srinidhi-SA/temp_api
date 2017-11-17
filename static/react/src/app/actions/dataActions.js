@@ -1,6 +1,6 @@
 import React from "react";
 import {API} from "../helpers/env";
-import {PERPAGE,DULOADERPERVALUE,DEFAULTINTERVAL,SUCCESS,FAILED,getUserDetailsOrRestart} from "../helpers/helper";
+import {PERPAGE,DULOADERPERVALUE,DEFAULTINTERVAL,SUCCESS,FAILED,getUserDetailsOrRestart,DEFAULTANALYSISVARIABLES} from "../helpers/helper";
 import store from "../store";
 import {dataPreviewInterval,dataUploadLoaderValue,clearLoadingMsg} from "./dataUploadActions";
 import {closeAppsLoaderValue} from "./appActions";
@@ -358,7 +358,7 @@ export function selectedAnalysisList(evt,noOfColumnsToUse){
 						}else{
 							//when main analysis is checked , low parameter should be checked as default
 							for(var j=0;j<analysisList[i].noOfColumnsToUse.length;j++){
-								 if(analysisList[i].noOfColumnsToUse[j].name == "low"){
+								 if(analysisList[i].noOfColumnsToUse[j].name == DEFAULTANALYSISVARIABLES){
 										analysisList[i].noOfColumnsToUse[j].status = evt.target.checked;	
 									}
 								}
@@ -431,7 +431,7 @@ export function selectAllAnalysisList(flag){
 							analysisList[i].noOfColumnsToUse[j].status = flag;		
 						} 
 				 }else{
-					 if(analysisList[i].noOfColumnsToUse[j].name == "low"){
+					 if(analysisList[i].noOfColumnsToUse[j].name == DEFAULTANALYSISVARIABLES){
 							analysisList[i].noOfColumnsToUse[j].status = flag;	
 						}else{
 							analysisList[i].noOfColumnsToUse[j].status = false;		

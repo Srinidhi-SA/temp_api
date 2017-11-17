@@ -19,6 +19,7 @@ from StockAdvisor.crawling.crawl_util import crawl_extract, \
     generate_urls_for_historic_data
 from api.helper import convert_json_object_into_list_of_object
 from api.lib import hadoop, fab_helper
+THIS_SERVER_DETAILS = settings.THIS_SERVER_DETAILS
 
 # Create your models here.
 
@@ -461,6 +462,7 @@ class Insight(models.Model):
 
         jobConfig = self.generate_config(*args, **kwargs)
         print "Dataset realted config genarated."
+        print jobConfig
 
         job = job_submission(
             instance=self,
@@ -555,7 +557,21 @@ class Insight(models.Model):
 
         return {
             'script_to_run': script_to_run,
-            'inputfile': [self.dataset.get_input_file()]
+            'inputfile': [self.dataset.get_input_file()],
+            'metadata': self.get_metadata_url_config()
+        }
+
+    def get_metadata_url_config(self):
+
+        ip_port = "{0}:{1}".format(THIS_SERVER_DETAILS.get('host'),
+                                                                    THIS_SERVER_DETAILS.get('port'))
+        url = "/api/get_metadata_for_mlscripts/"
+        slug_list = [
+            self.dataset.slug
+        ]
+        return {
+            "url": ip_port + url,
+            "slug_list": slug_list
         }
 
     def create_configuration_column_settings(self):
@@ -596,8 +612,14 @@ class Insight(models.Model):
     def create_configuration_meta_data(self):
         return {}
 
-    def get_list_of_scripts_to_run(self):
-        pass
+    def get_list_of_scripts_to_run(self, analysis_list):
+        analysis_list_sequence = settings.ANALYSIS_LIST_SEQUENCE
+        temp_list = []
+        for item in analysis_list_sequence:
+            if item in analysis_list:
+                temp_list.append(item)
+        return temp_list
+
 
     def get_brief_info(self):
         brief_info = dict()

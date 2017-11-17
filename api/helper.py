@@ -1,6 +1,8 @@
 from django.conf import settings
 
 from math import floor, log10
+import uuid
+import md5
 
 JOBSERVER = settings.JOBSERVER
 THIS_SERVER_DETAILS = settings.THIS_SERVER_DETAILS
@@ -983,6 +985,42 @@ def get_message(instance):
     ac = AccessFeedbackMessage()
     return ac.get_using_obj(instance)
 
+
+from functools import wraps
+from django.http import JsonResponse
+
+
+def auth_for_ml(func):
+
+    def another_function(*args, **kwargs):
+        request = args[0]
+        key1 = request.GET['key1']
+        key2 = request.GET['key2']
+        secretKey = request.GET['secretKey']
+        json_obj = {
+            "key1": key1,
+            "key2": key2
+        }
+        generated_key = generate_signature(json_obj)
+        if secretKey == generated_key:
+            return func(*args, **kwargs)
+        else:
+            return JsonResponse({'Message': 'Auth failed'})
+
+    return another_function
+
+
+def generate_signature(json_obj):
+    """
+    json_obj = json obj with {"key1":"DSDDD","key2":"DASDAA","signature":None}
+    secretKey = secret key kknown to ML and API Codebase
+    """
+    secretKey = settings.ML_SECRET_KEY
+    existing_key = json_obj["key1"]+"|"+json_obj["key2"]+"|"+secretKey
+    newhash = md5.new()
+    newhash.update(existing_key)
+    value = newhash.hexdigest()
+    return value
 
 
 

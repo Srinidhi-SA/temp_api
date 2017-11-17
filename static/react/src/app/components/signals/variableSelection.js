@@ -129,6 +129,7 @@ export class VariableSelection extends React.Component {
 		if (this.props.dataPreview == null) {
 			this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
 		}
+		this.props.dispatch(closeCsLoaderModal())
 	}
 
 	componentDidMount(){

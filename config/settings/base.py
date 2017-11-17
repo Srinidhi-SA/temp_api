@@ -388,7 +388,7 @@ JOBSERVER_STATUS = {
     'KILLED': 'FAILED'
 }
 
-UI_VERSION = "v2.1_4"
+UI_VERSION = "v2.1_7"
 
 
 
@@ -736,3 +736,14 @@ CONCEPTS = {'corporate': ['leadership change', 'public relations'],
   'market share',
   'risks & inhibitors',
   'product performance']}
+
+ANALYSIS_LIST_SEQUENCE = [
+    "Overview",
+    "Trend",
+    "Association"
+    "Performance",
+    "Influencers",
+    "Prediction"
+]
+
+ML_SECRET_KEY = 'GETMETADATAOBJECT'
