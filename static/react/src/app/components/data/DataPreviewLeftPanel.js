@@ -21,7 +21,7 @@ export class DataPreviewLeftPanel extends React.Component {
 	constructor(props) {
 		super(props);
 	}
-	 componentDidMount(){
+	 componentWillMount(){
 	     if(!isEmpty(this.props.scoreCSVData)){
 	         this.props.dispatch(getScoreSummaryInCSV(this.props.match.params.slug))   
 	     }

@@ -1,5 +1,5 @@
 
-import {API} from "../helpers/env";
+import {API,EMR} from "../helpers/env";
 import {PERPAGE,isEmpty,getUserDetailsOrRestart} from "../helpers/helper";
 import store from "../store";
 import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,CUSTOMERDATA,HISTORIALDATA,EXTERNALDATA,DELETEMODEL,
@@ -429,7 +429,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 	    }
 	}
 	function fetchScoreSummaryInCSV(token,slug) {
-        return fetch(API+'/api/get_score_data_and_return_top_n/?url=http://174.129.163.0:8001/'+slug+'/data.csv&count=11',{
+        return fetch(API+'/api/get_score_data_and_return_top_n/?url='+EMR+'/'+slug+'/data.csv&count=100',{
             method: 'get',
             headers: getHeader(token)
         }).then( response => Promise.all([response, response.json()]));

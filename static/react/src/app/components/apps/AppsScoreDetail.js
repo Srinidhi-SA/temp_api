@@ -7,10 +7,11 @@ import {AppsCreateScore} from "./AppsCreateScore";
 import {Card} from "../signals/Card";
 import {getListOfCards,getAppsScoreSummary,getScoreSummaryInCSV} from "../../actions/appActions";
 import {Button} from "react-bootstrap";
-import {STATIC_URL} from "../../helpers/env.js";
+import {STATIC_URL,EMR} from "../../helpers/env.js";
 import {isEmpty} from "../../helpers/helper";
 import {API} from "../../helpers/env";
 import {Link} from "react-router-dom";
+
 
 @connect((store) => {
 	return {login_response: store.login.login_response, 
@@ -100,7 +101,7 @@ export class AppsScoreDetail extends React.Component {
                            </div>
 		                    <div className="col-md-1">
 		                   	
-		                    	<a  href={'http://174.129.163.0:8001/'+store.getState().apps.scoreSlug+'/data.csv'}id="download" className="btn btn-primary" download>Download</a>
+		                    	<a  href={''+EMR+'/'+store.getState().apps.scoreSlug+'/data.csv'}id="download" className="btn btn-primary" download>Download</a>
 		                   </div>
 		                   </div>
 		             </div>
