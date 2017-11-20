@@ -51,8 +51,8 @@ export class Data extends React.Component {
   componentWillMount() {
     var pageNo = 1;
     this.props.dispatch(storeSignalMeta(null, this.props.match.url));
-    if (this.props.history.location.pathname.indexOf("page") != -1) {
-      pageNo = this.props.history.location.pathname.split("page=")[1];
+    if (this.props.history.location.search.indexOf("page") != -1) {
+      pageNo = this.props.history.location.search.split("page=")[1];
       this.props.dispatch(getDataList(pageNo));
     } else
       this.props.dispatch(getDataList(pageNo));

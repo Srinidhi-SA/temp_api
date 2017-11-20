@@ -39,8 +39,8 @@ import Dialog from 'react-bootstrap-dialog'
 			console.log(this.props.history);
 
 			var pageNo = 1;
-			if(this.props.history.location.pathname.indexOf("page") != -1){
-				pageNo = this.props.history.location.pathname.split("page=")[1];
+			if(this.props.history.location.search.indexOf("page") != -1){
+				pageNo = this.props.history.location.search.split("page=")[1];
 				this.props.dispatch(getAppsModelList(pageNo));
 			}else{
 				this.props.dispatch(getAppsModelList(pageNo));

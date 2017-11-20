@@ -404,6 +404,37 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 			data,
 		}
 	}
+	export function emptyScoreCSVData(){
+	    var data = {};
+	    data.csv_data = [];
+	    fetchScoreSummarySuccess(data);
+	}
+	export function fetchScoreSummaryCSVSuccess(data){
+        return {
+            type: "SCORE_SUMMARY_CSV_DATA",
+            data,
+        }
+    }
+	export function getScoreSummaryInCSV(slug){
+	    return (dispatch) => {
+	        return fetchScoreSummaryInCSV(getUserDetailsOrRestart.get().userToken,slug).then(([response, json]) =>{
+	            if(response.status === 200){
+	                dispatch(fetchScoreSummaryCSVSuccess(json));
+	            }else{
+	                dispatch(fetchScoreSummaryError(json));
+	            }    
+	            
+	        });  
+	        
+	    }
+	}
+	function fetchScoreSummaryInCSV(token,slug) {
+        return fetch(API+'/api/get_score_data_and_return_top_n/?url=http://174.129.163.0:8001/'+slug+'/data.csv&count=11',{
+            method: 'get',
+            headers: getHeader(token)
+        }).then( response => Promise.all([response, response.json()]));
+    }
+
 	export function updateSelectedApp(appId,appName){
 		return {
 			type: "SELECTED_APP_DETAILS",

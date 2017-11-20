@@ -55,10 +55,10 @@ export class AdvanceSettings extends React.Component {
 		this.props.dispatch(selectedAnalysisList(evt.target,"trend"))
 	}
 	renderAllAnalysisList(analysisList,trendSettings){
-		let performancePlaceholder = "0-"+store.getState().datasets.dataSetDimensions.length;
-		let influencersPlaceholder = "0-"+ (store.getState().datasets.dataSetMeasures.length -1);
+	
 		let associationPlaceholder = "0-"+ store.getState().datasets.dataSetDimensions.length;
-
+		let customMaxValue = store.getState().datasets.dataSetDimensions.length;
+		
 		var that = this;
 		let list =   analysisList.map((metaItem,metaIndex) =>{
 			let id = "chk_analysis_advance"+ metaIndex;
@@ -109,7 +109,10 @@ export class AdvanceSettings extends React.Component {
 							</li>)
 				}//end of trendsetting check
 			}else{
-
+			    if(metaItem.name.indexOf("influencer") != -1){
+			      associationPlaceholder = "0-"+ (store.getState().datasets.dataSetMeasures.length -1);
+			      customMaxValue = store.getState().datasets.dataSetMeasures.length -1;
+			    }
 				var countOptions=null, options=[],customValueInput=null,customInputDivClass="col-md-5 md-p-0 visibilityHidden";
 				if(metaItem.noOfColumnsToUse!= null){
 					options = metaItem.noOfColumnsToUse.map((subItem,subIndex)=>{
@@ -125,7 +128,7 @@ export class AdvanceSettings extends React.Component {
 							if(subItem.status){
 								customInputDivClass = "col-md-5 md-p-0";
 							}
-							customValueInput =   <input type="text" value={subItem.value} onChange={this.handleCustomInput.bind(this)} placeholder={associationPlaceholder} className={customClsName} id={customIdName} name={customName}/>
+							customValueInput =   <input type="number" min="1" max={customMaxValue} value={subItem.value} onChange={this.handleCustomInput.bind(this)} placeholder={associationPlaceholder} className={customClsName} id={customIdName} name={customName}/>
 
 						}
 						if(subItem.status){
