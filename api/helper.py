@@ -807,7 +807,7 @@ def convert_column_data_with_array_of_category_into_column_data_stright_xy(colum
                         'orange': 'Cluster3',
                         'yellow': 'Cluster4'
                     }
-    
+
     unique_category_name = get_all_unique(category_data_list)
 
     end_data = []
@@ -996,13 +996,13 @@ def auth_for_ml(func):
         request = args[0]
         key1 = request.GET['key1']
         key2 = request.GET['key2']
-        secretKey = request.GET['secretKey']
+        signature = request.GET['signature']
         json_obj = {
             "key1": key1,
             "key2": key2
         }
         generated_key = generate_signature(json_obj)
-        if secretKey == generated_key:
+        if signature == generated_key:
             return func(*args, **kwargs)
         else:
             return JsonResponse({'Message': 'Auth failed'})
@@ -1021,9 +1021,3 @@ def generate_signature(json_obj):
     newhash.update(existing_key)
     value = newhash.hexdigest()
     return value
-
-
-
-
-
-
