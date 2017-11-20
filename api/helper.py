@@ -3,6 +3,7 @@ from django.conf import settings
 from math import floor, log10
 import uuid
 import md5
+import time
 
 JOBSERVER = settings.JOBSERVER
 THIS_SERVER_DETAILS = settings.THIS_SERVER_DETAILS
@@ -997,15 +998,22 @@ def auth_for_ml(func):
         key1 = request.GET['key1']
         key2 = request.GET['key2']
         signature = request.GET['signature']
-        json_obj = {
-            "key1": key1,
-            "key2": key2
-        }
-        generated_key = generate_signature(json_obj)
-        if signature == generated_key:
-            return func(*args, **kwargs)
+        generationTime = float(request.GET['generated_at'])
+        currentTime = time.time()
+        timeDiff = currentTime-generationTime
+        #print timeDiff
+        if timeDiff < settings.SIGNATURE_LIFETIME:
+            json_obj = {
+                "key1": key1,
+                "key2": key2
+            }
+            generated_key = generate_signature(json_obj)
+            if signature == generated_key:
+                return func(*args, **kwargs)
+            else:
+                return JsonResponse({'Message': 'Auth failed'})
         else:
-            return JsonResponse({'Message': 'Auth failed'})
+            return JsonResponse({'Message': 'Signature Expired'})
 
     return another_function
 
