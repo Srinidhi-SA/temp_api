@@ -213,7 +213,7 @@ a {
 	text-decoration: none
 }
 a:focus, a:hover {
-	color: #e0e6e5
+	color: #04ae9f
 }
 a:focus {
 	outline-offset: -2px
@@ -340,6 +340,13 @@ address, blockquote .small, blockquote footer, blockquote small, dd, dt, pre {
 	padding-left: 0;
 	list-style: none
 }
+.list-unstyled li {
+    display: block;
+    overflow: hidden;
+    padding: 5px 10px 5px 0px;
+}
+
+.list-unstyled.list-border li { border-width:1px; border-style:solid; border-color:#e2e2e2; margin-bottom:-1px;}
 .text-bold {
 	font-weight: bold
 }
