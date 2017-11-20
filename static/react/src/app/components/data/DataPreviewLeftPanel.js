@@ -5,120 +5,122 @@ import {Redirect} from 'react-router';
 import store from "../../store";
 import {C3Chart} from "../c3Chart";
 import ReactDOM from 'react-dom';
-
+import {STATIC_URL} from "../../helpers/env.js";
+import { Scrollbars } from 'react-custom-scrollbars';
+import {getScoreSummaryInCSV,emptyScoreCSVData} from "../../actions/appActions";
+import {Link} from "react-router-dom";
+import {Button} from "react-bootstrap";
+import {isEmpty} from "../../helpers/helper";
 
 @connect((store) => {
-	return {login_response: store.login.login_response, dataPreview: store.datasets.dataPreview};
+	return {login_response: store.login.login_response, scoreCSVData: store.apps.scoreSummaryCSVData,
+	    currentAppId:store.apps.currentAppId,scoreSlug:store.apps.scoreSlug};
 })
 
 export class DataPreviewLeftPanel extends React.Component {
 	constructor(props) {
 		super(props);
 	}
-	componentDidMount() {
-		$(function(){
-			let initialCol= $(".cst_table td").first();
-			let initialColCls = $(initialCol).attr("class");
-			$(" td."+initialColCls).addClass("activeColumn");
-
-			$(".cst_table td,.cst_table th").click(function(){
-				$(".cst_table td").removeClass("activeColumn");
-				let cls = $(this).attr("class");
-				if(cls.indexOf(" ") !== -1){
-					let tmp =[];
-					tmp = cls.split(" ");
-					cls = tmp[0];
-				}
-				$(" td."+cls).addClass("activeColumn");
-			});
-
-		});
-
-	}
-	setSideElements(e){
-		//renderFlag=true;
-		const chkClass = $(e.target).attr('class');
-		let dataPrev = this.props.dataPreview.meta_data;
-		dataPrev.columnData.map((item, i) => {
-			if(chkClass.indexOf(item.slug) !== -1){
-
-				const sideChartUpdate = item.chartData;
-				const sideTableUpdate = item.columnStats;
-				$("#side-chart").empty();
-				ReactDOM.render(<C3Chart classId={"_side"} data={sideChartUpdate} yformat={false} sideChart={true}/>, document.getElementById('side-chart'));
-
-				const sideTableUpdatedTemplate=sideTableUpdate.map((tableItem,tableIndex)=>{
-					return(  <tr key={tableIndex}>
-					<td className="item">{tableItem.name}</td>
-					<td>{tableItem.value}</td>
-					</tr>
-					);
-				});
-				$("#side-table").empty();
-				ReactDOM.render( <tbody className="no-border-x no-border-y">{sideTableUpdatedTemplate}</tbody>, document.getElementById('side-table'));
-
-			}
-		});
-	}
+	 componentDidMount(){
+	     if(!isEmpty(this.props.scoreCSVData)){
+	         this.props.dispatch(getScoreSummaryInCSV(this.props.match.params.slug))   
+	     }
+	  }
+	 emptyScoreCSVData(){
+	     this.props.dispatch(emptyScoreCSVData())
+	 }
 	render() {
-		console.log("data preview Left panel is called##########3");
-		let dataPrev = this.props.dataPreview.meta_data;
-			const topInfo = dataPrev.metaData.map((item, i) => {
-				if(item.display){
-					return(
-							<div key={i} className="col-md-3 col-xs-6">
-							<h3>
-							{item.value}
-							<small>{item.name}</small>
-							</h3>
-							</div>
+		console.log("score data preview is called##########3");
+		 var pattern = /(".*?"|[^",\s]+)(?=\s*,|\s*$)/g;
+		 var scoreLink = "/apps/" + store.getState().apps.currentAppId + "/scores/" + this.props.match.params.slug;
+		const scoreData = this.props.scoreCSVData;
+		var tableThTemplate = "";
+		var tableRowTemplate = "";
+		if(!isEmpty(scoreData)){
+		    tableThTemplate = scoreData.map(function(row,id){
+		        let colData = "";
+		        if(id == 0){
+		           colData =  row.match(pattern).map((colData,index) =>{
+		               let colIndex = "row_"+id+index
+		                return(<th key={colIndex}>{colData}</th>)
+		            })
+		        }
+		        return colData;
+		    });
+		    tableRowTemplate = scoreData.map(function(row,id){
+                let colData = "";
+                let colIndex = "row_"+id
+                if(id > 0){
+                   colData =  row.match(pattern).map((colData,index) =>{
+                        return(<td>{colData}</td>)
+                    })
+                }
+                return <tr key = {colIndex}>{colData}</tr>;
+            });
+		    return(
+		            <div className="side-body">
+                    {/* <!-- Page Title and Breadcrumbs -->*/}
+                    <div className="page-head">
+                    <div className="row">
+                    <div className="col-md-8">
+                    <h4>Score Data Preview</h4>
+                    </div>
+                    </div>
+                    <div className="clearfix"></div>
+                    </div>
+                    { /*<!-- /.Page Title and Breadcrumbs -->*/ }
+                    { /*<!-- Page Content Area -->*/}
+                    <div className="main-content">
+                    <div className="row">
+                    <div className="col-md-12">
+                    <div className="panel panel-borders">
 
-					);
-				}
-			});
+                    <div className="clearfix"></div>
+                    <div className="table-responsive scoreDataPreview">
+                    
+                    <Scrollbars>
+                    <table className="table table-condensed table-hover table-bordered table-striped cst_table">
+                    <thead>
+                    <tr>
+                    {tableThTemplate}
+                    </tr>
+                    </thead>
+                    <tbody className="no-border-x">
+                   {tableRowTemplate}
+                    </tbody>
 
-			const tableThTemplate=dataPrev.columnData.map((thElement, thIndex) => {
-				const cls = thElement.slug + " dropdown";
-				const anchorCls =thElement.slug + " dropdown-toggle";
-				return(
-						<th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)}>
-						<a href="#" data-toggle="dropdown" className={anchorCls}><i className="fa fa-clock-o"></i> {thElement.name}</a>
-						</th>
-				);
-			});
-			const tableRowsTemplate = dataPrev.sampleData.map((trElement, trIndex) => {
-				const tds=trElement.map((tdElement, tdIndex) => {
-					return(
-							<td key={tdIndex} className={dataPrev.columnData[tdIndex].slug} onClick={this.setSideElements.bind(this)}>{tdElement}</td>
-					);
-				});
-				return (
-						<tr key={trIndex}>
-						{tds}
-						</tr>
-
-				);
-			});
-			return(
-					<div className="col-md-9">
-					<div className="panel panel-borders">
-					{topInfo}
-					<div className="clearfix"></div>
-					<div className="table-responsive noSwipe">
-					<table className="table table-condensed table-hover table-bordered table-striped cst_table">
-					<thead>
-					<tr>
-					{tableThTemplate}
-					</tr>
-					</thead>
-					<tbody className="no-border-x">
-					{tableRowsTemplate}
-					</tbody>
-					</table>
-					</div>
-					</div>
-					</div>
-			);
+                    </table>
+                    </Scrollbars>
+                    
+                    </div>
+                    </div>
+                    </div>
+                    </div>
+                    
+                    <div className="row col-md-offset-11">
+                    <div className="panel">
+                    <div className="panel-body">
+                    <Link to={scoreLink} onClick={this.emptyScoreCSVData.bind(this)}><Button> Close</Button></Link>
+                    </div>
+                    </div>
+                    </div>
+                    
+                    </div>
+                    </div>
+                    
+            );
+		}else{
+		    return (
+	                 <div className="side-body">
+	                    <div className="page-head">
+	                    </div>
+	                    <div className="main-content">
+	                      <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif" } />
+	                    </div>
+	                  </div>
+	                );
+		}
+			
 
 		}
 }

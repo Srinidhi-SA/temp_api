@@ -34,6 +34,7 @@ import {AudioFileSummary} from "./components/apps/AudioFileSummary";
 import {AppsStockAdvisorList} from "./components/apps/AppsStockAdvisorList";
 import {AppsStockDataPreview} from "./components/apps/AppsStockDataPreview";
 import {AppsStockDocumentMode} from "./components/apps/AppsStockDocumentMode";
+import {DataPreviewLeftPanel} from "./components/data/DataPreviewLeftPanel";
 
 class App extends React.Component {
 
@@ -90,7 +91,8 @@ class App extends React.Component {
             <Route exact path="/apps-stock-advisor/:slug/:l1" component={OverViewPage}/>
             <Route exact path="/apps-stock-advisor/:slug/:l1/:l2/:l3" component={OverViewPage}/>
             <Route exact path="/apps-stock-advisor/:slug/:l1/:l2" component={OverViewPage}/>
-            <Route exact path="/apps-stock-document-mode/:slug" component={AppsStockDocumentMode}/>			
+            <Route exact path="/apps-stock-document-mode/:slug" component={AppsStockDocumentMode}/>
+            <Route exact path="/apps/:AppId/scores/:slug/dataPreview" component={DataPreviewLeftPanel}/> 	
             </Main>
       </Switch>
       </BrowserRouter>

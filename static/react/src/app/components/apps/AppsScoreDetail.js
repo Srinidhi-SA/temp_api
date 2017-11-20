@@ -5,7 +5,7 @@ import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab} from "react-bootstrap";
 import {AppsCreateScore} from "./AppsCreateScore";
 import {Card} from "../signals/Card";
-import {getListOfCards,getAppsScoreSummary} from "../../actions/appActions";
+import {getListOfCards,getAppsScoreSummary,getScoreSummaryInCSV} from "../../actions/appActions";
 import {Button} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js";
 import {isEmpty} from "../../helpers/helper";
@@ -37,12 +37,16 @@ export class AppsScoreDetail extends React.Component {
 	  }else{
 		  this.props.dispatch(getAppsScoreSummary(store.getState().apps.scoreSlug));
 	  }
-	  
+	
+  }
+  gotoScoreData(){
+      this.props.dispatch(getScoreSummaryInCSV(store.getState().apps.scoreSlug))
   }
   render() {
     console.log("apps Score Detail View is called##########3");
     const scoreSummary = store.getState().apps.scoreSummary;
     const scoreLink = "/apps/"+store.getState().apps.currentAppId+"/scores";
+    const scoreDataLink = "/apps/"+store.getState().apps.currentAppId+"/scores/"+store.getState().apps.scoreSlug+"/dataPreview";
     console.log(scoreSummary)
 	if (!$.isEmptyObject(scoreSummary)) {
 		console.log(this.props)
@@ -89,8 +93,12 @@ export class AppsScoreDetail extends React.Component {
 		                    </div>
 		                    
 		                    
-		                    <div className="row">
-		                    <div className="col-md-2 col-md-offset-11">
+		                    <div className="row text-right">
+		                     <div className="col-md-1 col-md-offset-10">
+                            
+                              <Link to={scoreDataLink} onClick={this.gotoScoreData.bind(this)}><Button bsStyle="primary">View</Button></Link>
+                           </div>
+		                    <div className="col-md-1">
 		                   	
 		                    	<a  href={'http://174.129.163.0:8001/'+store.getState().apps.scoreSlug+'/data.csv'}id="download" className="btn btn-primary" download>Download</a>
 		                   </div>
