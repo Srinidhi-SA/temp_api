@@ -59,6 +59,7 @@ export default function reducer(state = {
 		stockSlug:"",
 		stockAnalysisFlag:false,
 		conceptList:{},
+		scoreSummaryCSVData:[],
 
 
 }, action) {
@@ -193,6 +194,14 @@ export default function reducer(state = {
 	{
 		//alert(action.json.non_field_errors);
 		throw new Error("Unable to fetch score summary!!");
+	}
+	break;
+	case "SCORE_SUMMARY_CSV_DATA":
+	{
+	    return {
+            ...state,
+            scoreSummaryCSVData: action.data.csv_data,
+        }
 	}
 	break;
 	case "SELECTED_APP_DETAILS":

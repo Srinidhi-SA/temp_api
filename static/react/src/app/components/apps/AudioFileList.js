@@ -35,8 +35,8 @@ export class AudioFileList extends React.Component {
   }
   componentWillMount(){
 	  var pageNo = 1;
-	  if(this.props.history.location.pathname.indexOf("page") != -1){
-			pageNo = this.props.history.location.pathname.split("page=")[1];
+	  if(this.props.history.location.saerch.indexOf("page") != -1){
+			pageNo = this.props.history.location.search.split("page=")[1];
 			this.props.dispatch(getAudioFileList(pageNo));
 		}else{
 			this.props.dispatch(getAudioFileList(pageNo));

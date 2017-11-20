@@ -34,8 +34,8 @@ export class AppsStockAdvisorList extends React.Component {
 	}
 	componentWillMount(){
 		var pageNo = 1;
-		if(this.props.history.location.pathname.indexOf("page") != -1){
-			pageNo = this.props.history.location.pathname.split("page=")[1];
+		if(this.props.history.location.search.indexOf("page") != -1){
+			pageNo = this.props.history.location.search.split("page=")[1];
 			this.props.dispatch(getAppsStockList(pageNo));
 		}else{
 			this.props.dispatch(getAppsStockList(pageNo));
@@ -129,7 +129,7 @@ export class AppsStockAdvisorList extends React.Component {
 
 						<div className="card-deatils">
 						{/*<!-- Popover Content link -->*/}
-						<OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={data}/> < /Popover>}>
+						<OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={data}/> </Popover>}>
 						<a  className="pover cursor">
 						<i className="ci pe-7s-info pe-2x"></i>
 						</a>
