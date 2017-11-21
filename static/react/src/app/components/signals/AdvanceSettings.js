@@ -2,7 +2,8 @@ import React from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router";
 import store from "../../store";
-import {Modal,Button} from "react-bootstrap";
+import {Modal,Button, Tooltip,
+    OverlayTrigger,} from "react-bootstrap";
 import {advanceSettingsModal} from "../../actions/signalActions";
 import {selectedAnalysisList,selectedDimensionSubLevel,cancelAdvanceSettings,saveAdvanceSettings} from "../../actions/dataActions";
 
@@ -49,7 +50,15 @@ export class AdvanceSettings extends React.Component {
 		this.props.dispatch(selectedAnalysisList(evt.target.childNodes[0],"noOfColumnsToUse"))
 	}
 	handleCustomInput(evt){
-		this.props.dispatch(selectedAnalysisList(evt.target,"noOfColumnsToUse"))
+	    if(evt.target.value){
+	        if(parseInt(evt.target.value) <= parseInt(evt.target.max)){
+	            this.props.dispatch(selectedAnalysisList(evt.target,"noOfColumnsToUse"))   
+	        }else{
+	            evt.target.value = "";
+	        }
+	    }else{
+	        this.props.dispatch(selectedAnalysisList(evt.target,"noOfColumnsToUse"))   
+	    }
 	}
 	handleTrendAnalysis(evt){
 		this.props.dispatch(selectedAnalysisList(evt.target,"trend"))
@@ -114,6 +123,7 @@ export class AdvanceSettings extends React.Component {
 			      customMaxValue = store.getState().datasets.dataSetMeasures.length -1;
 			    }
 				var countOptions=null, options=[],customValueInput=null,customInputDivClass="col-md-5 md-p-0 visibilityHidden";
+				var tooltipText = <Tooltip id="tooltip">Value should be less than or equal to {customMaxValue}</Tooltip>;
 				if(metaItem.noOfColumnsToUse!= null){
 					options = metaItem.noOfColumnsToUse.map((subItem,subIndex)=>{
 						let clsName = "sub-level-analysis-count";
@@ -128,7 +138,7 @@ export class AdvanceSettings extends React.Component {
 							if(subItem.status){
 								customInputDivClass = "col-md-5 md-p-0";
 							}
-							customValueInput =   <input type="number" min="1" max={customMaxValue} value={subItem.value} onChange={this.handleCustomInput.bind(this)} placeholder={associationPlaceholder} className={customClsName} id={customIdName} name={customName}/>
+							customValueInput =     <OverlayTrigger  placement="top" overlay={tooltipText}><input type="number" id={subIndex} min="1" max={customMaxValue} value={subItem.value} onChange={this.handleCustomInput.bind(this)} placeholder={associationPlaceholder} className={customClsName} id={customIdName} name={customName}/></OverlayTrigger>
 
 						}
 						if(subItem.status){
