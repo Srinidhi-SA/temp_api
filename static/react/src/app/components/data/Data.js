@@ -170,7 +170,7 @@ export class Data extends React.Component {
 
                 <div className="card-deatils">
                   {/*<!-- Popover Content link -->*/}
-                  <OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={data}/> < /Popover>}>
+                  <OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={data}/> </Popover>}>
                     <a  className="pover cursor">
                       <i className="ci pe-7s-info pe-2x"></i>
                     </a>
