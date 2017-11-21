@@ -659,7 +659,7 @@ def set_result(request, slug=None):
             results=json.loads(results)
         )
     return JsonResponse({'result': "success"})
-    
+
 
 @csrf_exempt
 def use_set_result(request, slug=None):
@@ -688,7 +688,7 @@ def write_into_databases(job_type, object_slug, results):
             dataset_object.status = "FAILED"
             dataset_object.save()
             return results
-            
+
         columnData = results['columnData']
         for data in columnData:
             # data["chartData"] = helper.find_chart_data_and_replace_with_chart_data(data["chartData"])
@@ -841,10 +841,10 @@ def get_info(request):
             'audioset': Audioset
         }
         display = {
-            'dataset': 'Data Set Uploaded',
+            'dataset': 'Data Sets Uploaded',
             'insight': 'Signals Created',
             'trainer': 'Models Created',
-            'score': 'Score Created',
+            'score': 'Scores Created',
             'robo': 'Robo Created',
             'audioset': 'Audioset Created'
         }
