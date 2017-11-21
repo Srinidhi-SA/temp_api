@@ -274,6 +274,43 @@ DATA_SOURCES_CONFIG = {"conf":  [{
                 "labelName": "Table Name"
                 }
         ]
+},
+{
+        "dataSourceType": "Hdfs",
+        "dataSourceName" : "HDFS",
+        "formFields": [
+            {
+                "fieldType": "Input",
+                "placeHolder": "Dataset Name",
+                "labelName": "Name"
+                },
+            {
+                "fieldType": "Input",
+                "placeHolder": "host",
+                "labelName": "Host"
+                },
+            {
+                "fieldType": "Input",
+                "placeHoplaceHolder": "port",
+                "labelName": "Port",
+                "defaultValue": 30015
+                },
+            {
+                "fieldType": "Input",
+                "placeHolder": "username",
+                "labelName": "Username"
+                },
+            {
+                "fieldType": "Password",
+                "placeHolder": "password",
+                "labelName": "Password"
+                },
+            {
+                "fieldType": "Input",
+                "placeHolder": "pathtofile",
+                "labelName": "File Path"
+                }
+        ]
 }
 
 
