@@ -50,15 +50,21 @@ def convert_crawled_data_to_metadata_format(news_data, other_details=None):
     columnData = get_column_data_for_metadata(headers)
     sampleData = get_sample_data(news_data=news_data, type=type)
     metaData = get_metaData(news_data=news_data)
+    transformation_settings = get_transformation_settings()
 
     return {
         "headers": headers,
         "sampleData": sampleData,
         "columnData": columnData,
         "metaData": metaData,
-        "transformation_settings": {}
+        "transformation_settings": transformation_settings
     }
 
+
+def get_transformation_settings():
+    return {
+            "existingColumns": []
+        }
 
 def find_headers(news_data, type='historical_data'):
     headers_name = news_data[0].keys()

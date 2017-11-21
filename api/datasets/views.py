@@ -196,7 +196,6 @@ class DatasetView(viewsets.ModelViewSet):
 
     @detail_route(methods=['put'])
     def meta_data_modifications(self, request, slug=None):
-
         try:
             instance = self.get_object_from_all()
         except:

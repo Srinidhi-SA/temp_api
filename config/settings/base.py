@@ -317,8 +317,8 @@ ANALYSIS_FOR_TARGET_VARIABLE = {
     "target_variable": {
         "dimension": [
         {"name": "Descriptive analysis", "id": "descriptive-analysis", "display": "Overview"},
-        {"name": "Dimension vs. Dimension", "id": "dimension-vs-dimension", "display": "Association"},
-        {"name": "Predictive modeling", "id": "predictive-modeling", "display": "Prediction"}
+        {"name": "Predictive modeling", "id": "predictive-modeling", "display": "Prediction"},
+        {"name": "Dimension vs. Dimension", "id": "dimension-vs-dimension", "display": "Association"}
     ],
         "measure": [
             {"name": "Descriptive analysis", "id": "descriptive-analysis", "display": "Overview"},
@@ -388,7 +388,8 @@ JOBSERVER_STATUS = {
     'KILLED': 'FAILED'
 }
 
-UI_VERSION = "0.1041"
+UI_VERSION = "v2.1_8"
+
 
 
 ERROR_MESSAGE = {
@@ -513,13 +514,6 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND = {
                 "noOfColumnsToUse":None
             },
             {
-                "name": "prediction",
-                "displayName": "Prediction",
-                "status": False,
-                "analysisSubTypes": [],
-                "noOfColumnsToUse": None
-            },
-            {
                 "name": "association",
                 "displayName": "Association",
                 "status": False,
@@ -528,7 +522,7 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND = {
                     {
                         "name": "low",
                         "displayName": "Low",
-                        "status": True,
+                        "status": False,
                         "defaultValue":3
                     },
                     {
@@ -551,11 +545,18 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND = {
                         "value":None
                     }
                 ]
+            },
+            {
+                "name": "prediction",
+                "displayName": "Prediction",
+                "status": False,
+                "analysisSubTypes": [],
+                "noOfColumnsToUse": None
             }
         ],
             "targetLevels":[],
             "trendSettings":[
-                {"name":"Count","status":True},
+                {"name":"Count","status":False},
                 {"name":"Specific Measure","status":False,"selectedMeasure":None}
             ]
         },
@@ -593,7 +594,7 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND = {
                     {
                         "name": "low",
                         "displayName": "Low",
-                        "status": True,
+                        "status": False,
                         "defaultValue":3
                     },
                     {
@@ -642,7 +643,7 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND = {
                     {
                         "name": "low",
                         "displayName": "Low",
-                        "status": True,
+                        "status": False,
                         "defaultValue":3
                     },
                     {
@@ -735,3 +736,16 @@ CONCEPTS = {'corporate': ['leadership change', 'public relations'],
   'market share',
   'risks & inhibitors',
   'product performance']}
+
+ANALYSIS_LIST_SEQUENCE = [
+    "Overview",
+    "Trend",
+    "Association"
+    "Performance",
+    "Influencers",
+    "Prediction"
+]
+
+ML_SECRET_KEY = 'GETMETADATAOBJECT'
+
+SIGNATURE_LIFETIME = 30

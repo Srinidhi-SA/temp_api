@@ -185,7 +185,7 @@ export class Profile extends React.Component {
                             <tbody className="no-border-x no-border-y full-width">
                               <tr>
                                 <td className="item" width="30">
-                                  <span className="fa fa-envelope-o fa-lg"></span>
+                                  <span className="fa fa-envelope"></span>
                                 </td>
                                 <td>
                                   <b>
@@ -194,7 +194,7 @@ export class Profile extends React.Component {
                               </tr>
                               <tr>
                                 <td className="item xs-pt-5">
-                                  <span className="fa fa-phone fa-lg"></span>
+                                  <span className="fa fa-phone"></span>
                                 </td>
                                 <td className="xs-pt-5">
                                   <b>
@@ -244,6 +244,7 @@ export class Profile extends React.Component {
                   <h5 class="text-center xs-pt-20">TOTAL SPACE</h5>
                   <C3Chart classId="_profile" data={this.props.profileInfo.chart_c3}/> {/*
               <img src="images/userProfileGraph.png" className="img-responsive"/>*/}
+			  <p className="xs-pl-20">{renderHTML(this.props.profileInfo.comment)}</p>
                 </div>
               </div>
               <div className="col-md-8">
@@ -267,8 +268,43 @@ export class Profile extends React.Component {
                   </div>
                   <div className="clearfix"></div>
                   <div className="col-md-12">
-                    <div className="xs-p-30 minHP">
-                      <p>{renderHTML(this.props.profileInfo.comment)}</p>
+                    <div className="minHP">
+					<h5 class="xs-pt-20  xs-ml-10">RECENT ACTIVITY</h5>
+					<ul className="list-unstyled list-border xs-m-10">
+						<li>
+							<img src="../assets/images/data_cardIcon.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
+							<span>Data set ‘<a href="#">Churn prediction.csv</a>’ was uploaded</span>
+							<span className="pull-right">Nov 13,2017 16:21</span>
+						</li>
+						<li>
+							<img src="../assets/images/m_carIcon.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
+							<span>Data set ‘Churn prediction.csv’ was renamed to ‘<a href="#">Churn Status Data</a>’
+</span>
+							<span className="pull-right">Nov 15,2017 16:21</span>
+						</li>
+						<li>
+							<img src="../assets/images/d_cardIcon.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
+							<span>‘Churn Status Signal’ was created</span>
+							<span className="pull-right">Nov 11,2017 16:21</span>
+						</li>
+						<li>
+							<img src="../assets/images/apps_score_icon.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
+							<span>‘Churn Status Signal’ was deleted
+</span>
+							<span className="pull-right">Nov 13,2017 16:21</span>
+						</li>
+						<li>
+							<img src="../assets/images/apps_model_icon.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
+							<span>‘Churn Status’ predictive model was created on Opportunity Scoring App.</span>
+							<span className="pull-right">15 Nov 2015, 10:15:00</span>
+						</li>
+						<li>
+							<img src="../assets/images/File_Icon.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
+							<span>Data set ‘<a href="#">Churn prediction.csv</a>’ was uploaded</span>
+							<span className="pull-right">Nov 13,2017 16:21</span>
+						</li>
+					</ul>
+                        
                     </div>
                   </div>
                   {/*  <div className="col-md-4">

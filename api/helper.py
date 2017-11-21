@@ -1,6 +1,9 @@
 from django.conf import settings
 
 from math import floor, log10
+import uuid
+import md5
+import time
 
 JOBSERVER = settings.JOBSERVER
 THIS_SERVER_DETAILS = settings.THIS_SERVER_DETAILS
@@ -805,7 +808,7 @@ def convert_column_data_with_array_of_category_into_column_data_stright_xy(colum
                         'orange': 'Cluster3',
                         'yellow': 'Cluster4'
                     }
-    
+
     unique_category_name = get_all_unique(category_data_list)
 
     end_data = []
@@ -984,8 +987,45 @@ def get_message(instance):
     return ac.get_using_obj(instance)
 
 
+from functools import wraps
+from django.http import JsonResponse
 
 
+def auth_for_ml(func):
+
+    def another_function(*args, **kwargs):
+        request = args[0]
+        key1 = request.GET['key1']
+        key2 = request.GET['key2']
+        signature = request.GET['signature']
+        generationTime = float(request.GET['generated_at'])
+        currentTime = time.time()
+        timeDiff = currentTime-generationTime
+        #print timeDiff
+        if timeDiff < settings.SIGNATURE_LIFETIME:
+            json_obj = {
+                "key1": key1,
+                "key2": key2
+            }
+            generated_key = generate_signature(json_obj)
+            if signature == generated_key:
+                return func(*args, **kwargs)
+            else:
+                return JsonResponse({'Message': 'Auth failed'})
+        else:
+            return JsonResponse({'Message': 'Signature Expired'})
+
+    return another_function
 
 
-
+def generate_signature(json_obj):
+    """
+    json_obj = json obj with {"key1":"DSDDD","key2":"DASDAA","signature":None}
+    secretKey = secret key kknown to ML and API Codebase
+    """
+    secretKey = settings.ML_SECRET_KEY
+    existing_key = json_obj["key1"]+"|"+json_obj["key2"]+"|"+secretKey
+    newhash = md5.new()
+    newhash.update(existing_key)
+    value = newhash.hexdigest()
+    return value

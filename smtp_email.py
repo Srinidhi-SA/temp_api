@@ -63,10 +63,15 @@ def send_mail(username, password, from_addr, to_addrs, msg):
 
 
 def send_jobserver_error(error=None):
-    joserver_email_list = settings.JOBSERVER_SENDTO_EMAIL_LIST
+    jobserver_email_list = [
+            'ankush.patel@marlabs.com',
+            'sabretooth.rog@gmail.com',
+            'vivekananda.tadala@marlabs.com',
+            'mukesh.kumar@marlabs.com'
+        ]
     # jobserver_email_list = settings.FUNNY_EMAIL_LIST
-    jobserver_sender_email = settings.JOBSERVER_FROM_EMAIL
-    jobserver_email_template = settings.JOBSERVER_EMAIL_TEMPLATE
+    jobserver_sender_email = 'ankush.patel@marlabs.com'
+    jobserver_email_template = "Please restart jobserver- IP-"
 
     # for to_addrs in joserver_email_list:
     msg = MIMEMultipart()

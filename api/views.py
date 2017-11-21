@@ -659,7 +659,7 @@ def set_result(request, slug=None):
             results=json.loads(results)
         )
     return JsonResponse({'result': "success"})
-    
+
 
 @csrf_exempt
 def use_set_result(request, slug=None):
@@ -688,7 +688,7 @@ def write_into_databases(job_type, object_slug, results):
             dataset_object.status = "FAILED"
             dataset_object.save()
             return results
-            
+
         columnData = results['columnData']
         for data in columnData:
             # data["chartData"] = helper.find_chart_data_and_replace_with_chart_data(data["chartData"])
@@ -823,7 +823,8 @@ def get_info(request):
     user = request.user
     from api.helper import convert_to_humanize
     def get_all_info_related_to_user(user):
-        things = ['dataset', 'insight', 'trainer', 'score', 'robo', 'audioset']
+        # things = ['dataset', 'insight', 'trainer', 'score', 'robo', 'audioset']
+        things = ['dataset', 'insight', 'trainer', 'score']
         all_data = []
         for t in things:
             all_data.append(get_all_objects(user, t))
@@ -840,10 +841,10 @@ def get_info(request):
             'audioset': Audioset
         }
         display = {
-            'dataset': 'Data Set Uploaded',
+            'dataset': 'Data Sets Uploaded',
             'insight': 'Signals Created',
             'trainer': 'Models Created',
-            'score': 'Score Created',
+            'score': 'Scores Created',
             'robo': 'Robo Created',
             'audioset': 'Audioset Created'
         }
@@ -4515,3 +4516,53 @@ def return_json_data(stockDataType, stockName, slug):
 @csrf_exempt
 def get_concepts_to_show_in_ui(request):
     return JsonResponse(settings.CONCEPTS)
+
+
+from api.helper import auth_for_ml
+
+@csrf_exempt
+@auth_for_ml
+def get_metadata_for_mlscripts(request, slug=None):
+    ds = Dataset.objects.filter(slug=slug).first()
+    if ds == None:
+        return JsonResponse({'Message': 'Failed. No such dataset.'})
+
+    if ds.analysis_done == False:
+        return JsonResponse({'Message': 'Failed. No analysis of this dataset'})
+
+    from api.datasets.serializers import DatasetSerializer
+    ds_serializer = DatasetSerializer(instance=ds)
+    meta_data = ds_serializer.data.get('meta_data')
+    return JsonResponse({
+        'Message': 'Success',
+        'meta_data': {
+            "metaData": meta_data.get('metaData'),
+            'columnData': meta_data.get('columnData'),
+            'headers': meta_data.get('headers')
+        },
+    })
+
+
+@csrf_exempt
+def get_score_data_and_return_top_n(request):
+
+    url = request.GET['url']
+    count = request.GET['count']
+    if count is None:
+        count = 100
+    try:
+        if int(count) < 10:
+            count = 100
+        else:
+            count = int(count)
+    except:
+        count = 100
+    import requests
+    data = requests.get(url)
+    text_data = data.text
+    csv_data = text_data.split('\n')
+
+    return JsonResponse({
+        'Message': 'Success',
+        'csv_data': csv_data[:count]
+    })
