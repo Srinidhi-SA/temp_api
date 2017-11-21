@@ -12,7 +12,7 @@ import {hideDataPreview,getDataSetPreview,renameMetaDataColumn,updateTranformCol
 import {dataSubsetting,clearDataPreview,clearLoadingMsg} from "../../actions/dataUploadActions"
 import {Button,Dropdown,Menu,MenuItem} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"
-import {showHideSideChart,showHideSideTable} from "../../helpers/helper.js"
+import {showHideSideChart,showHideSideTable,MINROWINDATASET} from "../../helpers/helper.js"
 import {isEmpty} from "../../helpers/helper";
 import {SubSetting} from "./SubSetting";
 import {DataUploadLoader} from "../common/DataUploadLoader";
@@ -195,7 +195,7 @@ export class DataPreview extends React.Component {
 							</tr>
 							);
 						}
-					});	
+					});
 				}
 				$("#side-table").empty();
 				ReactDOM.render( <tbody className="no-border-x no-border-y">{sideTableUpdatedTemplate}</tbody>, document.getElementById('side-table'));
@@ -223,12 +223,18 @@ export class DataPreview extends React.Component {
 
 	moveToVariableSelection(){
 		//alert(this.buttons.create.url);
+		//check for minimum rows in datasets
+	
+		if (this.props.dataPreview.meta_data.metaData[0].value<MINROWINDATASET)
+		bootbox.alert("Minimum "+MINROWINDATASET+" rows are required for analysis!!")
+		else{
 		let url = this.buttons.create.url;
 		if(this.buttons.create.url.indexOf("apps-robo") != -1){
 			url = "/apps-robo/"+store.getState().apps.roboDatasetSlug+"/"+store.getState().signals.signalAnalysis.slug
 		}
 		this.props.history.push(url);
 	}
+}
 
 	applyDataSubset(){
 		//alert("working");
@@ -254,20 +260,21 @@ export class DataPreview extends React.Component {
 
 		console.log("data prev is called##########3");
 		//for active select in columnName
+		//console.log(this.props)
 		$(function(){
 		    var idActiveColumn = false
 		    $(".cst_table tbody tr").first().find("td").each(function(){
-		        
+
 		        if($(this).hasClass("activeColumn"))idActiveColumn=true
 		    })
 		    if(!idActiveColumn){
 		        let initialCol= $(".cst_table td").first();
 		        let initialColCls = $(initialCol).attr("class");
 		        $(" td."+initialColCls).addClass("activeColumn");
-		        
-		    } 
-		    
-		    
+
+		    }
+
+
 		    $(".cst_table td,.cst_table th").click(function(){
 		        $(".cst_table td").removeClass("activeColumn");
 		        let cls = $(this).attr("class");
@@ -372,7 +379,7 @@ export class DataPreview extends React.Component {
    						</th>
    				);
                }
-			
+
 			});
 			//  data.splice(0,1);
 			const tableRowsTemplate = dataPrev.sampleData.map((trElement, trIndex) => {
@@ -426,7 +433,7 @@ export class DataPreview extends React.Component {
     				}
     			});
             }
-			
+
 
 
 			return(
@@ -516,7 +523,7 @@ export class DataPreview extends React.Component {
 
 					<div className="panel">
 					<div className="panel-body">
-					
+
 					<div className="navbar">
 						<ul className="nav navbar-nav navbar-right">
 						<li>
@@ -528,7 +535,7 @@ export class DataPreview extends React.Component {
 							:(<div/>)
 							}
 						</li>
-						 
+
 						<li className="text-right">
 							<Button onClick={this.closePreview.bind(this)}> {this.buttons.close.text} </Button>
 							{
@@ -538,7 +545,7 @@ export class DataPreview extends React.Component {
 							}
 						</li>
 						</ul>
-						</div> 
+						</div>
 
 
 					<DataUploadLoader/>
