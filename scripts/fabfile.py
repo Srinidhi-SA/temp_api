@@ -30,8 +30,8 @@ def dev():
         "react_path" : "/static/react",
         "asset_path" : "/static/asset",
         "base_remote_path" : "/home/ubuntu/codebase/mAdvisor-api",
-        "ui_branch" : "api_ui_dev_connectors",
-        "api_branch" : "api_ui_dev_connectors"
+        "ui_branch" : "api_ui_dev",
+        "api_branch" : "api_ui_dev"
     }
 
     key_file = BASE_DIR + "/config/keyfiles/TIAA.pem"
