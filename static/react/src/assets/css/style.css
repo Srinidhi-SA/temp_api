@@ -14613,6 +14613,11 @@ a.disabled { color:#ccc !important; }
 a .btn-close {
     color: #a4a4a4;
 }
+.row.text-center > div {
+        display: inline-block;
+        float: none;
+    }
+
 /**************** Css realated to developers, keep the source down ***/
 
 

@@ -233,8 +233,10 @@ export class Profile extends React.Component {
 
               </div>
               <div className="clearfix"></div>
-              <div className="row">
+              <div className="row text-center">
+			  
                 {statsList}
+				 
               </div>
             </div>
 			<div className="panel">
