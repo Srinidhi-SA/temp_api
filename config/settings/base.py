@@ -31,6 +31,8 @@ ALLOWED_HOSTS = ["192.168.33.128"]
 # Application definition
 
 INSTALLED_APPS = [
+    'material',
+    'material.admin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,7 +42,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'api',
-    'django_filters'
+    'django_filters',
+
 ]
 
 MIDDLEWARE = [
@@ -200,7 +203,13 @@ DATA_SOURCES_CONFIG = {"conf":  [{
 	{
 		"dataSourceType": "MySQL",
         "dataSourceName" : "MySQL",
-		"formFields": [{
+		"formFields": [
+            {
+                "fieldType": "Input",
+                "placeHolder": "Dataset Name",
+                "labelName": "Name"
+                },
+            {
                     "fieldType": "Input",
                 				"placeHolder": "host",
                 				"labelName": "Host"
