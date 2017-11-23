@@ -813,8 +813,18 @@ def convert_chart_data_to_beautiful_things(data):
 
 
 def home(request):
+    host = request.get_host()
 
-    context = {"UI_VERSION":settings.UI_VERSION}
+    APP_BASE_URL = ""
+    protocol = "http"
+    if request.is_secure():
+        protocol = "https"
+
+    APP_BASE_URL = "{}://{}".format(protocol, host)
+
+
+    context = {"UI_VERSION": settings.UI_VERSION, "APP_BASE_URL": APP_BASE_URL}
+
     return render(request, 'home.html', context)
 
 @api_view(['GET'])
