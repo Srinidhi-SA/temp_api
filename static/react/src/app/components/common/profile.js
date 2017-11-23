@@ -272,34 +272,34 @@ export class Profile extends React.Component {
 					<h5 class="xs-pt-20  xs-ml-10">RECENT ACTIVITY</h5>
 					<ul className="list-unstyled list-border xs-m-10">
 						<li>
-							<img src="../assets/images/data_cardIcon.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
+							<img src="../assets/images/iconp_signal.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
 							<span>Data set ‘<a href="#">Churn prediction.csv</a>’ was uploaded</span>
 							<span className="pull-right">Nov 13,2017 16:21</span>
 						</li>
 						<li>
-							<img src="../assets/images/m_carIcon.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
+							<img src="../assets/images/iconp_app.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
 							<span>Data set ‘Churn prediction.csv’ was renamed to ‘<a href="#">Churn Status Data</a>’
 </span>
 							<span className="pull-right">Nov 15,2017 16:21</span>
 						</li>
 						<li>
-							<img src="../assets/images/d_cardIcon.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
+							<img src="../assets/images/iconp_data.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
 							<span>‘Churn Status Signal’ was created</span>
 							<span className="pull-right">Nov 11,2017 16:21</span>
 						</li>
 						<li>
-							<img src="../assets/images/apps_score_icon.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
+							<img src="../assets/images/iconp_oppr.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
 							<span>‘Churn Status Signal’ was deleted
 </span>
 							<span className="pull-right">Nov 13,2017 16:21</span>
 						</li>
 						<li>
-							<img src="../assets/images/apps_model_icon.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
+							<img src="../assets/images/iconp_prediction.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
 							<span>‘Churn Status’ predictive model was created on Opportunity Scoring App.</span>
 							<span className="pull-right">15 Nov 2015, 10:15:00</span>
 						</li>
 						<li>
-							<img src="../assets/images/File_Icon.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
+							<img src="../assets/images/iconp_robo.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
 							<span>Data set ‘<a href="#">Churn prediction.csv</a>’ was uploaded</span>
 							<span className="pull-right">Nov 13,2017 16:21</span>
 						</li>
