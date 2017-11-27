@@ -419,8 +419,8 @@ class Insight(models.Model):
 
     dataset = models.ForeignKey(Dataset, null=True)  # get all dataset related detail
 
-    compare_with = models.CharField(max_length=300, default="")
-    compare_type = models.CharField(max_length=300, null=True)
+    compare_with = models.CharField(max_length=300, default="", null=True, blank=True)
+    compare_type = models.CharField(max_length=300, null=True, blank=True)
     column_data_raw = models.TextField(default="{}")
     config = models.TextField(default="{}")
 
