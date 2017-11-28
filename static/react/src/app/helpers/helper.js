@@ -96,7 +96,8 @@ const REMOVE = "remove";
 const CURRENTVALUE = "current value";
 const NEWVALUE = "new value";
 const TEXTHEATMAPTABLE = "textHeatMapTable";
-const DEFAULTANALYSISVARIABLES = "high"
+const DEFAULTANALYSISVARIABLES = "high";
+const MINROWINDATASET = 10;
 
 
 export function generateHeaders(table) {
@@ -382,6 +383,7 @@ export{
 	APPSLOADERPERVALUE,
 	USERDETAILS,
 	DEFAULTANALYSISVARIABLES,
+  MINROWINDATASET,
 	}
 export function capitalizeArray(array){
   let a =[]

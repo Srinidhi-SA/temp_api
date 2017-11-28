@@ -182,10 +182,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
+# STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static")
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    os.path.join(os.path.dirname(BASE_DIR), "static"),
-    '/home/marlabs/codebase/mAdvisor-api/static'
+   os.path.join(os.path.dirname(BASE_DIR), "static"),
+   '/home/marlabs/codebase/mAdvisor-api/static'
 ]
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
@@ -435,7 +436,7 @@ JOBSERVER_STATUS = {
     'KILLED': 'FAILED'
 }
 
-UI_VERSION = "v2.1_8"
+UI_VERSION = "v2.1_9"
 
 
 
@@ -625,23 +626,7 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND = {
                 "name": "performance",
                 "displayName": "Performance",
                 "status": False,
-                "analysisSubTypes": [
-                    {
-                        "name": "overview",
-                        "displayName": "Overview",
-                        "status": False
-                    },
-                    {
-                        "name": "Top Sublevel",
-                        "displayName": "Top Sublevel",
-                        "status": False
-                    },
-                    {
-                        "name": "Trend for top Sublevel",
-                        "displayName": "Trend for top Sublevel",
-                        "status": False
-                    }
-                ],
+                "analysisSubTypes": [],
                 "noOfColumnsToUse": [
                     {
                         "name": "low",
@@ -675,21 +660,21 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND = {
                 "displayName": "Influencer",
                 "status": False,
                 "analysisSubTypes": [
-                    {
-                        "name": "overview",
-                        "displayName": "Overview",
-                        "status": False
-                    },
-                    {
-                        "name": "Key areas of Impact",
-                        "displayName": "Key areas of Impact",
-                        "status": False
-                    },
-                    {
-                        "name": "Trend analysis",
-                        "displayName": "Trend analysis",
-                        "status": False
-                    }
+                    # {
+                    #     "name": "overview",
+                    #     "displayName": "Overview",
+                    #     "status": False
+                    # },
+                    # {
+                    #     "name": "Key areas of Impact",
+                    #     "displayName": "Key areas of Impact",
+                    #     "status": False
+                    # },
+                    # {
+                    #     "name": "Trend analysis",
+                    #     "displayName": "Trend analysis",
+                    #     "status": False
+                    # }
                 ],
                 "noOfColumnsToUse": [
                     {
