@@ -33,12 +33,12 @@ export class CardTable extends React.Component {
 			tableEle = <DecisionTreeTable tableData={element}/>;
 		}
 		if(element.tableType == HEATMAPTABLE){
-			tableEle = <HeatMapTable tableData={element}/>;
+			tableEle = <HeatMapTable classId={this.props.classId} tableData={element}/>;
 		}
 		if(element.tableType == TEXTHEATMAPTABLE){
 			tableEle = <TextHeatMapTable tableData={element}/>;
 		}if(element.tableType == NORMALTABLE){
-			tableEle = <NormalTable tableData={element}/>;
+			tableEle = <NormalTable classId={this.props.classId} tableData={element}/>;
 		}
 		return (
 				<div>

@@ -6663,7 +6663,7 @@ body.open-right-sidebar .ma-right-sidebar {
 }
 .switch-button {
 	border-radius: 50px;
-	background-color: #b3b3b3;
+	background-color: #00998c;
 	width: 60px;
 	height: 27px;
 	padding: 2px;
@@ -6727,10 +6727,10 @@ body.open-right-sidebar .ma-right-sidebar {
 	padding-left: 10px
 }
 .switch-button.switch-button-yesno label:before {
-	content: "NO"
+	content: " %"
 }
 .switch-button.switch-button-yesno input[type=checkbox]:checked+span label:before {
-	content: "YES"
+	content: "AVG"
 }
 .switch-button.switch-button-xs {
 	height: 20px;
@@ -12286,7 +12286,6 @@ form.dropzone .note {
 .slider-handle {
 	opacity: 1;
 	background: #FFF;
-	border: 3px solid #00998c;
 	background-clip: padding-box;
 	box-shadow: none;
 	height: 23px;
@@ -14702,14 +14701,14 @@ html{
 	padding-left: 10%;
     padding-right: 10%;
     max-width: 100%;
-    overflow-x: auto;
+    /*overflow-x: auto;*/
 }
 
 .table-style_1 {
     /* margin-top: 1.8%; */
     /* padding-left: 10%; */
     /* padding-right: 10%; */
-    max-width: 70%;
+    /* max-width: 70%; */
     overflow-x: auto;
     margin: 0 auto;
 }
@@ -14948,3 +14947,5 @@ display: inline-block;
 .scoreDataPreview{
 	height:500px !important;
 }
+
+

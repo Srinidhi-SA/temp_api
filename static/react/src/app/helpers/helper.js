@@ -12,7 +12,15 @@ export function isEmpty(obj) {
 }
 
 var  USERDETAILS = {};
-
+export function handleSignalToggleButton(){
+    if($(".toggleOn").is(":visible")){
+        $(".toggleOff").removeClass("hidden");
+        $(".toggleOn").addClass("hidden")
+    }else{
+        $(".toggleOn").removeClass("hidden");
+        $(".toggleOff").addClass("hidden") 
+    }
+}
 
 export const getUserDetailsOrRestart = {
 		get : function(){
