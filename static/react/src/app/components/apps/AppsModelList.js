@@ -186,13 +186,21 @@ import Dialog from 'react-bootstrap-dialog'
 						<div className="col-md-4">
 						<div className="input-group pull-right">
 
-						<input type="text" name="model_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Model Insights" id="model_insights" className="form-control" placeholder="Search Model insights..."/>
+						{/*<input type="text" name="model_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Model Insights" id="model_insights" className="form-control" placeholder="Search Model insights..."/>*/}
+						
+						<div className="search-wrapper">
+							<form>
+							<input type="text" name="model_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Model Insights" id="model_insights" className="form-control search-box" placeholder="Search Model insights..." required />
+							<span class="fa fa-search form-control-feedback"></span>
+							<button className="close-icon" type="reset"></button>
+							</form>
+						</div>
 
 						<span className="input-group-btn">
 									{/*<button type="button" className="btn btn-default" title="Select All Card">
 										<i className="fa fa-address-card-o fa-lg"></i>
 									</button>*/}
-									<button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false">
+									<button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-primary dropdown-toggle" aria-expanded="false">
 										<i className="fa fa-sort-alpha-asc fa-lg"></i>&nbsp;<span className="caret"></span>
 									</button>
 									<ul role="menu" className="dropdown-menu dropdown-menu-right">

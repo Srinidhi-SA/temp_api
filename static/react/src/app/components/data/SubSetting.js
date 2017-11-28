@@ -172,7 +172,7 @@ export class SubSetting extends React.Component {
           return (
             <div>
               <div id="measure_subsetting">
-                <h5>{this.props.item.name}</h5>
+                <h5 className="xs-pt-5">{this.props.item.name}</h5>
                 <div className="xs-pt-20"></div>
                 <div className="row">
                   <div className="col-xs-5">
@@ -233,7 +233,7 @@ export class SubSetting extends React.Component {
                 {/* for dimention */}
                 <div id="dimention_subsetting">
 
-                  <h5>{this.props.item.name}</h5>
+                  <h5 className="xs-pt-5">{this.props.item.name}</h5>
 
                   <div class="table-responsive cst-scroll-panel">
                     <Scrollbars>
@@ -503,7 +503,7 @@ export class SubSetting extends React.Component {
               </h4>
             </div>
             <div id="pnl_tbset" className="panel-collapse collapse in" aria-expanded="true">
-              <div className="panel-body">
+              <div className="xs-pt-5 xs-pr-10 xs-pb-5 xs-pl-10">
                 {subsettingsTemplate}
               </div>
               <div class="panel-footer">

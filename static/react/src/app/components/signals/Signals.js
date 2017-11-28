@@ -160,7 +160,7 @@ export class Signals extends React.Component {
         var signalLink = "/signals/" + story.slug;
         return (
 
-          <div className="col-md-3 top20 list-boxes" key={i}>
+          <div className="col-md-3 xs-mb-10 xs-pr-5 xs-pl-5 list-boxes" key={i}>
             <div className="rep_block newCardStyle" name={story.name}>
               <div className="card-header"></div>
               <div className="card-center-tile">
@@ -180,7 +180,7 @@ export class Signals extends React.Component {
               <div className="card-footer">
                 <div className="left_div">
                   <span className="footerTitle"></span>{story.username}
-                  <span className="footerTitle">{dateFormat(story.created_at, "mmm d,yyyy HH:MM")}</span>
+                  <span className="footerTitle footerTitle-lineh">{dateFormat(story.created_at, "mmm d,yyyy HH:MM")}</span>
                 </div>
 
                 <div className="card-deatils">
@@ -227,21 +227,22 @@ export class Signals extends React.Component {
 
               <div class="row">
                 <div class="col-md-8">
-                  <h4>Signals</h4>
+                  <h3 className="xs-mt-0">Signals</h3>
                 </div>
                 <div class="col-md-4">
-                  <div class="input-group pull-right">
-<div className="search-wrapper">
-	<form>
-                    <input type="text" name="search_signals" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search Signals" id="search_signals" className="form-control search-box" placeholder="Search signals..." required />
-                    <button className="close-icon" type="reset"></button>
+                <div class="input-group pull-right">
+				<div className="search-wrapper">
+					<form>
+					<input type="text" name="search_signals" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search Signals" id="search_signals" className="form-control search-box" placeholder="Search signals..." required />
+					<span class="fa fa-search form-control-feedback"></span>
+					<button className="close-icon" type="reset"></button>
 					</form>
-					</div>
+				</div>
                       <span class="input-group-btn">
                       {/*<button type="button" class="btn btn-default" title="Select All Card">
                         <i class="fa fa-address-card-o fa-lg"></i>
                       </button>*/}
-                      <button type="button" data-toggle="dropdown" title="Sorting" class="btn btn-default dropdown-toggle" aria-expanded="false">
+                      <button type="button" data-toggle="dropdown" title="Sorting" class="btn btn-primary dropdown-toggle" aria-expanded="false">
                         <i class="fa fa-sort-alpha-asc fa-lg"></i> <span class="caret"></span>
                       </button>
                       <ul role="menu" class="dropdown-menu dropdown-menu-right">
@@ -269,11 +270,12 @@ export class Signals extends React.Component {
           </div>
 
           <div className="main-content">
-            <div className="row">
+            <div className="row xs-m-0">
               {addButton}
               {storyList}
               <div className="clearfix"></div>
             </div>
+			
             <div className="ma-datatable-footer" id="idSignalPagination">
               <div className="dataTables_paginate">
                 {paginationTag}

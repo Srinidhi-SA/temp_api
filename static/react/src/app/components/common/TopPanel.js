@@ -38,7 +38,7 @@ export default class TopPanel extends React.Component {
 		            <div>
 								{/* // Header Menu*/}
 
-								<nav className="navbar navbar-default navbar-fixed-top" role="navigation">
+								<nav className="navbar navbar-default navbar-fixed-top box-shadow" role="navigation">
 								<LoadingBar style={{ backgroundColor: '#148071', height: '3px' }} />
 									{/*/ Brand and toggle get grouped for better mobile display -->*/}
 									<div className="navbar-header">
