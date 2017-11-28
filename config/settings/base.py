@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+
 import datetime
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -564,6 +565,11 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND = {
                 "displayName": "Association",
                 "status": False,
                 "analysisSubTypes": [],
+                "binSetting" : [
+                                    {"name":"heading","displayName":"Binning of Numerical Values"},
+                                    {"name":"binLevels","displayName":"Number of Bin Levels","defaultValue":5,"min":2,"max":10},
+                                    {"name":"binCardinality","displayName":"Do not bin numerical values with cardinality less than:","defaultValue":5,"min":2,"max":10}
+                                ],
                 "noOfColumnsToUse": [
                     {
                         "name": "low",
