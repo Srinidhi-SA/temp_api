@@ -189,13 +189,15 @@ export class AppsScoreList extends React.Component {
 							<li><a href="#">Story</a></li>
 							<li class="active">Sales Performance Report</li>
 						</ol> -->*/}
-                    <div className="row">
-                    <div className="col-md-8"></div>
-                    <div className="col-md-4">
-                    <div className="input-group pull-right">
-                    
-                    <input type="text" name="score_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Score Insights" id="score_insights" className="form-control" placeholder="Search Score insights..."/>
-                        <span className="input-group-btn">
+ 
+            <div className="row">
+              <div className="col-md-8"></div>
+              <div className="col-md-4">
+                <div className="input-group pull-right">
+
+                  <input type="text" name="score_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Score Insights" id="score_insights" className="form-control" placeholder="Search Score insights... "/>
+                  <span className="input-group-btn">
+ 
                     {/*<button type="button" className="btn btn-default" title="Select All Card">
                       <i className="fa fa-address-card-o fa-lg"></i>
                     </button>*/}

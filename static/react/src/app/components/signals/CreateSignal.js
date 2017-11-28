@@ -86,7 +86,7 @@ export class CreateSignal extends React.Component {
 			renderSelectBox = "No Datasets"
 		}
 		return (
-				<div class="col-md-3 top20 list-boxes" onClick={this.openSignalModal.bind(this)}>
+				<div class="col-md-3 xs-mb-10 xs-pr-5 xs-pl-5 list-boxes" onClick={this.openSignalModal.bind(this)}>
 				<div class="newCardStyle firstCard">
 				<div class="card-header"></div>
 				<div class="card-center newStoryCard">

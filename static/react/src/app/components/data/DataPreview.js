@@ -442,7 +442,7 @@ export class DataPreview extends React.Component {
 					<div className="page-head">
 					<div className="row">
 					<div className="col-md-8">
-					<h4>Data Preview</h4>
+					<h3 className="xs-mt-0 text-capitalize">Data Preview</h3>
 					</div>
 					</div>
 					<div className="clearfix"></div>
@@ -458,7 +458,7 @@ export class DataPreview extends React.Component {
 					<div className="clearfix"></div>
 					<div className="table-responsive noSwipe">
 
-					<Scrollbars>
+					<Scrollbars style={{ height: 764 }}>
 					<table className="table table-condensed table-hover table-bordered table-striped cst_table">
 					<thead>
 					<tr>
@@ -482,14 +482,14 @@ export class DataPreview extends React.Component {
 					<h4 className="panel-title"><a data-toggle="collapse" data-parent="#tab_statistics" href="#pnl_stc" aria-expanded="true" className="">Statistics <i className="fa fa-angle-down pull-right"></i></a></h4>
 					</div>
 					<div id="pnl_stc" className="panel-collapse collapse in" aria-expanded="true">
-					<div className="panel-body" >
-					<table className="no-border no-strip skills"id="side-table">
+					 <div className="xs-pt-5 xs-pr-5 xs-pb-5 xs-pl-5">
+					<table className="no-border no-strip skills" cellpadding="3" cellspacing="0" id="side-table">
 					<tbody className="no-border-x no-border-y" >
 					{sideTableTemaplte}
 
 					</tbody>
 					</table>
-					</div>
+					 </div>
 					</div>
 					</div>
 					</div>
@@ -501,10 +501,12 @@ export class DataPreview extends React.Component {
 					<h4 className="panel-title"><a data-toggle="collapse" data-parent="#tab_visualizations" href="#pnl_visl" aria-expanded="true" className="">Visualization <i className="fa fa-angle-down pull-right"></i></a></h4>
 					</div>
 					<div id="pnl_visl" className="panel-collapse collapse in" aria-expanded="true">
-					<div className="panel-body" id="side-chart">
+					<div className="xs-pt-5 xs-pr-5 xs-pb-5 xs-pl-5">
+					<div id="side-chart">
 					{/*<img src="../assets/images/data_preview_graph.png" className="img-responsive" />*/}
 						{firstChart}
 						<div className="clearfix"></div>
+					</div>
 					</div>
 					</div>
 					</div>
@@ -518,6 +520,7 @@ export class DataPreview extends React.Component {
 					{/* End Tab Subsettings */}
 					</div>
 					</div>
+					
 					<div className="row buttonRow" id="dataPreviewButton">
 					<div className="col-md-12">
 

@@ -54,7 +54,7 @@ export class MasterSummary extends React.Component {
       <div className="side-body">
         <div className="page-head">
           <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-12 hidden">
               <Breadcrumb path={[
                 {
                   path: '/signals',
@@ -66,7 +66,7 @@ export class MasterSummary extends React.Component {
               ]}/>
             </div>
             <div class="col-md-8">
-              <h4>{heading}</h4>
+              <h3 className="xs-mt-0 text-capitalize">{heading}</h3>
             </div>
           </div>
           <div class="clearfix"></div>
@@ -85,10 +85,8 @@ export class MasterSummary extends React.Component {
                               <table>
                                 <tr>
                                   <td></td>
-                                  <td class="text-center">
-                                    <h1>
-                                      <h1>{noOfDimention}</h1>
-                                    </h1>
+                                  <td class="text-center">                                   
+                                      <h1>{noOfDimention}</h1>                                    
                                   </td>
                                 </tr>
                                 <tr>
@@ -120,7 +118,7 @@ export class MasterSummary extends React.Component {
 
                             </div>
                             <div className="clearfix"></div>
-                            <div className="col-md-12 xs-pt-20">
+                            <div className="col-md-12 xs-pt-30">
                               <p className="lead txt-justify"><Card cardData={summary}/>
                               </p>
                             </div>
