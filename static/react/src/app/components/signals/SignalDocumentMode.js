@@ -119,37 +119,28 @@ export class SignalDocumentMode extends React.Component {
                   <div className="col-md-12">
                     <div className="panel panel-mAd">
                       <div className="panel-heading">
-                        <h2 class="pull-left">{this.props.signal.name}</h2>
-                        <div className="btn-toolbar pull-right">
-                          <div className="btn-group btn-space">
-                            <Link className="tabs-control right grp_legends_green continue" to={cardModeLink}>
-                              <button type="button" className="btn btn-default" title="Card mode">
-                                <i className="fa fa-id-card-o"></i>
-                              </button>
-                            </Link>
-                            <button type="button" className="btn btn-default" disabled="true" title="Document Mode">
-                              <i className="fa fa-file-text-o"></i>
-                            </button>
-                            {/*<Link className="continue" to="/signals">*/}
-                              <button type="button" className="btn" onClick = {this.closeDocumentMode.bind(this)}>
-                                 <i className="fa fa-times"></i>
-                              </button>
-                            {/*</Link>*/}
-                          </div>
-                        </div>
+                        <h4 className="page-title-4">{this.props.signal.name}					
+							<div className="btn-toolbar pull-right">
+								<div className="btn-group">
+								<button type="button" className="btn btn-default" onClick={this.print.bind(this)} title="Print Document"><i className="fa fa-print"></i></button>
+								<Link className="btn btn-default continue" to={cardModeLink} title="Card mode">
+								<i className="fa fa-id-card-o"></i>
+								</Link>
+								<button type="button" className="btn btn-default" disabled="true" title="Document Mode">
+								<i className="fa fa-file-text-o"></i>
+								</button>
+								{/*<Link className="continue" to="/signals">*/}
+								<button type="button" className="btn btn-alt4" onClick = {this.closeDocumentMode.bind(this)}>
+								<i className="fa fa-times"></i>
+								</button>
+								{/*</Link>*/}
+								</div>
+							</div>
+						</h4>
+						
                         <div className="clearfix"></div>
                       </div>
-                      <div className="btn-toolbar pull-right">
-                        <div className="btn-group btn-space">
-
-                          <button className="btn btn-default" type="button" onClick={this.print.bind(this)} title="Print Document">
-                            <i class="fa fa-print" aria-hidden="true"></i>
-                          </button>
-
-                        </div>
-                      </div>
-                      <div className="clearfix"></div>
-                      <br/>
+                        
                       <div className="panel-body documentModeSpacing">
                         <Card cardData={objs}/>
                       </div>

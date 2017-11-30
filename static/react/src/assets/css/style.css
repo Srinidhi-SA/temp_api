@@ -216,7 +216,7 @@ div.col-md-6.col-xs-12{ display:inline-block; float:left; width:48%; margin-bott
 }
 body {
 	font-family: 'Roboto', sans-serif; /* mAdv Old Style 'Open Sans', sans-serif; */
-	font-size: 13px;
+	font-size: 14px;
 	line-height: 1.42857143;
 	/*color: #555; mAdvisor Old */
 	color:#424242
@@ -1088,7 +1088,7 @@ select[multiple].input-lg, textarea.input-lg {
 	touch-action: manipulation;
 	cursor: pointer;
 	border: 1px solid transparent;
-	padding: 6px;
+	padding: 6px 10px;
 	font-size: 13px;
 	-webkit-user-select: none;
 	-moz-user-select: none;
@@ -2879,7 +2879,7 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:focus, a.list-g
 	border-radius: 0
 }
 .panel-body {
-	padding: 15px 20px 20px
+	padding: 15px;
 }
 .panel-heading {
 	padding: 5px 10px;
@@ -13918,8 +13918,8 @@ background:#ededed; color:#7dac02
 
 /** Panel Header **/
 .panel-mAd .panel { padding: 10px; }
-.panel-mAd>.panel-heading {      margin: 0; padding: 0; /*padding: 6px 0px 0 10px; background-color: #FFF; border-bottom:1px solid #ddd; */}
-.panel-mAd>.panel-heading h2 { margin-top: 8px;font-weight: bold; text-transform:capitalize}
+.panel-mAd>.panel-heading { margin: 0; padding: 0; /*padding: 6px 0px 0 10px; background-color: #FFF; border-bottom:1px solid #ddd; */}
+.panel-mAd>.panel-heading h2 { margin-top: 8px; text-transform:capitalize}
 .panel-mAd .panel-body { padding:0;}
 .panel-mAd div h2 small { font-size:50%; }
 /** For Card Tabs **/
@@ -14520,7 +14520,7 @@ margin-right:8px;
 content:''
 }
 a.disabled { color:#ccc !important; }
-.ex_bg .md-p-50 { min-height: 296px; }
+.ex_bg .md-p-50 { min-height: 312px; }
 
 ::-webkit-input-placeholder {
    font-style: italic;
@@ -14695,13 +14695,13 @@ a .btn-close {
   width: auto;
   cursor:pointer;
 }
-.pre_rules td label.blocks_rules { background: #c6eeee; max-width: 130px; padding: 5px 10px;
-    -webkit-border-radius:5px;
-	-moz-border-radius: 5px;
-	border-radius: 5px;
-	-moz-box-shadow: inset 0 0 10px #97c7c7;
-	-webkit-box-shadow: inset 0 0 10px #97c7c7;
-	box-shadow: inset 0 0 10px #97c7c7}
+
+.pred_disp_block:hover {-webkit-box-shadow: 2px 2px 15px -3px rgba(0,0,0,0.3);
+-moz-box-shadow: 2px 2px 15px -3px rgba(0,0,0,0.3);
+box-shadow: 2px 2px 15px -3px rgba(0,0,0,0.3); }
+
+.recActivity { margin-bottom: 0; }
+	
 /**************** Css realated to developers, keep the source down ***/
 
 
@@ -14755,10 +14755,10 @@ progress::-webkit-progress-value {
 }
 
 
-
+/*
 html{
     font: 10px sans-serif;
-}
+}*/
 
 
   svg{
@@ -15016,6 +15016,7 @@ visibility:hidden !important;
 .list-boxes .rep_block  { text-transform: capitalize; }
 
 .ov_card_boxes .row { text-align:center }
+.modal-body.chart-data-modal-body table td { text-align: left }
 .bgStockBox {
 margin-bottom: 10px;
 float: inherit;
