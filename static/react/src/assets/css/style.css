@@ -7,6 +7,16 @@
 /*@import url('https://fonts.googleapis.com/css?family=Open+Sans');*/
 
 @font-face {
+    font-family: 'Roboto';
+    src: url('../fonts/Roboto-Regular.eot');
+    src: url('../fonts/Roboto-Regular.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/Roboto-Regular.woff') format('woff'),
+        url(../fonts/'Roboto-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
     font-family: 'Segoe UI';
     src: url('../fonts/SegoeUI.eot');
     src: url('../fonts/SegoeUI.eot?#iefix') format('embedded-opentype'),
@@ -36,7 +46,7 @@ body, figure {
 	margin: 0
 }
 html {
-	font-family: 'Segoe UI', sans-serif; /*'Open Sans', sans-serif;*/
+	font-family: 'Roboto', sans-serif; /*'Open Sans', sans-serif;*/
 	-ms-text-size-adjust: 100%;
 	-webkit-text-size-adjust: 100%;
 	font-size: 10px;
@@ -205,7 +215,7 @@ div.col-md-6.col-xs-12{ display:inline-block; float:left; width:48%; margin-bott
 	box-sizing: border-box
 }
 body {
-	font-family: 'Segoe UI', sans-serif; /* mAdv Old Style 'Open Sans', sans-serif; */
+	font-family: 'Roboto', sans-serif; /* mAdv Old Style 'Open Sans', sans-serif; */
 	font-size: 13px;
 	line-height: 1.42857143;
 	/*color: #555; mAdvisor Old */
@@ -2285,7 +2295,7 @@ box-shadow:         0 2px 2px rgba(0,0,0,0.05);
 .pagination>li>a, .pagination>li>span {
     position: relative;
     float: left;
-    padding: 4px 12px;
+    padding: 5px 12px;
     line-height: 1.42857143;
     text-decoration: none;
     color: #00998c;
@@ -3116,7 +3126,7 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:focus, a.list-g
 	filter: alpha(opacity=20)
 }
 .popover, .tooltip {
-	font-family: 'Segoe UI', sans-serif; /*'Open Sans', sans-serif;*/
+	font-family: 'Roboto', sans-serif; /*'Open Sans', sans-serif;*/
 	font-style: normal;
 	font-weight: 400;
 	letter-spacing: normal;
@@ -7061,7 +7071,7 @@ body.open-right-sidebar .ma-right-sidebar {
 	box-shadow: 0 0 4px rgba(0, 0, 0, .2)
 }
 .gritter-item-wrapper .gritter-item {
-	font-family: 'Segoe UI', sans-serif; /*'Open Sans', sans-serif;*/
+	font-family: 'Roboto', sans-serif; /*'Open Sans', sans-serif;*/
 	background: 0 0;
 	color: #fff;
 	padding: 0;
@@ -12562,8 +12572,8 @@ div.dataTables_wrapper div.dataTables_length label select {
 .ma-datatable-footer {
     margin: 5px;
     padding: 15px 3px 13px;
-    background-color: #f7f7f7;
-    border: 1px solid #ebeef2;
+    background-color: #f9fafc;
+    border: 1px solid #eaeef1;
 }
 .bootstrap-touchspin input {
 	border-width: 1px
@@ -14685,7 +14695,13 @@ a .btn-close {
   width: auto;
   cursor:pointer;
 }
-	
+.pre_rules td label.blocks_rules { background: #c6eeee; max-width: 130px; padding: 5px 10px;
+    -webkit-border-radius:5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	-moz-box-shadow: inset 0 0 10px #97c7c7;
+	-webkit-box-shadow: inset 0 0 10px #97c7c7;
+	box-shadow: inset 0 0 10px #97c7c7}
 /**************** Css realated to developers, keep the source down ***/
 
 

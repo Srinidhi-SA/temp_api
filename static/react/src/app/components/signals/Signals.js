@@ -260,7 +260,7 @@ export class Signals extends React.Component {
                       {/*<button type="button" class="btn btn-default" title="Select All Card">
                         <i class="fa fa-address-card-o fa-lg"></i>
                       </button>*/}
-                      <button type="button" data-toggle="dropdown" title="Sorting" class="btn btn-primary dropdown-toggle" aria-expanded="false">
+                      <button type="button" data-toggle="dropdown" title="Sorting" class="btn btn-alt4 dropdown-toggle" aria-expanded="false">
                         <i class="fa fa-sort-alpha-asc fa-lg"></i> <span class="caret"></span>
                       </button>
                       <ul role="menu" class="dropdown-menu dropdown-menu-right">
