@@ -60,6 +60,18 @@ export class AdvanceSettings extends React.Component {
 	        this.props.dispatch(selectedAnalysisList(evt.target,"noOfColumnsToUse"))   
 	    }
 	}
+	handleBinningInput(evt){
+	    if(evt.target.value){
+            if(parseInt(evt.target.value) <= parseInt(evt.target.max)){
+                this.props.dispatch(selectedAnalysisList(evt.target,"association"))   
+            }else{
+                evt.target.value = "";
+            }
+        }else{
+            evt.target.value = 5;
+            this.props.dispatch(selectedAnalysisList(evt.target,"association"))   
+        }
+	}
 	handleTrendAnalysis(evt){
 		this.props.dispatch(selectedAnalysisList(evt.target,"trend"))
 	}
@@ -168,11 +180,11 @@ export class AdvanceSettings extends React.Component {
 				    
 				    binTemplate = metaItem.binSetting.map((binItem,binIndex)=>{
 				        if(!binItem.hasOwnProperty("defaultValue")){
-				            return (<label key={"bin"+binIndex}><b>{binItem.displayName}</b></label>)  
+				            return (<label key={binIndex}><b>{binItem.displayName}</b></label>)  
 				        }else{
-				            return (<div className="form-group md-pt-20" id={binIndex}><label for="fl1" className="col-sm-9 control-label">{binItem.displayName}</label>
+				            return (<div className="form-group md-pt-15" id={binIndex}><label for="fl1" className="col-sm-9 control-label">{binItem.displayName}</label>
 				            <div className="col-sm-3">
-	                        <input id={binIndex} type="number" name={binItem.name}  className="form-control" min={binItem.min} max={binItem.max} defaultValue={binItem.defaultValue}/>
+	                        <input id={binIndex} type="number" name={metaItem.name}  className="form-control" min={binItem.min} max={binItem.max} defaultValue={binItem.defaultValue} onChange={this.handleBinningInput.bind(this)}/>
 	                        </div>
 	                        </div>)    
 				        }

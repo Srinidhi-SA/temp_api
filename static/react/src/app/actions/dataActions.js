@@ -339,6 +339,24 @@ export function selectedAnalysisList(evt,noOfColumnsToUse){
 			}
 		}
 	}
+	//For updating Bin values in Association
+	else if(noOfColumnsToUse == "association" ){
+	    for(var i=0;i<analysisList.length;i++){
+        if(analysisList[i].name == evt.name){
+            if(evt.value)
+            analysisList[i].status = true;
+            else
+            analysisList[i].status = false;   
+            for(var j=0;j<analysisList[i].binSetting.length;j++){
+               if(evt.id == j){
+                   analysisList[i].binSetting[j].defaultValue = evt.value;  
+               }
+            }
+            break;
+        }
+    }
+	    
+	}
 	//For top level analysis update like trend,prediction,association
 	else {
 		if(evt.target.className == "possibleAnalysis"){
