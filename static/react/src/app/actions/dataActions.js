@@ -753,6 +753,10 @@ export function storeSearchElement(search_element){
 	}
 }
 
+export function storeSearchElement_data(search_element){
+    storeSearchElement(search_element)
+}
+
 export function storeSortElements(sorton,sorttype){
 	return {
 		type: "SORT_DATA",
