@@ -349,7 +349,7 @@ export function selectedAnalysisList(evt,noOfColumnsToUse){
             analysisList[i].status = false;   
             for(var j=0;j<analysisList[i].binSetting.length;j++){
                if(evt.id == j){
-                   analysisList[i].binSetting[j].defaultValue = evt.value;  
+                   analysisList[i].binSetting[j].value = parseInt(evt.value);  
                }
             }
             break;

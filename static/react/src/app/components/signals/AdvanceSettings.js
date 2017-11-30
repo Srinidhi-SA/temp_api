@@ -68,7 +68,7 @@ export class AdvanceSettings extends React.Component {
                 evt.target.value = "";
             }
         }else{
-            evt.target.value = 5;
+            //evt.target.value = evt.target.defaultValue;
             this.props.dispatch(selectedAnalysisList(evt.target,"association"))   
         }
 	}
@@ -184,7 +184,7 @@ export class AdvanceSettings extends React.Component {
 				        }else{
 				            return (<div className="form-group md-pt-15" id={binIndex}><label for="fl1" className="col-sm-9 control-label">{binItem.displayName}</label>
 				            <div className="col-sm-3">
-	                        <input id={binIndex} type="number" name={metaItem.name}  className="form-control" min={binItem.min} max={binItem.max} defaultValue={binItem.defaultValue} onChange={this.handleBinningInput.bind(this)}/>
+	                        <input id={binIndex} type="number" name={metaItem.name}  className="form-control" min={binItem.min} max={binItem.max} placeholder={binItem.defaultValue} defaultValue={binItem.value}   onChange={this.handleBinningInput.bind(this)}/>
 	                        </div>
 	                        </div>)    
 				        }
