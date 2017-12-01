@@ -1098,7 +1098,7 @@ class CustomApps(models.Model):
     app_url = models.CharField(max_length=300,null=True)
     #data = models.TextField(default="{}")
     #model_data = models.TextField(default="{}")
-    #created_at = models.DateTimeField(auto_now_add=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
     #updated_at = models.DateTimeField(auto_now=True, null=True)
     created_by = models.ForeignKey(User, null=False)
     #deleted = models.BooleanField(default=False)
