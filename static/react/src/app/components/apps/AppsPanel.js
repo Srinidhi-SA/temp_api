@@ -76,7 +76,8 @@ export class AppsPanel extends React.Component {
                           <a href="#"><i class="fa fa-sort-numeric-desc" aria-hidden="true"></i> Date Descending</a>
                         </li>
                       </ul>
-					  
+					  </div>
+					   <div class="btn-group">
 					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter fa-lg"></i> <span class="caret"></span></button>
 					<ul role="menu" class="dropdown-menu dropdown-menu-right">
                        {/* <li>
@@ -203,7 +204,7 @@ export class AppsPanel extends React.Component {
 					</div>
 				</div>
 				
-				<div class="clearfix xs-p-5"></div>
+				<div class="clearfix xs-p-10"></div>
 				<div class="row">
 				<div class="col-md-4">
 
@@ -315,7 +316,7 @@ export class AppsPanel extends React.Component {
 				</div>
 
 
-				<div class="clearfix xs-p-5"></div>
+				<div class="clearfix xs-p-10"></div>
                 <div class="row">
                 <div class="col-md-4">
 
@@ -425,7 +426,7 @@ export class AppsPanel extends React.Component {
 
                
                 
-                <div class="clearfix xs-p-5"></div>
+                <div class="clearfix xs-p-10"></div>
                 <div class="row">
                 <div class="col-md-4">
 
