@@ -60,6 +60,7 @@ export default function reducer(state = {
 		stockAnalysisFlag:false,
 		conceptList:{},
 		scoreSummaryCSVData:[],
+		appsList:{},
 
 
 }, action) {
@@ -667,6 +668,23 @@ export default function reducer(state = {
 		}
 	}
 	break;
+	
+	   case "APPS_LIST":
+	    {
+	        return {
+	            ...state,
+	            appsList: action.data,
+	            current_page:action.current_page,
+	        }
+	    }
+	    break;
+	    
+	   case "APPS_LIST_ERROR":
+	    {
+	        //alert(action.json.non_field_errors);
+	        throw new Error("Unable to fetch apps list data!!");
+	    }
+	    break;
 	
 	}
 	return state

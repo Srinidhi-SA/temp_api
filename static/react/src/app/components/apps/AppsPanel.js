@@ -5,9 +5,9 @@ import {connect} from "react-redux";
 import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab} from "react-bootstrap";
 import {Link, Redirect} from "react-router-dom";
-import {updateSelectedApp,updateModelSummaryFlag,uploadStockAnalysisFlag,closeAppsLoaderValue,updateScoreSummaryFlag,clearModelSummary,showRoboDataUploadPreview,updateAudioFileSummaryFlag} from "../../actions/appActions";
+import {updateSelectedApp,getAppsList,updateModelSummaryFlag,uploadStockAnalysisFlag,closeAppsLoaderValue,updateScoreSummaryFlag,clearModelSummary,showRoboDataUploadPreview,updateAudioFileSummaryFlag} from "../../actions/appActions";
 import {STATIC_URL} from "../../helpers/env.js"
-import {APPID1,APPID2,APPID3,APPID4,APPNAME1,APPNAME2,APPNAME3,APPNAME4,APPNAME5,APPID5} from "../../helpers/helper.js"
+import {APPID1,APPID2,APPID3,APPID4,APPNAME1,APPNAME2,APPNAME3,APPNAME4,APPNAME5,APPID5,getUserDetailsOrRestart} from "../../helpers/helper.js"
 
 @connect((store) => {
 	return {login_response: store.login.login_response,
@@ -22,6 +22,9 @@ export class AppsPanel extends React.Component {
   constructor(props) {
     super(props);
     console.log(this.props)
+  }
+  componentWillMount(){
+      this.props.dispatch(getAppsList(getUserDetailsOrRestart.get().userToken,1));
   }
   gotoAppsList(appId,appName){
 	  this.props.dispatch(updateSelectedApp(appId,appName));

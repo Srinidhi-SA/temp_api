@@ -1,4 +1,4 @@
-const API = "http://madvisordev.marlabsai.com"; //dev
+const API = "http://192.168.18.70:9022"; //dev
 // const API = "http://.............";   //prod
 
 //const API = "http://192.168.18.138:9012"; //vivek
