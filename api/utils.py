@@ -7,7 +7,7 @@ from sjsclient import client
 
 from api.helper import JobserverDetails, get_jobserver_status, get_message
 from api.user_helper import UserSerializer
-from models import Insight, Dataset, Trainer, Score, Job, Robo, Audioset, StockDataset, Apps
+from models import Insight, Dataset, Trainer, Score, Job, Robo, Audioset, StockDataset, CustomApps
 
 from django.conf import settings
 
@@ -537,7 +537,7 @@ class AppListSerializers(serializers.ModelSerializer):
             return tag_keywords
 
         class Meta:
-            model = Apps
+            model = CustomApps
             fields = '__all__'
 
 class AppSerializer(serializers.ModelSerializer):
@@ -575,5 +575,5 @@ class AppSerializer(serializers.ModelSerializer):
             return instance
 
         class Meta:
-            model = Apps
+            model = CustomApps
             fields = '__all__'

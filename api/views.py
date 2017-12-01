@@ -31,7 +31,7 @@ from api.utils import \
     AppListSerializers, \
     AppSerializer
 
-from models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData, StockDataset, Apps
+from models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData, StockDataset, CustomApps
 
 
 class SignalView(viewsets.ModelViewSet):
@@ -613,7 +613,7 @@ class AudiosetView(viewsets.ModelViewSet):
 
 class AppView(viewsets.ModelViewSet):
     def get_queryset(self):
-        queryset = Apps.objects.filter(
+        queryset = CustomApps.objects.filter(
             created_by=self.request.user,
             status="Active"
         )
@@ -623,7 +623,7 @@ class AppView(viewsets.ModelViewSet):
         return AppSerializer
 
     def get_object_from_all(self):
-        return Apps.objects.get(slug=self.kwargs.get('slug'))
+        return CustomApps.objects.get(slug=self.kwargs.get('slug'))
 
     lookup_field = 'slug'
     filter_backends = (DjangoFilterBackend,)

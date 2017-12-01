@@ -29,6 +29,7 @@ STATUS_CHOICES = (
     ('1', 'Signal Creation Started.'),
     ('2', 'Trend Created'),
     ('3', 'ChiSquare Created'),
+
     ('4', 'Decision Tree Created'),
     ('5', 'Density Histogram Created'),
     ('6', 'Regression Created'),
@@ -1086,7 +1087,7 @@ class Robo(models.Model):
             self.status = "INPROGRESS"
         self.save()
 
-class Apps(models.Model):
+class CustomApps(models.Model):
     app_id = models.IntegerField(null=False)
     name = models.CharField(max_length=300, null=False, default = "App")
     slug = models.SlugField(null=False, blank=True, max_length=300)
@@ -1116,7 +1117,7 @@ class Apps(models.Model):
 
     def save(self, *args, **kwargs):
         self.generate_slug()
-        super(Apps, self).save(*args, **kwargs)
+        super(CustomApps, self).save(*args, **kwargs)
 
     def create(self, *args, **kwargs):
         self.add_to_job()
