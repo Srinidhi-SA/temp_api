@@ -178,7 +178,7 @@ export class Signals extends React.Component {
         var signalLink = "/signals/" + story.slug;
         return (
 
-          <div className="col-md-3 xs-mb-10 xs-pr-5 xs-pl-5 list-boxes" key={i}>
+          <div className="col-md-3 top20 list-boxes" key={i}>
             <div className="rep_block newCardStyle" name={story.name}>
               <div className="card-header"></div>
               <div className="card-center-tile">
@@ -198,12 +198,12 @@ export class Signals extends React.Component {
               <div className="card-footer">
                 <div className="left_div">
                   <span className="footerTitle"></span>{story.username}
-                  <span className="footerTitle footerTitle-lineh">{dateFormat(story.created_at, "mmm d,yyyy HH:MM")}</span>
+                  <span className="footerTitle">{dateFormat(story.created_at, "mmm d,yyyy HH:MM")}</span>
                 </div>
 
                 <div className="card-deatils">
                   {/*<!-- Popover Content link -->*/}
-                  <OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={story}/> < /Popover>}>
+                  <OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={story}/> </Popover>}>
                     <a className="pover cursor">
                       <i className="ci pe-7s-info pe-2x"></i>
                     </a>
@@ -242,64 +242,64 @@ export class Signals extends React.Component {
                 <li><a href="#">Story</a></li>
                 <li class="active">Sales Performance Report</li>
               </ol> -->*/}
- 
-              <div class="row">
-                <div class="col-md-8">
-                  <h3 className="xs-mt-0">Signals</h3>
-                </div>
-                <div class="col-md-4">
-				
-				<div class="btn-toolbar pull-right">
-				<div class="input-group">
-				<div className="search-wrapper">
-					<form>
-					<input type="text" name="search_signals" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search Signals" id="search_signals" className="form-control search-box" placeholder="Search signals..." required />
-					<span class="fa fa-search form-control-feedback"></span>
-					<button className="close-icon" type="reset"></button>
-					</form>
-				</div>
-				</div>
-                  <div class="btn-group">
-                     
-					
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-sort-alpha-asc fa-lg"></i> <span class="caret"></span></button>
-					<ul role="menu" class="dropdown-menu dropdown-menu-right">
-                        <li>
-                          <a href="#" onClick={this.doSorting.bind(this,'name','asc')}><i class="fa fa-sort-alpha-asc" aria-hidden="true"></i> Name Ascending</a>
-                        </li>
-                        <li>
-                          <a href="#" onClick={this.doSorting.bind(this,'name','desc')}><i class="fa fa-sort-alpha-desc" aria-hidden="true"></i> Name Descending</a>
-                        </li>
-                        <li>
-                          <a href="#" onClick={this.doSorting.bind(this,'created_at','asc')}><i class="fa fa-sort-numeric-asc" aria-hidden="true"></i> Date Ascending</a>
-                        </li>
-                        <li>
-                          <a href="#" onClick={this.doSorting.bind(this,'created_at','desc')}><i class="fa fa-sort-numeric-desc" aria-hidden="true"></i> Date Descending</a>
-                        </li>
-                      </ul>
-                  </div>
-                   
-                  
-                </div>
-				
-				
-                
 
- 
+            <div class="row">
+              <div class="col-md-8">
+                <h4>Signals</h4>
+              </div>
+              <div class="col-md-4">
+                <div class="input-group pull-right">
+                  <div className="search-wrapper">
+                    {/*<form>*/}
+                    <input type="text" name="search_signals" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search Signals" id="search_signals" className="form-control search-box" placeholder="Search signals..." required/>
+                    <button className="close-icon" type="reset"></button>
+                    {/*</form>*/}
+                  </div>
+                  <span class="input-group-btn">
+                    {/*<button type="button" class="btn btn-default" title="Select All Card">
+                        <i class="fa fa-address-card-o fa-lg"></i>
+                      </button>*/}
+                    <button type="button" data-toggle="dropdown" title="Sorting" class="btn btn-default dropdown-toggle" aria-expanded="false">
+                      <i class="fa fa-sort-alpha-asc fa-lg"></i>
+                      <span class="caret"></span>
+                    </button>
+                    <ul role="menu" class="dropdown-menu dropdown-menu-right">
+                      <li>
+                        <a href="#" onClick={this.doSorting.bind(this, 'name', 'asc')}>
+                          <i class="fa fa-sort-alpha-asc" aria-hidden="true"></i>
+                          Name Ascending</a>
+                      </li>
+                      <li>
+                        <a href="#" onClick={this.doSorting.bind(this, 'name', 'desc')}>
+                          <i class="fa fa-sort-alpha-desc" aria-hidden="true"></i>
+                          Name Descending</a>
+                      </li>
+                      <li>
+                        <a href="#" onClick={this.doSorting.bind(this, 'created_at', 'asc')}>
+                          <i class="fa fa-sort-numeric-asc" aria-hidden="true"></i>
+                          Date Ascending</a>
+                      </li>
+                      <li>
+                        <a href="#" onClick={this.doSorting.bind(this, 'created_at', 'desc')}>
+                          <i class="fa fa-sort-numeric-desc" aria-hidden="true"></i>
+                          Date Descending</a>
+                      </li>
+                    </ul>
+                  </span>
                 </div>
 
               </div>
             </div>
 
-            
+            <div class="clearfix"></div>
+          </div>
 
           <div className="main-content">
-            <div className="row xs-m-0">
+            <div className="row">
               {addButton}
               {storyList}
               <div className="clearfix"></div>
             </div>
-			
             <div className="ma-datatable-footer" id="idSignalPagination">
               <div className="dataTables_paginate">
                 {paginationTag}

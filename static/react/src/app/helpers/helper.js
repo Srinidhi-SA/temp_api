@@ -106,6 +106,7 @@ const NEWVALUE = "new value";
 const TEXTHEATMAPTABLE = "textHeatMapTable";
 const DEFAULTANALYSISVARIABLES = "high";
 const MINROWINDATASET = 10;
+const APPSPERPAGE = 9;
 
 
 export function generateHeaders(table) {
@@ -392,6 +393,7 @@ export{
 	USERDETAILS,
 	DEFAULTANALYSISVARIABLES,
   MINROWINDATASET,
+  APPSPERPAGE
 	}
 export function capitalizeArray(array){
   let a =[]

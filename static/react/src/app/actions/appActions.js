@@ -1,6 +1,6 @@
 
 import {API,EMR} from "../helpers/env";
-import {PERPAGE,isEmpty,getUserDetailsOrRestart} from "../helpers/helper";
+import {PERPAGE,isEmpty,getUserDetailsOrRestart,APPSPERPAGE} from "../helpers/helper";
 import store from "../store";
 import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,CUSTOMERDATA,HISTORIALDATA,EXTERNALDATA,DELETEMODEL,
     RENAMEMODEL,DELETESCORE,RENAMESCORE,DELETEINSIGHT,RENAMEINSIGHT,SUCCESS,FAILED,DELETEAUDIO,RENAMEAUDIO} from "../helpers/helper";
@@ -1659,14 +1659,24 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
     }
     
     function  fetchApps(token,pageNo){
-        return fetch(API+'/api/apps/?page_number='+pageNo+'&page_size='+PERPAGE+'',{
-            method: 'get',
-            headers: getHeader(token)
-            }).then( response => Promise.all([response, response.json()]));
+        let search_element = store.getState().apps.storeAppsSearchElement;
+        if(search_element){
+            return fetch(API+'/api/apps/?name='+search_element+'&page_number='+pageNo+'&page_size='+APPSPERPAGE+'',{
+                method: 'get',
+                headers: getHeader(token)
+                }).then( response => Promise.all([response, response.json()]));
+        }
+        else{
+            return fetch(API+'/api/apps/?page_number='+pageNo+'&page_size='+APPSPERPAGE+'',{
+                method: 'get',
+                headers: getHeader(token)
+                }).then( response => Promise.all([response, response.json()]));  
+        }
+       
     }
     
     function fetchAppsSuccess(json){
-        var current_page =  signalList.current_page
+        var current_page =  json.current_page
         return {
           type: "APPS_LIST",
           json,
@@ -1681,4 +1691,9 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
           json
         }
       }
-    
+    export function appsStoreSearchEle(search_element){
+        return {
+            type: "APPS_SEARCH",
+            search_element
+          }
+    }

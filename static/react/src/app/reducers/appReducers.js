@@ -61,6 +61,7 @@ export default function reducer(state = {
 		conceptList:{},
 		scoreSummaryCSVData:[],
 		appsList:{},
+		storeAppsSearchElement:"",
 
 
 }, action) {
@@ -673,7 +674,7 @@ export default function reducer(state = {
 	    {
 	        return {
 	            ...state,
-	            appsList: action.data,
+	            appsList: action.json,
 	            current_page:action.current_page,
 	        }
 	    }
@@ -683,6 +684,15 @@ export default function reducer(state = {
 	    {
 	        //alert(action.json.non_field_errors);
 	        throw new Error("Unable to fetch apps list data!!");
+	    }
+	    break;
+	    
+	   case "APPS_SEARCH":
+	    {
+	        return{
+	            ...state,
+	            storeAppsSearchElement:action.search_element
+	        }
 	    }
 	    break;
 	
