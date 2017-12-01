@@ -8,6 +8,8 @@ from api import views
 from datasets.views import DatasetView
 from views import ScoreView, StockDatasetView, get_concepts_to_show_in_ui
 from views import SignalView, get_datasource_config_list
+from views import AppView
+
 from views import TrainerView
 from views import RoboView
 from views import AudiosetView
@@ -58,6 +60,12 @@ router.register(
     base_name='stockdataset'
 )
 
+router.register(
+    'apps',
+    AppView,
+    base_name='apps'
+)
+
 from api.user_helper import upload_photo, get_profile_image
 urlpatterns = [
     url(r'^datasource/get_config_list$',get_datasource_config_list , name="datasource_get_config_list"),
@@ -80,4 +88,3 @@ urlpatterns = [
 
 urlpatterns += router.urls
 # print urlpatterns
-
