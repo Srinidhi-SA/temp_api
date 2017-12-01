@@ -14701,6 +14701,7 @@ a .btn-close {
 -moz-box-shadow: 2px 2px 15px -3px rgba(0,0,0,0.3);
 box-shadow: 2px 2px 15px -3px rgba(0,0,0,0.3); }
 
+div.pred_disp_block a.selected h1 { color:#f0ad4e; }
 .recActivity { margin-bottom: 0; }
 	
 /**************** Css realated to developers, keep the source down ***/
