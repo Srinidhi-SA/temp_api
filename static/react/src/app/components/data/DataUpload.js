@@ -41,7 +41,7 @@ export class DataUpload extends React.Component {
 	}
 	render() {
 			return (
-					<div className="col-md-3 top20 list-boxes" onClick={this.openPopup.bind(this)}>
+					<div className="col-md-3 xs-mb-10 xs-pr-5 xs-pl-5 list-boxes" onClick={this.openPopup.bind(this)}>
 					<div className="newCardStyle firstCard">
 					<div className="card-header"></div>
 					<div className="card-center newStoryCard">					

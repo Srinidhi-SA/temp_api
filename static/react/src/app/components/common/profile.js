@@ -1,4 +1,5 @@
 import React from "react";
+import { Scrollbars } from 'react-custom-scrollbars';
 import {connect} from "react-redux";
 import ReactDOM from "react-dom";
 import {Link} from "react-router-dom";
@@ -13,8 +14,6 @@ import {saveFileToStore} from "../../actions/dataSourceListActions";
 import Dropzone from 'react-dropzone'
 import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
 import {openImg,closeImg,uploadImg,getUserProfile,saveProfileImage} from "../../actions/loginActions";
-
-
 
 @connect((store) => {
   return {login_response: store.login.login_response,
@@ -35,9 +34,17 @@ export class Profile extends React.Component {
       this.props.dispatch(getUserProfile(getUserDetailsOrRestart.get().userToken))
     if(this.props.profileImgURL=="")
     this.props.dispatch(saveProfileImage(getUserDetailsOrRestart.get().image_url))
+	
+	
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+  
+ // $('.crop').click(function() {
+ //    $(this).toggleClass('crop active');
+ //  });
+ 
+  }
   popupMsg(){
 		bootbox.alert("Only PNG and JPEG files are allowed to upload")
 	}
@@ -114,7 +121,7 @@ export class Profile extends React.Component {
           <div className="page-head">
             <div className="row">
               <div className="col-md-8">
-                <h4>User Profile</h4>
+                <h3 className="xs-mt-0 text-capitalize">User Profile</h3>
               </div>
             </div>
           </div>
@@ -123,7 +130,10 @@ export class Profile extends React.Component {
             <!-- Page Content Area -->*/}
           <div className="main-content">
             <div className="user-profile">
-              <div className="user-display xs-p-10">
+			
+			<div className="panel panel-default xs-mb-15">
+			<div className="panel-body">
+              <div className="user-display">
                 <div className="user-avatar col-md-2 text-center">
                 <img src={imgSrc} className="img-responsive img-center img-circle"/>
                 <a onClick={this.openPopup.bind(this)} href ="javascript:void(0)"><i class="fa fa-camera" style={{fontSize:"36px",color:"grey"}}></i></a>
@@ -230,22 +240,30 @@ export class Profile extends React.Component {
                   </div>
                 </div>
                 <div className="clearfix"></div>
-
               </div>
-              <div className="clearfix"></div>
-              <div className="row">
+            
+			
+			 <div className="clearfix"></div>
+              <div className="row text-center">
+			  
                 {statsList}
+				 
               </div>
+			  </div>
             </div>
-			<div className="panel">
+			 </div>
             <div className="row">
               <div className="col-md-4">
+			  <div className="panel">
+				<div className="panel-body">
                 <div className="minHP">
-                  <h5 class="text-center xs-pt-20">TOTAL SPACE</h5>
+                  <h5 class="text-center">TOTAL SPACE</h5>
                   <C3Chart classId="_profile" data={this.props.profileInfo.chart_c3}/> {/*
               <img src="images/userProfileGraph.png" className="img-responsive"/>*/}
 			  <p className="xs-pl-20">{renderHTML(this.props.profileInfo.comment)}</p>
                 </div>
+				</div>
+				</div>
               </div>
               <div className="col-md-8">
                 <div className="row">
@@ -268,45 +286,70 @@ export class Profile extends React.Component {
                   </div>
                   <div className="clearfix"></div>
                   <div className="col-md-12">
+					<div className="panel">
+					<div className="panel-body">
                     <div className="minHP">
-					<h5 class="xs-pt-20  xs-ml-10">RECENT ACTIVITY</h5>
-					<ul className="list-unstyled list-border xs-m-10">
+					<h5>RECENT ACTIVITY</h5>					
+					<Scrollbars style={{ height: 312 }} renderTrackHorizontal={props => <div {...props} className="track-horizontal" style={{display:"none"}}/>}
+        renderThumbHorizontal={props => <div {...props} className="thumb-horizontal" style={{display:"none"}}/>}>
+					<ul className="list-unstyled list-border recActivity">
 						<li>
-							<img src="../assets/images/data_cardIcon.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
-							<span>Data set ‘<a href="#">Churn prediction.csv</a>’ was uploaded</span>
+							<img src="../assets/images/iconp_signal.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
+							<span>
+							<div class="crop">Data set ‘<a href="#">Churn prediction.csv</a>’ was uploaded and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen
+  book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged</div>
+							
+							</span>
 							<span className="pull-right">Nov 13,2017 16:21</span>
 						</li>
 						<li>
-							<img src="../assets/images/m_carIcon.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
+							<img src="../assets/images/iconp_app.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
 							<span>Data set ‘Churn prediction.csv’ was renamed to ‘<a href="#">Churn Status Data</a>’
 </span>
 							<span className="pull-right">Nov 15,2017 16:21</span>
 						</li>
 						<li>
-							<img src="../assets/images/d_cardIcon.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
+							<img src="../assets/images/iconp_data.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
 							<span>‘Churn Status Signal’ was created</span>
 							<span className="pull-right">Nov 11,2017 16:21</span>
 						</li>
 						<li>
-							<img src="../assets/images/apps_score_icon.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
+							<img src="../assets/images/iconp_oppr.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
 							<span>‘Churn Status Signal’ was deleted
 </span>
 							<span className="pull-right">Nov 13,2017 16:21</span>
 						</li>
 						<li>
-							<img src="../assets/images/apps_model_icon.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
+							<img src="../assets/images/iconp_prediction.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
 							<span>‘Churn Status’ predictive model was created on Opportunity Scoring App.</span>
 							<span className="pull-right">15 Nov 2015, 10:15:00</span>
 						</li>
 						<li>
-							<img src="../assets/images/File_Icon.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
+							<img src="../assets/images/iconp_robo.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
+							<span>Data set ‘<a href="#">Churn prediction.csv</a>’ was uploaded</span>
+							<span className="pull-right">Nov 13,2017 16:21</span>
+						</li>
+						<li>
+							<img src="../assets/images/iconp_robo.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
+							<span>Data set ‘<a href="#">Churn prediction.csv</a>’ was uploaded</span>
+							<span className="pull-right">Nov 13,2017 16:21</span>
+						</li>
+						<li>
+							<img src="../assets/images/iconp_robo.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
+							<span>Data set ‘<a href="#">Churn prediction.csv</a>’ was uploaded</span>
+							<span className="pull-right">Nov 13,2017 16:21</span>
+						</li>
+						<li>
+							<img src="../assets/images/iconp_robo.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
 							<span>Data set ‘<a href="#">Churn prediction.csv</a>’ was uploaded</span>
 							<span className="pull-right">Nov 13,2017 16:21</span>
 						</li>
 					</ul>
-                        
+                    </Scrollbars>  
                     </div>
-                  </div>
+					</div>
+					</div>
+				  </div>
                   {/*  <div className="col-md-4">
                   <div className="panel text-center xs-p-20 minHP">
                     <a href="#">
@@ -320,7 +363,7 @@ export class Profile extends React.Component {
               </div>
 
             </div>
-			</div>
+			 
 		  </div>
         </div>
 

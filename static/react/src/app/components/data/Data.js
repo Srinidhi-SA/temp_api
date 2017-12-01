@@ -147,7 +147,7 @@ export class Data extends React.Component {
           src = STATIC_URL + "assets/images/mySQL_Icon.png"
         }
         return (
-          <div className="col-md-3 top20 list-boxes" key={i}>
+          <div className="col-md-3 xs-mb-10 xs-pr-5 xs-pl-5 list-boxes" key={i}>
             <div className="rep_block newCardStyle" name={data.name}>
               <div className="card-header"></div>
               <div className="card-center-tile">
@@ -170,7 +170,7 @@ export class Data extends React.Component {
 
                 <div className="card-deatils">
                   {/*<!-- Popover Content link -->*/}
-                  <OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={data}/> < /Popover>}>
+                  <OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={data}/> </Popover>}>
                     <a  className="pover cursor">
                       <i className="ci pe-7s-info pe-2x"></i>
                     </a>
@@ -205,16 +205,26 @@ export class Data extends React.Component {
           <div class="page-head">
             <div class="row">
               <div class="col-md-8">
-                <h4>Data</h4>
+                <h3 className="xs-mt-0">Data</h3>
               </div>
               <div class="col-md-4">
-                <div class="input-group pull-right">
-                  <input type="text" name="search_data" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search Data" id="search_data" class="form-control" placeholder="Search data..."/>
-
-                  <span class="input-group-btn">
-                    {/*<button type="button" class="btn btn-default" title="Select All Card">
+			  
+			  <div class="btn-toolbar pull-right">
+				<div class="input-group">
+				{/*   <input type="text" name="search_data" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search Data" id="search_data" class="form-control" placeholder="Search data..."/>*/}
+				<div className="search-wrapper">
+					<form>
+					<input type="text" name="search_data" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Model Insights" id="search_data" className="form-control search-box" placeholder="Search data..." required />
+					<span class="fa fa-search form-control-feedback"></span>
+					<button className="close-icon" type="reset"></button>
+					</form>
+				</div>
+				
+				</div>
+                  <div class="btn-group">                    
+					{/*<button type="button" class="btn btn-default" title="Select All Card">
                       <i class="fa fa-address-card-o fa-lg"></i>
-                    </button>*/}
+                    </button>*/}					
                     <button type="button" data-toggle="dropdown" title="Sorting" class="btn btn-default dropdown-toggle" aria-expanded="false">
                       <i class="fa fa-sort-alpha-asc fa-lg"></i>&nbsp;<span class="caret"></span>
                     </button>
@@ -231,15 +241,15 @@ export class Data extends React.Component {
                         <li>
                           <a href="#" onClick={this.doSorting.bind(this,'created_at','desc')}><i class="fa fa-sort-numeric-desc" aria-hidden="true"></i> Date Descending</a>
                         </li>
-                    </ul>
-                  </span>
-                </div>
+                    </ul>					
+                  </div>
+				  </div>
               </div>
             </div>
             <div class="clearfix"></div>
           </div>
           <div className="main-content">
-            <div className="row">
+            <div className="row xs-m-0">
               {addButton}
               {dataSetList}
               <div className="clearfix"></div>
