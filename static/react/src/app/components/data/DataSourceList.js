@@ -26,7 +26,7 @@ import {getDataSourceList,saveFileToStore,updateSelectedDataSrc,updateDbDetails}
 })
 
 export class DataSourceList extends React.Component {
-	
+
 	constructor(props) {
 		super(props);
 		this.onDrop = this.onDrop.bind(this);
@@ -50,7 +50,7 @@ export class DataSourceList extends React.Component {
 	render() {
 		const dataSrcList = store.getState().dataSource.dataSourceList.conf;
         var fileName = store.getState().dataSource.fileUpload.name;
-       
+
         var fileSize = store.getState().dataSource.fileUpload.size;
 		if (dataSrcList) {
 			const navTabs = dataSrcList.map((data, i) => {
@@ -85,10 +85,15 @@ export class DataSourceList extends React.Component {
 						</div>
 						</div>)
 					}else if(field.fieldType.toLowerCase() == INPUT.toLowerCase()){
+						//to put default port
+						let placeHolder = field.placeHolder
+						if(field.defaultValue){
+							placeHolder = field.defaultValue
+						}
 						return(<div className="form-group" id={j}>
 						<label for="fl1" className="col-sm-3 control-label">{field.labelName}</label>
 						<div className="col-sm-9">
-						<input id={j} type="text" name={field.labelName} placeholder={field.placeHolder} className="form-control" onChange={this.handleInputChange.bind(this)}/>
+						<input id={j} type="text" name={field.labelName} placeholder={placeHolder} className="form-control" onChange={this.handleInputChange.bind(this)}/>
 						</div>
 						</div>)
 					}
@@ -128,7 +133,7 @@ export class DataSourceList extends React.Component {
 					</Col>
 
 					</Row>
-					</Tab.Container>	
+					</Tab.Container>
 					</div>
 			)
 		}
@@ -140,4 +145,4 @@ export class DataSourceList extends React.Component {
 
 	}
 
-}	  
+}
