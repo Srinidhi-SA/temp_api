@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+
 import datetime
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -31,6 +32,8 @@ ALLOWED_HOSTS = ["192.168.33.128"]
 # Application definition
 
 INSTALLED_APPS = [
+    'material',
+    'material.admin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,7 +43,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'api',
-    'django_filters'
+    'django_filters',
+
 ]
 
 MIDDLEWARE = [
@@ -178,10 +182,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
+# STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static")
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    os.path.join(os.path.dirname(BASE_DIR), "static"),
-    '/home/marlabs/codebase/mAdvisor-api/static'
+   os.path.join(os.path.dirname(BASE_DIR), "static"),
+   '/home/marlabs/codebase/mAdvisor-api/static'
 ]
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
@@ -200,7 +205,13 @@ DATA_SOURCES_CONFIG = {"conf":  [{
 	{
 		"dataSourceType": "MySQL",
         "dataSourceName" : "MySQL",
-		"formFields": [{
+		"formFields": [
+            {
+                "fieldType": "Input",
+                "placeHolder": "Dataset Name",
+                "labelName": "Name"
+                },
+            {
                     "fieldType": "Input",
                 				"placeHolder": "host",
                 				"labelName": "Host"
@@ -272,6 +283,43 @@ DATA_SOURCES_CONFIG = {"conf":  [{
                 "fieldType": "Input",
                 "placeHolder": "tablename",
                 "labelName": "Table Name"
+                }
+        ]
+},
+{
+        "dataSourceType": "Hdfs",
+        "dataSourceName" : "HDFS",
+        "formFields": [
+            {
+                "fieldType": "Input",
+                "placeHolder": "Dataset Name",
+                "labelName": "Name"
+                },
+            {
+                "fieldType": "Input",
+                "placeHolder": "host",
+                "labelName": "Host"
+                },
+            {
+                "fieldType": "Input",
+                "placeHoplaceHolder": "port",
+                "labelName": "Port",
+                "defaultValue": 30015
+                },
+            {
+                "fieldType": "Input",
+                "placeHolder": "username",
+                "labelName": "Username"
+                },
+            {
+                "fieldType": "Password",
+                "placeHolder": "password",
+                "labelName": "Password"
+                },
+            {
+                "fieldType": "Input",
+                "placeHolder": "pathtofile",
+                "labelName": "File Path"
                 }
         ]
 }
@@ -518,6 +566,11 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND = {
                 "displayName": "Association",
                 "status": False,
                 "analysisSubTypes": [],
+                "binSetting" : [
+                                    {"name":"heading","displayName":"Binning of Numerical Values"},
+                                    {"name":"binLevels", "value": 5, "displayName":"Number of Bin Levels","defaultValue":5,"min":2,"max":10},
+                                    {"name":"binCardinality","value": 5, "displayName":"Do not bin numerical values with cardinality less than:","defaultValue":5,"min":2,"max":10}
+                                ],
                 "noOfColumnsToUse": [
                     {
                         "name": "low",
@@ -733,3 +786,74 @@ ANALYSIS_LIST_SEQUENCE = [
 ML_SECRET_KEY = 'GETMETADATAOBJECT'
 
 SIGNATURE_LIFETIME = 30
+
+APPS_KEYWORD_TEMPLATE = [{
+'name': 'Sales',
+'displayName':'Sales',
+'description':" "
+},
+{
+'name': 'Marketing',
+'displayName':'Marketting',
+'description':" "
+},
+{
+'name': 'Operations',
+'displayName':'Operations',
+'description':" "
+},
+{
+'name': 'Finance',
+'displayName':'Finance',
+'description':" "
+},
+{
+'name': 'Wealth Management',
+'displayName':'Wealth Management',
+'description':" "
+},
+{
+'name': 'Customer Service',
+'displayName':'Customer Service',
+'description':" "
+},
+{
+'name': 'Investment Banking',
+'displayName':'Investment Banking',
+'description':" "
+},
+{
+'name': 'Customer Experience',
+'displayName':'Customer Experience',
+'description':" "
+},
+{
+'name': 'Healthcare',
+'displayName':'Healthcare',
+'description':" "
+},
+{
+'name': 'Consumer Finance',
+'displayName':'Consumer Finance',
+'description':" "
+},
+{
+'name': 'Insurance',
+'displayName':'Insurance',
+'description':" "
+},
+{
+'name': 'Manufacturing',
+'displayName':'Manufacturing',
+'description':" "
+},
+{
+'name': 'IOT',
+'displayName':'IOT',
+'description':" "
+},{
+'name': 'Human Resources',
+'displayName':'Human Resources',
+'description':" "
+},
+]

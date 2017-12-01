@@ -7,8 +7,9 @@ from sjsclient import client
 
 from api.helper import JobserverDetails, get_jobserver_status, get_message
 from api.user_helper import UserSerializer
-from models import Insight, Dataset, Trainer, Score, Job, Robo, Audioset, StockDataset
+from models import Insight, Dataset, Trainer, Score, Job, Robo, Audioset, StockDataset, Apps
 
+from django.conf import settings
 
 def submit_job(
         slug,
@@ -161,6 +162,7 @@ class InsightListSerializers(serializers.ModelSerializer):
             'config',
             'data'
         )
+
 
 
 class TrainerSerlializer(serializers.ModelSerializer):
@@ -510,4 +512,68 @@ class AudioListSerializer(serializers.ModelSerializer):
             "file_remote"
         )
 
+class AppListSerializers(serializers.ModelSerializer):
+        def to_representation(self, instance):
+            ret = super(AppListSerializers, self).to_representation(instance)
+            ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data['username']
+            #add tags object
+            template_tags = settings.APPS_KEYWORD_TEMPLATE
+            if ret['tags'] != None:
+                tags = ret['tags'].split(",")
+                tag_object = []
+                for obj in template_tags:
+                    if obj['name'] in tags:
+                        tag_object.append(obj)
+                #print tag_object
+                ret['tags'] = tag_object
+                #add all keys list
+                ret['tag_keywords'] = self.add_all_tag_keywords(template_tags)
+            return ret
 
+        def add_all_tag_keywords(self,template_tags):
+            tag_keywords=[]
+            for key in template_tags:
+                tag_keywords.append(key['name'])
+            return tag_keywords
+
+        class Meta:
+            model = Apps
+            fields = '__all__'
+
+class AppSerializer(serializers.ModelSerializer):
+        def to_representation(self, instance):
+            print "in app serializers"
+            ret = super(AppSerializer, self).to_representation(instance)
+            ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+            if ret['tags'] != None:
+                tags = ret['tags'].split(",")
+                tag_object = []
+
+                template_tags = settings.APPS_KEYWORD_TEMPLATE
+                for obj in template_tags:
+                    if obj['name'] in tags:
+                        tag_object.append(obj)
+
+                print tag_object
+
+                ret['tags'] = tag_object
+            return ret
+
+
+        def update(self, instance, validated_data):
+            instance.app_id = validated_data.get("app_id", instance.app_id)
+            instance.displayName = validated_data.get("displayName", instance.displayName)
+            instance.description = validated_data.get("description", instance.description)
+            instance.status = validated_data.get("status", instance.status)
+            instance.tags = validated_data.get("tags", instance.tags)
+            instance.iconName = validated_data.get("iconName", instance.iconName)
+            instance.name = validated_data.get("name", instance.name)
+            instance.app_url = validated_data.get("app_url", instance.app_url)
+
+            instance.save()
+
+            return instance
+
+        class Meta:
+            model = Apps
+            fields = '__all__'
