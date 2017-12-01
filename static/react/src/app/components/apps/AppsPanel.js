@@ -38,10 +38,69 @@ export class AppsPanel extends React.Component {
 
     return (
           <div className="side-body">
+			
+			<div class="page-head">
+            {/*<!-- <ol class="breadcrumb">
+                <li><a href="#">Story</a></li>
+                <li class="active">Sales Performance Report</li>
+              </ol> -->*/}
+ 
+              <div class="row">
+                <div class="col-md-8">
+                  <h3 className="xs-mt-0">mAdvisor Apps</h3>
+                </div>
+                <div class="col-md-4">				
+				<div class="btn-toolbar pull-right">
+				<div class="input-group">
+				<div className="search-wrapper">
+					<form>
+					<input type="text" name="search_apps" onKeyPress="" onChange="" title="Search Apps..." id="search_apps" className="form-control search-box" placeholder="Search Apps..." required />
+					<span class="fa fa-search form-control-feedback"></span>
+					<button className="close-icon" type="reset"></button>
+					</form>
+				</div>
+				</div>
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-sort-alpha-asc fa-lg"></i> <span class="caret"></span></button>
+					<ul role="menu" class="dropdown-menu dropdown-menu-right">
+                        <li>
+                          <a href="#"><i class="fa fa-sort-alpha-asc" aria-hidden="true"></i> Name Ascending</a>
+                        </li>
+                        <li>
+                          <a href="#"><i class="fa fa-sort-alpha-desc" aria-hidden="true"></i> Name Descending</a>
+                        </li>
+                        <li>
+                          <a href="#"><i class="fa fa-sort-numeric-asc" aria-hidden="true"></i> Date Ascending</a>
+                        </li>
+                        <li>
+                          <a href="#"><i class="fa fa-sort-numeric-desc" aria-hidden="true"></i> Date Descending</a>
+                        </li>
+                      </ul>
+					  
+					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter fa-lg"></i> <span class="caret"></span></button>
+					<ul role="menu" class="dropdown-menu dropdown-menu-right">
+                       {/* <li>
+                          <input type="text" class="form-control" />
+                        </li> */}
+                        <li>
+                          <label><input type="checkbox" /> Finance</label>
+                        </li>
+                        <li>
+                          <a href="#"><i class="fa fa-sort-numeric-asc" aria-hidden="true"></i> Date Ascending</a>
+                        </li>
+                        <li>
+                          <a href="#"><i class="fa fa-sort-numeric-desc" aria-hidden="true"></i> Date Descending</a>
+                        </li>
+                      </ul>
+                  </div>
+                </div> 
+                </div>
+              </div>
+            </div>
+		  
             <div className="main-content">
 
-            <div className="panel">
-			<div className="panel-body">
+            
 
 				<div class="row">
 					<div class="col-md-4">
@@ -144,7 +203,7 @@ export class AppsPanel extends React.Component {
 					</div>
 				</div>
 				
-				<div class="clearfix xs-p-20"></div>
+				<div class="clearfix xs-p-5"></div>
 				<div class="row">
 				<div class="col-md-4">
 
@@ -256,7 +315,7 @@ export class AppsPanel extends React.Component {
 				</div>
 
 
-				    <div class="clearfix xs-p-20"></div>
+				<div class="clearfix xs-p-5"></div>
                 <div class="row">
                 <div class="col-md-4">
 
@@ -366,7 +425,7 @@ export class AppsPanel extends React.Component {
 
                
                 
-                        <div class="clearfix xs-p-20"></div>
+                <div class="clearfix xs-p-5"></div>
                 <div class="row">
                 <div class="col-md-4">
 
@@ -479,10 +538,7 @@ export class AppsPanel extends React.Component {
 				
 				
 				
-		   </div>
-		   
-		   
-		</div>
+		    
           </div>
         </div>
       );

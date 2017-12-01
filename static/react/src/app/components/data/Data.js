@@ -208,9 +208,10 @@ export class Data extends React.Component {
                 <h3 className="xs-mt-0">Data</h3>
               </div>
               <div class="col-md-4">
-                <div class="input-group pull-right">
-               {/*   <input type="text" name="search_data" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search Data" id="search_data" class="form-control" placeholder="Search data..."/>*/}
-				
+			  
+			  <div class="btn-toolbar pull-right">
+				<div class="input-group">
+				{/*   <input type="text" name="search_data" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search Data" id="search_data" class="form-control" placeholder="Search data..."/>*/}
 				<div className="search-wrapper">
 					<form>
 					<input type="text" name="search_data" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Model Insights" id="search_data" className="form-control search-box" placeholder="Search data..." required />
@@ -219,12 +220,12 @@ export class Data extends React.Component {
 					</form>
 				</div>
 				
-				
-                  <span class="input-group-btn">
-                    {/*<button type="button" class="btn btn-default" title="Select All Card">
+				</div>
+                  <div class="btn-group">                    
+					{/*<button type="button" class="btn btn-default" title="Select All Card">
                       <i class="fa fa-address-card-o fa-lg"></i>
-                    </button>*/}
-                    <button type="button" data-toggle="dropdown" title="Sorting" class="btn btn-primary dropdown-toggle" aria-expanded="false">
+                    </button>*/}					
+                    <button type="button" data-toggle="dropdown" title="Sorting" class="btn btn-default dropdown-toggle" aria-expanded="false">
                       <i class="fa fa-sort-alpha-asc fa-lg"></i>&nbsp;<span class="caret"></span>
                     </button>
                     <ul role="menu" class="dropdown-menu dropdown-menu-right">
@@ -240,9 +241,9 @@ export class Data extends React.Component {
                         <li>
                           <a href="#" onClick={this.doSorting.bind(this,'created_at','desc')}><i class="fa fa-sort-numeric-desc" aria-hidden="true"></i> Date Descending</a>
                         </li>
-                    </ul>
-                  </span>
-                </div>
+                    </ul>					
+                  </div>
+				  </div>
               </div>
             </div>
             <div class="clearfix"></div>

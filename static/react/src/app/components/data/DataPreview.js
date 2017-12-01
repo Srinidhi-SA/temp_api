@@ -458,7 +458,7 @@ export class DataPreview extends React.Component {
 					<div className="clearfix"></div>
 					<div className="table-responsive noSwipe">
 
-					<Scrollbars style={{ height: 764 }}>
+					<Scrollbars style={{ height: 779 }}>
 					<table className="table table-condensed table-hover table-bordered table-striped cst_table">
 					<thead>
 					<tr>
@@ -519,6 +519,7 @@ export class DataPreview extends React.Component {
 					</div>
 					{/* End Tab Subsettings */}
 					</div>
+					<div className="clearfix"></div>
 					</div>
 					
 					<div className="row buttonRow" id="dataPreviewButton">
