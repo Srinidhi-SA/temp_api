@@ -27,9 +27,11 @@ from api.utils import \
     RoboSerializer, \
     RoboListSerializer, \
     StockDatasetListSerializer, \
-    StockDatasetSerializer
+    StockDatasetSerializer, \
+    AppListSerializers, \
+    AppSerializer
 
-from models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData, StockDataset
+from models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData, StockDataset, Apps
 
 
 class SignalView(viewsets.ModelViewSet):
@@ -607,6 +609,81 @@ class AudiosetView(viewsets.ModelViewSet):
             return Response(serializer.data)
 
         return update_failed_exception(serializer.errors)
+
+
+class AppView(viewsets.ModelViewSet):
+    def get_queryset(self):
+        queryset = Apps.objects.filter(
+            created_by=self.request.user,
+            status="Active"
+        )
+        return queryset
+
+    def get_serializer_class(self):
+        return AppSerializer
+
+    def get_object_from_all(self):
+        return Apps.objects.get(slug=self.kwargs.get('slug'))
+
+    lookup_field = 'slug'
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = ('name','tags')
+    pagination_class = CustomPagination
+
+    def create(self, request, *args, **kwargs):
+
+        try:
+            data = request.data
+            data = convert_to_string(data)
+            # data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
+            data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
+            serializer = AppSerializer(data=data)
+            if serializer.is_valid():
+                app_obj = serializer.save()
+                app_obj.create()
+                return Response(serializer.data)
+
+            return creation_failed_exception(serializer.errors)
+        except Exception as error:
+            creation_failed_exception(error)
+
+
+    def update(self, request, *args, **kwargs):
+        data = request.data
+        data = convert_to_string(data)
+
+        try:
+            instance = self.get_object_from_all()
+        except:
+            return creation_failed_exception("App Doesn't exist.")
+
+        serializer = self.get_serializer(instance=instance, data=data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors)
+
+    def list(self, request, *args, **kwargs):
+
+        return get_listed_data(
+            viewset=self,
+            request=request,
+            list_serializer=AppListSerializers
+        )
+
+    def retrieve(self, request, *args, **kwargs):
+        # return get_retrieve_data(self)
+        try:
+            instance = self.get_object_from_all()
+        except:
+            return creation_failed_exception("App Doesn't exist.")
+
+        if instance is None:
+            return creation_failed_exception("App Doesn't exist.")
+
+        serializer = AppSerializer(instance=instance)
+        return Response(serializer.data)
+
 
 
 def get_datasource_config_list(request):

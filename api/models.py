@@ -156,6 +156,7 @@ class Dataset(models.Model):
 
         if job is None:
             self.status = "FAILED"
+            #self.status = "INPROGRESS"
         else:
             self.status = "INPROGRESS"
 
@@ -1084,6 +1085,73 @@ class Robo(models.Model):
         else:
             self.status = "INPROGRESS"
         self.save()
+
+class Apps(models.Model):
+    app_id = models.IntegerField(null=False)
+    name = models.CharField(max_length=300, null=False, default = "App")
+    slug = models.SlugField(null=False, blank=True, max_length=300)
+    displayName = models.CharField(max_length=300,null=True, default="App")
+    description = models.CharField(max_length=300,null=True)
+    tags = models.CharField(max_length=500,null=True)
+    iconName = models.CharField(max_length=300,null=True)
+    app_url = models.CharField(max_length=300,null=True)
+    #data = models.TextField(default="{}")
+    #model_data = models.TextField(default="{}")
+    #created_at = models.DateTimeField(auto_now_add=True, null=True)
+    #updated_at = models.DateTimeField(auto_now=True, null=True)
+    created_by = models.ForeignKey(User, null=False)
+    #deleted = models.BooleanField(default=False)
+    status = models.CharField(max_length=100, null=True, default="Inactive")
+
+    class Meta:
+        ordering = ['app_id']
+
+    def __str__(self):
+        return " : ".join(["{}".format(x) for x in [self.name,self.slug, self.app_id]])
+
+    def generate_slug(self):
+        if not self.slug:
+            self.slug = slugify(self.name + "-" + ''.join(
+                random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
+
+    def save(self, *args, **kwargs):
+        self.generate_slug()
+        super(Apps, self).save(*args, **kwargs)
+
+    def create(self, *args, **kwargs):
+        self.add_to_job()
+
+    def generate_config(self, *args, **kwargs):
+        return {
+
+        }
+
+    def add_to_job(self, *args, **kwargs):
+        #jobConfig = self.generate_config(*args, **kwargs)
+
+        # job = job_submission(
+        #     instance=self,
+        #     jobConfig=jobConfig,
+        #     job_type='robo'
+        # )
+        #
+        # self.job = job
+        # if job is None:
+        #     self.status = "FAILED"
+        # else:
+        #     self.status = "INPROGRESS"
+        print "create app is called!"
+        self.status = "Active"
+        self.save()
+
+    def get_brief_info(self):
+        brief_info = dict()
+        brief_info.update(
+            {
+                'created_by': self.created_by.username,
+            })
+        return convert_json_object_into_list_of_object(brief_info, 'apps')
+
 
 
 def job_submission(
@@ -5511,4 +5579,3 @@ pie_chart = [
         ]
 ]
 """
-

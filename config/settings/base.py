@@ -786,3 +786,74 @@ ANALYSIS_LIST_SEQUENCE = [
 ML_SECRET_KEY = 'GETMETADATAOBJECT'
 
 SIGNATURE_LIFETIME = 30
+
+APPS_KEYWORD_TEMPLATE = [{
+'name': 'Sales',
+'displayName':'Sales',
+'description':" "
+},
+{
+'name': 'Marketing',
+'displayName':'Marketting',
+'description':" "
+},
+{
+'name': 'Operations',
+'displayName':'Operations',
+'description':" "
+},
+{
+'name': 'Finance',
+'displayName':'Finance',
+'description':" "
+},
+{
+'name': 'Wealth Management',
+'displayName':'Wealth Management',
+'description':" "
+},
+{
+'name': 'Customer Service',
+'displayName':'Customer Service',
+'description':" "
+},
+{
+'name': 'Investment Banking',
+'displayName':'Investment Banking',
+'description':" "
+},
+{
+'name': 'Customer Experience',
+'displayName':'Customer Experience',
+'description':" "
+},
+{
+'name': 'Healthcare',
+'displayName':'Healthcare',
+'description':" "
+},
+{
+'name': 'Consumer Finance',
+'displayName':'Consumer Finance',
+'description':" "
+},
+{
+'name': 'Insurance',
+'displayName':'Insurance',
+'description':" "
+},
+{
+'name': 'Manufacturing',
+'displayName':'Manufacturing',
+'description':" "
+},
+{
+'name': 'IOT',
+'displayName':'IOT',
+'description':" "
+},{
+'name': 'Human Resources',
+'displayName':'Human Resources',
+'description':" "
+},
+]

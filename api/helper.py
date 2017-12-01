@@ -896,6 +896,7 @@ def return_status_of_job_log(job_url):
     if data.get("status") == "FINISHED":
         final_status = data.get("status")
     elif data.get("status") == "ERROR" and "startTime" in data.keys():
+        #print data.get("status")
         final_status = data.get("status")
     elif data.get("status") == "RUNNING":
         final_status = data.get("status")

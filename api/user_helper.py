@@ -13,6 +13,7 @@ from django.db.models.signals import post_save
 from django.template.defaultfilters import slugify
 import random
 import string
+from django.http import JsonResponse
 
 
 class Profile(models.Model):
@@ -44,6 +45,12 @@ class Profile(models.Model):
         image_url = settings.IMAGE_URL
         if not self.slug:
             return None
+
+        try:
+            image = self.photo.path
+        except:
+            return None
+            
         return image_url + self.slug + "/"
 
     def json_serialized(self):
@@ -193,7 +200,7 @@ def get_profile_image(request, slug=None):
         response['Content-Disposition'] = 'attachment; filename="%s"' % os.path.basename(image.path)
         return response
     except Exception as err:
-        return Response({'message': 'No Image. Upload an image.'})
+        return JsonResponse({'message': 'No Image. Upload an image.'})
 
 
 class UserProfileView(generics.CreateAPIView, generics.UpdateAPIView):
