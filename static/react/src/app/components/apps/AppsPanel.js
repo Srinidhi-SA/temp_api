@@ -15,7 +15,8 @@ import {SEARCHCHARLIMIT,APPID1,APPID2,APPID3,APPID4,APPNAME1,APPNAME2,APPNAME3,A
         modelSummaryFlag:store.apps.modelSummaryFlag,
         modelSlug:store.apps.modelSlug,
         currentAppId:store.apps.currentAppId,
-        appsList:store.apps.appsList
+        appsList:store.apps.appsList,
+        storeAppsSearchElement:store.apps.storeAppsSearchElement,
     };
 })
 
@@ -69,11 +70,24 @@ export class AppsPanel extends React.Component {
         this.props.history.push('/apps?page=' + eventKey + '');
         this.props.dispatch(getAppsList(getUserDetailsOrRestart.get().userToken, eventKey));
     }
+    handleSearchReset(){
+        this.props.dispatch(appsStoreSearchEle(""));
+        this.props.history.push('/apps');
+        this.props.dispatch(getAppsList(getUserDetailsOrRestart.get().userToken, 1)); 
+    }
     render() {
         console.log("Apps panel is called##########3");
         var appsLists = this.props.appsList.data;
         var appListTemplate = "";
         let paginationTag = null
+        //empty search element
+        if (this.props.storeAppsSearchElement != "" && (this.props.location.search == "" || this.props.location.search == null)) {
+          this.props.dispatch(appsStoreSearchEle(""));
+          let search_element = document.getElementById('search_apps');
+          if (search_element)
+            document.getElementById('search_apps').value = "";
+          }
+        
         if(appsLists){
             const pages = this.props.appsList.total_number_of_pages;
             const current_page =this.props.appsList.current_page;
@@ -139,7 +153,7 @@ export class AppsPanel extends React.Component {
                 <form>
                 <input type="text" name="search_apps" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeAppsSearchBox.bind(this)}  title="Search Apps..." id="search_apps" className="form-control search-box" placeholder="Search Apps..." required />
                 <span class="fa fa-search form-control-feedback"></span>
-                <button className="close-icon" type="reset"></button>
+                <button className="close-icon" type="reset" onClick={this.handleSearchReset.bind(this)}></button>
                 </form>
                 </div>
                 </div>
