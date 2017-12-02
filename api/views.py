@@ -1000,12 +1000,15 @@ def get_info(request):
             log_changed_message = obj.change_message.replace("\"", "").replace("{", "").replace("}", "").replace("[",
                                                                                                                  "").replace(
                 "]", "").replace(":", "")
+            log_content_type = obj.content_type.model
+            if log_content_type == "insight":
+                log_content_type = "signal"
             # import pdb; pdb.set_trace()
             # if user==log_user:
             # if obj.content_type.model!='user' and obj.content_type.model!='permission':
             recent_activity.append(
                 {"message": str(log_changed_message), "action_time": obj.action_time, "repr": obj.object_repr,
-                 "content_type": obj.content_type.model,
+                 "content_type":log_content_type,
                  # "content_type_app_label": obj.content_type.app_label,
                  "user": log_user})
         return recent_activity
