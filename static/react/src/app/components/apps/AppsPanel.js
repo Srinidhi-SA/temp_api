@@ -75,6 +75,10 @@ export class AppsPanel extends React.Component {
         this.props.history.push('/apps');
         this.props.dispatch(getAppsList(getUserDetailsOrRestart.get().userToken, 1)); 
     }
+    handleSorting(sortOn, type){
+        console.log(sortOn)
+    }
+    
     render() {
         console.log("Apps panel is called##########3");
         var appsLists = this.props.appsList.data;
@@ -161,16 +165,10 @@ export class AppsPanel extends React.Component {
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-sort-alpha-asc fa-lg"></i> <span class="caret"></span></button>
                 <ul role="menu" class="dropdown-menu dropdown-menu-right">
                 <li>
-                <a href="#"><i class="fa fa-sort-alpha-asc" aria-hidden="true"></i> Name Ascending</a>
+                <a href="#" onClick={this.handleSorting.bind(this, 'name', 'asc')}><i class="fa fa-sort-alpha-asc" aria-hidden="true"></i> Name Ascending</a>
                 </li>
                 <li>
-                <a href="#"><i class="fa fa-sort-alpha-desc" aria-hidden="true"></i> Name Descending</a>
-                </li>
-                <li>
-                <a href="#"><i class="fa fa-sort-numeric-asc" aria-hidden="true"></i> Date Ascending</a>
-                </li>
-                <li>
-                <a href="#"><i class="fa fa-sort-numeric-desc" aria-hidden="true"></i> Date Descending</a>
+                <a href="#" onClick={this.handleSorting.bind(this, 'name', 'desc')}><i class="fa fa-sort-alpha-desc" aria-hidden="true"></i> Name Descending</a>
                 </li>
                 </ul>
                 </div>
