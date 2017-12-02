@@ -5,7 +5,7 @@ import {connect} from "react-redux";
 import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Pagination} from "react-bootstrap";
 import {Link, Redirect} from "react-router-dom";
-import {updateSelectedApp,getAppsList,appsStoreSearchEle,updateModelSummaryFlag,uploadStockAnalysisFlag,closeAppsLoaderValue,updateScoreSummaryFlag,clearModelSummary,showRoboDataUploadPreview,updateAudioFileSummaryFlag} from "../../actions/appActions";
+import {updateSelectedApp,getAppsList,appsStoreSortElements,appsStoreSearchEle,updateModelSummaryFlag,uploadStockAnalysisFlag,closeAppsLoaderValue,updateScoreSummaryFlag,clearModelSummary,showRoboDataUploadPreview,updateAudioFileSummaryFlag} from "../../actions/appActions";
 import {STATIC_URL} from "../../helpers/env.js"
 import {SEARCHCHARLIMIT,APPID1,APPID2,APPID3,APPID4,APPNAME1,APPNAME2,APPNAME3,APPNAME4,APPNAME5,APPID5,getUserDetailsOrRestart} from "../../helpers/helper.js"
 
@@ -17,6 +17,8 @@ import {SEARCHCHARLIMIT,APPID1,APPID2,APPID3,APPID4,APPNAME1,APPNAME2,APPNAME3,A
         currentAppId:store.apps.currentAppId,
         appsList:store.apps.appsList,
         storeAppsSearchElement:store.apps.storeAppsSearchElement,
+        storeAppsSortByElement:store.apps.storeAppsSortByElement,
+        storeAppsSortType:store.apps.storeAppsSortType,
     };
 })
 
@@ -75,8 +77,10 @@ export class AppsPanel extends React.Component {
         this.props.history.push('/apps');
         this.props.dispatch(getAppsList(getUserDetailsOrRestart.get().userToken, 1)); 
     }
-    handleSorting(sortOn, type){
-        console.log(sortOn)
+    handleSorting(sortBy,sortType){
+        this.props.history.push('/apps?sort=' + sortBy + '&type=' +sortType);
+        this.props.dispatch(appsStoreSortElements(sortBy,sortType));
+        this.props.dispatch(getAppsList(getUserDetailsOrRestart.get().userToken, 1));
     }
     
     render() {
@@ -90,6 +94,10 @@ export class AppsPanel extends React.Component {
           let search_element = document.getElementById('search_apps');
           if (search_element)
             document.getElementById('search_apps').value = "";
+          }
+        
+        if (this.props.location.sort == "" || this.props.location.sort == null) {
+            this.props.dispatch(appsStoreSortElements("", null));
           }
         
         if(appsLists){

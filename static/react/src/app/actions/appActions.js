@@ -1660,12 +1660,19 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
     
     function  fetchApps(token,pageNo){
         let search_element = store.getState().apps.storeAppsSearchElement;
+        let apps_sortBy = store.getState().apps.storeAppsSortByElement;
+        let apps_sortType = store.getState().apps.storeAppsSortType;
         if(search_element){
             return fetch(API+'/api/apps/?name='+search_element+'&page_number='+pageNo+'&page_size='+APPSPERPAGE+'',{
                 method: 'get',
                 headers: getHeader(token)
                 }).then( response => Promise.all([response, response.json()]));
-        }
+        }else if((apps_sortBy!=""&&apps_sortBy!=null) && (apps_sortType!=null)){
+            return fetch(API+'/api/apps/?sorted_by='+apps_sortBy+'&ordering='+apps_sortType+'&page_number='+pageNo+'&page_size='+APPSPERPAGE+'',{
+                method: 'get',
+                headers: getHeader(token)
+                }).then( response => Promise.all([response, response.json()]));
+            }
         else{
             return fetch(API+'/api/apps/?page_number='+pageNo+'&page_size='+APPSPERPAGE+'',{
                 method: 'get',
@@ -1697,3 +1704,10 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             search_element
           }
     }
+    export function appsStoreSortElements(sort_by,sort_type){
+        return {
+          type: "APPS_SORT",
+          sort_by,
+          sort_type
+      }
+  }

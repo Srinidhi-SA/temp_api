@@ -62,7 +62,8 @@ export default function reducer(state = {
 		scoreSummaryCSVData:[],
 		appsList:{},
 		storeAppsSearchElement:"",
-		storeAppsSortElement : "",
+		storeAppsSortByElement : "",
+		storeAppsSortType:"",
 
 
 }, action) {
@@ -696,6 +697,15 @@ export default function reducer(state = {
 	        }
 	    }
 	    break;
+	   case "APPS_SORT":
+       {
+           return{
+               ...state,
+               storeAppsSortType:action.sort_type,
+               storeAppsSortByElement:action.sort_by
+           }
+       }
+       break;
 	
 	}
 	return state
