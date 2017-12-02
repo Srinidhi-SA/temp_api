@@ -107,6 +107,7 @@ const TEXTHEATMAPTABLE = "textHeatMapTable";
 const DEFAULTANALYSISVARIABLES = "high";
 const MINROWINDATASET = 10;
 const APPSPERPAGE = 9;
+const POPUPDECISIONTREETABLE = "popupDecisionTreeTable";
 
 
 export function generateHeaders(table) {
@@ -393,7 +394,8 @@ export{
 	USERDETAILS,
 	DEFAULTANALYSISVARIABLES,
   MINROWINDATASET,
-  APPSPERPAGE
+  APPSPERPAGE,
+  POPUPDECISIONTREETABLE
 	}
 export function capitalizeArray(array){
   let a =[]

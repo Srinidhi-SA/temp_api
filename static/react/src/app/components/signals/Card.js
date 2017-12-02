@@ -96,7 +96,7 @@ export class Card extends React.Component {
                return (<div className="table-style" ><CardTable classId={toggleTable} key = {i} jsonData={story.data} type={story.dataType}/></div>);
                break;
            case "dropdown":
-               return (<PredictionDropDown key = {i} jsonData={story.data} type={story.dataType}/>);
+               return (<PredictionDropDown key = {i} label={story.label} jsonData={story.data} type={story.dataType}/>);
                break;
            case "gauge":
                return (<GaugeMeter key = {i} jsonData={story.data} type={story.dataType}/>);

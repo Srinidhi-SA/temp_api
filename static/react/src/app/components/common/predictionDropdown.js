@@ -44,9 +44,9 @@ export class PredictionDropDown extends React.Component {
    var optionsTemp =[], desc=""; // ulHead ="";
    console.log("prediction dropdown component");
    for (var prop in data) {
-        optionsTemp.push(<option key={prop} className={prop} value={prop}>{prop}</option>);
+        optionsTemp.push(<option key={prop} className={prop} value={data[prop].name}>{data[prop].displayName}</option>);
     }
-	if(this.props.selPrediction){
+	/*if(this.props.selPrediction){
 		
 		for (var prop in data) {
 			if(prop == this.props.selPrediction){
@@ -59,24 +59,28 @@ export class PredictionDropDown extends React.Component {
 			}
            
       }
-	}
+	}*/
 
   
   
    
    return (
-           <div>
+          <div> <div className="clearfix"></div>
+           <div className="row">
+           <div className="col-md-10">
+           <div className="form-group">
+           <label class="col-md-3 col-md-offset-1 control-label" for="rulesFor">{this.props.label} :</label>
 		    <select id="prediction_dropdown" name="selectbasic" class="form-control" onChange={this.checkSelection.bind(this)}>
 				{optionsTemp}
 				</select>
-			<div className="prediction_li">	
+			{/*<div className="prediction_li">	
 			<br/>
 			<ul>
 			  {renderHTML(desc)}
 			</ul>
-			</div>
-		   
-		   </div>
+			</div>*/}
+		   </div></div>
+		   </div></div>
        );
   }
 }
