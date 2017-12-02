@@ -13685,7 +13685,7 @@ div.dataTables_wrapper div.dataTables_length label select {
     color: #0b0b0b;
     font-weight: bold;
     text-decoration: none !important;
-    font-size: 16px;
+    font-size: 14px;
     word-break: break-word;
     /* line-height: 50px; */
     height: 60px;
@@ -13731,7 +13731,10 @@ ul.app_labels li:first-child { margin: 0; padding: 7px 5px }
 .app_labels a i {
     color: #becfce;
 }
-.app-block  a.app-link:hover, .app-block  a.app-link:focus, .app_labels li a:hover, .app_labels li a:focus { color: #00998c; background:#ffffff}
+.rep_block .title a, .app-block  a.app-link {transition: color 0.3s linear;
+   -webkit-transition: color 0.3s linear;
+   -moz-transition: color 0.3s linear;}
+.app-block  a.app-link:hover, .app-block  a.app-link:focus, .app_labels li a:hover, .app_labels li a:focus, .rep_block .title a:hover { color: #00998c; background:#ffffff}
 
 .newCardStyle:hover, .app-block:hover { box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22); }
 
@@ -14711,7 +14714,9 @@ div.pred_disp_block a {
 }
 div.pred_disp_block a.selected, div.pred_disp_block a:hover, div.pred_disp_block a:hover small, div.pred_disp_block a.selected:hover { color:#f0ad4e; }
 .recActivity { margin-bottom: 0; }
-	
+.btn .fa.fa-more-img { display:block; width:24px; height:6px; background: no-repeat url(../images/icon_for_more.png) 0 0; }
+.btn:hover .fa.fa-more-img { background-position: 0 -6px}
+
 /**************** Css realated to developers, keep the source down ***/
 
 
