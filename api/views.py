@@ -996,10 +996,18 @@ def get_info(request):
         # logCount = LogEntry.objects.exclude(change_message="No fields changed.").order_by('-action_time')[:20].count()
         recent_activity = []
         for obj in logs:
+            log_user = str(obj.user)
+            log_changed_message = obj.change_message.replace("\"", "").replace("{", "").replace("}", "").replace("[",
+                                                                                                                 "").replace(
+                "]", "").replace(":", "")
+            # import pdb; pdb.set_trace()
+            # if user==log_user:
+            # if obj.content_type.model!='user' and obj.content_type.model!='permission':
             recent_activity.append(
-                {"message": obj.change_message, "action_time": obj.action_time, "repr": obj.object_repr,
+                {"message": str(log_changed_message), "action_time": obj.action_time, "repr": obj.object_repr,
                  "content_type": obj.content_type.model,
-                 "content_type_app_label": obj.content_type.app_label})
+                 # "content_type_app_label": obj.content_type.app_label,
+                 "user": log_user})
         return recent_activity
 
     return JsonResponse({
