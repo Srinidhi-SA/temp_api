@@ -296,7 +296,7 @@ export class Profile extends React.Component {
 						<li>
 							<img src="../assets/images/iconp_signal.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
 							<span>
-							<div class="crop">Data set ‘<a href="#">Churn prediction.csv</a>’ was uploaded and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen
+							<div class="crop">Data set ‘<span class="text-primary">Churn prediction.csv</span>’ was uploaded and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen
   book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged</div>
 							
 							</span>
@@ -304,7 +304,7 @@ export class Profile extends React.Component {
 						</li>
 						<li>
 							<img src="../assets/images/iconp_app.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
-							<span>Data set ‘Churn prediction.csv’ was renamed to ‘<a href="#">Churn Status Data</a>’
+							<span>Data set ‘Churn prediction.csv’ was renamed to ‘<span class="text-primary">Churn Status Data</span>’
 </span>
 							<span className="pull-right">Nov 15,2017 16:21</span>
 						</li>

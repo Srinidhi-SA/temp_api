@@ -240,8 +240,30 @@ export class C3Chart extends React.Component {
 	 <div className="clearfix"></div>
 </div>*/}
     <div className="row">
-		<div className="chart-data-icon col-md-7 col-md-offset-2  xs-mb-20">
-			 <i className="fa fa-table pull-right" aria-hidden="true" onClick={this.showModal.bind(this)}></i>
+		<div className="chart-data-icon col-md-7 col-md-offset-2 xs-p-0 xs-mb-20">
+			
+					<div class="btn-group pull-right">
+					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i className="fa pe-7s-more pe-rotate-90 pe-2x" aria-hidden="true" ></i></button>
+					<ul role="menu" class="dropdown-menu dropdown-menu-right">
+					<li>
+					<a href="#"><i class="fa fa-info-circle" aria-hidden="true"></i> Statistical Info</a>
+					</li>
+					<li>
+					<a href="#"><i class="fa fa-search-plus" aria-hidden="true"></i> Zoom Chart</a>
+					</li>
+					<li>
+					<a href="#"><i class="fa fa-picture-o" aria-hidden="true"></i> Download as PNG</a>
+					</li>
+					<li>
+					<a href="javascript:;" onClick={this.showModal.bind(this)}><i class="fa fa-eye" aria-hidden="true"></i> View Chart Data</a>
+					</li>
+					<li>
+					<a href="#"><i class="fa fa-cloud-download" aria-hidden="true"></i> Download Chart Data</a>
+					</li>					
+					</ul>
+					</div>
+			
+			 
 		 </div>
 
 	       <div className="clearfix"></div>
