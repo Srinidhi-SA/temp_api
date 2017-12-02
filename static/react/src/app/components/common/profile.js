@@ -67,7 +67,11 @@ export class Profile extends React.Component {
   uploadProfileImage(){
     this.props.dispatch(uploadImg());
   }
-
+  
+//in your component
+addDefaultSrc(ev){
+  ev.target.src = '../assets/images/iconp_default.png'
+}
   render() {
 	   let lastLogin = null;
 	  // alert(sessionStorage.last_login)
@@ -114,6 +118,25 @@ export class Profile extends React.Component {
               </small>
             </h2>
           </div>
+        )
+      });
+	  // Recent Activity Block
+	  let recentActivity = this.props.profileInfo.recent_activity.map((recAct, i) => {
+        console.log(recAct);
+		let img_name ="../assets/images/iconp_" + recAct.content_type + ".png";
+		//console.log(img_name);
+		 
+        return (
+          <li key={i}>
+				<img  onError={this.addDefaultSrc} src={img_name} className="img-responsive pull-left xs-pl-5 xs-pr-10" />
+				<span>
+				<div class="crop">{recAct.message}</div>
+				</span>
+				<span className="pull-right"> 
+				
+				{dateFormat(recAct.action_time, "mmm d,yyyy")}
+				</span>
+          </li>
         )
       });
       return (
@@ -292,59 +315,10 @@ export class Profile extends React.Component {
 					<h5>RECENT ACTIVITY</h5>					
 					<Scrollbars style={{ height: 312 }} renderTrackHorizontal={props => <div {...props} className="track-horizontal" style={{display:"none"}}/>}
         renderThumbHorizontal={props => <div {...props} className="thumb-horizontal" style={{display:"none"}}/>}>
-					<ul className="list-unstyled list-border recActivity">
-						<li>
-							<img src="../assets/images/iconp_signal.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
-							<span>
-							<div class="crop">Data set ‘<span class="text-primary">Churn prediction.csv</span>’ was uploaded and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen
-  book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged</div>
-							
-							</span>
-							<span className="pull-right">Nov 13,2017 16:21</span>
-						</li>
-						<li>
-							<img src="../assets/images/iconp_app.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
-							<span>Data set ‘Churn prediction.csv’ was renamed to ‘<span class="text-primary">Churn Status Data</span>’
-</span>
-							<span className="pull-right">Nov 15,2017 16:21</span>
-						</li>
-						<li>
-							<img src="../assets/images/iconp_data.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
-							<span>‘Churn Status Signal’ was created</span>
-							<span className="pull-right">Nov 11,2017 16:21</span>
-						</li>
-						<li>
-							<img src="../assets/images/iconp_oppr.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
-							<span>‘Churn Status Signal’ was deleted
-</span>
-							<span className="pull-right">Nov 13,2017 16:21</span>
-						</li>
-						<li>
-							<img src="../assets/images/iconp_prediction.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
-							<span>‘Churn Status’ predictive model was created on Opportunity Scoring App.</span>
-							<span className="pull-right">15 Nov 2015, 10:15:00</span>
-						</li>
-						<li>
-							<img src="../assets/images/iconp_robo.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
-							<span>Data set ‘<a href="#">Churn prediction.csv</a>’ was uploaded</span>
-							<span className="pull-right">Nov 13,2017 16:21</span>
-						</li>
-						<li>
-							<img src="../assets/images/iconp_robo.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
-							<span>Data set ‘<a href="#">Churn prediction.csv</a>’ was uploaded</span>
-							<span className="pull-right">Nov 13,2017 16:21</span>
-						</li>
-						<li>
-							<img src="../assets/images/iconp_robo.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
-							<span>Data set ‘<a href="#">Churn prediction.csv</a>’ was uploaded</span>
-							<span className="pull-right">Nov 13,2017 16:21</span>
-						</li>
-						<li>
-							<img src="../assets/images/iconp_robo.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
-							<span>Data set ‘<a href="#">Churn prediction.csv</a>’ was uploaded</span>
-							<span className="pull-right">Nov 13,2017 16:21</span>
-						</li>
-					</ul>
+						
+						<ul className="list-unstyled list-border recActivity">
+						{recentActivity}
+						</ul>					
                     </Scrollbars>  
                     </div>
 					</div>

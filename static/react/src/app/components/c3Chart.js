@@ -240,25 +240,25 @@ export class C3Chart extends React.Component {
 	 <div className="clearfix"></div>
 </div>*/}
     <div className="row">
-		<div className="chart-data-icon col-md-7 col-md-offset-2 xs-p-0 xs-mb-20">
+		<div className="chart-data-icon col-md-8 col-md-offset-2 xs-p-0 xs-mb-20">
 			
 					<div class="btn-group pull-right">
-					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i className="fa pe-7s-more pe-rotate-90 pe-2x" aria-hidden="true" ></i></button>
+					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i className="fa fa-more-img" aria-hidden="true" ></i></button>
 					<ul role="menu" class="dropdown-menu dropdown-menu-right">
 					<li>
-					<a href="#"><i class="fa fa-info-circle" aria-hidden="true"></i> Statistical Info</a>
+					<a href="javascript:;"><i class="fa fa-info-circle" aria-hidden="true"></i> Statistical Info</a>
 					</li>
 					<li>
-					<a href="#"><i class="fa fa-search-plus" aria-hidden="true"></i> Zoom Chart</a>
+					<a href="javascript:;"><i class="fa fa-search-plus" aria-hidden="true"></i> Zoom Chart</a>
 					</li>
 					<li>
-					<a href="#"><i class="fa fa-picture-o" aria-hidden="true"></i> Download as PNG</a>
+					<a href="javascript:;" onClick={this.downloadSVG.bind(this)}><i class="fa fa-picture-o" aria-hidden="true"></i> Download as PNG</a>
 					</li>
 					<li>
 					<a href="javascript:;" onClick={this.showModal.bind(this)}><i class="fa fa-eye" aria-hidden="true"></i> View Chart Data</a>
 					</li>
 					<li>
-					<a href="#"><i class="fa fa-cloud-download" aria-hidden="true"></i> Download Chart Data</a>
+					<a href={this.tableDownload}><i class="fa fa-cloud-download" aria-hidden="true"></i> Download Chart Data</a>
 					</li>					
 					</ul>
 					</div>
