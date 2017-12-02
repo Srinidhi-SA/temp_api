@@ -13734,6 +13734,10 @@ ul.app_labels li:first-child { margin: 0; padding: 7px 5px }
 .app-block  a.app-link:hover, .app-block  a.app-link:focus, .app_labels li a:hover, .app_labels li a:focus { color: #00998c; background:#ffffff}
 
 .newCardStyle:hover, .app-block:hover { box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22); }
+
+.app-block h4, h4.title a {
+    font-weight: bold;
+}
 .firstCard .col-xs-8.col-xs-offset-0 {
         padding-left: 12px;
 }
@@ -14700,8 +14704,12 @@ a .btn-close {
 .pred_disp_block:hover {-webkit-box-shadow: 2px 2px 15px -3px rgba(0,0,0,0.3);
 -moz-box-shadow: 2px 2px 15px -3px rgba(0,0,0,0.3);
 box-shadow: 2px 2px 15px -3px rgba(0,0,0,0.3); }
-
-div.pred_disp_block a.selected h1 { color:#f0ad4e; }
+div.pred_disp_block a {
+	   transition: color 0.3s linear;
+   -webkit-transition: color 0.3s linear;
+   -moz-transition: color 0.3s linear;
+}
+div.pred_disp_block a.selected, div.pred_disp_block a:hover, div.pred_disp_block a:hover small, div.pred_disp_block a.selected:hover { color:#f0ad4e; }
 .recActivity { margin-bottom: 0; }
 	
 /**************** Css realated to developers, keep the source down ***/
