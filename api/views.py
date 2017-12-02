@@ -989,11 +989,25 @@ def get_info(request):
 
     used_data_size = get_total_size(user)
 
+    #get recent activity
+    def get_recent_activity():
+        from django.contrib.admin.models import LogEntry, ADDITION, CHANGE, DELETION
+        logs = LogEntry.objects.order_by('-action_time')[:10]
+        # logCount = LogEntry.objects.exclude(change_message="No fields changed.").order_by('-action_time')[:20].count()
+        recent_activity = []
+        for obj in logs:
+            recent_activity.append(
+                {"message": obj.change_message, "action_time": obj.action_time, "repr": obj.object_repr,
+                 "content_type": obj.content_type.model,
+                 "content_type_app_label": obj.content_type.app_label})
+        return recent_activity
+
     return JsonResponse({
         'info': get_all_info_related_to_user(user),
         'used_size': convert_to_humanize(used_data_size),
         'chart_c3': get_size_pie_chart(used_data_size),
         'comment': get_html_template(),
+        'recent_activity':get_recent_activity()
     })
 
 dummy_robo_data = {
@@ -4652,4 +4666,20 @@ def get_score_data_and_return_top_n(request):
     return JsonResponse({
         'Message': 'Success',
         'csv_data': csv_data[:count]
+    })
+
+@api_view(['GET'])
+def get_recent_activity(request):
+    user = request.user
+    from django.contrib.admin.models import LogEntry, ADDITION, CHANGE, DELETION
+
+    logs = LogEntry.objects.order_by('-action_time')
+    #logCount = LogEntry.objects.exclude(change_message="No fields changed.").order_by('-action_time')[:20].count()
+    recent_activity=[]
+    for obj in logs:
+        recent_activity.append({"message":obj.change_message,"action_time":obj.action_time,"repr":obj.object_repr,"content_type":obj.content_type.model,"content_type_app_label":obj.content_type.app_label})
+
+    return JsonResponse({
+       "recent_activity":recent_activity
+
     })
