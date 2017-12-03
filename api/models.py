@@ -1145,13 +1145,13 @@ class CustomApps(models.Model):
         self.status = "Active"
         self.save()
 
-    def get_brief_info(self):
-        brief_info = dict()
-        brief_info.update(
-            {
-                'created_by': self.created_by.username,
-            })
-        return convert_json_object_into_list_of_object(brief_info, 'apps')
+    # def get_brief_info(self):
+    #     brief_info = dict()
+    #     brief_info.update(
+    #         {
+    #             'created_by': self.created_by.username,
+    #         })
+    #     return convert_json_object_into_list_of_object(brief_info, 'apps')
 
 
 
