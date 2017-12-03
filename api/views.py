@@ -617,6 +617,10 @@ class AppView(viewsets.ModelViewSet):
             created_by=self.request.user,
             status="Active"
         )
+
+          # tagsRq = self.request.query_params.get('tag', None)
+              # if tagsRq is not None:
+              #     queryset = queryset.filter(tags__icontains=tagsRq)
         return queryset
 
     def get_serializer_class(self):

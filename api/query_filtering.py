@@ -1,5 +1,6 @@
 from rest_framework.response import Response
 from api.exceptions import creation_failed_exception, update_failed_exception
+from django.db.models import Q
 
 
 class QueryCommonFiltering(object):
@@ -10,7 +11,7 @@ class QueryCommonFiltering(object):
     sorted_by = None
     ordering = ""
 
-
+    app_name=None
     name = None
     app_id = None
 
@@ -48,6 +49,13 @@ class QueryCommonFiltering(object):
                 if temp_name in ["-"]:
                     self.ordering = temp_name
 
+        if 'app_name' in request.query_params:
+            temp_app_name = self.request.query_params.get('app_name')
+            if temp_app_name is None or temp_app_name is "":
+                self.app_name = self.app_name
+            else:
+                self.app_name = temp_app_name
+
     def execute_common_filtering_and_sorting_and_ordering(self):
 
         if self.name is not None:
@@ -55,6 +63,9 @@ class QueryCommonFiltering(object):
 
         if self.app_id is not None:
             self.query_set = self.query_set.filter(app_id=self.app_id)
+
+        if self.app_name is not None:
+            self.query_set = self.query_set.filter(Q(name__icontains=self.app_name)|Q(tags__icontains=self.app_name))
 
         if self.sorted_by is not None:
             query_args = "{0}{1}".format(self.ordering, self.sorted_by)
