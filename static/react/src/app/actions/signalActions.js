@@ -411,5 +411,17 @@ function dispatchSignalLoadingMsg(signalAnalysis){
 export function clearLoadingMsg() {
   return {type: "CLEAR_LOADING_MSG"}
 }
+export function handleDecisionTreeTable(){
+    $(".popupDecisionTreeTable").find("tr").each(function(){
+       if(this.rowIndex != 0){
+           if(this.cells[2].innerText.toLowerCase() != store.getState().signals.selectedPrediction.toLowerCase()){
+               $(this).addClass("hidden");
+           }else{
+               $(this).removeClass("hidden");
+           } 
+       }
+    })
+}
+
 
 

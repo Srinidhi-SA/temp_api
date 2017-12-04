@@ -2,20 +2,30 @@ import React from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router";
 import store from "../../store";
-import {getSignalAnalysis} from "../../actions/signalActions";
+import {getSignalAnalysis,handleDecisionTreeTable} from "../../actions/signalActions";
 import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
 import HeatMap from '../../helpers/heatmap';
 import {generateHeaders,generateNormalTableRows} from "../../helpers/helper";
 import { Scrollbars } from 'react-custom-scrollbars';
 
+@connect((store) => {
+    return { selPrediction: store.signals.selectedPrediction};
+  })
+  
 export class PopupDecisionTreeTable extends React.Component {
-  constructor(){
-    super();
+  constructor(props){
+    super(props);
     this.showDecisionTreePopup = this.showDecisionTreePopup.bind(this);
   }
   showDecisionTreePopup(evt){
      bootbox.alert(evt.target.name);
+  }
+  componentDidMount(){
+      handleDecisionTreeTable();
+  }
+  componentDidUpdate(){
+      handleDecisionTreeTable();
   }
 generateDecisionTreeRows(table) {
     var that = this;
@@ -34,10 +44,8 @@ generateDecisionTreeRows(table) {
       }
   render() {
    var data = this.props.tableData;
-   var className = "table table-bordered"
-   if(this.props.classId) 
-   className = className+" "+"toggleOff"+" "+"hidden";
-   console.log("checking normal tabletable element");
+   var className = "table table-bordered popupDecisionTreeTable"
+   console.log("checking popup decision tree tabletable element");
    var headerComponents = generateHeaders(data);
    var rowComponents = this.generateDecisionTreeRows(data);
    return (

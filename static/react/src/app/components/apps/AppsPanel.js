@@ -176,7 +176,7 @@ export class AppsPanel extends React.Component {
                 <a href="#" onClick={this.handleSorting.bind(this, 'name', 'asc')}><i class="fa fa-sort-alpha-asc" aria-hidden="true"></i> Name Ascending</a>
                 </li>
                 <li>
-                <a href="#" onClick={this.handleSorting.bind(this, 'name', 'desc')}><i class="fa fa-sort-alpha-desc" aria-hidden="true"></i> Name Descending</a>
+                <a href="#" onClick={this.handleSorting.bind(this, 'name', '-')}><i class="fa fa-sort-alpha-desc" aria-hidden="true"></i> Name Descending</a>
                 </li>
                 </ul>
                 </div>

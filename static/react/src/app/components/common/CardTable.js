@@ -42,7 +42,7 @@ export class CardTable extends React.Component {
 			tableEle = <NormalTable classId={this.props.classId} tableData={element}/>;
 		}
 		if(element.tableType == POPUPDECISIONTREETABLE){
-            tableEle = <PopupDecisionTreeTable tableData={element}/>;
+            tableEle = <PopupDecisionTreeTable  tableData={element}/>;
         }
 		return (
 				<div>

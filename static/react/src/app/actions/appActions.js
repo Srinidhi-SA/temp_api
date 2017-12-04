@@ -1663,7 +1663,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
         let apps_sortBy = store.getState().apps.storeAppsSortByElement;
         let apps_sortType = store.getState().apps.storeAppsSortType;
         if(search_element){
-            return fetch(API+'/api/apps/?name='+search_element+'&page_number='+pageNo+'&page_size='+APPSPERPAGE+'',{
+            return fetch(API+'/api/apps/?app_name='+search_element+'&page_number='+pageNo+'&page_size='+APPSPERPAGE+'',{
                 method: 'get',
                 headers: getHeader(token)
                 }).then( response => Promise.all([response, response.json()]));
@@ -1711,3 +1711,5 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
           sort_type
       }
   }
+    
+  

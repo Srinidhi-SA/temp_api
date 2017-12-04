@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router";
 import store from "../../store";
-import {showPredictions} from "../../actions/signalActions";
+import {showPredictions,handleDecisionTreeTable} from "../../actions/signalActions";
 import renderHTML from 'react-render-html';
 
 @connect((store) => {
@@ -10,33 +10,22 @@ import renderHTML from 'react-render-html';
 })
 
 export class PredictionDropDown extends React.Component {
-  constructor(){
-    super();
+  constructor(props){
+    super(props);
   }
   
-  componentDidMount(){
-	// var sel =$('#prediction_dropdown').val());
-	// this.props.dispatch(showPredictions(sel));
-	console.log(this.props.selPrediction);
-	  
-  }
   componentWillMount(){
 	  var sel= null;
 	  var data = this.props.jsonData;
-	  console.log("----");
-	  console.log(data);
-	   for (var prop in data) {
-           sel= prop;
-		   break;
-       }
+      sel= data[0].name;
 	 this.props.dispatch(showPredictions(sel));  
-	  
   }
   
  checkSelection(e){
 	 console.log("change predictive dropdown");
 	  var sel =$('#prediction_dropdown').val();
 	 this.props.dispatch(showPredictions(sel));
+	 handleDecisionTreeTable();
  }
  
   render() {
