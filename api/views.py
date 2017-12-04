@@ -709,6 +709,7 @@ def set_result(request, slug=None):
     print "Welcome to API."
     print "So you wanna write."
     job = Job.objects.get(slug=slug)
+
     if not job:
         return JsonResponse({'result': 'Failed'})
     results = request.body
@@ -792,6 +793,7 @@ def write_into_databases(job_type, object_slug, results):
         dataset_object.save()
         return results
     elif job_type == "master":
+        #print "inside job_type==master"
         insight_object = Insight.objects.get(slug=object_slug)
         results = add_slugs(results)
         insight_object.data = json.dumps(results)
@@ -882,6 +884,7 @@ def add_slugs(results):
 def convert_chart_data_to_beautiful_things(data):
     from api import helper
     for card in data:
+        print card["dataType"]
         if card["dataType"] == "c3Chart":
             chart_raw_data = card["data"]
             # function

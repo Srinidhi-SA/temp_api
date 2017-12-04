@@ -17,6 +17,7 @@ from .config import *
 class C3Chart(object):
 
     def __init__(self, **kwargs):
+        print "kwargs",kwargs
         self._bindto = '#{}'.format(kwargs.get('bindto', 'chart'))
         self._data = None
         self._axis = {}
@@ -43,11 +44,14 @@ class C3Chart(object):
         self._x_label_rotation = X_TICKS_ROTATION
         self._point_radius = POINT_RADIUS
         self._title = {'text': kwargs.get('title', TITLE)}
-
         self._x_index_in_column_data = None
         self._number_of_x_ticks = None
         self._number_of_y_data = None
         self._total_data_count = None
+        self._donutChartFormat = kwargs.get('yAxisNumberFormat',".2s")
+        print "self._donutChartFormat",self._donutChartFormat,kwargs.get('yAxisNumberFormat')
+        self._pieChartFormat = kwargs.get('yAxisNumberFormat',".2s")
+        print "self._pieChartFormat",self._pieChartFormat,kwargs.get('yAxisNumberFormat')
 
         self.set_data_and_type()
         self.set_basic_chart_setting()
@@ -607,6 +611,20 @@ class C3Chart(object):
             'bar': self.set_basic_bar_chart(),
             'size': self._size
         }
+    def add_tooltip_for_donut(self):
+        self._tooltip={
+            'format':{
+            'title':"",
+            'value':'.2s'
+            }
+            }
+    def add_tooltip_for_pie(self):
+        self._tooltip={
+            'format':{
+            'title':"",
+            'value':'.2s'
+            }
+            }
 
 
 class ScatterChart(C3Chart):
@@ -630,11 +648,17 @@ class PieChart(C3Chart):
         self.hide_x_axis()
         self.set_pie_chatter()
         self._pie = {
-                    'label': {
-                        'format': None
-                    }
-                }
-
+            'title': "",
+            'label': {
+                'show' : False,
+                'format' : None
+            }
+        }
+        if self._pieChartFormat != None:
+            self._pie["label"]["format"] = self._pieChartFormat
+        # if self._title != None:
+        #     self._pie["title"] = self._title["text"]
+        print self._pie
     def get_json(self):
 
 
@@ -646,7 +670,8 @@ class PieChart(C3Chart):
             'padding': self._padding,
             # 'title': self._title,
             'size': self._size,
-            'pie': self._pie
+            'pie': self._pie,
+            'tooltip':self._tooltip,
         }
 
 
@@ -657,11 +682,20 @@ class DonutChart(C3Chart):
         self.hide_x_axis()
         self.set_donut_chart()
         self._donut = {
-            # 'title': "Title",
+            'title': "",
             'label': {
-                'format': None
+                'show' : False,
+                'format' : None
             }
         }
+        if self._donutChartFormat != None:
+            self._donut["label"]["format"] = self._donutChartFormat
+        if self._title != None:
+            self._donut["title"] = self._title["text"]
+        print self._donut
+
+
+
 
     def get_json(self):
 
@@ -673,7 +707,8 @@ class DonutChart(C3Chart):
             'padding': self._padding,
             # 'title': self._title,
             'size': self._size,
-            'donut': self._donut
+            'donut': self._donut,
+            'tooltip':self._tooltip,
         }
 
 class BarChartColored(C3Chart):
