@@ -65,7 +65,7 @@ export class AppsCreateModel extends React.Component {
 			renderSelectBox = "No Datasets"
 		}
 		return (
-				<div class="col-md-3 top20 list-boxes" onClick={this.openModelPopup.bind(this)}>
+				<div class="col-md-3 xs-mb-10 xs-pr-5 list-boxes" onClick={this.openModelPopup.bind(this)}>
 				<div class="newCardStyle firstCard">
 				<div class="card-header"></div>
 				<div class="card-center newStoryCard">
