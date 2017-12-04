@@ -247,8 +247,7 @@ export class Signals extends React.Component {
                 <div class="col-md-8">
                   <h3 className="xs-mt-0">Signals</h3>
                 </div>
-                <div class="col-md-4">
-				
+                <div class="col-md-4">				
 				<div class="btn-toolbar pull-right">
 				<div class="input-group">
 				<div className="search-wrapper">
@@ -260,8 +259,6 @@ export class Signals extends React.Component {
 				</div>
 				</div>
                   <div class="btn-group">
-                     
-					
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-sort-alpha-asc fa-lg"></i> <span class="caret"></span></button>
 					<ul role="menu" class="dropdown-menu dropdown-menu-right">
                         <li>
@@ -278,16 +275,8 @@ export class Signals extends React.Component {
                         </li>
                       </ul>
                   </div>
-                   
-                  
+                </div> 
                 </div>
-				
-				
-                
-
- 
-                </div>
-
               </div>
             </div>
 

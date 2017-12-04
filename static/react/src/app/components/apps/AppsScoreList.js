@@ -193,33 +193,52 @@ export class AppsScoreList extends React.Component {
             <div className="row">
               <div className="col-md-8"></div>
               <div className="col-md-4">
-                <div className="input-group pull-right">
+				
+				<div class="btn-toolbar pull-right">
+			  
+                <div className="input-group">
 
-                  <input type="text" name="score_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Score Insights" id="score_insights" className="form-control" placeholder="Search Score insights... "/>
-                  <span className="input-group-btn">
- 
+							{/*<input type="text" name="score_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Model Insights" id="model_insights" className="form-control" placeholder="Search Model insights..."/>*/}
+							
+							<div className="search-wrapper">
+								<form>
+								<input type="text" name="score_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Score Insights" id="score_insights" className="form-control search-box"  placeholder="Search Score insights... " required />
+								<span className="fa fa-search form-control-feedback"></span>
+								<button className="close-icon" type="reset"></button>
+								</form>
+							</div>							
+				</div>
+				
+				
+				
+
+                <div className="btn-group">
                     {/*<button type="button" className="btn btn-default" title="Select All Card">
                       <i className="fa fa-address-card-o fa-lg"></i>
                     </button>*/}
+					
                     <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false">
                     <i className="fa fa-sort-alpha-asc fa-lg"></i>&nbsp;<span className="caret"></span>
                     </button>
                     <ul role="menu" className="dropdown-menu dropdown-menu-right">
                     <li>
-                    <a href="#" onClick={this.doSorting.bind(this,'name','asc')}><i class="fa fa-sort-alpha-asc" aria-hidden="true"></i> Name Ascending</a>
+                    <a href="javascript:;" onClick={this.doSorting.bind(this,'name','asc')}><i class="fa fa-sort-alpha-asc" aria-hidden="true"></i> Name Ascending</a>
                     </li>
                     <li>
-                    <a href="#" onClick={this.doSorting.bind(this,'name','desc')}><i class="fa fa-sort-alpha-desc" aria-hidden="true"></i> Name Descending</a>
+                    <a href="javascript:;" onClick={this.doSorting.bind(this,'name','desc')}><i class="fa fa-sort-alpha-desc" aria-hidden="true"></i> Name Descending</a>
                     </li>
                     <li>
-                    <a href="#" onClick={this.doSorting.bind(this,'created_at','asc')}><i class="fa fa-sort-numeric-asc" aria-hidden="true"></i> Date Ascending</a>
+                    <a href="javascript:;" onClick={this.doSorting.bind(this,'created_at','asc')}><i class="fa fa-sort-numeric-asc" aria-hidden="true"></i> Date Ascending</a>
                     </li>
                     <li>
-                    <a href="#" onClick={this.doSorting.bind(this,'created_at','desc')}><i class="fa fa-sort-numeric-desc" aria-hidden="true"></i> Date Descending</a>
+                    <a href="javascript:;" onClick={this.doSorting.bind(this,'created_at','desc')}><i class="fa fa-sort-numeric-desc" aria-hidden="true"></i> Date Descending</a>
                     </li>
                     </ul>
-                    </span>
                     </div>
+                  
+					
+					</div>
+					
                     </div>
                     </div>
                     
