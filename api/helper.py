@@ -220,9 +220,11 @@ def limit_chart_data_length(chart_data, limit=None):
 
 def decode_and_convert_chart_raw_data(data):
     if not check_chart_data_format(data):
+        print "chart data format not matched"
         return {}
     from api.C3Chart.c3charts import C3Chart, ScatterChart, DonutChart, PieChart
     chart_type = data['chart_type']
+    title = data.get('title', "None")
     axes = data['axes']
     label_text = data['label_text']
     legend = data['legend']
@@ -240,7 +242,7 @@ def decode_and_convert_chart_raw_data(data):
     print "legend ------->> --------"
     print legend
     c3_chart_details = dict()
-
+    print chart_type
     from api.models import SaveData
     sd = SaveData()
     sd.save()
@@ -544,22 +546,45 @@ def decode_and_convert_chart_raw_data(data):
         chart_data = replace_chart_data(data['data'])
         sd.set_data(data=chart_data)
         c3_chart_details['download_url'] = sd.get_url()
-        pie_chart_data = convert_chart_data_to_pie_chart(chart_data)
-        c3 = DonutChart(data=pie_chart_data)
+        # pie_chart_data = convert_chart_data_to_pie_chart(chart_data)
+        pie_chart_data = chart_data
+        c3 = DonutChart(data=pie_chart_data,title=title,yAxisNumberFormat=yAxisNumberFormat)
         c3.set_all_basics()
+        if yAxisNumberFormat is not None:
+            c3_chart_details["yformat"] = yAxisNumberFormat
+        else:
+            c3_chart_details["yformat"] = '.2s'
+
+        c3.set_d3_format_y(c3_chart_details["yformat"])
+        c3.set_basic_tooltip()
+        c3.set_tooltip_format('.2s')
         c3.remove_x_from_data()
+        c3.add_tooltip_for_donut()
 
         c3_chart_details['table_c3'] = pie_chart_data
         c3_chart_details["chart_c3"] = c3.get_json()
+        print "final donut object",c3_chart_details
+
         return c3_chart_details
 
     elif chart_type in ['pie']:
         chart_data = replace_chart_data(data['data'])
-        pie_chart_data = convert_chart_data_to_pie_chart(chart_data)
+        #pie_chart_data = convert_chart_data_to_pie_chart(chart_data)
+        pie_chart_data = chart_data
         sd.set_data(data=chart_data)
         c3_chart_details['download_url'] = sd.get_url()
-        c3 = PieChart(data=pie_chart_data)
+        c3 = PieChart(data=pie_chart_data,title=title,yAxisNumberFormat=yAxisNumberFormat)
         c3.set_all_basics()
+
+        if yAxisNumberFormat is not None:
+            c3_chart_details["yformat"] = yAxisNumberFormat
+        else:
+            c3_chart_details["yformat"] = '.2s'
+        c3.set_d3_format_y(c3_chart_details["yformat"])
+        c3.set_basic_tooltip()
+        c3.set_tooltip_format('.2s')
+        c3.remove_x_from_data()
+        c3.add_tooltip_for_pie()
 
         c3_chart_details['table_c3'] = pie_chart_data
         c3_chart_details["chart_c3"] = c3.get_json()
@@ -574,10 +599,13 @@ def replace_chart_data(data, axes=None):
 
 
 def convert_chart_data_to_pie_chart(chart_data):
-
+    print "chart_data",chart_data
     pie_chart_data = zip(*chart_data)
+    print pie_chart_data
     pie_chart_data = map(list, pie_chart_data)
+    print pie_chart_data
     return pie_chart_data[1:]
+
 
 
 def get_slug(name):
