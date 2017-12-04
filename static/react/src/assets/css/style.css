@@ -314,7 +314,7 @@ hr {
 .h2, h2 {
 	font-size: 27px
 }
-.h3, h3 {
+.h3, h3,h4.modal-title {
 	font-size: 23px
 }
 .h4, h4 {
@@ -11127,7 +11127,8 @@ pre {
 .modal-header .close {
 	font-size: 26px;
 	opacity: .4;
-	text-shadow: none
+	text-shadow: none;
+	color:white;
 }
 .modal-header .close:hover {
 	opacity: .8
@@ -11228,7 +11229,7 @@ pre {
 .modal-colored-header .modal-content {
 	background-color: transparent
 }
-.modal-colored-header .modal-header {
+.modal-colored-header .modal-header, .modal-header {
 	background-color: #00998c;
 	color: #fff;
 	padding: 15px
@@ -14944,6 +14945,10 @@ svg[class^='chart']{
   width: 70%;
   min-height: 340px;
   margin-left:10%;
+}
+
+.c3-axis-x-label{
+transform:rotate(30 20,40) !important;
 }
 #tab_statistics .xs-pt-5 {
     height: 206px;	

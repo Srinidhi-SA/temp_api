@@ -19,7 +19,8 @@ export class PopupDecisionTreeTable extends React.Component {
     this.showDecisionTreePopup = this.showDecisionTreePopup.bind(this);
   }
   showDecisionTreePopup(evt){
-     bootbox.alert(evt.target.name);
+     bootbox.alert({title: "Prediction Rule",
+             message: evt.target.name});
   }
   componentDidMount(){
       handleDecisionTreeTable();
