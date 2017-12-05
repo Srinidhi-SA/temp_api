@@ -69,7 +69,7 @@ export class Profile extends React.Component {
 
 //in your component
 addDefaultSrc(ev){
-  ev.target.src = STATIC_URL + "assets/images/iconp_default.png'
+  ev.target.src = STATIC_URL + "assets/images/iconp_default.png"
 }
   render() {
 	   let lastLogin = null;
