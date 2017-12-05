@@ -35,6 +35,9 @@ export class AppsModelDetail extends React.Component {
 		 
 	}
   
+  print() {
+    window.print();
+  }
   componentDidMount() {
 	  if(!isEmpty(store.getState().apps.modelSummary)){
 		  if(store.getState().apps.modelSummary.slug != store.getState().apps.modelSlug)
@@ -76,15 +79,15 @@ export class AppsModelDetail extends React.Component {
 		                      <h2 className="pull-left">{store.getState().apps.modelSummary.name}</h2>
 		                      
 		                      <div className="btn-toolbar pull-right">
-		                        <div className="btn-group btn-space">
-		                        
+		                        <div className="btn-group">
+		                        <button type="button" className="btn btn-default" onClick={this.print.bind(this)} title="Print Document"><i className="fa fa-print"></i></button>
 		                          <button type="button" className="btn btn-default" disabled = "true" title="Document Mode">
 		                             <i className="fa fa-file-text-o"></i>
 		                            </button>
-							   <Link className="continue" to={modelLink}>
-		                          <button type="button" className="btn  btn-close">
+							   <Link className="btn btn-alt4 continue btn-close" to={modelLink}>
+		                         
 		                            <i className="fa fa-times"></i>
-		                          </button>
+		                          
 								 </Link>
 		                        </div>
 		                      </div>

@@ -1,4 +1,5 @@
 import React from "react";
+import { Scrollbars } from 'react-custom-scrollbars';
 import {connect} from "react-redux";
 import ReactDOM from "react-dom";
 import {Link} from "react-router-dom";
@@ -13,8 +14,6 @@ import {saveFileToStore} from "../../actions/dataSourceListActions";
 import Dropzone from 'react-dropzone'
 import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
 import {openImg,closeImg,uploadImg,getUserProfile,saveProfileImage} from "../../actions/loginActions";
-
-
 
 @connect((store) => {
   return {login_response: store.login.login_response,
@@ -35,9 +34,16 @@ export class Profile extends React.Component {
       this.props.dispatch(getUserProfile(getUserDetailsOrRestart.get().userToken))
     if(this.props.profileImgURL=="")
     this.props.dispatch(saveProfileImage(getUserDetailsOrRestart.get().image_url))
+
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+
+ // $('.crop').click(function() {
+ //    $(this).toggleClass('crop active');
+ //  });
+
+  }
   popupMsg(){
 		bootbox.alert("Only PNG and JPEG files are allowed to upload")
 	}
@@ -61,6 +67,10 @@ export class Profile extends React.Component {
     this.props.dispatch(uploadImg());
   }
 
+//in your component
+addDefaultSrc(ev){
+  ev.target.src = '../assets/images/iconp_default.png'
+}
   render() {
 	   let lastLogin = null;
 	  // alert(sessionStorage.last_login)
@@ -69,7 +79,7 @@ export class Profile extends React.Component {
 	  }else{
 		  lastLogin = dateFormat(new Date(), "mmm d,yyyy");
 	  }
-  
+
     if (isEmpty(this.props.profileInfo)) {
       return (
         <div className="side-body">
@@ -109,12 +119,29 @@ export class Profile extends React.Component {
           </div>
         )
       });
+	  // Recent Activity Block
+	  let recentActivity = this.props.profileInfo.recent_activity.map((recAct, i) => {
+        console.log(recAct);
+		let img_name ="../assets/images/iconp_" + recAct.content_type + ".png";
+		//console.log(img_name);
+        return (
+          <li key={i}>
+				<img  onError={this.addDefaultSrc} src={img_name} className="img-responsive pull-left xs-pl-5 xs-pr-10" />
+				<span>
+				<div class="crop">{recAct.message_on_ui}</div>
+				</span>
+				<span className="pull-right">
+				{dateFormat(recAct.action_time, "mmm d,yyyy")}
+				</span>
+          </li>
+        )
+      });
       return (
         <div className="side-body">
           <div className="page-head">
             <div className="row">
               <div className="col-md-8">
-                <h4>User Profile</h4>
+                <h3 className="xs-mt-0 text-capitalize">User Profile</h3>
               </div>
             </div>
           </div>
@@ -123,7 +150,9 @@ export class Profile extends React.Component {
             <!-- Page Content Area -->*/}
           <div className="main-content">
             <div className="user-profile">
-              <div className="user-display xs-p-10">
+			<div className="panel panel-default xs-mb-15">
+			<div className="panel-body">
+              <div className="user-display">
                 <div className="user-avatar col-md-2 text-center">
                 <img src={imgSrc} className="img-responsive img-center img-circle"/>
                 <a onClick={this.openPopup.bind(this)} href ="javascript:void(0)"><i class="fa fa-camera" style={{fontSize:"36px",color:"grey"}}></i></a>
@@ -133,15 +162,15 @@ export class Profile extends React.Component {
                 <h3 className="modal-title">Upload Image</h3>
                 </Modal.Header>
                 <Modal.Body>
-				
-				
-				
-               
+
+
+
+
 				<div className="row">
 					<div className="col-md-9 col-md-offset-1 col-xs-12">
                 <div className="clearfix"></div>
                 <div className="xs-pt-20"></div>
-				
+
 						 <div className="dropzone md-pl-50">
                 <Dropzone id={1} onDrop={this.onDrop.bind(this)} accept=".png, .jpg" onDropRejected={this.popupMsg}>
                 <p>Try dropping some files here, or click to select files to upload.</p>
@@ -157,12 +186,12 @@ export class Profile extends React.Component {
                           </ul>
                         </aside>
                 </div>
-				
+
 				 <div className="xs-pt-10"></div>
                <div className="clearfix"></div>
-				
-                 
-                </div>				 
+
+
+                </div>
 				</div>
                 </Modal.Body>
                 <Modal.Footer>
@@ -206,7 +235,7 @@ export class Profile extends React.Component {
                           </table>
                         </div>
 						<div className="col-md-6 text-right">
-                    <p className="xs-pt-30"> 
+                    <p className="xs-pt-30">
                       Date Joined :
                       <b> {dateFormat(getUserDetailsOrRestart.get().date, "mmm d,yyyy")}</b>
                       <br/>
@@ -230,22 +259,27 @@ export class Profile extends React.Component {
                   </div>
                 </div>
                 <div className="clearfix"></div>
-
               </div>
-              <div className="clearfix"></div>
-              <div className="row">
+			 <div className="clearfix"></div>
+              <div className="row text-center">
+
                 {statsList}
               </div>
+			  </div>
             </div>
-			<div className="panel">
+			 </div>
             <div className="row">
               <div className="col-md-4">
+			  <div className="panel">
+				<div className="panel-body">
                 <div className="minHP">
-                  <h5 class="text-center xs-pt-20">TOTAL SPACE</h5>
+                  <h5 class="text-center">TOTAL SPACE</h5>
                   <C3Chart classId="_profile" data={this.props.profileInfo.chart_c3}/> {/*
               <img src="images/userProfileGraph.png" className="img-responsive"/>*/}
 			  <p className="xs-pl-20">{renderHTML(this.props.profileInfo.comment)}</p>
                 </div>
+				</div>
+				</div>
               </div>
               <div className="col-md-8">
                 <div className="row">
@@ -268,45 +302,21 @@ export class Profile extends React.Component {
                   </div>
                   <div className="clearfix"></div>
                   <div className="col-md-12">
+					<div className="panel">
+					<div className="panel-body">
                     <div className="minHP">
-					<h5 class="xs-pt-20  xs-ml-10">RECENT ACTIVITY</h5>
-					<ul className="list-unstyled list-border xs-m-10">
-						<li>
-							<img src="../assets/images/data_cardIcon.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
-							<span>Data set ‘<a href="#">Churn prediction.csv</a>’ was uploaded</span>
-							<span className="pull-right">Nov 13,2017 16:21</span>
-						</li>
-						<li>
-							<img src="../assets/images/m_carIcon.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
-							<span>Data set ‘Churn prediction.csv’ was renamed to ‘<a href="#">Churn Status Data</a>’
-</span>
-							<span className="pull-right">Nov 15,2017 16:21</span>
-						</li>
-						<li>
-							<img src="../assets/images/d_cardIcon.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
-							<span>‘Churn Status Signal’ was created</span>
-							<span className="pull-right">Nov 11,2017 16:21</span>
-						</li>
-						<li>
-							<img src="../assets/images/apps_score_icon.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
-							<span>‘Churn Status Signal’ was deleted
-</span>
-							<span className="pull-right">Nov 13,2017 16:21</span>
-						</li>
-						<li>
-							<img src="../assets/images/apps_model_icon.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
-							<span>‘Churn Status’ predictive model was created on Opportunity Scoring App.</span>
-							<span className="pull-right">15 Nov 2015, 10:15:00</span>
-						</li>
-						<li>
-							<img src="../assets/images/File_Icon.png" className="img-responsive pull-left xs-pl-5 xs-pr-10" />
-							<span>Data set ‘<a href="#">Churn prediction.csv</a>’ was uploaded</span>
-							<span className="pull-right">Nov 13,2017 16:21</span>
-						</li>
-					</ul>
-                        
+					<h5>RECENT ACTIVITY</h5>
+					<Scrollbars style={{ height: 312 }} renderTrackHorizontal={props => <div {...props} className="track-horizontal" style={{display:"none"}}/>}
+        renderThumbHorizontal={props => <div {...props} className="thumb-horizontal" style={{display:"none"}}/>}>
+
+						<ul className="list-unstyled list-border recActivity">
+						{recentActivity}
+						</ul>
+                    </Scrollbars>
                     </div>
-                  </div>
+					</div>
+					</div>
+				  </div>
                   {/*  <div className="col-md-4">
                   <div className="panel text-center xs-p-20 minHP">
                     <a href="#">
@@ -320,7 +330,6 @@ export class Profile extends React.Component {
               </div>
 
             </div>
-			</div>
 		  </div>
         </div>
 

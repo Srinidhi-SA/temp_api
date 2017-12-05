@@ -124,7 +124,7 @@ import Dialog from 'react-bootstrap-dialog'
 				const appsModelList = modelList.map((data, i) => {
 					var modelLink = "/apps/"+store.getState().apps.currentAppId+"/models/" + data.slug;
 					return (
-							<div className="col-md-3 top20 list-boxes" key={i}>
+							<div className="col-md-3 xs-mb-10 xs-pr-5 list-boxes" key={i}>
 							<div className="rep_block newCardStyle" name={data.name}>
 							<div className="card-header"></div>
 							<div className="card-center-tile">
@@ -184,40 +184,52 @@ import Dialog from 'react-bootstrap-dialog'
 
 						</div>
 						<div className="col-md-4">
-						<div className="input-group pull-right">
+							<div className="btn-toolbar pull-right">
+							<div className="input-group">
 
-						<input type="text" name="model_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Model Insights" id="model_insights" className="form-control" placeholder="Search Model insights..."/>
-
-						<span className="input-group-btn">
-									{/*<button type="button" className="btn btn-default" title="Select All Card">
-										<i className="fa fa-address-card-o fa-lg"></i>
-									</button>*/}
-									<button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false">
-										<i className="fa fa-sort-alpha-asc fa-lg"></i>&nbsp;<span className="caret"></span>
-									</button>
-									<ul role="menu" className="dropdown-menu dropdown-menu-right">
-										 <li>
-										  <a href="#" onClick={this.doSorting.bind(this,'name','asc')}><i class="fa fa-sort-alpha-asc" aria-hidden="true"></i> Name Ascending</a>
-										</li>
-										<li>
-										  <a href="#" onClick={this.doSorting.bind(this,'name','desc')}><i class="fa fa-sort-alpha-desc" aria-hidden="true"></i> Name Descending</a>
-										</li>
-										<li>
-										  <a href="#" onClick={this.doSorting.bind(this,'created_at','asc')}><i class="fa fa-sort-numeric-asc" aria-hidden="true"></i> Date Ascending</a>
-										</li>
-										<li>
-										  <a href="#" onClick={this.doSorting.bind(this,'created_at','desc')}><i class="fa fa-sort-numeric-desc" aria-hidden="true"></i> Date Descending</a>
-										</li>
-									</ul>
-								</span>
-						</div>
+							{/*<input type="text" name="model_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Model Insights" id="model_insights" className="form-control" placeholder="Search Model insights..."/>*/}
+							
+							<div className="search-wrapper">
+								<form>
+								<input type="text" name="model_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Model Insights" id="model_insights" className="form-control search-box" placeholder="Search Model insights..." required />
+								<span className="fa fa-search form-control-feedback"></span>
+								<button className="close-icon" type="reset"></button>
+								</form>
+							</div>
+							
+							</div>
+							<div className="btn-group">
+										{/*<button type="button" className="btn btn-default" title="Select All Card">
+											<i className="fa fa-address-card-o fa-lg"></i>
+										</button>*/}
+										<button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false">
+											<i className="fa fa-sort-alpha-asc fa-lg"></i>&nbsp;<span className="caret"></span>
+										</button>
+										<ul role="menu" className="dropdown-menu dropdown-menu-right">
+											 <li>
+											  <a href="javascript:;" onClick={this.doSorting.bind(this,'name','asc')}><i class="fa fa-sort-alpha-asc" aria-hidden="true"></i> Name Ascending</a>
+											</li>
+											<li>
+											  <a href="javascript:;" onClick={this.doSorting.bind(this,'name','desc')}><i class="fa fa-sort-alpha-desc" aria-hidden="true"></i> Name Descending</a>
+											</li>
+											<li>
+											  <a href="javascript:;" onClick={this.doSorting.bind(this,'created_at','asc')}><i class="fa fa-sort-numeric-asc" aria-hidden="true"></i> Date Ascending</a>
+											</li>
+											<li>
+											  <a href="javascript:;" onClick={this.doSorting.bind(this,'created_at','desc')}><i class="fa fa-sort-numeric-desc" aria-hidden="true"></i> Date Descending</a>
+											</li>
+										</ul>
+									</div>
+							 
+							
+							</div>
 						</div>
 						</div>
 
 						<div class="clearfix"></div>
 						</div>
-						<div className="main-content">
-						<div className="row">
+						<div className="main-content xs-pb-20">
+						<div className="row xs-pr-10">
 						{addButton}
 						{appsModelList}
 						<div className="clearfix"></div>

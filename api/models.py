@@ -20,6 +20,7 @@ from StockAdvisor.crawling.crawl_util import crawl_extract, \
 from api.helper import convert_json_object_into_list_of_object
 from api.lib import hadoop, fab_helper
 THIS_SERVER_DETAILS = settings.THIS_SERVER_DETAILS
+from auditlog.registry import auditlog
 
 # Create your models here.
 
@@ -1153,6 +1154,11 @@ class CustomApps(models.Model):
     #         })
     #     return convert_json_object_into_list_of_object(brief_info, 'apps')
 
+auditlog.register(Dataset)
+auditlog.register(Insight)
+auditlog.register(Robo)
+auditlog.register(Trainer)
+auditlog.register(CustomApps)
 
 
 def job_submission(instance=None, jobConfig=None, job_type=None):

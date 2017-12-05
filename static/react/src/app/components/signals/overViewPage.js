@@ -378,7 +378,7 @@ closeDocumentMode(){
         <div>
           <div className="side-body">
             {/* Page Title and Breadcrumbs */}
-            <div className="page-head">
+            <div className="page-head hidden">
               <div class="row">
                 <div class="col-md-12">
                   <Breadcrumb path={[
@@ -410,31 +410,30 @@ closeDocumentMode(){
                   <div className="panel panel-mAd">
                     <div className="panel-heading">
 
-                      <h4 class="page-title-4">{storyName}
-
-                      <div className="btn-toolbar pull-right">
-                        <div className="btn-group btn-space">
-
-                          <button type="button" className="btn btn-default" disabled="true" title="Card mode">
-                            <i className="fa fa-id-card-o"></i>
-                          </button>
-                          <Link className="tabs-control right grp_legends_green continue" to={{
+                      <h4 className="page-title-4">{storyName}
+					  
+					  
+					<div className="btn-toolbar pull-right">
+					<div className="btn-group">
+					{/*<button type="button" className="btn btn-default" disabled="true" title="Card mode"><i className="fa fa-print"></i></button>*/}
+					<button type="button" className="btn btn-default" disabled="true" title="Card mode"><i className="fa fa-id-card-o"></i></button>
+					<Link className="btn btn-default continue" to={{
                             pathname: documentModeLink,
                             state: {
                               lastVar: lastcard.slug
                             }
-                          }}>
-                            <button type="button" className="btn btn-default" title="Document mode">
-                              <i className="fa fa-file-text-o"></i>
-                            </button>
-                          </Link>
-                          {/*<Link className="continue" to={that.urlPrefix}>*/}
-                            <button type="button" className="btn" onClick = {this.closeDocumentMode.bind(this)}>
+                          }} title="Document mode">                             
+                              <i className="fa fa-file-text-o"></i>                            
+                    </Link>
+						  
+					{/*<Link className="continue" to={that.urlPrefix}>*/}
+                            <button type="button" className="btn btn-alt4" onClick = {this.closeDocumentMode.bind(this)}>
                               <i className="fa fa-times"></i>
                             </button>
-                          {/*</Link>*/}
-                        </div>
-                      </div>
+                    {/*</Link>*/}
+					
+					</div>
+					</div>
 					  </h4>
                       <div className="clearfix"></div>
                     </div>

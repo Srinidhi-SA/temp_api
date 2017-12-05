@@ -42,7 +42,7 @@ export class DataPreviewRightPanel extends React.Component {
 				</div>
 				<div id="pnl_stc" className="panel-collapse collapse in" aria-expanded="true">
 				<div className="panel-body" >
-				<table className="no-border no-strip skills"id="side-table">
+				<table className="no-border no-strip skills" cellpadding="3" cellspacing="0" id="side-table">
 				<tbody className="no-border-x no-border-y" >
 				{sideTableTemaplte}
 				</tbody>

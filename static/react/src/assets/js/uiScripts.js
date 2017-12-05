@@ -5,7 +5,12 @@ $(function () {
 			$('.side-body').toggleClass('body-slide-in');
 		});
 
-/*** Popover function ***/
+	/*	.for more 'text' collapsible script
+	$('.crop').click(function() {
+		$(this).toggleClass('crop');
+	}); */
+
+/*** Popover function **
 $('[rel="popover"]').popover({
 	container: 'body',
 	html: true,
@@ -17,16 +22,16 @@ $('[rel="popover"]').popover({
 	}
 }).click(function(e) {
 	e.preventDefault();
-});
+});*/
 
-/** Below Script for main tab content slide buttons *Next and *Previous **/
+/** Below Script for main tab content slide buttons *Next and *Previous *
 $('.continue').click(function(){
   $('.nav-tabs > .active').next('li').find('a').trigger('click');
 });
 $('.back').click(function(){
   $('.nav-tabs > .active').prev('li').find('a').trigger('click');
-});
-/*var hidWidth;
+});*/
+/* var hidWidth;
  * Below code is for subnavigation ** 
 var scrollBarWidths = 40;
 
@@ -97,11 +102,11 @@ $('[data-toggle=offcanvas]').click(function () {
 	};
   });*/
 
- /*** Seach Visible ***/
+ /*** Seach Visible **
 $("#search-button, #search-icon").click(function(e){
  e.preventDefault();
  $("#search-button, #search-form").toggle();
-});
+});*/
 
 
 
