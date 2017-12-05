@@ -18,3 +18,5 @@ python-magic==0.4.13
 simplejson==3.11.1
 bs4==0.0.1
 django-material==1.1.1
+django-auditlog==0.4.4
+
