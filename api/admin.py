@@ -2,7 +2,7 @@ from django.contrib import admin
 
 # Register your models here.
 
-from api.models import Dataset, Insight, Job, Score, Trainer
+from api.models import Dataset, Insight, Job, Score, Trainer,CustomApps
 
 
 class DatasetAdmin(admin.ModelAdmin):
@@ -41,9 +41,15 @@ class TrainerAdmin(admin.ModelAdmin):
     list_filter = ["analysis_done"]
     readonly_fields = ["created_at"]
 
+class CustomAppsAdmin(admin.ModelAdmin):
+    search_fields = ["name", "slug"]
+    list_display = ["name", "slug", "app_id","created_by","status","created_at"]
+    list_filter = ["status"]
+    readonly_fields = ["status","app_id"]
 
 admin.site.register(Dataset, DatasetAdmin)
 admin.site.register(Insight, InsightAdmin)
 admin.site.register(Job, JobAdmin)
 admin.site.register(Score, ScoreAdmin)
 admin.site.register(Trainer, TrainerAdmin)
+admin.site.register(CustomApps, CustomAppsAdmin)

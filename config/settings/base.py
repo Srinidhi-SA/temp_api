@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'api',
     'django_filters',
+    'auditlog',
 
 ]
 
@@ -56,6 +57,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'auditlog.middleware.AuditlogMiddleware',
+
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -436,7 +439,7 @@ JOBSERVER_STATUS = {
     'KILLED': 'FAILED'
 }
 
-UI_VERSION = "v2.1_9"
+UI_VERSION = "v2.1_11"
 
 
 
