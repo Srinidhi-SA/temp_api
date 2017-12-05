@@ -20,6 +20,7 @@ from StockAdvisor.crawling.crawl_util import crawl_extract, \
 from api.helper import convert_json_object_into_list_of_object
 from api.lib import hadoop, fab_helper
 THIS_SERVER_DETAILS = settings.THIS_SERVER_DETAILS
+from auditlog.registry import auditlog
 
 # Create your models here.
 
@@ -29,6 +30,7 @@ STATUS_CHOICES = (
     ('1', 'Signal Creation Started.'),
     ('2', 'Trend Created'),
     ('3', 'ChiSquare Created'),
+
     ('4', 'Decision Tree Created'),
     ('5', 'Density Histogram Created'),
     ('6', 'Regression Created'),
@@ -1086,7 +1088,7 @@ class Robo(models.Model):
             self.status = "INPROGRESS"
         self.save()
 
-class Apps(models.Model):
+class CustomApps(models.Model):
     app_id = models.IntegerField(null=False)
     name = models.CharField(max_length=300, null=False, default = "App")
     slug = models.SlugField(null=False, blank=True, max_length=300)
@@ -1097,7 +1099,7 @@ class Apps(models.Model):
     app_url = models.CharField(max_length=300,null=True)
     #data = models.TextField(default="{}")
     #model_data = models.TextField(default="{}")
-    #created_at = models.DateTimeField(auto_now_add=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
     #updated_at = models.DateTimeField(auto_now=True, null=True)
     created_by = models.ForeignKey(User, null=False)
     #deleted = models.BooleanField(default=False)
@@ -1116,7 +1118,7 @@ class Apps(models.Model):
 
     def save(self, *args, **kwargs):
         self.generate_slug()
-        super(Apps, self).save(*args, **kwargs)
+        super(CustomApps, self).save(*args, **kwargs)
 
     def create(self, *args, **kwargs):
         self.add_to_job()
@@ -1144,14 +1146,19 @@ class Apps(models.Model):
         self.status = "Active"
         self.save()
 
-    def get_brief_info(self):
-        brief_info = dict()
-        brief_info.update(
-            {
-                'created_by': self.created_by.username,
-            })
-        return convert_json_object_into_list_of_object(brief_info, 'apps')
+    # def get_brief_info(self):
+    #     brief_info = dict()
+    #     brief_info.update(
+    #         {
+    #             'created_by': self.created_by.username,
+    #         })
+    #     return convert_json_object_into_list_of_object(brief_info, 'apps')
 
+auditlog.register(Dataset)
+auditlog.register(Insight)
+auditlog.register(Robo)
+auditlog.register(Trainer)
+auditlog.register(CustomApps)
 
 
 def job_submission(

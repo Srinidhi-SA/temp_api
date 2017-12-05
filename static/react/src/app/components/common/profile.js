@@ -34,16 +34,15 @@ export class Profile extends React.Component {
       this.props.dispatch(getUserProfile(getUserDetailsOrRestart.get().userToken))
     if(this.props.profileImgURL=="")
     this.props.dispatch(saveProfileImage(getUserDetailsOrRestart.get().image_url))
-	
-	
+
   }
 
   componentDidMount() {
-  
+
  // $('.crop').click(function() {
  //    $(this).toggleClass('crop active');
  //  });
- 
+
   }
   popupMsg(){
 		bootbox.alert("Only PNG and JPEG files are allowed to upload")
@@ -67,7 +66,7 @@ export class Profile extends React.Component {
   uploadProfileImage(){
     this.props.dispatch(uploadImg());
   }
-  
+
 //in your component
 addDefaultSrc(ev){
   ev.target.src = '../assets/images/iconp_default.png'
@@ -80,7 +79,7 @@ addDefaultSrc(ev){
 	  }else{
 		  lastLogin = dateFormat(new Date(), "mmm d,yyyy");
 	  }
-  
+
     if (isEmpty(this.props.profileInfo)) {
       return (
         <div className="side-body">
@@ -125,15 +124,13 @@ addDefaultSrc(ev){
         console.log(recAct);
 		let img_name ="../assets/images/iconp_" + recAct.content_type + ".png";
 		//console.log(img_name);
-		 
         return (
           <li key={i}>
 				<img  onError={this.addDefaultSrc} src={img_name} className="img-responsive pull-left xs-pl-5 xs-pr-10" />
 				<span>
-				<div class="crop">{recAct.message}</div>
+				<div class="crop">{recAct.message_on_ui}</div>
 				</span>
-				<span className="pull-right"> 
-				
+				<span className="pull-right">
 				{dateFormat(recAct.action_time, "mmm d,yyyy")}
 				</span>
           </li>
@@ -153,7 +150,6 @@ addDefaultSrc(ev){
             <!-- Page Content Area -->*/}
           <div className="main-content">
             <div className="user-profile">
-			
 			<div className="panel panel-default xs-mb-15">
 			<div className="panel-body">
               <div className="user-display">
@@ -166,15 +162,15 @@ addDefaultSrc(ev){
                 <h3 className="modal-title">Upload Image</h3>
                 </Modal.Header>
                 <Modal.Body>
-				
-				
-				
-               
+
+
+
+
 				<div className="row">
 					<div className="col-md-9 col-md-offset-1 col-xs-12">
                 <div className="clearfix"></div>
                 <div className="xs-pt-20"></div>
-				
+
 						 <div className="dropzone md-pl-50">
                 <Dropzone id={1} onDrop={this.onDrop.bind(this)} accept=".png, .jpg" onDropRejected={this.popupMsg}>
                 <p>Try dropping some files here, or click to select files to upload.</p>
@@ -190,12 +186,12 @@ addDefaultSrc(ev){
                           </ul>
                         </aside>
                 </div>
-				
+
 				 <div className="xs-pt-10"></div>
                <div className="clearfix"></div>
-				
-                 
-                </div>				 
+
+
+                </div>
 				</div>
                 </Modal.Body>
                 <Modal.Footer>
@@ -239,7 +235,7 @@ addDefaultSrc(ev){
                           </table>
                         </div>
 						<div className="col-md-6 text-right">
-                    <p className="xs-pt-30"> 
+                    <p className="xs-pt-30">
                       Date Joined :
                       <b> {dateFormat(getUserDetailsOrRestart.get().date, "mmm d,yyyy")}</b>
                       <br/>
@@ -264,13 +260,10 @@ addDefaultSrc(ev){
                 </div>
                 <div className="clearfix"></div>
               </div>
-            
-			
 			 <div className="clearfix"></div>
               <div className="row text-center">
-			  
+
                 {statsList}
-				 
               </div>
 			  </div>
             </div>
@@ -312,14 +305,14 @@ addDefaultSrc(ev){
 					<div className="panel">
 					<div className="panel-body">
                     <div className="minHP">
-					<h5>RECENT ACTIVITY</h5>					
+					<h5>RECENT ACTIVITY</h5>
 					<Scrollbars style={{ height: 312 }} renderTrackHorizontal={props => <div {...props} className="track-horizontal" style={{display:"none"}}/>}
         renderThumbHorizontal={props => <div {...props} className="thumb-horizontal" style={{display:"none"}}/>}>
-						
+
 						<ul className="list-unstyled list-border recActivity">
 						{recentActivity}
-						</ul>					
-                    </Scrollbars>  
+						</ul>
+                    </Scrollbars>
                     </div>
 					</div>
 					</div>
@@ -337,7 +330,6 @@ addDefaultSrc(ev){
               </div>
 
             </div>
-			 
 		  </div>
         </div>
 

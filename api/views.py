@@ -31,7 +31,7 @@ from api.utils import \
     AppListSerializers, \
     AppSerializer
 
-from models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData, StockDataset, Apps
+from models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData, StockDataset, CustomApps
 
 
 class SignalView(viewsets.ModelViewSet):
@@ -613,17 +613,21 @@ class AudiosetView(viewsets.ModelViewSet):
 
 class AppView(viewsets.ModelViewSet):
     def get_queryset(self):
-        queryset = Apps.objects.filter(
+        queryset = CustomApps.objects.filter(
             created_by=self.request.user,
             status="Active"
         )
+
+          # tagsRq = self.request.query_params.get('tag', None)
+              # if tagsRq is not None:
+              #     queryset = queryset.filter(tags__icontains=tagsRq)
         return queryset
 
     def get_serializer_class(self):
         return AppSerializer
 
     def get_object_from_all(self):
-        return Apps.objects.get(slug=self.kwargs.get('slug'))
+        return CustomApps.objects.get(slug=self.kwargs.get('slug'))
 
     lookup_field = 'slug'
     filter_backends = (DjangoFilterBackend,)
@@ -705,6 +709,7 @@ def set_result(request, slug=None):
     print "Welcome to API."
     print "So you wanna write."
     job = Job.objects.get(slug=slug)
+
     if not job:
         return JsonResponse({'result': 'Failed'})
     results = request.body
@@ -788,6 +793,7 @@ def write_into_databases(job_type, object_slug, results):
         dataset_object.save()
         return results
     elif job_type == "master":
+        #print "inside job_type==master"
         insight_object = Insight.objects.get(slug=object_slug)
         results = add_slugs(results)
         insight_object.data = json.dumps(results)
@@ -878,6 +884,7 @@ def add_slugs(results):
 def convert_chart_data_to_beautiful_things(data):
     from api import helper
     for card in data:
+        print card["dataType"]
         if card["dataType"] == "c3Chart":
             chart_raw_data = card["data"]
             # function
@@ -989,11 +996,46 @@ def get_info(request):
 
     used_data_size = get_total_size(user)
 
+    #get recent activity
+    def get_recent_activity():
+       # from django.contrib.admin.models import LogEntry, ADDITION, CHANGE, DELETION
+        from auditlog.models import LogEntry,LogEntry
+        logs = LogEntry.objects.order_by('-timestamp')[:30]
+        #print logs
+        # logCount = LogEntry.objects.exclude(change_message="No fields changed.").order_by('-action_time')[:20].count()
+        recent_activity = []
+        for obj in logs:
+            log_user = str(obj.actor)
+            log_changed_message = obj.changes.replace("\"", "").replace("{", "").replace("}", "").replace(": [","->[").replace(":", "").replace("\\","")
+            log_content_type = obj.content_type.model
+            if log_content_type == "insight":
+                log_content_type = "signal"
+            if log_content_type == "trainer":
+                log_content_type = "model"
+            # import pdb; pdb.set_trace()
+            # if user==log_user:
+            # if obj.content_type.model!='user' and obj.content_type.model!='permission':
+            #check for status success
+            changes_json = json.loads(obj.changes)
+            choicesDict = dict(LogEntry.Action.choices)
+           # if "status" in changes_json:
+               # if changes_json["status"][1]=="SUCCESS":
+            message_in_ui = log_content_type+" "+obj.object_repr.split(":")[0]+str(choicesDict[obj.action])+"d"
+            recent_activity.append(
+                        {"changes": str(log_changed_message),
+                         "action_time": obj.timestamp,
+                         "message_on_ui": message_in_ui,
+                         "action":choicesDict[obj.action],
+                         "content_type":log_content_type,
+                         "user": log_user})
+        return recent_activity
+
     return JsonResponse({
         'info': get_all_info_related_to_user(user),
         'used_size': convert_to_humanize(used_data_size),
         'chart_c3': get_size_pie_chart(used_data_size),
         'comment': get_html_template(),
+        'recent_activity':get_recent_activity()
     })
 
 dummy_robo_data = {
@@ -4652,4 +4694,21 @@ def get_score_data_and_return_top_n(request):
     return JsonResponse({
         'Message': 'Success',
         'csv_data': csv_data[:count]
+    })
+
+@api_view(['GET'])
+def get_recent_activity(request):
+    user = request.user
+    from django.contrib.admin.models import LogEntry, ADDITION, CHANGE, DELETION
+
+    logs = LogEntry.objects.order_by('-action_time')
+    #logCount = LogEntry.objects.exclude(change_message="No fields changed.").order_by('-action_time')[:20].count()
+    recent_activity=[]
+    for obj in logs:
+        log_user = str(obj.user)
+        recent_activity.append({"message":obj.change_message,"action_time":obj.action_time,"repr":obj.object_repr,"content_type":obj.content_type.model,"content_type_app_label":obj.content_type.app_label,"user":log_user})
+
+    return JsonResponse({
+       "recent_activity":recent_activity
+
     })
