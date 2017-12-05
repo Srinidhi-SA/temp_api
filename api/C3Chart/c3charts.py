@@ -165,6 +165,11 @@ class C3Chart(object):
             'show': False
         }
 
+    def show_basic_legends(self):
+        self._legend = {
+            'show': True
+        }
+
     def set_basic_grid_lines(self):
         self._grid = {
             'y': {
