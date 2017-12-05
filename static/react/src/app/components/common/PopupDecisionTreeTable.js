@@ -8,6 +8,7 @@ import renderHTML from 'react-render-html';
 import HeatMap from '../../helpers/heatmap';
 import {generateHeaders,generateNormalTableRows} from "../../helpers/helper";
 import { Scrollbars } from 'react-custom-scrollbars';
+import {MAXTEXTLENGTH} from "../../helpers/helper";
 
 @connect((store) => {
     return { selPrediction: store.signals.selectedPrediction};
@@ -34,7 +35,7 @@ generateDecisionTreeRows(table) {
           if(i != 0){
               var rows = rowData.map(function(colData,j) {
                    if(j == 0)
-                      return<td key={j} className="cursor" onClick={that.showDecisionTreePopup}><a name={colData}>{colData.slice(0, 80)}...</a></td>;
+                      return<td key={j} className="cursor" onClick={that.showDecisionTreePopup}><a name={colData}>{colData.slice(0, MAXTEXTLENGTH)}...</a></td>;
                       else
                          return  <td key={j}>{colData}</td>    
               });
