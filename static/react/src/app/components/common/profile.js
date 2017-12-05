@@ -69,7 +69,7 @@ export class Profile extends React.Component {
 
 //in your component
 addDefaultSrc(ev){
-  ev.target.src = '../assets/images/iconp_default.png'
+  ev.target.src = STATIC_URL + "assets/images/iconp_default.png'
 }
   render() {
 	   let lastLogin = null;
@@ -122,7 +122,7 @@ addDefaultSrc(ev){
 	  // Recent Activity Block
 	  let recentActivity = this.props.profileInfo.recent_activity.map((recAct, i) => {
         console.log(recAct);
-		let img_name ="../assets/images/iconp_" + recAct.content_type + ".png";
+		let img_name =STATIC_URL + "assets/images/iconp_" + recAct.content_type + ".png";
 		//console.log(img_name);
         return (
           <li key={i}>

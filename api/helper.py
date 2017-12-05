@@ -550,6 +550,7 @@ def decode_and_convert_chart_raw_data(data):
         pie_chart_data = chart_data
         c3 = DonutChart(data=pie_chart_data,title=title,yAxisNumberFormat=yAxisNumberFormat)
         c3.set_all_basics()
+        c3.show_basic_legends()
         if yAxisNumberFormat is not None:
             c3_chart_details["yformat"] = yAxisNumberFormat
         else:
@@ -575,7 +576,7 @@ def decode_and_convert_chart_raw_data(data):
         c3_chart_details['download_url'] = sd.get_url()
         c3 = PieChart(data=pie_chart_data,title=title,yAxisNumberFormat=yAxisNumberFormat)
         c3.set_all_basics()
-
+        c3.show_basic_legends()
         if yAxisNumberFormat is not None:
             c3_chart_details["yformat"] = yAxisNumberFormat
         else:
