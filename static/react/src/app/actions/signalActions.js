@@ -422,6 +422,12 @@ export function handleDecisionTreeTable(){
        }
     })
 }
+export function showZoomChart(flag){
+    return {
+        type: "ZOOM_CHART",
+        flag
+    }
+}
 
 
 
