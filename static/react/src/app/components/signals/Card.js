@@ -131,6 +131,42 @@ export class Card extends React.Component {
 
 		const cardElements = this.renderCardData(cardData);
 
+				return (<CardHtml key = {i} htmlElement={story.data} type={story.dataType}/>);
+				break;
+			case "c3Chart":
+				//console.log("checking chart data:::::");
+				if(!$.isEmptyObject(story.data)){
+					if(story.widthPercent){
+						let width  = parseInt((story.widthPercent/100)*12)
+            let divClass="col-md-"+width
+						return (<div key={randomNum} class={divClass} style={{ display:"inline-block",paddingLeft:"30px"}}><C3Chart classId={randomNum} widthPercent = {story.widthPercent} data={story.data.chart_c3} yformat={story.data.yformat} y2format={story.data.y2format} guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div>);
+					}else{
+						return (<div key={randomNum}><C3Chart classId={randomNum} data={story.data.chart_c3} yformat={story.data.yformat} y2format={story.data.y2format} guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div>);
+					}
+				}
+				break;
+			case "tree":
+				//console.log("checking tree data");
+				return ( <DecisionTree key={i} treeData={story.data}/>);
+				break;
+			case "table":
+				return (<div className="table-style"><CardTable key = {i} jsonData={story.data} type={story.dataType}/></div>);
+				break;
+			case "dropdown":
+				return (<PredictionDropDown key = {i} jsonData={story.data} type={story.dataType}/>);
+				break;
+			case "gauge":
+				return (<GaugeMeter key = {i} jsonData={story.data} type={story.dataType}/>);
+				break;
+			case "dataBox":
+				return (<DataBox key = {i} jsonData={story.data} type={story.dataType}/>);
+				break;
+			case "wordCloud":
+				return (<WordCloud key = {i} jsonData={story.data} type={story.dataType}/>);
+				break;
+			}
+
+		});
 		return (
 				<div>
 				{cardElements}
