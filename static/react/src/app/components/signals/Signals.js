@@ -242,52 +242,41 @@ export class Signals extends React.Component {
                 <li><a href="#">Story</a></li>
                 <li class="active">Sales Performance Report</li>
               </ol> -->*/}
-
-            <div class="row">
-              <div class="col-md-8">
-                <h4>Signals</h4>
-              </div>
-              <div class="col-md-4">
-                <div class="input-group pull-right">
-                  <div className="search-wrapper">
-                    {/*<form>*/}
-                    <input type="text" name="search_signals" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search Signals" id="search_signals" className="form-control search-box" placeholder="Search signals..." required/>
-                    <button className="close-icon" type="reset"></button>
-                    {/*</form>*/}
-                  </div>
-                  <span class="input-group-btn">
-                    {/*<button type="button" class="btn btn-default" title="Select All Card">
-                        <i class="fa fa-address-card-o fa-lg"></i>
-                      </button>*/}
-                    <button type="button" data-toggle="dropdown" title="Sorting" class="btn btn-default dropdown-toggle" aria-expanded="false">
-                      <i class="fa fa-sort-alpha-asc fa-lg"></i>
-                      <span class="caret"></span>
-                    </button>
-                    <ul role="menu" class="dropdown-menu dropdown-menu-right">
-                      <li>
-                        <a href="#" onClick={this.doSorting.bind(this, 'name', 'asc')}>
-                          <i class="fa fa-sort-alpha-asc" aria-hidden="true"></i>
-                          Name Ascending</a>
-                      </li>
-                      <li>
-                        <a href="#" onClick={this.doSorting.bind(this, 'name', 'desc')}>
-                          <i class="fa fa-sort-alpha-desc" aria-hidden="true"></i>
-                          Name Descending</a>
-                      </li>
-                      <li>
-                        <a href="#" onClick={this.doSorting.bind(this, 'created_at', 'asc')}>
-                          <i class="fa fa-sort-numeric-asc" aria-hidden="true"></i>
-                          Date Ascending</a>
-                      </li>
-                      <li>
-                        <a href="#" onClick={this.doSorting.bind(this, 'created_at', 'desc')}>
-                          <i class="fa fa-sort-numeric-desc" aria-hidden="true"></i>
-                          Date Descending</a>
-                      </li>
-                    </ul>
-                  </span>
+ 
+              <div class="row">
+                <div class="col-md-8">
+                  <h3 className="xs-mt-0">Signals</h3>
                 </div>
-
+                <div class="col-md-4">				
+				<div class="btn-toolbar pull-right">
+				<div class="input-group">
+				<div className="search-wrapper">
+					<form>
+					<input type="text" name="search_signals" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search Signals" id="search_signals" className="form-control search-box" placeholder="Search signals..." required />
+					<span class="fa fa-search form-control-feedback"></span>
+					<button className="close-icon" type="reset"></button>
+					</form>
+				</div>
+				</div>
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-sort-alpha-asc fa-lg"></i> <span class="caret"></span></button>
+					<ul role="menu" class="dropdown-menu dropdown-menu-right">
+                        <li>
+                          <a href="#" onClick={this.doSorting.bind(this,'name','asc')}><i class="fa fa-sort-alpha-asc" aria-hidden="true"></i> Name Ascending</a>
+                        </li>
+                        <li>
+                          <a href="#" onClick={this.doSorting.bind(this,'name','desc')}><i class="fa fa-sort-alpha-desc" aria-hidden="true"></i> Name Descending</a>
+                        </li>
+                        <li>
+                          <a href="#" onClick={this.doSorting.bind(this,'created_at','asc')}><i class="fa fa-sort-numeric-asc" aria-hidden="true"></i> Date Ascending</a>
+                        </li>
+                        <li>
+                          <a href="#" onClick={this.doSorting.bind(this,'created_at','desc')}><i class="fa fa-sort-numeric-desc" aria-hidden="true"></i> Date Descending</a>
+                        </li>
+                      </ul>
+                  </div>
+                </div> 
+                </div>
               </div>
             </div>
 
