@@ -109,7 +109,7 @@ const DEFAULTANALYSISVARIABLES = "high";
 const MINROWINDATASET = 10;
 const APPSPERPAGE = 9;
 const POPUPDECISIONTREETABLE = "popupDecisionTreeTable";
-const MAXTEXTLENGTH = 80;
+const MAXTEXTLENGTH = 100;
 
 
 export function generateHeaders(table) {

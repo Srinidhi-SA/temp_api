@@ -35,7 +35,7 @@ export class DataValidation extends React.Component {
    renderDropdownList(colSlug,colName,colData){
        if(colData){
            let list = colData.map((actionNames,index)=>{
-               if(actionNames.actionName == DATA_TYPE){
+               if(actionNames.hasOwnProperty("listOfDataTypes")){
                  return (
                 <li key={index}><span>{actionNames.displayName}</span>
                 <ul>{actionNames.listOfDataTypes.map((subItem,subIndex)=>{
