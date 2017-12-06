@@ -995,10 +995,8 @@ def get_info(request):
 
     # get recent activity
     def get_recent_activity():
-       # from django.contrib.admin.models import LogEntry, ADDITION, CHANGE, DELETION
-        from auditlog.models import LogEntry,LogEntry
+        from auditlog.models import LogEntry
         logs = LogEntry.objects.order_by('-timestamp')[:30]
-        #print logs
         # logCount = LogEntry.objects.exclude(change_message="No fields changed.").order_by('-action_time')[:20].count()
         recent_activity = []
         for obj in logs:
@@ -1009,22 +1007,33 @@ def get_info(request):
                 log_content_type = "signal"
             if log_content_type == "trainer":
                 log_content_type = "model"
-            # import pdb; pdb.set_trace()
             # if user==log_user:
             # if obj.content_type.model!='user' and obj.content_type.model!='permission':
-            #check for status success
             changes_json = json.loads(obj.changes)
             choicesDict = dict(LogEntry.Action.choices)
-           # if "status" in changes_json:
-               # if changes_json["status"][1]=="SUCCESS":
-            message_in_ui = log_content_type+" "+obj.object_repr.split(":")[0]+str(choicesDict[obj.action])+"d"
-            recent_activity.append(
-                        {"changes": str(log_changed_message),
-                         "action_time": obj.timestamp,
-                         "message_on_ui": message_in_ui,
-                         "action":choicesDict[obj.action],
-                         "content_type":log_content_type,
-                         "user": log_user})
+            #check for status success to reduce update count
+            if obj.action==1:
+                if "status" in changes_json:
+                    if changes_json["status"][1]=="SUCCESS":
+                        message_in_ui = log_content_type+" "+obj.object_repr.split(":")[0]+str(choicesDict[obj.action])+"d"
+                        recent_activity.append(
+                                    {"changes": str(log_changed_message),
+                                     "action_time": obj.timestamp,
+                                     "message_on_ui": message_in_ui,
+                                     "action":choicesDict[obj.action],
+                                     "content_type":log_content_type,
+                                     "user": log_user})
+            else:
+                message_in_ui = log_content_type + " " + obj.object_repr.split(":")[0] + str(
+                    choicesDict[obj.action]) + "d"
+                recent_activity.append(
+                    {"changes": str(log_changed_message),
+                     "action_time": obj.timestamp,
+                     "message_on_ui": message_in_ui,
+                     "action": choicesDict[obj.action],
+                     "content_type": log_content_type,
+                     "user": log_user})
+
         return recent_activity
 
     return JsonResponse({

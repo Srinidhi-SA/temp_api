@@ -1,27 +1,30 @@
 import React from "react";
-import { Scrollbars } from 'react-custom-scrollbars';
+import {Scrollbars} from 'react-custom-scrollbars';
 import {connect} from "react-redux";
 import ReactDOM from "react-dom";
 import {Link} from "react-router-dom";
 import store from "../../store";
-import {isEmpty,getUserDetailsOrRestart} from "../../helpers/helper";
+import {isEmpty, getUserDetailsOrRestart} from "../../helpers/helper";
 var dateFormat = require('dateformat');
 import Breadcrumb from 'react-breadcrumb';
-import {STATIC_URL,API} from "../../helpers/env";
+import {STATIC_URL, API} from "../../helpers/env";
 import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
 import {saveFileToStore} from "../../actions/dataSourceListActions";
 import Dropzone from 'react-dropzone'
-import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
-import {openImg,closeImg,uploadImg,getUserProfile,saveProfileImage} from "../../actions/loginActions";
+import {
+  Modal,
+  Button,
+  Tab,
+  Row,
+  Col,
+  Nav,
+  NavItem
+} from "react-bootstrap";
+import {openImg, closeImg, uploadImg, getUserProfile, saveProfileImage} from "../../actions/loginActions";
 
 @connect((store) => {
-  return {login_response: store.login.login_response,
-          profileInfo: store.login.profileInfo,
-          fileUpload:store.dataSource.fileUpload,
-          showModal:store.dataUpload.imgUploadShowModal,
-          profileImgURL:store.login.profileImgURL
-          };
+  return {login_response: store.login.login_response, profileInfo: store.login.profileInfo, fileUpload: store.dataSource.fileUpload, showModal: store.dataUpload.imgUploadShowModal, profileImgURL: store.login.profileImgURL};
 })
 
 export class Profile extends React.Component {
@@ -32,53 +35,59 @@ export class Profile extends React.Component {
   componentWillMount() {
     if (isEmpty(this.props.profileInfo))
       this.props.dispatch(getUserProfile(getUserDetailsOrRestart.get().userToken))
-    if(this.props.profileImgURL=="")
-    this.props.dispatch(saveProfileImage(getUserDetailsOrRestart.get().image_url))
+    if (this.props.profileImgURL == "")
+      this.props.dispatch(saveProfileImage(getUserDetailsOrRestart.get().image_url))
 
   }
 
   componentDidMount() {
 
- // $('.crop').click(function() {
- //    $(this).toggleClass('crop active');
- //  });
+    // $('.crop').click(function() {
+    //    $(this).toggleClass('crop active');
+    //  });
 
   }
-  popupMsg(){
-		bootbox.alert("Only PNG and JPEG files are allowed to upload")
-	}
-  popupMsgForSize(){
+  popupMsg() {
+    bootbox.alert("Only PNG and JPEG files are allowed to upload")
+  }
+  popupMsgForSize() {
     bootbox.alert("Maximum allowed file size is 2MB")
   }
   onDrop(files) {
-		this.props.dispatch(saveFileToStore(files))
-	}
-  openPopup(){
+    this.props.dispatch(saveFileToStore(files))
+  }
+  openPopup() {
     this.props.dispatch(openImg());
-    var files = [{name:"",size:""}]
+    var files = [
+      {
+        name: "",
+        size: ""
+      }
+    ]
     this.props.dispatch(saveFileToStore(files))
 
   }
-  closePopup(){
+  closePopup() {
     this.props.dispatch(closeImg())
   }
 
-  uploadProfileImage(){
+  uploadProfileImage() {
     this.props.dispatch(uploadImg());
   }
 
-//in your component
-addDefaultSrc(ev){
-  ev.target.src = '../assets/images/iconp_default.png'
-}
+  //in your component
+  addDefaultSrc(ev) {
+    ev.target.src = STATIC_URL + "assets/images/iconp_default.png"
+  }
   render() {
-	   let lastLogin = null;
-	  // alert(sessionStorage.last_login)
-	  if(getUserDetailsOrRestart.get().last_login != "null"){
-		  lastLogin = dateFormat(getUserDetailsOrRestart.get().last_login, "mmm d,yyyy");
-	  }else{
-		  lastLogin = dateFormat(new Date(), "mmm d,yyyy");
-	  }
+    let lastLogin = null;
+    // alert(sessionStorage.last_login)
+    console.log("in profile")
+    if (getUserDetailsOrRestart.get().last_login != "null") {
+      lastLogin = dateFormat(getUserDetailsOrRestart.get().last_login, "mmm d,yyyy");
+    } else {
+      lastLogin = dateFormat(new Date(), "mmm d,yyyy");
+    }
 
     if (isEmpty(this.props.profileInfo)) {
       return (
@@ -103,11 +112,11 @@ addDefaultSrc(ev){
       var fileName = store.getState().dataSource.fileUpload.name;
       var fileSize = store.getState().dataSource.fileUpload.size;
       let fileSizeInKB = (fileSize / 1024).toFixed(3)
-      if(fileSizeInKB>2000)
-      this.popupMsgForSize()
-      let imgSrc = API+this.props.profileImgURL+fileSizeInKB+new Date().getTime();
-      if(!this.props.profileImgURL)
-      imgSrc = STATIC_URL + "assets/images/avatar.png"
+      if (fileSizeInKB > 2000)
+        this.popupMsgForSize()
+      let imgSrc = API + this.props.profileImgURL + fileSizeInKB + new Date().getTime();
+      if (!this.props.profileImgURL)
+        imgSrc = STATIC_URL + "assets/images/avatar.png"
       let statsList = this.props.profileInfo.info.map((analysis, i) => {
         console.log(analysis)
         return (
@@ -119,20 +128,41 @@ addDefaultSrc(ev){
           </div>
         )
       });
-	  // Recent Activity Block
-	  let recentActivity = this.props.profileInfo.recent_activity.map((recAct, i) => {
-        console.log(recAct);
-		let img_name ="../assets/images/iconp_" + recAct.content_type + ".png";
-		//console.log(img_name);
+      // Recent Activity Block
+      let recentActivity = this.props.profileInfo.recent_activity.map((recAct, i) => {
+
+        let img_name = STATIC_URL + "assets/images/iconp_" + recAct.content_type + ".png";
+        var timediff = new Date().getTime() - new Date(recAct.action_time).getTime()
+
+        var hoursDifference = Math.floor(timediff / 1000 / 60 / 60);
+        var minutesDifference = Math.floor(timediff / 1000 / 60);
+        var secondsDifference = Math.floor(timediff / 1000);
+
+        let action_time_string=dateFormat(recAct.action_time, "mmm d,yyyy")
+        if(hoursDifference<60){
+          if(hoursDifference==0){
+            if(minutesDifference==0)
+            action_time_string=secondsDifference+" sec ago"
+            else {
+              action_time_string=minutesDifference+" min ago"
+            }
+          }else {
+            action_time_string=hoursDifference+" hrs ago"
+          }
+        }
+
+        //  var daysDifference = Math.floor(timediff/1000/60/60/24);
+        //  timediff -= daysDifference*1000*60*60*24
+        //console.log(img_name);
         return (
           <li key={i}>
-				<img  onError={this.addDefaultSrc} src={img_name} className="img-responsive pull-left xs-pl-5 xs-pr-10" />
-				<span>
-				<div class="crop">{recAct.message_on_ui}</div>
-				</span>
-				<span className="pull-right">
-				{dateFormat(recAct.action_time, "mmm d,yyyy")}
-				</span>
+            <img onError={this.addDefaultSrc} src={img_name} className="img-responsive pull-left xs-pl-5 xs-pr-10"/>
+            <span className="pull-left">
+              <div class="crop">{recAct.message_on_ui}</div>
+            </span>
+            <span className="pull-right">
+              {action_time_string}
+            </span>
           </li>
         )
       });
@@ -150,173 +180,183 @@ addDefaultSrc(ev){
             <!-- Page Content Area -->*/}
           <div className="main-content">
             <div className="user-profile">
-			<div className="panel panel-default xs-mb-15">
-			<div className="panel-body">
-              <div className="user-display">
-                <div className="user-avatar col-md-2 text-center">
-                <img src={imgSrc} className="img-responsive img-center img-circle"/>
-                <a onClick={this.openPopup.bind(this)} href ="javascript:void(0)"><i class="fa fa-camera" style={{fontSize:"36px",color:"grey"}}></i></a>
-                <div id="uploadImg" role="dialog" className="modal fade modal-colored-header">
-                <Modal show={store.getState().dataUpload.imgUploadShowModal} onHide={this.closePopup.bind(this)} dialogClassName="modal-colored-header uploadData">
-                <Modal.Header closeButton>
-                <h3 className="modal-title">Upload Image</h3>
-                </Modal.Header>
-                <Modal.Body>
+              <div className="panel panel-default xs-mb-15">
+                <div className="panel-body">
+                  <div className="user-display">
+                    <div className="user-avatar col-md-2 text-center">
+                      <img src={imgSrc} className="img-responsive img-center img-circle"/>
+                      <a onClick={this.openPopup.bind(this)} href="javascript:void(0)">
+                        <i class="fa fa-camera" style={{
+                          fontSize: "36px",
+                          color: "grey"
+                        }}></i>
+                      </a>
+                      <div id="uploadImg" role="dialog" className="modal fade modal-colored-header">
+                        <Modal show={store.getState().dataUpload.imgUploadShowModal} onHide={this.closePopup.bind(this)} dialogClassName="modal-colored-header uploadData">
+                          <Modal.Header closeButton>
+                            <h3 className="modal-title">Upload Image</h3>
+                          </Modal.Header>
+                          <Modal.Body>
 
+                            <div className="row">
+                              <div className="col-md-9 col-md-offset-1 col-xs-12">
+                                <div className="clearfix"></div>
+                                <div className="xs-pt-20"></div>
 
-
-
-				<div className="row">
-					<div className="col-md-9 col-md-offset-1 col-xs-12">
-                <div className="clearfix"></div>
-                <div className="xs-pt-20"></div>
-
-						 <div className="dropzone md-pl-50">
-                <Dropzone id={1} onDrop={this.onDrop.bind(this)} accept=".png, .jpg" onDropRejected={this.popupMsg}>
-                <p>Try dropping some files here, or click to select files to upload.</p>
-                </Dropzone>
-                {/*<aside>
+                                <div className="dropzone md-pl-50">
+                                  <Dropzone id={1} onDrop={this.onDrop.bind(this)} accept=".png, .jpg" onDropRejected={this.popupMsg}>
+                                    <p>Try dropping some files here, or click to select files to upload.</p>
+                                  </Dropzone>
+                                  {/*<aside>
                       <ul className={fileName != "" ? "list-unstyled bullets_primary":"list-unstyled"}>
                           <li>{fileName}{fileName != "" ? " - ":""}{fileSizeInKB}{fileName != "" ? " KB ":""}</li>
                       </ul>
                     </aside>*/}
-                    <aside>
-                          <ul className={fileName != "" ? "list-unstyled bullets_primary":"list-unstyled"}>
-                              <li>{fileName}</li>
-                          </ul>
-                        </aside>
-                </div>
+                                  <aside>
+                                    <ul className={fileName != ""
+                                      ? "list-unstyled bullets_primary"
+                                      : "list-unstyled"}>
+                                      <li>{fileName}</li>
+                                    </ul>
+                                  </aside>
+                                </div>
 
-				 <div className="xs-pt-10"></div>
-               <div className="clearfix"></div>
+                                <div className="xs-pt-10"></div>
+                                <div className="clearfix"></div>
 
+                              </div>
+                            </div>
+                          </Modal.Body>
+                          <Modal.Footer>
+                            <Button onClick={this.closePopup.bind(this)}>Close</Button>
+                            <Button bsStyle="primary" onClick={this.uploadProfileImage.bind(this)}>Upload Image</Button>
+                          </Modal.Footer>
+                        </Modal>
+                      </div>
+                    </div>
 
-                </div>
-				</div>
-                </Modal.Body>
-                <Modal.Footer>
-                <Button onClick={this.closePopup.bind(this)}>Close</Button>
-                  <Button bsStyle="primary" onClick={this.uploadProfileImage.bind(this)}>Upload Image</Button>
-                </Modal.Footer>
-                </Modal>
-                </div>
-                </div>
+                    <div className="user-info col-md-10">
 
-                <div className="user-info col-md-10">
+                      <div className="panel-default">
 
-                  <div className="panel-default">
-
-                    <div className="panel-body">
-                      <div className="row">
-                        <div className="col-md-6">
-                          <h3>{getUserDetailsOrRestart.get().userName}</h3>
-                          <table className="full-table-width no-border no-strip skills">
-                            <tbody className="no-border-x no-border-y full-width">
-                              <tr>
-                                <td className="item" width="30">
-                                  <span className="fa fa-envelope"></span>
-                                </td>
-                                <td>
-                                  <b>
-                                    {getUserDetailsOrRestart.get().email}</b>
-                                </td>
-                              </tr>
-                              <tr>
-                                <td className="item xs-pt-5">
-                                  <span className="fa fa-phone"></span>
-                                </td>
-                                <td className="xs-pt-5">
-                                  <b>
-                                    {getUserDetailsOrRestart.get().phone}
-                                  </b>
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
-						<div className="col-md-6 text-right">
-                    <p className="xs-pt-30">
-                      Date Joined :
-                      <b> {dateFormat(getUserDetailsOrRestart.get().date, "mmm d,yyyy")}</b>
-                      <br/>
-                      Last Login :
-                      <b>{lastLogin}</b>
-                      {/*<br/>
+                        <div className="panel-body">
+                          <div className="row">
+                            <div className="col-md-6">
+                              <h3>{getUserDetailsOrRestart.get().userName}</h3>
+                              <table className="full-table-width no-border no-strip skills">
+                                <tbody className="no-border-x no-border-y full-width">
+                                  <tr>
+                                    <td className="item" width="30">
+                                      <span className="fa fa-envelope"></span>
+                                    </td>
+                                    <td>
+                                      <b>
+                                        {getUserDetailsOrRestart.get().email}</b>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td className="item xs-pt-5">
+                                      <span className="fa fa-phone"></span>
+                                    </td>
+                                    <td className="xs-pt-5">
+                                      <b>
+                                        {getUserDetailsOrRestart.get().phone}
+                                      </b>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                            <div className="col-md-6 text-right">
+                              <p className="xs-pt-30">
+                                Date Joined :
+                                <b>
+                                  {dateFormat(getUserDetailsOrRestart.get().date, "mmm d,yyyy")}</b>
+                                <br/>
+                                Last Login :
+                                <b>{lastLogin}</b>
+                                {/*<br/>
                     Subscription Left :
                     <b>25 Days</b>*/}
-                    <br/>
-                    Superuser status:
-                    <b>{getUserDetailsOrRestart.get().is_superuser}</b>
+                                <br/>
+                                Superuser status:
+                                <b>{getUserDetailsOrRestart.get().is_superuser}</b>
 
-                    </p>
-                  </div>
-                        {/*<div className="col-md-4 text-right xs-p-20">
+                              </p>
+                            </div>
+                            {/*<div className="col-md-4 text-right xs-p-20">
                                  <a href="#" className="btn btn-primary">Edit Profile</a>
                                </div>*/}
-                      </div>
+                          </div>
 
+                        </div>
+                      </div>
+                    </div>
+                    <div className="clearfix"></div>
+                  </div>
+                  <div className="clearfix"></div>
+                  <div className="row text-center">
+
+                    {statsList}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-md-4">
+                <div className="panel">
+                  <div className="panel-body">
+                    <div className="minHP">
+                      <h5 class="text-center">TOTAL SPACE</h5>
+                      <C3Chart classId="_profile" data={this.props.profileInfo.chart_c3}/> {/*
+              <img src="images/userProfileGraph.png" className="img-responsive"/>*/}
+                      <p className="xs-pl-20">{renderHTML(this.props.profileInfo.comment)}</p>
                     </div>
                   </div>
                 </div>
-                <div className="clearfix"></div>
-              </div>
-			 <div className="clearfix"></div>
-              <div className="row text-center">
-
-                {statsList}
-              </div>
-			  </div>
-            </div>
-			 </div>
-            <div className="row">
-              <div className="col-md-4">
-			  <div className="panel">
-				<div className="panel-body">
-                <div className="minHP">
-                  <h5 class="text-center">TOTAL SPACE</h5>
-                  <C3Chart classId="_profile" data={this.props.profileInfo.chart_c3}/> {/*
-              <img src="images/userProfileGraph.png" className="img-responsive"/>*/}
-			  <p className="xs-pl-20">{renderHTML(this.props.profileInfo.comment)}</p>
-                </div>
-				</div>
-				</div>
               </div>
               <div className="col-md-8">
                 <div className="row">
                   <div className="col-md-12 text-right hidden">
                     <p className="xs-p-20">
-                    <br/>
+                      <br/>
                       Date Joined :
-                      <b> {dateFormat(getUserDetailsOrRestart.get().date, "mmm d,yyyy")}</b>
+                      <b>
+                        {dateFormat(getUserDetailsOrRestart.get().date, "mmm d,yyyy")}</b>
                       <br/>
                       Last Login :
                       <b>{lastLogin}</b>
                       {/*<br/>
                     Subscription Left :
                     <b>25 Days</b>*/}
-                    <br/>
-                    Superuser status:
-                    <b>{getUserDetailsOrRestart.get().is_superuser}</b>
+                      <br/>
+                      Superuser status:
+                      <b>{getUserDetailsOrRestart.get().is_superuser}</b>
 
                     </p>
                   </div>
                   <div className="clearfix"></div>
                   <div className="col-md-12">
-					<div className="panel">
-					<div className="panel-body">
-                    <div className="minHP">
-					<h5>RECENT ACTIVITY</h5>
-					<Scrollbars style={{ height: 312 }} renderTrackHorizontal={props => <div {...props} className="track-horizontal" style={{display:"none"}}/>}
-        renderThumbHorizontal={props => <div {...props} className="thumb-horizontal" style={{display:"none"}}/>}>
+                    <div className="panel">
+                      <div className="panel-body">
+                        <div className="minHP">
+                          <h5>RECENT ACTIVITY</h5>
+                          <Scrollbars style={{
+                            height: 312
+                          }} renderTrackHorizontal={props => <div {...props} className="track-horizontal" style={{
+                            display: "none"
+                          }}/>} renderThumbHorizontal={props => <div {...props} className="thumb-horizontal" style={{
+                            display: "none"
+                          }}/>}>
 
-						<ul className="list-unstyled list-border recActivity">
-						{recentActivity}
-						</ul>
-                    </Scrollbars>
+                            <ul className="list-unstyled list-border recActivity">
+                              {recentActivity}
+                            </ul>
+                          </Scrollbars>
+                        </div>
+                      </div>
                     </div>
-					</div>
-					</div>
-				  </div>
+                  </div>
                   {/*  <div className="col-md-4">
                   <div className="panel text-center xs-p-20 minHP">
                     <a href="#">
@@ -330,7 +370,7 @@ addDefaultSrc(ev){
               </div>
 
             </div>
-		  </div>
+          </div>
         </div>
 
       );
