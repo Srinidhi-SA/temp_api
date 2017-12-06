@@ -90,7 +90,7 @@ export class C3Chart extends React.Component {
     if (this.props.sideChart) {
       console.log(data);
       data['size'] = {
-        height: 200
+        height: 230
       }
     }
     if (this.props.yformat) {

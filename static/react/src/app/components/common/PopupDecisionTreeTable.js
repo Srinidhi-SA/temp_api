@@ -66,7 +66,7 @@ generateDecisionTreeRows(table) {
    var headerComponents = this.generatePredTableHeaders(data);
    var rowComponents = this.generateDecisionTreeRows(data);
    return (
-           <div>
+           <div class="table-style-custom">
            <table className={className}>
                <thead><tr>{headerComponents}</tr></thead>
                <tbody>{rowComponents}</tbody>

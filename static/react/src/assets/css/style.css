@@ -14719,7 +14719,9 @@ a .btn-close {
   cursor:pointer;
 }
 .pred_disp_block {
-    margin-top: 30px;
+    /* margin-top: 30px; */
+    background: #f2f4f8;
+    margin: 35px 10px 10px 0;
 }
 .pred_disp_block:hover {-webkit-box-shadow: 2px 2px 15px -3px rgba(0,0,0,0.3);
 -moz-box-shadow: 2px 2px 15px -3px rgba(0,0,0,0.3);
@@ -15098,5 +15100,8 @@ display: inline-block;
 .scoreDataPreview{
 	height:500px !important;
 }
-
+.table-style-custom{
+	margin-left:-12%;
+	margin-right:-12%;
+}
 
