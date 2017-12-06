@@ -14702,6 +14702,9 @@ a .btn-close {
 	float: none;
 }
 
+.recActivity span.pull-left {
+    max-width: 70%;
+}
 .crop {
   white-space: nowrap;      
   overflow: hidden;
@@ -14711,6 +14714,7 @@ a .btn-close {
   display:block;
 }
 .crop.active {
+  white-space: normal;   
   width: auto;
   cursor:pointer;
 }

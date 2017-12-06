@@ -157,7 +157,7 @@ export class Profile extends React.Component {
         return (
           <li key={i}>
             <img onError={this.addDefaultSrc} src={img_name} className="img-responsive pull-left xs-pl-5 xs-pr-10"/>
-            <span>
+            <span className="pull-left">
               <div class="crop">{recAct.message_on_ui}</div>
             </span>
             <span className="pull-right">
