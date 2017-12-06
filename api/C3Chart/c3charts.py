@@ -692,7 +692,7 @@ class DonutChart(C3Chart):
                 'show' : False,
                 'format' : None
             },
-            'width':30
+            'width':20
         }
         if self._donutChartFormat != None:
             self._donut["label"]["format"] = self._donutChartFormat
