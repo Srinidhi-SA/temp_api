@@ -1,6 +1,7 @@
 import React from "react";
 import CircularProgressbar from 'react-circular-progressbar';
 import {Redirect} from 'react-router';
+import {handleDecisionTreeTable} from "../actions/signalActions";
 
 export function isEmpty(obj) {
     for(var prop in obj) {
@@ -407,3 +408,11 @@ export function capitalizeArray(array){
   }
   return a
 }
+export function predictionLabelClick(){
+    var cell =document.querySelectorAll('.pred_disp_block');
+    for(var i=0;i<cell.length;i++){
+    cell[i].addEventListener('click',handleDecisionTreeTable,false);
+  }
+   
+}
+

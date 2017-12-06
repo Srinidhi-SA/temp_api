@@ -29,15 +29,30 @@ export class PopupDecisionTreeTable extends React.Component {
   componentDidUpdate(){
       handleDecisionTreeTable();
   }
+  generatePredTableHeaders(table) {
+      var cols = table.tableData.map(function(rowData,i){
+          var colLength = rowData.length;
+        if(i== 0){
+            return rowData.map(function(colData,j) {
+                if(j == colLength-1)return <th class="hidden" key={j}>{colData}</th>
+                else return <th key={j}>{colData}</th>;
+                 });
+        }
+      })
+    return cols;
+  }
 generateDecisionTreeRows(table) {
     var that = this;
       var tbodyData = table.tableData.map(function(rowData,i){
+          var colLength = rowData.length;
           if(i != 0){
               var rows = rowData.map(function(colData,j) {
                    if(j == 0)
                       return<td key={j} className="cursor" onClick={that.showDecisionTreePopup}><a name={colData}>{colData.slice(0, MAXTEXTLENGTH)}...</a></td>;
-                      else
-                         return  <td key={j}>{colData}</td>    
+                      else{
+                          if(j == colLength-1)return  <td class="hidden" key={j}>{colData}</td>    
+                          return  <td key={j}>{colData}</td>       
+                      }
               });
               return<tr key={i}>{rows}</tr>;
           }
@@ -48,7 +63,7 @@ generateDecisionTreeRows(table) {
    var data = this.props.tableData;
    var className = "table table-bordered popupDecisionTreeTable"
    console.log("checking popup decision tree tabletable element");
-   var headerComponents = generateHeaders(data);
+   var headerComponents = this.generatePredTableHeaders(data);
    var rowComponents = this.generateDecisionTreeRows(data);
    return (
            <div>

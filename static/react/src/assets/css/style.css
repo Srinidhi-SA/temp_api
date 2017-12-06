@@ -14703,7 +14703,9 @@ a .btn-close {
   width: auto;
   cursor:pointer;
 }
-
+.pred_disp_block {
+    margin-top: 30px;
+}
 .pred_disp_block:hover {-webkit-box-shadow: 2px 2px 15px -3px rgba(0,0,0,0.3);
 -moz-box-shadow: 2px 2px 15px -3px rgba(0,0,0,0.3);
 box-shadow: 2px 2px 15px -3px rgba(0,0,0,0.3); }
@@ -14861,6 +14863,7 @@ html{
 .chart-data-icon {
     font-size: 24px;
     z-index:10 !important;
+    position:absolute;
 }
 
 .chart-data-icon .fa-table{

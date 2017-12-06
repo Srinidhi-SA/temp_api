@@ -17,7 +17,12 @@ export class PredictionDropDown extends React.Component {
   componentWillMount(){
 	  var sel= null;
 	  var data = this.props.jsonData;
-      sel= data[0].name;
+	  for (var prop in data) {
+	      if(data[prop].selected){
+	          sel= data[0].name;
+	          break;
+	      }
+	  }
 	 this.props.dispatch(showPredictions(sel));  
   }
   
