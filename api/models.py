@@ -1161,11 +1161,8 @@ auditlog.register(Trainer)
 auditlog.register(CustomApps)
 
 
-def job_submission(
-        instance=None,
-        jobConfig=None,
-        job_type=None
-):
+def job_submission(instance=None, jobConfig=None, job_type=None):
+    """Submit job to jobserver"""
     # Job Book Keeping
     job = Job()
     job.name = "-".join([job_type, instance.slug])
@@ -1177,7 +1174,7 @@ def job_submission(
     job.config = json.dumps(jobConfig)
     job.save()
 
-    print "Job entry created."
+    print "Job entry created in db. Now going to submit job to job server."
 
     # Submitting JobServer
     from utils import submit_job
@@ -1195,7 +1192,9 @@ def job_submission(
         job.url = job_url
         job.save()
     except Exception as exc:
-        print "Unable to submit job."
+        print "#"*100
+        print "Unable to submit job. Could be some issue with job server please check"
+        print "#" * 100
         print exc
         send_jobserver_error(exc)
         return None
