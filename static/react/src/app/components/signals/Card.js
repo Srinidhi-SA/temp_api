@@ -16,7 +16,6 @@ import {GaugeMeter} from "../common/GaugeMeter";
 import {DataBox} from "../common/DataBox";
 import {WordCloud} from "../common/WordCloud";
 import $ from "jquery";
-import Toggle from 'react-bootstrap-toggle';
 import {handleSignalToggleButton,predictionLabelClick} from "../../helpers/helper";
 
 var data = null,
