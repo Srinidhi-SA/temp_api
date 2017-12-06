@@ -691,12 +691,13 @@ class DonutChart(C3Chart):
             'label': {
                 'show' : False,
                 'format' : None
-            }
+            },
+            'width':30
         }
         if self._donutChartFormat != None:
             self._donut["label"]["format"] = self._donutChartFormat
-        if self._title != None:
-            self._donut["title"] = self._title["text"]
+        #if self._title != None:
+            #self._donut["title"] = self._title["text"]
         print self._donut
 
 
