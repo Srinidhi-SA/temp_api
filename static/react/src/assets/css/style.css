@@ -1,4 +1,4 @@
-@import 'font-awesome.min.css';
+8@import 'font-awesome.min.css';
 @import 'pe-icon-7-stroke.css';
 @import 'helper.css';
 @import 'slick.min.css';
@@ -4637,7 +4637,7 @@ button:focus {
 	max-width: 50px;
 	max-height: 43px;
 	border-radius: 50%;
-	background: #718989;
+	background: #333333;
 	width: 43px;
 	vertical-align: middle;
 	text-align: center;
@@ -5632,10 +5632,10 @@ button:focus {
 }
 }
 .navbar-default.navbar-fixed-top a.dropdown-toggle {
-	color: #333333
+	color: #00998c
 }
 .navbar-default.navbar-fixed-top a.dropdown-toggle i {
-	color: #FFF;
+	color: #cabd9f;
 }
 .navbar-default.navbar-fixed-top a.dropdown-toggle:hover {
 	color: #dbdbdb
@@ -13854,7 +13854,7 @@ ul.app_labels li:first-child { margin: 0; padding: 7px 5px }
 }
 .card-footer {
     height: 40px;
-    background-color: #f9fafc;
+    background-color: #f3f4f6;
     padding: 0 0 0 15px;
     /* color: #fff; */
 }
@@ -13875,7 +13875,7 @@ ul.app_labels li:first-child { margin: 0; padding: 7px 5px }
 
 
 .card-footer div a:focus, .card-footer div a:hover, .card-footer div a:active, .card-deatils.open a.more_button{
-background:#ededed; color:#7dac02
+background:#e1eaea; color:#7dac02
 }
 .card-selected {
 	/*background: #f1f1f1;*/
