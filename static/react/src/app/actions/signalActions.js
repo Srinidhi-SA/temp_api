@@ -411,5 +411,57 @@ function dispatchSignalLoadingMsg(signalAnalysis){
 export function clearLoadingMsg() {
   return {type: "CLEAR_LOADING_MSG"}
 }
+export function handleDecisionTreeTable(evt){
+    var probability = "";
+    var probabilityCond = true;
+    var noDataFlag = true;
+    //triggered when probability block is clicked to select and unselect 
+    if(evt){
+        selectProbabilityBlock(evt);
+    }
+    if($(".pred_disp_block").find(".selected").length > 0)
+        probability = $(".pred_disp_block").find(".selected")[0].innerText.toLowerCase();
+    
+    $(".popupDecisionTreeTable").find("tr").each(function(){
+        if(this.rowIndex != 0 ){
+            if(probability)  probabilityCond = probability.indexOf(this.cells[4].innerText.toLowerCase()) != -1;
+            if(this.cells[2].innerText.toLowerCase() == store.getState().signals.selectedPrediction.toLowerCase() && probabilityCond){
+                $(this).removeClass("hidden");
+                noDataFlag = false;
+            }else{
+                $(this).addClass("hidden");
+            } 
+        }
+    })
+    if(noDataFlag){
+        $(".popupDecisionTreeTable").addClass("hidden");  
+    }else{
+        $(".popupDecisionTreeTable").removeClass("hidden");  
+    }
+}
+export function selectProbabilityBlock(evt){
+    $(".pred_disp_block").each(function(){
+        if(!$(this).find("a").hasClass("selected")){
+            if($(this).find("a")[0].innerText.toLowerCase().indexOf(evt.target.innerText.toLowerCase()) != -1){
+                $(this).find("a").addClass("selected");  
+            }else{
+                $(this).find("a").removeClass("selected");  
+            }   
+        }else{
+            $(this).find("a").removeClass("selected");  
+        }
+        
+    })
+    
+}
+export function showZoomChart(flag){
+    return {
+        type: "ZOOM_CHART",
+        flag
+    }
+}
+
+
+
 
 

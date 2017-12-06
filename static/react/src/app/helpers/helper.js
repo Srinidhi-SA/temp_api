@@ -1,6 +1,7 @@
 import React from "react";
 import CircularProgressbar from 'react-circular-progressbar';
 import {Redirect} from 'react-router';
+import {handleDecisionTreeTable} from "../actions/signalActions";
 
 export function isEmpty(obj) {
     for(var prop in obj) {
@@ -12,7 +13,15 @@ export function isEmpty(obj) {
 }
 
 var  USERDETAILS = {};
-
+export function handleSignalToggleButton(){
+    if($(".toggleOn").is(":visible")){
+        $(".toggleOff").removeClass("hidden");
+        $(".toggleOn").addClass("hidden")
+    }else{
+        $(".toggleOn").removeClass("hidden");
+        $(".toggleOff").addClass("hidden") 
+    }
+}
 
 export const getUserDetailsOrRestart = {
 		get : function(){
@@ -98,6 +107,9 @@ const NEWVALUE = "new value";
 const TEXTHEATMAPTABLE = "textHeatMapTable";
 const DEFAULTANALYSISVARIABLES = "high";
 const MINROWINDATASET = 10;
+const APPSPERPAGE = 9;
+const POPUPDECISIONTREETABLE = "popupDecisionTreeTable";
+const MAXTEXTLENGTH = 80;
 
 
 export function generateHeaders(table) {
@@ -384,6 +396,9 @@ export{
 	USERDETAILS,
 	DEFAULTANALYSISVARIABLES,
   MINROWINDATASET,
+  APPSPERPAGE,
+  POPUPDECISIONTREETABLE,
+  MAXTEXTLENGTH
 	}
 export function capitalizeArray(array){
   let a =[]
@@ -393,3 +408,11 @@ export function capitalizeArray(array){
   }
   return a
 }
+export function predictionLabelClick(){
+    var cell =document.querySelectorAll('.pred_disp_block');
+    for(var i=0;i<cell.length;i++){
+    cell[i].addEventListener('click',handleDecisionTreeTable,false);
+  }
+   
+}
+

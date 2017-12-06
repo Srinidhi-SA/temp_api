@@ -314,7 +314,7 @@ hr {
 .h2, h2 {
 	font-size: 27px
 }
-.h3, h3 {
+.h3, h3,h4.modal-title {
 	font-size: 23px
 }
 .h4, h4 {
@@ -6701,7 +6701,7 @@ body.open-right-sidebar .ma-right-sidebar {
 }
 .switch-button {
 	border-radius: 50px;
-	background-color: #b3b3b3;
+	background-color: #00998c;
 	width: 60px;
 	height: 27px;
 	padding: 2px;
@@ -6765,10 +6765,10 @@ body.open-right-sidebar .ma-right-sidebar {
 	padding-left: 10px
 }
 .switch-button.switch-button-yesno label:before {
-	content: "NO"
+	content: " %"
 }
 .switch-button.switch-button-yesno input[type=checkbox]:checked+span label:before {
-	content: "YES"
+	content: "AVG"
 }
 .switch-button.switch-button-xs {
 	height: 20px;
@@ -11138,7 +11138,8 @@ pre {
 .modal-header .close {
 	font-size: 26px;
 	opacity: .4;
-	text-shadow: none
+	text-shadow: none;
+	color:white;
 }
 .modal-header .close:hover {
 	opacity: .8
@@ -11239,7 +11240,7 @@ pre {
 .modal-colored-header .modal-content {
 	background-color: transparent
 }
-.modal-colored-header .modal-header {
+.modal-colored-header .modal-header, .modal-header {
 	background-color: #00998c;
 	color: #fff;
 	padding: 15px
@@ -12332,7 +12333,6 @@ form.dropzone .note {
 .slider-handle {
 	opacity: 1;
 	background: #FFF;
-	border: 3px solid #00998c;
 	background-clip: padding-box;
 	box-shadow: none;
 	height: 23px;
@@ -13737,7 +13737,7 @@ ul.app_labels li:first-child { margin: 0; padding: 7px 5px }
 .app-block .card-footer { padding:0; }
 .app-block  .card-footer div.card-deatils { width: 46px; }
 
-.app-block  a.app-link { min-height: 128px; display: block; border-bottom: 1px solid #eaeef1; color:#333; }
+.app-block  a.app-link { min-height: 130px; display: block; border-bottom: 1px solid #eaeef1; color:#333; }
 .app_labels li a { border:1px solid #eaeef1; /*width: 100px; */ display: inline-block; line-height: 1.8em; color: #333; padding-left: 5px;padding-right:5px }
 .app_labels a i {
     color: #becfce;
@@ -14260,7 +14260,7 @@ a.tabs-control.right span { right: 5px; }
     vertical-align: middle;
     display: table-cell; }
 /**CSS FOR ICON WITH NO BACKGROUND COLOR**/
-
+130px
 /** Upload Data Styles ***/
 #holder { border: 1px dashed #ccc;
     width: 300px;
@@ -14718,7 +14718,9 @@ a .btn-close {
   width: auto;
   cursor:pointer;
 }
-
+.pred_disp_block {
+    margin-top: 30px;
+}
 .pred_disp_block:hover {-webkit-box-shadow: 2px 2px 15px -3px rgba(0,0,0,0.3);
 -moz-box-shadow: 2px 2px 15px -3px rgba(0,0,0,0.3);
 box-shadow: 2px 2px 15px -3px rgba(0,0,0,0.3); }
@@ -14839,14 +14841,14 @@ html{
 	padding-left: 10%;
     padding-right: 10%;
     max-width: 100%;
-    overflow-x: auto;
+    /*overflow-x: auto;*/
 }
 
 .table-style_1 {
     /* margin-top: 1.8%; */
     /* padding-left: 10%; */
     /* padding-right: 10%; */
-    max-width: 70%;
+    /* max-width: 70%; */
     overflow-x: auto;
     margin: 0 auto;
 }
@@ -14879,6 +14881,7 @@ html{
 .chart-data-icon {
     font-size: 24px;
     z-index:10 !important;
+    position:absolute;
 }
 
 .chart-data-icon .fa-table{
@@ -14983,6 +14986,10 @@ svg[class^='chart']{
   width: 70%;
   min-height: 340px;
   margin-left:10%;
+}
+
+.c3-axis-x-label{
+transform:rotate(30 20,40) !important;
 }
 #tab_statistics .xs-pt-5 {
     height: 206px;	
@@ -15091,3 +15098,5 @@ display: inline-block;
 .scoreDataPreview{
 	height:500px !important;
 }
+
+

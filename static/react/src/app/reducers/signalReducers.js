@@ -22,7 +22,8 @@ export default function reducer(state = {
   advanceSettingsModal:false,
   getVarType:null,
   getVarText:null,
-  loading_message:[]
+  loading_message:[],
+  viewChartFlag:false,
 }, action) {
   console.log("in SIGNAL reducer!!");
   console.log(action);
@@ -213,6 +214,14 @@ export default function reducer(state = {
         }
       }
       break;
+      
+    case "ZOOM_CHART":
+    {
+        return {
+            ...state,
+            viewChartFlag: action.flag
+          }
+    }
   }
   return state
 }

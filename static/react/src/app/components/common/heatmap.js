@@ -20,6 +20,9 @@ export class HeatMapTable extends React.Component {
   render() {
    var data = this.props.tableData;
    var tableTitle ="";
+   var className = "table table-bordered heat-table-map"
+       if(this.props.classId) 
+    className = className+" "+"toggleOn";
    if(this.props.tableData.topHeader){
    tableTitle = this.props.tableData.topHeader;
    }
@@ -28,8 +31,8 @@ export class HeatMapTable extends React.Component {
    var headerComponents = generateHeatMapHeaders(data);
    var rowComponents = generateHeatMapRows(data);
    return (
-          <div>
-           <table className="table table-bordered heat-table-map">
+          <div >
+           <table className={className}>
                <thead>{headerComponents}</thead>
                <tbody>{rowComponents}</tbody>
            </table>
