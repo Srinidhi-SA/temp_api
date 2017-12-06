@@ -77,7 +77,7 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
         columnData=columnData,
         sampleData=sampleData
     )
-    
+
     ts = ts.get('existingColumns')
 
     for col in ts:
@@ -422,7 +422,57 @@ dummy_meta_data = {
                                 "name": "text"
                             }
                         ]
+                    },
+                    {
+                        "status": False,
+                        "actionName": "set_variable",
+                        "displayName": "Set Variable as",
+                        "listOfDataTypes": [
+                            {
+                                "status": False,
+                                "displayName": "General",
+                                "name": "general"
+                            },
+                            {
+                                "status": False,
+                                "displayName": "Numeric",
+                                "name": "numeric"
+                            },
+                            {
+                                "status": False,
+                                "displayName": "Percentage",
+                                "name": "percentage"
+                            },
+                            {
+                                "status": False,
+                                "displayName": "Index",
+                                "name": "index"
+                            },
+                            {
+                                "status": False,
+                                "displayName": "Average",
+                                "name": "average"
+                            }
+                        ]
+                    },
+                    {
+                        "status": False,
+                        "actionName": "set_polarity",
+                        "displayName": "Set Polarity as",
+                        "listOfDataTypes": [
+                            {
+                                "status": False,
+                                "displayName": "Positive",
+                                "name": "positive"
+                            },
+                            {
+                                "status": False,
+                                "displayName": "Negative",
+                                "name": "negative"
+                            }
+                        ]
                     }
+
                 ],
                 "name": "Age",
                 "slug": "e496c1e9f5c34edf8acbd17513a0deb6"

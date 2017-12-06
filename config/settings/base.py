@@ -738,7 +738,56 @@ TRANSFORMATION_SETTINGS_CONSTANT = {
                     {"name":"numeric","displayName":"Numeric","status":False},
                     {"name":"text","displayName":"Text","status":False},
                 ]
-            }
+            },
+            {
+                "actionName": "set_variable",
+                "displayName": "Set Variable as",
+                "status": False,
+                    "listOfDataTypes": [
+                            {
+                                "status": False,
+                                "displayName": "General",
+                                "name": "general"
+                            },
+                            {
+                                "status": False,
+                                "displayName": "Numeric",
+                                "name": "numeric"
+                            },
+                            {
+                                "status": False,
+                                "displayName": "Percentage",
+                                "name": "percentage"
+                            },
+                            {
+                                "status": False,
+                                "displayName": "Index",
+                                "name": "index"
+                            },
+                            {
+                                "status": False,
+                                "displayName": "Average",
+                                "name": "average"
+                            }
+                        ]
+                    },
+                    {
+                        "status": False,
+                        "actionName": "set_polarity",
+                        "displayName": "Set Polarity as",
+                        "listOfDataTypes": [
+                            {
+                                "status": False,
+                                "displayName": "Positive",
+                                "name": "positive"
+                            },
+                            {
+                                "status": False,
+                                "displayName": "Negative",
+                                "name": "negative"
+                            }
+                        ]
+                    }
         ],
     "new_columns":
         [
