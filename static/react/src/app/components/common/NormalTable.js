@@ -16,12 +16,15 @@ export class NormalTable extends React.Component {
  
   render() {
    var data = this.props.tableData;
+   var className = "table table-bordered"
+   if(this.props.classId) 
+   className = className+" "+"toggleOff"+" "+"hidden";
    console.log("checking normal tabletable element");
    var headerComponents = generateHeaders(data);
    var rowComponents = generateNormalTableRows(data);
    return (
-           <div className="table-style_1">
-           <table className="table table-bordered idDecisionTreeTable">
+           <div>
+           <table className={className}>
                <thead><tr>{headerComponents}</tr></thead>
                <tbody>{rowComponents}</tbody>
            </table>

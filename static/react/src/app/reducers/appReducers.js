@@ -60,6 +60,10 @@ export default function reducer(state = {
 		stockAnalysisFlag:false,
 		conceptList:{},
 		scoreSummaryCSVData:[],
+		appsList:{},
+		storeAppsSearchElement:"",
+		storeAppsSortByElement : "",
+		storeAppsSortType:"",
 
 
 }, action) {
@@ -667,6 +671,41 @@ export default function reducer(state = {
 		}
 	}
 	break;
+	
+	   case "APPS_LIST":
+	    {
+	        return {
+	            ...state,
+	            appsList: action.json,
+	            current_page:action.current_page,
+	        }
+	    }
+	    break;
+	    
+	   case "APPS_LIST_ERROR":
+	    {
+	        //alert(action.json.non_field_errors);
+	        throw new Error("Unable to fetch apps list data!!");
+	    }
+	    break;
+	    
+	   case "APPS_SEARCH":
+	    {
+	        return{
+	            ...state,
+	            storeAppsSearchElement:action.search_element
+	        }
+	    }
+	    break;
+	   case "APPS_SORT":
+       {
+           return{
+               ...state,
+               storeAppsSortType:action.sort_type,
+               storeAppsSortByElement:action.sort_by
+           }
+       }
+       break;
 	
 	}
 	return state

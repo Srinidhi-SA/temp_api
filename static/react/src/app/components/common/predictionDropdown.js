@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router";
 import store from "../../store";
-import {showPredictions} from "../../actions/signalActions";
+import {showPredictions,handleDecisionTreeTable} from "../../actions/signalActions";
 import renderHTML from 'react-render-html';
 
 @connect((store) => {
@@ -10,33 +10,27 @@ import renderHTML from 'react-render-html';
 })
 
 export class PredictionDropDown extends React.Component {
-  constructor(){
-    super();
+  constructor(props){
+    super(props);
   }
   
-  componentDidMount(){
-	// var sel =$('#prediction_dropdown').val());
-	// this.props.dispatch(showPredictions(sel));
-	console.log(this.props.selPrediction);
-	  
-  }
   componentWillMount(){
 	  var sel= null;
 	  var data = this.props.jsonData;
-	  console.log("----");
-	  console.log(data);
-	   for (var prop in data) {
-           sel= prop;
-		   break;
-       }
+	  for (var prop in data) {
+	      if(data[prop].selected){
+	          sel= data[0].name;
+	          break;
+	      }
+	  }
 	 this.props.dispatch(showPredictions(sel));  
-	  
   }
   
  checkSelection(e){
 	 console.log("change predictive dropdown");
 	  var sel =$('#prediction_dropdown').val();
 	 this.props.dispatch(showPredictions(sel));
+	 handleDecisionTreeTable();
  }
  
   render() {
@@ -44,9 +38,9 @@ export class PredictionDropDown extends React.Component {
    var optionsTemp =[], desc=""; // ulHead ="";
    console.log("prediction dropdown component");
    for (var prop in data) {
-        optionsTemp.push(<option key={prop} className={prop} value={prop}>{prop}</option>);
+        optionsTemp.push(<option key={prop} className={prop} value={data[prop].name}>{data[prop].displayName}</option>);
     }
-	if(this.props.selPrediction){
+	/*if(this.props.selPrediction){
 		
 		for (var prop in data) {
 			if(prop == this.props.selPrediction){
@@ -59,24 +53,28 @@ export class PredictionDropDown extends React.Component {
 			}
            
       }
-	}
+	}*/
 
   
   
    
    return (
-           <div>
+          <div> <div className="clearfix"></div>
+           <div className="row">
+           <div className="col-md-10">
+           <div className="form-group">
+           <label class="col-md-3 col-md-offset-1 control-label" for="rulesFor">{this.props.label} :</label>
 		    <select id="prediction_dropdown" name="selectbasic" class="form-control" onChange={this.checkSelection.bind(this)}>
 				{optionsTemp}
 				</select>
-			<div className="prediction_li">	
+			{/*<div className="prediction_li">	
 			<br/>
 			<ul>
 			  {renderHTML(desc)}
 			</ul>
-			</div>
-		   
-		   </div>
+			</div>*/}
+		   </div></div>
+		   </div></div>
        );
   }
 }

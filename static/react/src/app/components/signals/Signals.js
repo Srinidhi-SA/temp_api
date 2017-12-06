@@ -203,7 +203,7 @@ export class Signals extends React.Component {
 
                 <div className="card-deatils">
                   {/*<!-- Popover Content link -->*/}
-                  <OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={story}/> < /Popover>}>
+                  <OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={story}/> </Popover>}>
                     <a className="pover cursor">
                       <i className="ci pe-7s-info pe-2x"></i>
                     </a>
@@ -247,20 +247,20 @@ export class Signals extends React.Component {
                 <div class="col-md-8">
                   <h3 className="xs-mt-0">Signals</h3>
                 </div>
-                <div class="col-md-4">				
-				<div class="btn-toolbar pull-right">
-				<div class="input-group">
-				<div className="search-wrapper">
-					<form>
-					<input type="text" name="search_signals" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search Signals" id="search_signals" className="form-control search-box" placeholder="Search signals..." required />
-					<span class="fa fa-search form-control-feedback"></span>
-					<button className="close-icon" type="reset"></button>
-					</form>
-				</div>
-				</div>
+                <div class="col-md-4">              
+                <div class="btn-toolbar pull-right">
+                <div class="input-group">
+                <div className="search-wrapper">
+                    <form>
+                    <input type="text" name="search_signals" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search Signals" id="search_signals" className="form-control search-box" placeholder="Search signals..." required />
+                    <span class="fa fa-search form-control-feedback"></span>
+                    <button className="close-icon" type="reset"></button>
+                    </form>
+                </div>
+                </div>
                   <div class="btn-group">
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-sort-alpha-asc fa-lg"></i> <span class="caret"></span></button>
-					<ul role="menu" class="dropdown-menu dropdown-menu-right">
+                    <ul role="menu" class="dropdown-menu dropdown-menu-right">
                         <li>
                           <a href="#" onClick={this.doSorting.bind(this,'name','asc')}><i class="fa fa-sort-alpha-asc" aria-hidden="true"></i> Name Ascending</a>
                         </li>
@@ -288,7 +288,7 @@ export class Signals extends React.Component {
               {storyList}
               <div className="clearfix"></div>
             </div>
-			
+            
             <div className="ma-datatable-footer" id="idSignalPagination">
               <div className="dataTables_paginate">
                 {paginationTag}
