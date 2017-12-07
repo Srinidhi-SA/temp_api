@@ -38,7 +38,7 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
         return None
 
     # print
-    pass
+    return ""
 
 
 def generate_job_config(class_name, job_config, job_name, message_slug, slug):
@@ -86,9 +86,9 @@ def submit_job(slug, class_name, job_config, job_name=None, message_slug=None):
     print("came to submit job")
     if settings.SUBMIT_JOB_THROUGH_YARN:
         print("Submitting job through YARN")
-        submit_job_through_yarn(slug, class_name, job_config, job_name, message_slug)
+        return submit_job_through_yarn(slug, class_name, job_config, job_name, message_slug)
     else:
-        submit_job_through_job_server(slug, class_name, job_config, job_name, message_slug)
+        return submit_job_through_job_server(slug, class_name, job_config, job_name, message_slug)
 
 def convert_to_string(data):
     keys = ['compare_type', 'column_data_raw', 'config', 'data', 'model_data', 'meta_data']
@@ -612,7 +612,7 @@ class AppSerializer(serializers.ModelSerializer):
 
 
 def correct_base_dir():
-    if  settings.BASE_DIR.ends_with("config") or settings.BASE_URL.ends_with("config/"):
+    if  settings.BASE_DIR.endswith("config") or settings.BASE_URL.endswith("config/"):
         return os.path.dirname(settings.BASE_DIR)
     else:
         return settings.BASE_DIR
