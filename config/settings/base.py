@@ -865,3 +865,12 @@ YARN_QUEUES_MAPPING = {"metaData": METADATA_QUEUE,
                        "prediction": APPS_QUEUE,
                        "stockAdvisor": APPS_QUEUE,
                        }
+
+SUBMIT_JOB_THROUGH_YARN = True
+LIST_OF_ADMIN_EMAILS = [
+            'ankush.patel@marlabs.com',
+            'sabretooth.rog@gmail.com',
+            'vivekananda.tadala@marlabs.com',
+            'mitali.sodhi@marlabs.com',
+            'gulshan.gaurav@marlabs.com'
+        ]

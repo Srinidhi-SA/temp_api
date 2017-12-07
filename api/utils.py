@@ -1,5 +1,6 @@
 import json
 
+import os
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from rest_framework.utils import humanize_datetime
@@ -10,53 +11,84 @@ from api.user_helper import UserSerializer
 from models import Insight, Dataset, Trainer, Score, Job, Robo, Audioset, StockDataset, CustomApps
 
 from django.conf import settings
+import subprocess
 
-def submit_job(
-        slug,
-        class_name,
-        job_config,
-        job_name=None,
-        message_slug=None
-):
-    sjs = client.Client(
-        JobserverDetails.get_jobserver_url()
-    )
 
-    app = sjs.apps.get(
-        JobserverDetails.get_app()
-    )
+def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message_slug=None):
+    config = generate_job_config(class_name, job_config, job_name, message_slug, slug)
 
-    ctx = sjs.contexts.get(
-        JobserverDetails.get_context()
-    )
+    try:
+        base_dir = correct_base_dir()
+        scripts_dir = os.path.join(base_dir,"scripts")
+        egg_file_path = os.path.join(scripts_dir, "marlabs_bi_jobs-0.0.0-py2.7.egg")
+        driver_py_file_path = os.path.join(scripts_dir, "driver.py")
+
+        print("About to submit job through YARN")
+        # Submit_job to YARN
+        comand_array = ["spark-submit", "--master", "yarn", "--py-files", egg_file_path, driver_py_file_path, json.dumps(config)]
+
+        print "command array", comand_array
+
+        output = subprocess.check_output(comand_array)
+        print "output", output
+
+    except Exception as e:
+        from smtp_email import send_alert_through_email
+        send_alert_through_email(e)
+        return None
+
+    # print
+    pass
+
+
+def generate_job_config(class_name, job_config, job_name, message_slug, slug):
+    # here
+    temp_config = JobserverDetails.get_config(slug=slug,
+                                              class_name=class_name,
+                                              job_name=job_name,
+                                              message_slug=message_slug
+                                              )
+    config = {}
+    config['job_config'] = job_config
+    config['job_config'].update(temp_config)
+    print "overall---------config"
+    print config
+
+    return config
+
+
+def submit_job_through_job_server(slug, class_name, job_config, job_name=None, message_slug=None):
+    sjs = client.Client( JobserverDetails.get_jobserver_url())
+    app = sjs.apps.get(JobserverDetails.get_app())
+    ctx = sjs.contexts.get(JobserverDetails.get_context())
 
     # class path for all class name are same, it is job_type which distinguishes which scripts to run
     # actually not much use of this function for now. things may change in future.
     class_path = JobserverDetails.get_class_path(class_name)
 
-    # here
-    config1 = JobserverDetails.get_config(slug=slug,
-                                         class_name=class_name,
-                                          job_name=job_name,
-                                          message_slug=message_slug
-                                          )
-    config = {}
-    config['job_config'] = job_config
-    config['job_config'].update(config1)
+    config = generate_job_config(class_name, job_config, job_name, message_slug, slug)
 
-    print "overall---------config"
-    print config
-    from smtp_email import send_jobserver_error
+
     try:
         job = sjs.jobs.create(app, class_path, ctx=ctx, conf=json.dumps(config))
     except Exception as e:
-        send_jobserver_error(e)
+        from smtp_email import send_alert_through_email
+        send_alert_through_email(e)
         return None
 
     # print
     job_url = JobserverDetails.print_job_details(job)
     return job_url
 
+
+def submit_job(slug, class_name, job_config, job_name=None, message_slug=None):
+    """Based on config, submit jobs either through YARN or job server"""
+    print("came to submit job")
+    if settings.SUBMIT_JOB_THROUGH_YARN:
+        print("Submitting job through YARN")
+        submit_job_through_yarn(slug, class_name, job_config, job_name, message_slug)
+    else:
+        submit_job_through_job_server(slug, class_name, job_config, job_name, message_slug)
 
 def convert_to_string(data):
     keys = ['compare_type', 'column_data_raw', 'config', 'data', 'model_data', 'meta_data']
@@ -577,3 +609,10 @@ class AppSerializer(serializers.ModelSerializer):
         class Meta:
             model = CustomApps
             fields = '__all__'
+
+
+def correct_base_dir():
+    if  settings.BASE_URL.ends_with("config") or settings.BASE_URL.ends_with("config/"):
+        return os.path.dirname(settings.BASE_DIR)
+    else:
+        return settings.BASE_DIR

@@ -1178,7 +1178,7 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
 
     # Submitting JobServer
     from utils import submit_job
-    from smtp_email import send_jobserver_error
+    from smtp_email import send_alert_through_email
     try:
         job_url = submit_job(
             slug=job.slug,
@@ -1196,7 +1196,7 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
         print "Unable to submit job. Could be some issue with job server please check"
         print "#" * 100
         print exc
-        send_jobserver_error(exc)
+        send_alert_through_email(exc)
         return None
 
     return job
