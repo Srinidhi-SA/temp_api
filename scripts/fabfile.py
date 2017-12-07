@@ -31,7 +31,7 @@ def dev():
         "asset_path" : "/static/asset",
         "base_remote_path" : "/home/ubuntu/codebase/mAdvisor-api",
         "ui_branch" : "api_ui_dev",
-        "api_branch" : "api_ui_dev"
+        "api_branch" : "api_ui_dev_yarn"
     }
 
     key_file = BASE_DIR + "/config/keyfiles/TIAA.pem"
