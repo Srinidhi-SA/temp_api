@@ -35,10 +35,10 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
     except Exception as e:
         from smtp_email import send_alert_through_email
         send_alert_through_email(e)
-        return None
+        return "vivek1"
 
     # print
-    return ""
+    return "vivek2"
 
 
 def generate_job_config(class_name, job_config, job_name, message_slug, slug):
