@@ -38,17 +38,17 @@ export class DataValidation extends React.Component {
                if(actionNames.actionName == DATA_TYPE){
                  return (
                 <li key={index}><span>{actionNames.displayName}</span>
-                <ul>{actionNames.listOfDataTypes.map((subItem,subIndex)=>{
+                <ul>{actionNames.listOfActions.map((subItem,subIndex)=>{
                     var id=colSlug+subIndex;
                       return(<li key={id} className="cursor"><div key={id} className="ma-radio inlinev"><input id={id} type="radio"   onClick={this.handleChangeTypeEvent.bind(this,actionNames.actionName,colSlug,colName,subItem.name)} checked={subItem.status} name={colSlug}  value={subItem.name} /><label htmlFor={id}>{subItem.displayName}</label></div></li>)
                     })}</ul>
-                 </li>)     
+                 </li>)
                }
-               else return (<li onClick={this.handleClickEvent.bind(this,colSlug,colName,actionNames.status)} key={index}><a className="cursor" name={actionNames.actionName}>{actionNames.displayName}</a></li>)  
+               else return (<li onClick={this.handleClickEvent.bind(this,colSlug,colName,actionNames.status)} key={index}><a className="cursor" name={actionNames.actionName}>{actionNames.displayName}</a></li>)
           })
-          return list;  
+          return list;
        }
-	  
+
    }
 	render() {
 		let dataPrev = store.getState().datasets.dataPreview;
@@ -60,15 +60,15 @@ export class DataValidation extends React.Component {
 				 transformationSettings.map((columnData,columnIndex) =>{
 		              if(that.props.slug == columnData.slug){
 		            	settingsTemplate = that.renderDropdownList(columnData.slug,columnData.name,columnData.columnSetting)
-		              }	 
-					 }); 
+		              }
+					 });
 			 }
 			return (
-				
+
 					<ul  className="dropdown-menu scrollable-menu">
 					  <Dialog ref="dialog"/>
 					{settingsTemplate}</ul>
-					
+
 			)
 		}
 
