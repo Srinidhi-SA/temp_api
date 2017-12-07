@@ -612,7 +612,7 @@ class AppSerializer(serializers.ModelSerializer):
 
 
 def correct_base_dir():
-    if  settings.BASE_URL.ends_with("config") or settings.BASE_URL.ends_with("config/"):
+    if  settings.BASE_DIR.ends_with("config") or settings.BASE_URL.ends_with("config/"):
         return os.path.dirname(settings.BASE_DIR)
     else:
         return settings.BASE_DIR

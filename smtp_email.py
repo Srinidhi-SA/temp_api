@@ -34,7 +34,7 @@ def send_mail(username, password, from_addr, to_addrs, msg):
 
 def send_alert_through_email(error=None):
     jobserver_sender_email = 'ankush.patel@marlabs.com'
-    jobserver_email_template = "Please restart jobserver- IP-"
+    jobserver_email_template = "Problem IP-"
 
     # for to_addrs in joserver_email_list:
     msg = MIMEMultipart()
