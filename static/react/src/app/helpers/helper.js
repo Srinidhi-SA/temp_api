@@ -2,6 +2,7 @@ import React from "react";
 import CircularProgressbar from 'react-circular-progressbar';
 import {Redirect} from 'react-router';
 import {handleDecisionTreeTable} from "../actions/signalActions";
+import renderHTML from 'react-render-html';
 
 export function isEmpty(obj) {
     for(var prop in obj) {
@@ -414,5 +415,17 @@ export function predictionLabelClick(){
     cell[i].addEventListener('click',handleDecisionTreeTable,false);
   }
    
+}
+
+export function renderC3ChartInfo(info){
+    var listOfData = "";
+    info.map((item,index)=>{
+        listOfData += "<p>"+item+"</p>";
+    });
+    bootbox.dialog({title: "Statistical Info",
+        size: 'small',
+        closeButton: true,
+        message: "<div>"+listOfData+"</div>"})
+    
 }
 
