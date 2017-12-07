@@ -76,6 +76,7 @@ class QueryCommonFiltering(object):
             self.query_set = self.query_set.filter(Q(name__icontains=self.app_name)|Q(tags__icontains=self.app_name))
 
         if self.filter_fields is not None:
+            self.filter_fields=self.filter_fields.replace(',','\",\"').replace('[','[\"').replace(']','\"]')
             self.filter_fields=eval(self.filter_fields)
             from itertools import chain
             final_query_set=self.query_set.none()
