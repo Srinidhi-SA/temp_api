@@ -439,7 +439,7 @@ JOBSERVER_STATUS = {
     'KILLED': 'FAILED'
 }
 
-UI_VERSION = "v2.1_17"
+UI_VERSION = "v2.1_18"
 
 
 
@@ -747,13 +747,8 @@ TRANSFORMATION_SETTINGS_CONSTANT = {
                     "listOfActions": [
                             {
                                 "status": False,
-                                "displayName": "General",
-                                "name": "general"
-                            },
-                            {
-                                "status": False,
-                                "displayName": "Numeric",
-                                "name": "numeric"
+                                "displayName": "General Numeric",
+                                "name": "general_numeric"
                             },
                             {
                                 "status": False,
