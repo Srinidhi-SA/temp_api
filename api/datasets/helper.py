@@ -80,12 +80,14 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
 
     ts = ts.get('existingColumns')
 
+
+
     for col in ts:
 
         if "columnSetting" in col:
             columnSetting = col.get("columnSetting")
-            for colset in columnSetting:
 
+            for colset in columnSetting:
                 if colset.get("status") == True:
 
                     if colset.get("actionName") == "delete":

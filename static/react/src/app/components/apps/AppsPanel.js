@@ -68,6 +68,13 @@ export class AppsPanel extends React.Component {
       this.props.dispatch(getAppsList(getUserDetailsOrRestart.get().userToken, pageNo));
     this.props.dispatch(updateAppsFilterList([]))
   }
+  // componentDidMount() {
+  //   $(function() {
+  //     $('.dropdown-menu').click(function(e) {
+  //       e.stopPropagation();
+  //     });
+  //   });
+  // }
   onChangeAppsSearchBox(e) {
     if (e.target.value == "" || e.target.value == null) {
       this.props.dispatch(appsStoreSearchEle(""));
@@ -92,6 +99,7 @@ export class AppsPanel extends React.Component {
   }
   handleCheckboxChange(e) {
     console.log(e.target)
+    e.preventDefault();
     //console.log(e.target.checked)
     var array = this.props.app_filtered_keywords;
     var index = array.indexOf(e.target.name)
@@ -104,6 +112,7 @@ export class AppsPanel extends React.Component {
     console.log(array)
     this.props.dispatch(updateAppsFilterList(array))
     this.props.dispatch(getAppsFilteredList(getUserDetailsOrRestart.get().userToken, 1))
+    if(array.length>0)
     this.props.history.push('/apps?filterApplied=' + array)
 
   }
@@ -223,9 +232,14 @@ export class AppsPanel extends React.Component {
           checked = true
         return (
           <li key={i}>
-          {/*<div className="ma-checkbox inline">*/}
-            <input type="checkbox" name={tag} defaultChecked={true} onClick={this.handleCheckboxChange.bind(this)}/><label>{tag}</label>
-            {/*</div>*/}
+            {/*<div key={metaIndex} className="ma-checkbox inline">
+            <input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisList.bind(this)}/>
+              <label htmlFor={id}>{metaItem.displayName}</label>
+            </div>*/}
+            <div key={i} className="ma-checkbox inline">
+              <input id={dId} type="checkbox" name={tag} checked={checked} onClick={this.handleCheckboxChange.bind(this)}/>
+              <label htmlFor={dId}>{tag}</label>
+            </div>
           </li>
         )
         // return (
@@ -284,7 +298,7 @@ export class AppsPanel extends React.Component {
                 </div>
                 <div class="btn-group">
 
-                {/*<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter fa-lg"></i> <span class="caret"></span></button>
+                  {/*<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter fa-lg"></i> <span class="caret"></span></button>
                 <ul role="menu" class="dropdown-menu dropdown-menu-right">
                 <li>
                                 <input type="text" class="form-control" />
