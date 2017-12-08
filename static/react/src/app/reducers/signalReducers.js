@@ -22,6 +22,7 @@ export default function reducer(state = {
   advanceSettingsModal:false,
   getVarType:null,
   getVarText:null,
+  selVarSlug:null,
   loading_message:[],
   viewChartFlag:false,
 }, action) {
@@ -98,7 +99,8 @@ export default function reducer(state = {
         return {
           ...state,
           getVarType: action.varType,
-		  getVarText: action.varText
+		  getVarText: action.varText,
+		  selVarSlug:action.varSlug,
         }
       }
       break;

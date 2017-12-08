@@ -114,6 +114,8 @@ const MAXTEXTLENGTH = 100;
 const SET_VARIABLE = "set_variable";
 const DIMENSION = "dimension";
 const MEASURE = "measure";
+const PERCENTAGE ="percentage";
+const GENERIC_NUMERIC = "generic_numeric";
 
 
 export function generateHeaders(table) {
@@ -405,7 +407,9 @@ export{
   MAXTEXTLENGTH,
   SET_VARIABLE,
   DIMENSION,
-  MEASURE
+  MEASURE,
+  PERCENTAGE,
+  GENERIC_NUMERIC,
 	}
 export function capitalizeArray(array){
   let a =[]
