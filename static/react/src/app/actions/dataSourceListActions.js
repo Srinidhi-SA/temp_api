@@ -61,6 +61,7 @@ function fetchDataSourceList(token,file) {
 export function saveFileToStore(files) {
 	console.log("In Data Upload ")
 	console.log(files)
+	$("#fileErrorMsg").addClass("visibilityHidden");
 	var file = files[0]
 	return {
 		type: "DATA_UPLOAD_FILE",

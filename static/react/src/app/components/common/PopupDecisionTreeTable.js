@@ -10,6 +10,7 @@ import {generateHeaders,generateNormalTableRows} from "../../helpers/helper";
 import { Scrollbars } from 'react-custom-scrollbars';
 import {MAXTEXTLENGTH} from "../../helpers/helper";
 
+
 @connect((store) => {
     return { selPrediction: store.signals.selectedPrediction};
   })
@@ -66,11 +67,16 @@ generateDecisionTreeRows(table) {
    var headerComponents = this.generatePredTableHeaders(data);
    var rowComponents = this.generateDecisionTreeRows(data);
    return (
-           <div>
+           <div class="table-style-custom">
+             <Scrollbars style={{ height: 200 }} 
+               className="thumb-horizontal" >
            <table className={className}>
                <thead><tr>{headerComponents}</tr></thead>
+             
                <tbody>{rowComponents}</tbody>
+             
            </table>
+             </Scrollbars>
            </div>
        );
   }

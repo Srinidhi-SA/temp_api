@@ -66,6 +66,7 @@ class QueryCommonFiltering(object):
                 self.filter_fields = temp_app_filter
 
     def execute_common_filtering_and_sorting_and_ordering(self):
+
         if self.name is not None:
             self.query_set = self.query_set.filter(name__icontains=self.name)
 
@@ -74,20 +75,19 @@ class QueryCommonFiltering(object):
 
         if self.app_name is not None:
             self.query_set = self.query_set.filter(Q(name__icontains=self.app_name)|Q(tags__icontains=self.app_name))
-
         if self.filter_fields is not None:
             self.filter_fields=self.filter_fields.replace(',','\",\"').replace('[','[\"').replace(']','\"]')
             self.filter_fields=eval(self.filter_fields)
             from itertools import chain
             final_query_set=self.query_set.none()
             for tag in self.filter_fields:
-                query_set_temp=self.query_set.filter(tags__icontains=tag)
-                final_query_set=chain(final_query_set,query_set_temp)
+                query_set_temp=self.query_set.filter(tags__icontains=tag).distinct()
+                final_query_set=(final_query_set | query_set_temp).distinct()
             self.query_set=final_query_set
-
         if self.sorted_by is not None:
             query_args = "{0}{1}".format(self.ordering, self.sorted_by)
             self.query_set = self.query_set.order_by(query_args)
+
         return self.query_set
 
 

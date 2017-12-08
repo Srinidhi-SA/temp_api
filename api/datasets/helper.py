@@ -117,9 +117,9 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
                             newName=newName
                         )
                     if colset.get("actionName") == "data_type":
-                        listOfDataTypes = colset.get('listOfDataTypes')
+                        listOfActions = colset.get('listOfActions')
                         data_type = {}
-                        for data in listOfDataTypes:
+                        for data in listOfActions:
                             if data.get('status') == True:
                                 mdc.changes_on_data_type(
                                     colName=col.get('name'),
@@ -332,7 +332,7 @@ class MetaDataChange(object):
                 if data['columnType'] == match_in_columnstats[type]:
                     return ""
                 data['columnType'] = match_in_columnstats[type]
-
+        
         if type == 'numeric':
             for data in self.metaData:
                 if data.get('name') == 'measures':
@@ -351,7 +351,7 @@ class MetaDataChange(object):
                 if data.get('name') == 'measureColumns':
                     if 'colName' in data['value']:
                         data['value'].remove(colName)
-                if data.get('name') == 'dimesions':
+                if data.get('name') == 'dimensions':
                     data['value'] = data['value'] + 1
                 if data.get('name') == 'dimensionColumns':
                     data['value'].append(colName)
@@ -410,7 +410,7 @@ dummy_meta_data = {
                         "status": False,
                         "actionName": "data_type",
                         "displayName": "Change Datatype",
-                        "listOfDataTypes": [
+                        "listOfActions": [
                             {
                                 "status": False,
                                 "displayName": "Numeric",
@@ -427,7 +427,7 @@ dummy_meta_data = {
                         "status": False,
                         "actionName": "set_variable",
                         "displayName": "Set Variable as",
-                        "listOfDataTypes": [
+                        "listOfActions": [
                             {
                                 "status": False,
                                 "displayName": "General",
@@ -459,7 +459,7 @@ dummy_meta_data = {
                         "status": False,
                         "actionName": "set_polarity",
                         "displayName": "Set Polarity as",
-                        "listOfDataTypes": [
+                        "listOfActions": [
                             {
                                 "status": False,
                                 "displayName": "Positive",
@@ -500,7 +500,7 @@ dummy_meta_data = {
                         "status": False,
                         "actionName": "data_type",
                         "displayName": "Change Datatype",
-                        "listOfDataTypes": [
+                        "listOfActions": [
                             {
                                 "status": False,
                                 "displayName": "Numeric",
@@ -540,7 +540,7 @@ dummy_meta_data = {
                         "status": False,
                         "actionName": "data_type",
                         "displayName": "Change Datatype",
-                        "listOfDataTypes": [
+                        "listOfActions": [
                             {
                                 "status": False,
                                 "displayName": "Numeric",
@@ -580,7 +580,7 @@ dummy_meta_data = {
                         "status": False,
                         "actionName": "data_type",
                         "displayName": "Change Datatype",
-                        "listOfDataTypes": [
+                        "listOfActions": [
                             {
                                 "status": False,
                                 "displayName": "Numeric",
@@ -620,7 +620,7 @@ dummy_meta_data = {
                         "status": False,
                         "actionName": "data_type",
                         "displayName": "Change Datatype",
-                        "listOfDataTypes": [
+                        "listOfActions": [
                             {
                                 "status": False,
                                 "displayName": "Numeric",
@@ -660,7 +660,7 @@ dummy_meta_data = {
                         "status": False,
                         "actionName": "data_type",
                         "displayName": "Change Datatype",
-                        "listOfDataTypes": [
+                        "listOfActions": [
                             {
                                 "status": False,
                                 "displayName": "Numeric",
@@ -700,7 +700,7 @@ dummy_meta_data = {
                         "status": False,
                         "actionName": "data_type",
                         "displayName": "Change Datatype",
-                        "listOfDataTypes": [
+                        "listOfActions": [
                             {
                                 "status": False,
                                 "displayName": "Numeric",
@@ -740,7 +740,7 @@ dummy_meta_data = {
                         "status": False,
                         "actionName": "data_type",
                         "displayName": "Change Datatype",
-                        "listOfDataTypes": [
+                        "listOfActions": [
                             {
                                 "status": False,
                                 "displayName": "Numeric",
@@ -780,7 +780,7 @@ dummy_meta_data = {
                         "status": False,
                         "actionName": "data_type",
                         "displayName": "Change Datatype",
-                        "listOfDataTypes": [
+                        "listOfActions": [
                             {
                                 "status": False,
                                 "displayName": "Numeric",
@@ -820,7 +820,7 @@ dummy_meta_data = {
                         "status": False,
                         "actionName": "data_type",
                         "displayName": "Change Datatype",
-                        "listOfDataTypes": [
+                        "listOfActions": [
                             {
                                 "status": False,
                                 "displayName": "Numeric",
@@ -860,7 +860,7 @@ dummy_meta_data = {
                         "status": False,
                         "actionName": "data_type",
                         "displayName": "Change Datatype",
-                        "listOfDataTypes": [
+                        "listOfActions": [
                             {
                                 "status": False,
                                 "displayName": "Numeric",
@@ -900,7 +900,7 @@ dummy_meta_data = {
                         "status": False,
                         "actionName": "data_type",
                         "displayName": "Change Datatype",
-                        "listOfDataTypes": [
+                        "listOfActions": [
                             {
                                 "status": False,
                                 "displayName": "Numeric",
@@ -940,7 +940,7 @@ dummy_meta_data = {
                         "status": False,
                         "actionName": "data_type",
                         "displayName": "Change Datatype",
-                        "listOfDataTypes": [
+                        "listOfActions": [
                             {
                                 "status": False,
                                 "displayName": "Numeric",
@@ -980,7 +980,7 @@ dummy_meta_data = {
                         "status": False,
                         "actionName": "data_type",
                         "displayName": "Change Datatype",
-                        "listOfDataTypes": [
+                        "listOfActions": [
                             {
                                 "status": False,
                                 "displayName": "Numeric",
@@ -1020,7 +1020,7 @@ dummy_meta_data = {
                         "status": False,
                         "actionName": "data_type",
                         "displayName": "Change Datatype",
-                        "listOfDataTypes": [
+                        "listOfActions": [
                             {
                                 "status": False,
                                 "displayName": "Numeric",
@@ -1060,7 +1060,7 @@ dummy_meta_data = {
                         "status": False,
                         "actionName": "data_type",
                         "displayName": "Change Datatype",
-                        "listOfDataTypes": [
+                        "listOfActions": [
                             {
                                 "status": False,
                                 "displayName": "Numeric",
@@ -1100,7 +1100,7 @@ dummy_meta_data = {
                         "status": False,
                         "actionName": "data_type",
                         "displayName": "Change Datatype",
-                        "listOfDataTypes": [
+                        "listOfActions": [
                             {
                                 "status": False,
                                 "displayName": "Numeric",
@@ -1140,7 +1140,7 @@ dummy_meta_data = {
                         "status": False,
                         "actionName": "data_type",
                         "displayName": "Change Datatype",
-                        "listOfDataTypes": [
+                        "listOfActions": [
                             {
                                 "status": False,
                                 "displayName": "Numeric",
@@ -1180,7 +1180,7 @@ dummy_meta_data = {
                         "status": False,
                         "actionName": "data_type",
                         "displayName": "Change Datatype",
-                        "listOfDataTypes": [
+                        "listOfActions": [
                             {
                                 "status": False,
                                 "displayName": "Numeric",
@@ -1220,7 +1220,7 @@ dummy_meta_data = {
                         "status": False,
                         "actionName": "data_type",
                         "displayName": "Change Datatype",
-                        "listOfDataTypes": [
+                        "listOfActions": [
                             {
                                 "status": False,
                                 "displayName": "Numeric",
@@ -1260,7 +1260,7 @@ dummy_meta_data = {
                         "status": False,
                         "actionName": "data_type",
                         "displayName": "Change Datatype",
-                        "listOfDataTypes": [
+                        "listOfActions": [
                             {
                                 "status": False,
                                 "displayName": "Numeric",
@@ -1300,7 +1300,7 @@ dummy_meta_data = {
                         "status": False,
                         "actionName": "data_type",
                         "displayName": "Change Datatype",
-                        "listOfDataTypes": [
+                        "listOfActions": [
                             {
                                 "status": False,
                                 "displayName": "Numeric",
@@ -1340,7 +1340,7 @@ dummy_meta_data = {
                         "status": False,
                         "actionName": "data_type",
                         "displayName": "Change Datatype",
-                        "listOfDataTypes": [
+                        "listOfActions": [
                             {
                                 "status": False,
                                 "displayName": "Numeric",
@@ -1380,7 +1380,7 @@ dummy_meta_data = {
                         "status": False,
                         "actionName": "data_type",
                         "displayName": "Change Datatype",
-                        "listOfDataTypes": [
+                        "listOfActions": [
                             {
                                 "status": False,
                                 "displayName": "Numeric",
@@ -1420,7 +1420,7 @@ dummy_meta_data = {
                         "status": False,
                         "actionName": "data_type",
                         "displayName": "Change Datatype",
-                        "listOfDataTypes": [
+                        "listOfActions": [
                             {
                                 "status": False,
                                 "displayName": "Numeric",
@@ -1460,7 +1460,7 @@ dummy_meta_data = {
                         "status": False,
                         "actionName": "data_type",
                         "displayName": "Change Datatype",
-                        "listOfDataTypes": [
+                        "listOfActions": [
                             {
                                 "status": False,
                                 "displayName": "Numeric",
@@ -1500,7 +1500,7 @@ dummy_meta_data = {
                         "status": False,
                         "actionName": "data_type",
                         "displayName": "Change Datatype",
-                        "listOfDataTypes": [
+                        "listOfActions": [
                             {
                                 "status": False,
                                 "displayName": "Numeric",
@@ -1540,7 +1540,7 @@ dummy_meta_data = {
                         "status": False,
                         "actionName": "data_type",
                         "displayName": "Change Datatype",
-                        "listOfDataTypes": [
+                        "listOfActions": [
                             {
                                 "status": False,
                                 "displayName": "Numeric",
@@ -1580,7 +1580,7 @@ dummy_meta_data = {
                         "status": False,
                         "actionName": "data_type",
                         "displayName": "Change Datatype",
-                        "listOfDataTypes": [
+                        "listOfActions": [
                             {
                                 "status": False,
                                 "displayName": "Numeric",
@@ -1620,7 +1620,7 @@ dummy_meta_data = {
                         "status": False,
                         "actionName": "data_type",
                         "displayName": "Change Datatype",
-                        "listOfDataTypes": [
+                        "listOfActions": [
                             {
                                 "status": False,
                                 "displayName": "Numeric",
@@ -1660,7 +1660,7 @@ dummy_meta_data = {
                         "status": False,
                         "actionName": "data_type",
                         "displayName": "Change Datatype",
-                        "listOfDataTypes": [
+                        "listOfActions": [
                             {
                                 "status": False,
                                 "displayName": "Numeric",
@@ -1700,7 +1700,7 @@ dummy_meta_data = {
                         "status": False,
                         "actionName": "data_type",
                         "displayName": "Change Datatype",
-                        "listOfDataTypes": [
+                        "listOfActions": [
                             {
                                 "status": False,
                                 "displayName": "Numeric",
@@ -1740,7 +1740,7 @@ dummy_meta_data = {
                         "status": False,
                         "actionName": "data_type",
                         "displayName": "Change Datatype",
-                        "listOfDataTypes": [
+                        "listOfActions": [
                             {
                                 "status": False,
                                 "displayName": "Numeric",
@@ -1780,7 +1780,7 @@ dummy_meta_data = {
                         "status": False,
                         "actionName": "data_type",
                         "displayName": "Change Datatype",
-                        "listOfDataTypes": [
+                        "listOfActions": [
                             {
                                 "status": False,
                                 "displayName": "Numeric",
@@ -1820,7 +1820,7 @@ dummy_meta_data = {
                         "status": False,
                         "actionName": "data_type",
                         "displayName": "Change Datatype",
-                        "listOfDataTypes": [
+                        "listOfActions": [
                             {
                                 "status": False,
                                 "displayName": "Numeric",
