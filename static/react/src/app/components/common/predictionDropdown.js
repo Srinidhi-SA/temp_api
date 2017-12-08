@@ -63,7 +63,7 @@ export class PredictionDropDown extends React.Component {
            <div className="row">
            <div className="col-md-10">
            <div className="form-group">
-           <label class="col-md-3 col-md-offset-1 control-label" for="rulesFor">{this.props.label} :</label>
+           <label class="control-label pull-left xs-pr-10" for="rulesFor">{this.props.label} :</label>
 		    <select id="prediction_dropdown" name="selectbasic" class="form-control" onChange={this.checkSelection.bind(this)}>
 				{optionsTemp}
 				</select>

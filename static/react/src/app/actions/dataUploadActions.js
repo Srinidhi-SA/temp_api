@@ -11,27 +11,41 @@ function getHeader(token) {
   return {'Authorization': token, 'Content-Type': 'application/json'};
 }
 export function dataUpload() {
+    return (dispatch) => {
+    if (store.getState().dataSource.selectedDataSrcType == "fileUpload") {
+        if(store.getState().dataSource.fileUpload.name){
+            $("#fileErrorMsg").addClass("visibilityHidden");
+            dispatch(uploadFileOrDB());
+        }else{
+            $("#fileErrorMsg").removeClass("visibilityHidden");
+        }
+    }
+    else{
+        dispatch(uploadFileOrDB());
+    }
+    }
 
-  return (dispatch) => {
-    dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
-    dispatch(dataUploadLoaderMsg(DULOADERPERMSG));
-    dispatch(close());
-    dispatch(openDULoaderPopup());
-    return triggerDataUpload(getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
-
-      // dispatch(dataUploadLoaderValue(json.message[json.message.length-1].globalCompletionPercentage));
-      // dispatch()
-      if (response.status === 200) {
-        console.log(json.slug)
-        dispatch(updateDatasetName(json.slug))
-        dispatch(dataUploadSuccess(json, dispatch))
-      } else {
-        dispatch(dataUploadError(json))
-      }
-    });
-  }
 }
+function uploadFileOrDB(){
+    return (dispatch) => {
+        dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
+        dispatch(dataUploadLoaderMsg(DULOADERPERMSG));
+        dispatch(close());
+        dispatch(openDULoaderPopup());
+        return triggerDataUpload(getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
 
+          // dispatch(dataUploadLoaderValue(json.message[json.message.length-1].globalCompletionPercentage));
+          // dispatch()
+          if (response.status === 200) {
+            console.log(json.slug)
+            dispatch(updateDatasetName(json.slug))
+            dispatch(dataUploadSuccess(json, dispatch))
+          } else {
+            dispatch(dataUploadError(json))
+          }
+        });
+      }
+}
 function triggerDataUpload(token) {
   if (store.getState().dataSource.selectedDataSrcType == "fileUpload") {
     var data = new FormData();

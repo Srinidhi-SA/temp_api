@@ -5,6 +5,8 @@ import store from "../../store";
 import Dialog from 'react-bootstrap-dialog';
 import {handleColumnClick,updateColSlug} from "../../actions/dataActions";
 import {DATA_TYPE,isEmpty} from "../../helpers/helper";
+import { Scrollbars } from 'react-custom-scrollbars';
+
 @connect((store) => {
 	return {
 		login_response: store.login.login_response,
@@ -35,12 +37,13 @@ export class DataValidation extends React.Component {
    renderDropdownList(colSlug,colName,colData){
        if(colData){
            let list = colData.map((actionNames,index)=>{
-               if(actionNames.actionName == DATA_TYPE){
+               if(actionNames.hasOwnProperty("listOfActions")){
                  return (
                 <li key={index}><span>{actionNames.displayName}</span>
                 <ul>{actionNames.listOfActions.map((subItem,subIndex)=>{
-                    var id=colSlug+subIndex;
-                      return(<li key={id} className="cursor"><div key={id} className="ma-radio inlinev"><input id={id} type="radio"   onClick={this.handleChangeTypeEvent.bind(this,actionNames.actionName,colSlug,colName,subItem.name)} checked={subItem.status} name={colSlug}  value={subItem.name} /><label htmlFor={id}>{subItem.displayName}</label></div></li>)
+                    let randomNum = Math.random().toString(36).substr(2,8);
+                    var id=colSlug+subIndex+randomNum;
+                      return(<li key={id} className="cursor"><div key={id} className="ma-radio radio-pt-2 inlinev"><input id={id} type="radio"   onClick={this.handleChangeTypeEvent.bind(this,actionNames.actionName,colSlug,colName,subItem.name)} checked={subItem.status} name={id}  value={subItem.name} /><label  className="text-nowrap" htmlFor={id}>{subItem.displayName}</label></div></li>)
                     })}</ul>
                  </li>)
                }
@@ -64,11 +67,13 @@ export class DataValidation extends React.Component {
 					 });
 			 }
 			return (
-
+			      
 					<ul  className="dropdown-menu scrollable-menu">
+					  <Scrollbars style={{ height: 200 }} renderTrackHorizontal={props => <div {...props} className="track-horizontal" style={{display:"none"}}/>}
+                    className="thumb-horizontal" >
 					  <Dialog ref="dialog"/>
-					{settingsTemplate}</ul>
-
+					{settingsTemplate}</Scrollbars></ul>
+					
 			)
 		}
 

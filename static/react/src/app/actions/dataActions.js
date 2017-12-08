@@ -6,7 +6,7 @@ import {dataPreviewInterval,dataUploadLoaderValue,clearLoadingMsg} from "./dataU
 import {closeAppsLoaderValue} from "./appActions";
 import Dialog from 'react-bootstrap-dialog'
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
-import {isEmpty,RENAME,DELETE,REPLACE,DATA_TYPE,REMOVE,CURRENTVALUE,NEWVALUE} from "../helpers/helper";
+import {isEmpty,RENAME,DELETE,REPLACE,DATA_TYPE,REMOVE,CURRENTVALUE,NEWVALUE,SET_VARIABLE} from "../helpers/helper";
 let refDialogBox = "";
 
 function getHeader(token){
@@ -990,13 +990,12 @@ export function handleColumnClick(dialog,actionName,colSlug,colName,subActionNam
 			renameMetaDataColumn(dialog,colName,colSlug,dispatch,actionName)
 		}else if(actionName == DELETE){
 			deleteMetaDataColumn(dialog,colName,colSlug,dispatch,actionName,colStatus)
-		}else if(actionName == DATA_TYPE){
-			//dispatch(updateVLPopup(true));
-			updateColumnStatus(dispatch,colSlug,colName,actionName,subActionName);
 		}else if(actionName == REPLACE){
 			dispatch(updateVLPopup(true));
 			dispatch(addComponents(colSlug));
 			//updateColumnStatus(dispatch,colSlug,colName,actionName,subActionName);
+		}else {
+		    updateColumnStatus(dispatch,colSlug,colName,actionName,subActionName);
 		}
 	}
 }
@@ -1022,6 +1021,7 @@ export function updateVLPopup(flag){
 }
 export function updateColumnStatus(dispatch,colSlug,colName,actionName,subActionName){
 	dispatch(showLoading());
+	var isSubsetting = false;
 	var transformSettings = store.getState().datasets.dataTransformSettings.slice();
 	var slug = store.getState().datasets.selectedDataSet;
 	for(var i =0;i<transformSettings.length;i++){
@@ -1041,31 +1041,34 @@ export function updateColumnStatus(dispatch,colSlug,colName,actionName,subAction
 						}
 						else transformSettings[i].columnSetting[j].status = true;
 						break;
-					}else if(actionName == DATA_TYPE){
-						transformSettings[i].columnSetting[j].status=true;
-						for(var k=0;k<transformSettings[i].columnSetting[j].listOfDataTypes.length;k++){
-							if(transformSettings[i].columnSetting[j].listOfDataTypes[k].name == subActionName){
-								transformSettings[i].columnSetting[j].listOfDataTypes[k].status = true;
-							}else{
-								transformSettings[i].columnSetting[j].listOfDataTypes[k].status = false;
-							}
-						}
-						break;
-					}
-					else if(actionName == REPLACE){
+					}else if(actionName == REPLACE){
 						transformSettings[i].columnSetting[j].status=true;
 						var removeValues =  store.getState().datasets.dataSetColumnRemoveValues.slice();
 						var replaceValues =  store.getState().datasets.dataSetColumnReplaceValues.slice();
 						replaceValues = replaceValues.concat(removeValues);
 						transformSettings[i].columnSetting[j].replacementValues = replaceValues;
-					}
+					}else{
+                        //transformSettings[i].columnSetting[j].status=true;
+                        for(var k=0;k<transformSettings[i].columnSetting[j].listOfActions.length;k++){
+                            if(transformSettings[i].columnSetting[j].listOfActions[k].name == subActionName){
+                                transformSettings[i].columnSetting[j].listOfActions[k].status = true;
+                            }else{
+                                transformSettings[i].columnSetting[j].listOfActions[k].status = false;
+                            }
+                        }
+                        break;
+                    }
+					
 
 				}
 			}//end of for columnsettings
 			break;
 		}
 	}
-	dispatch(handleColumnActions(transformSettings,slug))
+	if(actionName != SET_VARIABLE){
+	    isSubsetting = true;
+	}
+	dispatch(handleColumnActions(transformSettings,slug,isSubsetting))
 	dispatch(updateVLPopup(false));
 	//dispatch(updateTransformSettings(transformSettings));
 
@@ -1089,11 +1092,11 @@ export function updateColSlug(slug){
 	}
 }
 
-export function handleColumnActions(transformSettings,slug) {
+export function handleColumnActions(transformSettings,slug,isSubsetting) {
 	return (dispatch) => {
 		return fetchModifiedMetaData(transformSettings,slug).then(([response, json]) =>{
 			if(response.status === 200){
-				dispatch(fetchDataValidationSuccess(json));
+				dispatch(fetchDataValidationSuccess(json,isSubsetting));
 				dispatch(hideLoading());
 			}
 			else{
@@ -1116,7 +1119,7 @@ function fetchModifiedMetaData(transformSettings,slug) {
 	}).then( response => Promise.all([response, response.json()]));
 }
 
-export function fetchDataValidationSuccess(dataPreview){
+export function fetchDataValidationSuccess(dataPreview,isSubsetting){
 	return{
 		type: "DATA_VALIDATION_PREVIEW",
 		dataPreview
