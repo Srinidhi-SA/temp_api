@@ -219,7 +219,7 @@ body {
 	font-size: 13px;
 	line-height: 22px;/*1.42857143;*/
 	/*color: #555; mAdvisor Old */
-	color:#424242
+	color:#333333
 }
 button, input, select, textarea {
 	font-family: inherit;
@@ -1974,11 +1974,12 @@ select[multiple].input-group-sm>.form-control, select[multiple].input-group-sm>.
 	background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
 	background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent)
 }
+/*
 .box-shadow {
 -webkit-box-shadow: 0 2px 2px rgba(0,0,0,0.05);
 -moz-box-shadow:    0 2px 2px rgba(0,0,0,0.05);
 box-shadow:         0 2px 2px rgba(0,0,0,0.05);
-}
+}*/
 @media (min-width:768px) {
 .navbar-nav {
 	float: left;
@@ -2115,7 +2116,7 @@ box-shadow:         0 2px 2px rgba(0,0,0,0.05);
 }
 .navbar-default {
 	background-color: #FFF;
-	border-color: #e4e4e4
+	border-color: #dae6e5
 }
 .navbar-default .navbar-brand {
 	color: #777
@@ -4448,7 +4449,7 @@ html {
 }
 body {
 	padding: 0;
-	background-color: #f2f4f8;/*height: 100% old bg-color: #ededed -- f0f0f0; #f7f7f7*/
+	background-color: #eff4f4;/* f2f4f8height: 100% old bg-color: #ededed -- f0f0f0; #f7f7f7*/
 }
 a:focus, a:hover {
 	text-decoration: none;
@@ -6279,7 +6280,7 @@ body.open-right-sidebar .ma-right-sidebar {
 }
 .chat .chat-window .title .user img {
 	height: 35px;
-	width: 35x;
+	width: 35px;
 	border-radius: 50%;
 	float: right;
 	margin-left: 10px
@@ -13702,7 +13703,7 @@ div.dataTables_wrapper div.dataTables_length label select {
     height: 60px;
 }
 .newCardTitle a{
-    color: #0b0b0b;
+    color: #333333;
     display: block;
     height: 52px;
     /* border: 1px solid; */
@@ -13719,7 +13720,7 @@ div.dataTables_wrapper div.dataTables_length label select {
 .newCardStyle, .app-block{
 	background:#FFF;
 	padding:0px;
-	border: 1px solid #eaeef1;
+	border: 1px solid #dae6e5; /* 1px solid #eaeef1*/
 	/*box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);*/
 	-webkit-box-shadow: 0 2px 2px rgba(0,0,0,0.05);
 	-moz-box-shadow:    0 2px 2px rgba(0,0,0,0.05);
@@ -13737,18 +13738,18 @@ ul.app_labels li:first-child { margin: 0; padding: 7px 5px }
 .app-block .card-footer { padding:0; }
 .app-block  .card-footer div.card-deatils { width: 46px; }
 
-.app-block  a.app-link { min-height: 130px; display: block; border-bottom: 1px solid #eaeef1; color:#333; }
-.app_labels li a { border:1px solid #eaeef1; /*width: 100px; */ display: inline-block; line-height: 1.8em; color: #333; padding-left: 5px;padding-right:5px }
+.app-block  a.app-link { min-height: 130px; display: block; border-bottom: 1px solid #dae6e5; color:#333; }
+.app_labels li a { /*border:1px solid #dae6e5; width: 100px; */ display: inline-block; line-height: 1.91em; color: #333; padding-left: 5px;padding-right:5px }
 .app_labels a i {
-    color: #becfce;
+    color: #02988c;
 }
 .rep_block .title a, .app-block  a.app-link {transition: color 0.3s linear;
    -webkit-transition: color 0.3s linear;
    -moz-transition: color 0.3s linear;}
-.app-block  a.app-link:hover, .app-block  a.app-link:focus, .app_labels li a:hover, .app_labels li a:focus, .rep_block .title a:hover { color: #00998c; background:#ffffff}
+.app-block  a.app-link:hover, .app-block  a.app-link:focus, .app_labels li a:hover, .app_labels li a:focus, .rep_block .title a:hover { color: #00998c;}
 
 .newCardStyle:hover, .app-block:hover { box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22); }
-
+.newCardStyle:hover .card-footer { background:#c6e8e5; }
 .app-block h4, h4.title a {
     font-weight: bold;
 }
@@ -13843,7 +13844,7 @@ ul.app_labels li:first-child { margin: 0; padding: 7px 5px }
 .card-center-tile {
     height: 78px;
     padding: 0 15px;
-    border-bottom: 1px solid #eaeef1/* #ececec;
+	border-bottom:1px solid #dae6e5; /* eaeef1 #ececec;      / * line-height: 66px; * /
     / * line-height: 66px; */
 }
 .pe-2x {
@@ -13854,7 +13855,7 @@ ul.app_labels li:first-child { margin: 0; padding: 7px 5px }
 }
 .card-footer {
     height: 40px;
-    background-color: #f3f4f6;
+    background-color: #e2f3f2; /*#ecf4f4 #f3f4f6;*/
     padding: 0 0 0 15px;
     /* color: #fff; */
 }
@@ -13875,7 +13876,8 @@ ul.app_labels li:first-child { margin: 0; padding: 7px 5px }
 
 
 .card-footer div a:focus, .card-footer div a:hover, .card-footer div a:active, .card-deatils.open a.more_button{
-background:#e1eaea; color:#7dac02
+background: #f3fffd;
+    color: #02988c;
 }
 .card-selected {
 	/*background: #f1f1f1;*/
@@ -13963,7 +13965,6 @@ box-shadow: 0px 6px 9px 0px rgba(240,255,246,1);  }
 }
 .full-width-tabs > ul.nav.nav-tabs > li > a { text-align: center; padding: 8px; text-transform: capitalize; display: block;/* border-top:2px solid #00bfb2; border-left:2px solid #00bfb2;  color:#FFFFFF; */text-transform:uppercase}
 
-.panel-mAd .nav-tabs { background;none; }
 .full-width-tabs > ul.nav.nav-tabs > li.active a, .full-width-tabs > ul.nav.nav-tabs > li > a.active {
     color: #00998c;
     border-bottom: 2px solid #00998c;
@@ -14260,7 +14261,7 @@ a.tabs-control.right span { right: 5px; }
     vertical-align: middle;
     display: table-cell; }
 /**CSS FOR ICON WITH NO BACKGROUND COLOR**/
-130px
+
 /** Upload Data Styles ***/
 #holder { border: 1px dashed #ccc;
     width: 300px;

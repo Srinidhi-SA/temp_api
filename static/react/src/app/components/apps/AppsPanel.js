@@ -187,14 +187,28 @@ export class AppsPanel extends React.Component {
                                 <input type="text" class="form-control" />
                               </li> */}
                 <li>
-                <label><input type="checkbox" /> Finance</label>
-                </li>
+				<div className="ma-checkbox inline">
+				<input type="checkbox" id="chk_mea0" name="0" class="" value="Finance" />
+				<label for="chk_mea0" class="radioLabels">Finance</label>
+				</div>				
+				
+				</li>
+				<li>
+				<div className="ma-checkbox inline"><input type="checkbox" className="" />
+				<label>Marketing</label>
+				</div>
+				</li>
+				<li>
+				<div className="ma-checkbox inline"><input type="checkbox" className="" />
+				<label>Sales</label>
+				</div>
+				</li>
                 <li>
-                <a href="#"><i class="fa fa-sort-numeric-asc" aria-hidden="true"></i> Date Ascending</a>
-                </li>
-                <li>
-                <a href="#"><i class="fa fa-sort-numeric-desc" aria-hidden="true"></i> Date Descending</a>
-                </li>
+				<div className="ma-checkbox inline"><input type="checkbox" className="" />
+				<label>Operations</label>
+				</div>
+				</li>
+                 
                 </ul>
                 </div>
                 </div> 
