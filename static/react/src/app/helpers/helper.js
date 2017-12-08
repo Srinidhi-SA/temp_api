@@ -111,6 +111,7 @@ const MINROWINDATASET = 10;
 const APPSPERPAGE = 9;
 const POPUPDECISIONTREETABLE = "popupDecisionTreeTable";
 const MAXTEXTLENGTH = 100;
+const SET_VARIABLE = "set_variable"
 
 
 export function generateHeaders(table) {
@@ -399,7 +400,8 @@ export{
   MINROWINDATASET,
   APPSPERPAGE,
   POPUPDECISIONTREETABLE,
-  MAXTEXTLENGTH
+  MAXTEXTLENGTH,
+  SET_VARIABLE
 	}
 export function capitalizeArray(array){
   let a =[]
@@ -418,14 +420,17 @@ export function predictionLabelClick(){
 }
 
 export function renderC3ChartInfo(info){
-    var listOfData = "";
-    info.map((item,index)=>{
-        listOfData += "<p>"+item+"</p>";
-    });
-    bootbox.dialog({title: "Statistical Info",
-        size: 'small',
-        closeButton: true,
-        message: "<div>"+listOfData+"</div>"})
+    if(!isEmpty(info)){
+     
+        var listOfData = "";
+        info.map((item,index)=>{
+            listOfData += "<p>"+item+"</p>";
+        });
+        bootbox.dialog({title: "Statistical Info",
+            size: 'small',
+            closeButton: true,
+            message: "<div>"+listOfData+"</div>"})
+    }
     
 }
 

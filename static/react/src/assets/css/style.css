@@ -1,4 +1,4 @@
-8@import 'font-awesome.min.css';
+@import 'font-awesome.min.css';
 @import 'pe-icon-7-stroke.css';
 @import 'helper.css';
 @import 'slick.min.css';
@@ -14633,8 +14633,8 @@ a.disabled { color:#ccc !important; }
 }
 .slider.slider-horizontal { width: 94%; }
 .scrollable-menu {
-    height: auto;
-    max-height: 250px;
+   /* height: auto;
+    max-height: 250px;*/
     overflow-x: hidden;
 	padding:10px 0px 0px 10px;
 }
