@@ -439,7 +439,7 @@ JOBSERVER_STATUS = {
     'KILLED': 'FAILED'
 }
 
-UI_VERSION = "v2.1_14"
+UI_VERSION = "v2.1_16"
 
 
 
@@ -721,6 +721,7 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND = {
 TRANSFORMATION_SETTINGS_CONSTANT = {
     "columnSetting":
         [
+            {"actionName": "unique_identifier", "displayName": "Unique Identifier", "status": False},
             {"actionName":"delete","displayName":"Delete Column","status":False},
             {"actionName":"rename","displayName":"Rename Column","status":False,"newName":None},
             {"actionName":"replace","displayName":"Replace Values","status":False,"replacementValues":[],
@@ -734,7 +735,7 @@ TRANSFORMATION_SETTINGS_CONSTANT = {
                 "actionName":"data_type",
                 "displayName":"Change Datatype",
                 "status":False,
-                "listOfDataTypes":[
+                "listOfActions":[
                     {"name":"numeric","displayName":"Numeric","status":False},
                     {"name":"text","displayName":"Text","status":False},
                 ]
@@ -743,7 +744,7 @@ TRANSFORMATION_SETTINGS_CONSTANT = {
                 "actionName": "set_variable",
                 "displayName": "Set Variable as",
                 "status": False,
-                    "listOfDataTypes": [
+                    "listOfActions": [
                             {
                                 "status": False,
                                 "displayName": "General",
@@ -775,7 +776,7 @@ TRANSFORMATION_SETTINGS_CONSTANT = {
                         "status": False,
                         "actionName": "set_polarity",
                         "displayName": "Set Polarity as",
-                        "listOfDataTypes": [
+                        "listOfActions": [
                             {
                                 "status": False,
                                 "displayName": "Positive",
@@ -788,6 +789,7 @@ TRANSFORMATION_SETTINGS_CONSTANT = {
                             }
                         ]
                     }
+
         ],
     "new_columns":
         [
