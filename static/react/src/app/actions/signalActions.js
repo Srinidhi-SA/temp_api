@@ -1,6 +1,7 @@
 import React from "react";
 import {API} from "../helpers/env";
-import {CSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,PERPAGE,SUCCESS,FAILED,getUserDetailsOrRestart} from "../helpers/helper";
+import {CSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,PERPAGE,SUCCESS,FAILED,getUserDetailsOrRestart,DIMENSION,
+    MEASURE,SET_VARIABLE} from "../helpers/helper";
 import {connect} from "react-redux";
 import store from "../store";
 import {openCsLoaderModal,closeCsLoaderModal,updateCsLoaderValue,updateCsLoaderMsg} from "./createSignalActions";
@@ -23,7 +24,7 @@ export function checkIfDateTimeIsSelected(){
     var totalAnalysisList = store.getState().datasets.dataSetAnalysisList;
     var analysisList = [];
     var trendIsChecked = false;
-    if(store.getState().signals.getVarType == "measure"){
+    if(store.getState().signals.getVarType == MEASURE){
         analysisList = totalAnalysisList.measures.analysis;
     }else{
         analysisList = totalAnalysisList.dimensions.analysis;
@@ -240,12 +241,50 @@ function fetchPostsError_analysis(json) {
     json
   }
 }
-export function setPossibleAnalysisList(varType,varText) {
+export function setPossibleAnalysisList(event) {
+    var selOption  = event.target.childNodes[event.target.selectedIndex];
+    var varType = selOption.value;
+    var varText = selOption.text;
+    var varSlug = selOption.getAttribute("name");
+   if(varType == MEASURE){
+       $(".treatAsCategorical").show();
+       var isVarTypeChanged = checkIfDataTypeChanges(varSlug);
+       if(isVarTypeChanged){
+           varType = DIMENSION ;
+           $(".treatAsCategorical").find('input[type=checkbox]').attr("checked",true);
+       }else{
+           $(".treatAsCategorical").find('input[type=checkbox]').attr("checked",false); 
+       }
+   }else{
+       $(".treatAsCategorical").find('input[type=checkbox]').attr("checked",false); 
+       $(".treatAsCategorical").hide();
+   }    
 	return {
 		type: "SET_POSSIBLE_LIST",
 		varType,
 		varText
 	}
+}
+function checkIfDataTypeChanges(varSlug){
+    var transformSettings = store.getState().datasets.dataTransformSettings;
+    var isVarTypeChanged = false
+    for(var i =0;i<transformSettings.length;i++){
+        if(transformSettings[i].slug == varSlug){
+            for(var j=0;j<transformSettings[i].columnSetting.length;j++){
+                if(transformSettings[i].columnSetting[j].actionName == SET_VARIABLE){
+                    for(var k=0;k<transformSettings[i].columnSetting[j].listOfActions.length;k++){
+                        if(transformSettings[i].columnSetting[j].listOfActions[k].name != "general_numeric"){
+                            if(transformSettings[i].columnSetting[j].listOfActions[k].status){
+                                isVarTypeChanged = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return isVarTypeChanged;
 }
 export function showPredictions(predictionSelected) {
 	return {

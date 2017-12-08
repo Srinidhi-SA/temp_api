@@ -1021,6 +1021,7 @@ export function updateVLPopup(flag){
 }
 export function updateColumnStatus(dispatch,colSlug,colName,actionName,subActionName){
 	dispatch(showLoading());
+	var isSubsetting = false;
 	var transformSettings = store.getState().datasets.dataTransformSettings.slice();
 	var slug = store.getState().datasets.selectedDataSet;
 	for(var i =0;i<transformSettings.length;i++){
@@ -1064,7 +1065,10 @@ export function updateColumnStatus(dispatch,colSlug,colName,actionName,subAction
 			break;
 		}
 	}
-	dispatch(handleColumnActions(transformSettings,slug))
+	if(actionName != SET_VARIABLE){
+	    isSubsetting = true;
+	}
+	dispatch(handleColumnActions(transformSettings,slug,isSubsetting))
 	dispatch(updateVLPopup(false));
 	//dispatch(updateTransformSettings(transformSettings));
 
@@ -1088,11 +1092,11 @@ export function updateColSlug(slug){
 	}
 }
 
-export function handleColumnActions(transformSettings,slug) {
+export function handleColumnActions(transformSettings,slug,isSubsetting) {
 	return (dispatch) => {
 		return fetchModifiedMetaData(transformSettings,slug).then(([response, json]) =>{
 			if(response.status === 200){
-				dispatch(fetchDataValidationSuccess(json));
+				dispatch(fetchDataValidationSuccess(json,isSubsetting));
 				dispatch(hideLoading());
 			}
 			else{
@@ -1115,7 +1119,7 @@ function fetchModifiedMetaData(transformSettings,slug) {
 	}).then( response => Promise.all([response, response.json()]));
 }
 
-export function fetchDataValidationSuccess(dataPreview){
+export function fetchDataValidationSuccess(dataPreview,isSubsetting){
 	return{
 		type: "DATA_VALIDATION_PREVIEW",
 		dataPreview

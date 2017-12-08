@@ -111,7 +111,9 @@ const MINROWINDATASET = 10;
 const APPSPERPAGE = 9;
 const POPUPDECISIONTREETABLE = "popupDecisionTreeTable";
 const MAXTEXTLENGTH = 100;
-const SET_VARIABLE = "set_variable"
+const SET_VARIABLE = "set_variable";
+const DIMENSION = "dimension";
+const MEASURE = "measure";
 
 
 export function generateHeaders(table) {
@@ -401,7 +403,9 @@ export{
   APPSPERPAGE,
   POPUPDECISIONTREETABLE,
   MAXTEXTLENGTH,
-  SET_VARIABLE
+  SET_VARIABLE,
+  DIMENSION,
+  MEASURE
 	}
 export function capitalizeArray(array){
   let a =[]

@@ -43,7 +43,7 @@ export class DataValidation extends React.Component {
                 <ul>{actionNames.listOfActions.map((subItem,subIndex)=>{
                     let randomNum = Math.random().toString(36).substr(2,8);
                     var id=colSlug+subIndex+randomNum;
-                      return(<li key={id} className="cursor"><div key={id} className="ma-radio inlinev"><input id={id} type="radio"   onClick={this.handleChangeTypeEvent.bind(this,actionNames.actionName,colSlug,colName,subItem.name)} checked={subItem.status} name={id}  value={subItem.name} /><label  className="text-nowrap" htmlFor={id}>{subItem.displayName}</label></div></li>)
+                      return(<li key={id} className="cursor"><div key={id} className="ma-radio radio-pt-2 inlinev"><input id={id} type="radio"   onClick={this.handleChangeTypeEvent.bind(this,actionNames.actionName,colSlug,colName,subItem.name)} checked={subItem.status} name={id}  value={subItem.name} /><label  className="text-nowrap" htmlFor={id}>{subItem.displayName}</label></div></li>)
                     })}</ul>
                  </li>)     
                }
@@ -69,7 +69,7 @@ export class DataValidation extends React.Component {
 			return (
 			      
 					<ul  className="dropdown-menu scrollable-menu">
-					  <Scrollbars style={{ height: 300 }} renderTrackHorizontal={props => <div {...props} className="track-horizontal" style={{display:"none"}}/>}
+					  <Scrollbars style={{ height: 200 }} renderTrackHorizontal={props => <div {...props} className="track-horizontal" style={{display:"none"}}/>}
                     className="thumb-horizontal" >
 					  <Dialog ref="dialog"/>
 					{settingsTemplate}</Scrollbars></ul>
