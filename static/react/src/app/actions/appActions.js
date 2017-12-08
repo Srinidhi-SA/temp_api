@@ -1649,8 +1649,8 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 if(response.status === 200){
                   //console.log(json)
                 dispatch(fetchAppsSuccess(json))
-                if(json.data)
-                dispatch(updateAppsFilterList(json.data[0].tag_keywords))
+                // if(json.data)
+                // dispatch(updateAppsFilterList(json.data[0].tag_keywords))
 
               }
               else{
@@ -1720,8 +1720,8 @@ export function updateAppsFilterList(filter_list){
   let appList=store.getState().apps.appsList
   //console.log(appList)
 
-  if(filter_list.length==0 && appList.data )
-  filter_list=appList.data[0].tag_keywords
+  // if(filter_list.length==0 && appList.data )
+  // filter_list=[]
   return{
     type:"UPDATE_FILTER_LIST",
     filter_list
