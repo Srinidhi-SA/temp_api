@@ -7,11 +7,12 @@ import {Modal,Button,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "r
 import store from "../../store";
 import {selectedAnalysisList,resetSelectedVariables,unselectAllPossibleAnalysis,getDataSetPreview,setDimensionSubLevels,selectAllAnalysisList,updateSelectAllAnlysis,saveAdvanceSettings,checkAllAnalysisSelected} from "../../actions/dataActions";
 import {openCreateSignalModal,closeCreateSignalModal,updateCsLoaderValue} from "../../actions/createSignalActions";
-import {createSignal,setPossibleAnalysisList,emptySignalAnalysis,advanceSettingsModal,checkIfDateTimeIsSelected} from "../../actions/signalActions";
+import {createSignal,setPossibleAnalysisList,emptySignalAnalysis,advanceSettingsModal,checkIfDateTimeIsSelected,updateCategoricalVariables} from "../../actions/signalActions";
 import {DataVariableSelection} from "../data/DataVariableSelection";
 import {CreateSignalLoader} from "../common/CreateSignalLoader";
 import {openCsLoaderModal,closeCsLoaderModal} from "../../actions/createSignalActions";
 import {AdvanceSettings} from "./AdvanceSettings";
+import {SET_VARIABLE} from "../../helpers/helper";
 
 
 var selectedVariables = {measures:[],dimensions:[],date:null};  // pass selectedVariables to config
@@ -30,6 +31,7 @@ var selectedVariables = {measures:[],dimensions:[],date:null};  // pass selected
 		selectedSignalAnalysis: store.signals.signalAnalysis,
 		getVarType: store.signals.getVarType,
 		getVarText: store.signals.getVarText,
+		selVarSlug:store.signals.selVarSlug,
 		dataSetTimeDimensions:store.datasets.dataSetTimeDimensions,
 		selectedVariablesCount: store.datasets.selectedVariablesCount,
 		dataSetAnalysisList:store.datasets.dataSetAnalysisList,
@@ -171,6 +173,9 @@ export class VariableSelection extends React.Component {
 		}
 
 	}
+	handleCategoricalChk(event){
+	    this.props.dispatch(updateCategoricalVariables(this.props.selVarSlug,this.props.getVarText,SET_VARIABLE,event));
+	}
 	renderAnalysisList(analysisList){
 		let list =  analysisList.map((metaItem,metaIndex) =>{
 			let id = "chk_analysis"+ metaIndex;
@@ -279,7 +284,7 @@ export class VariableSelection extends React.Component {
 				</div>
 				</div>
 				<div className="col-lg-4">
-				<div className="ma-checkbox inline treatAsCategorical" ><input id="idCategoricalVar" type="checkbox"/><label htmlFor="idCategoricalVar">Treat as categorical variable</label></div>
+				<div className="ma-checkbox inline treatAsCategorical" ><input id="idCategoricalVar" type="checkbox" onClick={this.handleCategoricalChk.bind(this)}/><label htmlFor="idCategoricalVar">Treat as categorical variable</label></div>
 				</div>
 				
 				{/*<!-- /.col-lg-4 -->*/}

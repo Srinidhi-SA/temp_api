@@ -1,12 +1,13 @@
 import React from "react";
 import {API} from "../helpers/env";
 import {CSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,PERPAGE,SUCCESS,FAILED,getUserDetailsOrRestart,DIMENSION,
-    MEASURE,SET_VARIABLE} from "../helpers/helper";
+    MEASURE,SET_VARIABLE,PERCENTAGE,GENERIC_NUMERIC} from "../helpers/helper";
 import {connect} from "react-redux";
 import store from "../store";
 import {openCsLoaderModal,closeCsLoaderModal,updateCsLoaderValue,updateCsLoaderMsg} from "./createSignalActions";
 import Dialog from 'react-bootstrap-dialog'
 import { showLoading, hideLoading } from 'react-redux-loading-bar'
+import {updateColumnStatus} from './dataActions';
 // var API = "http://34.196.204.54:9000";
 
 // @connect((store) => {
@@ -262,7 +263,8 @@ export function setPossibleAnalysisList(event) {
 	return {
 		type: "SET_POSSIBLE_LIST",
 		varType,
-		varText
+		varText,
+		varSlug
 	}
 }
 function checkIfDataTypeChanges(varSlug){
@@ -286,6 +288,16 @@ function checkIfDataTypeChanges(varSlug){
     }
     return isVarTypeChanged;
 }
+export function updateCategoricalVariables(colSlug,colName,actionName,evt){
+    return (dispatch) => {
+   if(evt.target.checked){
+       updateColumnStatus(dispatch,colSlug,colName,actionName,PERCENTAGE)
+   }else{
+       updateColumnStatus(dispatch,colSlug,colName,actionName,GENERIC_NUMERIC) 
+   }
+    }
+}
+
 export function showPredictions(predictionSelected) {
 	return {
 		type: "SEL_PREDICTION",
