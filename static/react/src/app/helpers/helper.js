@@ -2,6 +2,7 @@ import React from "react";
 import CircularProgressbar from 'react-circular-progressbar';
 import {Redirect} from 'react-router';
 import {handleDecisionTreeTable} from "../actions/signalActions";
+import renderHTML from 'react-render-html';
 
 export function isEmpty(obj) {
     for(var prop in obj) {
@@ -109,7 +110,10 @@ const DEFAULTANALYSISVARIABLES = "high";
 const MINROWINDATASET = 10;
 const APPSPERPAGE = 9;
 const POPUPDECISIONTREETABLE = "popupDecisionTreeTable";
-const MAXTEXTLENGTH = 80;
+const MAXTEXTLENGTH = 100;
+const SET_VARIABLE = "set_variable";
+const DIMENSION = "dimension";
+const MEASURE = "measure";
 
 
 export function generateHeaders(table) {
@@ -398,7 +402,10 @@ export{
   MINROWINDATASET,
   APPSPERPAGE,
   POPUPDECISIONTREETABLE,
-  MAXTEXTLENGTH
+  MAXTEXTLENGTH,
+  SET_VARIABLE,
+  DIMENSION,
+  MEASURE
 	}
 export function capitalizeArray(array){
   let a =[]
@@ -414,5 +421,20 @@ export function predictionLabelClick(){
     cell[i].addEventListener('click',handleDecisionTreeTable,false);
   }
    
+}
+
+export function renderC3ChartInfo(info){
+    if(!isEmpty(info)){
+     
+        var listOfData = "";
+        info.map((item,index)=>{
+            listOfData += "<p>"+item+"</p>";
+        });
+        bootbox.dialog({title: "Statistical Info",
+            size: 'small',
+            closeButton: true,
+            message: "<div>"+listOfData+"</div>"})
+    }
+    
 }
 
