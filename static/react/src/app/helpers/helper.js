@@ -20,7 +20,7 @@ export function handleSignalToggleButton(){
         $(".toggleOn").addClass("hidden")
     }else{
         $(".toggleOn").removeClass("hidden");
-        $(".toggleOff").addClass("hidden") 
+        $(".toggleOff").addClass("hidden")
     }
 }
 
@@ -116,6 +116,7 @@ const DIMENSION = "dimension";
 const MEASURE = "measure";
 const PERCENTAGE ="percentage";
 const GENERIC_NUMERIC = "generic_numeric";
+const SET_POLARITY= "set_polarity"
 
 
 export function generateHeaders(table) {
@@ -410,6 +411,7 @@ export{
   MEASURE,
   PERCENTAGE,
   GENERIC_NUMERIC,
+  SET_POLARITY
 	}
 export function capitalizeArray(array){
   let a =[]
@@ -424,12 +426,12 @@ export function predictionLabelClick(){
     for(var i=0;i<cell.length;i++){
     cell[i].addEventListener('click',handleDecisionTreeTable,false);
   }
-   
+
 }
 
 export function renderC3ChartInfo(info){
     if(!isEmpty(info)){
-     
+
         var listOfData = "";
         info.map((item,index)=>{
             listOfData += "<p>"+item+"</p>";
@@ -439,6 +441,5 @@ export function renderC3ChartInfo(info){
             closeButton: true,
             message: "<div>"+listOfData+"</div>"})
     }
-    
-}
 
+}

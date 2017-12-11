@@ -527,7 +527,8 @@ class Insight(models.Model):
             'consider_columns_type': consider_columns_type,
             'consider_columns': consider_columns,
             'date_columns': [] if data_columns is "" else [data_columns],
-            'customAnalysisDetails':config.get('customAnalysisDetails',[])
+            'customAnalysisDetails':config.get('customAnalysisDetails',[]),
+            'polarity': config.get('polarity',[])
         }
         return ret
 
@@ -583,7 +584,6 @@ class Insight(models.Model):
         result_column = [self.target_column]
 
         ret = {
-            'polarity': ['positive'],
             'result_column': result_column,
             'analysis_type': analysis_type,
             'date_format': None,
