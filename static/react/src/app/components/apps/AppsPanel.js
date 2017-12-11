@@ -180,30 +180,30 @@ export class AppsPanel extends React.Component {
                 </li>
                 </ul>
                 </div>
-                <div class="btn-group">
+                <div className="btn-group">
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter fa-lg"></i> <span class="caret"></span></button>
                 <ul role="menu" class="dropdown-menu dropdown-menu-right">
                 {/* <li>
                                 <input type="text" class="form-control" />
                               </li> */}
-                <li>
+                <li className="xs-pl-10">
 				<div className="ma-checkbox inline">
 				<input type="checkbox" id="chk_mea0" name="0" class="" value="Finance" />
 				<label for="chk_mea0" class="radioLabels">Finance</label>
 				</div>				
 				
 				</li>
-				<li>
+				<li className="xs-pl-10">
 				<div className="ma-checkbox inline"><input type="checkbox" className="" />
 				<label>Marketing</label>
 				</div>
 				</li>
-				<li>
+				<li className="xs-pl-10">
 				<div className="ma-checkbox inline"><input type="checkbox" className="" />
 				<label>Sales</label>
 				</div>
 				</li>
-                <li>
+                <li className="xs-pl-10">
 				<div className="ma-checkbox inline"><input type="checkbox" className="" />
 				<label>Operations</label>
 				</div>
