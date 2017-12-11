@@ -7,7 +7,7 @@ import {Modal,Button,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "r
 import store from "../../store";
 import {selectedAnalysisList,resetSelectedVariables,unselectAllPossibleAnalysis,getDataSetPreview,setDimensionSubLevels,selectAllAnalysisList,updateSelectAllAnlysis,saveAdvanceSettings,checkAllAnalysisSelected} from "../../actions/dataActions";
 import {openCreateSignalModal,closeCreateSignalModal,updateCsLoaderValue} from "../../actions/createSignalActions";
-import {createSignal,setPossibleAnalysisList,emptySignalAnalysis,advanceSettingsModal,checkIfDateTimeIsSelected,updateCategoricalVariables} from "../../actions/signalActions";
+import {createSignal,setPossibleAnalysisList,emptySignalAnalysis,advanceSettingsModal,checkIfDateTimeIsSelected,updateCategoricalVariables,createcustomAnalysisDetails} from "../../actions/signalActions";
 import {DataVariableSelection} from "../data/DataVariableSelection";
 import {CreateSignalLoader} from "../common/CreateSignalLoader";
 import {openCsLoaderModal,closeCsLoaderModal} from "../../actions/createSignalActions";
@@ -56,10 +56,8 @@ export class VariableSelection extends React.Component {
 		this.signalFlag =true;
 		this.possibleTrend = null;
 		this.prevSelectedVar = null;
-
-
-		props.dispatch(emptySignalAnalysis());
-
+		this.props.dispatch(emptySignalAnalysis());
+		
 
 	}
 
@@ -88,14 +86,16 @@ export class VariableSelection extends React.Component {
 			console.log(this.props);
 			this.signalFlag = false;
 			this.props.dispatch(updateCsLoaderValue(3))
-			this.props.dispatch(openCsLoaderModal())
+			this.props.dispatch(openCsLoaderModal());
+			let customDetails = createcustomAnalysisDetails();
 			let analysisList =[],config={}, postData={};
 			config['possibleAnalysis'] = this.props.selectedAnalysis;
 			config['measures'] =this.props.selectedMeasures;
 			config['dimension'] =this.props.selectedDimensions;
 			config['timeDimension'] =this.props.selectedTimeDimensions;
+			config['customAnalysisDetails'] = customDetails;
 			postData["name"]=$("#createSname").val();
-			postData["type"]=$('#signalVariableList option:selected').val();
+			postData["type"]=this.props.getVarType;
 			postData["target_column"]=$('#signalVariableList option:selected').text();
 			postData["config"]=config;
 			postData["dataset"]=this.props.dataPreview.slug;
