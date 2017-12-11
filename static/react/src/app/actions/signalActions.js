@@ -298,6 +298,28 @@ export function updateCategoricalVariables(colSlug,colName,actionName,evt){
     }
 }
 
+export function createcustomAnalysisDetails(){
+    var transformSettings = store.getState().datasets.dataTransformSettings;
+    var customAnalysisDetails = []
+    for(var i =0;i<transformSettings.length;i++){
+    if(transformSettings[i].slug == store.getState().signals.selVarSlug){
+        for(var j=0;j<transformSettings[i].columnSetting.length;j++){
+            if(transformSettings[i].columnSetting[j].actionName == SET_VARIABLE){
+                for(var k=0;k<transformSettings[i].columnSetting[j].listOfActions.length;k++){
+                    if(transformSettings[i].columnSetting[j].listOfActions[k].name != "general_numeric"){
+                        if(transformSettings[i].columnSetting[j].listOfActions[k].status){
+                            customAnalysisDetails.push({ "colName":store.getState().signals.getVarText,
+                                "colSlug":store.getState().signals.selVarSlug,
+                                "treatAs":transformSettings[i].columnSetting[j].listOfActions[k].name})  
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+    return customAnalysisDetails;
+}
 export function showPredictions(predictionSelected) {
 	return {
 		type: "SEL_PREDICTION",
