@@ -304,14 +304,17 @@ export function createcustomAnalysisDetails(){
     var polarity=[]
     var columnSettings = {}
     for(var i =0;i<transformSettings.length;i++){
-    if(transformSettings[i].slug == store.getState().signals.selVarSlug){
+  //  if(transformSettings[i].slug == store.getState().signals.selVarSlug){
         for(var j=0;j<transformSettings[i].columnSetting.length;j++){
             if(transformSettings[i].columnSetting[j].actionName == SET_VARIABLE){
                 for(var k=0;k<transformSettings[i].columnSetting[j].listOfActions.length;k++){
                     if(transformSettings[i].columnSetting[j].listOfActions[k].name != "general_numeric"){
                         if(transformSettings[i].columnSetting[j].listOfActions[k].status){
-                            customAnalysisDetails.push({ "colName":store.getState().signals.getVarText,
-                                "colSlug":store.getState().signals.selVarSlug,
+                            // customAnalysisDetails.push({ "colName":store.getState().signals.getVarText,
+                            //     "colSlug":store.getState().signals.selVarSlug,
+                            //     "treatAs":transformSettings[i].columnSetting[j].listOfActions[k].name})
+                            customAnalysisDetails.push({ "colName":transformSettings[i].name,
+                                "colSlug":transformSettings[i].slug,
                                 "treatAs":transformSettings[i].columnSetting[j].listOfActions[k].name})
                         }
                     }
@@ -319,15 +322,15 @@ export function createcustomAnalysisDetails(){
             }else if (transformSettings[i].columnSetting[j].actionName == SET_POLARITY) {
               for(var k=0;k<transformSettings[i].columnSetting[j].listOfActions.length;k++){
                       if(transformSettings[i].columnSetting[j].listOfActions[k].status){
-                          polarity.push({ "colName":store.getState().signals.getVarText,
-                              "colSlug":store.getState().signals.selVarSlug,
+                          polarity.push({  "colName":transformSettings[i].name,
+                              "colSlug":transformSettings[i].slug,
                               "polarity":transformSettings[i].columnSetting[j].listOfActions[k].name})
                       }
 
               }
             }
         }
-    }
+    //}
 }
     return columnSettings={"customAnalysisDetails":customAnalysisDetails,
                             "polarity":polarity};
