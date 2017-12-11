@@ -527,6 +527,7 @@ class Insight(models.Model):
             'consider_columns_type': consider_columns_type,
             'consider_columns': consider_columns,
             'date_columns': [] if data_columns is "" else [data_columns],
+            'customAnalysisDetails':config.get('customAnalysisDetails',[])
         }
         return ret
 
