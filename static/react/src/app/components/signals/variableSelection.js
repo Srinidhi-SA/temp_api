@@ -57,7 +57,7 @@ export class VariableSelection extends React.Component {
 		this.possibleTrend = null;
 		this.prevSelectedVar = null;
 		this.props.dispatch(emptySignalAnalysis());
-		
+
 
 	}
 
@@ -93,14 +93,14 @@ export class VariableSelection extends React.Component {
 			config['measures'] =this.props.selectedMeasures;
 			config['dimension'] =this.props.selectedDimensions;
 			config['timeDimension'] =this.props.selectedTimeDimensions;
-			config['customAnalysisDetails'] = customDetails;
+			config['customAnalysisDetails'] = customDetails["customAnalysisDetails"];
+			config['polarity']=customDetails["polarity"];
 			postData["name"]=$("#createSname").val();
 			postData["type"]=this.props.getVarType;
 			postData["target_column"]=$('#signalVariableList option:selected').text();
 			postData["config"]=config;
 			postData["dataset"]=this.props.dataPreview.slug;
 
-			// console.log(postData);
 			// po
 			if(this.props.getVarType.toLowerCase() == "measure"){
 				// postData['trend-sub'] = this.props.selectedTrendSub;
@@ -286,7 +286,7 @@ export class VariableSelection extends React.Component {
 				<div className="col-lg-4">
 				<div className="ma-checkbox inline treatAsCategorical" ><input id="idCategoricalVar" type="checkbox" onClick={this.handleCategoricalChk.bind(this)}/><label htmlFor="idCategoricalVar">Treat as categorical variable</label></div>
 				</div>
-				
+
 				{/*<!-- /.col-lg-4 -->*/}
 
 				</div>{/*<!-- /.row -->*/}
