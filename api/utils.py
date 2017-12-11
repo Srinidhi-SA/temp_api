@@ -29,7 +29,7 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
 
         print "command array", comand_array
 
-        output = subprocess.check_output(comand_array)
+        output = subprocess.run(comand_array, shell=True)
         print "output", output
 
     except Exception as e:
