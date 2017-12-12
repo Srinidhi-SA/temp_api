@@ -36,7 +36,14 @@ export class DataSourceList extends React.Component {
 		this.props.dispatch(getDataSourceList());
 	}
 	onDrop(files) {
-		this.props.dispatch(saveFileToStore(files))
+	    if(files[0].size == 0){
+	       $("#fileErrorMsg").removeClass("visibilityHidden");
+	       $("#fileErrorMsg").html("The uploaded file is empty , please upload the correct file");
+	    }
+	    else{
+	        $("#fileErrorMsg").addClass("visibilityHidden");
+	        this.props.dispatch(saveFileToStore(files))
+	    } 
 	}
 	popupMsg(){
 		bootbox.alert("Only CSV files are allowed to upload")

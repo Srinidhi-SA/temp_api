@@ -1049,14 +1049,17 @@ export function updateColumnStatus(dispatch,colSlug,colName,actionName,subAction
 						transformSettings[i].columnSetting[j].replacementValues = replaceValues;
 					}else{
                         transformSettings[i].columnSetting[j].status=true;
-                        for(var k=0;k<transformSettings[i].columnSetting[j].listOfActions.length;k++){
-                            if(transformSettings[i].columnSetting[j].listOfActions[k].name == subActionName){
-                                transformSettings[i].columnSetting[j].listOfActions[k].status = true;
-                            }else{
-                                transformSettings[i].columnSetting[j].listOfActions[k].status = false;
-                            }
-                        }
-                        break;
+                       if(transformSettings[i].columnSetting[j].hasOwnProperty("listOfActions")){
+                           for(var k=0;k<transformSettings[i].columnSetting[j].listOfActions.length;k++){
+                           if(transformSettings[i].columnSetting[j].listOfActions[k].name == subActionName){
+                               transformSettings[i].columnSetting[j].listOfActions[k].status = true;
+                           }else{
+                               transformSettings[i].columnSetting[j].listOfActions[k].status = false;
+                           }
+                       }
+                       break;
+                       }
+                     
                     }
 					
 

@@ -47,7 +47,18 @@ export class DataValidation extends React.Component {
                     })}</ul>
                  </li>)
                }
-               else return (<li onClick={this.handleClickEvent.bind(this,colSlug,colName,actionNames.status)} key={index}><a className="cursor" name={actionNames.actionName}>{actionNames.displayName}</a></li>)
+               else{
+                   if(actionNames.actionName == "unique_identifier")
+                       return(<li onClick={this.handleClickEvent.bind(this,colSlug,colName,actionNames.status)} key={index}><a className="cursor" name={actionNames.actionName}><input type="radio">{actionNames.displayName}</input></a></li>)
+              
+                       else
+                  return (<li onClick={this.handleClickEvent.bind(this,colSlug,colName,actionNames.status)} key={index}><a className="cursor" name={actionNames.actionName}>{actionNames.displayName}</a></li>)
+               
+               
+               } 
+                   
+                   
+                  
           })
           return list;
        }
