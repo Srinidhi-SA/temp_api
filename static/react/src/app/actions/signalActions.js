@@ -1,7 +1,7 @@
 import React from "react";
 import {API} from "../helpers/env";
 import {CSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,PERPAGE,SUCCESS,FAILED,getUserDetailsOrRestart,DIMENSION,
-    MEASURE,SET_VARIABLE,PERCENTAGE,GENERIC_NUMERIC} from "../helpers/helper";
+    MEASURE,SET_VARIABLE,PERCENTAGE,GENERIC_NUMERIC,SET_POLARITY} from "../helpers/helper";
 import {connect} from "react-redux";
 import store from "../store";
 import {openCsLoaderModal,closeCsLoaderModal,updateCsLoaderValue,updateCsLoaderMsg} from "./createSignalActions";
@@ -30,7 +30,7 @@ export function checkIfDateTimeIsSelected(){
     }else{
         analysisList = totalAnalysisList.dimensions.analysis;
     }
-    
+
     for(var i=0;i<analysisList.length;i++){
     if(analysisList[i].name == "trend"){
        if( analysisList[i].status){
@@ -40,7 +40,7 @@ export function checkIfDateTimeIsSelected(){
     }
 }
    return  trendIsChecked;
-    
+
 }
 
 //x-www-form-urlencoded'
@@ -56,9 +56,9 @@ export function createSignal(metaData) {
               dispatch(closeCsLoaderModal())
              dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
            }
-         }) 
+         })
      }
- 
+
   }
 
 function fetchCreateSignal(metaData) {
@@ -114,7 +114,7 @@ function fetchCreateSignalError(json) {
 }
 
 export function getList(token,pageNo) {
-    
+
     return (dispatch) => {
     return fetchPosts(token,pageNo).then(([response, json]) =>{
         if(response.status === 200){
@@ -254,12 +254,12 @@ export function setPossibleAnalysisList(event) {
            varType = DIMENSION ;
            $(".treatAsCategorical").find('input[type=checkbox]').attr("checked",true);
        }else{
-           $(".treatAsCategorical").find('input[type=checkbox]').attr("checked",false); 
+           $(".treatAsCategorical").find('input[type=checkbox]').attr("checked",false);
        }
    }else{
-       $(".treatAsCategorical").find('input[type=checkbox]').attr("checked",false); 
+       $(".treatAsCategorical").find('input[type=checkbox]').attr("checked",false);
        $(".treatAsCategorical").hide();
-   }    
+   }
 	return {
 		type: "SET_POSSIBLE_LIST",
 		varType,
@@ -290,35 +290,50 @@ function checkIfDataTypeChanges(varSlug){
 }
 export function updateCategoricalVariables(colSlug,colName,actionName,evt){
     return (dispatch) => {
-        if(evt.target.checked){
-            updateColumnStatus(dispatch,colSlug,colName,actionName,PERCENTAGE)
-        }else{
-            updateColumnStatus(dispatch,colSlug,colName,actionName,GENERIC_NUMERIC) 
-        }
+   if(evt.target.checked){
+       updateColumnStatus(dispatch,colSlug,colName,actionName,PERCENTAGE)
+   }else{
+       updateColumnStatus(dispatch,colSlug,colName,actionName,GENERIC_NUMERIC)
+   }
     }
 }
 
 export function createcustomAnalysisDetails(){
     var transformSettings = store.getState().datasets.dataTransformSettings;
     var customAnalysisDetails = []
+    var polarity=[]
+    var columnSettings = {}
     for(var i =0;i<transformSettings.length;i++){
-    if(transformSettings[i].slug == store.getState().signals.selVarSlug){
+  //  if(transformSettings[i].slug == store.getState().signals.selVarSlug){
         for(var j=0;j<transformSettings[i].columnSetting.length;j++){
             if(transformSettings[i].columnSetting[j].actionName == SET_VARIABLE){
                 for(var k=0;k<transformSettings[i].columnSetting[j].listOfActions.length;k++){
                     if(transformSettings[i].columnSetting[j].listOfActions[k].name != "general_numeric"){
                         if(transformSettings[i].columnSetting[j].listOfActions[k].status){
-                            customAnalysisDetails.push({ "colName":store.getState().signals.getVarText,
-                                "colSlug":store.getState().signals.selVarSlug,
-                                "treatAs":transformSettings[i].columnSetting[j].listOfActions[k].name})  
+                            // customAnalysisDetails.push({ "colName":store.getState().signals.getVarText,
+                            //     "colSlug":store.getState().signals.selVarSlug,
+                            //     "treatAs":transformSettings[i].columnSetting[j].listOfActions[k].name})
+                            customAnalysisDetails.push({ "colName":transformSettings[i].name,
+                                "colSlug":transformSettings[i].slug,
+                                "treatAs":transformSettings[i].columnSetting[j].listOfActions[k].name})
                         }
                     }
                 }
+            }else if (transformSettings[i].columnSetting[j].actionName == SET_POLARITY) {
+              for(var k=0;k<transformSettings[i].columnSetting[j].listOfActions.length;k++){
+                      if(transformSettings[i].columnSetting[j].listOfActions[k].status){
+                          polarity.push({  "colName":transformSettings[i].name,
+                              "colSlug":transformSettings[i].slug,
+                              "polarity":transformSettings[i].columnSetting[j].listOfActions[k].name})
+                      }
+
+              }
             }
         }
-    }
+    //}
 }
-    return customAnalysisDetails;
+    return columnSettings={"customAnalysisDetails":customAnalysisDetails,
+                            "polarity":polarity};
 }
 export function showPredictions(predictionSelected) {
 	return {
@@ -488,13 +503,13 @@ export function handleDecisionTreeTable(evt){
     var probability = "";
     var probabilityCond = true;
     var noDataFlag = true;
-    //triggered when probability block is clicked to select and unselect 
+    //triggered when probability block is clicked to select and unselect
     if(evt){
         selectProbabilityBlock(evt);
     }
     if($(".pred_disp_block").find(".selected").length > 0)
         probability = $(".pred_disp_block").find(".selected")[0].innerText.toLowerCase();
-    
+
     $(".popupDecisionTreeTable").find("tr").each(function(){
         if(this.rowIndex != 0 ){
             if(probability)  probabilityCond = probability.indexOf(this.cells[4].innerText.toLowerCase()) != -1;
@@ -503,29 +518,29 @@ export function handleDecisionTreeTable(evt){
                 noDataFlag = false;
             }else{
                 $(this).addClass("hidden");
-            } 
+            }
         }
     })
     if(noDataFlag){
-        $(".popupDecisionTreeTable").addClass("hidden");  
+        $(".popupDecisionTreeTable").addClass("hidden");
     }else{
-        $(".popupDecisionTreeTable").removeClass("hidden");  
+        $(".popupDecisionTreeTable").removeClass("hidden");
     }
 }
 export function selectProbabilityBlock(evt){
     $(".pred_disp_block").each(function(){
         if(!$(this).find("a").hasClass("selected")){
             if($(this).find("a")[0].innerText.toLowerCase().indexOf(evt.target.innerText.toLowerCase()) != -1){
-                $(this).find("a").addClass("selected");  
+                $(this).find("a").addClass("selected");
             }else{
-                $(this).find("a").removeClass("selected");  
-            }   
+                $(this).find("a").removeClass("selected");
+            }
         }else{
-            $(this).find("a").removeClass("selected");  
+            $(this).find("a").removeClass("selected");
         }
-        
+
     })
-    
+
 }
 export function showZoomChart(flag){
     return {
@@ -533,8 +548,3 @@ export function showZoomChart(flag){
         flag
     }
 }
-
-
-
-
-

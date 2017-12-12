@@ -208,9 +208,11 @@ class DatasetView(viewsets.ModelViewSet):
         if 'config' not in data:
             return Response({'messgae': 'No config in request body.'})
 
+
         ts = data.get('config')
         meta_data = convert_metadata_according_to_transformation_setting(instance.meta_data, transformation_setting=ts)
         serializer = DatasetSerializer(instance=instance)
         data = serializer.data
+        meta_data["advanced_settings"] = serializer.get_advanced_setting(meta_data)
         data['meta_data'] = meta_data
         return Response(data)

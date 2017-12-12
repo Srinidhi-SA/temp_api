@@ -45,13 +45,13 @@ export class DataValidation extends React.Component {
                     var id=colSlug+subIndex+randomNum;
                       return(<li key={id} className="cursor"><div key={id} className="ma-radio radio-pt-2 inlinev"><input id={id} type="radio"   onClick={this.handleChangeTypeEvent.bind(this,actionNames.actionName,colSlug,colName,subItem.name)} checked={subItem.status} name={id}  value={subItem.name} /><label  className="text-nowrap" htmlFor={id}>{subItem.displayName}</label></div></li>)
                     })}</ul>
-                 </li>)     
+                 </li>)
                }
-               else return (<li onClick={this.handleClickEvent.bind(this,colSlug,colName,actionNames.status)} key={index}><a className="cursor" name={actionNames.actionName}>{actionNames.displayName}</a></li>)  
+               else return (<li onClick={this.handleClickEvent.bind(this,colSlug,colName,actionNames.status)} key={index}><a className="cursor" name={actionNames.actionName}>{actionNames.displayName}</a></li>)
           })
-          return list;  
+          return list;
        }
-	  
+
    }
 	render() {
 		let dataPrev = store.getState().datasets.dataPreview;
@@ -63,8 +63,8 @@ export class DataValidation extends React.Component {
 				 transformationSettings.map((columnData,columnIndex) =>{
 		              if(that.props.slug == columnData.slug){
 		            	settingsTemplate = that.renderDropdownList(columnData.slug,columnData.name,columnData.columnSetting)
-		              }	 
-					 }); 
+		              }
+					 });
 			 }
 			return (
 			      

@@ -74,10 +74,10 @@ class DatasetSerializer(serializers.ModelSerializer):
                 elif "boolean" == columnType:
                     temp['columnSetting'] = columnSettingCopy[:3]
                 elif "measure" == columnType:
-                    datatype_element = columnSettingCopy[3]
-                    datatype_element['listOfDataTypes'][0]["status"] = True
-                    columnSettingCopy[4]['listOfDataTypes'][0]["status"]=True
-                    columnSettingCopy[5]['listOfDataTypes'][0]["status"]=True
+                    datatype_element = columnSettingCopy[4]
+                    datatype_element['listOfActions'][0]["status"] = True
+                    columnSettingCopy[5]['listOfActions'][0]["status"]=True
+                    columnSettingCopy[6]['listOfActions'][0]["status"]=True
 
                     temp['columnSetting'] = columnSettingCopy
                 elif "datetime" == columnType:
