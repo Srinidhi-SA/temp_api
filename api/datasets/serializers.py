@@ -9,7 +9,7 @@ from django.conf import settings
 
 from api.models import Dataset
 from helper import convert_to_json, convert_time_to_human
-from api.helper import get_jobserver_status, get_message
+from api.helper import get_job_status, get_message
 import copy
 
 class DatasetSerializer(serializers.ModelSerializer):
@@ -35,7 +35,7 @@ class DatasetSerializer(serializers.ModelSerializer):
         return instance
 
     def to_representation(self, instance):
-        print get_jobserver_status(instance)
+        print get_job_status(instance)
         ret = super(DatasetSerializer, self).to_representation(instance)
         ret = convert_to_json(ret)
         ret = convert_time_to_human(ret)

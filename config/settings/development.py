@@ -21,11 +21,17 @@ PROJECT_APP = [
 
 INSTALLED_APPS += PROJECT_APP
 
+HADOOP_MASTER = "ec2-34-205-203-38.compute-1.amazonaws.com",
 
+YARN = {
+    "host": HADOOP_MASTER,
+    "port" : 8088,
+    "timeout" : 30
+}
 HDFS = {
 
     # Give host name without http
-    'host': 'ec2-34-205-203-38.compute-1.amazonaws.com',
+    'host': HADOOP_MASTER,
     'port': '14000', #webhdfs port
     'uri': '/webhdfs/v1',
     'user.name': 'hadoop',

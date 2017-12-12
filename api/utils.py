@@ -9,7 +9,7 @@ from rest_framework import serializers
 from rest_framework.utils import humanize_datetime
 from sjsclient import client
 
-from api.helper import JobserverDetails, get_jobserver_status, get_message
+from api.helper import JobserverDetails, get_job_status, get_message
 from api.user_helper import UserSerializer
 from models import Insight, Dataset, Trainer, Score, Job, Robo, Audioset, StockDataset, CustomApps
 
@@ -151,7 +151,7 @@ def convert_time_to_human(data):
 # TODO: use dataserializer
 class InsightSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
-        print get_jobserver_status(instance)
+        print get_job_status(instance)
         ret = super(InsightSerializer, self).to_representation(instance)
         dataset = ret['dataset']
         dataset_object = Dataset.objects.get(pk=dataset)
@@ -217,7 +217,7 @@ class InsightListSerializers(serializers.ModelSerializer):
 class TrainerSerlializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
-        print get_jobserver_status(instance)
+        print get_job_status(instance)
         ret = super(TrainerSerlializer, self).to_representation(instance)
         dataset = ret['dataset']
         dataset_object = Dataset.objects.get(pk=dataset)
@@ -274,7 +274,7 @@ class TrainerListSerializer(serializers.ModelSerializer):
 class ScoreSerlializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
-        print get_jobserver_status(instance)
+        print get_job_status(instance)
         ret = super(ScoreSerlializer, self).to_representation(instance)
         trainer = ret['trainer']
         trainer_object = Trainer.objects.get(pk=trainer)
@@ -461,7 +461,7 @@ class StockDatasetSerializer(serializers.ModelSerializer):
         return instance
 
     def to_representation(self, instance):
-        print get_jobserver_status(instance)
+        print get_job_status(instance)
         ret = super(StockDatasetSerializer, self).to_representation(instance)
         ret = convert_to_json(ret)
         ret = convert_time_to_human(ret)
@@ -522,7 +522,7 @@ class AudiosetSerializer(serializers.ModelSerializer):
         return instance
 
     def to_representation(self, instance):
-        print get_jobserver_status(instance)
+        print get_job_status(instance)
         ret = super(AudiosetSerializer, self).to_representation(instance)
         ret = convert_to_json(ret)
         ret = convert_time_to_human(ret)

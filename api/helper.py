@@ -1,9 +1,9 @@
-from django.conf import settings
-
-from math import floor, log10
-import uuid
 import md5
 import time
+from math import floor, log10
+
+from django.conf import settings
+import yarn_api_client
 
 JOBSERVER = settings.JOBSERVER
 THIS_SERVER_DETAILS = settings.THIS_SERVER_DETAILS
@@ -894,9 +894,15 @@ def get_x_column_from_chart_data_without_xs(chart_data, axes):
         return []
 
 
-def get_jobserver_status(
-        instance=None
-):
+def get_job_status_from_yarn(job_obj=None):
+
+    ym = yarn_api_client.resource_manager.ResourceManager(address=settings.YARN.get("host"), port=settings.YARN.get("port"), timeout=settings.YARN.get("timeout"))
+    app_status = ym.cluster_application(job_obj.job_url)
+    job_obj["status"] = app_status.data['app']["state"]
+    job_obj.save()
+    return job_obj["status"]
+
+def get_job_status_from_jobserver(instance=None):
     if instance is None:
 
         return "no instance ---!!"
@@ -914,6 +920,12 @@ def get_jobserver_status(
         return live_status
     except Exception as err:
         return err
+
+def get_job_status(instance=None):
+    if settings.SUBMIT_JOB_THROUGH_YARN:
+        get_job_status_from_yarn(instance)
+    else:
+        get_job_status_from_jobserver(instance)
 
 
 def return_status_of_job_log(job_url):
@@ -1017,7 +1029,6 @@ def get_message(instance):
     return ac.get_using_obj(instance)
 
 
-from functools import wraps
 from django.http import JsonResponse
 
 
