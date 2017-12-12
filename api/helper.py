@@ -1093,5 +1093,3 @@ def generate_signature(json_obj):
     newhash.update(existing_key)
     value = newhash.hexdigest()
     return value
-
-

@@ -379,6 +379,17 @@ class Dataset(models.Model):
             return {}
         return config
 
+    def get_number_of_row_size(self):
+        config = self.get_config()
+        if 'metaData' in config:
+            metad = config['metaData']
+            for data in metad:
+                if 'displayName' not in data:
+                    continue
+                if data['displayName'] == 'Rows':
+                    return int(data['value'])
+        return -1
+
     def get_brief_info(self):
         list_objects = []
         brief_info = dict()
@@ -1176,6 +1187,25 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
 
     print "Job entry created in db. Now going to submit job to job server."
 
+    queue_name = None
+    if job_type in ['metadata', 'subSetting']:
+        queue_name = get_queue_to_use(job_type=job_type, data_size=instance.get_number_of_row_size())
+    elif job_type in ['master', 'model', 'score']:
+        queue_name = get_queue_to_use(job_type=job_type, data_size=instance.get_number_of_row_size())
+    elif job_type in ['robo', 'stockAdvisor']:
+        pass
+
+    '''
+    job_type = {
+            "metadata": "metaData",
+            "master": "story",
+            "model":"training",
+            "score": "prediction",
+            "robo": "robo",
+            "subSetting": "subSetting",
+            "stockAdvisor": "stockAdvisor"
+        }
+    '''
     # Submitting JobServer
     from utils import submit_job
     from smtp_email import send_alert_through_email
@@ -1185,7 +1215,8 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
             class_name=job_type,
             job_config=jobConfig,
             job_name=instance.name,
-            message_slug=get_message_slug(instance)
+            message_slug=get_message_slug(instance),
+            queue_name=queue_name
         )
         print "Job submitted."
 
@@ -1200,6 +1231,44 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
         return None
 
     return job
+
+
+def get_queue_to_use(job_type, data_size):
+
+    # deployment_environment
+    deployment_env = get_queue_deployment_env_name()
+
+    # job_type
+    job_type_naming = get_queue_job_type_name(job_type)
+
+    # size
+    data_size_name = get_queue_size_name(job_type, data_size)
+
+    return deployment_env + job_type_naming + data_size_name
+
+
+def get_queue_deployment_env_name():
+    return settings.DEPLOYMENT_ENV
+
+
+def get_queue_job_type_name(job_type):
+    return "." + get_queue_deployment_env_name() + '-' + settings.YARN_QUEUE_NAMES.get(job_type)
+
+
+def get_queue_size_name(job_type, data_size):
+
+    if job_type in ['metadata', 'subSetting', 'score', 'stockAdvisor']:
+        return ''
+
+    data_size_name = "default"
+    if data_size < settings.DATASET_ROW_SIZE_NAME.get('small'):
+        data_size_name = 'small'
+    elif data_size < settings.DATASET_ROW_SIZE_NAME.get('medium'):
+        data_size_name = 'medium'
+    else:
+        data_size_name = 'large'
+
+    return "." + data_size_name
 
 def get_message_slug(instance):
     from api.redis_access import AccessFeedbackMessage

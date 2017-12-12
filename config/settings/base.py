@@ -868,7 +868,7 @@ SIGNALS_QUEUE = "signals"
 MLMODELS_QUEUE = "mlmodels"
 APPS_QUEUE = "apps"
 
-YARN_QUEUES_MAPPING = {"metaData": METADATA_QUEUE,
+YARN_JOBTYPE_TO_QUEUE_MAPPING_= { "metaData": METADATA_QUEUE,
                        "subSetting": SIGNALS_QUEUE,
                        "story": SIGNALS_QUEUE,
                        "default": SIGNALS_QUEUE,
@@ -876,6 +876,23 @@ YARN_QUEUES_MAPPING = {"metaData": METADATA_QUEUE,
                        "prediction": APPS_QUEUE,
                        "stockAdvisor": APPS_QUEUE,
                        }
+
+DATASET_ROW_SIZE_NAME = {
+    "small": 1000,
+    "medium": 10000
+}
+
+YARN_QUEUE_NAMES = {
+    "metadata": METADATA_QUEUE,
+    "master": SIGNALS_QUEUE,
+    "model": MLMODELS_QUEUE,
+    "score": APPS_QUEUE,
+    "robo": "robo",
+    "subSetting": METADATA_QUEUE,
+    "stockAdvisor": APPS_QUEUE,
+    "default": SIGNALS_QUEUE
+}
+
 
 SUBMIT_JOB_THROUGH_YARN = True
 LIST_OF_ADMIN_EMAILS = [

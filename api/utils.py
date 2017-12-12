@@ -17,7 +17,7 @@ from django.conf import settings
 import subprocess
 
 
-def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message_slug=None):
+def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message_slug=None,queue_name=None):
     config = generate_job_config(class_name, job_config, job_name, message_slug, slug)
 
     try:
@@ -98,12 +98,12 @@ def submit_job_through_job_server(slug, class_name, job_config, job_name=None, m
     return job_url
 
 
-def submit_job(slug, class_name, job_config, job_name=None, message_slug=None):
+def submit_job(slug, class_name, job_config, job_name=None, message_slug=None,queue_name=None):
     """Based on config, submit jobs either through YARN or job server"""
     print("came to submit job")
     if settings.SUBMIT_JOB_THROUGH_YARN:
         print("Submitting job through YARN")
-        return submit_job_through_yarn(slug, class_name, job_config, job_name, message_slug)
+        return submit_job_through_yarn(slug, class_name, job_config, job_name, message_slug,queue_name=queue_name)
     else:
         return submit_job_through_job_server(slug, class_name, job_config, job_name, message_slug)
 
