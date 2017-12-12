@@ -896,18 +896,19 @@ def get_x_column_from_chart_data_without_xs(chart_data, axes):
 
 def get_job_status_from_yarn(instance=None):
 
-
-
     ym = yarn_api_client.resource_manager.ResourceManager(address=settings.YARN.get("host"), port=settings.YARN.get("port"), timeout=settings.YARN.get("timeout"))
     app_status = ym.cluster_application(instance.job.url)
 
-    instance.status = app_status.data['app']["state"]
+
+
+    instance.status = settings.YARN_STATUS.get(app_status.data['app']["state"], "FAILED")
     print "%" * 100
     print instance.status
     print "%" * 100
 
     instance.save()
     return instance.status
+
 
 def get_job_status_from_jobserver(instance=None):
     if instance is None:
@@ -937,6 +938,17 @@ def get_job_status(instance=None):
         get_job_status_from_yarn(instance)
     else:
         get_job_status_from_jobserver(instance)
+
+
+def normalize_job_status_for_yarn(status):
+    if "RUNNING" == status :
+        return settings.job_status.RUNNING
+    elif "ERROR" == status:
+        return settings.job_status.ERROR
+    elif "FAILED" == status:
+        return settings.job_status.ERROR
+    elif "FINISHED" == status:
+        return settings.job_status.SUCCESS
 
 
 def return_status_of_job_log(job_url):
@@ -1081,3 +1093,5 @@ def generate_signature(json_obj):
     newhash.update(existing_key)
     value = newhash.hexdigest()
     return value
+
+

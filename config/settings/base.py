@@ -428,6 +428,17 @@ JOBSERVER_STATUS = {
     'UNKNOWN': 'UNKNOWN',
     'KILLED': 'FAILED'
 }
+YARN_STATUS = { "RUNNING" :"INPROGRESS",
+                "ACCEPTED" : "INPROGRESS",
+                "NEW" : "INPROGRESS",
+                "NEW_SAVING" : "INPROGRESS",
+                "SUBMITTED" : "INPROGRESS",
+                "ERROR" : "FAILED",
+                "FAILED" : "FAILED",
+                "killed" : "FAILED",
+                "FINISHED" : "SUCCESS",
+                "SUCCESS" : "SUCCESS"
+              }
 
 UI_VERSION = "v2.1_14"
 
@@ -874,3 +885,4 @@ LIST_OF_ADMIN_EMAILS = [
             # 'mitali.sodhi@marlabs.com',
             # 'gulshan.gaurav@marlabs.com'
         ]
+
