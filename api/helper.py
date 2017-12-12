@@ -894,13 +894,20 @@ def get_x_column_from_chart_data_without_xs(chart_data, axes):
         return []
 
 
-def get_job_status_from_yarn(job_obj=None):
+def get_job_status_from_yarn(instance=None):
+
+
 
     ym = yarn_api_client.resource_manager.ResourceManager(address=settings.YARN.get("host"), port=settings.YARN.get("port"), timeout=settings.YARN.get("timeout"))
-    app_status = ym.cluster_application(job_obj.job_url)
-    job_obj["status"] = app_status.data['app']["state"]
-    job_obj.save()
-    return job_obj["status"]
+    app_status = ym.cluster_application(instance.job.url)
+
+    instance.status = app_status.data['app']["state"]
+    print "%" * 100
+    print instance.status
+    print "%" * 100
+
+    instance.save()
+    return instance.status
 
 def get_job_status_from_jobserver(instance=None):
     if instance is None:
@@ -922,6 +929,10 @@ def get_job_status_from_jobserver(instance=None):
         return err
 
 def get_job_status(instance=None):
+
+    if instance.status in ['SUCCESS', 'FAILED']:
+        return instance.status
+
     if settings.SUBMIT_JOB_THROUGH_YARN:
         get_job_status_from_yarn(instance)
     else:
