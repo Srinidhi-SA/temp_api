@@ -290,11 +290,11 @@ function checkIfDataTypeChanges(varSlug){
 }
 export function updateCategoricalVariables(colSlug,colName,actionName,evt){
     return (dispatch) => {
-   if(evt.target.checked){
-       updateColumnStatus(dispatch,colSlug,colName,actionName,PERCENTAGE)
-   }else{
-       updateColumnStatus(dispatch,colSlug,colName,actionName,GENERIC_NUMERIC) 
-   }
+        if(evt.target.checked){
+            updateColumnStatus(dispatch,colSlug,colName,actionName,PERCENTAGE)
+        }else{
+            updateColumnStatus(dispatch,colSlug,colName,actionName,GENERIC_NUMERIC) 
+        }
     }
 }
 
