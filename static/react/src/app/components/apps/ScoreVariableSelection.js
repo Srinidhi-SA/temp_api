@@ -60,7 +60,7 @@ export class ScoreVariableSelection extends React.Component {
                 <div className="page-head">
                 <div className="row">
                 <div className="col-md-8">
-                <h2>Variable Selection</h2>
+                <h3 class="xs-mt-0 text-capitalize">Variable Selection</h3>
                 </div>
                 </div>
                 <div className="clearfix"></div>
@@ -89,7 +89,7 @@ export class ScoreVariableSelection extends React.Component {
                 </div>
                 
                 <div className="row">
-                <div className="col-lg-2 col-lg-offset-10">
+                <div className="col-lg-12 text-right">
                 <Button type="submit" bsStyle="primary">SCORE MODEL</Button>
                 </div>
                 </div>
