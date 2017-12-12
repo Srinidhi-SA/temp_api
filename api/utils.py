@@ -28,9 +28,12 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
         comand_array = ["spark-submit", "--master", "yarn", "--py-files", egg_file_path, driver_py_file_path, json.dumps(config)]
 
         print "command array", comand_array
+        print "="*100
+        print " ".join(comand_array)
+        print "="*100
 
-        output = subprocess.call(comand_array)
-        print "output", output
+        proc = subprocess.Popen(comand_array)
+        print "proc", proc
 
     except Exception as e:
         from smtp_email import send_alert_through_email
