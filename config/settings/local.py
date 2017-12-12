@@ -33,7 +33,7 @@ PROJECT_APP = [
 ]
 
 INSTALLED_APPS += PROJECT_APP
-HADOOP_MASTER = "ec2-34-205-203-38.compute-1.amazonaws.com",
+HADOOP_MASTER = "ec2-34-205-203-38.compute-1.amazonaws.com"
 
 YARN = {
     "host": HADOOP_MASTER,
