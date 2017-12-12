@@ -1,6 +1,9 @@
 import json
 
 import os
+import re
+
+import sys
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from rest_framework.utils import humanize_datetime
@@ -19,29 +22,40 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
 
     try:
         base_dir = correct_base_dir()
-        scripts_dir = os.path.join(base_dir,"scripts")
+        scripts_dir = os.path.join(base_dir, "scripts")
         egg_file_path = os.path.join(scripts_dir, "marlabs_bi_jobs-0.0.0-py2.7.egg")
         driver_py_file_path = os.path.join(scripts_dir, "driver.py")
 
         print("About to submit job through YARN")
         # Submit_job to YARN
-        comand_array = ["spark-submit", "--master", "yarn", "--py-files", egg_file_path, driver_py_file_path, json.dumps(config)]
+        comand_array = ["spark-submit", "--master", "yarn", "--py-files", egg_file_path, driver_py_file_path,
+                        json.dumps(config)]
 
         print "command array", comand_array
-        print "="*100
+        print "=" * 100
         print " ".join(comand_array)
-        print "="*100
+        print "=" * 100
 
-        proc = subprocess.Popen(comand_array)
-        print "proc", proc
+        application_id = ""
+
+        cur_process = subprocess.Popen(comand_array, stderr=subprocess.PIPE)
+        # TODO: @Ankush need to write the error to error log and standard out to normal log
+        for line in iter(lambda: cur_process.stderr.readline(), ''):
+            print(line.strip())
+            match = re.search('Submitted application (.*)$', line)
+            if match:
+                application_id = match.groups()[0]
+                print "$$" * 100
+                print application_id
+                print "$$" * 100
+                break
+        print "proc", cur_process
 
     except Exception as e:
         from smtp_email import send_alert_through_email
         send_alert_through_email(e)
-        return "vivek1"
 
-    # print
-    return "vivek2"
+    return application_id
 
 
 def generate_job_config(class_name, job_config, job_name, message_slug, slug):
