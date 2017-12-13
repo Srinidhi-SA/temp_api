@@ -440,7 +440,7 @@ YARN_STATUS = { "RUNNING" :"INPROGRESS",
                 "SUCCESS" : "SUCCESS"
               }
 
-UI_VERSION = "v2.1_25"
+UI_VERSION = "v2.1_26"
 
 ERROR_MESSAGE = {
     'upload_error': 'Code had a weakness. Now it is broken.'
@@ -720,35 +720,81 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND = {
 TRANSFORMATION_SETTINGS_CONSTANT = {
     "columnSetting":
         [
-            {"actionName": "delete", "displayName": "Delete Column", "status": False},
-            {"actionName": "rename", "displayName": "Rename Column", "status": False, "newName": None},
-            {"actionName": "replace", "displayName": "Replace Values", "status": False, "replacementValues": [],
-             "replaceTypeList": [
-                 {"name": "contains", "displayName": "Contains"},
-                 {"name": "equals", "displayName": "Equal To"},
-                 {"name": "startsWith", "displayName": "Starts With"},
-                 {"name": "endsWith", "displayName": "Ends With"}
-             ]},
+            {"actionName": "unique_identifier", "displayName": "Unique Identifier", "status": False},
+            {"actionName":"delete","displayName":"Delete Column","status":False},
+            {"actionName":"rename","displayName":"Rename Column","status":False,"newName":None},
+            {"actionName":"replace","displayName":"Replace Values","status":False,"replacementValues":[],
+             "replaceTypeList":[
+                {"name":"contains","displayName":"Contains"},
+                {"name":"equals","displayName":"Equal To"},
+                {"name":"startsWith","displayName":"Starts With"},
+                {"name":"endsWith","displayName":"Ends With"}
+            ]},
             {
-                "actionName": "data_type",
-                "displayName": "Change Datatype",
-                "status": False,
-                "listOfDataTypes": [
-                    {"name": "numeric", "displayName": "Numeric", "status": False},
-                    {"name": "text", "displayName": "Text", "status": False},
+                "actionName":"data_type",
+                "displayName":"Change Datatype",
+                "status":False,
+                "listOfActions":[
+                    {"name":"numeric","displayName":"Numeric","status":False},
+                    {"name":"text","displayName":"Text","status":False},
                 ]
-            }
+            },
+            {
+                "actionName": "set_variable",
+                "displayName": "Set Variable as",
+                "status": False,
+                    "listOfActions": [
+                            {
+                                "status": False,
+                                "displayName": "General Numeric",
+                                "name": "general_numeric"
+                            },
+                            {
+                                "status": False,
+                                "displayName": "Percentage",
+                                "name": "percentage"
+                            },
+                            {
+                                "status": False,
+                                "displayName": "Index",
+                                "name": "index"
+                            },
+                            {
+                                "status": False,
+                                "displayName": "Average",
+                                "name": "average"
+                            }
+                        ]
+                    },
+                    {
+                        "status": False,
+                        "actionName": "set_polarity",
+                        "displayName": "Set Polarity as",
+                        "listOfActions": [
+                            {
+                                "status": False,
+                                "displayName": "Positive",
+                                "name": "positive"
+                            },
+                            {
+                                "status": False,
+                                "displayName": "Negative",
+                                "name": "negative"
+                            }
+                        ]
+                    }
+
         ],
     "new_columns":
         [
             {
-                "newColName": None,
-                "orderedColNames": [],
-                "operators": [
-                    {"name": "+", "displayName": "Addition", "status": True},
-                    {"name": "-", "displayName": "Sub dsada", "status": False},
-                ]
-            }
+            "newColName":None,
+            "orderedColNames":[],
+            "operators":[
+                {"name":"+","displayName":"Addition","status":True},
+                {"name":"-","displayName":"Sub dsada","status":False},
+            ]
+}
         ]
 
 }
