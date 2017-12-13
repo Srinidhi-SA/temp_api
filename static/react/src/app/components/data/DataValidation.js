@@ -51,8 +51,8 @@ export class DataValidation extends React.Component {
                }
                else{
                    if(actionNames.actionName == UNIQUE_IDENTIFIER)
-                       return(<li onClick={this.handleClickEvent.bind(this,colSlug,colName,actionNames.status)} key={index}>
-                               <div class="ma-radio inline">
+                       return(<li  onClick={this.handleClickEvent.bind(this,colSlug,colName,actionNames.status)} key={index}>
+                               <div class="ma-radio inline cursor">
                                <input type="radio" checked={actionNames.status}  name="rad2" id={actionNames.actionName}/>
                                <label for={actionNames.actionName}><a className="inline-block">{actionNames.displayName}</a></label>
                                </div>
