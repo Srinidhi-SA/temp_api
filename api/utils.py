@@ -28,8 +28,13 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
 
         print("About to submit job through YARN")
         # Submit_job to YARN
-        comand_array = ["spark-submit", "--master", "yarn", "--py-files", egg_file_path, driver_py_file_path,
-                        json.dumps(config)]
+        print queue_name
+        if queue_name is None:
+            comand_array = ["spark-submit", "--master", "yarn", "--py-files", egg_file_path, driver_py_file_path,
+                            json.dumps(config)]
+        else:
+            comand_array = ["spark-submit", "--master", "yarn", "--queue ",  queue_name , "--py-files", egg_file_path, driver_py_file_path,
+                            json.dumps(config)]
 
         print "command array", comand_array
         print "=" * 100
