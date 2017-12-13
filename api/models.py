@@ -1256,7 +1256,7 @@ def get_queue_job_type_name(job_type):
     return "." + get_queue_deployment_env_name() + '-' + settings.YARN_QUEUE_NAMES.get(job_type)
 
 def get_queue_job_type_name_full(job_type, data_size):
-    return get_queue_deployment_env_name() + '-' + settings.YARN_QUEUE_NAMES.get(job_type) + '-' + get_queue_size_name(job_type, data_size)
+    return get_queue_deployment_env_name() + '-' + settings.YARN_QUEUE_NAMES.get(job_type) + '-' + get_queue_size_name(job_type, data_size)[1:]
 
 def get_queue_size_name(job_type, data_size):
 
