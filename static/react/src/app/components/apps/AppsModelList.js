@@ -124,7 +124,7 @@ import Dialog from 'react-bootstrap-dialog'
 				const appsModelList = modelList.map((data, i) => {
 					var modelLink = "/apps/"+store.getState().apps.currentAppId+"/models/" + data.slug;
 					return (
-							<div className="col-md-3 xs-mb-10 xs-pr-5 list-boxes" key={i}>
+							<div className="col-md-3 xs-mb-15 list-boxes" key={i}>
 							<div className="rep_block newCardStyle" name={data.name}>
 							<div className="card-header"></div>
 							<div className="card-center-tile">
