@@ -15112,3 +15112,10 @@ display: inline-block;
 {
 	padding:2px 0;
 }
+
+.inline-block{
+	display:inline-block !important;
+}
+.dataPreviewUniqueIdentifierCol{
+	border:2px solid #1ea89c !important;
+}

@@ -116,7 +116,8 @@ const DIMENSION = "dimension";
 const MEASURE = "measure";
 const PERCENTAGE ="percentage";
 const GENERIC_NUMERIC = "generic_numeric";
-const SET_POLARITY= "set_polarity"
+const SET_POLARITY= "set_polarity";
+const UNIQUE_IDENTIFIER = "unique_identifier";
 
 
 export function generateHeaders(table) {
@@ -411,7 +412,8 @@ export{
   MEASURE,
   PERCENTAGE,
   GENERIC_NUMERIC,
-  SET_POLARITY
+  SET_POLARITY,
+  UNIQUE_IDENTIFIER
 	}
 export function capitalizeArray(array){
   let a =[]

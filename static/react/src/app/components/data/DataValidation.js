@@ -4,7 +4,7 @@ import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import Dialog from 'react-bootstrap-dialog';
 import {handleColumnClick,updateColSlug} from "../../actions/dataActions";
-import {DATA_TYPE,isEmpty} from "../../helpers/helper";
+import {DATA_TYPE,isEmpty,UNIQUE_IDENTIFIER} from "../../helpers/helper";
 import { Scrollbars } from 'react-custom-scrollbars';
 
 @connect((store) => {
@@ -24,6 +24,8 @@ export class DataValidation extends React.Component {
 	handleClickEvent(colSlug,colName,colStatus,event){
 		event.stopPropagation();
 		this.props.dispatch(updateColSlug(colSlug));
+		if(event.target.name == "" || event.target.name == undefined)
+		 event.target.name = event.target.htmlFor;
 		this.props.dispatch(handleColumnClick(this.refs.dialog,event.target.name,colSlug,colName,"",colStatus));
 	}
 	handleChangeTypeEvent(actionName,colSlug,colName,subActionName,event){
@@ -48,8 +50,13 @@ export class DataValidation extends React.Component {
                  </li>)
                }
                else{
-                   if(actionNames.actionName == "unique_identifier")
-                       return(<li onClick={this.handleClickEvent.bind(this,colSlug,colName,actionNames.status)} key={index}><a className="cursor" name={actionNames.actionName}><input type="radio">{actionNames.displayName}</input></a></li>)
+                   if(actionNames.actionName == UNIQUE_IDENTIFIER)
+                       return(<li onClick={this.handleClickEvent.bind(this,colSlug,colName,actionNames.status)} key={index}>
+                               <div class="ma-radio inline">
+                               <input type="radio" checked={actionNames.status}  name="rad2" id={actionNames.actionName}/>
+                               <label for={actionNames.actionName}><a className="inline-block">{actionNames.displayName}</a></label>
+                               </div>
+                       </li>)
               
                        else
                   return (<li onClick={this.handleClickEvent.bind(this,colSlug,colName,actionNames.status)} key={index}><a className="cursor" name={actionNames.actionName}>{actionNames.displayName}</a></li>)
