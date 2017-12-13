@@ -231,7 +231,7 @@ export class AppsPanel extends React.Component {
         if (this.props.app_filtered_keywords.indexOf(tag) > -1)
           checked = true
         return (
-          <li key={i}>
+          <li key={i} className="xs-pl-10">
             {/*<div key={metaIndex} className="ma-checkbox inline">
             <input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisList.bind(this)}/>
               <label htmlFor={id}>{metaItem.displayName}</label>
@@ -296,31 +296,35 @@ export class AppsPanel extends React.Component {
                 </li>*/}
                   </ul>
                 </div>
+
                 <div class="btn-group">
 
                   {/*<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter fa-lg"></i> <span class="caret"></span></button>
+
                 <ul role="menu" class="dropdown-menu dropdown-menu-right">
                 <li>
                                 <input type="text" class="form-control" />
+
                               </li>
                 <li>
+
 				<div className="ma-checkbox inline">
 				<input type="checkbox" id="chk_mea0" name="0" class="" value="Finance" />
 				<label for="chk_mea0" class="radioLabels">Finance</label>
 				</div>
 
 				</li>
-				<li>
+				<li className="xs-pl-10">
 				<div className="ma-checkbox inline"><input type="checkbox" className="" />
 				<label>Marketing</label>
 				</div>
 				</li>
-				<li>
+				<li className="xs-pl-10">
 				<div className="ma-checkbox inline"><input type="checkbox" className="" />
 				<label>Sales</label>
 				</div>
 				</li>
-                <li>
+                <li className="xs-pl-10">
 				<div className="ma-checkbox inline"><input type="checkbox" className="" />
 				<label>Operations</label>
 				</div>

@@ -439,7 +439,8 @@ JOBSERVER_STATUS = {
     'KILLED': 'FAILED'
 }
 
-UI_VERSION = "v2.1_22"
+
+UI_VERSION = "v2.1_23"
 
 
 
