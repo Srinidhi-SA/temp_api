@@ -7,11 +7,12 @@ import {Modal,Button,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "r
 import store from "../../store";
 import {selectedAnalysisList,resetSelectedVariables,unselectAllPossibleAnalysis,getDataSetPreview,setDimensionSubLevels,selectAllAnalysisList,updateSelectAllAnlysis,saveAdvanceSettings,checkAllAnalysisSelected} from "../../actions/dataActions";
 import {openCreateSignalModal,closeCreateSignalModal,updateCsLoaderValue} from "../../actions/createSignalActions";
-import {createSignal,setPossibleAnalysisList,emptySignalAnalysis,advanceSettingsModal,checkIfDateTimeIsSelected} from "../../actions/signalActions";
+import {createSignal,setPossibleAnalysisList,emptySignalAnalysis,advanceSettingsModal,checkIfDateTimeIsSelected,updateCategoricalVariables,createcustomAnalysisDetails} from "../../actions/signalActions";
 import {DataVariableSelection} from "../data/DataVariableSelection";
 import {CreateSignalLoader} from "../common/CreateSignalLoader";
 import {openCsLoaderModal,closeCsLoaderModal} from "../../actions/createSignalActions";
 import {AdvanceSettings} from "./AdvanceSettings";
+import {SET_VARIABLE} from "../../helpers/helper";
 
 
 var selectedVariables = {measures:[],dimensions:[],date:null};  // pass selectedVariables to config
@@ -30,6 +31,7 @@ var selectedVariables = {measures:[],dimensions:[],date:null};  // pass selected
 		selectedSignalAnalysis: store.signals.signalAnalysis,
 		getVarType: store.signals.getVarType,
 		getVarText: store.signals.getVarText,
+		selVarSlug:store.signals.selVarSlug,
 		dataSetTimeDimensions:store.datasets.dataSetTimeDimensions,
 		selectedVariablesCount: store.datasets.selectedVariablesCount,
 		dataSetAnalysisList:store.datasets.dataSetAnalysisList,
@@ -54,9 +56,7 @@ export class VariableSelection extends React.Component {
 		this.signalFlag =true;
 		this.possibleTrend = null;
 		this.prevSelectedVar = null;
-
-
-		props.dispatch(emptySignalAnalysis());
+		this.props.dispatch(emptySignalAnalysis());
 
 
 	}
@@ -86,19 +86,21 @@ export class VariableSelection extends React.Component {
 			console.log(this.props);
 			this.signalFlag = false;
 			this.props.dispatch(updateCsLoaderValue(3))
-			this.props.dispatch(openCsLoaderModal())
+			this.props.dispatch(openCsLoaderModal());
+			let customDetails = createcustomAnalysisDetails();
 			let analysisList =[],config={}, postData={};
 			config['possibleAnalysis'] = this.props.selectedAnalysis;
 			config['measures'] =this.props.selectedMeasures;
 			config['dimension'] =this.props.selectedDimensions;
 			config['timeDimension'] =this.props.selectedTimeDimensions;
+			config['customAnalysisDetails'] = customDetails["customAnalysisDetails"];
+			config['polarity']=customDetails["polarity"];
 			postData["name"]=$("#createSname").val();
-			postData["type"]=$('#signalVariableList option:selected').val();
+			postData["type"]=this.props.getVarType;
 			postData["target_column"]=$('#signalVariableList option:selected').text();
 			postData["config"]=config;
 			postData["dataset"]=this.props.dataPreview.slug;
 
-			// console.log(postData);
 			// po
 			if(this.props.getVarType.toLowerCase() == "measure"){
 				// postData['trend-sub'] = this.props.selectedTrendSub;
@@ -115,14 +117,14 @@ export class VariableSelection extends React.Component {
 			this.props.dispatch(createSignal(postData));
 		}else{
 
-			alert("Please select a variable to analyze...")
+			bootbox.alert("Please select a variable to analyze...")
 		}
 	}
 
-	setPossibleList(e){
+	setPossibleList(event){
+		this.props.dispatch(setPossibleAnalysisList(event));
 		this.props.dispatch(updateSelectAllAnlysis(false));
-		this.props.dispatch(selectAllAnalysisList(false));
-		this.props.dispatch(setPossibleAnalysisList(e.target.value,$('#signalVariableList option:selected').text()));
+        this.props.dispatch(selectAllAnalysisList(false));
 	}
 
 	componentWillMount(){
@@ -135,10 +137,10 @@ export class VariableSelection extends React.Component {
 	componentDidMount(){
 		var that = this;
 
-		$(function(){
+		/*$(function(){
 			//alert($('#signalVariableList option:selected').val());
-			that.props.dispatch(setPossibleAnalysisList($('#signalVariableList option:selected').val(),$('#signalVariableList option:selected').text()));
-		});
+			that.props.dispatch(setPossibleAnalysisList(event));
+		});*/
 	}
 
 	componentWillUpdate(){
@@ -158,9 +160,9 @@ export class VariableSelection extends React.Component {
 	}
 	componentDidUpdate(){
 		var that = this;
-		$(function(){
-			that.props.dispatch(setPossibleAnalysisList($('#signalVariableList option:selected').val(),$('#signalVariableList option:selected').text()));
-		});
+		/*$(function(){
+			that.props.dispatch(setPossibleAnalysisList(event));
+		});*/
 
 		if(!this.props.getVarType){
 			$("#allAnalysis").prop("disabled",true);
@@ -170,6 +172,9 @@ export class VariableSelection extends React.Component {
 			$("#advance-setting-link").show();
 		}
 
+	}
+	handleCategoricalChk(event){
+	    this.props.dispatch(updateCategoricalVariables(this.props.selVarSlug,this.props.getVarText,SET_VARIABLE,event));
 	}
 	renderAnalysisList(analysisList){
 		let list =  analysisList.map((metaItem,metaIndex) =>{
@@ -233,7 +238,7 @@ export class VariableSelection extends React.Component {
 				renderSelectBox = metaData.map((metaItem,metaIndex) =>{
 					if(metaItem.columnType !="datetime" && !metaItem.ignoreSuggestionFlag && !metaItem.dateSuggestionFlag){
 						return(
-								<option key={metaIndex}  value={metaItem.columnType}>{metaItem.name}</option>
+								<option key={metaItem.slug}  name={metaItem.slug}  value={metaItem.columnType}>{metaItem.name}</option>
 						);
 					}
 				})
@@ -269,7 +274,7 @@ export class VariableSelection extends React.Component {
 				<Form onSubmit={this.createSignal.bind(this)}>
 				<FormGroup role="form">
 				<div className="row">
-				<label className="col-lg-2" for="signalVariableList">I want to analyze</label>
+				<label className="col-lg-2 text-right" for="signalVariableList">I want to analyze</label>
 				<div className="col-lg-4">
 				<div className="htmlForm-group">
 				<select className="form-control" id="signalVariableList" onChange={this.setPossibleList.bind(this)}>
@@ -277,7 +282,12 @@ export class VariableSelection extends React.Component {
 				{renderSelectBox}
 				</select>
 				</div>
-				</div>{/*<!-- /.col-lg-4 -->*/}
+				</div>
+				<div className="col-lg-4">
+				<div className="ma-checkbox inline treatAsCategorical" ><input id="idCategoricalVar" type="checkbox" onClick={this.handleCategoricalChk.bind(this)}/><label htmlFor="idCategoricalVar">Treat as categorical variable</label></div>
+				</div>
+
+				{/*<!-- /.col-lg-4 -->*/}
 
 				</div>{/*<!-- /.row -->*/}
 				<br/>

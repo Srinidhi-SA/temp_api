@@ -36,26 +36,28 @@ export class DataPreviewLeftPanel extends React.Component {
 		const scoreData = this.props.scoreCSVData;
 		var tableThTemplate = "";
 		var tableRowTemplate = "";
-		if(!isEmpty(scoreData)){
+		if(scoreData.length > 0){
 		    tableThTemplate = scoreData.map(function(row,id){
 		        let colData = "";
 		        if(id == 0){
 		           colData =  row.match(pattern).map((colData,index) =>{
 		               let colIndex = "row_"+id+index
-		                return(<th key={colIndex}>{colData}</th>)
+		                return(<th key={colIndex}><b>{colData}</b></th>)
 		            })
 		        }
 		        return colData;
 		    });
 		    tableRowTemplate = scoreData.map(function(row,id){
+		        if(row != ""){
                 let colData = "";
                 let colIndex = "row_"+id
                 if(id > 0){
-                   colData =  row.match(pattern).map((colData,index) =>{
-                        return(<td>{colData}</td>)
-                    })
-                }
+                        colData =  row.match(pattern).map((colData,index) =>{
+                            return(<td>{colData}</td>)
+                        })   
+                    }
                 return <tr key = {colIndex}>{colData}</tr>;
+                }
             });
 		    return(
 		            <div className="side-body">

@@ -1,11 +1,13 @@
 import React from "react";
 import {API} from "../helpers/env";
-import {CSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,PERPAGE,SUCCESS,FAILED,getUserDetailsOrRestart} from "../helpers/helper";
+import {CSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,PERPAGE,SUCCESS,FAILED,getUserDetailsOrRestart,DIMENSION,
+    MEASURE,SET_VARIABLE,PERCENTAGE,GENERIC_NUMERIC,SET_POLARITY} from "../helpers/helper";
 import {connect} from "react-redux";
 import store from "../store";
 import {openCsLoaderModal,closeCsLoaderModal,updateCsLoaderValue,updateCsLoaderMsg} from "./createSignalActions";
 import Dialog from 'react-bootstrap-dialog'
 import { showLoading, hideLoading } from 'react-redux-loading-bar'
+import {updateColumnStatus} from './dataActions';
 // var API = "http://34.196.204.54:9000";
 
 // @connect((store) => {
@@ -23,12 +25,12 @@ export function checkIfDateTimeIsSelected(){
     var totalAnalysisList = store.getState().datasets.dataSetAnalysisList;
     var analysisList = [];
     var trendIsChecked = false;
-    if(store.getState().signals.getVarType == "measure"){
+    if(store.getState().signals.getVarType == MEASURE){
         analysisList = totalAnalysisList.measures.analysis;
     }else{
         analysisList = totalAnalysisList.dimensions.analysis;
     }
-    
+
     for(var i=0;i<analysisList.length;i++){
     if(analysisList[i].name == "trend"){
        if( analysisList[i].status){
@@ -38,7 +40,7 @@ export function checkIfDateTimeIsSelected(){
     }
 }
    return  trendIsChecked;
-    
+
 }
 
 //x-www-form-urlencoded'
@@ -54,9 +56,9 @@ export function createSignal(metaData) {
               dispatch(closeCsLoaderModal())
              dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
            }
-         }) 
+         })
      }
- 
+
   }
 
 function fetchCreateSignal(metaData) {
@@ -112,7 +114,7 @@ function fetchCreateSignalError(json) {
 }
 
 export function getList(token,pageNo) {
-    
+
     return (dispatch) => {
     return fetchPosts(token,pageNo).then(([response, json]) =>{
         if(response.status === 200){
@@ -240,12 +242,98 @@ function fetchPostsError_analysis(json) {
     json
   }
 }
-export function setPossibleAnalysisList(varType,varText) {
+export function setPossibleAnalysisList(event) {
+    var selOption  = event.target.childNodes[event.target.selectedIndex];
+    var varType = selOption.value;
+    var varText = selOption.text;
+    var varSlug = selOption.getAttribute("name");
+   if(varType == MEASURE){
+       $(".treatAsCategorical").show();
+       var isVarTypeChanged = checkIfDataTypeChanges(varSlug);
+       if(isVarTypeChanged){
+           varType = DIMENSION ;
+           $(".treatAsCategorical").find('input[type=checkbox]').attr("checked",true);
+       }else{
+           $(".treatAsCategorical").find('input[type=checkbox]').attr("checked",false);
+       }
+   }else{
+       $(".treatAsCategorical").find('input[type=checkbox]').attr("checked",false);
+       $(".treatAsCategorical").hide();
+   }
 	return {
 		type: "SET_POSSIBLE_LIST",
 		varType,
-		varText
+		varText,
+		varSlug
 	}
+}
+function checkIfDataTypeChanges(varSlug){
+    var transformSettings = store.getState().datasets.dataTransformSettings;
+    var isVarTypeChanged = false
+    for(var i =0;i<transformSettings.length;i++){
+        if(transformSettings[i].slug == varSlug){
+            for(var j=0;j<transformSettings[i].columnSetting.length;j++){
+                if(transformSettings[i].columnSetting[j].actionName == SET_VARIABLE){
+                    for(var k=0;k<transformSettings[i].columnSetting[j].listOfActions.length;k++){
+                        if(transformSettings[i].columnSetting[j].listOfActions[k].name != "general_numeric"){
+                            if(transformSettings[i].columnSetting[j].listOfActions[k].status){
+                                isVarTypeChanged = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return isVarTypeChanged;
+}
+export function updateCategoricalVariables(colSlug,colName,actionName,evt){
+    return (dispatch) => {
+   if(evt.target.checked){
+       updateColumnStatus(dispatch,colSlug,colName,actionName,PERCENTAGE)
+   }else{
+       updateColumnStatus(dispatch,colSlug,colName,actionName,GENERIC_NUMERIC)
+   }
+    }
+}
+
+export function createcustomAnalysisDetails(){
+    var transformSettings = store.getState().datasets.dataTransformSettings;
+    var customAnalysisDetails = []
+    var polarity=[]
+    var columnSettings = {}
+    for(var i =0;i<transformSettings.length;i++){
+  //  if(transformSettings[i].slug == store.getState().signals.selVarSlug){
+        for(var j=0;j<transformSettings[i].columnSetting.length;j++){
+            if(transformSettings[i].columnSetting[j].actionName == SET_VARIABLE){
+                for(var k=0;k<transformSettings[i].columnSetting[j].listOfActions.length;k++){
+                    if(transformSettings[i].columnSetting[j].listOfActions[k].name != "general_numeric"){
+                        if(transformSettings[i].columnSetting[j].listOfActions[k].status){
+                            // customAnalysisDetails.push({ "colName":store.getState().signals.getVarText,
+                            //     "colSlug":store.getState().signals.selVarSlug,
+                            //     "treatAs":transformSettings[i].columnSetting[j].listOfActions[k].name})
+                            customAnalysisDetails.push({ "colName":transformSettings[i].name,
+                                "colSlug":transformSettings[i].slug,
+                                "treatAs":transformSettings[i].columnSetting[j].listOfActions[k].name})
+                        }
+                    }
+                }
+            }else if (transformSettings[i].columnSetting[j].actionName == SET_POLARITY) {
+              for(var k=0;k<transformSettings[i].columnSetting[j].listOfActions.length;k++){
+                      if(transformSettings[i].columnSetting[j].listOfActions[k].status){
+                          polarity.push({  "colName":transformSettings[i].name,
+                              "colSlug":transformSettings[i].slug,
+                              "polarity":transformSettings[i].columnSetting[j].listOfActions[k].name})
+                      }
+
+              }
+            }
+        }
+    //}
+}
+    return columnSettings={"customAnalysisDetails":customAnalysisDetails,
+                            "polarity":polarity};
 }
 export function showPredictions(predictionSelected) {
 	return {
@@ -411,5 +499,52 @@ function dispatchSignalLoadingMsg(signalAnalysis){
 export function clearLoadingMsg() {
   return {type: "CLEAR_LOADING_MSG"}
 }
+export function handleDecisionTreeTable(evt){
+    var probability = "";
+    var probabilityCond = true;
+    var noDataFlag = true;
+    //triggered when probability block is clicked to select and unselect
+    if(evt){
+        selectProbabilityBlock(evt);
+    }
+    if($(".pred_disp_block").find(".selected").length > 0)
+        probability = $(".pred_disp_block").find(".selected")[0].innerText.toLowerCase();
 
+    $(".popupDecisionTreeTable").find("tr").each(function(){
+        if(this.rowIndex != 0 ){
+            if(probability)  probabilityCond = probability.indexOf(this.cells[4].innerText.toLowerCase()) != -1;
+            if(this.cells[2].innerText.toLowerCase() == store.getState().signals.selectedPrediction.toLowerCase() && probabilityCond){
+                $(this).removeClass("hidden");
+                noDataFlag = false;
+            }else{
+                $(this).addClass("hidden");
+            }
+        }
+    })
+    if(noDataFlag){
+        $(".popupDecisionTreeTable").addClass("hidden");
+    }else{
+        $(".popupDecisionTreeTable").removeClass("hidden");
+    }
+}
+export function selectProbabilityBlock(evt){
+    $(".pred_disp_block").each(function(){
+        if(!$(this).find("a").hasClass("selected")){
+            if($(this).find("a")[0].innerText.toLowerCase().indexOf(evt.target.innerText.toLowerCase()) != -1){
+                $(this).find("a").addClass("selected");
+            }else{
+                $(this).find("a").removeClass("selected");
+            }
+        }else{
+            $(this).find("a").removeClass("selected");
+        }
 
+    })
+
+}
+export function showZoomChart(flag){
+    return {
+        type: "ZOOM_CHART",
+        flag
+    }
+}

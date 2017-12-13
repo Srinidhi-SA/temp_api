@@ -80,8 +80,10 @@ export class DataSourceList extends React.Component {
 						<aside>
 				          <ul className={fileName != "" ? "list-unstyled bullets_primary":"list-unstyled"}>
 				            	<li>{fileName}{fileName != "" ? " - ":""}{fileSize}{fileName != "" ? " bytes ":""}</li>
-				          </ul>
+				            	<li className="text-danger visibilityHidden" id="fileErrorMsg">Please select csv file to upload.</li>
+				            	</ul>
 				        </aside>
+				        
 						</div>
 						</div>)
 					}else if(field.fieldType.toLowerCase() == INPUT.toLowerCase()){
@@ -93,7 +95,7 @@ export class DataSourceList extends React.Component {
 						return(<div className="form-group" id={j}>
 						<label for="fl1" className="col-sm-3 control-label">{field.labelName}</label>
 						<div className="col-sm-9">
-						<input id={j} type="text" name={field.labelName} placeholder={placeHolder} className="form-control" onChange={this.handleInputChange.bind(this)}/>
+						<input id={j} type="text" required={true} name={field.labelName} placeholder={placeHolder} className="form-control" onChange={this.handleInputChange.bind(this)}/>
 						</div>
 						</div>)
 					}
@@ -101,7 +103,7 @@ export class DataSourceList extends React.Component {
 						return(<div className="form-group" id={j}>
 						<label for="fl1" className="col-sm-3 control-label">{field.labelName}</label>
 						<div className="col-sm-9">
-						<input  id={j} type="password" name={field.labelName}  placeholder={field.placeHolder} className="form-control" onChange={this.handleInputChange.bind(this)}/>
+						<input  id={j} type="password" required={true} name={field.labelName}  placeholder={field.placeHolder} className="form-control" onChange={this.handleInputChange.bind(this)}/>
 						</div>
 						</div>)
 					}

@@ -3,7 +3,10 @@ import {connect} from "react-redux";
 import {c3Functions} from "../helpers/c3.functions";
 import {Scrollbars} from 'react-custom-scrollbars';
 import {API} from "../helpers/env";
+import {renderC3ChartInfo} from "../helpers/helper";
 import store from "../store";
+import {ViewChart} from "./common/ViewChart";
+import {showZoomChart} from "../actions/signalActions";
 
 @connect((store) => {
   return {sideCardListFlag: store.signals.sideCardListFlag};
@@ -23,12 +26,19 @@ export class C3Chart extends React.Component {
     this.modalCls = "modal fade chart-modal" + props.classId;
     this.tableCls = "table-responsive table-area table" + props.classId;
     /*if($(".chart"+props.classId).html()){
-			this.updateChart();
-		}*/
+            this.updateChart();
+        }*/
 
     this.classId = "chart" + this.props.classId + " ct col-md-7 col-md-offset-2 xs-mb-20";
   }
+  
+  openZoomChart(flag){
+      this.props.dispatch(showZoomChart(flag)); 
+  }
 
+  showStatisticalInfo(){
+      renderC3ChartInfo(this.props.info)
+  }
   getChartElement() {
     if (this.props.classId == '_side') {
       return $(".chart", this.element);
@@ -64,9 +74,8 @@ export class C3Chart extends React.Component {
   }
 
   downloadSVG() {
-
+      //This is code to remove background black color in chart and ticks adjustment
     var nodeList = document.querySelector(".chart" + this.props.classId + ">svg").querySelectorAll('.c3-chart .c3-chart-lines path');
-    //var nodeList1 = document.querySelector(".chart"+this.props.classId +">svg").querySelectorAll('.c3 line');
     var nodeList2 = document.querySelector(".chart" + this.props.classId + ">svg").querySelectorAll('.c3-axis path');
     var line_graph = Array.from(nodeList);
     var x_and_y = Array.from(nodeList2); //.concat(Array.from(nodeList2));
@@ -90,7 +99,7 @@ export class C3Chart extends React.Component {
     if (this.props.sideChart) {
       console.log(data);
       data['size'] = {
-        height: 200
+        height: 230
       }
     }
     if (this.props.yformat) {
@@ -292,79 +301,80 @@ export class C3Chart extends React.Component {
       <div className="chart-area">
 
         {/*<div className="row">
-  	<div className="chart-data-icon col-md-7 col-md-offset-2  xs-mb-20">
+    <div className="chart-data-icon col-md-7 col-md-offset-2  xs-mb-20">
 
      </div>
-	 <div className="clearfix"></div>
+     <div className="clearfix"></div>
 </div>*/}
     <div className="row">
-		<div className="chart-data-icon col-md-8 col-md-offset-2 xs-p-0 xs-mb-20">
+        <div className="chart-data-icon col-md-8 col-md-offset-2 xs-p-0 xs-mb-20">
 
-					<div class="btn-group pull-right">
-					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i className="fa fa-more-img" aria-hidden="true" ></i></button>
-					<ul role="menu" class="dropdown-menu dropdown-menu-right">
-					<li>
-					<a href="javascript:;"><i class="fa fa-info-circle" aria-hidden="true"></i> Statistical Info</a>
-					</li>
-					<li>
-					<a href="javascript:;"><i class="fa fa-search-plus" aria-hidden="true"></i> Zoom Chart</a>
-					</li>
-					<li>
-					<a href="javascript:;" onClick={this.downloadSVG.bind(this)}><i class="fa fa-picture-o" aria-hidden="true"></i> Download as PNG</a>
-					</li>
-					<li>
-					<a href="javascript:;" onClick={this.showModal.bind(this)}><i class="fa fa-eye" aria-hidden="true"></i> View Chart Data</a>
-					</li>
-					<li>
-					<a href={this.tableDownload}><i class="fa fa-cloud-download" aria-hidden="true"></i> Download Chart Data</a>
-					</li>
-					</ul>
-					</div>
+                    <div class="btn-group pull-right">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i className="fa fa-more-img" aria-hidden="true" ></i></button>
+                    <ul role="menu" class="dropdown-menu dropdown-menu-right">
+                    <li>
+                    <a href="javascript:;" onClick={this.showStatisticalInfo.bind(this)}><i class="fa fa-info-circle" aria-hidden="true"></i> Statistical Info</a>
+                    </li>
+                    <li>
+                    <a href="javascript:;" onClick={this.openZoomChart.bind(this,true)}><i class="fa fa-search-plus" aria-hidden="true"></i> Zoom Chart</a>
+                    </li>
+                    <li>
+                    <a href="javascript:;" onClick={this.downloadSVG.bind(this)}><i class="fa fa-picture-o" aria-hidden="true"></i> Download as PNG</a>
+                    </li>
+                    <li>
+                    <a href="javascript:;" onClick={this.showModal.bind(this)}><i class="fa fa-eye" aria-hidden="true"></i> View Chart Data</a>
+                    </li>
+                    <li>
+                    <a href={this.tableDownload}><i class="fa fa-cloud-download" aria-hidden="true"></i> Download Chart Data</a>
+                    </li>
+                    </ul>
+                    </div>
 
 
-		 </div>
+         </div>
 
-	       <div className="clearfix"></div>
-		   <div className={this.classId}></div>
-		   <div className="clearfix"></div>
+           <div className="clearfix"></div>
+           <div className={this.classId}></div>
+           <div className="clearfix"></div>
 
      </div>
-		   {/* chart data Popup */}
-		   <div id="" className={this.modalCls} role="dialog">
-		   <div className="modal-colored-header uploadData modal-dialog ">
+           {/* chart data Popup */}
+           <div id="" className={this.modalCls} role="dialog">
+           <div className="modal-colored-header uploadData modal-dialog ">
 
-		   {/*Modal content*/}
-			<div className="modal-content chart-data-popup">
-				<div class="modal-header">
+           {/*Modal content*/}
+            <div className="modal-content chart-data-popup">
+                <div class="modal-header">
 
-				<button type='button' onClick={this.closeModal.bind(this)} className='close'  data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>
-				<h3 class="modal-title">Chart Data</h3>
-				</div>
+                <button type='button' onClick={this.closeModal.bind(this)} className='close'  data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>
+                <h3 class="modal-title">Chart Data</h3>
+                </div>
 
-				<div className="modal-body chart-data-modal-body">
-					<div className="row" >
-					<div className="col-md-12">
-					<div className={this.tableCls}>
-					<Scrollbars style={{ height: 300 }} renderTrackHorizontal={props => <div {...props} className="track-horizontal" style={{display:"none"}}/>}
+                <div className="modal-body chart-data-modal-body">
+                    <div className="row" >
+                    <div className="col-md-12">
+                    <div className={this.tableCls}>
+                    <Scrollbars style={{ height: 300 }} renderTrackHorizontal={props => <div {...props} className="track-horizontal" style={{display:"none"}}/>}
         renderThumbHorizontal={props => <div {...props} className="thumb-horizontal" style={{display:"none"}}/>}>
-					<table className='table chart-table'>
-					</table>
-					{/*<div class="form-group col-md-7;">*/}
-					</Scrollbars>
-					</div>
-					</div>
-					</div>
+                    <table className='table chart-table'>
+                    </table>
+                    {/*<div class="form-group col-md-7;">*/}
+                    </Scrollbars>
+                    </div>
+                    </div>
+                    </div>
 
-				</div>
+                </div>
 
-				<div class="modal-footer">
-				<button className="btn btn-primary" onClick={this.downloadSVG.bind(this)}><i class="fa fa-picture-o" aria-hidden="true"></i>  Download Chart</button> &nbsp;
-				<a href={this.tableDownload} id="cddownload" className="btn btn-primary" download ><i className="fa fa-cloud-download"></i> Download Chart Data</a>
-				</div>
+                <div class="modal-footer">
+                <button className="btn btn-primary" onClick={this.downloadSVG.bind(this)}><i class="fa fa-picture-o" aria-hidden="true"></i>  Download Chart</button> &nbsp;
+                <a href={this.tableDownload} id="cddownload" className="btn btn-primary" download ><i className="fa fa-cloud-download"></i> Download Chart Data</a>
+                </div>
 
-		   </div>
-		  </div>
-		 </div>
+           </div>
+          </div>
+          <ViewChart classId={this.props.classId} onRef={ref => (this.child = ref)}/>
+         </div>
 
  </div>
 

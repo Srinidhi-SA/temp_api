@@ -1,6 +1,8 @@
 import React from "react";
 import CircularProgressbar from 'react-circular-progressbar';
 import {Redirect} from 'react-router';
+import {handleDecisionTreeTable} from "../actions/signalActions";
+import renderHTML from 'react-render-html';
 
 export function isEmpty(obj) {
     for(var prop in obj) {
@@ -12,7 +14,15 @@ export function isEmpty(obj) {
 }
 
 var  USERDETAILS = {};
-
+export function handleSignalToggleButton(){
+    if($(".toggleOn").is(":visible")){
+        $(".toggleOff").removeClass("hidden");
+        $(".toggleOn").addClass("hidden")
+    }else{
+        $(".toggleOn").removeClass("hidden");
+        $(".toggleOff").addClass("hidden")
+    }
+}
 
 export const getUserDetailsOrRestart = {
 		get : function(){
@@ -98,6 +108,15 @@ const NEWVALUE = "new value";
 const TEXTHEATMAPTABLE = "textHeatMapTable";
 const DEFAULTANALYSISVARIABLES = "high";
 const MINROWINDATASET = 10;
+const APPSPERPAGE = 9;
+const POPUPDECISIONTREETABLE = "popupDecisionTreeTable";
+const MAXTEXTLENGTH = 100;
+const SET_VARIABLE = "set_variable";
+const DIMENSION = "dimension";
+const MEASURE = "measure";
+const PERCENTAGE ="percentage";
+const GENERIC_NUMERIC = "generic_numeric";
+const SET_POLARITY= "set_polarity"
 
 
 export function generateHeaders(table) {
@@ -384,6 +403,15 @@ export{
 	USERDETAILS,
 	DEFAULTANALYSISVARIABLES,
   MINROWINDATASET,
+  APPSPERPAGE,
+  POPUPDECISIONTREETABLE,
+  MAXTEXTLENGTH,
+  SET_VARIABLE,
+  DIMENSION,
+  MEASURE,
+  PERCENTAGE,
+  GENERIC_NUMERIC,
+  SET_POLARITY
 	}
 export function capitalizeArray(array){
   let a =[]
@@ -392,4 +420,26 @@ export function capitalizeArray(array){
     a[i]= array[val].charAt(0).toUpperCase() + array[val].slice(1);i++;
   }
   return a
+}
+export function predictionLabelClick(){
+    var cell =document.querySelectorAll('.pred_disp_block');
+    for(var i=0;i<cell.length;i++){
+    cell[i].addEventListener('click',handleDecisionTreeTable,false);
+  }
+
+}
+
+export function renderC3ChartInfo(info){
+    if(!isEmpty(info)){
+
+        var listOfData = "";
+        info.map((item,index)=>{
+            listOfData += "<p>"+item+"</p>";
+        });
+        bootbox.dialog({title: "Statistical Info",
+            size: 'small',
+            closeButton: true,
+            message: "<div>"+listOfData+"</div>"})
+    }
+
 }

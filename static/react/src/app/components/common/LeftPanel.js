@@ -1,8 +1,8 @@
 import React from "react";
 import {NavLink, withRouter} from "react-router-dom";
 import {connect} from "react-redux";
-import {hideDataPreview, getDataList} from "../../actions/dataActions";
-import {getList} from "../../actions/signalActions";
+import {hideDataPreview, getDataList,storeSearchElement_data} from "../../actions/dataActions";
+import {getList,storeSearchElement} from "../../actions/signalActions";
 import {getUserDetailsOrRestart} from "../../helpers/helper"
 
 @connect((store) => {

@@ -60,6 +60,7 @@ class App extends React.Component {
             <Route exact path="/data" component={Data} />
             <Route exact path="/data/:slug" component={DataPreview} />
             <Route exact path="/apps" component={AppsPanel} />
+            <Route exact path="/apps?page=:slug" component={AppsPanel} />
             <Route exact path="/apps/:AppId/models" component={Apps} />
             <Route exact path="/apps/:AppId/scores" component={Apps} />
             <Route exact path="/apps/:AppId/models?page=:slug" component={Apps} />

@@ -60,6 +60,18 @@ export class AdvanceSettings extends React.Component {
 	        this.props.dispatch(selectedAnalysisList(evt.target,"noOfColumnsToUse"))   
 	    }
 	}
+	handleBinningInput(evt){
+	    if(evt.target.value){
+            if(parseInt(evt.target.value) <= parseInt(evt.target.max)){
+                this.props.dispatch(selectedAnalysisList(evt.target,"association"))   
+            }else{
+                evt.target.value = "";
+            }
+        }else{
+            //evt.target.value = evt.target.defaultValue;
+            this.props.dispatch(selectedAnalysisList(evt.target,"association"))   
+        }
+	}
 	handleTrendAnalysis(evt){
 		this.props.dispatch(selectedAnalysisList(evt.target,"trend"))
 	}
@@ -122,7 +134,7 @@ export class AdvanceSettings extends React.Component {
 			      associationPlaceholder = "0-"+ (store.getState().datasets.dataSetMeasures.length -1);
 			      customMaxValue = store.getState().datasets.dataSetMeasures.length -1;
 			    }
-				var countOptions=null, options=[],customValueInput=null,customInputDivClass="col-md-5 md-p-0 visibilityHidden";
+				var countOptions=null, binOptions=null,binTemplate = null,options=[],customValueInput=null,customInputDivClass="col-md-5 md-p-0 visibilityHidden";
 				var tooltipText = <Tooltip id="tooltip">Value should be less than or equal to {customMaxValue}</Tooltip>;
 				if(metaItem.noOfColumnsToUse!= null){
 					options = metaItem.noOfColumnsToUse.map((subItem,subIndex)=>{
@@ -164,11 +176,38 @@ export class AdvanceSettings extends React.Component {
 						);
 					})();
 				}
+				if(metaItem.hasOwnProperty("binSetting")){
+				    
+				    binTemplate = metaItem.binSetting.map((binItem,binIndex)=>{
+				        if(!binItem.hasOwnProperty("defaultValue")){
+				            return (<label key={binIndex}><b>{binItem.displayName}</b></label>)  
+				        }else{
+				            return (<div className="form-group md-pt-15" id={binIndex}><label for="fl1" className="col-sm-9 control-label">{binItem.displayName}</label>
+				            <div className="col-sm-3">
+	                        <input id={binIndex} type="number" name={metaItem.name}  className="form-control" min={binItem.min} max={binItem.max} placeholder={binItem.defaultValue} defaultValue={binItem.value}   onChange={this.handleBinningInput.bind(this)}/>
+	                        </div>
+	                        </div>)    
+				        }
+				    });
+				    
+				    binOptions  = (function(){
+                        return(
+                                <div>
+                                <div className="col-md-10 md-pl-20 md-pt-20">
+                                {binTemplate}
+                                </div>
+                                </div>
+                        );
+                    })();
+				    
+				}
 
 				return(
 						<li><div key={metaIndex} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisListActions.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>
 						<div className="clearfix"></div>
 						{countOptions}
+						<div className="clearfix"></div>
+						{binOptions}
 						</li>);
 			}
 		});

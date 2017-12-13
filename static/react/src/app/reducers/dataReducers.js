@@ -579,7 +579,7 @@ export default function reducer(state = {
         ...state,
         dataPreview: action.dataPreview,
         subsettedSlug: "",
-        subsettingDone: true,
+        subsettingDone: action.isSubsetting,
         dataTransformSettings:action.dataPreview.meta_data.transformation_settings.existingColumns,
       }
     }
