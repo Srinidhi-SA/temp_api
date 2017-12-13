@@ -1191,7 +1191,7 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
     if job_type in ['metadata', 'subSetting']:
         queue_name = get_queue_to_use(job_type=job_type, data_size=instance.get_number_of_row_size())
     elif job_type in ['master', 'model', 'score']:
-        queue_name = get_queue_to_use(job_type=job_type, data_size=instance.get_number_of_row_size())
+        queue_name = get_queue_to_use(job_type=job_type, data_size=instance.dataset.get_number_of_row_size())
     elif job_type in ['robo', 'stockAdvisor']:
         pass
 
