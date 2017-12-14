@@ -169,6 +169,12 @@ class InsightSerializer(serializers.ModelSerializer):
             ret['message'] = get_message(instance)
         except:
             ret['message'] = None
+        if dataset_object.datasource_type=='fileUpload':
+            try:
+                from api.helper import convert_to_humanize
+                ret['file_size']=convert_to_humanize(dataset_object.input_file.size)
+            except:
+                ret['file_size']=-1
         return ret
 
     def update(self, instance, validated_data):
