@@ -4670,12 +4670,10 @@ def get_metadata_for_mlscripts(request, slug=None):
     ds_serializer = DatasetSerializer(instance=ds)
     meta_data = ds_serializer.data.get('meta_data')
     return JsonResponse({
-        'Message': 'Success',
-        'meta_data': {
-            "metaData": meta_data.get('metaData'),
-            'columnData': meta_data.get('columnData'),
-            'headers': meta_data.get('headers')
-        },
+        "metaData": meta_data.get('metaData'),
+        'columnData': meta_data.get('columnData'),
+        'headers': meta_data.get('headers')
+
     })
 
 

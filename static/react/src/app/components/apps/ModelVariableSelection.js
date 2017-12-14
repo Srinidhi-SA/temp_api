@@ -68,7 +68,7 @@ export class ModelVariableSelection extends React.Component {
                 <div className="page-head">
                 <div className="row">
                 <div className="col-md-8">
-                <h2>Variable Selection</h2>
+                <h3 class="xs-mt-0 text-capitalize">Variable Selection</h3>
                 </div>
                 </div>
                 <div className="clearfix"></div>
@@ -79,12 +79,12 @@ export class ModelVariableSelection extends React.Component {
                 <Form onSubmit={this.createModel.bind(this)}>
                 <FormGroup role="form">
                 <div className="row">			          
-                <div className="col-lg-12">
+                 
                 <div className="form-group">
-                <div className="col-lg-2"><label>I want to predict</label></div>
+                <label className="col-lg-2">I want to predict</label>
                 <div className="col-lg-4"> {renderSelectBox}</div>
                 </div>
-                </div>{/*<!-- /.col-lg-4 -->*/}
+                 {/*<!-- /.col-lg-4 -->*/}
                 </div>
                 
                 <DataVariableSelection/>
@@ -103,7 +103,7 @@ export class ModelVariableSelection extends React.Component {
                 </div>{/*<!-- /.col-lg-4 -->*/}
                 </div>
                 <div className="row">
-                <div className="col-lg-2 col-lg-offset-10">
+                <div className="col-lg-12 text-right">
                 <Button type="submit" bsStyle="primary">Create Model</Button>
                 </div>
                 </div>
