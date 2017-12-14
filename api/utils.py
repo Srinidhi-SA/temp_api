@@ -147,6 +147,7 @@ class InsightListSerializers(serializers.ModelSerializer):
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
         ret['brief_info'] = instance.get_brief_info()
+        ret['is_viewed'] = True
         return ret
 
     def get_brief_info(self):
