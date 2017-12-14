@@ -167,6 +167,14 @@ def deploy_api_and_migrate(type="development"):
 def deploy_ml(branch="development"):
     pass
 
+@task
+def copy_egg_from_emr_to_api_dev():
+
+    command_to_copy = "scp emr_dev:/home/hadoop/codebase/mAdvisor-MLScripts/dist/marlabs_bi_jobs-0.0.0-py2.7.egg ."
+    command_to_paste = "scp marlabs_bi_jobs-0.0.0-py2.7.egg development_api:/home/ubuntu/codebase/mAdvisor-api/scripts/"
+    local(command_to_copy)
+    local(command_to_paste)
+
 
 @task
 def reload_gunicorn(type="dev"):

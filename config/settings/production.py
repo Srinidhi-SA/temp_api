@@ -20,11 +20,18 @@ PROJECT_APP = [
 ]
 
 INSTALLED_APPS += PROJECT_APP
+HADOOP_MASTER = '172.31.50.84'
+
+YARN = {
+    "host": HADOOP_MASTER,
+    "port": 8088,
+    "timeout": 30
+}
 
 HDFS = {
 
     # Give host name without http
-    'host': '172.31.50.84',
+    'host': HADOOP_MASTER,
     'port': '14000', #webhdfs port
     'uri': '/webhdfs/v1',
     'user.name': 'hadoop',
@@ -64,8 +71,47 @@ THIS_SERVER_DETAILS = {
     "initail_domain": "/api"
 }
 
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient"
+        },
+        "KEY_PREFIX": "local"
+    }
+}
+CACHE_TTL = 60 * 15
+REDIS_SALT = "123"
+
+
 
 APPEND_SLASH=False
 DATA_UPLOAD_MAX_MEMORY_SIZE = 1024*1024*1024
 
 mAdvisorScores = '/home/hadoop/mAdvisorScores/'
+
+IMAGE_URL = "/api/get_profile_image/"
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = "smtp.office365.com"
+EMAIL_PORT = 587
+EMAIL_HOST_USER = "product@marlabs.com"
+EMAIL_HOST_PASSWORD = "BImarlabs@123"
+EMAIL_USE_TLS = ""
+EMAIL_USE_SSL = ""
+
+JOBSERVER_FROM_EMAIL = "ankush.patel@marlabs.com"
+JOBSERVER_SENDTO_EMAIL_LIST = [
+    'ankush.patel@marlabs.com',
+    'vivekananda.tadala@marlabs.com',
+    'gulshan.gaurav@marlabs.com',
+    'mukesh.kumar@marlabs.com'
+]
+FUNNY_EMAIL_LIST = [
+    'ankush.patel@marlabs.com',
+    'sabretooth.rog@gmail.com'
+]
+
+
+JOBSERVER_EMAIL_TEMPLATE = "Please restart jobserver- IP-"
