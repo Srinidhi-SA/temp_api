@@ -650,9 +650,14 @@ class Insight(models.Model):
 
             if 'FILE_SETTINGS' in config:
                 file_setting = config['FILE_SETTINGS']
-                brief_info.update({
-                    'analysis list': set(file_setting.get('script_to_run'))
-                })
+                try:
+                    brief_info.update({
+                        'analysis list': set(file_setting.get('script_to_run'))
+                    })
+                except:
+                    brief_info.update({
+                        'analysis list': []
+                    })
 
         brief_info.update(
             {

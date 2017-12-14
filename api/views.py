@@ -39,7 +39,8 @@ class SignalView(viewsets.ModelViewSet):
         queryset = Insight.objects.filter(
             created_by=self.request.user,
             deleted=False,
-            analysis_done=True
+            # analysis_done=True
+            status__in=['SUCCESS','INPROGRESS']
         )
         return queryset
 
