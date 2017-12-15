@@ -11064,14 +11064,14 @@ pre {
     text-align: center;
     border-radius: 0;
     color: #555;
-    border-width: 0;
+    border: 2px solid transparent;
     font-weight: 600;
     /* background: #f8f8f8; */
-    border:none;
 }
 .nav-tabs>li a:hover {
 	background: 0 0;
-	color: #00998c
+	color: #00998c;
+	border: 2px solid transparent;
 }
 .nav-tabs>li a:active {
 	background-color: transparent
@@ -13745,7 +13745,7 @@ ul.app_labels li:first-child { margin: 0; padding: 7px 5px }
 .app-block .card-footer { padding:0; }
 .app-block  .card-footer div.card-deatils { width: 46px; }
 
-.app-block  a.app-link { min-height: 130px; display: block; border-bottom: 1px solid #dae6e5; color:#333; }
+.app-block  a.app-link { min-height: 135px; display: block; border-bottom: 1px solid #dae6e5; color:#333; }
 .app_labels li a { /*border:1px solid #dae6e5; width: 100px; */ display: inline-block; line-height: 1.91em; color: #333; padding-left: 5px;padding-right:5px }
 .app_labels a i {
     color: #02988c;
