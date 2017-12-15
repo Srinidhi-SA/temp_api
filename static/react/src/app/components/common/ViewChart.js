@@ -12,6 +12,7 @@ import { Scrollbars } from 'react-custom-scrollbars';
     return {login_response: store.login.login_response,
         signal: store.signals.signalAnalysis,
         viewChartFlag:store.signals.viewChartFlag,
+        chartClassId:store.signals.chartClassId,
     };
 })
 
@@ -21,16 +22,17 @@ export class ViewChart extends React.Component {
         super(props);
     }
     openCloseZoomChart(flag){
-        this.props.dispatch(showZoomChart(flag));
+        this.props.dispatch(showZoomChart(flag,""));
     }
     render() {
-        var data = document.querySelector(".chart" + this.props.classId + ">svg")
-       
-        if(document.querySelector(".chart" + this.props.classId + ">svg")){
+      var imgId = document.querySelector(".chart" + this.props.chartClassId + ">svg");
+      var imgDetails = "";
+        if(document.querySelector(".chart" + this.props.chartClassId + ">svg")){
+            imgDetails = imgId.innerHTML;
             //This is code to remove background black color in chart and ticks adjustment
-            var nodeList = document.querySelector(".chart" + this.props.classId + ">svg").querySelectorAll('.c3-chart .c3-chart-lines path');
+            var nodeList = document.querySelector(".chart" + this.props.chartClassId + ">svg").querySelectorAll('.c3-chart .c3-chart-lines path');
             //var nodeList1 = document.querySelector(".chart"+this.props.classId +">svg").querySelectorAll('.c3 line');
-            var nodeList2 = document.querySelector(".chart" + this.props.classId + ">svg").querySelectorAll('.c3-axis path');
+            var nodeList2 = document.querySelector(".chart" + this.props.chartClassId + ">svg").querySelectorAll('.c3-axis path');
             var line_graph = Array.from(nodeList);
             var x_and_y = Array.from(nodeList2); //.concat(Array.from(nodeList2));
             line_graph.forEach(function(element) {
@@ -40,9 +42,9 @@ export class ViewChart extends React.Component {
               element.style.fill = "none";
               element.style.stroke = "black";
             });
-            svgAsPngUri(document.querySelector(".chart" + this.props.classId + ">svg"), {}, function(uri) {
+            svgAsPngUri(document.querySelector(".chart" + this.props.chartClassId + ">svg"), {}, function(uri) {
                console.log("PNG")
-               $("#idChart").attr("src",uri);
+               $(".imgContent").attr("src",uri);
               });
         }
         return (
@@ -57,10 +59,19 @@ export class ViewChart extends React.Component {
                 <div className="row">
                 <div className="col-md-12 text-center">
          
-               <img src="" id="idChart" />
+               <img src="" class="imgContent" />
+             
                 </div>
             
                 </div>
+                 {/* <div className="row">
+                <div className="col-md-12 text-center">
+         
+                  <svg>{imgDetails}</svg>
+             
+                </div>
+            
+                </div> */}
                  </Scrollbars>
                 </Modal.Body>
                 <Modal.Footer>

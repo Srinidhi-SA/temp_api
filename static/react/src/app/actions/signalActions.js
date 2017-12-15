@@ -71,7 +71,14 @@ function fetchCreateSignal(metaData) {
 		}).then( response => Promise.all([response, response.json()]));
 }
 
-function fetchCreateSignalSuccess(signalData, dispatch) {
+export function triggerSignalAnalysis(signalData,percentage,message){
+    return (dispatch) => {
+        dispatch(updateCsLoaderValue(percentage));
+        dispatch(updateCsLoaderMsg(message));
+        fetchCreateSignalSuccess(signalData,dispatch)
+    }
+}
+export function fetchCreateSignalSuccess(signalData, dispatch) {
   //console.log("signal list from api to store")
   // if(signalData.type == "dimension"){
     console.log("created in progress slug is:")
@@ -542,9 +549,10 @@ export function selectProbabilityBlock(evt){
     })
 
 }
-export function showZoomChart(flag){
+export function showZoomChart(flag,classId){
     return {
         type: "ZOOM_CHART",
-        flag
+        flag,
+        classId
     }
 }
