@@ -9,7 +9,9 @@ import {
   handleDelete,
   handleRename,
   storeSearchElement,
-  storeSortElements
+  storeSortElements,
+  fetchCreateSignalSuccess,
+  triggerSignalAnalysis
 } from "../../actions/signalActions";
 import {
   Pagination,
@@ -29,6 +31,8 @@ import {SEARCHCHARLIMIT, getUserDetailsOrRestart} from "../../helpers/helper"
 import Dialog from 'react-bootstrap-dialog';
 import {DetailOverlay} from "../common/DetailOverlay";
 import {getAllDataList} from "../../actions/dataActions";
+import {openCsLoaderModal,closeCsLoaderModal} from "../../actions/createSignalActions";
+import {CreateSignalLoader} from "../common/CreateSignalLoader";
 
 @connect((store) => {
   return {
@@ -122,6 +126,13 @@ export class Signals extends React.Component {
     console.log(e.target.id);
     this.props.dispatch(emptySignalAnalysis());
   }
+  openLoaderScreen(slug,e){
+    var signalData ={};
+    signalData.slug = slug
+     this.props.dispatch(openCsLoaderModal());
+     this.props.dispatch(emptySignalAnalysis());
+     this.props.dispatch(triggerSignalAnalysis(signalData))
+  }
   onChangeOfSearchBox(e) {
     if (e.target.value == "" || e.target.value == null) {
       this.props.dispatch(storeSearchElement(""));
@@ -170,12 +181,28 @@ export class Signals extends React.Component {
     if (data) {
       console.log("under if data condition!!")
       const storyList = data.map((story, i) => {
-        if (story.type == "dimension") {
-          var imgLink = STATIC_URL + "assets/images/d_cardIcon.png"
-        } else {
-          var imgLink = STATIC_URL + "assets/images/m_carIcon.png"
-        }
-        var signalLink = "/signals/" + story.slug;
+          var iconDetails = "";
+          
+          var signalLink = "/signals/" + story.slug;
+          var signalClick =   <Link to={signalLink} id={story.slug} onClick={this.getSignalAnalysis.bind(this)}>
+          {story.name}
+          </Link>
+          if(story.status == "INPROGRESS"){
+              iconDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{story.completed_percentage}&nbsp;%</span></div>
+              signalClick = <a class="cursor" onClick={this.openLoaderScreen.bind(this,story.slug)}> {story.name}</a>
+          }else if(story.status == "SUCCESS" && !story.viewed){
+              iconDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{story.completed_percentage}&nbsp;%</span></div>
+          }else{
+              if (story.type == "dimension") {
+                  var imgLink = STATIC_URL + "assets/images/d_cardIcon.png"
+              } else {
+                  var imgLink = STATIC_URL + "assets/images/m_carIcon.png"
+              }
+              iconDetails = <img src={imgLink} className="img-responsive" alt="LOADING"/>;
+          }
+          
+          
+          
         return (
 
           <div className="col-md-3 xs-mb-15 list-boxes" key={i}>
@@ -185,13 +212,14 @@ export class Signals extends React.Component {
                 <div className="row">
                   <div className="col-xs-9">
                     <h4 className="title newCardTitle">
-                      <Link to={signalLink} id={story.slug} onClick={this.getSignalAnalysis.bind(this)}>
-                        {story.name}
-                      </Link>
+                    {signalClick}
                     </h4>
                   </div>
                   <div className="col-xs-3">
-                    <img src={imgLink} className="img-responsive" alt="LOADING"/>
+                  {iconDetails}
+                   {/* <img src={imgLink} className="img-responsive" alt="LOADING"/> 
+                   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{story.completed_percentage}&nbsp;%</span></div>
+                   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">100%</span></div> */}
                   </div>
                 </div>
               </div>
@@ -296,6 +324,7 @@ export class Signals extends React.Component {
             </div>
           </div>
           <Dialog ref="dialog"/>
+              <CreateSignalLoader />
         </div>
       );
     } else {

@@ -25,6 +25,7 @@ export default function reducer(state = {
   selVarSlug:null,
   loading_message:[],
   viewChartFlag:false,
+  chartClassId :"",
 }, action) {
   console.log("in SIGNAL reducer!!");
   console.log(action);
@@ -221,7 +222,8 @@ export default function reducer(state = {
     {
         return {
             ...state,
-            viewChartFlag: action.flag
+            viewChartFlag: action.flag,
+            chartClassId:action.classId,
           }
     }
   }
