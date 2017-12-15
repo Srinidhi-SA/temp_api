@@ -71,8 +71,10 @@ function fetchCreateSignal(metaData) {
 		}).then( response => Promise.all([response, response.json()]));
 }
 
-export function triggerSignalAnalysis(signalData){
+export function triggerSignalAnalysis(signalData,percentage,message){
     return (dispatch) => {
+        dispatch(updateCsLoaderValue(percentage));
+        dispatch(updateCsLoaderMsg(message));
         fetchCreateSignalSuccess(signalData,dispatch)
     }
 }

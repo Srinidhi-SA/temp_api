@@ -126,12 +126,12 @@ export class Signals extends React.Component {
     console.log(e.target.id);
     this.props.dispatch(emptySignalAnalysis());
   }
-  openLoaderScreen(slug,e){
+  openLoaderScreen(slug,percentage,message,e){
     var signalData ={};
     signalData.slug = slug
      this.props.dispatch(openCsLoaderModal());
      this.props.dispatch(emptySignalAnalysis());
-     this.props.dispatch(triggerSignalAnalysis(signalData))
+     this.props.dispatch(triggerSignalAnalysis(signalData,percentage,message))
   }
   onChangeOfSearchBox(e) {
     if (e.target.value == "" || e.target.value == null) {
@@ -189,7 +189,7 @@ export class Signals extends React.Component {
           </Link>
           if(story.status == "INPROGRESS"){
               iconDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{story.completed_percentage}&nbsp;%</span></div>
-              signalClick = <a class="cursor" onClick={this.openLoaderScreen.bind(this,story.slug)}> {story.name}</a>
+              signalClick = <a class="cursor" onClick={this.openLoaderScreen.bind(this,story.slug,story.completed_percentage,story.completed_message)}> {story.name}</a>
           }else if(story.status == "SUCCESS" && !story.viewed){
               iconDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{story.completed_percentage}&nbsp;%</span></div>
           }else{

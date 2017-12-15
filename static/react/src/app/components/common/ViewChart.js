@@ -25,8 +25,10 @@ export class ViewChart extends React.Component {
         this.props.dispatch(showZoomChart(flag,""));
     }
     render() {
-      var imgId = "id"+this.props.chartClassId;
+      var imgId = document.querySelector(".chart" + this.props.chartClassId + ">svg");
+      var imgDetails = "";
         if(document.querySelector(".chart" + this.props.chartClassId + ">svg")){
+            imgDetails = imgId.innerHTML;
             //This is code to remove background black color in chart and ticks adjustment
             var nodeList = document.querySelector(".chart" + this.props.chartClassId + ">svg").querySelectorAll('.c3-chart .c3-chart-lines path');
             //var nodeList1 = document.querySelector(".chart"+this.props.classId +">svg").querySelectorAll('.c3 line');
@@ -58,9 +60,18 @@ export class ViewChart extends React.Component {
                 <div className="col-md-12 text-center">
          
                <img src="" class="imgContent" />
+             
                 </div>
             
                 </div>
+                 {/* <div className="row">
+                <div className="col-md-12 text-center">
+         
+                  <svg>{imgDetails}</svg>
+             
+                </div>
+            
+                </div> */}
                  </Scrollbars>
                 </Modal.Body>
                 <Modal.Footer>
