@@ -758,7 +758,20 @@ class Trainer(models.Model):
             'inputfile': [self.dataset.get_input_file()],
             'modelpath': [self.slug],
             'train_test_split': [train_test_split],
-            'analysis_type': ['training']
+            'analysis_type': ['training'],
+            'metadata': self.get_metadata_url_config()
+        }
+
+    def get_metadata_url_config(self):
+        ip_port = "{0}:{1}".format(THIS_SERVER_DETAILS.get('host'),
+                                   THIS_SERVER_DETAILS.get('port'))
+        url = "/api/get_metadata_for_mlscripts/"
+        slug_list = [
+            self.dataset.slug
+        ]
+        return {
+            "url": ip_port + url,
+            "slug_list": slug_list
         }
 
     def create_configuration_column_settings(self):
@@ -944,8 +957,21 @@ class Score(models.Model):
             'analysis_type': ['score'],
             'levelcounts': targetVariableLevelcount if targetVariableLevelcount is not None else [],
             'algorithmslug': [algorithmslug],
-            'modelfeatures': modelfeatures if modelfeatures is not None else []
+            'modelfeatures': modelfeatures if modelfeatures is not None else [],
+            'metadata': self.get_metadata_url_config()
+        }
 
+    def get_metadata_url_config(self):
+
+        ip_port = "{0}:{1}".format(THIS_SERVER_DETAILS.get('host'),
+                                                                    THIS_SERVER_DETAILS.get('port'))
+        url = "/api/get_metadata_for_mlscripts/"
+        slug_list = [
+            self.dataset.slug
+        ]
+        return {
+            "url": ip_port + url,
+            "slug_list": slug_list
         }
 
     def get_config_from_config(self):
