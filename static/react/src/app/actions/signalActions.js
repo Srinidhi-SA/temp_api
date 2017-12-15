@@ -75,36 +75,55 @@ export function triggerSignalAnalysis(signalData,percentage,message){
     return (dispatch) => {
         dispatch(updateCsLoaderValue(percentage));
         dispatch(updateCsLoaderMsg(message));
-        fetchCreateSignalSuccess(signalData,dispatch)
+        fetchCreateSignalSuccess(signalData,dispatch);
     }
+}
+export function checkAnalysisIsChecked(){
+   var isChecked = false;
+    $("#analysisList").find("input:checkbox").each(function(){
+        if(this.checked){
+            isChecked = true;
+            return false;
+        }
+    });
+    return isChecked;
 }
 export function fetchCreateSignalSuccess(signalData, dispatch) {
   //console.log("signal list from api to store")
   // if(signalData.type == "dimension"){
     console.log("created in progress slug is:")
     console.log(signalData)
-
-    let msg = store.getState().signals.loaderText
+     let msg = store.getState().signals.loaderText
     let loaderVal = store.getState().signals.createSignalLoaderValue
+    if(signalData.hasOwnProperty("proceed_for_loading") && !signalData.proceed_for_loading){
+        msg = "Your signal will be created in background...";
+        var interval = setInterval(function() {
+            dispatch(closeCsLoaderModal())
+            dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
+        },DEFAULTINTERVAL);
+    }
+   
+    else{
+        createSignalInterval = setInterval(function() {
 
-    createSignalInterval = setInterval(function() {
+            let loading_message = store.getState().signals.loading_message
+            dispatch(getSignalAnalysis(getUserDetailsOrRestart.get().userToken,signalData.slug));
+            if(store.getState().signals.createSignalLoaderValue < LOADERMAXPERVALUE){
+              if (loading_message && loading_message.length > 0) {
+                msg = loading_message[loading_message.length - 1].shortExplanation
+                loaderVal = loading_message[loading_message.length - 1].globalCompletionPercentage
+                //alert(msg + "  " + loaderVal)
+              }
+              dispatch(updateCsLoaderValue(loaderVal));
+              dispatch(updateCsLoaderMsg(msg));
+            } else {
+              dispatch(clearLoadingMsg())
+            }
 
-      let loading_message = store.getState().signals.loading_message
-      dispatch(getSignalAnalysis(getUserDetailsOrRestart.get().userToken,signalData.slug));
-      if(store.getState().signals.createSignalLoaderValue < LOADERMAXPERVALUE){
-        if (loading_message && loading_message.length > 0) {
-          msg = loading_message[loading_message.length - 1].shortExplanation
-          loaderVal = loading_message[loading_message.length - 1].globalCompletionPercentage
-          //alert(msg + "  " + loaderVal)
-        }
-        dispatch(updateCsLoaderValue(loaderVal));
-        dispatch(updateCsLoaderMsg(msg));
-      } else {
-        dispatch(clearLoadingMsg())
-      }
+          }, DEFAULTINTERVAL);
 
-    }, DEFAULTINTERVAL);
-
+    }
+   
   return {
     type: "CREATE_SUCCESS",
     signalData
@@ -225,7 +244,7 @@ function fetchPostsSuccess_analysis(signalAnalysis, errandId,dispatch) {
     clearInterval(createSignalInterval);
     dispatch(closeCsLoaderModal())
     dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
-    dispatch(clearLoadingMsg())
+    dispatch(clearLoadingMsg());
   }else if(signalAnalysis.status == FAILED||signalAnalysis.status == false){
 	  bootbox.alert("Your signal could not be created. Please try later.")
 	    clearInterval(createSignalInterval);
