@@ -164,7 +164,9 @@ class InsightSerializer(serializers.ModelSerializer):
         ret['dataset_name'] = dataset_object.name
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
-
+        if instance.viewed == False:
+            instance.viewed = True
+            instance.save()
         try:
             ret['message'] = get_message(instance)
         except:
@@ -200,6 +202,7 @@ class InsightListSerializers(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         from api.helper import get_message
+
         ret = super(InsightListSerializers, self).to_representation(instance)
         dataset = ret['dataset']
         dataset_object = Dataset.objects.get(pk=dataset)
@@ -208,6 +211,7 @@ class InsightListSerializers(serializers.ModelSerializer):
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
         ret['brief_info'] = instance.get_brief_info()
+
         # ret['is_viewed'] = False
         try:
             ret['completed_percentage']=get_message(instance)[-1]['globalCompletionPercentage']
