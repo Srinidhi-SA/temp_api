@@ -210,8 +210,8 @@ class InsightListSerializers(serializers.ModelSerializer):
         ret['brief_info'] = instance.get_brief_info()
         # ret['is_viewed'] = False
         try:
-            ret['completed_percentage']=get_message(dataset_object)[-1]['globalCompletionPercentage']
-            ret['completed_message']=get_message(dataset_object)[-1]['shortExplanation']
+            ret['completed_percentage']=get_message(instance)[-1]['globalCompletionPercentage']
+            ret['completed_message']=get_message(instance)[-1]['shortExplanation']
         except:
             ret['completed_percentage'] = 0
             ret['completed_message']="Please wait while mAdvisor is creating signal....."
