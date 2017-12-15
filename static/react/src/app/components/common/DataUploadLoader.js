@@ -39,7 +39,7 @@ export class DataUploadLoader extends React.Component {
 		<div className="panel">
 			<div className="panel-body">
 				<p className="text-center"><br/>
-				<i className="pe-7s-science pe-spin pe-5x pe-va text-primary" ></i><br/>
+				<img src="/assets/images/brain_loading.gif" /><br/>
 				<br/>
                  {store.getState().datasets.dataLoaderText}
 				</p><br/>
