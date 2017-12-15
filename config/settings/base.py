@@ -226,6 +226,11 @@ DATA_SOURCES_CONFIG = {"conf": [{
             },
             {
                 "fieldType": "Input",
+                "placeHolder": "tablename",
+                "labelName": "Table Name"
+            },
+            {
+                "fieldType": "Input",
                 "placeHolder": "username",
                 "labelName": "Username"
             },
@@ -233,12 +238,8 @@ DATA_SOURCES_CONFIG = {"conf": [{
                 "fieldType": "Password",
                 "placeHolder": "password",
                 "labelName": "Password"
-            },
-            {
-                "fieldType": "Input",
-                "placeHolder": "tablename",
-                "labelName": "Table Name"
             }
+
         ]
     },
     {
