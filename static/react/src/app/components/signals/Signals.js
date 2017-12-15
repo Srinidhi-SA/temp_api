@@ -1,7 +1,7 @@
 import React from "react";
 import {connect} from "react-redux";
 import ReactDOM from "react-dom";
-import {Link} from "react-router-dom";
+import {Link,Redirect} from "react-router-dom";
 import store from "../../store";
 import {
   getList,
@@ -27,12 +27,13 @@ import Breadcrumb from 'react-breadcrumb';
 var dateFormat = require('dateformat');
 import {CreateSignal} from "./CreateSignal";
 import {STATIC_URL} from "../../helpers/env";
-import {SEARCHCHARLIMIT, getUserDetailsOrRestart} from "../../helpers/helper"
+import {SEARCHCHARLIMIT, getUserDetailsOrRestart,isEmpty,SUCCESS} from "../../helpers/helper"
 import Dialog from 'react-bootstrap-dialog';
 import {DetailOverlay} from "../common/DetailOverlay";
 import {getAllDataList} from "../../actions/dataActions";
 import {openCsLoaderModal,closeCsLoaderModal} from "../../actions/createSignalActions";
 import {CreateSignalLoader} from "../common/CreateSignalLoader";
+
 
 @connect((store) => {
   return {
@@ -41,7 +42,8 @@ import {CreateSignalLoader} from "../common/CreateSignalLoader";
     selectedSignal: store.signals.signalAnalysis,
     signal_search_element: store.signals.signal_search_element,
     signal_sorton: store.signals.signal_sorton,
-    signal_sorttype: store.signals.signal_sorttype
+    signal_sorttype: store.signals.signal_sorttype,
+    signalAnalysis: store.signals.signalAnalysis
   };
 })
 
@@ -53,15 +55,12 @@ export class Signals extends React.Component {
   componentWillMount() {
     var pageNo = 1;
     this.props.dispatch(getAllDataList());
+    this.props.dispatch(emptySignalAnalysis());
     if (this.props.history.location.search.indexOf("page") != -1) {
       pageNo = this.props.history.location.search.split("page=")[1];
       this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, pageNo));
     } else
       this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, pageNo));
-
-      // if(this.props.signal_search_element==""){
-      //   this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, 1));
-      // }
     }
 
   componentDidMount() {
@@ -131,7 +130,8 @@ export class Signals extends React.Component {
     signalData.slug = slug
      this.props.dispatch(openCsLoaderModal());
      this.props.dispatch(emptySignalAnalysis());
-     this.props.dispatch(triggerSignalAnalysis(signalData,percentage,message))
+     this.props.dispatch(triggerSignalAnalysis(signalData,percentage,message));
+     //this.props.history.push('/signals/'+slug);
   }
   onChangeOfSearchBox(e) {
     if (e.target.value == "" || e.target.value == null) {
@@ -165,6 +165,11 @@ export class Signals extends React.Component {
     }
     //search element ends..
 
+    if (!isEmpty(store.getState().signals.signalAnalysis)) {
+            let _link = "/signals/" + store.getState().signals.signalAnalysis.slug;
+            return (<Redirect to={_link}/>);     
+    }
+    
     console.log(this.props);
     const data = this.props.signalList;
     const pages = store.getState().signals.signalList.total_number_of_pages;

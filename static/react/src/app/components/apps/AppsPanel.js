@@ -278,18 +278,18 @@ export class AppsPanel extends React.Component {
                 <div class="btn-group">
                   <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                     <i class="fa fa-sort-alpha-asc fa-lg"></i>
-                    <span class="caret"></span>
+                    &nbsp;<span class="caret"></span>
                   </button>
                   <ul role="menu" class="dropdown-menu dropdown-menu-right">
                     <li>
                       <a href="#" onClick={this.handleSorting.bind(this, 'name', 'asc')}>
                         <i class="fa fa-sort-alpha-asc" aria-hidden="true"></i>
-                        Name Ascending</a>
+                        &nbsp;Name Ascending</a>
                     </li>
                     <li>
                       <a href="#" onClick={this.handleSorting.bind(this, 'name', '-')}>
                         <i class="fa fa-sort-alpha-desc" aria-hidden="true"></i>
-                        Name Descending</a>
+                        &nbsp;Name Descending</a>
                     </li>
                     {/*  <li>
                 <a href="#" onClick={this.handleSorting.bind(this,'created_at','-')}><i class="fa fa-sort-numeric-asc" aria-hidden="true"></i> Date Ascending</a>
