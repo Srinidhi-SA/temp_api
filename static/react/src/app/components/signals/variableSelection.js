@@ -7,7 +7,7 @@ import {Modal,Button,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "r
 import store from "../../store";
 import {selectedAnalysisList,resetSelectedVariables,unselectAllPossibleAnalysis,getDataSetPreview,setDimensionSubLevels,selectAllAnalysisList,updateSelectAllAnlysis,saveAdvanceSettings,checkAllAnalysisSelected} from "../../actions/dataActions";
 import {openCreateSignalModal,closeCreateSignalModal,updateCsLoaderValue} from "../../actions/createSignalActions";
-import {createSignal,setPossibleAnalysisList,emptySignalAnalysis,advanceSettingsModal,checkIfDateTimeIsSelected,updateCategoricalVariables,createcustomAnalysisDetails} from "../../actions/signalActions";
+import {createSignal,setPossibleAnalysisList,emptySignalAnalysis,advanceSettingsModal,checkIfDateTimeIsSelected,updateCategoricalVariables,createcustomAnalysisDetails,checkAnalysisIsChecked} from "../../actions/signalActions";
 import {DataVariableSelection} from "../data/DataVariableSelection";
 import {CreateSignalLoader} from "../common/CreateSignalLoader";
 import {openCsLoaderModal,closeCsLoaderModal} from "../../actions/createSignalActions";
@@ -76,49 +76,52 @@ export class VariableSelection extends React.Component {
 	}
 	createSignal(event){
 		event.preventDefault();
-		if($('#signalVariableList option:selected').val() != ""){
-		    var trendIsChecked = checkIfDateTimeIsSelected();
-		    if((store.getState().datasets.selectedTimeDimensions  == "" || store.getState().datasets.selectedTimeDimensions == undefined) && trendIsChecked == true){
-		        bootbox.alert("Please select one of the date dimensions.");
-		        return false;
-		    }
-			console.log("while creating signal")
-			console.log(this.props);
-			this.signalFlag = false;
-			this.props.dispatch(updateCsLoaderValue(3))
-			this.props.dispatch(openCsLoaderModal());
-			let customDetails = createcustomAnalysisDetails();
-			let analysisList =[],config={}, postData={};
-			config['possibleAnalysis'] = this.props.selectedAnalysis;
-			config['measures'] =this.props.selectedMeasures;
-			config['dimension'] =this.props.selectedDimensions;
-			config['timeDimension'] =this.props.selectedTimeDimensions;
-			config['customAnalysisDetails'] = customDetails["customAnalysisDetails"];
-			config['polarity']=customDetails["polarity"];
-			postData["name"]=$("#createSname").val();
-			postData["type"]=this.props.getVarType;
-			postData["target_column"]=$('#signalVariableList option:selected').text();
-			postData["config"]=config;
-			postData["dataset"]=this.props.dataPreview.slug;
-
-			// po
-			if(this.props.getVarType.toLowerCase() == "measure"){
-				// postData['trend-sub'] = this.props.selectedTrendSub;
-				postData['advanced_settings'] = this.props.dataSetAnalysisList.measures;
-
-			}else if(this.props.getVarType.toLowerCase() == "dimension"){
-				//postData['trend-sub'] = this.props.selectedTrendSub;
-				postData['advanced_settings'] = this.props.dataSetAnalysisList.dimensions;
-				this.props.dataSetAnalysisList.dimensions.targetLevels.push(this.props.dimensionSubLevel);
-				//postData['dimension-sub-level'] = this.props.dimensionSubLevel;
-
-			}
-			console.log(postData);
-			//this.props.dispatch(createSignal(postData));
-		}else{
-
-			bootbox.alert("Please select a variable to analyze...")
+		var isAnalysisChecked = checkAnalysisIsChecked();
+		if($('#signalVariableList option:selected').val() == ""){
+		    bootbox.alert("Please select a variable to analyze...");
+		    return false;
 		}
+		if(!isAnalysisChecked){
+		    bootbox.alert("Please select a type of analysis...");
+            return false;
+		}
+		
+		var trendIsChecked = checkIfDateTimeIsSelected();
+        if((store.getState().datasets.selectedTimeDimensions  == "" || store.getState().datasets.selectedTimeDimensions == undefined) && trendIsChecked == true){
+            bootbox.alert("Please select one of the date dimensions.");
+            return false;
+        }
+        console.log("while creating signal")
+        console.log(this.props);
+        this.signalFlag = false;
+        this.props.dispatch(updateCsLoaderValue(3))
+        this.props.dispatch(openCsLoaderModal());
+        let customDetails = createcustomAnalysisDetails();
+        let analysisList =[],config={}, postData={};
+        config['possibleAnalysis'] = this.props.selectedAnalysis;
+        config['measures'] =this.props.selectedMeasures;
+        config['dimension'] =this.props.selectedDimensions;
+        config['timeDimension'] =this.props.selectedTimeDimensions;
+        config['customAnalysisDetails'] = customDetails["customAnalysisDetails"];
+        config['polarity']=customDetails["polarity"];
+        postData["name"]=$("#createSname").val();
+        postData["type"]=this.props.getVarType;
+        postData["target_column"]=$('#signalVariableList option:selected').text();
+        postData["config"]=config;
+        postData["dataset"]=this.props.dataPreview.slug;
+
+
+        if(this.props.getVarType.toLowerCase() == "measure"){
+           
+            postData['advanced_settings'] = this.props.dataSetAnalysisList.measures;
+
+        }else if(this.props.getVarType.toLowerCase() == "dimension"){
+            postData['advanced_settings'] = this.props.dataSetAnalysisList.dimensions;
+            this.props.dataSetAnalysisList.dimensions.targetLevels.push(this.props.dimensionSubLevel);  
+
+        }
+        console.log(postData);
+        this.props.dispatch(createSignal(postData)); 
 	}
 
 	setPossibleList(event){
