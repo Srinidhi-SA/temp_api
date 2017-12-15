@@ -440,7 +440,7 @@ YARN_STATUS = { "RUNNING" :"INPROGRESS",
                 "SUCCESS" : "SUCCESS"
               }
 
-UI_VERSION = "v2.1_27"
+UI_VERSION = "v2.1_28"
 
 ERROR_MESSAGE = {
     'upload_error': 'Code had a weakness. Now it is broken.'
@@ -948,4 +948,3 @@ LIST_OF_ADMIN_EMAILS = [
             # 'mitali.sodhi@marlabs.com',
             # 'gulshan.gaurav@marlabs.com'
         ]
-
