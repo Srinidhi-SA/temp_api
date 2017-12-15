@@ -410,7 +410,7 @@ closeDocumentMode(){
                   <div className="panel panel-mAd">
                     <div className="panel-heading">
 
-                      <h4 className="page-title-4">{storyName}
+                      <h2 className="page-title-4">{storyName}
 					  
 					  
 					<div className="btn-toolbar pull-right">
@@ -434,7 +434,7 @@ closeDocumentMode(){
 					
 					</div>
 					</div>
-					  </h4>
+					  </h2>
                       <div className="clearfix"></div>
                     </div>
 

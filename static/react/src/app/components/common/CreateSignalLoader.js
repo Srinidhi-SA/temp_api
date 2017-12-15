@@ -1,9 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Redirect } from "react-router";
+import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {Modal,Button} from "react-bootstrap";
 import {openCsLoaderModal,closeCsLoaderModal} from "../../actions/createSignalActions";
+import {hideDataPreview} from "../../actions/dataActions";
 import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
 import HeatMap from '../../helpers/heatmap';
@@ -25,13 +26,15 @@ export class CreateSignalLoader extends React.Component {
   	this.props.dispatch(openCsLoaderModal())
   }
   closeModelPopup(){
-  	this.props.dispatch(closeCsLoaderModal())
+  	this.props.dispatch(closeCsLoaderModal());
+  	this.props.dispatch(hideDataPreview());
   }
   render() {
    return (
           <div id="createSignalLoader">
 
       	<Modal show={store.getState().signals.createSignalLoaderModal}  backdrop="static" onHide={this.closeModelPopup.bind(this)} dialogClassName="modal-colored-header">
+      
       	<Modal.Body>
     	<div className="row">
 		<div className="col-md-12">
@@ -54,6 +57,10 @@ export class CreateSignalLoader extends React.Component {
 		</div>
 	</div>
 		</Modal.Body>
+		<Modal.Footer>
+                    <Link to="/signals" onClick={this.closeModelPopup.bind(this)}><Button onClick={this.closeModelPopup.bind(this)}>Proceed in Background</Button></Link>
+                    
+                    </Modal.Footer>
 		</Modal>
           </div>
        );

@@ -6,7 +6,7 @@ import {dataPreviewInterval,dataUploadLoaderValue,clearLoadingMsg} from "./dataU
 import {closeAppsLoaderValue} from "./appActions";
 import Dialog from 'react-bootstrap-dialog'
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
-import {isEmpty,RENAME,DELETE,REPLACE,DATA_TYPE,REMOVE,CURRENTVALUE,NEWVALUE,SET_VARIABLE} from "../helpers/helper";
+import {isEmpty,RENAME,DELETE,REPLACE,DATA_TYPE,REMOVE,CURRENTVALUE,NEWVALUE,SET_VARIABLE,UNIQUE_IDENTIFIER} from "../helpers/helper";
 let refDialogBox = "";
 
 function getHeader(token){
@@ -989,12 +989,20 @@ export function handleColumnClick(dialog,actionName,colSlug,colName,subActionNam
 		if(actionName == RENAME){
 			renameMetaDataColumn(dialog,colName,colSlug,dispatch,actionName)
 		}else if(actionName == DELETE){
-			deleteMetaDataColumn(dialog,colName,colSlug,dispatch,actionName,colStatus)
+		deleteMetaDataColumn(dialog,colName,colSlug,dispatch,actionName,colStatus);
 		}else if(actionName == REPLACE){
 			dispatch(updateVLPopup(true));
 			dispatch(addComponents(colSlug));
 			//updateColumnStatus(dispatch,colSlug,colName,actionName,subActionName);
-		}else {
+		}else if(actionName == UNIQUE_IDENTIFIER){
+            bootbox.confirm("Setting this column as unique identifier will unset previous selected column.",
+                     function(result){
+                          if(result){  
+                              $(".cst_table").find("thead").find("."+colSlug).first().addClass("dataPreviewUniqueIdentifierCol");
+                              updateUniqueIdentifierColumn(dispatch,actionName,colSlug);  
+                          }
+                   });
+      }else {
 		    updateColumnStatus(dispatch,colSlug,colName,actionName,subActionName);
 		}
 	}
@@ -1049,14 +1057,17 @@ export function updateColumnStatus(dispatch,colSlug,colName,actionName,subAction
 						transformSettings[i].columnSetting[j].replacementValues = replaceValues;
 					}else{
                         transformSettings[i].columnSetting[j].status=true;
-                        for(var k=0;k<transformSettings[i].columnSetting[j].listOfActions.length;k++){
-                            if(transformSettings[i].columnSetting[j].listOfActions[k].name == subActionName){
-                                transformSettings[i].columnSetting[j].listOfActions[k].status = true;
-                            }else{
-                                transformSettings[i].columnSetting[j].listOfActions[k].status = false;
-                            }
-                        }
-                        break;
+                       if(transformSettings[i].columnSetting[j].hasOwnProperty("listOfActions")){
+                           for(var k=0;k<transformSettings[i].columnSetting[j].listOfActions.length;k++){
+                           if(transformSettings[i].columnSetting[j].listOfActions[k].name == subActionName){
+                               transformSettings[i].columnSetting[j].listOfActions[k].status = true;
+                           }else{
+                               transformSettings[i].columnSetting[j].listOfActions[k].status = false;
+                           }
+                       }
+                       break;
+                       }
+                     
                     }
 					
 
@@ -1073,6 +1084,30 @@ export function updateColumnStatus(dispatch,colSlug,colName,actionName,subAction
 	//dispatch(updateTransformSettings(transformSettings));
 
 }
+
+function updateUniqueIdentifierColumn(dispatch,actionName,colSlug){
+    dispatch(showLoading());
+    var slug = store.getState().datasets.selectedDataSet;
+    var transformSettings = store.getState().datasets.dataTransformSettings.slice();
+    for(var i =0;i<transformSettings.length;i++){
+        for(var j=0;j<transformSettings[i].columnSetting.length;j++){
+            if(transformSettings[i].columnSetting[j].actionName == actionName){
+                if(transformSettings[i].slug == colSlug){
+                    transformSettings[i].columnSetting[j].status = true;  
+                }
+                else {
+                    if(transformSettings[i].columnSetting[j].status){
+                        $(".cst_table").find("thead").find("."+transformSettings[i].slug).first().removeClass("dataPreviewUniqueIdentifierCol");
+                        transformSettings[i].columnSetting[j].status = false;
+                    }   
+                }
+            }
+        }
+    }  
+    dispatch(handleColumnActions(transformSettings,slug,false))
+}
+
+
 export function handleSaveEditValues(colSlug){
 	return (dispatch) => {
 	updateColumnStatus(dispatch,colSlug,"",REPLACE,"");
@@ -1122,7 +1157,8 @@ function fetchModifiedMetaData(transformSettings,slug) {
 export function fetchDataValidationSuccess(dataPreview,isSubsetting){
 	return{
 		type: "DATA_VALIDATION_PREVIEW",
-		dataPreview
+		dataPreview,
+		isSubsetting
 	}
 }
 

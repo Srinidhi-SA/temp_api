@@ -33,7 +33,7 @@ export class C3Chart extends React.Component {
   }
   
   openZoomChart(flag){
-      this.props.dispatch(showZoomChart(flag)); 
+      this.props.dispatch(showZoomChart(flag,this.props.classId)); 
   }
 
   showStatisticalInfo(){
@@ -373,7 +373,7 @@ export class C3Chart extends React.Component {
 
            </div>
           </div>
-          <ViewChart classId={this.props.classId} onRef={ref => (this.child = ref)}/>
+          <ViewChart classId={this.props.classId}/>
          </div>
 
  </div>
