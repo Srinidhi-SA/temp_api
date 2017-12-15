@@ -120,7 +120,7 @@ def leia():
     env.key_filename = [key_file]
     env.host_string = "{0}@{1}".format(server_details.get('username'), server_details.get('host'))
 
-    return {'server_details':server_details, 'path_details':path_details, 'type':'luke'}
+    return {'server_details':server_details, 'path_details':path_details, 'type':'leia'}
 
 
 BRANCH_FUNCTION_MAPPING = {
@@ -235,7 +235,8 @@ def do_npm_run(branch, react_path):
             local("npm run buildLinux")
         elif "luke" == branch:
             local("npm run buildLuke")
-
+        elif "leia" == branch:
+            local("npm run buildLeia")
 
 def deploy_dist_to_destination(base_remote_path, react_path):
     import random
