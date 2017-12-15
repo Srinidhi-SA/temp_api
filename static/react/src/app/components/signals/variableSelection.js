@@ -114,7 +114,7 @@ export class VariableSelection extends React.Component {
 
 			}
 			console.log(postData);
-			//this.props.dispatch(createSignal(postData));
+			this.props.dispatch(createSignal(postData));
 		}else{
 
 			bootbox.alert("Please select a variable to analyze...")
