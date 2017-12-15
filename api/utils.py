@@ -199,6 +199,7 @@ class InsightSerializer(serializers.ModelSerializer):
 class InsightListSerializers(serializers.ModelSerializer):
 
     def to_representation(self, instance):
+        from api.helper import get_message
         ret = super(InsightListSerializers, self).to_representation(instance)
         dataset = ret['dataset']
         dataset_object = Dataset.objects.get(pk=dataset)
@@ -207,8 +208,13 @@ class InsightListSerializers(serializers.ModelSerializer):
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
         ret['brief_info'] = instance.get_brief_info()
-        ret['is_viewed'] = False
-        ret['completed_percentage']=23
+        # ret['is_viewed'] = False
+        try:
+            ret['completed_percentage']=get_message(dataset_object)[-1]['globalCompletionPercentage']
+            ret['completed_message']=get_message(dataset_object)[-1]['shortExplanation']
+        except:
+            ret['completed_percentage'] = 0
+            ret['completed_message']="Please wait while mAdvisor is creating signal....."
         return ret
 
     def get_brief_info(self):
