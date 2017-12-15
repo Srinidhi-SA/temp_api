@@ -175,7 +175,7 @@ class InsightSerializer(serializers.ModelSerializer):
             try:
                 from api.helper import convert_to_humanize
                 ret['file_size']=convert_to_humanize(dataset_object.input_file.size)
-                if(dataset_object.input_file.size<1000000):
+                if(dataset_object.input_file.size<500000):
                     ret['proceed_for_loading']=True
                 else:
                     ret['proceed_for_loading'] = False
