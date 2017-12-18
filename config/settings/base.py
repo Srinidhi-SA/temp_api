@@ -226,6 +226,96 @@ DATA_SOURCES_CONFIG = {"conf": [{
             },
             {
                 "fieldType": "Input",
+                "placeHolder": "tablename",
+                "labelName": "Table Name"
+            },
+            {
+                "fieldType": "Input",
+                "placeHolder": "username",
+                "labelName": "Username"
+            },
+            {
+                "fieldType": "Password",
+                "placeHolder": "password",
+                "labelName": "Password"
+            }
+
+        ]
+    },
+    {
+        "dataSourceType": "mssql",
+        "dataSourceName": "MSSql",
+        "formFields": [
+            {
+                "fieldType": "Input",
+                "placeHolder": "Dataset Name",
+                "labelName": "Name"
+            },
+            {
+                "fieldType": "Input",
+                "placeHolder": "host",
+                "labelName": "Host"
+            },
+            {
+                "fieldType": "Input",
+                "placeHoplaceHolder": "port",
+                "labelName": "Port",
+                "defaultValue": 1433
+            },
+            {
+                "fieldType": "Input",
+                "placeHolder": "schema",
+                "labelName": "Schema"
+            },
+            {
+                "fieldType": "Input",
+                "placeHolder": "tablename",
+                "labelName": "Table Name"
+            },
+            {
+                "fieldType": "Input",
+                "placeHolder": "username",
+                "labelName": "Username"
+            },
+            {
+                "fieldType": "Password",
+                "placeHolder": "password",
+                "labelName": "Password"
+            }
+        ]
+    },
+    {
+        "dataSourceType": "oracle",
+        "dataSourceName": "Oracle",
+        "formFields": [
+            {
+                "fieldType": "Input",
+                "placeHolder": "Dataset Name",
+                "labelName": "Name"
+            },
+            {
+                "fieldType": "Input",
+                "placeHolder": "host",
+                "labelName": "Host"
+            },
+            {
+                "fieldType": "Input",
+                "placeHoplaceHolder": "port",
+                "labelName": "Port",
+                "defaultValue": 1521
+            },
+            {
+                "fieldType": "Input",
+                "placeHolder": "schema",
+                "labelName": "Schema"
+            },
+            {
+                "fieldType": "Input",
+                "placeHolder": "tablename",
+                "labelName": "Table Name"
+            },
+            {
+                "fieldType": "Input",
                 "placeHolder": "username",
                 "labelName": "Username"
             },
@@ -234,11 +324,7 @@ DATA_SOURCES_CONFIG = {"conf": [{
                 "placeHolder": "password",
                 "labelName": "Password"
             },
-            {
-                "fieldType": "Input",
-                "placeHolder": "tablename",
-                "labelName": "Table Name"
-            }
+
         ]
     },
     {
