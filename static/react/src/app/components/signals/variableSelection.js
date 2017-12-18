@@ -287,7 +287,7 @@ export class VariableSelection extends React.Component {
 				</div>
 				</div>
 				<div className="col-lg-4">
-				<div className="ma-checkbox inline treatAsCategorical" ><input id="idCategoricalVar" type="checkbox" onClick={this.handleCategoricalChk.bind(this)}/><label htmlFor="idCategoricalVar">Treat as categorical variable</label></div>
+				<div className="ma-checkbox inline treatAsCategorical hidden" ><input id="idCategoricalVar" type="checkbox" onClick={this.handleCategoricalChk.bind(this)}/><label htmlFor="idCategoricalVar">Treat as categorical variable</label></div>
 				</div>
 
 				{/*<!-- /.col-lg-4 -->*/}
@@ -331,7 +331,7 @@ export class VariableSelection extends React.Component {
 
 				</div>
 				</div>
-				<CreateSignalLoader />
+				<CreateSignalLoader history={this.props.history} />
 
 				</div>
 				</div>

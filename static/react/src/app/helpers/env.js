@@ -1,10 +1,10 @@
-const API = APP_BASE_URL;
+const API = "http://madvisordev.marlabsai.com"; //dev
 // const API = "http://.............";   //prod
 //const API = "http://192.168.33.128:8000"; //vivek
-const EMR = SCORES_BASE_URL;
+
 //const API = ""; //vivek
-const STATIC_URL = "/";
+const STATIC_URL = "/static/";
 
 export{
-  API, EMR,STATIC_URL
+  API, STATIC_URL
 }

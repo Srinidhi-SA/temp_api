@@ -379,6 +379,17 @@ class Dataset(models.Model):
             return {}
         return config
 
+    def get_number_of_row_size(self):
+        config = self.get_config()
+        if 'metaData' in config:
+            metad = config['metaData']
+            for data in metad:
+                if 'displayName' not in data:
+                    continue
+                if data['displayName'] == 'Rows':
+                    return int(data['value'])
+        return -1
+
     def get_brief_info(self):
         list_objects = []
         brief_info = dict()
@@ -442,6 +453,7 @@ class Insight(models.Model):
 
     job = models.ForeignKey(Job, null=True)
     status = models.CharField(max_length=100, null=True, default="Not Registered")
+    viewed = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
@@ -639,9 +651,14 @@ class Insight(models.Model):
 
             if 'FILE_SETTINGS' in config:
                 file_setting = config['FILE_SETTINGS']
-                brief_info.update({
-                    'analysis list': set(file_setting.get('script_to_run'))
-                })
+                try:
+                    brief_info.update({
+                        'analysis list': set(file_setting.get('script_to_run'))
+                    })
+                except:
+                    brief_info.update({
+                        'analysis list': []
+                    })
 
         brief_info.update(
             {
@@ -741,7 +758,20 @@ class Trainer(models.Model):
             'inputfile': [self.dataset.get_input_file()],
             'modelpath': [self.slug],
             'train_test_split': [train_test_split],
-            'analysis_type': ['training']
+            'analysis_type': ['training'],
+            'metadata': self.get_metadata_url_config()
+        }
+
+    def get_metadata_url_config(self):
+        ip_port = "{0}:{1}".format(THIS_SERVER_DETAILS.get('host'),
+                                   THIS_SERVER_DETAILS.get('port'))
+        url = "/api/get_metadata_for_mlscripts/"
+        slug_list = [
+            self.dataset.slug
+        ]
+        return {
+            "url": ip_port + url,
+            "slug_list": slug_list
         }
 
     def create_configuration_column_settings(self):
@@ -927,8 +957,21 @@ class Score(models.Model):
             'analysis_type': ['score'],
             'levelcounts': targetVariableLevelcount if targetVariableLevelcount is not None else [],
             'algorithmslug': [algorithmslug],
-            'modelfeatures': modelfeatures if modelfeatures is not None else []
+            'modelfeatures': modelfeatures if modelfeatures is not None else [],
+            'metadata': self.get_metadata_url_config()
+        }
 
+    def get_metadata_url_config(self):
+
+        ip_port = "{0}:{1}".format(THIS_SERVER_DETAILS.get('host'),
+                                                                    THIS_SERVER_DETAILS.get('port'))
+        url = "/api/get_metadata_for_mlscripts/"
+        slug_list = [
+            self.dataset.slug
+        ]
+        return {
+            "url": ip_port + url,
+            "slug_list": slug_list
         }
 
     def get_config_from_config(self):
@@ -1177,16 +1220,36 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
 
     print "Job entry created in db. Now going to submit job to job server."
 
+    queue_name = None
+    if job_type in ['metadata', 'subSetting']:
+        queue_name = get_queue_to_use(job_type=job_type, data_size=instance.get_number_of_row_size())
+    elif job_type in ['master', 'model', 'score']:
+        queue_name = get_queue_to_use(job_type=job_type, data_size=instance.dataset.get_number_of_row_size())
+    elif job_type in ['robo', 'stockAdvisor']:
+        pass
+
+    '''
+    job_type = {
+            "metadata": "metaData",
+            "master": "story",
+            "model":"training",
+            "score": "prediction",
+            "robo": "robo",
+            "subSetting": "subSetting",
+            "stockAdvisor": "stockAdvisor"
+        }
+    '''
     # Submitting JobServer
     from utils import submit_job
-    from smtp_email import send_jobserver_error
+    from smtp_email import send_alert_through_email
     try:
         job_url = submit_job(
             slug=job.slug,
             class_name=job_type,
             job_config=jobConfig,
             job_name=instance.name,
-            message_slug=get_message_slug(instance)
+            message_slug=get_message_slug(instance),
+            queue_name=queue_name
         )
         print "Job submitted."
 
@@ -1197,10 +1260,51 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
         print "Unable to submit job. Could be some issue with job server please check"
         print "#" * 100
         print exc
-        send_jobserver_error(exc)
+        send_alert_through_email(exc)
         return None
 
     return job
+
+
+def get_queue_to_use(job_type, data_size):
+
+    # deployment_environment
+    deployment_env = get_queue_deployment_env_name()
+
+    # job_type
+    job_type_naming = get_queue_job_type_name(job_type)
+
+    # size
+    data_size_name = get_queue_size_name(job_type, data_size)
+
+    # return deployment_env + job_type_naming + data_size_name
+    return get_queue_job_type_name_full(job_type, data_size)
+
+
+def get_queue_deployment_env_name():
+    return settings.DEPLOYMENT_ENV
+
+
+def get_queue_job_type_name(job_type):
+    return "." + get_queue_deployment_env_name() + '-' + settings.YARN_QUEUE_NAMES.get(job_type)
+
+def get_queue_job_type_name_full(job_type, data_size):
+    return get_queue_deployment_env_name() + '-' + settings.YARN_QUEUE_NAMES.get(job_type) + get_queue_size_name(job_type, data_size)
+
+def get_queue_size_name(job_type, data_size):
+
+    if job_type in ['metadata', 'subSetting', 'score', 'stockAdvisor']:
+        return ''
+
+    data_size_name = "default"
+    if data_size < settings.DATASET_ROW_SIZE_NAME.get('small'):
+        data_size_name = 'small'
+    elif data_size < settings.DATASET_ROW_SIZE_NAME.get('medium'):
+        data_size_name = 'medium'
+    else:
+        data_size_name = 'large'
+
+    return "-" + data_size_name
 
 def get_message_slug(instance):
     from api.redis_access import AccessFeedbackMessage

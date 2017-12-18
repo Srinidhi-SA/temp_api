@@ -8,19 +8,20 @@ import {hideDataPreview} from "../../actions/dataActions";
 import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
 import HeatMap from '../../helpers/heatmap';
-
+import {isEmpty,DEFAULTINTERVAL} from "../../helpers/helper";
 
 @connect((store) => {
 	return {login_response: store.login.login_response,
 		createSignalLoaderModal:store.signals.createSignalLoaderModal,
 		createSignalLoaderValue:store.signals.createSignalLoaderValue,
 		loaderText:store.signals.loaderText,
+		signalData:store.signals.signalData,
 	};
 })
 
 export class CreateSignalLoader extends React.Component {
-  constructor(){
-    super();
+  constructor(props){
+    super(props);
   }
 	openModelPopup(){
   	this.props.dispatch(openCsLoaderModal())
@@ -30,6 +31,14 @@ export class CreateSignalLoader extends React.Component {
   	this.props.dispatch(hideDataPreview());
   }
   render() {
+      var that = this;
+      if(this.props.signalData != null){
+          setTimeout(function() {
+          if(that.props.signalData.hasOwnProperty("proceed_for_loading") && !that.props.signalData.proceed_for_loading){
+             that.props.history.push("/signals");
+          }     
+      },2000)}
+     
    return (
           <div id="createSignalLoader">
 
@@ -42,7 +51,7 @@ export class CreateSignalLoader extends React.Component {
 			<div className="panel-body">
 			
 			<p className="text-center"><br/>
-			<i className="pe-7s-science pe-spin pe-5x pe-va text-primary" ></i><br/>
+			<img src="/assets/images/brain_loading.gif" /><br/>
 			<br/>
 			{store.getState().signals.loaderText}
 			</p><br/>

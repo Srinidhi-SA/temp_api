@@ -97,13 +97,40 @@ def luke():
     return {'server_details':server_details, 'path_details':path_details, 'type':'luke'}
 
 
+@task
+def leia():
+    """Set prod environemnt"""
+    server_details = {
+        "known name": "leia.marlabsai.com",
+        "username": "ubuntu",
+        "host": "34.196.22.246",
+        "port": "9012",
+        "initail_domain": "/api"
+    }
+
+    path_details = {
+        "react_path": "/static/react",
+        "asset_path": "/static/asset",
+        "base_remote_path": "/home/ubuntu/9013/mAdvisor-api",
+        "ui_branch": "api_ui_dev",
+        "api_branch": "api_ui_dev"
+    }
+
+    key_file = BASE_DIR + "/config/keyfiles/TIAA.pem"
+    env.key_filename = [key_file]
+    env.host_string = "{0}@{1}".format(server_details.get('username'), server_details.get('host'))
+
+    return {'server_details':server_details, 'path_details':path_details, 'type':'leia'}
+
+
 BRANCH_FUNCTION_MAPPING = {
     'development': dev(),
     'dev': dev(),
     'production': prod(),
     'prod': prod(),
     'trainer/vivek_product_revamp': dev(),
-    'luke': luke()
+    'luke': luke(),
+    'leia':leia()
 }
     
 @task
@@ -167,6 +194,14 @@ def deploy_api_and_migrate(type="development"):
 def deploy_ml(branch="development"):
     pass
 
+@task
+def copy_egg_from_emr_to_api_dev():
+
+    command_to_copy = "scp emr_dev:/home/hadoop/codebase/mAdvisor-MLScripts/dist/marlabs_bi_jobs-0.0.0-py2.7.egg ."
+    command_to_paste = "scp marlabs_bi_jobs-0.0.0-py2.7.egg development_api:/home/ubuntu/codebase/mAdvisor-api/scripts/"
+    local(command_to_copy)
+    local(command_to_paste)
+
 
 @task
 def reload_gunicorn(type="dev"):
@@ -200,7 +235,8 @@ def do_npm_run(branch, react_path):
             local("npm run buildLinux")
         elif "luke" == branch:
             local("npm run buildLuke")
-
+        elif "leia" == branch:
+            local("npm run buildLeia")
 
 def deploy_dist_to_destination(base_remote_path, react_path):
     import random
