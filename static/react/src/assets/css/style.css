@@ -1,4 +1,5 @@
 @import 'font-awesome.min.css';
+@import 'material-design-iconic-font.min.css';
 @import 'pe-icon-7-stroke.css';
 @import 'helper.css';
 @import 'slick.min.css';
@@ -14552,19 +14553,19 @@ a.disabled { color:#ccc !important; }
 
 ::-webkit-input-placeholder {
    font-style: italic;
-   font-size:14px;
+   font-size:12px;
 }
 :-moz-placeholder {
    font-style: italic;  
-   font-size:14px;
+   font-size:12px;
 }
 ::-moz-placeholder {
    font-style: italic;
-   font-size:14px;
+   font-size:12px;
 }
 :-ms-input-placeholder {  
    font-style: italic;
-   font-size:17px;
+   font-size:12px;
 }
 
 .form-control.search-box,.close-icon,.search-wrapper {
@@ -14615,7 +14616,7 @@ a.disabled { color:#ccc !important; }
     top: 0;
     bottom: 0;
     margin: auto;
-    padding: 2px;
+    padding: 0px;
     border-radius: 50%;
     text-align: center;
     color: #555555;
@@ -14758,11 +14759,11 @@ div.pred_disp_block a.selected, div.pred_disp_block a:hover, div.pred_disp_block
     border-color: transparent;
 }
 
-
 .btn-toolbar.pull-right .btn-default:hover, .btn-toolbar.pull-right .btn-default:focus, .btn-group.open .btn-default, .btn-group.pull-right .btn-default:hover { background:none; color:#00998c; border-color: transparent}
 
+.btn-toolbar .dropdown-menu-right .ma-checkbox input[type=checkbox]+label:before, .btn-toolbar .dropdown-menu-right .ma-checkbox input[type=radio]+label:before, .btn-toolbar .dropdown-menu-right .ma-radio input[type=checkbox]+label:before, .btn-toolbar .dropdown-menu-right .ma-radio input[type=radio]+label:before { display: block; float: left; margin-bottom: 3px; }
 
-
+.zmdi-hc-lg { font-weight:600; }
 /**************** Css realated to developers, keep the source down ***/
 
 
