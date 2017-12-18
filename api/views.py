@@ -795,6 +795,7 @@ def write_into_databases(job_type, object_slug, results):
         results = add_slugs(results)
         insight_object.data = json.dumps(results)
         insight_object.analysis_done = True
+        insight_object.status = 'SUCCESS'
         insight_object.save()
         return results
     elif job_type == "model":
