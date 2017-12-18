@@ -131,6 +131,9 @@ export function fetchCreateSignalSuccess(signalData, dispatch) {
     signalData
   }
 }
+export function clearCreateSignalInterval(){
+    clearInterval(createSignalInterval);
+}
 export function emptySignalData(){
     return (dispatch) => {
     var signalData = null;

@@ -65,7 +65,7 @@ export class Signals extends React.Component {
     } else
       this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, pageNo));
     }
-
+ 
   componentDidMount() {
     console.log("/checking anchor html");
     console.log($('a[rel="popover"]'));
