@@ -8,7 +8,8 @@ import {hideDataPreview} from "../../actions/dataActions";
 import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
 import HeatMap from '../../helpers/heatmap';
-import {isEmpty,DYNAMICLOADERINTERVAL} from "../../helpers/helper";
+import {isEmpty,DYNAMICLOADERINTERVAL,getUserDetailsOrRestart} from "../../helpers/helper";
+import {clearCreateSignalInterval} from "../../actions/signalActions";
 
 @connect((store) => {
 	return {login_response: store.login.login_response,
@@ -29,6 +30,8 @@ export class CreateSignalLoader extends React.Component {
   closeModelPopup(){
   	this.props.dispatch(closeCsLoaderModal());
   	this.props.dispatch(hideDataPreview());
+  	clearCreateSignalInterval();
+  	//this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, 1));
   }
   render() {
       var that = this;
