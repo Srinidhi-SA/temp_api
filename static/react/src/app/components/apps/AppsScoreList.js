@@ -127,7 +127,7 @@ export class AppsScoreList extends React.Component {
             const appsScoreList = scoreList.map((data, i) => {
                 var scoreLink = "/apps/" + store.getState().apps.currentAppId + "/scores/" + data.slug;
                 return (
-                        <div className="col-md-3 top20 list-boxes" key={i}>
+                        <div className="col-md-3 xs-mb-15 list-boxes" key={i}>
                         <div className="rep_block newCardStyle" name={data.name}>
                         <div className="card-header"></div>
                         <div className="card-center-tile">
@@ -203,7 +203,7 @@ export class AppsScoreList extends React.Component {
 							<div className="search-wrapper">
 								<form>
 								<input type="text" name="score_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Score Insights" id="score_insights" className="form-control search-box"  placeholder="Search Score insights... " required />
-								<span className="fa fa-search form-control-feedback"></span>
+								<span className="zmdi zmdi-search form-control-feedback"></span>
 								<button className="close-icon" type="reset"></button>
 								</form>
 							</div>							
@@ -218,20 +218,20 @@ export class AppsScoreList extends React.Component {
                     </button>*/}
 					
                     <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false">
-                    <i className="fa fa-sort-alpha-asc fa-lg"></i>&nbsp;<span className="caret"></span>
+                    <i className="zmdi zmdi-hc-lg zmdi-sort-asc"></i>
                     </button>
                     <ul role="menu" className="dropdown-menu dropdown-menu-right">
                     <li>
-                    <a href="javascript:;" onClick={this.doSorting.bind(this,'name','asc')}><i class="fa fa-sort-alpha-asc" aria-hidden="true"></i> Name Ascending</a>
+                    <a href="javascript:;" onClick={this.doSorting.bind(this,'name','asc')}><i class="zmdi zmdi-sort-amount-asc"></i> Name Ascending</a>
                     </li>
                     <li>
-                    <a href="javascript:;" onClick={this.doSorting.bind(this,'name','desc')}><i class="fa fa-sort-alpha-desc" aria-hidden="true"></i> Name Descending</a>
+                    <a href="javascript:;" onClick={this.doSorting.bind(this,'name','desc')}><i class="zmdi zmdi-sort-amount-desc"></i> Name Descending</a>
                     </li>
                     <li>
-                    <a href="javascript:;" onClick={this.doSorting.bind(this,'created_at','asc')}><i class="fa fa-sort-numeric-asc" aria-hidden="true"></i> Date Ascending</a>
+                    <a href="javascript:;" onClick={this.doSorting.bind(this,'created_at','asc')}><i class="zmdi zmdi-calendar-alt"></i> Date Ascending</a>
                     </li>
                     <li>
-                    <a href="javascript:;" onClick={this.doSorting.bind(this,'created_at','desc')}><i class="fa fa-sort-numeric-desc" aria-hidden="true"></i> Date Descending</a>
+                    <a href="javascript:;" onClick={this.doSorting.bind(this,'created_at','desc')}><i class="zmdi zmdi-calendar"></i> Date Descending</a>
                     </li>
                     </ul>
                     </div>
@@ -244,7 +244,7 @@ export class AppsScoreList extends React.Component {
                     
                     <div className="clearfix"></div>
                     </div>
-                    <div class="main-content">
+                    <div class="main-content xs-pb-20">
                     <div className="row">
                     {appsScoreList}
                     <div className="clearfix"></div>
