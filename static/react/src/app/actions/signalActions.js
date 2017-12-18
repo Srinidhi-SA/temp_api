@@ -97,10 +97,12 @@ export function fetchCreateSignalSuccess(signalData, dispatch) {
     let loaderVal = store.getState().signals.createSignalLoaderValue
     if(signalData.hasOwnProperty("proceed_for_loading") && !signalData.proceed_for_loading){
         msg = "Your signal will be created in background...";
-        var interval = setInterval(function() {
+        dispatch(updateCsLoaderMsg(msg));
+        setTimeout(function() {
             dispatch(closeCsLoaderModal())
             dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
-        },DEFAULTINTERVAL);
+        },2000);
+      
     }
    
     else{
@@ -128,6 +130,18 @@ export function fetchCreateSignalSuccess(signalData, dispatch) {
     type: "CREATE_SUCCESS",
     signalData
   }
+}
+export function emptySignalData(){
+    return (dispatch) => {
+    var signalData = null;
+    dispatch(assignSignalData(signalData));
+    }
+}
+export function assignSignalData(signalData){
+    return {
+        type: "CREATE_SUCCESS",
+        signalData
+      }
 }
 
 function fetchCreateSignalError(json) {
@@ -274,7 +288,8 @@ export function setPossibleAnalysisList(event) {
     var varText = selOption.text;
     var varSlug = selOption.getAttribute("name");
    if(varType == MEASURE){
-       $(".treatAsCategorical").show();
+       //$(".treatAsCategorical").show();
+       $(".treatAsCategorical").removeClass("hidden")
        var isVarTypeChanged = checkIfDataTypeChanges(varSlug);
        if(isVarTypeChanged){
            varType = DIMENSION ;
@@ -284,7 +299,7 @@ export function setPossibleAnalysisList(event) {
        }
    }else{
        $(".treatAsCategorical").find('input[type=checkbox]').attr("checked",false);
-       $(".treatAsCategorical").hide();
+       $(".treatAsCategorical").addClass("hidden")
    }
 	return {
 		type: "SET_POSSIBLE_LIST",
