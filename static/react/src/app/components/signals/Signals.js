@@ -65,7 +65,7 @@ export class Signals extends React.Component {
     } else
       this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, pageNo));
     }
- 
+
   componentDidMount() {
     console.log("/checking anchor html");
     console.log($('a[rel="popover"]'));
@@ -170,9 +170,9 @@ export class Signals extends React.Component {
 
     if (!isEmpty(store.getState().signals.signalAnalysis)) {
             let _link = "/signals/" + store.getState().signals.signalAnalysis.slug;
-            return (<Redirect to={_link}/>);     
+            return (<Redirect to={_link}/>);
     }
-    
+
     console.log(this.props);
     const data = this.props.signalList;
     const pages = store.getState().signals.signalList.total_number_of_pages;
@@ -190,7 +190,7 @@ export class Signals extends React.Component {
       console.log("under if data condition!!")
       const storyList = data.map((story, i) => {
           var iconDetails = "";
-          
+
           var signalLink = "/signals/" + story.slug;
           var signalClick =   <Link to={signalLink} id={story.slug} onClick={this.getSignalAnalysis.bind(this)}>
           {story.name}
@@ -199,7 +199,7 @@ export class Signals extends React.Component {
               iconDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{story.completed_percentage}&nbsp;%</span></div>
               signalClick = <a class="cursor" onClick={this.openLoaderScreen.bind(this,story.slug,story.completed_percentage,story.completed_message)}> {story.name}</a>
           }else if(story.status == "SUCCESS" && !story.viewed){
-              iconDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{story.completed_percentage}&nbsp;%</span></div>
+              iconDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{100}&nbsp;%</span></div>
           }else{
               if (story.type == "dimension") {
                   var imgLink = STATIC_URL + "assets/images/d_cardIcon.png"
@@ -208,9 +208,9 @@ export class Signals extends React.Component {
               }
               iconDetails = <img src={imgLink} className="img-responsive" alt="LOADING"/>;
           }
-          
-          
-          
+
+
+
         return (
 
           <div className="col-md-3 xs-mb-15 list-boxes" key={i}>
@@ -225,7 +225,7 @@ export class Signals extends React.Component {
                   </div>
                   <div className="col-xs-3">
                   {iconDetails}
-                   {/* <img src={imgLink} className="img-responsive" alt="LOADING"/> 
+                   {/* <img src={imgLink} className="img-responsive" alt="LOADING"/>
                    <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{story.completed_percentage}&nbsp;%</span></div>
                    <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">100%</span></div> */}
                   </div>
@@ -250,12 +250,12 @@ export class Signals extends React.Component {
                     <i className="ci pe-7s-more pe-rotate-90 pe-2x"></i>
                   </a>
                   <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                    
+
                   <li onClick={this.handleRename.bind(this, story.slug, story.name)}>
                       <a className="dropdown-item" href="#renameCard" data-toggle="modal">
                         <i className="fa fa-edit"></i>&nbsp;&nbsp;Rename</a>
                     </li>
-                    
+
                     <li onClick={this.handleDelete.bind(this, story.slug)}>
                       <a className="dropdown-item" href="#deleteCard" data-toggle="modal">
                         <i className="fa fa-trash-o"></i>&nbsp;&nbsp;{story.status == "INPROGRESS" ? "Stop and Delete ":"Delete"}</a>
@@ -280,12 +280,12 @@ export class Signals extends React.Component {
                 <li><a href="#">Story</a></li>
                 <li class="active">Sales Performance Report</li>
               </ol> -->*/}
- 
+
               <div class="row">
                 <div class="col-md-8">
                   <h3 className="xs-mt-0">Signals</h3>
                 </div>
-                <div class="col-md-4">              
+                <div class="col-md-4">
                 <div class="btn-toolbar pull-right">
                 <div class="input-group">
                 <div className="search-wrapper">
@@ -313,12 +313,12 @@ export class Signals extends React.Component {
                         </li>
                       </ul>
                   </div>
-                </div> 
+                </div>
                 </div>
               </div>
             </div>
 
-            
+
 
           <div className="main-content">
             <div className="row">
@@ -326,7 +326,7 @@ export class Signals extends React.Component {
               {storyList}
               <div className="clearfix"></div>
             </div>
-            
+
             <div className="ma-datatable-footer" id="idSignalPagination">
               <div className="dataTables_paginate">
                 {paginationTag}
