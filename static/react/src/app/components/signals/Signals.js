@@ -11,7 +11,8 @@ import {
   storeSearchElement,
   storeSortElements,
   fetchCreateSignalSuccess,
-  triggerSignalAnalysis
+  triggerSignalAnalysis,
+  emptySignalData,
 } from "../../actions/signalActions";
 import {
   Pagination,
@@ -30,7 +31,7 @@ import {STATIC_URL} from "../../helpers/env";
 import {SEARCHCHARLIMIT, getUserDetailsOrRestart,isEmpty,SUCCESS} from "../../helpers/helper"
 import Dialog from 'react-bootstrap-dialog';
 import {DetailOverlay} from "../common/DetailOverlay";
-import {getAllDataList} from "../../actions/dataActions";
+import {getAllDataList,hideDataPreview} from "../../actions/dataActions";
 import {openCsLoaderModal,closeCsLoaderModal} from "../../actions/createSignalActions";
 import {CreateSignalLoader} from "../common/CreateSignalLoader";
 
@@ -54,7 +55,9 @@ export class Signals extends React.Component {
   }
   componentWillMount() {
     var pageNo = 1;
+    this.props.dispatch(hideDataPreview())
     this.props.dispatch(getAllDataList());
+    this.props.dispatch(emptySignalData());
     this.props.dispatch(emptySignalAnalysis());
     if (this.props.history.location.search.indexOf("page") != -1) {
       pageNo = this.props.history.location.search.split("page=")[1];
@@ -329,7 +332,7 @@ export class Signals extends React.Component {
             </div>
           </div>
           <Dialog ref="dialog"/>
-              <CreateSignalLoader />
+              <CreateSignalLoader history={this.props.history} />
         </div>
       );
     } else {

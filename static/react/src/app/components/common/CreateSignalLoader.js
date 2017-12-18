@@ -8,28 +8,38 @@ import {hideDataPreview} from "../../actions/dataActions";
 import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
 import HeatMap from '../../helpers/heatmap';
-
+import {isEmpty,DEFAULTINTERVAL} from "../../helpers/helper";
 
 @connect((store) => {
 	return {login_response: store.login.login_response,
 		createSignalLoaderModal:store.signals.createSignalLoaderModal,
 		createSignalLoaderValue:store.signals.createSignalLoaderValue,
 		loaderText:store.signals.loaderText,
+		signalData:store.signals.signalData,
 	};
 })
 
 export class CreateSignalLoader extends React.Component {
-  constructor(){
-    super();
+  constructor(props){
+    super(props);
   }
 	openModelPopup(){
   	this.props.dispatch(openCsLoaderModal())
   }
   closeModelPopup(){
+      alert("close modal")
   	this.props.dispatch(closeCsLoaderModal());
   	this.props.dispatch(hideDataPreview());
   }
   render() {
+      var that = this;
+      if(this.props.signalData != null){
+          setTimeout(function() {
+          if(that.props.signalData.hasOwnProperty("proceed_for_loading") && !that.props.signalData.proceed_for_loading){
+             that.props.history.push("/signals");
+          }     
+      },2000)}
+     
    return (
           <div id="createSignalLoader">
 
