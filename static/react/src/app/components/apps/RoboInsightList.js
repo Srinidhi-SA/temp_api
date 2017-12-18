@@ -193,36 +193,43 @@ export class RoboInsightList extends React.Component {
 						</ol> -->*/}
             <div className="row">
               <div className="col-md-8">
-                <h4>Robo Advisor Insights</h4>
+				<h3 className="xs-mt-0">Robo Advisor Insights</h3>
               </div>
               <div className="col-md-4">
-                <div className="input-group pull-right">
-
-                  <input type="text" name="robo_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Robo Insights" id="robo_insights" class="form-control" placeholder="Search robo insights..."/>
-
-				  <span className="input-group-btn">
-					{/*<button type="button" className="btn btn-default" title="Select All Card">
-					<i className="fa fa-address-card-o fa-lg"></i>
-					</button>*/}
-					<button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false">
-					<i className="fa fa-sort-alpha-asc fa-lg"></i>&nbsp;<span className="caret"></span>
-					</button>
-					<ul role="menu" className="dropdown-menu dropdown-menu-right">
-					     <li>
-                          <a href="#" onClick={this.doSorting.bind(this,'name','asc')}><i class="fa fa-sort-alpha-asc" aria-hidden="true"></i> Name Ascending</a>
-                        </li>
-                        <li>
-                          <a href="#" onClick={this.doSorting.bind(this,'name','desc')}><i class="fa fa-sort-alpha-desc" aria-hidden="true"></i> Name Descending</a>
-                        </li>
-                        <li>
-                          <a href="#" onClick={this.doSorting.bind(this,'created_at','asc')}><i class="fa fa-sort-numeric-asc" aria-hidden="true"></i> Date Ascending</a>
-                        </li>
-                        <li>
-                          <a href="#" onClick={this.doSorting.bind(this,'created_at','desc')}><i class="fa fa-sort-numeric-desc" aria-hidden="true"></i> Date Descending</a>
-                        </li>
-					</ul>
-					</span>
-                </div>
+                <div class="btn-toolbar pull-right">				
+				<div className="input-group">
+				
+				<div className="input-group">
+					<div className="search-wrapper">
+						<form>
+						<input type="text" name="robo_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Robo Insights" id="robo_insights" className="form-control search-box"  placeholder="Search robo insights..." required />
+						<span className="zmdi zmdi-search form-control-feedback"></span>
+						<button className="close-icon" type="reset"></button>
+						</form>
+					</div>
+				</div>
+				</div>
+				
+				<div className="btn-group">
+                    <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false">
+                    <i className="zmdi zmdi-hc-lg zmdi-sort-asc"></i>
+                    </button>
+                    <ul role="menu" className="dropdown-menu dropdown-menu-right">
+                    <li>
+                    <a href="javascript:;" onClick={this.doSorting.bind(this,'name','asc')}><i class="zmdi zmdi-sort-amount-asc"></i> Name Ascending</a>
+                    </li>
+                    <li>
+                    <a href="javascript:;" onClick={this.doSorting.bind(this,'name','desc')}><i class="zmdi zmdi-sort-amount-desc"></i> Name Descending</a>
+                    </li>
+                    <li>
+                    <a href="javascript:;" onClick={this.doSorting.bind(this,'created_at','asc')}><i class="zmdi zmdi-calendar-alt"></i> Date Ascending</a>
+                    </li>
+                    <li>
+                    <a href="javascript:;" onClick={this.doSorting.bind(this,'created_at','desc')}><i class="zmdi zmdi-calendar"></i> Date Descending</a>
+                    </li>
+                    </ul>
+                </div>				
+			  </div>
               </div>
             </div>
 
