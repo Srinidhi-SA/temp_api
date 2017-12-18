@@ -8,7 +8,7 @@ import {hideDataPreview} from "../../actions/dataActions";
 import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
 import HeatMap from '../../helpers/heatmap';
-import {isEmpty,DEFAULTINTERVAL} from "../../helpers/helper";
+import {isEmpty,DYNAMICLOADERINTERVAL} from "../../helpers/helper";
 
 @connect((store) => {
 	return {login_response: store.login.login_response,
@@ -37,7 +37,7 @@ export class CreateSignalLoader extends React.Component {
           if(that.props.signalData.hasOwnProperty("proceed_for_loading") && !that.props.signalData.proceed_for_loading){
              that.props.history.push("/signals");
           }     
-      },2000)}
+      },DYNAMICLOADERINTERVAL)}
      
    return (
           <div id="createSignalLoader">

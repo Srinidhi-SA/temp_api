@@ -1,7 +1,7 @@
 import React from "react";
 import {API} from "../helpers/env";
 import {CSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,PERPAGE,SUCCESS,FAILED,getUserDetailsOrRestart,DIMENSION,
-    MEASURE,SET_VARIABLE,PERCENTAGE,GENERIC_NUMERIC,SET_POLARITY} from "../helpers/helper";
+    MEASURE,SET_VARIABLE,PERCENTAGE,GENERIC_NUMERIC,SET_POLARITY,DYNAMICLOADERINTERVAL} from "../helpers/helper";
 import {connect} from "react-redux";
 import store from "../store";
 import {openCsLoaderModal,closeCsLoaderModal,updateCsLoaderValue,updateCsLoaderMsg} from "./createSignalActions";
@@ -101,7 +101,7 @@ export function fetchCreateSignalSuccess(signalData, dispatch) {
         setTimeout(function() {
             dispatch(closeCsLoaderModal())
             dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
-        },2000);
+        },DYNAMICLOADERINTERVAL);
       
     }
    
