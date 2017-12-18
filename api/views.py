@@ -1008,32 +1008,32 @@ def get_info(request):
                 log_content_type = "signal"
             if log_content_type == "trainer":
                 log_content_type = "model"
-            # if user==log_user:
-            # if obj.content_type.model!='user' and obj.content_type.model!='permission':
-            changes_json = json.loads(obj.changes)
-            choicesDict = dict(LogEntry.Action.choices)
-            #check for status success to reduce update count
-            if obj.action==1:
-                if "status" in changes_json:
-                    if changes_json["status"][1]=="SUCCESS":
-                        message_in_ui = log_content_type+" "+obj.object_repr.split(":")[0]+str(choicesDict[obj.action])+"d"
-                        recent_activity.append(
-                                    {"changes": str(log_changed_message),
-                                     "action_time": obj.timestamp,
-                                     "message_on_ui": message_in_ui,
-                                     "action":choicesDict[obj.action],
-                                     "content_type":log_content_type,
-                                     "user": log_user})
-            else:
-                message_in_ui = log_content_type + " " + obj.object_repr.split(":")[0] + str(
-                    choicesDict[obj.action]) + "d"
-                recent_activity.append(
-                    {"changes": str(log_changed_message),
-                     "action_time": obj.timestamp,
-                     "message_on_ui": message_in_ui,
-                     "action": choicesDict[obj.action],
-                     "content_type": log_content_type,
-                     "user": log_user})
+            if user.username==log_user:
+                 # if obj.content_type.model!='user' and obj.content_type.model!='permission':
+                changes_json = json.loads(obj.changes)
+                choicesDict = dict(LogEntry.Action.choices)
+                #check for status success to reduce update count
+                if obj.action==1:
+                    if "status" in changes_json:
+                        if changes_json["status"][1]=="SUCCESS":
+                            message_in_ui = log_content_type+" "+obj.object_repr.split(":")[0]+str(choicesDict[obj.action])+"d"
+                            recent_activity.append(
+                                        {"changes": str(log_changed_message),
+                                         "action_time": obj.timestamp,
+                                         "message_on_ui": message_in_ui,
+                                         "action":choicesDict[obj.action],
+                                         "content_type":log_content_type,
+                                         "user": log_user})
+                else:
+                    message_in_ui = log_content_type + " " + obj.object_repr.split(":")[0] + str(
+                        choicesDict[obj.action]) + "d"
+                    recent_activity.append(
+                        {"changes": str(log_changed_message),
+                         "action_time": obj.timestamp,
+                         "message_on_ui": message_in_ui,
+                         "action": choicesDict[obj.action],
+                         "content_type": log_content_type,
+                         "user": log_user})
 
         return recent_activity
 
