@@ -615,7 +615,7 @@ class AudiosetView(viewsets.ModelViewSet):
 class AppView(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = CustomApps.objects.filter(
-            created_by=self.request.user,
+            #created_by=self.request.user,
             status="Active"
         )
 
