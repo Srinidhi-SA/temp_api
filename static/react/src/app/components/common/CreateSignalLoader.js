@@ -27,7 +27,6 @@ export class CreateSignalLoader extends React.Component {
   	this.props.dispatch(openCsLoaderModal())
   }
   closeModelPopup(){
-      alert("close modal")
   	this.props.dispatch(closeCsLoaderModal());
   	this.props.dispatch(hideDataPreview());
   }
