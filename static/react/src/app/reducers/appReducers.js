@@ -39,7 +39,7 @@ export default function reducer(state = {
 		appsSelectedTabId:"model",
 		audioFileUploadShowFlag:false,
 		audioFileUpload:{},
-		appsLoaderImage:"pe-7s-science pe-spin pe-5x pe-va text-primary",
+		appsLoaderImage:"/assets/images/brain_loading.gif",
 		audioFileSummary:{},
 		audioFileSlug :"",
 		audioFileSummaryFlag:false,

@@ -38,11 +38,11 @@ export class DataUploadLoader extends React.Component {
 		<div className="col-md-12">
 		<div className="panel">
 			<div className="panel-body">
-				<p className="text-center"><br/>
+				<h4 className="text-center"><br/>
 				<img src="/assets/images/brain_loading.gif" /><br/>
 				<br/>
                  {store.getState().datasets.dataLoaderText}
-				</p><br/>
+				</h4><br/>
 			
 				<div className="p_bar_body">
 				<progress className="prg_bar" value={store.getState().datasets.dULoaderValue} max={95}></progress>

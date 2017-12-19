@@ -37,11 +37,12 @@ export class AppsLoader extends React.Component {
 		<div className="col-md-12">
 		<div className="panel">
 			<div className="panel-body">
-				<p className="text-center"><br/>
-				<i className={store.getState().apps.appsLoaderImage} ></i><br/>
+				<h4 className="text-center"><br/>
+				<img src={store.getState().apps.appsLoaderImage} />
 				<br/>
-				<p>{store.getState().apps.appsLoaderText}</p>
-				</p><br/>
+				<br/>
+				{store.getState().apps.appsLoaderText}
+				</h4><br/>
 			
 				<div className="p_bar_body">
 				<progress className="prg_bar" value={store.getState().apps.appsLoaderPerValue} max={95}></progress>

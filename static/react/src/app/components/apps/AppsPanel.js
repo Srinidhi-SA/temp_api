@@ -270,25 +270,24 @@ export class AppsPanel extends React.Component {
                   <div className="search-wrapper">
                     <form>
                       <input type="text" name="search_apps" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeAppsSearchBox.bind(this)} title="Search Apps..." id="search_apps" className="form-control search-box" placeholder="Search Apps..." required/>
-                      <span class="fa fa-search form-control-feedback"></span>
+                      <span className="zmdi zmdi-search form-control-feedback"></span>
                       <button className="close-icon" type="reset" onClick={this.handleSearchReset.bind(this)}></button>
                     </form>
                   </div>
                 </div>
                 <div class="btn-group">
                   <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                    <i class="fa fa-sort-alpha-asc fa-lg"></i>
-                    &nbsp;<span class="caret"></span>
+                    <i className="zmdi zmdi-hc-lg zmdi-sort-asc"></i>
                   </button>
                   <ul role="menu" class="dropdown-menu dropdown-menu-right">
                     <li>
                       <a href="#" onClick={this.handleSorting.bind(this, 'name', 'asc')}>
-                        <i class="fa fa-sort-alpha-asc" aria-hidden="true"></i>
+                        <i class="zmdi zmdi-sort-amount-asc"></i>
                         &nbsp;Name Ascending</a>
                     </li>
                     <li>
                       <a href="#" onClick={this.handleSorting.bind(this, 'name', '-')}>
-                        <i class="fa fa-sort-alpha-desc" aria-hidden="true"></i>
+                        <i class="zmdi zmdi-sort-amount-desc"></i>
                         &nbsp;Name Descending</a>
                     </li>
                     {/*  <li>
@@ -330,8 +329,7 @@ export class AppsPanel extends React.Component {
 				</div>
 				</li>*/}
                   <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                    <i class="fa fa-filter fa-lg"></i>
-                    <span class="caret"></span>
+                    <i class="zmdi zmdi-hc-lg zmdi-filter-list"></i>
                   </button>
                   <ul role="menu" class="dropdown-menu dropdown-menu-right">
                     {/*<li>

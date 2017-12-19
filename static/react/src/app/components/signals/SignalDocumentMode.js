@@ -124,14 +124,14 @@ export class SignalDocumentMode extends React.Component {
 								<div className="btn-group">
 								<button type="button" className="btn btn-default" onClick={this.print.bind(this)} title="Print Document"><i className="fa fa-print"></i></button>
 								<Link className="btn btn-default continue" to={cardModeLink} title="Card mode">
-								<i className="fa fa-id-card-o"></i>
+								<i class="zmdi zmdi-hc-lg zmdi-view-stream"></i>
 								</Link>
 								<button type="button" className="btn btn-default" disabled="true" title="Document Mode">
-								<i className="fa fa-file-text-o"></i>
+								<i class="zmdi zmdi-hc-lg zmdi-view-web"></i>
 								</button>
 								{/*<Link className="continue" to="/signals">*/}
-								<button type="button" className="btn btn-alt4" onClick = {this.closeDocumentMode.bind(this)}>
-								<i className="fa fa-times"></i>
+								<button type="button" className="btn btn-default" onClick = {this.closeDocumentMode.bind(this)}>
+								<i class="fa zmdi-hc-lg fa-times"></i>
 								</button>
 								{/*</Link>*/}
 								</div>

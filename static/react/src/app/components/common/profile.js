@@ -33,9 +33,9 @@ export class Profile extends React.Component {
     console.log(props)
   }
   componentWillMount() {
-    if (isEmpty(this.props.profileInfo))
+  //  if (isEmpty(this.props.profileInfo))
       this.props.dispatch(getUserProfile(getUserDetailsOrRestart.get().userToken))
-    if (this.props.profileImgURL == "")
+  // if (this.props.profileImgURL == "")
       this.props.dispatch(saveProfileImage(getUserDetailsOrRestart.get().image_url))
 
   }
@@ -115,7 +115,7 @@ export class Profile extends React.Component {
       if (fileSizeInKB > 2000)
         this.popupMsgForSize()
       let imgSrc = API + this.props.profileImgURL + fileSizeInKB + new Date().getTime();
-      if (!this.props.profileImgURL)
+      if (!this.props.profileImgURL||this.props.profileImgURL==null||this.props.profileImgURL=="null")
         imgSrc = STATIC_URL + "assets/images/avatar.png"
       let statsList = this.props.profileInfo.info.map((analysis, i) => {
         console.log(analysis)
