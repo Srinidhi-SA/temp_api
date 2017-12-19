@@ -203,11 +203,14 @@ function fetchPosts(token,pageNo) {
 
 }
 
-export function refreshSignals(pageNo,props){
+export function refreshSignals(props){
     return (dispatch) => {
         refreshSignalInterval = setInterval(function() {
-            if(props.history.location.pathname == "/signals")
-            dispatch(getList(getUserDetailsOrRestart.get().userToken, pageNo));
+           
+           var pageNo = window.location.href.split("=")[1];
+            if(pageNo == undefined) pageNo = 1;
+            if(window.location.pathname == "/signals")
+            dispatch(getList(getUserDetailsOrRestart.get().userToken, parseInt(pageNo)));
         },DEFAULTINTERVAL);
         
     }
@@ -305,12 +308,12 @@ export function setPossibleAnalysisList(event) {
        var isVarTypeChanged = checkIfDataTypeChanges(varSlug);
        if(isVarTypeChanged){
            varType = DIMENSION ;
-           $(".treatAsCategorical").find('input[type=checkbox]').attr("checked",true);
+           $(".treatAsCategorical").find('input[type=checkbox]').prop("checked",true);
        }else{
-           $(".treatAsCategorical").find('input[type=checkbox]').attr("checked",false);
+           $(".treatAsCategorical").find('input[type=checkbox]').prop("checked",false);
        }
    }else{
-       $(".treatAsCategorical").find('input[type=checkbox]').attr("checked",false);
+       $(".treatAsCategorical").find('input[type=checkbox]').prop("checked",false);
        $(".treatAsCategorical").addClass("hidden")
    }
 	return {
@@ -337,6 +340,7 @@ function checkIfDataTypeChanges(varSlug){
                     }
                 }
             }
+            break;
         }
     }
     return isVarTypeChanged;
@@ -350,7 +354,29 @@ export function updateCategoricalVariables(colSlug,colName,actionName,evt){
    }
     }
 }
-
+export function changeSelectedVariableType(colSlug,colName,actionName,evt){
+    var varType = "dimension";
+    var varText = colName;
+    var varSlug = colSlug;
+    if(evt.target.checked){
+        varType = "dimension";
+        return {
+            type: "SET_POSSIBLE_LIST",
+            varType,
+            varText,
+            varSlug
+        }
+    }else{
+        varType = "measure";
+        return {
+            type: "SET_POSSIBLE_LIST",
+            varType,
+            varText,
+            varSlug
+        }
+    }
+    
+}
 export function createcustomAnalysisDetails(){
     var transformSettings = store.getState().datasets.dataTransformSettings;
     var customAnalysisDetails = []

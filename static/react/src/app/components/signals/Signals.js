@@ -66,7 +66,7 @@ export class Signals extends React.Component {
     } else{
         this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, pageNo));   
     }
-    this.props.dispatch(refreshSignals(pageNo,this.props));
+    this.props.dispatch(refreshSignals(this.props));
     }
  
   componentDidMount() {
