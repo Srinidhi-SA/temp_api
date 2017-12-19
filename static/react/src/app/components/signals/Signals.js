@@ -12,7 +12,8 @@ import {
   storeSortElements,
   fetchCreateSignalSuccess,
   triggerSignalAnalysis,
-  emptySignalData
+  emptySignalData,
+  refreshSignals,
 } from "../../actions/signalActions";
 import {
   Pagination,
@@ -61,10 +62,12 @@ export class Signals extends React.Component {
     if (this.props.history.location.search.indexOf("page") != -1) {
       pageNo = this.props.history.location.search.split("page=")[1];
       this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, pageNo));
-    } else
-      this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, pageNo));
+    } else{
+        this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, pageNo));   
     }
-
+    this.props.dispatch(refreshSignals(this.props));
+    }
+ 
   componentDidMount() {
     console.log("/checking anchor html");
     console.log($('a[rel="popover"]'));
@@ -217,24 +220,20 @@ export class Signals extends React.Component {
         var signalLink = "/signals/" + story.slug;
         var signalClick = <Link to={signalLink} id={story.slug} onClick={this.getSignalAnalysis.bind(this)}>
           {story.name}
-        </Link>
-        if (story.status == "INPROGRESS") {
-          iconDetails = <div class="">
-            <i className="fa fa-circle inProgressIcon"></i>
-            <span class="inProgressIconText">{story.completed_percentage}&nbsp;%</span>
-          </div>
-          signalClick = <a class="cursor" onClick={this.openLoaderScreen.bind(this, story.slug, story.completed_percentage, story.completed_message)}>
-            {story.name}</a>
-        } else if (story.status == "SUCCESS" && !story.viewed) {
-          iconDetails = <div class="">
-            <i className="fa fa-check completedIcon"></i>
-            <span class="inProgressIconText">{100}&nbsp;%</span>
-          </div>
-        } else {
-          if (story.type == "dimension") {
-            var imgLink = STATIC_URL + "assets/images/d_cardIcon.png"
-          } else {
-            var imgLink = STATIC_URL + "assets/images/m_carIcon.png"
+          </Link>
+          if(story.status == "INPROGRESS"){
+              iconDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{story.completed_percentage}&nbsp;%</span></div>
+              signalClick = <a class="cursor" onClick={this.openLoaderScreen.bind(this,story.slug,story.completed_percentage,story.completed_message)}> {story.name}</a>
+          }else if(story.status == "SUCCESS" && !story.viewed){
+              story.completed_percentage = 100;
+              iconDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{story.completed_percentage}&nbsp;%</span></div>
+          }else{
+              if (story.type == "dimension") {
+                  var imgLink = STATIC_URL + "assets/images/d_cardIcon.png"
+              } else {
+                  var imgLink = STATIC_URL + "assets/images/m_carIcon.png"
+              }
+              iconDetails = <img src={imgLink} className="img-responsive" alt="LOADING"/>;
           }
           iconDetails = <img src={imgLink} className="img-responsive" alt="LOADING"/>;
         }

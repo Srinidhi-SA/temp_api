@@ -28,6 +28,7 @@ export class C3Chart extends React.Component {
     /*if($(".chart"+props.classId).html()){
             this.updateChart();
         }*/
+    this.chartData = "";
 
     this.classId = "chart" + this.props.classId + " ct col-md-7 col-md-offset-2 xs-mb-20";
   }
@@ -212,7 +213,7 @@ export class C3Chart extends React.Component {
         }
       }
     }
-
+    this.chartData = data;
     data['bindto'] = this.getChartElement().get(0); // binding chart to html element
     console.log(data);
 
@@ -373,7 +374,7 @@ export class C3Chart extends React.Component {
 
            </div>
           </div>
-          <ViewChart classId={this.props.classId}/>
+          <ViewChart classId={this.props.classId} click={this.downloadSVG}  chartData={this.props.data} />
          </div>
 
  </div>
