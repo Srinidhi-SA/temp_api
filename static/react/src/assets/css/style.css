@@ -14729,9 +14729,12 @@ a .btn-close {
   cursor:pointer;
 }
 .pred_disp_block {
-    /* margin-top: 30px; */
-    background: #f2f4f8;
-    margin: 35px 10px 10px 0;
+    margin: 10px 10px 10px 0;
+    background: #f8f8f8; 
+	min-height:136px;    
+}
+.pred_disp_block h1 {
+    margin-top: 10px;
 }
 .pred_disp_block:hover {-webkit-box-shadow: 2px 2px 15px -3px rgba(0,0,0,0.3);
 -moz-box-shadow: 2px 2px 15px -3px rgba(0,0,0,0.3);
