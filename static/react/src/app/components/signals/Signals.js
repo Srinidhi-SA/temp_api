@@ -104,9 +104,12 @@ export class Signals extends React.Component {
   _handleKeyPress = (e) => {
     if (e.key === 'Enter') {
       console.log('searching');
-      if (e.target.value != "" && e.target.value != null)
+      if (e.target.value != "" && e.target.value != null){
+        if(this.props.signal_sorton)
+        this.props.history.push('/signals?search='+e.target.value+'&sort=' + this.props.signal_sorton + '&type=' + this.props.signal_sorttype)
+        else
         this.props.history.push('/signals?search=' + e.target.value + '')
-
+}
       this.props.dispatch(storeSearchElement(e.target.value));
       this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, 1));
     }
@@ -145,10 +148,16 @@ export class Signals extends React.Component {
   onChangeOfSearchBox(e) {
     if (e.target.value == "" || e.target.value == null) {
       this.props.dispatch(storeSearchElement(""));
+      if(this.props.signal_sorton)
+      this.props.history.push('/signals?sort=' + this.props.signal_sorton + '&type=' + this.props.signal_sorttype)
+      else
       this.props.history.push('/signals');
       this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, 1));
 
     } else if (e.target.value.length > SEARCHCHARLIMIT) {
+      if(this.props.signal_sorton)
+      this.props.history.push('/signals?search='+e.target.value+'&sort=' + this.props.signal_sorton + '&type=' + this.props.signal_sorttype)
+      else
       this.props.history.push('/signals?search=' + e.target.value + '')
       this.props.dispatch(storeSearchElement(e.target.value));
       this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, 1));
