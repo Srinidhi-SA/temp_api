@@ -58,14 +58,14 @@ export class Signals extends React.Component {
     this.props.dispatch(hideDataPreview())
     this.props.dispatch(getAllDataList());
     this.props.dispatch(emptySignalData());
-    this.props.dispatch(emptySignalAnalysis());
+   // this.props.dispatch(emptySignalAnalysis());
     if (this.props.history.location.search.indexOf("page") != -1) {
       pageNo = this.props.history.location.search.split("page=")[1];
       this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, pageNo));
     } else
       this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, pageNo));
     }
-
+ 
   componentDidMount() {
     console.log("/checking anchor html");
     console.log($('a[rel="popover"]'));
@@ -250,13 +250,15 @@ export class Signals extends React.Component {
                     <i className="ci pe-7s-more pe-rotate-90 pe-2x"></i>
                   </a>
                   <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                    <li onClick={this.handleRename.bind(this, story.slug, story.name)}>
+                    
+                  <li onClick={this.handleRename.bind(this, story.slug, story.name)}>
                       <a className="dropdown-item" href="#renameCard" data-toggle="modal">
                         <i className="fa fa-edit"></i>&nbsp;&nbsp;Rename</a>
                     </li>
+                    
                     <li onClick={this.handleDelete.bind(this, story.slug)}>
                       <a className="dropdown-item" href="#deleteCard" data-toggle="modal">
-                        <i className="fa fa-trash-o"></i>&nbsp;&nbsp;Delete</a>
+                        <i className="fa fa-trash-o"></i>&nbsp;&nbsp;{story.status == "INPROGRESS" ? "Stop and Delete ":"Delete"}</a>
                     </li>
                   </ul>
                   {/*<!-- End Rename and Delete BLock  -->*/}

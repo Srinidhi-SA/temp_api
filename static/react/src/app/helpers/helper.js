@@ -118,6 +118,7 @@ const PERCENTAGE ="percentage";
 const GENERIC_NUMERIC = "generic_numeric";
 const SET_POLARITY= "set_polarity";
 const UNIQUE_IDENTIFIER = "unique_identifier";
+const DYNAMICLOADERINTERVAL = 2000;
 
 
 export function generateHeaders(table) {
@@ -413,7 +414,8 @@ export{
   PERCENTAGE,
   GENERIC_NUMERIC,
   SET_POLARITY,
-  UNIQUE_IDENTIFIER
+  UNIQUE_IDENTIFIER,
+  DYNAMICLOADERINTERVAL
 	}
 export function capitalizeArray(array){
   let a =[]
