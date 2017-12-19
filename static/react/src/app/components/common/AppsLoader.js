@@ -38,7 +38,8 @@ export class AppsLoader extends React.Component {
 		<div className="panel">
 			<div className="panel-body">
 				<h4 className="text-center"><br/>
-				<i className={store.getState().apps.appsLoaderImage} ></i><br/>
+				<img src={store.getState().apps.appsLoaderImage} />
+				<br/>
 				<br/>
 				{store.getState().apps.appsLoaderText}
 				</h4><br/>
