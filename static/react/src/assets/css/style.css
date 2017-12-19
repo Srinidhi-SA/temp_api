@@ -319,7 +319,7 @@ hr {
 	font-size: 23px
 }
 .h4, h4 {
-	font-size: 17px
+	font-size: 16px
 }
 .h5, h5 {
 	font-size: 13px
@@ -14475,7 +14475,7 @@ table.apps_table_style thead th { font-weight:bold }
 .data-info h3 img { display: inline-block; vertical-align: bottom; }
 .ex_bg { background: #f7f7f7; margin: 0 10px; }
 .ex_bg .col-md-9 { background:#FFF;  }
-.panel.panel-mAd { padding: 10px 15px; }
+.panel.panel-mAd { padding: 10px 15px; border:none;  }
 .txt-justify { text-align: justify }
 
 .panel-primary-p1 .mAd_icons.ic_inflnce {
@@ -14767,6 +14767,8 @@ div.pred_disp_block a.selected, div.pred_disp_block a:hover, div.pred_disp_block
 .btn-toolbar .dropdown-menu-right .ma-checkbox input[type=checkbox]+label:before, .btn-toolbar .dropdown-menu-right .ma-checkbox input[type=radio]+label:before, .btn-toolbar .dropdown-menu-right .ma-radio input[type=checkbox]+label:before, .btn-toolbar .dropdown-menu-right .ma-radio input[type=radio]+label:before { display: block; float: left; margin-bottom: 3px; }
 
 .zmdi-hc-lg { font-weight:600; }
+.panel-mAd  .panel-heading h2 { font-size:20px; }
+.panel-mAd .panel-body h2, .panel-mAd .panel-body h3{ font-size: 18px; }
 /**************** Css realated to developers, keep the source down ***/
 
 
