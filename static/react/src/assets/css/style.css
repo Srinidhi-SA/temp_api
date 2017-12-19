@@ -13952,7 +13952,7 @@ background: #f3f2f2;
 .panel-mAd>.panel-heading { margin: 0; padding: 0; /*padding: 6px 0px 0 10px; background-color: #FFF; border-bottom:1px solid #ddd; */}
 .panel-mAd>.panel-heading h2 { margin-top: 8px; text-transform:capitalize}
 .panel-mAd .panel-body { padding:0;}
-.panel-mAd div h2 small { font-size:50%; }
+.panel-mAd div h2 small { font-size:65%; }
 /** For Card Tabs **/
 .panel-mAd .nav-tabs {
     background: #ffffff;
