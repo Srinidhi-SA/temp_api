@@ -44,6 +44,7 @@ export class CreateSignalLoader extends React.Component {
           }
       },DYNAMICLOADERINTERVAL)}
 
+let imgsrc_url=STATIC_URL+"assets/images/brain_loading.gif"
    return (
           <div id="createSignalLoader">
 
@@ -56,7 +57,7 @@ export class CreateSignalLoader extends React.Component {
 			<div className="panel-body">
 
 			<h4 className="text-center"><br/>
-			<img src= STATIC_URL+"assets/images/brain_loading.gif" /><br/>
+			<img src= {imgsrc_url} /><br/>
 			<br/>
 			{store.getState().signals.loaderText}
 			</h4><br/>
