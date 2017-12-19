@@ -100,10 +100,22 @@ export class Data extends React.Component {
   }
 
   doSorting(sortOn, type){
-	     this.props.history.push('/data?sort=' + sortOn + '&type='+type);
+    if(this.props.data_search_element)
+    this.props.history.push('/data?search='+this.props.data_search_element+'&sort='+sortOn + '&type='+type)
+	  else
+    this.props.history.push('/data?sort=' + sortOn + '&type='+type);
 
 	 this.props.dispatch(storeSortElements(sortOn,type));
 	this.props.dispatch(getDataList(1));
+  }
+
+  clearSearchElement(e){
+    this.props.dispatch(storeSearchElement(""));
+    if(this.props.data_sorton)
+    this.props.history.push('/data?sort=' + this.props.data_sorton + '&type=' + this.props.data_sorttype)
+    else
+    this.props.history.push('/data');
+    this.props.dispatch(getDataList(1));
   }
 
   render() {
@@ -117,9 +129,9 @@ export class Data extends React.Component {
     	if (search_element)
     		document.getElementById('search_data').value = "";
     }
-    if(this.props.location.sort == "" || this.props.location.sort == null){
-    	this.props.dispatch(storeSortElements("",null));
-    }
+    // if(this.props.location.sort == "" || this.props.location.sort == null){
+    // 	this.props.dispatch(storeSortElements("",null));
+    // }
     //search element ends..
     if (store.getState().datasets.dataPreviewFlag) {
     	let _link = "/data/" + store.getState().datasets.selectedDataSet;
@@ -208,7 +220,7 @@ export class Data extends React.Component {
                 <h3 className="xs-mt-0">Data</h3>
               </div>
               <div class="col-md-4">
-			  
+
 			  <div class="btn-toolbar pull-right">
 				<div class="input-group">
 				{/*   <input type="text" name="search_data" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search Data" id="search_data" class="form-control" placeholder="Search data..."/>*/}
@@ -216,15 +228,15 @@ export class Data extends React.Component {
 					<form>
 					<input type="text" name="search_data" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Model Insights" id="search_data" className="form-control search-box" placeholder="Search data..." required />
 					<span className="zmdi zmdi-search form-control-feedback"></span>
-					<button className="close-icon" type="reset"></button>
+					<button className="close-icon" type="reset" onClick={this.clearSearchElement.bind(this)}></button>
 					</form>
 				</div>
-				
+
 				</div>
-                  <div class="btn-group">                    
+                  <div class="btn-group">
 					{/*<button type="button" class="btn btn-default" title="Select All Card">
                       <i class="fa fa-address-card-o fa-lg"></i>
-                    </button>*/}					
+                    </button>*/}
                     <button type="button" data-toggle="dropdown" title="Sorting" class="btn btn-default dropdown-toggle" aria-expanded="false">
                       <i class="zmdi zmdi-hc-lg zmdi-sort-asc"></i>
                     </button>
@@ -241,7 +253,7 @@ export class Data extends React.Component {
                         <li>
                           <a href="#" onClick={this.doSorting.bind(this,'created_at','desc')}><i class="zmdi zmdi-calendar"></i> Date Descending</a>
                         </li>
-                    </ul>					
+                    </ul>
                   </div>
 				  </div>
               </div>
@@ -276,6 +288,9 @@ export class Data extends React.Component {
 
   handleSelect(eventKey) {
 		if (this.props.data_search_element) {
+      if(this.props.data_sorton)
+      this.props.history.push('/data?search=' + this.props.data_search_element +'&sort='+this.props.data_sorton+ '&page=' + eventKey + '');
+      else
       this.props.history.push('/data?search=' + this.props.data_search_element + '&page=' + eventKey + '');
     } else if(this.props.data_sorton){
 	     this.props.history.push('/data?sort=' + this.props.data_sorton +'&type='+this.props.data_sorttype+'&page=' + eventKey + '');
