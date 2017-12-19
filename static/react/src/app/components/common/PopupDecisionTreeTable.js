@@ -36,7 +36,8 @@ export class PopupDecisionTreeTable extends React.Component {
         if(i== 0){
             return rowData.map(function(colData,j) {
                 if(j == colLength-1)return <th class="hidden" key={j}>{colData}</th>
-                else return <th key={j}>{colData}</th>;
+                else if(j == 0) return <th  style={{width:"60%"}}  key={j}>{colData}</th>;
+                else return <th class="text-center" key={j}>{colData}</th>;
                  });
         }
       })
@@ -48,12 +49,10 @@ generateDecisionTreeRows(table) {
           var colLength = rowData.length;
           if(i != 0){
               var rows = rowData.map(function(colData,j) {
-                   if(j == 0)
-                      return<td key={j} className="cursor" onClick={that.showDecisionTreePopup}><a name={colData}>{colData.slice(0, MAXTEXTLENGTH)}...</a></td>;
-                      else{
-                          if(j == colLength-1)return  <td class="hidden" key={j}>{colData}</td>    
-                          return  <td key={j}>{colData}</td>       
-                      }
+                   if(j == 0)return<td key={j} className="cursor" onClick={that.showDecisionTreePopup}><a name={colData}>{colData.slice(0, MAXTEXTLENGTH)}...</a></td>;
+                      else if(j == colLength-1)return  <td class="hidden" key={j}>{colData}</td> 
+                      else return  <td class="text-center" key={j}>{colData}</td>       
+                      
               });
               return<tr key={i}>{rows}</tr>;
           }
@@ -68,15 +67,15 @@ generateDecisionTreeRows(table) {
    var rowComponents = this.generateDecisionTreeRows(data);
    return (
            <div class="table-style-custom">
-             <Scrollbars style={{ height: 200 }} 
-               className="thumb-horizontal" >
+           {/* <Scrollbars style={{ height: 200 }} 
+               className="thumb-horizontal" > */}  
            <table className={className}>
                <thead><tr>{headerComponents}</tr></thead>
              
                <tbody>{rowComponents}</tbody>
              
            </table>
-             </Scrollbars>
+             {/* </Scrollbars>*/}
            </div>
        );
   }

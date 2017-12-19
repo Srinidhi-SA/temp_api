@@ -13,6 +13,7 @@ import {
   fetchCreateSignalSuccess,
   triggerSignalAnalysis,
   emptySignalData,
+  refreshSignals,
 } from "../../actions/signalActions";
 import {
   Pagination,
@@ -62,8 +63,10 @@ export class Signals extends React.Component {
     if (this.props.history.location.search.indexOf("page") != -1) {
       pageNo = this.props.history.location.search.split("page=")[1];
       this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, pageNo));
-    } else
-      this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, pageNo));
+    } else{
+        this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, pageNo));   
+    }
+    this.props.dispatch(refreshSignals(this.props));
     }
  
   componentDidMount() {
@@ -199,6 +202,7 @@ export class Signals extends React.Component {
               iconDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{story.completed_percentage}&nbsp;%</span></div>
               signalClick = <a class="cursor" onClick={this.openLoaderScreen.bind(this,story.slug,story.completed_percentage,story.completed_message)}> {story.name}</a>
           }else if(story.status == "SUCCESS" && !story.viewed){
+              story.completed_percentage = 100;
               iconDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{story.completed_percentage}&nbsp;%</span></div>
           }else{
               if (story.type == "dimension") {
