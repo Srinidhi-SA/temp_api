@@ -14,6 +14,7 @@ import {updateColumnStatus} from './dataActions';
 //   return {signal: store.signals.signalAnalysis};
 // })
 var createSignalInterval = null;
+var refreshSignalInterval = null;
 
 function getHeader(token){
   return {
@@ -202,7 +203,15 @@ function fetchPosts(token,pageNo) {
 
 }
 
-
+export function refreshSignals(pageNo,props){
+    return (dispatch) => {
+        refreshSignalInterval = setInterval(function() {
+            if(props.history.location.pathname == "/signals")
+            dispatch(getList(getUserDetailsOrRestart.get().userToken, pageNo));
+        },DEFAULTINTERVAL);
+        
+    }
+}
 function fetchPostsSuccess(signalList) {
   //console.log("signal list from api to store")
   //console.log(signalList);
