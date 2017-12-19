@@ -235,11 +235,9 @@ export class Signals extends React.Component {
               }
               iconDetails = <img src={imgLink} className="img-responsive" alt="LOADING"/>;
           }
-          iconDetails = <img src={imgLink} className="img-responsive" alt="LOADING"/>;
-        }
+      
 
         return (
-
           <div className="col-md-3 xs-mb-15 list-boxes" key={i}>
             <div className="rep_block newCardStyle" name={story.name}>
               <div className="card-header"></div>
@@ -266,7 +264,7 @@ export class Signals extends React.Component {
 
                 <div className="card-deatils">
                   {/*<!-- Popover Content link -->*/}
-                  <OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={story}/> < /Popover>}>
+                  <OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={story}/> </Popover>}>
                     <a className="pover cursor">
                       <i className="ci pe-7s-info pe-2x"></i>
                     </a>
@@ -330,7 +328,7 @@ export class Signals extends React.Component {
                       <i class="zmdi zmdi-hc-lg zmdi-sort-asc"></i>
                     </button>
                     <ul role="menu" class="dropdown-menu dropdown-menu-right">
-                      <li>
+      clearSearchElement                <li>
                         <a href="#" onClick={this.doSorting.bind(this, 'name', 'asc')}>
                           <i class="zmdi zmdi-sort-amount-asc"></i>
                           Name Ascending</a>
@@ -387,6 +385,5 @@ export class Signals extends React.Component {
         </div>
       )
     }
-  }
-
+    }
 }
