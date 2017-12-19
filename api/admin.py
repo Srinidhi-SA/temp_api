@@ -25,6 +25,22 @@ class JobAdmin(admin.ModelAdmin):
     list_display = ["name", "slug", "job_type", "deleted", "status"]
     list_filter = ["job_type", "status"]
     readonly_fields = ["created_at"]
+    actions = ['kill_selected_jobs', 'pause_selected_jobs', 'start_selected_jobs']
+
+    def kill_selected_jobs(self, request, queryset):
+        for instance in queryset:
+            instance.kill()
+        return 'good grace'
+
+    def pause_selected_jobs(self, request, queryset):
+        for instance in queryset:
+            instance.kill()
+        return 'good grace'
+
+    def start_selected_jobs(self, request, queryset):
+        for instance in queryset:
+            instance.kill()
+        return 'good grace'
 
 
 class ScoreAdmin(admin.ModelAdmin):
