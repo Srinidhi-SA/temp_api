@@ -102,9 +102,9 @@ export function fetchCreateSignalSuccess(signalData, dispatch) {
             dispatch(closeCsLoaderModal())
             dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
         },DYNAMICLOADERINTERVAL);
-      
+
     }
-   
+
     else{
         createSignalInterval = setInterval(function() {
 
@@ -125,7 +125,7 @@ export function fetchCreateSignalSuccess(signalData, dispatch) {
           }, DEFAULTINTERVAL);
 
     }
-   
+
   return {
     type: "CREATE_SUCCESS",
     signalData
@@ -183,10 +183,17 @@ function fetchPosts(token,pageNo) {
   //console.log(search_element)
   if(search_element!=""&&search_element!=null){
     //console.log("calling for search element!!")
+    if((signal_sorton!=""&&signal_sorton!=null) && (signal_sorttype!=null)){
+      return fetch(API+'/api/signals/?name='+search_element+'&sorted_by='+signal_sorton+'&ordering='+signal_sorttype+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
+      method: 'get',
+      headers: getHeader(token)
+      }).then( response => Promise.all([response, response.json()]));
+    }else{
     return fetch(API+'/api/signals/?name='+search_element+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
       method: 'get',
       headers: getHeader(token)
       }).then( response => Promise.all([response, response.json()]));
+    }
   }else if((signal_sorton!=""&&signal_sorton!=null) && (signal_sorttype!=null)){
 	    return fetch(API+'/api/signals/?sorted_by='+signal_sorton+'&ordering='+signal_sorttype+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
       method: 'get',
