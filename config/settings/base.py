@@ -527,7 +527,7 @@ YARN_STATUS = { "RUNNING" :"INPROGRESS",
                 "SUCCESS" : "SUCCESS"
               }
 
-UI_VERSION = "v2.1_32"
+UI_VERSION = "v2.1_34"
 
 ERROR_MESSAGE = {
     'upload_error': 'Code had a weakness. Now it is broken.'
