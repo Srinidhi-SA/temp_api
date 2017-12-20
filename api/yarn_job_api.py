@@ -1,5 +1,7 @@
 from knit import YARNAPI
 from django.conf import settings
+import subprocess
+import re
 
 yap = YARNAPI(
     rm = settings.YARN.get("host"),
@@ -83,7 +85,6 @@ def start_yarn_application_again(command_array=None):
     if None == command_array:
         return -1
 
-    import subprocess
     try:
         cur_process = subprocess.Popen(command_array, stderr=subprocess.PIPE)
         # TODO: @Ankush need to write the error to error log and standard out to normal log
@@ -97,12 +98,11 @@ def start_yarn_application_again(command_array=None):
                 print "$$" * 100
                 break
         print "proc", cur_process
-
+        return {
+            "application_id": application_id
+        }
     except Exception as e:
         from smtp_email import send_alert_through_email
         send_alert_through_email(e)
 
-    return {
-        "application_id": application_id
-    }
 

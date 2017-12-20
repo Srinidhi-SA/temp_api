@@ -1268,7 +1268,7 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
         print "Job submitted."
 
         job.url = job_return_data.get('application_id')
-        job.command_array = json.dump(job_return_data.get('command_array'))
+        job.command_array = json.dumps(job_return_data.get('comand_array'))
         job.save()
     except Exception as exc:
         print "#"*100
