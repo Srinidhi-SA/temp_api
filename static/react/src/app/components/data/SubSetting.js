@@ -235,8 +235,9 @@ export class SubSetting extends React.Component {
 
                   <h5 className="xs-pt-5">{this.props.item.name}</h5>
 
-                  <div class="table-responsive cst-scroll-panel">
-                    <Scrollbars>
+                  <div class="table-responsive">
+                    <Scrollbars style={{ height: 170 }} renderTrackHorizontal={props => <div {...props} className="track-horizontal" style={{display:"none"}}/>}
+		        renderThumbHorizontal={props => <div {...props} className="thumb-horizontal" style={{display:"none"}}/>}>
                       <table id="subset" className="tablesorter table table-condensed table-hover table-bordered">
                         <thead>
                           <tr>
@@ -246,8 +247,8 @@ export class SubSetting extends React.Component {
                                 <label htmlFor="dim"></label>
                               </div>
                             </th>
-                            <th>
-                              <b>{this.props.item.name}</b>
+                            <th className="tb_srtColumn">
+                              <b title={this.props.item.name}>{this.props.item.name}</b>
                             </th>
                             <th>
                               <b>Count</b>
