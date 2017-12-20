@@ -78,6 +78,26 @@ class Job(models.Model):
             command_array=command_array
         )
         self.url = newly_spawned_job.get('application_id')
+        original_object = None
+        if self.job_type in ["metadata", "subSetting"]:
+            original_object = Dataset.objects.get(slug=self.object_slug)
+        elif self.job_type == "master":
+            original_object = Insight.objects.get(slug=self.object_slug)
+        elif self.job_type == "model":
+            original_object = Trainer.objects.get(slug=self.object_slug)
+        elif self.job_type == 'score':
+            original_object = Score.objects.get(slug=self.object_slug)
+        elif self.job_type == 'robo':
+            original_object = Robo.objects.get(slug=self.object_slug)
+        elif self.job_type == 'stockAdvisor':
+            original_object = StockDataset.objects.get(slug=self.object_slug)
+        else:
+            print "No where to write"
+
+        if original_object is not None:
+            original_object.status = 'INPROGRESS'
+            original_object.save()
+
         self.save()
 
 
