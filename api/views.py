@@ -4615,6 +4615,33 @@ def set_messages(request, slug=None):
     return JsonResponse({'message': data})
 
 
+
+@csrf_exempt
+def set_pmml(request, slug=None):
+    if slug is None:
+        return JsonResponse({"message": "Failed"})
+    data = request.body
+    data = json.loads(data)
+    from api.redis_access import AccessFeedbackMessage
+    from helper import generate_pmml_name
+    ac = AccessFeedbackMessage()
+    key_pmml_name = generate_pmml_name(slug)
+    data = ac.append_using_key(key_pmml_name, data)
+    return JsonResponse({'message': data})
+
+
+@csrf_exempt
+def get_pmml(request, slug=None, algoname='algo'):
+
+    from api.redis_access import AccessFeedbackMessage
+    from helper import generate_pmml_name
+    ac = AccessFeedbackMessage()
+    key_pmml_name = generate_pmml_name(slug)
+    data = ac.get_using_key(key_pmml_name)
+    xml_data = data[-1].get(algoname)
+    return return_xml_data(xml_data, algoname)
+
+
 @csrf_exempt
 def get_stockdatasetfiles(request, slug=None):
     # if slug is None:
@@ -4646,6 +4673,17 @@ def return_json_data(stockDataType, stockName, slug):
     file_content = open(path).read()
     response = HttpResponse(file_content, content_type='application/json')
     response['Content-Disposition'] = 'attachment; filename="{0}.json"'.format(path)
+
+    return response
+
+
+def return_xml_data(xml_data_str, algoname):
+
+    from django.http import HttpResponse
+
+    file_content = xml_data_str
+    response = HttpResponse(file_content, content_type='application/xml')
+    response['Content-Disposition'] = 'attachment; filename="{0}.xml"'.format(algoname)
 
     return response
 
