@@ -437,9 +437,9 @@ a.bg-warning:focus, a.bg-warning:hover {
 a.bg-danger:focus, a.bg-danger:hover {
 	background-color: #ea3434
 }
-.bg-highlight { background-color: #f9f9f9;
-    border: 1px solid #dddddd; }
-.bg-highlight:hover { background:#FFFFFF;}	
+.bg-highlight-parent { background:#f9f9f9; padding:10px 10px 10px 10px; border: 1px solid #f6f6f6 }
+.bg-highlight { background:url(../images/bg_highlight.png) no-repeat center left ; padding-left:100px; background-position-x: 25px; min-height: 50px; }
+.bg-highlight-parent:hover { background:#f6f6f6; }	
 
 pre code, table {
 	background-color: transparent
@@ -12632,6 +12632,7 @@ div.dataTables_wrapper div.dataTables_length label select {
 .xs-pl-50 {
 	padding-left: 50px!important
 }
+.xs-pl-100 { padding-left: 100px!important }
 .xs-pr-50 {
 	padding-right: 50px!important
 }
@@ -14769,6 +14770,7 @@ div.pred_disp_block a.selected, div.pred_disp_block a:hover, div.pred_disp_block
 .zmdi-hc-lg { font-weight:600; }
 .panel-mAd  .panel-heading h2 { font-size:20px; }
 .panel-mAd .panel-body h2, .panel-mAd .panel-body h3{ font-size: 18px; }
+
 /**************** Css realated to developers, keep the source down ***/
 
 
