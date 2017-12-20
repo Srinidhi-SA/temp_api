@@ -1010,7 +1010,7 @@ YARN_JOBTYPE_TO_QUEUE_MAPPING_= { "metaData": METADATA_QUEUE,
                        "stockAdvisor": APPS_QUEUE,
                        }
 
-DATASET_ROW_SIZE_NAME = {
+DATASET_ROW_SIZE_LIMITS = {
     "small": 1000,
     "medium": 10000
 }
@@ -1020,7 +1020,7 @@ YARN_QUEUE_NAMES = {
     "master": SIGNALS_QUEUE,
     "model": MLMODELS_QUEUE,
     "score": APPS_QUEUE,
-    "robo": "robo",
+    "robo": APPS_QUEUE,
     "subSetting": METADATA_QUEUE,
     "stockAdvisor": APPS_QUEUE,
     "default": SIGNALS_QUEUE
