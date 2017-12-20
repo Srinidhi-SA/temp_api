@@ -221,8 +221,8 @@ DATA_SOURCES_CONFIG = {"conf": [{
             },
             {
                 "fieldType": "Input",
-                "placeHolder": "schema",
-                "labelName": "Schema"
+                "placeHolder": "databasename",
+                "labelName": "DBName"
             },
             {
                 "fieldType": "Input",
@@ -264,8 +264,8 @@ DATA_SOURCES_CONFIG = {"conf": [{
             },
             {
                 "fieldType": "Input",
-                "placeHolder": "schema",
-                "labelName": "Schema"
+                "placeHolder": "databasename",
+                "labelName": "DBName"
             },
             {
                 "fieldType": "Input",
@@ -284,49 +284,49 @@ DATA_SOURCES_CONFIG = {"conf": [{
             }
         ]
     },
-    {
-        "dataSourceType": "oracle",
-        "dataSourceName": "Oracle",
-        "formFields": [
-            {
-                "fieldType": "Input",
-                "placeHolder": "Dataset Name",
-                "labelName": "Name"
-            },
-            {
-                "fieldType": "Input",
-                "placeHolder": "host",
-                "labelName": "Host"
-            },
-            {
-                "fieldType": "Input",
-                "placeHoplaceHolder": "port",
-                "labelName": "Port",
-                "defaultValue": 1521
-            },
-            {
-                "fieldType": "Input",
-                "placeHolder": "schema",
-                "labelName": "Schema"
-            },
-            {
-                "fieldType": "Input",
-                "placeHolder": "tablename",
-                "labelName": "Table Name"
-            },
-            {
-                "fieldType": "Input",
-                "placeHolder": "username",
-                "labelName": "Username"
-            },
-            {
-                "fieldType": "Password",
-                "placeHolder": "password",
-                "labelName": "Password"
-            },
-
-        ]
-    },
+    # {
+    #     "dataSourceType": "oracle",
+    #     "dataSourceName": "Oracle",
+    #     "formFields": [
+    #         {
+    #             "fieldType": "Input",
+    #             "placeHolder": "Dataset Name",
+    #             "labelName": "Name"
+    #         },
+    #         {
+    #             "fieldType": "Input",
+    #             "placeHolder": "host",
+    #             "labelName": "Host"
+    #         },
+    #         {
+    #             "fieldType": "Input",
+    #             "placeHoplaceHolder": "port",
+    #             "labelName": "Port",
+    #             "defaultValue": 1521
+    #         },
+    #         {
+    #             "fieldType": "Input",
+    #             "placeHolder": "databasename",
+    #             "labelName": "DBName"
+    #         },
+    #         {
+    #             "fieldType": "Input",
+    #             "placeHolder": "tablename",
+    #             "labelName": "Table Name"
+    #         },
+    #         {
+    #             "fieldType": "Input",
+    #             "placeHolder": "username",
+    #             "labelName": "Username"
+    #         },
+    #         {
+    #             "fieldType": "Password",
+    #             "placeHolder": "password",
+    #             "labelName": "Password"
+    #         },
+    #
+    #     ]
+    # },
     {
         "dataSourceType": "Hana",
         "dataSourceName": "HANA",
@@ -349,8 +349,8 @@ DATA_SOURCES_CONFIG = {"conf": [{
             },
             {
                 "fieldType": "Input",
-                "placeHolder": "schema",
-                "labelName": "Schema"
+                "placeHolder": "databasename",
+                "labelName": "DBName"
             },
             {
                 "fieldType": "Input",
@@ -527,7 +527,8 @@ YARN_STATUS = { "RUNNING" :"INPROGRESS",
                 "SUCCESS" : "SUCCESS"
               }
 
-UI_VERSION = "v2.1_37"
+
+UI_VERSION = "v2.1_40"
 
 ERROR_MESSAGE = {
     'upload_error': 'Code had a weakness. Now it is broken.'
@@ -1010,7 +1011,7 @@ YARN_JOBTYPE_TO_QUEUE_MAPPING_= { "metaData": METADATA_QUEUE,
                        "stockAdvisor": APPS_QUEUE,
                        }
 
-DATASET_ROW_SIZE_NAME = {
+DATASET_ROW_SIZE_LIMITS = {
     "small": 1000,
     "medium": 10000
 }
@@ -1020,7 +1021,7 @@ YARN_QUEUE_NAMES = {
     "master": SIGNALS_QUEUE,
     "model": MLMODELS_QUEUE,
     "score": APPS_QUEUE,
-    "robo": "robo",
+    "robo": APPS_QUEUE,
     "subSetting": METADATA_QUEUE,
     "stockAdvisor": APPS_QUEUE,
     "default": SIGNALS_QUEUE
@@ -1029,7 +1030,7 @@ YARN_QUEUE_NAMES = {
 
 SUBMIT_JOB_THROUGH_YARN = True
 LIST_OF_ADMIN_EMAILS = [
-            # 'ankush.patel@marlabs.com',
+            'ankush.patel@marlabs.com',
             # 'sabretooth.rog@gmail.com',
             'vivekananda.tadala@marlabs.com',
             # 'mitali.sodhi@marlabs.com',

@@ -17,44 +17,47 @@ from django.conf import settings
 import subprocess
 
 
-def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message_slug=None,queue_name=None):
+def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message_slug=None, queue_name=None):
     config = generate_job_config(class_name, job_config, job_name, message_slug, slug)
 
     try:
         base_dir = correct_base_dir()
         scripts_dir = os.path.join(base_dir, "scripts")
         egg_file_path = os.path.join(scripts_dir, "marlabs_bi_jobs-0.0.0-py2.7.egg")
-        driver_py_file_path = os.path.join(scripts_dir, "driver.py")
+        driver_file = os.path.join(scripts_dir, "driver.py")
 
         print("About to submit job through YARN")
         # Submit_job to YARN
         print queue_name
-        if queue_name is None:
-            comand_array = ["spark-submit", "--master", "yarn", "--py-files", egg_file_path, driver_py_file_path,
-                            json.dumps(config)]
-        else:
-            comand_array = ["spark-submit", "--master", "yarn", "--queue",  queue_name , "--py-files", egg_file_path, driver_py_file_path,
-                            json.dumps(config)]
 
-        print "command array", comand_array
+        if queue_name is None:
+            command_array = ["spark-submit", "--name", job_name, "--master", "yarn", "--py-files", egg_file_path,
+                             driver_file,
+                             json.dumps(config)]
+        else:
+            command_array = ["spark-submit", "--name", job_name, "--master", "yarn", "--queue", queue_name,
+                             "--py-files", egg_file_path, driver_file,
+                             json.dumps(config)]
+
+        print "command array", command_array
         print "=" * 100
-        print " ".join(comand_array)
+        print " ".join(command_array)
         print "=" * 100
 
         application_id = ""
 
-        cur_process = subprocess.Popen(comand_array, stderr=subprocess.PIPE)
+        cur_process = subprocess.Popen(command_array, stderr=subprocess.PIPE)
         # TODO: @Ankush need to write the error to error log and standard out to normal log
         for line in iter(lambda: cur_process.stderr.readline(), ''):
             print(line.strip())
             match = re.search('Submitted application (.*)$', line)
             if match:
                 application_id = match.groups()[0]
-                print "$$" * 100
+                print "$" * 100
                 print application_id
-                print "$$" * 100
+                print "$" * 100
                 break
-        print "proc", cur_process
+        print "process", cur_process
 
     except Exception as e:
         from smtp_email import send_alert_through_email
@@ -62,10 +65,10 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
 
     return {
         "application_id": application_id,
-        "comand_array": comand_array,
+        "command_array": command_array,
         "queue_name": queue_name,
         "egg_file_path": egg_file_path,
-        "driver_py_file_path": driver_py_file_path
+        "driver_py_file_path": driver_file
     }
 
 

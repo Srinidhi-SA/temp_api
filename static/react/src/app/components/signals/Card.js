@@ -30,24 +30,24 @@ cardData = {};
 export class Card extends React.Component {
     constructor() {
         super();
-        
+
     }
-    
+
     handleCheckBoxEvent(event){
-        handleSignalToggleButton(); 
+        handleSignalToggleButton();
     }
     renderCardData(cardData,toggleTable){
         var htmlData = cardData.map((story, i) => {
             let randomNum = Math.random().toString(36).substr(2,8);
             switch (story.dataType) {
             case "html":
-                
+
                 return (<CardHtml key = {i} htmlElement={story.data} type={story.dataType}/>);
                 break;
             case "c3Chart":
                 //console.log("checking chart data:::::");
                 if(!$.isEmptyObject(story.data)){
-                    story.statisticalInfo =["Statistical Test : Avova","Variables : Call Volume","Effect Size : 0.2"]
+                    story.statisticalInfo =["Statistical Test : Anova","Variables : Call Volume","Effect Size : 0.2"]
                     if(story.widthPercent &&  story.widthPercent != 100){
                       //  let width  = story.widthPercent+"%";
                         let width  = parseInt((story.widthPercent/100)*12)
@@ -90,9 +90,9 @@ export class Card extends React.Component {
             </div>
             return (<div>{inputChk}{toggleData}</div>);
             break;
-            
+
             }
-            
+
         });
         return htmlData;
     }
@@ -105,6 +105,6 @@ export class Card extends React.Component {
                 {cardElements}
                 </div>
         );
-        
+
     }
 }

@@ -18,11 +18,11 @@ import {MAXTEXTLENGTH} from "../../helpers/helper";
 export class PopupDecisionTreeTable extends React.Component {
   constructor(props){
     super(props);
-    this.showDecisionTreePopup = this.showDecisionTreePopup.bind(this);
+   
   }
-  showDecisionTreePopup(evt){
+  showDecisionTreePopup(rule){
      bootbox.alert({title: "Prediction Rule",
-             message: evt.target.name});
+             message: rule});
   }
   componentDidMount(){
       handleDecisionTreeTable();
@@ -48,13 +48,18 @@ generateDecisionTreeRows(table) {
       var tbodyData = table.tableData.map(function(rowData,i){
           var colLength = rowData.length;
           if(i != 0){
+              var rule ="";
               var rows = rowData.map(function(colData,j) {
-                   if(j == 0)return<td key={j} className="cursor" onClick={that.showDecisionTreePopup}><a name={colData}>{colData.slice(0, MAXTEXTLENGTH)}...</a></td>;
+                  
+                   if(j == 0){
+                       rule=colData
+                       return<td key={j} className="cursor">{colData.slice(0, MAXTEXTLENGTH)}...</td>;
+                   }
                       else if(j == colLength-1)return  <td class="hidden" key={j}>{colData}</td> 
                       else return  <td class="text-center" key={j}>{colData}</td>       
                       
               });
-              return<tr key={i}>{rows}</tr>;
+              return<tr key={i}>{rows}<td class="cursor" onClick={that.showDecisionTreePopup.bind(this,rule)}><a name={rule}><i className="fa fa-info"></i></a></td></tr>;
           }
         })
       return tbodyData;
@@ -70,7 +75,7 @@ generateDecisionTreeRows(table) {
            {/* <Scrollbars style={{ height: 200 }} 
                className="thumb-horizontal" > */}  
            <table className={className}>
-               <thead><tr>{headerComponents}</tr></thead>
+               <thead><tr>{headerComponents}<th>Details</th></tr></thead>
              
                <tbody>{rowComponents}</tbody>
              

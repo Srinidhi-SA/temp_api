@@ -104,6 +104,7 @@ export class VariableSelection extends React.Component {
         config['timeDimension'] =this.props.selectedTimeDimensions;
         config['customAnalysisDetails'] = customDetails["customAnalysisDetails"];
         config['polarity']=customDetails["polarity"];
+        config['uidColumn']=customDetails["uidColumn"];
         postData["name"]=$("#createSname").val();
         postData["type"]=this.props.getVarType;
         postData["target_column"]=$('#signalVariableList option:selected').text();
