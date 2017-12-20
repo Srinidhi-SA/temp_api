@@ -278,7 +278,7 @@ export class VariableSelection extends React.Component {
 				<Form onSubmit={this.createSignal.bind(this)}>
 				<FormGroup role="form">
 				<div className="row">
-				<label className="col-lg-2 text-right" for="signalVariableList">I want to analyze</label>
+				<div className="col-lg-2"><label for="signalVariableList">I want to analyze </label></div>
 				<div className="col-lg-4">
 				<div className="htmlForm-group">
 				<select className="form-control" id="signalVariableList" onChange={this.setPossibleList.bind(this)}>
