@@ -183,7 +183,7 @@ export class DataValidationEditValues extends React.Component {
         </p>
 		
 		<div className="tb_content">
-		<Scrollbars style={{ height: 300 }} renderTrackHorizontal={props => <div {...props} className="track-horizontal" style={{display:"none"}}/>}
+		<Scrollbars style={{ height: 100 }} renderTrackHorizontal={props => <div {...props} className="track-horizontal" style={{display:"none"}}/>}
         renderThumbHorizontal={props => <div {...props} className="thumb-horizontal" style={{display:"none"}}/>}>
 		<div id="replaceValues">
 		<form role="form" className="form-horizontal">

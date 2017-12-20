@@ -87,10 +87,9 @@ export class DataValidation extends React.Component {
 			return (
 			      
 					<ul  className="dropdown-menu scrollable-menu">
-					  <Scrollbars style={{ height: 200 }} renderTrackHorizontal={props => <div {...props} className="track-horizontal" style={{display:"none"}}/>}
-                    className="thumb-horizontal" >
+					   
 					  <Dialog ref="dialog"/>
-					{settingsTemplate}</Scrollbars></ul>
+					{settingsTemplate}</ul>
 					
 			)
 		}

@@ -11488,7 +11488,16 @@ pre {
 .table>thead>tr>th {
 	border-bottom-width: 1px;
 	font-weight: 400;
-	font-size: 13px
+	font-size: 13px;
+	padding-right: 15px;
+}
+.tablesorter-ice .tablesorter-header { padding-right: 15px; }
+.tb_srtColumn .tablesorter-header-inner {
+    width: 120px;    
+    white-space: nowrap;
+    overflow: hidden;
+	text-overflow: ellipsis;
+    /* display: block; */
 }
 .table>thead.primary>tr>th {
 	color: #00998c
@@ -14644,14 +14653,14 @@ a.disabled { color:#ccc !important; }
 }
 .slider.slider-horizontal { width: 94%; }
 .scrollable-menu {
-    height: auto;
-   /* max-height: 200px;*/
-    overflow-x: hidden;
-	padding:10px 0px 0px 10px;
+   /* height: auto;
+    max-height: 200px;
+    overflow-x: hidden;*/
+	padding:5px 0px 5px 10px;
 }
 
-.scrollable-menu li { font-weight:bold; }
-.scrollable-menu li a, .scrollable-menu li span {font-weight:bold;  /*padding: 5px 5px 5px 0;*/ background:none;}
+.scrollable-menu li span {font-weight:bold; font-size: 12px;}
+.scrollable-menu li a, .scrollable-menu li span {/*padding: 5px 5px 5px 0;*/ background:none;}
 
 .col-md-9 .panel { margin-bottom: 0px; }
 #tab_subsettings .panel-body { height:230px; }
@@ -14661,8 +14670,8 @@ a.disabled { color:#ccc !important; }
 .panel-body .navbar-right li { padding: 5px;  }
 .panel-body .navbar-right li .form-group { margin-bottom:0; }
 
-.scrollable-menu li { font-weight:bold; padding: 2px 2px 2px 0; }
-.scrollable-menu li a {font-weight:bold;  padding: 2px 2px 2px 0; background:none;}
+.scrollable-menu li { padding: 1px 1px 1px 0; }
+.scrollable-menu li a { padding: 3px 3px 3px 0; background:none;}
 
 .scrollable-menu li a:hover {  background:none; color:#00665e !important }
 .scrollable-menu li ul { list-style-type:none; padding:0; margin:0; }
@@ -14670,7 +14679,7 @@ a.disabled { color:#ccc !important; }
 .scrollable-menu li ul li a:hover { color:#00665e !important}
 
 .scrollable-menu li ul li .cursor { cursor:auto; }
-.scrollable-menu li ul li.cursor label, .scrollable-menu li a { font-weight:bold;color:#00998c !important; }
+.scrollable-menu li ul li.cursor label, .scrollable-menu li a { color:#00998c !important; font-size: 12px; }
 
 
 /** User Profile Avatar ***/
