@@ -39,7 +39,7 @@ class JobAdmin(admin.ModelAdmin):
 
     def start_selected_jobs(self, request, queryset):
         for instance in queryset:
-            instance.kill()
+            instance.start()
         return 'good grace'
 
 

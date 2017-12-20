@@ -60,7 +60,13 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
         from smtp_email import send_alert_through_email
         send_alert_through_email(e)
 
-    return application_id
+    return {
+        "application_id": application_id,
+        "comand_array": comand_array,
+        "queue_name": queue_name,
+        "egg_file_path": egg_file_path,
+        "driver_py_file_path": driver_py_file_path
+    }
 
 
 def generate_job_config(class_name, job_config, job_name, message_slug, slug):

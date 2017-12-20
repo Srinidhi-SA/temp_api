@@ -47,7 +47,7 @@ class Job(models.Model):
     results = models.TextField(default="{}")
     url = models.TextField(default="")
     status = models.CharField(max_length=100, default="")
-
+    command_array = models.TextField(default="{}")
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
     # TODO: @Ankush please add created by
@@ -72,7 +72,13 @@ class Job(models.Model):
         return kill_application_using_fabric(self.url)
 
     def start(self):
-        pass
+        command_array = json.loads(self.command_array)
+        from api.yarn_job_api import start_yarn_application_again
+        newly_spawned_job = start_yarn_application_again(
+            command_array=command_array
+        )
+        self.url = newly_spawned_job.get('application_id')
+        self.save()
 
 
 class Dataset(models.Model):
@@ -1251,7 +1257,7 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
     from utils import submit_job
     from smtp_email import send_alert_through_email
     try:
-        job_url = submit_job(
+        job_return_data = submit_job(
             slug=job.slug,
             class_name=job_type,
             job_config=jobConfig,
@@ -1261,7 +1267,8 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
         )
         print "Job submitted."
 
-        job.url = job_url
+        job.url = job_return_data.get('application_id')
+        job.command_array = json.dump(job_return_data.get('command_array'))
         job.save()
     except Exception as exc:
         print "#"*100
