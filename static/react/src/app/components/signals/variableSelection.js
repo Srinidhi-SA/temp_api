@@ -7,7 +7,7 @@ import {Modal,Button,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "r
 import store from "../../store";
 import {selectedAnalysisList,resetSelectedVariables,unselectAllPossibleAnalysis,getDataSetPreview,setDimensionSubLevels,selectAllAnalysisList,updateSelectAllAnlysis,saveAdvanceSettings,checkAllAnalysisSelected} from "../../actions/dataActions";
 import {openCreateSignalModal,closeCreateSignalModal,updateCsLoaderValue} from "../../actions/createSignalActions";
-import {createSignal,setPossibleAnalysisList,emptySignalAnalysis,advanceSettingsModal,checkIfDateTimeIsSelected,updateCategoricalVariables,createcustomAnalysisDetails,checkAnalysisIsChecked} from "../../actions/signalActions";
+import {createSignal,setPossibleAnalysisList,emptySignalAnalysis,advanceSettingsModal,checkIfDateTimeIsSelected,updateCategoricalVariables,createcustomAnalysisDetails,checkAnalysisIsChecked,changeSelectedVariableType} from "../../actions/signalActions";
 import {DataVariableSelection} from "../data/DataVariableSelection";
 import {CreateSignalLoader} from "../common/CreateSignalLoader";
 import {openCsLoaderModal,closeCsLoaderModal} from "../../actions/createSignalActions";
@@ -178,6 +178,7 @@ export class VariableSelection extends React.Component {
 	}
 	handleCategoricalChk(event){
 	    this.props.dispatch(updateCategoricalVariables(this.props.selVarSlug,this.props.getVarText,SET_VARIABLE,event));
+	    this.props.dispatch(changeSelectedVariableType(this.props.selVarSlug,this.props.getVarText,SET_VARIABLE,event))
 	}
 	renderAnalysisList(analysisList){
 		let list =  analysisList.map((metaItem,metaIndex) =>{
