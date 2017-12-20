@@ -6,7 +6,7 @@ import {dataPreviewInterval,dataUploadLoaderValue,clearLoadingMsg} from "./dataU
 import {closeAppsLoaderValue} from "./appActions";
 import Dialog from 'react-bootstrap-dialog'
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
-import {isEmpty,RENAME,DELETE,REPLACE,DATA_TYPE,REMOVE,CURRENTVALUE,NEWVALUE,SET_VARIABLE,UNIQUE_IDENTIFIER} from "../helpers/helper";
+import {isEmpty,RENAME,DELETE,REPLACE,DATA_TYPE,REMOVE,CURRENTVALUE,NEWVALUE,SET_VARIABLE,UNIQUE_IDENTIFIER,SET_POLARITY} from "../helpers/helper";
 let refDialogBox = "";
 
 function getHeader(token){
@@ -1076,7 +1076,7 @@ export function updateColumnStatus(dispatch,colSlug,colName,actionName,subAction
 			break;
 		}
 	}
-	if(actionName != SET_VARIABLE){
+	if(actionName != SET_VARIABLE && actionName != UNIQUE_IDENTIFIER && actionName != SET_POLARITY){
 	    isSubsetting = true;
 	}
 	dispatch(handleColumnActions(transformSettings,slug,isSubsetting))

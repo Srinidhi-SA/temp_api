@@ -26,6 +26,8 @@ export class DataValidation extends React.Component {
 		this.props.dispatch(updateColSlug(colSlug));
 		if(event.target.name == "" || event.target.name == undefined)
 		 event.target.name = event.target.htmlFor;
+		//this is to prevent parent click on UInique identifier
+		if(event.target.name != "uniqueBtn")
 		this.props.dispatch(handleColumnClick(this.refs.dialog,event.target.name,colSlug,colName,"",colStatus));
 	}
 	handleChangeTypeEvent(actionName,colSlug,colName,subActionName,event){
@@ -51,9 +53,9 @@ export class DataValidation extends React.Component {
                }
                else{
                    if(actionNames.actionName == UNIQUE_IDENTIFIER)
-                       return(<li  onClick={this.handleClickEvent.bind(this,colSlug,colName,actionNames.status)} key={index}>
+                       return(<li  onClick={this.handleClickEvent.bind(this,colSlug,colName,actionNames.status)}  key={index}>
                                <div class="ma-radio inline cursor">
-                               <input type="radio" checked={actionNames.status}  name="rad2" id={actionNames.actionName}/>
+                               <input type="radio" checked={actionNames.status}  name="uniqueBtn" id={actionNames.actionName}/>
                                <label for={actionNames.actionName}><a className="inline-block">{actionNames.displayName}</a></label>
                                </div>
                        </li>)
