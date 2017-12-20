@@ -67,8 +67,9 @@ class Job(models.Model):
         return " : ".join(["{}".format(x) for x in [self.name, self.job_type, self.created_at, self.slug]])
 
     def kill(self):
-        from api.yarn_job_api import kill_application
-        return kill_application(self.url)
+        from api.yarn_job_api import kill_application, kill_application_using_fabric
+        # return kill_application(self.url)
+        return kill_application_using_fabric(self.url)
 
     def start(self):
         pass

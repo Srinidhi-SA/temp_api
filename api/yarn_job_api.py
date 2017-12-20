@@ -55,6 +55,29 @@ def kill_application(app_id=None):
         print("Failed to kill.")
 
 
+def kill_application_using_fabric(app_id=None):
+
+    if None == app_id:
+        return -1
+
+    from fabric.api import env, run
+    from django.conf import settings
+
+    HDFS = settings.HDFS
+    BASEDIR = settings.BASE_DIR
+    emr_file = BASEDIR + "/keyfiles/TIAA.pem"
+
+    env.key_filename = [emr_file]
+    env.host_string = "{0}@{1}".format(HDFS["user.name"], HDFS["host"])
+
+    capture = run("yarn application --kill {0}".format(app_id))
+
+    if 'finished' in capture:
+        return False
+    else:
+        return True
+
+
 def start_yarn_application_again(app_id=None):
 
     if None == app_id:
