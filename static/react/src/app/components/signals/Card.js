@@ -36,6 +36,11 @@ export class Card extends React.Component {
     handleCheckBoxEvent(event){
         handleSignalToggleButton(); 
     }
+    calculateWidth(width){
+        let colWidth  = parseInt((width/100)*12)
+        let divClass="col-md-"+colWidth;
+        return divClass;
+    }
     renderCardData(cardData,toggleTable){
         var htmlData = cardData.map((story, i) => {
             let randomNum = Math.random().toString(36).substr(2,8);
@@ -65,7 +70,10 @@ export class Card extends React.Component {
                 return ( <DecisionTree key={i} treeData={story.data}/>);
                 break;
             case "table":
-                return (<div className="table-style" ><CardTable classId={toggleTable} key = {i} jsonData={story.data} type={story.dataType}/></div>);
+                if(!story.tableWidth)story.tableWidth = 100;
+                var colClass= this.calculateWidth(story.tableWidth)
+                colClass = colClass + " "+"table-style"
+             return (<div className={colClass} ><CardTable classId={toggleTable} key = {i} jsonData={story.data} type={story.dataType}/></div>);
                 break;
             case "dropdown":
                 return (<PredictionDropDown key = {i} label={story.label} jsonData={story.data} type={story.dataType}/>);

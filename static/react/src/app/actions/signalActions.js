@@ -596,7 +596,7 @@ export function handleDecisionTreeTable(evt){
     $(".popupDecisionTreeTable").find("tr").each(function(){
         if(this.rowIndex != 0 ){
             if(probability)  probabilityCond = probability.indexOf(this.cells[4].innerText.toLowerCase()) != -1;
-            if(this.cells[2].innerText.toLowerCase() == store.getState().signals.selectedPrediction.toLowerCase() && probabilityCond){
+            if(this.cells[2].innerText.toLowerCase().trim() == store.getState().signals.selectedPrediction.toLowerCase().trim() && probabilityCond){
                 $(this).removeClass("hidden");
                 noDataFlag = false;
             }else{
@@ -609,6 +609,9 @@ export function handleDecisionTreeTable(evt){
     }else{
         $(".popupDecisionTreeTable").removeClass("hidden");
     }
+}
+export function handleTopPredictions(){
+    
 }
 export function selectProbabilityBlock(evt){
     $(".pred_disp_block").each(function(){

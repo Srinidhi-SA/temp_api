@@ -229,7 +229,7 @@ export class DataPreview extends React.Component {
 		bootbox.alert("Minimum "+MINROWINDATASET+" rows are required for analysis!!")
 		else{
 		let url = this.buttons.create.url;
-		if(this.buttons.create.url.indexOf("apps-robo") != -1){
+		if(this.buttons.create.url.indexOf("apps-robo") != -1){$(".cst_table").find("thead").find("."+colSlug).first()
 			url = "/apps-robo/"+store.getState().apps.roboDatasetSlug+"/"+store.getState().signals.signalAnalysis.slug
 		}
 		this.props.history.push(url);

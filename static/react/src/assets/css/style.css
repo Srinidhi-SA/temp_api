@@ -401,7 +401,7 @@ ul.recActivity li:hover { background:#f9fafc }
 	color: #777
 }
 .text-primary {
-	color: #00998c
+	color: #00998c !important
 }
 a.text-primary:focus, a.text-primary:hover {
 	color: #ea3434

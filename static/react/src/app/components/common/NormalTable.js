@@ -15,6 +15,7 @@ export class NormalTable extends React.Component {
   }
  
   render() {
+      alert("normal")
    var data = this.props.tableData;
    var className = "table table-bordered"
    if(this.props.classId) 

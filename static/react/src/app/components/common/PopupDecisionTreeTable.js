@@ -59,7 +59,7 @@ generateDecisionTreeRows(table) {
                       else return  <td class="text-center" key={j}>{colData}</td>       
                       
               });
-              return<tr key={i}>{rows}<td class="cursor" onClick={that.showDecisionTreePopup.bind(this,rule)}><a name={rule}><i className="fa fa-info"></i></a></td></tr>;
+              return<tr key={i}>{rows}<td class="cursor text-center" onClick={that.showDecisionTreePopup.bind(this,rule)}><a href="javascript:;" class="btn btn-space btn-primary btn-rounded btn-xs"><i class="zmdi zmdi-hc-lg zmdi-more"></i></a></td></tr>;
           }
         })
       return tbodyData;
@@ -75,7 +75,7 @@ generateDecisionTreeRows(table) {
            {/* <Scrollbars style={{ height: 200 }} 
                className="thumb-horizontal" > */}  
            <table className={className}>
-               <thead><tr>{headerComponents}<th>Details</th></tr></thead>
+               <thead><tr>{headerComponents}<th width="2%">Details</th></tr></thead>
              
                <tbody>{rowComponents}</tbody>
              

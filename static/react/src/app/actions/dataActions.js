@@ -995,13 +995,19 @@ export function handleColumnClick(dialog,actionName,colSlug,colName,subActionNam
 			dispatch(addComponents(colSlug));
 			//updateColumnStatus(dispatch,colSlug,colName,actionName,subActionName);
 		}else if(actionName == UNIQUE_IDENTIFIER){
-            bootbox.confirm("Setting this column as unique identifier will unset previous selected column.",
-                     function(result){
-                          if(result){  
-                              $(".cst_table").find("thead").find("."+colSlug).first().addClass("dataPreviewUniqueIdentifierCol");
-                              updateUniqueIdentifierColumn(dispatch,actionName,colSlug);  
-                          }
-                   });
+		    if(!colStatus){
+		        bootbox.confirm("Setting this column as unique identifier will unset previous selection.",
+	                     function(result){
+	                          if(result){  
+	                              $(".cst_table").find("thead").find("."+colSlug).first().find("a").addClass("text-primary");
+	                              updateUniqueIdentifierColumn(dispatch,actionName,colSlug,colStatus);  
+	                          }
+	                   });
+		    }else{
+		        updateUniqueIdentifierColumn(dispatch,actionName,colSlug,colStatus);
+		        $(".cst_table").find("thead").find("."+colSlug).first().find("a").removeClass("text-primary");
+		    }
+            
       }else {
 		    updateColumnStatus(dispatch,colSlug,colName,actionName,subActionName);
 		}
@@ -1085,7 +1091,7 @@ export function updateColumnStatus(dispatch,colSlug,colName,actionName,subAction
 
 }
 
-function updateUniqueIdentifierColumn(dispatch,actionName,colSlug){
+function updateUniqueIdentifierColumn(dispatch,actionName,colSlug,isChecked){
     dispatch(showLoading());
     var slug = store.getState().datasets.selectedDataSet;
     var transformSettings = store.getState().datasets.dataTransformSettings.slice();
@@ -1093,11 +1099,11 @@ function updateUniqueIdentifierColumn(dispatch,actionName,colSlug){
         for(var j=0;j<transformSettings[i].columnSetting.length;j++){
             if(transformSettings[i].columnSetting[j].actionName == actionName){
                 if(transformSettings[i].slug == colSlug){
-                    transformSettings[i].columnSetting[j].status = true;  
+                    transformSettings[i].columnSetting[j].status = !isChecked;  
                 }
                 else {
                     if(transformSettings[i].columnSetting[j].status){
-                        $(".cst_table").find("thead").find("."+transformSettings[i].slug).first().removeClass("dataPreviewUniqueIdentifierCol");
+                        $(".cst_table").find("thead").find("."+transformSettings[i].slug).first().find("a").removeClass("text-primary")
                         transformSettings[i].columnSetting[j].status = false;
                     }   
                 }
