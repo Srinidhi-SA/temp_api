@@ -81,17 +81,17 @@ class Job(models.Model):
         self.url = newly_spawned_job.get('application_id')
         original_object = None
         if self.job_type in ["metadata", "subSetting"]:
-            original_object = Dataset.objects.get(slug=self.object_slug)
+            original_object = Dataset.objects.get(slug=self.object_id)
         elif self.job_type == "master":
-            original_object = Insight.objects.get(slug=self.object_slug)
+            original_object = Insight.objects.get(slug=self.object_id)
         elif self.job_type == "model":
-            original_object = Trainer.objects.get(slug=self.object_slug)
+            original_object = Trainer.objects.get(slug=self.object_id)
         elif self.job_type == 'score':
-            original_object = Score.objects.get(slug=self.object_slug)
+            original_object = Score.objects.get(slug=self.object_id)
         elif self.job_type == 'robo':
-            original_object = Robo.objects.get(slug=self.object_slug)
+            original_object = Robo.objects.get(slug=self.object_id)
         elif self.job_type == 'stockAdvisor':
-            original_object = StockDataset.objects.get(slug=self.object_slug)
+            original_object = StockDataset.objects.get(slug=self.object_id)
         else:
             print "No where to write"
 
