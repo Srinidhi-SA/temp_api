@@ -7,6 +7,8 @@ import {openDULoaderPopup,closeDULoaderPopup} from "../../actions/dataActions";
 import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
 import HeatMap from '../../helpers/heatmap';
+import {STATIC_URL} from "../../helpers/env";
+
 
 
 @connect((store) => {
@@ -30,6 +32,7 @@ export class DataUploadLoader extends React.Component {
   	this.props.dispatch(closeDULoaderPopup())
   }
   render() {
+		let img_src=STATIC_URL+"assets/images/brain_loading.gif"
    return (
           <div id="dULoader">
       	<Modal show={store.getState().datasets.dataUploadLoaderModal} backdrop="static" onHide={this.closeModelPopup.bind(this)} dialogClassName="modal-colored-header">
@@ -39,11 +42,11 @@ export class DataUploadLoader extends React.Component {
 		<div className="panel">
 			<div className="panel-body">
 				<h4 className="text-center"><br/>
-				<img src="/assets/images/brain_loading.gif" /><br/>
+				<img src={img_src} /><br/>
 				<br/>
                  {store.getState().datasets.dataLoaderText}
 				</h4><br/>
-			
+
 				<div className="p_bar_body">
 				<progress className="prg_bar" value={store.getState().datasets.dULoaderValue} max={95}></progress>
 				<div className="progress-value"><h3>{store.getState().datasets.dULoaderValue} %</h3></div>
