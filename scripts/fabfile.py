@@ -1,7 +1,7 @@
 """
 Usage
         fab <function_name>:[arg,arg1=val1]
-        e.g. fab deploy_api_development
+        e.g. fab deploy_api:branch=dev
 
 List
         fab -list
@@ -51,10 +51,11 @@ def deploy_react(branch="dev"):
     Default deploy to development. Other options are production
     """
     details = get_branch_details(branch)
+    set_fabric_env(details)
+    print details
     path_details= details['path_details']
     server_details= details['server_details']
     k = details['type']
-    print details
     npm_install_and_deploy(
         server_details=server_details,
         path_details=path_details,
