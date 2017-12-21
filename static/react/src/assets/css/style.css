@@ -14865,9 +14865,20 @@ html{
     margin: 0 auto;
 }
 
-.table-style table th, table-style_1 table th{
+.table-style_2{
+	/*margin-top: 1.8%;
+	padding-left: 10%;
+    padding-right: 10%;*/
+    max-width: 100%;
+    /*overflow-x: auto;*/
+}
+.table-style table th, .table-style_1 table th, .table-style_2 table th{
 	font-weight:bold !important;
 }
+
+
+
+
 
 .card.full-width-tabs{
     overflow: hidden;

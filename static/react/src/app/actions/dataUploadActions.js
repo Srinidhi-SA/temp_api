@@ -49,6 +49,7 @@ function uploadFileOrDB(){
 }
 function triggerDataUpload(token) {
   if (store.getState().dataSource.selectedDataSrcType == "fileUpload") {
+    
     var data = new FormData();
     data.append("input_file", store.getState().dataSource.fileUpload);
     console.log(data)
@@ -58,6 +59,7 @@ function triggerDataUpload(token) {
       body: data
     }).then(response => Promise.all([response, response.json()]));
   } else {
+     
     var host = store.getState().dataSource.db_host;
     var port = store.getState().dataSource.db_port;
     var username = store.getState().dataSource.db_username;

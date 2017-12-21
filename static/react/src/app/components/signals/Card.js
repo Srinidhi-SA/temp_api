@@ -72,7 +72,7 @@ export class Card extends React.Component {
             case "table":
                 if(!story.tableWidth)story.tableWidth = 100;
                 var colClass= this.calculateWidth(story.tableWidth)
-                colClass = colClass + " "+"table-style"
+                colClass = colClass;
              return (<div className={colClass} ><CardTable classId={toggleTable} key = {i} jsonData={story.data} type={story.dataType}/></div>);
                 break;
             case "dropdown":

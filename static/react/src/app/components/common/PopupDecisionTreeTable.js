@@ -53,7 +53,7 @@ generateDecisionTreeRows(table) {
                   
                    if(j == 0){
                        rule=colData
-                       return<td key={j} className="cursor">{colData.slice(0, MAXTEXTLENGTH)}...</td>;
+                       return<td key={j} className="cursor">{colData.length > MAXTEXTLENGTH ? colData.slice(0, MAXTEXTLENGTH).concat("...") : colData}</td>;
                    }
                       else if(j == colLength-1)return  <td class="hidden" key={j}>{colData}</td> 
                       else return  <td class="text-center" key={j}>{colData}</td>       
@@ -71,7 +71,7 @@ generateDecisionTreeRows(table) {
    var headerComponents = this.generatePredTableHeaders(data);
    var rowComponents = this.generateDecisionTreeRows(data);
    return (
-           <div class="table-style-custom">
+           <div class="table-style_2">
            {/* <Scrollbars style={{ height: 200 }} 
                className="thumb-horizontal" > */}  
            <table className={className}>

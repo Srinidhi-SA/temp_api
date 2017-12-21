@@ -20,6 +20,7 @@ export class ConfusionMatrix extends React.Component {
    var headerComponents = generateHeaders(data);
    var rowComponents = generateRows(data);
    return (
+           <div className="table-style">
            <table className="table table-bordered apps_table_style">
                <thead><tr>
 				<th colSpan={data.tableData.length+3} class="text-center">Actual</th>
@@ -27,6 +28,7 @@ export class ConfusionMatrix extends React.Component {
                <tbody><tr><th rowSpan={data.tableData.length} class="left_highlilght">Predicted</th>
 				{headerComponents}</tr>{rowComponents}</tbody>
            </table>
+           </div>
        );
   }
 }

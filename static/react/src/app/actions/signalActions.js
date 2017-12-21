@@ -611,7 +611,23 @@ export function handleDecisionTreeTable(evt){
     }
 }
 export function handleTopPredictions(){
-    
+    var noDataFlag = true;
+    $(".topPredictions").find("tr").each(function(){
+        if(this.rowIndex != 0 ){
+            if(this.cells[2].innerText.toLowerCase().trim() == store.getState().signals.selectedPrediction.toLowerCase().trim()){
+                $(this).removeClass("hidden");
+                noDataFlag = false;
+            }else{
+                $(this).addClass("hidden");
+            }
+            
+        }
+    })
+    if(noDataFlag){
+        $(".topPredictions").addClass("hidden");
+    }else{
+        $(".topPredictions").removeClass("hidden");
+    }
 }
 export function selectProbabilityBlock(evt){
     $(".pred_disp_block").each(function(){

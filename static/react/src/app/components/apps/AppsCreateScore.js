@@ -18,6 +18,7 @@ import {getAllDataList,getDataSetPreview,storeSignalMeta,updateDatasetName} from
 		dataPreviewFlag:store.datasets.dataPreviewFlag,
 		currentAppId:store.apps.currentAppId,
 		modelSlug:store.apps.modelSlug,
+		algorithmsList:store.apps.algorithmsList
 		};
 })
 
@@ -77,7 +78,7 @@ export class AppsCreateScore extends React.Component {
 			algorithmNames = "No Algorithms"
 		}
 		return (
-				<div class="col-md-3 col-md-offset-5" onClick={this.openScorePopup.bind(this)}>
+				<span className="xs-pl-10" onClick={this.openScorePopup.bind(this)}>
 				<Button bsStyle="primary">Create Score</Button>
 				<div id="newScore"  role="dialog" className="modal fade modal-colored-header">
 				<Modal show={store.getState().apps.appsScoreShowModal} onHide={this.closeScorePopup.bind(this)} dialogClassName="modal-colored-header">
@@ -99,7 +100,7 @@ export class AppsCreateScore extends React.Component {
 				</Modal.Footer>
 				</Modal>
 				</div>
-				</div>
+				</span>
 
 
 		)

@@ -71,7 +71,14 @@ export class DataSourceList extends React.Component {
 				var divId = "data_upload_"+i;
 				const fieldsList = fields.map((field,j) =>{
 					if(field.fieldType == "file"){
-						return(<div class="tab-pane active cont fade in">
+						if(this.props.renderDatasets){
+						    return(<div><div class="form-group col-md-10 xs-pt-50 xs-pl-30">
+			                  <label>Select an existing dataset</label>
+			                  {this.props.renderDatasets}
+			                </div><div className="clearfix"></div></div>);
+						}
+						else{
+						    return(<div class="tab-pane active cont fade in">
 						<h3>
 						File Upload
 						<div class="pull-right">
@@ -92,32 +99,25 @@ export class DataSourceList extends React.Component {
 				        </aside>
 				        
 						</div>
-						</div>)
-					}else if(field.fieldType.toLowerCase() == INPUT.toLowerCase()){
+						</div>)}
+					}else {
 						//to put default port
 						let placeHolder = field.placeHolder
-						if(field.defaultValue){
+						/*if(field.defaultValue){
 							placeHolder = field.defaultValue
-						}
+						}*/
 						return(<div className="form-group" id={j}>
 						<label for="fl1" className="col-sm-3 control-label">{field.labelName}</label>
 						<div className="col-sm-9">
-						<input id={j} type="text" required={true} name={field.labelName} placeholder={placeHolder} className="form-control" onChange={this.handleInputChange.bind(this)}/>
+						<input id={j} defaultValue={field.defaultValue} type={field.fieldType} required={field.required} name={field.fieldName} placeholder={placeHolder} className="form-control" maxlength={field.maxLength} onChange={this.handleInputChange.bind(this)}/>
 						</div>
 						</div>)
 					}
-					else if(field.fieldType.toLowerCase() == PASSWORD.toLowerCase()){
-						return(<div className="form-group" id={j}>
-						<label for="fl1" className="col-sm-3 control-label">{field.labelName}</label>
-						<div className="col-sm-9">
-						<input  id={j} type="password" required={true} name={field.labelName}  placeholder={field.placeHolder} className="form-control" onChange={this.handleInputChange.bind(this)}/>
-						</div>
-						</div>)
-					}
+					
 
 				});
 				if(data.dataSourceType.toLowerCase() != FILEUPLOAD.toLowerCase()){
-					formList = <div id={divId}><form role="form" className="form-horizontal">{fieldsList}</form></div>
+					formList = <div id={divId}><form role="form" className="form-horizontal" id="dbConnectors">{fieldsList}</form></div>
 				}else{
 					formList = <div id={divId}>{fieldsList}</div>
 				}

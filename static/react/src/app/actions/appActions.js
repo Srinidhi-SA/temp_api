@@ -1767,3 +1767,11 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
         
         
     }
+    
+    export function handleExportAsPMMLModal(flag) {
+        return {
+            type: "EXPORT_AS_PMML_MODAL",
+            flag
+        }
+    }
+    

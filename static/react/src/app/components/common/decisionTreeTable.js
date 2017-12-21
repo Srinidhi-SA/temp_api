@@ -61,11 +61,12 @@ export class DecisionTreeTable extends React.Component {
 
 
       return(
-
+              <div className="table-style">
         <table className="table table-bordered idDecisionTreeTable">
                <thead><tr> {renderTableThead}</tr></thead>
                <tbody>{trs}</tbody>
          </table>
+         </div>
 
     );
 
