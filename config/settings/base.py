@@ -527,6 +527,7 @@ YARN_STATUS = { "RUNNING" :"INPROGRESS",
                 "SUCCESS" : "SUCCESS"
               }
 
+
 UI_VERSION = "v2.1_40"
 
 ERROR_MESSAGE = {
