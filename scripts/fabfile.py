@@ -91,9 +91,7 @@ def change_config_file(branch='dev'):
     print details
     path_details= details['path_details']
     server_details= details['server_details']
-    text_command = """
-        CONFIG_FILE_NAME = 'local'
-        UI_VERSION = '{0}'
+    text_command = """CONFIG_FILE_NAME = 'local'\nUI_VERSION = '{0}'
     """.format(random.randint(100000,10000000))
     config_file_path = BASE_DIR + '/config/settings/config_file_name_to_run.py'
     react_env = BASE_DIR + '/static/react/src/app/helpers/env.js'
@@ -112,8 +110,6 @@ def change_config_file(branch='dev'):
         path_details=path_details
     )
     gunicorn.reload()
-
-
 
 
 @task
