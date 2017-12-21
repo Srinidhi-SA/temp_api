@@ -166,7 +166,16 @@ def deploy_api(type="development"):
         server_details=server_details,
         path_details=path_details
     )
-    reload_gunicorn("dev")
+
+    details_env = {
+        'development': 'dev',
+        'luke': 'luke',
+        'leia': 'leia',
+        'production': 'prod',
+        'prod': 'prod',
+        'dev': 'dev'
+    }
+    reload_gunicorn(details_env[details_env])
 
 
 @task
@@ -214,6 +223,10 @@ def reload_gunicorn(type="dev"):
         dev()
     elif "prod" == type:
         prod()
+    elif "luke" == type:
+        luke()
+    elif "leia" == type:
+        leia()
     gunicorn.reload()
 
 
