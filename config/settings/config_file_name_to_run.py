@@ -1,2 +1,4 @@
-CONFIG_FILE_NAME = 'local'
-UI_VERSION = "v2.1_41"
+
+        CONFIG_FILE_NAME = 'local'
+        UI_VERSION = '2059868'
+    
