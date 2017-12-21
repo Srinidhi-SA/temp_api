@@ -6,7 +6,7 @@ import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
 import store from "../../store";
 import {closeModelPopup,openModelPopup} from "../../actions/appActions";
 import {getAllDataList,getDataSetPreview,storeSignalMeta,updateDatasetName} from "../../actions/dataActions";
-
+import {DataSourceList} from "../data/DataSourceList";
 
 @connect((store) => {
 	return {login_response: store.login.login_response, 
@@ -74,15 +74,16 @@ export class AppsCreateModel extends React.Component {
 				</div>
 				
 				<div id="newModel"  role="dialog" className="modal fade modal-colored-header">
-				<Modal show={store.getState().apps.appsModelShowModal} onHide={this.closeModelPopup.bind(this)} dialogClassName="modal-colored-header">
+				<Modal show={store.getState().apps.appsModelShowModal} onHide={this.closeModelPopup.bind(this)} dialogClassName="modal-colored-header uploadData">
 				<Modal.Header closeButton>
 				<h3 className="modal-title">Create Model</h3>
 				</Modal.Header>
 				<Modal.Body>
-				  <div class="form-group">
-	              <label>Select an existing dataset</label>
-	              {renderSelectBox}
-				</div>
+				 {/* <div class="form-group">
+                  <label>Select an existing dataset</label>
+                  {renderSelectBox}
+                </div>*/} 
+				<DataSourceList type="model" renderDatasets={renderSelectBox}/>
 				</Modal.Body>
 				<Modal.Footer>
 				<Button className="btn btn-primary md-close" onClick={this.closeModelPopup.bind(this)}>Close</Button>

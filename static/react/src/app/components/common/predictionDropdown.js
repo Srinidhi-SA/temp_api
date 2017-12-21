@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router";
 import store from "../../store";
-import {showPredictions,handleDecisionTreeTable} from "../../actions/signalActions";
+import {showPredictions,handleDecisionTreeTable,handleTopPredictions} from "../../actions/signalActions";
 import renderHTML from 'react-render-html';
 
 @connect((store) => {
@@ -31,6 +31,7 @@ export class PredictionDropDown extends React.Component {
 	  var sel =$('#prediction_dropdown').val();
 	 this.props.dispatch(showPredictions(sel));
 	 handleDecisionTreeTable();
+	 handleTopPredictions();
  }
  
   render() {
