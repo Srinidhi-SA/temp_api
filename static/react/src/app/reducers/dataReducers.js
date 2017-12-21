@@ -31,7 +31,7 @@ export default function reducer(state = {
   dimensionAllChecked: true,
   dimensionChecked: [],
   dateTimeChecked: [],
-  dataLoaderText: "initialized the filter parameters",
+  dataLoaderText: "Initialized the filter parameters",
   dataSetAnalysisList: {},
   dataSetPrevAnalysisList:{},
   selectedDimensionSubLevels: null,
@@ -299,7 +299,7 @@ export default function reducer(state = {
           dataPreview: {},
           dataPreviewFlag: false,
           selectedDataSet: "",
-          dataLoaderText:"initialized the filter parameters",
+          dataLoaderText:"Initialized the filter parameters",
           dULoaderValue: 3,
           loading_message:[]
         }
@@ -536,7 +536,7 @@ export default function reducer(state = {
         ...state,
         loading_message:[],
         dULoaderValue:3,
-        dataLoaderText:"initialized the filter parameters"
+        dataLoaderText:"Initialized the filter parameters"
       }
     }
     break;
@@ -608,7 +608,7 @@ export default function reducer(state = {
       }
     }
     break;
-    
+
   }
   return state
 
