@@ -97,7 +97,7 @@ def change_config_file(branch='dev'):
     """.format(random.randint(100000,10000000))
     config_file_path = BASE_DIR + '/config/settings/config_file_name_to_run.py'
     react_env = BASE_DIR + '/static/react/src/app/helpers/env.js'
-    react_npm_log = BASE_DIR + '../static/react/npm-debug.log'
+    react_npm_log = BASE_DIR + '/static/react/npm-debug.log'
     local('rm {0}'.format(config_file_path))
     local('echo "{0}" > {1}'.format(text_command, config_file_path))
 
