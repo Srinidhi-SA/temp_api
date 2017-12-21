@@ -70,9 +70,9 @@ class DatasetSerializer(serializers.ModelSerializer):
                 columnType = head.get('columnType')
 
                 if "dimension" == columnType:
-                    temp['columnSetting'] = columnSettingCopy[:3]
+                    temp['columnSetting'] = columnSettingCopy[:4]
                 elif "boolean" == columnType:
-                    temp['columnSetting'] = columnSettingCopy[:3]
+                    temp['columnSetting'] = columnSettingCopy[:4]
                 elif "measure" == columnType:
                     datatype_element = columnSettingCopy[4]
                     datatype_element['listOfActions'][0]["status"] = True
