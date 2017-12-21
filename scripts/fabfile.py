@@ -96,11 +96,15 @@ def change_config_file(branch='dev'):
         UI_VERSION = '{0}'
     """.format(random.randint(100000,10000000))
     config_file_path = BASE_DIR + '/config/settings/config_file_name_to_run.py'
+    react_env = BASE_DIR + '/static/react/src/app/helpers/env.js'
+    react_npm_log = BASE_DIR + '../static/react/npm-debug.log'
     local('rm {0}'.format(config_file_path))
     local('echo "{0}" > {1}'.format(text_command, config_file_path))
 
     with cd(BASE_DIR):
         local('git add {0}'.format(config_file_path))
+        local('git checkout {0}'.format(react_env))
+        local('git checkout {0}'.format(react_npm_log))
         local('git commit -m "version changed"')
 
     only_for_api_push_and_pull(
