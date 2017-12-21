@@ -192,53 +192,91 @@ MEDIA_URL = '/media/'
 
 UPLOAD_FOLDER = '/uploads/datasets/'
 
+"""
+fieldType -> password, text, number, email
+fieldName -> Will be used as key by UI team
+
+labelName -> used as label name
+placeHolder -> showed inside input box
+
+required -> true/false
+defaultValue -> the input box will be filled with this value
+
+"""
 DATA_SOURCES_CONFIG = {"conf": [{
-    "dataSourceType": "fileUpload",
-    "dataSourceName": "File Upload",
-    "formFields": [{
-        "fieldType": "file",
-        "name": "File"
-    }]
-},
+        "dataSourceType": "fileUpload",
+        "dataSourceName": "File Upload",
+        "formFields": [
+            {
+                "fieldType": "file",
+                "name": "File"
+            }
+        ]
+    },
     {
         "dataSourceType": "MySQL",
         "dataSourceName": "MySQL",
         "formFields": [
             {
-                "fieldType": "Input",
+                "fieldType": "text",
+                "fieldName" : "datasetname",
                 "placeHolder": "Dataset Name",
-                "labelName": "Name"
+                "labelName": "Name",
+                "required" : "true"
             },
             {
-                "fieldType": "Input",
-                "placeHolder": "host",
-                "labelName": "Host"
+
+                "fieldType": "text",
+                "fieldName" : "host",
+                "placeHolder": "Host",
+                "labelName": "host",
+                "required" : "true"
             },
             {
-                "fieldType": "Input",
-                "placeHoplaceHolder": "port",
+
+                "fieldType": "number",
+                "fieldName": "port",
+                "placeHolder": "Port",
                 "labelName": "Port",
-                "defaultValue": 3306
+                "required": "true",
+                "defaultValue" : 3306,
+                "maxLength":5
+
+
             },
             {
-                "fieldType": "Input",
-                "placeHolder": "databasename",
-                "labelName": "DBName"
+
+                "fieldType": "text",
+                "fieldName": "databasename",
+                "placeHolder": "DataBase Name",
+                "labelName": "DBName",
+                "required": "true"
+
             },
             {
-                "fieldType": "Input",
+
+                "fieldType": "text",
+                "fieldName": "tablename",
                 "placeHolder": "tablename",
-                "labelName": "Table Name"
+                "labelName": "Table Name",
+                "required": "true"
             },
             {
-                "fieldType": "Input",
+
+                "fieldType": "text",
+                "fieldName": "username",
                 "placeHolder": "username",
-                "labelName": "Username"
+                "labelName": "Username",
+                 "required": "true"
             },
             {
+
+
                 "fieldType": "Password",
+                "fieldName": "password",
                 "placeHolder": "password",
-                "labelName": "Password"
+                "labelName": "Password",
+                 "required": "true"
             }
 
         ]
@@ -248,126 +286,124 @@ DATA_SOURCES_CONFIG = {"conf": [{
         "dataSourceName": "MSSql",
         "formFields": [
             {
-                "fieldType": "Input",
+                "fieldType": "text",
+                "fieldName": "datasetname",
                 "placeHolder": "Dataset Name",
-                "labelName": "Name"
+                "labelName": "Name",
+                "required": "true"
             },
             {
-                "fieldType": "Input",
-                "placeHolder": "host",
-                "labelName": "Host"
+
+                "fieldType": "text",
+                "fieldName": "host",
+                "placeHolder": "Host",
+                "labelName": "host",
+                "required": "true"
             },
             {
-                "fieldType": "Input",
-                "placeHoplaceHolder": "port",
+
+                "fieldType": "number",
+                "fieldName": "port",
+                "placeHolder": "Port",
                 "labelName": "Port",
-                "defaultValue": 1433
+                "required": "true",
+                "defaultValue": 1433,
+                "maxLength": 5
+
             },
             {
-                "fieldType": "Input",
-                "placeHolder": "databasename",
-                "labelName": "DBName"
+
+                "fieldType": "text",
+                "fieldName": "databasename",
+                "placeHolder": "DataBase Name",
+                "labelName": "DBName",
+                "required": "true"
+
             },
             {
-                "fieldType": "Input",
+
+                "fieldType": "text",
+                "fieldName": "tablename",
                 "placeHolder": "tablename",
-                "labelName": "Table Name"
+                "labelName": "Table Name",
+                "required": "true"
             },
             {
-                "fieldType": "Input",
+
+                "fieldType": "text",
+                "fieldName": "username",
                 "placeHolder": "username",
-                "labelName": "Username"
+                "labelName": "Username",
+                "required": "true"
             },
             {
+
                 "fieldType": "Password",
+                "fieldName": "password",
                 "placeHolder": "password",
-                "labelName": "Password"
+                "labelName": "Password",
+                "required": "true"
             }
         ]
     },
-    # {
-    #     "dataSourceType": "oracle",
-    #     "dataSourceName": "Oracle",
-    #     "formFields": [
-    #         {
-    #             "fieldType": "Input",
-    #             "placeHolder": "Dataset Name",
-    #             "labelName": "Name"
-    #         },
-    #         {
-    #             "fieldType": "Input",
-    #             "placeHolder": "host",
-    #             "labelName": "Host"
-    #         },
-    #         {
-    #             "fieldType": "Input",
-    #             "placeHoplaceHolder": "port",
-    #             "labelName": "Port",
-    #             "defaultValue": 1521
-    #         },
-    #         {
-    #             "fieldType": "Input",
-    #             "placeHolder": "databasename",
-    #             "labelName": "DBName"
-    #         },
-    #         {
-    #             "fieldType": "Input",
-    #             "placeHolder": "tablename",
-    #             "labelName": "Table Name"
-    #         },
-    #         {
-    #             "fieldType": "Input",
-    #             "placeHolder": "username",
-    #             "labelName": "Username"
-    #         },
-    #         {
-    #             "fieldType": "Password",
-    #             "placeHolder": "password",
-    #             "labelName": "Password"
-    #         },
-    #
-    #     ]
-    # },
     {
         "dataSourceType": "Hana",
         "dataSourceName": "HANA",
         "formFields": [
+
             {
-                "fieldType": "Input",
+                "fieldType": "text",
+                "fieldName": "datasetname",
                 "placeHolder": "Dataset Name",
-                "labelName": "Name"
+                "labelName": "Name",
+                "required": "true"
             },
             {
-                "fieldType": "Input",
-                "placeHolder": "host",
-                "labelName": "Host"
+
+                "fieldType": "text",
+                "fieldName": "host",
+                "placeHolder": "Host",
+                "labelName": "host",
+                "required": "true"
             },
             {
-                "fieldType": "Input",
-                "placeHoplaceHolder": "port",
+
+                "fieldType": "number",
+                "fieldName": "port",
+                "placeHolder": "Port",
                 "labelName": "Port",
-                "defaultValue": 30015
+                "required": "true",
+                "defaultValue": 30015,
+                "maxLength": 5
+
             },
             {
-                "fieldType": "Input",
-                "placeHolder": "databasename",
-                "labelName": "DBName"
+
+                "fieldType": "text",
+                "fieldName": "databasename",
+                "placeHolder": "DataBase Name",
+                "labelName": "DBName",
+                "required": "true"
+
             },
             {
-                "fieldType": "Input",
+
+                "fieldType": "text",
+                "fieldName": "username",
                 "placeHolder": "username",
-                "labelName": "Username"
+                "labelName": "Username",
+                "required": "true"
             },
             {
+
                 "fieldType": "Password",
+                "fieldName": "password",
                 "placeHolder": "password",
-                "labelName": "Password"
-            },
-            {
-                "fieldType": "Input",
-                "placeHolder": "tablename",
-                "labelName": "Table Name"
+                "labelName": "Password",
+                "required": "true"
             }
+
+
         ]
     },
     {
@@ -375,35 +411,46 @@ DATA_SOURCES_CONFIG = {"conf": [{
         "dataSourceName": "HDFS",
         "formFields": [
             {
-                "fieldType": "Input",
+                "fieldType": "text",
+                "fieldName": "datasetname",
                 "placeHolder": "Dataset Name",
-                "labelName": "Name"
+                "labelName": "Name",
+                "required": "true"
             },
             {
-                "fieldType": "Input",
-                "placeHolder": "host",
-                "labelName": "Host"
+
+                "fieldType": "text",
+                "fieldName": "host",
+                "placeHolder": "Host",
+                "labelName": "host",
+                "required": "true"
             },
             {
-                "fieldType": "Input",
-                "placeHoplaceHolder": "port",
+
+                "fieldType": "number",
+                "fieldName": "port",
+                "placeHolder": "Port",
                 "labelName": "Port",
-                "defaultValue": 30015
+                "required": "true",
+                "defaultValue": 30015,
+                "maxLength": 5
+
             },
             {
-                "fieldType": "Input",
+
+                "fieldType": "text",
+                "fieldName": "username",
                 "placeHolder": "username",
-                "labelName": "Username"
+                "labelName": "Username",
+                "required": "true"
             },
             {
+
                 "fieldType": "Password",
+                "fieldName": "password",
                 "placeHolder": "password",
-                "labelName": "Password"
-            },
-            {
-                "fieldType": "Input",
-                "placeHolder": "pathtofile",
-                "labelName": "File Path"
+                "labelName": "Password",
+                "required": "true"
             }
         ]
     }

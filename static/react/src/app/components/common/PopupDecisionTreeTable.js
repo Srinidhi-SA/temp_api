@@ -53,13 +53,13 @@ generateDecisionTreeRows(table) {
                   
                    if(j == 0){
                        rule=colData
-                       return<td key={j} className="cursor">{colData.slice(0, MAXTEXTLENGTH)}...</td>;
+                       return<td key={j} className="cursor">{colData.length > MAXTEXTLENGTH ? colData.slice(0, MAXTEXTLENGTH).concat("...") : colData}</td>;
                    }
                       else if(j == colLength-1)return  <td class="hidden" key={j}>{colData}</td> 
                       else return  <td class="text-center" key={j}>{colData}</td>       
                       
               });
-              return<tr key={i}>{rows}<td class="cursor" onClick={that.showDecisionTreePopup.bind(this,rule)}><a name={rule}><i className="fa fa-info"></i></a></td></tr>;
+              return<tr key={i}>{rows}<td class="cursor text-center" onClick={that.showDecisionTreePopup.bind(this,rule)}><a href="javascript:;" class="btn btn-space btn-primary btn-rounded btn-xs"><i class="zmdi zmdi-hc-lg zmdi-more"></i></a></td></tr>;
           }
         })
       return tbodyData;
@@ -71,11 +71,11 @@ generateDecisionTreeRows(table) {
    var headerComponents = this.generatePredTableHeaders(data);
    var rowComponents = this.generateDecisionTreeRows(data);
    return (
-           <div class="table-style-custom">
+           <div class="table-style_2">
            {/* <Scrollbars style={{ height: 200 }} 
                className="thumb-horizontal" > */}  
            <table className={className}>
-               <thead><tr>{headerComponents}<th>Details</th></tr></thead>
+               <thead><tr>{headerComponents}<th width="2%">Details</th></tr></thead>
              
                <tbody>{rowComponents}</tbody>
              
