@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 import os
 import sys
+from config.settings.config_file_name_to_run import CONFIG_FILE_NAME
 
 if __name__ == "__main__":
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings." + CONFIG_FILE_NAME)
     try:
         from django.core.management import execute_from_command_line
     except ImportError:
