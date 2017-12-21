@@ -63,11 +63,11 @@ export class Signals extends React.Component {
       pageNo = this.props.history.location.search.split("page=")[1];
       this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, pageNo));
     } else{
-        this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, pageNo));   
+        this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, pageNo));
     }
     this.props.dispatch(refreshSignals(this.props));
     }
- 
+
   componentDidMount() {
     console.log("/checking anchor html");
     console.log($('a[rel="popover"]'));
@@ -214,6 +214,7 @@ export class Signals extends React.Component {
 
     if (data) {
       console.log("under if data condition!!")
+
       const storyList = data.map((story, i) => {
         var iconDetails = "";
 
@@ -235,7 +236,7 @@ export class Signals extends React.Component {
               }
               iconDetails = <img src={imgLink} className="img-responsive" alt="LOADING"/>;
           }
-      
+
 
         return (
           <div className="col-md-3 xs-mb-15 list-boxes" key={i}>
@@ -358,7 +359,11 @@ export class Signals extends React.Component {
           <div className="main-content">
             <div className="row">
               {addButton}
-              {storyList}
+              {
+							(storyList.length>0)
+							?(storyList)
+							:(<div><div className="clearfix"></div><div className="text-center text-muted xs-mt-50"><h2>No results found..</h2></div></div>)
+							}
               <div className="clearfix"></div>
             </div>
 

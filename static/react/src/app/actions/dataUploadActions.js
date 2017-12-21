@@ -18,7 +18,7 @@ export function dataUpload() {
             dispatch(uploadFileOrDB());
         }else{
             $("#fileErrorMsg").removeClass("visibilityHidden");
-            $("#fileErrorMsg").html("Please upload a file to proceed.");
+            $("#fileErrorMsg").html("Please add a new file or select an existing dataset.");
         }
     }
     else{

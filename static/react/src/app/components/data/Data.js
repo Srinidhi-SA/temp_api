@@ -263,7 +263,12 @@ export class Data extends React.Component {
           <div className="main-content">
             <div className="row">
               {addButton}
-              {dataSetList}
+              {
+							(dataSetList.length>0)
+							?(dataSetList)
+							:(<div><div className="clearfix"></div><div className="text-center text-muted xs-mt-50"><h2>No results found..</h2></div></div>)
+							}
+
               <div className="clearfix"></div>
             </div>
             <div className="ma-datatable-footer" id="idPagination">

@@ -224,7 +224,7 @@ export class DataPreview extends React.Component {
 	moveToVariableSelection(){
 		//alert(this.buttons.create.url);
 		//check for minimum rows in datasets
-	
+
 		if (this.props.dataPreview.meta_data.metaData[0].value<MINROWINDATASET)
 		bootbox.alert("Minimum "+MINROWINDATASET+" rows are required for analysis!!")
 		else{
@@ -521,7 +521,7 @@ export class DataPreview extends React.Component {
 					</div>
 					<div className="clearfix"></div>
 					</div>
-					
+
 					<div className="row buttonRow" id="dataPreviewButton">
 					<div className="col-md-12">
 
@@ -570,6 +570,7 @@ export class DataPreview extends React.Component {
 			return (
 					 <div>	<DataUploadLoader/>
 			            <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif"} />
+									{/*<div><div className="text-center text-muted xs-mt-50"><h2>Data preview failed to load. Please refresh the page or try again later</h2></div></div>*/}
 			          </div>
 			);
 		}
