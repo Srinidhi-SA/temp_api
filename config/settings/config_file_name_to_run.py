@@ -1,4 +1,4 @@
 
         CONFIG_FILE_NAME = 'local'
-        UI_VERSION = '8508003'
+        UI_VERSION = '8042022'
     
