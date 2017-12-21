@@ -61,6 +61,7 @@ def deploy_react(branch="dev"):
         path_details=path_details,
         type=k
     )
+    change_config_file(branch=branch)
 
 
 @task
