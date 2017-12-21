@@ -14738,12 +14738,13 @@ a .btn-close {
   width: auto;
   cursor:pointer;
 }
-.pred_disp_block {
+.pred_disp_block, .pred_disp_block_store {
     margin: 10px 10px 10px 0;
     background: #f8f8f8; 
 	min-height:136px;    
 }
-.pred_disp_block h1 {
+.pred_disp_block_store { background: transparent; }
+.pred_disp_block h1, .pred_disp_block_store h1 {
     margin-top: 10px;
 }
 .pred_disp_block:hover {-webkit-box-shadow: 2px 2px 15px -3px rgba(0,0,0,0.3);
@@ -14755,6 +14756,8 @@ div.pred_disp_block a {
    -moz-transition: color 0.3s linear;
 }
 div.pred_disp_block a.selected, div.pred_disp_block a:hover, div.pred_disp_block a:hover small, div.pred_disp_block a.selected:hover { color:#f0ad4e; }
+div.pred_disp_block  p, .pred_disp_block_store p { font-size:12px; }
+
 .recActivity { margin-bottom: 0; }
 .btn .fa.fa-more-img { display:block; width:24px; height:6px; background: no-repeat url(../images/icon_for_more.png) 0 0; }
 .btn:hover .fa.fa-more-img, .open .btn .fa.fa-more-img{ background-position: 0 -6px; background-color:transparent}
