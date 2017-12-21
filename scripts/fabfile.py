@@ -82,6 +82,34 @@ def deploy_api(branch="dev"):
     )
     gunicorn.reload()
 
+@task
+def change_config_file(branch='dev'):
+    import random
+    details = get_branch_details(branch)
+    set_fabric_env(details)
+    print details
+    path_details= details['path_details']
+    server_details= details['server_details']
+    text_command = """
+        CONFIG_FILE_NAME = 'local'
+        UI_VERSION = '{0}'
+    """.format(random.randint(100000,10000000))
+    config_file_path = BASE_DIR + '/config/settings/config_file_name_to_run.py'
+    local('rm config_file_path')
+    local('echo {0} > {1}'.format(text_command, config_file_path))
+
+    with cd(BASE_DIR):
+        local('git add config_file_path')
+        local('git commit -m "version changed"')
+
+    only_for_api_push_and_pull(
+        server_details=server_details,
+        path_details=path_details
+    )
+    gunicorn.reload()
+
+
+
 
 @task
 def deploy_api_and_migrate(type="development"):
