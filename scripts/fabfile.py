@@ -95,11 +95,11 @@ def change_config_file(branch='dev'):
         UI_VERSION = '{0}'
     """.format(random.randint(100000,10000000))
     config_file_path = BASE_DIR + '/config/settings/config_file_name_to_run.py'
-    local('rm config_file_path')
-    local('echo {0} > {1}'.format(text_command, config_file_path))
+    local('rm {0}'.format(config_file_path))
+    local('echo "{0}" > {1}'.format(text_command, config_file_path))
 
     with cd(BASE_DIR):
-        local('git add config_file_path')
+        local('git add {0}'.format(config_file_path))
         local('git commit -m "version changed"')
 
     only_for_api_push_and_pull(
