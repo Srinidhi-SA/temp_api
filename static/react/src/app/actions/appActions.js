@@ -10,28 +10,28 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
     import React from "react";
     import { showLoading, hideLoading } from 'react-redux-loading-bar';
     import {createcustomAnalysisDetails} from './signalActions';
-    
+
     export var appsInterval = null;
-    
+
     function getHeader(token){
         return {
             'Authorization': token,
             'Content-Type': 'application/json'
         };
     }
-    
+
     export function openModelPopup() {
         return {
             type: "APPS_MODEL_SHOW_POPUP",
         }
     }
-    
+
     export function closeModelPopup() {
         return {
             type: "APPS_MODEL_HIDE_POPUP",
         }
     }
-    
+
     export function getAppsModelList(pageNo) {
         return (dispatch) => {
             return fetchModelList(pageNo,getUserDetailsOrRestart.get().userToken).then(([response, json]) =>{
@@ -45,7 +45,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             })
         }
     }
-    
+
     function fetchModelList(pageNo,token) {
         let search_element = store.getState().apps.model_search_element;
         let apps_model_sorton =  store.getState().apps.apps_model_sorton;
@@ -54,7 +54,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             apps_model_sorttype = ""
                 else if(apps_model_sorttype=='desc')
                     apps_model_sorttype="-"
-                        
+
                         if(search_element!=""&&search_element!=null){
                             console.log("calling for model search element!!")
                             return fetch(API+'/api/trainer/?app_id='+store.getState().apps.currentAppId+'&name='+search_element+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
@@ -72,10 +72,10 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                                 headers: getHeader(token)
                             }).then( response => Promise.all([response, response.json()]));
                         }
-        
-        
+
+
     }
-    
+
     function fetchModelListError(json) {
         return {
             type: "MODEL_LIST_ERROR",
@@ -100,7 +100,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             testValue,
         }
     }
-    
+
     export function createModel(modelName,targetVariable) {
         console.log(modelName);
         console.log(targetVariable);
@@ -119,7 +119,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             })
         }
     }
-    
+
     function triggerCreateModel(token,modelName,targetVariable) {
         var datasetSlug = store.getState().datasets.dataPreview.slug;
         var app_id=store.getState().apps.currentAppId;
@@ -175,7 +175,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             })
         }
     }
-    
+
     function fetchScoreList(pageNo,token) {
         let search_element = store.getState().apps.score_search_element;
         let apps_score_sorton =  store.getState().apps.apps_score_sorton;
@@ -184,7 +184,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             apps_score_sorttype = ""
                 else if(apps_score_sorttype=='desc')
                     apps_score_sorttype="-"
-                        
+
                         if(search_element!=""&&search_element!=null){
                             console.log("calling for score search element!!")
                             return fetch(API+'/api/score/?app_id='+store.getState().apps.currentAppId+'&name='+search_element+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
@@ -202,10 +202,10 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                                 headers: getHeader(token)
                             }).then( response => Promise.all([response, response.json()]));
                         }
-        
-        
+
+
     }
-    
+
     function fetchScoreListError(json) {
         return {
             type: "SCORE_LIST_ERROR",
@@ -221,19 +221,19 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             current_page,
         }
     }
-    
+
     export function showCreateScorePopup() {
         return {
             type: "APPS_SCORE_SHOW_POPUP",
         }
     }
-    
+
     export function hideCreateScorePopup() {
         return {
             type: "APPS_SCORE_HIDE_POPUP",
         }
     }
-    
+
     export function getAppsModelSummary(slug) {
         return (dispatch) => {
             return fetchModelSummary(getUserDetailsOrRestart.get().userToken,slug).then(([response, json]) =>{
@@ -261,14 +261,14 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             })
         }
     }
-    
+
     function fetchModelSummary(token,slug) {
         return fetch(API+'/api/trainer/'+slug+'/',{
             method: 'get',
             headers: getHeader(token)
         }).then( response => Promise.all([response, response.json()]));
     }
-    
+
     function fetchModelSummaryError(json) {
         return {
             type: "MODEL_SUMMARY_ERROR",
@@ -296,14 +296,14 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
         console.log(cardList)
         return cardList;
     }
-    
+
     export function updateSelectedAlg(name){
         return {
             type: "SELECTED_ALGORITHM",
             name,
         }
     }
-    
+
     export function createScore(scoreName,targetVariable) {
         console.log(scoreName);
         console.log(targetVariable);
@@ -311,7 +311,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             dispatch(openAppsLoader(APPSLOADERPERVALUE,"Please wait while mAdvisor is scoring your model... "));
             return triggerCreateScore(getUserDetailsOrRestart.get().userToken,scoreName,targetVariable).then(([response, json]) =>{
                 if(response.status === 200){
-                    
+
                     dispatch(createScoreSuccess(json,dispatch))
                 }
                 else{
@@ -322,7 +322,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             })
         }
     }
-    
+
     function triggerCreateScore(token,scoreName,targetVariable) {
         var datasetSlug = store.getState().datasets.dataPreview.slug;
         var app_id=store.getState().apps.currentAppId;
@@ -347,7 +347,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             }),
         }).then( response => Promise.all([response, response.json()]));
     }
-    
+
     function createScoreSuccess(data,dispatch){
         var slug = data.slug;
         appsInterval = setInterval(function(){
@@ -365,7 +365,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             slug,
         }
     }
-    
+
     export function getAppsScoreSummary(slug) {
         return (dispatch) => {
             return fetchScoreSummary(getUserDetailsOrRestart.get().userToken,slug).then(([response, json]) =>{
@@ -384,7 +384,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                         dispatch(closeAppsLoaderValue());
                         dispatch(hideDataPreview());
                     }
-                    
+
                 }
                 else{
                     dispatch(closeAppsLoaderValue());
@@ -394,14 +394,14 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             })
         }
     }
-    
+
     function fetchScoreSummary(token,slug) {
         return fetch(API+'/api/score/'+slug+'/',{
             method: 'get',
             headers: getHeader(token)
         }).then( response => Promise.all([response, response.json()]));
     }
-    
+
     function fetchScoreSummaryError(json) {
         return {
             type: "SCORE_SUMMARY_ERROR",
@@ -433,9 +433,9 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 }else{
                     dispatch(fetchScoreSummaryError(json));
                 }
-                
+
             });
-            
+
         }
     }
     function fetchScoreSummaryInCSV(token,slug) {
@@ -444,7 +444,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             headers: getHeader(token)
         }).then( response => Promise.all([response, response.json()]));
     }
-    
+
     export function updateSelectedApp(appId,appName){
         return {
             type: "SELECTED_APP_DETAILS",
@@ -452,7 +452,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             appName,
         }
     }
-    
+
     export function openAppsLoaderValue(value,text){
         return {
             type: "OPEN_APPS_LOADER_MODAL",
@@ -476,7 +476,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             value,
         }
     }
-    
+
     export function openAppsLoader(value,text){
         return {
             type: "OPEN_APPS_LOADER_MODAL",
@@ -496,7 +496,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             flag,
         }
     }
-    
+
     export function updateModelSlug(slug){
         return {
             type: "CREATE_MODEL_SUCCESS",
@@ -509,7 +509,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             slug,
         }
     }
-    
+
     export function getAppsRoboList(pageNo) {
         return (dispatch) => {
             return fetchRoboList(pageNo,getUserDetailsOrRestart.get().userToken).then(([response, json]) =>{
@@ -523,7 +523,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             })
         }
     }
-    
+
     function fetchRoboList(pageNo,token) {
         let search_element = store.getState().apps.robo_search_element;
         let robo_sorton =  store.getState().apps.robo_sorton;
@@ -549,10 +549,10 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                                 headers: getHeader(token)
                             }).then( response => Promise.all([response, response.json()]));
                         }
-        
-        
+
+
     }
-    
+
     function fetchRoboListError(json) {
         return {
             type: "ROBO_LIST_ERROR",
@@ -573,13 +573,13 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             type: "APPS_ROBO_HIDE_POPUP",
         }
     }
-    
+
     export function openRoboDataPopup() {
         return {
             type: "APPS_ROBO_SHOW_POPUP",
         }
     }
-    
+
     export function saveFilesToStore(files,uploadData) {
         console.log(files)
         var file = files[0]
@@ -601,10 +601,10 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 files
             }
         }
-        
+
     }
-    
-    
+
+
     export function uploadFiles(dialog,insightName) {
         if(!isEmpty(store.getState().apps.customerDataUpload) && !isEmpty(store.getState().apps.historialDataUpload) && !isEmpty(store.getState().apps.externalDataUpload)){
             return (dispatch) => {
@@ -612,7 +612,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 dispatch(openAppsLoader(APPSLOADERPERVALUE,"Please wait while mAdvisor is processing data... "));
                 return triggerDataUpload(getUserDetailsOrRestart.get().userToken,insightName).then(([response, json]) =>{
                     if(response.status === 200){
-                        
+
                         dispatch(dataUploadFilesSuccess(json,dispatch))
                     }
                     else{
@@ -624,9 +624,9 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
         }else{
             dialog.showAlert("Please select Customer Data,Historial Data and External Data.");
         }
-        
+
     }
-    
+
     function triggerDataUpload(token,insightName) {
         var data = new FormData();
         data.append("customer_file",store.getState().apps.customerDataUpload);
@@ -639,7 +639,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             body:data,
         }).then( response => Promise.all([response, response.json()]));
     }
-    
+
     function dataUploadFilesSuccess(data,dispatch) {
         var slug = data.slug;
         appsInterval = setInterval(function(){
@@ -653,7 +653,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             slug,
         }
     }
-    
+
     export function dataUploadFilesError(josn){
         return {
             type: "ROBO_DATA_UPLOAD_ERROR",
@@ -697,14 +697,14 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             })
         }
     }
-    
+
     function fetchRoboDataset(token,slug) {
         return fetch(API+'/api/robo/'+slug+'/',{
             method: 'get',
             headers: getHeader(token)
         }).then( response => Promise.all([response, response.json()]));
     }
-    
+
     function fetchRoboSummaryError(json) {
         return {
             type: "ROBO_SUMMARY_ERROR",
@@ -767,7 +767,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                                       deleteAudio(slug,dialog,dispatch)
                                       else
                                           deleteScore(slug,dialog,dispatch)
-                                          
+
                       })
                       ],
                       bsSize: 'medium',
@@ -791,7 +791,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 dispatch(hideLoading());
             }
             else{
-                dialog.showAlert("Error occured , Please try after sometime.");
+                dialog.showAlert("Something went wrong. Please try again later.");
                 dispatch(hideLoading());
             }
         })
@@ -804,10 +804,10 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 deleted:true,
             }),
         }).then( response => Promise.all([response, response.json()]));
-        
+
     }
-    
-    
+
+
     export function handleModelRename(slug,dialog,name){
         const customBody = (
                 <div className="form-group">
@@ -843,7 +843,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                       }
         });
     }
-    
+
     function renameModel(slug,dialog,newName,dispatch){
         dispatch(showLoading());
         Dialog.resetOptions();
@@ -853,7 +853,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 dispatch(hideLoading());
             }
             else{
-                dialog.showAlert("Error occured , Please try after sometime.");
+                dialog.showAlert("Something went wrong. Please try again later.");
                 dispatch(hideLoading());
             }
         })
@@ -866,10 +866,10 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 name:newName,
             }),
         }).then( response => Promise.all([response, response.json()]));
-        
+
     }
-    
-    
+
+
     export function handleScoreDelete(slug,dialog) {
         return (dispatch) => {
             showDialogBox(slug,dialog,dispatch,DELETESCORE,"Are you sure, you want to delete score?")
@@ -884,7 +884,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 dispatch(hideLoading());
             }
             else{
-                dialog.showAlert("Error occured , Please try after sometime.");
+                dialog.showAlert("Something went wrong. Please try again later.");
                 dispatch(hideLoading());
             }
         })
@@ -897,10 +897,10 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 deleted:true,
             }),
         }).then( response => Promise.all([response, response.json()]));
-        
+
     }
-    
-    
+
+
     export function handleScoreRename(slug,dialog,name){
         const customBody = (
                 <div className="form-group">
@@ -912,7 +912,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             showRenameDialogBox(slug,dialog,dispatch,RENAMESCORE,customBody)
         }
     }
-    
+
     function renameScore(slug,dialog,newName,dispatch){
         dispatch(showLoading());
         Dialog.resetOptions();
@@ -922,7 +922,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 dispatch(hideLoading());
             }
             else{
-                dialog.showAlert("Error occured , Please try after sometime.");
+                dialog.showAlert("Something went wrong. Please try again later.");
                 dispatch(hideLoading());
             }
         })
@@ -935,16 +935,16 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 name:newName,
             }),
         }).then( response => Promise.all([response, response.json()]));
-        
+
     }
-    
+
     export function activateModelScoreTabs(id){
         return {
             type: "APPS_SELECTED_TAB",
             id,
         }
     }
-    
+
     export function handleInsightDelete(slug,dialog) {
         return (dispatch) => {
             showDialogBox(slug,dialog,dispatch,DELETEINSIGHT,"Are you sure, you want to delete Insight?")
@@ -959,7 +959,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 dispatch(hideLoading());
             }
             else{
-                dialog.showAlert("Error occured , Please try after sometime.");
+                dialog.showAlert("Something went wrong. Please try again later.");
                 dispatch(hideLoading());
             }
         })
@@ -972,10 +972,10 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 deleted:true,
             }),
         }).then( response => Promise.all([response, response.json()]));
-        
+
     }
-    
-    
+
+
     export function handleInsightRename(slug,dialog,name){
         const customBody = (
                 <div className="form-group">
@@ -987,7 +987,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             showRenameDialogBox(slug,dialog,dispatch,RENAMEINSIGHT,customBody)
         }
     }
-    
+
     function renameInsight(slug,dialog,newName,dispatch){
         dispatch(showLoading());
         Dialog.resetOptions();
@@ -997,7 +997,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 dispatch(hideLoading());
             }
             else{
-                dialog.showAlert("Error occured , Please try after sometime.");
+                dialog.showAlert("Something went wrong. Please try again later.");
                 dispatch(hideLoading());
             }
         })
@@ -1010,9 +1010,9 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 name:newName,
             }),
         }).then( response => Promise.all([response, response.json()]));
-        
+
     }
-    
+
     export function storeRoboSearchElement(search_element){
         return {
             type: "SEARCH_ROBO",
@@ -1040,27 +1040,27 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             type: "SHOW_AUDIO_FILE_UPLOAD",
         }
     }
-    
+
     export function hideAudioFUModal(){
         return {
             type: "HIDE_AUDIO_FILE_UPLOAD",
         }
     }
-    
+
     export function uploadAudioFileToStore(files){
         return {
             type: "AUDIO_UPLOAD_FILE",
             files
         }
     }
-    
+
     export function uploadAudioFile(){
         return (dispatch) => {
             dispatch(hideAudioFUModal());
             dispatch(openAppsLoader(APPSLOADERPERVALUE,"Please wait while mAdvisor analyzes the audio file... "));
             return triggerAudioUpload(getUserDetailsOrRestart.get().userToken).then(([response, json]) =>{
                 if(response.status === 200){
-                    
+
                     dispatch(audioUploadFilesSuccess(json,dispatch))
                 }
                 else{
@@ -1070,7 +1070,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             })
         }
     }
-    
+
     function triggerAudioUpload(token){
         var data = new FormData();
         data.append("input_file",store.getState().apps.audioFileUpload);
@@ -1080,7 +1080,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             body:data,
         }).then( response => Promise.all([response, response.json()]));
     }
-    
+
     function audioUploadFilesSuccess(data,dispatch) {
         var slug = data.slug;
         appsInterval = setInterval(function(){
@@ -1094,13 +1094,13 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             slug,
         }
     }
-    
+
     function audioUploadFilesError(){
         return {
             type: "AUDIO_UPLOAD_ERROR",
         }
     }
-    
+
     export function getAudioFile(slug) {
         return (dispatch) => {
             return fetchAudioFileSummary(getUserDetailsOrRestart.get().userToken,slug).then(([response, json]) =>{
@@ -1133,33 +1133,33 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             headers: getHeader(token)
         }).then( response => Promise.all([response, response.json()]));
     }
-    
+
     function fetchAFSummarySuccess(data){
         return {
             type: "AUDIO_UPLOAD_SUMMARY_SUCCESS",
             data,
         }
     }
-    
+
     function fetchAFSummaryError(data){
         return {
             type: "AUDIO_UPLOAD_SUMMARY_ERROR",
         }
     }
-    
+
     export function clearAudioFile(){
         return {
             type: "CLEAR_AUDIO_UPLOAD_FILE",
         }
     }
-    
+
     export function updateAudioFileSummaryFlag(flag){
         return {
             type: "UPDATE_AUDIO_FILE_SUMMARY_FLAG",
             flag
         }
     }
-    
+
     export function getAudioFileList(pageNo){
         return (dispatch) => {
             return fetchAudioList(pageNo,getUserDetailsOrRestart.get().userToken).then(([response, json]) =>{
@@ -1172,9 +1172,9 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             })
         }
     }
-    
+
     function fetchAudioList(pageNo,token) {
-        
+
         console.log(token)
         let search_element = store.getState().apps.audio_search_element
         console.log(search_element)
@@ -1190,10 +1190,10 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 headers: getHeader(token)
             }).then( response => Promise.all([response, response.json()]));
         }
-        
-        
+
+
     }
-    
+
     function fetchAudioListError(json) {
         return {
             type: "AUDIO_LIST_ERROR",
@@ -1215,10 +1215,10 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             search_element
         }
     }
-    
+
 //  Rename and Delete Audio files
-    
-    
+
+
     export function handleAudioDelete(slug,dialog) {
         return (dispatch) => {
             showDialogBox(slug,dialog,dispatch,DELETEAUDIO,"Are you sure, you want to delete media file?")
@@ -1233,7 +1233,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 dispatch(hideLoading());
             }
             else{
-                dialog.showAlert("Error occured , Please try after sometime.");
+                dialog.showAlert("Something went wrong. Please try again later.");
                 dispatch(hideLoading());
             }
         })
@@ -1246,10 +1246,10 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 deleted:true,
             }),
         }).then( response => Promise.all([response, response.json()]));
-        
+
     }
-    
-    
+
+
     export function handleAudioRename(slug,dialog,name){
         const customBody = (
                 <div className="form-group">
@@ -1261,7 +1261,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             showRenameDialogBox(slug,dialog,dispatch,RENAMEAUDIO,customBody)
         }
     }
-    
+
     function renameAudio(slug,dialog,newName,dispatch){
         dispatch(showLoading());
         Dialog.resetOptions();
@@ -1271,12 +1271,12 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 dispatch(hideLoading());
             }
             else{
-                dialog.showAlert("Error occured , Please try after sometime.");
+                dialog.showAlert("Something went wrong. Please try again later.");
                 dispatch(hideLoading());
             }
         })
     }
-    
+
     function renameAudioAPI(slug,newName){
         return fetch(API+'/api/audioset/'+slug+'/',{
             method: 'put',
@@ -1285,9 +1285,9 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 name:newName,
             }),
         }).then( response => Promise.all([response, response.json()]));
-        
+
     }
-    
+
     export function playAudioFile(){
         if(!isEmpty(store.getState().apps.audioFileUpload)){
             var audioEle =  document.getElementById("myAudio");
@@ -1300,9 +1300,9 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
         }else{
             bootbox.alert("Please upload audio file to play.");
         }
-        
+
     }
-    
+
     export function pauseAudioFile(){
         if(!isEmpty(store.getState().apps.audioFileUpload)){
             var audioEle =  document.getElementById("myAudio");
@@ -1316,7 +1316,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             bootbox.alert("Please upload audio file to play.");
         }
     }
-    
+
     export function storeRoboSortElements(roboSorton,roboSorttype){
         return {
             type: "SORT_ROBO",
@@ -1344,7 +1344,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             flag
         }
     }
-    
+
     export function addDefaultStockSymbolsComp(){
         return (dispatch) => {
             var stockSymbolsArray = [];
@@ -1353,27 +1353,27 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             dispatch(updateStockSymbolsArray(stockSymbolsArray))
         }
     }
-    
+
     function updateStockSymbolsArray(stockSymbolsArray){
         return{
             type: "ADD_STOCK_SYMBOLS",
             stockSymbolsArray
         }
     }
-    
+
     export function addMoreStockSymbols(){
         return (dispatch) => {
             var stockSymbolsArray = store.getState().apps.appsStockSymbolsInputs.slice();
             var max = stockSymbolsArray.reduce(function(prev, current) {
                 return (prev.id > current.id) ? prev : current
-                        
+
             });
             let length = max.id+1;
             stockSymbolsArray.push({"id":length,"name":"name"+length,"value":""});
             dispatch(updateStockSymbolsArray(stockSymbolsArray));
         }
     }
-    
+
     export function removeStockSymbolsComponents(data){
         return (dispatch) => {
             var stockSymbolsArray = store.getState().apps.appsStockSymbolsInputs.slice();
@@ -1386,9 +1386,9 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             dispatch(updateStockSymbolsArray(stockSymbolsArray))
         }
     }
-    
+
     export function handleInputChange(event){
-        
+
         return (dispatch) => {
             var stockSymbolsArray = store.getState().apps.appsStockSymbolsInputs.slice();
             for (var i=0;i<stockSymbolsArray.length;i++) {
@@ -1400,7 +1400,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             dispatch(updateStockSymbolsArray(stockSymbolsArray))
         }
     }
-    
+
     export function getAppsStockList(pageNo) {
         return (dispatch) => {
             return fetchStockList(pageNo,getUserDetailsOrRestart.get().userToken).then(([response, json]) =>{
@@ -1414,22 +1414,22 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             })
         }
     }
-    
+
     function fetchStockList(pageNo,token) {
         return fetch(API+'/api/stockdataset/?page_number='+pageNo+'&page_size='+PERPAGE+'',{
             method: 'get',
             headers: getHeader(getUserDetailsOrRestart.get().userToken)
         }).then( response => Promise.all([response, response.json()]));
-        
+
     }
-    
+
     function fetchStockListError(json) {
         return {
             type: "STOCK_LIST_ERROR",
             json
         }
     }
-    
+
     export function fetchStockListSuccess(doc){
         var data = doc;
         var current_page =  doc.current_page
@@ -1439,7 +1439,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             current_page,
         }
     }
-    
+
     export function crawlDataForAnalysis(url,analysisName,urlForNews){
         var found = false;
         var stockSymbolsArray = store.getState().apps.appsStockSymbolsInputs;
@@ -1493,7 +1493,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             if(store.getState().apps.appsLoaderPerValue+10 < LOADERMAXPERVALUE){
                 dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+APPSLOADERPERVALUE));
             }
-            
+
         }, 60000);
         return {
             type: "STOCK_CRAWL_SUCCESS",
@@ -1501,22 +1501,22 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
         }
     }
     function triggerCrawlingAPI(urlForPrices,urlForNews,analysisName) {
-        
+
         var details = {
                 "url1":urlForPrices,
                 "url2":urlForNews,
                 "name":analysisName,
                 "stock_symbols":store.getState().apps.appsStockSymbolsInputs
-                
+
         }
         return fetch(API + '/api/stockdataset/', {
             method: 'post',
             headers: getHeader(getUserDetailsOrRestart.get().userToken),
             body: JSON.stringify({config: details})
         }).then(response => Promise.all([response, response.json()]));
-        
+
     }
-    
+
     export function hideDataPreviewRightPanels(){
         $("#tab_visualizations").hide();
         $("#sub_settings").hide();
@@ -1540,7 +1540,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             flag
         }
     }
-    
+
     export function uploadStockFile(slug){
         return (dispatch) => {
             dispatch(updateUploadStockPopup(false));
@@ -1600,23 +1600,23 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             })
         }
     }
-    
+
     function fetchStockAnalysisAPI(token,slug) {
         return fetch(API+"/api/stockdataset/"+slug+"/read_stats/",{
             method: 'get',
             headers: getHeader(token)
         }).then( response => Promise.all([response, response.json()]));
     }
-    
+
     export function updateStockSlug(slug){
         return {
             type: "STOCK_CRAWL_SUCCESS",
             slug,
         }
     }
-    
-    
-    
+
+
+
     export function getConceptsList() {
         return (dispatch) => {
             return fetchConceptList().then(([response, json]) =>{
@@ -1636,24 +1636,24 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             headers: getHeader(getUserDetailsOrRestart.get().userToken)
         }).then( response => Promise.all([response, response.json()]));
     }
-    
+
     function fetchConceptListSuccess(concepts) {
         return{
             type:"CONCEPTSLIST",
             concepts
         }
-        
+
     }
-    
+
     function fetchConceptListError(json) {
         // return {
         // 	type: "MODEL_LIST_ERROR",
         // 	json
         // }
     }
-    
+
     export function getAppsList(token,pageNo){
-        
+
         return (dispatch) => {
             return fetchApps(token,pageNo).then(([response, json]) =>{
                 if(response.status === 200){
@@ -1661,16 +1661,16 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                     dispatch(fetchAppsSuccess(json))
                     // if(json.data)
                     // dispatch(updateAppsFilterList(json.data[0].tag_keywords))
-                    
+
                 }
                 else{
                     dispatch(fetchAppsError(json))
                 }
             })
         }
-        
+
     }
-    
+
     function  fetchApps(token,pageNo){
         let search_element = store.getState().apps.storeAppsSearchElement;
         let apps_sortBy = store.getState().apps.storeAppsSortByElement;
@@ -1692,9 +1692,9 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 headers: getHeader(token)
             }).then( response => Promise.all([response, response.json()]));
         }
-        
+
     }
-    
+
     function fetchAppsSuccess(json){
         var current_page =  json.current_page
         return {
@@ -1703,8 +1703,8 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             current_page
         }
     }
-    
-    
+
+
     function fetchAppsError(json) {
         //console.log("fetching list error!!",json)
         return {
@@ -1725,11 +1725,11 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             sort_type
         }
     }
-    
+
     export function updateAppsFilterList(filter_list){
         let appList=store.getState().apps.appsList
         //console.log(appList)
-        
+
         // if(filter_list.length==0 && appList.data )
         // filter_list=[]
         return{
@@ -1737,25 +1737,25 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             filter_list
         }
     }
-    
-    
+
+
     export function getAppsFilteredList(token,pageNo){
-        
+
         return (dispatch) => {
             return fetchFilteredApps(token,pageNo).then(([response, json]) =>{
                 if(response.status === 200){
                     //console.log(json)
                     dispatch(fetchAppsSuccess(json))
-                    
+
                 }
                 else{
                     dispatch(fetchAppsError(json))
                 }
             })
         }
-        
+
     }
-    
+
     function  fetchFilteredApps(token,pageNo){
         let filtered_list = store.getState().apps.app_filtered_keywords;
         //let stringify_list="[\""+filtered_list.toString().replace(/,/g ,"\",\"")+"\"]"
@@ -1764,6 +1764,6 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             method: 'get',
             headers: getHeader(token)
         }).then( response => Promise.all([response, response.json()]));
-        
-        
+
+
     }

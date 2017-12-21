@@ -34,6 +34,7 @@ export class Main extends React.Component {
       );
     } else {
       console.log("Session ended!!");
+      bootbox.alert("Session Timeout. Please login again to continue.")
       return(<Redirect to={"/login"} />);
     }
 
