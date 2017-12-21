@@ -7,6 +7,8 @@ import store from "../../store";
 import {closeModelPopup,openModelPopup} from "../../actions/appActions";
 import {getAllDataList,getDataSetPreview,storeSignalMeta,updateDatasetName} from "../../actions/dataActions";
 import {DataSourceList} from "../data/DataSourceList";
+import {open,close,fileUpload,dataUpload} from "../../actions/dataUploadActions";
+
 
 @connect((store) => {
 	return {login_response: store.login.login_response, 
@@ -38,8 +40,13 @@ export class AppsCreateModel extends React.Component {
     	this.props.dispatch(closeModelPopup())
     }
     getDataSetPreview(){
+        if (store.getState().dataSource.selectedDataSrcType == "fileUpload") {
     	this.selectedData = $("#model_Dataset").val();
     	this.props.dispatch(getDataSetPreview(this.selectedData));
+        }else{
+            this.props.dispatch(closeModelPopup())
+            this.props.dispatch(dataUpload())
+        }
     }
     updateDataset(e){
     	this.selectedData = e.target.value;

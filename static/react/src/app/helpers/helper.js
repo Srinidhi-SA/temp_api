@@ -48,7 +48,7 @@ function redirectToLogin() {
 }
 
 
-const FILEUPLOAD = "File Upload";
+const FILEUPLOAD = "fileUpload";
 const MYSQL = "MySQL";
 const INPUT = "Input";
 const HOST = "Host";

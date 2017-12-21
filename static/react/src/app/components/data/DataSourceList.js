@@ -69,6 +69,7 @@ export class DataSourceList extends React.Component {
 				let fields = data.formFields;
 				let formList = null;
 				var divId = "data_upload_"+i;
+				var dataSrcType = data.dataSourceType
 				const fieldsList = fields.map((field,j) =>{
 					if(field.fieldType == "file"){
 						if(this.props.renderDatasets){
@@ -103,13 +104,10 @@ export class DataSourceList extends React.Component {
 					}else {
 						//to put default port
 						let placeHolder = field.placeHolder
-						/*if(field.defaultValue){
-							placeHolder = field.defaultValue
-						}*/
 						return(<div className="form-group" id={j}>
 						<label for="fl1" className="col-sm-3 control-label">{field.labelName}</label>
 						<div className="col-sm-9">
-						<input id={j} defaultValue={field.defaultValue} type={field.fieldType} required={field.required} name={field.fieldName} placeholder={placeHolder} className="form-control" maxlength={field.maxLength} onChange={this.handleInputChange.bind(this)}/>
+						<input id={dataSrcType+field.fieldName} defaultValue={field.defaultValue} type={field.fieldType} required={field.required}  title="Please Enter" name={field.fieldName} placeholder={placeHolder} className="form-control" maxlength={field.maxLength}/>
 						</div>
 						</div>)
 					}
@@ -117,7 +115,7 @@ export class DataSourceList extends React.Component {
 
 				});
 				if(data.dataSourceType.toLowerCase() != FILEUPLOAD.toLowerCase()){
-					formList = <div id={divId}><form role="form" className="form-horizontal" id="dbConnectors">{fieldsList}</form></div>
+					formList = <div id={divId}><form role="form" className="form-horizontal" id={data.dataSourceType}>{fieldsList}</form></div>
 				}else{
 					formList = <div id={divId}>{fieldsList}</div>
 				}
