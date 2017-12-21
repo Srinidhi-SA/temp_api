@@ -27,4 +27,3 @@ env
 .pydevproject
 *.log
 config/media
-scripts

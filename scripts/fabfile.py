@@ -104,7 +104,7 @@ def leia():
         "known name": "leia.marlabsai.com",
         "username": "ubuntu",
         "host": "34.196.22.246",
-        "port": "9012",
+        "port": "9015",
         "initail_domain": "/api"
     }
 
