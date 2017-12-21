@@ -234,7 +234,7 @@ DATA_SOURCES_CONFIG = {"conf": [{
             {
 
                 "fieldType": "number",
-                "fieldName": "Port",
+                "fieldName": "port",
                 "placeHolder": "Port",
                 "labelName": "Port",
                 "required": "true",
@@ -302,7 +302,7 @@ DATA_SOURCES_CONFIG = {"conf": [{
             {
 
                 "fieldType": "number",
-                "fieldName": "Port",
+                "fieldName": "port",
                 "placeHolder": "Port",
                 "labelName": "Port",
                 "required": "true",
@@ -368,7 +368,7 @@ DATA_SOURCES_CONFIG = {"conf": [{
             {
 
                 "fieldType": "number",
-                "fieldName": "Port",
+                "fieldName": "port",
                 "placeHolder": "Port",
                 "labelName": "Port",
                 "required": "true",
@@ -427,7 +427,7 @@ DATA_SOURCES_CONFIG = {"conf": [{
             {
 
                 "fieldType": "number",
-                "fieldName": "Port",
+                "fieldName": "port",
                 "placeHolder": "Port",
                 "labelName": "Port",
                 "required": "true",
