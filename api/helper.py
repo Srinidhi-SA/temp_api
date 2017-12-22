@@ -903,7 +903,7 @@ def get_job_status_from_yarn(instance=None):
     app_status = ym.cluster_application(instance.job.url)
 
     instance.status = settings.YARN_STATUS.get(app_status.data['app']["state"], "FAILED")
-    instance.job.status = settings.YARN_STATUS.get(app_status.data['app']["state"], "FAILED")
+    instance.job.status = app_status.data['app']["state"]
     instance.job.save()
     print "%" * 100
     print instance.status

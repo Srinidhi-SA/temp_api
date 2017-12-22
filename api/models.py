@@ -978,9 +978,14 @@ class Score(models.Model):
         model_config_from_results = model_data['config']
         targetVariableLevelcount = model_config_from_results.get('targetVariableLevelcount', None)
         modelFeaturesDict = model_config_from_results.get('modelFeatures', None)
+        labelMappingDictAll = model_config_from_results.get('labelMappingDict',None)
         # algorithmslug = 'f77631ce2ab24cf78c55bb6a5fce4db8rf'
 
         modelfeatures = modelFeaturesDict.get(algorithmslug, None)
+        if labelMappingDictAll != None:
+            labelMappingDict = labelMappingDictAll.get(algorithmslug, None)
+        else:
+            labelMappingDict = None
 
         return {
             'inputfile': [self.dataset.get_input_file()],
@@ -990,7 +995,8 @@ class Score(models.Model):
             'levelcounts': targetVariableLevelcount if targetVariableLevelcount is not None else [],
             'algorithmslug': [algorithmslug],
             'modelfeatures': modelfeatures if modelfeatures is not None else [],
-            'metadata': self.get_metadata_url_config()
+            'metadata': self.get_metadata_url_config(),
+            'labelMappingDict':labelMappingDict
         }
 
     def get_metadata_url_config(self):

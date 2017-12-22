@@ -40,7 +40,7 @@ class JobAdmin(admin.ModelAdmin):
     def start_selected_jobs(self, request, queryset):
         for instance in queryset:
             try:
-                if instance.status is 'KILLED':
+                if instance.status is 'KILLED' or instance.status is 'FAILED':
                     instance.start()
             except Exception as exc:
                 print exc
