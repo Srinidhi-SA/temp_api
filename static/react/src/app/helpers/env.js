@@ -3,7 +3,7 @@ const API = APP_BASE_URL; //dev
 //const API = "http://192.168.33.128:8000"; //vivek
 
 //const API = ""; //vivek
-const STATIC_URL = "/";
+const STATIC_URL = STATIC_URL_1;
 const EMR = SCORES_BASE_URL;
 const PMMLURL = "api/get_xml"
 export{

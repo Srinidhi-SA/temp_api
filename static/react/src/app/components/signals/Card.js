@@ -52,7 +52,7 @@ export class Card extends React.Component {
             case "c3Chart":
                 //console.log("checking chart data:::::");
                 if(!$.isEmptyObject(story.data)){
-                    story.chartInfo =[]
+                   // story.chartInfo =[]
                     if(story.widthPercent &&  story.widthPercent != 100){
                       //  let width  = story.widthPercent+"%";
                         let width  = parseInt((story.widthPercent/100)*12)
