@@ -906,7 +906,7 @@ def home(request):
     SCORES_BASE_URL = "http://{}:8001/".format(settings.HDFS.get("host", "ec2-34-205-203-38.compute-1.amazonaws.com"))
     APP_BASE_URL = "{}://{}".format(protocol, host)
 
-    context = {"UI_VERSION": settings.UI_VERSION, "APP_BASE_URL": APP_BASE_URL, "SCORES_BASE_URL": SCORES_BASE_URL}
+    context = {"UI_VERSION": settings.UI_VERSION, "APP_BASE_URL": APP_BASE_URL, "SCORES_BASE_URL": SCORES_BASE_URL, "STATIC_URL" : settings.STATIC_URL}
 
     return render(request, 'home.html', context)
 
