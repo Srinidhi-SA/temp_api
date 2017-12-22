@@ -75,7 +75,8 @@ export function updateSelectedDataSrc(selectedDataSrcType) {
 	}
 }
 export function updateDbDetails(evt){
-	if(evt.target.name.toLowerCase() == HOST.toLowerCase()){
+    $("#"+evt.target.id).css("border-color","#e0e0e0");
+	/*if(evt.target.name.toLowerCase() == HOST.toLowerCase()){
 		var host  = evt.target.value;
 		return {
 			type: "DB_HOST_NAME",
@@ -116,5 +117,5 @@ export function updateDbDetails(evt){
 			type: "DB_TABLENAME",
 			tablename
 		}
-    }
+    }*/
 }

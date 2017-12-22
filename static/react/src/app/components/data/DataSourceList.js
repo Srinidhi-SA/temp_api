@@ -36,17 +36,25 @@ export class DataSourceList extends React.Component {
 		this.props.dispatch(getDataSourceList());
 	}
 	onDrop(files) {
-	    if(files[0].size == 0){
-	       $("#fileErrorMsg").removeClass("visibilityHidden");
-	       $("#fileErrorMsg").html("The uploaded file is empty , please upload the correct file");
-	    }
-	    else{
-	        $("#fileErrorMsg").addClass("visibilityHidden");
+	    if(files.length > 0){
+	        if(files[0].size == 0){
+	            $("#fileErrorMsg").removeClass("visibilityHidden");
+	            $("#fileErrorMsg").html("The uploaded file is empty , please upload the correct file");
+	         }
+	         else{
+	             $("#fileErrorMsg").addClass("visibilityHidden");
+	             this.props.dispatch(saveFileToStore(files))
+	         }     
+	    }else{
+	        files[0] = {"name":"","size":""};
 	        this.props.dispatch(saveFileToStore(files))
-	    } 
+	    }
+	    
 	}
 	popupMsg(){
-		bootbox.alert("Only CSV files are allowed to upload")
+	    $("#fileErrorMsg").removeClass("visibilityHidden");
+        $("#fileErrorMsg").html("File format is not supported. Please upload a CSV and retry.");
+        
 	}
 	handleSelect(key){
 		this.props.dispatch(updateSelectedDataSrc(key))
@@ -107,7 +115,7 @@ export class DataSourceList extends React.Component {
 						return(<div className="form-group" id={j}>
 						<label for="fl1" className="col-sm-3 control-label">{field.labelName}</label>
 						<div className="col-sm-9">
-						<input id={dataSrcType+field.fieldName} defaultValue={field.defaultValue} type={field.fieldType} required={field.required}  title="Please Enter" name={field.fieldName} placeholder={placeHolder} className="form-control" maxlength={field.maxLength}/>
+						<input id={dataSrcType+field.fieldName} defaultValue={field.defaultValue} type={field.fieldType} required={field.required}  title="Please Enter" name={field.fieldName} onChange={this.handleInputChange.bind(this)} placeholder={placeHolder} className="form-control" maxlength={field.maxLength}/>
 						</div>
 						</div>)
 					}

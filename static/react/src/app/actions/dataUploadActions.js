@@ -25,8 +25,17 @@ export function dataUpload() {
     else{
         var elements = document.getElementById(store.getState().dataSource.selectedDataSrcType).elements;
         //$("#MySQLdatasetname").tooltip({'trigger':'focus', 'title': 'Password tooltip'});
+       // var dataSrc = store.getState().dataSource.selectedDataSrcType;
         for(var i=0;i<elements.length;i++){
-        dbDetails[elements[i].name] = elements[i].value
+            if(elements[i].required &&  elements[i].value == ""){
+                $("#"+elements[i].id).css("border-color","red");
+                return false;
+            }else{
+                $("#"+elements[i].id).css("border-color","#e0e0e0");
+                dbDetails[elements[i].name] = elements[i].value
+            }
+           
+       
         }
         dispatch(uploadFileOrDB(dbDetails));
     }
