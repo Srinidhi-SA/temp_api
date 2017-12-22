@@ -91,6 +91,19 @@ export class VariableSelection extends React.Component {
             bootbox.alert("Please select one of the date dimensions.");
             return false;
         }
+				//check if no variable selected
+				if(this.props.selectedTimeDimensions===undefined){
+					if(this.props.selectedMeasures.length+this.props.selectedDimensions.length==0){
+					bootbox.alert("Please select atleast one variable.")
+					return false
+				}
+				}else{
+					if(this.props.selectedMeasures.length+this.props.selectedDimensions.length+this.props.selectedTimeDimensions.length==0){
+					bootbox.alert("Please select atleast one variable.")
+					return false
+				}
+				}
+
         console.log("while creating signal")
         console.log(this.props);
         this.signalFlag = false;
@@ -279,7 +292,7 @@ export class VariableSelection extends React.Component {
 				<Form onSubmit={this.createSignal.bind(this)}>
 				<FormGroup role="form">
 				<div className="row">
-				<label className="col-lg-2 text-right" for="signalVariableList">I want to analyze</label>
+				<div className="col-lg-2"><label for="signalVariableList">I want to analyze </label></div>
 				<div className="col-lg-4">
 				<div className="htmlForm-group">
 				<select className="form-control" id="signalVariableList" onChange={this.setPossibleList.bind(this)}>

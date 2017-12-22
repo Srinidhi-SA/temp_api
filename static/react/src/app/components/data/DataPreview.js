@@ -315,6 +315,7 @@ export class DataPreview extends React.Component {
 			dataPrev = this.props.dataPreview.meta_data
 			//  console.log(data[0]);
 			//const tableThTemplate=data[0].map((thElement, thIndex) => {
+			if(dataPrev && !isEmpty(dataPrev)){
 			const topInfo = dataPrev.metaData.map((item, i) => {
 				if(item.display){
 					return(
@@ -417,7 +418,8 @@ export class DataPreview extends React.Component {
     			this.firstTimeSideChart = dataPrev.columnData[0].chartData;
     			this.firstTimeColTypeForChart = dataPrev.columnData[0].columnType;
     			 if(!$.isEmptyObject(this.firstTimeSideChart)){
-    				 firstChart = <C3Chart classId={this.chartId} data={sideChart} yformat={yformat} xdata={xdata} sideChart={true}/> ;
+    			     this.chartInfo = [];
+    				 firstChart = <C3Chart chartInfo={this.chartInfo} classId={this.chartId} data={sideChart} yformat={yformat} xdata={xdata} sideChart={true}/> ;
     			 }
     			 if(!isEmpty(dataPrev.columnData[0]))
     			 firstTimeSubSetting = dataPrev.columnData[0]
@@ -566,6 +568,14 @@ export class DataPreview extends React.Component {
 					  <Dialog ref="dialog"/>
 					 </div>
 			);
+		}else{
+			return (
+					 <div>	<DataUploadLoader/>
+			            <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif"} />
+								<div><div className="text-center text-muted xs-mt-50"><h3>Data preview failed to load. Please refresh the page or try again later</h3></div></div>
+			          </div>
+			);
+		}
 		} else {
 			return (
 					 <div>	<DataUploadLoader/>

@@ -104,6 +104,22 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
     export function createModel(modelName,targetVariable) {
         console.log(modelName);
         console.log(targetVariable);
+        //check if no variable selected
+        let selectedMeasures=store.getState().datasets.selectedMeasures
+        let selectedDimensions=store.getState().datasets.selectedDimensions
+        let selectedTimeDimension=store.getState().datasets.selectedTimeDimensions
+        if(selectedTimeDimension===undefined){
+          if(selectedMeasures.length+selectedDimensions.length==0){
+          bootbox.alert("Please select atleast one variable.")
+          return false
+        }
+        }else{
+          if(selectedMeasures.length+selectedDimensions.length+selectedTimeDimension.length==0){
+          bootbox.alert("Please select atleast one variable.")
+          return false
+        }
+        }
+
         return (dispatch) => {
             dispatch(openAppsLoader(APPSLOADERPERVALUE,"Please wait while mAdvisor is creating model... "));
             return triggerCreateModel(getUserDetailsOrRestart.get().userToken,modelName,targetVariable).then(([response, json]) =>{
