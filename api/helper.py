@@ -904,6 +904,7 @@ def get_job_status_from_yarn(instance=None):
 
     instance.status = settings.YARN_STATUS.get(app_status.data['app']["state"], "FAILED")
     instance.job.status = settings.YARN_STATUS.get(app_status.data['app']["state"], "FAILED")
+    instance.job.save()
     print "%" * 100
     print instance.status
     print "%" * 100
