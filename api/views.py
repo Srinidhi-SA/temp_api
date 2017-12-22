@@ -4603,6 +4603,25 @@ def get_chart_or_small_data(request, slug=None):
     return response
 
 
+@api_view(['GET'])
+def get_job_kill(request, slug=None):
+
+    job_object = Job.objects.filter(object_id=slug).first()
+    job_object.kill()
+    return JsonResponse({
+        'message': 'killed'
+    })
+
+
+@api_view(['GET'])
+def get_job_refreshed(request, slug=None):
+
+    job_object = Job.objects.filter(object_id=slug).first()
+    job_object.update_status()
+    return JsonResponse({
+        'message': 'refreshed'
+    })
+
 @csrf_exempt
 def set_messages(request, slug=None):
     if slug is None:

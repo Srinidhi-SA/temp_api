@@ -535,7 +535,7 @@ def configuration_details():
         },
         'leia': {
             'server_details': {
-                 "known name": "leia.marlabsai.com",
+                "known name": "leia.marlabsai.com",
                 "username": "ubuntu",
                 "host": "34.196.22.246",
                 "port": "9015",
