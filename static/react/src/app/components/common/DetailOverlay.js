@@ -46,7 +46,6 @@ export class DetailOverlay extends React.Component {
 	   else
 	  return( <div>{templateList}</div>);
    })
-   template=[]
    return (
 		   <div id="myPopover" >
        {
