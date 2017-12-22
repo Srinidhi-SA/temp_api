@@ -540,7 +540,7 @@ def configuration_details():
             'gunicorn_details': {
                 'gunicorn_wsgi_app': 'config.wsgi:application',
                 'gunicorn_pidpath': "/gunicorn.pid",
-                'gunicorn_bind': "0.0.0.0:9012"
+                'gunicorn_bind': "0.0.0.0:9015"
             }
         }
     }
