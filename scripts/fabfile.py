@@ -81,11 +81,27 @@ def deploy_api(branch="dev"):
     :param type:
     :return:
     """
+    import random
     details = get_branch_details(branch)
     set_fabric_env(details)
     print details
     path_details= details['path_details']
     server_details= details['server_details']
+    deployment_config= details['deployment_config']
+    base_remote_path = path_details['base_remote_path']
+    text_command = """CONFIG_FILE_NAME = '{0}'\nUI_VERSION = '{1}'
+    """.format(deployment_config, random.randint(100000,10000000))
+    config_file_path = BASE_DIR + '/config/settings/config_file_name_to_run.py'
+    react_env = BASE_DIR + '/static/react/src/app/helpers/env.js'
+    react_npm_log = BASE_DIR + '/static/react/npm-debug.log'
+    local('rm {0}'.format(config_file_path))
+    local('echo "{0}" > {1}'.format(text_command, config_file_path))
+
+    with cd(BASE_DIR):
+        local('git add {0}'.format(config_file_path))
+        local('git checkout {0}'.format(react_env))
+        local('git checkout {0}'.format(react_npm_log))
+        local('git commit -m "version changed"')
 
     only_for_api_push_and_pull(
         server_details=server_details,
@@ -108,27 +124,19 @@ def change_config_file(branch='dev'):
     config_file_path = BASE_DIR + '/config/settings/config_file_name_to_run.py'
     react_env = BASE_DIR + '/static/react/src/app/helpers/env.js'
     react_npm_log = BASE_DIR + '/static/react/npm-debug.log'
-
+    local('rm {0}'.format(config_file_path))
+    local('echo "{0}" > {1}'.format(text_command, config_file_path))
 
     with cd(BASE_DIR):
-        # local('git add {0}'.format(config_file_path))
+        local('git add {0}'.format(config_file_path))
         local('git checkout {0}'.format(react_env))
         local('git checkout {0}'.format(react_npm_log))
-        # local('git commit -m "version changed"')
+        local('git commit -m "version changed"')
 
     only_for_api_push_and_pull(
         server_details=server_details,
         path_details=path_details
     )
-
-    local('rm {0}'.format(config_file_path))
-    local('echo "{0}" > {1}'.format(text_command, config_file_path))
-    put(
-        local_path=config_file_path,
-        remote_path=base_remote_path + '/config/settings/'
-    )
-    local('rm {0}'.format(config_file_path))
-
     gunicorn.reload()
 
 

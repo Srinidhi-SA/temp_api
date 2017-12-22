@@ -27,4 +27,3 @@ env
 .pydevproject
 *.log
 config/media
-config/settings/config_file_name_to_run.py
