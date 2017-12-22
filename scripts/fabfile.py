@@ -101,8 +101,9 @@ def change_config_file(branch='dev'):
     print details
     path_details= details['path_details']
     server_details= details['server_details']
-    text_command = """CONFIG_FILE_NAME = 'local'\nUI_VERSION = '{0}'
-    """.format(random.randint(100000,10000000))
+    deployment_config= details['deployment_config']
+    text_command = """CONFIG_FILE_NAME = '{0}'\nUI_VERSION = '{1}'
+    """.format(deployment_config, random.randint(100000,10000000))
     config_file_path = BASE_DIR + '/config/settings/config_file_name_to_run.py'
     react_env = BASE_DIR + '/static/react/src/app/helpers/env.js'
     react_npm_log = BASE_DIR + '/static/react/npm-debug.log'
@@ -504,7 +505,8 @@ def configuration_details():
                 'gunicorn_wsgi_app': 'config.wsgi:application',
                 'gunicorn_pidpath': "/gunicorn.pid",
                 'gunicorn_bind': "0.0.0.0:9012"
-            }
+            },
+            'deployment_config': 'luke'
         },
 
         'dev': {
@@ -528,7 +530,8 @@ def configuration_details():
                 'gunicorn_wsgi_app': 'config.wsgi:application',
                 'gunicorn_pidpath': "/gunicorn.pid",
                 'gunicorn_bind': "0.0.0.0:9012"
-            }
+            },
+            'deployment_config': 'development'
         },
         'leia': {
             'server_details': {
@@ -551,7 +554,8 @@ def configuration_details():
                 'gunicorn_wsgi_app': 'config.wsgi:application',
                 'gunicorn_pidpath': "/gunicorn.pid",
                 'gunicorn_bind': "0.0.0.0:9015"
-            }
+            },
+            'deployment_config': 'leia'
         }
     }
 
