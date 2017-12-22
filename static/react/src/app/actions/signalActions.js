@@ -269,7 +269,9 @@ function fetchPosts_analysis(token,errandId) {
 			'Authorization': token,
 			'Content-Type': 'application/x-www-form-urlencoded'
 		}
-  }).then( response => Promise.all([response, response.json()]));
+  }).then( response => Promise.all([response, response.json()])).catch(function(error){
+    bootbox.alert("Something went wrong. Please try again later.")
+  });
 
 }
 

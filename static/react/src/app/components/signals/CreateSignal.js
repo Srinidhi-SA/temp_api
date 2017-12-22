@@ -38,7 +38,7 @@ export class CreateSignal extends React.Component {
 		if($.isEmptyObject(store.getState().datasets.allDataSets)){
 			bootbox.alert("No datasets available.Please upload datasets.");
 		}else{
-			this.props.dispatch(openCreateSignalModal()) 
+			this.props.dispatch(openCreateSignalModal())
 		}
 	}
 	closeSignalModal(){
@@ -50,7 +50,15 @@ export class CreateSignal extends React.Component {
 		var that = this;
 		if(!this.flag){
 			that.selectedData['name']= $('#signal_Dataset option:selected').val();
+			if(that.selectedData['name']==""||that.selectedData['name']==null){
+			$("#errorMsgs").html("Please select a data set to create signal from")
+			return false
+			}
 			this.props.dispatch(storeSignalMeta(that.selectedData,that.props.url));
+		}
+		if(this.selectedData.name==""||this.selectedData.name==null){
+		$("#errorMsgs").html("Please select a data set to create signal from")
+		return false
 		}
 		this.props.dispatch(showDataPreview());
 		this.props.dispatch(getDataSetPreview(this.selectedData.name));
@@ -106,6 +114,7 @@ export class CreateSignal extends React.Component {
 				{renderSelectBox}
 				</select>
 				</div>
+				<div id="errorMsgs" className="text-danger"></div>
 				</Modal.Body>
 				<Modal.Footer>
 
