@@ -212,7 +212,7 @@ def pip_install_and_deploy_remote(base_remote_path):
     with cd(base_remote_path):
         # sudo('pip install -r requirements.txt')
         run('python manage.py migrate')
-        sudo('api-get install python-matplotlib')
+        sudo('apt-get install python-matplotlib')
 
 
 def pull_ui_and_merge_to_api():
