@@ -902,9 +902,8 @@ def get_job_status_from_yarn(instance=None):
     ym = yarn_api_client.resource_manager.ResourceManager(address=settings.YARN.get("host"), port=settings.YARN.get("port"), timeout=settings.YARN.get("timeout"))
     app_status = ym.cluster_application(instance.job.url)
 
-
-
     instance.status = settings.YARN_STATUS.get(app_status.data['app']["state"], "FAILED")
+    instance.job.status = settings.YARN_STATUS.get(app_status.data['app']["state"], "FAILED")
     print "%" * 100
     print instance.status
     print "%" * 100
