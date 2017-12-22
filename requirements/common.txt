@@ -20,3 +20,4 @@ bs4==0.0.1
 django-material==1.1.1
 django-auditlog==0.4.4
 yarn-api-client==0.2.3
+fabric-gunicorn==0.1

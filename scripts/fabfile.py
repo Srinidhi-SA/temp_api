@@ -2,6 +2,12 @@
 Usage
         fab <function_name>:[arg,arg1=val1]
         e.g. fab deploy_api:branch=dev
+        e.g. fab deploy_api:branch=leia
+        e.g. fab deploy_api:branch=luke
+
+        e.g. fab deploy_react:branch=dev
+        e.g. fab deploy_react:branch=leia
+        e.g. fab deploy_react:branch=luke
 
 List
         fab -list
@@ -113,7 +119,7 @@ def change_config_file(branch='dev'):
 
 
 @task
-def deploy_api_and_migrate(type="development"):
+def deploy_api_and_migrate(branch="dev"):
     """
     Default deploy to development
     :param type:
@@ -133,7 +139,6 @@ def deploy_api_and_migrate(type="development"):
     pip_install_and_deploy_remote(
         base_remote_path=path_details['base_remote_path']
     )
-
     gunicorn.reload()
 
 
@@ -203,6 +208,7 @@ def pip_install_and_deploy_remote(base_remote_path):
     with cd(base_remote_path):
         # sudo('pip install -r requirements.txt')
         run('python manage.py migrate')
+        sudo('api-get install python3-matplotlib')
 
 
 def pull_ui_and_merge_to_api():
