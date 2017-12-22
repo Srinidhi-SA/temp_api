@@ -4618,6 +4618,12 @@ def set_messages(request, slug=None):
 
 @csrf_exempt
 def set_pmml(request, slug=None):
+    '''
+
+    :param request:
+    :param slug: It is Job Slug
+    :return:
+    '''
     if slug is None:
         return JsonResponse({"message": "Failed"})
     data = request.body
@@ -4638,7 +4644,9 @@ def get_pmml(request, slug=None, algoname='algo'):
     from api.redis_access import AccessFeedbackMessage
     from helper import generate_pmml_name
     ac = AccessFeedbackMessage()
-    key_pmml_name = generate_pmml_name(slug)
+    job_object = Job.objects.filter(object_id=slug).first()
+    job_slug = job_object.slug
+    key_pmml_name = generate_pmml_name(job_slug)
     data = ac.get_using_key(key_pmml_name)
     if data is None:
         sample_xml =  "<mydocument has=\"an attribute\">\n  <and>\n    <many>elements</many>\n    <many>more elements</many>\n  </and>\n  <plus a=\"complex\">\n    element as well\n  </plus>\n</mydocument>"
