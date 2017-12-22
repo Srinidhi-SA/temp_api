@@ -131,7 +131,9 @@ function fetchDataPreview(slug) {
 	return fetch(API+'/api/datasets/'+slug+'/',{
 		method: 'get',
 		headers: getHeader(getUserDetailsOrRestart.get().userToken)
-	}).then( response => Promise.all([response, response.json()]));
+	}).then( response => Promise.all([response, response.json()])).catch(function(error){
+		bootbox.alert("Unable to connect to server. Check your connection please try again.")
+	});
 }
 //get preview data
 function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {

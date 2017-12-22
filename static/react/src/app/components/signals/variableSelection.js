@@ -91,6 +91,19 @@ export class VariableSelection extends React.Component {
             bootbox.alert("Please select one of the date dimensions.");
             return false;
         }
+				//check if no variable selected
+				if(this.props.selectedTimeDimensions===undefined){
+					if(this.props.selectedMeasures.length+this.props.selectedDimensions.length==0){
+					bootbox.alert("Please select atleast one variable.")
+					return false
+				}
+				}else{
+					if(this.props.selectedMeasures.length+this.props.selectedDimensions.length+this.props.selectedTimeDimensions.length==0){
+					bootbox.alert("Please select atleast one variable.")
+					return false
+				}
+				}
+
         console.log("while creating signal")
         console.log(this.props);
         this.signalFlag = false;

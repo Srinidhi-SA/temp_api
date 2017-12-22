@@ -106,7 +106,7 @@ export class C3Chart extends React.Component {
     if (this.props.yformat) {
       if (data.data.type == "donut") {
         console.log("in donut")
-        let formats = ['.2s', '$', '$,.2s', '.2f'];
+        let formats = ['.2s', '$', '$,.2s', '.2f',',.0f','.4r'];
         if (formats.indexOf(this.props.yformat) >= 0) {
           data.donut.label.format = d3.format(this.props.yformat);
         } else {
@@ -114,7 +114,7 @@ export class C3Chart extends React.Component {
         }
       } else if (data.data.type == "pie") {
         console.log("in pie")
-        let formats = ['.2s', '$', '$,.2s', '.2f'];
+        let formats = ['.2s', '$', '$,.2s', '.2f',',.0f','.4r'];
         if (formats.indexOf(this.props.yformat) >= 0) {
           data.pie.label.format = d3.format(this.props.yformat);
         } else {
@@ -122,7 +122,7 @@ export class C3Chart extends React.Component {
         }
 
       } else {
-        let formats = ['.2s', '$', '$,.2s', '.2f'];
+        let formats = ['.2s', '$', '$,.2s', '.2f',',.0f','.4r'];
         if (formats.indexOf(this.props.yformat) >= 0) {
           data.axis.y.tick.format = d3.format(this.props.yformat);
         } else {
@@ -133,7 +133,7 @@ export class C3Chart extends React.Component {
     }
 
     if (this.props.y2format) {
-      let formats = ['.2s', '$', '$,.2s', '.2f'];
+      let formats = ['.2s', '$', '$,.2s', '.2f',',.0f','.4r'];
       if (formats.indexOf(this.props.y2format) >= 0) {
         data.axis.y2.tick.format = d3.format(this.props.y2format);
       } else {
@@ -181,7 +181,7 @@ export class C3Chart extends React.Component {
 
     if (data.data.type == "donut") {
       console.log("in donut tooltip")
-      let formats = ['.2s', '$', '$,.2s', '.2f'];
+      let formats = ['.2s', '$', '$,.2s', '.2f',',.0f','.4r'];
       //  data.tooltip.format.title = function (d) { return 'Data ' + d; };
       if (formats.indexOf(data.tooltip.format.value) >= 0) {
 
@@ -198,7 +198,7 @@ export class C3Chart extends React.Component {
 
     if (data.data.type == "pie") {
       console.log("in pie tooltip")
-      let formats = ['.2s', '$', '$,.2s', '.2f'];
+      let formats = ['.2s', '$', '$,.2s', '.2f',',.0f','.4r'];
       //  data.tooltip.format.title = function (d) { return 'Data ' + d; };
       if (data.tooltip && data.tooltip.format) {
         if (formats.indexOf(data.tooltip.format.value) >= 0) {

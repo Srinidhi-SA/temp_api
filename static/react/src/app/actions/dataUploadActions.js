@@ -56,7 +56,10 @@ function triggerDataUpload(token) {
       method: 'post',
       headers: getHeaderWithoutContent(token),
       body: data
-    }).then(response => Promise.all([response, response.json()]));
+    }).then(response => Promise.all([response, response.json()])).catch(function(error) {
+          console.log(error);
+          bootbox.alert("Connection lost. Please try again later.")
+      });;
   } else {
     var host = store.getState().dataSource.db_host;
     var port = store.getState().dataSource.db_port;
@@ -77,7 +80,10 @@ function triggerDataUpload(token) {
       method: 'post',
       headers: getHeader(token),
       body: JSON.stringify({datasource_details: dataSourceDetails, datasource_type: store.getState().dataSource.selectedDataSrcType})
-    }).then(response => Promise.all([response, response.json()]));
+    }).then(response => Promise.all([response, response.json()])).catch(function(error) {
+          console.log(error);
+          bootbox.alert("Connection lost. Please try again later.")
+      });;
 
   }
 
