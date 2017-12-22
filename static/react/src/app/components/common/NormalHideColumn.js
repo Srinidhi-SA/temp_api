@@ -8,14 +8,21 @@ import renderHTML from 'react-render-html';
 import HeatMap from '../../helpers/heatmap';
 import { Scrollbars } from 'react-custom-scrollbars';
 
+@connect((store) => {
+    return {login_response: store.login.login_response,
+        selectedPrediction:store.signals.selectedPrediction,
+    };
+})
+
 export class NormalHideColumn extends React.Component {
   constructor(props){
     super(props);
   }
   componentDidMount(){
-      handleTopPredictions()
+      if(this.props.selectedPrediction)handleTopPredictions()
   }
   componentDidUpdate(){
+      
       handleTopPredictions()
   }
  generateHeaders(table) {

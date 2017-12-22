@@ -67,7 +67,7 @@ export class AppsScoreDetail extends React.Component {
 		                 
 		                <div className="panel panel-mAd documentModeSpacing ">
 		                    <div className="panel-heading">
-		                      <h2 className="pull-left">{store.getState().apps.scoreSummary.name}</h2>
+		                      {/* <h2 className="pull-left">{store.getState().apps.scoreSummary.name}</h2>*/}
 		                      
 		                      <div className="btn-toolbar pull-right">
 		                        <div className="btn-group btn-space">
