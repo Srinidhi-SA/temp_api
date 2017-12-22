@@ -500,6 +500,7 @@ class Insight(models.Model):
     class Meta:
         ordering = ['-created_at', '-updated_at']
 
+
     def __str__(self):
         return " : ".join(["{}".format(x) for x in [self.name, self.slug, self.status, self.created_at]])
 

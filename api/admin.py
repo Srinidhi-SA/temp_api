@@ -6,6 +6,7 @@ from api.models import Dataset, Insight, Job, Score, Trainer,CustomApps
 
 
 class DatasetAdmin(admin.ModelAdmin):
+    icon = '<i class="material-icons">cloud_done</i>'
     search_fields = ["name", "slug"]
     list_display = ["name", "slug", "created_at", "deleted"]  # TODO: @Ankush Add "created_by"
     # list_filter = []
@@ -13,6 +14,8 @@ class DatasetAdmin(admin.ModelAdmin):
 
 
 class InsightAdmin(admin.ModelAdmin):
+    icon = '<i class="material-icons">bubble_chart</i>'
+    name = "Signals"
     search_fields = ["name", "slug", "target_column"]
     list_display = ["name", "slug", "type", "target_column", "dataset", "status", "analysis_done", "created_at",
                     "created_by"]
@@ -21,6 +24,7 @@ class InsightAdmin(admin.ModelAdmin):
 
 
 class JobAdmin(admin.ModelAdmin):
+    icon = '<i class="material-icons">settings_input_component</i>'
     search_fields = ["name", "slug", ]
     list_display = ["name", "slug", "job_type", "deleted", "status"]
     list_filter = ["job_type", "status"]
@@ -53,6 +57,7 @@ class JobAdmin(admin.ModelAdmin):
 
 
 class ScoreAdmin(admin.ModelAdmin):
+    icon = '<i class="material-icons">assessment</i>'
     search_fields = ["name", "slug"]
     list_display = ["name", "slug", "analysis_done", "created_at", "created_by"]
     list_filter = ["analysis_done", ]
@@ -60,6 +65,7 @@ class ScoreAdmin(admin.ModelAdmin):
 
 
 class TrainerAdmin(admin.ModelAdmin):
+    icon = '<i class="material-icons">tune</i>'
     search_fields = ["name", "slug"]
     list_display = ["name", "slug", "app_id", "analysis_done", "created_at",
                     "created_by", "deleted"]
@@ -67,6 +73,7 @@ class TrainerAdmin(admin.ModelAdmin):
     readonly_fields = ["created_at"]
 
 class CustomAppsAdmin(admin.ModelAdmin):
+    icon = '<i class="material-icons">widgets</i>'
     search_fields = ["name", "slug"]
     list_display = ["name", "slug", "app_id","created_by","status","created_at"]
     list_filter = ["status"]
