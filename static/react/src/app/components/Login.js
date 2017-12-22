@@ -59,15 +59,18 @@ export class Login extends React.Component {
     	document.body.className = "ma-splash-screen";
       return (
 
-          <div className="ma-wrapper am-login">
+          <div className="ma-wrapper ma-login">
             <div className="ma-content">
               <div className="main-content">
-			  <div className="row">
-				<div className="col-md-4 col-md-offset-7">
+			  
+				<div class="ma-content-left">
+				</div>
+			  
+			  <div class="ma-content-right">
              <form action="javascript:void(0);">
                 <div className="login-container">
                   <div className="panel panel-default">
-                    <div className="panel-heading"><img src={STATIC_URL + "assets/images/m_adv_logo.png" } alt="logo" className="logo-img"/></div>
+                    <div className="panel-heading"><img src={STATIC_URL + "assets/images/m_adv_logo.png" } alt="mAdvisor" className="img-responsive logo-img"/></div>
                     <div className="panel-body">
 
                       <h3>SIGN IN</h3>
@@ -75,17 +78,17 @@ export class Login extends React.Component {
                         <div className="form-group">
                           <div className="input-group">
                             <input id="username" type="text" value={this.state.uId} onChange={this.onChangeUId.bind(this)} placeholder="Username" autoComplete="off" className="form-control"/>
-                            <span className="input-group-addon">
+                            {/*  <span className="input-group-addon">
                               <i className="fa fa-user"></i>
-                            </span>
+                            </span>*/}
                           </div>
                         </div>
                         <div className="form-group">
                           <div className="input-group">
                             <input id="password" type="password" value={this.state.pwd} onChange={this.onChangePwd.bind(this)} placeholder="Password" className="form-control"/>
-                            <span className="input-group-addon">
+                            {/*  <span className="input-group-addon">
                               <i className="fa fa-key"></i>
-                            </span>
+                            </span>*/}
                           </div>
                         </div>
                         <div className="form-group footer row">
@@ -112,8 +115,7 @@ export class Login extends React.Component {
                   </div>
                 </div>
               </form>
-			  </div>
-			  </div>
+		 </div>
               </div>
             </div>
           </div>
