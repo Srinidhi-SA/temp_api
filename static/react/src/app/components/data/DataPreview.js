@@ -417,7 +417,8 @@ export class DataPreview extends React.Component {
     			this.firstTimeSideChart = dataPrev.columnData[0].chartData;
     			this.firstTimeColTypeForChart = dataPrev.columnData[0].columnType;
     			 if(!$.isEmptyObject(this.firstTimeSideChart)){
-    				 firstChart = <C3Chart classId={this.chartId} data={sideChart} yformat={yformat} xdata={xdata} sideChart={true}/> ;
+    			     this.chartInfo = [];
+    				 firstChart = <C3Chart chartInfo={this.chartInfo} classId={this.chartId} data={sideChart} yformat={yformat} xdata={xdata} sideChart={true}/> ;
     			 }
     			 if(!isEmpty(dataPrev.columnData[0]))
     			 firstTimeSubSetting = dataPrev.columnData[0]

@@ -60,7 +60,7 @@ export class DataSourceList extends React.Component {
 		this.props.dispatch(updateSelectedDataSrc(key))
 	}
 	handleInputChange(event){
-		this.props.dispatch(updateDbDetails(event))
+		updateDbDetails(event);
 	}
 	render() {
 		const dataSrcList = store.getState().dataSource.dataSourceList.conf;
