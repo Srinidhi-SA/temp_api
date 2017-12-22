@@ -73,12 +73,12 @@ export class AppsScoreDetail extends React.Component {
 		                        <div className="btn-group btn-space">
 		                        
 		                          <button type="button" className="btn btn-default" disabled = "true" title="Document Mode">
-		                              <i className="fa fa-file-text-o"></i>
+		                               <i class="zmdi zmdi-hc-lg zmdi-view-web"></i>
 		                            </button>
-							   <Link className="continue" to={scoreLink}>
-		                          <button type="button" className="btn btn-close">
-		                            <i className="fa fa-times"></i>
-		                          </button>
+							   <Link className="continue btn btn-default" to={scoreLink}>
+		                          
+		                            <i class="fa zmdi-hc-lg fa-times"></i>
+		                          
 								 </Link>
 		                        </div>
 		                      </div>
