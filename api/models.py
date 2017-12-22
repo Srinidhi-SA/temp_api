@@ -1006,7 +1006,7 @@ class Score(models.Model):
             'algorithmslug': [algorithmslug],
             'modelfeatures': modelfeatures if modelfeatures is not None else [],
             'metadata': self.get_metadata_url_config(),
-            'labelMappingDict':labelMappingDict
+            'labelMappingDict':[labelMappingDict]
         }
 
     def get_metadata_url_config(self):

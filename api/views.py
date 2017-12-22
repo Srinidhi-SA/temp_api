@@ -4622,11 +4622,13 @@ def set_pmml(request, slug=None):
         return JsonResponse({"message": "Failed"})
     data = request.body
     data = json.loads(data)
+    print "keys ", data.keys()
     from api.redis_access import AccessFeedbackMessage
     from helper import generate_pmml_name
     ac = AccessFeedbackMessage()
     key_pmml_name = generate_pmml_name(slug)
     data = ac.append_using_key(key_pmml_name, data)
+
     return JsonResponse({'message': data})
 
 
@@ -4638,7 +4640,6 @@ def get_pmml(request, slug=None, algoname='algo'):
     ac = AccessFeedbackMessage()
     key_pmml_name = generate_pmml_name(slug)
     data = ac.get_using_key(key_pmml_name)
-
     if data is None:
         sample_xml =  "<mydocument has=\"an attribute\">\n  <and>\n    <many>elements</many>\n    <many>more elements</many>\n  </and>\n  <plus a=\"complex\">\n    element as well\n  </plus>\n</mydocument>"
         return return_xml_data(sample_xml, algoname)
