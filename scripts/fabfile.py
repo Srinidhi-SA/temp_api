@@ -9,6 +9,10 @@ Usage
         e.g. fab deploy_react:branch=leia
         e.g. fab deploy_react:branch=luke
 
+        e.g. fab deploy_api_and_migrate:branch=dev
+        e.g. fab deploy_api_and_migrate:branch=leia
+        e.g. fab deploy_api_and_migrate:branch=luke
+
 List
         fab -list
 """
@@ -208,7 +212,7 @@ def pip_install_and_deploy_remote(base_remote_path):
     with cd(base_remote_path):
         # sudo('pip install -r requirements.txt')
         run('python manage.py migrate')
-        sudo('api-get install python3-matplotlib')
+        sudo('api-get install python-matplotlib')
 
 
 def pull_ui_and_merge_to_api():
