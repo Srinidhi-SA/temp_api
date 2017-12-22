@@ -23,7 +23,7 @@ export class NormalTable extends React.Component {
    var headerComponents = generateHeaders(data);
    var rowComponents = generateNormalTableRows(data);
    return (
-           <div>
+           <div className="table-style">
            <table className={className}>
                <thead><tr>{headerComponents}</tr></thead>
                <tbody>{rowComponents}</tbody>

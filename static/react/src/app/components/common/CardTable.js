@@ -14,6 +14,7 @@ import {HeatMapTable} from "./heatmap";
 import {TextHeatMapTable} from "./TextHeatMapTable";
 import {NormalTable} from "./NormalTable";
 import {PopupDecisionTreeTable} from "./PopupDecisionTreeTable";
+import {NormalHideColumn} from "./NormalHideColumn";
 
 export class CardTable extends React.Component {
 	constructor(){
@@ -43,6 +44,9 @@ export class CardTable extends React.Component {
 		}
 		if(element.tableType == POPUPDECISIONTREETABLE){
             tableEle = <PopupDecisionTreeTable  tableData={element}/>;
+        }
+		if(element.tableType == "normalHideColumn"){
+            tableEle = <NormalHideColumn tableData={element}/>;
         }
 		return (
 				<div>

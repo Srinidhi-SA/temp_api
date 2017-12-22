@@ -36,25 +36,31 @@ export class DataSourceList extends React.Component {
 		this.props.dispatch(getDataSourceList());
 	}
 	onDrop(files) {
-	    if(files[0]&&[0].size == 0){
-	       $("#fileErrorMsg").removeClass("visibilityHidden");
-	       //$("#fileErrorMsg").html("The uploaded file is empty , please upload the correct file");
-				 $("#fileErrorMsg").html("The uploaded file does not contain data in readable format. Please check the source file.");
-	    }
-	    else{
-	        $("#fileErrorMsg").addClass("visibilityHidden");
+	    if(files.length > 0){
+	        if(files[0].size == 0){
+	            $("#fileErrorMsg").removeClass("visibilityHidden");
+	            $("#fileErrorMsg").html("The uploaded file is empty , please upload the correct file");
+	         }
+	         else{
+	             $("#fileErrorMsg").addClass("visibilityHidden");
+	             this.props.dispatch(saveFileToStore(files))
+	         }     
+	    }else{
+	        files[0] = {"name":"","size":""};
 	        this.props.dispatch(saveFileToStore(files))
 	    }
+	    
 	}
 	popupMsg(){
-		//bootbox.alert("Only CSV files are allowed to upload")
-		bootbox.alert("File format is not supported. Please upload a CSV and retry.")
+	    $("#fileErrorMsg").removeClass("visibilityHidden");
+        $("#fileErrorMsg").html("File format is not supported. Please upload a CSV and retry.");
+        
 	}
 	handleSelect(key){
 		this.props.dispatch(updateSelectedDataSrc(key))
 	}
 	handleInputChange(event){
-		this.props.dispatch(updateDbDetails(event))
+		updateDbDetails(event);
 	}
 	render() {
 		const dataSrcList = store.getState().dataSource.dataSourceList.conf;
@@ -71,9 +77,17 @@ export class DataSourceList extends React.Component {
 				let fields = data.formFields;
 				let formList = null;
 				var divId = "data_upload_"+i;
+				var dataSrcType = data.dataSourceType
 				const fieldsList = fields.map((field,j) =>{
 					if(field.fieldType == "file"){
-						return(<div class="tab-pane active cont fade in">
+						if(this.props.renderDatasets){
+						    return(<div><div class="form-group col-md-10 xs-pt-50 xs-pl-30">
+			                  <label>Select an existing dataset</label>
+			                  {this.props.renderDatasets}
+			                </div><div className="clearfix"></div></div>);
+						}
+						else{
+						    return(<div class="tab-pane active cont fade in">
 						<h3>
 						File Upload
 						<div class="pull-right">
@@ -94,32 +108,22 @@ export class DataSourceList extends React.Component {
 				        </aside>
 
 						</div>
-						</div>)
-					}else if(field.fieldType.toLowerCase() == INPUT.toLowerCase()){
+						</div>)}
+					}else {
 						//to put default port
 						let placeHolder = field.placeHolder
-						if(field.defaultValue){
-							placeHolder = field.defaultValue
-						}
 						return(<div className="form-group" id={j}>
 						<label for="fl1" className="col-sm-3 control-label">{field.labelName}</label>
 						<div className="col-sm-9">
-						<input id={j} type="text" required={true} name={field.labelName} placeholder={placeHolder} className="form-control" onChange={this.handleInputChange.bind(this)}/>
+						<input id={dataSrcType+field.fieldName} defaultValue={field.defaultValue} type={field.fieldType} required={field.required}  title={"Please Enter "+field.labelName} name={field.fieldName} onChange={this.handleInputChange.bind(this)} placeholder={placeHolder} className="form-control" maxlength={field.maxLength}/>
 						</div>
 						</div>)
 					}
-					else if(field.fieldType.toLowerCase() == PASSWORD.toLowerCase()){
-						return(<div className="form-group" id={j}>
-						<label for="fl1" className="col-sm-3 control-label">{field.labelName}</label>
-						<div className="col-sm-9">
-						<input  id={j} type="password" required={true} name={field.labelName}  placeholder={field.placeHolder} className="form-control" onChange={this.handleInputChange.bind(this)}/>
-						</div>
-						</div>)
-					}
+					
 
 				});
 				if(data.dataSourceType.toLowerCase() != FILEUPLOAD.toLowerCase()){
-					formList = <div id={divId}><form role="form" className="form-horizontal">{fieldsList}</form></div>
+					formList = <div id={divId}><form role="form" className="form-horizontal" id={data.dataSourceType}>{fieldsList}</form></div>
 				}else{
 					formList = <div id={divId}>{fieldsList}</div>
 				}

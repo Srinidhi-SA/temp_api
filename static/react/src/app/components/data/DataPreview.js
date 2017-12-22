@@ -229,7 +229,7 @@ export class DataPreview extends React.Component {
 		bootbox.alert("Minimum "+MINROWINDATASET+" rows are required for analysis!!")
 		else{
 		let url = this.buttons.create.url;
-		if(this.buttons.create.url.indexOf("apps-robo") != -1){
+		if(this.buttons.create.url.indexOf("apps-robo") != -1){$(".cst_table").find("thead").find("."+colSlug).first()
 			url = "/apps-robo/"+store.getState().apps.roboDatasetSlug+"/"+store.getState().signals.signalAnalysis.slug
 		}
 		this.props.history.push(url);
@@ -418,7 +418,8 @@ export class DataPreview extends React.Component {
     			this.firstTimeSideChart = dataPrev.columnData[0].chartData;
     			this.firstTimeColTypeForChart = dataPrev.columnData[0].columnType;
     			 if(!$.isEmptyObject(this.firstTimeSideChart)){
-    				 firstChart = <C3Chart classId={this.chartId} data={sideChart} yformat={yformat} xdata={xdata} sideChart={true}/> ;
+    			     this.chartInfo = [];
+    				 firstChart = <C3Chart chartInfo={this.chartInfo} classId={this.chartId} data={sideChart} yformat={yformat} xdata={xdata} sideChart={true}/> ;
     			 }
     			 if(!isEmpty(dataPrev.columnData[0]))
     			 firstTimeSubSetting = dataPrev.columnData[0]

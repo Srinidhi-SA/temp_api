@@ -94,15 +94,13 @@ export class AppsScoreDetail extends React.Component {
 		                    </div>
 		                    
 		                    
-		                    <div className="row text-right">
-		                     <div className="col-md-1 col-md-offset-10">
+		                    <div className="row ">
+		                     <div className="col-md-12 text-right">
                             
-                              <Link to={scoreDataLink} onClick={this.gotoScoreData.bind(this)}><Button bsStyle="primary">View</Button></Link>
-                           </div>
-		                    <div className="col-md-1">
-		                   	
-		                    	<a  href={''+EMR+'/'+store.getState().apps.scoreSlug+'/data.csv'}id="download" className="btn btn-primary" download>Download</a>
-		                   </div>
+                              <Link className="xs-pr-10" to={scoreDataLink} onClick={this.gotoScoreData.bind(this)}><Button  bsStyle="primary">View</Button></Link>
+                              <a  href={EMR+store.getState().apps.scoreSlug+'/data.csv'}id="download" className="btn btn-primary" download>Download</a>
+                              </div>
+		                   
 		                   </div>
 		             </div>
 		                    </div>

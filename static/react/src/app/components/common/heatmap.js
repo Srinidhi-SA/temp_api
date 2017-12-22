@@ -31,7 +31,7 @@ export class HeatMapTable extends React.Component {
    var headerComponents = generateHeatMapHeaders(data);
    var rowComponents = generateHeatMapRows(data);
    return (
-          <div >
+          <div className="table-style">
            <table className={className}>
                <thead>{headerComponents}</thead>
                <tbody>{rowComponents}</tbody>

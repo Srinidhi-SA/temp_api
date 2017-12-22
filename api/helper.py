@@ -55,6 +55,9 @@ class JobserverDetails(object):
                 "message_url": "http://{0}:{1}/api/messages/{2}/".format(THIS_SERVER_DETAILS.get('host'),
                                                                 THIS_SERVER_DETAILS.get('port'),
                                                                 message_slug),
+                "xml_url": "http://{0}:{1}/api/xml/{2}/".format(THIS_SERVER_DETAILS.get('host'),
+                                                                THIS_SERVER_DETAILS.get('port'),
+                                                                slug),
                 "job_name": job_name,
                 "get_config" :
                     {
@@ -899,9 +902,9 @@ def get_job_status_from_yarn(instance=None):
     ym = yarn_api_client.resource_manager.ResourceManager(address=settings.YARN.get("host"), port=settings.YARN.get("port"), timeout=settings.YARN.get("timeout"))
     app_status = ym.cluster_application(instance.job.url)
 
-
-
     instance.status = settings.YARN_STATUS.get(app_status.data['app']["state"], "FAILED")
+    instance.job.status = app_status.data['app']["state"]
+    instance.job.save()
     print "%" * 100
     print instance.status
     print "%" * 100
@@ -1093,3 +1096,6 @@ def generate_signature(json_obj):
     newhash.update(existing_key)
     value = newhash.hexdigest()
     return value
+
+def generate_pmml_name(slug):
+    return slug + "_" + 'pmml'

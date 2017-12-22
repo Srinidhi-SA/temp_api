@@ -48,7 +48,7 @@ function redirectToLogin() {
 }
 
 
-const FILEUPLOAD = "File Upload";
+const FILEUPLOAD = "fileUpload";
 const MYSQL = "MySQL";
 const INPUT = "Input";
 const HOST = "Host";
@@ -56,7 +56,7 @@ const PORT = "Port";
 const SCHEMA = "Schema";
 const USERNAME = "Username";
 const PASSWORD = "Password";
-const TABLENAME = "Table Name";
+const TABLENAME = "tablename";
 const PERPAGE = 11;
 const NORMALTABLE = "normal";
 const CONFUSIONMATRIX = "confusionMatrix";

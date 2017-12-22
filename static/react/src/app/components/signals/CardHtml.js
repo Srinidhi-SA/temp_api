@@ -24,11 +24,25 @@ export class CardHtml extends React.Component {
   render() {
    var element = this.props.htmlElement;
    console.log("checking html element");
-      return(
-        <div>
-         {renderHTML(element)}
-         </div>
-    );
+   if(this.props.classTag == "highlight"){
+       return(
+               <div class="row">
+               <div class="bg-highlight-parent xs-ml-50 xs-mr-50">
+               <div class="col-md-12 col-xs-12 bg-highlight"> 
+                {renderHTML(element)}
+                </div>
+                <div class="clearfix"></div>
+                </div>
+                </div>
+           );   
+   }
+   else {
+       return(
+               <div>
+                {renderHTML(element)}
+                </div>
+           );   
+   }
 
   }
 }
