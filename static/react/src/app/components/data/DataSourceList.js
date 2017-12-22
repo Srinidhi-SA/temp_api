@@ -36,17 +36,19 @@ export class DataSourceList extends React.Component {
 		this.props.dispatch(getDataSourceList());
 	}
 	onDrop(files) {
-	    if(files[0].size == 0){
+	    if(files[0]&&[0].size == 0){
 	       $("#fileErrorMsg").removeClass("visibilityHidden");
-	       $("#fileErrorMsg").html("The uploaded file is empty , please upload the correct file");
+	       //$("#fileErrorMsg").html("The uploaded file is empty , please upload the correct file");
+				 $("#fileErrorMsg").html("The uploaded file does not contain data in readable format. Please check the source file.");
 	    }
 	    else{
 	        $("#fileErrorMsg").addClass("visibilityHidden");
 	        this.props.dispatch(saveFileToStore(files))
-	    } 
+	    }
 	}
 	popupMsg(){
-		bootbox.alert("Only CSV files are allowed to upload")
+		//bootbox.alert("Only CSV files are allowed to upload")
+		bootbox.alert("File format is not supported. Please upload a CSV and retry.")
 	}
 	handleSelect(key){
 		this.props.dispatch(updateSelectedDataSrc(key))
@@ -97,7 +99,7 @@ export class DataSourceList extends React.Component {
 				            	<li className="text-danger visibilityHidden" id="fileErrorMsg">Please select csv file to upload.</li>
 				            	</ul>
 				        </aside>
-				        
+
 						</div>
 						</div>)}
 					}else {

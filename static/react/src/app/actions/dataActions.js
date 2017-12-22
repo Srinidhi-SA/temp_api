@@ -654,7 +654,7 @@ export function showDialogBox(slug,dialog,dispatch){
 	})
 	dialog.show({
 		title: 'Delete Dataset',
-		body: 'Are you sure you want to delete dataset?',
+		body: 'Are you sure you want to delete the selected data set? Yes , No',
 		actions: [
 		          Dialog.CancelAction(),
 		          Dialog.OKAction(() => {
@@ -678,11 +678,12 @@ function deleteDataset(slug,dialog,dispatch){
 	Dialog.resetOptions();
 	return deleteDatasetAPI(slug).then(([response, json]) =>{
 		if(response.status === 200){
+			//bootbox.alert("The data set is deleted successfully.")
 			dispatch(getDataList(store.getState().datasets.current_page));
 			dispatch(hideLoading());
 		}
 		else{
-			dialog.showAlert("Error occured , Please try after sometime.");
+			dialog.showAlert("Something went wrong. Please try again later.");
 			dispatch(hideLoading());
 		}
 	})
@@ -739,7 +740,7 @@ function renameDataset(slug,dialog,newName,dispatch){
 			dispatch(hideLoading());
 		}
 		else{
-			dialog.showAlert("Error occured , Please try after sometime.");
+			dialog.showAlert("Renaming unsuccessful. Please try again later.");
 			dispatch(hideLoading());
 		}
 	})
@@ -1023,9 +1024,9 @@ export function handleColumnClick(dialog,actionName,colSlug,colName,subActionNam
 }
 
 function deleteMetaDataColumn(dialog,colName,colSlug,dispatch,actionName,colStatus){
-	var text = "Are you sure, you want to delete column ?";
+	var text = "Are you sure, you want to delete the selected column?";
 	if(colStatus == true){
-		text = "Are you sure, you want to undelete column ?"
+		text = "Are you sure, you want to undelete the selected column?"
 	}
 	bootbox.confirm(text,function(result){
 		if(result){

@@ -213,13 +213,13 @@ function fetchPosts(token,pageNo) {
 export function refreshSignals(props){
     return (dispatch) => {
         refreshSignalInterval = setInterval(function() {
-           
+
            var pageNo = window.location.href.split("=")[1];
             if(pageNo == undefined) pageNo = 1;
             if(window.location.pathname == "/signals")
             dispatch(getList(getUserDetailsOrRestart.get().userToken, parseInt(pageNo)));
         },DEFAULTINTERVAL);
-        
+
     }
 }
 function fetchPostsSuccess(signalList) {
@@ -282,7 +282,8 @@ function fetchPostsSuccess_analysis(signalAnalysis, errandId,dispatch) {
     dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
     dispatch(clearLoadingMsg());
   }else if(signalAnalysis.status == FAILED||signalAnalysis.status == false){
-	  bootbox.alert("Your signal could not be created. Please try later.")
+	  //bootbox.alert("Your signal could not be created. Please try later.")
+    bootbox.alert("The signal could not be created. Please check the dataset and try again.")
 	    clearInterval(createSignalInterval);
 	    dispatch(closeCsLoaderModal())
 	    dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
@@ -382,7 +383,7 @@ export function changeSelectedVariableType(colSlug,colName,actionName,evt){
             varSlug
         }
     }
-    
+
 }
 export function createcustomAnalysisDetails(){
     var transformSettings = store.getState().datasets.dataTransformSettings;
@@ -445,7 +446,7 @@ export function showDialogBox(slug,dialog,dispatch){
 		})
 	dialog.show({
 		  title: 'Delete Signal',
-		  body: 'Are you sure you want to delete signal?',
+		  body: 'Are you sure you want to delete this Signal ? Yes , No',
 		  actions: [
 		    Dialog.CancelAction(),
 		    Dialog.OKAction(() => {
@@ -473,7 +474,7 @@ function deleteSignal(slug,dialog,dispatch){
 			dispatch(hideLoading());
 		}
 		else{
-			dialog.showAlert("Error occured , Please try after sometime.");
+			dialog.showAlert("The card could not be deleted. Please try again later.");
 			dispatch(hideLoading());
 		}
 	})
@@ -555,7 +556,7 @@ function renameSignal(slug,dialog,newName,dispatch){
 			dispatch(hideLoading());
 		}
 		else{
-			dialog.showAlert("Error occured , Please try after sometime.");
+			dialog.showAlert("Renaming unsuccessful. Please try again later.");
 			dispatch(hideLoading());
 		}
 	})

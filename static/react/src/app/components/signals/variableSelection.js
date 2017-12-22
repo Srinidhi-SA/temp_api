@@ -82,10 +82,10 @@ export class VariableSelection extends React.Component {
 		    return false;
 		}
 		if(!isAnalysisChecked){
-		    bootbox.alert("Please select a type of analysis...");
+		    bootbox.alert("Please select atleast one analysis to Proceed..");
             return false;
 		}
-		
+
 		var trendIsChecked = checkIfDateTimeIsSelected();
         if((store.getState().datasets.selectedTimeDimensions  == "" || store.getState().datasets.selectedTimeDimensions == undefined) && trendIsChecked == true){
             bootbox.alert("Please select one of the date dimensions.");
@@ -113,16 +113,16 @@ export class VariableSelection extends React.Component {
 
 
         if(this.props.getVarType.toLowerCase() == "measure"){
-           
+
             postData['advanced_settings'] = this.props.dataSetAnalysisList.measures;
 
         }else if(this.props.getVarType.toLowerCase() == "dimension"){
             postData['advanced_settings'] = this.props.dataSetAnalysisList.dimensions;
-            this.props.dataSetAnalysisList.dimensions.targetLevels.push(this.props.dimensionSubLevel);  
+            this.props.dataSetAnalysisList.dimensions.targetLevels.push(this.props.dimensionSubLevel);
 
         }
         console.log(postData);
-        this.props.dispatch(createSignal(postData)); 
+        this.props.dispatch(createSignal(postData));
 	}
 
 	setPossibleList(event){
