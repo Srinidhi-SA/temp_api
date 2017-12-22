@@ -102,6 +102,7 @@ def change_config_file(branch='dev'):
     path_details= details['path_details']
     server_details= details['server_details']
     deployment_config= details['deployment_config']
+    base_remote_path = path_details['base_remote_path']
     text_command = """CONFIG_FILE_NAME = '{0}'\nUI_VERSION = '{1}'
     """.format(deployment_config, random.randint(100000,10000000))
     config_file_path = BASE_DIR + '/config/settings/config_file_name_to_run.py'
@@ -110,8 +111,13 @@ def change_config_file(branch='dev'):
     local('rm {0}'.format(config_file_path))
     local('echo "{0}" > {1}'.format(text_command, config_file_path))
 
+
     with cd(BASE_DIR):
-        local('git add {0}'.format(config_file_path))
+        put(
+            local_path=config_file_path,
+            remote_path=base_remote_path + '/config/settings/'
+        )
+        # local('git add {0}'.format(config_file_path))
         local('git checkout {0}'.format(react_env))
         local('git checkout {0}'.format(react_npm_log))
         local('git commit -m "version changed"')
