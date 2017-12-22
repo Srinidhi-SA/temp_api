@@ -29,6 +29,7 @@ export function dataUpload() {
         for(var i=0;i<elements.length;i++){
             if(elements[i].required &&  elements[i].value == ""){
                 $("#"+elements[i].id).css("border-color","red");
+                $("#"+elements[i].id).trigger("focus");
                 return false;
             }else{
                 $("#"+elements[i].id).css("border-color","#e0e0e0");

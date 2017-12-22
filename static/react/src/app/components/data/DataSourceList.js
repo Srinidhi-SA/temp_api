@@ -115,7 +115,7 @@ export class DataSourceList extends React.Component {
 						return(<div className="form-group" id={j}>
 						<label for="fl1" className="col-sm-3 control-label">{field.labelName}</label>
 						<div className="col-sm-9">
-						<input id={dataSrcType+field.fieldName} defaultValue={field.defaultValue} type={field.fieldType} required={field.required}  title="Please Enter" name={field.fieldName} onChange={this.handleInputChange.bind(this)} placeholder={placeHolder} className="form-control" maxlength={field.maxLength}/>
+						<input id={dataSrcType+field.fieldName} defaultValue={field.defaultValue} type={field.fieldType} required={field.required}  title={"Please Enter "+field.labelName} name={field.fieldName} onChange={this.handleInputChange.bind(this)} placeholder={placeHolder} className="form-control" maxlength={field.maxLength}/>
 						</div>
 						</div>)
 					}
