@@ -1150,6 +1150,7 @@ export function handleColumnActions(transformSettings,slug,isSubsetting) {
 				dispatch(hideLoading());
 			}
 			else{
+			    bootbox.alert("Something went wrong. Please try again later.")
 				dispatch(fetchDataPreviewError(json));
 				dispatch(hideLoading());
 			}

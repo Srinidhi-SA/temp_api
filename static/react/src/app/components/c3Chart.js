@@ -38,7 +38,7 @@ export class C3Chart extends React.Component {
   }
 
   showStatisticalInfo(){
-      renderC3ChartInfo(this.props.info)
+      renderC3ChartInfo(this.props.chartInfo)
   }
   getChartElement() {
     if (this.props.classId == '_side') {
@@ -313,9 +313,9 @@ export class C3Chart extends React.Component {
                     <div class="btn-group pull-right">
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i className="fa fa-more-img" aria-hidden="true" ></i></button>
                     <ul role="menu" class="dropdown-menu dropdown-menu-right">
-                    <li>
-                    <a href="javascript:;" onClick={this.showStatisticalInfo.bind(this)}><i class="fa fa-info-circle" aria-hidden="true"></i> Statistical Info</a>
-                    </li>
+                   {this.props.chartInfo.length > 0 ? <li>
+                           <a href="javascript:;" onClick={this.showStatisticalInfo.bind(this)}><i class="fa fa-info-circle" aria-hidden="true"></i> Statistical Info</a>
+                           </li>:""}
                     <li>
                     <a href="javascript:;" onClick={this.openZoomChart.bind(this,true)}><i class="fa fa-search-plus" aria-hidden="true"></i> Zoom Chart</a>
                     </li>

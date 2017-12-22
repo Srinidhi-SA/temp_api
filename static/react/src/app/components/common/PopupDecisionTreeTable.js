@@ -53,7 +53,7 @@ generateDecisionTreeRows(table) {
                   
                    if(j == 0){
                        rule=colData
-                       return<td key={j} className="cursor">{colData.length > MAXTEXTLENGTH ? colData.slice(0, MAXTEXTLENGTH).concat("...") : colData}</td>;
+                       return<td key={j} className="cursor">{renderHTML(colData.length > MAXTEXTLENGTH ? colData.slice(0, MAXTEXTLENGTH).concat("...") : colData)}</td>;
                    }
                       else if(j == colLength-1)return  <td class="hidden" key={j}>{colData}</td> 
                       else return  <td class="text-center" key={j}>{colData}</td>       
