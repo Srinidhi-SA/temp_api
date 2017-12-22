@@ -101,6 +101,16 @@ class Job(models.Model):
 
         self.save()
 
+    def update_status(self):
+        import yarn_api_client
+        ym = yarn_api_client.resource_manager.ResourceManager(address=settings.YARN.get("host"),
+                                                              port=settings.YARN.get("port"),
+                                                              timeout=settings.YARN.get("timeout"))
+        app_status = ym.cluster_application(self.url)
+
+        self.status = app_status.data['app']["state"]
+        self.save()
+
 
 class Dataset(models.Model):
     name = models.CharField(max_length=100, null=True)

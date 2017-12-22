@@ -25,7 +25,7 @@ class JobAdmin(admin.ModelAdmin):
     list_display = ["name", "slug", "job_type", "deleted", "status"]
     list_filter = ["job_type", "status"]
     readonly_fields = ["created_at"]
-    actions = ['kill_selected_jobs', 'pause_selected_jobs', 'start_selected_jobs']
+    actions = ['kill_selected_jobs', 'start_selected_jobs', 'refresh_status']
 
     def kill_selected_jobs(self, request, queryset):
         for instance in queryset:
@@ -44,6 +44,11 @@ class JobAdmin(admin.ModelAdmin):
                     instance.start()
             except Exception as exc:
                 print exc
+        return 'good grace'
+
+    def refresh_status(self, request, queryset):
+        for instance in queryset:
+            instance.update_status()
         return 'good grace'
 
 
