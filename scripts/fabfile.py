@@ -114,7 +114,7 @@ def change_config_file(branch='dev'):
         # local('git add {0}'.format(config_file_path))
         local('git checkout {0}'.format(react_env))
         local('git checkout {0}'.format(react_npm_log))
-        local('git commit -m "version changed"')
+        # local('git commit -m "version changed"')
 
     only_for_api_push_and_pull(
         server_details=server_details,
@@ -128,6 +128,7 @@ def change_config_file(branch='dev'):
         remote_path=base_remote_path + '/config/settings/'
     )
     local('rm {0}'.format(config_file_path))
+
     gunicorn.reload()
 
 
