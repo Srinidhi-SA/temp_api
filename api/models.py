@@ -477,8 +477,8 @@ class Insight(models.Model):
     data = models.TextField(default="{}")
 
     created_at = models.DateTimeField(auto_now_add=True, null=True)
-    updated_at = models.DateTimeField(auto_now=True, null=True)
-    created_by = models.ForeignKey(User, null=False)
+    updated_at = models.DateTimeField(auto_now=True, null=True, db_index=True)
+    created_by = models.ForeignKey(User, null=False, db_index=True)
     deleted = models.BooleanField(default=False)
 
     bookmarked = models.BooleanField(default=False)
