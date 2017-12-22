@@ -57,7 +57,7 @@ class JobserverDetails(object):
                                                                 message_slug),
                 "xml_url": "http://{0}:{1}/api/xml/{2}/".format(THIS_SERVER_DETAILS.get('host'),
                                                                 THIS_SERVER_DETAILS.get('port'),
-                                                                generate_pmml_name(slug)),
+                                                                slug),
                 "job_name": job_name,
                 "get_config" :
                     {
