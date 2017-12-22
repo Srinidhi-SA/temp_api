@@ -11,6 +11,7 @@ function getHeader(token) {
   return {'Authorization': token, 'Content-Type': 'application/json'};
 }
 export function dataUpload() {
+    var dbDetails = {};
     return (dispatch) => {
     if (store.getState().dataSource.selectedDataSrcType == "fileUpload") {
         if(store.getState().dataSource.fileUpload.name){
@@ -22,18 +23,33 @@ export function dataUpload() {
         }
     }
     else{
-        dispatch(uploadFileOrDB());
+        var elements = document.getElementById(store.getState().dataSource.selectedDataSrcType).elements;
+        //$("#MySQLdatasetname").tooltip({'trigger':'focus', 'title': 'Password tooltip'});
+       // var dataSrc = store.getState().dataSource.selectedDataSrcType;
+        for(var i=0;i<elements.length;i++){
+            if(elements[i].required &&  elements[i].value == ""){
+                $("#"+elements[i].id).css("border-color","red");
+                $("#"+elements[i].id).trigger("focus");
+                return false;
+            }else{
+                $("#"+elements[i].id).css("border-color","#e0e0e0");
+                dbDetails[elements[i].name] = elements[i].value
+            }
+           
+       
+        }
+        dispatch(uploadFileOrDB(dbDetails));
     }
     }
 
 }
-function uploadFileOrDB(){
+function uploadFileOrDB(dbDetails){
     return (dispatch) => {
         dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
         dispatch(dataUploadLoaderMsg(DULOADERPERMSG));
         dispatch(close());
         dispatch(openDULoaderPopup());
-        return triggerDataUpload(getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
+        return triggerDataUpload(getUserDetailsOrRestart.get().userToken,dbDetails).then(([response, json]) => {
 
           // dispatch(dataUploadLoaderValue(json.message[json.message.length-1].globalCompletionPercentage));
           // dispatch()
@@ -47,9 +63,9 @@ function uploadFileOrDB(){
         });
       }
 }
-function triggerDataUpload(token) {
+function triggerDataUpload(token,dbDetails) {
   if (store.getState().dataSource.selectedDataSrcType == "fileUpload") {
-    
+     
     var data = new FormData();
     data.append("input_file", store.getState().dataSource.fileUpload);
     console.log(data)
@@ -78,7 +94,7 @@ function triggerDataUpload(token) {
     return fetch(API + '/api/datasets/', {
       method: 'post',
       headers: getHeader(token),
-      body: JSON.stringify({datasource_details: dataSourceDetails, datasource_type: store.getState().dataSource.selectedDataSrcType})
+      body: JSON.stringify({datasource_details: dbDetails, datasource_type: store.getState().dataSource.selectedDataSrcType})
     }).then(response => Promise.all([response, response.json()]));
 
   }

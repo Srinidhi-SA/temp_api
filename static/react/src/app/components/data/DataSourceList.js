@@ -36,19 +36,25 @@ export class DataSourceList extends React.Component {
 		this.props.dispatch(getDataSourceList());
 	}
 	onDrop(files) {
-	    if(files[0]&&[0].size == 0){
-	       $("#fileErrorMsg").removeClass("visibilityHidden");
-	       //$("#fileErrorMsg").html("The uploaded file is empty , please upload the correct file");
-				 $("#fileErrorMsg").html("The uploaded file does not contain data in readable format. Please check the source file.");
-	    }
-	    else{
-	        $("#fileErrorMsg").addClass("visibilityHidden");
+	    if(files.length > 0){
+	        if(files[0].size == 0){
+	            $("#fileErrorMsg").removeClass("visibilityHidden");
+	            $("#fileErrorMsg").html("The uploaded file is empty , please upload the correct file");
+	         }
+	         else{
+	             $("#fileErrorMsg").addClass("visibilityHidden");
+	             this.props.dispatch(saveFileToStore(files))
+	         }     
+	    }else{
+	        files[0] = {"name":"","size":""};
 	        this.props.dispatch(saveFileToStore(files))
 	    }
+	    
 	}
 	popupMsg(){
-		//bootbox.alert("Only CSV files are allowed to upload")
-		bootbox.alert("File format is not supported. Please upload a CSV and retry.")
+	    $("#fileErrorMsg").removeClass("visibilityHidden");
+        $("#fileErrorMsg").html("File format is not supported. Please upload a CSV and retry.");
+        
 	}
 	handleSelect(key){
 		this.props.dispatch(updateSelectedDataSrc(key))
@@ -71,6 +77,7 @@ export class DataSourceList extends React.Component {
 				let fields = data.formFields;
 				let formList = null;
 				var divId = "data_upload_"+i;
+				var dataSrcType = data.dataSourceType
 				const fieldsList = fields.map((field,j) =>{
 					if(field.fieldType == "file"){
 						if(this.props.renderDatasets){
@@ -105,13 +112,10 @@ export class DataSourceList extends React.Component {
 					}else {
 						//to put default port
 						let placeHolder = field.placeHolder
-						/*if(field.defaultValue){
-							placeHolder = field.defaultValue
-						}*/
 						return(<div className="form-group" id={j}>
 						<label for="fl1" className="col-sm-3 control-label">{field.labelName}</label>
 						<div className="col-sm-9">
-						<input id={j} defaultValue={field.defaultValue} type={field.fieldType} required={field.required} name={field.fieldName} placeholder={placeHolder} className="form-control" maxlength={field.maxLength} onChange={this.handleInputChange.bind(this)}/>
+						<input id={dataSrcType+field.fieldName} defaultValue={field.defaultValue} type={field.fieldType} required={field.required}  title={"Please Enter "+field.labelName} name={field.fieldName} onChange={this.handleInputChange.bind(this)} placeholder={placeHolder} className="form-control" maxlength={field.maxLength}/>
 						</div>
 						</div>)
 					}
@@ -119,7 +123,7 @@ export class DataSourceList extends React.Component {
 
 				});
 				if(data.dataSourceType.toLowerCase() != FILEUPLOAD.toLowerCase()){
-					formList = <div id={divId}><form role="form" className="form-horizontal" id="dbConnectors">{fieldsList}</form></div>
+					formList = <div id={divId}><form role="form" className="form-horizontal" id={data.dataSourceType}>{fieldsList}</form></div>
 				}else{
 					formList = <div id={divId}>{fieldsList}</div>
 				}
