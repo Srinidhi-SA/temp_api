@@ -232,7 +232,7 @@ class InsightListSerializers(serializers.ModelSerializer):
             ret['completed_message']=get_message(instance)[-1]['shortExplanation']
         except:
             ret['completed_percentage'] = 0
-            ret['completed_message']="Please wait while mAdvisor is creating signal....."
+            ret['completed_message']="Analyzing Target Variable"
         return ret
 
     def get_brief_info(self):
