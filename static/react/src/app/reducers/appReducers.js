@@ -39,7 +39,7 @@ export default function reducer(state = {
         appsSelectedTabId:"model",
         audioFileUploadShowFlag:false,
         audioFileUpload:{},
-        appsLoaderImage:"/assets/images/brain_loading.gif",
+        appsLoaderImage:"assets/images/brain_loading.gif",
         audioFileSummary:{},
         audioFileSlug :"",
         audioFileSummaryFlag:false,
@@ -66,12 +66,12 @@ export default function reducer(state = {
         storeAppsSortType:"",
         app_filtered_keywords:[],
         exportAsPMMLModal:false,
-        
-        
+
+
 }, action) {
     console.log("In APPs reducer!!");
     console.log(action);
-    
+
     switch (action.type) {
     case "APPS_MODEL_SHOW_POPUP":
     {
@@ -81,7 +81,7 @@ export default function reducer(state = {
         }
     }
     break;
-    
+
     case "APPS_MODEL_HIDE_POPUP":
     {
         return {
@@ -99,7 +99,7 @@ export default function reducer(state = {
         }
     }
     break;
-    
+
     case "MODEL_LIST_ERROR":
     {
         //alert(action.json.non_field_errors);
@@ -115,7 +115,7 @@ export default function reducer(state = {
         }
     }
     break;
-    
+
     case "SCORE_LIST":
     {
         return {
@@ -125,7 +125,7 @@ export default function reducer(state = {
         }
     }
     break;
-    
+
     case "SCORE_LIST_ERROR":
     {
         //alert(action.json.non_field_errors);
@@ -140,7 +140,7 @@ export default function reducer(state = {
         }
     }
     break;
-    
+
     case "APPS_SCORE_HIDE_POPUP":
     {
         return {
@@ -149,7 +149,7 @@ export default function reducer(state = {
         }
     }
     break;
-    
+
     case "MODEL_SUMMARY_SUCCESS":
     {
         return {
@@ -176,7 +176,7 @@ export default function reducer(state = {
         throw new Error("Unable to fetch model summary!!");
     }
     break;
-    
+
     case "SELECTED_ALGORITHM":
     {
         return {
@@ -187,7 +187,7 @@ export default function reducer(state = {
     break;
     case "SCORE_SUMMARY_SUCCESS":
     {
-        
+
         return {
             ...state,
             scoreSummary: action.data,
@@ -195,7 +195,7 @@ export default function reducer(state = {
         }
     }
     break;
-    
+
     case "SCORE_SUMMARY_ERROR":
     {
         //alert(action.json.non_field_errors);
@@ -212,7 +212,7 @@ export default function reducer(state = {
     break;
     case "SELECTED_APP_DETAILS":
     {
-        
+
         return {
             ...state,
             currentAppId: action.appId,
@@ -222,7 +222,7 @@ export default function reducer(state = {
     break;
     case "OPEN_APPS_LOADER_MODAL":
     {
-        
+
         return {
             ...state,
             appsLoaderModal:true,
@@ -233,7 +233,7 @@ export default function reducer(state = {
     break;
     case "HIDE_APPS_LOADER_MODAL":
     {
-        
+
         return {
             ...state,
             appsLoaderModal:false,
@@ -244,7 +244,7 @@ export default function reducer(state = {
     break;
     case "UPDATE_APPS_LOADER_VALUE":
     {
-        
+
         return {
             ...state,
             appsLoaderPerValue:action.value,
@@ -304,7 +304,7 @@ export default function reducer(state = {
         }
     }
     break;
-    
+
     case "ROBO_LIST_ERROR":
     {
         //alert(action.json.non_field_errors);
@@ -319,7 +319,7 @@ export default function reducer(state = {
         }
     }
     break;
-    
+
     case "APPS_ROBO_HIDE_POPUP":
     {
         return {
@@ -344,7 +344,7 @@ export default function reducer(state = {
         }
     }
     break;
-    
+
     case "EXTERNAL_DATA_UPLOAD_FILE":
     {
         return {
@@ -361,7 +361,7 @@ export default function reducer(state = {
         }
     }
     break;
-    
+
     case "ROBO_DATA_UPLOAD_ERROR":
     {
         //alert(action.json.non_field_errors);
@@ -401,7 +401,7 @@ export default function reducer(state = {
             historialDataUpload:{},
             customerDataUpload:{},
             externalDataUpload:{},
-            
+
         }
     }
     break;
@@ -409,7 +409,7 @@ export default function reducer(state = {
     {
         return {
             ...state,
-            
+
             roboUploadTabId:action.tabId,
         }
     }
@@ -526,7 +526,7 @@ export default function reducer(state = {
         }
     }
     break;
-    
+
     case "AUDIO_LIST":
     {
         return {
@@ -536,7 +536,7 @@ export default function reducer(state = {
         }
     }
     break;
-    
+
     case "AUDIO_LIST_ERROR":
     {
         //alert(action.json.non_field_errors);
@@ -551,7 +551,7 @@ export default function reducer(state = {
         }
     }
     break;
-    
+
     case "SORT_ROBO":
     {
         return{
@@ -578,13 +578,13 @@ export default function reducer(state = {
         }
     }
     break;
-    
+
     case "CREATE_STOCK_MODAL":
     {
         return{
             ...state,
             appsCreateStockModal:action.flag
-            
+
         }
     }
     break;
@@ -593,12 +593,12 @@ export default function reducer(state = {
         return{
             ...state,
             appsStockSymbolsInputs:action.stockSymbolsArray
-            
+
         }
     }
     break;
-    
-    
+
+
     case "STOCK_LIST":
     {
         return {
@@ -608,7 +608,7 @@ export default function reducer(state = {
         }
     }
     break;
-    
+
     case "STOCK_LIST_ERROR":
     {
         //alert(action.json.non_field_errors);
@@ -620,7 +620,7 @@ export default function reducer(state = {
         return{
             ...state,
             stockUploadDomainModal:action.flag
-            
+
         }
     }
     break;
@@ -629,7 +629,7 @@ export default function reducer(state = {
         return{
             ...state,
             stockUploadDomainFiles:action.files
-            
+
         }
     }
     break;
@@ -639,7 +639,7 @@ export default function reducer(state = {
         throw new Error("Unable to crawl data!!");
     }
     break;
-    
+
     case "STOCK_CRAWL_SUCCESS":
     {
         return{
@@ -664,7 +664,7 @@ export default function reducer(state = {
         }
     }
     break;
-    
+
     case "UPDATE_LOADER_TEXT":
     {
         return{
@@ -673,7 +673,7 @@ export default function reducer(state = {
         }
     }
     break;
-    
+
     case "APPS_LIST":
     {
         return {
@@ -684,14 +684,14 @@ export default function reducer(state = {
         }
     }
     break;
-    
+
     case "APPS_LIST_ERROR":
     {
         //alert(action.json.non_field_errors);
         throw new Error("Unable to fetch apps list data!!");
     }
     break;
-    
+
     case "APPS_SEARCH":
     {
         return{
@@ -717,7 +717,7 @@ export default function reducer(state = {
         }
     }
     break;
-    
+
     case "EXPORT_AS_PMML_MODAL":
     {
         return{
