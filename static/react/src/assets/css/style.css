@@ -2335,7 +2335,7 @@ box-shadow:         0 2px 2px rgba(0,0,0,0.05);
 }
 .pagination>li>a:focus, .pagination>li>a:hover, .pagination>li>span:focus, .pagination>li>span:hover {
 	z-index: 2;
-	color: #e71d1d;
+	color: #00978b;
 	background-color: #eee;
 	border-color: transparent
 }
@@ -6649,11 +6649,13 @@ body.open-right-sidebar .ma-right-sidebar {
   background-image: url(../images/ma_lgBanner.png);
   background-repeat: no-repeat;
   background-position:center center;
-background-color: #00998c; /* Old browsers */
-background-color: -moz-linear-gradient(top, #00998c 0%, #0f736d 100%); /* FF3.6-15 */
-background-color: -webkit-linear-gradient(top, #00998c 0%,#0f736d 100%); /* Chrome10-25,Safari5.1-6 */
-background-color: linear-gradient(to bottom, #00998c 0%,#0f736d 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00998c', endColorstr='#0f736d',GradientType=0 ); /* IE6-9 */ 
+
+/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#079088+0,0c6965+100 */
+background-color: #079088; /* Old browsers */
+background-color: -moz-linear-gradient(top, #079088 0%, #0c6965 100%); /* FF3.6-15 */
+background-color: -webkit-linear-gradient(top, #079088 0%,#0c6965 100%); /* Chrome10-25,Safari5.1-6 */
+background-color: linear-gradient(to bottom, #079088 0%,#0c6965 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#079088', endColorstr='#0c6965',GradientType=0 ); /* IE6-9 */
 }
 .ma-login .ma-content-right {
   overflow: auto;
@@ -13822,9 +13824,9 @@ ul.app_labels li:first-child { margin: 0; padding: 7px 5px }
 
 .newCardStyle:hover, .app-block:hover { box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22); }
 .newCardStyle:hover .card-footer { background:#f3f2f2; }
-.app-block h4, h4.title a {
+/*.app-block h4, h4.title a {
     font-weight: bold;
-}
+}*/
 .firstCard .col-xs-8.col-xs-offset-0 {
         padding-left: 12px;
 }
@@ -14836,7 +14838,7 @@ div.pred_disp_block  p, .pred_disp_block_store p { font-size:12px; }
 
 .btn-toolbar .dropdown-menu-right .ma-checkbox input[type=checkbox]+label:before, .btn-toolbar .dropdown-menu-right .ma-checkbox input[type=radio]+label:before, .btn-toolbar .dropdown-menu-right .ma-radio input[type=checkbox]+label:before, .btn-toolbar .dropdown-menu-right .ma-radio input[type=radio]+label:before { display: block; float: left; margin-bottom: 3px; }
 
-.zmdi-hc-lg { font-weight:600; }
+/*.zmdi-hc-lg { font-weight:600; }*/
 .panel-mAd  .panel-heading h2 { font-size:20px; }
 .panel-mAd .panel-body h2, .panel-mAd .panel-body h3{ font-size: 18px; }
 

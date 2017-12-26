@@ -105,7 +105,7 @@ export class Login extends React.Component {
                           </div>*/}
 
                         </div>
-                        <div className="form-group login-submit">
+                        <div className="form-group login-submit text-right">
                           <button onClick={this.doAuth.bind(this)} className="btn btn-primary">SIGN IN</button>
                         </div>
                         <div className = "text-danger text-center" id="errormsg">{this.state.errmsg}</div>
