@@ -572,7 +572,7 @@ YARN_STATUS = { "RUNNING" :"INPROGRESS",
                 "FAILED" : "FAILED",
                 "killed" : "FAILED",
                 "FINISHED" : "SUCCESS",
-                "SUCCESS" : "SUCCESS"
+                "KILLED" : "FAILED",
               }
 
 

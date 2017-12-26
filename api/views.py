@@ -792,6 +792,12 @@ def write_into_databases(job_type, object_slug, results):
     elif job_type == "master":
         # print "inside job_type==master"
         insight_object = Insight.objects.get(slug=object_slug)
+
+        if "error_message" in results:
+            insight_object.status = "FAILED"
+            insight_object.save()
+            return results
+
         results = add_slugs(results)
         insight_object.data = json.dumps(results)
         insight_object.analysis_done = True
@@ -800,6 +806,12 @@ def write_into_databases(job_type, object_slug, results):
         return results
     elif job_type == "model":
         trainer_object = Trainer.objects.get(slug=object_slug)
+
+        if "error_message" in results:
+            trainer_object.status = "FAILED"
+            trainer_object.save()
+            return results
+
         results['model_summary'] = add_slugs(results['model_summary'])
         trainer_object.data = json.dumps(results)
         trainer_object.analysis_done = True
@@ -807,6 +819,12 @@ def write_into_databases(job_type, object_slug, results):
         return results
     elif job_type == 'score':
         score_object = Score.objects.get(slug=object_slug)
+
+        if "error_message" in results:
+            score_object.status = "FAILED"
+            score_object.save()
+            return results
+
         results = add_slugs(results)
         score_object.data = json.dumps(results)
         score_object.analysis_done = True
@@ -814,6 +832,12 @@ def write_into_databases(job_type, object_slug, results):
         return results
     elif job_type == 'robo':
         robo_object = Robo.objects.get(slug=object_slug)
+
+        if "error_message" in results:
+            robo_object.status = "FAILED"
+            robo_object.save()
+            return results
+
         results = add_slugs(results)
         robo_object.data = json.dumps(results)
         robo_object.robo_analysis_done = True
