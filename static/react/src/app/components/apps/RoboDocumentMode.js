@@ -56,9 +56,9 @@ export class RoboDocumentMode extends React.Component {
 		                 
 		                <div className="panel panel-mAd documentModeSpacing ">
 		                    <div className="panel-heading">
-		                      <h2>{store.getState().apps.roboSummary.name}</h2>
-		                     
-		                      <div className="btn-toolbar pull-right">
+		                      <h2>{store.getState().apps.roboSummary.name}
+							  
+							    <div className="btn-toolbar pull-right">
 		                        <div className="btn-group btn-space">
 		                        <Link className="tabs-control right grp_legends_green continue" to={cardModeLink}>
 		                          <button type="button" className="btn btn-default" title="Card mode">
@@ -69,12 +69,15 @@ export class RoboDocumentMode extends React.Component {
 		                              <i class="zmdi zmdi-hc-lg zmdi-view-web"></i>
 		                            </button>
 							   <Link className="continue" to="/apps-robo">
-		                          <button type="button" className="btn btn-close">
+		                          <button type="button" className="btn btn-default">
 		                            <i class="fa zmdi-hc-lg fa-times"></i>
 		                          </button>
 								 </Link>
 		                        </div>
 		                      </div>
+							  </h2>
+		                     
+		                    
 		                      
 		                      <div className="clearfix"></div>
 		                    </div>
