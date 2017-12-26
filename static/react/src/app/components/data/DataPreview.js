@@ -179,8 +179,10 @@ export class DataPreview extends React.Component {
 				let  xdata= item.chartData.xdata;
 				console.log("checking side table data:; ");
 				console.log(sideTableUpdate);
+				//currently hardcoding charInfo as empty
+				let chartInfo=[]
 				$("#side-chart").empty();
-				ReactDOM.render(<Provider store={store}><C3Chart classId={"_side"} data={sideChartUpdate} yformat={yformat} xdata={xdata} sideChart={true}/></Provider>, document.getElementById('side-chart'));
+				ReactDOM.render(<Provider store={store}><C3Chart chartInfo={chartInfo} classId={"_side"} data={sideChartUpdate} yformat={yformat} xdata={xdata} sideChart={true}/></Provider>, document.getElementById('side-chart'));
                 }
 				const sideTableUpdate = item.columnStats;
 				let sideTableUpdatedTemplate = "";
@@ -418,8 +420,8 @@ export class DataPreview extends React.Component {
     			this.firstTimeSideChart = dataPrev.columnData[0].chartData;
     			this.firstTimeColTypeForChart = dataPrev.columnData[0].columnType;
     			 if(!$.isEmptyObject(this.firstTimeSideChart)){
-    			     this.chartInfo = [];
-    				 firstChart = <C3Chart chartInfo={this.chartInfo} classId={this.chartId} data={sideChart} yformat={yformat} xdata={xdata} sideChart={true}/> ;
+    			     let chartInfo = [];
+    				 firstChart = <C3Chart chartInfo={chartInfo} classId={this.chartId} data={sideChart} yformat={yformat} xdata={xdata} sideChart={true}/> ;
     			 }
     			 if(!isEmpty(dataPrev.columnData[0]))
     			 firstTimeSubSetting = dataPrev.columnData[0]

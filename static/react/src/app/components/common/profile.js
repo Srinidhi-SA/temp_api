@@ -166,6 +166,7 @@ export class Profile extends React.Component {
           </li>
         )
       });
+      let chartInfo=[]
       return (
         <div className="side-body">
           <div className="page-head">
@@ -308,7 +309,7 @@ export class Profile extends React.Component {
                   <div className="panel-body">
                     <div className="minHP">
                       <h5 class="text-center">TOTAL SPACE</h5>
-                      <C3Chart classId="_profile" data={this.props.profileInfo.chart_c3}/> {/*
+                      <C3Chart chartInfo={chartInfo} classId="_profile" data={this.props.profileInfo.chart_c3}/> {/*
               <img src="images/userProfileGraph.png" className="img-responsive"/>*/}
                       <p className="xs-pl-20">{renderHTML(this.props.profileInfo.comment)}</p>
                     </div>

@@ -51,17 +51,20 @@ export class Card extends React.Component {
                 break;
             case "c3Chart":
                 //console.log("checking chart data:::::");
+                let chartInfo=[]
                 if(!$.isEmptyObject(story.data)){
-                   // story.chartInfo =[]
+                   if(story.chartInfo){
+                     chartInfo=story.chartInfo
+                   }
                     if(story.widthPercent &&  story.widthPercent != 100){
                       //  let width  = story.widthPercent+"%";
                         let width  = parseInt((story.widthPercent/100)*12)
                         let divClass="col-md-"+width;
                         let sideChart=false;
                         if(story.widthPercent < 50)sideChart=true;
-                        return (<div key={randomNum} class={divClass} style={{display:"inline-block",paddingLeft:"30px"}}><C3Chart chartInfo={story.chartInfo} sideChart={sideChart} classId={randomNum} widthPercent = {story.widthPercent} data={story.data.chart_c3}  yformat={story.data.yformat} y2format={story.data.y2format} guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div>);
+                        return (<div key={randomNum} class={divClass} style={{display:"inline-block",paddingLeft:"30px"}}><C3Chart chartInfo={chartInfo} sideChart={sideChart} classId={randomNum} widthPercent = {story.widthPercent} data={story.data.chart_c3}  yformat={story.data.yformat} y2format={story.data.y2format} guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div>);
                     }else{
-                        return (<div key={randomNum}><C3Chart chartInfo={story.chartInfo} classId={randomNum} data={story.data.chart_c3} yformat={story.data.yformat} y2format={story.data.y2format} guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div>);
+                        return (<div key={randomNum}><C3Chart chartInfo={chartInfo} classId={randomNum} data={story.data.chart_c3} yformat={story.data.yformat} y2format={story.data.y2format} guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div>);
                     }
                 }
                 break;
