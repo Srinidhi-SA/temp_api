@@ -4625,7 +4625,7 @@ def get_job_refreshed(request, slug=None):
 
 @csrf_exempt
 def set_messages(request, slug=None):
-    import pdb;pdb.set_trace()
+
     if slug is None:
         return JsonResponse({"message": "Failed"})
     return_data = request.query_params.get('data', None)
