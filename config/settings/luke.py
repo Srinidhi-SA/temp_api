@@ -28,10 +28,18 @@ PROJECT_APP = [
 
 INSTALLED_APPS += PROJECT_APP
 
+HADOOP_MASTER = '172.31.50.84'
+
+YARN = {
+    "host": HADOOP_MASTER,
+    "port": 8088,
+    "timeout": 30
+}
 
 HDFS = {
+
     # Give host name without http
-    'host': '172.31.50.84',
+    'host': HADOOP_MASTER,
     'port': '14000', #webhdfs port
     'uri': '/webhdfs/v1',
     'user.name': 'hadoop',
