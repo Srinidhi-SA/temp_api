@@ -77,7 +77,7 @@ export class AppsScoreDetail extends React.Component {
 		                            </button>
 							   <Link className="continue btn btn-default" to={scoreLink}>
 		                          
-		                            <i class="fa zmdi-hc-lg fa-times"></i>
+		                            <i class="zmdi zmdi-hc-lg zmdi-close"></i>
 		                          
 								 </Link>
 		                        </div>

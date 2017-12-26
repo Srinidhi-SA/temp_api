@@ -86,7 +86,7 @@ export class AppsModelDetail extends React.Component {
 		                            </button>
 							   <Link className="btn btn-default continue btn-close" to={modelLink}>
 		                         
-		                            <i class="fa zmdi-hc-lg fa-times"></i>
+		                            <i class="zmdi zmdi-hc-lg zmdi-close"></i>
 		                          
 								 </Link>
 		                        </div>

@@ -14699,7 +14699,7 @@ a.disabled { color:#ccc !important; }
 }
 .fa.fa-table.pull-right { cursor: pointer; color: #747474; font-size: 15px;}
 .full-table-width { width:100%; }
-.no-border td.item { padding:4px; }
+.no-border td.item { padding:3px; }
 .minHP { min-height:120px; }
 
 .img-responsive.img-center { margin:0 auto; }
