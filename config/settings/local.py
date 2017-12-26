@@ -7,7 +7,7 @@ import datetime
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*', '192.168.18.80', '127.0.0.1', 'localhost']
 
 # DATABASES = {
 #     'default': {
@@ -20,10 +20,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'madvisor',
-        'USER': 'marlabs',
-        'PASSWORD': 'Password@123',
-        # 'USER': 'root',
-        # 'PASSWORD': 'root',
+        # 'USER': 'marlabs',
+        # 'PASSWORD': 'Password@123',
+        'USER': 'root',
+        'PASSWORD': 'root',
         'HOST': 'localhost',
         'PORT': '',
     }

@@ -4628,7 +4628,7 @@ def set_messages(request, slug=None):
 
     if slug is None:
         return JsonResponse({"message": "Failed"})
-    return_data = request.query_params.get('data', None)
+    return_data = request.GET.get('data', None)
     data = request.body
     data = json.loads(data)
     from api.redis_access import AccessFeedbackMessage
