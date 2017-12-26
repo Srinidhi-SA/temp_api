@@ -416,7 +416,7 @@ closeDocumentMode(){
 					<div className="btn-toolbar pull-right">
 					<div className="btn-group">
 					{/*<button type="button" className="btn btn-default" disabled="true" title="Card mode"><i className="fa fa-print"></i></button>*/}
-					<button type="button" className="btn btn-default" disabled="true" title="Card mode"><i class="zmdi zmdi-hc-lg zmdi-view-stream"></i></button>
+					<button type="button" className="btn btn-default" disabled="true" title="Card mode"><i class="zmdi zmdi-hc-lg zmdi-view-carousel"></i></button>
 					<Link className="btn btn-default continue" to={{
                             pathname: documentModeLink,
                             state: {
@@ -428,7 +428,7 @@ closeDocumentMode(){
 						  
 					{/*<Link className="continue" to={that.urlPrefix}>*/}
                             <button type="button" className="btn btn-default" onClick = {this.closeDocumentMode.bind(this)}>
-                              <i class="fa zmdi-hc-lg fa-times"></i>
+                              <i class="zmdi zmdi-hc-lg zmdi-close"></i>
                             </button>
                     {/*</Link>*/}
 					

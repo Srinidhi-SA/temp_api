@@ -62,7 +62,7 @@ export class RoboDocumentMode extends React.Component {
 		                        <div className="btn-group btn-space">
 		                        <Link className="tabs-control right grp_legends_green continue" to={cardModeLink}>
 		                          <button type="button" className="btn btn-default" title="Card mode">
-		                            <i class="zmdi zmdi-hc-lg zmdi-view-stream"></i>
+		                            <i class="zmdi zmdi-hc-lg zmdi-view-carousel"></i>
 		                          </button>
 		                          </Link>
 		                          <button type="button" className="btn btn-default" disabled = "true" title="Document Mode">
@@ -70,7 +70,7 @@ export class RoboDocumentMode extends React.Component {
 		                            </button>
 							   <Link className="continue" to="/apps-robo">
 		                          <button type="button" className="btn btn-default">
-		                            <i class="fa zmdi-hc-lg fa-times"></i>
+		                            <i class="fa zmdi-hc-lg zmdi-close"></i>
 		                          </button>
 								 </Link>
 		                        </div>
