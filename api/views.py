@@ -4626,12 +4626,17 @@ def get_job_refreshed(request, slug=None):
 def set_messages(request, slug=None):
     if slug is None:
         return JsonResponse({"message": "Failed"})
+    return_data = request.query_params.get('data', None)
     data = request.body
     data = json.loads(data)
     from api.redis_access import AccessFeedbackMessage
     ac = AccessFeedbackMessage()
     data = ac.append_using_key(slug, data)
-    return JsonResponse({'message': data})
+
+    if return_data is not None:
+        return JsonResponse({'message': data})
+    else:
+        return JsonResponse({'message': "Success"})
 
 
 
