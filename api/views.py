@@ -4622,17 +4622,25 @@ def get_job_refreshed(request, slug=None):
         'message': 'refreshed'
     })
 
+
 @csrf_exempt
 def set_messages(request, slug=None):
+
     if slug is None:
         return JsonResponse({"message": "Failed"})
+    return_data = request.GET.get('data', None)
     data = request.body
     data = json.loads(data)
     from api.redis_access import AccessFeedbackMessage
     ac = AccessFeedbackMessage()
     data = ac.append_using_key(slug, data)
-    return JsonResponse({'message': data})
 
+    if return_data is None:
+        return JsonResponse({'message': "Success"})
+    elif return_data is False:
+        return JsonResponse({'message': "Success"})
+    elif return_data is True:
+        JsonResponse({'message': data})
 
 
 @csrf_exempt
