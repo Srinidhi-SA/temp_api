@@ -4622,8 +4622,10 @@ def get_job_refreshed(request, slug=None):
         'message': 'refreshed'
     })
 
+
 @csrf_exempt
 def set_messages(request, slug=None):
+    import pdb;pdb.set_trace()
     if slug is None:
         return JsonResponse({"message": "Failed"})
     return_data = request.query_params.get('data', None)
@@ -4633,11 +4635,12 @@ def set_messages(request, slug=None):
     ac = AccessFeedbackMessage()
     data = ac.append_using_key(slug, data)
 
-    if return_data is not None:
-        return JsonResponse({'message': data})
-    else:
+    if return_data is None:
         return JsonResponse({'message': "Success"})
-
+    elif return_data is False:
+        return JsonResponse({'message': "Success"})
+    elif return_data is True:
+        JsonResponse({'message': data})
 
 
 @csrf_exempt
