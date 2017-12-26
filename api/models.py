@@ -51,9 +51,8 @@ class Job(models.Model):
     command_array = models.TextField(default="{}")
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
-    # TODO: @Ankush please add created by
-    # created_by = models.ForeignKey(User, null=False)
     deleted = models.BooleanField(default=False)
+    submitted_by = models.ForeignKey(User, null=False)
 
     def generate_slug(self):
         if not self.slug:
@@ -1262,6 +1261,7 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
     job.name = "-".join([job_type, instance.slug])
     job.job_type = job_type
     job.object_id = str(instance.slug)
+    job.submitted_by = instance.created_by
 
     if jobConfig is None:
         jobConfig = json.loads(instance.config)
@@ -1313,6 +1313,7 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
 
         job.url = job_return_data.get('application_id')
         job.command_array = json.dumps(job_return_data.get('command_array'))
+        job.config = json.dumps(job_return_data.get('config'))
         job.save()
     except Exception as exc:
         print "#" * 100

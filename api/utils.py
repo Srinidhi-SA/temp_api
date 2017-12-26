@@ -68,7 +68,8 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
         "command_array": command_array,
         "queue_name": queue_name,
         "egg_file_path": egg_file_path,
-        "driver_py_file_path": driver_file
+        "driver_py_file_path": driver_file,
+        "config": config
     }
 
 
