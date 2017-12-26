@@ -175,6 +175,7 @@ class Dataset(models.Model):
             filter_subsetting,
             transformation_settings,
             inputfile,
+            original_metadata_url_info
 
     ):
         self.set_subesetting_true()
@@ -190,6 +191,11 @@ class Dataset(models.Model):
             jobConfig = self.add_inputfile_outfile_to_config(
                 inputfile,
                 jobConfig
+            )
+        if original_metadata_url_info:
+            jobConfig = self.add_previous_dataset_metadata_url_info(
+                original_metadata_url_info=original_metadata_url_info,
+                jobConfig=jobConfig
             )
 
         job = job_submission(
@@ -251,6 +257,13 @@ class Dataset(models.Model):
             "inputfile": [inputfile],
             "outputfile": [self.get_input_file()],
         }
+
+        return jobConfig
+
+    def add_previous_dataset_metadata_url_info(self, original_metadata_url_info, jobConfig):
+
+        if "FILE_SETTINGS" in jobConfig["config"]:
+            jobConfig["config"]["FILE_SETTINGS"]['metadata'] = original_metadata_url_info
 
         return jobConfig
 
@@ -465,6 +478,18 @@ class Dataset(models.Model):
         )
         return convert_json_object_into_list_of_object(brief_info, 'dataset')
 
+    def get_metadata_url_config(self):
+        ip_port = "{0}:{1}".format(THIS_SERVER_DETAILS.get('host'),
+                                   THIS_SERVER_DETAILS.get('port'))
+        url = "/api/get_metadata_for_mlscripts/"
+        slug_list = [
+            self.slug
+        ]
+        return {
+            "url": ip_port + url,
+            "slug_list": slug_list
+        }
+
 
 class Insight(models.Model):
     name = models.CharField(max_length=300, null=True)
@@ -617,20 +642,7 @@ class Insight(models.Model):
         return {
             'script_to_run': script_to_run,
             'inputfile': [self.dataset.get_input_file()],
-            'metadata': self.get_metadata_url_config()
-        }
-
-    def get_metadata_url_config(self):
-
-        ip_port = "{0}:{1}".format(THIS_SERVER_DETAILS.get('host'),
-                                   THIS_SERVER_DETAILS.get('port'))
-        url = "/api/get_metadata_for_mlscripts/"
-        slug_list = [
-            self.dataset.slug
-        ]
-        return {
-            "url": ip_port + url,
-            "slug_list": slug_list
+            'metadata': self.dataset.get_metadata_url_config()
         }
 
     def create_configuration_column_settings(self):
@@ -800,19 +812,7 @@ class Trainer(models.Model):
             'modelpath': [self.slug],
             'train_test_split': [train_test_split],
             'analysis_type': ['training'],
-            'metadata': self.get_metadata_url_config()
-        }
-
-    def get_metadata_url_config(self):
-        ip_port = "{0}:{1}".format(THIS_SERVER_DETAILS.get('host'),
-                                   THIS_SERVER_DETAILS.get('port'))
-        url = "/api/get_metadata_for_mlscripts/"
-        slug_list = [
-            self.dataset.slug
-        ]
-        return {
-            "url": ip_port + url,
-            "slug_list": slug_list
+            'metadata': self.dataset.get_metadata_url_config()
         }
 
     def create_configuration_column_settings(self):
@@ -1005,21 +1005,8 @@ class Score(models.Model):
             'levelcounts': targetVariableLevelcount if targetVariableLevelcount is not None else [],
             'algorithmslug': [algorithmslug],
             'modelfeatures': modelfeatures if modelfeatures is not None else [],
-            'metadata': self.get_metadata_url_config(),
+            'metadata': self.dataset.get_metadata_url_config(),
             'labelMappingDict':[labelMappingDict]
-        }
-
-    def get_metadata_url_config(self):
-
-        ip_port = "{0}:{1}".format(THIS_SERVER_DETAILS.get('host'),
-                                   THIS_SERVER_DETAILS.get('port'))
-        url = "/api/get_metadata_for_mlscripts/"
-        slug_list = [
-            self.dataset.slug
-        ]
-        return {
-            "url": ip_port + url,
-            "slug_list": slug_list
         }
 
     def get_config_from_config(self):
