@@ -685,8 +685,8 @@ function deleteDataset(slug,dialog,dispatch){
 			dispatch(hideLoading());
 		}
 		else{
-			dialog.showAlert("Something went wrong. Please try again later.");
 			dispatch(hideLoading());
+			dialog.showAlert("Something went wrong. Please try again later.");
 		}
 	})
 }
@@ -1009,16 +1009,16 @@ export function handleColumnClick(dialog,actionName,colSlug,colName,subActionNam
 		    if(!colStatus){
 		        bootbox.confirm("Setting this column as unique identifier will unset previous selection.",
 	                     function(result){
-	                          if(result){  
+	                          if(result){
 	                              $(".cst_table").find("thead").find("."+colSlug).first().find("a").addClass("text-primary");
-	                              updateUniqueIdentifierColumn(dispatch,actionName,colSlug,colStatus);  
+	                              updateUniqueIdentifierColumn(dispatch,actionName,colSlug,colStatus);
 	                          }
 	                   });
 		    }else{
 		        updateUniqueIdentifierColumn(dispatch,actionName,colSlug,colStatus);
 		        $(".cst_table").find("thead").find("."+colSlug).first().find("a").removeClass("text-primary");
 		    }
-            
+
       }else {
 		    updateColumnStatus(dispatch,colSlug,colName,actionName,subActionName);
 		}
@@ -1110,7 +1110,7 @@ function updateUniqueIdentifierColumn(dispatch,actionName,colSlug,isChecked){
         for(var j=0;j<transformSettings[i].columnSetting.length;j++){
             if(transformSettings[i].columnSetting[j].actionName == actionName){
                 if(transformSettings[i].slug == colSlug){
-                    transformSettings[i].columnSetting[j].status = !isChecked;  
+                    transformSettings[i].columnSetting[j].status = !isChecked;
                 }
                 else {
                     if(transformSettings[i].columnSetting[j].status){
@@ -1152,9 +1152,10 @@ export function handleColumnActions(transformSettings,slug,isSubsetting) {
 				dispatch(hideLoading());
 			}
 			else{
-			    bootbox.alert("Something went wrong. Please try again later.")
+
 				dispatch(fetchDataPreviewError(json));
 				dispatch(hideLoading());
+				bootbox.alert("Something went wrong. Please try again later.")
 			}
 		})
 	}
