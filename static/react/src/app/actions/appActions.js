@@ -807,8 +807,9 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 dispatch(hideLoading());
             }
             else{
-                dialog.showAlert("Something went wrong. Please try again later.");
                 dispatch(hideLoading());
+                dialog.showAlert("Something went wrong. Please try again later.");
+
             }
         })
     }
@@ -869,8 +870,9 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 dispatch(hideLoading());
             }
             else{
-                dialog.showAlert("Something went wrong. Please try again later.");
                 dispatch(hideLoading());
+                dialog.showAlert("Something went wrong. Please try again later.");
+
             }
         })
     }
@@ -900,8 +902,9 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 dispatch(hideLoading());
             }
             else{
-                dialog.showAlert("Something went wrong. Please try again later.");
                 dispatch(hideLoading());
+                dialog.showAlert("Something went wrong. Please try again later.");
+
             }
         })
     }
@@ -938,8 +941,9 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 dispatch(hideLoading());
             }
             else{
-                dialog.showAlert("Something went wrong. Please try again later.");
                 dispatch(hideLoading());
+                dialog.showAlert("Something went wrong. Please try again later.");
+
             }
         })
     }
@@ -975,8 +979,9 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 dispatch(hideLoading());
             }
             else{
-                dialog.showAlert("Something went wrong. Please try again later.");
                 dispatch(hideLoading());
+                dialog.showAlert("Something went wrong. Please try again later.");
+
             }
         })
     }
@@ -1013,8 +1018,9 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 dispatch(hideLoading());
             }
             else{
-                dialog.showAlert("Something went wrong. Please try again later.");
                 dispatch(hideLoading());
+                dialog.showAlert("Something went wrong. Please try again later.");
+
             }
         })
     }
@@ -1249,8 +1255,9 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 dispatch(hideLoading());
             }
             else{
-                dialog.showAlert("Something went wrong. Please try again later.");
                 dispatch(hideLoading());
+                dialog.showAlert("Something went wrong. Please try again later.");
+
             }
         })
     }
@@ -1287,8 +1294,9 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 dispatch(hideLoading());
             }
             else{
-                dialog.showAlert("Something went wrong. Please try again later.");
                 dispatch(hideLoading());
+                dialog.showAlert("Something went wrong. Please try again later.");
+
             }
         })
     }
@@ -1783,11 +1791,10 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 
 
     }
-    
+
     export function handleExportAsPMMLModal(flag) {
         return {
             type: "EXPORT_AS_PMML_MODAL",
             flag
         }
     }
-    
