@@ -58,6 +58,9 @@ class JobserverDetails(object):
                 "xml_url": "http://{0}:{1}/api/xml/{2}/".format(THIS_SERVER_DETAILS.get('host'),
                                                                 THIS_SERVER_DETAILS.get('port'),
                                                                 slug),
+                "error_reporting_url": "http://{0}:{1}/api/set_job_report/{2}/".format(THIS_SERVER_DETAILS.get('host'),
+                                                                THIS_SERVER_DETAILS.get('port'),
+                                                                slug),
                 "job_name": job_name,
                 "get_config" :
                     {
