@@ -4707,6 +4707,42 @@ def get_pmml(request, slug=None, algoname='algo'):
 
 
 @csrf_exempt
+def set_job_reporting(request, slug=None, report_name=None):
+    job = Job.objects.get(slug=slug)
+
+    if not job:
+        return JsonResponse({'result': 'Failed'})
+    new_error = request.body
+    error_log = json.loads(job.error_report)
+    if isinstance(new_error, str) or isinstance(new_error, unicode):
+        json_formatted_new_error = json.loads(new_error)
+    elif isinstance(new_error, dict):
+        json_formatted_new_error = new_error
+
+    if report_name in error_log:
+        error_log[report_name].append(json_formatted_new_error)
+    else:
+        error_log[report_name] = [json_formatted_new_error]
+
+    job.error_report = json.dumps(error_log)
+    job.save()
+
+    return JsonResponse({'messgae':'error reported.'})
+
+@csrf_exempt
+def get_job_report(request, slug=None):
+    job = Job.objects.get(slug=slug)
+
+    if not job:
+        return JsonResponse({'result': 'Failed'})
+
+    error_log = json.loads(job.error_report)
+
+    return JsonResponse({'report': error_log})
+
+
+
+@csrf_exempt
 def get_stockdatasetfiles(request, slug=None):
     # if slug is None:
     #     return JsonResponse({"message": "Failed"})

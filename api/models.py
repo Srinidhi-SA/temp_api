@@ -53,6 +53,7 @@ class Job(models.Model):
     updated_at = models.DateTimeField(auto_now=True, null=True)
     deleted = models.BooleanField(default=False)
     submitted_by = models.ForeignKey(User, null=False)
+    error_report = models.TextField(default="{}")
 
     def generate_slug(self):
         if not self.slug:
