@@ -113,10 +113,14 @@ export function fetchCreateSignalSuccess(signalData, dispatch) {
             dispatch(getSignalAnalysis(getUserDetailsOrRestart.get().userToken,signalData.slug));
             if(store.getState().signals.createSignalLoaderValue < LOADERMAXPERVALUE){
               if (loading_message && loading_message.length > 0) {
+                //check if display is true
+                if(loading_message[loading_message.length - 1].display&&loading_message[loading_message.length - 1].display==true){
                 msg = loading_message[loading_message.length - 1].shortExplanation
+              }
                 loaderVal = loading_message[loading_message.length - 1].globalCompletionPercentage
                 //alert(msg + "  " + loaderVal)
               }
+
               dispatch(updateCsLoaderValue(loaderVal));
               dispatch(updateCsLoaderMsg(msg));
             } else {
@@ -630,7 +634,7 @@ export function handleTopPredictions(){
             }else{
                 $(this).addClass("hidden");
             }
-            
+
         }
     })
     if(noDataFlag){
