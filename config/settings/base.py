@@ -205,7 +205,7 @@ defaultValue -> the input box will be filled with this value
 """
 DATA_SOURCES_CONFIG = {"conf": [{
         "dataSourceType": "fileUpload",
-        "dataSourceName": "File Upload",
+        "dataSourceName": "File",
         "formFields": [
             {
                 "fieldType": "file",
