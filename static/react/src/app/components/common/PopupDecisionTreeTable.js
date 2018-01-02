@@ -35,7 +35,7 @@ export class PopupDecisionTreeTable extends React.Component {
           var colLength = rowData.length;
         if(i== 0){
             return rowData.map(function(colData,j) {
-                if(j == colLength-1)return <th class="hidden" key={j}>{colData}</th>
+                if(j > 3)return <th class="hidden" key={j}>{colData}</th>
                 else if(j == 0) return <th  style={{width:"60%"}}  key={j}>{colData}</th>;
                 else return <th class="text-center" key={j}>{colData}</th>;
                  });
@@ -48,14 +48,13 @@ generateDecisionTreeRows(table) {
       var tbodyData = table.tableData.map(function(rowData,i){
           var colLength = rowData.length;
           if(i != 0){
-              var rule ="";
+              var rule = rowData[rowData.length-1]
               var rows = rowData.map(function(colData,j) {
                   
                    if(j == 0){
-                       rule=colData
                        return<td key={j} className="cursor">{renderHTML(colData.length > MAXTEXTLENGTH ? colData.slice(0, MAXTEXTLENGTH).concat("...") : colData)}</td>;
                    }
-                      else if(j == colLength-1)return  <td class="hidden" key={j}>{colData}</td> 
+                      else if(j > 3)return  <td class="hidden" key={j}>{colData}</td> 
                       else return  <td class="text-center" key={j}>{colData}</td>       
                       
               });

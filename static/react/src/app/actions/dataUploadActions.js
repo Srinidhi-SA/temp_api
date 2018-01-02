@@ -1,7 +1,8 @@
 import {API} from "../helpers/env";
+import {DYNAMICLOADERINTERVAL} from "../helpers/helper";
 import store from "../store";
 import {FILEUPLOAD, DULOADERPERVALUE, LOADERMAXPERVALUE, DEFAULTINTERVAL, DULOADERPERMSG,getUserDetailsOrRestart} from "../helpers/helper";
-import {getDataList, getDataSetPreview, updateDatasetName, openDULoaderPopup} from "./dataActions";
+import {getDataList, getDataSetPreview, updateDatasetName, openDULoaderPopup,hideDULoaderPopup} from "./dataActions";
 export var dataPreviewInterval = null;
 
 export function getHeaderWithoutContent(token) {
@@ -107,30 +108,49 @@ function triggerDataUpload(token,dbDetails) {
 
 }
 
+export function triggerDataUploadAnalysis(data,percentage, message){
+    return (dispatch) => {
+        dispatch(dataUploadLoaderValue(percentage));
+        dispatch(dataUploadLoaderMsg(message));
+        dispatch(openDULoaderPopup());
+        dataUploadSuccess(data,dispatch)
+        
+    }
+}
 function dataUploadSuccess(data, dispatch) {
   let msg = store.getState().datasets.dataLoaderText
   let loaderVal = store.getState().datasets.dULoaderValue
-
-  dataPreviewInterval = setInterval(function() {
-
-    let loading_message = store.getState().datasets.loading_message
-    dispatch(getDataSetPreview(data.slug, dataPreviewInterval));
-    if (store.getState().datasets.dULoaderValue < LOADERMAXPERVALUE) {
-      if (loading_message && loading_message.length > 0) {
-        if(loading_message[loading_message.length - 1].display&&loading_message[loading_message.length - 1].display==true){
-      msg = loading_message[loading_message.length - 1].shortExplanation
-    }
-        loaderVal = loading_message[loading_message.length - 1].globalCompletionPercentage
-        //alert(msg + "  " + loaderVal)
-      }
-      dispatch(dataUploadLoaderValue(loaderVal));
+  if(data.hasOwnProperty("proceed_for_loading") && !data.proceed_for_loading){
+      msg = "Your dataset will be uploaded in background...";
       dispatch(dataUploadLoaderMsg(msg));
-    } else {
-      dispatch(clearLoadingMsg())
-    }
+      setTimeout(function() {
+          dispatch(hideDULoaderPopup());
+          dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
+      },DYNAMICLOADERINTERVAL);
+  }
+  else{
+    dataPreviewInterval = setInterval(function() {
 
-  }, DEFAULTINTERVAL);
-  dispatch(dataUploadLoaderValue(loaderVal));
+        let loading_message = store.getState().datasets.loading_message
+        dispatch(getDataSetPreview(data.slug, dataPreviewInterval));
+        if (store.getState().datasets.dULoaderValue < LOADERMAXPERVALUE) {
+          if (loading_message && loading_message.length > 0) {
+            if(loading_message[loading_message.length - 1].display&&loading_message[loading_message.length - 1].display==true){
+          msg = loading_message[loading_message.length - 1].shortExplanation
+        }
+            loaderVal = loading_message[loading_message.length - 1].globalCompletionPercentage
+            //alert(msg + "  " + loaderVal)
+          }
+          dispatch(dataUploadLoaderValue(loaderVal));
+          dispatch(dataUploadLoaderMsg(msg));
+        } else {
+          dispatch(clearLoadingMsg())
+        }
+
+      }, DEFAULTINTERVAL);
+      dispatch(dataUploadLoaderValue(loaderVal));
+    
+}
 }
 
 export function dataUploadError(josn) {
