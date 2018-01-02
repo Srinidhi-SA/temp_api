@@ -205,7 +205,7 @@ defaultValue -> the input box will be filled with this value
 """
 DATA_SOURCES_CONFIG = {"conf": [{
         "dataSourceType": "fileUpload",
-        "dataSourceName": "File Upload",
+        "dataSourceName": "File",
         "formFields": [
             {
                 "fieldType": "file",
@@ -1086,3 +1086,5 @@ LIST_OF_ADMIN_EMAILS = [
 import config_file_name_to_run
 
 UI_VERSION = config_file_name_to_run.UI_VERSION
+
+PROCEED_TO_UPLOAD_CONSTANT = 15000000

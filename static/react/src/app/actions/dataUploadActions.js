@@ -117,7 +117,9 @@ function dataUploadSuccess(data, dispatch) {
     dispatch(getDataSetPreview(data.slug, dataPreviewInterval));
     if (store.getState().datasets.dULoaderValue < LOADERMAXPERVALUE) {
       if (loading_message && loading_message.length > 0) {
-        msg = loading_message[loading_message.length - 1].shortExplanation
+        if(loading_message[loading_message.length - 1].display&&loading_message[loading_message.length - 1].display==true){
+      msg = loading_message[loading_message.length - 1].shortExplanation
+    }
         loaderVal = loading_message[loading_message.length - 1].globalCompletionPercentage
         //alert(msg + "  " + loaderVal)
       }

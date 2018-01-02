@@ -53,6 +53,7 @@ class Job(models.Model):
     updated_at = models.DateTimeField(auto_now=True, null=True)
     deleted = models.BooleanField(default=False)
     submitted_by = models.ForeignKey(User, null=False)
+    error_report = models.TextField(default="{}")
 
     def generate_slug(self):
         if not self.slug:
@@ -136,6 +137,7 @@ class Dataset(models.Model):
     file_remote = models.CharField(max_length=100, null=True)
     analysis_done = models.BooleanField(default=False)
     status = models.CharField(max_length=100, null=True, default="Not Registered")
+    viewed = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
