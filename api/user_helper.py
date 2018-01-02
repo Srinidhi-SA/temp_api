@@ -290,7 +290,7 @@ class myJSONWebTokenSerializer(Serializer):
                     'user': user
                 }
             else:
-                msg = _('Incorrect username or password. Please try again.')
+                msg = _('You have entered a wrong username or password. Please retry!')
                 raise serializers.ValidationError(msg)
         else:
             msg = _('Must include "{username_field}" and "password".')

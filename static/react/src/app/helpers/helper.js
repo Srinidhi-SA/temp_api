@@ -48,7 +48,7 @@ function redirectToLogin() {
 }
 
 
-const FILEUPLOAD = "File Upload";
+const FILEUPLOAD = "fileUpload";
 const MYSQL = "MySQL";
 const INPUT = "Input";
 const HOST = "Host";
@@ -56,7 +56,7 @@ const PORT = "Port";
 const SCHEMA = "Schema";
 const USERNAME = "Username";
 const PASSWORD = "Password";
-const TABLENAME = "Table Name";
+const TABLENAME = "tablename";
 const PERPAGE = 11;
 const NORMALTABLE = "normal";
 const CONFUSIONMATRIX = "confusionMatrix";
@@ -97,7 +97,7 @@ const APPID4 = 4;
 const APPNAME4 = "Speech Analytics";
 const DELETEAUDIO = "Delete Media File";
 const RENAMEAUDIO = "Rename Media File";
-const DULOADERPERMSG = "initialized the filter parameters";
+const DULOADERPERMSG = "Preparing data for loading";
 const RENAME = "rename";
 const DELETE = "delete";
 const REPLACE = "replace";

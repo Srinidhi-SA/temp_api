@@ -25,3 +25,5 @@ env
 *.csv
 .project
 .pydevproject
+*.log
+config/media

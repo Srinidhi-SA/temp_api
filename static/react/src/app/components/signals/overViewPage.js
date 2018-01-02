@@ -168,7 +168,7 @@ closeDocumentMode(){
   render() {
 
     console.log("overviewPage is called!!");
-    //console.log(this.props);
+    console.log(this.props);
     var that = this;
     that.urlPrefix = "/signals";
     let breadcrumb_label = "Signals";
@@ -331,6 +331,8 @@ closeDocumentMode(){
       }
 
       let expectedURL = this.prevNext(this.props);
+      console.log("expected url.....")
+      console.log(expectedURL)
       let prevURL = that.urlPrefix + "/" + this.props.match.params.slug + "/" + expectedURL.prev;
       let nextURL = that.urlPrefix + "/" + this.props.match.params.slug + "/" + expectedURL.next;
       this.nextRedirect = nextURL;
@@ -339,7 +341,15 @@ closeDocumentMode(){
     	  if(this.props.signal.listOfCards.length > 0){
     		  if (expectedURL.prev == this.props.signal.listOfCards[0].slug) {
             	  prevURL = that.urlPrefix + "/" + this.props.match.params.slug;
-              }  
+              }
+    	  }else{
+    		  prevURL = that.urlPrefix;
+    	  }
+      }else{
+        if(this.props.signal.listOfCards.length > 0){
+    		  if (expectedURL.prev == this.props.signal.listOfCards[0].slug) {
+            	  prevURL = that.urlPrefix + "/" + this.props.match.params.slug;
+              }
     	  }else{
     		  prevURL = that.urlPrefix;
     	  }
@@ -411,8 +421,8 @@ closeDocumentMode(){
                     <div className="panel-heading">
 
                       <h2 className="page-title-4">{storyName}
-					  
-					  
+
+
 					<div className="btn-toolbar pull-right">
 					<div className="btn-group">
 					{/*<button type="button" className="btn btn-default" disabled="true" title="Card mode"><i className="fa fa-print"></i></button>*/}
@@ -422,16 +432,16 @@ closeDocumentMode(){
                             state: {
                               lastVar: lastcard.slug
                             }
-                          }} title="Document mode">                             
+                          }} title="Document mode">
                               <i class="zmdi zmdi-hc-lg zmdi-view-web"></i>
                     </Link>
-						  
+
 					{/*<Link className="continue" to={that.urlPrefix}>*/}
                             <button type="button" className="btn btn-default" onClick = {this.closeDocumentMode.bind(this)}>
                               <i class="zmdi zmdi-hc-lg zmdi-close"></i>
                             </button>
                     {/*</Link>*/}
-					
+
 					</div>
 					</div>
 					  </h2>

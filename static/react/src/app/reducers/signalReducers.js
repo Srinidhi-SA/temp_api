@@ -5,7 +5,7 @@ export default function reducer(state = {
   newSignalShowModal:false,
   signalData:null,
   createSignalLoaderModal:false,
-  createSignalLoaderValue:1,
+  createSignalLoaderValue:0,
   current_page:1,
   urlPrefix:"/signals",
   signalAnalysis: {},
@@ -18,7 +18,7 @@ export default function reducer(state = {
   signal_sorton:null,
   signal_sorttype:null,
   sideCardListFlag:null,
-  loaderText:"Please wait while mAdvisor is creating signal.....",
+  loaderText:"Analyzing Target Variable",
   advanceSettingsModal:false,
   getVarType:null,
   getVarText:null,
@@ -204,8 +204,8 @@ export default function reducer(state = {
       return{
         ...state,
         loading_message:[],
-        createSignalLoaderValue:1,
-        loaderText:"Please wait while mAdvisor is creating signal....."
+        createSignalLoaderValue:0,
+        loaderText:"Analyzing Target Variable"
       }
     }
     break;
@@ -217,7 +217,7 @@ export default function reducer(state = {
         }
       }
       break;
-      
+
     case "ZOOM_CHART":
     {
         return {

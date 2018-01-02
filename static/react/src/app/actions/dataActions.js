@@ -6,7 +6,7 @@ import {dataPreviewInterval,dataUploadLoaderValue,clearLoadingMsg} from "./dataU
 import {closeAppsLoaderValue} from "./appActions";
 import Dialog from 'react-bootstrap-dialog'
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
-import {isEmpty,RENAME,DELETE,REPLACE,DATA_TYPE,REMOVE,CURRENTVALUE,NEWVALUE,SET_VARIABLE,UNIQUE_IDENTIFIER} from "../helpers/helper";
+import {isEmpty,RENAME,DELETE,REPLACE,DATA_TYPE,REMOVE,CURRENTVALUE,NEWVALUE,SET_VARIABLE,UNIQUE_IDENTIFIER,SET_POLARITY} from "../helpers/helper";
 let refDialogBox = "";
 
 function getHeader(token){
@@ -45,11 +45,19 @@ function fetchDataList(pageNo,token) {
 
 					console.log(search_element)
 					if(search_element!=""&&search_element!=null){
-						console.log("calling for search element!!")
+						//console.log("calling for search element!!")
+						if((data_sorton!=""&& data_sorton!=null) && (data_sorttype!=null))
+						{
+							return fetch(API+'/api/datasets/?name='+search_element+'&sorted_by='+data_sorton+'&ordering='+data_sorttype+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
+								method: 'get',
+								headers: getHeader(token)
+							}).then( response => Promise.all([response, response.json()]));
+						}else{
 						return fetch(API+'/api/datasets/?name='+search_element+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
 							method: 'get',
 							headers: getHeader(token)
 						}).then( response => Promise.all([response, response.json()]));
+					}
 					}else if((data_sorton!=""&& data_sorton!=null) && (data_sorttype!=null)){
 						return fetch(API+'/api/datasets/?sorted_by='+data_sorton+'&ordering='+data_sorttype+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
 							method: 'get',
@@ -123,7 +131,9 @@ function fetchDataPreview(slug) {
 	return fetch(API+'/api/datasets/'+slug+'/',{
 		method: 'get',
 		headers: getHeader(getUserDetailsOrRestart.get().userToken)
-	}).then( response => Promise.all([response, response.json()]));
+	}).then( response => Promise.all([response, response.json()])).catch(function(error){
+		bootbox.alert("Unable to connect to server. Check your connection please try again.")
+	});
 }
 //get preview data
 function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
@@ -264,7 +274,7 @@ export function checkAllAnalysisSelected(){
 	}
 	dispatch(updateSelectAllAnlysis(flag));
 	}
-	
+
 }
 export function selectedAnalysisList(evt,noOfColumnsToUse){
 
@@ -286,7 +296,7 @@ export function selectedAnalysisList(evt,noOfColumnsToUse){
 				let name = trendSettings[i].name.toLowerCase();
 				if(name.indexOf("specific measure") != -1)
 				trendSettings[i].selectedMeasure = $("#specific-trend-measure").val();
-				
+
 			}
 		}
 		else{
@@ -299,7 +309,7 @@ export function selectedAnalysisList(evt,noOfColumnsToUse){
 			for(var i in trendSettings){
 				let name = trendSettings[i].name.toLowerCase();
 				if(name == evt.value){
-					trendSettings[i].status = evt.checked;	
+					trendSettings[i].status = evt.checked;
 					if(name.indexOf("specific measure") != -1)
 					trendSettings[i].selectedMeasure = $("#specific-trend-measure").val();
 				}else{
@@ -314,7 +324,7 @@ export function selectedAnalysisList(evt,noOfColumnsToUse){
 		if(evt.type == "radio"){
 			for(var i=0;i<analysisList.length;i++){
 				if(analysisList[i].name == evt.name){
-					analysisList[i].status = true;	
+					analysisList[i].status = true;
 					for(var j=0;j<analysisList[i].noOfColumnsToUse.length;j++){
 						if(analysisList[i].noOfColumnsToUse[j].name == evt.value){
 							analysisList[i].noOfColumnsToUse[j].status = true;
@@ -324,7 +334,7 @@ export function selectedAnalysisList(evt,noOfColumnsToUse){
 					}
 					break;
 				}
-			}	
+			}
 		}else{
 			//for updating custom input value
 			for(var i=0;i<analysisList.length;i++){
@@ -346,16 +356,16 @@ export function selectedAnalysisList(evt,noOfColumnsToUse){
             if(evt.value)
             analysisList[i].status = true;
             else
-            analysisList[i].status = false;   
+            analysisList[i].status = false;
             for(var j=0;j<analysisList[i].binSetting.length;j++){
                if(evt.id == j){
-                   analysisList[i].binSetting[j].value = parseInt(evt.value);  
+                   analysisList[i].binSetting[j].value = parseInt(evt.value);
                }
             }
             break;
         }
     }
-	    
+
 	}
 	//For top level analysis update like trend,prediction,association
 	else {
@@ -367,17 +377,17 @@ export function selectedAnalysisList(evt,noOfColumnsToUse){
 						if(!evt.target.checked){
 							for(var j=0;j<analysisList[i].noOfColumnsToUse.length;j++){
 								 if(analysisList[i].noOfColumnsToUse[j].name == "custom"){
-										analysisList[i].noOfColumnsToUse[j].status = evt.target.checked;	
+										analysisList[i].noOfColumnsToUse[j].status = evt.target.checked;
 										analysisList[i].noOfColumnsToUse[j].value = null;
 									}else{
-										analysisList[i].noOfColumnsToUse[j].status = evt.target.checked;		
+										analysisList[i].noOfColumnsToUse[j].status = evt.target.checked;
 									}
 								}
 						}else{
 							//when main analysis is checked , low parameter should be checked as default
 							for(var j=0;j<analysisList[i].noOfColumnsToUse.length;j++){
 								 if(analysisList[i].noOfColumnsToUse[j].name == DEFAULTANALYSISVARIABLES){
-										analysisList[i].noOfColumnsToUse[j].status = evt.target.checked;	
+										analysisList[i].noOfColumnsToUse[j].status = evt.target.checked;
 									}
 								}
 						}
@@ -386,27 +396,27 @@ export function selectedAnalysisList(evt,noOfColumnsToUse){
 				}
 			}
 		}
-		
+
 		//For updating trend count and specific measure when trend is unchecked
 		if(evt.target.value.indexOf("trend") != -1){
 			if(store.getState().signals.getVarType != "measure"){
 				if(!evt.target.checked){
 						for(var i in trendSettings){
-						trendSettings[i].status = evt.target.checked;	
-						}	
+						trendSettings[i].status = evt.target.checked;
+						}
 				}else{
 					//when trend is selected , count should be selected as default
 					for(var i in trendSettings){
 						let name = trendSettings[i].name.toLowerCase();
 						if(name.indexOf("count") != -1)
-						trendSettings[i].status = evt.target.checked;	
+						trendSettings[i].status = evt.target.checked;
 						}
 				}
 			}
 		}
-		
+
 	}
-	
+
 	if(store.getState().signals.getVarType == "measure"){
 		totalAnalysisList.measures.analysis = analysisList
 	}else{
@@ -443,37 +453,37 @@ export function selectAllAnalysisList(flag){
 				 //when select all is unchecked
 					if(!flag){
 					 if(analysisList[i].noOfColumnsToUse[j].name == "custom"){
-							analysisList[i].noOfColumnsToUse[j].status = flag;	
+							analysisList[i].noOfColumnsToUse[j].status = flag;
 							analysisList[i].noOfColumnsToUse[j].value = null;
 						}else{
-							analysisList[i].noOfColumnsToUse[j].status = flag;		
-						} 
+							analysisList[i].noOfColumnsToUse[j].status = flag;
+						}
 				 }else{
 					 if(analysisList[i].noOfColumnsToUse[j].name == DEFAULTANALYSISVARIABLES){
-							analysisList[i].noOfColumnsToUse[j].status = flag;	
+							analysisList[i].noOfColumnsToUse[j].status = flag;
 						}else{
-							analysisList[i].noOfColumnsToUse[j].status = false;		
-						} 
+							analysisList[i].noOfColumnsToUse[j].status = false;
+						}
 				 }
-					
-				}	
+
+				}
 			}
 		}
-		
+
 
 			if(store.getState().signals.getVarType != "measure"){
 				for(var i in trendSettings){
 					if(!flag){
-						trendSettings[i].status = flag;	
+						trendSettings[i].status = flag;
 					}else{
 						let name = trendSettings[i].name.toLowerCase();
 						if(name.indexOf("count") != -1)
-						trendSettings[i].status = flag;	
+						trendSettings[i].status = flag;
 					}
-				}	
+				}
 			}
 
-		
+
 		if(store.getState().signals.getVarType == "measure"){
 			totalAnalysisList.measures.analysis = analysisList
 		}else{
@@ -646,7 +656,7 @@ export function showDialogBox(slug,dialog,dispatch){
 	})
 	dialog.show({
 		title: 'Delete Dataset',
-		body: 'Are you sure you want to delete dataset?',
+		body: 'Are you sure you want to delete the selected data set? Yes , No',
 		actions: [
 		          Dialog.CancelAction(),
 		          Dialog.OKAction(() => {
@@ -670,12 +680,13 @@ function deleteDataset(slug,dialog,dispatch){
 	Dialog.resetOptions();
 	return deleteDatasetAPI(slug).then(([response, json]) =>{
 		if(response.status === 200){
+			//bootbox.alert("The data set is deleted successfully.")
 			dispatch(getDataList(store.getState().datasets.current_page));
 			dispatch(hideLoading());
 		}
 		else{
-			dialog.showAlert("Error occured , Please try after sometime.");
 			dispatch(hideLoading());
+			dialog.showAlert("Something went wrong. Please try again later.");
 		}
 	})
 }
@@ -731,7 +742,7 @@ function renameDataset(slug,dialog,newName,dispatch){
 			dispatch(hideLoading());
 		}
 		else{
-			dialog.showAlert("Error occured , Please try after sometime.");
+			dialog.showAlert("Renaming unsuccessful. Please try again later.");
 			dispatch(hideLoading());
 		}
 	})
@@ -995,13 +1006,19 @@ export function handleColumnClick(dialog,actionName,colSlug,colName,subActionNam
 			dispatch(addComponents(colSlug));
 			//updateColumnStatus(dispatch,colSlug,colName,actionName,subActionName);
 		}else if(actionName == UNIQUE_IDENTIFIER){
-            bootbox.confirm("Setting this column as unique identifier will unset previous selected column.",
-                     function(result){
-                          if(result){  
-                              $(".cst_table").find("thead").find("."+colSlug).first().addClass("dataPreviewUniqueIdentifierCol");
-                              updateUniqueIdentifierColumn(dispatch,actionName,colSlug);  
-                          }
-                   });
+		    if(!colStatus){
+		        bootbox.confirm("Setting this column as unique identifier will unset previous selection.",
+	                     function(result){
+	                          if(result){
+	                              $(".cst_table").find("thead").find("."+colSlug).first().find("a").addClass("text-primary");
+	                              updateUniqueIdentifierColumn(dispatch,actionName,colSlug,colStatus);
+	                          }
+	                   });
+		    }else{
+		        updateUniqueIdentifierColumn(dispatch,actionName,colSlug,colStatus);
+		        $(".cst_table").find("thead").find("."+colSlug).first().find("a").removeClass("text-primary");
+		    }
+
       }else {
 		    updateColumnStatus(dispatch,colSlug,colName,actionName,subActionName);
 		}
@@ -1009,15 +1026,15 @@ export function handleColumnClick(dialog,actionName,colSlug,colName,subActionNam
 }
 
 function deleteMetaDataColumn(dialog,colName,colSlug,dispatch,actionName,colStatus){
-	var text = "Are you sure, you want to delete column ?";
+	var text = "Are you sure, you want to delete the selected column?";
 	if(colStatus == true){
-		text = "Are you sure, you want to undelete column ?"
+		text = "Are you sure, you want to undelete the selected column?"
 	}
 	bootbox.confirm(text,function(result){
 		if(result){
 			$(".cst_table").find("thead").find("."+colSlug).first().addClass("dataPreviewUpdateCol");
 			$(".cst_table").find("tbody").find("tr").find("."+colSlug).addClass("dataPreviewUpdateCol");
-			updateColumnStatus(dispatch,colSlug,colName,actionName)	
+			updateColumnStatus(dispatch,colSlug,colName,actionName)
 		}
 	});
 }
@@ -1067,16 +1084,16 @@ export function updateColumnStatus(dispatch,colSlug,colName,actionName,subAction
                        }
                        break;
                        }
-                     
+
                     }
-					
+
 
 				}
 			}//end of for columnsettings
 			break;
 		}
 	}
-	if(actionName != SET_VARIABLE){
+	if(actionName != SET_VARIABLE && actionName != UNIQUE_IDENTIFIER && actionName != SET_POLARITY){
 	    isSubsetting = true;
 	}
 	dispatch(handleColumnActions(transformSettings,slug,isSubsetting))
@@ -1085,7 +1102,7 @@ export function updateColumnStatus(dispatch,colSlug,colName,actionName,subAction
 
 }
 
-function updateUniqueIdentifierColumn(dispatch,actionName,colSlug){
+function updateUniqueIdentifierColumn(dispatch,actionName,colSlug,isChecked){
     dispatch(showLoading());
     var slug = store.getState().datasets.selectedDataSet;
     var transformSettings = store.getState().datasets.dataTransformSettings.slice();
@@ -1093,17 +1110,17 @@ function updateUniqueIdentifierColumn(dispatch,actionName,colSlug){
         for(var j=0;j<transformSettings[i].columnSetting.length;j++){
             if(transformSettings[i].columnSetting[j].actionName == actionName){
                 if(transformSettings[i].slug == colSlug){
-                    transformSettings[i].columnSetting[j].status = true;  
+                    transformSettings[i].columnSetting[j].status = !isChecked;
                 }
                 else {
                     if(transformSettings[i].columnSetting[j].status){
-                        $(".cst_table").find("thead").find("."+transformSettings[i].slug).first().removeClass("dataPreviewUniqueIdentifierCol");
+                        $(".cst_table").find("thead").find("."+transformSettings[i].slug).first().find("a").removeClass("text-primary")
                         transformSettings[i].columnSetting[j].status = false;
-                    }   
+                    }
                 }
             }
         }
-    }  
+    }
     dispatch(handleColumnActions(transformSettings,slug,false))
 }
 
@@ -1135,8 +1152,10 @@ export function handleColumnActions(transformSettings,slug,isSubsetting) {
 				dispatch(hideLoading());
 			}
 			else{
+
 				dispatch(fetchDataPreviewError(json));
 				dispatch(hideLoading());
+				bootbox.alert("Something went wrong. Please try again later.")
 			}
 		})
 	}
@@ -1169,7 +1188,7 @@ export function addComponents(colSlug){
 		var transformSettings = store.getState().datasets.dataTransformSettings.slice();
 		var dataColumnRemoveValues = [];
 		var dataColumnReplaceValues = [];
-		
+
 		for(var i =0;i<transformSettings.length;i++){
 			if(transformSettings[i].slug == colSlug){
 				for(var j=0;j<transformSettings[i].columnSetting.length;j++){
@@ -1184,24 +1203,24 @@ export function addComponents(colSlug){
 							}
 						}
 					}
-					
+
 				}//end of for columnsettings
 				break;
 			}
 		}
-		
+
 		if(dataColumnRemoveValues.length == 0){
 			dataColumnRemoveValues.push({"id":1,"name":"remove1","valueToReplace":"","replacedValue":"","replaceType":"contains"});
 			dataColumnRemoveValues.push({"id":2,"name":"remove2","valueToReplace":"","replacedValue":"","replaceType":"contains"});
-			
+
 		}if(dataColumnReplaceValues.length == 0){
 			dataColumnReplaceValues.push({"replaceId":1,"name":"replace1","valueToReplace":"","replacedValue":"","replaceType":"contains"});
 			dataColumnReplaceValues.push({"replaceId":2,"name":"replace2","valueToReplace":"","replacedValue":"","replaceType":"contains"});
 		}
-		
+
 		dispatch(updateColumnReplaceValues(dataColumnReplaceValues))
-		dispatch(updateColumnRemoveValues(dataColumnRemoveValues))	
-	
+		dispatch(updateColumnRemoveValues(dataColumnRemoveValues))
+
 	}
 
 }
@@ -1228,22 +1247,22 @@ export function addMoreComponentsToReplace(editType){
 		if(editType == REMOVE){
 			var dataColumnRemoveValues = store.getState().datasets.dataSetColumnRemoveValues.slice();
 			if(dataColumnRemoveValues.length > 0){
-				var max = dataColumnRemoveValues.reduce(function(prev, current) { 
+				var max = dataColumnRemoveValues.reduce(function(prev, current) {
 					return (prev.id > current.id) ? prev : current
 
 				});
 				let length = max.id+1;
 				dataColumnRemoveValues.push({"id":length,"name":"remove"+length,"valueToReplace":"","replacedValue":"","replaceType":"contains"});
-					
+
 			}else{
 				dataColumnRemoveValues.push({"id":1,"name":"remove1","valueToReplace":"","replacedValue":"","replaceType":"contains"});
 			}
-			
+
 			dispatch(updateColumnRemoveValues(dataColumnRemoveValues))
 		}else{
 			var dataColumnReplaceValues = store.getState().datasets.dataSetColumnReplaceValues.slice();
 			if(dataColumnReplaceValues.length > 0){
-				var max = dataColumnReplaceValues.reduce(function(prev, current) { 
+				var max = dataColumnReplaceValues.reduce(function(prev, current) {
 					return (prev.replaceId > current.replaceId) ? prev : current
 
 				});
@@ -1252,10 +1271,10 @@ export function addMoreComponentsToReplace(editType){
 			}else{
 				dataColumnReplaceValues.push({"replaceId":1,"name":"replace1","valueToReplace":"","replacedValue":"","replaceType":"contains"});
 			}
-			
-			dispatch(updateColumnReplaceValues(dataColumnReplaceValues))	
+
+			dispatch(updateColumnReplaceValues(dataColumnReplaceValues))
 		}
-		
+
 	}
 }
 export function removeComponents(data,editType){
@@ -1307,7 +1326,7 @@ export function handleInputChangeReplace(targetTextBox,event){
 				if(targetTextBox == NEWVALUE){
 					dataSetColumnReplaceValues[i].replacedValue = event.target.value;
 					break;
-				}	
+				}
 				else if(targetTextBox == CURRENTVALUE){
 					dataSetColumnReplaceValues[i].valueToReplace = event.target.value;
 					break;
@@ -1327,4 +1346,3 @@ export function updateSelectAllAnlysis(flag){
 		flag
 	}
 }
-

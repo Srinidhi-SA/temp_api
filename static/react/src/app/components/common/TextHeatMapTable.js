@@ -30,7 +30,7 @@ export class TextHeatMapTable extends React.Component {
    var headerComponents = generateHeatMapHeaders(data);
    var rowComponents = generateTextHeatMapRows(data);
    return (
-          <div>
+          <div className="table-style">
            <table className="table table-bordered heat-table-map">
                <thead>{headerComponents}</thead>
                <tbody>{rowComponents}</tbody>

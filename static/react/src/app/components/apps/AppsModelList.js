@@ -13,7 +13,7 @@ import {DetailOverlay} from "../common/DetailOverlay";
 import {SEARCHCHARLIMIT,getUserDetailsOrRestart} from  "../../helpers/helper"
 import {STATIC_URL} from "../../helpers/env.js";
 import Dialog from 'react-bootstrap-dialog'
-
+import {DataUploadLoader} from "../common/DataUploadLoader";
 
 	var dateFormat = require('dateformat');
 
@@ -241,6 +241,7 @@ import Dialog from 'react-bootstrap-dialog'
 						</div>
 						</div>
 						<Dialog ref="dialog" />
+						<DataUploadLoader/>
 						</div>
 
 				);

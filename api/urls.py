@@ -76,6 +76,12 @@ urlpatterns = [
     url(r'^random_test_api',views.random_test_api , name="random_test_api"),
     url(r'^get_info',views.get_info , name="get_info"),
     url(r'^messages/(?P<slug>[^/.]+)/',views.set_messages , name="set_messages"),
+    url(r'^xml/(?P<slug>[^/.]+)/',views.set_pmml , name="set_pmml"),
+    url(r'^get_job_kill/(?P<slug>[^/.]+)/',views.get_job_kill , name="get_job_kill"),
+    url(r'^get_job_refreshed/(?P<slug>[^/.]+)/',views.get_job_refreshed , name="get_job_refreshed"),
+    url(r'^get_xml/(?P<slug>[^/.]+)/(?P<algoname>[^/.]+)/',views.get_pmml , name="get_pmml"),
+    url(r'^set_job_report/(?P<slug>[^/.]+)/(?P<report_name>[^/.]+)/',views.set_job_reporting , name="set_job_reporting"),
+    url(r'^get_job_report/(?P<slug>[^/.]+)/',views.get_job_report , name="get_job_report"),
     url(r'^upload_photo',upload_photo , name="upload_photo"),
     url(r'^get_profile_image/(?P<slug>[^/.]+)/',get_profile_image , name="get_profile_image"),
     url(r'^stockdatasetfiles/(?P<slug>[^/.]+)/',views.get_stockdatasetfiles , name="get_stockdatasetfiles"),
@@ -84,7 +90,6 @@ urlpatterns = [
     url(r'^get_metadata_for_mlscripts/(?P<slug>[^/.]+)/', views.get_metadata_for_mlscripts, name="get_metadata_for_mlscripts"),
     url(r'^get_score_data_and_return_top_n/', views.get_score_data_and_return_top_n, name="get_score_data_and_return_top_n"),
     url(r'^get_recent_activity',views.get_recent_activity , name="get_recent_activity"),
-
 ]
 
 

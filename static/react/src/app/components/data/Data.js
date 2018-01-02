@@ -18,9 +18,9 @@ import {BreadCrumb} from "../common/BreadCrumb";
 import {getDataList, getDataSetPreview, storeSignalMeta, handleDelete, handleRename} from "../../actions/dataActions";
 import {fetchProductList, openDULoaderPopup, closeDULoaderPopup, storeSearchElement,storeSortElements} from "../../actions/dataActions";
 import {DataUpload} from "./DataUpload";
-import {open, close} from "../../actions/dataUploadActions";
+import {open, close,triggerDataUploadAnalysis} from "../../actions/dataUploadActions";
 import {STATIC_URL} from "../../helpers/env.js"
-import {SEARCHCHARLIMIT,getUserDetailsOrRestart} from  "../../helpers/helper"
+import {SEARCHCHARLIMIT,getUserDetailsOrRestart,SUCCESS,INPROGRESS} from  "../../helpers/helper"
 import {DataUploadLoader} from "../common/DataUploadLoader";
 import Dialog from 'react-bootstrap-dialog'
 
@@ -100,10 +100,28 @@ export class Data extends React.Component {
   }
 
   doSorting(sortOn, type){
-	     this.props.history.push('/data?sort=' + sortOn + '&type='+type);
+    if(this.props.data_search_element)
+    this.props.history.push('/data?search='+this.props.data_search_element+'&sort='+sortOn + '&type='+type)
+	  else
+    this.props.history.push('/data?sort=' + sortOn + '&type='+type);
 
 	 this.props.dispatch(storeSortElements(sortOn,type));
 	this.props.dispatch(getDataList(1));
+  }
+
+  clearSearchElement(e){
+    this.props.dispatch(storeSearchElement(""));
+    if(this.props.data_sorton)
+    this.props.history.push('/data?sort=' + this.props.data_sorton + '&type=' + this.props.data_sorttype)
+    else
+    this.props.history.push('/data');
+    this.props.dispatch(getDataList(1));
+  }
+  openDataLoaderScreen(slug, percentage, message, e){
+      var dataUpload = {};
+      dataUpload.slug = slug
+      this.props.dispatch(openDULoaderPopup());
+      this.props.dispatch(triggerDataUploadAnalysis(dataUpload, percentage, message));
   }
 
   render() {
@@ -117,9 +135,9 @@ export class Data extends React.Component {
     	if (search_element)
     		document.getElementById('search_data').value = "";
     }
-    if(this.props.location.sort == "" || this.props.location.sort == null){
-    	this.props.dispatch(storeSortElements("",null));
-    }
+    // if(this.props.location.sort == "" || this.props.location.sort == null){
+    // 	this.props.dispatch(storeSortElements("",null));
+    // }
     //search element ends..
     if (store.getState().datasets.dataPreviewFlag) {
     	let _link = "/data/" + store.getState().datasets.selectedDataSet;
@@ -139,13 +157,31 @@ export class Data extends React.Component {
         paginationTag = <Pagination ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
       }
       const dataSetList = dataSets.map((data, i) => {
-        var dataSetLink = "/data/" + data.slug;
-        let src = STATIC_URL + "assets/images/File_Icon.png"
-        if(data.datasource_type=="Hana"){
-          src = STATIC_URL + "assets/images/sapHana_Icon.png"
-        }else if (data.datasource_type == "Mysql") {
-          src = STATIC_URL + "assets/images/mySQL_Icon.png"
-        }
+          
+          var iconDetails = "";
+          var dataSetLink = "/data/" + data.slug;
+          
+          var dataClick = <Link to={dataSetLink} id={data.slug} onClick={this.getPreviewData.bind(this)}>
+            {data.name}
+            </Link>
+            if(data.status == INPROGRESS){
+                iconDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>
+                dataClick = <a class="cursor" onClick={this.openDataLoaderScreen.bind(this,data.slug,data.completed_percentage,data.completed_message)}> {data.name}</a>
+            }else if(data.status == SUCCESS && !data.viewed){
+                data.completed_percentage = 100;
+                iconDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>
+            }else{
+                let src = STATIC_URL + "assets/images/File_Icon.png"
+                if(data.datasource_type == "Hana"){
+                  src = STATIC_URL + "assets/images/sapHana_Icon.png"
+                }else if (data.datasource_type == "Mysql") {
+                  src = STATIC_URL + "assets/images/mySQL_Icon.png"
+                }
+                iconDetails = <img src={src} className="img-responsive" alt="LOADING"/>;
+            }
+            
+        
+        
         return (
           <div className="col-md-3 xs-mb-15 list-boxes" key={i}>
             <div className="rep_block newCardStyle" name={data.name}>
@@ -154,11 +190,11 @@ export class Data extends React.Component {
                 <div className="row">
                   <div className="col-xs-9">
                     <h4 className="title newCardTitle">
-                      <a href="javascript:void(0);" id={data.slug} onClick={this.getPreviewData.bind(this)}>{data.name}</a>
+                     {dataClick}
                     </h4>
                   </div>
                   <div className="col-xs-3">
-                    <img src={src} className="img-responsive" alt="LOADING"/>
+                    {iconDetails}
                   </div>
                 </div>
               </div>
@@ -208,7 +244,7 @@ export class Data extends React.Component {
                 <h3 className="xs-mt-0">Data</h3>
               </div>
               <div class="col-md-4">
-			  
+
 			  <div class="btn-toolbar pull-right">
 				<div class="input-group">
 				{/*   <input type="text" name="search_data" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search Data" id="search_data" class="form-control" placeholder="Search data..."/>*/}
@@ -216,32 +252,32 @@ export class Data extends React.Component {
 					<form>
 					<input type="text" name="search_data" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Model Insights" id="search_data" className="form-control search-box" placeholder="Search data..." required />
 					<span className="zmdi zmdi-search form-control-feedback"></span>
-					<button className="close-icon" type="reset"></button>
+					<button className="close-icon" type="reset" onClick={this.clearSearchElement.bind(this)}></button>
 					</form>
 				</div>
-				
+
 				</div>
-                  <div class="btn-group">                    
+                  <div class="btn-group">
 					{/*<button type="button" class="btn btn-default" title="Select All Card">
                       <i class="fa fa-address-card-o fa-lg"></i>
-                    </button>*/}					
+                    </button>*/}
                     <button type="button" data-toggle="dropdown" title="Sorting" class="btn btn-default dropdown-toggle" aria-expanded="false">
                       <i class="zmdi zmdi-hc-lg zmdi-sort-asc"></i>
                     </button>
                     <ul role="menu" class="dropdown-menu dropdown-menu-right">
                         <li>
-                          <a href="#" onClick={this.doSorting.bind(this,'name','asc')}><i class="zmdi zmdi-sort-amount-asc"></i> Name Ascending</a>
+                          <a href="#" onClick={this.doSorting.bind(this,'name','asc')}><i class="zmdi zmdi-sort-amount-asc"></i>&nbsp;&nbsp;Name Ascending</a>
                         </li>
                         <li>
-                          <a href="#" onClick={this.doSorting.bind(this,'name','desc')}><i class="zmdi zmdi-sort-amount-desc"></i> Name Descending</a>
+                          <a href="#" onClick={this.doSorting.bind(this,'name','desc')}><i class="zmdi zmdi-sort-amount-desc"></i>&nbsp;&nbsp;Name Descending</a>
                         </li>
                         <li>
-                          <a href="#" onClick={this.doSorting.bind(this,'created_at','asc')}><i class="zmdi zmdi-calendar-alt"></i> Date Ascending</a>
+                          <a href="#" onClick={this.doSorting.bind(this,'created_at','asc')}><i class="zmdi zmdi-calendar-alt"></i>&nbsp;&nbsp;Date Ascending</a>
                         </li>
                         <li>
-                          <a href="#" onClick={this.doSorting.bind(this,'created_at','desc')}><i class="zmdi zmdi-calendar"></i> Date Descending</a>
+                          <a href="#" onClick={this.doSorting.bind(this,'created_at','desc')}><i class="zmdi zmdi-calendar"></i>&nbsp;&nbsp;Date Descending</a>
                         </li>
-                    </ul>					
+                    </ul>
                   </div>
 				  </div>
               </div>
@@ -251,7 +287,12 @@ export class Data extends React.Component {
           <div className="main-content">
             <div className="row">
               {addButton}
-              {dataSetList}
+              {
+							(dataSetList.length>0)
+							?(dataSetList)
+							:(<div><div className="clearfix"></div><div className="text-center text-muted xs-mt-50"><h2>No results found..</h2></div></div>)
+							}
+
               <div className="clearfix"></div>
             </div>
             <div className="ma-datatable-footer" id="idPagination">
@@ -276,6 +317,9 @@ export class Data extends React.Component {
 
   handleSelect(eventKey) {
 		if (this.props.data_search_element) {
+      if(this.props.data_sorton)
+      this.props.history.push('/data?search=' + this.props.data_search_element +'&sort='+this.props.data_sorton+ '&page=' + eventKey + '');
+      else
       this.props.history.push('/data?search=' + this.props.data_search_element + '&page=' + eventKey + '');
     } else if(this.props.data_sorton){
 	     this.props.history.push('/data?sort=' + this.props.data_sorton +'&type='+this.props.data_sorttype+'&page=' + eventKey + '');

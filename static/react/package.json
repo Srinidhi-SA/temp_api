@@ -8,10 +8,10 @@
     "start": "npm run buildLinux",
     "buildLinux": "webpack -d && cp src/index.html dist/index.html && webpack-dev-server --content-base src/ --inline --hot --history-api-fallback",
     "build": "webpack -d && copy src\\index.html dist\\index.html && webpack-dev-server --content-base src/ --inline --hot --history-api-fallback",
-    "buildDev": "cp confs/dev/env.js src/app/helpers/env.js &&webpack -p && cp src/index.html dist/index.html ",
-    "buildProd": "cp confs/prod/env.js src/app/helpers/env.js &&webpack -p && cp src/index.html dist/index.html ",
-    "buildLuke": "cp confs/luke/env.js src/app/helpers/env.js &&webpack -p && cp src/index.html dist/index.html ",
-    "buildLeia": "cp confs/leia/env.js src/app/helpers/env.js &&webpack -p && cp src/index.html dist/index.html "
+    "buildDev": "webpack -p",
+    "buildProd": "webpack -p",
+    "buildLuke": "webpack -p",
+    "buildLeia": "webpack -p"
   },
   "keywords": [
     "marlabsai"

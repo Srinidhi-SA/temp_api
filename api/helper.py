@@ -55,6 +55,12 @@ class JobserverDetails(object):
                 "message_url": "http://{0}:{1}/api/messages/{2}/".format(THIS_SERVER_DETAILS.get('host'),
                                                                 THIS_SERVER_DETAILS.get('port'),
                                                                 message_slug),
+                "xml_url": "http://{0}:{1}/api/xml/{2}/".format(THIS_SERVER_DETAILS.get('host'),
+                                                                THIS_SERVER_DETAILS.get('port'),
+                                                                slug),
+                "error_reporting_url": "http://{0}:{1}/api/set_job_report/{2}/".format(THIS_SERVER_DETAILS.get('host'),
+                                                                THIS_SERVER_DETAILS.get('port'),
+                                                                slug),
                 "job_name": job_name,
                 "get_config" :
                     {
@@ -896,15 +902,45 @@ def get_x_column_from_chart_data_without_xs(chart_data, axes):
 
 def get_job_status_from_yarn(instance=None):
 
-    ym = yarn_api_client.resource_manager.ResourceManager(address=settings.YARN.get("host"), port=settings.YARN.get("port"), timeout=settings.YARN.get("timeout"))
-    app_status = ym.cluster_application(instance.job.url)
+    try:
+        ym = yarn_api_client.resource_manager.ResourceManager(address=settings.YARN.get("host"), port=settings.YARN.get("port"), timeout=settings.YARN.get("timeout"))
+        app_status = ym.cluster_application(instance.job.url)
 
 
+        # YarnApplicationState = (
+        # (ACCEPTED, 'Application has been accepted by the scheduler.'),
+        # (FAILED, 'Application which failed.'),
+        # (FINISHED, 'Application which finished successfully.'),
+        # (KILLED, 'Application which was terminated by a user or admin.'),
+        # (NEW, 'Application which was just created.'),
+        # (NEW_SAVING, 'Application which is being saved.'),
+        # (RUNNING, 'Application which is currently running.'),
+        # (SUBMITTED, 'Application which has been submitted.'),
+        # )
 
-    instance.status = settings.YARN_STATUS.get(app_status.data['app']["state"], "FAILED")
-    print "%" * 100
-    print instance.status
-    print "%" * 100
+        YarnApplicationState = app_status.data['app']["state"]
+
+        # YARN_STATUS = {"RUNNING": "INPROGRESS",
+        #                "ACCEPTED": "INPROGRESS",
+        #                "NEW": "INPROGRESS",
+        #                "NEW_SAVING": "INPROGRESS",
+        #                "SUBMITTED": "INPROGRESS",
+        #                "ERROR": "FAILED",
+        #                "FAILED": "FAILED",
+        #                "killed": "FAILED",
+        #                "FINISHED": "SUCCESS",
+        #                "KILLED": "FAILED",
+        #                }
+    except:
+        YarnApplicationState = "FAILED"
+    readable_live_status = settings.YARN_STATUS.get(YarnApplicationState, "FAILED")
+    instance.job.status = YarnApplicationState
+    instance.job.save()
+
+    if readable_live_status is 'SUCCESS' and instance.analysis_done is False:
+        instance.status = 'FAILED'
+    else:
+        instance.status = readable_live_status
 
     instance.save()
     return instance.status
@@ -1093,3 +1129,6 @@ def generate_signature(json_obj):
     newhash.update(existing_key)
     value = newhash.hexdigest()
     return value
+
+def generate_pmml_name(slug):
+    return slug + "_" + 'pmml'

@@ -42,10 +42,28 @@ class DatasetSerializer(serializers.ModelSerializer):
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
         meta_data = ret.get('meta_data')
         self.changes_to_metadata(meta_data)
+
         try:
             ret['message'] = get_message(instance)
         except:
             ret['message'] = None
+
+        if instance.viewed == False and instance.status=='SUCCESS':
+            instance.viewed = True
+            instance.save()
+
+        if instance.datasource_type=='fileUpload':
+            PROCEED_TO_UPLOAD_CONSTANT = settings.PROCEED_TO_UPLOAD_CONSTANT
+            try:
+                from api.helper import convert_to_humanize
+                ret['file_size']=convert_to_humanize(instance.input_file.size)
+                if(instance.input_file.size < PROCEED_TO_UPLOAD_CONSTANT or ret['status']=='SUCCESS'):
+                    ret['proceed_for_loading']=True
+                else:
+                    ret['proceed_for_loading'] = False
+            except:
+                ret['file_size']=-1
+                ret['proceed_for_loading'] = True
 
         return ret
 
@@ -70,9 +88,9 @@ class DatasetSerializer(serializers.ModelSerializer):
                 columnType = head.get('columnType')
 
                 if "dimension" == columnType:
-                    temp['columnSetting'] = columnSettingCopy[:3]
+                    temp['columnSetting'] = columnSettingCopy[:4]
                 elif "boolean" == columnType:
-                    temp['columnSetting'] = columnSettingCopy[:3]
+                    temp['columnSetting'] = columnSettingCopy[:4]
                 elif "measure" == columnType:
                     datatype_element = columnSettingCopy[4]
                     datatype_element['listOfActions'][0]["status"] = True
@@ -129,7 +147,15 @@ class DataListSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         ret = super(DataListSerializer, self).to_representation(instance)
         ret['brief_info'] = instance.get_brief_info()
+
+        try:
+            ret['completed_percentage']=get_message(instance)[-1]['globalCompletionPercentage']
+            ret['completed_message']=get_message(instance)[-1]['shortExplanation']
+        except:
+            ret['completed_percentage'] = 0
+            ret['completed_message']="Analyzing Target Variable"
         return ret
+
 
     class Meta:
         model = Dataset
@@ -143,7 +169,8 @@ class DataListSerializer(serializers.ModelSerializer):
             "bookmarked",
             "analysis_done",
             "file_remote",
-            "status"
+            "status",
+            "viewed"
         )
 
 

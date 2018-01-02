@@ -28,7 +28,8 @@ class DatasetView(viewsets.ModelViewSet):
         queryset = Dataset.objects.filter(
             created_by=self.request.user,
             deleted=False,
-            analysis_done=True
+            # analysis_done=True
+            status__in=['SUCCESS', 'INPROGRESS']
         )
         return queryset
 
@@ -185,7 +186,8 @@ class DatasetView(viewsets.ModelViewSet):
                     dataset_object.create_for_subsetting(
                         data['filter_settings'],
                         data.get('transformation_settings', {}),
-                        instance.get_input_file()
+                        instance.get_input_file(),
+                        instance.get_metadata_url_config()
                     )
                 else:
                     return creation_failed_exception({'error': 'no filter_settings'})

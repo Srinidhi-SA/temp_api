@@ -2,15 +2,16 @@ import React from "react";
 import {connect} from "react-redux";
 import store from "../../store";
 import {MainHeader} from "../common/MainHeader";
-import {Tabs,Tab} from "react-bootstrap";
+import {Tabs,Tab,Button} from "react-bootstrap";
 import {AppsCreateScore} from "./AppsCreateScore";
 import {Card} from "../signals/Card";
-import {getListOfCards,getAppsModelSummary,updateModelSlug} from "../../actions/appActions";
+import {getListOfCards,getAppsModelSummary,updateModelSlug,handleExportAsPMMLModal} from "../../actions/appActions";
 import {storeSignalMeta} from "../../actions/dataActions";
 import CircularProgressbar from 'react-circular-progressbar';
 import {STATIC_URL} from "../../helpers/env.js"
 import {isEmpty} from "../../helpers/helper";
 import {Link} from "react-router-dom";
+import {ExportAsPMML} from "./ExportAsPMML";
 
 @connect((store) => {
 	return {login_response: store.login.login_response, 
@@ -48,6 +49,9 @@ export class AppsModelDetail extends React.Component {
   }
   componentDidUpdate(){
       $(".chart-data-icon").next("div").next("div").removeClass("col-md-7 col-md-offset-2").addClass("col-md-10")
+  }
+  handleExportAsPMMLModal(flag){
+      this.props.dispatch(handleExportAsPMMLModal(flag))
   }
   render() {
     console.log("apps Model Detail View is called##########3");
@@ -101,11 +105,13 @@ export class AppsModelDetail extends React.Component {
 
 		                    </div>
 		                    <div class="row">
-		                    <div className="col-md-2 col-md-offset-10">
+		                    <div className="col-md-12 text-right ">
+		                    <Button bsStyle="primary" onClick={this.handleExportAsPMMLModal.bind(this,true)}>Export As PMML</Button>
 		                   <AppsCreateScore match={this.props.match}/>
 		                   </div>
 		                   </div>
 		             </div>
+		             <ExportAsPMML/>
 		                    </div>
 		                  </div>
 		                </div>

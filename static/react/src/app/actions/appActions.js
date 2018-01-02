@@ -9,6 +9,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
     import Dialog from 'react-bootstrap-dialog';
     import React from "react";
     import { showLoading, hideLoading } from 'react-redux-loading-bar';
+    import {createcustomAnalysisDetails} from './signalActions';
 
     export var appsInterval = null;
 
@@ -103,6 +104,22 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
     export function createModel(modelName,targetVariable) {
         console.log(modelName);
         console.log(targetVariable);
+        //check if no variable selected
+        let selectedMeasures=store.getState().datasets.selectedMeasures
+        let selectedDimensions=store.getState().datasets.selectedDimensions
+        let selectedTimeDimension=store.getState().datasets.selectedTimeDimensions
+        if(selectedTimeDimension===undefined){
+          if(selectedMeasures.length+selectedDimensions.length==0){
+          bootbox.alert("Please select atleast one variable.")
+          return false
+        }
+        }else{
+          if(selectedMeasures.length+selectedDimensions.length+selectedTimeDimension.length==0){
+          bootbox.alert("Please select atleast one variable.")
+          return false
+        }
+        }
+
         return (dispatch) => {
             dispatch(openAppsLoader(APPSLOADERPERVALUE,"Please wait while mAdvisor is creating model... "));
             return triggerCreateModel(getUserDetailsOrRestart.get().userToken,modelName,targetVariable).then(([response, json]) =>{
@@ -122,12 +139,17 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
     function triggerCreateModel(token,modelName,targetVariable) {
         var datasetSlug = store.getState().datasets.dataPreview.slug;
         var app_id=store.getState().apps.currentAppId;
+        var customDetails = createcustomAnalysisDetails();
+
         var details = {"measures":store.getState().datasets.selectedMeasures,
                 "dimension":store.getState().datasets.selectedDimensions,
                 "timeDimension":store.getState().datasets.selectedTimeDimensions,
                 "trainValue":store.getState().apps.trainValue,
                 "testValue":store.getState().apps.testValue,
-                "analysisVariable":targetVariable}
+                "analysisVariable":targetVariable,
+                'customAnalysisDetails':customDetails["customAnalysisDetails"],
+                 'polarity':customDetails["polarity"],
+                 'uidColumn':customDetails["uidColumn"]}
         return fetch(API+'/api/trainer/',{
             method: 'post',
             headers: getHeader(token),
@@ -320,11 +342,15 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
     function triggerCreateScore(token,scoreName,targetVariable) {
         var datasetSlug = store.getState().datasets.dataPreview.slug;
         var app_id=store.getState().apps.currentAppId;
+        var customDetails = createcustomAnalysisDetails();
         var details = {"measures":store.getState().datasets.selectedMeasures,
                 "dimension":store.getState().datasets.selectedDimensions,
                 "timeDimension":store.getState().datasets.selectedTimeDimensions,
                 "analysisVariable":targetVariable,
                 "algorithmName":store.getState().apps.selectedAlg,
+                'customAnalysisDetails':customDetails["customAnalysisDetails"],
+                'polarity':customDetails["polarity"],
+                'uidColumn':customDetails["uidColumn"],
                 "app_id":app_id}
         return fetch(API+'/api/score/',{
             method: 'post',
@@ -781,8 +807,9 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 dispatch(hideLoading());
             }
             else{
-                dialog.showAlert("Error occured , Please try after sometime.");
                 dispatch(hideLoading());
+                dialog.showAlert("Something went wrong. Please try again later.");
+
             }
         })
     }
@@ -843,8 +870,9 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 dispatch(hideLoading());
             }
             else{
-                dialog.showAlert("Error occured , Please try after sometime.");
                 dispatch(hideLoading());
+                dialog.showAlert("Something went wrong. Please try again later.");
+
             }
         })
     }
@@ -874,8 +902,9 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 dispatch(hideLoading());
             }
             else{
-                dialog.showAlert("Error occured , Please try after sometime.");
                 dispatch(hideLoading());
+                dialog.showAlert("Something went wrong. Please try again later.");
+
             }
         })
     }
@@ -912,8 +941,9 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 dispatch(hideLoading());
             }
             else{
-                dialog.showAlert("Error occured , Please try after sometime.");
                 dispatch(hideLoading());
+                dialog.showAlert("Something went wrong. Please try again later.");
+
             }
         })
     }
@@ -949,8 +979,9 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 dispatch(hideLoading());
             }
             else{
-                dialog.showAlert("Error occured , Please try after sometime.");
                 dispatch(hideLoading());
+                dialog.showAlert("Something went wrong. Please try again later.");
+
             }
         })
     }
@@ -987,8 +1018,9 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 dispatch(hideLoading());
             }
             else{
-                dialog.showAlert("Error occured , Please try after sometime.");
                 dispatch(hideLoading());
+                dialog.showAlert("Something went wrong. Please try again later.");
+
             }
         })
     }
@@ -1223,8 +1255,9 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 dispatch(hideLoading());
             }
             else{
-                dialog.showAlert("Error occured , Please try after sometime.");
                 dispatch(hideLoading());
+                dialog.showAlert("Something went wrong. Please try again later.");
+
             }
         })
     }
@@ -1261,8 +1294,9 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 dispatch(hideLoading());
             }
             else{
-                dialog.showAlert("Error occured , Please try after sometime.");
                 dispatch(hideLoading());
+                dialog.showAlert("Something went wrong. Please try again later.");
+
             }
         })
     }
@@ -1647,17 +1681,17 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
         return (dispatch) => {
             return fetchApps(token,pageNo).then(([response, json]) =>{
                 if(response.status === 200){
-                  //console.log(json)
-                dispatch(fetchAppsSuccess(json))
-                // if(json.data)
-                // dispatch(updateAppsFilterList(json.data[0].tag_keywords))
+                    //console.log(json)
+                    dispatch(fetchAppsSuccess(json))
+                    // if(json.data)
+                    // dispatch(updateAppsFilterList(json.data[0].tag_keywords))
 
-              }
-              else{
-                dispatch(fetchAppsError(json))
-              }
+                }
+                else{
+                    dispatch(fetchAppsError(json))
+                }
             })
-          }
+        }
 
     }
 
@@ -1669,18 +1703,18 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             return fetch(API+'/api/apps/?app_name='+search_element+'&page_number='+pageNo+'&page_size='+APPSPERPAGE+'',{
                 method: 'get',
                 headers: getHeader(token)
-                }).then( response => Promise.all([response, response.json()]));
+            }).then( response => Promise.all([response, response.json()]));
         }else if((apps_sortBy!=""&&apps_sortBy!=null) && (apps_sortType!=null)){
             return fetch(API+'/api/apps/?sorted_by='+apps_sortBy+'&ordering='+apps_sortType+'&page_number='+pageNo+'&page_size='+APPSPERPAGE+'',{
                 method: 'get',
                 headers: getHeader(token)
-                }).then( response => Promise.all([response, response.json()]));
-            }
+            }).then( response => Promise.all([response, response.json()]));
+        }
         else{
             return fetch(API+'/api/apps/?page_number='+pageNo+'&page_size='+APPSPERPAGE+'',{
                 method: 'get',
                 headers: getHeader(token)
-                }).then( response => Promise.all([response, response.json()]));
+            }).then( response => Promise.all([response, response.json()]));
         }
 
     }
@@ -1688,9 +1722,9 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
     function fetchAppsSuccess(json){
         var current_page =  json.current_page
         return {
-          type: "APPS_LIST",
-          json,
-          current_page
+            type: "APPS_LIST",
+            json,
+            current_page
         }
     }
 
@@ -1698,62 +1732,69 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
     function fetchAppsError(json) {
         //console.log("fetching list error!!",json)
         return {
-          type: "APPS_LIST_ERROR",
-          json
+            type: "APPS_LIST_ERROR",
+            json
         }
-      }
+    }
     export function appsStoreSearchEle(search_element){
         return {
             type: "APPS_SEARCH",
             search_element
-          }
+        }
     }
     export function appsStoreSortElements(sort_by,sort_type){
         return {
-          type: "APPS_SORT",
-          sort_by,
-          sort_type
-      }
-  }
+            type: "APPS_SORT",
+            sort_by,
+            sort_type
+        }
+    }
 
-export function updateAppsFilterList(filter_list){
-  let appList=store.getState().apps.appsList
-  //console.log(appList)
+    export function updateAppsFilterList(filter_list){
+        let appList=store.getState().apps.appsList
+        //console.log(appList)
 
-  // if(filter_list.length==0 && appList.data )
-  // filter_list=[]
-  return{
-    type:"UPDATE_FILTER_LIST",
-    filter_list
-  }
-}
+        // if(filter_list.length==0 && appList.data )
+        // filter_list=[]
+        return{
+            type:"UPDATE_FILTER_LIST",
+            filter_list
+        }
+    }
 
 
-export function getAppsFilteredList(token,pageNo){
+    export function getAppsFilteredList(token,pageNo){
 
-    return (dispatch) => {
-        return fetchFilteredApps(token,pageNo).then(([response, json]) =>{
-            if(response.status === 200){
-              //console.log(json)
-            dispatch(fetchAppsSuccess(json))
+        return (dispatch) => {
+            return fetchFilteredApps(token,pageNo).then(([response, json]) =>{
+                if(response.status === 200){
+                    //console.log(json)
+                    dispatch(fetchAppsSuccess(json))
 
-          }
-          else{
-            dispatch(fetchAppsError(json))
-          }
-        })
-      }
+                }
+                else{
+                    dispatch(fetchAppsError(json))
+                }
+            })
+        }
 
-}
+    }
 
-function  fetchFilteredApps(token,pageNo){
-    let filtered_list = store.getState().apps.app_filtered_keywords;
-    //let stringify_list="[\""+filtered_list.toString().replace(/,/g ,"\",\"")+"\"]"
-    //alert(stringify_list)
-            return fetch(API+'/api/apps/?filter_fields='+'['+filtered_list+']'+'&page_number='+pageNo+'&page_size='+APPSPERPAGE+'',{
+    function  fetchFilteredApps(token,pageNo){
+        let filtered_list = store.getState().apps.app_filtered_keywords;
+        //let stringify_list="[\""+filtered_list.toString().replace(/,/g ,"\",\"")+"\"]"
+        //alert(stringify_list)
+        return fetch(API+'/api/apps/?filter_fields='+'['+filtered_list+']'+'&page_number='+pageNo+'&page_size='+APPSPERPAGE+'',{
             method: 'get',
             headers: getHeader(token)
-            }).then( response => Promise.all([response, response.json()]));
+        }).then( response => Promise.all([response, response.json()]));
 
 
-}
+    }
+
+    export function handleExportAsPMMLModal(flag) {
+        return {
+            type: "EXPORT_AS_PMML_MODAL",
+            flag
+        }
+    }

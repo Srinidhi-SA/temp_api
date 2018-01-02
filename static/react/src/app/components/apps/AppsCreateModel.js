@@ -6,6 +6,8 @@ import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
 import store from "../../store";
 import {closeModelPopup,openModelPopup} from "../../actions/appActions";
 import {getAllDataList,getDataSetPreview,storeSignalMeta,updateDatasetName} from "../../actions/dataActions";
+import {DataSourceList} from "../data/DataSourceList";
+import {open,close,fileUpload,dataUpload} from "../../actions/dataUploadActions";
 
 
 @connect((store) => {
@@ -38,8 +40,13 @@ export class AppsCreateModel extends React.Component {
     	this.props.dispatch(closeModelPopup())
     }
     getDataSetPreview(){
+        if (store.getState().dataSource.selectedDataSrcType == "fileUpload") {
     	this.selectedData = $("#model_Dataset").val();
     	this.props.dispatch(getDataSetPreview(this.selectedData));
+        }else{
+            this.props.dispatch(closeModelPopup())
+            this.props.dispatch(dataUpload())
+        }
     }
     updateDataset(e){
     	this.selectedData = e.target.value;
@@ -74,15 +81,16 @@ export class AppsCreateModel extends React.Component {
 				</div>
 				
 				<div id="newModel"  role="dialog" className="modal fade modal-colored-header">
-				<Modal show={store.getState().apps.appsModelShowModal} onHide={this.closeModelPopup.bind(this)} dialogClassName="modal-colored-header">
+				<Modal show={store.getState().apps.appsModelShowModal} onHide={this.closeModelPopup.bind(this)} dialogClassName="modal-colored-header uploadData">
 				<Modal.Header closeButton>
 				<h3 className="modal-title">Create Model</h3>
 				</Modal.Header>
 				<Modal.Body>
-				  <div class="form-group">
-	              <label>Select an existing dataset</label>
-	              {renderSelectBox}
-				</div>
+				 {/* <div class="form-group">
+                  <label>Select an existing dataset</label>
+                  {renderSelectBox}
+                </div>*/} 
+				<DataSourceList type="model" renderDatasets={renderSelectBox}/>
 				</Modal.Body>
 				<Modal.Footer>
 				<Button className="btn btn-primary md-close" onClick={this.closeModelPopup.bind(this)}>Close</Button>

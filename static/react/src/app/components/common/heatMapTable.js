@@ -74,11 +74,12 @@ export class HeatMapTable extends React.Component {
 
 
       return(
-
+              <div className="table-style">
         <table className="table table-bordered idDecisionTreeTable">
                <thead> {renderTableThead}</thead>
                <tbody>{renderTableTbody}</tbody>
          </table>
+         </div>
 
     );
 

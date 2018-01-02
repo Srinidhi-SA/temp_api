@@ -1,7 +1,17 @@
 """
 Usage
         fab <function_name>:[arg,arg1=val1]
-        e.g. fab deploy_api_development
+        e.g. fab deploy_api:branch=dev
+        e.g. fab deploy_api:branch=leia
+        e.g. fab deploy_api:branch=luke
+
+        e.g. fab deploy_react:branch=dev
+        e.g. fab deploy_react:branch=leia
+        e.g. fab deploy_react:branch=luke
+
+        e.g. fab deploy_api_and_migrate:branch=dev
+        e.g. fab deploy_api_and_migrate:branch=leia
+        e.g. fab deploy_api_and_migrate:branch=luke
 
 List
         fab -list
@@ -15,169 +25,132 @@ import fabric_gunicorn as gunicorn
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-@task
-def dev():
+def set_fabric_env(configuration_detail=None):
     """Set dev environemnt"""
-    server_details = {
-        "known name": "madvisordev.marlabsai.com",
-        "username": "ubuntu",
-        "host": "34.196.204.54",
-        "port": "9012",
-        "initail_domain": "/api"
-    }
 
-    path_details = {
-        "react_path" : "/static/react",
-        "asset_path" : "/static/asset",
-        "base_remote_path" : "/home/ubuntu/codebase/mAdvisor-api",
-        "ui_branch" : "api_ui_dev",
-        "api_branch" : "api_ui_dev"
-    }
+    if configuration_detail is None:
+        return -1
+    server_details = configuration_detail['server_details']
+    path_details = configuration_detail['path_details']
+    type = configuration_detail['type']
+    gunicorn_details = configuration_detail['gunicorn_details']
 
-    key_file = BASE_DIR + "/config/keyfiles/TIAA.pem"
-    env.key_filename=[key_file]    
+    key_file = BASE_DIR + server_details['pem_detail']
+
+
+    env.key_filename=[key_file]
     env.host_string="{0}@{1}".format(server_details.get('username'), server_details.get('host'))
-    env.gunicorn_wsgi_app = 'config.wsgi:application'
-    env.gunicorn_pidpath = path_details["base_remote_path"] + "/gunicorn.pid"
-    env.gunicorn_bind = "0.0.0.0:9012"
+    env.gunicorn_wsgi_app = gunicorn_details['gunicorn_wsgi_app']
+    env.gunicorn_pidpath = path_details["base_remote_path"] + gunicorn_details['gunicorn_pidpath']
+    env.gunicorn_bind = gunicorn_details['gunicorn_bind']
     env["server_details"] = server_details
     env["path_details"] = path_details
-    return {'server_details': server_details, 'path_details': path_details, 'type': 'development'}
+
+    return {'server_details': server_details, 'path_details': path_details, 'type': type}
+
+
+def get_branch_details(branch=None):
+    configuration_detail = configuration_details()
+    print configuration_detail.keys()
+    return configuration_detail[branch]
 
 
 @task
-def prod():
-    """Set prod environemnt"""
-    server_details = {
-        "known name": "madvisordev.marlabsai.com",
-        "username": "ubuntu",
-        "host": "34.196.204.54",
-        "port": "9012",
-        "initail_domain": "/api"
-    }
-
-    path_details = {
-        "react_path": "/static/react",
-        "asset_path": "/static/asset",
-        "base_remote_path": "/home/ubuntu/codebase/mAdvisor-api",
-        "ui_branch": "react-ui-development",
-        "api_branch": "trainer/vivek_product_revamp"
-    }
-
-    key_file = BASE_DIR + "/config/keyfiles/TIAA.pem"
-    env.key_filename = [key_file]
-    env.host_string = "{0}@{1}".format(server_details.get('username'), server_details.get('host'))
-
-    return {'server_details':server_details, 'path_details':path_details, 'type':'production'}
-
-
-@task
-def luke():
-    """Set prod environemnt"""
-    server_details = {
-        "known name": "luke.marlabsai.com",
-        "username": "ubuntu",
-        "host": "34.196.22.246",
-        "port": "9012",
-        "initail_domain": "/api"
-    }
-
-    path_details = {
-        "react_path": "/static/react",
-        "asset_path": "/static/asset",
-        "base_remote_path": "/home/ubuntu/codebase/mAdvisor-api_luke",
-        "ui_branch": "api_ui_dev",
-        "api_branch": "api_ui_dev"
-    }
-
-    key_file = BASE_DIR + "/config/keyfiles/TIAA.pem"
-    env.key_filename = [key_file]
-    env.host_string = "{0}@{1}".format(server_details.get('username'), server_details.get('host'))
-
-    return {'server_details':server_details, 'path_details':path_details, 'type':'luke'}
-
-
-@task
-def leia():
-    """Set prod environemnt"""
-    server_details = {
-        "known name": "leia.marlabsai.com",
-        "username": "ubuntu",
-        "host": "34.196.22.246",
-        "port": "9012",
-        "initail_domain": "/api"
-    }
-
-    path_details = {
-        "react_path": "/static/react",
-        "asset_path": "/static/asset",
-        "base_remote_path": "/home/ubuntu/9013/mAdvisor-api",
-        "ui_branch": "api_ui_dev",
-        "api_branch": "api_ui_dev"
-    }
-
-    key_file = BASE_DIR + "/config/keyfiles/TIAA.pem"
-    env.key_filename = [key_file]
-    env.host_string = "{0}@{1}".format(server_details.get('username'), server_details.get('host'))
-
-    return {'server_details':server_details, 'path_details':path_details, 'type':'leia'}
-
-
-BRANCH_FUNCTION_MAPPING = {
-    'development': dev(),
-    'dev': dev(),
-    'production': prod(),
-    'prod': prod(),
-    'trainer/vivek_product_revamp': dev(),
-    'luke': luke(),
-    'leia':leia()
-}
-    
-@task
-def deploy_react(branch="development"):
+def deploy_react(branch="dev"):
     """
     Default deploy to development. Other options are production
     """
-    details = BRANCH_FUNCTION_MAPPING[branch]
+    details = get_branch_details(branch)
+    set_fabric_env(details)
+    print details
     path_details= details['path_details']
     server_details= details['server_details']
     k = details['type']
-    print details
     npm_install_and_deploy(
         server_details=server_details,
         path_details=path_details,
         type=k
     )
+    change_config_file(branch=branch)
 
 
 @task
-def deploy_api(type="development"):
+def deploy_api(branch="dev"):
     """
     Default deploy to development
     :param type:
     :return:
     """
-
-    details = BRANCH_FUNCTION_MAPPING[type]
+    import random
+    details = get_branch_details(branch)
+    set_fabric_env(details)
+    print details
     path_details= details['path_details']
     server_details= details['server_details']
+    deployment_config= details['deployment_config']
+    base_remote_path = path_details['base_remote_path']
+    text_command = """CONFIG_FILE_NAME = '{0}'\nUI_VERSION = '{1}'
+    """.format(deployment_config, random.randint(100000,10000000))
+    config_file_path = BASE_DIR + '/config/settings/config_file_name_to_run.py'
+    react_env = BASE_DIR + '/static/react/src/app/helpers/env.js'
+    react_npm_log = BASE_DIR + '/static/react/npm-debug.log'
+    local('rm {0}'.format(config_file_path))
+    local('echo "{0}" > {1}'.format(text_command, config_file_path))
+
+    with cd(BASE_DIR):
+        local('git add {0}'.format(config_file_path))
+        local('git checkout {0}'.format(react_env))
+        local('git checkout {0}'.format(react_npm_log))
+        local('git commit -m "version changed"')
 
     only_for_api_push_and_pull(
         server_details=server_details,
         path_details=path_details
     )
-    reload_gunicorn("dev")
+    gunicorn.reload()
+
+@task
+def change_config_file(branch='dev'):
+    import random
+    details = get_branch_details(branch)
+    set_fabric_env(details)
+    print details
+    path_details= details['path_details']
+    server_details= details['server_details']
+    deployment_config= details['deployment_config']
+    base_remote_path = path_details['base_remote_path']
+    text_command = """CONFIG_FILE_NAME = '{0}'\nUI_VERSION = '{1}'
+    """.format(deployment_config, random.randint(100000,10000000))
+    config_file_path = BASE_DIR + '/config/settings/config_file_name_to_run.py'
+    react_env = BASE_DIR + '/static/react/src/app/helpers/env.js'
+    react_npm_log = BASE_DIR + '/static/react/npm-debug.log'
+    local('rm {0}'.format(config_file_path))
+    local('echo "{0}" > {1}'.format(text_command, config_file_path))
+
+    with cd(BASE_DIR):
+        local('git add {0}'.format(config_file_path))
+        local('git checkout {0}'.format(react_env))
+        local('git checkout {0}'.format(react_npm_log))
+        local('git commit -m "version changed"')
+
+    only_for_api_push_and_pull(
+        server_details=server_details,
+        path_details=path_details
+    )
+    gunicorn.reload()
 
 
 @task
-def deploy_api_and_migrate(type="development"):
+def deploy_api_and_migrate(branch="dev"):
     """
     Default deploy to development
     :param type:
     :return:
     """
 
-    details = BRANCH_FUNCTION_MAPPING[type]
+    details = get_branch_details(branch)
+    set_fabric_env(details)
+    print details
     path_details= details['path_details']
     server_details= details['server_details']
 
@@ -188,7 +161,9 @@ def deploy_api_and_migrate(type="development"):
     pip_install_and_deploy_remote(
         base_remote_path=path_details['base_remote_path']
     )
-    reload_gunicorn("dev")
+    gunicorn.reload()
+
+
 
 
 def deploy_ml(branch="development"):
@@ -201,18 +176,6 @@ def copy_egg_from_emr_to_api_dev():
     command_to_paste = "scp marlabs_bi_jobs-0.0.0-py2.7.egg development_api:/home/ubuntu/codebase/mAdvisor-api/scripts/"
     local(command_to_copy)
     local(command_to_paste)
-
-
-@task
-def reload_gunicorn(type="dev"):
-    """
-    reload Gunicorn. gracefully kill and restart.
-    """
-    if "dev" == type:
-        dev()
-    elif "prod" == type:
-        prod()
-    gunicorn.reload()
 
 
 def remote_uname():
@@ -267,6 +230,7 @@ def pip_install_and_deploy_remote(base_remote_path):
     with cd(base_remote_path):
         # sudo('pip install -r requirements.txt')
         run('python manage.py migrate')
+        sudo('apt-get install python-matplotlib')
 
 
 def pull_ui_and_merge_to_api():
@@ -310,7 +274,7 @@ def push_api_to_remote(api_branch):
             print capture
             if "Changes not staged for commit" in capture:
                 abort("Unstaged changes. Please commit or stash.")
-                # local("git stash")
+                local("git stash")
 
             local("git checkout {0}".format(api_branch))
 
@@ -324,7 +288,6 @@ def push_api_to_remote(api_branch):
 
 
 def pull_api_at_remote(base_remote_path, api_branch):
-
     try:
         with cd(base_remote_path):
             capture = run("git status")
@@ -338,6 +301,7 @@ def pull_api_at_remote(base_remote_path, api_branch):
             # run("git stash apply")
 
             sudo("pip install -r requirements.txt")
+            run('python manage.py migrate')
 
     except Exception as err:
         print err
@@ -347,9 +311,7 @@ def pull_api_at_remote(base_remote_path, api_branch):
 
 
 def only_for_api_push_and_pull(server_details, path_details):
-    push_api_to_remote(
-        path_details['api_branch']
-    )
+    push_api_to_remote(path_details['api_branch'])
     pull_api_at_remote(
         path_details['base_remote_path'],
         path_details['api_branch']
@@ -536,10 +498,86 @@ def restart_jobserver(branch="development"):
     )
 
 
+def configuration_details():
 
 
+    configuration_detail = {
+        'luke': {
+            'server_details': {
+                "known name": "luke.marlabsai.com",
+                "username": "ubuntu",
+                "host": "34.196.22.246",
+                "port": "9012",
+                "initail_domain": "/api",
+                'pem_detail': "/config/keyfiles/TIAA.pem"
+            },
+            'path_details': {
+                "react_path": "/static/react",
+                "asset_path": "/static/asset",
+                "base_remote_path": "/home/ubuntu/codebase/mAdvisor-api_luke",
+                "ui_branch": "api_ui_dev",
+                "api_branch": "api_ui_dev"
+            },
+            'type': 'luke',
+            'gunicorn_details': {
+                'gunicorn_wsgi_app': 'config.wsgi:application',
+                'gunicorn_pidpath': "/gunicorn.pid",
+                'gunicorn_bind': "0.0.0.0:9012"
+            },
+            'deployment_config': 'luke'
+        },
 
+        'dev': {
+            'server_details': {
+                "known name": "madvisordev.marlabsai.com",
+                "username": "ubuntu",
+                "host": "34.196.204.54",
+                "port": "9012",
+                "initail_domain": "/api",
+                'pem_detail': "/config/keyfiles/TIAA.pem"
+            },
+            'path_details': {
+                "react_path": "/static/react",
+                "asset_path": "/static/asset",
+                "base_remote_path": "/home/ubuntu/codebase/mAdvisor-api",
+                "ui_branch": "api_ui_dev",
+                "api_branch": "api_ui_dev"
+            },
+            'type':'development',
+            'gunicorn_details': {
+                'gunicorn_wsgi_app': 'config.wsgi:application',
+                'gunicorn_pidpath': "/gunicorn.pid",
+                'gunicorn_bind': "0.0.0.0:9012"
+            },
+            'deployment_config': 'development'
+        },
+        'leia': {
+            'server_details': {
+                "known name": "leia.marlabsai.com",
+                "username": "ubuntu",
+                "host": "34.196.22.246",
+                "port": "9015",
+                "initail_domain": "/api",
+                'pem_detail': "/config/keyfiles/TIAA.pem"
+            },
+            'path_details': {
+                "react_path": "/static/react",
+                "asset_path": "/static/asset",
+                "base_remote_path": "/home/ubuntu/9013/mAdvisor-api",
+                "ui_branch": "api_ui_dev",
+                "api_branch": "api_ui_dev"
+            },
+            'type':'leia',
+            'gunicorn_details': {
+                'gunicorn_wsgi_app': 'config.wsgi:application',
+                'gunicorn_pidpath': "/gunicorn.pid",
+                'gunicorn_bind': "0.0.0.0:9015"
+            },
+            'deployment_config': 'leia'
+        }
+    }
 
+    return configuration_detail
 
 
 

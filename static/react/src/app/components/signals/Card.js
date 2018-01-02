@@ -30,33 +30,41 @@ cardData = {};
 export class Card extends React.Component {
     constructor() {
         super();
-        
+
     }
-    
+
     handleCheckBoxEvent(event){
-        handleSignalToggleButton(); 
+        handleSignalToggleButton();
+    }
+    calculateWidth(width){
+        let colWidth  = parseInt((width/100)*12)
+        let divClass="col-md-"+colWidth;
+        return divClass;
     }
     renderCardData(cardData,toggleTable){
         var htmlData = cardData.map((story, i) => {
             let randomNum = Math.random().toString(36).substr(2,8);
             switch (story.dataType) {
             case "html":
-                
-                return (<CardHtml key = {i} htmlElement={story.data} type={story.dataType}/>);
+                if(!story.hasOwnProperty("classTag"))story.classTag ="none";
+                return (<CardHtml key = {i} htmlElement={story.data} type={story.dataType} classTag={story.classTag}/>);
                 break;
             case "c3Chart":
                 //console.log("checking chart data:::::");
+                let chartInfo=[]
                 if(!$.isEmptyObject(story.data)){
-                    story.statisticalInfo =["Statistical Test : Avova","Variables : Call Volume","Effect Size : 0.2"]
+                   if(story.chartInfo){
+                     chartInfo=story.chartInfo
+                   }
                     if(story.widthPercent &&  story.widthPercent != 100){
                       //  let width  = story.widthPercent+"%";
                         let width  = parseInt((story.widthPercent/100)*12)
                         let divClass="col-md-"+width;
                         let sideChart=false;
                         if(story.widthPercent < 50)sideChart=true;
-                        return (<div key={randomNum} class={divClass} style={{display:"inline-block",paddingLeft:"30px"}}><C3Chart info={story.statisticalInfo} sideChart={sideChart} classId={randomNum} widthPercent = {story.widthPercent} data={story.data.chart_c3}  yformat={story.data.yformat} y2format={story.data.y2format} guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div>);
+                        return (<div key={randomNum} class={divClass} style={{display:"inline-block",paddingLeft:"30px"}}><C3Chart chartInfo={chartInfo} sideChart={sideChart} classId={randomNum} widthPercent = {story.widthPercent} data={story.data.chart_c3}  yformat={story.data.yformat} y2format={story.data.y2format} guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div>);
                     }else{
-                        return (<div key={randomNum}><C3Chart info={story.statisticalInfo} classId={randomNum} data={story.data.chart_c3} yformat={story.data.yformat} y2format={story.data.y2format} guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div>);
+                        return (<div key={randomNum}><C3Chart chartInfo={chartInfo} classId={randomNum} data={story.data.chart_c3} yformat={story.data.yformat} y2format={story.data.y2format} guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div>);
                     }
                 }
                 break;
@@ -65,7 +73,10 @@ export class Card extends React.Component {
                 return ( <DecisionTree key={i} treeData={story.data}/>);
                 break;
             case "table":
-                return (<div className="table-style" ><CardTable classId={toggleTable} key = {i} jsonData={story.data} type={story.dataType}/></div>);
+                if(!story.tableWidth)story.tableWidth = 100;
+                var colClass= this.calculateWidth(story.tableWidth)
+                colClass = colClass;
+             return (<div className={colClass} ><CardTable classId={toggleTable} key = {i} jsonData={story.data} type={story.dataType}/></div>);
                 break;
             case "dropdown":
                 return (<PredictionDropDown key = {i} label={story.label} jsonData={story.data} type={story.dataType}/>);
@@ -90,9 +101,9 @@ export class Card extends React.Component {
             </div>
             return (<div>{inputChk}{toggleData}</div>);
             break;
-            
+
             }
-            
+
         });
         return htmlData;
     }
@@ -105,6 +116,6 @@ export class Card extends React.Component {
                 {cardElements}
                 </div>
         );
-        
+
     }
 }
