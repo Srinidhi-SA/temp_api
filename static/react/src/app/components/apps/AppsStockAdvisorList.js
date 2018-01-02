@@ -165,36 +165,45 @@ export class AppsStockAdvisorList extends React.Component {
 					<div className="side-body">
 					<div class="page-head">
 					<div class="row">
-					<div class="col-md-8">
-					<h4>Stock Analytics</h4>
+					<div class="col-md-8">					
+					<h3 class="xs-mt-0">Stock Analytics</h3>
 					</div>
 					<div class="col-md-4">
-					<div class="input-group pull-right">
-					<input type="text" name="search_stock" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search Stock" id="search_stock" class="form-control" placeholder="Search Stock Analysis..."/>
-
-					<span class="input-group-btn">
-					{/*<button type="button" class="btn btn-default" title="Select All Card">
-	                      <i class="fa fa-address-card-o fa-lg"></i>
-	                    </button>*/}
-					<button type="button" data-toggle="dropdown" title="Sorting" class="btn btn-default dropdown-toggle" aria-expanded="false">
-					<i class="fa fa-sort-alpha-asc fa-lg"></i>&nbsp;<span class="caret"></span>
-					</button>
-					<ul role="menu" class="dropdown-menu dropdown-menu-right">
-					<li>
-					<a href="#" onClick={this.doSorting.bind(this,'name','asc')}><i class="fa fa-sort-alpha-asc" aria-hidden="true"></i> Name Ascending</a>
-					</li>
-					<li>
-					<a href="#" onClick={this.doSorting.bind(this,'name','desc')}><i class="fa fa-sort-alpha-desc" aria-hidden="true"></i> Name Descending</a>
-					</li>
-					<li>
-					<a href="#" onClick={this.doSorting.bind(this,'created_at','asc')}><i class="fa fa-sort-numeric-asc" aria-hidden="true"></i> Date Ascending</a>
-					</li>
-					<li>
-					<a href="#" onClick={this.doSorting.bind(this,'created_at','desc')}><i class="fa fa-sort-numeric-desc" aria-hidden="true"></i> Date Descending</a>
-					</li>
-					</ul>
-					</span>
-					</div>
+					
+					
+				<div class="btn-toolbar pull-right">
+                <div class="input-group">
+                <div className="search-wrapper">
+                    <form>
+                    <input type="text" name="search_stock" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search Stock" id="search_stock" className="form-control search-box" placeholder="Search Stock Analysis..." required />
+                    <span className="zmdi zmdi-search form-control-feedback"></span>
+                    <button className="close-icon" type="reset"></button>
+                    </form>
+                </div>
+                </div>
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="zmdi zmdi-hc-lg zmdi-sort-asc"></i> </button>
+                    <ul role="menu" class="dropdown-menu dropdown-menu-right">
+                        <li>
+                          <a href="#" onClick={this.doSorting.bind(this,'name','asc')}><i class="zmdi zmdi-sort-amount-asc"></i> Name Ascending</a>
+                        </li>
+                        <li>
+                          <a href="#" onClick={this.doSorting.bind(this,'name','desc')}><i class="zmdi zmdi-sort-amount-desc"></i> Name Descending</a>
+                        </li>
+                        <li>
+                          <a href="#" onClick={this.doSorting.bind(this,'created_at','asc')}><i class="zmdi zmdi-calendar-alt"></i> Date Ascending</a>
+                        </li>
+                        <li>
+                          <a href="#" onClick={this.doSorting.bind(this,'created_at','desc')}><i class="zmdi zmdi-calendar"></i> Date Descending</a>
+                        </li>
+                      </ul>
+                  </div>
+                </div>
+					
+					
+					 
+					
+					
 					</div>
 					</div>
 					<div class="clearfix"></div>

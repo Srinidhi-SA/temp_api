@@ -150,7 +150,7 @@ export class AppsStockDocumentMode extends React.Component {
                       </div>
                       <div className="clearfix"></div>
                       <br/>
-                      <div className="panel-body documentModeSpacing">
+                      <div className="panel-body no-border documentModeSpacing">
                         <Card cardData={objs}/>
                       </div>
                     </div>

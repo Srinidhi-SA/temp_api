@@ -289,7 +289,8 @@ export class Signals extends React.Component {
                 <div class="col-md-8">
                   <h3 className="xs-mt-0">Signals</h3>
                 </div>
-                <div class="col-md-4">              
+                <div class="col-md-4">  
+				
                 <div class="btn-toolbar pull-right">
                 <div class="input-group">
                 <div className="search-wrapper">
@@ -317,8 +318,9 @@ export class Signals extends React.Component {
                         </li>
                       </ul>
                   </div>
-                </div> 
                 </div>
+				
+				</div>				
               </div>
             </div>
 

@@ -21,7 +21,7 @@ export class OverViewTabs extends React.Component {
               </div>
               <div class="clearfix"></div>
             </div>
-            <div class="panel-body">
+            <div class="panel-body no-border">
               <div class="card full-width-tabs">
                 <ul class="nav nav-tabs" id="guide-tabs" role="tablist">
                   <li class="active"><a href="#overview" aria-controls="overview" role="tab" data-toggle="tab"><i class="mAd_icons tab_overview"></i><span>Overview</span></a></li>
