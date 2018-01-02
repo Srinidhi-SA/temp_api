@@ -28,7 +28,8 @@ class DatasetView(viewsets.ModelViewSet):
         queryset = Dataset.objects.filter(
             created_by=self.request.user,
             deleted=False,
-            analysis_done=True
+            # analysis_done=True
+            status__in=['SUCCESS', 'INPROGRESS']
         )
         return queryset
 
