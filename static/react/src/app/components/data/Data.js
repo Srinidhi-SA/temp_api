@@ -18,9 +18,9 @@ import {BreadCrumb} from "../common/BreadCrumb";
 import {getDataList, getDataSetPreview, storeSignalMeta, handleDelete, handleRename} from "../../actions/dataActions";
 import {fetchProductList, openDULoaderPopup, closeDULoaderPopup, storeSearchElement,storeSortElements} from "../../actions/dataActions";
 import {DataUpload} from "./DataUpload";
-import {open, close} from "../../actions/dataUploadActions";
+import {open, close,triggerDataUploadAnalysis} from "../../actions/dataUploadActions";
 import {STATIC_URL} from "../../helpers/env.js"
-import {SEARCHCHARLIMIT,getUserDetailsOrRestart} from  "../../helpers/helper"
+import {SEARCHCHARLIMIT,getUserDetailsOrRestart,SUCCESS,INPROGRESS} from  "../../helpers/helper"
 import {DataUploadLoader} from "../common/DataUploadLoader";
 import Dialog from 'react-bootstrap-dialog'
 
@@ -117,6 +117,12 @@ export class Data extends React.Component {
     this.props.history.push('/data');
     this.props.dispatch(getDataList(1));
   }
+  openDataLoaderScreen(slug, percentage, message, e){
+      var dataUpload = {};
+      dataUpload.slug = slug
+      this.props.dispatch(openDULoaderPopup());
+      this.props.dispatch(triggerDataUploadAnalysis(dataUpload, percentage, message));
+  }
 
   render() {
     console.log("data is called");
@@ -151,13 +157,31 @@ export class Data extends React.Component {
         paginationTag = <Pagination ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
       }
       const dataSetList = dataSets.map((data, i) => {
-        var dataSetLink = "/data/" + data.slug;
-        let src = STATIC_URL + "assets/images/File_Icon.png"
-        if(data.datasource_type=="Hana"){
-          src = STATIC_URL + "assets/images/sapHana_Icon.png"
-        }else if (data.datasource_type == "Mysql") {
-          src = STATIC_URL + "assets/images/mySQL_Icon.png"
-        }
+          
+          var iconDetails = "";
+          var dataSetLink = "/data/" + data.slug;
+          
+          var dataClick = <Link to={dataSetLink} id={data.slug} onClick={this.getPreviewData.bind(this)}>
+            {data.name}
+            </Link>
+            if(data.status == INPROGRESS){
+                iconDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>
+                dataClick = <a class="cursor" onClick={this.openDataLoaderScreen.bind(this,data.slug,data.completed_percentage,data.completed_message)}> {data.name}</a>
+            }else if(data.status == SUCCESS && !data.viewed){
+                data.completed_percentage = 100;
+                iconDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>
+            }else{
+                let src = STATIC_URL + "assets/images/File_Icon.png"
+                if(data.datasource_type == "Hana"){
+                  src = STATIC_URL + "assets/images/sapHana_Icon.png"
+                }else if (data.datasource_type == "Mysql") {
+                  src = STATIC_URL + "assets/images/mySQL_Icon.png"
+                }
+                iconDetails = <img src={src} className="img-responsive" alt="LOADING"/>;
+            }
+            
+        
+        
         return (
           <div className="col-md-3 xs-mb-15 list-boxes" key={i}>
             <div className="rep_block newCardStyle" name={data.name}>
@@ -166,11 +190,11 @@ export class Data extends React.Component {
                 <div className="row">
                   <div className="col-xs-9">
                     <h4 className="title newCardTitle">
-                      <a href="javascript:void(0);" id={data.slug} onClick={this.getPreviewData.bind(this)}>{data.name}</a>
+                     {dataClick}
                     </h4>
                   </div>
                   <div className="col-xs-3">
-                    <img src={src} className="img-responsive" alt="LOADING"/>
+                    {iconDetails}
                   </div>
                 </div>
               </div>
@@ -242,16 +266,16 @@ export class Data extends React.Component {
                     </button>
                     <ul role="menu" class="dropdown-menu dropdown-menu-right">
                         <li>
-                          <a href="#" onClick={this.doSorting.bind(this,'name','asc')}><i class="zmdi zmdi-sort-amount-asc"></i> Name Ascending</a>
+                          <a href="#" onClick={this.doSorting.bind(this,'name','asc')}><i class="zmdi zmdi-sort-amount-asc"></i>&nbsp;&nbsp;Name Ascending</a>
                         </li>
                         <li>
-                          <a href="#" onClick={this.doSorting.bind(this,'name','desc')}><i class="zmdi zmdi-sort-amount-desc"></i> Name Descending</a>
+                          <a href="#" onClick={this.doSorting.bind(this,'name','desc')}><i class="zmdi zmdi-sort-amount-desc"></i>&nbsp;&nbsp;Name Descending</a>
                         </li>
                         <li>
-                          <a href="#" onClick={this.doSorting.bind(this,'created_at','asc')}><i class="zmdi zmdi-calendar-alt"></i> Date Ascending</a>
+                          <a href="#" onClick={this.doSorting.bind(this,'created_at','asc')}><i class="zmdi zmdi-calendar-alt"></i>&nbsp;&nbsp;Date Ascending</a>
                         </li>
                         <li>
-                          <a href="#" onClick={this.doSorting.bind(this,'created_at','desc')}><i class="zmdi zmdi-calendar"></i> Date Descending</a>
+                          <a href="#" onClick={this.doSorting.bind(this,'created_at','desc')}><i class="zmdi zmdi-calendar"></i>&nbsp;&nbsp;Date Descending</a>
                         </li>
                     </ul>
                   </div>

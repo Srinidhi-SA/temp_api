@@ -181,6 +181,7 @@ function fetchPosts(token,pageNo) {
   let search_element = store.getState().signals.signal_search_element;
   let signal_sorton =  store.getState().signals.signal_sorton;
   let signal_sorttype = store.getState().signals.signal_sorttype;
+  console.log(search_element)
     if(signal_sorttype=='asc')
 		signal_sorttype = ""
 	else if(signal_sorttype=='desc')
