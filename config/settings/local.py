@@ -33,6 +33,13 @@ PROJECT_APP = [
 ]
 
 INSTALLED_APPS += PROJECT_APP
+
+LOCAL_MIDDLEWARE = [
+    'django_cprofile_middleware.middleware.ProfilerMiddleware'
+]
+
+MIDDLEWARE += LOCAL_MIDDLEWARE
+
 HADOOP_MASTER = "ec2-34-205-203-38.compute-1.amazonaws.com"
 
 YARN = {

@@ -403,23 +403,42 @@ def create_database(type="development"):
     run("GRANT ALL PRIVILEGES ON {0}.* TO {1}@{2};".format(db_name, user_name, host))
 
 @task
-def download_sql_and_dump(type='development'):
-
-    if type == "development":
-        dev()
-    elif type == "production":
-        prod()
-
-    server_details = env.get('server_details')
-    path_details = env.get('path_details')
-
+def download_sql_and_dump(branch='development'):
+    import time
+    details = get_branch_details(branch)
+    set_fabric_env(details)
+    print details
+    path_details= details['path_details']
+    server_details= details['server_details']
+    current_time = str(time.time())
     base_remote_path = path_details.get('base_remote_path')
     with cd(base_remote_path):
-        run("python manage.py dumpdata -e contenttypes -e auth.Permission > datadump.json")
-        path_json = base_remote_path + "/" + "datadump.json"
-        get(path_json, "/home/ankush/codebase/code_revamp/madvisor_api/")
+
+        run("python manage.py dumpdata -e contenttypes -e auth.Permission > datadump{0}.json".format(current_time))
+        path_json = base_remote_path + "/" + "datadump{0}.json".format(current_time)
+        local_dumping_path = '/tmp'
+        get(path_json, local_dumping_path)
+
+    with lcd(BASE_DIR):
+        file_name = '{0}.json'.format(current_time)
+        locapath = '/home/ankush/dump_files/' + file_name
+        local('python manage.py loaddata {0}'.format(locapath))
+
+
+@task
+def load_sql_dump_data():
+    with lcd(BASE_DIR):
+        file_name = 'datadump1514902040.15.json'
+        locapath = '/home/ankush/dump_files/' + file_name
+        local('python manage.py loaddata {0}'.format(locapath))
+
+
+
 
     local("cat 'Done.'")
+
+
+
 
 
 def recreate_database(type='local'):
@@ -580,10 +599,18 @@ def configuration_details():
     return configuration_detail
 
 
+@task
+def testpad():
+    import os
+    local('pwd')
+    get_local_home()
 
 
+def get_local_home():
+    localhome = local('echo $HOME', capture=True)
+    return localhome
 
 
-
-
-
+def get_local_user_name():
+    localusername = local('whoami', capture=True)
+    return localusername
