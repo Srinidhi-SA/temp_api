@@ -47,6 +47,22 @@ class DatasetSerializer(serializers.ModelSerializer):
         except:
             ret['message'] = None
 
+        if instance.viewed == False and instance.status=='SUCCESS':
+            instance.viewed = True
+            instance.save()
+
+        if instance.datasource_type=='fileUpload':
+            try:
+                from api.helper import convert_to_humanize
+                ret['file_size']=convert_to_humanize(instance.input_file.size)
+                if(instance.input_file.size < 15000000 or ret['status']=='SUCCESS'):
+                    ret['proceed_for_loading']=True
+                else:
+                    ret['proceed_for_loading'] = False
+            except:
+                ret['file_size']=-1
+                ret['proceed_for_loading'] = True
+
         return ret
 
     def changes_to_metadata(self, meta_data):
@@ -129,7 +145,15 @@ class DataListSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         ret = super(DataListSerializer, self).to_representation(instance)
         ret['brief_info'] = instance.get_brief_info()
+
+        try:
+            ret['completed_percentage']=get_message(instance)[-1]['globalCompletionPercentage']
+            ret['completed_message']=get_message(instance)[-1]['shortExplanation']
+        except:
+            ret['completed_percentage'] = 0
+            ret['completed_message']="Analyzing Target Variable"
         return ret
+
 
     class Meta:
         model = Dataset

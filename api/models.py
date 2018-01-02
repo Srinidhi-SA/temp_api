@@ -137,6 +137,7 @@ class Dataset(models.Model):
     file_remote = models.CharField(max_length=100, null=True)
     analysis_done = models.BooleanField(default=False)
     status = models.CharField(max_length=100, null=True, default="Not Registered")
+    viewed = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
