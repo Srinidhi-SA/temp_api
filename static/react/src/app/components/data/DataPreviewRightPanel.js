@@ -32,7 +32,9 @@ export class DataPreviewRightPanel extends React.Component {
 			);
 		});
 
-		return(			
+		let chartInfo=[]
+
+		return(
 				<div className="col-md-3 preview_stats">
 				{ /*<!-- Start Tab Statistics -->*/}
 				<div id="tab_statistics" className="panel-group accordion accordion-semi">
@@ -61,7 +63,7 @@ export class DataPreviewRightPanel extends React.Component {
 				<div id="pnl_visl" className="panel-collapse collapse in" aria-expanded="true">
 				<div className="panel-body" id="side-chart">
 				{/*<img src="../assets/images/data_preview_graph.png" className="img-responsive" />*/}
-				<C3Chart classId={"_side"} data={sideChart} yformat={false} sideChart={true}/>
+				<C3Chart chartInfo={chartInfo} classId={"_side"} data={sideChart} yformat={false} sideChart={true}/>
 				<div className="clearfix"></div>
 				</div>
 				</div>

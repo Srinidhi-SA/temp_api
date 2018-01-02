@@ -26,6 +26,7 @@ export class ExportAsPMML extends React.Component {
     }
 
     componentDidUpdate(){
+      if($("#PMMLalgorithms").val()!=undefined)
         this.props.dispatch(updateSelectedAlg($("#PMMLalgorithms").val()));
     }
     openCloseModal(flag){
@@ -48,7 +49,7 @@ export class ExportAsPMML extends React.Component {
             algorithmNames = "No Algorithms"
         }
         return (
-              
+
                 <div id="exportAsPMML"  role="dialog" className="modal fade modal-colored-header">
                 <Modal show={store.getState().apps.exportAsPMMLModal} onHide={this.openCloseModal.bind(this,false)} dialogClassName="modal-colored-header">
                 <Modal.Header closeButton>
@@ -57,9 +58,9 @@ export class ExportAsPMML extends React.Component {
                 <Modal.Body>
                 <div class="form-group">
                 <label>Select an Algorithm</label>
-              
+
                 {algorithmNames}
-          
+
                 </div>
                 </Modal.Body>
                 <Modal.Footer>
@@ -70,7 +71,7 @@ export class ExportAsPMML extends React.Component {
                 </Modal.Footer>
                 </Modal>
                 </div>
-               
+
         )
     }
 

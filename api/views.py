@@ -615,7 +615,7 @@ class AudiosetView(viewsets.ModelViewSet):
 class AppView(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = CustomApps.objects.filter(
-            created_by=self.request.user,
+            #created_by=self.request.user,
             status="Active"
         )
 
@@ -792,13 +792,26 @@ def write_into_databases(job_type, object_slug, results):
     elif job_type == "master":
         # print "inside job_type==master"
         insight_object = Insight.objects.get(slug=object_slug)
+
+        if "error_message" in results:
+            insight_object.status = "FAILED"
+            insight_object.save()
+            return results
+
         results = add_slugs(results)
         insight_object.data = json.dumps(results)
         insight_object.analysis_done = True
+        insight_object.status = 'SUCCESS'
         insight_object.save()
         return results
     elif job_type == "model":
         trainer_object = Trainer.objects.get(slug=object_slug)
+
+        if "error_message" in results:
+            trainer_object.status = "FAILED"
+            trainer_object.save()
+            return results
+
         results['model_summary'] = add_slugs(results['model_summary'])
         trainer_object.data = json.dumps(results)
         trainer_object.analysis_done = True
@@ -806,6 +819,12 @@ def write_into_databases(job_type, object_slug, results):
         return results
     elif job_type == 'score':
         score_object = Score.objects.get(slug=object_slug)
+
+        if "error_message" in results:
+            score_object.status = "FAILED"
+            score_object.save()
+            return results
+
         results = add_slugs(results)
         score_object.data = json.dumps(results)
         score_object.analysis_done = True
@@ -813,6 +832,12 @@ def write_into_databases(job_type, object_slug, results):
         return results
     elif job_type == 'robo':
         robo_object = Robo.objects.get(slug=object_slug)
+
+        if "error_message" in results:
+            robo_object.status = "FAILED"
+            robo_object.save()
+            return results
+
         results = add_slugs(results)
         robo_object.data = json.dumps(results)
         robo_object.robo_analysis_done = True
@@ -905,7 +930,7 @@ def home(request):
     SCORES_BASE_URL = "http://{}:8001/".format(settings.HDFS.get("host", "ec2-34-205-203-38.compute-1.amazonaws.com"))
     APP_BASE_URL = "{}://{}".format(protocol, host)
 
-    context = {"UI_VERSION": settings.UI_VERSION, "APP_BASE_URL": APP_BASE_URL, "SCORES_BASE_URL": SCORES_BASE_URL}
+    context = {"UI_VERSION": settings.UI_VERSION, "APP_BASE_URL": APP_BASE_URL, "SCORES_BASE_URL": SCORES_BASE_URL, "STATIC_URL" : settings.STATIC_URL}
 
     return render(request, 'home.html', context)
 
@@ -4602,16 +4627,119 @@ def get_chart_or_small_data(request, slug=None):
     return response
 
 
+@api_view(['GET'])
+def get_job_kill(request, slug=None):
+
+    job_object = Job.objects.filter(object_id=slug).first()
+    job_object.kill()
+    return JsonResponse({
+        'message': 'killed'
+    })
+
+
+@api_view(['GET'])
+def get_job_refreshed(request, slug=None):
+
+    job_object = Job.objects.filter(object_id=slug).first()
+    job_object.update_status()
+    return JsonResponse({
+        'message': 'refreshed'
+    })
+
+
 @csrf_exempt
 def set_messages(request, slug=None):
+
     if slug is None:
         return JsonResponse({"message": "Failed"})
+    return_data = request.GET.get('data', None)
     data = request.body
     data = json.loads(data)
     from api.redis_access import AccessFeedbackMessage
     ac = AccessFeedbackMessage()
     data = ac.append_using_key(slug, data)
+
+    if return_data is None:
+        return JsonResponse({'message': "Success"})
+    elif return_data is False:
+        return JsonResponse({'message': "Success"})
+    elif return_data is True:
+        JsonResponse({'message': data})
+
+
+@csrf_exempt
+def set_pmml(request, slug=None):
+    '''
+
+    :param request:
+    :param slug: It is Job Slug
+    :return:
+    '''
+    if slug is None:
+        return JsonResponse({"message": "Failed"})
+    data = request.body
+    data = json.loads(data)
+    print "keys ", data.keys()
+    from api.redis_access import AccessFeedbackMessage
+    from helper import generate_pmml_name
+    ac = AccessFeedbackMessage()
+    key_pmml_name = generate_pmml_name(slug)
+    data = ac.append_using_key(key_pmml_name, data)
+
     return JsonResponse({'message': data})
+
+
+@csrf_exempt
+def get_pmml(request, slug=None, algoname='algo'):
+
+    from api.redis_access import AccessFeedbackMessage
+    from helper import generate_pmml_name
+    ac = AccessFeedbackMessage()
+    job_object = Job.objects.filter(object_id=slug).first()
+    job_slug = job_object.slug
+    key_pmml_name = generate_pmml_name(job_slug)
+    data = ac.get_using_key(key_pmml_name)
+    if data is None:
+        sample_xml =  "<mydocument has=\"an attribute\">\n  <and>\n    <many>elements</many>\n    <many>more elements</many>\n  </and>\n  <plus a=\"complex\">\n    element as well\n  </plus>\n</mydocument>"
+        return return_xml_data(sample_xml, algoname)
+    xml_data = data[-1].get(algoname)
+    return return_xml_data(xml_data, algoname)
+
+
+@csrf_exempt
+def set_job_reporting(request, slug=None, report_name=None):
+    job = Job.objects.get(slug=slug)
+
+    if not job:
+        return JsonResponse({'result': 'Failed'})
+    new_error = request.body
+    error_log = json.loads(job.error_report)
+    if isinstance(new_error, str) or isinstance(new_error, unicode):
+        json_formatted_new_error = json.loads(new_error)
+    elif isinstance(new_error, dict):
+        json_formatted_new_error = new_error
+
+    if report_name in error_log:
+        error_log[report_name].append(json_formatted_new_error)
+    else:
+        error_log[report_name] = [json_formatted_new_error]
+
+    job.error_report = json.dumps(error_log)
+    job.save()
+
+    return JsonResponse({'messgae':'error reported.'})
+
+@csrf_exempt
+def get_job_report(request, slug=None):
+    job = Job.objects.get(slug=slug)
+
+    if not job:
+        return JsonResponse({'result': 'Failed'})
+
+    error_log = json.loads(job.error_report)
+
+    return JsonResponse({'report': error_log})
+
 
 
 @csrf_exempt
@@ -4645,6 +4773,17 @@ def return_json_data(stockDataType, stockName, slug):
     file_content = open(path).read()
     response = HttpResponse(file_content, content_type='application/json')
     response['Content-Disposition'] = 'attachment; filename="{0}.json"'.format(path)
+
+    return response
+
+
+def return_xml_data(xml_data_str, algoname):
+
+    from django.http import HttpResponse
+
+    file_content = xml_data_str
+    response = HttpResponse(file_content, content_type='application/xml')
+    response['Content-Disposition'] = 'attachment; filename="{0}.xml"'.format(algoname)
 
     return response
 

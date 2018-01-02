@@ -7,6 +7,7 @@ import {openAppsLoaderValue,closeAppsLoaderValue} from "../../actions/appActions
 import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
 import HeatMap from '../../helpers/heatmap';
+import {STATIC_URL} from "../../helpers/env";
 
 
 @connect((store) => {
@@ -29,6 +30,7 @@ export class AppsLoader extends React.Component {
   	this.props.dispatch(closeAppsLoaderValue())
   }
   render() {
+		let img_src=STATIC_URL+store.getState().apps.appsLoaderImage
    return (
           <div id="dULoader">
       	<Modal show={store.getState().apps.appsLoaderModal} backdrop="static" onHide={this.closeModelPopup.bind(this)} dialogClassName="modal-colored-header">
@@ -38,12 +40,12 @@ export class AppsLoader extends React.Component {
 		<div className="panel">
 			<div className="panel-body">
 				<h4 className="text-center"><br/>
-				<img src={store.getState().apps.appsLoaderImage} />
+				<img src={img_src} />
 				<br/>
 				<br/>
 				{store.getState().apps.appsLoaderText}
 				</h4><br/>
-			
+
 				<div className="p_bar_body">
 				<progress className="prg_bar" value={store.getState().apps.appsLoaderPerValue} max={95}></progress>
 				<div className="progress-value"><h3>{store.getState().apps.appsLoaderPerValue} %</h3></div>

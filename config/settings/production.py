@@ -7,7 +7,10 @@ import datetime
 
 DEBUG = False
 
-ALLOWED_HOSTS = ["172.31.50.84", "localhost"]
+ALLOWED_HOSTS = ['172.31.50.84', 'leia.marlabsai.com' , 'leia.marlabsai.com', 'localhost', 'luke.marlabsai.com', 'madvisor-leia.marlabsai.com',
+                 'madvisor-luke.marlabsai.com', 'madvisor-luke.marlabsai.comleia.marlabsai.com',
+                 'madvisor.marlabsai.com', 'madvisor1.marlabsai.com', 'madvisor2.marlabsai.com',
+                 'webinar.marlabsai.com']
 
 DATABASES = {
     'default': {

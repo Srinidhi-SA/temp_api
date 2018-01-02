@@ -103,9 +103,9 @@ export function fetchCreateSignalSuccess(signalData, dispatch) {
             dispatch(closeCsLoaderModal())
             dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
         },DYNAMICLOADERINTERVAL);
-      
+
     }
-   
+
     else{
         createSignalInterval = setInterval(function() {
 
@@ -113,10 +113,14 @@ export function fetchCreateSignalSuccess(signalData, dispatch) {
             dispatch(getSignalAnalysis(getUserDetailsOrRestart.get().userToken,signalData.slug));
             if(store.getState().signals.createSignalLoaderValue < LOADERMAXPERVALUE){
               if (loading_message && loading_message.length > 0) {
+                //check if display is true
+                if(loading_message[loading_message.length - 1].display&&loading_message[loading_message.length - 1].display==true){
                 msg = loading_message[loading_message.length - 1].shortExplanation
+              }
                 loaderVal = loading_message[loading_message.length - 1].globalCompletionPercentage
                 //alert(msg + "  " + loaderVal)
               }
+
               dispatch(updateCsLoaderValue(loaderVal));
               dispatch(updateCsLoaderMsg(msg));
             } else {
@@ -126,7 +130,7 @@ export function fetchCreateSignalSuccess(signalData, dispatch) {
           }, DEFAULTINTERVAL);
 
     }
-   
+
   return {
     type: "CREATE_SUCCESS",
     signalData
@@ -184,10 +188,17 @@ function fetchPosts(token,pageNo) {
   //console.log(search_element)
   if(search_element!=""&&search_element!=null){
     //console.log("calling for search element!!")
+    if((signal_sorton!=""&&signal_sorton!=null) && (signal_sorttype!=null)){
+      return fetch(API+'/api/signals/?name='+search_element+'&sorted_by='+signal_sorton+'&ordering='+signal_sorttype+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
+      method: 'get',
+      headers: getHeader(token)
+      }).then( response => Promise.all([response, response.json()]));
+    }else{
     return fetch(API+'/api/signals/?name='+search_element+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
       method: 'get',
       headers: getHeader(token)
       }).then( response => Promise.all([response, response.json()]));
+    }
   }else if((signal_sorton!=""&&signal_sorton!=null) && (signal_sorttype!=null)){
 	    return fetch(API+'/api/signals/?sorted_by='+signal_sorton+'&ordering='+signal_sorttype+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
       method: 'get',
@@ -206,13 +217,13 @@ function fetchPosts(token,pageNo) {
 export function refreshSignals(props){
     return (dispatch) => {
         refreshSignalInterval = setInterval(function() {
-           
+
            var pageNo = window.location.href.split("=")[1];
             if(pageNo == undefined) pageNo = 1;
             if(window.location.pathname == "/signals")
             dispatch(getList(getUserDetailsOrRestart.get().userToken, parseInt(pageNo)));
         },DEFAULTINTERVAL);
-        
+
     }
 }
 function fetchPostsSuccess(signalList) {
@@ -262,7 +273,9 @@ function fetchPosts_analysis(token,errandId) {
 			'Authorization': token,
 			'Content-Type': 'application/x-www-form-urlencoded'
 		}
-  }).then( response => Promise.all([response, response.json()]));
+  }).then( response => Promise.all([response, response.json()])).catch(function(error){
+    bootbox.alert("Something went wrong. Please try again later.")
+  });
 
 }
 
@@ -275,7 +288,8 @@ function fetchPostsSuccess_analysis(signalAnalysis, errandId,dispatch) {
     dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
     dispatch(clearLoadingMsg());
   }else if(signalAnalysis.status == FAILED||signalAnalysis.status == false){
-	  bootbox.alert("Your signal could not be created. Please try later.")
+	  //bootbox.alert("Your signal could not be created. Please try later.")
+    bootbox.alert("The signal could not be created. Please check the dataset and try again.")
 	    clearInterval(createSignalInterval);
 	    dispatch(closeCsLoaderModal())
 	    dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
@@ -375,7 +389,7 @@ export function changeSelectedVariableType(colSlug,colName,actionName,evt){
             varSlug
         }
     }
-    
+
 }
 export function createcustomAnalysisDetails(){
     var transformSettings = store.getState().datasets.dataTransformSettings;
@@ -438,7 +452,7 @@ export function showDialogBox(slug,dialog,dispatch){
 		})
 	dialog.show({
 		  title: 'Delete Signal',
-		  body: 'Are you sure you want to delete signal?',
+		  body: 'Are you sure you want to delete this Signal ? Yes , No',
 		  actions: [
 		    Dialog.CancelAction(),
 		    Dialog.OKAction(() => {
@@ -466,7 +480,7 @@ function deleteSignal(slug,dialog,dispatch){
 			dispatch(hideLoading());
 		}
 		else{
-			dialog.showAlert("Error occured , Please try after sometime.");
+			dialog.showAlert("The card could not be deleted. Please try again later.");
 			dispatch(hideLoading());
 		}
 	})
@@ -548,7 +562,7 @@ function renameSignal(slug,dialog,newName,dispatch){
 			dispatch(hideLoading());
 		}
 		else{
-			dialog.showAlert("Error occured , Please try after sometime.");
+			dialog.showAlert("Renaming unsuccessful. Please try again later.");
 			dispatch(hideLoading());
 		}
 	})
@@ -620,7 +634,7 @@ export function handleTopPredictions(){
             }else{
                 $(this).addClass("hidden");
             }
-            
+
         }
     })
     if(noDataFlag){

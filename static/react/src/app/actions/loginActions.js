@@ -34,7 +34,10 @@ function fetchPosts(username,password) {
 				username: username,
 				password: password,
 		 })
-	}).then( response => Promise.all([response, response.json()]));
+	}).then( response => Promise.all([response, response.json()])).catch(function(error) {
+        console.log(error);
+        $("#errormsg").html("Login unsuccessful. Please try again in sometime.")
+    });
 }
 
 

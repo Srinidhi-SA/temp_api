@@ -82,19 +82,32 @@ export class VariableSelection extends React.Component {
 		    return false;
 		}
 		if(!isAnalysisChecked){
-		    bootbox.alert("Please select a type of analysis...");
+		    bootbox.alert("Please select atleast one analysis to Proceed..");
             return false;
 		}
-		
+
 		var trendIsChecked = checkIfDateTimeIsSelected();
         if((store.getState().datasets.selectedTimeDimensions  == "" || store.getState().datasets.selectedTimeDimensions == undefined) && trendIsChecked == true){
             bootbox.alert("Please select one of the date dimensions.");
             return false;
         }
+				//check if no variable selected
+				if(this.props.selectedTimeDimensions===undefined){
+					if(this.props.selectedMeasures.length+this.props.selectedDimensions.length==0){
+					bootbox.alert("Please select atleast one variable.")
+					return false
+				}
+				}else{
+					if(this.props.selectedMeasures.length+this.props.selectedDimensions.length+this.props.selectedTimeDimensions.length==0){
+					bootbox.alert("Please select atleast one variable.")
+					return false
+				}
+				}
+
         console.log("while creating signal")
         console.log(this.props);
         this.signalFlag = false;
-        this.props.dispatch(updateCsLoaderValue(3))
+        this.props.dispatch(updateCsLoaderValue(0))
         this.props.dispatch(openCsLoaderModal());
         let customDetails = createcustomAnalysisDetails();
         let analysisList =[],config={}, postData={};
@@ -113,16 +126,16 @@ export class VariableSelection extends React.Component {
 
 
         if(this.props.getVarType.toLowerCase() == "measure"){
-           
+
             postData['advanced_settings'] = this.props.dataSetAnalysisList.measures;
 
         }else if(this.props.getVarType.toLowerCase() == "dimension"){
             postData['advanced_settings'] = this.props.dataSetAnalysisList.dimensions;
-            this.props.dataSetAnalysisList.dimensions.targetLevels.push(this.props.dimensionSubLevel);  
+            this.props.dataSetAnalysisList.dimensions.targetLevels.push(this.props.dimensionSubLevel);
 
         }
         console.log(postData);
-        this.props.dispatch(createSignal(postData)); 
+        this.props.dispatch(createSignal(postData));
 	}
 
 	setPossibleList(event){

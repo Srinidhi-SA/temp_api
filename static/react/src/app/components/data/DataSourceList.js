@@ -106,7 +106,7 @@ export class DataSourceList extends React.Component {
 				            	<li className="text-danger visibilityHidden" id="fileErrorMsg">Please select csv file to upload.</li>
 				            	</ul>
 				        </aside>
-				        
+
 						</div>
 						</div>)}
 					}else {

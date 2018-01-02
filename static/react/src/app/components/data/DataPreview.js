@@ -179,8 +179,10 @@ export class DataPreview extends React.Component {
 				let  xdata= item.chartData.xdata;
 				console.log("checking side table data:; ");
 				console.log(sideTableUpdate);
+				//currently hardcoding charInfo as empty
+				let chartInfo=[]
 				$("#side-chart").empty();
-				ReactDOM.render(<Provider store={store}><C3Chart classId={"_side"} data={sideChartUpdate} yformat={yformat} xdata={xdata} sideChart={true}/></Provider>, document.getElementById('side-chart'));
+				ReactDOM.render(<Provider store={store}><C3Chart chartInfo={chartInfo} classId={"_side"} data={sideChartUpdate} yformat={yformat} xdata={xdata} sideChart={true}/></Provider>, document.getElementById('side-chart'));
                 }
 				const sideTableUpdate = item.columnStats;
 				let sideTableUpdatedTemplate = "";
@@ -224,7 +226,7 @@ export class DataPreview extends React.Component {
 	moveToVariableSelection(){
 		//alert(this.buttons.create.url);
 		//check for minimum rows in datasets
-	
+
 		if (this.props.dataPreview.meta_data.metaData[0].value<MINROWINDATASET)
 		bootbox.alert("Minimum "+MINROWINDATASET+" rows are required for analysis!!")
 		else{
@@ -315,6 +317,7 @@ export class DataPreview extends React.Component {
 			dataPrev = this.props.dataPreview.meta_data
 			//  console.log(data[0]);
 			//const tableThTemplate=data[0].map((thElement, thIndex) => {
+			if(dataPrev && !isEmpty(dataPrev)){
 			const topInfo = dataPrev.metaData.map((item, i) => {
 				if(item.display){
 					return(
@@ -417,8 +420,8 @@ export class DataPreview extends React.Component {
     			this.firstTimeSideChart = dataPrev.columnData[0].chartData;
     			this.firstTimeColTypeForChart = dataPrev.columnData[0].columnType;
     			 if(!$.isEmptyObject(this.firstTimeSideChart)){
-    			     this.chartInfo = [];
-    				 firstChart = <C3Chart chartInfo={this.chartInfo} classId={this.chartId} data={sideChart} yformat={yformat} xdata={xdata} sideChart={true}/> ;
+    			     let chartInfo = [];
+    				 firstChart = <C3Chart chartInfo={chartInfo} classId={this.chartId} data={sideChart} yformat={yformat} xdata={xdata} sideChart={true}/> ;
     			 }
     			 if(!isEmpty(dataPrev.columnData[0]))
     			 firstTimeSubSetting = dataPrev.columnData[0]
@@ -522,7 +525,7 @@ export class DataPreview extends React.Component {
 					</div>
 					<div className="clearfix"></div>
 					</div>
-					
+
 					<div className="row buttonRow" id="dataPreviewButton">
 					<div className="col-md-12">
 
@@ -567,10 +570,19 @@ export class DataPreview extends React.Component {
 					  <Dialog ref="dialog"/>
 					 </div>
 			);
+		}else{
+			return (
+					 <div>	<DataUploadLoader/>
+			            <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif"} />
+								<div><div className="text-center text-muted xs-mt-50"><h3>Data preview failed to load. Please refresh the page or try again later</h3></div></div>
+			          </div>
+			);
+		}
 		} else {
 			return (
 					 <div>	<DataUploadLoader/>
 			            <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif"} />
+									{/*<div><div className="text-center text-muted xs-mt-50"><h2>Data preview failed to load. Please refresh the page or try again later</h2></div></div>*/}
 			          </div>
 			);
 		}

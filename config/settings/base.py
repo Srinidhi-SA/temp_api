@@ -14,6 +14,7 @@ import os
 
 import datetime
 
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -191,53 +192,91 @@ MEDIA_URL = '/media/'
 
 UPLOAD_FOLDER = '/uploads/datasets/'
 
+"""
+fieldType -> password, text, number, email
+fieldName -> Will be used as key by UI team
+
+labelName -> used as label name
+placeHolder -> showed inside input box
+
+required -> true/false
+defaultValue -> the input box will be filled with this value
+
+"""
 DATA_SOURCES_CONFIG = {"conf": [{
-    "dataSourceType": "fileUpload",
-    "dataSourceName": "File Upload",
-    "formFields": [{
-        "fieldType": "file",
-        "name": "File"
-    }]
-},
+        "dataSourceType": "fileUpload",
+        "dataSourceName": "File",
+        "formFields": [
+            {
+                "fieldType": "file",
+                "name": "File"
+            }
+        ]
+    },
     {
         "dataSourceType": "MySQL",
         "dataSourceName": "MySQL",
         "formFields": [
             {
-                "fieldType": "Input",
+                "fieldType": "text",
+                "fieldName" : "datasetname",
                 "placeHolder": "Dataset Name",
-                "labelName": "Name"
+                "labelName": "Name",
+                "required" : "true"
             },
             {
-                "fieldType": "Input",
-                "placeHolder": "host",
-                "labelName": "Host"
+
+                "fieldType": "text",
+                "fieldName" : "host",
+                "placeHolder": "Host",
+                "labelName": "host",
+                "required" : "true"
             },
             {
-                "fieldType": "Input",
-                "placeHoplaceHolder": "port",
+
+                "fieldType": "number",
+                "fieldName": "port",
+                "placeHolder": "Port",
                 "labelName": "Port",
-                "defaultValue": 3306
+                "required": "true",
+                "defaultValue" : 3306,
+                "maxLength":5
+
+
             },
             {
-                "fieldType": "Input",
-                "placeHolder": "schema",
-                "labelName": "Schema"
+
+                "fieldType": "text",
+                "fieldName": "databasename",
+                "placeHolder": "DataBase Name",
+                "labelName": "DBName",
+                "required": "true"
+
             },
             {
-                "fieldType": "Input",
+
+                "fieldType": "text",
+                "fieldName": "tablename",
                 "placeHolder": "tablename",
-                "labelName": "Table Name"
+                "labelName": "Table Name",
+                "required": "true"
             },
             {
-                "fieldType": "Input",
+
+                "fieldType": "text",
+                "fieldName": "username",
                 "placeHolder": "username",
-                "labelName": "Username"
+                "labelName": "Username",
+                 "required": "true"
             },
             {
+
+
                 "fieldType": "Password",
+                "fieldName": "password",
                 "placeHolder": "password",
-                "labelName": "Password"
+                "labelName": "Password",
+                 "required": "true"
             }
 
         ]
@@ -247,126 +286,124 @@ DATA_SOURCES_CONFIG = {"conf": [{
         "dataSourceName": "MSSql",
         "formFields": [
             {
-                "fieldType": "Input",
+                "fieldType": "text",
+                "fieldName": "datasetname",
                 "placeHolder": "Dataset Name",
-                "labelName": "Name"
+                "labelName": "Name",
+                "required": "true"
             },
             {
-                "fieldType": "Input",
-                "placeHolder": "host",
-                "labelName": "Host"
-            },
-            {
-                "fieldType": "Input",
-                "placeHoplaceHolder": "port",
-                "labelName": "Port",
-                "defaultValue": 1433
-            },
-            {
-                "fieldType": "Input",
-                "placeHolder": "schema",
-                "labelName": "Schema"
-            },
-            {
-                "fieldType": "Input",
-                "placeHolder": "tablename",
-                "labelName": "Table Name"
-            },
-            {
-                "fieldType": "Input",
-                "placeHolder": "username",
-                "labelName": "Username"
-            },
-            {
-                "fieldType": "Password",
-                "placeHolder": "password",
-                "labelName": "Password"
-            }
-        ]
-    },
-    {
-        "dataSourceType": "oracle",
-        "dataSourceName": "Oracle",
-        "formFields": [
-            {
-                "fieldType": "Input",
-                "placeHolder": "Dataset Name",
-                "labelName": "Name"
-            },
-            {
-                "fieldType": "Input",
-                "placeHolder": "host",
-                "labelName": "Host"
-            },
-            {
-                "fieldType": "Input",
-                "placeHoplaceHolder": "port",
-                "labelName": "Port",
-                "defaultValue": 1521
-            },
-            {
-                "fieldType": "Input",
-                "placeHolder": "schema",
-                "labelName": "Schema"
-            },
-            {
-                "fieldType": "Input",
-                "placeHolder": "tablename",
-                "labelName": "Table Name"
-            },
-            {
-                "fieldType": "Input",
-                "placeHolder": "username",
-                "labelName": "Username"
-            },
-            {
-                "fieldType": "Password",
-                "placeHolder": "password",
-                "labelName": "Password"
-            },
 
+                "fieldType": "text",
+                "fieldName": "host",
+                "placeHolder": "Host",
+                "labelName": "host",
+                "required": "true"
+            },
+            {
+
+                "fieldType": "number",
+                "fieldName": "port",
+                "placeHolder": "Port",
+                "labelName": "Port",
+                "required": "true",
+                "defaultValue": 1433,
+                "maxLength": 5
+
+            },
+            {
+
+                "fieldType": "text",
+                "fieldName": "databasename",
+                "placeHolder": "DataBase Name",
+                "labelName": "DBName",
+                "required": "true"
+
+            },
+            {
+
+                "fieldType": "text",
+                "fieldName": "tablename",
+                "placeHolder": "tablename",
+                "labelName": "Table Name",
+                "required": "true"
+            },
+            {
+
+                "fieldType": "text",
+                "fieldName": "username",
+                "placeHolder": "username",
+                "labelName": "Username",
+                "required": "true"
+            },
+            {
+
+                "fieldType": "Password",
+                "fieldName": "password",
+                "placeHolder": "password",
+                "labelName": "Password",
+                "required": "true"
+            }
         ]
     },
     {
         "dataSourceType": "Hana",
         "dataSourceName": "HANA",
         "formFields": [
+
             {
-                "fieldType": "Input",
+                "fieldType": "text",
+                "fieldName": "datasetname",
                 "placeHolder": "Dataset Name",
-                "labelName": "Name"
+                "labelName": "Name",
+                "required": "true"
             },
             {
-                "fieldType": "Input",
-                "placeHolder": "host",
-                "labelName": "Host"
+
+                "fieldType": "text",
+                "fieldName": "host",
+                "placeHolder": "Host",
+                "labelName": "host",
+                "required": "true"
             },
             {
-                "fieldType": "Input",
-                "placeHoplaceHolder": "port",
+
+                "fieldType": "number",
+                "fieldName": "port",
+                "placeHolder": "Port",
                 "labelName": "Port",
-                "defaultValue": 30015
+                "required": "true",
+                "defaultValue": 30015,
+                "maxLength": 5
+
             },
             {
-                "fieldType": "Input",
-                "placeHolder": "schema",
-                "labelName": "Schema"
+
+                "fieldType": "text",
+                "fieldName": "databasename",
+                "placeHolder": "DataBase Name",
+                "labelName": "DBName",
+                "required": "true"
+
             },
             {
-                "fieldType": "Input",
+
+                "fieldType": "text",
+                "fieldName": "username",
                 "placeHolder": "username",
-                "labelName": "Username"
+                "labelName": "Username",
+                "required": "true"
             },
             {
+
                 "fieldType": "Password",
+                "fieldName": "password",
                 "placeHolder": "password",
-                "labelName": "Password"
-            },
-            {
-                "fieldType": "Input",
-                "placeHolder": "tablename",
-                "labelName": "Table Name"
+                "labelName": "Password",
+                "required": "true"
             }
+
+
         ]
     },
     {
@@ -374,35 +411,46 @@ DATA_SOURCES_CONFIG = {"conf": [{
         "dataSourceName": "HDFS",
         "formFields": [
             {
-                "fieldType": "Input",
+                "fieldType": "text",
+                "fieldName": "datasetname",
                 "placeHolder": "Dataset Name",
-                "labelName": "Name"
+                "labelName": "Name",
+                "required": "true"
             },
             {
-                "fieldType": "Input",
-                "placeHolder": "host",
-                "labelName": "Host"
+
+                "fieldType": "text",
+                "fieldName": "host",
+                "placeHolder": "Host",
+                "labelName": "host",
+                "required": "true"
             },
             {
-                "fieldType": "Input",
-                "placeHoplaceHolder": "port",
+
+                "fieldType": "number",
+                "fieldName": "port",
+                "placeHolder": "Port",
                 "labelName": "Port",
-                "defaultValue": 30015
+                "required": "true",
+                "defaultValue": 30015,
+                "maxLength": 5
+
             },
             {
-                "fieldType": "Input",
+
+                "fieldType": "text",
+                "fieldName": "username",
                 "placeHolder": "username",
-                "labelName": "Username"
+                "labelName": "Username",
+                "required": "true"
             },
             {
+
                 "fieldType": "Password",
+                "fieldName": "password",
                 "placeHolder": "password",
-                "labelName": "Password"
-            },
-            {
-                "fieldType": "Input",
-                "placeHolder": "pathtofile",
-                "labelName": "File Path"
+                "labelName": "Password",
+                "required": "true"
             }
         ]
     }
@@ -524,10 +572,9 @@ YARN_STATUS = { "RUNNING" :"INPROGRESS",
                 "FAILED" : "FAILED",
                 "killed" : "FAILED",
                 "FINISHED" : "SUCCESS",
-                "SUCCESS" : "SUCCESS"
+                "KILLED" : "FAILED",
               }
 
-UI_VERSION = "v2.1_29"
 
 ERROR_MESSAGE = {
     'upload_error': 'Code had a weakness. Now it is broken.'
@@ -1010,7 +1057,7 @@ YARN_JOBTYPE_TO_QUEUE_MAPPING_= { "metaData": METADATA_QUEUE,
                        "stockAdvisor": APPS_QUEUE,
                        }
 
-DATASET_ROW_SIZE_NAME = {
+DATASET_ROW_SIZE_LIMITS = {
     "small": 1000,
     "medium": 10000
 }
@@ -1020,7 +1067,7 @@ YARN_QUEUE_NAMES = {
     "master": SIGNALS_QUEUE,
     "model": MLMODELS_QUEUE,
     "score": APPS_QUEUE,
-    "robo": "robo",
+    "robo": APPS_QUEUE,
     "subSetting": METADATA_QUEUE,
     "stockAdvisor": APPS_QUEUE,
     "default": SIGNALS_QUEUE
@@ -1029,9 +1076,13 @@ YARN_QUEUE_NAMES = {
 
 SUBMIT_JOB_THROUGH_YARN = True
 LIST_OF_ADMIN_EMAILS = [
-            # 'ankush.patel@marlabs.com',
+            'ankush.patel@marlabs.com',
             # 'sabretooth.rog@gmail.com',
             'vivekananda.tadala@marlabs.com',
             # 'mitali.sodhi@marlabs.com',
             # 'gulshan.gaurav@marlabs.com'
         ]
+
+import config_file_name_to_run
+
+UI_VERSION = config_file_name_to_run.UI_VERSION

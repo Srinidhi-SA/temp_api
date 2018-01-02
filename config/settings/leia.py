@@ -18,14 +18,8 @@ ALLOWED_HOSTS = ['*']
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'madvisor',
-        'USER': 'marlabs',
-        'PASSWORD': 'Password@123',
-        # 'USER': 'root',
-        # 'PASSWORD': 'root',
-        'HOST': 'localhost',
-        'PORT': '',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
@@ -33,13 +27,15 @@ PROJECT_APP = [
 ]
 
 INSTALLED_APPS += PROJECT_APP
-HADOOP_MASTER = "ec2-34-205-203-38.compute-1.amazonaws.com"
+
+HADOOP_MASTER = '172.31.50.84'
 
 YARN = {
     "host": HADOOP_MASTER,
-    "port" : 8088,
-    "timeout" : 30
+    "port": 8088,
+    "timeout": 30
 }
+
 HDFS = {
 
     # Give host name without http
@@ -64,9 +60,9 @@ KAFKA = {
 
 
 JOBSERVER = {
-    'host': 'ec2-34-205-203-38.compute-1.amazonaws.com',
+    'host': '172.31.50.84',
     'port': '8090',
-    'app-name': 'product_revamp',
+    'app-name': 'luke',
     'context': 'pysql-context',
     'master': 'bi.sparkjobs.JobScript',
     'metadata': 'bi.sparkjobs.JobScript',
@@ -79,8 +75,8 @@ JOBSERVER = {
 }
 
 THIS_SERVER_DETAILS = {
-    "host": "34.196.204.54",
-    "port": "9012",
+    "host": "34.196.22.246",
+    "port": "9015",
     "initail_domain": "/api"
 }
 
@@ -127,4 +123,4 @@ FUNNY_EMAIL_LIST = [
 
 JOBSERVER_EMAIL_TEMPLATE = "Please restart jobserver- IP-"
 
-DEPLOYMENT_ENV = "dev"
+DEPLOYMENT_ENV = "prod"

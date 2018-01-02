@@ -19,7 +19,7 @@ export function dataUpload() {
             dispatch(uploadFileOrDB());
         }else{
             $("#fileErrorMsg").removeClass("visibilityHidden");
-            $("#fileErrorMsg").html("Please upload a file to proceed.");
+            $("#fileErrorMsg").html("Please add a new file or select an existing dataset.");
         }
     }
     else{
@@ -35,8 +35,8 @@ export function dataUpload() {
                 $("#"+elements[i].id).css("border-color","#e0e0e0");
                 dbDetails[elements[i].name] = elements[i].value
             }
-           
-       
+
+
         }
         dispatch(uploadFileOrDB(dbDetails));
     }
@@ -65,7 +65,7 @@ function uploadFileOrDB(dbDetails){
 }
 function triggerDataUpload(token,dbDetails) {
   if (store.getState().dataSource.selectedDataSrcType == "fileUpload") {
-     
+
     var data = new FormData();
     data.append("input_file", store.getState().dataSource.fileUpload);
     console.log(data)
@@ -73,9 +73,12 @@ function triggerDataUpload(token,dbDetails) {
       method: 'post',
       headers: getHeaderWithoutContent(token),
       body: data
-    }).then(response => Promise.all([response, response.json()]));
+    }).then(response => Promise.all([response, response.json()])).catch(function(error) {
+          console.log(error);
+          bootbox.alert("Connection lost. Please try again later.")
+      });;
   } else {
-     
+
     var host = store.getState().dataSource.db_host;
     var port = store.getState().dataSource.db_port;
     var username = store.getState().dataSource.db_username;
@@ -95,7 +98,10 @@ function triggerDataUpload(token,dbDetails) {
       method: 'post',
       headers: getHeader(token),
       body: JSON.stringify({datasource_details: dbDetails, datasource_type: store.getState().dataSource.selectedDataSrcType})
-    }).then(response => Promise.all([response, response.json()]));
+    }).then(response => Promise.all([response, response.json()])).catch(function(error) {
+          console.log(error);
+          bootbox.alert("Connection lost. Please try again later.")
+      });
 
   }
 
@@ -111,7 +117,9 @@ function dataUploadSuccess(data, dispatch) {
     dispatch(getDataSetPreview(data.slug, dataPreviewInterval));
     if (store.getState().datasets.dULoaderValue < LOADERMAXPERVALUE) {
       if (loading_message && loading_message.length > 0) {
-        msg = loading_message[loading_message.length - 1].shortExplanation
+        if(loading_message[loading_message.length - 1].display&&loading_message[loading_message.length - 1].display==true){
+      msg = loading_message[loading_message.length - 1].shortExplanation
+    }
         loaderVal = loading_message[loading_message.length - 1].globalCompletionPercentage
         //alert(msg + "  " + loaderVal)
       }
