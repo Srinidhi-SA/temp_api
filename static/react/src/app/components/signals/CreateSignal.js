@@ -36,7 +36,7 @@ export class CreateSignal extends React.Component {
 	}
 	openSignalModal(){
 		if($.isEmptyObject(store.getState().datasets.allDataSets)){
-			bootbox.alert("No datasets available.Please upload datasets.");
+			bootbox.alert("No datasets available.Please upload some data or connect to a database");
 		}else{
 			this.props.dispatch(openCreateSignalModal())
 		}

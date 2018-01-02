@@ -11,7 +11,7 @@ import {open,close,fileUpload,dataUpload} from "../../actions/dataUploadActions"
 
 
 @connect((store) => {
-	return {login_response: store.login.login_response, 
+	return {login_response: store.login.login_response,
 		appsModelShowModal: store.apps.appsModelShowModal,
 		allDataList: store.datasets.allDataSets,
 		dataPreview: store.datasets.dataPreview,
@@ -34,7 +34,12 @@ export class AppsCreateModel extends React.Component {
 		this.props.dispatch(closeModelPopup());
 	}
 	openModelPopup(){
+		if(store.getState().datasets.allDataSets.data)
     	this.props.dispatch(openModelPopup())
+		else {
+			bootbox.alert("No datasets available.Please upload some data or connect to a database")
+			
+		}
     }
     closeModelPopup(){
     	this.props.dispatch(closeModelPopup())
@@ -79,7 +84,7 @@ export class AppsCreateModel extends React.Component {
 				<div class="col-xs-12 text-center">CREATE MODEL</div>
 				</div>
 				</div>
-				
+
 				<div id="newModel"  role="dialog" className="modal fade modal-colored-header">
 				<Modal show={store.getState().apps.appsModelShowModal} onHide={this.closeModelPopup.bind(this)} dialogClassName="modal-colored-header uploadData">
 				<Modal.Header closeButton>
@@ -89,7 +94,7 @@ export class AppsCreateModel extends React.Component {
 				 {/* <div class="form-group">
                   <label>Select an existing dataset</label>
                   {renderSelectBox}
-                </div>*/} 
+                </div>*/}
 				<DataSourceList type="model" renderDatasets={renderSelectBox}/>
 				</Modal.Body>
 				<Modal.Footer>
@@ -104,4 +109,4 @@ export class AppsCreateModel extends React.Component {
 		)
 	}
 
-}	  
+}
