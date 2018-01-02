@@ -340,7 +340,7 @@ export class C3Chart extends React.Component {
 
      </div>
            {/* chart data Popup */}
-           <div id="" className={this.modalCls} role="dialog">
+           <div id="" className={this.modalCls} role="dialog" tabindex="-1" backdrop={true}>
            <div className="modal-colored-header uploadData modal-dialog ">
 
            {/*Modal content*/}

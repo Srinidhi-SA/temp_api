@@ -29,7 +29,7 @@ import Breadcrumb from 'react-breadcrumb';
 var dateFormat = require('dateformat');
 import {CreateSignal} from "./CreateSignal";
 import {STATIC_URL} from "../../helpers/env";
-import {SEARCHCHARLIMIT, getUserDetailsOrRestart, isEmpty, SUCCESS} from "../../helpers/helper"
+import {SEARCHCHARLIMIT, getUserDetailsOrRestart, isEmpty, SUCCESS,INPROGRESS} from "../../helpers/helper"
 import Dialog from 'react-bootstrap-dialog';
 import {DetailOverlay} from "../common/DetailOverlay";
 import {getAllDataList, hideDataPreview} from "../../actions/dataActions";
@@ -65,12 +65,13 @@ export class Signals extends React.Component {
     } else{
         this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, pageNo));
     }
-    this.props.dispatch(refreshSignals(this.props));
+    
     }
 
   componentDidMount() {
     console.log("/checking anchor html");
     console.log($('a[rel="popover"]'));
+    this.props.dispatch(refreshSignals(this.props));
     /* var tmp = setInterval(function() {
       if ($('a[rel="popover"]').html()) {
         $('a[rel="popover"]').popover({
@@ -222,10 +223,10 @@ export class Signals extends React.Component {
         var signalClick = <Link to={signalLink} id={story.slug} onClick={this.getSignalAnalysis.bind(this)}>
           {story.name}
           </Link>
-          if(story.status == "INPROGRESS"){
+          if(story.status == INPROGRESS){
               iconDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{story.completed_percentage}&nbsp;%</span></div>
               signalClick = <a class="cursor" onClick={this.openLoaderScreen.bind(this,story.slug,story.completed_percentage,story.completed_message)}> {story.name}</a>
-          }else if(story.status == "SUCCESS" && !story.viewed){
+          }else if(story.status == SUCCESS && !story.viewed){
               story.completed_percentage = 100;
               iconDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{story.completed_percentage}&nbsp;%</span></div>
           }else{
@@ -329,25 +330,25 @@ export class Signals extends React.Component {
                       <i class="zmdi zmdi-hc-lg zmdi-sort-asc"></i>
                     </button>
                     <ul role="menu" class="dropdown-menu dropdown-menu-right">
-      clearSearchElement                <li>
+                    <li>
                         <a href="#" onClick={this.doSorting.bind(this, 'name', 'asc')}>
                           <i class="zmdi zmdi-sort-amount-asc"></i>
-                          Name Ascending</a>
+                          &nbsp;&nbsp;Name Ascending</a>
                       </li>
                       <li>
                         <a href="#" onClick={this.doSorting.bind(this, 'name', 'desc')}>
                           <i class="zmdi zmdi-sort-amount-desc"></i>
-                          Name Descending</a>
+                          &nbsp;&nbsp;Name Descending</a>
                       </li>
                       <li>
                         <a href="#" onClick={this.doSorting.bind(this, 'created_at', 'asc')}>
                           <i class="zmdi zmdi-calendar-alt"></i>
-                          Date Ascending</a>
+                          &nbsp;&nbsp;Date Ascending</a>
                       </li>
                       <li>
                         <a href="#" onClick={this.doSorting.bind(this, 'created_at', 'desc')}>
                           <i class="zmdi zmdi-calendar"></i>
-                          Date Descending</a>
+                          &nbsp;&nbsp;Date Descending</a>
                       </li>
                     </ul>
                   </div>

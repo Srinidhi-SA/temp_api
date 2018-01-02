@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Redirect } from "react-router";
+import { Redirect,Link } from "react-router-dom";
 import store from "../../store";
 import {Modal,Button} from "react-bootstrap";
 import {openDULoaderPopup,closeDULoaderPopup} from "../../actions/dataActions";
@@ -56,6 +56,11 @@ export class DataUploadLoader extends React.Component {
 		</div>
 	</div>
 		</Modal.Body>
+		<Modal.Footer>
+                    <Link to="/data"  style={{paddingRight:"10px"}}  onClick={this.closeModelPopup.bind(this)}><Button onClick={this.closeModelPopup.bind(this)}>Cancel</Button></Link>
+                    <Link to="/data" onClick={this.closeModelPopup.bind(this)}><Button bsStyle="primary" onClick={this.closeModelPopup.bind(this)}>Hide</Button></Link>
+
+                    </Modal.Footer>
 		</Modal>
           </div>
        );
