@@ -42,6 +42,7 @@ class DatasetSerializer(serializers.ModelSerializer):
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
         meta_data = ret.get('meta_data')
         self.changes_to_metadata(meta_data)
+
         try:
             ret['message'] = get_message(instance)
         except:
@@ -52,10 +53,11 @@ class DatasetSerializer(serializers.ModelSerializer):
             instance.save()
 
         if instance.datasource_type=='fileUpload':
+            PROCEED_TO_UPLOAD_CONSTANT = settings.PROCEED_TO_UPLOAD_CONSTANT
             try:
                 from api.helper import convert_to_humanize
                 ret['file_size']=convert_to_humanize(instance.input_file.size)
-                if(instance.input_file.size < 15000000 or ret['status']=='SUCCESS'):
+                if(instance.input_file.size < PROCEED_TO_UPLOAD_CONSTANT or ret['status']=='SUCCESS'):
                     ret['proceed_for_loading']=True
                 else:
                     ret['proceed_for_loading'] = False
@@ -167,7 +169,8 @@ class DataListSerializer(serializers.ModelSerializer):
             "bookmarked",
             "analysis_done",
             "file_remote",
-            "status"
+            "status",
+            "viewed"
         )
 
 
