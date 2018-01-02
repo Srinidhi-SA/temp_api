@@ -269,8 +269,9 @@ export class VariableSelection extends React.Component {
 		return (
 				<div className="side-body">
 				<div className="main-content">
+				
 				<div className="panel panel-default">
-				<div className="panel-body">
+				<div className="panel-body no-border xs-pt-10 xs-pr-0 xs-pb-0 xs-pl-0">
 				<Form onSubmit={this.createSignal.bind(this)}>
 				<FormGroup role="form">
 				<div className="row">
@@ -297,7 +298,7 @@ export class VariableSelection extends React.Component {
 				{/*---------end of selection component----------------------*/}
 				<div className="row">
 				<div className="col-md-12">
-				<div className="panel panel-alt4 panel-borders">
+				<div className="panel panel-alt4">
 				<div className="panel-heading text-center">Type of Signals</div>
 				<div className="panel-body text-center" id="analysisList" >
 				<div className="ma-checkbox inline"><input id="allAnalysis" type="checkbox" className="allAnalysis" checked={store.getState().datasets.dataSetSelectAllAnalysis} onClick={this.handleAllAnlysis.bind(this)}  /><label htmlFor="allAnalysis">Select All</label></div>
@@ -311,18 +312,21 @@ export class VariableSelection extends React.Component {
 				</div>
 				</div>
 				<div className="row">
-				<div className="col-lg-4 col-lg-offset-8">
-				<div className="htmlForm-group">
-				<input type="text" name="createSname" id="createSname"  required={true} className="form-control input-sm" placeholder="Enter a signal name"/>
+				<div className="col-lg-6 col-lg-offset-6">
+				
+				<div className="form-inline text-right">				
+				<div class="form-group">
+				<label className="sr-only">Signal Name</label>
+				<div className="htmlForm-group lg-pr-10">
+					<input type="text" name="createSname" id="createSname"  required={true} className="form-control input-sm" placeholder="Enter a signal name"/>
+					</div>
+				</div>		 
+				<button type="submit" className="btn btn-primary">CREATE SIGNAL</button>				
 				</div>
+				
 				</div>{/*<!-- /.col-lg-4 -->*/}
 				</div>
-				<hr/>
-				<div className="row">
-				<div className="col-md-12 text-right">
-				<button type="submit" className="btn btn-primary">CREATE SIGNAL</button>
-				</div>
-				</div>
+			 
 				</FormGroup>
 				</Form>
 

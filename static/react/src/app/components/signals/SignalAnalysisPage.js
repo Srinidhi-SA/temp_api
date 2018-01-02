@@ -89,7 +89,7 @@ export class SignalAnalysisPage extends React.Component {
                     </div>
                     <div className="clearfix"></div>
                   </div>
-                  <div className="panel-body">
+                  <div className="panel-body no-border">
                     <div className="card full-width-tabs">
                       <ul className="nav nav-tabs" id="guide-tabs" role="tablist">
                         <li className="active"><a href="#overview" aria-controls="overview" role="tab" data-toggle="tab"><i className="mAd_icons tab_overview"></i><span>Overview</span></a></li>

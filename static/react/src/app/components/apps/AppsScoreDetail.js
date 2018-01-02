@@ -86,7 +86,7 @@ export class AppsScoreDetail extends React.Component {
 		                      
 		                      <div className="clearfix"></div>
 		                    </div>
-		                   <div className="panel-body">
+		                   <div className="panel-body no-border">
 		                   <div className="row-fluid"> 
 		           
 		                  {cardDataList}

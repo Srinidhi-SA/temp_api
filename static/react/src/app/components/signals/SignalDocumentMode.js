@@ -141,7 +141,7 @@ export class SignalDocumentMode extends React.Component {
                         <div className="clearfix"></div>
                       </div>
                         
-                      <div className="panel-body documentModeSpacing">
+                      <div className="panel-body no-border documentModeSpacing">
                         <Card cardData={objs}/>
                       </div>
                     </div>
