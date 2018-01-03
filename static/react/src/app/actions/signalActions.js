@@ -77,6 +77,7 @@ export function triggerSignalAnalysis(signalData,percentage,message){
         dispatch(updateCsLoaderValue(percentage));
         dispatch(updateCsLoaderMsg(message));
         fetchCreateSignalSuccess(signalData,dispatch);
+        dispatch(assignSignalData(signalData));
     }
 }
 export function checkAnalysisIsChecked(){
