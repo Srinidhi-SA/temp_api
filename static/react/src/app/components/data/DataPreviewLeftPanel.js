@@ -62,14 +62,15 @@ export class DataPreviewLeftPanel extends React.Component {
 		    return(
 		            <div className="side-body">
                     {/* <!-- Page Title and Breadcrumbs -->*/}
-                    <div className="page-head">
-                    <div className="row">
-                    <div className="col-md-8">
-                    <h4>Score Data Preview</h4>
-                    </div>
-                    </div>
-                    <div className="clearfix"></div>
-                    </div>
+					<div className="page-head">
+					<div className="row">
+					<div className="col-md-8">
+					<h3 className="xs-mt-0 text-capitalize">Score Data Preview</h3>
+					</div>
+					</div>
+					</div> 
+					
+					
                     { /*<!-- /.Page Title and Breadcrumbs -->*/ }
                     { /*<!-- Page Content Area -->*/}
                     <div className="main-content">
@@ -99,9 +100,9 @@ export class DataPreviewLeftPanel extends React.Component {
                     </div>
                     </div>
                     
-                    <div className="row col-md-offset-11">
+                    <div className="row">
                     <div className="panel">
-                    <div className="panel-body">
+                    <div className="panel-body no-border text-right">
                     <Link to={scoreLink} onClick={this.emptyScoreCSVData.bind(this)}><Button> Close</Button></Link>
                     </div>
                     </div>

@@ -65,7 +65,7 @@ export class AppsStockDataPreview extends React.Component {
 				
 				<div class="col-md-11 col-md-offset-1 xs-pl-0">
 				<div class="panel">
-				<div class="panel-body">
+				<div class="panel-body no-border">
 				
 				<div className="navbar xs-mb-0">
 						<ul className="nav navbar-nav navbar-right">
