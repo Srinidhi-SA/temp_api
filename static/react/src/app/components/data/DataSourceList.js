@@ -7,7 +7,7 @@ import Dropzone from 'react-dropzone'
 import store from "../../store";
 import $ from "jquery";
 
-import {FILEUPLOAD,MYSQL,INPUT,PASSWORD} from "../../helpers/helper";
+import {FILEUPLOAD,MYSQL,INPUT,PASSWORD,bytesToSize} from "../../helpers/helper";
 
 import {getDataSourceList,saveFileToStore,updateSelectedDataSrc,updateDbDetails} from "../../actions/dataSourceListActions";
 
@@ -44,17 +44,17 @@ export class DataSourceList extends React.Component {
 	         else{
 	             $("#fileErrorMsg").addClass("visibilityHidden");
 	             this.props.dispatch(saveFileToStore(files))
-	         }     
+	         }
 	    }else{
 	        files[0] = {"name":"","size":""};
 	        this.props.dispatch(saveFileToStore(files))
 	    }
-	    
+
 	}
 	popupMsg(){
 	    $("#fileErrorMsg").removeClass("visibilityHidden");
         $("#fileErrorMsg").html("File format is not supported. Please upload a CSV and retry.");
-        
+
 	}
 	handleSelect(key){
 		this.props.dispatch(updateSelectedDataSrc(key))
@@ -62,11 +62,15 @@ export class DataSourceList extends React.Component {
 	handleInputChange(event){
 		updateDbDetails(event);
 	}
+
 	render() {
 		const dataSrcList = store.getState().dataSource.dataSourceList.conf;
         var fileName = store.getState().dataSource.fileUpload.name;
+				val => ['Bytes','Kb','Mb','Gb','Tb'][Math.floor(Math.log2(val)/10)]
 
         var fileSize = store.getState().dataSource.fileUpload.size;
+			if(store.getState().dataSource.fileUpload.size)
+			 fileSize=bytesToSize(store.getState().dataSource.fileUpload.size);
 		if (dataSrcList) {
 			const navTabs = dataSrcList.map((data, i) => {
 				return (<NavItem eventKey={data.dataSourceType} onSelect={this.handleSelect}>
@@ -102,7 +106,7 @@ export class DataSourceList extends React.Component {
 						</Dropzone>
 						<aside>
 				          <ul className={fileName != "" ? "list-unstyled bullets_primary":"list-unstyled"}>
-				            	<li>{fileName}{fileName != "" ? " - ":""}{fileSize}{fileName != "" ? " bytes ":""}</li>
+				            	<li>{fileName}{fileName != "" ? " - ":""}{fileSize}</li>
 				            	<li className="text-danger visibilityHidden" id="fileErrorMsg">Please select csv file to upload.</li>
 				            	</ul>
 				        </aside>
@@ -119,7 +123,7 @@ export class DataSourceList extends React.Component {
 						</div>
 						</div>)
 					}
-					
+
 
 				});
 				if(data.dataSourceType.toLowerCase() != FILEUPLOAD.toLowerCase()){
