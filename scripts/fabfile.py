@@ -98,7 +98,7 @@ def deploy_api(branch="dev"):
     local('echo "{0}" > {1}'.format(text_command, config_file_path))
 
     with cd(BASE_DIR):
-
+        import pdb;pdb.set_trace()
         if os.path.exists(config_file_path) is True:
             local('git add {0}'.format(config_file_path))
 
