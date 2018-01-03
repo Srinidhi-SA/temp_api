@@ -606,3 +606,7 @@ export function showZoomChart(flag, classId) {
 export function updateHide(flag) {
   return {type: "UPDATE_HIDE", flag}
 }
+
+export function showChartData(flag, classId) {
+  return {type: "CHART_DATA", flag, classId}
+}
