@@ -105,9 +105,13 @@ class Job(models.Model):
                                                               port=settings.YARN.get("port"),
                                                               timeout=settings.YARN.get("timeout"))
         app_status = ym.cluster_application(self.url)
-
-        self.status = app_status.data['app']["state"]
-        self.save()
+        try:
+            print app_status
+            self.status = app_status.data['app']["state"]
+            self.save()
+        except Exception as err:
+            print "update_status_error -- "
+            print err
 
     def get_original_object(self):
         original_object = None
