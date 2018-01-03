@@ -8,7 +8,7 @@ import Dialog from 'react-bootstrap-dialog'
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
 import {isEmpty,RENAME,DELETE,REPLACE,DATA_TYPE,REMOVE,CURRENTVALUE,NEWVALUE,SET_VARIABLE,UNIQUE_IDENTIFIER,SET_POLARITY} from "../helpers/helper";
 let refDialogBox = "";
-
+var refreshDatasetsInterval = null;
 function getHeader(token){
 	return {
 		'Authorization': token,
@@ -16,7 +16,16 @@ function getHeader(token){
 	};
 }
 
-
+export function refreshDatasets(props){
+    return (dispatch) => {
+        refreshDatasetsInterval = setInterval(function() {
+           var pageNo = window.location.href.split("=")[1];
+            if(pageNo == undefined) pageNo = 1;
+            if(window.location.pathname == "/data")
+            dispatch(getDataList(parseInt(pageNo)));
+        },DEFAULTINTERVAL);
+    }
+}
 export function getDataList(pageNo) {
 	return (dispatch) => {
 		return fetchDataList(pageNo,getUserDetailsOrRestart.get().userToken).then(([response, json]) =>{

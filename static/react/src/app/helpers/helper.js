@@ -343,6 +343,29 @@ export function  subTreeSetting(urlLength, length,paramL2) {
     return ((+ number).toFixed(4)).replace(/^-?\d*\.?|0+$/g, '').length;
   }
 
+  export function handleJobProcessing(slug){
+      return (dispatch) => {
+          return updateJobStatus(slug).then(([response, json]) =>{
+              if(response.status === 200){
+    
+               
+              }
+              else{
+                  dispatch(hideDULoaderPopup());
+                  dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
+              }
+          })
+      }
+  }
+  
+  function updateJobStatus(slug) {
+      return fetch(API+'/api/get_job_kill/'+slug+'/',{
+          method: 'get',
+          headers: getHeader(getUserDetailsOrRestart.get().userToken)
+      }).then( response => Promise.all([response, response.json()])).catch(function(error){
+          bootbox.alert("Unable to connect to server. Check your connection please try again.")
+      });
+  }
 export{
 	FILEUPLOAD,
 	MYSQL,
