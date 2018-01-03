@@ -18,6 +18,8 @@ import {STATIC_URL} from "../../helpers/env";
 		dataUploadLoaderModal:store.datasets.dataUploadLoaderModal,
 		dULoaderValue:store.datasets.dULoaderValue,
 		dataLoaderText:store.datasets.dataLoaderText,
+		showHideData:store.signals.showHideData
+
 	};
 })
 
@@ -33,6 +35,7 @@ export class DataUploadLoader extends React.Component {
   }
   render() {
 		let img_src=STATIC_URL+"assets/images/brain_loading.gif"
+		let checked=!this.props.showHideData
    return (
           <div id="dULoader">
       	<Modal show={store.getState().datasets.dataUploadLoaderModal} backdrop="static" onHide={this.closeModelPopup.bind(this)} dialogClassName="modal-colored-header">
@@ -58,7 +61,7 @@ export class DataUploadLoader extends React.Component {
 		</Modal.Body>
 		<Modal.Footer>
                     <Link to="/data"  style={{paddingRight:"10px"}}  onClick={this.closeModelPopup.bind(this)}><Button onClick={this.closeModelPopup.bind(this)}>Cancel</Button></Link>
-                    <Link to="/data" onClick={this.closeModelPopup.bind(this)}><Button bsStyle="primary" onClick={this.closeModelPopup.bind(this)}>Hide</Button></Link>
+                    <Link to="/data" onClick={this.closeModelPopup.bind(this)}><Button bsStyle="primary" disabled={checked} onClick={this.closeModelPopup.bind(this)}>Hide</Button></Link>
 
                     </Modal.Footer>
 		</Modal>
