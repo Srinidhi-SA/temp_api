@@ -105,7 +105,11 @@ def deploy_api(branch="dev"):
             local('git checkout {0}'.format(react_env))
 
         if os.path.exists(react_npm_log) is True:
-            local('git checkout {0}'.format(react_npm_log))
+            ls_react_npm_log = local('ls {0}'.format(react_npm_log), capture=True)
+            if 'cannot access' in ls_react_npm_log:
+                pass
+            else:
+                local('git checkout {0}'.format(react_npm_log))
         local('git commit -m "version changed. Automated Deployment."')
 
     only_for_api_push_and_pull(
