@@ -105,7 +105,7 @@ def deploy_api(branch="dev"):
         if os.path.exists(react_env) is True:
             local('git checkout {0}'.format(react_env))
 
-        if os.path.exists(react_npm_log) is True
+        if os.path.exists(react_npm_log) is True:
             local('git checkout {0}'.format(react_npm_log))
         local('git commit -m "version changed. Automated Deployment."')
 
