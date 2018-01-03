@@ -40,7 +40,7 @@ export class DataUploadLoader extends React.Component {
 		<div className="row">
 		<div className="col-md-12">
 		<div className="panel">
-			<div className="panel-body">
+			<div className="panel-body no-border">
 				<h4 className="text-center"><br/>
 				<img src={img_src} /><br/>
 				<br/>

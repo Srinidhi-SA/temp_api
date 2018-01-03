@@ -357,7 +357,7 @@ export class Signals extends React.Component {
 				</div>				
               </div>
             </div>
-          </div>
+           
 
           <div className="main-content">
             <div className="row">

@@ -370,33 +370,7 @@ ul.recActivity li:hover { background:#f9fafc }
 .recActivity li img {
     width: 45px;
 }
-.text-bold {
-	font-weight: bold
-}
-.text-left {
-	text-align: left
-}
-.text-right {
-	text-align: right
-}
-.text-center {
-	text-align: center
-}
-.text-justify {
-	text-align: justify
-}
-.text-nowrap {
-	white-space: nowrap
-}
-.text-lowercase {
-	text-transform: lowercase
-}
-.text-uppercase {
-	text-transform: uppercase
-}
-.text-capitalize {
-	text-transform: capitalize
-}
+
 .text-muted {
 	color: #777
 }

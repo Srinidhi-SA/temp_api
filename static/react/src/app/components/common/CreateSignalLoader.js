@@ -53,9 +53,8 @@ let imgsrc_url=STATIC_URL+"assets/images/brain_loading.gif"
       	<Modal.Body>
     	<div className="row">
 		<div className="col-md-12">
-		<div className="panel">
-			<div className="panel-body">
-
+		<div className="panel"> 
+			<div className="panel-body no-border">
 			<h4 className="text-center"><br/>
 			<img src= {imgsrc_url} /><br/>
 			<br/>
