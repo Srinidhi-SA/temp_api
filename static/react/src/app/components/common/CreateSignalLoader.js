@@ -36,6 +36,12 @@ export class CreateSignalLoader extends React.Component {
   	clearCreateSignalInterval();
   	//this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, 1));
   }
+  cancelSignalProcessing(){
+      this.props.dispatch(closeCsLoaderModal());
+      this.props.dispatch(hideDataPreview());
+      clearCreateSignalInterval();
+      handleJobProcessing(this.props.signalData.slug);
+  }
   render() {
       var that = this;
       if(this.props.signalData != null){
@@ -74,7 +80,7 @@ let checked=!this.props.showHide
 	</div>
 		</Modal.Body>
 		<Modal.Footer>
-                    <Link to="/signals"  style={{paddingRight:"10px"}}  onClick={this.closeModelPopup.bind(this)}><Button onClick={this.closeModelPopup.bind(this)}>Cancel</Button></Link>
+                    <Link to="/signals"  style={{paddingRight:"10px"}}  onClick={this.cancelSignalProcessing.bind(this)}><Button onClick={this.closeModelPopup.bind(this)}>Cancel</Button></Link>
                     <Link to="/signals" onClick={this.closeModelPopup.bind(this)}><Button disabled={checked} bsStyle="primary" onClick={this.closeModelPopup.bind(this)}>Hide</Button></Link>
 
                     </Modal.Footer>
