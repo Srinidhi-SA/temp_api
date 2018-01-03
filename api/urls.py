@@ -79,6 +79,7 @@ urlpatterns = [
     url(r'^xml/(?P<slug>[^/.]+)/',views.set_pmml , name="set_pmml"),
     url(r'^get_job_kill/(?P<slug>[^/.]+)/',views.get_job_kill , name="get_job_kill"),
     url(r'^get_job_refreshed/(?P<slug>[^/.]+)/',views.get_job_refreshed , name="get_job_refreshed"),
+    url(r'^get_job_restarted/(?P<slug>[^/.]+)/',views.get_job_restarted , name="get_job_restarted"),
     url(r'^get_xml/(?P<slug>[^/.]+)/(?P<algoname>[^/.]+)/',views.get_pmml , name="get_pmml"),
     url(r'^set_job_report/(?P<slug>[^/.]+)/(?P<report_name>[^/.]+)/',views.set_job_reporting , name="set_job_reporting"),
     url(r'^get_job_report/(?P<slug>[^/.]+)/',views.get_job_report , name="get_job_report"),

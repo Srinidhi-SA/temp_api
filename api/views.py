@@ -4631,10 +4631,14 @@ def get_chart_or_small_data(request, slug=None):
 def get_job_kill(request, slug=None):
 
     job_object = Job.objects.filter(object_id=slug).first()
-    job_object.kill()
-    return JsonResponse({
-        'message': 'killed'
-    })
+    if job_object.kill() is True:
+        return JsonResponse({
+            'message': 'killed'
+        })
+    else:
+        return JsonResponse({
+            'message': 'Unable to kill.'
+        })
 
 
 @api_view(['GET'])
@@ -4646,6 +4650,15 @@ def get_job_refreshed(request, slug=None):
         'message': 'refreshed'
     })
 
+@api_view(['GET'])
+def get_job_restarted(request, slug=None):
+
+    job_object = Job.objects.filter(object_id=slug).first()
+    job_object.start()
+    return JsonResponse({
+        'message': 'started'
+    })
+
 
 @csrf_exempt
 def set_messages(request, slug=None):
@@ -4653,10 +4666,10 @@ def set_messages(request, slug=None):
     if slug is None:
         return JsonResponse({"message": "Failed"})
 
-    job = Job.objects.get(slug=slug)
-
-    if not job:
-        return JsonResponse({'result': 'No job exist.'})
+    # job = Job.objects.get(slug=slug)
+    #
+    # if not job:
+    #     return JsonResponse({'result': 'No job exist.'})
 
     return_data = request.GET.get('data', None)
     data = request.body
@@ -4665,8 +4678,8 @@ def set_messages(request, slug=None):
     ac = AccessFeedbackMessage()
     data = ac.append_using_key(slug, data)
 
-    job.message_log = json.dumps(data)
-    job.save()
+    # job.message_log = json.dumps(data)
+    # job.save()
 
     if return_data is None:
         return JsonResponse({'message': "Success"})
