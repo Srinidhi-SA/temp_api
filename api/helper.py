@@ -568,6 +568,10 @@ def decode_and_convert_chart_raw_data(data):
         c3.remove_x_from_data()
         c3.add_tooltip_for_donut()
 
+        legend_data = get_x_column_from_chart_data_without_xs(chart_data, axes)
+        if len(legend_data) >= 1:
+            c3_chart_details["legend_data"] = get_x_column_from_chart_data_without_xs(chart_data, axes)
+
         c3_chart_details['table_c3'] = pie_chart_data
         c3_chart_details["chart_c3"] = c3.get_json()
         print "final donut object",c3_chart_details

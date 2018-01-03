@@ -4,6 +4,7 @@ import {Redirect} from 'react-router';
 import {handleDecisionTreeTable} from "../actions/signalActions";
 import renderHTML from 'react-render-html';
 import {API} from "./env";
+import { showLoading, hideLoading } from 'react-redux-loading-bar'
 
 function getHeader(token){
     return {
@@ -352,15 +353,22 @@ export function  subTreeSetting(urlLength, length,paramL2) {
   }
 
   export function handleJobProcessing(slug){
-      return fetch(API+'/api/get_job_kill/'+slug+'/',{
-          method: 'get',
-          headers: getHeader(getUserDetailsOrRestart.get().userToken)
-      }).then( response => Promise.all([response, response.json()])).catch(function(error){
-          bootbox.alert("Unable to connect to server. Check your connection please try again.")
-      });
+      return (dispatch) => {
+          dispatch(showLoading());
+          return updateJobStatus(slug).then(([response, json]) =>{
+              dispatch(hideLoading());
+          })
+      }
 
   }
-
+ export function updateJobStatus(slug){
+     return fetch(API+'/api/get_job_kill/'+slug+'/',{
+         method: 'get',
+         headers: getHeader(getUserDetailsOrRestart.get().userToken)
+     }).then( response => Promise.all([response, response.json()])).catch(function(error){
+         bootbox.alert("Unable to connect to server. Check your connection please try again.")
+     });
+ }
 export{
 	FILEUPLOAD,
 	MYSQL,

@@ -14,6 +14,7 @@ import {
   triggerSignalAnalysis,
   emptySignalData,
   refreshSignals,
+  updateHide
 } from "../../actions/signalActions";
 import {
   Pagination,
@@ -128,8 +129,8 @@ export class Signals extends React.Component {
     this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, 1));
   }
 
-  handleDelete(slug) {
-    this.props.dispatch(handleDelete(slug, this.refs.dialog));
+  handleDelete(slug,evt) {
+    this.props.dispatch(handleDelete(slug, this.refs.dialog,evt));
   }
 
   handleRename(slug, name) {
@@ -145,8 +146,10 @@ export class Signals extends React.Component {
     var signalData = {};
     signalData.slug = slug
     this.props.dispatch(openCsLoaderModal());
+    this.props.dispatch(updateHide(true))
     this.props.dispatch(emptySignalAnalysis());
     this.props.dispatch(triggerSignalAnalysis(signalData, percentage, message));
+    
     //this.props.history.push('/signals/'+slug);
   }
   onChangeOfSearchBox(e) {

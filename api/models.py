@@ -1313,7 +1313,7 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
             class_name=job_type,
             job_config=jobConfig,
             job_name=instance.name,
-            message_slug=get_message_slug(instance),
+            message_slug=get_message_slug(job),
             queue_name=queue_name
         )
         print "Job submitted."
@@ -1369,6 +1369,12 @@ def get_message_slug(instance):
     ac = AccessFeedbackMessage()
     slug = ac.get_cache_name(instance)
     return slug
+
+
+def get_slug_from_message_url(url):
+    split_with_underscore = url.split('_')
+    return "_".join(split_with_underscore[1:-1])
+
 
 
 class StockDataset(models.Model):
