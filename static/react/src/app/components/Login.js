@@ -71,7 +71,7 @@ export class Login extends React.Component {
                 <div className="login-container">
                   <div className="panel panel-default">
                     <div className="panel-heading"><img src={STATIC_URL + "assets/images/m_adv_logo.png" } alt="mAdvisor" className="img-responsive logo-img"/></div>
-                    <div className="panel-body">
+                    <div className="panel-body no-border">
 
                       <h3>SIGN IN</h3>
                       <div className="login-form">
