@@ -4652,12 +4652,21 @@ def set_messages(request, slug=None):
 
     if slug is None:
         return JsonResponse({"message": "Failed"})
+
+    job = Job.objects.get(slug=slug)
+
+    if not job:
+        return JsonResponse({'result': 'No job exist.'})
+
     return_data = request.GET.get('data', None)
     data = request.body
     data = json.loads(data)
     from api.redis_access import AccessFeedbackMessage
     ac = AccessFeedbackMessage()
     data = ac.append_using_key(slug, data)
+
+    job.message_log = json.dumps(data)
+    job.save()
 
     if return_data is None:
         return JsonResponse({'message': "Success"})

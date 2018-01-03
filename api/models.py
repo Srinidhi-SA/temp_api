@@ -54,6 +54,7 @@ class Job(models.Model):
     deleted = models.BooleanField(default=False)
     submitted_by = models.ForeignKey(User, null=False)
     error_report = models.TextField(default="{}")
+    message_log = models.TextField(default="{}")
 
     def generate_slug(self):
         if not self.slug:
