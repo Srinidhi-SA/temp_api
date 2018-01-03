@@ -72,14 +72,15 @@ export class MasterSummary extends React.Component {
           <div class="clearfix"></div>
         </div>
         <div className="main-content">
-          <div className="row">
-            <div className="col-md-12">
-              <div className="panel panel-default">
-                <div className="panel-body">
+			   
+				<div className="panel panel-default">
+					<div className="panel-body">
+					
+					
                   <div className="row">
                     <div className="ex_bg">
                       <div className="col-md-9">
-                        <div className="panel-body md-p-50">
+                        <div className="md-p-50">
                           <div className="row">
                             <div className="col-md-4 col-md-offset-2 col-sm-6 data-info">
                               <table>
@@ -137,10 +138,10 @@ export class MasterSummary extends React.Component {
                       <div class="clearfix"></div>
                     </div>
                   </div>
-                </div>
-              </div>
-            </div>
-          </div>
+				  
+             </div>
+				</div>
+            
 
         </div>
       </div>

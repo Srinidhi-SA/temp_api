@@ -456,9 +456,10 @@ export class DataPreview extends React.Component {
 					<div className="main-content">
 					<div className="row">
 					<div className="col-md-9">
-					<div className="panel panel-borders">
+					<div className="panel">
+					<div className="panel-body xs-p-0">
 					{topInfo}
-
+					</div>
 					<div className="clearfix"></div>
 					<div className="table-responsive noSwipe">
 

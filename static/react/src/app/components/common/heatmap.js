@@ -22,7 +22,7 @@ export class HeatMapTable extends React.Component {
    var tableTitle ="";
    var className = "table table-bordered heat-table-map"
        if(this.props.classId) 
-    className = className+" "+"toggleOn";
+    className = className+" "+this.props.classId;
    if(this.props.tableData.topHeader){
    tableTitle = this.props.tableData.topHeader;
    }

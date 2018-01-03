@@ -56,29 +56,32 @@ export class RoboDocumentMode extends React.Component {
 		                 
 		                <div className="panel panel-mAd documentModeSpacing ">
 		                    <div className="panel-heading">
-		                      <h2>{store.getState().apps.roboSummary.name}</h2>
-		                     
-		                      <div className="btn-toolbar pull-right">
+		                      <h2>{store.getState().apps.roboSummary.name}
+							  
+							    <div className="btn-toolbar pull-right">
 		                        <div className="btn-group btn-space">
 		                        <Link className="tabs-control right grp_legends_green continue" to={cardModeLink}>
 		                          <button type="button" className="btn btn-default" title="Card mode">
-		                            <i className="fa fa-id-card-o"></i>
+		                            <i class="zmdi zmdi-hc-lg zmdi-view-carousel"></i>
 		                          </button>
 		                          </Link>
 		                          <button type="button" className="btn btn-default" disabled = "true" title="Document Mode">
-		                              <i className="fa fa-file-text-o"></i>
+		                              <i class="zmdi zmdi-hc-lg zmdi-view-web"></i>
 		                            </button>
 							   <Link className="continue" to="/apps-robo">
-		                          <button type="button" className="btn btn-close">
-		                            <i className="fa fa-times"></i>
+		                          <button type="button" className="btn btn-default">
+		                            <i class="fa zmdi-hc-lg zmdi-close"></i>
 		                          </button>
 								 </Link>
 		                        </div>
 		                      </div>
+							  </h2>
+		                     
+		                    
 		                      
 		                      <div className="clearfix"></div>
 		                    </div>
-		                   <div className="panel-body">
+		                   <div className="panel-body no-border">
 		                   <div className="row-fluid"> 
 		           
 		                  {cardDataList}

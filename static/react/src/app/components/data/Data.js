@@ -15,7 +15,7 @@ import store from "../../store";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {MainHeader} from "../common/MainHeader";
 import {BreadCrumb} from "../common/BreadCrumb";
-import {getDataList, getDataSetPreview, storeSignalMeta, handleDelete, handleRename} from "../../actions/dataActions";
+import {getDataList, getDataSetPreview, storeSignalMeta, handleDelete, handleRename,refreshDatasets} from "../../actions/dataActions";
 import {fetchProductList, openDULoaderPopup, closeDULoaderPopup, storeSearchElement,storeSortElements} from "../../actions/dataActions";
 import {DataUpload} from "./DataUpload";
 import {open, close,triggerDataUploadAnalysis} from "../../actions/dataUploadActions";
@@ -57,6 +57,9 @@ export class Data extends React.Component {
     } else
       this.props.dispatch(getDataList(pageNo));
     }
+  componentDidMount(){
+      this.props.dispatch(refreshDatasets(this.props));
+  }
   getPreviewData(e) {
     var that = this;
     this.selectedData = e.target.id;

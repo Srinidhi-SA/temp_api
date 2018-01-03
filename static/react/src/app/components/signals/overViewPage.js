@@ -286,7 +286,7 @@ closeDocumentMode(){
             let selectedl2Link = that.urlPrefix + "/" + params.slug + "/" + selectedNodeFromLevel1.slug + "/" + letiable.slug + "/$";
             return (
               <li key={i}>
-                <NavLink to={selectedl2Link}>
+                <NavLink to={selectedl2Link} title={letiable.name}>
                   <i className="mAd_icons ic_perf"></i>
                   <span id={letiable.slug}>{letiable.name}</span>
                 </NavLink>
@@ -314,7 +314,7 @@ closeDocumentMode(){
       cardList = selectedNode.listOfCards.map((card, i) => {
         let selectedLink = selectedURL + "/" + card.slug;
         return (
-          <NavLink to={selectedLink} key={i} className="list-group-item">
+          <NavLink to={selectedLink} key={i} className="list-group-item" title={card.name}>
             <i className="fa fa-bar-chart"></i>
             <span>{card.name}</span></NavLink>
         )
@@ -426,7 +426,7 @@ closeDocumentMode(){
 					<div className="btn-toolbar pull-right">
 					<div className="btn-group">
 					{/*<button type="button" className="btn btn-default" disabled="true" title="Card mode"><i className="fa fa-print"></i></button>*/}
-					<button type="button" className="btn btn-default" disabled="true" title="Card mode"><i class="zmdi zmdi-hc-lg zmdi-view-stream"></i></button>
+					<button type="button" className="btn btn-default" disabled="true" title="Card mode"><i class="zmdi zmdi-hc-lg zmdi-view-carousel"></i></button>
 					<Link className="btn btn-default continue" to={{
                             pathname: documentModeLink,
                             state: {
@@ -438,7 +438,7 @@ closeDocumentMode(){
 
 					{/*<Link className="continue" to={that.urlPrefix}>*/}
                             <button type="button" className="btn btn-default" onClick = {this.closeDocumentMode.bind(this)}>
-                              <i class="fa zmdi-hc-lg fa-times"></i>
+                              <i class="zmdi zmdi-hc-lg zmdi-close"></i>
                             </button>
                     {/*</Link>*/}
 
@@ -448,7 +448,7 @@ closeDocumentMode(){
                       <div className="clearfix"></div>
                     </div>
 
-                    <div className="panel-body">
+                    <div className="panel-body no-border">
                       <div className="card full-width-tabs">
                         <ul className="nav nav-tabs" id="guide-tabs" role="tablist">
                           {tabList}</ul>
