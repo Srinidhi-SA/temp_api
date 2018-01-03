@@ -178,7 +178,11 @@ class InsightSerializer(serializers.ModelSerializer):
             instance.viewed = True
             instance.save()
         try:
-            ret['message'] = get_message(instance)
+            message_list = get_message(instance)
+
+            if message_list is not None:
+                message_list = [message_list[-1]]
+            ret['message'] = message_list
         except:
             ret['message'] = None
         if dataset_object.datasource_type=='fileUpload':

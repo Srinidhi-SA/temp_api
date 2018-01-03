@@ -30,12 +30,15 @@ DATABASES = {
 }
 
 PROJECT_APP = [
+    'silk',
+    'django_extensions'
 ]
 
 INSTALLED_APPS += PROJECT_APP
 
 LOCAL_MIDDLEWARE = [
-    'django_cprofile_middleware.middleware.ProfilerMiddleware'
+    # 'django_cprofile_middleware.middleware.ProfilerMiddleware',
+    'silk.middleware.SilkyMiddleware'
 ]
 
 MIDDLEWARE += LOCAL_MIDDLEWARE

@@ -410,7 +410,7 @@ def download_sql_and_dump(branch='development'):
     print details
     path_details= details['path_details']
     server_details= details['server_details']
-    current_time = str(time.time())
+    current_time = time.strftime("%Y%m%dT%H%M%S", time.gmtime())
     base_remote_path = path_details.get('base_remote_path')
     with cd(base_remote_path):
 
@@ -431,14 +431,7 @@ def load_sql_dump_data():
         file_name = 'datadump1514902040.15.json'
         locapath = '/home/ankush/dump_files/' + file_name
         local('python manage.py loaddata {0}'.format(locapath))
-
-
-
-
     local("cat 'Done.'")
-
-
-
 
 
 def recreate_database(type='local'):
