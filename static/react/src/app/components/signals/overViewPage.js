@@ -489,7 +489,7 @@ closeDocumentMode(){
 
                                       </span>
                                     </div>
-                                    <div className="panel-body">
+                                    <div className="panel-body no-border">
                                       <div className="list-group">
                                         {cardList}
                                       </div>
