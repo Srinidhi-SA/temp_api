@@ -19,6 +19,7 @@ import {STATIC_URL} from "../../helpers/env";
 		createSignalLoaderValue:store.signals.createSignalLoaderValue,
 		loaderText:store.signals.loaderText,
 		signalData:store.signals.signalData,
+		showHide:store.signals.showHide
 	};
 })
 
@@ -45,6 +46,7 @@ export class CreateSignalLoader extends React.Component {
       },DYNAMICLOADERINTERVAL)}
 
 let imgsrc_url=STATIC_URL+"assets/images/brain_loading.gif"
+let checked=!this.props.showHide
    return (
           <div id="createSignalLoader">
 
@@ -53,7 +55,7 @@ let imgsrc_url=STATIC_URL+"assets/images/brain_loading.gif"
       	<Modal.Body>
     	<div className="row">
 		<div className="col-md-12">
-		<div className="panel"> 
+		<div className="panel">
 			<div className="panel-body no-border">
 			<h4 className="text-center"><br/>
 			<img src= {imgsrc_url} /><br/>
@@ -73,7 +75,7 @@ let imgsrc_url=STATIC_URL+"assets/images/brain_loading.gif"
 		</Modal.Body>
 		<Modal.Footer>
                     <Link to="/signals"  style={{paddingRight:"10px"}}  onClick={this.closeModelPopup.bind(this)}><Button onClick={this.closeModelPopup.bind(this)}>Cancel</Button></Link>
-                    <Link to="/signals" onClick={this.closeModelPopup.bind(this)}><Button bsStyle="primary" onClick={this.closeModelPopup.bind(this)}>Hide</Button></Link>
+                    <Link to="/signals" onClick={this.closeModelPopup.bind(this)}><Button disabled={checked} bsStyle="primary" onClick={this.closeModelPopup.bind(this)}>Hide</Button></Link>
 
                     </Modal.Footer>
 		</Modal>
