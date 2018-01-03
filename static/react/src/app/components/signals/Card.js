@@ -93,13 +93,15 @@ export class Card extends React.Component {
             case "toggle":
             var tableData = [];
             tableData.push(story.data.toggleon);
+            var toggleData =  this.renderCardData(tableData,"toggleOn");
+            tableData = [];
             tableData.push(story.data.toggleoff);
-            var toggleData =  this.renderCardData(tableData,"toggleTable");
+             var toggleData1 = this.renderCardData(tableData,"toggleOff hidden");
             var inputChk =  <div className="switch-button switch-button-yesno col-md-1 col-md-offset-11">
             <input type="checkbox" name="vehicle" value="Bike" id="swt9" onClick={this.handleCheckBoxEvent.bind(this)}/><span>
             <label for="swt9"></label></span>
             </div>
-            return (<div>{inputChk}{toggleData}</div>);
+            return (<div>{inputChk}{toggleData}{toggleData1}</div>);
             break;
 
             }
