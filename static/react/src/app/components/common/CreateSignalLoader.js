@@ -8,7 +8,7 @@ import {hideDataPreview} from "../../actions/dataActions";
 import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
 import HeatMap from '../../helpers/heatmap';
-import {isEmpty,DYNAMICLOADERINTERVAL,getUserDetailsOrRestart} from "../../helpers/helper";
+import {isEmpty,DYNAMICLOADERINTERVAL,getUserDetailsOrRestart,handleJobProcessing} from "../../helpers/helper";
 import {clearCreateSignalInterval} from "../../actions/signalActions";
 import {STATIC_URL} from "../../helpers/env";
 

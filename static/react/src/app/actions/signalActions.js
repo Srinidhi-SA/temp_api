@@ -85,19 +85,12 @@ function fetchCreateSignal(metaData) {
   }).then(response => Promise.all([response, response.json()]));
 }
 
-export function triggerSignalAnalysis(signalData, percentage, message) {
-  return (dispatch) => {
-    dispatch(updateCsLoaderValue(percentage));
-    dispatch(updateCsLoaderMsg(message));
-    fetchCreateSignalSuccess(signalData, dispatch);
-  }
-}
-export function checkAnalysisIsChecked() {
-  var isChecked = false;
-  $("#analysisList").find("input:checkbox").each(function() {
-    if (this.checked) {
-      isChecked = true;
-      return false;
+export function triggerSignalAnalysis(signalData,percentage,message){
+    return (dispatch) => {
+        dispatch(updateCsLoaderValue(percentage));
+        dispatch(updateCsLoaderMsg(message));
+        fetchCreateSignalSuccess(signalData,dispatch);
+        dispatch(assignSignalData(signalData));
     }
   });
   return isChecked;
