@@ -124,15 +124,15 @@ export class AppsStockDocumentMode extends React.Component {
                           <div className="btn-group btn-space">
                             <Link className="tabs-control right grp_legends_green continue" to={cardModeLink}>
                               <button type="button" className="btn btn-default" title="Card mode">
-                                <i className="pe-7s-display2 pe-lg"></i>
+                                <i class="zmdi zmdi-hc-lg zmdi-view-carousel"></i>
                               </button>
                             </Link>
                             <button type="button" className="btn btn-default" disabled="true" title="Document Mode">
-                              <i className="pe-7s-news-paper pe-lg"></i>
+                              <i class="zmdi zmdi-hc-lg zmdi-view-web"></i>
                             </button>
                             {/*<Link className="tabs-control right grp_legends_green continue" to="/signals">*/}
                               <button type="button" className="btn btn-default" onClick = {this.closeDocumentMode.bind(this)}>
-                                <i className="pe-7s-close pe-lg"></i>
+                                <i class="zmdi zmdi-hc-lg zmdi-close"></i>
                               </button>
                             {/*</Link>*/}
                           </div>
@@ -150,7 +150,7 @@ export class AppsStockDocumentMode extends React.Component {
                       </div>
                       <div className="clearfix"></div>
                       <br/>
-                      <div className="panel-body documentModeSpacing">
+                      <div className="panel-body no-border documentModeSpacing">
                         <Card cardData={objs}/>
                       </div>
                     </div>

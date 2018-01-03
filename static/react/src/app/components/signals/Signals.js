@@ -14,6 +14,7 @@ import {
   triggerSignalAnalysis,
   emptySignalData,
   refreshSignals,
+  updateHide
 } from "../../actions/signalActions";
 import {
   Pagination,
@@ -145,8 +146,10 @@ export class Signals extends React.Component {
     var signalData = {};
     signalData.slug = slug
     this.props.dispatch(openCsLoaderModal());
+    this.props.dispatch(updateHide(true))
     this.props.dispatch(emptySignalAnalysis());
     this.props.dispatch(triggerSignalAnalysis(signalData, percentage, message));
+    
     //this.props.history.push('/signals/'+slug);
   }
   onChangeOfSearchBox(e) {
@@ -353,9 +356,11 @@ export class Signals extends React.Component {
                     </ul>
                   </div>
                 </div>
+				
+				</div>				
               </div>
             </div>
-          </div>
+           
 
           <div className="main-content">
             <div className="row">

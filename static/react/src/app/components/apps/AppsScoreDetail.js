@@ -73,12 +73,12 @@ export class AppsScoreDetail extends React.Component {
 		                        <div className="btn-group btn-space">
 		                        
 		                          <button type="button" className="btn btn-default" disabled = "true" title="Document Mode">
-		                              <i className="fa fa-file-text-o"></i>
+		                               <i class="zmdi zmdi-hc-lg zmdi-view-web"></i>
 		                            </button>
-							   <Link className="continue" to={scoreLink}>
-		                          <button type="button" className="btn btn-close">
-		                            <i className="fa fa-times"></i>
-		                          </button>
+							   <Link className="continue btn btn-default" to={scoreLink}>
+		                          
+		                            <i class="zmdi zmdi-hc-lg zmdi-close"></i>
+		                          
 								 </Link>
 		                        </div>
 		                      </div>
@@ -86,21 +86,18 @@ export class AppsScoreDetail extends React.Component {
 		                      
 		                      <div className="clearfix"></div>
 		                    </div>
-		                   <div className="panel-body">
+		                   <div className="panel-body no-border">
 		                   <div className="row-fluid"> 
 		           
 		                  {cardDataList}
 
 		                    </div>
-		                    
-		                    
-		                    <div className="row ">
-		                     <div className="col-md-12 text-right">
-                            
-                              <Link className="xs-pr-10" to={scoreDataLink} onClick={this.gotoScoreData.bind(this)}><Button  bsStyle="primary">View</Button></Link>
-                              <a  href={EMR+store.getState().apps.scoreSlug+'/data.csv'}id="download" className="btn btn-primary" download>Download</a>
-                              </div>
-		                   
+		                    <div className="row">		                   
+		                    <div className="col-md-12 text-right">
+		                   	<Link to={scoreDataLink} onClick={this.gotoScoreData.bind(this)} className="btn btn-primary xs-pr-10"> View </Link>
+		                    	<a  href={''+EMR+'/'+store.getState().apps.scoreSlug+'/data.csv'} id="download" className="btn btn-primary" download>Download</a>
+		                   </div>
+
 		                   </div>
 		             </div>
 		                    </div>

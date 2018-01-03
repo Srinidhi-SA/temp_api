@@ -26,6 +26,9 @@ export default function reducer(state = {
   loading_message:[],
   viewChartFlag:false,
   chartClassId :"",
+  showHide:false,
+  viewChartDataFlag:false,
+  chartDataClassId :"",
 }, action) {
   console.log("in SIGNAL reducer!!");
   console.log(action);
@@ -226,6 +229,25 @@ export default function reducer(state = {
             chartClassId:action.classId,
           }
     }
+    break;
+
+    case "UPDATE_HIDE":
+    {
+      return{
+        ...state,
+        showHide:action.flag
+      }
+    }
+    break;
+
+  case "CHART_DATA":
+  {
+      return {
+          ...state,
+          viewChartDataFlag: action.flag,
+          chartDataClassId:action.classId,
+        }
+  }
   }
   return state
 }

@@ -94,9 +94,11 @@ export class Profile extends React.Component {
         <div className="side-body">
           {/*<!-- Page Title and Breadcrumbs -->*/}
           <div className="page-head">
-
-            <h4>User Profile</h4>
-
+            <div className="row">
+              <div className="col-md-8">
+                <h3 className="xs-mt-0 text-capitalize">User Profile</h3>
+              </div>
+            </div>
           </div>
           <div className="main-content">
             <div>
@@ -240,7 +242,7 @@ export class Profile extends React.Component {
 
                       <div className="panel-default">
 
-                        <div className="panel-body">
+                        <div className="panel-body no-border">
                           <div className="row">
                             <div className="col-md-6">
                               <h3>{getUserDetailsOrRestart.get().userName}</h3>
@@ -343,7 +345,7 @@ export class Profile extends React.Component {
                         <div className="minHP">
                           <h5>RECENT ACTIVITY</h5>
                           <Scrollbars style={{
-                            height: 312
+                            height: 293
                           }} renderTrackHorizontal={props => <div {...props} className="track-horizontal" style={{
                             display: "none"
                           }}/>} renderThumbHorizontal={props => <div {...props} className="thumb-horizontal" style={{

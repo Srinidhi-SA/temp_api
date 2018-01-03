@@ -124,14 +124,14 @@ export class SignalDocumentMode extends React.Component {
 								<div className="btn-group">
 								<button type="button" className="btn btn-default" onClick={this.print.bind(this)} title="Print Document"><i className="fa fa-print"></i></button>
 								<Link className="btn btn-default continue" to={cardModeLink} title="Card mode">
-								<i class="zmdi zmdi-hc-lg zmdi-view-stream"></i>
+								<i class="zmdi zmdi-hc-lg zmdi-view-carousel"></i>
 								</Link>
 								<button type="button" className="btn btn-default" disabled="true" title="Document Mode">
 								<i class="zmdi zmdi-hc-lg zmdi-view-web"></i>
 								</button>
 								{/*<Link className="continue" to="/signals">*/}
 								<button type="button" className="btn btn-default" onClick = {this.closeDocumentMode.bind(this)}>
-								<i class="fa zmdi-hc-lg fa-times"></i>
+								<i class="zmdi zmdi-hc-lg zmdi-close"></i>
 								</button>
 								{/*</Link>*/}
 								</div>
@@ -141,7 +141,7 @@ export class SignalDocumentMode extends React.Component {
                         <div className="clearfix"></div>
                       </div>
                         
-                      <div className="panel-body documentModeSpacing">
+                      <div className="panel-body no-border documentModeSpacing">
                         <Card cardData={objs}/>
                       </div>
                     </div>

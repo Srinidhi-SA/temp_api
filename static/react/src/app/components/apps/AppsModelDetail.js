@@ -86,11 +86,11 @@ export class AppsModelDetail extends React.Component {
 		                        <div className="btn-group">
 		                        <button type="button" className="btn btn-default" onClick={this.print.bind(this)} title="Print Document"><i className="fa fa-print"></i></button>
 		                          <button type="button" className="btn btn-default" disabled = "true" title="Document Mode">
-		                             <i className="fa fa-file-text-o"></i>
+		                             <i class="zmdi zmdi-hc-lg zmdi-view-web"></i>
 		                            </button>
-							   <Link className="btn btn-alt4 continue btn-close" to={modelLink}>
+							   <Link className="btn btn-default continue btn-close" to={modelLink}>
 		                         
-		                            <i className="fa fa-times"></i>
+		                            <i class="zmdi zmdi-hc-lg zmdi-close"></i>
 		                          
 								 </Link>
 		                        </div>
@@ -98,7 +98,7 @@ export class AppsModelDetail extends React.Component {
 		                      
 		                      <div className="clearfix"></div>
 		                    </div>
-		                   <div className="panel-body">
+		                   <div className="panel-body no-border">
 		                   <div className="row-fluid"> 
 		           
 		                  {cardDataList}

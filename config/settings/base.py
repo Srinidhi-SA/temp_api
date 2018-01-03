@@ -1086,3 +1086,5 @@ LIST_OF_ADMIN_EMAILS = [
 import config_file_name_to_run
 
 UI_VERSION = config_file_name_to_run.UI_VERSION
+
+PROCEED_TO_UPLOAD_CONSTANT = 15000000

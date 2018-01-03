@@ -54,6 +54,7 @@ class Job(models.Model):
     deleted = models.BooleanField(default=False)
     submitted_by = models.ForeignKey(User, null=False)
     error_report = models.TextField(default="{}")
+    message_log = models.TextField(default="{}")
 
     def generate_slug(self):
         if not self.slug:
@@ -70,7 +71,18 @@ class Job(models.Model):
     def kill(self):
         from api.yarn_job_api import kill_application, kill_application_using_fabric
         # return kill_application(self.url)
-        return kill_application_using_fabric(self.url)
+        url_status =  kill_application_using_fabric(self.url)
+
+        if url_status is True:
+            original_object = self.get_original_object()
+
+            if original_object is not None:
+                original_object.status = 'FAILED'
+                original_object.save()
+            self.status = 'KILLED'
+            self.save()
+
+        return url_status
 
     def start(self):
         command_array = json.loads(self.command_array)
@@ -79,21 +91,7 @@ class Job(models.Model):
             command_array=command_array
         )
         self.url = newly_spawned_job.get('application_id')
-        original_object = None
-        if self.job_type in ["metadata", "subSetting"]:
-            original_object = Dataset.objects.get(slug=self.object_id)
-        elif self.job_type == "master":
-            original_object = Insight.objects.get(slug=self.object_id)
-        elif self.job_type == "model":
-            original_object = Trainer.objects.get(slug=self.object_id)
-        elif self.job_type == 'score':
-            original_object = Score.objects.get(slug=self.object_id)
-        elif self.job_type == 'robo':
-            original_object = Robo.objects.get(slug=self.object_id)
-        elif self.job_type == 'stockAdvisor':
-            original_object = StockDataset.objects.get(slug=self.object_id)
-        else:
-            print "No where to write"
+        original_object = self.get_original_object()
 
         if original_object is not None:
             original_object.status = 'INPROGRESS'
@@ -110,6 +108,26 @@ class Job(models.Model):
 
         self.status = app_status.data['app']["state"]
         self.save()
+
+    def get_original_object(self):
+        original_object = None
+        if self.job_type in ["metadata", "subSetting"]:
+            original_object = Dataset.objects.get(slug=self.object_id)
+        elif self.job_type == "master":
+            original_object = Insight.objects.get(slug=self.object_id)
+        elif self.job_type == "model":
+            original_object = Trainer.objects.get(slug=self.object_id)
+        elif self.job_type == 'score':
+            original_object = Score.objects.get(slug=self.object_id)
+        elif self.job_type == 'robo':
+            original_object = Robo.objects.get(slug=self.object_id)
+        elif self.job_type == 'stockAdvisor':
+            original_object = StockDataset.objects.get(slug=self.object_id)
+        else:
+            print "No where to write"
+
+        return original_object
+
 
 
 class Dataset(models.Model):
@@ -137,6 +155,7 @@ class Dataset(models.Model):
     file_remote = models.CharField(max_length=100, null=True)
     analysis_done = models.BooleanField(default=False)
     status = models.CharField(max_length=100, null=True, default="Not Registered")
+    viewed = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['-created_at', '-updated_at']

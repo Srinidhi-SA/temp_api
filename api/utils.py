@@ -178,14 +178,19 @@ class InsightSerializer(serializers.ModelSerializer):
             instance.viewed = True
             instance.save()
         try:
-            ret['message'] = get_message(instance)
+            message_list = get_message(instance)
+
+            if message_list is not None:
+                message_list = [message_list[-1]]
+            ret['message'] = message_list
         except:
             ret['message'] = None
         if dataset_object.datasource_type=='fileUpload':
+            PROCEED_TO_UPLOAD_CONSTANT = settings.PROCEED_TO_UPLOAD_CONSTANT
             try:
                 from api.helper import convert_to_humanize
                 ret['file_size']=convert_to_humanize(dataset_object.input_file.size)
-                if(dataset_object.input_file.size<15000000 or ret['status']=='SUCCESS'):
+                if(dataset_object.input_file.size < PROCEED_TO_UPLOAD_CONSTANT or ret['status']=='SUCCESS'):
                     ret['proceed_for_loading']=True
                 else:
                     ret['proceed_for_loading'] = False
