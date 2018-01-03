@@ -40,28 +40,26 @@ export class CreateSignalLoader extends React.Component {
     this.props.dispatch(closeCsLoaderModal());
     this.props.dispatch(hideDataPreview());
     clearCreateSignalInterval();
-    handleJobProcessing(this.props.signalData.slug);
+    this.props.dispatch(handleJobProcessing(this.props.signalData.slug));
   }
-  render() {
-    var that = this;
-    if (this.props.signalData != null) {
-      setTimeout(function() {
-        if (that.props.signalData.hasOwnProperty("proceed_for_loading") && !that.props.signalData.proceed_for_loading) {
-          that.props.history.push("/signals");
-        }
-      }, DYNAMICLOADERINTERVAL)
-    }
-
-    let imgsrc_url = STATIC_URL + "assets/images/brain_loading.gif"
-    //let checked=!this.props.showHide
-    return (
-      <div id="createSignalLoader">
-
-        <Modal show={store.getState().signals.createSignalLoaderModal} backdrop="static" onHide={this.closeModelPopup.bind(this)} dialogClassName="modal-colored-header">
-
-          <Modal.Body>
-            <div className="row">
-              <div className="col-md-12">
+    render() {
+        var that = this;
+        if(this.props.signalData != null){
+            setTimeout(function() {
+                if(that.props.signalData.hasOwnProperty("proceed_for_loading") && !that.props.signalData.proceed_for_loading){
+                    that.props.history.push("/signals");
+                }
+            },DYNAMICLOADERINTERVAL)}
+        
+        let imgsrc_url=STATIC_URL+"assets/images/brain_loading.gif"
+        return (
+                <div id="createSignalLoader">
+                
+                <Modal show={store.getState().signals.createSignalLoaderModal}  backdrop="static" onHide={this.closeModelPopup.bind(this)} dialogClassName="modal-colored-header">
+                
+                <Modal.Body>
+                <div className="row">
+                <div className="col-md-12">
                 <div className="panel">
                   <div className="panel-body no-border">
                     <h4 className="text-center"><br/>
@@ -89,10 +87,10 @@ export class CreateSignalLoader extends React.Component {
                   <Link to="/signals" style={{
                     paddingRight: "10px"
                   }} onClick={this.cancelSignalProcessing.bind(this)}>
-                    <Button onClick={this.closeModelPopup.bind(this)}>Cancel</Button>
+                    <Button onClick={this.cancelSignalProcessing.bind(this)}>Cancel</Button>
                   </Link>
                   <Link to="/signals" onClick={this.closeModelPopup.bind(this)}>
-                    <Button bsStyle="primary" onClick={this.closeModelPopup.bind(this)}>Hide</Button>
+                    <Button bsStyle="primary" >Hide</Button>
                   </Link>
                 </div>
               </Modal.Footer>
