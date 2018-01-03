@@ -25,7 +25,10 @@ const err = (store) => (next) => (action) => {
         location.reload();
       
     }else{
-    	bootbox.alert(e.message)
+    	//bootbox.alert(e.message)
+        sessionStorage.clear();
+        cookieObj.clearCookies();
+        location.reload();
     }
   }
 }

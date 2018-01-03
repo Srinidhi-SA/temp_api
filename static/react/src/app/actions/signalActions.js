@@ -1,7 +1,7 @@
 import React from "react";
 import {API} from "../helpers/env";
 import {CSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,PERPAGE,SUCCESS,FAILED,getUserDetailsOrRestart,DIMENSION,
-    MEASURE,SET_VARIABLE,PERCENTAGE,GENERIC_NUMERIC,SET_POLARITY,DYNAMICLOADERINTERVAL,UNIQUE_IDENTIFIER} from "../helpers/helper";
+    MEASURE,SET_VARIABLE,PERCENTAGE,GENERIC_NUMERIC,SET_POLARITY,DYNAMICLOADERINTERVAL,UNIQUE_IDENTIFIER,handleJobProcessing} from "../helpers/helper";
 import {connect} from "react-redux";
 import store from "../store";
 import {openCsLoaderModal,closeCsLoaderModal,updateCsLoaderValue,updateCsLoaderMsg} from "./createSignalActions";
@@ -447,7 +447,8 @@ export function emptySignalAnalysis() {
 }
 
 //delete signal -------------------
-export function showDialogBox(slug,dialog,dispatch){
+export function showDialogBox(slug,dialog,dispatch,evt){
+    var labelTxt = evt.target.text;
 	Dialog.setOptions({
 		  defaultOkLabel: 'Yes',
 		  defaultCancelLabel: 'No',
@@ -458,7 +459,8 @@ export function showDialogBox(slug,dialog,dispatch){
 		  actions: [
 		    Dialog.CancelAction(),
 		    Dialog.OKAction(() => {
-		    	deleteSignal(slug,dialog,dispatch)
+		        if(labelTxt.indexOf("Stop") != -1)dispatch(handleJobProcessing(slug));
+		        else deleteSignal(slug,dialog,dispatch)
 		    })
 		  ],
 		  bsSize: 'medium',
@@ -468,9 +470,9 @@ export function showDialogBox(slug,dialog,dispatch){
 		  }
 		});
 }
-export function handleDelete(slug,dialog) {
+export function handleDelete(slug,dialog,evt) {
 	return (dispatch) => {
-		showDialogBox(slug,dialog,dispatch)
+		showDialogBox(slug,dialog,dispatch,evt)
 	}
 }
 function deleteSignal(slug,dialog,dispatch){

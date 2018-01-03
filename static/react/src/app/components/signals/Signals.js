@@ -128,8 +128,8 @@ export class Signals extends React.Component {
     this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, 1));
   }
 
-  handleDelete(slug) {
-    this.props.dispatch(handleDelete(slug, this.refs.dialog));
+  handleDelete(slug,evt) {
+    this.props.dispatch(handleDelete(slug, this.refs.dialog,evt));
   }
 
   handleRename(slug, name) {

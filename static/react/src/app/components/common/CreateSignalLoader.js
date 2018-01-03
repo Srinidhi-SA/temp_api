@@ -39,7 +39,7 @@ export class CreateSignalLoader extends React.Component {
         this.props.dispatch(closeCsLoaderModal());
         this.props.dispatch(hideDataPreview());
         clearCreateSignalInterval();
-        handleJobProcessing(this.props.signalData.slug);
+        this.props.dispatch(handleJobProcessing(this.props.signalData.slug));
     }
     render() {
         var that = this;
