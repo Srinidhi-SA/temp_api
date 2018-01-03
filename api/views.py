@@ -4631,10 +4631,14 @@ def get_chart_or_small_data(request, slug=None):
 def get_job_kill(request, slug=None):
 
     job_object = Job.objects.filter(object_id=slug).first()
-    job_object.kill()
-    return JsonResponse({
-        'message': 'killed'
-    })
+    if job_object.kill() is True:
+        return JsonResponse({
+            'message': 'killed'
+        })
+    else:
+        return JsonResponse({
+            'message': 'Unable to kill.'
+        })
 
 
 @api_view(['GET'])
@@ -4644,6 +4648,15 @@ def get_job_refreshed(request, slug=None):
     job_object.update_status()
     return JsonResponse({
         'message': 'refreshed'
+    })
+
+@api_view(['GET'])
+def get_job_restarted(request, slug=None):
+
+    job_object = Job.objects.filter(object_id=slug).first()
+    job_object.start()
+    return JsonResponse({
+        'message': 'started'
     })
 
 
