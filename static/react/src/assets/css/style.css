@@ -6728,7 +6728,8 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#079088', end
 	height: 27px;
 	padding: 2px;
 	position: relative;
-	overflow: hidden
+	overflow: hidden;
+	margin-bottom: 10px;
 }
 .switch-button input[type=checkbox] {
 	display: none
