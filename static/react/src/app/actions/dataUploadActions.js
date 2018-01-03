@@ -46,15 +46,18 @@ export function dataUpload() {
 }
 function uploadFileOrDB(dbDetails){
     return (dispatch) => {
+        dispatch(updateHideData(false));
         dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
         dispatch(dataUploadLoaderMsg(DULOADERPERMSG));
         dispatch(close());
         dispatch(openDULoaderPopup());
+
         return triggerDataUpload(getUserDetailsOrRestart.get().userToken,dbDetails).then(([response, json]) => {
 
           // dispatch(dataUploadLoaderValue(json.message[json.message.length-1].globalCompletionPercentage));
           // dispatch()
           if (response.status === 200) {
+            dispatch(updateHideData(true));
             console.log(json.slug)
             dispatch(updateDatasetName(json.slug))
             dispatch(dataUploadSuccess(json, dispatch))
@@ -114,7 +117,7 @@ export function triggerDataUploadAnalysis(data,percentage, message){
         dispatch(dataUploadLoaderMsg(message));
         dispatch(openDULoaderPopup());
         dataUploadSuccess(data,dispatch)
-        
+
     }
 }
 function dataUploadSuccess(data, dispatch) {
@@ -149,7 +152,7 @@ function dataUploadSuccess(data, dispatch) {
 
       }, DEFAULTINTERVAL);
       dispatch(dataUploadLoaderValue(loaderVal));
-    
+
 }
 }
 
@@ -226,4 +229,7 @@ export function clearDataPreview() {
 
 export function clearLoadingMsg() {
   return {type: "CLEAR_LOADING_MSG"}
+}
+export function updateHideData(flag) {
+  return {type: "UPDATE_HIDE_DATA", flag}
 }
