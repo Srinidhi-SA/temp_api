@@ -226,8 +226,10 @@ export class Data extends React.Component {
                     </li>
                     <li onClick={this.handleDelete.bind(this, data.slug)}>
                       <a className="dropdown-item" href="#deleteCard" data-toggle="modal">
-                        <i className="fa fa-trash-o"></i>&nbsp;&nbsp;Delete</a>
-                    </li>
+                        <i className="fa fa-trash-o"></i>&nbsp;&nbsp;{data.status == "INPROGRESS"
+                            ? "Stop and Delete "
+                                    : "Delete"}</a>
+                                    </li>
                   </ul>
                   {/*<!-- End Rename and Delete BLock  -->*/}
                 </div>

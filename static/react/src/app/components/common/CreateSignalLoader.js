@@ -8,7 +8,7 @@ import {hideDataPreview} from "../../actions/dataActions";
 import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
 import HeatMap from '../../helpers/heatmap';
-import {isEmpty,DYNAMICLOADERINTERVAL,getUserDetailsOrRestart} from "../../helpers/helper";
+import {isEmpty,DYNAMICLOADERINTERVAL,getUserDetailsOrRestart,handleJobProcessing} from "../../helpers/helper";
 import {clearCreateSignalInterval} from "../../actions/signalActions";
 import {STATIC_URL} from "../../helpers/env";
 
@@ -35,6 +35,12 @@ export class CreateSignalLoader extends React.Component {
   	this.props.dispatch(hideDataPreview());
   	clearCreateSignalInterval();
   	//this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, 1));
+  }
+  cancelSignalProcessing(){
+      this.props.dispatch(closeCsLoaderModal());
+      this.props.dispatch(hideDataPreview());
+      clearCreateSignalInterval();
+      handleJobProcessing(this.props.signalData.slug);
   }
   render() {
       var that = this;
@@ -74,7 +80,7 @@ let checked=!this.props.showHide
 	</div>
 		</Modal.Body>
 		<Modal.Footer>
-                    <Link to="/signals"  style={{paddingRight:"10px"}}  onClick={this.closeModelPopup.bind(this)}><Button onClick={this.closeModelPopup.bind(this)}>Cancel</Button></Link>
+                    <Link to="/signals"  style={{paddingRight:"10px"}}  onClick={this.cancelSignalProcessing.bind(this)}><Button onClick={this.closeModelPopup.bind(this)}>Cancel</Button></Link>
                     <Link to="/signals" onClick={this.closeModelPopup.bind(this)}><Button disabled={checked} bsStyle="primary" onClick={this.closeModelPopup.bind(this)}>Hide</Button></Link>
 
                     </Modal.Footer>
