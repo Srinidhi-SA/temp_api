@@ -28,18 +28,20 @@ export function refreshDatasets(props){
 }
 export function getDataList(pageNo) {
 	return (dispatch) => {
-		return fetchDataList(pageNo,getUserDetailsOrRestart.get().userToken).then(([response, json]) =>{
+		return fetchDataList(pageNo,getUserDetailsOrRestart.get().userToken,dispatch).then(([response, json]) =>{
 			if(response.status === 200){
+				dispatch(hideLoading())
 				dispatch(fetchDataSuccess(json))
 			}
 			else{
 				dispatch(fetchDataError(json))
+				dispatch(hideLoading())
 			}
 		})
 	}
 }
 
-function fetchDataList(pageNo,token) {
+function fetchDataList(pageNo,token,dispatch) {
 
 	console.log(token)
 	let search_element = store.getState().datasets.data_search_element;
@@ -68,6 +70,7 @@ function fetchDataList(pageNo,token) {
 						}).then( response => Promise.all([response, response.json()]));
 					}
 					}else if((data_sorton!=""&& data_sorton!=null) && (data_sorttype!=null)){
+						dispatch(showLoading())
 						return fetch(API+'/api/datasets/?sorted_by='+data_sorton+'&ordering='+data_sorttype+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
 							method: 'get',
 							headers: getHeader(token)
