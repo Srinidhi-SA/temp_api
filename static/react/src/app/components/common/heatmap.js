@@ -7,6 +7,7 @@ import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
 import HeatMap from '../../helpers/heatmap';
 import {generateHeatMapHeaders,generateHeatMapRows} from "../../helpers/helper";
+import { Scrollbars } from 'react-custom-scrollbars';
 
 export class HeatMapTable extends React.Component {
   constructor(){
@@ -31,12 +32,15 @@ export class HeatMapTable extends React.Component {
    var headerComponents = generateHeatMapHeaders(data);
    var rowComponents = generateHeatMapRows(data);
    return (
-          <div className="table-style">
+          <div className={this.props.classId}>
+          <Scrollbars autoHeight minHeight={100} maxHeight={250}>
            <table className={className}>
                <thead>{headerComponents}</thead>
                <tbody>{rowComponents}</tbody>
            </table>
+           </Scrollbars>
 		   <div className="text-center">{tableTitle}</div>
+		   
 		   </div>
        );
   }
