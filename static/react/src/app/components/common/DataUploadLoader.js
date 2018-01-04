@@ -4,10 +4,12 @@ import {Redirect, Link} from "react-router-dom";
 import store from "../../store";
 import {Modal, Button} from "react-bootstrap";
 import {openDULoaderPopup, closeDULoaderPopup} from "../../actions/dataActions";
+import {clearDatasetPreview} from  "../../actions/dataUploadActions";
 import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
 import HeatMap from '../../helpers/heatmap';
 import {STATIC_URL} from "../../helpers/env";
+import {handleJobProcessing} from "../../helpers/helper";
 
 @connect((store) => {
   return {
@@ -17,7 +19,8 @@ import {STATIC_URL} from "../../helpers/env";
     dataUploadLoaderModal: store.datasets.dataUploadLoaderModal,
     dULoaderValue: store.datasets.dULoaderValue,
     dataLoaderText: store.datasets.dataLoaderText,
-    showHideData: store.signals.showHideData
+    showHideData: store.dataUpload.showHideData,
+    selectedDataSet:store.datasets.selectedDataSet,
 
   };
 })
@@ -30,8 +33,14 @@ export class DataUploadLoader extends React.Component {
     this.props.dispatch(openDULoaderPopup())
   }
   closeModelPopup() {
-    this.props.dispatch(closeDULoaderPopup())
+    this.props.dispatch(closeDULoaderPopup());
+    clearDatasetPreview();
   }
+  cancelDataUpload() {
+      this.props.dispatch(closeDULoaderPopup());
+      clearDatasetPreview();
+      this.props.dispatch(handleJobProcessing(this.props.selectedDataSet));
+    }
   render() {
     let img_src = STATIC_URL + "assets/images/brain_loading.gif"
     //let checked=!this.props.showHideData
@@ -66,8 +75,8 @@ export class DataUploadLoader extends React.Component {
                 <div>
                   <Link to="/data" style={{
                     paddingRight: "10px"
-                  }} onClick={this.closeModelPopup.bind(this)}>
-                    <Button onClick={this.closeModelPopup.bind(this)}>Cancel</Button>
+                  }} onClick={this.cancelDataUpload.bind(this)}>
+                    <Button onClick={this.cancelDataUpload.bind(this)}>Cancel</Button>
                   </Link>
                   <Link to="/data" onClick={this.closeModelPopup.bind(this)}>
                     <Button bsStyle="primary" onClick={this.closeModelPopup.bind(this)}>Hide</Button>

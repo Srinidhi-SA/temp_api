@@ -18,7 +18,7 @@ import {BreadCrumb} from "../common/BreadCrumb";
 import {getDataList, getDataSetPreview, storeSignalMeta, handleDelete, handleRename,refreshDatasets} from "../../actions/dataActions";
 import {fetchProductList, openDULoaderPopup, closeDULoaderPopup, storeSearchElement,storeSortElements} from "../../actions/dataActions";
 import {DataUpload} from "./DataUpload";
-import {open, close,triggerDataUploadAnalysis} from "../../actions/dataUploadActions";
+import {open, close,triggerDataUploadAnalysis,updateHideData} from "../../actions/dataUploadActions";
 import {STATIC_URL} from "../../helpers/env.js"
 import {SEARCHCHARLIMIT,getUserDetailsOrRestart,SUCCESS,INPROGRESS} from  "../../helpers/helper"
 import {DataUploadLoader} from "../common/DataUploadLoader";
@@ -74,8 +74,8 @@ export class Data extends React.Component {
   closeModelPopup() {
     this.props.dispatch(closeDULoaderPopup())
   }
-  handleDelete(slug) {
-    this.props.dispatch(handleDelete(slug, this.refs.dialog));
+  handleDelete(slug,evt) {
+    this.props.dispatch(handleDelete(slug, this.refs.dialog,evt));
   }
   handleRename(slug, name) {
     this.props.dispatch(handleRename(slug, this.refs.dialog, name));
@@ -124,6 +124,7 @@ export class Data extends React.Component {
       var dataUpload = {};
       dataUpload.slug = slug
       this.props.dispatch(openDULoaderPopup());
+      this.props.dispatch(updateHideData(true));
       this.props.dispatch(triggerDataUploadAnalysis(dataUpload, percentage, message));
   }
 

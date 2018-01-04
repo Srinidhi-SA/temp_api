@@ -6,7 +6,7 @@ import {dataPreviewInterval,dataUploadLoaderValue,clearLoadingMsg} from "./dataU
 import {closeAppsLoaderValue} from "./appActions";
 import Dialog from 'react-bootstrap-dialog'
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
-import {isEmpty,RENAME,DELETE,REPLACE,DATA_TYPE,REMOVE,CURRENTVALUE,NEWVALUE,SET_VARIABLE,UNIQUE_IDENTIFIER,SET_POLARITY} from "../helpers/helper";
+import {isEmpty,RENAME,DELETE,REPLACE,DATA_TYPE,REMOVE,CURRENTVALUE,NEWVALUE,SET_VARIABLE,UNIQUE_IDENTIFIER,SET_POLARITY,handleJobProcessing} from "../helpers/helper";
 let refDialogBox = "";
 var refreshDatasetsInterval = null;
 function getHeader(token){
@@ -658,7 +658,8 @@ export function hideDULoaderPopup(){
 		type: "HIDE_DATA_UPLOAD_LOADER",
 	}
 }
-export function showDialogBox(slug,dialog,dispatch){
+export function showDialogBox(slug,dialog,dispatch,evt){
+    var labelTxt = evt.target.text;
 	Dialog.setOptions({
 		defaultOkLabel: 'Yes',
 		defaultCancelLabel: 'No',
@@ -669,7 +670,8 @@ export function showDialogBox(slug,dialog,dispatch){
 		actions: [
 		          Dialog.CancelAction(),
 		          Dialog.OKAction(() => {
-		        	  deleteDataset(slug,dialog,dispatch)
+		              if(labelTxt.indexOf("Stop") != -1)dispatch(handleJobProcessing(slug));
+		              else deleteDataset(slug,dialog,dispatch)
 		          })
 		          ],
 		          bsSize: 'medium',
@@ -679,9 +681,9 @@ export function showDialogBox(slug,dialog,dispatch){
 		          }
 	});
 }
-export function handleDelete(slug,dialog) {
+export function handleDelete(slug,dialog,evt) {
 	return (dispatch) => {
-		showDialogBox(slug,dialog,dispatch)
+		showDialogBox(slug,dialog,dispatch,evt)
 	}
 }
 function deleteDataset(slug,dialog,dispatch){

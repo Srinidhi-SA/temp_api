@@ -58,7 +58,6 @@ function uploadFileOrDB(dbDetails){
           // dispatch()
           if (response.status === 200) {
             dispatch(updateHideData(true));
-            console.log(json.slug)
             dispatch(updateDatasetName(json.slug))
             dispatch(dataUploadSuccess(json, dispatch))
           } else {
@@ -154,6 +153,7 @@ function dataUploadSuccess(data, dispatch) {
       dispatch(dataUploadLoaderValue(loaderVal));
 
 }
+  dispatch(updateDatasetName(data.slug));
 }
 
 export function dataUploadError(josn) {
@@ -232,4 +232,7 @@ export function clearLoadingMsg() {
 }
 export function updateHideData(flag) {
   return {type: "UPDATE_HIDE_DATA", flag}
+}
+export function clearDatasetPreview(){
+    clearInterval(dataPreviewInterval)
 }
