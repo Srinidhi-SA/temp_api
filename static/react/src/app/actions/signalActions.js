@@ -159,18 +159,20 @@ function fetchCreateSignalError(json) {
 export function getList(token, pageNo) {
 
   return (dispatch) => {
-    return fetchPosts(token, pageNo).then(([response, json]) => {
+    return fetchPosts(token, pageNo,dispatch).then(([response, json]) => {
       if (response.status === 200) {
         //console.log(json)
+        dispatch(hideLoading())
         dispatch(fetchPostsSuccess(json))
       } else {
         dispatch(fetchPostsError(json))
+        dispatch(hideLoading())
       }
     })
   }
 }
 
-function fetchPosts(token, pageNo) {
+function fetchPosts(token, pageNo,dispatch) {
   //console.log(token)
   let search_element = store.getState().signals.signal_search_element;
   let signal_sorton = store.getState().signals.signal_sorton;
@@ -195,6 +197,7 @@ function fetchPosts(token, pageNo) {
       }).then(response => Promise.all([response, response.json()]));
     }
   } else if ((signal_sorton != "" && signal_sorton != null) && (signal_sorttype != null)) {
+    dispatch(showLoading())
     return fetch(API + '/api/signals/?sorted_by=' + signal_sorton + '&ordering=' + signal_sorttype + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
       method: 'get',
       headers: getHeader(token)
