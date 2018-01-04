@@ -45,7 +45,7 @@ export function checkIfDateTimeIsSelected() {
 export function createSignal(metaData) {
   return (dispatch) => {
     dispatch(updateHide(false))
-    return fetchCreateSignal(metaData).then(([response, json]) => {
+    return fetchCreateSignal(metaData,dispatch).then(([response, json]) => {
       if (response.status === 200) {
         //console.log(json)
         dispatch(updateHide(true));
@@ -55,12 +55,16 @@ export function createSignal(metaData) {
         dispatch(closeCsLoaderModal())
         dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
       }
-    })
+    }).catch(function(error) {
+      bootbox.alert("Connection lost. Please try again later.")
+      dispatch(closeCsLoaderModal())
+      dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
+    });
   }
 
 }
 
-function fetchCreateSignal(metaData) {
+function fetchCreateSignal(metaData,dispatch) {
   //console.log(metaData)
 
   return fetch(API + '/api/signals/', {
