@@ -150,7 +150,7 @@ export class AudioFileList extends React.Component {
 						<li><a href="#">Story</a></li>
 						<li class="active">Sales Performance Report</li>
 					</ol> -->*/}
-					<div class="row">
+					<div class="row hidden">
 	                <div class="col-md-12">
 	                  <Breadcrumb path={[
 	                    {
@@ -167,40 +167,54 @@ export class AudioFileList extends React.Component {
 
 					<div className="row">
 					<div className="col-md-8">
-					 <h4>Media Files</h4>
+					 
+					<h3 className="xs-mt-0 text-capitalize">Media Files</h3>
 					</div>
+					  
 						<div className="col-md-4">
-							<div className="input-group pull-right">
+							
+							<div class="btn-toolbar pull-right">
+				<div class="input-group">
+				
+				<div className="search-wrapper">
+					<form>
+					<input type="text" name="audio_file" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Media Files" id="audio_file" className="form-control search-box" placeholder="Search Audio files..." required />
+					<span className="zmdi zmdi-search form-control-feedback"></span>
+					<button className="close-icon" type="reset"></button>
+					</form>
+				</div>
 
-								<input type="text" name="audio_file" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Media Files" id="audio_file" className="form-control" placeholder="Search Audio files..."/>
-
-								{/*<span className="input-group-btn">
-									<button type="button" className="btn btn-default" title="Select All Card">
-										<i className="fa fa-address-card-o fa-lg"></i>
-									</button>
-									<button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false">
-										<i className="fa fa-sort-alpha-asc fa-lg"></i>&nbsp;<span className="caret"></span>
-									</button>
-									<ul role="menu" className="dropdown-menu dropdown-menu-right">
-										<li>
-											<a href="#"><i class="fa fa-sort-alpha-asc" aria-hidden="true"></i> Name Ascending</a>
-										</li>
-										<li>
-											<a href="#"><i class="fa fa-sort-alpha-desc" aria-hidden="true"></i> Name Descending</a>
-										</li>
-										<li>
-											<a href="#"><i class="fa fa-sort-numeric-asc" aria-hidden="true"></i> Date Ascending</a>
-										</li>
-										<li>
-											<a href="#"><i class="fa fa-sort-numeric-desc" aria-hidden="true"></i> Date Descending</a>
-										</li>
-									</ul>
-								</span>*/}
-							</div>
-						</div>
+				</div>
+                  <div class="btn-group hidden">
+                    <button type="button" data-toggle="dropdown" title="Sorting" class="btn btn-default dropdown-toggle" aria-expanded="false">
+                      <i class="zmdi zmdi-hc-lg zmdi-sort-asc"></i>
+                    </button>
+                    <ul role="menu" class="dropdown-menu dropdown-menu-right">
+                        <li>
+                          <a href="#" ><i class="zmdi zmdi-sort-amount-asc"></i>&nbsp;&nbsp;Name Ascending</a>
+                        </li>
+                        <li>
+                          <a href="#" ><i class="zmdi zmdi-sort-amount-desc"></i>&nbsp;&nbsp;Name Descending</a>
+                        </li>
+                        <li>
+                          <a href="#" ><i class="zmdi zmdi-calendar-alt"></i>&nbsp;&nbsp;Date Ascending</a>
+                        </li>
+                        <li>
+                          <a href="#" ><i class="zmdi zmdi-calendar"></i>&nbsp;&nbsp;Date Descending</a>
+                        </li>
+                    </ul>
+                  </div>
+				  </div>
+						
+						
+							
+							
+							
+							
+						</div>	<div class="clearfix"></div>
 					</div>
 
-					<div class="clearfix"></div>
+				
 				</div>
 				<div className="main-content">
 				<div className="row">
