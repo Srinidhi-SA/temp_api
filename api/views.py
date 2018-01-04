@@ -4631,13 +4631,20 @@ def get_chart_or_small_data(request, slug=None):
 def get_job_kill(request, slug=None):
 
     job_object = Job.objects.filter(object_id=slug).first()
+    original_object = job_object.get_original_object()
+    if original_object is None:
+        return JsonResponse({
+            'message': 'Unable to Delete.'
+        })
+    original_object.deleted = True
+    original_object.save()
     if job_object.kill() is True:
         return JsonResponse({
-            'message': 'killed'
+            'message': 'killed. and Deleted'
         })
     else:
         return JsonResponse({
-            'message': 'Unable to kill.'
+            'message': 'Unable to kill. but Deleted.'
         })
 
 
