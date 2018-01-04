@@ -59,6 +59,7 @@ export function createSignal(metaData) {
       bootbox.alert("Connection lost. Please try again later.")
       dispatch(closeCsLoaderModal())
       dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
+      clearInterval(createSignalInterval);
     });
   }
 

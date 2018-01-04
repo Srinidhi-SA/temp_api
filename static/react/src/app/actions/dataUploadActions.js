@@ -69,6 +69,7 @@ function uploadFileOrDB(dbDetails){
               bootbox.alert("Connection lost. Please try again later.")
               dispatch(hideDULoaderPopup());
               dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
+              clearInterval(dataPreviewInterval);
           });
       }
 }
