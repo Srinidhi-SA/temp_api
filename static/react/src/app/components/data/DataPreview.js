@@ -507,7 +507,7 @@ export class DataPreview extends React.Component {
 					</div>
 					<div id="pnl_visl" className="panel-collapse collapse in" aria-expanded="true">
 					<div className="xs-pt-5 xs-pr-5 xs-pb-5 xs-pl-5">
-					<div id="side-chart">
+					<div id="side-chart" style={{paddingTop:"12px"}}>
 					{/*<img src="../assets/images/data_preview_graph.png" className="img-responsive" />*/}
 						{firstChart}
 						<div className="clearfix"></div>
