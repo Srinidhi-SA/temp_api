@@ -100,6 +100,11 @@ class DatasetSerializer(serializers.ModelSerializer):
                     temp['columnSetting'] = columnSettingCopy
                 elif "datetime" == columnType:
                     temp['columnSetting'] = columnSettingCopy[:3]
+
+                if head.get('ignoreSuggestionFlag') is True:
+                    transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
+                    transformation_settings_ignore['status'] = True
+                    temp['columnSetting'].append(transformation_settings_ignore)
                 transformation_data.append(temp)
 
             transformation_final_obj["existingColumns"] = transformation_data

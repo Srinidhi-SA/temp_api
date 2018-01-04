@@ -136,6 +136,10 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
                             replace_match_array=replacementValues
                         )
 
+                    if colset.get('actionName', None) == 'ignore_suggestion':
+                        colName = col.get('name')
+                        mdc.changes_on_consider_column(colName, make_it=True)
+
                 elif colset.get("status") == False:
 
                     if colset.get("actionName") == "delete":
@@ -146,6 +150,10 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
                                 mdc.changes_on_delete(col.get("name"), type='undelete')
                                 colset['modified'] = False
                                 colset['displayName'] = 'Delete Column'
+
+                    if colset.get('actionName', None) == 'ignore_suggestion':
+                        colName = col.get('name')
+                        mdc.changes_on_consider_column(colName, make_it=False)
 
     return metaData, headers
 
@@ -386,6 +394,13 @@ class MetaDataChange(object):
                         data[index] = data[index].replace(r['valueToReplace'], r['replacedValue'])
                 elif replaceType == "":
                     pass
+
+    def changes_on_consider_column(self, colName=None, make_it=None):
+        for data in self.columnData:
+            if data.get('name') == colName:
+                data['consider'] = make_it
+            break
+
 
 dummy_meta_data = {
         "transformation_settings": [
