@@ -105,9 +105,13 @@ class Job(models.Model):
                                                               port=settings.YARN.get("port"),
                                                               timeout=settings.YARN.get("timeout"))
         app_status = ym.cluster_application(self.url)
-
-        self.status = app_status.data['app']["state"]
-        self.save()
+        try:
+            print app_status
+            self.status = app_status.data['app']["state"]
+            self.save()
+        except Exception as err:
+            print "update_status_error -- "
+            print err
 
     def get_original_object(self):
         original_object = None
@@ -1313,7 +1317,7 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
             class_name=job_type,
             job_config=jobConfig,
             job_name=instance.name,
-            message_slug=get_message_slug(instance),
+            message_slug=get_message_slug(job),
             queue_name=queue_name
         )
         print "Job submitted."
@@ -1369,6 +1373,12 @@ def get_message_slug(instance):
     ac = AccessFeedbackMessage()
     slug = ac.get_cache_name(instance)
     return slug
+
+
+def get_slug_from_message_url(url):
+    split_with_underscore = url.split('_')
+    return "_".join(split_with_underscore[1:-1])
+
 
 
 class StockDataset(models.Model):

@@ -14822,6 +14822,7 @@ div.pred_disp_block  p, .pred_disp_block_store p { font-size:12px; }
 .panel-mAd  .panel-heading h2 { font-size:20px; }
 .panel-mAd .panel-body h2, .panel-mAd .panel-body h3{ font-size: 18px; }
 .no-border { border:none; }
+.toggleOn, .toggleOff { margin-bottom: 10px; }
 /**************** Css realated to developers, keep the source down ***/
 #prediction_dropdown{
 	    width: 40%;

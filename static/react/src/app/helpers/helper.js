@@ -359,7 +359,7 @@ export function  subTreeSetting(urlLength, length,paramL2) {
               dispatch(hideLoading());
           })
       }
-     
+
   }
  export function updateJobStatus(slug){
      return fetch(API+'/api/get_job_kill/'+slug+'/',{
@@ -473,3 +473,9 @@ export function renderC3ChartInfo(info){
     }
 
 }
+export function bytesToSize(bytes) {
+   var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+   if (bytes == 0) return '0 Byte';
+   var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+   return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+};

@@ -178,7 +178,7 @@ class InsightSerializer(serializers.ModelSerializer):
             instance.viewed = True
             instance.save()
         try:
-            message_list = get_message(instance)
+            message_list = get_message(instance.job)
 
             if message_list is not None:
                 message_list = [message_list[-1]]

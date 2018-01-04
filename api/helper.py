@@ -567,6 +567,8 @@ def decode_and_convert_chart_raw_data(data):
         c3.set_tooltip_format('.2s')
         c3.remove_x_from_data()
         c3.add_tooltip_for_donut()
+        if len(chart_data) >= 1:
+            c3_chart_details["legend_data"] = [i[0] for i in chart_data]
 
         c3_chart_details['table_c3'] = pie_chart_data
         c3_chart_details["chart_c3"] = c3.get_json()
@@ -886,6 +888,7 @@ def convert_column_data_with_array_of_category_into_column_data_stright_xy(colum
         end_data[name_indexs[name_y]].append(columns_data[1][index + 1])
 
     return end_data, xs
+
 
 def get_x_column_from_chart_data_without_xs(chart_data, axes):
     i = None
