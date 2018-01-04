@@ -131,7 +131,11 @@ export function getDataSetPreview(slug,interval) {
 				dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
 				dispatch(fetchDataPreviewError(json))
 			}
-		})
+		}).catch(function(error){
+		    
+		    dispatch(hideDULoaderPopup());
+	        bootbox.alert("Unable to connect to server. Check your connection please try again.")
+	    });
 	}
 }
 
@@ -140,9 +144,7 @@ function fetchDataPreview(slug) {
 	return fetch(API+'/api/datasets/'+slug+'/',{
 		method: 'get',
 		headers: getHeader(getUserDetailsOrRestart.get().userToken)
-	}).then( response => Promise.all([response, response.json()])).catch(function(error){
-		bootbox.alert("Unable to connect to server. Check your connection please try again.")
-	});
+	}).then( response => Promise.all([response, response.json()]))
 }
 //get preview data
 function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
@@ -180,6 +182,10 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
 		}
 	}else if(dataPreview.status == "INPROGRESS"){
 		dispatch(dispatchDataPreviewLoadingMsg(dataPreview));
+		return {
+            type: "SELECTED_DATASET",
+            slug,
+        }
 	}
 }
 

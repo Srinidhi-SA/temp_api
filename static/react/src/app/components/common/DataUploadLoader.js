@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import {Redirect, Link} from "react-router-dom";
 import store from "../../store";
 import {Modal, Button} from "react-bootstrap";
-import {openDULoaderPopup, closeDULoaderPopup} from "../../actions/dataActions";
+import {openDULoaderPopup, hideDULoaderPopup} from "../../actions/dataActions";
 import {clearDatasetPreview} from  "../../actions/dataUploadActions";
 import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
@@ -33,11 +33,11 @@ export class DataUploadLoader extends React.Component {
     this.props.dispatch(openDULoaderPopup())
   }
   closeModelPopup() {
-    this.props.dispatch(closeDULoaderPopup());
+    this.props.dispatch(hideDULoaderPopup());
     clearDatasetPreview();
   }
   cancelDataUpload() {
-      this.props.dispatch(closeDULoaderPopup());
+      this.props.dispatch(hideDULoaderPopup());
       clearDatasetPreview();
       this.props.dispatch(handleJobProcessing(this.props.selectedDataSet));
     }

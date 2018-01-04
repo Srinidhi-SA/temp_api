@@ -121,7 +121,8 @@ export function triggerDataUploadAnalysis(data,percentage, message){
 }
 function dataUploadSuccess(data, dispatch) {
   let msg = store.getState().datasets.dataLoaderText
-  let loaderVal = store.getState().datasets.dULoaderValue
+  let loaderVal = store.getState().datasets.dULoaderValue;
+  let dataset = data.slug
   if(data.hasOwnProperty("proceed_for_loading") && !data.proceed_for_loading){
       msg = "Your dataset will be uploaded in background...";
       dispatch(dataUploadLoaderMsg(msg));
@@ -153,7 +154,10 @@ function dataUploadSuccess(data, dispatch) {
       dispatch(dataUploadLoaderValue(loaderVal));
 
 }
-  dispatch(updateDatasetName(data.slug));
+  return {
+      type: "SELECTED_DATASET",
+      dataset
+  }
 }
 
 export function dataUploadError(josn) {
@@ -201,8 +205,8 @@ export function dataSubsetting(subsetRq, slug) {
         dispatch(dataUploadSuccess(json, dispatch))
         dispatch(updateSubsetSuccess(json))
       } else {
-				dispatch(clearLoadingMsg())
-				dispatch(dataUploadError(json))
+          dispatch(clearLoadingMsg())
+          dispatch(dataUploadError(json))
       }
     });
   }
