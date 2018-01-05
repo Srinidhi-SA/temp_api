@@ -171,7 +171,7 @@
     margin-right: 6px;
 }
 .c3-tooltip td.value {
-    text-align: right;
+    text-align: left;
 }
 .c3-area {
     stroke-width: 0;
