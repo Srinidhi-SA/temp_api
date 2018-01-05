@@ -57,7 +57,11 @@ class Job(models.Model):
     message_log = models.TextField(default="{}")
 
     def url_html(self):
-        return '<a href="http://%s:%s/cluster/app/%s">%s</a>'.format(settings.YARN.host,settings.YARN.port, self.url, self.url)
+        return '<a href="http://%s:%s/cluster/app/%s">%s</a>'.format(settings.YARN.get('host'),
+                                                                     settings.YARN.get('port'),
+                                                                     self.url,
+                                                                     self.url
+                                                                     )
 
     def generate_slug(self):
         if not self.slug:
