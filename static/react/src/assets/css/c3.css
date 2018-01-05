@@ -150,6 +150,7 @@
 }
 .c3-tooltip tr {
     border:1px solid #CCC;
+    text-align: left;
 }
 .c3-tooltip th {
     background-color: #aaa;
@@ -163,6 +164,7 @@
     padding: 3px 6px;
     background-color:#fff;
     border-left:1px dotted #999;
+    text-align: left;
 }
 .c3-tooltip td > span {
     display: inline-block;
@@ -171,6 +173,9 @@
     margin-right: 6px;
 }
 .c3-tooltip td.value {
+    text-align: left;
+}
+.c3-tooltip tr.value {
     text-align: left;
 }
 .c3-area {
