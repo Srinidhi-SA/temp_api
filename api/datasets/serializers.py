@@ -11,6 +11,7 @@ from api.models import Dataset
 from helper import convert_to_json, convert_time_to_human
 from api.helper import get_job_status, get_message
 import copy
+import json
 
 class DatasetSerializer(serializers.ModelSerializer):
 
@@ -41,8 +42,8 @@ class DatasetSerializer(serializers.ModelSerializer):
         ret = convert_time_to_human(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
         meta_data = ret.get('meta_data')
-        self.changes_to_metadata(meta_data)
-
+        modified_meta_data = self.changes_to_metadata(meta_data)
+        instance.meta_data = json.dumps(modified_meta_data)
         try:
             ret['message'] = get_message(instance.job)
         except:
@@ -107,6 +108,9 @@ class DatasetSerializer(serializers.ModelSerializer):
                     temp['columnSetting'].append(transformation_settings_ignore)
                     head['consider'] = False
                 else:
+                    transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
+                    transformation_settings_ignore['status'] = False
+                    temp['columnSetting'].append(transformation_settings_ignore)
                     head['consider'] = True
                 transformation_data.append(temp)
 
@@ -114,6 +118,8 @@ class DatasetSerializer(serializers.ModelSerializer):
             transformation_final_obj["newColumns"] = transformation_settings.get('new_columns')
             meta_data['transformation_settings'] = transformation_final_obj
             meta_data['columnData'] = columnData
+
+            return meta_data
 
     def get_advanced_setting(self, meta_data):
         metaData = meta_data.get('metaData')
