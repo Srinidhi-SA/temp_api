@@ -51,7 +51,7 @@ export class ViewChartData extends React.Component {
     }
     return (
       <div id="viewChartData">
-        <Modal show={store.getState().signals.viewChartDataFlag} backdrop="static" onHide={this.openCloseChartData.bind(this, false)} dialogClassName="modal-colored-header uploadData modal-dialog">
+        <Modal show={this.props.viewChartDataFlag} backdrop="static" onHide={this.openCloseChartData.bind(this, false)} dialogClassName="modal-colored-header uploadData modal-dialog">
           <Modal.Header closeButton>
             <h3 className="modal-title">Chart Data</h3>
           </Modal.Header>
@@ -66,7 +66,8 @@ export class ViewChartData extends React.Component {
                 }}/>} renderThumbHorizontal={props => <div {...props} className="thumb-horizontal" style={{
                   display: "none"
                 }}/>}>
-                  <table className='table chart-table'>{renderHTML(tablehtml)}</table>
+                  <table className='table chart-table'>{
+                    (this.props.tabledata)?renderHTML(tablehtml):""}</table>
                   {/*<div class="form-group col-md-7;">*/}
 
                 </Scrollbars>
