@@ -44,7 +44,7 @@ class DatasetSerializer(serializers.ModelSerializer):
         self.changes_to_metadata(meta_data)
 
         try:
-            ret['message'] = get_message(instance)
+            ret['message'] = get_message(instance.job)
         except:
             ret['message'] = None
 
