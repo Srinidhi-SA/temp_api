@@ -35,7 +35,7 @@ class DatasetSerializer(serializers.ModelSerializer):
         return instance
 
     def to_representation(self, instance):
-        print get_job_status(instance)
+        get_job_status(instance)
         ret = super(DatasetSerializer, self).to_representation(instance)
         ret = convert_to_json(ret)
         ret = convert_time_to_human(ret)
@@ -150,13 +150,13 @@ class DatasetSerializer(serializers.ModelSerializer):
 class DataListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
-        print get_job_status(instance)
+        get_job_status(instance)
         ret = super(DataListSerializer, self).to_representation(instance)
         ret['brief_info'] = instance.get_brief_info()
 
         try:
-            ret['completed_percentage']=get_message(instance)[-1]['globalCompletionPercentage']
-            ret['completed_message']=get_message(instance)[-1]['shortExplanation']
+            ret['completed_percentage']=get_message(instance.job)[-1]['globalCompletionPercentage']
+            ret['completed_message']=get_message(instance.job)[-1]['shortExplanation']
         except:
             ret['completed_percentage'] = 0
             ret['completed_message']="Analyzing Target Variable"

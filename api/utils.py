@@ -167,7 +167,7 @@ def convert_time_to_human(data):
 # TODO: use dataserializer
 class InsightSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
-        print get_job_status(instance)
+        get_job_status(instance)
         ret = super(InsightSerializer, self).to_representation(instance)
         dataset = ret['dataset']
         dataset_object = Dataset.objects.get(pk=dataset)
@@ -222,7 +222,7 @@ class InsightSerializer(serializers.ModelSerializer):
 class InsightListSerializers(serializers.ModelSerializer):
 
     def to_representation(self, instance):
-        print get_job_status(instance)
+        get_job_status(instance)
         ret = super(InsightListSerializers, self).to_representation(instance)
         dataset = ret['dataset']
         dataset_object = Dataset.objects.get(pk=dataset)
@@ -234,8 +234,8 @@ class InsightListSerializers(serializers.ModelSerializer):
 
         # ret['is_viewed'] = False
         try:
-            ret['completed_percentage']=get_message(instance)[-1]['globalCompletionPercentage']
-            ret['completed_message']=get_message(instance)[-1]['shortExplanation']
+            ret['completed_percentage']=get_message(instance.job)[-1]['globalCompletionPercentage']
+            ret['completed_message']=get_message(instance.job)[-1]['shortExplanation']
         except:
             ret['completed_percentage'] = 0
             ret['completed_message']="Analyzing Target Variable"
