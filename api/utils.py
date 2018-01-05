@@ -17,6 +17,7 @@ from django.conf import settings
 import subprocess
 
 
+
 def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message_slug=None, queue_name=None):
     config = generate_job_config(class_name, job_config, job_name, message_slug, slug)
 
@@ -221,8 +222,7 @@ class InsightSerializer(serializers.ModelSerializer):
 class InsightListSerializers(serializers.ModelSerializer):
 
     def to_representation(self, instance):
-        from api.helper import get_message
-
+        print get_job_status(instance)
         ret = super(InsightListSerializers, self).to_representation(instance)
         dataset = ret['dataset']
         dataset_object = Dataset.objects.get(pk=dataset)
@@ -293,6 +293,7 @@ class TrainerSerlializer(serializers.ModelSerializer):
 class TrainerListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
+        print get_job_status(instance)
         ret = super(TrainerListSerializer, self).to_representation(instance)
         dataset = ret['dataset']
         dataset_object = Dataset.objects.get(pk=dataset)
@@ -354,6 +355,7 @@ class ScoreSerlializer(serializers.ModelSerializer):
 class ScoreListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
+        print get_job_status(instance)
         ret = super(ScoreListSerializer, self).to_representation(instance)
         trainer = ret['trainer']
         trainer_object = Trainer.objects.get(pk=trainer)
@@ -524,6 +526,7 @@ class StockDatasetSerializer(serializers.ModelSerializer):
 class StockDatasetListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
+        print get_job_status(instance)
         ret = super(StockDatasetListSerializer, self).to_representation(instance)
         ret['brief_info'] = instance.get_brief_info()
         return ret

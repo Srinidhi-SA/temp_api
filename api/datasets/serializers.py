@@ -150,6 +150,7 @@ class DatasetSerializer(serializers.ModelSerializer):
 class DataListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
+        print get_job_status(instance)
         ret = super(DataListSerializer, self).to_representation(instance)
         ret['brief_info'] = instance.get_brief_info()
 
