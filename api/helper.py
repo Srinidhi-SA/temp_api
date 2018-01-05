@@ -903,6 +903,45 @@ def get_x_column_from_chart_data_without_xs(chart_data, axes):
         return []
 
 
+from celery.decorators import task
+
+
+def get_db_object(model_name, model_slug):
+    from django.apps import apps
+    mymodel = apps.get_model('api', model_name)
+    obj = mymodel.objects.get(slug=model_slug)
+    return obj
+
+
+@task(name='get_job_from_yarn')
+def get_job_from_yarn(model_name=None,model_slug=None):
+
+    model_instance = get_db_object(model_name=model_name,
+                                   model_slug=model_slug
+                                   )
+
+    try:
+        ym = yarn_api_client.resource_manager.ResourceManager(address=settings.YARN.get("host"),
+                                                              port=settings.YARN.get("port"),
+                                                              timeout=settings.YARN.get("timeout"))
+        app_status = ym.cluster_application(model_instance.job.url)
+        YarnApplicationState = app_status.data['app']["state"]
+
+    except:
+        YarnApplicationState = "FAILED"
+
+    readable_live_status = settings.YARN_STATUS.get(YarnApplicationState, "FAILED")
+    model_instance.job.status = YarnApplicationState
+    model_instance.job.save()
+
+    if readable_live_status is 'SUCCESS' and model_instance.analysis_done is False:
+        model_instance.status = 'FAILED'
+    else:
+        model_instance.status = readable_live_status
+
+    model_instance.save()
+    return model_instance.status
+
 def get_job_status_from_yarn(instance=None):
 
     try:
@@ -974,7 +1013,10 @@ def get_job_status(instance=None):
         return instance.status
 
     if settings.SUBMIT_JOB_THROUGH_YARN:
-        get_job_status_from_yarn(instance)
+        get_job_from_yarn.delay(
+            type(instance).__name__,
+            instance.slug
+        )
     else:
         get_job_status_from_jobserver(instance)
 
