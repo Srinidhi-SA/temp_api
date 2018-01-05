@@ -119,7 +119,7 @@ const DEFAULTANALYSISVARIABLES = "high";
 const MINROWINDATASET = 10;
 const APPSPERPAGE = 9;
 const POPUPDECISIONTREETABLE = "popupDecisionTreeTable";
-const MAXTEXTLENGTH = 100;
+const MAXTEXTLENGTH = 375;
 const SET_VARIABLE = "set_variable";
 const DIMENSION = "dimension";
 const MEASURE = "measure";
@@ -128,6 +128,7 @@ const GENERIC_NUMERIC = "generic_numeric";
 const SET_POLARITY= "set_polarity";
 const UNIQUE_IDENTIFIER = "unique_identifier";
 const DYNAMICLOADERINTERVAL = 2000;
+const IGNORE_SUGGESTION = "ignore_suggestion";
 
 
 export function generateHeaders(table) {
@@ -442,7 +443,8 @@ export{
   GENERIC_NUMERIC,
   SET_POLARITY,
   UNIQUE_IDENTIFIER,
-  DYNAMICLOADERINTERVAL
+  DYNAMICLOADERINTERVAL,
+  IGNORE_SUGGESTION
 	}
 export function capitalizeArray(array){
   let a =[]

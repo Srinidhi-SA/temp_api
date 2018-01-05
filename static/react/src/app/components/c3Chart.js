@@ -11,7 +11,8 @@ import {ViewChartData} from "./common/ViewChartData";
 import {showZoomChart, showChartData} from "../actions/signalActions";
 
 @connect((store) => {
-  return {sideCardListFlag: store.signals.sideCardListFlag};
+  return {sideCardListFlag: store.signals.sideCardListFlag,
+  selectedL1:store.signals.selectedL1};
 })
 
 //var data= {}, toolData = [], toolLegend=[], chartDiv =null;
@@ -233,6 +234,16 @@ export class C3Chart extends React.Component {
       } else {
         data.tooltip.format.value = d3.format('');
       }
+    }
+
+//fix for common point colour in trend
+    if(this.props.selectedL1=="Trend"&&data.data.type=="line"){
+      console.log("in dtrend##########")
+      console.log(data)
+      let colors=data.color.pattern
+      data.data.color= function (color, d) {
+               return d.index === 0 ? colors[0] : color;
+       }
     }
 
     if (data.data.type == "pie") {

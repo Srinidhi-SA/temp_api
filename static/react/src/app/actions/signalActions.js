@@ -314,6 +314,78 @@ export function setPossibleAnalysisList(event) {
   }
   return {type: "SET_POSSIBLE_LIST", varType, varText, varSlug}
 }
+export function handleTargetSelection(){
+    var selectedDimensions =  store.getState().datasets.selectedDimensions.slice();
+    var selectedMeasures = store.getState().datasets.selectedMeasures.slice();
+    var varType = store.getState().signals.getVarType;
+    var varText = store.getState().signals.getVarText;
+    if(varType == "dimension"){
+        selectedDimensions.splice(selectedDimensions.indexOf(varText),1);
+    }else{
+        selectedMeasures.splice(selectedMeasures.indexOf(varText),1);
+    }
+    return {
+        type:"UPDATE_SELECTED_VARIABLES",
+        selectedDimensions,
+        selectedMeasures}
+}
+export function deleteTargetVariableFromSelection(event){
+    var selOption = event.target.childNodes[event.target.selectedIndex];
+    var varType = selOption.value;
+    var varText = selOption.text;
+    var prevVarText = store.getState().signals.getVarText;
+    var selectedDimensions =  store.getState().datasets.selectedDimensions.slice();
+    var originalDimension = store.getState().datasets.ImmutableDimension;
+    var dimensionList =  jQuery.extend(true, [], originalDimension);
+    var dimChkList = store.getState().datasets.dimensionChecked.slice();
+    
+    var selectedTimeDim =  store.getState().datasets.selectedTimeDimensions;
+    
+    var selectedMeasures = store.getState().datasets.selectedMeasures.slice();
+    var originalMeasures = store.getState().datasets.ImmutableMeasures;
+    var measuresList =  jQuery.extend(true, [], originalMeasures);
+    var measuresChkList = store.getState().datasets.measureChecked.slice();
+    
+    if(varType == "dimension"){
+        var index = dimensionList.indexOf(varText);
+        var prevIndex = dimensionList.indexOf(prevVarText);
+        dimensionList.splice(index,1);
+        dimChkList.splice(index,1);
+        if(prevIndex != -1)
+        dimChkList.splice(prevIndex,0,true);
+        else{
+            prevIndex = measuresList.indexOf(prevVarText);
+            measuresChkList.splice(prevIndex,0,true);
+        }
+       
+        //selectedDimensions.splice(selectedDimensions.indexOf(varText),1);
+        //selectedDimensions.push(store.getState().signals.getVarText);
+    }else{
+        var index = measuresList.indexOf(varText);
+        var prevIndex = measuresList.indexOf(prevVarText);
+        measuresList.splice(index,1);
+        measuresChkList.splice(index,1);
+        if(prevIndex != -1)
+        measuresChkList.splice(prevIndex,0,true)
+        else{
+            prevIndex = dimensionList.indexOf(prevVarText); 
+            dimChkList.splice(prevIndex,0,true);
+        }
+        
+       // selectedMeasures.splice(selectedMeasures.indexOf(varText),1);
+        //selectedMeasures.push(store.getState().signals.getVarText);
+    }
+    var count = selectedMeasures.length+selectedDimensions.length-1;
+    if(selectedTimeDim)count = count+1;
+    return{
+        type:"UPADTE_VARIABLES_LIST",
+        measuresChkList,
+        measuresList,
+        count,
+        dimChkList,
+        dimensionList
+    } 
+}
 function checkIfDataTypeChanges(varSlug) {
   var transformSettings = store.getState().datasets.dataTransformSettings;
   var isVarTypeChanged = false
@@ -608,4 +680,11 @@ export function updateHide(flag) {
 
 export function showChartData(flag, classId) {
   return {type: "CHART_DATA", flag, classId}
+}
+
+export function updateselectedL1(selectedL1){
+  return{
+    type:"SELECTED_L1",
+    selectedL1
+  }
 }
