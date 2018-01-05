@@ -937,8 +937,12 @@ def get_job_status_from_yarn(instance=None):
     except:
         YarnApplicationState = "FAILED"
     readable_live_status = settings.YARN_STATUS.get(YarnApplicationState, "FAILED")
-    instance.job.status = YarnApplicationState
-    instance.job.save()
+
+    try:
+        instance.job.status = YarnApplicationState
+        instance.job.save()
+    except:
+        pass
 
     if readable_live_status is 'SUCCESS' and instance.analysis_done is False:
         instance.status = 'FAILED'
