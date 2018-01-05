@@ -113,6 +113,7 @@ class DatasetSerializer(serializers.ModelSerializer):
             transformation_final_obj["existingColumns"] = transformation_data
             transformation_final_obj["newColumns"] = transformation_settings.get('new_columns')
             meta_data['transformation_settings'] = transformation_final_obj
+            meta_data['columnData'] = columnData
 
     def get_advanced_setting(self, meta_data):
         metaData = meta_data.get('metaData')
