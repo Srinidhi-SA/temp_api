@@ -681,3 +681,10 @@ export function updateHide(flag) {
 export function showChartData(flag, classId) {
   return {type: "CHART_DATA", flag, classId}
 }
+
+export function updateselectedL1(selectedL1){
+  return{
+    type:"SELECTED_L1",
+    selectedL1
+  }
+}
