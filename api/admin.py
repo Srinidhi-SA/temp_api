@@ -25,8 +25,8 @@ class InsightAdmin(admin.ModelAdmin):
 
 class JobAdmin(admin.ModelAdmin):
     icon = '<i class="material-icons">settings_input_component</i>'
-    search_fields = ["name", "slug", "job_type"]
-    list_display = ["name", "slug", "job_type", "deleted", "status", 'submitted_by']
+    search_fields = ["name", "slug", "job_type", "url"]
+    list_display = ["name", "slug", "url_html", "job_type", "deleted", "status", 'submitted_by']
     list_filter = ["job_type", "status", "submitted_by"]
     readonly_fields = ["created_at"]
     actions = ['kill_selected_jobs', 'start_selected_jobs', 'refresh_status']
