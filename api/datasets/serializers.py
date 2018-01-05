@@ -105,6 +105,9 @@ class DatasetSerializer(serializers.ModelSerializer):
                     transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
                     transformation_settings_ignore['status'] = True
                     temp['columnSetting'].append(transformation_settings_ignore)
+                    head['consider'] = False
+                else:
+                    head['consider'] = True
                 transformation_data.append(temp)
 
             transformation_final_obj["existingColumns"] = transformation_data
