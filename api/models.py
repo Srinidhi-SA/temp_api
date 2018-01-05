@@ -57,7 +57,7 @@ class Job(models.Model):
     message_log = models.TextField(default="{}")
 
     def url_html(self):
-        return '<a href="http://%s:%s/cluster/app/%s">%s</a>'.format(settings.YARN.get('host'),
+        return '<a href="http://{0}:{1}/cluster/app/{2}">{3}</a>'.format(settings.YARN.get('host'),
                                                                      settings.YARN.get('port'),
                                                                      self.url,
                                                                      self.url
