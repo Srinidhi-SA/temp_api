@@ -17,7 +17,6 @@ from django.conf import settings
 import subprocess
 
 
-
 def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message_slug=None, queue_name=None):
     config = generate_job_config(class_name, job_config, job_name, message_slug, slug)
 

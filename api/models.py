@@ -1324,7 +1324,12 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
 
         job.url = job_return_data.get('application_id')
         job.command_array = json.dumps(job_return_data.get('command_array'))
-        job.config = json.dumps(job_return_data.get('config'))
+
+        readable_job_config = {
+            'job_config': job_return_data.get('config')['job_config']['job_config'],
+            'config': job_return_data.get('config')['job_config']['config']
+        }
+        job.config = json.dumps(readable_job_config)
         job.save()
     except Exception as exc:
         print "#" * 100
