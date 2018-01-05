@@ -366,6 +366,7 @@ export function  subTreeSetting(urlLength, length,paramL2) {
          method: 'get',
          headers: getHeader(getUserDetailsOrRestart.get().userToken)
      }).then( response => Promise.all([response, response.json()])).catch(function(error){
+         dispatch(hideLoading());
          bootbox.alert("Unable to connect to server. Check your connection please try again.")
      });
  }
