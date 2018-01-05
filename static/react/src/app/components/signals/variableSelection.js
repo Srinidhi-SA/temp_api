@@ -7,7 +7,7 @@ import {Modal,Button,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "r
 import store from "../../store";
 import {selectedAnalysisList,resetSelectedVariables,unselectAllPossibleAnalysis,getDataSetPreview,setDimensionSubLevels,selectAllAnalysisList,updateSelectAllAnlysis,saveAdvanceSettings,checkAllAnalysisSelected} from "../../actions/dataActions";
 import {openCreateSignalModal,closeCreateSignalModal,updateCsLoaderValue} from "../../actions/createSignalActions";
-import {createSignal,setPossibleAnalysisList,emptySignalAnalysis,advanceSettingsModal,checkIfDateTimeIsSelected,updateCategoricalVariables,createcustomAnalysisDetails,checkAnalysisIsChecked,changeSelectedVariableType} from "../../actions/signalActions";
+import {createSignal,setPossibleAnalysisList,emptySignalAnalysis,advanceSettingsModal,checkIfDateTimeIsSelected,updateCategoricalVariables,createcustomAnalysisDetails,checkAnalysisIsChecked,changeSelectedVariableType,deleteTargetVariableFromSelection,handleTargetSelection} from "../../actions/signalActions";
 import {DataVariableSelection} from "../data/DataVariableSelection";
 import {CreateSignalLoader} from "../common/CreateSignalLoader";
 import {openCsLoaderModal,closeCsLoaderModal} from "../../actions/createSignalActions";
@@ -77,6 +77,7 @@ export class VariableSelection extends React.Component {
     createSignal(event){
         event.preventDefault();
         var isAnalysisChecked = checkAnalysisIsChecked();
+        this.props.dispatch(handleTargetSelection());
         if($('#signalVariableList option:selected').val() == ""){
             bootbox.alert("Please select a variable to analyze...");
             return false;
@@ -112,8 +113,8 @@ export class VariableSelection extends React.Component {
         let customDetails = createcustomAnalysisDetails();
         let analysisList =[],config={}, postData={};
         config['possibleAnalysis'] = this.props.selectedAnalysis;
-        config['measures'] =this.props.selectedMeasures;
-        config['dimension'] =this.props.selectedDimensions;
+        config['measures'] =store.getState().datasets.selectedMeasures;
+        config['dimension'] =store.getState().datasets.selectedDimensions;
         config['timeDimension'] =this.props.selectedTimeDimensions;
         config['customAnalysisDetails'] = customDetails["customAnalysisDetails"];
         config['polarity']=customDetails["polarity"];
@@ -135,13 +136,15 @@ export class VariableSelection extends React.Component {
             
         }
         console.log(postData);
-        this.props.dispatch(createSignal(postData));
+       this.props.dispatch(createSignal(postData));
     }
     
     setPossibleList(event){
+        this.props.dispatch(deleteTargetVariableFromSelection(event));
         this.props.dispatch(setPossibleAnalysisList(event));
         this.props.dispatch(updateSelectAllAnlysis(false));
         this.props.dispatch(selectAllAnalysisList(false));
+        
     }
     
     componentWillMount(){
@@ -296,7 +299,7 @@ export class VariableSelection extends React.Component {
                 <div className="col-lg-2"><label for="signalVariableList">I want to analyze </label></div>
                 <div className="col-lg-4">
                 <div className="htmlForm-group">
-                <select className="form-control" id="signalVariableList" onChange={this.setPossibleList.bind(this)}>
+                <select className="form-control" id="signalVariableList"  onChange={this.setPossibleList.bind(this)}>
                 <option value=""></option>
                 {renderSelectBox}
                 </select>
