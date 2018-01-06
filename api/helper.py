@@ -289,6 +289,8 @@ def decode_and_convert_chart_raw_data(data):
         )
 
         c3.add_additional_grid_line_at_zero()
+        if chart_type=="bar":
+            c3.remove_vertical_grid_from_chart_data()
 
         if subchart is False:
             c3.hide_subchart()
