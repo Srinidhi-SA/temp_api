@@ -776,6 +776,7 @@ def write_into_databases(job_type, object_slug, results):
                 chart_data = card_data['data']
                 final_chart_data = helper.decode_and_convert_chart_raw_data(chart_data)
                 data["chartData"] = chart_changes_in_metadata_chart(final_chart_data)
+                data["table_c3"] = []
 
         results['columnData'] = columnData
         results['possibleAnalysis'] = settings.ANALYSIS_FOR_TARGET_VARIABLE
