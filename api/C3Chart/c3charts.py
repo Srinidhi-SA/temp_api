@@ -96,6 +96,15 @@ class C3Chart(object):
     def hide_x_axis(self):
         self._data['x'] = None
 
+    def hide_x_axis_line(self):
+
+        if 'x' in self._axis:
+            self._axis['x']['show'] = False
+        else:
+            self._axis['x'] = {
+                "show": False
+            }
+
     def set_basic_chart_setting(self,
                                 padding_top=PADDING_TOP):
         self._padding = {
@@ -420,7 +429,7 @@ class C3Chart(object):
             print "no negative"
             return ""
 
-        zero_data = {"value": 0, "text": '',"class":"zeroAxisGrid"}
+        zero_data = {"value": 0, "text": 'Zero',"class":"zeroAxisGrid", 'position': 'start'}
         if self._grid:
             if 'y' in self._grid:
                 if 'lines' in self._grid['y']:
@@ -440,6 +449,7 @@ class C3Chart(object):
                     "lines": [zero_data]
                 }
             }
+        self.hide_x_axis_line()
 
     def add_groups_to_data(self, list_of_y):
         self._data['groups'] = [list_of_y]
