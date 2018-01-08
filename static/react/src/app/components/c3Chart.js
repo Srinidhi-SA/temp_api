@@ -108,6 +108,7 @@ export class C3Chart extends React.Component {
         height: 230
       }
     }
+
     if (this.props.yformat) {
       if (data.data.type == "donut") {
         console.log("in donut")
@@ -151,6 +152,7 @@ export class C3Chart extends React.Component {
         ];
         if (formats.indexOf(this.props.yformat) >= 0) {
           data.axis.y.tick.format = d3.format(this.props.yformat);
+
         } else {
           data.axis.y.tick.format = d3.format('');
         }
@@ -174,6 +176,24 @@ export class C3Chart extends React.Component {
       }
 
     }
+
+    if(store.getState().datasets.dataPreviewFlag){
+      let yformat=".2s"
+      if(this.props.yformat)
+        yformat=this.props.yformat
+
+    data.axis.y.tick.format=function(f){
+      //console.log("f of tick")
+      if(f>999){
+        let si = d3.format(yformat);
+      return String(si(f));
+      //return d3.format(".2s")
+    }  else {
+      let si = d3.format('.0f');
+    return String(si(f));
+      }
+    }}
+
     if (this.props.guage) {
       data.gauge.label.format = function(value, ratio) {
         return value;
