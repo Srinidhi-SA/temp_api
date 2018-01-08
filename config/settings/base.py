@@ -852,8 +852,7 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND = {
 }
 
 TRANSFORMATION_SETTINGS_CONSTANT = {
-    "columnSetting":
-        [
+    "columnSetting":[
             {"actionName": "unique_identifier", "displayName": "Unique Identifier", "status": False},
             {"actionName":"delete","displayName":"Delete Column","status":False},
             {"actionName":"rename","displayName":"Rename Column","status":False,"newName":None},
@@ -900,23 +899,23 @@ TRANSFORMATION_SETTINGS_CONSTANT = {
                             }
                         ]
                     },
+            {
+                "status": False,
+                "actionName": "set_polarity",
+                "displayName": "Set Polarity as",
+                "listOfActions": [
                     {
                         "status": False,
-                        "actionName": "set_polarity",
-                        "displayName": "Set Polarity as",
-                        "listOfActions": [
-                            {
-                                "status": False,
-                                "displayName": "Positive",
-                                "name": "positive"
-                            },
-                            {
-                                "status": False,
-                                "displayName": "Negative",
-                                "name": "negative"
-                            }
-                        ]
+                        "displayName": "Positive",
+                        "name": "positive"
+                    },
+                    {
+                        "status": False,
+                        "displayName": "Negative",
+                        "name": "negative"
                     }
+                ]
+            }
 
         ],
     "new_columns":
@@ -932,6 +931,8 @@ TRANSFORMATION_SETTINGS_CONSTANT = {
         ]
 
 }
+
+TRANSFORMATION_SETTINGS_IGNORE = {"actionName": "ignore_suggestion", "displayName": "Consider for Analysis", "status": False}
 
 CONCEPTS = {'corporate': ['leadership change', 'public relations'],
             'expansion - geography/segment': ['acquisition',

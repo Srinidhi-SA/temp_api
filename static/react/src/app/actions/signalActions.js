@@ -45,7 +45,7 @@ export function checkIfDateTimeIsSelected() {
 export function createSignal(metaData) {
   return (dispatch) => {
     dispatch(updateHide(false))
-    return fetchCreateSignal(metaData).then(([response, json]) => {
+    return fetchCreateSignal(metaData,dispatch).then(([response, json]) => {
       if (response.status === 200) {
         //console.log(json)
         dispatch(updateHide(true));
@@ -55,12 +55,17 @@ export function createSignal(metaData) {
         dispatch(closeCsLoaderModal())
         dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
       }
-    })
+    }).catch(function(error) {
+      bootbox.alert("Connection lost. Please try again later.")
+      dispatch(closeCsLoaderModal())
+      dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
+      clearInterval(createSignalInterval);
+    });
   }
 
 }
 
-function fetchCreateSignal(metaData) {
+function fetchCreateSignal(metaData,dispatch) {
   //console.log(metaData)
 
   return fetch(API + '/api/signals/', {
@@ -154,18 +159,20 @@ function fetchCreateSignalError(json) {
 export function getList(token, pageNo) {
 
   return (dispatch) => {
-    return fetchPosts(token, pageNo).then(([response, json]) => {
+    return fetchPosts(token, pageNo,dispatch).then(([response, json]) => {
       if (response.status === 200) {
         //console.log(json)
+        dispatch(hideLoading())
         dispatch(fetchPostsSuccess(json))
       } else {
         dispatch(fetchPostsError(json))
+        dispatch(hideLoading())
       }
     })
   }
 }
 
-function fetchPosts(token, pageNo) {
+function fetchPosts(token, pageNo,dispatch) {
   //console.log(token)
   let search_element = store.getState().signals.signal_search_element;
   let signal_sorton = store.getState().signals.signal_sorton;
@@ -190,6 +197,7 @@ function fetchPosts(token, pageNo) {
       }).then(response => Promise.all([response, response.json()]));
     }
   } else if ((signal_sorton != "" && signal_sorton != null) && (signal_sorttype != null)) {
+    dispatch(showLoading())
     return fetch(API + '/api/signals/?sorted_by=' + signal_sorton + '&ordering=' + signal_sorttype + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
       method: 'get',
       headers: getHeader(token)
@@ -305,6 +313,78 @@ export function setPossibleAnalysisList(event) {
     $(".treatAsCategorical").addClass("hidden")
   }
   return {type: "SET_POSSIBLE_LIST", varType, varText, varSlug}
+}
+export function handleTargetSelection(){
+    var selectedDimensions =  store.getState().datasets.selectedDimensions.slice();
+    var selectedMeasures = store.getState().datasets.selectedMeasures.slice();
+    var varType = store.getState().signals.getVarType;
+    var varText = store.getState().signals.getVarText;
+    if(varType == "dimension"){
+        selectedDimensions.splice(selectedDimensions.indexOf(varText),1);
+    }else{
+        selectedMeasures.splice(selectedMeasures.indexOf(varText),1);
+    }
+    return {
+        type:"UPDATE_SELECTED_VARIABLES",
+        selectedDimensions,
+        selectedMeasures}
+}
+export function deleteTargetVariableFromSelection(event){
+    var selOption = event.target.childNodes[event.target.selectedIndex];
+    var varType = selOption.value;
+    var varText = selOption.text;
+    var prevVarText = store.getState().signals.getVarText;
+    var selectedDimensions =  store.getState().datasets.selectedDimensions.slice();
+    var originalDimension = store.getState().datasets.ImmutableDimension;
+    var dimensionList =  jQuery.extend(true, [], originalDimension);
+    var dimChkList = store.getState().datasets.dimensionChecked.slice();
+    
+    var selectedTimeDim =  store.getState().datasets.selectedTimeDimensions;
+    
+    var selectedMeasures = store.getState().datasets.selectedMeasures.slice();
+    var originalMeasures = store.getState().datasets.ImmutableMeasures;
+    var measuresList =  jQuery.extend(true, [], originalMeasures);
+    var measuresChkList = store.getState().datasets.measureChecked.slice();
+    
+    if(varType == "dimension"){
+        var index = dimensionList.indexOf(varText);
+        var prevIndex = dimensionList.indexOf(prevVarText);
+        dimensionList.splice(index,1);
+        dimChkList.splice(index,1);
+        if(prevIndex != -1)
+        dimChkList.splice(prevIndex,0,true);
+        else{
+            prevIndex = measuresList.indexOf(prevVarText);
+            measuresChkList.splice(prevIndex,0,true);
+        }
+       
+        //selectedDimensions.splice(selectedDimensions.indexOf(varText),1);
+        //selectedDimensions.push(store.getState().signals.getVarText);
+    }else{
+        var index = measuresList.indexOf(varText);
+        var prevIndex = measuresList.indexOf(prevVarText);
+        measuresList.splice(index,1);
+        measuresChkList.splice(index,1);
+        if(prevIndex != -1)
+        measuresChkList.splice(prevIndex,0,true)
+        else{
+            prevIndex = dimensionList.indexOf(prevVarText); 
+            dimChkList.splice(prevIndex,0,true);
+        }
+        
+       // selectedMeasures.splice(selectedMeasures.indexOf(varText),1);
+        //selectedMeasures.push(store.getState().signals.getVarText);
+    }
+    var count = selectedMeasures.length+selectedDimensions.length-1;
+    if(selectedTimeDim)count = count+1;
+    return{
+        type:"UPADTE_VARIABLES_LIST",
+        measuresChkList,
+        measuresList,
+        count,
+        dimChkList,
+        dimensionList
+    } 
 }
 function checkIfDataTypeChanges(varSlug) {
   var transformSettings = store.getState().datasets.dataTransformSettings;
@@ -600,4 +680,11 @@ export function updateHide(flag) {
 
 export function showChartData(flag, classId) {
   return {type: "CHART_DATA", flag, classId}
+}
+
+export function updateselectedL1(selectedL1){
+  return{
+    type:"SELECTED_L1",
+    selectedL1
+  }
 }

@@ -289,6 +289,8 @@ def decode_and_convert_chart_raw_data(data):
         )
 
         c3.add_additional_grid_line_at_zero()
+        if chart_type=="bar":
+            c3.remove_vertical_grid_from_chart_data()
 
         if subchart is False:
             c3.hide_subchart()
@@ -567,6 +569,8 @@ def decode_and_convert_chart_raw_data(data):
         c3.set_tooltip_format('.2s')
         c3.remove_x_from_data()
         c3.add_tooltip_for_donut()
+        if len(chart_data) >= 1:
+            c3_chart_details["legend_data"] = [i[0] for i in chart_data]
 
         c3_chart_details['table_c3'] = pie_chart_data
         c3_chart_details["chart_c3"] = c3.get_json()
@@ -887,6 +891,7 @@ def convert_column_data_with_array_of_category_into_column_data_stright_xy(colum
 
     return end_data, xs
 
+
 def get_x_column_from_chart_data_without_xs(chart_data, axes):
     i = None
     for index, row in enumerate(chart_data):
@@ -934,8 +939,12 @@ def get_job_status_from_yarn(instance=None):
     except:
         YarnApplicationState = "FAILED"
     readable_live_status = settings.YARN_STATUS.get(YarnApplicationState, "FAILED")
-    instance.job.status = YarnApplicationState
-    instance.job.save()
+
+    try:
+        instance.job.status = YarnApplicationState
+        instance.job.save()
+    except:
+        pass
 
     if readable_live_status is 'SUCCESS' and instance.analysis_done is False:
         instance.status = 'FAILED'

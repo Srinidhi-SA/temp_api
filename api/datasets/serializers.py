@@ -11,6 +11,7 @@ from api.models import Dataset
 from helper import convert_to_json, convert_time_to_human
 from api.helper import get_job_status, get_message
 import copy
+import json
 
 class DatasetSerializer(serializers.ModelSerializer):
 
@@ -35,16 +36,16 @@ class DatasetSerializer(serializers.ModelSerializer):
         return instance
 
     def to_representation(self, instance):
-        print get_job_status(instance)
+        get_job_status(instance)
         ret = super(DatasetSerializer, self).to_representation(instance)
         ret = convert_to_json(ret)
         ret = convert_time_to_human(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
         meta_data = ret.get('meta_data')
-        self.changes_to_metadata(meta_data)
-
+        modified_meta_data = self.changes_to_metadata(meta_data)
+        # instance.meta_data = json.dumps(modified_meta_data)
         try:
-            ret['message'] = get_message(instance)
+            ret['message'] = get_message(instance.job)
         except:
             ret['message'] = None
 
@@ -79,6 +80,8 @@ class DatasetSerializer(serializers.ModelSerializer):
             columnData = meta_data['columnData']
             transformation_settings = settings.TRANSFORMATION_SETTINGS_CONSTANT
 
+            percentage_slug_list = self.collect_slug_for_percentage_columns(meta_data)
+
             for head in columnData:
                 import copy
                 temp = dict()
@@ -100,11 +103,53 @@ class DatasetSerializer(serializers.ModelSerializer):
                     temp['columnSetting'] = columnSettingCopy
                 elif "datetime" == columnType:
                     temp['columnSetting'] = columnSettingCopy[:3]
+
+                if head.get('ignoreSuggestionFlag') is True:
+                    transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
+                    transformation_settings_ignore['status'] = True
+                    transformation_settings_ignore['displayName'] = 'Consider for Analysis'
+                    temp['columnSetting'].append(transformation_settings_ignore)
+                    head['consider'] = False
+                else:
+                    transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
+                    transformation_settings_ignore['status'] = False
+                    transformation_settings_ignore['displayName'] = 'Ignore for Analysis'
+                    temp['columnSetting'].append(transformation_settings_ignore)
+                    head['consider'] = True
+
+                if head['slug'] in percentage_slug_list:
+                    for colSet in temp['columnSetting']:
+                        if 'set_variable' == colSet['actionName']:
+                            colSet['status'] = True
+                            if 'listOfActions' in colSet:
+                                for listAct in colSet['listOfActions']:
+                                    if 'percentage' == listAct['name']:
+                                        listAct['status'] = True
+
                 transformation_data.append(temp)
 
             transformation_final_obj["existingColumns"] = transformation_data
             transformation_final_obj["newColumns"] = transformation_settings.get('new_columns')
             meta_data['transformation_settings'] = transformation_final_obj
+            meta_data['columnData'] = columnData
+
+            return meta_data
+
+    def collect_slug_for_percentage_columns(self, meta_data):
+        metaData = meta_data['metaData']
+        name_list = []
+        slug_list = []
+        for data in metaData:
+            if 'percentageColumns' == data['name']:
+                name_list = data['value']
+
+        columnData = meta_data['columnData']
+        for name in name_list:
+            for data in columnData:
+                if name == data['name']:
+                    slug_list.append(data['slug'])
+
+        return slug_list
 
     def get_advanced_setting(self, meta_data):
         metaData = meta_data.get('metaData')
@@ -145,12 +190,13 @@ class DatasetSerializer(serializers.ModelSerializer):
 class DataListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
+        get_job_status(instance)
         ret = super(DataListSerializer, self).to_representation(instance)
         ret['brief_info'] = instance.get_brief_info()
 
         try:
-            ret['completed_percentage']=get_message(instance)[-1]['globalCompletionPercentage']
-            ret['completed_message']=get_message(instance)[-1]['shortExplanation']
+            ret['completed_percentage']=get_message(instance.job)[-1]['globalCompletionPercentage']
+            ret['completed_message']=get_message(instance.job)[-1]['shortExplanation']
         except:
             ret['completed_percentage'] = 0
             ret['completed_message']="Analyzing Target Variable"

@@ -63,7 +63,13 @@ function uploadFileOrDB(dbDetails){
           } else {
             dispatch(dataUploadError(json))
           }
-        });
+        }).catch(function(error) {
+              console.log(error);
+              bootbox.alert("Connection lost. Please try again later.")
+              dispatch(hideDULoaderPopup());
+              dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
+              clearInterval(dataPreviewInterval);
+          });
       }
 }
 function triggerDataUpload(token,dbDetails) {
@@ -76,10 +82,7 @@ function triggerDataUpload(token,dbDetails) {
       method: 'post',
       headers: getHeaderWithoutContent(token),
       body: data
-    }).then(response => Promise.all([response, response.json()])).catch(function(error) {
-          console.log(error);
-          bootbox.alert("Connection lost. Please try again later.")
-      });;
+    }).then(response => Promise.all([response, response.json()]));
   } else {
 
     var host = store.getState().dataSource.db_host;
@@ -101,10 +104,7 @@ function triggerDataUpload(token,dbDetails) {
       method: 'post',
       headers: getHeader(token),
       body: JSON.stringify({datasource_details: dbDetails, datasource_type: store.getState().dataSource.selectedDataSrcType})
-    }).then(response => Promise.all([response, response.json()])).catch(function(error) {
-          console.log(error);
-          bootbox.alert("Connection lost. Please try again later.")
-      });
+    }).then(response => Promise.all([response, response.json()]));
 
   }
 

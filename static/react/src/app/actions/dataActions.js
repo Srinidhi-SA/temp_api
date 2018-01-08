@@ -6,7 +6,7 @@ import {dataPreviewInterval,dataUploadLoaderValue,clearLoadingMsg} from "./dataU
 import {closeAppsLoaderValue} from "./appActions";
 import Dialog from 'react-bootstrap-dialog'
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
-import {isEmpty,RENAME,DELETE,REPLACE,DATA_TYPE,REMOVE,CURRENTVALUE,NEWVALUE,SET_VARIABLE,UNIQUE_IDENTIFIER,SET_POLARITY,handleJobProcessing} from "../helpers/helper";
+import {isEmpty,RENAME,DELETE,REPLACE,DATA_TYPE,REMOVE,CURRENTVALUE,NEWVALUE,SET_VARIABLE,UNIQUE_IDENTIFIER,SET_POLARITY,handleJobProcessing,IGNORE_SUGGESTION} from "../helpers/helper";
 let refDialogBox = "";
 var refreshDatasetsInterval = null;
 function getHeader(token){
@@ -28,18 +28,20 @@ export function refreshDatasets(props){
 }
 export function getDataList(pageNo) {
 	return (dispatch) => {
-		return fetchDataList(pageNo,getUserDetailsOrRestart.get().userToken).then(([response, json]) =>{
+		return fetchDataList(pageNo,getUserDetailsOrRestart.get().userToken,dispatch).then(([response, json]) =>{
 			if(response.status === 200){
+				dispatch(hideLoading())
 				dispatch(fetchDataSuccess(json))
 			}
 			else{
 				dispatch(fetchDataError(json))
+				dispatch(hideLoading())
 			}
 		})
 	}
 }
 
-function fetchDataList(pageNo,token) {
+function fetchDataList(pageNo,token,dispatch) {
 
 	console.log(token)
 	let search_element = store.getState().datasets.data_search_element;
@@ -68,6 +70,7 @@ function fetchDataList(pageNo,token) {
 						}).then( response => Promise.all([response, response.json()]));
 					}
 					}else if((data_sorton!=""&& data_sorton!=null) && (data_sorttype!=null)){
+						dispatch(showLoading())
 						return fetch(API+'/api/datasets/?sorted_by='+data_sorton+'&ordering='+data_sorttype+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
 							method: 'get',
 							headers: getHeader(token)
@@ -1083,6 +1086,12 @@ export function updateColumnStatus(dispatch,colSlug,colName,actionName,subAction
 						}
 						else transformSettings[i].columnSetting[j].status = true;
 						break;
+					}else if(actionName == IGNORE_SUGGESTION){
+					    if(transformSettings[i].columnSetting[j].status){
+					        transformSettings[i].columnSetting[j].status = false;
+					    }
+					    else transformSettings[i].columnSetting[j].status = true;
+					    break;
 					}else if(actionName == REPLACE){
 						transformSettings[i].columnSetting[j].status=true;
 						var removeValues =  store.getState().datasets.dataSetColumnRemoveValues.slice();
@@ -1363,3 +1372,4 @@ export function updateSelectAllAnlysis(flag){
 		flag
 	}
 }
+

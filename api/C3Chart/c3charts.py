@@ -536,6 +536,9 @@ class C3Chart(object):
     def remove_x_from_data(self):
         self._data['x'] = None
 
+    def remove_vertical_grid_from_chart_data(self):
+        self._grid['x']['show'] = False
+
     def set_x_type(self, to=X_DEFAULT_TYPE):
         self._x_type = to
 

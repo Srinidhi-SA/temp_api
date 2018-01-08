@@ -82,9 +82,9 @@ export class SignalAnalysisPage extends React.Component {
                     <h2 className="pull-left">Sales Performance Report</h2>
                     <div className="btn-toolbar pull-right">
                       <div className="btn-group btn-space">
-                        <button type="button" className="btn btn-default"><i className="pe-7s-display2 pe-lg"></i></button>
-                        <button type="button" className="btn btn-default" title="Document mode"><i className="pe-7s-news-paper pe-lg"></i></button>
-                        <button type="button" className="btn btn-default"><i className="fa fa-times"></i></button>
+                        <button type="button" className="btn btn-default"  title="Card mode"><i class="zmdi zmdi-hc-lg zmdi-view-carousel"></i></button>
+                        <button type="button" className="btn btn-default" title="Document mode"><i class="zmdi zmdi-hc-lg zmdi-view-web"></i></button>
+                        <button type="button" className="btn btn-default"><i class="zmdi zmdi-hc-lg zmdi-close"></i></button>
                       </div>
                     </div>
                     <div className="clearfix"></div>
@@ -273,7 +273,7 @@ export class SignalAnalysisPage extends React.Component {
                                 <div className="side_panel"> <a href="javscript:;" data-toggle="offcanvas" className="sdbar_switch"><i className="mAd_icons sw_on"></i></a>
                                   <div className="panel panel-primary">
                                     <div className="panel-heading"> <span className="title"><i className="mAd_icons ic_perf active"></i> Measure 1 </span> </div>
-                                    <div className="panel-body">
+                                    <div className="panel-body no-border">
                                       <div className="list-group"> <a href="#" className="list-group-item active">Miami's sales performance over time</a> <a href="#" className="list-group-item">City-Sales Performance Decision Matrix</a> <a href="#" className="list-group-item">Link</a> <a href="#" className="list-group-item">Link</a> <a href="#" className="list-group-item">Link</a> <a href="#" className="list-group-item">Link</a> <a href="#" className="list-group-item">Link</a> <a href="#" className="list-group-item">Link</a> <a href="#" className="list-group-item">Link</a> <a href="#" className="list-group-item">Link</a> </div>
                                     </div>
                                   </div>

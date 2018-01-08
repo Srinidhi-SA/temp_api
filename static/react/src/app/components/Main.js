@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import { Redirect } from "react-router";
 import store from "../store";
 import {isEmpty,setUserDetails,getUserDetailsOrRestart} from "../helpers/helper";
-
+import {cookieObj} from '../helpers/cookiesHandler';
 
 @connect((store) => {
   return {
@@ -33,6 +33,8 @@ export class Main extends React.Component {
         </div>
       );
     } else {
+        sessionStorage.clear();
+        cookieObj.clearCookies();
       console.log("Session ended!!");
       //bootbox.alert("Session Timeout. Please login again to continue.")
       return(<Redirect to={"/login"} />);

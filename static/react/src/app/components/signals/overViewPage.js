@@ -15,7 +15,7 @@ import {isEmpty, subTreeSetting,getUserDetailsOrRestart} from "../../helpers/hel
 import {MainHeader} from "../../components/common/MainHeader";
 import {Card} from "./Card";
 import store from "../../store";
-import {getSignalAnalysis,setSideCardListFlag} from "../../actions/signalActions";
+import {getSignalAnalysis,setSideCardListFlag,updateselectedL1} from "../../actions/signalActions";
 import {STATIC_URL} from "../../helpers/env.js"
 import Slider from "react-slick";
 import {getRoboDataset,getStockAnalysis} from "../../actions/appActions";
@@ -383,7 +383,9 @@ closeDocumentMode(){
       }else if(that.urlPrefix == "/apps-stock-advisor"){
     	  nameLink = that.urlPrefix + "/" + this.props.match.params.slug+"/" + params.l1;
       }
+//to fix trend line colour issue:
 
+this.props.dispatch(updateselectedL1(l1Name))
       return (
         <div>
           <div className="side-body">
@@ -489,7 +491,7 @@ closeDocumentMode(){
 
                                       </span>
                                     </div>
-                                    <div className="panel-body">
+                                    <div className="panel-body no-border">
                                       <div className="list-group">
                                         {cardList}
                                       </div>

@@ -119,7 +119,7 @@ const DEFAULTANALYSISVARIABLES = "high";
 const MINROWINDATASET = 10;
 const APPSPERPAGE = 9;
 const POPUPDECISIONTREETABLE = "popupDecisionTreeTable";
-const MAXTEXTLENGTH = 100;
+const MAXTEXTLENGTH = 375;
 const SET_VARIABLE = "set_variable";
 const DIMENSION = "dimension";
 const MEASURE = "measure";
@@ -128,6 +128,7 @@ const GENERIC_NUMERIC = "generic_numeric";
 const SET_POLARITY= "set_polarity";
 const UNIQUE_IDENTIFIER = "unique_identifier";
 const DYNAMICLOADERINTERVAL = 2000;
+const IGNORE_SUGGESTION = "ignore_suggestion";
 
 
 export function generateHeaders(table) {
@@ -359,7 +360,7 @@ export function  subTreeSetting(urlLength, length,paramL2) {
               dispatch(hideLoading());
           })
       }
-     
+
   }
  export function updateJobStatus(slug){
      return fetch(API+'/api/get_job_kill/'+slug+'/',{
@@ -442,7 +443,8 @@ export{
   GENERIC_NUMERIC,
   SET_POLARITY,
   UNIQUE_IDENTIFIER,
-  DYNAMICLOADERINTERVAL
+  DYNAMICLOADERINTERVAL,
+  IGNORE_SUGGESTION
 	}
 export function capitalizeArray(array){
   let a =[]
@@ -470,7 +472,14 @@ export function renderC3ChartInfo(info){
         bootbox.dialog({title: "Statistical Info",
             size: 'small',
             closeButton: true,
-            message: "<div>"+listOfData+"</div>"})
+            message: "<div>"+listOfData+"</div>",
+          onEscape:true})
     }
 
 }
+export function bytesToSize(bytes) {
+   var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+   if (bytes == 0) return '0 Byte';
+   var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+   return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+};
