@@ -571,7 +571,7 @@ def decode_and_convert_chart_raw_data(data):
         c3.add_tooltip_for_donut()
         if len(chart_data) >= 1:
             name_list = [i[0] for i in chart_data]
-            from config import PATTERN1
+            from api.C3Chart.config import PATTERN1
             color_list = PATTERN1
             length = len(name_list)
             c3_chart_details["legend_data"] = [{'name':name_list[i], 'color':color_list[i]} for i in range(length)]
