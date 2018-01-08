@@ -49,7 +49,8 @@ SUBCHART_X_TICK_THRESHOLD = 14
 PATTERN1 = [
     '#00AEB3', '#f47b16', '#7c5bbb',
     '#dd2e1f', '#00a0dc', '#efb920',
-    '#e2247f', '#7cb82f', '#86898c'
+    '#e2247f', '#7cb82f', '#86898c',
+    '#0fc4b5' , '#005662' , '#148071' , '#6cba86' , '#bcf3a2'
 ]
 
 PATTERN = ['#0fc4b5' , '#005662' , '#148071' , '#6cba86' , '#bcf3a2']
