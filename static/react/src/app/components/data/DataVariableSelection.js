@@ -10,7 +10,7 @@ import store from "../../store";
 import { C3Chart } from "../c3Chart";
 import $ from "jquery";
 
-import {updateSelectedVariables, resetSelectedVariables, setSelectedVariables,updateDatasetVariables,handleDVSearch,handelSort,handleSelectAll } from "../../actions/dataActions";
+import {updateSelectedVariables, resetSelectedVariables, setSelectedVariables,updateDatasetVariables,handleDVSearch,handelSort,handleSelectAll,checkColumnIsIgnored } from "../../actions/dataActions";
 
 @connect(( store ) => {
     return {
@@ -99,15 +99,16 @@ export class DataVariableSelection extends React.Component {
             // var measures =[], dimensions =[],datetime =[];
             metaData.map(( metaItem, metaIndex ) => {
                 if ( this.firstLoop ) {
+                   
                     switch ( metaItem.columnType ) {
                         case "measure":
-                           if(!metaItem.ignoreSuggestionFlag){
+                           if(metaItem.consider){
                         	   this.measures.push( metaItem.name );
                                this.measureChkBoxList.push(true);  
                            }
                             break;
                         case "dimension":
-                        	if(!metaItem.ignoreSuggestionFlag && !metaItem.dateSuggestionFlag){
+                        	if(metaItem.consider && !metaItem.dateSuggestionFlag){
                         		this.dimensions.push( metaItem.name );
                         		this.dimensionChkBoxList.push(true)
                         	}else if(metaItem.dateSuggestionFlag){
