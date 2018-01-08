@@ -144,8 +144,10 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
                         #     colset['modified'] = True
 
                         colset['displayName'] = 'Consider for Analysis'
+                        colset['switching_from_false'] = False
+                        mdc.changes_in_column_data_if_column_is_ignore(colName)
                         mdc.changes_on_consider_column(colName, make_it=False)
-
+                        print 'colset'
                 elif colset.get("status") == False:
 
                     if colset.get("actionName") == "delete":
@@ -165,6 +167,12 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
                         #         colset['modified'] = False
                         #         colset['displayName'] = 'Consider for Analysis'
                         #         mdc.changes_on_consider_column(colName, make_it=False)
+                        if 'switching_from_false' not in colset:
+                            colset['switching_from_false'] = True
+                        if colset['switching_from_false']  == False:
+                            colset['switching_from_false'] = True
+                            mdc.changes_in_column_data_if_column_is_considered(colName)
+
                         colset['displayName'] = 'Ignore for Analysis'
                         mdc.changes_on_consider_column(colName, make_it=True)
 
@@ -414,6 +422,54 @@ class MetaDataChange(object):
                 data['consider'] = make_it
                 # data['ignoreSuggestionFlag'] = not make_it
                 break
+
+    def changes_in_column_data_if_column_is_considered(self, colName):
+        import copy
+        from django.conf import settings
+        for head in self.columnData:
+            if head.get('name') == colName:
+                transformation_settings = settings.TRANSFORMATION_SETTINGS_CONSTANT
+
+                columnSettingCopy = copy.deepcopy(transformation_settings.get('columnSetting'))
+                columnType = head.get('columnType')
+
+                if "dimension" == columnType:
+                    head['columnSetting'] = columnSettingCopy[:4]
+                elif "boolean" == columnType:
+                    head['columnSetting'] = columnSettingCopy[:4]
+                elif "measure" == columnType:
+                    datatype_element = columnSettingCopy[4]
+                    datatype_element['listOfActions'][0]["status"] = True
+                    columnSettingCopy[5]['listOfActions'][0]["status"] = True
+                    columnSettingCopy[6]['listOfActions'][0]["status"] = True
+
+                    head['columnSetting'] = columnSettingCopy
+                elif "datetime" == columnType:
+                    head['columnSetting'] = columnSettingCopy[:3]
+
+                transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
+                transformation_settings_ignore['status'] = True
+                transformation_settings_ignore['displayName'] = 'Consider for Analysis'
+                head['columnSetting'].append(transformation_settings_ignore)
+                head['consider'] = False
+                break
+
+    def changes_in_column_data_if_column_is_ignore(self, colName):
+        import copy
+        from django.conf import settings
+        for head in self.columnData:
+            if head.get('name') == colName:
+                transformation_settings = settings.TRANSFORMATION_SETTINGS_CONSTANT_DELETE
+                columnSettingCopy = copy.deepcopy(transformation_settings.get('columnSetting'))
+                head['columnSetting'] = columnSettingCopy
+
+                transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
+                transformation_settings_ignore['status'] = True
+                transformation_settings_ignore['displayName'] = 'Consider for Analysis'
+                head['columnSetting'].append(transformation_settings_ignore)
+                head['consider'] = False
+                break
+
 
 
 dummy_meta_data = {
