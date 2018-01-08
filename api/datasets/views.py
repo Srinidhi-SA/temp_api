@@ -198,6 +198,20 @@ class DatasetView(viewsets.ModelViewSet):
 
     @detail_route(methods=['put'])
     def meta_data_modifications(self, request, slug=None):
+        """
+        This function will not change original metadata. It is just for data preview and modification
+        page. UI will send a modified TS(Tranformation setting) and accordingly we will make changes
+        to TS, metaData, columnData or metadata as a whole. Return metadata again back to UI.
+
+        No changes should be saved to original metadata.
+
+        So all modification are done in function convert_metadata_according_to_transformation_setting.
+        Using latest transformation_settings, change whatever possible on original metadata but don't commit.
+        :param request:
+        :param slug:
+        :return:
+        """
+
         try:
             instance = self.get_object_from_all()
         except:
@@ -210,13 +224,8 @@ class DatasetView(viewsets.ModelViewSet):
         if 'config' not in data:
             return Response({'messgae': 'No config in request body.'})
 
-
         ts = data.get('config')
         meta_data = convert_metadata_according_to_transformation_setting(instance.meta_data, transformation_setting=ts)
-
-        import json
-        instance.meta_data = json.dumps(meta_data)
-        instance.save()
         serializer = DatasetSerializer(instance=instance)
         data = serializer.data
         meta_data["advanced_settings"] = serializer.get_advanced_setting(meta_data)
