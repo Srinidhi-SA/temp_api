@@ -13,16 +13,16 @@ export class HeatMapTable extends React.Component {
   constructor(){
     super();
   }
-  
+
   componentDidMount(){
 	  HeatMap("heat-table-map");
   }
- 
+
   render() {
    var data = this.props.tableData;
    var tableTitle ="";
    var className = "table table-bordered heat-table-map"
-       if(this.props.classId) 
+       if(this.props.classId)
     className = className+" "+this.props.classId;
    if(this.props.tableData.topHeader){
    tableTitle = this.props.tableData.topHeader;
@@ -33,14 +33,14 @@ export class HeatMapTable extends React.Component {
    var rowComponents = generateHeatMapRows(data);
    return (
           <div className={this.props.classId}>
-          <Scrollbars autoHeight minHeight={100} maxHeight={250}>
+          <Scrollbars autoHeight autoHeightMin={100} autoHeightMax={800}>
            <table className={className}>
                <thead>{headerComponents}</thead>
                <tbody>{rowComponents}</tbody>
            </table>
            </Scrollbars>
 		   <div className="text-center">{tableTitle}</div>
-		   
+
 		   </div>
        );
   }
