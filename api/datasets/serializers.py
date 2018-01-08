@@ -11,6 +11,7 @@ from api.models import Dataset
 from helper import convert_to_json, convert_time_to_human
 from api.helper import get_job_status, get_message
 import copy
+import json
 
 class DatasetSerializer(serializers.ModelSerializer):
 
@@ -35,16 +36,16 @@ class DatasetSerializer(serializers.ModelSerializer):
         return instance
 
     def to_representation(self, instance):
-        print get_job_status(instance)
+        get_job_status(instance)
         ret = super(DatasetSerializer, self).to_representation(instance)
         ret = convert_to_json(ret)
         ret = convert_time_to_human(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
         meta_data = ret.get('meta_data')
-        self.changes_to_metadata(meta_data)
-
+        modified_meta_data = self.changes_to_metadata(meta_data)
+        instance.meta_data = json.dumps(modified_meta_data)
         try:
-            ret['message'] = get_message(instance)
+            ret['message'] = get_message(instance.job)
         except:
             ret['message'] = None
 
@@ -105,11 +106,20 @@ class DatasetSerializer(serializers.ModelSerializer):
                     transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
                     transformation_settings_ignore['status'] = True
                     temp['columnSetting'].append(transformation_settings_ignore)
+                    head['consider'] = False
+                else:
+                    transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
+                    transformation_settings_ignore['status'] = False
+                    temp['columnSetting'].append(transformation_settings_ignore)
+                    head['consider'] = True
                 transformation_data.append(temp)
 
             transformation_final_obj["existingColumns"] = transformation_data
             transformation_final_obj["newColumns"] = transformation_settings.get('new_columns')
             meta_data['transformation_settings'] = transformation_final_obj
+            meta_data['columnData'] = columnData
+
+            return meta_data
 
     def get_advanced_setting(self, meta_data):
         metaData = meta_data.get('metaData')
@@ -150,12 +160,13 @@ class DatasetSerializer(serializers.ModelSerializer):
 class DataListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
+        get_job_status(instance)
         ret = super(DataListSerializer, self).to_representation(instance)
         ret['brief_info'] = instance.get_brief_info()
 
         try:
-            ret['completed_percentage']=get_message(instance)[-1]['globalCompletionPercentage']
-            ret['completed_message']=get_message(instance)[-1]['shortExplanation']
+            ret['completed_percentage']=get_message(instance.job)[-1]['globalCompletionPercentage']
+            ret['completed_message']=get_message(instance.job)[-1]['shortExplanation']
         except:
             ret['completed_percentage'] = 0
             ret['completed_message']="Analyzing Target Variable"

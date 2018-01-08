@@ -80,8 +80,6 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
 
     ts = ts.get('existingColumns')
 
-
-
     for col in ts:
 
         if "columnSetting" in col:
@@ -138,6 +136,17 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
 
                     if colset.get('actionName', None) == 'ignore_suggestion':
                         colName = col.get('name')
+
+                        if 'modified' in colset:
+                            if colset.get('modified') == True:
+                                pass
+                            else:
+                                pass
+                        else:
+                            colset['modified'] = True
+
+                        colset['displayName'] = 'Ignore for Analysis'
+
                         mdc.changes_on_consider_column(colName, make_it=True)
 
                 elif colset.get("status") == False:
@@ -153,7 +162,13 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
 
                     if colset.get('actionName', None) == 'ignore_suggestion':
                         colName = col.get('name')
-                        mdc.changes_on_consider_column(colName, make_it=False)
+
+                        if 'modified' in colset:
+
+                            if colset.get('modified') == True:
+                                colset['modified'] = False
+                                colset['displayName'] = 'Consider for Analysis'
+                                mdc.changes_on_consider_column(colName, make_it=False)
 
     return metaData, headers
 

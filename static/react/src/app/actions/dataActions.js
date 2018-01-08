@@ -6,7 +6,7 @@ import {dataPreviewInterval,dataUploadLoaderValue,clearLoadingMsg} from "./dataU
 import {closeAppsLoaderValue} from "./appActions";
 import Dialog from 'react-bootstrap-dialog'
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
-import {isEmpty,RENAME,DELETE,REPLACE,DATA_TYPE,REMOVE,CURRENTVALUE,NEWVALUE,SET_VARIABLE,UNIQUE_IDENTIFIER,SET_POLARITY,handleJobProcessing} from "../helpers/helper";
+import {isEmpty,RENAME,DELETE,REPLACE,DATA_TYPE,REMOVE,CURRENTVALUE,NEWVALUE,SET_VARIABLE,UNIQUE_IDENTIFIER,SET_POLARITY,handleJobProcessing,IGNORE_SUGGESTION} from "../helpers/helper";
 let refDialogBox = "";
 var refreshDatasetsInterval = null;
 function getHeader(token){
@@ -1086,6 +1086,12 @@ export function updateColumnStatus(dispatch,colSlug,colName,actionName,subAction
 						}
 						else transformSettings[i].columnSetting[j].status = true;
 						break;
+					}else if(actionName == IGNORE_SUGGESTION){
+					    if(transformSettings[i].columnSetting[j].status){
+					        transformSettings[i].columnSetting[j].status = false;
+					    }
+					    else transformSettings[i].columnSetting[j].status = true;
+					    break;
 					}else if(actionName == REPLACE){
 						transformSettings[i].columnSetting[j].status=true;
 						var removeValues =  store.getState().datasets.dataSetColumnRemoveValues.slice();

@@ -932,7 +932,7 @@ TRANSFORMATION_SETTINGS_CONSTANT = {
 
 }
 
-TRANSFORMATION_SETTINGS_IGNORE = {"actionName": "ignore_suggestion", "displayName": "Ignore", "status": False}
+TRANSFORMATION_SETTINGS_IGNORE = {"actionName": "ignore_suggestion", "displayName": "Consider for Analysis", "status": False}
 
 CONCEPTS = {'corporate': ['leadership change', 'public relations'],
             'expansion - geography/segment': ['acquisition',

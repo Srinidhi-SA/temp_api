@@ -56,6 +56,13 @@ class Job(models.Model):
     error_report = models.TextField(default="{}")
     message_log = models.TextField(default="{}")
 
+    def url_html(self):
+        return '<a href="http://{0}:{1}/cluster/app/{2}">{3}</a>'.format(settings.YARN.get('host'),
+                                                                     settings.YARN.get('port'),
+                                                                     self.url,
+                                                                     self.url
+                                                                     )
+
     def generate_slug(self):
         if not self.slug:
             self.slug = slugify(str(self.name) + "-" + ''.join(
@@ -1324,7 +1331,12 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
 
         job.url = job_return_data.get('application_id')
         job.command_array = json.dumps(job_return_data.get('command_array'))
-        job.config = json.dumps(job_return_data.get('config'))
+
+        readable_job_config = {
+            'job_config': job_return_data.get('config')['job_config']['job_config'],
+            'config': job_return_data.get('config')['job_config']['config']
+        }
+        job.config = json.dumps(readable_job_config)
         job.save()
     except Exception as exc:
         print "#" * 100

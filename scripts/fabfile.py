@@ -544,7 +544,31 @@ def configuration_details():
             'path_details': {
                 "react_path": "/static/react",
                 "asset_path": "/static/asset",
-                "base_remote_path": "/home/ubuntu/codebase/mAdvisor-api_luke",
+                "base_remote_path": "/home/ubuntu/codebase/mAdvisor-api",
+                "ui_branch": "api_ui_dev",
+                "api_branch": "api_ui_dev"
+            },
+            'type': 'luke',
+            'gunicorn_details': {
+                'gunicorn_wsgi_app': 'config.wsgi:application',
+                'gunicorn_pidpath': "/gunicorn.pid",
+                'gunicorn_bind': "0.0.0.0:9012"
+            },
+            'deployment_config': 'luke'
+        },
+        'madvisor': {
+            'server_details': {
+                "known name": "madvisor.marlabsai.com",
+                "username": "ubuntu",
+                "host": "34.196.22.246",
+                "port": "9012",
+                "initail_domain": "/api",
+                'pem_detail': "/config/keyfiles/TIAA.pem"
+            },
+            'path_details': {
+                "react_path": "/static/react",
+                "asset_path": "/static/asset",
+                "base_remote_path": "/home/ubuntu/codebase/mAdvisor-api",
                 "ui_branch": "api_ui_dev",
                 "api_branch": "api_ui_dev"
             },
@@ -593,7 +617,7 @@ def configuration_details():
             'path_details': {
                 "react_path": "/static/react",
                 "asset_path": "/static/asset",
-                "base_remote_path": "/home/ubuntu/9013/mAdvisor-api",
+                "base_remote_path": "/home/ubuntu/codebase/mAdvisor-api_2",
                 "ui_branch": "api_ui_dev",
                 "api_branch": "api_ui_dev"
             },

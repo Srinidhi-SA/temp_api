@@ -166,7 +166,7 @@ def convert_time_to_human(data):
 # TODO: use dataserializer
 class InsightSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
-        print get_job_status(instance)
+        get_job_status(instance)
         ret = super(InsightSerializer, self).to_representation(instance)
         dataset = ret['dataset']
         dataset_object = Dataset.objects.get(pk=dataset)
@@ -221,8 +221,7 @@ class InsightSerializer(serializers.ModelSerializer):
 class InsightListSerializers(serializers.ModelSerializer):
 
     def to_representation(self, instance):
-        from api.helper import get_message
-
+        get_job_status(instance)
         ret = super(InsightListSerializers, self).to_representation(instance)
         dataset = ret['dataset']
         dataset_object = Dataset.objects.get(pk=dataset)
@@ -234,8 +233,8 @@ class InsightListSerializers(serializers.ModelSerializer):
 
         # ret['is_viewed'] = False
         try:
-            ret['completed_percentage']=get_message(instance)[-1]['globalCompletionPercentage']
-            ret['completed_message']=get_message(instance)[-1]['shortExplanation']
+            ret['completed_percentage']=get_message(instance.job)[-1]['globalCompletionPercentage']
+            ret['completed_message']=get_message(instance.job)[-1]['shortExplanation']
         except:
             ret['completed_percentage'] = 0
             ret['completed_message']="Analyzing Target Variable"
@@ -293,6 +292,7 @@ class TrainerSerlializer(serializers.ModelSerializer):
 class TrainerListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
+        print get_job_status(instance)
         ret = super(TrainerListSerializer, self).to_representation(instance)
         dataset = ret['dataset']
         dataset_object = Dataset.objects.get(pk=dataset)
@@ -354,6 +354,7 @@ class ScoreSerlializer(serializers.ModelSerializer):
 class ScoreListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
+        print get_job_status(instance)
         ret = super(ScoreListSerializer, self).to_representation(instance)
         trainer = ret['trainer']
         trainer_object = Trainer.objects.get(pk=trainer)
@@ -524,6 +525,7 @@ class StockDatasetSerializer(serializers.ModelSerializer):
 class StockDatasetListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
+        print get_job_status(instance)
         ret = super(StockDatasetListSerializer, self).to_representation(instance)
         ret['brief_info'] = instance.get_brief_info()
         return ret

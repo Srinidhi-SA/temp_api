@@ -213,6 +213,10 @@ class DatasetView(viewsets.ModelViewSet):
 
         ts = data.get('config')
         meta_data = convert_metadata_according_to_transformation_setting(instance.meta_data, transformation_setting=ts)
+
+        import json
+        instance.meta_data = json.dumps(meta_data)
+        instance.save()
         serializer = DatasetSerializer(instance=instance)
         data = serializer.data
         meta_data["advanced_settings"] = serializer.get_advanced_setting(meta_data)
