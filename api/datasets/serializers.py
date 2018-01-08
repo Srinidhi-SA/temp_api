@@ -125,6 +125,8 @@ class DatasetSerializer(serializers.ModelSerializer):
                                 for listAct in colSet['listOfActions']:
                                     if 'percentage' == listAct['name']:
                                         listAct['status'] = True
+                                    else:
+                                        listAct['status'] = False
 
                 transformation_data.append(temp)
 
