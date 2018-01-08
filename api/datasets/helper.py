@@ -412,7 +412,7 @@ class MetaDataChange(object):
         for data in self.columnData:
             if data.get('name') == colName:
                 data['consider'] = make_it
-                data['ignoreSuggestionFlag'] = not make_it
+                # data['ignoreSuggestionFlag'] = not make_it
                 break
 
 

@@ -80,6 +80,8 @@ class DatasetSerializer(serializers.ModelSerializer):
             columnData = meta_data['columnData']
             transformation_settings = settings.TRANSFORMATION_SETTINGS_CONSTANT
 
+            percentage_slug_list = self.collect_slug_for_percentage_columns(meta_data)
+
             for head in columnData:
                 import copy
                 temp = dict()
@@ -114,6 +116,16 @@ class DatasetSerializer(serializers.ModelSerializer):
                     transformation_settings_ignore['displayName'] = 'Ignore for Analysis'
                     temp['columnSetting'].append(transformation_settings_ignore)
                     head['consider'] = True
+
+                if head['slug'] in percentage_slug_list:
+                    for colSet in temp['columnSetting']:
+                        if 'set_variable' == colSet['actionName']:
+                            colSet['status'] = True
+                            if 'listOfActions' in colSet:
+                                for listAct in colSet['listOfActions']:
+                                    if 'percentage' == listAct['name']:
+                                        listAct['status'] = True
+
                 transformation_data.append(temp)
 
             transformation_final_obj["existingColumns"] = transformation_data
@@ -122,6 +134,22 @@ class DatasetSerializer(serializers.ModelSerializer):
             meta_data['columnData'] = columnData
 
             return meta_data
+
+    def collect_slug_for_percentage_columns(self, meta_data):
+        metaData = meta_data['metaData']
+        name_list = []
+        slug_list = []
+        for data in metaData:
+            if 'percentageColumns' == data['name']:
+                name_list = data['value']
+
+        columnData = meta_data['columnData']
+        for name in name_list:
+            for data in columnData:
+                if name == data['name']:
+                    slug_list.append(data['slug'])
+
+        return slug_list
 
     def get_advanced_setting(self, meta_data):
         metaData = meta_data.get('metaData')
