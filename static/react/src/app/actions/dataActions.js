@@ -1372,3 +1372,4 @@ export function updateSelectAllAnlysis(flag){
 		flag
 	}
 }
+
