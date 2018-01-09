@@ -693,5 +693,5 @@ def json_prettify_for_admin(json_val):
     response = highlight(response, JsonLexer(), formatter)
     style = "<style>" + formatter.get_style_defs() + "</style><br>"
 
-    return mark_safe(style + response)
+    return mark_safe(style + response +"<hr>")
 
