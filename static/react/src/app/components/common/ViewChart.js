@@ -12,7 +12,7 @@ import { Scrollbars } from 'react-custom-scrollbars';
     return {login_response: store.login.login_response,
         signal: store.signals.signalAnalysis,
         viewChartFlag:store.signals.viewChartFlag,
-        chartClassId:store.signals.chartClassId,
+        viewChartClassId:store.signals.chartClassId,
     };
 })
 
@@ -25,6 +25,7 @@ export class ViewChart extends React.Component {
         this.props.dispatch(showZoomChart(flag,""));
     }
     
+  
     componentDidUpdate(){
         var chartData = this.props.chartData;
         if(chartData.subchart != null){
@@ -33,8 +34,17 @@ export class ViewChart extends React.Component {
         //chartData.axis.x.extent = null;
        // chartData.size.height = 450;
        // chartData.size.width = 2000;
-        chartData['bindto'] = document.querySelector(".c3ChartScroll")
+        var imgDetails = "c3ChartScroll"+this.props.classId;
+        chartData['bindto'] = document.querySelector("."+imgDetails)
         let chart = c3.generate(chartData);
+    }
+    shouldComponentUpdate(){
+       
+        if(store.getState().signals.chartClassId == this.props.classId) 
+        return true;
+        else if(store.getState().signals.chartClassId == "")return true;
+        else return false;
+       // return true;
     }
     downloadSVGAsPNG() {
         //This is code to remove background black color in chart and ticks adjustment
@@ -56,9 +66,8 @@ export class ViewChart extends React.Component {
 
     }
     render() {
-      var imgId = document.querySelector(".chart" + this.props.chartClassId + ">svg");
-      
-      var imgDetails = "";
+  
+      var imgDetails = "c3ChartScroll"+this.props.classId;;
        
         return (
                 <div id="viewC3Chart">
@@ -70,7 +79,7 @@ export class ViewChart extends React.Component {
     <Scrollbars className="thumb-horizontal" style={{width:850, minHeight:350,maxheight:500 }}  >
                 
                   
-                <div className="c3ChartScroll text-center ">
+                <div className={imgDetails}>
 
              
                 </div>

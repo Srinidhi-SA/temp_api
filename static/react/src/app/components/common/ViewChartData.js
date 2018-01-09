@@ -8,7 +8,8 @@ import renderHTML from 'react-render-html';
 import {Scrollbars} from 'react-custom-scrollbars';
 
 @connect((store) => {
-  return {login_response: store.login.login_response, signal: store.signals.signalAnalysis, viewChartDataFlag: store.signals.viewChartDataFlag, chartDataClassId: store.signals.chartDataClassId};
+  return {login_response: store.login.login_response, signal: store.signals.signalAnalysis, 
+      viewChartDataFlag: store.signals.viewChartDataFlag, chartDataClassId: store.signals.chartDataClassId};
 })
 
 export class ViewChartData extends React.Component {
@@ -19,7 +20,13 @@ export class ViewChartData extends React.Component {
   openCloseChartData(flag) {
     this.props.dispatch(showChartData(flag, ""));
   }
-
+  shouldComponentUpdate(){   
+      if(store.getState().signals.chartDataClassId == this.props.classId) 
+      return true;
+      else if(store.getState().signals.chartDataClassId == "")return true;
+      else return false;
+     // return true;
+  }
   render() {
     console.log("in view chart@@@@@@@@@@@@")
     console.log(this.props)
@@ -49,6 +56,7 @@ export class ViewChartData extends React.Component {
 
     //  $(".table" + this.props.classId + " table").html(tablehtml);
     }
+    var tableClass = "table chart-table"
     return (
       <div id="viewChartData">
         <Modal show={this.props.viewChartDataFlag} backdrop="static" onHide={this.openCloseChartData.bind(this, false)} dialogClassName="modal-colored-header uploadData modal-dialog">
@@ -66,7 +74,7 @@ export class ViewChartData extends React.Component {
                 }}/>} renderThumbHorizontal={props => <div {...props} className="thumb-horizontal" style={{
                   display: "none"
                 }}/>}>
-                  <table className='table chart-table'>{
+                  <table className={tableClass}>{
                     (this.props.tabledata)?renderHTML(tablehtml):""}</table>
                   {/*<div class="form-group col-md-7;">*/}
 
