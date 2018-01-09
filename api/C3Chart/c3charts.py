@@ -144,7 +144,7 @@ class C3Chart(object):
                     'tick':
                         {
                             'outer': False,
-                            'count': 7,
+                            # 'count': 7,
                             'multiline': Y_TICK_MULTILNE
                         },
                     'label':
