@@ -33,7 +33,7 @@ class JobAdmin(admin.ModelAdmin):
     actions = ['kill_selected_jobs', 'start_selected_jobs', 'refresh_status']
 
     def url_html(self,obj):
-        return '<a href="http://%s:%s/cluster/app/%s">%s</a>'.format(settings.YARN.host,settings.YARN.port, obj.url, obj.url)
+        return '<a href="http://%s:%s/cluster/app/%s">%s</a>'.format(settings.YARN.get("host"),settings.YARN.get("port"), obj.url, obj.url)
 
     url_html.allow_tags = True
 
