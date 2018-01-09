@@ -17,15 +17,15 @@ import { Scrollbars } from 'react-custom-scrollbars';
 })
 
 export class ViewChart extends React.Component {
-    
+
     constructor(props){
         super(props);
     }
     openCloseZoomChart(flag){
         this.props.dispatch(showZoomChart(flag,""));
     }
-    
-  
+
+
     componentDidUpdate(){
         var chartData = this.props.chartData;
         if(chartData.subchart != null){
@@ -37,10 +37,24 @@ export class ViewChart extends React.Component {
         var imgDetails = "c3ChartScroll"+this.props.classId;
         chartData['bindto'] = document.querySelector("."+imgDetails)
         let chart = c3.generate(chartData);
+
+        if(chartData.subchart != null){
+            chartData.subchart.show=false;
+        }
+        if(chartData.axis&&chartData.axis.x){
+        chartData.axis.x.extent = null;
+      }
+       // chartData.size.height = 450;
+       // chartData.size.width = 2000;
+        chartData['bindto'] = document.querySelector(".c3ChartDownload"+this.props.classId)
+        chart = c3.generate(chartData);
+        if(chartData.subchart != null){
+            chartData.subchart.show=true;
+        }
     }
     shouldComponentUpdate(){
-       
-        if(store.getState().signals.chartClassId == this.props.classId) 
+
+        if(store.getState().signals.chartClassId == this.props.classId)
         return true;
         else if(store.getState().signals.chartClassId == "")return true;
         else return false;
@@ -48,8 +62,8 @@ export class ViewChart extends React.Component {
     }
     downloadSVGAsPNG() {
         //This is code to remove background black color in chart and ticks adjustment
-      var nodeList = document.querySelector(".chart" + this.props.classId + ">svg").querySelectorAll('.c3-chart .c3-chart-lines path');
-      var nodeList2 = document.querySelector(".chart" + this.props.classId + ">svg").querySelectorAll('.c3-axis path');
+      var nodeList = document.querySelector(".c3ChartDownload"+this.props.classId + ">svg").querySelectorAll('.c3-chart .c3-chart-lines path');
+      var nodeList2 = document.querySelector(".c3ChartDownload"+this.props.classId+ ">svg").querySelectorAll('.c3-axis path');
       var line_graph = Array.from(nodeList);
       var x_and_y = Array.from(nodeList2); //.concat(Array.from(nodeList2));
       line_graph.forEach(function(element) {
@@ -59,16 +73,17 @@ export class ViewChart extends React.Component {
         element.style.fill = "none";
         element.style.stroke = "black";
       });
-      saveSvgAsPng(document.querySelector(".chart" + this.props.classId + ">svg"), "chart.png", {
+      saveSvgAsPng(document.querySelector(".c3ChartDownload"+this.props.classId + ">svg"), "chart.png", {
         backgroundColor: "white",
-        height: "450"
+        height: "500"
       });
 
     }
     render() {
-  
-      var imgDetails = "c3ChartScroll"+this.props.classId;;
-       
+
+      var imgDetails = "c3ChartScroll"+this.props.classId;
+      var downloadDtls="c3ChartDownload"+this.props.classId;
+
         return (
                 <div id="viewC3Chart">
                 <Modal show={store.getState().signals.viewChartFlag} backdrop="static" onHide={this.openCloseZoomChart.bind(this,false)} dialogClassName="modal-colored-header modal-lg">
@@ -77,14 +92,16 @@ export class ViewChart extends React.Component {
                 </Modal.Header>
                 <Modal.Body>
     <Scrollbars className="thumb-horizontal" style={{width:850, minHeight:350,maxheight:500 }}  >
-                
-                  
+
+
                 <div className={imgDetails}>
 
-             
+
                 </div>
-            
-                
+                <div className = {downloadDtls} style={{display:"none"}}></div>
+
+
+
                  </Scrollbars>
                 </Modal.Body>
                 <Modal.Footer>
@@ -94,5 +111,5 @@ export class ViewChart extends React.Component {
                 </div>
         );
     }
-    
+
 }
