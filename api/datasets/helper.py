@@ -147,7 +147,7 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
                         col['switching_from_false'] = False
                         mdc.changes_in_column_data_if_column_is_ignore(colName)
                         mdc.changes_on_consider_column(colName, make_it=False)
-                        print 'colset'
+
                 elif colset.get("status") == False:
 
                     if colset.get("actionName") == "delete":
@@ -419,7 +419,6 @@ class MetaDataChange(object):
 
     def changes_in_column_data_if_column_is_considered(self, colName):
         import copy
-        import pdb;pdb.set_trace()
         from django.conf import settings
         for head in self.columnData:
             if head.get('name') == colName:

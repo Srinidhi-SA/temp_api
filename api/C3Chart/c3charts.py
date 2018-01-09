@@ -429,7 +429,7 @@ class C3Chart(object):
             print "no negative"
             return ""
 
-        zero_data = {"value": 0, "text": 'Zero',"class":"zeroAxisGrid", 'position': 'start'}
+        zero_data = {"value": 0, "text": '',"class":"zeroAxisGrid", 'position': 'start'}
         if self._grid:
             if 'y' in self._grid:
                 if 'lines' in self._grid['y']:
@@ -450,6 +450,9 @@ class C3Chart(object):
                 }
             }
         self.hide_x_axis_line()
+
+    def remove_y_label_count(self):
+        self._axis['y']['tick']['count'] = None
 
     def add_groups_to_data(self, list_of_y):
         self._data['groups'] = [list_of_y]
