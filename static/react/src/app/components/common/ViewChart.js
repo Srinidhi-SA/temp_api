@@ -34,6 +34,7 @@ export class ViewChart extends React.Component {
         //chartData.axis.x.extent = null;
        // chartData.size.height = 450;
        // chartData.size.width = 2000;
+       var extent=null
         var imgDetails = "c3ChartScroll"+this.props.classId;
         chartData['bindto'] = document.querySelector("."+imgDetails)
         let chart = c3.generate(chartData);
@@ -42,6 +43,7 @@ export class ViewChart extends React.Component {
             chartData.subchart.show=false;
         }
         if(chartData.axis&&chartData.axis.x){
+          extent=chartData.axis.x.extent
         chartData.axis.x.extent = null;
       }
        // chartData.size.height = 450;
@@ -51,6 +53,9 @@ export class ViewChart extends React.Component {
         if(chartData.subchart != null){
             chartData.subchart.show=true;
         }
+        if(chartData.axis&&chartData.axis.x){
+          chartData.axis.x.extent=extent
+      }
     }
     shouldComponentUpdate(){
 
