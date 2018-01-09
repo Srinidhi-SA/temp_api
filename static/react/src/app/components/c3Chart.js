@@ -78,11 +78,24 @@ export class C3Chart extends React.Component {
     $('.chart-data-icon').css('visibility', 'hidden');
 
   }
-
+  componentDidUpdate(){
+    //   var chartData = this.props.data;
+    //   if(chartData.subchart != null){
+    //       chartData.subchart.show=false;
+    //   }
+    //   if(chartData.axis&&chartData.axis.x){
+    //   chartData.axis.x.extent = null;
+    // }
+    //   chartData['bindto'] = document.querySelector(".c3ChartDownloadDirect"+this.props.classId)
+    //   chart = c3.generate(chartData);
+    //   if(chartData.subchart != null){
+    //       chartData.subchart.show=true;
+    //   }
+  }
   downloadSVG() {
     //This is code to remove background black color in chart and ticks adjustment
-    var nodeList = document.querySelector(".chart" + this.props.classId + ">svg").querySelectorAll('.c3-chart .c3-chart-lines path');
-    var nodeList2 = document.querySelector(".chart" + this.props.classId + ">svg").querySelectorAll('.c3-axis path');
+    var nodeList = document.querySelector(".c3ChartDownloadDirect"+this.props.classId  + ">svg").querySelectorAll('.c3-chart .c3-chart-lines path');
+    var nodeList2 = document.querySelector(".c3ChartDownloadDirect"+this.props.classId + ">svg").querySelectorAll('.c3-axis path');
     var line_graph = Array.from(nodeList);
     var x_and_y = Array.from(nodeList2); //.concat(Array.from(nodeList2));
     line_graph.forEach(function(element) {
@@ -92,9 +105,9 @@ export class C3Chart extends React.Component {
       element.style.fill = "none";
       element.style.stroke = "black";
     });
-    saveSvgAsPng(document.querySelector(".chart" + this.props.classId + ">svg"), "chart.png", {
+    saveSvgAsPng(document.querySelector(".c3ChartDownloadDirect"+this.props.classId  + ">svg"), "chart.png", {
       backgroundColor: "white",
-      height: "450"
+      height: "500"
     });
 
   }
@@ -116,7 +129,7 @@ export class C3Chart extends React.Component {
           '.2s',
           '$',
           '$,.2s',
-          '.2f',
+          '.2f','.4f',
           ',.0f',
           '.4r'
         ];
@@ -131,7 +144,7 @@ export class C3Chart extends React.Component {
           '.2s',
           '$',
           '$,.2s',
-          '.2f',
+          '.2f','.4f',
           ',.0f',
           '.4r'
         ];
@@ -146,7 +159,7 @@ export class C3Chart extends React.Component {
           '.2s',
           '$',
           '$,.2s',
-          '.2f',
+          '.2f','.4f',
           ',.0f',
           '.4r'
         ];
@@ -165,7 +178,7 @@ export class C3Chart extends React.Component {
         '.2s',
         '$',
         '$,.2s',
-        '.2f',
+        '.2f','.4f',
         ',.0f',
         '.4r'
       ];
@@ -241,7 +254,7 @@ export class C3Chart extends React.Component {
         '.2s',
         '$',
         '$,.2s',
-        '.2f',
+        '.2f','.4f',
         ',.0f',
         '.4r'
       ];
@@ -275,7 +288,7 @@ export class C3Chart extends React.Component {
         '.2s',
         '$',
         '$,.2s',
-        '.2f',
+        '.2f','.4f',
         ',.0f',
         '.4r'
       ];
@@ -303,6 +316,19 @@ export class C3Chart extends React.Component {
     chart = setTimeout(function() {
       return c3.generate(data);
     }, 100);
+
+
+    if(chartData.subchart != null){
+        chartData.subchart.show=false;
+    }
+    if(chartData.axis&&chartData.axis.x){
+    chartData.axis.x.extent = null;
+  }
+    chartData['bindto'] = document.querySelector(".c3ChartDownloadDirect"+this.props.classId)
+    chart = c3.generate(chartData);
+    if(chartData.subchart != null){
+        chartData.subchart.show=true;
+    }
     //c3.generate(data);
 
     //this.props.dispatch(chartObjStore(chart));
@@ -377,9 +403,10 @@ export class C3Chart extends React.Component {
 
     }
     //var classId = "chart"+this.props.classId + " ct col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 xs-mb-20";
-
+var downloadDtls="c3ChartDownloadDirect"+this.props.classId;
     return (
       <div className="chart-area">
+      <div className = {downloadDtls} style={{display:"none"}}></div>
         <div className="row">
           <div className="chart-data-icon col-md-8 col-md-offset-2 xs-p-0 xs-mb-20">
 
