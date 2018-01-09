@@ -272,17 +272,17 @@ export class Profile extends React.Component {
                             </div>
                             <div className="col-md-6 text-right">
                               <p className="xs-pt-30">
-                                Date Joined :
+                                Date Joined :&nbsp;
                                 <b>
                                   {dateFormat(getUserDetailsOrRestart.get().date, "mmm d,yyyy")}</b>
                                 <br/>
-                                Last Login :
+                                Last Login :&nbsp;
                                 <b>{lastLogin}</b>
                                 {/*<br/>
                     Subscription Left :
                     <b>25 Days</b>*/}
                                 <br/>
-                                Superuser status:
+                                Super user status:&nbsp;
                                 <b>{getUserDetailsOrRestart.get().is_superuser}</b>
 
                               </p>
@@ -308,7 +308,7 @@ export class Profile extends React.Component {
             <div className="row">
               <div className="col-md-4">
                 <div className="panel">
-                  <div className="panel-body">
+                  <div className="panel-body no-border">
                     <div className="minHP">
                       <h5 class="text-center">TOTAL SPACE</h5>
                       <C3Chart chartInfo={chartInfo} classId="_profile" data={this.props.profileInfo.chart_c3}/> {/*
@@ -341,7 +341,7 @@ export class Profile extends React.Component {
                   <div className="clearfix"></div>
                   <div className="col-md-12">
                     <div className="panel">
-                      <div className="panel-body">
+                      <div className="panel-body no-border">
                         <div className="minHP">
                           <h5>RECENT ACTIVITY</h5>
                           <Scrollbars style={{
@@ -352,7 +352,7 @@ export class Profile extends React.Component {
                             display: "none"
                           }}/>}>
 
-                            <ul className="list-unstyled list-border recActivity">
+                            <ul className="list-unstyled recActivity">
                               {recentActivity}
                             </ul>
                           </Scrollbars>
