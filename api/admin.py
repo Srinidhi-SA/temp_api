@@ -32,8 +32,8 @@ class JobAdmin(admin.ModelAdmin):
     readonly_fields = ["created_at"]
     actions = ['kill_selected_jobs', 'start_selected_jobs', 'refresh_status']
 
-    def url_html(self):
-        return '<a href="http://%s:%s/cluster/app/%s">%s</a>'.format(settings.YARN.host,settings.YARN.port, self.url, self.url)
+    def url_html(self,obj):
+        return '<a href="http://%s:%s/cluster/app/%s">%s</a>'.format(settings.YARN.get("host"),settings.YARN.get("port"), obj.url, obj.url)
 
     url_html.allow_tags = True
 
