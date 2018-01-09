@@ -134,22 +134,6 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
                             replace_match_array=replacementValues
                         )
 
-                    if colset.get('actionName') == 'ignore_suggestion':
-                        colName = col.get('name')
-
-                        # if 'modified' in colset:
-                        #     if colset.get('modified') == True:
-                        #         pass
-                        #     else:
-                        #         pass
-                        # else:
-                        #     colset['modified'] = True
-
-                        colset['displayName'] = 'Consider for Analysis'
-                        col['switching_from_false'] = False
-                        columnSetting_Temp = mdc.changes_in_column_data_if_column_is_ignore(colName)
-                        mdc.changes_on_consider_column(colName, make_it=False)
-
                 elif colset.get("status") == False:
 
                     if colset.get("actionName") == "delete":
@@ -160,20 +144,6 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
                                 mdc.changes_on_delete(col.get("name"), type='undelete')
                                 colset['modified'] = False
                                 colset['displayName'] = 'Delete Column'
-
-                    if colset.get('actionName') == 'ignore_suggestion':
-                        colName = col.get('name')
-                        if 'switching_from_false' not in col:
-                            col['switching_from_false'] = True
-                        if col['switching_from_false']  == False:
-                            col['switching_from_false'] = True
-                            columnSetting_Temp = mdc.changes_in_column_data_if_column_is_considered(colName)
-                        print col['switching_from_false']
-                        colset['displayName'] = 'Ignore for Analysis'
-                        mdc.changes_on_consider_column(colName, make_it=True)
-
-        if columnSetting_Temp is not None:
-            col['columnSetting'] = columnSetting_Temp
 
     return metaData, headers
 
