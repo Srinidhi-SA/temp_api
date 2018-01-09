@@ -55,7 +55,6 @@ def convert_metadata_according_to_transformation_setting(meta_data=None, transfo
     columnData = the_meta_data.get("columnData")
     sampleData = the_meta_data.get("sampleData")
 
-
     a,b = read_and_change_metadata(
         ts=ts,
         metaData=metaData,
@@ -80,10 +79,7 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
 
     ts = ts.get('existingColumns')
 
-
-
     for col in ts:
-
         if "columnSetting" in col:
             columnSetting = col.get("columnSetting")
 
@@ -136,6 +132,20 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
                             replace_match_array=replacementValues
                         )
 
+                    if colset.get('actionName') == 'ignore_suggestion':
+                        colName = col.get('name')
+
+                        # if 'modified' in colset:
+                        #     if colset.get('modified') == True:
+                        #         pass
+                        #     else:
+                        #         pass
+                        # else:
+                        #     colset['modified'] = True
+
+                        colset['displayName'] = 'Consider for Analysis'
+                        mdc.changes_on_consider_column(colName, make_it=False)
+
                 elif colset.get("status") == False:
 
                     if colset.get("actionName") == "delete":
@@ -146,6 +156,17 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
                                 mdc.changes_on_delete(col.get("name"), type='undelete')
                                 colset['modified'] = False
                                 colset['displayName'] = 'Delete Column'
+
+                    if colset.get('actionName') == 'ignore_suggestion':
+                        colName = col.get('name')
+                        # if 'modified' in colset:
+                        #
+                        #     if colset.get('modified') == True:
+                        #         colset['modified'] = False
+                        #         colset['displayName'] = 'Consider for Analysis'
+                        #         mdc.changes_on_consider_column(colName, make_it=False)
+                        colset['displayName'] = 'Ignore for Analysis'
+                        mdc.changes_on_consider_column(colName, make_it=True)
 
     return metaData, headers
 
@@ -386,6 +407,14 @@ class MetaDataChange(object):
                         data[index] = data[index].replace(r['valueToReplace'], r['replacedValue'])
                 elif replaceType == "":
                     pass
+
+    def changes_on_consider_column(self, colName=None, make_it=None):
+        for data in self.columnData:
+            if data.get('name') == colName:
+                data['consider'] = make_it
+                # data['ignoreSuggestionFlag'] = not make_it
+                break
+
 
 dummy_meta_data = {
         "transformation_settings": [

@@ -6,7 +6,7 @@ import {dataPreviewInterval,dataUploadLoaderValue,clearLoadingMsg} from "./dataU
 import {closeAppsLoaderValue} from "./appActions";
 import Dialog from 'react-bootstrap-dialog'
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
-import {isEmpty,RENAME,DELETE,REPLACE,DATA_TYPE,REMOVE,CURRENTVALUE,NEWVALUE,SET_VARIABLE,UNIQUE_IDENTIFIER,SET_POLARITY} from "../helpers/helper";
+import {isEmpty,RENAME,DELETE,REPLACE,DATA_TYPE,REMOVE,CURRENTVALUE,NEWVALUE,SET_VARIABLE,UNIQUE_IDENTIFIER,SET_POLARITY,handleJobProcessing,IGNORE_SUGGESTION} from "../helpers/helper";
 let refDialogBox = "";
 var refreshDatasetsInterval = null;
 function getHeader(token){
@@ -28,18 +28,20 @@ export function refreshDatasets(props){
 }
 export function getDataList(pageNo) {
 	return (dispatch) => {
-		return fetchDataList(pageNo,getUserDetailsOrRestart.get().userToken).then(([response, json]) =>{
+		return fetchDataList(pageNo,getUserDetailsOrRestart.get().userToken,dispatch).then(([response, json]) =>{
 			if(response.status === 200){
+				dispatch(hideLoading())
 				dispatch(fetchDataSuccess(json))
 			}
 			else{
 				dispatch(fetchDataError(json))
+				dispatch(hideLoading())
 			}
 		})
 	}
 }
 
-function fetchDataList(pageNo,token) {
+function fetchDataList(pageNo,token,dispatch) {
 
 	console.log(token)
 	let search_element = store.getState().datasets.data_search_element;
@@ -68,6 +70,7 @@ function fetchDataList(pageNo,token) {
 						}).then( response => Promise.all([response, response.json()]));
 					}
 					}else if((data_sorton!=""&& data_sorton!=null) && (data_sorttype!=null)){
+						dispatch(showLoading())
 						return fetch(API+'/api/datasets/?sorted_by='+data_sorton+'&ordering='+data_sorttype+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
 							method: 'get',
 							headers: getHeader(token)
@@ -131,7 +134,11 @@ export function getDataSetPreview(slug,interval) {
 				dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
 				dispatch(fetchDataPreviewError(json))
 			}
-		})
+		}).catch(function(error){
+		    
+		    dispatch(hideDULoaderPopup());
+	        bootbox.alert("Unable to connect to server. Check your connection please try again.")
+	    });
 	}
 }
 
@@ -140,9 +147,7 @@ function fetchDataPreview(slug) {
 	return fetch(API+'/api/datasets/'+slug+'/',{
 		method: 'get',
 		headers: getHeader(getUserDetailsOrRestart.get().userToken)
-	}).then( response => Promise.all([response, response.json()])).catch(function(error){
-		bootbox.alert("Unable to connect to server. Check your connection please try again.")
-	});
+	}).then( response => Promise.all([response, response.json()]))
 }
 //get preview data
 function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
@@ -180,6 +185,10 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
 		}
 	}else if(dataPreview.status == "INPROGRESS"){
 		dispatch(dispatchDataPreviewLoadingMsg(dataPreview));
+		return {
+            type: "SELECTED_DATASET",
+            slug,
+        }
 	}
 }
 
@@ -658,7 +667,8 @@ export function hideDULoaderPopup(){
 		type: "HIDE_DATA_UPLOAD_LOADER",
 	}
 }
-export function showDialogBox(slug,dialog,dispatch){
+export function showDialogBox(slug,dialog,dispatch,evt){
+    var labelTxt = evt.target.text;
 	Dialog.setOptions({
 		defaultOkLabel: 'Yes',
 		defaultCancelLabel: 'No',
@@ -669,7 +679,8 @@ export function showDialogBox(slug,dialog,dispatch){
 		actions: [
 		          Dialog.CancelAction(),
 		          Dialog.OKAction(() => {
-		        	  deleteDataset(slug,dialog,dispatch)
+		              if(labelTxt.indexOf("Stop") != -1)dispatch(handleJobProcessing(slug));
+		              else deleteDataset(slug,dialog,dispatch)
 		          })
 		          ],
 		          bsSize: 'medium',
@@ -679,9 +690,9 @@ export function showDialogBox(slug,dialog,dispatch){
 		          }
 	});
 }
-export function handleDelete(slug,dialog) {
+export function handleDelete(slug,dialog,evt) {
 	return (dispatch) => {
-		showDialogBox(slug,dialog,dispatch)
+		showDialogBox(slug,dialog,dispatch,evt)
 	}
 }
 function deleteDataset(slug,dialog,dispatch){
@@ -1075,6 +1086,12 @@ export function updateColumnStatus(dispatch,colSlug,colName,actionName,subAction
 						}
 						else transformSettings[i].columnSetting[j].status = true;
 						break;
+					}else if(actionName == IGNORE_SUGGESTION){
+					    if(transformSettings[i].columnSetting[j].status){
+					        transformSettings[i].columnSetting[j].status = false;
+					    }
+					    else transformSettings[i].columnSetting[j].status = true;
+					    break;
 					}else if(actionName == REPLACE){
 						transformSettings[i].columnSetting[j].status=true;
 						var removeValues =  store.getState().datasets.dataSetColumnRemoveValues.slice();
@@ -1355,3 +1372,4 @@ export function updateSelectAllAnlysis(flag){
 		flag
 	}
 }
+

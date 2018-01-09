@@ -11,7 +11,7 @@ import {open,close,fileUpload,dataUpload} from "../../actions/dataUploadActions"
 
 
 @connect((store) => {
-	return {login_response: store.login.login_response, 
+	return {login_response: store.login.login_response,
 		appsModelShowModal: store.apps.appsModelShowModal,
 		allDataList: store.datasets.allDataSets,
 		dataPreview: store.datasets.dataPreview,
@@ -19,6 +19,7 @@ import {open,close,fileUpload,dataUpload} from "../../actions/dataUploadActions"
 		selectedDataset:store.datasets.selectedDataSet,
 		dataPreviewFlag:store.datasets.dataPreviewFlag,
 		currentAppId:store.apps.currentAppId,
+		selectedDataSrcType:store.dataSource.selectedDataSrcType
 		};
 })
 
@@ -34,7 +35,12 @@ export class AppsCreateModel extends React.Component {
 		this.props.dispatch(closeModelPopup());
 	}
 	openModelPopup(){
+		// if(store.getState().datasets.allDataSets.data)
     	this.props.dispatch(openModelPopup())
+		// else {
+		// 	bootbox.alert("No datasets available.Please upload some data or connect to a database")
+		//
+		// }
     }
     closeModelPopup(){
     	this.props.dispatch(closeModelPopup())
@@ -58,6 +64,7 @@ export class AppsCreateModel extends React.Component {
 		const dataSets = store.getState().datasets.allDataSets.data;
 		let renderSelectBox = null;
 		let _link = "";
+		let hideCreate=false
 		if(store.getState().datasets.dataPreviewFlag){
 			let _link = "/apps/"+store.getState().apps.currentAppId+"/models/data/"+store.getState().datasets.selectedDataSet;
 			return(<Redirect to={_link}/>);
@@ -70,6 +77,8 @@ export class AppsCreateModel extends React.Component {
 			</select>
 		}else{
 			renderSelectBox = "No Datasets"
+			if(this.props.selectedDataSrcType=="fileUpload")
+			hideCreate=true
 		}
 		return (
 				<div class="col-md-3 xs-mb-15 list-boxes" onClick={this.openModelPopup.bind(this)}>
@@ -79,7 +88,7 @@ export class AppsCreateModel extends React.Component {
 				<div class="col-xs-12 text-center">CREATE MODEL</div>
 				</div>
 				</div>
-				
+
 				<div id="newModel"  role="dialog" className="modal fade modal-colored-header">
 				<Modal show={store.getState().apps.appsModelShowModal} onHide={this.closeModelPopup.bind(this)} dialogClassName="modal-colored-header uploadData">
 				<Modal.Header closeButton>
@@ -89,12 +98,12 @@ export class AppsCreateModel extends React.Component {
 				 {/* <div class="form-group">
                   <label>Select an existing dataset</label>
                   {renderSelectBox}
-                </div>*/} 
+                </div>*/}
 				<DataSourceList type="model" renderDatasets={renderSelectBox}/>
 				</Modal.Body>
 				<Modal.Footer>
 				<Button className="btn btn-primary md-close" onClick={this.closeModelPopup.bind(this)}>Close</Button>
-                <Button bsStyle="primary" onClick={this.getDataSetPreview.bind(this)}>Create</Button>
+                <Button bsStyle="primary" id="modalCreateButton" disabled={hideCreate} onClick={this.getDataSetPreview.bind(this)}>Create</Button>
 				</Modal.Footer>
 				</Modal>
 				</div>
@@ -104,4 +113,4 @@ export class AppsCreateModel extends React.Component {
 		)
 	}
 
-}	  
+}

@@ -54,6 +54,14 @@ class Job(models.Model):
     deleted = models.BooleanField(default=False)
     submitted_by = models.ForeignKey(User, null=False)
     error_report = models.TextField(default="{}")
+    message_log = models.TextField(default="{}")
+
+    def url_html(self):
+        return '<a href="http://{0}:{1}/cluster/app/{2}">{3}</a>'.format(settings.YARN.get('host'),
+                                                                     settings.YARN.get('port'),
+                                                                     self.url,
+                                                                     self.url
+                                                                     )
 
     def generate_slug(self):
         if not self.slug:
@@ -70,7 +78,18 @@ class Job(models.Model):
     def kill(self):
         from api.yarn_job_api import kill_application, kill_application_using_fabric
         # return kill_application(self.url)
-        return kill_application_using_fabric(self.url)
+        url_status =  kill_application_using_fabric(self.url)
+
+        if url_status is True:
+            original_object = self.get_original_object()
+
+            if original_object is not None:
+                original_object.status = 'FAILED'
+                original_object.save()
+            self.status = 'KILLED'
+            self.save()
+
+        return url_status
 
     def start(self):
         command_array = json.loads(self.command_array)
@@ -79,6 +98,29 @@ class Job(models.Model):
             command_array=command_array
         )
         self.url = newly_spawned_job.get('application_id')
+        original_object = self.get_original_object()
+
+        if original_object is not None:
+            original_object.status = 'INPROGRESS'
+            original_object.save()
+
+        self.save()
+
+    def update_status(self):
+        import yarn_api_client
+        ym = yarn_api_client.resource_manager.ResourceManager(address=settings.YARN.get("host"),
+                                                              port=settings.YARN.get("port"),
+                                                              timeout=settings.YARN.get("timeout"))
+        app_status = ym.cluster_application(self.url)
+        try:
+            print app_status
+            self.status = app_status.data['app']["state"]
+            self.save()
+        except Exception as err:
+            print "update_status_error -- "
+            print err
+
+    def get_original_object(self):
         original_object = None
         if self.job_type in ["metadata", "subSetting"]:
             original_object = Dataset.objects.get(slug=self.object_id)
@@ -95,21 +137,8 @@ class Job(models.Model):
         else:
             print "No where to write"
 
-        if original_object is not None:
-            original_object.status = 'INPROGRESS'
-            original_object.save()
+        return original_object
 
-        self.save()
-
-    def update_status(self):
-        import yarn_api_client
-        ym = yarn_api_client.resource_manager.ResourceManager(address=settings.YARN.get("host"),
-                                                              port=settings.YARN.get("port"),
-                                                              timeout=settings.YARN.get("timeout"))
-        app_status = ym.cluster_application(self.url)
-
-        self.status = app_status.data['app']["state"]
-        self.save()
 
 
 class Dataset(models.Model):
@@ -1295,14 +1324,19 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
             class_name=job_type,
             job_config=jobConfig,
             job_name=instance.name,
-            message_slug=get_message_slug(instance),
+            message_slug=get_message_slug(job),
             queue_name=queue_name
         )
         print "Job submitted."
 
         job.url = job_return_data.get('application_id')
         job.command_array = json.dumps(job_return_data.get('command_array'))
-        job.config = json.dumps(job_return_data.get('config'))
+
+        readable_job_config = {
+            'job_config': job_return_data.get('config')['job_config']['job_config'],
+            'config': job_return_data.get('config')['job_config']['config']
+        }
+        job.config = json.dumps(readable_job_config)
         job.save()
     except Exception as exc:
         print "#" * 100
@@ -1351,6 +1385,12 @@ def get_message_slug(instance):
     ac = AccessFeedbackMessage()
     slug = ac.get_cache_name(instance)
     return slug
+
+
+def get_slug_from_message_url(url):
+    split_with_underscore = url.split('_')
+    return "_".join(split_with_underscore[1:-1])
+
 
 
 class StockDataset(models.Model):

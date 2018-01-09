@@ -98,10 +98,19 @@ def deploy_api(branch="dev"):
     local('echo "{0}" > {1}'.format(text_command, config_file_path))
 
     with cd(BASE_DIR):
-        local('git add {0}'.format(config_file_path))
-        local('git checkout {0}'.format(react_env))
-        local('git checkout {0}'.format(react_npm_log))
-        local('git commit -m "version changed"')
+        if os.path.exists(config_file_path) is True:
+            local('git add {0}'.format(config_file_path))
+
+        if os.path.exists(react_env) is True:
+            local('git checkout {0}'.format(react_env))
+
+        if os.path.exists(react_npm_log) is True:
+            ls_react_npm_log = local('ls {0}'.format(react_npm_log), capture=True)
+            if 'cannot access' in ls_react_npm_log:
+                pass
+            else:
+                local('git checkout {0}'.format(react_npm_log))
+        local('git commit -m "version changed. Automated Deployment."')
 
     only_for_api_push_and_pull(
         server_details=server_details,
@@ -128,10 +137,19 @@ def change_config_file(branch='dev'):
     local('echo "{0}" > {1}'.format(text_command, config_file_path))
 
     with cd(BASE_DIR):
-        local('git add {0}'.format(config_file_path))
-        local('git checkout {0}'.format(react_env))
-        local('git checkout {0}'.format(react_npm_log))
-        local('git commit -m "version changed"')
+        if os.path.exists(config_file_path) is True:
+            local('git add {0}'.format(config_file_path))
+
+        if os.path.exists(react_env) is True:
+            local('git checkout {0}'.format(react_env))
+
+        if os.path.exists(react_npm_log) is True:
+            ls_react_npm_log = local('ls {0}'.format(react_npm_log), capture=True)
+            if 'cannot access' in ls_react_npm_log:
+                pass
+            else:
+                local('git checkout {0}'.format(react_npm_log))
+        local('git commit -m "version changed. Automated Deployment."')
 
     only_for_api_push_and_pull(
         server_details=server_details,
@@ -403,22 +421,34 @@ def create_database(type="development"):
     run("GRANT ALL PRIVILEGES ON {0}.* TO {1}@{2};".format(db_name, user_name, host))
 
 @task
-def download_sql_and_dump(type='development'):
-
-    if type == "development":
-        dev()
-    elif type == "production":
-        prod()
-
-    server_details = env.get('server_details')
-    path_details = env.get('path_details')
-
+def download_sql_and_dump(branch='development'):
+    import time
+    details = get_branch_details(branch)
+    set_fabric_env(details)
+    print details
+    path_details= details['path_details']
+    server_details= details['server_details']
+    current_time = time.strftime("%Y%m%dT%H%M%S", time.gmtime())
     base_remote_path = path_details.get('base_remote_path')
     with cd(base_remote_path):
-        run("python manage.py dumpdata -e contenttypes -e auth.Permission > datadump.json")
-        path_json = base_remote_path + "/" + "datadump.json"
-        get(path_json, "/home/ankush/codebase/code_revamp/madvisor_api/")
 
+        run("python manage.py dumpdata -e contenttypes -e auth.Permission > datadump{0}.json".format(current_time))
+        path_json = base_remote_path + "/" + "datadump{0}.json".format(current_time)
+        local_dumping_path = '/tmp'
+        get(path_json, local_dumping_path)
+
+    with lcd(BASE_DIR):
+        file_name = '{0}.json'.format(current_time)
+        locapath = '/home/ankush/dump_files/' + file_name
+        local('python manage.py loaddata {0}'.format(locapath))
+
+
+@task
+def load_sql_dump_data():
+    with lcd(BASE_DIR):
+        file_name = 'datadump1514902040.15.json'
+        locapath = '/home/ankush/dump_files/' + file_name
+        local('python manage.py loaddata {0}'.format(locapath))
     local("cat 'Done.'")
 
 
@@ -514,7 +544,31 @@ def configuration_details():
             'path_details': {
                 "react_path": "/static/react",
                 "asset_path": "/static/asset",
-                "base_remote_path": "/home/ubuntu/codebase/mAdvisor-api_luke",
+                "base_remote_path": "/home/ubuntu/codebase/mAdvisor-api",
+                "ui_branch": "api_ui_dev",
+                "api_branch": "api_ui_dev"
+            },
+            'type': 'luke',
+            'gunicorn_details': {
+                'gunicorn_wsgi_app': 'config.wsgi:application',
+                'gunicorn_pidpath': "/gunicorn.pid",
+                'gunicorn_bind': "0.0.0.0:9012"
+            },
+            'deployment_config': 'luke'
+        },
+        'madvisor': {
+            'server_details': {
+                "known name": "madvisor.marlabsai.com",
+                "username": "ubuntu",
+                "host": "34.196.22.246",
+                "port": "9012",
+                "initail_domain": "/api",
+                'pem_detail': "/config/keyfiles/TIAA.pem"
+            },
+            'path_details': {
+                "react_path": "/static/react",
+                "asset_path": "/static/asset",
+                "base_remote_path": "/home/ubuntu/codebase/mAdvisor-api",
                 "ui_branch": "api_ui_dev",
                 "api_branch": "api_ui_dev"
             },
@@ -563,7 +617,7 @@ def configuration_details():
             'path_details': {
                 "react_path": "/static/react",
                 "asset_path": "/static/asset",
-                "base_remote_path": "/home/ubuntu/9013/mAdvisor-api",
+                "base_remote_path": "/home/ubuntu/codebase/mAdvisor-api_2",
                 "ui_branch": "api_ui_dev",
                 "api_branch": "api_ui_dev"
             },
@@ -580,10 +634,18 @@ def configuration_details():
     return configuration_detail
 
 
+@task
+def testpad():
+    import os
+    local('pwd')
+    get_local_home()
 
 
+def get_local_home():
+    localhome = local('echo $HOME', capture=True)
+    return localhome
 
 
-
-
-
+def get_local_user_name():
+    localusername = local('whoami', capture=True)
+    return localusername

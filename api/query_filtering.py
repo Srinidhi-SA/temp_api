@@ -121,11 +121,11 @@ def get_listed_data(
     page_class = viewset.pagination_class()
     page = page_class.paginate_queryset(
         queryset=query_set,
-        request=request
+        request=request,
+        list_serializer=list_serializer
     )
 
-    serializer = list_serializer(page, many=True)
-    return page_class.get_paginated_response(serializer.data)
+    return page_class.modified_get_paginate_response(page)
 
 
 def get_retrieve_data(
