@@ -62,6 +62,7 @@ def convert_metadata_according_to_transformation_setting(meta_data=None, transfo
         columnData=columnData,
         sampleData=sampleData
     )
+
     the_meta_data['modified'] = True
     the_meta_data["transformation_settings"] = transformation_setting
     return the_meta_data
@@ -80,6 +81,7 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
     ts = ts.get('existingColumns')
 
     for col in ts:
+        columnSetting_Temp = None
         if "columnSetting" in col:
             columnSetting = col.get("columnSetting")
 
@@ -145,7 +147,7 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
 
                         colset['displayName'] = 'Consider for Analysis'
                         col['switching_from_false'] = False
-                        mdc.changes_in_column_data_if_column_is_ignore(colName)
+                        columnSetting_Temp = mdc.changes_in_column_data_if_column_is_ignore(colName)
                         mdc.changes_on_consider_column(colName, make_it=False)
 
                 elif colset.get("status") == False:
@@ -165,12 +167,46 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
                             col['switching_from_false'] = True
                         if col['switching_from_false']  == False:
                             col['switching_from_false'] = True
-                            mdc.changes_in_column_data_if_column_is_considered(colName)
+                            columnSetting_Temp = mdc.changes_in_column_data_if_column_is_considered(colName)
                         print col['switching_from_false']
                         colset['displayName'] = 'Ignore for Analysis'
                         mdc.changes_on_consider_column(colName, make_it=True)
 
+        if columnSetting_Temp is not None:
+            col['columnSetting'] = columnSetting_Temp
+
     return metaData, headers
+
+#
+# def changes_in_column_data_if_column_is_considered(self, col):
+#     import copy
+#     from django.conf import settings
+#
+#     transformation_settings = settings.TRANSFORMATION_SETTINGS_CONSTANT
+#
+#     columnSettingCopy = copy.deepcopy(transformation_settings.get('columnSetting'))
+#     columnType = col.get('columnType')
+#
+#     if "dimension" == columnType:
+#         head['columnSetting'] = columnSettingCopy[:4]
+#     elif "boolean" == columnType:
+#         head['columnSetting'] = columnSettingCopy[:4]
+#     elif "measure" == columnType:
+#         datatype_element = columnSettingCopy[4]
+#         datatype_element['listOfActions'][0]["status"] = True
+#         columnSettingCopy[5]['listOfActions'][0]["status"] = True
+#         columnSettingCopy[6]['listOfActions'][0]["status"] = True
+#
+#         head['columnSetting'] = columnSettingCopy
+#     elif "datetime" == columnType:
+#         head['columnSetting'] = columnSettingCopy[:3]
+#
+#     transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
+#     transformation_settings_ignore['status'] = True
+#     transformation_settings_ignore['displayName'] = 'Consider for Analysis'
+#     head['columnSetting'].append(transformation_settings_ignore)
+#     head['consider'] = False
+#     break
 
 # from api.datasets.helper import *
 # convert_metadata_according_to_transformation_setting()
@@ -446,7 +482,8 @@ class MetaDataChange(object):
                 transformation_settings_ignore['displayName'] = 'Consider for Analysis'
                 head['columnSetting'].append(transformation_settings_ignore)
                 head['consider'] = False
-                break
+
+                return head['columnSetting']
 
     def changes_in_column_data_if_column_is_ignore(self, colName):
         import copy
@@ -462,7 +499,7 @@ class MetaDataChange(object):
                 transformation_settings_ignore['displayName'] = 'Consider for Analysis'
                 head['columnSetting'].append(transformation_settings_ignore)
                 head['consider'] = False
-                break
+                return head['columnSetting']
 
 
 
