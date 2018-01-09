@@ -558,7 +558,8 @@ def decode_and_convert_chart_raw_data(data):
         pie_chart_data = chart_data
         c3 = DonutChart(data=pie_chart_data,title=title,yAxisNumberFormat=yAxisNumberFormat)
         c3.set_all_basics()
-        c3.show_basic_legends()
+        #c3.show_basic_legends()
+        c3.show_legends_at_right()
         if yAxisNumberFormat is not None:
             c3_chart_details["yformat"] = yAxisNumberFormat
         else:

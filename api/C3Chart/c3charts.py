@@ -170,6 +170,12 @@ class C3Chart(object):
             'show': True
         }
 
+    def show_legends_at_right(self):
+        self._legend = {
+            'show':True,
+            'position':'right'
+        }
+
     def set_basic_grid_lines(self):
         self._grid = {
             'y': {
