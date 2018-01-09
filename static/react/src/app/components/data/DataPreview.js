@@ -136,6 +136,7 @@ export class DataPreview extends React.Component {
 
 
 	componentDidMount() {
+	  
 		{/*}$(function(){
 			console.log($(".cst_table"));
 			let initialCol= $(".cst_table td").first();
@@ -159,6 +160,7 @@ export class DataPreview extends React.Component {
 
 		showHideSideTable(this.firstTimeSideTable);
 		showHideSideChart(this.firstTimeColTypeForChart,this.firstTimeSideChart);
+		
 
 	}
 	setSideElements(e){
@@ -265,7 +267,8 @@ export class DataPreview extends React.Component {
 		//console.log(this.props)
 		var that = this;
 		$(function(){
-		    var idActiveColumn = false
+		    
+		    var idActiveColumn = false;
 		    $(".cst_table tbody tr").first().find("td").each(function(){
 
 		        if($(this).hasClass("activeColumn"))idActiveColumn=true

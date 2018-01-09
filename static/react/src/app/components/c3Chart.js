@@ -108,6 +108,7 @@ export class C3Chart extends React.Component {
         height: 230
       }
     }
+
     if (this.props.yformat) {
       if (data.data.type == "donut") {
         console.log("in donut")
@@ -211,7 +212,10 @@ export class C3Chart extends React.Component {
       }
 
     }
-
+    if (data.data.type == "donut") {
+        data.padding.top=10;
+        data.size.height=200
+    }
     if (data.data.type == "donut") {
       console.log("in donut tooltip")
       let formats = [
