@@ -254,7 +254,7 @@ def decode_and_convert_chart_raw_data(data):
     sd.save()
     if chart_type in ["bar", "line", "spline"]:
         chart_data = replace_chart_data(data['data'])
-        c3_chart_details['table_c3'] = chart_data
+        c3_chart_details['table_c3'] = put_x_axis_first_chart_data(chart_data, axes.get('x', 'key'))
         sd.set_data(data=chart_data)
         c3_chart_details['download_url'] = sd.get_url()
         c3 = C3Chart(
@@ -319,7 +319,7 @@ def decode_and_convert_chart_raw_data(data):
     elif chart_type in ["combination"]:
 
         chart_data = replace_chart_data(data['data'])
-        c3_chart_details['table_c3'] = chart_data
+        c3_chart_details['table_c3'] = put_x_axis_first_chart_data(chart_data, axes.get('x', 'key'))
         sd.set_data(data=chart_data)
         c3_chart_details['download_url'] = sd.get_url()
         c3 = C3Chart(
@@ -625,6 +625,30 @@ def convert_chart_data_to_pie_chart(chart_data):
     pie_chart_data = map(list, pie_chart_data)
     print pie_chart_data
     return pie_chart_data[1:]
+
+def put_x_axis_first_chart_data(chart_data, x_column=None):
+    import copy
+    chart_data = copy.deepcopy(chart_data)
+    if x_column is None:
+        return chart_data
+    index = 0
+    i = 0
+    for data in chart_data:
+        if data[0] == x_column:
+            index = i
+            break
+        i += 1
+
+    if index == 0:
+        return chart_data
+    else:
+        temp = chart_data[index]
+        chart_data[index] = chart_data[0]
+        chart_data[0] = temp
+
+    return chart_data
+
+
 
 
 
