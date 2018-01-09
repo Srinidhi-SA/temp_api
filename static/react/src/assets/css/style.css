@@ -3488,6 +3488,9 @@ button.close {
 	border-right-width: 0;
 	border-left-color: #fff
 }
+.popover-content h5 { margin-top: 12px;
+    margin-bottom: 4px; }
+.popover-content p { line-height: 16px;}
 .carousel-inner {
 	width: 100%
 }
@@ -9206,7 +9209,7 @@ box-shadow: 0px 0px 14px 4px rgba(0,0,0,0.15); */
 .user-display { border:1px solid #f2f4f8;}*/
 .user-profile .user-display {
     margin-bottom: 0px;
-    background: #d2d2d2;
+    background: #f8f8f8;
     padding: 10px;
     margin: -15px;
 }
@@ -13754,22 +13757,26 @@ div.dataTables_wrapper div.dataTables_length label select {
     text-decoration: none !important;
     font-size: 14px;
     word-break: break-word;
-    /* line-height: 50px; */
-    height: 60px;
+	width: 90%;
+    /* line-height: 50px; 
+    height: 60px;*/
 }
 .newCardTitle a{
-    color: #333333;
-    display: block;
-    height: 52px;
+    color: #333333; 
     /* border: 1px solid; */
     text-overflow: ellipsis;
     overflow: hidden; white-space: nowrap; text-transform: capitalize; font-weight:normal }
+	
+.newCardTitle a.title {
+    display: inline-block;
+    width:  100%
+}	
 .footerTitle{
 	display:block;
 	font-size:12px;
 }
 .footerTitle-lineh { line-height: 3em; }
-.newCardStyle { height:131px; }
+.newCardStyle { height:114px; }
 
 
 .newCardStyle, .app-block{
@@ -13808,6 +13815,7 @@ ul.app_labels li:first-child { margin: 0; padding: 7px 5px }
 /*.app-block h4, h4.title a {
     font-weight: bold;
 }*/
+.newCardStyle:hover a.pover { background-color: #10b7a9}
 .firstCard .col-xs-8.col-xs-offset-0 {
         padding-left: 12px;
 }
@@ -13885,7 +13893,7 @@ ul.app_labels li:first-child { margin: 0; padding: 7px 5px }
 	border-top: 1px solid #f4f4f4;
 	display: block;
 	padding: 0 0px;
-	height: 128px;
+	height: 115px;
 	overflow: hidden;
 	transition: all .1s ease-in-out;
 	cursor:pointer;
@@ -13897,9 +13905,9 @@ ul.app_labels li:first-child { margin: 0; padding: 7px 5px }
 
 }
 .card-center-tile {
-    height: 78px;
+    height: 66px;
     padding: 0 15px;
-	border-bottom:1px solid #ececec; /* eaeef1 #ececec;      / * line-height: 66px; * /
+	/*border-bottom:1px solid #ececec;  eaeef1 #ececec;      / * line-height: 66px; * /
     / * line-height: 66px; */
 }
 .pe-2x {
@@ -13909,7 +13917,7 @@ ul.app_labels li:first-child { margin: 0; padding: 7px 5px }
     line-height: 1.9em;
 }
 .card-footer {
-    height: 40px;
+    height: 36px;
     background-color: #f9f9f9; /*#ecf4f4 #f3f4f6;*/
     padding: 0 0 0 15px;
     /* color: #fff; */
@@ -13926,7 +13934,10 @@ ul.app_labels li:first-child { margin: 0; padding: 7px 5px }
     display: inline-block;
 	width:36px;/*  line-height:40px;*/
 }
-
+.pover { height: 45px;width: 45px;position: absolute;right: 10px;top: 42px; border-radius: 50px;background-color: #00978b; -webkit-box-shadow: 1px 6px 10px -3px rgba(0,0,0,0.44);
+-moz-box-shadow: 1px 6px 10px -3px rgba(0,0,0,0.44);
+box-shadow: 1px 6px 10px -3px rgba(0,0,0,0.44);}
+.card_icon { text-align: center;  display: block; line-height: 40px;  }
 /*.card-deatils.open a .fa { color: #7dac02} */
 
 
@@ -14823,6 +14834,11 @@ div.pred_disp_block  p, .pred_disp_block_store p { font-size:12px; }
 .panel-mAd .panel-body h2, .panel-mAd .panel-body h3{ font-size: 18px; }
 .no-border { border:none; }
 .toggleOn, .toggleOff { margin-bottom: 10px; }
+
+.panel-mAd .col-md-4 .list-unstyled li { width: 130px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; }
 /**************** Css realated to developers, keep the source down ***/
 #prediction_dropdown{
 	    width: 40%;
@@ -15209,16 +15225,24 @@ display: inline-block;
     /* margin: 0; */
     padding: 0;
 }
-.inProgressIconText {
-    font-size: 15px;
-    /* font-weight: bold; */
-    color: #aeb0b3;
-}
+
 .completedIcon{
 	color:#169c06;
 	margin-right:5px;
 }
+/*
 .inProgressIcon{
 	color:#de521d;
 	margin-right:5px;
+}*/
+.inProgressIcon {
+    color: #de521d;
+    margin-right: 5px;
+	position:absolute;
 }
+.inProgressIconText { color:#333333; }
+/*.inProgressIconText {
+    font-size: 15px;
+   font-weight: bold; 
+    color: #aeb0b3;
+}*/
