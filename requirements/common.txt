@@ -23,3 +23,4 @@ yarn-api-client==0.2.3
 fabric-gunicorn==0.1
 matplotlib==2.1.1
 knit==0.2.4
+pygments

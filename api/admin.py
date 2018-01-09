@@ -1,5 +1,7 @@
 from django.contrib import admin
 from django.conf import settings
+from utils import json_prettify_for_admin
+import json
 
 # Register your models here.
 
@@ -29,12 +31,19 @@ class JobAdmin(admin.ModelAdmin):
     search_fields = ["name", "slug", "job_type", "url"]
     list_display = ["name", "slug", "url_html", "job_type", "deleted", "status", 'submitted_by']
     list_filter = ["job_type", "status", "submitted_by"]
-    readonly_fields = ["created_at"]
+    readonly_fields = ["created_at","config_prettified" ]
     actions = ['kill_selected_jobs', 'start_selected_jobs', 'refresh_status']
 
-    def url_html(self,obj):
+    def config_prettified(self, instance):
+        """Function to display pretty version of our config"""
+        return json_prettify_for_admin(json.loads(instance.config))
+    config_prettified.short_description = 'config prettified'
+
+
+
+    def url_html(self,instance):
         return '<a href="http://{}:{}/cluster/app/{}">{}</a>'.format(settings.YARN.get("host"),
-                                                                     settings.YARN.get("port"), obj.url, obj.url)
+                                                                     settings.YARN.get("port"), instance.url, instance.url)
 
     url_html.allow_tags = True
 
