@@ -308,7 +308,7 @@ export class Profile extends React.Component {
             <div className="row">
               <div className="col-md-4">
                 <div className="panel">
-                  <div className="panel-body">
+                  <div className="panel-body no-border">
                     <div className="minHP">
                       <h5 class="text-center">TOTAL SPACE</h5>
                       <C3Chart chartInfo={chartInfo} classId="_profile" data={this.props.profileInfo.chart_c3}/> {/*
