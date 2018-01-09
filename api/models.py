@@ -56,13 +56,6 @@ class Job(models.Model):
     error_report = models.TextField(default="{}")
     message_log = models.TextField(default="{}")
 
-    def url_html(self):
-        return '<a href="http://{0}:{1}/cluster/app/{2}">{3}</a>'.format(settings.YARN.get('host'),
-                                                                     settings.YARN.get('port'),
-                                                                     self.url,
-                                                                     self.url
-                                                                     )
-
     def generate_slug(self):
         if not self.slug:
             self.slug = slugify(str(self.name) + "-" + ''.join(
