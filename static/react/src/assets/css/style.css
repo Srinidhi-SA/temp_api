@@ -14816,7 +14816,7 @@ div.pred_disp_block  p, .pred_disp_block_store p { font-size:12px; }
     border-right: 0;
 }
 .user-profile .row.text-center div {
-    border-right: 1px solid #f1f1f1;
+    border-right: transparent;
     margin-top: 10px;
 }
 
