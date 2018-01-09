@@ -104,18 +104,18 @@ class DatasetSerializer(serializers.ModelSerializer):
                 elif "datetime" == columnType:
                     temp['columnSetting'] = columnSettingCopy[:3]
 
-                if head.get('ignoreSuggestionFlag') is True:
-                    transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
-                    transformation_settings_ignore['status'] = True
-                    transformation_settings_ignore['displayName'] = 'Consider for Analysis'
-                    temp['columnSetting'].append(transformation_settings_ignore)
-                    head['consider'] = False
-                else:
-                    transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
-                    transformation_settings_ignore['status'] = False
-                    transformation_settings_ignore['displayName'] = 'Ignore for Analysis'
-                    temp['columnSetting'].append(transformation_settings_ignore)
-                    head['consider'] = True
+                # if head.get('ignoreSuggestionFlag') is True:
+                #     transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
+                #     transformation_settings_ignore['status'] = True
+                #     # transformation_settings_ignore['displayName'] = 'Consider for Analysis'
+                #     temp['columnSetting'].append(transformation_settings_ignore)
+                #     head['consider'] = False
+                # else:
+                #     transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
+                #     transformation_settings_ignore['status'] = False
+                #     # transformation_settings_ignore['displayName'] = 'Ignore for Analysis'
+                #     temp['columnSetting'].append(transformation_settings_ignore)
+                #     head['consider'] = True
 
                 if head['slug'] in percentage_slug_list:
                     for colSet in temp['columnSetting']:
