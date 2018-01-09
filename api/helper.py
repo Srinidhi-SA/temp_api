@@ -558,8 +558,12 @@ def decode_and_convert_chart_raw_data(data):
         pie_chart_data = chart_data
         c3 = DonutChart(data=pie_chart_data,title=title,yAxisNumberFormat=yAxisNumberFormat)
         c3.set_all_basics()
+
         #c3.show_basic_legends()
         c3.show_legends_at_right()
+
+        #c3.hide_basic_legends()
+
         if yAxisNumberFormat is not None:
             c3_chart_details["yformat"] = yAxisNumberFormat
         else:
@@ -571,7 +575,11 @@ def decode_and_convert_chart_raw_data(data):
         c3.remove_x_from_data()
         c3.add_tooltip_for_donut()
         if len(chart_data) >= 1:
-            c3_chart_details["legend_data"] = [i[0] for i in chart_data]
+            name_list = [i[0] for i in chart_data]
+            from api.C3Chart.config import PATTERN1
+            color_list = PATTERN1
+            length = len(name_list)
+            c3_chart_details["legend_data"] = [{'name':name_list[i], 'color':color_list[i]} for i in range(length)]
 
         c3_chart_details['table_c3'] = pie_chart_data
         c3_chart_details["chart_c3"] = c3.get_json()

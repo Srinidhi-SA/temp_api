@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.conf import settings
 
 # Register your models here.
 
@@ -30,6 +31,12 @@ class JobAdmin(admin.ModelAdmin):
     list_filter = ["job_type", "status", "submitted_by"]
     readonly_fields = ["created_at"]
     actions = ['kill_selected_jobs', 'start_selected_jobs', 'refresh_status']
+
+    def url_html(self):
+        return '<a href="http://%s:%s/cluster/app/%s">%s</a>'.format(settings.YARN.host,settings.YARN.port, self.url, self.url)
+
+    url_html.allow_tags = True
+
 
     def kill_selected_jobs(self, request, queryset):
         for instance in queryset:

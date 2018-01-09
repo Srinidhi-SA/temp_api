@@ -147,7 +147,7 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
                         col['switching_from_false'] = False
                         mdc.changes_in_column_data_if_column_is_ignore(colName)
                         mdc.changes_on_consider_column(colName, make_it=False)
-                        print 'colset'
+
                 elif colset.get("status") == False:
 
                     if colset.get("actionName") == "delete":
@@ -161,18 +161,12 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
 
                     if colset.get('actionName') == 'ignore_suggestion':
                         colName = col.get('name')
-                        # if 'modified' in colset:
-                        #
-                        #     if colset.get('modified') == True:
-                        #         colset['modified'] = False
-                        #         colset['displayName'] = 'Consider for Analysis'
-                        #         mdc.changes_on_consider_column(colName, make_it=False)
                         if 'switching_from_false' not in col:
                             col['switching_from_false'] = True
                         if col['switching_from_false']  == False:
                             col['switching_from_false'] = True
                             mdc.changes_in_column_data_if_column_is_considered(colName)
-
+                        print col['switching_from_false']
                         colset['displayName'] = 'Ignore for Analysis'
                         mdc.changes_on_consider_column(colName, make_it=True)
 
