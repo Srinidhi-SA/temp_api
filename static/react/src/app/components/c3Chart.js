@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import {c3Functions} from "../helpers/c3.functions";
 import {Scrollbars} from 'react-custom-scrollbars';
 import {API} from "../helpers/env";
-import {renderC3ChartInfo} from "../helpers/helper";
+import {renderC3ChartInfo,downloadSVGAsPNG} from "../helpers/helper";
 import store from "../store";
 import {ViewChart} from "./common/ViewChart";
 import {ViewChartData} from "./common/ViewChartData";
@@ -79,7 +79,10 @@ export class C3Chart extends React.Component {
 
   }
 
-  downloadSVG() {
+  downloadSVG(){
+      downloadSVGAsPNG("chartDownload"+this.props.classId)   
+  }
+  /*downloadSVG() {
     //This is code to remove background black color in chart and ticks adjustment
     var nodeList = document.querySelector(".chart" + this.props.classId + ">svg").querySelectorAll('.c3-chart .c3-chart-lines path');
     var nodeList2 = document.querySelector(".chart" + this.props.classId + ">svg").querySelectorAll('.c3-axis path');
@@ -97,7 +100,7 @@ export class C3Chart extends React.Component {
       height: "450"
     });
 
-  }
+  }*/
 
   updateChart() {
     var that = this;
@@ -300,7 +303,18 @@ export class C3Chart extends React.Component {
     chart = setTimeout(function() {
       return c3.generate(data);
     }, 100);
-    //c3.generate(data);
+    
+    
+    //Modify Chart Data for Download
+    var chartDownloadData = jQuery.extend(true, {}, data);
+    if(chartDownloadData.subchart != null){
+        chartDownloadData.subchart.show=false;
+    }
+    if(chartDownloadData.axis&&chartDownloadData.axis.x){
+        chartDownloadData.axis.x.extent = null;
+    }
+    chartDownloadData['bindto'] = document.querySelector(".chartDownload"+this.props.classId)
+    let chartDownload = c3.generate(chartDownloadData);
 
     //this.props.dispatch(chartObjStore(chart));
 
@@ -354,7 +368,7 @@ export class C3Chart extends React.Component {
       this.modalCls = "modal fade chart-modal" + this.props.classId;
       this.tableCls = "table-responsive table-area table" + this.props.classId;
     }
-
+   var chartDownloadCls = "chartDownload"+this.props.classId;
     $(function() {
 
       // alert("render");
@@ -419,6 +433,7 @@ export class C3Chart extends React.Component {
 
           <div className="clearfix"></div>
           <div className={this.classId}></div>
+         <div className={chartDownloadCls} style={{display:"none"}}></div>
           <div className="clearfix"></div>
 
         </div>
