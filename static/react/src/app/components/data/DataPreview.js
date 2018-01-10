@@ -168,7 +168,7 @@ export class DataPreview extends React.Component {
 		//renderFlag=true;
 		//alert("setting side element!!")
 		const chkClass = $(e.target).attr('class');
-		let dataPrev = this.props.dataPreview.meta_data;
+		let dataPrev = this.props.dataPreview.meta_data.uiMetaData;
 		dataPrev.columnData.map((item, i) => {
 
 			if(chkClass.indexOf(item.slug) !== -1){
@@ -229,7 +229,7 @@ export class DataPreview extends React.Component {
 		//alert(this.buttons.create.url);
 		//check for minimum rows in datasets
 
-		if (this.props.dataPreview.meta_data.metaData[0].value<MINROWINDATASET)
+		if (this.props.dataPreview.meta_data.uiMetaData.metaData[0].value<MINROWINDATASET)
 		bootbox.alert("Minimum "+MINROWINDATASET+" rows are required for analysis!!")
 		else{
 		let url = this.buttons.create.url;
