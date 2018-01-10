@@ -361,7 +361,7 @@ export class DataPreview extends React.Component {
 				
 				const anchorCls =thElement.slug + " dropdown-toggle cursor";
                if(thElement.chartData != null){
-            		//if(thElement.ignoreSuggestionFlag && !flag ){
+           //if(thElement.ignoreSuggestionFlag && !flag ){
                    if(!thElement.consider){
     					cls = cls + " greyout-col";
 
@@ -393,7 +393,7 @@ export class DataPreview extends React.Component {
 			const tableRowsTemplate = dataPrev.sampleData.map((trElement, trIndex) => {
 
 				const tds=trElement.map((tdElement, tdIndex) => {
-					if(dataPrev.columnData[tdIndex].ignoreSuggestionFlag){
+					if(!dataPrev.columnData[tdIndex].consider){
 						let cls = dataPrev.columnData[tdIndex].slug + " greyout-col";
 						return(
 							<td key={tdIndex} className={cls} onClick={this.setSideElements.bind(this)}>{tdElement}</td>
