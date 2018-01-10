@@ -57,8 +57,8 @@ class DatasetView(viewsets.ModelViewSet):
                     data['name'] = data.get('name', data['input_file'].name)
             elif 'datasource_details' in data:
                 data['input_file'] = None
-                if "databasename" in data['datasource_details']:
-                    data['name'] = data['datasource_details']['databasename']
+                if "datasetname" in data['datasource_details']:
+                    data['name'] = data['datasource_details']['datasetname']
                 else:
                     data['name'] = data.get('name', data.get('datasource_type', "H") + "_" + str(random.randint(1000000, 10000000)))
 
