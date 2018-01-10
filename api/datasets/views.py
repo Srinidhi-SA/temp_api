@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 import random
+import json
 
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
@@ -44,36 +45,37 @@ class DatasetView(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
 
-        # try:
-        data = request.data
-        data = convert_to_string(data)
+        try:
+            data = request.data
+            data = convert_to_string(data)
 
-        if 'input_file' in data:
-            data['input_file'] =  request.FILES.get('input_file')
-            data['datasource_type'] = 'fileUpload'
-            if data['input_file'] is None:
-                data['name'] = data.get('name', data.get('datasource_type', "H") + "_"+ str(random.randint(1000000,10000000)))
-            else:
-                data['name'] = data.get('name', data['input_file'].name)
-        elif 'datasource_details' in data:
-            data['input_file'] = None
-            if "datasetname" in data['datasource_details']:
-                data['name'] = data['datasource_details']['datasetname']
-            else:
-                data['name'] = data.get('name', data.get('datasource_type', "H") + "_" + str(random.randint(1000000, 10000000)))
+            if 'input_file' in data:
+                data['input_file'] =  request.FILES.get('input_file')
+                data['datasource_type'] = 'fileUpload'
+                if data['input_file'] is None:
+                    data['name'] = data.get('name', data.get('datasource_type', "H") + "_"+ str(random.randint(1000000,10000000)))
+                else:
+                    data['name'] = data.get('name', data['input_file'].name)
+            elif 'datasource_details' in data:
+                data['input_file'] = None
+                if "datasetname" in data['datasource_details']:
+                    datasource_details = json.loads(data['datasource_details'])
+                    data['name'] = datasource_details['datasetname']
+                else:
+                    data['name'] = data.get('name', data.get('datasource_type', "H") + "_" + str(random.randint(1000000, 10000000)))
 
-        # question: why to use user.id when it can take, id, pk, object.
-        # answer: I tried. Sighhh but it gave this error "Incorrect type. Expected pk value, received User."
-        data['created_by'] = request.user.id
+            # question: why to use user.id when it can take, id, pk, object.
+            # answer: I tried. Sighhh but it gave this error "Incorrect type. Expected pk value, received User."
+            data['created_by'] = request.user.id
 
-        serializer = DatasetSerializer(data=data)
-        if serializer.is_valid():
-            dataset_object = serializer.save()
-            dataset_object.create()
-            return Response(serializer.data)
-        return creation_failed_exception(serializer.errors)
-        # except Exception as err:
-        #     return creation_failed_exception(err)
+            serializer = DatasetSerializer(data=data)
+            if serializer.is_valid():
+                dataset_object = serializer.save()
+                dataset_object.create()
+                return Response(serializer.data)
+            return creation_failed_exception(serializer.errors)
+        except Exception as err:
+            return creation_failed_exception(err)
 
     def update(self, request, *args, **kwargs):
         data = request.data
