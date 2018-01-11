@@ -240,9 +240,9 @@ class MetaDataChange(object):
             if data['name'] in indexes:
                 indexes[data["name"]] = i
 
-        measures_array = self.metaData[indexes["measures"]].get("value")
-        dimensions_array = self.metaData[indexes["dimensions"]].get("value")
-        time_dimensions_array = self.metaData[indexes["timeDimension"]].get("value")
+        measures_array = self.metaData[indexes["measureColumns"]].get("value")
+        dimensions_array = self.metaData[indexes["dimensionColumns"]].get("value")
+        time_dimensions_array = self.metaData[indexes["timeDimensionColumns"]].get("value")
 
         type_of_col = None
         if type == "undelete":
@@ -12146,11 +12146,12 @@ def add_advanced_settings_to_ui_metadata(meta_data):
 
 
 def add_metaData_to_ui_metadata(meta_data):
-    metaDataUI = []
-    if "metaData" in meta_data:
-        metaKeysUI = ["noOfRows", "noOfColumns", "measures", "dimensions", "timeDimension"]
-        metaDataUI = [x for x in meta_data["metaData"] if x["name"] in metaKeysUI]
-    return metaDataUI
+    # metaDataUI = []
+    # if "metaData" in meta_data:
+    #     metaKeysUI = ["noOfRows", "noOfColumns", "measures", "dimensions", "timeDimension",
+    #                   "measureColumns", "dimensionColumns"]
+    #     metaDataUI = [x for x in meta_data["metaData"] if x["name"] in metaKeysUI]
+    return meta_data['metaData']
 
 def collect_slug_for_percentage_columns(meta_data):
     metaData = meta_data['metaData']

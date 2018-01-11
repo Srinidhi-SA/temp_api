@@ -229,7 +229,6 @@ class DatasetView(viewsets.ModelViewSet):
         #     instance = self.get_object_from_all()
         # except:
         #     return creation_failed_exception("File Doesn't exist.")
-
         from helper import convert_metadata_according_to_transformation_setting
 
         data = request.data
