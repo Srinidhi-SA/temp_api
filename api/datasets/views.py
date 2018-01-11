@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 import random
+import json
 
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
@@ -57,8 +58,9 @@ class DatasetView(viewsets.ModelViewSet):
                     data['name'] = data.get('name', data['input_file'].name)
             elif 'datasource_details' in data:
                 data['input_file'] = None
-                if "Dataset Name" in data['datasource_details']:
-                    data['name'] = data['datasource_details']['Dataset Name']
+                if "datasetname" in data['datasource_details']:
+                    datasource_details = json.loads(data['datasource_details'])
+                    data['name'] = datasource_details['datasetname']
                 else:
                     data['name'] = data.get('name', data.get('datasource_type', "H") + "_" + str(random.randint(1000000, 10000000)))
 
@@ -151,7 +153,18 @@ class DatasetView(viewsets.ModelViewSet):
             return creation_failed_exception("File Doesn't exist.")
 
         serializer = DatasetSerializer(instance=instance)
-        return Response(serializer.data)
+        object_details = serializer.data
+        scriptMetaData = object_details['meta_data']
+
+        from helper import add_transformation_setting_to_ui_metadata, add_ui_metadata_to_metadata
+
+        uiMetaData = add_ui_metadata_to_metadata(scriptMetaData)
+        object_details['meta_data'] = {
+            "scriptMetaData":scriptMetaData,
+            "uiMetaData":uiMetaData
+        }
+
+        return Response(object_details)
 
     def subsetting(self, request, instance=None):
 
@@ -211,23 +224,28 @@ class DatasetView(viewsets.ModelViewSet):
         :param slug:
         :return:
         """
-
-        try:
-            instance = self.get_object_from_all()
-        except:
-            return creation_failed_exception("File Doesn't exist.")
-
+        #
+        # try:
+        #     instance = self.get_object_from_all()
+        # except:
+        #     return creation_failed_exception("File Doesn't exist.")
         from helper import convert_metadata_according_to_transformation_setting
 
         data = request.data
-
         if 'config' not in data:
             return Response({'messgae': 'No config in request body.'})
-
+        # serializer = DatasetSerializer(instance=instance)
+        # object_details = serializer.data
+        uiMetaData = data['uiMetaData']
+        # uiMetaData = serializer.add_ui_metadata_to_metadata(scriptMetaData)
         ts = data.get('config')
-        meta_data = convert_metadata_according_to_transformation_setting(instance.meta_data, transformation_setting=ts)
-        serializer = DatasetSerializer(instance=instance)
-        data = serializer.data
-        meta_data["advanced_settings"] = serializer.get_advanced_setting(meta_data)
-        data['meta_data'] = meta_data
-        return Response(data)
+
+        uiMetaData = convert_metadata_according_to_transformation_setting(
+                uiMetaData,
+                transformation_setting=ts
+            )
+
+        from helper import get_advanced_setting
+        uiMetaData["advanced_settings"] = get_advanced_setting(uiMetaData['metaDataUI'])
+        return Response(uiMetaData)
+

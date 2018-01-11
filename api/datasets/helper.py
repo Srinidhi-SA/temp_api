@@ -1,5 +1,6 @@
 import json
 from rest_framework.utils import humanize_datetime
+from django.conf import settings
 
 
 
@@ -44,28 +45,26 @@ def convert_time_to_human(data):
 def convert_metadata_according_to_transformation_setting(meta_data=None, transformation_setting=None):
 
     if meta_data is not None:
-        the_meta_data = json.loads(meta_data)
+        uiMetaData = meta_data
     else:
-        # the_meta_data = dummy_meta_data
-        return  {}
-    ts = transformation_setting
-    metaData = the_meta_data.get("metaData")
-    sampleData = the_meta_data.get("sampleData")
-    headers = the_meta_data.get("headers")
-    columnData = the_meta_data.get("columnData")
-    sampleData = the_meta_data.get("sampleData")
+        return {}
 
-    a,b = read_and_change_metadata(
+    ts = transformation_setting
+    metaData = uiMetaData.get("metaDataUI")
+    sampleData = uiMetaData.get("sampleDataUI")
+    headers = uiMetaData.get("headersUI")
+    columnData = uiMetaData.get("columnDataUI")
+
+    read_and_change_metadata(
         ts=ts,
         metaData=metaData,
         headers=headers,
         columnData=columnData,
         sampleData=sampleData
     )
-
-    the_meta_data['modified'] = True
-    the_meta_data["transformation_settings"] = transformation_setting
-    return the_meta_data
+    uiMetaData['transformation_setting'] = transformation_setting
+    uiMetaData['modified'] = True
+    return uiMetaData
 
 
 def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
@@ -12135,4 +12134,180 @@ dummy_meta_data = {
                 ]
             }
         }
+    }
+
+
+def add_possible_analysis_to_ui_metadata(meta_data):
+    return settings.ANALYSIS_FOR_TARGET_VARIABLE
+
+
+def add_advanced_settings_to_ui_metadata(meta_data):
+    return get_advanced_setting(meta_data)
+
+
+def add_metaData_to_ui_metadata(meta_data):
+    # metaDataUI = []
+    # if "metaData" in meta_data:
+    #     metaKeysUI = ["noOfRows", "noOfColumns", "measures", "dimensions", "timeDimension",
+    #                   "measureColumns", "dimensionColumns"]
+    #     metaDataUI = [x for x in meta_data["metaData"] if x["name"] in metaKeysUI]
+    return meta_data['metaData']
+
+def collect_slug_for_percentage_columns(meta_data):
+    metaData = meta_data['metaData']
+    name_list = []
+    slug_list = []
+    for data in metaData:
+        if 'percentageColumns' == data['name']:
+            name_list = data['value']
+
+    columnData = meta_data['columnData']
+    for name in name_list:
+        for data in columnData:
+            if name == data['name']:
+                slug_list.append(data['slug'])
+
+    return slug_list
+
+def get_advanced_setting(metaData):
+
+    time_count = 0
+    try:
+        for data in metaData:
+            if data.get('name') == 'timeDimension':
+                time_count += data.get('value')
+            if data.get('name') == 'dateTimeSuggestions':
+                time_count += len(data.get('value').keys())
+    except:
+        pass
+
+    print "get_advanced_setting    ", time_count
+
+    return add_trend_in_advanced_setting(time_count)
+
+
+def add_trend_in_advanced_setting(time_count):
+    import copy
+    from django.conf import settings
+    if time_count > 0:
+        main_setting = copy.deepcopy(settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND)
+        trend_setting = copy.deepcopy(settings.ADANCED_SETTING_FOR_POSSIBLE_ANALYSIS_TREND)
+
+        main_setting["dimensions"]["analysis"].insert(1, trend_setting)
+        main_setting["measures"]["analysis"].insert(1, trend_setting)
+        return main_setting
+    else:
+        return settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND
+
+
+def add_transformation_setting_to_ui_metadata(meta_data):
+    transformation_final_obj = {"existingColumns": None, "newColumns": None}
+    transformation_data = []
+
+    if 'columnData' in meta_data:
+        columnData = meta_data['columnData']
+        transformation_settings = settings.TRANSFORMATION_SETTINGS_CONSTANT
+
+        percentage_slug_list = collect_slug_for_percentage_columns(meta_data)
+
+        for head in columnData:
+            import copy
+            temp = dict()
+            temp['name'] = head.get('name')
+            temp['slug'] = head.get('slug')
+            columnSettingCopy = copy.deepcopy(transformation_settings.get('columnSetting'))
+            columnType = head.get('columnType')
+
+            if "dimension" == columnType:
+                temp['columnSetting'] = columnSettingCopy[:4]
+            elif "boolean" == columnType:
+                temp['columnSetting'] = columnSettingCopy[:4]
+            elif "measure" == columnType:
+                datatype_element = columnSettingCopy[4]
+                datatype_element['listOfActions'][0]["status"] = True
+                columnSettingCopy[5]['listOfActions'][0]["status"] = True
+                columnSettingCopy[6]['listOfActions'][0]["status"] = True
+
+                temp['columnSetting'] = columnSettingCopy
+            elif "datetime" == columnType:
+                temp['columnSetting'] = columnSettingCopy[:3]
+
+
+
+            if head['slug'] in percentage_slug_list:
+                for colSet in temp['columnSetting']:
+                    if 'set_variable' == colSet['actionName']:
+                        colSet['status'] = True
+                        if 'listOfActions' in colSet:
+                            for listAct in colSet['listOfActions']:
+                                if 'percentage' == listAct['name']:
+                                    listAct['status'] = True
+                                else:
+                                    listAct['status'] = False
+
+            transformation_data.append(temp)
+        transformation_final_obj["existingColumns"] = transformation_data
+        transformation_final_obj["newColumns"] = transformation_settings.get('new_columns')
+    return transformation_final_obj
+
+
+def add_columnData_to_ui_metatdata(meta_data):
+    columnDataUI = []
+    if 'columnData' in meta_data:
+        columnData = meta_data['columnData']
+
+        for head in columnData:
+            colDataUI = {}
+            colDataUI["name"] = head["name"]
+            colDataUI["slug"] = head["slug"]
+            colDataUI["columnType"] = head["columnType"]
+            colDataUI["dateSuggestionFlag"] = head["dateSuggestionFlag"]
+            colDataUI["ignoreSuggestionFlag"] = head["ignoreSuggestionFlag"]
+            colDataUI["ignoreSuggestionMsg"] = head["ignoreSuggestionMsg"]
+            if "actualColumnType" in head:
+                colDataUI["actualColumnType"] = head["actualColumnType"]
+            else:
+                colDataUI["actualColumnType"] = None
+
+            if head.get('ignoreSuggestionFlag') is True:
+                # transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
+                # transformation_settings_ignore['status'] = True
+                # # transformation_settings_ignore['displayName'] = 'Consider for Analysis'
+                # temp['columnSetting'].append(transformation_settings_ignore)
+                colDataUI['consider'] = False
+            else:
+                # transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
+                # transformation_settings_ignore['status'] = False
+                # # transformation_settings_ignore['displayName'] = 'Ignore for Analysis'
+                # temp['columnSetting'].append(transformation_settings_ignore)
+                colDataUI['consider'] = True
+
+            columnDataUI.append(colDataUI)
+    return columnDataUI
+
+
+def add_sampleData_to_ui_metadata(meta_data):
+    if 'sampleData' in meta_data:
+        return meta_data['sampleData']
+
+
+def add_modified_to_ui_metadata(value=False):
+    return value
+
+
+def add_headers_to_ui_metadata(meta_data):
+    if 'headers' in meta_data:
+        return meta_data['headers']
+
+
+def add_ui_metadata_to_metadata(meta_data):
+    return {
+        'possibleAnalysis': add_possible_analysis_to_ui_metadata(meta_data),
+        'advanced_settings': add_advanced_settings_to_ui_metadata(meta_data),
+        'transformation_settings': add_transformation_setting_to_ui_metadata(meta_data),
+        'metaDataUI': add_metaData_to_ui_metadata(meta_data),
+        'columnDataUI': add_columnData_to_ui_metatdata(meta_data),
+        'sampleDataUI': add_sampleData_to_ui_metadata(meta_data),
+        'headersUI': add_headers_to_ui_metadata(meta_data),
+        'modified': add_modified_to_ui_metadata()
     }

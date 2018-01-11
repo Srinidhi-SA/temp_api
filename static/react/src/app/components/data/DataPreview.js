@@ -168,7 +168,7 @@ export class DataPreview extends React.Component {
 		//renderFlag=true;
 		//alert("setting side element!!")
 		const chkClass = $(e.target).attr('class');
-		let dataPrev = this.props.dataPreview.meta_data;
+		let dataPrev = this.props.dataPreview.meta_data.scriptMetaData;
 		dataPrev.columnData.map((item, i) => {
 
 			if(chkClass.indexOf(item.slug) !== -1){
@@ -229,7 +229,7 @@ export class DataPreview extends React.Component {
 		//alert(this.buttons.create.url);
 		//check for minimum rows in datasets
 
-		if (this.props.dataPreview.meta_data.metaData[0].value<MINROWINDATASET)
+		if (this.props.dataPreview.meta_data.uiMetaData.metaDataUI[0].value<MINROWINDATASET)
 		bootbox.alert("Minimum "+MINROWINDATASET+" rows are required for analysis!!")
 		else{
 		let url = this.buttons.create.url;
@@ -318,11 +318,11 @@ export class DataPreview extends React.Component {
 
 		let dataPrev = this.props.dataPreview;
 		if (dataPrev && !isEmpty(dataPrev)) {
-			dataPrev = this.props.dataPreview.meta_data
+			dataPrev = this.props.dataPreview.meta_data;
 			//  console.log(data[0]);
 			//const tableThTemplate=data[0].map((thElement, thIndex) => {
 			if(dataPrev && !isEmpty(dataPrev)){
-			const topInfo = dataPrev.metaData.map((item, i) => {
+			const topInfo = dataPrev.uiMetaData.metaDataUI.map((item, i) => {
 				if(item.display){
 					return(
 
@@ -340,7 +340,7 @@ export class DataPreview extends React.Component {
 
 
 
-			const tableThTemplate=dataPrev.columnData.map((thElement, thIndex) => {
+			const tableThTemplate=dataPrev.uiMetaData.columnDataUI.map((thElement, thIndex) => {
 				// console.log("th check::");
 				// console.log(thElement);
 				let cls = thElement.slug + " dropdown";
@@ -360,7 +360,7 @@ export class DataPreview extends React.Component {
 
 				
 				const anchorCls =thElement.slug + " dropdown-toggle cursor";
-               if(thElement.chartData != null){
+               //if(thElement.chartData != null){
            //if(thElement.ignoreSuggestionFlag && !flag ){
                    if(!thElement.consider){
     					cls = cls + " greyout-col";
@@ -380,27 +380,29 @@ export class DataPreview extends React.Component {
     				);
 
     			}
-               }else{
+              // }
+                   {/*else{
             	   return(
    						<th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)}>
    						<a href="#"  id={thElement.slug} className={anchorCls}><i className={iconCls}></i> {thElement.name}</a>
    						</th>
    				);
+               }*/
                }
 
 			});
 			//  data.splice(0,1);
-			const tableRowsTemplate = dataPrev.sampleData.map((trElement, trIndex) => {
+			const tableRowsTemplate = dataPrev.uiMetaData.sampleDataUI.map((trElement, trIndex) => {
 
 				const tds=trElement.map((tdElement, tdIndex) => {
-					if(!dataPrev.columnData[tdIndex].consider){
-						let cls = dataPrev.columnData[tdIndex].slug + " greyout-col";
+					if(!dataPrev.uiMetaData.columnDataUI[tdIndex].consider){
+						let cls = dataPrev.uiMetaData.columnDataUI[tdIndex].slug + " greyout-col";
 						return(
 							<td key={tdIndex} className={cls} onClick={this.setSideElements.bind(this)}>{tdElement}</td>
 					   );
 					}else{
 						return(
-							<td key={tdIndex} className={dataPrev.columnData[tdIndex].slug} onClick={this.setSideElements.bind(this)}>{tdElement}</td>
+							<td key={tdIndex} className={dataPrev.uiMetaData.columnDataUI[tdIndex].slug} onClick={this.setSideElements.bind(this)}>{tdElement}</td>
 					);
 					}
 
@@ -415,21 +417,21 @@ export class DataPreview extends React.Component {
 			let  sideTableTemaplte = "";
 			let firstChart = "";
 			 let firstTimeSubSetting = ""
-            if(dataPrev.columnData[0].chartData != null){
-            	const sideChart = dataPrev.columnData[0].chartData.chart_c3;
-    			let yformat = dataPrev.columnData[0].chartData.yformat;
-    			let xdata = dataPrev.columnData[0].chartData.xdata;
+            if(dataPrev.scriptMetaData.columnData[0].chartData != null){
+            	const sideChart = dataPrev.scriptMetaData.columnData[0].chartData.chart_c3;
+    			let yformat = dataPrev.scriptMetaData.columnData[0].chartData.yformat;
+    			let xdata = dataPrev.scriptMetaData.columnData[0].chartData.xdata;
     			console.log("chart-----------")
-    			const sideTable = dataPrev.columnData[0].columnStats;
+    			const sideTable = dataPrev.scriptMetaData.columnData[0].columnStats;
     			this.firstTimeSideTable = sideTable; //show hide side table
-    			this.firstTimeSideChart = dataPrev.columnData[0].chartData;
-    			this.firstTimeColTypeForChart = dataPrev.columnData[0].columnType;
+    			this.firstTimeSideChart = dataPrev.scriptMetaData.columnData[0].chartData;
+    			this.firstTimeColTypeForChart = dataPrev.scriptMetaData.columnData[0].columnType;
     			 if(!$.isEmptyObject(this.firstTimeSideChart)){
     			     let chartInfo = [];
     				 firstChart = <C3Chart chartInfo={chartInfo} classId={this.chartId} data={sideChart} yformat={yformat} xdata={xdata} sideChart={true}/> ;
     			 }
-    			 if(!isEmpty(dataPrev.columnData[0]))
-    			 firstTimeSubSetting = dataPrev.columnData[0]
+    			 if(!isEmpty(dataPrev.scriptMetaData.columnData[0]))
+    			 firstTimeSubSetting = dataPrev.scriptMetaData.columnData[0]
     			console.log("checking side table data:; ");
     			console.log(sideTable);
     			sideTableTemaplte=sideTable.map((tableItem,tableIndex)=>{
