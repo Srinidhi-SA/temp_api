@@ -402,28 +402,28 @@ export class C3Chart extends React.Component {
                 {this.props.chartInfo.length > 0
                   ? <li>
                       <a href="javascript:;" onClick={this.showStatisticalInfo.bind(this)}>
-                        <i class="fa fa-info-circle" aria-hidden="true"></i>
+                        <i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp;
                         Statistical Info</a>
                     </li>
                   : ""}
                 <li>
                   <a href="javascript:;" onClick={this.openZoomChart.bind(this, true)}>
-                    <i class="fa fa-search-plus" aria-hidden="true"></i>
+                    <i class="fa fa-search-plus" aria-hidden="true"></i>&nbsp;
                     Zoom Chart</a>
                 </li>
                 <li>
                   <a href="javascript:;" onClick={this.downloadSVG.bind(this)}>
-                    <i class="fa fa-picture-o" aria-hidden="true"></i>
+                    <i class="fa fa-picture-o" aria-hidden="true"></i>&nbsp;
                     Download as PNG</a>
                 </li>
                 <li>
                   <a href="javascript:;" onClick={this.openChartData.bind(this, true)}>
-                    <i class="fa fa-eye" aria-hidden="true"></i>
+                    <i class="fa fa-eye" aria-hidden="true"></i>&nbsp;
                     View Chart Data</a>
                 </li>
                 <li>
                   <a href={this.tableDownload}>
-                    <i class="fa fa-cloud-download" aria-hidden="true"></i>
+                    <i class="fa fa-cloud-download" aria-hidden="true"></i>&nbsp;
                     Download Chart Data</a>
                 </li>
               </ul>
