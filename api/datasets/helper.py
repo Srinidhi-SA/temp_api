@@ -12377,8 +12377,6 @@ def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
         colset = obj["columnSetting"]
         uidObj = [{"name":obj["name"],"slug":obj["slug"]} for x in colset if x["actionName"] == "unique_identifier" and x["status"]==True]
         polarityCols = filter(lambda x:x["actionName"] == "set_polarity" and x["status"]==True,colset)
-        print polarityCols
-        print "polarityCols"*5
         if len(polarityCols) >0:
             polarityActions = polarityCols[0]["listOfActions"]
             relevantAction = filter(lambda x:x["status"]==True,polarityActions)
@@ -12386,15 +12384,12 @@ def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
                 polarity.append({"name":obj["name"],"slug":obj["slug"],"polarity":relevantAction[0]["name"]})
 
         setVarAsCols = filter(lambda x: x["actionName"] == "set_variable" and x["status"] == True, colset)
-        print setVarAsCols
-        print "setVarAsCols" * 5
         if len(setVarAsCols) > 0:
             setVarAsActions = setVarAsCols[0]["listOfActions"]
             relevantAction = filter(lambda x: x["status"] == True, setVarAsActions)
             print relevantAction
             if len(relevantAction) > 0:
                 setVarAs.append({"name": obj["name"], "slug": obj["slug"], "setVarAs": relevantAction[0]["name"]})
-    print "setVarAs",setVarAs
     ######
     output = []
     for obj in validcols:
@@ -12410,7 +12405,7 @@ def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
         else:
             obj.update({"polarity": None})
 
-        setVarAsFilter = filter(lambda x: x["slug"] == obj["slug"], setVarAsCols)
+        setVarAsFilter = filter(lambda x: x["slug"] == obj["slug"], setVarAs)
         if len(setVarAsFilter) > 0:
             obj.update({"setVarAs": setVarAsFilter[0]["setVarAs"]})
         else:
