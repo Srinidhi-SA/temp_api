@@ -4,10 +4,12 @@ Usage
         e.g. fab deploy_api:branch=dev
         e.g. fab deploy_api:branch=leia
         e.g. fab deploy_api:branch=luke
+        e.g. fab deploy_api:branch=dev_9015
 
         e.g. fab deploy_react:branch=dev
         e.g. fab deploy_react:branch=leia
         e.g. fab deploy_react:branch=luke
+        e.g. fab deploy_react:branch=dev_9015
 
         e.g. fab deploy_api_and_migrate:branch=dev
         e.g. fab deploy_api_and_migrate:branch=leia
