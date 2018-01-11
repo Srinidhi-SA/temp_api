@@ -141,6 +141,7 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
                         if colset['previous_status'] != colset["status"]:
                             columnSetting_Temp = mdc.changes_in_column_data_if_column_is_ignore(colName)
                             colset['previous_status'] = colset["status"]
+                            break
 
                 elif colset.get("status") == False:
 
@@ -159,6 +160,7 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
                         if colset['previous_status'] != colset["status"]:
                             columnSetting_Temp = mdc.changes_in_column_data_if_column_is_considered(colName)
                             colset['previous_status'] = colset["status"]
+                            break
 
         if columnSetting_Temp is not None:
             col['columnSetting'] = columnSetting_Temp
@@ -450,28 +452,29 @@ class MetaDataChange(object):
 
                 columnSettingCopy = copy.deepcopy(transformation_settings.get('columnSetting'))
                 columnType = head.get('columnType')
-
+                head_columnSetting = []
                 if "dimension" == columnType:
-                    head['columnSetting'] = columnSettingCopy[:4]
+                    head_columnSetting = columnSettingCopy[:4]
                 elif "boolean" == columnType:
-                    head['columnSetting'] = columnSettingCopy[:4]
+                    head_columnSetting = columnSettingCopy[:4]
                 elif "measure" == columnType:
                     datatype_element = columnSettingCopy[4]
                     datatype_element['listOfActions'][0]["status"] = True
                     columnSettingCopy[5]['listOfActions'][0]["status"] = True
                     columnSettingCopy[6]['listOfActions'][0]["status"] = True
 
-                    head['columnSetting'] = columnSettingCopy
+                    head_columnSetting = columnSettingCopy
                 elif "datetime" == columnType:
-                    head['columnSetting'] = columnSettingCopy[:3]
+                    head_columnSetting = columnSettingCopy[:3]
 
                 transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
                 transformation_settings_ignore['status'] = True
                 transformation_settings_ignore['displayName'] = 'Consider for Analysis'
                 transformation_settings_ignore['previous_status'] = True
+                head_columnSetting.append(transformation_settings_ignore)
                 head['consider'] = True
 
-                return transformation_settings_ignore
+                return head_columnSetting
 
     def changes_in_column_data_if_column_is_ignore(self, colName):
         import copy
@@ -480,16 +483,15 @@ class MetaDataChange(object):
             if head.get('name') == colName:
                 transformation_settings = settings.TRANSFORMATION_SETTINGS_CONSTANT
                 columnSettingCopy = copy.deepcopy(transformation_settings.get('columnSetting'))
-                head['columnSetting'] = columnSettingCopy[:3]
+                head_columnSetting = columnSettingCopy[:3]
 
                 transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
                 transformation_settings_ignore['status'] = True
                 transformation_settings_ignore['previous_status'] = True
                 transformation_settings_ignore['displayName'] = 'Consider for Analysis'
-                head['columnSetting'].append(transformation_settings_ignore)
+                head_columnSetting.append(transformation_settings_ignore)
                 head['consider'] = False
-                return head['columnSetting']
-
+                return head_columnSetting
 
 
 dummy_meta_data = {
