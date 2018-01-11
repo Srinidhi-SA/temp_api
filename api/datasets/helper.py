@@ -133,6 +133,10 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
                             replace_match_array=replacementValues
                         )
 
+                    if colset.get('actionName') == 'ignore_suggestion':
+                        colName = col.get('name')
+                        colset['displayName'] = 'Consider for Analysis'
+
                 elif colset.get("status") == False:
 
                     if colset.get("actionName") == "delete":
@@ -142,6 +146,10 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
                                 mdc.changes_on_delete(col.get("name"), type='undelete')
                                 colset['modified'] = False
                                 colset['displayName'] = 'Delete Column'
+
+                    if colset.get('actionName') == 'ignore_suggestion':
+                        colName = col.get('name')
+                        colset['displayName'] = 'Ignore for Analysis'
 
     return metaData, headers
 
