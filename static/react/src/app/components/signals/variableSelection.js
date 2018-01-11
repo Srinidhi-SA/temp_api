@@ -210,7 +210,7 @@ export class VariableSelection extends React.Component {
         if(that.props.getVarText && that.props.getVarType){ //getting selected dimension's sub levels
             
             if(that.props.getVarType == "dimension"){
-                let columnData = store.getState().datasets.dataPreview.meta_data.columnData;
+                let columnData = store.getState().datasets.dataPreview.meta_data.scriptMetaData.columnData;
                 let subLevelsDimension = [];
                 
                 for (let item of columnData) {
@@ -254,10 +254,10 @@ export class VariableSelection extends React.Component {
         let renderSelectBox = null;
         let renderPossibleAnalysis = null, renderSubList=null;
         if(dataPrev){
-            const metaData = dataPrev.meta_data.columnData;
+            const metaData = dataPrev.meta_data.uiMetaData.columnDataUI;
             if(metaData){
                 renderSelectBox = metaData.map((metaItem,metaIndex) =>{
-                    if(metaItem.columnType !="datetime" && !metaItem.ignoreSuggestionFlag && !metaItem.dateSuggestionFlag){
+                    if(metaItem.columnType !="datetime" && metaItem.consider && !metaItem.dateSuggestionFlag){
                         return(
                                 <option key={metaItem.slug}  name={metaItem.slug}  value={metaItem.columnType}>{metaItem.name}</option>
                         );
