@@ -240,9 +240,9 @@ class MetaDataChange(object):
             if data['name'] in indexes:
                 indexes[data["name"]] = i
 
-        measures_array = self.metaData[indexes["measureColumns"]].get("value")
-        dimensions_array = self.metaData[indexes["dimensionColumns"]].get("value")
-        time_dimensions_array = self.metaData[indexes["timeDimensionColumns"]].get("value")
+        measures_array = self.metaData[indexes["measures"]].get("value")
+        dimensions_array = self.metaData[indexes["dimensions"]].get("value")
+        time_dimensions_array = self.metaData[indexes["timeDimension"]].get("value")
 
         type_of_col = None
         if type == "undelete":
