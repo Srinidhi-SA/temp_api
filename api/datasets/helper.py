@@ -62,8 +62,15 @@ def convert_metadata_according_to_transformation_setting(meta_data=None, transfo
         columnData=columnData,
         sampleData=sampleData
     )
+
+
     uiMetaData['transformation_settings'] = transformation_setting
     uiMetaData['modified'] = True
+    varibaleSelectionArray = add_variable_selection_to_metadata(
+        uiMetaData["columnDataUI"],
+        uiMetaData['transformation_settings']
+    )
+    uiMetaData.update({"varibaleSelectionArray": varibaleSelectionArray})
     return uiMetaData
 
 
@@ -12337,7 +12344,7 @@ def add_headers_to_ui_metadata(meta_data):
 
 
 def add_ui_metadata_to_metadata(meta_data):
-    return {
+    output = {
         'possibleAnalysis': add_possible_analysis_to_ui_metadata(meta_data),
         'advanced_settings': add_advanced_settings_to_ui_metadata(meta_data),
         'transformation_settings': add_transformation_setting_to_ui_metadata(meta_data),
@@ -12347,3 +12354,64 @@ def add_ui_metadata_to_metadata(meta_data):
         'headersUI': add_headers_to_ui_metadata(meta_data),
         'modified': add_modified_to_ui_metadata()
     }
+    varibaleSelectionArray = add_variable_selection_to_metadata(output["columnDataUI"], output['transformation_settings'])
+    output.update({"varibaleSelectionArray":varibaleSelectionArray})
+    return output
+
+def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
+    validcols = [ {"name":x["name"],"slug":x["slug"],"columnType":x["columnType"],"dateSuggestionFlag":x["dateSuggestionFlag"],"targetColumn":False} for x in columnDataUI if x["consider"]==True]
+    validcols1 = []
+    for x in validcols:
+        if x["dateSuggestionFlag"] == True:
+            x.update({"selected": False})
+        else:
+            x.update({"selected": True})
+        validcols1.append(x)
+    validcols = [x.update({"columnType":"datetime"}) if x["columnType"] == "dimension" and x["dateSuggestionFlag"] == True else x for x in validcols1]
+
+    transformSetting = transformation_settings["existingColumns"]
+    uidcols = []
+    polarity = []
+    setVarAs = []
+    for obj in transformSetting:
+        colset = obj["columnSetting"]
+        uidObj = [{"name":obj["name"],"slug":obj["slug"]} for x in colset if x["actionName"] == "unique_identifier" and x["status"]==True]
+        polarityCols = filter(lambda x:x["actionName"] == "set_polarity" and x["status"]==True,colset)
+        if len(polarityCols) >0:
+            polarityActions = polarityCols[0]["listOfActions"]
+            relevantAction = filter(lambda x:x["status"]==True,polarityActions)
+            if len(relevantAction) >0:
+                polarity.append({"name":obj["name"],"slug":obj["slug"],"polarity":relevantAction[0]["name"]})
+
+        setVarAsCols = filter(lambda x: x["actionName"] == "set_variable" and x["status"] == True, colset)
+        if len(setVarAsCols) > 0:
+            setVarAsActions = setVarAsCols[0]["listOfActions"]
+            relevantAction = filter(lambda x: x["status"] == True, setVarAsActions)
+            if len(relevantAction) > 0:
+                setVarAs.append({"name": obj["name"], "slug": obj["slug"], "setVarAs": relevantAction[0]["name"]})
+
+    ######
+    output = []
+    for obj in validcols:
+        uidFilter = filter(lambda x:x["slug"] == obj["slug"],uidcols)
+        if len(uidFilter) > 0:
+            obj.update({"uidCol": True})
+        else:
+            obj.update({"uidCol": False})
+
+        polarityFilter = filter(lambda x:x["slug"] == obj["slug"],polarity)
+        if len(polarityFilter) > 0:
+            obj.update({"polarity": polarityFilter["polarity"]})
+        else:
+            obj.update({"polarity": None})
+
+        setVarAsFilter = filter(lambda x: x["slug"] == obj["slug"], setVarAsCols)
+        if len(setVarAsFilter) > 0:
+            obj.update({"setVarAs": setVarAsFilter["setVarAs"]})
+        else:
+            obj.update({"setVarAs": None})
+        output.append(obj)
+
+
+
+    return output
