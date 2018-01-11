@@ -319,7 +319,7 @@ hr {
 	font-size: 23px
 }
 .h4, h4 {
-	font-size: 16px
+	font-size: 17px
 }
 .h5, h5 {
 	font-size: 13px
@@ -10815,7 +10815,7 @@ pre {
 }
 .panel-body { border: 1px solid #eaeef1; }
 .panel-heading .panel-title, .panel-heading .title, .panel-heading>h1, .panel-heading>h2, .panel-heading>h3, .panel-heading>h4, .panel-heading>h5, .panel-heading>h6 {
-	font-size: 20px;
+	/*font-size: 20px;*/
 	font-weight: 300;
 	display: block;
 	margin: 0

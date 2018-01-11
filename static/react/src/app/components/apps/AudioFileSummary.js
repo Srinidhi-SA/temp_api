@@ -87,7 +87,7 @@ export class AudioFileSummary extends React.Component {
 
 						<div className="panel panel-mAd documentModeSpacing ">
 						<div className="panel-heading">
-						<h2 className="pull-left">{store.getState().apps.audioFileSummary.name}</h2>
+						<h3 className="xs-mt-0">{store.getState().apps.audioFileSummary.name}
 
 						<div className="btn-toolbar pull-right">
 						<div className="btn-group btn-space">
@@ -100,7 +100,7 @@ export class AudioFileSummary extends React.Component {
 						</Link>
 						</div>
 						</div>
-
+</h3>
 						<div className="clearfix"></div>
 						</div>
 						<div className="panel-body no-border">
