@@ -138,7 +138,6 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
                     if colset.get("actionName") == "delete":
 
                         if 'modified' in colset:
-
                             if colset.get('modified') == True:
                                 mdc.changes_on_delete(col.get("name"), type='undelete')
                                 colset['modified'] = False
@@ -12234,7 +12233,16 @@ def add_transformation_setting_to_ui_metadata(meta_data):
             elif "datetime" == columnType:
                 temp['columnSetting'] = columnSettingCopy[:3]
 
-
+            if head.get('ignoreSuggestionFlag') is True:
+                transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
+                transformation_settings_ignore['status'] = True
+                transformation_settings_ignore['displayName'] = 'Consider for Analysis'
+                temp['columnSetting'].append(transformation_settings_ignore)
+            else:
+                transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
+                transformation_settings_ignore['status'] = False
+                transformation_settings_ignore['displayName'] = 'Ignore for Analysis'
+                temp['columnSetting'].append(transformation_settings_ignore)
 
             if head['slug'] in percentage_slug_list:
                 for colSet in temp['columnSetting']:
