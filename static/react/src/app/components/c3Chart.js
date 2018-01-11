@@ -80,7 +80,7 @@ export class C3Chart extends React.Component {
   }
 
   downloadSVG(){
-      downloadSVGAsPNG("chartDownload"+this.props.classId)   
+      downloadSVGAsPNG("chartDownload"+this.props.classId)
   }
   /*downloadSVG() {
     //This is code to remove background black color in chart and ticks adjustment
@@ -112,6 +112,9 @@ export class C3Chart extends React.Component {
       }
     }
 
+    if (data.data.type == "donut"){
+      data.padding.top=35
+    }
     if (this.props.yformat) {
       if (data.data.type == "donut") {
         console.log("in donut")
@@ -303,8 +306,8 @@ export class C3Chart extends React.Component {
     chart = setTimeout(function() {
       return c3.generate(data);
     }, 100);
-    
-    
+
+
     //Modify Chart Data for Download
     var chartDownloadData = jQuery.extend(true, {}, data);
     if(chartDownloadData.subchart != null){
@@ -312,6 +315,8 @@ export class C3Chart extends React.Component {
     }
     if(chartDownloadData.axis&&chartDownloadData.axis.x){
         chartDownloadData.axis.x.extent = null;
+        if(chartDownloadData.axis.x.tick)
+        chartDownloadData.axis.x.tick.fit=true;
     }
     chartDownloadData['bindto'] = document.querySelector(".chartDownload"+this.props.classId)
     let chartDownload = c3.generate(chartDownloadData);
