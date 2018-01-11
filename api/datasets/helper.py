@@ -62,7 +62,8 @@ def convert_metadata_according_to_transformation_setting(meta_data=None, transfo
         columnData=columnData,
         sampleData=sampleData
     )
-    uiMetaData['transformation_setting'] = transformation_setting
+    import pdb;pdb.set_trace()
+    uiMetaData['transformation_settings'] = transformation_setting
     uiMetaData['modified'] = True
     return uiMetaData
 
@@ -85,6 +86,7 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
             columnSetting = col.get("columnSetting")
 
             for colset in columnSetting:
+                print colset.get("actionName")
                 if colset.get("status") == True:
 
                     if colset.get("actionName") == "delete":
@@ -136,6 +138,7 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
                     if colset.get('actionName') == 'ignore_suggestion':
                         colName = col.get('name')
                         colset['displayName'] = 'Consider for Analysis'
+                        mdc.changes_on_consider_column(colName, True)
 
                 elif colset.get("status") == False:
 
@@ -150,6 +153,7 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
                     if colset.get('actionName') == 'ignore_suggestion':
                         colName = col.get('name')
                         colset['displayName'] = 'Ignore for Analysis'
+                        mdc.changes_on_consider_column(colName, False)
 
     return metaData, headers
 
