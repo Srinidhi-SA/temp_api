@@ -12391,9 +12391,10 @@ def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
         if len(setVarAsCols) > 0:
             setVarAsActions = setVarAsCols[0]["listOfActions"]
             relevantAction = filter(lambda x: x["status"] == True, setVarAsActions)
+            print relevantAction
             if len(relevantAction) > 0:
                 setVarAs.append({"name": obj["name"], "slug": obj["slug"], "setVarAs": relevantAction[0]["name"]})
-
+    print "setVarAs",setVarAs
     ######
     output = []
     for obj in validcols:
