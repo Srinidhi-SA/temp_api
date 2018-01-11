@@ -87,7 +87,7 @@ export class Profile extends React.Component {
           <div className="page-head">
             <div className="row">
               <div className="col-md-8">
-                <h3 className="xs-mt-0 text-capitalize">User Profile</h3>
+                <h3 className="xs-mt-0 text-capitalize">My Page</h3>
               </div>
             </div>
           </div>
@@ -163,7 +163,7 @@ export class Profile extends React.Component {
           <div className="page-head">
             <div className="row">
               <div className="col-md-8">
-                <h3 className="xs-mt-0 text-capitalize">User Profile</h3>
+                <h3 className="xs-mt-0 text-capitalize">My Page</h3>
               </div>
             </div>
           </div>
@@ -254,7 +254,7 @@ export class Profile extends React.Component {
                                 </tbody>
                               </table>
                             </div>
-                            <div className="col-md-6 text-right">
+                            <div className="col-md-3 col-md-offset-3">
                               <p className="xs-pt-30">
                                 Date Joined :&nbsp;
                                 <b>

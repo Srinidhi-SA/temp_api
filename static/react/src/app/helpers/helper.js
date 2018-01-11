@@ -235,12 +235,11 @@ export function  generateNormalTableRows(table) {
 	return tbodyData;
 	}
 
-export function  subTreeSetting(urlLength, length,paramL2) {
+export function  subTreeSetting(urlLength, length,paramL2,classname=".sb_navigation #subTab i.mAd_icons.ic_perf ~ span") {
 	  $(function(){
-
 	    if(urlLength == length ){  //show -hide subtree and active class of subtree element
 		  $(".sb_navigation").show();
-		   $(".sb_navigation #subTab i.mAd_icons.ic_perf ~ span").each(function(){
+		   $(classname).each(function(){
 				console.log($(this).html() +" == "+ paramL2);
 				if($(this).attr('id') == paramL2){
 				  $(this).parent().addClass('active');
