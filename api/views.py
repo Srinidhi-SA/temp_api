@@ -779,12 +779,12 @@ def write_into_databases(job_type, object_slug, results):
                 data["chartData"]["table_c3"] = []
 
         results['columnData'] = columnData
-        results['possibleAnalysis'] = settings.ANALYSIS_FOR_TARGET_VARIABLE
+        # results['possibleAnalysis'] = settings.ANALYSIS_FOR_TARGET_VARIABLE
         da = []
         for d in results.get('sampleData'):
             da.append(map(str, d))
         results['sampleData'] = da
-        results["modified"] = False
+        # results["modified"] = False
 
         dataset_object.meta_data = json.dumps(results)
         dataset_object.analysis_done = True
@@ -4746,18 +4746,22 @@ def set_job_reporting(request, slug=None, report_name=None):
         return JsonResponse({'result': 'Failed'})
     new_error = request.body
     error_log = json.loads(job.error_report)
+    json_formatted_new_error = None
     if isinstance(new_error, str) or isinstance(new_error, unicode):
         json_formatted_new_error = json.loads(new_error)
     elif isinstance(new_error, dict):
         json_formatted_new_error = new_error
 
-    if report_name in error_log:
-        error_log[report_name].append(json_formatted_new_error)
+    if json_formatted_new_error is None:
+        pass
     else:
-        error_log[report_name] = [json_formatted_new_error]
+        if report_name in error_log:
+            error_log[report_name].append(json_formatted_new_error)
+        else:
+            error_log[report_name] = [json_formatted_new_error]
 
-    job.error_report = json.dumps(error_log)
-    job.save()
+        job.error_report = json.dumps(error_log)
+        job.save()
 
     return JsonResponse({'messgae':'error reported.'})
 
