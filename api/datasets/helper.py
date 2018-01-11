@@ -62,7 +62,6 @@ def convert_metadata_according_to_transformation_setting(meta_data=None, transfo
         columnData=columnData,
         sampleData=sampleData
     )
-    import pdb;pdb.set_trace()
     uiMetaData['transformation_settings'] = transformation_setting
     uiMetaData['modified'] = True
     return uiMetaData
