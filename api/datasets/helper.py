@@ -12151,7 +12151,9 @@ def add_metaData_to_ui_metadata(meta_data):
     #     metaKeysUI = ["noOfRows", "noOfColumns", "measures", "dimensions", "timeDimension",
     #                   "measureColumns", "dimensionColumns"]
     #     metaDataUI = [x for x in meta_data["metaData"] if x["name"] in metaKeysUI]
-    return meta_data['metaData']
+    if "metaData" in meta_data:
+        return meta_data['metaData']
+    return []
 
 def collect_slug_for_percentage_columns(meta_data):
     metaData = meta_data['metaData']
@@ -12298,6 +12300,7 @@ def add_modified_to_ui_metadata(value=False):
 def add_headers_to_ui_metadata(meta_data):
     if 'headers' in meta_data:
         return meta_data['headers']
+    return []
 
 
 def add_ui_metadata_to_metadata(meta_data):
