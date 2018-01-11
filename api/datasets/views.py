@@ -158,10 +158,14 @@ class DatasetView(viewsets.ModelViewSet):
 
         from helper import add_transformation_setting_to_ui_metadata, add_ui_metadata_to_metadata
 
-        uiMetaData = add_ui_metadata_to_metadata(scriptMetaData)
+        if scriptMetaData is None:
+            uiMetaData = None
+        else:
+            uiMetaData = add_ui_metadata_to_metadata(scriptMetaData)
+
         object_details['meta_data'] = {
-            "scriptMetaData":scriptMetaData,
-            "uiMetaData":uiMetaData
+            "scriptMetaData": scriptMetaData,
+            "uiMetaData": uiMetaData
         }
 
         return Response(object_details)
