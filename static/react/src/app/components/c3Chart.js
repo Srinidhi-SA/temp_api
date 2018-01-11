@@ -315,6 +315,8 @@ export class C3Chart extends React.Component {
     }
     if(chartDownloadData.axis&&chartDownloadData.axis.x){
         chartDownloadData.axis.x.extent = null;
+        if(chartDownloadData.axis.x.tick)
+        chartDownloadData.axis.x.tick.fit=true;
     }
     chartDownloadData['bindto'] = document.querySelector(".chartDownload"+this.props.classId)
     let chartDownload = c3.generate(chartDownloadData);
