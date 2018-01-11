@@ -138,6 +138,9 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
                         colName = col.get('name')
                         colset['displayName'] = 'Consider for Analysis'
                         mdc.changes_on_consider_column(colName, False)
+                        if colset['previous_status'] != colset["status"]:
+                            columnSetting_Temp = mdc.changes_in_column_data_if_column_is_ignore(colName)
+                            colset['previous_status'] = colset["status"]
 
                 elif colset.get("status") == False:
 
@@ -153,6 +156,12 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
                         colName = col.get('name')
                         colset['displayName'] = 'Ignore for Analysis'
                         mdc.changes_on_consider_column(colName, True)
+                        if colset['previous_status'] != colset["status"]:
+                            columnSetting_Temp = mdc.changes_in_column_data_if_column_is_considered(colName)
+                            colset['previous_status'] = colset["status"]
+
+        if columnSetting_Temp is not None:
+            col['columnSetting'] = columnSetting_Temp
 
     return metaData, headers
 
@@ -459,10 +468,10 @@ class MetaDataChange(object):
                 transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
                 transformation_settings_ignore['status'] = True
                 transformation_settings_ignore['displayName'] = 'Consider for Analysis'
-                head['columnSetting'].append(transformation_settings_ignore)
-                head['consider'] = False
+                transformation_settings_ignore['previous_status'] = True
+                head['consider'] = True
 
-                return head['columnSetting']
+                return transformation_settings_ignore
 
     def changes_in_column_data_if_column_is_ignore(self, colName):
         import copy
@@ -475,6 +484,7 @@ class MetaDataChange(object):
 
                 transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
                 transformation_settings_ignore['status'] = True
+                transformation_settings_ignore['previous_status'] = True
                 transformation_settings_ignore['displayName'] = 'Consider for Analysis'
                 head['columnSetting'].append(transformation_settings_ignore)
                 head['consider'] = False
@@ -12247,11 +12257,13 @@ def add_transformation_setting_to_ui_metadata(meta_data):
             if head.get('ignoreSuggestionFlag') is True:
                 transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
                 transformation_settings_ignore['status'] = True
+                transformation_settings_ignore['previous_status'] = True
                 transformation_settings_ignore['displayName'] = 'Consider for Analysis'
                 temp['columnSetting'].append(transformation_settings_ignore)
             else:
                 transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
                 transformation_settings_ignore['status'] = False
+                transformation_settings_ignore['previous_status'] = False
                 transformation_settings_ignore['displayName'] = 'Ignore for Analysis'
                 temp['columnSetting'].append(transformation_settings_ignore)
 
