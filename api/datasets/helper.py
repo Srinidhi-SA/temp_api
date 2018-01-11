@@ -12401,13 +12401,13 @@ def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
 
         polarityFilter = filter(lambda x:x["slug"] == obj["slug"],polarity)
         if len(polarityFilter) > 0:
-            obj.update({"polarity": polarityFilter["polarity"]})
+            obj.update({"polarity": polarityFilter[0]["polarity"]})
         else:
             obj.update({"polarity": None})
 
         setVarAsFilter = filter(lambda x: x["slug"] == obj["slug"], setVarAsCols)
         if len(setVarAsFilter) > 0:
-            obj.update({"setVarAs": setVarAsFilter["setVarAs"]})
+            obj.update({"setVarAs": setVarAsFilter[0]["setVarAs"]})
         else:
             obj.update({"setVarAs": None})
         output.append(obj)
