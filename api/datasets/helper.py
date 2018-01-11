@@ -483,7 +483,7 @@ class MetaDataChange(object):
             if head.get('name') == colName:
                 transformation_settings = settings.TRANSFORMATION_SETTINGS_CONSTANT
                 columnSettingCopy = copy.deepcopy(transformation_settings.get('columnSetting'))
-                head_columnSetting = columnSettingCopy[:3]
+                head_columnSetting = columnSettingCopy[1:3]
 
                 transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
                 transformation_settings_ignore['status'] = True
