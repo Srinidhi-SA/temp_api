@@ -241,13 +241,11 @@ class DatasetView(viewsets.ModelViewSet):
         ts = data.get('config')
 
         uiMetaData = convert_metadata_according_to_transformation_setting(
-            uiMetaData,
-            transformation_setting=ts
-        )
+                uiMetaData,
+                transformation_setting=ts
+            )
 
         from helper import get_advanced_setting
-
         uiMetaData["advanced_settings"] = get_advanced_setting(uiMetaData['metaDataUI'])
-        data['uiMetaData'] = uiMetaData
-        return Response(data)
+        return Response(uiMetaData)
 
