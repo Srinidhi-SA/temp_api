@@ -207,7 +207,7 @@ export class VariableSelection extends React.Component {
     }
     render(){
         var that= this;
-        if(that.props.getVarText && that.props.getVarType){ //getting selected dimension's sub levels
+       /* if(that.props.getVarText && that.props.getVarType){ //getting selected dimension's sub levels
             
             if(that.props.getVarType == "dimension"){
                 let columnData = store.getState().datasets.dataPreview.meta_data.scriptMetaData.columnData;
@@ -238,7 +238,7 @@ export class VariableSelection extends React.Component {
                 //that.props.dispatch(setDimensionSubLevels(null));
             } // end of if dimension - code to setup sub level in popup
             
-        }
+        }*/
         
         
         if(!$.isEmptyObject(this.props.selectedSignalAnalysis) && !that.signalFlag){

@@ -1,6 +1,6 @@
-//const API = APP_BASE_URL; //dev
+const API = APP_BASE_URL; //dev
 // const API = "http://.............";   //prod
-const API = "http://192.168.18.80:9012"; //vivek
+//const API = "http://192.168.18.80:9012"; //vivek
 
 //const API = ""; //vivek
 const STATIC_URL = STATIC_URL_PATH;
