@@ -468,9 +468,9 @@ class MetaDataChange(object):
                     head_columnSetting = columnSettingCopy[:3]
 
                 transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
-                transformation_settings_ignore['status'] = True
+                transformation_settings_ignore['status'] = False
                 transformation_settings_ignore['displayName'] = 'Ignore for Analysis'
-                transformation_settings_ignore['previous_status'] = True
+                transformation_settings_ignore['previous_status'] = False
                 head_columnSetting.append(transformation_settings_ignore)
                 head['consider'] = True
 
