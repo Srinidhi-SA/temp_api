@@ -14794,8 +14794,8 @@ a .btn-close {
 .pred_disp_block, .pred_disp_block_store {
     margin: 10px 10px 10px 0;
     background: #f8f8f8;
-	min-height:172px;
-	padding-top:13px;
+    min-height: 214px;
+    padding-top: 35px;
 }
 .pred_disp_block_store { background: transparent; }
 .pred_disp_block h1, .pred_disp_block_store h1 {
