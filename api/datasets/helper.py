@@ -12375,7 +12375,9 @@ def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
     setVarAs = []
     for obj in transformSetting:
         colset = obj["columnSetting"]
-        uidcols = [{"name":obj["name"],"slug":obj["slug"]} for x in colset if x["actionName"] == "unique_identifier" and x["status"]==True]
+        uidobj = [{"name":obj["name"],"slug":obj["slug"]} for x in colset if x["actionName"] == "unique_identifier" and x["status"]==True]
+        if len(uidobj) > 0:
+            uidcols.append(uidobj[0])
         polarityCols = filter(lambda x:x["actionName"] == "set_polarity" and x["status"]==True,colset)
         if len(polarityCols) >0:
             polarityActions = polarityCols[0]["listOfActions"]
