@@ -477,9 +477,31 @@ export function renderC3ChartInfo(info){
     }
 
 }
+
+
 export function bytesToSize(bytes) {
    var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
    if (bytes == 0) return '0 Byte';
    var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
    return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
 };
+
+export function downloadSVGAsPNG(chartClassId) {
+    //This is code to remove background black color in chart and ticks adjustment
+  var nodeList = document.querySelector("."+chartClassId + ">svg").querySelectorAll('.c3-chart .c3-chart-lines path');
+  var nodeList2 = document.querySelector("."+chartClassId+ ">svg").querySelectorAll('.c3-axis path');
+  var line_graph = Array.from(nodeList);
+  var x_and_y = Array.from(nodeList2); //.concat(Array.from(nodeList2));
+  line_graph.forEach(function(element) {
+    element.style.fill = "none";
+  });
+  x_and_y.forEach(function(element) {
+    element.style.fill = "none";
+    element.style.stroke = "black";
+  });
+  saveSvgAsPng(document.querySelector("."+chartClassId + ">svg"), "chart.png", {
+    backgroundColor: "white",
+    height: "500"
+  });
+
+}
