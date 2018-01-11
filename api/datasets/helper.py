@@ -137,7 +137,7 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
                     if colset.get('actionName') == 'ignore_suggestion':
                         colName = col.get('name')
                         colset['displayName'] = 'Consider for Analysis'
-                        mdc.changes_on_consider_column(colName, True)
+                        mdc.changes_on_consider_column(colName, False)
 
                 elif colset.get("status") == False:
 
@@ -152,7 +152,7 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
                     if colset.get('actionName') == 'ignore_suggestion':
                         colName = col.get('name')
                         colset['displayName'] = 'Ignore for Analysis'
-                        mdc.changes_on_consider_column(colName, False)
+                        mdc.changes_on_consider_column(colName, True)
 
     return metaData, headers
 
