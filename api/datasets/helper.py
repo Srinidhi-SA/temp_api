@@ -478,9 +478,9 @@ class MetaDataChange(object):
         from django.conf import settings
         for head in self.columnData:
             if head.get('name') == colName:
-                transformation_settings = settings.TRANSFORMATION_SETTINGS_CONSTANT_DELETE
+                transformation_settings = settings.TRANSFORMATION_SETTINGS_CONSTANT
                 columnSettingCopy = copy.deepcopy(transformation_settings.get('columnSetting'))
-                head['columnSetting'] = columnSettingCopy
+                head['columnSetting'] = columnSettingCopy[:3]
 
                 transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
                 transformation_settings_ignore['status'] = True
