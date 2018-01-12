@@ -220,7 +220,9 @@ body {
 	font-size: 13px;
 	line-height: 22px;/*1.42857143;*/
 	/*color: #555; mAdvisor Old */
-	color:#333333
+	color:#333333;
+	padding: 0;
+	background-color: #f1f1f1; /* f2f4f8height: 100% old bg-color: #ededed -- f0f0f0; #f7f7f7*/
 }
 button, input, select, textarea {
 	font-family: inherit;
@@ -2094,7 +2096,8 @@ box-shadow:         0 2px 2px rgba(0,0,0,0.05);
 	float: left;
 }
 .navbar-default {
-	border-color: #cccccc;
+	border-color: #ececec;
+    background: #fbfbfb;
 }
 .navbar-default .navbar-brand {
 	color: #777
@@ -4425,10 +4428,7 @@ html {
 	height: 100%;
 	overflow-x: hidden
 }
-body {
-	padding: 0;
-	/*background-color: #eff4f4; f2f4f8height: 100% old bg-color: #ededed -- f0f0f0; #f7f7f7*/
-}
+
 a:focus, a:hover {
 	text-decoration: none;
 	outline: 0
@@ -6600,6 +6600,7 @@ body.open-right-sidebar .ma-right-sidebar {
 }
 }
 .ma-splash-screen {
+		background:transparent;
 	/*background:#ffffff url('../images/login_bg.png') no-repeat center center fixed;
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
@@ -10818,7 +10819,8 @@ pre {
 	/*font-size: 20px;*/
 	font-weight: 300;
 	display: block;
-	margin: 0
+	margin: 0;
+	text-transform: capitalize;
 }
 .panel-heading .tools {
 	float: right;
@@ -13776,7 +13778,7 @@ div.dataTables_wrapper div.dataTables_length label select {
 .newCardStyle, .app-block{
 	background:#FFF;
 	padding:0px;
-	border: 1px solid #e1e1e1; /* 1px solid #eaeef1*/
+	border: 1px solid #eaeaea; /*e1e1e1 1px solid #eaeef1*/
 	/*box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);*/
 	-webkit-box-shadow: 0 2px 2px rgba(0,0,0,0.05);
 	-moz-box-shadow:    0 2px 2px rgba(0,0,0,0.05);
@@ -13990,7 +13992,7 @@ background: #f3f2f2;
 .data-info h1 { color:#00998c; font-size:50px; }
 
 .data-info h1, .data-info h3 { margin: 0;}
-.v_smry { text-align: center; padding: 7em 3em; }
+.v_smry { text-align: center; padding: 8em 3em; }
 .v_smry img { margin:0 auto; }
 .v_smry a {font-size:18px; font-weight:bold; }
 .text_seconday { color:rgb(224,123,22)}
@@ -14535,7 +14537,7 @@ table.apps_table_style thead th { font-weight:bold }
 
 .data-info h3 img { display: inline-block; vertical-align: bottom; }
 .ex_bg { background: #f7f7f7; }
-.ex_bg .col-md-9 { background:#FFF;  }
+
 .panel.panel-mAd { padding: 10px 15px; border:none;  }
 .txt-justify { text-align: justify }
 
@@ -14613,7 +14615,7 @@ margin-right:8px;
 content:''
 }
 a.disabled { color:#ccc !important; }
-.ex_bg .md-p-50 { min-height: 312px; }
+
 
 ::-webkit-input-placeholder {
     
@@ -14798,6 +14800,7 @@ a .btn-close {
 	padding-top:13px;   
 }
 .pred_disp_block_store { background: transparent; }
+.pred_disp_block_store.cursor { cursor:auto; }
 .pred_disp_block h1, .pred_disp_block_store h1 {
     margin-top: 10px;
 }
@@ -14835,7 +14838,7 @@ div.pred_disp_block  p, .pred_disp_block_store p { font-size:12px; }
 
 /*.zmdi-hc-lg { font-weight:600; }*/
 .panel-mAd  .panel-heading h2 { font-size:20px; }
-.panel-mAd .panel-body h2, .panel-mAd .panel-body h3{ font-size: 20px; }
+.panel-mAd .panel-body h2, .panel-mAd .panel-body h3{ font-size: 21px; }
 .no-border { border:none; }
 .toggleOn, .toggleOff { margin-bottom: 10px; }
 /**************** Css realated to developers, keep the source down ***/
