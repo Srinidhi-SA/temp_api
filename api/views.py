@@ -4872,7 +4872,7 @@ def get_score_data_and_return_top_n(request):
 
         if download_csv == 'true':
             response = HttpResponse(fp.read(), content_type='application/csv')
-            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(instance.name)
+            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(instance.name) + '.csv'
             return response
         else:
             count = request.GET['count']
@@ -4885,7 +4885,7 @@ def get_score_data_and_return_top_n(request):
                     count = int(count)
             except:
                 count = 100
-            
+
             csv_text = fp.read()
             csv_list = csv_text.split('\n')
             return JsonResponse({
