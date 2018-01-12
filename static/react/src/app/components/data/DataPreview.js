@@ -136,7 +136,7 @@ export class DataPreview extends React.Component {
 
 
 	componentDidMount() {
-	  
+
 		{/*}$(function(){
 			console.log($(".cst_table"));
 			let initialCol= $(".cst_table td").first();
@@ -160,7 +160,7 @@ export class DataPreview extends React.Component {
 
 		showHideSideTable(this.firstTimeSideTable);
 		showHideSideChart(this.firstTimeColTypeForChart,this.firstTimeSideChart);
-		
+
 
 	}
 	setSideElements(e){
@@ -228,10 +228,12 @@ export class DataPreview extends React.Component {
 	moveToVariableSelection(){
 		//alert(this.buttons.create.url);
 		//check for minimum rows in datasets
-
 		if (this.props.dataPreview.meta_data.uiMetaData.metaDataUI[0].value<MINROWINDATASET)
 		bootbox.alert("Minimum "+MINROWINDATASET+" rows are required for analysis!!")
-		else{
+		else if (this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray&&this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray.length==0) {
+			bootbox.alert("Not enough data to run analysis. Please upload/connect a differenct dataset.")
+		}
+		else {
 		let url = this.buttons.create.url;
 		if(this.buttons.create.url.indexOf("apps-robo") != -1){$(".cst_table").find("thead").find("."+colSlug).first()
 			url = "/apps-robo/"+store.getState().apps.roboDatasetSlug+"/"+store.getState().signals.signalAnalysis.slug
@@ -267,7 +269,7 @@ export class DataPreview extends React.Component {
 		//console.log(this.props)
 		var that = this;
 		$(function(){
-		    
+
 		    var idActiveColumn = false;
 		    $(".cst_table tbody tr").first().find("td").each(function(){
 
@@ -358,7 +360,7 @@ export class DataPreview extends React.Component {
 
 				}
 
-				
+
 				const anchorCls =thElement.slug + " dropdown-toggle cursor";
                //if(thElement.chartData != null){
            //if(thElement.ignoreSuggestionFlag && !flag ){
