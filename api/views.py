@@ -260,7 +260,7 @@ class ScoreView(viewsets.ModelViewSet):
     def download(self, request, slug=None):
         instance = self.get_object()
         from django.conf import settings
-        base_file_path = settings.mAdvisorScores
+        base_file_path = settings.SCORES_SCRIPTS_FOLDER
         download_path = base_file_path + instance.slug + '/data.csv'
         # save_file_to = instance.get_local_file_path()
         #
