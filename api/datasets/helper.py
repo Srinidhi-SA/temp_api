@@ -12206,17 +12206,12 @@ def collect_slug_for_percentage_columns(meta_data):
 def get_advanced_setting(metaData):
 
     time_count = 0
-    try:
-        for data in metaData:
-            if data.get('name') == 'timeDimension':
-                time_count += data.get('value')
-            if data.get('name') == 'dateTimeSuggestions':
-                time_count += len(data.get('value').keys())
-    except:
-        pass
 
-    print "get_advanced_setting    ", time_count
-
+    for data in metaData:
+        if data.get('name') == 'timeDimension':
+            time_count += data.get('value')
+        if data.get('name') == 'dateTimeSuggestions':
+            time_count += len(data.get('value').keys())
     return add_trend_in_advanced_setting(time_count)
 
 

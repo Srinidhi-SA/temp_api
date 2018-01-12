@@ -154,17 +154,19 @@ class DatasetView(viewsets.ModelViewSet):
 
         serializer = DatasetSerializer(instance=instance)
         object_details = serializer.data
-        scriptMetaData = object_details['meta_data']
+        original_meta_data_from_scripts = object_details['meta_data']
 
         from helper import add_transformation_setting_to_ui_metadata, add_ui_metadata_to_metadata
 
-        if scriptMetaData is None:
+        if original_meta_data_from_scripts is None:
+            uiMetaData = None
+        if original_meta_data_from_scripts == {}:
             uiMetaData = None
         else:
-            uiMetaData = add_ui_metadata_to_metadata(scriptMetaData)
+            uiMetaData = add_ui_metadata_to_metadata(original_meta_data_from_scripts)
 
         object_details['meta_data'] = {
-            "scriptMetaData": scriptMetaData,
+            "scriptMetaData": original_meta_data_from_scripts,
             "uiMetaData": uiMetaData
         }
 
