@@ -135,7 +135,7 @@ export function getDataSetPreview(slug,interval) {
 				dispatch(fetchDataPreviewError(json))
 			}
 		}).catch(function(error){
-		    
+
 		    dispatch(hideDULoaderPopup());
 	        bootbox.alert("Unable to connect to server. Check your connection please try again.")
 	    });
@@ -1119,7 +1119,7 @@ export function updateColumnStatus(dispatch,colSlug,colName,actionName,subAction
 			break;
 		}
 	}
-	if(actionName != SET_VARIABLE && actionName != UNIQUE_IDENTIFIER && actionName != SET_POLARITY){
+	if(actionName != SET_VARIABLE && actionName != UNIQUE_IDENTIFIER && actionName != SET_POLARITY && actionName!= IGNORE_SUGGESTION){
 	    isSubsetting = true;
 	}
 	dispatch(handleColumnActions(transformSettings,slug,isSubsetting))
@@ -1378,4 +1378,3 @@ export function updateSelectAllAnlysis(flag){
 		flag
 	}
 }
-

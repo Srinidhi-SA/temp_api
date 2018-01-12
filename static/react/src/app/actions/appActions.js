@@ -455,7 +455,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
         }
     }
     function fetchScoreSummaryInCSV(token,slug) {
-        return fetch(API+'/api/get_score_data_and_return_top_n/?url='+EMR+'/'+slug+'/data.csv&count=100',{
+        return fetch(API+'/api/get_score_data_and_return_top_n/?url='+slug+'&count=100'+'&download_csv=false',{
             method: 'get',
             headers: getHeader(token)
         }).then( response => Promise.all([response, response.json()]));
