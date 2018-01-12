@@ -1019,7 +1019,13 @@ def get_info(request):
         return chart_data
 
     def get_html_template():
-        return """<p> Your maximum file upload size is <b>5 GB</b> and maximum number of columns allowed in your data set is 50 columns."""
+        '''
+        Maximum File Upload Limit: 5 GB
+        Maximum Column Limit : 50
+        :return:
+        '''
+
+        return """<p> Maximum File Upload Limit: <b>5 GB</b></p> <p>Maximum Column Limit : <b>50</b></p>"""
 
     used_data_size = get_total_size(user)
 
