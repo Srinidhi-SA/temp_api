@@ -79,7 +79,7 @@ export default function reducer(state = {
           selectedDataSet: action.slug,
           subsettedSlug: "",
           subsettingDone: false,
-          dataTransformSettings:action.dataPreview.meta_data.transformation_settings.existingColumns,
+          dataTransformSettings:action.dataPreview.meta_data.uiMetaData.transformation_settings.existingColumns,
         }
       }
       break;
@@ -603,7 +603,7 @@ export default function reducer(state = {
         dataPreview: action.dataPreview,
         subsettedSlug: "",
         subsettingDone: action.isSubsetting,
-        dataTransformSettings:action.dataPreview.meta_data.transformation_settings.existingColumns,
+        dataTransformSettings:action.dataPreview.meta_data.uiMetaData.transformation_settings.existingColumns,
       }
     }
     break;

@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import {c3Functions} from "../helpers/c3.functions";
 import {Scrollbars} from 'react-custom-scrollbars';
 import {API} from "../helpers/env";
-import {renderC3ChartInfo} from "../helpers/helper";
+import {renderC3ChartInfo,downloadSVGAsPNG} from "../helpers/helper";
 import store from "../store";
 import {ViewChart} from "./common/ViewChart";
 import {ViewChartData} from "./common/ViewChartData";
@@ -79,7 +79,10 @@ export class C3Chart extends React.Component {
 
   }
 
-  downloadSVG() {
+  downloadSVG(){
+      downloadSVGAsPNG("chartDownload"+this.props.classId)
+  }
+  /*downloadSVG() {
     //This is code to remove background black color in chart and ticks adjustment
     var nodeList = document.querySelector(".chart" + this.props.classId + ">svg").querySelectorAll('.c3-chart .c3-chart-lines path');
     var nodeList2 = document.querySelector(".chart" + this.props.classId + ">svg").querySelectorAll('.c3-axis path');
@@ -97,7 +100,7 @@ export class C3Chart extends React.Component {
       height: "450"
     });
 
-  }
+  }*/
 
   updateChart() {
     var that = this;
@@ -109,6 +112,9 @@ export class C3Chart extends React.Component {
       }
     }
 
+    if (data.data.type == "donut"){
+      data.padding.top=35
+    }
     if (this.props.yformat) {
       if (data.data.type == "donut") {
         console.log("in donut")
@@ -116,7 +122,7 @@ export class C3Chart extends React.Component {
           '.2s',
           '$',
           '$,.2s',
-          '.2f',
+          '.2f','.4f',
           ',.0f',
           '.4r'
         ];
@@ -131,7 +137,7 @@ export class C3Chart extends React.Component {
           '.2s',
           '$',
           '$,.2s',
-          '.2f',
+          '.2f','.4f',
           ',.0f',
           '.4r'
         ];
@@ -146,12 +152,13 @@ export class C3Chart extends React.Component {
           '.2s',
           '$',
           '$,.2s',
-          '.2f',
+          '.2f','.4f',
           ',.0f',
           '.4r'
         ];
         if (formats.indexOf(this.props.yformat) >= 0) {
           data.axis.y.tick.format = d3.format(this.props.yformat);
+
         } else {
           data.axis.y.tick.format = d3.format('');
         }
@@ -164,7 +171,7 @@ export class C3Chart extends React.Component {
         '.2s',
         '$',
         '$,.2s',
-        '.2f',
+        '.2f','.4f',
         ',.0f',
         '.4r'
       ];
@@ -175,6 +182,24 @@ export class C3Chart extends React.Component {
       }
 
     }
+
+    if(store.getState().datasets.dataPreviewFlag){
+      let yformat=".2s"
+      if(this.props.yformat)
+        yformat=this.props.yformat
+
+    data.axis.y.tick.format=function(f){
+      //console.log("f of tick")
+      if(f>999){
+        let si = d3.format(yformat);
+      return String(si(f));
+      //return d3.format(".2s")
+    }  else {
+      let si = d3.format('.0f');
+    return String(si(f));
+      }
+    }}
+
     if (this.props.guage) {
       data.gauge.label.format = function(value, ratio) {
         return value;
@@ -212,17 +237,14 @@ export class C3Chart extends React.Component {
       }
 
     }
-    if (data.data.type == "donut") {
-        data.padding.top=10;
-        data.size.height=200
-    }
+
     if (data.data.type == "donut") {
       console.log("in donut tooltip")
       let formats = [
         '.2s',
         '$',
         '$,.2s',
-        '.2f',
+        '.2f','.4f',
         ',.0f',
         '.4r'
       ];
@@ -256,7 +278,7 @@ export class C3Chart extends React.Component {
         '.2s',
         '$',
         '$,.2s',
-        '.2f',
+        '.2f','.4f',
         ',.0f',
         '.4r'
       ];
@@ -284,7 +306,20 @@ export class C3Chart extends React.Component {
     chart = setTimeout(function() {
       return c3.generate(data);
     }, 100);
-    //c3.generate(data);
+
+
+    //Modify Chart Data for Download
+    var chartDownloadData = jQuery.extend(true, {}, data);
+    if(chartDownloadData.subchart != null){
+        chartDownloadData.subchart.show=false;
+    }
+    if(chartDownloadData.axis&&chartDownloadData.axis.x){
+        chartDownloadData.axis.x.extent = null;
+        if(chartDownloadData.axis.x.tick)
+        chartDownloadData.axis.x.tick.fit=true;
+    }
+    chartDownloadData['bindto'] = document.querySelector(".chartDownload"+this.props.classId)
+    let chartDownload = c3.generate(chartDownloadData);
 
     //this.props.dispatch(chartObjStore(chart));
 
@@ -338,7 +373,7 @@ export class C3Chart extends React.Component {
       this.modalCls = "modal fade chart-modal" + this.props.classId;
       this.tableCls = "table-responsive table-area table" + this.props.classId;
     }
-
+   var chartDownloadCls = "chartDownload"+this.props.classId;
     $(function() {
 
       // alert("render");
@@ -403,6 +438,7 @@ export class C3Chart extends React.Component {
 
           <div className="clearfix"></div>
           <div className={this.classId}></div>
+         <div className={chartDownloadCls} style={{display:"none"}}></div>
           <div className="clearfix"></div>
 
         </div>

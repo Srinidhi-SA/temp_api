@@ -56,13 +56,6 @@ class Job(models.Model):
     error_report = models.TextField(default="{}")
     message_log = models.TextField(default="{}")
 
-    def url_html(self):
-        return '<a href="http://{0}:{1}/cluster/app/{2}">{3}</a>'.format(settings.YARN.get('host'),
-                                                                     settings.YARN.get('port'),
-                                                                     self.url,
-                                                                     self.url
-                                                                     )
-
     def generate_slug(self):
         if not self.slug:
             self.slug = slugify(str(self.name) + "-" + ''.join(
@@ -108,11 +101,11 @@ class Job(models.Model):
 
     def update_status(self):
         import yarn_api_client
-        ym = yarn_api_client.resource_manager.ResourceManager(address=settings.YARN.get("host"),
-                                                              port=settings.YARN.get("port"),
-                                                              timeout=settings.YARN.get("timeout"))
-        app_status = ym.cluster_application(self.url)
         try:
+            ym = yarn_api_client.resource_manager.ResourceManager(address=settings.YARN.get("host"),
+                                                                  port=settings.YARN.get("port"),
+                                                                  timeout=settings.YARN.get("timeout"))
+            app_status = ym.cluster_application(self.url)
             print app_status
             self.status = app_status.data['app']["state"]
             self.save()

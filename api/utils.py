@@ -17,6 +17,14 @@ from django.conf import settings
 import subprocess
 
 
+import json
+from pygments import highlight
+from pygments.lexers import JsonLexer
+from pygments.formatters import HtmlFormatter
+
+from django.utils.safestring import mark_safe
+
+
 def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message_slug=None, queue_name=None):
     config = generate_job_config(class_name, job_config, job_name, message_slug, slug)
 
@@ -678,3 +686,12 @@ def correct_base_dir():
         return os.path.dirname(settings.BASE_DIR)
     else:
         return settings.BASE_DIR
+
+def json_prettify_for_admin(json_val):
+    response = json.dumps(json_val, sort_keys=True, indent=2)
+    formatter = HtmlFormatter(style='colorful')
+    response = highlight(response, JsonLexer(), formatter)
+    style = "<style>" + formatter.get_style_defs() + "</style><br>"
+
+    return mark_safe(style + response +"<hr>")
+

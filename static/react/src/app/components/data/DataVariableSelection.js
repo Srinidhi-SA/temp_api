@@ -94,8 +94,8 @@ export class DataVariableSelection extends React.Component {
         if ( dataPrev ) {
             console.log( "data variable selection" );
             console.log( dataPrev );
-            this.possibleAnalysisList = dataPrev.meta_data.advanced_settings;
-            const metaData = dataPrev.meta_data.columnData;
+            this.possibleAnalysisList = dataPrev.meta_data.uiMetaData.advanced_settings;
+            const metaData = dataPrev.meta_data.uiMetaData.columnDataUI;
             // var measures =[], dimensions =[],datetime =[];
             metaData.map(( metaItem, metaIndex ) => {
                 if ( this.firstLoop ) {

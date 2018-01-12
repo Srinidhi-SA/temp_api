@@ -1,5 +1,6 @@
 import json
 from rest_framework.utils import humanize_datetime
+from django.conf import settings
 
 
 
@@ -44,27 +45,33 @@ def convert_time_to_human(data):
 def convert_metadata_according_to_transformation_setting(meta_data=None, transformation_setting=None):
 
     if meta_data is not None:
-        the_meta_data = json.loads(meta_data)
+        uiMetaData = meta_data
     else:
-        # the_meta_data = dummy_meta_data
-        return  {}
-    ts = transformation_setting
-    metaData = the_meta_data.get("metaData")
-    sampleData = the_meta_data.get("sampleData")
-    headers = the_meta_data.get("headers")
-    columnData = the_meta_data.get("columnData")
-    sampleData = the_meta_data.get("sampleData")
+        return {}
 
-    a,b = read_and_change_metadata(
+    ts = transformation_setting
+    metaData = uiMetaData.get("metaDataUI")
+    sampleData = uiMetaData.get("sampleDataUI")
+    headers = uiMetaData.get("headersUI")
+    columnData = uiMetaData.get("columnDataUI")
+
+    read_and_change_metadata(
         ts=ts,
         metaData=metaData,
         headers=headers,
         columnData=columnData,
         sampleData=sampleData
     )
-    the_meta_data['modified'] = True
-    the_meta_data["transformation_settings"] = transformation_setting
-    return the_meta_data
+
+
+    uiMetaData['transformation_settings'] = transformation_setting
+    uiMetaData['modified'] = True
+    varibaleSelectionArray = add_variable_selection_to_metadata(
+        uiMetaData["columnDataUI"],
+        uiMetaData['transformation_settings']
+    )
+    uiMetaData.update({"varibaleSelectionArray": varibaleSelectionArray})
+    return uiMetaData
 
 
 def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
@@ -80,10 +87,12 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
     ts = ts.get('existingColumns')
 
     for col in ts:
+        columnSetting_Temp = None
         if "columnSetting" in col:
             columnSetting = col.get("columnSetting")
 
             for colset in columnSetting:
+                print colset.get("actionName")
                 if colset.get("status") == True:
 
                     if colset.get("actionName") == "delete":
@@ -134,24 +143,18 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
 
                     if colset.get('actionName') == 'ignore_suggestion':
                         colName = col.get('name')
-
-                        # if 'modified' in colset:
-                        #     if colset.get('modified') == True:
-                        #         pass
-                        #     else:
-                        #         pass
-                        # else:
-                        #     colset['modified'] = True
-
                         colset['displayName'] = 'Consider for Analysis'
-                        mdc.changes_on_consider_column(colName, make_it=False)
+                        mdc.changes_on_consider_column(colName, False)
+                        if colset['previous_status'] != colset["status"]:
+                            columnSetting_Temp = mdc.changes_in_column_data_if_column_is_ignore(colName)
+                            colset['previous_status'] = colset["status"]
+                            break
 
                 elif colset.get("status") == False:
 
                     if colset.get("actionName") == "delete":
 
                         if 'modified' in colset:
-
                             if colset.get('modified') == True:
                                 mdc.changes_on_delete(col.get("name"), type='undelete')
                                 colset['modified'] = False
@@ -159,16 +162,48 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
 
                     if colset.get('actionName') == 'ignore_suggestion':
                         colName = col.get('name')
-                        # if 'modified' in colset:
-                        #
-                        #     if colset.get('modified') == True:
-                        #         colset['modified'] = False
-                        #         colset['displayName'] = 'Consider for Analysis'
-                        #         mdc.changes_on_consider_column(colName, make_it=False)
                         colset['displayName'] = 'Ignore for Analysis'
-                        mdc.changes_on_consider_column(colName, make_it=True)
+                        mdc.changes_on_consider_column(colName, True)
+                        if colset['previous_status'] != colset["status"]:
+                            columnSetting_Temp = mdc.changes_in_column_data_if_column_is_considered(colName)
+                            colset['previous_status'] = colset["status"]
+                            break
+
+        if columnSetting_Temp is not None:
+            col['columnSetting'] = columnSetting_Temp
 
     return metaData, headers
+
+#
+# def changes_in_column_data_if_column_is_considered(self, col):
+#     import copy
+#     from django.conf import settings
+#
+#     transformation_settings = settings.TRANSFORMATION_SETTINGS_CONSTANT
+#
+#     columnSettingCopy = copy.deepcopy(transformation_settings.get('columnSetting'))
+#     columnType = col.get('columnType')
+#
+#     if "dimension" == columnType:
+#         head['columnSetting'] = columnSettingCopy[:4]
+#     elif "boolean" == columnType:
+#         head['columnSetting'] = columnSettingCopy[:4]
+#     elif "measure" == columnType:
+#         datatype_element = columnSettingCopy[4]
+#         datatype_element['listOfActions'][0]["status"] = True
+#         columnSettingCopy[5]['listOfActions'][0]["status"] = True
+#         columnSettingCopy[6]['listOfActions'][0]["status"] = True
+#
+#         head['columnSetting'] = columnSettingCopy
+#     elif "datetime" == columnType:
+#         head['columnSetting'] = columnSettingCopy[:3]
+#
+#     transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
+#     transformation_settings_ignore['status'] = True
+#     transformation_settings_ignore['displayName'] = 'Consider for Analysis'
+#     head['columnSetting'].append(transformation_settings_ignore)
+#     head['consider'] = False
+#     break
 
 # from api.datasets.helper import *
 # convert_metadata_according_to_transformation_setting()
@@ -414,6 +449,56 @@ class MetaDataChange(object):
                 data['consider'] = make_it
                 # data['ignoreSuggestionFlag'] = not make_it
                 break
+
+    def changes_in_column_data_if_column_is_considered(self, colName):
+        import copy
+        from django.conf import settings
+        for head in self.columnData:
+            if head.get('name') == colName:
+                transformation_settings = settings.TRANSFORMATION_SETTINGS_CONSTANT
+
+                columnSettingCopy = copy.deepcopy(transformation_settings.get('columnSetting'))
+                columnType = head.get('columnType')
+                head_columnSetting = []
+                if "dimension" == columnType:
+                    head_columnSetting = columnSettingCopy[:4]
+                elif "boolean" == columnType:
+                    head_columnSetting = columnSettingCopy[:4]
+                elif "measure" == columnType:
+                    datatype_element = columnSettingCopy[4]
+                    datatype_element['listOfActions'][0]["status"] = True
+                    columnSettingCopy[5]['listOfActions'][0]["status"] = True
+                    columnSettingCopy[6]['listOfActions'][0]["status"] = True
+
+                    head_columnSetting = columnSettingCopy
+                elif "datetime" == columnType:
+                    head_columnSetting = columnSettingCopy[:3]
+
+                transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
+                transformation_settings_ignore['status'] = False
+                transformation_settings_ignore['displayName'] = 'Ignore for Analysis'
+                transformation_settings_ignore['previous_status'] = False
+                head_columnSetting.append(transformation_settings_ignore)
+                head['consider'] = True
+
+                return head_columnSetting
+
+    def changes_in_column_data_if_column_is_ignore(self, colName):
+        import copy
+        from django.conf import settings
+        for head in self.columnData:
+            if head.get('name') == colName:
+                transformation_settings = settings.TRANSFORMATION_SETTINGS_CONSTANT
+                columnSettingCopy = copy.deepcopy(transformation_settings.get('columnSetting'))
+                head_columnSetting = columnSettingCopy[1:3]
+
+                transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
+                transformation_settings_ignore['status'] = True
+                transformation_settings_ignore['previous_status'] = True
+                transformation_settings_ignore['displayName'] = 'Consider for Analysis'
+                head_columnSetting.append(transformation_settings_ignore)
+                head['consider'] = False
+                return head_columnSetting
 
 
 dummy_meta_data = {
@@ -12079,3 +12164,262 @@ dummy_meta_data = {
             }
         }
     }
+
+
+def add_possible_analysis_to_ui_metadata(meta_data):
+    return settings.ANALYSIS_FOR_TARGET_VARIABLE
+
+
+def add_advanced_settings_to_ui_metadata(meta_data):
+    return get_advanced_setting(meta_data)
+
+
+def add_metaData_to_ui_metadata(meta_data):
+    # metaDataUI = []
+    # if "metaData" in meta_data:
+    #     metaKeysUI = ["noOfRows", "noOfColumns", "measures", "dimensions", "timeDimension",
+    #                   "measureColumns", "dimensionColumns"]
+    #     metaDataUI = [x for x in meta_data["metaData"] if x["name"] in metaKeysUI]
+    if "metaData" in meta_data:
+        return meta_data['metaData']
+    return []
+
+def collect_slug_for_percentage_columns(meta_data):
+    metaData = meta_data['metaData']
+    name_list = []
+    slug_list = []
+    for data in metaData:
+        if 'percentageColumns' == data['name']:
+            name_list = data['value']
+
+    columnData = meta_data['columnData']
+    for name in name_list:
+        for data in columnData:
+            if name == data['name']:
+                slug_list.append(data['slug'])
+
+    return slug_list
+
+def get_advanced_setting(metaData):
+
+    time_count = 0
+    try:
+        for data in metaData:
+            if data.get('name') == 'timeDimension':
+                time_count += data.get('value')
+            if data.get('name') == 'dateTimeSuggestions':
+                time_count += len(data.get('value').keys())
+    except:
+        pass
+
+    print "get_advanced_setting    ", time_count
+
+    return add_trend_in_advanced_setting(time_count)
+
+
+def add_trend_in_advanced_setting(time_count):
+    import copy
+    from django.conf import settings
+    if time_count > 0:
+        main_setting = copy.deepcopy(settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND)
+        trend_setting = copy.deepcopy(settings.ADANCED_SETTING_FOR_POSSIBLE_ANALYSIS_TREND)
+
+        main_setting["dimensions"]["analysis"].insert(1, trend_setting)
+        main_setting["measures"]["analysis"].insert(1, trend_setting)
+        return main_setting
+    else:
+        return settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND
+
+
+def add_transformation_setting_to_ui_metadata(meta_data):
+    transformation_final_obj = {"existingColumns": None, "newColumns": None}
+    transformation_data = []
+
+    if 'columnData' in meta_data:
+        columnData = meta_data['columnData']
+        transformation_settings = settings.TRANSFORMATION_SETTINGS_CONSTANT
+
+        percentage_slug_list = collect_slug_for_percentage_columns(meta_data)
+
+        for head in columnData:
+            import copy
+            temp = dict()
+            temp['name'] = head.get('name')
+            temp['slug'] = head.get('slug')
+            columnSettingCopy = copy.deepcopy(transformation_settings.get('columnSetting'))
+            columnType = head.get('columnType')
+
+            if "dimension" == columnType:
+                temp['columnSetting'] = columnSettingCopy[:4]
+            elif "boolean" == columnType:
+                temp['columnSetting'] = columnSettingCopy[:4]
+            elif "measure" == columnType:
+                datatype_element = columnSettingCopy[4]
+                datatype_element['listOfActions'][0]["status"] = True
+                columnSettingCopy[5]['listOfActions'][0]["status"] = True
+                columnSettingCopy[6]['listOfActions'][0]["status"] = True
+
+                temp['columnSetting'] = columnSettingCopy
+            elif "datetime" == columnType:
+                temp['columnSetting'] = columnSettingCopy[:3]
+
+            if head.get('ignoreSuggestionFlag') is True:
+                transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
+                transformation_settings_ignore['status'] = True
+                transformation_settings_ignore['previous_status'] = True
+                transformation_settings_ignore['displayName'] = 'Consider for Analysis'
+                temp['columnSetting'].append(transformation_settings_ignore)
+            else:
+                transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
+                transformation_settings_ignore['status'] = False
+                transformation_settings_ignore['previous_status'] = False
+                transformation_settings_ignore['displayName'] = 'Ignore for Analysis'
+                temp['columnSetting'].append(transformation_settings_ignore)
+
+            if head['slug'] in percentage_slug_list:
+                for colSet in temp['columnSetting']:
+                    if 'set_variable' == colSet['actionName']:
+                        colSet['status'] = True
+                        if 'listOfActions' in colSet:
+                            for listAct in colSet['listOfActions']:
+                                if 'percentage' == listAct['name']:
+                                    listAct['status'] = True
+                                else:
+                                    listAct['status'] = False
+
+            transformation_data.append(temp)
+        transformation_final_obj["existingColumns"] = transformation_data
+        transformation_final_obj["newColumns"] = transformation_settings.get('new_columns')
+    return transformation_final_obj
+
+
+def add_columnData_to_ui_metatdata(meta_data):
+    columnDataUI = []
+    if 'columnData' in meta_data:
+        columnData = meta_data['columnData']
+
+        for head in columnData:
+            colDataUI = {}
+            colDataUI["name"] = head["name"]
+            colDataUI["slug"] = head["slug"]
+            colDataUI["columnType"] = head["columnType"]
+            colDataUI["dateSuggestionFlag"] = head["dateSuggestionFlag"]
+            colDataUI["ignoreSuggestionFlag"] = head["ignoreSuggestionFlag"]
+            colDataUI["ignoreSuggestionMsg"] = head["ignoreSuggestionMsg"]
+            if "actualColumnType" in head:
+                colDataUI["actualColumnType"] = head["actualColumnType"]
+            else:
+                colDataUI["actualColumnType"] = None
+
+            if head.get('ignoreSuggestionFlag') is True:
+                # transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
+                # transformation_settings_ignore['status'] = True
+                # # transformation_settings_ignore['displayName'] = 'Consider for Analysis'
+                # temp['columnSetting'].append(transformation_settings_ignore)
+                colDataUI['consider'] = False
+            else:
+                # transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
+                # transformation_settings_ignore['status'] = False
+                # # transformation_settings_ignore['displayName'] = 'Ignore for Analysis'
+                # temp['columnSetting'].append(transformation_settings_ignore)
+                colDataUI['consider'] = True
+
+            columnDataUI.append(colDataUI)
+    return columnDataUI
+
+
+def add_sampleData_to_ui_metadata(meta_data):
+    if 'sampleData' in meta_data:
+        return meta_data['sampleData']
+
+
+def add_modified_to_ui_metadata(value=False):
+    return value
+
+
+def add_headers_to_ui_metadata(meta_data):
+    if 'headers' in meta_data:
+        return meta_data['headers']
+    return []
+
+
+def add_ui_metadata_to_metadata(meta_data):
+    output = {
+        'possibleAnalysis': add_possible_analysis_to_ui_metadata(meta_data),
+        'advanced_settings': add_advanced_settings_to_ui_metadata(meta_data),
+        'transformation_settings': add_transformation_setting_to_ui_metadata(meta_data),
+        'metaDataUI': add_metaData_to_ui_metadata(meta_data),
+        'columnDataUI': add_columnData_to_ui_metatdata(meta_data),
+        'sampleDataUI': add_sampleData_to_ui_metadata(meta_data),
+        'headersUI': add_headers_to_ui_metadata(meta_data),
+        'modified': add_modified_to_ui_metadata()
+    }
+    varibaleSelectionArray = add_variable_selection_to_metadata(output["columnDataUI"], output['transformation_settings'])
+    output.update({"varibaleSelectionArray":varibaleSelectionArray})
+    return output
+
+def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
+    print "length of columnDataUI",len(columnDataUI)
+    validcols = [ {"name":x["name"],"slug":x["slug"],"columnType":x["columnType"],"dateSuggestionFlag":x["dateSuggestionFlag"],"targetColumn":False} for x in columnDataUI if x["consider"]==True]
+    print "presence of none validcols",len([x for x in validcols if x != None])
+    validcols1 = []
+    for x in validcols:
+        if x["dateSuggestionFlag"] == True:
+            x.update({"selected": False})
+        else:
+            x.update({"selected": True})
+        validcols1.append(x)
+    print "presence of none validcols1", len([x for x in validcols1 if x != None])
+    for x in validcols1:
+        print x
+        print "#"*40
+    validcols = [x.update({"columnType":"datetime"}) if x["columnType"] == "dimension" and x["dateSuggestionFlag"] == True else x for x in validcols1]
+    print "presence of none validcols", len([x for x in validcols if x != None])
+    transformSetting = transformation_settings["existingColumns"]
+    uidcols = []
+    polarity = []
+    setVarAs = []
+    for obj in transformSetting:
+        colset = obj["columnSetting"]
+        uidobj = [{"name":obj["name"],"slug":obj["slug"]} for x in colset if x["actionName"] == "unique_identifier" and x["status"]==True]
+        if len(uidobj) > 0:
+            uidcols.append(uidobj[0])
+        polarityCols = filter(lambda x:x["actionName"] == "set_polarity" and x["status"]==True,colset)
+        if len(polarityCols) >0:
+            polarityActions = polarityCols[0]["listOfActions"]
+            relevantAction = filter(lambda x:x["status"]==True,polarityActions)
+            if len(relevantAction) >0:
+                polarity.append({"name":obj["name"],"slug":obj["slug"],"polarity":relevantAction[0]["name"]})
+
+        setVarAsCols = filter(lambda x: x["actionName"] == "set_variable" and x["status"] == True, colset)
+        if len(setVarAsCols) > 0:
+            setVarAsActions = setVarAsCols[0]["listOfActions"]
+            relevantAction = filter(lambda x: x["status"] == True, setVarAsActions)
+            print relevantAction
+            if len(relevantAction) > 0:
+                setVarAs.append({"name": obj["name"], "slug": obj["slug"], "setVarAs": relevantAction[0]["name"]})
+    ######
+    output = []
+    for obj in validcols:
+        uidFilter = filter(lambda x:x["slug"] == obj["slug"],uidcols)
+        if len(uidFilter) > 0:
+            obj.update({"uidCol": True})
+        else:
+            obj.update({"uidCol": False})
+
+        polarityFilter = filter(lambda x:x["slug"] == obj["slug"],polarity)
+        if len(polarityFilter) > 0:
+            obj.update({"polarity": polarityFilter[0]["polarity"]})
+        else:
+            obj.update({"polarity": None})
+
+        setVarAsFilter = filter(lambda x: x["slug"] == obj["slug"], setVarAs)
+        if len(setVarAsFilter) > 0:
+            obj.update({"setVarAs": setVarAsFilter[0]["setVarAs"]})
+        else:
+            obj.update({"setVarAs": None})
+        output.append(obj)
+
+
+
+    return output

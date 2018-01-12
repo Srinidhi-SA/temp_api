@@ -254,7 +254,7 @@ def decode_and_convert_chart_raw_data(data):
     sd.save()
     if chart_type in ["bar", "line", "spline"]:
         chart_data = replace_chart_data(data['data'])
-        c3_chart_details['table_c3'] = chart_data
+        c3_chart_details['table_c3'] = put_x_axis_first_chart_data(chart_data, axes.get('x', 'key'))
         sd.set_data(data=chart_data)
         c3_chart_details['download_url'] = sd.get_url()
         c3 = C3Chart(
@@ -319,7 +319,7 @@ def decode_and_convert_chart_raw_data(data):
     elif chart_type in ["combination"]:
 
         chart_data = replace_chart_data(data['data'])
-        c3_chart_details['table_c3'] = chart_data
+        c3_chart_details['table_c3'] = put_x_axis_first_chart_data(chart_data, axes.get('x', 'key'))
         sd.set_data(data=chart_data)
         c3_chart_details['download_url'] = sd.get_url()
         c3 = C3Chart(
@@ -558,7 +558,12 @@ def decode_and_convert_chart_raw_data(data):
         pie_chart_data = chart_data
         c3 = DonutChart(data=pie_chart_data,title=title,yAxisNumberFormat=yAxisNumberFormat)
         c3.set_all_basics()
-        c3.show_basic_legends()
+
+        #c3.show_basic_legends()
+        c3.show_legends_at_right()
+
+        #c3.hide_basic_legends()
+
         if yAxisNumberFormat is not None:
             c3_chart_details["yformat"] = yAxisNumberFormat
         else:
@@ -570,7 +575,11 @@ def decode_and_convert_chart_raw_data(data):
         c3.remove_x_from_data()
         c3.add_tooltip_for_donut()
         if len(chart_data) >= 1:
-            c3_chart_details["legend_data"] = [i[0] for i in chart_data]
+            name_list = [i[0] for i in chart_data]
+            from api.C3Chart.config import PATTERN1
+            color_list = PATTERN1
+            length = len(name_list)
+            c3_chart_details["legend_data"] = [{'name':name_list[i], 'color':color_list[i]} for i in range(length)]
 
         c3_chart_details['table_c3'] = pie_chart_data
         c3_chart_details["chart_c3"] = c3.get_json()
@@ -616,6 +625,30 @@ def convert_chart_data_to_pie_chart(chart_data):
     pie_chart_data = map(list, pie_chart_data)
     print pie_chart_data
     return pie_chart_data[1:]
+
+def put_x_axis_first_chart_data(chart_data, x_column=None):
+    import copy
+    chart_data = copy.deepcopy(chart_data)
+    if x_column is None:
+        return chart_data
+    index = 0
+    i = 0
+    for data in chart_data:
+        if data[0] == x_column:
+            index = i
+            break
+        i += 1
+
+    if index == 0:
+        return chart_data
+    else:
+        temp = chart_data[index]
+        chart_data[index] = chart_data[0]
+        chart_data[0] = temp
+
+    return chart_data
+
+
 
 
 

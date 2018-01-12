@@ -135,7 +135,7 @@ export function getDataSetPreview(slug,interval) {
 				dispatch(fetchDataPreviewError(json))
 			}
 		}).catch(function(error){
-		    
+
 		    dispatch(hideDULoaderPopup());
 	        bootbox.alert("Unable to connect to server. Check your connection please try again.")
 	    });
@@ -1004,14 +1004,14 @@ export function renameMetaDataColumn(dialog,colName,colSlug,dispatch,actionName)
 function updateColumnName(dispatch,colSlug,newColName){
 	var metaData = store.getState().datasets.dataPreview;
 	var slug = store.getState().datasets.selectedDataSet;
-	var colData = metaData.meta_data.columnData;
+	var colData = metaData.meta_data.uiMetaData.columnDataUI;
 	for(var i=0;i<colData.length;i++){
 		if(colData[i].slug == colSlug){
 			colData[i].name = newColName;
 			break;
 		}
 	}
-	metaData.meta_data.columnData = colData;
+	metaData.meta_data.uiMetaData.columnDataUI = colData;
 	let dataPreview = Object.assign({}, metaData);
 	//handleColumnActions(dataPreview,slug,dispatch)
 }
@@ -1119,7 +1119,7 @@ export function updateColumnStatus(dispatch,colSlug,colName,actionName,subAction
 			break;
 		}
 	}
-	if(actionName != SET_VARIABLE && actionName != UNIQUE_IDENTIFIER && actionName != SET_POLARITY){
+	if(actionName != SET_VARIABLE && actionName != UNIQUE_IDENTIFIER && actionName != SET_POLARITY && actionName!= IGNORE_SUGGESTION){
 	    isSubsetting = true;
 	}
 	dispatch(handleColumnActions(transformSettings,slug,isSubsetting))
@@ -1189,17 +1189,23 @@ export function handleColumnActions(transformSettings,slug,isSubsetting) {
 
 function fetchModifiedMetaData(transformSettings,slug) {
 	var tran_settings = {};
+	var uiMetaDataPrev = store.getState().datasets.dataPreview.meta_data.uiMetaData;
 	tran_settings.existingColumns = transformSettings;
 	return fetch(API+'/api/datasets/'+slug+'/meta_data_modifications/',{
 		method: 'put',
 		headers: getHeader(getUserDetailsOrRestart.get().userToken),
 		body:JSON.stringify({
 			config:tran_settings,
+			uiMetaData:uiMetaDataPrev,
 		}),
 	}).then( response => Promise.all([response, response.json()]));
 }
 
-export function fetchDataValidationSuccess(dataPreview,isSubsetting){
+export function fetchDataValidationSuccess(uiMetaData,isSubsetting){
+    var prevDataPreview = store.getState().datasets.dataPreview;
+    prevDataPreview.meta_data.uiMetaData = uiMetaData;
+    var dataPreview = Object.assign({}, prevDataPreview);
+
 	return{
 		type: "DATA_VALIDATION_PREVIEW",
 		dataPreview,
@@ -1372,4 +1378,3 @@ export function updateSelectAllAnlysis(flag){
 		flag
 	}
 }
-
