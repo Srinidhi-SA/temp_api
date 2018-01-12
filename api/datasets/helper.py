@@ -12361,7 +12361,7 @@ def add_ui_metadata_to_metadata(meta_data):
 def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
     print "length of columnDataUI",len(columnDataUI)
     validcols = [ {"name":x["name"],"slug":x["slug"],"columnType":x["columnType"],"dateSuggestionFlag":x["dateSuggestionFlag"],"targetColumn":False} for x in columnDataUI if x["consider"]==True]
-    print "presence of none validcols",len([x for x in validcols if x != None])
+    # print "presence of none validcols",len([x for x in validcols if x != None])
     validcols1 = []
     for x in validcols:
         if x["dateSuggestionFlag"] == True:
@@ -12369,13 +12369,10 @@ def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
         else:
             x.update({"selected": True})
         validcols1.append(x)
-    print "presence of none validcols1", len([x for x in validcols1 if x != None])
-    for x in validcols1:
-        print x
-        print "#"*40
+    # print "presence of none validcols1", len([x for x in validcols1 if x != None])
     # validcols = [x.update({"columnType":"datetime"}) if x["columnType"] == "dimension" and x["dateSuggestionFlag"] == True else x for x in validcols1]
     validcols = validcols1
-    print "presence of none validcols", len([x for x in validcols if x != None])
+    # print "presence of none validcols", len([x for x in validcols if x != None])
     transformSetting = transformation_settings["existingColumns"]
     uidcols = []
     polarity = []
@@ -12396,7 +12393,6 @@ def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
         if len(setVarAsCols) > 0:
             setVarAsActions = setVarAsCols[0]["listOfActions"]
             relevantAction = filter(lambda x: x["status"] == True, setVarAsActions)
-            print relevantAction
             if len(relevantAction) > 0:
                 setVarAs.append({"name": obj["name"], "slug": obj["slug"], "setVarAs": relevantAction[0]["name"]})
     ######
