@@ -644,8 +644,8 @@ def configuration_details():
                 "react_path": "/static/react",
                 "asset_path": "/static/asset",
                 "base_remote_path": "/home/ubuntu/codebase/mAdvisor-api_2",
-                "ui_branch": "api_ui_dev",
-                "api_branch": "api_ui_dev"
+                "ui_branch": "api_ui_dev_metadata",
+                "api_branch": "api_ui_dev_metadata"
             },
             'type':'leia',
             'gunicorn_details': {
