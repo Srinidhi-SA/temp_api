@@ -12359,14 +12359,19 @@ def add_ui_metadata_to_metadata(meta_data):
     return output
 
 def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
+    print "length of columnDataUI",len(columnDataUI)
     validcols = [ {"name":x["name"],"slug":x["slug"],"columnType":x["columnType"],"dateSuggestionFlag":x["dateSuggestionFlag"],"targetColumn":False} for x in columnDataUI if x["consider"]==True]
+    print "presence of none validcols",len([x for x in validcols if x != None])
     validcols1 = []
     for x in validcols:
+        print x
+        print "#"*40
         if x["dateSuggestionFlag"] == True:
             x.update({"selected": False})
         else:
             x.update({"selected": True})
         validcols1.append(x)
+    print "presence of none validcols", len([x for x in validcols1 if x != None])
     validcols = [x.update({"columnType":"datetime"}) if x["columnType"] == "dimension" and x["dateSuggestionFlag"] == True else x for x in validcols1]
 
     transformSetting = transformation_settings["existingColumns"]
