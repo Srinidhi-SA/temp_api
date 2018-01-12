@@ -260,19 +260,19 @@ class ScoreView(viewsets.ModelViewSet):
     def download(self, request, slug=None):
         instance = self.get_object()
         from django.conf import settings
-        hadoop_base_file_path = settings.mAdvisorScores
-
-        download_path = hadoop_base_file_path + instance.slug + '/data.csv'
-        save_file_to = instance.get_local_file_path()
-
-        from api.lib.fab_helper import get_file
-
-        get_file(
-            from_file=download_path,
-            to_dir=save_file_to
-        )
-
-        filepath = save_file_to
+        base_file_path = settings.mAdvisorScores
+        download_path = base_file_path + instance.slug + '/data.csv'
+        # save_file_to = instance.get_local_file_path()
+        #
+        # from api.lib.fab_helper import get_file
+        #
+        # get_file(
+        #     from_file=download_path,
+        #     to_dir=save_file_to
+        # )
+        #
+        # filepath = save_file_to
+        filepath = download_path
 
         from django.http import HttpResponse
         import os

@@ -626,6 +626,9 @@ class Insight(models.Model):
         }
         return ret
 
+
+
+
     def create_configuration_url_settings(self, advanced_settings):
         default_scripts_to_run = [
             'Descriptive analysis',
