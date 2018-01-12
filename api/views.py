@@ -290,12 +290,12 @@ class ScoreView(viewsets.ModelViewSet):
                     response['Content-Disposition'] = 'inline; filename=' + os.path.basename(instance.name)
                     return response
                 else:
-                    csv_list = f.read()
+                    csv_text = f.read()
+                    csv_list = csv_text.split('\n')
                     return JsonResponse({
                         'Message': 'Success',
                         'csv_data': csv_list[:count]
                     })
-
         else:
             return JsonResponse({'result': 'failed to download'})
 
