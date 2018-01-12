@@ -1677,7 +1677,7 @@ select[multiple].input-group-sm>.form-control, select[multiple].input-group-sm>.
 	max-width: none
 }
 .nav-tabs {
-	border-bottom: 1px solid #CCC;
+	border-bottom: 1px solid transparent;
 }
 .nav-tabs>li {
 	float: left;
@@ -2097,7 +2097,7 @@ box-shadow:         0 2px 2px rgba(0,0,0,0.05);
 }
 .navbar-default {
 	border-color: #ececec;
-    background: #fbfbfb;
+    background: #FFFFFF;
 }
 .navbar-default .navbar-brand {
 	color: #777
@@ -2328,7 +2328,7 @@ box-shadow:         0 2px 2px rgba(0,0,0,0.05);
 }
 .pagination>.disabled>a, .pagination>.disabled>a:focus, .pagination>.disabled>a:hover, .pagination>.disabled>span, .pagination>.disabled>span:focus, .pagination>.disabled>span:hover {
 	color: #777;
-	background-color: transparent;
+	background-color: #e4e4e4;
 	border-color: transparent;
 	cursor: not-allowed
 }
@@ -11123,7 +11123,7 @@ pre {
 	color: #00998c
 }
 .modal-content, .nav-tabs>li.active a, .nav-tabs>li.active a:focus, .nav-tabs>li.active a:hover {
-	background-color: #fff
+	background-color: transparent;
 }
 .tab-content {
 	background: #fff;
@@ -11174,7 +11174,9 @@ pre {
 	border-radius: 3px;
 	overflow: hidden;
 	color: #555;
-	border-width: 0
+	border-width: 0;
+	background:#FFFFFF;
+	
 }
 .modal-header {
 	border: 0
