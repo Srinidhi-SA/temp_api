@@ -414,7 +414,7 @@ export class OverViewPage extends React.Component {
                   <div className="panel panel-mAd">
                     <div className="panel-heading">
 
-                      <h2 className="page-title-4">{storyName}
+                      <h3 className="xs-mt-0">{storyName}
 
                         <div className="btn-toolbar pull-right">
                           <div className="btn-group">
@@ -437,9 +437,10 @@ export class OverViewPage extends React.Component {
                             </button>
                             {/*</Link>*/}
 
-                          </div>
-                        </div>
-                      </h2>
+					</div>
+					</div>
+					  </h3>
+
                       <div className="clearfix"></div>
                     </div>
 

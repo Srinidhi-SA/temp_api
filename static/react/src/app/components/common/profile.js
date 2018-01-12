@@ -285,7 +285,7 @@ export class Profile extends React.Component {
             <div className="row">
               <div className="col-md-4">
                 <div className="panel">
-                  <div className="panel-body no-border">
+                  <div className="panel-body">
                     <div className="minHP">
                       <h5 class="text-center">TOTAL SPACE</h5>
                       <C3Chart chartInfo={chartInfo} classId="_profile" data={this.props.profileInfo.chart_c3}/>
@@ -314,7 +314,7 @@ export class Profile extends React.Component {
                   <div className="clearfix"></div>
                   <div className="col-md-12">
                     <div className="panel">
-                      <div className="panel-body no-border">
+                      <div className="panel-body">
                         <div className="minHP">
                           <h5>RECENT ACTIVITY</h5>
                           <Scrollbars style={{

@@ -74,11 +74,11 @@ export class MasterSummary extends React.Component {
         <div className="main-content">
 			   
 				<div className="panel panel-default">
-					<div className="panel-body">
+					<div className="panel-body no-border">
 					
 					
                   <div className="row">
-                    <div className="ex_bg">
+                    
                       <div className="col-md-9">
                         <div className="md-p-50">
                           <div className="row">
@@ -126,7 +126,8 @@ export class MasterSummary extends React.Component {
                           </div>
                         </div>
                       </div>
-                      <div className="col-md-3 v_smry">
+                      <div className="col-md-3">
+						<div className="v_smry ex_bg">
                         <h3>
                           <em>{quotes}</em>
                         </h3>
@@ -134,9 +135,10 @@ export class MasterSummary extends React.Component {
                           <img src={STATIC_URL + "assets/images/icon_proceedformore.png"} className="img-responsive" alt="Proceed for More"/>
                           View Summary
                         </Link>
+						</div>
                       </div>
                       <div class="clearfix"></div>
-                    </div>
+                     
                   </div>
 				  
              </div>

@@ -292,7 +292,7 @@ export class VariableSelection extends React.Component {
                 <div className="main-content">
                 
                 <div className="panel panel-default">
-                <div className="panel-body no-border xs-pt-10 xs-pr-0 xs-pb-0 xs-pl-0">
+                <div className="panel-body no-border">
                 <Form onSubmit={this.createSignal.bind(this)}>
                 <FormGroup role="form">
                 <div className="row">
