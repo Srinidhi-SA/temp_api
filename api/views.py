@@ -4858,17 +4858,7 @@ def get_metadata_for_mlscripts(request, slug=None):
 @csrf_exempt
 def get_score_data_and_return_top_n(request):
     url = request.GET['url']
-    count = request.GET['count']
     download_csv = request.GET['download_csv']
-    if count is None:
-        count = 100
-    try:
-        if int(count) < 10:
-            count = 100
-        else:
-            count = int(count)
-    except:
-        count = 100
 
     from django.conf import settings
     base_file_path = settings.SCORES_SCRIPTS_FOLDER
@@ -4880,11 +4870,22 @@ def get_score_data_and_return_top_n(request):
 
     with open(download_path, 'rb') as fp:
 
-        if download_csv is None:
+        if download_csv == 'true':
             response = HttpResponse(fp.read(), content_type='application/csv')
             response['Content-Disposition'] = 'inline; filename=' + os.path.basename(instance.name)
             return response
         else:
+            count = request.GET['count']
+            if count is None:
+                count = 100
+            try:
+                if int(count) < 10:
+                    count = 100
+                else:
+                    count = int(count)
+            except:
+                count = 100
+            
             csv_text = fp.read()
             csv_list = csv_text.split('\n')
             return JsonResponse({
