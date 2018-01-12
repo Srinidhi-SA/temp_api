@@ -12373,7 +12373,8 @@ def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
     for x in validcols1:
         print x
         print "#"*40
-    validcols = [x.update({"columnType":"datetime"}) if x["columnType"] == "dimension" and x["dateSuggestionFlag"] == True else x for x in validcols1]
+    # validcols = [x.update({"columnType":"datetime"}) if x["columnType"] == "dimension" and x["dateSuggestionFlag"] == True else x for x in validcols1]
+    validcols = validcols1
     print "presence of none validcols", len([x for x in validcols if x != None])
     transformSetting = transformation_settings["existingColumns"]
     uidcols = []
