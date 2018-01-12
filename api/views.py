@@ -4859,6 +4859,7 @@ def get_metadata_for_mlscripts(request, slug=None):
 def get_score_data_and_return_top_n(request):
     url = request.GET['url']
     count = request.GET['count']
+    download_csv = request.GET['download_csv']
     if count is None:
         count = 100
     try:
@@ -4868,15 +4869,30 @@ def get_score_data_and_return_top_n(request):
             count = int(count)
     except:
         count = 100
-    import requests
-    data = requests.get(url)
-    text_data = data.text
-    csv_data = text_data.split('\n')
 
-    return JsonResponse({
-        'Message': 'Success',
-        'csv_data': csv_data[:count]
-    })
+    from django.conf import settings
+    base_file_path = settings.SCORES_SCRIPTS_FOLDER
+    download_path = base_file_path + url + '/data.csv'
+    from django.http import HttpResponse
+    import os
+
+    instance = Score.objects.get(slug=url)
+
+    with open(download_path, 'rb') as fp:
+
+        if download_csv is None:
+            response = HttpResponse(fp.read(), content_type='application/csv')
+            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(instance.name)
+            return response
+        else:
+            csv_text = fp.read()
+            csv_list = csv_text.split('\n')
+            return JsonResponse({
+                'Message': 'Success',
+                'csv_data': csv_list[:count]
+            })
+
+
 
 
 @api_view(['GET'])
