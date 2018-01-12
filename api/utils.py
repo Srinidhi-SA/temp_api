@@ -60,9 +60,11 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
                 # print application_id
                 # print "$" * 100
                 break
-        print "process", cur_process
+        # print "process", cur_process
 
     except Exception as e:
+        print 'Error-->submit_job_through_yarn--->'
+        print e
         pass
         # from smtp_email import send_alert_through_email
         # send_alert_through_email(e)
