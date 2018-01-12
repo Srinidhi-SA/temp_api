@@ -278,6 +278,10 @@ class ScoreView(viewsets.ModelViewSet):
         import os
         download_csv = request.query_params.get('download_csv', None)
         count = request.query_params.get('count', 100)
+        try:
+            count = int(count)
+        except:
+            count = 100
         if download_path is not None:
             with open(filepath, 'rb') as f:
 
