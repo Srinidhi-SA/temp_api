@@ -23,9 +23,9 @@ export default function reducer(state = {
   dataSetMeasures: [],
   dataSetDimensions: [],
   dataSetTimeDimensions: [],
-  ImmutableMeasures: [],
-  ImmutableDimension: [],
-  ImmutableTimeDimension: [],
+  CopyOfMeasures: [],
+  CopyOfDimension: [],
+  CopyTimeDimension: [],
   measureAllChecked: true,
   measureChecked: [],
   dimensionAllChecked: true,
@@ -49,6 +49,7 @@ export default function reducer(state = {
   dataSetColumnRemoveValues:[],
   dataSetColumnReplaceValues:[],
   dataSetSelectAllAnalysis:false,
+  isUpdate:false,
 
 }, action) {
   console.log("In DATA reducer!!");
@@ -242,10 +243,12 @@ export default function reducer(state = {
       {
         return {
           ...state,
-          selectedDimensions: [],
-          selectedTimeDimensions: [],
-          selectedVariablesCount: 0,
-          selectedMeasures: []
+          dataSetMeasures: [],
+          dataSetDimensions: [],
+          dataSetTimeDimensions: [],
+          CopyOfMeasures: [],
+          CopyOfDimension: [],
+          CopyTimeDimension: [],
         }
       }
       break;
@@ -320,25 +323,29 @@ export default function reducer(state = {
           dataSetMeasures: action.measures,
           dataSetDimensions: action.dimensions,
           dataSetTimeDimensions: action.timeDimensions,
-          ImmutableMeasures: action.measures,
-          ImmutableDimension: action.dimensions,
-          ImmutableTimeDimension: action.timeDimensions,
-          measureChecked: action.measureChkBoxList,
-          dimensionChecked: action.dimChkBoxList,
-          measureAllChecked: true,
-          dimensionAllChecked: true,
-          dateTimeChecked: action.dateTimeChkBoxList,
+          CopyOfMeasures: action.measures,
+          CopyOfDimension: action.dimensions,
+          CopyTimeDimension: action.timeDimensions,
           dataSetAnalysisList: action.possibleAnalysisList,
           dataSetPrevAnalysisList:action.prevAnalysisList,
+          selectedVariablesCount:action.count,
+          isUpdate:action.flag
         }
       }
       break;
-
+    case "IS_VARIABLE_SELECTION_UPDATE":
+    {
+      return {
+        ...state,
+        isUpdate:action.flag
+      }
+    }
+    break;
     case "SEARCH_MEASURE":
       {
         return {
           ...state,
-          dataSetMeasures: state.ImmutableMeasures.filter((item) => item.toLowerCase().includes(action.name.toLowerCase()))
+          dataSetMeasures: state.CopyOfMeasures.filter((item) => item.name.toLowerCase().includes(action.name.toLowerCase()))
         }
       }
       break;
@@ -376,7 +383,7 @@ export default function reducer(state = {
       {
         return {
           ...state,
-          dataSetDimensions: state.ImmutableDimension.filter((item) => item.toLowerCase().includes(action.name.toLowerCase()))
+          dataSetDimensions: state.CopyOfDimension.filter((item) => item.name.toLowerCase().includes(action.name.toLowerCase()))
         }
       }
       break;
@@ -385,7 +392,7 @@ export default function reducer(state = {
       {
         return {
           ...state,
-          dataSetTimeDimensions: state.ImmutableTimeDimension.filter((item) => item.toLowerCase().includes(action.name.toLowerCase()))
+          dataSetTimeDimensions: state.CopyTimeDimension.filter((item) => item.name.toLowerCase().includes(action.name.toLowerCase()))
         }
       }
       break;
@@ -444,13 +451,15 @@ export default function reducer(state = {
     {
         return {
             ...state,
-            //selectedMeasures: action.selectedMeasures,
-            measureChecked: action.measuresChkList,
-            dataSetMeasures: action.measuresList,
+            dataSetMeasures: action.measures,
+            dataSetDimensions: action.dimensions,
+            dataSetTimeDimensions: action.timeDimensions,
+            dimensionAllChecked: action.dimFlag,
+            measureAllChecked: action.meaFlag,
             selectedVariablesCount:action.count,
-            //selectedDimensions:action.selectedDimensions,
-            dimensionChecked:action.dimChkList,
-            dataSetDimensions:action.dimensionList
+            CopyOfMeasures: action.measures,
+            CopyOfDimension: action.dimensions,
+            CopyTimeDimension: action.timeDimensions,
             
         }
     }

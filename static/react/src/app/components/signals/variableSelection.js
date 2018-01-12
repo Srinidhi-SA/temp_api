@@ -77,7 +77,7 @@ export class VariableSelection extends React.Component {
     createSignal(event){
         event.preventDefault();
         var isAnalysisChecked = checkAnalysisIsChecked();
-        this.props.dispatch(handleTargetSelection());
+        //this.props.dispatch(handleTargetSelection());
         if($('#signalVariableList option:selected').val() == ""){
             bootbox.alert("Please select a variable to analyze...");
             return false;
@@ -140,7 +140,7 @@ export class VariableSelection extends React.Component {
     }
     
     setPossibleList(event){
-        this.props.dispatch(deleteTargetVariableFromSelection(event));
+      //  this.props.dispatch(deleteTargetVariableFromSelection(event));
         this.props.dispatch(setPossibleAnalysisList(event));
         this.props.dispatch(updateSelectAllAnlysis(false));
         this.props.dispatch(selectAllAnalysisList(false));
@@ -164,7 +164,7 @@ export class VariableSelection extends React.Component {
     }
     
     componentWillUpdate(){
-        console.log("trend disbale check:::: ");
+        console.log("Advancesettings disbale check:::: ");
         /*  if(this.props.dataSetTimeDimensions.length == 0){
             $('#analysisList input[type="checkbox"]').last().attr("disabled", true);
         }else{

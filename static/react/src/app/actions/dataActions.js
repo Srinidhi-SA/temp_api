@@ -526,10 +526,74 @@ export function unselectAllPossibleAnalysis(){
 
 }
 
+function updateList(slug,array){
+   for(var i=0;i<array.length;i++){
+       if(array[i].slug == slug){
+           array[i].selected = !array[i].selected;  
+       }
+   } 
+   return array;
+}
+
+function getIsAllSelected(array){
+    var isAllSelected = true;
+    
+    for(var i=0;i<array.length;i++){
+        isAllSelected = array[i].selected;
+        if(!isAllSelected)break;
+    } 
+    
+    return isAllSelected
+}
+   
+ function updateStoreVariables(measures,dimensions,timeDimensions,dimFlag,meaFlag,count) {
+   return {
+       type: "UPADTE_VARIABLES_LIST",
+       measures,
+       dimensions,
+       timeDimensions,
+       dimFlag,
+       meaFlag,
+       count
+   }
+}
 export function updateSelectedVariables(evt){
-	var variableName = evt.target.value;
+    return (dispatch) => {
+	var varSlug = evt.target.id;
+	var dataSetMeasures = store.getState().datasets.dataSetMeasures.slice();
+	var dataSetDimensions = store.getState().datasets.dataSetDimensions.slice();
+	var dataSetTimeDimensions = store.getState().datasets.dataSetTimeDimensions.slice();
+	var dimFlag =  store.getState().datasets.dimensionAllChecked;
+	var meaFlag = store.getState().datasets.measureAllChecked;
+	var count = store.getState().datasets.selectedVariablesCount;
 
 	if(evt.target.className == "measure"){
+	    if(evt.target.name != null){
+	        dataSetDimensions  = updateList(varSlug,dataSetDimensions);
+	        dimFlag = getIsAllSelected(dataSetDimensions);
+	    }
+	    else{
+	        dataSetMeasures =  updateList(varSlug,dataSetMeasures);
+	        meaFlag = getIsAllSelected(dataSetMeasures);
+	    }
+	}else if(evt.target.className == "dimension"){
+	    dataSetDimensions  = updateList(varSlug,dataSetDimensions);
+	    dimFlag = getIsAllSelected(dataSetDimensions);
+	}
+	else if(evt.target.className == "timeDimension"){
+	    dataSetTimeDimensions  = updateList(varSlug,dataSetTimeDimensions);
+	}
+	
+	
+	//Update selectAll checkbox and selected variables count when varaibles are checked/unchecked
+	if(evt.target.checked){
+	    count=count+1;
+	}else if(!evt.target.checked){
+	    count = count-1;
+	}
+	dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
+    }
+	/*if(evt.target.className == "measure"){
 		//Calculate whether select all should be check or not
 		var meaChkBoxList = store.getState().datasets.measureChecked;
 		meaChkBoxList[evt.target.name] = evt.target.checked;
@@ -592,7 +656,7 @@ export function updateSelectedVariables(evt){
 				type: "SELECTED_TIMEDIMENSION",
 				variableName,
 				timeChkBoxList
-			}
+			}else if(evt.target.className == "timeDimension"){
 		}else{
 			return {
 				type: "UNSELECT_TIMEDIMENSION",
@@ -600,7 +664,7 @@ export function updateSelectedVariables(evt){
 				timeChkBoxList
 			}
 		}
-	}
+	}*/
 
 }
 
@@ -797,18 +861,18 @@ export function storeSortElements(sorton,sorttype){
 }
 
 
-export function updateDatasetVariables(measures,dimensions,timeDimensions,measureChkBoxList,dimChkBoxList,dateTimeChkBoxList,possibleAnalysisList){
-	let prevAnalysisList = jQuery.extend(true, {}, possibleAnalysisList);
+export function updateDatasetVariables(measures,dimensions,timeDimensions,possibleAnalysisList,flag){
+    let prevAnalysisList = jQuery.extend(true, {}, possibleAnalysisList);
+    var count = measures.length+dimensions.length+timeDimensions.length;
 	return {
 		type: "DATASET_VARIABLES",
 		measures,
 		dimensions,
 		timeDimensions,
-		measureChkBoxList,
-		dimChkBoxList,
-		dateTimeChkBoxList,
 		possibleAnalysisList,
-		prevAnalysisList
+		prevAnalysisList,
+		count,
+		flag
 
 	}
 }
@@ -856,9 +920,9 @@ export function handelSort(variableType,sortOrder){
 	switch ( variableType ) {
 
 	case "measure":
-		let measures = store.getState().datasets.dataSetMeasures.slice().sort(function(a,b) { return (a.toLowerCase() < b.toLowerCase()) ? -1 : 1;});
+		let measures = store.getState().datasets.dataSetMeasures.slice().sort(function(a,b) { return (a.name.toLowerCase() < b.name.toLowerCase()) ? -1 : 1;});
 		if(sortOrder == "DESC" )
-			measures = store.getState().datasets.dataSetMeasures.slice().sort(function(a,b) { return (a.toLowerCase() > b.toLowerCase()) ? -1 : 1;});
+			measures = store.getState().datasets.dataSetMeasures.slice().sort(function(a,b) { return (a.name.toLowerCase() > b.name.toLowerCase()) ? -1 : 1;});
 		let checkBoxList = handleCheckboxes(measures,"measure")
 		return {
 			type: "SORT_MEASURE",
@@ -867,9 +931,9 @@ export function handelSort(variableType,sortOrder){
 		}
 		break;
 	case "dimension":
-		let dimensions = store.getState().datasets.dataSetDimensions.slice().sort(function(a,b) { return (a.toLowerCase() < b.toLowerCase()) ? -1 : 1;});
+		let dimensions = store.getState().datasets.dataSetDimensions.slice().sort(function(a,b) { return (a.name.toLowerCase() < b.name.toLowerCase()) ? -1 : 1;});
 		if(sortOrder == "DESC" )
-			dimensions = store.getState().datasets.dataSetDimensions.slice().sort(function(a,b) { return (a.toLowerCase() > b.toLowerCase()) ? -1 : 1;});
+			dimensions = store.getState().datasets.dataSetDimensions.slice().sort(function(a,b) { return (a.name.toLowerCase() > b.name.toLowerCase()) ? -1 : 1;});
 		let checkBoxList1 = handleCheckboxes(dimensions,"dimension")
 		return {
 			type: "SORT_DIMENSION",
@@ -878,9 +942,9 @@ export function handelSort(variableType,sortOrder){
 		}
 		break;
 	case "datetime":
-		let timedimensions = store.getState().datasets.dataSetTimeDimensions.slice().sort(function(a,b) { return (a.toLowerCase() < b.toLowerCase()) ? -1 : 1;});
+		let timedimensions = store.getState().datasets.dataSetTimeDimensions.slice().sort(function(a,b) { return (a.name.toLowerCase() < b.name.toLowerCase()) ? -1 : 1;});
 		if(sortOrder == "DESC" )
-			timedimensions = store.getState().datasets.dataSetTimeDimensions.slice().sort(function(a,b) { return (a.toLowerCase() > b.toLowerCase()) ? -1 : 1;});
+			timedimensions = store.getState().datasets.dataSetTimeDimensions.slice().sort(function(a,b) { return (a.name.toLowerCase() > b.name.toLowerCase()) ? -1 : 1;});
 		let checkBoxList2 = handleCheckboxes(timedimensions,"datetime")
 		return {
 			type: "SORT_TIMEDIMENSION",
@@ -1176,10 +1240,12 @@ export function handleColumnActions(transformSettings,slug,isSubsetting) {
 			if(response.status === 200){
 				dispatch(fetchDataValidationSuccess(json,isSubsetting));
 				dispatch(hideLoading());
+				dispatch(vaiableSelectionUpdate(true));
 			}
 			else{
 
 				dispatch(fetchDataPreviewError(json));
+				dispatch(vaiableSelectionUpdate(false));
 				dispatch(hideLoading());
 				bootbox.alert("Something went wrong. Please try again later.")
 			}
@@ -1187,6 +1253,9 @@ export function handleColumnActions(transformSettings,slug,isSubsetting) {
 	}
 }
 
+export function vaiableSelectionUpdate(flag){
+    return {type: "IS_VARIABLE_SELECTION_UPDATE", flag}
+}
 function fetchModifiedMetaData(transformSettings,slug) {
 	var tran_settings = {};
 	var uiMetaDataPrev = store.getState().datasets.dataPreview.meta_data.uiMetaData;

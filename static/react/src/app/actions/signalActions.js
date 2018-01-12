@@ -312,7 +312,7 @@ export function setPossibleAnalysisList(event) {
     $(".treatAsCategorical").find('input[type=checkbox]').prop("checked", false);
     $(".treatAsCategorical").addClass("hidden")
   }
-  return {type: "SET_POSSIBLE_LIST", varType, varText, varSlug}
+  return {type: "SET_POSSIBLE_LIST", varType, varText, varSlug};
 }
 export function handleTargetSelection(){
     var selectedDimensions =  store.getState().datasets.selectedDimensions.slice();
@@ -412,11 +412,13 @@ export function updateCategoricalVariables(colSlug, colName, actionName, evt) {
   return (dispatch) => {
     if (evt.target.checked) {
       updateColumnStatus(dispatch, colSlug, colName, actionName, PERCENTAGE)
+     
     } else {
-      updateColumnStatus(dispatch, colSlug, colName, actionName, GENERIC_NUMERIC)
+      updateColumnStatus(dispatch, colSlug, colName, actionName, GENERIC_NUMERIC);
     }
   }
 }
+
 export function changeSelectedVariableType(colSlug, colName, actionName, evt) {
   var varType = "dimension";
   var varText = colName;
@@ -430,6 +432,7 @@ export function changeSelectedVariableType(colSlug, colName, actionName, evt) {
   }
 
 }
+
 export function createcustomAnalysisDetails() {
   var transformSettings = store.getState().datasets.dataTransformSettings;
   var customAnalysisDetails = []
