@@ -276,12 +276,18 @@ class ScoreView(viewsets.ModelViewSet):
 
         from django.http import HttpResponse
         import os
-
+        download_csv = request.query_params.get('download_csv', None)
         if download_path is not None:
             with open(filepath, 'rb') as f:
-                response = HttpResponse(f.read(), content_type='application/csv')
-                response['Content-Disposition'] = 'inline; filename=' + os.path.basename(filepath)
-                return response
+
+                if download_csv is None:
+                    response = HttpResponse(f.read(), content_type='application/csv')
+                    response['Content-Disposition'] = 'inline; filename=' + os.path.basename(instance.name)
+                    return response
+                else:
+                    csv_list = f.read()
+                    return JsonResponse({'result': csv_list.split('\n')})
+
         else:
             return JsonResponse({'result': 'failed to download'})
 
