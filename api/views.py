@@ -705,8 +705,6 @@ from django.views.decorators.csrf import csrf_exempt
 
 @csrf_exempt
 def set_result(request, slug=None):
-    print "Welcome to API."
-    print "So you wanna write."
     job = Job.objects.get(slug=slug)
 
     if not job:
@@ -717,13 +715,7 @@ def set_result(request, slug=None):
     elif isinstance(results, dict):
         results = json.dumps(results)
         job.results = results
-
-    print "data----------->"
-    print request.body
-
     job.save()
-    print "Data has been saved to job table."
-
     if "status=failed" in request.body:
         results = {'error_message': 'Failed'}
         results = write_into_databases(
@@ -854,7 +846,6 @@ def write_into_databases(job_type, object_slug, results):
         return results
     else:
         print "No where to write"
-    print "written to the database."
 
 
 def chart_changes_in_metadata_chart(chart_data):
@@ -877,7 +868,6 @@ def chart_changes_in_metadata_chart(chart_data):
 @csrf_exempt
 def random_test_api(request):
     import json
-    print "Welcome to Random Test API."
     data = json.loads(request.body)
     data = add_slugs(data)
 
@@ -908,7 +898,6 @@ def add_slugs(results):
 def convert_chart_data_to_beautiful_things(data):
     from api import helper
     for card in data:
-        print card["dataType"]
         if card["dataType"] == "c3Chart":
             chart_raw_data = card["data"]
             # function
@@ -4711,7 +4700,6 @@ def set_pmml(request, slug=None):
         return JsonResponse({"message": "Failed"})
     data = request.body
     data = json.loads(data)
-    print "keys ", data.keys()
     from api.redis_access import AccessFeedbackMessage
     from helper import generate_pmml_name
     ac = AccessFeedbackMessage()

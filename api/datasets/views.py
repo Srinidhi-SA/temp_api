@@ -191,7 +191,6 @@ class DatasetView(viewsets.ModelViewSet):
                 temp_details['input_file'] = None
                 temp_details['datasource_details'] = instance.datasource_details
                 temp_details['datasource_type'] = instance.datasource_type
-                print "subsetting", "hana", data.get('name')
                 temp_details['name'] = data.get(
                     'name',
                     data.get('datasource_type', "NoName") + "_" + str(random.randint(1000000, 10000000))

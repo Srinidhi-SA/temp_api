@@ -106,7 +106,6 @@ class Job(models.Model):
                                                                   port=settings.YARN.get("port"),
                                                                   timeout=settings.YARN.get("timeout"))
             app_status = ym.cluster_application(self.url)
-            print app_status
             self.status = app_status.data['app']["state"]
             self.save()
         except Exception as err:
@@ -208,8 +207,6 @@ class Dataset(models.Model):
         )
         jobConfig = self.add_transformation_settings_to_config(jobConfig=jobConfig,
                                                                transformation_settings=transformation_settings)
-        print jobConfig
-        print "Dataset realted config generated."
 
         if inputfile:
             jobConfig = self.add_inputfile_outfile_to_config(
@@ -245,8 +242,6 @@ class Dataset(models.Model):
     def add_to_job(self):
 
         jobConfig = self.generate_config()
-        print jobConfig
-        print "Dataset realted config genarated."
 
         job = job_submission(
             instance=self,
@@ -265,7 +260,6 @@ class Dataset(models.Model):
     def add_subsetting_to_config(self, filter_subsetting):
 
         jobConfig = self.generate_config()
-        print jobConfig
         jobConfig["config"]["FILTER_SETTINGS"] = filter_subsetting
 
         return jobConfig
@@ -326,7 +320,6 @@ class Dataset(models.Model):
                 row = [self.clean_restriced_chars(item) for item in row]
                 if i == 0:
                     cleaned_header = self.clean_column_names(row)
-                    print cleaned_header
                 else:
                     CLEAN_DATA.append(row)
 
@@ -567,8 +560,6 @@ class Insight(models.Model):
     def add_to_job(self, *args, **kwargs):
 
         jobConfig = self.generate_config(*args, **kwargs)
-        print "Dataset realted config genarated."
-        print jobConfig
 
         job = job_submission(
             instance=self,
@@ -859,7 +850,6 @@ class Trainer(models.Model):
 
     def add_to_job(self, *args, **kwargs):
         jobConfig = self.generate_config(*args, **kwargs)
-        print "Trainer realted config genarated."
 
         job = job_submission(
             instance=self,
@@ -970,7 +960,6 @@ class Score(models.Model):
     def add_to_job(self, *args, **kwargs):
 
         jobConfig = self.generate_config(*args, **kwargs)
-        print "Score realted config genarated."
 
         job = job_submission(
             instance=self,
@@ -1278,9 +1267,6 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
         jobConfig = json.loads(instance.config)
     job.config = json.dumps(jobConfig)
     job.save()
-
-    print "Job entry created in db. Now going to submit job to job server."
-
     queue_name = None
     try:
         data_size = None
@@ -1292,7 +1278,6 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
         queue_name = get_queue_to_use(job_type=job_type, data_size=data_size)
     except Exception as e:
         print e
-        print "ignoring the exception and continue"
 
     if not queue_name:
         queue_name = "default"
@@ -1320,7 +1305,6 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
             message_slug=get_message_slug(job),
             queue_name=queue_name
         )
-        print "Job submitted."
 
         job.url = job_return_data.get('application_id')
         job.command_array = json.dumps(job_return_data.get('command_array'))
@@ -1332,11 +1316,8 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
         job.config = json.dumps(readable_job_config)
         job.save()
     except Exception as exc:
-        print "#" * 100
-        print "Unable to submit job. Could be some issue with job server please check"
-        print "#" * 100
         print exc
-        send_alert_through_email(exc)
+        # send_alert_through_email(exc)
         return None
 
     return job
