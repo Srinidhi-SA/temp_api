@@ -47,29 +47,25 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
                              "--py-files", egg_file_path, driver_file,
                              json.dumps(config)]
 
-        print "command array", command_array
-        print "=" * 100
-        print " ".join(command_array)
-        print "=" * 100
-
         application_id = ""
 
         cur_process = subprocess.Popen(command_array, stderr=subprocess.PIPE)
         # TODO: @Ankush need to write the error to error log and standard out to normal log
         for line in iter(lambda: cur_process.stderr.readline(), ''):
-            print(line.strip())
+            # print(line.strip())
             match = re.search('Submitted application (.*)$', line)
             if match:
                 application_id = match.groups()[0]
-                print "$" * 100
-                print application_id
-                print "$" * 100
+                # print "$" * 100
+                # print application_id
+                # print "$" * 100
                 break
         print "process", cur_process
 
     except Exception as e:
-        from smtp_email import send_alert_through_email
-        send_alert_through_email(e)
+        pass
+        # from smtp_email import send_alert_through_email
+        # send_alert_through_email(e)
 
     return {
         "application_id": application_id,
@@ -91,8 +87,6 @@ def generate_job_config(class_name, job_config, job_name, message_slug, slug):
     config = {}
     config['job_config'] = job_config
     config['job_config'].update(temp_config)
-    print "overall---------config"
-    print config
 
     return config
 
@@ -123,9 +117,7 @@ def submit_job_through_job_server(slug, class_name, job_config, job_name=None, m
 
 def submit_job(slug, class_name, job_config, job_name=None, message_slug=None,queue_name=None):
     """Based on config, submit jobs either through YARN or job server"""
-    print("came to submit job")
     if settings.SUBMIT_JOB_THROUGH_YARN:
-        print("Submitting job through YARN")
         return submit_job_through_yarn(slug, class_name, job_config, job_name, message_slug,queue_name=queue_name)
     else:
         return submit_job_through_job_server(slug, class_name, job_config, job_name, message_slug)
