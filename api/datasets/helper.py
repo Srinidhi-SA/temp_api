@@ -12171,7 +12171,10 @@ def add_possible_analysis_to_ui_metadata(meta_data):
 
 
 def add_advanced_settings_to_ui_metadata(meta_data):
-    return get_advanced_setting(meta_data)
+    if 'metaData' in meta_data:
+        return get_advanced_setting(meta_data['metaData'])
+    elif 'metaDataUI' in meta_data:
+        return get_advanced_setting(meta_data['metaDataUI'])
 
 
 def add_metaData_to_ui_metadata(meta_data):
