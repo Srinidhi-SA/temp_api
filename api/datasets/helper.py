@@ -12364,16 +12364,17 @@ def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
     print "presence of none validcols",len([x for x in validcols if x != None])
     validcols1 = []
     for x in validcols:
-        print x
-        print "#"*40
         if x["dateSuggestionFlag"] == True:
             x.update({"selected": False})
         else:
             x.update({"selected": True})
         validcols1.append(x)
-    print "presence of none validcols", len([x for x in validcols1 if x != None])
+    print "presence of none validcols1", len([x for x in validcols1 if x != None])
+    for x in validcols1:
+        print x
+        print "#"*40
     validcols = [x.update({"columnType":"datetime"}) if x["columnType"] == "dimension" and x["dateSuggestionFlag"] == True else x for x in validcols1]
-
+    print "presence of none validcols", len([x for x in validcols if x != None])
     transformSetting = transformation_settings["existingColumns"]
     uidcols = []
     polarity = []
