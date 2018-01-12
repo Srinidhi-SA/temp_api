@@ -277,6 +277,7 @@ class ScoreView(viewsets.ModelViewSet):
         from django.http import HttpResponse
         import os
         download_csv = request.query_params.get('download_csv', None)
+        count = request.query_params.get('count', 100)
         if download_path is not None:
             with open(filepath, 'rb') as f:
 
@@ -286,7 +287,10 @@ class ScoreView(viewsets.ModelViewSet):
                     return response
                 else:
                     csv_list = f.read()
-                    return JsonResponse({'result': csv_list.split('\n')})
+                    return JsonResponse({
+                        'Message': 'Success',
+                        'csv_data': csv_list[:count]
+                    })
 
         else:
             return JsonResponse({'result': 'failed to download'})
