@@ -7,7 +7,7 @@ import {Modal,Button,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "r
 import store from "../../store";
 import {selectedAnalysisList,resetSelectedVariables,unselectAllPossibleAnalysis,getDataSetPreview,setDimensionSubLevels,selectAllAnalysisList,updateSelectAllAnlysis,saveAdvanceSettings,checkAllAnalysisSelected} from "../../actions/dataActions";
 import {openCreateSignalModal,closeCreateSignalModal,updateCsLoaderValue} from "../../actions/createSignalActions";
-import {createSignal,setPossibleAnalysisList,emptySignalAnalysis,advanceSettingsModal,checkIfDateTimeIsSelected,updateCategoricalVariables,createcustomAnalysisDetails,checkAnalysisIsChecked,changeSelectedVariableType,deleteTargetVariableFromSelection,handleTargetSelection} from "../../actions/signalActions";
+import {createSignal,setPossibleAnalysisList,emptySignalAnalysis,advanceSettingsModal,checkIfDateTimeIsSelected,updateCategoricalVariables,createcustomAnalysisDetails,checkAnalysisIsChecked,changeSelectedVariableType,hideTargetVariable,handleTargetSelection} from "../../actions/signalActions";
 import {DataVariableSelection} from "../data/DataVariableSelection";
 import {CreateSignalLoader} from "../common/CreateSignalLoader";
 import {openCsLoaderModal,closeCsLoaderModal} from "../../actions/createSignalActions";
@@ -93,7 +93,7 @@ export class VariableSelection extends React.Component {
             return false;
         }
         //check if no variable selected
-        if(this.props.selectedTimeDimensions===undefined){
+        /*if(this.props.selectedTimeDimensions===undefined){
             if(this.props.selectedMeasures.length+this.props.selectedDimensions.length==0){
                 bootbox.alert("Please select atleast one variable.")
                 return false
@@ -103,7 +103,7 @@ export class VariableSelection extends React.Component {
                 bootbox.alert("Please select atleast one variable.")
                 return false
             }
-        }
+        }*/
         
         console.log("while creating signal")
         console.log(this.props);
@@ -140,7 +140,7 @@ export class VariableSelection extends React.Component {
     }
     
     setPossibleList(event){
-      //  this.props.dispatch(deleteTargetVariableFromSelection(event));
+        this.props.dispatch(hideTargetVariable(event));
         this.props.dispatch(setPossibleAnalysisList(event));
         this.props.dispatch(updateSelectAllAnlysis(false));
         this.props.dispatch(selectAllAnalysisList(false));

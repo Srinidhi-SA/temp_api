@@ -150,21 +150,26 @@ export class DataVariableSelection extends React.Component {
             this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.possibleAnalysisList,false));
             }
           
-            
+            var varCls = "";
+                
             if ( store.getState().datasets.dataSetMeasures.length > 0 ) {
                 var measureTemplate = store.getState().datasets.dataSetMeasures.map(( mItem, mIndex ) => {
-                  
+                 if(mItem.targetColumn)varCls="hidden";
+                 else varCls = "";
                     return (
-                        <li key={mItem.slug}><div className="ma-checkbox inline"><input id={mItem.slug} name={mItem.setVarAs} type="checkbox" className="measure" onChange={this.handleCheckboxEvents} value={mItem.name} checked={mItem.selected} /><label htmlFor={mItem.slug} className="radioLabels">{mItem.name}</label></div> </li>
+                        <li className={varCls} key={mItem.slug}><div className="ma-checkbox inline"><input id={mItem.slug} name={mItem.setVarAs} type="checkbox" className="measure" onChange={this.handleCheckboxEvents} value={mItem.name} checked={mItem.selected} /><label htmlFor={mItem.slug} className="radioLabels">{mItem.name}</label></div> </li>
                     );
                 } );
             } else {
                 var measureTemplate = <label>No measure variable present</label>
             }
             if ( store.getState().datasets.dataSetDimensions.length > 0 ) {
+                
                 var dimensionTemplate = store.getState().datasets.dataSetDimensions.map(( dItem, dIndex ) => {
+                    if(dItem.targetColumn)varCls="hidden";
+                    else varCls = "";
                     return (
-                        <li key={dItem.slug}><div className="ma-checkbox inline"><input id={dItem.slug} name={dItem.setVarAs} type="checkbox" className="dimension" onChange={this.handleCheckboxEvents} value={dItem.name} checked={dItem.selected} /><label htmlFor={dItem.slug}>{dItem.name}</label></div> </li>
+                        <li className={varCls} key={dItem.slug}><div className="ma-checkbox inline"><input id={dItem.slug} name={dItem.setVarAs} type="checkbox" className="dimension" onChange={this.handleCheckboxEvents} value={dItem.name} checked={dItem.selected} /><label htmlFor={dItem.slug}>{dItem.name}</label></div> </li>
                     );
                 } );
             } else {

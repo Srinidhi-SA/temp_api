@@ -543,10 +543,10 @@ function getIsAllSelected(array){
         if(!isAllSelected)break;
     } 
     
-    return isAllSelected
+    return isAllSelected;
 }
    
- function updateStoreVariables(measures,dimensions,timeDimensions,dimFlag,meaFlag,count) {
+ export function updateStoreVariables(measures,dimensions,timeDimensions,dimFlag,meaFlag,count) {
    return {
        type: "UPADTE_VARIABLES_LIST",
        measures,
@@ -568,7 +568,7 @@ export function updateSelectedVariables(evt){
 	var count = store.getState().datasets.selectedVariablesCount;
 
 	if(evt.target.className == "measure"){
-	    if(evt.target.name != null){
+	    if(evt.target.name != ""){
 	        dataSetDimensions  = updateList(varSlug,dataSetDimensions);
 	        dimFlag = getIsAllSelected(dataSetDimensions);
 	    }

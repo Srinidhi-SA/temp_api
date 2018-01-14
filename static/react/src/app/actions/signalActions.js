@@ -7,7 +7,7 @@ import store from "../store";
 import {openCsLoaderModal, closeCsLoaderModal, updateCsLoaderValue, updateCsLoaderMsg} from "./createSignalActions";
 import Dialog from 'react-bootstrap-dialog'
 import {showLoading, hideLoading} from 'react-redux-loading-bar'
-import {updateColumnStatus} from './dataActions';
+import {updateColumnStatus,updateStoreVariables} from './dataActions';
 // var API = "http://34.196.204.54:9000";
 
 // @connect((store) => {
@@ -329,8 +329,48 @@ export function handleTargetSelection(){
         selectedDimensions,
         selectedMeasures}
 }
-export function deleteTargetVariableFromSelection(event){
+function updateTargetVariable(slug,array){
+    for(var i=0;i<array.length;i++){
+    if(array[i].slug == slug){
+        array[i].targetColumn = !array[i].targetColumn; 
+        break;
+    }
+} 
+return array;
+}
+export function hideTargetVariable(event){
+    return (dispatch) => {
     var selOption = event.target.childNodes[event.target.selectedIndex];
+    var varType = selOption.value;
+    var varText = selOption.text;
+    var varSlug = selOption.getAttribute("name");
+    var prevVarSlug = store.getState().signals.selVarSlug;
+    var prevVarType = store.getState().signals.getVarType;
+    
+    
+    var dataSetMeasures = store.getState().datasets.dataSetMeasures.slice();
+    var dataSetDimensions = store.getState().datasets.dataSetDimensions.slice();
+    var dataSetTimeDimensions = store.getState().datasets.dataSetTimeDimensions.slice();
+    var dimFlag =  store.getState().datasets.dimensionAllChecked;
+    var meaFlag = store.getState().datasets.measureAllChecked;
+    var count = store.getState().datasets.selectedVariablesCount;
+    if(varType == "measure"){
+        dataSetMeasures = updateTargetVariable(varSlug,dataSetMeasures)
+    }else if(varType == "dimension"){
+        dataSetDimensions = updateTargetVariable(varSlug,dataSetDimensions)
+    }
+    
+    if(prevVarType == "measure"){
+        dataSetMeasures = updateTargetVariable(prevVarSlug,dataSetMeasures)
+    }else if(prevVarType == "dimension"){
+        dataSetDimensions = updateTargetVariable(prevVarSlug,dataSetDimensions)
+    }
+    if(prevVarType == null){
+        count = count-1;
+    }
+    dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
+    }
+    /*var selOption = event.target.childNodes[event.target.selectedIndex];
     var varType = selOption.value;
     var varText = selOption.text;
     var prevVarText = store.getState().signals.getVarText;
@@ -384,7 +424,7 @@ export function deleteTargetVariableFromSelection(event){
         count,
         dimChkList,
         dimensionList
-    } 
+    } */
 }
 function checkIfDataTypeChanges(varSlug) {
   var transformSettings = store.getState().datasets.dataTransformSettings;
