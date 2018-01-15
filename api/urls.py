@@ -13,6 +13,7 @@ from views import AppView
 from views import TrainerView
 from views import RoboView
 from views import AudiosetView
+from dummyModel.models import DummyView
 
 # Start adding urlconf from here
 
@@ -66,6 +67,12 @@ router.register(
     base_name='apps'
 )
 
+router.register(
+    'dummy',
+    DummyView,
+    base_name='dummy'
+)
+
 from api.user_helper import upload_photo, get_profile_image
 urlpatterns = [
     url(r'^datasource/get_config_list$',get_datasource_config_list , name="datasource_get_config_list"),
@@ -95,4 +102,4 @@ urlpatterns = [
 
 
 urlpatterns += router.urls
-# print urlpatterns
+print urlpatterns
