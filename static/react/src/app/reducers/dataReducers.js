@@ -18,7 +18,7 @@ export default function reducer(state = {
   signalMeta: {},
   curUrl: "",
   dataUploadLoaderModal: false,
-  dULoaderValue: 1,
+  dULoaderValue: 0,
   data_search_element: "",
   dataSetMeasures: [],
   dataSetDimensions: [],
@@ -451,7 +451,7 @@ export default function reducer(state = {
             //selectedDimensions:action.selectedDimensions,
             dimensionChecked:action.dimChkList,
             dataSetDimensions:action.dimensionList
-            
+
         }
     }
         break;
