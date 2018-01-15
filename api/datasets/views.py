@@ -128,8 +128,13 @@ class DatasetView(viewsets.ModelViewSet):
 
     @list_route(methods=['get'])
     def all(self, request):
-        query_set = self.get_queryset()
-        serializer = DataNameListSerializer(query_set, many=True)
+        queryset = Dataset.objects.filter(
+            created_by=self.request.user,
+            deleted=False,
+            # analysis_done=True
+            status__in=['SUCCESS']
+        )
+        serializer = DataNameListSerializer(queryset, many=True)
         return Response({
             "data": serializer.data
         })
