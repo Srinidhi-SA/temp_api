@@ -684,8 +684,14 @@ def add_ui_metadata_to_metadata(meta_data):
 def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
     validcols = [ {"name":x["name"],"slug":x["slug"],"columnType":x["columnType"],"dateSuggestionFlag":x["dateSuggestionFlag"],"targetColumn":False} for x in columnDataUI if x["consider"]==True]
     # print "presence of none validcols",len([x for x in validcols if x != None])
+    timeDimensionCols = []
+    dateSuggestionCols = []
     validcols1 = []
     for x in validcols:
+        if x["columnType"] == "datetime":
+            timeDimensionCols.append(x["slug"])
+        if x["dateSuggestionFlag"] == True:
+            dateSuggestionCols.append(x["slug"])
         if x["dateSuggestionFlag"] == True:
             x.update({"selected": False})
         else:
@@ -719,13 +725,14 @@ def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
                 setVarAs.append({"name": obj["name"], "slug": obj["slug"], "setVarAs": relevantAction[0]["name"]})
     ######
     output = []
-    timeDimensionCols = []
-    dateSuggestionCols = []
+    selctedDateSuggestedCol = None
+    if len(timeDimensionCols) == 0:
+        if len(dateSuggestionCols) > 0:
+            selctedDateSuggestedCol = dateSuggestionCols[0]
     for obj in validcols:
-        if x["columnType"]=="datetime":
-            timeDimensionCols.append(x["slug"])
-        if x["dateSuggestionFlag"] == True:
-            dateSuggestionCols.append(x["slug"])
+        if selctedDateSuggestedCol != None:
+            if x["slug"]==selctedDateSuggestedCol:
+                obj.update({"selected":True})
         uidFilter = filter(lambda x:x["slug"] == obj["slug"],uidcols)
         if len(uidFilter) > 0:
             obj.update({"uidCol": True})
@@ -744,14 +751,6 @@ def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
         else:
             obj.update({"setVarAs": None})
         output.append(obj)
-    selctedDateSuggestedCol = None
-    if len(timeDimensionCols) == 0:
-        if len(dateSuggestionCols) > 0:
-            selctedDateSuggestedCol = dateSuggestionCols[0]
-    if selctedDateSuggestedCol != None:
-        output = [x.update({"selected":True}) for x in output if x["slug"]==selctedDateSuggestedCol]
-
-
 
 
     return output
