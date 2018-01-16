@@ -792,7 +792,12 @@ class Trainer(models.Model):
         }
 
         config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
-        config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
+
+        try:
+            config['config']["COLUMN_SETTINGS"] = self.make_config_for_colum_setting()
+        except:
+            config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
+
         config['config']["DATA_SOURCE"] = self.dataset.get_datasource_info()
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
         # config['config']["META_HELPER"] = self.create_configuration_meta_data()
@@ -800,6 +805,12 @@ class Trainer(models.Model):
         self.config = json.dumps(config)
         self.save()
         return config
+
+    def make_config_for_colum_setting(self):
+        config = self.get_config()
+        return {
+            'variableSelection': config['variableSelection']
+        }
 
     def get_config_from_config(self):
         config = json.loads(self.config)
