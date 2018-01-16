@@ -719,6 +719,7 @@ class Insight(models.Model):
                     brief_info.update(self.get_variable_details_from_variable_selection())
                 except:
                     column_settings = config['COLUMN_SETTINGS']
+                    print column_settings
                     brief_info.update({
                         'variable selected': column_settings.get('result_column')[0],
                         'variable type': column_settings.get('analysis_type')[0]
