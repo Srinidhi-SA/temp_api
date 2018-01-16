@@ -624,6 +624,32 @@ class Insight(models.Model):
         ret.update(meta_data_related_config)
         return ret
 
+    def get_config_from_config(self):
+        config = json.loads(self.config)
+        consider_columns_type = ['including']
+        data_columns = config.get("timeDimension", None)
+
+        if data_columns is None:
+            consider_columns = config.get('dimension', []) + config.get('measures', [])
+            data_columns = ""
+        else:
+            if data_columns is "":
+                consider_columns = config.get('dimension', []) + config.get('measures', [])
+            else:
+                consider_columns = config.get('dimension', []) + config.get('measures', []) + [data_columns]
+
+        if len(consider_columns) < 1:
+            consider_columns_type = ['excluding']
+
+        ret = {
+            'consider_columns_type': consider_columns_type,
+            'consider_columns': consider_columns,
+            'date_columns': [] if data_columns is "" else [data_columns],
+            'customAnalysisDetails': config.get('customAnalysisDetails', []),
+            'polarity': config.get('polarity', [])
+        }
+        return ret
+
     def create_configuration_url_settings(self, advanced_settings):
         default_scripts_to_run = [
             'Descriptive analysis',
