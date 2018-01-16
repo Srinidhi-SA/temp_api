@@ -60,7 +60,6 @@ class SignalView(viewsets.ModelViewSet):
         # try:
         data = request.data
         data = convert_to_string(data)
-        print data
         data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
         data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
         serializer = InsightSerializer(data=data)
