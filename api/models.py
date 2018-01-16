@@ -604,34 +604,6 @@ class Insight(models.Model):
             'variableSelection': config['variableSelection']
         }
 
-    def get_config_from_config(self):
-        config = json.loads(self.config)
-        consider_columns_type = ['including']
-        data_columns = config.get("timeDimension", None)
-
-        if data_columns is None:
-            consider_columns = config.get('dimension', []) + config.get('measures', [])
-            data_columns = ""
-        else:
-            if data_columns is "":
-                consider_columns = config.get('dimension', []) + config.get('measures', [])
-            else:
-                consider_columns = config.get('dimension', []) + config.get('measures', []) + [data_columns]
-
-        if len(consider_columns) < 1:
-            consider_columns_type = ['excluding']
-
-        ret = {
-            'consider_columns_type': consider_columns_type,
-            'consider_columns': consider_columns,
-            'date_columns': [] if data_columns is "" else [data_columns],
-            'customAnalysisDetails': config.get('customAnalysisDetails', []),
-            'polarity': config.get('polarity', [])
-        }
-        return ret
-
-
-
 
     def create_configuration_url_settings(self, advanced_settings):
         default_scripts_to_run = [
@@ -640,14 +612,6 @@ class Insight(models.Model):
             'Dimension vs. Dimension',
             'Trend'
         ]
-        # config = json.loads(self.config)
-        # script_to_run = config.get('possibleAnalysis', default_scripts_to_run)
-        # for index, value in enumerate(script_to_run):
-        #     if value == 'Trend Analysis':
-        #         script_to_run[index] = 'Trend'
-        #
-        # if script_to_run is [] or script_to_run is "":
-        #     script_to_run = default_scripts_to_run
 
         from django.conf import settings
         REVERSE_ANALYSIS_LIST = settings.REVERSE_ANALYSIS_LIST
@@ -667,37 +631,6 @@ class Insight(models.Model):
             'metadata': self.dataset.get_metadata_url_config()
         }
 
-    def create_configuration_column_settings(self):
-        analysis_type = [self.type]
-        result_column = [self.target_column]
-
-        ret = {
-            'result_column': result_column,
-            'analysis_type': analysis_type,
-            'date_format': None,
-        }
-
-        get_config_from_config = self.get_config_from_config()
-        meta_data_related_config = self.dataset.common_config()
-
-        ret.update(get_config_from_config)
-        ret.update(meta_data_related_config)
-        return ret
-        # return {
-        #     "analysis_type": ["master"],
-        #     "result_column": "",
-        #     "polarity": "",
-        #     "consider_columns": "",
-        #     "consider_columns_type": "",
-        #     "date_columns": "",
-        #     "date_format": "",
-        #     "ignore_column_suggestions": "",
-        #     "utf8_columns": "",
-        #     "measure_column_filter": "",
-        #     "dimension_column_filter": "",
-        #     "measure_suggestions": ""
-        # }
-
     def create_configuration_filter_settings(self):
         return {}
 
@@ -712,17 +645,32 @@ class Insight(models.Model):
                 temp_list.append(item)
         return temp_list
 
+    def get_variable_details_from_variable_selection(self):
+        config = self.get_config()
+        variableSelection = config.get('variableSelection')
+
+        variable_selected = []
+        analysis_type = []
+
+        for variables in variableSelection:
+            if 'selected' in variables:
+                if variables['selected'] is True:
+                    variable_selected.append(variables['name'])
+                    analysis_type.append(variables['columnType'])
+                    break
+
+        return {
+            'variable selected': variable_selected,
+            'variable type': analysis_type
+        }
+
     def get_brief_info(self):
         brief_info = dict()
         config = self.get_config()
         config = config.get('config')
         if config is not None:
             if 'COLUMN_SETTINGS' in config:
-                column_settings = config['COLUMN_SETTINGS']
-                brief_info.update({
-                    'variable selected': column_settings.get('result_column')[0],
-                    'variable type': column_settings.get('analysis_type')[0]
-                })
+                brief_info.update(self.get_variable_details_from_variable_selection())
 
             if 'FILE_SETTINGS' in config:
                 file_setting = config['FILE_SETTINGS']
