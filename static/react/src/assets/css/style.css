@@ -14809,7 +14809,7 @@ div.pred_disp_block a {
    -webkit-transition: color 0.3s linear;
    -moz-transition: color 0.3s linear;
 }
-div.pred_disp_block a.selected, div.pred_disp_block a:hover, div.pred_disp_block a:hover small, div.pred_disp_block a.selected:hover { color:#f0ad4e; }
+div.pred_disp_block a.selected, div.pred_disp_block a.selected small, div.pred_disp_block a:hover, div.pred_disp_block a:hover small, div.pred_disp_block a.selected:hover { color:#f0ad4e !important; }
 div.pred_disp_block  p, .pred_disp_block_store p { font-size:12px; }
 
 .recActivity { margin-bottom: 0; }
