@@ -222,7 +222,7 @@ body {
 	/*color: #555; mAdvisor Old */
 	color:#333333;
 	padding: 0;
-	background-color: #f1f1f1; /* f2f4f8height: 100% old bg-color: #ededed -- f0f0f0; #f7f7f7*/
+	background-color: #edecec; /* f2f4f8height: 100% old bg-color: #ededed -- f0f0f0; #f7f7f7*/
 }
 button, input, select, textarea {
 	font-family: inherit;
@@ -2096,8 +2096,11 @@ box-shadow:         0 2px 2px rgba(0,0,0,0.05);
 	float: left;
 }
 .navbar-default {
-	border-color: #ececec;
+	border-color: transparent;
     background: #FFFFFF;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+	-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+	-moz-box-shadow:    0 1px 2px rgba(0, 0, 0, 0.15);
 }
 .navbar-default .navbar-brand {
 	color: #777
@@ -13780,12 +13783,11 @@ div.dataTables_wrapper div.dataTables_length label select {
 .newCardStyle, .app-block{
 	background:#FFF;
 	padding:0px;
-	border: 1px solid #eaeaea; /*e1e1e1 1px solid #eaeef1*/
-	/*box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);*/
-	-webkit-box-shadow: 0 2px 2px rgba(0,0,0,0.05);
-	-moz-box-shadow:    0 2px 2px rgba(0,0,0,0.05);
-	box-shadow:         0 2px 2px rgba(0,0,0,0.05);
-  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+	/*border: 1px solid #eaeaea; e1e1e1 1px solid #eaeef1*/
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+	-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+	-moz-box-shadow:    0 1px 2px rgba(0, 0, 0, 0.15);	
+	transition: all 0.3s cubic-bezier(.25,.8,.25,1);
 /*	cursor:pointer;
 	box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);*/
 }
@@ -14841,7 +14843,10 @@ div.pred_disp_block  p, .pred_disp_block_store p { font-size:12px; }
 /*.zmdi-hc-lg { font-weight:600; }*/
 .panel-mAd  .panel-heading h2 { font-size:20px; }
 .panel-mAd .panel-body h2, .panel-mAd .panel-body h3{ font-size: 21px; }
-.no-border { border:none; }
+.no-border { border:none;  }
+.box-shadow { box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+	-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+	-moz-box-shadow:    0 1px 2px rgba(0, 0, 0, 0.15); }
 .toggleOn, .toggleOff { margin-bottom: 10px; }
 /**************** Css realated to developers, keep the source down ***/
 #prediction_dropdown{
