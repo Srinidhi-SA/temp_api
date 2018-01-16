@@ -446,7 +446,6 @@ class Dataset(models.Model):
         }
 
     def get_config(self):
-        import json
         config = json.loads(self.meta_data)
         if config is None:
             return {}
@@ -581,7 +580,8 @@ class Insight(models.Model):
         }
         advanced_settings = kwargs.get('advanced_settings')
         config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings(advanced_settings=advanced_settings)
-        config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
+        # config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
+        config['config']["COLUMN_SETTINGS"] = self.make_config_for_colum_setting()
         config['config']["DATA_SOURCE"] = self.dataset.get_datasource_info()
 
         if 'advanced_settings' in kwargs:
@@ -591,14 +591,18 @@ class Insight(models.Model):
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
         # config['config']["META_HELPER"] = self.create_configuration_meta_data()
 
-        import json
         self.config = json.dumps(config)
         self.save()
         return config
 
     def get_config(self):
-        import json
         return json.loads(self.config)
+
+    def make_config_for_colum_setting(self):
+        config = self.get_config()
+        return {
+            'variableSelection': config['variableSelection']
+        }
 
     def get_config_from_config(self):
         config = json.loads(self.config)
@@ -792,7 +796,6 @@ class Trainer(models.Model):
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
         # config['config']["META_HELPER"] = self.create_configuration_meta_data()
 
-        import json
         self.config = json.dumps(config)
         self.save()
         return config
@@ -868,7 +871,6 @@ class Trainer(models.Model):
         self.save()
 
     def get_config(self):
-        import json
         return json.loads(self.config)
 
     def get_brief_info(self):
@@ -988,7 +990,6 @@ class Score(models.Model):
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
         # config['config']["META_HELPER"] = self.create_configuration_meta_data()
 
-        import json
         self.config = json.dumps(config)
         self.save()
         return config
