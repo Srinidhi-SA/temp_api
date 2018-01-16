@@ -580,8 +580,11 @@ class Insight(models.Model):
         }
         advanced_settings = kwargs.get('advanced_settings')
         config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings(advanced_settings=advanced_settings)
-        # config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
-        config['config']["COLUMN_SETTINGS"] = self.make_config_for_colum_setting()
+        #
+        try:
+            config['config']["COLUMN_SETTINGS"] = self.make_config_for_colum_setting()
+        except:
+            config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
         config['config']["DATA_SOURCE"] = self.dataset.get_datasource_info()
 
         if 'advanced_settings' in kwargs:
@@ -604,6 +607,22 @@ class Insight(models.Model):
             'variableSelection': config['variableSelection']
         }
 
+    def create_configuration_column_settings(self):
+        analysis_type = [self.type]
+        result_column = [self.target_column]
+
+        ret = {
+            'result_column': result_column,
+            'analysis_type': analysis_type,
+            'date_format': None,
+        }
+
+        get_config_from_config = self.get_config_from_config()
+        meta_data_related_config = self.dataset.common_config()
+
+        ret.update(get_config_from_config)
+        ret.update(meta_data_related_config)
+        return ret
 
     def create_configuration_url_settings(self, advanced_settings):
         default_scripts_to_run = [
@@ -670,7 +689,14 @@ class Insight(models.Model):
         config = config.get('config')
         if config is not None:
             if 'COLUMN_SETTINGS' in config:
-                brief_info.update(self.get_variable_details_from_variable_selection())
+                try:
+                    brief_info.update(self.get_variable_details_from_variable_selection())
+                except:
+                    column_settings = config['COLUMN_SETTINGS']
+                    brief_info.update({
+                        'variable selected': column_settings.get('result_column')[0],
+                        'variable type': column_settings.get('analysis_type')[0]
+                    })
 
             if 'FILE_SETTINGS' in config:
                 file_setting = config['FILE_SETTINGS']
