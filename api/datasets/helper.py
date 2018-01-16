@@ -719,7 +719,13 @@ def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
                 setVarAs.append({"name": obj["name"], "slug": obj["slug"], "setVarAs": relevantAction[0]["name"]})
     ######
     output = []
+    timeDimensionCols = []
+    dateSuggestionCols = []
     for obj in validcols:
+        if x["columnType"]=="datetime":
+            timeDimensionCols.append(x["slug"])
+        if x["dateSuggestionFlag"] == True:
+            dateSuggestionCols.append(x["slug"])
         uidFilter = filter(lambda x:x["slug"] == obj["slug"],uidcols)
         if len(uidFilter) > 0:
             obj.update({"uidCol": True})
@@ -738,6 +744,13 @@ def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
         else:
             obj.update({"setVarAs": None})
         output.append(obj)
+    selctedDateSuggestedCol = None
+    if len(timeDimensionCols) == 0:
+        if len(dateSuggestionCols) > 0:
+            selctedDateSuggestedCol = dateSuggestionCols[0]
+    if selctedDateSuggestedCol != None:
+        output = [x.update({"selected":True}) for x in output if x["slug"]==selctedDateSuggestedCol]
+
 
 
 
