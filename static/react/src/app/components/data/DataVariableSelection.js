@@ -126,7 +126,7 @@ export class DataVariableSelection extends React.Component {
                             this.datetime.push( metaItem);
                             break;
                     }
-                    this.selectedTimeDimension = this.datetime[0];
+                    //this.selectedTimeDimension = this.datetime[0];
               }
 
 
@@ -185,7 +185,7 @@ export class DataVariableSelection extends React.Component {
                         	);
                         }else{
                         	return (
-                        			<li key={dtItem.slug}><div className="ma-radio inline col-md-10"><input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents}  name="date_type" id={dtItem.slug} value={dtItem.slug} checked={dtItem.selected} /><label htmlFor={dtItem.slug}>{dtItem.name}</label></div>{timeSuggestionToolTip}</li>
+                        			<li key={dtItem.slug}><div className="ma-radio inline col-md-10"><input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents}  name="date_type" id={dtItem.slug} value={dtItem.name} checked={dtItem.selected} /><label htmlFor={dtItem.slug}>{dtItem.name}</label></div>{timeSuggestionToolTip}</li>
                         	);	
                         }
              

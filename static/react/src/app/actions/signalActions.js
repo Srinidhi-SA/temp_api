@@ -19,7 +19,7 @@ var refreshSignalInterval = null;
 function getHeader(token) {
   return {'Authorization': token, 'Content-Type': 'application/json'};
 }
-export function checkIfDateTimeIsSelected() {
+export function checkIfTrendIsSelected() {
   var totalAnalysisList = store.getState().datasets.dataSetAnalysisList;
   var analysisList = [];
   var trendIsChecked = false;
@@ -39,6 +39,14 @@ export function checkIfDateTimeIsSelected() {
   }
   return trendIsChecked;
 
+}
+
+export function checkIfDateTimeIsSelected(){
+    var dataSetTimeDimensions = store.getState().datasets.dataSetTimeDimensions;
+    var flag = dataSetTimeDimensions.find(function(element) {
+        return element.selected  == true;
+      });
+    return flag;
 }
 
 //x-www-form-urlencoded'

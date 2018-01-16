@@ -9,9 +9,6 @@ export default function reducer(state = {
   current_page: 1,
   dataPreview: null,
   allDataSets: {},
-  selectedDimensions: [],
-  selectedMeasures: [],
-  selectedTimeDimensions: "",
   dataPreviewFlag: false,
   selectedAnalysis: [],
   selectedVariablesCount: 0,
@@ -140,7 +137,7 @@ export default function reducer(state = {
       }
       break;
 
-    case "SELECTED_MEASURES":
+    /*case "SELECTED_MEASURES":
       {
         return {
           ...state,
@@ -151,7 +148,7 @@ export default function reducer(state = {
 
         }
       }
-      break;
+      break;*/
     case "SHOW_DATA_PREVIEW":
       {
         return {
@@ -168,7 +165,7 @@ export default function reducer(state = {
         }
       }
       break;
-    case "UNSELECT_MEASURES":
+ /*   case "UNSELECT_MEASURES":
       {
         return {
           ...state,
@@ -221,7 +218,7 @@ export default function reducer(state = {
           dateTimeChecked: action.timeChkBoxList
         }
       }
-      break;
+      break;*/
     case "STORE_SIGNAL_META":
       {
         return {
@@ -252,7 +249,7 @@ export default function reducer(state = {
         }
       }
       break;
-    case "SET_VARIABLES":
+    /*case "SET_VARIABLES":
       {
         return {
           ...state,
@@ -262,7 +259,7 @@ export default function reducer(state = {
           selectedVariablesCount: action.count
         }
       }
-      break;
+      break;*/
     case "SHOW_DATA_PREVIEW":
       {
         return {
@@ -397,7 +394,7 @@ export default function reducer(state = {
       }
       break;
 
-    case "SELECT_ALL_MEASURES":
+   /* case "SELECT_ALL_MEASURES":
       {
         return {
           ...state,
@@ -446,7 +443,7 @@ export default function reducer(state = {
           dataSetDimensions: state.ImmutableDimension
         }
       }
-      break;
+      break;*/
     case "UPADTE_VARIABLES_LIST":
     {
         return {
