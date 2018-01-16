@@ -56,6 +56,7 @@ export class ModelVariableSelection extends React.Component {
             const metaData = dataPrev.meta_data.uiMetaData.columnDataUI;
             if(metaData){
                 renderSelectBox =  <select className="form-control" onChange={this.setPossibleList.bind(this)} id="createModelAnalysisList">
+                    <option value=""></option>
                 {metaData.map((metaItem,metaIndex) =>{
                     if(metaItem.columnType !="datetime" && metaItem.consider && !metaItem.dateSuggestionFlag){
                         return(<option key={metaItem.slug}  name={metaItem.slug}  value={metaItem.columnType}>{metaItem.name}</option>)
