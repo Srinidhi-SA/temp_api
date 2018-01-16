@@ -9,23 +9,20 @@ export default function reducer(state = {
   current_page: 1,
   dataPreview: null,
   allDataSets: {},
-  selectedDimensions: [],
-  selectedMeasures: [],
-  selectedTimeDimensions: "",
   dataPreviewFlag: false,
   selectedAnalysis: [],
   selectedVariablesCount: 0,
   signalMeta: {},
   curUrl: "",
   dataUploadLoaderModal: false,
-  dULoaderValue: 0,
+  dULoaderValue: 1,
   data_search_element: "",
   dataSetMeasures: [],
   dataSetDimensions: [],
   dataSetTimeDimensions: [],
-  ImmutableMeasures: [],
-  ImmutableDimension: [],
-  ImmutableTimeDimension: [],
+  CopyOfMeasures: [],
+  CopyOfDimension: [],
+  CopyTimeDimension: [],
   measureAllChecked: true,
   measureChecked: [],
   dimensionAllChecked: true,
@@ -49,6 +46,7 @@ export default function reducer(state = {
   dataSetColumnRemoveValues:[],
   dataSetColumnReplaceValues:[],
   dataSetSelectAllAnalysis:false,
+  isUpdate:false,
 
 }, action) {
   console.log("In DATA reducer!!");
@@ -139,7 +137,7 @@ export default function reducer(state = {
       }
       break;
 
-    case "SELECTED_MEASURES":
+    /*case "SELECTED_MEASURES":
       {
         return {
           ...state,
@@ -150,7 +148,7 @@ export default function reducer(state = {
 
         }
       }
-      break;
+      break;*/
     case "SHOW_DATA_PREVIEW":
       {
         return {
@@ -167,7 +165,7 @@ export default function reducer(state = {
         }
       }
       break;
-    case "UNSELECT_MEASURES":
+ /*   case "UNSELECT_MEASURES":
       {
         return {
           ...state,
@@ -220,7 +218,7 @@ export default function reducer(state = {
           dateTimeChecked: action.timeChkBoxList
         }
       }
-      break;
+      break;*/
     case "STORE_SIGNAL_META":
       {
         return {
@@ -242,14 +240,16 @@ export default function reducer(state = {
       {
         return {
           ...state,
-          selectedDimensions: [],
-          selectedTimeDimensions: [],
-          selectedVariablesCount: 0,
-          selectedMeasures: []
+          dataSetMeasures: [],
+          dataSetDimensions: [],
+          dataSetTimeDimensions: [],
+          CopyOfMeasures: [],
+          CopyOfDimension: [],
+          CopyTimeDimension: [],
         }
       }
       break;
-    case "SET_VARIABLES":
+    /*case "SET_VARIABLES":
       {
         return {
           ...state,
@@ -259,7 +259,7 @@ export default function reducer(state = {
           selectedVariablesCount: action.count
         }
       }
-      break;
+      break;*/
     case "SHOW_DATA_PREVIEW":
       {
         return {
@@ -320,25 +320,29 @@ export default function reducer(state = {
           dataSetMeasures: action.measures,
           dataSetDimensions: action.dimensions,
           dataSetTimeDimensions: action.timeDimensions,
-          ImmutableMeasures: action.measures,
-          ImmutableDimension: action.dimensions,
-          ImmutableTimeDimension: action.timeDimensions,
-          measureChecked: action.measureChkBoxList,
-          dimensionChecked: action.dimChkBoxList,
-          measureAllChecked: true,
-          dimensionAllChecked: true,
-          dateTimeChecked: action.dateTimeChkBoxList,
+          CopyOfMeasures: action.measures,
+          CopyOfDimension: action.dimensions,
+          CopyTimeDimension: action.timeDimensions,
           dataSetAnalysisList: action.possibleAnalysisList,
           dataSetPrevAnalysisList:action.prevAnalysisList,
+          selectedVariablesCount:action.count,
+          isUpdate:action.flag
         }
       }
       break;
-
+    case "IS_VARIABLE_SELECTION_UPDATE":
+    {
+      return {
+        ...state,
+        isUpdate:action.flag
+      }
+    }
+    break;
     case "SEARCH_MEASURE":
       {
         return {
           ...state,
-          dataSetMeasures: state.ImmutableMeasures.filter((item) => item.toLowerCase().includes(action.name.toLowerCase()))
+          dataSetMeasures: state.CopyOfMeasures.filter((item) => item.name.toLowerCase().includes(action.name.toLowerCase()))
         }
       }
       break;
@@ -376,7 +380,7 @@ export default function reducer(state = {
       {
         return {
           ...state,
-          dataSetDimensions: state.ImmutableDimension.filter((item) => item.toLowerCase().includes(action.name.toLowerCase()))
+          dataSetDimensions: state.CopyOfDimension.filter((item) => item.name.toLowerCase().includes(action.name.toLowerCase()))
         }
       }
       break;
@@ -385,12 +389,12 @@ export default function reducer(state = {
       {
         return {
           ...state,
-          dataSetTimeDimensions: state.ImmutableTimeDimension.filter((item) => item.toLowerCase().includes(action.name.toLowerCase()))
+          dataSetTimeDimensions: state.CopyTimeDimension.filter((item) => item.name.toLowerCase().includes(action.name.toLowerCase()))
         }
       }
       break;
 
-    case "SELECT_ALL_MEASURES":
+   /* case "SELECT_ALL_MEASURES":
       {
         return {
           ...state,
@@ -439,19 +443,21 @@ export default function reducer(state = {
           dataSetDimensions: state.ImmutableDimension
         }
       }
-      break;
+      break;*/
     case "UPADTE_VARIABLES_LIST":
     {
         return {
             ...state,
-            //selectedMeasures: action.selectedMeasures,
-            measureChecked: action.measuresChkList,
-            dataSetMeasures: action.measuresList,
+            dataSetMeasures: action.measures,
+            dataSetDimensions: action.dimensions,
+            dataSetTimeDimensions: action.timeDimensions,
+            dimensionAllChecked: action.dimFlag,
+            measureAllChecked: action.meaFlag,
             selectedVariablesCount:action.count,
-            //selectedDimensions:action.selectedDimensions,
-            dimensionChecked:action.dimChkList,
-            dataSetDimensions:action.dimensionList
-
+            CopyOfMeasures: action.measures,
+            CopyOfDimension: action.dimensions,
+            CopyTimeDimension: action.timeDimensions,
+            
         }
     }
         break;

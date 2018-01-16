@@ -7,7 +7,7 @@ import {Modal,Button,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "r
 import store from "../../store";
 import {selectedAnalysisList,resetSelectedVariables,unselectAllPossibleAnalysis,getDataSetPreview,setDimensionSubLevels,selectAllAnalysisList,updateSelectAllAnlysis,saveAdvanceSettings,checkAllAnalysisSelected} from "../../actions/dataActions";
 import {openCreateSignalModal,closeCreateSignalModal,updateCsLoaderValue} from "../../actions/createSignalActions";
-import {createSignal,setPossibleAnalysisList,emptySignalAnalysis,advanceSettingsModal,checkIfDateTimeIsSelected,updateCategoricalVariables,createcustomAnalysisDetails,checkAnalysisIsChecked,changeSelectedVariableType,deleteTargetVariableFromSelection,handleTargetSelection} from "../../actions/signalActions";
+import {createSignal,setPossibleAnalysisList,emptySignalAnalysis,advanceSettingsModal,checkIfDateTimeIsSelected,checkIfTrendIsSelected,updateCategoricalVariables,createcustomAnalysisDetails,checkAnalysisIsChecked,changeSelectedVariableType,hideTargetVariable,handleTargetSelection} from "../../actions/signalActions";
 import {DataVariableSelection} from "../data/DataVariableSelection";
 import {CreateSignalLoader} from "../common/CreateSignalLoader";
 import {openCsLoaderModal,closeCsLoaderModal} from "../../actions/createSignalActions";
@@ -77,7 +77,7 @@ export class VariableSelection extends React.Component {
     createSignal(event){
         event.preventDefault();
         var isAnalysisChecked = checkAnalysisIsChecked();
-        this.props.dispatch(handleTargetSelection());
+        //this.props.dispatch(handleTargetSelection());
         if($('#signalVariableList option:selected').val() == ""){
             bootbox.alert("Please select a variable to analyze...");
             return false;
@@ -87,13 +87,14 @@ export class VariableSelection extends React.Component {
             return false;
         }
         
-        var trendIsChecked = checkIfDateTimeIsSelected();
-        if((store.getState().datasets.selectedTimeDimensions  == "" || store.getState().datasets.selectedTimeDimensions == undefined) && trendIsChecked == true){
+        var trendIsChecked = checkIfTrendIsSelected();
+        var dateTimeIsSelected = checkIfDateTimeIsSelected();
+        if(dateTimeIsSelected == undefined && trendIsChecked == true){
             bootbox.alert("Please select one of the date dimensions.");
             return false;
         }
         //check if no variable selected
-        if(this.props.selectedTimeDimensions===undefined){
+        /*if(this.props.selectedTimeDimensions===undefined){
             if(this.props.selectedMeasures.length+this.props.selectedDimensions.length==0){
                 bootbox.alert("Please select atleast one variable.")
                 return false
@@ -103,16 +104,16 @@ export class VariableSelection extends React.Component {
                 bootbox.alert("Please select atleast one variable.")
                 return false
             }
-        }
+        }*/
         
         console.log("while creating signal")
         console.log(this.props);
         this.signalFlag = false;
         this.props.dispatch(updateCsLoaderValue(0))
         this.props.dispatch(openCsLoaderModal());
-        let customDetails = createcustomAnalysisDetails();
+        //let customDetails = createcustomAnalysisDetails();
         let analysisList =[],config={}, postData={};
-        config['possibleAnalysis'] = this.props.selectedAnalysis;
+       /* config['possibleAnalysis'] = this.props.selectedAnalysis;
         config['measures'] =store.getState().datasets.selectedMeasures;
         config['dimension'] =store.getState().datasets.selectedDimensions;
         config['timeDimension'] =this.props.selectedTimeDimensions;
@@ -123,8 +124,9 @@ export class VariableSelection extends React.Component {
         postData["type"]=this.props.getVarType;
         postData["target_column"]=$('#signalVariableList option:selected').text();
         postData["config"]=config;
-        postData["dataset"]=this.props.dataPreview.slug;
+        postData["dataset"]=this.props.dataPreview.slug;*/
         
+        config['variableSelection'] = store.getState().datasets.dataPreview.meta_data.uiMetaData.varibaleSelectionArray
         
         if(this.props.getVarType.toLowerCase() == "measure"){
             
@@ -135,12 +137,15 @@ export class VariableSelection extends React.Component {
             this.props.dataSetAnalysisList.dimensions.targetLevels.push(this.props.dimensionSubLevel);
             
         }
+        postData["config"]=config;
+        postData["dataset"]=this.props.dataPreview.slug;
+        postData["name"]=$("#createSname").val();
         console.log(postData);
        this.props.dispatch(createSignal(postData));
     }
     
     setPossibleList(event){
-        this.props.dispatch(deleteTargetVariableFromSelection(event));
+        this.props.dispatch(hideTargetVariable(event));
         this.props.dispatch(setPossibleAnalysisList(event));
         this.props.dispatch(updateSelectAllAnlysis(false));
         this.props.dispatch(selectAllAnalysisList(false));
@@ -164,7 +169,7 @@ export class VariableSelection extends React.Component {
     }
     
     componentWillUpdate(){
-        console.log("trend disbale check:::: ");
+        console.log("Advancesettings disbale check:::: ");
         /*  if(this.props.dataSetTimeDimensions.length == 0){
             $('#analysisList input[type="checkbox"]').last().attr("disabled", true);
         }else{
