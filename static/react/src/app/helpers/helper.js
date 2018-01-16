@@ -59,6 +59,9 @@ function redirectToLogin() {
 
 const FILEUPLOAD = "fileUpload";
 const MYSQL = "MySQL";
+const MSSQL = "mssql";
+const HANA = "Hana";
+const HDFS = "Hdfs";
 const INPUT = "Input";
 const HOST = "Host";
 const PORT = "Port";
@@ -443,7 +446,10 @@ export{
   SET_POLARITY,
   UNIQUE_IDENTIFIER,
   DYNAMICLOADERINTERVAL,
-  IGNORE_SUGGESTION
+  IGNORE_SUGGESTION,
+  HDFS,
+  HANA,
+  MSSQL
 	}
 export function capitalizeArray(array){
   let a =[]
