@@ -104,8 +104,12 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
     export function createModel(modelName,targetVariable) {
         console.log(modelName);
         console.log(targetVariable);
+        if($('#createModelAnalysisList option:selected').val() == ""){
+            bootbox.alert("Please select a variable to analyze...");
+            return false;
+        }
         //check if no variable selected
-        let selectedMeasures=store.getState().datasets.selectedMeasures
+       /* let selectedMeasures=store.getState().datasets.selectedMeasures
         let selectedDimensions=store.getState().datasets.selectedDimensions
         let selectedTimeDimension=store.getState().datasets.selectedTimeDimensions
         if(selectedTimeDimension===undefined){
@@ -118,7 +122,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
           bootbox.alert("Please select atleast one variable.")
           return false
         }
-        }
+        }*/
 
         return (dispatch) => {
             dispatch(openAppsLoader(APPSLOADERPERVALUE,"Please wait while mAdvisor is creating model... "));
@@ -141,15 +145,16 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
         var app_id=store.getState().apps.currentAppId;
         var customDetails = createcustomAnalysisDetails();
 
-        var details = {"measures":store.getState().datasets.selectedMeasures,
+        var details = {/*"measures":store.getState().datasets.selectedMeasures,
                 "dimension":store.getState().datasets.selectedDimensions,
-                "timeDimension":store.getState().datasets.selectedTimeDimensions,
+                "timeDimension":store.getState().datasets.selectedTimeDimensions,*/
                 "trainValue":store.getState().apps.trainValue,
                 "testValue":store.getState().apps.testValue,
-                "analysisVariable":targetVariable,
+                "variablesSelected":store.getState().datasets.dataPreview.meta_data.uiMetaData.varibaleSelectionArray
+               /* "analysisVariable":targetVariable,
                 'customAnalysisDetails':customDetails["customAnalysisDetails"],
                  'polarity':customDetails["polarity"],
-                 'uidColumn':customDetails["uidColumn"]}
+                 'uidColumn':customDetails["uidColumn"]*/}
         return fetch(API+'/api/trainer/',{
             method: 'post',
             headers: getHeader(token),
