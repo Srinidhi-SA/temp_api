@@ -29,7 +29,7 @@ class InsightAdmin(admin.ModelAdmin):
 class JobAdmin(admin.ModelAdmin):
     icon = '<i class="material-icons">settings_input_component</i>'
     search_fields = ["name", "slug", "job_type", "url"]
-    list_display = ["name", "YARN_URL_html", "job_type", "deleted", "status", 'submitted_by']
+    list_display = ["name", "YARN_URL_html", "job_type", "deleted", "status", 'submitted_by', "msg_count"]
     list_filter = ["job_type", "status", "submitted_by"]
     readonly_fields = ("created_at","config_prettified","messages_prettified" )
     actions = ['kill_selected_jobs', 'start_selected_jobs', 'refresh_status']
@@ -76,6 +76,14 @@ class JobAdmin(admin.ModelAdmin):
         for instance in queryset:
             instance.update_status()
         return 'good grace'
+
+    def msg_count(self, instance):
+        message_log_json = json.loads(instance.message_log)
+        message_count = len(message_log_json)
+
+        error_report_json = json.loads(instance.error_report)
+        error_report_count = len(error_report_json)
+        return "Msg:{0}/Err:{1}".format(message_count, error_report_count)
 
 
 class ScoreAdmin(admin.ModelAdmin):
