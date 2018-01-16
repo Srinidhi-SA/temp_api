@@ -886,16 +886,36 @@ class Trainer(models.Model):
     def get_config(self):
         return json.loads(self.config)
 
+    def get_variable_details_from_variable_selection(self):
+        config = self.get_config()
+        COLUMN_SETTINGS = config['config']['COLUMN_SETTINGS']
+        variableSelection = COLUMN_SETTINGS.get('variableSelection')
+
+        variable_selected = []
+
+        for variables in variableSelection:
+            if 'selected' in variables:
+                if variables['selected'] is True:
+                    variable_selected.append(variables['name'])
+                    break
+
+        return {
+            'variable selected': variable_selected
+        }
+
     def get_brief_info(self):
         brief_info = dict()
         config = self.get_config()
         config = config.get('config')
         if config is not None:
             if 'COLUMN_SETTINGS' in config:
-                column_settings = config['COLUMN_SETTINGS']
-                brief_info.update({
-                    'variable selected': column_settings.get('result_column')[0]
-                })
+                try:
+                    brief_info.update(self.get_variable_details_from_variable_selection())
+                except:
+                    column_settings = config['COLUMN_SETTINGS']
+                    brief_info.update({
+                        'variable selected': column_settings.get('result_column')[0]
+                    })
 
             if 'FILE_SETTINGS' in config:
                 file_setting = config['FILE_SETTINGS']
