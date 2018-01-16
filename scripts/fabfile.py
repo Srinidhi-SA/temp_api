@@ -91,8 +91,7 @@ def deploy_api(branch="dev"):
     server_details= details['server_details']
     deployment_config= details['deployment_config']
     base_remote_path = path_details['base_remote_path']
-    from django.conf import settings
-    UI_VERSION = settings.UI_VERSION
+    from config.settings.base import UI_VERSION
     text_command = """CONFIG_FILE_NAME = '{0}'\nUI_VERSION = '{1}'
     """.format(deployment_config, UI_VERSION)
     config_file_path = BASE_DIR + '/config/settings/config_file_name_to_run.py'
