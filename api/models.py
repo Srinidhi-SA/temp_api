@@ -691,6 +691,7 @@ class Insight(models.Model):
         return temp_list
 
     def get_variable_details_from_variable_selection(self):
+        import pdb;pdb.set_trace()
         config = self.get_config()
         variableSelection = config.get('variableSelection')
 
