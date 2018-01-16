@@ -28,6 +28,64 @@ class DummyPermission(permissions.BasePermission):
         pass
 
 
+class DummyPermissionTrue(permissions.BasePermission):
+    message = 'Always True'
+
+    def has_permission(self, request, view):
+        user = request.user
+        return True
+
+    def has_object_permission(self, request, view, obj):
+        pass
+
+
+class DummyPermissionFalse(permissions.BasePermission):
+    message = 'Always False'
+
+    def has_permission(self, request, view):
+        user = request.user
+
+        return False
+
+    def has_object_permission(self, request, view, obj):
+        pass
+
+class DummyPermissionGroup(permissions.BasePermission):
+    message = 'Group related'
+
+    def has_permission(self, request, view):
+        user = request.user
+        if 'AllAccess' in user.groups.values_list('name', flat=True) or user.is_superuser:
+            return True
+
+    def has_object_permission(self, request, view, obj):
+        pass
+
+
+class DummyPermissionUsingHasObject(permissions.BasePermission):
+    message = 'Using has_object_permissio.'
+
+    def has_permission(self, request, view):
+        return True
+
+    def has_object_permission(self, request, view, obj):
+        # Obj is actual instance
+        if request.method in permissions.SAFE_METHODS:
+            return True
+
+        return obj.created_by.id == request.user.id
+
+
+class DummyPermissionModelPermission(permissions.DjangoModelPermissions):
+    message = 'Using DjangoModelPermission.'
+
+    def has_permission(self, request, view):
+        import pdb;pdb.set_trace()
+        perms = self.get_required_permissions(request.method, view.models)
+        return request.user.has_perms(perms)
+
+
+
 class Dummy(models.Model):
     job_type = models.CharField(max_length=300, null=False)
     object_id = models.CharField(max_length=300, null=False)
@@ -70,7 +128,12 @@ class DummyView(viewsets.ModelViewSet):
     serializer_class = DummySerializer
     lookup_field = 'slug'
     filter_backends = (DjangoFilterBackend,)
-    permission_classes = (DummyPermission, )
+    # permission_classes = (DummyPermissionTrue, DummyPermissionFalse)
+    # permission_classes = (DummyPermission, )
+    # permission_classes = (DummyPermissionGroup, )
+    # permission_classes = (DummyPermissionUsingHasObject, )
+    permission_classes = (DummyPermissionModelPermission, )
+    models = Dummy
 
     def create(self, request, *args, **kwargs):
         data = request.data
@@ -80,8 +143,3 @@ class DummyView(viewsets.ModelViewSet):
         if seriali.is_valid():
             instance = seriali.save()
             return JsonResponse(seriali.data)
-
-
-
-
-
