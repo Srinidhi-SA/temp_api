@@ -810,7 +810,7 @@ class Trainer(models.Model):
         config = self.get_config()
         print config
         return {
-            'variableSelection': config['variableSelection']
+            'variableSelection': config['variablesSelected']
         }
 
     def get_config_from_config(self):
