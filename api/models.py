@@ -808,6 +808,7 @@ class Trainer(models.Model):
 
     def make_config_for_colum_setting(self):
         config = self.get_config()
+        print config
         return {
             'variableSelection': config['variableSelection']
         }
