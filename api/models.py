@@ -793,10 +793,10 @@ class Trainer(models.Model):
 
         config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
 
-        try:
-            config['config']["COLUMN_SETTINGS"] = self.make_config_for_colum_setting()
-        except:
-            config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
+        # try:
+        config['config']["COLUMN_SETTINGS"] = self.make_config_for_colum_setting()
+        # except:
+        #     config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
 
         config['config']["DATA_SOURCE"] = self.dataset.get_datasource_info()
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
