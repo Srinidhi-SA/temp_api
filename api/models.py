@@ -1348,6 +1348,11 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
     ac = AccessFeedbackMessage()
     message_slug = get_message_slug(job)
     ac.delete_this_key(message_slug)
+    app_id = None
+    if 'score' == job_type:
+        app_id = instance.app_id
+    elif 'model' == job_type:
+        app_id = instance.app_id
     '''
     job_type = {
             "metadata": "metaData",
@@ -1369,7 +1374,8 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
             job_config=jobConfig,
             job_name=instance.name,
             message_slug=message_slug,
-            queue_name=queue_name
+            queue_name=queue_name,
+            app_id=app_id
         )
 
         job.url = job_return_data.get('application_id')
