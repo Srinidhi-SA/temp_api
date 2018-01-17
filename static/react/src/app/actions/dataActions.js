@@ -605,79 +605,7 @@ export function updateSelectedVariables(evt){
         }
         dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
     }
-    /*if(evt.target.className == "measure"){
-		//Calculate whether select all should be check or not
-		var meaChkBoxList = store.getState().datasets.measureChecked;
-		meaChkBoxList[evt.target.name] = evt.target.checked;
-		var isAllChecked = meaChkBoxList.filter(function(c) {
-			return c;
-		}).length === meaChkBoxList.length;
-
-		if(evt.target.checked){
-			return {
-				type: "SELECTED_MEASURES",
-				variableName,
-				meaChkBoxList,
-				isAllChecked
-			}
-		}else{
-			return {
-				type: "UNSELECT_MEASURES",
-				variableName,
-				meaChkBoxList,
-				isAllChecked
-			}
-		}
-	}
-	else if(evt.target.className == "dimension"){
-		var dimChkBoxList = store.getState().datasets.dimensionChecked;
-		dimChkBoxList[evt.target.name] = evt.target.checked;
-		var isAllChecked = dimChkBoxList.filter(function(c) {
-			return c;
-		}).length === dimChkBoxList.length;
-		if(evt.target.checked){
-			return {
-				type: "SELECTED_DIMENSIONS",
-				variableName,
-				dimChkBoxList,
-				isAllChecked,
-
-			}
-		}else{
-			return {
-				type: "UNSELECT_DIMENSION",
-				variableName,
-				dimChkBoxList,
-				isAllChecked,
-			}
-		}
-	}
-	else if(evt.target.className == "timeDimension"){
-		var timeChkBoxList = store.getState().datasets.dateTimeChecked;
-		var index = evt.target.id.split("dt")[1];
-		for(var i =0;i<timeChkBoxList.length;i++){
-			if(i == index){
-				timeChkBoxList[i] = evt.target.checked;
-			}else{
-				timeChkBoxList[i] = false;
-			}
-		}
-		timeChkBoxList[evt.target.id.split("dt")[1]] = evt.target.checked;
-		if(evt.target.checked){
-			return {
-				type: "SELECTED_TIMEDIMENSION",
-				variableName,
-				timeChkBoxList
-			}else if(evt.target.className == "timeDimension"){
-		}else{
-			return {
-				type: "UNSELECT_TIMEDIMENSION",
-				variableName,
-				timeChkBoxList
-			}
-		}
-	}*/
-
+  
 }
 
 
@@ -1026,61 +954,6 @@ export function handleSelectAll(evt){
         }
         dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
     }
-
-    /*var dataTimeCount = 0;
-	if(store.getState().datasets.selectedTimeDimensions){
-		dataTimeCount = 1;
-	}
-	switch ( evt.target.id ) {
-	case "measure":
-		$("#measureSearch").val("");
-		var meaChkBoxList = store.getState().datasets.measureChecked;
-		meaChkBoxList = meaChkBoxList.map(function() {
-			return evt.target.checked
-		})
-		if(evt.target.checked){
-			let measures = store.getState().datasets.ImmutableMeasures;
-			return {
-				type: "SELECT_ALL_MEASURES",
-				measures,
-				meaChkBoxList,
-				dataTimeCount
-			}
-		}else{
-			return {
-				type: "UNSELECT_ALL_MEASURES",
-				meaChkBoxList,
-				dataTimeCount
-			}
-		}
-		break;
-	case "dimension":
-		var diaChkBoxList = store.getState().datasets.dimensionChecked;
-		diaChkBoxList = diaChkBoxList.map(function() {
-			return evt.target.checked
-		})
-		if(evt.target.checked){
-			let dimension = store.getState().datasets.ImmutableDimension;
-			return {
-				type: "SELECT_ALL_DIMENSION",
-				dimension,
-				diaChkBoxList,
-				dataTimeCount
-			}
-		}else{
-			return {
-				type: "UNSELECT_ALL_DIMENSION",
-				diaChkBoxList,
-				dataTimeCount
-			}
-		}
-
-		break;
-	case "datetime":
-
-		break;
-	}*/
-
 }
 
 
@@ -1238,7 +1111,7 @@ export function updateColumnStatus(dispatch,colSlug,colName,actionName,subAction
             break;
         }
     }
-    if(actionName != SET_VARIABLE && actionName != UNIQUE_IDENTIFIER && actionName != SET_POLARITY){
+    if(actionName != SET_VARIABLE && actionName != UNIQUE_IDENTIFIER && actionName != SET_POLARITY && actionName != IGNORE_SUGGESTION){
         isSubsetting = true;
     }
     dispatch(handleColumnActions(transformSettings,slug,isSubsetting))
