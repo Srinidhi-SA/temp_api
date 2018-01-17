@@ -119,7 +119,7 @@ export class SignalDocumentMode extends React.Component {
                   <div className="col-md-12">
                     <div className="panel panel-mAd">
                       <div className="panel-heading">
-                        <h2>{this.props.signal.name}					
+                        <h3 className="xs-mt-0">{this.props.signal.name}					
 							<div className="btn-toolbar pull-right">
 								<div className="btn-group">
 								<button type="button" className="btn btn-default" onClick={this.print.bind(this)} title="Print Document"><i className="fa fa-print"></i></button>
@@ -136,7 +136,7 @@ export class SignalDocumentMode extends React.Component {
 								{/*</Link>*/}
 								</div>
 							</div>
-						</h2>
+						</h3>
 						
                         <div className="clearfix"></div>
                       </div>

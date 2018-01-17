@@ -27,100 +27,100 @@ export function refreshDatasets(props){
     }
 }
 export function getDataList(pageNo) {
-    return (dispatch) => {
-        return fetchDataList(pageNo,getUserDetailsOrRestart.get().userToken,dispatch).then(([response, json]) =>{
-            if(response.status === 200){
-                dispatch(hideLoading())
-                dispatch(fetchDataSuccess(json))
-            }
-            else{
-                dispatch(fetchDataError(json))
-                dispatch(hideLoading())
-            }
-        })
-    }
+	return (dispatch) => {
+		return fetchDataList(pageNo,getUserDetailsOrRestart.get().userToken,dispatch).then(([response, json]) =>{
+			if(response.status === 200){
+				dispatch(hideLoading())
+				dispatch(fetchDataSuccess(json))
+			}
+			else{
+				dispatch(fetchDataError(json))
+				dispatch(hideLoading())
+			}
+		})
+	}
 }
 
 function fetchDataList(pageNo,token,dispatch) {
-    
-    console.log(token)
-    let search_element = store.getState().datasets.data_search_element;
-    let data_sorton =  store.getState().datasets.data_sorton;
-    let data_sorttype = store.getState().datasets.data_sorttype;
-    if(data_sorttype=='asc')
-        data_sorttype = ""
-            else if(data_sorttype=='desc')
-                data_sorttype="-"
-                    
-                    console.log(data_sorton+" "+data_sorttype)
-                    
-                    console.log(search_element)
-                    if(search_element!=""&&search_element!=null){
-                        //console.log("calling for search element!!")
-                        if((data_sorton!=""&& data_sorton!=null) && (data_sorttype!=null))
-                        {
-                            return fetch(API+'/api/datasets/?name='+search_element+'&sorted_by='+data_sorton+'&ordering='+data_sorttype+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
-                                method: 'get',
-                                headers: getHeader(token)
-                            }).then( response => Promise.all([response, response.json()]));
-                        }else{
-                            return fetch(API+'/api/datasets/?name='+search_element+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
-                                method: 'get',
-                                headers: getHeader(token)
-                            }).then( response => Promise.all([response, response.json()]));
-                        }
-                    }else if((data_sorton!=""&& data_sorton!=null) && (data_sorttype!=null)){
-                        dispatch(showLoading())
-                        return fetch(API+'/api/datasets/?sorted_by='+data_sorton+'&ordering='+data_sorttype+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
-                            method: 'get',
-                            headers: getHeader(token)
-                        }).then( response => Promise.all([response, response.json()]));
-                    }else{
-                        return fetch(API+'/api/datasets/?page_number='+pageNo+'&page_size='+PERPAGE+'',{
-                            method: 'get',
-                            headers: getHeader(token)
-                        }).then( response => Promise.all([response, response.json()]));
-                    }
-    
-    
+
+	console.log(token)
+	let search_element = store.getState().datasets.data_search_element;
+	let data_sorton =  store.getState().datasets.data_sorton;
+	let data_sorttype = store.getState().datasets.data_sorttype;
+	if(data_sorttype=='asc')
+		data_sorttype = ""
+			else if(data_sorttype=='desc')
+				data_sorttype="-"
+
+					console.log(data_sorton+" "+data_sorttype)
+
+					console.log(search_element)
+					if(search_element!=""&&search_element!=null){
+						//console.log("calling for search element!!")
+						if((data_sorton!=""&& data_sorton!=null) && (data_sorttype!=null))
+						{
+							return fetch(API+'/api/datasets/?name='+search_element+'&sorted_by='+data_sorton+'&ordering='+data_sorttype+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
+								method: 'get',
+								headers: getHeader(token)
+							}).then( response => Promise.all([response, response.json()]));
+						}else{
+						return fetch(API+'/api/datasets/?name='+search_element+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
+							method: 'get',
+							headers: getHeader(token)
+						}).then( response => Promise.all([response, response.json()]));
+					}
+					}else if((data_sorton!=""&& data_sorton!=null) && (data_sorttype!=null)){
+						dispatch(showLoading())
+						return fetch(API+'/api/datasets/?sorted_by='+data_sorton+'&ordering='+data_sorttype+'&page_number='+pageNo+'&page_size='+PERPAGE+'',{
+							method: 'get',
+							headers: getHeader(token)
+						}).then( response => Promise.all([response, response.json()]));
+					}else{
+						return fetch(API+'/api/datasets/?page_number='+pageNo+'&page_size='+PERPAGE+'',{
+							method: 'get',
+							headers: getHeader(token)
+						}).then( response => Promise.all([response, response.json()]));
+					}
+
+
 }
 
 function fetchDataError(json) {
-    return {
-        type: "DATA_LIST_ERROR",
-        json
-    }
+	return {
+		type: "DATA_LIST_ERROR",
+		json
+	}
 }
 export function fetchDataSuccess(doc){
-    var data = doc;
-    var current_page =  doc.current_page
-    return {
-        type: "DATA_LIST",
-        data,
-        current_page,
-    }
+	var data = doc;
+	var current_page =  doc.current_page
+	return {
+		type: "DATA_LIST",
+		data,
+		current_page,
+	}
 }
 //fetch stock dataset Preview
 export function getStockDataSetPreview(slug,interval) {
-    return (dispatch) => {
-        return fetchStockDataPreview(slug).then(([response, json]) =>{
-            if(response.status === 200){
-                console.log(json)
-                dispatch(fetchDataPreviewSuccess(json,interval,dispatch))
-            }
-            else{
-                dispatch(hideDULoaderPopup());
-                dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
-                dispatch(fetchDataPreviewError(json))
-            }
-        })
-    }
+	return (dispatch) => {
+		return fetchStockDataPreview(slug).then(([response, json]) =>{
+			if(response.status === 200){
+				console.log(json)
+				dispatch(fetchDataPreviewSuccess(json,interval,dispatch))
+			}
+			else{
+				dispatch(hideDULoaderPopup());
+				dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
+				dispatch(fetchDataPreviewError(json))
+			}
+		})
+	}
 }
 function fetchStockDataPreview(slug) {
-    return fetch(API+'/api/stockdataset/'+slug+'/',{
-        method: 'get',
-        headers: getHeader(getUserDetailsOrRestart.get().userToken)
-    }).then( response => Promise.all([response, response.json()]));
+	return fetch(API+'/api/stockdataset/'+slug+'/',{
+		method: 'get',
+		headers: getHeader(getUserDetailsOrRestart.get().userToken)
+	}).then( response => Promise.all([response, response.json()]));
 }
 export function getDataSetPreview(slug,interval) {
     return (dispatch) => {
@@ -135,7 +135,7 @@ export function getDataSetPreview(slug,interval) {
                 dispatch(fetchDataPreviewError(json))
             }
         }).catch(function(error){
-            
+
             dispatch(hideDULoaderPopup());
             bootbox.alert("Unable to connect to server. Check your connection please try again.")
         });
@@ -177,7 +177,7 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
         bootbox.alert("The uploaded file does not contain data in readable format. Please check the source file.")
         dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
         dispatch(clearLoadingMsg())
-        
+
         return {
             type: "DATA_PREVIEW_FOR_LOADER",
             dataPreview,
@@ -292,10 +292,10 @@ export function checkAllAnalysisSelected(){
         }
         dispatch(updateSelectAllAnlysis(flag));
     }
-    
+
 }
 export function selectedAnalysisList(evt,noOfColumnsToUse){
-    
+
     var totalAnalysisList = store.getState().datasets.dataSetAnalysisList;
     var prevAnalysisList = jQuery.extend(true, {}, store.getState().datasets.dataSetPrevAnalysisList);
     var analysisList = [];
@@ -314,7 +314,7 @@ export function selectedAnalysisList(evt,noOfColumnsToUse){
                 let name = trendSettings[i].name.toLowerCase();
                 if(name.indexOf("specific measure") != -1)
                     trendSettings[i].selectedMeasure = $("#specific-trend-measure").val();
-                
+
             }
         }
         else{
@@ -383,7 +383,7 @@ export function selectedAnalysisList(evt,noOfColumnsToUse){
                 break;
             }
         }
-        
+
     }
     //For top level analysis update like trend,prediction,association
     else {
@@ -414,7 +414,7 @@ export function selectedAnalysisList(evt,noOfColumnsToUse){
                 }
             }
         }
-        
+
         //For updating trend count and specific measure when trend is unchecked
         if(evt.target.value.indexOf("trend") != -1){
             if(store.getState().signals.getVarType != "measure"){
@@ -432,9 +432,9 @@ export function selectedAnalysisList(evt,noOfColumnsToUse){
                 }
             }
         }
-        
+
     }
-    
+
     if(store.getState().signals.getVarType == "measure"){
         totalAnalysisList.measures.analysis = analysisList
     }else{
@@ -483,12 +483,12 @@ export function selectAllAnalysisList(flag){
                         analysisList[i].noOfColumnsToUse[j].status = false;
                     }
                 }
-                
+
             }
         }
     }
-    
-    
+
+
     if(store.getState().signals.getVarType != "measure"){
         for(var i in trendSettings){
             if(!flag){
@@ -500,8 +500,8 @@ export function selectAllAnalysisList(flag){
             }
         }
     }
-    
-    
+
+
     if(store.getState().signals.getVarType == "measure"){
         totalAnalysisList.measures.analysis = analysisList
     }else{
@@ -523,36 +523,36 @@ export function unselectAllPossibleAnalysis(){
         type: "UNSELECT_All_ANALYSIS_TYPE",
         unselectAll
     }
-    
+
 }
 
 function updateList(slug,array){
     for(var i=0;i<array.length;i++){
         if(array[i].slug == slug){
-            array[i].selected = !array[i].selected;  
+            array[i].selected = !array[i].selected;
         }
-    } 
+    }
     return array;
 }
 function updateTimeDimList(slug,array,evt){
     for(var i=0;i<array.length;i++){
     if(array[i].slug == slug){
-        array[i].selected = evt.target.checked;  
+        array[i].selected = evt.target.checked;
     }else{
-        array[i].selected = !evt.target.checked;   
+        array[i].selected = !evt.target.checked;
     }
-} 
+}
 return array;
 }
 
 function getIsAllSelected(array){
     var isAllSelected = true;
-    
+
     for(var i=0;i<array.length;i++){
         isAllSelected = array[i].selected;
         if(!isAllSelected)break;
-    } 
-    
+    }
+
     return isAllSelected;
 }
 
@@ -576,7 +576,7 @@ export function updateSelectedVariables(evt){
         var dimFlag =  store.getState().datasets.dimensionAllChecked;
         var meaFlag = store.getState().datasets.measureAllChecked;
         var count = store.getState().datasets.selectedVariablesCount;
-        
+
         if(evt.target.className == "measure"){
             if(evt.target.name != ""){
                 dataSetDimensions  = updateList(varSlug,dataSetDimensions);
@@ -593,8 +593,8 @@ export function updateSelectedVariables(evt){
         else if(evt.target.className == "timeDimension"){
             dataSetTimeDimensions  = updateTimeDimList(varSlug,dataSetTimeDimensions,evt);
         }
-        
-        
+
+
         //Update selectAll checkbox and selected variables count when varaibles are checked/unchecked
         if(evt.target.className != "timeDimension"){
             if(evt.target.checked){
@@ -677,7 +677,7 @@ export function updateSelectedVariables(evt){
 			}
 		}
 	}*/
-    
+
 }
 
 
@@ -794,7 +794,7 @@ function deleteDatasetAPI(slug){
             deleted:true,
         }),
     }).then( response => Promise.all([response, response.json()]));
-    
+
 }
 
 
@@ -811,7 +811,7 @@ function showRenameDialogBox(slug,dialog,dispatch,name){
             <input className="form-control"  id="idRenameDataset" type="text" defaultValue={name}/>
             </div>
     )
-    
+
     dialog.show({
         title: 'Rename Dataset',
         body: customBody,
@@ -888,7 +888,7 @@ export function updateDatasetVariables(measures,dimensions,timeDimensions,possib
         prevAnalysisList,
         count,
         flag
-        
+
     }
 }
 
@@ -900,7 +900,7 @@ export function setDimensionSubLevels(selectedDimensionSubLevels){
 }
 
 export function  selectedDimensionSubLevel(dimensionSubLevel){
-    
+
     return {
         type: "SELECTED_DIMENSION_SUB_LEVEL",
         dimensionSubLevel
@@ -929,11 +929,11 @@ export function handleDVSearch(evt){
     }
         break;
     }
-    
+
 }
 export function handelSort(variableType,sortOrder){
     switch ( variableType ) {
-    
+
     case "measure":
         let measures = store.getState().datasets.dataSetMeasures.slice().sort(function(a,b) { return (a.name.toLowerCase() < b.name.toLowerCase()) ? -1 : 1;});
         if(sortOrder == "DESC" )
@@ -1002,18 +1002,18 @@ export function handleSelectAll(evt){
         var dimFlag =  store.getState().datasets.dimensionAllChecked;
         var meaFlag = store.getState().datasets.measureAllChecked;
         var count = store.getState().datasets.selectedVariablesCount;
-        
+
         if(varType == "measure"){
             dataSetMeasures  = updateSelectedKey(dataSetMeasures,evt.target.checked);
             meaFlag = evt.target.checked;
-            
+
         }else if(varType == "dimension"){
             dataSetDimensions  = updateSelectedKey(dataSetDimensions,evt.target.checked);
             dimFlag = evt.target.checked
         }
-        
-        
-      
+
+
+
         if(evt.target.checked && varType == "measure" ){
             count=count+dataSetMeasures.length;
         }else if(!evt.target.checked && varType == "measure"){
@@ -1026,7 +1026,7 @@ export function handleSelectAll(evt){
         }
         dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
     }
-    
+
     /*var dataTimeCount = 0;
 	if(store.getState().datasets.selectedTimeDimensions){
 		dataTimeCount = 1;
@@ -1080,16 +1080,16 @@ export function handleSelectAll(evt){
 
 		break;
 	}*/
-    
+
 }
 
 
 export function updateSubSetting(updatedSubSetting){
-    
+
     return {
         type: "UPDATE_SUBSETTING",
         updatedSubSetting
-        
+
     }
 }
 
@@ -1101,7 +1101,7 @@ export function renameMetaDataColumn(dialog,colName,colSlug,dispatch,actionName)
             <input className="form-control"  id="idRenameMetaCloumn" type="text" defaultValue={colName}/>
             </div>
     )
-    
+
     dialog.show({
         title: 'Rename Column',
         body: customBody,
@@ -1110,7 +1110,7 @@ export function renameMetaDataColumn(dialog,colName,colSlug,dispatch,actionName)
                   Dialog.OKAction(() => {
                       updateColumnName(dispatch,colSlug,$("#idRenameMetaCloumn").val());
                       updateColumnStatus(dispatch,colSlug,$("#idRenameMetaCloumn").val(),actionName);
-                      
+
                   })
                   ],
                   bsSize: 'medium',
@@ -1157,7 +1157,7 @@ export function handleColumnClick(dialog,actionName,colSlug,colName,subActionNam
                 updateUniqueIdentifierColumn(dispatch,actionName,colSlug,colStatus);
                 $(".cst_table").find("thead").find("."+colSlug).first().find("a").removeClass("text-primary");
             }
-            
+
         }else {
             updateColumnStatus(dispatch,colSlug,colName,actionName,subActionName);
         }
@@ -1192,7 +1192,7 @@ export function updateColumnStatus(dispatch,colSlug,colName,actionName,subAction
         if(transformSettings[i].slug == colSlug){
             for(var j=0;j<transformSettings[i].columnSetting.length;j++){
                 if(transformSettings[i].columnSetting[j].actionName == actionName){
-                    
+
                     if(actionName == RENAME){
                         transformSettings[i].columnSetting[j].newName = colName;
                         transformSettings[i].columnSetting[j].status=true;
@@ -1229,10 +1229,10 @@ export function updateColumnStatus(dispatch,colSlug,colName,actionName,subAction
                             }
                             break;
                         }
-                        
+
                     }
-                    
-                    
+
+
                 }
             }//end of for columnsettings
             break;
@@ -1244,7 +1244,7 @@ export function updateColumnStatus(dispatch,colSlug,colName,actionName,subAction
     dispatch(handleColumnActions(transformSettings,slug,isSubsetting))
     dispatch(updateVLPopup(false));
     //dispatch(updateTransformSettings(transformSettings));
-    
+
 }
 
 function updateUniqueIdentifierColumn(dispatch,actionName,colSlug,isChecked){
@@ -1298,7 +1298,7 @@ export function handleColumnActions(transformSettings,slug,isSubsetting) {
                 dispatch(vaiableSelectionUpdate(true));
             }
             else{
-                
+
                 dispatch(fetchDataPreviewError(json));
                 dispatch(vaiableSelectionUpdate(false));
                 dispatch(hideLoading());
@@ -1329,7 +1329,7 @@ export function fetchDataValidationSuccess(uiMetaData,isSubsetting){
     var prevDataPreview = store.getState().datasets.dataPreview;
     prevDataPreview.meta_data.uiMetaData = uiMetaData;
     var dataPreview = Object.assign({}, prevDataPreview);
-    
+
     return{
         type: "DATA_VALIDATION_PREVIEW",
         dataPreview,
@@ -1344,7 +1344,7 @@ export function addComponents(colSlug){
         var transformSettings = store.getState().datasets.dataTransformSettings.slice();
         var dataColumnRemoveValues = [];
         var dataColumnReplaceValues = [];
-        
+
         for(var i =0;i<transformSettings.length;i++){
             if(transformSettings[i].slug == colSlug){
                 for(var j=0;j<transformSettings[i].columnSetting.length;j++){
@@ -1359,26 +1359,26 @@ export function addComponents(colSlug){
                             }
                         }
                     }
-                    
+
                 }//end of for columnsettings
                 break;
             }
         }
-        
+
         if(dataColumnRemoveValues.length == 0){
             dataColumnRemoveValues.push({"id":1,"name":"remove1","valueToReplace":"","replacedValue":"","replaceType":"contains"});
             dataColumnRemoveValues.push({"id":2,"name":"remove2","valueToReplace":"","replacedValue":"","replaceType":"contains"});
-            
+
         }if(dataColumnReplaceValues.length == 0){
             dataColumnReplaceValues.push({"replaceId":1,"name":"replace1","valueToReplace":"","replacedValue":"","replaceType":"contains"});
             dataColumnReplaceValues.push({"replaceId":2,"name":"replace2","valueToReplace":"","replacedValue":"","replaceType":"contains"});
         }
-        
+
         dispatch(updateColumnReplaceValues(dataColumnReplaceValues))
         dispatch(updateColumnRemoveValues(dataColumnRemoveValues))
-        
+
     }
-    
+
 }
 export function setReplacementType(){
     var dataColumnReplaceValues = store.getState().datasets.dataSetColumnReplaceValues.slice();
@@ -1405,32 +1405,32 @@ export function addMoreComponentsToReplace(editType){
             if(dataColumnRemoveValues.length > 0){
                 var max = dataColumnRemoveValues.reduce(function(prev, current) {
                     return (prev.id > current.id) ? prev : current
-                            
+
                 });
                 let length = max.id+1;
                 dataColumnRemoveValues.push({"id":length,"name":"remove"+length,"valueToReplace":"","replacedValue":"","replaceType":"contains"});
-                
+
             }else{
                 dataColumnRemoveValues.push({"id":1,"name":"remove1","valueToReplace":"","replacedValue":"","replaceType":"contains"});
             }
-            
+
             dispatch(updateColumnRemoveValues(dataColumnRemoveValues))
         }else{
             var dataColumnReplaceValues = store.getState().datasets.dataSetColumnReplaceValues.slice();
             if(dataColumnReplaceValues.length > 0){
                 var max = dataColumnReplaceValues.reduce(function(prev, current) {
                     return (prev.replaceId > current.replaceId) ? prev : current
-                            
+
                 });
                 let length = max.replaceId+1;
                 dataColumnReplaceValues.push({"replaceId":length,"name":"replace"+length,"valueToReplace":"","replacedValue":"","replaceType":"contains"});
             }else{
                 dataColumnReplaceValues.push({"replaceId":1,"name":"replace1","valueToReplace":"","replacedValue":"","replaceType":"contains"});
             }
-            
+
             dispatch(updateColumnReplaceValues(dataColumnReplaceValues))
         }
-        
+
     }
 }
 export function removeComponents(data,editType){
@@ -1468,7 +1468,7 @@ export function handleInputChange(event){
                     dataColumnRemoveValues[i].replaceType = event.target.value;
                     break;
                 }
-                
+
             }
         }
         dispatch(updateColumnRemoveValues(dataColumnRemoveValues))

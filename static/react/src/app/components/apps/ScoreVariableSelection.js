@@ -71,12 +71,12 @@ export class ScoreVariableSelection extends React.Component {
                 <Form onSubmit={this.createScore.bind(this)}>
                 <FormGroup role="form">
                 <div className="row">			          
-                <div className="col-lg-12">
+                 
                 <div className="form-group">
                 <div className="col-lg-2"><label>I want to analyse</label></div>
                 <div className="col-lg-4"> {renderSelectBox}</div>
                 </div>
-                </div>{/*<!-- /.col-lg-4 -->*/}
+                 {/*<!-- /.col-lg-4 -->*/}
                 </div>
                 
                 <DataVariableSelection/>

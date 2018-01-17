@@ -57,20 +57,20 @@ class SignalView(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
 
-        try:
-            data = request.data
-            data = convert_to_string(data)
-            data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
-            data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
-            serializer = InsightSerializer(data=data)
-            if serializer.is_valid():
-                signal_object = serializer.save()
-                signal_object.create(advanced_settings=data.get('advanced_settings', {}))
-                return Response(serializer.data)
+        # try:
+        data = request.data
+        data = convert_to_string(data)
+        data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
+        data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
+        serializer = InsightSerializer(data=data)
+        if serializer.is_valid():
+            signal_object = serializer.save()
+            signal_object.create(advanced_settings=data.get('advanced_settings', {}))
+            return Response(serializer.data)
 
-            return creation_failed_exception(serializer.errors)
-        except Exception as error:
-            creation_failed_exception(error)
+        return creation_failed_exception(serializer.errors)
+        # except Exception as error:
+        #     creation_failed_exception(error)
 
     def update(self, request, *args, **kwargs):
         data = request.data
@@ -130,20 +130,20 @@ class TrainerView(viewsets.ModelViewSet):
     pagination_class = CustomPagination
 
     def create(self, request, *args, **kwargs):
-        try:
-            data = request.data
-            data = convert_to_string(data)
-            data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
-            data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
-            serializer = TrainerSerlializer(data=data)
-            if serializer.is_valid():
-                trainer_object = serializer.save()
-                trainer_object.create()
-                return Response(serializer.data)
+        # try:
+        data = request.data
+        data = convert_to_string(data)
+        data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
+        data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
+        serializer = TrainerSerlializer(data=data)
+        if serializer.is_valid():
+            trainer_object = serializer.save()
+            trainer_object.create()
+            return Response(serializer.data)
 
-            return creation_failed_exception(serializer.errors)
-        except Exception as error:
-            creation_failed_exception(error)
+        return creation_failed_exception(serializer.errors)
+        # except Exception as error:
+        #     creation_failed_exception(error)
 
     def update(self, request, *args, **kwargs):
         data = request.data
@@ -260,28 +260,42 @@ class ScoreView(viewsets.ModelViewSet):
     def download(self, request, slug=None):
         instance = self.get_object()
         from django.conf import settings
-        hadoop_base_file_path = settings.mAdvisorScores
-
-        download_path = hadoop_base_file_path + instance.slug + '/data.csv'
-        save_file_to = instance.get_local_file_path()
-
-        from api.lib.fab_helper import get_file
-
-        get_file(
-            from_file=download_path,
-            to_dir=save_file_to
-        )
-
-        filepath = save_file_to
+        base_file_path = settings.SCORES_SCRIPTS_FOLDER
+        download_path = base_file_path + instance.slug + '/data.csv'
+        # save_file_to = instance.get_local_file_path()
+        #
+        # from api.lib.fab_helper import get_file
+        #
+        # get_file(
+        #     from_file=download_path,
+        #     to_dir=save_file_to
+        # )
+        #
+        # filepath = save_file_to
+        filepath = download_path
 
         from django.http import HttpResponse
         import os
-
+        download_csv = request.query_params.get('download_csv', None)
+        count = request.query_params.get('count', 100)
+        try:
+            count = int(count)
+        except:
+            count = 100
         if download_path is not None:
             with open(filepath, 'rb') as f:
-                response = HttpResponse(f.read(), content_type='application/csv')
-                response['Content-Disposition'] = 'inline; filename=' + os.path.basename(filepath)
-                return response
+
+                if download_csv is None:
+                    response = HttpResponse(f.read(), content_type='application/csv')
+                    response['Content-Disposition'] = 'inline; filename=' + os.path.basename(instance.name)
+                    return response
+                else:
+                    csv_text = f.read()
+                    csv_list = csv_text.split('\n')
+                    return JsonResponse({
+                        'Message': 'Success',
+                        'csv_data': csv_list[:count]
+                    })
         else:
             return JsonResponse({'result': 'failed to download'})
 
@@ -705,8 +719,6 @@ from django.views.decorators.csrf import csrf_exempt
 
 @csrf_exempt
 def set_result(request, slug=None):
-    print "Welcome to API."
-    print "So you wanna write."
     job = Job.objects.get(slug=slug)
 
     if not job:
@@ -717,13 +729,7 @@ def set_result(request, slug=None):
     elif isinstance(results, dict):
         results = json.dumps(results)
         job.results = results
-
-    print "data----------->"
-    print request.body
-
     job.save()
-    print "Data has been saved to job table."
-
     if "status=failed" in request.body:
         results = {'error_message': 'Failed'}
         results = write_into_databases(
@@ -779,12 +785,12 @@ def write_into_databases(job_type, object_slug, results):
                 data["chartData"]["table_c3"] = []
 
         results['columnData'] = columnData
-        results['possibleAnalysis'] = settings.ANALYSIS_FOR_TARGET_VARIABLE
+        # results['possibleAnalysis'] = settings.ANALYSIS_FOR_TARGET_VARIABLE
         da = []
         for d in results.get('sampleData'):
             da.append(map(str, d))
         results['sampleData'] = da
-        results["modified"] = False
+        # results["modified"] = False
 
         dataset_object.meta_data = json.dumps(results)
         dataset_object.analysis_done = True
@@ -854,7 +860,6 @@ def write_into_databases(job_type, object_slug, results):
         return results
     else:
         print "No where to write"
-    print "written to the database."
 
 
 def chart_changes_in_metadata_chart(chart_data):
@@ -877,7 +882,6 @@ def chart_changes_in_metadata_chart(chart_data):
 @csrf_exempt
 def random_test_api(request):
     import json
-    print "Welcome to Random Test API."
     data = json.loads(request.body)
     data = add_slugs(data)
 
@@ -908,7 +912,6 @@ def add_slugs(results):
 def convert_chart_data_to_beautiful_things(data):
     from api import helper
     for card in data:
-        print card["dataType"]
         if card["dataType"] == "c3Chart":
             chart_raw_data = card["data"]
             # function
@@ -1016,7 +1019,13 @@ def get_info(request):
         return chart_data
 
     def get_html_template():
-        return """<p> Your maximum file upload size is <b>5 GB</b> and maximum number of columns allowed in your data set is 50 columns."""
+        '''
+        Maximum File Upload Limit: 5 GB
+        Maximum Column Limit : 50
+        :return:
+        '''
+
+        return """<p> Maximum File Upload Limit: <b>5 GB</b></p> <p>Maximum Column Limit : <b>50</b></p>"""
 
     used_data_size = get_total_size(user)
 
@@ -4711,7 +4720,6 @@ def set_pmml(request, slug=None):
         return JsonResponse({"message": "Failed"})
     data = request.body
     data = json.loads(data)
-    print "keys ", data.keys()
     from api.redis_access import AccessFeedbackMessage
     from helper import generate_pmml_name
     ac = AccessFeedbackMessage()
@@ -4746,18 +4754,22 @@ def set_job_reporting(request, slug=None, report_name=None):
         return JsonResponse({'result': 'Failed'})
     new_error = request.body
     error_log = json.loads(job.error_report)
+    json_formatted_new_error = None
     if isinstance(new_error, str) or isinstance(new_error, unicode):
         json_formatted_new_error = json.loads(new_error)
     elif isinstance(new_error, dict):
         json_formatted_new_error = new_error
 
-    if report_name in error_log:
-        error_log[report_name].append(json_formatted_new_error)
+    if json_formatted_new_error is None:
+        pass
     else:
-        error_log[report_name] = [json_formatted_new_error]
+        if report_name in error_log:
+            error_log[report_name].append(json_formatted_new_error)
+        else:
+            error_log[report_name] = [json_formatted_new_error]
 
-    job.error_report = json.dumps(error_log)
-    job.save()
+        job.error_report = json.dumps(error_log)
+        job.save()
 
     return JsonResponse({'messgae':'error reported.'})
 
@@ -4852,25 +4864,42 @@ def get_metadata_for_mlscripts(request, slug=None):
 @csrf_exempt
 def get_score_data_and_return_top_n(request):
     url = request.GET['url']
-    count = request.GET['count']
-    if count is None:
-        count = 100
-    try:
-        if int(count) < 10:
-            count = 100
-        else:
-            count = int(count)
-    except:
-        count = 100
-    import requests
-    data = requests.get(url)
-    text_data = data.text
-    csv_data = text_data.split('\n')
+    download_csv = request.GET['download_csv']
 
-    return JsonResponse({
-        'Message': 'Success',
-        'csv_data': csv_data[:count]
-    })
+    from django.conf import settings
+    base_file_path = settings.SCORES_SCRIPTS_FOLDER
+    download_path = base_file_path + url + '/data.csv'
+    from django.http import HttpResponse
+    import os
+
+    instance = Score.objects.get(slug=url)
+
+    with open(download_path, 'rb') as fp:
+
+        if download_csv == 'true':
+            response = HttpResponse(fp.read(), content_type='application/csv')
+            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(instance.name) + '.csv'
+            return response
+        else:
+            count = request.GET['count']
+            if count is None:
+                count = 100
+            try:
+                if int(count) < 10:
+                    count = 100
+                else:
+                    count = int(count)
+            except:
+                count = 100
+
+            csv_text = fp.read()
+            csv_list = csv_text.split('\n')
+            return JsonResponse({
+                'Message': 'Success',
+                'csv_data': csv_list[:count]
+            })
+
+
 
 
 @api_view(['GET'])

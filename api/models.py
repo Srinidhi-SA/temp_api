@@ -101,12 +101,11 @@ class Job(models.Model):
 
     def update_status(self):
         import yarn_api_client
-        ym = yarn_api_client.resource_manager.ResourceManager(address=settings.YARN.get("host"),
-                                                              port=settings.YARN.get("port"),
-                                                              timeout=settings.YARN.get("timeout"))
-        app_status = ym.cluster_application(self.url)
         try:
-            print app_status
+            ym = yarn_api_client.resource_manager.ResourceManager(address=settings.YARN.get("host"),
+                                                                  port=settings.YARN.get("port"),
+                                                                  timeout=settings.YARN.get("timeout"))
+            app_status = ym.cluster_application(self.url)
             self.status = app_status.data['app']["state"]
             self.save()
         except Exception as err:
@@ -208,8 +207,6 @@ class Dataset(models.Model):
         )
         jobConfig = self.add_transformation_settings_to_config(jobConfig=jobConfig,
                                                                transformation_settings=transformation_settings)
-        print jobConfig
-        print "Dataset realted config generated."
 
         if inputfile:
             jobConfig = self.add_inputfile_outfile_to_config(
@@ -245,8 +242,6 @@ class Dataset(models.Model):
     def add_to_job(self):
 
         jobConfig = self.generate_config()
-        print jobConfig
-        print "Dataset realted config genarated."
 
         job = job_submission(
             instance=self,
@@ -265,7 +260,6 @@ class Dataset(models.Model):
     def add_subsetting_to_config(self, filter_subsetting):
 
         jobConfig = self.generate_config()
-        print jobConfig
         jobConfig["config"]["FILTER_SETTINGS"] = filter_subsetting
 
         return jobConfig
@@ -326,7 +320,6 @@ class Dataset(models.Model):
                 row = [self.clean_restriced_chars(item) for item in row]
                 if i == 0:
                     cleaned_header = self.clean_column_names(row)
-                    print cleaned_header
                 else:
                     CLEAN_DATA.append(row)
 
@@ -453,7 +446,6 @@ class Dataset(models.Model):
         }
 
     def get_config(self):
-        import json
         config = json.loads(self.meta_data)
         if config is None:
             return {}
@@ -567,8 +559,6 @@ class Insight(models.Model):
     def add_to_job(self, *args, **kwargs):
 
         jobConfig = self.generate_config(*args, **kwargs)
-        print "Dataset realted config genarated."
-        print jobConfig
 
         job = job_submission(
             instance=self,
@@ -590,7 +580,11 @@ class Insight(models.Model):
         }
         advanced_settings = kwargs.get('advanced_settings')
         config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings(advanced_settings=advanced_settings)
-        config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
+        #
+        try:
+            config['config']["COLUMN_SETTINGS"] = self.make_config_for_colum_setting()
+        except:
+            config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
         config['config']["DATA_SOURCE"] = self.dataset.get_datasource_info()
 
         if 'advanced_settings' in kwargs:
@@ -600,14 +594,35 @@ class Insight(models.Model):
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
         # config['config']["META_HELPER"] = self.create_configuration_meta_data()
 
-        import json
         self.config = json.dumps(config)
         self.save()
         return config
 
     def get_config(self):
-        import json
         return json.loads(self.config)
+
+    def make_config_for_colum_setting(self):
+        config = self.get_config()
+        return {
+            'variableSelection': config['variableSelection']
+        }
+
+    def create_configuration_column_settings(self):
+        analysis_type = [self.type]
+        result_column = [self.target_column]
+
+        ret = {
+            'result_column': result_column,
+            'analysis_type': analysis_type,
+            'date_format': None,
+        }
+
+        get_config_from_config = self.get_config_from_config()
+        meta_data_related_config = self.dataset.common_config()
+
+        ret.update(get_config_from_config)
+        ret.update(meta_data_related_config)
+        return ret
 
     def get_config_from_config(self):
         config = json.loads(self.config)
@@ -642,14 +657,6 @@ class Insight(models.Model):
             'Dimension vs. Dimension',
             'Trend'
         ]
-        # config = json.loads(self.config)
-        # script_to_run = config.get('possibleAnalysis', default_scripts_to_run)
-        # for index, value in enumerate(script_to_run):
-        #     if value == 'Trend Analysis':
-        #         script_to_run[index] = 'Trend'
-        #
-        # if script_to_run is [] or script_to_run is "":
-        #     script_to_run = default_scripts_to_run
 
         from django.conf import settings
         REVERSE_ANALYSIS_LIST = settings.REVERSE_ANALYSIS_LIST
@@ -669,37 +676,6 @@ class Insight(models.Model):
             'metadata': self.dataset.get_metadata_url_config()
         }
 
-    def create_configuration_column_settings(self):
-        analysis_type = [self.type]
-        result_column = [self.target_column]
-
-        ret = {
-            'result_column': result_column,
-            'analysis_type': analysis_type,
-            'date_format': None,
-        }
-
-        get_config_from_config = self.get_config_from_config()
-        meta_data_related_config = self.dataset.common_config()
-
-        ret.update(get_config_from_config)
-        ret.update(meta_data_related_config)
-        return ret
-        # return {
-        #     "analysis_type": ["master"],
-        #     "result_column": "",
-        #     "polarity": "",
-        #     "consider_columns": "",
-        #     "consider_columns_type": "",
-        #     "date_columns": "",
-        #     "date_format": "",
-        #     "ignore_column_suggestions": "",
-        #     "utf8_columns": "",
-        #     "measure_column_filter": "",
-        #     "dimension_column_filter": "",
-        #     "measure_suggestions": ""
-        # }
-
     def create_configuration_filter_settings(self):
         return {}
 
@@ -714,17 +690,40 @@ class Insight(models.Model):
                 temp_list.append(item)
         return temp_list
 
+    def get_variable_details_from_variable_selection(self):
+        config = self.get_config()
+        COLUMN_SETTINGS = config['config']['COLUMN_SETTINGS']
+        variableSelection = COLUMN_SETTINGS.get('variableSelection')
+
+        variable_selected = []
+        analysis_type = []
+
+        for variables in variableSelection:
+            if 'selected' in variables:
+                if variables['selected'] is True:
+                    variable_selected.append(variables['name'])
+                    analysis_type.append(variables['columnType'])
+                    break
+
+        return {
+            'variable selected': variable_selected,
+            'variable type': analysis_type
+        }
+
     def get_brief_info(self):
         brief_info = dict()
         config = self.get_config()
         config = config.get('config')
         if config is not None:
             if 'COLUMN_SETTINGS' in config:
-                column_settings = config['COLUMN_SETTINGS']
-                brief_info.update({
-                    'variable selected': column_settings.get('result_column')[0],
-                    'variable type': column_settings.get('analysis_type')[0]
-                })
+                try:
+                    brief_info.update(self.get_variable_details_from_variable_selection())
+                except:
+                    column_settings = config['COLUMN_SETTINGS']
+                    brief_info.update({
+                        'variable selected': column_settings.get('result_column')[0],
+                        'variable type': column_settings.get('analysis_type')[0]
+                    })
 
             if 'FILE_SETTINGS' in config:
                 file_setting = config['FILE_SETTINGS']
@@ -793,15 +792,26 @@ class Trainer(models.Model):
         }
 
         config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
-        config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
+
+        # try:
+        config['config']["COLUMN_SETTINGS"] = self.make_config_for_colum_setting()
+        # except:
+        #     config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
+
         config['config']["DATA_SOURCE"] = self.dataset.get_datasource_info()
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
         # config['config']["META_HELPER"] = self.create_configuration_meta_data()
 
-        import json
         self.config = json.dumps(config)
         self.save()
         return config
+
+    def make_config_for_colum_setting(self):
+        config = self.get_config()
+        print config
+        return {
+            'variableSelection': config['variablesSelected']
+        }
 
     def get_config_from_config(self):
         config = json.loads(self.config)
@@ -859,7 +869,6 @@ class Trainer(models.Model):
 
     def add_to_job(self, *args, **kwargs):
         jobConfig = self.generate_config(*args, **kwargs)
-        print "Trainer realted config genarated."
 
         job = job_submission(
             instance=self,
@@ -875,8 +884,24 @@ class Trainer(models.Model):
         self.save()
 
     def get_config(self):
-        import json
         return json.loads(self.config)
+
+    def get_variable_details_from_variable_selection(self):
+        config = self.get_config()
+        COLUMN_SETTINGS = config['config']['COLUMN_SETTINGS']
+        variableSelection = COLUMN_SETTINGS.get('variableSelection')
+
+        variable_selected = []
+
+        for variables in variableSelection:
+            if 'selected' in variables:
+                if variables['selected'] is True:
+                    variable_selected.append(variables['name'])
+                    break
+
+        return {
+            'variable selected': variable_selected
+        }
 
     def get_brief_info(self):
         brief_info = dict()
@@ -884,10 +909,13 @@ class Trainer(models.Model):
         config = config.get('config')
         if config is not None:
             if 'COLUMN_SETTINGS' in config:
-                column_settings = config['COLUMN_SETTINGS']
-                brief_info.update({
-                    'variable selected': column_settings.get('result_column')[0]
-                })
+                try:
+                    brief_info.update(self.get_variable_details_from_variable_selection())
+                except:
+                    column_settings = config['COLUMN_SETTINGS']
+                    brief_info.update({
+                        'variable selected': column_settings.get('result_column')[0]
+                    })
 
             if 'FILE_SETTINGS' in config:
                 file_setting = config['FILE_SETTINGS']
@@ -970,7 +998,6 @@ class Score(models.Model):
     def add_to_job(self, *args, **kwargs):
 
         jobConfig = self.generate_config(*args, **kwargs)
-        print "Score realted config genarated."
 
         job = job_submission(
             instance=self,
@@ -996,7 +1023,6 @@ class Score(models.Model):
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
         # config['config']["META_HELPER"] = self.create_configuration_meta_data()
 
-        import json
         self.config = json.dumps(config)
         self.save()
         return config
@@ -1278,9 +1304,6 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
         jobConfig = json.loads(instance.config)
     job.config = json.dumps(jobConfig)
     job.save()
-
-    print "Job entry created in db. Now going to submit job to job server."
-
     queue_name = None
     try:
         data_size = None
@@ -1292,7 +1315,6 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
         queue_name = get_queue_to_use(job_type=job_type, data_size=data_size)
     except Exception as e:
         print e
-        print "ignoring the exception and continue"
 
     if not queue_name:
         queue_name = "default"
@@ -1320,7 +1342,6 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
             message_slug=get_message_slug(job),
             queue_name=queue_name
         )
-        print "Job submitted."
 
         job.url = job_return_data.get('application_id')
         job.command_array = json.dumps(job_return_data.get('command_array'))
@@ -1332,11 +1353,8 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
         job.config = json.dumps(readable_job_config)
         job.save()
     except Exception as exc:
-        print "#" * 100
-        print "Unable to submit job. Could be some issue with job server please check"
-        print "#" * 100
         print exc
-        send_alert_through_email(exc)
+        # send_alert_through_email(exc)
         return None
 
     return job
@@ -1753,2052 +1771,6 @@ class SaveAnyData(models.Model):
         self.data = json.dumps(json_data)
         self.save()
         return True
-
-
-sample_stockdataset_data = {
-    "listOfNodes": [
-        {
-            "listOfNodes": [
-                {
-                    "listOfNodes": [
-
-                    ],
-                    "listOfCards": [
-                        {
-                            "name": "Impact on Elapsed Day",
-                            "cardType": "normal",
-                            "cardData": [
-                                {
-                                    "dataType": "html",
-                                    "data": "<h3>Elapsed Day: Impact of Market Route on Elapsed Day</h3>"
-                                },
-                                {
-                                    "dataType": "c3Chart",
-                                    "data": {
-                                        "chart_c3": {
-                                            "bar": {
-                                                "width": {
-                                                    "ratio": 0.5
-                                                }
-                                            },
-                                            "point": None,
-                                            "color": {
-                                                "pattern": [
-                                                    "#0fc4b5",
-                                                    "#005662",
-                                                    "#148071",
-                                                    "#6cba86",
-                                                    "#bcf3a2"
-                                                ]
-                                            },
-                                            "tooltip": {
-                                                "show": True,
-                                                "format": {
-                                                    "title": ".2s"
-                                                }
-                                            },
-                                            "padding": {
-                                                "top": 40
-                                            },
-                                            "grid": {
-                                                "y": {
-                                                    "show": True
-                                                },
-                                                "x": {
-                                                    "show": True
-                                                }
-                                            },
-                                            "subchart": None,
-                                            "axis": {
-                                                "y": {
-                                                    "tick": {
-                                                        "count": 7,
-                                                        "outer": False,
-                                                        "multiline": True,
-                                                        "format": ".2s"
-                                                    },
-                                                    "label": {
-                                                        "text": "Total Elapsed Day",
-                                                        "position": "outer-middle"
-                                                    }
-                                                },
-                                                "x": {
-                                                    "height": 90,
-                                                    "tick": {
-                                                        "rotate": -45,
-                                                        "multiline": False,
-                                                        "fit": False,
-                                                        "format": ".2s"
-                                                    },
-                                                    "type": "category",
-                                                    "label": {
-                                                        "text": "Market Route",
-                                                        "position": "outer-center"
-                                                    }
-                                                },
-                                                "y2": {
-                                                    "show": True,
-                                                    "tick": {
-                                                        "count": 7,
-                                                        "multiline": True,
-                                                        "format": ".2s"
-                                                    },
-                                                    "label": {
-                                                        "text": "Average Elapsed Day",
-                                                        "position": "outer-middle"
-                                                    }
-                                                }
-                                            },
-                                            "data": {
-                                                "x": "dimension",
-                                                "axes": {
-                                                    "average": "y2"
-                                                },
-                                                "type": "bar",
-                                                "columns": [
-                                                    [
-                                                        "average",
-                                                        74.9746835443038,
-                                                        59.375,
-                                                        74.06371191135734,
-                                                        77.50344530577088,
-                                                        57.624663677130044
-                                                    ],
-                                                    [
-                                                        "total",
-                                                        5923.0,
-                                                        475.0,
-                                                        26737.0,
-                                                        179963.0,
-                                                        128503.0
-                                                    ],
-                                                    [
-                                                        "dimension",
-                                                        "Telesales",
-                                                        "Telecoverage",
-                                                        "Other",
-                                                        "Fields Sales",
-                                                        "Reseller"
-                                                    ]
-                                                ]
-                                            },
-                                            "legend": {
-                                                "show": True
-                                            },
-                                            "size": {
-                                                "height": 340
-                                            }
-                                        },
-                                        "yformat": ".2s",
-                                        "y2format": ".2s",
-                                        "table_c3": [
-                                            [
-                                                "average",
-                                                74.9746835443038,
-                                                59.375,
-                                                74.06371191135734,
-                                                77.50344530577088,
-                                                57.624663677130044
-                                            ],
-                                            [
-                                                "total",
-                                                5923.0,
-                                                475.0,
-                                                26737.0,
-                                                179963.0,
-                                                128503.0
-                                            ],
-                                            [
-                                                "dimension",
-                                                "Telesales",
-                                                "Telecoverage",
-                                                "Other",
-                                                "Fields Sales",
-                                                "Reseller"
-                                            ]
-                                        ],
-                                        "xdata": [
-                                            "Telesales",
-                                            "Telecoverage",
-                                            "Other",
-                                            "Fields Sales",
-                                            "Reseller"
-                                        ]
-                                    }
-                                },
-                                {
-                                    "dataType": "html",
-                                    "data": "<p class = \"txt-justify\"> The <b>top two Market Routes(Fields Sales and Reseller)</b> account for about <b>90%</b> of the total Elapsed Day. Being the <b>largest contributor</b>, total Elapsed Day from Fields Sales amounts to 179,963 that accounts for about <b>52.68% of the total Elapsed Day</b> and the average Elapsed Day is 77. On the other hand, bottom 3 contributes to just 9% of the total Elapsed Day. </p>"
-                                },
-                                {
-                                    "dataType": "html",
-                                    "data": "<h4>Key Factors influencing Elapsed Day from Fields Sales</h4>"
-                                },
-                                {
-                                    "dataType": "html",
-                                    "data": "<p class = \"txt-justify\"> High contribution of Elapsed Day from Market Route is characterized by the influence of key dimensions, such as Region, Deal Size Category, and Subgroup. For instance,Midwest, the <b>top performing Region account for 49.43%</b> of the overall Elapsed Day from Fields Sales. In terms of Deal Size Category, 100k to 250k(30.03%) and 50k to 100k(27.54%) account for 57% of the total Elapsed Day from Fields Sales. Among the Subgroup, Exterior Accessories has got the major chunk of Elapsed Day from Fields Sales, accounting for 18. </p>"
-                                }
-                            ],
-                            "slug": "impact-on-elapsed-day-gk4uk2a7d5",
-                            "cardWidth": 100
-                        }
-                    ],
-                    "name": "Market Route",
-                    "slug": "market-route-ke455kazyr"
-                },
-                {
-                    "listOfNodes": [
-
-                    ],
-                    "listOfCards": [
-                        {
-                            "name": "Impact on Elapsed Day",
-                            "cardType": "normal",
-                            "cardData": [
-                                {
-                                    "dataType": "html",
-                                    "data": "<h3>Elapsed Day: Impact of Opportunity Result on Elapsed Day</h3>"
-                                },
-                                {
-                                    "dataType": "c3Chart",
-                                    "data": {
-                                        "chart_c3": {
-                                            "bar": {
-                                                "width": 40
-                                            },
-                                            "point": None,
-                                            "color": {
-                                                "pattern": [
-                                                    "#0fc4b5",
-                                                    "#005662",
-                                                    "#148071",
-                                                    "#6cba86",
-                                                    "#bcf3a2"
-                                                ]
-                                            },
-                                            "tooltip": {
-                                                "show": True,
-                                                "format": {
-                                                    "title": ".2s"
-                                                }
-                                            },
-                                            "padding": {
-                                                "top": 40
-                                            },
-                                            "grid": {
-                                                "y": {
-                                                    "show": True
-                                                },
-                                                "x": {
-                                                    "show": True
-                                                }
-                                            },
-                                            "subchart": None,
-                                            "axis": {
-                                                "y": {
-                                                    "tick": {
-                                                        "count": 7,
-                                                        "outer": False,
-                                                        "multiline": True,
-                                                        "format": ".2s"
-                                                    },
-                                                    "label": {
-                                                        "text": "Total Elapsed Day",
-                                                        "position": "outer-middle"
-                                                    }
-                                                },
-                                                "x": {
-                                                    "height": 90,
-                                                    "tick": {
-                                                        "rotate": -45,
-                                                        "multiline": False,
-                                                        "fit": False,
-                                                        "format": ".2s"
-                                                    },
-                                                    "type": "category",
-                                                    "label": {
-                                                        "text": "Opportunity Result",
-                                                        "position": "outer-center"
-                                                    }
-                                                },
-                                                "y2": {
-                                                    "show": True,
-                                                    "tick": {
-                                                        "count": 7,
-                                                        "multiline": True,
-                                                        "format": ".2s"
-                                                    },
-                                                    "label": {
-                                                        "text": "Average Elapsed Day",
-                                                        "position": "outer-middle"
-                                                    }
-                                                }
-                                            },
-                                            "data": {
-                                                "x": "dimension",
-                                                "axes": {
-                                                    "average": "y2"
-                                                },
-                                                "type": "bar",
-                                                "columns": [
-                                                    [
-                                                        "average",
-                                                        73.98582333696838,
-                                                        52.718468468468465
-                                                    ],
-                                                    [
-                                                        "total",
-                                                        271380.0,
-                                                        70221.0
-                                                    ],
-                                                    [
-                                                        "dimension",
-                                                        "Loss",
-                                                        "Won"
-                                                    ]
-                                                ]
-                                            },
-                                            "legend": {
-                                                "show": True
-                                            },
-                                            "size": {
-                                                "height": 340
-                                            }
-                                        },
-                                        "yformat": ".2s",
-                                        "y2format": ".2s",
-                                        "table_c3": [
-                                            [
-                                                "average",
-                                                73.98582333696838,
-                                                52.718468468468465
-                                            ],
-                                            [
-                                                "total",
-                                                271380.0,
-                                                70221.0
-                                            ],
-                                            [
-                                                "dimension",
-                                                "Loss",
-                                                "Won"
-                                            ]
-                                        ],
-                                        "xdata": [
-                                            "Loss",
-                                            "Won"
-                                        ]
-                                    }
-                                },
-                                {
-                                    "dataType": "html",
-                                    "data": "<p class = \"txt-justify\"> Being the <b>largest contributor</b>, total Elapsed Day from Loss amounts to 271,380 that accounts for about <b>79.44% of the total Elapsed Day</b> and the average Elapsed Day is 73. </p>"
-                                },
-                                {
-                                    "dataType": "html",
-                                    "data": "<h4>Key Factors influencing Elapsed Day from Loss</h4>"
-                                },
-                                {
-                                    "dataType": "html",
-                                    "data": "<p class = \"txt-justify\"> High contribution of Elapsed Day from Opportunity Result is characterized by the influence of key dimensions, such as Market Route, Subgroup, and Deal Size Category. For instance, Fields Sales(54.66%) along with Reseller(35.68%), the <b>top performing Market Route account for 90%</b> of the overall Elapsed Day from Loss. In terms of Subgroup, top 6 account for 84% of the total Elapsed Day from Loss. Among the Deal Size Category, 50k to 100k and 100k to 250k has got the major chunk of Elapsed Day from Loss, accounting for 50. </p>"
-                                }
-                            ],
-                            "slug": "impact-on-elapsed-day-pjhzerq40n",
-                            "cardWidth": 100
-                        }
-                    ],
-                    "name": "Opportunity Result",
-                    "slug": "opportunity-result-bfb524gywf"
-                },
-                {
-                    "listOfNodes": [
-
-                    ],
-                    "listOfCards": [
-                        {
-                            "name": "Impact on Elapsed Day",
-                            "cardType": "normal",
-                            "cardData": [
-                                {
-                                    "dataType": "html",
-                                    "data": "<h3>Elapsed Day: Impact of Subgroup on Elapsed Day</h3>"
-                                },
-                                {
-                                    "dataType": "c3Chart",
-                                    "data": {
-                                        "chart_c3": {
-                                            "bar": {
-                                                "width": {
-                                                    "ratio": 0.5
-                                                }
-                                            },
-                                            "point": None,
-                                            "color": {
-                                                "pattern": [
-                                                    "#0fc4b5",
-                                                    "#005662",
-                                                    "#148071",
-                                                    "#6cba86",
-                                                    "#bcf3a2"
-                                                ]
-                                            },
-                                            "tooltip": {
-                                                "show": True,
-                                                "format": {
-                                                    "title": ".2s"
-                                                }
-                                            },
-                                            "padding": {
-                                                "top": 40
-                                            },
-                                            "grid": {
-                                                "y": {
-                                                    "show": True
-                                                },
-                                                "x": {
-                                                    "show": True
-                                                }
-                                            },
-                                            "subchart": None,
-                                            "axis": {
-                                                "y": {
-                                                    "tick": {
-                                                        "count": 7,
-                                                        "outer": False,
-                                                        "multiline": True,
-                                                        "format": ".2s"
-                                                    },
-                                                    "label": {
-                                                        "text": "Total Elapsed Day",
-                                                        "position": "outer-middle"
-                                                    }
-                                                },
-                                                "x": {
-                                                    "height": 90,
-                                                    "tick": {
-                                                        "rotate": -45,
-                                                        "multiline": False,
-                                                        "fit": False,
-                                                        "format": ".2s"
-                                                    },
-                                                    "type": "category",
-                                                    "label": {
-                                                        "text": "Subgroup",
-                                                        "position": "outer-center"
-                                                    }
-                                                },
-                                                "y2": {
-                                                    "show": True,
-                                                    "tick": {
-                                                        "count": 7,
-                                                        "multiline": True,
-                                                        "format": ".2s"
-                                                    },
-                                                    "label": {
-                                                        "text": "Average Elapsed Day",
-                                                        "position": "outer-middle"
-                                                    }
-                                                }
-                                            },
-                                            "data": {
-                                                "x": "dimension",
-                                                "axes": {
-                                                    "average": "y2"
-                                                },
-                                                "type": "bar",
-                                                "columns": [
-                                                    [
-                                                        "average",
-                                                        55.24390243902439,
-                                                        71.33474576271186,
-                                                        67.87566607460036,
-                                                        68.12948207171314,
-                                                        73.59302325581395,
-                                                        69.83414634146341,
-                                                        60.60432766615147,
-                                                        69.30278232405892,
-                                                        72.84201077199282,
-                                                        69.12937433722163,
-                                                        75.9047619047619
-                                                    ],
-                                                    [
-                                                        "total",
-                                                        2265.0,
-                                                        16835.0,
-                                                        38214.0,
-                                                        68402.0,
-                                                        12657.999999999998,
-                                                        14315.999999999998,
-                                                        39211.0,
-                                                        42344.0,
-                                                        40573.0,
-                                                        65189.0,
-                                                        1593.9999999999998
-                                                    ],
-                                                    [
-                                                        "dimension",
-                                                        "Car Electronics",
-                                                        "Interior Accessories",
-                                                        "Replacement Parts",
-                                                        "Exterior Accessories",
-                                                        "Towing & Hitches",
-                                                        "Performance Parts",
-                                                        "Garage & Car Care",
-                                                        "Shelters & RV",
-                                                        "Batteries & Accessories",
-                                                        "Motorcycle Parts",
-                                                        "Tires & Wheels"
-                                                    ]
-                                                ]
-                                            },
-                                            "legend": {
-                                                "show": True
-                                            },
-                                            "size": {
-                                                "height": 340
-                                            }
-                                        },
-                                        "yformat": ".2s",
-                                        "y2format": ".2s",
-                                        "table_c3": [
-                                            [
-                                                "average",
-                                                55.24390243902439,
-                                                71.33474576271186,
-                                                67.87566607460036,
-                                                68.12948207171314,
-                                                73.59302325581395,
-                                                69.83414634146341,
-                                                60.60432766615147,
-                                                69.30278232405892,
-                                                72.84201077199282,
-                                                69.12937433722163,
-                                                75.9047619047619
-                                            ],
-                                            [
-                                                "total",
-                                                2265.0,
-                                                16835.0,
-                                                38214.0,
-                                                68402.0,
-                                                12657.999999999998,
-                                                14315.999999999998,
-                                                39211.0,
-                                                42344.0,
-                                                40573.0,
-                                                65189.0,
-                                                1593.9999999999998
-                                            ],
-                                            [
-                                                "dimension",
-                                                "Car Electronics",
-                                                "Interior Accessories",
-                                                "Replacement Parts",
-                                                "Exterior Accessories",
-                                                "Towing & Hitches",
-                                                "Performance Parts",
-                                                "Garage & Car Care",
-                                                "Shelters & RV",
-                                                "Batteries & Accessories",
-                                                "Motorcycle Parts",
-                                                "Tires & Wheels"
-                                            ]
-                                        ],
-                                        "xdata": [
-                                            "Car Electronics",
-                                            "Interior Accessories",
-                                            "Replacement Parts",
-                                            "Exterior Accessories",
-                                            "Towing & Hitches",
-                                            "Performance Parts",
-                                            "Garage & Car Care",
-                                            "Shelters & RV",
-                                            "Batteries & Accessories",
-                                            "Motorcycle Parts",
-                                            "Tires & Wheels"
-                                        ]
-                                    }
-                                },
-                                {
-                                    "dataType": "html",
-                                    "data": "<p class = \"txt-justify\"> The <b>top two Subgroups(Exterior Accessories and Motorcycle Parts)</b> account for about <b>39%</b> of the total Elapsed Day. Being the <b>largest contributor</b>, total Elapsed Day from Exterior Accessories amounts to 68,402 that accounts for about <b>20.02% of the total Elapsed Day</b>. However, Tires & Wheels has the <b>highest average</b> Elapsed Day of 75, whereas the average for Exterior Accessories is 68. On the other hand, bottom 4 contributes to just 9% of the total Elapsed Day. </p>"
-                                },
-                                {
-                                    "dataType": "html",
-                                    "data": "<h4>Key Factors influencing Elapsed Day from Exterior Accessories</h4>"
-                                },
-                                {
-                                    "dataType": "html",
-                                    "data": "<p class = \"txt-justify\"> High contribution of Elapsed Day from Subgroup is characterized by the influence of key dimensions, such as Market Route, Opportunity Result, and Competitor Type. For instance, Fields Sales(48.46%) along with Reseller(45.65%), the <b>top performing Market Route account for 94%</b> of the overall Elapsed Day from Exterior Accessories. In terms of Opportunity Result, Loss account for 73.96% of the total Elapsed Day from Exterior Accessories. Among the Competitor Type, Unknown has got the major chunk of Elapsed Day from Exterior Accessories, accounting for 68. </p>"
-                                }
-                            ],
-                            "slug": "impact-on-elapsed-day-tu5h243hm3",
-                            "cardWidth": 100
-                        }
-                    ],
-                    "name": "Subgroup",
-                    "slug": "subgroup-od231tw76q"
-                },
-                {
-                    "listOfNodes": [
-
-                    ],
-                    "listOfCards": [
-                        {
-                            "name": "Impact on Elapsed Day",
-                            "cardType": "normal",
-                            "cardData": [
-                                {
-                                    "dataType": "html",
-                                    "data": "<h3>Elapsed Day: Impact of Competitor Type on Elapsed Day</h3>"
-                                },
-                                {
-                                    "dataType": "c3Chart",
-                                    "data": {
-                                        "chart_c3": {
-                                            "bar": {
-                                                "width": 40
-                                            },
-                                            "point": None,
-                                            "color": {
-                                                "pattern": [
-                                                    "#0fc4b5",
-                                                    "#005662",
-                                                    "#148071",
-                                                    "#6cba86",
-                                                    "#bcf3a2"
-                                                ]
-                                            },
-                                            "tooltip": {
-                                                "show": True,
-                                                "format": {
-                                                    "title": ".2s"
-                                                }
-                                            },
-                                            "padding": {
-                                                "top": 40
-                                            },
-                                            "grid": {
-                                                "y": {
-                                                    "show": True
-                                                },
-                                                "x": {
-                                                    "show": True
-                                                }
-                                            },
-                                            "subchart": None,
-                                            "axis": {
-                                                "y": {
-                                                    "tick": {
-                                                        "count": 7,
-                                                        "outer": False,
-                                                        "multiline": True,
-                                                        "format": ".2s"
-                                                    },
-                                                    "label": {
-                                                        "text": "Total Elapsed Day",
-                                                        "position": "outer-middle"
-                                                    }
-                                                },
-                                                "x": {
-                                                    "height": 90,
-                                                    "tick": {
-                                                        "rotate": -45,
-                                                        "multiline": False,
-                                                        "fit": False,
-                                                        "format": ".2s"
-                                                    },
-                                                    "type": "category",
-                                                    "label": {
-                                                        "text": "Competitor Type",
-                                                        "position": "outer-center"
-                                                    }
-                                                },
-                                                "y2": {
-                                                    "show": True,
-                                                    "tick": {
-                                                        "count": 7,
-                                                        "multiline": True,
-                                                        "format": ".2s"
-                                                    },
-                                                    "label": {
-                                                        "text": "Average Elapsed Day",
-                                                        "position": "outer-middle"
-                                                    }
-                                                }
-                                            },
-                                            "data": {
-                                                "x": "dimension",
-                                                "axes": {
-                                                    "average": "y2"
-                                                },
-                                                "type": "bar",
-                                                "columns": [
-                                                    [
-                                                        "average",
-                                                        72.95333333333333,
-                                                        66.08055009823183,
-                                                        76.36950904392765
-                                                    ],
-                                                    [
-                                                        "total",
-                                                        76601.0,
-                                                        235445.0,
-                                                        29555.0
-                                                    ],
-                                                    [
-                                                        "dimension",
-                                                        "Known",
-                                                        "Unknown",
-                                                        "None"
-                                                    ]
-                                                ]
-                                            },
-                                            "legend": {
-                                                "show": True
-                                            },
-                                            "size": {
-                                                "height": 340
-                                            }
-                                        },
-                                        "yformat": ".2s",
-                                        "y2format": ".2s",
-                                        "table_c3": [
-                                            [
-                                                "average",
-                                                72.95333333333333,
-                                                66.08055009823183,
-                                                76.36950904392765
-                                            ],
-                                            [
-                                                "total",
-                                                76601.0,
-                                                235445.0,
-                                                29555.0
-                                            ],
-                                            [
-                                                "dimension",
-                                                "Known",
-                                                "Unknown",
-                                                "None"
-                                            ]
-                                        ],
-                                        "xdata": [
-                                            "Known",
-                                            "Unknown",
-                                            "None"
-                                        ]
-                                    }
-                                },
-                                {
-                                    "dataType": "html",
-                                    "data": "<p class = \"txt-justify\"> The <b>top two Competitor Types(Unknown and Known)</b> account for about <b>91%</b> of the total Elapsed Day. Being the <b>largest contributor</b>, total Elapsed Day from Unknown amounts to 235,445 that accounts for about <b>68.92% of the total Elapsed Day</b>. However, None has the <b>highest average</b> Elapsed Day of 76, whereas the average for Unknown is 66. On the other hand, None contributes to just 8% of the total Elapsed Day. </p>"
-                                },
-                                {
-                                    "dataType": "html",
-                                    "data": "<h4>Key Factors influencing Elapsed Day from Unknown</h4>"
-                                },
-                                {
-                                    "dataType": "html",
-                                    "data": "<p class = \"txt-justify\"> High contribution of Elapsed Day from Competitor Type is characterized by the influence of key dimensions, such as Opportunity Result, Market Route, and Subgroup. For instance,Loss, the <b>top performing Opportunity Result account for 80.42%</b> of the overall Elapsed Day from Unknown. In terms of Market Route, Reseller(47.73%) and Fields Sales(44.37%) account for 92% of the total Elapsed Day from Unknown. Among the Subgroup, Motorcycle Parts and Exterior Accessories has got the major chunk of Elapsed Day from Unknown, accounting for 40. </p>"
-                                }
-                            ],
-                            "slug": "impact-on-elapsed-day-l3xvvbdmub",
-                            "cardWidth": 100
-                        }
-                    ],
-                    "name": "Competitor Type",
-                    "slug": "competitor-type-pudehd71lv"
-                },
-                {
-                    "listOfNodes": [
-
-                    ],
-                    "listOfCards": [
-                        {
-                            "name": "Impact on Elapsed Day",
-                            "cardType": "normal",
-                            "cardData": [
-                                {
-                                    "dataType": "html",
-                                    "data": "<h3>Elapsed Day: Impact of Deal Size Category on Elapsed Day</h3>"
-                                },
-                                {
-                                    "dataType": "c3Chart",
-                                    "data": {
-                                        "chart_c3": {
-                                            "bar": {
-                                                "width": {
-                                                    "ratio": 0.5
-                                                }
-                                            },
-                                            "point": None,
-                                            "color": {
-                                                "pattern": [
-                                                    "#0fc4b5",
-                                                    "#005662",
-                                                    "#148071",
-                                                    "#6cba86",
-                                                    "#bcf3a2"
-                                                ]
-                                            },
-                                            "tooltip": {
-                                                "show": True,
-                                                "format": {
-                                                    "title": ".2s"
-                                                }
-                                            },
-                                            "padding": {
-                                                "top": 40
-                                            },
-                                            "grid": {
-                                                "y": {
-                                                    "show": True
-                                                },
-                                                "x": {
-                                                    "show": True
-                                                }
-                                            },
-                                            "subchart": None,
-                                            "axis": {
-                                                "y": {
-                                                    "tick": {
-                                                        "count": 7,
-                                                        "outer": False,
-                                                        "multiline": True,
-                                                        "format": ".2s"
-                                                    },
-                                                    "label": {
-                                                        "text": "Total Elapsed Day",
-                                                        "position": "outer-middle"
-                                                    }
-                                                },
-                                                "x": {
-                                                    "height": 90,
-                                                    "tick": {
-                                                        "rotate": -45,
-                                                        "multiline": False,
-                                                        "fit": False,
-                                                        "format": ".2s"
-                                                    },
-                                                    "type": "category",
-                                                    "label": {
-                                                        "text": "Deal Size Category",
-                                                        "position": "outer-center"
-                                                    }
-                                                },
-                                                "y2": {
-                                                    "show": True,
-                                                    "tick": {
-                                                        "count": 7,
-                                                        "multiline": True,
-                                                        "format": ".2s"
-                                                    },
-                                                    "label": {
-                                                        "text": "Average Elapsed Day",
-                                                        "position": "outer-middle"
-                                                    }
-                                                }
-                                            },
-                                            "data": {
-                                                "x": "dimension",
-                                                "axes": {
-                                                    "average": "y2"
-                                                },
-                                                "type": "bar",
-                                                "columns": [
-                                                    [
-                                                        "average",
-                                                        72.22222222222223,
-                                                        68.30897435897435,
-                                                        71.02564102564102,
-                                                        63.03129445234708,
-                                                        69.66885245901639,
-                                                        64.25,
-                                                        70.4298245614035
-                                                    ],
-                                                    [
-                                                        "total",
-                                                        83850.00000000001,
-                                                        53280.99999999999,
-                                                        8310.0,
-                                                        44311.0,
-                                                        21249.0,
-                                                        58339.0,
-                                                        72261.0
-                                                    ],
-                                                    [
-                                                        "dimension",
-                                                        "50k to 100k",
-                                                        "25k to 50k",
-                                                        "More than 500k",
-                                                        "Less than 10k",
-                                                        "250k to 500k",
-                                                        "10k to 25k",
-                                                        "100k to 250k"
-                                                    ]
-                                                ]
-                                            },
-                                            "legend": {
-                                                "show": True
-                                            },
-                                            "size": {
-                                                "height": 340
-                                            }
-                                        },
-                                        "yformat": ".2s",
-                                        "y2format": ".2s",
-                                        "table_c3": [
-                                            [
-                                                "average",
-                                                72.22222222222223,
-                                                68.30897435897435,
-                                                71.02564102564102,
-                                                63.03129445234708,
-                                                69.66885245901639,
-                                                64.25,
-                                                70.4298245614035
-                                            ],
-                                            [
-                                                "total",
-                                                83850.00000000001,
-                                                53280.99999999999,
-                                                8310.0,
-                                                44311.0,
-                                                21249.0,
-                                                58339.0,
-                                                72261.0
-                                            ],
-                                            [
-                                                "dimension",
-                                                "50k to 100k",
-                                                "25k to 50k",
-                                                "More than 500k",
-                                                "Less than 10k",
-                                                "250k to 500k",
-                                                "10k to 25k",
-                                                "100k to 250k"
-                                            ]
-                                        ],
-                                        "xdata": [
-                                            "50k to 100k",
-                                            "25k to 50k",
-                                            "More than 500k",
-                                            "Less than 10k",
-                                            "250k to 500k",
-                                            "10k to 25k",
-                                            "100k to 250k"
-                                        ]
-                                    }
-                                },
-                                {
-                                    "dataType": "html",
-                                    "data": "<p class = \"txt-justify\"> The <b>top two Deal Size Categories(50k to 100k and 100k to 250k)</b> account for about <b>45%</b> of the total Elapsed Day. Being the <b>largest contributor</b>, total Elapsed Day from 50k to 100k amounts to 83,850 that accounts for about <b>24.55% of the total Elapsed Day</b> and the average Elapsed Day is 72. On the other hand, More than 500k and 250k to 500k contributes to just 8% of the total Elapsed Day. </p>"
-                                },
-                                {
-                                    "dataType": "html",
-                                    "data": "<h4>Key Factors influencing Elapsed Day from 50k to 100k</h4>"
-                                },
-                                {
-                                    "dataType": "html",
-                                    "data": "<p class = \"txt-justify\"> High contribution of Elapsed Day from Deal Size Category is characterized by the influence of key dimensions, such as Market Route, Opportunity Result, and Competitor Type. For instance,Fields Sales, the <b>top performing Market Route account for 59.1%</b> of the overall Elapsed Day from 50k to 100k. In terms of Opportunity Result, Loss account for 87.93% of the total Elapsed Day from 50k to 100k. Among the Competitor Type, Unknown has got the major chunk of Elapsed Day from 50k to 100k, accounting for 66. </p>"
-                                }
-                            ],
-                            "slug": "impact-on-elapsed-day-n5zou4joy0",
-                            "cardWidth": 100
-                        }
-                    ],
-                    "name": "Deal Size Category",
-                    "slug": "deal-size-category-n62chl3yjy"
-                },
-                {
-                    "listOfNodes": [
-
-                    ],
-                    "listOfCards": [
-                        {
-                            "name": "Impact on Elapsed Day",
-                            "cardType": "normal",
-                            "cardData": [
-                                {
-                                    "dataType": "html",
-                                    "data": "<h3>Elapsed Day: Impact of Region on Elapsed Day</h3>"
-                                },
-                                {
-                                    "dataType": "c3Chart",
-                                    "data": {
-                                        "chart_c3": {
-                                            "bar": {
-                                                "width": 40
-                                            },
-                                            "point": None,
-                                            "color": {
-                                                "pattern": [
-                                                    "#0fc4b5",
-                                                    "#005662",
-                                                    "#148071",
-                                                    "#6cba86",
-                                                    "#bcf3a2"
-                                                ]
-                                            },
-                                            "tooltip": {
-                                                "show": True,
-                                                "format": {
-                                                    "title": ".2s"
-                                                }
-                                            },
-                                            "padding": {
-                                                "top": 40
-                                            },
-                                            "grid": {
-                                                "y": {
-                                                    "show": True
-                                                },
-                                                "x": {
-                                                    "show": True
-                                                }
-                                            },
-                                            "subchart": None,
-                                            "axis": {
-                                                "y": {
-                                                    "tick": {
-                                                        "count": 7,
-                                                        "outer": False,
-                                                        "multiline": True,
-                                                        "format": ".2s"
-                                                    },
-                                                    "label": {
-                                                        "text": "Total Elapsed Day",
-                                                        "position": "outer-middle"
-                                                    }
-                                                },
-                                                "x": {
-                                                    "height": 90,
-                                                    "tick": {
-                                                        "rotate": -45,
-                                                        "multiline": False,
-                                                        "fit": False,
-                                                        "format": ".2s"
-                                                    },
-                                                    "type": "category",
-                                                    "label": {
-                                                        "text": "Region",
-                                                        "position": "outer-center"
-                                                    }
-                                                },
-                                                "y2": {
-                                                    "show": True,
-                                                    "tick": {
-                                                        "count": 7,
-                                                        "multiline": True,
-                                                        "format": ".2s"
-                                                    },
-                                                    "label": {
-                                                        "text": "Average Elapsed Day",
-                                                        "position": "outer-middle"
-                                                    }
-                                                }
-                                            },
-                                            "data": {
-                                                "x": "dimension",
-                                                "axes": {
-                                                    "average": "y2"
-                                                },
-                                                "type": "bar",
-                                                "columns": [
-                                                    [
-                                                        "average",
-                                                        65.80722418531606,
-                                                        67.17653276955602,
-                                                        73.28533510285335
-                                                    ],
-                                                    [
-                                                        "total",
-                                                        167611.0,
-                                                        63548.99999999999,
-                                                        110441.0
-                                                    ],
-                                                    [
-                                                        "dimension",
-                                                        "Midwest",
-                                                        "Northwest",
-                                                        "Pacific"
-                                                    ]
-                                                ]
-                                            },
-                                            "legend": {
-                                                "show": True
-                                            },
-                                            "size": {
-                                                "height": 340
-                                            }
-                                        },
-                                        "yformat": ".2s",
-                                        "y2format": ".2s",
-                                        "table_c3": [
-                                            [
-                                                "average",
-                                                65.80722418531606,
-                                                67.17653276955602,
-                                                73.28533510285335
-                                            ],
-                                            [
-                                                "total",
-                                                167611.0,
-                                                63548.99999999999,
-                                                110441.0
-                                            ],
-                                            [
-                                                "dimension",
-                                                "Midwest",
-                                                "Northwest",
-                                                "Pacific"
-                                            ]
-                                        ],
-                                        "xdata": [
-                                            "Midwest",
-                                            "Northwest",
-                                            "Pacific"
-                                        ]
-                                    }
-                                },
-                                {
-                                    "dataType": "html",
-                                    "data": "<p class = \"txt-justify\"> The <b>top two Regions(Midwest and Pacific)</b> account for about <b>81%</b> of the total Elapsed Day. Being the <b>largest contributor</b>, total Elapsed Day from Midwest amounts to 167,611 that accounts for about <b>49.07% of the total Elapsed Day</b>. However, Pacific has the <b>highest average</b> Elapsed Day of 73, whereas the average for Midwest is 65. On the other hand, Northwest contributes to just 18% of the total Elapsed Day. </p>"
-                                },
-                                {
-                                    "dataType": "html",
-                                    "data": "<h4>Key Factors influencing Elapsed Day from Midwest</h4>"
-                                },
-                                {
-                                    "dataType": "html",
-                                    "data": "<p class = \"txt-justify\"> High contribution of Elapsed Day from Region is characterized by the influence of key dimensions, such as Opportunity Result, Market Route, and Subgroup. For instance,Loss, the <b>top performing Opportunity Result account for 80.4%</b> of the overall Elapsed Day from Midwest. In terms of Market Route, Fields Sales(53.07%) and Reseller(45.13%) account for 98% of the total Elapsed Day from Midwest. Also, the top 6 Subgroup contribute to 86% of Elapsed Day from Midwest. </p>"
-                                }
-                            ],
-                            "slug": "impact-on-elapsed-day-6hiof0puzf",
-                            "cardWidth": 100
-                        }
-                    ],
-                    "name": "Region",
-                    "slug": "region-e771506rsf"
-                },
-                {
-                    "listOfNodes": [
-
-                    ],
-                    "listOfCards": [
-                        {
-                            "name": "Impact on Elapsed Day",
-                            "cardType": "normal",
-                            "cardData": [
-                                {
-                                    "dataType": "html",
-                                    "data": "<h3>Elapsed Day: Impact of Revenue on Elapsed Day</h3>"
-                                },
-                                {
-                                    "dataType": "c3Chart",
-                                    "data": {
-                                        "chart_c3": {
-                                            "bar": {
-                                                "width": {
-                                                    "ratio": 0.5
-                                                }
-                                            },
-                                            "point": None,
-                                            "color": {
-                                                "pattern": [
-                                                    "#0fc4b5",
-                                                    "#005662",
-                                                    "#148071",
-                                                    "#6cba86",
-                                                    "#bcf3a2"
-                                                ]
-                                            },
-                                            "tooltip": {
-                                                "show": True,
-                                                "format": {
-                                                    "title": ".2s"
-                                                }
-                                            },
-                                            "padding": {
-                                                "top": 40
-                                            },
-                                            "grid": {
-                                                "y": {
-                                                    "show": True
-                                                },
-                                                "x": {
-                                                    "show": True
-                                                }
-                                            },
-                                            "subchart": None,
-                                            "axis": {
-                                                "y": {
-                                                    "tick": {
-                                                        "count": 7,
-                                                        "outer": False,
-                                                        "multiline": True,
-                                                        "format": ".2s"
-                                                    },
-                                                    "label": {
-                                                        "text": "Total Elapsed Day",
-                                                        "position": "outer-middle"
-                                                    }
-                                                },
-                                                "x": {
-                                                    "height": 90,
-                                                    "tick": {
-                                                        "rotate": -45,
-                                                        "multiline": False,
-                                                        "fit": False,
-                                                        "format": ".2s"
-                                                    },
-                                                    "type": "category",
-                                                    "label": {
-                                                        "text": "Revenue",
-                                                        "position": "outer-center"
-                                                    }
-                                                },
-                                                "y2": {
-                                                    "show": True,
-                                                    "tick": {
-                                                        "count": 7,
-                                                        "multiline": True,
-                                                        "format": ".2s"
-                                                    },
-                                                    "label": {
-                                                        "text": "Average Elapsed Day",
-                                                        "position": "outer-middle"
-                                                    }
-                                                }
-                                            },
-                                            "data": {
-                                                "x": "dimension",
-                                                "axes": {
-                                                    "average": "y2"
-                                                },
-                                                "type": "bar",
-                                                "columns": [
-                                                    [
-                                                        "average",
-                                                        68.84068466096116,
-                                                        61.6530612244898,
-                                                        64.23170731707317,
-                                                        47.43010752688172,
-                                                        71.61176470588235
-                                                    ],
-                                                    [
-                                                        "total",
-                                                        313707.0,
-                                                        6042.0,
-                                                        5267.0,
-                                                        4411.0,
-                                                        12174.0
-                                                    ],
-                                                    [
-                                                        "dimension",
-                                                        "0",
-                                                        "50k to 400k",
-                                                        "400k to 1.5M",
-                                                        "1 to 50k",
-                                                        "More than 1.5M"
-                                                    ]
-                                                ]
-                                            },
-                                            "legend": {
-                                                "show": True
-                                            },
-                                            "size": {
-                                                "height": 340
-                                            }
-                                        },
-                                        "yformat": ".2s",
-                                        "y2format": ".2s",
-                                        "table_c3": [
-                                            [
-                                                "average",
-                                                68.84068466096116,
-                                                61.6530612244898,
-                                                64.23170731707317,
-                                                47.43010752688172,
-                                                71.61176470588235
-                                            ],
-                                            [
-                                                "total",
-                                                313707.0,
-                                                6042.0,
-                                                5267.0,
-                                                4411.0,
-                                                12174.0
-                                            ],
-                                            [
-                                                "dimension",
-                                                "0",
-                                                "50k to 400k",
-                                                "400k to 1.5M",
-                                                "1 to 50k",
-                                                "More than 1.5M"
-                                            ]
-                                        ],
-                                        "xdata": [
-                                            "0",
-                                            "50k to 400k",
-                                            "400k to 1.5M",
-                                            "1 to 50k",
-                                            "More than 1.5M"
-                                        ]
-                                    }
-                                },
-                                {
-                                    "dataType": "html",
-                                    "data": "<p class = \"txt-justify\"> The <b>top two Revenues(0 and More than 1.5M)</b> account for about <b>95%</b> of the total Elapsed Day. Being the <b>largest contributor</b>, total Elapsed Day from 0 amounts to 313,707 that accounts for about <b>91.83% of the total Elapsed Day</b>. However, More than 1.5M has the <b>highest average</b> Elapsed Day of 71, whereas the average for 0 is 68. On the other hand, bottom 4 contributes to just 8% of the total Elapsed Day. </p>"
-                                },
-                                {
-                                    "dataType": "html",
-                                    "data": "<h4>Key Factors influencing Elapsed Day from 0</h4>"
-                                },
-                                {
-                                    "dataType": "html",
-                                    "data": "<p class = \"txt-justify\"> High contribution of Elapsed Day from Revenue is characterized by the influence of key dimensions, such as Opportunity Result, Market Route, and Subgroup. For instance,Loss, the <b>top performing Opportunity Result account for 82.27%</b> of the overall Elapsed Day from 0. In terms of Market Route, Fields Sales(51.71%) and Reseller(38.51%) account for 90% of the total Elapsed Day from 0. Among the Subgroup, Exterior Accessories and Motorcycle Parts has got the major chunk of Elapsed Day from 0, accounting for 39. </p>"
-                                }
-                            ],
-                            "slug": "impact-on-elapsed-day-6dpjic8c6o",
-                            "cardWidth": 100
-                        }
-                    ],
-                    "name": "Revenue",
-                    "slug": "revenue-1hr2wx2r07"
-                },
-                {
-                    "listOfNodes": [
-
-                    ],
-                    "listOfCards": [
-                        {
-                            "name": "Impact on Elapsed Day",
-                            "cardType": "normal",
-                            "cardData": [
-                                {
-                                    "dataType": "html",
-                                    "data": "<h3>Elapsed Day: Impact of Size By Revenue on Elapsed Day</h3>"
-                                },
-                                {
-                                    "dataType": "c3Chart",
-                                    "data": {
-                                        "chart_c3": {
-                                            "bar": {
-                                                "width": {
-                                                    "ratio": 0.5
-                                                }
-                                            },
-                                            "point": None,
-                                            "color": {
-                                                "pattern": [
-                                                    "#0fc4b5",
-                                                    "#005662",
-                                                    "#148071",
-                                                    "#6cba86",
-                                                    "#bcf3a2"
-                                                ]
-                                            },
-                                            "tooltip": {
-                                                "show": True,
-                                                "format": {
-                                                    "title": ".2s"
-                                                }
-                                            },
-                                            "padding": {
-                                                "top": 40
-                                            },
-                                            "grid": {
-                                                "y": {
-                                                    "show": True
-                                                },
-                                                "x": {
-                                                    "show": True
-                                                }
-                                            },
-                                            "subchart": None,
-                                            "axis": {
-                                                "y": {
-                                                    "tick": {
-                                                        "count": 7,
-                                                        "outer": False,
-                                                        "multiline": True,
-                                                        "format": ".2s"
-                                                    },
-                                                    "label": {
-                                                        "text": "Total Elapsed Day",
-                                                        "position": "outer-middle"
-                                                    }
-                                                },
-                                                "x": {
-                                                    "height": 90,
-                                                    "tick": {
-                                                        "rotate": -45,
-                                                        "multiline": False,
-                                                        "fit": False,
-                                                        "format": ".2s"
-                                                    },
-                                                    "type": "category",
-                                                    "label": {
-                                                        "text": "Size By Revenue",
-                                                        "position": "outer-center"
-                                                    }
-                                                },
-                                                "y2": {
-                                                    "show": True,
-                                                    "tick": {
-                                                        "count": 7,
-                                                        "multiline": True,
-                                                        "format": ".2s"
-                                                    },
-                                                    "label": {
-                                                        "text": "Average Elapsed Day",
-                                                        "position": "outer-middle"
-                                                    }
-                                                }
-                                            },
-                                            "data": {
-                                                "x": "dimension",
-                                                "axes": {
-                                                    "average": "y2"
-                                                },
-                                                "type": "bar",
-                                                "columns": [
-                                                    [
-                                                        "average",
-                                                        69.02635228848821,
-                                                        70.71753986332574,
-                                                        71.31851851851852,
-                                                        67.1603448275862,
-                                                        66.96612244897959
-                                                    ],
-                                                    [
-                                                        "total",
-                                                        49768.0,
-                                                        31045.0,
-                                                        57768.0,
-                                                        38953.0,
-                                                        164067.0
-                                                    ],
-                                                    [
-                                                        "dimension",
-                                                        "50M to 100M",
-                                                        "1M to 10M",
-                                                        "More than 100M",
-                                                        "10M to 50M",
-                                                        "Less than 1M"
-                                                    ]
-                                                ]
-                                            },
-                                            "legend": {
-                                                "show": True
-                                            },
-                                            "size": {
-                                                "height": 340
-                                            }
-                                        },
-                                        "yformat": ".2s",
-                                        "y2format": ".2s",
-                                        "table_c3": [
-                                            [
-                                                "average",
-                                                69.02635228848821,
-                                                70.71753986332574,
-                                                71.31851851851852,
-                                                67.1603448275862,
-                                                66.96612244897959
-                                            ],
-                                            [
-                                                "total",
-                                                49768.0,
-                                                31045.0,
-                                                57768.0,
-                                                38953.0,
-                                                164067.0
-                                            ],
-                                            [
-                                                "dimension",
-                                                "50M to 100M",
-                                                "1M to 10M",
-                                                "More than 100M",
-                                                "10M to 50M",
-                                                "Less than 1M"
-                                            ]
-                                        ],
-                                        "xdata": [
-                                            "50M to 100M",
-                                            "1M to 10M",
-                                            "More than 100M",
-                                            "10M to 50M",
-                                            "Less than 1M"
-                                        ]
-                                    }
-                                },
-                                {
-                                    "dataType": "html",
-                                    "data": "<p class = \"txt-justify\"> The <b>top three Size By Revenues(Less than 1M, More than 100M and 50M to 100M)</b> account for about <b>79%</b> of the total Elapsed Day. Being the <b>largest contributor</b>, total Elapsed Day from Less than 1M amounts to 164,067 that accounts for about <b>48.03% of the total Elapsed Day</b>. However, More than 100M has the <b>highest average</b> Elapsed Day of 71, whereas the average for Less than 1M is 66. On the other hand, 1M to 10M contributes to just 9% of the total Elapsed Day. </p>"
-                                },
-                                {
-                                    "dataType": "html",
-                                    "data": "<h4>Key Factors influencing Elapsed Day from Less than 1M</h4>"
-                                },
-                                {
-                                    "dataType": "html",
-                                    "data": "<p class = \"txt-justify\"> High contribution of Elapsed Day from Size By Revenue is characterized by the influence of key dimensions, such as Opportunity Result, Market Route, and Competitor Type. For instance,Loss, the <b>top performing Opportunity Result account for 78.56%</b> of the overall Elapsed Day from Less than 1M. In terms of Market Route, Fields Sales account for 45.11% of the total Elapsed Day from Less than 1M. Among the Competitor Type, Unknown has got the major chunk of Elapsed Day from Less than 1M, accounting for 71. </p>"
-                                }
-                            ],
-                            "slug": "impact-on-elapsed-day-yuesxo6eqh",
-                            "cardWidth": 100
-                        }
-                    ],
-                    "name": "Size By Revenue",
-                    "slug": "size-by-revenue-5b0da6zlcr"
-                },
-                {
-                    "listOfNodes": [
-
-                    ],
-                    "listOfCards": [
-                        {
-                            "name": "Impact on Elapsed Day",
-                            "cardType": "normal",
-                            "cardData": [
-                                {
-                                    "dataType": "html",
-                                    "data": "<h3>Elapsed Day: Impact of Group on Elapsed Day</h3>"
-                                },
-                                {
-                                    "dataType": "c3Chart",
-                                    "data": {
-                                        "chart_c3": {
-                                            "bar": {
-                                                "width": 40
-                                            },
-                                            "point": None,
-                                            "color": {
-                                                "pattern": [
-                                                    "#0fc4b5",
-                                                    "#005662",
-                                                    "#148071",
-                                                    "#6cba86",
-                                                    "#bcf3a2"
-                                                ]
-                                            },
-                                            "tooltip": {
-                                                "show": True,
-                                                "format": {
-                                                    "title": ".2s"
-                                                }
-                                            },
-                                            "padding": {
-                                                "top": 40
-                                            },
-                                            "grid": {
-                                                "y": {
-                                                    "show": True
-                                                },
-                                                "x": {
-                                                    "show": True
-                                                }
-                                            },
-                                            "subchart": None,
-                                            "axis": {
-                                                "y": {
-                                                    "tick": {
-                                                        "count": 7,
-                                                        "outer": False,
-                                                        "multiline": True,
-                                                        "format": ".2s"
-                                                    },
-                                                    "label": {
-                                                        "text": "Total Elapsed Day",
-                                                        "position": "outer-middle"
-                                                    }
-                                                },
-                                                "x": {
-                                                    "height": 90,
-                                                    "tick": {
-                                                        "rotate": -45,
-                                                        "multiline": False,
-                                                        "fit": False,
-                                                        "format": ".2s"
-                                                    },
-                                                    "type": "category",
-                                                    "label": {
-                                                        "text": "Group",
-                                                        "position": "outer-center"
-                                                    }
-                                                },
-                                                "y2": {
-                                                    "show": True,
-                                                    "tick": {
-                                                        "count": 7,
-                                                        "multiline": True,
-                                                        "format": ".2s"
-                                                    },
-                                                    "label": {
-                                                        "text": "Average Elapsed Day",
-                                                        "position": "outer-middle"
-                                                    }
-                                                }
-                                            },
-                                            "data": {
-                                                "x": "dimension",
-                                                "axes": {
-                                                    "average": "y2"
-                                                },
-                                                "type": "bar",
-                                                "columns": [
-                                                    [
-                                                        "average",
-                                                        67.91223655237496,
-                                                        55.24390243902439,
-                                                        69.27174530983514,
-                                                        75.9047619047619
-                                                    ],
-                                                    [
-                                                        "total",
-                                                        215893.0,
-                                                        2265.0,
-                                                        121849.00000000001,
-                                                        1593.9999999999998
-                                                    ],
-                                                    [
-                                                        "dimension",
-                                                        "Car Accessories",
-                                                        "Car Electronics",
-                                                        "Performance & Non-auto",
-                                                        "Tires & Wheels"
-                                                    ]
-                                                ]
-                                            },
-                                            "legend": {
-                                                "show": True
-                                            },
-                                            "size": {
-                                                "height": 340
-                                            }
-                                        },
-                                        "yformat": ".2s",
-                                        "y2format": ".2s",
-                                        "table_c3": [
-                                            [
-                                                "average",
-                                                67.91223655237496,
-                                                55.24390243902439,
-                                                69.27174530983514,
-                                                75.9047619047619
-                                            ],
-                                            [
-                                                "total",
-                                                215893.0,
-                                                2265.0,
-                                                121849.00000000001,
-                                                1593.9999999999998
-                                            ],
-                                            [
-                                                "dimension",
-                                                "Car Accessories",
-                                                "Car Electronics",
-                                                "Performance & Non-auto",
-                                                "Tires & Wheels"
-                                            ]
-                                        ],
-                                        "xdata": [
-                                            "Car Accessories",
-                                            "Car Electronics",
-                                            "Performance & Non-auto",
-                                            "Tires & Wheels"
-                                        ]
-                                    }
-                                },
-                                {
-                                    "dataType": "html",
-                                    "data": "<p class = \"txt-justify\"> The <b>top two Groups(Car Accessories and Performance & Non-auto)</b> account for about <b>98%</b> of the total Elapsed Day. Being the <b>largest contributor</b>, total Elapsed Day from Car Accessories amounts to 215,893 that accounts for about <b>63.2% of the total Elapsed Day</b>. However, Tires & Wheels has the <b>highest average</b> Elapsed Day of 75, whereas the average for Car Accessories is 67. On the other hand, bottom 3 contributes to just 36% of the total Elapsed Day. </p>"
-                                },
-                                {
-                                    "dataType": "html",
-                                    "data": "<h4>Key Factors influencing Elapsed Day from Car Accessories</h4>"
-                                },
-                                {
-                                    "dataType": "html",
-                                    "data": "<p class = \"txt-justify\"> High contribution of Elapsed Day from Group is characterized by the influence of key dimensions, such as Market Route, Opportunity Result, and Subgroup. For instance, Fields Sales(53.47%) along with Reseller(38.83%), the <b>top performing Market Route account for 92%</b> of the overall Elapsed Day from Car Accessories. In terms of Opportunity Result, Loss account for 76.26% of the total Elapsed Day from Car Accessories. Among the Subgroup, Exterior Accessories has got the major chunk of Elapsed Day from Car Accessories, accounting for 31. </p>"
-                                }
-                            ],
-                            "slug": "impact-on-elapsed-day-v0zxkyr9mr",
-                            "cardWidth": 100
-                        }
-                    ],
-                    "name": "Group",
-                    "slug": "group-r8fge8wmb8"
-                },
-                {
-                    "listOfNodes": [
-
-                    ],
-                    "listOfCards": [
-                        {
-                            "name": "Impact on Elapsed Day",
-                            "cardType": "normal",
-                            "cardData": [
-                                {
-                                    "dataType": "html",
-                                    "data": "<h3>Elapsed Day: Impact of Size By Employees on Elapsed Day</h3>"
-                                },
-                                {
-                                    "dataType": "c3Chart",
-                                    "data": {
-                                        "chart_c3": {
-                                            "bar": {
-                                                "width": {
-                                                    "ratio": 0.5
-                                                }
-                                            },
-                                            "point": None,
-                                            "color": {
-                                                "pattern": [
-                                                    "#0fc4b5",
-                                                    "#005662",
-                                                    "#148071",
-                                                    "#6cba86",
-                                                    "#bcf3a2"
-                                                ]
-                                            },
-                                            "tooltip": {
-                                                "show": True,
-                                                "format": {
-                                                    "title": ".2s"
-                                                }
-                                            },
-                                            "padding": {
-                                                "top": 40
-                                            },
-                                            "grid": {
-                                                "y": {
-                                                    "show": True
-                                                },
-                                                "x": {
-                                                    "show": True
-                                                }
-                                            },
-                                            "subchart": None,
-                                            "axis": {
-                                                "y": {
-                                                    "tick": {
-                                                        "count": 7,
-                                                        "outer": False,
-                                                        "multiline": True,
-                                                        "format": ".2s"
-                                                    },
-                                                    "label": {
-                                                        "text": "Total Elapsed Day",
-                                                        "position": "outer-middle"
-                                                    }
-                                                },
-                                                "x": {
-                                                    "height": 90,
-                                                    "tick": {
-                                                        "rotate": -45,
-                                                        "multiline": False,
-                                                        "fit": False,
-                                                        "format": ".2s"
-                                                    },
-                                                    "type": "category",
-                                                    "label": {
-                                                        "text": "Size By Employees",
-                                                        "position": "outer-center"
-                                                    }
-                                                },
-                                                "y2": {
-                                                    "show": True,
-                                                    "tick": {
-                                                        "count": 7,
-                                                        "multiline": True,
-                                                        "format": ".2s"
-                                                    },
-                                                    "label": {
-                                                        "text": "Average Elapsed Day",
-                                                        "position": "outer-middle"
-                                                    }
-                                                }
-                                            },
-                                            "data": {
-                                                "x": "dimension",
-                                                "axes": {
-                                                    "average": "y2"
-                                                },
-                                                "type": "bar",
-                                                "columns": [
-                                                    [
-                                                        "average",
-                                                        67.64553686934023,
-                                                        67.34752981260647,
-                                                        69.64868804664724,
-                                                        67.09144542772862,
-                                                        71.13835616438357
-                                                    ],
-                                                    [
-                                                        "total",
-                                                        156870.0,
-                                                        39532.99999999999,
-                                                        47779.00000000001,
-                                                        45488.0,
-                                                        51931.0
-                                                    ],
-                                                    [
-                                                        "dimension",
-                                                        "Less than 1k",
-                                                        "1k to 5k",
-                                                        "10k to 30k",
-                                                        "5k to 10k",
-                                                        "More than 30k"
-                                                    ]
-                                                ]
-                                            },
-                                            "legend": {
-                                                "show": True
-                                            },
-                                            "size": {
-                                                "height": 340
-                                            }
-                                        },
-                                        "yformat": ".2s",
-                                        "y2format": ".2s",
-                                        "table_c3": [
-                                            [
-                                                "average",
-                                                67.64553686934023,
-                                                67.34752981260647,
-                                                69.64868804664724,
-                                                67.09144542772862,
-                                                71.13835616438357
-                                            ],
-                                            [
-                                                "total",
-                                                156870.0,
-                                                39532.99999999999,
-                                                47779.00000000001,
-                                                45488.0,
-                                                51931.0
-                                            ],
-                                            [
-                                                "dimension",
-                                                "Less than 1k",
-                                                "1k to 5k",
-                                                "10k to 30k",
-                                                "5k to 10k",
-                                                "More than 30k"
-                                            ]
-                                        ],
-                                        "xdata": [
-                                            "Less than 1k",
-                                            "1k to 5k",
-                                            "10k to 30k",
-                                            "5k to 10k",
-                                            "More than 30k"
-                                        ]
-                                    }
-                                },
-                                {
-                                    "dataType": "html",
-                                    "data": "<p class = \"txt-justify\"> The <b>top two Size By Employees(Less than 1k and More than 30k)</b> account for about <b>61%</b> of the total Elapsed Day. Being the <b>largest contributor</b>, total Elapsed Day from Less than 1k amounts to 156,870 that accounts for about <b>45.92% of the total Elapsed Day</b>. However, More than 30k has the <b>highest average</b> Elapsed Day of 71, whereas the average for Less than 1k is 67. On the other hand, 1k to 5k contributes to just 11% of the total Elapsed Day. </p>"
-                                },
-                                {
-                                    "dataType": "html",
-                                    "data": "<h4>Key Factors influencing Elapsed Day from Less than 1k</h4>"
-                                },
-                                {
-                                    "dataType": "html",
-                                    "data": "<p class = \"txt-justify\"> High contribution of Elapsed Day from Size By Employees is characterized by the influence of key dimensions, such as Market Route, Opportunity Result, and Subgroup. For instance, Fields Sales(45.63%) along with Reseller(42.67%), the <b>top performing Market Route account for 88%</b> of the overall Elapsed Day from Less than 1k. In terms of Opportunity Result, Loss account for 76.81% of the total Elapsed Day from Less than 1k. Among the Subgroup, Exterior Accessories and Motorcycle Parts has got the major chunk of Elapsed Day from Less than 1k, accounting for 40. </p>"
-                                }
-                            ],
-                            "slug": "impact-on-elapsed-day-4uqutsu5mp",
-                            "cardWidth": 100
-                        }
-                    ],
-                    "name": "Size By Employees",
-                    "slug": "size-by-employees-4jl6qkqopl"
-                }
-            ],
-            "listOfCards": [
-                {
-                    "name": "Overview of Key Factors",
-                    "cardType": "normal",
-                    "cardData": [
-                        {
-                            "dataType": "html",
-                            "data": "<p class = \"txt-justify\"> There are <b>10 dimensions</b> in the dataset(including Market Route, Opportunity Result, Opportunity Result, etc.) and all of them have a <b>significant influence</b> on Elapsed Day. It implies that specific categories within each of the dimensions show <b>considerable amount of variation</b> in Elapsed Day. </p>"
-                        },
-                        {
-                            "dataType": "c3Chart",
-                            "data": {
-                                "chart_c3": {
-                                    "bar": {
-                                        "width": {
-                                            "ratio": 0.5
-                                        }
-                                    },
-                                    "point": None,
-                                    "color": {
-                                        "pattern": [
-                                            "#0fc4b5",
-                                            "#005662",
-                                            "#148071",
-                                            "#6cba86",
-                                            "#bcf3a2"
-                                        ]
-                                    },
-                                    "tooltip": {
-                                        "show": True,
-                                        "format": {
-                                            "title": ".2s"
-                                        }
-                                    },
-                                    "padding": {
-                                        "top": 40
-                                    },
-                                    "grid": {
-                                        "y": {
-                                            "show": True
-                                        },
-                                        "x": {
-                                            "show": True
-                                        }
-                                    },
-                                    "subchart": None,
-                                    "axis": {
-                                        "y": {
-                                            "tick": {
-                                                "count": 7,
-                                                "outer": False,
-                                                "multiline": True,
-                                                "format": ".2s"
-                                            },
-                                            "label": {
-                                                "text": "Effect Size",
-                                                "position": "outer-middle"
-                                            }
-                                        },
-                                        "x": {
-                                            "height": 90,
-                                            "tick": {
-                                                "rotate": -45,
-                                                "multiline": False,
-                                                "fit": False,
-                                                "format": ".2s"
-                                            },
-                                            "type": "category",
-                                            "label": {
-                                                "text": "",
-                                                "position": "outer-center"
-                                            }
-                                        }
-                                    },
-                                    "data": {
-                                        "x": "dimension",
-                                        "axes": {
-                                            "effect_size": "y"
-                                        },
-                                        "type": "bar",
-                                        "columns": [
-                                            [
-                                                "effect_size",
-                                                0.15386169534200783,
-                                                0.14562503712225297,
-                                                0.022035830105915553,
-                                                0.021577016041256426,
-                                                0.019229733067950075,
-                                                0.017948507344020186,
-                                                0.016272992177517247,
-                                                0.005086305763765186,
-                                                0.0034070743152993977,
-                                                0.003177274635950544
-                                            ],
-                                            [
-                                                "dimension",
-                                                "Market Route",
-                                                "Opportunity Result",
-                                                "Subgroup",
-                                                "Competitor Type",
-                                                "Deal Size Category",
-                                                "Region",
-                                                "Revenue",
-                                                "Size By Revenue",
-                                                "Group",
-                                                "Size By Employees"
-                                            ]
-                                        ]
-                                    },
-                                    "legend": {
-                                        "show": False
-                                    },
-                                    "size": {
-                                        "height": 340
-                                    }
-                                },
-                                "yformat": ".2f",
-                                "table_c3": [
-                                    [
-                                        "effect_size",
-                                        0.15386169534200783,
-                                        0.14562503712225297,
-                                        0.022035830105915553,
-                                        0.021577016041256426,
-                                        0.019229733067950075,
-                                        0.017948507344020186,
-                                        0.016272992177517247,
-                                        0.005086305763765186,
-                                        0.0034070743152993977,
-                                        0.003177274635950544
-                                    ],
-                                    [
-                                        "dimension",
-                                        "Market Route",
-                                        "Opportunity Result",
-                                        "Subgroup",
-                                        "Competitor Type",
-                                        "Deal Size Category",
-                                        "Region",
-                                        "Revenue",
-                                        "Size By Revenue",
-                                        "Group",
-                                        "Size By Employees"
-                                    ]
-                                ],
-                                "xdata": [
-                                    "Market Route",
-                                    "Opportunity Result",
-                                    "Subgroup",
-                                    "Competitor Type",
-                                    "Deal Size Category",
-                                    "Region",
-                                    "Revenue",
-                                    "Size By Revenue",
-                                    "Group",
-                                    "Size By Employees"
-                                ]
-                            }
-                        },
-                        {
-                            "dataType": "html",
-                            "data": "<p class = \"txt-justify\"> The chart above displays the <b>impact of key dimensions</b> on Elapsed Day, as measured by effect size. Let us take a deeper look at some of the most important dimensions that show significant amount of difference in average Elapsed Day. </p>"
-                        }
-                    ],
-                    "slug": "overview-of-key-factors-dmpwln1ha7",
-                    "cardWidth": 100
-                }
-            ],
-            "name": "Performance",
-            "slug": "performance-qm5ilmxf41"
-        },
-    ],
-    "listOfCards": [
-    ],
-    "name": "Overview card",
-    "slug": "fdfdfd_overview"
-}
 
 bar_chart = {
     "dataType": "c3Chart",
