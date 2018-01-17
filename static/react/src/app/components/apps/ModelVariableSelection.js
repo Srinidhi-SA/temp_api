@@ -74,7 +74,7 @@ export class ModelVariableSelection extends React.Component {
                 <div className="clearfix"></div>
                 </div>
                 <div className="main-content">
-                <div className="panel panel-default">
+                <div className="panel panel-default box-shadow">
                 <div className="panel-body">    
                 <Form onSubmit={this.createModel.bind(this)}>
                 <FormGroup role="form">

@@ -66,7 +66,7 @@ export class AppsScoreDetail extends React.Component {
 			          <div className="row">
 		                <div className="col-md-12">
 
-		                <div className="panel panel-mAd documentModeSpacing ">
+		                <div className="panel panel-mAd documentModeSpacing box-shadow">
 		                    <div className="panel-heading">
 		                      {/* <h2 className="pull-left">{store.getState().apps.scoreSummary.name}</h2>*/}
 
