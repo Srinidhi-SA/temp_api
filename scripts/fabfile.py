@@ -114,20 +114,21 @@ def deploy_api(branch="dev"):
     local('rm {0}'.format(config_file_path))
     local('echo "{0}" > {1}'.format(text_command, config_file_path))
 
-    with cd(BASE_DIR):
-        if os.path.exists(config_file_path) is True:
-            local('git add {0}'.format(config_file_path))
+    if UI_VERSION is None:
+        with cd(BASE_DIR):
+            if os.path.exists(config_file_path) is True:
+                local('git add {0}'.format(config_file_path))
 
-        if os.path.exists(react_env) is True:
-            local('git checkout {0}'.format(react_env))
+            if os.path.exists(react_env) is True:
+                local('git checkout {0}'.format(react_env))
 
-        if os.path.exists(react_npm_log) is True:
-            ls_react_npm_log = local('ls {0}'.format(react_npm_log), capture=True)
-            if 'cannot access' in ls_react_npm_log:
-                pass
-            else:
-                local('git checkout {0}'.format(react_npm_log))
-        local('git commit -m "version changed. Automated Deployment."')
+            if os.path.exists(react_npm_log) is True:
+                ls_react_npm_log = local('ls {0}'.format(react_npm_log), capture=True)
+                if 'cannot access' in ls_react_npm_log:
+                    pass
+                else:
+                    local('git checkout {0}'.format(react_npm_log))
+            commit_capture = local('git commit -m "version changed. Automated Deployment."', capture=True)
 
     only_for_api_push_and_pull(
         server_details=server_details,
