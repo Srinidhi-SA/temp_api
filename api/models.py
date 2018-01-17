@@ -1068,6 +1068,7 @@ class Score(models.Model):
 
     def create_configuration_for_column_setting_from_variable_selection(self):
         # Trainer related variable selection
+
         trainer_config = json.loads(self.trainer.config)
         trainer_config_config = trainer_config.get('config')
         trainer_column_setting_config = trainer_config_config.get('COLUMN_SETTINGS')
@@ -1075,8 +1076,7 @@ class Score(models.Model):
 
         # Score related variable selection
         main_config = json.loads(self.config)
-        score_config = main_config.get('config')
-        score_variable_selection_config = score_config.get('variablesSelection')
+        score_variable_selection_config = main_config.get('variablesSelection')
         print score_variable_selection_config
         output = {
             'modelvariableSelection': trainer_variable_selection_config,
