@@ -317,7 +317,7 @@ hr {
 .h2, h2 {
 	font-size: 27px
 }
-.h3, h3,h4.modal-title {
+.h3, h3 {
 	font-size: 23px
 }
 .h4, h4 {
@@ -2318,7 +2318,7 @@ box-shadow:         0 2px 2px rgba(0,0,0,0.05);
 .pagination>li>a:focus, .pagination>li>a:hover, .pagination>li>span:focus, .pagination>li>span:hover {
 	z-index: 2;
 	color: #00978b;
-	background-color: #eee;
+	background-color: #f1f1f1;
 	border-color: transparent
 }
 .pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover {
@@ -2590,8 +2590,8 @@ a.thumbnail.active, a.thumbnail:focus, a.thumbnail:hover {
 	color: #e6e6e6
 }
 .alert-danger {
-	background-color: #00998c;
-	border-color: #00998c;
+	background-color: #EF6262;
+	border-color: #EF6262;
 	color: #fff
 }
 .alert-danger hr {
@@ -3184,7 +3184,7 @@ button.close {
 .carousel-inner, .modal-open {
 	overflow: hidden
 }
-/*
+
 .modal {
   text-align: center;
   padding: 0!important;
@@ -3193,7 +3193,7 @@ button.close {
 .modal:before {
   content: '';
   display: inline-block;
-  height: 100%;
+  height: 85%;
   vertical-align: middle;
   margin-right: -4px;
 }
@@ -3208,8 +3208,7 @@ button.close {
 	position: relative;
 	width: auto;
 	margin: 10px
-
-} */
+} 
 
 .modal-content {
 	border: 1px solid #999;
@@ -3233,7 +3232,7 @@ button.close {
 	padding: 15px
 }
 .modal-header .close {
-	margin-top: -2px
+	margin-top: 4px
 }
 .modal-title {
 	margin: 0;
@@ -5370,7 +5369,7 @@ button:focus {
 	width: 80px;
 	height: 100%;
 	background-color: #333333;
-	border-right: 1px solid #eee;
+	border-right: 1px solid #edecec;
 	top: 60px;
 }
 .side-menu .navbar {
@@ -5686,7 +5685,7 @@ li a.sdb_settings:hover span, li a.active.sdb_settings span {
 	left: 54px;
     border-width: 7px 13px 7px 13px;
 	border-style: solid;
-	border-color: transparent #f7f7f7 transparent transparent; /* Old mAdv Comment e0e6e5 */
+	border-color: transparent #edecec transparent transparent; /* Old mAdv Comment e0e6e5 */
 	display: block;
 	width: 0;
 }
@@ -11174,7 +11173,7 @@ pre {
 }
 .modal-content {
 	box-shadow: 0 4px 6px rgba(0, 0, 0, .3);
-	border-radius: 3px;
+	border-radius: 0;
 	overflow: hidden;
 	color: #555;
 	border-width: 0;
@@ -11287,7 +11286,7 @@ pre {
 }
 }
 .modal-colored-header .modal-header .close, .modal-dark .modal-header .close {
-	margin-top: 2px;
+	 
 	color: #fff
 }
 .modal-colored-header .modal-content {
@@ -11296,7 +11295,7 @@ pre {
 .modal-colored-header .modal-header, .modal-header {
 	background-color: #00998c;
 	color: #fff;
-	padding: 15px
+	padding: 5px 15px
 }
 .modal-colored-header .modal-body {
 	background-color: #fff
@@ -11356,6 +11355,8 @@ pre {
 .ma-modal-open {
 	overflow-x: visible
 }
+
+h3.modal-title, h4.modal-title { font-size: 19px; }
 .alert {
 	line-height: 25px
 }
@@ -14355,7 +14356,7 @@ progress { width: 100%; }
 
 .modal-body .tab-content {  margin-bottom: inherit; margin-top: 0; }
 .modal-body .tab-content h3 { margin-top:0; }
-.db_images { width: 122px; height: 56px; background: url(../../assets/images/db_images.png) no-repeat 0 0; background-size: 360px; }
+.db_images { width: 113px; height: 49px; background: url(../../assets/images/db_images.png) no-repeat 0 0; background-size: 360px; }
 .db_images.db_file_upload { background-position: -240px -120px}
 .db_images.db_sql_server { background-position: 0 0}
 .db_images.db_my_sql { background-position: -196px 0  }
