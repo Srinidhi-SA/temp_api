@@ -259,12 +259,12 @@ export class VariableSelection extends React.Component {
         let renderSelectBox = null;
         let renderPossibleAnalysis = null, renderSubList=null;
         if(dataPrev){
-            const metaData = dataPrev.meta_data.uiMetaData.columnDataUI;
+            const metaData = dataPrev.meta_data.uiMetaData.varibaleSelectionArray;
             if(metaData){
                 renderSelectBox = metaData.map((metaItem,metaIndex) =>{
-                    if(metaItem.columnType !="datetime" && metaItem.consider && !metaItem.dateSuggestionFlag){
+                    if(metaItem.columnType !="datetime" && !metaItem.dateSuggestionFlag){
                         return(
-                                <option key={metaItem.slug}  name={metaItem.slug}  value={metaItem.columnType}>{metaItem.name}</option>
+                                <option key={metaItem.slug}  name={metaItem.slug}   value={metaItem.columnType}>{metaItem.name}</option>
                         );
                     }
                 })

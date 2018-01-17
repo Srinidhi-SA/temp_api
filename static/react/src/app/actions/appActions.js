@@ -150,7 +150,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 "timeDimension":store.getState().datasets.selectedTimeDimensions,*/
                 "trainValue":store.getState().apps.trainValue,
                 "testValue":store.getState().apps.testValue,
-                "variablesSelected":store.getState().datasets.dataPreview.meta_data.uiMetaData.varibaleSelectionArray
+                "variablesSelection":store.getState().datasets.dataPreview.meta_data.uiMetaData.varibaleSelectionArray
                /* "analysisVariable":targetVariable,
                 'customAnalysisDetails':customDetails["customAnalysisDetails"],
                  'polarity':customDetails["polarity"],
@@ -348,14 +348,15 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
         var datasetSlug = store.getState().datasets.dataPreview.slug;
         var app_id=store.getState().apps.currentAppId;
         var customDetails = createcustomAnalysisDetails();
-        var details = {"measures":store.getState().datasets.selectedMeasures,
+        var details = {/*"measures":store.getState().datasets.selectedMeasures,
                 "dimension":store.getState().datasets.selectedDimensions,
                 "timeDimension":store.getState().datasets.selectedTimeDimensions,
                 "analysisVariable":targetVariable,
                 "algorithmName":store.getState().apps.selectedAlg,
                 'customAnalysisDetails':customDetails["customAnalysisDetails"],
                 'polarity':customDetails["polarity"],
-                'uidColumn':customDetails["uidColumn"],
+                'uidColumn':customDetails["uidColumn"],*/
+                "variablesSelection":store.getState().datasets.dataPreview.meta_data.uiMetaData.varibaleSelectionArray,
                 "app_id":app_id}
         return fetch(API+'/api/score/',{
             method: 'post',
@@ -1802,4 +1803,12 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             type: "EXPORT_AS_PMML_MODAL",
             flag
         }
+    }
+    
+    export function updateSelectedVariable(event){
+        var selOption = event.target.childNodes[event.target.selectedIndex];
+        var varType = selOption.value;
+        var varText = selOption.text;
+        var varSlug = selOption.getAttribute("name");
+        return {type: "SET_POSSIBLE_LIST", varType, varText, varSlug};
     }

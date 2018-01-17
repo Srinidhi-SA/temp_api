@@ -137,18 +137,6 @@ export default function reducer(state = {
       }
       break;
 
-    /*case "SELECTED_MEASURES":
-      {
-        return {
-          ...state,
-          selectedMeasures: state.selectedMeasures.concat(action.variableName),
-          selectedVariablesCount: state.selectedVariablesCount + 1,
-          measureChecked: action.meaChkBoxList,
-          measureAllChecked: action.isAllChecked
-
-        }
-      }
-      break;*/
     case "SHOW_DATA_PREVIEW":
       {
         return {
@@ -165,60 +153,7 @@ export default function reducer(state = {
         }
       }
       break;
- /*   case "UNSELECT_MEASURES":
-      {
-        return {
-          ...state,
-          selectedMeasures: state.selectedMeasures.filter(item => action.variableName !== item),
-          selectedVariablesCount: state.selectedVariablesCount - 1,
-          measureChecked: action.meaChkBoxList,
-          measureAllChecked: action.isAllChecked
 
-        }
-      }
-      break;
-    case "SELECTED_DIMENSIONS":
-      {
-        return {
-          ...state,
-          selectedDimensions: state.selectedDimensions.concat(action.variableName),
-          selectedVariablesCount: state.selectedVariablesCount + 1,
-          dimensionAllChecked: action.isAllChecked,
-          dimensionChecked: action.dimChkBoxList
-        }
-      }
-      break;
-    case "UNSELECT_DIMENSION":
-      {
-        return {
-          ...state,
-          selectedDimensions: state.selectedDimensions.filter(item => action.variableName !== item),
-          selectedVariablesCount: state.selectedVariablesCount - 1,
-          dimensionAllChecked: action.isAllChecked,
-          dimensionChecked: action.dimChkBoxList
-        }
-      }
-      break;
-    case "SELECTED_TIMEDIMENSION":
-      {
-        return {
-          ...state,
-          selectedTimeDimensions: action.variableName,
-          selectedVariablesCount: state.selectedVariablesCount,
-          dateTimeChecked: action.timeChkBoxList
-        }
-      }
-      break;
-    case "UNSELECT_TIMEDIMENSION":
-      {
-        return {
-          ...state,
-          selectedTimeDimensions: action.variableName,
-          selectedVariablesCount: state.selectedVariablesCount - 1,
-          dateTimeChecked: action.timeChkBoxList
-        }
-      }
-      break;*/
     case "STORE_SIGNAL_META":
       {
         return {
@@ -249,17 +184,7 @@ export default function reducer(state = {
         }
       }
       break;
-    /*case "SET_VARIABLES":
-      {
-        return {
-          ...state,
-          selectedDimensions: action.dimensions,
-          selectedTimeDimensions: action.timeDimension,
-          selectedMeasures: action.measures,
-          selectedVariablesCount: action.count
-        }
-      }
-      break;*/
+
     case "SHOW_DATA_PREVIEW":
       {
         return {
@@ -394,56 +319,6 @@ export default function reducer(state = {
       }
       break;
 
-   /* case "SELECT_ALL_MEASURES":
-      {
-        return {
-          ...state,
-          selectedMeasures: action.measures,
-          measureAllChecked: true,
-          measureChecked: action.meaChkBoxList,
-          selectedVariablesCount: state.selectedDimensions.length + action.measures.length + action.dataTimeCount,
-          dataSetMeasures: action.measures
-
-        }
-      }
-      break;
-    case "UNSELECT_ALL_MEASURES":
-      {
-        return {
-          ...state,
-          selectedMeasures: [],
-          measureAllChecked: false,
-          measureChecked: action.meaChkBoxList,
-          selectedVariablesCount: state.selectedVariablesCount - state.selectedMeasures.length,
-          dataSetMeasures: state.ImmutableMeasures
-        }
-      }
-      break;
-
-    case "SELECT_ALL_DIMENSION":
-      {
-        return {
-          ...state,
-          selectedDimensions: action.dimension,
-          dimensionAllChecked: true,
-          dimensionChecked: action.diaChkBoxList,
-          selectedVariablesCount: state.selectedMeasures.length + action.dimension.length + action.dataTimeCount,
-          dataSetDimensions: action.dimension
-        }
-      }
-      break;
-    case "UNSELECT_ALL_DIMENSION":
-      {
-        return {
-          ...state,
-          selectedDimensions: [],
-          dimensionAllChecked: false,
-          dimensionChecked: action.diaChkBoxList,
-          selectedVariablesCount: state.selectedVariablesCount - state.selectedDimensions.length,
-          dataSetDimensions: state.ImmutableDimension
-        }
-      }
-      break;*/
     case "UPADTE_VARIABLES_LIST":
     {
         return {
