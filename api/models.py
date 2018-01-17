@@ -1022,10 +1022,10 @@ class Score(models.Model):
         }
 
         config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
-        try:
-            config['config']["COLUMN_SETTINGS"] = self.create_configuration_for_column_setting_from_variable_selection()
-        except:
-            config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
+        # try:
+        config['config']["COLUMN_SETTINGS"] = self.create_configuration_for_column_setting_from_variable_selection()
+        # except:
+        #     config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
         config['config']["DATA_SOURCE"] = self.dataset.get_datasource_info()
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
         # config['config']["META_HELPER"] = self.create_configuration_meta_data()
@@ -1076,7 +1076,7 @@ class Score(models.Model):
         # Score related variable selection
         main_config = json.loads(self.config)
         score_config = main_config.get('config')
-        score_variable_selection_config = score_config.get('variableSelection')
+        score_variable_selection_config = score_config.get('variablesSelection')
         print score_variable_selection_config
         output = {
             'modelvariableSelection': trainer_variable_selection_config,
