@@ -1074,7 +1074,8 @@ class Score(models.Model):
         trainer_variable_selection_config = trainer_column_setting_config.get('variableSelection')
 
         # Score related variable selection
-        score_config = json.loads(self.config)
+        main_config = json.loads(self.config)
+        score_config = main_config.get('config')
         score_variable_selection_config = score_config.get('variableSelection')
 
         output = {
