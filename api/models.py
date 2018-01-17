@@ -1018,7 +1018,11 @@ class Score(models.Model):
         }
 
         config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
-        config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
+        try:
+            config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
+        except:
+            config['config']["COLUMN_SETTINGS"] = ""
+            pass
         config['config']["DATA_SOURCE"] = self.dataset.get_datasource_info()
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
         # config['config']["META_HELPER"] = self.create_configuration_meta_data()
@@ -1057,6 +1061,15 @@ class Score(models.Model):
             'modelfeatures': modelfeatures if modelfeatures is not None else [],
             'metadata': self.dataset.get_metadata_url_config(),
             'labelMappingDict':[labelMappingDict]
+        }
+
+    def create_configuration_for_column_setting_from_variable_selection(self):
+        trainer_config = json.loads(self.trainer.config)
+        trainer_config_config = trainer_config.get('config')
+        trainer_column_setting_config = trainer_config_config.get('COLUMN_SETTINGS')
+        trainer_variable_selection_config = trainer_column_setting_config.get('variableSelection')
+        output = {
+            'variable_selection': trainer_variable_selection_config
         }
 
     def get_config_from_config(self):

@@ -682,7 +682,7 @@ def add_ui_metadata_to_metadata(meta_data):
     return output
 
 def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
-    validcols = [ {"name":x["name"],"slug":x["slug"],"columnType":x["columnType"],"dateSuggestionFlag":x["dateSuggestionFlag"],"targetColumn":False} for x in columnDataUI if x["consider"]==True]
+    validcols = [ {"name":x["name"],"slug":x["slug"],"columnType":x["columnType"],"dateSuggestionFlag":x["dateSuggestionFlag"],"targetColumn":False,"targetColSetVarAs":None} for x in columnDataUI if x["consider"]==True]
     # print "presence of none validcols",len([x for x in validcols if x != None])
     timeDimensionCols = []
     dateSuggestionCols = []

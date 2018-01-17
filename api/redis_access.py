@@ -97,3 +97,13 @@ class AccessFeedbackMessage:
 
         self.set_using_key(key=key, value=data)
         return self.get_using_key(key)
+
+    def delete_this_key(self, key):
+        try:
+            sd = SaveAnyData.objects.get(slug=key)
+            sd.delete()
+        except:
+            print "No instance."
+            pass
+
+        return cache.__delattr__(key)
