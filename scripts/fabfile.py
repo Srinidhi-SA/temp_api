@@ -91,9 +91,24 @@ def deploy_api(branch="dev"):
     server_details= details['server_details']
     deployment_config= details['deployment_config']
     base_remote_path = path_details['base_remote_path']
-    text_command = """CONFIG_FILE_NAME = '{0}'\nUI_VERSION = '{1}'
-    """.format(deployment_config, random.randint(100000,10000000))
     config_file_path = BASE_DIR + '/config/settings/config_file_name_to_run.py'
+    all_lines = []
+    with open(config_file_path) as fp:
+        for line in fp:
+            all_lines.append(line)
+
+    UI_VERSION = None
+    for line in all_lines:
+        if "UI_VERSION" in line:
+            UI_VERSION = line.split("'")[1]
+
+    if UI_VERSION is None:
+        text_command = """CONFIG_FILE_NAME = '{0}'\nUI_VERSION = '{1}'
+        """.format(deployment_config, random.randint(100000,10000000))
+    else:
+        text_command = """CONFIG_FILE_NAME = '{0}'\nUI_VERSION = '{1}'
+        """.format(deployment_config, UI_VERSION)
+
     react_env = BASE_DIR + '/static/react/src/app/helpers/env.js'
     react_npm_log = BASE_DIR + '/static/react/npm-debug.log'
     local('rm {0}'.format(config_file_path))
