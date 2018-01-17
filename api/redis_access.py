@@ -102,8 +102,8 @@ class AccessFeedbackMessage:
         try:
             sd = SaveAnyData.objects.get(slug=key)
             sd.delete()
+            return cache.__delattr__(key)
         except:
             print "No instance."
-            pass
+            return None
 
-        return cache.__delattr__(key)

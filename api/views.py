@@ -4690,6 +4690,10 @@ def set_messages(request, slug=None):
     if not job:
         return JsonResponse({'result': 'No job exist.'})
 
+    emptyBin = request.GET.get('emptyBin', None)
+    if emptyBin is True or emptyBin == 'True':
+        job.reset_message()
+
     return_data = request.GET.get('data', None)
     data = request.body
     data = json.loads(data)
