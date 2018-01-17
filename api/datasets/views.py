@@ -256,6 +256,6 @@ class DatasetView(viewsets.ModelViewSet):
             )
 
         from helper import get_advanced_setting
-        uiMetaData["advanced_settings"] = get_advanced_setting(uiMetaData['metaDataUI'])
+        uiMetaData["advanced_settings"] = get_advanced_setting(uiMetaData)
         return Response(uiMetaData)
 
