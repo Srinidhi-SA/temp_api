@@ -1077,11 +1077,12 @@ class Score(models.Model):
         main_config = json.loads(self.config)
         score_config = main_config.get('config')
         score_variable_selection_config = score_config.get('variableSelection')
-
+        print score_variable_selection_config
         output = {
             'modelvariableSelection': trainer_variable_selection_config,
             'variableSelection': score_variable_selection_config
         }
+        return output
 
     def get_config_from_config(self):
         trainer_config = json.loads(self.trainer.config)
