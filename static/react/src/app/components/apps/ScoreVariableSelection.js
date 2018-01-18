@@ -66,7 +66,7 @@ export class ScoreVariableSelection extends React.Component {
                 <div className="clearfix"></div>
                 </div>
                 <div className="main-content">
-                <div className="panel panel-default">
+                <div className="panel panel-default box-shadow">
                 <div className="panel-body">    
                 <Form onSubmit={this.createScore.bind(this)}>
                 <FormGroup role="form">
@@ -80,17 +80,15 @@ export class ScoreVariableSelection extends React.Component {
                 </div>
                 
                 <DataVariableSelection/>
-                <div className="row">
-                <div className="col-lg-4 col-lg-offset-8">
-                <div className="form-group">
-                <input type="text" name="createScoreName" required={true} id="createScoreName" className="form-control input-sm" placeholder="Create Score Name" />
-                    </div>
-                </div>
-                </div>
+               
                 
                 <div className="row">
                 <div className="col-lg-12 text-right">
-                <Button type="submit" bsStyle="primary">SCORE MODEL</Button>
+				  <div className="form-inline">
+                <input type="text" name="createScoreName" required={true} id="createScoreName" className="form-control" placeholder="Create Score Name" />
+				&nbsp;&nbsp;  <Button type="submit" bsStyle="primary">SCORE MODEL</Button>
+                    </div>
+              
                 </div>
                 </div>
                 </FormGroup>
