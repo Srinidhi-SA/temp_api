@@ -1,6 +1,5 @@
 import React from "react";
 import {Redirect} from 'react-router';
-import ReactDOM from 'react-dom';
 import {sessionObject} from '../../helpers/manageSessionStorage';
 import LoadingBar from 'react-redux-loading-bar';
 import {Link} from "react-router-dom";

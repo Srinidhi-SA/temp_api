@@ -32,11 +32,13 @@ export class ViewChart extends React.Component {
         //View chart code
         if(chartData.subchart != null){
             chartData.subchart.show=true;
+
         }
 
         var imgDetails = "c3ChartScroll"+this.props.classId;
         chartData['bindto'] = document.querySelector("."+imgDetails)
         let chart = c3.generate(chartData);
+        //chart.zoom.enable(true);
 
         //Download Chart
         if(chartDataDownload.subchart != null){

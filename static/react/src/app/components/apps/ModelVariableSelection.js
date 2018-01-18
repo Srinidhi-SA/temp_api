@@ -6,7 +6,6 @@ import store from "../../store";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "react-bootstrap";
 
 import {C3Chart} from "../c3Chart";
-import ReactDOM from 'react-dom';
 import {DataVariableSelection} from "../data/DataVariableSelection";
 import {updateTrainAndTest,createModel} from "../../actions/appActions";
 import {AppsLoader} from "../common/AppsLoader";
@@ -23,12 +22,12 @@ import {getDataSetPreview} from "../../actions/dataActions";
 export class ModelVariableSelection extends React.Component {
     constructor(props) {
         super(props);
-        
+
     }
     componentWillMount() {
         //It will trigger when refresh happens on url
         if(this.props.dataPreview == null){
-            this.props.dispatch(getDataSetPreview(this.props.match.params.slug));   
+            this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
         }
         this.props.dispatch(updateTrainAndTest(50))
     }
@@ -75,18 +74,18 @@ export class ModelVariableSelection extends React.Component {
                 </div>
                 <div className="main-content">
                 <div className="panel panel-default">
-                <div className="panel-body">    
+                <div className="panel-body">
                 <Form onSubmit={this.createModel.bind(this)}>
                 <FormGroup role="form">
-                <div className="row">			          
-                 
+                <div className="row">
+
                 <div className="form-group">
                 <label className="col-lg-2">I want to predict</label>
                 <div className="col-lg-4"> {renderSelectBox}</div>
                 </div>
                  {/*<!-- /.col-lg-4 -->*/}
                 </div>
-                
+
                 <DataVariableSelection/>
                 <div className="row">
                 <div className="col-lg-8">

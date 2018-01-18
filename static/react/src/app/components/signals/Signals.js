@@ -1,6 +1,5 @@
 import React from "react";
 import {connect} from "react-redux";
-import ReactDOM from "react-dom";
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {
@@ -66,7 +65,7 @@ export class Signals extends React.Component {
     } else{
         this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, pageNo));
     }
-    
+
     }
 
   componentDidMount() {
@@ -149,7 +148,7 @@ export class Signals extends React.Component {
     this.props.dispatch(updateHide(true))
     this.props.dispatch(emptySignalAnalysis());
     this.props.dispatch(triggerSignalAnalysis(signalData, percentage, message));
-    
+
     //this.props.history.push('/signals/'+slug);
   }
   onChangeOfSearchBox(e) {
@@ -356,11 +355,11 @@ export class Signals extends React.Component {
                     </ul>
                   </div>
                 </div>
-				
-				</div>				
+
+				</div>
               </div>
             </div>
-           
+
 
           <div className="main-content">
             <div className="row">
