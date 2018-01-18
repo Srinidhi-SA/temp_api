@@ -198,6 +198,7 @@ class TrainerView(viewsets.ModelViewSet):
 
         serializer = TrainerSerlializer(instance=instance)
         trainer_data = serializer.data
+        print trainer_data['config']['config']['COLUMN_SETTINGS'].keys()
         t_d_c = trainer_data['config']['config']['COLUMN_SETTINGS']['varibleSelection']
 
         score_datatset_slug = request.GET.get('score_datatset_slug')
