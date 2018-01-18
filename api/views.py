@@ -183,9 +183,10 @@ class TrainerView(viewsets.ModelViewSet):
         serializer = TrainerSerlializer(instance=instance)
         return Response(serializer.data)
 
-    @detail_route
+    # http://madvisordev.marlabsai.com/api/trainer/test-model-5cci7lpr5b/
+    # comparision/?score_datatset_slug=subsett-8taanm0lge
+    detail_route(methods=['get'])
     def comparision(self, request):
-        import pdb;pdb.set_trace()
         try:
             instance = self.get_object_from_all()
         except:
