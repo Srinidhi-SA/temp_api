@@ -211,10 +211,24 @@ class TrainerView(viewsets.ModelViewSet):
             return creation_failed_exception("File Doesn't exist.")
 
         dataset_serializer = DatasetSerializer(instance=dataset_instance)
-        dataset_serializer_data = dataset_serializer.add_uimetadata(dataset_instance)
-        print dataset_serializer_data.keys()
-        print dataset_serializer_data['meta_data'].keys()
-        d_d_c = dataset_serializer_data['meta_data']['uiMetaData']['varibaleSelectionArray']
+        object_details = dataset_serializer.data
+        original_meta_data_from_scripts = object_details['meta_data']
+
+        from api.datasets.helper import add_transformation_setting_to_ui_metadata, add_ui_metadata_to_metadata
+
+        if original_meta_data_from_scripts is None:
+            uiMetaData = None
+        if original_meta_data_from_scripts == {}:
+            uiMetaData = None
+        else:
+            uiMetaData = add_ui_metadata_to_metadata(original_meta_data_from_scripts)
+
+        object_details['meta_data'] = {
+            "scriptMetaData": original_meta_data_from_scripts,
+            "uiMetaData": uiMetaData
+        }
+
+        d_d_c = uiMetaData['varibaleSelectionArray']
 
         t_d_c_s = set([item['name'] for item in t_d_c])
         d_d_c_s = set([item['name'] for item in d_d_c])
