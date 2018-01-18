@@ -41,7 +41,17 @@ class JobAdmin(admin.ModelAdmin):
     config_prettified.verbose_name = 'Verbose ConfigPrettified'
 
     def javascript_like_config(self, instance):
-        return json.loads(instance.config)
+        config_str = instance.config
+        replace_words = {
+            'None': 'null',
+            'True': 'true',
+            'False': 'false'
+        }
+
+        for key in replace_words:
+            config_str.replace(key, replace_words[key])
+        
+        return replace_words
 
 
 
