@@ -352,10 +352,10 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 "dimension":store.getState().datasets.selectedDimensions,
                 "timeDimension":store.getState().datasets.selectedTimeDimensions,
                 "analysisVariable":targetVariable,
-                "algorithmName":store.getState().apps.selectedAlg,
                 'customAnalysisDetails':customDetails["customAnalysisDetails"],
                 'polarity':customDetails["polarity"],
                 'uidColumn':customDetails["uidColumn"],*/
+                "algorithmName":store.getState().apps.selectedAlg,
                 "variablesSelection":store.getState().datasets.dataPreview.meta_data.uiMetaData.varibaleSelectionArray,
                 "app_id":app_id}
         return fetch(API+'/api/score/',{
