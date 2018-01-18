@@ -184,8 +184,6 @@ class TrainerView(viewsets.ModelViewSet):
         serializer = TrainerSerlializer(instance=instance)
         return Response(serializer.data)
 
-    # http://madvisordev.marlabsai.com/api/trainer/test-model-5cci7lpr5b/
-    # comparision/?score_datatset_slug=subsett-8taanm0lge
     @detail_route(methods=['get'])
     def comparision(self, request, *args, **kwargs):
 

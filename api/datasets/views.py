@@ -20,6 +20,8 @@ from helper import convert_to_string
 from serializers import DatasetSerializer, DataListSerializer, DataNameListSerializer
 from api.query_filtering import get_listed_data, get_retrieve_data
 from helper import add_transformation_setting_to_ui_metadata, add_ui_metadata_to_metadata
+from helper import convert_metadata_according_to_transformation_setting
+from helper import get_advanced_setting
 
 # Create your views here.
 
@@ -30,7 +32,6 @@ class DatasetView(viewsets.ModelViewSet):
         queryset = Dataset.objects.filter(
             created_by=self.request.user,
             deleted=False,
-            # analysis_done=True
             status__in=['SUCCESS', 'INPROGRESS']
         )
         return queryset
@@ -132,7 +133,6 @@ class DatasetView(viewsets.ModelViewSet):
         queryset = Dataset.objects.filter(
             created_by=self.request.user,
             deleted=False,
-            # analysis_done=True
             status__in=['SUCCESS']
         )
         serializer = DataNameListSerializer(queryset, many=True)
@@ -220,33 +220,10 @@ class DatasetView(viewsets.ModelViewSet):
 
     @detail_route(methods=['put'])
     def meta_data_modifications(self, request, slug=None):
-        """
-        This function will not change original metadata. It is just for data preview and modification
-        page. UI will send a modified TS(Tranformation setting) and accordingly we will make changes
-        to TS, metaData, columnData or metadata as a whole. Return metadata again back to UI.
-
-        No changes should be saved to original metadata.
-
-        So all modification are done in function convert_metadata_according_to_transformation_setting.
-        Using latest transformation_settings, change whatever possible on original metadata but don't commit.
-        :param request:
-        :param slug:
-        :return:
-        """
-        #
-        # try:
-        #     instance = self.get_object_from_all()
-        # except:
-        #     return creation_failed_exception("File Doesn't exist.")
-        from helper import convert_metadata_according_to_transformation_setting
-
         data = request.data
         if 'config' not in data:
             return Response({'messgae': 'No config in request body.'})
-        # serializer = DatasetSerializer(instance=instance)
-        # object_details = serializer.data
         uiMetaData = data['uiMetaData']
-        # uiMetaData = serializer.add_ui_metadata_to_metadata(scriptMetaData)
         ts = data.get('config')
 
         uiMetaData = convert_metadata_according_to_transformation_setting(
@@ -254,7 +231,6 @@ class DatasetView(viewsets.ModelViewSet):
                 transformation_setting=ts
             )
 
-        from helper import get_advanced_setting
         uiMetaData["advanced_settings"] = get_advanced_setting(uiMetaData['varibaleSelectionArray'])
         return Response(uiMetaData)
 
