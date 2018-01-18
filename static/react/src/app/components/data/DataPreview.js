@@ -8,7 +8,7 @@ import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {C3Chart} from "../c3Chart";
 import ReactDOM from 'react-dom';
-import {hideDataPreview,getDataSetPreview,renameMetaDataColumn,updateTranformColumns} from "../../actions/dataActions";
+import {hideDataPreview,getDataSetPreview,renameMetaDataColumn,updateTranformColumns,hideDataPreviewDropDown} from "../../actions/dataActions";
 import {dataSubsetting,clearDataPreview,clearLoadingMsg} from "../../actions/dataUploadActions"
 import {Button,Dropdown,Menu,MenuItem} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"
@@ -136,7 +136,6 @@ export class DataPreview extends React.Component {
 
 
 	componentDidMount() {
-
 		{/*}$(function(){
 			console.log($(".cst_table"));
 			let initialCol= $(".cst_table td").first();
@@ -160,9 +159,12 @@ export class DataPreview extends React.Component {
 
 		showHideSideTable(this.firstTimeSideTable);
 		showHideSideChart(this.firstTimeColTypeForChart,this.firstTimeSideChart);
-
+		hideDataPreviewDropDown(this.props.curUrl);
+		
 
 	}
+	
+	
 	setSideElements(e){
 
 		//renderFlag=true;

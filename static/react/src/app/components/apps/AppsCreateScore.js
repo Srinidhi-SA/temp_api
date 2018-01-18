@@ -46,6 +46,7 @@ export class AppsCreateScore extends React.Component {
     	this.props.dispatch(updateSelectedAlg($("#algorithms").val()));
     	this.props.dispatch(getDataSetPreview(this.selectedData));
     	this.props.dispatch(hideCreateScorePopup());
+    	
     }
     updateDataset(e){
     	this.props.dispatch(updateDatasetName(e.target.value));

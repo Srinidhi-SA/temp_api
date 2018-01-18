@@ -1376,3 +1376,8 @@ export function updateSelectAllAnlysis(flag){
     }
 }
 
+export function hideDataPreviewDropDown(props){
+  if(props.indexOf("scores") != -1)
+    $('.dropdown-toggle').removeAttr('data-toggle');
+}
+

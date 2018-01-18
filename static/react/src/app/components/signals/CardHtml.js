@@ -18,7 +18,7 @@ export class CardHtml extends React.Component {
     super(props);
   }
   componentDidMount() {
-      HeatMap("heat-table-map");
+    //  HeatMap("heat-table-map");
       predictionLabelClick();
   }
   render() {
