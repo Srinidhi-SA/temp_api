@@ -32,6 +32,7 @@ from api.utils import \
     AppSerializer
 
 from api.datasets.serializers import DatasetSerializer
+from api.datasets.helper import add_transformation_setting_to_ui_metadata, add_ui_metadata_to_metadata
 
 from models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData, StockDataset, CustomApps
 
@@ -213,9 +214,6 @@ class TrainerView(viewsets.ModelViewSet):
         dataset_serializer = DatasetSerializer(instance=dataset_instance)
         object_details = dataset_serializer.data
         original_meta_data_from_scripts = object_details['meta_data']
-
-        from api.datasets.helper import add_transformation_setting_to_ui_metadata, add_ui_metadata_to_metadata
-
         if original_meta_data_from_scripts is None:
             uiMetaData = None
         if original_meta_data_from_scripts == {}:

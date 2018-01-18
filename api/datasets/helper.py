@@ -503,11 +503,8 @@ def add_possible_analysis_to_ui_metadata(meta_data):
     return settings.ANALYSIS_FOR_TARGET_VARIABLE
 
 
-def add_advanced_settings_to_ui_metadata(meta_data):
-    if 'metaData' in meta_data:
-        return get_advanced_setting(meta_data)
-    elif 'metaDataUI' in meta_data:
-        return get_advanced_setting(meta_data)
+def add_advanced_settings_to_ui_metadata(varibaleSelectionArray):
+    get_advanced_setting(varibaleSelectionArray)
 
 
 def add_metaData_to_ui_metadata(meta_data):
@@ -536,24 +533,15 @@ def collect_slug_for_percentage_columns(meta_data):
 
     return slug_list
 
-def get_advanced_setting(meta_data):
+
+def get_advanced_setting(varibaleSelectionArray):
 
     time_count = 0
-    metaData = []
-    if 'metaData' in meta_data:
-        metaData = meta_data['metaData']
-    elif 'metaDataUI' in meta_data:
-        metaData = meta_data['metaDataUI']
+    for data in varibaleSelectionArray:
+        if data['dateSuggestionFlag'] is True or data['columnType'] == 'dateTime':
+            time_count += 1
 
-    for data in metaData:
-        if data.get('name') == 'timeDimension':
-            time_count += data.get('value')
-        if data.get('name') == 'dateTimeSuggestions':
-            time_count += len(data.get('value').keys())
     advanced_setting = add_trend_in_advanced_setting(time_count)
-
-
-
     return advanced_setting
 
 
@@ -679,7 +667,6 @@ def add_headers_to_ui_metadata(meta_data):
 def add_ui_metadata_to_metadata(meta_data):
     output = {
         'possibleAnalysis': add_possible_analysis_to_ui_metadata(meta_data),
-        'advanced_settings': add_advanced_settings_to_ui_metadata(meta_data),
         'transformation_settings': add_transformation_setting_to_ui_metadata(meta_data),
         'metaDataUI': add_metaData_to_ui_metadata(meta_data),
         'columnDataUI': add_columnData_to_ui_metatdata(meta_data),
@@ -689,6 +676,7 @@ def add_ui_metadata_to_metadata(meta_data):
     }
     varibaleSelectionArray = add_variable_selection_to_metadata(output["columnDataUI"], output['transformation_settings'])
     output.update({"varibaleSelectionArray":varibaleSelectionArray})
+    output.update({'advanced_settings': add_advanced_settings_to_ui_metadata(varibaleSelectionArray)})
     return output
 
 def add_variable_selection_to_metadata(columnDataUI,transformation_settings):

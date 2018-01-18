@@ -19,6 +19,7 @@ from api.pagination import CustomPagination
 from helper import convert_to_string
 from serializers import DatasetSerializer, DataListSerializer, DataNameListSerializer
 from api.query_filtering import get_listed_data, get_retrieve_data
+from helper import add_transformation_setting_to_ui_metadata, add_ui_metadata_to_metadata
 
 # Create your views here.
 
@@ -161,8 +162,6 @@ class DatasetView(viewsets.ModelViewSet):
         object_details = serializer.data
         original_meta_data_from_scripts = object_details['meta_data']
 
-        from helper import add_transformation_setting_to_ui_metadata, add_ui_metadata_to_metadata
-
         if original_meta_data_from_scripts is None:
             uiMetaData = None
         if original_meta_data_from_scripts == {}:
@@ -256,6 +255,6 @@ class DatasetView(viewsets.ModelViewSet):
             )
 
         from helper import get_advanced_setting
-        uiMetaData["advanced_settings"] = get_advanced_setting(uiMetaData)
+        uiMetaData["advanced_settings"] = get_advanced_setting(uiMetaData['varibaleSelectionArray'])
         return Response(uiMetaData)
 

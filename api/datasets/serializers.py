@@ -66,25 +66,6 @@ class DatasetSerializer(serializers.ModelSerializer):
 
         return ret
 
-    def add_uimetadata(self, instance):
-        ret = super(DatasetSerializer, self).to_representation(instance)
-        original_meta_data_from_scripts = ret['meta_data']
-
-        from helper import add_transformation_setting_to_ui_metadata, add_ui_metadata_to_metadata
-
-        if original_meta_data_from_scripts is None:
-            uiMetaData = None
-        if original_meta_data_from_scripts == {}:
-            uiMetaData = None
-        else:
-            uiMetaData = add_ui_metadata_to_metadata(original_meta_data_from_scripts)
-
-        ret['meta_data'] = {
-            "scriptMetaData": original_meta_data_from_scripts,
-            "uiMetaData": uiMetaData
-        }
-        return ret
-
 
     class Meta:
         model = Dataset
