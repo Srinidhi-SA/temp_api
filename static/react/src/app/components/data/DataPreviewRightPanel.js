@@ -4,7 +4,6 @@ import {connect} from "react-redux";
 import {Redirect} from 'react-router';
 import store from "../../store";
 import {C3Chart} from "../c3Chart";
-import ReactDOM from 'react-dom';
 
 @connect((store) => {
 	return {login_response: store.login.login_response, dataPreview: store.datasets.dataPreview};
