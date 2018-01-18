@@ -939,24 +939,6 @@ class Trainer(models.Model):
         return convert_json_object_into_list_of_object(brief_info, 'trainer')
 
 
-"""
-{
-    "name": "WWADw",
-    "dataset": "iriscsv-5dbng5clba",
-    "app_id": 1,
-    "column_data_raw":
-        {
-            "measures": "",
-            "dimension": "",
-            "timeDimension": "",
-            "trainValue": 50,
-            "testValue": 50,
-            "analysisVariable": "age"
-        }
-}
-"""
-
-
 # TODO: Add generate config
 # TODO: Add set_result function: it will be contain many things.
 class Score(models.Model):
@@ -1046,7 +1028,6 @@ class Score(models.Model):
         targetVariableLevelcount = model_config_from_results.get('targetVariableLevelcount', None)
         modelFeaturesDict = model_config_from_results.get('modelFeatures', None)
         labelMappingDictAll = model_config_from_results.get('labelMappingDict',None)
-        # algorithmslug = 'f77631ce2ab24cf78c55bb6a5fce4db8rf'
 
         modelfeatures = modelFeaturesDict.get(algorithmslug, None)
         if labelMappingDictAll != None:

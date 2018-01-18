@@ -415,14 +415,12 @@ def cleanup_static_react_old_dist(type="development"):
         run('mv dist_* ~/old_dist')
 
 
-def create_database(type="development"):
-    if type == "development":
-        dev()
-    elif type == "production":
-        prod()
-
-    server_details = env.get('server_details')
-    path_details = env.get('path_details')
+def create_database(branch="development"):
+    details = get_branch_details(branch)
+    set_fabric_env(details)
+    print details
+    path_details = details['path_details']
+    server_details = details['server_details']
 
     db_name = "madvisor"
     user_name = "marlabs"
@@ -456,16 +454,16 @@ def download_sql_and_dump(branch='development'):
         get(path_json, local_dumping_path)
 
     with lcd(BASE_DIR):
-        file_name = '{0}.json'.format(current_time)
-        locapath = '/home/ankush/dump_files/' + file_name
+        file_name = 'datadump{0}.json'.format(current_time)
+        locapath = '/tmp/' + file_name
         local('python manage.py loaddata {0}'.format(locapath))
 
 
 @task
 def load_sql_dump_data():
     with lcd(BASE_DIR):
-        file_name = 'datadump1514902040.15.json'
-        locapath = '/home/ankush/dump_files/' + file_name
+        file_name = 'datadump20180118T112500.json'
+        locapath = '/tmp/' + file_name
         local('python manage.py loaddata {0}'.format(locapath))
     local("cat 'Done.'")
 

@@ -31,6 +31,8 @@ from api.utils import \
     AppListSerializers, \
     AppSerializer
 
+from api.datasets.serializers import DatasetSerializer
+
 from models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData, StockDataset, CustomApps
 
 
@@ -180,6 +182,44 @@ class TrainerView(viewsets.ModelViewSet):
 
         serializer = TrainerSerlializer(instance=instance)
         return Response(serializer.data)
+
+    @detail_route
+    def comparision(self, request):
+        import pdb;pdb.set_trace()
+        try:
+            instance = self.get_object_from_all()
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
+        if instance is None:
+            return creation_failed_exception("File Doesn't exist.")
+
+        serializer = TrainerSerlializer(instance=instance)
+        trainer_data = serializer.data
+        t_d_c = trainer_data['config']['COLUMN_SETTING']['varibleSelection']
+
+        score_datatset_slug = request.GET.get('score_datatset_slug')
+        try:
+            dataset_instance = Dataset.objects.get(slug=score_datatset_slug)
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
+        if dataset_instance is None:
+            return creation_failed_exception("File Doesn't exist.")
+
+        dataset_serializer = DatasetSerializer(instance=dataset_instance)
+        dataset_serializer_data = dataset_serializer.data
+        d_d_c = dataset_serializer_data['config']['COLUMN_SETTING']['varibleSelection']
+
+        t_d_c_s = set([item['name'] for item in t_d_c])
+        d_d_c_s = set([item['name'] for item in d_d_c])
+
+        differnece_in_set = d_d_c_s.difference(t_d_c_s)
+
+        return JsonResponse({
+            'proceed': True if len(differnece_in_set) < 1 else False,
+            'message': "Their was differnece among {0}".format(differnece_in_set)
+        })
 
 
 class ScoreView(viewsets.ModelViewSet):
