@@ -505,9 +505,9 @@ def add_possible_analysis_to_ui_metadata(meta_data):
 
 def add_advanced_settings_to_ui_metadata(meta_data):
     if 'metaData' in meta_data:
-        return get_advanced_setting(meta_data['metaData'])
+        return get_advanced_setting(meta_data)
     elif 'metaDataUI' in meta_data:
-        return get_advanced_setting(meta_data['metaDataUI'])
+        return get_advanced_setting(meta_data)
 
 
 def add_metaData_to_ui_metadata(meta_data):
@@ -536,16 +536,25 @@ def collect_slug_for_percentage_columns(meta_data):
 
     return slug_list
 
-def get_advanced_setting(metaData):
+def get_advanced_setting(meta_data):
 
     time_count = 0
+    metaData = []
+    if 'metaData' in meta_data:
+        metaData = meta_data['metaData']
+    elif 'metaDataUI' in meta_data:
+        metaData = meta_data['metaDataUI']
 
     for data in metaData:
         if data.get('name') == 'timeDimension':
             time_count += data.get('value')
         if data.get('name') == 'dateTimeSuggestions':
             time_count += len(data.get('value').keys())
-    return add_trend_in_advanced_setting(time_count)
+    advanced_setting = add_trend_in_advanced_setting(time_count)
+
+
+
+    return advanced_setting
 
 
 def add_trend_in_advanced_setting(time_count):
@@ -553,6 +562,7 @@ def add_trend_in_advanced_setting(time_count):
     from django.conf import settings
     if time_count > 0:
         main_setting = copy.deepcopy(settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND)
+
         trend_setting = copy.deepcopy(settings.ADANCED_SETTING_FOR_POSSIBLE_ANALYSIS_TREND)
 
         main_setting["dimensions"]["analysis"].insert(1, trend_setting)
@@ -682,10 +692,16 @@ def add_ui_metadata_to_metadata(meta_data):
     return output
 
 def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
-    validcols = [ {"name":x["name"],"slug":x["slug"],"columnType":x["columnType"],"dateSuggestionFlag":x["dateSuggestionFlag"],"targetColumn":False} for x in columnDataUI if x["consider"]==True]
+    validcols = [ {"name":x["name"],"slug":x["slug"],"columnType":x["columnType"],"dateSuggestionFlag":x["dateSuggestionFlag"],"targetColumn":False,"targetColSetVarAs":None} for x in columnDataUI if x["consider"]==True]
     # print "presence of none validcols",len([x for x in validcols if x != None])
+    timeDimensionCols = []
+    dateSuggestionCols = []
     validcols1 = []
     for x in validcols:
+        if x["columnType"] == "datetime":
+            timeDimensionCols.append(x["slug"])
+        if x["dateSuggestionFlag"] == True:
+            dateSuggestionCols.append(x["slug"])
         if x["dateSuggestionFlag"] == True:
             x.update({"selected": False})
         else:
@@ -719,7 +735,14 @@ def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
                 setVarAs.append({"name": obj["name"], "slug": obj["slug"], "setVarAs": relevantAction[0]["name"]})
     ######
     output = []
+    selctedDateSuggestedCol = None
+    if len(timeDimensionCols) == 0:
+        if len(dateSuggestionCols) > 0:
+            selctedDateSuggestedCol = dateSuggestionCols[0]
     for obj in validcols:
+        if selctedDateSuggestedCol != None:
+            if obj["slug"]==selctedDateSuggestedCol:
+                obj.update({"selected":True})
         uidFilter = filter(lambda x:x["slug"] == obj["slug"],uidcols)
         if len(uidFilter) > 0:
             obj.update({"uidCol": True})
@@ -738,7 +761,6 @@ def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
         else:
             obj.update({"setVarAs": None})
         output.append(obj)
-
 
 
     return output

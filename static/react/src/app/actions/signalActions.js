@@ -7,7 +7,7 @@ import store from "../store";
 import {openCsLoaderModal, closeCsLoaderModal, updateCsLoaderValue, updateCsLoaderMsg} from "./createSignalActions";
 import Dialog from 'react-bootstrap-dialog'
 import {showLoading, hideLoading} from 'react-redux-loading-bar'
-import {updateColumnStatus} from './dataActions';
+import {updateColumnStatus,updateStoreVariables} from './dataActions';
 // var API = "http://34.196.204.54:9000";
 
 // @connect((store) => {
@@ -19,7 +19,7 @@ var refreshSignalInterval = null;
 function getHeader(token) {
   return {'Authorization': token, 'Content-Type': 'application/json'};
 }
-export function checkIfDateTimeIsSelected() {
+export function checkIfTrendIsSelected() {
   var totalAnalysisList = store.getState().datasets.dataSetAnalysisList;
   var analysisList = [];
   var trendIsChecked = false;
@@ -39,6 +39,14 @@ export function checkIfDateTimeIsSelected() {
   }
   return trendIsChecked;
 
+}
+
+export function checkIfDateTimeIsSelected(){
+    var dataSetTimeDimensions = store.getState().datasets.dataSetTimeDimensions;
+    var flag = dataSetTimeDimensions.find(function(element) {
+        return element.selected  == true;
+      });
+    return flag;
 }
 
 //x-www-form-urlencoded'
@@ -312,7 +320,7 @@ export function setPossibleAnalysisList(event) {
     $(".treatAsCategorical").find('input[type=checkbox]').prop("checked", false);
     $(".treatAsCategorical").addClass("hidden")
   }
-  return {type: "SET_POSSIBLE_LIST", varType, varText, varSlug}
+  return {type: "SET_POSSIBLE_LIST", varType, varText, varSlug};
 }
 export function handleTargetSelection(){
     var selectedDimensions =  store.getState().datasets.selectedDimensions.slice();
@@ -329,62 +337,49 @@ export function handleTargetSelection(){
         selectedDimensions,
         selectedMeasures}
 }
-export function deleteTargetVariableFromSelection(event){
+function updateTargetVariable(slug,array){
+    for(var i=0;i<array.length;i++){
+    if(array[i].slug == slug){
+        array[i].targetColumn = !array[i].targetColumn; 
+        array[i].targetColSetVarAs = null;
+        break;
+    }
+} 
+return array;
+}
+
+export function hideTargetVariable(event){
+    return (dispatch) => {
     var selOption = event.target.childNodes[event.target.selectedIndex];
     var varType = selOption.value;
     var varText = selOption.text;
-    var prevVarText = store.getState().signals.getVarText;
-    var selectedDimensions =  store.getState().datasets.selectedDimensions.slice();
-    var originalDimension = store.getState().datasets.ImmutableDimension;
-    var dimensionList =  jQuery.extend(true, [], originalDimension);
-    var dimChkList = store.getState().datasets.dimensionChecked.slice();
+    var varSlug = selOption.getAttribute("name");
+    var prevVarSlug = store.getState().signals.selVarSlug;
+    var prevVarType = store.getState().signals.getVarType;
+    var prevSetVarAs = null;
     
-    var selectedTimeDim =  store.getState().datasets.selectedTimeDimensions;
-    
-    var selectedMeasures = store.getState().datasets.selectedMeasures.slice();
-    var originalMeasures = store.getState().datasets.ImmutableMeasures;
-    var measuresList =  jQuery.extend(true, [], originalMeasures);
-    var measuresChkList = store.getState().datasets.measureChecked.slice();
-    
-    if(varType == "dimension"){
-        var index = dimensionList.indexOf(varText);
-        var prevIndex = dimensionList.indexOf(prevVarText);
-        dimensionList.splice(index,1);
-        dimChkList.splice(index,1);
-        if(prevIndex != -1)
-        dimChkList.splice(prevIndex,0,true);
-        else{
-            prevIndex = measuresList.indexOf(prevVarText);
-            measuresChkList.splice(prevIndex,0,true);
-        }
-       
-        //selectedDimensions.splice(selectedDimensions.indexOf(varText),1);
-        //selectedDimensions.push(store.getState().signals.getVarText);
-    }else{
-        var index = measuresList.indexOf(varText);
-        var prevIndex = measuresList.indexOf(prevVarText);
-        measuresList.splice(index,1);
-        measuresChkList.splice(index,1);
-        if(prevIndex != -1)
-        measuresChkList.splice(prevIndex,0,true)
-        else{
-            prevIndex = dimensionList.indexOf(prevVarText); 
-            dimChkList.splice(prevIndex,0,true);
-        }
-        
-       // selectedMeasures.splice(selectedMeasures.indexOf(varText),1);
-        //selectedMeasures.push(store.getState().signals.getVarText);
+    var dataSetMeasures = store.getState().datasets.dataSetMeasures.slice();
+    var dataSetDimensions = store.getState().datasets.dataSetDimensions.slice();
+    var dataSetTimeDimensions = store.getState().datasets.dataSetTimeDimensions.slice();
+    var dimFlag =  store.getState().datasets.dimensionAllChecked;
+    var meaFlag = store.getState().datasets.measureAllChecked;
+    var count = store.getState().datasets.selectedVariablesCount;
+    if(varType == "measure"){
+        dataSetMeasures = updateTargetVariable(varSlug,dataSetMeasures)
+    }else if(varType == "dimension"){
+        dataSetDimensions = updateTargetVariable(varSlug,dataSetDimensions)
     }
-    var count = selectedMeasures.length+selectedDimensions.length-1;
-    if(selectedTimeDim)count = count+1;
-    return{
-        type:"UPADTE_VARIABLES_LIST",
-        measuresChkList,
-        measuresList,
-        count,
-        dimChkList,
-        dimensionList
-    } 
+
+    dataSetDimensions = updateTargetVariable(prevVarSlug,dataSetDimensions)
+    dataSetMeasures = updateTargetVariable(prevVarSlug,dataSetMeasures)
+  
+  
+    if(prevVarType == null){
+        count = count-1;
+    }
+    dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
+    }
+    
 }
 function checkIfDataTypeChanges(varSlug) {
   var transformSettings = store.getState().datasets.dataTransformSettings;
@@ -408,15 +403,37 @@ function checkIfDataTypeChanges(varSlug) {
   }
   return isVarTypeChanged;
 }
+function updateSetVarAs(colSlug,evt){
+    return (dispatch) => {
+        var dataSetMeasures = store.getState().datasets.dataSetMeasures.slice();
+        var dataSetDimensions = store.getState().datasets.dataSetDimensions.slice();
+        var dataSetTimeDimensions = store.getState().datasets.dataSetTimeDimensions.slice();
+        var dimFlag =  store.getState().datasets.dimensionAllChecked;
+        var meaFlag = store.getState().datasets.measureAllChecked;
+        var count = store.getState().datasets.selectedVariablesCount;
+        for(var i=0;i<dataSetMeasures.length;i++){
+            if(dataSetMeasures[i].slug == colSlug){
+                if(dataSetMeasures[i].targetColSetVarAs == null){
+                    dataSetMeasures[i].targetColSetVarAs = "percentage"; 
+                    break;
+                }
+                else{
+                    dataSetMeasures[i].targetColSetVarAs = null; 
+                    break;
+                }
+                
+            }
+        }
+        dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
+    }
+}
 export function updateCategoricalVariables(colSlug, colName, actionName, evt) {
   return (dispatch) => {
-    if (evt.target.checked) {
-      updateColumnStatus(dispatch, colSlug, colName, actionName, PERCENTAGE)
-    } else {
-      updateColumnStatus(dispatch, colSlug, colName, actionName, GENERIC_NUMERIC)
-    }
+        dispatch(updateSetVarAs(colSlug));
+      
   }
 }
+
 export function changeSelectedVariableType(colSlug, colName, actionName, evt) {
   var varType = "dimension";
   var varText = colName;
@@ -430,6 +447,7 @@ export function changeSelectedVariableType(colSlug, colName, actionName, evt) {
   }
 
 }
+
 export function createcustomAnalysisDetails() {
   var transformSettings = store.getState().datasets.dataTransformSettings;
   var customAnalysisDetails = []

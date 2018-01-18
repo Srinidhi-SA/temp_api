@@ -46,7 +46,7 @@ export class ScoreVariableSelection extends React.Component {
         let dataPrev = store.getState().datasets.dataPreview;
         let renderSelectBox = null;
         if(dataPrev){
-            const metaData = dataPrev.meta_data.uiMetaData.columnDataUI;
+            const metaData =  dataPrev.meta_data.uiMetaData.varibaleSelectionArray;
             if(metaData){
                 renderSelectBox =  <select disabled className="form-control" id="createScoreAnalysisList">
                 <option key={store.getState().apps.modelTargetVariable} value={store.getState().apps.modelTargetVariable}>{store.getState().apps.modelTargetVariable}</option>

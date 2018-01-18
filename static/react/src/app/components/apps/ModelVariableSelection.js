@@ -7,9 +7,10 @@ import {Modal,Button,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "r
 
 import {C3Chart} from "../c3Chart";
 import {DataVariableSelection} from "../data/DataVariableSelection";
-import {updateTrainAndTest,createModel} from "../../actions/appActions";
+import {updateTrainAndTest,createModel,updateSelectedVariable} from "../../actions/appActions";
 import {AppsLoader} from "../common/AppsLoader";
 import {getDataSetPreview} from "../../actions/dataActions";
+import {hideTargetVariable} from "../../actions/signalActions";
 
 @connect((store) => {
     return {login_response: store.login.login_response, dataPreview: store.datasets.dataPreview,
@@ -38,6 +39,10 @@ export class ModelVariableSelection extends React.Component {
         event.preventDefault();
         this.props.dispatch(createModel($("#createModelName").val(),$("#createModelAnalysisList").val()))
     }
+    setPossibleList(event){
+        this.props.dispatch(hideTargetVariable(event)); 
+        this.props.dispatch(updateSelectedVariable(event));
+    }
     render() {
         console.log("Create Model Variable Selection  is called##########3");
         {/* */}
@@ -48,12 +53,13 @@ export class ModelVariableSelection extends React.Component {
         let dataPrev = store.getState().datasets.dataPreview;
         let renderSelectBox = null;
         if(dataPrev){
-            const metaData = dataPrev.meta_data.uiMetaData.columnDataUI;
+            const metaData = dataPrev.meta_data.uiMetaData.varibaleSelectionArray;
             if(metaData){
-                renderSelectBox =  <select className="form-control" id="createModelAnalysisList">
+                renderSelectBox =  <select className="form-control" onChange={this.setPossibleList.bind(this)} id="createModelAnalysisList">
+                    <option value=""></option>
                 {metaData.map((metaItem,metaIndex) =>{
-                    if(metaItem.columnType !="datetime" && metaItem.consider && !metaItem.dateSuggestionFlag){
-                        return(<option key={metaIndex} value={metaItem.name}>{metaItem.name}</option>)
+                    if(metaItem.columnType !="datetime" && !metaItem.dateSuggestionFlag){
+                        return(<option key={metaItem.slug}  name={metaItem.slug}  value={metaItem.columnType}>{metaItem.name}</option>)
                     }
                 }
                 )}

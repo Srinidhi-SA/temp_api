@@ -740,7 +740,8 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND = {
                 "displayName": "Prediction",
                 "status": False,
                 "analysisSubTypes": [],
-                "noOfColumnsToUse": None
+                "noOfColumnsToUse": None,
+                "levelSetting":[]
             }
         ],
         "targetLevels": [],
@@ -845,7 +846,8 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND = {
                 "displayName": "Prediction",
                 "status": False,
                 "analysisSubTypes": [],
-                "noOfColumnsToUse": None
+                "noOfColumnsToUse": None,
+                "levelSetting":[]
             }
         ]
     },

@@ -131,6 +131,10 @@ class Job(models.Model):
 
         return original_object
 
+    def reset_message(self):
+        empty_dict = dict()
+        self.message_log = json.dumps(empty_dict)
+        self.save()
 
 
 class Dataset(models.Model):
@@ -446,7 +450,6 @@ class Dataset(models.Model):
         }
 
     def get_config(self):
-        import json
         config = json.loads(self.meta_data)
         if config is None:
             return {}
@@ -581,7 +584,11 @@ class Insight(models.Model):
         }
         advanced_settings = kwargs.get('advanced_settings')
         config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings(advanced_settings=advanced_settings)
-        config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
+        #
+        try:
+            config['config']["COLUMN_SETTINGS"] = self.make_config_for_colum_setting()
+        except:
+            config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
         config['config']["DATA_SOURCE"] = self.dataset.get_datasource_info()
 
         if 'advanced_settings' in kwargs:
@@ -591,14 +598,35 @@ class Insight(models.Model):
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
         # config['config']["META_HELPER"] = self.create_configuration_meta_data()
 
-        import json
         self.config = json.dumps(config)
         self.save()
         return config
 
     def get_config(self):
-        import json
         return json.loads(self.config)
+
+    def make_config_for_colum_setting(self):
+        config = self.get_config()
+        return {
+            'variableSelection': config['variableSelection']
+        }
+
+    def create_configuration_column_settings(self):
+        analysis_type = [self.type]
+        result_column = [self.target_column]
+
+        ret = {
+            'result_column': result_column,
+            'analysis_type': analysis_type,
+            'date_format': None,
+        }
+
+        get_config_from_config = self.get_config_from_config()
+        meta_data_related_config = self.dataset.common_config()
+
+        ret.update(get_config_from_config)
+        ret.update(meta_data_related_config)
+        return ret
 
     def get_config_from_config(self):
         config = json.loads(self.config)
@@ -626,9 +654,6 @@ class Insight(models.Model):
         }
         return ret
 
-
-
-
     def create_configuration_url_settings(self, advanced_settings):
         default_scripts_to_run = [
             'Descriptive analysis',
@@ -636,14 +661,6 @@ class Insight(models.Model):
             'Dimension vs. Dimension',
             'Trend'
         ]
-        # config = json.loads(self.config)
-        # script_to_run = config.get('possibleAnalysis', default_scripts_to_run)
-        # for index, value in enumerate(script_to_run):
-        #     if value == 'Trend Analysis':
-        #         script_to_run[index] = 'Trend'
-        #
-        # if script_to_run is [] or script_to_run is "":
-        #     script_to_run = default_scripts_to_run
 
         from django.conf import settings
         REVERSE_ANALYSIS_LIST = settings.REVERSE_ANALYSIS_LIST
@@ -663,37 +680,6 @@ class Insight(models.Model):
             'metadata': self.dataset.get_metadata_url_config()
         }
 
-    def create_configuration_column_settings(self):
-        analysis_type = [self.type]
-        result_column = [self.target_column]
-
-        ret = {
-            'result_column': result_column,
-            'analysis_type': analysis_type,
-            'date_format': None,
-        }
-
-        get_config_from_config = self.get_config_from_config()
-        meta_data_related_config = self.dataset.common_config()
-
-        ret.update(get_config_from_config)
-        ret.update(meta_data_related_config)
-        return ret
-        # return {
-        #     "analysis_type": ["master"],
-        #     "result_column": "",
-        #     "polarity": "",
-        #     "consider_columns": "",
-        #     "consider_columns_type": "",
-        #     "date_columns": "",
-        #     "date_format": "",
-        #     "ignore_column_suggestions": "",
-        #     "utf8_columns": "",
-        #     "measure_column_filter": "",
-        #     "dimension_column_filter": "",
-        #     "measure_suggestions": ""
-        # }
-
     def create_configuration_filter_settings(self):
         return {}
 
@@ -708,17 +694,40 @@ class Insight(models.Model):
                 temp_list.append(item)
         return temp_list
 
+    def get_variable_details_from_variable_selection(self):
+        config = self.get_config()
+        COLUMN_SETTINGS = config['config']['COLUMN_SETTINGS']
+        variableSelection = COLUMN_SETTINGS.get('variableSelection')
+
+        variable_selected = []
+        analysis_type = []
+
+        for variables in variableSelection:
+            if 'selected' in variables:
+                if variables['selected'] is True:
+                    variable_selected.append(variables['name'])
+                    analysis_type.append(variables['columnType'])
+                    break
+
+        return {
+            'variable selected': variable_selected,
+            'variable type': analysis_type
+        }
+
     def get_brief_info(self):
         brief_info = dict()
         config = self.get_config()
         config = config.get('config')
         if config is not None:
             if 'COLUMN_SETTINGS' in config:
-                column_settings = config['COLUMN_SETTINGS']
-                brief_info.update({
-                    'variable selected': column_settings.get('result_column')[0],
-                    'variable type': column_settings.get('analysis_type')[0]
-                })
+                try:
+                    brief_info.update(self.get_variable_details_from_variable_selection())
+                except:
+                    column_settings = config['COLUMN_SETTINGS']
+                    brief_info.update({
+                        'variable selected': column_settings.get('result_column')[0],
+                        'variable type': column_settings.get('analysis_type')[0]
+                    })
 
             if 'FILE_SETTINGS' in config:
                 file_setting = config['FILE_SETTINGS']
@@ -787,15 +796,26 @@ class Trainer(models.Model):
         }
 
         config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
-        config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
+
+        # try:
+        config['config']["COLUMN_SETTINGS"] = self.make_config_for_colum_setting()
+        # except:
+        #     config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
+
         config['config']["DATA_SOURCE"] = self.dataset.get_datasource_info()
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
         # config['config']["META_HELPER"] = self.create_configuration_meta_data()
 
-        import json
         self.config = json.dumps(config)
         self.save()
         return config
+
+    def make_config_for_colum_setting(self):
+        config = self.get_config()
+        print config
+        return {
+            'variableSelection': config['variablesSelection']
+        }
 
     def get_config_from_config(self):
         config = json.loads(self.config)
@@ -868,8 +888,24 @@ class Trainer(models.Model):
         self.save()
 
     def get_config(self):
-        import json
         return json.loads(self.config)
+
+    def get_variable_details_from_variable_selection(self):
+        config = self.get_config()
+        COLUMN_SETTINGS = config['config']['COLUMN_SETTINGS']
+        variableSelection = COLUMN_SETTINGS.get('variableSelection')
+
+        variable_selected = []
+
+        for variables in variableSelection:
+            if 'selected' in variables:
+                if variables['selected'] is True:
+                    variable_selected.append(variables['name'])
+                    break
+
+        return {
+            'variable selected': variable_selected
+        }
 
     def get_brief_info(self):
         brief_info = dict()
@@ -877,10 +913,13 @@ class Trainer(models.Model):
         config = config.get('config')
         if config is not None:
             if 'COLUMN_SETTINGS' in config:
-                column_settings = config['COLUMN_SETTINGS']
-                brief_info.update({
-                    'variable selected': column_settings.get('result_column')[0]
-                })
+                try:
+                    brief_info.update(self.get_variable_details_from_variable_selection())
+                except:
+                    column_settings = config['COLUMN_SETTINGS']
+                    brief_info.update({
+                        'variable selected': column_settings.get('result_column')[0]
+                    })
 
             if 'FILE_SETTINGS' in config:
                 file_setting = config['FILE_SETTINGS']
@@ -983,12 +1022,14 @@ class Score(models.Model):
         }
 
         config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
-        config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
+        # try:
+        config['config']["COLUMN_SETTINGS"] = self.create_configuration_for_column_setting_from_variable_selection()
+        # except:
+        #     config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
         config['config']["DATA_SOURCE"] = self.dataset.get_datasource_info()
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
         # config['config']["META_HELPER"] = self.create_configuration_meta_data()
 
-        import json
         self.config = json.dumps(config)
         self.save()
         return config
@@ -1024,6 +1065,24 @@ class Score(models.Model):
             'metadata': self.dataset.get_metadata_url_config(),
             'labelMappingDict':[labelMappingDict]
         }
+
+    def create_configuration_for_column_setting_from_variable_selection(self):
+        # Trainer related variable selection
+
+        trainer_config = json.loads(self.trainer.config)
+        trainer_config_config = trainer_config.get('config')
+        trainer_column_setting_config = trainer_config_config.get('COLUMN_SETTINGS')
+        trainer_variable_selection_config = trainer_column_setting_config.get('variableSelection')
+
+        # Score related variable selection
+        main_config = json.loads(self.config)
+        score_variable_selection_config = main_config.get('variablesSelection')
+        print score_variable_selection_config
+        output = {
+            'modelvariableSelection': trainer_variable_selection_config,
+            'variableSelection': score_variable_selection_config
+        }
+        return output
 
     def get_config_from_config(self):
         trainer_config = json.loads(self.trainer.config)
@@ -1285,6 +1344,15 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
     if not queue_name:
         queue_name = "default"
 
+    from api.redis_access import AccessFeedbackMessage
+    ac = AccessFeedbackMessage()
+    message_slug = get_message_slug(job)
+    ac.delete_this_key(message_slug)
+    app_id = None
+    if 'score' == job_type:
+        app_id = instance.app_id
+    elif 'model' == job_type:
+        app_id = instance.app_id
     '''
     job_type = {
             "metadata": "metaData",
@@ -1305,8 +1373,9 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
             class_name=job_type,
             job_config=jobConfig,
             job_name=instance.name,
-            message_slug=get_message_slug(job),
-            queue_name=queue_name
+            message_slug=message_slug,
+            queue_name=queue_name,
+            app_id=app_id
         )
 
         job.url = job_return_data.get('application_id')

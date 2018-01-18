@@ -57,20 +57,20 @@ class SignalView(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
 
-        try:
-            data = request.data
-            data = convert_to_string(data)
-            data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
-            data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
-            serializer = InsightSerializer(data=data)
-            if serializer.is_valid():
-                signal_object = serializer.save()
-                signal_object.create(advanced_settings=data.get('advanced_settings', {}))
-                return Response(serializer.data)
+        # try:
+        data = request.data
+        data = convert_to_string(data)
+        data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
+        data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
+        serializer = InsightSerializer(data=data)
+        if serializer.is_valid():
+            signal_object = serializer.save()
+            signal_object.create(advanced_settings=data.get('advanced_settings', {}))
+            return Response(serializer.data)
 
-            return creation_failed_exception(serializer.errors)
-        except Exception as error:
-            creation_failed_exception(error)
+        return creation_failed_exception(serializer.errors)
+        # except Exception as error:
+        #     creation_failed_exception(error)
 
     def update(self, request, *args, **kwargs):
         data = request.data
@@ -130,20 +130,20 @@ class TrainerView(viewsets.ModelViewSet):
     pagination_class = CustomPagination
 
     def create(self, request, *args, **kwargs):
-        try:
-            data = request.data
-            data = convert_to_string(data)
-            data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
-            data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
-            serializer = TrainerSerlializer(data=data)
-            if serializer.is_valid():
-                trainer_object = serializer.save()
-                trainer_object.create()
-                return Response(serializer.data)
+        # try:
+        data = request.data
+        data = convert_to_string(data)
+        data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
+        data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
+        serializer = TrainerSerlializer(data=data)
+        if serializer.is_valid():
+            trainer_object = serializer.save()
+            trainer_object.create()
+            return Response(serializer.data)
 
-            return creation_failed_exception(serializer.errors)
-        except Exception as error:
-            creation_failed_exception(error)
+        return creation_failed_exception(serializer.errors)
+        # except Exception as error:
+        #     creation_failed_exception(error)
 
     def update(self, request, *args, **kwargs):
         data = request.data
@@ -203,21 +203,22 @@ class ScoreView(viewsets.ModelViewSet):
     pagination_class = CustomPagination
 
     def create(self, request, *args, **kwargs):
-        try:
-            data = request.data
-            data = convert_to_string(data)
-            data['trainer'] = Trainer.objects.filter(slug=data['trainer'])
-            data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
-            data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
-            serializer = ScoreSerlializer(data=data)
-            if serializer.is_valid():
-                score_object = serializer.save()
-                score_object.create()
-                return Response(serializer.data)
+        # try:
+        data = request.data
+        data = convert_to_string(data)
+        print data
+        data['trainer'] = Trainer.objects.filter(slug=data['trainer'])
+        data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
+        data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
+        serializer = ScoreSerlializer(data=data)
+        if serializer.is_valid():
+            score_object = serializer.save()
+            score_object.create()
+            return Response(serializer.data)
 
-            return creation_failed_exception(serializer.errors)
-        except Exception as error:
-            creation_failed_exception(error)
+        return creation_failed_exception(serializer.errors)
+        # except Exception as error:
+        #     creation_failed_exception(error)
 
     def update(self, request, *args, **kwargs):
         data = request.data
@@ -4689,6 +4690,10 @@ def set_messages(request, slug=None):
 
     if not job:
         return JsonResponse({'result': 'No job exist.'})
+
+    emptyBin = request.GET.get('emptyBin', None)
+    if emptyBin is True or emptyBin == 'True':
+        job.reset_message()
 
     return_data = request.GET.get('data', None)
     data = request.body
