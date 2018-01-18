@@ -197,7 +197,7 @@ class TrainerView(viewsets.ModelViewSet):
 
         serializer = TrainerSerlializer(instance=instance)
         trainer_data = serializer.data
-        t_d_c = trainer_data['config']['COLUMN_SETTING']['varibleSelection']
+        t_d_c = trainer_data['config']['config']['COLUMN_SETTING']['varibleSelection']
 
         score_datatset_slug = request.GET.get('score_datatset_slug')
         try:
@@ -210,7 +210,7 @@ class TrainerView(viewsets.ModelViewSet):
 
         dataset_serializer = DatasetSerializer(instance=dataset_instance)
         dataset_serializer_data = dataset_serializer.data
-        d_d_c = dataset_serializer_data['config']['COLUMN_SETTING']['varibleSelection']
+        d_d_c = dataset_serializer_data['meta_data']['uiMetaData']['varibaleSelectionArray']
 
         t_d_c_s = set([item['name'] for item in t_d_c])
         d_d_c_s = set([item['name'] for item in d_d_c])
