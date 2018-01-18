@@ -31,7 +31,7 @@ class JobAdmin(admin.ModelAdmin):
     search_fields = ["name", "slug", "job_type", "url"]
     list_display = ["name", "YARN_URL_html", "job_type", "deleted", "status", 'submitted_by', "msg_count"]
     list_filter = ["job_type", "status", "submitted_by"]
-    readonly_fields = ("created_at", "javascript_like_config", "config_prettified","messages_prettified" )
+    readonly_fields = ("created_at", "javascript_like_config" )
     actions = ['kill_selected_jobs', 'start_selected_jobs', 'refresh_status']
 
     def config_prettified(self, instance):
