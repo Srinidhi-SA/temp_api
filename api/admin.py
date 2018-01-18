@@ -50,8 +50,8 @@ class JobAdmin(admin.ModelAdmin):
 
         for key in replace_words:
             config_str.replace(key, replace_words[key])
-        
-        return replace_words
+
+        return config_str
 
 
 
