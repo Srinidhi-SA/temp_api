@@ -504,7 +504,7 @@ def add_possible_analysis_to_ui_metadata(meta_data):
 
 
 def add_advanced_settings_to_ui_metadata(varibaleSelectionArray):
-    get_advanced_setting(varibaleSelectionArray)
+    return get_advanced_setting(varibaleSelectionArray)
 
 
 def add_metaData_to_ui_metadata(meta_data):
@@ -546,6 +546,7 @@ def get_advanced_setting(varibaleSelectionArray):
 
 
 def add_trend_in_advanced_setting(time_count):
+    print time_count
     import copy
     from django.conf import settings
     if time_count > 0:
