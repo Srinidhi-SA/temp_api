@@ -212,6 +212,8 @@ class TrainerView(viewsets.ModelViewSet):
 
         dataset_serializer = DatasetSerializer(instance=dataset_instance)
         dataset_serializer_data = dataset_serializer.data
+        print dataset_serializer_data.keys()
+        print dataset_serializer_data['meta_data'].keys()
         d_d_c = dataset_serializer_data['meta_data']['uiMetaData']['varibaleSelectionArray']
 
         t_d_c_s = set([item['name'] for item in t_d_c])
