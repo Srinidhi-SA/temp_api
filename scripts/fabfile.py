@@ -106,7 +106,7 @@ def deploy_api(branch="dev"):
         text_command = """CONFIG_FILE_NAME = '{0}'\nUI_VERSION = '{1}'
         """.format(deployment_config, random.randint(100000,10000000))
     else:
-        text_command = """CONFIG_FILE_NAME = '{0}'\nUI_VERSION = '{1}\nVAR = 12'
+        text_command = """CONFIG_FILE_NAME = '{0}'\nUI_VERSION = '{1}'\nVAR = '12'
         """.format(deployment_config, UI_VERSION)
 
     react_env = BASE_DIR + '/static/react/src/app/helpers/env.js'
