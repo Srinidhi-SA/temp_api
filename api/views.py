@@ -187,6 +187,7 @@ class TrainerView(viewsets.ModelViewSet):
     # comparision/?score_datatset_slug=subsett-8taanm0lge
     @detail_route(methods=['get'])
     def comparision(self, request, *args, **kwargs):
+        import pdb;pdb.set_trace()
         try:
             instance = self.get_object_from_all()
         except:
