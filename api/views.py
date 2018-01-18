@@ -186,7 +186,7 @@ class TrainerView(viewsets.ModelViewSet):
     # http://madvisordev.marlabsai.com/api/trainer/test-model-5cci7lpr5b/
     # comparision/?score_datatset_slug=subsett-8taanm0lge
     @detail_route(methods=['get'])
-    def comparision(self, request):
+    def comparision(self, request, *args, **kwargs):
         try:
             instance = self.get_object_from_all()
         except:
