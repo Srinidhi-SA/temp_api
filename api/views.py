@@ -211,7 +211,7 @@ class TrainerView(viewsets.ModelViewSet):
             return creation_failed_exception("File Doesn't exist.")
 
         dataset_serializer = DatasetSerializer(instance=dataset_instance)
-        dataset_serializer_data = dataset_serializer.data
+        dataset_serializer_data = dataset_serializer.add_uimetadata(dataset_instance)
         print dataset_serializer_data.keys()
         print dataset_serializer_data['meta_data'].keys()
         d_d_c = dataset_serializer_data['meta_data']['uiMetaData']['varibaleSelectionArray']
