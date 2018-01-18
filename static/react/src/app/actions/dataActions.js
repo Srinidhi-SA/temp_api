@@ -800,12 +800,23 @@ export function storeSortElements(sorton,sorttype){
     }
 }
 
-
+export function getTotalVariablesSelected(){
+   var dataPrev =  store.getState().datasets.dataPreview;
+   if(dataPrev){
+       var varaiblesList = store.getState().datasets.dataPreview.meta_data.uiMetaData.varibaleSelectionArray;
+       var totalCount = 0;
+       for(var i=0;i<varaiblesList.length;i++){
+           if(varaiblesList[i].selected){
+               totalCount = totalCount+1;
+           }
+       }
+       return totalCount;
+   }
+}
 export function updateDatasetVariables(measures,dimensions,timeDimensions,possibleAnalysisList,flag){
     let prevAnalysisList = jQuery.extend(true, {}, possibleAnalysisList);
-    var count = measures.length+dimensions.length;
-    if(timeDimensions.length > 0)
-    count = measures.length+dimensions.length+1;
+    var count = getTotalVariablesSelected();
+
 
     return {
         type: "DATASET_VARIABLES",
