@@ -8,7 +8,7 @@ import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {C3Chart} from "../c3Chart";
 import ReactDOM from 'react-dom';
-import {hideDataPreview,getDataSetPreview,renameMetaDataColumn,updateTranformColumns,hideDataPreviewDropDown} from "../../actions/dataActions";
+import {hideDataPreview,getDataSetPreview,renameMetaDataColumn,updateTranformColumns,hideDataPreviewDropDown,popupAlertBox} from "../../actions/dataActions";
 import {dataSubsetting,clearDataPreview,clearLoadingMsg} from "../../actions/dataUploadActions"
 import {Button,Dropdown,Menu,MenuItem} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"
@@ -19,6 +19,7 @@ import {DataUploadLoader} from "../common/DataUploadLoader";
 import {DataValidation} from "./DataValidation";
 import {DataValidationEditValues} from "./DataValidationEditValues";
 import Dialog from 'react-bootstrap-dialog';
+import {checkCreateScoreToProceed} from "../../actions/appActions";
 
 @connect((store) => {
   return {
@@ -246,8 +247,18 @@ export class DataPreview extends React.Component {
       if (this.buttons.create.url.indexOf("apps-robo") != -1) {
         $(".cst_table").find("thead").find("." + colSlug).first()
         url = "/apps-robo/" + store.getState().apps.roboDatasetSlug + "/" + store.getState().signals.signalAnalysis.slug
+        this.props.history.push(url);
+      }else if(store.getState().datasets.curUrl.indexOf("scores") != -1){
+          var response = this.props.dispatch(checkCreateScoreToProceed());
+         if(response.proceed){
+             this.props.history.push(url);
+         }
+         else {
+             this.props.dispatch(hideDataPreview());
+             popupAlertBox("One or few variables are missing from the scoring data. Score cannot be created",this.props,url.split("/data")[0])
+         }
       }
-      this.props.history.push(url);
+      else this.props.history.push(url);
     }
   }
 
