@@ -557,6 +557,11 @@ def get_advanced_setting(varibaleSelectionArray):
 
     print "measure_count_without_target", measure_count_without_target
     print "dimension_count_without_target", dimension_count_without_target
+    print 'dimension_count', dimension_count
+    print 'measure_count', measure_count
+    print 'datetime_list', datetime_list
+    print 'measure_list', measure_list
+
     things_to_add = {
         'overview': add_overview,
         'trend': add_trend,
