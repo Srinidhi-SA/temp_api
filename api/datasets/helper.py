@@ -497,7 +497,7 @@ def collect_slug_for_percentage_columns(meta_data):
 
 def get_advanced_setting(varibaleSelectionArray):
 
-    things_to_add = []
+    things_to_add = dict()
 
     time_count = 0
     add_trend = False
