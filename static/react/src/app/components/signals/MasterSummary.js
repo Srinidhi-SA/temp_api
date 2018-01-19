@@ -74,7 +74,7 @@ export class MasterSummary extends React.Component {
         <div className="main-content">
 			   
 				<div className="panel panel-default">
-					<div className="panel-body no-border">
+					<div className="panel-body no-border box-shadow">
 					
 					
                   <div className="row">

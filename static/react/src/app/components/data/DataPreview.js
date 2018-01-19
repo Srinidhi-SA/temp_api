@@ -488,15 +488,15 @@ export class DataPreview extends React.Component {
             <div className="main-content">
               <div className="row">
                 <div className="col-md-9">
-                  <div className="panel">
-                    <div className="panel-body xs-p-0">
+                  <div className="panel box-shadow">
+                    <div className="panel-body no-border xs-p-0">
                       {topInfo}
                     </div>
                     <div className="clearfix"></div>
-                    <div className="table-responsive noSwipe">
+                    <div className="table-responsive noSwipe xs-pl-10 xs-pr-10 xs-pb-10">
 
                       <Scrollbars style={{
-                        height: 779
+                        height: 767
                       }}>
                         <table className="table table-condensed table-hover table-bordered table-striped cst_table">
                           <thead>
@@ -515,7 +515,7 @@ export class DataPreview extends React.Component {
                 </div>
                 <div className="col-md-3 preview_stats">
                   {/*<!-- Start Tab Statistics -->*/}
-                  <div id="tab_statistics" className="panel-group accordion accordion-semi">
+                  <div id="tab_statistics" className="panel-group accordion accordion-semi box-shadow">
                     <div className="panel panel-default">
                       <div className="panel-heading">
                         <h4 className="panel-title">
@@ -538,7 +538,7 @@ export class DataPreview extends React.Component {
                   </div>
                   {/*<!-- ./ End Tab Statistics -->*/}
                   {/* <!-- Start Tab Visualizations -->*/}
-                  <div id="tab_visualizations" className="panel-group accordion accordion-semi">
+                  <div id="tab_visualizations" className="panel-group accordion accordion-semi box-shadow">
                     <div className="panel panel-default">
                       <div className="panel-heading">
                         <h4 className="panel-title">
@@ -563,7 +563,7 @@ export class DataPreview extends React.Component {
                   {/*<!-- ./ End Tab Visualizations -->*/}
 
                   {/*<!-- Start Tab Subsettings -->*/}
-                  <div id="sub_settings">
+                  <div id="sub_settings" className="box-shadow">
                     <SubSetting item={firstTimeSubSetting}/>
                   </div>
                   {/* End Tab Subsettings */}
@@ -574,8 +574,8 @@ export class DataPreview extends React.Component {
               <div className="row buttonRow" id="dataPreviewButton">
                 <div className="col-md-12">
 
-                  <div className="panel">
-                    <div className="panel-body">
+                  <div className="panel xs-mb-0">
+                    <div className="panel-body box-shadow">
 
                       <div className="navbar">
                         <ul className="nav navbar-nav navbar-right">

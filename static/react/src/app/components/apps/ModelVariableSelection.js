@@ -40,7 +40,7 @@ export class ModelVariableSelection extends React.Component {
         this.props.dispatch(createModel($("#createModelName").val(),$("#createModelAnalysisList").val()))
     }
     setPossibleList(event){
-        this.props.dispatch(hideTargetVariable(event)); 
+        this.props.dispatch(hideTargetVariable(event));
         this.props.dispatch(updateSelectedVariable(event));
     }
     render() {
@@ -79,7 +79,8 @@ export class ModelVariableSelection extends React.Component {
                 <div className="clearfix"></div>
                 </div>
                 <div className="main-content">
-                <div className="panel panel-default">
+
+                <div className="panel panel-default box-shadow">
                 <div className="panel-body">
                 <Form onSubmit={this.createModel.bind(this)}>
                 <FormGroup role="form">
