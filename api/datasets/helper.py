@@ -554,7 +554,7 @@ def get_advanced_setting(varibaleSelectionArray):
 
     if dimension_count_without_target > 0:
         add_performance = True
-
+    import pdb;pdb.set_trace()
     if target_data_type == 'measure':
         things_to_add = {
             'overview': add_overview,
