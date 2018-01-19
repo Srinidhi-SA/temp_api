@@ -226,14 +226,27 @@ class TrainerView(viewsets.ModelViewSet):
 
         d_d_c = uiMetaData['varibaleSelectionArray']
 
-        t_d_c_s = set([item['name'] for item in t_d_c])
+        t_d_c_s = set([item['name'] for item in t_d_c if item["targetColumn"] != True])
         d_d_c_s = set([item['name'] for item in d_d_c])
+        proceedFlag = d_d_c_s.issuperset(t_d_c_s)
 
-        differnece_in_set = d_d_c_s.difference(t_d_c_s)
+        if proceedFlag != True:
+            missing = t_d_c_s.difference(d_d_c_s)
+            extra = d_d_c_s.difference(t_d_c_s)
+            message = "These are the missing Columns {0}".format(missing)
+            if len(extra) > 0:
+                message += "and these are the new columns {0}".format(extra)
+        else:
+            extra = d_d_c_s.difference(t_d_c_s)
+            if len(extra) > 0:
+                message = "These are the new columns {0}".format(extra)
+            else:
+                message = ""
+
 
         return JsonResponse({
-            'proceed': True if len(differnece_in_set) < 1 else False,
-            'message': "Their was differnece among {0}".format(differnece_in_set)
+            'proceed': proceedFlag,
+            'message': message
         })
 
 

@@ -591,7 +591,7 @@ def add_trend_in_advanced_setting(things_to_add):
     # target_level= copy.deepcopy(settings.ADVANCED_SETTINGS_TARGET_LEVEL)
     # target_settings= copy.deepcopy(settings.ADVANCED_SETTINGS_TARGET_SETTINGS)
 
-    asdasd = {
+    match_ing = {
         'overview': overview,
         'association': association,
         'performace': performace,
@@ -605,13 +605,13 @@ def add_trend_in_advanced_setting(things_to_add):
 
     raw_final_setting = copy.deepcopy(settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS)
 
-    for measure in measure_checklist:
-        if measure_checklist[measure]:
-            raw_final_setting['measure']['analysis'].append(asdasd[measure])
+    for key in measure_checklist:
+        if things_to_add[key]:
+            raw_final_setting['measure']['analysis'].append(match_ing[key])
 
-    for dimension in dimension_checklist:
-        if dimension_checklist[dimension]:
-            raw_final_setting['dimension']['analysis'].append(asdasd[dimension])
+    for key in dimension_checklist:
+        if things_to_add[key]:
+            raw_final_setting['dimension']['analysis'].append(match_ing[key])
 
     return raw_final_setting
     # if add_trend is True:
