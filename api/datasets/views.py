@@ -234,3 +234,8 @@ class DatasetView(viewsets.ModelViewSet):
         uiMetaData["advanced_settings"] = get_advanced_setting(uiMetaData['varibaleSelectionArray'])
         return Response(uiMetaData)
 
+    @detail_route(methods=['put'])
+    def advanced_settings_modification(self, request):
+        data = request.data
+        return Response(get_advanced_setting(data))
+
