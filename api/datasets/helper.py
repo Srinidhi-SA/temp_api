@@ -585,7 +585,7 @@ def add_trend_in_advanced_setting(things_to_add):
 
     overview = copy.deepcopy(settings.ADVANCED_SETTINGS_OVERVIEW)
     association = copy.deepcopy(settings.ADVANCED_SETTINGS_ASSOCIATION)
-    performace= copy.deepcopy(settings.ADVANCED_SETTINGS_PERFORMANCE)
+    performance= copy.deepcopy(settings.ADVANCED_SETTINGS_PERFORMANCE)
     prediction= copy.deepcopy(settings.ADVANCED_SETTINGS_PREDICTION)
     influencer= copy.deepcopy(settings.ADVANCED_SETTINGS_INFLUENCER)
     trend= copy.deepcopy(settings.ADANCED_SETTING_FOR_POSSIBLE_ANALYSIS_TREND)
@@ -595,7 +595,7 @@ def add_trend_in_advanced_setting(things_to_add):
     match_ing = {
         'overview': overview,
         'association': association,
-        'performace': performace,
+        'performance': performance,
         'prediction': prediction,
         'influencer': influencer,
         'trend': trend
