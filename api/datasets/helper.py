@@ -518,7 +518,7 @@ def get_advanced_setting(varibaleSelectionArray):
     for data in varibaleSelectionArray:
         if data['dateSuggestionFlag'] is True or data['columnType'] == 'datetime':
             time_count += 1
-
+        print data['targetColumn'], data['name']
         if data['targetColumn'] == True:
             target_column_name = data['name']
             target_data_type = data['columnType']
@@ -554,7 +554,7 @@ def get_advanced_setting(varibaleSelectionArray):
 
     if dimension_count_without_target > 0:
         add_performance = True
-    import pdb;pdb.set_trace()
+
     if target_data_type == 'measure':
         things_to_add = {
             'overview': add_overview,
