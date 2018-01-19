@@ -1812,3 +1812,23 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
         var varSlug = selOption.getAttribute("name");
         return {type: "SET_POSSIBLE_LIST", varType, varText, varSlug};
     }
+    
+    
+    export function checkCreateScoreToProceed(){
+        var modelSlug = store.getState().apps.modelSlug;
+        var selectedDataset = store.getState().datasets.selectedDataSet;
+        return (dispatch) => {
+            return triggerAPI(modelSlug,selectedDataset).then(([response, json]) =>{
+                if(response.status === 200){
+                  return json;
+                }
+            })
+        }
+    }
+    
+    function triggerAPI(modelSlug,selectedDataset){
+        return fetch(API+'/api/trainer/'+modelSlug+'/comparision/?score_datatset_slug='+selectedDataset+'',{
+            method: 'get',
+            headers: getHeader(getUserDetailsOrRestart.get().userToken)
+        }).then( response => Promise.all([response, response.json()]));
+    }
