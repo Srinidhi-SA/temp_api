@@ -602,11 +602,11 @@ def add_trend_in_advanced_setting(things_to_add):
     print measure_checklist, things_to_add
     for key in measure_checklist:
         if things_to_add[key]:
-            raw_final_setting['measure']['analysis'].append(match_ing[key])
+            raw_final_setting['measures']['analysis'].append(match_ing[key])
 
     for key in dimension_checklist:
         if things_to_add[key]:
-            raw_final_setting['dimension']['analysis'].append(match_ing[key])
+            raw_final_setting['dimensions']['analysis'].append(match_ing[key])
 
     return raw_final_setting
     # if add_trend is True:
