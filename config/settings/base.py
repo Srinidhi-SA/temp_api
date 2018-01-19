@@ -847,6 +847,8 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS =  {
         "analysis": []
     },
 }
+ADVANCED_SETTINGS_FOR_POSSIBLE_DIMENSION_ANALYSIS_CHECK_LIST = ['overview', 'trend', 'association', 'prediction']
+ADVANCED_SETTINGS_FOR_POSSIBLE_MEASURE_ANALYSIS_CHECK_LIST = ['overview', 'trend', 'performance', 'influencer', 'prediction']
 
 ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND = {
     "dimensions": {

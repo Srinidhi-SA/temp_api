@@ -507,6 +507,7 @@ def get_advanced_setting(varibaleSelectionArray):
     add_performance = False
     add_influencer = False
     target_column_name = None
+    target_data_type = None
     dimension_count = 0
     dimension_list = []
     measure_count = 0
@@ -520,6 +521,7 @@ def get_advanced_setting(varibaleSelectionArray):
 
         if data['targetColumn'] == True:
             target_column_name = data['name']
+            target_data_type = data['columnType']
 
         if data['columnType'] == 'dimension':
             dimension_count += 1
@@ -536,37 +538,89 @@ def get_advanced_setting(varibaleSelectionArray):
     if time_count > 0:
         add_trend = True
 
-    if measure_count + dimension_count > 1:
-        pass
+    measure_count_without_target = 0
+    dimension_count_without_target = 0
+    if target_data_type == 'measure':
+        measure_count_without_target = measure_count - 1
+    elif target_column_name == 'dimension':
+        dimension_count_without_target = dimension_count - 1
 
-    return add_trend_in_advanced_setting(add_trend)
+    if measure_count_without_target + dimension_count_without_target >= 1:
+        add_association = True
+        add_prediction = True
+
+    if measure_count_without_target > 0:
+        add_influencer = True
+
+    if dimension_count_without_target > 0:
+        add_performance = True
+
+    if target_data_type == 'measure':
+        things_to_add = [
+            {'overview': add_overview},
+            {'trend': add_trend},
+            {'association': add_association},
+            {'prediction': add_prediction},
+        ]
+    elif target_column_name == 'dimension':
+        things_to_add = [
+            {'overview': add_overview},
+            {'trend': add_trend},
+            {'performance': add_performance},
+            {'influencer': add_influencer},
+            {'prediction': add_prediction},
+        ]
+
+    return add_trend_in_advanced_setting(things_to_add)
 
 
-def add_trend_in_advanced_setting(add_trend):
+# def add_trend_in_advanced_setting(add_trend):
+def add_trend_in_advanced_setting(things_to_add):
     import copy
     from django.conf import settings
 
     main_setting = copy.deepcopy(settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND)
     trend_setting = copy.deepcopy(settings.ADANCED_SETTING_FOR_POSSIBLE_ANALYSIS_TREND)
 
-    raw_overview_setting = copy.deepcopy(settings.ADVANCED_SETTINGS_OVERVIEW)
-    raw_association_setting = copy.deepcopy(settings.ADVANCED_SETTINGS_ASSOCIATION)
-    raw_performace_setting = copy.deepcopy(settings.ADVANCED_SETTINGS_PERFORMANCE)
-    raw_prediction_setting = copy.deepcopy(settings.ADVANCED_SETTINGS_PREDICTION)
-    raw_influencer_setting = copy.deepcopy(settings.ADVANCED_SETTINGS_INFLUENCER)
-    raw_trend_setting = copy.deepcopy(settings.ADANCED_SETTING_FOR_POSSIBLE_ANALYSIS_TREND)
-    raw_target_level_setting = copy.deepcopy(settings.ADVANCED_SETTINGS_TARGET_LEVEL)
-    raw_target_settings_setting = copy.deepcopy(settings.ADVANCED_SETTINGS_TARGET_SETTINGS)
+    overview = copy.deepcopy(settings.ADVANCED_SETTINGS_OVERVIEW)
+    association = copy.deepcopy(settings.ADVANCED_SETTINGS_ASSOCIATION)
+    performace= copy.deepcopy(settings.ADVANCED_SETTINGS_PERFORMANCE)
+    prediction= copy.deepcopy(settings.ADVANCED_SETTINGS_PREDICTION)
+    influencer= copy.deepcopy(settings.ADVANCED_SETTINGS_INFLUENCER)
+    trend= copy.deepcopy(settings.ADANCED_SETTING_FOR_POSSIBLE_ANALYSIS_TREND)
+    # target_level= copy.deepcopy(settings.ADVANCED_SETTINGS_TARGET_LEVEL)
+    # target_settings= copy.deepcopy(settings.ADVANCED_SETTINGS_TARGET_SETTINGS)
+
+    asdasd = {
+        'overview': overview,
+        'association': association,
+        'performace': performace,
+        'prediction': prediction,
+        'influencer': influencer,
+        'trend': trend
+    }
+
+    measure_checklist = copy.deepcopy(settings.ADVANCED_SETTINGS_FOR_POSSIBLE_MEASURE_ANALYSIS_CHECK_LIST)
+    dimension_checklist = copy.deepcopy(settings.ADVANCED_SETTINGS_FOR_POSSIBLE_DIMENSION_ANALYSIS_CHECK_LIST)
 
     raw_final_setting = copy.deepcopy(settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS)
 
-    if add_trend is True:
+    for measure in measure_checklist:
+        if measure_checklist[measure]:
+            raw_final_setting['measure']['analysis'].append(asdasd[measure])
 
-        main_setting["dimensions"]["analysis"].insert(1, trend_setting)
-        main_setting["measures"]["analysis"].insert(1, trend_setting)
-        return main_setting
-    else:
-        return settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND
+    for dimension in dimension_checklist:
+        if dimension_checklist[dimension]:
+            raw_final_setting['dimension']['analysis'].append(asdasd[dimension])
+
+    return raw_final_setting
+    # if add_trend is True:
+    #
+    #     main_setting["dimensions"]["analysis"].insert(1, trend_setting)
+    #     main_setting["measures"]["analysis"].insert(1, trend_setting)
+    #     return main_setting
+    # else:
+    #     return settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND
 
 
 def add_transformation_setting_to_ui_metadata(meta_data):
