@@ -605,6 +605,7 @@ def add_trend_in_advanced_setting(things_to_add):
 
     raw_final_setting = copy.deepcopy(settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS)
 
+    print measure_checklist, things_to_add
     for key in measure_checklist:
         if things_to_add[key]:
             raw_final_setting['measure']['analysis'].append(match_ing[key])
