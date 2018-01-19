@@ -538,8 +538,8 @@ def get_advanced_setting(varibaleSelectionArray):
     if time_count > 0:
         add_trend = True
 
-    measure_count_without_target = 0
-    dimension_count_without_target = 0
+    measure_count_without_target = measure_count
+    dimension_count_without_target = dimension_count
     if target_data_type == 'measure':
         measure_count_without_target = measure_count - 1
     elif target_column_name == 'dimension':
