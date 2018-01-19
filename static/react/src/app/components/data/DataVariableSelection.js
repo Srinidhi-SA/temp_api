@@ -4,7 +4,6 @@ import { MainHeader } from "../common/MainHeader";
 import { connect } from "react-redux";
 import { Link, Redirect } from "react-router";
 import { Modal, Button, Tab, Row, Col, Nav, NavItem, Popover, OverlayTrigger } from "react-bootstrap";
-import ReactDOM from 'react-dom';
 
 import store from "../../store";
 import { C3Chart } from "../c3Chart";
@@ -58,11 +57,12 @@ export class DataVariableSelection extends React.Component {
     }
 
     componentDidMount() {
-    	window.scrollTo(0, 0); 
+    	window.scrollTo(0, 0);
         this.props.dispatch( resetSelectedVariables() );
+
        // this.setVariables( this.dimensions, this.measures, this.selectedTimeDimension );
         this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.possibleAnalysisList,true));
-        
+
     }
 
     handleDVSearch(evt){
@@ -79,20 +79,20 @@ export class DataVariableSelection extends React.Component {
         console.log( "data variableSelection is called##########3" );
 
         let dataPrev = store.getState().datasets.dataPreview;
-       
+
         var that = this;
         const popoverLeft = (
         		  <Popover id="popover-trigger-hover-focus">
         		<p>mAdvisor has identified this as date suggestion.This could be used for trend analysis. </p>
         		  </Popover>
         		);
-        
+
         let timeSuggestionToolTip = (<div className="col-md-2"><OverlayTrigger trigger={['hover', 'focus']}  rootClose placement="top" overlay={popoverLeft}>
         <a className="pover cursor">
         <i className="pe-7s-info pe-2x"></i>
       </a>
     </OverlayTrigger></div>)
-        
+
         if ( dataPrev ) {
             console.log( "data variable selection" );
             console.log( dataPrev );
@@ -103,13 +103,14 @@ export class DataVariableSelection extends React.Component {
             this.datetime = [];
             this.dimensionDateTime =[];
             metaData.map(( metaItem, metaIndex ) => {
+
                 if ( this.props.isUpdate ) {
-                   
+
                     switch ( metaItem.columnType ) {
                         case "measure":
                            if(metaItem.setVarAs == null){
                         	   this.measures.push( metaItem);
-                               //this.measureChkBoxList.push(true);  
+                               //this.measureChkBoxList.push(true);
                            }else if(metaItem.setVarAs != null){
                                this.dimensions.push(metaItem);
                            }
@@ -143,15 +144,16 @@ export class DataVariableSelection extends React.Component {
             }
             //this.props.dispatch( resetSelectedVariables() );
             //this.setVariables( this.dimensions, this.measures, this.selectedTimeDimension);
-             
+
             }*/
             if ( this.props.isUpdate ) {
             this.props.dispatch( resetSelectedVariables() );
+
             this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.possibleAnalysisList,false));
             }
-          
+
             var varCls = "";
-                
+
             if ( store.getState().datasets.dataSetMeasures.length > 0 ) {
                 var measureTemplate = store.getState().datasets.dataSetMeasures.map(( mItem, mIndex ) => {
                  if(mItem.targetColumn)varCls="hidden";
@@ -164,8 +166,9 @@ export class DataVariableSelection extends React.Component {
                 var measureTemplate = <label>No measure variable present</label>
             }
             if ( store.getState().datasets.dataSetDimensions.length > 0 ) {
-                
+
                 var dimensionTemplate = store.getState().datasets.dataSetDimensions.map(( dItem, dIndex ) => {
+
                     if(dItem.targetColumn)varCls="hidden";
                     else varCls = "";
                     return (
@@ -178,25 +181,27 @@ export class DataVariableSelection extends React.Component {
 
             if ( store.getState().datasets.dataSetTimeDimensions.length > 0 ) {
                 var datetimeTemplate = store.getState().datasets.dataSetTimeDimensions.map(( dtItem, dtIndex ) => {
-                  
+
+
                     	if(dtItem.columnType != "dimension"){
                         	return (
                         			<li key={dtItem.slug}><div className="ma-radio inline"><input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents}  name="date_type" id={dtItem.slug} value={dtItem.name} checked={dtItem.selected} /><label htmlFor={dtItem.slug}>{dtItem.name}</label></div></li>
                         	);
                         }else{
                         	return (
+
                         			<li key={dtItem.slug}><div className="ma-radio inline col-md-10"><input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents}  name="date_type" id={dtItem.slug} value={dtItem.name} checked={dtItem.selected} /><label htmlFor={dtItem.slug}>{dtItem.name}</label></div>{timeSuggestionToolTip}</li>
-                        	);	
+                        	);
                         }
-             
-                    
-                   
+
+
+
                 } );
             } else {
                 var datetimeTemplate = <label>No date dimensions to display</label>
             }
 
-           
+
             return (
                 <div>
 
@@ -215,10 +220,10 @@ export class DataVariableSelection extends React.Component {
                                     {/*  <!-- Row for select all-->*/}
                                     <div className="row">
                                         <div className="col-md-12 col-sm-12 xs-pr-0">
-                                            
+
 											 <div class="btn-toolbar pull-right">
                                              {/*   <input type="text" name="measure" title="Search Measures" id="measureSearch"  onChange={this.handleDVSearch.bind(this)} className="form-control" placeholder="Search measures..." />*/}
-											 
+
 											<div class="input-group">
 											<div className="search-wrapper">
 											<form>
@@ -235,17 +240,17 @@ export class DataVariableSelection extends React.Component {
 											<li onClick={this.handelSort.bind(this,"measure","DESC")} className="cursor"><a><i class="zmdi zmdi-sort-amount-desc"></i> Descending</a></li>
 											</ul>
 											</div>
-												
+
                                             </div>
-											
+
 											<div className="ma-checkbox inline">
                                                 <input id="measure" type="checkbox" className="measureAll" onChange={this.handleSelectAll.bind(this)} checked={store.getState().datasets.measureAllChecked}/>
                                                 <label htmlFor="measure">Select All</label>
                                             </div>
-											
-											
+
+
                                         </div>
-                                      
+
                                     </div>
 									<div className="xs-pb-10"></div>
                                     {/*  <!-- End -->*/}
@@ -275,12 +280,12 @@ export class DataVariableSelection extends React.Component {
                                     {/*  <!-- Row for select all-->*/}
                                     <div className="row">
                                         <div className="col-md-12 col-sm-12 xs-pr-0">
-                                            
+
 											<div class="btn-toolbar pull-right">
                                                 {/* <input type="text" name="dimension" title="Search Dimension" id="dimensionSearch" onChange={this.handleDVSearch.bind(this)}  className="form-control" placeholder="Search dimension..." />
                                                 <span className="input-group-addon"><i className="fa fa-search fa-lg"></i></span>*/}
-                                                
-												<div class="input-group">			
+
+												<div class="input-group">
 												<div className="search-wrapper">
 												<form>
 												<input type="text" name="dimension" onChange={this.handleDVSearch.bind(this)} title="Search Dimension" id="dimensionSearch" className="form-control search-box" placeholder="Search dimension..." required />
@@ -295,15 +300,15 @@ export class DataVariableSelection extends React.Component {
                                                         <li onClick={this.handelSort.bind(this,"dimension","ASC")} className="cursor"><a><i class="zmdi zmdi-sort-amount-asc"></i> Ascending</a></li>
                                                         <li onClick={this.handelSort.bind(this,"dimension","DESC")} className="cursor"><a><i class="zmdi zmdi-sort-amount-desc"></i> Descending</a></li>
                                                     </ul>
-                                                </div>												
+                                                </div>
                                             </div>
-											
+
 											<div className="ma-checkbox inline">
                                                 <input id="dimension" type="checkbox" className="dimensionAll" onChange={this.handleSelectAll.bind(this)} checked={store.getState().datasets.dimensionAllChecked}/>
                                                 <label htmlFor="dimension">Select All</label>
                                             </div>
                                         </div>
-                                      
+
                                     </div>
 									<div className="xs-pb-10"></div>
                                     {/*  <!-- End -->*/}
@@ -333,15 +338,15 @@ export class DataVariableSelection extends React.Component {
 
                                     {/*  <!-- Row for options all-->*/}
                                     <div className="row">
-                                         
+
                                         <div className="col-md-12 col-sm-12 xs-pr-0">
-										
+
                                             <div class="btn-toolbar pull-right">
-											
+
                                               {/*  <input type="text" name="datetime" title="Search Time Dimensions" id="datetimeSearch" className="form-control" onChange={this.handleDVSearch.bind(this)} placeholder="Search time dimensions..." />
                                                  <span className="input-group-addon"><i className="fa fa-search fa-lg"></i></span>*/}
-                                                
-												<div class="input-group">			
+
+												<div class="input-group">
 												<div className="search-wrapper">
 												<form>
 												<input type="text" name="datetime" onChange={this.handleDVSearch.bind(this)} title="Search Time Dimensions" id="datetimeSearch" className="form-control search-box" placeholder="Search time dimensions..." required />
@@ -350,19 +355,19 @@ export class DataVariableSelection extends React.Component {
 												</form>
 												</div>
 												</div>
-												
-												
+
+
 												<div class="btn-group">
                                                     <button type="button" data-toggle="dropdown" title="Sorting" className="btn btn-default dropdown-toggle" aria-expanded="false"><i class="zmdi zmdi-hc-lg zmdi-sort-asc"></i></button>
                                                     <ul role="menu" className="dropdown-menu dropdown-menu-right">
                                                         <li onClick={this.handelSort.bind(this,"datetime","ASC")} className="cursor"><a><i class="zmdi zmdi-sort-amount-asc"></i> Ascending</a></li>
                                                         <li onClick={this.handelSort.bind(this,"datetime","DESC")} className="cursor"><a><i class="zmdi zmdi-sort-amount-desc"></i> Descending</a></li>
-                                                       
+
                                                     </ul>
                                                 </div>
-												
+
                                             </div>
-											
+
                                         </div>
                                     </div>
 									<div className="xs-pb-10"></div>

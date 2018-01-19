@@ -6,14 +6,13 @@ import store from "../../store";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "react-bootstrap";
 
 import {C3Chart} from "../c3Chart";
-import ReactDOM from 'react-dom';
 import {DataVariableSelection} from "../data/DataVariableSelection";
 import {updateTrainAndTest,createScore,getAppsModelSummary} from "../../actions/appActions";
 import {AppsLoader} from "../common/AppsLoader";
 import {getDataSetPreview} from "../../actions/dataActions";
 
 @connect((store) => {
-    return {login_response: store.login.login_response, 
+    return {login_response: store.login.login_response,
         dataPreview: store.datasets.dataPreview,
         modelTargetVariable:store.apps.modelTargetVariable,
         selectedAlg:store.apps.selectedAlg,
@@ -24,7 +23,7 @@ import {getDataSetPreview} from "../../actions/dataActions";
 export class ScoreVariableSelection extends React.Component {
     constructor(props) {
         super(props);
-        
+
     }
     createScore(event){
         event.preventDefault();
@@ -43,7 +42,7 @@ export class ScoreVariableSelection extends React.Component {
             let _link = "/apps/"+store.getState().apps.currentAppId+'/scores/'+store.getState().apps.scoreSlug;
             return(<Redirect to={_link}/>);
         }
-        
+
         let dataPrev = store.getState().datasets.dataPreview;
         let renderSelectBox = null;
         if(dataPrev){
@@ -54,7 +53,7 @@ export class ScoreVariableSelection extends React.Component {
                 </select>
             }
         }
-        
+
         return(
                 <div className="side-body">
                 <div className="page-head">
@@ -67,18 +66,18 @@ export class ScoreVariableSelection extends React.Component {
                 </div>
                 <div className="main-content">
                 <div className="panel panel-default">
-                <div className="panel-body">    
+                <div className="panel-body">
                 <Form onSubmit={this.createScore.bind(this)}>
                 <FormGroup role="form">
-                <div className="row">			          
-                 
+                <div className="row">
+
                 <div className="form-group">
                 <div className="col-lg-2"><label>I want to analyse</label></div>
                 <div className="col-lg-4"> {renderSelectBox}</div>
                 </div>
                  {/*<!-- /.col-lg-4 -->*/}
                 </div>
-                
+
                 <DataVariableSelection/>
                 <div className="row">
                 <div className="col-lg-4 col-lg-offset-8">
@@ -87,7 +86,7 @@ export class ScoreVariableSelection extends React.Component {
                     </div>
                 </div>
                 </div>
-                
+
                 <div className="row">
                 <div className="col-lg-12 text-right">
                 <Button type="submit" bsStyle="primary">SCORE MODEL</Button>

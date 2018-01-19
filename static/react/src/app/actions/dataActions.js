@@ -1388,7 +1388,14 @@ export function updateSelectAllAnlysis(flag){
 }
 
 export function hideDataPreviewDropDown(props){
-  if(props.indexOf("scores") != -1)
-    $('.dropdown-toggle').removeAttr('data-toggle');
+  if(props.indexOf("scores") != -1){
+      $("#sub_settings").hide();
+      $('.dropdown-toggle').removeAttr('data-toggle'); 
+  }
+    
 }
-
+export function popupAlertBox(msg,props,url){
+    bootbox.alert(msg,function(){
+        props.history.push(url)
+    });
+}

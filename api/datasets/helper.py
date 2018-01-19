@@ -3,9 +3,6 @@ from rest_framework.utils import humanize_datetime
 from django.conf import settings
 
 
-
-
-
 def convert_to_string(data):
 
     keys = ['meta_data', 'datasource_details']
@@ -173,39 +170,7 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
 
     return metaData, headers
 
-#
-# def changes_in_column_data_if_column_is_considered(self, col):
-#     import copy
-#     from django.conf import settings
-#
-#     transformation_settings = settings.TRANSFORMATION_SETTINGS_CONSTANT
-#
-#     columnSettingCopy = copy.deepcopy(transformation_settings.get('columnSetting'))
-#     columnType = col.get('columnType')
-#
-#     if "dimension" == columnType:
-#         head['columnSetting'] = columnSettingCopy[:4]
-#     elif "boolean" == columnType:
-#         head['columnSetting'] = columnSettingCopy[:4]
-#     elif "measure" == columnType:
-#         datatype_element = columnSettingCopy[4]
-#         datatype_element['listOfActions'][0]["status"] = True
-#         columnSettingCopy[5]['listOfActions'][0]["status"] = True
-#         columnSettingCopy[6]['listOfActions'][0]["status"] = True
-#
-#         head['columnSetting'] = columnSettingCopy
-#     elif "datetime" == columnType:
-#         head['columnSetting'] = columnSettingCopy[:3]
-#
-#     transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
-#     transformation_settings_ignore['status'] = True
-#     transformation_settings_ignore['displayName'] = 'Consider for Analysis'
-#     head['columnSetting'].append(transformation_settings_ignore)
-#     head['consider'] = False
-#     break
 
-# from api.datasets.helper import *
-# convert_metadata_according_to_transformation_setting()
 class MetaDataChange(object):
 
     def __init__(self, **kwargs):
@@ -503,13 +468,6 @@ def add_possible_analysis_to_ui_metadata(meta_data):
     return settings.ANALYSIS_FOR_TARGET_VARIABLE
 
 
-def add_advanced_settings_to_ui_metadata(meta_data):
-    if 'metaData' in meta_data:
-        return get_advanced_setting(meta_data['metaData'])
-    elif 'metaDataUI' in meta_data:
-        return get_advanced_setting(meta_data['metaDataUI'])
-
-
 def add_metaData_to_ui_metadata(meta_data):
     # metaDataUI = []
     # if "metaData" in meta_data:
@@ -536,30 +494,135 @@ def collect_slug_for_percentage_columns(meta_data):
 
     return slug_list
 
-def get_advanced_setting(metaData):
+
+def get_advanced_setting(varibaleSelectionArray):
+
+    things_to_add = dict()
 
     time_count = 0
+    add_trend = False
+    add_overview = True
+    add_association = False
+    add_prediction = False
+    add_performance = False
+    add_influencer = False
+    target_column_name = None
+    target_data_type = None
+    dimension_count = 0
+    dimension_list = []
+    measure_count = 0
+    measure_list = []
+    datetime_count = 0
+    datetime_list = []
 
-    for data in metaData:
-        if data.get('name') == 'timeDimension':
-            time_count += data.get('value')
-        if data.get('name') == 'dateTimeSuggestions':
-            time_count += len(data.get('value').keys())
-    return add_trend_in_advanced_setting(time_count)
+    for data in varibaleSelectionArray:
+        if data['dateSuggestionFlag'] is True or data['columnType'] == 'datetime':
+            time_count += 1
+        print data['targetColumn'], data['name']
+        if data['targetColumn'] == True:
+            target_column_name = data['name']
+            target_data_type = data['columnType']
+
+        if data['columnType'] == 'dimension':
+            dimension_count += 1
+            dimension_list.append(data['name'])
+
+        if data['columnType'] == 'measure':
+            measure_count += 1
+            measure_list.append(data['name'])
+
+        if data['columnType'] == 'datetime':
+            datetime_count += 1
+            datetime_list.append(data['name'])
+
+    if time_count > 0:
+        add_trend = True
+
+    measure_count_without_target = measure_count
+    dimension_count_without_target = dimension_count
+    if target_data_type == 'measure':
+        measure_count_without_target = measure_count - 1
+    elif target_column_name == 'dimension':
+        dimension_count_without_target = dimension_count - 1
+
+    if measure_count_without_target + dimension_count_without_target >= 1:
+        add_association = True
+        add_prediction = True
+
+    if measure_count_without_target > 0:
+        add_influencer = True
+
+    if dimension_count_without_target > 0:
+        add_performance = True
+
+    print "measure_count_without_target", measure_count_without_target
+    print "dimension_count_without_target", dimension_count_without_target
+    print 'dimension_count', dimension_count
+    print 'measure_count', measure_count
+    print 'datetime_list', datetime_list
+    print 'measure_list', measure_list
+
+    things_to_add = {
+        'overview': add_overview,
+        'trend': add_trend,
+        'association': add_association,
+        'performance': add_performance,
+        'influencer': add_influencer,
+        'prediction': add_prediction,
+    }
+
+    return add_trend_in_advanced_setting(things_to_add)
 
 
-def add_trend_in_advanced_setting(time_count):
+def add_trend_in_advanced_setting(things_to_add):
     import copy
     from django.conf import settings
-    if time_count > 0:
-        main_setting = copy.deepcopy(settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND)
-        trend_setting = copy.deepcopy(settings.ADANCED_SETTING_FOR_POSSIBLE_ANALYSIS_TREND)
 
-        main_setting["dimensions"]["analysis"].insert(1, trend_setting)
-        main_setting["measures"]["analysis"].insert(1, trend_setting)
+    if things_to_add == dict():
+        main_setting = copy.deepcopy(settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND)
         return main_setting
-    else:
-        return settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND
+    trend_setting = copy.deepcopy(settings.ADANCED_SETTING_FOR_POSSIBLE_ANALYSIS_TREND)
+
+    overview = copy.deepcopy(settings.ADVANCED_SETTINGS_OVERVIEW)
+    association = copy.deepcopy(settings.ADVANCED_SETTINGS_ASSOCIATION)
+    performance= copy.deepcopy(settings.ADVANCED_SETTINGS_PERFORMANCE)
+    prediction= copy.deepcopy(settings.ADVANCED_SETTINGS_PREDICTION)
+    influencer= copy.deepcopy(settings.ADVANCED_SETTINGS_INFLUENCER)
+    trend= copy.deepcopy(settings.ADANCED_SETTING_FOR_POSSIBLE_ANALYSIS_TREND)
+    # target_level= copy.deepcopy(settings.ADVANCED_SETTINGS_TARGET_LEVEL)
+    # target_settings= copy.deepcopy(settings.ADVANCED_SETTINGS_TARGET_SETTINGS)
+
+    match_ing = {
+        'overview': overview,
+        'association': association,
+        'performance': performance,
+        'prediction': prediction,
+        'influencer': influencer,
+        'trend': trend
+    }
+
+    measure_checklist = copy.deepcopy(settings.ADVANCED_SETTINGS_FOR_POSSIBLE_MEASURE_ANALYSIS_CHECK_LIST)
+    dimension_checklist = copy.deepcopy(settings.ADVANCED_SETTINGS_FOR_POSSIBLE_DIMENSION_ANALYSIS_CHECK_LIST)
+
+    raw_final_setting = copy.deepcopy(settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS)
+
+    print measure_checklist, things_to_add
+    for key in measure_checklist:
+        if things_to_add[key]:
+            raw_final_setting['measures']['analysis'].append(match_ing[key])
+
+    for key in dimension_checklist:
+        if things_to_add[key]:
+            raw_final_setting['dimensions']['analysis'].append(match_ing[key])
+
+    return raw_final_setting
+    # if add_trend is True:
+    #
+    #     main_setting["dimensions"]["analysis"].insert(1, trend_setting)
+    #     main_setting["measures"]["analysis"].insert(1, trend_setting)
+    #     return main_setting
+    # else:
+    #     return settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND
 
 
 def add_transformation_setting_to_ui_metadata(meta_data):
@@ -669,7 +732,6 @@ def add_headers_to_ui_metadata(meta_data):
 def add_ui_metadata_to_metadata(meta_data):
     output = {
         'possibleAnalysis': add_possible_analysis_to_ui_metadata(meta_data),
-        'advanced_settings': add_advanced_settings_to_ui_metadata(meta_data),
         'transformation_settings': add_transformation_setting_to_ui_metadata(meta_data),
         'metaDataUI': add_metaData_to_ui_metadata(meta_data),
         'columnDataUI': add_columnData_to_ui_metatdata(meta_data),
@@ -679,10 +741,11 @@ def add_ui_metadata_to_metadata(meta_data):
     }
     varibaleSelectionArray = add_variable_selection_to_metadata(output["columnDataUI"], output['transformation_settings'])
     output.update({"varibaleSelectionArray":varibaleSelectionArray})
+    output.update({'advanced_settings': get_advanced_setting(varibaleSelectionArray)})
     return output
 
 def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
-    validcols = [ {"name":x["name"],"slug":x["slug"],"columnType":x["columnType"],"dateSuggestionFlag":x["dateSuggestionFlag"],"targetColumn":False} for x in columnDataUI if x["consider"]==True]
+    validcols = [ {"name":x["name"],"slug":x["slug"],"columnType":x["columnType"],"dateSuggestionFlag":x["dateSuggestionFlag"],"targetColumn":False,"targetColSetVarAs":None} for x in columnDataUI if x["consider"]==True]
     # print "presence of none validcols",len([x for x in validcols if x != None])
     timeDimensionCols = []
     dateSuggestionCols = []

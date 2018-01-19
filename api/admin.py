@@ -31,7 +31,7 @@ class JobAdmin(admin.ModelAdmin):
     search_fields = ["name", "slug", "job_type", "url"]
     list_display = ["name", "YARN_URL_html", "job_type", "deleted", "status", 'submitted_by', "msg_count"]
     list_filter = ["job_type", "status", "submitted_by"]
-    readonly_fields = ("created_at","config_prettified","messages_prettified" )
+    readonly_fields = ("created_at", "javascript_like_config" )
     actions = ['kill_selected_jobs', 'start_selected_jobs', 'refresh_status']
 
     def config_prettified(self, instance):
@@ -39,6 +39,21 @@ class JobAdmin(admin.ModelAdmin):
         return json_prettify_for_admin(json.loads(instance.config))
     config_prettified.short_description = 'ConfigPrettified'
     config_prettified.verbose_name = 'Verbose ConfigPrettified'
+
+    def javascript_like_config(self, instance):
+        config_str = instance.config
+        replace_words = {
+            'None': 'null',
+            'True': 'true',
+            'False': 'false'
+        }
+
+        for key in replace_words:
+            config_str.replace(key, replace_words[key])
+
+        return config_str
+
+
 
 
     def messages_prettified(self, instance):

@@ -31,6 +31,9 @@ from api.utils import \
     AppListSerializers, \
     AppSerializer
 
+from api.datasets.serializers import DatasetSerializer
+from api.datasets.helper import add_transformation_setting_to_ui_metadata, add_ui_metadata_to_metadata
+
 from models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData, StockDataset, CustomApps
 
 
@@ -181,6 +184,71 @@ class TrainerView(viewsets.ModelViewSet):
         serializer = TrainerSerlializer(instance=instance)
         return Response(serializer.data)
 
+    @detail_route(methods=['get'])
+    def comparision(self, request, *args, **kwargs):
+
+        try:
+            instance = self.get_object_from_all()
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
+        if instance is None:
+            return creation_failed_exception("File Doesn't exist.")
+
+        serializer = TrainerSerlializer(instance=instance)
+        trainer_data = serializer.data
+        print trainer_data['config']['config']['COLUMN_SETTINGS'].keys()
+        t_d_c = trainer_data['config']['config']['COLUMN_SETTINGS']['variableSelection']
+
+        score_datatset_slug = request.GET.get('score_datatset_slug')
+        try:
+            dataset_instance = Dataset.objects.get(slug=score_datatset_slug)
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
+        if dataset_instance is None:
+            return creation_failed_exception("File Doesn't exist.")
+
+        dataset_serializer = DatasetSerializer(instance=dataset_instance)
+        object_details = dataset_serializer.data
+        original_meta_data_from_scripts = object_details['meta_data']
+        if original_meta_data_from_scripts is None:
+            uiMetaData = None
+        if original_meta_data_from_scripts == {}:
+            uiMetaData = None
+        else:
+            uiMetaData = add_ui_metadata_to_metadata(original_meta_data_from_scripts)
+
+        object_details['meta_data'] = {
+            "scriptMetaData": original_meta_data_from_scripts,
+            "uiMetaData": uiMetaData
+        }
+
+        d_d_c = uiMetaData['varibaleSelectionArray']
+
+        t_d_c_s = set([item['name'] for item in t_d_c if item["targetColumn"] != True])
+        d_d_c_s = set([item['name'] for item in d_d_c])
+        proceedFlag = d_d_c_s.issuperset(t_d_c_s)
+
+        if proceedFlag != True:
+            missing = t_d_c_s.difference(d_d_c_s)
+            extra = d_d_c_s.difference(t_d_c_s)
+            message = "These are the missing Columns {0}".format(missing)
+            if len(extra) > 0:
+                message += "and these are the new columns {0}".format(extra)
+        else:
+            extra = d_d_c_s.difference(t_d_c_s)
+            if len(extra) > 0:
+                message = "These are the new columns {0}".format(extra)
+            else:
+                message = ""
+
+
+        return JsonResponse({
+            'proceed': proceedFlag,
+            'message': message
+        })
+
 
 class ScoreView(viewsets.ModelViewSet):
     def get_queryset(self):
@@ -203,21 +271,22 @@ class ScoreView(viewsets.ModelViewSet):
     pagination_class = CustomPagination
 
     def create(self, request, *args, **kwargs):
-        try:
-            data = request.data
-            data = convert_to_string(data)
-            data['trainer'] = Trainer.objects.filter(slug=data['trainer'])
-            data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
-            data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
-            serializer = ScoreSerlializer(data=data)
-            if serializer.is_valid():
-                score_object = serializer.save()
-                score_object.create()
-                return Response(serializer.data)
+        # try:
+        data = request.data
+        data = convert_to_string(data)
+        print data
+        data['trainer'] = Trainer.objects.filter(slug=data['trainer'])
+        data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
+        data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
+        serializer = ScoreSerlializer(data=data)
+        if serializer.is_valid():
+            score_object = serializer.save()
+            score_object.create()
+            return Response(serializer.data)
 
-            return creation_failed_exception(serializer.errors)
-        except Exception as error:
-            creation_failed_exception(error)
+        return creation_failed_exception(serializer.errors)
+        # except Exception as error:
+        #     creation_failed_exception(error)
 
     def update(self, request, *args, **kwargs):
         data = request.data
@@ -4689,6 +4758,10 @@ def set_messages(request, slug=None):
 
     if not job:
         return JsonResponse({'result': 'No job exist.'})
+
+    emptyBin = request.GET.get('emptyBin', None)
+    if emptyBin is True or emptyBin == 'True':
+        job.reset_message()
 
     return_data = request.GET.get('data', None)
     data = request.body

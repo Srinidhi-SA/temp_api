@@ -1,7 +1,6 @@
 import React from "react";
 import {connect} from "react-redux";
 import {Link, Redirect} from "react-router-dom";
-import ReactDOM from 'react-dom';
 import {push} from "react-router-redux";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "react-bootstrap";
 import store from "../../store";
@@ -39,7 +38,7 @@ var selectedVariables = {measures:[],dimensions:[],date:null};  // pass selected
         dataSetAnalysisList:store.datasets.dataSetAnalysisList,
         dimensionSubLevel:store.datasets.dimensionSubLevel,
         dataSetSelectAllAnalysis:store.datasets.dataSetSelectAllAnalysis,
-        
+
     };
 })
 
@@ -51,16 +50,16 @@ var selectedVariables = {measures:[],dimensions:[],date:null};  // pass selected
 export class VariableSelection extends React.Component {
     constructor(props) {
         super(props);
-        
+
         console.log("preview data check");
         this.signalFlag =true;
         this.possibleTrend = null;
         this.prevSelectedVar = null;
         this.props.dispatch(emptySignalAnalysis());
-        
-        
+
+
     }
-    
+
     handleAnlysisList(e){
         this.props.dispatch(selectedAnalysisList(e));
         this.props.dispatch(saveAdvanceSettings());
@@ -69,7 +68,7 @@ export class VariableSelection extends React.Component {
     handleAllAnlysis(evt){
         this.props.dispatch(updateSelectAllAnlysis(evt.target.checked));
         this.props.dispatch(selectAllAnalysisList(evt.target.checked));
-        
+
     }
     openAdvanceSettingsModal(){
         this.props.dispatch(advanceSettingsModal(true));
@@ -86,7 +85,7 @@ export class VariableSelection extends React.Component {
             bootbox.alert("Please select atleast one analysis to Proceed..");
             return false;
         }
-        
+
         var trendIsChecked = checkIfTrendIsSelected();
         var dateTimeIsSelected = checkIfDateTimeIsSelected();
         if(dateTimeIsSelected == undefined && trendIsChecked == true){
@@ -105,7 +104,7 @@ export class VariableSelection extends React.Component {
                 return false
             }
         }*/
-        
+
         console.log("while creating signal")
         console.log(this.props);
         this.signalFlag = false;
@@ -124,18 +123,19 @@ export class VariableSelection extends React.Component {
         postData["type"]=this.props.getVarType;
         postData["target_column"]=$('#signalVariableList option:selected').text();
         postData["config"]=config;
+
         postData["dataset"]=this.props.dataPreview.slug;*/
-        
+
         config['variableSelection'] = store.getState().datasets.dataPreview.meta_data.uiMetaData.varibaleSelectionArray
-        
+
         if(this.props.getVarType.toLowerCase() == "measure"){
-            
+
             postData['advanced_settings'] = this.props.dataSetAnalysisList.measures;
-            
+
         }else if(this.props.getVarType.toLowerCase() == "dimension"){
             postData['advanced_settings'] = this.props.dataSetAnalysisList.dimensions;
             this.props.dataSetAnalysisList.dimensions.targetLevels.push(this.props.dimensionSubLevel);
-            
+
         }
         postData["config"]=config;
         postData["dataset"]=this.props.dataPreview.slug;
@@ -143,31 +143,31 @@ export class VariableSelection extends React.Component {
         console.log(postData);
        this.props.dispatch(createSignal(postData));
     }
-    
+
     setPossibleList(event){
         this.props.dispatch(hideTargetVariable(event));
         this.props.dispatch(setPossibleAnalysisList(event));
         this.props.dispatch(updateSelectAllAnlysis(false));
         this.props.dispatch(selectAllAnalysisList(false));
-        
+
     }
-    
+
     componentWillMount(){
         if (this.props.dataPreview == null) {
             this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
         }
         this.props.dispatch(closeCsLoaderModal())
     }
-    
+
     componentDidMount(){
         var that = this;
-        
+
         /*$(function(){
 			//alert($('#signalVariableList option:selected').val());
 			that.props.dispatch(setPossibleAnalysisList(event));
 		});*/
     }
-    
+
     componentWillUpdate(){
         console.log("Advancesettings disbale check:::: ");
         /*  if(this.props.dataSetTimeDimensions.length == 0){
@@ -188,7 +188,7 @@ export class VariableSelection extends React.Component {
         /*$(function(){
 			that.props.dispatch(setPossibleAnalysisList(event));
 		});*/
-        
+
         if(!this.props.getVarType){
             $("#allAnalysis").prop("disabled",true);
             $("#advance-setting-link").hide();
@@ -196,7 +196,7 @@ export class VariableSelection extends React.Component {
             $("#allAnalysis").prop("disabled",false);
             $("#advance-setting-link").show();
         }
-        
+
     }
     handleCategoricalChk(event){
         this.props.dispatch(updateCategoricalVariables(this.props.selVarSlug,this.props.getVarText,SET_VARIABLE,event));
@@ -206,18 +206,18 @@ export class VariableSelection extends React.Component {
         let list =  analysisList.map((metaItem,metaIndex) =>{
             let id = "chk_analysis"+ metaIndex;
             return(<div key={metaIndex} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisList.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>);
-            
+
         });
         return list;
     }
     render(){
         var that= this;
        /* if(that.props.getVarText && that.props.getVarType){ //getting selected dimension's sub levels
-            
+
             if(that.props.getVarType == "dimension"){
                 let columnData = store.getState().datasets.dataPreview.meta_data.scriptMetaData.columnData;
                 let subLevelsDimension = [];
-                
+
                 for (let item of columnData) {
                     if(item.name.trim()== that.props.getVarText.trim()){
                         let columnStats = item.columnStats;
@@ -235,17 +235,17 @@ export class VariableSelection extends React.Component {
                     tmpObj[item] = false;
                     return tmpObj;
                 });
-                
+
                 //that.props.dispatch(setDimensionSubLevels(subLevels));
-                
+
             }else{
-                
+
                 //that.props.dispatch(setDimensionSubLevels(null));
             } // end of if dimension - code to setup sub level in popup
-            
+
         }*/
-        
-        
+
+
         if(!$.isEmptyObject(this.props.selectedSignalAnalysis) && !that.signalFlag){
             console.log("move from variable selection page");
             console.log(this.props.selectedSignal)
@@ -254,7 +254,7 @@ export class VariableSelection extends React.Component {
             return(<Redirect to={_link}/>)
             ;
         }
-        
+
         let dataPrev = store.getState().datasets.dataPreview;
         let renderSelectBox = null;
         let renderPossibleAnalysis = null, renderSubList=null;
@@ -271,9 +271,9 @@ export class VariableSelection extends React.Component {
             }else{
                 renderSelectBox = <option>No Variables</option>
             }
-            
-            
-            
+
+
+
             //AnalysisList
             let possibleAnalysis = store.getState().datasets.dataSetAnalysisList;
             if(!$.isEmptyObject(possibleAnalysis)){
@@ -287,15 +287,15 @@ export class VariableSelection extends React.Component {
                     console.log(possibleAnalysis);
                     renderSubList = this.renderAnalysisList(possibleAnalysis);
                 }
-                
-                
+
+
             }
         }
-        
+
         return (
                 <div className="side-body">
                 <div className="main-content">
-                
+
                 <div className="panel panel-default">
                 <div className="panel-body no-border">
                 <Form onSubmit={this.createSignal.bind(this)}>
@@ -313,9 +313,9 @@ export class VariableSelection extends React.Component {
                 <div className="col-lg-4">
                 <div className="ma-checkbox inline treatAsCategorical hidden" ><input id="idCategoricalVar" type="checkbox" onClick={this.handleCategoricalChk.bind(this)}/><label htmlFor="idCategoricalVar">Treat as categorical variable</label></div>
                 </div>
-                
+
                 {/*<!-- /.col-lg-4 -->*/}
-                
+
                 </div>{/*<!-- /.row -->*/}
                 <br/>
                 {/*  adding selection component */}
@@ -333,37 +333,37 @@ export class VariableSelection extends React.Component {
                 <a className="cursor" id="advance-setting-link" onClick={this.openAdvanceSettingsModal.bind(this)}>Advanced Settings</a>
                 </div>
                 </div>
-                
+
                 </div>
                 </div>
                 </div>
                 <div className="row">
                 <div className="col-lg-6 col-lg-offset-6">
-                
-                <div className="form-inline text-right">				
+
+                <div className="form-inline text-right">
                 <div class="form-group">
                 <label className="sr-only">Signal Name</label>
                 <div className="htmlForm-group lg-pr-10">
                 <input type="text" name="createSname" id="createSname"  required={true} className="form-control input-sm" placeholder="Enter a signal name"/>
                     </div>
-                </div>		 
-                <button type="submit" className="btn btn-primary">CREATE SIGNAL</button>				
                 </div>
-                
+                <button type="submit" className="btn btn-primary">CREATE SIGNAL</button>
+                </div>
+
                 </div>{/*<!-- /.col-lg-4 -->*/}
                 </div>
-                
+
                 </FormGroup>
                 </Form>
-                
+
                 </div>
                 </div>
                 <CreateSignalLoader history={this.props.history} />
-                
+
                 </div>
                 </div>
-                
+
         )
     }
-    
+
 }

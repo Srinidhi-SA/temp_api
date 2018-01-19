@@ -131,6 +131,10 @@ class Job(models.Model):
 
         return original_object
 
+    def reset_message(self):
+        empty_dict = dict()
+        self.message_log = json.dumps(empty_dict)
+        self.save()
 
 
 class Dataset(models.Model):
@@ -793,10 +797,10 @@ class Trainer(models.Model):
 
         config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
 
-        # try:
-        config['config']["COLUMN_SETTINGS"] = self.make_config_for_colum_setting()
-        # except:
-        #     config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
+        try:
+            config['config']["COLUMN_SETTINGS"] = self.make_config_for_colum_setting()
+        except:
+            config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
 
         config['config']["DATA_SOURCE"] = self.dataset.get_datasource_info()
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
@@ -810,7 +814,7 @@ class Trainer(models.Model):
         config = self.get_config()
         print config
         return {
-            'variableSelection': config['variablesSelected']
+            'variableSelection': config['variablesSelection']
         }
 
     def get_config_from_config(self):
@@ -935,24 +939,6 @@ class Trainer(models.Model):
         return convert_json_object_into_list_of_object(brief_info, 'trainer')
 
 
-"""
-{
-    "name": "WWADw",
-    "dataset": "iriscsv-5dbng5clba",
-    "app_id": 1,
-    "column_data_raw":
-        {
-            "measures": "",
-            "dimension": "",
-            "timeDimension": "",
-            "trainValue": 50,
-            "testValue": 50,
-            "analysisVariable": "age"
-        }
-}
-"""
-
-
 # TODO: Add generate config
 # TODO: Add set_result function: it will be contain many things.
 class Score(models.Model):
@@ -1018,7 +1004,10 @@ class Score(models.Model):
         }
 
         config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
-        config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
+        # try:
+        config['config']["COLUMN_SETTINGS"] = self.create_configuration_for_column_setting_from_variable_selection()
+        # except:
+        #     config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
         config['config']["DATA_SOURCE"] = self.dataset.get_datasource_info()
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
         # config['config']["META_HELPER"] = self.create_configuration_meta_data()
@@ -1039,7 +1028,6 @@ class Score(models.Model):
         targetVariableLevelcount = model_config_from_results.get('targetVariableLevelcount', None)
         modelFeaturesDict = model_config_from_results.get('modelFeatures', None)
         labelMappingDictAll = model_config_from_results.get('labelMappingDict',None)
-        # algorithmslug = 'f77631ce2ab24cf78c55bb6a5fce4db8rf'
 
         modelfeatures = modelFeaturesDict.get(algorithmslug, None)
         if labelMappingDictAll != None:
@@ -1058,6 +1046,24 @@ class Score(models.Model):
             'metadata': self.dataset.get_metadata_url_config(),
             'labelMappingDict':[labelMappingDict]
         }
+
+    def create_configuration_for_column_setting_from_variable_selection(self):
+        # Trainer related variable selection
+
+        trainer_config = json.loads(self.trainer.config)
+        trainer_config_config = trainer_config.get('config')
+        trainer_column_setting_config = trainer_config_config.get('COLUMN_SETTINGS')
+        trainer_variable_selection_config = trainer_column_setting_config.get('variableSelection')
+
+        # Score related variable selection
+        main_config = json.loads(self.config)
+        score_variable_selection_config = main_config.get('variablesSelection')
+        print score_variable_selection_config
+        output = {
+            'modelvariableSelection': trainer_variable_selection_config,
+            'variableSelection': score_variable_selection_config
+        }
+        return output
 
     def get_config_from_config(self):
         trainer_config = json.loads(self.trainer.config)
@@ -1319,6 +1325,15 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
     if not queue_name:
         queue_name = "default"
 
+    from api.redis_access import AccessFeedbackMessage
+    ac = AccessFeedbackMessage()
+    message_slug = get_message_slug(job)
+    ac.delete_this_key(message_slug)
+    app_id = None
+    if 'score' == job_type:
+        app_id = instance.app_id
+    elif 'model' == job_type:
+        app_id = instance.app_id
     '''
     job_type = {
             "metadata": "metaData",
@@ -1339,8 +1354,9 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
             class_name=job_type,
             job_config=jobConfig,
             job_name=instance.name,
-            message_slug=get_message_slug(job),
-            queue_name=queue_name
+            message_slug=message_slug,
+            queue_name=queue_name,
+            app_id=app_id
         )
 
         job.url = job_return_data.get('application_id')

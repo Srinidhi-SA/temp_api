@@ -4,7 +4,8 @@ var _datepicker =  'react-dates/lib/css/_datepicker.css';
 var DIST_DIR = path.resolve(__dirname, "dist");
 var SRC_DIR = path.resolve(__dirname, "src");
 var ASSETS_DIR = path.resolve(__dirname,"assets");
-
+//const webpack = require('webpack')
+//var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 var config = {
     entry: SRC_DIR + "/app/index.js",
