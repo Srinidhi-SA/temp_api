@@ -237,5 +237,5 @@ class DatasetView(viewsets.ModelViewSet):
     @detail_route(methods=['put'])
     def advanced_settings_modification(self, request, slug=None):
         data = request.data
+        data = data.get('variableSelection')
         return Response(get_advanced_setting(data))
-
