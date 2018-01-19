@@ -579,7 +579,9 @@ def add_trend_in_advanced_setting(things_to_add):
     import copy
     from django.conf import settings
 
-    main_setting = copy.deepcopy(settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND)
+    if things_to_add == dict():
+        main_setting = copy.deepcopy(settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND)
+        return main_setting
     trend_setting = copy.deepcopy(settings.ADANCED_SETTING_FOR_POSSIBLE_ANALYSIS_TREND)
 
     overview = copy.deepcopy(settings.ADVANCED_SETTINGS_OVERVIEW)
