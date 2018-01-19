@@ -555,6 +555,8 @@ def get_advanced_setting(varibaleSelectionArray):
     if dimension_count_without_target > 0:
         add_performance = True
 
+    print "measure_count_without_target", measure_count_without_target
+    print "dimension_count_without_target", dimension_count_without_target
     things_to_add = {
         'overview': add_overview,
         'trend': add_trend,
