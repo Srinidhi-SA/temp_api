@@ -556,20 +556,20 @@ def get_advanced_setting(varibaleSelectionArray):
         add_performance = True
 
     if target_data_type == 'measure':
-        things_to_add = [
-            {'overview': add_overview},
-            {'trend': add_trend},
-            {'association': add_association},
-            {'prediction': add_prediction},
-        ]
+        things_to_add = {
+            'overview': add_overview,
+            'trend': add_trend,
+            'association': add_association,
+            'prediction': add_prediction,
+        }
     elif target_column_name == 'dimension':
-        things_to_add = [
-            {'overview': add_overview},
-            {'trend': add_trend},
-            {'performance': add_performance},
-            {'influencer': add_influencer},
-            {'prediction': add_prediction},
-        ]
+        things_to_add = {
+            'overview': add_overview,
+            'trend': add_trend,
+            'performance': add_performance,
+            'influencer': add_influencer,
+            'prediction': add_prediction,
+        }
 
     return add_trend_in_advanced_setting(things_to_add)
 
