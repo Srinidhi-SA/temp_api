@@ -235,7 +235,7 @@ class DatasetView(viewsets.ModelViewSet):
         return Response(uiMetaData)
 
     @detail_route(methods=['put'])
-    def advanced_settings_modification(self, request):
+    def advanced_settings_modification(self, request, slug=None):
         data = request.data
         return Response(get_advanced_setting(data))
 
