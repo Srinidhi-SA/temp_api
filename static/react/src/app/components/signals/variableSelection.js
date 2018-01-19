@@ -6,7 +6,7 @@ import {Modal,Button,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "r
 import store from "../../store";
 import {selectedAnalysisList,resetSelectedVariables,unselectAllPossibleAnalysis,getDataSetPreview,setDimensionSubLevels,selectAllAnalysisList,updateSelectAllAnlysis,saveAdvanceSettings,checkAllAnalysisSelected} from "../../actions/dataActions";
 import {openCreateSignalModal,closeCreateSignalModal,updateCsLoaderValue} from "../../actions/createSignalActions";
-import {createSignal,setPossibleAnalysisList,emptySignalAnalysis,advanceSettingsModal,checkIfDateTimeIsSelected,checkIfTrendIsSelected,updateCategoricalVariables,createcustomAnalysisDetails,checkAnalysisIsChecked,changeSelectedVariableType,hideTargetVariable,handleTargetSelection} from "../../actions/signalActions";
+import {createSignal,setPossibleAnalysisList,emptySignalAnalysis,advanceSettingsModal,checkIfDateTimeIsSelected,checkIfTrendIsSelected,updateCategoricalVariables,createcustomAnalysisDetails,checkAnalysisIsChecked,changeSelectedVariableType,hideTargetVariable,updateAdvanceSettings} from "../../actions/signalActions";
 import {DataVariableSelection} from "../data/DataVariableSelection";
 import {CreateSignalLoader} from "../common/CreateSignalLoader";
 import {openCsLoaderModal,closeCsLoaderModal} from "../../actions/createSignalActions";
@@ -21,9 +21,6 @@ var selectedVariables = {measures:[],dimensions:[],date:null};  // pass selected
         newSignalShowModal: store.signals.newSignalShowModal,
         dataList: store.datasets.dataList,
         dataPreview: store.datasets.dataPreview,
-        selectedMeasures:store.datasets.selectedMeasures,
-        selectedDimensions:store.datasets.selectedDimensions,
-        selectedTimeDimensions:store.datasets.selectedTimeDimensions,
         selectedAnalysis:store.datasets.selectedAnalysis,
         signalData: store.signals.signalData,
         selectedSignal: store.signals.selectedSignal,
@@ -42,9 +39,6 @@ var selectedVariables = {measures:[],dimensions:[],date:null};  // pass selected
     };
 })
 
-/*		selectedDimensionSubLevels:store.datasets.selectedDimensionSubLevels,
-		selectedTrendSub:store.datasets.selectedTrendSub,
-		dataSetAnalysisListForLevels:store.datasets.dataSetAnalysisListForLevels,*/
 
 
 export class VariableSelection extends React.Component {
@@ -92,18 +86,6 @@ export class VariableSelection extends React.Component {
             bootbox.alert("Please select one of the date dimensions.");
             return false;
         }
-        //check if no variable selected
-        /*if(this.props.selectedTimeDimensions===undefined){
-            if(this.props.selectedMeasures.length+this.props.selectedDimensions.length==0){
-                bootbox.alert("Please select atleast one variable.")
-                return false
-            }
-        }else{
-            if(this.props.selectedMeasures.length+this.props.selectedDimensions.length+this.props.selectedTimeDimensions.length==0){
-                bootbox.alert("Please select atleast one variable.")
-                return false
-            }
-        }*/
 
         console.log("while creating signal")
         console.log(this.props);
@@ -112,19 +94,7 @@ export class VariableSelection extends React.Component {
         this.props.dispatch(openCsLoaderModal());
         //let customDetails = createcustomAnalysisDetails();
         let analysisList =[],config={}, postData={};
-       /* config['possibleAnalysis'] = this.props.selectedAnalysis;
-        config['measures'] =store.getState().datasets.selectedMeasures;
-        config['dimension'] =store.getState().datasets.selectedDimensions;
-        config['timeDimension'] =this.props.selectedTimeDimensions;
-        config['customAnalysisDetails'] = customDetails["customAnalysisDetails"];
-        config['polarity']=customDetails["polarity"];
-        config['uidColumn']=customDetails["uidColumn"];
-        postData["name"]=$("#createSname").val();
-        postData["type"]=this.props.getVarType;
-        postData["target_column"]=$('#signalVariableList option:selected').text();
-        postData["config"]=config;
 
-        postData["dataset"]=this.props.dataPreview.slug;*/
 
         config['variableSelection'] = store.getState().datasets.dataPreview.meta_data.uiMetaData.varibaleSelectionArray
 
@@ -145,10 +115,12 @@ export class VariableSelection extends React.Component {
     }
 
     setPossibleList(event){
-        this.props.dispatch(hideTargetVariable(event));
-        this.props.dispatch(setPossibleAnalysisList(event));
-        this.props.dispatch(updateSelectAllAnlysis(false));
-        this.props.dispatch(selectAllAnalysisList(false));
+        this.props.dispatch(hideTargetVariable(event,"signals"));
+        //this.props.dispatch(updateAdvanceSettings(event));
+        //this.props.dispatch(setPossibleAnalysisList(event));
+        //this.props.dispatch(updateSelectAllAnlysis(false));
+        //clear all analysis once target variable is changed
+       // this.props.dispatch(selectAllAnalysisList(false));
 
     }
 
@@ -162,19 +134,11 @@ export class VariableSelection extends React.Component {
     componentDidMount(){
         var that = this;
 
-        /*$(function(){
-			//alert($('#signalVariableList option:selected').val());
-			that.props.dispatch(setPossibleAnalysisList(event));
-		});*/
     }
 
     componentWillUpdate(){
         console.log("Advancesettings disbale check:::: ");
-        /*  if(this.props.dataSetTimeDimensions.length == 0){
-            $('#analysisList input[type="checkbox"]').last().attr("disabled", true);
-        }else{
-            $('#analysisList input[type="checkbox"]').last().attr("disabled", false);
-        }*/
+  
         if(!this.props.getVarType){
             $("#allAnalysis").prop("disabled",true);
             $("#advance-setting-link").hide();
@@ -185,9 +149,6 @@ export class VariableSelection extends React.Component {
     }
     componentDidUpdate(){
         var that = this;
-        /*$(function(){
-			that.props.dispatch(setPossibleAnalysisList(event));
-		});*/
 
         if(!this.props.getVarType){
             $("#allAnalysis").prop("disabled",true);
@@ -212,39 +173,7 @@ export class VariableSelection extends React.Component {
     }
     render(){
         var that= this;
-       /* if(that.props.getVarText && that.props.getVarType){ //getting selected dimension's sub levels
-
-            if(that.props.getVarType == "dimension"){
-                let columnData = store.getState().datasets.dataPreview.meta_data.scriptMetaData.columnData;
-                let subLevelsDimension = [];
-
-                for (let item of columnData) {
-                    if(item.name.trim()== that.props.getVarText.trim()){
-                        let columnStats = item.columnStats;
-                        for (let subItem of columnStats) {
-                            if(subItem.name == "LevelCount"){
-                                subLevelsDimension = Object.keys(subItem.value);
-                                break;
-                            }
-                        }
-                        break;
-                    }
-                } // end of main for loop
-                let subLevels = subLevelsDimension.map(function(item,index){
-                    let tmpObj = {};
-                    tmpObj[item] = false;
-                    return tmpObj;
-                });
-
-                //that.props.dispatch(setDimensionSubLevels(subLevels));
-
-            }else{
-
-                //that.props.dispatch(setDimensionSubLevels(null));
-            } // end of if dimension - code to setup sub level in popup
-
-        }*/
-
+     
 
         if(!$.isEmptyObject(this.props.selectedSignalAnalysis) && !that.signalFlag){
             console.log("move from variable selection page");

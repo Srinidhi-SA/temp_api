@@ -7,7 +7,7 @@ import store from "../store";
 import {openCsLoaderModal, closeCsLoaderModal, updateCsLoaderValue, updateCsLoaderMsg} from "./createSignalActions";
 import Dialog from 'react-bootstrap-dialog'
 import {showLoading, hideLoading} from 'react-redux-loading-bar'
-import {updateColumnStatus,updateStoreVariables} from './dataActions';
+import {updateColumnStatus,updateStoreVariables,updateDatasetVariables} from './dataActions';
 // var API = "http://34.196.204.54:9000";
 
 // @connect((store) => {
@@ -301,28 +301,57 @@ function fetchPostsError_analysis(json) {
   //console.log("fetching list error!!",json)
   return {type: "SIGNAL_ANALYSIS_ERROR", json}
 }
-export function setPossibleAnalysisList(event) {
-  var selOption = event.target.childNodes[event.target.selectedIndex];
-  var varType = selOption.value;
-  var varText = selOption.text;
-  var varSlug = selOption.getAttribute("name");
-  if (varType == MEASURE) {
-    //$(".treatAsCategorical").show();
-    $(".treatAsCategorical").removeClass("hidden")
-    var isVarTypeChanged = checkIfDataTypeChanges(varSlug);
-    if (isVarTypeChanged) {
-      varType = DIMENSION;
-      $(".treatAsCategorical").find('input[type=checkbox]').prop("checked", true);
+export function setPossibleAnalysisList(varType,varText,varSlug) {
+    
+    if (varType == MEASURE) {
+        $(".treatAsCategorical").removeClass("hidden")
+        var isVarTypeChanged = checkIfDataTypeChanges(varSlug);
+        if (isVarTypeChanged) {
+            varType = DIMENSION;
+            $(".treatAsCategorical").find('input[type=checkbox]').prop("checked", true);
+        } else {
+            $(".treatAsCategorical").find('input[type=checkbox]').prop("checked", false);
+        }
     } else {
-      $(".treatAsCategorical").find('input[type=checkbox]').prop("checked", false);
+        $(".treatAsCategorical").find('input[type=checkbox]').prop("checked", false);
+        $(".treatAsCategorical").addClass("hidden")
     }
-  } else {
-    $(".treatAsCategorical").find('input[type=checkbox]').prop("checked", false);
-    $(".treatAsCategorical").addClass("hidden")
-  }
-  return {type: "SET_POSSIBLE_LIST", varType, varText, varSlug};
+    return {type: "SET_POSSIBLE_LIST", varType, varText, varSlug};
 }
-export function handleTargetSelection(){
+
+export function updateAdvanceSettings(event){
+   var variableSelection = store.getState().datasets.dataPreview.meta_data.uiMetaData.varibaleSelectionArray;
+   var dataSetMeasures = store.getState().datasets.dataSetMeasures.slice();
+   var dataSetDimensions = store.getState().datasets.dataSetDimensions.slice();
+   var dataSetTimeDimensions = store.getState().datasets.dataSetTimeDimensions.slice();
+   var selOption = event.target.childNodes[event.target.selectedIndex];
+   var varType = selOption.value;
+   var varText = selOption.text;
+   var varSlug = selOption.getAttribute("name");
+    return (dispatch) => {
+        return triggerAdvanceSettingsAPI(variableSelection).then(([response, json]) =>{
+            if(response.status === 200){
+                dispatch(updateDatasetVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,json,false));
+                dispatch(setPossibleAnalysisList(varType,varText,varSlug));
+                dispatch(updateSelectAllAnlysis(false));
+                //clear all analysis once target variable is changed
+                dispatch(selectAllAnalysisList(false));
+            }
+        })
+    }
+}
+
+function triggerAdvanceSettingsAPI(variableSelection){
+    return fetch(API+'/api/datasets/'+store.getState().datasets.selectedDataSet+'/advanced_settings_modification/',{
+        method: 'put',
+        body:JSON.stringify({
+            variableSelection
+        }),
+        headers: getHeader(getUserDetailsOrRestart.get().userToken)
+    }).then( response => Promise.all([response, response.json()]));
+}
+
+/*export function handleTargetSelection(){
     var selectedDimensions =  store.getState().datasets.selectedDimensions.slice();
     var selectedMeasures = store.getState().datasets.selectedMeasures.slice();
     var varType = store.getState().signals.getVarType;
@@ -336,7 +365,7 @@ export function handleTargetSelection(){
         type:"UPDATE_SELECTED_VARIABLES",
         selectedDimensions,
         selectedMeasures}
-}
+}*/
 function updateTargetVariable(slug,array){
     for(var i=0;i<array.length;i++){
     if(array[i].slug == slug){
@@ -348,7 +377,7 @@ function updateTargetVariable(slug,array){
 return array;
 }
 
-export function hideTargetVariable(event){
+export function hideTargetVariable(event,jobType){
     return (dispatch) => {
     var selOption = event.target.childNodes[event.target.selectedIndex];
     var varType = selOption.value;
@@ -378,6 +407,11 @@ export function hideTargetVariable(event){
         count = count-1;
     }
     dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
+   
+    if(jobType == "signals"){
+        dispatch(updateAdvanceSettings(event));
+    }
+    
     }
     
 }
