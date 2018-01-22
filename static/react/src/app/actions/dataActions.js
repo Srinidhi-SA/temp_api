@@ -1147,6 +1147,10 @@ function updateUniqueIdentifierColumn(dispatch,actionName,colSlug,isChecked){
                         transformSettings[i].columnSetting[j].status = false;
                     }
                 }
+            } else if(transformSettings[i].columnSetting[j].actionName == IGNORE_SUGGESTION){
+                if(transformSettings[i].slug == colSlug){
+                    transformSettings[i].columnSetting[j].status = false;
+                }
             }
         }
     }
