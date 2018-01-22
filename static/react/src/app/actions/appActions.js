@@ -1814,21 +1814,27 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
     }
     
     
-    export function checkCreateScoreToProceed(){
+    export function checkCreateScoreToProceed(selectedDataset){
         var modelSlug = store.getState().apps.modelSlug;
-        var selectedDataset = store.getState().datasets.selectedDataSet;
+        var response = "";
         return (dispatch) => {
             return triggerAPI(modelSlug,selectedDataset).then(([response, json]) =>{
                 if(response.status === 200){
-                  return json;
+                    dispatch(scoreToProceed(json.proceed));
                 }
-            })
+            });
         }
+        
     }
     
     function triggerAPI(modelSlug,selectedDataset){
         return fetch(API+'/api/trainer/'+modelSlug+'/comparision/?score_datatset_slug='+selectedDataset+'',{
             method: 'get',
-            headers: getHeader(getUserDetailsOrRestart.get().userToken)
+            headers: getHeader(getUserDetailsOrRestart.get().userToken),
         }).then( response => Promise.all([response, response.json()]));
+    }
+    
+    
+    function scoreToProceed(flag){
+        return {type: "SCORE_TO_PROCEED", flag};
     }
