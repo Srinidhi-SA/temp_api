@@ -455,7 +455,7 @@ class C3Chart(object):
                     "lines": [zero_data]
                 }
             }
-        self.hide_x_axis_line()
+        # self.hide_x_axis_line()
 
     def remove_y_label_count(self):
         self._axis['y']['tick']['count'] = None

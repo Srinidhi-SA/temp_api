@@ -1,8 +1,6 @@
 import React from "react";
 import {Scrollbars} from 'react-custom-scrollbars';
 import {connect} from "react-redux";
-import ReactDOM from "react-dom";
-import {Link} from "react-router-dom";
 import store from "../../store";
 import {isEmpty, getUserDetailsOrRestart} from "../../helpers/helper";
 var dateFormat = require('dateformat');

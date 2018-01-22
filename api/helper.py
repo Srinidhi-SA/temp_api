@@ -33,7 +33,8 @@ class JobserverDetails(object):
                    slug,
                    class_name,
                    job_name=None,
-                   message_slug=None
+                   message_slug=None,
+                   app_id=None
                    ):
 
         job_type = {
@@ -62,6 +63,7 @@ class JobserverDetails(object):
                                                                 THIS_SERVER_DETAILS.get('port'),
                                                                 slug),
                 "job_name": job_name,
+                "app_id":app_id,
                 "get_config" :
                     {
                         "action" : "get_config" ,
