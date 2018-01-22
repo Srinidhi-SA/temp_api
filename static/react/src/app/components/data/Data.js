@@ -20,7 +20,7 @@ import {fetchProductList, openDULoaderPopup, closeDULoaderPopup, storeSearchElem
 import {DataUpload} from "./DataUpload";
 import {open, close,triggerDataUploadAnalysis,updateHideData} from "../../actions/dataUploadActions";
 import {STATIC_URL} from "../../helpers/env.js"
-import {SEARCHCHARLIMIT,getUserDetailsOrRestart,SUCCESS,INPROGRESS} from  "../../helpers/helper"
+import {SEARCHCHARLIMIT,getUserDetailsOrRestart,SUCCESS,INPROGRESS,HANA,MYSQL,MSSQL,HDFS,FILEUPLOAD} from  "../../helpers/helper"
 import {DataUploadLoader} from "../common/DataUploadLoader";
 import Dialog from 'react-bootstrap-dialog'
 
@@ -176,10 +176,16 @@ export class Data extends React.Component {
                 iconDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>
             }else{
                 let src = STATIC_URL + "assets/images/File_Icon.png"
-                if(data.datasource_type == "Hana"){
+                if(data.datasource_type == HANA){
                   src = STATIC_URL + "assets/images/sapHana_Icon.png"
-                }else if (data.datasource_type == "Mysql") {
+                }else if (data.datasource_type == MYSQL) {
                   src = STATIC_URL + "assets/images/mySQL_Icon.png"
+                }else if (data.datasource_type == MSSQL) {
+                  src = STATIC_URL + "assets/images/SqlServer_Icons.png"
+                }else if (data.datasource_type == HDFS) {
+                  src = STATIC_URL + "assets/images/hadoop_Icons.png"
+                }else {
+                  src = STATIC_URL + "assets/images/File_Icon.png"
                 }
                 iconDetails = <img src={src} className="img-responsive" alt="LOADING"/>;
             }

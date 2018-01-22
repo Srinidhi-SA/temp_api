@@ -411,7 +411,7 @@ export class OverViewPage extends React.Component {
 
               <div className="row">
                 <div className="col-md-12">
-                  <div className="panel panel-mAd">
+                  <div className="panel panel-mAd box-shadow">
                     <div className="panel-heading">
 
                       <h3 className="xs-mt-0">{storyName}

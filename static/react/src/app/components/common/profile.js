@@ -171,7 +171,7 @@ export class Profile extends React.Component {
           <div className="main-content">
             <div className="user-profile">
               <div className="panel panel-default xs-mb-15">
-                <div className="panel-body">
+                <div className="panel-body no-border box-shadow">
                   <div className="user-display">
                     <div className="user-avatar col-md-2 text-center">
                       <img src={imgSrc} className="img-responsive img-center img-circle"/>
@@ -282,8 +282,8 @@ export class Profile extends React.Component {
             </div>
             <div className="row">
               <div className="col-md-4">
-                <div className="panel">
-                  <div className="panel-body">
+                <div className="panel xs-mb-0">
+                  <div className="panel-body no-border box-shadow">
                     <div className="minHP">
                       <h5 class="text-center">TOTAL SPACE</h5>
                       <C3Chart chartInfo={chartInfo} classId="_profile" data={this.props.profileInfo.chart_c3}/>
@@ -311,13 +311,11 @@ export class Profile extends React.Component {
                   </div>
                   <div className="clearfix"></div>
                   <div className="col-md-12">
-                    <div className="panel">
-                      <div className="panel-body">
+                    <div className="panel xs-mb-0">
+                      <div className="panel-body no-border box-shadow">
                         <div className="minHP">
                           <h5>RECENT ACTIVITY</h5>
-                          <Scrollbars style={{
-                            height: 293
-                          }} renderTrackHorizontal={props => <div {...props} className="track-horizontal" style={{
+                          <Scrollbars style={{ height: 302 }} renderTrackHorizontal={props => <div {...props} className="track-horizontal" style={{
                             display: "none"
                           }}/>} renderThumbHorizontal={props => <div {...props} className="thumb-horizontal" style={{
                             display: "none"

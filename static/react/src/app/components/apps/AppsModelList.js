@@ -180,10 +180,10 @@ import {DataUploadLoader} from "../common/DataUploadLoader";
 						<li class="active">Sales Performance Report</li>
 					</ol> -->*/}
 						<div className="row">
-						<div className="col-md-8">
+						<div className="col-md-6">
 
 						</div>
-						<div className="col-md-4">
+						<div className="col-md-6">
 							<div className="btn-toolbar pull-right">
 							<div className="input-group">
 
