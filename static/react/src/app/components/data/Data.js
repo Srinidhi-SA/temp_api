@@ -187,7 +187,7 @@ export class Data extends React.Component {
                 }else {
                   src = STATIC_URL + "assets/images/File_Icon.png"
                 }
-                iconDetails = <img src={src} className="img-responsive" alt="LOADING"/>;
+                iconDetails = <img src={src} alt="LOADING"/>;
             }
             
         
@@ -198,33 +198,16 @@ export class Data extends React.Component {
               <div className="card-header"></div>
               <div className="card-center-tile">
                 <div className="row">
-                  <div className="col-xs-9">
-                    <h4 className="title newCardTitle">
+                  <div className="col-xs-12">
+                    <h5 className="title newCardTitle pull-left">
                      {dataClick}
-                    </h4>
-                  </div>
-                  <div className="col-xs-3">
-                    {iconDetails}
-                  </div>
-                </div>
-              </div>
-              <div className="card-footer">
-                <div className="left_div">
-                  <span className="footerTitle"></span>{getUserDetailsOrRestart.get().userName}
-                  <span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy HH:MM")}</span>
-                </div>
-
-                <div className="card-deatils">
-                  {/*<!-- Popover Content link -->*/}
-                  <OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={data}/> </Popover>}>
-                    <a  className="pover cursor">
-                      <i className="ci pe-7s-info pe-2x"></i>
-                    </a>
-                  </OverlayTrigger>
-
-                  {/*<!-- Rename and Delete BLock  -->*/}
+                    </h5>
+					
+					<div class="btn-toolbar pull-right">
+					
+						{/*<!-- Rename and Delete BLock  -->*/}
                   <a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
-                    <i className="ci pe-7s-more pe-rotate-90 pe-2x"></i>
+                    <i className="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
                   </a>
                   <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                     <li onClick={this.handleRename.bind(this, data.slug, data.name)}>
@@ -238,8 +221,29 @@ export class Data extends React.Component {
                                     : "Delete"}</a>
                                     </li>
                   </ul>
-                  {/*<!-- End Rename and Delete BLock  -->*/}
+					
+					</div>
+					  <div className="clearfix"></div>
+					  
+					  
+			<OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={data}/> </Popover>}>
+			<a  className="pover cursor">
+			<div class="card_icon">
+					{iconDetails}
+					</div>
+			</a>
+			</OverlayTrigger>
+					  
+                  </div>
+                   
                 </div>
+              </div>
+              <div className="card-footer">
+                <div className="left_div">
+                  <span className="footerTitle"></span>{getUserDetailsOrRestart.get().userName}
+                  <span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy HH:MM")}</span>
+                </div>
+ 
 
                 {/*popover*/}
 

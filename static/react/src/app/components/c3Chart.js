@@ -396,6 +396,7 @@ export class C3Chart extends React.Component {
 
     return (
       <div className="chart-area">
+
         <div className="row">
           <div className="chart-data-icon col-md-8 col-md-offset-2 xs-p-0 xs-mb-20">
 
@@ -434,6 +435,7 @@ export class C3Chart extends React.Component {
               </ul>
             </div>
 
+ 
           </div>
 
           <div className="clearfix"></div>
