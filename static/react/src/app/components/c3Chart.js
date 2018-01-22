@@ -315,8 +315,12 @@ export class C3Chart extends React.Component {
     }
     if(chartDownloadData.axis&&chartDownloadData.axis.x){
         chartDownloadData.axis.x.extent = null;
-        if(chartDownloadData.axis.x.tick)
+        if(chartDownloadData.axis.x.tick){
         chartDownloadData.axis.x.tick.fit=true;
+        //for scatter chart x axis correction
+        if(chartDownloadData.data.type=="scatter")
+        chartDownloadData.axis.x.tick.fit=false;
+      }
     }
     chartDownloadData['bindto'] = document.querySelector(".chartDownload"+this.props.classId)
     let chartDownload = c3.generate(chartDownloadData);
@@ -435,7 +439,7 @@ export class C3Chart extends React.Component {
               </ul>
             </div>
 
- 
+
           </div>
 
           <div className="clearfix"></div>
