@@ -7,6 +7,7 @@ import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
 import HeatMap from '../../helpers/heatmap';
 import {generateHeaders,generateRows} from "../../helpers/helper";
+import { Scrollbars } from 'react-custom-scrollbars';
 
 export class ConfusionMatrix extends React.Component {
   constructor(){
@@ -21,6 +22,7 @@ export class ConfusionMatrix extends React.Component {
    var rowComponents = generateRows(data);
    return (
            <div className="table-style">
+		   <Scrollbars style={{ height: 420 }}>
            <table className="table table-bordered apps_table_style">
                <thead><tr>
 				<th colSpan={data.tableData.length+3} class="text-center">Actual</th>
@@ -28,6 +30,7 @@ export class ConfusionMatrix extends React.Component {
                <tbody><tr><th rowSpan={data.tableData.length} class="left_highlilght">Predicted</th>
 				{headerComponents}</tr>{rowComponents}</tbody>
            </table>
+		   </Scrollbars>
            </div>
        );
   }

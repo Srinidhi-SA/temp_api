@@ -101,11 +101,13 @@ export class DataPreviewLeftPanel extends React.Component {
                     </div>
                     
                     <div className="row">
+					<div className="col-md-12">
                     <div className="panel">
                     <div className="panel-body no-border text-right">
                     <Link to={scoreLink} onClick={this.emptyScoreCSVData.bind(this)}><Button> Close</Button></Link>
                     </div>
                     </div>
+					</div>
                     </div>
                     
                     </div>

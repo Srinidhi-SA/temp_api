@@ -48,7 +48,7 @@ export default function reducer(state = {
   data_sorttype:"",
   dataSetColumnRemoveValues:[],
   dataSetColumnReplaceValues:[],
-  dataSetSelectAllAnalysis:false
+  dataSetSelectAllAnalysis:false,
 
 }, action) {
   console.log("In DATA reducer!!");
@@ -79,7 +79,7 @@ export default function reducer(state = {
           selectedDataSet: action.slug,
           subsettedSlug: "",
           subsettingDone: false,
-          dataTransformSettings:action.dataPreview.meta_data.transformation_settings.existingColumns,
+          dataTransformSettings:action.dataPreview.meta_data.uiMetaData.transformation_settings.existingColumns,
         }
       }
       break;
@@ -440,7 +440,30 @@ export default function reducer(state = {
         }
       }
       break;
-
+    case "UPADTE_VARIABLES_LIST":
+    {
+        return {
+            ...state,
+            //selectedMeasures: action.selectedMeasures,
+            measureChecked: action.measuresChkList,
+            dataSetMeasures: action.measuresList,
+            selectedVariablesCount:action.count,
+            //selectedDimensions:action.selectedDimensions,
+            dimensionChecked:action.dimChkList,
+            dataSetDimensions:action.dimensionList
+            
+        }
+    }
+        break;
+    case "UPDATE_SELECTED_VARIABLES":
+    {
+        return {
+            ...state,
+            selectedMeasures: action.selectedMeasures,
+            selectedDimensions:action.selectedDimensions,
+        }
+    }
+    break;
     case "UPDATE_ANALYSIS_LIST":
       {
         return {
@@ -470,7 +493,7 @@ export default function reducer(state = {
       {
         return {
           ...state,
-          selectedDimensionSubLevels: action.selectedDimensionSubLevels
+          selectedDimensionSubLevels: action.SubLevels
         }
       }
       break;
@@ -580,7 +603,7 @@ export default function reducer(state = {
         dataPreview: action.dataPreview,
         subsettedSlug: "",
         subsettingDone: action.isSubsetting,
-        dataTransformSettings:action.dataPreview.meta_data.transformation_settings.existingColumns,
+        dataTransformSettings:action.dataPreview.meta_data.uiMetaData.transformation_settings.existingColumns,
       }
     }
     break;

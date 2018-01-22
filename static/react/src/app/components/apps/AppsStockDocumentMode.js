@@ -117,7 +117,7 @@ export class AppsStockDocumentMode extends React.Component {
               <div className="main-content">
                 <div className="row">
                   <div className="col-md-12">
-                    <div className="panel panel-mAd">
+                    <div className="panel panel-mAd box-shadow">
                       <div className="panel-heading">
                         <h2 class="pull-left">{this.props.signal.name}</h2>
                         <div className="btn-toolbar pull-right">

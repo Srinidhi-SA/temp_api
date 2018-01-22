@@ -14,6 +14,7 @@ import {
   triggerSignalAnalysis,
   emptySignalData,
   refreshSignals,
+  updateHide
 } from "../../actions/signalActions";
 import {
   Pagination,
@@ -128,8 +129,8 @@ export class Signals extends React.Component {
     this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, 1));
   }
 
-  handleDelete(slug) {
-    this.props.dispatch(handleDelete(slug, this.refs.dialog));
+  handleDelete(slug,evt) {
+    this.props.dispatch(handleDelete(slug, this.refs.dialog,evt));
   }
 
   handleRename(slug, name) {
@@ -145,8 +146,10 @@ export class Signals extends React.Component {
     var signalData = {};
     signalData.slug = slug
     this.props.dispatch(openCsLoaderModal());
+    this.props.dispatch(updateHide(true))
     this.props.dispatch(emptySignalAnalysis());
     this.props.dispatch(triggerSignalAnalysis(signalData, percentage, message));
+    
     //this.props.history.push('/signals/'+slug);
   }
   onChangeOfSearchBox(e) {
@@ -249,19 +252,14 @@ export class Signals extends React.Component {
                     <h5 className="title newCardTitle pull-left">
                       {signalClick}					 
                     </h5>
+					
 					 <div class="btn-toolbar pull-right">
 						 {/*<!-- Rename and Delete BLock  -->*/}
                   <a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
                     <i className="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
                   </a>
                   <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-					{/*<li>
-					<OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={story}/> </Popover>}>
-                    <a className="pover cursor">
-                      <i className="ci pe-7s-info pe-2x"></i>
-                    </a>
-                  </OverlayTrigger>
-					</li>*/}
+				 
                     <li onClick={this.handleRename.bind(this, story.slug, story.name)}>
                       <a className="dropdown-item" href="#renameCard" data-toggle="modal">
                         <i className="fa fa-edit"></i>&nbsp;&nbsp;Rename</a>
@@ -276,26 +274,23 @@ export class Signals extends React.Component {
                   </ul>
                   {/*<!-- End Rename and Delete BLock  -->*/}
 					  </div>
-					  <div className="clearfix"></div>
-					
+					  
+					  
+					  <div className="clearfix"></div>					
 					 
 					<div class="inProgressIcon">
-				   <i class="fa fa-circle"></i>
-				   <span class="inProgressIconText">&nbsp;{story.completed_percentage}&nbsp;%</span>
-				</div>
-				<OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={story}/> </Popover>}>
-                    <a className="pover cursor">  
-				<div class="card_icon">
-				
-						{iconDetails}
+						   <i class="fa fa-circle"></i>
+						   <span class="inProgressIconText">&nbsp;{story.completed_percentage}&nbsp;%</span>
+					</div>
 						
-				</div></a>
-					</OverlayTrigger>	
-					
+					<OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={story}/> </Popover>}>
+					<a className="pover cursor">
+					<div class="card_icon">
+					{iconDetails}
+					</div></a>
+					</OverlayTrigger>
+							
                   </div>
-				  
-				
-						
 						
                 {/*  <div className="col-xs-3">
                      <img src={imgLink} className="img-responsive" alt="LOADING"/>

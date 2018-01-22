@@ -30,9 +30,19 @@ DATABASES = {
 }
 
 PROJECT_APP = [
+    # 'silk',
+    # 'django_extensions'
 ]
 
 INSTALLED_APPS += PROJECT_APP
+
+LOCAL_MIDDLEWARE = [
+    # 'django_cprofile_middleware.middleware.ProfilerMiddleware',
+    # 'silk.middleware.SilkyMiddleware'
+]
+
+MIDDLEWARE += LOCAL_MIDDLEWARE
+
 HADOOP_MASTER = "ec2-34-205-203-38.compute-1.amazonaws.com"
 
 YARN = {

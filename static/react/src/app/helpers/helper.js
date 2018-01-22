@@ -3,6 +3,15 @@ import CircularProgressbar from 'react-circular-progressbar';
 import {Redirect} from 'react-router';
 import {handleDecisionTreeTable} from "../actions/signalActions";
 import renderHTML from 'react-render-html';
+import {API} from "./env";
+import { showLoading, hideLoading } from 'react-redux-loading-bar'
+
+function getHeader(token){
+    return {
+      'Authorization': token,
+      'Content-Type': 'application/json'
+    };
+  }
 
 export function isEmpty(obj) {
     for(var prop in obj) {
@@ -50,6 +59,9 @@ function redirectToLogin() {
 
 const FILEUPLOAD = "fileUpload";
 const MYSQL = "MySQL";
+const MSSQL = "mssql";
+const HANA = "Hana";
+const HDFS = "Hdfs";
 const INPUT = "Input";
 const HOST = "Host";
 const PORT = "Port";
@@ -110,7 +122,7 @@ const DEFAULTANALYSISVARIABLES = "high";
 const MINROWINDATASET = 10;
 const APPSPERPAGE = 9;
 const POPUPDECISIONTREETABLE = "popupDecisionTreeTable";
-const MAXTEXTLENGTH = 100;
+const MAXTEXTLENGTH = 375;
 const SET_VARIABLE = "set_variable";
 const DIMENSION = "dimension";
 const MEASURE = "measure";
@@ -119,6 +131,7 @@ const GENERIC_NUMERIC = "generic_numeric";
 const SET_POLARITY= "set_polarity";
 const UNIQUE_IDENTIFIER = "unique_identifier";
 const DYNAMICLOADERINTERVAL = 2000;
+const IGNORE_SUGGESTION = "ignore_suggestion";
 
 
 export function generateHeaders(table) {
@@ -225,12 +238,11 @@ export function  generateNormalTableRows(table) {
 	return tbodyData;
 	}
 
-export function  subTreeSetting(urlLength, length,paramL2) {
+export function  subTreeSetting(urlLength, length,paramL2,classname=".sb_navigation #subTab i.mAd_icons.ic_perf ~ span") {
 	  $(function(){
-
 	    if(urlLength == length ){  //show -hide subtree and active class of subtree element
 		  $(".sb_navigation").show();
-		   $(".sb_navigation #subTab i.mAd_icons.ic_perf ~ span").each(function(){
+		   $(classname).each(function(){
 				console.log($(this).html() +" == "+ paramL2);
 				if($(this).attr('id') == paramL2){
 				  $(this).parent().addClass('active');
@@ -345,27 +357,22 @@ export function  subTreeSetting(urlLength, length,paramL2) {
 
   export function handleJobProcessing(slug){
       return (dispatch) => {
+          dispatch(showLoading());
           return updateJobStatus(slug).then(([response, json]) =>{
-              if(response.status === 200){
-    
-               
-              }
-              else{
-                  dispatch(hideDULoaderPopup());
-                  dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
-              }
+              dispatch(hideLoading());
           })
       }
+
   }
-  
-  function updateJobStatus(slug) {
-      return fetch(API+'/api/get_job_kill/'+slug+'/',{
-          method: 'get',
-          headers: getHeader(getUserDetailsOrRestart.get().userToken)
-      }).then( response => Promise.all([response, response.json()])).catch(function(error){
-          bootbox.alert("Unable to connect to server. Check your connection please try again.")
-      });
-  }
+ export function updateJobStatus(slug){
+     return fetch(API+'/api/get_job_kill/'+slug+'/',{
+         method: 'get',
+         headers: getHeader(getUserDetailsOrRestart.get().userToken)
+     }).then( response => Promise.all([response, response.json()])).catch(function(error){
+         dispatch(hideLoading());
+         bootbox.alert("Unable to connect to server. Check your connection please try again.")
+     });
+ }
 export{
 	FILEUPLOAD,
 	MYSQL,
@@ -438,7 +445,11 @@ export{
   GENERIC_NUMERIC,
   SET_POLARITY,
   UNIQUE_IDENTIFIER,
-  DYNAMICLOADERINTERVAL
+  DYNAMICLOADERINTERVAL,
+  IGNORE_SUGGESTION,
+  HDFS,
+  HANA,
+  MSSQL
 	}
 export function capitalizeArray(array){
   let a =[]
@@ -466,7 +477,43 @@ export function renderC3ChartInfo(info){
         bootbox.dialog({title: "Statistical Info",
             size: 'small',
             closeButton: true,
-            message: "<div>"+listOfData+"</div>"})
+            message: "<div>"+listOfData+"</div>",
+          onEscape:true})
     }
+
+}
+
+
+export function bytesToSize(bytes) {
+   var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+   if (bytes == 0) return '0 Byte';
+   var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+   return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+};
+
+export function downloadSVGAsPNG(chartClassId) {
+    //This is code to remove background black color in chart and ticks adjustment
+  var nodeList = document.querySelector("."+chartClassId + ">svg").querySelectorAll('.c3-chart .c3-chart-lines path');
+  var nodeList2 = document.querySelector("."+chartClassId+ ">svg").querySelectorAll('.c3-axis path');
+  var nodeList3 =document.querySelector("."+chartClassId+ ">svg").querySelectorAll("svg text");
+
+  var line_graph = Array.from(nodeList);
+  var x_and_y = Array.from(nodeList2); //.concat(Array.from(nodeList2));
+  var labels = Array.from(nodeList3)
+
+  line_graph.forEach(function(element) {
+    element.style.fill = "none";
+  });
+  x_and_y.forEach(function(element) {
+    element.style.fill = "none";
+    element.style.stroke = "black";
+  });
+  labels.forEach(function(element){
+    element.style.fontSize = "12px"
+  })
+  saveSvgAsPng(document.querySelector("."+chartClassId + ">svg"), "chart.png", {
+    backgroundColor: "white",
+    height: "500"
+  });
 
 }

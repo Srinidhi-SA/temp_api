@@ -10,7 +10,7 @@ import store from "../../store";
 import { C3Chart } from "../c3Chart";
 import $ from "jquery";
 
-import {updateSelectedVariables, resetSelectedVariables, setSelectedVariables,updateDatasetVariables,handleDVSearch,handelSort,handleSelectAll } from "../../actions/dataActions";
+import {updateSelectedVariables, resetSelectedVariables, setSelectedVariables,updateDatasetVariables,handleDVSearch,handelSort,handleSelectAll,checkColumnIsIgnored } from "../../actions/dataActions";
 
 @connect(( store ) => {
     return {
@@ -94,20 +94,21 @@ export class DataVariableSelection extends React.Component {
         if ( dataPrev ) {
             console.log( "data variable selection" );
             console.log( dataPrev );
-            this.possibleAnalysisList = dataPrev.meta_data.advanced_settings;
-            const metaData = dataPrev.meta_data.columnData;
+            this.possibleAnalysisList = dataPrev.meta_data.uiMetaData.advanced_settings;
+            const metaData = dataPrev.meta_data.uiMetaData.columnDataUI;
             // var measures =[], dimensions =[],datetime =[];
             metaData.map(( metaItem, metaIndex ) => {
                 if ( this.firstLoop ) {
+                   
                     switch ( metaItem.columnType ) {
                         case "measure":
-                           if(!metaItem.ignoreSuggestionFlag){
+                           if(metaItem.consider){
                         	   this.measures.push( metaItem.name );
                                this.measureChkBoxList.push(true);  
                            }
                             break;
                         case "dimension":
-                        	if(!metaItem.ignoreSuggestionFlag && !metaItem.dateSuggestionFlag){
+                        	if(metaItem.consider && !metaItem.dateSuggestionFlag){
                         		this.dimensions.push( metaItem.name );
                         		this.dimensionChkBoxList.push(true)
                         	}else if(metaItem.dateSuggestionFlag){
@@ -203,14 +204,9 @@ export class DataVariableSelection extends React.Component {
                                 <div className="panel-body">
                                     {/*  <!-- Row for select all-->*/}
                                     <div className="row">
-                                        <div className="col-md-3 col-sm-3 xs-pr-0">
-                                            <div className="ma-checkbox inline">
-                                                <input id="measure" type="checkbox" className="measureAll" onChange={this.handleSelectAll.bind(this)} checked={store.getState().datasets.measureAllChecked}/>
-                                                <label htmlFor="measure">Select All</label>
-                                            </div>
-                                        </div>
-                                        <div className="col-md-9 col-sm-9">
-                                            <div class="btn-toolbar pull-right">
+                                        <div className="col-md-12 col-sm-12 xs-pr-0">
+                                            
+											 <div class="btn-toolbar pull-right">
                                              {/*   <input type="text" name="measure" title="Search Measures" id="measureSearch"  onChange={this.handleDVSearch.bind(this)} className="form-control" placeholder="Search measures..." />*/}
 											 
 											<div class="input-group">
@@ -231,7 +227,15 @@ export class DataVariableSelection extends React.Component {
 											</div>
 												
                                             </div>
+											
+											<div className="ma-checkbox inline">
+                                                <input id="measure" type="checkbox" className="measureAll" onChange={this.handleSelectAll.bind(this)} checked={store.getState().datasets.measureAllChecked}/>
+                                                <label htmlFor="measure">Select All</label>
+                                            </div>
+											
+											
                                         </div>
+                                      
                                     </div>
 									<div className="xs-pb-10"></div>
                                     {/*  <!-- End -->*/}
@@ -260,13 +264,7 @@ export class DataVariableSelection extends React.Component {
                                 <div className="panel-body">
                                     {/*  <!-- Row for select all-->*/}
                                     <div className="row">
-                                        <div className="col-md-3 col-sm-3 xs-pr-0">
-                                            <div className="ma-checkbox inline">
-                                                <input id="dimension" type="checkbox" className="dimensionAll" onChange={this.handleSelectAll.bind(this)} checked={store.getState().datasets.dimensionAllChecked}/>
-                                                <label htmlFor="dimension">Select All</label>
-                                            </div>
-                                        </div>
-                                        <div className="col-md-9 col-sm-9">
+                                        <div className="col-md-12 col-sm-12 xs-pr-0">
                                             
 											<div class="btn-toolbar pull-right">
                                                 {/* <input type="text" name="dimension" title="Search Dimension" id="dimensionSearch" onChange={this.handleDVSearch.bind(this)}  className="form-control" placeholder="Search dimension..." />
@@ -290,8 +288,12 @@ export class DataVariableSelection extends React.Component {
                                                 </div>												
                                             </div>
 											
-											
+											<div className="ma-checkbox inline">
+                                                <input id="dimension" type="checkbox" className="dimensionAll" onChange={this.handleSelectAll.bind(this)} checked={store.getState().datasets.dimensionAllChecked}/>
+                                                <label htmlFor="dimension">Select All</label>
+                                            </div>
                                         </div>
+                                      
                                     </div>
 									<div className="xs-pb-10"></div>
                                     {/*  <!-- End -->*/}
@@ -321,10 +323,8 @@ export class DataVariableSelection extends React.Component {
 
                                     {/*  <!-- Row for options all-->*/}
                                     <div className="row">
-                                        <div className="col-md-3 col-sm-3 xs-pr-0">
-
-                                        </div>
-                                        <div className="col-md-9 col-sm-9">
+                                         
+                                        <div className="col-md-12 col-sm-12 xs-pr-0">
 										
                                             <div class="btn-toolbar pull-right">
 											

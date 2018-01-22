@@ -33,20 +33,12 @@ export class Profile extends React.Component {
     console.log(props)
   }
   componentWillMount() {
-  //  if (isEmpty(this.props.profileInfo))
       this.props.dispatch(getUserProfile(getUserDetailsOrRestart.get().userToken))
-  // if (this.props.profileImgURL == "")
       this.props.dispatch(saveProfileImage(getUserDetailsOrRestart.get().image_url))
 
   }
 
-  componentDidMount() {
 
-    // $('.crop').click(function() {
-    //    $(this).toggleClass('crop active');
-    //  });
-
-  }
   popupMsg() {
     bootbox.alert("Only PNG and JPEG files are allowed to upload")
   }
@@ -81,7 +73,6 @@ export class Profile extends React.Component {
   }
   render() {
     let lastLogin = null;
-    // alert(sessionStorage.last_login)
     console.log("in profile")
     if (getUserDetailsOrRestart.get().last_login != "null") {
       lastLogin = dateFormat(getUserDetailsOrRestart.get().last_login, "mmm d,yyyy");
@@ -96,7 +87,7 @@ export class Profile extends React.Component {
           <div className="page-head">
             <div className="row">
               <div className="col-md-8">
-                <h3 className="xs-mt-0 text-capitalize">User Profile</h3>
+                <h3 className="xs-mt-0 text-capitalize">My Page</h3>
               </div>
             </div>
           </div>
@@ -110,7 +101,6 @@ export class Profile extends React.Component {
     } else {
       console.log("profile info!!")
       console.log(this.props)
-      //console.log(this.props.profileInfo.info)
       var fileName = store.getState().dataSource.fileUpload.name;
       var fileSize = store.getState().dataSource.fileUpload.size;
       let fileSizeInKB = (fileSize / 1024).toFixed(3)
@@ -153,14 +143,13 @@ export class Profile extends React.Component {
           }
         }
 
-        //  var daysDifference = Math.floor(timediff/1000/60/60/24);
-        //  timediff -= daysDifference*1000*60*60*24
-        //console.log(img_name);
+        let msg=recAct.message_on_ui
+        msg=msg.charAt(0).toUpperCase()+msg.slice(1)+"."
         return (
           <li key={i}>
             <img onError={this.addDefaultSrc} src={img_name} className="img-responsive pull-left xs-pl-5 xs-pr-10"/>
             <span className="pull-left">
-              <div class="crop">{recAct.message_on_ui}</div>
+              <div class="crop">{msg}</div>
             </span>
             <span className="pull-right">
               {action_time_string}
@@ -174,7 +163,7 @@ export class Profile extends React.Component {
           <div className="page-head">
             <div className="row">
               <div className="col-md-8">
-                <h3 className="xs-mt-0 text-capitalize">User Profile</h3>
+                <h3 className="xs-mt-0 text-capitalize">My Page</h3>
               </div>
             </div>
           </div>
@@ -184,7 +173,7 @@ export class Profile extends React.Component {
           <div className="main-content">
             <div className="user-profile">
               <div className="panel panel-default xs-mb-15">
-                <div className="panel-body">
+                <div className="panel-body no-border box-shadow">
                   <div className="user-display">
                     <div className="user-avatar col-md-2 text-center">
                       <img src={imgSrc} className="img-responsive img-center img-circle"/>
@@ -210,11 +199,6 @@ export class Profile extends React.Component {
                                   <Dropzone id={1} onDrop={this.onDrop.bind(this)} accept=".png, .jpg" onDropRejected={this.popupMsg}>
                                     <p>Try dropping some files here, or click to select files to upload.</p>
                                   </Dropzone>
-                                  {/*<aside>
-                      <ul className={fileName != "" ? "list-unstyled bullets_primary":"list-unstyled"}>
-                          <li>{fileName}{fileName != "" ? " - ":""}{fileSizeInKB}{fileName != "" ? " KB ":""}</li>
-                      </ul>
-                    </aside>*/}
                                   <aside>
                                     <ul className={fileName != ""
                                       ? "list-unstyled bullets_primary"
@@ -270,28 +254,21 @@ export class Profile extends React.Component {
                                 </tbody>
                               </table>
                             </div>
-                            <div className="col-md-6 text-right">
+                            <div className="col-md-3 col-md-offset-3">
                               <p className="xs-pt-30">
-                                Date Joined :
+                                Date Joined :&nbsp;
                                 <b>
                                   {dateFormat(getUserDetailsOrRestart.get().date, "mmm d,yyyy")}</b>
                                 <br/>
-                                Last Login :
+                                Last Login :&nbsp;
                                 <b>{lastLogin}</b>
-                                {/*<br/>
-                    Subscription Left :
-                    <b>25 Days</b>*/}
                                 <br/>
-                                Superuser status:
-                                <b>{getUserDetailsOrRestart.get().is_superuser}</b>
+                                User type:&nbsp;
+                                <b>{(getUserDetailsOrRestart.get().is_superuser==true)?"Super user":"User"}</b>
 
                               </p>
                             </div>
-                            {/*<div className="col-md-4 text-right xs-p-20">
-                                 <a href="#" className="btn btn-primary">Edit Profile</a>
-                               </div>*/}
                           </div>
-
                         </div>
                       </div>
                     </div>
@@ -307,12 +284,11 @@ export class Profile extends React.Component {
             </div>
             <div className="row">
               <div className="col-md-4">
-                <div className="panel">
-                  <div className="panel-body">
+                <div className="panel xs-mb-0">
+                  <div className="panel-body no-border box-shadow">
                     <div className="minHP">
                       <h5 class="text-center">TOTAL SPACE</h5>
-                      <C3Chart chartInfo={chartInfo} classId="_profile" data={this.props.profileInfo.chart_c3}/> {/*
-              <img src="images/userProfileGraph.png" className="img-responsive"/>*/}
+                      <C3Chart chartInfo={chartInfo} classId="_profile" data={this.props.profileInfo.chart_c3}/>
                       <p className="xs-pl-20">{renderHTML(this.props.profileInfo.comment)}</p>
                     </div>
                   </div>
@@ -329,30 +305,25 @@ export class Profile extends React.Component {
                       <br/>
                       Last Login :
                       <b>{lastLogin}</b>
-                      {/*<br/>
-                    Subscription Left :
-                    <b>25 Days</b>*/}
                       <br/>
-                      Superuser status:
-                      <b>{getUserDetailsOrRestart.get().is_superuser}</b>
+                      User type:
+                      <b>{(getUserDetailsOrRestart.get().is_superuser)?"Super user":"User"}</b>
 
                     </p>
                   </div>
                   <div className="clearfix"></div>
                   <div className="col-md-12">
-                    <div className="panel">
-                      <div className="panel-body">
+                    <div className="panel xs-mb-0">
+                      <div className="panel-body no-border box-shadow">
                         <div className="minHP">
                           <h5>RECENT ACTIVITY</h5>
-                          <Scrollbars style={{
-                            height: 293
-                          }} renderTrackHorizontal={props => <div {...props} className="track-horizontal" style={{
+                          <Scrollbars style={{ height: 302 }} renderTrackHorizontal={props => <div {...props} className="track-horizontal" style={{
                             display: "none"
                           }}/>} renderThumbHorizontal={props => <div {...props} className="thumb-horizontal" style={{
                             display: "none"
                           }}/>}>
 
-                            <ul className="list-unstyled list-border recActivity">
+                            <ul className="list-unstyled recActivity">
                               {recentActivity}
                             </ul>
                           </Scrollbars>
@@ -360,18 +331,9 @@ export class Profile extends React.Component {
                       </div>
                     </div>
                   </div>
-                  {/*  <div className="col-md-4">
-                  <div className="panel text-center xs-p-20 minHP">
-                    <a href="#">
-                      <img src="images/launch_icon.png"/><br/>
-                      UPGRADE ACCOUNT SERVICE
-                    </a>
-                  </div>
-                </div>*/}
-                  <div className="clearfix"></div>
+                <div className="clearfix"></div>
                 </div>
               </div>
-
             </div>
           </div>
         </div>

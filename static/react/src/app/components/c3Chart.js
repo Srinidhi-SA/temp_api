@@ -3,13 +3,16 @@ import {connect} from "react-redux";
 import {c3Functions} from "../helpers/c3.functions";
 import {Scrollbars} from 'react-custom-scrollbars';
 import {API} from "../helpers/env";
-import {renderC3ChartInfo} from "../helpers/helper";
+import {renderC3ChartInfo,downloadSVGAsPNG} from "../helpers/helper";
 import store from "../store";
 import {ViewChart} from "./common/ViewChart";
-import {showZoomChart} from "../actions/signalActions";
+import {ViewChartData} from "./common/ViewChartData";
+
+import {showZoomChart, showChartData} from "../actions/signalActions";
 
 @connect((store) => {
-  return {sideCardListFlag: store.signals.sideCardListFlag};
+  return {sideCardListFlag: store.signals.sideCardListFlag,
+  selectedL1:store.signals.selectedL1};
 })
 
 //var data= {}, toolData = [], toolLegend=[], chartDiv =null;
@@ -33,12 +36,14 @@ export class C3Chart extends React.Component {
     this.classId = "chart" + this.props.classId + " ct col-md-7 col-md-offset-2 xs-mb-20";
   }
 
-  openZoomChart(flag){
-      this.props.dispatch(showZoomChart(flag,this.props.classId));
+  openZoomChart(flag) {
+    this.props.dispatch(showZoomChart(flag, this.props.classId));
   }
-
-  showStatisticalInfo(){
-      renderC3ChartInfo(this.props.chartInfo)
+  openChartData(flag) {
+    this.props.dispatch(showChartData(flag, this.props.classId))
+  }
+  showStatisticalInfo() {
+    renderC3ChartInfo(this.props.chartInfo)
   }
   getChartElement() {
     if (this.props.classId == '_side') {
@@ -74,8 +79,11 @@ export class C3Chart extends React.Component {
 
   }
 
-  downloadSVG() {
-      //This is code to remove background black color in chart and ticks adjustment
+  downloadSVG(){
+      downloadSVGAsPNG("chartDownload"+this.props.classId)
+  }
+  /*downloadSVG() {
+    //This is code to remove background black color in chart and ticks adjustment
     var nodeList = document.querySelector(".chart" + this.props.classId + ">svg").querySelectorAll('.c3-chart .c3-chart-lines path');
     var nodeList2 = document.querySelector(".chart" + this.props.classId + ">svg").querySelectorAll('.c3-axis path');
     var line_graph = Array.from(nodeList);
@@ -92,7 +100,7 @@ export class C3Chart extends React.Component {
       height: "450"
     });
 
-  }
+  }*/
 
   updateChart() {
     var that = this;
@@ -103,10 +111,21 @@ export class C3Chart extends React.Component {
         height: 230
       }
     }
+
+    if (data.data.type == "donut"){
+      data.padding.top=35
+    }
     if (this.props.yformat) {
       if (data.data.type == "donut") {
         console.log("in donut")
-        let formats = ['.2s', '$', '$,.2s', '.2f',',.0f','.4r'];
+        let formats = [
+          '.2s',
+          '$',
+          '$,.2s',
+          '.2f','.4f',
+          ',.0f',
+          '.4r'
+        ];
         if (formats.indexOf(this.props.yformat) >= 0) {
           data.donut.label.format = d3.format(this.props.yformat);
         } else {
@@ -114,7 +133,14 @@ export class C3Chart extends React.Component {
         }
       } else if (data.data.type == "pie") {
         console.log("in pie")
-        let formats = ['.2s', '$', '$,.2s', '.2f',',.0f','.4r'];
+        let formats = [
+          '.2s',
+          '$',
+          '$,.2s',
+          '.2f','.4f',
+          ',.0f',
+          '.4r'
+        ];
         if (formats.indexOf(this.props.yformat) >= 0) {
           data.pie.label.format = d3.format(this.props.yformat);
         } else {
@@ -122,9 +148,17 @@ export class C3Chart extends React.Component {
         }
 
       } else {
-        let formats = ['.2s', '$', '$,.2s', '.2f',',.0f','.4r'];
+        let formats = [
+          '.2s',
+          '$',
+          '$,.2s',
+          '.2f','.4f',
+          ',.0f',
+          '.4r'
+        ];
         if (formats.indexOf(this.props.yformat) >= 0) {
           data.axis.y.tick.format = d3.format(this.props.yformat);
+
         } else {
           data.axis.y.tick.format = d3.format('');
         }
@@ -133,7 +167,14 @@ export class C3Chart extends React.Component {
     }
 
     if (this.props.y2format) {
-      let formats = ['.2s', '$', '$,.2s', '.2f',',.0f','.4r'];
+      let formats = [
+        '.2s',
+        '$',
+        '$,.2s',
+        '.2f','.4f',
+        ',.0f',
+        '.4r'
+      ];
       if (formats.indexOf(this.props.y2format) >= 0) {
         data.axis.y2.tick.format = d3.format(this.props.y2format);
       } else {
@@ -141,6 +182,24 @@ export class C3Chart extends React.Component {
       }
 
     }
+
+    if(store.getState().datasets.dataPreviewFlag){
+      let yformat=".2s"
+      if(this.props.yformat)
+        yformat=this.props.yformat
+
+    data.axis.y.tick.format=function(f){
+      //console.log("f of tick")
+      if(f>999){
+        let si = d3.format(yformat);
+      return String(si(f));
+      //return d3.format(".2s")
+    }  else {
+      let si = d3.format('.0f');
+    return String(si(f));
+      }
+    }}
+
     if (this.props.guage) {
       data.gauge.label.format = function(value, ratio) {
         return value;
@@ -181,7 +240,14 @@ export class C3Chart extends React.Component {
 
     if (data.data.type == "donut") {
       console.log("in donut tooltip")
-      let formats = ['.2s', '$', '$,.2s', '.2f',',.0f','.4r'];
+      let formats = [
+        '.2s',
+        '$',
+        '$,.2s',
+        '.2f','.4f',
+        ',.0f',
+        '.4r'
+      ];
       //  data.tooltip.format.title = function (d) { return 'Data ' + d; };
       if (formats.indexOf(data.tooltip.format.value) >= 0) {
 
@@ -196,9 +262,26 @@ export class C3Chart extends React.Component {
       }
     }
 
+//fix for common point colour in trend
+    if(this.props.selectedL1=="Trend"&&data.data.type=="line"){
+      console.log("in dtrend##########")
+      console.log(data)
+      let colors=data.color.pattern
+      data.data.color= function (color, d) {
+               return d.index === 0 ? colors[0] : color;
+       }
+    }
+
     if (data.data.type == "pie") {
       console.log("in pie tooltip")
-      let formats = ['.2s', '$', '$,.2s', '.2f',',.0f','.4r'];
+      let formats = [
+        '.2s',
+        '$',
+        '$,.2s',
+        '.2f','.4f',
+        ',.0f',
+        '.4r'
+      ];
       //  data.tooltip.format.title = function (d) { return 'Data ' + d; };
       if (data.tooltip && data.tooltip.format) {
         if (formats.indexOf(data.tooltip.format.value) >= 0) {
@@ -223,7 +306,20 @@ export class C3Chart extends React.Component {
     chart = setTimeout(function() {
       return c3.generate(data);
     }, 100);
-    //c3.generate(data);
+
+
+    //Modify Chart Data for Download
+    var chartDownloadData = jQuery.extend(true, {}, data);
+    if(chartDownloadData.subchart != null){
+        chartDownloadData.subchart.show=false;
+    }
+    if(chartDownloadData.axis&&chartDownloadData.axis.x){
+        chartDownloadData.axis.x.extent = null;
+        if(chartDownloadData.axis.x.tick)
+        chartDownloadData.axis.x.tick.fit=true;
+    }
+    chartDownloadData['bindto'] = document.querySelector(".chartDownload"+this.props.classId)
+    let chartDownload = c3.generate(chartDownloadData);
 
     //this.props.dispatch(chartObjStore(chart));
 
@@ -277,7 +373,7 @@ export class C3Chart extends React.Component {
       this.modalCls = "modal fade chart-modal" + this.props.classId;
       this.tableCls = "table-responsive table-area table" + this.props.classId;
     }
-
+   var chartDownloadCls = "chartDownload"+this.props.classId;
     $(function() {
 
       // alert("render");
@@ -301,85 +397,65 @@ export class C3Chart extends React.Component {
     return (
       <div className="chart-area">
 
-        {/*<div className="row">
-    <div className="chart-data-icon col-md-7 col-md-offset-2  xs-mb-20">
+        <div className="row">
+          <div className="chart-data-icon col-md-8 col-md-offset-2 xs-p-0 xs-mb-20">
 
-     </div>
-     <div className="clearfix"></div>
-</div>*/}
-    <div className="row">
-        <div className="chart-data-icon col-md-8 col-md-offset-2 xs-p-0 xs-mb-20">
-
-                    <div class="btn-group pull-right">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i className="fa fa-more-img" aria-hidden="true" ></i></button>
-                    <ul role="menu" class="dropdown-menu dropdown-menu-right">
-                   {this.props.chartInfo.length > 0 ? <li>
-                           <a href="javascript:;" onClick={this.showStatisticalInfo.bind(this)}><i class="fa fa-info-circle" aria-hidden="true"></i> Statistical Info</a>
-                           </li>:""}
-                    <li>
-                    <a href="javascript:;" onClick={this.openZoomChart.bind(this,true)}><i class="fa fa-search-plus" aria-hidden="true"></i>&nbsp;Zoom Chart</a>
+            <div class="btn-group pull-right">
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                <i className="fa fa-more-img" aria-hidden="true"></i>
+              </button>
+              <ul role="menu" class="dropdown-menu dropdown-menu-right">
+                {this.props.chartInfo.length > 0
+                  ? <li>
+                      <a href="javascript:;" onClick={this.showStatisticalInfo.bind(this)}>
+                        <i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp;
+                        Statistical Info</a>
                     </li>
-                    <li>
-                    <a href="javascript:;" onClick={this.downloadSVG.bind(this)}><i class="fa fa-picture-o" aria-hidden="true"></i>&nbsp;Download as PNG</a>
-                    </li>
-                    <li>
-                    <a href="javascript:;" onClick={this.showModal.bind(this)}><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;View Chart Data</a>
-                    </li>
-                    <li>
-                    <a href={this.tableDownload}><i class="fa fa-cloud-download" aria-hidden="true"></i>&nbsp;Download Chart Data</a>
-                    </li>
-                    </ul>
-                    </div>
+                  : ""}
+                <li>
+                  <a href="javascript:;" onClick={this.openZoomChart.bind(this, true)}>
+                    <i class="fa fa-search-plus" aria-hidden="true"></i>&nbsp;
+                    Zoom Chart</a>
+                </li>
+                <li>
+                  <a href="javascript:;" onClick={this.downloadSVG.bind(this)}>
+                    <i class="fa fa-picture-o" aria-hidden="true"></i>&nbsp;
+                    Download as PNG</a>
+                </li>
+                <li>
+                  <a href="javascript:;" onClick={this.openChartData.bind(this, true)}>
+                    <i class="fa fa-eye" aria-hidden="true"></i>&nbsp;
+                    View Chart Data</a>
+                </li>
+                <li>
+                  <a href={this.tableDownload}>
+                    <i class="fa fa-cloud-download" aria-hidden="true"></i>&nbsp;
+                    Download Chart Data</a>
+                </li>
+              </ul>
+            </div>
 
-
-         </div>
-
-           <div className="clearfix"></div>
-           <div className={this.classId}></div>
-           <div className="clearfix"></div>
-
-     </div>
-           {/* chart data Popup */}
-           <div id="" className={this.modalCls} role="dialog" tabindex="-1" backdrop={true}>
-           <div className="modal-colored-header uploadData modal-dialog ">
-
-           {/*Modal content*/}
-            <div className="modal-content chart-data-popup">
-                <div class="modal-header">
-
-                <button type='button' onClick={this.closeModal.bind(this)} className='close'  data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>
-                <h3 class="modal-title">Chart Data</h3>
-                </div>
-
-                <div className="modal-body chart-data-modal-body">
-                    <div className="row" >
-                    <div className="col-md-12">
-                    <div className={this.tableCls} style={{backgroundColor:"white"}}>
-                    <Scrollbars style={{ height: 300 }} renderTrackHorizontal={props => <div {...props} className="track-horizontal" style={{display:"none"}}/>}
-        renderThumbHorizontal={props => <div {...props} className="thumb-horizontal" style={{display:"none"}}/>}>
-                    <table className='table chart-table'>
-                    </table>
-                    {/*<div class="form-group col-md-7;">*/}
-                    </Scrollbars>
-                    </div>
-                    </div>
-                    </div>
-
-                </div>
-
-                <div class="modal-footer">
-                {/*<button className="btn btn-primary" onClick={this.downloadSVG.bind(this)}><i class="fa fa-picture-o" aria-hidden="true"></i>  Download Chart</button> &nbsp;*/}
-                <a href={this.tableDownload} id="cddownload" className="btn btn-primary" download ><i className="fa fa-cloud-download"></i> Download Chart Data</a>
-                </div>
-
-           </div>
+ 
           </div>
-          <ViewChart classId={this.props.classId} click={this.downloadSVG}  chartData={this.props.data} />
-         </div>
 
- </div>
+          <div className="clearfix"></div>
+          <div className={this.classId}></div>
+         <div className={chartDownloadCls} style={{display:"none"}}></div>
+          <div className="clearfix"></div>
 
-      );
+        </div>
+        {/* chart data Popup */}
+        <div id="" className={this.modalCls} role="dialog">
+          <div className="modal-colored-header uploadData modal-dialog ">
+
+            {/*Modal content*/}
+            <ViewChartData tabledata={this.props.tabledata} tableCls={this.tableCls} classId={this.props.classId} tableDownload={this.tableDownload}/>
+            <ViewChart classId={this.props.classId} click={this.downloadSVG} chartData={this.props.data}/>
+          </div>
+        </div>
+      </div>
+
+    );
   }
 
 }

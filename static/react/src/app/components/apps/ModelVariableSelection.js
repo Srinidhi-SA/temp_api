@@ -49,11 +49,11 @@ export class ModelVariableSelection extends React.Component {
         let dataPrev = store.getState().datasets.dataPreview;
         let renderSelectBox = null;
         if(dataPrev){
-            const metaData = dataPrev.meta_data.columnData;
+            const metaData = dataPrev.meta_data.uiMetaData.columnDataUI;
             if(metaData){
                 renderSelectBox =  <select className="form-control" id="createModelAnalysisList">
                 {metaData.map((metaItem,metaIndex) =>{
-                    if(metaItem.columnType !="datetime" && !metaItem.ignoreSuggestionFlag && !metaItem.dateSuggestionFlag){
+                    if(metaItem.columnType !="datetime" && metaItem.consider && !metaItem.dateSuggestionFlag){
                         return(<option key={metaIndex} value={metaItem.name}>{metaItem.name}</option>)
                     }
                 }
@@ -74,7 +74,7 @@ export class ModelVariableSelection extends React.Component {
                 <div className="clearfix"></div>
                 </div>
                 <div className="main-content">
-                <div className="panel panel-default">
+                <div className="panel panel-default box-shadow">
                 <div className="panel-body">    
                 <Form onSubmit={this.createModel.bind(this)}>
                 <FormGroup role="form">
