@@ -15283,7 +15283,7 @@ display: inline-block;
 .inProgressIcon {
     color: #de521d;
     margin-right: 5px;
-	position:absolute;
+	/*position:absolute;*/
 }
 .inProgressIconText { color:#333333; }
 /*.inProgressIconText {

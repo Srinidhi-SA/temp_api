@@ -164,17 +164,20 @@ export class Data extends React.Component {
           
           var iconDetails = "";
           var dataSetLink = "/data/" + data.slug;
+          var percentageDetails = "";
           
           var dataClick = <Link to={dataSetLink} id={data.slug} onClick={this.getPreviewData.bind(this)}>
             {data.name}
             </Link>
             if(data.status == INPROGRESS){
-                iconDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>
+                percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>
                 dataClick = <a class="cursor" onClick={this.openDataLoaderScreen.bind(this,data.slug,data.completed_percentage,data.completed_message)}> {data.name}</a>
             }else if(data.status == SUCCESS && !data.viewed){
                 data.completed_percentage = 100;
-                iconDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>
-            }else{
+                percentageDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>
+            }
+            
+            
                 let src = STATIC_URL + "assets/images/File_Icon.png"
                 if(data.datasource_type == HANA){
                   src = STATIC_URL + "assets/images/sapHana_Icon.png"
@@ -188,7 +191,7 @@ export class Data extends React.Component {
                   src = STATIC_URL + "assets/images/File_Icon.png"
                 }
                 iconDetails = <img src={src} alt="LOADING"/>;
-            }
+            
             
         
         
@@ -224,7 +227,7 @@ export class Data extends React.Component {
 					
 					</div>
 					  <div className="clearfix"></div>
-					  
+					  {percentageDetails}
 					  
 			<OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={data}/> </Popover>}>
 			<a  className="pover cursor">

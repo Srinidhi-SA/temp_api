@@ -220,27 +220,26 @@ export class Signals extends React.Component {
 
       const storyList = data.map((story, i) => {
         var iconDetails = "";
+        var percentageDetails = "";
 
         var signalLink = "/signals/" + story.slug;
         var signalClick = <Link to={signalLink} id={story.slug} onClick={this.getSignalAnalysis.bind(this)} className="title">
           {story.name}
           </Link>
           if(story.status == INPROGRESS){
-              iconDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{story.completed_percentage}&nbsp;%</span></div>
+              percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">&nbsp;{story.completed_percentage}&nbsp;%</span></div>
               signalClick = <a class="cursor" onClick={this.openLoaderScreen.bind(this,story.slug,story.completed_percentage,story.completed_message)}> {story.name}</a>
           }else if(story.status == SUCCESS && !story.viewed){
               story.completed_percentage = 100;
-              iconDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{story.completed_percentage}&nbsp;%</span></div>
-          }else{
-              if (story.type == "dimension") {
-                  var imgLink = STATIC_URL + "assets/images/s_d_carIcon.png"
-              } else {
-                  var imgLink = STATIC_URL + "assets/images/s_m_carIcon.png"
-              }
-              iconDetails = <img src={imgLink} alt="LOADING"/>;
+              percentageDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">&nbsp;{story.completed_percentage}&nbsp;%</span></div>
           }
 
-
+          if (story.type == "dimension") {
+              var imgLink = STATIC_URL + "assets/images/s_d_carIcon.png"
+          } else {
+              var imgLink = STATIC_URL + "assets/images/s_m_carIcon.png"
+          }
+          iconDetails = <img src={imgLink} alt="LOADING"/>
         return (
           <div className="col-md-3 xs-mb-15 list-boxes" key={i}>
             <div className="rep_block newCardStyle" name={story.name}>
@@ -277,10 +276,11 @@ export class Signals extends React.Component {
 					  
 					  <div className="clearfix"></div>					
 					 
-					<div class="inProgressIcon">
-						   <i class="fa fa-circle"></i>
-						   <span class="inProgressIconText">&nbsp;{story.completed_percentage}&nbsp;%</span>
-					</div>
+					  {percentageDetails}
+					{/* <div class="inProgressIcon">
+                           <i class="fa fa-circle"></i>
+                           <span class="inProgressIconText">&nbsp;{story.completed_percentage}&nbsp;%</span>
+                    </div>*/}
 						
 					<OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={story}/> </Popover>}>
 					<a className="pover cursor">
