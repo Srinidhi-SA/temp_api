@@ -35,6 +35,7 @@ import {DetailOverlay} from "../common/DetailOverlay";
 import {getAllDataList, hideDataPreview} from "../../actions/dataActions";
 import {openCsLoaderModal, closeCsLoaderModal} from "../../actions/createSignalActions";
 import {CreateSignalLoader} from "../common/CreateSignalLoader";
+import {LatestSignals} from "./LatestSignals";
 
 @connect((store) => {
   return {
@@ -317,6 +318,8 @@ export class Signals extends React.Component {
 
       return (
         <div className="side-body">
+        
+        <LatestSignals/>
           {/* <MainHeader/>*/}
           {/*<!-- Page Title and Breadcrumbs -->*/}
           <div class="page-head">

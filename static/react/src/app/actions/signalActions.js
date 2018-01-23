@@ -238,7 +238,8 @@ function fetchPostsSuccess(signalList) {
   //console.log("signal list from api to store")
   //console.log(signalList);
   var current_page = signalList.current_page
-  return {type: "SIGNAL_LIST", signalList, current_page}
+  var latestSignals = signalList.data.slice(0,3);
+  return {type: "SIGNAL_LIST", signalList,latestSignals, current_page}
 }
 
 function fetchPostsError(json) {
