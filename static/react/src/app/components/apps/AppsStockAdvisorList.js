@@ -111,33 +111,16 @@ export class AppsStockAdvisorList extends React.Component {
 						<div className="card-header"></div>
 						<div className="card-center-tile">
 						<div className="row">
-						<div className="col-xs-9">
-						<h4 className="title newCardTitle">
+						
+						<div className="col-xs-12">
+						<h5 className="title newCardTitle pull-left">
 						<a href="javascript:void(0);" id={data.slug} onClick={this.getPreviewData.bind(this)}>{data.name}</a>
-						</h4>
-						</div>
-						<div className="col-xs-3">
-						<img  src={ STATIC_URL + "assets/images/apps_model_icon.png" } className="img-responsive" alt="LOADING"/>
-						</div>
-						</div>
-						</div>
-						<div className="card-footer">
-						<div className="left_div">
-						<span className="footerTitle"></span>{getUserDetailsOrRestart.get().userName}
-						<span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy HH:MM")}</span>
-						</div>
-
-						<div className="card-deatils">
-						{/*<!-- Popover Content link -->*/}
-						<OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={data}/> </Popover>}>
-						<a  className="pover cursor">
-						<i className="ci pe-7s-info pe-2x"></i>
-						</a>
-						</OverlayTrigger>
-
+						</h5>
+						
+						<div class="btn-toolbar pull-right">
 						{/*<!-- Rename and Delete BLock  -->*/}
 						<a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
-						<i className="ci pe-7s-more pe-rotate-90 pe-2x"></i>
+						<i className="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
 						</a>
 						<ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
 						<li onClick={this.handleRename.bind(this, data.slug, data.name)}>
@@ -153,6 +136,36 @@ export class AppsStockAdvisorList extends React.Component {
 						</ul>
 						{/*<!-- End Rename and Delete BLock  -->*/}
 						</div>
+						
+						<div className="clearfix"></div>
+						
+						{/*	<div class="inProgressIcon">
+							<i class="fa fa-circle"></i>
+							<span class="inProgressIconText">&nbsp;{story.completed_percentage}&nbsp;%</span>
+							</div> */}
+							
+						{/*<!-- Popover Content link -->*/}
+						<OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={data}/> </Popover>}>
+						<a  className="pover cursor">
+						<div class="card_icon">
+						<img  src={ STATIC_URL + "assets/images/apps_model_icon.png" } alt="LOADING"/>
+						</div>
+						</a>
+						</OverlayTrigger>	
+							
+						
+						</div>
+						 
+						
+						</div>
+						</div>
+						<div className="card-footer">
+						<div className="left_div">
+						<span className="footerTitle"></span>{getUserDetailsOrRestart.get().userName}
+						<span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy HH:MM")}</span>
+						</div>
+
+						 
 
 						{/*popover*/}
 

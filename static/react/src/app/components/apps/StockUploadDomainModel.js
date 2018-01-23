@@ -65,17 +65,32 @@ export class StockUploadDomainModel extends React.Component {
             <div className="card-header"></div>
             <div className="card-center-tile">
               <div className="row">
-                <div className="col-xs-9">
-                  <h4 className="title newCardTitle">
+                <div className="col-xs-12">
+					<h5 className="title newCardTitle pull-left">
                     {concept}
-                  </h4>
+                  </h5>
+				  <div class="btn-toolbar pull-right">
+				  
+				  </div>
+				  <div className="clearfix"></div>
+				  {/*<!-- Popover Content link -->*/}
+                <OverlayTrigger trigger="click" rootClose placement="right" overlay={< Popover id = "popover-trigger-focus" > <h4>Sub-Concepts:</h4><br/><p>{subconcepts}</p> < /Popover>}>
+                  <a>
+                  View Sub-Concepts
+				  <div class="card_icon">
+                    {/*<i className="ci pe-7s-info pe-2x"></i>*/}
+					<img src={imgLink} alt="LOADING"/>
+					</div>
+                  </a>
+                </OverlayTrigger>
+				  
                 </div>
-                <div className="col-xs-3">
-                  <img src={imgLink} className="img-responsive" alt="LOADING"/>
-                 {/* <i class="fa fa-bullseye fa-4x" aria-hidden="true" style={{color:"rgba(128, 128, 128, 0.78)"}}></i>*/}
-                </div>
+                 {/* <i class="fa fa-bullseye fa-4x" aria-hidden="true" style={{color:"rgba(128, 128, 128, 0.78)"}}></i> */}
+				
               </div>
             </div>
+			
+			
             <div className="card-footer">
 			<div className="xs-pt-10"></div>
               {/*<div className="left_div">
@@ -83,16 +98,7 @@ export class StockUploadDomainModel extends React.Component {
 								<span className="footerTitle">{dateFormat(story.created_at, "mmm d,yyyy HH:MM")}</span>
 							</div>*/}
 
-              <div>
-                {/*<!-- Popover Content link -->*/}
-                <OverlayTrigger trigger="click" rootClose placement="right" overlay={< Popover id = "popover-trigger-focus" > <h4>Sub-Concepts:</h4><br/><p>{subconcepts}</p> < /Popover>}>
-                  <a>
-                  View Sub-Concepts
-                    {/*<i className="ci pe-7s-info pe-2x"></i>*/}
-                  </a>
-                </OverlayTrigger>
-
-              </div>
+              
               {/*popover*/}
 
             </div>
