@@ -7,15 +7,11 @@ import store from "../../store";
 import {getAllDataList,getDataSetPreview,storeSignalMeta,showDataPreview} from "../../actions/dataActions";
 import {isEmpty} from "../../helpers/helper";
 import {CreateSignal} from "./CreateSignal";
-
+import {SignalCard} from "./SignalCard";
 
 @connect((store) => {
     return {login_response: store.login.login_response,
-        newSignalShowModal: store.signals.newSignalShowModal,
-        allDataList: store.datasets.allDataSets,
-        dataPreview: store.datasets.dataPreview,
-        signalMeta: store.datasets.signalMeta,
-        dataPreviewFlag:store.datasets.dataPreviewFlag};
+        latestSignalList: store.signals.latestSignals,};
 })
 
 //var selectedData = null;
@@ -30,9 +26,14 @@ export class LatestSignals extends React.Component {
     }
 
     render() {
+        var data = this.props.latestSignalList;
         console.log(this.props)
         const current_page = store.getState().signals.signalList.current_page;
-        let addButton = addButton = <CreateSignal url={this.props.props.match.url}/>
+        let addButton = addButton = <CreateSignal url={this.props.props.match.url}/>;
+        let latestSignals = "";
+       if(data){
+           latestSignals =  <SignalCard data={data}/>;
+       }
         return (
              
                 <div class="dashboard_head">
@@ -44,6 +45,7 @@ export class LatestSignals extends React.Component {
                 <div class="row">
                 
                 {addButton}
+                {latestSignals}
                 </div>
                 
                 </div>
