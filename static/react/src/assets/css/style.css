@@ -13782,7 +13782,7 @@ div.dataTables_wrapper div.dataTables_length label select {
 }	
 .footerTitle{
 	display:block;
-	font-size:12px;
+	font-size:11px;
 }
 .footerTitle-lineh { line-height: 3em; }
 .newCardStyle { height:114px; }
@@ -13925,17 +13925,17 @@ ul.app_labels li:first-child { margin: 0; padding: 7px 5px }
     line-height: 1.9em;
 }
 .card-footer {
-    height: 36px;
+    height: 38px;
     background-color: #f9f9f9; /*#ecf4f4 #f3f4f6;*/
     padding: 0 0 0 15px;
-    /* color: #fff; */
+    color: #969696;
 }
 .card-footer div.card-deatils { width: 72px; }
 .card-footer .left_div {
     float: left;
     width: 57%;
-     margin-top: 2px;
-    line-height: 20px;
+     margin-top: 1px;
+    line-height: 18px;
 
 }
 .card-footer .pover, .card-footer .more_button{
@@ -15285,7 +15285,9 @@ display: inline-block;
     margin-right: 5px;
 	position:absolute;
 }
-.inProgressIconText { color:#333333; }
+.inProgressIconText { color:#969696;  }
+.progress_count {line-height: initial; color:#FFFFFF; margin-top: 4px; }
+.progress_count .completedIcon, .progress_count .inProgressIconText { color:#FFFFFF;}
 /*.inProgressIconText {
     font-size: 15px;
    font-weight: bold; 
