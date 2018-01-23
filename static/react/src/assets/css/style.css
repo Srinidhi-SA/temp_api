@@ -15291,3 +15291,11 @@ display: inline-block;
    font-weight: bold; 
     color: #aeb0b3;
 }*/
+
+.dashboard_head { background-color: #849190; */ Old #d2d2d2 */ }
+.dashboard_head .page-head { color:#FFFFFF; }
+.active_copy {
+    padding-left: 25px;
+    padding-right: 25px;
+    padding-top: 15px;
+}

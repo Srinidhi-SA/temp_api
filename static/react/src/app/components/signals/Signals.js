@@ -181,9 +181,6 @@ export class Signals extends React.Component {
   render() {
     console.log("signals is called##########3");
     document.body.className = "";
-    // h:MM
-    // let parametersForBreadCrumb = [];
-    // parametersForBreadCrumb.push({name:"Signals"});
 
     //empty search element
     if (this.props.signal_search_element != "" && (this.props.location.search == "" || this.props.location.search == null)) {
@@ -193,10 +190,6 @@ export class Signals extends React.Component {
       if (search_element)
         document.getElementById('search_signals').value = "";
       }
-    // if (this.props.location.sort == "" || this.props.location.sort == null) {
-    //   this.props.dispatch(storeSortElements("", null));
-    // }
-    //search element ends..
 
     if (!isEmpty(store.getState().signals.signalAnalysis)) {
       let _link = "/signals/" + store.getState().signals.signalAnalysis.slug;
@@ -319,20 +312,17 @@ export class Signals extends React.Component {
       return (
         <div className="side-body">
         
-        <LatestSignals/>
+        <LatestSignals props={this.props}/>
           {/* <MainHeader/>*/}
           {/*<!-- Page Title and Breadcrumbs -->*/}
-          <div class="page-head">
+       
             {/*<!-- <ol class="breadcrumb">
                 <li><a href="#">Story</a></li>
                 <li class="active">Sales Performance Report</li>
               </ol> -->*/}
-
+            <div className="main-content">
             <div class="row">
-              <div class="col-md-8">
-                <h3 className="xs-mt-0">Signals</h3>
-              </div>
-              <div class="col-md-4">
+              <div class="col-md-12">
                 <div class="btn-toolbar pull-right">
                   <div class="input-group">
                     <div className="search-wrapper">
@@ -374,10 +364,10 @@ export class Signals extends React.Component {
 
 				</div>
               </div>
-            </div>
+           
 
 
-          <div className="main-content">
+         
             <div className="row">
               {addButton}
               {
@@ -393,10 +383,10 @@ export class Signals extends React.Component {
                 {paginationTag}
               </div>
             </div>
-          </div>
           <Dialog ref="dialog"/>
           <CreateSignalLoader history={this.props.history}/>
         </div>
+                </div>
       );
     } else {
       return (

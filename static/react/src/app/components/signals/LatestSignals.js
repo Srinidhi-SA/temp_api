@@ -30,13 +30,16 @@ export class LatestSignals extends React.Component {
     }
 
     render() {
+        console.log(this.props)
         const current_page = store.getState().signals.signalList.current_page;
-        let addButton = addButton = <CreateSignal url={this.props.match.url}/>
+        let addButton = addButton = <CreateSignal url={this.props.props.match.url}/>
         return (
              
                 <div class="dashboard_head">
                 
                 <div class="page-head">
+            <h3 class="xs-mt-0">Signals</h3>
+        </div>
                 <div class="active_copy">
                 <div class="row">
                 
@@ -45,7 +48,7 @@ export class LatestSignals extends React.Component {
                 
                 </div>
                 </div>
-                </div>
+        
         );
     }
 
