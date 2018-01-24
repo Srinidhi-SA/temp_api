@@ -55,8 +55,7 @@ class CustomPagination(PageNumberPagination):
         }
 
     def add_top_3(self, query_set):
-        top_3_query_set = query_set[0:3]
-        top_3_query_set_serializer = self.list_serializer(top_3_query_set, many=True)
+        top_3_query_set_serializer = self.list_serializer(query_set, many=True)
         top_3_query_set_serializer_data = top_3_query_set_serializer.data
         self.top_3 = top_3_query_set_serializer_data
 

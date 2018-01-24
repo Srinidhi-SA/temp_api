@@ -126,7 +126,7 @@ def get_listed_data(
         list_serializer=list_serializer
     )
 
-    page_class.add_top_3(query_set=query_set)
+    page_class.add_top_3(query_set=top_3_query_set)
     resp = page_class.modified_get_paginate_response(page)
     return resp
 
