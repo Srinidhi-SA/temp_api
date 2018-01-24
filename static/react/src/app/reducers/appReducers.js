@@ -67,6 +67,9 @@ export default function reducer(state = {
         app_filtered_keywords:[],
         exportAsPMMLModal:false,
         scoreToProceed:false,
+        latestScores : {},
+        latestModels :{},
+        
 
 }, action) {
     console.log("In APPs reducer!!");
@@ -95,6 +98,7 @@ export default function reducer(state = {
         return {
             ...state,
             modelList: action.data,
+            latestModels:action.latestModels,
             current_page:action.current_page,
         }
     }
@@ -121,6 +125,7 @@ export default function reducer(state = {
         return {
             ...state,
             scoreList: action.data,
+            latestScores:action.latestScores,
             current_page:action.current_page,
         }
     }

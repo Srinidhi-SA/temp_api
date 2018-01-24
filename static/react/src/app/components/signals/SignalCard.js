@@ -12,7 +12,7 @@ import {
   } from "react-bootstrap";
 import store from "../../store";
 import {getAllDataList,getDataSetPreview,storeSignalMeta,showDataPreview} from "../../actions/dataActions";
-import {isEmpty, SUCCESS,INPROGRESS} from "../../helpers/helper";
+import {isEmpty, SUCCESS,INPROGRESS,getUserDetailsOrRestart} from "../../helpers/helper";
 import {
     getList,
     emptySignalAnalysis,
@@ -148,8 +148,8 @@ export class SignalCard extends React.Component {
                   </div>
                   <div className="card-footer">
                     <div className="left_div">
-                      <span className="footerTitle"></span>{story.username}
-                      <span className="footerTitle footerTitle-lineh">{dateFormat(story.created_at, "mmm d,yyyy HH:MM")}</span>
+                      <span className="footerTitle"></span>{getUserDetailsOrRestart.get().userName}
+                      <span className="footerTitle footerTitle">{dateFormat(story.created_at, "mmm d,yyyy HH:MM")}</span>
                     </div>
 
                     

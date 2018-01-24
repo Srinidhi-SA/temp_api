@@ -13930,7 +13930,7 @@ ul.app_labels li:first-child { margin: 0; padding: 7px 5px }
     line-height: 1.9em;
 }
 .card-footer {
-    height: 36px;
+    height: 38px;
     background-color: #f9f9f9; /*#ecf4f4 #f3f4f6;*/
     padding: 0 0 0 15px;
     /* color: #fff; */
@@ -13940,7 +13940,7 @@ ul.app_labels li:first-child { margin: 0; padding: 7px 5px }
     float: left;
     width: 57%;
      margin-top: 2px;
-    line-height: 20px;
+    line-height: 18px;
 
 }
 .card-footer .pover, .card-footer .more_button{
