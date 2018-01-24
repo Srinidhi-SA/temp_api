@@ -30,6 +30,7 @@ import {STATIC_URL} from "../../helpers/env";
 import {DetailOverlay} from "../common/DetailOverlay";
 var dateFormat = require('dateformat');
 import Dialog from 'react-bootstrap-dialog';
+import {openCsLoaderModal, closeCsLoaderModal} from "../../actions/createSignalActions"
 
 @connect((store) => {
     return { login_response: store.login.login_response,
@@ -55,6 +56,16 @@ export class SignalCard extends React.Component {
       handleRename(slug, name) {
         this.props.dispatch(handleRename(slug, this.refs.dialog, name));
       }
+      openLoaderScreen(slug, percentage, message, e) {
+          var signalData = {};
+          signalData.slug = slug
+          this.props.dispatch(openCsLoaderModal());
+          this.props.dispatch(updateHide(true))
+          this.props.dispatch(emptySignalAnalysis());
+          this.props.dispatch(triggerSignalAnalysis(signalData, percentage, message));
+
+          //this.props.history.push('/signals/'+slug);
+        }
     render() {
    
         var listData = this.props.data;

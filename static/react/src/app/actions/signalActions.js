@@ -235,10 +235,8 @@ export function refreshSignals(props) {
   }
 }
 function fetchPostsSuccess(signalList) {
- var latestSignals = store.getState().signals.latestSignals;
   var current_page = signalList.current_page;
-  if(current_page == 1)
-  latestSignals = signalList.data.slice(0,3);
+  var latestSignals = signalList.top_3;
   return {type: "SIGNAL_LIST", signalList,latestSignals, current_page}
 }
 

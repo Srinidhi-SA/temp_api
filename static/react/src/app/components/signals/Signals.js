@@ -126,7 +126,7 @@ export class Signals extends React.Component {
     if (e.target.value == "" || e.target.value == null) {
       this.props.dispatch(storeSearchElement(""));
       if(this.props.signal_sorton)
-      this.props.history.push('/signals?sort=' + this.props.signal_sorton + '&type=' + this.props.signal_sorttype)
+      this.proopenCsLoaderModalps.history.push('/signals?sort=' + this.props.signal_sorton + '&type=' + this.props.signal_sorttype)
       else
       this.props.history.push('/signals');
       this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, 1));
