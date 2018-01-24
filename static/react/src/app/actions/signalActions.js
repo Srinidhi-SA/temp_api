@@ -303,7 +303,7 @@ function fetchPostsError_analysis(json) {
   return {type: "SIGNAL_ANALYSIS_ERROR", json}
 }
 export function setPossibleAnalysisList(varType,varText,varSlug) {
-    
+
     if (varType == MEASURE) {
         $(".treatAsCategorical").removeClass("hidden")
         var isVarTypeChanged = checkIfDataTypeChanges(varSlug);
@@ -370,11 +370,11 @@ function triggerAdvanceSettingsAPI(variableSelection){
 function updateTargetVariable(slug,array){
     for(var i=0;i<array.length;i++){
     if(array[i].slug == slug){
-        array[i].targetColumn = !array[i].targetColumn; 
+        array[i].targetColumn = !array[i].targetColumn;
         array[i].targetColSetVarAs = null;
         break;
     }
-} 
+}
 return array;
 }
 
@@ -387,7 +387,7 @@ export function hideTargetVariable(event,jobType){
     var prevVarSlug = store.getState().signals.selVarSlug;
     var prevVarType = store.getState().signals.getVarType;
     var prevSetVarAs = null;
-    
+
     var dataSetMeasures = store.getState().datasets.dataSetMeasures.slice();
     var dataSetDimensions = store.getState().datasets.dataSetDimensions.slice();
     var dataSetTimeDimensions = store.getState().datasets.dataSetTimeDimensions.slice();
@@ -402,19 +402,19 @@ export function hideTargetVariable(event,jobType){
 
     dataSetDimensions = updateTargetVariable(prevVarSlug,dataSetDimensions)
     dataSetMeasures = updateTargetVariable(prevVarSlug,dataSetMeasures)
-  
-  
+
+
     if(prevVarType == null){
         count = count-1;
     }
     dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
-   
+
     if(jobType == "signals"){
         dispatch(updateAdvanceSettings(event));
     }
-    
+
     }
-    
+
 }
 function checkIfDataTypeChanges(varSlug) {
   var transformSettings = store.getState().datasets.dataTransformSettings;
@@ -449,14 +449,14 @@ function updateSetVarAs(colSlug,evt){
         for(var i=0;i<dataSetMeasures.length;i++){
             if(dataSetMeasures[i].slug == colSlug){
                 if(dataSetMeasures[i].targetColSetVarAs == null){
-                    dataSetMeasures[i].targetColSetVarAs = "percentage"; 
+                    dataSetMeasures[i].targetColSetVarAs = "percentage";
                     break;
                 }
                 else{
-                    dataSetMeasures[i].targetColSetVarAs = null; 
+                    dataSetMeasures[i].targetColSetVarAs = null;
                     break;
                 }
-                
+
             }
         }
         dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
@@ -465,7 +465,7 @@ function updateSetVarAs(colSlug,evt){
 export function updateCategoricalVariables(colSlug, colName, actionName, evt) {
   return (dispatch) => {
         dispatch(updateSetVarAs(colSlug));
-      
+
   }
 }
 
@@ -539,7 +539,7 @@ export function showDialogBox(slug,dialog,dispatch,evt){
 		})
 	dialog.show({
 		  title: 'Delete Signal',
-		  body: 'Are you sure you want to delete this Signal ? Yes , No',
+		  body: 'Are you sure you want to delete this Signal?',
 		  actions: [
 		    Dialog.CancelAction(),
 		    Dialog.OKAction(() => {
