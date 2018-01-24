@@ -7,6 +7,7 @@ class QueryCommonFiltering(object):
 
     query_set = None
     request = None
+    top_3 = None
 
     sorted_by = None
     ordering = ""
@@ -72,6 +73,9 @@ class QueryCommonFiltering(object):
 
         if self.app_id is not None:
             self.query_set = self.query_set.filter(app_id=self.app_id)
+            self.top_3 = self.query_set[0:3]
+        else:
+            self.top_3 = self.query_set[0:3]
 
         if self.app_name is not None:
             self.query_set = self.query_set.filter(Q(name__icontains=self.app_name)|Q(tags__icontains=self.app_name))
@@ -88,7 +92,7 @@ class QueryCommonFiltering(object):
             query_args = "{0}{1}".format(self.ordering, self.sorted_by)
             self.query_set = self.query_set.order_by(query_args)
 
-        return self.query_set
+        return self.query_set, self.top_3
 
 
 def get_listed_data(
@@ -110,8 +114,8 @@ def get_listed_data(
         query_set=query_set,
         request=request
     )
-    top_3_query_set = query_set[0:3]
-    query_set = qcf.execute_common_filtering_and_sorting_and_ordering()
+
+    query_set, top_3_query_set = qcf.execute_common_filtering_and_sorting_and_ordering()
 
     if 'page' in request.query_params:
         if request.query_params.get('page') == 'all':
