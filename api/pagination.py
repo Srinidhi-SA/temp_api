@@ -24,7 +24,8 @@ class CustomPagination(PageNumberPagination):
             'total_number_of_pages': pagination['count'],
             'current_page': pagination['current_page'],
             'current_page_size': pagination['current_page_size'],
-            'current_item_count': len(pagination["current_data"])
+            'current_item_count': len(pagination["current_data"]),
+            'top_3': self.top_3
         })
 
     def get_page_count(self, page, page_number=1, page_size=10):
@@ -52,6 +53,12 @@ class CustomPagination(PageNumberPagination):
             "current_page_size": page_size,
             "current_data": serialized_page_data.data
         }
+
+    def add_top_3(self, query_set):
+        top_3_query_set = query_set[0:3]
+        top_3_query_set_serializer = self.list_serializer(top_3_query_set, many=True)
+        top_3_query_set_serializer_data = top_3_query_set_serializer.data
+        self.top_3 = top_3_query_set_serializer_data
 
     def paginate_queryset(self,
                           queryset,
