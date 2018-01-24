@@ -684,6 +684,172 @@ ADANCED_SETTING_FOR_POSSIBLE_ANALYSIS_TREND = {
     "noOfColumnsToUse": None
 }
 
+ADVANCED_SETTINGS_OVERVIEW = {
+                "name": "overview",
+                "displayName": "Overview",
+                "status": False,
+                "analysisSubTypes": [],
+                "noOfColumnsToUse": None
+            }
+
+ADVANCED_SETTINGS_ASSOCIATION = {
+                "name": "association",
+                "displayName": "Association",
+                "status": False,
+                "analysisSubTypes": [],
+                "binSetting": [
+                    {"name": "heading", "displayName": "Binning of Numerical Values"},
+                    {"name": "binLevels", "value": 5, "displayName": "Number of Bin Levels", "defaultValue": 5,
+                     "min": 2, "max": 10},
+                    {"name": "binCardinality", "value": 5,
+                     "displayName": "Do not bin numerical values with cardinality less than:", "defaultValue": 5,
+                     "min": 2, "max": 10}
+                ],
+                "noOfColumnsToUse": [
+                    {
+                        "name": "low",
+                        "displayName": "Low",
+                        "status": False,
+                        "defaultValue": 3
+                    },
+                    {
+                        "name": "medium",
+                        "displayName": "Medium",
+                        "status": False,
+                        "defaultValue": 5
+                    },
+                    {
+                        "name": "high",
+                        "displayName": "High",
+                        "status": False,
+                        "defaultValue": 8
+                    },
+                    {
+                        "name": "custom",
+                        "displayName": "Custom",
+                        "status": False,
+                        "defaultValue": 3,
+                        "value": None
+                    }
+                ]
+            }
+
+ADVANCED_SETTINGS_PREDICTION = {
+                "name": "prediction",
+                "displayName": "Prediction",
+                "status": False,
+                "analysisSubTypes": [],
+                "noOfColumnsToUse": None,
+                "levelSetting":[]
+            }
+
+ADVANCED_SETTINGS_TARGET_LEVEL = []
+
+ADVANCED_SETTINGS_TARGET_SETTINGS = [
+            {"name": "Count", "status": False},
+            {"name": "Specific Measure", "status": False, "selectedMeasure": None}
+        ]
+
+ADVANCED_SETTINGS_PERFORMANCE = {
+                "name": "performance",
+                "displayName": "Performance",
+                "status": False,
+                "analysisSubTypes": [],
+                "noOfColumnsToUse": [
+                    {
+                        "name": "low",
+                        "displayName": "Low",
+                        "status": False,
+                        "defaultValue": 3
+                    },
+                    {
+                        "name": "medium",
+                        "displayName": "Medium",
+                        "status": False,
+                        "defaultValue": 5
+                    },
+                    {
+                        "name": "high",
+                        "displayName": "High",
+                        "status": False,
+                        "defaultValue": 8
+                    },
+                    {
+                        "name": "custom",
+                        "displayName": "Custom",
+                        "status": False,
+                        "defaultValue": 3,
+                        "value": None
+                    }
+                ],
+            }
+
+ADVANCED_SETTINGS_INFLUENCER = {
+                "name": "influencer",
+                "displayName": "Influencer",
+                "status": False,
+                "analysisSubTypes": [
+                    # {
+                    #     "name": "overview",
+                    #     "displayName": "Overview",
+                    #     "status": False
+                    # },
+                    # {
+                    #     "name": "Key areas of Impact",
+                    #     "displayName": "Key areas of Impact",
+                    #     "status": False
+                    # },
+                    # {
+                    #     "name": "Trend analysis",
+                    #     "displayName": "Trend analysis",
+                    #     "status": False
+                    # }
+                ],
+                "noOfColumnsToUse": [
+                    {
+                        "name": "low",
+                        "displayName": "Low",
+                        "status": False,
+                        "defaultValue": 3
+                    },
+                    {
+                        "name": "medium",
+                        "displayName": "Medium",
+                        "status": False,
+                        "defaultValue": 5
+                    },
+                    {
+                        "name": "high",
+                        "displayName": "High",
+                        "status": False,
+                        "defaultValue": 8
+                    },
+                    {
+                        "name": "custom",
+                        "displayName": "Custom",
+                        "status": False,
+                        "defaultValue": 3,
+                        "value": None
+                    }
+                ]
+            }
+
+ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS =  {
+    "dimensions": {
+        "analysis": [],
+        "targetLevels": [],
+        "trendSettings": [
+            {"name": "Count", "status": False},
+            {"name": "Specific Measure", "status": False, "selectedMeasure": None}
+        ]
+    },
+    "measures": {
+        "analysis": []
+    },
+}
+ADVANCED_SETTINGS_FOR_POSSIBLE_DIMENSION_ANALYSIS_CHECK_LIST = ['overview', 'trend', 'association', 'prediction']
+ADVANCED_SETTINGS_FOR_POSSIBLE_MEASURE_ANALYSIS_CHECK_LIST = ['overview', 'trend', 'performance', 'influencer', 'prediction']
+
 ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND = {
     "dimensions": {
         "analysis": [
@@ -740,7 +906,8 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND = {
                 "displayName": "Prediction",
                 "status": False,
                 "analysisSubTypes": [],
-                "noOfColumnsToUse": None
+                "noOfColumnsToUse": None,
+                "levelSetting":[]
             }
         ],
         "targetLevels": [],
@@ -845,15 +1012,15 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND = {
                 "displayName": "Prediction",
                 "status": False,
                 "analysisSubTypes": [],
-                "noOfColumnsToUse": None
+                "noOfColumnsToUse": None,
+                "levelSetting":[]
             }
         ]
     },
 }
 
 TRANSFORMATION_SETTINGS_CONSTANT = {
-    "columnSetting":
-        [
+    "columnSetting":[
             {"actionName": "unique_identifier", "displayName": "Unique Identifier", "status": False},
             {"actionName":"delete","displayName":"Delete Column","status":False},
             {"actionName":"rename","displayName":"Rename Column","status":False,"newName":None},
@@ -900,23 +1067,23 @@ TRANSFORMATION_SETTINGS_CONSTANT = {
                             }
                         ]
                     },
+            {
+                "status": False,
+                "actionName": "set_polarity",
+                "displayName": "Set Polarity as",
+                "listOfActions": [
                     {
                         "status": False,
-                        "actionName": "set_polarity",
-                        "displayName": "Set Polarity as",
-                        "listOfActions": [
-                            {
-                                "status": False,
-                                "displayName": "Positive",
-                                "name": "positive"
-                            },
-                            {
-                                "status": False,
-                                "displayName": "Negative",
-                                "name": "negative"
-                            }
-                        ]
+                        "displayName": "Positive",
+                        "name": "positive"
+                    },
+                    {
+                        "status": False,
+                        "displayName": "Negative",
+                        "name": "negative"
                     }
+                ]
+            }
 
         ],
     "new_columns":
@@ -932,6 +1099,30 @@ TRANSFORMATION_SETTINGS_CONSTANT = {
         ]
 
 }
+
+
+TRANSFORMATION_SETTINGS_CONSTANT_DELETE = {
+    "columnSetting":[
+            {"actionName": "unique_identifier", "displayName": "Unique Identifier", "status": False},
+            {"actionName":"delete","displayName":"Delete Column","status":False},
+            {"actionName":"rename","displayName":"Rename Column","status":False,"newName":None}
+        ],
+    "new_columns":
+        [
+            {
+            "newColName":None,
+            "orderedColNames":[],
+            "operators":[
+                {"name":"+","displayName":"Addition","status":True},
+                {"name":"-","displayName":"Sub dsada","status":False},
+            ]
+}
+        ]
+
+}
+
+
+TRANSFORMATION_SETTINGS_IGNORE = {"actionName": "ignore_suggestion", "displayName": "Consider for Analysis", "status": False}
 
 CONCEPTS = {'corporate': ['leadership change', 'public relations'],
             'expansion - geography/segment': ['acquisition',

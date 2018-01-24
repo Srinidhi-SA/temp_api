@@ -111,12 +111,12 @@ export class DataSourceList extends React.Component {
             } else {
               return (
                 <div class="tab-pane active cont fade in">
-                  <h3>
+                  <h4>
                     File Upload
                     <div class="pull-right">
                       <div class="db_images db_file_upload"></div>
                     </div>
-                  </h3>
+                  </h4>
                   <div className="clearfix"></div>
                   <div className="xs-pt-20"></div>
                   <div className="dropzone ">

@@ -110,6 +110,7 @@ def get_listed_data(
         query_set=query_set,
         request=request
     )
+    top_3_query_set = query_set[0:3]
     query_set = qcf.execute_common_filtering_and_sorting_and_ordering()
 
     if 'page' in request.query_params:
@@ -125,7 +126,9 @@ def get_listed_data(
         list_serializer=list_serializer
     )
 
-    return page_class.modified_get_paginate_response(page)
+    page_class.add_top_3(query_set=top_3_query_set)
+    resp = page_class.modified_get_paginate_response(page)
+    return resp
 
 
 def get_retrieve_data(

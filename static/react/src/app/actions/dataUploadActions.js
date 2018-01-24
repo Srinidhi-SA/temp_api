@@ -58,13 +58,18 @@ function uploadFileOrDB(dbDetails){
           // dispatch()
           if (response.status === 200) {
             dispatch(updateHideData(true));
-            console.log(json.slug)
             dispatch(updateDatasetName(json.slug))
             dispatch(dataUploadSuccess(json, dispatch))
           } else {
             dispatch(dataUploadError(json))
           }
-        });
+        }).catch(function(error) {
+              console.log(error);
+              bootbox.alert("Connection lost. Please try again later.")
+              dispatch(hideDULoaderPopup());
+              dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
+              clearInterval(dataPreviewInterval);
+          });
       }
 }
 function triggerDataUpload(token,dbDetails) {
@@ -77,10 +82,7 @@ function triggerDataUpload(token,dbDetails) {
       method: 'post',
       headers: getHeaderWithoutContent(token),
       body: data
-    }).then(response => Promise.all([response, response.json()])).catch(function(error) {
-          console.log(error);
-          bootbox.alert("Connection lost. Please try again later.")
-      });;
+    }).then(response => Promise.all([response, response.json()]));
   } else {
 
     var host = store.getState().dataSource.db_host;
@@ -102,10 +104,7 @@ function triggerDataUpload(token,dbDetails) {
       method: 'post',
       headers: getHeader(token),
       body: JSON.stringify({datasource_details: dbDetails, datasource_type: store.getState().dataSource.selectedDataSrcType})
-    }).then(response => Promise.all([response, response.json()])).catch(function(error) {
-          console.log(error);
-          bootbox.alert("Connection lost. Please try again later.")
-      });
+    }).then(response => Promise.all([response, response.json()]));
 
   }
 
@@ -122,7 +121,8 @@ export function triggerDataUploadAnalysis(data,percentage, message){
 }
 function dataUploadSuccess(data, dispatch) {
   let msg = store.getState().datasets.dataLoaderText
-  let loaderVal = store.getState().datasets.dULoaderValue
+  let loaderVal = store.getState().datasets.dULoaderValue;
+  let dataset = data.slug
   if(data.hasOwnProperty("proceed_for_loading") && !data.proceed_for_loading){
       msg = "Your dataset will be uploaded in background...";
       dispatch(dataUploadLoaderMsg(msg));
@@ -154,6 +154,10 @@ function dataUploadSuccess(data, dispatch) {
       dispatch(dataUploadLoaderValue(loaderVal));
 
 }
+  return {
+      type: "SELECTED_DATASET",
+      dataset
+  }
 }
 
 export function dataUploadError(josn) {
@@ -201,8 +205,8 @@ export function dataSubsetting(subsetRq, slug) {
         dispatch(dataUploadSuccess(json, dispatch))
         dispatch(updateSubsetSuccess(json))
       } else {
-				dispatch(clearLoadingMsg())
-				dispatch(dataUploadError(json))
+          dispatch(clearLoadingMsg())
+          dispatch(dataUploadError(json))
       }
     });
   }
@@ -232,4 +236,7 @@ export function clearLoadingMsg() {
 }
 export function updateHideData(flag) {
   return {type: "UPDATE_HIDE_DATA", flag}
+}
+export function clearDatasetPreview(){
+    clearInterval(dataPreviewInterval)
 }

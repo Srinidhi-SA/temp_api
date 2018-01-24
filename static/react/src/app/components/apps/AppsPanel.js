@@ -261,10 +261,10 @@ export class AppsPanel extends React.Component {
         <div class="page-head">
 
           <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-7">
               <h3 className="xs-mt-0">mAdvisor Apps</h3>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-5">
               <div class="btn-toolbar pull-right">
                 <div class="input-group">
                   <div className="search-wrapper">

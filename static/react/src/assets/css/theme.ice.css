@@ -30,6 +30,7 @@
 	 background-image: url(../images/ice-unsorted.gif);	 
 	white-space: normal;
 	cursor: pointer;
+	vertical-align: middle;
 }
 .tablesorter-ice .headerSortUp,
 .tablesorter-ice .tablesorter-headerSortUp,
@@ -54,7 +55,7 @@
 .tablesorter-ice thead .sorter-false {
 	background-image: none;
 	cursor: default;
-	padding: 4px;
+	/*padding: 4px;*/
 }
 
 /* tfoot */
@@ -197,3 +198,4 @@ caption {
 	cursor: pointer;
 	background-color: #e6bf99;
 }
+.tablesorter-ice th .ma-checkbox { padding: 0;}

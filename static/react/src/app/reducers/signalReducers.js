@@ -29,6 +29,7 @@ export default function reducer(state = {
   showHide:false,
   viewChartDataFlag:false,
   chartDataClassId :"",
+  selectedL1: "",
 }, action) {
   console.log("in SIGNAL reducer!!");
   console.log(action);
@@ -247,6 +248,14 @@ export default function reducer(state = {
           viewChartDataFlag: action.flag,
           chartDataClassId:action.classId,
         }
+  }
+  break;
+  case "SELECTED_L1":
+  {
+    return{
+      ...state,
+      selectedL1:action.selectedL1
+    }
   }
   }
   return state

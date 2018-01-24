@@ -62,7 +62,7 @@ export class AudioFileSummary extends React.Component {
 						<div className="side-body">
 
 						<div className="page-head">
-			              <div class="row">
+			              <div class="row hidden">
 			                <div class="col-md-12">
 			                  <Breadcrumb path={[
 			                    {
@@ -85,24 +85,22 @@ export class AudioFileSummary extends React.Component {
 						<div className="row">
 						<div className="col-md-12">
 
-						<div className="panel panel-mAd documentModeSpacing ">
+						<div className="panel panel-mAd documentModeSpacing box-shadow">
 						<div className="panel-heading">
-						<h2 className="pull-left">{store.getState().apps.audioFileSummary.name}</h2>
+						<h3 className="xs-mt-0">{store.getState().apps.audioFileSummary.name}
 
 						<div className="btn-toolbar pull-right">
 						<div className="btn-group btn-space">
 
-						<button type="button" className="btn btn-default" disabled = "true" title="Document Mode">
-						<i className="fa fa-file-text-o"></i>
-						</button>
-						<Link className="continue" onClick={this.updateAudioFlag.bind(this)} to="/apps/audio">
-						<button type="button" className="btn btn-close">
-						<i className="fa fa-times"></i>
-						</button>
+						<button type="button" className="btn btn-default" disabled="true" title="Document Mode">
+                              <i class="zmdi zmdi-hc-lg zmdi-view-web"></i>
+                        </button>
+						<Link className="continue btn btn-default" onClick={this.updateAudioFlag.bind(this)} to="/apps/audio">						 
+						<i class="zmdi zmdi-hc-lg zmdi-close"></i>						 
 						</Link>
 						</div>
 						</div>
-
+</h3>
 						<div className="clearfix"></div>
 						</div>
 						<div className="panel-body no-border">

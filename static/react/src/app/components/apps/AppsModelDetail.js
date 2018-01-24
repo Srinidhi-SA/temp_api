@@ -78,9 +78,9 @@ export class AppsModelDetail extends React.Component {
 			          <div className="row">
 		                <div className="col-md-12">
 		                 
-		                <div className="panel panel-mAd documentModeSpacing ">
+		                <div className="panel panel-mAd documentModeSpacing box-shadow">
 		                    <div className="panel-heading">
-		                      <h2 className="pull-left">{store.getState().apps.modelSummary.name}</h2>
+		                      <h3 className="xs-mt-0">{store.getState().apps.modelSummary.name}
 		                      
 		                      <div className="btn-toolbar pull-right">
 		                        <div className="btn-group">
@@ -95,7 +95,7 @@ export class AppsModelDetail extends React.Component {
 								 </Link>
 		                        </div>
 		                      </div>
-		                      
+		                     </h3> 
 		                      <div className="clearfix"></div>
 		                    </div>
 		                   <div className="panel-body no-border">

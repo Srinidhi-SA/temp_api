@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 import random
+import json
 
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
@@ -18,6 +19,9 @@ from api.pagination import CustomPagination
 from helper import convert_to_string
 from serializers import DatasetSerializer, DataListSerializer, DataNameListSerializer
 from api.query_filtering import get_listed_data, get_retrieve_data
+from helper import add_transformation_setting_to_ui_metadata, add_ui_metadata_to_metadata
+from helper import convert_metadata_according_to_transformation_setting
+from helper import get_advanced_setting
 
 # Create your views here.
 
@@ -28,7 +32,6 @@ class DatasetView(viewsets.ModelViewSet):
         queryset = Dataset.objects.filter(
             created_by=self.request.user,
             deleted=False,
-            # analysis_done=True
             status__in=['SUCCESS', 'INPROGRESS']
         )
         return queryset
@@ -57,8 +60,9 @@ class DatasetView(viewsets.ModelViewSet):
                     data['name'] = data.get('name', data['input_file'].name)
             elif 'datasource_details' in data:
                 data['input_file'] = None
-                if "Dataset Name" in data['datasource_details']:
-                    data['name'] = data['datasource_details']['Dataset Name']
+                if "datasetname" in data['datasource_details']:
+                    datasource_details = json.loads(data['datasource_details'])
+                    data['name'] = datasource_details['datasetname']
                 else:
                     data['name'] = data.get('name', data.get('datasource_type', "H") + "_" + str(random.randint(1000000, 10000000)))
 
@@ -126,8 +130,12 @@ class DatasetView(viewsets.ModelViewSet):
 
     @list_route(methods=['get'])
     def all(self, request):
-        query_set = self.get_queryset()
-        serializer = DataNameListSerializer(query_set, many=True)
+        queryset = Dataset.objects.filter(
+            created_by=self.request.user,
+            deleted=False,
+            status__in=['SUCCESS']
+        )
+        serializer = DataNameListSerializer(queryset, many=True)
         return Response({
             "data": serializer.data
         })
@@ -151,7 +159,22 @@ class DatasetView(viewsets.ModelViewSet):
             return creation_failed_exception("File Doesn't exist.")
 
         serializer = DatasetSerializer(instance=instance)
-        return Response(serializer.data)
+        object_details = serializer.data
+        original_meta_data_from_scripts = object_details['meta_data']
+
+        if original_meta_data_from_scripts is None:
+            uiMetaData = None
+        if original_meta_data_from_scripts == {}:
+            uiMetaData = None
+        else:
+            uiMetaData = add_ui_metadata_to_metadata(original_meta_data_from_scripts)
+
+        object_details['meta_data'] = {
+            "scriptMetaData": original_meta_data_from_scripts,
+            "uiMetaData": uiMetaData
+        }
+
+        return Response(object_details)
 
     def subsetting(self, request, instance=None):
 
@@ -172,7 +195,6 @@ class DatasetView(viewsets.ModelViewSet):
                 temp_details['input_file'] = None
                 temp_details['datasource_details'] = instance.datasource_details
                 temp_details['datasource_type'] = instance.datasource_type
-                print "subsetting", "hana", data.get('name')
                 temp_details['name'] = data.get(
                     'name',
                     data.get('datasource_type', "NoName") + "_" + str(random.randint(1000000, 10000000))
@@ -198,23 +220,22 @@ class DatasetView(viewsets.ModelViewSet):
 
     @detail_route(methods=['put'])
     def meta_data_modifications(self, request, slug=None):
-        try:
-            instance = self.get_object_from_all()
-        except:
-            return creation_failed_exception("File Doesn't exist.")
-
-        from helper import convert_metadata_according_to_transformation_setting
-
         data = request.data
-
         if 'config' not in data:
             return Response({'messgae': 'No config in request body.'})
-
-
+        uiMetaData = data['uiMetaData']
         ts = data.get('config')
-        meta_data = convert_metadata_according_to_transformation_setting(instance.meta_data, transformation_setting=ts)
-        serializer = DatasetSerializer(instance=instance)
-        data = serializer.data
-        meta_data["advanced_settings"] = serializer.get_advanced_setting(meta_data)
-        data['meta_data'] = meta_data
-        return Response(data)
+
+        uiMetaData = convert_metadata_according_to_transformation_setting(
+                uiMetaData,
+                transformation_setting=ts
+            )
+
+        uiMetaData["advanced_settings"] = get_advanced_setting(uiMetaData['varibaleSelectionArray'])
+        return Response(uiMetaData)
+
+    @detail_route(methods=['put'])
+    def advanced_settings_modification(self, request, slug=None):
+        data = request.data
+        data = data.get('variableSelection')
+        return Response(get_advanced_setting(data))

@@ -104,8 +104,12 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
     export function createModel(modelName,targetVariable) {
         console.log(modelName);
         console.log(targetVariable);
+        if($('#createModelAnalysisList option:selected').val() == ""){
+            bootbox.alert("Please select a variable to analyze...");
+            return false;
+        }
         //check if no variable selected
-        let selectedMeasures=store.getState().datasets.selectedMeasures
+       /* let selectedMeasures=store.getState().datasets.selectedMeasures
         let selectedDimensions=store.getState().datasets.selectedDimensions
         let selectedTimeDimension=store.getState().datasets.selectedTimeDimensions
         if(selectedTimeDimension===undefined){
@@ -118,7 +122,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
           bootbox.alert("Please select atleast one variable.")
           return false
         }
-        }
+        }*/
 
         return (dispatch) => {
             dispatch(openAppsLoader(APPSLOADERPERVALUE,"Please wait while mAdvisor is creating model... "));
@@ -141,15 +145,16 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
         var app_id=store.getState().apps.currentAppId;
         var customDetails = createcustomAnalysisDetails();
 
-        var details = {"measures":store.getState().datasets.selectedMeasures,
+        var details = {/*"measures":store.getState().datasets.selectedMeasures,
                 "dimension":store.getState().datasets.selectedDimensions,
-                "timeDimension":store.getState().datasets.selectedTimeDimensions,
+                "timeDimension":store.getState().datasets.selectedTimeDimensions,*/
                 "trainValue":store.getState().apps.trainValue,
                 "testValue":store.getState().apps.testValue,
-                "analysisVariable":targetVariable,
+                "variablesSelection":store.getState().datasets.dataPreview.meta_data.uiMetaData.varibaleSelectionArray
+               /* "analysisVariable":targetVariable,
                 'customAnalysisDetails':customDetails["customAnalysisDetails"],
                  'polarity':customDetails["polarity"],
-                 'uidColumn':customDetails["uidColumn"]}
+                 'uidColumn':customDetails["uidColumn"]*/}
         return fetch(API+'/api/trainer/',{
             method: 'post',
             headers: getHeader(token),
@@ -343,14 +348,15 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
         var datasetSlug = store.getState().datasets.dataPreview.slug;
         var app_id=store.getState().apps.currentAppId;
         var customDetails = createcustomAnalysisDetails();
-        var details = {"measures":store.getState().datasets.selectedMeasures,
+        var details = {/*"measures":store.getState().datasets.selectedMeasures,
                 "dimension":store.getState().datasets.selectedDimensions,
                 "timeDimension":store.getState().datasets.selectedTimeDimensions,
                 "analysisVariable":targetVariable,
-                "algorithmName":store.getState().apps.selectedAlg,
                 'customAnalysisDetails':customDetails["customAnalysisDetails"],
                 'polarity':customDetails["polarity"],
-                'uidColumn':customDetails["uidColumn"],
+                'uidColumn':customDetails["uidColumn"],*/
+                "algorithmName":store.getState().apps.selectedAlg,
+                "variablesSelection":store.getState().datasets.dataPreview.meta_data.uiMetaData.varibaleSelectionArray,
                 "app_id":app_id}
         return fetch(API+'/api/score/',{
             method: 'post',
@@ -455,7 +461,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
         }
     }
     function fetchScoreSummaryInCSV(token,slug) {
-        return fetch(API+'/api/get_score_data_and_return_top_n/?url='+EMR+'/'+slug+'/data.csv&count=100',{
+        return fetch(API+'/api/get_score_data_and_return_top_n/?url='+slug+'&count=100'+'&download_csv=false',{
             method: 'get',
             headers: getHeader(token)
         }).then( response => Promise.all([response, response.json()]));
@@ -1797,4 +1803,38 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             type: "EXPORT_AS_PMML_MODAL",
             flag
         }
+    }
+    
+    export function updateSelectedVariable(event){
+        var selOption = event.target.childNodes[event.target.selectedIndex];
+        var varType = selOption.value;
+        var varText = selOption.text;
+        var varSlug = selOption.getAttribute("name");
+        return {type: "SET_POSSIBLE_LIST", varType, varText, varSlug};
+    }
+    
+    
+    export function checkCreateScoreToProceed(selectedDataset){
+        var modelSlug = store.getState().apps.modelSlug;
+        var response = "";
+        return (dispatch) => {
+            return triggerAPI(modelSlug,selectedDataset).then(([response, json]) =>{
+                if(response.status === 200){
+                    dispatch(scoreToProceed(json.proceed));
+                }
+            });
+        }
+        
+    }
+    
+    function triggerAPI(modelSlug,selectedDataset){
+        return fetch(API+'/api/trainer/'+modelSlug+'/comparision/?score_datatset_slug='+selectedDataset+'',{
+            method: 'get',
+            headers: getHeader(getUserDetailsOrRestart.get().userToken),
+        }).then( response => Promise.all([response, response.json()]));
+    }
+    
+    
+    function scoreToProceed(flag){
+        return {type: "SCORE_TO_PROCEED", flag};
     }

@@ -18,9 +18,9 @@ import {BreadCrumb} from "../common/BreadCrumb";
 import {getDataList, getDataSetPreview, storeSignalMeta, handleDelete, handleRename,refreshDatasets} from "../../actions/dataActions";
 import {fetchProductList, openDULoaderPopup, closeDULoaderPopup, storeSearchElement,storeSortElements} from "../../actions/dataActions";
 import {DataUpload} from "./DataUpload";
-import {open, close,triggerDataUploadAnalysis} from "../../actions/dataUploadActions";
+import {open, close,triggerDataUploadAnalysis,updateHideData} from "../../actions/dataUploadActions";
 import {STATIC_URL} from "../../helpers/env.js"
-import {SEARCHCHARLIMIT,getUserDetailsOrRestart,SUCCESS,INPROGRESS} from  "../../helpers/helper"
+import {SEARCHCHARLIMIT,getUserDetailsOrRestart,SUCCESS,INPROGRESS,HANA,MYSQL,MSSQL,HDFS,FILEUPLOAD} from  "../../helpers/helper"
 import {DataUploadLoader} from "../common/DataUploadLoader";
 import Dialog from 'react-bootstrap-dialog'
 
@@ -74,8 +74,8 @@ export class Data extends React.Component {
   closeModelPopup() {
     this.props.dispatch(closeDULoaderPopup())
   }
-  handleDelete(slug) {
-    this.props.dispatch(handleDelete(slug, this.refs.dialog));
+  handleDelete(slug,evt) {
+    this.props.dispatch(handleDelete(slug, this.refs.dialog,evt));
   }
   handleRename(slug, name) {
     this.props.dispatch(handleRename(slug, this.refs.dialog, name));
@@ -124,6 +124,7 @@ export class Data extends React.Component {
       var dataUpload = {};
       dataUpload.slug = slug
       this.props.dispatch(openDULoaderPopup());
+      this.props.dispatch(updateHideData(true));
       this.props.dispatch(triggerDataUploadAnalysis(dataUpload, percentage, message));
   }
 
@@ -163,25 +164,34 @@ export class Data extends React.Component {
           
           var iconDetails = "";
           var dataSetLink = "/data/" + data.slug;
+          var percentageDetails = "";
           
           var dataClick = <Link to={dataSetLink} id={data.slug} onClick={this.getPreviewData.bind(this)}>
             {data.name}
             </Link>
             if(data.status == INPROGRESS){
-                iconDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>
+                percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>
                 dataClick = <a class="cursor" onClick={this.openDataLoaderScreen.bind(this,data.slug,data.completed_percentage,data.completed_message)}> {data.name}</a>
             }else if(data.status == SUCCESS && !data.viewed){
                 data.completed_percentage = 100;
-                iconDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>
-            }else{
-                let src = STATIC_URL + "assets/images/File_Icon.png"
-                if(data.datasource_type == "Hana"){
-                  src = STATIC_URL + "assets/images/sapHana_Icon.png"
-                }else if (data.datasource_type == "Mysql") {
-                  src = STATIC_URL + "assets/images/mySQL_Icon.png"
-                }
-                iconDetails = <img src={src} className="img-responsive" alt="LOADING"/>;
+                percentageDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>
             }
+            
+            
+                let src = STATIC_URL + "assets/images/File_Icon.png"
+                if(data.datasource_type == HANA){
+                  src = STATIC_URL + "assets/images/sapHana_Icon.png"
+                }else if (data.datasource_type == MYSQL) {
+                  src = STATIC_URL + "assets/images/mySQL_Icon.png"
+                }else if (data.datasource_type == MSSQL) {
+                  src = STATIC_URL + "assets/images/SqlServer_Icons.png"
+                }else if (data.datasource_type == HDFS) {
+                  src = STATIC_URL + "assets/images/hadoop_Icons.png"
+                }else {
+                  src = STATIC_URL + "assets/images/File_Icon.png"
+                }
+                iconDetails = <img src={src} alt="LOADING"/>;
+            
             
         
         
@@ -191,33 +201,16 @@ export class Data extends React.Component {
               <div className="card-header"></div>
               <div className="card-center-tile">
                 <div className="row">
-                  <div className="col-xs-9">
-                    <h4 className="title newCardTitle">
+                  <div className="col-xs-12">
+                    <h5 className="title newCardTitle pull-left">
                      {dataClick}
-                    </h4>
-                  </div>
-                  <div className="col-xs-3">
-                    {iconDetails}
-                  </div>
-                </div>
-              </div>
-              <div className="card-footer">
-                <div className="left_div">
-                  <span className="footerTitle"></span>{getUserDetailsOrRestart.get().userName}
-                  <span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy HH:MM")}</span>
-                </div>
-
-                <div className="card-deatils">
-                  {/*<!-- Popover Content link -->*/}
-                  <OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={data}/> </Popover>}>
-                    <a  className="pover cursor">
-                      <i className="ci pe-7s-info pe-2x"></i>
-                    </a>
-                  </OverlayTrigger>
-
-                  {/*<!-- Rename and Delete BLock  -->*/}
+                    </h5>
+					
+					<div class="btn-toolbar pull-right">
+					
+						{/*<!-- Rename and Delete BLock  -->*/}
                   <a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
-                    <i className="ci pe-7s-more pe-rotate-90 pe-2x"></i>
+                    <i className="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
                   </a>
                   <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                     <li onClick={this.handleRename.bind(this, data.slug, data.name)}>
@@ -231,8 +224,29 @@ export class Data extends React.Component {
                                     : "Delete"}</a>
                                     </li>
                   </ul>
-                  {/*<!-- End Rename and Delete BLock  -->*/}
+					
+					</div>
+					  <div className="clearfix"></div>
+					  {percentageDetails}
+					  
+			<OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={data}/> </Popover>}>
+			<a  className="pover cursor">
+			<div class="card_icon">
+					{iconDetails}
+					</div>
+			</a>
+			</OverlayTrigger>
+					  
+                  </div>
+                   
                 </div>
+              </div>
+              <div className="card-footer">
+                <div className="left_div">
+                  <span className="footerTitle"></span>{getUserDetailsOrRestart.get().userName}
+                  <span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy HH:MM")}</span>
+                </div>
+ 
 
                 {/*popover*/}
 
@@ -285,6 +299,7 @@ export class Data extends React.Component {
                     </ul>
                   </div>
 				  </div>
+				  
               </div>
             </div>
             <div class="clearfix"></div>

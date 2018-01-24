@@ -7,7 +7,7 @@ import store from "../store";
 import {openCsLoaderModal, closeCsLoaderModal, updateCsLoaderValue, updateCsLoaderMsg} from "./createSignalActions";
 import Dialog from 'react-bootstrap-dialog'
 import {showLoading, hideLoading} from 'react-redux-loading-bar'
-import {updateColumnStatus} from './dataActions';
+import {updateColumnStatus,updateStoreVariables,updateDatasetVariables,updateSelectAllAnlysis,hideDataPreview} from './dataActions';
 // var API = "http://34.196.204.54:9000";
 
 // @connect((store) => {
@@ -19,7 +19,7 @@ var refreshSignalInterval = null;
 function getHeader(token) {
   return {'Authorization': token, 'Content-Type': 'application/json'};
 }
-export function checkIfDateTimeIsSelected() {
+export function checkIfTrendIsSelected() {
   var totalAnalysisList = store.getState().datasets.dataSetAnalysisList;
   var analysisList = [];
   var trendIsChecked = false;
@@ -41,11 +41,20 @@ export function checkIfDateTimeIsSelected() {
 
 }
 
+export function checkIfDateTimeIsSelected(){
+    var dataSetTimeDimensions = store.getState().datasets.dataSetTimeDimensions;
+    var flag = dataSetTimeDimensions.find(function(element) {
+        return element.selected  == true;
+      });
+    return flag;
+}
+
 //x-www-form-urlencoded'
 export function createSignal(metaData) {
   return (dispatch) => {
-    dispatch(updateHide(false))
-    return fetchCreateSignal(metaData).then(([response, json]) => {
+    dispatch(updateHide(false));
+    dispatch(hideDataPreview())
+    return fetchCreateSignal(metaData,dispatch).then(([response, json]) => {
       if (response.status === 200) {
         //console.log(json)
         dispatch(updateHide(true));
@@ -55,12 +64,17 @@ export function createSignal(metaData) {
         dispatch(closeCsLoaderModal())
         dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
       }
-    })
+    }).catch(function(error) {
+      bootbox.alert("Connection lost. Please try again later.")
+      dispatch(closeCsLoaderModal())
+      dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
+      clearInterval(createSignalInterval);
+    });
   }
 
 }
 
-function fetchCreateSignal(metaData) {
+function fetchCreateSignal(metaData,dispatch) {
   //console.log(metaData)
 
   return fetch(API + '/api/signals/', {
@@ -154,18 +168,20 @@ function fetchCreateSignalError(json) {
 export function getList(token, pageNo) {
 
   return (dispatch) => {
-    return fetchPosts(token, pageNo).then(([response, json]) => {
+    return fetchPosts(token, pageNo,dispatch).then(([response, json]) => {
       if (response.status === 200) {
         //console.log(json)
+        dispatch(hideLoading())
         dispatch(fetchPostsSuccess(json))
       } else {
         dispatch(fetchPostsError(json))
+        dispatch(hideLoading())
       }
     })
   }
 }
 
-function fetchPosts(token, pageNo) {
+function fetchPosts(token, pageNo,dispatch) {
   //console.log(token)
   let search_element = store.getState().signals.signal_search_element;
   let signal_sorton = store.getState().signals.signal_sorton;
@@ -190,6 +206,7 @@ function fetchPosts(token, pageNo) {
       }).then(response => Promise.all([response, response.json()]));
     }
   } else if ((signal_sorton != "" && signal_sorton != null) && (signal_sorttype != null)) {
+    dispatch(showLoading())
     return fetch(API + '/api/signals/?sorted_by=' + signal_sorton + '&ordering=' + signal_sorttype + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
       method: 'get',
       headers: getHeader(token)
@@ -285,26 +302,119 @@ function fetchPostsError_analysis(json) {
   //console.log("fetching list error!!",json)
   return {type: "SIGNAL_ANALYSIS_ERROR", json}
 }
-export function setPossibleAnalysisList(event) {
-  var selOption = event.target.childNodes[event.target.selectedIndex];
-  var varType = selOption.value;
-  var varText = selOption.text;
-  var varSlug = selOption.getAttribute("name");
-  if (varType == MEASURE) {
-    //$(".treatAsCategorical").show();
-    $(".treatAsCategorical").removeClass("hidden")
-    var isVarTypeChanged = checkIfDataTypeChanges(varSlug);
-    if (isVarTypeChanged) {
-      varType = DIMENSION;
-      $(".treatAsCategorical").find('input[type=checkbox]').prop("checked", true);
+export function setPossibleAnalysisList(varType,varText,varSlug) {
+    
+    if (varType == MEASURE) {
+        $(".treatAsCategorical").removeClass("hidden")
+        var isVarTypeChanged = checkIfDataTypeChanges(varSlug);
+        if (isVarTypeChanged) {
+            varType = DIMENSION;
+            $(".treatAsCategorical").find('input[type=checkbox]').prop("checked", true);
+        } else {
+            $(".treatAsCategorical").find('input[type=checkbox]').prop("checked", false);
+        }
     } else {
-      $(".treatAsCategorical").find('input[type=checkbox]').prop("checked", false);
+        $(".treatAsCategorical").find('input[type=checkbox]').prop("checked", false);
+        $(".treatAsCategorical").addClass("hidden")
     }
-  } else {
-    $(".treatAsCategorical").find('input[type=checkbox]').prop("checked", false);
-    $(".treatAsCategorical").addClass("hidden")
-  }
-  return {type: "SET_POSSIBLE_LIST", varType, varText, varSlug}
+    return {type: "SET_POSSIBLE_LIST", varType, varText, varSlug};
+}
+
+export function updateAdvanceSettings(event){
+   var variableSelection = store.getState().datasets.dataPreview.meta_data.uiMetaData.varibaleSelectionArray;
+   var dataSetMeasures = store.getState().datasets.dataSetMeasures.slice();
+   var dataSetDimensions = store.getState().datasets.dataSetDimensions.slice();
+   var dataSetTimeDimensions = store.getState().datasets.dataSetTimeDimensions.slice();
+   var selOption = event.target.childNodes[event.target.selectedIndex];
+   var varType = selOption.value;
+   var varText = selOption.text;
+   var varSlug = selOption.getAttribute("name");
+    return (dispatch) => {
+        return triggerAdvanceSettingsAPI(variableSelection).then(([response, json]) =>{
+            if(response.status === 200){
+                dispatch(updateDatasetVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,json,false));
+                dispatch(setPossibleAnalysisList(varType,varText,varSlug));
+                dispatch(updateSelectAllAnlysis(false));
+                //clear all analysis once target variable is changed
+                 //dispatch(selectAllAnalysisList(false));
+            }
+        })
+    }
+}
+
+function triggerAdvanceSettingsAPI(variableSelection){
+    return fetch(API+'/api/datasets/'+store.getState().datasets.selectedDataSet+'/advanced_settings_modification/',{
+        method: 'put',
+        body:JSON.stringify({
+            variableSelection
+        }),
+        headers: getHeader(getUserDetailsOrRestart.get().userToken)
+    }).then( response => Promise.all([response, response.json()]));
+}
+
+/*export function handleTargetSelection(){
+    var selectedDimensions =  store.getState().datasets.selectedDimensions.slice();
+    var selectedMeasures = store.getState().datasets.selectedMeasures.slice();
+    var varType = store.getState().signals.getVarType;
+    var varText = store.getState().signals.getVarText;
+    if(varType == "dimension"){
+        selectedDimensions.splice(selectedDimensions.indexOf(varText),1);
+    }else{
+        selectedMeasures.splice(selectedMeasures.indexOf(varText),1);
+    }
+    return {
+        type:"UPDATE_SELECTED_VARIABLES",
+        selectedDimensions,
+        selectedMeasures}
+}*/
+function updateTargetVariable(slug,array){
+    for(var i=0;i<array.length;i++){
+    if(array[i].slug == slug){
+        array[i].targetColumn = !array[i].targetColumn; 
+        array[i].targetColSetVarAs = null;
+        break;
+    }
+} 
+return array;
+}
+
+export function hideTargetVariable(event,jobType){
+    return (dispatch) => {
+    var selOption = event.target.childNodes[event.target.selectedIndex];
+    var varType = selOption.value;
+    var varText = selOption.text;
+    var varSlug = selOption.getAttribute("name");
+    var prevVarSlug = store.getState().signals.selVarSlug;
+    var prevVarType = store.getState().signals.getVarType;
+    var prevSetVarAs = null;
+    
+    var dataSetMeasures = store.getState().datasets.dataSetMeasures.slice();
+    var dataSetDimensions = store.getState().datasets.dataSetDimensions.slice();
+    var dataSetTimeDimensions = store.getState().datasets.dataSetTimeDimensions.slice();
+    var dimFlag =  store.getState().datasets.dimensionAllChecked;
+    var meaFlag = store.getState().datasets.measureAllChecked;
+    var count = store.getState().datasets.selectedVariablesCount;
+    if(varType == "measure"){
+        dataSetMeasures = updateTargetVariable(varSlug,dataSetMeasures)
+    }else if(varType == "dimension"){
+        dataSetDimensions = updateTargetVariable(varSlug,dataSetDimensions)
+    }
+
+    dataSetDimensions = updateTargetVariable(prevVarSlug,dataSetDimensions)
+    dataSetMeasures = updateTargetVariable(prevVarSlug,dataSetMeasures)
+  
+  
+    if(prevVarType == null){
+        count = count-1;
+    }
+    dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
+   
+    if(jobType == "signals"){
+        dispatch(updateAdvanceSettings(event));
+    }
+    
+    }
+    
 }
 function checkIfDataTypeChanges(varSlug) {
   var transformSettings = store.getState().datasets.dataTransformSettings;
@@ -328,15 +438,37 @@ function checkIfDataTypeChanges(varSlug) {
   }
   return isVarTypeChanged;
 }
+function updateSetVarAs(colSlug,evt){
+    return (dispatch) => {
+        var dataSetMeasures = store.getState().datasets.dataSetMeasures.slice();
+        var dataSetDimensions = store.getState().datasets.dataSetDimensions.slice();
+        var dataSetTimeDimensions = store.getState().datasets.dataSetTimeDimensions.slice();
+        var dimFlag =  store.getState().datasets.dimensionAllChecked;
+        var meaFlag = store.getState().datasets.measureAllChecked;
+        var count = store.getState().datasets.selectedVariablesCount;
+        for(var i=0;i<dataSetMeasures.length;i++){
+            if(dataSetMeasures[i].slug == colSlug){
+                if(dataSetMeasures[i].targetColSetVarAs == null){
+                    dataSetMeasures[i].targetColSetVarAs = "percentage"; 
+                    break;
+                }
+                else{
+                    dataSetMeasures[i].targetColSetVarAs = null; 
+                    break;
+                }
+                
+            }
+        }
+        dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
+    }
+}
 export function updateCategoricalVariables(colSlug, colName, actionName, evt) {
   return (dispatch) => {
-    if (evt.target.checked) {
-      updateColumnStatus(dispatch, colSlug, colName, actionName, PERCENTAGE)
-    } else {
-      updateColumnStatus(dispatch, colSlug, colName, actionName, GENERIC_NUMERIC)
-    }
+        dispatch(updateSetVarAs(colSlug));
+      
   }
 }
+
 export function changeSelectedVariableType(colSlug, colName, actionName, evt) {
   var varType = "dimension";
   var varText = colName;
@@ -350,6 +482,7 @@ export function changeSelectedVariableType(colSlug, colName, actionName, evt) {
   }
 
 }
+
 export function createcustomAnalysisDetails() {
   var transformSettings = store.getState().datasets.dataTransformSettings;
   var customAnalysisDetails = []
@@ -600,4 +733,11 @@ export function updateHide(flag) {
 
 export function showChartData(flag, classId) {
   return {type: "CHART_DATA", flag, classId}
+}
+
+export function updateselectedL1(selectedL1){
+  return{
+    type:"SELECTED_L1",
+    selectedL1
+  }
 }

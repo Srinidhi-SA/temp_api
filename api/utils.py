@@ -17,8 +17,16 @@ from django.conf import settings
 import subprocess
 
 
-def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message_slug=None, queue_name=None):
-    config = generate_job_config(class_name, job_config, job_name, message_slug, slug)
+import json
+from pygments import highlight
+from pygments.lexers import JsonLexer
+from pygments.formatters import HtmlFormatter
+
+from django.utils.safestring import mark_safe
+
+
+def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message_slug=None, queue_name=None,app_id= None):
+    config = generate_job_config(class_name, job_config, job_name, message_slug, slug,app_id)
 
     try:
         base_dir = correct_base_dir()
@@ -39,29 +47,27 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
                              "--py-files", egg_file_path, driver_file,
                              json.dumps(config)]
 
-        print "command array", command_array
-        print "=" * 100
-        print " ".join(command_array)
-        print "=" * 100
-
         application_id = ""
 
         cur_process = subprocess.Popen(command_array, stderr=subprocess.PIPE)
         # TODO: @Ankush need to write the error to error log and standard out to normal log
         for line in iter(lambda: cur_process.stderr.readline(), ''):
-            print(line.strip())
+            # print(line.strip())
             match = re.search('Submitted application (.*)$', line)
             if match:
                 application_id = match.groups()[0]
-                print "$" * 100
-                print application_id
-                print "$" * 100
+                # print "$" * 100
+                # print application_id
+                # print "$" * 100
                 break
-        print "process", cur_process
+        # print "process", cur_process
 
     except Exception as e:
-        from smtp_email import send_alert_through_email
-        send_alert_through_email(e)
+        print 'Error-->submit_job_through_yarn--->'
+        print e
+        pass
+        # from smtp_email import send_alert_through_email
+        # send_alert_through_email(e)
 
     return {
         "application_id": application_id,
@@ -73,18 +79,17 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
     }
 
 
-def generate_job_config(class_name, job_config, job_name, message_slug, slug):
+def generate_job_config(class_name, job_config, job_name, message_slug, slug,app_id=None):
     # here
     temp_config = JobserverDetails.get_config(slug=slug,
                                               class_name=class_name,
                                               job_name=job_name,
-                                              message_slug=message_slug
+                                              message_slug=message_slug,
+                                              app_id=app_id
                                               )
     config = {}
     config['job_config'] = job_config
     config['job_config'].update(temp_config)
-    print "overall---------config"
-    print config
 
     return config
 
@@ -113,12 +118,10 @@ def submit_job_through_job_server(slug, class_name, job_config, job_name=None, m
     return job_url
 
 
-def submit_job(slug, class_name, job_config, job_name=None, message_slug=None,queue_name=None):
+def submit_job(slug, class_name, job_config, job_name=None, message_slug=None,queue_name=None,app_id=None):
     """Based on config, submit jobs either through YARN or job server"""
-    print("came to submit job")
     if settings.SUBMIT_JOB_THROUGH_YARN:
-        print("Submitting job through YARN")
-        return submit_job_through_yarn(slug, class_name, job_config, job_name, message_slug,queue_name=queue_name)
+        return submit_job_through_yarn(slug, class_name, job_config, job_name, message_slug,queue_name=queue_name,app_id=app_id)
     else:
         return submit_job_through_job_server(slug, class_name, job_config, job_name, message_slug)
 
@@ -166,7 +169,7 @@ def convert_time_to_human(data):
 # TODO: use dataserializer
 class InsightSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
-        print get_job_status(instance)
+        get_job_status(instance)
         ret = super(InsightSerializer, self).to_representation(instance)
         dataset = ret['dataset']
         dataset_object = Dataset.objects.get(pk=dataset)
@@ -221,8 +224,7 @@ class InsightSerializer(serializers.ModelSerializer):
 class InsightListSerializers(serializers.ModelSerializer):
 
     def to_representation(self, instance):
-        from api.helper import get_message
-
+        get_job_status(instance)
         ret = super(InsightListSerializers, self).to_representation(instance)
         dataset = ret['dataset']
         dataset_object = Dataset.objects.get(pk=dataset)
@@ -234,8 +236,8 @@ class InsightListSerializers(serializers.ModelSerializer):
 
         # ret['is_viewed'] = False
         try:
-            ret['completed_percentage']=get_message(instance)[-1]['globalCompletionPercentage']
-            ret['completed_message']=get_message(instance)[-1]['shortExplanation']
+            ret['completed_percentage']=get_message(instance.job)[-1]['globalCompletionPercentage']
+            ret['completed_message']=get_message(instance.job)[-1]['shortExplanation']
         except:
             ret['completed_percentage'] = 0
             ret['completed_message']="Analyzing Target Variable"
@@ -293,6 +295,7 @@ class TrainerSerlializer(serializers.ModelSerializer):
 class TrainerListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
+        print get_job_status(instance)
         ret = super(TrainerListSerializer, self).to_representation(instance)
         dataset = ret['dataset']
         dataset_object = Dataset.objects.get(pk=dataset)
@@ -354,6 +357,7 @@ class ScoreSerlializer(serializers.ModelSerializer):
 class ScoreListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
+        print get_job_status(instance)
         ret = super(ScoreListSerializer, self).to_representation(instance)
         trainer = ret['trainer']
         trainer_object = Trainer.objects.get(pk=trainer)
@@ -524,6 +528,7 @@ class StockDatasetSerializer(serializers.ModelSerializer):
 class StockDatasetListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
+        print get_job_status(instance)
         ret = super(StockDatasetListSerializer, self).to_representation(instance)
         ret['brief_info'] = instance.get_brief_info()
         return ret
@@ -676,3 +681,12 @@ def correct_base_dir():
         return os.path.dirname(settings.BASE_DIR)
     else:
         return settings.BASE_DIR
+
+def json_prettify_for_admin(json_val):
+    response = json.dumps(json_val, sort_keys=True, indent=2)
+    formatter = HtmlFormatter(style='colorful')
+    response = highlight(response, JsonLexer(), formatter)
+    style = "<style>" + formatter.get_style_defs() + "</style><br>"
+
+    return mark_safe(style + response +"<hr>")
+
