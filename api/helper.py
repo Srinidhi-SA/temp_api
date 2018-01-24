@@ -956,6 +956,8 @@ def get_job_from_yarn(model_name=None,model_slug=None):
     model_instance = get_db_object(model_name=model_name,
                                    model_slug=model_slug
                                    )
+    if model_instance.job.url == '':
+        return model_instance.status
 
     try:
         ym = yarn_api_client.resource_manager.ResourceManager(address=settings.YARN.get("host"),
@@ -963,7 +965,6 @@ def get_job_from_yarn(model_name=None,model_slug=None):
                                                               timeout=settings.YARN.get("timeout"))
         app_status = ym.cluster_application(model_instance.job.url)
         YarnApplicationState = app_status.data['app']["state"]
-
     except:
         YarnApplicationState = "FAILED"
 
@@ -978,6 +979,26 @@ def get_job_from_yarn(model_name=None,model_slug=None):
 
     model_instance.save()
     return model_instance.status
+
+import subprocess
+import re
+from models import Job
+
+@task(name='hum_se_hai_zamana_sara')
+def submit_job_separate_task(command_array, slug):
+    cur_process = subprocess.Popen(command_array, stderr=subprocess.PIPE)
+    # TODO: @Ankush need to write the error to error log and standard out to normal log
+    for line in iter(lambda: cur_process.stderr.readline(), ''):
+        # print(line.strip())
+        match = re.search('Submitted application (.*)$', line)
+        if match:
+            application_id = match.groups()[0]
+            model_instance = get_db_object(model_name=Job.__name__,
+                                           model_slug=slug
+                                           )
+            model_instance.url = application_id
+            model_instance.save()
+            break
 
 def get_job_status_from_yarn(instance=None):
 

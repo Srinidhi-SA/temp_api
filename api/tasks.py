@@ -1,6 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 import random
 from celery.decorators import task
+from api.redis_access import AccessFeedbackMessage
 
 
 @task(name="sum_two_numbers")
@@ -17,3 +18,4 @@ def mul(x, y):
 @task(name="sum_list_numbers")
 def xsum(numbers):
     return sum(numbers)
+

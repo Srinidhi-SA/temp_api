@@ -49,18 +49,9 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
 
         application_id = ""
 
-        cur_process = subprocess.Popen(command_array, stderr=subprocess.PIPE)
-        # TODO: @Ankush need to write the error to error log and standard out to normal log
-        for line in iter(lambda: cur_process.stderr.readline(), ''):
-            # print(line.strip())
-            match = re.search('Submitted application (.*)$', line)
-            if match:
-                application_id = match.groups()[0]
-                # print "$" * 100
-                # print application_id
-                # print "$" * 100
-                break
-        # print "process", cur_process
+        from tasks import submit_job_separate_task
+
+        submit_job_separate_task.delay(command_array, slug)
 
     except Exception as e:
         print 'Error-->submit_job_through_yarn--->'
