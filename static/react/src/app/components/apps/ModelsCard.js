@@ -103,6 +103,8 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                             
                             </div>
                             </div>
+                             <Dialog ref="dialog" />
+
                             </div>
                     )
                 });

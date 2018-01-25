@@ -113,6 +113,8 @@ export class RoboInsightCard extends React.Component {
                   <span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy HH:MM")}</span>
                 </div>                 
               </div>
+               <Dialog ref="dialog" />
+
             </div>
           </div>
         )

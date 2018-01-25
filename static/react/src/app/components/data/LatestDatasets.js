@@ -28,7 +28,7 @@ export class LatestDatasets extends React.Component {
     render() {
         var data = this.props.latestDatasets;
         console.log(this.props)
-        let addButton = addButton = <DataUpload/>;
+        let addButton = <DataUpload/>;
         let latestDatasets = "";
         if(data){
             latestDatasets =  <DataCard data={data}/>;

@@ -1220,11 +1220,13 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
     }
     export function fetchAudioListSuccess(doc){
         var data = doc;
-        var current_page =  doc.current_page
+        var current_page =  doc.current_page;
+        var latestAudioFiles = doc.top_3;
         return {
             type: "AUDIO_LIST",
             data,
             current_page,
+            latestAudioFiles,
         }
     }
     export function storeAudioSearchElement(search_element){

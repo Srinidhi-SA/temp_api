@@ -107,6 +107,8 @@ export class ScoreCard extends React.Component {
                     </div>                        
                     </div>
                     </div>
+                     <Dialog ref="dialog" />
+
                     </div>
             )
         });

@@ -70,7 +70,7 @@ export default function reducer(state = {
         latestScores : {},
         latestModels :{},
         latestRoboInsights:{},
-        
+        latestAudioList:{},
 
 }, action) {
     console.log("In APPs reducer!!");
@@ -540,6 +540,7 @@ export default function reducer(state = {
             ...state,
             audioList: action.data,
             current_page:action.current_page,
+            latestAudioList:action.latestAudioFiles,
         }
     }
     break;
