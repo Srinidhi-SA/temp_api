@@ -19,7 +19,10 @@ import {STATIC_URL} from "../../helpers/env.js";
 import {RoboDataUpload} from "./RoboDataUpload";
 import {AppsLoader} from "../common/AppsLoader";
 import Dialog from 'react-bootstrap-dialog'
-import {SEARCHCHARLIMIT,getUserDetailsOrRestart} from "../../helpers/helper"
+import {SEARCHCHARLIMIT,getUserDetailsOrRestart} from "../../helpers/helper";
+import {RoboInsightCard} from "./RoboInsightCard";
+import {LatestRoboInsights} from "./LatestRoboInsights";
+
 
 var dateFormat = require('dateformat');
 
@@ -89,10 +92,9 @@ export class RoboInsightList extends React.Component {
   }
 
     doSorting(sortOn, type){
-	     this.props.history.push('/apps-robo?sort=' + sortOn + '&type='+type);
-
-	 this.props.dispatch(storeRoboSortElements(sortOn,type));
-	this.props.dispatch(getAppsRoboList(1));
+        this.props.history.push('/apps-robo?sort=' + sortOn + '&type='+type);
+        this.props.dispatch(storeRoboSortElements(sortOn,type));
+        this.props.dispatch(getAppsRoboList(1));
   }
   render() {
     console.log("apps robo list is called##########3");
@@ -120,87 +122,26 @@ export class RoboInsightList extends React.Component {
       const pages = store.getState().apps.roboList.total_number_of_pages;
       const current_page = store.getState().apps.current_page;
       let addButton = null;
-      let paginationTag = null
+      let paginationTag = null;
+      const appsRoboList = <RoboInsightCard data={roboList} />;
       if (current_page == 1 || current_page == 0) {
         addButton = <RoboDataUpload match={this.props.match}/>
       }
       if (pages > 1) {
         paginationTag = <Pagination ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
       }
-      const appsRoboList = roboList.map((data, i) => {
-        var modelLink = "/apps-robo-list/" + data.slug+"/customer/data/"+data.customer_dataset;
-        return (
-          <div className="col-md-3 top20 list-boxes" key={i}>
-            <div className="rep_block newCardStyle" name={data.name}>
-              <div className="card-header"></div>
-              <div className="card-center-tile">
-                <div className="row">
-				
-                  <div className="col-xs-12">
-					<h5 className="title newCardTitle pull-left">
-                        <Link id={data.slug} onClick={this.getInsightPreview.bind(this, data.slug)} to={modelLink}>{data.name}</Link>
-                    </h5>
-					<div class="btn-toolbar pull-right">
-				{/*<!-- Rename and Delete BLock  -->*/}
-				  <a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
-					<i className="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
-				  </a>
-				  <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-					<li onClick={this.handleInsightRename.bind(this, data.slug, data.name)}>
-					  <a className="dropdown-item" href="#renameCard" data-toggle="modal">
-						<i className="fa fa-edit"></i>
-						&nbsp;&nbsp;Rename</a>
-					</li>
-					<li onClick={this.handleInsightDelete.bind(this, data.slug)}>
-					  <a className="dropdown-item" href="#deleteCard" data-toggle="modal">
-						<i className="fa fa-trash-o"></i>
-					   &nbsp;&nbsp; Delete</a>
-					</li>
-				  </ul>
-				  {/*<!-- End Rename and Delete BLock  -->*/}
-					</div>
-					
-					<div className="clearfix"></div>
-						
-						{/*	<div class="inProgressIcon">
-							<i class="fa fa-circle"></i>
-							<span class="inProgressIconText">&nbsp;{story.completed_percentage}&nbsp;%</span>
-						</div> */}
-					
-					 {/*<!-- Popover Content link -->*/}
-                  <OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={data}/> </Popover>}>
-                    <a className="pover cursor">
-					<div class="card_icon">
-                      <img src={STATIC_URL + "assets/images/apps_model_icon.png"} alt="LOADING"/>
-					</div>
-                    </a>
-                  </OverlayTrigger>
-					
-                  </div>
-                </div>
-              </div>
-              <div className="card-footer">
-                <div className="left_div">
-                  <span className="footerTitle"></span>{getUserDetailsOrRestart.get().userName}
-                  <span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy HH:MM")}</span>
-                </div>                 
-              </div>
-            </div>
-          </div>
-        )
-      });
+      
       return (
         <div className="side-body">
-          <div className="page-head">
-            {/*<!-- <ol class="breadcrumb">
-							<li><a href="#">Story</a></li>
-							<li class="active">Sales Performance Report</li>
-						</ol> -->*/}
-            <div className="row">
-              <div className="col-md-8">
-				<h3 className="xs-mt-0">Robo Advisor Insights</h3>
+        <LatestRoboInsights props={this.props}/>
+          <div className="main-content">
+            <div class="row">
+             {/*
+             <div className="col-md-8">
+                <h3 className="xs-mt-0">Robo Advisor Insights</h3>
               </div>
-              <div className="col-md-4">
+             */} 
+              <div className="col-md-12">
                 <div class="btn-toolbar pull-right">				
 				<div className="input-group">
 				
@@ -237,13 +178,8 @@ export class RoboInsightList extends React.Component {
 			  </div>
               </div>
             </div>
-
-            <div className="clearfix"></div>
-          </div>
-          <div className="main-content">
             <div className="row">
-              {addButton}
-              {appsRoboList}
+             {appsRoboList}
               <div className="clearfix"></div>
             </div>
             <div className="ma-datatable-footer" id="idPagination">

@@ -571,11 +571,13 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
     }
     export function fetchRoboListSuccess(doc){
         var data = doc;
-        var current_page =  doc.current_page
+        var current_page =  doc.current_page;
+        var latestRoboInsights=doc.top_3;
         return {
             type: "ROBO_LIST",
             data,
             current_page,
+            latestRoboInsights,
         }
     }
     export function closeRoboDataPopup() {

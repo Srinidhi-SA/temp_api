@@ -69,6 +69,7 @@ export default function reducer(state = {
         scoreToProceed:false,
         latestScores : {},
         latestModels :{},
+        latestRoboInsights:{},
         
 
 }, action) {
@@ -305,6 +306,7 @@ export default function reducer(state = {
         return {
             ...state,
             roboList: action.data,
+            latestRoboInsights:action.latestRoboInsights,
             current_page:action.current_page,
         }
     }
