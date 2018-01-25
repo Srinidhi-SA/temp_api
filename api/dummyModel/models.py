@@ -66,7 +66,7 @@ class DummyPermissionGroup(permissions.BasePermission):
     def has_permission(self, request, view):
         user = request.user
 
-        # If user has this particular group in its group list
+        # If user has this particular group in its user-group-list
         if 'AllAccess' in user.groups.values_list('name', flat=True) or user.is_superuser:
             return True
 
@@ -96,10 +96,11 @@ class DummyPermissionModelPermission(permissions.DjangoModelPermissions):
 
     def has_permission(self, request, view):
 
-        # If this particular permission is on user's permission list.
+        #  First collect all the permission in model of this particular view.
+        #  like can add dataset, can change dataset, can delete dataset .
+        #  then compare it with user-permissions granted to user.
         perms = self.get_required_permissions(request.method, view.models)
         return request.user.has_perms(perms)
-
 
 
 class Dummy(models.Model):
