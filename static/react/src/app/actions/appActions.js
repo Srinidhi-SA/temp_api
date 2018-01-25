@@ -1,5 +1,5 @@
 
-import {API,EMR} from "../helpers/env";
+import {API,EMR,STATIC_URL} from "../helpers/env";
 import {PERPAGE,isEmpty,getUserDetailsOrRestart,APPSPERPAGE} from "../helpers/helper";
 import store from "../store";
 import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,CUSTOMERDATA,HISTORIALDATA,EXTERNALDATA,DELETEMODEL,
@@ -10,6 +10,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
     import React from "react";
     import { showLoading, hideLoading } from 'react-redux-loading-bar';
     import {createcustomAnalysisDetails} from './signalActions';
+
 
     export var appsInterval = null;
 
@@ -104,8 +105,11 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
     export function createModel(modelName,targetVariable) {
         console.log(modelName);
         console.log(targetVariable);
+        let imgsrc_url=STATIC_URL+"assets/images/alert_warning.png"
+
         if($('#createModelAnalysisList option:selected').val() == ""){
-            bootbox.alert("Please select a variable to analyze...");
+            let msg='<div class="row"><div class="col-md-4"><img src='+imgsrc_url+' class="img-responsive" /></div><div class="col-md-8"><h4 class="text-warning">Warning !</h4><p>Please select a variable to analyze...</p></div></div>';
+              bootbox.alert(msg);
             return false;
         }
         //check if no variable selected
@@ -1804,7 +1808,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             flag
         }
     }
-    
+
     export function updateSelectedVariable(event){
         var selOption = event.target.childNodes[event.target.selectedIndex];
         var varType = selOption.value;
@@ -1812,8 +1816,8 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
         var varSlug = selOption.getAttribute("name");
         return {type: "SET_POSSIBLE_LIST", varType, varText, varSlug};
     }
-    
-    
+
+
     export function checkCreateScoreToProceed(selectedDataset){
         var modelSlug = store.getState().apps.modelSlug;
         var response = "";
@@ -1824,17 +1828,17 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 }
             });
         }
-        
+
     }
-    
+
     function triggerAPI(modelSlug,selectedDataset){
         return fetch(API+'/api/trainer/'+modelSlug+'/comparision/?score_datatset_slug='+selectedDataset+'',{
             method: 'get',
             headers: getHeader(getUserDetailsOrRestart.get().userToken),
         }).then( response => Promise.all([response, response.json()]));
     }
-    
-    
+
+
     function scoreToProceed(flag){
         return {type: "SCORE_TO_PROCEED", flag};
     }

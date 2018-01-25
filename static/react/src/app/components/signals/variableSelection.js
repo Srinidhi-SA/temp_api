@@ -12,6 +12,8 @@ import {CreateSignalLoader} from "../common/CreateSignalLoader";
 import {openCsLoaderModal,closeCsLoaderModal} from "../../actions/createSignalActions";
 import {AdvanceSettings} from "./AdvanceSettings";
 import {SET_VARIABLE} from "../../helpers/helper";
+import {STATIC_URL} from "../../helpers/env";
+
 
 
 var selectedVariables = {measures:[],dimensions:[],date:null};  // pass selectedVariables to config
@@ -70,13 +72,17 @@ export class VariableSelection extends React.Component {
     createSignal(event){
         event.preventDefault();
         var isAnalysisChecked = checkAnalysisIsChecked();
+        let imgsrc_url=STATIC_URL+"assets/images/alert_warning.png"
+
         //this.props.dispatch(handleTargetSelection());
         if($('#signalVariableList option:selected').val() == ""){
-            bootbox.alert("Please select a variable to analyze...");
+            let msg='<div class="row"><div class="col-md-4"><img src='+imgsrc_url+' class="img-responsive" /></div><div class="col-md-8"><h4 class="text-warning">Warning !</h4><p>Please select a variable to analyze...</p></div></div>';
+              bootbox.alert(msg);
             return false;
         }
         if(!isAnalysisChecked){
-            bootbox.alert("Please select atleast one analysis to Proceed..");
+            let msg='<div class="row"><div class="col-md-4"><img src='+imgsrc_url+' class="img-responsive" /></div><div class="col-md-8"><h4 class="text-warning">Warning !</h4><p>Please select atleast one analysis to Proceed..</p></div></div>';
+              bootbox.alert(msg);
             return false;
         }
 
@@ -138,7 +144,7 @@ export class VariableSelection extends React.Component {
 
     componentWillUpdate(){
         console.log("Advancesettings disbale check:::: ");
-  
+
         if(!this.props.getVarType){
             $("#allAnalysis").prop("disabled",true);
             $("#advance-setting-link").hide();
@@ -173,7 +179,7 @@ export class VariableSelection extends React.Component {
     }
     render(){
         var that= this;
-     
+
 
         if(!$.isEmptyObject(this.props.selectedSignalAnalysis) && !that.signalFlag){
             console.log("move from variable selection page");
