@@ -13897,14 +13897,19 @@ ul.app_labels li:first-child { margin: 0; padding: 7px 5px }
     white-space:nowrap
 }
 .firstCard{
-	background-color: #00998c;
+	/*background-color: #00998c;
 	border-top: 1px solid #f4f4f4;
 	display: block;
 	padding: 0 0px;
 	height: 114px;
 	overflow: hidden;
 	transition: all .1s ease-in-out;
-	cursor:pointer;
+	cursor:pointer;*/
+	    background-color: #FFF;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #d2d2d2 #b3b2b2 #acacac #d2d2d2;
+    cursor:pointer;
 }
 .card-center{
 	line-height: 107px;
@@ -13925,7 +13930,7 @@ ul.app_labels li:first-child { margin: 0; padding: 7px 5px }
     line-height: 1.9em;
 }
 .card-footer {
-    height: 36px;
+    height: 38px;
     background-color: #f9f9f9; /*#ecf4f4 #f3f4f6;*/
     padding: 0 0 0 15px;
     /* color: #fff; */
@@ -13935,7 +13940,7 @@ ul.app_labels li:first-child { margin: 0; padding: 7px 5px }
     float: left;
     width: 57%;
      margin-top: 2px;
-    line-height: 20px;
+    line-height: 18px;
 
 }
 .card-footer .pover, .card-footer .more_button{
@@ -15291,3 +15296,22 @@ display: inline-block;
    font-weight: bold; 
     color: #aeb0b3;
 }*/
+
+.dashboard_head { background-color: #849190; */ Old #d2d2d2 */ }
+.dashboard_head .page-head { color:#FFFFFF; }
+.active_copy {
+    padding-left: 25px;
+    padding-right: 25px;
+    padding-top: 15px;
+}
+.newStoryCard { color: inherit;
+    font-size: 4em;
+    line-height: inherit;
+    margin: .6em;}
+.newStoryCard:hover, .firstCard:hover { background-color:transparent; color: #00998c}
+.newStoryCard small { display:block; font-size:14px; }
+.card-center.newStoryCard small {
+    padding-top: 10px;
+}
+	.card-center-tile {
+		height: 70px;	}

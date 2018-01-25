@@ -15,6 +15,7 @@ export const cookieObj = {
       document.cookie = "last_login="+userDetail.user.last_login+"; "+"expires="+expires+"; path=/";
       document.cookie = "is_superuser="+userDetail.user.is_superuser+"; "+"expires="+expires+"; path=/";
       document.cookie = "image_url="+userDetail.profile.image_url+"; "+"expires="+expires+"; path=/";
+      
   },
 
   clearCookies: function() {

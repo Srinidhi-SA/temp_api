@@ -67,6 +67,11 @@ export default function reducer(state = {
         app_filtered_keywords:[],
         exportAsPMMLModal:false,
         scoreToProceed:false,
+        latestScores : {},
+        latestModels :{},
+        latestRoboInsights:{},
+        latestAudioList:{},
+        latestStocks:{},
 
 }, action) {
     console.log("In APPs reducer!!");
@@ -95,6 +100,7 @@ export default function reducer(state = {
         return {
             ...state,
             modelList: action.data,
+            latestModels:action.latestModels,
             current_page:action.current_page,
         }
     }
@@ -121,6 +127,7 @@ export default function reducer(state = {
         return {
             ...state,
             scoreList: action.data,
+            latestScores:action.latestScores,
             current_page:action.current_page,
         }
     }
@@ -300,6 +307,7 @@ export default function reducer(state = {
         return {
             ...state,
             roboList: action.data,
+            latestRoboInsights:action.latestRoboInsights,
             current_page:action.current_page,
         }
     }
@@ -533,6 +541,7 @@ export default function reducer(state = {
             ...state,
             audioList: action.data,
             current_page:action.current_page,
+            latestAudioList:action.latestAudioFiles,
         }
     }
     break;
@@ -605,6 +614,7 @@ export default function reducer(state = {
             ...state,
             stockAnalysisList: action.data,
             current_page:action.current_page,
+            latestStocks:action.latestStocks,
         }
     }
     break;
