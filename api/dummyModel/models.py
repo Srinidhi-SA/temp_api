@@ -11,15 +11,22 @@ from django.template.defaultfilters import slugify
 from rest_framework import permissions
 
 
+"""
+Below are some permission classes that can be used to put permission before accessing
+views.
+"""
+
 class DummyPermission(permissions.BasePermission):
     message = 'Adding Dummy not allowed.'
 
     def has_permission(self, request, view):
         user = request.user
 
+        # if user is superadmin then allowed to access
         if user.is_superuser:
             return True
         else:
+            # if user is not superadmin then it can only access SAFE METHODS which is GET
             if request.method in permissions.SAFE_METHODS:
                 return True
         return False
@@ -33,6 +40,8 @@ class DummyPermissionTrue(permissions.BasePermission):
 
     def has_permission(self, request, view):
         user = request.user
+
+        # Always true. Everyone is allowed to view
         return True
 
     def has_object_permission(self, request, view, obj):
@@ -45,6 +54,7 @@ class DummyPermissionFalse(permissions.BasePermission):
     def has_permission(self, request, view):
         user = request.user
 
+        # Always False. No one is allowed to view
         return False
 
     def has_object_permission(self, request, view, obj):
@@ -55,6 +65,8 @@ class DummyPermissionGroup(permissions.BasePermission):
 
     def has_permission(self, request, view):
         user = request.user
+
+        # If user has this particular group in its group list
         if 'AllAccess' in user.groups.values_list('name', flat=True) or user.is_superuser:
             return True
 
@@ -68,8 +80,11 @@ class DummyPermissionUsingHasObject(permissions.BasePermission):
     def has_permission(self, request, view):
         return True
 
+    # this method comes into picture when has_permission is already computed true.
+    # this functions allows permission for object level
     def has_object_permission(self, request, view, obj):
-        # Obj is actual instance
+        # Obj is actual instance. Like dataset's object.
+        # one can develop further logic on the basis of obj instance details
         if request.method in permissions.SAFE_METHODS:
             return True
 
@@ -80,7 +95,8 @@ class DummyPermissionModelPermission(permissions.DjangoModelPermissions):
     message = 'Using DjangoModelPermission.'
 
     def has_permission(self, request, view):
-        import pdb;pdb.set_trace()
+
+        # If this particular permission is on user's permission list.
         perms = self.get_required_permissions(request.method, view.models)
         return request.user.has_perms(perms)
 
@@ -128,6 +144,11 @@ class DummyView(viewsets.ModelViewSet):
     serializer_class = DummySerializer
     lookup_field = 'slug'
     filter_backends = (DjangoFilterBackend,)
+
+
+
+    # multiple permission objects in permission_class will be calculated with 'OR'
+
     # permission_classes = (DummyPermissionTrue, DummyPermissionFalse)
     # permission_classes = (DummyPermission, )
     # permission_classes = (DummyPermissionGroup, )
