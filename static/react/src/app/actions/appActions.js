@@ -1454,11 +1454,13 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 
     export function fetchStockListSuccess(doc){
         var data = doc;
-        var current_page =  doc.current_page
+        var current_page =  doc.current_page;
+        var latestStocks = doc.top_3;
         return {
             type: "STOCK_LIST",
             data,
             current_page,
+            latestStocks,
         }
     }
 

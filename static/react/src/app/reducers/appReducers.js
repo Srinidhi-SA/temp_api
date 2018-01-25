@@ -71,6 +71,7 @@ export default function reducer(state = {
         latestModels :{},
         latestRoboInsights:{},
         latestAudioList:{},
+        latestStocks:{},
 
 }, action) {
     console.log("In APPs reducer!!");
@@ -613,6 +614,7 @@ export default function reducer(state = {
             ...state,
             stockAnalysisList: action.data,
             current_page:action.current_page,
+            latestStocks:action.latestStocks,
         }
     }
     break;
