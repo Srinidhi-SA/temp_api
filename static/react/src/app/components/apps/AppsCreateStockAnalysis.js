@@ -63,7 +63,7 @@ export class AppsCreateStockAnalysis extends React.Component {
 				<div class="newCardStyle firstCard">
 				<div class="card-header"></div>
 				<div class="card-center newStoryCard">
-				<div class="col-xs-12 text-center">Analyze</div>
+				<div class="col-xs-12 text-center">+<br/><small>Analyze</small></div>
 				</div>
 				</div>
 				

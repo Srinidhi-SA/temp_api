@@ -85,10 +85,12 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
     }
     export function fetchModelListSuccess(doc){
         var data = doc;
-        var current_page =  doc.current_page
+        var current_page =  doc.current_page;
+        var latestModels = doc.top_3
         return {
             type: "MODEL_LIST",
             data,
+            latestModels,
             current_page,
         }
     }
@@ -112,22 +114,6 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
               bootbox.alert(msg);
             return false;
         }
-        //check if no variable selected
-       /* let selectedMeasures=store.getState().datasets.selectedMeasures
-        let selectedDimensions=store.getState().datasets.selectedDimensions
-        let selectedTimeDimension=store.getState().datasets.selectedTimeDimensions
-        if(selectedTimeDimension===undefined){
-          if(selectedMeasures.length+selectedDimensions.length==0){
-          bootbox.alert("Please select atleast one variable.")
-          return false
-        }
-        }else{
-          if(selectedMeasures.length+selectedDimensions.length+selectedTimeDimension.length==0){
-          bootbox.alert("Please select atleast one variable.")
-          return false
-        }
-        }*/
-
         return (dispatch) => {
             dispatch(openAppsLoader(APPSLOADERPERVALUE,"Please wait while mAdvisor is creating model... "));
             return triggerCreateModel(getUserDetailsOrRestart.get().userToken,modelName,targetVariable).then(([response, json]) =>{
@@ -240,9 +226,11 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
     export function fetchScoreListSuccess(doc){
         var data = doc;
         var current_page =  doc.current_page
+        var latestScores = doc.top_3;
         return {
             type: "SCORE_LIST",
             data,
+            latestScores,
             current_page,
         }
     }
@@ -587,11 +575,13 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
     }
     export function fetchRoboListSuccess(doc){
         var data = doc;
-        var current_page =  doc.current_page
+        var current_page =  doc.current_page;
+        var latestRoboInsights=doc.top_3;
         return {
             type: "ROBO_LIST",
             data,
             current_page,
+            latestRoboInsights,
         }
     }
     export function closeRoboDataPopup() {
@@ -1234,11 +1224,13 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
     }
     export function fetchAudioListSuccess(doc){
         var data = doc;
-        var current_page =  doc.current_page
+        var current_page =  doc.current_page;
+        var latestAudioFiles = doc.top_3;
         return {
             type: "AUDIO_LIST",
             data,
             current_page,
+            latestAudioFiles,
         }
     }
     export function storeAudioSearchElement(search_element){
@@ -1466,11 +1458,13 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 
     export function fetchStockListSuccess(doc){
         var data = doc;
-        var current_page =  doc.current_page
+        var current_page =  doc.current_page;
+        var latestStocks = doc.top_3;
         return {
             type: "STOCK_LIST",
             data,
             current_page,
+            latestStocks,
         }
     }
 

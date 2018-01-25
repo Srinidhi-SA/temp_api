@@ -13,7 +13,8 @@ import {isEmpty,SEARCHCHARLIMIT,getUserDetailsOrRestart} from "../../helpers/hel
 import {DetailOverlay} from "../common/DetailOverlay";
 import Dialog from 'react-bootstrap-dialog'
 import Breadcrumb from 'react-breadcrumb';
-
+import {AudioFileCard} from "./AudioFileCard";
+import {LatestAudioFile} from "./LatestAudioFiles";
 var dateFormat = require('dateformat');
 
 @connect((store) => {
@@ -84,94 +85,25 @@ export class AudioFileList extends React.Component {
     if (audioList) {
 		const pages = store.getState().apps.audioList.total_number_of_pages;
 		const current_page = store.getState().apps.current_page;
-		let addButton = null;
+	
 		let paginationTag = null
-		if(current_page == 1 || current_page == 0){
-			addButton = <AudioFileUpload match={this.props.match}/>
-		}
+        const audioFileList = <AudioFileCard data={audioList}/>
 		if(pages > 1){
 			paginationTag = <Pagination  ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
 		}
-		const appsAudioList = audioList.map((data, i) => {
-			var modelLink = "/apps/audio/" + data.slug;
-			return (
-					<div className="col-md-3 top20 list-boxes" key={i}>
-					<div className="rep_block newCardStyle" name={data.name}>
-					<div className="card-header"></div>
-					<div className="card-center-tile">
-					<div className="row">
-					<div className="col-xs-9">
-					<h4 className="title newCardTitle">
-					<a href="javascript:void(0);" id= {data.slug} onClick={this.getAudioFileSummary.bind(this,data.slug)}><Link to={modelLink}>{data.name}</Link></a>
-					</h4>
-					</div>
-					<div className="col-xs-3">
-					<img src={ STATIC_URL + "assets/images/apps_model_icon.png" } className="img-responsive" alt="LOADING"/>
-					</div>
-					</div>
-					</div>
-					<div className="card-footer">
-					<div className="left_div">
-					<span className="footerTitle"></span>{getUserDetailsOrRestart.get().userName}
-					<span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy HH:MM")}</span>
-					</div>
-
-					<div className="card-deatils">
-					{/*<!-- Popover Content link -->*/}
-					 <OverlayTrigger trigger="click" rootClose  placement="left" overlay={<Popover id="popover-trigger-focus"><DetailOverlay details={data}/></Popover>}><a  className="pover cursor">
-					<i className="ci pe-7s-info pe-2x"></i>
-					</a></OverlayTrigger>
-
-					{/*<!-- Rename and Delete BLock  -->*/}
-					<a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
-					<i className="ci pe-7s-more pe-rotate-90 pe-2x"></i>
-					</a>
-					<ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-					<li onClick={this.handleAudioRename.bind(this,data.slug,data.name)}>
-					<a className="dropdown-item" href="#renameCard" data-toggle="modal">
-					<i className="fa fa-edit"></i>&nbsp;&nbsp; Rename</a>
-					</li>
-					<li onClick={this.handleAudioDelete.bind(this,data.slug)} >
-					<a className="dropdown-item" href="#deleteCard" data-toggle="modal">
-					<i className="fa fa-trash-o"></i>&nbsp;&nbsp; Delete</a>
-					</li>
-					</ul>
-					{/*<!-- End Rename and Delete BLock  -->*/}
-					</div>
-							</div>
-							</div>
-							</div>
-			)
-		});
+		
 		return (
 				<div className="side-body">
-				<div className="page-head">
-					{/*<!-- <ol class="breadcrumb">
-						<li><a href="#">Story</a></li>
-						<li class="active">Sales Performance Report</li>
-					</ol> -->*/}
-					<div class="row hidden">
-	                <div class="col-md-12">
-	                  <Breadcrumb path={[
-	                    {
-	                      path: '/apps',
-	                      label: 'Apps'
-	                    }, {
-		                      path: '/apps/audio',
-		                      label: 'Audio'
-		                    }
-	                  ]}/>
-	                </div>
-	              </div>
-	              <div class="clearfix"></div>
+				<LatestAudioFile props={this.props}/>
+				<div className="main-content">
 
 					<div className="row">
-					<div className="col-md-8">
-					 
-					<h3 className="xs-mt-0 text-capitalize">Media Files</h3>
-					</div>
+					{/* <div className="col-md-8">
+                     
+                    <h3 className="xs-mt-0 text-capitalize">Media Files</h3>
+                    </div>*/}
 					  
-						<div className="col-md-4">
+						<div className="col-md-12">
 							
 							<div class="btn-toolbar pull-right">
 				<div class="input-group">
@@ -204,22 +136,16 @@ export class AudioFileList extends React.Component {
                         </li>
                     </ul>
                   </div>
-				  </div>
-						
-						
-							
-							
-							
+				  </div>	
 							
 						</div>	<div class="clearfix"></div>
 					</div>
 
 				
-				</div>
-				<div className="main-content">
+			
+				
 				<div className="row">
-				{addButton}
-				{appsAudioList}
+				{audioFileList}
 				<div className="clearfix"></div>
 				</div>
 				<div className="ma-datatable-footer"  id="idPagination">

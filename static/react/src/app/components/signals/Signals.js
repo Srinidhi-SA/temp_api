@@ -23,18 +23,18 @@ import {
   Modal,
   Button
 } from "react-bootstrap";
-//import {BreadCrumb} from "../common/BreadCrumb";
+
 import Breadcrumb from 'react-breadcrumb';
-//import $ from "jquery";
 var dateFormat = require('dateformat');
 import {CreateSignal} from "./CreateSignal";
 import {STATIC_URL} from "../../helpers/env";
 import {SEARCHCHARLIMIT, getUserDetailsOrRestart, isEmpty, SUCCESS,INPROGRESS} from "../../helpers/helper"
-import Dialog from 'react-bootstrap-dialog';
 import {DetailOverlay} from "../common/DetailOverlay";
 import {getAllDataList, hideDataPreview} from "../../actions/dataActions";
 import {openCsLoaderModal, closeCsLoaderModal} from "../../actions/createSignalActions";
 import {CreateSignalLoader} from "../common/CreateSignalLoader";
+import {LatestSignals} from "./LatestSignals";
+import {SignalCard} from "./SignalCard";
 
 @connect((store) => {
   return {
@@ -58,7 +58,7 @@ export class Signals extends React.Component {
     this.props.dispatch(hideDataPreview())
     this.props.dispatch(getAllDataList());
     this.props.dispatch(emptySignalData());
-    // this.props.dispatch(emptySignalAnalysis());
+    // thvar dateFormat = require('dateformat');is.props.dispatch(emptySignalAnalysis());
     if (this.props.history.location.search.indexOf("page") != -1) {
       pageNo = this.props.history.location.search.split("page=")[1];
       this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, pageNo));
@@ -72,23 +72,7 @@ export class Signals extends React.Component {
     console.log("/checking anchor html");
     console.log($('a[rel="popover"]'));
     this.props.dispatch(refreshSignals(this.props));
-    /* var tmp = setInterval(function() {
-      if ($('a[rel="popover"]').html()) {
-        $('a[rel="popover"]').popover({
-          container: 'body',
-          html: true,
-          trigger: 'focus',
-          placement: 'auto right',
-          content: function() {
-            var clone = $($(this).data('popover-content')).clone(true).removeClass('hide');
-            return clone;
-          }
-        }).click(function(e) {
-          e.preventDefault();
-        });
-        clearInterval(tmp);
-      }
-    }, 100);*/
+
   }
 
   handleSelect(eventKey) {
@@ -128,19 +112,6 @@ export class Signals extends React.Component {
     this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, 1));
   }
 
-  handleDelete(slug,evt) {
-    this.props.dispatch(handleDelete(slug, this.refs.dialog,evt));
-  }
-
-  handleRename(slug, name) {
-    this.props.dispatch(handleRename(slug, this.refs.dialog, name));
-  }
-
-  getSignalAnalysis(e) {
-    console.log("Link Onclick is called")
-    console.log(e.target.id);
-    this.props.dispatch(emptySignalAnalysis());
-  }
   openLoaderScreen(slug, percentage, message, e) {
     var signalData = {};
     signalData.slug = slug
@@ -155,7 +126,7 @@ export class Signals extends React.Component {
     if (e.target.value == "" || e.target.value == null) {
       this.props.dispatch(storeSearchElement(""));
       if(this.props.signal_sorton)
-      this.props.history.push('/signals?sort=' + this.props.signal_sorton + '&type=' + this.props.signal_sorttype)
+      this.proopenCsLoaderModalps.history.push('/signals?sort=' + this.props.signal_sorton + '&type=' + this.props.signal_sorttype)
       else
       this.props.history.push('/signals');
       this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, 1));
@@ -180,9 +151,6 @@ export class Signals extends React.Component {
   render() {
     console.log("signals is called##########3");
     document.body.className = "";
-    // h:MM
-    // let parametersForBreadCrumb = [];
-    // parametersForBreadCrumb.push({name:"Signals"});
 
     //empty search element
     if (this.props.signal_search_element != "" && (this.props.location.search == "" || this.props.location.search == null)) {
@@ -192,10 +160,6 @@ export class Signals extends React.Component {
       if (search_element)
         document.getElementById('search_signals').value = "";
       }
-    // if (this.props.location.sort == "" || this.props.location.sort == null) {
-    //   this.props.dispatch(storeSortElements("", null));
-    // }
-    //search element ends..
 
     if (!isEmpty(store.getState().signals.signalAnalysis)) {
       let _link = "/signals/" + store.getState().signals.signalAnalysis.slug;
@@ -203,14 +167,11 @@ export class Signals extends React.Component {
     }
 
     console.log(this.props);
-    const data = this.props.signalList;
+    var data = this.props.signalList;
     const pages = store.getState().signals.signalList.total_number_of_pages;
     const current_page = store.getState().signals.signalList.current_page;
-    let addButton = null;
-    let paginationTag = null
-    if (current_page == 1 || current_page == 0) {
-      addButton = <CreateSignal url={this.props.match.url}/>
-    }
+    let paginationTag = null;
+    let storyList = null;
     if (pages > 1) {
       paginationTag = <Pagination ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
     }
@@ -218,118 +179,16 @@ export class Signals extends React.Component {
     if (data) {
       console.log("under if data condition!!")
 
-      const storyList = data.map((story, i) => {
-        var iconDetails = "";
-        var percentageDetails = "";
-
-        var signalLink = "/signals/" + story.slug;
-        var signalClick = <Link to={signalLink} id={story.slug} onClick={this.getSignalAnalysis.bind(this)} className="title">
-          {story.name}
-          </Link>
-          if(story.status == INPROGRESS){
-              percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">&nbsp;{story.completed_percentage}&nbsp;%</span></div>
-              signalClick = <a class="cursor" onClick={this.openLoaderScreen.bind(this,story.slug,story.completed_percentage,story.completed_message)}> {story.name}</a>
-          }else if(story.status == SUCCESS && !story.viewed){
-              story.completed_percentage = 100;
-              percentageDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">&nbsp;{story.completed_percentage}&nbsp;%</span></div>
-          }
-
-          if (story.type == "dimension") {
-              var imgLink = STATIC_URL + "assets/images/s_d_carIcon.png"
-          } else {
-              var imgLink = STATIC_URL + "assets/images/s_m_carIcon.png"
-          }
-          iconDetails = <img src={imgLink} alt="LOADING"/>
-        return (
-          <div className="col-md-3 xs-mb-15 list-boxes" key={i}>
-            <div className="rep_block newCardStyle" name={story.name}>
-              <div className="card-header"></div>
-              <div className="card-center-tile">
-                <div className="row">
-                  <div className="col-xs-12">
-                    <h5 className="title newCardTitle pull-left">
-                      {signalClick}					 
-                    </h5>
-					
-					 <div class="btn-toolbar pull-right">
-						 {/*<!-- Rename and Delete BLock  -->*/}
-                  <a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
-                    <i className="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
-                  </a>
-                  <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-				 
-                    <li onClick={this.handleRename.bind(this, story.slug, story.name)}>
-                      <a className="dropdown-item" href="#renameCard" data-toggle="modal">
-                        <i className="fa fa-edit"></i>&nbsp;&nbsp;Rename</a>
-                    </li>
-
-                    <li onClick={this.handleDelete.bind(this, story.slug)}>
-                      <a className="dropdown-item" href="#deleteCard" data-toggle="modal">
-                        <i className="fa fa-trash-o"></i>&nbsp;&nbsp;{story.status == "INPROGRESS"
-                          ? "Stop and Delete "
-                          : "Delete"}</a>
-                    </li>
-                  </ul>
-                  {/*<!-- End Rename and Delete BLock  -->*/}
-					  </div>
-					  
-					  
-					  <div className="clearfix"></div>					
-					 
-					  {percentageDetails}
-					{/* <div class="inProgressIcon">
-                           <i class="fa fa-circle"></i>
-                           <span class="inProgressIconText">&nbsp;{story.completed_percentage}&nbsp;%</span>
-                    </div>*/}
-						
-					<OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={story}/> </Popover>}>
-					<a className="pover cursor">
-					<div class="card_icon">
-					{iconDetails}
-					</div></a>
-					</OverlayTrigger>
-							
-                  </div>
-						
-                {/*  <div className="col-xs-3">
-                     <img src={imgLink} className="img-responsive" alt="LOADING"/>
-                   <div class=""><i className="fa fa-circle inProgressIcon"></i></div>
-                   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">100%</span></div>
-                  </div> */}
-				  
-				  
-                </div>
-              </div>
-              <div className="card-footer">
-                <div className="left_div">
-                  <span className="footerTitle"></span>{story.username}
-                  <span className="footerTitle footerTitle-lineh">{dateFormat(story.created_at, "mmm d,yyyy HH:MM")}</span>
-                </div>
-
-                
-                {/*popover*/}
-
-              </div>
-            </div>
-          </div>
-        )
-      });
+      storyList = <SignalCard data={data}/>;
 
       return (
         <div className="side-body">
-          {/* <MainHeader/>*/}
-          {/*<!-- Page Title and Breadcrumbs -->*/}
-          <div class="page-head">
-            {/*<!-- <ol class="breadcrumb">
-                <li><a href="#">Story</a></li>
-                <li class="active">Sales Performance Report</li>
-              </ol> -->*/}
+        
+        <LatestSignals props={this.props}/>
 
+            <div className="main-content">
             <div class="row">
-              <div class="col-md-8">
-                <h3 className="xs-mt-0">Signals</h3>
-              </div>
-              <div class="col-md-4">
+              <div class="col-md-12">
                 <div class="btn-toolbar pull-right">
                   <div class="input-group">
                     <div className="search-wrapper">
@@ -371,17 +230,12 @@ export class Signals extends React.Component {
 
 				</div>
               </div>
-            </div>
+           
 
 
-          <div className="main-content">
+         
             <div className="row">
-              {addButton}
-              {
-							(storyList.length>0)
-							?(storyList)
-							:(<div><div className="clearfix"></div><div className="text-center text-muted xs-mt-50"><h2>No results found..</h2></div></div>)
-							}
+              {storyList}
               <div className="clearfix"></div>
             </div>
 
@@ -390,10 +244,9 @@ export class Signals extends React.Component {
                 {paginationTag}
               </div>
             </div>
-          </div>
-          <Dialog ref="dialog"/>
           <CreateSignalLoader history={this.props.history}/>
         </div>
+                </div>
       );
     } else {
       return (

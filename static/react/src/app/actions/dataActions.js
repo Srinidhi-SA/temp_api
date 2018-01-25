@@ -94,9 +94,10 @@ function fetchDataError(json) {
 export function fetchDataSuccess(doc){
 	var data = doc;
 	var current_page =  doc.current_page
+	var latestDatasets = doc.top_3;
 	return {
 		type: "DATA_LIST",
-		data,
+		data,latestDatasets,
 		current_page,
 	}
 }
