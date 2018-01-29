@@ -144,6 +144,7 @@ td, th {
 	padding: 0
 }
 
+.col-lg-1, .col-lg-10, .col-lg-11, .col-lg-12, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-md-1, .col-md-10, .col-md-11, .col-md-12, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-sm-1, .col-sm-10, .col-sm-11, .col-sm-12, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-xs-1, .col-xs-10, .col-xs-11, .col-xs-12, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9 { padding-right: 12px; padding-left: 12px; }
 
 @media print {
 blockquote, img, pre, tr {
@@ -183,6 +184,7 @@ h2, h3, p {
 h2, h3 {
 	page-break-after: avoid
 }
+
 .navbar {
 	display: none
 }
@@ -206,6 +208,7 @@ h2, h3 {
 @page {  margin: 0; size:297mm 210mm;  }
 div.col-md-6.col-xs-12{ display:inline-block; float:left; width:48%; margin-bottom:20px; }
 }
+
 
 .btn, .btn-danger.active, .btn-danger:active, .btn-info.active, .btn-info:active, .btn-primary.active, .btn-primary:active, .btn-warning.active, .btn-warning:active, .btn.active, .btn:active, .dropdown-menu>.disabled>a:focus, .dropdown-menu>.disabled>a:hover, .form-control, .navbar-toggle, .open>.dropdown-toggle.btn-danger, .open>.dropdown-toggle.btn-info, .open>.dropdown-toggle.btn-primary, .open>.dropdown-toggle.btn-warning {
 	background-image: none
@@ -2872,7 +2875,7 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:focus, a.list-g
 }
 .panel {
 	border: 1px solid transparent;
-	border-radius: 0
+	border-radius: 2px
 }
 .panel-body {
 	padding: 15px;
@@ -2968,7 +2971,7 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:focus, a.list-g
 }
 .panel-group .panel {
 	margin-bottom: 0;
-	border-radius: 0
+	border-radius: 2px
 }
 .panel-group .panel+.panel {
 	margin-top: 5px
@@ -6436,7 +6439,7 @@ body.open-right-sidebar .ma-right-sidebar {
 .main-content {
 	padding-left: 25px;
 	padding-right: 25px;
-	padding-top: 30px
+	padding-top: 15px
 }
 }
 
@@ -6450,7 +6453,7 @@ body.open-right-sidebar .ma-right-sidebar {
 	-webkit-overflow-scrolling: touch;
 	padding-left: 15px;
 	padding-right: 15px;
-	padding-top: 20px
+	padding-top: 15px
 }
 }
 .ma-no-padding .main-content {
@@ -9598,7 +9601,7 @@ pre {
 	border: 0
 }
 .btn {
-	border-radius: 0
+	border-radius: 2px
 }
 .btn-group-xs>.btn, .btn-xs {
 	font-size: 11px;
@@ -13766,7 +13769,7 @@ div.dataTables_wrapper div.dataTables_length label select {
     text-decoration: none !important;
     font-size: 14px;
     word-break: break-word;
-	width: 90%;
+	width: 89%;
     /* line-height: 50px; 
     height: 60px;*/
 }
@@ -13796,6 +13799,8 @@ div.dataTables_wrapper div.dataTables_length label select {
 	-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
 	-moz-box-shadow:    0 1px 2px rgba(0, 0, 0, 0.15);	
 	transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+	border-radius: 2px;
+    overflow: hidden;
 /*	cursor:pointer;
 	box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);*/
 }
@@ -13808,7 +13813,7 @@ ul.app_labels li:first-child { margin: 0; padding: 7px 5px }
 .app-block .card-footer { padding:0; }
 .app-block  .card-footer div.card-deatils { width: 46px; }
 
-.app-block  a.app-link { min-height: 135px; display: block; border-bottom: 1px solid #dae6e5; color:#333; }
+.app-block  a.app-link { min-height: 135px; display: block; border-bottom: 1px solid #edecec; color:#333; }
 .app_labels li a { /*border:1px solid #dae6e5; width: 100px; */ display: inline-block; line-height: 1.91em; color: #333; padding-left: 5px;padding-right:5px }
 .app_labels a i {
     color: #02988c;
@@ -15281,10 +15286,19 @@ display: inline-block;
 	margin-right:5px;
 }*/
 .inProgressIcon {
-    color: #de521d;
+    color: #ff9c7c;
     margin-right: 5px;
 	position:absolute;
 }
+
+.inProgressIcon .fa-circle {
+  animation: blinker 0.5s cubic-bezier(.5, 0, 1, 1) infinite alternate;  
+}
+@keyframes blinker {  
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
 .inProgressIconText { color:#969696;  }
 .progress_count {line-height: initial; color:#FFFFFF; margin-top: 4px; }
 .progress_count .completedIcon, .progress_count .inProgressIconText { color:#FFFFFF;}

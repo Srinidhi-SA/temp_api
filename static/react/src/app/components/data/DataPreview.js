@@ -490,8 +490,8 @@ export class DataPreview extends React.Component {
 					</div>
 					<div className="col-md-3 preview_stats">
 					{ /*<!-- Start Tab Statistics -->*/}
-					<div id="tab_statistics" className="panel-group accordion accordion-semi box-shadow">
-					<div className="panel panel-default">
+					<div id="tab_statistics" className="panel-group accordion accordion-semi">
+					<div className="panel panel-default box-shadow">
 					<div className="panel-heading">
 					<h4 className="panel-title"><a data-toggle="collapse" data-parent="#tab_statistics" href="#pnl_stc" aria-expanded="true" className="">Statistics <i className="fa fa-angle-down pull-right"></i></a></h4>
 					</div>
@@ -509,8 +509,8 @@ export class DataPreview extends React.Component {
 					</div>
 					{  /*<!-- ./ End Tab Statistics -->*/}
 					{ /* <!-- Start Tab Visualizations -->*/}
-					<div id="tab_visualizations" className="panel-group accordion accordion-semi box-shadow">
-					<div className="panel panel-default">
+					<div id="tab_visualizations" className="panel-group accordion accordion-semi">
+					<div className="panel panel-default box-shadow">
 					<div className="panel-heading">
 					<h4 className="panel-title"><a data-toggle="collapse" data-parent="#tab_visualizations" href="#pnl_visl" aria-expanded="true" className="">Visualization <i className="fa fa-angle-down pull-right"></i></a></h4>
 					</div>
@@ -528,7 +528,7 @@ export class DataPreview extends React.Component {
 					{/*<!-- ./ End Tab Visualizations -->*/}
 
 					{/*<!-- Start Tab Subsettings -->*/}
-					<div id = "sub_settings" className="box-shadow">
+					<div id = "sub_settings">
 					<SubSetting item = {firstTimeSubSetting}/>
 					</div>
 					{/* End Tab Subsettings */}
