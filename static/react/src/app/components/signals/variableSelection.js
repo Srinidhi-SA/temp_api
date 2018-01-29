@@ -35,6 +35,7 @@ var selectedVariables = {measures:[],dimensions:[],date:null};  // pass selected
         dataSetAnalysisList:store.datasets.dataSetAnalysisList,
         dimensionSubLevel:store.datasets.dimensionSubLevel,
         dataSetSelectAllAnalysis:store.datasets.dataSetSelectAllAnalysis,
+        selectedVariablesCount: store.datasets.selectedVariablesCount,
 
     };
 })
@@ -75,11 +76,24 @@ export class VariableSelection extends React.Component {
             bootbox.alert("Please select a variable to analyze...");
             return false;
         }
+        if(store.getState().datasets.dataSetTimeDimensions.length > 0){
+            if(store.getState().datasets.selectedVariablesCount == 1){
+                bootbox.alert("Please select atleast one variable to analyze...");
+                return false;
+            }
+        }
+        else{
+            if(store.getState().datasets.selectedVariablesCount == 0){
+                bootbox.alert("Please select atleast one variable to analyze...");
+                return false;
+            }  
+        }
+       
         if(!isAnalysisChecked){
             bootbox.alert("Please select atleast one analysis to Proceed..");
             return false;
         }
-
+        
         var trendIsChecked = checkIfTrendIsSelected();
         var dateTimeIsSelected = checkIfDateTimeIsSelected();
         if(dateTimeIsSelected == undefined && trendIsChecked == true){
