@@ -434,6 +434,7 @@ export class DataPreview extends React.Component {
               );
             }
 
+ 
           });
           return (
             <tr key={trIndex}>
@@ -643,5 +644,5 @@ export class DataPreview extends React.Component {
         </div>
       );
     }
-  }
+  } 
 }
