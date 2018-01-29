@@ -786,6 +786,7 @@ def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
             relevantAction = filter(lambda x: x["status"] == True, setVarAsActions)
             if len(relevantAction) > 0:
                 setVarAs.append({"name": obj["name"], "slug": obj["slug"], "setVarAs": relevantAction[0]["name"]})
+    print "uidcols",uidcols
     ######
     output = []
     selctedDateSuggestedCol = None
@@ -797,6 +798,7 @@ def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
             if obj["slug"]==selctedDateSuggestedCol:
                 obj.update({"selected":True})
         uidFilter = filter(lambda x:x["slug"] == obj["slug"],uidcols)
+        print "uidFilter",uidFilter
         if len(uidFilter) > 0:
             obj.update({"uidCol": True})
         else:
