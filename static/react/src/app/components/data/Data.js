@@ -22,7 +22,9 @@ import {open, close,triggerDataUploadAnalysis,updateHideData} from "../../action
 import {STATIC_URL} from "../../helpers/env.js"
 import {SEARCHCHARLIMIT,getUserDetailsOrRestart,SUCCESS,INPROGRESS,HANA,MYSQL,MSSQL,HDFS,FILEUPLOAD} from  "../../helpers/helper"
 import {DataUploadLoader} from "../common/DataUploadLoader";
-import Dialog from 'react-bootstrap-dialog'
+import Dialog from 'react-bootstrap-dialog';
+import {DataCard}  from "./DataCard";
+import {LatestDatasets} from "./LatestDatasets";
 
 var dateFormat = require('dateformat');
 
@@ -60,25 +62,13 @@ export class Data extends React.Component {
   componentDidMount(){
       this.props.dispatch(refreshDatasets(this.props));
   }
-  getPreviewData(e) {
-    var that = this;
-    this.selectedData = e.target.id;
-    //alert(this.selectedData);
-    this.props.dispatch(storeSignalMeta(null, that.props.match.url));
-    this.props.dispatch(getDataSetPreview(this.selectedData));
-  }
+
 
   openModelPopup() {
     this.props.dispatch(openDULoaderPopup())
   }
   closeModelPopup() {
     this.props.dispatch(closeDULoaderPopup())
-  }
-  handleDelete(slug,evt) {
-    this.props.dispatch(handleDelete(slug, this.refs.dialog,evt));
-  }
-  handleRename(slug, name) {
-    this.props.dispatch(handleRename(slug, this.refs.dialog, name));
   }
   _handleKeyPress = (e) => {
     if (e.key === 'Enter') {
@@ -120,13 +110,6 @@ export class Data extends React.Component {
     this.props.history.push('/data');
     this.props.dispatch(getDataList(1));
   }
-  openDataLoaderScreen(slug, percentage, message, e){
-      var dataUpload = {};
-      dataUpload.slug = slug
-      this.props.dispatch(openDULoaderPopup());
-      this.props.dispatch(updateHideData(true));
-      this.props.dispatch(triggerDataUploadAnalysis(dataUpload, percentage, message));
-  }
 
   render() {
     console.log("data is called");
@@ -139,9 +122,7 @@ export class Data extends React.Component {
     	if (search_element)
     		document.getElementById('search_data').value = "";
     }
-    // if(this.props.location.sort == "" || this.props.location.sort == null){
-    // 	this.props.dispatch(storeSortElements("",null));
-    // }
+
     //search element ends..
     if (store.getState().datasets.dataPreviewFlag) {
     	let _link = "/data/" + store.getState().datasets.selectedDataSet;
@@ -152,117 +133,18 @@ export class Data extends React.Component {
     if (dataSets) {
       const pages = store.getState().datasets.dataList.total_number_of_pages;
       const current_page = store.getState().datasets.dataList.current_page;
-      let addButton = null;
-      let paginationTag = null
-      if (current_page == 1 || current_page == 0) {
-        addButton = <DataUpload/>
-      }
+      let paginationTag = null;
+      let dataList = <DataCard data={dataSets}/>;
       if (pages > 1) {
         paginationTag = <Pagination ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
       }
-      const dataSetList = dataSets.map((data, i) => {
-          
-          var iconDetails = "";
-          var dataSetLink = "/data/" + data.slug;
-          var percentageDetails = "";
-          
-          var dataClick = <Link to={dataSetLink} id={data.slug} onClick={this.getPreviewData.bind(this)}>
-            {data.name}
-            </Link>
-            if(data.status == INPROGRESS){
-                percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>
-                dataClick = <a class="cursor" onClick={this.openDataLoaderScreen.bind(this,data.slug,data.completed_percentage,data.completed_message)}> {data.name}</a>
-            }else if(data.status == SUCCESS && !data.viewed){
-                data.completed_percentage = 100;
-                percentageDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>
-            }
-            
-            
-                let src = STATIC_URL + "assets/images/File_Icon.png"
-                if(data.datasource_type == HANA){
-                  src = STATIC_URL + "assets/images/sapHana_Icon.png"
-                }else if (data.datasource_type == MYSQL) {
-                  src = STATIC_URL + "assets/images/mySQL_Icon.png"
-                }else if (data.datasource_type == MSSQL) {
-                  src = STATIC_URL + "assets/images/SqlServer_Icons.png"
-                }else if (data.datasource_type == HDFS) {
-                  src = STATIC_URL + "assets/images/hadoop_Icons.png"
-                }else {
-                  src = STATIC_URL + "assets/images/File_Icon.png"
-                }
-                iconDetails = <img src={src} alt="LOADING"/>;
-            
-            
-        
-        
-        return (
-          <div className="col-md-3 xs-mb-15 list-boxes" key={i}>
-            <div className="rep_block newCardStyle" name={data.name}>
-              <div className="card-header"></div>
-              <div className="card-center-tile">
-                <div className="row">
-                  <div className="col-xs-12">
-                    <h5 className="title newCardTitle pull-left">
-                     {dataClick}
-                    </h5>
-					
-					<div class="btn-toolbar pull-right">
-					
-						{/*<!-- Rename and Delete BLock  -->*/}
-                  <a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
-                    <i className="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
-                  </a>
-                  <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                    <li onClick={this.handleRename.bind(this, data.slug, data.name)}>
-                      <a className="dropdown-item" href="#renameCard" data-toggle="modal">
-                        <i className="fa fa-edit"></i>&nbsp;&nbsp;Rename</a>
-                    </li>
-                    <li onClick={this.handleDelete.bind(this, data.slug)}>
-                      <a className="dropdown-item" href="#deleteCard" data-toggle="modal">
-                        <i className="fa fa-trash-o"></i>&nbsp;&nbsp;{data.status == "INPROGRESS"
-                            ? "Stop and Delete "
-                                    : "Delete"}</a>
-                                    </li>
-                  </ul>
-					
-					</div>
-					  <div className="clearfix"></div>
-					  {percentageDetails}
-					  
-			<OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={data}/> </Popover>}>
-			<a  className="pover cursor">
-			<div class="card_icon">
-					{iconDetails}
-					</div>
-			</a>
-			</OverlayTrigger>
-					  
-                  </div>
-                   
-                </div>
-              </div>
-              <div className="card-footer">
-                <div className="left_div">
-                  <span className="footerTitle"></span>{getUserDetailsOrRestart.get().userName}
-                  <span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy HH:MM")}</span>
-                </div>
- 
-
-                {/*popover*/}
-
-              </div>
-            </div>
-          </div>
-        )
-      });
       return (
         <div className="side-body">
-          <div class="page-head">
+        <LatestDatasets props={this.props}/>
+          <div class="main-content">
             <div class="row">
-              <div class="col-md-8">
-                <h3 className="xs-mt-0">Data</h3>
-              </div>
-              <div class="col-md-4">
+            
+              <div class="col-md-12">
 
 			  <div class="btn-toolbar pull-right">
 				<div class="input-group">
@@ -303,16 +185,9 @@ export class Data extends React.Component {
               </div>
             </div>
             <div class="clearfix"></div>
-          </div>
-          <div className="main-content">
+        
             <div className="row">
-              {addButton}
-              {
-							(dataSetList.length>0)
-							?(dataSetList)
-							:(<div><div className="clearfix"></div><div className="text-center text-muted xs-mt-50"><h2>No results found..</h2></div></div>)
-							}
-
+            {dataList}
               <div className="clearfix"></div>
             </div>
             <div className="ma-datatable-footer" id="idPagination">
@@ -321,9 +196,8 @@ export class Data extends React.Component {
               </div>
             </div>
             <DataUploadLoader/>
-            <Dialog ref="dialog"/>
-          </div>
         </div>
+                </div>
       );
     } else {
       return (

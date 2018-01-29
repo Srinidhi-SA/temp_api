@@ -45,7 +45,7 @@ export class DataUpload extends React.Component {
 					<div className="newCardStyle firstCard">
 					<div className="card-header"></div>
 					<div className="card-center newStoryCard">					
-					<div className="col-xs-12 text-center"> UPLOAD DATA </div>
+					<div className="col-xs-12 text-center">+<br/><small>UPLOAD DATA</small> </div>
 					</div>
 					</div>
 					<div id="uploadData"  role="dialog" className="modal fade modal-colored-header">

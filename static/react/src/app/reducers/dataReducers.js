@@ -47,6 +47,7 @@ export default function reducer(state = {
   dataSetColumnReplaceValues:[],
   dataSetSelectAllAnalysis:false,
   isUpdate:false,
+  latestDatasets:{},
 
 }, action) {
   console.log("In DATA reducer!!");
@@ -58,6 +59,7 @@ export default function reducer(state = {
         return {
           ...state,
           dataList: action.data,
+          latestDatasets:action.latestDatasets,
           current_page: action.current_page
         }
       }
