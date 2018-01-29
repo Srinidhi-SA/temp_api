@@ -91,6 +91,8 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
 
     for col in ts:
         columnSetting_Temp = None
+        print "--"*10
+        print col['name'], ts[0]['columnSetting']
         if "columnSetting" in col:
             columnSetting = col.get("columnSetting")
 
