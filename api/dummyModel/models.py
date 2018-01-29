@@ -165,3 +165,12 @@ class DummyView(viewsets.ModelViewSet):
         if seriali.is_valid():
             instance = seriali.save()
             return JsonResponse(seriali.data)
+
+
+# @api_view(['GET'])
+# @permission_classes((IsAuthenticated, ))
+# def example_view(request, format=None):
+#     content = {
+#         'status': 'request was permitted'
+#     }
+#     return Response(content)
