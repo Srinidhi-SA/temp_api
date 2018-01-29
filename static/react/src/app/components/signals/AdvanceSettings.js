@@ -105,7 +105,7 @@ export class AdvanceSettings extends React.Component {
 									</div>
 									<div className={specificMeasureClsName}> <select id="specific-trend-measure" className="form-control " onChange={this.handleTrendAnalysis.bind(this)}>
 									{store.getState().datasets.dataSetMeasures.map(function(item,index){
-										return(<option>{item}</option>)
+										return(<option>{item.name}</option>)
 									})
 									}
 									</select>

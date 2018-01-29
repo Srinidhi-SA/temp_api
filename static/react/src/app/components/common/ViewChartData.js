@@ -86,7 +86,7 @@ export class ViewChartData extends React.Component {
           <Modal.Footer>
             <a href={this.props.tableDownload} id="cddownload" className="btn btn-primary" download>
               <i className="fa fa-cloud-download"></i>
-              Download Chart Data</a>
+              &nbsp;Download Chart Data</a>
           </Modal.Footer>
         </Modal>
       </div>

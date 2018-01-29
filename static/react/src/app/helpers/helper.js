@@ -59,6 +59,9 @@ function redirectToLogin() {
 
 const FILEUPLOAD = "fileUpload";
 const MYSQL = "MySQL";
+const MSSQL = "mssql";
+const HANA = "Hana";
+const HDFS = "Hdfs";
 const INPUT = "Input";
 const HOST = "Host";
 const PORT = "Port";
@@ -72,8 +75,8 @@ const CONFUSIONMATRIX = "confusionMatrix";
 const HEATMAPTABLE = "heatMap";
 const CIRCULARCHARTTABLE = "circularChartTable";
 const DECISIONTREETABLE = "decisionTreeTable"
-const DULOADERPERVALUE = 1;
-const CSLOADERPERVALUE = 1;
+const DULOADERPERVALUE = 0;
+const CSLOADERPERVALUE = 0;
 const APPSLOADERPERVALUE = 10;
 const LOADERMAXPERVALUE = 99;
 const DEFAULTINTERVAL = 10000;
@@ -443,7 +446,10 @@ export{
   SET_POLARITY,
   UNIQUE_IDENTIFIER,
   DYNAMICLOADERINTERVAL,
-  IGNORE_SUGGESTION
+  IGNORE_SUGGESTION,
+  HDFS,
+  HANA,
+  MSSQL
 	}
 export function capitalizeArray(array){
   let a =[]

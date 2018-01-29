@@ -25,8 +25,8 @@ from pygments.formatters import HtmlFormatter
 from django.utils.safestring import mark_safe
 
 
-def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message_slug=None, queue_name=None):
-    config = generate_job_config(class_name, job_config, job_name, message_slug, slug)
+def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message_slug=None, queue_name=None,app_id= None):
+    config = generate_job_config(class_name, job_config, job_name, message_slug, slug,app_id)
 
     try:
         base_dir = correct_base_dir()
@@ -79,12 +79,13 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
     }
 
 
-def generate_job_config(class_name, job_config, job_name, message_slug, slug):
+def generate_job_config(class_name, job_config, job_name, message_slug, slug,app_id=None):
     # here
     temp_config = JobserverDetails.get_config(slug=slug,
                                               class_name=class_name,
                                               job_name=job_name,
-                                              message_slug=message_slug
+                                              message_slug=message_slug,
+                                              app_id=app_id
                                               )
     config = {}
     config['job_config'] = job_config
@@ -117,10 +118,10 @@ def submit_job_through_job_server(slug, class_name, job_config, job_name=None, m
     return job_url
 
 
-def submit_job(slug, class_name, job_config, job_name=None, message_slug=None,queue_name=None):
+def submit_job(slug, class_name, job_config, job_name=None, message_slug=None,queue_name=None,app_id=None):
     """Based on config, submit jobs either through YARN or job server"""
     if settings.SUBMIT_JOB_THROUGH_YARN:
-        return submit_job_through_yarn(slug, class_name, job_config, job_name, message_slug,queue_name=queue_name)
+        return submit_job_through_yarn(slug, class_name, job_config, job_name, message_slug,queue_name=queue_name,app_id=app_id)
     else:
         return submit_job_through_job_server(slug, class_name, job_config, job_name, message_slug)
 

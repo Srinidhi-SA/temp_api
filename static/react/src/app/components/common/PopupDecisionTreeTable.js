@@ -83,7 +83,8 @@ generateDecisionTreeRows(table) {
               0: {
                 sorter: false
               }
-            }
+            },
+            sortList: [[1,1]]
           });
         });
       }

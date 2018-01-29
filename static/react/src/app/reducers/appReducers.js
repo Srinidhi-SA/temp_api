@@ -66,7 +66,7 @@ export default function reducer(state = {
         storeAppsSortType:"",
         app_filtered_keywords:[],
         exportAsPMMLModal:false,
-
+        scoreToProceed:false,
 
 }, action) {
     console.log("In APPs reducer!!");
@@ -723,6 +723,15 @@ export default function reducer(state = {
         return{
             ...state,
             exportAsPMMLModal:action.flag
+        }
+    }
+    break;
+    
+    case "SCORE_TO_PROCEED":
+    {
+        return{
+            ...state,
+            scoreToProceed:action.flag
         }
     }
     break;

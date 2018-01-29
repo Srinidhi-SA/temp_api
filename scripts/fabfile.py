@@ -91,14 +91,30 @@ def deploy_api(branch="dev"):
     server_details= details['server_details']
     deployment_config= details['deployment_config']
     base_remote_path = path_details['base_remote_path']
+    config_file_path = BASE_DIR + '/config/settings/config_file_name_to_run.py'
+    all_lines = []
+    with open(config_file_path) as fp:
+        for line in fp:
+            all_lines.append(line)
+
+    UI_VERSION = None
+    for line in all_lines:
+        if "UI_VERSION" in line:
+            UI_VERSION = line.split("'")[1]
+
+    # if UI_VERSION is None:
     text_command = """CONFIG_FILE_NAME = '{0}'\nUI_VERSION = '{1}'
     """.format(deployment_config, random.randint(100000,10000000))
-    config_file_path = BASE_DIR + '/config/settings/config_file_name_to_run.py'
+    # else:
+    #     text_command = """CONFIG_FILE_NAME = '{0}'\nUI_VERSION = '{1}'\nV=1
+    #     """.format(deployment_config, UI_VERSION)
+
     react_env = BASE_DIR + '/static/react/src/app/helpers/env.js'
     react_npm_log = BASE_DIR + '/static/react/npm-debug.log'
     local('rm {0}'.format(config_file_path))
     local('echo "{0}" > {1}'.format(text_command, config_file_path))
 
+    # if UI_VERSION is None:
     with cd(BASE_DIR):
         if os.path.exists(config_file_path) is True:
             local('git add {0}'.format(config_file_path))
@@ -112,7 +128,7 @@ def deploy_api(branch="dev"):
                 pass
             else:
                 local('git checkout {0}'.format(react_npm_log))
-        local('git commit -m "version changed. Automated Deployment."')
+        commit_capture = local('git commit -m "version changed. Automated Deployment."', capture=True)
 
     only_for_api_push_and_pull(
         server_details=server_details,
@@ -399,14 +415,12 @@ def cleanup_static_react_old_dist(type="development"):
         run('mv dist_* ~/old_dist')
 
 
-def create_database(type="development"):
-    if type == "development":
-        dev()
-    elif type == "production":
-        prod()
-
-    server_details = env.get('server_details')
-    path_details = env.get('path_details')
+def create_database(branch="development"):
+    details = get_branch_details(branch)
+    set_fabric_env(details)
+    print details
+    path_details = details['path_details']
+    server_details = details['server_details']
 
     db_name = "madvisor"
     user_name = "marlabs"
@@ -440,16 +454,16 @@ def download_sql_and_dump(branch='development'):
         get(path_json, local_dumping_path)
 
     with lcd(BASE_DIR):
-        file_name = '{0}.json'.format(current_time)
-        locapath = '/home/ankush/dump_files/' + file_name
+        file_name = 'datadump{0}.json'.format(current_time)
+        locapath = '/tmp/' + file_name
         local('python manage.py loaddata {0}'.format(locapath))
 
 
 @task
 def load_sql_dump_data():
     with lcd(BASE_DIR):
-        file_name = 'datadump1514902040.15.json'
-        locapath = '/home/ankush/dump_files/' + file_name
+        file_name = 'datadump20180118T112500.json'
+        locapath = '/tmp/' + file_name
         local('python manage.py loaddata {0}'.format(locapath))
     local("cat 'Done.'")
 

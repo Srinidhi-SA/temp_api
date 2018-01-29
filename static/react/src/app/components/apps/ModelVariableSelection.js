@@ -6,11 +6,11 @@ import store from "../../store";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "react-bootstrap";
 
 import {C3Chart} from "../c3Chart";
-import ReactDOM from 'react-dom';
 import {DataVariableSelection} from "../data/DataVariableSelection";
-import {updateTrainAndTest,createModel} from "../../actions/appActions";
+import {updateTrainAndTest,createModel,updateSelectedVariable} from "../../actions/appActions";
 import {AppsLoader} from "../common/AppsLoader";
 import {getDataSetPreview} from "../../actions/dataActions";
+import {hideTargetVariable} from "../../actions/signalActions";
 
 @connect((store) => {
     return {login_response: store.login.login_response, dataPreview: store.datasets.dataPreview,
@@ -23,12 +23,12 @@ import {getDataSetPreview} from "../../actions/dataActions";
 export class ModelVariableSelection extends React.Component {
     constructor(props) {
         super(props);
-        
+
     }
     componentWillMount() {
         //It will trigger when refresh happens on url
         if(this.props.dataPreview == null){
-            this.props.dispatch(getDataSetPreview(this.props.match.params.slug));   
+            this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
         }
         this.props.dispatch(updateTrainAndTest(50))
     }
@@ -38,6 +38,10 @@ export class ModelVariableSelection extends React.Component {
     createModel(event){
         event.preventDefault();
         this.props.dispatch(createModel($("#createModelName").val(),$("#createModelAnalysisList").val()))
+    }
+    setPossibleList(event){
+        this.props.dispatch(hideTargetVariable(event));
+        this.props.dispatch(updateSelectedVariable(event));
     }
     render() {
         console.log("Create Model Variable Selection  is called##########3");
@@ -49,12 +53,13 @@ export class ModelVariableSelection extends React.Component {
         let dataPrev = store.getState().datasets.dataPreview;
         let renderSelectBox = null;
         if(dataPrev){
-            const metaData = dataPrev.meta_data.uiMetaData.columnDataUI;
+            const metaData = dataPrev.meta_data.uiMetaData.varibaleSelectionArray;
             if(metaData){
-                renderSelectBox =  <select className="form-control" id="createModelAnalysisList">
+                renderSelectBox =  <select className="form-control" onChange={this.setPossibleList.bind(this)} id="createModelAnalysisList">
+                    <option value=""></option>
                 {metaData.map((metaItem,metaIndex) =>{
-                    if(metaItem.columnType !="datetime" && metaItem.consider && !metaItem.dateSuggestionFlag){
-                        return(<option key={metaIndex} value={metaItem.name}>{metaItem.name}</option>)
+                    if(metaItem.columnType !="datetime" && !metaItem.dateSuggestionFlag){
+                        return(<option key={metaItem.slug}  name={metaItem.slug}  value={metaItem.columnType}>{metaItem.name}</option>)
                     }
                 }
                 )}
@@ -74,19 +79,20 @@ export class ModelVariableSelection extends React.Component {
                 <div className="clearfix"></div>
                 </div>
                 <div className="main-content">
-                <div className="panel panel-default">
-                <div className="panel-body">    
+
+                <div className="panel panel-default box-shadow">
+                <div className="panel-body">
                 <Form onSubmit={this.createModel.bind(this)}>
                 <FormGroup role="form">
-                <div className="row">			          
-                 
+                <div className="row">
+
                 <div className="form-group">
                 <label className="col-lg-2">I want to predict</label>
                 <div className="col-lg-4"> {renderSelectBox}</div>
                 </div>
                  {/*<!-- /.col-lg-4 -->*/}
                 </div>
-                
+
                 <DataVariableSelection/>
                 <div className="row">
                 <div className="col-lg-8">
