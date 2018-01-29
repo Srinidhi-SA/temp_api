@@ -235,10 +235,9 @@ export function refreshSignals(props) {
   }
 }
 function fetchPostsSuccess(signalList) {
-  //console.log("signal list from api to store")
-  //console.log(signalList);
-  var current_page = signalList.current_page
-  return {type: "SIGNAL_LIST", signalList, current_page}
+  var current_page = signalList.current_page;
+  var latestSignals = signalList.top_3;
+  return {type: "SIGNAL_LIST", signalList,latestSignals, current_page}
 }
 
 function fetchPostsError(json) {

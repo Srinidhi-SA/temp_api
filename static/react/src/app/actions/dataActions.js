@@ -94,9 +94,10 @@ function fetchDataError(json) {
 export function fetchDataSuccess(doc){
 	var data = doc;
 	var current_page =  doc.current_page
+	var latestDatasets = doc.top_3;
 	return {
 		type: "DATA_LIST",
-		data,
+		data,latestDatasets,
 		current_page,
 	}
 }
@@ -1146,6 +1147,10 @@ function updateUniqueIdentifierColumn(dispatch,actionName,colSlug,isChecked){
                         $(".cst_table").find("thead").find("."+transformSettings[i].slug).first().find("a").removeClass("text-primary")
                         transformSettings[i].columnSetting[j].status = false;
                     }
+                }
+            } else if(transformSettings[i].columnSetting[j].actionName == IGNORE_SUGGESTION){
+                if(transformSettings[i].slug == colSlug){
+                    transformSettings[i].columnSetting[j].status = false;
                 }
             }
         }

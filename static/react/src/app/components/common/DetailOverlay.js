@@ -21,10 +21,10 @@ export class DetailOverlay extends React.Component {
   }
   getAnalysisValues(displayName,value,name){
 	  value = value.map((key,index) =>{
-		  return( <li><i class="fa fa-check"></i>&nbsp;{key}</li>);
+		  return( <li><i class="fa fa-check"></i>&nbsp;&nbsp;{key}</li>);
 	  })
 	 let  analysisList = <ul class="list-unstyled">{value}</ul>;
-	   return  <p className="overlayTooltip"><h4 class="text-primary">List Of Signals</h4>{analysisList}</p>
+	   return  <p className="overlayTooltip"><h5 class="text-primary">List Of Signals</h5>{analysisList}</p>
   }
   render() {
    var details = this.props.details.brief_info;

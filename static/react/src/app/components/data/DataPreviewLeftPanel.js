@@ -75,7 +75,7 @@ export class DataPreviewLeftPanel extends React.Component {
                     <div className="main-content">
                     <div className="row">
                     <div className="col-md-12">
-                    <div className="panel panel-borders">
+                    <div className="panel no-borders box-shadow xs-p-10">
 
                     <div className="clearfix"></div>
                     <div className="table-responsive scoreDataPreview">
@@ -102,7 +102,7 @@ export class DataPreviewLeftPanel extends React.Component {
                     <div className="row">
 					<div className="col-md-12">
                     <div className="panel">
-                    <div className="panel-body no-border text-right">
+                    <div className="panel-body no-border text-right box-shadow">
                     <Link to={scoreLink} onClick={this.emptyScoreCSVData.bind(this)}><Button> Close</Button></Link>
                     </div>
                     </div>

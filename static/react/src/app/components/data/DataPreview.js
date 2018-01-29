@@ -34,7 +34,8 @@ import {checkCreateScoreToProceed} from "../../actions/appActions";
     signal: store.signals.signalAnalysis,
     subsettingDone: store.datasets.subsettingDone,
     subsettedSlug: store.datasets.subsettedSlug,
-    dataTransformSettings: store.datasets.dataTransformSettings
+    dataTransformSettings: store.datasets.dataTransformSettings,
+    scoreToProceed:store.apps.scoreToProceed,
   };
 })
 
@@ -238,29 +239,30 @@ export class DataPreview extends React.Component {
   moveToVariableSelection() {
     //alert(this.buttons.create.url);
     //check for minimum rows in datasets
-    if (this.props.dataPreview.meta_data.uiMetaData.metaDataUI[0].value < MINROWINDATASET)
-      bootbox.alert("Minimum " + MINROWINDATASET + " rows are required for analysis!!")
-    else if (this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray && (this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray.length == 0 || (this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray.length == 1 && this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray[0].dateSuggestionFlag == true))) {
-      bootbox.alert("Not enough data to run analysis. Please upload/connect a differenct dataset.")
-    } else {
-      let url = this.buttons.create.url;
-      if (this.buttons.create.url.indexOf("apps-robo") != -1) {
-        $(".cst_table").find("thead").find("." + colSlug).first()
-        url = "/apps-robo/" + store.getState().apps.roboDatasetSlug + "/" + store.getState().signals.signalAnalysis.slug
-        this.props.history.push(url);
-      }else if(store.getState().datasets.curUrl.indexOf("scores") != -1){
-          var response = this.props.dispatch(checkCreateScoreToProceed());
-         if(response.proceed){
-             this.props.history.push(url);
-         }
-         else {
-             this.props.dispatch(hideDataPreview());
-             popupAlertBox("One or few variables are missing from the scoring data. Score cannot be created",this.props,url.split("/data")[0])
-         }
-      }
-      else this.props.history.push(url);
-    }
+      if (this.props.dataPreview.meta_data.uiMetaData.metaDataUI[0].value < MINROWINDATASET)
+          bootbox.alert("Minimum " + MINROWINDATASET + " rows are required for analysis!!")
+          else if (this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray && (this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray.length == 0 || (this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray.length == 1 && this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray[0].dateSuggestionFlag == true))) {
+              bootbox.alert("Not enough data to run analysis. Please upload/connect a differenct dataset.")
+          } else {
+              let url = this.buttons.create.url;
+              if (this.buttons.create.url.indexOf("apps-robo") != -1) {
+                  $(".cst_table").find("thead").find("." + colSlug).first()
+                  url = "/apps-robo/" + store.getState().apps.roboDatasetSlug + "/" + store.getState().signals.signalAnalysis.slug
+                  this.props.history.push(url);
+              }else if(store.getState().datasets.curUrl.indexOf("scores") != -1){
+                  if(store.getState().apps.scoreToProceed  == true){
+                      this.props.history.push(url);
+                  }
+                  else {
+                      this.props.dispatch(hideDataPreview());
+                      popupAlertBox("One or few variables are missing from the scoring data. Score cannot be created",this.props,url.split("/data")[0])
+                  }
+              }
+              else this.props.history.push(url);
+          } 
   }
+    
+    
 
   applyDataSubset() {
     //alert("working");
