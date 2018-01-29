@@ -86,6 +86,9 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
 
     ts = ts.get('existingColumns')
 
+    print 'before read_and_change_metadata----------------------------->ts'
+    print ts[0]['columnSetting']
+
     for col in ts:
         columnSetting_Temp = None
         if "columnSetting" in col:
@@ -170,6 +173,9 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
 
         if columnSetting_Temp is not None:
             col['columnSetting'] = columnSetting_Temp
+
+    print 'after read_and_change_metadata----------------------------->ts'
+    print ts[0]['columnSetting']
 
     return metaData, headers
 
