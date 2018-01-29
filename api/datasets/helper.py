@@ -63,6 +63,9 @@ def convert_metadata_according_to_transformation_setting(meta_data=None, transfo
 
     uiMetaData['transformation_settings'] = transformation_setting
     uiMetaData['modified'] = True
+
+    print 'after change----------------------------->ts'
+    print uiMetaData['transformation_settings']['existingColumns'][0]['columnSetting']
     varibaleSelectionArray = add_variable_selection_to_metadata(
         uiMetaData["columnDataUI"],
         uiMetaData['transformation_settings']
