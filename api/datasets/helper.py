@@ -91,13 +91,15 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
 
     for col in ts:
         columnSetting_Temp = None
-        print "--"*10
-        print col['name'], ts[0]['columnSetting']
+        uid_flag = False
         if "columnSetting" in col:
             columnSetting = col.get("columnSetting")
 
             for colset in columnSetting:
                 if colset.get("status") == True:
+
+                    if colset.get('actionName') == 'unique_identifier':
+                        uid_flag = True
 
                     if colset.get("actionName") == "delete":
 
@@ -169,7 +171,10 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
                         colset['displayName'] = 'Ignore for Analysis'
                         mdc.changes_on_consider_column(colName, True)
                         if colset['previous_status'] != colset["status"]:
-                            columnSetting_Temp = mdc.changes_in_column_data_if_column_is_considered(colName)
+                            columnSetting_Temp = mdc.changes_in_column_data_if_column_is_considered(
+                                                        colName,
+                                                        uid_flag=uid_flag
+                                                    )
                             colset['previous_status'] = colset["status"]
                             break
 
@@ -425,7 +430,7 @@ class MetaDataChange(object):
                 # data['ignoreSuggestionFlag'] = not make_it
                 break
 
-    def changes_in_column_data_if_column_is_considered(self, colName):
+    def changes_in_column_data_if_column_is_considered(self, colName, uid_flag=False):
         import copy
         from django.conf import settings
         for head in self.columnData:
@@ -453,6 +458,13 @@ class MetaDataChange(object):
                 transformation_settings_ignore['status'] = False
                 transformation_settings_ignore['displayName'] = 'Ignore for Analysis'
                 transformation_settings_ignore['previous_status'] = False
+
+                if uid_flag is True:
+                    for head_column in head_columnSetting:
+                        if head_column.get('actionName') == 'unique_identifier':
+                            head_column['status'] = True
+                            break
+
                 head_columnSetting.append(transformation_settings_ignore)
                 head['consider'] = True
 
