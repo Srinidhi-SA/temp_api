@@ -704,8 +704,8 @@ class Insight(models.Model):
         analysis_type = []
 
         for variables in variableSelection:
-            if 'selected' in variables:
-                if variables['selected'] is True:
+            if 'targetColumn' in variables:
+                if variables['targetColumn'] is True:
                     variable_selected.append(variables['name'])
                     analysis_type.append(variables['columnType'])
                     break
