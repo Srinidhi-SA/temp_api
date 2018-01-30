@@ -606,7 +606,7 @@ export function updateSelectedVariables(evt){
         }
         dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
     }
-  
+
 }
 
 
@@ -680,7 +680,7 @@ export function showDialogBox(slug,dialog,dispatch,evt){
     })
     dialog.show({
         title: 'Delete Dataset',
-        body: 'Are you sure you want to delete the selected data set? Yes , No',
+        body: 'Are you sure you want to delete the selected data set?',
         actions: [
                   Dialog.CancelAction(),
                   Dialog.OKAction(() => {
@@ -1395,9 +1395,9 @@ export function updateSelectAllAnlysis(flag){
 export function hideDataPreviewDropDown(props){
   if(props.indexOf("scores") != -1){
       $("#sub_settings").hide();
-      $('.dropdown-toggle').removeAttr('data-toggle'); 
+      $('.dropdown-toggle').removeAttr('data-toggle');
   }
-    
+
 }
 export function popupAlertBox(msg,props,url){
     bootbox.alert(msg,function(){
