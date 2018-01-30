@@ -11,7 +11,7 @@ import {DataVariableSelection} from "../data/DataVariableSelection";
 import {CreateSignalLoader} from "../common/CreateSignalLoader";
 import {openCsLoaderModal,closeCsLoaderModal} from "../../actions/createSignalActions";
 import {AdvanceSettings} from "./AdvanceSettings";
-import {SET_VARIABLE} from "../../helpers/helper";
+import {SET_VARIABLE,statusMessages} from "../../helpers/helper";
 import {STATIC_URL} from "../../helpers/env";
 
 
@@ -72,16 +72,15 @@ export class VariableSelection extends React.Component {
     createSignal(event){
         event.preventDefault();
         var isAnalysisChecked = checkAnalysisIsChecked();
-        let imgsrc_url=STATIC_URL+"assets/images/alert_warning.png"
 
         //this.props.dispatch(handleTargetSelection());
         if($('#signalVariableList option:selected').val() == ""){
-            let msg='<div class="row"><div class="col-md-4"><img src='+imgsrc_url+' class="img-responsive" /></div><div class="col-md-8"><h4 class="text-warning">Warning !</h4><p>Please select a variable to analyze...</p></div></div>';
+          let msg=statusMessages("warning","Please select a variable to analyze...","small_mascot")
               bootbox.alert(msg);
             return false;
         }
         if(!isAnalysisChecked){
-            let msg='<div class="row"><div class="col-md-4"><img src='+imgsrc_url+' class="img-responsive" /></div><div class="col-md-8"><h4 class="text-warning">Warning !</h4><p>Please select atleast one analysis to Proceed..</p></div></div>';
+          let msg=statusMessages("warning","Please select atleast one analysis to Proceed..","small_mascot")
               bootbox.alert(msg);
             return false;
         }

@@ -1,6 +1,6 @@
 
 import {API,EMR,STATIC_URL} from "../helpers/env";
-import {PERPAGE,isEmpty,getUserDetailsOrRestart,APPSPERPAGE} from "../helpers/helper";
+import {PERPAGE,isEmpty,getUserDetailsOrRestart,APPSPERPAGE,statusMessages} from "../helpers/helper";
 import store from "../store";
 import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,CUSTOMERDATA,HISTORIALDATA,EXTERNALDATA,DELETEMODEL,
     RENAMEMODEL,DELETESCORE,RENAMESCORE,DELETEINSIGHT,RENAMEINSIGHT,SUCCESS,FAILED,DELETEAUDIO,RENAMEAUDIO} from "../helpers/helper";
@@ -107,10 +107,8 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
     export function createModel(modelName,targetVariable) {
         console.log(modelName);
         console.log(targetVariable);
-        let imgsrc_url=STATIC_URL+"assets/images/alert_warning.png"
-
         if($('#createModelAnalysisList option:selected').val() == ""){
-            let msg='<div class="row"><div class="col-md-4"><img src='+imgsrc_url+' class="img-responsive" /></div><div class="col-md-8"><h4 class="text-warning">Warning !</h4><p>Please select a variable to analyze...</p></div></div>';
+            let msg=statusMessages("warning","Please select a variable to analyze...","small_mascot")
               bootbox.alert(msg);
             return false;
         }
@@ -154,7 +152,11 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 "app_id":app_id,
                 "config":details
             }),
-        }).then( response => Promise.all([response, response.json()]));
+        }).then( response => Promise.all([response, response.json()])).catch(function(error) {
+          dispatch(closeAppsLoaderValue());
+          dispatch(updateModelSummaryFlag(false));
+          bootbox.alert(statusMessages("error","Unable to connect to server. Check your connection please try again.","small_mascot"))
+        });
     }
     function createModelSuccess(data,dispatch){
         var slug = data.slug;

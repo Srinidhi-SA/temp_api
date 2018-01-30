@@ -1,6 +1,6 @@
 import React from "react";
-import {API} from "../helpers/env";
-import {PERPAGE,DULOADERPERVALUE,DEFAULTINTERVAL,SUCCESS,FAILED,getUserDetailsOrRestart,DEFAULTANALYSISVARIABLES} from "../helpers/helper";
+import {API,STATIC_URL} from "../helpers/env";
+import {PERPAGE,DULOADERPERVALUE,DEFAULTINTERVAL,SUCCESS,FAILED,getUserDetailsOrRestart,DEFAULTANALYSISVARIABLES,statusMessages} from "../helpers/helper";
 import store from "../store";
 import {dataPreviewInterval,dataUploadLoaderValue,clearLoadingMsg} from "./dataUploadActions";
 import {closeAppsLoaderValue} from "./appActions";
@@ -138,7 +138,8 @@ export function getDataSetPreview(slug,interval) {
         }).catch(function(error){
 
             dispatch(hideDULoaderPopup());
-            bootbox.alert("Unable to connect to server. Check your connection please try again.")
+            let msg=statusMessages("error","Unable to connect to server. Check your connection please try again.","small_mascot")
+            bootbox.alert(msg)
         });
     }
 }
@@ -606,7 +607,7 @@ export function updateSelectedVariables(evt){
         }
         dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
     }
-  
+
 }
 
 
@@ -680,7 +681,7 @@ export function showDialogBox(slug,dialog,dispatch,evt){
     })
     dialog.show({
         title: 'Delete Dataset',
-        body: 'Are you sure you want to delete the selected data set? Yes , No',
+        body: 'Are you sure you want to delete the selected data set?',
         actions: [
                   Dialog.CancelAction(),
                   Dialog.OKAction(() => {
@@ -1054,13 +1055,25 @@ function deleteMetaDataColumn(dialog,colName,colSlug,dispatch,actionName,colStat
     if(colStatus == true){
         text = "Are you sure, you want to undelete the selected column?"
     }
-    bootbox.confirm(text,function(result){
+    bootbox.confirm({
+      title:"Delete Column",
+      message:text,
+      //size:"small",
+      buttons: {
+      'cancel': {
+          label: 'No'
+      },
+      'confirm': {
+          label: 'Yes'
+      }
+  },
+      callback:function(result){
         if(result){
             $(".cst_table").find("thead").find("."+colSlug).first().addClass("dataPreviewUpdateCol");
             $(".cst_table").find("tbody").find("tr").find("."+colSlug).addClass("dataPreviewUpdateCol");
             updateColumnStatus(dispatch,colSlug,colName,actionName)
         }
-    });
+    }});
 }
 export function updateVLPopup(flag){
     return{
@@ -1191,9 +1204,14 @@ export function handleColumnActions(transformSettings,slug,isSubsetting) {
                 dispatch(fetchDataPreviewError(json));
                 dispatch(vaiableSelectionUpdate(false));
                 dispatch(hideLoading());
-                bootbox.alert("Something went wrong. Please try again later.")
-            }
-        })
+                let msg=statusMessages("error","Something went wrong. Please try again later.","small_mascot")
+                bootbox.alert(msg)            }
+        }).catch(function(error){
+            dispatch(hideLoading());
+            dispatch(vaiableSelectionUpdate(false));
+            let msg=statusMessages("error","Something went wrong. Please try again later.","small_mascot")
+            bootbox.alert(msg)
+        });
     }
 }
 
@@ -1395,9 +1413,9 @@ export function updateSelectAllAnlysis(flag){
 export function hideDataPreviewDropDown(props){
   if(props.indexOf("scores") != -1){
       $("#sub_settings").hide();
-      $('.dropdown-toggle').removeAttr('data-toggle'); 
+      $('.dropdown-toggle').removeAttr('data-toggle');
   }
-    
+
 }
 export function popupAlertBox(msg,props,url){
     bootbox.alert(msg,function(){
