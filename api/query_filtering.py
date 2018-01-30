@@ -73,7 +73,7 @@ class QueryCommonFiltering(object):
 
         if self.app_id is not None:
             self.top_3 = self.top_3.filter(app_id=self.app_id)
-            self.query_set = self.query_set(app_id=self.app_id)
+            self.query_set = self.query_set.filter(app_id=self.app_id)
             self.top_3 = self.top_3[0:3]
         else:
             self.top_3 = self.top_3[0:3]
