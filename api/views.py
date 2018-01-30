@@ -1096,9 +1096,7 @@ def get_info(request):
     # get recent activity
     def get_recent_activity():
         from auditlog.models import LogEntry
-        import pdb;
-        pdb.set_trace()
-        logs = LogEntry.objects.order_by('-timestamp')[:30]
+        logs = LogEntry.objects.filter(actor=user.id).order_by('-timestamp')[:30]
         # logCount = LogEntry.objects.exclude(change_message="No fields changed.").order_by('-action_time')[:20].count()
 
         recent_activity = []
