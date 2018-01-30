@@ -225,8 +225,22 @@ class TrainerView(viewsets.ModelViewSet):
 
         d_d_c = uiMetaData['varibaleSelectionArray']
 
+        print "tdc"
+        print t_d_c
+        print "ddc"
+        print d_d_c
+
         t_d_c_s = set([item['name'] for item in t_d_c if item["targetColumn"] != True])
         d_d_c_s = set([item['name'] for item in d_d_c])
+
+        print "tdcs"
+        print t_d_c_s
+        print "ddcs"
+        print d_d_c_s
+
+        print "d_d_c_s.issuperset(t_d_c_s)"
+        print d_d_c_s.issuperset(t_d_c_s)
+
         proceedFlag = d_d_c_s.issuperset(t_d_c_s)
 
         if proceedFlag != True:
