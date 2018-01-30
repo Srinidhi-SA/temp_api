@@ -198,6 +198,9 @@ class TrainerView(viewsets.ModelViewSet):
         serializer = TrainerSerlializer(instance=instance)
         trainer_data = serializer.data
         t_d_c = trainer_data['config']['config']['COLUMN_SETTINGS']['variableSelection']
+        uidColArray= [x["name"] for x in t_d_c if x["uidCol"] == True]
+
+
 
         score_datatset_slug = request.GET.get('score_datatset_slug')
         try:
@@ -225,13 +228,14 @@ class TrainerView(viewsets.ModelViewSet):
 
         d_d_c = uiMetaData['varibaleSelectionArray']
 
+
         print "tdc"
         print t_d_c
         print "ddc"
         print d_d_c
 
         t_d_c_s = set([item['name'] for item in t_d_c if item["targetColumn"] != True])
-        d_d_c_s = set([item['name'] for item in d_d_c])
+        d_d_c_s = set([item['name'] for item in d_d_c]).union(set(uidColArray))
 
         print "tdcs"
         print t_d_c_s
