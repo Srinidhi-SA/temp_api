@@ -47,7 +47,7 @@ export class OverViewTabs extends React.Component {
                             </div>
                             <span class="title">Phenomenal growth during Jan-Dec - 2014</span> </div>
                           <div class="panel-body">
-                            <div class="grp_height"> <img src="images/grp1.jpg" alt="grp 1" class="img-responsive"> </div>
+                            <div class="grp_height"> <img src="../assets/images/grp1.jpg" alt="grp 1" class="img-responsive"> </div>
                             <div class="grp_legends grp_legends_green">
                               <div class="grp_legend_label">
                                 <h3> 32% <small>Strong Growth</small> </h3>
@@ -70,7 +70,7 @@ export class OverViewTabs extends React.Component {
                             </div>
                             <span class="title">Moderate Decline - Mar to June 2014</span> </div>
                           <div class="panel-body">
-                            <div class="grp_height"> <img src="images/grp2.jpg" alt="grp 2" class="img-responsive"> </div>
+                            <div class="grp_height"> <img src="../assets/images/grp2.jpg" alt="grp 2" class="img-responsive"> </div>
                             <div class="grp_legends grp_legends_red">
                               <div class="grp_legend_label">
                                 <h3> 9% <small>Decline</small> </h3>
@@ -93,7 +93,7 @@ export class OverViewTabs extends React.Component {
                             </div>
                             <span class="title">Variance in sales</span> </div>
                           <div class="panel-body">
-                            <div class="grp_height"> <img src="images/grp3.jpg" alt="grp 3" class="img-responsive"> </div>
+                            <div class="grp_height"> <img src="../assets/images/grp3.jpg" alt="grp 3" class="img-responsive"> </div>
                             <div class="grp_legends grp_legends_primary">
                               <div class="grp_legend_label">
                                 <h3> 6% <small>Average Sale</small> </h3>
@@ -142,7 +142,7 @@ export class OverViewTabs extends React.Component {
                             </div>
                             <span class="title">Variance in sales</span> </div>
                           <div class="panel-body">
-                            <div class="grp_height"> <img src="images/graph_1.png" alt="grp 3" class="img-responsive"> </div>
+                            <div class="grp_height"> <img src="../assets/images/graph_1.png" alt="grp 3" class="img-responsive"> </div>
                             <div class="grp_legends grp_legends_primary">
                               <div class="grp_legend_label">
                                 <h3> 6% <small>Average Sale</small> </h3>
