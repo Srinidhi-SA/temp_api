@@ -59,13 +59,9 @@ def convert_metadata_according_to_transformation_setting(meta_data=None, transfo
         columnData=columnData,
         sampleData=sampleData
     )
-
-
     uiMetaData['transformation_settings'] = transformation_setting
     uiMetaData['modified'] = True
 
-    print 'after change----------------------------->ts'
-    print uiMetaData['transformation_settings']['existingColumns'][0]['columnSetting']
     varibaleSelectionArray = add_variable_selection_to_metadata(
         uiMetaData["columnDataUI"],
         uiMetaData['transformation_settings']
@@ -85,9 +81,6 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
     )
 
     ts = ts.get('existingColumns')
-
-    print 'before read_and_change_metadata----------------------------->ts'
-    print ts[0]['columnSetting']
 
     for col in ts:
         columnSetting_Temp = None
@@ -180,9 +173,6 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
 
         if columnSetting_Temp is not None:
             col['columnSetting'] = columnSetting_Temp
-
-    print 'after read_and_change_metadata----------------------------->ts'
-    print ts[0]['columnSetting']
 
     return metaData, headers
 
@@ -541,7 +531,6 @@ def get_advanced_setting(varibaleSelectionArray):
     for data in varibaleSelectionArray:
         if data['dateSuggestionFlag'] is True or data['columnType'] == 'datetime':
             time_count += 1
-        print data['targetColumn'], data['name']
         if data['targetColumn'] == True:
             target_column_name = data['name']
             target_data_type = data['columnType']
@@ -577,13 +566,6 @@ def get_advanced_setting(varibaleSelectionArray):
 
     if dimension_count_without_target > 0:
         add_performance = True
-
-    print "measure_count_without_target", measure_count_without_target
-    print "dimension_count_without_target", dimension_count_without_target
-    print 'dimension_count', dimension_count
-    print 'measure_count', measure_count
-    print 'datetime_list', datetime_list
-    print 'measure_list', measure_list
 
     things_to_add = {
         'overview': add_overview,
@@ -629,7 +611,6 @@ def add_trend_in_advanced_setting(things_to_add):
 
     raw_final_setting = copy.deepcopy(settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS)
 
-    print measure_checklist, things_to_add
     for key in measure_checklist:
         if things_to_add[key]:
             raw_final_setting['measures']['analysis'].append(match_ing[key])
@@ -769,7 +750,6 @@ def add_ui_metadata_to_metadata(meta_data):
 
 def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
     validcols = [ {"name":x["name"],"slug":x["slug"],"columnType":x["columnType"],"dateSuggestionFlag":x["dateSuggestionFlag"],"targetColumn":False,"targetColSetVarAs":None} for x in columnDataUI if x["consider"]==True]
-    # print "presence of none validcols",len([x for x in validcols if x != None])
     timeDimensionCols = []
     dateSuggestionCols = []
     validcols1 = []
@@ -783,20 +763,13 @@ def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
         else:
             x.update({"selected": True})
         validcols1.append(x)
-    # print "presence of none validcols1", len([x for x in validcols1 if x != None])
-    # validcols = [x.update({"columnType":"datetime"}) if x["columnType"] == "dimension" and x["dateSuggestionFlag"] == True else x for x in validcols1]
     validcols = validcols1
-    # print "presence of none validcols", len([x for x in validcols if x != None])
     transformSetting = transformation_settings["existingColumns"]
     uidcols = []
     polarity = []
     setVarAs = []
     for obj in transformSetting:
         colset = obj["columnSetting"]
-        for kk in colset:
-            print "OHOHOHHHHHH"
-            if kk["actionName"] == "unique_identifier":
-                print obj["name"],kk["actionName"],kk["status"]
         uidobj = [{"name":obj["name"],"slug":obj["slug"]} for x in colset if x["actionName"] == "unique_identifier" and x["status"]==True]
         if len(uidobj) > 0:
             uidcols.append(uidobj[0])
@@ -813,7 +786,6 @@ def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
             relevantAction = filter(lambda x: x["status"] == True, setVarAsActions)
             if len(relevantAction) > 0:
                 setVarAs.append({"name": obj["name"], "slug": obj["slug"], "setVarAs": relevantAction[0]["name"]})
-    print "uidcols",uidcols
     ######
     output = []
     selctedDateSuggestedCol = None
@@ -825,7 +797,6 @@ def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
             if obj["slug"]==selctedDateSuggestedCol:
                 obj.update({"selected":True})
         uidFilter = filter(lambda x:x["slug"] == obj["slug"],uidcols)
-        print "uidFilter",uidFilter
         if len(uidFilter) > 0:
             obj.update({"uidCol": True})
         else:

@@ -247,10 +247,7 @@ def decode_and_convert_chart_raw_data(data):
     subchart = data.get('subchart', True)
     rotate = data.get('rotate', False)
 
-    print "legend ------->> --------"
-    print legend
     c3_chart_details = dict()
-    print chart_type
     from api.models import SaveData
     sd = SaveData()
     sd.save()
@@ -585,7 +582,6 @@ def decode_and_convert_chart_raw_data(data):
 
         c3_chart_details['table_c3'] = pie_chart_data
         c3_chart_details["chart_c3"] = c3.get_json()
-        print "final donut object",c3_chart_details
 
         return c3_chart_details
 
@@ -621,11 +617,8 @@ def replace_chart_data(data, axes=None):
 
 
 def convert_chart_data_to_pie_chart(chart_data):
-    print "chart_data",chart_data
     pie_chart_data = zip(*chart_data)
-    print pie_chart_data
     pie_chart_data = map(list, pie_chart_data)
-    print pie_chart_data
     return pie_chart_data[1:]
 
 def put_x_axis_first_chart_data(chart_data, x_column=None):
@@ -1037,7 +1030,6 @@ def get_job_status_from_jobserver(instance=None):
         return "no instance ---!!"
 
     if instance.job is None:
-        print "no job---!!"
         return ""
     job_url = instance.job.url
     if instance.status in ['SUCCESS', 'FAILED']:
@@ -1078,13 +1070,11 @@ def normalize_job_status_for_yarn(status):
 def return_status_of_job_log(job_url):
     import urllib, json
     final_status = "RUNNING"
-    print job_url
     check_status = urllib.urlopen(job_url)
     data = json.loads(check_status.read())
     if data.get("status") == "FINISHED":
         final_status = data.get("status")
     elif data.get("status") == "ERROR" and "startTime" in data.keys():
-        #print data.get("status")
         final_status = data.get("status")
     elif data.get("status") == "RUNNING":
         final_status = data.get("status")
@@ -1189,7 +1179,6 @@ def auth_for_ml(func):
         generationTime = float(request.GET['generated_at'])
         currentTime = time.time()
         timeDiff = currentTime-generationTime
-        #print timeDiff
         if timeDiff < settings.SIGNATURE_LIFETIME:
             json_obj = {
                 "key1": key1,

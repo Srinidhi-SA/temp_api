@@ -226,8 +226,6 @@ class DatasetView(viewsets.ModelViewSet):
         uiMetaData = data['uiMetaData']
         ts = data.get('config')
 
-        print 'from ui----------------------------->ts'
-        print ts['existingColumns'][0]['columnSetting']
         uiMetaData = convert_metadata_according_to_transformation_setting(
                 uiMetaData,
                 transformation_setting=ts

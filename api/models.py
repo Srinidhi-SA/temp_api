@@ -109,7 +109,6 @@ class Job(models.Model):
             self.status = app_status.data['app']["state"]
             self.save()
         except Exception as err:
-            print "update_status_error -- "
             print err
 
     def get_original_object(self):
@@ -812,7 +811,6 @@ class Trainer(models.Model):
 
     def make_config_for_colum_setting(self):
         config = self.get_config()
-        print config
         return {
             'variableSelection': config['variablesSelection']
         }
@@ -1058,7 +1056,6 @@ class Score(models.Model):
         # Score related variable selection
         main_config = json.loads(self.config)
         score_variable_selection_config = main_config.get('variablesSelection')
-        print score_variable_selection_config
         output = {
             'modelvariableSelection': trainer_variable_selection_config,
             'variableSelection': score_variable_selection_config
@@ -1297,7 +1294,6 @@ class CustomApps(models.Model):
         #     self.status = "FAILED"
         # else:
         #     self.status = "INPROGRESS"
-        print "create app is called!"
         self.status = "Active"
         self.save()
 
@@ -1389,7 +1385,6 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
         job.config = json.dumps(readable_job_config)
         job.save()
     except Exception as exc:
-        print exc
         # send_alert_through_email(exc)
         return None
 
@@ -1487,13 +1482,11 @@ class StockDataset(models.Model):
 
         stock_symbols = self.get_stock_symbol_names()
         GOOGLE_REGEX_FILE = "google_regex.json"
-        print "stock_symbols  ---> crawl_data", stock_symbols
         extracted_data = crawl_extract(
             urls=generate_urls_for_crawl_news(stock_symbols),
             regex_dict=get_regex(GOOGLE_REGEX_FILE)
         )
         if len(extracted_data) < 1:
-            print "No news_data"
             return {}
         meta_data = convert_crawled_data_to_metadata_format(
             news_data=extracted_data,
@@ -1514,13 +1507,11 @@ class StockDataset(models.Model):
     def crawl_for_historic_data(self):
         stock_symbols = self.get_stock_symbol_names()
         GOOGLE_REGEX_FILE = "nasdaq_stock.json"
-        print "stock_symbols  ---> crawl_for_historic_data", stock_symbols
         extracted_data = crawl_extract(
             urls=generate_urls_for_historic_data(stock_symbols),
             regex_dict=get_regex(GOOGLE_REGEX_FILE)
         )
         if len(extracted_data) < 1:
-            print "No news_data"
             return {}
         meta_data = convert_crawled_data_to_metadata_format(
             news_data=extracted_data,

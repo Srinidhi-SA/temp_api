@@ -197,7 +197,6 @@ class TrainerView(viewsets.ModelViewSet):
 
         serializer = TrainerSerlializer(instance=instance)
         trainer_data = serializer.data
-        print trainer_data['config']['config']['COLUMN_SETTINGS'].keys()
         t_d_c = trainer_data['config']['config']['COLUMN_SETTINGS']['variableSelection']
 
         score_datatset_slug = request.GET.get('score_datatset_slug')
@@ -274,7 +273,6 @@ class ScoreView(viewsets.ModelViewSet):
         # try:
         data = request.data
         data = convert_to_string(data)
-        print data
         data['trainer'] = Trainer.objects.filter(slug=data['trainer'])
         data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
         data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
@@ -866,7 +864,6 @@ def write_into_databases(job_type, object_slug, results):
         dataset_object.save()
         return results
     elif job_type == "master":
-        # print "inside job_type==master"
         insight_object = Insight.objects.get(slug=object_slug)
 
         if "error_message" in results:
@@ -987,7 +984,6 @@ def convert_chart_data_to_beautiful_things(data):
             try:
                 card["data"] = helper.decode_and_convert_chart_raw_data(chart_raw_data)
             except Exception as e:
-                print "Error in Cards"
                 print e
                 card["data"] = {}
 
@@ -1058,7 +1054,6 @@ def get_info(request):
                 size += dataset.input_file.size
             except Exception as err:
                 pass
-                # print err
 
         return size
 
