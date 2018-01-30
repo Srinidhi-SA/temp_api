@@ -98,9 +98,10 @@ export class Card extends React.Component {
             tableData = [];
             tableData.push(story.data.toggleoff);
              var toggleData1 = this.renderCardData(tableData,"toggleOff hidden");
+             var randomChk = randomNum+"_chk"
             var inputChk =  <div className="switch-button switch-button-yesno col-md-1 col-md-offset-11">
-            <input type="checkbox" name="vehicle" value="Bike" id="swt9" onClick={this.handleCheckBoxEvent.bind(this)}/><span>
-            <label for="swt9"></label></span>
+            <input type="checkbox" name={randomChk} value={randomChk} id={randomChk} onClick={this.handleCheckBoxEvent.bind(this)}/><span>
+            <label for={randomChk}></label></span>
             </div>
             return (<div>{inputChk}{toggleData}{toggleData1}</div>);
             break;

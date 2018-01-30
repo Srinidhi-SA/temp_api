@@ -438,8 +438,6 @@ export class C3Chart extends React.Component {
                 </li>
               </ul>
             </div>
-
-
           </div>
 
           <div className="clearfix"></div>

@@ -63,6 +63,9 @@ def convert_metadata_according_to_transformation_setting(meta_data=None, transfo
 
     uiMetaData['transformation_settings'] = transformation_setting
     uiMetaData['modified'] = True
+
+    print 'after change----------------------------->ts'
+    print uiMetaData['transformation_settings']['existingColumns'][0]['columnSetting']
     varibaleSelectionArray = add_variable_selection_to_metadata(
         uiMetaData["columnDataUI"],
         uiMetaData['transformation_settings']
@@ -83,13 +86,20 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
 
     ts = ts.get('existingColumns')
 
+    print 'before read_and_change_metadata----------------------------->ts'
+    print ts[0]['columnSetting']
+
     for col in ts:
         columnSetting_Temp = None
+        uid_flag = False
         if "columnSetting" in col:
             columnSetting = col.get("columnSetting")
 
             for colset in columnSetting:
                 if colset.get("status") == True:
+
+                    if colset.get('actionName') == 'unique_identifier':
+                        uid_flag = True
 
                     if colset.get("actionName") == "delete":
 
@@ -161,12 +171,18 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
                         colset['displayName'] = 'Ignore for Analysis'
                         mdc.changes_on_consider_column(colName, True)
                         if colset['previous_status'] != colset["status"]:
-                            columnSetting_Temp = mdc.changes_in_column_data_if_column_is_considered(colName)
+                            columnSetting_Temp = mdc.changes_in_column_data_if_column_is_considered(
+                                                        colName,
+                                                        uid_flag=uid_flag
+                                                    )
                             colset['previous_status'] = colset["status"]
                             break
 
         if columnSetting_Temp is not None:
             col['columnSetting'] = columnSetting_Temp
+
+    print 'after read_and_change_metadata----------------------------->ts'
+    print ts[0]['columnSetting']
 
     return metaData, headers
 
@@ -414,7 +430,7 @@ class MetaDataChange(object):
                 # data['ignoreSuggestionFlag'] = not make_it
                 break
 
-    def changes_in_column_data_if_column_is_considered(self, colName):
+    def changes_in_column_data_if_column_is_considered(self, colName, uid_flag=False):
         import copy
         from django.conf import settings
         for head in self.columnData:
@@ -442,6 +458,13 @@ class MetaDataChange(object):
                 transformation_settings_ignore['status'] = False
                 transformation_settings_ignore['displayName'] = 'Ignore for Analysis'
                 transformation_settings_ignore['previous_status'] = False
+
+                if uid_flag is True:
+                    for head_column in head_columnSetting:
+                        if head_column.get('actionName') == 'unique_identifier':
+                            head_column['status'] = True
+                            break
+
                 head_columnSetting.append(transformation_settings_ignore)
                 head['consider'] = True
 
@@ -770,6 +793,10 @@ def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
     setVarAs = []
     for obj in transformSetting:
         colset = obj["columnSetting"]
+        for kk in colset:
+            print "OHOHOHHHHHH"
+            if kk["actionName"] == "unique_identifier":
+                print obj["name"],kk["actionName"],kk["status"]
         uidobj = [{"name":obj["name"],"slug":obj["slug"]} for x in colset if x["actionName"] == "unique_identifier" and x["status"]==True]
         if len(uidobj) > 0:
             uidcols.append(uidobj[0])
@@ -786,6 +813,7 @@ def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
             relevantAction = filter(lambda x: x["status"] == True, setVarAsActions)
             if len(relevantAction) > 0:
                 setVarAs.append({"name": obj["name"], "slug": obj["slug"], "setVarAs": relevantAction[0]["name"]})
+    print "uidcols",uidcols
     ######
     output = []
     selctedDateSuggestedCol = None
@@ -797,6 +825,7 @@ def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
             if obj["slug"]==selctedDateSuggestedCol:
                 obj.update({"selected":True})
         uidFilter = filter(lambda x:x["slug"] == obj["slug"],uidcols)
+        print "uidFilter",uidFilter
         if len(uidFilter) > 0:
             obj.update({"uidCol": True})
         else:

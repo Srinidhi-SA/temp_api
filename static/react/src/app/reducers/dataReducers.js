@@ -183,6 +183,10 @@ export default function reducer(state = {
           CopyOfMeasures: [],
           CopyOfDimension: [],
           CopyTimeDimension: [],
+          measureAllChecked:true,
+          dimensionAllChecked:true,
+          
+          
         }
       }
       break;
