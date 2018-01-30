@@ -280,7 +280,6 @@ class ScoreView(viewsets.ModelViewSet):
         data['trainer'] = Trainer.objects.filter(slug=data['trainer'])
         data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
         data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
-        import pdb;pdb.set_trace()
         data['app_id'] = int(json.loads(data['config'])['app_id'])
         serializer = ScoreSerlializer(data=data)
         if serializer.is_valid():
