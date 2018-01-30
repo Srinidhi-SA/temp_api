@@ -473,7 +473,9 @@ class Dataset(models.Model):
             'Rows': 'number of rows',
             'Columns': 'number of columns',
             'Measures': 'number of measures',
+            'Measure': 'number of measures',
             'Dimensions': 'number of dimensions',
+            'Dimension': 'number of dimensions',
             'Time Dimension': 'number of time dimension',
         }
         if 'metaData' in config:
