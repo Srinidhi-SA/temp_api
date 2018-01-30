@@ -898,8 +898,8 @@ class Trainer(models.Model):
         variable_selected = []
 
         for variables in variableSelection:
-            if 'selected' in variables:
-                if variables['selected'] is True:
+            if 'targetColumn' in variables:
+                if variables['targetColumn'] is True:
                     variable_selected.append(variables['name'])
                     break
 
@@ -1137,8 +1137,8 @@ class Score(models.Model):
         variable_selected = []
 
         for variables in variableSelection:
-            if 'selected' in variables:
-                if variables['selected'] is True:
+            if 'targetColumn' in variables:
+                if variables['targetColumn'] is True:
                     variable_selected.append(variables['name'])
                     break
 
