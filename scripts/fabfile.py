@@ -446,17 +446,22 @@ def download_sql_and_dump(branch='development'):
     server_details= details['server_details']
     current_time = time.strftime("%Y%m%dT%H%M%S", time.gmtime())
     base_remote_path = path_details.get('base_remote_path')
-    with cd(base_remote_path):
+    dump_file_name = "datadump{0}.json".format(current_time)
+    tar_dump_file_name = dump_file_name + ".tar.gz"
+    base_remote_path_json = base_remote_path + "/" + tar_dump_file_name
+    local_dumping_path = '/tmp'
+    local_dumping_file_path = '/tmp/' + tar_dump_file_name
 
-        run("python manage.py dumpdata -e contenttypes -e auth.Permission > datadump{0}.json".format(current_time))
-        path_json = base_remote_path + "/" + "datadump{0}.json".format(current_time)
-        local_dumping_path = '/tmp'
-        get(path_json, local_dumping_path)
+    with cd(base_remote_path):
+        run("python manage.py dumpdata -e contenttypes -e auth.Permission > {0}".format(dump_file_name))
+        run("tar -zcvf {0} {1}".format(tar_dump_file_name, dump_file_name))
+        get(base_remote_path_json, local_dumping_path)
+
+    with lcd(local_dumping_path):
+        local('tar -xzvf {0}'.format(local_dumping_file_path))
 
     with lcd(BASE_DIR):
-        file_name = 'datadump{0}.json'.format(current_time)
-        locapath = '/tmp/' + file_name
-        local('python manage.py loaddata {0}'.format(locapath))
+        local('python manage.py loaddata {0}'.format(local_dumping_file_path))
 
 
 @task
