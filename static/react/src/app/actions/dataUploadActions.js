@@ -116,7 +116,6 @@ export function triggerDataUploadAnalysis(data,percentage, message){
         dispatch(dataUploadLoaderMsg(message));
         dispatch(openDULoaderPopup());
         dataUploadSuccess(data,dispatch)
-
     }
 }
 function dataUploadSuccess(data, dispatch) {
@@ -193,10 +192,10 @@ export function dataUploadLoaderMsg(message) {
 export function dataSubsetting(subsetRq, slug) {
 
   return (dispatch) => {
-    dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
+   dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
     dispatch(dataUploadLoaderMsg(DULOADERPERMSG));
-    //dispatch(close());
-   dispatch(openDULoaderPopup());
+   dispatch(close());
+ dispatch(openDULoaderPopup());
     return triggerDataSubsetting(subsetRq, slug).then(([response, json]) => {
       //dispatch(dataUploadLoaderValue(store.getState().datasets.dULoaderValue+DULOADERPERVALUE));
       if (response.status === 200) {

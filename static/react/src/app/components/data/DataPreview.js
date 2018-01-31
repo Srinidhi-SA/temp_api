@@ -169,7 +169,22 @@ export class DataPreview extends React.Component {
 
 	}
 
-
+  componentWillUpdate(){
+      let currentDataset = store.getState().datasets.selectedDataSet
+      if (!isEmpty(this.props.dataPreview) && currentDataset != this.props.match.params.slug && this.props.dataPreview != null && this.props.dataPreview.status != 'FAILED') {
+        let url = '/data/' + currentDataset;
+        console.log(this.props);
+        this.props.history.push(url)
+       // return (<Redirect to={url}/>)
+      }
+      if (!isEmpty(this.props.dataPreview) && this.props.dataPreview != null && this.props.dataPreview.status == 'FAILED') {
+          console.log("goitn to data url")
+          this.props.dispatch(clearDataPreview())
+          this.props.dispatch(clearLoadingMsg())
+          let url = '/data/'
+          this.props.history.push(url)
+        }
+  }
 	setSideElements(e){
 
     //renderFlag=true;
@@ -321,19 +336,8 @@ export class DataPreview extends React.Component {
       });
     });
 
-    let currentDataset = store.getState().datasets.selectedDataSet
-    if (!isEmpty(this.props.dataPreview) && currentDataset != this.props.match.params.slug && this.props.dataPreview != null && this.props.dataPreview.status != 'FAILED') {
-      let url = '/data/' + currentDataset
-      return (<Redirect to={url}/>)
-    }
-    if (!isEmpty(this.props.dataPreview) && this.props.dataPreview != null && this.props.dataPreview.status == 'FAILED') {
-      console.log("goitn to data url")
-      this.props.dispatch(clearDataPreview())
-      this.props.dispatch(clearLoadingMsg())
-      let url = '/data/'
-      return (<Redirect to={url}/>)
-    }
-    $('body').pleaseWait('stop');
+  
+   
     this.isSubsetted = this.props.subsettingDone;
     //  const data = store.getState().data.dataPreview.meta_data.data;
 
