@@ -1037,7 +1037,7 @@ TRANSFORMATION_SETTINGS_CONSTANT = {
                 "status":False,
                 "listOfActions":[
                     {"name":"numeric","displayName":"Numeric","status":False},
-                    {"name":"string","displayName":"Text","status":False},
+                    {"name":"text","displayName":"Text","status":False},
                 ]
             },
             {

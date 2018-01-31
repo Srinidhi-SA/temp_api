@@ -342,7 +342,7 @@ class MetaDataChange(object):
 
         match_in_columnstats = {
             'numeric': 'measure',
-            'string': 'dimension'
+            'text': 'dimension'
         }
 
         for data in self.columnData:
