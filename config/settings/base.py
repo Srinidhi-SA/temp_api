@@ -1037,7 +1037,7 @@ TRANSFORMATION_SETTINGS_CONSTANT = {
                 "status":False,
                 "listOfActions":[
                     {"name":"numeric","displayName":"Numeric","status":False},
-                    {"name":"text","displayName":"Text","status":False},
+                    {"name":"string","displayName":"Text","status":False},
                 ]
             },
             {
@@ -1122,7 +1122,9 @@ TRANSFORMATION_SETTINGS_CONSTANT_DELETE = {
 }
 
 
-TRANSFORMATION_SETTINGS_IGNORE = {"actionName": "ignore_suggestion", "displayName": "Consider for Analysis", "status": False}
+TRANSFORMATION_SETTINGS_IGNORE = {
+    "actionName": "ignore_suggestion", "displayName": "Consider for Analysis", "status": False
+}
 
 CONCEPTS = {'corporate': ['leadership change', 'public relations'],
             'expansion - geography/segment': ['acquisition',
@@ -1279,3 +1281,10 @@ import config_file_name_to_run
 UI_VERSION = config_file_name_to_run.UI_VERSION
 
 PROCEED_TO_UPLOAD_CONSTANT = 15000000
+
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE

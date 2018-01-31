@@ -1,6 +1,6 @@
 
-import {API,EMR} from "../helpers/env";
-import {PERPAGE,isEmpty,getUserDetailsOrRestart,APPSPERPAGE} from "../helpers/helper";
+import {API,EMR,STATIC_URL} from "../helpers/env";
+import {PERPAGE,isEmpty,getUserDetailsOrRestart,APPSPERPAGE,statusMessages} from "../helpers/helper";
 import store from "../store";
 import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,CUSTOMERDATA,HISTORIALDATA,EXTERNALDATA,DELETEMODEL,
     RENAMEMODEL,DELETESCORE,RENAMESCORE,DELETEINSIGHT,RENAMEINSIGHT,SUCCESS,FAILED,DELETEAUDIO,RENAMEAUDIO} from "../helpers/helper";
@@ -10,6 +10,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
     import React from "react";
     import { showLoading, hideLoading } from 'react-redux-loading-bar';
     import {createcustomAnalysisDetails} from './signalActions';
+
 
     export var appsInterval = null;
 
@@ -107,7 +108,8 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
         console.log(modelName);
         console.log(targetVariable);
         if($('#createModelAnalysisList option:selected').val() == ""){
-            bootbox.alert("Please select a variable to analyze...");
+            let msg=statusMessages("warning","Please select a variable to analyze...","small_mascot")
+              bootbox.alert(msg);
             return false;
         }
         return (dispatch) => {
@@ -150,7 +152,11 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 "app_id":app_id,
                 "config":details
             }),
-        }).then( response => Promise.all([response, response.json()]));
+        }).then( response => Promise.all([response, response.json()])).catch(function(error) {
+          dispatch(closeAppsLoaderValue());
+          dispatch(updateModelSummaryFlag(false));
+          bootbox.alert(statusMessages("error","Unable to connect to server. Check your connection please try again.","small_mascot"))
+        });
     }
     function createModelSuccess(data,dispatch){
         var slug = data.slug;
@@ -1798,7 +1804,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             flag
         }
     }
-    
+
     export function updateSelectedVariable(event){
         var selOption = event.target.childNodes[event.target.selectedIndex];
         var varType = selOption.value;
@@ -1806,8 +1812,8 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
         var varSlug = selOption.getAttribute("name");
         return {type: "SET_POSSIBLE_LIST", varType, varText, varSlug};
     }
-    
-    
+
+
     export function checkCreateScoreToProceed(selectedDataset){
         var modelSlug = store.getState().apps.modelSlug;
         var response = "";
@@ -1818,17 +1824,17 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 }
             });
         }
-        
+
     }
-    
+
     function triggerAPI(modelSlug,selectedDataset){
         return fetch(API+'/api/trainer/'+modelSlug+'/comparision/?score_datatset_slug='+selectedDataset+'',{
             method: 'get',
             headers: getHeader(getUserDetailsOrRestart.get().userToken),
         }).then( response => Promise.all([response, response.json()]));
     }
-    
-    
+
+
     function scoreToProceed(flag){
         return {type: "SCORE_TO_PROCEED", flag};
     }

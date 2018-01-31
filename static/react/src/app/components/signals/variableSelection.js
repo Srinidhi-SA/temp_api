@@ -11,7 +11,9 @@ import {DataVariableSelection} from "../data/DataVariableSelection";
 import {CreateSignalLoader} from "../common/CreateSignalLoader";
 import {openCsLoaderModal,closeCsLoaderModal} from "../../actions/createSignalActions";
 import {AdvanceSettings} from "./AdvanceSettings";
-import {SET_VARIABLE} from "../../helpers/helper";
+import {SET_VARIABLE,statusMessages} from "../../helpers/helper";
+import {STATIC_URL} from "../../helpers/env";
+
 
 
 var selectedVariables = {measures:[],dimensions:[],date:null};  // pass selectedVariables to config
@@ -71,9 +73,11 @@ export class VariableSelection extends React.Component {
     createSignal(event){
         event.preventDefault();
         var isAnalysisChecked = checkAnalysisIsChecked();
+
         //this.props.dispatch(handleTargetSelection());
         if($('#signalVariableList option:selected').val() == ""){
-            bootbox.alert("Please select a variable to analyze...");
+          let msg=statusMessages("warning","Please select a variable to analyze...","small_mascot")
+              bootbox.alert(msg);
             return false;
         }
         if(store.getState().datasets.dataSetTimeDimensions.length > 0){
@@ -90,7 +94,8 @@ export class VariableSelection extends React.Component {
         }
        
         if(!isAnalysisChecked){
-            bootbox.alert("Please select atleast one analysis to Proceed..");
+          let msg=statusMessages("warning","Please select atleast one analysis to Proceed..","small_mascot")
+              bootbox.alert(msg);
             return false;
         }
         
@@ -152,7 +157,7 @@ export class VariableSelection extends React.Component {
 
     componentWillUpdate(){
         console.log("Advancesettings disbale check:::: ");
-  
+
         if(!this.props.getVarType){
             $("#allAnalysis").prop("disabled",true);
             $("#advance-setting-link").hide();
@@ -187,7 +192,7 @@ export class VariableSelection extends React.Component {
     }
     render(){
         var that= this;
-     
+
 
         if(!$.isEmptyObject(this.props.selectedSignalAnalysis) && !that.signalFlag){
             console.log("move from variable selection page");

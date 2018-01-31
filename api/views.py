@@ -197,8 +197,10 @@ class TrainerView(viewsets.ModelViewSet):
 
         serializer = TrainerSerlializer(instance=instance)
         trainer_data = serializer.data
-        print trainer_data['config']['config']['COLUMN_SETTINGS'].keys()
         t_d_c = trainer_data['config']['config']['COLUMN_SETTINGS']['variableSelection']
+        uidColArray= [x["name"] for x in t_d_c if x["uidCol"] == True]
+
+
 
         score_datatset_slug = request.GET.get('score_datatset_slug')
         try:
@@ -227,7 +229,8 @@ class TrainerView(viewsets.ModelViewSet):
         d_d_c = uiMetaData['varibaleSelectionArray']
 
         t_d_c_s = set([item['name'] for item in t_d_c if item["targetColumn"] != True])
-        d_d_c_s = set([item['name'] for item in d_d_c])
+        d_d_c_s = set([item['name'] for item in d_d_c]).union(set(uidColArray))
+
         proceedFlag = d_d_c_s.issuperset(t_d_c_s)
 
         if proceedFlag != True:
@@ -274,10 +277,10 @@ class ScoreView(viewsets.ModelViewSet):
         # try:
         data = request.data
         data = convert_to_string(data)
-        print data
         data['trainer'] = Trainer.objects.filter(slug=data['trainer'])
         data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
         data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
+        data['app_id'] = int(json.loads(data['config'])['app_id'])
         serializer = ScoreSerlializer(data=data)
         if serializer.is_valid():
             score_object = serializer.save()
@@ -866,7 +869,6 @@ def write_into_databases(job_type, object_slug, results):
         dataset_object.save()
         return results
     elif job_type == "master":
-        # print "inside job_type==master"
         insight_object = Insight.objects.get(slug=object_slug)
 
         if "error_message" in results:
@@ -987,7 +989,6 @@ def convert_chart_data_to_beautiful_things(data):
             try:
                 card["data"] = helper.decode_and_convert_chart_raw_data(chart_raw_data)
             except Exception as e:
-                print "Error in Cards"
                 print e
                 card["data"] = {}
 
@@ -1058,7 +1059,6 @@ def get_info(request):
                 size += dataset.input_file.size
             except Exception as err:
                 pass
-                # print err
 
         return size
 
@@ -1101,8 +1101,9 @@ def get_info(request):
     # get recent activity
     def get_recent_activity():
         from auditlog.models import LogEntry
-        logs = LogEntry.objects.order_by('-timestamp')[:30]
+        logs = LogEntry.objects.filter(actor=user.id).order_by('-timestamp')[:30]
         # logCount = LogEntry.objects.exclude(change_message="No fields changed.").order_by('-action_time')[:20].count()
+
         recent_activity = []
         for obj in logs:
             log_user = str(obj.actor)

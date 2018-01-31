@@ -49,18 +49,9 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
 
         application_id = ""
 
-        cur_process = subprocess.Popen(command_array, stderr=subprocess.PIPE)
-        # TODO: @Ankush need to write the error to error log and standard out to normal log
-        for line in iter(lambda: cur_process.stderr.readline(), ''):
-            # print(line.strip())
-            match = re.search('Submitted application (.*)$', line)
-            if match:
-                application_id = match.groups()[0]
-                # print "$" * 100
-                # print application_id
-                # print "$" * 100
-                break
-        # print "process", cur_process
+        from tasks import submit_job_separate_task
+
+        submit_job_separate_task.delay(command_array, slug)
 
     except Exception as e:
         print 'Error-->submit_job_through_yarn--->'
@@ -262,7 +253,7 @@ class InsightListSerializers(serializers.ModelSerializer):
 class TrainerSerlializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
-        print get_job_status(instance)
+        get_job_status(instance)
         ret = super(TrainerSerlializer, self).to_representation(instance)
         dataset = ret['dataset']
         dataset_object = Dataset.objects.get(pk=dataset)
@@ -295,7 +286,7 @@ class TrainerSerlializer(serializers.ModelSerializer):
 class TrainerListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
-        print get_job_status(instance)
+        get_job_status(instance)
         ret = super(TrainerListSerializer, self).to_representation(instance)
         dataset = ret['dataset']
         dataset_object = Dataset.objects.get(pk=dataset)
@@ -320,7 +311,7 @@ class TrainerListSerializer(serializers.ModelSerializer):
 class ScoreSerlializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
-        print get_job_status(instance)
+        get_job_status(instance)
         ret = super(ScoreSerlializer, self).to_representation(instance)
         trainer = ret['trainer']
         trainer_object = Trainer.objects.get(pk=trainer)
@@ -357,7 +348,7 @@ class ScoreSerlializer(serializers.ModelSerializer):
 class ScoreListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
-        print get_job_status(instance)
+        get_job_status(instance)
         ret = super(ScoreListSerializer, self).to_representation(instance)
         trainer = ret['trainer']
         trainer_object = Trainer.objects.get(pk=trainer)
@@ -403,7 +394,6 @@ class RoboSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
 
-        # print get_jobserver_status(instance)
         from api.datasets.serializers import DatasetSerializer
         ret = super(RoboSerializer, self).to_representation(instance)
 

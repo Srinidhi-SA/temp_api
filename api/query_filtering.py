@@ -20,6 +20,7 @@ class QueryCommonFiltering(object):
     def __init__(self, query_set=None, request=None):
         self.query_set = query_set
         self.request = request
+        self.top_3 = query_set
 
         if 'name' in request.query_params:
             temp_name = self.request.query_params.get('name')
@@ -59,7 +60,6 @@ class QueryCommonFiltering(object):
                 self.app_name = temp_app_name
 
         if 'filter_fields' in request.query_params:
-            #print "ap[ filters#####",request.query_params
             temp_app_filter = self.request.query_params.get('filter_fields')
             if temp_app_filter is None or temp_app_filter is "" or temp_app_filter is []:
                 self.filter_fields = self.filter_fields
@@ -72,10 +72,11 @@ class QueryCommonFiltering(object):
             self.query_set = self.query_set.filter(name__icontains=self.name)
 
         if self.app_id is not None:
+            self.top_3 = self.top_3.filter(app_id=self.app_id)
             self.query_set = self.query_set.filter(app_id=self.app_id)
-            self.top_3 = self.query_set[0:3]
+            self.top_3 = self.top_3[0:3]
         else:
-            self.top_3 = self.query_set[0:3]
+            self.top_3 = self.top_3[0:3]
 
         if self.app_name is not None:
             self.query_set = self.query_set.filter(Q(name__icontains=self.app_name)|Q(tags__icontains=self.app_name))

@@ -1,7 +1,7 @@
 import React from "react";
 import {API} from "../helpers/env";
 import {CSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,PERPAGE,SUCCESS,FAILED,getUserDetailsOrRestart,DIMENSION,
-    MEASURE,SET_VARIABLE,PERCENTAGE,GENERIC_NUMERIC,SET_POLARITY,DYNAMICLOADERINTERVAL,UNIQUE_IDENTIFIER,handleJobProcessing} from "../helpers/helper";
+    MEASURE,SET_VARIABLE,PERCENTAGE,GENERIC_NUMERIC,SET_POLARITY,DYNAMICLOADERINTERVAL,UNIQUE_IDENTIFIER,handleJobProcessing,statusMessages} from "../helpers/helper";
 import {connect} from "react-redux";
 import store from "../store";
 import {openCsLoaderModal, closeCsLoaderModal, updateCsLoaderValue, updateCsLoaderMsg} from "./createSignalActions";
@@ -251,7 +251,6 @@ export function getSignalAnalysis(token, errandId) {
   return (dispatch) => {
     return fetchPosts_analysis(token, errandId).then(([response, json]) => {
       if (response.status === 200) {
-
         dispatch(fetchPostsSuccess_analysis(json, errandId, dispatch))
       } else {
         dispatch(fetchPostsError_analysis(json));
@@ -272,7 +271,7 @@ function fetchPosts_analysis(token, errandId) {
       'Content-Type': 'application/x-www-form-urlencoded'
     }
   }).then(response => Promise.all([response, response.json()])).catch(function(error) {
-    bootbox.alert("Something went wrong. Please try again later.")
+      bootbox.alert(statusMessages("error","Something went wrong. Please try again later.","small_mascot"))
   });
 
 }
@@ -286,7 +285,7 @@ function fetchPostsSuccess_analysis(signalAnalysis, errandId, dispatch) {
     dispatch(clearLoadingMsg());
   } else if (signalAnalysis.status == FAILED || signalAnalysis.status == false) {
     //bootbox.alert("Your signal could not be created. Please try later.")
-    bootbox.alert("The signal could not be created. Please check the dataset and try again.")
+    bootbox.alert(statusMessages("error","The signal could not be created. Please check the dataset and try again.","small_mascot"))
     clearInterval(createSignalInterval);
     dispatch(closeCsLoaderModal())
     dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
@@ -302,7 +301,7 @@ function fetchPostsError_analysis(json) {
   return {type: "SIGNAL_ANALYSIS_ERROR", json}
 }
 export function setPossibleAnalysisList(varType,varText,varSlug) {
-    
+
     if (varType == MEASURE) {
         $(".treatAsCategorical").removeClass("hidden")
         var isVarTypeChanged = checkIfDataTypeChanges(varSlug);
@@ -369,11 +368,11 @@ function triggerAdvanceSettingsAPI(variableSelection){
 function updateTargetVariable(slug,array){
     for(var i=0;i<array.length;i++){
     if(array[i].slug == slug){
-        array[i].targetColumn = !array[i].targetColumn; 
+        array[i].targetColumn = !array[i].targetColumn;
         array[i].targetColSetVarAs = null;
         break;
     }
-} 
+}
 return array;
 }
 
@@ -386,7 +385,7 @@ export function hideTargetVariable(event,jobType){
     var prevVarSlug = store.getState().signals.selVarSlug;
     var prevVarType = store.getState().signals.getVarType;
     var prevSetVarAs = null;
-    
+
     var dataSetMeasures = store.getState().datasets.dataSetMeasures.slice();
     var dataSetDimensions = store.getState().datasets.dataSetDimensions.slice();
     var dataSetTimeDimensions = store.getState().datasets.dataSetTimeDimensions.slice();
@@ -401,19 +400,19 @@ export function hideTargetVariable(event,jobType){
 
     dataSetDimensions = updateTargetVariable(prevVarSlug,dataSetDimensions)
     dataSetMeasures = updateTargetVariable(prevVarSlug,dataSetMeasures)
-  
-  
+
+
     if(prevVarType == null){
         count = count-1;
     }
     dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
-   
+
     if(jobType == "signals"){
         dispatch(updateAdvanceSettings(event));
     }
-    
+
     }
-    
+
 }
 function checkIfDataTypeChanges(varSlug) {
   var transformSettings = store.getState().datasets.dataTransformSettings;
@@ -448,14 +447,14 @@ function updateSetVarAs(colSlug,evt){
         for(var i=0;i<dataSetMeasures.length;i++){
             if(dataSetMeasures[i].slug == colSlug){
                 if(dataSetMeasures[i].targetColSetVarAs == null){
-                    dataSetMeasures[i].targetColSetVarAs = "percentage"; 
+                    dataSetMeasures[i].targetColSetVarAs = "percentage";
                     break;
                 }
                 else{
-                    dataSetMeasures[i].targetColSetVarAs = null; 
+                    dataSetMeasures[i].targetColSetVarAs = null;
                     break;
                 }
-                
+
             }
         }
         dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
@@ -464,7 +463,7 @@ function updateSetVarAs(colSlug,evt){
 export function updateCategoricalVariables(colSlug, colName, actionName, evt) {
   return (dispatch) => {
         dispatch(updateSetVarAs(colSlug));
-      
+
   }
 }
 
@@ -538,7 +537,7 @@ export function showDialogBox(slug,dialog,dispatch,evt){
 		})
 	dialog.show({
 		  title: 'Delete Signal',
-		  body: 'Are you sure you want to delete this Signal ? Yes , No',
+		  body: 'Are you sure you want to delete this Signal?',
 		  actions: [
 		    Dialog.CancelAction(),
 		    Dialog.OKAction(() => {
@@ -566,7 +565,8 @@ function deleteSignal(slug, dialog, dispatch) {
       dispatch(getList(getUserDetailsOrRestart.get().userToken, store.getState().signals.signalList.current_page));
       dispatch(hideLoading());
     } else {
-      dialog.showAlert("The card could not be deleted. Please try again later.");
+      //dialog.showAlert("The card could not be deleted. Please try again later.");
+      bootbox.alert(statusMessages("error","The card could not be deleted. Please try again later.","without_mascot"))
       dispatch(hideLoading());
     }
   })
