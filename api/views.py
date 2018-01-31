@@ -198,6 +198,9 @@ class TrainerView(viewsets.ModelViewSet):
         serializer = TrainerSerlializer(instance=instance)
         trainer_data = serializer.data
         t_d_c = trainer_data['config']['config']['COLUMN_SETTINGS']['variableSelection']
+        uidColArray= [x["name"] for x in t_d_c if x["uidCol"] == True]
+
+
 
         score_datatset_slug = request.GET.get('score_datatset_slug')
         try:
@@ -226,7 +229,8 @@ class TrainerView(viewsets.ModelViewSet):
         d_d_c = uiMetaData['varibaleSelectionArray']
 
         t_d_c_s = set([item['name'] for item in t_d_c if item["targetColumn"] != True])
-        d_d_c_s = set([item['name'] for item in d_d_c])
+        d_d_c_s = set([item['name'] for item in d_d_c]).union(set(uidColArray))
+
         proceedFlag = d_d_c_s.issuperset(t_d_c_s)
 
         if proceedFlag != True:
@@ -276,6 +280,7 @@ class ScoreView(viewsets.ModelViewSet):
         data['trainer'] = Trainer.objects.filter(slug=data['trainer'])
         data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
         data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
+        data['app_id'] = int(json.loads(data['config'])['app_id'])
         serializer = ScoreSerlializer(data=data)
         if serializer.is_valid():
             score_object = serializer.save()
