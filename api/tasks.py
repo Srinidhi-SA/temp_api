@@ -156,3 +156,20 @@ def write_into_databases(job_type, object_slug, results):
         return results
     else:
         print "No where to write"
+
+
+@task(name='save_results_to_job')
+def save_results_to_job(slug, results):
+    from api.helper import get_db_object
+    import json
+
+    job = get_db_object(model_name=Job.__name__,
+                                   model_slug=slug
+                                   )
+
+    if isinstance(results, str) or isinstance(results, unicode):
+        job.results = results
+    elif isinstance(results, dict):
+        results = json.dumps(results)
+        job.results = results
+    job.save()

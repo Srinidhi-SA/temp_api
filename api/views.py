@@ -797,12 +797,10 @@ def set_result(request, slug=None):
     if not job:
         return JsonResponse({'result': 'Failed'})
     results = request.body
-    if isinstance(results, str) or isinstance(results, unicode):
-        job.results = results
-    elif isinstance(results, dict):
-        results = json.dumps(results)
-        job.results = results
-    job.save()
+    tasks.save_results_to_job.delay(
+        slug,
+        results
+    )
     if "status=failed" in request.body:
         results = {'error_message': 'Failed'}
         results = tasks.write_into_databases.delay(
