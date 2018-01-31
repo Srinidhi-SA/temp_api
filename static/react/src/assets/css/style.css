@@ -5373,7 +5373,7 @@ button:focus {
 	width: 80px;
 	height: 100%;
 	background-color: #333333;
-	border-right: 1px solid #edecec;
+	/*border-right: 1px solid #edecec;*/
 	top: 60px;
 }
 .side-menu .navbar {
@@ -5387,7 +5387,7 @@ button:focus {
 	background: #00998c;color: #FFF; }
 .side-menu .navbar-nav li {
 	display: block;
-	width: 79px;
+	width: 80px;
 }
 .side-menu .navbar-nav li a {
 	text-align: center;
@@ -13777,7 +13777,7 @@ div.dataTables_wrapper div.dataTables_length label select {
     color: #333333;
     /* border: 1px solid; */
     text-overflow: ellipsis;
-    overflow: hidden; white-space: nowrap; text-transform: capitalize; font-weight:normal }
+    overflow: hidden; white-space: nowrap; text-transform: capitalize; font-weight:normal; display:block; }
 
 .newCardTitle a.title {
     display: inline-block;
@@ -13833,7 +13833,7 @@ ul.app_labels li:first-child { margin: 0; padding: 7px 5px }
         padding-left: 12px;
 }
 .newCardStyle .card-center .fa { line-height:100px; color:#FFF; }
-.newCardStyle.firstCard:hover { background: #007a70; }
+.newCardStyle.firstCard:hover { background: #FFFFFF; color:#00998c }
 /*.newCardStyle:hover { background: #f3fffe; }*/
 /*.newCardStyle:hover .fa, .newCardStyle:hover .newStoryCard { color:#00998c}*/
 .datalist {
@@ -13910,7 +13910,7 @@ ul.app_labels li:first-child { margin: 0; padding: 7px 5px }
 	overflow: hidden;
 	transition: all .1s ease-in-out;
 	cursor:pointer;*/
-	    background-color: #FFF;
+	background-color: #FFF;
     border-style: solid;
     border-width: 1px;
     border-color: #d2d2d2 #b3b2b2 #acacac #d2d2d2;
@@ -13919,9 +13919,7 @@ ul.app_labels li:first-child { margin: 0; padding: 7px 5px }
 .card-center{
 	line-height: 107px;
 	padding-left:0px;
-	padding-right:20px;
-
-}
+	padding-right:20px; }
 .card-center-tile {
     height: 66px;
     padding: 0 15px;
@@ -13944,7 +13942,7 @@ ul.app_labels li:first-child { margin: 0; padding: 7px 5px }
 .card-footer .left_div {
     float: left;
     width: 57%;
-     margin-top: 1px;
+     margin-top: 2px;
     line-height: 18px;
 
 }
@@ -14879,13 +14877,20 @@ div.pred_disp_block  p, .pred_disp_block_store p { font-size:12px; }
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap; }
-a.more_button { color: #b3b3b3}
+a.more_button { color: #b3b3b3; padding: 0 10px; margin-right: 9px; cursor:pointer}
+
+.card-center-tile .pull-right>.dropdown-menu {
+    right: 15px;
+    left: auto;
+    top: 20px
+}
 
 .border-success { border-color:#00998c}
 .border-danger { border-color:#EF6262}
 .border-warning { border-color:#FFC870}
 .col-md-6 .col-md-12 .table-style { padding-left:0; padding-right:0; margin-top:0; }
 .col-md-6 .col-md-12 .table-style .table{ margin-bottom: 0; }
+.col-md-12 .btn-toolbar { margin-bottom: 10px; }
 /**************** Css realated to developers, keep the source down ***/
 #prediction_dropdown{
 	    width: 40%;
@@ -15314,12 +15319,8 @@ display: inline-block;
 }*/
 
 .dashboard_head { background-color: #849190; */ Old #d2d2d2 */ }
-.dashboard_head .page-head { color:#FFFFFF; }
-.active_copy {
-    padding-left: 25px;
-    padding-right: 25px;
-    padding-top: 15px;
-}
+.dashboard_head .page-head { color:#FFFFFF; padding: 15px 21px 0px 21px }
+.active_copy { padding:0 25px 10px 25px; }
 .newStoryCard { color: inherit;
     font-size: 4em;
     line-height: inherit;
@@ -15330,4 +15331,4 @@ display: inline-block;
     padding-top: 10px;
 }
 	.card-center-tile {
-		height: 70px;	}
+		height: 65px;	}
