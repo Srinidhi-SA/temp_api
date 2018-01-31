@@ -342,17 +342,7 @@ class MetaDataChange(object):
 
         match_in_columnstats = {
             'numeric': 'measure',
-            'text': 'dimension'
-        }
-
-        match_in_row_metaData = {
-            'numeric': 'measures',
-            'text': 'dimensions'
-        }
-
-        match_in_array_metaData = {
-            'numeric': 'measureColumns',
-            'text': 'dimensionColumns'
+            'string': 'dimension'
         }
 
         for data in self.columnData:
