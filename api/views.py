@@ -787,6 +787,7 @@ def get_config(request, slug=None):
 
 
 from django.views.decorators.csrf import csrf_exempt
+from api import tasks
 
 
 @csrf_exempt
@@ -804,13 +805,13 @@ def set_result(request, slug=None):
     job.save()
     if "status=failed" in request.body:
         results = {'error_message': 'Failed'}
-        results = write_into_databases(
+        results = tasks.write_into_databases.delay(
             job_type=job.job_type,
             object_slug=job.object_id,
             results=results
         )
     else:
-        results = write_into_databases(
+        results = tasks.write_into_databases.delay(
             job_type=job.job_type,
             object_slug=job.object_id,
             results=json.loads(results)
