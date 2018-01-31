@@ -437,7 +437,7 @@ def create_database(branch="development"):
     run("GRANT ALL PRIVILEGES ON {0}.* TO {1}@{2};".format(db_name, user_name, host))
 
 @task
-def download_sql_and_dump(branch='development'):
+def download_sql_and_dump(branch='dev'):
     import time
     details = get_branch_details(branch)
     set_fabric_env(details)
