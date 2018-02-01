@@ -28,6 +28,7 @@ from api.models import Job, Dataset, Score, Insight, Trainer, StockDataset, Robo
 @task(name='hum_se_hai_zamana_sara')
 def submit_job_separate_task(command_array, slug):
     cur_process = subprocess.Popen(command_array, stderr=subprocess.PIPE)
+    print cur_process
     # TODO: @Ankush need to write the error to error log and standard out to normal log
     for line in iter(lambda: cur_process.stderr.readline(), ''):
         # print(line.strip())
