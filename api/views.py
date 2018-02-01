@@ -5000,7 +5000,6 @@ def delete_and_keep_only_ten_from_all_models():
 
     for model_item in model_list:
         all_database_object = model_item.objects.all().order_by('created_at')
-        all_database_object = all_database_object[10:]
         for database_object in all_database_object:
             database_object.delete()
 
