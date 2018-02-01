@@ -91,6 +91,7 @@ urlpatterns = [
     url(r'^get_metadata_for_mlscripts/(?P<slug>[^/.]+)/', views.get_metadata_for_mlscripts, name="get_metadata_for_mlscripts"),
     url(r'^get_score_data_and_return_top_n/', views.get_score_data_and_return_top_n, name="get_score_data_and_return_top_n"),
     url(r'^get_recent_activity',views.get_recent_activity , name="get_recent_activity"),
+    url(r'^delete_and_keep_only_ten_from_all_models',views.delete_and_keep_only_ten_from_all_models , name="delete_and_keep_only_ten_from_all_models"),
 ]
 
 
