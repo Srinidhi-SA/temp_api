@@ -4994,7 +4994,7 @@ def get_recent_activity(request):
 
 
 @api_view(['GET'])
-def delete_and_keep_only_ten_from_all_models():
+def delete_and_keep_only_ten_from_all_models(request):
 
     model_list = [Dataset, Insight, Trainer, Score, Job ]
 
