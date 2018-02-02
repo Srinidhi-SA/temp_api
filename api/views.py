@@ -4995,8 +4995,8 @@ def get_recent_activity(request):
 
 @api_view(['GET'])
 def delete_and_keep_only_ten_from_all_models(request):
-
-    model_list = [Dataset, Insight, Trainer, Score, Job ]
+    from api.models import SaveAnyData
+    model_list = [Dataset, Insight, Trainer, Score, Job, SaveData, SaveAnyData ]
 
     for model_item in model_list:
         all_database_object = model_item.objects.all().order_by('created_at')
