@@ -458,6 +458,8 @@ def download_sql_and_dump(branch='dev'):
         run("python manage.py dumpdata -e contenttypes -e auth.Permission > {0}".format(dump_file_name))
         run("tar -zcvf {0} {1}".format(tar_dump_file_name, dump_file_name))
         get(base_remote_path_json, local_dumping_path)
+        run('rm {0}'.format(dump_file_name))
+        run('rm {0}'.format(tar_dump_file_name))
 
     with lcd(local_dumping_path):
         local('tar -xzvf {0}'.format(local_tar_dumping_file_path))
@@ -467,11 +469,9 @@ def download_sql_and_dump(branch='dev'):
 
 
 @task
-def load_sql_dump_data():
+def load_local_sql_dump_data(filepath=None):
     with lcd(BASE_DIR):
-        file_name = 'datadump20180118T112500.json'
-        locapath = '/tmp/' + file_name
-        local('python manage.py loaddata {0}'.format(locapath))
+        local('python manage.py loaddata {0}'.format(filepath))
     local("cat 'Done.'")
 
 
