@@ -450,7 +450,8 @@ def download_sql_and_dump(branch='dev'):
     tar_dump_file_name = dump_file_name + ".tar.gz"
     base_remote_path_json = base_remote_path + "/" + tar_dump_file_name
     local_dumping_path = '/tmp'
-    local_dumping_file_path = '/tmp/' + tar_dump_file_name
+    local_tar_dumping_file_path = local_dumping_path + '/' + tar_dump_file_name
+    local_dumping_file_path = local_dumping_path + '/' + dump_file_name
 
     with cd(base_remote_path):
         run("python manage.py dumpdata -e contenttypes -e auth.Permission > {0}".format(dump_file_name))
@@ -458,7 +459,7 @@ def download_sql_and_dump(branch='dev'):
         get(base_remote_path_json, local_dumping_path)
 
     with lcd(local_dumping_path):
-        local('tar -xzvf {0}'.format(local_dumping_file_path))
+        local('tar -xzvf {0}'.format(local_tar_dumping_file_path))
 
     with lcd(BASE_DIR):
         local('python manage.py loaddata {0}'.format(local_dumping_file_path))
