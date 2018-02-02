@@ -200,24 +200,6 @@ def deploy_api_and_migrate(branch="dev"):
     gunicorn.reload()
 
 
-
-
-def deploy_ml(branch="development"):
-    pass
-
-@task
-def copy_egg_from_emr_to_api_dev():
-
-    command_to_copy = "scp emr_dev:/home/hadoop/codebase/mAdvisor-MLScripts/dist/marlabs_bi_jobs-0.0.0-py2.7.egg ."
-    command_to_paste = "scp marlabs_bi_jobs-0.0.0-py2.7.egg development_api:/home/ubuntu/codebase/mAdvisor-api/scripts/"
-    local(command_to_copy)
-    local(command_to_paste)
-
-
-def remote_uname():
-    run('uname -a')
-
-
 def do_npm_install(react_path):
     with lcd(BASE_DIR + react_path):
         local("rm -rf dist")
@@ -357,6 +339,7 @@ def only_for_api_push_and_pull(server_details, path_details):
 def apt_get(*packages):
     sudo('apt-get -y --no-upgrade install %s' % ' '.join(packages), shell=False)
 
+
 def install_mysql():
     with settings(hide('warnings', 'stderr'), warn_only=True):
         result = sudo('dpkg-query --show mysql-server')
@@ -475,32 +458,6 @@ def load_local_sql_dump_data(filepath=None):
         local('python manage.py loaddata {0}'.format(filepath))
     local("cat 'Done.'")
 
-
-def recreate_database(type='local'):
-
-
-    db_name = "madvisor"
-    user_name = "marlabs"
-    host= "localhost"
-    passowrd = "Password@123"
-
-def move_css_from_react_css_to_static_assets_css(type='development'):
-
-    if type == "development":
-        dev()
-    elif type == "production":
-        prod()
-
-    server_details = env.get('server_details')
-    path_details = env.get('path_details')
-
-    react_path = path_details['react_path']
-    style_css = react_path + "/src/assets/css/style.css"
-    asset_path = path_details['asset_path']
-    asset_css = asset_path + "/css"
-    run("mv {0} {1}".format(style_css, asset_css))
-
-# api_ui_dev
 
 @task
 def restart_jobserver(branch="development"):
