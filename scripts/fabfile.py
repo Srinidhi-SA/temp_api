@@ -371,25 +371,27 @@ def install_mysql():
     apt_get('mysql-server')
 
 
-def save_db_copy(branch="local"):
-    pass
+@task
+def uptime(branch="dev"):
 
-def get_remote_db(branch="development"):
-    pass
+    details = get_branch_details(branch)
+    set_fabric_env(details)
+    print details
+    path_details= details['path_details']
+    server_details= details['server_details']
+    run('ls')
+
 
 @task
-def uptime():
-    res = run('cat /proc/uptime')
-
-@task
-def remember_git_cache_local_and_remote(type="development"):
+def remember_git_cache_local_and_remote(branch="dev"):
     """
     remember git password.
     """
-    if type == "development":
-        dev()
-    elif type == "production":
-        prod()
+    details = get_branch_details(branch)
+    set_fabric_env(details)
+    print details
+    path_details= details['path_details']
+    server_details= details['server_details']
 
     local("git config --global credential.helper cache")
     local("git config --global credential.helper 'cache --timeout=360000'")
@@ -397,17 +399,16 @@ def remember_git_cache_local_and_remote(type="development"):
     run("git config --global credential.helper 'cache --timeout=360000'")
 
 @task
-def cleanup_static_react_old_dist(type="development"):
+def cleanup_static_react_old_dist(branch="dev"):
     """
     cleaup dist_files from static_react
     """
-    if type == "development":
-        dev()
-    elif type == "production":
-        prod()
+    details = get_branch_details(branch)
+    set_fabric_env(details)
+    print details
+    path_details= details['path_details']
+    server_details= details['server_details']
 
-    server_details = env.get('server_details')
-    path_details = env.get('path_details')
     base_remote_path = path_details.get('base_remote_path')
     react_path = path_details.get('react_path')
 
