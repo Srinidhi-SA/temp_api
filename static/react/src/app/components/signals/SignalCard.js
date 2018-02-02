@@ -50,11 +50,11 @@ export class SignalCard extends React.Component {
         this.props.dispatch(emptySignalAnalysis());
       }
     handleDelete(slug,evt) {
-        this.props.dispatch(handleDelete(slug, this.refs.dialog,evt));
+        this.props.dispatch(handleDelete(slug, this.dialog,evt));
       }
 
       handleRename(slug, name) {
-        this.props.dispatch(handleRename(slug, this.refs.dialog, name));
+        this.props.dispatch(handleRename(slug, this.dialog, name));
       }
       openLoaderScreen(slug, percentage, message, e) {
           var signalData = {};
@@ -157,7 +157,7 @@ export class SignalCard extends React.Component {
 
                   </div>
                 </div>
-                   <Dialog ref="dialog"/>
+                   <Dialog ref={(el) => { this.dialog = el }}/>
               </div>
             )
           });

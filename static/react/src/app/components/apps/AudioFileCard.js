@@ -34,10 +34,10 @@ export class AudioFileCard extends React.Component {
   }
  
   handleAudioDelete(slug){
-      this.props.dispatch(handleAudioDelete(slug,this.refs.dialog));
+      this.props.dispatch(handleAudioDelete(slug,this.dialog));
   }
   handleAudioRename(slug,name){
-      this.props.dispatch(handleAudioRename(slug,this.refs.dialog,name));
+      this.props.dispatch(handleAudioRename(slug,this.dialog,name));
   }
   getAudioFileSummary(slug){
      this.props.dispatch(getAudioFile(slug));
@@ -111,7 +111,7 @@ export class AudioFileCard extends React.Component {
                      
                             </div>
                             </div>
-                             <Dialog ref="dialog" />
+                             <Dialog ref={(el) => { this.dialog = el }} />
 
                             </div>
             )

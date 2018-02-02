@@ -38,10 +38,10 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
             this.props.dispatch(updateModelSlug(slug))
         }
         handleModelDelete(slug){
-            this.props.dispatch(handleModelDelete(slug,this.refs.dialog));
+            this.props.dispatch(handleModelDelete(slug,this.dialog));
         }
         handleModelRename(slug,name){
-            this.props.dispatch(handleModelRename(slug,this.refs.dialog,name));
+            this.props.dispatch(handleModelRename(slug,this.dialog,name));
         }
        
         
@@ -103,7 +103,7 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                             
                             </div>
                             </div>
-                             <Dialog ref="dialog" />
+                             <Dialog ref={(el) => { this.dialog = el }} />
 
                             </div>
                     )

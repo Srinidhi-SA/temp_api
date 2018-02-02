@@ -57,10 +57,10 @@ export class DataCard extends React.Component {
     
    
     handleDelete(slug,evt) {
-        this.props.dispatch(handleDelete(slug, this.refs.dialog,evt));
+        this.props.dispatch(handleDelete(slug, this.dialog,evt));
     }
     handleRename(slug, name) {
-        this.props.dispatch(handleRename(slug, this.refs.dialog, name));
+        this.props.dispatch(handleRename(slug, this.dialog, name));
     }
     getPreviewData(e) {
         var that = this;
@@ -174,7 +174,7 @@ export class DataCard extends React.Component {
                                 
                                 </div>
                                 </div>
-                                  <Dialog ref="dialog"/>
+                                  <Dialog ref={(el) => { this.dialog = el }}/>
                                 </div>
             )
         });
@@ -182,7 +182,7 @@ export class DataCard extends React.Component {
         {
             (dataSetList.length>0)
             ?(dataSetList)
-                    :(<div>  <Dialog ref="dialog"/><div className="text-center text-muted xs-mt-10"><h2>No results found..</h2></div></div>)
+                    :(<div><div className="text-center text-muted xs-mt-10"><h2>No results found..</h2></div></div>)
         }
 
         </div>);
