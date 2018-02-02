@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ["192.168.33.128"]
 # Application definition
 
 INSTALLED_APPS = [
+    'material.theme.teal',
     'material',
     'material.admin',
     'django.contrib.admin',
@@ -190,7 +191,8 @@ STATICFILES_DIRS = [
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = '/media/'
 
-UPLOAD_FOLDER = '/uploads/datasets/'
+# @depricated
+# UPLOAD_FOLDER = '/uploads/datasets/'
 
 """
 fieldType -> password, text, number, email
@@ -1037,7 +1039,7 @@ TRANSFORMATION_SETTINGS_CONSTANT = {
                 "status":False,
                 "listOfActions":[
                     {"name":"numeric","displayName":"Numeric","status":False},
-                    {"name":"string","displayName":"Text","status":False},
+                    {"name":"text","displayName":"Text","status":False},
                 ]
             },
             {

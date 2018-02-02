@@ -195,11 +195,13 @@ export function dataSubsetting(subsetRq, slug) {
    dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
     dispatch(dataUploadLoaderMsg(DULOADERPERMSG));
    dispatch(close());
+   dispatch(updateHideData(false));
  dispatch(openDULoaderPopup());
     return triggerDataSubsetting(subsetRq, slug).then(([response, json]) => {
       //dispatch(dataUploadLoaderValue(store.getState().datasets.dULoaderValue+DULOADERPERVALUE));
       if (response.status === 200) {
         console.log(json.slug)
+        dispatch(updateHideData(true));
         dispatch(updateDatasetName(json.slug))
         dispatch(dataUploadSuccess(json, dispatch))
         dispatch(updateSubsetSuccess(json))

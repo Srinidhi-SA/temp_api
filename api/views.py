@@ -787,6 +787,7 @@ def get_config(request, slug=None):
 
 
 from django.views.decorators.csrf import csrf_exempt
+from api import tasks
 
 
 @csrf_exempt
@@ -796,21 +797,19 @@ def set_result(request, slug=None):
     if not job:
         return JsonResponse({'result': 'Failed'})
     results = request.body
-    if isinstance(results, str) or isinstance(results, unicode):
-        job.results = results
-    elif isinstance(results, dict):
-        results = json.dumps(results)
-        job.results = results
-    job.save()
+    tasks.save_results_to_job.delay(
+        slug,
+        results
+    )
     if "status=failed" in request.body:
         results = {'error_message': 'Failed'}
-        results = write_into_databases(
+        results = tasks.write_into_databases.delay(
             job_type=job.job_type,
             object_slug=job.object_id,
             results=results
         )
     else:
-        results = write_into_databases(
+        results = tasks.write_into_databases.delay(
             job_type=job.job_type,
             object_slug=job.object_id,
             results=json.loads(results)
@@ -4988,8 +4987,23 @@ def get_recent_activity(request):
         log_user = str(obj.user)
         recent_activity.append({"message":obj.change_message,"action_time":obj.action_time,"repr":obj.object_repr,"content_type":obj.content_type.model,"content_type_app_label":obj.content_type.app_label,"user":log_user})
 
-
     return JsonResponse({
         "recent_activity": recent_activity
+
+    })
+
+
+@api_view(['GET'])
+def delete_and_keep_only_ten_from_all_models(request):
+
+    model_list = [Dataset, Insight, Trainer, Score, Job ]
+
+    for model_item in model_list:
+        all_database_object = model_item.objects.all().order_by('created_at')
+        for database_object in all_database_object:
+            database_object.delete()
+
+    return JsonResponse({
+        'ok' : 'ok'
 
     })
