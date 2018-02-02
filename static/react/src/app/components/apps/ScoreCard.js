@@ -41,10 +41,10 @@ export class ScoreCard extends React.Component {
     }
     
     handleScoreDelete(slug) {
-        this.props.dispatch(handleScoreDelete(slug, this.refs.dialog));
+        this.props.dispatch(handleScoreDelete(slug, this.dialog));
     }
     handleScoreRename(slug, name) {
-        this.props.dispatch(handleScoreRename(slug, this.refs.dialog, name));
+        this.props.dispatch(handleScoreRename(slug, this.dialog, name));
     }
     getScoreSummary(slug) {
         this.props.dispatch(updateScoreSlug(slug))
@@ -107,7 +107,7 @@ export class ScoreCard extends React.Component {
                     </div>                        
                     </div>
                     </div>
-                     <Dialog ref="dialog" />
+                     <Dialog ref={(el) => { this.dialog = el }} />
 
                     </div>
             )
