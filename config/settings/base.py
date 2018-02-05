@@ -1249,7 +1249,7 @@ CUSTOM_WORD1_APPS = {
 }
 
 CUSTOM_WORD2_APPS = {
-    'AUTOMATED PREDICTIOn': 'prediction',
+    'AUTOMATED PREDICTION': 'prediction',
     'OPPORTUNITY SCORING': 'opportunity',
     'CHURN REDICTION': 'churn',
     'RE-ADMISSION PREDICTION': 're-admission',
