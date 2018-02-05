@@ -196,6 +196,7 @@ export class Data extends React.Component {
               </div>
             </div>
             <DataUploadLoader/>
+            
         </div>
                 </div>
       );
@@ -203,7 +204,7 @@ export class Data extends React.Component {
       return (
         <div>
           <img id="loading" src={STATIC_URL + "assets/images/Preloader_2.gif"}/>
-           <Dialog ref="dialog"/>
+           <Dialog ref={(el) => { this.dialog = el }}/>
         </div>
       )
     }
