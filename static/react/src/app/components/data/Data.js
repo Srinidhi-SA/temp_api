@@ -151,7 +151,7 @@ export class Data extends React.Component {
 				{/*   <input type="text" name="search_data" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search Data" id="search_data" class="form-control" placeholder="Search data..."/>*/}
 				<div className="search-wrapper">
 					<form>
-					<input type="text" name="search_data" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Model Insights" id="search_data" className="form-control search-box" placeholder="Search data..." required />
+					<input type="text" name="search_data" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search data" id="search_data" className="form-control search-box" placeholder="Search data..." required />
 					<span className="zmdi zmdi-search form-control-feedback"></span>
 					<button className="close-icon" type="reset" onClick={this.clearSearchElement.bind(this)}></button>
 					</form>
