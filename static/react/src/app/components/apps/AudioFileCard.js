@@ -34,10 +34,10 @@ export class AudioFileCard extends React.Component {
   }
  
   handleAudioDelete(slug){
-      this.props.dispatch(handleAudioDelete(slug,this.refs.dialog));
+      this.props.dispatch(handleAudioDelete(slug,this.dialog));
   }
   handleAudioRename(slug,name){
-      this.props.dispatch(handleAudioRename(slug,this.refs.dialog,name));
+      this.props.dispatch(handleAudioRename(slug,this.dialog,name));
   }
   getAudioFileSummary(slug){
      this.props.dispatch(getAudioFile(slug));
@@ -111,7 +111,7 @@ export class AudioFileCard extends React.Component {
                      
                             </div>
                             </div>
-                             <Dialog ref="dialog" />
+                             <Dialog ref={(el) => { this.dialog = el }} />
 
                             </div>
             )
@@ -120,7 +120,7 @@ export class AudioFileCard extends React.Component {
                 {
                     (appsAudioList.length>0)
                     ?(appsAudioList)
-                    :(<div><div className="clearfix"></div><div className="text-center text-muted xs-mt-50"><h2>No results found..</h2></div></div>)
+                    :(<div><div className="text-center text-muted xs-mt-10"><h2>No results found..</h2></div></div>)
                 }
 
                 </div>);
