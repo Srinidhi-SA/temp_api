@@ -68,13 +68,7 @@ export class AppsPanel extends React.Component {
       this.props.dispatch(getAppsList(getUserDetailsOrRestart.get().userToken, pageNo));
     this.props.dispatch(updateAppsFilterList([]))
   }
-  // componentDidMount() {
-  //   $(function() {
-  //     $('.dropdown-menu').click(function(e) {
-  //       e.stopPropagation();
-  //     });
-  //   });
-  // }
+
   onChangeAppsSearchBox(e) {
     if (e.target.value == "" || e.target.value == null) {
       this.props.dispatch(appsStoreSearchEle(""));
@@ -116,8 +110,8 @@ export class AppsPanel extends React.Component {
     this.props.history.push('/apps?filterApplied=' + array)
 
   }
-  gotoAppsList(appId, appName) {
-    this.props.dispatch(updateSelectedApp(appId, appName));
+  gotoAppsList(appId, appName,appDetails) {
+    this.props.dispatch(updateSelectedApp(appId, appName,appDetails));
     this.props.dispatch(updateModelSummaryFlag(false));
     this.props.dispatch(updateScoreSummaryFlag(false));
     this.props.dispatch(showRoboDataUploadPreview(false));
@@ -190,7 +184,7 @@ export class AppsPanel extends React.Component {
             <div>
 
               <div className="app-block">
-                <Link onClick={this.gotoAppsList.bind(this, data.id, data.name)} className="app-link" to={data.app_url}>
+                <Link onClick={this.gotoAppsList.bind(this, data.id, data.name,data)} className="app-link" to={data.app_url}>
 
                   <div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
                     <img src={imageLink} className="img-responsive"/>
@@ -211,9 +205,6 @@ export class AppsPanel extends React.Component {
                     {tagsList}
                   </ul>
 
-                  {/*<div className="card-deatils">
-                            <a href="javascript:void(0);" rel="popover" className="pover" data-popover-content="#myPopover" data-original-title="" title=""><i className="ci pe-7s-info pe-2x"></i></a>
-                    </div>*/}
                   <div id="myPopover" className="pop_box hide">
                     <p>Info</p>
                   </div>
@@ -232,26 +223,14 @@ export class AppsPanel extends React.Component {
           checked = true
         return (
           <li key={i} className="xs-pl-10">
-            {/*<div key={metaIndex} className="ma-checkbox inline">
-            <input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisList.bind(this)}/>
-              <label htmlFor={id}>{metaItem.displayName}</label>
-            </div>*/}
+
             <div key={i} className="ma-checkbox inline">
               <input id={dId} type="checkbox" name={tag} checked={checked} onClick={this.handleCheckboxChange.bind(this)}/>
               <label htmlFor={dId}>{tag}</label>
             </div>
           </li>
         )
-        // return (
-        //   <tr key={i}>
-        //     <td>
-        //       <div className="ma-checkbox inline"><input id={dId} type="checkbox" className="filter_apps" value={tag} defaultChecked={checked}/>
-        //         <label htmlFor={dId}></label>
-        //       </div>
-        //     </td>
-        //     <td>{tag}</td>
-        //   </tr>
-        // )
+  
       });
     }
 
