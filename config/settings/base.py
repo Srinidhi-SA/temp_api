@@ -1246,7 +1246,8 @@ CUSTOM_WORD1_APPS = {
     'CREDIT CARD FRAUD': 'Credit Card Fraud',
     'CLAIMS PREDICTION': 'claims',
     'ASSET HEALTH PREDICTION': 'asset health',
-    'EMPLOYEE ATTRITION': 'attrition'
+    'EMPLOYEE ATTRITION': 'attrition',
+    'SPEECH ANALYTICS': 'speech'
 }
 
 CUSTOM_WORD2_APPS = {
@@ -1259,7 +1260,8 @@ CUSTOM_WORD2_APPS = {
     'CREDIT CARD FRAUD': 'fraud',
     'CLAIMS PREDICTION': 'claims',
     'ASSET HEALTH PREDICTION': 'asset health',
-    'EMPLOYEE ATTRITION': 'attrition'
+    'EMPLOYEE ATTRITION': 'attrition',
+    'SPEECH ANALYTICS': 'speech'
 }
 
 ############# YARN related items
