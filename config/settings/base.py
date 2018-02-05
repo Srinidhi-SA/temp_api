@@ -1238,8 +1238,9 @@ APPS_KEYWORD_TEMPLATE = [
 
 CUSTOM_WORD1_APPS = {
     'AUTOMATED PREDICTION': '',
+    'ROBO-ADVISOR INSIGHTS': '',
     'OPPORTUNITY SCORING': 'opportunity',
-    'CHURN REDICTION': 'churn',
+    'CHURN PREDICTION': 'churn',
     'RE-ADMISSION PREDICTION': 're-admission',
     'PHYSICIAN ATTRITION': 'attrition',
     'CREDIT CARD FRAUD': 'Credit Card Fraud',
@@ -1250,8 +1251,9 @@ CUSTOM_WORD1_APPS = {
 
 CUSTOM_WORD2_APPS = {
     'AUTOMATED PREDICTION': 'prediction',
+    'ROBO-ADVISOR INSIGHTS': '',
     'OPPORTUNITY SCORING': 'opportunity',
-    'CHURN REDICTION': 'churn',
+    'CHURN PREDICTION': 'churn',
     'RE-ADMISSION PREDICTION': 're-admission',
     'PHYSICIAN ATTRITION': 'attrition',
     'CREDIT CARD FRAUD': 'fraud',
