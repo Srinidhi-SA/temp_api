@@ -461,11 +461,12 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
         }).then( response => Promise.all([response, response.json()]));
     }
 
-    export function updateSelectedApp(appId,appName){
+    export function updateSelectedApp(appId,appName,appDetails){
         return {
             type: "SELECTED_APP_DETAILS",
             appId,
             appName,
+            appDetails,
         }
     }
 
@@ -1837,4 +1838,29 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 
     function scoreToProceed(flag){
         return {type: "SCORE_TO_PROCEED", flag};
+    }
+    
+   export  function showLevelCountsForTarget(event){
+        var selOption = event.target.childNodes[event.target.selectedIndex];
+        var varType = selOption.value;
+        var varText = selOption.text;
+        var varSlug = selOption.getAttribute("name");
+        var levelCounts = null;
+        var colData = store.getState().datasets.dataPreview.meta_data.scriptMetaData.columnData;
+        var colStats = [];
+        if(varType == "dimension"){
+           for(var i =0;i<colData.length;i++){
+               if(colData[i].slug == varSlug){
+                   var found = colData[i].columnStats.find(function(element) {
+                       return element.name == "LevelCount";
+                     });
+                   if(found != undefined){
+                     levelCounts = Object.keys(found.value);
+                   }
+               }
+           }
+        }
+        return{
+            type: "SET_TARGET_LEVEL_COUNTS", levelCounts
+        }
     }

@@ -73,6 +73,8 @@ export default function reducer(state = {
         latestRoboInsights:{},
         latestAudioList:{},
         latestStocks:{},
+        targetLevelCounts:null,
+        currentAppDetails:null,
 
 }, action) {
     console.log("In APPs reducer!!");
@@ -225,6 +227,7 @@ export default function reducer(state = {
             ...state,
             currentAppId: action.appId,
             currentAppName:action.appName,
+            currentAppDetails:action.appDetails
         }
     }
     break;
@@ -748,6 +751,15 @@ export default function reducer(state = {
         }
     }
     break;
+    case "SET_TARGET_LEVEL_COUNTS":
+    {
+        return{
+            ...state,
+            targetLevelCounts:action.levelCounts
+        }
+    }
+    break;
+    
     }
     return state
 }
