@@ -644,6 +644,11 @@ class AppSerializer(serializers.ModelSerializer):
                 print tag_object
 
                 ret['tags'] = tag_object
+
+            CUSTOM_WORD1_APPS = settings.CUSTOM_WORD1_APPS
+            CUSTOM_WORD2_APPS = settings.CUSTOM_WORD2_APPS
+            ret['CUSTOM_WORD1_APPS'] = CUSTOM_WORD1_APPS[ret['name'].upper()]
+            ret['CUSTOM_WORD2_APPS'] = CUSTOM_WORD2_APPS[ret['name'].upper()]
             return ret
 
 
