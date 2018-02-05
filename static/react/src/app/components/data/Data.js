@@ -124,7 +124,7 @@ export class Data extends React.Component {
     }
 
     //search element ends..
-    if (store.getState().datasets.dataPreviewFlag) {
+    if (store.getState().datasets.dataPreviewFlag && this.props.dataPreview &&this.props.dataPreview.status!="FAILED") {
     	let _link = "/data/" + store.getState().datasets.selectedDataSet;
     	return (<Redirect to={_link}/>);
     }
@@ -196,7 +196,7 @@ export class Data extends React.Component {
               </div>
             </div>
             <DataUploadLoader/>
-            
+
         </div>
                 </div>
       );
