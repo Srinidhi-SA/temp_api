@@ -1247,7 +1247,9 @@ CUSTOM_WORD1_APPS = {
     'CLAIMS PREDICTION': 'claims',
     'ASSET HEALTH PREDICTION': 'asset health',
     'EMPLOYEE ATTRITION': 'attrition',
-    'SPEECH ANALYTICS': 'speech'
+    'SPEECH ANALYTICS': 'speech',
+    'STOCK SENSE': 'stock',
+    'STOCK  SENSE': 'stock'
 }
 
 CUSTOM_WORD2_APPS = {
@@ -1261,7 +1263,9 @@ CUSTOM_WORD2_APPS = {
     'CLAIMS PREDICTION': 'claims',
     'ASSET HEALTH PREDICTION': 'asset health',
     'EMPLOYEE ATTRITION': 'attrition',
-    'SPEECH ANALYTICS': 'speech'
+    'SPEECH ANALYTICS': 'speech',
+    'STOCK SENSE': 'stock',
+    'STOCK  SENSE': 'stock'
 }
 
 ############# YARN related items
