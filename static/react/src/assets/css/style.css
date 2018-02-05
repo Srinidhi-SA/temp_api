@@ -13919,10 +13919,10 @@ box-shadow: 1px 2px 6px -3px rgba(0,0,0,0.44); }
 	overflow: hidden;
 	transition: all .1s ease-in-out;
 	cursor:pointer;*/
-	background-color: #FFF;
-    border-style: solid;
-    border-width: 1px;
-    border-color: #d2d2d2 #b3b2b2 #acacac #d2d2d2;
+	background-color: #FFF;    
+    border-width: 0;
+	/*border-style: solid;
+    border-color: #d2d2d2 #b3b2b2 #acacac #d2d2d2;*/
     cursor:pointer;
 }
 .card-center{
