@@ -615,6 +615,13 @@ class AppListSerializers(serializers.ModelSerializer):
                 ret['tags'] = tag_object
                 #add all keys list
                 ret['tag_keywords'] = self.add_all_tag_keywords(template_tags)
+
+                CUSTOM_WORD1_APPS = settings.CUSTOM_WORD1_APPS
+                CUSTOM_WORD2_APPS = settings.CUSTOM_WORD2_APPS
+                upper_case_name = ret['name'].upper()
+                print upper_case_name
+                ret['CUSTOM_WORD1_APPS'] = CUSTOM_WORD1_APPS[upper_case_name]
+                ret['CUSTOM_WORD2_APPS'] = CUSTOM_WORD2_APPS[upper_case_name]
             return ret
 
         def add_all_tag_keywords(self,template_tags):
