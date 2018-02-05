@@ -647,8 +647,10 @@ class AppSerializer(serializers.ModelSerializer):
 
             CUSTOM_WORD1_APPS = settings.CUSTOM_WORD1_APPS
             CUSTOM_WORD2_APPS = settings.CUSTOM_WORD2_APPS
-            ret['CUSTOM_WORD1_APPS'] = CUSTOM_WORD1_APPS[ret['name'].upper()]
-            ret['CUSTOM_WORD2_APPS'] = CUSTOM_WORD2_APPS[ret['name'].upper()]
+            upper_case_name = ret['name'].upper()
+            print upper_case_name
+            ret['CUSTOM_WORD1_APPS'] = CUSTOM_WORD1_APPS[upper_case_name]
+            ret['CUSTOM_WORD2_APPS'] = CUSTOM_WORD2_APPS[upper_case_name]
             return ret
 
 
