@@ -1163,7 +1163,8 @@ ML_SECRET_KEY = 'GETMETADATAOBJECT'
 
 SIGNATURE_LIFETIME = 30
 
-APPS_KEYWORD_TEMPLATE = [{
+APPS_KEYWORD_TEMPLATE = [
+    {
     'name': 'Sales',
     'displayName': 'Sales',
     'description': " "
@@ -1233,6 +1234,31 @@ APPS_KEYWORD_TEMPLATE = [{
         'description': " "
     },
 ]
+
+
+CUSTOM_WORD1_APPS = {
+    'AUTOMATED PREDICTION': '',
+    'OPPORTUNITY SCORING': 'opportunity',
+    'CHURN REDICTION': 'churn',
+    'RE-ADMISSION PREDICTION': 're-admission',
+    'PHYSICIAN ATTRITION': 'attrition',
+    'CREDIT CARD FRAUD': 'Credit Card Fraud',
+    'CLAIMS PREDICTION': 'claims',
+    'ASSET HEALTH PREDICTION': 'asset health',
+    'EMPLOYEE ATTRITION': 'attrition'
+}
+
+CUSTOM_WORD2_APPS = {
+    'AUTOMATED PREDICTIOn': 'prediction',
+    'OPPORTUNITY SCORING': 'opportunity',
+    'CHURN REDICTION': 'churn',
+    'RE-ADMISSION PREDICTION': 're-admission',
+    'PHYSICIAN ATTRITION': 'attrition',
+    'CREDIT CARD FRAUD': 'fraud',
+    'CLAIMS PREDICTION': 'claims',
+    'ASSET HEALTH PREDICTION': 'asset health',
+    'EMPLOYEE ATTRITION': 'attrition'
+}
 
 ############# YARN related items
 
