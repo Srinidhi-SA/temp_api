@@ -143,7 +143,7 @@ export class Data extends React.Component {
         <LatestDatasets props={this.props}/>
           <div class="main-content">
             <div class="row">
-            
+
               <div class="col-md-12">
 
 			  <div class="btn-toolbar pull-right">
@@ -181,11 +181,11 @@ export class Data extends React.Component {
                     </ul>
                   </div>
 				  </div>
-				  
+
               </div>
             </div>
             <div class="clearfix"></div>
-        
+
             <div className="row">
             {dataList}
               <div className="clearfix"></div>
