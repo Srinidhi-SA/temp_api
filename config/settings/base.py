@@ -1163,7 +1163,8 @@ ML_SECRET_KEY = 'GETMETADATAOBJECT'
 
 SIGNATURE_LIFETIME = 30
 
-APPS_KEYWORD_TEMPLATE = [{
+APPS_KEYWORD_TEMPLATE = [
+    {
     'name': 'Sales',
     'displayName': 'Sales',
     'description': " "
@@ -1233,6 +1234,41 @@ APPS_KEYWORD_TEMPLATE = [{
         'description': " "
     },
 ]
+
+
+CUSTOM_WORD1_APPS = {
+    'AUTOMATED PREDICTION': '',
+    'ROBO-ADVISOR INSIGHTS': '',
+    'OPPORTUNITY SCORING': 'opportunity',
+    'CHURN PREDICTION': 'churn',
+    'RE-ADMISSION PREDICTION': 're-admission',
+    'READMISSION PREDICTION': 're-admission',
+    'PHYSICIAN ATTRITION': 'attrition',
+    'CREDIT CARD FRAUD': 'Credit Card Fraud',
+    'CLAIMS PREDICTION': 'claims',
+    'ASSET HEALTH PREDICTION': 'asset health',
+    'EMPLOYEE ATTRITION': 'attrition',
+    'SPEECH ANALYTICS': 'speech',
+    'STOCK SENSE': 'stock',
+    'STOCK  SENSE': 'stock'
+}
+
+CUSTOM_WORD2_APPS = {
+    'AUTOMATED PREDICTION': 'prediction',
+    'ROBO-ADVISOR INSIGHTS': '',
+    'OPPORTUNITY SCORING': 'opportunity',
+    'CHURN PREDICTION': 'churn',
+    'RE-ADMISSION PREDICTION': 're-admission',
+    'READMISSION PREDICTION': 're-admission',
+    'PHYSICIAN ATTRITION': 'attrition',
+    'CREDIT CARD FRAUD': 'fraud',
+    'CLAIMS PREDICTION': 'claims',
+    'ASSET HEALTH PREDICTION': 'asset health',
+    'EMPLOYEE ATTRITION': 'attrition',
+    'SPEECH ANALYTICS': 'speech',
+    'STOCK SENSE': 'stock',
+    'STOCK  SENSE': 'stock'
+}
 
 ############# YARN related items
 

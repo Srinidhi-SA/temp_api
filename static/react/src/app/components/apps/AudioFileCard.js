@@ -120,7 +120,7 @@ export class AudioFileCard extends React.Component {
                 {
                     (appsAudioList.length>0)
                     ?(appsAudioList)
-                    :(<div><div className="clearfix"></div><div className="text-center text-muted xs-mt-50"><h2>No results found..</h2></div></div>)
+                    :(<div><div className="text-center text-muted xs-mt-10"><h2>No results found..</h2></div></div>)
                 }
 
                 </div>);

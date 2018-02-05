@@ -38,7 +38,8 @@ export class Profile extends React.Component {
 
 
   popupMsg() {
-    bootbox.alert("Only PNG and JPEG files are allowed to upload")
+    $("#fileErrorMsg").removeClass("visibilityHidden");
+    $("#fileErrorMsg").html("Only PNG and JPEG files are allowed to upload.Please retry.");
   }
   popupMsgForSize() {
     bootbox.alert("Maximum allowed file size is 2MB")
@@ -62,7 +63,13 @@ export class Profile extends React.Component {
   }
 
   uploadProfileImage() {
+    if(this.props.fileUpload)
     this.props.dispatch(uploadImg());
+    else {
+      $("#fileErrorMsg").removeClass("visibilityHidden");
+      $("#fileErrorMsg").html("Please select a file");
+
+    }
   }
 
   //in your component
@@ -99,8 +106,13 @@ export class Profile extends React.Component {
     } else {
       console.log("profile info!!")
       console.log(this.props)
-      var fileName = store.getState().dataSource.fileUpload.name;
-      var fileSize = store.getState().dataSource.fileUpload.size;
+      var fileName = ""
+      var fileSize=0
+      if(store.getState().dataSource.fileUpload){
+        fileName=store.getState().dataSource.fileUpload.name;
+        fileSize=store.getState().dataSource.fileUpload.size
+      }
+
       let fileSizeInKB = (fileSize / 1024).toFixed(3)
       if (fileSizeInKB > 2000)
         this.popupMsgForSize()
@@ -202,6 +214,7 @@ export class Profile extends React.Component {
                                       ? "list-unstyled bullets_primary"
                                       : "list-unstyled"}>
                                       <li>{fileName}</li>
+                                      <li className="text-danger visibilityHidden" id="fileErrorMsg">Please select .png or .jpg file to upload.</li>
                                     </ul>
                                   </aside>
                                 </div>
