@@ -543,6 +543,8 @@ class Insight(models.Model):
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
+        verbose_name = "Signal"
+        verbose_name_plural = "Signals"
 
 
     def __str__(self):

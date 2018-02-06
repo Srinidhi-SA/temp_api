@@ -113,10 +113,10 @@ class Dummy(models.Model):
     created_by = models.ForeignKey(User, null=False)
     deleted = models.BooleanField(default=False)
 
-    # class Meta:
-    #     permissions = (
-    #         ('view_task', 'View task'),
-    #     )
+    class Meta:
+        permissions = (
+            ('view_task', 'View task'),
+        )
 
     def generate_slug(self):
         if not self.slug:
