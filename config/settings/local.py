@@ -32,6 +32,7 @@ DATABASES = {
 PROJECT_APP = [
     # 'silk',
     # 'django_extensions'
+    'guardian'
 ]
 
 INSTALLED_APPS += PROJECT_APP
@@ -40,6 +41,11 @@ LOCAL_MIDDLEWARE = [
     # 'django_cprofile_middleware.middleware.ProfilerMiddleware',
     # 'silk.middleware.SilkyMiddleware'
 ]
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend', # this is default
+    'guardian.backends.ObjectPermissionBackend',
+)
 
 MIDDLEWARE += LOCAL_MIDDLEWARE
 

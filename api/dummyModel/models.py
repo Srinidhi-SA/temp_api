@@ -113,6 +113,11 @@ class Dummy(models.Model):
     created_by = models.ForeignKey(User, null=False)
     deleted = models.BooleanField(default=False)
 
+    # class Meta:
+    #     permissions = (
+    #         ('view_task', 'View task'),
+    #     )
+
     def generate_slug(self):
         if not self.slug:
             self.slug = slugify(str(self.name) + "-" + ''.join(
@@ -145,7 +150,6 @@ class DummyView(viewsets.ModelViewSet):
     serializer_class = DummySerializer
     lookup_field = 'slug'
     filter_backends = (DjangoFilterBackend,)
-
 
 
     # multiple permission objects in permission_class will be calculated with 'OR'
