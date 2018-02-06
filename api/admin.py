@@ -126,23 +126,13 @@ class JobAdmin(admin.ModelAdmin):
 
     def script_time_difference(self, instance):
         message_log_json = json.loads(instance.message_log)
-
+        message_box = ""
         if 'jobRuntime' in message_log_json:
             run_time_msg = message_log_json['jobRuntime']
-
-            if len(run_time_msg) > 1:
-                try:
-                    return run_time_msg[1]['endTime'] - run_time_msg[0]['startTime']
-                except:
-                    return 'Gadbad ho gai.'
-            elif len(run_time_msg) == 1:
-                try:
-                    return run_time_msg[0]['startTime']
-                except:
-                    return 'Gadbad ho gai.'
-            else:
-                return 'wait'
-        return 'None'
+            for time_msg in run_time_msg:
+                if 'endTime' in time_msg and 'startTime' in time_msg:
+                    message_box = message_box + " | " +  time_msg['endTime'] - time_msg['startTime']
+        return message_box
 
 class ScoreAdmin(admin.ModelAdmin):
     icon = '<i class="material-icons">assessment</i>'
