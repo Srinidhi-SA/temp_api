@@ -13,6 +13,8 @@ from rest_framework.decorators import api_view
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
 
+from api.datasets.helper import add_ui_metadata_to_metadata
+from api.datasets.serializers import DatasetSerializer
 from api.exceptions import creation_failed_exception, update_failed_exception
 from api.pagination import CustomPagination
 from api.query_filtering import get_listed_data
@@ -30,10 +32,6 @@ from api.utils import \
     StockDatasetSerializer, \
     AppListSerializers, \
     AppSerializer
-
-from api.datasets.serializers import DatasetSerializer
-from api.datasets.helper import add_transformation_setting_to_ui_metadata, add_ui_metadata_to_metadata
-
 from models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData, StockDataset, CustomApps
 
 
@@ -4715,6 +4713,7 @@ def get_job_kill(request, slug=None):
         return JsonResponse({
             'message': 'Unable to Delete.'
         })
+
     original_object.deleted = True
     original_object.save()
     if job_object.kill() is True:
@@ -4723,7 +4722,7 @@ def get_job_kill(request, slug=None):
         })
     else:
         return JsonResponse({
-            'message': 'Unable to kill. but Deleted.'
+            'message': 'Unable to kill.'
         })
 
 
@@ -4752,7 +4751,7 @@ def set_messages(request, slug=None):
     if slug is None:
         return JsonResponse({"message": "Failed"})
 
-    from api.models import get_message_slug, get_slug_from_message_url
+    from api.models import get_slug_from_message_url
     job_slug = get_slug_from_message_url(slug)
     job = Job.objects.get(slug=job_slug)
 
@@ -4978,7 +4977,7 @@ def get_score_data_and_return_top_n(request):
 @api_view(['GET'])
 def get_recent_activity(request):
     user = request.user
-    from django.contrib.admin.models import LogEntry, ADDITION, CHANGE, DELETION
+    from django.contrib.admin.models import LogEntry
 
     logs = LogEntry.objects.order_by('-action_time')
     # logCount = LogEntry.objects.exclude(change_message="No fields changed.").order_by('-action_time')[:20].count()
