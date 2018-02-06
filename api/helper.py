@@ -1214,5 +1214,9 @@ def encrypt_url(url):
     from cryptography.fernet import Fernet
     cipher_suite = Fernet(settings.HDFS_SECRET_KEY)
     bytes_url = url.encode()
-    cipher_text = cipher_suite.encrypt(url)
+    # if isinstance(bytes_url, bytes):
+    #     pass
+    # else:
+    #     bytes_url = base64.urlsafe_b64decode(url)
+    cipher_text = cipher_suite.encrypt(bytes_url)
     return cipher_text
