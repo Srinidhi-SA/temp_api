@@ -278,7 +278,7 @@ class Dataset(models.Model):
     def add_inputfile_outfile_to_config(self, inputfile, jobConfig):
         jobConfig["config"]["FILE_SETTINGS"] = {
             "inputfile": [inputfile],
-            "outputfile": [self.get_input_file()],
+            "outputfile": [self.get_output_file()],
         }
 
         return jobConfig
@@ -391,15 +391,36 @@ class Dataset(models.Model):
         return "/home/marlabs" + self.get_hdfs_relative_path()
 
     def get_input_file(self):
-        HDFS = settings.HDFS
+
+        if self.datasource_type in ['file', 'fileUpload']:
+            type = self.file_remote
+            if type == 'emr_file':
+                return "file://{}".format(self.input_file.path)
+            elif type == 'hdfs':
+                dir_path = "hdfs://{}:{}".format(
+                    settings.HDFS.get("host"),
+                    settings.HDFS.get("hdfs_port")
+                )
+                file_name = self.get_hdfs_relative_file_path()
+
+                return dir_path + file_name
+
+            elif type == 'fake':
+                return "file:///asdasdasdasd"
+        else:
+            return ""
+
+    def get_output_file(self):
         from api.helper import encrypt_url
+        HDFS = settings.HDFS
         if self.datasource_type in ['file', 'fileUpload']:
             type = self.file_remote
             if type == 'emr_file':
                 final_url = "file://{}".format(self.input_file.path)
-                encrypt_path = encrypt_url(final_url)
-                return encrypt_path
+                encrypted_url = encrypt_url(final_url)
+                return encrypted_url
             elif type == 'hdfs':
+
                 if 'password' in HDFS:
                     dir_path = "hdfs://{}:{}@{}:{}".format(
                         HDFS.get("user.name"),
@@ -412,11 +433,10 @@ class Dataset(models.Model):
                         HDFS.get("host"),
                         HDFS.get("hdfs_port")
                     )
-
                 file_name = self.get_hdfs_relative_file_path()
                 final_url = dir_path + file_name
-                encrypt_path = encrypt_url(final_url)
-                return encrypt_path
+                encrypted_url = encrypt_url(final_url)
+                return encrypted_url
 
             elif type == 'fake':
                 return "file:///asdasdasdasd"
