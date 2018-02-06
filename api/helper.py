@@ -1209,3 +1209,9 @@ def generate_signature(json_obj):
 
 def generate_pmml_name(slug):
     return slug + "_" + 'pmml'
+
+def encrypt_url(url):
+    from cryptography.fernet import Fernet
+    cipher_suite = Fernet(settings.HDFS_SECRET_KEY)
+    cipher_text = cipher_suite.encrypt(url)
+    return cipher_text

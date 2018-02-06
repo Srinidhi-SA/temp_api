@@ -391,19 +391,32 @@ class Dataset(models.Model):
         return "/home/marlabs" + self.get_hdfs_relative_path()
 
     def get_input_file(self):
-
+        HDFS = settings.HDFS
+        from api.helper import encrypt_url
         if self.datasource_type in ['file', 'fileUpload']:
             type = self.file_remote
             if type == 'emr_file':
-                return "file://{}".format(self.input_file.path)
+                final_url = "file://{}".format(self.input_file.path)
+                encrypt_path = encrypt_url(final_url)
+                return encrypt_path
             elif type == 'hdfs':
-                dir_path = "hdfs://{}:{}".format(
-                    settings.HDFS.get("host"),
-                    settings.HDFS.get("hdfs_port")
-                )
-                file_name = self.get_hdfs_relative_file_path()
+                if 'password' in HDFS:
+                    dir_path = "hdfs://{}:{}@{}:{}".format(
+                        HDFS.get("user.name"),
+                        HDFS.get("password"),
+                        HDFS.get("host"),
+                        HDFS.get("hdfs_port")
+                    )
+                else:
+                    dir_path = "hdfs://{}:{}".format(
+                        HDFS.get("host"),
+                        HDFS.get("hdfs_port")
+                    )
 
-                return dir_path + file_name
+                file_name = self.get_hdfs_relative_file_path()
+                final_url = dir_path + file_name
+                encrypt_path = encrypt_url(final_url)
+                return encrypt_path
 
             elif type == 'fake':
                 return "file:///asdasdasdasd"
