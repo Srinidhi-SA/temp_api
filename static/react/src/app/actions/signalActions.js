@@ -740,3 +740,9 @@ export function updateselectedL1(selectedL1){
     selectedL1
   }
 }
+export function resetSelectedTargetVariable(){
+    var varType = null;
+    var varText = null;
+    var varSlug = null;
+    return {type: "SET_POSSIBLE_LIST", varType, varText, varSlug}
+}
