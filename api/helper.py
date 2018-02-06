@@ -1213,5 +1213,6 @@ def generate_pmml_name(slug):
 def encrypt_url(url):
     from cryptography.fernet import Fernet
     cipher_suite = Fernet(settings.HDFS_SECRET_KEY)
+    bytes_url = url.encode()
     cipher_text = cipher_suite.encrypt(url)
     return cipher_text
