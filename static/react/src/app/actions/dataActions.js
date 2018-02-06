@@ -2,7 +2,7 @@ import React from "react";
 import {API,STATIC_URL} from "../helpers/env";
 import {PERPAGE,DULOADERPERVALUE,DEFAULTINTERVAL,SUCCESS,FAILED,getUserDetailsOrRestart,DEFAULTANALYSISVARIABLES,statusMessages} from "../helpers/helper";
 import store from "../store";
-import {dataPreviewInterval,dataUploadLoaderValue,clearLoadingMsg} from "./dataUploadActions";
+import {dataPreviewInterval,dataUploadLoaderValue,clearLoadingMsg,clearDatasetPreview} from "./dataUploadActions";
 import {closeAppsLoaderValue} from "./appActions";
 import Dialog from 'react-bootstrap-dialog'
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
@@ -135,11 +135,6 @@ export function getDataSetPreview(slug,interval) {
                 dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
                 dispatch(fetchDataPreviewError(json))
             }
-        }).catch(function(error){
-
-            dispatch(hideDULoaderPopup());
-            let msg=statusMessages("error","Unable to connect to server. Check your connection please try again.","small_mascot")
-            bootbox.alert(msg)
         });
     }
 }
@@ -149,7 +144,12 @@ function fetchDataPreview(slug) {
     return fetch(API+'/api/datasets/'+slug+'/',{
         method: 'get',
         headers: getHeader(getUserDetailsOrRestart.get().userToken)
-    }).then( response => Promise.all([response, response.json()]))
+    }).then( response => Promise.all([response, response.json()])).catch(function(error){
+
+        dispatch(hideDULoaderPopup());
+        let msg=statusMessages("error","Unable to connect to server. Check your connection please try again.","small_mascot")
+        bootbox.alert(msg)
+    });
 }
 //get preview data
 function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
@@ -179,6 +179,8 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
         bootbox.alert("The uploaded file does not contain data in readable format. Please check the source file.")
         dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
         dispatch(clearLoadingMsg())
+        //clearDatasetPreview()
+        //dispatch(hideDataPreview())
 
         return {
             type: "DATA_PREVIEW_FOR_LOADER",

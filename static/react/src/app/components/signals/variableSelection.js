@@ -76,29 +76,31 @@ export class VariableSelection extends React.Component {
 
         //this.props.dispatch(handleTargetSelection());
         if($('#signalVariableList option:selected').val() == ""){
-          let msg=statusMessages("warning","Please select a variable to analyze...","small_mascot")
+          let msg=statusMessages("warning","Please select a target variable to analyze...","small_mascot")
               bootbox.alert(msg);
             return false;
         }
         if(store.getState().datasets.dataSetTimeDimensions.length > 0){
             if(store.getState().datasets.selectedVariablesCount == 1){
-                bootbox.alert("Please select atleast one variable to analyze...");
+              let msg=statusMessages("warning","Please select atleast one variable to analyze...","small_mascot")
+                  bootbox.alert(msg);
                 return false;
             }
         }
         else{
             if(store.getState().datasets.selectedVariablesCount == 0){
-                bootbox.alert("Please select atleast one variable to analyze...");
+              let msg=statusMessages("warning","Please select atleast one variable to analyze...","small_mascot")
+                  bootbox.alert(msg);
                 return false;
-            }  
+            }
         }
-       
+
         if(!isAnalysisChecked){
           let msg=statusMessages("warning","Please select atleast one analysis to Proceed..","small_mascot")
               bootbox.alert(msg);
             return false;
         }
-        
+
         var trendIsChecked = checkIfTrendIsSelected();
         var dateTimeIsSelected = checkIfDateTimeIsSelected();
         if(dateTimeIsSelected == undefined && trendIsChecked == true){
