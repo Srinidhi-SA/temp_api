@@ -39,9 +39,9 @@ export class DataUploadLoader extends React.Component {
   }
   cancelDataUpload() {
       this.props.dispatch(hideDULoaderPopup());
-      clearDatasetPreview();
       this.props.dispatch(handleJobProcessing(this.props.selectedDataSet));
       this.props.dispatch(hideDataPreview());
+      clearDatasetPreview();
     }
   render() {
     let img_src = STATIC_URL + "assets/images/brain_loading.gif"
@@ -77,10 +77,10 @@ export class DataUploadLoader extends React.Component {
                 <div>
                   <Link to="/data" style={{
                     paddingRight: "10px"
-                  }} onClick={this.cancelDataUpload.bind(this)}>
+                  }} >
                     <Button onClick={this.cancelDataUpload.bind(this)}>Cancel</Button>
                   </Link>
-                  <Link to="/data" onClick={this.closeModelPopup.bind(this)}>
+                  <Link to="/data">
                     <Button bsStyle="primary" onClick={this.closeModelPopup.bind(this)}>Hide</Button>
                   </Link>
                 </div>
