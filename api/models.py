@@ -69,9 +69,11 @@ class Job(models.Model):
         return " : ".join(["{}".format(x) for x in [self.name, self.job_type, self.created_at, self.slug]])
 
     def kill(self):
-        from api.yarn_job_api import kill_application, kill_application_using_fabric
+        from api.yarn_job_api import kill_application_using_fabric
         # return kill_application(self.url)
-        url_status =  kill_application_using_fabric(self.url)
+        if self.url == "":
+            return False
+        url_status = kill_application_using_fabric(self.url)
 
         if url_status is True:
             original_object = self.get_original_object()
@@ -1365,7 +1367,6 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
     '''
     # Submitting JobServer
     from utils import submit_job
-    from smtp_email import send_alert_through_email
     try:
         job_return_data = submit_job(
             slug=job.slug,
@@ -3664,7 +3665,6 @@ article_by_source = [
 
 from sample_stock_data import stock_performace_card1, \
     stock_by_sentiment_score, \
-    card1_total_entities, \
     number_of_articles_by_concept, \
     overview_of_second_node_databox_data, \
     stock_name_match_with_data, \

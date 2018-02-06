@@ -259,6 +259,7 @@ export default function reducer(state = {
       selectedL1:action.selectedL1
     }
   }
+  break;
   }
   return state
 }
