@@ -29,7 +29,9 @@ class InsightAdmin(admin.ModelAdmin):
 class JobAdmin(admin.ModelAdmin):
     icon = '<i class="material-icons">settings_input_component</i>'
     search_fields = ["name", "slug", "job_type", "url"]
-    list_display = ["name", "YARN_URL_html", "job_type", "deleted", "status", 'submitted_by', "msg_count"]
+    list_display = ["name", "YARN_URL_html", "job_type", "deleted", "status", 'submitted_by',
+                    "msg_count", "time_difference", "script_time_difference"
+                    ]
     list_filter = ["job_type", "status", "submitted_by"]
     readonly_fields = ("created_at", "javascript_like_config" , "python_like_config")
     actions = ['kill_selected_jobs', 'start_selected_jobs', 'refresh_status']
@@ -66,7 +68,10 @@ class JobAdmin(admin.ModelAdmin):
 
         return config_str
 
-
+    def time_difference(self, instance):
+        time_difference = instance.updated_at - instance.created_at
+        time_delta = str(time_difference).split('.')[0]
+        return time_delta
 
 
     def messages_prettified(self, instance):
@@ -110,9 +115,34 @@ class JobAdmin(admin.ModelAdmin):
         message_count = len(message_log_json)
 
         error_report_json = json.loads(instance.error_report)
-        error_report_count = len(error_report_json)
-        return "Msg:{0}/Err:{1}".format(message_count, error_report_count)
+        msgKeys = error_report_json.keys()
+        msgKeys = list(set(msgKeys))
+        errorKeys = [x for x in msgKeys if x != "jobRuntime"]
+        timeMsg = "No"
+        if "jobRuntime" in msgKeys:
+            timeMsg= "Yes"
+        error_report_count = len(errorKeys)
+        return "Msg:{0}/Err:{1}/Time:{2}".format(message_count, error_report_count,timeMsg)
 
+    def script_time_difference(self, instance):
+        message_log_json = json.loads(instance.message_log)
+
+        if 'jobRuntime' in message_log_json:
+            run_time_msg = message_log_json['jobRuntime']
+
+            if len(run_time_msg) > 1:
+                try:
+                    return run_time_msg[1]['endTime'] - run_time_msg[0]['startTime']
+                except:
+                    return 'Gadbad ho gai.'
+            elif len(run_time_msg) == 1:
+                try:
+                    return run_time_msg[0]['startTime']
+                except:
+                    return 'Gadbad ho gai.'
+            else:
+                return 'wait'
+        return 'None'
 
 class ScoreAdmin(admin.ModelAdmin):
     icon = '<i class="material-icons">assessment</i>'
