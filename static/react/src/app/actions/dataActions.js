@@ -155,9 +155,10 @@ function fetchDataPreview(slug) {
 function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
     console.log("data preview from api to store")
     console.log(dataPreview)
-    var slug = "";
+    var  slug = dataPreview.slug;
+    var dataset = slug;
     if(dataPreview.status == SUCCESS){
-        slug = dataPreview.slug;
+      
         if(interval != undefined){
             clearInterval(interval);
             dispatch(dispatchDataPreview(dataPreview,slug));
@@ -189,7 +190,7 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
         dispatch(dispatchDataPreviewLoadingMsg(dataPreview));
         return {
             type: "SELECTED_DATASET",
-            slug,
+            dataset,
         }
     }
 }
