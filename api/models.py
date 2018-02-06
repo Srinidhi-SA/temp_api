@@ -1185,6 +1185,10 @@ class Score(models.Model):
         brief_info = dict()
         config = self.get_config()
         config = config.get('config')
+
+        model_data = json.loads(self.trainer.data)
+        model_config_from_results = model_data['model_dropdown']
+
         if config is not None:
             if 'COLUMN_SETTINGS' in config:
                 try:
@@ -1197,9 +1201,15 @@ class Score(models.Model):
 
             if 'FILE_SETTINGS' in config:
                 file_setting = config['FILE_SETTINGS']
+                algorithm_name = None
+                for slug_name in model_config_from_results:
+                    if slug_name['slug'] == file_setting.get('algorithmslug')[0]:
+                        algorithm_name = slug_name['name']
+                        break
+
                 brief_info.update({
                     'analysis type': file_setting.get('analysis_type')[0],
-                    'algorithm name': file_setting.get('algorithmslug')[0],
+                    'algorithm name': algorithm_name,
                 })
 
         brief_info.update(
