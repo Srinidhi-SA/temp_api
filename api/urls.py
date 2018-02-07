@@ -73,7 +73,6 @@ urlpatterns = [
     url(r'^job/(?P<slug>[^/.]+)/set_result',views.set_result , name="set_result"),
     url(r'^job/(?P<slug>[^/.]+)/use_set_result',views.use_set_result , name="use_set_result"),
     url(r'^download_data/(?P<slug>[^/.]+)',views.get_chart_or_small_data , name="get_chart_or_small_data"),
-    url(r'^random_test_api',views.random_test_api , name="random_test_api"),
     url(r'^get_info',views.get_info , name="get_info"),
     url(r'^messages/(?P<slug>[^/.]+)/',views.set_messages , name="set_messages"),
     url(r'^xml/(?P<slug>[^/.]+)/',views.set_pmml , name="set_pmml"),
