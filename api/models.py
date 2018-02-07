@@ -278,7 +278,7 @@ class Dataset(models.Model):
     def add_inputfile_outfile_to_config(self, inputfile, jobConfig):
         jobConfig["config"]["FILE_SETTINGS"] = {
             "inputfile": [inputfile],
-            "outputfile": [self.get_input_file()],
+            "outputfile": [self.get_output_file()],
         }
 
         return jobConfig
@@ -404,6 +404,39 @@ class Dataset(models.Model):
                 file_name = self.get_hdfs_relative_file_path()
 
                 return dir_path + file_name
+
+            elif type == 'fake':
+                return "file:///asdasdasdasd"
+        else:
+            return ""
+
+    def get_output_file(self):
+        from api.helper import encrypt_url
+        HDFS = settings.HDFS
+        if self.datasource_type in ['file', 'fileUpload']:
+            type = self.file_remote
+            if type == 'emr_file':
+                final_url = "file://{}".format(self.input_file.path)
+                encrypted_url = encrypt_url(final_url)
+                return encrypted_url
+            elif type == 'hdfs':
+
+                if 'password' in HDFS:
+                    dir_path = "hdfs://{}:{}@{}:{}".format(
+                        HDFS.get("user.name"),
+                        HDFS.get("password"),
+                        HDFS.get("host"),
+                        HDFS.get("hdfs_port")
+                    )
+                else:
+                    dir_path = "hdfs://{}:{}".format(
+                        HDFS.get("host"),
+                        HDFS.get("hdfs_port")
+                    )
+                file_name = self.get_hdfs_relative_file_path()
+                final_url = dir_path + file_name
+                encrypted_url = encrypt_url(final_url)
+                return encrypted_url
 
             elif type == 'fake':
                 return "file:///asdasdasdasd"
@@ -847,12 +880,16 @@ class Trainer(models.Model):
 
         config = json.loads(self.config)
         train_test_split = float(config.get('trainValue')) / 100
+        targetLevel = None
+        if 'targetLevel' in config:
+            targetLevel = config.get('targetLevel')
         return {
             'inputfile': [self.dataset.get_input_file()],
             'modelpath': [self.slug],
             'train_test_split': [train_test_split],
             'analysis_type': ['training'],
-            'metadata': self.dataset.get_metadata_url_config()
+            'metadata': self.dataset.get_metadata_url_config(),
+            'targetLevel': targetLevel
         }
 
     def create_configuration_column_settings(self):
@@ -1152,6 +1189,10 @@ class Score(models.Model):
         brief_info = dict()
         config = self.get_config()
         config = config.get('config')
+
+        model_data = json.loads(self.trainer.data)
+        model_config_from_results = model_data['model_dropdown']
+
         if config is not None:
             if 'COLUMN_SETTINGS' in config:
                 try:
@@ -1164,9 +1205,15 @@ class Score(models.Model):
 
             if 'FILE_SETTINGS' in config:
                 file_setting = config['FILE_SETTINGS']
+                algorithm_name = None
+                for slug_name in model_config_from_results:
+                    if slug_name['slug'] == file_setting.get('algorithmslug')[0]:
+                        algorithm_name = slug_name['name']
+                        break
+
                 brief_info.update({
                     'analysis type': file_setting.get('analysis_type')[0],
-                    'algorithm name': file_setting.get('algorithmslug')[0],
+                    'algorithm name': algorithm_name,
                 })
 
         brief_info.update(
