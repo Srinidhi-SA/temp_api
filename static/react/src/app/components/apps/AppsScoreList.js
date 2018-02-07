@@ -22,7 +22,8 @@ import {
     handleScoreDelete,
     activateModelScoreTabs,
     storeScoreSearchElement,
-    storeAppsScoreSortElements
+    storeAppsScoreSortElements,
+    getAppDetails
 } from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {STATIC_URL} from "../../helpers/env.js"
@@ -45,16 +46,15 @@ export class AppsScoreList extends React.Component {
     }
     componentWillMount() {
         console.log(this.props.history)
-        
         var pageNo = 1;
-        if (this.props.history.location.search.indexOf("page") != -1) {
+        if(this.props.history.location.search.indexOf("page") != -1){
             pageNo = this.props.history.location.search.split("page=")[1];
-            this.props.dispatch(getAppsScoreList(pageNo));
-        } else {
-            this.props.dispatch(getAppsScoreList(pageNo));
-            // this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/scores')
         }
-        
+        if(store.getState().apps.currentAppId == ""){
+            this.props.dispatch(getAppDetails(this.props.match.params.AppId,pageNo));
+        }else{
+            this.props.dispatch(getAppsScoreList(pageNo));
+        }
     }
     getScoreSummary(slug) {
         this.props.dispatch(updateScoreSlug(slug))

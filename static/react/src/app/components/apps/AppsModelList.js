@@ -8,7 +8,7 @@ import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstrap";
 import {AppsCreateModel} from "./AppsCreateModel";
 import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryFlag,
-    updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,storeAppsModelSortElements} from "../../actions/appActions";
+    updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,storeAppsModelSortElements,getAppDetails} from "../../actions/appActions";
     import {DetailOverlay} from "../common/DetailOverlay";
     import {SEARCHCHARLIMIT,getUserDetailsOrRestart} from  "../../helpers/helper"
     import {STATIC_URL} from "../../helpers/env.js";
@@ -40,11 +40,15 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
             var pageNo = 1;
             if(this.props.history.location.search.indexOf("page") != -1){
                 pageNo = this.props.history.location.search.split("page=")[1];
-                this.props.dispatch(getAppsModelList(pageNo));
+            }
+            if(store.getState().apps.currentAppId == ""){
+                this.props.dispatch(getAppDetails(this.props.match.params.AppId,pageNo));
             }else{
                 this.props.dispatch(getAppsModelList(pageNo));
             }
+           
         }
+    
         getModelSummary(slug){
             this.props.dispatch(updateModelSlug(slug))
         }

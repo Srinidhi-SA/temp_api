@@ -43,7 +43,7 @@ export class LatestModels extends React.Component {
         return (
                 <div class="dashboard_head">
            
-                <div class="active_copy">
+                <div class="active_copy apps-cards">
                 <div class="row">
                 {addButton}
                 {latestModels}
