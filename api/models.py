@@ -880,12 +880,16 @@ class Trainer(models.Model):
 
         config = json.loads(self.config)
         train_test_split = float(config.get('trainValue')) / 100
+        targetLevel = None
+        if 'targetLevel' in config:
+            targetLevel = config.get('targetLevel')
         return {
             'inputfile': [self.dataset.get_input_file()],
             'modelpath': [self.slug],
             'train_test_split': [train_test_split],
             'analysis_type': ['training'],
-            'metadata': self.dataset.get_metadata_url_config()
+            'metadata': self.dataset.get_metadata_url_config(),
+            'targetLevel': targetLevel
         }
 
     def create_configuration_column_settings(self):
