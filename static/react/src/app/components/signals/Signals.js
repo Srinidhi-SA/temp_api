@@ -35,6 +35,7 @@ import {openCsLoaderModal, closeCsLoaderModal} from "../../actions/createSignalA
 import {CreateSignalLoader} from "../common/CreateSignalLoader";
 import {LatestSignals} from "./LatestSignals";
 import {SignalCard} from "./SignalCard";
+import {showLoading, hideLoading} from 'react-redux-loading-bar'
 
 @connect((store) => {
   return {
@@ -107,7 +108,7 @@ export class Signals extends React.Component {
     this.props.history.push('/signals?name='+this.props.signal_search_element+'&sort='+ sortOn + '&type=' + type)
     else
     this.props.history.push('/signals?sort=' + sortOn + '&type=' + type);
-
+    this.props.dispatch(showLoading());
     this.props.dispatch(storeSortElements(sortOn, type));
     this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, 1));
   }
