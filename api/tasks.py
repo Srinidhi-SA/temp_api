@@ -7,13 +7,14 @@ from celery.schedules import crontab
 
 @task(name="sum_two_numbers")
 def add(x, y):
+    print "crazy bird {0}{1}".format(x,y)
     return x + y
 
 CELERYBEAT_SCHEDULE = {
 	# executes every night at 4:15
 	'every-night': {
 		'task': 'multiply_two_numbers',
-		'schedule': crontab(hour=4, minute=20),
+		'schedule': crontab(),
         'args': (1,2)
 	}
 }
