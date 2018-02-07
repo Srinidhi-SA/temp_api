@@ -206,7 +206,6 @@ function fetchPosts(token, pageNo,dispatch) {
       }).then(response => Promise.all([response, response.json()]));
     }
   } else if ((signal_sorton != "" && signal_sorton != null) && (signal_sorttype != null)) {
-    dispatch(showLoading())
     return fetch(API + '/api/signals/?sorted_by=' + signal_sorton + '&ordering=' + signal_sorttype + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
       method: 'get',
       headers: getHeader(token)
@@ -588,6 +587,7 @@ export function storeSearchElement(search_element) {
   return {type: "SEARCH_SIGNAL", search_element}
 }
 export function storeSortElements(sorton, sorttype) {
+    
   return {type: "SORT_SIGNAL", sorton, sorttype}
 }
 
