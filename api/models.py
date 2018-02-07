@@ -1797,6 +1797,7 @@ class Audioset(models.Model):
 class SaveData(models.Model):
     slug = models.SlugField(null=False, blank=True, max_length=300)
     data = models.TextField(default="{}")
+    object_slug = models.SlugField(null=False, blank=True, max_length=300, default="")
 
     def get_data(self):
         data = self.data

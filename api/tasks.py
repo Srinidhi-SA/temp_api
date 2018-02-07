@@ -2,7 +2,6 @@ from __future__ import absolute_import, unicode_literals
 import random
 from celery.decorators import task
 from api.redis_access import AccessFeedbackMessage
-from celery.schedules import crontab
 
 
 @task(name="sum_two_numbers")
@@ -176,3 +175,44 @@ def save_results_to_job(slug, results):
         results = json.dumps(results)
         job.results = results
     job.save()
+
+
+@task(name='cleanup_logentry')
+def clean_up_logentry():
+
+    from auditlog.models import LogEntry
+    from django.contrib.auth.models import User
+
+    all_users = User.objects.all()
+
+    for user in all_users:
+        log_entries = LogEntry.objects.filter(actor=user.id).count()
+        LogEntry.objects.all().delete()
+        print "delete object(s) :- %{0}".format(log_entries)
+
+
+@task(name='cleanup_on_delete')
+def clean_up_on_delete(slug, model_name):
+
+    from api.helper import get_db_object
+    import json
+    from api.models import SaveAnyData, Job, SaveData
+
+    model_instance = get_db_object(model_name=model_name,
+                                   model_slug=slug
+                                   )
+    data = json.loads(model_instance.data)
+    model_instance.delete()
+
+    job_instance = Job.objects.filter(object_id__contains=slug)
+    job_instance.delete()
+
+    sad_instance = SaveAnyData.objects.filter(slug__contains=slug)
+    sad_instance.delete()
+
+    sd = SaveData.objects.filter(object_slug__contains=slug)
+    sd.delete()
+
+
+
+

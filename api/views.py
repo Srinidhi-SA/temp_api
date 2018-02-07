@@ -4972,8 +4972,6 @@ def get_score_data_and_return_top_n(request):
             })
 
 
-
-
 @api_view(['GET'])
 def get_recent_activity(request):
     user = request.user
@@ -4984,7 +4982,8 @@ def get_recent_activity(request):
     recent_activity = []
     for obj in logs:
         log_user = str(obj.user)
-        recent_activity.append({"message":obj.change_message,"action_time":obj.action_time,"repr":obj.object_repr,"content_type":obj.content_type.model,"content_type_app_label":obj.content_type.app_label,"user":log_user})
+        recent_activity.append(
+            {"message": obj.change_message,"action_time":obj.action_time,"repr":obj.object_repr,"content_type":obj.content_type.model,"content_type_app_label":obj.content_type.app_label,"user":log_user})
 
     return JsonResponse({
         "recent_activity": recent_activity
@@ -4995,14 +4994,14 @@ def get_recent_activity(request):
 @api_view(['GET'])
 def delete_and_keep_only_ten_from_all_models(request):
     from api.models import SaveAnyData
-    model_list = [Dataset, Insight, Trainer, Score, Job, SaveData, SaveAnyData ]
+    from auditlog.models import LogEntry
+
+    model_list = [Dataset, Insight, Trainer, Score, Job, SaveData, SaveAnyData, LogEntry]
 
     for model_item in model_list:
-        all_database_object = model_item.objects.all().order_by('created_at')
-        for database_object in all_database_object:
-            database_object.delete()
+        model_item.objects.all().delete()
 
     return JsonResponse({
-        'ok' : 'ok'
+        'ok': 'ok'
 
     })
