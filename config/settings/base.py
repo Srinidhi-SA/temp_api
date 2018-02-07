@@ -1327,4 +1327,14 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE
 
+from celery.schedules import crontab
+CELERYBEAT_SCHEDULE = {
+	# executes every night at 4:15
+	'every-night': {
+		'task': 'multiply_two_numbers',
+		'schedule': crontab(),
+        'args': (1,2)
+	}
+}
+
 HDFS_SECRET_KEY = 'xfBmEcr_hFHGqVrTo2gMFpER3ks9x841UcvJbEQJesI='
