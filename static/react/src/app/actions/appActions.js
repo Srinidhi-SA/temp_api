@@ -104,7 +104,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
         }
     }
 
-    export function createModel(modelName,targetVariable) {
+    export function createModel(modelName,targetVariable,targetLevel) {
         console.log(modelName);
         console.log(targetVariable);
         if($('#createModelAnalysisList option:selected').val() == ""){
@@ -114,7 +114,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
         }
         return (dispatch) => {
             dispatch(openAppsLoader(APPSLOADERPERVALUE,"Please wait while mAdvisor is creating model... "));
-            return triggerCreateModel(getUserDetailsOrRestart.get().userToken,modelName,targetVariable).then(([response, json]) =>{
+            return triggerCreateModel(getUserDetailsOrRestart.get().userToken,modelName,targetVariable,targetLevel).then(([response, json]) =>{
                 if(response.status === 200){
                     console.log(json)
                     dispatch(createModelSuccess(json,dispatch))
@@ -128,7 +128,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
         }
     }
 
-    function triggerCreateModel(token,modelName,targetVariable) {
+    function triggerCreateModel(token,modelName,targetVariable,targetLevel) {
         var datasetSlug = store.getState().datasets.dataPreview.slug;
         var app_id=store.getState().apps.currentAppId;
         var customDetails = createcustomAnalysisDetails();
@@ -138,6 +138,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 "timeDimension":store.getState().datasets.selectedTimeDimensions,*/
                 "trainValue":store.getState().apps.trainValue,
                 "testValue":store.getState().apps.testValue,
+                "targetLevel":targetLevel,
                 "variablesSelection":store.getState().datasets.dataPreview.meta_data.uiMetaData.varibaleSelectionArray
                /* "analysisVariable":targetVariable,
                 'customAnalysisDetails':customDetails["customAnalysisDetails"],

@@ -39,7 +39,7 @@ export class ModelVariableSelection extends React.Component {
     }
     createModel(event){
         event.preventDefault();
-        this.props.dispatch(createModel($("#createModelName").val(),$("#createModelAnalysisList").val()))
+        this.props.dispatch(createModel($("#createModelName").val(),$("#createModelAnalysisList").val(),$("#createModelLevelCount").val()))
     }
     setPossibleList(event){
         this.props.dispatch(showLevelCountsForTarget(event))
