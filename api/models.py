@@ -69,22 +69,23 @@ class Job(models.Model):
         return " : ".join(["{}".format(x) for x in [self.name, self.job_type, self.created_at, self.slug]])
 
     def kill(self):
-        from api.yarn_job_api import kill_application_using_fabric
-        # return kill_application(self.url)
+        from api.tasks import kill_application_using_fabric
         if self.url == "":
             return False
-        url_status = kill_application_using_fabric(self.url)
 
-        if url_status is True:
-            original_object = self.get_original_object()
+        if self.url is None:
+            return False
 
-            if original_object is not None:
-                original_object.status = 'FAILED'
-                original_object.save()
-            self.status = 'KILLED'
-            self.save()
+        kill_application_using_fabric.delay(self.url)
 
-        return url_status
+        original_object = self.get_original_object()
+
+        if original_object is not None:
+            original_object.status = 'FAILED'
+            original_object.save()
+        self.status = 'KILLED'
+        self.save()
+        return True
 
     def start(self):
         command_array = json.loads(self.command_array)
