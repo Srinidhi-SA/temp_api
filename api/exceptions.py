@@ -69,4 +69,20 @@ def update_failed_exception(err):
 
     return response
 
+def deleted_failed_exception(err):
+    response = Response()
+    if response is not None:
+        response.data = {}
+        errors = []
+        for field, value in response.data.items():
+            errors.append("{} : {}".format(field, " ".join(value)))
+
+        response.data['errors'] = "Deleted failed"
+        response.data['status'] = False
+        response.data['message'] = 'failed'
+
+        response.data['exception'] = err
+
+    return response
+
 

@@ -84,6 +84,7 @@ class SignalView(viewsets.ModelViewSet):
                 if data['deleted'] == True:
                     print 'let us delete'
                     clean_up_on_delete.delay(instance.slug, Insight.__name__)
+                    return JsonResponse({'message':'Deleted'})
         except:
             return update_failed_exception("File Doesn't exist.")
 
