@@ -7,7 +7,7 @@ import store from "../store";
 import {openCsLoaderModal, closeCsLoaderModal, updateCsLoaderValue, updateCsLoaderMsg} from "./createSignalActions";
 import Dialog from 'react-bootstrap-dialog'
 import {showLoading, hideLoading} from 'react-redux-loading-bar'
-import {updateColumnStatus,handleDVSearch,updateStoreVariables,updateDatasetVariables,updateSelectAllAnlysis,hideDataPreview,updateTargetAnalysisList} from './dataActions';
+import {updateColumnStatus,handleDVSearch,updateStoreVariables,clearMeasureSearchIfTargetIsSelected,clearDimensionSearchIfTargetIsSelected,updateDatasetVariables,updateSelectAllAnlysis,hideDataPreview,updateTargetAnalysisList} from './dataActions';
 // var API = "http://34.196.204.54:9000";
 
 // @connect((store) => {
@@ -384,11 +384,9 @@ export function hideTargetVariable(event,jobType){
     var prevVarSlug = store.getState().signals.selVarSlug;
     var prevVarType = store.getState().signals.getVarType;
     var prevSetVarAs = null;
-    var evt = {};
-    evt.target = {};
-    evt.target.value = "";
-    evt.target.name = varType;
-    dispatch(handleDVSearch(evt))
+   
+    dispatch(clearMeasureSearchIfTargetIsSelected(""))
+    dispatch(clearDimensionSearchIfTargetIsSelected(""))
     var dataSetMeasures = store.getState().datasets.dataSetMeasures.slice();
     var dataSetDimensions = store.getState().datasets.dataSetDimensions.slice();
     var dataSetTimeDimensions = store.getState().datasets.dataSetTimeDimensions.slice();
@@ -397,10 +395,9 @@ export function hideTargetVariable(event,jobType){
     var count = store.getState().datasets.selectedVariablesCount;
     if(varType == "measure"){
         dataSetMeasures = updateTargetVariable(varSlug,dataSetMeasures);
-        $("#measureSearch").val("");
     }else if(varType == "dimension"){
         dataSetDimensions = updateTargetVariable(varSlug,dataSetDimensions);
-        $("#dimensionSearch").val("");
+        
     }
 
     dataSetDimensions = updateTargetVariable(prevVarSlug,dataSetDimensions)

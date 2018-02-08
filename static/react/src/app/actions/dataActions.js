@@ -885,6 +885,21 @@ export function handleDVSearch(evt){
         break;
     }
 }
+export function clearMeasureSearchIfTargetIsSelected(name){
+    $("#measureSearch").val("");
+    return {
+        type: "SEARCH_MEASURE",
+        name,
+    }
+}
+export function clearDimensionSearchIfTargetIsSelected(name){
+    $("#dimensionSearch").val("");
+    return {
+        type: "SEARCH_DIMENSION",
+        name,
+    }
+}
+
 export function handelSort(variableType,sortOrder){
     switch ( variableType ) {
 
