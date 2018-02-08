@@ -13,6 +13,8 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 
 
     export var appsInterval = null;
+    export var refreshAppsModelInterval = null;
+    export var refreshAppsScoresInterval = null;
 
     function getHeader(token){
         return {
@@ -30,6 +32,18 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
     export function closeModelPopup() {
         return {
             type: "APPS_MODEL_HIDE_POPUP",
+        }
+    }
+
+    export function refreshAppsModelList(props){
+        return (dispatch) => {
+            
+            refreshAppsModelInterval = setInterval(function() {
+                var pageNo = window.location.href.split("=")[1];
+                if(pageNo == undefined) pageNo = 1;
+                if(window.location.pathname == "/apps/"+store.getState().apps.currentAppId+"/models")
+                    dispatch(getAppsModelList(parseInt(pageNo)));
+            },APPSDEFAULTINTERVAL);
         }
     }
 
@@ -174,6 +188,16 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
         return {
             type: "CREATE_MODEL_SUCCESS",
             slug,
+        }
+    }
+    export function refreshAppsScoreList(props){
+        return (dispatch) => {
+            refreshAppsScoresInterval = setInterval(function() {
+                var pageNo = window.location.href.split("=")[1];
+                if(pageNo == undefined) pageNo = 1;
+                if(window.location.pathname == "/apps/"+store.getState().apps.currentAppId+"/scores")
+                    dispatch(getAppsScoreList(parseInt(pageNo)));
+            },APPSDEFAULTINTERVAL);
         }
     }
     export function getAppsScoreList(pageNo) {

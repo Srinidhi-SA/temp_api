@@ -8,7 +8,7 @@ import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstrap";
 import {AppsCreateModel} from "./AppsCreateModel";
 import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryFlag,
-    updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,storeAppsModelSortElements,getAppDetails} from "../../actions/appActions";
+    updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,storeAppsModelSortElements,getAppDetails,refreshAppsModelList} from "../../actions/appActions";
     import {DetailOverlay} from "../common/DetailOverlay";
     import {SEARCHCHARLIMIT,getUserDetailsOrRestart} from  "../../helpers/helper"
     import {STATIC_URL} from "../../helpers/env.js";
@@ -48,7 +48,9 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
             }
            
         }
-    
+        componentDidMount(){
+            this.props.dispatch(refreshAppsModelList(this.props));
+        }
         getModelSummary(slug){
             this.props.dispatch(updateModelSlug(slug))
         }
