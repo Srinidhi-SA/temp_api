@@ -22,7 +22,8 @@ import {
     handleScoreDelete,
     activateModelScoreTabs,
     storeScoreSearchElement,
-    storeAppsScoreSortElements
+    storeAppsScoreSortElements,
+    refreshAppsScoreList
 } from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {STATIC_URL} from "../../helpers/env.js"
@@ -55,6 +56,9 @@ export class AppsScoreList extends React.Component {
             // this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/scores')
         }
         
+    }
+    componentDidMount(){
+        this.props.dispatch(refreshAppsScoreList(this.props));
     }
     getScoreSummary(slug) {
         this.props.dispatch(updateScoreSlug(slug))
