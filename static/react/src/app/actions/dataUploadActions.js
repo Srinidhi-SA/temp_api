@@ -27,11 +27,13 @@ export function dataUpload() {
         var elements = document.getElementById(store.getState().dataSource.selectedDataSrcType).elements;
         //$("#MySQLdatasetname").tooltip({'trigger':'focus', 'title': 'Password tooltip'});
        // var dataSrc = store.getState().dataSource.selectedDataSrcType;
+        var flag = false;
         for(var i=0;i<elements.length;i++){
+           
             if(elements[i].required &&  elements[i].value == ""){
                 $("#"+elements[i].id).css("border-color","red");
                 $("#"+elements[i].id).trigger("focus");
-                return false;
+                flag = true;
             }else{
                 $("#"+elements[i].id).css("border-color","#e0e0e0");
                 dbDetails[elements[i].name] = elements[i].value
@@ -39,6 +41,7 @@ export function dataUpload() {
 
 
         }
+        if(!flag)
         dispatch(uploadFileOrDB(dbDetails));
     }
     }

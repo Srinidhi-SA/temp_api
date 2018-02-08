@@ -52,7 +52,7 @@ export class ScoreCard extends React.Component {
     render() {
         var scoreList = this.props.data;
         const appsScoreList = scoreList.map((data, i) => {
-            var scoreLink = "/apps/" + store.getState().apps.currentAppId + "/scores/" + data.slug;
+            var scoreLink = "/apps/" + this.props.match.params.AppId + "/scores/" + data.slug;
             return (
                     <div className="col-md-3 xs-mb-15 list-boxes" key={i}>
                     <div className="rep_block newCardStyle" name={data.name}>

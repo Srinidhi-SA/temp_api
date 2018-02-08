@@ -1865,3 +1865,25 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             type: "SET_TARGET_LEVEL_COUNTS", levelCounts
         }
     }
+   
+   
+   export function getAppDetails(appSlug,pageNo){
+       
+       return (dispatch) => {
+           return triggerAppDetailsAPI(appSlug).then(([response, json]) =>{
+               if(response.status === 200){
+                   dispatch(updateSelectedApp(json.app_id,json.name,json));
+                   dispatch(getAppsModelList(pageNo));
+                   dispatch(getAppsScoreList(pageNo));
+               }
+           });
+       }
+       
+   }
+   
+   function triggerAppDetailsAPI(appSlug){
+       return fetch(API+'/api/apps/'+appSlug+'/',{
+           method: 'get',
+           headers: getHeader(getUserDetailsOrRestart.get().userToken),
+       }).then( response => Promise.all([response, response.json()]));
+   }
