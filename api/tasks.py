@@ -197,12 +197,12 @@ def clean_up_on_delete(slug, model_name):
     from api.helper import get_db_object
     from api.models import SaveAnyData, Job, SaveData
 
-    model_instance = get_db_object(model_name=model_name,
-                                   model_slug=slug
-                                   )
-    model_instance.data = '{}'
-    model_instance.deleted = True
-    model_instance.save()
+    # model_instance = get_db_object(model_name=model_name,
+    #                                model_slug=slug
+    #                                )
+    # model_instance.data = '{}'
+    # model_instance.deleted = True
+    # model_instance.save()
 
     job_instance = Job.objects.filter(object_id__contains=slug)
     print len(job_instance)
