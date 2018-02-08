@@ -226,7 +226,7 @@ def limit_chart_data_length(chart_data, limit=None):
     return chart_data
 
 
-def decode_and_convert_chart_raw_data(data):
+def decode_and_convert_chart_raw_data(data, object_slug=None):
     if not check_chart_data_format(data):
         print "chart data format not matched"
         return {}
@@ -250,6 +250,8 @@ def decode_and_convert_chart_raw_data(data):
     c3_chart_details = dict()
     from api.models import SaveData
     sd = SaveData()
+    if object_slug is not None:
+        sd.object_slug=object_slug
     sd.save()
     if chart_type in ["bar", "line", "spline"]:
         chart_data = replace_chart_data(data['data'])
@@ -1209,3 +1211,14 @@ def generate_signature(json_obj):
 
 def generate_pmml_name(slug):
     return slug + "_" + 'pmml'
+
+def encrypt_url(url):
+    from cryptography.fernet import Fernet
+    cipher_suite = Fernet(settings.HDFS_SECRET_KEY)
+    bytes_url = url.encode()
+    # if isinstance(bytes_url, bytes):
+    #     pass
+    # else:
+    #     bytes_url = base64.urlsafe_b64decode(url)
+    cipher_text = cipher_suite.encrypt(bytes_url)
+    return cipher_text

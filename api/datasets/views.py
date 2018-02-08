@@ -181,42 +181,42 @@ class DatasetView(viewsets.ModelViewSet):
         if instance is None:
             return creation_failed_exception("File Doesn't exist.")
 
-        try:
-            data = request.data
-            data = convert_to_string(data)
+        # try:
+        data = request.data
+        data = convert_to_string(data)
 
-            temp_details = dict()
-            if instance.datasource_type == "fileUpload":
-                temp_details['input_file'] = instance.input_file
-                temp_details['datasource_type'] = instance.datasource_type
-                temp_details['file_remote'] = instance.file_remote
-                temp_details['name'] = data.get('name', temp_details['input_file'].name)
-            else:
-                temp_details['input_file'] = None
-                temp_details['datasource_details'] = instance.datasource_details
-                temp_details['datasource_type'] = instance.datasource_type
-                temp_details['name'] = data.get(
-                    'name',
-                    data.get('datasource_type', "NoName") + "_" + str(random.randint(1000000, 10000000))
+        temp_details = dict()
+        if instance.datasource_type == "fileUpload":
+            temp_details['input_file'] = instance.input_file
+            temp_details['datasource_type'] = instance.datasource_type
+            temp_details['file_remote'] = instance.file_remote
+            temp_details['name'] = data.get('name', temp_details['input_file'].name)
+        else:
+            temp_details['input_file'] = None
+            temp_details['datasource_details'] = instance.datasource_details
+            temp_details['datasource_type'] = instance.datasource_type
+            temp_details['name'] = data.get(
+                'name',
+                data.get('datasource_type', "NoName") + "_" + str(random.randint(1000000, 10000000))
+            )
+        temp_details['created_by'] = request.user.id
+
+        serializer = DatasetSerializer(data=temp_details)
+        if serializer.is_valid():
+            dataset_object = serializer.save()
+            if 'filter_settings' in data:
+                dataset_object.create_for_subsetting(
+                    data['filter_settings'],
+                    data.get('transformation_settings', {}),
+                    instance.get_input_file(),
+                    instance.get_metadata_url_config()
                 )
-            temp_details['created_by'] = request.user.id
-
-            serializer = DatasetSerializer(data=temp_details)
-            if serializer.is_valid():
-                dataset_object = serializer.save()
-                if 'filter_settings' in data:
-                    dataset_object.create_for_subsetting(
-                        data['filter_settings'],
-                        data.get('transformation_settings', {}),
-                        instance.get_input_file(),
-                        instance.get_metadata_url_config()
-                    )
-                else:
-                    return creation_failed_exception({'error': 'no filter_settings'})
-                return Response(serializer.data)
-        except Exception as err:
-            return creation_failed_exception(err)
-        return creation_failed_exception(serializer.errors)
+            else:
+                return creation_failed_exception({'error': 'no filter_settings'})
+            return Response(serializer.data)
+        # except Exception as err:
+        #     return creation_failed_exception(err)
+        # return creation_failed_exception(serializer.errors)
 
     @detail_route(methods=['put'])
     def meta_data_modifications(self, request, slug=None):

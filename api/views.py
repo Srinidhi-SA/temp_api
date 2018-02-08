@@ -849,7 +849,7 @@ def write_into_databases(job_type, object_slug, results):
             card_data = data["chartData"]
             if 'dataType' in card_data and card_data['dataType'] == 'c3Chart':
                 chart_data = card_data['data']
-                final_chart_data = helper.decode_and_convert_chart_raw_data(chart_data)
+                final_chart_data = helper.decode_and_convert_chart_raw_data(chart_data, object_slug=object_slug)
                 data["chartData"] = chart_changes_in_metadata_chart(final_chart_data)
                 data["chartData"]["table_c3"] = []
 
@@ -873,7 +873,7 @@ def write_into_databases(job_type, object_slug, results):
             insight_object.save()
             return results
 
-        results = add_slugs(results)
+        results = add_slugs(results, object_slug=object_slug)
         insight_object.data = json.dumps(results)
         insight_object.analysis_done = True
         insight_object.status = 'SUCCESS'
@@ -887,7 +887,7 @@ def write_into_databases(job_type, object_slug, results):
             trainer_object.save()
             return results
 
-        results['model_summary'] = add_slugs(results['model_summary'])
+        results['model_summary'] = add_slugs(results['model_summary'], object_slug=object_slug)
         trainer_object.data = json.dumps(results)
         trainer_object.analysis_done = True
         trainer_object.save()
@@ -900,7 +900,7 @@ def write_into_databases(job_type, object_slug, results):
             score_object.save()
             return results
 
-        results = add_slugs(results)
+        results = add_slugs(results, object_slug=object_slug)
         score_object.data = json.dumps(results)
         score_object.analysis_done = True
         score_object.save()
@@ -913,14 +913,14 @@ def write_into_databases(job_type, object_slug, results):
             robo_object.save()
             return results
 
-        results = add_slugs(results)
+        results = add_slugs(results, object_slug=object_slug)
         robo_object.data = json.dumps(results)
         robo_object.robo_analysis_done = True
         robo_object.save()
         return results
     elif job_type == 'stockAdvisor':
         stock_objects = StockDataset.objects.get(slug=object_slug)
-        results = add_slugs(results)
+        results = add_slugs(results, object_slug=object_slug)
         stock_objects.data = json.dumps(results)
         stock_objects.analysis_done = True
         stock_objects.status = 'SUCCESS'
@@ -947,16 +947,7 @@ def chart_changes_in_metadata_chart(chart_data):
     return chart_data
 
 
-@csrf_exempt
-def random_test_api(request):
-    import json
-    data = json.loads(request.body)
-    data = add_slugs(data)
-
-    return JsonResponse({"data": data})
-
-
-def add_slugs(results):
+def add_slugs(results, object_slug=""):
     from api import helper
     listOfNodes = results.get('listOfNodes', [])
     listOfCards = results.get('listOfCards', [])
@@ -966,25 +957,25 @@ def add_slugs(results):
 
     if len(listOfCards) > 0:
         for loC in listOfCards:
-            add_slugs(loC)
+            add_slugs(loC, object_slug=object_slug)
             if loC['cardType'] == 'normal':
-                convert_chart_data_to_beautiful_things(loC['cardData'])
+                convert_chart_data_to_beautiful_things(loC['cardData'], object_slug=object_slug)
 
     if len(listOfNodes) > 0:
         for loN in listOfNodes:
-            add_slugs(loN)
+            add_slugs(loN, object_slug=object_slug)
 
     return results
 
 
-def convert_chart_data_to_beautiful_things(data):
+def convert_chart_data_to_beautiful_things(data, object_slug=""):
     from api import helper
     for card in data:
         if card["dataType"] == "c3Chart":
             chart_raw_data = card["data"]
             # function
             try:
-                card["data"] = helper.decode_and_convert_chart_raw_data(chart_raw_data)
+                card["data"] = helper.decode_and_convert_chart_raw_data(chart_raw_data, object_slug=object_slug)
             except Exception as e:
                 print e
                 card["data"] = {}
@@ -4972,8 +4963,6 @@ def get_score_data_and_return_top_n(request):
             })
 
 
-
-
 @api_view(['GET'])
 def get_recent_activity(request):
     user = request.user
@@ -4984,7 +4973,8 @@ def get_recent_activity(request):
     recent_activity = []
     for obj in logs:
         log_user = str(obj.user)
-        recent_activity.append({"message":obj.change_message,"action_time":obj.action_time,"repr":obj.object_repr,"content_type":obj.content_type.model,"content_type_app_label":obj.content_type.app_label,"user":log_user})
+        recent_activity.append(
+            {"message": obj.change_message,"action_time":obj.action_time,"repr":obj.object_repr,"content_type":obj.content_type.model,"content_type_app_label":obj.content_type.app_label,"user":log_user})
 
     return JsonResponse({
         "recent_activity": recent_activity
@@ -4995,14 +4985,14 @@ def get_recent_activity(request):
 @api_view(['GET'])
 def delete_and_keep_only_ten_from_all_models(request):
     from api.models import SaveAnyData
-    model_list = [Dataset, Insight, Trainer, Score, Job, SaveData, SaveAnyData ]
+    from auditlog.models import LogEntry
+
+    model_list = [Dataset, Insight, Trainer, Score, Job, SaveData, SaveAnyData, LogEntry]
 
     for model_item in model_list:
-        all_database_object = model_item.objects.all().order_by('created_at')
-        for database_object in all_database_object:
-            database_object.delete()
+        model_item.objects.all().delete()
 
     return JsonResponse({
-        'ok' : 'ok'
+        'ok': 'ok'
 
     })
