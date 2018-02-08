@@ -64,6 +64,7 @@ class DatasetSerializer(serializers.ModelSerializer):
                 ret['file_size']=-1
                 ret['proceed_for_loading'] = True
 
+        ret['job_status'] = self.job.status
         return ret
 
 
@@ -85,6 +86,8 @@ class DataListSerializer(serializers.ModelSerializer):
         except:
             ret['completed_percentage'] = 0
             ret['completed_message']="Analyzing Target Variable"
+
+        ret['job_status'] = self.job.status
         return ret
 
 
