@@ -215,7 +215,3 @@ def clean_up_on_delete(slug, model_name):
     sd_instance = SaveData.objects.filter(object_slug__contains=slug)
     print len(sd_instance)
     sd_instance.delete()
-
-
-
-

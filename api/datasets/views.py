@@ -86,11 +86,11 @@ class DatasetView(viewsets.ModelViewSet):
 
         try:
             instance = self.get_object_from_all()
-            if 'deleted' in data:
-                if data['deleted'] == True:
-                    print 'let us delete'
-                    clean_up_on_delete.delay(instance.slug, Dataset.__name__)
-                    return JsonResponse({'message': 'Deleted'})
+            # if 'deleted' in data:
+            #     if data['deleted'] == True:
+            #         print 'let us delete'
+            #         clean_up_on_delete.delay(instance.slug, Dataset.__name__)
+            #         return JsonResponse({'message': 'Deleted'})
         except:
             return update_failed_exception("File Doesn't exist.")
 
