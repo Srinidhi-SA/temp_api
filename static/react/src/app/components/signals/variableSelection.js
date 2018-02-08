@@ -137,12 +137,6 @@ export class VariableSelection extends React.Component {
 
     setPossibleList(event){
         this.props.dispatch(hideTargetVariable(event,"signals"));
-        //this.props.dispatch(updateAdvanceSettings(event));
-        //this.props.dispatch(setPossibleAnalysisList(event));
-        //this.props.dispatch(updateSelectAllAnlysis(false));
-        //clear all analysis once target variable is changed
-       // this.props.dispatch(selectAllAnalysisList(false));
-
     }
 
     componentWillMount(){

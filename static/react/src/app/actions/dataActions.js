@@ -836,6 +836,17 @@ export function updateDatasetVariables(measures,dimensions,timeDimensions,possib
     }
 }
 
+export function updateTargetAnalysisList(renderList){
+    let prevAnalysisList = jQuery.extend(true, {}, renderList);
+  
+    return {
+        type: "UPDATE_ANALYSIS_LIST",
+        renderList,
+        prevAnalysisList,
+
+    }
+}
+
 export function setDimensionSubLevels(selectedDimensionSubLevels){
     return {
         type: "SELECTED_DIMENSION_SUBLEVELS",
@@ -873,7 +884,6 @@ export function handleDVSearch(evt){
     }
         break;
     }
-
 }
 export function handelSort(variableType,sortOrder){
     switch ( variableType ) {
