@@ -224,6 +224,7 @@ class MetaDataChange(object):
             "measure": 'measures',
             "dimension": 'dimensions',
             "timeDimension": 'timeDimension',
+            "datetime":'timeDimension',
         }
 
         match_for_column = {
@@ -231,7 +232,8 @@ class MetaDataChange(object):
             "dimensions": 'dimensionColumns',
             "timeDimension": 'timeDimensionColumns',
             "measure": 'measureColumns',
-            "dimension": 'dimensionColumns'
+            "dimension": 'dimensionColumns',
+            "datetime":'timeDimensionColumns',
         }
 
         for i, data in enumerate(self.metaData):
