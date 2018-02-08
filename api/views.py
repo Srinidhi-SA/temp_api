@@ -15,7 +15,7 @@ from rest_framework.response import Response
 
 from api.datasets.helper import add_ui_metadata_to_metadata
 from api.datasets.serializers import DatasetSerializer
-from api.exceptions import creation_failed_exception, update_failed_exception
+from api.exceptions import creation_failed_exception, update_failed_exception, retrieve_failed_exception
 from api.pagination import CustomPagination
 from api.query_filtering import get_listed_data
 from api.utils import \
@@ -33,6 +33,7 @@ from api.utils import \
     AppListSerializers, \
     AppSerializer
 from models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData, StockDataset, CustomApps
+from api.tasks import clean_up_on_delete
 
 
 class SignalView(viewsets.ModelViewSet):
@@ -79,8 +80,12 @@ class SignalView(viewsets.ModelViewSet):
 
         try:
             instance = self.get_object_from_all()
+            if 'deleted' in data:
+                if data['deleted'] == True:
+                    print 'let us delete'
+                    clean_up_on_delete.delay(instance.slug, Dataset.__name__)
         except:
-            return creation_failed_exception("File Doesn't exist.")
+            return update_failed_exception("File Doesn't exist.")
 
         serializer = self.get_serializer(instance=instance, data=data, partial=True)
         if serializer.is_valid():
@@ -101,10 +106,10 @@ class SignalView(viewsets.ModelViewSet):
         try:
             instance = self.get_object_from_all()
         except:
-            return creation_failed_exception("File Doesn't exist.")
+            return retrieve_failed_exception("File Doesn't exist.")
 
         if instance is None:
-            return creation_failed_exception("File Doesn't exist.")
+            return retrieve_failed_exception("File Doesn't exist.")
 
         serializer = InsightSerializer(instance=instance)
         return Response(serializer.data)

@@ -13,7 +13,7 @@ from django.http import Http404
 
 from django.views.decorators.csrf import csrf_exempt
 
-from api.exceptions import creation_failed_exception, update_failed_exception
+from api.exceptions import creation_failed_exception, update_failed_exception, retrieve_failed_exception
 from api.models import Dataset
 from api.pagination import CustomPagination
 from helper import convert_to_string
@@ -22,6 +22,7 @@ from api.query_filtering import get_listed_data, get_retrieve_data
 from helper import add_transformation_setting_to_ui_metadata, add_ui_metadata_to_metadata
 from helper import convert_metadata_according_to_transformation_setting
 from helper import get_advanced_setting
+from api.tasks import clean_up_on_delete
 
 # Create your views here.
 
@@ -82,12 +83,15 @@ class DatasetView(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         data = request.data
         data = convert_to_string(data)
-        # instance = self.get_object()
 
         try:
             instance = self.get_object_from_all()
+            if 'deleted' in data:
+                if data['deleted'] == True:
+                    print 'let us delete'
+                    clean_up_on_delete.delay(instance.slug, Dataset.__name__)
         except:
-            return creation_failed_exception("File Doesn't exist.")
+            return update_failed_exception("File Doesn't exist.")
 
         if 'subsetting' in data:
             if data['subsetting'] == True:
@@ -153,10 +157,10 @@ class DatasetView(viewsets.ModelViewSet):
         try:
             instance = self.get_object_from_all()
         except:
-            return creation_failed_exception("File Doesn't exist.")
+            return retrieve_failed_exception("File Doesn't exist.")
 
         if instance is None:
-            return creation_failed_exception("File Doesn't exist.")
+            return retrieve_failed_exception("File Doesn't exist.")
 
         serializer = DatasetSerializer(instance=instance)
         object_details = serializer.data
