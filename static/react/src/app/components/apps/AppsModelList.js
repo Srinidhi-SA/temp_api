@@ -62,7 +62,7 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
             if (e.key === 'Enter') {
                 //console.log('searching in data list');
                 if (e.target.value != "" && e.target.value != null)
-                    this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models?search=' + e.target.value + '')
+                    this.props.history.push('/apps/'+this.props.match.params.AppId+'/models?search=' + e.target.value + '')
                     
                     this.props.dispatch(storeModelSearchElement(e.target.value));
                 this.props.dispatch(getAppsModelList(1));
@@ -72,18 +72,18 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
         onChangeOfSearchBox(e){
             if(e.target.value==""||e.target.value==null){
                 this.props.dispatch(storeModelSearchElement(""));
-                this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models'+'')
+                this.props.history.push('/apps/'+this.props.match.params.AppId+'/models'+'')
                 this.props.dispatch(getAppsModelList(1));
                 
             }else if (e.target.value.length > SEARCHCHARLIMIT) {
-                this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models?search=' + e.target.value + '')
+                this.props.history.push('/apps/'+this.props.match.params.AppId+'/models?search=' + e.target.value + '')
                 this.props.dispatch(storeModelSearchElement(e.target.value));
                 this.props.dispatch(getAppsModelList(1));
             }
         }
         
         doSorting(sortOn, type){
-            this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models?sort=' + sortOn + '&type='+type);
+            this.props.history.push('/apps/'+this.props.match.params.AppId+'/models?sort=' + sortOn + '&type='+type);
             
             this.props.dispatch(storeAppsModelSortElements(sortOn,type));
             this.props.dispatch(getAppsModelList(1));
@@ -121,7 +121,7 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                 if(pages > 1){
                     paginationTag = <Pagination  ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
                 }
-                appsModelList = <ModelsCard data={modelList}/>;
+                appsModelList = <ModelsCard match={this.props.match} data={modelList}/>;
                 return (
                         <div>
                         <LatestModels props={this.props}/>

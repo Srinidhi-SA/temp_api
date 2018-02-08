@@ -52,7 +52,7 @@ export class LatestScores extends React.Component {
         var data = this.props.latestScores;
   var latestScores = "";
         if(data){
-            latestScores =  <ScoreCard data={data}/>;
+            latestScores =  <ScoreCard match = {this.props.props.match} data={data}/>;
         }
         return (
                 <div class="dashboard_head">

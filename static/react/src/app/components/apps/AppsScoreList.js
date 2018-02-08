@@ -71,7 +71,7 @@ export class AppsScoreList extends React.Component {
             //console.log('searching in data list');
             
             if (e.target.value != "" && e.target.value != null)
-                this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/scores?search=' + e.target.value + '')
+                this.props.history.push('/apps/'+this.props.match.params.AppId+'/scores?search=' + e.target.value + '')
                 
                 this.props.dispatch(storeScoreSearchElement(e.target.value));
             this.props.dispatch(getAppsScoreList(1));
@@ -82,17 +82,17 @@ export class AppsScoreList extends React.Component {
         if (e.target.value == "" || e.target.value == null) {
             this.props.dispatch(storeScoreSearchElement(""));
             this.props.dispatch(getAppsScoreList(1));
-            this.props.history.push('/apps/' + store.getState().apps.currentAppId + '/scores'+ '')
+            this.props.history.push('/apps/' + this.props.match.params.AppId + '/scores'+ '')
             
         } else if (e.target.value.length > SEARCHCHARLIMIT) {
-            this.props.history.push('/apps/' + store.getState().apps.currentAppId + '/scores?search=' + e.target.value+'')
+            this.props.history.push('/apps/' + this.props.match.params.AppId + '/scores?search=' + e.target.value+'')
             this.props.dispatch(storeScoreSearchElement(e.target.value));
             this.props.dispatch(getAppsScoreList(1));
         }
     }
     
     doSorting(sortOn, type){
-        this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/scores?sort=' + sortOn + '&type='+type);
+        this.props.history.push('/apps/'+this.props.match.params.AppId+'/scores?sort=' + sortOn + '&type='+type);
         
         this.props.dispatch(storeAppsScoreSortElements(sortOn,type));
         this.props.dispatch(getAppsScoreList(1));
@@ -128,7 +128,7 @@ export class AppsScoreList extends React.Component {
             if (pages > 1) {
                 paginationTag = <Pagination ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
             }
-            appsScoreList = <ScoreCard data={scoreList} />
+            appsScoreList = <ScoreCard match = {this.props.match} data={scoreList} />
             return (
                     
                     <div>
