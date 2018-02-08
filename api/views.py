@@ -158,6 +158,11 @@ class TrainerView(viewsets.ModelViewSet):
         # instance = self.get_object()
         try:
             instance = self.get_object_from_all()
+            if 'deleted' in data:
+                if data['deleted'] == True:
+                    print 'let us delete'
+                    clean_up_on_delete.delay(instance.slug, Trainer.__name__)
+                    return JsonResponse({'message':'Deleted'})
         except:
             return creation_failed_exception("File Doesn't exist.")
 
@@ -302,6 +307,11 @@ class ScoreView(viewsets.ModelViewSet):
 
         try:
             instance = self.get_object_from_all()
+            if 'deleted' in data:
+                if data['deleted'] == True:
+                    print 'let us delete'
+                    clean_up_on_delete.delay(instance.slug, Score.__name__)
+                    return JsonResponse({'message':'Deleted'})
         except:
             return creation_failed_exception("File Doesn't exist.")
 
@@ -445,6 +455,11 @@ class RoboView(viewsets.ModelViewSet):
         # instance = self.get_object()
         try:
             instance = self.get_object_from_all()
+            if 'deleted' in data:
+                if data['deleted'] == True:
+                    print 'let us delete'
+                    clean_up_on_delete.delay(instance.slug, Robo.__name__)
+                    return JsonResponse({'message':'Deleted'})
         except:
             return creation_failed_exception("File Doesn't exist.")
 
