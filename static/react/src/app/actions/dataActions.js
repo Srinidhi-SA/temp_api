@@ -836,6 +836,17 @@ export function updateDatasetVariables(measures,dimensions,timeDimensions,possib
     }
 }
 
+export function updateTargetAnalysisList(renderList){
+    let prevAnalysisList = jQuery.extend(true, {}, renderList);
+  
+    return {
+        type: "UPDATE_ANALYSIS_LIST",
+        renderList,
+        prevAnalysisList,
+
+    }
+}
+
 export function setDimensionSubLevels(selectedDimensionSubLevels){
     return {
         type: "SELECTED_DIMENSION_SUBLEVELS",
@@ -873,8 +884,22 @@ export function handleDVSearch(evt){
     }
         break;
     }
-
 }
+export function clearMeasureSearchIfTargetIsSelected(name){
+    $("#measureSearch").val("");
+    return {
+        type: "SEARCH_MEASURE",
+        name,
+    }
+}
+export function clearDimensionSearchIfTargetIsSelected(name){
+    $("#dimensionSearch").val("");
+    return {
+        type: "SEARCH_DIMENSION",
+        name,
+    }
+}
+
 export function handelSort(variableType,sortOrder){
     switch ( variableType ) {
 

@@ -7,7 +7,7 @@ import store from "../store";
 import {openCsLoaderModal, closeCsLoaderModal, updateCsLoaderValue, updateCsLoaderMsg} from "./createSignalActions";
 import Dialog from 'react-bootstrap-dialog'
 import {showLoading, hideLoading} from 'react-redux-loading-bar'
-import {updateColumnStatus,updateStoreVariables,updateDatasetVariables,updateSelectAllAnlysis,hideDataPreview} from './dataActions';
+import {updateColumnStatus,handleDVSearch,updateStoreVariables,clearMeasureSearchIfTargetIsSelected,clearDimensionSearchIfTargetIsSelected,updateDatasetVariables,updateSelectAllAnlysis,hideDataPreview,updateTargetAnalysisList} from './dataActions';
 // var API = "http://34.196.204.54:9000";
 
 // @connect((store) => {
@@ -329,7 +329,7 @@ export function updateAdvanceSettings(event){
     return (dispatch) => {
         return triggerAdvanceSettingsAPI(variableSelection).then(([response, json]) =>{
             if(response.status === 200){
-                dispatch(updateDatasetVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,json,false));
+                dispatch(updateTargetAnalysisList(json));
                 dispatch(setPossibleAnalysisList(varType,varText,varSlug));
                 dispatch(updateSelectAllAnlysis(false));
                 //clear all analysis once target variable is changed
@@ -384,7 +384,9 @@ export function hideTargetVariable(event,jobType){
     var prevVarSlug = store.getState().signals.selVarSlug;
     var prevVarType = store.getState().signals.getVarType;
     var prevSetVarAs = null;
-
+   
+    dispatch(clearMeasureSearchIfTargetIsSelected(""))
+    dispatch(clearDimensionSearchIfTargetIsSelected(""))
     var dataSetMeasures = store.getState().datasets.dataSetMeasures.slice();
     var dataSetDimensions = store.getState().datasets.dataSetDimensions.slice();
     var dataSetTimeDimensions = store.getState().datasets.dataSetTimeDimensions.slice();
@@ -392,9 +394,10 @@ export function hideTargetVariable(event,jobType){
     var meaFlag = store.getState().datasets.measureAllChecked;
     var count = store.getState().datasets.selectedVariablesCount;
     if(varType == "measure"){
-        dataSetMeasures = updateTargetVariable(varSlug,dataSetMeasures)
+        dataSetMeasures = updateTargetVariable(varSlug,dataSetMeasures);
     }else if(varType == "dimension"){
-        dataSetDimensions = updateTargetVariable(varSlug,dataSetDimensions)
+        dataSetDimensions = updateTargetVariable(varSlug,dataSetDimensions);
+        
     }
 
     dataSetDimensions = updateTargetVariable(prevVarSlug,dataSetDimensions)

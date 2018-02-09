@@ -50,7 +50,7 @@ export class AppsCreateModel extends React.Component {
     	this.selectedData = $("#model_Dataset").val();
     	this.props.dispatch(getDataSetPreview(this.selectedData));
         }else{
-            this.props.dispatch(closeModelPopup())
+            //this.props.dispatch(closeModelPopup())
             this.props.dispatch(dataUpload())
         }
     }

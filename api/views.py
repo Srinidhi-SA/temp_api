@@ -121,7 +121,9 @@ class TrainerView(viewsets.ModelViewSet):
         queryset = Trainer.objects.filter(
             created_by=self.request.user,
             deleted=False,
-            analysis_done=True
+            #analysis_done=True,
+            status__in=['SUCCESS', 'INPROGRESS']
+
         )
         return queryset
 
@@ -267,7 +269,8 @@ class ScoreView(viewsets.ModelViewSet):
         queryset = Score.objects.filter(
             created_by=self.request.user,
             deleted=False,
-            analysis_done=True
+            #analysis_done=True
+            status__in=['SUCCESS', 'INPROGRESS']
         )
         return queryset
 
