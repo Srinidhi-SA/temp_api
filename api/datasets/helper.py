@@ -157,7 +157,7 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
                             if colset.get('modified') == True:
                                 mdc.changes_on_delete(col.get("name"), type='undelete')
                                 colset['modified'] = False
-                                colset['displayName'] = 'Delete Column'
+                        colset['displayName'] = 'Delete Column'
 
                     if colset.get('actionName') == 'ignore_suggestion':
                         colName = col.get('name')
