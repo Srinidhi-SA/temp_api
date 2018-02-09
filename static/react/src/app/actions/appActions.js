@@ -37,7 +37,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 
     export function refreshAppsModelList(props){
         return (dispatch) => {
-            
+
             refreshAppsModelInterval = setInterval(function() {
                 var pageNo = window.location.href.split("=")[1];
                 if(pageNo == undefined) pageNo = 1;
@@ -285,7 +285,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                         dispatch(hideDataPreview());
                         dispatch(updateModelSummaryFlag(true));
                     }else if(json.status == FAILED){
-                        bootbox.alert("Your model could not created.Please try later.",function(){
+                        bootbox.alert("Your model could not be created.Please try later.",function(){
                             window.history.go(-2);
                         });
                         clearInterval(appsInterval);
@@ -1864,7 +1864,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
     function scoreToProceed(flag){
         return {type: "SCORE_TO_PROCEED", flag};
     }
-    
+
    export  function showLevelCountsForTarget(event){
         var selOption = event.target.childNodes[event.target.selectedIndex];
         var varType = selOption.value;
@@ -1889,10 +1889,10 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             type: "SET_TARGET_LEVEL_COUNTS", levelCounts
         }
     }
-   
-   
+
+
    export function getAppDetails(appSlug,pageNo){
-       
+
        return (dispatch) => {
            return triggerAppDetailsAPI(appSlug).then(([response, json]) =>{
                if(response.status === 200){
@@ -1902,9 +1902,9 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                }
            });
        }
-       
+
    }
-   
+
    function triggerAppDetailsAPI(appSlug){
        return fetch(API+'/api/apps/'+appSlug+'/',{
            method: 'get',
