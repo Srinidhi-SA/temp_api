@@ -1,6 +1,7 @@
 
-import {API,EMR,STATIC_URL} from "../helpers/env";
-import {PERPAGE,isEmpty,getUserDetailsOrRestart,APPSPERPAGE,statusMessages} from "../helpers/helper";
+import {API,EMR} from "../helpers/env";
+import {PERPAGE,isEmpty,getUserDetailsOrRestart,APPSPERPAGE} from "../helpers/helper";
+
 import store from "../store";
 import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,CUSTOMERDATA,HISTORIALDATA,EXTERNALDATA,DELETEMODEL,
     RENAMEMODEL,DELETESCORE,RENAMESCORE,DELETEINSIGHT,RENAMEINSIGHT,SUCCESS,FAILED,DELETEAUDIO,RENAMEAUDIO} from "../helpers/helper";
@@ -10,7 +11,6 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
     import React from "react";
     import { showLoading, hideLoading } from 'react-redux-loading-bar';
     import {createcustomAnalysisDetails} from './signalActions';
-
 
     export var appsInterval = null;
     export var refreshAppsModelInterval = null;
@@ -122,8 +122,8 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
         console.log(modelName);
         console.log(targetVariable);
         if($('#createModelAnalysisList option:selected').val() == ""){
-            let msg=statusMessages("warning","Please select a variable to analyze...","small_mascot")
-              bootbox.alert(msg);
+
+            bootbox.alert("Please select a variable to analyze...");
             return false;
         }
         return (dispatch) => {

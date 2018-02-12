@@ -11,9 +11,8 @@ import {DataVariableSelection} from "../data/DataVariableSelection";
 import {CreateSignalLoader} from "../common/CreateSignalLoader";
 import {openCsLoaderModal,closeCsLoaderModal} from "../../actions/createSignalActions";
 import {AdvanceSettings} from "./AdvanceSettings";
-import {SET_VARIABLE,statusMessages} from "../../helpers/helper";
-import {STATIC_URL} from "../../helpers/env";
 
+import {SET_VARIABLE} from "../../helpers/helper";
 
 
 var selectedVariables = {measures:[],dimensions:[],date:null};  // pass selectedVariables to config
@@ -73,11 +72,9 @@ export class VariableSelection extends React.Component {
     createSignal(event){
         event.preventDefault();
         var isAnalysisChecked = checkAnalysisIsChecked();
-
         //this.props.dispatch(handleTargetSelection());
         if($('#signalVariableList option:selected').val() == ""){
-          let msg=statusMessages("warning","Please select a target variable to analyze...","small_mascot")
-              bootbox.alert(msg);
+            bootbox.alert("Please select a variable to analyze...");
             return false;
         }
         if(store.getState().datasets.dataSetTimeDimensions.length > 0){
@@ -96,8 +93,8 @@ export class VariableSelection extends React.Component {
         }
 
         if(!isAnalysisChecked){
-          let msg=statusMessages("warning","Please select atleast one analysis to Proceed..","small_mascot")
-              bootbox.alert(msg);
+
+            bootbox.alert("Please select atleast one analysis to Proceed..");
             return false;
         }
 
