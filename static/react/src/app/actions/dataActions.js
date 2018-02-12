@@ -147,8 +147,8 @@ function fetchDataPreview(slug) {
     }).then( response => Promise.all([response, response.json()])).catch(function(error){
 
         dispatch(hideDULoaderPopup());
-        let msg=statusMessages("error","Unable to connect to server. Check your connection please try again.","small_mascot")
-        bootbox.alert(msg)
+        //let msg=statusMessages("error","Unable to connect to server. Check your connection please try again.","small_mascot")
+        bootbox.alert("Unable to connect to server. Check your connection please try again.")
     });
 }
 //get preview data
