@@ -17,11 +17,20 @@ ALLOWED_HOSTS = ['*']
 # }
 
 DATABASES = {
-    'default': {
+    'default1': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    },
+    "default": {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'madvisor2',
+        'USER': 'root',
+        'PASSWORD': 'Marlabs@123',
+        'HOST': 'localhost',
+        'PORT': '',
+        }
 }
+
 
 PROJECT_APP = [
 ]
