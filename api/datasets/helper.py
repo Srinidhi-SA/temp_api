@@ -110,7 +110,7 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
                     if colset.get("actionName") == "rename":
                         colName = col.get('name')
                         newName = colset.get('newName')
-
+                        col['name'] = newName
                         if 'modified' in colset:
                             if colset.get('modified') == True:
                                 colset['prevName'] = newName
@@ -121,6 +121,7 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
                             colName=colName,
                             newName=newName
                         )
+
                     if colset.get("actionName") == "data_type":
                         listOfActions = colset.get('listOfActions')
                         data_type = {}
