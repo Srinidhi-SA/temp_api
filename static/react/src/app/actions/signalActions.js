@@ -7,7 +7,7 @@ import store from "../store";
 import {openCsLoaderModal, closeCsLoaderModal, updateCsLoaderValue, updateCsLoaderMsg} from "./createSignalActions";
 import Dialog from 'react-bootstrap-dialog'
 import {showLoading, hideLoading} from 'react-redux-loading-bar'
-import {updateColumnStatus,handleDVSearch,updateStoreVariables,clearMeasureSearchIfTargetIsSelected,clearDimensionSearchIfTargetIsSelected,updateDatasetVariables,updateSelectAllAnlysis,hideDataPreview,updateTargetAnalysisList} from './dataActions';
+import {updateColumnStatus,handleDVSearch,updateStoreVariables,updateDatasetVariables,updateSelectAllAnlysis,hideDataPreview,updateTargetAnalysisList} from './dataActions';
 // var API = "http://34.196.204.54:9000";
 
 // @connect((store) => {
@@ -385,8 +385,14 @@ export function hideTargetVariable(event,jobType){
     var prevVarType = store.getState().signals.getVarType;
     var prevSetVarAs = null;
    
-    dispatch(clearMeasureSearchIfTargetIsSelected(""))
-    dispatch(clearDimensionSearchIfTargetIsSelected(""))
+    if(varType != ""){ 
+        var evt = {}; 
+        evt.target = {}; 
+        evt.target.value = ""; 
+        evt.target.name = varType; 
+        dispatch(handleDVSearch(evt))    
+    } 
+ 
     var dataSetMeasures = store.getState().datasets.dataSetMeasures.slice();
     var dataSetDimensions = store.getState().datasets.dataSetDimensions.slice();
     var dataSetTimeDimensions = store.getState().datasets.dataSetTimeDimensions.slice();
@@ -395,9 +401,17 @@ export function hideTargetVariable(event,jobType){
     var count = store.getState().datasets.selectedVariablesCount;
     if(varType == "measure"){
         dataSetMeasures = updateTargetVariable(varSlug,dataSetMeasures);
+        $("#measureSearch").val("");
+        if(dataSetMeasures.length == 1){
+            meaFlag = false;
+        }
     }else if(varType == "dimension"){
         dataSetDimensions = updateTargetVariable(varSlug,dataSetDimensions);
-        
+        $("#dimensionSearch").val("");
+        //If only one dimension is there and selected as target , selectAll should be unchecked
+        if(dataSetDimensions.length == 1){
+            dimFlag = false;
+        }
     }
 
     dataSetDimensions = updateTargetVariable(prevVarSlug,dataSetDimensions)
@@ -405,8 +419,21 @@ export function hideTargetVariable(event,jobType){
 
 
     if(prevVarType == null){
+        if(count != 0)
         count = count-1;
     }
+    //If previous variable selected and current target is empty count should be incremented
+    else if(prevVarType != "" && varType == ""){
+        count = count+1;
+    }
+    
+    
+    if(prevVarType == "measure" && dataSetMeasures.length == 1 ){
+        meaFlag = true;
+    }else if(prevVarType == "dimension" && dataSetDimensions.length == 1 ){
+        dimFlag = true;
+    }
+    
     dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
 
     if(jobType == "signals"){
@@ -440,9 +467,9 @@ function checkIfDataTypeChanges(varSlug) {
 }
 function updateSetVarAs(colSlug,evt){
     return (dispatch) => {
-        var dataSetMeasures = store.getState().datasets.dataSetMeasures.slice();
-        var dataSetDimensions = store.getState().datasets.dataSetDimensions.slice();
-        var dataSetTimeDimensions = store.getState().datasets.dataSetTimeDimensions.slice();
+        var dataSetMeasures = store.getState().datasets.CopyOfMeasures.slice();
+        var dataSetDimensions = store.getState().datasets.CopyOfDimension.slice();
+        var dataSetTimeDimensions = store.getState().datasets.CopyTimeDimension.slice();
         var dimFlag =  store.getState().datasets.dimensionAllChecked;
         var meaFlag = store.getState().datasets.measureAllChecked;
         var count = store.getState().datasets.selectedVariablesCount;
