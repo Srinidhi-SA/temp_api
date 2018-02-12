@@ -375,6 +375,16 @@ function updateTargetVariable(slug,array){
 return array;
 }
 
+function handleSelectAllFlag(array){
+    var selectAllFlag = true;
+    for(var i=0;i<array.length;i++){
+       if(array[i].selected == false && array[i].targetColumn == false){
+            selectAllFlag = false;
+            break;
+        }
+    }
+    return selectAllFlag;
+}
 export function hideTargetVariable(event,jobType){
     return (dispatch) => {
     var selOption = event.target.childNodes[event.target.selectedIndex];
@@ -402,16 +412,16 @@ export function hideTargetVariable(event,jobType){
     if(varType == "measure"){
         dataSetMeasures = updateTargetVariable(varSlug,dataSetMeasures);
         $("#measureSearch").val("");
-        if(dataSetMeasures.length == 1){
+        /*if(dataSetMeasures.length == 1){
             meaFlag = false;
-        }
+        }*/
     }else if(varType == "dimension"){
         dataSetDimensions = updateTargetVariable(varSlug,dataSetDimensions);
         $("#dimensionSearch").val("");
         //If only one dimension is there and selected as target , selectAll should be unchecked
-        if(dataSetDimensions.length == 1){
+        /*if(dataSetDimensions.length == 1){
             dimFlag = false;
-        }
+        }*/
     }
 
     dataSetDimensions = updateTargetVariable(prevVarSlug,dataSetDimensions)
@@ -428,11 +438,13 @@ export function hideTargetVariable(event,jobType){
     }
     
     
-    if(prevVarType == "measure" && dataSetMeasures.length == 1 ){
+    /*if(prevVarType == "measure" && dataSetMeasures.length == 1 ){
         meaFlag = true;
     }else if(prevVarType == "dimension" && dataSetDimensions.length == 1 ){
         dimFlag = true;
-    }
+    }*/
+    dimFlag = handleSelectAllFlag(dataSetDimensions);
+    meaFlag = handleSelectAllFlag(dataSetMeasures);
     
     dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
 
