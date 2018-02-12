@@ -13,6 +13,8 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 
 
     export var appsInterval = null;
+    export var refreshAppsModelInterval = null;
+    export var refreshAppsScoresInterval = null;
 
     function getHeader(token){
         return {
@@ -30,6 +32,18 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
     export function closeModelPopup() {
         return {
             type: "APPS_MODEL_HIDE_POPUP",
+        }
+    }
+
+    export function refreshAppsModelList(props){
+        return (dispatch) => {
+
+            refreshAppsModelInterval = setInterval(function() {
+                var pageNo = window.location.href.split("=")[1];
+                if(pageNo == undefined) pageNo = 1;
+                if(window.location.pathname == "/apps/"+store.getState().apps.currentAppId+"/models")
+                    dispatch(getAppsModelList(parseInt(pageNo)));
+            },APPSDEFAULTINTERVAL);
         }
     }
 
@@ -176,6 +190,16 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             slug,
         }
     }
+    export function refreshAppsScoreList(props){
+        return (dispatch) => {
+            refreshAppsScoresInterval = setInterval(function() {
+                var pageNo = window.location.href.split("=")[1];
+                if(pageNo == undefined) pageNo = 1;
+                if(window.location.pathname == "/apps/"+store.getState().apps.currentAppId+"/scores")
+                    dispatch(getAppsScoreList(parseInt(pageNo)));
+            },APPSDEFAULTINTERVAL);
+        }
+    }
     export function getAppsScoreList(pageNo) {
         return (dispatch) => {
             return fetchScoreList(pageNo,getUserDetailsOrRestart.get().userToken).then(([response, json]) =>{
@@ -261,7 +285,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                         dispatch(hideDataPreview());
                         dispatch(updateModelSummaryFlag(true));
                     }else if(json.status == FAILED){
-                        bootbox.alert("Your model could not created.Please try later.",function(){
+                        bootbox.alert("Your model could not be created.Please try later.",function(){
                             window.history.go(-2);
                         });
                         clearInterval(appsInterval);
@@ -1840,7 +1864,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
     function scoreToProceed(flag){
         return {type: "SCORE_TO_PROCEED", flag};
     }
-    
+
    export  function showLevelCountsForTarget(event){
         var selOption = event.target.childNodes[event.target.selectedIndex];
         var varType = selOption.value;
@@ -1865,10 +1889,10 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             type: "SET_TARGET_LEVEL_COUNTS", levelCounts
         }
     }
-   
-   
+
+
    export function getAppDetails(appSlug,pageNo){
-       
+
        return (dispatch) => {
            return triggerAppDetailsAPI(appSlug).then(([response, json]) =>{
                if(response.status === 200){
@@ -1878,9 +1902,9 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                }
            });
        }
-       
+
    }
-   
+
    function triggerAppDetailsAPI(appSlug){
        return fetch(API+'/api/apps/'+appSlug+'/',{
            method: 'get',

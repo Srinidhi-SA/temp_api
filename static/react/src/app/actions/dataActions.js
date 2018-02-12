@@ -917,6 +917,7 @@ export function handleDVSearch(evt){
         break;
     }
 }
+
 export function handelSort(variableType,sortOrder){
     switch ( variableType ) {
 

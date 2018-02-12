@@ -3,6 +3,8 @@ import {DYNAMICLOADERINTERVAL} from "../helpers/helper";
 import store from "../store";
 import {FILEUPLOAD, DULOADERPERVALUE, LOADERMAXPERVALUE, DEFAULTINTERVAL, DULOADERPERMSG,getUserDetailsOrRestart} from "../helpers/helper";
 import {getDataList, getDataSetPreview, updateDatasetName, openDULoaderPopup,hideDULoaderPopup} from "./dataActions";
+import {closeModelPopup} from "./appActions";
+
 export var dataPreviewInterval = null;
 
 export function getHeaderWithoutContent(token) {
@@ -53,6 +55,8 @@ function uploadFileOrDB(dbDetails){
         dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
         dispatch(dataUploadLoaderMsg(DULOADERPERMSG));
         dispatch(close());
+        //close model DB popup when user is trying to upload data in model creation
+        dispatch(closeModelPopup())
         dispatch(openDULoaderPopup());
 
         return triggerDataUpload(getUserDetailsOrRestart.get().userToken,dbDetails).then(([response, json]) => {

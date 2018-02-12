@@ -384,17 +384,18 @@ export function hideTargetVariable(event,jobType){
     var prevVarSlug = store.getState().signals.selVarSlug;
     var prevVarType = store.getState().signals.getVarType;
     var prevSetVarAs = null;
-    if(varType != ""){
-        var evt = {};
-        evt.target = {};
-        evt.target.value = "";
-        evt.target.name = varType;
-        dispatch(handleDVSearch(evt))   
-    }
-
-    var dataSetMeasures = store.getState().datasets.CopyOfMeasures.slice();
-    var dataSetDimensions = store.getState().datasets.CopyOfDimension.slice();
-    var dataSetTimeDimensions = store.getState().datasets.CopyTimeDimension.slice();
+   
+    if(varType != ""){ 
+        var evt = {}; 
+        evt.target = {}; 
+        evt.target.value = ""; 
+        evt.target.name = varType; 
+        dispatch(handleDVSearch(evt))    
+    } 
+ 
+    var dataSetMeasures = store.getState().datasets.dataSetMeasures.slice();
+    var dataSetDimensions = store.getState().datasets.dataSetDimensions.slice();
+    var dataSetTimeDimensions = store.getState().datasets.dataSetTimeDimensions.slice();
     var dimFlag =  store.getState().datasets.dimensionAllChecked;
     var meaFlag = store.getState().datasets.measureAllChecked;
     var count = store.getState().datasets.selectedVariablesCount;

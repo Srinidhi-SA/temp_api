@@ -191,6 +191,7 @@ class InsightSerializer(serializers.ModelSerializer):
             except:
                 ret['file_size']=-1
                 ret['proceed_for_loading'] = True
+        ret['job_status'] = instance.job.status
         return ret
 
     def update(self, instance, validated_data):
@@ -232,6 +233,7 @@ class InsightListSerializers(serializers.ModelSerializer):
         except:
             ret['completed_percentage'] = 0
             ret['completed_message']="Analyzing Target Variable"
+        ret['job_status'] = instance.job.status
         return ret
 
     def get_brief_info(self):
@@ -265,6 +267,7 @@ class TrainerSerlializer(serializers.ModelSerializer):
             ret['message'] = get_message(instance)
         except:
             ret['message'] = None
+        ret['job_status'] = instance.job.status
         return ret
 
     def update(self, instance, validated_data):
@@ -295,6 +298,7 @@ class TrainerListSerializer(serializers.ModelSerializer):
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
         ret['brief_info'] = instance.get_brief_info()
+        ret['job_status'] = instance.job.status
         return ret
 
 
@@ -325,6 +329,7 @@ class ScoreSerlializer(serializers.ModelSerializer):
             ret['message'] = get_message(instance)
         except:
             ret['message'] = None
+        ret['job_status'] = instance.job.status
         return ret
 
     def update(self, instance, validated_data):
@@ -359,6 +364,7 @@ class ScoreListSerializer(serializers.ModelSerializer):
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
         ret['brief_info'] = instance.get_brief_info()
+        ret['job_status'] = instance.job.status
         return ret
 
     class Meta:
