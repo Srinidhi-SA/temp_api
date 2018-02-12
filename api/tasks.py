@@ -204,7 +204,7 @@ def clean_up_on_delete(slug, model_name):
     model_instance.deleted = True
     model_instance.save()
 
-    job_instance = Job.objects.filter(object_id__contains=slug)
+    job_instance = Job.objects.filter(object_id__contains=slug).first()
     print len(job_instance)
     job_instance.data = '{}'
     job_instance.save()
