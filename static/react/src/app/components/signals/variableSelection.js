@@ -72,9 +72,18 @@ export class VariableSelection extends React.Component {
     createSignal(event){
         event.preventDefault();
         var isAnalysisChecked = checkAnalysisIsChecked();
+<<<<<<< HEAD
         //this.props.dispatch(handleTargetSelection());
         if($('#signalVariableList option:selected').val() == ""){
             bootbox.alert("Please select a variable to analyze...");
+=======
+        let imgsrc_url=STATIC_URL+"assets/images/alert_warning.png"
+
+        //this.props.dispatch(handleTargetSelection());
+        if($('#signalVariableList option:selected').val() == ""){
+            let msg='<div class="row"><div class="col-md-4"><img src='+imgsrc_url+' class="img-responsive" /></div><div class="col-md-8"><h4 class="text-warning">Warning !</h4><p>Please select a variable to analyze...</p></div></div>';
+              bootbox.alert(msg);
+>>>>>>> parent of ef8f38f... mascot implementation
             return false;
         }
         if(store.getState().datasets.dataSetTimeDimensions.length > 0){
@@ -93,8 +102,13 @@ export class VariableSelection extends React.Component {
         }
 
         if(!isAnalysisChecked){
+<<<<<<< HEAD
 
             bootbox.alert("Please select atleast one analysis to Proceed..");
+=======
+            let msg='<div class="row"><div class="col-md-4"><img src='+imgsrc_url+' class="img-responsive" /></div><div class="col-md-8"><h4 class="text-warning">Warning !</h4><p>Please select atleast one analysis to Proceed..</p></div></div>';
+              bootbox.alert(msg);
+>>>>>>> parent of ef8f38f... mascot implementation
             return false;
         }
 

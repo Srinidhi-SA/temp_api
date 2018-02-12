@@ -1,6 +1,6 @@
 import React from "react";
-import {API,STATIC_URL} from "../helpers/env";
-import {PERPAGE,DULOADERPERVALUE,DEFAULTINTERVAL,SUCCESS,FAILED,getUserDetailsOrRestart,DEFAULTANALYSISVARIABLES,statusMessages} from "../helpers/helper";
+import {API} from "../helpers/env";
+import {PERPAGE,DULOADERPERVALUE,DEFAULTINTERVAL,SUCCESS,FAILED,getUserDetailsOrRestart,DEFAULTANALYSISVARIABLES} from "../helpers/helper";
 import store from "../store";
 import {dataPreviewInterval,dataUploadLoaderValue,clearLoadingMsg,clearDatasetPreview} from "./dataUploadActions";
 import {closeAppsLoaderValue} from "./appActions";
@@ -158,7 +158,7 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
     var  slug = dataPreview.slug;
     var dataset = slug;
     if(dataPreview.status == SUCCESS){
-      
+
         if(interval != undefined){
             clearInterval(interval);
             dispatch(dispatchDataPreview(dataPreview,slug));
@@ -684,7 +684,7 @@ export function showDialogBox(slug,dialog,dispatch,evt){
     })
     dialog.show({
         title: 'Delete Dataset',
-        body: 'Are you sure you want to delete the selected data set?',
+        body: 'Are you sure you want to delete the selected data set? Yes , No',
         actions: [
                   Dialog.CancelAction(),
                   Dialog.OKAction(() => {
@@ -838,7 +838,7 @@ export function updateDatasetVariables(measures,dimensions,timeDimensions,possib
 
 export function updateTargetAnalysisList(renderList){
     let prevAnalysisList = jQuery.extend(true, {}, renderList);
-  
+
     return {
         type: "UPDATE_ANALYSIS_LIST",
         renderList,
@@ -1083,25 +1083,13 @@ function deleteMetaDataColumn(dialog,colName,colSlug,dispatch,actionName,colStat
     if(colStatus == true){
         text = "Are you sure, you want to undelete the selected column?"
     }
-    bootbox.confirm({
-      title:"Delete Column",
-      message:text,
-      //size:"small",
-      buttons: {
-      'cancel': {
-          label: 'No'
-      },
-      'confirm': {
-          label: 'Yes'
-      }
-  },
-      callback:function(result){
+    bootbox.confirm(text,function(result){
         if(result){
             $(".cst_table").find("thead").find("."+colSlug).first().addClass("dataPreviewUpdateCol");
             $(".cst_table").find("tbody").find("tr").find("."+colSlug).addClass("dataPreviewUpdateCol");
             updateColumnStatus(dispatch,colSlug,colName,actionName)
         }
-    }});
+    });
 }
 export function updateVLPopup(flag){
     return{
@@ -1232,14 +1220,9 @@ export function handleColumnActions(transformSettings,slug,isSubsetting) {
                 dispatch(fetchDataPreviewError(json));
                 dispatch(vaiableSelectionUpdate(false));
                 dispatch(hideLoading());
-                let msg=statusMessages("error","Something went wrong. Please try again later.","small_mascot")
-                bootbox.alert(msg)            }
-        }).catch(function(error){
-            dispatch(hideLoading());
-            dispatch(vaiableSelectionUpdate(false));
-            let msg=statusMessages("error","Something went wrong. Please try again later.","small_mascot")
-            bootbox.alert(msg)
-        });
+                bootbox.alert("Something went wrong. Please try again later.")
+            }
+        })
     }
 }
 

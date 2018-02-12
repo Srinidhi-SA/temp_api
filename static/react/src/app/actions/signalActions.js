@@ -1,7 +1,7 @@
 import React from "react";
 import {API} from "../helpers/env";
 import {CSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,PERPAGE,SUCCESS,FAILED,getUserDetailsOrRestart,DIMENSION,
-    MEASURE,SET_VARIABLE,PERCENTAGE,GENERIC_NUMERIC,SET_POLARITY,DYNAMICLOADERINTERVAL,UNIQUE_IDENTIFIER,handleJobProcessing,statusMessages} from "../helpers/helper";
+    MEASURE,SET_VARIABLE,PERCENTAGE,GENERIC_NUMERIC,SET_POLARITY,DYNAMICLOADERINTERVAL,UNIQUE_IDENTIFIER,handleJobProcessing} from "../helpers/helper";
 import {connect} from "react-redux";
 import store from "../store";
 import {openCsLoaderModal, closeCsLoaderModal, updateCsLoaderValue, updateCsLoaderMsg} from "./createSignalActions";
@@ -250,6 +250,7 @@ export function getSignalAnalysis(token, errandId) {
   return (dispatch) => {
     return fetchPosts_analysis(token, errandId).then(([response, json]) => {
       if (response.status === 200) {
+
         dispatch(fetchPostsSuccess_analysis(json, errandId, dispatch))
       } else {
         dispatch(fetchPostsError_analysis(json));
@@ -270,7 +271,7 @@ function fetchPosts_analysis(token, errandId) {
       'Content-Type': 'application/x-www-form-urlencoded'
     }
   }).then(response => Promise.all([response, response.json()])).catch(function(error) {
-      bootbox.alert(statusMessages("error","Something went wrong. Please try again later.","small_mascot"))
+    bootbox.alert("Something went wrong. Please try again later.")
   });
 
 }
@@ -284,7 +285,7 @@ function fetchPostsSuccess_analysis(signalAnalysis, errandId, dispatch) {
     dispatch(clearLoadingMsg());
   } else if (signalAnalysis.status == FAILED || signalAnalysis.status == false) {
     //bootbox.alert("Your signal could not be created. Please try later.")
-    bootbox.alert(statusMessages("error","The signal could not be created. Please check the dataset and try again.","small_mascot"))
+    bootbox.alert("The signal could not be created. Please check the dataset and try again.")
     clearInterval(createSignalInterval);
     dispatch(closeCsLoaderModal())
     dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
@@ -384,7 +385,7 @@ export function hideTargetVariable(event,jobType){
     var prevVarSlug = store.getState().signals.selVarSlug;
     var prevVarType = store.getState().signals.getVarType;
     var prevSetVarAs = null;
-   
+
     dispatch(clearMeasureSearchIfTargetIsSelected(""))
     dispatch(clearDimensionSearchIfTargetIsSelected(""))
     var dataSetMeasures = store.getState().datasets.dataSetMeasures.slice();
@@ -397,7 +398,7 @@ export function hideTargetVariable(event,jobType){
         dataSetMeasures = updateTargetVariable(varSlug,dataSetMeasures);
     }else if(varType == "dimension"){
         dataSetDimensions = updateTargetVariable(varSlug,dataSetDimensions);
-        
+
     }
 
     dataSetDimensions = updateTargetVariable(prevVarSlug,dataSetDimensions)
@@ -539,7 +540,7 @@ export function showDialogBox(slug,dialog,dispatch,evt){
 		})
 	dialog.show({
 		  title: 'Delete Signal',
-		  body: 'Are you sure you want to delete this Signal?',
+		  body: 'Are you sure you want to delete this Signal ? Yes , No',
 		  actions: [
 		    Dialog.CancelAction(),
 		    Dialog.OKAction(() => {
@@ -567,8 +568,7 @@ function deleteSignal(slug, dialog, dispatch) {
       dispatch(getList(getUserDetailsOrRestart.get().userToken, store.getState().signals.signalList.current_page));
       dispatch(hideLoading());
     } else {
-      //dialog.showAlert("The card could not be deleted. Please try again later.");
-      bootbox.alert(statusMessages("error","The card could not be deleted. Please try again later.","without_mascot"))
+      dialog.showAlert("The card could not be deleted. Please try again later.");
       dispatch(hideLoading());
     }
   })
@@ -590,7 +590,7 @@ export function storeSearchElement(search_element) {
   return {type: "SEARCH_SIGNAL", search_element}
 }
 export function storeSortElements(sorton, sorttype) {
-    
+
   return {type: "SORT_SIGNAL", sorton, sorttype}
 }
 

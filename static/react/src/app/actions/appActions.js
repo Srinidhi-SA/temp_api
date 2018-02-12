@@ -121,9 +121,9 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
     export function createModel(modelName,targetVariable,targetLevel) {
         console.log(modelName);
         console.log(targetVariable);
-        if($('#createModelAnalysisList option:selected').val() == ""){
-
+      if($('#createModelAnalysisList option:selected').val() == ""){
             bootbox.alert("Please select a variable to analyze...");
+
             return false;
         }
         return (dispatch) => {
@@ -167,11 +167,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 "app_id":app_id,
                 "config":details
             }),
-        }).then( response => Promise.all([response, response.json()])).catch(function(error) {
-          dispatch(closeAppsLoaderValue());
-          dispatch(updateModelSummaryFlag(false));
-          bootbox.alert(statusMessages("error","Unable to connect to server. Check your connection please try again.","small_mascot"))
-        });
+        }).then( response => Promise.all([response, response.json()]));
     }
     function createModelSuccess(data,dispatch){
         var slug = data.slug;
