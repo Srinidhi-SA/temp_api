@@ -80,15 +80,15 @@ export class VariableSelection extends React.Component {
         }
         if(store.getState().datasets.dataSetTimeDimensions.length > 0){
             if(store.getState().datasets.selectedVariablesCount == 1 &&  $("#analysisList").find(".overview").next("div").find("input[type='checkbox']").prop("checked") == true){
-              let msg=statusMessages("warning","Insufficient variables selected for your chosen analysis.Please select more.","small_mascot")
-                  bootbox.alert(msg);
+              //let msg=statusMessages("warning","Insufficient variables selected for your chosen analysis.Please select more.","small_mascot")
+                  bootbox.alert("Insufficient variables selected for your chosen analysis.Please select more.");
                 return false;
             }
         }
         else{
             if(store.getState().datasets.selectedVariablesCount == 0 &&  $("#analysisList").find(".overview").next("div").find("input[type='checkbox']").prop("checked") == true){
-              let msg=statusMessages("warning","Insufficient variables selected for your chosen analysis.Please select more.","small_mascot")
-                  bootbox.alert(msg);
+              //let msg=statusMessages("warning","Insufficient variables selected for your chosen analysis.Please select more.","small_mascot")
+                  bootbox.alert("Insufficient variables selected for your chosen analysis.Please select more.");
                 return false;
             }
         }
