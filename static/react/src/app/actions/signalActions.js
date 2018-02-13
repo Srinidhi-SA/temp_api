@@ -386,6 +386,20 @@ function handleSelectAllFlag(array){
     }
     return selectAllFlag;
 }
+export function clearMeasureSearchIfTargetIsSelected(name){ 
+    $("#measureSearch").val(""); 
+    return { 
+        type: "SEARCH_MEASURE", 
+        name, 
+    } 
+} 
+export function clearDimensionSearchIfTargetIsSelected(name){ 
+    $("#dimensionSearch").val(""); 
+    return { 
+        type: "SEARCH_DIMENSION", 
+        name, 
+    } 
+} 
 export function hideTargetVariable(event,jobType){
     return (dispatch) => {
     var selOption = event.target.childNodes[event.target.selectedIndex];
@@ -395,17 +409,13 @@ export function hideTargetVariable(event,jobType){
     var prevVarSlug = store.getState().signals.selVarSlug;
     var prevVarType = store.getState().signals.getVarType;
     var prevSetVarAs = null;
-    if(varType != ""){
-        var evt = {};
-        evt.target = {};
-        evt.target.value = "";
-        evt.target.name = varType;
-        dispatch(handleDVSearch(evt))   
-    }
-
-    var dataSetMeasures = store.getState().datasets.CopyOfMeasures.slice();
-    var dataSetDimensions = store.getState().datasets.CopyOfDimension.slice();
-    var dataSetTimeDimensions = store.getState().datasets.CopyTimeDimension.slice();
+    
+    dispatch(clearMeasureSearchIfTargetIsSelected("")) 
+    dispatch(clearDimensionSearchIfTargetIsSelected("")) 
+    
+    var dataSetMeasures = store.getState().datasets.dataSetMeasures.slice();
+    var dataSetDimensions = store.getState().datasets.dataSetDimensions.slice();
+    var dataSetTimeDimensions = store.getState().datasets.dataSetTimeDimensions.slice();
     var dimFlag =  store.getState().datasets.dimensionAllChecked;
     var meaFlag = store.getState().datasets.measureAllChecked;
     var count = store.getState().datasets.selectedVariablesCount;
