@@ -27,8 +27,8 @@ class LeftPanel extends React.Component {
   hideDataPrev(e) {
     this.props.dispatch(hideDataPreview());
     //clear all search elements
-    this.props.dispatch(storeSearchElement(""));
-    this.props.dispatch(storeSearchElement_data(""));
+    //this.props.dispatch(storeSearchElement(""));
+    //this.props.dispatch(storeSearchElement_data(""));
     this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, 1));
     this.props.dispatch(getDataList(1));
     /*$("."+e.target).addClass("active");
