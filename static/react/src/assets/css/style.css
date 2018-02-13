@@ -6667,7 +6667,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#079088', end
 	    text-transform: uppercase;
 }
 .ma-splash-screen .ma-wrapper .ma-content a:hover {
-	color: #fff
+	color: #00998c
 }
 .ma-scroll-top {
 	cursor: pointer;
@@ -8791,7 +8791,7 @@ box-shadow: 0px 0px 14px 4px rgba(0,0,0,0.15); */
     color: #fff;
     background-color: #00998c;
     border-color: #00998c;
-	padding: 9px;
+	/*padding: 9px;*/
 }
 .login-container .btn-primary:active {
     color: #fff;
