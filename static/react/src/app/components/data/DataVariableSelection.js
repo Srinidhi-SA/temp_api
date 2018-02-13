@@ -37,7 +37,7 @@ export class DataVariableSelection extends React.Component {
         this.firstLoop = true;
         //this.props.dispatch(resetSelectedVariables());
         this.handleCheckboxEvents = this.handleCheckboxEvents.bind( this );
-        this.setVariables = this.setVariables.bind( this );
+        //this.setVariables = this.setVariables.bind( this );
         this.measures = [];
         this.dimensions = [];
         this.datetime = [];
@@ -51,11 +51,6 @@ export class DataVariableSelection extends React.Component {
     handleCheckboxEvents( e ) {
         this.props.dispatch( updateSelectedVariables( e ) )
     }
-    setVariables( dimensions, measures, timeDimension) {
-        //	this.props.dispatch(resetSelectedVariables());
-        this.props.dispatch( setSelectedVariables( dimensions, measures, timeDimension ) )
-    }
-
     componentDidMount() {
     	window.scrollTo(0, 0);
         this.props.dispatch( resetSelectedVariables() );
@@ -134,18 +129,7 @@ export class DataVariableSelection extends React.Component {
             } );
 
             this.datetime = this.datetime.concat(this.dimensionDateTime);
-           /* if ( this.firstLoop ) {
-            for(var i=0;i<this.datetime.length;i++){
-            	if(i == 0 && $.inArray( this.datetime[i], that.dimensionDateTime)){
-            		this.dateTimeChkBoxList.push(true)
-            	}else{
-            		this.dateTimeChkBoxList.push(false)
-            	}
-            }
-            //this.props.dispatch( resetSelectedVariables() );
-            //this.setVariables( this.dimensions, this.measures, this.selectedTimeDimension);
-
-            }*/
+        
             if ( this.props.isUpdate ) {
             this.props.dispatch( resetSelectedVariables() );
 
@@ -163,6 +147,7 @@ export class DataVariableSelection extends React.Component {
                     );
                 } );
             } else {
+                $(".measureAll").prop("disabled",true);
                 var measureTemplate = <label>No measure variable present</label>
             }
             if ( store.getState().datasets.dataSetDimensions.length > 0 ) {
@@ -176,6 +161,7 @@ export class DataVariableSelection extends React.Component {
                     );
                 } );
             } else {
+                $(".dimensionAll").prop("disabled",true);
                 var dimensionTemplate = <label>No dimension variable present</label>
             }
 
@@ -198,6 +184,7 @@ export class DataVariableSelection extends React.Component {
 
                 } );
             } else {
+                
                 var datetimeTemplate = <label>No date dimensions to display</label>
             }
 

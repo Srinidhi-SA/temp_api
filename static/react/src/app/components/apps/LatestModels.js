@@ -38,12 +38,12 @@ export class LatestModels extends React.Component {
         let addButton  = <AppsCreateModel match={this.props.props.match}/>;
         let latestModels = "";
         if(data){
-            latestModels =  <ModelsCard data={data}/>;
+            latestModels =  <ModelsCard match = {this.props.props.match} data={data}/>;
         }
         return (
                 <div class="dashboard_head">
            
-                <div class="active_copy">
+                <div class="active_copy apps-cards">
                 <div class="row">
                 {addButton}
                 {latestModels}

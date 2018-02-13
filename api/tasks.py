@@ -201,17 +201,45 @@ def clean_up_on_delete(slug, model_name):
                                    model_slug=slug
                                    )
     model_instance.data = '{}'
+    model_instance.deleted = True
     model_instance.save()
 
     job_instance = Job.objects.filter(object_id__contains=slug)
-    job_instance.delete()
+    print len(job_instance)
+    job_instance.data = '{}'
+    job_instance.save()
 
     sad_instance = SaveAnyData.objects.filter(slug__contains=slug)
+    print len(sad_instance)
     sad_instance.delete()
 
-    sd = SaveData.objects.filter(object_slug__contains=slug)
-    sd.delete()
+    sd_instance = SaveData.objects.filter(object_slug__contains=slug)
+    print len(sd_instance)
+    sd_instance.delete()
 
 
+@task(name='kill_job_using_application_id')
+def kill_application_using_fabric(app_id=None):
 
+    if None == app_id:
+        return -1
 
+    from fabric.api import env, run
+    from django.conf import settings
+
+    HDFS = settings.HDFS
+    BASEDIR = settings.BASE_DIR
+    emr_file = BASEDIR + "/keyfiles/TIAA.pem"
+
+    env.key_filename = [emr_file]
+    env.host_string = "{0}@{1}".format(HDFS["user.name"], HDFS["host"])
+
+    try:
+        capture = run("yarn application --kill {0}".format(app_id))
+
+        if 'finished' in capture:
+            return False
+        else:
+            return True
+    except:
+        return True
