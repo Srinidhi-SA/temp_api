@@ -1181,6 +1181,13 @@ export function updateColumnStatus(dispatch,colSlug,colName,actionName,subAction
     }
     if(actionName != SET_VARIABLE && actionName != UNIQUE_IDENTIFIER && actionName != SET_POLARITY && actionName != IGNORE_SUGGESTION){
         isSubsetting = true;
+    }else{
+        //Enable subsetting when any one of the column is deleted,renamed, removed 
+        if(store.getState().datasets.subsettingDone == false) {
+            isSubsetting = false;   
+        }else{
+            isSubsetting = true;   
+        }
     }
     dispatch(handleColumnActions(transformSettings,slug,isSubsetting))
     dispatch(updateVLPopup(false));
