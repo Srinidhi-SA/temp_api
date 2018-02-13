@@ -79,16 +79,16 @@ export class VariableSelection extends React.Component {
             return false;
         }
         if(store.getState().datasets.dataSetTimeDimensions.length > 0){
-            if(store.getState().datasets.selectedVariablesCount == 1){
-            //  let msg=statusMessages("warning","Please select atleast one variable to analyze...","small_mascot")
-                  bootbox.alert("Please select atleast one variable to analyze...");
+            if(store.getState().datasets.selectedVariablesCount == 1 &&  $("#analysisList").find(".overview").next("div").find("input[type='checkbox']").prop("checked") == true){
+              let msg=statusMessages("warning","Insufficient variables selected for your chosen analysis.Please select more.","small_mascot")
+                  bootbox.alert(msg);
                 return false;
             }
         }
         else{
-            if(store.getState().datasets.selectedVariablesCount == 0){
-              //let msg=statusMessages("warning","Please select atleast one variable to analyze...","small_mascot")
-                  bootbox.alert("Please select atleast one variable to analyze...");
+            if(store.getState().datasets.selectedVariablesCount == 0 &&  $("#analysisList").find(".overview").next("div").find("input[type='checkbox']").prop("checked") == true){
+              let msg=statusMessages("warning","Insufficient variables selected for your chosen analysis.Please select more.","small_mascot")
+                  bootbox.alert(msg);
                 return false;
             }
         }
@@ -182,7 +182,8 @@ export class VariableSelection extends React.Component {
     renderAnalysisList(analysisList){
         let list =  analysisList.map((metaItem,metaIndex) =>{
             let id = "chk_analysis"+ metaIndex;
-            return(<div key={metaIndex} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisList.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>);
+            let cls = "ma-checkbox inline "+metaItem.name
+            return(<div key={metaIndex} className={cls}><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisList.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>);
 
         });
         return list;
