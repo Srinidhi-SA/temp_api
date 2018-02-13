@@ -7,7 +7,7 @@ import store from "../store";
 import {openCsLoaderModal, closeCsLoaderModal, updateCsLoaderValue, updateCsLoaderMsg} from "./createSignalActions";
 import Dialog from 'react-bootstrap-dialog'
 import {showLoading, hideLoading} from 'react-redux-loading-bar'
-import {updateColumnStatus,handleDVSearch,updateStoreVariables,clearMeasureSearchIfTargetIsSelected,clearDimensionSearchIfTargetIsSelected,updateDatasetVariables,updateSelectAllAnlysis,hideDataPreview,updateTargetAnalysisList} from './dataActions';
+import {updateColumnStatus,handleDVSearch,updateStoreVariables,updateDatasetVariables,updateSelectAllAnlysis,hideDataPreview,updateTargetAnalysisList} from './dataActions';
 // var API = "http://34.196.204.54:9000";
 
 // @connect((store) => {
