@@ -1023,6 +1023,7 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND = {
 
 TRANSFORMATION_SETTINGS_CONSTANT = {
     "columnSetting":[
+            {"actionName": "unique_identifier", "displayName": "Unique Identifier", "status": False},
             {"actionName":"delete","displayName":"Delete Column","status":False},
             {"actionName":"rename","displayName":"Rename Column","status":False,"newName":None},
             {"actionName":"replace","displayName":"Replace Values","status":False,"replacementValues":[],
@@ -1102,11 +1103,29 @@ TRANSFORMATION_SETTINGS_CONSTANT = {
 }
 
 
+TRANSFORMATION_SETTINGS_CONSTANT_DELETE = {
+    "columnSetting":[
+            {"actionName": "unique_identifier", "displayName": "Unique Identifier", "status": False},
+            {"actionName":"delete","displayName":"Delete Column","status":False},
+            {"actionName":"rename","displayName":"Rename Column","status":False,"newName":None}
+        ],
+    "new_columns":
+        [
+            {
+            "newColName":None,
+            "orderedColNames":[],
+            "operators":[
+                {"name":"+","displayName":"Addition","status":True},
+                {"name":"-","displayName":"Sub dsada","status":False},
+            ]
+}
+        ]
+
+}
+
+
 TRANSFORMATION_SETTINGS_IGNORE = {
     "actionName": "ignore_suggestion", "displayName": "Consider for Analysis", "status": False
-}
-TRANSFORMATION_SETTINGS_UID = {
-    "actionName": "unique_identifier", "displayName": "Unique Identifier", "status": False
 }
 
 CONCEPTS = {'corporate': ['leadership change', 'public relations'],
