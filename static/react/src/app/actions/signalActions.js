@@ -7,7 +7,7 @@ import store from "../store";
 import {openCsLoaderModal, closeCsLoaderModal, updateCsLoaderValue, updateCsLoaderMsg} from "./createSignalActions";
 import Dialog from 'react-bootstrap-dialog'
 import {showLoading, hideLoading} from 'react-redux-loading-bar'
-import {updateColumnStatus,handleDVSearch,updateStoreVariables,updateDatasetVariables,updateSelectAllAnlysis,hideDataPreview,updateTargetAnalysisList} from './dataActions';
+import {updateColumnStatus,handleDVSearch,updateStoreVariables,updateDatasetVariables,updateSelectAllAnlysis,hideDataPreview,updateTargetAnalysisList,getTotalVariablesSelected} from './dataActions';
 // var API = "http://34.196.204.54:9000";
 
 // @connect((store) => {
@@ -437,14 +437,15 @@ export function hideTargetVariable(event,jobType){
     dataSetMeasures = updateTargetVariable(prevVarSlug,dataSetMeasures)
 
 
-    if(prevVarType == null){
+  /*  if(prevVarType == null){
         if(count != 0)
         count = count-1;
-    }
+    }*/
     //If previous variable selected and current target is empty count should be incremented
-    else if(prevVarType != "" && varType == ""){
+   /* else if(prevVarType != "" && varType == ""){
         count = count+1;
-    }
+    }*/
+  
     
     
     /*if(prevVarType == "measure" && dataSetMeasures.length == 1 ){
@@ -456,13 +457,17 @@ export function hideTargetVariable(event,jobType){
     meaFlag = handleSelectAllFlag(dataSetMeasures);
     
     dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
-
+    count = getTotalVariablesSelected();
+    dispatch(updateVariablesCount(count));
     if(jobType == "signals"){
         dispatch(updateAdvanceSettings(event));
     }
 
     }
 
+}
+export function updateVariablesCount(count){
+    return {type: "UPDATE_VARIABLES_COUNT", count}
 }
 function checkIfDataTypeChanges(varSlug) {
   var transformSettings = store.getState().datasets.dataTransformSettings;
