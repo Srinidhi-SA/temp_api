@@ -75,6 +75,7 @@ export default function reducer(state = {
         latestStocks:{},
         targetLevelCounts:null,
         currentAppDetails:null,
+        updateCreateModelHideShow:false,
 
 }, action) {
     console.log("In APPs reducer!!");
@@ -267,6 +268,7 @@ export default function reducer(state = {
         return {
             ...state,
             modelSlug:action.slug,
+            updateCreateModelHideShow:true,
         }
     }
     break;

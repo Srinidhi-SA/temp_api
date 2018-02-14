@@ -8,6 +8,7 @@ import store from "../../store";
 import {connect} from "react-redux";
 import {APPID1,APPID2,APPID3,APPNAME1,APPNAME2,APPNAME3,getUserDetailsOrRestart} from "../../helpers/helper.js"
 import {activateModelScoreTabs,storeModelSearchElement,storeScoreSearchElement,getAppsModelList,getAppsScoreList,updateSelectedApp} from "../../actions/appActions";
+import {AppsLoader} from "../common/AppsLoader";
 
 @connect((store) => {
 	return {login_response: store.login.login_response,
@@ -54,7 +55,11 @@ export class Apps extends React.Component {
   }
   render() {
     console.log("apps is called##########3");
-    console.log(this.props)
+    console.log(this.props);
+    if(store.getState().apps.modelSummaryFlag){
+            let _link = "/apps/"+store.getState().apps.currentAppId+'/models/'+store.getState().apps.modelSlug;
+            return(<Redirect to={_link}/>);
+        }
    let models = <AppsModelList history={this.props.history} match={this.props.match}/>
 
   let scores = <AppsScoreList history={this.props.history} match={this.props.match}/>
@@ -66,6 +71,7 @@ export class Apps extends React.Component {
             <Tab  eventKey="model" id="model" title="Models">{models}</Tab>
             <Tab eventKey="score" id="score" title="Scores">{scores}</Tab>
           </Tabs>
+          <AppsLoader match={this.props.match}/>
           </div>
         </div>
       );
