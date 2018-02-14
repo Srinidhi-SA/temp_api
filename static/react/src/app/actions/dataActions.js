@@ -126,7 +126,7 @@ function fetchStockDataPreview(slug) {
 }
 export function getDataSetPreview(slug,interval) {
     return (dispatch) => {
-        return fetchDataPreview(slug).then(([response, json]) =>{
+        return fetchDataPreview(slug,dispatch).then(([response, json]) =>{
             if(response.status === 200){
                 console.log(json)
                 dispatch(fetchDataPreviewSuccess(json,interval,dispatch))
@@ -141,7 +141,7 @@ export function getDataSetPreview(slug,interval) {
 }
 
 
-function fetchDataPreview(slug) {
+function fetchDataPreview(slug,dispatch) {
     return fetch(API+'/api/datasets/'+slug+'/',{
         method: 'get',
         headers: getHeader(getUserDetailsOrRestart.get().userToken)
