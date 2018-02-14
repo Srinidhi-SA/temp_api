@@ -423,18 +423,18 @@ class MetaDataChange(object):
                 columnType = head.get('columnType')
                 head_columnSetting = []
                 if "dimension" == columnType:
-                    head_columnSetting = columnSettingCopy[:4]
+                    head_columnSetting = columnSettingCopy[:3]
                 elif "boolean" == columnType:
-                    head_columnSetting = columnSettingCopy[:4]
+                    head_columnSetting = columnSettingCopy[:3]
                 elif "measure" == columnType:
-                    datatype_element = columnSettingCopy[4]
+                    datatype_element = columnSettingCopy[3]
                     datatype_element['listOfActions'][0]["status"] = True
+                    columnSettingCopy[4]['listOfActions'][0]["status"] = True
                     columnSettingCopy[5]['listOfActions'][0]["status"] = True
-                    columnSettingCopy[6]['listOfActions'][0]["status"] = True
 
                     head_columnSetting = columnSettingCopy
                 elif "datetime" == columnType:
-                    head_columnSetting = columnSettingCopy[:3]
+                    head_columnSetting = columnSettingCopy[:2]
 
                 transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
                 transformation_settings_ignore['status'] = False
@@ -459,7 +459,7 @@ class MetaDataChange(object):
             if head.get('name') == colName:
                 transformation_settings = settings.TRANSFORMATION_SETTINGS_CONSTANT
                 columnSettingCopy = copy.deepcopy(transformation_settings.get('columnSetting'))
-                head_columnSetting = columnSettingCopy[1:3]
+                head_columnSetting = columnSettingCopy[0:2]
 
                 transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
                 transformation_settings_ignore['status'] = True
