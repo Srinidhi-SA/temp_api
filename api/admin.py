@@ -139,7 +139,7 @@ class ScoreAdmin(admin.ModelAdmin):
     search_fields = ["name", "slug"]
     list_display = ["name", "slug", "analysis_done", "created_at", "created_by"]
     list_filter = ["analysis_done", ]
-    readonly_fields = ["created_at"]
+    readonly_fields = ["created_at", "trainer", "dataset"]
 
 
 class TrainerAdmin(admin.ModelAdmin):
