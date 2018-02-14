@@ -14898,6 +14898,7 @@ a.more_button { color: #b3b3b3; padding: 0 10px; margin-right: 9px; cursor:point
 .col-md-6 .col-md-12 .table-style .table{ margin-bottom: 0; }
 .col-md-12 .btn-toolbar { margin-bottom: 10px; }
 .dashboard_head .text-muted { color: #ececec; }
+.preview_content { margin-bottom:19px }
 /**************** Css realated to developers, keep the source down ***/
 #prediction_dropdown{
 	    width: 40%;
