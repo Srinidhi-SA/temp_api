@@ -226,7 +226,7 @@ def limit_chart_data_length(chart_data, limit=None):
     return chart_data
 
 
-def decode_and_convert_chart_raw_data(data):
+def decode_and_convert_chart_raw_data(data, object_slug=None):
     if not check_chart_data_format(data):
         print "chart data format not matched"
         return {}
@@ -250,6 +250,8 @@ def decode_and_convert_chart_raw_data(data):
     c3_chart_details = dict()
     from api.models import SaveData
     sd = SaveData()
+    if object_slug is not None:
+        sd.object_slug=object_slug
     sd.save()
     if chart_type in ["bar", "line", "spline"]:
         chart_data = replace_chart_data(data['data'])

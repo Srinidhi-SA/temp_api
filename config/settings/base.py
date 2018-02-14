@@ -1319,6 +1319,7 @@ import config_file_name_to_run
 UI_VERSION = config_file_name_to_run.UI_VERSION
 
 PROCEED_TO_UPLOAD_CONSTANT = 15000000
+from datetime import timedelta
 
 CELERY_BROKER_URL = 'redis://localhost:6379'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379'
@@ -1327,14 +1328,5 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE
 
-from celery.schedules import crontab
-CELERYBEAT_SCHEDULE = {
-	# executes every night at 4:15
-	'every-night': {
-		'task': 'multiply_two_numbers',
-		'schedule': crontab(),
-        'args': (1,2)
-	}
-}
 
 HDFS_SECRET_KEY = 'xfBmEcr_hFHGqVrTo2gMFpER3ks9x841UcvJbEQJesI='

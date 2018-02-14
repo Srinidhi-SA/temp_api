@@ -7,7 +7,7 @@ import store from "../store";
 import {openCsLoaderModal, closeCsLoaderModal, updateCsLoaderValue, updateCsLoaderMsg} from "./createSignalActions";
 import Dialog from 'react-bootstrap-dialog'
 import {showLoading, hideLoading} from 'react-redux-loading-bar'
-import {updateColumnStatus,updateStoreVariables,updateDatasetVariables,updateSelectAllAnlysis,hideDataPreview} from './dataActions';
+import {updateColumnStatus,handleDVSearch,updateStoreVariables,updateDatasetVariables,updateSelectAllAnlysis,hideDataPreview,updateTargetAnalysisList} from './dataActions';
 // var API = "http://34.196.204.54:9000";
 
 // @connect((store) => {
@@ -329,7 +329,7 @@ export function updateAdvanceSettings(event){
     return (dispatch) => {
         return triggerAdvanceSettingsAPI(variableSelection).then(([response, json]) =>{
             if(response.status === 200){
-                dispatch(updateDatasetVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,json,false));
+                dispatch(updateTargetAnalysisList(json));
                 dispatch(setPossibleAnalysisList(varType,varText,varSlug));
                 dispatch(updateSelectAllAnlysis(false));
                 //clear all analysis once target variable is changed
@@ -375,6 +375,30 @@ function updateTargetVariable(slug,array){
 return array;
 }
 
+function handleSelectAllFlag(array){
+    var selectAllFlag = true;
+    for(var i=0;i<array.length;i++){
+       if(array[i].selected == false && array[i].targetColumn == false){
+            selectAllFlag = false;
+            break;
+        }
+    }
+    return selectAllFlag;
+}
+export function clearMeasureSearchIfTargetIsSelected(name){ 
+    $("#measureSearch").val(""); 
+    return { 
+        type: "SEARCH_MEASURE", 
+        name, 
+    } 
+} 
+export function clearDimensionSearchIfTargetIsSelected(name){ 
+    $("#dimensionSearch").val(""); 
+    return { 
+        type: "SEARCH_DIMENSION", 
+        name, 
+    } 
+} 
 export function hideTargetVariable(event,jobType){
     return (dispatch) => {
     var selOption = event.target.childNodes[event.target.selectedIndex];
@@ -384,7 +408,10 @@ export function hideTargetVariable(event,jobType){
     var prevVarSlug = store.getState().signals.selVarSlug;
     var prevVarType = store.getState().signals.getVarType;
     var prevSetVarAs = null;
-
+    
+    dispatch(clearMeasureSearchIfTargetIsSelected("")) 
+    dispatch(clearDimensionSearchIfTargetIsSelected("")) 
+    
     var dataSetMeasures = store.getState().datasets.dataSetMeasures.slice();
     var dataSetDimensions = store.getState().datasets.dataSetDimensions.slice();
     var dataSetTimeDimensions = store.getState().datasets.dataSetTimeDimensions.slice();
@@ -392,9 +419,18 @@ export function hideTargetVariable(event,jobType){
     var meaFlag = store.getState().datasets.measureAllChecked;
     var count = store.getState().datasets.selectedVariablesCount;
     if(varType == "measure"){
-        dataSetMeasures = updateTargetVariable(varSlug,dataSetMeasures)
+        dataSetMeasures = updateTargetVariable(varSlug,dataSetMeasures);
+        $("#measureSearch").val("");
+        /*if(dataSetMeasures.length == 1){
+            meaFlag = false;
+        }*/
     }else if(varType == "dimension"){
-        dataSetDimensions = updateTargetVariable(varSlug,dataSetDimensions)
+        dataSetDimensions = updateTargetVariable(varSlug,dataSetDimensions);
+        $("#dimensionSearch").val("");
+        //If only one dimension is there and selected as target , selectAll should be unchecked
+        /*if(dataSetDimensions.length == 1){
+            dimFlag = false;
+        }*/
     }
 
     dataSetDimensions = updateTargetVariable(prevVarSlug,dataSetDimensions)
@@ -402,8 +438,23 @@ export function hideTargetVariable(event,jobType){
 
 
     if(prevVarType == null){
+        if(count != 0)
         count = count-1;
     }
+    //If previous variable selected and current target is empty count should be incremented
+    else if(prevVarType != "" && varType == ""){
+        count = count+1;
+    }
+    
+    
+    /*if(prevVarType == "measure" && dataSetMeasures.length == 1 ){
+        meaFlag = true;
+    }else if(prevVarType == "dimension" && dataSetDimensions.length == 1 ){
+        dimFlag = true;
+    }*/
+    dimFlag = handleSelectAllFlag(dataSetDimensions);
+    meaFlag = handleSelectAllFlag(dataSetMeasures);
+    
     dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
 
     if(jobType == "signals"){
@@ -437,9 +488,9 @@ function checkIfDataTypeChanges(varSlug) {
 }
 function updateSetVarAs(colSlug,evt){
     return (dispatch) => {
-        var dataSetMeasures = store.getState().datasets.dataSetMeasures.slice();
-        var dataSetDimensions = store.getState().datasets.dataSetDimensions.slice();
-        var dataSetTimeDimensions = store.getState().datasets.dataSetTimeDimensions.slice();
+        var dataSetMeasures = store.getState().datasets.CopyOfMeasures.slice();
+        var dataSetDimensions = store.getState().datasets.CopyOfDimension.slice();
+        var dataSetTimeDimensions = store.getState().datasets.CopyTimeDimension.slice();
         var dimFlag =  store.getState().datasets.dimensionAllChecked;
         var meaFlag = store.getState().datasets.measureAllChecked;
         var count = store.getState().datasets.selectedVariablesCount;

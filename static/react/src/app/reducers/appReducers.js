@@ -14,7 +14,7 @@ export default function reducer(state = {
         selectedAlg:"",
         scoreSummary:{},
         scoreSlug:"",
-        currentAppId:1,
+        currentAppId:"",
         currentAppName:"",
         appsLoaderModal:false,
         appsLoaderPerValue:0,

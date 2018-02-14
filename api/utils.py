@@ -191,6 +191,7 @@ class InsightSerializer(serializers.ModelSerializer):
             except:
                 ret['file_size']=-1
                 ret['proceed_for_loading'] = True
+        ret['job_status'] = instance.job.status
         return ret
 
     def update(self, instance, validated_data):
@@ -232,6 +233,7 @@ class InsightListSerializers(serializers.ModelSerializer):
         except:
             ret['completed_percentage'] = 0
             ret['completed_message']="Analyzing Target Variable"
+        ret['job_status'] = instance.job.status
         return ret
 
     def get_brief_info(self):
@@ -261,10 +263,31 @@ class TrainerSerlializer(serializers.ModelSerializer):
         ret['dataset_name'] = dataset_object.name
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        if instance.viewed == False and instance.status=='SUCCESS':
+            instance.viewed = True
+            instance.save()
         try:
-            ret['message'] = get_message(instance)
+            message_list = get_message(instance.job)
+
+            if message_list is not None:
+                message_list = [message_list[-1]]
+            ret['message'] = message_list
         except:
             ret['message'] = None
+
+        if dataset_object.datasource_type=='fileUpload':
+            PROCEED_TO_UPLOAD_CONSTANT = settings.PROCEED_TO_UPLOAD_CONSTANT
+            try:
+                from api.helper import convert_to_humanize
+                ret['file_size']=convert_to_humanize(dataset_object.input_file.size)
+                if(dataset_object.input_file.size < PROCEED_TO_UPLOAD_CONSTANT or ret['status']=='SUCCESS'):
+                    ret['proceed_for_loading']=True
+                else:
+                    ret['proceed_for_loading'] = False
+            except:
+                ret['file_size']=-1
+                ret['proceed_for_loading'] = True
+        ret['job_status'] = instance.job.status
         return ret
 
     def update(self, instance, validated_data):
@@ -273,6 +296,10 @@ class TrainerSerlializer(serializers.ModelSerializer):
         instance.deleted = validated_data.get("deleted", instance.deleted)
         instance.bookmarked = validated_data.get("bookmarked", instance.bookmarked)
         instance.data = validated_data.get("data", instance.data)
+        instance.live_status = validated_data.get("live_status", instance.live_status)
+        instance.status = validated_data.get("status", instance.status)
+
+
 
         instance.save()
 
@@ -295,6 +322,13 @@ class TrainerListSerializer(serializers.ModelSerializer):
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
         ret['brief_info'] = instance.get_brief_info()
+        try:
+            ret['completed_percentage']=get_message(instance.job)[-1]['globalCompletionPercentage']
+            ret['completed_message']=get_message(instance.job)[-1]['shortExplanation']
+        except:
+            ret['completed_percentage'] = 0
+            ret['completed_message']="Analyzing Target Variable"
+        ret['job_status'] = instance.job.status
         return ret
 
 
@@ -325,6 +359,7 @@ class ScoreSerlializer(serializers.ModelSerializer):
             ret['message'] = get_message(instance)
         except:
             ret['message'] = None
+        ret['job_status'] = instance.job.status
         return ret
 
     def update(self, instance, validated_data):
@@ -359,6 +394,7 @@ class ScoreListSerializer(serializers.ModelSerializer):
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
         ret['brief_info'] = instance.get_brief_info()
+        ret['job_status'] = instance.job.status
         return ret
 
     class Meta:
@@ -693,4 +729,3 @@ def json_prettify_for_admin(json_val):
     style = "<style>" + formatter.get_style_defs() + "</style><br>"
 
     return mark_safe(style + response +"<hr>")
-

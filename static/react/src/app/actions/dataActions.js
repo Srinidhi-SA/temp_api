@@ -562,6 +562,13 @@ function getIsAllSelected(array){
 }
 
 export function updateStoreVariables(measures,dimensions,timeDimensions,dimFlag,meaFlag,count) {
+    return (dispatch) => {
+        dispatch(updateVariables(measures,dimensions,timeDimensions,dimFlag,meaFlag,count));
+        dispatch(applyFilterOnVaraibles());
+    }
+}
+
+export function updateVariables(measures,dimensions,timeDimensions,dimFlag,meaFlag,count) {
     return {
         type: "UPADTE_VARIABLES_LIST",
         measures,
@@ -572,12 +579,36 @@ export function updateStoreVariables(measures,dimensions,timeDimensions,dimFlag,
         count
     }
 }
+
+function applyFilterOnVaraibles(){
+    return (dispatch) => {
+        var evt = {};
+        evt.target = {}
+        if($("#measureSearch").val() != ""){
+            evt.target.value = $("#measureSearch").val();
+            evt.target.name = "measure"
+                dispatch(handleDVSearch(evt));
+        }
+        if($("#dimensionSearch").val() != ""){
+            evt.target.value = $("#dimensionSearch").val();
+            evt.target.name = "dimension"
+                dispatch(handleDVSearch(evt));
+        }
+        
+        if($("#datetimeSearch").val() != ""){
+            evt.target.value = $("#datetimeSearch").val();
+            evt.target.name = "datetime"
+                dispatch(handleDVSearch(evt));
+        }
+    }
+}
 export function updateSelectedVariables(evt){
     return (dispatch) => {
         var varSlug = evt.target.id;
-        var dataSetMeasures = store.getState().datasets.dataSetMeasures.slice();
-        var dataSetDimensions = store.getState().datasets.dataSetDimensions.slice();
-        var dataSetTimeDimensions = store.getState().datasets.dataSetTimeDimensions.slice();
+        var dataSetMeasures = store.getState().datasets.CopyOfMeasures.slice();
+        var dataSetDimensions = store.getState().datasets.CopyOfDimension.slice();
+        var dataSetTimeDimensions = store.getState().datasets.CopyTimeDimension.slice();
+        
         var dimFlag =  store.getState().datasets.dimensionAllChecked;
         var meaFlag = store.getState().datasets.measureAllChecked;
         var count = store.getState().datasets.selectedVariablesCount;
@@ -614,6 +645,7 @@ export function updateSelectedVariables(evt){
 }
 
 
+
 export function showDataPreview() {
     return {
         type: "SHOW_DATA_PREVIEW",
@@ -645,7 +677,7 @@ export function resetSelectedVariables(){
         type: "RESET_VARIABLES",
     }
 }
-export function setSelectedVariables(dimensions,measures,timeDimension){
+/*export function setSelectedVariables(dimensions,measures,timeDimension){
     let count = 0;
     if(timeDimension != undefined){
         count = dimensions.slice().length + measures.slice().length + 1;
@@ -662,7 +694,7 @@ export function setSelectedVariables(dimensions,measures,timeDimension){
         timeDimension,
         count,
     }
-}
+}*/
 
 export function openDULoaderPopup(){
     return {
@@ -836,6 +868,17 @@ export function updateDatasetVariables(measures,dimensions,timeDimensions,possib
     }
 }
 
+export function updateTargetAnalysisList(renderList){
+    let prevAnalysisList = jQuery.extend(true, {}, renderList);
+  
+    return {
+        type: "UPDATE_ANALYSIS_LIST",
+        renderList,
+        prevAnalysisList,
+
+    }
+}
+
 export function setDimensionSubLevels(selectedDimensionSubLevels){
     return {
         type: "SELECTED_DIMENSION_SUBLEVELS",
@@ -873,8 +916,8 @@ export function handleDVSearch(evt){
     }
         break;
     }
-
 }
+
 export function handelSort(variableType,sortOrder){
     switch ( variableType ) {
 
@@ -940,13 +983,13 @@ function updateSelectedKey(array,IsSelected){
 export function handleSelectAll(evt){
     return (dispatch) => {
         var varType = evt.target.id;
-        var dataSetMeasures = store.getState().datasets.dataSetMeasures.slice();
-        var dataSetDimensions = store.getState().datasets.dataSetDimensions.slice();
-        var dataSetTimeDimensions = store.getState().datasets.dataSetTimeDimensions.slice();
+        var dataSetMeasures = store.getState().datasets.CopyOfMeasures.slice();
+        var dataSetDimensions = store.getState().datasets.CopyOfDimension.slice();
+        var dataSetTimeDimensions = store.getState().datasets.CopyTimeDimension.slice();
         var dimFlag =  store.getState().datasets.dimensionAllChecked;
         var meaFlag = store.getState().datasets.measureAllChecked;
         var count = store.getState().datasets.selectedVariablesCount;
-
+        var targetVariableType = store.getState().signals.getVarType;
         if(varType == "measure"){
             dataSetMeasures  = updateSelectedKey(dataSetMeasures,evt.target.checked);
             meaFlag = evt.target.checked;
@@ -968,6 +1011,15 @@ export function handleSelectAll(evt){
         }else if(!evt.target.checked && varType == "dimension"){
             count = count-dataSetDimensions.length;
         }
+        
+        //When TargetVariable type and select all type are same count will be changed as target woon't be shown in select list
+        if(evt.target.checked && varType == targetVariableType ){
+            count=count-1
+        }
+        else if(!evt.target.checked && varType == targetVariableType){
+            count=count+1
+        }
+        
         dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
     }
 }
@@ -1141,7 +1193,14 @@ export function updateColumnStatus(dispatch,colSlug,colName,actionName,subAction
     }
     if(actionName != SET_VARIABLE && actionName != UNIQUE_IDENTIFIER && actionName != SET_POLARITY && actionName != IGNORE_SUGGESTION){
         isSubsetting = true;
-    }
+    }else{ 
+        //Enable subsetting when any one of the column is deleted,renamed, removed  
+        if(store.getState().datasets.subsettingDone == false) { 
+            isSubsetting = false;    
+        }else{ 
+            isSubsetting = true;    
+        } 
+    } 
     dispatch(handleColumnActions(transformSettings,slug,isSubsetting))
     dispatch(updateVLPopup(false));
     //dispatch(updateTransformSettings(transformSettings));

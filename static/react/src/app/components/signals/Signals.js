@@ -56,6 +56,7 @@ export class Signals extends React.Component {
   }
   componentWillMount() {
     var pageNo = 1;
+    //this.props.dispatch(storeSearchElement(""));
     this.props.dispatch(hideDataPreview())
     this.props.dispatch(getAllDataList());
     this.props.dispatch(emptySignalData());
@@ -66,7 +67,7 @@ export class Signals extends React.Component {
     } else{
         this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, pageNo));
     }
-
+    
     }
 
   componentDidMount() {
@@ -139,6 +140,8 @@ export class Signals extends React.Component {
       this.props.history.push('/signals?search=' + e.target.value + '')
       this.props.dispatch(storeSearchElement(e.target.value));
       this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, 1));
+    }else{
+        this.props.dispatch(storeSearchElement(e.target.value));  
     }
   }
   clearSearchElement(e){
@@ -154,13 +157,13 @@ export class Signals extends React.Component {
     document.body.className = "";
 
     //empty search element
-    if (this.props.signal_search_element != "" && (this.props.location.search == "" || this.props.location.search == null)) {
+    /*if (this.props.signal_search_element != "" && (this.props.location.search == "" || this.props.location.search == null)) {
       console.log("search is empty");
       this.props.dispatch(storeSearchElement(""));
       let search_element = document.getElementById('search_signals');
       if (search_element)
         document.getElementById('search_signals').value = "";
-      }
+      }*/
 
     if (!isEmpty(store.getState().signals.signalAnalysis)) {
       let _link = "/signals/" + store.getState().signals.signalAnalysis.slug;
@@ -194,7 +197,7 @@ export class Signals extends React.Component {
                   <div class="input-group">
                     <div className="search-wrapper">
                       <form>
-                        <input type="text" name="search_signals" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search Signals" id="search_signals" className="form-control search-box" placeholder="Search signals..." required/>
+                        <input type="text" value={this.props.signal_search_element} name="search_signals" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search Signals" id="search_signals" className="form-control search-box" placeholder="Search signals..." required/>
                         <span className="zmdi zmdi-search form-control-feedback"></span>
                         <button className="close-icon" onClick={this.clearSearchElement.bind(this)} type="reset"></button>
                       </form>

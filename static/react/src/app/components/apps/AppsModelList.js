@@ -8,7 +8,7 @@ import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstrap";
 import {AppsCreateModel} from "./AppsCreateModel";
 import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryFlag,
-    updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,storeAppsModelSortElements,refreshAppsModelList} from "../../actions/appActions";
+    updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,storeAppsModelSortElements,getAppDetails,refreshAppsModelList} from "../../actions/appActions";
     import {DetailOverlay} from "../common/DetailOverlay";
     import {SEARCHCHARLIMIT,getUserDetailsOrRestart} from  "../../helpers/helper"
     import {STATIC_URL} from "../../helpers/env.js";
@@ -40,10 +40,13 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
             var pageNo = 1;
             if(this.props.history.location.search.indexOf("page") != -1){
                 pageNo = this.props.history.location.search.split("page=")[1];
-                this.props.dispatch(getAppsModelList(pageNo));
+            }
+            if(store.getState().apps.currentAppId == ""){
+                this.props.dispatch(getAppDetails(this.props.match.params.AppId,pageNo));
             }else{
                 this.props.dispatch(getAppsModelList(pageNo));
             }
+           
         }
         componentDidMount(){
             this.props.dispatch(refreshAppsModelList(this.props));
@@ -61,7 +64,7 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
             if (e.key === 'Enter') {
                 //console.log('searching in data list');
                 if (e.target.value != "" && e.target.value != null)
-                    this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models?search=' + e.target.value + '')
+                    this.props.history.push('/apps/'+this.props.match.params.AppId+'/models?search=' + e.target.value + '')
                     
                     this.props.dispatch(storeModelSearchElement(e.target.value));
                 this.props.dispatch(getAppsModelList(1));
@@ -71,18 +74,18 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
         onChangeOfSearchBox(e){
             if(e.target.value==""||e.target.value==null){
                 this.props.dispatch(storeModelSearchElement(""));
-                this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models'+'')
+                this.props.history.push('/apps/'+this.props.match.params.AppId+'/models'+'')
                 this.props.dispatch(getAppsModelList(1));
                 
             }else if (e.target.value.length > SEARCHCHARLIMIT) {
-                this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models?search=' + e.target.value + '')
+                this.props.history.push('/apps/'+this.props.match.params.AppId+'/models?search=' + e.target.value + '')
                 this.props.dispatch(storeModelSearchElement(e.target.value));
                 this.props.dispatch(getAppsModelList(1));
             }
         }
         
         doSorting(sortOn, type){
-            this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models?sort=' + sortOn + '&type='+type);
+            this.props.history.push('/apps/'+this.props.match.params.AppId+'/models?sort=' + sortOn + '&type='+type);
             
             this.props.dispatch(storeAppsModelSortElements(sortOn,type));
             this.props.dispatch(getAppsModelList(1));
@@ -120,7 +123,7 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                 if(pages > 1){
                     paginationTag = <Pagination  ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
                 }
-                appsModelList = <ModelsCard data={modelList}/>;
+                appsModelList = <ModelsCard match={this.props.match} data={modelList}/>;
                 return (
                         <div>
                         <LatestModels props={this.props}/>

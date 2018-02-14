@@ -290,7 +290,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                         dispatch(hideDataPreview());
                         dispatch(updateModelSummaryFlag(true));
                     }else if(json.status == FAILED){
-                        bootbox.alert("Your model could not created.Please try later.",function(){
+                        bootbox.alert("Your model could not be created.Please try later.",function(){
                             window.history.go(-2);
                         });
                         clearInterval(appsInterval);
@@ -1901,3 +1901,24 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
     export function clearAppsCreateModel(){
         clearInterval(appsInterval)
     }
+
+    export function getAppDetails(appSlug,pageNo){
+
+       return (dispatch) => {
+           return triggerAppDetailsAPI(appSlug).then(([response, json]) =>{
+               if(response.status === 200){
+                   dispatch(updateSelectedApp(json.app_id,json.name,json));
+                   dispatch(getAppsModelList(pageNo));
+                   dispatch(getAppsScoreList(pageNo));
+               }
+           });
+       }
+
+   }
+
+   function triggerAppDetailsAPI(appSlug){
+       return fetch(API+'/api/apps/'+appSlug+'/',{
+           method: 'get',
+           headers: getHeader(getUserDetailsOrRestart.get().userToken),
+       }).then( response => Promise.all([response, response.json()]));
+   }

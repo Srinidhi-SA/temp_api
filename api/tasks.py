@@ -2,7 +2,6 @@ from __future__ import absolute_import, unicode_literals
 import random
 from celery.decorators import task
 from api.redis_access import AccessFeedbackMessage
-from celery.schedules import crontab
 
 
 @task(name="sum_two_numbers")
@@ -70,7 +69,7 @@ def write_into_databases(job_type, object_slug, results):
             card_data = data["chartData"]
             if 'dataType' in card_data and card_data['dataType'] == 'c3Chart':
                 chart_data = card_data['data']
-                final_chart_data = helper.decode_and_convert_chart_raw_data(chart_data)
+                final_chart_data = helper.decode_and_convert_chart_raw_data(chart_data, object_slug=object_slug)
                 data["chartData"] = chart_changes_in_metadata_chart(final_chart_data)
                 data["chartData"]["table_c3"] = []
 
@@ -96,7 +95,7 @@ def write_into_databases(job_type, object_slug, results):
             insight_object.save()
             return results
 
-        results = add_slugs(results)
+        results = add_slugs(results, object_slug=object_slug)
         insight_object.data = json.dumps(results)
         insight_object.analysis_done = True
         insight_object.status = 'SUCCESS'
@@ -112,7 +111,7 @@ def write_into_databases(job_type, object_slug, results):
             trainer_object.save()
             return results
 
-        results['model_summary'] = add_slugs(results['model_summary'])
+        results['model_summary'] = add_slugs(results['model_summary'],object_slug=object_slug)
         trainer_object.data = json.dumps(results)
         trainer_object.analysis_done = True
         trainer_object.save()
@@ -127,7 +126,7 @@ def write_into_databases(job_type, object_slug, results):
             score_object.save()
             return results
 
-        results = add_slugs(results)
+        results = add_slugs(results, object_slug=object_slug)
         score_object.data = json.dumps(results)
         score_object.analysis_done = True
         score_object.save()
@@ -142,7 +141,7 @@ def write_into_databases(job_type, object_slug, results):
             robo_object.save()
             return results
 
-        results = add_slugs(results)
+        results = add_slugs(results, object_slug=object_slug)
         robo_object.data = json.dumps(results)
         robo_object.robo_analysis_done = True
         robo_object.save()
@@ -151,7 +150,7 @@ def write_into_databases(job_type, object_slug, results):
         stock_objects = get_db_object(model_name=StockDataset.__name__,
                                            model_slug=object_slug
                                            )
-        results = add_slugs(results)
+        results = add_slugs(results, object_slug=object_slug)
         stock_objects.data = json.dumps(results)
         stock_objects.analysis_done = True
         stock_objects.status = 'SUCCESS'
@@ -176,3 +175,71 @@ def save_results_to_job(slug, results):
         results = json.dumps(results)
         job.results = results
     job.save()
+
+
+@task(name='cleanup_logentry')
+def clean_up_logentry():
+
+    from auditlog.models import LogEntry
+    from django.contrib.auth.models import User
+
+    all_users = User.objects.all()
+
+    for user in all_users:
+        log_entries = LogEntry.objects.filter(actor=user.id).count()
+        LogEntry.objects.all().delete()
+        print "delete object(s) :- %{0}".format(log_entries)
+
+
+@task(name='cleanup_on_delete')
+def clean_up_on_delete(slug, model_name):
+
+    from api.helper import get_db_object
+    from api.models import SaveAnyData, Job, SaveData
+
+    model_instance = get_db_object(model_name=model_name,
+                                   model_slug=slug
+                                   )
+    model_instance.data = '{}'
+    model_instance.deleted = True
+    model_instance.save()
+
+    job_instance = Job.objects.filter(object_id__contains=slug).first()
+    if job_instance:
+        job_instance.data = '{}'
+        job_instance.save()
+
+    sad_instance = SaveAnyData.objects.filter(slug__contains=slug)
+    print len(sad_instance)
+    sad_instance.delete()
+
+    sd_instance = SaveData.objects.filter(object_slug__contains=slug)
+    print len(sd_instance)
+    sd_instance.delete()
+
+
+@task(name='kill_job_using_application_id')
+def kill_application_using_fabric(app_id=None):
+
+    if None == app_id:
+        return -1
+
+    from fabric.api import env, run
+    from django.conf import settings
+
+    HDFS = settings.HDFS
+    BASEDIR = settings.BASE_DIR
+    emr_file = BASEDIR + "/keyfiles/TIAA.pem"
+
+    env.key_filename = [emr_file]
+    env.host_string = "{0}@{1}".format(HDFS["user.name"], HDFS["host"])
+
+    try:
+        capture = run("yarn application --kill {0}".format(app_id))
+
+        if 'finished' in capture:
+            return False
+        else:
+            return True
+    except:
+        return True

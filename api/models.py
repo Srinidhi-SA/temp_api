@@ -69,22 +69,23 @@ class Job(models.Model):
         return " : ".join(["{}".format(x) for x in [self.name, self.job_type, self.created_at, self.slug]])
 
     def kill(self):
-        from api.yarn_job_api import kill_application_using_fabric
-        # return kill_application(self.url)
+        from api.tasks import kill_application_using_fabric
         if self.url == "":
             return False
-        url_status = kill_application_using_fabric(self.url)
 
-        if url_status is True:
-            original_object = self.get_original_object()
+        if self.url is None:
+            return False
 
-            if original_object is not None:
-                original_object.status = 'FAILED'
-                original_object.save()
-            self.status = 'KILLED'
-            self.save()
+        kill_application_using_fabric.delay(self.url)
 
-        return url_status
+        original_object = self.get_original_object()
+
+        if original_object is not None:
+            original_object.status = 'FAILED'
+            original_object.save()
+        self.status = 'KILLED'
+        self.save()
+        return True
 
     def start(self):
         command_array = json.loads(self.command_array)
@@ -807,6 +808,10 @@ class Trainer(models.Model):
 
     job = models.ForeignKey(Job, null=True)
     status = models.CharField(max_length=100, null=True, default="Not Registered")
+    live_status = models.CharField(max_length=300, default='0', choices=STATUS_CHOICES)
+    viewed = models.BooleanField(default=False)
+
+
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
@@ -1063,10 +1068,12 @@ class Score(models.Model):
         trainer_slug = self.trainer.slug
         score_slug = self.slug
         model_data = json.loads(self.trainer.data)
+        model_config = json.loads(self.trainer.config)
         model_config_from_results = model_data['config']
         targetVariableLevelcount = model_config_from_results.get('targetVariableLevelcount', None)
         modelFeaturesDict = model_config_from_results.get('modelFeatures', None)
         labelMappingDictAll = model_config_from_results.get('labelMappingDict',None)
+        modelTargetLevel = model_config['config']['FILE_SETTINGS']['targetLevel']
 
         modelfeatures = modelFeaturesDict.get(algorithmslug, None)
         if labelMappingDictAll != None:
@@ -1083,7 +1090,8 @@ class Score(models.Model):
             'algorithmslug': [algorithmslug],
             'modelfeatures': modelfeatures if modelfeatures is not None else [],
             'metadata': self.dataset.get_metadata_url_config(),
-            'labelMappingDict':[labelMappingDict]
+            'labelMappingDict':[labelMappingDict],
+            'targetLevel': modelTargetLevel
         }
 
     def create_configuration_for_column_setting_from_variable_selection(self):
@@ -1797,6 +1805,7 @@ class Audioset(models.Model):
 class SaveData(models.Model):
     slug = models.SlugField(null=False, blank=True, max_length=300)
     data = models.TextField(default="{}")
+    object_slug = models.SlugField(null=False, blank=True, max_length=300, default="")
 
     def get_data(self):
         data = self.data
