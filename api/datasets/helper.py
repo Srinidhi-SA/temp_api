@@ -640,18 +640,18 @@ def add_transformation_setting_to_ui_metadata(meta_data):
             columnType = head.get('columnType')
 
             if "dimension" == columnType:
-                temp['columnSetting'] = columnSettingCopy[:4]
+                temp['columnSetting'] = columnSettingCopy[:3]
             elif "boolean" == columnType:
-                temp['columnSetting'] = columnSettingCopy[:4]
+                temp['columnSetting'] = columnSettingCopy[:3]
             elif "measure" == columnType:
-                datatype_element = columnSettingCopy[4]
+                datatype_element = columnSettingCopy[3]
                 datatype_element['listOfActions'][0]["status"] = True
                 columnSettingCopy[5]['listOfActions'][0]["status"] = True
                 columnSettingCopy[6]['listOfActions'][0]["status"] = True
 
                 temp['columnSetting'] = columnSettingCopy
             elif "datetime" == columnType:
-                temp['columnSetting'] = columnSettingCopy[:3]
+                temp['columnSetting'] = columnSettingCopy[:2]
 
             if head.get('ignoreSuggestionFlag') is True:
                 transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
@@ -661,7 +661,7 @@ def add_transformation_setting_to_ui_metadata(meta_data):
                 temp['columnSetting'].append(transformation_settings_ignore)
                 transformation_settings_uid = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_UID)
                 if head.get('ignoreSuggestionMsg').startswith("Index Column"):
-                    temp['columnSetting'].insert(0,transformation_settings_uid)
+                    temp['columnSetting'].append(transformation_settings_uid)
             else:
                 transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
                 transformation_settings_ignore['status'] = False
