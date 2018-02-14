@@ -518,7 +518,14 @@ export default function reducer(state = {
       }
     }
     break;
-
+    case "UPDATE_VARIABLES_COUNT":
+    {
+      return {
+        ...state,
+        selectedVariablesCount:action.count,
+      }
+    }
+    break;
   }
   return state
 
