@@ -631,6 +631,7 @@ def add_transformation_setting_to_ui_metadata(meta_data):
 
         percentage_slug_list = collect_slug_for_percentage_columns(meta_data)
 
+
         for head in columnData:
             import copy
             temp = dict()
@@ -646,12 +647,12 @@ def add_transformation_setting_to_ui_metadata(meta_data):
             elif "measure" == columnType:
                 datatype_element = columnSettingCopy[3]
                 datatype_element['listOfActions'][0]["status"] = True
+                columnSettingCopy[4]['listOfActions'][0]["status"] = True
                 columnSettingCopy[5]['listOfActions'][0]["status"] = True
-                columnSettingCopy[6]['listOfActions'][0]["status"] = True
 
                 temp['columnSetting'] = columnSettingCopy
             elif "datetime" == columnType:
-                temp['columnSetting'] = columnSettingCopy[:2]
+                temp['columnSetting'] = columnSettingCopy[:1]
 
             if head.get('ignoreSuggestionFlag') is True:
                 transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
