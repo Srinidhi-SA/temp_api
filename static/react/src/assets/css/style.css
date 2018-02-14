@@ -8725,7 +8725,7 @@ box-shadow: 0px 0px 14px 4px rgba(0,0,0,0.15); */
 }
 .login-container .panel-default .panel-body .form-group .input-group {
 	border:none;
-	border-bottom: 1px solid #c3c0bf;
+	
 	/* border: 1px solid #c3c0bf;*/
 	margin-top: 10px;
 	width: 100%;
@@ -8742,6 +8742,7 @@ box-shadow: 0px 0px 14px 4px rgba(0,0,0,0.15); */
 }
 .login-container .panel-default .panel-body .form-group .input-group .form-control {
 	border: 0;
+	border-bottom: 1px solid #c3c0bf;
 	background-color: transparent;
 	box-shadow: none;
 	color: #a3a2a2;
@@ -8751,6 +8752,8 @@ box-shadow: 0px 0px 14px 4px rgba(0,0,0,0.15); */
 	font-weight: 500;
 	height: 36px
 }
+.login-container .panel-default .panel-body .form-group .input-group .form-control:focus {border-bottom:1px solid rgba(2, 152, 140,.6) }
+
 .login-container .panel-default .panel-body .form-group .input-group.parsley-error {
 	border-color: #f49090
 }
@@ -14899,6 +14902,15 @@ a.more_button { color: #b3b3b3; padding: 0 10px; margin-right: 9px; cursor:point
 .col-md-12 .btn-toolbar { margin-bottom: 10px; }
 .dashboard_head .text-muted { color: #ececec; }
 .preview_content { margin-bottom:19px }
+.form-control:focus {
+  border-color: rgb(204,204,204); /* Restate unfocused value to make CSSLint happy that there's a pre-CSS3 fallback*/
+  border-color: rgba(2, 152, 140,.8);
+  outline: 0;
+  outline: thin dotted \9; /* IE6-9 */
+  -webkit-box-shadow: 0 0 8px rgba(2, 152, 140,.6);
+  -moz-box-shadow: 0 0 8px rgba(2, 152, 140,.6);
+          box-shadow: 0 0 8px rgba(2, 152, 140,.6);
+}
 /**************** Css realated to developers, keep the source down ***/
 #prediction_dropdown{
 	    width: 40%;
