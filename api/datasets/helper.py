@@ -661,7 +661,7 @@ def add_transformation_setting_to_ui_metadata(meta_data):
                 transformation_settings_ignore['displayName'] = 'Consider for Analysis'
                 temp['columnSetting'].append(transformation_settings_ignore)
                 transformation_settings_uid = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_UID)
-                if head.get('ignoreSuggestionMsg').startswith("Index Column"):
+                if head.get('ignoreSuggestionMsg').lower().startswith("index column"):
                     temp['columnSetting'].append(transformation_settings_uid)
             else:
                 transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
