@@ -116,7 +116,7 @@ export class ScoreCard extends React.Component {
                 {
                     (appsScoreList.length>0)
                     ?(appsScoreList)
-                    :(<div><div className="text-center text-muted xs-mt-10"><h2>No results found..</h2></div></div>)
+                    :(<div><div className="text-center text-muted xs-mt-50"><h2>No results found..</h2></div></div>)
                 }
 
                 </div>);
