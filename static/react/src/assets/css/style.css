@@ -15336,5 +15336,11 @@ display: inline-block;
 .card-center.newStoryCard small {
     padding-top: 10px;
 }
-	.card-center-tile {
-		height: 65px;	}
+
+.card-center-tile {
+	height: 65px;
+}
+
+.apps-cards .list-boxes {
+	margin-top: 20px !important
+}

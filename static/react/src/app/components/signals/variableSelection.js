@@ -6,7 +6,7 @@ import {Modal,Button,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "r
 import store from "../../store";
 import {selectedAnalysisList,resetSelectedVariables,unselectAllPossibleAnalysis,getDataSetPreview,setDimensionSubLevels,selectAllAnalysisList,updateSelectAllAnlysis,saveAdvanceSettings,checkAllAnalysisSelected} from "../../actions/dataActions";
 import {openCreateSignalModal,closeCreateSignalModal,updateCsLoaderValue} from "../../actions/createSignalActions";
-import {createSignal,setPossibleAnalysisList,emptySignalAnalysis,advanceSettingsModal,checkIfDateTimeIsSelected,checkIfTrendIsSelected,updateCategoricalVariables,createcustomAnalysisDetails,checkAnalysisIsChecked,changeSelectedVariableType,hideTargetVariable,updateAdvanceSettings} from "../../actions/signalActions";
+import {createSignal,setPossibleAnalysisList,emptySignalAnalysis,advanceSettingsModal,checkIfDateTimeIsSelected,checkIfTrendIsSelected,updateCategoricalVariables,createcustomAnalysisDetails,checkAnalysisIsChecked,changeSelectedVariableType,hideTargetVariable,updateAdvanceSettings,resetSelectedTargetVariable} from "../../actions/signalActions";
 import {DataVariableSelection} from "../data/DataVariableSelection";
 import {CreateSignalLoader} from "../common/CreateSignalLoader";
 import {openCsLoaderModal,closeCsLoaderModal} from "../../actions/createSignalActions";
@@ -76,29 +76,31 @@ export class VariableSelection extends React.Component {
 
         //this.props.dispatch(handleTargetSelection());
         if($('#signalVariableList option:selected').val() == ""){
-          let msg=statusMessages("warning","Please select a variable to analyze...","small_mascot")
+          let msg=statusMessages("warning","Please select a target variable to analyze...","small_mascot")
               bootbox.alert(msg);
             return false;
         }
         if(store.getState().datasets.dataSetTimeDimensions.length > 0){
-            if(store.getState().datasets.selectedVariablesCount == 1){
-                bootbox.alert("Please select atleast one variable to analyze...");
+            if(store.getState().datasets.selectedVariablesCount == 1 &&  $("#analysisList").find(".overview").next("div").find("input[type='checkbox']").prop("checked") == true){
+              let msg=statusMessages("warning","Insufficient variables selected for your chosen analysis.Please select more.","small_mascot")
+                  bootbox.alert(msg);
                 return false;
             }
         }
         else{
-            if(store.getState().datasets.selectedVariablesCount == 0){
-                bootbox.alert("Please select atleast one variable to analyze...");
+            if(store.getState().datasets.selectedVariablesCount == 0 &&  $("#analysisList").find(".overview").next("div").find("input[type='checkbox']").prop("checked") == true){
+              let msg=statusMessages("warning","Insufficient variables selected for your chosen analysis.Please select more.","small_mascot")
+                  bootbox.alert(msg);
                 return false;
-            }  
+            }
         }
-       
+
         if(!isAnalysisChecked){
           let msg=statusMessages("warning","Please select atleast one analysis to Proceed..","small_mascot")
               bootbox.alert(msg);
             return false;
         }
-        
+
         var trendIsChecked = checkIfTrendIsSelected();
         var dateTimeIsSelected = checkIfDateTimeIsSelected();
         if(dateTimeIsSelected == undefined && trendIsChecked == true){
@@ -135,19 +137,15 @@ export class VariableSelection extends React.Component {
 
     setPossibleList(event){
         this.props.dispatch(hideTargetVariable(event,"signals"));
-        //this.props.dispatch(updateAdvanceSettings(event));
-        //this.props.dispatch(setPossibleAnalysisList(event));
-        //this.props.dispatch(updateSelectAllAnlysis(false));
-        //clear all analysis once target variable is changed
-       // this.props.dispatch(selectAllAnalysisList(false));
-
     }
 
     componentWillMount(){
         if (this.props.dataPreview == null) {
             this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
         }
-        this.props.dispatch(closeCsLoaderModal())
+        this.props.dispatch(closeCsLoaderModal());
+        this.props.dispatch(resetSelectedTargetVariable());
+        this.props.dispatch(updateSelectAllAnlysis(false));
     }
 
     componentDidMount(){
@@ -185,7 +183,8 @@ export class VariableSelection extends React.Component {
     renderAnalysisList(analysisList){
         let list =  analysisList.map((metaItem,metaIndex) =>{
             let id = "chk_analysis"+ metaIndex;
-            return(<div key={metaIndex} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisList.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>);
+            let cls = "ma-checkbox inline "+metaItem.name
+            return(<div key={metaIndex} className={cls}><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisList.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>);
 
         });
         return list;

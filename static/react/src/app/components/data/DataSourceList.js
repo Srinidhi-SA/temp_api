@@ -120,7 +120,7 @@ export class DataSourceList extends React.Component {
                   <div className="clearfix"></div>
                   <div className="xs-pt-20"></div>
                   <div className="dropzone ">
-                    <Dropzone id={1} onDrop={this.onDrop} accept=".csv" onDropRejected={this.popupMsg}>
+                    <Dropzone id={1} onDrop={this.onDrop} accept=".csv" multiple={false} onDropRejected={this.popupMsg}>
                       <p>Try dropping some files here, or click to select files to upload.</p>
                     </Dropzone>
                     <aside>

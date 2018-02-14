@@ -17,7 +17,6 @@ from .config import *
 class C3Chart(object):
 
     def __init__(self, **kwargs):
-        print "kwargs",kwargs
         self._bindto = '#{}'.format(kwargs.get('bindto', 'chart'))
         self._data = None
         self._axis = {}
@@ -49,9 +48,7 @@ class C3Chart(object):
         self._number_of_y_data = None
         self._total_data_count = None
         self._donutChartFormat = kwargs.get('yAxisNumberFormat',".2s")
-        print "self._donutChartFormat",self._donutChartFormat,kwargs.get('yAxisNumberFormat')
         self._pieChartFormat = kwargs.get('yAxisNumberFormat',".2s")
-        print "self._pieChartFormat",self._pieChartFormat,kwargs.get('yAxisNumberFormat')
 
         self.set_data_and_type()
         self.set_basic_chart_setting()
@@ -229,10 +226,6 @@ class C3Chart(object):
         if USE_MULTILINE_LABELS:
             import math
             if self._x_max_string_length:
-                print 'calculation', abs(math.sin(math.radians(self._x_label_rotation))), abs(
-                    math.sin(math.radians(self._x_label_rotation))) * \
-                                                                                          5 * \
-                                                                                          self._x_max_string_length
                 self._x_height = abs(math.sin(math.radians(self._x_label_rotation))) * \
                                  5 * \
                                  self._x_max_string_length + X_AXIS_HEIGHT
@@ -432,7 +425,6 @@ class C3Chart(object):
                     break
 
         if negative is False:
-            print "no negative"
             return ""
 
         zero_data = {"value": 0, "text": '',"class":"zeroAxisGrid", 'position': 'start'}
@@ -574,8 +566,6 @@ class C3Chart(object):
                 new_legend[changes[val]] = legend[val]
 
         new_legend.update(legend)
-        print "------------> legensd"
-        print new_legend
         if self._data:
             self._data['names'] = new_legend
 
@@ -623,7 +613,6 @@ class C3Chart(object):
         self.set_d3_format_y()
 
     def get_json(self):
-        print self.get_some_related_info_printed()
         return {
             'data': self._data,
             'axis': self._axis,
@@ -685,11 +674,8 @@ class PieChart(C3Chart):
             self._pie["label"]["format"] = self._pieChartFormat
         # if self._title != None:
         #     self._pie["title"] = self._title["text"]
-        print self._pie
+
     def get_json(self):
-
-
-        print self.get_some_related_info_printed()
         return {
             'data': self._data,
             'legend': self._legend,
@@ -720,14 +706,9 @@ class DonutChart(C3Chart):
             self._donut["label"]["format"] = self._donutChartFormat
         #if self._title != None:
             #self._donut["title"] = self._title["text"]
-        print self._donut
-
-
-
 
     def get_json(self):
 
-        print self.get_some_related_info_printed()
         return {
             'data': self._data,
             'legend': self._legend,

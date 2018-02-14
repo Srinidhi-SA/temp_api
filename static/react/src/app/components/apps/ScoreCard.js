@@ -41,10 +41,10 @@ export class ScoreCard extends React.Component {
     }
     
     handleScoreDelete(slug) {
-        this.props.dispatch(handleScoreDelete(slug, this.refs.dialog));
+        this.props.dispatch(handleScoreDelete(slug, this.dialog));
     }
     handleScoreRename(slug, name) {
-        this.props.dispatch(handleScoreRename(slug, this.refs.dialog, name));
+        this.props.dispatch(handleScoreRename(slug, this.dialog, name));
     }
     getScoreSummary(slug) {
         this.props.dispatch(updateScoreSlug(slug))
@@ -52,7 +52,7 @@ export class ScoreCard extends React.Component {
     render() {
         var scoreList = this.props.data;
         const appsScoreList = scoreList.map((data, i) => {
-            var scoreLink = "/apps/" + store.getState().apps.currentAppId + "/scores/" + data.slug;
+            var scoreLink = "/apps/" + this.props.match.params.AppId + "/scores/" + data.slug;
             return (
                     <div className="col-md-3 xs-mb-15 list-boxes" key={i}>
                     <div className="rep_block newCardStyle" name={data.name}>
@@ -107,7 +107,7 @@ export class ScoreCard extends React.Component {
                     </div>                        
                     </div>
                     </div>
-                     <Dialog ref="dialog" />
+                     <Dialog ref={(el) => { this.dialog = el }} />
 
                     </div>
             )
@@ -116,7 +116,7 @@ export class ScoreCard extends React.Component {
                 {
                     (appsScoreList.length>0)
                     ?(appsScoreList)
-                    :(<div><div className="clearfix"></div><div className="text-center text-muted xs-mt-50"><h2>No results found..</h2></div></div>)
+                    :(<div><div className="text-center text-muted xs-mt-10"><h2>No results found..</h2></div></div>)
                 }
 
                 </div>);

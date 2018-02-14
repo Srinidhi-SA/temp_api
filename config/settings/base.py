@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ["192.168.33.128"]
 # Application definition
 
 INSTALLED_APPS = [
+    'material.theme.teal',
     'material',
     'material.admin',
     'django.contrib.admin',
@@ -190,7 +191,8 @@ STATICFILES_DIRS = [
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = '/media/'
 
-UPLOAD_FOLDER = '/uploads/datasets/'
+# @depricated
+# UPLOAD_FOLDER = '/uploads/datasets/'
 
 """
 fieldType -> password, text, number, email
@@ -1157,11 +1159,12 @@ ANALYSIS_LIST_SEQUENCE = [
     "Prediction"
 ]
 
-ML_SECRET_KEY = 'GETMETADATAOBJECT'
+ML_SECRET_KEY = 'xfBmEcr_hFHGqVrTo2gMFpER3ks9x841UcvJbEQJesI='
 
 SIGNATURE_LIFETIME = 30
 
-APPS_KEYWORD_TEMPLATE = [{
+APPS_KEYWORD_TEMPLATE = [
+    {
     'name': 'Sales',
     'displayName': 'Sales',
     'description': " "
@@ -1232,6 +1235,41 @@ APPS_KEYWORD_TEMPLATE = [{
     },
 ]
 
+
+CUSTOM_WORD1_APPS = {
+    'AUTOMATED PREDICTION': '',
+    'ROBO-ADVISOR INSIGHTS': '',
+    'OPPORTUNITY SCORING': 'opportunity',
+    'CHURN PREDICTION': 'churn',
+    'RE-ADMISSION PREDICTION': 're-admission',
+    'READMISSION PREDICTION': 're-admission',
+    'PHYSICIAN ATTRITION': 'attrition',
+    'CREDIT CARD FRAUD': 'Credit Card Fraud',
+    'CLAIMS PREDICTION': 'claims',
+    'ASSET HEALTH PREDICTION': 'asset health',
+    'EMPLOYEE ATTRITION': 'attrition',
+    'SPEECH ANALYTICS': 'speech',
+    'STOCK SENSE': 'stock',
+    'STOCK  SENSE': 'stock'
+}
+
+CUSTOM_WORD2_APPS = {
+    'AUTOMATED PREDICTION': 'prediction',
+    'ROBO-ADVISOR INSIGHTS': '',
+    'OPPORTUNITY SCORING': 'opportunity',
+    'CHURN PREDICTION': 'churn',
+    'RE-ADMISSION PREDICTION': 're-admission',
+    'READMISSION PREDICTION': 're-admission',
+    'PHYSICIAN ATTRITION': 'attrition',
+    'CREDIT CARD FRAUD': 'fraud',
+    'CLAIMS PREDICTION': 'claims',
+    'ASSET HEALTH PREDICTION': 'asset health',
+    'EMPLOYEE ATTRITION': 'attrition',
+    'SPEECH ANALYTICS': 'speech',
+    'STOCK SENSE': 'stock',
+    'STOCK  SENSE': 'stock'
+}
+
 ############# YARN related items
 
 DEPLOYMENT_ENV = "dev"
@@ -1281,6 +1319,7 @@ import config_file_name_to_run
 UI_VERSION = config_file_name_to_run.UI_VERSION
 
 PROCEED_TO_UPLOAD_CONSTANT = 15000000
+from datetime import timedelta
 
 CELERY_BROKER_URL = 'redis://localhost:6379'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379'
@@ -1288,3 +1327,6 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE
+
+
+HDFS_SECRET_KEY = 'xfBmEcr_hFHGqVrTo2gMFpER3ks9x841UcvJbEQJesI='

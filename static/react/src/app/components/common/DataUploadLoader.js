@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import {Redirect, Link} from "react-router-dom";
 import store from "../../store";
 import {Modal, Button} from "react-bootstrap";
-import {openDULoaderPopup, hideDULoaderPopup} from "../../actions/dataActions";
+import {openDULoaderPopup, hideDULoaderPopup,hideDataPreview} from "../../actions/dataActions";
 import {clearDatasetPreview} from  "../../actions/dataUploadActions";
 import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
@@ -35,11 +35,13 @@ export class DataUploadLoader extends React.Component {
   closeModelPopup() {
     this.props.dispatch(hideDULoaderPopup());
     clearDatasetPreview();
+    this.props.dispatch(hideDataPreview());
   }
   cancelDataUpload() {
       this.props.dispatch(hideDULoaderPopup());
-      clearDatasetPreview();
       this.props.dispatch(handleJobProcessing(this.props.selectedDataSet));
+      this.props.dispatch(hideDataPreview());
+      clearDatasetPreview();
     }
   render() {
     let img_src = STATIC_URL + "assets/images/brain_loading.gif"
@@ -75,10 +77,10 @@ export class DataUploadLoader extends React.Component {
                 <div>
                   <Link to="/data" style={{
                     paddingRight: "10px"
-                  }} onClick={this.cancelDataUpload.bind(this)}>
+                  }} >
                     <Button onClick={this.cancelDataUpload.bind(this)}>Cancel</Button>
                   </Link>
-                  <Link to="/data" onClick={this.closeModelPopup.bind(this)}>
+                  <Link to="/data">
                     <Button bsStyle="primary" onClick={this.closeModelPopup.bind(this)}>Hide</Button>
                   </Link>
                 </div>

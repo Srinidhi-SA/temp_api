@@ -16,7 +16,7 @@ import {DetailOverlay} from "../common/DetailOverlay";
 import {MainHeader} from "../common/MainHeader";
 import {BreadCrumb} from "../common/BreadCrumb";
 import {getDataList, getDataSetPreview, storeSignalMeta, handleDelete, handleRename,refreshDatasets} from "../../actions/dataActions";
-import {fetchProductList, openDULoaderPopup, closeDULoaderPopup, storeSearchElement,storeSortElements} from "../../actions/dataActions";
+import {fetchProductList, openDULoaderPopup, closeDULoaderPopup, storeSearchElement,storeSortElements,updateDatasetName} from "../../actions/dataActions";
 import {DataUpload} from "./DataUpload";
 import {open, close,triggerDataUploadAnalysis,updateHideData} from "../../actions/dataUploadActions";
 import {STATIC_URL} from "../../helpers/env.js"
@@ -57,10 +57,10 @@ export class DataCard extends React.Component {
     
    
     handleDelete(slug,evt) {
-        this.props.dispatch(handleDelete(slug, this.refs.dialog,evt));
+        this.props.dispatch(handleDelete(slug, this.dialog,evt));
     }
     handleRename(slug, name) {
-        this.props.dispatch(handleRename(slug, this.refs.dialog, name));
+        this.props.dispatch(handleRename(slug, this.dialog, name));
     }
     getPreviewData(e) {
         var that = this;
@@ -73,6 +73,7 @@ export class DataCard extends React.Component {
         var dataUpload = {};
         dataUpload.slug = slug
         this.props.dispatch(openDULoaderPopup());
+        this.props.dispatch(updateDatasetName(slug));
         this.props.dispatch(updateHideData(true));
         this.props.dispatch(triggerDataUploadAnalysis(dataUpload, percentage, message));
     }
@@ -174,7 +175,7 @@ export class DataCard extends React.Component {
                                 
                                 </div>
                                 </div>
-                                  <Dialog ref="dialog"/>
+                                  <Dialog ref={(el) => { this.dialog = el }}/>
                                 </div>
             )
         });
@@ -182,7 +183,7 @@ export class DataCard extends React.Component {
         {
             (dataSetList.length>0)
             ?(dataSetList)
-                    :(<div><div className="clearfix"></div><div className="text-center text-muted xs-mt-50"><h2>No results found..</h2></div></div>)
+                    :(<div><div className="text-center text-muted xs-mt-10"><h2>No results found..</h2></div></div>)
         }
 
         </div>);

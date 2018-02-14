@@ -38,10 +38,10 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
             this.props.dispatch(updateModelSlug(slug))
         }
         handleModelDelete(slug){
-            this.props.dispatch(handleModelDelete(slug,this.refs.dialog));
+            this.props.dispatch(handleModelDelete(slug,this.dialog));
         }
         handleModelRename(slug,name){
-            this.props.dispatch(handleModelRename(slug,this.refs.dialog,name));
+            this.props.dispatch(handleModelRename(slug,this.dialog,name));
         }
        
         
@@ -49,7 +49,7 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
 
                 var modelList = this.props.data;
                 var appsModelList = modelList.map((data, i) => {
-                    var modelLink = "/apps/"+store.getState().apps.currentAppId+"/models/" + data.slug;
+                    var modelLink = "/apps/"+this.props.match.params.AppId+"/models/" + data.slug;
                     return (
                             <div className="col-md-3 xs-mb-15 list-boxes" key={i}>
                             <div className="rep_block newCardStyle" name={data.name}>
@@ -103,7 +103,7 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                             
                             </div>
                             </div>
-                             <Dialog ref="dialog" />
+                             <Dialog ref={(el) => { this.dialog = el }} />
 
                             </div>
                     )
@@ -112,7 +112,7 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                         {
                             (appsModelList.length>0)
                             ?(appsModelList)
-                            :(<div><div className="clearfix"></div><div className="text-center text-muted xs-mt-50"><h2>No results found..</h2></div></div>)
+                            :(<div><div className="text-center text-muted xs-mt-30"><h2>No results found..</h2></div></div>)
                         }
 
                         </div>);
