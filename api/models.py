@@ -69,20 +69,23 @@ class Job(models.Model):
         return " : ".join(["{}".format(x) for x in [self.name, self.job_type, self.created_at, self.slug]])
 
     def kill(self):
-        from api.yarn_job_api import kill_application, kill_application_using_fabric
-        # return kill_application(self.url)
-        url_status =  kill_application_using_fabric(self.url)
+        from api.tasks import kill_application_using_fabric
+        if self.url == "":
+            return False
 
-        if url_status is True:
-            original_object = self.get_original_object()
+        if self.url is None:
+            return False
 
-            if original_object is not None:
-                original_object.status = 'FAILED'
-                original_object.save()
-            self.status = 'KILLED'
-            self.save()
+        kill_application_using_fabric.delay(self.url)
 
-        return url_status
+        original_object = self.get_original_object()
+
+        if original_object is not None:
+            original_object.status = 'FAILED'
+            original_object.save()
+        self.status = 'KILLED'
+        self.save()
+        return True
 
     def start(self):
         command_array = json.loads(self.command_array)
@@ -276,7 +279,7 @@ class Dataset(models.Model):
     def add_inputfile_outfile_to_config(self, inputfile, jobConfig):
         jobConfig["config"]["FILE_SETTINGS"] = {
             "inputfile": [inputfile],
-            "outputfile": [self.get_input_file()],
+            "outputfile": [self.get_output_file()],
         }
 
         return jobConfig
@@ -408,6 +411,39 @@ class Dataset(models.Model):
         else:
             return ""
 
+    def get_output_file(self):
+        from api.helper import encrypt_url
+        HDFS = settings.HDFS
+        if self.datasource_type in ['file', 'fileUpload']:
+            type = self.file_remote
+            if type == 'emr_file':
+                final_url = "file://{}".format(self.input_file.path)
+                encrypted_url = encrypt_url(final_url)
+                return encrypted_url
+            elif type == 'hdfs':
+
+                if 'password' in HDFS:
+                    dir_path = "hdfs://{}:{}@{}:{}".format(
+                        HDFS.get("user.name"),
+                        HDFS.get("password"),
+                        HDFS.get("host"),
+                        HDFS.get("hdfs_port")
+                    )
+                else:
+                    dir_path = "hdfs://{}:{}".format(
+                        HDFS.get("host"),
+                        HDFS.get("hdfs_port")
+                    )
+                file_name = self.get_hdfs_relative_file_path()
+                final_url = dir_path + file_name
+                encrypted_url = encrypt_url(final_url)
+                return encrypted_url
+
+            elif type == 'fake':
+                return "file:///asdasdasdasd"
+        else:
+            return ""
+
     def get_datasource_info(self):
         datasource_details = ""
         if self.datasource_type in ['file', 'fileUpload']:
@@ -473,7 +509,9 @@ class Dataset(models.Model):
             'Rows': 'number of rows',
             'Columns': 'number of columns',
             'Measures': 'number of measures',
+            'Measure': 'number of measures',
             'Dimensions': 'number of dimensions',
+            'Dimension': 'number of dimensions',
             'Time Dimension': 'number of time dimension',
         }
         if 'metaData' in config:
@@ -702,8 +740,8 @@ class Insight(models.Model):
         analysis_type = []
 
         for variables in variableSelection:
-            if 'selected' in variables:
-                if variables['selected'] is True:
+            if 'targetColumn' in variables:
+                if variables['targetColumn'] is True:
                     variable_selected.append(variables['name'])
                     analysis_type.append(variables['columnType'])
                     break
@@ -770,6 +808,10 @@ class Trainer(models.Model):
 
     job = models.ForeignKey(Job, null=True)
     status = models.CharField(max_length=100, null=True, default="Not Registered")
+    live_status = models.CharField(max_length=300, default='0', choices=STATUS_CHOICES)
+    viewed = models.BooleanField(default=False)
+
+
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
@@ -843,12 +885,16 @@ class Trainer(models.Model):
 
         config = json.loads(self.config)
         train_test_split = float(config.get('trainValue')) / 100
+        targetLevel = None
+        if 'targetLevel' in config:
+            targetLevel = config.get('targetLevel')
         return {
             'inputfile': [self.dataset.get_input_file()],
             'modelpath': [self.slug],
             'train_test_split': [train_test_split],
             'analysis_type': ['training'],
-            'metadata': self.dataset.get_metadata_url_config()
+            'metadata': self.dataset.get_metadata_url_config(),
+            'targetLevel': targetLevel
         }
 
     def create_configuration_column_settings(self):
@@ -896,8 +942,8 @@ class Trainer(models.Model):
         variable_selected = []
 
         for variables in variableSelection:
-            if 'selected' in variables:
-                if variables['selected'] is True:
+            if 'targetColumn' in variables:
+                if variables['targetColumn'] is True:
                     variable_selected.append(variables['name'])
                     break
 
@@ -1135,8 +1181,8 @@ class Score(models.Model):
         variable_selected = []
 
         for variables in variableSelection:
-            if 'selected' in variables:
-                if variables['selected'] is True:
+            if 'targetColumn' in variables:
+                if variables['targetColumn'] is True:
                     variable_selected.append(variables['name'])
                     break
 
@@ -1148,6 +1194,10 @@ class Score(models.Model):
         brief_info = dict()
         config = self.get_config()
         config = config.get('config')
+
+        model_data = json.loads(self.trainer.data)
+        model_config_from_results = model_data['model_dropdown']
+
         if config is not None:
             if 'COLUMN_SETTINGS' in config:
                 try:
@@ -1160,9 +1210,15 @@ class Score(models.Model):
 
             if 'FILE_SETTINGS' in config:
                 file_setting = config['FILE_SETTINGS']
+                algorithm_name = None
+                for slug_name in model_config_from_results:
+                    if slug_name['slug'] == file_setting.get('algorithmslug')[0]:
+                        algorithm_name = slug_name['name']
+                        break
+
                 brief_info.update({
                     'analysis type': file_setting.get('analysis_type')[0],
-                    'algorithm name': file_setting.get('algorithmslug')[0],
+                    'algorithm name': algorithm_name,
                 })
 
         brief_info.update(
@@ -1363,7 +1419,6 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
     '''
     # Submitting JobServer
     from utils import submit_job
-    from smtp_email import send_alert_through_email
     try:
         job_return_data = submit_job(
             slug=job.slug,
@@ -1747,6 +1802,7 @@ class Audioset(models.Model):
 class SaveData(models.Model):
     slug = models.SlugField(null=False, blank=True, max_length=300)
     data = models.TextField(default="{}")
+    object_slug = models.SlugField(null=False, blank=True, max_length=300, default="")
 
     def get_data(self):
         data = self.data
@@ -3662,7 +3718,6 @@ article_by_source = [
 
 from sample_stock_data import stock_performace_card1, \
     stock_by_sentiment_score, \
-    card1_total_entities, \
     number_of_articles_by_concept, \
     overview_of_second_node_databox_data, \
     stock_name_match_with_data, \

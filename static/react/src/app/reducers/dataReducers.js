@@ -282,7 +282,7 @@ export default function reducer(state = {
         return {
           ...state,
           dataSetMeasures: action.measures,
-          measureChecked: action.checkBoxList
+          //measureChecked: action.checkBoxList
         }
       }
       break;
@@ -292,7 +292,7 @@ export default function reducer(state = {
         return {
           ...state,
           dataSetDimensions: action.dimensions,
-          dimensionChecked: action.checkBoxList1
+         // dimensionChecked: action.checkBoxList1
         }
       }
       break;
@@ -302,7 +302,7 @@ export default function reducer(state = {
         return {
           ...state,
           dataSetTimeDimensions: action.timedimensions,
-          dateTimeChecked: action.checkBoxList2
+         // dateTimeChecked: action.checkBoxList2
         }
       }
       break;

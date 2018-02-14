@@ -49,10 +49,10 @@ export class RoboInsightCard extends React.Component {
     this.props.dispatch(getRoboDataset(slug));
   }
   handleInsightRename(slug, name) {
-    this.props.dispatch(handleInsightRename(slug, this.refs.dialog, name))
+    this.props.dispatch(handleInsightRename(slug, this.dialog, name))
   }
   handleInsightDelete(slug) {
-    this.props.dispatch(handleInsightDelete(slug, this.refs.dialog))
+    this.props.dispatch(handleInsightDelete(slug, this.dialog))
   }
 
   render() {
@@ -113,7 +113,7 @@ export class RoboInsightCard extends React.Component {
                   <span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy HH:MM")}</span>
                 </div>                 
               </div>
-               <Dialog ref="dialog" />
+               <Dialog ref={(el) => { this.dialog = el }} />
 
             </div>
           </div>
@@ -124,7 +124,7 @@ export class RoboInsightCard extends React.Component {
               {
                  (appsRoboList.length>0)
                  ?(appsRoboList)
-                 :(<div><div className="clearfix"></div><div className="text-center text-muted xs-mt-50"><h2>No results found..</h2></div></div>)
+                 :(<div><div className="text-center text-muted xs-mt-10"><h2>No results found..</h2></div></div>)
                  }
               </div>);
     }

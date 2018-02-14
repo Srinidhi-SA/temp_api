@@ -69,7 +69,7 @@ const SCHEMA = "Schema";
 const USERNAME = "Username";
 const PASSWORD = "Password";
 const TABLENAME = "tablename";
-const PERPAGE = 11;
+const PERPAGE = 12;
 const NORMALTABLE = "normal";
 const CONFUSIONMATRIX = "confusionMatrix";
 const HEATMAPTABLE = "heatMap";
@@ -358,13 +358,13 @@ export function  subTreeSetting(urlLength, length,paramL2,classname=".sb_navigat
   export function handleJobProcessing(slug){
       return (dispatch) => {
           dispatch(showLoading());
-          return updateJobStatus(slug).then(([response, json]) =>{
+          return updateJobStatus(slug,dispatch).then(([response, json]) =>{
               dispatch(hideLoading());
           })
       }
 
   }
- export function updateJobStatus(slug){
+ export function updateJobStatus(slug,dispatch){
      return fetch(API+'/api/get_job_kill/'+slug+'/',{
          method: 'get',
          headers: getHeader(getUserDetailsOrRestart.get().userToken)

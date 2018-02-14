@@ -14,7 +14,7 @@ import {Link} from "react-router-dom";
 import {ExportAsPMML} from "./ExportAsPMML";
 
 @connect((store) => {
-	return {login_response: store.login.login_response, 
+	return {login_response: store.login.login_response,
 		modelList:store.apps.modelList,modelSummary:store.apps.modelSummary,
 		modelSlug:store.apps.modelSlug,
 		currentAppId:store.apps.currentAppId
@@ -30,12 +30,12 @@ export class AppsModelDetail extends React.Component {
 		this.props.dispatch(storeSignalMeta(null,this.props.match.url));
 		//It will trigger when refresh happens on url
 		if(isEmpty(this.props.modelSummary)){
-		    this.props.dispatch(getAppsModelSummary(this.props.match.params.slug));  
+		    this.props.dispatch(getAppsModelSummary(this.props.match.params.slug));
 		    this.props.dispatch(updateModelSlug(this.props.match.params.slug));
 		}
-		 
+
 	}
-  
+
   print() {
     window.print();
   }
@@ -43,9 +43,8 @@ export class AppsModelDetail extends React.Component {
 	  if(!isEmpty(store.getState().apps.modelSummary)){
 		  if(store.getState().apps.modelSummary.slug != store.getState().apps.modelSlug)
 		  this.props.dispatch(getAppsModelSummary(store.getState().apps.modelSlug));
-	  }else{
-		  this.props.dispatch(getAppsModelSummary(store.getState().apps.modelSlug));
 	  }
+
   }
   componentDidUpdate(){
       $(".chart-data-icon").next("div").next("div").removeClass("col-md-7 col-md-offset-2").addClass("col-md-10")
@@ -68,20 +67,20 @@ export class AppsModelDetail extends React.Component {
 				return (<div className="col-md-6 xs-p-30"><Card cardData={data} /></div>)
 			}
              else return (<Card key={i} cardData={data} />)
-			
+
 		                    });
 		if(listOfCardList){
 			return (
 			          <div className="side-body">
-			          
+
 			          <div className="main-content">
 			          <div className="row">
 		                <div className="col-md-12">
-		                 
+
 		                <div className="panel panel-mAd documentModeSpacing box-shadow">
 		                    <div className="panel-heading">
 		                      <h3 className="xs-mt-0">{store.getState().apps.modelSummary.name}
-		                      
+
 		                      <div className="btn-toolbar pull-right">
 		                        <div className="btn-group">
 		                        <button type="button" className="btn btn-default" onClick={this.print.bind(this)} title="Print Document"><i className="fa fa-print"></i></button>
@@ -89,18 +88,18 @@ export class AppsModelDetail extends React.Component {
 		                             <i class="zmdi zmdi-hc-lg zmdi-view-web"></i>
 		                            </button>
 							   <Link className="btn btn-default continue btn-close" to={modelLink}>
-		                         
+
 		                            <i class="zmdi zmdi-hc-lg zmdi-close"></i>
-		                          
+
 								 </Link>
 		                        </div>
 		                      </div>
-		                     </h3> 
+		                     </h3>
 		                      <div className="clearfix"></div>
 		                    </div>
 		                   <div className="panel-body no-border">
-		                   <div className="row-fluid"> 
-		           
+		                   <div className="row-fluid">
+
 		                  {cardDataList}
 
 		                    </div>
@@ -116,17 +115,17 @@ export class AppsModelDetail extends React.Component {
 		                  </div>
 		                </div>
 		              </div>
-		  
-		             
-			           
+
+
+
 			          </div>
-			      );	
+			      );
 		}
 	}
-	
+
 	else{
 		return (
-	
+
 		      <div className="side-body">
 		        <div className="page-head">
 		        </div>
@@ -136,6 +135,6 @@ export class AppsModelDetail extends React.Component {
 		      </div>
 		    );
 	}
-    
+
   }
 }

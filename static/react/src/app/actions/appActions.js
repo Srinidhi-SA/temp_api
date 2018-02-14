@@ -13,6 +13,8 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 
 
     export var appsInterval = null;
+    export var refreshAppsModelInterval = null;
+    export var refreshAppsScoresInterval = null;
 
     function getHeader(token){
         return {
@@ -30,6 +32,18 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
     export function closeModelPopup() {
         return {
             type: "APPS_MODEL_HIDE_POPUP",
+        }
+    }
+
+    export function refreshAppsModelList(props){
+        return (dispatch) => {
+
+            refreshAppsModelInterval = setInterval(function() {
+                var pageNo = window.location.href.split("=")[1];
+                if(pageNo == undefined) pageNo = 1;
+                if(window.location.pathname == "/apps/"+store.getState().apps.currentAppId+"/models")
+                    dispatch(getAppsModelList(parseInt(pageNo)));
+            },APPSDEFAULTINTERVAL);
         }
     }
 
@@ -104,7 +118,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
         }
     }
 
-    export function createModel(modelName,targetVariable) {
+    export function createModel(modelName,targetVariable,targetLevel) {
         console.log(modelName);
         console.log(targetVariable);
         if($('#createModelAnalysisList option:selected').val() == ""){
@@ -114,7 +128,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
         }
         return (dispatch) => {
             dispatch(openAppsLoader(APPSLOADERPERVALUE,"Please wait while mAdvisor is creating model... "));
-            return triggerCreateModel(getUserDetailsOrRestart.get().userToken,modelName,targetVariable).then(([response, json]) =>{
+            return triggerCreateModel(getUserDetailsOrRestart.get().userToken,modelName,targetVariable,targetLevel).then(([response, json]) =>{
                 if(response.status === 200){
                     console.log(json)
                     dispatch(createModelSuccess(json,dispatch))
@@ -128,7 +142,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
         }
     }
 
-    function triggerCreateModel(token,modelName,targetVariable) {
+    function triggerCreateModel(token,modelName,targetVariable,targetLevel) {
         var datasetSlug = store.getState().datasets.dataPreview.slug;
         var app_id=store.getState().apps.currentAppId;
         var customDetails = createcustomAnalysisDetails();
@@ -138,6 +152,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 "timeDimension":store.getState().datasets.selectedTimeDimensions,*/
                 "trainValue":store.getState().apps.trainValue,
                 "testValue":store.getState().apps.testValue,
+                "targetLevel":targetLevel,
                 "variablesSelection":store.getState().datasets.dataPreview.meta_data.uiMetaData.varibaleSelectionArray
                /* "analysisVariable":targetVariable,
                 'customAnalysisDetails':customDetails["customAnalysisDetails"],
@@ -173,6 +188,16 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
         return {
             type: "CREATE_MODEL_SUCCESS",
             slug,
+        }
+    }
+    export function refreshAppsScoreList(props){
+        return (dispatch) => {
+            refreshAppsScoresInterval = setInterval(function() {
+                var pageNo = window.location.href.split("=")[1];
+                if(pageNo == undefined) pageNo = 1;
+                if(window.location.pathname == "/apps/"+store.getState().apps.currentAppId+"/scores")
+                    dispatch(getAppsScoreList(parseInt(pageNo)));
+            },APPSDEFAULTINTERVAL);
         }
     }
     export function getAppsScoreList(pageNo) {
@@ -260,7 +285,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                         dispatch(hideDataPreview());
                         dispatch(updateModelSummaryFlag(true));
                     }else if(json.status == FAILED){
-                        bootbox.alert("Your model could not created.Please try later.",function(){
+                        bootbox.alert("Your model could not be created.Please try later.",function(){
                             window.history.go(-2);
                         });
                         clearInterval(appsInterval);
@@ -461,11 +486,12 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
         }).then( response => Promise.all([response, response.json()]));
     }
 
-    export function updateSelectedApp(appId,appName){
+    export function updateSelectedApp(appId,appName,appDetails){
         return {
             type: "SELECTED_APP_DETAILS",
             appId,
             appName,
+            appDetails,
         }
     }
 
@@ -1838,3 +1864,50 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
     function scoreToProceed(flag){
         return {type: "SCORE_TO_PROCEED", flag};
     }
+
+   export  function showLevelCountsForTarget(event){
+        var selOption = event.target.childNodes[event.target.selectedIndex];
+        var varType = selOption.value;
+        var varText = selOption.text;
+        var varSlug = selOption.getAttribute("name");
+        var levelCounts = null;
+        var colData = store.getState().datasets.dataPreview.meta_data.scriptMetaData.columnData;
+        var colStats = [];
+        if(varType == "dimension"){
+           for(var i =0;i<colData.length;i++){
+               if(colData[i].slug == varSlug){
+                   var found = colData[i].columnStats.find(function(element) {
+                       return element.name == "LevelCount";
+                     });
+                   if(found != undefined){
+                     levelCounts = Object.keys(found.value);
+                   }
+               }
+           }
+        }
+        return{
+            type: "SET_TARGET_LEVEL_COUNTS", levelCounts
+        }
+    }
+
+
+   export function getAppDetails(appSlug,pageNo){
+
+       return (dispatch) => {
+           return triggerAppDetailsAPI(appSlug).then(([response, json]) =>{
+               if(response.status === 200){
+                   dispatch(updateSelectedApp(json.app_id,json.name,json));
+                   dispatch(getAppsModelList(pageNo));
+                   dispatch(getAppsScoreList(pageNo));
+               }
+           });
+       }
+
+   }
+
+   function triggerAppDetailsAPI(appSlug){
+       return fetch(API+'/api/apps/'+appSlug+'/',{
+           method: 'get',
+           headers: getHeader(getUserDetailsOrRestart.get().userToken),
+       }).then( response => Promise.all([response, response.json()]));
+   }

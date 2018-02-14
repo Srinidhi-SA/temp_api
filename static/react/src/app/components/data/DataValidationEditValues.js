@@ -138,7 +138,7 @@ export class DataValidationEditValues extends React.Component {
       	<Modal.Body className="dataTransformModal">
       	 
       	<div>
-		<Tab.Container id="left-tabs-example" defaultActiveKey="Remove">
+		<Tab.Container id="left-tabs-example" defaultActiveKey="Replace">
 		<Row className="clearfix">
 		<Col sm={3}>
 		<Nav bsStyle="pills" stacked>
