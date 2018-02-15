@@ -154,8 +154,8 @@ class Dataset(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
-    created_by = models.ForeignKey(User, null=False)
-    deleted = models.BooleanField(default=False)
+    created_by = models.ForeignKey(User, null=False, db_index=True)
+    deleted = models.BooleanField(default=False, db_index=True)
     subsetting = models.BooleanField(default=False, blank=True)
 
     job = models.ForeignKey(Job, null=True)
@@ -163,7 +163,7 @@ class Dataset(models.Model):
     bookmarked = models.BooleanField(default=False)
     file_remote = models.CharField(max_length=100, null=True)
     analysis_done = models.BooleanField(default=False)
-    status = models.CharField(max_length=100, null=True, default="Not Registered")
+    status = models.CharField(max_length=100, null=True, default="Not Registered", db_index=True)
     viewed = models.BooleanField(default=False)
 
     class Meta:
@@ -570,12 +570,12 @@ class Insight(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True, db_index=True)
     created_by = models.ForeignKey(User, null=False, db_index=True)
-    deleted = models.BooleanField(default=False)
+    deleted = models.BooleanField(default=False, db_index=True)
 
     bookmarked = models.BooleanField(default=False)
 
     job = models.ForeignKey(Job, null=True)
-    status = models.CharField(max_length=100, null=True, default="Not Registered")
+    status = models.CharField(max_length=100, null=True, default="Not Registered", db_index=True)
     viewed = models.BooleanField(default=False)
 
     class Meta:
@@ -800,14 +800,14 @@ class Trainer(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
-    created_by = models.ForeignKey(User, null=False)
-    deleted = models.BooleanField(default=False)
+    created_by = models.ForeignKey(User, null=False, db_index=True)
+    deleted = models.BooleanField(default=False, db_index=True)
 
     bookmarked = models.BooleanField(default=False)
     analysis_done = models.BooleanField(default=False)
 
     job = models.ForeignKey(Job, null=True)
-    status = models.CharField(max_length=100, null=True, default="Not Registered")
+    status = models.CharField(max_length=100, null=True, default="Not Registered", db_index=True)
     live_status = models.CharField(max_length=300, default='0', choices=STATUS_CHOICES)
     viewed = models.BooleanField(default=False)
 
@@ -998,14 +998,14 @@ class Score(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
-    created_by = models.ForeignKey(User, null=False)
-    deleted = models.BooleanField(default=False)
+    created_by = models.ForeignKey(User, null=False, db_index=True)
+    deleted = models.BooleanField(default=False, db_index=True)
     analysis_done = models.BooleanField(default=False)
 
     bookmarked = models.BooleanField(default=False)
 
     job = models.ForeignKey(Job, null=True)
-    status = models.CharField(max_length=100, null=True, default="Not Registered")
+    status = models.CharField(max_length=100, null=True, default="Not Registered", db_index=True)
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
