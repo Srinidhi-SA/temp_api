@@ -59,10 +59,9 @@ def convert_metadata_according_to_transformation_setting(meta_data=None, transfo
         columnData=columnData,
         sampleData=sampleData
     )
-
-
     uiMetaData['transformation_settings'] = transformation_setting
     uiMetaData['modified'] = True
+
     varibaleSelectionArray = add_variable_selection_to_metadata(
         uiMetaData["columnDataUI"],
         uiMetaData['transformation_settings']
@@ -85,22 +84,25 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
 
     for col in ts:
         columnSetting_Temp = None
+        uid_flag = False
         if "columnSetting" in col:
             columnSetting = col.get("columnSetting")
 
             for colset in columnSetting:
                 if colset.get("status") == True:
 
+                    if colset.get('actionName') == 'unique_identifier':
+                        uid_flag = True
+
                     if colset.get("actionName") == "delete":
 
-                        if 'modified' in colset:
-                            if colset.get('modified') == True:
-                                pass
-                            else:
-                                pass
-                        else:
-                            colset['modified'] = True
-
+                        # if 'modified' in colset:
+                        #     if colset.get('modified') == True:
+                        #         pass
+                        #     else:
+                        #         pass
+                        # else:
+                        colset['modified'] = True
                         colset['displayName'] = 'UnDelete Column'
 
                         mdc.changes_on_delete(col.get("name"), type='delete')
@@ -108,7 +110,7 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
                     if colset.get("actionName") == "rename":
                         colName = col.get('name')
                         newName = colset.get('newName')
-
+                        col['name'] = newName
                         if 'modified' in colset:
                             if colset.get('modified') == True:
                                 colset['prevName'] = newName
@@ -119,6 +121,7 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
                             colName=colName,
                             newName=newName
                         )
+
                     if colset.get("actionName") == "data_type":
                         listOfActions = colset.get('listOfActions')
                         data_type = {}
@@ -154,14 +157,17 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
                             if colset.get('modified') == True:
                                 mdc.changes_on_delete(col.get("name"), type='undelete')
                                 colset['modified'] = False
-                                colset['displayName'] = 'Delete Column'
+                        colset['displayName'] = 'Delete Column'
 
                     if colset.get('actionName') == 'ignore_suggestion':
                         colName = col.get('name')
                         colset['displayName'] = 'Ignore for Analysis'
                         mdc.changes_on_consider_column(colName, True)
                         if colset['previous_status'] != colset["status"]:
-                            columnSetting_Temp = mdc.changes_in_column_data_if_column_is_considered(colName)
+                            columnSetting_Temp = mdc.changes_in_column_data_if_column_is_considered(
+                                                        colName,
+                                                        uid_flag=uid_flag
+                                                    )
                             colset['previous_status'] = colset["status"]
                             break
 
@@ -218,6 +224,7 @@ class MetaDataChange(object):
             "measure": 'measures',
             "dimension": 'dimensions',
             "timeDimension": 'timeDimension',
+            "datetime":'timeDimension',
         }
 
         match_for_column = {
@@ -225,7 +232,8 @@ class MetaDataChange(object):
             "dimensions": 'dimensionColumns',
             "timeDimension": 'timeDimensionColumns',
             "measure": 'measureColumns',
-            "dimension": 'dimensionColumns'
+            "dimension": 'dimensionColumns',
+            "datetime":'timeDimensionColumns',
         }
 
         for i, data in enumerate(self.metaData):
@@ -339,16 +347,6 @@ class MetaDataChange(object):
             'text': 'dimension'
         }
 
-        match_in_row_metaData = {
-            'numeric': 'measures',
-            'text': 'dimensions'
-        }
-
-        match_in_array_metaData = {
-            'numeric': 'measureColumns',
-            'text': 'dimensionColumns'
-        }
-
         for data in self.columnData:
             if data.get('name') == colName:
                 if data['columnType'] == match_in_columnstats[type]:
@@ -414,7 +412,7 @@ class MetaDataChange(object):
                 # data['ignoreSuggestionFlag'] = not make_it
                 break
 
-    def changes_in_column_data_if_column_is_considered(self, colName):
+    def changes_in_column_data_if_column_is_considered(self, colName, uid_flag=False):
         import copy
         from django.conf import settings
         for head in self.columnData:
@@ -442,6 +440,13 @@ class MetaDataChange(object):
                 transformation_settings_ignore['status'] = False
                 transformation_settings_ignore['displayName'] = 'Ignore for Analysis'
                 transformation_settings_ignore['previous_status'] = False
+
+                if uid_flag is True:
+                    for head_column in head_columnSetting:
+                        if head_column.get('actionName') == 'unique_identifier':
+                            head_column['status'] = True
+                            break
+
                 head_columnSetting.append(transformation_settings_ignore)
                 head['consider'] = True
 
@@ -518,7 +523,6 @@ def get_advanced_setting(varibaleSelectionArray):
     for data in varibaleSelectionArray:
         if data['dateSuggestionFlag'] is True or data['columnType'] == 'datetime':
             time_count += 1
-        print data['targetColumn'], data['name']
         if data['targetColumn'] == True:
             target_column_name = data['name']
             target_data_type = data['columnType']
@@ -554,13 +558,6 @@ def get_advanced_setting(varibaleSelectionArray):
 
     if dimension_count_without_target > 0:
         add_performance = True
-
-    print "measure_count_without_target", measure_count_without_target
-    print "dimension_count_without_target", dimension_count_without_target
-    print 'dimension_count', dimension_count
-    print 'measure_count', measure_count
-    print 'datetime_list', datetime_list
-    print 'measure_list', measure_list
 
     things_to_add = {
         'overview': add_overview,
@@ -606,7 +603,6 @@ def add_trend_in_advanced_setting(things_to_add):
 
     raw_final_setting = copy.deepcopy(settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS)
 
-    print measure_checklist, things_to_add
     for key in measure_checklist:
         if things_to_add[key]:
             raw_final_setting['measures']['analysis'].append(match_ing[key])
@@ -746,7 +742,6 @@ def add_ui_metadata_to_metadata(meta_data):
 
 def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
     validcols = [ {"name":x["name"],"slug":x["slug"],"columnType":x["columnType"],"dateSuggestionFlag":x["dateSuggestionFlag"],"targetColumn":False,"targetColSetVarAs":None} for x in columnDataUI if x["consider"]==True]
-    # print "presence of none validcols",len([x for x in validcols if x != None])
     timeDimensionCols = []
     dateSuggestionCols = []
     validcols1 = []
@@ -760,10 +755,7 @@ def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
         else:
             x.update({"selected": True})
         validcols1.append(x)
-    # print "presence of none validcols1", len([x for x in validcols1 if x != None])
-    # validcols = [x.update({"columnType":"datetime"}) if x["columnType"] == "dimension" and x["dateSuggestionFlag"] == True else x for x in validcols1]
     validcols = validcols1
-    # print "presence of none validcols", len([x for x in validcols if x != None])
     transformSetting = transformation_settings["existingColumns"]
     uidcols = []
     polarity = []

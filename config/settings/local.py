@@ -47,6 +47,13 @@ AUTHENTICATION_BACKENDS = (
     'guardian.backends.ObjectPermissionBackend',
 )
 
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE
+
 MIDDLEWARE += LOCAL_MIDDLEWARE
 
 HADOOP_MASTER = "ec2-34-205-203-38.compute-1.amazonaws.com"

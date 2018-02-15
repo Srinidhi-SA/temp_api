@@ -13,7 +13,9 @@ from rest_framework.decorators import api_view
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
 
-from api.exceptions import creation_failed_exception, update_failed_exception
+from api.datasets.helper import add_ui_metadata_to_metadata
+from api.datasets.serializers import DatasetSerializer
+from api.exceptions import creation_failed_exception, update_failed_exception, retrieve_failed_exception
 from api.pagination import CustomPagination
 from api.query_filtering import get_listed_data
 from api.utils import \
@@ -30,11 +32,8 @@ from api.utils import \
     StockDatasetSerializer, \
     AppListSerializers, \
     AppSerializer
-
-from api.datasets.serializers import DatasetSerializer
-from api.datasets.helper import add_transformation_setting_to_ui_metadata, add_ui_metadata_to_metadata
-
 from models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData, StockDataset, CustomApps
+from api.tasks import clean_up_on_delete
 
 
 class SignalView(viewsets.ModelViewSet):
@@ -81,8 +80,13 @@ class SignalView(viewsets.ModelViewSet):
 
         try:
             instance = self.get_object_from_all()
+            if 'deleted' in data:
+                if data['deleted'] == True:
+                    print 'let us delete'
+                    clean_up_on_delete.delay(instance.slug, Insight.__name__)
+                    return JsonResponse({'message':'Deleted'})
         except:
-            return creation_failed_exception("File Doesn't exist.")
+            return update_failed_exception("File Doesn't exist.")
 
         serializer = self.get_serializer(instance=instance, data=data, partial=True)
         if serializer.is_valid():
@@ -103,10 +107,10 @@ class SignalView(viewsets.ModelViewSet):
         try:
             instance = self.get_object_from_all()
         except:
-            return creation_failed_exception("File Doesn't exist.")
+            return retrieve_failed_exception("File Doesn't exist.")
 
         if instance is None:
-            return creation_failed_exception("File Doesn't exist.")
+            return retrieve_failed_exception("File Doesn't exist.")
 
         serializer = InsightSerializer(instance=instance)
         return Response(serializer.data)
@@ -117,7 +121,9 @@ class TrainerView(viewsets.ModelViewSet):
         queryset = Trainer.objects.filter(
             created_by=self.request.user,
             deleted=False,
-            analysis_done=True
+            #analysis_done=True,
+            status__in=['SUCCESS', 'INPROGRESS']
+
         )
         return queryset
 
@@ -154,6 +160,11 @@ class TrainerView(viewsets.ModelViewSet):
         # instance = self.get_object()
         try:
             instance = self.get_object_from_all()
+            if 'deleted' in data:
+                if data['deleted'] == True:
+                    print 'let us delete'
+                    clean_up_on_delete.delay(instance.slug, Trainer.__name__)
+                    return JsonResponse({'message':'Deleted'})
         except:
             return creation_failed_exception("File Doesn't exist.")
 
@@ -197,8 +208,10 @@ class TrainerView(viewsets.ModelViewSet):
 
         serializer = TrainerSerlializer(instance=instance)
         trainer_data = serializer.data
-        print trainer_data['config']['config']['COLUMN_SETTINGS'].keys()
         t_d_c = trainer_data['config']['config']['COLUMN_SETTINGS']['variableSelection']
+        uidColArray= [x["name"] for x in t_d_c if x["uidCol"] == True]
+
+
 
         score_datatset_slug = request.GET.get('score_datatset_slug')
         try:
@@ -227,7 +240,8 @@ class TrainerView(viewsets.ModelViewSet):
         d_d_c = uiMetaData['varibaleSelectionArray']
 
         t_d_c_s = set([item['name'] for item in t_d_c if item["targetColumn"] != True])
-        d_d_c_s = set([item['name'] for item in d_d_c])
+        d_d_c_s = set([item['name'] for item in d_d_c]).union(set(uidColArray))
+
         proceedFlag = d_d_c_s.issuperset(t_d_c_s)
 
         if proceedFlag != True:
@@ -255,7 +269,8 @@ class ScoreView(viewsets.ModelViewSet):
         queryset = Score.objects.filter(
             created_by=self.request.user,
             deleted=False,
-            analysis_done=True
+            #analysis_done=True
+            status__in=['SUCCESS', 'INPROGRESS']
         )
         return queryset
 
@@ -274,10 +289,10 @@ class ScoreView(viewsets.ModelViewSet):
         # try:
         data = request.data
         data = convert_to_string(data)
-        print data
         data['trainer'] = Trainer.objects.filter(slug=data['trainer'])
         data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
         data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
+        data['app_id'] = int(json.loads(data['config'])['app_id'])
         serializer = ScoreSerlializer(data=data)
         if serializer.is_valid():
             score_object = serializer.save()
@@ -295,6 +310,11 @@ class ScoreView(viewsets.ModelViewSet):
 
         try:
             instance = self.get_object_from_all()
+            if 'deleted' in data:
+                if data['deleted'] == True:
+                    print 'let us delete'
+                    clean_up_on_delete.delay(instance.slug, Score.__name__)
+                    return JsonResponse({'message':'Deleted'})
         except:
             return creation_failed_exception("File Doesn't exist.")
 
@@ -438,6 +458,11 @@ class RoboView(viewsets.ModelViewSet):
         # instance = self.get_object()
         try:
             instance = self.get_object_from_all()
+            if 'deleted' in data:
+                if data['deleted'] == True:
+                    print 'let us delete'
+                    clean_up_on_delete.delay(instance.slug, Robo.__name__)
+                    return JsonResponse({'message':'Deleted'})
         except:
             return creation_failed_exception("File Doesn't exist.")
 
@@ -784,6 +809,7 @@ def get_config(request, slug=None):
 
 
 from django.views.decorators.csrf import csrf_exempt
+from api import tasks
 
 
 @csrf_exempt
@@ -793,21 +819,19 @@ def set_result(request, slug=None):
     if not job:
         return JsonResponse({'result': 'Failed'})
     results = request.body
-    if isinstance(results, str) or isinstance(results, unicode):
-        job.results = results
-    elif isinstance(results, dict):
-        results = json.dumps(results)
-        job.results = results
-    job.save()
+    tasks.save_results_to_job.delay(
+        slug,
+        results
+    )
     if "status=failed" in request.body:
         results = {'error_message': 'Failed'}
-        results = write_into_databases(
+        results = tasks.write_into_databases.delay(
             job_type=job.job_type,
             object_slug=job.object_id,
             results=results
         )
     else:
-        results = write_into_databases(
+        results = tasks.write_into_databases.delay(
             job_type=job.job_type,
             object_slug=job.object_id,
             results=json.loads(results)
@@ -849,7 +873,7 @@ def write_into_databases(job_type, object_slug, results):
             card_data = data["chartData"]
             if 'dataType' in card_data and card_data['dataType'] == 'c3Chart':
                 chart_data = card_data['data']
-                final_chart_data = helper.decode_and_convert_chart_raw_data(chart_data)
+                final_chart_data = helper.decode_and_convert_chart_raw_data(chart_data, object_slug=object_slug)
                 data["chartData"] = chart_changes_in_metadata_chart(final_chart_data)
                 data["chartData"]["table_c3"] = []
 
@@ -866,7 +890,6 @@ def write_into_databases(job_type, object_slug, results):
         dataset_object.save()
         return results
     elif job_type == "master":
-        # print "inside job_type==master"
         insight_object = Insight.objects.get(slug=object_slug)
 
         if "error_message" in results:
@@ -874,7 +897,7 @@ def write_into_databases(job_type, object_slug, results):
             insight_object.save()
             return results
 
-        results = add_slugs(results)
+        results = add_slugs(results, object_slug=object_slug)
         insight_object.data = json.dumps(results)
         insight_object.analysis_done = True
         insight_object.status = 'SUCCESS'
@@ -888,7 +911,7 @@ def write_into_databases(job_type, object_slug, results):
             trainer_object.save()
             return results
 
-        results['model_summary'] = add_slugs(results['model_summary'])
+        results['model_summary'] = add_slugs(results['model_summary'], object_slug=object_slug)
         trainer_object.data = json.dumps(results)
         trainer_object.analysis_done = True
         trainer_object.save()
@@ -901,7 +924,7 @@ def write_into_databases(job_type, object_slug, results):
             score_object.save()
             return results
 
-        results = add_slugs(results)
+        results = add_slugs(results, object_slug=object_slug)
         score_object.data = json.dumps(results)
         score_object.analysis_done = True
         score_object.save()
@@ -914,14 +937,14 @@ def write_into_databases(job_type, object_slug, results):
             robo_object.save()
             return results
 
-        results = add_slugs(results)
+        results = add_slugs(results, object_slug=object_slug)
         robo_object.data = json.dumps(results)
         robo_object.robo_analysis_done = True
         robo_object.save()
         return results
     elif job_type == 'stockAdvisor':
         stock_objects = StockDataset.objects.get(slug=object_slug)
-        results = add_slugs(results)
+        results = add_slugs(results, object_slug=object_slug)
         stock_objects.data = json.dumps(results)
         stock_objects.analysis_done = True
         stock_objects.status = 'SUCCESS'
@@ -948,16 +971,7 @@ def chart_changes_in_metadata_chart(chart_data):
     return chart_data
 
 
-@csrf_exempt
-def random_test_api(request):
-    import json
-    data = json.loads(request.body)
-    data = add_slugs(data)
-
-    return JsonResponse({"data": data})
-
-
-def add_slugs(results):
+def add_slugs(results, object_slug=""):
     from api import helper
     listOfNodes = results.get('listOfNodes', [])
     listOfCards = results.get('listOfCards', [])
@@ -967,27 +981,26 @@ def add_slugs(results):
 
     if len(listOfCards) > 0:
         for loC in listOfCards:
-            add_slugs(loC)
+            add_slugs(loC, object_slug=object_slug)
             if loC['cardType'] == 'normal':
-                convert_chart_data_to_beautiful_things(loC['cardData'])
+                convert_chart_data_to_beautiful_things(loC['cardData'], object_slug=object_slug)
 
     if len(listOfNodes) > 0:
         for loN in listOfNodes:
-            add_slugs(loN)
+            add_slugs(loN, object_slug=object_slug)
 
     return results
 
 
-def convert_chart_data_to_beautiful_things(data):
+def convert_chart_data_to_beautiful_things(data, object_slug=""):
     from api import helper
     for card in data:
         if card["dataType"] == "c3Chart":
             chart_raw_data = card["data"]
             # function
             try:
-                card["data"] = helper.decode_and_convert_chart_raw_data(chart_raw_data)
+                card["data"] = helper.decode_and_convert_chart_raw_data(chart_raw_data, object_slug=object_slug)
             except Exception as e:
-                print "Error in Cards"
                 print e
                 card["data"] = {}
 
@@ -1058,7 +1071,6 @@ def get_info(request):
                 size += dataset.input_file.size
             except Exception as err:
                 pass
-                # print err
 
         return size
 
@@ -1101,8 +1113,9 @@ def get_info(request):
     # get recent activity
     def get_recent_activity():
         from auditlog.models import LogEntry
-        logs = LogEntry.objects.order_by('-timestamp')[:30]
+        logs = LogEntry.objects.filter(actor=user.id).order_by('-timestamp')[:30]
         # logCount = LogEntry.objects.exclude(change_message="No fields changed.").order_by('-action_time')[:20].count()
+
         recent_activity = []
         for obj in logs:
             log_user = str(obj.actor)
@@ -4715,6 +4728,7 @@ def get_job_kill(request, slug=None):
         return JsonResponse({
             'message': 'Unable to Delete.'
         })
+
     original_object.deleted = True
     original_object.save()
     if job_object.kill() is True:
@@ -4723,7 +4737,7 @@ def get_job_kill(request, slug=None):
         })
     else:
         return JsonResponse({
-            'message': 'Unable to kill. but Deleted.'
+            'message': 'Unable to kill.'
         })
 
 
@@ -4752,7 +4766,7 @@ def set_messages(request, slug=None):
     if slug is None:
         return JsonResponse({"message": "Failed"})
 
-    from api.models import get_message_slug, get_slug_from_message_url
+    from api.models import get_slug_from_message_url
     job_slug = get_slug_from_message_url(slug)
     job = Job.objects.get(slug=job_slug)
 
@@ -4973,22 +4987,36 @@ def get_score_data_and_return_top_n(request):
             })
 
 
-
-
 @api_view(['GET'])
 def get_recent_activity(request):
     user = request.user
-    from django.contrib.admin.models import LogEntry, ADDITION, CHANGE, DELETION
+    from django.contrib.admin.models import LogEntry
 
     logs = LogEntry.objects.order_by('-action_time')
     # logCount = LogEntry.objects.exclude(change_message="No fields changed.").order_by('-action_time')[:20].count()
     recent_activity = []
     for obj in logs:
         log_user = str(obj.user)
-        recent_activity.append({"message":obj.change_message,"action_time":obj.action_time,"repr":obj.object_repr,"content_type":obj.content_type.model,"content_type_app_label":obj.content_type.app_label,"user":log_user})
-
+        recent_activity.append(
+            {"message": obj.change_message,"action_time":obj.action_time,"repr":obj.object_repr,"content_type":obj.content_type.model,"content_type_app_label":obj.content_type.app_label,"user":log_user})
 
     return JsonResponse({
         "recent_activity": recent_activity
+
+    })
+
+
+@api_view(['GET'])
+def delete_and_keep_only_ten_from_all_models(request):
+    from api.models import SaveAnyData
+    from auditlog.models import LogEntry
+
+    model_list = [Dataset, Insight, Trainer, Score, Job, SaveData, SaveAnyData, LogEntry]
+
+    for model_item in model_list:
+        model_item.objects.all().delete()
+
+    return JsonResponse({
+        'ok': 'ok'
 
     })

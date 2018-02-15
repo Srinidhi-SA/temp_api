@@ -47,6 +47,7 @@ export default function reducer(state = {
   dataSetColumnReplaceValues:[],
   dataSetSelectAllAnalysis:false,
   isUpdate:false,
+  latestDatasets:{},
 
 }, action) {
   console.log("In DATA reducer!!");
@@ -58,6 +59,7 @@ export default function reducer(state = {
         return {
           ...state,
           dataList: action.data,
+          latestDatasets:action.latestDatasets,
           current_page: action.current_page
         }
       }
@@ -181,6 +183,10 @@ export default function reducer(state = {
           CopyOfMeasures: [],
           CopyOfDimension: [],
           CopyTimeDimension: [],
+          measureAllChecked:true,
+          dimensionAllChecked:true,
+          
+          
         }
       }
       break;
@@ -276,7 +282,7 @@ export default function reducer(state = {
         return {
           ...state,
           dataSetMeasures: action.measures,
-          measureChecked: action.checkBoxList
+          //measureChecked: action.checkBoxList
         }
       }
       break;
@@ -286,7 +292,7 @@ export default function reducer(state = {
         return {
           ...state,
           dataSetDimensions: action.dimensions,
-          dimensionChecked: action.checkBoxList1
+         // dimensionChecked: action.checkBoxList1
         }
       }
       break;
@@ -296,7 +302,7 @@ export default function reducer(state = {
         return {
           ...state,
           dataSetTimeDimensions: action.timedimensions,
-          dateTimeChecked: action.checkBoxList2
+         // dateTimeChecked: action.checkBoxList2
         }
       }
       break;
@@ -512,7 +518,14 @@ export default function reducer(state = {
       }
     }
     break;
-
+    case "UPDATE_VARIABLES_COUNT":
+    {
+      return {
+        ...state,
+        selectedVariablesCount:action.count,
+      }
+    }
+    break;
   }
   return state
 

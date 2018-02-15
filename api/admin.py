@@ -13,7 +13,7 @@ class DatasetAdmin(admin.ModelAdmin):
     search_fields = ["name", "slug"]
     list_display = ["name", "slug", "created_at", "deleted"]  # TODO: @Ankush Add "created_by"
     # list_filter = []
-    readonly_fields = ["created_at", "deleted"]
+    readonly_fields = ["created_at", "deleted", "created_by", "job"]
 
 
 class InsightAdmin(admin.ModelAdmin):
@@ -23,15 +23,17 @@ class InsightAdmin(admin.ModelAdmin):
     list_display = ["name", "slug", "type", "target_column", "dataset", "status", "analysis_done", "created_at",
                     "created_by"]
     list_filter = ["status", "analysis_done"]
-    readonly_fields = ["created_at"]
+    readonly_fields = ["created_at", "created_by", "job", "dataset"]
 
 
 class JobAdmin(admin.ModelAdmin):
     icon = '<i class="material-icons">settings_input_component</i>'
     search_fields = ["name", "slug", "job_type", "url"]
-    list_display = ["name", "YARN_URL_html", "job_type", "deleted", "status", 'submitted_by', "msg_count"]
+    list_display = ["name", "YARN_URL_html", "job_type", "deleted", "status", 'submitted_by',
+                    "msg_count", "time_difference", "script_time_difference"
+                    ]
     list_filter = ["job_type", "status", "submitted_by"]
-    readonly_fields = ("created_at", "javascript_like_config" )
+    readonly_fields = ("created_at", "javascript_like_config" , "python_like_config", "submitted_by")
     actions = ['kill_selected_jobs', 'start_selected_jobs', 'refresh_status']
 
     def config_prettified(self, instance):
@@ -53,7 +55,23 @@ class JobAdmin(admin.ModelAdmin):
 
         return config_str
 
+    def python_like_config(self, instance):
+        config_str = instance.config
+        replace_words = {
+            'null': 'None',
+            'true': 'True',
+            'false': 'False'
+        }
 
+        for key in replace_words:
+            config_str.replace(key, replace_words[key])
+
+        return config_str
+
+    def time_difference(self, instance):
+        time_difference = instance.updated_at - instance.created_at
+        time_delta = str(time_difference).split('.')[0]
+        return time_delta
 
 
     def messages_prettified(self, instance):
@@ -97,16 +115,31 @@ class JobAdmin(admin.ModelAdmin):
         message_count = len(message_log_json)
 
         error_report_json = json.loads(instance.error_report)
-        error_report_count = len(error_report_json)
-        return "Msg:{0}/Err:{1}".format(message_count, error_report_count)
+        msgKeys = error_report_json.keys()
+        msgKeys = list(set(msgKeys))
+        errorKeys = [x for x in msgKeys if x != "jobRuntime"]
+        timeMsg = "No"
+        if "jobRuntime" in msgKeys:
+            timeMsg= "Yes"
+        error_report_count = len(errorKeys)
+        return "Msg:{0}/Err:{1}/Time:{2}".format(message_count, error_report_count,timeMsg)
 
+    def script_time_difference(self, instance):
+        message_log_json = json.loads(instance.message_log)
+        message_box = ""
+        if 'jobRuntime' in message_log_json:
+            run_time_msg = message_log_json['jobRuntime']
+            for time_msg in run_time_msg:
+                if 'endTime' in time_msg and 'startTime' in time_msg:
+                    message_box = message_box + " | " +  time_msg['endTime'] - time_msg['startTime']
+        return message_box
 
 class ScoreAdmin(admin.ModelAdmin):
     icon = '<i class="material-icons">assessment</i>'
     search_fields = ["name", "slug"]
     list_display = ["name", "slug", "analysis_done", "created_at", "created_by"]
     list_filter = ["analysis_done", ]
-    readonly_fields = ["created_at"]
+    readonly_fields = ["created_at", "trainer",  "created_by", "job", "dataset"]
 
 
 class TrainerAdmin(admin.ModelAdmin):
@@ -115,7 +148,7 @@ class TrainerAdmin(admin.ModelAdmin):
     list_display = ["name", "slug", "app_id", "analysis_done", "created_at",
                     "created_by", "deleted"]
     list_filter = ["analysis_done"]
-    readonly_fields = ["created_at"]
+    readonly_fields = ["created_at", "created_by", "job", "dataset"]
 
 class CustomAppsAdmin(admin.ModelAdmin):
     icon = '<i class="material-icons">widgets</i>'
@@ -130,3 +163,13 @@ admin.site.register(Job, JobAdmin)
 admin.site.register(Score, ScoreAdmin)
 admin.site.register(Trainer, TrainerAdmin)
 admin.site.register(CustomApps, CustomAppsAdmin)
+
+
+from django.contrib.auth.admin import GroupAdmin
+from django.contrib.auth.models import Group
+
+from .models import Role
+
+
+admin.site.unregister(Group)
+admin.site.register(Role, GroupAdmin)

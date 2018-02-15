@@ -25,11 +25,11 @@ export class Apps extends React.Component {
     console.log(this.props);
   }
   componentWillMount(){
-      if(this.props.match.params.AppId == APPID1){
+      /*if(this.props.match.params.AppId == APPID1){
           this.props.dispatch(updateSelectedApp(APPID1,APPNAME1)); 
       }else if(this.props.match.params.AppId == APPID2){
           this.props.dispatch(updateSelectedApp(APPID2,APPNAME2));
-      }
+      }*/
       
       //checking for score and model tab
       if(this.props.match.url.indexOf("model") != -1){
@@ -47,9 +47,9 @@ export class Apps extends React.Component {
 		this.props.dispatch(storeScoreSearchElement(""));
 		this.props.dispatch(getAppsScoreList(1));
 	  if(tabId == "score"){
-		  this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/scores')  
+		  this.props.history.push('/apps/'+this.props.match.params.AppId+'/scores')  
 	  }else{
-		  this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models')   
+		  this.props.history.push('/apps/'+this.props.match.params.AppId+'/models')   
 	  }
   }
   render() {

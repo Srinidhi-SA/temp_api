@@ -3,6 +3,8 @@ import {DYNAMICLOADERINTERVAL} from "../helpers/helper";
 import store from "../store";
 import {FILEUPLOAD, DULOADERPERVALUE, LOADERMAXPERVALUE, DEFAULTINTERVAL, DULOADERPERMSG,getUserDetailsOrRestart} from "../helpers/helper";
 import {getDataList, getDataSetPreview, updateDatasetName, openDULoaderPopup,hideDULoaderPopup} from "./dataActions";
+import {closeModelPopup} from "./appActions";
+
 export var dataPreviewInterval = null;
 
 export function getHeaderWithoutContent(token) {
@@ -27,11 +29,13 @@ export function dataUpload() {
         var elements = document.getElementById(store.getState().dataSource.selectedDataSrcType).elements;
         //$("#MySQLdatasetname").tooltip({'trigger':'focus', 'title': 'Password tooltip'});
        // var dataSrc = store.getState().dataSource.selectedDataSrcType;
+        var flag = false;
         for(var i=0;i<elements.length;i++){
+           
             if(elements[i].required &&  elements[i].value == ""){
                 $("#"+elements[i].id).css("border-color","red");
                 $("#"+elements[i].id).trigger("focus");
-                return false;
+                flag = true;
             }else{
                 $("#"+elements[i].id).css("border-color","#e0e0e0");
                 dbDetails[elements[i].name] = elements[i].value
@@ -39,6 +43,7 @@ export function dataUpload() {
 
 
         }
+        if(!flag)
         dispatch(uploadFileOrDB(dbDetails));
     }
     }
@@ -50,6 +55,8 @@ function uploadFileOrDB(dbDetails){
         dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
         dispatch(dataUploadLoaderMsg(DULOADERPERMSG));
         dispatch(close());
+        //close model DB popup when user is trying to upload data in model creation
+        dispatch(closeModelPopup())
         dispatch(openDULoaderPopup());
 
         return triggerDataUpload(getUserDetailsOrRestart.get().userToken,dbDetails).then(([response, json]) => {
@@ -116,7 +123,6 @@ export function triggerDataUploadAnalysis(data,percentage, message){
         dispatch(dataUploadLoaderMsg(message));
         dispatch(openDULoaderPopup());
         dataUploadSuccess(data,dispatch)
-
     }
 }
 function dataUploadSuccess(data, dispatch) {
@@ -193,14 +199,16 @@ export function dataUploadLoaderMsg(message) {
 export function dataSubsetting(subsetRq, slug) {
 
   return (dispatch) => {
-    dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
+   dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
     dispatch(dataUploadLoaderMsg(DULOADERPERMSG));
-    //dispatch(close());
-   dispatch(openDULoaderPopup());
+   dispatch(close());
+   dispatch(updateHideData(false));
+ dispatch(openDULoaderPopup());
     return triggerDataSubsetting(subsetRq, slug).then(([response, json]) => {
       //dispatch(dataUploadLoaderValue(store.getState().datasets.dULoaderValue+DULOADERPERVALUE));
       if (response.status === 200) {
         console.log(json.slug)
+        dispatch(updateHideData(true));
         dispatch(updateDatasetName(json.slug))
         dispatch(dataUploadSuccess(json, dispatch))
         dispatch(updateSubsetSuccess(json))

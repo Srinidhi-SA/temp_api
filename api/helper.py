@@ -226,7 +226,7 @@ def limit_chart_data_length(chart_data, limit=None):
     return chart_data
 
 
-def decode_and_convert_chart_raw_data(data):
+def decode_and_convert_chart_raw_data(data, object_slug=None):
     if not check_chart_data_format(data):
         print "chart data format not matched"
         return {}
@@ -247,12 +247,11 @@ def decode_and_convert_chart_raw_data(data):
     subchart = data.get('subchart', True)
     rotate = data.get('rotate', False)
 
-    print "legend ------->> --------"
-    print legend
     c3_chart_details = dict()
-    print chart_type
     from api.models import SaveData
     sd = SaveData()
+    if object_slug is not None:
+        sd.object_slug=object_slug
     sd.save()
     if chart_type in ["bar", "line", "spline"]:
         chart_data = replace_chart_data(data['data'])
@@ -585,7 +584,6 @@ def decode_and_convert_chart_raw_data(data):
 
         c3_chart_details['table_c3'] = pie_chart_data
         c3_chart_details["chart_c3"] = c3.get_json()
-        print "final donut object",c3_chart_details
 
         return c3_chart_details
 
@@ -621,11 +619,8 @@ def replace_chart_data(data, axes=None):
 
 
 def convert_chart_data_to_pie_chart(chart_data):
-    print "chart_data",chart_data
     pie_chart_data = zip(*chart_data)
-    print pie_chart_data
     pie_chart_data = map(list, pie_chart_data)
-    print pie_chart_data
     return pie_chart_data[1:]
 
 def put_x_axis_first_chart_data(chart_data, x_column=None):
@@ -940,6 +935,47 @@ def get_x_column_from_chart_data_without_xs(chart_data, axes):
         return []
 
 
+from celery.decorators import task
+
+
+def get_db_object(model_name, model_slug):
+    from django.apps import apps
+    mymodel = apps.get_model('api', model_name)
+    obj = mymodel.objects.get(slug=model_slug)
+    return obj
+
+
+@task(name='get_job_from_yarn')
+def get_job_from_yarn(model_name=None,model_slug=None):
+
+    model_instance = get_db_object(model_name=model_name,
+                                   model_slug=model_slug
+                                   )
+    if model_instance.job.url == '':
+        return model_instance.status
+
+    try:
+        ym = yarn_api_client.resource_manager.ResourceManager(address=settings.YARN.get("host"),
+                                                              port=settings.YARN.get("port"),
+                                                              timeout=settings.YARN.get("timeout"))
+        app_status = ym.cluster_application(model_instance.job.url)
+        YarnApplicationState = app_status.data['app']["state"]
+    except:
+        YarnApplicationState = "FAILED"
+
+    readable_live_status = settings.YARN_STATUS.get(YarnApplicationState, "FAILED")
+    model_instance.job.status = YarnApplicationState
+    model_instance.job.save()
+
+    if readable_live_status is 'SUCCESS' and model_instance.analysis_done is False:
+        model_instance.status = 'FAILED'
+    else:
+        model_instance.status = readable_live_status
+
+    model_instance.save()
+    return model_instance.status
+
+
 def get_job_status_from_yarn(instance=None):
 
     try:
@@ -996,7 +1032,6 @@ def get_job_status_from_jobserver(instance=None):
         return "no instance ---!!"
 
     if instance.job is None:
-        print "no job---!!"
         return ""
     job_url = instance.job.url
     if instance.status in ['SUCCESS', 'FAILED']:
@@ -1015,7 +1050,10 @@ def get_job_status(instance=None):
         return instance.status
 
     if settings.SUBMIT_JOB_THROUGH_YARN:
-        get_job_status_from_yarn(instance)
+        get_job_from_yarn.delay(
+            type(instance).__name__,
+            instance.slug
+        )
     else:
         get_job_status_from_jobserver(instance)
 
@@ -1034,13 +1072,11 @@ def normalize_job_status_for_yarn(status):
 def return_status_of_job_log(job_url):
     import urllib, json
     final_status = "RUNNING"
-    print job_url
     check_status = urllib.urlopen(job_url)
     data = json.loads(check_status.read())
     if data.get("status") == "FINISHED":
         final_status = data.get("status")
     elif data.get("status") == "ERROR" and "startTime" in data.keys():
-        #print data.get("status")
         final_status = data.get("status")
     elif data.get("status") == "RUNNING":
         final_status = data.get("status")
@@ -1145,7 +1181,6 @@ def auth_for_ml(func):
         generationTime = float(request.GET['generated_at'])
         currentTime = time.time()
         timeDiff = currentTime-generationTime
-        #print timeDiff
         if timeDiff < settings.SIGNATURE_LIFETIME:
             json_obj = {
                 "key1": key1,
@@ -1176,3 +1211,14 @@ def generate_signature(json_obj):
 
 def generate_pmml_name(slug):
     return slug + "_" + 'pmml'
+
+def encrypt_url(url):
+    from cryptography.fernet import Fernet
+    cipher_suite = Fernet(settings.HDFS_SECRET_KEY)
+    bytes_url = url.encode()
+    # if isinstance(bytes_url, bytes):
+    #     pass
+    # else:
+    #     bytes_url = base64.urlsafe_b64decode(url)
+    cipher_text = cipher_suite.encrypt(bytes_url)
+    return cipher_text

@@ -50,7 +50,7 @@ export class AppsCreateModel extends React.Component {
     	this.selectedData = $("#model_Dataset").val();
     	this.props.dispatch(getDataSetPreview(this.selectedData));
         }else{
-            this.props.dispatch(closeModelPopup())
+            //this.props.dispatch(closeModelPopup())
             this.props.dispatch(dataUpload())
         }
     }
@@ -81,11 +81,11 @@ export class AppsCreateModel extends React.Component {
 			hideCreate=true
 		}
 		return (
-				<div class="col-md-3 xs-mb-15 list-boxes" onClick={this.openModelPopup.bind(this)}>
+				<div class="col-md-3 xs-mb-15 list-boxes xs-mt-20" onClick={this.openModelPopup.bind(this)}>
 				<div class="newCardStyle firstCard">
 				<div class="card-header"></div>
 				<div class="card-center newStoryCard">
-				<div class="col-xs-12 text-center">CREATE MODEL</div>
+				<div class="col-xs-12 text-center">+<br/><small>CREATE MODEL</small></div>
 				</div>
 				</div>
 

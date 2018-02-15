@@ -13,6 +13,8 @@ from api.helper import get_job_status, get_message
 import copy
 import json
 
+from api.utils import get_permissions
+
 class DatasetSerializer(serializers.ModelSerializer):
 
     # name = serializers.CharField(max_length=100,
@@ -64,6 +66,7 @@ class DatasetSerializer(serializers.ModelSerializer):
                 ret['file_size']=-1
                 ret['proceed_for_loading'] = True
 
+        ret['job_status'] = instance.job.status
         return ret
 
 
@@ -75,6 +78,7 @@ class DatasetSerializer(serializers.ModelSerializer):
 class DataListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
+        import pdb;pdb.set_trace()
         get_job_status(instance)
         ret = super(DataListSerializer, self).to_representation(instance)
         ret['brief_info'] = instance.get_brief_info()
@@ -85,6 +89,8 @@ class DataListSerializer(serializers.ModelSerializer):
         except:
             ret['completed_percentage'] = 0
             ret['completed_message']="Analyzing Target Variable"
+
+        ret['job_status'] = instance.job.status
         return ret
 
 

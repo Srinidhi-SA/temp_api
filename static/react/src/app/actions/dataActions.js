@@ -1,12 +1,13 @@
 import React from "react";
-import {API} from "../helpers/env";
-import {PERPAGE,DULOADERPERVALUE,DEFAULTINTERVAL,SUCCESS,FAILED,getUserDetailsOrRestart,DEFAULTANALYSISVARIABLES} from "../helpers/helper";
+import {API,STATIC_URL} from "../helpers/env";
+import {PERPAGE,DULOADERPERVALUE,DEFAULTINTERVAL,SUCCESS,FAILED,getUserDetailsOrRestart,DEFAULTANALYSISVARIABLES,statusMessages} from "../helpers/helper";
 import store from "../store";
-import {dataPreviewInterval,dataUploadLoaderValue,clearLoadingMsg} from "./dataUploadActions";
+import {dataPreviewInterval,dataUploadLoaderValue,clearLoadingMsg,clearDatasetPreview} from "./dataUploadActions";
 import {closeAppsLoaderValue} from "./appActions";
 import Dialog from 'react-bootstrap-dialog'
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
 import {isEmpty,RENAME,DELETE,REPLACE,DATA_TYPE,REMOVE,CURRENTVALUE,NEWVALUE,SET_VARIABLE,UNIQUE_IDENTIFIER,SET_POLARITY,handleJobProcessing,IGNORE_SUGGESTION} from "../helpers/helper";
+import {updateVariablesCount} from "./signalActions";
 let refDialogBox = "";
 var refreshDatasetsInterval = null;
 function getHeader(token){
@@ -94,9 +95,10 @@ function fetchDataError(json) {
 export function fetchDataSuccess(doc){
 	var data = doc;
 	var current_page =  doc.current_page
+	var latestDatasets = doc.top_3;
 	return {
 		type: "DATA_LIST",
-		data,
+		data,latestDatasets,
 		current_page,
 	}
 }
@@ -124,7 +126,7 @@ function fetchStockDataPreview(slug) {
 }
 export function getDataSetPreview(slug,interval) {
     return (dispatch) => {
-        return fetchDataPreview(slug).then(([response, json]) =>{
+        return fetchDataPreview(slug,dispatch).then(([response, json]) =>{
             if(response.status === 200){
                 console.log(json)
                 dispatch(fetchDataPreviewSuccess(json,interval,dispatch))
@@ -134,28 +136,30 @@ export function getDataSetPreview(slug,interval) {
                 dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
                 dispatch(fetchDataPreviewError(json))
             }
-        }).catch(function(error){
-
-            dispatch(hideDULoaderPopup());
-            bootbox.alert("Unable to connect to server. Check your connection please try again.")
         });
     }
 }
 
 
-function fetchDataPreview(slug) {
+function fetchDataPreview(slug,dispatch) {
     return fetch(API+'/api/datasets/'+slug+'/',{
         method: 'get',
         headers: getHeader(getUserDetailsOrRestart.get().userToken)
-    }).then( response => Promise.all([response, response.json()]))
+    }).then( response => Promise.all([response, response.json()])).catch(function(error){
+
+        dispatch(hideDULoaderPopup());
+        let msg=statusMessages("error","Unable to connect to server. Check your connection please try again.","small_mascot")
+        bootbox.alert(msg)
+    });
 }
 //get preview data
 function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
     console.log("data preview from api to store")
     console.log(dataPreview)
-    var slug = "";
+    var  slug = dataPreview.slug;
+    var dataset = slug;
     if(dataPreview.status == SUCCESS){
-        slug = dataPreview.slug;
+      
         if(interval != undefined){
             clearInterval(interval);
             dispatch(dispatchDataPreview(dataPreview,slug));
@@ -177,6 +181,8 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
         bootbox.alert("The uploaded file does not contain data in readable format. Please check the source file.")
         dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
         dispatch(clearLoadingMsg())
+        //clearDatasetPreview()
+        //dispatch(hideDataPreview())
 
         return {
             type: "DATA_PREVIEW_FOR_LOADER",
@@ -187,7 +193,7 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
         dispatch(dispatchDataPreviewLoadingMsg(dataPreview));
         return {
             type: "SELECTED_DATASET",
-            slug,
+            dataset,
         }
     }
 }
@@ -557,6 +563,13 @@ function getIsAllSelected(array){
 }
 
 export function updateStoreVariables(measures,dimensions,timeDimensions,dimFlag,meaFlag,count) {
+    return (dispatch) => {
+        dispatch(updateVariables(measures,dimensions,timeDimensions,dimFlag,meaFlag,count));
+        dispatch(applyFilterOnVaraibles());
+    }
+}
+
+export function updateVariables(measures,dimensions,timeDimensions,dimFlag,meaFlag,count) {
     return {
         type: "UPADTE_VARIABLES_LIST",
         measures,
@@ -567,12 +580,36 @@ export function updateStoreVariables(measures,dimensions,timeDimensions,dimFlag,
         count
     }
 }
+
+function applyFilterOnVaraibles(){
+    return (dispatch) => {
+        var evt = {};
+        evt.target = {}
+        if($("#measureSearch").val() != ""){
+            evt.target.value = $("#measureSearch").val();
+            evt.target.name = "measure"
+                dispatch(handleDVSearch(evt));
+        }
+        if($("#dimensionSearch").val() != ""){
+            evt.target.value = $("#dimensionSearch").val();
+            evt.target.name = "dimension"
+                dispatch(handleDVSearch(evt));
+        }
+        
+        if($("#datetimeSearch").val() != ""){
+            evt.target.value = $("#datetimeSearch").val();
+            evt.target.name = "datetime"
+                dispatch(handleDVSearch(evt));
+        }
+    }
+}
 export function updateSelectedVariables(evt){
     return (dispatch) => {
         var varSlug = evt.target.id;
-        var dataSetMeasures = store.getState().datasets.dataSetMeasures.slice();
-        var dataSetDimensions = store.getState().datasets.dataSetDimensions.slice();
-        var dataSetTimeDimensions = store.getState().datasets.dataSetTimeDimensions.slice();
+        var dataSetMeasures = store.getState().datasets.CopyOfMeasures.slice();
+        var dataSetDimensions = store.getState().datasets.CopyOfDimension.slice();
+        var dataSetTimeDimensions = store.getState().datasets.CopyTimeDimension.slice();
+        
         var dimFlag =  store.getState().datasets.dimensionAllChecked;
         var meaFlag = store.getState().datasets.measureAllChecked;
         var count = store.getState().datasets.selectedVariablesCount;
@@ -596,17 +633,20 @@ export function updateSelectedVariables(evt){
 
 
         //Update selectAll checkbox and selected variables count when varaibles are checked/unchecked
-        if(evt.target.className != "timeDimension"){
+        /*if(evt.target.className != "timeDimension"){
             if(evt.target.checked){
                 count=count+1;
             }else if(!evt.target.checked){
                 count = count-1;
             }
-        }
+        }*/
         dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
+        count = getTotalVariablesSelected();
+        dispatch(updateVariablesCount(count));
     }
-  
+
 }
+
 
 
 export function showDataPreview() {
@@ -640,7 +680,7 @@ export function resetSelectedVariables(){
         type: "RESET_VARIABLES",
     }
 }
-export function setSelectedVariables(dimensions,measures,timeDimension){
+/*export function setSelectedVariables(dimensions,measures,timeDimension){
     let count = 0;
     if(timeDimension != undefined){
         count = dimensions.slice().length + measures.slice().length + 1;
@@ -657,7 +697,7 @@ export function setSelectedVariables(dimensions,measures,timeDimension){
         timeDimension,
         count,
     }
-}
+}*/
 
 export function openDULoaderPopup(){
     return {
@@ -679,7 +719,7 @@ export function showDialogBox(slug,dialog,dispatch,evt){
     })
     dialog.show({
         title: 'Delete Dataset',
-        body: 'Are you sure you want to delete the selected data set? Yes , No',
+        body: 'Are you sure you want to delete the selected data set?',
         actions: [
                   Dialog.CancelAction(),
                   Dialog.OKAction(() => {
@@ -806,7 +846,7 @@ export function getTotalVariablesSelected(){
        var varaiblesList = store.getState().datasets.dataPreview.meta_data.uiMetaData.varibaleSelectionArray;
        var totalCount = 0;
        for(var i=0;i<varaiblesList.length;i++){
-           if(varaiblesList[i].selected){
+           if(varaiblesList[i].selected == true && varaiblesList[i].targetColumn == false){
                totalCount = totalCount+1;
            }
        }
@@ -827,6 +867,17 @@ export function updateDatasetVariables(measures,dimensions,timeDimensions,possib
         prevAnalysisList,
         count,
         flag
+
+    }
+}
+
+export function updateTargetAnalysisList(renderList){
+    let prevAnalysisList = jQuery.extend(true, {}, renderList);
+  
+    return {
+        type: "UPDATE_ANALYSIS_LIST",
+        renderList,
+        prevAnalysisList,
 
     }
 }
@@ -868,8 +919,8 @@ export function handleDVSearch(evt){
     }
         break;
     }
-
 }
+
 export function handelSort(variableType,sortOrder){
     switch ( variableType ) {
 
@@ -935,13 +986,13 @@ function updateSelectedKey(array,IsSelected){
 export function handleSelectAll(evt){
     return (dispatch) => {
         var varType = evt.target.id;
-        var dataSetMeasures = store.getState().datasets.dataSetMeasures.slice();
-        var dataSetDimensions = store.getState().datasets.dataSetDimensions.slice();
-        var dataSetTimeDimensions = store.getState().datasets.dataSetTimeDimensions.slice();
+        var dataSetMeasures = store.getState().datasets.CopyOfMeasures.slice();
+        var dataSetDimensions = store.getState().datasets.CopyOfDimension.slice();
+        var dataSetTimeDimensions = store.getState().datasets.CopyTimeDimension.slice();
         var dimFlag =  store.getState().datasets.dimensionAllChecked;
         var meaFlag = store.getState().datasets.measureAllChecked;
         var count = store.getState().datasets.selectedVariablesCount;
-
+        var targetVariableType = store.getState().signals.getVarType;
         if(varType == "measure"){
             dataSetMeasures  = updateSelectedKey(dataSetMeasures,evt.target.checked);
             meaFlag = evt.target.checked;
@@ -953,7 +1004,7 @@ export function handleSelectAll(evt){
 
 
 
-        if(evt.target.checked && varType == "measure" ){
+     /*   if(evt.target.checked && varType == "measure" ){
             count=count+dataSetMeasures.length;
         }else if(!evt.target.checked && varType == "measure"){
             count = count-dataSetMeasures.length;
@@ -963,7 +1014,18 @@ export function handleSelectAll(evt){
         }else if(!evt.target.checked && varType == "dimension"){
             count = count-dataSetDimensions.length;
         }
+        
+        //When TargetVariable type and select all type are same, count will be changed as target woon't be shown in select list
+        if(evt.target.checked && varType == targetVariableType ){
+            count=count-1
+        }
+        else if(!evt.target.checked && varType == targetVariableType){
+            count=count+1
+        }
+        */
         dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
+        count = getTotalVariablesSelected();
+        dispatch(updateVariablesCount(count));
     }
 }
 
@@ -1053,13 +1115,25 @@ function deleteMetaDataColumn(dialog,colName,colSlug,dispatch,actionName,colStat
     if(colStatus == true){
         text = "Are you sure, you want to undelete the selected column?"
     }
-    bootbox.confirm(text,function(result){
+    bootbox.confirm({
+      title:"Delete Column",
+      message:text,
+      //size:"small",
+      buttons: {
+      'cancel': {
+          label: 'No'
+      },
+      'confirm': {
+          label: 'Yes'
+      }
+  },
+      callback:function(result){
         if(result){
             $(".cst_table").find("thead").find("."+colSlug).first().addClass("dataPreviewUpdateCol");
             $(".cst_table").find("tbody").find("tr").find("."+colSlug).addClass("dataPreviewUpdateCol");
             updateColumnStatus(dispatch,colSlug,colName,actionName)
         }
-    });
+    }});
 }
 export function updateVLPopup(flag){
     return{
@@ -1124,7 +1198,14 @@ export function updateColumnStatus(dispatch,colSlug,colName,actionName,subAction
     }
     if(actionName != SET_VARIABLE && actionName != UNIQUE_IDENTIFIER && actionName != SET_POLARITY && actionName != IGNORE_SUGGESTION){
         isSubsetting = true;
-    }
+    }else{ 
+        //Enable subsetting when any one of the column is deleted,renamed, removed  
+        if(store.getState().datasets.subsettingDone == false) { 
+            isSubsetting = false;    
+        }else{ 
+            isSubsetting = true;    
+        } 
+    } 
     dispatch(handleColumnActions(transformSettings,slug,isSubsetting))
     dispatch(updateVLPopup(false));
     //dispatch(updateTransformSettings(transformSettings));
@@ -1190,9 +1271,14 @@ export function handleColumnActions(transformSettings,slug,isSubsetting) {
                 dispatch(fetchDataPreviewError(json));
                 dispatch(vaiableSelectionUpdate(false));
                 dispatch(hideLoading());
-                bootbox.alert("Something went wrong. Please try again later.")
-            }
-        })
+                let msg=statusMessages("error","Something went wrong. Please try again later.","small_mascot")
+                bootbox.alert(msg)            }
+        }).catch(function(error){
+            dispatch(hideLoading());
+            dispatch(vaiableSelectionUpdate(false));
+            let msg=statusMessages("error","Something went wrong. Please try again later.","small_mascot")
+            bootbox.alert(msg)
+        });
     }
 }
 
@@ -1394,9 +1480,9 @@ export function updateSelectAllAnlysis(flag){
 export function hideDataPreviewDropDown(props){
   if(props.indexOf("scores") != -1){
       $("#sub_settings").hide();
-      $('.dropdown-toggle').removeAttr('data-toggle'); 
+      $('.dropdown-toggle').removeAttr('data-toggle');
   }
-    
+
 }
 export function popupAlertBox(msg,props,url){
     bootbox.alert(msg,function(){

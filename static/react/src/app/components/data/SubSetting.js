@@ -495,7 +495,7 @@ export class SubSetting extends React.Component {
       <div>
         {/*Start Tab Subsettings*/}
         <div id="tab_subsettings" className="panel-group accordion accordion-semi">
-          <div className="panel panel-default">
+          <div className="panel panel-default box-shadow">
             <div className="panel-heading">
               <h4 className="panel-title">
                 <a data-toggle="collapse" data-parent="#tab_subsettings" href="#pnl_tbset" aria-expanded="true" className="">Sub Setting

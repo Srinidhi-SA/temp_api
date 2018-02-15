@@ -12,7 +12,7 @@ import {hideDataPreview,getDataSetPreview,renameMetaDataColumn,updateTranformCol
 import {dataSubsetting,clearDataPreview,clearLoadingMsg} from "../../actions/dataUploadActions"
 import {Button,Dropdown,Menu,MenuItem} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"
-import {showHideSideChart, showHideSideTable, MINROWINDATASET} from "../../helpers/helper.js"
+import {showHideSideChart, showHideSideTable, MINROWINDATASET,statusMessages} from "../../helpers/helper.js"
 import {isEmpty} from "../../helpers/helper";
 import {SubSetting} from "./SubSetting";
 import {DataUploadLoader} from "../common/DataUploadLoader";
@@ -169,7 +169,22 @@ export class DataPreview extends React.Component {
 
 	}
 
-
+  componentWillUpdate(){
+      let currentDataset = store.getState().datasets.selectedDataSet
+      if (!isEmpty(this.props.dataPreview) && currentDataset != this.props.match.params.slug && this.props.dataPreview != null && this.props.dataPreview.status != 'FAILED') {
+        let url = '/data/' + currentDataset;
+        console.log(this.props);
+        this.props.history.push(url)
+       // return (<Redirect to={url}/>)
+      }
+      if (!isEmpty(this.props.dataPreview) && this.props.dataPreview != null && this.props.dataPreview.status == 'FAILED') {
+          console.log("goitn to data url")
+          this.props.dispatch(clearDataPreview())
+          this.props.dispatch(clearLoadingMsg())
+          let url = '/data/'
+          this.props.history.push(url)
+        }
+  }
 	setSideElements(e){
 
     //renderFlag=true;
@@ -242,7 +257,8 @@ export class DataPreview extends React.Component {
       if (this.props.dataPreview.meta_data.uiMetaData.metaDataUI[0].value < MINROWINDATASET)
           bootbox.alert("Minimum " + MINROWINDATASET + " rows are required for analysis!!")
           else if (this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray && (this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray.length == 0 || (this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray.length == 1 && this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray[0].dateSuggestionFlag == true))) {
-              bootbox.alert("Not enough data to run analysis. Please upload/connect a differenct dataset.")
+              let errormsg=statusMessages("warning","Not enough data to run analysis. Please upload/connect a different dataset.","small_mascot")
+              bootbox.alert(errormsg)
           } else {
               let url = this.buttons.create.url;
               if (this.buttons.create.url.indexOf("apps-robo") != -1) {
@@ -255,14 +271,15 @@ export class DataPreview extends React.Component {
                   }
                   else {
                       this.props.dispatch(hideDataPreview());
-                      popupAlertBox("One or few variables are missing from the scoring data. Score cannot be created",this.props,url.split("/data")[0])
+
+                      popupAlertBox(statusMessages("error","One or few variables are missing from the scoring data. Score cannot be created","small_mascot"),this.props,url.split("/data")[0])
                   }
               }
               else this.props.history.push(url);
-          } 
+          }
   }
-    
-    
+
+
 
   applyDataSubset() {
     //alert("working");
@@ -319,19 +336,8 @@ export class DataPreview extends React.Component {
       });
     });
 
-    let currentDataset = store.getState().datasets.selectedDataSet
-    if (!isEmpty(this.props.dataPreview) && currentDataset != this.props.match.params.slug && this.props.dataPreview != null && this.props.dataPreview.status != 'FAILED') {
-      let url = '/data/' + currentDataset
-      return (<Redirect to={url}/>)
-    }
-    if (!isEmpty(this.props.dataPreview) && this.props.dataPreview != null && this.props.dataPreview.status == 'FAILED') {
-      console.log("goitn to data url")
-      this.props.dispatch(clearDataPreview())
-      this.props.dispatch(clearLoadingMsg())
-      let url = '/data/'
-      return (<Redirect to={url}/>)
-    }
-    $('body').pleaseWait('stop');
+  
+   
     this.isSubsetted = this.props.subsettingDone;
     //  const data = store.getState().data.dataPreview.meta_data.data;
 
@@ -434,6 +440,7 @@ export class DataPreview extends React.Component {
               );
             }
 
+ 
           });
           return (
             <tr key={trIndex}>
@@ -643,5 +650,5 @@ export class DataPreview extends React.Component {
         </div>
       );
     }
-  }
+  } 
 }

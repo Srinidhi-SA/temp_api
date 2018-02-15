@@ -22,6 +22,9 @@ from api.lib import hadoop, fab_helper
 
 THIS_SERVER_DETAILS = settings.THIS_SERVER_DETAILS
 from auditlog.registry import auditlog
+from django.conf import settings
+
+from guardian.shortcuts import assign_perm
 
 # Create your models here.
 
@@ -69,20 +72,23 @@ class Job(models.Model):
         return " : ".join(["{}".format(x) for x in [self.name, self.job_type, self.created_at, self.slug]])
 
     def kill(self):
-        from api.yarn_job_api import kill_application, kill_application_using_fabric
-        # return kill_application(self.url)
-        url_status =  kill_application_using_fabric(self.url)
+        from api.tasks import kill_application_using_fabric
+        if self.url == "":
+            return False
 
-        if url_status is True:
-            original_object = self.get_original_object()
+        if self.url is None:
+            return False
 
-            if original_object is not None:
-                original_object.status = 'FAILED'
-                original_object.save()
-            self.status = 'KILLED'
-            self.save()
+        kill_application_using_fabric.delay(self.url)
 
-        return url_status
+        original_object = self.get_original_object()
+
+        if original_object is not None:
+            original_object.status = 'FAILED'
+            original_object.save()
+        self.status = 'KILLED'
+        self.save()
+        return True
 
     def start(self):
         command_array = json.loads(self.command_array)
@@ -109,7 +115,6 @@ class Job(models.Model):
             self.status = app_status.data['app']["state"]
             self.save()
         except Exception as err:
-            print "update_status_error -- "
             print err
 
     def get_original_object(self):
@@ -152,8 +157,8 @@ class Dataset(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
-    created_by = models.ForeignKey(User, null=False)
-    deleted = models.BooleanField(default=False)
+    created_by = models.ForeignKey(User, null=False, db_index=True)
+    deleted = models.BooleanField(default=False, db_index=True)
     subsetting = models.BooleanField(default=False, blank=True)
 
     job = models.ForeignKey(Job, null=True)
@@ -161,11 +166,13 @@ class Dataset(models.Model):
     bookmarked = models.BooleanField(default=False)
     file_remote = models.CharField(max_length=100, null=True)
     analysis_done = models.BooleanField(default=False)
-    status = models.CharField(max_length=100, null=True, default="Not Registered")
+    status = models.CharField(max_length=100, null=True, default="Not Registered", db_index=True)
     viewed = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
+        permissions = settings.PERMISSIONS_RELATED_TO_DATASET
+
 
     def __str__(self):
         return " : ".join(["{}".format(x) for x in [self.name, self.datasource_type, self.slug]])
@@ -196,6 +203,7 @@ class Dataset(models.Model):
             self.csv_header_clean()
             self.copy_file_to_destination()
         self.add_to_job()
+        self.add_permission_on_creation()
 
     def create_for_subsetting(
             self,
@@ -238,6 +246,14 @@ class Dataset(models.Model):
             self.status = "INPROGRESS"
 
         self.save()
+        self.add_permission_on_creation()
+
+    def add_permission_on_creation(self):
+        assign_perm('view_dataset', self)
+        assign_perm('rename_dataset', self)
+        assign_perm('remove_dataset', self)
+        assign_perm('datavalidation', self)
+        assign_perm('subsetting_dataset', self)
 
     def set_subesetting_true(self):
         self.subsetting = True
@@ -277,7 +293,7 @@ class Dataset(models.Model):
     def add_inputfile_outfile_to_config(self, inputfile, jobConfig):
         jobConfig["config"]["FILE_SETTINGS"] = {
             "inputfile": [inputfile],
-            "outputfile": [self.get_input_file()],
+            "outputfile": [self.get_output_file()],
         }
 
         return jobConfig
@@ -409,6 +425,39 @@ class Dataset(models.Model):
         else:
             return ""
 
+    def get_output_file(self):
+        from api.helper import encrypt_url
+        HDFS = settings.HDFS
+        if self.datasource_type in ['file', 'fileUpload']:
+            type = self.file_remote
+            if type == 'emr_file':
+                final_url = "file://{}".format(self.input_file.path)
+                encrypted_url = encrypt_url(final_url)
+                return encrypted_url
+            elif type == 'hdfs':
+
+                if 'password' in HDFS:
+                    dir_path = "hdfs://{}:{}@{}:{}".format(
+                        HDFS.get("user.name"),
+                        HDFS.get("password"),
+                        HDFS.get("host"),
+                        HDFS.get("hdfs_port")
+                    )
+                else:
+                    dir_path = "hdfs://{}:{}".format(
+                        HDFS.get("host"),
+                        HDFS.get("hdfs_port")
+                    )
+                file_name = self.get_hdfs_relative_file_path()
+                final_url = dir_path + file_name
+                encrypted_url = encrypt_url(final_url)
+                return encrypted_url
+
+            elif type == 'fake':
+                return "file:///asdasdasdasd"
+        else:
+            return ""
+
     def get_datasource_info(self):
         datasource_details = ""
         if self.datasource_type in ['file', 'fileUpload']:
@@ -474,7 +523,9 @@ class Dataset(models.Model):
             'Rows': 'number of rows',
             'Columns': 'number of columns',
             'Measures': 'number of measures',
+            'Measure': 'number of measures',
             'Dimensions': 'number of dimensions',
+            'Dimension': 'number of dimensions',
             'Time Dimension': 'number of time dimension',
         }
         if 'metaData' in config:
@@ -533,18 +584,19 @@ class Insight(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True, db_index=True)
     created_by = models.ForeignKey(User, null=False, db_index=True)
-    deleted = models.BooleanField(default=False)
+    deleted = models.BooleanField(default=False, db_index=True)
 
     bookmarked = models.BooleanField(default=False)
 
     job = models.ForeignKey(Job, null=True)
-    status = models.CharField(max_length=100, null=True, default="Not Registered")
+    status = models.CharField(max_length=100, null=True, default="Not Registered", db_index=True)
     viewed = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
         verbose_name = "Signal"
         verbose_name_plural = "Signals"
+        permissions = settings.NEW_PERMISSIONS
 
 
     def __str__(self):
@@ -705,8 +757,8 @@ class Insight(models.Model):
         analysis_type = []
 
         for variables in variableSelection:
-            if 'selected' in variables:
-                if variables['selected'] is True:
+            if 'targetColumn' in variables:
+                if variables['targetColumn'] is True:
                     variable_selected.append(variables['name'])
                     analysis_type.append(variables['columnType'])
                     break
@@ -765,17 +817,22 @@ class Trainer(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
-    created_by = models.ForeignKey(User, null=False)
-    deleted = models.BooleanField(default=False)
+    created_by = models.ForeignKey(User, null=False, db_index=True)
+    deleted = models.BooleanField(default=False, db_index=True)
 
     bookmarked = models.BooleanField(default=False)
     analysis_done = models.BooleanField(default=False)
 
     job = models.ForeignKey(Job, null=True)
-    status = models.CharField(max_length=100, null=True, default="Not Registered")
+    status = models.CharField(max_length=100, null=True, default="Not Registered", db_index=True)
+    live_status = models.CharField(max_length=300, default='0', choices=STATUS_CHOICES)
+    viewed = models.BooleanField(default=False)
+
+
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
+        permissions = settings.NEW_PERMISSIONS
 
     def __str__(self):
         return " : ".join(["{}".format(x) for x in [self.name, self.created_at, self.slug, self.app_id]])
@@ -814,7 +871,6 @@ class Trainer(models.Model):
 
     def make_config_for_colum_setting(self):
         config = self.get_config()
-        print config
         return {
             'variableSelection': config['variablesSelection']
         }
@@ -847,12 +903,16 @@ class Trainer(models.Model):
 
         config = json.loads(self.config)
         train_test_split = float(config.get('trainValue')) / 100
+        targetLevel = None
+        if 'targetLevel' in config:
+            targetLevel = config.get('targetLevel')
         return {
             'inputfile': [self.dataset.get_input_file()],
             'modelpath': [self.slug],
             'train_test_split': [train_test_split],
             'analysis_type': ['training'],
-            'metadata': self.dataset.get_metadata_url_config()
+            'metadata': self.dataset.get_metadata_url_config(),
+            'targetLevel': targetLevel
         }
 
     def create_configuration_column_settings(self):
@@ -900,8 +960,8 @@ class Trainer(models.Model):
         variable_selected = []
 
         for variables in variableSelection:
-            if 'selected' in variables:
-                if variables['selected'] is True:
+            if 'targetColumn' in variables:
+                if variables['targetColumn'] is True:
                     variable_selected.append(variables['name'])
                     break
 
@@ -956,17 +1016,20 @@ class Score(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
-    created_by = models.ForeignKey(User, null=False)
-    deleted = models.BooleanField(default=False)
+    created_by = models.ForeignKey(User, null=False, db_index=True)
+    deleted = models.BooleanField(default=False, db_index=True)
     analysis_done = models.BooleanField(default=False)
 
     bookmarked = models.BooleanField(default=False)
 
     job = models.ForeignKey(Job, null=True)
-    status = models.CharField(max_length=100, null=True, default="Not Registered")
+    status = models.CharField(max_length=100, null=True, default="Not Registered", db_index=True)
+    live_status = models.CharField(max_length=300, default='0', choices=STATUS_CHOICES)
+    viewed = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
+        permissions = settings.NEW_PERMISSIONS
 
     def __str__(self):
         return " : ".join(["{}".format(x) for x in [self.name, self.created_at, self.slug, self.trainer]])
@@ -1026,10 +1089,12 @@ class Score(models.Model):
         trainer_slug = self.trainer.slug
         score_slug = self.slug
         model_data = json.loads(self.trainer.data)
+        model_config = json.loads(self.trainer.config)
         model_config_from_results = model_data['config']
         targetVariableLevelcount = model_config_from_results.get('targetVariableLevelcount', None)
         modelFeaturesDict = model_config_from_results.get('modelFeatures', None)
         labelMappingDictAll = model_config_from_results.get('labelMappingDict',None)
+        modelTargetLevel = model_config['config']['FILE_SETTINGS']['targetLevel']
 
         modelfeatures = modelFeaturesDict.get(algorithmslug, None)
         if labelMappingDictAll != None:
@@ -1046,7 +1111,8 @@ class Score(models.Model):
             'algorithmslug': [algorithmslug],
             'modelfeatures': modelfeatures if modelfeatures is not None else [],
             'metadata': self.dataset.get_metadata_url_config(),
-            'labelMappingDict':[labelMappingDict]
+            'labelMappingDict':[labelMappingDict],
+            'targetLevel': modelTargetLevel
         }
 
     def create_configuration_for_column_setting_from_variable_selection(self):
@@ -1060,7 +1126,6 @@ class Score(models.Model):
         # Score related variable selection
         main_config = json.loads(self.config)
         score_variable_selection_config = main_config.get('variablesSelection')
-        print score_variable_selection_config
         output = {
             'modelvariableSelection': trainer_variable_selection_config,
             'variableSelection': score_variable_selection_config
@@ -1140,8 +1205,8 @@ class Score(models.Model):
         variable_selected = []
 
         for variables in variableSelection:
-            if 'selected' in variables:
-                if variables['selected'] is True:
+            if 'targetColumn' in variables:
+                if variables['targetColumn'] is True:
                     variable_selected.append(variables['name'])
                     break
 
@@ -1153,6 +1218,10 @@ class Score(models.Model):
         brief_info = dict()
         config = self.get_config()
         config = config.get('config')
+
+        model_data = json.loads(self.trainer.data)
+        model_config_from_results = model_data['model_dropdown']
+
         if config is not None:
             if 'COLUMN_SETTINGS' in config:
                 try:
@@ -1165,9 +1234,15 @@ class Score(models.Model):
 
             if 'FILE_SETTINGS' in config:
                 file_setting = config['FILE_SETTINGS']
+                algorithm_name = None
+                for slug_name in model_config_from_results:
+                    if slug_name['slug'] == file_setting.get('algorithmslug')[0]:
+                        algorithm_name = slug_name['name']
+                        break
+
                 brief_info.update({
                     'analysis type': file_setting.get('analysis_type')[0],
-                    'algorithm name': file_setting.get('algorithmslug')[0],
+                    'algorithm name': algorithm_name,
                 })
 
         brief_info.update(
@@ -1207,6 +1282,7 @@ class Robo(models.Model):
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
+        permissions = settings.NEW_PERMISSIONS
 
     def __str__(self):
         return " : ".join(["{}".format(x) for x in [self.name, self.created_at, self.slug]])
@@ -1299,7 +1375,6 @@ class CustomApps(models.Model):
         #     self.status = "FAILED"
         # else:
         #     self.status = "INPROGRESS"
-        print "create app is called!"
         self.status = "Active"
         self.save()
 
@@ -1369,7 +1444,6 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
     '''
     # Submitting JobServer
     from utils import submit_job
-    from smtp_email import send_alert_through_email
     try:
         job_return_data = submit_job(
             slug=job.slug,
@@ -1391,7 +1465,6 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
         job.config = json.dumps(readable_job_config)
         job.save()
     except Exception as exc:
-        print exc
         # send_alert_through_email(exc)
         return None
 
@@ -1465,6 +1538,7 @@ class StockDataset(models.Model):
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
+        permissions = settings.NEW_PERMISSIONS
 
     def __str__(self):
         return " : ".join(["{}".format(x) for x in [self.name, self.slug]])
@@ -1489,13 +1563,11 @@ class StockDataset(models.Model):
 
         stock_symbols = self.get_stock_symbol_names()
         GOOGLE_REGEX_FILE = "google_regex.json"
-        print "stock_symbols  ---> crawl_data", stock_symbols
         extracted_data = crawl_extract(
             urls=generate_urls_for_crawl_news(stock_symbols),
             regex_dict=get_regex(GOOGLE_REGEX_FILE)
         )
         if len(extracted_data) < 1:
-            print "No news_data"
             return {}
         meta_data = convert_crawled_data_to_metadata_format(
             news_data=extracted_data,
@@ -1516,13 +1588,11 @@ class StockDataset(models.Model):
     def crawl_for_historic_data(self):
         stock_symbols = self.get_stock_symbol_names()
         GOOGLE_REGEX_FILE = "nasdaq_stock.json"
-        print "stock_symbols  ---> crawl_for_historic_data", stock_symbols
         extracted_data = crawl_extract(
             urls=generate_urls_for_historic_data(stock_symbols),
             regex_dict=get_regex(GOOGLE_REGEX_FILE)
         )
         if len(extracted_data) < 1:
-            print "No news_data"
             return {}
         meta_data = convert_crawled_data_to_metadata_format(
             news_data=extracted_data,
@@ -1712,6 +1782,7 @@ class Audioset(models.Model):
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
+        permissions = settings.NEW_PERMISSIONS
 
     def __str__(self):
         return " : ".join(["{}".format(x) for x in [self.name, self.datasource_type, self.slug]])
@@ -1758,6 +1829,7 @@ class Audioset(models.Model):
 class SaveData(models.Model):
     slug = models.SlugField(null=False, blank=True, max_length=300)
     data = models.TextField(default="{}")
+    object_slug = models.SlugField(null=False, blank=True, max_length=300, default="")
 
     def get_data(self):
         data = self.data
@@ -3673,7 +3745,6 @@ article_by_source = [
 
 from sample_stock_data import stock_performace_card1, \
     stock_by_sentiment_score, \
-    card1_total_entities, \
     number_of_articles_by_concept, \
     overview_of_second_node_databox_data, \
     stock_name_match_with_data, \
@@ -3801,3 +3872,13 @@ pie_chart = [
         ]
 ]
 """
+
+from django.contrib.auth.models import Group
+from django.utils.translation import ugettext_lazy as _
+
+
+class Role(Group):
+    class Meta:
+        proxy = True
+        app_label = 'auth'
+        verbose_name = _('Role')

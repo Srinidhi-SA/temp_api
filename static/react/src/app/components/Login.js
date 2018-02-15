@@ -36,7 +36,7 @@ export class Login extends React.Component {
     //this.props.dispatch(authenticateFunc($("#username").val(),$("#password").val()))
     console.log("checking login form fields");
     // console.log(this.state.uId);
-    if(this.state.uId==""||this.state.uId==null){
+    if(this.state.uId==""||this.state.uId==null||this.state.uId.trim().length==0){
     this.state.errmsg = "Please enter the username!"
     $("#errormsg").text(this.state.errmsg);
   }else if(this.state.pwd==""||this.state.pwd==null){
@@ -54,18 +54,20 @@ export class Login extends React.Component {
     if (document.cookie.indexOf("JWT ") > 0 ) {
       console.log("authorized!!!");
       document.body.className = "";
+
       return (<Redirect to={"/"} />);
     } else {
     	document.body.className = "ma-splash-screen";
+    	   localStorage.JWT = "Test Local Storage"
       return (
 
           <div className="ma-wrapper ma-login">
             <div className="ma-content">
               <div className="main-content">
-			  
+
 				<div class="ma-content-left">
 				</div>
-			  
+
 			  <div class="ma-content-right">
              <form action="javascript:void(0);">
                 <div className="login-container">

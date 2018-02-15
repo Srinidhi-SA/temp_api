@@ -9,11 +9,11 @@ from rest_framework import viewsets
 from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from django.http import Http404
+from django.http import Http404, JsonResponse
 
 from django.views.decorators.csrf import csrf_exempt
 
-from api.exceptions import creation_failed_exception, update_failed_exception
+from api.exceptions import creation_failed_exception, update_failed_exception, retrieve_failed_exception
 from api.models import Dataset
 from api.pagination import CustomPagination
 from helper import convert_to_string
@@ -22,6 +22,10 @@ from api.query_filtering import get_listed_data, get_retrieve_data
 from helper import add_transformation_setting_to_ui_metadata, add_ui_metadata_to_metadata
 from helper import convert_metadata_according_to_transformation_setting
 from helper import get_advanced_setting
+from api.tasks import clean_up_on_delete
+
+from api.permission import DatasetRelatedPermission
+from guardian.shortcuts import assign_perm
 
 # Create your views here.
 
@@ -34,16 +38,22 @@ class DatasetView(viewsets.ModelViewSet):
             deleted=False,
             status__in=['SUCCESS', 'INPROGRESS']
         )
+
+        queryset = [individual for individual in queryset if self.request.user.has_perm('view_dataset', individual)]
         return queryset
 
     def get_object_from_all(self):
         return Dataset.objects.get(slug=self.kwargs.get('slug'))
+
+    def get_serializer_context(self):
+        return {'request': self.request}
 
     serializer_class = DatasetSerializer
     lookup_field = 'slug'
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('bookmarked', 'deleted', 'datasource_type', 'name')
     pagination_class = CustomPagination
+    permission_classes = (DatasetRelatedPermission, )
 
     def create(self, request, *args, **kwargs):
 
@@ -82,12 +92,16 @@ class DatasetView(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         data = request.data
         data = convert_to_string(data)
-        # instance = self.get_object()
 
         try:
             instance = self.get_object_from_all()
+            if 'deleted' in data:
+                if data['deleted'] == True:
+                    print 'let us delete'
+                    clean_up_on_delete.delay(instance.slug, Dataset.__name__)
+                    return JsonResponse({'message': 'Deleted'})
         except:
-            return creation_failed_exception("File Doesn't exist.")
+            return update_failed_exception("File Doesn't exist.")
 
         if 'subsetting' in data:
             if data['subsetting'] == True:
@@ -141,7 +155,7 @@ class DatasetView(viewsets.ModelViewSet):
         })
 
     def list(self, request, *args, **kwargs):
-
+        import pdb;pdb.set_trace()
         return get_listed_data(
             viewset=self,
             request=request,
@@ -153,10 +167,10 @@ class DatasetView(viewsets.ModelViewSet):
         try:
             instance = self.get_object_from_all()
         except:
-            return creation_failed_exception("File Doesn't exist.")
+            return retrieve_failed_exception("File Doesn't exist.")
 
         if instance is None:
-            return creation_failed_exception("File Doesn't exist.")
+            return retrieve_failed_exception("File Doesn't exist.")
 
         serializer = DatasetSerializer(instance=instance)
         object_details = serializer.data
@@ -181,42 +195,42 @@ class DatasetView(viewsets.ModelViewSet):
         if instance is None:
             return creation_failed_exception("File Doesn't exist.")
 
-        try:
-            data = request.data
-            data = convert_to_string(data)
+        # try:
+        data = request.data
+        data = convert_to_string(data)
 
-            temp_details = dict()
-            if instance.datasource_type == "fileUpload":
-                temp_details['input_file'] = instance.input_file
-                temp_details['datasource_type'] = instance.datasource_type
-                temp_details['file_remote'] = instance.file_remote
-                temp_details['name'] = data.get('name', temp_details['input_file'].name)
-            else:
-                temp_details['input_file'] = None
-                temp_details['datasource_details'] = instance.datasource_details
-                temp_details['datasource_type'] = instance.datasource_type
-                temp_details['name'] = data.get(
-                    'name',
-                    data.get('datasource_type', "NoName") + "_" + str(random.randint(1000000, 10000000))
+        temp_details = dict()
+        if instance.datasource_type == "fileUpload":
+            temp_details['input_file'] = instance.input_file
+            temp_details['datasource_type'] = instance.datasource_type
+            temp_details['file_remote'] = instance.file_remote
+            temp_details['name'] = data.get('name', temp_details['input_file'].name)
+        else:
+            temp_details['input_file'] = None
+            temp_details['datasource_details'] = instance.datasource_details
+            temp_details['datasource_type'] = instance.datasource_type
+            temp_details['name'] = data.get(
+                'name',
+                data.get('datasource_type', "NoName") + "_" + str(random.randint(1000000, 10000000))
+            )
+        temp_details['created_by'] = request.user.id
+
+        serializer = DatasetSerializer(data=temp_details)
+        if serializer.is_valid():
+            dataset_object = serializer.save()
+            if 'filter_settings' in data:
+                dataset_object.create_for_subsetting(
+                    data['filter_settings'],
+                    data.get('transformation_settings', {}),
+                    instance.get_input_file(),
+                    instance.get_metadata_url_config()
                 )
-            temp_details['created_by'] = request.user.id
-
-            serializer = DatasetSerializer(data=temp_details)
-            if serializer.is_valid():
-                dataset_object = serializer.save()
-                if 'filter_settings' in data:
-                    dataset_object.create_for_subsetting(
-                        data['filter_settings'],
-                        data.get('transformation_settings', {}),
-                        instance.get_input_file(),
-                        instance.get_metadata_url_config()
-                    )
-                else:
-                    return creation_failed_exception({'error': 'no filter_settings'})
-                return Response(serializer.data)
-        except Exception as err:
-            return creation_failed_exception(err)
-        return creation_failed_exception(serializer.errors)
+            else:
+                return creation_failed_exception({'error': 'no filter_settings'})
+            return Response(serializer.data)
+        # except Exception as err:
+        #     return creation_failed_exception(err)
+        # return creation_failed_exception(serializer.errors)
 
     @detail_route(methods=['put'])
     def meta_data_modifications(self, request, slug=None):
