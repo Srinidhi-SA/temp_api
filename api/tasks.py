@@ -1,7 +1,11 @@
 from __future__ import absolute_import, unicode_literals
+
 import random
+
+import signal
+
+import os
 from celery.decorators import task
-from api.redis_access import AccessFeedbackMessage
 
 
 @task(name="sum_two_numbers")
@@ -44,7 +48,7 @@ def submit_job_separate_task(command_array, slug):
             model_instance.url = application_id
             model_instance.save()
             break
-
+    os.killpg(os.getpgid(cur_process.pid), signal.SIGTERM)
 
 @task(name='write_into_databases')
 def write_into_databases(job_type, object_slug, results):
