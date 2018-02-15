@@ -32,7 +32,7 @@ ALLOWED_HOSTS = ["192.168.33.128"]
 # Application definition
 
 INSTALLED_APPS = [
-    'material.theme.teal',
+    '`',
     'material',
     'material.admin',
     'django.contrib.admin',
