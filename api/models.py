@@ -1006,6 +1006,8 @@ class Score(models.Model):
 
     job = models.ForeignKey(Job, null=True)
     status = models.CharField(max_length=100, null=True, default="Not Registered", db_index=True)
+    live_status = models.CharField(max_length=300, default='0', choices=STATUS_CHOICES)
+    viewed = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['-created_at', '-updated_at']

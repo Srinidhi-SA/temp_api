@@ -352,13 +352,35 @@ class ScoreSerlializer(serializers.ModelSerializer):
         ret['trainer'] = trainer_object.slug
         ret['trainer_name'] = trainer_object.name
         ret['dataset'] = trainer_object.dataset.slug
+        dataset = ret['dataset']
+        #dataset_object = Dataset.objects.get(pk=dataset)
         ret['dataset_name'] = trainer_object.dataset.name
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        if instance.viewed == False and instance.status=='SUCCESS':
+            instance.viewed = True
+            instance.save()
         try:
-            ret['message'] = get_message(instance)
+            message_list = get_message(instance.job)
+
+            if message_list is not None:
+                message_list = [message_list[-1]]
+            ret['message'] = message_list
         except:
             ret['message'] = None
+
+        #if dataset_object.datasource_type=='fileUpload':
+           # PROCEED_TO_UPLOAD_CONSTANT = settings.PROCEED_TO_UPLOAD_CONSTANT
+            #try:
+               # from api.helper import convert_to_humanize
+                #ret['file_size']=convert_to_humanize(dataset_object.input_file.size)
+                #if(dataset_object.input_file.size < PROCEED_TO_UPLOAD_CONSTANT or ret['status']=='SUCCESS'):
+                 #   ret['proceed_for_loading']=True
+                #else:
+                 #   ret['proceed_for_loading'] = False
+            #except:
+             #   ret['file_size']=-1
+              #  ret['proceed_for_loading'] = True
         ret['job_status'] = instance.job.status
         return ret
 
@@ -394,6 +416,12 @@ class ScoreListSerializer(serializers.ModelSerializer):
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
         ret['brief_info'] = instance.get_brief_info()
+        try:
+            ret['completed_percentage']=get_message(instance.job)[-1]['globalCompletionPercentage']
+            ret['completed_message']=get_message(instance.job)[-1]['shortExplanation']
+        except:
+            ret['completed_percentage'] = 0
+            ret['completed_message']="Analyzing Target Variable"
         ret['job_status'] = instance.job.status
         return ret
 
