@@ -1260,6 +1260,8 @@ class Robo(models.Model):
     bookmarked = models.BooleanField(default=False)
     job = models.ForeignKey(Job, null=True)
     status = models.CharField(max_length=100, null=True, default="Not Registered")
+    live_status = models.CharField(max_length=300, default='0', choices=STATUS_CHOICES)
+    viewed = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
@@ -1317,6 +1319,8 @@ class CustomApps(models.Model):
     created_by = models.ForeignKey(User, null=False)
     # deleted = models.BooleanField(default=False)
     status = models.CharField(max_length=100, null=True, default="Inactive")
+    live_status = models.CharField(max_length=300, default='0', choices=STATUS_CHOICES)
+    viewed = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['app_id']
@@ -1515,6 +1519,8 @@ class StockDataset(models.Model):
     job = models.ForeignKey(Job, null=True)
     analysis_done = models.BooleanField(default=False)
     status = models.CharField(max_length=100, null=True, default="Not Registered")
+    live_status = models.CharField(max_length=300, default='0', choices=STATUS_CHOICES)
+    viewed = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
@@ -1758,6 +1764,8 @@ class Audioset(models.Model):
     file_remote = models.CharField(max_length=100, null=True)
     analysis_done = models.BooleanField(default=False)
     status = models.CharField(max_length=100, null=True, default="Not Registered")
+    live_status = models.CharField(max_length=300, default='0', choices=STATUS_CHOICES)
+    viewed = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['-created_at', '-updated_at']

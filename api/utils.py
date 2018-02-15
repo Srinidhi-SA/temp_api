@@ -495,10 +495,18 @@ class RoboSerializer(serializers.ModelSerializer):
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
         ret['analysis_done'] = instance.analysis_done
 
+        if instance.viewed == False and instance.status=='SUCCESS':
+            instance.viewed = True
+            instance.save()
         try:
-            ret['message'] = get_message(instance)
+            message_list = get_message(instance)
+
+            if message_list is not None:
+                message_list = [message_list[-1]]
+            ret['message'] = message_list
         except:
             ret['message'] = None
+
         return ret
 
 
@@ -531,6 +539,12 @@ class RoboListSerializer(serializers.ModelSerializer):
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
         ret['analysis_done'] = instance.analysis_done
+        try:
+            ret['completed_percentage']=get_message(instance)[-1]['globalCompletionPercentage']
+            ret['completed_message']=get_message(instance)[-1]['shortExplanation']
+        except:
+            ret['completed_percentage'] = 0
+            ret['completed_message']="Analyzing Target Variable"
         return ret
 
     class Meta:
@@ -568,8 +582,15 @@ class StockDatasetSerializer(serializers.ModelSerializer):
         ret = convert_time_to_human(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
 
+        if instance.viewed == False and instance.status=='SUCCESS':
+            instance.viewed = True
+            instance.save()
         try:
-            ret['message'] = get_message(instance)
+            message_list = get_message(instance)
+
+            if message_list is not None:
+                message_list = [message_list[-1]]
+            ret['message'] = message_list
         except:
             ret['message'] = None
 
@@ -585,6 +606,12 @@ class StockDatasetListSerializer(serializers.ModelSerializer):
         print get_job_status(instance)
         ret = super(StockDatasetListSerializer, self).to_representation(instance)
         ret['brief_info'] = instance.get_brief_info()
+        try:
+            ret['completed_percentage']=get_message(instance)[-1]['globalCompletionPercentage']
+            ret['completed_message']=get_message(instance)[-1]['shortExplanation']
+        except:
+            ret['completed_percentage'] = 0
+            ret['completed_message']="Analyzing Target Variable"
         return ret
 
     class Meta:
@@ -629,9 +656,15 @@ class AudiosetSerializer(serializers.ModelSerializer):
         ret = convert_to_json(ret)
         ret = convert_time_to_human(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
-
+        if instance.viewed == False and instance.status=='SUCCESS':
+            instance.viewed = True
+            instance.save()
         try:
-            ret['message'] = get_message(instance)
+            message_list = get_message(instance)
+
+            if message_list is not None:
+                message_list = [message_list[-1]]
+            ret['message'] = message_list
         except:
             ret['message'] = None
 
@@ -647,6 +680,12 @@ class AudioListSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         ret = super(AudioListSerializer, self).to_representation(instance)
         ret['brief_info'] = instance.get_brief_info()
+        try:
+            ret['completed_percentage']=get_message(instance.job)[-1]['globalCompletionPercentage']
+            ret['completed_message']=get_message(instance.job)[-1]['shortExplanation']
+        except:
+            ret['completed_percentage'] = 0
+            ret['completed_message']="Analyzing Target Variable"
         return ret
 
     class Meta:
@@ -686,6 +725,12 @@ class AppListSerializers(serializers.ModelSerializer):
                 print upper_case_name
                 ret['custom_word1'] = CUSTOM_WORD1_APPS[upper_case_name]
                 ret['custom_word2'] = CUSTOM_WORD2_APPS[upper_case_name]
+            try:
+                ret['completed_percentage'] = get_message(instance.job)[-1]['globalCompletionPercentage']
+                ret['completed_message'] = get_message(instance.job)[-1]['shortExplanation']
+            except:
+                ret['completed_percentage'] = 0
+                ret['completed_message'] = "Analyzing Target Variable"
             return ret
 
         def add_all_tag_keywords(self,template_tags):
@@ -722,6 +767,17 @@ class AppSerializer(serializers.ModelSerializer):
             print upper_case_name
             ret['CUSTOM_WORD1_APPS'] = CUSTOM_WORD1_APPS[upper_case_name]
             ret['CUSTOM_WORD2_APPS'] = CUSTOM_WORD2_APPS[upper_case_name]
+            if instance.viewed == False and instance.status == 'SUCCESS':
+                instance.viewed = True
+                instance.save()
+            try:
+                message_list = get_message(instance)
+
+                if message_list is not None:
+                    message_list = [message_list[-1]]
+                ret['message'] = message_list
+            except:
+                ret['message'] = None
             return ret
 
 
