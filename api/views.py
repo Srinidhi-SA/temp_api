@@ -727,8 +727,8 @@ class AppView(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = CustomApps.objects.filter(
             #created_by=self.request.user,
-            #status="Active"
-            status__in=['SUCCESS', 'INPROGRESS']
+            status="Active"
+            #status__in=['SUCCESS', 'INPROGRESS']
         )
 
         # tagsRq = self.request.query_params.get('tag', None)
