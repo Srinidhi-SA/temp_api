@@ -13,7 +13,7 @@ class DatasetAdmin(admin.ModelAdmin):
     search_fields = ["name", "slug"]
     list_display = ["name", "slug", "created_at", "deleted"]  # TODO: @Ankush Add "created_by"
     # list_filter = []
-    readonly_fields = ["created_at", "deleted"]
+    readonly_fields = ["created_at", "deleted", "created_by", "job"]
 
 
 class InsightAdmin(admin.ModelAdmin):
@@ -23,7 +23,7 @@ class InsightAdmin(admin.ModelAdmin):
     list_display = ["name", "slug", "type", "target_column", "dataset", "status", "analysis_done", "created_at",
                     "created_by"]
     list_filter = ["status", "analysis_done"]
-    readonly_fields = ["created_at"]
+    readonly_fields = ["created_at", "created_by", "job", "dataset"]
 
 
 class JobAdmin(admin.ModelAdmin):
@@ -33,7 +33,7 @@ class JobAdmin(admin.ModelAdmin):
                     "msg_count", "time_difference", "script_time_difference"
                     ]
     list_filter = ["job_type", "status", "submitted_by"]
-    readonly_fields = ("created_at", "javascript_like_config" , "python_like_config")
+    readonly_fields = ("created_at", "javascript_like_config" , "python_like_config", "submitted_by")
     actions = ['kill_selected_jobs', 'start_selected_jobs', 'refresh_status']
 
     def config_prettified(self, instance):
@@ -139,7 +139,7 @@ class ScoreAdmin(admin.ModelAdmin):
     search_fields = ["name", "slug"]
     list_display = ["name", "slug", "analysis_done", "created_at", "created_by"]
     list_filter = ["analysis_done", ]
-    readonly_fields = ["created_at"]
+    readonly_fields = ["created_at", "trainer",  "created_by", "job", "dataset"]
 
 
 class TrainerAdmin(admin.ModelAdmin):
@@ -148,7 +148,7 @@ class TrainerAdmin(admin.ModelAdmin):
     list_display = ["name", "slug", "app_id", "analysis_done", "created_at",
                     "created_by", "deleted"]
     list_filter = ["analysis_done"]
-    readonly_fields = ["created_at"]
+    readonly_fields = ["created_at", "created_by", "job", "dataset"]
 
 class CustomAppsAdmin(admin.ModelAdmin):
     icon = '<i class="material-icons">widgets</i>'

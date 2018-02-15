@@ -7,6 +7,7 @@ import {closeAppsLoaderValue} from "./appActions";
 import Dialog from 'react-bootstrap-dialog'
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
 import {isEmpty,RENAME,DELETE,REPLACE,DATA_TYPE,REMOVE,CURRENTVALUE,NEWVALUE,SET_VARIABLE,UNIQUE_IDENTIFIER,SET_POLARITY,handleJobProcessing,IGNORE_SUGGESTION} from "../helpers/helper";
+import {updateVariablesCount} from "./signalActions";
 let refDialogBox = "";
 var refreshDatasetsInterval = null;
 function getHeader(token){
@@ -125,7 +126,7 @@ function fetchStockDataPreview(slug) {
 }
 export function getDataSetPreview(slug,interval) {
     return (dispatch) => {
-        return fetchDataPreview(slug).then(([response, json]) =>{
+        return fetchDataPreview(slug,dispatch).then(([response, json]) =>{
             if(response.status === 200){
                 console.log(json)
                 dispatch(fetchDataPreviewSuccess(json,interval,dispatch))
@@ -140,7 +141,7 @@ export function getDataSetPreview(slug,interval) {
 }
 
 
-function fetchDataPreview(slug) {
+function fetchDataPreview(slug,dispatch) {
     return fetch(API+'/api/datasets/'+slug+'/',{
         method: 'get',
         headers: getHeader(getUserDetailsOrRestart.get().userToken)
@@ -632,14 +633,16 @@ export function updateSelectedVariables(evt){
 
 
         //Update selectAll checkbox and selected variables count when varaibles are checked/unchecked
-        if(evt.target.className != "timeDimension"){
+        /*if(evt.target.className != "timeDimension"){
             if(evt.target.checked){
                 count=count+1;
             }else if(!evt.target.checked){
                 count = count-1;
             }
-        }
+        }*/
         dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
+        count = getTotalVariablesSelected();
+        dispatch(updateVariablesCount(count));
     }
 
 }
@@ -843,7 +846,7 @@ export function getTotalVariablesSelected(){
        var varaiblesList = store.getState().datasets.dataPreview.meta_data.uiMetaData.varibaleSelectionArray;
        var totalCount = 0;
        for(var i=0;i<varaiblesList.length;i++){
-           if(varaiblesList[i].selected){
+           if(varaiblesList[i].selected == true && varaiblesList[i].targetColumn == false){
                totalCount = totalCount+1;
            }
        }
@@ -1001,7 +1004,7 @@ export function handleSelectAll(evt){
 
 
 
-        if(evt.target.checked && varType == "measure" ){
+     /*   if(evt.target.checked && varType == "measure" ){
             count=count+dataSetMeasures.length;
         }else if(!evt.target.checked && varType == "measure"){
             count = count-dataSetMeasures.length;
@@ -1012,15 +1015,17 @@ export function handleSelectAll(evt){
             count = count-dataSetDimensions.length;
         }
         
-        //When TargetVariable type and select all type are same count will be changed as target woon't be shown in select list
+        //When TargetVariable type and select all type are same, count will be changed as target woon't be shown in select list
         if(evt.target.checked && varType == targetVariableType ){
             count=count-1
         }
         else if(!evt.target.checked && varType == targetVariableType){
             count=count+1
         }
-        
+        */
         dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
+        count = getTotalVariablesSelected();
+        dispatch(updateVariablesCount(count));
     }
 }
 
@@ -1193,7 +1198,14 @@ export function updateColumnStatus(dispatch,colSlug,colName,actionName,subAction
     }
     if(actionName != SET_VARIABLE && actionName != UNIQUE_IDENTIFIER && actionName != SET_POLARITY && actionName != IGNORE_SUGGESTION){
         isSubsetting = true;
-    }
+    }else{ 
+        //Enable subsetting when any one of the column is deleted,renamed, removed  
+        if(store.getState().datasets.subsettingDone == false) { 
+            isSubsetting = false;    
+        }else{ 
+            isSubsetting = true;    
+        } 
+    } 
     dispatch(handleColumnActions(transformSettings,slug,isSubsetting))
     dispatch(updateVLPopup(false));
     //dispatch(updateTransformSettings(transformSettings));

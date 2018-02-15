@@ -1070,10 +1070,12 @@ class Score(models.Model):
         trainer_slug = self.trainer.slug
         score_slug = self.slug
         model_data = json.loads(self.trainer.data)
+        model_config = json.loads(self.trainer.config)
         model_config_from_results = model_data['config']
         targetVariableLevelcount = model_config_from_results.get('targetVariableLevelcount', None)
         modelFeaturesDict = model_config_from_results.get('modelFeatures', None)
         labelMappingDictAll = model_config_from_results.get('labelMappingDict',None)
+        modelTargetLevel = model_config['config']['FILE_SETTINGS']['targetLevel']
 
         modelfeatures = modelFeaturesDict.get(algorithmslug, None)
         if labelMappingDictAll != None:
@@ -1090,7 +1092,8 @@ class Score(models.Model):
             'algorithmslug': [algorithmslug],
             'modelfeatures': modelfeatures if modelfeatures is not None else [],
             'metadata': self.dataset.get_metadata_url_config(),
-            'labelMappingDict':[labelMappingDict]
+            'labelMappingDict':[labelMappingDict],
+            'targetLevel': modelTargetLevel
         }
 
     def create_configuration_for_column_setting_from_variable_selection(self):

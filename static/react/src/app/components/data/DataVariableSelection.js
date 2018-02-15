@@ -139,6 +139,7 @@ export class DataVariableSelection extends React.Component {
             var varCls = "";
 
             if ( store.getState().datasets.dataSetMeasures.length > 0 ) {
+                $(".measureAll").prop("disabled",false);
                 var measureTemplate = store.getState().datasets.dataSetMeasures.map(( mItem, mIndex ) => {
                  if(mItem.targetColumn)varCls="hidden";
                  else varCls = "";
@@ -151,7 +152,7 @@ export class DataVariableSelection extends React.Component {
                 var measureTemplate = <label>No measure variable present</label>
             }
             if ( store.getState().datasets.dataSetDimensions.length > 0 ) {
-
+                $(".dimensionAll").prop("disabled",false);
                 var dimensionTemplate = store.getState().datasets.dataSetDimensions.map(( dItem, dIndex ) => {
 
                     if(dItem.targetColumn)varCls="hidden";
