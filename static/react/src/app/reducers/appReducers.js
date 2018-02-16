@@ -61,7 +61,7 @@ export default function reducer(state = {
         stockAnalysisFlag:false,
         conceptList:{},
         scoreSummaryCSVData:[],
-        appsList:{},
+        appsList:[],
         storeAppsSearchElement:"",
         storeAppsSortByElement : "",
         storeAppsSortType:"",
