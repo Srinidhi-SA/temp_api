@@ -1,6 +1,6 @@
 import React from "react";
 import {connect} from "react-redux";
-import {Link, Redirect} from "react-router-dom";
+import {Link} from "react-router-dom";
 import {push} from "react-router-redux";
 import $ from "jquery";
 import {
@@ -55,20 +55,12 @@ export class DataCard extends React.Component {
         this.props.dispatch(getDataSetPreview(this.selectedData));
     }
     
-   
     handleDelete(slug,evt) {
         this.props.dispatch(handleDelete(slug, this.dialog,evt));
     }
     handleRename(slug, name) {
         this.props.dispatch(handleRename(slug, this.dialog, name));
     }
-    getPreviewData(e) {
-        var that = this;
-        this.selectedData = e.target.id;
-        //alert(this.selectedData);
-        this.props.dispatch(storeSignalMeta(null, that.props.match.url));
-        this.props.dispatch(getDataSetPreview(this.selectedData));
-      }
     openDataLoaderScreen(slug, percentage, message, e){
         var dataUpload = {};
         dataUpload.slug = slug

@@ -137,7 +137,7 @@ export class Data extends React.Component {
       const pages = store.getState().datasets.dataList.total_number_of_pages;
       const current_page = store.getState().datasets.dataList.current_page;
       let paginationTag = null;
-      let dataList = <DataCard data={dataSets}/>;
+      let dataList = <DataCard data={dataSets} match={this.props.match}/>;
       if (pages > 1) {
         paginationTag = <Pagination ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
       }

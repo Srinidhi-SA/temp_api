@@ -17,6 +17,7 @@ import {getDataSetPreview} from "../../actions/dataActions";
         modelTargetVariable:store.apps.modelTargetVariable,
         selectedAlg:store.apps.selectedAlg,
         scoreSummaryFlag:store.apps.scoreSummaryFlag,
+        currentAppId:store.apps.currentAppId
     };
 })
 
