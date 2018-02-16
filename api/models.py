@@ -154,8 +154,8 @@ class Dataset(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
-    created_by = models.ForeignKey(User, null=False)
-    deleted = models.BooleanField(default=False)
+    created_by = models.ForeignKey(User, null=False, db_index=True)
+    deleted = models.BooleanField(default=False, db_index=True)
     subsetting = models.BooleanField(default=False, blank=True)
 
     job = models.ForeignKey(Job, null=True)
@@ -163,7 +163,7 @@ class Dataset(models.Model):
     bookmarked = models.BooleanField(default=False)
     file_remote = models.CharField(max_length=100, null=True)
     analysis_done = models.BooleanField(default=False)
-    status = models.CharField(max_length=100, null=True, default="Not Registered")
+    status = models.CharField(max_length=100, null=True, default="Not Registered", db_index=True)
     viewed = models.BooleanField(default=False)
 
     class Meta:
@@ -570,12 +570,12 @@ class Insight(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True, db_index=True)
     created_by = models.ForeignKey(User, null=False, db_index=True)
-    deleted = models.BooleanField(default=False)
+    deleted = models.BooleanField(default=False, db_index=True)
 
     bookmarked = models.BooleanField(default=False)
 
     job = models.ForeignKey(Job, null=True)
-    status = models.CharField(max_length=100, null=True, default="Not Registered")
+    status = models.CharField(max_length=100, null=True, default="Not Registered", db_index=True)
     viewed = models.BooleanField(default=False)
 
     class Meta:
@@ -800,14 +800,18 @@ class Trainer(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
-    created_by = models.ForeignKey(User, null=False)
-    deleted = models.BooleanField(default=False)
+    created_by = models.ForeignKey(User, null=False, db_index=True)
+    deleted = models.BooleanField(default=False, db_index=True)
 
     bookmarked = models.BooleanField(default=False)
     analysis_done = models.BooleanField(default=False)
 
     job = models.ForeignKey(Job, null=True)
-    status = models.CharField(max_length=100, null=True, default="Not Registered")
+    status = models.CharField(max_length=100, null=True, default="Not Registered", db_index=True)
+    live_status = models.CharField(max_length=300, default='0', choices=STATUS_CHOICES)
+    viewed = models.BooleanField(default=False)
+
+
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
@@ -994,14 +998,16 @@ class Score(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
-    created_by = models.ForeignKey(User, null=False)
-    deleted = models.BooleanField(default=False)
+    created_by = models.ForeignKey(User, null=False, db_index=True)
+    deleted = models.BooleanField(default=False, db_index=True)
     analysis_done = models.BooleanField(default=False)
 
     bookmarked = models.BooleanField(default=False)
 
     job = models.ForeignKey(Job, null=True)
-    status = models.CharField(max_length=100, null=True, default="Not Registered")
+    status = models.CharField(max_length=100, null=True, default="Not Registered", db_index=True)
+    live_status = models.CharField(max_length=300, default='0', choices=STATUS_CHOICES)
+    viewed = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
@@ -1064,10 +1070,12 @@ class Score(models.Model):
         trainer_slug = self.trainer.slug
         score_slug = self.slug
         model_data = json.loads(self.trainer.data)
+        model_config = json.loads(self.trainer.config)
         model_config_from_results = model_data['config']
         targetVariableLevelcount = model_config_from_results.get('targetVariableLevelcount', None)
         modelFeaturesDict = model_config_from_results.get('modelFeatures', None)
         labelMappingDictAll = model_config_from_results.get('labelMappingDict',None)
+        modelTargetLevel = model_config['config']['FILE_SETTINGS']['targetLevel']
 
         modelfeatures = modelFeaturesDict.get(algorithmslug, None)
         if labelMappingDictAll != None:
@@ -1084,7 +1092,8 @@ class Score(models.Model):
             'algorithmslug': [algorithmslug],
             'modelfeatures': modelfeatures if modelfeatures is not None else [],
             'metadata': self.dataset.get_metadata_url_config(),
-            'labelMappingDict':[labelMappingDict]
+            'labelMappingDict':[labelMappingDict],
+            'targetLevel': modelTargetLevel
         }
 
     def create_configuration_for_column_setting_from_variable_selection(self):
@@ -1251,6 +1260,8 @@ class Robo(models.Model):
     bookmarked = models.BooleanField(default=False)
     job = models.ForeignKey(Job, null=True)
     status = models.CharField(max_length=100, null=True, default="Not Registered")
+    live_status = models.CharField(max_length=300, default='0', choices=STATUS_CHOICES)
+    viewed = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
@@ -1308,6 +1319,8 @@ class CustomApps(models.Model):
     created_by = models.ForeignKey(User, null=False)
     # deleted = models.BooleanField(default=False)
     status = models.CharField(max_length=100, null=True, default="Inactive")
+    live_status = models.CharField(max_length=300, default='0', choices=STATUS_CHOICES)
+    viewed = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['app_id']
@@ -1506,6 +1519,8 @@ class StockDataset(models.Model):
     job = models.ForeignKey(Job, null=True)
     analysis_done = models.BooleanField(default=False)
     status = models.CharField(max_length=100, null=True, default="Not Registered")
+    live_status = models.CharField(max_length=300, default='0', choices=STATUS_CHOICES)
+    viewed = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
@@ -1749,6 +1764,8 @@ class Audioset(models.Model):
     file_remote = models.CharField(max_length=100, null=True)
     analysis_done = models.BooleanField(default=False)
     status = models.CharField(max_length=100, null=True, default="Not Registered")
+    live_status = models.CharField(max_length=300, default='0', choices=STATUS_CHOICES)
+    viewed = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['-created_at', '-updated_at']

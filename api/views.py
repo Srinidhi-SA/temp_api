@@ -394,7 +394,8 @@ class RoboView(viewsets.ModelViewSet):
         query_set = Robo.objects.filter(
             created_by=self.request.user,
             deleted=False,
-            analysis_done=True
+            #analysis_done=True
+            status__in=['SUCCESS', 'INPROGRESS']
         )
         return query_set
 
@@ -503,7 +504,8 @@ class StockDatasetView(viewsets.ModelViewSet):
         queryset = StockDataset.objects.filter(
             created_by=self.request.user,
             deleted=False,
-            analysis_done=True
+            #analysis_done=True
+            status__in=['SUCCESS', 'INPROGRESS']
         )
         return queryset
 
@@ -631,7 +633,8 @@ class AudiosetView(viewsets.ModelViewSet):
         queryset = Audioset.objects.filter(
             created_by=self.request.user,
             deleted=False,
-            analysis_done=True
+            #analysis_done=True
+            status__in=['SUCCESS', 'INPROGRESS']
         )
         return queryset
 
@@ -725,6 +728,7 @@ class AppView(viewsets.ModelViewSet):
         queryset = CustomApps.objects.filter(
             #created_by=self.request.user,
             status="Active"
+            #status__in=['SUCCESS', 'INPROGRESS']
         )
 
         # tagsRq = self.request.query_params.get('tag', None)
