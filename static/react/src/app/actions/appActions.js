@@ -401,9 +401,9 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
     function createScoreSuccess(data,dispatch){
         var slug = data.slug;
         appsInterval = setInterval(function(){
-            if(store.getState().apps.appsLoaderPerValue < LOADERMAXPERVALUE){
+           /* if(store.getState().apps.appsLoaderPerValue < LOADERMAXPERVALUE){
                 dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+APPSLOADERPERVALUE));
-            }
+            }*/
             dispatch(getAppsScoreSummary(data.slug));
             return {
                 type: "CREATE_SCORE_SUCCESS",
@@ -433,6 +433,10 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                         clearInterval(appsInterval);
                         dispatch(closeAppsLoaderValue());
                         dispatch(hideDataPreview());
+                    }else if(json.status == INPROGRESS){
+                        if(json.message !== null && json.message.length > 0){
+                            dispatch(openAppsLoaderValue(json.message[0].stageCompletionPercentage,json.message[0].shortExplanation));
+                        }
                     }
 
                 }
@@ -1898,7 +1902,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             type: "SET_TARGET_LEVEL_COUNTS", levelCounts
         }
     }
-    export function clearAppsCreateModel(){
+    export function clearAppsIntervel(){
         clearInterval(appsInterval)
     }
 
@@ -1922,3 +1926,9 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
            headers: getHeader(getUserDetailsOrRestart.get().userToken),
        }).then( response => Promise.all([response, response.json()]));
    }
+
+   export function createScoreSuccessAnalysis(data){
+        return (dispatch) => {
+            dispatch(createScoreSuccess(data,dispatch))
+        }
+    }

@@ -188,7 +188,7 @@ export class RoboInsightList extends React.Component {
               </div>
             </div>
           </div>
-          <AppsLoader/>
+          <AppsLoader match={this.props.match}/>
           <Dialog ref="dialog"/>
         </div>
 

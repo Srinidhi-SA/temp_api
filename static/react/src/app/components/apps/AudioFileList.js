@@ -155,7 +155,7 @@ export class AudioFileList extends React.Component {
 				</div>
 				</div>
 				 <Dialog ref="dialog" />
-				 <AppsLoader/>
+				 <AppsLoader match={this.props.match}/>
 				</div>
 
 		);

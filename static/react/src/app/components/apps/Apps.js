@@ -16,6 +16,8 @@ import {AppsLoader} from "../common/AppsLoader";
 		scoreList: store.apps.scoreList,
 		activateModelScoreTabs:store.apps.activateModelScoreTabs,
 		appsSelectedTabId:store.apps.appsSelectedTabId,
+    scoreSummaryFlag:store.apps.scoreSummaryFlag,
+    modelSummaryFlag:store.apps.modelSummaryFlag
 		};
 })
 
@@ -57,9 +59,14 @@ export class Apps extends React.Component {
     console.log("apps is called##########3");
     console.log(this.props);
     if(store.getState().apps.modelSummaryFlag){
-            let _link = "/apps/"+store.getState().apps.currentAppId+'/models/'+store.getState().apps.modelSlug;
-            return(<Redirect to={_link}/>);
-        }
+      let _link = "/apps/"+store.getState().apps.currentAppId+'/models/'+store.getState().apps.modelSlug;
+      return(<Redirect to={_link}/>);
+    }
+
+    if(store.getState().apps.scoreSummaryFlag){
+      let _link1 = "/apps/"+store.getState().apps.currentAppId+'/scores/'+store.getState().apps.scoreSlug;
+      return(<Redirect to={_link1}/>);
+    }
    let models = <AppsModelList history={this.props.history} match={this.props.match}/>
 
   let scores = <AppsScoreList history={this.props.history} match={this.props.match}/>

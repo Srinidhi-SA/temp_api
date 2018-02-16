@@ -44,7 +44,7 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
             this.props.dispatch(handleModelRename(slug,this.dialog,name));
         }
         openDataLoaderScreen(data){
-            this.props.dispatch(openAppsLoader("0","Please wait while mAdvisor is creating model... "));
+            this.props.dispatch(openAppsLoader(data.completed_percentage,data.completed_message));
             this.props.dispatch(createModelSuccessAnalysis(data));
         }
         
