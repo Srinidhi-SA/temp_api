@@ -5,7 +5,7 @@ import store from "../../store";
 import {Modal,Button, Tooltip,
     OverlayTrigger,} from "react-bootstrap";
 import {advanceSettingsModal} from "../../actions/signalActions";
-import {selectedAnalysisList,selectedDimensionSubLevel,cancelAdvanceSettings,saveAdvanceSettings} from "../../actions/dataActions";
+import {selectedAnalysisList,selectedDimensionSubLevel,cancelAdvanceSettings,saveAdvanceSettings,checkAllAnalysisSelected} from "../../actions/dataActions";
 
 
 @connect((store) => {
@@ -40,6 +40,7 @@ export class AdvanceSettings extends React.Component {
 	updateAdvanceSettings(){
 		this.props.dispatch(saveAdvanceSettings());
 		this.props.dispatch(advanceSettingsModal(false));
+		this.props.dispatch(checkAllAnalysisSelected())
 	}
 
 	handleAnlysisListActions(e){
