@@ -55,6 +55,9 @@ class SignalView(viewsets.ModelViewSet):
     def get_object_from_all(self):
         return Insight.objects.get(slug=self.kwargs.get('slug'))
 
+    def get_serializer_context(self):
+        return {'request': self.request}
+
     lookup_field = 'slug'
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('bookmarked', 'deleted', 'type', 'name', 'status', 'analysis_done')
@@ -116,7 +119,7 @@ class SignalView(viewsets.ModelViewSet):
         if instance is None:
             return retrieve_failed_exception("File Doesn't exist.")
 
-        serializer = InsightSerializer(instance=instance)
+        serializer = InsightSerializer(instance=instance, context={"request": self.request})
         return Response(serializer.data)
 
 
@@ -136,6 +139,9 @@ class TrainerView(viewsets.ModelViewSet):
 
     def get_object_from_all(self):
         return Trainer.objects.get(slug=self.kwargs.get('slug'))
+
+    def get_serializer_context(self):
+        return {'request': self.request}
 
     lookup_field = 'slug'
     filter_backends = (DjangoFilterBackend,)
@@ -197,7 +203,7 @@ class TrainerView(viewsets.ModelViewSet):
         if instance is None:
             return creation_failed_exception("File Doesn't exist.")
 
-        serializer = TrainerSerlializer(instance=instance)
+        serializer = TrainerSerlializer(instance=instance, context={"request": self.request})
         return Response(serializer.data)
 
     @detail_route(methods=['get'])
@@ -285,6 +291,9 @@ class ScoreView(viewsets.ModelViewSet):
     def get_object_from_all(self):
         return Score.objects.get(slug=self.kwargs.get('slug'))
 
+    def get_serializer_context(self):
+        return {'request': self.request}
+
     lookup_field = 'slug'
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('bookmarked', 'deleted', 'name')
@@ -348,7 +357,7 @@ class ScoreView(viewsets.ModelViewSet):
         if instance is None:
             return creation_failed_exception("File Doesn't exist.")
 
-        serializer = ScoreSerlializer(instance=instance)
+        serializer = ScoreSerlializer(instance=instance, context={"request": self.request})
         return Response(serializer.data)
 
     @detail_route(methods=['get'])
@@ -410,6 +419,9 @@ class RoboView(viewsets.ModelViewSet):
 
     def get_object_from_all(self):
         return Robo.objects.get(slug=self.kwargs.get('slug'))
+
+    def get_serializer_context(self):
+        return {'request': self.request}
 
     lookup_field = 'slug'
     filter_backends = (DjangoFilterBackend,)
@@ -489,7 +501,7 @@ class RoboView(viewsets.ModelViewSet):
         if instance is None:
             return creation_failed_exception("File Doesn't exist.")
 
-        serializer = RoboSerializer(instance=instance)
+        serializer = RoboSerializer(instance=instance, context={"request": self.request})
         return Response(serializer.data)
 
     def list(self, request, *args, **kwargs):
@@ -517,6 +529,9 @@ class StockDatasetView(viewsets.ModelViewSet):
 
     def get_object_from_all(self):
         return StockDataset.objects.get(slug=self.kwargs.get('slug'))
+
+    def get_serializer_context(self):
+        return {'request': self.request}
 
     serializer_class = StockDatasetSerializer
     lookup_field = 'slug'
@@ -552,7 +567,7 @@ class StockDatasetView(viewsets.ModelViewSet):
         if instance is None:
             return creation_failed_exception("File Doesn't exist.")
 
-        serializer = StockDatasetSerializer(instance=instance)
+        serializer = StockDatasetSerializer(instance=instance, context={"request": self.request})
         return Response(serializer.data)
 
     def list(self, request, *args, **kwargs):
@@ -646,6 +661,9 @@ class AudiosetView(viewsets.ModelViewSet):
 
     def get_object_from_all(self):
         return Audioset.objects.get(slug=self.kwargs.get('slug'))
+
+    def get_serializer_context(self):
+        return {'request': self.request}
 
     serializer_class = AudiosetSerializer
     lookup_field = 'slug'
@@ -747,6 +765,9 @@ class AppView(viewsets.ModelViewSet):
 
     def get_object_from_all(self):
         return CustomApps.objects.get(slug=self.kwargs.get('slug'))
+
+    def get_serializer_context(self):
+        return {'request': self.request}
 
     lookup_field = 'slug'
     filter_backends = (DjangoFilterBackend,)
