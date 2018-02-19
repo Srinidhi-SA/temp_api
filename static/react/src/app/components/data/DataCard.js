@@ -175,7 +175,7 @@ export class DataCard extends React.Component {
         {
             (dataSetList.length>0)
             ?(dataSetList)
-                    :(<div><div className="text-center text-muted xs-mt-10"><h2>No results found..</h2></div></div>)
+                    :(<div><div className="text-center text-muted xs-mt-50"><h2>No results found..</h2></div></div>)
         }
 
         </div>);

@@ -96,7 +96,7 @@ export class ScoreVariableSelection extends React.Component {
                 </div>
                 </div>
                 </div>
-                <AppsLoader/>
+                <AppsLoader match={this.props.match}/>
                 </div>
         );
     }

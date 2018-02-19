@@ -3,7 +3,7 @@ import {API,EMR,STATIC_URL} from "../helpers/env";
 import {PERPAGE,isEmpty,getUserDetailsOrRestart,APPSPERPAGE,statusMessages} from "../helpers/helper";
 import store from "../store";
 import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL,CUSTOMERDATA,HISTORIALDATA,EXTERNALDATA,DELETEMODEL,
-    RENAMEMODEL,DELETESCORE,RENAMESCORE,DELETEINSIGHT,RENAMEINSIGHT,SUCCESS,FAILED,DELETEAUDIO,RENAMEAUDIO} from "../helpers/helper";
+    RENAMEMODEL,DELETESCORE,RENAMESCORE,DELETEINSIGHT,RENAMEINSIGHT,SUCCESS,FAILED,DELETEAUDIO,RENAMEAUDIO,INPROGRESS} from "../helpers/helper";
     import {hideDataPreview,getStockDataSetPreview,showDataPreview,getDataSetPreview} from "./dataActions";
     import {getHeaderWithoutContent} from "./dataUploadActions";
     import Dialog from 'react-bootstrap-dialog';
@@ -37,7 +37,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
 
     export function refreshAppsModelList(props){
         return (dispatch) => {
-
+            
             refreshAppsModelInterval = setInterval(function() {
                 var pageNo = window.location.href.split("=")[1];
                 if(pageNo == undefined) pageNo = 1;
@@ -176,9 +176,9 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
     function createModelSuccess(data,dispatch){
         var slug = data.slug;
         appsInterval = setInterval(function(){
-            if(store.getState().apps.appsLoaderPerValue < LOADERMAXPERVALUE){
+            /*if(store.getState().apps.appsLoaderPerValue < LOADERMAXPERVALUE){
                 dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+APPSLOADERPERVALUE));
-            }
+            }*/
             dispatch(getAppsModelSummary(data.slug));
             return {
                 type: "CREATE_MODEL_SUCCESS",
@@ -188,6 +188,11 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
         return {
             type: "CREATE_MODEL_SUCCESS",
             slug,
+        }
+    }
+    export function createModelSuccessAnalysis(data){
+        return (dispatch) => {
+            dispatch(createModelSuccess(data,dispatch))
         }
     }
     export function refreshAppsScoreList(props){
@@ -291,6 +296,10 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                         clearInterval(appsInterval);
                         dispatch(closeAppsLoaderValue());
                         dispatch(hideDataPreview());
+                    }else if(json.status == INPROGRESS){
+                        if(json.message !== null && json.message.length > 0){
+                            dispatch(openAppsLoaderValue(json.message[0].stageCompletionPercentage,json.message[0].shortExplanation));
+                        }
                     }
                 }
                 else{
@@ -392,9 +401,9 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
     function createScoreSuccess(data,dispatch){
         var slug = data.slug;
         appsInterval = setInterval(function(){
-            if(store.getState().apps.appsLoaderPerValue < LOADERMAXPERVALUE){
+           /* if(store.getState().apps.appsLoaderPerValue < LOADERMAXPERVALUE){
                 dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+APPSLOADERPERVALUE));
-            }
+            }*/
             dispatch(getAppsScoreSummary(data.slug));
             return {
                 type: "CREATE_SCORE_SUCCESS",
@@ -424,6 +433,10 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                         clearInterval(appsInterval);
                         dispatch(closeAppsLoaderValue());
                         dispatch(hideDataPreview());
+                    }else if(json.status == INPROGRESS){
+                        if(json.message !== null && json.message.length > 0){
+                            dispatch(openAppsLoaderValue(json.message[0].stageCompletionPercentage,json.message[0].shortExplanation));
+                        }
                     }
 
                 }
@@ -1864,7 +1877,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
     function scoreToProceed(flag){
         return {type: "SCORE_TO_PROCEED", flag};
     }
-
+    
    export  function showLevelCountsForTarget(event){
         var selOption = event.target.childNodes[event.target.selectedIndex];
         var varType = selOption.value;
@@ -1889,9 +1902,11 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             type: "SET_TARGET_LEVEL_COUNTS", levelCounts
         }
     }
+    export function clearAppsIntervel(){
+        clearInterval(appsInterval)
+    }
 
-
-   export function getAppDetails(appSlug,pageNo){
+    export function getAppDetails(appSlug,pageNo){
 
        return (dispatch) => {
            return triggerAppDetailsAPI(appSlug).then(([response, json]) =>{
@@ -1911,3 +1926,9 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
            headers: getHeader(getUserDetailsOrRestart.get().userToken),
        }).then( response => Promise.all([response, response.json()]));
    }
+
+   export function createScoreSuccessAnalysis(data){
+        return (dispatch) => {
+            dispatch(createScoreSuccess(data,dispatch))
+        }
+    }
