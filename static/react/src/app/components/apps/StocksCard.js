@@ -122,7 +122,7 @@ export class StocksCard extends React.Component {
                     {
                         (stockTemplateList.length>0)
                         ?(stockTemplateList)
-                        :(<div><div className="text-center text-muted xs-mt-20"><h2>No results found..</h2></div></div>)
+                        :(<div><div className="text-center text-muted xs-mt-50"><h2>No results found..</h2></div></div>)
                     }
                     </div>);
 

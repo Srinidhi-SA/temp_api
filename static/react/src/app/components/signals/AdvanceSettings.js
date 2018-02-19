@@ -41,6 +41,7 @@ export class AdvanceSettings extends React.Component {
 	updateAdvanceSettings(){
 		this.props.dispatch(saveAdvanceSettings());
 		this.props.dispatch(advanceSettingsModal(false));
+		this.props.dispatch(checkAllAnalysisSelected())
 	}
 
 	handleAnlysisListActions(e){

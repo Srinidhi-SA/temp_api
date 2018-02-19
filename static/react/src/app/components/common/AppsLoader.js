@@ -1,13 +1,16 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router";
+import {Link} from "react-router-dom";
 import store from "../../store";
 import {Modal,Button} from "react-bootstrap";
-import {openAppsLoaderValue,closeAppsLoaderValue} from "../../actions/appActions";
+import {openAppsLoaderValue,closeAppsLoaderValue,clearAppsIntervel,updateModelSummaryFlag} from "../../actions/appActions";
+import {hideDataPreview} from "../../actions/dataActions";
 import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
 import HeatMap from '../../helpers/heatmap';
 import {STATIC_URL} from "../../helpers/env";
+import {handleJobProcessing} from "../../helpers/helper";
 
 
 @connect((store) => {
@@ -16,6 +19,10 @@ import {STATIC_URL} from "../../helpers/env";
 		appsLoaderPerValue:store.apps.appsLoaderPerValue,
 		appsLoaderText:store.apps.appsLoaderText,
 		appsLoaderImage:store.apps.appsLoaderImage,
+		currentAppId: store.apps.currentAppId,
+    modelSlug: store.apps.modelSlug,
+		updateCreateModelHideShow:store.apps.updateCreateModelHideShow,
+		scoreSlug:store.apps.scoreSlug
 	};
 })
 
@@ -27,10 +34,28 @@ export class AppsLoader extends React.Component {
   	this.props.dispatch(openAppsLoaderValue())
   }
   closeModelPopup(){
-  	this.props.dispatch(closeAppsLoaderValue())
+		this.props.dispatch(updateModelSummaryFlag(false));
+		this.props.dispatch(hideDataPreview());
+  	this.props.dispatch(closeAppsLoaderValue());
+		clearAppsIntervel();
   }
+  cancelCreateModel(){
+		this.props.dispatch(updateModelSummaryFlag(false));
+		this.props.dispatch(hideDataPreview());
+		if((this.props.match.url).indexOf("/createScore") > 0 || (this.props.match.url).indexOf("/scores") > 0)
+		this.props.dispatch(handleJobProcessing(this.props.scoreSlug));
+		else
+		this.props.dispatch(handleJobProcessing(this.props.modelSlug));
+		this.props.dispatch(closeAppsLoaderValue());
+		clearAppsIntervel();
+	}
   render() {
-		let img_src=STATIC_URL+store.getState().apps.appsLoaderImage
+		let img_src=STATIC_URL+store.getState().apps.appsLoaderImage;
+		if(this.props.match && (this.props.match.url).indexOf("/createModel") > 0 || this.props.match && (this.props.match.url).indexOf("/createScore") > 0)
+		var hideUrl = "/apps/"+store.getState().apps.currentAppId+"/models";
+		else
+		var hideUrl = this.props.match.url;
+
    return (
           <div id="dULoader">
       	<Modal show={store.getState().apps.appsLoaderModal} backdrop="static" onHide={this.closeModelPopup.bind(this)} dialogClassName="modal-colored-header">
@@ -55,6 +80,25 @@ export class AppsLoader extends React.Component {
 		</div>
 	</div>
 		</Modal.Body>
+		 {(this.props.updateCreateModelHideShow)
+            ? (
+		<Modal.Footer>
+                <div>
+                  <Link to={this.props.match.url} style={{
+                    paddingRight: "10px"
+                  }} >
+                    <Button onClick={this.cancelCreateModel.bind(this)}>Cancel</Button>
+                  </Link>
+                  <Link to={hideUrl} >
+                   <Button bsStyle="primary" onClick={this.closeModelPopup.bind(this)}>Hide</Button>
+                   </Link>
+                </div>
+              </Modal.Footer>
+			   )
+            : (
+              <div></div>
+            )
+}
 		</Modal>
           </div>
        );
