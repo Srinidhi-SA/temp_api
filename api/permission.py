@@ -25,7 +25,7 @@ class DatasetRelatedPermission(permissions.BasePermission):
             datasource_type = data.get('datasource_type')
             print datasource_type
             if user.has_perm('api.create_dataset'):
-                if datasource_type == 'fileUpload' or datasource_type is None:
+                if datasource_type == 'fileUpload':
                     return user.has_perm('api.upload_from_file')
                 elif datasource_type == 'MySQL':
                     return user.has_perm('api.upload_from_mysql')
@@ -35,6 +35,8 @@ class DatasetRelatedPermission(permissions.BasePermission):
                     return user.has_perm('api.upload_from_hana')
                 elif datasource_type == 'Hdfs':
                     return user.has_perm('api.upload_from_hdfs')
+                elif datasource_type is None:
+                    return user.has_perm('api.upload_from_file')
 
             return False
 

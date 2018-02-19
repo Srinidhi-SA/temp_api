@@ -79,7 +79,7 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             # answer: I tried. Sighhh but it gave this error "Incorrect type. Expected pk value, received User."
             data['created_by'] = request.user.id
 
-            serializer = DatasetSerializer(data=data)
+            serializer = DatasetSerializer(data=data, context={"request": self.request})
             if serializer.is_valid():
                 dataset_object = serializer.save()
                 dataset_object.create()
@@ -213,7 +213,7 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             )
         temp_details['created_by'] = request.user.id
 
-        serializer = DatasetSerializer(data=temp_details)
+        serializer = DatasetSerializer(data=temp_details, context={"request": self.request})
         if serializer.is_valid():
             dataset_object = serializer.save()
             if 'filter_settings' in data:
