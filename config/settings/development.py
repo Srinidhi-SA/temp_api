@@ -30,6 +30,7 @@ DATABASES = {
 }
 
 PROJECT_APP = [
+    'guardian'
 ]
 
 INSTALLED_APPS += PROJECT_APP
