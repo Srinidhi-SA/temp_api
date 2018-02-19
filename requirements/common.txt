@@ -25,3 +25,4 @@ matplotlib==2.1.1
 knit==0.2.4
 pygments
 celery==4.1.0
+django-guardian==1.4.9

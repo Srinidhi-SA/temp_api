@@ -841,15 +841,14 @@ def json_prettify_for_admin(json_val):
 
 
 def get_permissions(user, model, type='retrieve'):
-    print model
     if model == 'dataset':
         if type == 'retrieve':
             return {
                'view_dataset': user.has_perm('api.view_dataset'),
-               # 'rename_dataset': user.has_perm('api.rename_dataset'),
-               'rename_dataset': get_random_true_false(),
-               'remove_dataset': get_random_true_false(),
-               # 'remove_dataset': user.has_perm('api.remove_dataset'),
+               'rename_dataset': user.has_perm('api.rename_dataset'),
+               # 'rename_dataset': get_random_true_false(),
+               # 'remove_dataset': get_random_true_false(),
+               'remove_dataset': user.has_perm('api.remove_dataset'),
                'data_validation': user.has_perm('api.data_validation'),
                'subsetting_dataset': user.has_perm('api.subsetting_dataset'),
                'create_signal': user.has_perm('api.create_signal'),
