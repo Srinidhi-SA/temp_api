@@ -13,6 +13,9 @@ from api.helper import get_job_status, get_message
 import copy
 import json
 
+from api.utils import get_permissions
+
+
 class DatasetSerializer(serializers.ModelSerializer):
 
     # name = serializers.CharField(max_length=100,
@@ -65,8 +68,14 @@ class DatasetSerializer(serializers.ModelSerializer):
                 ret['proceed_for_loading'] = True
 
         ret['job_status'] = instance.job.status
-        return ret
 
+        # permission details
+        permission_details = get_permissions(
+            user=self.context['request'].user,
+            model=self.Meta.model.__name__.lower(),
+        )
+        ret['permission_details'] = permission_details
+        return ret
 
     class Meta:
         model = Dataset
@@ -88,8 +97,14 @@ class DataListSerializer(serializers.ModelSerializer):
             ret['completed_message']="Analyzing Target Variable"
 
         ret['job_status'] = instance.job.status
-        return ret
 
+        # permission details
+        permission_details = get_permissions(
+            user=self.context['request'].user,
+            model=self.Meta.model.__name__.lower(),
+        )
+        ret['permission_details'] = permission_details
+        return ret
 
     class Meta:
         model = Dataset

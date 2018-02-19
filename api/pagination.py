@@ -1,6 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 from django.conf import settings
+from api.utils import get_permissions
 
 class CustomPagination(PageNumberPagination):
 
@@ -18,6 +19,10 @@ class CustomPagination(PageNumberPagination):
         except ValueError:
             page_size = settings.PAGESIZE
         pagination = self.get_page_count(page, page_number, page_size)
+        permission_details = get_permissions(user=self.request.user,
+                                             model=self.list_serializer.Meta.model.__name__.lower(),
+                                             type='list'
+                                             )
 
         return Response({
             'data': pagination["current_data"],
@@ -25,7 +30,8 @@ class CustomPagination(PageNumberPagination):
             'current_page': pagination['current_page'],
             'current_page_size': pagination['current_page_size'],
             'current_item_count': len(pagination["current_data"]),
-            'top_3': self.top_3
+            'top_3': self.top_3,
+            'permission_details': permission_details
         })
 
     def get_page_count(self, page, page_number=1, page_size=10):
@@ -46,7 +52,7 @@ class CustomPagination(PageNumberPagination):
         initial_count = (page_number - 1) * page_size
         end_count = initial_count + page_size
         page_data = page[initial_count:end_count]
-        serialized_page_data = self.list_serializer(page_data, many=True)
+        serialized_page_data = self.list_serializer(page_data, many=True, context={"request": self.request})
         return {
             "count": total_number_of_pages,
             "current_page": page_number,
@@ -55,7 +61,7 @@ class CustomPagination(PageNumberPagination):
         }
 
     def add_top_3(self, query_set):
-        top_3_query_set_serializer = self.list_serializer(query_set, many=True)
+        top_3_query_set_serializer = self.list_serializer(query_set, many=True, context={"request": self.request})
         top_3_query_set_serializer_data = top_3_query_set_serializer.data
         self.top_3 = top_3_query_set_serializer_data
 

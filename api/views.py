@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 import json
 import random
+import copy
 
 from django.conf import settings
 from django.http import JsonResponse
@@ -35,6 +36,8 @@ from api.utils import \
 from models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData, StockDataset, CustomApps
 from api.tasks import clean_up_on_delete
 
+from api.permission import TrainerRelatedPermission, ScoreRelatedPermission, SignalsRelatedPermission
+
 
 class SignalView(viewsets.ModelViewSet):
     def get_queryset(self):
@@ -56,6 +59,7 @@ class SignalView(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('bookmarked', 'deleted', 'type', 'name', 'status', 'analysis_done')
     pagination_class = CustomPagination
+    permission_classes = (SignalsRelatedPermission, )
 
     def create(self, request, *args, **kwargs):
 
@@ -137,6 +141,7 @@ class TrainerView(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('bookmarked', 'deleted', 'name', "app_id")
     pagination_class = CustomPagination
+    permission_classes = (TrainerRelatedPermission, )
 
     def create(self, request, *args, **kwargs):
         # try:
@@ -284,6 +289,7 @@ class ScoreView(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('bookmarked', 'deleted', 'name')
     pagination_class = CustomPagination
+    permission_classes = (ScoreRelatedPermission, )
 
     def create(self, request, *args, **kwargs):
         # try:
@@ -802,7 +808,33 @@ class AppView(viewsets.ModelViewSet):
 
 
 def get_datasource_config_list(request):
-    return JsonResponse(settings.DATA_SOURCES_CONFIG)
+
+    user = request.user
+    data_source_config = copy.deepcopy(settings.DATA_SOURCES_CONFIG)
+    upload_permission_map = {
+        'api.upload_from_file': 'fileUpload',
+        'api.upload_from_mysql': 'MySQL',
+        'api.upload_from_mssql': 'mssql',
+        'api.upload_from_hana': 'Hana',
+        'api.upload_from_hdfs': 'Hdfs'
+    }
+
+    upload_permitted_list = []
+
+    for key in upload_permission_map:
+        if user.has_perm(key):
+            upload_permitted_list.append(upload_permission_map[key])
+
+    permitted_source_config = {
+        "conf": []
+    }
+
+    print data_source_config.keys()
+    for data in data_source_config['conf']:
+        if data['dataSourceType'] in upload_permitted_list:
+            permitted_source_config['conf'].append(data)
+
+    return JsonResponse(permitted_source_config)
 
 
 def get_config(request, slug=None):

@@ -32,8 +32,7 @@ DATABASES = {
 PROJECT_APP = [
     # 'silk',
     # 'django_extensions'
-    # 'django_celery_beat',
-    # 'django_celery_results'
+    'guardian'
 ]
 
 INSTALLED_APPS += PROJECT_APP
@@ -42,6 +41,11 @@ LOCAL_MIDDLEWARE = [
     # 'django_cprofile_middleware.middleware.ProfilerMiddleware',
     # 'silk.middleware.SilkyMiddleware'
 ]
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend', # this is default
+    'guardian.backends.ObjectPermissionBackend',
+)
 
 CELERY_BROKER_URL = 'redis://localhost:6379'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379'

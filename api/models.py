@@ -22,6 +22,9 @@ from api.lib import hadoop, fab_helper
 
 THIS_SERVER_DETAILS = settings.THIS_SERVER_DETAILS
 from auditlog.registry import auditlog
+from django.conf import settings
+
+from guardian.shortcuts import assign_perm
 
 # Create your models here.
 
@@ -168,6 +171,8 @@ class Dataset(models.Model):
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
+        permissions = settings.PERMISSIONS_RELATED_TO_DATASET
+
 
     def __str__(self):
         return " : ".join(["{}".format(x) for x in [self.name, self.datasource_type, self.slug]])
@@ -580,6 +585,9 @@ class Insight(models.Model):
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
+        verbose_name = "Signal"
+        verbose_name_plural = "Signals"
+        permissions = settings.PERMISSIONS_RELATED_TO_SIGNAL
 
 
     def __str__(self):
@@ -815,6 +823,7 @@ class Trainer(models.Model):
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
+        permissions = settings.PERMISSIONS_RELATED_TO_TRAINER
 
     def __str__(self):
         return " : ".join(["{}".format(x) for x in [self.name, self.created_at, self.slug, self.app_id]])
@@ -1011,6 +1020,7 @@ class Score(models.Model):
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
+        permissions = settings.PERMISSIONS_RELATED_TO_SCORE
 
     def __str__(self):
         return " : ".join(["{}".format(x) for x in [self.name, self.created_at, self.slug, self.trainer]])
@@ -1265,6 +1275,7 @@ class Robo(models.Model):
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
+        # permissions = settings.NEW_PERMISSIONS
 
     def __str__(self):
         return " : ".join(["{}".format(x) for x in [self.name, self.created_at, self.slug]])
@@ -1524,6 +1535,7 @@ class StockDataset(models.Model):
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
+        # permissions = settings.NEW_PERMISSIONS
 
     def __str__(self):
         return " : ".join(["{}".format(x) for x in [self.name, self.slug]])
@@ -1769,6 +1781,7 @@ class Audioset(models.Model):
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
+        # permissions = settings.NEW_PERMISSIONS
 
     def __str__(self):
         return " : ".join(["{}".format(x) for x in [self.name, self.datasource_type, self.slug]])
@@ -3858,3 +3871,13 @@ pie_chart = [
         ]
 ]
 """
+
+from django.contrib.auth.models import Group
+from django.utils.translation import ugettext_lazy as _
+
+
+class Role(Group):
+    class Meta:
+        proxy = True
+        app_label = 'auth'
+        verbose_name = _('Role')
