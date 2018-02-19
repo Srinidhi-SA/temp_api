@@ -203,7 +203,6 @@ class Dataset(models.Model):
             self.csv_header_clean()
             self.copy_file_to_destination()
         self.add_to_job()
-        self.add_permission_on_creation()
 
     def create_for_subsetting(
             self,
@@ -246,14 +245,6 @@ class Dataset(models.Model):
             self.status = "INPROGRESS"
 
         self.save()
-        self.add_permission_on_creation()
-
-    def add_permission_on_creation(self):
-        assign_perm('view_dataset', self)
-        assign_perm('rename_dataset', self)
-        assign_perm('remove_dataset', self)
-        assign_perm('datavalidation', self)
-        assign_perm('subsetting_dataset', self)
 
     def set_subesetting_true(self):
         self.subsetting = True
@@ -596,7 +587,7 @@ class Insight(models.Model):
         ordering = ['-created_at', '-updated_at']
         verbose_name = "Signal"
         verbose_name_plural = "Signals"
-        permissions = settings.NEW_PERMISSIONS
+        permissions = settings.PERMISSIONS_RELATED_TO_SIGNAL
 
 
     def __str__(self):
@@ -832,7 +823,7 @@ class Trainer(models.Model):
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
-        permissions = settings.NEW_PERMISSIONS
+        permissions = settings.PERMISSIONS_RELATED_TO_TRAINER
 
     def __str__(self):
         return " : ".join(["{}".format(x) for x in [self.name, self.created_at, self.slug, self.app_id]])
@@ -1029,7 +1020,7 @@ class Score(models.Model):
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
-        permissions = settings.NEW_PERMISSIONS
+        permissions = settings.PERMISSIONS_RELATED_TO_SCORE
 
     def __str__(self):
         return " : ".join(["{}".format(x) for x in [self.name, self.created_at, self.slug, self.trainer]])
@@ -1282,7 +1273,7 @@ class Robo(models.Model):
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
-        permissions = settings.NEW_PERMISSIONS
+        # permissions = settings.NEW_PERMISSIONS
 
     def __str__(self):
         return " : ".join(["{}".format(x) for x in [self.name, self.created_at, self.slug]])
@@ -1538,7 +1529,7 @@ class StockDataset(models.Model):
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
-        permissions = settings.NEW_PERMISSIONS
+        # permissions = settings.NEW_PERMISSIONS
 
     def __str__(self):
         return " : ".join(["{}".format(x) for x in [self.name, self.slug]])
@@ -1782,7 +1773,7 @@ class Audioset(models.Model):
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
-        permissions = settings.NEW_PERMISSIONS
+        # permissions = settings.NEW_PERMISSIONS
 
     def __str__(self):
         return " : ".join(["{}".format(x) for x in [self.name, self.datasource_type, self.slug]])

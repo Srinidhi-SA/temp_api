@@ -173,3 +173,23 @@ from .models import Role
 
 admin.site.unregister(Group)
 admin.site.register(Role, GroupAdmin)
+
+from django.contrib.auth.models import Permission
+
+class PermissionAdmin(admin.ModelAdmin):
+    model = Permission
+    fields = ['name']
+
+admin.site.register(Permission, PermissionAdmin)
+
+# from guardian.admin import GuardedModelAdmin
+# from guardian.backends import ObjectPermissionBackend
+#
+# class DatasetGaurdianAdmin(GuardedModelAdmin):
+#     icon = '<i class="material-icons">cloud_done</i>'
+#     search_fields = ["name", "slug"]
+#     list_display = ["name", "slug", "created_at", "deleted"]  # TODO: @Ankush Add "created_by"
+#     # list_filter = []
+#     readonly_fields = ["created_at", "deleted", "created_by", "job"]
+#
+# admin.site.register(Dataset, DatasetGaurdianAdmin)

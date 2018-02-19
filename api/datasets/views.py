@@ -30,7 +30,7 @@ from guardian.shortcuts import assign_perm
 # Create your views here.
 
 
-class DatasetView(viewsets.ModelViewSet):
+class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
     def get_queryset(self):
         queryset = Dataset.objects.filter(
@@ -39,7 +39,6 @@ class DatasetView(viewsets.ModelViewSet):
             status__in=['SUCCESS', 'INPROGRESS']
         )
 
-        queryset = [individual for individual in queryset if self.request.user.has_perm('view_dataset', individual)]
         return queryset
 
     def get_object_from_all(self):
@@ -149,13 +148,12 @@ class DatasetView(viewsets.ModelViewSet):
             deleted=False,
             status__in=['SUCCESS']
         )
-        serializer = DataNameListSerializer(queryset, many=True)
+        serializer = DataNameListSerializer(queryset, many=True, context={"request": self.request})
         return Response({
             "data": serializer.data
         })
 
     def list(self, request, *args, **kwargs):
-        import pdb;pdb.set_trace()
         return get_listed_data(
             viewset=self,
             request=request,
@@ -172,7 +170,7 @@ class DatasetView(viewsets.ModelViewSet):
         if instance is None:
             return retrieve_failed_exception("File Doesn't exist.")
 
-        serializer = DatasetSerializer(instance=instance)
+        serializer = DatasetSerializer(instance=instance, context={'request': request})
         object_details = serializer.data
         original_meta_data_from_scripts = object_details['meta_data']
 
@@ -253,3 +251,17 @@ class DatasetView(viewsets.ModelViewSet):
         data = request.data
         data = data.get('variableSelection')
         return Response(get_advanced_setting(data))
+
+
+    @list_route(methods=['get'])
+    def dummy_permission(self, request):
+        queryset = Dataset.objects.filter(
+            created_by=self.request.user,
+            deleted=False,
+            status__in=['SUCCESS']
+        )
+        # assign_perm('api.view_dataset', request.user)
+        for insta in queryset:
+            assign_perm('api.view_dataset', request.user, insta)
+
+        return Response({})

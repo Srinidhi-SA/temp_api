@@ -15,22 +15,26 @@ class DatasetRelatedPermission(permissions.BasePermission):
     message = 'Permission for datasets.'
 
     def has_permission(self, request, view):
+        user = request.user
+
         if request.method in ['GET']:
-            return request.user.has_perm('view_dataset')
+            return user.has_perm('api.view_dataset')
 
         if request.method in ['POST']:
             data = request.data
             datasource_type = data.get('datasource_type')
-
-            if request.user.has_perm('create_dataset'):
+            print datasource_type
+            if user.has_perm('api.create_dataset'):
                 if datasource_type == 'fileUpload':
-                    return request.user.has_perm('upload_from_file')
+                    return user.has_perm('api.upload_from_file')
                 elif datasource_type == 'MySQL':
-                    return request.user.has_perm('upload_from_mysql')
+                    return user.has_perm('api.upload_from_mysql')
                 elif datasource_type == 'mssql':
-                    return request.user.has_perm('upload_from_mssql')
+                    return user.has_perm('api.upload_from_mssql')
                 elif datasource_type == 'Hana':
-                    return request.user.has_perm('upload_from_hana')
+                    return user.has_perm('api.upload_from_hana')
+                elif datasource_type == 'Hdfs':
+                    return user.has_perm('api.upload_from_hdfs')
 
             return False
 
@@ -39,17 +43,80 @@ class DatasetRelatedPermission(permissions.BasePermission):
             path = request.path
 
             if 'meta_data_modifications' in path:
-                return request.user.has_perm('data_validation')
+                return user.has_perm('api.data_validation')
 
             if 'subsetting' in data:
                 if data['subsetting'] == True:
-                    return request.user.has_perm('subsetting_dataset')
+                    return user.has_perm('api.subsetting_dataset')
 
-            if 'delete' in data:
-                if data['delete'] == True:
-                    return request.user.has_perm('remove_dataset')
+            if 'deleted' in data:
+                if data['deleted'] == True:
+                    return user.has_perm('api.remove_dataset')
 
-            return request.user.has_perm('rename_dataset')
+            return user.has_perm('api.rename_dataset')
+
+
+class SignalsRelatedPermission(permissions.BasePermission):
+    message = 'Permission for signals.'
+
+    def has_permission(self, request, view):
+        user = request.user
+        if request.method in ['GET']:
+            return user.has_perm('api.view_signal')
+
+        if request.method in ['POST']:
+            return user.has_perm('api.create_signal')
+
+        if request.method in ['PUT']:
+            data = request.data
+
+            if 'deleted' in data:
+                if data['deleted'] == True:
+                    return user.has_perm('api.remove_signal')
+
+            return user.has_perm('api.rename_signal')
+
+
+class TrainerRelatedPermission(permissions.BasePermission):
+    message = 'Permission for trainers.'
+
+    def has_permission(self, request, view):
+        user = request.user
+        if request.method in ['GET']:
+            return user.has_perm('api.view_trainer')
+
+        if request.method in ['POST']:
+            return user.has_perm('api.create_trainer')
+
+        if request.method in ['PUT']:
+            data = request.data
+
+            if 'deleted' in data:
+                if data['deleted'] == True:
+                    return user.has_perm('api.remove_trainer')
+
+            return user.has_perm('api.rename_trainer')
+
+
+class ScoreRelatedPermission(permissions.BasePermission):
+    message = 'Permission for scores.'
+
+    def has_permission(self, request, view):
+        user = request.user
+        if request.method in ['GET']:
+            return user.has_perm('api.view_score')
+
+        if request.method in ['POST']:
+            return user.has_perm('api.create_score')
+
+        if request.method in ['PUT']:
+            data = request.data
+
+            if 'deleted' in data:
+                if data['deleted'] == True:
+                    return user.has_perm('api.remove_score')
+
+            return user.has_perm('api.rename_score')
 
 
 class SuperUserPermission(permissions.BasePermission):

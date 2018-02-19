@@ -192,6 +192,13 @@ class InsightSerializer(serializers.ModelSerializer):
                 ret['file_size']=-1
                 ret['proceed_for_loading'] = True
         ret['job_status'] = instance.job.status
+
+        # permission details
+        permission_details = get_permissions(
+            user=self.context['request'].user,
+            model=self.Meta.model.__name__.lower(),
+        )
+        ret['permission_details'] = permission_details
         return ret
 
     def update(self, instance, validated_data):
@@ -234,6 +241,12 @@ class InsightListSerializers(serializers.ModelSerializer):
             ret['completed_percentage'] = 0
             ret['completed_message']="Analyzing Target Variable"
         ret['job_status'] = instance.job.status
+        # permission details
+        permission_details = get_permissions(
+            user=self.context['request'].user,
+            model=self.Meta.model.__name__.lower(),
+        )
+        ret['permission_details'] = permission_details
         return ret
 
     def get_brief_info(self):
@@ -288,6 +301,12 @@ class TrainerSerlializer(serializers.ModelSerializer):
                 ret['file_size']=-1
                 ret['proceed_for_loading'] = True
         ret['job_status'] = instance.job.status
+        # permission details
+        permission_details = get_permissions(
+            user=self.context['request'].user,
+            model=self.Meta.model.__name__.lower(),
+        )
+        ret['permission_details'] = permission_details
         return ret
 
     def update(self, instance, validated_data):
@@ -329,6 +348,12 @@ class TrainerListSerializer(serializers.ModelSerializer):
             ret['completed_percentage'] = 0
             ret['completed_message']="Analyzing Target Variable"
         ret['job_status'] = instance.job.status
+        # permission details
+        permission_details = get_permissions(
+            user=self.context['request'].user,
+            model=self.Meta.model.__name__.lower(),
+        )
+        ret['permission_details'] = permission_details
         return ret
 
 
@@ -759,21 +784,68 @@ def json_prettify_for_admin(json_val):
     return mark_safe(style + response +"<hr>")
 
 
-def get_permissions(instance, user, model, type='retrieve'):
+def get_permissions(user, model, type='retrieve'):
+    print model
+    if model == 'dataset':
+        if type == 'retrieve':
+            return {
+               'view_dataset': user.has_perm('api.view_dataset'),
+               # 'rename_dataset': user.has_perm('api.rename_dataset'),
+               'rename_dataset': get_random_true_false(),
+               'remove_dataset': get_random_true_false(),
+               # 'remove_dataset': user.has_perm('api.remove_dataset'),
+               'data_validation': user.has_perm('api.data_validation'),
+               'subsetting_dataset': user.has_perm('api.subsetting_dataset'),
+               'create_signal': user.has_perm('api.create_signal'),
+               'create_trainer': user.has_perm('api.create_trainer'),
+               'create_score': user.has_perm('api.create_score'),
+            }
+        if type=='list':
+            return {
+                'create_dataset': user.has_perm('api.create_dataset'),
+                'upload_from_file': user.has_perm('api.upload_from_file'),
+                'upload_from_mysql': user.has_perm('api.upload_from_mysql'),
+                'upload_from_mssql': user.has_perm('api.upload_from_mssql'),
+                'upload_from_hana': user.has_perm('api.upload_from_hana'),
+                'upload_from_hdfs': user.has_perm('api.upload_from_hdfs'),
+            }
+    if model == 'insight':
+        if type == 'retrieve':
+            return {
+               'view_signal': user.has_perm('api.view_signal'),
+               'rename_signal': user.has_perm('api.rename_signal'),
+               'remove_signal': user.has_perm('api.remove_signal'),
+            }
+        if type=='list':
+            return {
+                'create_signal': user.has_perm('api.create_signal'),
+            }
+    if model == 'trainer':
+        if type == 'retrieve':
+            return {
+               'view_trainer': user.has_perm('api.view_trainer'),
+               'rename_trainer': user.has_perm('api.rename_trainer'),
+               'remove_trainer': user.has_perm('api.remove_trainer'),
+            }
+        if type=='list':
+            return {
+                'create_trainer': user.has_perm('api.create_trainer'),
+            }
+    if model == 'score':
+        if type == 'retrieve':
+            return {
+               'view_score': user.has_perm('api.view_score'),
+               'rename_score': user.has_perm('api.rename_score'),
+               'remove_score': user.has_perm('api.remove_score'),
+            }
+        if type=='list':
+            return {
+                'create_score': user.has_perm('api.create_score'),
+            }
+    return {}
 
-    if model == 'datasets' and type=='retrieve':
-        return {
-           'view_dataset': user.has_perm('view_dataset', instance),
-           'rename_dataset': user.has_perm('rename_dataset', instance),
-           'remove_dataset': user.has_perm('remove_dataset', instance),
-           'data_validation': user.has_perm('datavalidation', instance),
-           'subsetting_dataset': user.has_perm('subsetting_dataset', instance)
-        }
-    elif model == 'datasets' and type=='list':
-        return {
-            'create_dataset': user.has_perm('create_dataset', instance),
-            'upload_from_file': user.has_perm('upload_from_file', instance),
-            'upload_from_mysql': user.has_perm('upload_from_mysql', instance),
-            'upload_from_mssql': user.has_perm('upload_from_mssql', instance),
-            'upload_from_hana': user.has_perm('upload_from_hana', instance),
-        }
+
+def get_random_true_false():
+    import random
+    return True if random.randint(0, 1) else False
+

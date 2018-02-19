@@ -128,7 +128,8 @@ def get_listed_data(
     page = page_class.paginate_queryset(
         queryset=query_set,
         request=request,
-        list_serializer=list_serializer
+        list_serializer=list_serializer,
+        view=viewset
     )
 
     page_class.add_top_3(query_set=top_3_query_set)
