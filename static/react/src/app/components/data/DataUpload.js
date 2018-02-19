@@ -14,7 +14,8 @@ import {DataSourceList} from "./DataSourceList";
 @connect((store) => {
 	return {login_response: store.login.login_response, showModal:store.dataUpload.dataUploadShowModal,
 	fileDataUpload:store.dataUpload.fileUpload,
-	selectedDataset:store.datasets.selectedDataSet,};
+	selectedDataset:store.datasets.selectedDataSet,
+	 dataList: store.datasets.dataList,};
 })
 
 export class DataUpload extends React.Component {
@@ -40,9 +41,14 @@ export class DataUpload extends React.Component {
 		this.props.dispatch(dataUpload());	
 	}
 	render() {
+	    var isDataUpload = this.props.dataList.permission_details.create_dataset;
+	    let cls = "newCardStyle firstCard"
+	    if(!isDataUpload){
+	        cls += " disable-card"
+	    }
 			return (
 					<div className="col-md-3 xs-mb-15 list-boxes" onClick={this.openPopup.bind(this)}>
-					<div className="newCardStyle firstCard">
+					<div className={cls}>
 					<div className="card-header"></div>
 					<div className="card-center newStoryCard">					
 					<div className="col-xs-12 text-center">+<br/><small>UPLOAD DATA</small> </div>

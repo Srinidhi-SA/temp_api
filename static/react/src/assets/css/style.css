@@ -15363,3 +15363,12 @@ display: inline-block;
 .apps-cards .list-boxes {
 	margin-top: 20px !important
 }
+
+.newCardStyle.firstCard.disable-card {
+    background: lightgrey;
+    color: grey;
+    cursor: not-allowed;
+}
+.newCardStyle.firstCard.disable-card:hover {
+    color: grey;
+}

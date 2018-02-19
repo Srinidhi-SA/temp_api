@@ -228,13 +228,13 @@ export class DataPreview extends React.Component {
         $("#side-table").empty();
         ReactDOM.render(
           <tbody className="no-border-x no-border-y">{sideTableUpdatedTemplate}</tbody>, document.getElementById('side-table'));
-
+        if(this.props.dataPreview.permission_details.subsetting_dataset){
         // column subsetting starts
         const sideSubsetting = item.columnStats;
         $("#sub_settings").empty();
         ReactDOM.render(
           <Provider store={store}><SubSetting item={item}/></Provider>, document.getElementById('sub_settings'));
-
+        }
         // column subsetting ends
 
       }
@@ -348,10 +348,13 @@ export class DataPreview extends React.Component {
     // 	 </div>
 
     let dataPrev = this.props.dataPreview;
+    let isSubsettingAllowed = false;
+    let isDataValidationAllowed = false;
     if (dataPrev && !isEmpty(dataPrev)) {
       dataPrev = this.props.dataPreview.meta_data;
-      //  console.log(data[0]);
-      //const tableThTemplate=data[0].map((thElement, thIndex) => {
+      let permission_details = this.props.dataPreview.permission_details;
+      isSubsettingAllowed = permission_details.subsetting_dataset;
+      isDataValidationAllowed = permission_details.data_validation;
       if (dataPrev && !isEmpty(dataPrev)) {
         const topInfo = dataPrev.uiMetaData.metaDataUI.map((item, i) => {
           if (item.display) {
@@ -374,6 +377,7 @@ export class DataPreview extends React.Component {
           // console.log(thElement);
           let cls = thElement.slug + " dropdown";
           let iconCls = null;
+          let dataValidationCom =  ""
           switch (thElement.columnType) {
             case "measure":
               iconCls = "mAd_icons ic_mes_s";
@@ -388,18 +392,17 @@ export class DataPreview extends React.Component {
           }
 
           const anchorCls = thElement.slug + " dropdown-toggle cursor";
-          //if(thElement.chartData != null){
-          //if(thElement.ignoreSuggestionFlag && !flag ){
+       if(isDataValidationAllowed)dataValidationCom = <DataValidation name={thElement.name} slug={thElement.slug}/>
           if (!thElement.consider) {
             cls = cls + " greyout-col";
-
+         
             return (
               <th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)} title={thElement.ignoreSuggestionMsg}>
                 <a href="#" data-toggle="dropdown" className={anchorCls}>
                   <i className={iconCls}></i>
                   {thElement.name}<b className="caret"></b>
                 </a>
-                <DataValidation name={thElement.name} slug={thElement.slug}/>
+               {dataValidationCom}
               </th>
             );
           } else {
@@ -409,7 +412,7 @@ export class DataPreview extends React.Component {
                   <i className={iconCls}></i>
                   {thElement.name}<b className="caret"></b>
                 </a>
-                <DataValidation name={thElement.name} slug={thElement.slug}/>
+               {dataValidationCom}
               </th>
             );
 
@@ -572,9 +575,12 @@ export class DataPreview extends React.Component {
                   {/*<!-- ./ End Tab Visualizations -->*/}
 
                   {/*<!-- Start Tab Subsettings -->*/}
-                  <div id="sub_settings" className="box-shadow">
-                    <SubSetting item={firstTimeSubSetting}/>
-                  </div>
+                
+                  {isSubsettingAllowed == true ?  <div id="sub_settings" className="box-shadow"><SubSetting item={firstTimeSubSetting}/>
+                          </div>:""}
+                 
+                 
+                    
                   {/* End Tab Subsettings */}
                 </div>
                 <div className="clearfix"></div>
@@ -608,7 +614,7 @@ export class DataPreview extends React.Component {
                                 <Button onClick={this.applyDataSubset.bind(this)} bsStyle="primary">Save Config</Button>
                               )
                               : (
-                                <Button onClick={this.moveToVariableSelection.bind(this)} bsStyle="primary">
+                                <Button onClick={this.moveToVariableSelection.bind(this)} disabled={!permission_details.create_signal} bsStyle="primary">
                                   {this.buttons.create.text}</Button>
                               )
 }
