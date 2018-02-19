@@ -17,6 +17,7 @@ import {getDataSetPreview} from "../../actions/dataActions";
         modelTargetVariable:store.apps.modelTargetVariable,
         selectedAlg:store.apps.selectedAlg,
         scoreSummaryFlag:store.apps.scoreSummaryFlag,
+        currentAppId:store.apps.currentAppId
     };
 })
 
@@ -95,7 +96,7 @@ export class ScoreVariableSelection extends React.Component {
                 </div>
                 </div>
                 </div>
-                <AppsLoader/>
+                <AppsLoader match={this.props.match}/>
                 </div>
         );
     }

@@ -6667,7 +6667,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#079088', end
 	    text-transform: uppercase;
 }
 .ma-splash-screen .ma-wrapper .ma-content a:hover {
-	color: #fff
+	color: #00998c
 }
 .ma-scroll-top {
 	cursor: pointer;
@@ -8725,7 +8725,7 @@ box-shadow: 0px 0px 14px 4px rgba(0,0,0,0.15); */
 }
 .login-container .panel-default .panel-body .form-group .input-group {
 	border:none;
-	border-bottom: 1px solid #c3c0bf;
+	
 	/* border: 1px solid #c3c0bf;*/
 	margin-top: 10px;
 	width: 100%;
@@ -8742,6 +8742,7 @@ box-shadow: 0px 0px 14px 4px rgba(0,0,0,0.15); */
 }
 .login-container .panel-default .panel-body .form-group .input-group .form-control {
 	border: 0;
+	border-bottom: 1px solid #c3c0bf;
 	background-color: transparent;
 	box-shadow: none;
 	color: #a3a2a2;
@@ -8751,6 +8752,8 @@ box-shadow: 0px 0px 14px 4px rgba(0,0,0,0.15); */
 	font-weight: 500;
 	height: 36px
 }
+.login-container .panel-default .panel-body .form-group .input-group .form-control:focus {border-bottom:1px solid rgba(2, 152, 140,.6) }
+
 .login-container .panel-default .panel-body .form-group .input-group.parsley-error {
 	border-color: #f49090
 }
@@ -8791,7 +8794,7 @@ box-shadow: 0px 0px 14px 4px rgba(0,0,0,0.15); */
     color: #fff;
     background-color: #00998c;
     border-color: #00998c;
-	padding: 9px;
+	/*padding: 9px;*/
 }
 .login-container .btn-primary:active {
     color: #fff;
@@ -13823,8 +13826,11 @@ ul.app_labels li:first-child { margin: 0; padding: 7px 5px }
    -moz-transition: color 0.3s linear;}
 .app-block  a.app-link:hover, .app-block  a.app-link:focus, .app_labels li a:hover, .app_labels li a:focus, .rep_block .title a:hover { color: #00998c;}
 
-.newCardStyle:hover, .app-block:hover { box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22); }
+.newCardStyle:hover, .app-block:hover { box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22); margin-top:-2px; }
 .newCardStyle:hover .card-footer { background:#f3f2f2; }
+.dashboard_head .col-md-3.xs-mb-15.list-boxes:nth-child(4n+1) { clear: none;}
+.main-content .col-md-3.list-boxes:nth-child(4n+1) { clear: left;}
+.main-content .col-md-4.xs-mb-20:nth-child(3n+1) { clear: left;}
 /*.app-block h4, h4.title a {
     font-weight: bold;
 }*/
@@ -13834,7 +13840,7 @@ ul.app_labels li:first-child { margin: 0; padding: 7px 5px }
 box-shadow: 1px 6px 10px -3px rgba(0,0,0,0.44);}
 .card_icon { text-align: center;  display: block; line-height: 40px;  }
 
-.newCardStyle:hover a.pover { background-color: #10b7a9;
+.newCardStyle:hover a.pover {background-color: rgba(0, 151, 139, 0.5);
 -webkit-box-shadow: 1px 2px 6px -3px rgba(0,0,0,0.44);
 -moz-box-shadow: 1px 2px 6px -3px rgba(0,0,0,0.44);
 box-shadow: 1px 2px 6px -3px rgba(0,0,0,0.44); }
@@ -13919,10 +13925,10 @@ box-shadow: 1px 2px 6px -3px rgba(0,0,0,0.44); }
 	overflow: hidden;
 	transition: all .1s ease-in-out;
 	cursor:pointer;*/
-	background-color: #FFF;
-    border-style: solid;
-    border-width: 1px;
-    border-color: #d2d2d2 #b3b2b2 #acacac #d2d2d2;
+	background-color: #FFF;    
+    border-width: 0;
+	/*border-style: solid;
+    border-color: #d2d2d2 #b3b2b2 #acacac #d2d2d2;*/
     cursor:pointer;
 }
 .card-center{
@@ -14897,6 +14903,19 @@ a.more_button { color: #b3b3b3; padding: 0 10px; margin-right: 9px; cursor:point
 .col-md-6 .col-md-12 .table-style { padding-left:0; padding-right:0; margin-top:0; }
 .col-md-6 .col-md-12 .table-style .table{ margin-bottom: 0; }
 .col-md-12 .btn-toolbar { margin-bottom: 10px; }
+.dashboard_head .text-muted { color: #ececec; }
+.preview_content { margin-bottom:19px }
+.form-control:focus {
+  border-color: rgb(204,204,204); /* Restate unfocused value to make CSSLint happy that there's a pre-CSS3 fallback*/
+  border-color: rgba(2, 152, 140,.8);
+  outline: 0;
+  outline: thin dotted \9; /* IE6-9 */
+	-webkit-box-shadow: 0 0 8px rgba(2, 152, 140,.6);
+	   -moz-box-shadow: 0 0 8px rgba(2, 152, 140,.6);
+		-ms-box-shadow: 0 0 8px rgba(2, 152, 140,.6);
+		 -o-box-shadow: 0 0 8px rgba(2, 152, 140,.6);
+			box-shadow: 0 0 8px rgba(2, 152, 140,.6);
+}
 /**************** Css realated to developers, keep the source down ***/
 #prediction_dropdown{
 	    width: 40%;

@@ -60,9 +60,8 @@ export class Data extends React.Component {
       this.props.dispatch(getDataList(pageNo));
     }
   componentDidMount(){
-      this.props.dispatch(refreshDatasets(this.props));
+     this.props.dispatch(refreshDatasets(this.props));
   }
-
 
   openModelPopup() {
     this.props.dispatch(openDULoaderPopup())
@@ -81,6 +80,7 @@ export class Data extends React.Component {
     }
   }
   onChangeOfSearchBox(e){
+      
     if(e.target.value==""||e.target.value==null){
       this.props.dispatch(storeSearchElement(""));
       this.props.history.push('/data');
@@ -89,6 +89,8 @@ export class Data extends React.Component {
       this.props.history.push('/data?search=' + e.target.value + '')
     this.props.dispatch(storeSearchElement(e.target.value));
     this.props.dispatch(getDataList(1));
+    }else{
+        this.props.dispatch(storeSearchElement(e.target.value));
     }
   }
 
@@ -115,14 +117,15 @@ export class Data extends React.Component {
     console.log("data is called");
     console.log(this.props);
 		//empty search element
-    if (this.props.data_search_element != "" && (this.props.location.search == "" || this.props.location.search == null)) {
+    /*if (this.props.data_search_element != "" && (this.props.location.search == "" || this.props.location.search == null)) {
     	console.log("search is empty");
     	this.props.dispatch(storeSearchElement(""));
     	let search_element = document.getElementById('search_data');
     	if (search_element)
     		document.getElementById('search_data').value = "";
-    }
-
+    }*/
+ 
+    
     //search element ends..
     if (store.getState().datasets.dataPreviewFlag && this.props.dataPreview &&this.props.dataPreview.status!="FAILED") {
     	let _link = "/data/" + store.getState().datasets.selectedDataSet;
@@ -134,7 +137,7 @@ export class Data extends React.Component {
       const pages = store.getState().datasets.dataList.total_number_of_pages;
       const current_page = store.getState().datasets.dataList.current_page;
       let paginationTag = null;
-      let dataList = <DataCard data={dataSets}/>;
+      let dataList = <DataCard data={dataSets} match={this.props.match}/>;
       if (pages > 1) {
         paginationTag = <Pagination ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
       }
@@ -151,7 +154,7 @@ export class Data extends React.Component {
 				{/*   <input type="text" name="search_data" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search Data" id="search_data" class="form-control" placeholder="Search data..."/>*/}
 				<div className="search-wrapper">
 					<form>
-					<input type="text" name="search_data" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search data" id="search_data" className="form-control search-box" placeholder="Search data..." required />
+					<input type="text" name="search_data"  value= {this.props.data_search_element} onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search data" id="search_data" className="form-control search-box" placeholder="Search data..." required />
 					<span className="zmdi zmdi-search form-control-feedback"></span>
 					<button className="close-icon" type="reset" onClick={this.clearSearchElement.bind(this)}></button>
 					</form>

@@ -494,7 +494,7 @@ export class DataPreview extends React.Component {
             {/*<!-- Page Content Area -->*/}
             <div className="main-content">
               <div className="row">
-                <div className="col-md-9">
+                <div className="col-md-9 preview_content">
                   <div className="panel box-shadow">
                     <div className="panel-body no-border xs-p-0">
                       {topInfo}

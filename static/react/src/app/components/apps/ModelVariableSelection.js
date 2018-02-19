@@ -114,14 +114,14 @@ export class ModelVariableSelection extends React.Component {
                 <div className="row">
 
                 <div className="form-group">
-                <label className="col-lg-2">Select Target Variable :</label>
+                <label className="col-lg-2 xs-pt-10">Select Target Variable :</label>
                 <div className="col-lg-4"> {renderSelectBox}</div>
                 </div>
                  {/*<!-- /.col-lg-4 -->*/}
                 </div>
-                {(this.props.targetLevelCounts != null)? ( <div className="row xs-mt-10">
+                {(this.props.targetLevelCounts != null)? ( <div className="row xs-mb-20">
                     <div className="form-group">
-                    <label className="col-lg-2">Choose Value for {custom_word2}</label>
+                    <label className="col-lg-2 xs-pt-10">Choose Value for {custom_word2}</label>
                     <div className="col-lg-4"> {renderLevelCountSelectBox}</div>
                     </div>
                      {/*<!-- /.col-lg-4 -->*/}
@@ -154,7 +154,7 @@ export class ModelVariableSelection extends React.Component {
                 </div>
                 </div>
                 </div>
-                <AppsLoader/>
+                <AppsLoader match={this.props.match}/>
                 </div>
         );
     }

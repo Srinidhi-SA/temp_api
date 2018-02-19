@@ -33,7 +33,8 @@ import {
   APPNAME4,
   APPNAME5,
   APPID5,
-  getUserDetailsOrRestart
+  getUserDetailsOrRestart,
+  isEmpty
 } from "../../helpers/helper.js"
 
 @connect((store) => {
@@ -161,7 +162,7 @@ export class AppsPanel extends React.Component {
       this.props.dispatch(appsStoreSortElements("", null));
     }
 
-    if (appsLists) {
+    if (appsLists != undefined && appsLists.length > 0) {
       const pages = this.props.appsList.total_number_of_pages;
       const current_page = this.props.appsList.current_page;
       filteredKeywords = appsLists[0].tag_keywords
@@ -233,7 +234,11 @@ export class AppsPanel extends React.Component {
   
       });
     }
-
+    else{
+        return(<div>
+        <img id="loading" src={STATIC_URL + "assets/images/Preloader_2.gif"}/>
+      </div>)
+    }
     return (
       <div className="side-body">
 

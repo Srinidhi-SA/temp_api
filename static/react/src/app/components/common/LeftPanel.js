@@ -2,7 +2,7 @@ import React from "react";
 import {NavLink, withRouter} from "react-router-dom";
 import {connect} from "react-redux";
 import {hideDataPreview, getDataList,storeSearchElement_data} from "../../actions/dataActions";
-import {getList,storeSearchElement} from "../../actions/signalActions";
+import {getList,storeSearchElement,emptySignalAnalysis} from "../../actions/signalActions";
 import {getUserDetailsOrRestart} from "../../helpers/helper"
 
 @connect((store) => {
@@ -26,9 +26,10 @@ class LeftPanel extends React.Component {
 
   hideDataPrev(e) {
     this.props.dispatch(hideDataPreview());
+    this.props.dispatch(emptySignalAnalysis());
     //clear all search elements
-    this.props.dispatch(storeSearchElement(""));
-    this.props.dispatch(storeSearchElement_data(""));
+    //this.props.dispatch(storeSearchElement(""));
+    //this.props.dispatch(storeSearchElement_data(""));
     this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, 1));
     this.props.dispatch(getDataList(1));
     /*$("."+e.target).addClass("active");

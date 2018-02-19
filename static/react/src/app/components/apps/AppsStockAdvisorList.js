@@ -159,7 +159,7 @@ export class AppsStockAdvisorList extends React.Component {
 					{paginationTag}
 					</div>
 					</div>
-                    <AppsLoader/>
+                    <AppsLoader match={this.props.match}/>
 					<Dialog ref="dialog"/>
 					</div>
 					</div>

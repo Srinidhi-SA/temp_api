@@ -85,7 +85,7 @@ export class AppsStockDataPreview extends React.Component {
 				</div>
 				 
 				<StockUploadDomainModel/>
-				 <AppsLoader/>
+				 <AppsLoader match={this.props.match}/>
 	        </div>
 	        );
 		}else{

@@ -31,7 +31,7 @@ export class LatestDatasets extends React.Component {
         let addButton = <DataUpload/>;
         let latestDatasets = "";
         if(data){
-            latestDatasets =  <DataCard data={data}/>;
+            latestDatasets =  <DataCard data={data} match={this.props.props.match}/>;
         }
         return (
                 <div class="dashboard_head">
