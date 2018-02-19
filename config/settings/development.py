@@ -33,7 +33,13 @@ PROJECT_APP = [
     'guardian'
 ]
 
+
 INSTALLED_APPS += PROJECT_APP
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend', # this is default
+    'guardian.backends.ObjectPermissionBackend',
+)
 HADOOP_MASTER = "ec2-34-205-203-38.compute-1.amazonaws.com"
 
 YARN = {
