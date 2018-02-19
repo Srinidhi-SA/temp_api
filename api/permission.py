@@ -16,7 +16,7 @@ class DatasetRelatedPermission(permissions.BasePermission):
 
     def has_permission(self, request, view):
         user = request.user
-
+        
         if request.method in ['GET']:
             return user.has_perm('api.view_dataset')
 
@@ -25,7 +25,7 @@ class DatasetRelatedPermission(permissions.BasePermission):
             datasource_type = data.get('datasource_type')
             print datasource_type
             if user.has_perm('api.create_dataset'):
-                if datasource_type == 'fileUpload':
+                if datasource_type == 'fileUpload' or datasource_type is None:
                     return user.has_perm('api.upload_from_file')
                 elif datasource_type == 'MySQL':
                     return user.has_perm('api.upload_from_mysql')
