@@ -5,7 +5,7 @@ import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab} from "react-bootstrap";
 import {AppsCreateScore} from "./AppsCreateScore";
 import {Card} from "../signals/Card";
-import {getListOfCards,getAppsScoreSummary,getScoreSummaryInCSV} from "../../actions/appActions";
+import {getListOfCards,getAppsScoreSummary,getScoreSummaryInCSV,updateScoreSlug} from "../../actions/appActions";
 import {Button} from "react-bootstrap";
 import {STATIC_URL,EMR} from "../../helpers/env.js";
 import {isEmpty} from "../../helpers/helper";
@@ -29,16 +29,14 @@ export class AppsScoreDetail extends React.Component {
       //It will trigger when refresh happens on url
       if(isEmpty(this.props.scoreSummary)){
           this.props.dispatch(getAppsScoreSummary(this.props.match.params.slug));
+          this.props.dispatch(updateScoreSlug(this.props.match.params.slug))
       }
   }
   componentDidMount() {
 	  if(!isEmpty(store.getState().apps.scoreSummary)){
 		  if(store.getState().apps.scoreSummary.slug != store.getState().apps.scoreSlug)
 		  this.props.dispatch(getAppsScoreSummary(store.getState().apps.scoreSlug));
-	  }else{
-		  this.props.dispatch(getAppsScoreSummary(store.getState().apps.scoreSlug));
 	  }
-
   }
   gotoScoreData(){
       this.props.dispatch(getScoreSummaryInCSV(store.getState().apps.scoreSlug))
