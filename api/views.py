@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 import json
 import random
+import copy
 
 from django.conf import settings
 from django.http import JsonResponse
@@ -35,6 +36,8 @@ from api.utils import \
 from models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData, StockDataset, CustomApps
 from api.tasks import clean_up_on_delete
 
+from api.permission import TrainerRelatedPermission, ScoreRelatedPermission, SignalsRelatedPermission
+
 
 class SignalView(viewsets.ModelViewSet):
     def get_queryset(self):
@@ -52,10 +55,14 @@ class SignalView(viewsets.ModelViewSet):
     def get_object_from_all(self):
         return Insight.objects.get(slug=self.kwargs.get('slug'))
 
+    def get_serializer_context(self):
+        return {'request': self.request}
+
     lookup_field = 'slug'
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('bookmarked', 'deleted', 'type', 'name', 'status', 'analysis_done')
     pagination_class = CustomPagination
+    permission_classes = (SignalsRelatedPermission, )
 
     def create(self, request, *args, **kwargs):
 
@@ -64,7 +71,7 @@ class SignalView(viewsets.ModelViewSet):
         data = convert_to_string(data)
         data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
         data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
-        serializer = InsightSerializer(data=data)
+        serializer = InsightSerializer(data=data, context={"request": self.request})
         if serializer.is_valid():
             signal_object = serializer.save()
             signal_object.create(advanced_settings=data.get('advanced_settings', {}))
@@ -112,7 +119,7 @@ class SignalView(viewsets.ModelViewSet):
         if instance is None:
             return retrieve_failed_exception("File Doesn't exist.")
 
-        serializer = InsightSerializer(instance=instance)
+        serializer = InsightSerializer(instance=instance, context={"request": self.request})
         return Response(serializer.data)
 
 
@@ -133,10 +140,14 @@ class TrainerView(viewsets.ModelViewSet):
     def get_object_from_all(self):
         return Trainer.objects.get(slug=self.kwargs.get('slug'))
 
+    def get_serializer_context(self):
+        return {'request': self.request}
+
     lookup_field = 'slug'
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('bookmarked', 'deleted', 'name', "app_id")
     pagination_class = CustomPagination
+    permission_classes = (TrainerRelatedPermission, )
 
     def create(self, request, *args, **kwargs):
         # try:
@@ -192,7 +203,7 @@ class TrainerView(viewsets.ModelViewSet):
         if instance is None:
             return creation_failed_exception("File Doesn't exist.")
 
-        serializer = TrainerSerlializer(instance=instance)
+        serializer = TrainerSerlializer(instance=instance, context={"request": self.request})
         return Response(serializer.data)
 
     @detail_route(methods=['get'])
@@ -222,7 +233,7 @@ class TrainerView(viewsets.ModelViewSet):
         if dataset_instance is None:
             return creation_failed_exception("File Doesn't exist.")
 
-        dataset_serializer = DatasetSerializer(instance=dataset_instance)
+        dataset_serializer = DatasetSerializer(instance=dataset_instance, context={"request": self.request})
         object_details = dataset_serializer.data
         original_meta_data_from_scripts = object_details['meta_data']
         if original_meta_data_from_scripts is None:
@@ -280,10 +291,14 @@ class ScoreView(viewsets.ModelViewSet):
     def get_object_from_all(self):
         return Score.objects.get(slug=self.kwargs.get('slug'))
 
+    def get_serializer_context(self):
+        return {'request': self.request}
+
     lookup_field = 'slug'
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('bookmarked', 'deleted', 'name')
     pagination_class = CustomPagination
+    permission_classes = (ScoreRelatedPermission, )
 
     def create(self, request, *args, **kwargs):
         # try:
@@ -342,7 +357,7 @@ class ScoreView(viewsets.ModelViewSet):
         if instance is None:
             return creation_failed_exception("File Doesn't exist.")
 
-        serializer = ScoreSerlializer(instance=instance)
+        serializer = ScoreSerlializer(instance=instance, context={"request": self.request})
         return Response(serializer.data)
 
     @detail_route(methods=['get'])
@@ -405,6 +420,9 @@ class RoboView(viewsets.ModelViewSet):
     def get_object_from_all(self):
         return Robo.objects.get(slug=self.kwargs.get('slug'))
 
+    def get_serializer_context(self):
+        return {'request': self.request}
+
     lookup_field = 'slug'
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('bookmarked', 'deleted', 'name')
@@ -437,12 +455,12 @@ class RoboView(viewsets.ModelViewSet):
                 dataset['created_by'] = request.user.id
                 dataset['datasource_type'] = 'fileUpload'
                 from api.datasets.serializers import DatasetSerializer
-                serializer = DatasetSerializer(data=dataset)
+                serializer = DatasetSerializer(data=dataset, context={"request": self.request})
                 if serializer.is_valid():
                     dataset_object = serializer.save()
                     dataset_object.create()
                     real_data[self.dataset_name_mapping[file]] = dataset_object.id
-            serializer = RoboSerializer(data=real_data)
+            serializer = RoboSerializer(data=real_data, context={"request": self.request})
             if serializer.is_valid():
                 robo_object = serializer.save()
                 robo_object.create()
@@ -483,7 +501,7 @@ class RoboView(viewsets.ModelViewSet):
         if instance is None:
             return creation_failed_exception("File Doesn't exist.")
 
-        serializer = RoboSerializer(instance=instance)
+        serializer = RoboSerializer(instance=instance, context={"request": self.request})
         return Response(serializer.data)
 
     def list(self, request, *args, **kwargs):
@@ -512,6 +530,9 @@ class StockDatasetView(viewsets.ModelViewSet):
     def get_object_from_all(self):
         return StockDataset.objects.get(slug=self.kwargs.get('slug'))
 
+    def get_serializer_context(self):
+        return {'request': self.request}
+
     serializer_class = StockDatasetSerializer
     lookup_field = 'slug'
     filter_backends = (DjangoFilterBackend,)
@@ -530,7 +551,7 @@ class StockDatasetView(viewsets.ModelViewSet):
         new_data['input_file'] = None
         new_data['created_by'] = request.user.id
 
-        serializer = StockDatasetSerializer(data=new_data)
+        serializer = StockDatasetSerializer(data=new_data, context={"request": self.request})
         if serializer.is_valid():
             stock_object = serializer.save()
             stock_object.create()
@@ -546,7 +567,7 @@ class StockDatasetView(viewsets.ModelViewSet):
         if instance is None:
             return creation_failed_exception("File Doesn't exist.")
 
-        serializer = StockDatasetSerializer(instance=instance)
+        serializer = StockDatasetSerializer(instance=instance, context={"request": self.request})
         return Response(serializer.data)
 
     def list(self, request, *args, **kwargs):
@@ -605,7 +626,7 @@ class StockDatasetView(viewsets.ModelViewSet):
                 stock_instance.call_mlscripts()
             return Response(serializer.data)
 
-        serializer = StockDatasetSerializer(instance=instance)
+        serializer = StockDatasetSerializer(instance=instance, context={"request": self.request})
         return Response(serializer.data)
 
     @detail_route(methods=['get'])
@@ -619,7 +640,7 @@ class StockDatasetView(viewsets.ModelViewSet):
         if instance is None:
             return creation_failed_exception("File Doesn't exist.")
 
-        serializer = StockDatasetSerializer(instance=instance)
+        serializer = StockDatasetSerializer(instance=instance, context={"request": self.request})
         return Response(serializer.data)
 
     """
@@ -640,6 +661,9 @@ class AudiosetView(viewsets.ModelViewSet):
 
     def get_object_from_all(self):
         return Audioset.objects.get(slug=self.kwargs.get('slug'))
+
+    def get_serializer_context(self):
+        return {'request': self.request}
 
     serializer_class = AudiosetSerializer
     lookup_field = 'slug'
@@ -673,7 +697,7 @@ class AudiosetView(viewsets.ModelViewSet):
             # answer: I tried. Sighhh but it gave this error "Incorrect type. Expected pk value, received User."
             data['created_by'] = request.user.id
             try:
-                serializer = AudiosetSerializer(data=data)
+                serializer = AudiosetSerializer(data=data, context={"request": self.request})
                 if serializer.is_valid():
                     audioset_object = serializer.save()
                     audioset_object.create()
@@ -693,7 +717,7 @@ class AudiosetView(viewsets.ModelViewSet):
         if instance is None:
             return creation_failed_exception("File Doesn't exist.")
 
-        serializer = AudiosetSerializer(instance=instance)
+        serializer = AudiosetSerializer(instance=instance, context={"request": self.request})
         return Response(serializer.data)
 
     def list(self, request, *args, **kwargs):
@@ -742,6 +766,9 @@ class AppView(viewsets.ModelViewSet):
     def get_object_from_all(self):
         return CustomApps.objects.get(slug=self.kwargs.get('slug'))
 
+    def get_serializer_context(self):
+        return {'request': self.request}
+
     lookup_field = 'slug'
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('name', 'tags')
@@ -754,7 +781,7 @@ class AppView(viewsets.ModelViewSet):
             data = convert_to_string(data)
             # data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
             data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
-            serializer = AppSerializer(data=data)
+            serializer = AppSerializer(data=data, context={"request": self.request})
             if serializer.is_valid():
                 app_obj = serializer.save()
                 app_obj.create()
@@ -797,12 +824,38 @@ class AppView(viewsets.ModelViewSet):
         if instance is None:
             return creation_failed_exception("App Doesn't exist.")
 
-        serializer = AppSerializer(instance=instance)
+        serializer = AppSerializer(instance=instance, context={"request": self.request})
         return Response(serializer.data)
 
 
 def get_datasource_config_list(request):
-    return JsonResponse(settings.DATA_SOURCES_CONFIG)
+
+    user = request.user
+    data_source_config = copy.deepcopy(settings.DATA_SOURCES_CONFIG)
+    upload_permission_map = {
+        'api.upload_from_file': 'fileUpload',
+        'api.upload_from_mysql': 'MySQL',
+        'api.upload_from_mssql': 'mssql',
+        'api.upload_from_hana': 'Hana',
+        'api.upload_from_hdfs': 'Hdfs'
+    }
+
+    upload_permitted_list = []
+
+    for key in upload_permission_map:
+        if user.has_perm(key):
+            upload_permitted_list.append(upload_permission_map[key])
+
+    permitted_source_config = {
+        "conf": []
+    }
+
+    print data_source_config.keys()
+    for data in data_source_config['conf']:
+        if data['dataSourceType'] in upload_permitted_list:
+            permitted_source_config['conf'].append(data)
+
+    return JsonResponse(permitted_source_config)
 
 
 def get_config(request, slug=None):
@@ -4942,7 +4995,7 @@ def get_metadata_for_mlscripts(request, slug=None):
         return JsonResponse({'Message': 'Failed. No analysis of this dataset'})
 
     from api.datasets.serializers import DatasetSerializer
-    ds_serializer = DatasetSerializer(instance=ds)
+    ds_serializer = DatasetSerializer(instance=ds, context={"request": self.request})
     meta_data = ds_serializer.data.get('meta_data')
     return JsonResponse({
         "metaData": meta_data.get('metaData'),

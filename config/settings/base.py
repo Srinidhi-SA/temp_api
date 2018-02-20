@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 import os
 
 import datetime
+import config_file_name_to_run
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -1314,7 +1315,6 @@ LIST_OF_ADMIN_EMAILS = [
             # 'gulshan.gaurav@marlabs.com'
         ]
 
-import config_file_name_to_run
 
 UI_VERSION = config_file_name_to_run.UI_VERSION
 
@@ -1330,3 +1330,39 @@ CELERY_TIMEZONE = TIME_ZONE
 
 
 HDFS_SECRET_KEY = 'xfBmEcr_hFHGqVrTo2gMFpER3ks9x841UcvJbEQJesI='
+
+PERMISSIONS_RELATED_TO_DATASET = (
+    ('view_dataset', 'View dataset'),
+    ('create_dataset', 'Create dataset'),
+    ('rename_dataset', 'Rename dataset'),
+    ('remove_dataset', 'remove dataset'),
+    ('upload_from_file', 'Upload from file'),
+    ('upload_from_mysql', 'Upload from mysql'),
+    ('upload_from_mssql', 'Upload from mssql'),
+    ('upload_from_hdfs', 'Upload from hdfs'),
+    ('upload_from_hana', 'Upload from hana'),
+    ('data_validation', 'Data Validation'),
+    ('subsetting_dataset', 'Subsetting dataset'),
+)
+
+
+PERMISSIONS_RELATED_TO_SIGNAL = (
+    ('view_signal', 'View signal'),
+    ('create_signal', 'Create signal'),
+    ('rename_signal', 'Rename signal'),
+    ('remove_signal', 'remove signal'),
+)
+
+PERMISSIONS_RELATED_TO_TRAINER = (
+    ('view_trainer', 'View trainer'),
+    ('create_trainer', 'Create trainer'),
+    ('rename_trainer', 'Rename trainer'),
+    ('remove_trainer', 'remove trainer'),
+)
+
+PERMISSIONS_RELATED_TO_SCORE = (
+    ('view_score', 'View score'),
+    ('create_score', 'Create score'),
+    ('rename_score', 'Rename score'),
+    ('remove_score', 'remove score'),
+)
