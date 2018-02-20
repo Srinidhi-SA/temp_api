@@ -85,6 +85,9 @@ class TrainerRelatedPermission(permissions.BasePermission):
     def has_permission(self, request, view):
         user = request.user
         if request.method in ['GET']:
+
+            if 'get_pmml' in request.path:
+                return user.has_perm('api.downlad_pmml')
             return user.has_perm('api.view_trainer')
 
         if request.method in ['POST']:

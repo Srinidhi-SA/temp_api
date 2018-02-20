@@ -275,10 +275,11 @@ class TrainerView(viewsets.ModelViewSet):
         })
 
     @detail_route(methods=['get'])
-    def get_pmml(request, jobslug=None, algoname='algo'):
-        # import pdb;pdb.set_trace()
+    def get_pmml(self, request, *args, **kwargs):
         from api.redis_access import AccessFeedbackMessage
         from helper import generate_pmml_name
+        jobslug = request.query_params.get('jobslug', None)
+        algoname = request.query_params.get('algoname', None)
         ac = AccessFeedbackMessage()
         job_object = Job.objects.filter(object_id=jobslug).first()
         job_slug = job_object.slug
