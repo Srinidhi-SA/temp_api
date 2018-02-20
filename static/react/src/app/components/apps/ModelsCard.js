@@ -52,7 +52,7 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
 
                 var modelList = this.props.data;
                 var appsModelList = modelList.map((data, i) => {
-                    var modelLink = "/apps/"+store.getState().apps.currentAppId+"/models/" + data.slug;
+                    var modelLink = "/apps/"+this.props.match.params.AppId+"/models/" + data.slug;
                     var modelLink1 = <Link id={data.slug} to={modelLink}>{data.name}</Link>
                     var percentageDetails = "";
                         if(data.status == INPROGRESS){
