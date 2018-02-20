@@ -55,9 +55,13 @@ export class AppsModelDetail extends React.Component {
   render() {
     console.log("apps Model Detail View is called##########3");
     const modelSummary = store.getState().apps.modelSummary;
+		var showExportPmml = true;
+		var showCreateScore = true;
     const modelLink = "/apps/"+store.getState().apps.currentAppId+"/models";
 	if (!$.isEmptyObject(modelSummary)) {
 		console.log(this.props)
+		showExportPmml = modelSummary.permission_details.downlad_pmml;
+		showCreateScore = modelSummary.permission_details.create_score;
 		let listOfCardList = getListOfCards(modelSummary.data.model_summary.listOfCards)
 		let cardDataList = listOfCardList.map((data, i) => {
 			if( i != 0){
@@ -103,10 +107,11 @@ export class AppsModelDetail extends React.Component {
 		                  {cardDataList}
 
 		                    </div>
-		                    <div class="row">
+												<div class="row">
 		                    <div className="col-md-12 text-right ">
-		                    <Button bsStyle="primary" onClick={this.handleExportAsPMMLModal.bind(this,true)}>Export As PMML</Button>
-		                   <AppsCreateScore match={this.props.match}/>
+												{showExportPmml?
+		                    <Button bsStyle="primary" onClick={this.handleExportAsPMMLModal.bind(this,true)}>Export As PMML</Button>:""}
+		                  	{showCreateScore? <AppsCreateScore match={this.props.match}/>:""}
 		                   </div>
 		                   </div>
 		             </div>

@@ -46,10 +46,14 @@ export class AppsScoreDetail extends React.Component {
     const scoreSummary = store.getState().apps.scoreSummary;
     const scoreLink = "/apps/"+store.getState().apps.currentAppId+"/scores";
     const scoreDataLink = "/apps/"+store.getState().apps.currentAppId+"/scores/"+store.getState().apps.scoreSlug+"/dataPreview";
+		var showViewButton = true;
+		var showDownloadButton = true;
     console.log(scoreSummary)
 	if (!$.isEmptyObject(scoreSummary)) {
 		console.log(this.props)
-		let listOfCardList = getListOfCards(scoreSummary.data.listOfCards)
+		let listOfCardList = getListOfCards(scoreSummary.data.listOfCards);
+		showViewButton = scoreSummary.permission_details.download_score;
+		showDownloadButton = scoreSummary.permission_details.download_score;
 		let cardDataList = listOfCardList.map((data, i) => {
 
             return (<Card key={i} cardData={data} />)
@@ -93,8 +97,8 @@ export class AppsScoreDetail extends React.Component {
 		                    </div>
 		                    <div className="row">
 		                    <div className="col-md-12 text-right">
-		                   	<Link to={scoreDataLink} onClick={this.gotoScoreData.bind(this)} className="btn btn-primary xs-pr-10"> View </Link>
-		                    	<a  href={downloadURL} id="download" className="btn btn-primary" download>Download</a>
+		                   	{showViewButton?<Link to={scoreDataLink} onClick={this.gotoScoreData.bind(this)} className="btn btn-primary xs-pr-10"> View </Link>:""}
+		                    {showDownloadButton?<a  href={downloadURL} id="download" className="btn btn-primary" download>Download</a>:""}
 		                   </div>
 
 		                   </div>
