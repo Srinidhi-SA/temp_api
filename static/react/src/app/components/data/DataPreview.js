@@ -13,7 +13,7 @@ import {dataSubsetting,clearDataPreview,clearLoadingMsg} from "../../actions/dat
 import {Button,Dropdown,Menu,MenuItem} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"
 import {showHideSideChart, showHideSideTable, MINROWINDATASET,statusMessages} from "../../helpers/helper.js"
-import {isEmpty} from "../../helpers/helper";
+import {isEmpty,CREATESIGNAL,  CREATESCORE,CREATEMODEL} from "../../helpers/helper";
 import {SubSetting} from "./SubSetting";
 import {DataUploadLoader} from "../common/DataUploadLoader";
 import {DataValidation} from "./DataValidation";
@@ -81,7 +81,7 @@ export class DataPreview extends React.Component {
         };
         this.buttons['create'] = {
           url: "/data/" + this.props.match.params.slug + "/createSignal",
-          text: "Create Signal"
+          text: CREATESIGNAL
         };
 
       } else if (store.getState().datasets.curUrl.startsWith("/data")) {
@@ -91,7 +91,7 @@ export class DataPreview extends React.Component {
         };
         this.buttons['create'] = {
           url: "/data/" + this.props.match.params.slug + "/createSignal",
-          text: "Create Signal"
+          text: CREATESIGNAL
         };
 
       } else if (store.getState().datasets.curUrl.startsWith("/apps")) {
@@ -111,7 +111,7 @@ export class DataPreview extends React.Component {
           };
           this.buttons['create'] = {
             url: "/apps/" + store.getState().apps.currentAppId + "/models/" + store.getState().apps.modelSlug + "/data/" + this.props.match.params.slug + "/createScore",
-            text: "Create Score"
+            text: CREATESCORE
           };
         } else {
           this.buttons['close'] = {
@@ -120,7 +120,7 @@ export class DataPreview extends React.Component {
           };
           this.buttons['create'] = {
             url: "/apps/" + store.getState().apps.currentAppId + "/models/data/" + this.props.match.params.slug + "/createModel",
-            text: "Create Model"
+            text: CREATEMODEL
           };
         }
 
@@ -132,7 +132,7 @@ export class DataPreview extends React.Component {
       };
       this.buttons['create'] = {
         url: "/data/" + this.props.match.params.slug + "/createSignal",
-        text: "Create Signal"
+        text: CREATESIGNAL
       };
     }
 
@@ -350,11 +350,21 @@ export class DataPreview extends React.Component {
     let dataPrev = this.props.dataPreview;
     let isSubsettingAllowed = false;
     let isDataValidationAllowed = false;
+    let isCreateAllowed = false
     if (dataPrev && !isEmpty(dataPrev)) {
       dataPrev = this.props.dataPreview.meta_data;
       let permission_details = this.props.dataPreview.permission_details;
       isSubsettingAllowed = permission_details.subsetting_dataset;
       isDataValidationAllowed = permission_details.data_validation;
+      if(this.buttons.create.text == CREATESIGNAL){
+          isCreateAllowed = permission_details.create_signal;
+          
+      }else if(this.buttons.create.text == CREATEMODEL){
+          isCreateAllowed = permission_details.create_trainer;
+      }
+      else if(this.buttons.create.text == CREATESCORE){
+          isCreateAllowed = permission_details.create_score;
+      }
       if (dataPrev && !isEmpty(dataPrev)) {
         const topInfo = dataPrev.uiMetaData.metaDataUI.map((item, i) => {
           if (item.display) {
@@ -614,7 +624,7 @@ export class DataPreview extends React.Component {
                                 <Button onClick={this.applyDataSubset.bind(this)} bsStyle="primary">Save Config</Button>
                               )
                               : (
-                                <Button onClick={this.moveToVariableSelection.bind(this)} disabled={!permission_details.create_signal} bsStyle="primary">
+                                <Button onClick={this.moveToVariableSelection.bind(this)} disabled={!isCreateAllowed} bsStyle="primary">
                                   {this.buttons.create.text}</Button>
                               )
 }

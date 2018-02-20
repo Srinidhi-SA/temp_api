@@ -15367,7 +15367,8 @@ display: inline-block;
 .newCardStyle.firstCard.disable-card {
     background: lightgrey;
     color: grey;
-    cursor: not-allowed;
+   pointer-events: none;
+   cursor: not-allowed;
 }
 .newCardStyle.firstCard.disable-card:hover {
     color: grey;

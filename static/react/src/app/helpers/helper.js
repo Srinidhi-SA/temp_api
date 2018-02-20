@@ -132,7 +132,10 @@ const SET_POLARITY= "set_polarity";
 const UNIQUE_IDENTIFIER = "unique_identifier";
 const DYNAMICLOADERINTERVAL = 2000;
 const IGNORE_SUGGESTION = "ignore_suggestion";
-
+const ACCESSDENIED ="Access Denied"
+const CREATESIGNAL = "Create Signal";
+const CREATEMODEL = "Create Model";
+const CREATESCORE = "Create Score"
 
 export function generateHeaders(table) {
     var cols = table.tableData.map(function(rowData,i){
@@ -449,7 +452,11 @@ export{
   IGNORE_SUGGESTION,
   HDFS,
   HANA,
-  MSSQL
+  MSSQL,
+  ACCESSDENIED,
+  CREATESIGNAL,
+  CREATESCORE,
+  CREATEMODEL
 	}
 export function capitalizeArray(array){
   let a =[]

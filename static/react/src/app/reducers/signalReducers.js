@@ -18,7 +18,7 @@ export default function reducer(state = {
   signal_sorton:null,
   signal_sorttype:null,
   sideCardListFlag:null,
-  loaderText:"Analyzing Target Variable",
+  loaderText:"Submitting for analysis",
   advanceSettingsModal:false,
   getVarType:null,
   getVarText:null,
