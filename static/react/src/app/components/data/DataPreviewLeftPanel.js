@@ -21,7 +21,7 @@ export class DataPreviewLeftPanel extends React.Component {
 		super(props);
 	}
 	 componentWillMount(){
-	     if(!isEmpty(this.props.scoreCSVData)){
+	     if(isEmpty(this.props.scoreCSVData)){
 	         this.props.dispatch(getScoreSummaryInCSV(this.props.match.params.slug))
 	     }
 	  }
@@ -103,7 +103,7 @@ export class DataPreviewLeftPanel extends React.Component {
 					<div className="col-md-12">
                     <div className="panel">
                     <div className="panel-body no-border text-right box-shadow">
-                    <Link to={scoreLink} onClick={this.emptyScoreCSVData.bind(this)}><Button> Close</Button></Link>
+                    <Link to={scoreLink} ><Button> Close</Button></Link>
                     </div>
                     </div>
 					</div>
