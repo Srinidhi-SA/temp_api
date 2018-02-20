@@ -6,7 +6,7 @@ import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
 import Dropzone from 'react-dropzone'
 import store from "../../store";
 import $ from "jquery";
-
+import {isEmpty,ACCESSDENIED} from "../../helpers/helper";
 import {open,close,fileUpload,dataUpload} from "../../actions/dataUploadActions";
 import {saveFileToStore} from "../../actions/dataSourceListActions";
 import {DataSourceList} from "./DataSourceList";
@@ -43,12 +43,14 @@ export class DataUpload extends React.Component {
 	render() {
 	    var isDataUpload = this.props.dataList.permission_details.create_dataset;
 	    let cls = "newCardStyle firstCard"
+	    let title = "";
 	    if(!isDataUpload){
-	        cls += " disable-card"
+	        cls += " disable-card";
+	        title= ACCESSDENIED
 	    }
 			return (
-					<div className="col-md-3 xs-mb-15 list-boxes" onClick={this.openPopup.bind(this)}>
-					<div className={cls}>
+					<div className="col-md-3 xs-mb-15 list-boxes" title={title}>
+					<div className={cls} onClick={this.openPopup.bind(this)}>
 					<div className="card-header"></div>
 					<div className="card-center newStoryCard">					
 					<div className="col-xs-12 text-center">+<br/><small>UPLOAD DATA</small> </div>

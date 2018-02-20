@@ -93,6 +93,9 @@ export class SignalCard extends React.Component {
                   var imgLink = STATIC_URL + "assets/images/s_m_carIcon.png"
               }
               iconDetails = <img src={imgLink} alt="LOADING"/>
+              var permissionDetails = story.permission_details;
+              var isDropDown = permissionDetails.remove_signal || permissionDetails.rename_signal;
+             
             return (
               <div className="col-md-3 xs-mb-15 list-boxes" key={i}>
                 <div className="rep_block newCardStyle" name={story.name}>
@@ -103,28 +106,30 @@ export class SignalCard extends React.Component {
                         <h5 className="title newCardTitle pull-left">
                           {signalClick}                  
                         </h5>
-                        
-                         <div class="btn-toolbar pull-right">
+                        {
+                            isDropDown == true ? <div class="btn-toolbar pull-right">
                              {/*<!-- Rename and Delete BLock  -->*/}
                       <a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
                         <i className="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
                       </a>
                       <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                     
+                     {permissionDetails.rename_signal == true ?
                         <li onClick={this.handleRename.bind(this, story.slug, story.name)}>
                           <a className="dropdown-item" href="#renameCard" data-toggle="modal">
                             <i className="fa fa-edit"></i>&nbsp;&nbsp;Rename</a>
-                        </li>
-
+                        </li>:""}
+{permissionDetails.remove_signal == true ?
                         <li onClick={this.handleDelete.bind(this, story.slug)}>
                           <a className="dropdown-item" href="#deleteCard" data-toggle="modal">
                             <i className="fa fa-trash-o"></i>&nbsp;&nbsp;{story.status == "INPROGRESS"
                               ? "Stop and Delete "
                               : "Delete"}</a>
-                        </li>
+                        </li> :""}
                       </ul>
                       {/*<!-- End Rename and Delete BLock  -->*/}
-                          </div>
+                          </div>:<div class="btn-toolbar pull-right"></div>
+                        }
+                         
                           
                           
                           <div className="clearfix"></div>                  
