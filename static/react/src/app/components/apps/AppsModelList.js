@@ -114,6 +114,7 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
             
             
             const modelList = store.getState().apps.modelList.data;
+            var createModelPermission = store.getState().apps.modelList.permission_details;
             let appsModelList = null;
             if (modelList) {
                 const pages = store.getState().apps.modelList.total_number_of_pages;
@@ -126,7 +127,7 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                 appsModelList = <ModelsCard match={this.props.match} data={modelList}/>;
                 return (
                         <div>
-                        <LatestModels props={this.props}/>
+                        <LatestModels props={this.props} permissions={createModelPermission}/>
                         <div className="main-content">
                         <div className="row">
                         <div className="col-md-6">
