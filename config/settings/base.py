@@ -1358,6 +1358,7 @@ PERMISSIONS_RELATED_TO_TRAINER = (
     ('create_trainer', 'Create trainer'),
     ('rename_trainer', 'Rename trainer'),
     ('remove_trainer', 'remove trainer'),
+    ('downlad_pmml', 'Download PMML')
 )
 
 PERMISSIONS_RELATED_TO_SCORE = (
@@ -1365,4 +1366,5 @@ PERMISSIONS_RELATED_TO_SCORE = (
     ('create_score', 'Create score'),
     ('rename_score', 'Rename score'),
     ('remove_score', 'remove score'),
+    ('download_score', 'Download Score')
 )

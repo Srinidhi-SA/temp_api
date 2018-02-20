@@ -32,7 +32,6 @@ DATABASES = {
 PROJECT_APP = [
     # 'silk',
     # 'django_extensions'
-    'guardian'
 ]
 
 INSTALLED_APPS += PROJECT_APP
