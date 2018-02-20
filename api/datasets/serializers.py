@@ -76,7 +76,7 @@ class DatasetSerializer(serializers.ModelSerializer):
                 model=self.Meta.model.__name__.lower(),
             )
             ret['permission_details'] = permission_details
-            return ret
+        return ret
 
     class Meta:
         model = Dataset
