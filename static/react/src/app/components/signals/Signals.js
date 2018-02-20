@@ -196,11 +196,9 @@ export class Signals extends React.Component {
                 <div class="btn-toolbar pull-right">
                   <div class="input-group">
                     <div className="search-wrapper">
-                      <form>
-                        <input type="text" value={this.props.signal_search_element} name="search_signals" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search Signals" id="search_signals" className="form-control search-box" placeholder="Search signals..." required/>
+                      <input type="text" value={this.props.signal_search_element} name="search_signals" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search Signals" id="search_signals" className="form-control search-box" placeholder="Search signals..." required/>
                         <span className="zmdi zmdi-search form-control-feedback"></span>
                         <button className="close-icon" onClick={this.clearSearchElement.bind(this)} type="reset"></button>
-                      </form>
                     </div>
                   </div>
                   <div class="btn-group">
