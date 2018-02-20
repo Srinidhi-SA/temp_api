@@ -19,7 +19,8 @@ import {open,close,fileUpload,dataUpload} from "../../actions/dataUploadActions"
 		selectedDataset:store.datasets.selectedDataSet,
 		dataPreviewFlag:store.datasets.dataPreviewFlag,
 		currentAppId:store.apps.currentAppId,
-		selectedDataSrcType:store.dataSource.selectedDataSrcType
+		selectedDataSrcType:store.dataSource.selectedDataSrcType,
+		currentAppDetails:store.apps.currentAppDetails,
 		};
 })
 
@@ -66,7 +67,7 @@ export class AppsCreateModel extends React.Component {
 		let _link = "";
 		let hideCreate=false
 		if(store.getState().datasets.dataPreviewFlag){
-			let _link = "/apps/"+store.getState().apps.currentAppId+"/models/data/"+store.getState().datasets.selectedDataSet;
+			let _link = "/apps/"+store.getState().apps.currentAppDetails.slug+"/models/data/"+store.getState().datasets.selectedDataSet;
 			return(<Redirect to={_link}/>);
 		}
 		if(dataSets){

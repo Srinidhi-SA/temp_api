@@ -36,6 +36,7 @@ import {checkCreateScoreToProceed} from "../../actions/appActions";
     subsettedSlug: store.datasets.subsettedSlug,
     dataTransformSettings: store.datasets.dataTransformSettings,
     scoreToProceed:store.apps.scoreToProceed,
+    currentAppDetails:store.apps.currentAppDetails,
   };
 })
 
@@ -97,7 +98,7 @@ export class DataPreview extends React.Component {
       } else if (store.getState().datasets.curUrl.startsWith("/apps")) {
         if (store.getState().datasets.curUrl.indexOf("robo") != -1) {
           this.buttons['close'] = {
-            url: "/apps/" + store.getState().apps.currentAppId + "/robo",
+            url: "/apps/" + store.getState().apps.currentAppDetails.slug + "/robo",
             text: "Close"
           };
           this.buttons['create'] = {
@@ -110,7 +111,7 @@ export class DataPreview extends React.Component {
             text: "Close"
           };
           this.buttons['create'] = {
-            url: "/apps/" + store.getState().apps.currentAppId + "/models/" + store.getState().apps.modelSlug + "/data/" + this.props.match.params.slug + "/createScore",
+            url: "/apps/" + store.getState().apps.currentAppDetails.slug + "/models/" + store.getState().apps.modelSlug + "/data/" + this.props.match.params.slug + "/createScore",
             text: CREATESCORE
           };
         } else {
@@ -119,7 +120,7 @@ export class DataPreview extends React.Component {
             text: "Close"
           };
           this.buttons['create'] = {
-            url: "/apps/" + store.getState().apps.currentAppId + "/models/data/" + this.props.match.params.slug + "/createModel",
+            url: "/apps/" + store.getState().apps.currentAppDetails.slug + "/models/data/" + this.props.match.params.slug + "/createModel",
             text: CREATEMODEL
           };
         }

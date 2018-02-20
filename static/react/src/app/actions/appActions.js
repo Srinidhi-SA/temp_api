@@ -128,7 +128,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
         }
         return (dispatch) => {
             dispatch(openAppsLoader(APPSLOADERPERVALUE,"Please wait while mAdvisor is creating model... "));
-            return triggerCreateModel(getUserDetailsOrRestart.get().userToken,modelName,targetVariable,targetLevel).then(([response, json]) =>{
+            return triggerCreateModel(getUserDetailsOrRestart.get().userToken,modelName,targetVariable,targetLevel,dispatch).then(([response, json]) =>{
                 if(response.status === 200){
                     console.log(json)
                     dispatch(createModelSuccess(json,dispatch))
@@ -142,7 +142,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
         }
     }
 
-    function triggerCreateModel(token,modelName,targetVariable,targetLevel) {
+    function triggerCreateModel(token,modelName,targetVariable,targetLevel,dispatch) {
         var datasetSlug = store.getState().datasets.dataPreview.slug;
         var app_id=store.getState().apps.currentAppId;
         var customDetails = createcustomAnalysisDetails();
@@ -1902,6 +1902,11 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             type: "SET_TARGET_LEVEL_COUNTS", levelCounts
         }
     }
+   export function updateTargetLevel(value){
+       return{
+           type: "SET_TARGET_LEVEL_COUNTS", value
+       }
+   }
     export function clearAppsIntervel(){
         clearInterval(appsInterval)
     }

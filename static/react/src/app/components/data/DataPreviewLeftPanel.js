@@ -13,7 +13,7 @@ import {isEmpty} from "../../helpers/helper";
 
 @connect((store) => {
 	return {login_response: store.login.login_response, scoreCSVData: store.apps.scoreSummaryCSVData,
-	    currentAppId:store.apps.currentAppId,scoreSlug:store.apps.scoreSlug};
+	    currentAppId:store.apps.currentAppId,scoreSlug:store.apps.scoreSlug,currentAppDetails:store.apps.currentAppDetails,};
 })
 
 export class DataPreviewLeftPanel extends React.Component {
@@ -31,7 +31,7 @@ export class DataPreviewLeftPanel extends React.Component {
 	render() {
 		console.log("score data preview is called##########3");
 		 var pattern = /(".*?"|[^",\s]+)(?=\s*,|\s*$)/g;
-		 var scoreLink = "/apps/" + store.getState().apps.currentAppId + "/scores/" + this.props.match.params.slug;
+		 var scoreLink = "/apps/" + store.getState().apps.currentAppDetails.slug + "/scores/" + this.props.match.params.slug;
 		const scoreData = this.props.scoreCSVData;
 		var tableThTemplate = "";
 		var tableRowTemplate = "";
@@ -39,7 +39,7 @@ export class DataPreviewLeftPanel extends React.Component {
 		    tableThTemplate = scoreData.map(function(row,id){
 		        let colData = "";
 		        if(id == 0){
-		           colData =  row.match(pattern).map((colData,index) =>{
+		           colData =  row.split(",").map((colData,index) =>{
 		               let colIndex = "row_"+id+index
 		                return(<th key={colIndex}><b>{colData}</b></th>)
 		            })
@@ -51,7 +51,7 @@ export class DataPreviewLeftPanel extends React.Component {
                 let colData = "";
                 let colIndex = "row_"+id
                 if(id > 0){
-                        colData =  row.match(pattern).map((colData,index) =>{
+                        colData =  row.split(",").map((colData,index) =>{
                             return(<td>{colData}</td>)
                         })
                     }
