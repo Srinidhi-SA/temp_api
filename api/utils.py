@@ -407,6 +407,11 @@ class ScoreSerlializer(serializers.ModelSerializer):
              #   ret['file_size']=-1
               #  ret['proceed_for_loading'] = True
         ret['job_status'] = instance.job.status
+        permission_details = get_permissions(
+            user=self.context['request'].user,
+            model=self.Meta.model.__name__.lower(),
+        )
+        ret['permission_details'] = permission_details
         return ret
 
     def update(self, instance, validated_data):
@@ -448,6 +453,11 @@ class ScoreListSerializer(serializers.ModelSerializer):
             ret['completed_percentage'] = 0
             ret['completed_message']="Analyzing Target Variable"
         ret['job_status'] = instance.job.status
+        permission_details = get_permissions(
+            user=self.context['request'].user,
+            model=self.Meta.model.__name__.lower(),
+        )
+        ret['permission_details'] = permission_details
         return ret
 
     class Meta:
