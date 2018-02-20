@@ -1902,6 +1902,11 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             type: "SET_TARGET_LEVEL_COUNTS", levelCounts
         }
     }
+   export function updateTargetLevel(value){
+       return{
+           type: "SET_TARGET_LEVEL_COUNTS", value
+       }
+   }
     export function clearAppsIntervel(){
         clearInterval(appsInterval)
     }
