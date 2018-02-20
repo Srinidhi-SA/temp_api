@@ -17,6 +17,7 @@ import {Link} from "react-router-dom";
 	return {login_response: store.login.login_response,
 		scoreList:store.apps.scoreList,scoreSummary:store.apps.scoreSummary,
 		scoreSlug:store.apps.scoreSlug,
+		currentAppDetails:store.apps.currentAppDetails,
 		};
 })
 
@@ -44,8 +45,8 @@ export class AppsScoreDetail extends React.Component {
   render() {
     console.log("apps Score Detail View is called##########3");
     const scoreSummary = store.getState().apps.scoreSummary;
-    const scoreLink = "/apps/"+store.getState().apps.currentAppId+"/scores";
-    const scoreDataLink = "/apps/"+store.getState().apps.currentAppId+"/scores/"+store.getState().apps.scoreSlug+"/dataPreview";
+    const scoreLink = "/apps/"+store.getState().apps.currentAppDetails.slug+"/scores";
+    const scoreDataLink = "/apps/"+store.getState().apps.currentAppDetails.slug+"/scores/"+store.getState().apps.scoreSlug+"/dataPreview";
     console.log(scoreSummary)
 	if (!$.isEmptyObject(scoreSummary)) {
 		console.log(this.props)
