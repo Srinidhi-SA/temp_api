@@ -4995,13 +4995,12 @@ def get_metadata_for_mlscripts(request, slug=None):
         return JsonResponse({'Message': 'Failed. No analysis of this dataset'})
 
     from api.datasets.serializers import DatasetSerializer
-    ds_serializer = DatasetSerializer(instance=ds, context={"request": self.request})
+    ds_serializer = DatasetSerializer(instance=ds, context={})
     meta_data = ds_serializer.data.get('meta_data')
     return JsonResponse({
         "metaData": meta_data.get('metaData'),
         'columnData': meta_data.get('columnData'),
         'headers': meta_data.get('headers')
-
     })
 
 

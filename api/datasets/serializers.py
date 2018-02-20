@@ -69,13 +69,14 @@ class DatasetSerializer(serializers.ModelSerializer):
 
         ret['job_status'] = instance.job.status
 
-        # permission details
-        permission_details = get_permissions(
-            user=self.context['request'].user,
-            model=self.Meta.model.__name__.lower(),
-        )
-        ret['permission_details'] = permission_details
-        return ret
+        if 'request' in self.context:
+            # permission details
+            permission_details = get_permissions(
+                user=self.context['request'].user,
+                model=self.Meta.model.__name__.lower(),
+            )
+            ret['permission_details'] = permission_details
+            return ret
 
     class Meta:
         model = Dataset
