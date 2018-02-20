@@ -888,6 +888,7 @@ def get_permissions(user, model, type='retrieve'):
     if model == 'trainer':
         if type == 'retrieve':
             return {
+               'create_score': user.has_perm('api.create_score'),
                'view_trainer': user.has_perm('api.view_trainer'),
                'downlad_pmml': user.has_perm('api.downlad_pmml'),
                'rename_trainer': user.has_perm('api.rename_trainer'),
