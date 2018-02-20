@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'api',
     'django_filters',
     'auditlog',
-
+    'guardian'
 ]
 
 MIDDLEWARE = [
