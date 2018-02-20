@@ -889,6 +889,7 @@ def get_permissions(user, model, type='retrieve'):
         if type == 'retrieve':
             return {
                'view_trainer': user.has_perm('api.view_trainer'),
+               'downlad_pmml': user.has_perm('api.downlad_pmml'),
                'rename_trainer': user.has_perm('api.rename_trainer'),
                'remove_trainer': user.has_perm('api.remove_trainer'),
             }
@@ -900,6 +901,7 @@ def get_permissions(user, model, type='retrieve'):
         if type == 'retrieve':
             return {
                'view_score': user.has_perm('api.view_score'),
+               'download_score': user.has_perm('api.download_score'),
                'rename_score': user.has_perm('api.rename_score'),
                'remove_score': user.has_perm('api.remove_score'),
             }
