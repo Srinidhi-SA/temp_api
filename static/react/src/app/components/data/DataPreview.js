@@ -396,7 +396,7 @@ export class DataPreview extends React.Component {
     let isSubsettingAllowed = false;
     let isDataValidationAllowed = false;
     let isCreateAllowed = false
-    if (dataPrev && !isEmpty(dataPrev)) {
+    if (dataPrev && !isEmpty(dataPrev) && dataPrev.status != "FAILED") {
       dataPrev = this.props.dataPreview.meta_data;
       let permission_details = this.props.dataPreview.permission_details;
       isSubsettingAllowed = permission_details.subsetting_dataset;
