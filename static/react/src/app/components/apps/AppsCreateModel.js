@@ -8,6 +8,7 @@ import {closeModelPopup,openModelPopup} from "../../actions/appActions";
 import {getAllDataList,getDataSetPreview,storeSignalMeta,updateDatasetName} from "../../actions/dataActions";
 import {DataSourceList} from "../data/DataSourceList";
 import {open,close,fileUpload,dataUpload} from "../../actions/dataUploadActions";
+import {ACCESSDENIED} from "../../helpers/helper";
 
 
 @connect((store) => {
@@ -81,9 +82,15 @@ export class AppsCreateModel extends React.Component {
 			if(this.props.selectedDataSrcType=="fileUpload")
 			hideCreate=true
 		}
+		let cls = "newCardStyle firstCard"
+	    let title = "";
+	    if(!this.props.isEnableCreate){
+	        cls += " disable-card";
+	        title= ACCESSDENIED
+	    }
 		return (
-				<div class="col-md-3 xs-mb-15 list-boxes xs-mt-20" onClick={this.openModelPopup.bind(this)}>
-				<div class="newCardStyle firstCard">
+				<div class="col-md-3 xs-mb-15 list-boxes xs-mt-20" title={title}>
+				<div className={cls} onClick={this.openModelPopup.bind(this)}>
 				<div class="card-header"></div>
 				<div class="card-center newStoryCard">
 				<div class="col-xs-12 text-center">+<br/><small>CREATE MODEL</small></div>

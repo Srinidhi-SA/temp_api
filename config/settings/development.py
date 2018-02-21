@@ -30,7 +30,6 @@ DATABASES = {
 }
 
 PROJECT_APP = [
-    'guardian'
 ]
 
 

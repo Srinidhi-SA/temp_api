@@ -62,6 +62,8 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                             data.completed_percentage = 100;
                             percentageDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>;
                         }
+                    var permissionDetails = data.permission_details;
+                    var isDropDown = permissionDetails.remove_trainer || permissionDetails.rename_trainer; 
                     return (
                             <div className="col-md-3 xs-mb-15 list-boxes" key={i}>
                             <div className="rep_block newCardStyle" name={data.name}>
@@ -73,28 +75,30 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                             <h5 className="title newCardTitle pull-left">
                             {modelLink1}
                             </h5>
-                            
-                            <div class="btn-toolbar pull-right">
+                            {
+                                isDropDown == true ? <div class="btn-toolbar pull-right">
                             {/*<!-- Rename and Delete BLock  -->*/}
                             <a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
                             <i className="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
                             </a>
                             <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                            {permissionDetails.rename_trainer == true ?
                             <li onClick={this.handleModelRename.bind(this,data.slug,data.name)}>
                             <a className="dropdown-item" href="#renameCard" data-toggle="modal">
                             <i className="fa fa-edit"></i>&nbsp;&nbsp;Rename</a>
-                            </li>
+                            </li>:""}
+                            {permissionDetails.remove_trainer == true ?
                             <li onClick={this.handleModelDelete.bind(this,data.slug)} >
                             <a className="dropdown-item" href="#deleteCard" data-toggle="modal">
                             <i className="fa fa-trash-o"></i>&nbsp;&nbsp;{data.status == "INPROGRESS"
                                 ? "Stop and Delete "
                                 : "Delete"}</a>
-                            </li>
+                            </li>:""}
                             </ul>
                             {/*<!-- End Rename and Delete BLock  -->*/}
                             
                             </div>
-                            
+                            :""}
                             <div className="clearfix"></div>
                                 {percentageDetails}
                             

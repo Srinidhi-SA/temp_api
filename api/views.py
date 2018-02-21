@@ -155,7 +155,7 @@ class TrainerView(viewsets.ModelViewSet):
         data = convert_to_string(data)
         data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
         data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
-        serializer = TrainerSerlializer(data=data)
+        serializer = TrainerSerlializer(data=data, context={"request": self.request})
         if serializer.is_valid():
             trainer_object = serializer.save()
             trainer_object.create()
@@ -179,7 +179,7 @@ class TrainerView(viewsets.ModelViewSet):
         except:
             return creation_failed_exception("File Doesn't exist.")
 
-        serializer = self.get_serializer(instance=instance, data=data, partial=True)
+        serializer = self.get_serializer(instance=instance, data=data, partial=True, context={"request": self.request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -217,7 +217,7 @@ class TrainerView(viewsets.ModelViewSet):
         if instance is None:
             return creation_failed_exception("File Doesn't exist.")
 
-        serializer = TrainerSerlializer(instance=instance)
+        serializer = TrainerSerlializer(instance=instance, context={"request": self.request})
         trainer_data = serializer.data
         t_d_c = trainer_data['config']['config']['COLUMN_SETTINGS']['variableSelection']
         uidColArray= [x["name"] for x in t_d_c if x["uidCol"] == True]
@@ -274,6 +274,23 @@ class TrainerView(viewsets.ModelViewSet):
             'message': message
         })
 
+    @detail_route(methods=['get'])
+    def get_pmml(self, request, *args, **kwargs):
+        from api.redis_access import AccessFeedbackMessage
+        from helper import generate_pmml_name
+        jobslug = request.query_params.get('jobslug', None)
+        algoname = request.query_params.get('algoname', None)
+        ac = AccessFeedbackMessage()
+        job_object = Job.objects.filter(object_id=jobslug).first()
+        job_slug = job_object.slug
+        key_pmml_name = generate_pmml_name(job_slug)
+        data = ac.get_using_key(key_pmml_name)
+        if data is None:
+            sample_xml = "<mydocument has=\"an attribute\">\n  <and>\n    <many>elements</many>\n    <many>more elements</many>\n  </and>\n  <plus a=\"complex\">\n    element as well\n  </plus>\n</mydocument>"
+            return return_xml_data(sample_xml, algoname)
+        xml_data = data[-1].get(algoname)
+        return return_xml_data(xml_data, algoname)
+
 
 class ScoreView(viewsets.ModelViewSet):
     def get_queryset(self):
@@ -308,7 +325,7 @@ class ScoreView(viewsets.ModelViewSet):
         data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
         data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
         data['app_id'] = int(json.loads(data['config'])['app_id'])
-        serializer = ScoreSerlializer(data=data)
+        serializer = ScoreSerlializer(data=data, context={"request": self.request})
         if serializer.is_valid():
             score_object = serializer.save()
             score_object.create()
@@ -333,7 +350,7 @@ class ScoreView(viewsets.ModelViewSet):
         except:
             return creation_failed_exception("File Doesn't exist.")
 
-        serializer = self.get_serializer(instance=instance, data=data, partial=True)
+        serializer = self.get_serializer(instance=instance, data=data, partial=True, context={"request": self.request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -4995,13 +5012,12 @@ def get_metadata_for_mlscripts(request, slug=None):
         return JsonResponse({'Message': 'Failed. No analysis of this dataset'})
 
     from api.datasets.serializers import DatasetSerializer
-    ds_serializer = DatasetSerializer(instance=ds, context={"request": self.request})
+    ds_serializer = DatasetSerializer(instance=ds, context={})
     meta_data = ds_serializer.data.get('meta_data')
     return JsonResponse({
         "metaData": meta_data.get('metaData'),
         'columnData': meta_data.get('columnData'),
         'headers': meta_data.get('headers')
-
     })
 
 

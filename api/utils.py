@@ -407,6 +407,11 @@ class ScoreSerlializer(serializers.ModelSerializer):
              #   ret['file_size']=-1
               #  ret['proceed_for_loading'] = True
         ret['job_status'] = instance.job.status
+        permission_details = get_permissions(
+            user=self.context['request'].user,
+            model=self.Meta.model.__name__.lower(),
+        )
+        ret['permission_details'] = permission_details
         return ret
 
     def update(self, instance, validated_data):
@@ -448,6 +453,11 @@ class ScoreListSerializer(serializers.ModelSerializer):
             ret['completed_percentage'] = 0
             ret['completed_message']="Analyzing Target Variable"
         ret['job_status'] = instance.job.status
+        permission_details = get_permissions(
+            user=self.context['request'].user,
+            model=self.Meta.model.__name__.lower(),
+        )
+        ret['permission_details'] = permission_details
         return ret
 
     class Meta:
@@ -878,7 +888,9 @@ def get_permissions(user, model, type='retrieve'):
     if model == 'trainer':
         if type == 'retrieve':
             return {
+               'create_score': user.has_perm('api.create_score'),
                'view_trainer': user.has_perm('api.view_trainer'),
+               'downlad_pmml': user.has_perm('api.downlad_pmml'),
                'rename_trainer': user.has_perm('api.rename_trainer'),
                'remove_trainer': user.has_perm('api.remove_trainer'),
             }
@@ -890,6 +902,7 @@ def get_permissions(user, model, type='retrieve'):
         if type == 'retrieve':
             return {
                'view_score': user.has_perm('api.view_score'),
+               'download_score': user.has_perm('api.download_score'),
                'rename_score': user.has_perm('api.rename_score'),
                'remove_score': user.has_perm('api.remove_score'),
             }

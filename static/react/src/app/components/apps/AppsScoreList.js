@@ -151,11 +151,9 @@ export class AppsScoreList extends React.Component {
 							{/*<input type="text" name="score_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Model Insights" id="model_insights" className="form-control" placeholder="Search Model insights..."/>*/}
 							
 							<div className="search-wrapper">
-								<form>
 								<input type="text" name="score_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Score Insights" id="score_insights" className="form-control search-box"  placeholder="Search Score insights... " required />
 								<span className="zmdi zmdi-search form-control-feedback"></span>
 								<button className="close-icon" type="reset"></button>
-								</form>
 							</div>							
 				</div>
 				

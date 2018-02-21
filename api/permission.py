@@ -85,6 +85,9 @@ class TrainerRelatedPermission(permissions.BasePermission):
     def has_permission(self, request, view):
         user = request.user
         if request.method in ['GET']:
+
+            if 'get_pmml' in request.path:
+                return user.has_perm('api.downlad_pmml')
             return user.has_perm('api.view_trainer')
 
         if request.method in ['POST']:
@@ -106,6 +109,9 @@ class ScoreRelatedPermission(permissions.BasePermission):
     def has_permission(self, request, view):
         user = request.user
         if request.method in ['GET']:
+
+            if 'download' in request.path:
+                return user.has_perm('api.download_score')
             return user.has_perm('api.view_score')
 
         if request.method in ['POST']:
@@ -134,3 +140,34 @@ class SuperUserPermission(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         pass
+
+
+'''
+Some Instruction:
+
+1. Permission Classes
+filename: api/permission.py
+usage: logic about permission/role/user/methods
+where to add:
+filaname: In api/views.py
+usage: add permission_class in views and in tuple add all permission class view wants
+
+3. List of permission
+filname: config/settings/base.py
+usage: source for permissions
+where_to_add:
+filename: api/models.py
+usage: add it in meta class of models as permissions = settings.PERMISSIONS_RELATED_TO_DATASET
+     : then makemigrations and migrate
+
+4. Adding to serializer
+filename: api/utils.py and api/datasets/serializer.py
+usage: adding permission_details in retrieve calls of APIs
+where_to_add:
+filename: api/utils.py
+usage: there is a method get_permissions(), make changes in this function according to the needs
+
+5. Add context in serializer. add request in context.
+
+6. For list serializers it has been added in pagination page itself.
+'''

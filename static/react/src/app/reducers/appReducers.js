@@ -251,6 +251,7 @@ export default function reducer(state = {
             appsLoaderModal:false,
             appsLoaderPerValue:0,
             appsLoaderText :"",
+            updateCreateModelHideShow:false,
         }
     }
     break;
