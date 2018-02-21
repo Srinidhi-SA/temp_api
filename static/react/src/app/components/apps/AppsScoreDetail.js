@@ -5,7 +5,7 @@ import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab} from "react-bootstrap";
 import {AppsCreateScore} from "./AppsCreateScore";
 import {Card} from "../signals/Card";
-import {getListOfCards,getAppsScoreSummary,getScoreSummaryInCSV,updateScoreSlug} from "../../actions/appActions";
+import {getListOfCards,getAppsScoreSummary,getScoreSummaryInCSV,updateScoreSlug,getAppDetails} from "../../actions/appActions";
 import {Button} from "react-bootstrap";
 import {STATIC_URL,EMR} from "../../helpers/env.js";
 import {isEmpty} from "../../helpers/helper";
@@ -28,6 +28,7 @@ export class AppsScoreDetail extends React.Component {
   }
   componentWillMount() {
       //It will trigger when refresh happens on url
+      this.props.dispatch(getAppDetails(this.props.match.params.AppId));
       if(isEmpty(this.props.scoreSummary)){
           this.props.dispatch(getAppsScoreSummary(this.props.match.params.slug));
           this.props.dispatch(updateScoreSlug(this.props.match.params.slug))
