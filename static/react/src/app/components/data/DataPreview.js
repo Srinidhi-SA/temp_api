@@ -19,7 +19,7 @@ import {DataUploadLoader} from "../common/DataUploadLoader";
 import {DataValidation} from "./DataValidation";
 import {DataValidationEditValues} from "./DataValidationEditValues";
 import Dialog from 'react-bootstrap-dialog';
-import {checkCreateScoreToProceed} from "../../actions/appActions";
+import {checkCreateScoreToProceed,getAppDetails} from "../../actions/appActions";
 
 @connect((store) => {
   return {
@@ -69,11 +69,55 @@ export class DataPreview extends React.Component {
   componentWillMount() {
     console.log("------------------");
     console.log(this.props);
-    if (this.props.dataPreview == null || isEmpty(this.props.dataPreview) || this.props.dataPreview.status == 'FAILED') {
-      this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
-    }
     console.log("data prevvvvv");
-    console.log(store.getState().datasets.curUrl.indexOf("models"));
+    if (this.props.dataPreview == null || isEmpty(this.props.dataPreview) || this.props.dataPreview.status == 'FAILED') {
+        this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
+    }
+    //When user refresh get current app details
+    if(this.props.match.path.includes("AppId")){
+        this.props.dispatch(getAppDetails(this.props.match.params.AppId));
+    }
+    if(this.props.match.path.includes("models") && this.props.match.path.includes("modelSlug") && this.props.match.path.includes("slug")){
+        this.buttons['close'] = {
+                url: "/apps",
+                text: "Close"
+        };
+        this.buttons['create'] = {
+                url: "/apps/" + this.props.match.params.AppId + "/models/" + this.props.match.params.modelSlug + "/data/" + this.props.match.params.slug + "/createScore",
+                text: CREATESCORE
+        };
+    }
+    else if(this.props.match.path.includes("models") && this.props.match.path.includes("slug")){
+        this.buttons['close'] = {
+                url: "/apps",
+                text: "Close"
+        };
+        this.buttons['create'] = {
+                url: "/apps/" + this.props.match.params.AppId + "/models/data/" + this.props.match.params.slug + "/createModel",
+                text: CREATEMODEL
+        };
+    }
+    else if(this.props.match.path.includes("robo")){
+        this.buttons['close'] = {
+                url: "/apps/" + this.props.match.params.AppId + "/robo",
+                text: "Close"
+        };
+        this.buttons['create'] = {
+                url: "/apps-robo/" + store.getState().apps.roboDatasetSlug + "/" + store.getState().signals.signalAnalysis.slug,
+                text: "Compose Insight"
+        };
+    }
+    else if(this.props.match.path.includes("slug")){
+        this.buttons['close'] = {
+                url: "/data",
+                text: "Close"
+        };
+        this.buttons['create'] = {
+                url: "/data/" + this.props.match.params.slug + "/createSignal",
+                text: CREATESIGNAL
+        };
+    }
+   /* console.log(store.getState().datasets.curUrl.indexOf("models"));
     if (store.getState().datasets.curUrl) {
       if (store.getState().datasets.curUrl.startsWith("/signals")) {
         this.buttons['close'] = {
@@ -135,7 +179,7 @@ export class DataPreview extends React.Component {
         url: "/data/" + this.props.match.params.slug + "/createSignal",
         text: CREATESIGNAL
       };
-    }
+    }*/
 
   }
 
@@ -352,7 +396,7 @@ export class DataPreview extends React.Component {
     let isSubsettingAllowed = false;
     let isDataValidationAllowed = false;
     let isCreateAllowed = false
-    if (dataPrev && !isEmpty(dataPrev)) {
+    if (dataPrev && !isEmpty(dataPrev) && dataPrev.status != "FAILED") {
       dataPrev = this.props.dataPreview.meta_data;
       let permission_details = this.props.dataPreview.permission_details;
       isSubsettingAllowed = permission_details.subsetting_dataset;

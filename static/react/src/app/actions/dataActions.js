@@ -126,7 +126,7 @@ function fetchStockDataPreview(slug) {
 }
 export function getDataSetPreview(slug,interval) {
     return (dispatch) => {
-        return fetchDataPreview(slug,dispatch).then(([response, json]) =>{
+        return fetchDataPreview(slug,dispatch,interval).then(([response, json]) =>{
             if(response.status === 200){
                 console.log(json)
                 dispatch(fetchDataPreviewSuccess(json,interval,dispatch))
@@ -141,13 +141,14 @@ export function getDataSetPreview(slug,interval) {
 }
 
 
-function fetchDataPreview(slug,dispatch) {
+function fetchDataPreview(slug,dispatch,interval) {
     return fetch(API+'/api/datasets/'+slug+'/',{
         method: 'get',
         headers: getHeader(getUserDetailsOrRestart.get().userToken)
     }).then( response => Promise.all([response, response.json()])).catch(function(error){
 
         dispatch(hideDULoaderPopup());
+        clearInterval(interval);
         let msg=statusMessages("error","Unable to connect to server. Check your connection please try again.","small_mascot")
         bootbox.alert(msg)
     });

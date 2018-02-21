@@ -5,7 +5,7 @@ import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Button} from "react-bootstrap";
 import {AppsCreateScore} from "./AppsCreateScore";
 import {Card} from "../signals/Card";
-import {getListOfCards,getAppsModelSummary,updateModelSlug,handleExportAsPMMLModal} from "../../actions/appActions";
+import {getListOfCards,getAppsModelSummary,updateModelSlug,handleExportAsPMMLModal,getAppDetails} from "../../actions/appActions";
 import {storeSignalMeta} from "../../actions/dataActions";
 import CircularProgressbar from 'react-circular-progressbar';
 import {STATIC_URL} from "../../helpers/env.js"
@@ -28,6 +28,7 @@ export class AppsModelDetail extends React.Component {
   }
   componentWillMount() {
 		this.props.dispatch(storeSignalMeta(null,this.props.match.url));
+		this.props.dispatch(getAppDetails(this.props.match.params.AppId));
 		//It will trigger when refresh happens on url
 		if(isEmpty(this.props.modelSummary)){
 		    this.props.dispatch(getAppsModelSummary(this.props.match.params.slug));
