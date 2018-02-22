@@ -1168,7 +1168,8 @@ def get_message(instance):
     ac = AccessFeedbackMessage()
     message_log = json.loads(instance.message_log)
     data = None
-    if len(message_log) < 0:
+
+    if message_log is None or len(message_log) < 0:
         data = get_message_for_job_status(instance.status)
         if data is not None:
             data = ac.append_using_key(instance.slug, data)
