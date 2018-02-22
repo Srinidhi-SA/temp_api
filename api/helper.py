@@ -1058,14 +1058,6 @@ def get_job_status(instance=None):
         get_job_status_from_jobserver(instance)
 
 
-def get_message_for_job_status(status=""):
-    job_status_message = settings.JOB_STATUS_MESSAGE
-    if status == "":
-        status = "EMPTY"
-
-    return job_status_message[status]
-
-
 def normalize_job_status_for_yarn(status):
     if "RUNNING" == status :
         return settings.job_status.RUNNING
@@ -1172,8 +1164,41 @@ def round_sig(x, sig=3):
 
 def get_message(instance):
     from api.redis_access import AccessFeedbackMessage
+    import json
     ac = AccessFeedbackMessage()
-    return ac.get_using_obj(instance)
+    message_log = json.loads(instance.message_log)
+    data = None
+    if len(message_log) < 0:
+        data = get_message_for_job_status(instance.status)
+        if data is not None:
+            data = ac.append_using_key(instance.slug, data)
+            instance.message_log = json.dumps(data)
+            instance.save()
+    else:
+        last_message = message_log[-1]
+        if 'analysisName' in last_message:
+            if last_message['analysisName'] == 'before_script':
+                data = get_message_for_job_status(instance.status)
+                if data is not None:
+                    data = ac.append_using_key(instance.slug, data)
+                    instance.message_log = json.dumps(data)
+                    instance.save()
+
+    if data is None:
+        return message_log
+    return data
+
+
+def get_message_for_job_status(status=""):
+    job_status_message = settings.JOB_STATUS_MESSAGE
+    import copy
+    job_message_json_format = copy.deepcopy(settings.JOB_MESSAGE_JSON_FORMAT)
+    if status == "":
+        status = "EMPTY"
+    job_message_json_format['messageType'] = status
+    job_message_json_format['shortExplanation'] = job_status_message[status]
+
+    return job_message_json_format
 
 
 from django.http import JsonResponse

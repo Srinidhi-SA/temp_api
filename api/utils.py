@@ -9,7 +9,7 @@ from rest_framework import serializers
 from rest_framework.utils import humanize_datetime
 from sjsclient import client
 
-from api.helper import JobserverDetails, get_job_status, get_message, get_message_for_job_status
+from api.helper import JobserverDetails, get_job_status, get_message
 from api.user_helper import UserSerializer
 from models import Insight, Dataset, Trainer, Score, Job, Robo, Audioset, StockDataset, CustomApps
 
@@ -192,8 +192,6 @@ class InsightSerializer(serializers.ModelSerializer):
                 ret['file_size']=-1
                 ret['proceed_for_loading'] = True
         ret['job_status'] = instance.job.status
-        ret['job_status_message'] = get_message_for_job_status(instance.job.status)
-
 
         # permission details
         permission_details = get_permissions(
@@ -243,8 +241,6 @@ class InsightListSerializers(serializers.ModelSerializer):
             ret['completed_percentage'] = 0
             ret['completed_message']="Analyzing Target Variable"
         ret['job_status'] = instance.job.status
-        ret['job_status_message'] = get_message_for_job_status(instance.job.status)
-
         # permission details
         permission_details = get_permissions(
             user=self.context['request'].user,

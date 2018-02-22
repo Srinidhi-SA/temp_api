@@ -9,7 +9,7 @@ from django.conf import settings
 
 from api.models import Dataset
 from helper import convert_to_json, convert_time_to_human
-from api.helper import get_job_status, get_message, get_message_for_job_status
+from api.helper import get_job_status, get_message
 import copy
 import json
 
@@ -68,7 +68,6 @@ class DatasetSerializer(serializers.ModelSerializer):
                 ret['proceed_for_loading'] = True
 
         ret['job_status'] = instance.job.status
-        ret['job_status_message'] = get_message_for_job_status(instance.job.status)
 
         if 'request' in self.context:
             # permission details
@@ -77,7 +76,6 @@ class DatasetSerializer(serializers.ModelSerializer):
                 model=self.Meta.model.__name__.lower(),
             )
             ret['permission_details'] = permission_details
-
         return ret
 
     class Meta:
@@ -100,7 +98,6 @@ class DataListSerializer(serializers.ModelSerializer):
             ret['completed_message']="Analyzing Target Variable"
 
         ret['job_status'] = instance.job.status
-        ret['job_status_message'] = get_message_for_job_status(instance.job.status)
 
         # permission details
         permission_details = get_permissions(

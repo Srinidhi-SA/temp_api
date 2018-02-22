@@ -1370,10 +1370,28 @@ PERMISSIONS_RELATED_TO_SCORE = (
 )
 
 JOB_STATUS_MESSAGE = {
-    "EMPTY": "I don't where is it.",
+    "EMPTY": "I don't know where is it.",
     "SUBMITTED": "It is not queue. But atleast it is in sysytem.",
     "ACCEPTED": "Accepted for queue. Wait and collect your peace.",
     "RUNNING": "Congrats. It is on move.",
     "FINISHED": "We are done.",
     "SUCCESS": "We are good."
 }
+
+JOB_MESSAGE_JSON_FORMAT = {
+    "analysisName" : "before_script",
+    "stageName" : "before_script",
+    "messageType" : "",
+    "shortExplanation" : "",
+    "stageCompletionTimestamp" : "",
+    "gmtDateTime":"",
+    "globalCompletionPercentage" : 0,
+    "stageCompletionPercentage" : 0,
+    "display": True
+}
+
+
+
+'''
+time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(timestamp))
+'''
