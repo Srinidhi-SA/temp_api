@@ -5,7 +5,7 @@ import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab} from "react-bootstrap";
 import {AppsCreateScore} from "./AppsCreateScore";
 import {Card} from "../signals/Card";
-import {getListOfCards,getAppsScoreSummary,getScoreSummaryInCSV,updateScoreSlug} from "../../actions/appActions";
+import {getListOfCards,getAppsScoreSummary,getScoreSummaryInCSV,updateScoreSlug,getAppDetails} from "../../actions/appActions";
 import {Button} from "react-bootstrap";
 import {STATIC_URL,EMR} from "../../helpers/env.js";
 import {isEmpty} from "../../helpers/helper";
@@ -28,6 +28,7 @@ export class AppsScoreDetail extends React.Component {
   }
   componentWillMount() {
       //It will trigger when refresh happens on url
+      this.props.dispatch(getAppDetails(this.props.match.params.AppId));
       if(isEmpty(this.props.scoreSummary)){
           this.props.dispatch(getAppsScoreSummary(this.props.match.params.slug));
           this.props.dispatch(updateScoreSlug(this.props.match.params.slug))
@@ -47,10 +48,14 @@ export class AppsScoreDetail extends React.Component {
     const scoreSummary = store.getState().apps.scoreSummary;
     const scoreLink = "/apps/"+store.getState().apps.currentAppDetails.slug+"/scores";
     const scoreDataLink = "/apps/"+store.getState().apps.currentAppDetails.slug+"/scores/"+store.getState().apps.scoreSlug+"/dataPreview";
+		var showViewButton = true;
+		var showDownloadButton = true;
     console.log(scoreSummary)
 	if (!$.isEmptyObject(scoreSummary)) {
 		console.log(this.props)
-		let listOfCardList = getListOfCards(scoreSummary.data.listOfCards)
+		let listOfCardList = getListOfCards(scoreSummary.data.listOfCards);
+		showViewButton = scoreSummary.permission_details.download_score;
+		showDownloadButton = scoreSummary.permission_details.download_score;
 		let cardDataList = listOfCardList.map((data, i) => {
 
             return (<Card key={i} cardData={data} />)
@@ -94,8 +99,8 @@ export class AppsScoreDetail extends React.Component {
 		                    </div>
 		                    <div className="row">
 		                    <div className="col-md-12 text-right">
-		                   	<Link to={scoreDataLink} onClick={this.gotoScoreData.bind(this)} className="btn btn-primary xs-pr-10"> View </Link>
-		                    	<a  href={downloadURL} id="download" className="btn btn-primary" download>Download</a>
+		                   	{showViewButton?<Link to={scoreDataLink} onClick={this.gotoScoreData.bind(this)} className="btn btn-primary xs-pr-10"> View </Link>:""}
+		                    {showDownloadButton?<a  href={downloadURL} id="download" className="btn btn-primary" download>Download</a>:""}
 		                   </div>
 
 		                   </div>

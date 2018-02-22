@@ -22,6 +22,7 @@ import {STATIC_URL} from "../../helpers/env.js"
 import {SEARCHCHARLIMIT,getUserDetailsOrRestart,SUCCESS,INPROGRESS,HANA,MYSQL,MSSQL,HDFS,FILEUPLOAD} from  "../../helpers/helper"
 import {DataUploadLoader} from "../common/DataUploadLoader";
 import Dialog from 'react-bootstrap-dialog'
+import {clearDataPreview} from "../../actions/dataUploadActions";
 
 var dateFormat = require('dateformat');
 
@@ -50,6 +51,7 @@ export class DataCard extends React.Component {
         var that = this;
         this.selectedData = e.target.id;
         //alert(this.selectedData);
+        this.props.dispatch(clearDataPreview());
         this.props.dispatch(storeSignalMeta(null, that.props.match.url));
         this.props.dispatch(getDataSetPreview(this.selectedData));
     }

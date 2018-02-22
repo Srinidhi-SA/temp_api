@@ -1912,13 +1912,15 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
     }
 
     export function getAppDetails(appSlug,pageNo){
-
        return (dispatch) => {
            return triggerAppDetailsAPI(appSlug).then(([response, json]) =>{
                if(response.status === 200){
                    dispatch(updateSelectedApp(json.app_id,json.name,json));
-                   dispatch(getAppsModelList(pageNo));
-                   dispatch(getAppsScoreList(pageNo));
+                   if(pageNo != undefined){
+                       dispatch(getAppsModelList(pageNo));
+                       dispatch(getAppsScoreList(pageNo));
+                   }
+                  
                }
            });
        }
