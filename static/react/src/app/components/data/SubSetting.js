@@ -49,6 +49,16 @@ export class SubSetting extends React.Component {
     $(".bslider").slider();
     var that = this;
     $(function() {
+      var selectAllChecked = true;
+       $('.dimension[type="checkbox"]').each(function() {
+          if (!$(this).is(":checked")) {
+            selectAllChecked = false;
+            $('#dim[type="checkbox"]').prop('checked', false);
+          } 
+      });
+      if(selectAllChecked == true)
+      $('#dim[type="checkbox"]').prop('checked', true);
+
       $("#dim").click(function() { // select all dimension clicked
         let count = 0;
         if ($(this).is(":checked")) {
@@ -67,21 +77,29 @@ export class SubSetting extends React.Component {
         });
         that.state.curdimention = that.state.selectedDimention
         console.log(that.state.selectedDimention);
+        $("#saveButton").removeClass('btn-alt4')
+        $("#saveButton").addClass('btn-primary')
+        $("#saveButton").removeAttr('disabled')
       });
 
       //Note:following will be called when we need to persist checklist on click of checkbox
 
       $('.dimension[type="checkbox"]').click(function() {
         let count = 0;
+        let checkSelectAll = true;
         that.state.selectedDimention = [];
         $('.dimension[type="checkbox"]').each(function() {
           if (!$(this).is(":checked")) {
+            checkSelectAll = false;
             $('#dim[type="checkbox"]').prop('checked', false);
           } else {
             count++;
             that.state.selectedDimention.push($(this).val());
           }
         });
+        if(checkSelectAll == true)
+        $('#dim[type="checkbox"]').prop('checked', true);
+
         console.log(that.state.selectedDimention);
         $("#saveButton").removeClass('btn-alt4')
         $("#saveButton").addClass('btn-primary')
