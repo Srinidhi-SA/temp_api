@@ -1058,6 +1058,14 @@ def get_job_status(instance=None):
         get_job_status_from_jobserver(instance)
 
 
+def get_message_for_job_status(status=""):
+    job_status_message = settings.JOB_STATUS_MESSAGE
+    if status == "":
+        status = "EMPTY"
+
+    return job_status_message[status]
+
+
 def normalize_job_status_for_yarn(status):
     if "RUNNING" == status :
         return settings.job_status.RUNNING

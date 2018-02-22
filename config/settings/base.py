@@ -1368,3 +1368,10 @@ PERMISSIONS_RELATED_TO_SCORE = (
     ('remove_score', 'remove score'),
     ('download_score', 'Download Score')
 )
+
+JOB_STATUS_MESSAGE = {
+    "EMPTY": "I don't where is it.",
+    "SUBMITTED": "It is not queue. But atleast it is in sysytem.",
+    "ACCEPTED": "Accepted for queue. Wait and collect your peace.",
+    "RUNNING": "Congrats. It is on move."
+}
