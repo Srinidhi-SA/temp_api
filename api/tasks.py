@@ -66,7 +66,7 @@ def write_into_databases(job_type, object_slug, results):
             dataset_object.status = "FAILED"
             dataset_object.save()
             return results
-
+        print results
         columnData = results['columnData']
         for data in columnData:
             # data["chartData"] = helper.find_chart_data_and_replace_with_chart_data(data["chartData"])

@@ -1180,7 +1180,7 @@ def get_message(instance):
             if msg_log['analysisName'] != 'before_script':
                 keep_in_API = False
                 break
-                
+
         last_message = message_log[-1]
         if 'analysisName' in last_message and keep_in_API:
             if last_message['analysisName'] == 'before_script':
