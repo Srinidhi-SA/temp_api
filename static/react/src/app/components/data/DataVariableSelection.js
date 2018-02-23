@@ -10,6 +10,7 @@ import { C3Chart } from "../c3Chart";
 import $ from "jquery";
 
 import {updateSelectedVariables, resetSelectedVariables, setSelectedVariables,updateDatasetVariables,handleDVSearch,handelSort,handleSelectAll,checkColumnIsIgnored } from "../../actions/dataActions";
+import {resetSelectedTargetVariable} from "../../actions/signalActions";
 
 @connect(( store ) => {
     return {
@@ -54,7 +55,7 @@ export class DataVariableSelection extends React.Component {
     componentDidMount() {
     	window.scrollTo(0, 0);
         this.props.dispatch( resetSelectedVariables() );
-
+        this.props.dispatch(resetSelectedTargetVariable());
        // this.setVariables( this.dimensions, this.measures, this.selectedTimeDimension );
         this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.possibleAnalysisList,true));
 
