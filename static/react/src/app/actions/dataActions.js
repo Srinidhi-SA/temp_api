@@ -536,9 +536,10 @@ function updateList(slug,array){
     for(var i=0;i<array.length;i++){
         if(array[i].slug == slug){
             array[i].selected = !array[i].selected;
+            return array;
         }
     }
-    return array;
+    
 }
 function updateTimeDimList(slug,array,evt){
     for(var i=0;i<array.length;i++){
@@ -631,15 +632,6 @@ export function updateSelectedVariables(evt){
             dataSetTimeDimensions  = updateTimeDimList(varSlug,dataSetTimeDimensions,evt);
         }
 
-
-        //Update selectAll checkbox and selected variables count when varaibles are checked/unchecked
-        /*if(evt.target.className != "timeDimension"){
-            if(evt.target.checked){
-                count=count+1;
-            }else if(!evt.target.checked){
-                count = count-1;
-            }
-        }*/
         dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
         count = getTotalVariablesSelected();
         dispatch(updateVariablesCount(count));
@@ -680,24 +672,6 @@ export function resetSelectedVariables(){
         type: "RESET_VARIABLES",
     }
 }
-/*export function setSelectedVariables(dimensions,measures,timeDimension){
-    let count = 0;
-    if(timeDimension != undefined){
-        count = dimensions.slice().length + measures.slice().length + 1;
-    }else{
-        count = dimensions.slice().length + measures.slice().length;
-    }
-    console.log("check count::");
-    console.log(dimensions)
-    console.log(count)
-    return {
-        type: "SET_VARIABLES",
-        dimensions,
-        measures,
-        timeDimension,
-        count,
-    }
-}*/
 
 export function openDULoaderPopup(){
     return {
@@ -1002,27 +976,6 @@ export function handleSelectAll(evt){
             dimFlag = evt.target.checked
         }
 
-
-
-     /*   if(evt.target.checked && varType == "measure" ){
-            count=count+dataSetMeasures.length;
-        }else if(!evt.target.checked && varType == "measure"){
-            count = count-dataSetMeasures.length;
-        }
-        else if(evt.target.checked && varType == "dimension" ){
-            count=count+dataSetDimensions.length;
-        }else if(!evt.target.checked && varType == "dimension"){
-            count = count-dataSetDimensions.length;
-        }
-        
-        //When TargetVariable type and select all type are same, count will be changed as target woon't be shown in select list
-        if(evt.target.checked && varType == targetVariableType ){
-            count=count-1
-        }
-        else if(!evt.target.checked && varType == targetVariableType){
-            count=count+1
-        }
-        */
         dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
         count = getTotalVariablesSelected();
         dispatch(updateVariablesCount(count));

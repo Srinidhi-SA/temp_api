@@ -350,30 +350,15 @@ function triggerAdvanceSettingsAPI(variableSelection){
     }).then( response => Promise.all([response, response.json()]));
 }
 
-/*export function handleTargetSelection(){
-    var selectedDimensions =  store.getState().datasets.selectedDimensions.slice();
-    var selectedMeasures = store.getState().datasets.selectedMeasures.slice();
-    var varType = store.getState().signals.getVarType;
-    var varText = store.getState().signals.getVarText;
-    if(varType == "dimension"){
-        selectedDimensions.splice(selectedDimensions.indexOf(varText),1);
-    }else{
-        selectedMeasures.splice(selectedMeasures.indexOf(varText),1);
-    }
-    return {
-        type:"UPDATE_SELECTED_VARIABLES",
-        selectedDimensions,
-        selectedMeasures}
-}*/
 function updateTargetVariable(slug,array){
     for(var i=0;i<array.length;i++){
     if(array[i].slug == slug){
         array[i].targetColumn = !array[i].targetColumn;
         array[i].targetColSetVarAs = null;
-        break;
+        return array;
     }
 }
-return array;
+
 }
 
 function handleSelectAllFlag(array){
@@ -381,10 +366,10 @@ function handleSelectAllFlag(array){
     for(var i=0;i<array.length;i++){
        if(array[i].selected == false && array[i].targetColumn == false){
             selectAllFlag = false;
-            break;
+            return selectAllFlag;
         }
     }
-    return selectAllFlag;
+    
 }
 export function clearMeasureSearchIfTargetIsSelected(name){ 
     $("#measureSearch").val(""); 
@@ -409,7 +394,7 @@ export function hideTargetVariable(event,jobType){
     var prevVarSlug = store.getState().signals.selVarSlug;
     var prevVarType = store.getState().signals.getVarType;
     var prevSetVarAs = null;
-    
+  
     dispatch(clearMeasureSearchIfTargetIsSelected("")) 
     dispatch(clearDimensionSearchIfTargetIsSelected("")) 
     
@@ -422,38 +407,15 @@ export function hideTargetVariable(event,jobType){
     if(varType == "measure"){
         dataSetMeasures = updateTargetVariable(varSlug,dataSetMeasures);
         $("#measureSearch").val("");
-        /*if(dataSetMeasures.length == 1){
-            meaFlag = false;
-        }*/
     }else if(varType == "dimension"){
         dataSetDimensions = updateTargetVariable(varSlug,dataSetDimensions);
         $("#dimensionSearch").val("");
-        //If only one dimension is there and selected as target , selectAll should be unchecked
-        /*if(dataSetDimensions.length == 1){
-            dimFlag = false;
-        }*/
     }
-
-    dataSetDimensions = updateTargetVariable(prevVarSlug,dataSetDimensions)
-    dataSetMeasures = updateTargetVariable(prevVarSlug,dataSetMeasures)
-
-
-  /*  if(prevVarType == null){
-        if(count != 0)
-        count = count-1;
-    }*/
-    //If previous variable selected and current target is empty count should be incremented
-   /* else if(prevVarType != "" && varType == ""){
-        count = count+1;
-    }*/
-  
+    if(prevVarSlug != null){
+        dataSetDimensions = updateTargetVariable(prevVarSlug,dataSetDimensions)
+        dataSetMeasures = updateTargetVariable(prevVarSlug,dataSetMeasures)    
+    }
     
-    
-    /*if(prevVarType == "measure" && dataSetMeasures.length == 1 ){
-        meaFlag = true;
-    }else if(prevVarType == "dimension" && dataSetDimensions.length == 1 ){
-        dimFlag = true;
-    }*/
     dimFlag = handleSelectAllFlag(dataSetDimensions);
     meaFlag = handleSelectAllFlag(dataSetMeasures);
     
