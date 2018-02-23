@@ -1200,7 +1200,7 @@ def get_message(instance):
     data[-1]['shortExplanation'] = prev_true_message
     data[-1]['display'] = True
 
-    return data[-1]
+    return [data[-1]]
 
 
 def get_message_for_job_status(status=""):
