@@ -1175,8 +1175,14 @@ def get_message(instance):
             instance.message_log = json.dumps(data)
             instance.save()
     else:
+        keep_in_API = True
+        for msg_log in message_log:
+            if msg_log['analysisName'] != 'before_script':
+                keep_in_API = False
+                break
+                
         last_message = message_log[-1]
-        if 'analysisName' in last_message:
+        if 'analysisName' in last_message and keep_in_API:
             if last_message['analysisName'] == 'before_script':
                 data = get_message_for_job_status(instance.status)
                 if data is not None:
