@@ -1191,8 +1191,15 @@ def get_message(instance):
                     instance.save()
 
     if data is None:
-        return message_log
-    return data
+        data = message_log
+
+    prev_true_message = None
+    for d in data:
+        if d['display'] == True:
+            prev_true_message = d['shortExplanation']
+    data[-1]['shortExplanation'] = prev_true_message
+
+    return data[-1]
 
 
 def get_message_for_job_status(status=""):
