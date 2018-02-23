@@ -111,7 +111,7 @@ export class VariableSelection extends React.Component {
         console.log("while creating signal")
         console.log(this.props);
         this.signalFlag = false;
-        this.props.dispatch(updateCsLoaderValue(0))
+        this.props.dispatch(updateCsLoaderValue(-1))
         this.props.dispatch(openCsLoaderModal());
         //let customDetails = createcustomAnalysisDetails();
         let analysisList =[],config={}, postData={};

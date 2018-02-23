@@ -17,7 +17,7 @@ export default function reducer(state = {
         currentAppId:"",
         currentAppName:"",
         appsLoaderModal:false,
-        appsLoaderPerValue:0,
+        appsLoaderPerValue:-1,
         appsLoaderText :"",
         modelSummaryFlag:false,
         scoreSummaryFlag:false,
@@ -249,7 +249,7 @@ export default function reducer(state = {
         return {
             ...state,
             appsLoaderModal:false,
-            appsLoaderPerValue:0,
+            appsLoaderPerValue:-1,
             appsLoaderText :"",
             updateCreateModelHideShow:false,
         }
@@ -294,6 +294,7 @@ export default function reducer(state = {
         return {
             ...state,
             scoreSlug:action.slug,
+            updateCreateModelHideShow:true,
         }
     }
     break;

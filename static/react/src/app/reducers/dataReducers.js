@@ -15,7 +15,7 @@ export default function reducer(state = {
   signalMeta: {},
   curUrl: "",
   dataUploadLoaderModal: false,
-  dULoaderValue: 1,
+  dULoaderValue: -1,
   data_search_element: "",
   dataSetMeasures: [],
   dataSetDimensions: [],
@@ -231,7 +231,7 @@ export default function reducer(state = {
           dataPreviewFlag: false,
           selectedDataSet: "",
           dataLoaderText:"Preparing data for loading",
-          dULoaderValue: 3,
+          dULoaderValue: -1,
           loading_message:[]
         }
       }
@@ -445,7 +445,7 @@ export default function reducer(state = {
       return{
         ...state,
         loading_message:[],
-        dULoaderValue:3,
+        dULoaderValue:-1,
         dataLoaderText:"Preparing data for loading"
       }
     }

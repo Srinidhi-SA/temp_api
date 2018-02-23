@@ -67,13 +67,13 @@ export class CreateSignalLoader extends React.Component {
                       <br/> {store.getState().signals.loaderText}
                     </h4><br/>
 
-                    <div className="p_bar_body">
+                    {store.getState().signals.createSignalLoaderValue >= 0?<div className="p_bar_body">
                       <progress className="prg_bar" value={store.getState().signals.createSignalLoaderValue} max={95}></progress>
                       <div className="progress-value">
                         <h3>{store.getState().signals.createSignalLoaderValue}
                           %</h3>
                       </div>
-                    </div>
+                    </div>:""}
 
                   </div>
                 </div>

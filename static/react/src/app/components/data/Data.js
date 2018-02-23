@@ -60,7 +60,7 @@ export class Data extends React.Component {
       this.props.dispatch(getDataList(pageNo));
     }
   componentDidMount(){
-     //this.props.dispatch(refreshDatasets(this.props));
+     this.props.dispatch(refreshDatasets(this.props));
   }
 
   openModelPopup() {

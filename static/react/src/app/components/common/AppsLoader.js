@@ -71,10 +71,10 @@ export class AppsLoader extends React.Component {
 				{store.getState().apps.appsLoaderText}
 				</h4><br/>
 
-				<div className="p_bar_body">
+				{store.getState().apps.appsLoaderPerValue >= 0 ?<div className="p_bar_body">
 				<progress className="prg_bar" value={store.getState().apps.appsLoaderPerValue} max={95}></progress>
 				<div className="progress-value"><h3>{store.getState().apps.appsLoaderPerValue} %</h3></div>
-				</div>
+				</div>:""}
 			</div>
 		</div>
 		</div>

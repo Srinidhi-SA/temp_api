@@ -5,7 +5,7 @@ export default function reducer(state = {
   newSignalShowModal:false,
   signalData:null,
   createSignalLoaderModal:false,
-  createSignalLoaderValue:0,
+  createSignalLoaderValue:-1,
   current_page:1,
   urlPrefix:"/signals",
   signalAnalysis: {},
@@ -210,7 +210,7 @@ export default function reducer(state = {
       return{
         ...state,
         loading_message:[],
-        createSignalLoaderValue:0,
+        createSignalLoaderValue:-1,
         loaderText:"Analyzing Target Variable"
       }
     }

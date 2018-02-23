@@ -85,7 +85,7 @@ export class DataCard extends React.Component {
             {data.name}
             </Link>
             if(data.status == INPROGRESS){
-                percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>
+                percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{data.completed_percentage >= 0 ? data.completed_percentage+' %':"In Progress"}</span></div>
                 dataClick = <a class="cursor" onClick={this.openDataLoaderScreen.bind(this,data.slug,data.completed_percentage,data.completed_message)}> {data.name}</a>
             }else if(data.status == SUCCESS && !data.viewed){
                 data.completed_percentage = 100;
