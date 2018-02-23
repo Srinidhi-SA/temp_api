@@ -1198,6 +1198,7 @@ def get_message(instance):
         if d['display'] == True:
             prev_true_message = d['shortExplanation']
     data[-1]['shortExplanation'] = prev_true_message
+    data[-1]['display'] = True
 
     return data[-1]
 
