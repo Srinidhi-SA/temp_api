@@ -1385,8 +1385,8 @@ JOB_MESSAGE_JSON_FORMAT = {
     "shortExplanation" : "",
     "stageCompletionTimestamp" : "",
     "gmtDateTime":"",
-    "globalCompletionPercentage" : 0,
-    "stageCompletionPercentage" : 0,
+    "globalCompletionPercentage" : -1,
+    "stageCompletionPercentage" : -1,
     "display": True
 }
 
