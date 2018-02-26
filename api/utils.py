@@ -825,6 +825,7 @@ class AppSerializer(serializers.ModelSerializer):
             instance.iconName = validated_data.get("iconName", instance.iconName)
             instance.name = validated_data.get("name", instance.name)
             instance.app_url = validated_data.get("app_url", instance.app_url)
+            instance.app_type = validated_data.get("app_type", instance.app_type)
 
             instance.save()
 
