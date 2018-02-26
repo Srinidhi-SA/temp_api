@@ -142,7 +142,7 @@ export class DataVariableSelection extends React.Component {
             if ( store.getState().datasets.dataSetMeasures.length > 0 ) {
                 $(".measureAll").prop("disabled",false);
                 var measureTemplate = store.getState().datasets.dataSetMeasures.map(( mItem, mIndex ) => {
-                 if(mItem.targetColumn)varCls="hidden";
+                 if(mItem.targetColumn || mItem.uidCol)varCls="hidden";
                  else varCls = "";
                     return (
                         <li className={varCls} key={mItem.slug}><div className="ma-checkbox inline"><input id={mItem.slug} name={mItem.setVarAs} type="checkbox" className="measure" onChange={this.handleCheckboxEvents} value={mItem.name} checked={mItem.selected} /><label htmlFor={mItem.slug} className="radioLabels">{mItem.name}</label></div> </li>
@@ -156,7 +156,7 @@ export class DataVariableSelection extends React.Component {
                 $(".dimensionAll").prop("disabled",false);
                 var dimensionTemplate = store.getState().datasets.dataSetDimensions.map(( dItem, dIndex ) => {
 
-                    if(dItem.targetColumn)varCls="hidden";
+                    if(dItem.targetColumn ||  dItem.uidCol)varCls="hidden";
                     else varCls = "";
                     return (
                         <li className={varCls} key={dItem.slug}><div className="ma-checkbox inline"><input id={dItem.slug} name={dItem.setVarAs} type="checkbox" className="dimension" onChange={this.handleCheckboxEvents} value={dItem.name} checked={dItem.selected} /><label htmlFor={dItem.slug}>{dItem.name}</label></div> </li>
@@ -169,16 +169,17 @@ export class DataVariableSelection extends React.Component {
 
             if ( store.getState().datasets.dataSetTimeDimensions.length > 0 ) {
                 var datetimeTemplate = store.getState().datasets.dataSetTimeDimensions.map(( dtItem, dtIndex ) => {
-
+                    if(mItem.uidCol)varCls="hidden";
+                    else varCls = "";
 
                     	if(dtItem.columnType != "dimension"){
                         	return (
-                        			<li key={dtItem.slug}><div className="ma-radio inline"><input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents}  name="date_type" id={dtItem.slug} value={dtItem.name} checked={dtItem.selected} /><label htmlFor={dtItem.slug}>{dtItem.name}</label></div></li>
+                        			<li className={varCls} key={dtItem.slug}><div className="ma-radio inline"><input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents}  name="date_type" id={dtItem.slug} value={dtItem.name} checked={dtItem.selected} /><label htmlFor={dtItem.slug}>{dtItem.name}</label></div></li>
                         	);
                         }else{
                         	return (
 
-                        			<li key={dtItem.slug}><div className="ma-radio inline col-md-10"><input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents}  name="date_type" id={dtItem.slug} value={dtItem.name} checked={dtItem.selected} /><label htmlFor={dtItem.slug}>{dtItem.name}</label></div>{timeSuggestionToolTip}</li>
+                        			<li className={varCls} key={dtItem.slug}><div className="ma-radio inline col-md-10"><input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents}  name="date_type" id={dtItem.slug} value={dtItem.name} checked={dtItem.selected} /><label htmlFor={dtItem.slug}>{dtItem.name}</label></div>{timeSuggestionToolTip}</li>
                         	);
                         }
 
