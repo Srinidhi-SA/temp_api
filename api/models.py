@@ -1216,7 +1216,7 @@ class Score(models.Model):
         if config is not None:
             if 'COLUMN_SETTINGS' in config:
                 try:
-                    brief_info.update(self.get_variable_details_from_variable_selection())
+                    brief_info.update(self.trainer.get_variable_details_from_variable_selection())
                 except:
                     column_settings = config['COLUMN_SETTINGS']
                     brief_info.update({
@@ -1244,6 +1244,7 @@ class Score(models.Model):
                 'model': self.trainer.name
             }
         )
+
         return convert_json_object_into_list_of_object(brief_info, 'score')
 
 
