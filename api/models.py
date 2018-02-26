@@ -1332,6 +1332,7 @@ class CustomApps(models.Model):
     status = models.CharField(max_length=100, null=True, default="Inactive")
     live_status = models.CharField(max_length=300, default='0', choices=STATUS_CHOICES)
     viewed = models.BooleanField(default=False)
+    app_type = models.CharField(max_length=300, null=True, default="")
 
     class Meta:
         ordering = ['app_id']
