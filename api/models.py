@@ -1386,6 +1386,7 @@ class CustomApps(models.Model):
 
 auditlog.register(Dataset)
 auditlog.register(Insight)
+auditlog.register(Score)
 auditlog.register(Robo)
 auditlog.register(Trainer)
 auditlog.register(CustomApps)
