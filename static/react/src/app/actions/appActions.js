@@ -1893,6 +1893,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                        return element.name == "LevelCount";
                      });
                    if(found != undefined){
+                       if(found.value != null)
                      levelCounts = Object.keys(found.value);
                    }
                }
