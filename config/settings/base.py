@@ -1251,7 +1251,8 @@ CUSTOM_WORD1_APPS = {
     'EMPLOYEE ATTRITION': 'attrition',
     'SPEECH ANALYTICS': 'speech',
     'STOCK SENSE': 'stock',
-    'STOCK  SENSE': 'stock'
+    'STOCK  SENSE': 'stock',
+    'REGRESSION APP': 'regression'
 }
 
 CUSTOM_WORD2_APPS = {
@@ -1268,7 +1269,8 @@ CUSTOM_WORD2_APPS = {
     'EMPLOYEE ATTRITION': 'attrition',
     'SPEECH ANALYTICS': 'speech',
     'STOCK SENSE': 'stock',
-    'STOCK  SENSE': 'stock'
+    'STOCK  SENSE': 'stock',
+    'REGRESSION APP': 'regression'
 }
 
 ############# YARN related items
