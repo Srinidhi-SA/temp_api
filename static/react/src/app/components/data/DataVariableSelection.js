@@ -215,11 +215,9 @@ export class DataVariableSelection extends React.Component {
 
 											<div class="input-group">
 											<div className="search-wrapper">
-											<form>
-											<input type="text" name="measure" onChange={this.handleDVSearch.bind(this)} title="Search Measures" id="measureSearch" className="form-control search-box" placeholder="Search measures..." required />
+											<input type="text" name="measure" onChange={this.handleDVSearch.bind(this)} title="Search Measures" id="measureSearch" className="form-control search-box" placeholder="Search measures..."  />
 											<span className="zmdi zmdi-search form-control-feedback"></span>
 											<button className="close-icon" name="measure" onClick={this.handleDVSearch.bind(this)}  type="reset"></button>
-											</form>
 											</div>
 											</div>
 											<div class="btn-group">
@@ -276,11 +274,11 @@ export class DataVariableSelection extends React.Component {
 
 												<div class="input-group">
 												<div className="search-wrapper">
-												<form>
-												<input type="text" name="dimension" onChange={this.handleDVSearch.bind(this)} title="Search Dimension" id="dimensionSearch" className="form-control search-box" placeholder="Search dimension..." required />
+									
+												<input type="text" name="dimension" onChange={this.handleDVSearch.bind(this)} title="Search Dimension" id="dimensionSearch" className="form-control search-box" placeholder="Search dimension..."  />
 												<span className="zmdi zmdi-search form-control-feedback"></span>
 												<button className="close-icon"  name="dimension"  onClick={this.handleDVSearch.bind(this)}  type="reset"></button>
-												</form>
+												
 												</div>
 												</div>
 												 <div class="btn-group">
@@ -337,11 +335,11 @@ export class DataVariableSelection extends React.Component {
 
 												<div class="input-group">
 												<div className="search-wrapper">
-												<form>
-												<input type="text" name="datetime" onChange={this.handleDVSearch.bind(this)} title="Search Time Dimensions" id="datetimeSearch" className="form-control search-box" placeholder="Search time dimensions..." required />
+												
+												<input type="text" name="datetime" onChange={this.handleDVSearch.bind(this)} title="Search Time Dimensions" id="datetimeSearch" className="form-control search-box" placeholder="Search time dimensions..."/>
 												<span className="zmdi zmdi-search form-control-feedback"></span>
 												<button className="close-icon" name="datetime" onClick={this.handleDVSearch.bind(this)} type="reset"></button>
-												</form>
+												
 												</div>
 												</div>
 
