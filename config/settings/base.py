@@ -1370,14 +1370,21 @@ PERMISSIONS_RELATED_TO_SCORE = (
 )
 
 JOB_STATUS_MESSAGE = {
-    "EMPTY": "ANKUSH - I don't know where is it.",
-    "SUBMITTED": "ANKUSH - It is not queue. But atleast it is in sysytem.",
-    "ACCEPTED": "ANKUSH - Accepted for queue. Wait and collect your peace.",
-    "RUNNING": "ANKUSH - Congrats. It is on move.",
-    "FINISHED": "ANKUSH - We are done.",
-    "SUCCESS": "ANKUSH - We are good."
+    "EMPTY": "Submitting for analysis",
+    "SUBMITTED": "Submitting for analysis.",
+    "ACCEPTED": "Analysis submitted. Waiting in queue.",
+    "RUNNING": "Analyzing target variable.",
+    "FINISHED": "Completed",
+    "SUCCESS": "Completed"
 }
-
+'''
+    "EMPTY": "Submitting for analysis",
+    "SUBMITTED": "Submitting for analysis.",
+    "ACCEPTED": "{0} submitted. Waiting in queue.",
+    "RUNNING": "Analyzing target variable.",
+    "FINISHED": "your {0} is ready.",
+    "SUCCESS": "your {0} is ready."
+'''
 JOB_MESSAGE_JSON_FORMAT = {
     "analysisName" : "before_script",
     "stageName" : "before_script",
