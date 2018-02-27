@@ -169,7 +169,7 @@ export class DataVariableSelection extends React.Component {
 
             if ( store.getState().datasets.dataSetTimeDimensions.length > 0 ) {
                 var datetimeTemplate = store.getState().datasets.dataSetTimeDimensions.map(( dtItem, dtIndex ) => {
-                    if(mItem.uidCol)varCls="hidden";
+                    if(dItem.uidCol)varCls="hidden";
                     else varCls = "";
 
                     	if(dtItem.columnType != "dimension"){
