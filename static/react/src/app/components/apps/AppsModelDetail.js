@@ -5,7 +5,7 @@ import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Button} from "react-bootstrap";
 import {AppsCreateScore} from "./AppsCreateScore";
 import {Card} from "../signals/Card";
-import {getListOfCards,getAppsModelSummary,updateModelSlug,handleExportAsPMMLModal,getAppDetails} from "../../actions/appActions";
+import {getListOfCards,getAppsModelSummary,updateModelSlug,handleExportAsPMMLModal,getAppDetails,updateModelSummaryFlag} from "../../actions/appActions";
 import {storeSignalMeta} from "../../actions/dataActions";
 import CircularProgressbar from 'react-circular-progressbar';
 import {STATIC_URL} from "../../helpers/env.js"
@@ -53,12 +53,15 @@ export class AppsModelDetail extends React.Component {
   handleExportAsPMMLModal(flag){
       this.props.dispatch(handleExportAsPMMLModal(flag))
   }
+  updateModelSummaryFlag(flag){
+      this.props.dispatch(updateModelSummaryFlag(flag))
+  }
   render() {
     console.log("apps Model Detail View is called##########3");
     const modelSummary = store.getState().apps.modelSummary;
 		var showExportPmml = true;
 		var showCreateScore = true;
-    const modelLink = "/apps/"+store.getState().apps.currentAppId+"/models";
+    const modelLink = "/apps/"+this.props.match.params.AppId+"/models";
 	if (!$.isEmptyObject(modelSummary)) {
 		console.log(this.props)
 		showExportPmml = modelSummary.permission_details.downlad_pmml;
@@ -92,7 +95,7 @@ export class AppsModelDetail extends React.Component {
 		                          <button type="button" className="btn btn-default" disabled = "true" title="Document Mode">
 		                             <i class="zmdi zmdi-hc-lg zmdi-view-web"></i>
 		                            </button>
-							   <Link className="btn btn-default continue btn-close" to={modelLink}>
+							   <Link className="btn btn-default continue btn-close" to={modelLink} onClick={this.updateModelSummaryFlag.bind(this,false)}>
 
 		                            <i class="zmdi zmdi-hc-lg zmdi-close"></i>
 

@@ -5,7 +5,7 @@ import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab} from "react-bootstrap";
 import {AppsCreateScore} from "./AppsCreateScore";
 import {Card} from "../signals/Card";
-import {getListOfCards,getAppsScoreSummary,getScoreSummaryInCSV,updateScoreSlug,getAppDetails} from "../../actions/appActions";
+import {getListOfCards,getAppsScoreSummary,getScoreSummaryInCSV,updateScoreSlug,getAppDetails,updateScoreSummaryFlag} from "../../actions/appActions";
 import {Button} from "react-bootstrap";
 import {STATIC_URL,EMR} from "../../helpers/env.js";
 import {isEmpty} from "../../helpers/helper";
@@ -43,13 +43,16 @@ export class AppsScoreDetail extends React.Component {
   gotoScoreData(){
       this.props.dispatch(getScoreSummaryInCSV(store.getState().apps.scoreSlug))
   }
+  updateScoreSummaryFlag(){
+      this.props.dispatch(updateScoreSummaryFlag(false));
+  }
   render() {
     console.log("apps Score Detail View is called##########3");
-    const scoreSummary = store.getState().apps.scoreSummary;
-    const scoreLink = "/apps/"+store.getState().apps.currentAppDetails.slug+"/scores";
-    const scoreDataLink = "/apps/"+store.getState().apps.currentAppDetails.slug+"/scores/"+store.getState().apps.scoreSlug+"/dataPreview";
-		var showViewButton = true;
-		var showDownloadButton = true;
+    let scoreSummary = store.getState().apps.scoreSummary;
+    let scoreLink = "/apps/"+this.props.match.params.AppId+"/scores";
+    let scoreDataLink = "/apps/"+this.props.match.params.AppId+"/scores/"+store.getState().apps.scoreSlug+"/dataPreview";
+    var showViewButton = true;
+    var showDownloadButton = true;
     console.log(scoreSummary)
 	if (!$.isEmptyObject(scoreSummary)) {
 		console.log(this.props)
@@ -80,7 +83,7 @@ export class AppsScoreDetail extends React.Component {
 		                          <button type="button" className="btn btn-default" disabled = "true" title="Document Mode">
 		                               <i class="zmdi zmdi-hc-lg zmdi-view-web"></i>
 		                            </button>
-							   <Link className="continue btn btn-default" to={scoreLink}>
+							   <Link className="continue btn btn-default" to={scoreLink} onClick={this.updateScoreSummaryFlag.bind(this,false)}>
 
 		                            <i class="zmdi zmdi-hc-lg zmdi-close"></i>
 

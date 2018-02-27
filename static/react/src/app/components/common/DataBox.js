@@ -15,7 +15,7 @@ export class DataBox extends React.Component {
 		super();
 	}
 
-
+//Used in Stock Sense
 	render() {
 		var dataBox = this.props.jsonData;
 		let  columnsTemplates = dataBox.map((data,index)=>{

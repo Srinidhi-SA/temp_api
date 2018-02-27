@@ -13,7 +13,7 @@ export class ConfusionMatrix extends React.Component {
   constructor(){
     super();
   }
- 
+ //used in ModelSummary
   render() {
    var data = this.props.tableData;
    console.log("checking confusion matrix table element");

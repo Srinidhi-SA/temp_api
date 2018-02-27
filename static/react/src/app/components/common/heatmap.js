@@ -18,7 +18,7 @@ export class HeatMapTable extends React.Component {
   componentDidMount(){
 	  HeatMap(this.randomNum);
   }
-
+//To render Heatmap table in signal summary
   render() {
       this.randomNum = Math.random().toString(36).substr(2,8);
    var data = this.props.tableData;
