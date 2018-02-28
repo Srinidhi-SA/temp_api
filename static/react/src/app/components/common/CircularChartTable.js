@@ -12,7 +12,7 @@ export class CircularChartTable extends React.Component {
   constructor(){
     super();
   }
- 
+ //Used in Model Summary
   render() {
    var data = this.props.tableData;
    console.log("checking circular chart tabletable element");

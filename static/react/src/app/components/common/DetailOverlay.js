@@ -6,7 +6,7 @@ import renderHTML from 'react-render-html';
 import HeatMap from '../../helpers/heatmap';
 import {generateHeaders,generateCircularChartRows} from "../../helpers/helper";
 var dateFormat = require('dateformat');
-
+//Info of all listing pages
 export class DetailOverlay extends React.Component {
   constructor(props){
     super(props);

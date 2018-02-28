@@ -354,10 +354,10 @@ function updateTargetVariable(slug,array){
     if(array[i].slug == slug){
         array[i].targetColumn = !array[i].targetColumn;
         array[i].targetColSetVarAs = null;
-        return array;
+         break;
     }
 }
-
+    return array;
 }
 
 function handleSelectAllFlag(array){
@@ -365,10 +365,10 @@ function handleSelectAllFlag(array){
     for(var i=0;i<array.length;i++){
        if(array[i].selected == false && array[i].targetColumn == false){
             selectAllFlag = false;
-            return selectAllFlag;
+            break;
         }
     }
-    
+    return selectAllFlag;
 }
 export function clearMeasureSearchIfTargetIsSelected(name){ 
     $("#measureSearch").val(""); 

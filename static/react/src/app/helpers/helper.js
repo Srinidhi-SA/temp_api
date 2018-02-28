@@ -287,7 +287,7 @@ export function  subTreeSetting(urlLength, length,paramL2,classname=".sb_navigat
 
 	export function  showHideSideChart(colType,chartData) {
 
-		if(colType =="datetime" || $.isEmptyObject(chartData)){
+		if(colType =="datetime" || $.isEmptyObject(chartData) ){
 				$(function(){
 			       $("#tab_visualizations #pnl_visl").removeClass("in");
                    $("#tab_visualizations a").addClass("collapsed");

@@ -6,7 +6,7 @@ import store from "../../store";
 import {C3Chart} from "../c3Chart";
 import {STATIC_URL} from "../../helpers/env.js";
 import { Scrollbars } from 'react-custom-scrollbars';
-import {getScoreSummaryInCSV,emptyScoreCSVData} from "../../actions/appActions";
+import {getScoreSummaryInCSV,emptyScoreCSVData,getAppDetails} from "../../actions/appActions";
 import {Link} from "react-router-dom";
 import {Button} from "react-bootstrap";
 import {isEmpty} from "../../helpers/helper";
@@ -21,7 +21,8 @@ export class DataPreviewLeftPanel extends React.Component {
 		super(props);
 	}
 	 componentWillMount(){
-	     if(isEmpty(this.props.scoreCSVData)){
+	     this.props.dispatch(getAppDetails(this.props.match.params.AppId));
+	     if(isEmpty(this.props.scoreCSVData) || this.props.scoreCSVData == null || this.props.scoreCSVData.length == 0){
 	         this.props.dispatch(getScoreSummaryInCSV(this.props.match.params.slug))
 	     }
 	  }
@@ -31,7 +32,7 @@ export class DataPreviewLeftPanel extends React.Component {
 	render() {
 		console.log("score data preview is called##########3");
 		 var pattern = /(".*?"|[^",\s]+)(?=\s*,|\s*$)/g;
-		 var scoreLink = "/apps/" + store.getState().apps.currentAppDetails.slug + "/scores/" + this.props.match.params.slug;
+		 var scoreLink = "/apps/" + this.props.match.params.AppId + "/scores/" + this.props.match.params.slug;
 		const scoreData = this.props.scoreCSVData;
 		var tableThTemplate = "";
 		var tableRowTemplate = "";

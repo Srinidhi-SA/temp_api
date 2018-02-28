@@ -537,10 +537,10 @@ function updateList(slug,array){
     for(var i=0;i<array.length;i++){
         if(array[i].slug == slug){
             array[i].selected = !array[i].selected;
-            return array;
+            break;
         }
     }
-    
+    return array;
 }
 function updateTimeDimList(slug,array,evt){
     for(var i=0;i<array.length;i++){
