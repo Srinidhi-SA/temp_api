@@ -413,9 +413,11 @@ class ScoreView(viewsets.ModelViewSet):
                 else:
                     csv_text = f.read()
                     csv_list = csv_text.split('\n')
+                    csv_list = csv_list[:count]
+                    csv_text_list = [text.split(',') for text in csv_list]
                     return JsonResponse({
                         'Message': 'Success',
-                        'csv_data': csv_list[:count]
+                        'csv_data': csv_text_list
                     })
         else:
             return JsonResponse({'result': 'failed to download'})
