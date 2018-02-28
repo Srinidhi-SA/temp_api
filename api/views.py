@@ -69,6 +69,16 @@ class SignalView(viewsets.ModelViewSet):
         # try:
         data = request.data
         data = convert_to_string(data)
+
+        if 'config' in data:
+            ui_config = data['config']
+            if 'variableSelection' in ui_config:
+                for variableItem in ui_config['variableSelection']:
+                    if variableItem['targetColumn'] == True:
+                        data['type'] = variableItem['columnType']
+                        data['target_column'] = variableItem['name']
+                        break
+
         data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
         data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
         serializer = InsightSerializer(data=data, context={"request": self.request})
