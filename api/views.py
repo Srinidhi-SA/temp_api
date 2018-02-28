@@ -5060,9 +5060,11 @@ def get_score_data_and_return_top_n(request):
 
             csv_text = fp.read()
             csv_list = csv_text.split('\n')
+            csv_list = csv_list[:count]
+            csv_text_list = [text.split(',') for text in csv_list]
             return JsonResponse({
                 'Message': 'Success',
-                'csv_data': csv_list[:count]
+                'csv_data': csv_text_list
             })
 
 
