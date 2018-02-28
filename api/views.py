@@ -65,6 +65,7 @@ class SignalView(viewsets.ModelViewSet):
 
         if 'config' in data:
             ui_config = data['config']
+            ui_config = json.loads(ui_config)
             if 'variableSelection' in ui_config:
                 for variableItem in ui_config['variableSelection']:
                     if variableItem['targetColumn'] == True:
