@@ -37,28 +37,30 @@ export class DataPreviewLeftPanel extends React.Component {
 		var tableThTemplate = "";
 		var tableRowTemplate = "";
 		if(scoreData.length > 0){
+		    console.log(scoreData)
 		    tableThTemplate = scoreData.map(function(row,id){
-		        let colData = "";
-		        if(id == 0){
-		           colData =  row.split(",").map((colData,index) =>{
-		               let colIndex = "row_"+id+index
-		                return(<th key={colIndex}><b>{colData}</b></th>)
-		            })
-		        }
-		        return colData;
-		    });
+                let colData = "";
+                if(id == 0){
+                   colData =  row.map((colData,index) =>{
+                       let colIndex = "row_"+id+index
+                        return(<th key={colIndex}><b>{colData}</b></th>)
+                    })
+                }
+                return colData;
+            });
 		    tableRowTemplate = scoreData.map(function(row,id){
 		        if(row != ""){
                 let colData = "";
                 let colIndex = "row_"+id
                 if(id > 0){
-                        colData =  row.split(",").map((colData,index) =>{
+                        colData =  row.map((colData,index) =>{
                             return(<td>{colData}</td>)
                         })
                     }
                 return <tr key = {colIndex}>{colData}</tr>;
                 }
             });
+		    
 		    return(
 		            <div className="side-body">
                     {/* <!-- Page Title and Breadcrumbs -->*/}
