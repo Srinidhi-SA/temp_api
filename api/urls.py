@@ -7,12 +7,13 @@ from rest_framework import routers
 from api import views
 from datasets.views import DatasetView
 from views import ScoreView, StockDatasetView, get_concepts_to_show_in_ui
-from views import SignalView, get_datasource_config_list
+from views import SignalView, get_datasource_config_list, get_algorithm_config_list
 from views import AppView
 
 from views import TrainerView
 from views import RoboView
 from views import AudiosetView
+from views import RegressionView
 from dummyModel.models import DummyView
 
 # Start adding urlconf from here
@@ -72,6 +73,11 @@ router.register(
     DummyView,
     base_name='dummy'
 )
+router.register(
+    'regression',
+    RegressionView,
+    base_name='regression'
+)
 
 from api.user_helper import upload_photo, get_profile_image
 urlpatterns = [
@@ -98,6 +104,7 @@ urlpatterns = [
     url(r'^get_score_data_and_return_top_n/', views.get_score_data_and_return_top_n, name="get_score_data_and_return_top_n"),
     url(r'^get_recent_activity',views.get_recent_activity , name="get_recent_activity"),
     url(r'^delete_and_keep_only_ten_from_all_models',views.delete_and_keep_only_ten_from_all_models , name="delete_and_keep_only_ten_from_all_models"),
+    url(r'^regression_app/get_algorithm_config_list$',get_algorithm_config_list , name="algorithm_get_config_list"),
 ]
 
 

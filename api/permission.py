@@ -171,3 +171,27 @@ usage: there is a method get_permissions(), make changes in this function accord
 
 6. For list serializers it has been added in pagination page itself.
 '''
+
+
+class RegressionRelatedPermission(permissions.BasePermission):
+    message = 'Permission for regression.'
+
+    def has_permission(self, request, view):
+        user = request.user
+        if request.method in ['GET']:
+
+            if 'get_pmml' in request.path:
+                return user.has_perm('api.downlad_pmml')
+            return user.has_perm('api.view_trainer')
+
+        if request.method in ['POST']:
+            return user.has_perm('api.create_regression')
+
+        if request.method in ['PUT']:
+            data = request.data
+
+            if 'deleted' in data:
+                if data['deleted'] == True:
+                    return user.has_perm('api.remove_trainer')
+
+            return user.has_perm('api.rename_regression')

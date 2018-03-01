@@ -11,7 +11,7 @@ from sjsclient import client
 
 from api.helper import JobserverDetails, get_job_status, get_message
 from api.user_helper import UserSerializer
-from models import Insight, Dataset, Trainer, Score, Job, Robo, Audioset, StockDataset, CustomApps
+from models import Insight, Dataset, Trainer, Score, Job, Robo, Audioset, StockDataset, CustomApps, Regression
 
 from django.conf import settings
 import subprocess
@@ -836,6 +836,108 @@ class AppSerializer(serializers.ModelSerializer):
             fields = '__all__'
 
 
+class RegressionSerlializer(serializers.ModelSerializer):
+
+    def to_representation(self, instance):
+        get_job_status(instance)
+        ret = super(RegressionSerlializer, self).to_representation(instance)
+        dataset = ret['dataset']
+        dataset_object = Dataset.objects.get(pk=dataset)
+        ret['dataset'] = dataset_object.slug
+        ret['dataset_name'] = dataset_object.name
+        ret = convert_to_json(ret)
+        ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        if instance.viewed == False and instance.status=='SUCCESS':
+            instance.viewed = True
+            instance.save()
+        try:
+            message_list = get_message(instance.job)
+
+            if message_list is not None:
+                message_list = [message_list[-1]]
+            ret['message'] = message_list
+        except:
+            ret['message'] = None
+
+        if dataset_object.datasource_type=='fileUpload':
+            PROCEED_TO_UPLOAD_CONSTANT = settings.PROCEED_TO_UPLOAD_CONSTANT
+            try:
+                from api.helper import convert_to_humanize
+                ret['file_size']=convert_to_humanize(dataset_object.input_file.size)
+                if(dataset_object.input_file.size < PROCEED_TO_UPLOAD_CONSTANT or ret['status']=='SUCCESS'):
+                    ret['proceed_for_loading']=True
+                else:
+                    ret['proceed_for_loading'] = False
+            except:
+                ret['file_size']=-1
+                ret['proceed_for_loading'] = True
+        ret['job_status'] = instance.job.status
+        # permission details
+        permission_details = get_permissions(
+            user=self.context['request'].user,
+            model=self.Meta.model.__name__.lower(),
+        )
+        ret['permission_details'] = permission_details
+        return ret
+
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get("name", instance.name)
+        instance.column_data_raw = validated_data.get("column_data_raw", instance.column_data_raw)
+        instance.deleted = validated_data.get("deleted", instance.deleted)
+        instance.bookmarked = validated_data.get("bookmarked", instance.bookmarked)
+        instance.data = validated_data.get("data", instance.data)
+        instance.live_status = validated_data.get("live_status", instance.live_status)
+        instance.status = validated_data.get("status", instance.status)
+
+
+
+        instance.save()
+
+        return instance
+
+    class Meta:
+        model = Regression
+        exclude = ('id', 'job')
+
+
+class RegressionListSerializer(serializers.ModelSerializer):
+
+    def to_representation(self, instance):
+        get_job_status(instance)
+        ret = super(RegressionListSerializer, self).to_representation(instance)
+        dataset = ret['dataset']
+        dataset_object = Dataset.objects.get(pk=dataset)
+        ret['dataset'] = dataset_object.slug
+        ret['dataset_name'] = dataset_object.name
+        ret = convert_to_json(ret)
+        ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        ret['brief_info'] = instance.get_brief_info()
+        try:
+            ret['completed_percentage']=get_message(instance.job)[-1]['globalCompletionPercentage']
+            ret['completed_message']=get_message(instance.job)[-1]['shortExplanation']
+        except:
+            ret['completed_percentage'] = 0
+            ret['completed_message']="Analyzing Target Variable"
+        ret['job_status'] = instance.job.status
+        # permission details
+        permission_details = get_permissions(
+            user=self.context['request'].user,
+            model=self.Meta.model.__name__.lower(),
+        )
+        ret['permission_details'] = permission_details
+        return ret
+
+
+    class Meta:
+        model = Regression
+        exclude =  (
+            'column_data_raw',
+            'id',
+            'config',
+            'data'
+        )
+
+
 def correct_base_dir():
     if  settings.BASE_DIR.endswith("config") or settings.BASE_DIR.endswith("config/"):
         return os.path.dirname(settings.BASE_DIR)
@@ -910,6 +1012,19 @@ def get_permissions(user, model, type='retrieve'):
         if type=='list':
             return {
                 'create_score': user.has_perm('api.create_score'),
+            }
+    if model == 'regression':
+        if type == 'retrieve':
+            return {
+                'create_score': user.has_perm('api.create_score'),
+                'view_regression': user.has_perm('api.view_regression'),
+                'downlad_pmml': user.has_perm('api.downlad_pmml'),
+                'rename_regression': user.has_perm('api.rename_regression'),
+                'remove_regression': user.has_perm('api.remove_regression'),
+            }
+        if type == 'list':
+            return {
+                'create_regression': user.has_perm('api.create_regression'),
             }
     return {}
 

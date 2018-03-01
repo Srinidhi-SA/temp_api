@@ -1371,6 +1371,14 @@ PERMISSIONS_RELATED_TO_SCORE = (
     ('download_score', 'Download Score')
 )
 
+PERMISSIONS_RELATED_TO_REGRESSION = (
+    ('view_regression', 'View regression'),
+    ('create_regression', 'Create regression'),
+    ('rename_regression', 'Rename regression'),
+    ('remove_regression', 'remove regression'),
+    ('downlad_pmml', 'Download PMML')
+)
+
 JOB_STATUS_MESSAGE = {
     "EMPTY": "Submitting for analysis",
     "SUBMITTED": "Submitting for analysis.",
@@ -1404,3 +1412,134 @@ JOB_MESSAGE_JSON_FORMAT = {
 '''
 time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(timestamp))
 '''
+
+#algorithm list for regression app
+ALGORITHM_LIST={
+    "ALGORITHM_SETTING":[
+      {
+        "algorithmName":"Algorithm 1",
+        "algorithmSlug":"DSAdasdadsad",
+        "selected":True,
+        "parameters":[
+          {
+            "name":"DSADA",
+            "displayName":"sdada",
+            "defaultValue":3,
+            "acceptedValue":2,
+            "valueRange":[],
+            "paramType":"number"
+          },
+          {
+          "name":"DSADAJJJKK",
+          "displayName":"sdada sadsada",
+          "defaultValue":[
+            {
+              "name":"l1",
+              "selected":True,
+              "displayName":"Aadsad"
+            },
+            {
+              "name":"l2",
+              "selected":False,
+              "displayName":"Aadsad"
+            }
+          ],
+          "paramType":"list"
+
+          },
+          {
+          "name":"DSADAJJJKK",
+          "displayName":"sdada sadsada",
+          "defaultValue":[
+            {
+              "name":"l1",
+              "selected":True,
+              "displayName":"Aadsad"
+            },
+            {
+              "name":"l2",
+              "selected":False,
+              "displayName":"Aadsad"
+            }
+          ],
+          "paramType":"list"
+
+          },
+          {
+            "name":"DSADA",
+            "displayName":"sdada",
+            "defaultValue":3,
+            "acceptedValue":2,
+            "valueRange":[],
+            "paramType":"number"
+          }
+        ]
+      },
+        {
+            "algorithmName": "Algorithm 2",
+            "algorithmSlug": "DSAdasda23dewwdwdddsad",
+            "selected": True,
+            "parameters": [
+                {
+                    "name": "DSADA",
+                    "displayName": "sdada",
+                    "defaultValue": 3,
+                    "acceptedValue": 2,
+                    "valueRange": [],
+                    "paramType": "number"
+                },
+                {
+                    "name": "DSADAJJJKK",
+                    "displayName": "sdada sadsada",
+                    "defaultValue": [
+                        {
+                            "name": "l1",
+                            "selected": True,
+                            "displayName": "Aadsad"
+                        },
+                        {
+                            "name": "l2",
+                            "selected": False,
+                            "displayName": "Aadsad"
+                        }
+                    ],
+                    "paramType": "list"
+
+                },
+            ]
+        },
+        {
+            "algorithmName": "Algorithm 3",
+            "algorithmSlug": "DSAdasd2edddadsad",
+            "selected": True,
+            "parameters": [
+                {
+                    "name": "DSADA",
+                    "displayName": "sdada",
+                    "defaultValue": 3,
+                    "acceptedValue": 2,
+                    "valueRange": [],
+                    "paramType": "number"
+                },
+                {
+                    "name": "DSADAJJJKK",
+                    "displayName": "sdada sadsada",
+                    "defaultValue": [
+                        {
+                            "name": "l1",
+                            "selected": True,
+                            "displayName": "Aadsad"
+                        },
+                        {
+                            "name": "l2",
+                            "selected": False,
+                            "displayName": "Aadsad"
+                        }
+                    ],
+                    "paramType": "list"
+
+                },
+            ]
+        }
+    ]
+}
