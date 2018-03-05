@@ -8,9 +8,9 @@ import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Pagination,Tooltip,OverlayTrigger,Popover} from "react-bootstrap";
 import {AppsCreateModel} from "./AppsCreateModel";
 import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryFlag,
-    updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,storeAppsModelSortElements} from "../../actions/appActions";
+    updateModelSummaryFlag,handleModelDelete,handleModelRename,storeModelSearchElement,storeAppsModelSortElements,openAppsLoader,createModelSuccessAnalysis} from "../../actions/appActions";
     import {DetailOverlay} from "../common/DetailOverlay";
-    import {SEARCHCHARLIMIT,getUserDetailsOrRestart} from  "../../helpers/helper"
+    import {SEARCHCHARLIMIT,getUserDetailsOrRestart,SUCCESS,INPROGRESS} from  "../../helpers/helper"
     import {STATIC_URL} from "../../helpers/env.js";
     import Dialog from 'react-bootstrap-dialog'
     import {DataUploadLoader} from "../common/DataUploadLoader";
@@ -43,13 +43,25 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
         handleModelRename(slug,name){
             this.props.dispatch(handleModelRename(slug,this.dialog,name));
         }
-       
+        openDataLoaderScreen(data){
+            this.props.dispatch(openAppsLoader(data.completed_percentage,data.completed_message));
+            this.props.dispatch(createModelSuccessAnalysis(data));
+        }
         
         render() {
 
                 var modelList = this.props.data;
                 var appsModelList = modelList.map((data, i) => {
-                    var modelLink = "/apps/"+this.props.match.params.AppId+"/models/" + data.slug;
+                    var modelLink = "/apps/"+store.getState().apps.currentAppId+"/models/" + data.slug;
+                    var modelLink1 = <Link id={data.slug} to={modelLink}>{data.name}</Link>
+                    var percentageDetails = "";
+                        if(data.status == INPROGRESS){
+                            percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>;
+                            modelLink1 = <a class="cursor" onClick={this.openDataLoaderScreen.bind(this,data)}> {data.name}</a>;
+                        }else if(data.status == SUCCESS && !data.viewed){
+                            data.completed_percentage = 100;
+                            percentageDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>;
+                        }
                     return (
                             <div className="col-md-3 xs-mb-15 list-boxes" key={i}>
                             <div className="rep_block newCardStyle" name={data.name}>
@@ -59,7 +71,7 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                             <div className="col-xs-12">
                             
                             <h5 className="title newCardTitle pull-left">
-                            <Link id= {data.slug} to={modelLink}>{data.name}</Link>
+                            {modelLink1}
                             </h5>
                             
                             <div class="btn-toolbar pull-right">
@@ -74,7 +86,9 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                             </li>
                             <li onClick={this.handleModelDelete.bind(this,data.slug)} >
                             <a className="dropdown-item" href="#deleteCard" data-toggle="modal">
-                            <i className="fa fa-trash-o"></i>&nbsp;&nbsp;Delete</a>
+                            <i className="fa fa-trash-o"></i>&nbsp;&nbsp;{data.status == "INPROGRESS"
+                                ? "Stop and Delete "
+                                : "Delete"}</a>
                             </li>
                             </ul>
                             {/*<!-- End Rename and Delete BLock  -->*/}
@@ -82,7 +96,7 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                             </div>
                             
                             <div className="clearfix"></div>
-                          
+                                {percentageDetails}
                             
                             {/*<!-- Popover Content link -->*/}
                             <OverlayTrigger trigger="click" rootClose  placement="left" overlay={<Popover id="popover-trigger-focus"><DetailOverlay details={data}/></Popover>}><a  className="pover cursor">

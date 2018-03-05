@@ -14925,6 +14925,10 @@ a.more_button { color: #b3b3b3; padding: 0 10px; margin-right: 9px; cursor:point
 		 -o-box-shadow: 0 0 8px rgba(2, 152, 140,.6);
 			box-shadow: 0 0 8px rgba(2, 152, 140,.6);
 }
+#pnl_stc td { vertical-align: top; }
+.insight_filter .panel-group.accordion  .panel .panel-heading{ background:#edecec}
+.insight_filter .panel-group.accordion{ margin-bottom:0; }
+.insight_filter  .panel-group.accordion .panel .panel-collapse .panel-body { padding-bottom:0; border-top: 1px solid gainsboro;}
 /**************** Css realated to developers, keep the source down ***/
 #prediction_dropdown{
 	    width: 40%;

@@ -22,11 +22,13 @@ import {
     handleScoreDelete,
     activateModelScoreTabs,
     storeScoreSearchElement,
-    storeAppsScoreSortElements
+    storeAppsScoreSortElements,
+    openAppsLoader,
+    createScoreSuccessAnalysis
 } from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {STATIC_URL} from "../../helpers/env.js"
-import {SEARCHCHARLIMIT,getUserDetailsOrRestart} from  "../../helpers/helper"
+import {SEARCHCHARLIMIT,getUserDetailsOrRestart,SUCCESS,INPROGRESS} from  "../../helpers/helper"
 import Dialog from 'react-bootstrap-dialog'
 
 var dateFormat = require('dateformat');
@@ -49,10 +51,23 @@ export class ScoreCard extends React.Component {
     getScoreSummary(slug) {
         this.props.dispatch(updateScoreSlug(slug))
     }
+    openDataLoaderScreen(data){
+            this.props.dispatch(openAppsLoader(data.completed_percentage,data.completed_message));
+            this.props.dispatch(createScoreSuccessAnalysis(data));
+    }
     render() {
         var scoreList = this.props.data;
         const appsScoreList = scoreList.map((data, i) => {
             var scoreLink = "/apps/" + this.props.match.params.AppId + "/scores/" + data.slug;
+            var scoreLink1 = <Link id={data.slug} to={scoreLink} onClick={this.getScoreSummary.bind(this, data.slug)}>{data.name}</Link>;
+            var percentageDetails = "";
+                        if(data.status == INPROGRESS){
+                            percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>;
+                            scoreLink1 = <a class="cursor" onClick={this.openDataLoaderScreen.bind(this,data)}> {data.name}</a>;
+                        }else if(data.status == SUCCESS && !data.viewed){
+                            data.completed_percentage = 100;
+                            percentageDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>;
+                        }
             return (
                     <div className="col-md-3 xs-mb-15 list-boxes" key={i}>
                     <div className="rep_block newCardStyle" name={data.name}>
@@ -62,7 +77,7 @@ export class ScoreCard extends React.Component {
                     
                     <div className="col-xs-12">
                     <h5 className="title newCardTitle pull-left">
-                    <Link to={scoreLink} id={data.slug} onClick={this.getScoreSummary.bind(this, data.slug)}>{data.name}</Link>
+                    {scoreLink1}
                     </h5>
                     
                     <div class="btn-toolbar pull-right">
@@ -78,15 +93,16 @@ export class ScoreCard extends React.Component {
                     </li>
                     <li onClick={this.handleScoreDelete.bind(this, data.slug)}>
                     <a className="dropdown-item" href="#deleteCard" data-toggle="modal">
-                    <i className="fa fa-trash-o"></i>
-                    &nbsp;&nbsp;Delete</a>
+                    <i className="fa fa-trash-o"></i>&nbsp;&nbsp;{data.status == "INPROGRESS"
+                                ? "Stop and Delete "
+                                : "Delete"}</a>
                     </li>
                     </ul>
                     {/*<!-- End Rename and Delete BLock  -->*/}
                     </div>
                     
                     <div className="clearfix"></div>
-      
+                    {percentageDetails}
                     
                     {/*<!-- Popover Content link -->*/}
                     <OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={data}/> </Popover>}>
