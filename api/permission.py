@@ -83,7 +83,10 @@ class TrainerRelatedPermission(permissions.BasePermission):
     message = 'Permission for trainers.'
 
     def has_permission(self, request, view):
+
         user = request.user
+        print user.has_perm('api.downlad_pmml')
+
         if request.method in ['GET']:
 
             if 'get_pmml' in request.path:
