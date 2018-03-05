@@ -355,10 +355,10 @@ function updateTargetVariable(slug,array){
     if(array[i].slug == slug){
         array[i].targetColumn = !array[i].targetColumn;
         array[i].targetColSetVarAs = null;
-        return array;
+        break;
     }
 }
-
+return array;
 }
 
 function handleSelectAllFlag(array){
@@ -369,22 +369,22 @@ function handleSelectAllFlag(array){
             return selectAllFlag;
         }
     }
-    
+
 }
-export function clearMeasureSearchIfTargetIsSelected(name){ 
-    $("#measureSearch").val(""); 
-    return { 
-        type: "SEARCH_MEASURE", 
-        name, 
-    } 
-} 
-export function clearDimensionSearchIfTargetIsSelected(name){ 
-    $("#dimensionSearch").val(""); 
-    return { 
-        type: "SEARCH_DIMENSION", 
-        name, 
-    } 
-} 
+export function clearMeasureSearchIfTargetIsSelected(name){
+    $("#measureSearch").val("");
+    return {
+        type: "SEARCH_MEASURE",
+        name,
+    }
+}
+export function clearDimensionSearchIfTargetIsSelected(name){
+    $("#dimensionSearch").val("");
+    return {
+        type: "SEARCH_DIMENSION",
+        name,
+    }
+}
 export function hideTargetVariable(event,jobType){
     return (dispatch) => {
     var selOption = event.target.childNodes[event.target.selectedIndex];
@@ -394,10 +394,10 @@ export function hideTargetVariable(event,jobType){
     var prevVarSlug = store.getState().signals.selVarSlug;
     var prevVarType = store.getState().signals.getVarType;
     var prevSetVarAs = null;
-  
-    dispatch(clearMeasureSearchIfTargetIsSelected("")) 
-    dispatch(clearDimensionSearchIfTargetIsSelected("")) 
-    
+
+    dispatch(clearMeasureSearchIfTargetIsSelected(""))
+    dispatch(clearDimensionSearchIfTargetIsSelected(""))
+
     var dataSetMeasures = store.getState().datasets.dataSetMeasures.slice();
     var dataSetDimensions = store.getState().datasets.dataSetDimensions.slice();
     var dataSetTimeDimensions = store.getState().datasets.dataSetTimeDimensions.slice();
@@ -413,12 +413,12 @@ export function hideTargetVariable(event,jobType){
     }
     if(prevVarSlug != null){
         dataSetDimensions = updateTargetVariable(prevVarSlug,dataSetDimensions)
-        dataSetMeasures = updateTargetVariable(prevVarSlug,dataSetMeasures)    
+        dataSetMeasures = updateTargetVariable(prevVarSlug,dataSetMeasures)
     }
-    
+
     dimFlag = handleSelectAllFlag(dataSetDimensions);
     meaFlag = handleSelectAllFlag(dataSetMeasures);
-    
+
     dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
     count = getTotalVariablesSelected();
     dispatch(updateVariablesCount(count));
