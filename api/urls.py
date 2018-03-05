@@ -13,7 +13,7 @@ from views import AppView
 from views import TrainerView
 from views import RoboView
 from views import AudiosetView
-from views import RegressionView
+# from views import RegressionView
 from dummyModel.models import DummyView
 
 # Start adding urlconf from here
@@ -73,11 +73,11 @@ router.register(
     DummyView,
     base_name='dummy'
 )
-router.register(
-    'regression',
-    RegressionView,
-    base_name='regression'
-)
+# router.register(
+#     'regression',
+#     RegressionView,
+#     base_name='regression'
+# )
 
 from api.user_helper import upload_photo, get_profile_image
 urlpatterns = [
