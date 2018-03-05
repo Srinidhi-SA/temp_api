@@ -96,16 +96,16 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
 
                     if colset.get("actionName") == "delete":
 
-                        # if 'modified' in colset:
-                        #     if colset.get('modified') == True:
-                        #         pass
-                        #     else:
-                        #         pass
-                        # else:
-                        colset['modified'] = True
-                        colset['displayName'] = 'UnDelete Column'
+                        if 'modified' in colset:
+                            if colset.get('modified') == True:
+                                pass
+                            else:
+                                pass
+                        else:
+                            colset['modified'] = True
+                            mdc.changes_on_delete(col.get("name"), type='delete')
 
-                        mdc.changes_on_delete(col.get("name"), type='delete')
+                        colset['displayName'] = 'UnDelete Column'
 
                     if colset.get("actionName") == "rename":
                         colName = col.get('name')

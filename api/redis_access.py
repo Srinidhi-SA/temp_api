@@ -29,10 +29,13 @@ class AccessFeedbackMessage:
         try:
             data = self.get_using_key_cache(key)
             if data is None:
-                return self.get_using_key_db(key)
+                data =  self.get_using_key_db(key)
+                self.set_using_key_cache(key, data) # --------------------------------->
             return data
         except:
-            return self.get_using_key_db(key)
+            data = self.get_using_key_db(key)
+            self.set_using_key_cache(key, data)
+            return data
 
     def get_using_key_cache(self, key):
         data = cache.get(key)
