@@ -4911,6 +4911,7 @@ def set_pmml(request, slug=None):
 def get_pmml(request, slug=None, algoname='algo'):
 
     from api.user_helper import return_user_using_token
+    from api.exceptions import retrieve_failed_exception
     token = request.GET.get('token')
     token = token.split(' ')[1]
 
@@ -4932,7 +4933,7 @@ def get_pmml(request, slug=None, algoname='algo'):
         xml_data = data[-1].get(algoname)
         return return_xml_data(xml_data, algoname)
     except:
-        return return_xml_data("permission_denied", "permission_denied")
+        return retrieve_failed_exception("permission_denied")
 
 
 @csrf_exempt
