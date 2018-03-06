@@ -1116,6 +1116,7 @@ def home(request):
 def get_info(request):
     user = request.user
     from api.helper import convert_to_humanize
+    from api.user_helper import UserSerializer
     def get_all_info_related_to_user(user):
         # things = ['dataset', 'insight', 'trainer', 'score', 'robo', 'audioset']
         things = ['dataset', 'insight', 'trainer', 'score']
@@ -1251,6 +1252,8 @@ def get_info(request):
         'chart_c3': get_size_pie_chart(used_data_size),
         'comment': get_html_template(),
         'recent_activity': get_recent_activity()
+        'user': UserSerializer(user, context={'request': request}).data,
+        'profile': user.profile.json_serialized() if profile is not None else None
     })
 
 
