@@ -67,10 +67,10 @@ export class SignalCard extends React.Component {
           //this.props.history.push('/signals/'+slug);
         }
     render() {
-   
+
         var listData = this.props.data;
         console.log(listData)
-       
+
         const storyListDetails = listData.map((story, i) => {
             var iconDetails = "";
             var percentageDetails = "";
@@ -80,7 +80,7 @@ export class SignalCard extends React.Component {
               {story.name}
               </Link>
               if(story.status == INPROGRESS){
-                  percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">&nbsp;{story.completed_percentage}&nbsp;%</span></div>
+                  percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{story.completed_percentage >= 0 ? story.completed_percentage+' %':"In Progress"}</span></div>
                   signalClick = <a class="cursor" onClick={this.openLoaderScreen.bind(this,story.slug,story.completed_percentage,story.completed_message)}> {story.name}</a>
               }else if(story.status == SUCCESS && !story.viewed){
                   story.completed_percentage = 100;
@@ -95,7 +95,7 @@ export class SignalCard extends React.Component {
               iconDetails = <img src={imgLink} alt="LOADING"/>
               var permissionDetails = story.permission_details;
               var isDropDown = permissionDetails.remove_signal || permissionDetails.rename_signal;
-             
+
             return (
               <div className="col-md-3 xs-mb-15 list-boxes" key={i}>
                 <div className="rep_block newCardStyle" name={story.name}>
@@ -104,7 +104,7 @@ export class SignalCard extends React.Component {
                     <div className="row">
                       <div className="col-xs-12">
                         <h5 className="title newCardTitle pull-left">
-                          {signalClick}                  
+                          {signalClick}
                         </h5>
                         {
                             isDropDown == true ? <div class="btn-toolbar pull-right">
@@ -129,26 +129,26 @@ export class SignalCard extends React.Component {
                       {/*<!-- End Rename and Delete BLock  -->*/}
                           </div>:<div class="btn-toolbar pull-right"></div>
                         }
-                         
-                          
-                          
-                          <div className="clearfix"></div>                  
-                         
+
+
+
+                          <div className="clearfix"></div>
+
                           {percentageDetails}
                         {/* <div class="inProgressIcon">
                                <i class="fa fa-circle"></i>
                                <span class="inProgressIconText">&nbsp;{story.completed_percentage}&nbsp;%</span>
                         </div>*/}
-                            
+
                         <OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={story}/> </Popover>}>
                         <a className="pover cursor">
                         <div class="card_icon">
                         {iconDetails}
                         </div></a>
                         </OverlayTrigger>
-                                
-                      </div>      
-                      
+
+                      </div>
+
                     </div>
                   </div>
                   <div className="card-footer">
@@ -157,7 +157,7 @@ export class SignalCard extends React.Component {
                       <span className="footerTitle footerTitle">{dateFormat(story.created_at, "mmm d,yyyy HH:MM")}</span>
                     </div>
 
-                    
+
                     {/*popover*/}
 
                   </div>
@@ -174,6 +174,6 @@ export class SignalCard extends React.Component {
               }
            </div>);
     }
-  
+
 
 }
