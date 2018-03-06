@@ -193,3 +193,13 @@ admin.site.register(Permission, PermissionAdmin)
 #     readonly_fields = ["created_at", "deleted", "created_by", "job"]
 #
 # admin.site.register(Dataset, DatasetGaurdianAdmin)
+
+from django.contrib.auth.models import User
+from django.contrib.auth.admin import UserAdmin
+
+admin.site.unregister(User)
+
+class MyUserAdmin(UserAdmin):
+    readonly_fields = ("last_login", "date_joined")
+
+admin.site.register(User, MyUserAdmin)
