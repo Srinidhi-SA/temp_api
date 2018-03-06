@@ -6,6 +6,7 @@ import json
 # Register your models here.
 
 from api.models import Dataset, Insight, Job, Score, Trainer,CustomApps
+from api.user_helper import Profile
 
 
 class DatasetAdmin(admin.ModelAdmin):
@@ -157,13 +158,24 @@ class CustomAppsAdmin(admin.ModelAdmin):
     list_filter = ["status"]
     readonly_fields = ["status","app_id"]
 
+class ProfileAdmin(admin.ModelAdmin):
+    # pass
+    icon = '<i class="material-icons">Profile</i>'
+    list_display = ["name", "website", "city", "phone"]
+    # search_fields = ["name"]
+
+    def name(self, instance):
+
+        return instance.user
+
+
 admin.site.register(Dataset, DatasetAdmin)
 admin.site.register(Insight, InsightAdmin)
 admin.site.register(Job, JobAdmin)
 admin.site.register(Score, ScoreAdmin)
 admin.site.register(Trainer, TrainerAdmin)
 admin.site.register(CustomApps, CustomAppsAdmin)
-
+admin.site.register(Profile, ProfileAdmin)
 
 from django.contrib.auth.admin import GroupAdmin
 from django.contrib.auth.models import Group
@@ -203,3 +215,6 @@ class MyUserAdmin(UserAdmin):
     readonly_fields = ("last_login", "date_joined")
 
 admin.site.register(User, MyUserAdmin)
+
+
+
