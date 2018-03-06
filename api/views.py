@@ -4912,6 +4912,7 @@ def get_pmml(request, slug=None, algoname='algo'):
 
     from api.user_helper import return_user_using_token
     token = request.GET.get('token')
+    token = token.split(' ')[1]
 
     user = return_user_using_token(token=token)
 
