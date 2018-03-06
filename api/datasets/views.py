@@ -241,7 +241,8 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
         uiMetaData = convert_metadata_according_to_transformation_setting(
                 uiMetaData,
-                transformation_setting=ts
+                transformation_setting=ts,
+                user=request.user
             )
 
         uiMetaData["advanced_settings"] = get_advanced_setting(uiMetaData['varibaleSelectionArray'])
