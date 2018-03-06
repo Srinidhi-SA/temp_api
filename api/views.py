@@ -4916,7 +4916,7 @@ def get_pmml(request, slug=None, algoname='algo'):
     user = return_user_using_token(token=token)
 
     try:
-        if user.has_perm('api.downlad_pmml'):
+        if not user.has_perm('api.downlad_pmml'):
             return return_xml_data("permission_denied", "permission_denied")
         from api.redis_access import AccessFeedbackMessage
         from helper import generate_pmml_name
