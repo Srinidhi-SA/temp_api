@@ -144,6 +144,19 @@ def jwt_response_payload_handler(token, user=None, request=None):
     }
 
 
+def return_user_using_token(token=None):
+
+    try:
+        from rest_framework_jwt.serializers import VerificationBaseSerializer
+        from rest_framework_jwt.settings import api_settings
+        vbs = VerificationBaseSerializer()
+        payload = vbs._check_payload(token=token)
+        user = vbs._check_user(payload=payload)
+        return user
+    except:
+        return False
+
+
 def create_profile(sender, **kwargs):
     user = kwargs["instance"]
     if kwargs["created"]:
