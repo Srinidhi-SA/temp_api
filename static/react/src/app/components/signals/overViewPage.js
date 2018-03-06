@@ -80,6 +80,17 @@ export class OverViewPage extends React.Component {
     // }
 
   }
+  componentDidUpdate(){
+    var that = this;
+    $(function() {
+      let index = $(".sb_navigation li>a.active").parent().index();
+      if(index>5)
+      that.refs.slider.slickGoTo(index-5);
+      else {
+        that.refs.slider.slickGoTo(0);
+      }
+    });
+  }
 
   toggleSideList() {
     //alert($('.row-offcanvas').attr('class'));
@@ -135,13 +146,13 @@ export class OverViewPage extends React.Component {
 
 }*/
 
-  setScrollActive() {
-    var that = this;
-    $(function() {
-      let index = $(".sb_navigation li>a.active").parent().index();
-      that.refs.slider.slickGoTo(index);
-    });
-  }
+  // setScrollActive() {
+  //   var that = this;
+  //   $(function() {
+  //     let index = $(".sb_navigation li>a.active").parent().index();
+  //     that.refs.slider.slickGoTo(index-5);
+  //   });
+  // }
 
   closeDocumentMode() {
     console.log("closing document mode")
@@ -170,7 +181,7 @@ export class OverViewPage extends React.Component {
     var settings = {
       dots: false,
       infinite: false,
-      speed: 500,
+      speed: 5,
       slidesToShow: 6,
       slidesToScroll: 1
       //swipeToSlide: true
@@ -358,10 +369,10 @@ export class OverViewPage extends React.Component {
       //console.log("l1name is ...." + selectedSignal);
       ////console.log(card);
 
-      if (!isEmpty(selectedNodeFromLevel1) && selectedNodeFromLevel1.listOfNodes.length > 0) {
-        if (varList.length > 6)
-          this.setScrollActive();
-        }
+      // if (!isEmpty(selectedNodeFromLevel1) && selectedNodeFromLevel1.listOfNodes.length > 0) {
+      //   if (varList.length > 6)
+      //   //  this.setScrollActive();
+      //   }
 
       let nameLink = that.urlPrefix + "/" + this.props.match.params.slug;
       if (that.urlPrefix == "/apps-robo") {
