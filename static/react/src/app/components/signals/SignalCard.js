@@ -24,7 +24,8 @@ import {
     triggerSignalAnalysis,
     emptySignalData,
     refreshSignals,
-    updateHide
+    updateHide,
+    updateTargetTypForSelSignal
   } from "../../actions/signalActions";
 import {STATIC_URL} from "../../helpers/env";
 import {DetailOverlay} from "../common/DetailOverlay";
@@ -44,10 +45,11 @@ export class SignalCard extends React.Component {
         super(props);
         this.props=props;
     }
-    getSignalAnalysis(e) {
+    getSignalAnalysis(signalType,e) {
         console.log("Link Onclick is called")
         console.log(e.target.id);
         this.props.dispatch(emptySignalAnalysis());
+        //this.props.dispatch(updateTargetTypForSelSignal(signalType));
       }
     handleDelete(slug,evt) {
         this.props.dispatch(handleDelete(slug, this.dialog,evt));
@@ -74,9 +76,9 @@ export class SignalCard extends React.Component {
         const storyListDetails = listData.map((story, i) => {
             var iconDetails = "";
             var percentageDetails = "";
-
+            var signalType=story.type
             var signalLink = "/signals/" + story.slug;
-            var signalClick = <Link to={signalLink} id={story.slug} onClick={this.getSignalAnalysis.bind(this)} className="title">
+            var signalClick = <Link to={signalLink} id={story.slug} onClick={this.getSignalAnalysis.bind(this,signalType)} className="title">
               {story.name}
               </Link>
               if(story.status == INPROGRESS){

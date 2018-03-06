@@ -282,6 +282,7 @@ function fetchPostsSuccess_analysis(signalAnalysis, errandId, dispatch) {
     dispatch(closeCsLoaderModal())
     dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
     dispatch(clearLoadingMsg());
+    dispatch(updateTargetTypForSelSignal(signalAnalysis.type))
   } else if (signalAnalysis.status == FAILED || signalAnalysis.status == false) {
     //bootbox.alert("Your signal could not be created. Please try later.")
     bootbox.alert(statusMessages("error","The signal could not be created. Please check the dataset and try again.","small_mascot"))
@@ -370,20 +371,20 @@ function handleSelectAllFlag(array){
     }
     return selectAllFlag;
 }
-export function clearMeasureSearchIfTargetIsSelected(name){ 
-    $("#measureSearch").val(""); 
-    return { 
-        type: "SEARCH_MEASURE", 
-        name, 
-    } 
-} 
-export function clearDimensionSearchIfTargetIsSelected(name){ 
-    $("#dimensionSearch").val(""); 
-    return { 
-        type: "SEARCH_DIMENSION", 
-        name, 
-    } 
-} 
+export function clearMeasureSearchIfTargetIsSelected(name){
+    $("#measureSearch").val("");
+    return {
+        type: "SEARCH_MEASURE",
+        name,
+    }
+}
+export function clearDimensionSearchIfTargetIsSelected(name){
+    $("#dimensionSearch").val("");
+    return {
+        type: "SEARCH_DIMENSION",
+        name,
+    }
+}
 export function hideTargetVariable(event,jobType){
     return (dispatch) => {
     var selOption = event.target.childNodes[event.target.selectedIndex];
@@ -393,10 +394,10 @@ export function hideTargetVariable(event,jobType){
     var prevVarSlug = store.getState().signals.selVarSlug;
     var prevVarType = store.getState().signals.getVarType;
     var prevSetVarAs = null;
-  
-    dispatch(clearMeasureSearchIfTargetIsSelected("")) 
-    dispatch(clearDimensionSearchIfTargetIsSelected("")) 
-    
+
+    dispatch(clearMeasureSearchIfTargetIsSelected(""))
+    dispatch(clearDimensionSearchIfTargetIsSelected(""))
+
     var dataSetMeasures = store.getState().datasets.dataSetMeasures.slice();
     var dataSetDimensions = store.getState().datasets.dataSetDimensions.slice();
     var dataSetTimeDimensions = store.getState().datasets.dataSetTimeDimensions.slice();
@@ -412,12 +413,12 @@ export function hideTargetVariable(event,jobType){
     }
     if(prevVarSlug != null){
         dataSetDimensions = updateTargetVariable(prevVarSlug,dataSetDimensions)
-        dataSetMeasures = updateTargetVariable(prevVarSlug,dataSetMeasures)    
+        dataSetMeasures = updateTargetVariable(prevVarSlug,dataSetMeasures)
     }
-    
+
     dimFlag = handleSelectAllFlag(dataSetDimensions);
     meaFlag = handleSelectAllFlag(dataSetMeasures);
-    
+
     dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
     count = getTotalVariablesSelected();
     dispatch(updateVariablesCount(count));
@@ -605,7 +606,7 @@ export function storeSearchElement(search_element) {
   return {type: "SEARCH_SIGNAL", search_element}
 }
 export function storeSortElements(sorton, sorttype) {
-    
+
   return {type: "SORT_SIGNAL", sorton, sorttype}
 }
 
@@ -763,4 +764,11 @@ export function resetSelectedTargetVariable(){
     var varText = null;
     var varSlug = null;
     return {type: "SET_POSSIBLE_LIST", varType, varText, varSlug}
+}
+
+export function updateTargetTypForSelSignal(signal_type){
+  return{
+    type:"SELECTED_SIGNAL_TYPE",
+    signal_type
+  }
 }
