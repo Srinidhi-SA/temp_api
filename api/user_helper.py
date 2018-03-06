@@ -89,15 +89,35 @@ class UserProfileSerializer(serializers.Serializer):
     #     instance.save()
     #     return instance
 
+    def update(self, instance, validated_data):
+        instance.email = validated_data.get('email', instance.email)
+        instance.website = validated_data.get('website', instance.website)
+        instance.bio = validated_data.get('bio', instance.bio)
+        instance.phone = validated_data.get('phone', instance.phone)
+        instance.city = validated_data.get('city', instance.city)
+        instance.country = validated_data.get('country', instance.country)
+        instance.organization = validated_data.get('organization', instance.organization)
+        return instance
+
 
     def to_representation(self, instance):
         ret = super(UserProfileSerializer, self).to_representation(instance)
-        ret['photo'] = instance.photo.path
+        try:
+            ret['photo'] = instance.photo.path
+        except:
+            ret['photo'] = ""
+
         return ret
 
 
+# class UserProfileView(generics.CreateAPIView, generics.UpdateAPIView):
+#     serializer_class = UserProfileSerializer
+#     queryset = User.objects.all()
+#     lookup_field = 'slug'
+
+
+
 class UserSerializer(serializers.ModelSerializer):
-    # user_profile = UserProfileSerializer(allow_null=True)
 
     class Meta:
         model = User
@@ -201,29 +221,6 @@ def get_profile_image(request, slug=None):
         return response
     except Exception as err:
         return JsonResponse({'message': 'No Image. Upload an image.'})
-
-
-class UserProfileView(generics.CreateAPIView, generics.UpdateAPIView):
-
-    def get_queryset(self):
-        pass
-
-    def get_serializer(self, *args, **kwargs):
-        return Profile
-
-    def create(self, request, *args, **kwargs):
-        data = request.data
-        serializers = self.get_serializer()
-        ser = serializers(data = data)
-        if ser.is_valid():
-            ser.save()
-            return Response(ser.data)
-
-        return Response({'message': 'Failed'})
-
-    def update(self, request, *args, **kwargs):
-        data = request.data
-        user = request.user
 
 
 

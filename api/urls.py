@@ -92,7 +92,6 @@ urlpatterns = [
     url(r'^upload_photo',upload_photo , name="upload_photo"),
     url(r'^get_profile_image/(?P<slug>[^/.]+)/',get_profile_image , name="get_profile_image"),
     url(r'^stockdatasetfiles/(?P<slug>[^/.]+)/',views.get_stockdatasetfiles , name="get_stockdatasetfiles"),
-    url(r'^get_profile_image/(?P<slug>[^/.]+)/', get_profile_image, name="get_profile_image"),
     url(r'^get_concepts/', get_concepts_to_show_in_ui, name="get_concepts"),
     url(r'^get_metadata_for_mlscripts/(?P<slug>[^/.]+)/', views.get_metadata_for_mlscripts, name="get_metadata_for_mlscripts"),
     url(r'^get_score_data_and_return_top_n/', views.get_score_data_and_return_top_n, name="get_score_data_and_return_top_n"),

@@ -85,7 +85,6 @@ class TrainerRelatedPermission(permissions.BasePermission):
     def has_permission(self, request, view):
 
         user = request.user
-        print user.has_perm('api.downlad_pmml')
 
         if request.method in ['GET']:
 
@@ -174,3 +173,4 @@ usage: there is a method get_permissions(), make changes in this function accord
 
 6. For list serializers it has been added in pagination page itself.
 '''
+
