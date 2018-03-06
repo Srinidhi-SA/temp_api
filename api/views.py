@@ -1251,9 +1251,9 @@ def get_info(request):
         'used_size': convert_to_humanize(used_data_size),
         'chart_c3': get_size_pie_chart(used_data_size),
         'comment': get_html_template(),
-        'recent_activity': get_recent_activity()
+        'recent_activity': get_recent_activity(),
         'user': UserSerializer(user, context={'request': request}).data,
-        'profile': user.profile.json_serialized() if profile is not None else None
+        'profile': user.profile.json_serialized() if user.profile is not None else None
     })
 
 
