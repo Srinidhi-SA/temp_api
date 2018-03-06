@@ -4919,7 +4919,14 @@ def get_pmml(request, slug=None, algoname='algo'):
 
     try:
         if not user.has_perm('api.downlad_pmml'):
-            return return_xml_data("permission_denied", "permission_denied")
+
+            return JsonResponse(
+                {
+                    "message": "failed.",
+                    "errors": "permission_denied",
+                    "status": False
+                }
+            )
         from api.redis_access import AccessFeedbackMessage
         from helper import generate_pmml_name
         ac = AccessFeedbackMessage()
@@ -4933,7 +4940,13 @@ def get_pmml(request, slug=None, algoname='algo'):
         xml_data = data[-1].get(algoname)
         return return_xml_data(xml_data, algoname)
     except:
-        return retrieve_failed_exception("permission_denied")
+        return JsonResponse(
+                {
+                    "message": "failed.",
+                    "errors": "permission_denied",
+                    "status": False
+                }
+            )
 
 
 @csrf_exempt
