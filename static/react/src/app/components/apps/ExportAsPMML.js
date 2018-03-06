@@ -5,7 +5,7 @@ import {push} from "react-router-redux";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
 import store from "../../store";
 import {handleExportAsPMMLModal,updateSelectedAlg} from "../../actions/appActions";
-import {isEmpty} from "../../helpers/helper";
+import {isEmpty,getUserDetailsOrRestart} from "../../helpers/helper";
 import {API,PMMLURL} from "../../helpers/env";
 
 
@@ -67,7 +67,7 @@ export class ExportAsPMML extends React.Component {
 
                 <Button  onClick={this.openCloseModal.bind(this,false)}>Close</Button>
                 {/* <Button bsStyle="primary" onClick={this.openCloseModal.bind(this)}>Download</Button> */}
-                <a  href={API+"/api/get_xml/"+store.getState().apps.modelSlug+"/"+store.getState().apps.selectedAlg+"/"} id="exportAsPMML" className="btn btn-primary" download>Download</a>
+                <a  href={API+"/api/get_xml/"+store.getState().apps.modelSlug+"/"+store.getState().apps.selectedAlg+"/?token="+getUserDetailsOrRestart.get().userToken} id="exportAsPMML" className="btn btn-primary" download>Download</a>
                 </Modal.Footer>
                 </Modal>
                 </div>
