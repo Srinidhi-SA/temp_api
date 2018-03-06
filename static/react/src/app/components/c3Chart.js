@@ -12,7 +12,8 @@ import {showZoomChart, showChartData} from "../actions/signalActions";
 
 @connect((store) => {
   return {sideCardListFlag: store.signals.sideCardListFlag,
-  selectedL1:store.signals.selectedL1};
+  selectedL1:store.signals.selectedL1,
+  selected_signal_type:store.signals.selected_signal_type};
 })
 
 //var data= {}, toolData = [], toolLegend=[], chartDiv =null;
@@ -220,7 +221,7 @@ export class C3Chart extends React.Component {
 
 
 //fix for common point colour in trend
-    if(this.props.selectedL1=="Trend"&&data.data.type=="line"){
+    if(this.props.selectedL1=="Trend"&&data.data.type=="line"&&this.props.selected_signal_type=="measure"){
       console.log("in dtrend##########")
       console.log(data)
       let colors=data.color.pattern
