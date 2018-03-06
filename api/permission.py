@@ -47,6 +47,9 @@ class DatasetRelatedPermission(permissions.BasePermission):
             if 'meta_data_modifications' in path:
                 return user.has_perm('api.data_validation')
 
+            if 'advanced_settings_modification' in path:
+                return user.has_perm('api.create_signal')
+
             if 'subsetting' in data:
                 if data['subsetting'] == True:
                     return user.has_perm('api.subsetting_dataset')
@@ -54,6 +57,8 @@ class DatasetRelatedPermission(permissions.BasePermission):
             if 'deleted' in data:
                 if data['deleted'] == True:
                     return user.has_perm('api.remove_dataset')
+
+
 
             return user.has_perm('api.rename_dataset')
 
