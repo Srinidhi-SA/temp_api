@@ -31,6 +31,7 @@ export default function reducer(state = {
   chartDataClassId :"",
   selectedL1: "",
   latestSignals:{},
+  selected_signal_type:""
 }, action) {
   console.log("in SIGNAL reducer!!");
   console.log(action);
@@ -260,6 +261,13 @@ export default function reducer(state = {
     }
   }
   break;
+  case "SELECTED_SIGNAL_TYPE":
+  {
+    return{
+      ...state,
+      selected_signal_type:action.signal_type
+    }
+  }
   }
   return state
 }
