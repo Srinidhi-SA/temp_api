@@ -621,7 +621,7 @@ def add_trend_in_advanced_setting(things_to_add):
     #     return settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND
 
 
-def add_transformation_setting_to_ui_metadata(meta_data):
+def add_transformation_setting_to_ui_metadata(meta_data, signal_permission=None):
     transformation_final_obj = {"existingColumns": None, "newColumns": None}
     transformation_data = []
 
@@ -640,18 +640,33 @@ def add_transformation_setting_to_ui_metadata(meta_data):
             columnType = head.get('columnType')
 
             if "dimension" == columnType:
-                temp['columnSetting'] = columnSettingCopy[:4]
+                if signal_permission is False:
+                    temp['columnSetting'] = columnSettingCopy[:1]
+                else:
+                    temp['columnSetting'] = columnSettingCopy[:4]
             elif "boolean" == columnType:
-                temp['columnSetting'] = columnSettingCopy[:4]
+                if signal_permission is False:
+                    temp['columnSetting'] = columnSettingCopy[:1]
+                else:
+                    temp['columnSetting'] = columnSettingCopy[:4]
             elif "measure" == columnType:
-                datatype_element = columnSettingCopy[4]
-                datatype_element['listOfActions'][0]["status"] = True
-                columnSettingCopy[5]['listOfActions'][0]["status"] = True
-                columnSettingCopy[6]['listOfActions'][0]["status"] = True
+                if signal_permission is False:
+                    columnSettingTemp = columnSettingCopy[0:1] + columnSettingCopy[5:]
+                    columnSettingTemp[1]['listOfActions'][0]["status"] = True
+                    columnSettingTemp[2]['listOfActions'][0]["status"] = True
+                    temp['columnSetting'] = columnSettingTemp
+                else:
+                    datatype_element = columnSettingCopy[4]
+                    datatype_element['listOfActions'][0]["status"] = True
+                    columnSettingCopy[5]['listOfActions'][0]["status"] = True
+                    columnSettingCopy[6]['listOfActions'][0]["status"] = True
+                    temp['columnSetting'] = columnSettingCopy
 
-                temp['columnSetting'] = columnSettingCopy
             elif "datetime" == columnType:
-                temp['columnSetting'] = columnSettingCopy[:3]
+                if signal_permission is False:
+                    temp['columnSetting'] = columnSettingCopy[:1]
+                else:
+                    temp['columnSetting'] = columnSettingCopy[:3]
 
             if head.get('ignoreSuggestionFlag') is True:
                 transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
@@ -725,10 +740,10 @@ def add_headers_to_ui_metadata(meta_data):
     return []
 
 
-def add_ui_metadata_to_metadata(meta_data):
+def add_ui_metadata_to_metadata(meta_data, signal_permission=None):
     output = {
         'possibleAnalysis': add_possible_analysis_to_ui_metadata(meta_data),
-        'transformation_settings': add_transformation_setting_to_ui_metadata(meta_data),
+        'transformation_settings': add_transformation_setting_to_ui_metadata(meta_data, signal_permission),
         'metaDataUI': add_metaData_to_ui_metadata(meta_data),
         'columnDataUI': add_columnData_to_ui_metatdata(meta_data),
         'sampleDataUI': add_sampleData_to_ui_metadata(meta_data),
