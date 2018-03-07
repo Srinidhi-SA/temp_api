@@ -91,6 +91,7 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData, user
             columnSetting = col.get("columnSetting")
 
             for colset in columnSetting:
+                # colset.get("status")=> get status of the actionitems
                 if colset.get("status") == True:
 
                     if colset.get('actionName') == 'unique_identifier':
@@ -102,7 +103,8 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData, user
                             if colset.get('modified') == True:
                                 pass
                             else:
-                                pass
+                                colset['modified'] = True
+                                mdc.changes_on_delete(col.get("name"), type='delete')
                         else:
                             colset['modified'] = True
                             mdc.changes_on_delete(col.get("name"), type='delete')
@@ -150,7 +152,7 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData, user
                             columnSetting_Temp = mdc.changes_in_column_data_if_column_is_ignore(colName)
                             colset['previous_status'] = colset["status"]
                             break
-
+                # colset.get("status")=> get status of the actionitems
                 elif colset.get("status") == False:
 
                     if colset.get("actionName") == "delete":
