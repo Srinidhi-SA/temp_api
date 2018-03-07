@@ -826,9 +826,6 @@ export default function reducer(state = {
     {
         return{
             ...state,
-            apps_regression_modelName:"",
-            apps_regression_targetType:"",
-            apps_regression_levelCount:"",
             regression_algorithm_data:[],
             regression_algorithm_data_manual:[],
             regression_isAutomatic:1,
