@@ -319,6 +319,8 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                         dispatch(closeAppsLoaderValue());
                         dispatch(hideDataPreview());
                         dispatch(updateModelSummaryFlag(true));
+                        if(store.getState().apps.currentAppDetails.app_type == "REGRESSION")
+                        dispatch(reSetRegressionVariables());
                     }else if(json.status == FAILED){
                         bootbox.alert("Your model could not be created.Please try later.",function(){
                             window.history.go(-2);
@@ -326,6 +328,8 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                         clearInterval(appsInterval);
                         dispatch(closeAppsLoaderValue());
                         dispatch(hideDataPreview());
+                        if(store.getState().apps.currentAppDetails.app_type == "REGRESSION")
+                        dispatch(reSetRegressionVariables());
                     }else if(json.status == INPROGRESS){
                         if(json.message !== null && json.message.length > 0){
                             dispatch(openAppsLoaderValue(json.message[0].stageCompletionPercentage,json.message[0].shortExplanation));
@@ -1978,22 +1982,12 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
     }
 
      export function getRegressionAppAlgorithmData(appSlug){
-         var three = 3;
-       /*return (dispatch) => {
+       return (dispatch) => {
            return triggerRegressionAppAlgorithmAPI(appSlug).then(([response, json]) =>{
                if(response.status === 200){
-                   dispatch(updateSelectedApp(json.app_id,json.name,json));
-                   if(pageNo != undefined){
-                       dispatch(getAppsModelList(pageNo));
-                       dispatch(getAppsScoreList(pageNo));
-                   }
-                  
+                   dispatch(saveRegressionAppAlgorithmData(json));                  
                }
            });
-       }*/
-       return (dispatch) => {
-        var apiData = {"ALGORITHM_SETTING": [{"algorithmName": "Algorithm 1", "selected": true, "parameters": [{"displayName": "sdada", "name": "DSADA", "paramType": "number", "acceptedValue": 2, "valueRange": [], "defaultValue": 3}, {"paramType": "list", "displayName": "arun", "defaultValue": [{"selected": true, "displayName": "Aadsad11", "name": "l1bbb"}, {"selected": false, "displayName": "Aadsad12", "name": "l2aaa"}], "name": "DSADAJJJKK"}, {"paramType": "list", "displayName": "sdada sadsada", "defaultValue": [{"selected": false, "displayName": "Aadsad13", "name": "l1"}, {"selected": true, "displayName": "Aadsad14", "name": "l2"}], "name": "DSADAJJJKK"}, {"displayName": "sdada", "name": "DSADA", "paramType": "number", "acceptedValue": 2, "valueRange": [], "defaultValue": 3}], "algorithmSlug": "DSAdasdadsad"}, {"algorithmName": "Algorithm 2", "selected": true, "parameters": [{"displayName": "sdada", "name": "DSADA", "paramType": "number", "acceptedValue": 2, "valueRange": [], "defaultValue": 3}, {"paramType": "list", "displayName": "sdada sadsada", "defaultValue": [{"selected": true, "displayName": "Aadsad", "name": "l1"}, {"selected": false, "displayName": "Aadsad", "name": "l2"}], "name": "DSADAJJJKK"}], "algorithmSlug": "DSAdasda23dewwdwdddsad"}, {"algorithmName": "Algorithm 3", "selected": true, "parameters": [{"displayName": "sdada", "name": "DSADA", "paramType": "number", "acceptedValue": 2, "valueRange": [], "defaultValue": 3}, {"paramType": "list", "displayName": "sdada sadsada", "defaultValue": [{"selected": true, "displayName": "Aadsad", "name": "l1"}, {"selected": false, "displayName": "Aadsad", "name": "l2"}], "name": "DSADAJJJKK"}], "algorithmSlug": "DSAdasd2edddadsad"}]};
-        dispatch(saveRegressionAppAlgorithmData(apiData));
        }
    }
 
@@ -2023,7 +2017,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                     let paramerterList = val.parameters;
                     $.each(paramerterList,function(key1,val1){
                         if(val1.name == parSlug){
-                            if(val1.paramType == 'number'){
+                            if(val1.paramType == 'number' || val1.paramType == 'textbox'){
                                 val1.defaultValue = parVal;
                             }
                             else if(val1.paramType == 'list'){
@@ -2034,6 +2028,9 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                                     else
                                     dat.selected = false;
                                 });
+                            }
+                            else{
+                                val1.defaultValue = parVal;
                             }
                         }
                     })
@@ -2058,5 +2055,10 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
     export function updateCrossValidationValue(val){
         return {
             type: "UPDATE_CROSS_VALIDATION_VALUE",val
+        }
+    }
+    export function reSetRegressionVariables(){
+        return {
+            type: "RESET_REGRESSION_VARIABLES"
         }
     }

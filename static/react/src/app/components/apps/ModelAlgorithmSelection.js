@@ -4,7 +4,7 @@ import {connect} from "react-redux";
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "react-bootstrap";
-import {createModel,getRegressionAppAlgorithmData,setDefaultAutomatic,updateAlgorithmData} from "../../actions/appActions";
+import {createModel,getRegressionAppAlgorithmData,setDefaultAutomatic,updateAlgorithmData,reSetRegressionVariables} from "../../actions/appActions";
 import {AppsLoader} from "../common/AppsLoader";
 import {getDataSetPreview} from "../../actions/dataActions";
 import {RegressionParameter} from "./RegressionParameter";
@@ -26,15 +26,15 @@ import {STATIC_URL} from "../../helpers/env.js";
 export class ModelAlgorithmSelection extends React.Component {
     constructor(props) {
         super(props);
-
     }
     componentWillMount() {
         //It will trigger when refresh happens on url
         if(this.props.dataPreview == null){
             this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
         }
-        this.props.dispatch(setDefaultAutomatic(1));
+        this.props.dispatch(reSetRegressionVariables());
         this.props.dispatch(getRegressionAppAlgorithmData(this.props.match.params.slug));
+        
     }
     componentDidMount() {
         $("#manualBlock_111").addClass("dispnone");
@@ -103,11 +103,6 @@ export class ModelAlgorithmSelection extends React.Component {
         var manualData = manualAlgorithmData.map((data,Index) =>{
            var collapseId = "collapse-manual"+Index;
            var collapse = "#collapse-manual"+Index;
-           var isSelected = data.selected;
-           if(isSelected == true)
-           var toggleCls = "panel-collapse collapse in";
-           else
-           var toggleCls = "panel-collapse collapse";
         var manualDataParams = data.parameters.map((params,paramIndex) =>{
             var manualKey = "manual"+paramIndex;
                                                             return(
@@ -118,21 +113,26 @@ export class ModelAlgorithmSelection extends React.Component {
                                                             );
                                                         });
                        return(
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">					
-                                    <div class="checkbox">
-                                    <label data-parent="#accordion9" data-target={collapse} onClick={this.changeAlgorithmSelection.bind(this,data)} aria-expanded="false" aria-controls={collapseId}>
-                                    <div class="ma-checkbox inline">
-                                    <input type="checkbox" checked={data.selected} onChange={this.changeAlgorithmSelection.bind(this,data)}/><label>{data.algorithmName}</label>
+                                <div className="panel panel-default">
+                                    <div className="panel-heading">	
+
+                                    <div className="checkbox">
+                                    <div className="ma-checkbox inline">
+                                    <input type="checkbox" checked={data.selected} id={collapse} onChange={this.changeAlgorithmSelection.bind(this,data)}/><label for={collapse}>&nbsp;</label>
                                     </div>
+                                    </div>
+
+                                    <label data-toggle="collapse" data-parent="#accordion9" data-target={collapse} aria-expanded="false" aria-controls={collapseId} title="Edit Parameter"  class="btn btn-space btn-default btn-xs">
+                                    <i className="fa fa-pencil-square-o"></i>
                                     </label>
+                                    {data.algorithmName}
+
                                     </div>
-                                    </div>
-                                    <div id={collapseId} class={toggleCls}>
-                                        <div class="panel-body">
-                                            <div class="container-fluid">
-                                                <form class="form-horizontal">
-                                                    <div class="row">
+                                    <div id={collapseId} className="panel-collapse collapse in">
+                                        <div className="panel-body">
+                                            <div className="container-fluid">
+                                                <form className="form-horizontal">
+                                                    <div className="row">
                                                     {manualDataParams}
                                                        			
                                                     </div>

@@ -822,6 +822,21 @@ export default function reducer(state = {
         }
     }
     break;
+    case "RESET_REGRESSION_VARIABLES":
+    {
+        return{
+            ...state,
+            apps_regression_modelName:"",
+            apps_regression_targetType:"",
+            apps_regression_levelCount:"",
+            regression_algorithm_data:[],
+            regression_algorithm_data_manual:[],
+            regression_isAutomatic:1,
+            regression_selectedTechnique:"crossValidation",
+            regression_crossvalidationvalue:0,
+        }
+    }
+    break;
     }
     return state
 }

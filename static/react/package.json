@@ -26,7 +26,6 @@
     "react-bootstrap": "^0.31.2",
     "react-bootstrap-date-picker": "^5.1.0",
     "react-bootstrap-dialog": "^0.9.1",
-    "react-bootstrap-multiselect-fix": "^3.0.0",
     "react-bootstrap-slider": "^2.0.1",
     "react-bootstrap-toggle": "^2.2.3",
     "react-breadcrumb": "^1.0.0",

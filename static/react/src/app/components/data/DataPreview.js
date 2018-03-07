@@ -532,7 +532,8 @@ export class DataPreview extends React.Component {
               return (
                 <tr key={tableIndex}>
                   <td className="item">{tableItem.displayName}</td>
-                  <td>&nbsp; : &nbsp;&nbsp;{tableItem.value}</td>
+                  <td>:</td>
+				  <td>{tableItem.value}</td>
                 </tr>
               );
             }

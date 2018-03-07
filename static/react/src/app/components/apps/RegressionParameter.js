@@ -8,15 +8,12 @@ import { Scrollbars } from 'react-custom-scrollbars';
 import {decimalPlaces} from "../../helpers/helper";
 import ReactBootstrapSlider from 'react-bootstrap-slider'
 import {updateAlgorithmData} from "../../actions/appActions";
-import Multiselect from 'react-bootstrap-multiselect-fix';
-var data = null,
-yformat = null,
-cardData = {};
 
 @connect((store) => {
     return {login_response: store.login.login_response, signal: store.signals.signalAnalysis,
         chartObject: store.chartObject.chartObj,
         algorithmData:store.apps.regression_algorithm_data,
+        isAutomatic:store.apps.regression_isAutomatic,
     };
 })
 
@@ -44,11 +41,6 @@ export class RegressionParameter extends React.Component {
       this.setState({
         defaultVal: e.target.value
       })
-      //this.state.curmin = Number(e.target.value)
-    //  console.log(e.target.value)
-     // $("#saveButton").removeClass('btn-alt4')
-      //$("#saveButton").addClass('btn-primary')
-     // $("#saveButton").removeAttr('disabled')
     }
   }
    changeSliderValue(e) {
@@ -57,19 +49,16 @@ export class RegressionParameter extends React.Component {
         defaultVal: e.target.value
       });
       this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value));
-      //let updateAlgorithmData = this.props.updateSlider(e.target.value);
-  }
-  updateSlider(val){
-      let algorithmData = $.grep((store.getState().apps.regression_algorithm_data.ALGORITHM_SETTING),function(key,val){
-          return(val.algorithmSlug == this.props.algorithmSlug);
-      });
-      console.log(algorithmData);
-  }
-  checkSelection(e){
-      console.log(e.target.value);
   }
   selecthandleChange(e){
       console.log(e.target.value);
+      this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value));
+  }
+  changeTextboxValue(e){
+      console.log(e.target.value);
+      this.setState({
+        defaultVal: e.target.value
+      });
       this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value));
   }
     renderParameterData(parameterData){
@@ -86,7 +75,7 @@ export class RegressionParameter extends React.Component {
                return(
                    <div>
                   
-                 <select  class="form-control" onChange={this.selecthandleChange.bind(this)}>
+                 <select  class="form-control" onChange={this.selecthandleChange.bind(this)} disabled={store.getState().apps.regression_isAutomatic == 1}>
                  {optionsTemp}
                  </select>
 				
@@ -101,15 +90,29 @@ export class RegressionParameter extends React.Component {
                 let step = (1 / Math.pow(10, precision));
                 return (
                         <div>
-                        <span className="small_box"><input type="number" min = {this.state.min} max = {this.state.max} className="form-control" value={this.state.defaultVal} onChange={this.changeSliderValueFromText.bind(this)} />
+                        <span className="small_box"><input type="number" min = {this.state.min} max = {this.state.max} className="form-control" value={this.state.defaultVal} onChange={this.changeSliderValueFromText.bind(this)} disabled={store.getState().apps.regression_isAutomatic == 1}/>
                         </span>
                         <span className="small_box_contol">
-                        <ReactBootstrapSlider value={this.state.defaultVal} triggerSlideEvent="true" change={this.changeSliderValue.bind(this)} step={step} max={this.state.max} min={this.state.min} tooltip="hide"/>
+                        <ReactBootstrapSlider value={this.state.defaultVal} triggerSlideEvent="true" change={this.changeSliderValue.bind(this)} step={step} max={this.state.max} min={this.state.min} tooltip="hide" disabled={store.getState().apps.regression_isAutomatic == 1?"disabled":""}/>
                         </span>
                         </div>
                        );
             
-           break;
+            break;
+            case "textbox":
+                 return (
+                        <div>
+                            <input type="text" className="form-control" value={this.state.defaultVal} onChange={this.changeTextboxValue.bind(this)} disabled={store.getState().apps.regression_isAutomatic == 1}/>
+                        </div>
+                       );
+            
+            break;
+            default:
+                return (
+                    <div>
+                    <input type="text" className="form-control" value={this.state.defaultVal} onChange={this.changeTextboxValue.bind(this)} disabled={store.getState().apps.regression_isAutomatic == 1}/>
+                    </div>
+                );
 
             }
 
