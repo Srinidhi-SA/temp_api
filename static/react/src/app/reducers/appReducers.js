@@ -76,6 +76,14 @@ export default function reducer(state = {
         targetLevelCounts:null,
         currentAppDetails:null,
         updateCreateModelHideShow:false,
+        apps_regression_modelName:"",
+        apps_regression_targetType:"",
+        apps_regression_levelCount:"",
+        regression_algorithm_data:[],
+        regression_algorithm_data_manual:[],
+        regression_isAutomatic:1,
+        regression_selectedTechnique:"crossValidation",
+        regression_crossvalidationvalue:0,
 
 }, action) {
     console.log("In APPs reducer!!");
@@ -763,7 +771,57 @@ export default function reducer(state = {
         }
     }
     break;
-    
+    case "SAVE_SELECTED_VALES_FOR_MODEL":
+    {
+        return{
+            ...state,
+            apps_regression_modelName:action.modelName,
+            apps_regression_targetType:action.targetType,
+            apps_regression_levelCount:action.levelCount
+        }
+    }
+    break;
+    case "SAVE_REGRESSION_ALGORITHM_DATA":
+    {
+        return{
+            ...state,
+            regression_algorithm_data:action.data.ALGORITHM_SETTING,
+            regression_algorithm_data_manual:action.data.ALGORITHM_SETTING,
+        }
+    }
+    break;
+    case "UPDATE_REGRESSION_ALGORITHM_DATA":
+    {
+        return{
+            ...state,
+            regression_algorithm_data_manual:action.newAlgorithm,
+        }
+    }
+    break;
+    case "SET_REGRESSION_DEFAULT_AUTOMATIC":
+    {
+        return{
+            ...state,
+            regression_isAutomatic:action.data,
+        }
+    }
+    break;
+    case "UPDATE_REGRESSION_TECHNIQUE":
+    {
+        return{
+            ...state,
+            regression_selectedTechnique:action.name,
+        }
+    }
+    break;
+    case "UPDATE_CROSS_VALIDATION_VALUE":
+    {
+        return{
+            ...state,
+            regression_crossvalidationvalue:action.val,
+        }
+    }
+    break;
     }
     return state
 }

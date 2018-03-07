@@ -121,11 +121,11 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
     export function createModel(modelName,targetVariable,targetLevel) {
         console.log(modelName);
         console.log(targetVariable);
-        if($('#createModelAnalysisList option:selected').val() == ""){
+        /*if($('#createModelAnalysisList option:selected').val() == ""){
             let msg=statusMessages("warning","Please select a variable to analyze...","small_mascot")
               bootbox.alert(msg);
             return false;
-        }
+        }*/
         return (dispatch) => {
             dispatch(openAppsLoader(APPSLOADERPERVALUE,"Please wait while mAdvisor is creating model... "));
             return triggerCreateModel(getUserDetailsOrRestart.get().userToken,modelName,targetVariable,targetLevel,dispatch).then(([response, json]) =>{
@@ -146,7 +146,36 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
         var datasetSlug = store.getState().datasets.dataPreview.slug;
         var app_id=store.getState().apps.currentAppId;
         var customDetails = createcustomAnalysisDetails();
+        if(store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
+            if(store.getState().apps.regression_selectedTechnique == "crossValidation")
+            {
+                var validationTechnique={
+                "name":"kFold",
+                "displayName":"K Fold Validation",
+                "value":store.getState().apps.regression_crossvalidationvalue
+                }
+            }
+            else
+            {
+                var validationTechnique={
+                "name":"trainAndtest",
+                "displayName":"Train and Test",
+                "value":store.getState().apps.trainValue
+                }
+            }
+            if(store.getState().apps.regression_isAutomatic == "1")
+            var AlgorithmSettings = store.getState().apps.regression_algorithm_data;
+            else
+            var AlgorithmSettings = store.getState().apps.regression_algorithm_data_manual;
 
+            var details = {
+                "ALGORITHM_SETTING":AlgorithmSettings,
+                "validationTechnique":validationTechnique,
+                "targetLevel":targetLevel,
+                "variablesSelection":store.getState().datasets.dataPreview.meta_data.uiMetaData.varibaleSelectionArray
+            }
+        }
+        else{
         var details = {/*"measures":store.getState().datasets.selectedMeasures,
                 "dimension":store.getState().datasets.selectedDimensions,
                 "timeDimension":store.getState().datasets.selectedTimeDimensions,*/
@@ -158,6 +187,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 'customAnalysisDetails':customDetails["customAnalysisDetails"],
                  'polarity':customDetails["polarity"],
                  'uidColumn':customDetails["uidColumn"]*/}
+        }
         return fetch(API+'/api/trainer/',{
             method: 'post',
             headers: getHeader(token),
@@ -1938,5 +1968,95 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
    export function createScoreSuccessAnalysis(data){
         return (dispatch) => {
             dispatch(createScoreSuccess(data,dispatch))
+        }
+    }
+
+    export function saveSelectedValuesForModel(modelName,targetType,levelCount){
+       return{
+           type: "SAVE_SELECTED_VALES_FOR_MODEL", modelName,targetType,levelCount
+       }
+    }
+
+     export function getRegressionAppAlgorithmData(appSlug){
+         var three = 3;
+       /*return (dispatch) => {
+           return triggerRegressionAppAlgorithmAPI(appSlug).then(([response, json]) =>{
+               if(response.status === 200){
+                   dispatch(updateSelectedApp(json.app_id,json.name,json));
+                   if(pageNo != undefined){
+                       dispatch(getAppsModelList(pageNo));
+                       dispatch(getAppsScoreList(pageNo));
+                   }
+                  
+               }
+           });
+       }*/
+       return (dispatch) => {
+        var apiData = {"ALGORITHM_SETTING": [{"algorithmName": "Algorithm 1", "selected": true, "parameters": [{"displayName": "sdada", "name": "DSADA", "paramType": "number", "acceptedValue": 2, "valueRange": [], "defaultValue": 3}, {"paramType": "list", "displayName": "arun", "defaultValue": [{"selected": true, "displayName": "Aadsad11", "name": "l1bbb"}, {"selected": false, "displayName": "Aadsad12", "name": "l2aaa"}], "name": "DSADAJJJKK"}, {"paramType": "list", "displayName": "sdada sadsada", "defaultValue": [{"selected": false, "displayName": "Aadsad13", "name": "l1"}, {"selected": true, "displayName": "Aadsad14", "name": "l2"}], "name": "DSADAJJJKK"}, {"displayName": "sdada", "name": "DSADA", "paramType": "number", "acceptedValue": 2, "valueRange": [], "defaultValue": 3}], "algorithmSlug": "DSAdasdadsad"}, {"algorithmName": "Algorithm 2", "selected": true, "parameters": [{"displayName": "sdada", "name": "DSADA", "paramType": "number", "acceptedValue": 2, "valueRange": [], "defaultValue": 3}, {"paramType": "list", "displayName": "sdada sadsada", "defaultValue": [{"selected": true, "displayName": "Aadsad", "name": "l1"}, {"selected": false, "displayName": "Aadsad", "name": "l2"}], "name": "DSADAJJJKK"}], "algorithmSlug": "DSAdasda23dewwdwdddsad"}, {"algorithmName": "Algorithm 3", "selected": true, "parameters": [{"displayName": "sdada", "name": "DSADA", "paramType": "number", "acceptedValue": 2, "valueRange": [], "defaultValue": 3}, {"paramType": "list", "displayName": "sdada sadsada", "defaultValue": [{"selected": true, "displayName": "Aadsad", "name": "l1"}, {"selected": false, "displayName": "Aadsad", "name": "l2"}], "name": "DSADAJJJKK"}], "algorithmSlug": "DSAdasd2edddadsad"}]};
+        dispatch(saveRegressionAppAlgorithmData(apiData));
+       }
+   }
+
+   function triggerRegressionAppAlgorithmAPI(appSlug){
+       return fetch(API+'/api/regression_app/get_algorithm_config_list/'+appSlug+'/',{
+           method: 'get',
+           headers: getHeader(getUserDetailsOrRestart.get().userToken),
+       }).then( response => Promise.all([response, response.json()]));
+   }
+   export function saveRegressionAppAlgorithmData(data){
+        return {
+            type: "SAVE_REGRESSION_ALGORITHM_DATA",data
+        }
+    }
+    export function updateAlgorithmData(algSlug,parSlug,parVal){
+        var AlgorithmCopy = jQuery.extend(true, [], store.getState().apps.regression_algorithm_data_manual);
+
+        var newAlgorithm = $.each(AlgorithmCopy,function(key,val){
+            if(val.algorithmSlug == algSlug)
+            {
+                if(parSlug === undefined && parVal === undefined)
+                {
+                    val.selected = !val.selected;
+                }
+                else
+                {
+                    let paramerterList = val.parameters;
+                    $.each(paramerterList,function(key1,val1){
+                        if(val1.name == parSlug){
+                            if(val1.paramType == 'number'){
+                                val1.defaultValue = parVal;
+                            }
+                            else if(val1.paramType == 'list'){
+                                let allValues = val1.defaultValue;
+                                $.each(allValues,function(i,dat){
+                                    if(dat.name == parVal)
+                                    dat.selected = true;
+                                    else
+                                    dat.selected = false;
+                                });
+                            }
+                        }
+                    })
+                }
+            }
+        });
+        return {
+            type: "UPDATE_REGRESSION_ALGORITHM_DATA",newAlgorithm
+        }
+
+    }
+     export function setDefaultAutomatic(data){
+        return {
+            type: "SET_REGRESSION_DEFAULT_AUTOMATIC",data
+        }
+    }
+    export function updateRegressionTechnique(name){
+        return {
+            type: "UPDATE_REGRESSION_TECHNIQUE",name
+        }
+    }
+    export function updateCrossValidationValue(val){
+        return {
+            type: "UPDATE_CROSS_VALIDATION_VALUE",val
         }
     }

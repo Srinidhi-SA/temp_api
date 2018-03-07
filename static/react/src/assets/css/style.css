@@ -11060,20 +11060,21 @@ pre {
 	transform: rotate(-90deg)
 }
 .panel-group.accordion .panel .panel-collapse .panel-body {
-	padding: 0 30px 20px 40px;
+	padding: 0 30px 20px 30px;
 	border-top: 0
 }
 .panel-group.accordion.accordion-color .panel .panel-heading a {
-	background-color: #7a98bf;
-	color: #fff
+    background-color: #edecec;
+    color: #333;
+	    padding: 15px;
 }
+#automaticBlock_111 {margin-top:10px;}
 .panel-group.accordion.accordion-color .panel .panel-heading a.collapsed {
 	background-color: #fff;
 	color: #555
 }
 .panel-group.accordion.accordion-color .panel .panel-collapse .panel-body {
-	background-color: #7a98bf;
-	color: #fff
+	background-color: #fdfdfd;
 }
 .panel-group.accordion.accordion-semi .panel .panel-heading a {
 	background-color: #00998c;
@@ -11133,6 +11134,14 @@ pre {
 .modal-content, .nav-tabs>li.active a, .nav-tabs>li.active a:focus, .nav-tabs>li.active a:hover {
 	background-color: transparent;
 }
+    .panel-group.accordion.accordion-color .panel .panel-heading {
+	background: #edecec;
+    padding: 0;
+    margin: 0;
+    border-bottom: 1px solid #edecec; }
+	
+	.accordion.accordion-color .checkbox label { display:block; padding-top: 5px; }
+	
 .tab-content {
 	background: #fff;
 	padding: 20px;
@@ -14880,7 +14889,7 @@ div.pred_disp_block  p, .pred_disp_block_store p { font-size:12px; }
 .panel-mAd  .panel-heading h2 { font-size:20px; }
 .panel-mAd .panel-body h2, .panel-mAd .panel-body h3{ font-size: 21px; }
 .no-border { border:none;  }
-.box-shadow { box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+.box-shadow { border-top: 1px solid #f5f5f5; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
 	-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
 	-moz-box-shadow:    0 1px 2px rgba(0, 0, 0, 0.15); }
 .toggleOn, .toggleOff { margin-bottom: 10px; }
@@ -14916,6 +14925,10 @@ a.more_button { color: #b3b3b3; padding: 0 10px; margin-right: 9px; cursor:point
 		 -o-box-shadow: 0 0 8px rgba(2, 152, 140,.6);
 			box-shadow: 0 0 8px rgba(2, 152, 140,.6);
 }
+
+.small_box { width:50px; display:inline-block; margin-right:20px; }
+.small_box_contol { width:220px; display:inline-block}
+.dispnone { display:none; }
 /**************** Css realated to developers, keep the source down ***/
 #prediction_dropdown{
 	    width: 40%;
@@ -15373,3 +15386,15 @@ display: inline-block;
 .newCardStyle.firstCard.disable-card:hover {
     color: grey;
 }
+/*** h4 label ***/
+h4 label { font-size:inherit; }
+.alter1 .nav-tabs>li.active>a { border-bottom-color:transparent; }
+.alter1 { background:#edecec }
+.alter1 li { padding-left:20px;}
+.alter1 .nav-tabs>li:hover { background-color:#f5f5f5;}
+.alter1 .nav-tabs>li.active, .alter1  .tab-content { background-color:#fdfdfd; }
+
+.alter1 .ma-checkbox, .alter1 li a { display:inline-block;}
+.accordion-color .form-horizontal .control-label.read{ color:#909090;}
+.accordion-color .form-horizontal .form-group.lp { padding:0; }
+.panel-body.no-border .panel-footer { border-top:none; background:none;  }
