@@ -263,8 +263,8 @@ export class DataPreview extends React.Component {
               return (
                 <tr key={tableIndex}>
                   <td className="item">{tableItem.displayName}</td>
-                  <td>&nbsp; : &nbsp;</td>
-                  <td>&nbsp;&nbsp;{tableItem.value}</td>
+                  <td>&nbsp;:&nbsp;</td>
+                  <td><span title={tableItem.value} className="stat-txtControl">{tableItem.value}</span></td>
                 </tr>
               );
             }
@@ -381,8 +381,8 @@ export class DataPreview extends React.Component {
       });
     });
 
-  
-   
+
+
     this.isSubsetted = this.props.subsettingDone;
     //  const data = store.getState().data.dataPreview.meta_data.data;
 
@@ -403,7 +403,7 @@ export class DataPreview extends React.Component {
       isDataValidationAllowed = permission_details.data_validation;
       if(this.buttons.create.text == CREATESIGNAL){
           isCreateAllowed = permission_details.create_signal;
-          
+
       }else if(this.buttons.create.text == CREATEMODEL){
           isCreateAllowed = permission_details.create_trainer;
       }
@@ -450,7 +450,7 @@ export class DataPreview extends React.Component {
        if(isDataValidationAllowed)dataValidationCom = <DataValidation name={thElement.name} slug={thElement.slug}/>
           if (!thElement.consider) {
             cls = cls + " greyout-col";
-         
+
             return (
               <th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)} title={thElement.ignoreSuggestionMsg}>
                 <a href="#" data-toggle="dropdown" className={anchorCls}>
@@ -498,7 +498,7 @@ export class DataPreview extends React.Component {
               );
             }
 
- 
+
           });
           return (
             <tr key={trIndex}>
@@ -532,7 +532,8 @@ export class DataPreview extends React.Component {
               return (
                 <tr key={tableIndex}>
                   <td className="item">{tableItem.displayName}</td>
-                  <td>&nbsp; : &nbsp;&nbsp;{tableItem.value}</td>
+                  <td>&nbsp;:&nbsp;</td>
+                  <td><span title={tableItem.value} className="stat-txtControl">{tableItem.value}</span></td>
                 </tr>
               );
             }
@@ -630,12 +631,12 @@ export class DataPreview extends React.Component {
                   {/*<!-- ./ End Tab Visualizations -->*/}
 
                   {/*<!-- Start Tab Subsettings -->*/}
-                
+
                   {isSubsettingAllowed == true ?  <div id="sub_settings" className="box-shadow"><SubSetting item={firstTimeSubSetting}/>
                           </div>:""}
-                 
-                 
-                    
+
+
+
                   {/* End Tab Subsettings */}
                 </div>
                 <div className="clearfix"></div>
@@ -711,5 +712,5 @@ export class DataPreview extends React.Component {
         </div>
       );
     }
-  } 
+  }
 }
