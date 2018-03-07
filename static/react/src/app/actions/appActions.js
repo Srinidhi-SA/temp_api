@@ -1992,7 +1992,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
    }
 
    function triggerRegressionAppAlgorithmAPI(){
-       return fetch(API+'/api/regression_app/get_algorithm_config_list/',{
+       return fetch(API+'/api/regression_app/get_algorithm_config_list',{
            method: 'get',
            headers: getHeader(getUserDetailsOrRestart.get().userToken),
        }).then( response => Promise.all([response, response.json()]));
