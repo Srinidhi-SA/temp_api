@@ -855,7 +855,8 @@ class Trainer(models.Model):
         config['config']["DATA_SOURCE"] = self.dataset.get_datasource_info()
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
         # config['config']["META_HELPER"] = self.create_configuration_meta_data()
-        config['config']["ALGORITHM_SETTING"]=self.make_config_algorithm_setting()
+        if(self.app_id==settings.REGRESSION_APP_ID):
+            config['config']["ALGORITHM_SETTING"]=self.make_config_algorithm_setting()
 
         self.config = json.dumps(config)
         self.save()
