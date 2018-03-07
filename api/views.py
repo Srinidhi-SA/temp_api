@@ -1289,6 +1289,7 @@ def home(request):
 def get_info(request):
     user = request.user
     from api.helper import convert_to_humanize
+    from api.user_helper import UserSerializer
     def get_all_info_related_to_user(user):
         # things = ['dataset', 'insight', 'trainer', 'score', 'robo', 'audioset']
         things = ['dataset', 'insight', 'trainer', 'score']
@@ -1423,7 +1424,9 @@ def get_info(request):
         'used_size': convert_to_humanize(used_data_size),
         'chart_c3': get_size_pie_chart(used_data_size),
         'comment': get_html_template(),
-        'recent_activity': get_recent_activity()
+        'recent_activity': get_recent_activity(),
+        'user': UserSerializer(user, context={'request': request}).data,
+        'profile': user.profile.json_serialized() if user.profile is not None else None
     })
 
 
@@ -5083,18 +5086,43 @@ def set_pmml(request, slug=None):
 @csrf_exempt
 def get_pmml(request, slug=None, algoname='algo'):
 
-    from api.redis_access import AccessFeedbackMessage
-    from helper import generate_pmml_name
-    ac = AccessFeedbackMessage()
-    job_object = Job.objects.filter(object_id=slug).first()
-    job_slug = job_object.slug
-    key_pmml_name = generate_pmml_name(job_slug)
-    data = ac.get_using_key(key_pmml_name)
-    if data is None:
-        sample_xml =  "<mydocument has=\"an attribute\">\n  <and>\n    <many>elements</many>\n    <many>more elements</many>\n  </and>\n  <plus a=\"complex\">\n    element as well\n  </plus>\n</mydocument>"
-        return return_xml_data(sample_xml, algoname)
-    xml_data = data[-1].get(algoname)
-    return return_xml_data(xml_data, algoname)
+    from api.user_helper import return_user_using_token
+    from api.exceptions import retrieve_failed_exception
+    token = request.GET.get('token')
+    token = token.split(' ')[1]
+
+    user = return_user_using_token(token=token)
+
+    try:
+        if not user.has_perm('api.downlad_pmml'):
+
+            return JsonResponse(
+                {
+                    "message": "failed.",
+                    "errors": "permission_denied",
+                    "status": False
+                }
+            )
+        from api.redis_access import AccessFeedbackMessage
+        from helper import generate_pmml_name
+        ac = AccessFeedbackMessage()
+        job_object = Job.objects.filter(object_id=slug).first()
+        job_slug = job_object.slug
+        key_pmml_name = generate_pmml_name(job_slug)
+        data = ac.get_using_key(key_pmml_name)
+        if data is None:
+            sample_xml =  "<mydocument has=\"an attribute\">\n  <and>\n    <many>elements</many>\n    <many>more elements</many>\n  </and>\n  <plus a=\"complex\">\n    element as well\n  </plus>\n</mydocument>"
+            return return_xml_data(sample_xml, algoname)
+        xml_data = data[-1].get(algoname)
+        return return_xml_data(xml_data, algoname)
+    except:
+        return JsonResponse(
+                {
+                    "message": "failed.",
+                    "errors": "permission_denied",
+                    "status": False
+                }
+            )
 
 
 @csrf_exempt

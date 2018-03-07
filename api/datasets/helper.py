@@ -39,7 +39,7 @@ def convert_time_to_human(data):
     return data
 
 
-def convert_metadata_according_to_transformation_setting(meta_data=None, transformation_setting=None):
+def convert_metadata_according_to_transformation_setting(meta_data=None, transformation_setting=None, user=None):
 
     if meta_data is not None:
         uiMetaData = meta_data
@@ -57,7 +57,8 @@ def convert_metadata_according_to_transformation_setting(meta_data=None, transfo
         metaData=metaData,
         headers=headers,
         columnData=columnData,
-        sampleData=sampleData
+        sampleData=sampleData,
+        user=user
     )
     uiMetaData['transformation_settings'] = transformation_setting
     uiMetaData['modified'] = True
@@ -70,14 +71,15 @@ def convert_metadata_according_to_transformation_setting(meta_data=None, transfo
     return uiMetaData
 
 
-def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
+def read_and_change_metadata(ts, metaData, headers, columnData, sampleData, user=None):
 
     mdc = MetaDataChange(
         metaData=metaData,
         headers=headers,
         ts=ts,
         columnData=columnData,
-        sampleData=sampleData
+        sampleData=sampleData,
+        user=user
     )
 
     ts = ts.get('existingColumns')
@@ -89,6 +91,7 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
             columnSetting = col.get("columnSetting")
 
             for colset in columnSetting:
+                # colset.get("status")=> get status of the actionitems
                 if colset.get("status") == True:
 
                     if colset.get('actionName') == 'unique_identifier':
@@ -100,7 +103,8 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
                             if colset.get('modified') == True:
                                 pass
                             else:
-                                pass
+                                colset['modified'] = True
+                                mdc.changes_on_delete(col.get("name"), type='delete')
                         else:
                             colset['modified'] = True
                             mdc.changes_on_delete(col.get("name"), type='delete')
@@ -148,7 +152,7 @@ def read_and_change_metadata(ts, metaData, headers, columnData, sampleData):
                             columnSetting_Temp = mdc.changes_in_column_data_if_column_is_ignore(colName)
                             colset['previous_status'] = colset["status"]
                             break
-
+                # colset.get("status")=> get status of the actionitems
                 elif colset.get("status") == False:
 
                     if colset.get("actionName") == "delete":
@@ -186,6 +190,7 @@ class MetaDataChange(object):
         self.ts = kwargs.get("ts")
         self.columnData = kwargs.get("columnData")
         self.sampleData = kwargs.get("sampleData")
+        self.user = kwargs.get('user')
 
     def changes_on_delete(self, colName=None, type='delete'):
         """
@@ -415,6 +420,9 @@ class MetaDataChange(object):
     def changes_in_column_data_if_column_is_considered(self, colName, uid_flag=False):
         import copy
         from django.conf import settings
+
+        signal_permission = self.user.has_perm('api.create_signal')
+
         for head in self.columnData:
             if head.get('name') == colName:
                 transformation_settings = settings.TRANSFORMATION_SETTINGS_CONSTANT
@@ -422,19 +430,35 @@ class MetaDataChange(object):
                 columnSettingCopy = copy.deepcopy(transformation_settings.get('columnSetting'))
                 columnType = head.get('columnType')
                 head_columnSetting = []
-                if "dimension" == columnType:
-                    head_columnSetting = columnSettingCopy[:4]
-                elif "boolean" == columnType:
-                    head_columnSetting = columnSettingCopy[:4]
-                elif "measure" == columnType:
-                    datatype_element = columnSettingCopy[4]
-                    datatype_element['listOfActions'][0]["status"] = True
-                    columnSettingCopy[5]['listOfActions'][0]["status"] = True
-                    columnSettingCopy[6]['listOfActions'][0]["status"] = True
 
-                    head_columnSetting = columnSettingCopy
+                if "dimension" == columnType:
+                    if signal_permission is False:
+                        head_columnSetting = columnSettingCopy[:1]
+                    else:
+                        head_columnSetting = columnSettingCopy[:4]
+                elif "boolean" == columnType:
+                    if signal_permission is False:
+                        head_columnSetting = columnSettingCopy[:1]
+                    else:
+                        head_columnSetting = columnSettingCopy[:4]
+                elif "measure" == columnType:
+                    if signal_permission is False:
+                        columnSettingTemp = columnSettingCopy[0:1] + columnSettingCopy[5:]
+                        columnSettingTemp[1]['listOfActions'][0]["status"] = True
+                        columnSettingTemp[2]['listOfActions'][0]["status"] = True
+                        head_columnSetting = columnSettingTemp
+                    else:
+                        datatype_element = columnSettingCopy[4]
+                        datatype_element['listOfActions'][0]["status"] = True
+                        columnSettingCopy[5]['listOfActions'][0]["status"] = True
+                        columnSettingCopy[6]['listOfActions'][0]["status"] = True
+                        head_columnSetting = columnSettingCopy
+
                 elif "datetime" == columnType:
-                    head_columnSetting = columnSettingCopy[:3]
+                    if signal_permission is False:
+                        head_columnSetting = columnSettingCopy[:1]
+                    else:
+                        head_columnSetting = columnSettingCopy[:3]
 
                 transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
                 transformation_settings_ignore['status'] = False
@@ -455,11 +479,16 @@ class MetaDataChange(object):
     def changes_in_column_data_if_column_is_ignore(self, colName):
         import copy
         from django.conf import settings
+        signal_permission = self.user.has_perm('api.create_signal')
         for head in self.columnData:
             if head.get('name') == colName:
                 transformation_settings = settings.TRANSFORMATION_SETTINGS_CONSTANT
                 columnSettingCopy = copy.deepcopy(transformation_settings.get('columnSetting'))
-                head_columnSetting = columnSettingCopy[1:3]
+
+                if signal_permission is False:
+                    head_columnSetting = []
+                else:
+                    head_columnSetting = columnSettingCopy[1:3]
 
                 transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
                 transformation_settings_ignore['status'] = True
@@ -621,7 +650,7 @@ def add_trend_in_advanced_setting(things_to_add):
     #     return settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND
 
 
-def add_transformation_setting_to_ui_metadata(meta_data):
+def add_transformation_setting_to_ui_metadata(meta_data, signal_permission=None):
     transformation_final_obj = {"existingColumns": None, "newColumns": None}
     transformation_data = []
 
@@ -640,18 +669,33 @@ def add_transformation_setting_to_ui_metadata(meta_data):
             columnType = head.get('columnType')
 
             if "dimension" == columnType:
-                temp['columnSetting'] = columnSettingCopy[:4]
+                if signal_permission is False:
+                    temp['columnSetting'] = columnSettingCopy[:1]
+                else:
+                    temp['columnSetting'] = columnSettingCopy[:4]
             elif "boolean" == columnType:
-                temp['columnSetting'] = columnSettingCopy[:4]
+                if signal_permission is False:
+                    temp['columnSetting'] = columnSettingCopy[:1]
+                else:
+                    temp['columnSetting'] = columnSettingCopy[:4]
             elif "measure" == columnType:
-                datatype_element = columnSettingCopy[4]
-                datatype_element['listOfActions'][0]["status"] = True
-                columnSettingCopy[5]['listOfActions'][0]["status"] = True
-                columnSettingCopy[6]['listOfActions'][0]["status"] = True
+                if signal_permission is False:
+                    columnSettingTemp = columnSettingCopy[0:1] + columnSettingCopy[5:]
+                    columnSettingTemp[1]['listOfActions'][0]["status"] = True
+                    columnSettingTemp[2]['listOfActions'][0]["status"] = True
+                    temp['columnSetting'] = columnSettingTemp
+                else:
+                    datatype_element = columnSettingCopy[4]
+                    datatype_element['listOfActions'][0]["status"] = True
+                    columnSettingCopy[5]['listOfActions'][0]["status"] = True
+                    columnSettingCopy[6]['listOfActions'][0]["status"] = True
+                    temp['columnSetting'] = columnSettingCopy
 
-                temp['columnSetting'] = columnSettingCopy
             elif "datetime" == columnType:
-                temp['columnSetting'] = columnSettingCopy[:3]
+                if signal_permission is False:
+                    temp['columnSetting'] = columnSettingCopy[:1]
+                else:
+                    temp['columnSetting'] = columnSettingCopy[:3]
 
             if head.get('ignoreSuggestionFlag') is True:
                 transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
@@ -725,10 +769,10 @@ def add_headers_to_ui_metadata(meta_data):
     return []
 
 
-def add_ui_metadata_to_metadata(meta_data):
+def add_ui_metadata_to_metadata(meta_data, signal_permission=None):
     output = {
         'possibleAnalysis': add_possible_analysis_to_ui_metadata(meta_data),
-        'transformation_settings': add_transformation_setting_to_ui_metadata(meta_data),
+        'transformation_settings': add_transformation_setting_to_ui_metadata(meta_data, signal_permission),
         'metaDataUI': add_metaData_to_ui_metadata(meta_data),
         'columnDataUI': add_columnData_to_ui_metatdata(meta_data),
         'sampleDataUI': add_sampleData_to_ui_metadata(meta_data),

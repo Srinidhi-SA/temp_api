@@ -95,6 +95,7 @@ function fetchUserProfile(token) {
 
 
 function fetchProfileSuccess(profileInfo) {
+  cookieObj.storeCookies(profileInfo)
   return {
     type: "PROFILE_INFO",
     profileInfo

@@ -47,6 +47,9 @@ class DatasetRelatedPermission(permissions.BasePermission):
             if 'meta_data_modifications' in path:
                 return user.has_perm('api.data_validation')
 
+            if 'advanced_settings_modification' in path:
+                return user.has_perm('api.create_signal')
+
             if 'subsetting' in data:
                 if data['subsetting'] == True:
                     return user.has_perm('api.subsetting_dataset')
@@ -54,6 +57,8 @@ class DatasetRelatedPermission(permissions.BasePermission):
             if 'deleted' in data:
                 if data['deleted'] == True:
                     return user.has_perm('api.remove_dataset')
+
+
 
             return user.has_perm('api.rename_dataset')
 
@@ -85,7 +90,6 @@ class TrainerRelatedPermission(permissions.BasePermission):
     def has_permission(self, request, view):
 
         user = request.user
-        print user.has_perm('api.downlad_pmml')
 
         if request.method in ['GET']:
 
@@ -198,3 +202,4 @@ usage: there is a method get_permissions(), make changes in this function accord
 #                     return user.has_perm('api.remove_trainer')
 #
 #             return user.has_perm('api.rename_regression')
+

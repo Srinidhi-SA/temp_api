@@ -1029,6 +1029,16 @@ def get_permissions(user, model, type='retrieve'):
     return {}
 
 
+def get_all_view_permission(user):
+    return {
+        'view_score': user.has_perm('api.view_score'),
+        'view_trainer': user.has_perm('api.view_trainer'),
+        'view_signal': user.has_perm('api.view_signal'),
+        'view_dataset': user.has_perm('api.view_dataset'),
+    }
+
+
+
 def get_random_true_false():
     import random
     return True if random.randint(0, 1) else False

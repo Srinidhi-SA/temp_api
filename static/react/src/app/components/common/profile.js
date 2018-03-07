@@ -8,7 +8,7 @@ import Breadcrumb from 'react-breadcrumb';
 import {STATIC_URL, API} from "../../helpers/env";
 import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
-import {saveFileToStore} from "../../actions/dataSourceListActions";
+import {saveFileToStore,clearDataUploadFile} from "../../actions/dataSourceListActions";
 import Dropzone from 'react-dropzone'
 import {
   Modal,
@@ -33,6 +33,8 @@ export class Profile extends React.Component {
   componentWillMount() {
       this.props.dispatch(getUserProfile(getUserDetailsOrRestart.get().userToken))
       this.props.dispatch(saveProfileImage(getUserDetailsOrRestart.get().image_url))
+      //clear dataSource variable as it is common in data upload
+      this.props.dispatch(clearDataUploadFile())
 
   }
 

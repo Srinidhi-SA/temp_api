@@ -12,7 +12,8 @@ import {showZoomChart, showChartData} from "../actions/signalActions";
 
 @connect((store) => {
   return {sideCardListFlag: store.signals.sideCardListFlag,
-  selectedL1:store.signals.selectedL1};
+  selectedL1:store.signals.selectedL1,
+  selected_signal_type:store.signals.selected_signal_type};
 })
 
 //var data= {}, toolData = [], toolLegend=[], chartDiv =null;
@@ -119,16 +120,16 @@ export class C3Chart extends React.Component {
       if (data.data.type == "donut")
       this.props.yformat == '.4f' ? data.donut.label.format = d3.format('.4f'):data.donut.label.format = d3.format('.2s');//If the y-format from API is .4f then making format for measure is .4f only, otherwise making it to .2s
       else if(data.data.type == "pie")
-      this.props.yformat == '.4f' ? data.pie.label.format = d3.format('.4f'):data.pie.label.format = d3.format('.2s');//If the y-format from API is .4f then making format for measure is .4f only, otherwise making it to .2s
-      else
+      {//removing logic for pie formatting >>this.props.yformat == '.4f' ? data.pie.label.format = d3.format('.4f'):data.pie.label.format = d3.format('.2s');//If the y-format from API is .4f then making format for measure is .4f only, otherwise making it to .2s}
+      }else
       this.props.yformat == '.4f' ? data.axis.y.tick.format = d3.format('.4f'):data.axis.y.tick.format = d3.format('.2s');//If the y-format from API is .4f then making format for measure is .4f only, otherwise making it to .2s
-      
+
       if (data.tooltip && data.tooltip.format){
-        if(data.data.columns[0][0] == "Count" || this.props.selectedL1 == "Prediction") // setting as Integer format for the charts coming under Overview and Prediction 
+        if(data.data.columns[0][0] == "Count" || this.props.selectedL1 == "Prediction") // setting as Integer format for the charts coming under Overview and Prediction
         data.tooltip.format.value = d3.format('');
         else if(this.props.yformat == '.4f')//If .4f is coming from API then set tooltip format is also .4f
         data.tooltip.format.value = d3.format('.4f');
-        else//set tooltip format as .2f for all the formats other than .4f 
+        else//set tooltip format as .2f for all the formats other than .4f
         data.tooltip.format.value = d3.format('.2f');
       }
     }
@@ -136,15 +137,15 @@ export class C3Chart extends React.Component {
     {
       if (data.data.type == "donut")
       data.donut.label.format = d3.format('.2s');
-      else if(data.data.type == "pie")
-      data.pie.label.format = d3.format('.2s');
-      else
+      else if(data.data.type == "pie"){
+    //removing logic for pie formatting as profile page is failing>>> data.pie.label.format = d3.format('.2s');
+      }else
       data.axis.y.tick.format = d3.format('.2s');
 
       if (data.tooltip && data.tooltip.format)
       data.tooltip.format.value = d3.format('.2f');
-    } 
-    
+    }
+
 
     if (this.props.y2format) {
       let formats = [
@@ -220,7 +221,7 @@ export class C3Chart extends React.Component {
 
 
 //fix for common point colour in trend
-    if(this.props.selectedL1=="Trend"&&data.data.type=="line"){
+    if(this.props.selectedL1=="Trend"&&data.data.type=="line"&&this.props.selected_signal_type=="measure"){
       console.log("in dtrend##########")
       console.log(data)
       let colors=data.color.pattern
