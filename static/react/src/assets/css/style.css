@@ -11068,7 +11068,7 @@ pre {
     color: #333;
 	    padding: 15px;
 }
-#automaticBlock_111 {margin-top:10px;}
+#automaticBlock_111, #manualBlock_111 {margin-top:10px;}
 .panel-group.accordion.accordion-color .panel .panel-heading a.collapsed {
 	background-color: #fff;
 	color: #555
@@ -14929,6 +14929,13 @@ a.more_button { color: #b3b3b3; padding: 0 10px; margin-right: 9px; cursor:point
 .insight_filter .panel-group.accordion  .panel .panel-heading{ background:#edecec}
 .insight_filter .panel-group.accordion{ margin-bottom:0; }
 .insight_filter  .panel-group.accordion .panel .panel-collapse .panel-body { padding-bottom:0; border-top: 1px solid gainsboro;}
+
+#welCome_message { position:fixed; z-index:1031; width:100%; top:-60px; height:100%; text-align:center; padding-top:140px; background-color:rgba(255, 255, 255, 0.3);}
+.accordion.accordion-color label, .accordion.accordion-color .checkbox { display: inline-block; }
+.accordion.accordion-color .checkbox {margin-left: 20px;}
+ .accordion.accordion-color label.btn {    margin-right: 10px; margin-bottom: 0; background: #02988c; color: #FFF; border-color: #edecec;} 
+.accordion.accordion-color .checkbox .ma-checkbox { padding:2px 0; }
+.panel-group.accordion.accordion-color .panel .panel-heading { font-size:15px; }
 /**************** Css realated to developers, keep the source down ***/
 #prediction_dropdown{
 	    width: 40%;
