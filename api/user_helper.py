@@ -131,8 +131,9 @@ def jwt_response_payload_handler(token, user=None, request=None):
     #     return {
     #         'error': "Subscription expired."
     #     }
-    profile = Profile.objects.filter(user=user).first()
+    from api.utils import get_all_view_permission
 
+    profile = Profile.objects.filter(user=user).first()
     if profile is None:
         profile = Profile(user=user)
         profile.save()
@@ -140,7 +141,8 @@ def jwt_response_payload_handler(token, user=None, request=None):
     return {
         'token': "JWT " + token,
         'user': UserSerializer(user, context={'request': request}).data,
-        'profile': profile.json_serialized() if profile is not None else None
+        'profile': profile.json_serialized() if profile is not None else None,
+        'view_permission': get_all_view_permission(user)
     }
 
 
