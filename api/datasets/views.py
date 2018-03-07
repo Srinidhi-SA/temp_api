@@ -179,7 +179,8 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         if original_meta_data_from_scripts == {}:
             uiMetaData = None
         else:
-            uiMetaData = add_ui_metadata_to_metadata(original_meta_data_from_scripts)
+            signal_permission = request.user.has_perm('api.create_signal')
+            uiMetaData = add_ui_metadata_to_metadata(original_meta_data_from_scripts, signal_permission=signal_permission)
 
         object_details['meta_data'] = {
             "scriptMetaData": original_meta_data_from_scripts,
@@ -240,7 +241,8 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
         uiMetaData = convert_metadata_according_to_transformation_setting(
                 uiMetaData,
-                transformation_setting=ts
+                transformation_setting=ts,
+                user=request.user
             )
 
         uiMetaData["advanced_settings"] = get_advanced_setting(uiMetaData['varibaleSelectionArray'])

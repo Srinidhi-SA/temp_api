@@ -54,7 +54,7 @@ export default function reducer(state = {
 	{
 		return {
 			...state,
-			db_port:action.port,	
+			db_port:action.port,
 		}
 	}
 	break;
@@ -87,6 +87,14 @@ export default function reducer(state = {
 		return {
 			...state,
 			db_schema:action.schema,
+		}
+	}
+	break;
+	case "CLEAR_DATA_UPLOAD_FILE":
+	{
+		return {
+			...state,
+			fileUpload:{},
 		}
 	}
 	break;

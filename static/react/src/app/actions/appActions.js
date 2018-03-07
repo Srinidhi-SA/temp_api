@@ -1981,9 +1981,9 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
        }
     }
 
-     export function getRegressionAppAlgorithmData(appSlug){
+     export function getRegressionAppAlgorithmData(){
        return (dispatch) => {
-           return triggerRegressionAppAlgorithmAPI(appSlug).then(([response, json]) =>{
+           return triggerRegressionAppAlgorithmAPI().then(([response, json]) =>{
                if(response.status === 200){
                    dispatch(saveRegressionAppAlgorithmData(json));                  
                }
@@ -1991,8 +1991,8 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
        }
    }
 
-   function triggerRegressionAppAlgorithmAPI(appSlug){
-       return fetch(API+'/api/regression_app/get_algorithm_config_list/'+appSlug+'/',{
+   function triggerRegressionAppAlgorithmAPI(){
+       return fetch(API+'/api/regression_app/get_algorithm_config_list/',{
            method: 'get',
            headers: getHeader(getUserDetailsOrRestart.get().userToken),
        }).then( response => Promise.all([response, response.json()]));
