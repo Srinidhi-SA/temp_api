@@ -49,6 +49,15 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE
+CELERY_DEFAULT_QUEUE = "default1"
+CELERY_QUEUES = {
+    "default1": {
+        "binding_key": "task.#",
+        "exchange": "default1",
+        "routing": "default1"
+
+    }
+}
 
 MIDDLEWARE += LOCAL_MIDDLEWARE
 
@@ -162,3 +171,4 @@ LOGGING = {
         },
     }
 }
+
