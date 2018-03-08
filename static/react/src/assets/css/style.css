@@ -14942,7 +14942,12 @@ a.more_button { color: #b3b3b3; padding: 0 10px; margin-right: 9px; cursor:point
  .accordion.accordion-color label.btn {    margin-right: 10px; margin-bottom: 0; background: #02988c; color: #FFF; border-color: #edecec;} 
 .accordion.accordion-color .checkbox .ma-checkbox { padding:2px 0; }
 .panel-group.accordion.accordion-color .panel .panel-heading { font-size:15px; }
-
+.col-centered {
+    display:inline-block;
+    float:none;
+    /* reset the text-align */
+    text-align:left;
+}
 /**************** Css realated to developers, keep the source down ***/
 #prediction_dropdown{
 	    width: 40%;

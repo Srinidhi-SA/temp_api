@@ -25,7 +25,7 @@ cardData = {};
 
 @connect((store) => {
     return {login_response: store.login.login_response, signal: store.signals.signalAnalysis,
-        chartObject: store.chartObject.chartObj};
+        chartObject: store.chartObject.chartObj,currentAppDetails: store.apps.currentAppDetails};
 })
 
 export class Card extends React.Component {
@@ -33,7 +33,10 @@ export class Card extends React.Component {
         super();
 
     }
-
+    componentDidMount() {
+	  if(this.props.currentAppDetails.app_type == "REGRESSION")
+      $('#box0').parent('div').addClass('text-center');
+    }
     handleCheckBoxEvent(event){
         handleSignalToggleButton();
     }
@@ -105,7 +108,20 @@ export class Card extends React.Component {
             </div>
             return (<div>{inputChk}{toggleData}{toggleData1}</div>);
             break;
-
+            case "box":
+            let boxData = story.data;
+            let boxId = "box"+i;
+		return (
+                    <div id={boxId} className="col-md-2 co-sm-4 col-xs-6 well xs-p-5 xs-m-5 col-centered">
+                    <h5>{boxData.data.best}</h5>
+                    <h3 className="text-center xs-mt-0">{boxData.data.value}<br />
+                    <small>{boxData.data.algorithmName}</small>
+                    </h3>
+                    </div>
+                    
+				
+		);
+                break;
             }
 
         });
