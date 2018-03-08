@@ -836,23 +836,20 @@ def set_result(request, slug=None):
     results = request.body
     tasks.save_results_to_job.delay(
         slug,
-        results,
-            queue = 'production'
+        results
     )
     if "status=failed" in request.body:
         results = {'error_message': 'Failed'}
         results = tasks.write_into_databases.delay(
             job_type=job.job_type,
             object_slug=job.object_id,
-            results=results,
-            queue = 'production'
+            results=results
         )
     else:
         results = tasks.write_into_databases.delay(
             job_type=job.job_type,
             object_slug=job.object_id,
-            results=json.loads(results),
-            queue = 'production'
+            results=json.loads(results)
         )
     return JsonResponse({'result': "success"})
 

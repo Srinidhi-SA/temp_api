@@ -76,8 +76,7 @@ class Job(models.Model):
         if self.url is None:
             return False
 
-        kill_application_using_fabric.delay(self.url,
-            queue = 'production')
+        kill_application_using_fabric.delay(self.url)
 
         original_object = self.get_original_object()
 

@@ -51,7 +51,7 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
 
         from tasks import submit_job_separate_task
 
-        submit_job_separate_task.delay(command_array, slug, queue='production')
+        submit_job_separate_task.delay(command_array, slug)
 
     except Exception as e:
         print 'Error-->submit_job_through_yarn--->'
