@@ -140,3 +140,14 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE
+CELERYD_MAX_TASKS_PER_CHILD = 4
+CELERYD_CONCURRENCY = 2
+# queue related settings
+CELERY_DEFAULT_QUEUE = config_file_name_to_run.CONFIG_FILE_NAME
+CELERY_QUEUES = {
+    config_file_name_to_run.CONFIG_FILE_NAME: {
+        "binding_key": "task.#",
+        "exchange": config_file_name_to_run.CONFIG_FILE_NAME,
+        "routing": config_file_name_to_run.CONFIG_FILE_NAME
+    }
+}
