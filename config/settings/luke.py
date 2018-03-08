@@ -125,3 +125,10 @@ FUNNY_EMAIL_LIST = [
 JOBSERVER_EMAIL_TEMPLATE = "Please restart jobserver- IP-"
 
 DEPLOYMENT_ENV = "prod"
+
+CELERY_BROKER_URL = 'redis://localhost:6379/1/'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/1/'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE
