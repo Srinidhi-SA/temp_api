@@ -5324,3 +5324,16 @@ def get_algorithm_config_list(request):
     print algorithm_config_list.keys()
 
     return JsonResponse(algorithm_config_list)
+
+def get_appID_appName_map(request):
+    #from django.core import serializers
+    from api.models import CustomApps
+    appIDmapfromDB=CustomApps.objects.only('app_id','name','app_type')
+    #appIDmap_serialized = serializers.serialize('json', appIDmap)
+    appIDmap=[]
+    for row in appIDmapfromDB:
+        appIDmap.append({
+            "app_id":row.app_id,"app_name":row.name,"app_type":row.app_type
+        })
+
+    return JsonResponse({"appIDMapping":appIDmap})
