@@ -2,6 +2,7 @@ from base import *
 import datetime
 
 
+
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
@@ -136,12 +137,28 @@ CELERY_TIMEZONE = TIME_ZONE
 CELERYD_MAX_TASKS_PER_CHILD = 4
 CELERYD_CONCURRENCY = 2
 # queue related settings
-CELERY_DEFAULT_QUEUE = "production"
-CELERY_QUEUES = {
-    "production": {
-        "binding_key": "production.#",
-    }
-}
-CELERY_DEFAULT_EXCHANGE = "production"
-CELERY_DEFAULT_EXCHANGE_TYPE = "topic"
-CELERY_DEFAULT_ROUTING_KEY = "production.default"
+# CELERY_DEFAULT_QUEUE = "production"
+# CELERY_QUEUES = {
+#     "production": {
+#         "binding_key": "production.#",
+#     }
+# }
+# CELERY_DEFAULT_EXCHANGE = "production"
+# CELERY_DEFAULT_EXCHANGE_TYPE = "topic"
+# CELERY_DEFAULT_ROUTING_KEY = "production.default"
+from celery import Exchange, Queue
+# default_exchange = Exchange('default', type='direct')
+production = Exchange('production', type='direct')
+
+CELERY_QUEUES = (
+    # Queue('default', default_exchange, routing_key='default', consumer_arguments={'x-priority': 0}),
+    Queue('production', production, routing_key='production', consumer_arguments={'x-priority': 10}),
+)
+CELERY_DEFAULT_QUEUE = 'default'
+CELERY_DEFAULT_EXCHANGE = 'default'
+CELERY_DEFAULT_ROUTING_KEY = 'default'
+
+CELERY_ROUTES = ({'api.tasks.*': {
+                        'queue': 'production',
+                        'routing_key': 'production'
+                 }}, )
