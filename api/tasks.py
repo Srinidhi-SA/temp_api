@@ -30,7 +30,7 @@ import re
 from api.models import Job, Dataset, Score, Insight, Trainer, StockDataset, Robo
 
 
-@task(name='hum_se_hai_zamana_sara')
+@task(name='hum_se_hai_zamana_sara', queue='production')
 def submit_job_separate_task(command_array, slug):
     cur_process = subprocess.Popen(command_array, stderr=subprocess.PIPE)
     print cur_process
@@ -50,7 +50,7 @@ def submit_job_separate_task(command_array, slug):
             break
     # os.killpg(os.getpgid(cur_process.pid), signal.SIGTERM)
 
-@task(name='write_into_databases')
+@task(name='write_into_databases', queue='production')
 def write_into_databases(job_type, object_slug, results):
     from api import helper
     import json
@@ -164,7 +164,7 @@ def write_into_databases(job_type, object_slug, results):
         print "No where to write"
 
 
-@task(name='save_results_to_job')
+@task(name='save_results_to_job', queue='production')
 def save_results_to_job(slug, results):
     from api.helper import get_db_object
     import json
@@ -181,7 +181,7 @@ def save_results_to_job(slug, results):
     job.save()
 
 
-@task(name='cleanup_logentry')
+@task(name='cleanup_logentry', queue='production')
 def clean_up_logentry():
 
     from auditlog.models import LogEntry
@@ -195,7 +195,7 @@ def clean_up_logentry():
         print "delete object(s) :- %{0}".format(log_entries)
 
 
-@task(name='cleanup_on_delete')
+@task(name='cleanup_on_delete', queue='production')
 def clean_up_on_delete(slug, model_name):
 
     from api.helper import get_db_object
@@ -222,7 +222,7 @@ def clean_up_on_delete(slug, model_name):
     sd_instance.delete()
 
 
-@task(name='kill_job_using_application_id')
+@task(name='kill_job_using_application_id', queue='production')
 def kill_application_using_fabric(app_id=None):
 
     if None == app_id:
