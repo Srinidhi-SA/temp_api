@@ -526,8 +526,8 @@ def configuration_details():
                 "react_path": "/static/react",
                 "asset_path": "/static/asset",
                 "base_remote_path": "/home/ubuntu/codebase/mAdvisor-api",
-                "ui_branch": "api_ui_dev",
-                "api_branch": "api_ui_dev"
+                "ui_branch": "api_ui_dev_staging",
+                "api_branch": "api_ui_dev_staging"
             },
             'type': 'luke',
             'gunicorn_details': {
