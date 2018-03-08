@@ -1252,7 +1252,23 @@ CUSTOM_WORD1_APPS = {
     'SPEECH ANALYTICS': 'speech',
     'STOCK SENSE': 'stock',
     'STOCK  SENSE': 'stock',
-    'REGRESSION APP': 'regression'
+    'REGRESSION APP': 'regression',
+    #newly added
+    'AUTOMATED_PREDICTION': '',
+    'ROBO_ADVISOR_INSIGHTS': '',
+    'OPPORTUNITY_SCORING': 'opportunity',
+    'CHURN_PREDICTION': 'churn',
+    'RE_ADMISSION_PREDICTION': 're-admission',
+    'READMISSION_PREDICTION': 're-admission',
+    'PHYSICIAN_ATTRITION': 'attrition',
+    'CREDIT_CARD_FRAUD': 'Credit Card Fraud',
+    'CLAIMS_PREDICTION': 'claims',
+    'ASSET_HEALTH_PREDICTION': 'asset health',
+    'EMPLOYEE_ATTRITION': 'attrition',
+    'SPEECH_ANALYTICS': 'speech',
+    'STOCK_SENSE': 'stock',
+    'STOCK_SENSE': 'stock',
+    'REGRESSION_APP': 'regression'
 }
 
 CUSTOM_WORD2_APPS = {
@@ -1270,7 +1286,23 @@ CUSTOM_WORD2_APPS = {
     'SPEECH ANALYTICS': 'speech',
     'STOCK SENSE': 'stock',
     'STOCK  SENSE': 'stock',
-    'REGRESSION APP': 'regression'
+    'REGRESSION APP': 'regression',
+    #after name change
+    'AUTOMATED_PREDICTION': 'prediction',
+    'ROBO_ADVISOR_INSIGHTS': '',
+    'OPPORTUNITY_SCORING': 'opportunity',
+    'CHURN_PREDICTION': 'churn',
+    'RE_ADMISSION_PREDICTION': 're-admission',
+    'READMISSION_PREDICTION': 're-admission',
+    'PHYSICIAN_ATTRITION': 'attrition',
+    'CREDIT_CARD_FRAUD': 'fraud',
+    'CLAIMS_PREDICTION': 'claims',
+    'ASSET_HEALTH_PREDICTION': 'asset health',
+    'EMPLOYEE_ATTRITION': 'attrition',
+    'SPEECH_ANALYTICS': 'speech',
+    'STOCK_SENSE': 'stock',
+    'STOCK_SENSE': 'stock',
+    'REGRESSION_APP': 'regression'
 }
 
 ############# YARN related items
@@ -1545,3 +1577,4 @@ ALGORITHM_LIST={
 }
 
 REGRESSION_APP_ID=13
+
