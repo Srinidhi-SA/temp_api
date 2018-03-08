@@ -143,6 +143,5 @@ CELERY_QUEUES = {
         "binding_key": "task.#",
         "exchange": "production",
         "routing": "production"
-
     }
 }
