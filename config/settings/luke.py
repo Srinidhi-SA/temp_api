@@ -132,3 +132,16 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE
+# load related settings
+CELERYD_MAX_TASKS_PER_CHILD = 4
+CELERYD_CONCURRENCY = 2
+# queue related settings
+CELERY_DEFAULT_QUEUE = "production"
+CELERY_QUEUES = {
+    "production": {
+        "binding_key": "production.#",
+    }
+}
+CELERY_DEFAULT_EXCHANGE = "production"
+CELERY_DEFAULT_EXCHANGE_TYPE = "topic"
+CELERY_DEFAULT_ROUTING_KEY = "production.default"
