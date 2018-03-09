@@ -33,8 +33,14 @@ from api.models import Job, Dataset, Score, Insight, Trainer, StockDataset, Robo
 
 @task(name='hum_se_hai_zamana_sara', queue=CONFIG_FILE_NAME)
 def submit_job_separate_task(command_array, slug):
-    cur_process = subprocess.Popen(command_array, stderr=subprocess.PIPE)
+    import subprocess, os
+    my_env = os.environ.copy()
+    if settings.HADOOP_CONF_DIR:
+        my_env["HADOOP_CONF_DIR"] = settings.HADOOP_CONF_DIR
+        my_env["HADOOP_USER_NAME"] = settings.HADOOP_USER_NAME
+    cur_process = subprocess.Popen(command_array, stderr=subprocess.PIPE, env=my_env)
     print cur_process
+    print command_array
     # TODO: @Ankush need to write the error to error log and standard out to normal log
     for line in iter(lambda: cur_process.stderr.readline(), ''):
         # print(line.strip())
