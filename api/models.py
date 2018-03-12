@@ -1309,7 +1309,8 @@ class Robo(models.Model):
         super(Robo, self).save(*args, **kwargs)
 
     def create(self, *args, **kwargs):
-        self.add_to_job()
+        # self.add_to_job()
+        pass
 
     def generate_config(self, *args, **kwargs):
         return {
