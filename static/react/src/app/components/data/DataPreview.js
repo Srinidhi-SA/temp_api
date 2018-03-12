@@ -217,11 +217,12 @@ export class DataPreview extends React.Component {
   componentWillUpdate(){
       let currentDataset = store.getState().datasets.selectedDataSet
       if (!isEmpty(this.props.dataPreview) && currentDataset != this.props.match.params.slug && this.props.dataPreview != null && this.props.dataPreview.status != 'FAILED') {
+        if(!this.props.match.path.includes("robo")){
         let url = '/data/' + currentDataset;
         console.log(this.props);
         this.props.history.push(url)
        // return (<Redirect to={url}/>)
-      }
+     }}
       if (!isEmpty(this.props.dataPreview) && this.props.dataPreview != null && this.props.dataPreview.status == 'FAILED') {
           console.log("goitn to data url")
           this.props.dispatch(clearDataPreview())
@@ -299,7 +300,7 @@ export class DataPreview extends React.Component {
   moveToVariableSelection() {
     //alert(this.buttons.create.url);
     //check for minimum rows in datasets
-      if (this.props.dataPreview.meta_data.uiMetaData.metaDataUI[0].value < MINROWINDATASET)
+      if (this.props.dataPreview.meta_data.uiMetaData.metaDataUI[0].value < MINROWINDATASET&&this.buttons.create.url.indexOf("apps-robo") == -1)
           bootbox.alert("Minimum " + MINROWINDATASET + " rows are required for analysis!!")
           else if (this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray && (this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray.length == 0 || (this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray.length == 1 && this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray[0].dateSuggestionFlag == true))) {
               let errormsg=statusMessages("warning","Not enough data to run analysis. Please upload/connect a different dataset.","small_mascot")
