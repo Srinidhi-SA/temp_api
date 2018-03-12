@@ -473,6 +473,8 @@ class RoboView(viewsets.ModelViewSet):
         data = request.data
         data = convert_to_string(data)
         files = request.FILES
+        if data.get('name') == "":
+            data['name'] = 'robo' + str(random.randint(100, 1000)) + "_"
         name = data.get('name', "robo" + "_" + str(random.randint(1000000, 10000000)))
         real_data = {
             'name': name,
