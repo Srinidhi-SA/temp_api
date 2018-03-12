@@ -58,25 +58,39 @@ export class AppsModelDetail extends React.Component {
   }
   render() {
     console.log("apps Model Detail View is called##########3");
-    const modelSummary = store.getState().apps.modelSummary;
-		var showExportPmml = true;
+  	const modelSummary = store.getState().apps.modelSummary;
+	 	var showExportPmml = true;
 		var showCreateScore = true;
     const modelLink = "/apps/"+this.props.match.params.AppId+"/models";
 	if (!$.isEmptyObject(modelSummary)) {
 		console.log(this.props)
 		showExportPmml = modelSummary.permission_details.downlad_pmml;
 		showCreateScore = modelSummary.permission_details.create_score;
-		let listOfCardList = getListOfCards(modelSummary.data.model_summary.listOfCards)
-		let cardDataList = listOfCardList.map((data, i) => {
-			if( i != 0){
+		let listOfCardList = getListOfCards(modelSummary.data.model_summary.listOfCards);
+		if(store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
+			var cardDataList = listOfCardList.map((data, i) => {
+				if( i != 0 && i != 1){
+					if(i%2 == 0)
+					return (<div className="col-md-6 xs-p-30 clearfix"><Card cardData={data} /></div>)
+					else
+					return (<div className="col-md-6 xs-p-30"><Card cardData={data} /></div>)
+				}
+				else return (<Card key={i} cardData={data} />)
+			});
+		}
+		else{
+		var cardDataList = listOfCardList.map((data, i) => {
+		if( i != 0){
 				if(i%2 != 0)
 				return (<div className="col-md-6 xs-p-30 clearfix"><Card cardData={data} /></div>)
 				else
 				return (<div className="col-md-6 xs-p-30"><Card cardData={data} /></div>)
 			}
-             else return (<Card key={i} cardData={data} />)
+			else return (<Card key={i} cardData={data} />)
+			 });
+		}
 
-		                    });
+		
 		if(listOfCardList){
 			return (
 			          <div className="side-body">

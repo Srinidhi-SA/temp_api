@@ -35,6 +35,7 @@ import {AppsStockAdvisorList} from "./components/apps/AppsStockAdvisorList";
 import {AppsStockDataPreview} from "./components/apps/AppsStockDataPreview";
 import {AppsStockDocumentMode} from "./components/apps/AppsStockDocumentMode";
 import {DataPreviewLeftPanel} from "./components/data/DataPreviewLeftPanel";
+import {ModelAlgorithmSelection} from "./components/apps/ModelAlgorithmSelection";
 
 class App extends React.Component {
 
@@ -94,7 +95,8 @@ class App extends React.Component {
             <Route exact path="/apps-stock-advisor/:slug/:l1/:l2/:l3" component={OverViewPage}/>
             <Route exact path="/apps-stock-advisor/:slug/:l1/:l2" component={OverViewPage}/>
             <Route exact path="/apps-stock-document-mode/:slug" component={AppsStockDocumentMode}/>
-            <Route exact path="/apps/:AppId/scores/:slug/dataPreview" component={DataPreviewLeftPanel}/> 	
+            <Route exact path="/apps/:AppId/scores/:slug/dataPreview" component={DataPreviewLeftPanel}/>
+            <Route exact path="/apps/:AppId/models/data/:slug/createModel/Proceed" component={ModelAlgorithmSelection}/> 	
             </Main>
       </Switch>
       </BrowserRouter>

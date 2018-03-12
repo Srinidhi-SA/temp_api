@@ -4,7 +4,7 @@ import { Redirect } from "react-router";
 import {Link} from "react-router-dom";
 import store from "../../store";
 import {Modal,Button} from "react-bootstrap";
-import {openAppsLoaderValue,closeAppsLoaderValue,clearAppsIntervel,updateModelSummaryFlag} from "../../actions/appActions";
+import {openAppsLoaderValue,closeAppsLoaderValue,clearAppsIntervel,updateModelSummaryFlag,reSetRegressionVariables} from "../../actions/appActions";
 import {hideDataPreview} from "../../actions/dataActions";
 import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
@@ -22,7 +22,8 @@ import {handleJobProcessing} from "../../helpers/helper";
 		currentAppId: store.apps.currentAppId,
     modelSlug: store.apps.modelSlug,
 		updateCreateModelHideShow:store.apps.updateCreateModelHideShow,
-		scoreSlug:store.apps.scoreSlug
+		scoreSlug:store.apps.scoreSlug,
+		app_type:store.apps.currentAppDetails.app_type,
 	};
 })
 
@@ -38,6 +39,8 @@ export class AppsLoader extends React.Component {
 		this.props.dispatch(hideDataPreview());
   	this.props.dispatch(closeAppsLoaderValue());
 		clearAppsIntervel();
+		if(this.props.app_type == "REGRESSION")
+    this.props.dispatch(reSetRegressionVariables());
   }
   cancelCreateModel(){
 		this.props.dispatch(updateModelSummaryFlag(false));

@@ -33,6 +33,8 @@ from api.utils import \
     StockDatasetSerializer, \
     AppListSerializers, \
     AppSerializer
+    # RegressionSerlializer, \
+    # RegressionListSerializer
 from models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData, StockDataset, CustomApps
 from api.tasks import clean_up_on_delete
 
@@ -542,6 +544,176 @@ class RoboView(viewsets.ModelViewSet):
             list_serializer=RoboListSerializer
         )
 
+#
+# class RegressionView(viewsets.ModelViewSet):
+#     def get_queryset(self):
+#         queryset = Regression.objects.filter(
+#             created_by=self.request.user,
+#             deleted=False,
+#             #analysis_done=True,
+#             status__in=['SUCCESS', 'INPROGRESS']
+#
+#         )
+#         return queryset
+#
+#     def get_serializer_class(self):
+#         return RegressionSerlializer
+#
+#     def get_object_from_all(self):
+#         return Regression.objects.get(slug=self.kwargs.get('slug'))
+#
+#     def get_serializer_context(self):
+#         return {'request': self.request}
+#
+#     lookup_field = 'slug'
+#     filter_backends = (DjangoFilterBackend,)
+#     filter_fields = ('bookmarked', 'deleted', 'name', "app_id")
+#     pagination_class = CustomPagination
+#     permission_classes = (RegressionRelatedPermission, )
+#
+#     def create(self, request, *args, **kwargs):
+#         # try:
+#         data = request.data
+#         data = convert_to_string(data)
+#         data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
+#         data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
+#         serializer = RegressionSerlializer(data=data, context={"request": self.request})
+#         if serializer.is_valid():
+#             trainer_object = serializer.save()
+#             trainer_object.create()
+#             return Response(serializer.data)
+#
+#         return creation_failed_exception(serializer.errors)
+#         # except Exception as error:
+#         #     creation_failed_exception(error)
+#
+#     def update(self, request, *args, **kwargs):
+#         data = request.data
+#         data = convert_to_string(data)
+#         # instance = self.get_object()
+#         try:
+#             instance = self.get_object_from_all()
+#             if 'deleted' in data:
+#                 if data['deleted'] == True:
+#                     print 'let us delete'
+#                     clean_up_on_delete.delay(instance.slug, Trainer.__name__)
+#                     return JsonResponse({'message':'Deleted'})
+#         except:
+#             return creation_failed_exception("File Doesn't exist.")
+#
+#         serializer = self.get_serializer(instance=instance, data=data, partial=True, context={"request": self.request})
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data)
+#         return Response(serializer.errors)
+#
+#     def list(self, request, *args, **kwargs):
+#
+#         return get_listed_data(
+#             viewset=self,
+#             request=request,
+#             list_serializer=RegressionListSerializer
+#         )
+#
+#     def retrieve(self, request, *args, **kwargs):
+#         # return get_retrieve_data(self)
+#         try:
+#             instance = self.get_object_from_all()
+#         except:
+#             return creation_failed_exception("File Doesn't exist.")
+#
+#         if instance is None:
+#             return creation_failed_exception("File Doesn't exist.")
+#
+#         serializer = RegressionSerlializer(instance=instance, context={"request": self.request})
+#         return Response(serializer.data)
+#
+#     @detail_route(methods=['get'])
+#     def comparision(self, request, *args, **kwargs):
+#
+#         try:
+#             instance = self.get_object_from_all()
+#         except:
+#             return creation_failed_exception("File Doesn't exist.")
+#
+#         if instance is None:
+#             return creation_failed_exception("File Doesn't exist.")
+#
+#         serializer = RegressionSerlializer(instance=instance, context={"request": self.request})
+#         trainer_data = serializer.data
+#         t_d_c = trainer_data['config']['config']['COLUMN_SETTINGS']['variableSelection']
+#         uidColArray= [x["name"] for x in t_d_c if x["uidCol"] == True]
+#
+#
+#
+#         score_datatset_slug = request.GET.get('score_datatset_slug')
+#         try:
+#             dataset_instance = Dataset.objects.get(slug=score_datatset_slug)
+#         except:
+#             return creation_failed_exception("File Doesn't exist.")
+#
+#         if dataset_instance is None:
+#             return creation_failed_exception("File Doesn't exist.")
+#
+#         dataset_serializer = DatasetSerializer(instance=dataset_instance, context={"request": self.request})
+#         object_details = dataset_serializer.data
+#         original_meta_data_from_scripts = object_details['meta_data']
+#         if original_meta_data_from_scripts is None:
+#             uiMetaData = None
+#         if original_meta_data_from_scripts == {}:
+#             uiMetaData = None
+#         else:
+#             uiMetaData = add_ui_metadata_to_metadata(original_meta_data_from_scripts)
+#
+#         object_details['meta_data'] = {
+#             "scriptMetaData": original_meta_data_from_scripts,
+#             "uiMetaData": uiMetaData
+#         }
+#
+#         d_d_c = uiMetaData['varibaleSelectionArray']
+#
+#         t_d_c_s = set([item['name'] for item in t_d_c if item["targetColumn"] != True])
+#         d_d_c_s = set([item['name'] for item in d_d_c]).union(set(uidColArray))
+#
+#         proceedFlag = d_d_c_s.issuperset(t_d_c_s)
+#
+#         if proceedFlag != True:
+#             missing = t_d_c_s.difference(d_d_c_s)
+#             extra = d_d_c_s.difference(t_d_c_s)
+#             message = "These are the missing Columns {0}".format(missing)
+#             if len(extra) > 0:
+#                 message += "and these are the new columns {0}".format(extra)
+#         else:
+#             extra = d_d_c_s.difference(t_d_c_s)
+#             if len(extra) > 0:
+#                 message = "These are the new columns {0}".format(extra)
+#             else:
+#                 message = ""
+#
+#
+#         return JsonResponse({
+#             'proceed': proceedFlag,
+#             'message': message
+#         })
+#
+#     @detail_route(methods=['get'])
+#     def get_pmml(self, request, *args, **kwargs):
+#         from api.redis_access import AccessFeedbackMessage
+#         from helper import generate_pmml_name
+#         jobslug = request.query_params.get('jobslug', None)
+#         algoname = request.query_params.get('algoname', None)
+#         ac = AccessFeedbackMessage()
+#         job_object = Job.objects.filter(object_id=jobslug).first()
+#         job_slug = job_object.slug
+#         key_pmml_name = generate_pmml_name(job_slug)
+#         data = ac.get_using_key(key_pmml_name)
+#         if data is None:
+#             sample_xml = "<mydocument has=\"an attribute\">\n  <and>\n    <many>elements</many>\n    <many>more elements</many>\n  </and>\n  <plus a=\"complex\">\n    element as well\n  </plus>\n</mydocument>"
+#             return return_xml_data(sample_xml, algoname)
+#         xml_data = data[-1].get(algoname)
+#         return return_xml_data(xml_data, algoname)
+
+
 
 from api.models import Audioset
 from api.utils import AudiosetSerializer, AudioListSerializer
@@ -858,6 +1030,7 @@ class AppView(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
+
 def get_datasource_config_list(request):
 
     user = request.user
@@ -1100,11 +1273,11 @@ def home(request):
     host = request.get_host()
 
     APP_BASE_URL = ""
-    protocol = "http"
+    protocol = "https"
     if request.is_secure():
         protocol = "https"
 
-    SCORES_BASE_URL = "http://{}:8001/".format(settings.HDFS.get("host", "ec2-34-205-203-38.compute-1.amazonaws.com"))
+    SCORES_BASE_URL = "https://{}:8001/".format(settings.HDFS.get("host", "ec2-34-205-203-38.compute-1.amazonaws.com"))
     APP_BASE_URL = "{}://{}".format(protocol, host)
 
     context = {"UI_VERSION": settings.UI_VERSION, "APP_BASE_URL": APP_BASE_URL, "SCORES_BASE_URL": SCORES_BASE_URL, "STATIC_URL" : settings.STATIC_URL}
@@ -5140,3 +5313,27 @@ def delete_and_keep_only_ten_from_all_models(request):
         'ok': 'ok'
 
     })
+
+
+#for regression modal algorithm config
+def get_algorithm_config_list(request):
+
+    user = request.user
+    algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST)
+
+    print algorithm_config_list.keys()
+
+    return JsonResponse(algorithm_config_list)
+
+def get_appID_appName_map(request):
+    #from django.core import serializers
+    from api.models import CustomApps
+    appIDmapfromDB=CustomApps.objects.only('app_id','name','app_type')
+    #appIDmap_serialized = serializers.serialize('json', appIDmap)
+    appIDmap=[]
+    for row in appIDmapfromDB:
+        appIDmap.append({
+            "app_id":row.app_id,"app_name":row.name,"app_type":row.app_type
+        })
+
+    return JsonResponse({"appIDMapping":appIDmap})

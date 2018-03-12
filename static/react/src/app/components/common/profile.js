@@ -264,6 +264,13 @@ export class Profile extends React.Component {
                                       </b>
                                     </td>
                                   </tr>
+								  <tr>
+									<td className="item xs-pt-5">
+									</td>
+									<td>
+										<a href="javascript:;">Change Password</a>
+									</td>
+								  </tr>
                                 </tbody>
                               </table>
                             </div>

@@ -1252,7 +1252,23 @@ CUSTOM_WORD1_APPS = {
     'SPEECH ANALYTICS': 'speech',
     'STOCK SENSE': 'stock',
     'STOCK  SENSE': 'stock',
-    'REGRESSION APP': 'regression'
+    'REGRESSION APP': 'regression',
+    #newly added
+    'AUTOMATED_PREDICTION': '',
+    'ROBO_ADVISOR_INSIGHTS': '',
+    'OPPORTUNITY_SCORING': 'opportunity',
+    'CHURN_PREDICTION': 'churn',
+    'RE_ADMISSION_PREDICTION': 're-admission',
+    'READMISSION_PREDICTION': 're-admission',
+    'PHYSICIAN_ATTRITION': 'attrition',
+    'CREDIT_CARD_FRAUD': 'Credit Card Fraud',
+    'CLAIMS_PREDICTION': 'claims',
+    'ASSET_HEALTH_PREDICTION': 'asset health',
+    'EMPLOYEE_ATTRITION': 'attrition',
+    'SPEECH_ANALYTICS': 'speech',
+    'STOCK_SENSE': 'stock',
+    'STOCK_SENSE': 'stock',
+    'REGRESSION_APP': 'regression'
 }
 
 CUSTOM_WORD2_APPS = {
@@ -1270,7 +1286,23 @@ CUSTOM_WORD2_APPS = {
     'SPEECH ANALYTICS': 'speech',
     'STOCK SENSE': 'stock',
     'STOCK  SENSE': 'stock',
-    'REGRESSION APP': 'regression'
+    'REGRESSION APP': 'regression',
+    #after name change
+    'AUTOMATED_PREDICTION': 'prediction',
+    'ROBO_ADVISOR_INSIGHTS': '',
+    'OPPORTUNITY_SCORING': 'opportunity',
+    'CHURN_PREDICTION': 'churn',
+    'RE_ADMISSION_PREDICTION': 're-admission',
+    'READMISSION_PREDICTION': 're-admission',
+    'PHYSICIAN_ATTRITION': 'attrition',
+    'CREDIT_CARD_FRAUD': 'fraud',
+    'CLAIMS_PREDICTION': 'claims',
+    'ASSET_HEALTH_PREDICTION': 'asset health',
+    'EMPLOYEE_ATTRITION': 'attrition',
+    'SPEECH_ANALYTICS': 'speech',
+    'STOCK_SENSE': 'stock',
+    'STOCK_SENSE': 'stock',
+    'REGRESSION_APP': 'regression'
 }
 
 ############# YARN related items
@@ -1371,6 +1403,14 @@ PERMISSIONS_RELATED_TO_SCORE = (
     ('download_score', 'Download Score')
 )
 
+PERMISSIONS_RELATED_TO_REGRESSION = (
+    ('view_regression', 'View regression'),
+    ('create_regression', 'Create regression'),
+    ('rename_regression', 'Rename regression'),
+    ('remove_regression', 'remove regression'),
+    ('downlad_pmml', 'Download PMML')
+)
+
 JOB_STATUS_MESSAGE = {
     "EMPTY": "Submitting for analysis",
     "SUBMITTED": "Submitting for analysis.",
@@ -1404,3 +1444,137 @@ JOB_MESSAGE_JSON_FORMAT = {
 '''
 time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(timestamp))
 '''
+
+#algorithm list for regression app
+ALGORITHM_LIST={
+    "ALGORITHM_SETTING":[
+      {
+        "algorithmName":"Algorithm 1",
+        "algorithmSlug":"DSAdasdadsad",
+        "selected":True,
+        "parameters":[
+          {
+            "name":"DSADA",
+            "displayName":"sdada",
+            "defaultValue":3,
+            "acceptedValue":2,
+            "valueRange":[],
+            "paramType":"number"
+          },
+          {
+          "name":"DSADAJJJKK",
+          "displayName":"sdada sadsada",
+          "defaultValue":[
+            {
+              "name":"l1",
+              "selected":True,
+              "displayName":"Aadsad"
+            },
+            {
+              "name":"l2",
+              "selected":False,
+              "displayName":"Aadsad"
+            }
+          ],
+          "paramType":"list"
+
+          },
+          {
+          "name":"DSADAJJJKK",
+          "displayName":"sdada sadsada",
+          "defaultValue":[
+            {
+              "name":"l1",
+              "selected":True,
+              "displayName":"Aadsad"
+            },
+            {
+              "name":"l2",
+              "selected":False,
+              "displayName":"Aadsad"
+            }
+          ],
+          "paramType":"list"
+
+          },
+          {
+            "name":"DSADA",
+            "displayName":"sdada",
+            "defaultValue":3,
+            "acceptedValue":2,
+            "valueRange":[],
+            "paramType":"number"
+          }
+        ]
+      },
+        {
+            "algorithmName": "Algorithm 2",
+            "algorithmSlug": "DSAdasda23dewwdwdddsad",
+            "selected": True,
+            "parameters": [
+                {
+                    "name": "DSADA",
+                    "displayName": "sdada",
+                    "defaultValue": 3,
+                    "acceptedValue": 2,
+                    "valueRange": [],
+                    "paramType": "number"
+                },
+                {
+                    "name": "DSADAJJJKK",
+                    "displayName": "sdada sadsada",
+                    "defaultValue": [
+                        {
+                            "name": "l1",
+                            "selected": True,
+                            "displayName": "Aadsad"
+                        },
+                        {
+                            "name": "l2",
+                            "selected": False,
+                            "displayName": "Aadsad"
+                        }
+                    ],
+                    "paramType": "list"
+
+                },
+            ]
+        },
+        {
+            "algorithmName": "Algorithm 3",
+            "algorithmSlug": "DSAdasd2edddadsad",
+            "selected": True,
+            "parameters": [
+                {
+                    "name": "DSADA",
+                    "displayName": "sdada",
+                    "defaultValue": 3,
+                    "acceptedValue": 2,
+                    "valueRange": [],
+                    "paramType": "number"
+                },
+                {
+                    "name": "DSADAJJJKK",
+                    "displayName": "sdada sadsada",
+                    "defaultValue": [
+                        {
+                            "name": "l1",
+                            "selected": True,
+                            "displayName": "Aadsad"
+                        },
+                        {
+                            "name": "l2",
+                            "selected": False,
+                            "displayName": "Aadsad"
+                        }
+                    ],
+                    "paramType": "list"
+
+                },
+            ]
+        }
+    ]
+}
+
+REGRESSION_APP_ID=13
+
