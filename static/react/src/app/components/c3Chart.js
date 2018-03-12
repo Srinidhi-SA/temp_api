@@ -168,7 +168,7 @@ export class C3Chart extends React.Component {
       let yformat=".2s"
       if(this.props.yformat)
         yformat=this.props.yformat
-
+    if(data.axis.y.tick.format){
     data.axis.y.tick.format=function(f){
       //console.log("f of tick")
       if(f>999){
@@ -179,7 +179,7 @@ export class C3Chart extends React.Component {
       let si = d3.format('.0f');
     return String(si(f));
       }
-    }}
+    }}}
 
     if (this.props.guage) {
       data.gauge.label.format = function(value, ratio) {

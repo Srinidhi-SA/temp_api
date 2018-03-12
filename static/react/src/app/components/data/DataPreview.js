@@ -307,7 +307,7 @@ export class DataPreview extends React.Component {
           } else {
               let url = this.buttons.create.url;
               if (this.buttons.create.url.indexOf("apps-robo") != -1) {
-                  $(".cst_table").find("thead").find("." + colSlug).first()
+                //  $(".cst_table").find("thead").find("." + colSlug).first()
                   url = "/apps-robo/" + store.getState().apps.roboDatasetSlug + "/" + store.getState().signals.signalAnalysis.slug
                   this.props.history.push(url);
               }else if(store.getState().datasets.curUrl.indexOf("scores") != -1){
@@ -409,6 +409,9 @@ export class DataPreview extends React.Component {
       }
       else if(this.buttons.create.text == CREATESCORE){
           isCreateAllowed = permission_details.create_score;
+      }else if(this.buttons.create.text=="Compose Insight"){
+        //need to change in future
+        isCreateAllowed = true
       }
       if (dataPrev && !isEmpty(dataPrev)) {
         const topInfo = dataPrev.uiMetaData.metaDataUI.map((item, i) => {

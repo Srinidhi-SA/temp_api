@@ -34,7 +34,7 @@ export class Card extends React.Component {
 
     }
     componentDidMount() {
-	  if(this.props.currentAppDetails.app_type == "REGRESSION")
+	  if(this.props.currentAppDetails&&this.props.currentAppDetails.app_type&&this.props.currentAppDetails.app_type == "REGRESSION")
       $('#box0').parent('div').addClass('text-center');
     }
     handleCheckBoxEvent(event){
@@ -118,8 +118,8 @@ export class Card extends React.Component {
                     <small>{boxData.data.algorithmName}</small>
                     </h3>
                     </div>
-                    
-				
+
+
 		);
                 break;
             }
