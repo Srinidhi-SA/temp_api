@@ -467,39 +467,39 @@ class RoboView(viewsets.ModelViewSet):
     # TODO: config missing
     def create(self, request, *args, **kwargs):
 
-        try:
-            data = request.data
-            data = convert_to_string(data)
-            files = request.FILES
-            name = data.get('name', "robo" + "_" + str(random.randint(1000000, 10000000)))
-            real_data = {
-                'name': name,
-                'created_by': request.user.id
-            }
+        # try:
+        data = request.data
+        data = convert_to_string(data)
+        files = request.FILES
+        name = data.get('name', "robo" + "_" + str(random.randint(1000000, 10000000)))
+        real_data = {
+            'name': name,
+            'created_by': request.user.id
+        }
 
-            for file in files:
-                dataset = dict()
-                input_file = files[file]
-                dataset['input_file'] = input_file
-                dataset['name'] = input_file.name
-                dataset['created_by'] = request.user.id
-                dataset['datasource_type'] = 'fileUpload'
-                from api.datasets.serializers import DatasetSerializer
-                serializer = DatasetSerializer(data=dataset, context={"request": self.request})
-                if serializer.is_valid():
-                    dataset_object = serializer.save()
-                    dataset_object.create()
-                    real_data[self.dataset_name_mapping[file]] = dataset_object.id
-            serializer = RoboSerializer(data=real_data, context={"request": self.request})
+        for file in files:
+            dataset = dict()
+            input_file = files[file]
+            dataset['input_file'] = input_file
+            dataset['name'] = input_file.name
+            dataset['created_by'] = request.user.id
+            dataset['datasource_type'] = 'fileUpload'
+            from api.datasets.serializers import DatasetSerializer
+            serializer = DatasetSerializer(data=dataset, context={"request": self.request})
             if serializer.is_valid():
-                robo_object = serializer.save()
-                robo_object.create()
-                robo_object.data = json.dumps(dummy_robo_data)
-                robo_object.save()
-                return Response(serializer.data)
-            return creation_failed_exception(serializer.errors)
-        except Exception as error:
-            creation_failed_exception(error)
+                dataset_object = serializer.save()
+                dataset_object.create()
+                real_data[self.dataset_name_mapping[file]] = dataset_object.id
+        serializer = RoboSerializer(data=real_data, context={"request": self.request})
+        if serializer.is_valid():
+            robo_object = serializer.save()
+            robo_object.create()
+            robo_object.data = json.dumps(dummy_robo_data)
+            robo_object.save()
+            return Response(serializer.data)
+        return creation_failed_exception(serializer.errors)
+        # except Exception as error:
+        #     creation_failed_exception(error)
 
     def update(self, request, *args, **kwargs):
         data = request.data
