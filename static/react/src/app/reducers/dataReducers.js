@@ -185,8 +185,8 @@ export default function reducer(state = {
           CopyTimeDimension: [],
           measureAllChecked:true,
           dimensionAllChecked:true,
-          
-          
+
+
         }
       }
       break;
@@ -338,7 +338,7 @@ export default function reducer(state = {
             CopyOfMeasures: action.measures,
             CopyOfDimension: action.dimensions,
             CopyTimeDimension: action.timeDimensions,
-            
+
         }
     }
         break;
@@ -526,6 +526,14 @@ export default function reducer(state = {
       }
     }
     break;
+    case "MAKE_ALL_TRUE_OR_FALSE":
+    {
+      return{
+        ...state,
+        measureAllChecked:action.value,
+        dimensionAllChecked:action.value
+      }
+    }
   }
   return state
 
