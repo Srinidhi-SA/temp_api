@@ -9,7 +9,7 @@ import {C3Chart} from "../c3Chart";
 import {DataVariableSelection} from "../data/DataVariableSelection";
 import {updateTrainAndTest,createScore,getAppsModelSummary} from "../../actions/appActions";
 import {AppsLoader} from "../common/AppsLoader";
-import {getDataSetPreview} from "../../actions/dataActions";
+import {getDataSetPreview,deselectAllVariablesDataPrev,makeAllVariablesTrueOrFalse} from "../../actions/dataActions";
 
 @connect((store) => {
     return {login_response: store.login.login_response,
@@ -35,7 +35,14 @@ export class ScoreVariableSelection extends React.Component {
         if(this.props.dataPreview == null){
             this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
             this.props.dispatch(getAppsModelSummary(this.props.match.params.modelSlug));
+
         }
+         if (this.props.match.path.includes("regression-app")&&this.props.currentAppId==13) {
+           deselectAllVariablesDataPrev()
+           this.props.dispatch(makeAllVariablesTrueOrFalse(false))
+         }
+
+
     }
     render() {
         console.log("Create Score Variable Selection  is called##########3");
