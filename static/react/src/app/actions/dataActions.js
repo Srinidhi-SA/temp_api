@@ -160,7 +160,7 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
     var  slug = dataPreview.slug;
     var dataset = slug;
     if(dataPreview.status == SUCCESS){
-      
+
         if(interval != undefined){
             clearInterval(interval);
             dispatch(dispatchDataPreview(dataPreview,slug));
@@ -597,7 +597,7 @@ function applyFilterOnVaraibles(){
             evt.target.name = "dimension"
                 dispatch(handleDVSearch(evt));
         }
-        
+
         if($("#datetimeSearch").val() != ""){
             evt.target.value = $("#datetimeSearch").val();
             evt.target.name = "datetime"
@@ -611,7 +611,7 @@ export function updateSelectedVariables(evt){
         var dataSetMeasures = store.getState().datasets.CopyOfMeasures.slice();
         var dataSetDimensions = store.getState().datasets.CopyOfDimension.slice();
         var dataSetTimeDimensions = store.getState().datasets.CopyTimeDimension.slice();
-        
+
         var dimFlag =  store.getState().datasets.dimensionAllChecked;
         var meaFlag = store.getState().datasets.measureAllChecked;
         var count = store.getState().datasets.selectedVariablesCount;
@@ -848,7 +848,7 @@ export function updateDatasetVariables(measures,dimensions,timeDimensions,possib
 
 export function updateTargetAnalysisList(renderList){
     let prevAnalysisList = jQuery.extend(true, {}, renderList);
-  
+
     return {
         type: "UPDATE_ANALYSIS_LIST",
         renderList,
@@ -1152,14 +1152,14 @@ export function updateColumnStatus(dispatch,colSlug,colName,actionName,subAction
     }
     if(actionName != SET_VARIABLE && actionName != UNIQUE_IDENTIFIER && actionName != SET_POLARITY && actionName != IGNORE_SUGGESTION){
         isSubsetting = true;
-    }else{ 
-        //Enable subsetting when any one of the column is deleted,renamed, removed  
-        if(store.getState().datasets.subsettingDone == false) { 
-            isSubsetting = false;    
-        }else{ 
-            isSubsetting = true;    
-        } 
-    } 
+    }else{
+        //Enable subsetting when any one of the column is deleted,renamed, removed
+        if(store.getState().datasets.subsettingDone == false) {
+            isSubsetting = false;
+        }else{
+            isSubsetting = true;
+        }
+    }
     dispatch(handleColumnActions(transformSettings,slug,isSubsetting))
     dispatch(updateVLPopup(false));
     //dispatch(updateTransformSettings(transformSettings));
@@ -1442,4 +1442,21 @@ export function popupAlertBox(msg,props,url){
     bootbox.alert(msg,function(){
         props.history.push(url)
     });
+}
+export function deselectAllVariablesDataPrev(){
+  let dataPrev=store.getState().datasets.dataPreview
+  let slug=store.getState().datasets.selectedDataSet
+  if(dataPrev&&dataPrev.meta_data){
+  for(var i=0;i<dataPrev.meta_data.uiMetaData.varibaleSelectionArray.length;i++){
+    dataPrev.meta_data.uiMetaData.varibaleSelectionArray[i].selected=false
+  }
+  dispatchDataPreview(dataPrev,slug)
+}
+}
+
+export function makeAllVariablesTrueOrFalse(value){
+  return{
+    type:"MAKE_ALL_TRUE_OR_FALSE",
+    value
+  }
 }

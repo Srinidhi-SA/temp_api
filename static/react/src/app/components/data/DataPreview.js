@@ -8,18 +8,25 @@ import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {C3Chart} from "../c3Chart";
 import ReactDOM from 'react-dom';
-import {hideDataPreview,getDataSetPreview,renameMetaDataColumn,updateTranformColumns,hideDataPreviewDropDown,popupAlertBox} from "../../actions/dataActions";
-import {dataSubsetting,clearDataPreview,clearLoadingMsg} from "../../actions/dataUploadActions"
-import {Button,Dropdown,Menu,MenuItem} from "react-bootstrap";
+import {
+  hideDataPreview,
+  getDataSetPreview,
+  renameMetaDataColumn,
+  updateTranformColumns,
+  hideDataPreviewDropDown,
+  popupAlertBox
+} from "../../actions/dataActions";
+import {dataSubsetting, clearDataPreview, clearLoadingMsg} from "../../actions/dataUploadActions"
+import {Button, Dropdown, Menu, MenuItem} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"
-import {showHideSideChart, showHideSideTable, MINROWINDATASET,statusMessages} from "../../helpers/helper.js"
-import {isEmpty,CREATESIGNAL,  CREATESCORE,CREATEMODEL} from "../../helpers/helper";
+import {showHideSideChart, showHideSideTable, MINROWINDATASET, statusMessages} from "../../helpers/helper.js"
+import {isEmpty, CREATESIGNAL, CREATESCORE, CREATEMODEL} from "../../helpers/helper";
 import {SubSetting} from "./SubSetting";
 import {DataUploadLoader} from "../common/DataUploadLoader";
 import {DataValidation} from "./DataValidation";
 import {DataValidationEditValues} from "./DataValidationEditValues";
 import Dialog from 'react-bootstrap-dialog';
-import {checkCreateScoreToProceed,getAppDetails} from "../../actions/appActions";
+import {checkCreateScoreToProceed, getAppDetails} from "../../actions/appActions";
 
 @connect((store) => {
   return {
@@ -35,12 +42,10 @@ import {checkCreateScoreToProceed,getAppDetails} from "../../actions/appActions"
     subsettingDone: store.datasets.subsettingDone,
     subsettedSlug: store.datasets.subsettedSlug,
     dataTransformSettings: store.datasets.dataTransformSettings,
-    scoreToProceed:store.apps.scoreToProceed,
-    currentAppDetails:store.apps.currentAppDetails,
+    scoreToProceed: store.apps.scoreToProceed,
+    currentAppDetails: store.apps.currentAppDetails
   };
 })
-
-
 
 export class DataPreview extends React.Component {
 
@@ -71,53 +76,50 @@ export class DataPreview extends React.Component {
     console.log(this.props);
     console.log("data prevvvvv");
     if (this.props.dataPreview == null || isEmpty(this.props.dataPreview) || this.props.dataPreview.status == 'FAILED') {
-        this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
+      this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
     }
     //When user refresh get current app details
-    if(this.props.match.path.includes("AppId")){
-        this.props.dispatch(getAppDetails(this.props.match.params.AppId));
+    if (this.props.match.path.includes("AppId")) {
+      this.props.dispatch(getAppDetails(this.props.match.params.AppId));
     }
-    if(this.props.match.path.includes("models") && this.props.match.path.includes("modelSlug") && this.props.match.path.includes("slug")){
-        this.buttons['close'] = {
-                url: "/apps",
-                text: "Close"
-        };
-        this.buttons['create'] = {
-                url: "/apps/" + this.props.match.params.AppId + "/models/" + this.props.match.params.modelSlug + "/data/" + this.props.match.params.slug + "/createScore",
-                text: CREATESCORE
-        };
+    if (this.props.match.path.includes("models") && this.props.match.path.includes("modelSlug") && this.props.match.path.includes("slug")) {
+      this.buttons['close'] = {
+        url: "/apps",
+        text: "Close"
+      };
+      this.buttons['create'] = {
+        url: "/apps/" + this.props.match.params.AppId + "/models/" + this.props.match.params.modelSlug + "/data/" + this.props.match.params.slug + "/createScore",
+        text: CREATESCORE
+      };
+    } else if (this.props.match.path.includes("models") && this.props.match.path.includes("slug")) {
+      this.buttons['close'] = {
+        url: "/apps",
+        text: "Close"
+      };
+      this.buttons['create'] = {
+        url: "/apps/" + this.props.match.params.AppId + "/models/data/" + this.props.match.params.slug + "/createModel",
+        text: CREATEMODEL
+      };
+    } else if (this.props.match.path.includes("robo")) {
+      this.buttons['close'] = {
+        url: "/apps/" + this.props.match.params.AppId + "/robo",
+        text: "Close"
+      };
+      this.buttons['create'] = {
+        url: "/apps-robo/" + store.getState().apps.roboDatasetSlug + "/" + store.getState().signals.signalAnalysis.slug,
+        text: "Compose Insight"
+      };
+    } else if (this.props.match.path.includes("slug")) {
+      this.buttons['close'] = {
+        url: "/data",
+        text: "Close"
+      };
+      this.buttons['create'] = {
+        url: "/data/" + this.props.match.params.slug + "/createSignal",
+        text: CREATESIGNAL
+      };
     }
-    else if(this.props.match.path.includes("models") && this.props.match.path.includes("slug")){
-        this.buttons['close'] = {
-                url: "/apps",
-                text: "Close"
-        };
-        this.buttons['create'] = {
-                url: "/apps/" + this.props.match.params.AppId + "/models/data/" + this.props.match.params.slug + "/createModel",
-                text: CREATEMODEL
-        };
-    }
-    else if(this.props.match.path.includes("robo")){
-        this.buttons['close'] = {
-                url: "/apps/" + this.props.match.params.AppId + "/robo",
-                text: "Close"
-        };
-        this.buttons['create'] = {
-                url: "/apps-robo/" + store.getState().apps.roboDatasetSlug + "/" + store.getState().signals.signalAnalysis.slug,
-                text: "Compose Insight"
-        };
-    }
-    else if(this.props.match.path.includes("slug")){
-        this.buttons['close'] = {
-                url: "/data",
-                text: "Close"
-        };
-        this.buttons['create'] = {
-                url: "/data/" + this.props.match.params.slug + "/createSignal",
-                text: CREATESIGNAL
-        };
-    }
-   /* console.log(store.getState().datasets.curUrl.indexOf("models"));
+    /* console.log(store.getState().datasets.curUrl.indexOf("models"));
     if (store.getState().datasets.curUrl) {
       if (store.getState().datasets.curUrl.startsWith("/signals")) {
         this.buttons['close'] = {
@@ -207,31 +209,31 @@ export class DataPreview extends React.Component {
 		});*/
     }
 
-		showHideSideTable(this.firstTimeSideTable);
-		showHideSideChart(this.firstTimeColTypeForChart,this.firstTimeSideChart);
-		hideDataPreviewDropDown(this.props.curUrl);
+    showHideSideTable(this.firstTimeSideTable);
+    showHideSideChart(this.firstTimeColTypeForChart, this.firstTimeSideChart);
+    hideDataPreviewDropDown(this.props.curUrl);
 
+  }
 
-	}
-
-  componentWillUpdate(){
-      let currentDataset = store.getState().datasets.selectedDataSet
-      if (!isEmpty(this.props.dataPreview) && currentDataset != this.props.match.params.slug && this.props.dataPreview != null && this.props.dataPreview.status != 'FAILED') {
-        if(!this.props.match.path.includes("robo")){
+  componentWillUpdate() {
+    let currentDataset = store.getState().datasets.selectedDataSet
+    if (!isEmpty(this.props.dataPreview) && currentDataset != this.props.match.params.slug && this.props.dataPreview != null && this.props.dataPreview.status != 'FAILED') {
+      if (!this.props.match.path.includes("robo")) {
         let url = '/data/' + currentDataset;
         console.log(this.props);
         this.props.history.push(url)
-       // return (<Redirect to={url}/>)
-     }}
-      if (!isEmpty(this.props.dataPreview) && this.props.dataPreview != null && this.props.dataPreview.status == 'FAILED') {
-          console.log("goitn to data url")
-          this.props.dispatch(clearDataPreview())
-          this.props.dispatch(clearLoadingMsg())
-          let url = '/data/'
-          this.props.history.push(url)
-        }
+        // return (<Redirect to={url}/>)
+      }
+    }
+    if (!isEmpty(this.props.dataPreview) && this.props.dataPreview != null && this.props.dataPreview.status == 'FAILED') {
+      console.log("goitn to data url")
+      this.props.dispatch(clearDataPreview())
+      this.props.dispatch(clearLoadingMsg())
+      let url = '/data/'
+      this.props.history.push(url)
+    }
   }
-	setSideElements(e){
+  setSideElements(e) {
 
     //renderFlag=true;
     //alert("setting side element!!")
@@ -265,7 +267,9 @@ export class DataPreview extends React.Component {
                 <tr key={tableIndex}>
                   <td className="item">{tableItem.displayName}</td>
                   <td>&nbsp;:&nbsp;</td>
-                  <td><span title={tableItem.value} className="stat-txtControl">{tableItem.value}</span></td>
+                  <td>
+                    <span title={tableItem.value} className="stat-txtControl">{tableItem.value}</span>
+                  </td>
                 </tr>
               );
             }
@@ -274,12 +278,12 @@ export class DataPreview extends React.Component {
         $("#side-table").empty();
         ReactDOM.render(
           <tbody className="no-border-x no-border-y">{sideTableUpdatedTemplate}</tbody>, document.getElementById('side-table'));
-        if(this.props.dataPreview.permission_details.subsetting_dataset){
-        // column subsetting starts
-        const sideSubsetting = item.columnStats;
-        $("#sub_settings").empty();
-        ReactDOM.render(
-          <Provider store={store}><SubSetting item={item}/></Provider>, document.getElementById('sub_settings'));
+        if (this.props.dataPreview.permission_details.subsetting_dataset) {
+          // column subsetting starts
+          const sideSubsetting = item.columnStats;
+          $("#sub_settings").empty();
+          ReactDOM.render(
+            <Provider store={store}><SubSetting item={item}/></Provider>, document.getElementById('sub_settings'));
         }
         // column subsetting ends
 
@@ -300,32 +304,29 @@ export class DataPreview extends React.Component {
   moveToVariableSelection() {
     //alert(this.buttons.create.url);
     //check for minimum rows in datasets
-      if (this.props.dataPreview.meta_data.uiMetaData.metaDataUI[0].value < MINROWINDATASET&&this.buttons.create.url.indexOf("apps-robo") == -1)
-          bootbox.alert("Minimum " + MINROWINDATASET + " rows are required for analysis!!")
-          else if (this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray && (this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray.length == 0 || (this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray.length == 1 && this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray[0].dateSuggestionFlag == true))) {
-              let errormsg=statusMessages("warning","Not enough data to run analysis. Please upload/connect a different dataset.","small_mascot")
-              bootbox.alert(errormsg)
-          } else {
-              let url = this.buttons.create.url;
-              if (this.buttons.create.url.indexOf("apps-robo") != -1) {
-                //  $(".cst_table").find("thead").find("." + colSlug).first()
-                  url = "/apps-robo/" + store.getState().apps.roboDatasetSlug + "/" + store.getState().signals.signalAnalysis.slug
-                  this.props.history.push(url);
-              }else if(store.getState().datasets.curUrl.indexOf("scores") != -1){
-                  if(store.getState().apps.scoreToProceed  == true){
-                      this.props.history.push(url);
-                  }
-                  else {
-                      this.props.dispatch(hideDataPreview());
+    if (this.props.dataPreview.meta_data.uiMetaData.metaDataUI[0].value < MINROWINDATASET && this.buttons.create.url.indexOf("apps-robo") == -1)
+      bootbox.alert("Minimum " + MINROWINDATASET + " rows are required for analysis!!")
+    else if (this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray && (this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray.length == 0 || (this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray.length == 1 && this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray[0].dateSuggestionFlag == true))) {
+      let errormsg = statusMessages("warning", "Not enough data to run analysis. Please upload/connect a different dataset.", "small_mascot")
+      bootbox.alert(errormsg)
+    } else {
+      let url = this.buttons.create.url;
+      if (this.buttons.create.url.indexOf("apps-robo") != -1) {
+        //  $(".cst_table").find("thead").find("." + colSlug).first()
+        url = "/apps-robo/" + store.getState().apps.roboDatasetSlug + "/" + store.getState().signals.signalAnalysis.slug
+        this.props.history.push(url);
+      } else if (store.getState().datasets.curUrl.indexOf("scores") != -1) {
+        if (store.getState().apps.scoreToProceed == true) {
+          this.props.history.push(url);
+        } else {
+          this.props.dispatch(hideDataPreview());
 
-                      popupAlertBox(statusMessages("error","One or few variables are missing from the scoring data. Score cannot be created","small_mascot"),this.props,url.split("/data")[0])
-                  }
-              }
-              else this.props.history.push(url);
-          }
-  }
-
-
+          popupAlertBox(statusMessages("error", "One or few variables are missing from the scoring data. Score cannot be created", "small_mascot"), this.props, url.split("/data")[0])
+        }
+      } else
+        this.props.history.push(url);
+      }
+    }
 
   applyDataSubset() {
     //alert("working");
@@ -382,8 +383,6 @@ export class DataPreview extends React.Component {
       });
     });
 
-
-
     this.isSubsetted = this.props.subsettingDone;
     //  const data = store.getState().data.dataPreview.meta_data.data;
 
@@ -402,15 +401,14 @@ export class DataPreview extends React.Component {
       let permission_details = this.props.dataPreview.permission_details;
       isSubsettingAllowed = permission_details.subsetting_dataset;
       isDataValidationAllowed = permission_details.data_validation;
-      if(this.buttons.create.text == CREATESIGNAL){
-          isCreateAllowed = permission_details.create_signal;
+      if (this.buttons.create.text == CREATESIGNAL) {
+        isCreateAllowed = permission_details.create_signal;
 
-      }else if(this.buttons.create.text == CREATEMODEL){
-          isCreateAllowed = permission_details.create_trainer;
-      }
-      else if(this.buttons.create.text == CREATESCORE){
-          isCreateAllowed = permission_details.create_score;
-      }else if(this.buttons.create.text=="Compose Insight"){
+      } else if (this.buttons.create.text == CREATEMODEL) {
+        isCreateAllowed = permission_details.create_trainer;
+      } else if (this.buttons.create.text == CREATESCORE) {
+        isCreateAllowed = permission_details.create_score;
+      } else if (this.buttons.create.text == "Compose Insight") {
         //need to change in future
         isCreateAllowed = true
       }
@@ -436,7 +434,7 @@ export class DataPreview extends React.Component {
           // console.log(thElement);
           let cls = thElement.slug + " dropdown";
           let iconCls = null;
-          let dataValidationCom =  ""
+          let dataValidationCom = ""
           switch (thElement.columnType) {
             case "measure":
               iconCls = "mAd_icons ic_mes_s";
@@ -451,7 +449,8 @@ export class DataPreview extends React.Component {
           }
 
           const anchorCls = thElement.slug + " dropdown-toggle cursor";
-       if(isDataValidationAllowed)dataValidationCom = <DataValidation name={thElement.name} slug={thElement.slug}/>
+          if (isDataValidationAllowed)
+            dataValidationCom = <DataValidation name={thElement.name} slug={thElement.slug}/>
           if (!thElement.consider) {
             cls = cls + " greyout-col";
 
@@ -461,7 +460,7 @@ export class DataPreview extends React.Component {
                   <i className={iconCls}></i>
                   {thElement.name}<b className="caret"></b>
                 </a>
-               {dataValidationCom}
+                {dataValidationCom}
               </th>
             );
           } else {
@@ -471,7 +470,7 @@ export class DataPreview extends React.Component {
                   <i className={iconCls}></i>
                   {thElement.name}<b className="caret"></b>
                 </a>
-               {dataValidationCom}
+                {dataValidationCom}
               </th>
             );
 
@@ -501,7 +500,6 @@ export class DataPreview extends React.Component {
                 <td key={tdIndex} className={dataPrev.uiMetaData.columnDataUI[tdIndex].slug} onClick={this.setSideElements.bind(this)}>{tdElement}</td>
               );
             }
-
 
           });
           return (
@@ -537,7 +535,9 @@ export class DataPreview extends React.Component {
                 <tr key={tableIndex}>
                   <td className="item">{tableItem.displayName}</td>
                   <td>&nbsp;:&nbsp;</td>
-                  <td><span title={tableItem.value} className="stat-txtControl">{tableItem.value}</span></td>
+                  <td>
+                    <span title={tableItem.value} className="stat-txtControl">{tableItem.value}</span>
+                  </td>
                 </tr>
               );
             }
@@ -636,10 +636,10 @@ export class DataPreview extends React.Component {
 
                   {/*<!-- Start Tab Subsettings -->*/}
 
-                  {isSubsettingAllowed == true ?  <div id="sub_settings" className="box-shadow"><SubSetting item={firstTimeSubSetting}/>
-                          </div>:""}
-
-
+                  {isSubsettingAllowed == true
+                    ? <div id="sub_settings" className="box-shadow"><SubSetting item={firstTimeSubSetting}/>
+                      </div>
+                    : ""}
 
                   {/* End Tab Subsettings */}
                 </div>
