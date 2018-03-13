@@ -838,6 +838,8 @@ class StockDatasetView(viewsets.ModelViewSet):
 
         try:
             instance = self.get_object_from_all()
+            if instance.data is None:
+                instance.fake_call_mlscripts()
         except:
             return creation_failed_exception("File Doesn't exist.")
 

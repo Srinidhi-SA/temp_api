@@ -617,7 +617,6 @@ class StockDatasetSerializer(serializers.ModelSerializer):
         ret = convert_to_json(ret)
         ret = convert_time_to_human(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
-        ret['data'] = instance.fake_call_mlscripts()
         if instance.viewed == False and instance.status=='SUCCESS':
             instance.viewed = True
             instance.save()
