@@ -621,14 +621,14 @@ class StockDatasetSerializer(serializers.ModelSerializer):
         if instance.viewed == False and instance.status=='SUCCESS':
             instance.viewed = True
             instance.save()
-        try:
-            message_list = get_message(instance)
-
-            if message_list is not None:
-                message_list = [message_list[-1]]
-            ret['message'] = message_list
-        except:
-            ret['message'] = None
+        # try:
+        #     message_list = get_message(instance)
+        #
+        #     if message_list is not None:
+        #         message_list = [message_list[-1]]
+        #     ret['message'] = message_list
+        # except:
+        #     ret['message'] = None
 
         return ret
 
