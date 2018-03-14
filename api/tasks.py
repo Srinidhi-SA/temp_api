@@ -108,7 +108,7 @@ def write_into_databases(job_type, object_slug, results):
                                            model_slug=object_slug
                                            )
 
-        if "error_message" in results:
+        if "error_message" in results or "model_summary" not in results:
             trainer_object.status = "FAILED"
             trainer_object.save()
             return results
