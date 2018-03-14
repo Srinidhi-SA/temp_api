@@ -66,7 +66,7 @@ export class AppsModelDetail extends React.Component {
 		console.log(this.props)
         showExportPmml = modelSummary.permission_details.downlad_pmml;
 		showCreateScore = modelSummary.permission_details.create_score;
-		let listOfCardList = modelSummary.listOfCards;
+		let listOfCardList = modelSummary.data.model_summary.listOfCards;
 		var componentsWidth = 0;
 		var cardDataList = listOfCardList.map((data, i) => {
 			var clearfixClass = "col-md-"+data.cardWidth*0.12+" xs-p-30 clearfix";
