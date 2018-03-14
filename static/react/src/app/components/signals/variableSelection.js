@@ -266,7 +266,7 @@ export class VariableSelection extends React.Component {
                 </div>{/*<!-- /.row -->*/}
                 <br/>
                 {/*  adding selection component */}
-                <DataVariableSelection/>
+                <DataVariableSelection match={this.props.match}/>
                 <AdvanceSettings   />
                 {/*---------end of selection component----------------------*/}
                 <div className="row">

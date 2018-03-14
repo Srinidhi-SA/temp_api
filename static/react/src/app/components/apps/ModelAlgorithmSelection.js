@@ -20,6 +20,7 @@ import {STATIC_URL} from "../../helpers/env.js";
         automaticAlgorithmData:store.apps.regression_algorithm_data,
         manualAlgorithmData:store.apps.regression_algorithm_data_manual,
         isAutomatic:store.apps.regression_isAutomatic,
+        apps_regression_modelName:store.apps.apps_regression_modelName,
     };
 })
 
@@ -29,8 +30,8 @@ export class ModelAlgorithmSelection extends React.Component {
     }
     componentWillMount() {
         //It will trigger when refresh happens on url
-        if(this.props.dataPreview == null){
-            this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
+        if(this.props.apps_regression_modelName == ""){
+            window.history.go(-1);
         }
         this.props.dispatch(reSetRegressionVariables());
         this.props.dispatch(getRegressionAppAlgorithmData(this.props.match.params.slug));
@@ -72,10 +73,11 @@ export class ModelAlgorithmSelection extends React.Component {
            var collapseId = "collapse-auto"+Index;
            var collapse = "#collapse-auto"+Index;
         var automaticDataParams = data.parameters.map((params,paramIndex) =>{
+            var automaticKey = "automatic"+paramIndex;
                                                             return(
                                                                     <div class="form-group">
                                                                         <label class="col-md-2 control-label read">{params.displayName}</label>  
-                                                                        <RegressionParameter key={paramIndex} parameterData={params} algorithmSlug={data.algorithmSlug}/>
+                                                                        <RegressionParameter key={automaticKey} uniqueTag={automaticKey} parameterData={params} algorithmSlug={data.algorithmSlug}/>
                                                                     </div>
                                                             );
                                                         });
@@ -108,7 +110,7 @@ export class ModelAlgorithmSelection extends React.Component {
                                                             return(
                                                                     <div class="form-group">
                                                                         <label class="col-md-2 control-label read">{params.displayName}</label>  
-                                                                        <RegressionParameter key={manualKey} parameterData={params} algorithmSlug={data.algorithmSlug}/>
+                                                                        <RegressionParameter key={manualKey} uniqueTag={manualKey} parameterData={params} algorithmSlug={data.algorithmSlug}/>
                                                                     </div>
                                                             );
                                                         });

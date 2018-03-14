@@ -17,6 +17,7 @@ import {DataBox} from "../common/DataBox";
 import {WordCloud} from "../common/WordCloud";
 import $ from "jquery";
 import {handleSignalToggleButton,predictionLabelClick} from "../../helpers/helper";
+import {ModelSummeryButton} from "../common/ModelSummeryButton";
 
 
 var data = null,
@@ -111,17 +112,18 @@ export class Card extends React.Component {
             case "box":
             let boxData = story.data;
             let boxId = "box"+i;
-		return (
-                    <div id={boxId} className="col-md-2 co-sm-4 col-xs-6 well xs-p-5 xs-m-5 col-centered">
-                    <h5>{boxData.data.best}</h5>
-                    <h3 className="text-center xs-mt-0">{boxData.data.value}<br />
-                    <small>{boxData.data.algorithmName}</small>
-                    </h3>
-                    </div>
-
-
-		);
-                break;
+            return (
+                <div id={boxId} className="col-md-2 co-sm-4 col-xs-6 well xs-p-5 xs-m-5 col-centered">
+                <h5>{boxData.data.best}</h5>
+                <h3 className="text-center xs-mt-0">{boxData.data.value}<br />
+                <small>{boxData.data.algorithmName}</small>
+                </h3>
+                </div>
+            );
+            break;
+            case "button":
+            return (<ModelSummeryButton key = {i} jsonData={story.data} classId={randomNum} type={story.dataType}/>);
+            break;
             }
 
         });

@@ -2018,7 +2018,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                     $.each(paramerterList,function(key1,val1){
                         if(val1.name == parSlug){
                             if(val1.paramType == 'number' || val1.paramType == 'textbox'){
-                                val1.defaultValue = parVal;
+                                val1.acceptedValue = parVal;
                             }
                             else if(val1.paramType == 'list'){
                                 let allValues = val1.defaultValue;
@@ -2030,7 +2030,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                                 });
                             }
                             else{
-                                val1.defaultValue = parVal;
+                                val1.acceptedValue = parVal;
                             }
                         }
                     })

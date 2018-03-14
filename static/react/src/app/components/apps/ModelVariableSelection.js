@@ -7,7 +7,7 @@ import {Modal,Button,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "r
 
 import {C3Chart} from "../c3Chart";
 import {DataVariableSelection} from "../data/DataVariableSelection";
-import {updateTrainAndTest,createModel,updateSelectedVariable,showLevelCountsForTarget,updateTargetLevel,saveSelectedValuesForModel,updateRegressionTechnique,updateCrossValidationValue} from "../../actions/appActions";
+import {updateTrainAndTest,createModel,updateSelectedVariable,showLevelCountsForTarget,updateTargetLevel,saveSelectedValuesForModel,updateRegressionTechnique,updateCrossValidationValue,getAppDetails} from "../../actions/appActions";
 import {AppsLoader} from "../common/AppsLoader";
 import {getDataSetPreview} from "../../actions/dataActions";
 import {hideTargetVariable} from "../../actions/signalActions";
@@ -31,6 +31,7 @@ export class ModelVariableSelection extends React.Component {
     }
     componentWillMount() {
         //It will trigger when refresh happens on url
+        this.props.dispatch(getAppDetails(this.props.match.params.AppId));
         if(this.props.dataPreview == null){
             this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
         }
@@ -73,6 +74,8 @@ export class ModelVariableSelection extends React.Component {
         console.log("Create Model Variable Selection  is called##########3");
        let custom_word1 = "";
        let custom_word2 = "";
+       var modelValidation = "";
+       var buttonName = "Create Model";
         if(store.getState().apps.modelSummaryFlag){
             let _link = "/apps/"+store.getState().apps.currentAppDetails.slug+'/models/'+store.getState().apps.modelSlug;
             return(<Redirect to={_link}/>);
@@ -80,7 +83,7 @@ export class ModelVariableSelection extends React.Component {
         let dataPrev = store.getState().datasets.dataPreview;
         let renderSelectBox = null;
         let renderLevelCountSelectBox = null;
-        if(dataPrev){
+        if(dataPrev && store.getState().apps.currentAppDetails != null ){
             const metaData = dataPrev.meta_data.uiMetaData.varibaleSelectionArray;
             if(metaData){
                 renderSelectBox =  <select className="form-control" onChange={this.setPossibleList.bind(this)} id="createModelAnalysisList">
@@ -114,7 +117,41 @@ export class ModelVariableSelection extends React.Component {
         }
         if(this.props.currentAppDetails != null){
             custom_word1 = this.props.currentAppDetails.custom_word1;
-            custom_word2 = this.props.currentAppDetails.custom_word2
+            custom_word2 = this.props.currentAppDetails.custom_word2;
+
+             if(store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
+                 buttonName = "Proceed";
+                       modelValidation = <div className="col-lg-8">
+                            <h4>Model Validation</h4>
+                            <div class="xs-pb-10">
+                            <div class="ma-radio inline"><input type="radio" class="timeDimension" name="modalValidation" id="crossValidation" value="crossValidation" onChange={this.handleOptionChange.bind(this)} checked={store.getState().apps.regression_selectedTechnique == "crossValidation"}/><label for="crossValidation">Cross Validation</label></div>
+                                <div class="ma-radio inline"><input type="radio" class="timeDimension" name="modalValidation" id="trainTestValidation" value="trainTestValidation" onChange={this.handleOptionChange.bind(this)} checked={store.getState().apps.regression_selectedTechnique == "trainTestValidation"}/><label for="trainTestValidation">Train Test Validation</label></div>
+                            </div>
+                            {store.getState().apps.regression_selectedTechnique == "crossValidation" ?
+                                <div class="form-group">
+                                    <label class="col-lg-2 xs-pt-10">No of Folds :</label>
+                                    <div class="col-lg-10">
+                                        <input type="number" name="" class="form-control" required={true} id="" onChange={this.changecrossValidationValue.bind(this)} value={store.getState().apps.regression_crossvalidationvalue}/>
+                                    </div>
+                                </div>:
+                                <div id="range">
+                                    <div id="rangeLeftSpan" >Train <span id="trainPercent">{store.getState().apps.trainValue}</span></div>
+                                    <input type="range" id="rangeElement"  onChange={this.handleRangeSlider.bind(this)}  min={50} defaultValue={50} />
+                                    <div id="rangeRightSpan" ><span id="testPercent">{store.getState().apps.testValue}</span> Test </div>
+                                </div>
+                            }
+                        </div>
+             }
+                        else{
+                             buttonName = "Create Model";
+                        modelValidation = <div className="col-lg-8">
+                            <div id="range" >
+                                <div id="rangeLeftSpan" >Train <span id="trainPercent">{store.getState().apps.trainValue}</span></div>
+                                <input type="range" id="rangeElement"  onChange={this.handleRangeSlider.bind(this)}  min={50} defaultValue={50} />
+                                <div id="rangeRightSpan" ><span id="testPercent">{store.getState().apps.testValue}</span> Test </div>
+                            </div>
+                        </div>
+                    }
         }
         return(
                 <div className="side-body">
@@ -158,37 +195,9 @@ export class ModelVariableSelection extends React.Component {
                     
                 }
              
-                <DataVariableSelection/>
+                <DataVariableSelection match={this.props.match}/>
                 <div className="row">
-                    {store.getState().apps.currentAppDetails.app_type == "REGRESSION" ? 
-                        <div className="col-lg-8">
-                            <h4>Model Validation</h4>
-                            <div class="xs-pb-10">
-                            <div class="ma-radio inline"><input type="radio" class="timeDimension" name="modalValidation" id="crossValidation" value="crossValidation" onChange={this.handleOptionChange.bind(this)} checked={store.getState().apps.regression_selectedTechnique == "crossValidation"}/><label for="crossValidation">Cross Validation</label></div>
-                                <div class="ma-radio inline"><input type="radio" class="timeDimension" name="modalValidation" id="trainTestValidation" value="trainTestValidation" onChange={this.handleOptionChange.bind(this)}/><label for="trainTestValidation">Train Test Validation</label></div>
-                            </div>
-                            {store.getState().apps.regression_selectedTechnique == "crossValidation" ?
-                                <div class="form-group">
-                                    <label class="col-lg-2 xs-pt-10">No of Folds :</label>
-                                    <div class="col-lg-10">
-                                        <input type="number" name="" class="form-control" required={true} id="" onChange={this.changecrossValidationValue.bind(this)} value={store.getState().apps.regression_crossvalidationvalue}/>
-                                    </div>
-                                </div>:
-                                <div id="range">
-                                    <div id="rangeLeftSpan" >Train <span id="trainPercent">{store.getState().apps.trainValue}</span></div>
-                                    <input type="range" id="rangeElement"  onChange={this.handleRangeSlider.bind(this)}  min={50} defaultValue={50} />
-                                    <div id="rangeRightSpan" ><span id="testPercent">{store.getState().apps.testValue}</span> Test </div>
-                                </div>
-                            }
-                        </div>:
-                        <div className="col-lg-8">
-                            <div id="range" >
-                                <div id="rangeLeftSpan" >Train <span id="trainPercent">{store.getState().apps.trainValue}</span></div>
-                                <input type="range" id="rangeElement"  onChange={this.handleRangeSlider.bind(this)}  min={50} defaultValue={50} />
-                                <div id="rangeRightSpan" ><span id="testPercent">{store.getState().apps.testValue}</span> Test </div>
-                            </div>
-                        </div>
-                    }
+                    {modelValidation}
                  </div>
                  <div class="row">      
                 <div className="col-lg-4 col-lg-offset-8">
@@ -199,7 +208,7 @@ export class ModelVariableSelection extends React.Component {
                 </div>
                 <div className="row">
                 <div className="col-lg-12 text-right">
-                <Button type="submit" bsStyle="primary">{store.getState().apps.currentAppDetails.app_type == "REGRESSION" ?"Proceed":"Create Model"}</Button>
+                <Button type="submit" bsStyle="primary">{buttonName}</Button>
                 </div>
                 </div>
                 </FormGroup>
@@ -210,5 +219,6 @@ export class ModelVariableSelection extends React.Component {
                 <AppsLoader match={this.props.match}/>
                 </div>
         );
+        
     }
 }

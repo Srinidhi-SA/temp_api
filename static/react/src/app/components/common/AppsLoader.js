@@ -23,7 +23,6 @@ import {handleJobProcessing} from "../../helpers/helper";
     modelSlug: store.apps.modelSlug,
 		updateCreateModelHideShow:store.apps.updateCreateModelHideShow,
 		scoreSlug:store.apps.scoreSlug,
-		app_type:store.apps.currentAppDetails.app_type,
 	};
 })
 
@@ -39,8 +38,8 @@ export class AppsLoader extends React.Component {
 		this.props.dispatch(hideDataPreview());
   	this.props.dispatch(closeAppsLoaderValue());
 		clearAppsIntervel();
-		if(this.props.app_type == "REGRESSION")
-    this.props.dispatch(reSetRegressionVariables());
+		//if(this.props.app_type == "REGRESSION")
+    //this.props.dispatch(reSetRegressionVariables());
   }
   cancelCreateModel(){
 		this.props.dispatch(updateModelSummaryFlag(false));

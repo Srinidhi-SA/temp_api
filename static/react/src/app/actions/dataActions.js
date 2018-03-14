@@ -636,6 +636,32 @@ export function updateSelectedVariables(evt){
         dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
         count = getTotalVariablesSelected();
         dispatch(updateVariablesCount(count));
+        if(evt.target.baseURI == "createScore" && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
+            if(count >= 5){
+                $('.measure[type="checkbox"]').each(function() {
+                    if (!$(this).is(":checked"))
+                    $(this).prop('disabled', true);
+                });
+                $('.dimension[type="checkbox"]').each(function() {
+                    if (!$(this).is(":checked"))
+                    $(this).prop('disabled', true);
+                });
+                $('.measureAll[type="checkbox"]').each(function() {
+                    $(this).prop('disabled', true);
+                });
+                $('.dimensionAll').prop("disabled",true);
+                $('.measureAll').prop("disabled",true);
+                //document.getElementById('measure').disabled = true;
+            }
+            else{
+                $('.measure[type="checkbox"]').each(function() {
+                    $(this).prop('disabled', false);
+                });
+                $('.dimension[type="checkbox"]').each(function() {
+                    $(this).prop('disabled', false);
+                });
+            }
+        }
     }
 
 }
@@ -668,9 +694,13 @@ export function updateDatasetName(dataset){
         dataset,
     }
 }
-export function resetSelectedVariables(){
+export function resetSelectedVariables(flag){
+    if(flag == undefined)
+    var selectChk = true;
+    else
+    var selectChk = flag;
     return {
-        type: "RESET_VARIABLES",
+        type: "RESET_VARIABLES",selectChk
     }
 }
 
@@ -980,6 +1010,42 @@ export function handleSelectAll(evt){
         dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
         count = getTotalVariablesSelected();
         dispatch(updateVariablesCount(count));
+        if(evt.target.baseURI == "createScore" && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
+            if(evt.target.checked == false)
+            {
+                $('.measure[type="checkbox"]').each(function() {
+                    $(this).prop('disabled', false);
+                });
+                $('.dimension[type="checkbox"]').each(function() {
+                    $(this).prop('disabled', false);
+                });
+            }
+            else
+            {
+                if(count >= 5){
+                    if(varType == "dimension"){
+                        $('.measure[type="checkbox"]').each(function() {
+                            if (!$(this).is(":checked"))
+                            $(this).prop('disabled', true);
+                        });
+                    }
+                    if(varType == "measure"){
+                        $('.dimension[type="checkbox"]').each(function() {
+                            if (!$(this).is(":checked"))
+                            $(this).prop('disabled', true);
+                        });
+                    }
+                }
+                else{
+                    $('.measure[type="checkbox"]').each(function() {
+                        $(this).prop('disabled', false);
+                    });
+                    $('.dimension[type="checkbox"]').each(function() {
+                        $(this).prop('disabled', false);
+                    });
+                }
+            }
+        }
     }
 }
 
@@ -1459,4 +1525,22 @@ export function makeAllVariablesTrueOrFalse(value){
     type:"MAKE_ALL_TRUE_OR_FALSE",
     value
   }
+}
+
+export function DisableSelectAllCheckbox(){
+  let dataPrev=store.getState().datasets.dataPreview
+  let slug=store.getState().datasets.selectedDataSet
+  if(dataPrev&&dataPrev.meta_data){
+    let measureArray = $.grep(dataPrev.meta_data.uiMetaData.varibaleSelectionArray,function(val,key){
+        return(val.columnType == "measure");
+    });
+    let dimensionArray = $.grep(dataPrev.meta_data.uiMetaData.varibaleSelectionArray,function(val,key){
+        return(val.columnType == "dimension");
+    });
+    if(measureArray.length > 5)
+     $('.measureAll').prop("disabled",true);
+  
+    if(dimensionArray.length > 5)
+     $(".dimensionAll").prop("disabled",true);
+}
 }
