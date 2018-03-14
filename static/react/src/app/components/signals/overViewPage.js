@@ -18,7 +18,7 @@ import store from "../../store";
 import {getSignalAnalysis, setSideCardListFlag, updateselectedL1} from "../../actions/signalActions";
 import {STATIC_URL} from "../../helpers/env.js"
 import Slider from "react-slick";
-import {getRoboDataset, getStockAnalysis} from "../../actions/appActions";
+import {getRoboDataset, getStockAnalysis,getAppsScoreSummary} from "../../actions/appActions";
 import {hideDataPreview} from "../../actions/dataActions";
 
 //import {SignalAnalysisPage} from "./signals/SignalAnalysisPage";
@@ -49,10 +49,14 @@ export class OverViewPage extends React.Component {
         this.props.dispatch(getRoboDataset(this.props.match.params.slug));
       } else if (this.props.match.url.indexOf("apps-stock") != -1) {
         this.props.dispatch(getStockAnalysis(this.props.match.params.slug));
-      } else {
+      }else if (this.props.match.url.indexOf("apps-regression") != -1) {
+        this.props.dispatch(getAppsScoreSummary(this.props.match.params.slug));
+      }
+      else {
         this.props.dispatch(getSignalAnalysis(getUserDetailsOrRestart.get().userToken, this.props.match.params.slug));
       }
     }
+
   }
   componentDidMount() {
     // var that = this;
@@ -84,11 +88,12 @@ export class OverViewPage extends React.Component {
     var that = this;
     $(function() {
       let index = $(".sb_navigation li>a.active").parent().index();
+      if(index!=-1){
       if(index>5)
       that.refs.slider.slickGoTo(index-5);
       else {
         that.refs.slider.slickGoTo(0);
-      }
+      }}
     });
   }
 
@@ -178,6 +183,7 @@ export class OverViewPage extends React.Component {
       }
     }
 
+
     var settings = {
       dots: false,
       infinite: false,
@@ -217,6 +223,14 @@ export class OverViewPage extends React.Component {
         </div>
       );
     } else {
+
+      //check for l1 of regression  scoreSummary
+      if (that.urlPrefix.indexOf("apps-regression") != -1&&!this.props.match.params.l1) {
+        var url=that.urlPrefix+"/"+this.props.match.params.slug+"/"+this.props.signal.listOfNodes[0].slug
+        //this.props.history.push(url)
+        return(<Redirect to ={url}/>)
+      }
+      //check ends
 
       let urlSplit = this.props.location.pathname.split("/");
       //console.log(urlSplit);
@@ -324,7 +338,10 @@ export class OverViewPage extends React.Component {
         documentModeLink = "/signaldocumentMode/" + this.props.match.params.slug;
       } else if (that.urlPrefix.indexOf("stock") != -1) {
         documentModeLink = "/apps-stock-advisor"
-      } else {
+      } else if (that.urlPrefix.indexOf("apps-regression") != -1) {
+        documentModeLink = "apps-regression-score-document/"+this.props.match.params.slug
+      }
+      else {
         documentModeLink = "/apps-robo-document-mode/" + this.props.match.params.slug;
       }
 
@@ -340,7 +357,9 @@ export class OverViewPage extends React.Component {
           if (expectedURL.prev == this.props.signal.listOfCards[0].slug) {
             prevURL = that.urlPrefix + "/" + this.props.match.params.slug;
           }
-        } else {
+        }else if (that.urlPrefix.indexOf("apps-regression") != -1) {
+          prevURL="/apps"
+        }else {
           prevURL = that.urlPrefix;
         }
       } else {
@@ -348,7 +367,7 @@ export class OverViewPage extends React.Component {
           if (expectedURL.prev == this.props.signal.listOfCards[0].slug) {
             prevURL = that.urlPrefix + "/" + this.props.match.params.slug;
           }
-        } else {
+        }else {
           prevURL = that.urlPrefix;
         }
       }

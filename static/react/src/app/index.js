@@ -41,7 +41,7 @@ class App extends React.Component {
 
   render() {
 	  sessionStorage.url = window.location.pathname;
-	  
+
     return (
       <BrowserRouter>
       <Switch>
@@ -86,7 +86,7 @@ class App extends React.Component {
             <Route exact path="/apps-robo/:roboSlug" component={RoboDataUploadPreview} />
             <Route exact path="/apps-robo-list" component={RoboInsightList} />
             <Route exact path="/apps/audio" component={AudioFileList} />
-            <Route exact path="/apps/audio/:audioSlug" component={AudioFileSummary} />				
+            <Route exact path="/apps/audio/:audioSlug" component={AudioFileSummary} />
             <Route exact path="/apps/audio?page=:pageNo" component={AudioFileList} />
             <Route exact path="/apps-stock-advisor" component={AppsStockAdvisorList} />
             <Route exact path="/apps-stock-advisor-analyze/data/:slug" component={AppsStockDataPreview} />" +
@@ -96,7 +96,13 @@ class App extends React.Component {
             <Route exact path="/apps-stock-advisor/:slug/:l1/:l2" component={OverViewPage}/>
             <Route exact path="/apps-stock-document-mode/:slug" component={AppsStockDocumentMode}/>
             <Route exact path="/apps/:AppId/scores/:slug/dataPreview" component={DataPreviewLeftPanel}/>
-            <Route exact path="/apps/:AppId/models/data/:slug/createModel/Proceed" component={ModelAlgorithmSelection}/> 	
+            <Route exact path="/apps/:AppId/models/data/:slug/createModel/Proceed" component={ModelAlgorithmSelection}/>
+            <Route exact path="/apps-regression-score/:slug" component={OverViewPage}/>
+            <Route exact path="/apps-regression-score/:slug/:l1" component={OverViewPage}/>
+            <Route exact path="/apps-regression-score/:slug/:l1/:l2/:l3" component={OverViewPage}/>
+            <Route exact path="/apps-regression-score/:slug/:l1/:l2" component={OverViewPage}/>
+            <Route exact path="/apps-regression-score-document/:slug" component={SignalDocumentMode}/>
+
             </Main>
       </Switch>
       </BrowserRouter>
