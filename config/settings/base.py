@@ -1449,131 +1449,106 @@ time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(timestamp))
 ALGORITHM_LIST={
     "ALGORITHM_SETTING":[
       {
-        "algorithmName":"Algorithm 1",
-        "algorithmSlug":"DSAdasdadsad",
-        "selected":True,
-        "parameters":[
-          {
-            "name":"DSADA",
-            "displayName":"sdada",
-            "defaultValue":3,
-            "acceptedValue":2,
-            "valueRange":[],
-            "paramType":"number"
-          },
-          {
-          "name":"DSADAJJJKK",
-          "displayName":"sdada sadsada",
-          "defaultValue":[
-            {
-              "name":"l1",
-              "selected":True,
-              "displayName":"Aadsad"
-            },
-            {
-              "name":"l2",
-              "selected":False,
-              "displayName":"Aadsad"
-            }
-          ],
-          "paramType":"list"
-
-          },
-          {
-          "name":"DSADAJJJKK",
-          "displayName":"sdada sadsada",
-          "defaultValue":[
-            {
-              "name":"l1",
-              "selected":True,
-              "displayName":"Aadsad"
-            },
-            {
-              "name":"l2",
-              "selected":False,
-              "displayName":"Aadsad"
-            }
-          ],
-          "paramType":"list"
-
-          },
-          {
-            "name":"DSADA",
-            "displayName":"sdada",
-            "defaultValue":3,
-            "acceptedValue":2,
-            "valueRange":[],
-            "paramType":"number"
-          }
-        ]
-      },
-        {
-            "algorithmName": "Algorithm 2",
-            "algorithmSlug": "DSAdasda23dewwdwdddsad",
-            "selected": True,
-            "parameters": [
-                {
-                    "name": "DSADA",
-                    "displayName": "sdada",
-                    "defaultValue": 3,
-                    "acceptedValue": 2,
-                    "valueRange": [],
-                    "paramType": "number"
-                },
-                {
-                    "name": "DSADAJJJKK",
-                    "displayName": "sdada sadsada",
-                    "defaultValue": [
+        "algorithmName": "Linear Regression",
+        "selected": True,
+        "parameters": [
                         {
-                            "name": "l1",
-                            "selected": True,
-                            "displayName": "Aadsad"
+                            "name":"maxIter",
+                            "displayName":"Maximum Iteration",
+                            "defaultValue":100,
+                            "acceptedValue":None,
+                            "valueRange":[1,200],
+                            "paramType":"number",
+                            "uiElemType":"slider"
                         },
                         {
-                            "name": "l2",
-                            "selected": False,
-                            "displayName": "Aadsad"
-                        }
-                    ],
-                    "paramType": "list"
-
-                },
-            ]
-        },
-        {
-            "algorithmName": "Algorithm 3",
-            "algorithmSlug": "DSAdasd2edddadsad",
-            "selected": True,
-            "parameters": [
-                {
-                    "name": "DSADA",
-                    "displayName": "sdada",
-                    "defaultValue": 3,
-                    "acceptedValue": 2,
-                    "valueRange": [],
-                    "paramType": "number"
-                },
-                {
-                    "name": "DSADAJJJKK",
-                    "displayName": "sdada sadsada",
-                    "defaultValue": [
-                        {
-                            "name": "l1",
-                            "selected": True,
-                            "displayName": "Aadsad"
+                            "name":"regParam",
+                            "displayName":"Regularization parameter",
+                            "defaultValue":0.0,
+                            "acceptedValue":None,
+                            "valueRange":[0.0,1.0],
+                            "paramType":"number",
+                            "uiElemType":"slider"
                         },
                         {
-                            "name": "l2",
-                            "selected": False,
-                            "displayName": "Aadsad"
-                        }
-                    ],
-                    "paramType": "list"
-
-                },
-            ]
-        }
+                            "name":"elasticNetParam",
+                            "displayName":"Elastic Net Param",
+                            "defaultValue":0.0,
+                            "acceptedValue":None,
+                            "valueRange":[0.0,1.0],
+                            "paramType":"number",
+                            "uiElemType":"slider"
+                        },
+                        {
+                            "name":"tol",
+                            "displayName":"Convergence tolerance of iterations(e^-n)",
+                            "defaultValue":6,
+                            "acceptedValue":None,
+                            "valueRange":[3,10],
+                            "paramType":"number",
+                            "uiElemType":"slider"
+                        },
+                        {
+                             "name":"fitIntercept",
+                             "displayName":"Fit Intercept",
+                             "defaultValue":True,
+                             "acceptedValue":None,
+                             "paramType":"boolean",
+                             "uiElemType":"checkbox"
+                         },
+                         {
+                              "name":"standardization",
+                              "displayName":"Standardization",
+                              "defaultValue":True,
+                              "acceptedValue":None,
+                              "paramType":"boolean",
+                              "uiElemType":"checkbox"
+                          },
+                          {
+                               "name":"standardization",
+                               "displayName":"Standardization",
+                               "defaultValue":True,
+                               "acceptedValue":None,
+                               "paramType":"boolean",
+                               "uiElemType":"checkbox"
+                           },
+                           {
+                               "name":"solver",
+                               "displayName":"Solver",
+                               "defaultValue":[
+                                {
+                                    "name":"l-bfgs",
+                                    "selected":False,
+                                    "displayName":"Limited-memory BFGS"
+                                },
+                                {
+                                    "name":"auto",
+                                    "selected":True,
+                                    "displayName":"Automatic Selection"
+                                },
+                                {
+                                    "name":"normal",
+                                    "selected":False,
+                                    "displayName":"Normal"
+                                }
+                               ],
+                               "paramType":"list",
+                               "uiElemType":"checkbox"
+                           },
+                        {
+                            "name":"aggregationDepth",
+                            "displayName":"Aggregation Depth",
+                            "defaultValue":2,
+                            "acceptedValue":None,
+                            "valueRange":[2,5],
+                            "paramType":"number",
+                            "uiElemType":"checkbox"
+                        },
+                        ],
+        "algorithmSlug": "f77631ce2ab24cf78c55bb6a5fce4db8linr"
+      }
     ]
+
 }
 
 REGRESSION_APP_ID=13
