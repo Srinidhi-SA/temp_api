@@ -6,6 +6,7 @@ import signal
 
 import os
 from celery.decorators import task
+from celery.contrib import rdb
 
 
 @task(name="sum_two_numbers")
@@ -104,6 +105,7 @@ def write_into_databases(job_type, object_slug, results):
         insight_object.save()
         return results
     elif job_type == "model":
+        rdb.set_trace()
         trainer_object = get_db_object(model_name=Trainer.__name__,
                                            model_slug=object_slug
                                            )
