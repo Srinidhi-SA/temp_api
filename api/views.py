@@ -1289,6 +1289,7 @@ def convert_chart_data_to_beautiful_things(data, object_slug=""):
                 # function
                 try:
                     button_card["data"] = helper.decode_and_convert_chart_raw_data(chart_raw_data, object_slug=object_slug)
+                    card["data"] = button_card["data"]
                 except Exception as e:
                     print e
                     button_card["data"] = {}
