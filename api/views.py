@@ -1241,6 +1241,7 @@ def chart_changes_in_metadata_chart(chart_data):
 
 def add_slugs(results, object_slug=""):
     from api import helper
+    print results.keys()
     listOfNodes = results.get('listOfNodes', [])
     listOfCards = results.get('listOfCards', [])
 
