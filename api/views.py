@@ -1083,7 +1083,11 @@ def set_result(request, slug=None):
     if not job:
         return JsonResponse({'result': 'Failed'})
     results = request.body
-    tasks.save_results_to_job.delay(
+    # tasks.save_results_to_job.delay(
+    #     slug,
+    #     results
+    # )
+    tasks.save_results_to_job1(
         slug,
         results
     )

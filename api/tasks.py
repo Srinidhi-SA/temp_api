@@ -290,6 +290,23 @@ def save_results_to_job(slug, results):
     job.save()
 
 
+def save_results_to_job1(slug, results):
+    from api.helper import get_db_object
+    import json
+
+    job = get_db_object(model_name=Job.__name__,
+                                   model_slug=slug
+                                   )
+
+    if isinstance(results, str) or isinstance(results, unicode):
+        job.results = results
+    elif isinstance(results, dict):
+        results = json.dumps(results)
+        job.results = results
+    job.save()
+
+
+
 @task(name='cleanup_logentry')
 def clean_up_logentry():
 
