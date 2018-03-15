@@ -23,7 +23,6 @@ class DatasetRelatedPermission(permissions.BasePermission):
         if request.method in ['POST']:
             data = request.data
             datasource_type = data.get('datasource_type')
-            print datasource_type
             if user.has_perm('api.create_dataset'):
                 if datasource_type == 'fileUpload':
                     return user.has_perm('api.upload_from_file')
