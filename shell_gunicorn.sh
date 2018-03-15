@@ -16,4 +16,4 @@ gunicorn --bind $IP:$PORT \
          --access-logfile $ACCESS_LOG \
          --error-logfile $ERROR_LOG \
          --daemon \
-         --max_requests 5
+         --max-requests 5
