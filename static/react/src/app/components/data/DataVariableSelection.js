@@ -79,6 +79,7 @@ export class DataVariableSelection extends React.Component {
     render() {
 
         console.log( "data variableSelection is called##########3" );
+        var variableSelectionMsg = <label>Including the follwing variables:</label>;
 
         let dataPrev = store.getState().datasets.dataPreview;
 
@@ -199,7 +200,7 @@ export class DataVariableSelection extends React.Component {
                 
                 var datetimeTemplate = <label>No date dimensions to display</label>
             }
-            if(this.props.match.path.includes("createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
+            if(this.props.match.path.includes("/createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
                 let measureArray = $.grep(dataPrev.meta_data.uiMetaData.varibaleSelectionArray,function(val,key){
                     return(val.columnType == "measure" && val.selected == false);
                 });
@@ -216,14 +217,16 @@ export class DataVariableSelection extends React.Component {
                 }
                 else
                 $(".dimensionAll").prop("disabled",false);
+
+                variableSelectionMsg = <h4>Including performance analysis across the following variables (Upto 5)</h4>;
             }
             return (
                 <div>
 
 
                     <div className="row">
-                        <div className="col-lg-4">
-                            <label>Including the follwing variables:</label>
+                        <div className="col-lg-6">
+                            {variableSelectionMsg}
                         </div>{/*<!-- /.col-lg-4 -->*/}
                     </div>
                     {/*<!-------------------------------------------------------------------------------->*/}
