@@ -147,7 +147,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
         var app_id=store.getState().apps.currentAppId;
         var customDetails = createcustomAnalysisDetails();
         if(store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
-            /*if(store.getState().apps.regression_selectedTechnique == "crossValidation")
+            if(store.getState().apps.regression_selectedTechnique == "crossValidation")
             {
                 var validationTechnique={
                 "name":"kFold",
@@ -160,14 +160,9 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                 var validationTechnique={
                 "name":"trainAndtest",
                 "displayName":"Train and Test",
-                "value":store.getState().apps.trainValue
+                "value":(store.getState().apps.trainValue/100)
                 }
-            }*/
-            var validationTechnique={
-                "name":"trainAndtest",
-                "displayName":"Train and Test",
-                "value":"0.6"
-                }
+            }
             if(store.getState().apps.regression_isAutomatic == "1")
             var AlgorithmSettings = store.getState().apps.regression_algorithm_data;
             else
