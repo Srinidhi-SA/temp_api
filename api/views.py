@@ -1103,7 +1103,6 @@ def set_result(request, slug=None):
         #     results=json.loads(results)
         # )
 
-        import pdb;pdb.set_trace()
         results = tasks.write_into_databases1(
             job_type=job.job_type,
             object_slug=job.object_id,

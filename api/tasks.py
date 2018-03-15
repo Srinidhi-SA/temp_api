@@ -218,7 +218,8 @@ def write_into_databases1(job_type, object_slug, results):
         trainer_object = get_db_object(model_name=Trainer.__name__,
                                            model_slug=object_slug
                                            )
-
+        import pdb;
+        pdb.set_trace()
         if "error_message" in results or "model_summary" not in results:
             trainer_object.status = "FAILED"
             trainer_object.save()
