@@ -2062,3 +2062,17 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
             type: "RESET_REGRESSION_VARIABLES"
         }
     }
+    export function checkAtleastOneSelected(){
+        let isSelected = false;
+        if(store.getState().apps.regression_isAutomatic == 0){
+            let algorithmData = store.getState().apps.regression_algorithm_data_manual;
+            $.each(algorithmData,function(i,dat){
+                if(dat.selected == true)
+                isSelected = true;
+            });
+        }
+        else
+        isSelected = true;
+
+        return isSelected;
+    }

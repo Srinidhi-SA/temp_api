@@ -144,7 +144,7 @@ export class RegressionParameter extends React.Component {
         let parameterData = this.props.parameterData;
         const parameterElements = this.renderParameterData(parameterData);
         return (
-                <div class="col-md-4">
+                <div class="col-md-8">
                 {parameterElements}
                 </div>
         );

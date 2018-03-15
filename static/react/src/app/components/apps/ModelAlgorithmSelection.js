@@ -4,7 +4,7 @@ import {connect} from "react-redux";
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "react-bootstrap";
-import {createModel,getRegressionAppAlgorithmData,setDefaultAutomatic,updateAlgorithmData,reSetRegressionVariables} from "../../actions/appActions";
+import {createModel,getRegressionAppAlgorithmData,setDefaultAutomatic,updateAlgorithmData,checkAtleastOneSelected} from "../../actions/appActions";
 import {AppsLoader} from "../common/AppsLoader";
 import {getDataSetPreview} from "../../actions/dataActions";
 import {RegressionParameter} from "./RegressionParameter";
@@ -33,7 +33,6 @@ export class ModelAlgorithmSelection extends React.Component {
         if(this.props.apps_regression_modelName == ""){
             window.history.go(-1);
         }
-        this.props.dispatch(reSetRegressionVariables());
         this.props.dispatch(getRegressionAppAlgorithmData(this.props.match.params.slug));
         
     }
@@ -44,6 +43,12 @@ export class ModelAlgorithmSelection extends React.Component {
     }
     createModel(event){
         event.preventDefault();
+        /*let isSelected = checkAtleastOneSelected();
+        if(isSelected == false){
+            let msg= statusMessages("warning","Please select atleast one Algorithm...","small_mascot");
+            bootbox.alert(msg);
+            return false;
+        }*/
         this.props.dispatch(createModel(store.getState().apps.apps_regression_modelName,store.getState().apps.apps_regression_targetType,store.getState().apps.apps_regression_levelCount));
     }
     handleOptionChange(e){

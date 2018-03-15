@@ -636,7 +636,7 @@ export function updateSelectedVariables(evt){
         dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
         count = getTotalVariablesSelected();
         dispatch(updateVariablesCount(count));
-        if(evt.target.baseURI == "createScore" && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
+        if(evt.target.baseURI.includes("/createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
             if(count >= 5){
                 $('.measure[type="checkbox"]').each(function() {
                     if (!$(this).is(":checked"))
@@ -1010,7 +1010,7 @@ export function handleSelectAll(evt){
         dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
         count = getTotalVariablesSelected();
         dispatch(updateVariablesCount(count));
-        if(evt.target.baseURI == "createScore" && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
+        if(evt.target.baseURI.includes("/createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
             if(evt.target.checked == false)
             {
                 $('.measure[type="checkbox"]').each(function() {
