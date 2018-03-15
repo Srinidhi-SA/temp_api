@@ -993,8 +993,23 @@ class Trainer(models.Model):
                 file_setting = config['FILE_SETTINGS']
                 brief_info.update({
                     'analysis type': file_setting.get('analysis_type')[0],
-                    'train_test_split': file_setting.get('train_test_split')[0]
                 })
+
+                if 'train_test_split' in file_setting:
+                    brief_info.update({
+                        'train_test_split': file_setting.get('train_test_split')[0]
+                    })
+                elif 'validationTechnique' in file_setting:
+                    validationTechnique = file_setting.get('validationTechnique')[0]
+                    valueKey = validationTechnique
+                    brief_info.update({
+                        'train_test_split': valueKey
+                    })
+                else:
+                    brief_info.update({
+                        'train_test_split': 0
+                    })
+
 
         brief_info.update(
             {
