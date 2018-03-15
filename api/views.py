@@ -1282,6 +1282,17 @@ def convert_chart_data_to_beautiful_things(data, object_slug=""):
             except Exception as e:
                 print e
                 card["data"] = {}
+        if card["dataType"] == "button":
+            button_card = card["data"]
+            if button_card["dataType"] == "c3Chart":
+                chart_raw_data = button_card["data"]
+                # function
+                try:
+                    button_card["data"] = helper.decode_and_convert_chart_raw_data(chart_raw_data, object_slug=object_slug)
+                except Exception as e:
+                    print e
+                    button_card["data"] = {}
+
 
 
 def home(request):
