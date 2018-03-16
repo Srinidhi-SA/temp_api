@@ -80,12 +80,14 @@ export class ModelAlgorithmSelection extends React.Component {
            var collapse = "#collapse-auto"+Index;
         var automaticDataParams = data.parameters.map((params,paramIndex) =>{
             var automaticKey = "automatic"+paramIndex;
+                                                        if(params.display == true){
                                                             return(
                                                                     <div class="form-group">
-                                                                        <label class="col-md-2 control-label read">{params.displayName}</label>  
+                                                                        <label class="col-md-3 control-label read">{params.displayName}</label>  
                                                                         <RegressionParameter key={automaticKey} uniqueTag={automaticKey} parameterData={params} algorithmSlug={data.algorithmSlug}/>
                                                                     </div>
-                                                            );
+                                                                );
+                                                            }
                                                         });
                        return(
                                 <div class="panel panel-default">
@@ -113,12 +115,14 @@ export class ModelAlgorithmSelection extends React.Component {
            var collapse = "#collapse-manual"+Index;
         var manualDataParams = data.parameters.map((params,paramIndex) =>{
             var manualKey = "manual"+paramIndex;
+                                                         if(params.display == true){
                                                             return(
                                                                     <div class="form-group">
-                                                                        <label class="col-md-2 control-label read">{params.displayName}</label>  
+                                                                        <label class="col-md-3 control-label read">{params.displayName}</label>  
                                                                         <RegressionParameter key={manualKey} uniqueTag={manualKey} parameterData={params} algorithmSlug={data.algorithmSlug}/>
                                                                     </div>
                                                             );
+                                                         }
                                                         });
                        return(
                                 <div className="panel panel-default">

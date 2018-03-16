@@ -221,7 +221,14 @@ export class ModelSummeryButton extends React.Component {
     //-----popup setup end------------------------------------------------
 
   }
-//Used in Stock Sense
+   getChartElement() {
+    if (this.props.classId == '_side') {
+      return $(".chart", this.element);
+    } else if (this.props.widthPercent) {
+      return $(".chart" + this.props.classId, this.element);
+    }
+    return $(".chart" + this.props.classId, this.element);
+  }
 	render() {
 		var that = this;
 		$(function() {
@@ -230,7 +237,7 @@ export class ModelSummeryButton extends React.Component {
 		return (
 				<div>
 				<button type="button" className="btn btn-primary col-md-offset-8" onClick={this.show.bind(this)} title="Print Document">View Residuals</button>
-				<ViewChart classId={this.props.classId} click={this.downloadSVG} chartData={this.props.data}/>
+				<ViewChart classId={this.props.classId} click={this.downloadSVG} chartData={this.props.data} tableDownload={this.props.tabledownload}/>
 				</div>
 		);
 
