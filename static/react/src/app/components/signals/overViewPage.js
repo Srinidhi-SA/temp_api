@@ -16,10 +16,11 @@ import {MainHeader} from "../../components/common/MainHeader";
 import {Card} from "./Card";
 import store from "../../store";
 import {getSignalAnalysis, setSideCardListFlag, updateselectedL1} from "../../actions/signalActions";
-import {STATIC_URL} from "../../helpers/env.js"
+import {STATIC_URL,API} from "../../helpers/env.js"
 import Slider from "react-slick";
-import {getRoboDataset, getStockAnalysis,getAppsScoreSummary} from "../../actions/appActions";
+import {getRoboDataset, getStockAnalysis,getAppsScoreSummary,getScoreSummaryInCSV} from "../../actions/appActions";
 import {hideDataPreview} from "../../actions/dataActions";
+import {Button} from "react-bootstrap";
 
 //import {SignalAnalysisPage} from "./signals/SignalAnalysisPage";
 //let showSubTree=false;
@@ -164,7 +165,9 @@ export class OverViewPage extends React.Component {
     this.props.dispatch(hideDataPreview());
     this.props.history.push("/signals");
   }
-
+  gotoScoreData(){
+      this.props.dispatch(getScoreSummaryInCSV(store.getState().apps.scoreSlug))
+  }
   render() {
 
     console.log("overviewPage is called!!");
@@ -224,8 +227,11 @@ export class OverViewPage extends React.Component {
       );
     } else {
 
+      let regression_app=false
+      if(that.urlPrefix.indexOf("apps-regression") != -1)
+      regression_app=true
       //check for l1 of regression  scoreSummary
-      if (that.urlPrefix.indexOf("apps-regression") != -1&&!this.props.match.params.l1) {
+      if (regression_app&&!this.props.match.params.l1) {
         var url=that.urlPrefix+"/"+this.props.match.params.slug+"/"+this.props.signal.listOfNodes[0].slug
         //this.props.history.push(url)
         return(<Redirect to ={url}/>)
@@ -338,7 +344,7 @@ export class OverViewPage extends React.Component {
         documentModeLink = "/signaldocumentMode/" + this.props.match.params.slug;
       } else if (that.urlPrefix.indexOf("stock") != -1) {
         documentModeLink = "/apps-stock-advisor"
-      } else if (that.urlPrefix.indexOf("apps-regression") != -1) {
+      } else if (regression_app) {
         documentModeLink = "apps-regression-score-document/"+this.props.match.params.slug
       }
       else {
@@ -357,7 +363,7 @@ export class OverViewPage extends React.Component {
           if (expectedURL.prev == this.props.signal.listOfCards[0].slug) {
             prevURL = that.urlPrefix + "/" + this.props.match.params.slug;
           }
-        }else if (that.urlPrefix.indexOf("apps-regression") != -1) {
+        }else if (regression_app) {
           prevURL="/apps"
         }else {
           prevURL = that.urlPrefix;
@@ -408,6 +414,10 @@ export class OverViewPage extends React.Component {
         classname=".sb_navigation #subTab i.mAd_icons.ic_measure ~ span"
       subTreeSetting(urlSplit.length, 6, that.props.match.params.l2,classname); // setting of subtree and active classes
 
+      if(regression_app){
+      var scoreDownloadURL=API+'/api/get_score_data_and_return_top_n/?url='+store.getState().apps.scoreSlug+'&download_csv=true&count=100'
+      var scoreDataLink = "/apps/regression-app-6u8ybu4vdr/scores/"+store.getState().apps.scoreSlug+"/dataPreview";
+      }
       return (
         <div>
           <div className="side-body">
@@ -541,6 +551,11 @@ export class OverViewPage extends React.Component {
                           }}>
                             <span className="fa fa-chevron-right"></span>
                           </Link>
+                         <div className="col-md-12 text-right">
+                         {(regression_app)?<div>
+                         <Link to={scoreDataLink} onClick={this.gotoScoreData.bind(this)} className="btn btn-primary xs-pr-10"> View </Link>
+                         <a  href={scoreDownloadURL} id="download" className="btn btn-primary" download>Download</a></div>:""}
+                        </div>
                         </div>
                       </div>
                     </div>
