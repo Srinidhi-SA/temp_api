@@ -319,7 +319,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                         dispatch(closeAppsLoaderValue());
                         dispatch(hideDataPreview());
                         dispatch(updateModelSummaryFlag(true));
-                        if(store.getState().apps.currentAppDetails.app_type == "REGRESSION")
+                        //if(store.getState().apps.currentAppDetails.app_type == "REGRESSION")
                         dispatch(reSetRegressionVariables());
                     }else if(json.status == FAILED){
                         bootbox.alert("Your model could not be created.Please try later.",function(){
@@ -328,7 +328,7 @@ import {APPSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,APPSDEFAULTINTERVAL
                         clearInterval(appsInterval);
                         dispatch(closeAppsLoaderValue());
                         dispatch(hideDataPreview());
-                        if(store.getState().apps.currentAppDetails.app_type == "REGRESSION")
+                        //if(store.getState().apps.currentAppDetails.app_type == "REGRESSION")
                         dispatch(reSetRegressionVariables());
                     }else if(json.status == INPROGRESS){
                         if(json.message !== null && json.message.length > 0){

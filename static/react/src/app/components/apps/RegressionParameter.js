@@ -80,41 +80,58 @@ export class RegressionParameter extends React.Component {
                 optionsTemp.push(<option key={prop} className={prop} value={options[prop].name} selected={options[prop].selected}>{options[prop].displayName}</option>);
             }
                return(
-                   <div>
-                  
+                   <div className="row">
+                  <div className="col-md-6">
                  <select  class="form-control" onChange={this.selecthandleChange.bind(this)} disabled={store.getState().apps.regression_isAutomatic == 1}>
                  {optionsTemp}
                  </select>
-				
+				</div>
                   
                 </div>
                );
                 break;
             case "number":
-                let diff = this.state.max - this.state.min;
-                if(diff <= 1)
-                var step = 0.1;
-                else{
-                let precision = decimalPlaces(this.state.max);
-                var step = (1 / Math.pow(10, precision));
-                }
-                return (
-                        <div>
-                        <span className="small_box"><input type="number" min = {this.state.min} max = {this.state.max} className="form-control" value={this.state.defaultVal} onChange={this.changeSliderValueFromText.bind(this)} disabled={store.getState().apps.regression_isAutomatic == 1}/>
-                        </span>
-                        <span className="small_box_contol inline-block">
-                        {this.state.min}
-                        <ReactBootstrapSlider value={this.state.defaultVal} triggerSlideEvent="true" change={this.changeSliderValue.bind(this)} step={step} max={this.state.max} min={this.state.min} tooltip="hide" disabled={store.getState().apps.regression_isAutomatic == 1?"disabled":""}/>
-                        {this.state.max}
-                        </span>
+                if(parameterData.uiElemType == "textBox"){
+                    return (
+                         <div className="row">
+                        <div className="col-md-6">
+                            <input type="number" className="form-control" value={this.state.defaultVal} onChange={this.changeTextboxValue.bind(this)} disabled={store.getState().apps.regression_isAutomatic == 1}/>
+                        </div>
                         </div>
                        );
+                }
+                else if(parameterData.uiElemType == "slider"){
+                    let diff = this.state.max - this.state.min;
+                    if(diff <= 1)
+                    var step = 0.1;
+                    else{
+                    let precision = decimalPlaces(this.state.max);
+                    var step = (1 / Math.pow(10, precision));
+                    }
+                    return (
+                            <div className="row">                            
+                            <div className="col-md-8 col-sm-2">
+                                <div className="row">
+                                    <div className="col-xs-1">{this.state.min}</div>
+                                    <div className="col-xs-10">
+                                    <ReactBootstrapSlider value={this.state.defaultVal} triggerSlideEvent="true" change={this.changeSliderValue.bind(this)} step={step} max={this.state.max} min={this.state.min} tooltip="hide" disabled={store.getState().apps.regression_isAutomatic == 1?"disabled":""}/>
+                                    </div>
+                                    <div className="col-xs-1"> {this.state.max}</div>
+                                </div>
+                            </div>
+                            <div className="col-md-2 col-sm-2"><input type="number" min = {this.state.min} max = {this.state.max} className="form-control" value={this.state.defaultVal} onChange={this.changeSliderValueFromText.bind(this)} disabled={store.getState().apps.regression_isAutomatic == 1}/>
+                            </div>
+                            </div>
+                        );
+                }
             
             break;
             case "textbox":
                  return (
-                        <div>
+                     <div className="row">
+                        <div className="col-md-6">
                             <input type="text" className="form-control" value={this.state.defaultVal} onChange={this.changeTextboxValue.bind(this)} disabled={store.getState().apps.regression_isAutomatic == 1}/>
+                        </div>
                         </div>
                        );
             break;
@@ -122,16 +139,19 @@ export class RegressionParameter extends React.Component {
            
            var chkBox = this.props.uniqueTag+this.props.parameterData.name;
          
-                 return (
+                 return ( 
                         <div className="ma-checkbox inline"><input  type="checkbox" id={chkBox} name={chkBox} onChange={this.handleCheckboxEvents.bind(this)} checked={this.state.defaultVal} disabled={store.getState().apps.regression_isAutomatic == 1}/><label htmlFor={chkBox}>&nbsp;</label>
-                        </div>
+                        </div> 
+
                        );
             
             break;
             default:
                 return (
-                    <div>
+                    <div className="row">
+                    <div className="col-md-6">
                     <input type="text" className="form-control" value={this.state.defaultVal} onChange={this.changeTextboxValue.bind(this)} disabled={store.getState().apps.regression_isAutomatic == 1}/>
+                    </div>
                     </div>
                 );
 
