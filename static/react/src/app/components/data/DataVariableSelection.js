@@ -9,7 +9,7 @@ import store from "../../store";
 import { C3Chart } from "../c3Chart";
 import $ from "jquery";
 
-import {updateSelectedVariables, resetSelectedVariables, setSelectedVariables,updateDatasetVariables,handleDVSearch,handelSort,handleSelectAll,checkColumnIsIgnored } from "../../actions/dataActions";
+import {updateSelectedVariables, resetSelectedVariables, setSelectedVariables,updateDatasetVariables,handleDVSearch,handelSort,handleSelectAll,checkColumnIsIgnored,deselectAllVariablesDataPrev,makeAllVariablesTrueOrFalse,DisableSelectAllCheckbox} from "../../actions/dataActions";
 import {resetSelectedTargetVariable} from "../../actions/signalActions";
 
 @connect(( store ) => {
@@ -54,7 +54,13 @@ export class DataVariableSelection extends React.Component {
     }
     componentDidMount() {
     	window.scrollTo(0, 0);
-        this.props.dispatch( resetSelectedVariables() );
+        if(this.props.match.path.includes("createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
+            deselectAllVariablesDataPrev();
+            DisableSelectAllCheckbox(); 
+            this.props.dispatch( resetSelectedVariables(false) );
+        }
+        else
+        this.props.dispatch( resetSelectedVariables(true) );
         this.props.dispatch(resetSelectedTargetVariable());
        // this.setVariables( this.dimensions, this.measures, this.selectedTimeDimension );
         this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.possibleAnalysisList,true));
@@ -73,6 +79,7 @@ export class DataVariableSelection extends React.Component {
     render() {
 
         console.log( "data variableSelection is called##########3" );
+        var variableSelectionMsg = <label>Including the follwing variables:</label>;
 
         let dataPrev = store.getState().datasets.dataPreview;
 
@@ -105,7 +112,7 @@ export class DataVariableSelection extends React.Component {
                     switch ( metaItem.columnType ) {
                         case "measure":
                            if(metaItem.setVarAs == null){
-                        	   this.measures.push( metaItem);
+                               this.measures.push( metaItem);
                                //this.measureChkBoxList.push(true);
                            }else if(metaItem.setVarAs != null){
                                this.dimensions.push(metaItem);
@@ -113,7 +120,7 @@ export class DataVariableSelection extends React.Component {
                             break;
                         case "dimension":
                         	if(!metaItem.dateSuggestionFlag){
-                        		this.dimensions.push( metaItem);
+                                this.dimensions.push( metaItem);
                         		//this.dimensionChkBoxList.push(true)
                         	}else if(metaItem.dateSuggestionFlag){
                         		 this.dimensionDateTime.push(metaItem)
@@ -132,15 +139,19 @@ export class DataVariableSelection extends React.Component {
             this.datetime = this.datetime.concat(this.dimensionDateTime);
         
             if ( this.props.isUpdate ) {
-            this.props.dispatch( resetSelectedVariables() );
-
+            if(this.props.match.path.includes("createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
+                this.props.dispatch(resetSelectedVariables(false));
+                deselectAllVariablesDataPrev();
+                DisableSelectAllCheckbox();    
+            }
+            else
+            this.props.dispatch( resetSelectedVariables(true) );
             this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.possibleAnalysisList,false));
             }
 
             var varCls = "";
 
             if ( store.getState().datasets.dataSetMeasures.length > 0 ) {
-                $(".measureAll").prop("disabled",false);
                 var measureTemplate = store.getState().datasets.dataSetMeasures.map(( mItem, mIndex ) => {
                  if(mItem.targetColumn || mItem.uidCol)varCls="hidden";
                  else varCls = "";
@@ -153,7 +164,6 @@ export class DataVariableSelection extends React.Component {
                 var measureTemplate = <label>No measure variable present</label>
             }
             if ( store.getState().datasets.dataSetDimensions.length > 0 ) {
-                $(".dimensionAll").prop("disabled",false);
                 var dimensionTemplate = store.getState().datasets.dataSetDimensions.map(( dItem, dIndex ) => {
 
                     if(dItem.targetColumn ||  dItem.uidCol)varCls="hidden";
@@ -190,15 +200,33 @@ export class DataVariableSelection extends React.Component {
                 
                 var datetimeTemplate = <label>No date dimensions to display</label>
             }
+            if(this.props.match.path.includes("/createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
+                let measureArray = $.grep(dataPrev.meta_data.uiMetaData.varibaleSelectionArray,function(val,key){
+                    return(val.columnType == "measure" && val.selected == false);
+                });
+                let dimensionArray = $.grep(dataPrev.meta_data.uiMetaData.varibaleSelectionArray,function(val,key){
+                    return(val.columnType == "dimension"  && val.selected == false);
+                });
+                if(measureArray.length > 5 || (store.getState().datasets.selectedVariablesCount+measureArray.length > 5)){
+                    if(store.getState().datasets.measureAllChecked == false)$('.measureAll').prop("disabled",true);
+                }
+                else
+                $('.measureAll').prop("disabled",false);
+                if(dimensionArray.length > 5 || (store.getState().datasets.selectedVariablesCount+dimensionArray.length > 5)){
+                    if(store.getState().datasets.dimensionAllChecked == false)$(".dimensionAll").prop("disabled",true);
+                }
+                else
+                $(".dimensionAll").prop("disabled",false);
 
-
+                variableSelectionMsg = <h4>Including performance analysis across the following variables (Upto 5)</h4>;
+            }
             return (
                 <div>
 
 
                     <div className="row">
-                        <div className="col-lg-4">
-                            <label>Including the follwing variables:</label>
+                        <div className="col-lg-6">
+                            {variableSelectionMsg}
                         </div>{/*<!-- /.col-lg-4 -->*/}
                     </div>
                     {/*<!-------------------------------------------------------------------------------->*/}

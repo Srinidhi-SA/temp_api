@@ -7,7 +7,7 @@ import {Modal,Button,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "r
 
 import {C3Chart} from "../c3Chart";
 import {DataVariableSelection} from "../data/DataVariableSelection";
-import {updateTrainAndTest,createScore,getAppsModelSummary} from "../../actions/appActions";
+import {updateTrainAndTest,createScore,getAppsModelSummary,getAppDetails} from "../../actions/appActions";
 import {AppsLoader} from "../common/AppsLoader";
 import {getDataSetPreview,deselectAllVariablesDataPrev,makeAllVariablesTrueOrFalse} from "../../actions/dataActions";
 
@@ -32,18 +32,14 @@ export class ScoreVariableSelection extends React.Component {
     }
     componentWillMount() {
         //It will trigger when refresh happens on url
+        this.props.dispatch(getAppDetails(this.props.match.params.AppId));
         if(this.props.dataPreview == null){
             this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
             this.props.dispatch(getAppsModelSummary(this.props.match.params.modelSlug));
 
         }
-         if (this.props.match.path.includes("regression-app")&&this.props.currentAppId==13) {
-           deselectAllVariablesDataPrev()
-           this.props.dispatch(makeAllVariablesTrueOrFalse(false))
-         }
-
-
     }
+   
     render() {
         console.log("Create Score Variable Selection  is called##########3");
         if(store.getState().apps.scoreSummaryFlag){
@@ -87,7 +83,7 @@ export class ScoreVariableSelection extends React.Component {
                  {/*<!-- /.col-lg-4 -->*/}
                 </div>
 
-                <DataVariableSelection/>
+                <DataVariableSelection match={this.props.match}/>
 
                 <div className="row">
                 <div className="col-lg-12 text-right">

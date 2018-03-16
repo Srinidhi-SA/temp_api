@@ -64,13 +64,34 @@ export class AppsModelDetail extends React.Component {
     const modelLink = "/apps/"+this.props.match.params.AppId+"/models";
 	if (!$.isEmptyObject(modelSummary)) {
 		console.log(this.props)
-		showExportPmml = modelSummary.permission_details.downlad_pmml;
+        showExportPmml = modelSummary.permission_details.downlad_pmml;
 		showCreateScore = modelSummary.permission_details.create_score;
-		let listOfCardList = getListOfCards(modelSummary.data.model_summary.listOfCards);
 		if(store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
+			var listOfCardList = modelSummary.data.model_summary.listOfCards;
+			var componentsWidth = 0;
 			var cardDataList = listOfCardList.map((data, i) => {
-				if( i != 0 && i != 1){
-					if(i%2 == 0)
+				var clearfixClass = "col-md-"+data.cardWidth*0.12+" xs-p-30 clearfix";
+				var nonClearfixClass = "col-md-"+data.cardWidth*0.12+" xs-p-30";
+				var cardDataArray = data.cardData;
+				if(data.cardWidth == 100){
+					componentsWidth = 0;
+					return (<div className={clearfixClass}><Card cardData={cardDataArray} /></div>)
+				}
+				else if(componentsWidth == 0 || componentsWidth+data.cardWidth > 100){
+					componentsWidth = data.cardWidth;
+					return (<div className={clearfixClass}><Card cardData={cardDataArray} /></div>)
+				}
+				else{
+					componentsWidth = componentsWidth+data.cardWidth;
+									return (<div className={nonClearfixClass}><Card cardData={cardDataArray} /></div>)
+							}
+				});
+		}
+		else{
+			var listOfCardList = getListOfCards(modelSummary.data.model_summary.listOfCards);
+			var cardDataList = listOfCardList.map((data, i) => {
+				if( i != 0 ){
+					if(i%2 != 0)
 					return (<div className="col-md-6 xs-p-30 clearfix"><Card cardData={data} /></div>)
 					else
 					return (<div className="col-md-6 xs-p-30"><Card cardData={data} /></div>)
@@ -78,18 +99,6 @@ export class AppsModelDetail extends React.Component {
 				else return (<Card key={i} cardData={data} />)
 			});
 		}
-		else{
-		var cardDataList = listOfCardList.map((data, i) => {
-		if( i != 0){
-				if(i%2 != 0)
-				return (<div className="col-md-6 xs-p-30 clearfix"><Card cardData={data} /></div>)
-				else
-				return (<div className="col-md-6 xs-p-30"><Card cardData={data} /></div>)
-			}
-			else return (<Card key={i} cardData={data} />)
-			 });
-		}
-
 		
 		if(listOfCardList){
 			return (

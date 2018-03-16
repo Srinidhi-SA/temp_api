@@ -4,11 +4,12 @@ import {connect} from "react-redux";
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "react-bootstrap";
-import {createModel,getRegressionAppAlgorithmData,setDefaultAutomatic,updateAlgorithmData,reSetRegressionVariables} from "../../actions/appActions";
+import {createModel,getRegressionAppAlgorithmData,setDefaultAutomatic,updateAlgorithmData,checkAtleastOneSelected} from "../../actions/appActions";
 import {AppsLoader} from "../common/AppsLoader";
 import {getDataSetPreview} from "../../actions/dataActions";
 import {RegressionParameter} from "./RegressionParameter";
 import {STATIC_URL} from "../../helpers/env.js";
+import {statusMessages} from "../../helpers/helper";
 
 @connect((store) => {
     return {login_response: store.login.login_response,
@@ -20,6 +21,7 @@ import {STATIC_URL} from "../../helpers/env.js";
         automaticAlgorithmData:store.apps.regression_algorithm_data,
         manualAlgorithmData:store.apps.regression_algorithm_data_manual,
         isAutomatic:store.apps.regression_isAutomatic,
+        apps_regression_modelName:store.apps.apps_regression_modelName,
     };
 })
 
@@ -29,10 +31,9 @@ export class ModelAlgorithmSelection extends React.Component {
     }
     componentWillMount() {
         //It will trigger when refresh happens on url
-        if(this.props.dataPreview == null){
-            this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
+        if(this.props.apps_regression_modelName == ""){
+            window.history.go(-1);
         }
-        this.props.dispatch(reSetRegressionVariables());
         this.props.dispatch(getRegressionAppAlgorithmData(this.props.match.params.slug));
         
     }
@@ -43,6 +44,12 @@ export class ModelAlgorithmSelection extends React.Component {
     }
     createModel(event){
         event.preventDefault();
+        let isSelected = checkAtleastOneSelected();
+        if(isSelected == false){
+            let msg= statusMessages("warning","Please select atleast one algorithm...","small_mascot");
+            bootbox.alert(msg);
+            return false;
+        }
         this.props.dispatch(createModel(store.getState().apps.apps_regression_modelName,store.getState().apps.apps_regression_targetType,store.getState().apps.apps_regression_levelCount));
     }
     handleOptionChange(e){
@@ -72,10 +79,11 @@ export class ModelAlgorithmSelection extends React.Component {
            var collapseId = "collapse-auto"+Index;
            var collapse = "#collapse-auto"+Index;
         var automaticDataParams = data.parameters.map((params,paramIndex) =>{
+            var automaticKey = "automatic"+paramIndex;
                                                             return(
                                                                     <div class="form-group">
                                                                         <label class="col-md-2 control-label read">{params.displayName}</label>  
-                                                                        <RegressionParameter key={paramIndex} parameterData={params} algorithmSlug={data.algorithmSlug}/>
+                                                                        <RegressionParameter key={automaticKey} uniqueTag={automaticKey} parameterData={params} algorithmSlug={data.algorithmSlug}/>
                                                                     </div>
                                                             );
                                                         });
@@ -108,7 +116,7 @@ export class ModelAlgorithmSelection extends React.Component {
                                                             return(
                                                                     <div class="form-group">
                                                                         <label class="col-md-2 control-label read">{params.displayName}</label>  
-                                                                        <RegressionParameter key={manualKey} parameterData={params} algorithmSlug={data.algorithmSlug}/>
+                                                                        <RegressionParameter key={manualKey} uniqueTag={manualKey} parameterData={params} algorithmSlug={data.algorithmSlug}/>
                                                                     </div>
                                                             );
                                                         });

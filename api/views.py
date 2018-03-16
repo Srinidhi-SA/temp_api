@@ -1087,6 +1087,10 @@ def set_result(request, slug=None):
         slug,
         results
     )
+    # tasks.save_results_to_job1(
+    #     slug,
+    #     results
+    # )
     if "status=failed" in request.body:
         results = {'error_message': 'Failed'}
         results = tasks.write_into_databases.delay(
@@ -1097,7 +1101,13 @@ def set_result(request, slug=None):
         job.status = 'FAILED'
         job.save()
     else:
-        results = tasks.write_into_databases.delay(
+        # results = tasks.write_into_databases.delay(
+        #     job_type=job.job_type,
+        #     object_slug=job.object_id,
+        #     results=json.loads(results)
+        # )
+
+        results = tasks.write_into_databases1(
             job_type=job.job_type,
             object_slug=job.object_id,
             results=json.loads(results)
@@ -1115,11 +1125,13 @@ def use_set_result(request, slug=None):
 
     results = job.results
 
-    results = write_into_databases(
+    results = tasks.write_into_databases1(
         job_type=job.job_type,
         object_slug=job.object_id,
         results=json.loads(results)
     )
+    job.status = 'SUCCESS'
+    job.save()
 
     return JsonResponse({'result': results})
 
@@ -1241,6 +1253,7 @@ def chart_changes_in_metadata_chart(chart_data):
 
 def add_slugs(results, object_slug=""):
     from api import helper
+    print results.keys()
     listOfNodes = results.get('listOfNodes', [])
     listOfCards = results.get('listOfCards', [])
 
@@ -1271,6 +1284,18 @@ def convert_chart_data_to_beautiful_things(data, object_slug=""):
             except Exception as e:
                 print e
                 card["data"] = {}
+        if card["dataType"] == "button":
+            button_card = card["data"]
+            if button_card["dataType"] == "c3Chart":
+                chart_raw_data = button_card["data"]
+                # function
+                try:
+                    button_card["data"] = helper.decode_and_convert_chart_raw_data(chart_raw_data, object_slug=object_slug)
+                    card["data"] = button_card["data"]
+                except Exception as e:
+                    print e
+                    button_card["data"] = {}
+
 
 
 def home(request):

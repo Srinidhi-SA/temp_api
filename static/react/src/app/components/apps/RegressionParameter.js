@@ -20,13 +20,15 @@ import {updateAlgorithmData} from "../../actions/appActions";
 export class RegressionParameter extends React.Component {
     constructor(props) {
         super(props);
+        if(this.props.parameterData.paramType == "number")
         this.state = {
-            min: 0,
-            max: 5,
+            min: this.props.parameterData.valueRange[0],
+            max: this.props.parameterData.valueRange[1],
             defaultVal:this.props.parameterData.defaultValue,
-            dimentionList: {},
-            curdimention: [],
-            selectedDimention: []
+        };
+        else
+        this.state = {
+            defaultVal:this.props.parameterData.defaultValue,
         };
     }
     componentDidMount() {
@@ -44,7 +46,6 @@ export class RegressionParameter extends React.Component {
     }
   }
    changeSliderValue(e) {
-    //alert("coming")
     this.setState({
         defaultVal: e.target.value
       });
@@ -60,6 +61,12 @@ export class RegressionParameter extends React.Component {
         defaultVal: e.target.value
       });
       this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value));
+  }
+  handleCheckboxEvents(e){
+       this.setState({
+        defaultVal: e.target.checked
+      });
+      this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.checked));
   }
     renderParameterData(parameterData){
      
@@ -84,16 +91,21 @@ export class RegressionParameter extends React.Component {
                );
                 break;
             case "number":
-                    this.state.min=0;
-                    this.state.max=5;
+                let diff = this.state.max - this.state.min;
+                if(diff <= 1)
+                var step = 0.1;
+                else{
                 let precision = decimalPlaces(this.state.max);
-                let step = (1 / Math.pow(10, precision));
+                var step = (1 / Math.pow(10, precision));
+                }
                 return (
                         <div>
                         <span className="small_box"><input type="number" min = {this.state.min} max = {this.state.max} className="form-control" value={this.state.defaultVal} onChange={this.changeSliderValueFromText.bind(this)} disabled={store.getState().apps.regression_isAutomatic == 1}/>
                         </span>
-                        <span className="small_box_contol">
+                        <span className="small_box_contol inline-block">
+                        {this.state.min}
                         <ReactBootstrapSlider value={this.state.defaultVal} triggerSlideEvent="true" change={this.changeSliderValue.bind(this)} step={step} max={this.state.max} min={this.state.min} tooltip="hide" disabled={store.getState().apps.regression_isAutomatic == 1?"disabled":""}/>
+                        {this.state.max}
                         </span>
                         </div>
                        );
@@ -103,6 +115,15 @@ export class RegressionParameter extends React.Component {
                  return (
                         <div>
                             <input type="text" className="form-control" value={this.state.defaultVal} onChange={this.changeTextboxValue.bind(this)} disabled={store.getState().apps.regression_isAutomatic == 1}/>
+                        </div>
+                       );
+            break;
+            case "boolean":
+           
+           var chkBox = this.props.uniqueTag+this.props.parameterData.name;
+         
+                 return (
+                        <div className="ma-checkbox inline"><input  type="checkbox" id={chkBox} name={chkBox} onChange={this.handleCheckboxEvents.bind(this)} checked={this.state.defaultVal} disabled={store.getState().apps.regression_isAutomatic == 1}/><label htmlFor={chkBox}>&nbsp;</label>
                         </div>
                        );
             
@@ -123,7 +144,7 @@ export class RegressionParameter extends React.Component {
         let parameterData = this.props.parameterData;
         const parameterElements = this.renderParameterData(parameterData);
         return (
-                <div class="col-md-4">
+                <div class="col-md-8">
                 {parameterElements}
                 </div>
         );

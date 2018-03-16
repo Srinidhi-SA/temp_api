@@ -14927,7 +14927,7 @@ a.more_button { color: #b3b3b3; padding: 0 10px; margin-right: 9px; cursor:point
 }
 
 
-.small_box { width:50px; display:inline-block; margin-right:20px; }
+.small_box { width:100px; display:inline-block; margin-right:20px; }
 .small_box_contol { width:220px; display:inline-block}
 .dispnone { display:none; }
 
@@ -15419,3 +15419,5 @@ h4 label { font-size:inherit; }
 .panel-body.no-border .panel-footer { border-top:none; background:none;  }
 .stat-txtControl { display: inline-block; width: 110px;text-overflow: ellipsis; overflow: hidden; white-space: nowrap;}
 #pnl_stc td, #pnl_stc td.item {vertical-align: top; line-height: 18px; padding: 2px; }
+
+.small_box_contol .slider.slider-horizontal { width: 70%; /* display: inline-block; */ margin: 0 15px; }
