@@ -364,7 +364,7 @@ export class OverViewPage extends React.Component {
             prevURL = that.urlPrefix + "/" + this.props.match.params.slug;
           }
         }else if (regression_app) {
-          prevURL="/apps"
+          prevURL="/apps/"
         }else {
           prevURL = that.urlPrefix;
         }
@@ -374,6 +374,7 @@ export class OverViewPage extends React.Component {
             prevURL = that.urlPrefix + "/" + this.props.match.params.slug;
           }
         }else {
+          if(!regression_app)
           prevURL = that.urlPrefix;
         }
       }
