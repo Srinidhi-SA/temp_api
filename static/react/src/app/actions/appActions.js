@@ -5330,6 +5330,7 @@ export function getAppsScoreSummary(slug) {
       if (response.status === 200) {
         if (json.status == SUCCESS) {
           clearInterval(appsInterval);
+          if(json.data&&json.data.listOfNodes.length==0&&json.data.listOfCards.length==0)
          json.data=dummy;
           dispatch(fetchScoreSummarySuccess(json));
           dispatch(updateRoboAnalysisData(json, "/apps-regression-score"));

@@ -553,8 +553,8 @@ export class OverViewPage extends React.Component {
                           </Link>
                          <div className="col-md-12 text-right">
                          {(regression_app)?<div>
-                         <Link to={scoreDataLink} onClick={this.gotoScoreData.bind(this)} className="btn btn-primary xs-pr-10"> View </Link>
-                         <a  href={scoreDownloadURL} id="download" className="btn btn-primary" download>Download</a></div>:""}
+                         <Link to={scoreDataLink} onClick={this.gotoScoreData.bind(this)} className="btn btn-primary xs-pr-10"> View Score </Link>
+                         <a  href={scoreDownloadURL} id="download" className="btn btn-primary" download>Download Score</a></div>:""}
                         </div>
                         </div>
                       </div>
