@@ -250,6 +250,7 @@ export class OverViewPage extends React.Component {
       let varList = null;
       let cardList = null;
       let card = null;
+      let node = null
       let params = this.props.match.params;
 
       tabList = [];
@@ -278,6 +279,17 @@ export class OverViewPage extends React.Component {
         //console.log("card after process is:");
         //console.log(card);
         let cardLink = that.urlPrefix + "/" + params.slug + "/" + params.l1 + "/" + card.slug;
+        //check when l1 dont have cards
+        node  = fetchNodeFromTree(params.l1, this.props.signal)
+
+        if(node.listOfCards.length==0){
+          if(node.listOfNodes.length>0){
+            //assuming l2 will be having altest one card always!
+            let level2 = node.listOfNodes[0].slug
+            cardLink = that.urlPrefix + "/" + params.slug + "/" + params.l1 + "/"+ level2+"/"+ card.slug
+          }
+        }
+        //check ends
         return (<Redirect to={cardLink}/>);
       } else {
         //node with listOfCards is selected..
@@ -298,16 +310,16 @@ export class OverViewPage extends React.Component {
         l1Name = selectedNodeFromLevel1.name;
         this.l1Name = l1Name
         if (!isEmpty(selectedNodeFromLevel1) && selectedNodeFromLevel1.listOfNodes.length > 0) {
-          varList = selectedNodeFromLevel1.listOfNodes.map((letiable, i) => {
-            let selectedl2Link = that.urlPrefix + "/" + params.slug + "/" + selectedNodeFromLevel1.slug + "/" + letiable.slug + "/$";
+          varList = selectedNodeFromLevel1.listOfNodes.map((variable, i) => {
+            let selectedl2Link = that.urlPrefix + "/" + params.slug + "/" + selectedNodeFromLevel1.slug + "/" + variable.slug + "/$";
             let l2Class = "mAd_icons ic_perf"
             if (l1Name == "Influencers")
               l2Class = "mAd_icons ic_measure"
             return (
               <li key={i}>
-                <NavLink to={selectedl2Link} title={letiable.name}>
+                <NavLink to={selectedl2Link} title={variable.name}>
                   <i className={l2Class}></i>
-                  <span id={letiable.slug}>{letiable.name}</span>
+                  <span id={variable.slug}>{variable.name}</span>
                 </NavLink>
               </li>
             )
@@ -345,7 +357,7 @@ export class OverViewPage extends React.Component {
       } else if (that.urlPrefix.indexOf("stock") != -1) {
         documentModeLink = "/apps-stock-advisor"
       } else if (regression_app) {
-        documentModeLink = "apps-regression-score-document/"+this.props.match.params.slug
+        documentModeLink = "/apps-regression-score-document/"+this.props.match.params.slug
       }
       else {
         documentModeLink = "/apps-robo-document-mode/" + this.props.match.params.slug;
