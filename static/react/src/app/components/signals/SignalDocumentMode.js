@@ -8,6 +8,8 @@ import {STATIC_URL} from "../../helpers/env.js";
 import {getSignalAnalysis} from "../../actions/signalActions";
 import {isEmpty, subTreeSetting,getUserDetailsOrRestart} from "../../helpers/helper";
 import {hideDataPreview} from "../../actions/dataActions";
+import {getAppsScoreSummary} from "../../actions/appActions";
+
 
 @connect((store) => {
   return {signal: store.signals.signalAnalysis};
@@ -22,7 +24,12 @@ export class SignalDocumentMode extends React.Component {
     // alert("in will mount!!!")
     // console.log("in will mount!!!")
     if (isEmpty(this.props.signal)) {
-      this.props.dispatch(getSignalAnalysis(getUserDetailsOrRestart.get().userToken, this.props.match.params.slug));
+      if (this.props.match.url.indexOf("apps-regression") != -1) {
+        this.props.dispatch(getAppsScoreSummary(this.props.match.params.slug));
+      }
+      else {
+        this.props.dispatch(getSignalAnalysis(getUserDetailsOrRestart.get().userToken, this.props.match.params.slug));
+      }
     }
     // console.log(this.props.signal)
   }
@@ -32,7 +39,7 @@ export class SignalDocumentMode extends React.Component {
   }
 
   searchTree(_Node, cardLists, lastVar) {
-    if (_Node.listOfCards[_Node.listOfCards.length - 1].slug == lastVar) {
+    if (_Node.listOfCards.length!=0&&_Node.listOfCards[_Node.listOfCards.length - 1].slug == lastVar) {
       console.log("cardlist if no cards in node:");
       console.log(cardLists);
       cardLists.push(_Node.listOfCards);
@@ -44,8 +51,8 @@ export class SignalDocumentMode extends React.Component {
       for (i = 0; i < _Node.listOfNodes.length; i++) {
         result = this.searchTree(_Node.listOfNodes[i], cardLists, lastVar);
       }
-      console.log("cardLists is:");
-      console.log(cardLists);
+      //console.log("cardLists is:");
+      //console.log(cardLists);
       return result;
     }
   }
@@ -59,6 +66,9 @@ export class SignalDocumentMode extends React.Component {
 
     console.log("document mode is called$$$$$$$$$$$$$$!!");
     console.log(this.props);
+    let regression_app=false
+    if(this.props.match.url.indexOf("apps-regression") != -1)
+    regression_app=true
 
     let cardList = [];
     if (!isEmpty(this.props.signal)) {
@@ -68,14 +78,15 @@ export class SignalDocumentMode extends React.Component {
       console.log(cardList);
       let docObj = [];
       for (let card of cardList) {
-        console.log("card is:")
-        console.log(card);
+        //console.log("card is:")
+        //console.log(card);
         for (let _card of card) {
-          console.log("_card is :" + _card);
+        //  console.log("_card is :" + _card);
           docObj.push(_card);
         }
       }
       console.log(docObj);
+      if(!regression_app)
       docObj.splice(0, 1);
 
       let objs = [];
@@ -119,7 +130,7 @@ export class SignalDocumentMode extends React.Component {
                   <div className="col-md-12">
                     <div className="panel panel-mAd box-shadow">
                       <div className="panel-heading">
-                        <h3 className="xs-mt-0">{this.props.signal.name}					
+                        <h3 className="xs-mt-0">{this.props.signal.name}
 							<div className="btn-toolbar pull-right">
 								<div className="btn-group">
 								<button type="button" className="btn btn-default" onClick={this.print.bind(this)} title="Print Document"><i className="fa fa-print"></i></button>
@@ -137,10 +148,10 @@ export class SignalDocumentMode extends React.Component {
 								</div>
 							</div>
 						</h3>
-						
+
                         <div className="clearfix"></div>
                       </div>
-                        
+
                       <div className="panel-body no-border documentModeSpacing">
                         <Card cardData={objs}/>
                       </div>
