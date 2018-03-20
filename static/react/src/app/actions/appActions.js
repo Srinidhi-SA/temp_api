@@ -27,6 +27,7 @@ import Dialog from 'react-bootstrap-dialog';
 import React from "react";
 import {showLoading, hideLoading} from 'react-redux-loading-bar';
 import {createcustomAnalysisDetails} from './signalActions';
+import { browserHistory } from 'react-router'
 
 export var appsInterval = null;
 export var refreshAppsModelInterval = null;
@@ -6497,3 +6498,24 @@ export function checkAtleastOneSelected(){
 
         return isSelected;
     }
+
+export function updateCurrentAppByID(app_id,pageNo) {
+      return (dispatch) => {
+        return triggerCurrentAppByID(app_id).then(([response, json]) => {
+          if (response.status === 200) {
+            dispatch(updateSelectedApp(json.data[0].app_id, json.data[0].name, json.data[0]));
+            if (pageNo != undefined) {
+              dispatch(getAppsModelList(pageNo));
+              dispatch(getAppsScoreList(pageNo));
+            }
+
+          }
+        });
+      }
+    }
+function triggerCurrentAppByID(app_id){
+  return fetch(API + '/api/apps/?app_id='+app_id, {
+    method: 'get',
+    headers: getHeader(getUserDetailsOrRestart.get().userToken)
+  }).then(response => Promise.all([response, response.json()]));
+}

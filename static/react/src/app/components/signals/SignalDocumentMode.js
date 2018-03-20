@@ -4,11 +4,11 @@ import {Link} from "react-router-dom";
 import store from "../../store";
 import Breadcrumb from 'react-breadcrumb';
 import {Card} from "./Card";
-import {STATIC_URL} from "../../helpers/env.js";
+import {STATIC_URL,API} from "../../helpers/env.js";
 import {getSignalAnalysis} from "../../actions/signalActions";
 import {isEmpty, subTreeSetting,getUserDetailsOrRestart} from "../../helpers/helper";
 import {hideDataPreview} from "../../actions/dataActions";
-import {getAppsScoreSummary} from "../../actions/appActions";
+import {getAppsScoreSummary,getScoreSummaryInCSV} from "../../actions/appActions";
 
 
 @connect((store) => {
@@ -58,9 +58,15 @@ export class SignalDocumentMode extends React.Component {
   }
 
   closeDocumentMode(){
-    console.log("closing document mode")
+    console.log("closing card mode")
     this.props.dispatch(hideDataPreview());
+    if(this.props.match.url.indexOf("apps-regression") != -1)
+    this.props.history.push("/apps-regression/scores")
+    else
     this.props.history.push("/signals");
+  }
+  gotoScoreData(){
+      this.props.dispatch(getScoreSummaryInCSV(store.getState().apps.scoreSlug))
   }
   render() {
 
@@ -102,7 +108,10 @@ export class SignalDocumentMode extends React.Component {
       console.log(objs);
       let firstOverviewSlug = this.props.signal.listOfNodes[0].slug;
       let cardModeLink = "/signals/" + this.props.match.params.slug + "/" + firstOverviewSlug;
-
+      if(regression_app){
+      var scoreDownloadURL=API+'/api/get_score_data_and_return_top_n/?url='+store.getState().apps.scoreSlug+'&download_csv=true&count=100'
+      var scoreDataLink = "/apps/regression-app-6u8ybu4vdr/scores/"+store.getState().apps.scoreSlug+"/dataPreview";
+      }
       if (objs) {
         return (
           <div>
@@ -154,6 +163,11 @@ export class SignalDocumentMode extends React.Component {
 
                       <div className="panel-body no-border documentModeSpacing">
                         <Card cardData={objs}/>
+                        <div className="col-md-12 text-right">
+                        {(regression_app)?<div>
+                        <Link to={scoreDataLink} onClick={this.gotoScoreData.bind(this)} className="btn btn-primary xs-pr-10">View Scored Data</Link>
+                        <a  href={scoreDownloadURL} id="download" className="btn btn-primary" download>Download Score</a></div>:""}
+                       </div>
                       </div>
                     </div>
                   </div>
@@ -170,11 +184,11 @@ export class SignalDocumentMode extends React.Component {
           <div className="page-head">
             <div class="row">
               <div class="col-md-12">
-                <Breadcrumb path={[{
+                {/*<Breadcrumb path={[{
                     path: '/signals',
                     label: 'Signals'
                   }
-                ]}/>
+                ]}/>*/}
               </div>
               <div class="col-md-8">
                 <h2>{this.props.signal.name}</h2>
