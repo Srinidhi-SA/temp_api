@@ -161,13 +161,18 @@ export class OverViewPage extends React.Component {
   // }
 
   closeDocumentMode() {
-    console.log("closing document mode")
+    console.log("closing card mode")
     this.props.dispatch(hideDataPreview());
+    if(this.urlPrefix.indexOf("apps-regression") != -1)
+    this.props.history.push("/apps-regression/scores")
+    else
     this.props.history.push("/signals");
+
   }
   gotoScoreData(){
       this.props.dispatch(getScoreSummaryInCSV(store.getState().apps.scoreSlug))
   }
+
   render() {
 
     console.log("overviewPage is called!!");
@@ -376,7 +381,7 @@ export class OverViewPage extends React.Component {
             prevURL = that.urlPrefix + "/" + this.props.match.params.slug;
           }
         }else if (regression_app) {
-          prevURL="/apps/"
+          prevURL="/apps-regression/scores"
         }else {
           prevURL = that.urlPrefix;
         }
@@ -566,7 +571,7 @@ export class OverViewPage extends React.Component {
                           </Link>
                          <div className="col-md-12 text-right">
                          {(regression_app)?<div>
-                         <Link to={scoreDataLink} onClick={this.gotoScoreData.bind(this)} className="btn btn-primary xs-pr-10"> View Score </Link>
+                         <Link to={scoreDataLink} onClick={this.gotoScoreData.bind(this)} className="btn btn-primary xs-pr-10">View Scored Data</Link>
                          <a  href={scoreDownloadURL} id="download" className="btn btn-primary" download>Download Score</a></div>:""}
                         </div>
                         </div>
