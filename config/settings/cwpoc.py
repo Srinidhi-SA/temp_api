@@ -157,3 +157,5 @@ CELERY_QUEUES = {
 }
 
 PEM_KEY = "/keyfiles/ankush.pem"
+
+USE_YARN_DEFAULT_QUEUE=True
