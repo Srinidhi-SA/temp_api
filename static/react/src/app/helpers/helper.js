@@ -556,3 +556,31 @@ htmlString='<div class="row"><div class="col-md-4"><img src='+imgsrc_url+' class
 }
 return htmlString
 }
+
+export function toggleVisualization(slug,actionsData){
+		let flag = true;
+		let transformationSettings = actionsData;
+		$.each(transformationSettings,function(key,val){
+				if(val.slug == slug){
+					$.each(val.columnSetting,function(key1,val1){
+							if(val1.actionName == IGNORE_SUGGESTION && val1.status == true)
+							flag = false;
+					});
+				}
+		});
+		if(flag == false)
+		{
+			$(function(){
+				$("#tab_visualizations #pnl_visl").removeClass("in");
+				$("#tab_visualizations a").addClass("collapsed");
+			});
+		}
+		else{
+			$(function(){
+				$("#tab_visualizations #pnl_visl").addClass("in");
+				$("#tab_visualizations a").removeClass("collapsed");
+				$("#tab_visualizations #pnl_visl").removeAttr("style");
+			});
+		}
+
+}

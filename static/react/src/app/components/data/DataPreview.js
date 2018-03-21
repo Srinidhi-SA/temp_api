@@ -19,7 +19,7 @@ import {
 import {dataSubsetting, clearDataPreview, clearLoadingMsg} from "../../actions/dataUploadActions"
 import {Button, Dropdown, Menu, MenuItem} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"
-import {showHideSideChart, showHideSideTable, MINROWINDATASET, statusMessages} from "../../helpers/helper.js"
+import {showHideSideChart, showHideSideTable, MINROWINDATASET, statusMessages,toggleVisualization} from "../../helpers/helper.js"
 import {isEmpty, CREATESIGNAL, CREATESCORE, CREATEMODEL} from "../../helpers/helper";
 import {SubSetting} from "./SubSetting";
 import {DataUploadLoader} from "../common/DataUploadLoader";
@@ -61,7 +61,8 @@ export class DataPreview extends React.Component {
     this.firstTimeSideChart = {};
     this.firstTimeColTypeForChart = null;
     this.isSubsetted = false;
-    this.new_subset = ""
+    this.new_subset = "";
+    this.toggleVisualizationSlug="";
   }
 
   hideDataPreview() {
@@ -206,12 +207,13 @@ export class DataPreview extends React.Component {
 
 
 
-		});*/
+		});*/  
     }
 
     showHideSideTable(this.firstTimeSideTable);
     showHideSideChart(this.firstTimeColTypeForChart, this.firstTimeSideChart);
     hideDataPreviewDropDown(this.props.curUrl);
+    toggleVisualization(this.toggleVisualizationSlug,this.props.dataTransformSettings);
 
   }
 
@@ -245,6 +247,7 @@ export class DataPreview extends React.Component {
         console.log(item);
         $("#side-chart").empty();
         showHideSideChart(item.columnType, item.chartData); // hide side chart on datetime selection
+        toggleVisualization(item.slug,this.props.dataTransformSettings);
         if (!$.isEmptyObject(item.chartData)) {
           const sideChartUpdate = item.chartData.chart_c3;
           let yformat = item.chartData.yformat;
@@ -347,6 +350,7 @@ export class DataPreview extends React.Component {
     }
   }
   shouldComponentUpdate(nextProps) {
+    toggleVisualization(this.toggleVisualizationSlug,this.props.dataTransformSettings);
     return true;
   }
 
@@ -521,6 +525,7 @@ export class DataPreview extends React.Component {
           this.firstTimeSideTable = sideTable; //show hide side table
           this.firstTimeSideChart = dataPrev.scriptMetaData.columnData[0].chartData;
           this.firstTimeColTypeForChart = dataPrev.scriptMetaData.columnData[0].columnType;
+          this.toggleVisualizationSlug = dataPrev.scriptMetaData.columnData[0].slug;
           if (!$.isEmptyObject(this.firstTimeSideChart)) {
             let chartInfo = [];
             firstChart = <C3Chart chartInfo={chartInfo} classId={this.chartId} data={sideChart} yformat={yformat} xdata={xdata} sideChart={true}/>;
