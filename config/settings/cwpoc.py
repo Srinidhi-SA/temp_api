@@ -24,9 +24,9 @@ DATABASES = {
     "default": {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'madvisor_cwpoc',
-        'USER': 'root',
+        'USER': 'cw_user',
         'PASSWORD': 'Marlabs@123',
-        'HOST': 'localhost',
+        'HOST': '172.31.53.141',
         'PORT': '',
         }
 }
