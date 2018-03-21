@@ -84,7 +84,7 @@ JOBSERVER = {
 }
 
 THIS_SERVER_DETAILS = {
-    "host": "34.196.22.246",
+    "host": "172.31.53.141",
     "port": "9016",
     "initail_domain": "/api"
 }
@@ -92,7 +92,7 @@ THIS_SERVER_DETAILS = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
+        "LOCATION": "redis://172.31.68.98:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient"
         },
@@ -136,7 +136,7 @@ DEPLOYMENT_ENV = "cwpoc"
 CELERY_EVENT_QUEUE_PREFIX=DEPLOYMENT_ENV
 
 
-HADOOP_CONF_DIR="/usr/local/hadoop_cw_poc"
+HADOOP_CONF_DIR="/usr/local/hadoop_cwpoc"
 HADOOP_USER_NAME="hduser"
 
 
@@ -153,4 +153,9 @@ CELERY_QUEUES = {
     }
 }
 
-
+CELERY_BROKER_URL = 'redis://172.31.68.98:6379'
+CELERY_RESULT_BACKEND = 'redis://172.31.68.98:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE

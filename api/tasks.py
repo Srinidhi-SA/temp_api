@@ -7,6 +7,7 @@ import signal
 import os
 from celery.decorators import task
 from config.settings.config_file_name_to_run import CONFIG_FILE_NAME
+from django.conf import settings
 
 
 @task(name="sum_two_numbers")
@@ -240,10 +241,10 @@ def kill_application_using_fabric(app_id=None):
 
     HDFS = settings.HDFS
     BASEDIR = settings.BASE_DIR
-    emr_file = BASEDIR + "/keyfiles/TIAA.pem"
+    emr_file = BASEDIR + "/keyfiles/ankush.pem"
 
     env.key_filename = [emr_file]
-    env.host_string = "{0}@{1}".format(HDFS["user.name"], HDFS["host"])
+    env.host_string = "{0}@{1}".format("ankush", HDFS["host"])
 
     try:
         capture = run("yarn application --kill {0}".format(app_id))
