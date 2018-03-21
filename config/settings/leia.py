@@ -134,6 +134,10 @@ JOBSERVER_EMAIL_TEMPLATE = "Please restart jobserver- IP-"
 
 DEPLOYMENT_ENV = "prod"
 
+
+HADOOP_CONF_DIR= False
+HADOOP_USER_NAME="hduser"
+
 CELERY_BROKER_URL = 'redis://localhost:6379/'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/'
 CELERY_ACCEPT_CONTENT = ['application/json']
