@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 IP=0.0.0.0
-PORT=9016
+PORT=9012
 WORKERS=5
 TIMEOUT=3000
 PID_FILE=gunicorn.pid
@@ -16,4 +16,4 @@ gunicorn --bind $IP:$PORT \
          --access-logfile $ACCESS_LOG \
          --error-logfile $ERROR_LOG \
          --daemon \
-	 --max-requests 5
+         --max-requests 5

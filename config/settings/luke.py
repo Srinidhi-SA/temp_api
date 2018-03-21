@@ -145,3 +145,6 @@ CELERY_QUEUES = {
         "routing": config_file_name_to_run.CONFIG_FILE_NAME
     }
 }
+
+
+PEM_KEY = "/keyfiles/TIAA.pem"

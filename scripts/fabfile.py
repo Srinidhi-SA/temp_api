@@ -633,7 +633,31 @@ def configuration_details():
                 'gunicorn_bind': "0.0.0.0:9015"
             },
             'deployment_config': 'leia'
-        }
+        },
+        'cwpoc': {
+            'server_details': {
+                "known name": "cwpoc.marlabsai.com",
+                "username": "ubuntu",
+                "host": "34.196.22.246",
+                "port": "9016",
+                "initail_domain": "/api",
+                'pem_detail': "/config/keyfiles/ankush.pem"
+            },
+            'path_details': {
+                "react_path": "/static/react",
+                "asset_path": "/static/asset",
+                "base_remote_path": "/home/ubuntu/codebase/mAdvisor-api_cwpoc",
+                "ui_branch": "api_ui_dev_staging",
+                "api_branch": "api_ui_dev_staging"
+            },
+            'type': 'cwpoc',
+            'gunicorn_details': {
+                'gunicorn_wsgi_app': 'config.wsgi:application',
+                'gunicorn_pidpath': "/gunicorn.pid",
+                'gunicorn_bind': "0.0.0.0:9016"
+            },
+            'deployment_config': 'cwpoc'
+        },
     }
 
     return configuration_detail
