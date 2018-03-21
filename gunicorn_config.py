@@ -70,7 +70,7 @@ worker_class = 'sync'
 worker_connections = 1000
 timeout = 3000
 keepalive = 30
-
+max_requests = 5
 #
 #   spew - Install a trace function that spews every line of Python
 #       that is executed when running the server. This is the
