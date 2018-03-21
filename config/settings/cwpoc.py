@@ -136,7 +136,7 @@ DEPLOYMENT_ENV = "cwpoc"
 CELERY_EVENT_QUEUE_PREFIX=DEPLOYMENT_ENV
 
 
-HADOOP_CONF_DIR="/usr/local/hadoop_cwpoc"
+HADOOP_CONF_DIR="/usr/local/hadoop/etc/hadoop/"
 HADOOP_USER_NAME="hduser"
 
 CELERY_BROKER_URL = 'redis://172.31.68.98:6379'
