@@ -19,6 +19,8 @@ class LeftPanel extends React.Component {
   componentDidMount() {
     console.log("Main side navbar props:::");
     console.log(this);
+    if(this.props.location.pathname.indexOf("/apps-") >= 0)
+    $('.navbar-nav')[0].childNodes[1].childNodes[0].className = " sdb sdb_app active";
   }
   componentWillUpdate() {
     //this.setState({currentTab: "otherTab"});
@@ -60,7 +62,7 @@ class LeftPanel extends React.Component {
                   </li>*/}
 
                 <li>
-                  <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" className=" sdb sdb_app" to="/apps">
+                  <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" location="/apps" className=" sdb sdb_app" to="/apps">
                     <span></span>
                     APPS</NavLink>
                 </li>
