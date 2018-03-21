@@ -408,54 +408,6 @@ DATA_SOURCES_CONFIG = {"conf": [{
 
         ]
     },
-    {
-        "dataSourceType": "Hdfs",
-        "dataSourceName": "HDFS",
-        "formFields": [
-            {
-                "fieldType": "text",
-                "fieldName": "datasetname",
-                "placeHolder": "Dataset Name",
-                "labelName": "Name",
-                "required": "true"
-            },
-            {
-
-                "fieldType": "text",
-                "fieldName": "host",
-                "placeHolder": "Host",
-                "labelName": "host",
-                "required": "true"
-            },
-            {
-
-                "fieldType": "number",
-                "fieldName": "port",
-                "placeHolder": "Port",
-                "labelName": "Port",
-                "required": "true",
-                "defaultValue": 30015,
-                "maxLength": 5
-
-            },
-            {
-
-                "fieldType": "text",
-                "fieldName": "username",
-                "placeHolder": "username",
-                "labelName": "Username",
-                "required": "true"
-            },
-            {
-
-                "fieldType": "Password",
-                "fieldName": "password",
-                "placeHolder": "password",
-                "labelName": "Password",
-                "required": "true"
-            }
-        ]
-    }
 
 ]
 }
