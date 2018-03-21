@@ -643,7 +643,7 @@ def configuration_details():
                 "host": "34.196.22.246",
                 "port": "9016",
                 "initail_domain": "/api",
-                'pem_detail': "/config/keyfiles/ankush.pem"
+                'pem_detail': "/config/keyfiles/TIAA.pem"
             },
             'path_details': {
                 "react_path": "/static/react",
