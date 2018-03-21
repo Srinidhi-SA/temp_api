@@ -7,6 +7,7 @@ import {showZoomChart} from "../../actions/signalActions";
 import renderHTML from 'react-render-html';
 import { Scrollbars } from 'react-custom-scrollbars';
 import {downloadSVGAsPNG} from '../../helpers/helper';
+import {API} from "../../helpers/env";
 
 @connect((store) => {
     return {login_response: store.login.login_response,
@@ -20,6 +21,7 @@ export class ViewChart extends React.Component {
 
     constructor(props){
         super(props);
+        this.tableDownload=""
     }
     openCloseZoomChart(flag){
         this.props.dispatch(showZoomChart(flag,""));
@@ -74,6 +76,9 @@ export class ViewChart extends React.Component {
         downloadSVGAsPNG(classId)
     }
     render() {
+        if (this.props.tableDownload) {
+      this.tableDownload = API + this.props.tableDownload;
+    }
 
         var imgDetails = "c3ChartScroll"+this.props.classId;
         var downloadDtls="c3ChartDownload"+this.props.classId;
@@ -99,6 +104,7 @@ export class ViewChart extends React.Component {
                 </Scrollbars>
                 </Modal.Body>
                 <Modal.Footer>
+                {this.props.tableDownload?<a href={this.tableDownload} className="btn btn-primary"> Download Data</a>:""}
                 <Button bsStyle="primary" onClick={this.downloadSVGAsPNG.bind(this,downloadDtls)}>Download as PNG</Button>
                 </Modal.Footer>
                 </Modal>

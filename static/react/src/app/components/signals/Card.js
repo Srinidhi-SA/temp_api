@@ -122,7 +122,7 @@ export class Card extends React.Component {
             );
             break;
             case "button":
-            return (<ModelSummeryButton key = {i} data={story.data.chart_c3} classId={randomNum} type={story.dataType}/>);
+            return (<ModelSummeryButton key = {i} data={story.data.chart_c3} tabledownload={story.data.download_url} classId={randomNum} type={story.dataType}/>);
             break;
             }
 

@@ -16,10 +16,11 @@ import {MainHeader} from "../../components/common/MainHeader";
 import {Card} from "./Card";
 import store from "../../store";
 import {getSignalAnalysis, setSideCardListFlag, updateselectedL1} from "../../actions/signalActions";
-import {STATIC_URL} from "../../helpers/env.js"
+import {STATIC_URL,API} from "../../helpers/env.js"
 import Slider from "react-slick";
-import {getRoboDataset, getStockAnalysis} from "../../actions/appActions";
+import {getRoboDataset, getStockAnalysis,getAppsScoreSummary,getScoreSummaryInCSV} from "../../actions/appActions";
 import {hideDataPreview} from "../../actions/dataActions";
+import {Button} from "react-bootstrap";
 
 //import {SignalAnalysisPage} from "./signals/SignalAnalysisPage";
 //let showSubTree=false;
@@ -49,10 +50,14 @@ export class OverViewPage extends React.Component {
         this.props.dispatch(getRoboDataset(this.props.match.params.slug));
       } else if (this.props.match.url.indexOf("apps-stock") != -1) {
         this.props.dispatch(getStockAnalysis(this.props.match.params.slug));
-      } else {
+      }else if (this.props.match.url.indexOf("apps-regression") != -1) {
+        this.props.dispatch(getAppsScoreSummary(this.props.match.params.slug));
+      }
+      else {
         this.props.dispatch(getSignalAnalysis(getUserDetailsOrRestart.get().userToken, this.props.match.params.slug));
       }
     }
+
   }
   componentDidMount() {
     // var that = this;
@@ -84,11 +89,12 @@ export class OverViewPage extends React.Component {
     var that = this;
     $(function() {
       let index = $(".sb_navigation li>a.active").parent().index();
+      if(index!=-1){
       if(index>5)
       that.refs.slider.slickGoTo(index-5);
       else {
         that.refs.slider.slickGoTo(0);
-      }
+      }}
     });
   }
 
@@ -155,9 +161,16 @@ export class OverViewPage extends React.Component {
   // }
 
   closeDocumentMode() {
-    console.log("closing document mode")
+    console.log("closing card mode")
     this.props.dispatch(hideDataPreview());
+    if(this.urlPrefix.indexOf("apps-regression") != -1)
+    this.props.history.push("/apps-regression/scores")
+    else
     this.props.history.push("/signals");
+
+  }
+  gotoScoreData(){
+      this.props.dispatch(getScoreSummaryInCSV(store.getState().apps.scoreSlug))
   }
 
   render() {
@@ -177,6 +190,7 @@ export class OverViewPage extends React.Component {
         storyName = this.props.signal.name
       }
     }
+
 
     var settings = {
       dots: false,
@@ -218,6 +232,17 @@ export class OverViewPage extends React.Component {
       );
     } else {
 
+      let regression_app=false
+      if(that.urlPrefix.indexOf("apps-regression") != -1)
+      regression_app=true
+      //check for l1 of regression  scoreSummary
+      if (regression_app&&!this.props.match.params.l1) {
+        var url=that.urlPrefix+"/"+this.props.match.params.slug+"/"+this.props.signal.listOfNodes[0].slug
+        //this.props.history.push(url)
+        return(<Redirect to ={url}/>)
+      }
+      //check ends
+
       let urlSplit = this.props.location.pathname.split("/");
       //console.log(urlSplit);
 
@@ -230,6 +255,7 @@ export class OverViewPage extends React.Component {
       let varList = null;
       let cardList = null;
       let card = null;
+      let node = null
       let params = this.props.match.params;
 
       tabList = [];
@@ -258,6 +284,17 @@ export class OverViewPage extends React.Component {
         //console.log("card after process is:");
         //console.log(card);
         let cardLink = that.urlPrefix + "/" + params.slug + "/" + params.l1 + "/" + card.slug;
+        //check when l1 dont have cards
+        node  = fetchNodeFromTree(params.l1, this.props.signal)
+
+        if(node.listOfCards.length==0){
+          if(node.listOfNodes.length>0){
+            //assuming l2 will be having altest one card always!
+            let level2 = node.listOfNodes[0].slug
+            cardLink = that.urlPrefix + "/" + params.slug + "/" + params.l1 + "/"+ level2+"/"+ card.slug
+          }
+        }
+        //check ends
         return (<Redirect to={cardLink}/>);
       } else {
         //node with listOfCards is selected..
@@ -278,16 +315,16 @@ export class OverViewPage extends React.Component {
         l1Name = selectedNodeFromLevel1.name;
         this.l1Name = l1Name
         if (!isEmpty(selectedNodeFromLevel1) && selectedNodeFromLevel1.listOfNodes.length > 0) {
-          varList = selectedNodeFromLevel1.listOfNodes.map((letiable, i) => {
-            let selectedl2Link = that.urlPrefix + "/" + params.slug + "/" + selectedNodeFromLevel1.slug + "/" + letiable.slug + "/$";
+          varList = selectedNodeFromLevel1.listOfNodes.map((variable, i) => {
+            let selectedl2Link = that.urlPrefix + "/" + params.slug + "/" + selectedNodeFromLevel1.slug + "/" + variable.slug + "/$";
             let l2Class = "mAd_icons ic_perf"
             if (l1Name == "Influencers")
               l2Class = "mAd_icons ic_measure"
             return (
               <li key={i}>
-                <NavLink to={selectedl2Link} title={letiable.name}>
+                <NavLink to={selectedl2Link} title={variable.name}>
                   <i className={l2Class}></i>
-                  <span id={letiable.slug}>{letiable.name}</span>
+                  <span id={variable.slug}>{variable.name}</span>
                 </NavLink>
               </li>
             )
@@ -324,7 +361,10 @@ export class OverViewPage extends React.Component {
         documentModeLink = "/signaldocumentMode/" + this.props.match.params.slug;
       } else if (that.urlPrefix.indexOf("stock") != -1) {
         documentModeLink = "/apps-stock-advisor"
-      } else {
+      } else if (regression_app) {
+        documentModeLink = "/apps-regression-score-document/"+this.props.match.params.slug
+      }
+      else {
         documentModeLink = "/apps-robo-document-mode/" + this.props.match.params.slug;
       }
 
@@ -340,7 +380,9 @@ export class OverViewPage extends React.Component {
           if (expectedURL.prev == this.props.signal.listOfCards[0].slug) {
             prevURL = that.urlPrefix + "/" + this.props.match.params.slug;
           }
-        } else {
+        }else if (regression_app) {
+          prevURL="/apps-regression/scores"
+        }else {
           prevURL = that.urlPrefix;
         }
       } else {
@@ -348,7 +390,8 @@ export class OverViewPage extends React.Component {
           if (expectedURL.prev == this.props.signal.listOfCards[0].slug) {
             prevURL = that.urlPrefix + "/" + this.props.match.params.slug;
           }
-        } else {
+        }else {
+          if(!regression_app)
           prevURL = that.urlPrefix;
         }
       }
@@ -389,6 +432,10 @@ export class OverViewPage extends React.Component {
         classname=".sb_navigation #subTab i.mAd_icons.ic_measure ~ span"
       subTreeSetting(urlSplit.length, 6, that.props.match.params.l2,classname); // setting of subtree and active classes
 
+      if(regression_app){
+      var scoreDownloadURL=API+'/api/get_score_data_and_return_top_n/?url='+store.getState().apps.scoreSlug+'&download_csv=true&count=100'
+      var scoreDataLink = "/apps/regression-app-6u8ybu4vdr/scores/"+store.getState().apps.scoreSlug+"/dataPreview";
+      }
       return (
         <div>
           <div className="side-body">
@@ -522,6 +569,11 @@ export class OverViewPage extends React.Component {
                           }}>
                             <span className="fa fa-chevron-right"></span>
                           </Link>
+                         <div className="col-md-12 text-right">
+                         {(regression_app)?<div>
+                         <Link to={scoreDataLink} onClick={this.gotoScoreData.bind(this)} className="btn btn-primary xs-pr-10">View Scored Data</Link>
+                         <a  href={scoreDownloadURL} id="download" className="btn btn-primary" download>Download Score</a></div>:""}
+                        </div>
                         </div>
                       </div>
                     </div>

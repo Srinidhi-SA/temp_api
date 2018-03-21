@@ -10,7 +10,7 @@ import {Button} from "react-bootstrap";
 import {STATIC_URL,EMR} from "../../helpers/env.js";
 import {isEmpty} from "../../helpers/helper";
 import {API} from "../../helpers/env";
-import {Link} from "react-router-dom";
+import {Link,Redirect} from "react-router-dom";
 
 
 @connect((store) => {
@@ -54,8 +54,13 @@ export class AppsScoreDetail extends React.Component {
     var showViewButton = true;
     var showDownloadButton = true;
     console.log(scoreSummary)
-	if (!$.isEmptyObject(scoreSummary)) {
+		if (!$.isEmptyObject(scoreSummary)) {
 		console.log(this.props)
+		if(scoreSummary.data.listOfNodes.length>0&&this.props.match.params.AppId.indexOf("regression")!=-1){
+		var url = "/apps-regression-score/"+store.getState().apps.scoreSlug
+		//this.props.history.push(url)
+		return(<Redirect to={url}/>)
+		}else{
 		let listOfCardList = getListOfCards(scoreSummary.data.listOfCards);
 		showViewButton = scoreSummary.permission_details.download_score;
 		showDownloadButton = scoreSummary.permission_details.download_score;
@@ -118,7 +123,7 @@ export class AppsScoreDetail extends React.Component {
 			          </div>
 			      );
 		}
-	}
+	}}
 	else{
 		return (
 				 <div className="side-body">
