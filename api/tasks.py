@@ -88,6 +88,7 @@ def write_into_databases(job_type, object_slug, results):
 
         dataset_object.meta_data = json.dumps(results)
         dataset_object.analysis_done = True
+	dataset_object.status = 'SUCCESS'
         dataset_object.save()
         return results
     elif job_type == "master":
@@ -119,6 +120,7 @@ def write_into_databases(job_type, object_slug, results):
         results['model_summary'] = add_slugs(results['model_summary'],object_slug=object_slug)
         trainer_object.data = json.dumps(results)
         trainer_object.analysis_done = True
+	trainer_object.status = 'SUCCESS'
         trainer_object.save()
         return results
     elif job_type == 'score':
@@ -134,6 +136,7 @@ def write_into_databases(job_type, object_slug, results):
         results = add_slugs(results, object_slug=object_slug)
         score_object.data = json.dumps(results)
         score_object.analysis_done = True
+	score_object.status = 'SUCCESS'
         score_object.save()
         return results
     elif job_type == 'robo':
@@ -149,6 +152,7 @@ def write_into_databases(job_type, object_slug, results):
         results = add_slugs(results, object_slug=object_slug)
         robo_object.data = json.dumps(results)
         robo_object.robo_analysis_done = True
+	robo_object.status = 'SUCCESS'
         robo_object.save()
         return results
     elif job_type == 'stockAdvisor':
