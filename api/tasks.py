@@ -245,7 +245,7 @@ def kill_application_using_fabric(app_id=None):
 
     HDFS = settings.HDFS
     BASEDIR = settings.BASE_DIR
-    emr_file = BASEDIR + settings.get('PEM_KEY')
+    emr_file = BASEDIR + settings.PEM_KEY
 
     env.key_filename = [emr_file]
     if CONFIG_FILE_NAME == 'cwpoc':
