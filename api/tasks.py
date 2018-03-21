@@ -7,6 +7,7 @@ import signal
 import os
 from celery.decorators import task
 from config.settings.config_file_name_to_run import CONFIG_FILE_NAME
+from django.conf import settings
 
 
 @task(name="sum_two_numbers")
@@ -33,8 +34,14 @@ from api.models import Job, Dataset, Score, Insight, Trainer, StockDataset, Robo
 
 @task(name='hum_se_hai_zamana_sara', queue=CONFIG_FILE_NAME)
 def submit_job_separate_task(command_array, slug):
-    cur_process = subprocess.Popen(command_array, stderr=subprocess.PIPE)
+    import subprocess, os
+    my_env = os.environ.copy()
+    if settings.HADOOP_CONF_DIR:
+        my_env["HADOOP_CONF_DIR"] = settings.HADOOP_CONF_DIR
+        my_env["HADOOP_USER_NAME"] = settings.HADOOP_USER_NAME
+    cur_process = subprocess.Popen(command_array, stderr=subprocess.PIPE, env=my_env)
     print cur_process
+    print command_array
     # TODO: @Ankush need to write the error to error log and standard out to normal log
     for line in iter(lambda: cur_process.stderr.readline(), ''):
         # print(line.strip())
@@ -238,10 +245,10 @@ def kill_application_using_fabric(app_id=None):
 
     HDFS = settings.HDFS
     BASEDIR = settings.BASE_DIR
-    emr_file = BASEDIR + "/keyfiles/TIAA.pem"
+    emr_file = BASEDIR + "/keyfiles/ankush.pem"
 
     env.key_filename = [emr_file]
-    env.host_string = "{0}@{1}".format(HDFS["user.name"], HDFS["host"])
+    env.host_string = "{0}@{1}".format("ankush", HDFS["host"])
 
     try:
         capture = run("yarn application --kill {0}".format(app_id))

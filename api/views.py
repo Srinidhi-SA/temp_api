@@ -35,6 +35,11 @@ from api.utils import \
 from models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData, StockDataset, CustomApps
 from api.tasks import clean_up_on_delete
 
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
+
 
 class SignalView(viewsets.ModelViewSet):
     def get_queryset(self):
