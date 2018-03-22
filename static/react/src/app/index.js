@@ -37,79 +37,269 @@ import {AppsStockDocumentMode} from "./components/apps/AppsStockDocumentMode";
 import {DataPreviewLeftPanel} from "./components/data/DataPreviewLeftPanel";
 import {ModelAlgorithmSelection} from "./components/apps/ModelAlgorithmSelection";
 import {RegressionAppList} from "./components/apps/RegressionAppList";
+import {getUserDetailsOrRestart} from "./helpers/helper";
+import {Redirect} from "react-router-dom";
 
 class App extends React.Component {
-
+  hasSignalRoutePermission() {
+    //alert("working!!!")
+    if (getUserDetailsOrRestart.get().view_signal_permission == "true")
+      return true
+    else
+      return false
+  }
+  hasDataRoutePermission() {
+    //alert("working!!!")
+    if (getUserDetailsOrRestart.get().view_data_permission == "true")
+      return true
+    else
+      return false
+  }
+  hasTrainerRoutePermission() {
+    //alert("working!!!")
+    if (getUserDetailsOrRestart.get().view_trainer_permission == "true")
+      return true
+    else
+      return false
+  }
+  hasScoreRoutePermission() {
+    //alert("working!!!")
+    if (getUserDetailsOrRestart.get().view_score_permission == "true")
+      return true
+    else
+      return false
+  }
   render() {
-	  sessionStorage.url = window.location.pathname;
+    sessionStorage.url = window.location.pathname;
+    //we need to do like this as BrowserRouter dont pass history and props if we call components directly
+    //signal related routing permissions
+    const signals = (props) => {
+      if (this.hasSignalRoutePermission()) {
+        switch (props.match.path) {
+          case "/signals":
+            {
+              return (<Signals {...props}/>)
+            }
+            break;
+          case "/signals/:slug":
+            {
+              return (<Signal {...props}/>)
+            }
+            break;
+          case "/signals/:slug/:l1":
+            {
+              return (<OverViewPage {...props}/>)
+            }
+            break;
+          case "/signals/:slug/:l1/:l2/:l3":
+            {
+              return (<OverViewPage {...props}/>)
+            }
+            break;
+          case "/signals/:slug/:l1/:l2":
+            {
+              return (<OverViewPage {...props}/>)
+            }
+            break;
+          case "/signaldocumentMode/:slug":
+            {
+              return (<SignalDocumentMode {...props}/>)
+            }
+            break;
+          case "/signals?page=:slug":
+            {
+              return (<Signals {...props}/>)
+            }
+            break;
+          case "/signals?search=:slug":
+            {
+              return (<Signals {...props}/>)
+            }
+            break;
+        }
+
+      } else if (this.hasDataRoutePermission()) {
+        return (<Redirect to="/data"/>)
+      } else {
+        //currently sending it to app, otherwise it should go to Login
+        return (<Redirect to="/apps"/>)
+      }
+    }
+    //data related routing permissions
+    const data = (props) => {
+      if (this.hasDataRoutePermission()) {
+        switch (props.match.path) {
+          case "/data":
+            {
+              return (<Data {...props}/>)
+            }
+            break;
+          case "/data/:slug":
+            {
+              return (<DataPreview {...props}/>)
+            }
+            break;
+          case "data?page=:slug":
+            {
+              return (<Data {...props}/>)
+            }
+            break;
+          case "/data/:slug/createSignal":
+            {
+              return (<VariableSelection {...props}/>)
+            }
+            break;
+          case "/apps/:AppId/models/data/:slug":
+            {
+              return (<DataPreview {...props}/>)
+            }
+            break;
+          case "/apps/:AppId/models/:modelSlug/data/:slug":
+            {
+              return (<DataPreview {...props}/>)
+            }
+        }
+
+      } else if (this.hasSignalRoutePermission()) {
+        return (<Redirect to="/signals"/>)
+      } else {
+        //currently sending it to app, otherwise it should go to Login
+        return (<Redirect to="/apps"/>)
+      }
+    }
+    //app trainer and score route permission
+    const trainer = (props) => {
+      if (this.hasTrainerRoutePermission()) {
+        switch (props.match.path) {
+          case "/apps/:AppId/models":
+            {
+              return (<Apps {...props}/>)
+            }
+            break;
+          case "/apps/:AppId/models?page=:slug":
+            {
+              return (<Apps {...props}/>)
+            }
+            break;
+          case "/apps/:AppId/models/:slug":
+            {
+              return (<AppsModelDetail {...props}/>)
+            }
+            break;
+
+        }
+
+      } else if (this.hasScoreRoutePermission()) {
+        let score_url = "/apps"
+        if (props.match.params.AppId)
+          score_url = "/apps/" + props.match.params.AppId + "/scores"
+        return (<Redirect to={score_url}/>)
+      } else {
+        return (<Redirect to="/apps"/>)
+      }
+    }
+
+    const score = (props) => {
+      if (this.hasScoreRoutePermission()) {
+        switch (props.match.path) {
+          case "/apps/:AppId/scores":
+            {
+              return (<Apps {...props}/>)
+            }
+            break;
+          case "/apps/:AppId/scores?page=:slug":
+            {
+              return (<Apps {...props}/>)
+            }
+            break;
+          case "/apps/:AppId/scores/:slug":
+            {
+              return (<AppsScoreDetail {...props}/>)
+            }
+            break;
+          case "/apps/:AppId/scores/:slug/dataPreview":
+            {
+              return (<DataPreviewLeftPanel {...props}/>)
+            }
+            break;
+        }
+
+      } else if (this.hasTrainerRoutePermission()) {
+        let model_url = "/apps"
+        if (props.match.params.AppId)
+          model_url = "/apps/" + props.match.params.AppId + "/models"
+        return (<Redirect to={model_url}/>)
+      } else {
+        return (<Redirect to="/apps"/>)
+      }
+    }
 
     return (
       <BrowserRouter>
-      <Switch>
+        <Switch>
           <Route exact path="/login" component={Login}/>
           <Main>
-            <Route exact path="/" component={Home} />
-			<Route exact path="/user-profile" component={Profile} />
-            <Route exact path="/signals" component={Signals} />
-            {/*<Route exact path="/signals/datapreview/:slug" component={DataPreview} />*/}
-            <Route exact path="/signals/:slug" component={Signal}/>
-            <Route exact path="/signals/:slug/:l1" component={OverViewPage}/>
-            <Route exact path="/signals/:slug/:l1/:l2/:l3" component={OverViewPage}/>
-            <Route exact path="/signals/:slug/:l1/:l2" component={OverViewPage}/>
-            <Route path="/variableselection" component={VariableSelection} />
-            <Route path = "/signaldocumentMode/:slug" component = {SignalDocumentMode}/>
-            <Route path="/settings" component={Settings} />
-            <Route path="/stories" component={Stories} />
-            <Route exact path="/data" component={Data} />
-            <Route exact path="/data/:slug" component={DataPreview} />
-            <Route exact path="/apps" component={AppsPanel} />
-            <Route exact path="/apps?page=:slug" component={AppsPanel} />
-            <Route exact path="/apps/:AppId/models" component={Apps} />
-            <Route exact path="/apps/:AppId/scores" component={Apps} />
-            <Route exact path="/apps/:AppId/models?page=:slug" component={Apps} />
-            <Route exact path="/apps/:AppId/scores?page=:slug" component={Apps} />
-            <Route exact path="/apps/:AppId/models/data/:slug/createModel" component={ModelVariableSelection} />
-            <Route exact path="/apps/:AppId/models/:slug" component={AppsModelDetail} />
-            <Route exact path="/apps/:AppId/models/:modelSlug/data/:slug/createScore" component={ScoreVariableSelection} />
-            <Route exact path="/data?page=:slug" component={Data} />
-            <Route exact path="/apps/:AppId/scores/:slug" component={AppsScoreDetail} />
-            <Route exact path="/data/:slug/createSignal" component={VariableSelection}/>
-            <Route exact path="/signals?page=:slug" component={Signals}/>
-            <Route exact path="/signals?search=:slug" component={Signals}/>
-            <Route exact path="/apps/:AppId/models/data/:slug" component={DataPreview} />
-            <Route exact path="/apps-robo" component={RoboInsightList} />
-            <Route exact path="/apps-robo-list/:roboSlug/:tabName/data/:slug" component={RoboDataUploadPreview} />
-            <Route exact path="/apps-robo/:slug/:l1" component={OverViewPage} />
-            <Route exact path="/apps-robo/:slug/:l1/:l2" component={OverViewPage} />
-            <Route exact path="/apps-robo/:slug/:l1/:l2/:l3" component={OverViewPage} />
-            <Route exact path="/apps-robo-document-mode/:slug" component={RoboDocumentMode} />
-            <Route exact path="/apps/:AppId/models/:modelSlug/data/:slug" component={DataPreview} />
-            <Route exact path="/apps-robo/:roboSlug" component={RoboDataUploadPreview} />
-            <Route exact path="/apps-robo-list" component={RoboInsightList} />
-            <Route exact path="/apps/audio" component={AudioFileList} />
-            <Route exact path="/apps/audio/:audioSlug" component={AudioFileSummary} />
-            <Route exact path="/apps/audio?page=:pageNo" component={AudioFileList} />
-            <Route exact path="/apps-stock-advisor" component={AppsStockAdvisorList} />
-            <Route exact path="/apps-stock-advisor-analyze/data/:slug" component={AppsStockDataPreview} />" +
+            <Route exact path="/" component={Home}/>
+            <Route exact path="/user-profile" component={Profile}/>
+            <Route exact path="/signals" render={signals}/> {/*<Route exact path="/signals/datapreview/:slug" component={DataPreview} />*/}
+            <Route exact path="/signals/:slug" render={signals}/>
+            <Route exact path="/signals/:slug/:l1" render={signals}/>
+            <Route exact path="/signals/:slug/:l1/:l2/:l3" render={signals}/>
+            <Route exact path="/signals/:slug/:l1/:l2" render={signals}/>
+            <Route path="/variableselection" component={VariableSelection}/>
+            <Route path="/signaldocumentMode/:slug" render={signals}/>
+            <Route path="/settings" component={Settings}/>
+            <Route path="/stories" component={Stories}/>
+            <Route exact path="/data" render={data}/>
+            <Route exact path="/data/:slug" render={data}/>
+            <Route exact path="/apps" component={AppsPanel}/>
+            <Route exact path="/apps?page=:slug" component={AppsPanel}/>
+            <Route exact path="/apps/:AppId/models" render={trainer}/>
+            <Route exact path="/apps/:AppId/scores" render={score}/>
+            <Route exact path="/apps/:AppId/models?page=:slug" render={trainer}/>
+            <Route exact path="/apps/:AppId/scores?page=:slug" render={score}/>
+            <Route exact path="/apps/:AppId/models/data/:slug/createModel" component={ModelVariableSelection}/>
+            <Route exact path="/apps/:AppId/models/:slug" render={trainer}/>
+            <Route exact path="/apps/:AppId/models/:modelSlug/data/:slug/createScore" component={ScoreVariableSelection}/>
+            <Route exact path="/data?page=:slug" render={data}/>
+            <Route exact path="/apps/:AppId/scores/:slug" render={score}/>
+            <Route exact path="/data/:slug/createSignal" render={data}/>
+            <Route exact path="/signals?page=:slug" render={signals}/>
+            <Route exact path="/signals?search=:slug" render={signals}/>
+            <Route exact path="/apps/:AppId/models/data/:slug" render={data}/>
+            <Route exact path="/apps-robo" component={RoboInsightList}/>
+            <Route exact path="/apps-robo-list/:roboSlug/:tabName/data/:slug" component={RoboDataUploadPreview}/>
+            <Route exact path="/apps-robo/:slug/:l1" component={OverViewPage}/>
+            <Route exact path="/apps-robo/:slug/:l1/:l2" component={OverViewPage}/>
+            <Route exact path="/apps-robo/:slug/:l1/:l2/:l3" component={OverViewPage}/>
+            <Route exact path="/apps-robo-document-mode/:slug" component={RoboDocumentMode}/>
+            <Route exact path="/apps/:AppId/models/:modelSlug/data/:slug" render={data}/>
+            <Route exact path="/apps-robo/:roboSlug" component={RoboDataUploadPreview}/>
+            <Route exact path="/apps-robo-list" component={RoboInsightList}/>
+            <Route exact path="/apps/audio" component={AudioFileList}/>
+            <Route exact path="/apps/audio/:audioSlug" component={AudioFileSummary}/>
+            <Route exact path="/apps/audio?page=:pageNo" component={AudioFileList}/>
+            <Route exact path="/apps-stock-advisor" component={AppsStockAdvisorList}/>
+            <Route exact path="/apps-stock-advisor-analyze/data/:slug" component={AppsStockDataPreview}/>" +
             <Route exact path="/apps-stock-advisor/:slug" component={OverViewPage}/>
             <Route exact path="/apps-stock-advisor/:slug/:l1" component={OverViewPage}/>
             <Route exact path="/apps-stock-advisor/:slug/:l1/:l2/:l3" component={OverViewPage}/>
             <Route exact path="/apps-stock-advisor/:slug/:l1/:l2" component={OverViewPage}/>
             <Route exact path="/apps-stock-document-mode/:slug" component={AppsStockDocumentMode}/>
-            <Route exact path="/apps/:AppId/scores/:slug/dataPreview" component={DataPreviewLeftPanel}/>
+            <Route exact path="/apps/:AppId/scores/:slug/dataPreview" render={score}/>
             <Route exact path="/apps/:AppId/models/data/:slug/createModel/Proceed" component={ModelAlgorithmSelection}/>
-            <Route exact path="/apps-regression" component={RegressionAppList} />
-            <Route exact path="/apps-regression-score" component={RegressionAppList} />
-            <Route exact path="/apps-regression/scores" component={RegressionAppList} />
-            <Route exact path="/apps-regression/models" component={RegressionAppList} />
+            <Route exact path="/apps-regression" component={RegressionAppList}/>
+            <Route exact path="/apps-regression-score" component={RegressionAppList}/>
+            <Route exact path="/apps-regression/scores" component={RegressionAppList}/>
+            <Route exact path="/apps-regression/models" component={RegressionAppList}/>
             <Route exact path="/apps-regression-score/:slug" component={OverViewPage}/>
             <Route exact path="/apps-regression-score/:slug/:l1" component={OverViewPage}/>
             <Route exact path="/apps-regression-score/:slug/:l1/:l2/:l3" component={OverViewPage}/>
             <Route exact path="/apps-regression-score/:slug/:l1/:l2" component={OverViewPage}/>
             <Route exact path="/apps-regression-score-document/:slug" component={SignalDocumentMode}/>
 
-            </Main>
-      </Switch>
+          </Main>
+        </Switch>
       </BrowserRouter>
     );
   }

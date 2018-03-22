@@ -5,7 +5,7 @@ import {push} from "react-router-redux";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
 import store from "../../store";
 import {getAllDataList,getDataSetPreview,storeSignalMeta,showDataPreview} from "../../actions/dataActions";
-import {isEmpty,ACCESSDENIED} from "../../helpers/helper";
+import {isEmpty,ACCESSDENIED,getUserDetailsOrRestart} from "../../helpers/helper";
 import {openCreateSignalModal,closeCreateSignalModal} from "../../actions/createSignalActions";
 
 
@@ -33,10 +33,14 @@ export class CreateSignal extends React.Component {
 
 	}
 	componentWillMount(){
+		if(getUserDetailsOrRestart.get().view_data_permission=="true")
 		this.props.dispatch(getAllDataList());
 	}
 	openSignalModal(){
-		if($.isEmptyObject(store.getState().datasets.allDataSets)){
+		//console.log(getUserDetailsOrRestart.get().view_data_permission)
+		if(getUserDetailsOrRestart.get().view_data_permission=="false"){
+			bootbox.alert("You don't have access to view datasets,Please contact admin for permissions!");
+		}else if($.isEmptyObject(store.getState().datasets.allDataSets)){
 			bootbox.alert("No datasets available.Please upload some data or connect to a database");
 		}else{
 			this.props.dispatch(openCreateSignalModal())
@@ -97,11 +101,14 @@ export class CreateSignal extends React.Component {
 	                    }
 	                });
 
-	            }else{
+	            }else if (getUserDetailsOrRestart.get().view_data_permission=="false") {
+	            	renderSelectBox = "You don't have access to view datasets,Please contact admin for permissions!"
+	            }
+							else{
 	                renderSelectBox = "No Datasets"
 	            }
 	        }
-		
+
 		return (
 				<div class="col-md-3 xs-mb-15 list-boxes" title={title}>
 				<div class={cls} onClick={this.openSignalModal.bind(this)}>
