@@ -179,7 +179,9 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
     }else if(dataPreview.status == FAILED){
         clearInterval(interval);
         dispatch(hideDULoaderPopup());
-        bootbox.alert("The uploaded file does not contain data in readable format. Please check the source file.")
+        bootbox.alert("The uploaded file does not contain data in readable format. Please check the source file.", function() {
+            window.history.go(-2);
+          });
         dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
         dispatch(clearLoadingMsg())
         //clearDatasetPreview()
