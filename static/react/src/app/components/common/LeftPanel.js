@@ -62,7 +62,7 @@ class LeftPanel extends React.Component {
                   </li>*/}
 
                 <li>
-                  <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" location="/apps" className=" sdb sdb_app" to="/apps">
+                  <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" isActive={(match,location) => /^[/]apps/.test(location.pathname)} className=" sdb sdb_app" to="/apps">
                     <span></span>
                     APPS</NavLink>
                 </li>
