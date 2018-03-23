@@ -192,7 +192,7 @@ export class AppsPanel extends React.Component {
                   </div>
                   <div className="col-md-8 col-sm-9 col-xs-7">
                     <h4>
-                      <b>{data.displayName}</b>
+                      {data.displayName}
                     </h4>
                     <p>
                       {data.description}
