@@ -19,6 +19,8 @@ function getHeader(token){
 
 export function refreshDatasets(props){
     return (dispatch) => {
+        if(refreshDatasetsInterval != null)
+        clearInterval(refreshDatasetsInterval);
         refreshDatasetsInterval = setInterval(function() {
             var pageNo = window.location.href.split("=")[1];
             if(pageNo == undefined) pageNo = 1;
