@@ -11,7 +11,8 @@
     "buildDev": "webpack -p",
     "buildProd": "webpack -p",
     "buildLuke": "webpack -p",
-    "buildLeia": "webpack -p"
+    "buildLeia": "webpack -p",
+    "buildCwpoc": "webpack -p"
   },
   "keywords": [
     "marlabsai"
