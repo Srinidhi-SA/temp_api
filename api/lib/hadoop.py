@@ -15,7 +15,7 @@ def hadoop_put(from_path, to_dir):
 
     hdfs_client = hadoop_hdfs()
     with open(from_path, 'r') as file:
-        hdfs_client.create_file(hdfs_file_path, file, overwrite=True)
+        hdfs_client.create_file(hdfs_file_path, file)
 
 def hadoop_mkdir(path):
     print "Creating directory {}".format(path)
