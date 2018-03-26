@@ -208,7 +208,7 @@ export class Profile extends React.Component {
                                 <div className="xs-pt-20"></div>
 
                                 <div className="dropzone md-pl-50">
-                                  <Dropzone id={1} onDrop={this.onDrop.bind(this)} accept=".png, .jpg" onDropRejected={this.popupMsg}>
+                                  <Dropzone id={1} onDrop={this.onDrop.bind(this)} accept=".png, .jpg,.jpeg" onDropRejected={this.popupMsg}>
                                     <p>Try dropping some files here, or click to select files to upload.</p>
                                   </Dropzone>
                                   <aside>
