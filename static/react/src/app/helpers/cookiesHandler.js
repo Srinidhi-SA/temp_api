@@ -16,10 +16,12 @@ export const cookieObj = {
       document.cookie = "last_login="+userDetail.user.last_login+"; "+"expires="+expires+"; path=/";
       document.cookie = "is_superuser="+userDetail.user.is_superuser+"; "+"expires="+expires+"; path=/";
       document.cookie = "image_url="+userDetail.profile.image_url+"; "+"expires="+expires+"; path=/";
-      document.cookie = "view_signal_permission="+userDetail.view_permission.view_signal+"; "+"expires="+expires+"; path=/";
-      document.cookie = "view_data_permission="+userDetail.view_permission.view_dataset+"; "+"expires="+expires+"; path=/";
-      document.cookie = "view_score_permission="+userDetail.view_permission.view_score+"; "+"expires="+expires+"; path=/";
-      document.cookie = "view_trainer_permission="+userDetail.view_permission.view_trainer+"; "+"expires="+expires+"; path=/";
+      if(userDetail.view_permission && userDetail.view_permission != null){
+        document.cookie = "view_signal_permission="+userDetail.view_permission.view_signal+"; "+"expires="+expires+"; path=/";
+        document.cookie = "view_data_permission="+userDetail.view_permission.view_dataset+"; "+"expires="+expires+"; path=/";
+        document.cookie = "view_score_permission="+userDetail.view_permission.view_score+"; "+"expires="+expires+"; path=/";
+        document.cookie = "view_trainer_permission="+userDetail.view_permission.view_trainer+"; "+"expires="+expires+"; path=/";
+      }
 
   },
 

@@ -19,6 +19,8 @@ function getHeader(token){
 
 export function refreshDatasets(props){
     return (dispatch) => {
+        if(refreshDatasetsInterval != null)
+        clearInterval(refreshDatasetsInterval);
         refreshDatasetsInterval = setInterval(function() {
             var pageNo = window.location.href.split("=")[1];
             if(pageNo == undefined) pageNo = 1;
@@ -179,7 +181,9 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
     }else if(dataPreview.status == FAILED){
         clearInterval(interval);
         dispatch(hideDULoaderPopup());
-        bootbox.alert("The uploaded file does not contain data in readable format. Please check the source file.")
+        bootbox.alert("The uploaded file does not contain data in readable format. Please check the source file.", function() {
+            window.history.go(-2);
+          });
         dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
         dispatch(clearLoadingMsg())
         //clearDatasetPreview()

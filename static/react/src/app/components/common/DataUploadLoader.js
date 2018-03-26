@@ -44,7 +44,7 @@ export class DataUploadLoader extends React.Component {
       clearDatasetPreview();
     }
   render() {
-    let img_src = STATIC_URL + "assets/images/brain_loading.gif"
+    let img_src = STATIC_URL + "assets/images/Processing.gif"
     //let checked=!this.props.showHideData
     return (
       <div id="dULoader">
