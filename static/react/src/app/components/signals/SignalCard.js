@@ -78,12 +78,15 @@ export class SignalCard extends React.Component {
             var percentageDetails = "";
             var signalType=story.type
             var signalLink = "/signals/" + story.slug;
+            var completed_percent = story.completed_percentage
+            if(completed_percent>99)
+            completed_percent = 99
             var signalClick = <Link to={signalLink} id={story.slug} onClick={this.getSignalAnalysis.bind(this,signalType)} className="title">
               {story.name}
               </Link>
               if(story.status == INPROGRESS){
-                  percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{story.completed_percentage >= 0 ? story.completed_percentage+' %':"In Progress"}</span></div>
-                  signalClick = <a class="cursor" onClick={this.openLoaderScreen.bind(this,story.slug,story.completed_percentage,story.completed_message)}> {story.name}</a>
+                  percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{story.completed_percent >= 0 ? story.completed_percent+' %':"In Progress"}</span></div>
+                  signalClick = <a class="cursor" onClick={this.openLoaderScreen.bind(this,story.slug,story.completed_percent,story.completed_message)}> {story.name}</a>
               }else if(story.status == SUCCESS && !story.viewed){
                   story.completed_percentage = 100;
                   percentageDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">&nbsp;{story.completed_percentage}&nbsp;%</span></div>
