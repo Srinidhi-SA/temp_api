@@ -14,6 +14,7 @@ import os
 
 import datetime
 import config_file_name_to_run
+from mlSettings import *
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
