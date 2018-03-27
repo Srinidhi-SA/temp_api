@@ -534,6 +534,17 @@ export default function reducer(state = {
         dimensionAllChecked:action.value
       }
     }
+    break;
+    case "UPDATE_ANALYSIS_LIST_SELECT_ALL":
+      {
+        return {
+          ...state,
+          dataSetAnalysisList: action.renderList,
+          dataSetPrevAnalysisList:action.prevAnalysisList,
+          dataSetSelectAllAnalysis:action.flag,
+        }
+      }
+      break;
   }
   return state
 

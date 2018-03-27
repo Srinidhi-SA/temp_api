@@ -666,6 +666,8 @@ export function updateSelectedVariables(evt){
                 });
             }
         }
+        if(evt.target.baseURI.includes("/createSignal"))
+        dispatch(uncheckHideAnalysisList());
     }
 
 }
@@ -1050,6 +1052,8 @@ export function handleSelectAll(evt){
                 }
             }
         }
+        if(evt.target.baseURI.includes("/createSignal"))
+        dispatch(uncheckHideAnalysisList());
     }
 }
 
@@ -1547,4 +1551,87 @@ export function DisableSelectAllCheckbox(){
     if(dimensionArray.length > 5)
      $(".dimensionAll").prop("disabled",true);
 }
+}
+export function uncheckHideAnalysisList(){
+    return (dispatch) => {
+        var dataSetMeasures = store.getState().datasets.CopyOfMeasures.slice();
+        var dataSetDimensions = store.getState().datasets.CopyOfDimension.slice();
+        var targetVariableType = store.getState().signals.getVarType;
+        let measureArray = $.grep(dataSetMeasures,function(val,key){
+            return(val.selected == true);
+        });
+        let dimensionArray = $.grep(dataSetDimensions,function(val,key){
+            return(val.selected == true);
+        });
+        if(targetVariableType == "dimension"){
+            if(measureArray.length < 1 || dimensionArray.length < 1){
+                dispatch(saveDeselectedAnalysisList($("#chk_analysis_association").val()));
+                dispatch(saveDeselectedAnalysisList($("#chk_analysis_prediction").val()));
+            }
+            
+        }
+        else if(targetVariableType == "measure"){
+            if(dimensionArray.length < 1)
+            dispatch(saveDeselectedAnalysisList($("#chk_analysis_performance").val()));
+
+            if(measureArray.length < 1)
+            dispatch(saveDeselectedAnalysisList($("#chk_analysis_influencer").val()));
+
+            if(measureArray.length < 1 || dimensionArray.length < 1)
+            dispatch(saveDeselectedAnalysisList($("#chk_analysis_prediction").val()));
+        }
+    }
+}
+export function saveDeselectedAnalysisList(name){
+    var totalAnalysisList = store.getState().datasets.dataSetAnalysisList;
+    var prevAnalysisList = jQuery.extend(true, {}, store.getState().datasets.dataSetPrevAnalysisList);
+    var analysisList = [];
+    var renderList = {};
+    var trendSettings = [];
+    if(store.getState().signals.getVarType == "measure"){
+        analysisList = totalAnalysisList.measures.analysis;
+    }else{
+        analysisList = totalAnalysisList.dimensions.analysis;
+        trendSettings = totalAnalysisList.dimensions.trendSettings;
+    }
+
+    for(var i=0;i<analysisList.length;i++){
+                if(analysisList[i].name == name){
+                    analysisList[i].status = false;
+                    if(analysisList[i].noOfColumnsToUse != null){
+                            for(var j=0;j<analysisList[i].noOfColumnsToUse.length;j++){
+                                if(analysisList[i].noOfColumnsToUse[j].name == "custom"){
+                                    analysisList[i].noOfColumnsToUse[j].status = false;
+                                    analysisList[i].noOfColumnsToUse[j].value = null;
+                                }else{
+                                    analysisList[i].noOfColumnsToUse[j].status = false;
+                                }
+                            }
+                    }
+                    break;
+                }
+            }
+
+            if(name.indexOf("trend") != -1){
+            if(store.getState().signals.getVarType != "measure"){
+                for(var i in trendSettings){
+                    trendSettings[i].status = false;
+                }
+            }
+        }
+
+    if(store.getState().signals.getVarType == "measure"){
+    totalAnalysisList.measures.analysis = analysisList
+    }else{
+        totalAnalysisList.dimensions.analysis = analysisList
+        totalAnalysisList.dimensions.trendSettings = trendSettings;
+    }
+    renderList.measures = totalAnalysisList.measures;
+    renderList.dimensions = totalAnalysisList.dimensions;
+    return {
+        type: "UPDATE_ANALYSIS_LIST_SELECT_ALL",
+        renderList,
+        prevAnalysisList,
+        flag:false,
+    }  
 }
