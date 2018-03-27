@@ -54,7 +54,7 @@ export class SubSetting extends React.Component {
           if (!$(this).is(":checked")) {
             selectAllChecked = false;
             $('#dim[type="checkbox"]').prop('checked', false);
-          } 
+          }
       });
       if(selectAllChecked == true)
       $('#dim[type="checkbox"]').prop('checked', true);
@@ -527,9 +527,9 @@ export class SubSetting extends React.Component {
               </div>
               <div class="panel-footer">
                 <div class="text-right" id="saveSubSetting">
-                  <a href="javascript:void(0)" class="btn btn-alt4" id="saveButton" disabled onClick={this.saveSubSetting.bind(this)}>
+                  <button href="javascript:void(0)" class="btn btn-alt4" id="saveButton" disabled onClick={this.saveSubSetting.bind(this)}>
                     Save
-                  </a>
+                  </button>
                 </div>
               </div>
 
