@@ -67,21 +67,24 @@ export class SignalCard extends React.Component {
           //this.props.history.push('/signals/'+slug);
         }
     render() {
-   
+
         var listData = this.props.data;
         console.log(listData)
-       
+
         const storyListDetails = listData.map((story, i) => {
             var iconDetails = "";
             var percentageDetails = "";
 
             var signalLink = "/signals/" + story.slug;
+            var completed_percent = story.completed_percentage
+            if(completed_percent>99)
+            completed_percent=99
             var signalClick = <Link to={signalLink} id={story.slug} onClick={this.getSignalAnalysis.bind(this)} className="title">
               {story.name}
               </Link>
               if(story.status == INPROGRESS){
-                  percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">&nbsp;{story.completed_percentage}&nbsp;%</span></div>
-                  signalClick = <a class="cursor" onClick={this.openLoaderScreen.bind(this,story.slug,story.completed_percentage,story.completed_message)}> {story.name}</a>
+                  percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">&nbsp;{completed_percent}&nbsp;%</span></div>
+                  signalClick = <a class="cursor" onClick={this.openLoaderScreen.bind(this,story.slug,completed_percent,story.completed_message)}> {story.name}</a>
               }else if(story.status == SUCCESS && !story.viewed){
                   story.completed_percentage = 100;
                   percentageDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">&nbsp;{story.completed_percentage}&nbsp;%</span></div>
@@ -101,16 +104,16 @@ export class SignalCard extends React.Component {
                     <div className="row">
                       <div className="col-xs-12">
                         <h5 className="title newCardTitle pull-left">
-                          {signalClick}                  
+                          {signalClick}
                         </h5>
-                        
+
                          <div class="btn-toolbar pull-right">
                              {/*<!-- Rename and Delete BLock  -->*/}
                       <a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
                         <i className="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
                       </a>
                       <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                     
+
                         <li onClick={this.handleRename.bind(this, story.slug, story.name)}>
                           <a className="dropdown-item" href="#renameCard" data-toggle="modal">
                             <i className="fa fa-edit"></i>&nbsp;&nbsp;Rename</a>
@@ -125,25 +128,25 @@ export class SignalCard extends React.Component {
                       </ul>
                       {/*<!-- End Rename and Delete BLock  -->*/}
                           </div>
-                          
-                          
-                          <div className="clearfix"></div>                  
-                         
+
+
+                          <div className="clearfix"></div>
+
                           {percentageDetails}
                         {/* <div class="inProgressIcon">
                                <i class="fa fa-circle"></i>
                                <span class="inProgressIconText">&nbsp;{story.completed_percentage}&nbsp;%</span>
                         </div>*/}
-                            
+
                         <OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={story}/> </Popover>}>
                         <a className="pover cursor">
                         <div class="card_icon">
                         {iconDetails}
                         </div></a>
                         </OverlayTrigger>
-                                
-                      </div>      
-                      
+
+                      </div>
+
                     </div>
                   </div>
                   <div className="card-footer">
@@ -152,7 +155,7 @@ export class SignalCard extends React.Component {
                       <span className="footerTitle footerTitle">{dateFormat(story.created_at, "mmm d,yyyy HH:MM")}</span>
                     </div>
 
-                    
+
                     {/*popover*/}
 
                   </div>
@@ -169,6 +172,6 @@ export class SignalCard extends React.Component {
               }
            </div>);
     }
-  
+
 
 }
