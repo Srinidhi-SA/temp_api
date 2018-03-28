@@ -236,7 +236,7 @@ export class ModelSummeryButton extends React.Component {
 		});
 		return (
 				<div>
-				<button type="button" className="btn btn-primary col-md-offset-8" onClick={this.show.bind(this)} title="Print Document">View Residuals</button>
+				<button type="button" className="btn btn-default col-md-offset-8" onClick={this.show.bind(this)} title="Print Document">View Residuals</button>
 				<ViewChart classId={this.props.classId} click={this.downloadSVG} chartData={this.props.data} tableDownload={this.props.tabledownload}/>
 				</div>
 		);
