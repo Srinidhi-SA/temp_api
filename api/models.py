@@ -89,11 +89,8 @@ class Job(models.Model):
 
     def start(self):
         command_array = json.loads(self.command_array)
-        from api.yarn_job_api import start_yarn_application_again
-        newly_spawned_job = start_yarn_application_again(
-            command_array=command_array
-        )
-        self.url = newly_spawned_job.get('application_id')
+        from tasks import submit_job_separate_task
+        submit_job_separate_task.delay(command_array, self.object_id)
         original_object = self.get_original_object()
 
         if original_object is not None:
