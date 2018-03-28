@@ -11199,7 +11199,7 @@ pre {
 }
 .modal-header h1, .modal-header h2, .modal-header h3, .modal-header h4, .modal-header h5, .modal-header h6 {
 	display: block;
-	margin: 0
+	margin: 5px 0;
 }
 .modal-header .close {
 	font-size: 26px;
@@ -11208,7 +11208,7 @@ pre {
 	color:white;
 }
 .modal-header .close {
-    margin-top: 2px;
+    margin-top: 5px;
 }
 .modal-header .close:hover {
 	opacity: .8
@@ -14964,7 +14964,7 @@ a.more_button { color: #b3b3b3; padding: 0 10px; margin-right: 9px; cursor:point
 
 #welCome_message .bg-color { background:#f3f3f4; border:1px solid #cccccc; border-radius:10px; width:60%; }
 .loaderValue { position:absolute; top:190px; right:100px; color:#FFFFFF; }
-
+.tab-pane .newCardStyle { border-top: 1px solid #f3f4f4;}
 /**************** Css realated to developers, keep the source down ***/
 #prediction_dropdown{
 	    width: 40%;

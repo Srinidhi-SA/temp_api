@@ -65,10 +65,11 @@ export default class TopPanel extends React.Component {
 										</a>
 										<ul className="dropdown-menu dropdown-menu-right">
 											<li>
-												<Link to="/user-profile"><i class="zmdi zmdi-account-circle zmdi-hc-lg" aria-hidden="true"></i>&nbsp;Profile</Link>
+												<Link to="/user-profile"><i class="zmdi zmdi-account-o zmdi-hc-lg" aria-hidden="true"></i>&nbsp;&nbsp;Profile</Link>
 											</li>
+											<li><a href="#" target="_blank"><i class="zmdi zmdi-help-outline zmdi-hc-lg" aria-hidden="true"></i>&nbsp;&nbsp;How to use ?</a></li>
 											<li>
-												<a href="javascript:;" className="logout" onClick={this.logout.bind(this)}><i class="zmdi zmdi-sign-in zmdi-hc-lg" aria-hidden="true"></i>&nbsp;Logout</a>
+												<a href="javascript:;" className="logout" onClick={this.logout.bind(this)}><i class="zmdi zmdi-sign-in zmdi-hc-lg" aria-hidden="true"></i>&nbsp;&nbsp;Logout</a>
 											</li>
 										</ul>
 									</div>
