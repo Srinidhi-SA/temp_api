@@ -8,7 +8,7 @@ import Breadcrumb from 'react-breadcrumb';
 import {STATIC_URL, API} from "../../helpers/env";
 import {C3Chart} from "../c3Chart";
 import renderHTML from 'react-render-html';
-import {saveFileToStore} from "../../actions/dataSourceListActions";
+import {saveFileToStore,clearDataUploadFile} from "../../actions/dataSourceListActions";
 import Dropzone from 'react-dropzone'
 import {
   Modal,
@@ -33,6 +33,7 @@ export class Profile extends React.Component {
   componentWillMount() {
       this.props.dispatch(getUserProfile(getUserDetailsOrRestart.get().userToken))
       this.props.dispatch(saveProfileImage(getUserDetailsOrRestart.get().image_url))
+      this.props.dispatch(clearDataUploadFile())
 
   }
 
@@ -206,7 +207,7 @@ export class Profile extends React.Component {
                                 <div className="xs-pt-20"></div>
 
                                 <div className="dropzone md-pl-50">
-                                  <Dropzone id={1} onDrop={this.onDrop.bind(this)} accept=".png, .jpg" onDropRejected={this.popupMsg}>
+                                  <Dropzone id={1} onDrop={this.onDrop.bind(this)} accept=".png, .jpg,.jpeg" onDropRejected={this.popupMsg}>
                                     <p>Try dropping some files here, or click to select files to upload.</p>
                                   </Dropzone>
                                   <aside>

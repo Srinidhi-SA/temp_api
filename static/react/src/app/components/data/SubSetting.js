@@ -509,9 +509,9 @@ export class SubSetting extends React.Component {
               </div>
               <div class="panel-footer">
                 <div class="text-right" id="saveSubSetting">
-                  <a href="javascript:void(0)" class="btn btn-alt4" id="saveButton" disabled onClick={this.saveSubSetting.bind(this)}>
+                  <button href="javascript:void(0)" class="btn btn-alt4" id="saveButton" disabled onClick={this.saveSubSetting.bind(this)}>
                     Save
-                  </a>
+                  </button>
                 </div>
               </div>
 
