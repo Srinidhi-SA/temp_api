@@ -67,7 +67,7 @@ export default class TopPanel extends React.Component {
 											<li>
 												<Link to="/user-profile"><i class="zmdi zmdi-account-o zmdi-hc-lg" aria-hidden="true"></i>&nbsp;&nbsp;Profile</Link>
 											</li>
-											<li><a href="../userManual/index.html" target="_blank"><i class="zmdi zmdi-help-outline zmdi-hc-lg" aria-hidden="true"></i>&nbsp;&nbsp;How to use ?</a></li>
+											<li><a href="userManual/UserManual.html" target="_blank"><i class="zmdi zmdi-help-outline zmdi-hc-lg" aria-hidden="true"></i>&nbsp;&nbsp;How to use ?</a></li>
 											<li>
 												<a href="javascript:;" className="logout" onClick={this.logout.bind(this)}><i class="zmdi zmdi-sign-in zmdi-hc-lg" aria-hidden="true"></i>&nbsp;&nbsp;Logout</a>
 											</li>
