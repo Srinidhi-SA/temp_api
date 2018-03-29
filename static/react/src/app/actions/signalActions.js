@@ -406,9 +406,11 @@ export function hideTargetVariable(event,jobType){
     var count = store.getState().datasets.selectedVariablesCount;
     if(varType == "measure"){
         dataSetMeasures = updateTargetVariable(varSlug,dataSetMeasures);
+        dataSetDimensions = updateTargetVariable(varSlug,dataSetDimensions);
         $("#measureSearch").val("");
     }else if(varType == "dimension"){
         dataSetDimensions = updateTargetVariable(varSlug,dataSetDimensions);
+        dataSetMeasures = updateTargetVariable(varSlug,dataSetMeasures);
         $("#dimensionSearch").val("");
     }
     if(prevVarSlug != null){
