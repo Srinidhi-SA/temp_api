@@ -130,9 +130,9 @@ export class ModelVariableSelection extends React.Component {
                             </div>
                             {store.getState().apps.regression_selectedTechnique == "crossValidation" ?
                                 <div class="form-group">
-                                    <label class="col-lg-2 xs-pt-10">No of Folds :</label>
+                                    <label class="col-lg-2 xs-pt-10" for="noOffolds">No of Folds :</label>
                                     <div class="col-lg-10">
-                                        <input type="number" name="" class="form-control" required={true} id="" onChange={this.changecrossValidationValue.bind(this)} value={store.getState().apps.regression_crossvalidationvalue}/>
+                                        <input type="number" name="" class="form-control" required={true} id="noOffolds" onChange={this.changecrossValidationValue.bind(this)} value={store.getState().apps.regression_crossvalidationvalue}/>
                                     </div>
                                 </div>:
                                 <div id="range">
@@ -173,7 +173,7 @@ export class ModelVariableSelection extends React.Component {
                 
                  <div className="row">
 
-                <div className="form-group">
+                <div className="form-group hidden">
                 <label className="col-lg-4"><h4>I want to predict {custom_word1}</h4></label>
                 </div>
                 </div>
@@ -181,7 +181,7 @@ export class ModelVariableSelection extends React.Component {
                 <div className="row">
 
                 <div className="form-group">
-                <label className="col-lg-2 xs-pt-10">Select Target Variable :</label>
+                <label className="col-lg-2 xs-pt-10">I want to predict :</label>
                 <div className="col-lg-4"> {renderSelectBox}</div>
                 </div>
                  {/*<!-- /.col-lg-4 -->*/}

@@ -105,7 +105,7 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                             {/*<!-- Popover Content link -->*/}
                             <OverlayTrigger trigger="click" rootClose  placement="left" overlay={<Popover id="popover-trigger-focus"><DetailOverlay details={data}/></Popover>}><a  className="pover cursor">
                             <div class="card_icon">
-                            <img src={ STATIC_URL + "assets/images/apps_model_icon.png" } alt="LOADING"/>
+                            {store.getState().apps.currentAppDetails.app_type == "REGRESSION"?<img src={ STATIC_URL + "assets/images/apps_regression_icon.png" } alt="LOADING"/>:<img src={ STATIC_URL + "assets/images/apps_model_icon.png" } alt="LOADING"/>}
                                 </div>
                             </a></OverlayTrigger>
                             
