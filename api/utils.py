@@ -629,6 +629,14 @@ class StockDatasetSerializer(serializers.ModelSerializer):
         # except:
         #     ret['message'] = None
 
+        if 'request' in self.context:
+            # permission details
+            permission_details = get_permissions(
+                user=self.context['request'].user,
+                model=Dataset.__name__.lower(),
+            )
+            ret['permission_details'] = permission_details
+
         return ret
 
     class Meta:
