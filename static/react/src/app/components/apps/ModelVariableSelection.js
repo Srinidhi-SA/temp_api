@@ -9,7 +9,7 @@ import {C3Chart} from "../c3Chart";
 import {DataVariableSelection} from "../data/DataVariableSelection";
 import {updateTrainAndTest,createModel,updateSelectedVariable,showLevelCountsForTarget,updateTargetLevel,saveSelectedValuesForModel,updateRegressionTechnique,updateCrossValidationValue,getAppDetails,reSetRegressionVariables} from "../../actions/appActions";
 import {AppsLoader} from "../common/AppsLoader";
-import {getDataSetPreview} from "../../actions/dataActions";
+import {getDataSetPreview,showAllVariables} from "../../actions/dataActions";
 import {hideTargetVariable} from "../../actions/signalActions";
 import {statusMessages} from "../../helpers/helper";
 
@@ -38,6 +38,8 @@ export class ModelVariableSelection extends React.Component {
         this.props.dispatch(reSetRegressionVariables());
         this.props.dispatch(updateTrainAndTest(50));
         this.props.dispatch(updateTargetLevel(null));
+        if(this.props.dataPreview != null)
+        this.props.dispatch(showAllVariables(this.props.dataPreview,this.props.match.params.slug));
     }
     handleRangeSlider(e){
         this.props.dispatch(updateTrainAndTest(e.target.value))

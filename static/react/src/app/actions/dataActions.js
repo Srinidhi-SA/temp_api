@@ -1635,3 +1635,13 @@ export function saveDeselectedAnalysisList(name){
         flag:false,
     }  
 }
+export function showAllVariables(array,slug){
+    $.each(array.meta_data.uiMetaData.varibaleSelectionArray,function(key,item){
+        item.targetColumn = false;
+    });
+    return {
+            type: "DATA_PREVIEW",
+            dataPreview:array,
+            slug,
+    }
+}
