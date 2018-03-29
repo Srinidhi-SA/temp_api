@@ -51,13 +51,52 @@ def convert_crawled_data_to_metadata_format(news_data, other_details=None):
     sampleData = get_sample_data(news_data=news_data, type=type)
     metaData = get_metaData(news_data=news_data)
     transformation_settings = get_transformation_settings()
+    #
+    # return {
+    #     "headers": headers,
+    #     "sampleData": sampleData,
+    #     "columnData": columnData,
+    #     "metaData": metaData,
+    #     "transformation_settings": transformation_settings
+    # }
 
     return {
-        "headers": headers,
-        "sampleData": sampleData,
-        "columnData": columnData,
-        "metaData": metaData,
-        "transformation_settings": transformation_settings
+        'scriptMetaData': {
+            'columnData': columnData,
+            'headers': headers,
+            'metaData': metaData,
+            'sampleData': sampleData
+        },
+        'uiMetaData': {
+            'advanced_settings': {},
+            'columnDataUI': columnData,
+            'headersUI': headers,
+            'metaDataUI': metaData,
+            'possibleAnalysis': '',
+            'sampleDataUI': sampleData,
+            'transformation_settings': transformation_settings,
+            'varibaleSelectionArray': []
+        }
+    }
+
+def transform_into_uiandscripts_metadata():
+    return {
+        'scriptMetaData': {
+            'columnData': '',
+            'headers': '',
+            'metaData': '',
+            'sampleData': ''
+        },
+        'uiMetaData': {
+            'advanced_settings': '',
+            'columnDataUI': '',
+            'headersUI': '',
+            'metaDataUI': '',
+            'possibleAnalysis': '',
+            'sampleDataUI': '',
+            'transformation_settings': '',
+            'varibaleSelectionArray': ''
+        }
     }
 
 
