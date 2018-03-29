@@ -1589,9 +1589,7 @@ class StockDataset(models.Model):
     def create(self):
         # self.meta_data = json.dumps(dummy_audio_data_3)
         self.meta_data = self.generate_meta_data()
-        self.data = self.fake_call_mlscripts()
-        self.analysis_done = True
-        self.status = 'SUCCESS'
+        self.fake_call_mlscripts()
         self.save()
 
     def crawl_data(self):
