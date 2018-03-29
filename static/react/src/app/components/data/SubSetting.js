@@ -126,7 +126,7 @@ export class SubSetting extends React.Component {
       });
     });
     showHideSubsetting(this.props.item.columnType, this.state.dimentionList, this.props.item.dateSuggestionFlag)
-
+    $('#saveButton').attr('disabled', true);
   }
   changeSliderValue(e) {
     //alert("coming")
@@ -527,7 +527,7 @@ export class SubSetting extends React.Component {
               </div>
               <div class="panel-footer">
                 <div class="text-right" id="saveSubSetting">
-                  <button href="javascript:void(0)" class="btn btn-alt4" id="saveButton" disabled onClick={this.saveSubSetting.bind(this)}>
+                  <button href="javascript:void(0)" class="btn btn-alt4" id="saveButton" onClick={this.saveSubSetting.bind(this)}>
                     Save
                   </button>
                 </div>
