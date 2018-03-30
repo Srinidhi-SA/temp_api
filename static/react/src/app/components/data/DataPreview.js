@@ -340,6 +340,19 @@ export class DataPreview extends React.Component {
     } else {
       let transformationSettings = {};
       transformationSettings.existingColumns = store.getState().datasets.dataTransformSettings;
+      var nonDeletedColumns = 0;
+      let dataPrev = this.props.dataPreview.meta_data;
+      $.each(dataPrev.uiMetaData.metaDataUI,function(key,val){
+        if(val.name == "noOfColumns"){
+          nonDeletedColumns = val.value;
+          return false;
+        }
+      });
+      if(nonDeletedColumns == 0){
+        let errormsg = statusMessages("warning", "Atleast one column is needed to create a new dataset", "small_mascot");
+        bootbox.alert(errormsg)
+        return;
+      }
       let subSettingRq = {
         'filter_settings': store.getState().datasets.updatedSubSetting,
         'name': this.new_subset,
