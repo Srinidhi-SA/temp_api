@@ -14,7 +14,7 @@ import {MAXTEXTLENGTH} from "../../helpers/helper";
 @connect((store) => {
     return { selPrediction: store.signals.selectedPrediction};
   })
-
+//Used in Score Summary Table
 export class PopupDecisionTreeTable extends React.Component {
   constructor(props){
     super(props);

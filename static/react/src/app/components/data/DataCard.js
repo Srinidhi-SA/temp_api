@@ -17,12 +17,12 @@ import {MainHeader} from "../common/MainHeader";
 import {BreadCrumb} from "../common/BreadCrumb";
 import {getDataList, getDataSetPreview, storeSignalMeta, handleDelete, handleRename,refreshDatasets} from "../../actions/dataActions";
 import {fetchProductList, openDULoaderPopup, closeDULoaderPopup, storeSearchElement,storeSortElements,updateDatasetName} from "../../actions/dataActions";
-import {DataUpload} from "./DataUpload";
 import {open, close,triggerDataUploadAnalysis,updateHideData} from "../../actions/dataUploadActions";
 import {STATIC_URL} from "../../helpers/env.js"
 import {SEARCHCHARLIMIT,getUserDetailsOrRestart,SUCCESS,INPROGRESS,HANA,MYSQL,MSSQL,HDFS,FILEUPLOAD} from  "../../helpers/helper"
 import {DataUploadLoader} from "../common/DataUploadLoader";
 import Dialog from 'react-bootstrap-dialog'
+import {clearDataPreview} from "../../actions/dataUploadActions";
 
 var dateFormat = require('dateformat');
 
@@ -51,6 +51,7 @@ export class DataCard extends React.Component {
         var that = this;
         this.selectedData = e.target.id;
         //alert(this.selectedData);
+        this.props.dispatch(clearDataPreview());
         this.props.dispatch(storeSignalMeta(null, that.props.match.url));
         this.props.dispatch(getDataSetPreview(this.selectedData));
     }
@@ -74,8 +75,7 @@ export class DataCard extends React.Component {
         
         
         const dataSets = this.props.data;
-        
-        let addButton = <DataUpload/>
+
         const dataSetList = dataSets.map((data, i) => { 
             var iconDetails = "";
             var dataSetLink = "/data/" + data.slug;
@@ -85,7 +85,7 @@ export class DataCard extends React.Component {
             {data.name}
             </Link>
             if(data.status == INPROGRESS){
-                percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>
+                percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{data.completed_percentage >= 0 ? data.completed_percentage+' %':"In Progress"}</span></div>
                 dataClick = <a class="cursor" onClick={this.openDataLoaderScreen.bind(this,data.slug,data.completed_percentage,data.completed_message)}> {data.name}</a>
             }else if(data.status == SUCCESS && !data.viewed){
                 data.completed_percentage = 100;
@@ -106,8 +106,9 @@ export class DataCard extends React.Component {
                 src = STATIC_URL + "assets/images/File_Icon.png"
             }
             iconDetails = <img src={src} alt="LOADING"/>;
-            
-            
+            var permissionDetails = data.permission_details;
+            var isDropDown = permissionDetails.remove_dataset || permissionDetails.rename_dataset;
+           
             
             
             return (
@@ -121,26 +122,28 @@ export class DataCard extends React.Component {
                     {dataClick}
                     </h5>
                     
-                    <div class="btn-toolbar pull-right">
+                    
                     
                     {/*<!-- Rename and Delete BLock  -->*/}
-                    <a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
-                    <i className="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
-                    </a>
-                    <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                    <li onClick={this.handleRename.bind(this, data.slug, data.name)}>
-                    <a className="dropdown-item" href="#renameCard" data-toggle="modal">
-                    <i className="fa fa-edit"></i>&nbsp;&nbsp;Rename</a>
-                    </li>
-                    <li onClick={this.handleDelete.bind(this, data.slug)}>
-                    <a className="dropdown-item" href="#deleteCard" data-toggle="modal">
-                    <i className="fa fa-trash-o"></i>&nbsp;&nbsp;{data.status == "INPROGRESS"
-                        ? "Stop and Delete "
-                                : "Delete"}</a>
-                                </li>
-                                </ul>
+                    {isDropDown == true ?<div class="btn-toolbar pull-right"><a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
+                            <i className="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
+                            </a>
+                            <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                           {permissionDetails.rename_dataset == true ?  <li onClick={this.handleRename.bind(this, data.slug, data.name)}>
+                                   <a className="dropdown-item" href="#renameCard" data-toggle="modal">
+                                   <i className="fa fa-edit"></i>&nbsp;&nbsp;Rename</a>
+                                   </li>:""}
+                           
+                            
+                            {permissionDetails.remove_dataset == true ? <li onClick={this.handleDelete.bind(this, data.slug)}>
+                                    <a className="dropdown-item" href="#deleteCard" data-toggle="modal">
+                                    <i className="fa fa-trash-o"></i>&nbsp;&nbsp;{data.status == "INPROGRESS"
+                                        ? "Stop and Delete "
+                                                : "Delete"}</a>
+                                                </li>: ""}
+                                        </ul></div>:<div class="btn-toolbar pull-right"></div>} 
+
                                 
-                                </div>
                                 <div className="clearfix"></div>
                                 {percentageDetails}
                                 

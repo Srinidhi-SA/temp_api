@@ -86,9 +86,8 @@ export class VariableSelection extends React.Component {
             }
         }
         else{
-            if(store.getState().datasets.selectedVariablesCount == 0 &&  $("#analysisList").find(".overview").next("div").find("input[type='checkbox']").prop("checked") == true){
-              //let msg=statusMessages("warning","Insufficient variables selected for your chosen analysis.Please select more.","small_mascot")
-                  bootbox.alert("Insufficient variables selected for your chosen analysis.Please select more.");
+            if(store.getState().datasets.selectedVariablesCount == 0 || (store.getState().datasets.selectedVariablesCount == 0 &&  $("#analysisList").find(".overview").next("div").find("input[type='checkbox']").prop("checked") == true)){
+              bootbox.alert("Insufficient variables selected for your chosen analysis.Please select more.");
                 return false;
             }
         }
@@ -110,7 +109,7 @@ export class VariableSelection extends React.Component {
         console.log("while creating signal")
         console.log(this.props);
         this.signalFlag = false;
-        this.props.dispatch(updateCsLoaderValue(0))
+        this.props.dispatch(updateCsLoaderValue(-1))
         this.props.dispatch(openCsLoaderModal());
         //let customDetails = createcustomAnalysisDetails();
         let analysisList =[],config={}, postData={};
@@ -165,6 +164,41 @@ export class VariableSelection extends React.Component {
     }
     componentDidUpdate(){
         var that = this;
+        let dataPrev = this.props.dataPreview;
+        if(this.props.match.path.includes("/createSignal")){
+            let measureArray = $.grep(dataPrev.meta_data.uiMetaData.varibaleSelectionArray,function(val,key){
+                return(val.columnType == "measure" && val.selected == true);
+            });
+            let dimensionArray = $.grep(dataPrev.meta_data.uiMetaData.varibaleSelectionArray,function(val,key){
+                return(val.columnType == "dimension"  && val.selected == true);
+            });
+            if(that.props.getVarType == "dimension"){
+                if(measureArray.length >= 1 && dimensionArray.length >= 1){
+                    $("#chk_analysis_association").prop("disabled",false);
+                    $("#chk_analysis_prediction").prop("disabled",false);
+                }
+                else{
+                    $("#chk_analysis_association").prop("disabled",true);
+                    $("#chk_analysis_prediction").prop("disabled",true);
+                }
+            }
+            else if(that.props.getVarType == "measure"){
+                if(dimensionArray.length >= 1)
+                $("#chk_analysis_performance").prop("disabled",false);
+                else
+                $("#chk_analysis_performance").prop("disabled",true);
+
+                if(measureArray.length >= 1)
+                $("#chk_analysis_influencer").prop("disabled",false);
+                else
+                $("#chk_analysis_influencer").prop("disabled",true);
+
+                if(measureArray.length >= 1 && dimensionArray.length >= 1)
+                $("#chk_analysis_prediction").prop("disabled",false);
+                else
+                $("#chk_analysis_prediction").prop("disabled",true);
+            }
+        }
 
         if(!this.props.getVarType){
             $("#allAnalysis").prop("disabled",true);
@@ -172,8 +206,16 @@ export class VariableSelection extends React.Component {
         }else{
             $("#allAnalysis").prop("disabled",false);
             $("#advance-setting-link").show();
+            let disableSelectAll = false;
+            $('.possibleAnalysis[type="checkbox"]').each(function() {
+                if($(this).prop('disabled') == true)
+                disableSelectAll = true;
+            });
+            if(disableSelectAll == true)
+            $("#allAnalysis").prop("disabled",true);
+            else
+            $("#allAnalysis").prop("disabled",false);
         }
-
     }
     handleCategoricalChk(event){
         this.props.dispatch(updateCategoricalVariables(this.props.selVarSlug,this.props.getVarText,SET_VARIABLE,event));
@@ -181,7 +223,7 @@ export class VariableSelection extends React.Component {
     }
     renderAnalysisList(analysisList){
         let list =  analysisList.map((metaItem,metaIndex) =>{
-            let id = "chk_analysis"+ metaIndex;
+            let id = "chk_analysis_"+ metaItem.name;
             let cls = "ma-checkbox inline "+metaItem.name
             return(<div key={metaIndex} className={cls}><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisList.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>);
 
@@ -208,7 +250,7 @@ export class VariableSelection extends React.Component {
             const metaData = dataPrev.meta_data.uiMetaData.varibaleSelectionArray;
             if(metaData){
                 renderSelectBox = metaData.map((metaItem,metaIndex) =>{
-                    if(metaItem.columnType !="datetime" && !metaItem.dateSuggestionFlag){
+                    if(metaItem.columnType !="datetime" && !metaItem.dateSuggestionFlag && !metaItem.uidCol){
                         return(
                                 <option key={metaItem.slug}  name={metaItem.slug}   value={metaItem.columnType}>{metaItem.name}</option>
                         );
@@ -265,7 +307,7 @@ export class VariableSelection extends React.Component {
                 </div>{/*<!-- /.row -->*/}
                 <br/>
                 {/*  adding selection component */}
-                <DataVariableSelection/>
+                <DataVariableSelection match={this.props.match}/>
                 <AdvanceSettings   />
                 {/*---------end of selection component----------------------*/}
                 <div className="row">

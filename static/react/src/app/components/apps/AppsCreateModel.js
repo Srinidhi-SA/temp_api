@@ -8,6 +8,7 @@ import {closeModelPopup,openModelPopup} from "../../actions/appActions";
 import {getAllDataList,getDataSetPreview,storeSignalMeta,updateDatasetName} from "../../actions/dataActions";
 import {DataSourceList} from "../data/DataSourceList";
 import {open,close,fileUpload,dataUpload} from "../../actions/dataUploadActions";
+import {ACCESSDENIED} from "../../helpers/helper";
 
 
 @connect((store) => {
@@ -19,7 +20,8 @@ import {open,close,fileUpload,dataUpload} from "../../actions/dataUploadActions"
 		selectedDataset:store.datasets.selectedDataSet,
 		dataPreviewFlag:store.datasets.dataPreviewFlag,
 		currentAppId:store.apps.currentAppId,
-		selectedDataSrcType:store.dataSource.selectedDataSrcType
+		selectedDataSrcType:store.dataSource.selectedDataSrcType,
+		currentAppDetails:store.apps.currentAppDetails,
 		};
 })
 
@@ -66,7 +68,7 @@ export class AppsCreateModel extends React.Component {
 		let _link = "";
 		let hideCreate=false
 		if(store.getState().datasets.dataPreviewFlag){
-			let _link = "/apps/"+store.getState().apps.currentAppId+"/models/data/"+store.getState().datasets.selectedDataSet;
+			let _link = "/apps/"+store.getState().apps.currentAppDetails.slug+"/models/data/"+store.getState().datasets.selectedDataSet;
 			return(<Redirect to={_link}/>);
 		}
 		if(dataSets){
@@ -80,9 +82,15 @@ export class AppsCreateModel extends React.Component {
 			if(this.props.selectedDataSrcType=="fileUpload")
 			hideCreate=true
 		}
+		let cls = "newCardStyle firstCard"
+	    let title = "";
+	    if(!this.props.isEnableCreate){
+	        cls += " disable-card";
+	        title= ACCESSDENIED
+	    }
 		return (
-				<div class="col-md-3 xs-mb-15 list-boxes xs-mt-20" onClick={this.openModelPopup.bind(this)}>
-				<div class="newCardStyle firstCard">
+				<div class="col-md-3 xs-mb-15 list-boxes xs-mt-20" title={title}>
+				<div className={cls} onClick={this.openModelPopup.bind(this)}>
 				<div class="card-header"></div>
 				<div class="card-center newStoryCard">
 				<div class="col-xs-12 text-center">+<br/><small>CREATE MODEL</small></div>

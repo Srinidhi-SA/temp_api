@@ -15,7 +15,7 @@ export default function reducer(state = {
   signalMeta: {},
   curUrl: "",
   dataUploadLoaderModal: false,
-  dULoaderValue: 1,
+  dULoaderValue: -1,
   data_search_element: "",
   dataSetMeasures: [],
   dataSetDimensions: [],
@@ -183,10 +183,10 @@ export default function reducer(state = {
           CopyOfMeasures: [],
           CopyOfDimension: [],
           CopyTimeDimension: [],
-          measureAllChecked:true,
-          dimensionAllChecked:true,
-          
-          
+          measureAllChecked:action.selectChk,
+          dimensionAllChecked:action.selectChk,
+
+
         }
       }
       break;
@@ -231,7 +231,7 @@ export default function reducer(state = {
           dataPreviewFlag: false,
           selectedDataSet: "",
           dataLoaderText:"Preparing data for loading",
-          dULoaderValue: 3,
+          dULoaderValue: -1,
           loading_message:[]
         }
       }
@@ -338,7 +338,7 @@ export default function reducer(state = {
             CopyOfMeasures: action.measures,
             CopyOfDimension: action.dimensions,
             CopyTimeDimension: action.timeDimensions,
-            
+
         }
     }
         break;
@@ -445,7 +445,7 @@ export default function reducer(state = {
       return{
         ...state,
         loading_message:[],
-        dULoaderValue:3,
+        dULoaderValue:-1,
         dataLoaderText:"Preparing data for loading"
       }
     }
@@ -526,6 +526,25 @@ export default function reducer(state = {
       }
     }
     break;
+    case "MAKE_ALL_TRUE_OR_FALSE":
+    {
+      return{
+        ...state,
+        measureAllChecked:action.value,
+        dimensionAllChecked:action.value
+      }
+    }
+    break;
+    case "UPDATE_ANALYSIS_LIST_SELECT_ALL":
+      {
+        return {
+          ...state,
+          dataSetAnalysisList: action.renderList,
+          dataSetPrevAnalysisList:action.prevAnalysisList,
+          dataSetSelectAllAnalysis:action.flag,
+        }
+      }
+      break;
   }
   return state
 

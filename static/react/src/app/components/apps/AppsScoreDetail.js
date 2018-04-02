@@ -5,18 +5,19 @@ import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab} from "react-bootstrap";
 import {AppsCreateScore} from "./AppsCreateScore";
 import {Card} from "../signals/Card";
-import {getListOfCards,getAppsScoreSummary,getScoreSummaryInCSV} from "../../actions/appActions";
+import {getListOfCards,getAppsScoreSummary,getScoreSummaryInCSV,updateScoreSlug,getAppDetails,updateScoreSummaryFlag} from "../../actions/appActions";
 import {Button} from "react-bootstrap";
 import {STATIC_URL,EMR} from "../../helpers/env.js";
 import {isEmpty} from "../../helpers/helper";
 import {API} from "../../helpers/env";
-import {Link} from "react-router-dom";
+import {Link,Redirect} from "react-router-dom";
 
 
 @connect((store) => {
 	return {login_response: store.login.login_response,
 		scoreList:store.apps.scoreList,scoreSummary:store.apps.scoreSummary,
 		scoreSlug:store.apps.scoreSlug,
+		currentAppDetails:store.apps.currentAppDetails,
 		};
 })
 
@@ -27,31 +28,42 @@ export class AppsScoreDetail extends React.Component {
   }
   componentWillMount() {
       //It will trigger when refresh happens on url
+      this.props.dispatch(getAppDetails(this.props.match.params.AppId));
       if(isEmpty(this.props.scoreSummary)){
           this.props.dispatch(getAppsScoreSummary(this.props.match.params.slug));
+          this.props.dispatch(updateScoreSlug(this.props.match.params.slug))
       }
   }
   componentDidMount() {
 	  if(!isEmpty(store.getState().apps.scoreSummary)){
 		  if(store.getState().apps.scoreSummary.slug != store.getState().apps.scoreSlug)
 		  this.props.dispatch(getAppsScoreSummary(store.getState().apps.scoreSlug));
-	  }else{
-		  this.props.dispatch(getAppsScoreSummary(store.getState().apps.scoreSlug));
 	  }
-
   }
   gotoScoreData(){
       this.props.dispatch(getScoreSummaryInCSV(store.getState().apps.scoreSlug))
   }
+  updateScoreSummaryFlag(){
+      this.props.dispatch(updateScoreSummaryFlag(false));
+  }
   render() {
     console.log("apps Score Detail View is called##########3");
-    const scoreSummary = store.getState().apps.scoreSummary;
-    const scoreLink = "/apps/"+store.getState().apps.currentAppId+"/scores";
-    const scoreDataLink = "/apps/"+store.getState().apps.currentAppId+"/scores/"+store.getState().apps.scoreSlug+"/dataPreview";
+    let scoreSummary = store.getState().apps.scoreSummary;
+    let scoreLink = "/apps/"+this.props.match.params.AppId+"/scores";
+    let scoreDataLink = "/apps/"+this.props.match.params.AppId+"/scores/"+store.getState().apps.scoreSlug+"/dataPreview";
+    var showViewButton = true;
+    var showDownloadButton = true;
     console.log(scoreSummary)
-	if (!$.isEmptyObject(scoreSummary)) {
+		if (!$.isEmptyObject(scoreSummary)) {
 		console.log(this.props)
-		let listOfCardList = getListOfCards(scoreSummary.data.listOfCards)
+		if(scoreSummary.data.listOfNodes.length>0&&this.props.match.params.AppId.indexOf("regression")!=-1){
+		var url = "/apps-regression-score/"+store.getState().apps.scoreSlug
+		//this.props.history.push(url)
+		return(<Redirect to={url}/>)
+		}else{
+		let listOfCardList = getListOfCards(scoreSummary.data.listOfCards);
+		showViewButton = scoreSummary.permission_details.download_score;
+		showDownloadButton = scoreSummary.permission_details.download_score;
 		let cardDataList = listOfCardList.map((data, i) => {
 
             return (<Card key={i} cardData={data} />)
@@ -76,7 +88,7 @@ export class AppsScoreDetail extends React.Component {
 		                          <button type="button" className="btn btn-default" disabled = "true" title="Document Mode">
 		                               <i class="zmdi zmdi-hc-lg zmdi-view-web"></i>
 		                            </button>
-							   <Link className="continue btn btn-default" to={scoreLink}>
+							   <Link className="continue btn btn-default" to={scoreLink} onClick={this.updateScoreSummaryFlag.bind(this,false)}>
 
 		                            <i class="zmdi zmdi-hc-lg zmdi-close"></i>
 
@@ -95,8 +107,8 @@ export class AppsScoreDetail extends React.Component {
 		                    </div>
 		                    <div className="row">
 		                    <div className="col-md-12 text-right">
-		                   	<Link to={scoreDataLink} onClick={this.gotoScoreData.bind(this)} className="btn btn-primary xs-pr-10"> View </Link>
-		                    	<a  href={downloadURL} id="download" className="btn btn-primary" download>Download</a>
+		                   	{showViewButton?<Link to={scoreDataLink} onClick={this.gotoScoreData.bind(this)} className="btn btn-primary xs-pr-10"> View </Link>:""}
+		                    {showDownloadButton?<a  href={downloadURL} id="download" className="btn btn-primary" download>Download</a>:""}
 		                   </div>
 
 		                   </div>
@@ -111,7 +123,7 @@ export class AppsScoreDetail extends React.Component {
 			          </div>
 			      );
 		}
-	}
+	}}
 	else{
 		return (
 				 <div className="side-body">

@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
 
-gunicorn -c gunicorn_config.py config.wsgi:application --enable-stdio-inheritance --max_requests 5
+gunicorn -c gunicorn_config.py config.wsgi:application --enable-stdio-inheritance

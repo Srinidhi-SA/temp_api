@@ -5,7 +5,7 @@ import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Button} from "react-bootstrap";
 import {AppsCreateScore} from "./AppsCreateScore";
 import {Card} from "../signals/Card";
-import {getListOfCards,getAppsModelSummary,updateModelSlug,handleExportAsPMMLModal} from "../../actions/appActions";
+import {getListOfCards,getAppsModelSummary,updateModelSlug,handleExportAsPMMLModal,getAppDetails,updateModelSummaryFlag} from "../../actions/appActions";
 import {storeSignalMeta} from "../../actions/dataActions";
 import CircularProgressbar from 'react-circular-progressbar';
 import {STATIC_URL} from "../../helpers/env.js"
@@ -28,6 +28,7 @@ export class AppsModelDetail extends React.Component {
   }
   componentWillMount() {
 		this.props.dispatch(storeSignalMeta(null,this.props.match.url));
+		this.props.dispatch(getAppDetails(this.props.match.params.AppId));
 		//It will trigger when refresh happens on url
 		if(isEmpty(this.props.modelSummary)){
 		    this.props.dispatch(getAppsModelSummary(this.props.match.params.slug));
@@ -52,23 +53,53 @@ export class AppsModelDetail extends React.Component {
   handleExportAsPMMLModal(flag){
       this.props.dispatch(handleExportAsPMMLModal(flag))
   }
+  updateModelSummaryFlag(flag){
+      this.props.dispatch(updateModelSummaryFlag(flag))
+  }
   render() {
     console.log("apps Model Detail View is called##########3");
-    const modelSummary = store.getState().apps.modelSummary;
-    const modelLink = "/apps/"+store.getState().apps.currentAppId+"/models";
+  	const modelSummary = store.getState().apps.modelSummary;
+	 	var showExportPmml = true;
+		var showCreateScore = true;
+    const modelLink = "/apps/"+this.props.match.params.AppId+"/models";
 	if (!$.isEmptyObject(modelSummary)) {
 		console.log(this.props)
-		let listOfCardList = getListOfCards(modelSummary.data.model_summary.listOfCards)
-		let cardDataList = listOfCardList.map((data, i) => {
-			if( i != 0){
-				if(i%2 != 0)
-				return (<div className="col-md-6 xs-p-30 clearfix"><Card cardData={data} /></div>)
-				else
-				return (<div className="col-md-6 xs-p-30"><Card cardData={data} /></div>)
-			}
-             else return (<Card key={i} cardData={data} />)
-
-		                    });
+        showExportPmml = modelSummary.permission_details.downlad_pmml;
+		showCreateScore = modelSummary.permission_details.create_score;
+		if(store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
+			var listOfCardList = modelSummary.data.model_summary.listOfCards;
+			var componentsWidth = 0;
+			var cardDataList = listOfCardList.map((data, i) => {
+				var clearfixClass = "col-md-"+data.cardWidth*0.12+" xs-p-30 clearfix";
+				var nonClearfixClass = "col-md-"+data.cardWidth*0.12+" xs-p-30";
+				var cardDataArray = data.cardData;
+				if(data.cardWidth == 100){
+					componentsWidth = 0;
+					return (<div className={clearfixClass}><Card cardData={cardDataArray} /></div>)
+				}
+				else if(componentsWidth == 0 || componentsWidth+data.cardWidth > 100){
+					componentsWidth = data.cardWidth;
+					return (<div className={clearfixClass}><Card cardData={cardDataArray} /></div>)
+				}
+				else{
+					componentsWidth = componentsWidth+data.cardWidth;
+									return (<div className={nonClearfixClass}><Card cardData={cardDataArray} /></div>)
+							}
+				});
+		}
+		else{
+			var listOfCardList = getListOfCards(modelSummary.data.model_summary.listOfCards);
+			var cardDataList = listOfCardList.map((data, i) => {
+				if( i != 0 ){
+					if(i%2 != 0)
+					return (<div className="col-md-6 xs-p-30 clearfix"><Card cardData={data} /></div>)
+					else
+					return (<div className="col-md-6 xs-p-30"><Card cardData={data} /></div>)
+				}
+				else return (<Card key={i} cardData={data} />)
+			});
+		}
+		
 		if(listOfCardList){
 			return (
 			          <div className="side-body">
@@ -87,7 +118,7 @@ export class AppsModelDetail extends React.Component {
 		                          <button type="button" className="btn btn-default" disabled = "true" title="Document Mode">
 		                             <i class="zmdi zmdi-hc-lg zmdi-view-web"></i>
 		                            </button>
-							   <Link className="btn btn-default continue btn-close" to={modelLink}>
+							   <Link className="btn btn-default continue btn-close" to={modelLink} onClick={this.updateModelSummaryFlag.bind(this,false)}>
 
 		                            <i class="zmdi zmdi-hc-lg zmdi-close"></i>
 
@@ -103,10 +134,11 @@ export class AppsModelDetail extends React.Component {
 		                  {cardDataList}
 
 		                    </div>
-		                    <div class="row">
+												<div class="row">
 		                    <div className="col-md-12 text-right ">
-		                    <Button bsStyle="primary" onClick={this.handleExportAsPMMLModal.bind(this,true)}>Export As PMML</Button>
-		                   <AppsCreateScore match={this.props.match}/>
+												{showExportPmml?
+		                    <Button bsStyle="primary" onClick={this.handleExportAsPMMLModal.bind(this,true)}>Export As PMML</Button>:""}
+		                  	{showCreateScore? <AppsCreateScore match={this.props.match}/>:""}
 		                   </div>
 		                   </div>
 		             </div>

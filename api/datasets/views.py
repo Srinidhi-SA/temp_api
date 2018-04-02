@@ -24,10 +24,13 @@ from helper import convert_metadata_according_to_transformation_setting
 from helper import get_advanced_setting
 from api.tasks import clean_up_on_delete
 
+from api.permission import DatasetRelatedPermission
+from guardian.shortcuts import assign_perm
+
 # Create your views here.
 
 
-class DatasetView(viewsets.ModelViewSet):
+class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
     def get_queryset(self):
         queryset = Dataset.objects.filter(
@@ -35,16 +38,21 @@ class DatasetView(viewsets.ModelViewSet):
             deleted=False,
             status__in=['SUCCESS', 'INPROGRESS']
         )
+
         return queryset
 
     def get_object_from_all(self):
         return Dataset.objects.get(slug=self.kwargs.get('slug'))
+
+    def get_serializer_context(self):
+        return {'request': self.request}
 
     serializer_class = DatasetSerializer
     lookup_field = 'slug'
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('bookmarked', 'deleted', 'datasource_type', 'name')
     pagination_class = CustomPagination
+    permission_classes = (DatasetRelatedPermission, )
 
     def create(self, request, *args, **kwargs):
 
@@ -71,7 +79,7 @@ class DatasetView(viewsets.ModelViewSet):
             # answer: I tried. Sighhh but it gave this error "Incorrect type. Expected pk value, received User."
             data['created_by'] = request.user.id
 
-            serializer = DatasetSerializer(data=data)
+            serializer = DatasetSerializer(data=data, context={"request": self.request})
             if serializer.is_valid():
                 dataset_object = serializer.save()
                 dataset_object.create()
@@ -140,13 +148,12 @@ class DatasetView(viewsets.ModelViewSet):
             deleted=False,
             status__in=['SUCCESS']
         )
-        serializer = DataNameListSerializer(queryset, many=True)
+        serializer = DataNameListSerializer(queryset, many=True, context={"request": self.request})
         return Response({
             "data": serializer.data
         })
 
     def list(self, request, *args, **kwargs):
-
         return get_listed_data(
             viewset=self,
             request=request,
@@ -163,7 +170,7 @@ class DatasetView(viewsets.ModelViewSet):
         if instance is None:
             return retrieve_failed_exception("File Doesn't exist.")
 
-        serializer = DatasetSerializer(instance=instance)
+        serializer = DatasetSerializer(instance=instance, context={'request': request})
         object_details = serializer.data
         original_meta_data_from_scripts = object_details['meta_data']
 
@@ -172,7 +179,8 @@ class DatasetView(viewsets.ModelViewSet):
         if original_meta_data_from_scripts == {}:
             uiMetaData = None
         else:
-            uiMetaData = add_ui_metadata_to_metadata(original_meta_data_from_scripts)
+            signal_permission = request.user.has_perm('api.create_signal')
+            uiMetaData = add_ui_metadata_to_metadata(original_meta_data_from_scripts, signal_permission=signal_permission)
 
         object_details['meta_data'] = {
             "scriptMetaData": original_meta_data_from_scripts,
@@ -206,7 +214,7 @@ class DatasetView(viewsets.ModelViewSet):
             )
         temp_details['created_by'] = request.user.id
 
-        serializer = DatasetSerializer(data=temp_details)
+        serializer = DatasetSerializer(data=temp_details, context={"request": self.request})
         if serializer.is_valid():
             dataset_object = serializer.save()
             if 'filter_settings' in data:
@@ -233,7 +241,8 @@ class DatasetView(viewsets.ModelViewSet):
 
         uiMetaData = convert_metadata_according_to_transformation_setting(
                 uiMetaData,
-                transformation_setting=ts
+                transformation_setting=ts,
+                user=request.user
             )
 
         uiMetaData["advanced_settings"] = get_advanced_setting(uiMetaData['varibaleSelectionArray'])
@@ -244,3 +253,17 @@ class DatasetView(viewsets.ModelViewSet):
         data = request.data
         data = data.get('variableSelection')
         return Response(get_advanced_setting(data))
+
+
+    @list_route(methods=['get'])
+    def dummy_permission(self, request):
+        queryset = Dataset.objects.filter(
+            created_by=self.request.user,
+            deleted=False,
+            status__in=['SUCCESS']
+        )
+        # assign_perm('api.view_dataset', request.user)
+        for insta in queryset:
+            assign_perm('api.view_dataset', request.user, insta)
+
+        return Response({})

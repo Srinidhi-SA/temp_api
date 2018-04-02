@@ -6,14 +6,14 @@ import store from "../../store";
 import {C3Chart} from "../c3Chart";
 import {STATIC_URL} from "../../helpers/env.js";
 import { Scrollbars } from 'react-custom-scrollbars';
-import {getScoreSummaryInCSV,emptyScoreCSVData} from "../../actions/appActions";
+import {getScoreSummaryInCSV,emptyScoreCSVData,getAppDetails} from "../../actions/appActions";
 import {Link} from "react-router-dom";
 import {Button} from "react-bootstrap";
 import {isEmpty} from "../../helpers/helper";
 
 @connect((store) => {
 	return {login_response: store.login.login_response, scoreCSVData: store.apps.scoreSummaryCSVData,
-	    currentAppId:store.apps.currentAppId,scoreSlug:store.apps.scoreSlug};
+	    currentAppId:store.apps.currentAppId,scoreSlug:store.apps.scoreSlug,currentAppDetails:store.apps.currentAppDetails,};
 })
 
 export class DataPreviewLeftPanel extends React.Component {
@@ -21,7 +21,8 @@ export class DataPreviewLeftPanel extends React.Component {
 		super(props);
 	}
 	 componentWillMount(){
-	     if(!isEmpty(this.props.scoreCSVData)){
+	     this.props.dispatch(getAppDetails(this.props.match.params.AppId));
+	     if(isEmpty(this.props.scoreCSVData) || this.props.scoreCSVData == null || this.props.scoreCSVData.length == 0){
 	         this.props.dispatch(getScoreSummaryInCSV(this.props.match.params.slug))
 	     }
 	  }
@@ -31,33 +32,35 @@ export class DataPreviewLeftPanel extends React.Component {
 	render() {
 		console.log("score data preview is called##########3");
 		 var pattern = /(".*?"|[^",\s]+)(?=\s*,|\s*$)/g;
-		 var scoreLink = "/apps/" + store.getState().apps.currentAppId + "/scores/" + this.props.match.params.slug;
+		 var scoreLink = "/apps/" + this.props.match.params.AppId + "/scores/" + this.props.match.params.slug;
 		const scoreData = this.props.scoreCSVData;
 		var tableThTemplate = "";
 		var tableRowTemplate = "";
 		if(scoreData.length > 0){
+		    console.log(scoreData)
 		    tableThTemplate = scoreData.map(function(row,id){
-		        let colData = "";
-		        if(id == 0){
-		           colData =  row.match(pattern).map((colData,index) =>{
-		               let colIndex = "row_"+id+index
-		                return(<th key={colIndex}><b>{colData}</b></th>)
-		            })
-		        }
-		        return colData;
-		    });
+                let colData = "";
+                if(id == 0){
+                   colData =  row.map((colData,index) =>{
+                       let colIndex = "row_"+id+index
+                        return(<th key={colIndex}><b>{colData}</b></th>)
+                    })
+                }
+                return colData;
+            });
 		    tableRowTemplate = scoreData.map(function(row,id){
 		        if(row != ""){
                 let colData = "";
                 let colIndex = "row_"+id
                 if(id > 0){
-                        colData =  row.match(pattern).map((colData,index) =>{
+                        colData =  row.map((colData,index) =>{
                             return(<td>{colData}</td>)
                         })
                     }
                 return <tr key = {colIndex}>{colData}</tr>;
                 }
             });
+		    
 		    return(
 		            <div className="side-body">
                     {/* <!-- Page Title and Breadcrumbs -->*/}
@@ -103,7 +106,7 @@ export class DataPreviewLeftPanel extends React.Component {
 					<div className="col-md-12">
                     <div className="panel">
                     <div className="panel-body no-border text-right box-shadow">
-                    <Link to={scoreLink} onClick={this.emptyScoreCSVData.bind(this)}><Button> Close</Button></Link>
+                    <Link to={scoreLink} ><Button> Close</Button></Link>
                     </div>
                     </div>
 					</div>

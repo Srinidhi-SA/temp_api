@@ -6,6 +6,7 @@ import json
 # Register your models here.
 
 from api.models import Dataset, Insight, Job, Score, Trainer,CustomApps
+from api.user_helper import Profile
 
 
 class DatasetAdmin(admin.ModelAdmin):
@@ -157,9 +158,63 @@ class CustomAppsAdmin(admin.ModelAdmin):
     list_filter = ["status"]
     readonly_fields = ["status","app_id"]
 
+class ProfileAdmin(admin.ModelAdmin):
+    # pass
+    icon = '<i class="material-icons">Profile</i>'
+    list_display = ["name", "website", "city", "phone"]
+    # search_fields = ["name"]
+
+    def name(self, instance):
+
+        return instance.user
+
+
 admin.site.register(Dataset, DatasetAdmin)
 admin.site.register(Insight, InsightAdmin)
 admin.site.register(Job, JobAdmin)
 admin.site.register(Score, ScoreAdmin)
 admin.site.register(Trainer, TrainerAdmin)
 admin.site.register(CustomApps, CustomAppsAdmin)
+admin.site.register(Profile, ProfileAdmin)
+
+from django.contrib.auth.admin import GroupAdmin
+from django.contrib.auth.models import Group
+
+from .models import Role
+
+
+admin.site.unregister(Group)
+admin.site.register(Role, GroupAdmin)
+
+from django.contrib.auth.models import Permission
+
+class PermissionAdmin(admin.ModelAdmin):
+    model = Permission
+    fields = ['name']
+
+admin.site.register(Permission, PermissionAdmin)
+
+# from guardian.admin import GuardedModelAdmin
+# from guardian.backends import ObjectPermissionBackend
+#
+# class DatasetGaurdianAdmin(GuardedModelAdmin):
+#     icon = '<i class="material-icons">cloud_done</i>'
+#     search_fields = ["name", "slug"]
+#     list_display = ["name", "slug", "created_at", "deleted"]  # TODO: @Ankush Add "created_by"
+#     # list_filter = []
+#     readonly_fields = ["created_at", "deleted", "created_by", "job"]
+#
+# admin.site.register(Dataset, DatasetGaurdianAdmin)
+
+from django.contrib.auth.models import User
+from django.contrib.auth.admin import UserAdmin
+
+admin.site.unregister(User)
+
+class MyUserAdmin(UserAdmin):
+    readonly_fields = ("last_login", "date_joined")
+
+admin.site.register(User, MyUserAdmin)
+
+
+

@@ -74,7 +74,6 @@ def write_into_databases(job_type, object_slug, results):
             dataset_object.status = "FAILED"
             dataset_object.save()
             return results
-
         columnData = results['columnData']
         for data in columnData:
             # data["chartData"] = helper.find_chart_data_and_replace_with_chart_data(data["chartData"])
@@ -119,7 +118,120 @@ def write_into_databases(job_type, object_slug, results):
                                            model_slug=object_slug
                                            )
 
+        if "error_message" in results or "model_summary" not in results:
+            trainer_object.status = "FAILED"
+            trainer_object.save()
+            return results
+
+        results['model_summary'] = add_slugs(results['model_summary'],object_slug=object_slug)
+        trainer_object.data = json.dumps(results)
+        trainer_object.analysis_done = True
+        trainer_object.status = 'SUCCESS'
+        trainer_object.save()
+        return results
+    elif job_type == 'score':
+        score_object = get_db_object(model_name=Score.__name__,
+                                           model_slug=object_slug
+                                           )
+
         if "error_message" in results:
+            score_object.status = "FAILED"
+            score_object.save()
+            return results
+
+        results = add_slugs(results, object_slug=object_slug)
+        score_object.data = json.dumps(results)
+        score_object.analysis_done = True
+        score_object.status = 'SUCCESS'
+        score_object.save()
+        return results
+    elif job_type == 'robo':
+        robo_object = get_db_object(model_name=Robo.__name__,
+                                    model_slug=object_slug
+                                    )
+
+        if "error_message" in results:
+            robo_object.status = "FAILED"
+            robo_object.save()
+            return results
+
+        results = add_slugs(results, object_slug=object_slug)
+        robo_object.data = json.dumps(results)
+        robo_object.robo_analysis_done = True
+        robo_object.status = 'SUCCESS'
+        robo_object.save()
+        return results
+    elif job_type == 'stockAdvisor':
+        stock_objects = get_db_object(model_name=StockDataset.__name__,
+                                           model_slug=object_slug
+                                           )
+        results = add_slugs(results, object_slug=object_slug)
+        stock_objects.data = json.dumps(results)
+        stock_objects.analysis_done = True
+        stock_objects.status = 'SUCCESS'
+        stock_objects.save()
+        return results
+    else:
+        print "No where to write"
+
+def write_into_databases1(job_type, object_slug, results):
+    from api import helper
+    import json
+    from api.helper import get_db_object
+    from api.views import chart_changes_in_metadata_chart, add_slugs
+
+    if job_type in ["metadata", "subSetting"]:
+        dataset_object = get_db_object(model_name=Dataset.__name__,
+                                           model_slug=object_slug
+                                           )
+
+        if "error_message" in results:
+            dataset_object.status = "FAILED"
+            dataset_object.save()
+            return results
+        columnData = results['columnData']
+        for data in columnData:
+            # data["chartData"] = helper.find_chart_data_and_replace_with_chart_data(data["chartData"])
+            card_data = data["chartData"]
+            if 'dataType' in card_data and card_data['dataType'] == 'c3Chart':
+                chart_data = card_data['data']
+                final_chart_data = helper.decode_and_convert_chart_raw_data(chart_data, object_slug=object_slug)
+                data["chartData"] = chart_changes_in_metadata_chart(final_chart_data)
+                data["chartData"]["table_c3"] = []
+
+        results['columnData'] = columnData
+        # results['possibleAnalysis'] = settings.ANALYSIS_FOR_TARGET_VARIABLE
+        da = []
+        for d in results.get('sampleData'):
+            da.append(map(str, d))
+        results['sampleData'] = da
+        # results["modified"] = False
+
+        dataset_object.meta_data = json.dumps(results)
+        dataset_object.analysis_done = True
+        dataset_object.save()
+        return results
+    elif job_type == "master":
+        insight_object = get_db_object(model_name=Insight.__name__,
+                                           model_slug=object_slug
+                                           )
+
+        if "error_message" in results:
+            insight_object.status = "FAILED"
+            insight_object.save()
+            return results
+
+        results = add_slugs(results, object_slug=object_slug)
+        insight_object.data = json.dumps(results)
+        insight_object.analysis_done = True
+        insight_object.status = 'SUCCESS'
+        insight_object.save()
+        return results
+    elif job_type == "model":
+        trainer_object = get_db_object(model_name=Trainer.__name__,
+                                           model_slug=object_slug
+                                           )
+        if "error_message" in results or "model_summary" not in results:
             trainer_object.status = "FAILED"
             trainer_object.save()
             return results

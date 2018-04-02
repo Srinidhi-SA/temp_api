@@ -19,6 +19,8 @@ class LeftPanel extends React.Component {
   componentDidMount() {
     console.log("Main side navbar props:::");
     console.log(this);
+    if(this.props.location.pathname.indexOf("/apps-") >= 0)
+    $('.navbar-nav')[0].childNodes[1].childNodes[0].className = " sdb sdb_app active";
   }
   componentWillUpdate() {
     //this.setState({currentTab: "otherTab"});
@@ -41,6 +43,10 @@ class LeftPanel extends React.Component {
   render() {
     console.log("LeftPanel")
     console.log(this.props);
+    let view_data_permission=getUserDetailsOrRestart.get().view_data_permission
+    let view_signal_permission = getUserDetailsOrRestart.get().view_signal_permission
+    let view_trainer_permission = getUserDetailsOrRestart.get().view_trainer_permission
+    let view_score_permission = getUserDetailsOrRestart.get().view_score_permission
     return (
       <div>
         <div>
@@ -48,11 +54,16 @@ class LeftPanel extends React.Component {
           <div className="side-menu">
             <div className="side-menu-container">
               <ul className="nav navbar-nav">
+              {(view_signal_permission=="true")?
                 <li>
                   <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" className="sdb sdb_signal" to="/signals">
                     <span></span>
                     SIGNALS</NavLink>
-                </li>
+                </li>:<li className="notAllowed" title="Access Denied">
+                  <NavLink className="sdb sdb_signal deactivate" to="/signals">
+                    <span></span>
+                    SIGNALS</NavLink>
+                </li>}
                 {/*  <li>
                     <NavLink className="sdb_story" to ="/stories">
                       <span></span>
@@ -60,16 +71,20 @@ class LeftPanel extends React.Component {
                   </li>*/}
 
                 <li>
-                  <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" className=" sdb sdb_app" to="/apps">
+                  <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" isActive={(match,location) => /^[/]apps/.test(location.pathname)} className=" sdb sdb_app" to="/apps">
                     <span></span>
                     APPS</NavLink>
                 </li>
-
+                {(view_data_permission=="true")?
                 <li>
                   <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" className="sdb sdb_data" to="/data">
                     <span></span>
                     DATA</NavLink>
-                </li>
+                </li>:<li className="notAllowed" title="Access Denied">
+                  <NavLink className="sdb sdb_data deactivate" to="/data">
+                    <span></span>
+                    DATA</NavLink>
+                </li>}
                 {/* <li>
                     <NavLink  onClick={this.hideDataPrev.bind(this)} activeClassName="active" className="sdb sdb_settings" to ="/settings">
                       <span></span>

@@ -75,9 +75,9 @@ const CONFUSIONMATRIX = "confusionMatrix";
 const HEATMAPTABLE = "heatMap";
 const CIRCULARCHARTTABLE = "circularChartTable";
 const DECISIONTREETABLE = "decisionTreeTable"
-const DULOADERPERVALUE = 0;
-const CSLOADERPERVALUE = 0;
-const APPSLOADERPERVALUE = 0;
+const DULOADERPERVALUE = -1;
+const CSLOADERPERVALUE = -1;
+const APPSLOADERPERVALUE = -1;
 const LOADERMAXPERVALUE = 99;
 const DEFAULTINTERVAL = 10000;
 const APPSDEFAULTINTERVAL = 10000;
@@ -132,7 +132,10 @@ const SET_POLARITY= "set_polarity";
 const UNIQUE_IDENTIFIER = "unique_identifier";
 const DYNAMICLOADERINTERVAL = 2000;
 const IGNORE_SUGGESTION = "ignore_suggestion";
-
+const ACCESSDENIED ="Access Denied"
+const CREATESIGNAL = "Create Signal";
+const CREATEMODEL = "Create Model";
+const CREATESCORE = "Create Score"
 
 export function generateHeaders(table) {
     var cols = table.tableData.map(function(rowData,i){
@@ -284,7 +287,7 @@ export function  subTreeSetting(urlLength, length,paramL2,classname=".sb_navigat
 
 	export function  showHideSideChart(colType,chartData) {
 
-		if(colType =="datetime" || $.isEmptyObject(chartData)){
+		if(colType =="datetime" || $.isEmptyObject(chartData) ){
 				$(function(){
 			       $("#tab_visualizations #pnl_visl").removeClass("in");
                    $("#tab_visualizations a").addClass("collapsed");
@@ -449,7 +452,11 @@ export{
   IGNORE_SUGGESTION,
   HDFS,
   HANA,
-  MSSQL
+  MSSQL,
+  ACCESSDENIED,
+  CREATESIGNAL,
+  CREATESCORE,
+  CREATEMODEL
 	}
 export function capitalizeArray(array){
   let a =[]
@@ -515,5 +522,33 @@ export function downloadSVGAsPNG(chartClassId) {
     backgroundColor: "white",
     height: "500"
   });
+
+}
+
+export function toggleVisualization(slug,actionsData){
+		let flag = true;
+		let transformationSettings = actionsData;
+		$.each(transformationSettings,function(key,val){
+				if(val.slug == slug){
+					$.each(val.columnSetting,function(key1,val1){
+							if(val1.actionName == IGNORE_SUGGESTION && val1.status == true)
+							flag = false;
+					});
+				}
+		});
+		if(flag == false)
+		{
+			$(function(){
+				$("#tab_visualizations #pnl_visl").removeClass("in");
+				$("#tab_visualizations a").addClass("collapsed");
+			});
+		}
+		else{
+			$(function(){
+				$("#tab_visualizations #pnl_visl").addClass("in");
+				$("#tab_visualizations a").removeClass("collapsed");
+				$("#tab_visualizations #pnl_visl").removeAttr("style");
+			});
+		}
 
 }

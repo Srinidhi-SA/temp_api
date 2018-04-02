@@ -62,12 +62,14 @@ export class ScoreCard extends React.Component {
             var scoreLink1 = <Link id={data.slug} to={scoreLink} onClick={this.getScoreSummary.bind(this, data.slug)}>{data.name}</Link>;
             var percentageDetails = "";
                         if(data.status == INPROGRESS){
-                            percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>;
+                            percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{data.completed_percentage >= 0 ? data.completed_percentage+' %':"In Progress"}</span></div>;
                             scoreLink1 = <a class="cursor" onClick={this.openDataLoaderScreen.bind(this,data)}> {data.name}</a>;
                         }else if(data.status == SUCCESS && !data.viewed){
                             data.completed_percentage = 100;
                             percentageDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>;
                         }
+            var permissionDetails = data.permission_details;
+            var isDropDown = permissionDetails.remove_score || permissionDetails.rename_score; 
             return (
                     <div className="col-md-3 xs-mb-15 list-boxes" key={i}>
                     <div className="rep_block newCardStyle" name={data.name}>
@@ -79,28 +81,30 @@ export class ScoreCard extends React.Component {
                     <h5 className="title newCardTitle pull-left">
                     {scoreLink1}
                     </h5>
-                    
-                    <div class="btn-toolbar pull-right">
+                    {
+                        isDropDown == true ? <div class="btn-toolbar pull-right">
                     {/*<!-- Rename and Delete BLock  -->*/}
                     <a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
                     <i className="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
                     </a>
                     <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                    {permissionDetails.rename_score == true ?
                     <li onClick={this.handleScoreRename.bind(this, data.slug, data.name)}>
                     <a className="dropdown-item" href="#renameCard" data-toggle="modal">
                     <i className="fa fa-edit"></i>
                     &nbsp;&nbsp;Rename</a>
-                    </li>
+                    </li>:""}
+                    {permissionDetails.remove_score == true ?
                     <li onClick={this.handleScoreDelete.bind(this, data.slug)}>
                     <a className="dropdown-item" href="#deleteCard" data-toggle="modal">
                     <i className="fa fa-trash-o"></i>&nbsp;&nbsp;{data.status == "INPROGRESS"
                                 ? "Stop and Delete "
                                 : "Delete"}</a>
-                    </li>
+                    </li>:""}
                     </ul>
                     {/*<!-- End Rename and Delete BLock  -->*/}
                     </div>
-                    
+                    :""}
                     <div className="clearfix"></div>
                     {percentageDetails}
                     

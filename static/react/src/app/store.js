@@ -13,18 +13,21 @@ const err = (store) => (next) => (action) => {
     next(action);
   } catch (e) {
     console.log("Error", e);
-    let expiredSignMsg = "Signature has expired."
-    if (action.json["exception"] == expiredSignMsg) {
-      /*bootbox.alert("Session has expired.",function(){
-    	  sessionStorage.clear();
-    	  cookieObj.clearCookies();
-    	  location.reload();
-      })*/
+    let expiredSignMsg = "Signature has expired.";
+    if(action.json == undefined){
+        bootbox.alert("Something went wrong.Please try again.",function(){
+            window.location.assign("/signals")
+        })
+    }
+    else if (action.json["exception"] == expiredSignMsg) {
         sessionStorage.clear();
         cookieObj.clearCookies();
         location.reload();
-      
-    }else{
+
+    }else if (action.json["exception"].indexOf("Permission")!=-1) {
+    //  bootbox.alert("permission Denied: "+action.json["exception"]+"!")
+    }
+    else{
     	//bootbox.alert(e.message)
         sessionStorage.clear();
         cookieObj.clearCookies();

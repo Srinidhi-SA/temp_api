@@ -1,3 +1,3 @@
-CONFIG_FILE_NAME = 'cwpoc'
-UI_VERSION = '2126424'
+CONFIG_FILE_NAME = 'development'
+UI_VERSION = '7743913'
     

@@ -9,7 +9,7 @@ import store from "../../store";
 import { C3Chart } from "../c3Chart";
 import $ from "jquery";
 
-import {updateSelectedVariables, resetSelectedVariables, setSelectedVariables,updateDatasetVariables,handleDVSearch,handelSort,handleSelectAll,checkColumnIsIgnored } from "../../actions/dataActions";
+import {updateSelectedVariables, resetSelectedVariables, setSelectedVariables,updateDatasetVariables,handleDVSearch,handelSort,handleSelectAll,checkColumnIsIgnored,deselectAllVariablesDataPrev,makeAllVariablesTrueOrFalse,DisableSelectAllCheckbox} from "../../actions/dataActions";
 import {resetSelectedTargetVariable} from "../../actions/signalActions";
 
 @connect(( store ) => {
@@ -54,7 +54,13 @@ export class DataVariableSelection extends React.Component {
     }
     componentDidMount() {
     	window.scrollTo(0, 0);
-        this.props.dispatch( resetSelectedVariables() );
+        if(this.props.match.path.includes("createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
+            deselectAllVariablesDataPrev();
+            DisableSelectAllCheckbox();
+            this.props.dispatch( resetSelectedVariables(false) );
+        }
+        else
+        this.props.dispatch( resetSelectedVariables(true) );
         this.props.dispatch(resetSelectedTargetVariable());
        // this.setVariables( this.dimensions, this.measures, this.selectedTimeDimension );
         this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.possibleAnalysisList,true));
@@ -73,6 +79,7 @@ export class DataVariableSelection extends React.Component {
     render() {
 
         console.log( "data variableSelection is called##########3" );
+        var variableSelectionMsg = <label>Including the follwing variables:</label>;
 
         let dataPrev = store.getState().datasets.dataPreview;
 
@@ -105,7 +112,7 @@ export class DataVariableSelection extends React.Component {
                     switch ( metaItem.columnType ) {
                         case "measure":
                            if(metaItem.setVarAs == null){
-                        	   this.measures.push( metaItem);
+                               this.measures.push( metaItem);
                                //this.measureChkBoxList.push(true);
                            }else if(metaItem.setVarAs != null){
                                this.dimensions.push(metaItem);
@@ -113,7 +120,7 @@ export class DataVariableSelection extends React.Component {
                             break;
                         case "dimension":
                         	if(!metaItem.dateSuggestionFlag){
-                        		this.dimensions.push( metaItem);
+                                this.dimensions.push( metaItem);
                         		//this.dimensionChkBoxList.push(true)
                         	}else if(metaItem.dateSuggestionFlag){
                         		 this.dimensionDateTime.push(metaItem)
@@ -130,19 +137,23 @@ export class DataVariableSelection extends React.Component {
             } );
 
             this.datetime = this.datetime.concat(this.dimensionDateTime);
-        
-            if ( this.props.isUpdate ) {
-            this.props.dispatch( resetSelectedVariables() );
 
+            if ( this.props.isUpdate ) {
+            if(this.props.match.path.includes("createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
+                this.props.dispatch(resetSelectedVariables(false));
+                deselectAllVariablesDataPrev();
+                DisableSelectAllCheckbox();
+            }
+            else
+            this.props.dispatch( resetSelectedVariables(true) );
             this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.possibleAnalysisList,false));
             }
 
             var varCls = "";
 
             if ( store.getState().datasets.dataSetMeasures.length > 0 ) {
-                $(".measureAll").prop("disabled",false);
                 var measureTemplate = store.getState().datasets.dataSetMeasures.map(( mItem, mIndex ) => {
-                 if(mItem.targetColumn)varCls="hidden";
+                 if(mItem.targetColumn || mItem.uidCol)varCls="hidden";
                  else varCls = "";
                     return (
                         <li className={varCls} key={mItem.slug}><div className="ma-checkbox inline"><input id={mItem.slug} name={mItem.setVarAs} type="checkbox" className="measure" onChange={this.handleCheckboxEvents} value={mItem.name} checked={mItem.selected} /><label htmlFor={mItem.slug} className="radioLabels">{mItem.name}</label></div> </li>
@@ -153,10 +164,9 @@ export class DataVariableSelection extends React.Component {
                 var measureTemplate = <label>No measure variable present</label>
             }
             if ( store.getState().datasets.dataSetDimensions.length > 0 ) {
-                $(".dimensionAll").prop("disabled",false);
                 var dimensionTemplate = store.getState().datasets.dataSetDimensions.map(( dItem, dIndex ) => {
 
-                    if(dItem.targetColumn)varCls="hidden";
+                    if(dItem.targetColumn ||  dItem.uidCol)varCls="hidden";
                     else varCls = "";
                     return (
                         <li className={varCls} key={dItem.slug}><div className="ma-checkbox inline"><input id={dItem.slug} name={dItem.setVarAs} type="checkbox" className="dimension" onChange={this.handleCheckboxEvents} value={dItem.name} checked={dItem.selected} /><label htmlFor={dItem.slug}>{dItem.name}</label></div> </li>
@@ -169,16 +179,17 @@ export class DataVariableSelection extends React.Component {
 
             if ( store.getState().datasets.dataSetTimeDimensions.length > 0 ) {
                 var datetimeTemplate = store.getState().datasets.dataSetTimeDimensions.map(( dtItem, dtIndex ) => {
-
+                    if(dtItem.uidCol)varCls="hidden";
+                    else varCls = "";
 
                     	if(dtItem.columnType != "dimension"){
                         	return (
-                        			<li key={dtItem.slug}><div className="ma-radio inline"><input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents}  name="date_type" id={dtItem.slug} value={dtItem.name} checked={dtItem.selected} /><label htmlFor={dtItem.slug}>{dtItem.name}</label></div></li>
+                        			<li className={varCls} key={dtItem.slug}><div className="ma-radio inline"><input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents}  name="date_type" id={dtItem.slug} value={dtItem.name} checked={dtItem.selected} /><label htmlFor={dtItem.slug}>{dtItem.name}</label></div></li>
                         	);
                         }else{
                         	return (
 
-                        			<li key={dtItem.slug}><div className="ma-radio inline col-md-10"><input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents}  name="date_type" id={dtItem.slug} value={dtItem.name} checked={dtItem.selected} /><label htmlFor={dtItem.slug}>{dtItem.name}</label></div>{timeSuggestionToolTip}</li>
+                        			<li className={varCls} key={dtItem.slug}><div className="ma-radio inline col-md-10"><input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents}  name="date_type" id={dtItem.slug} value={dtItem.name} checked={dtItem.selected} /><label htmlFor={dtItem.slug}>{dtItem.name}</label></div>{timeSuggestionToolTip}</li>
                         	);
                         }
 
@@ -186,18 +197,36 @@ export class DataVariableSelection extends React.Component {
 
                 } );
             } else {
-                
+
                 var datetimeTemplate = <label>No date dimensions to display</label>
             }
+            if(this.props.match.path.includes("/createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
+                let measureArray = $.grep(dataPrev.meta_data.uiMetaData.varibaleSelectionArray,function(val,key){
+                    return(val.columnType == "measure" && val.selected == false);
+                });
+                let dimensionArray = $.grep(dataPrev.meta_data.uiMetaData.varibaleSelectionArray,function(val,key){
+                    return(val.columnType == "dimension"  && val.selected == false);
+                });
+                if(measureArray.length > 5 || (store.getState().datasets.selectedVariablesCount+measureArray.length > 5)){
+                    if(store.getState().datasets.measureAllChecked == false)$('.measureAll').prop("disabled",true);
+                }
+                else
+                $('.measureAll').prop("disabled",false);
+                if(dimensionArray.length > 5 || (store.getState().datasets.selectedVariablesCount+dimensionArray.length > 5)){
+                    if(store.getState().datasets.dimensionAllChecked == false)$(".dimensionAll").prop("disabled",true);
+                }
+                else
+                $(".dimensionAll").prop("disabled",false);
 
-
+                variableSelectionMsg = <h4>Including performance analysis across the following variables (Upto 5)</h4>;
+            }
             return (
                 <div>
 
 
                     <div className="row">
-                        <div className="col-lg-4">
-                            <label>Including the follwing variables:</label>
+                        <div className="col-lg-6">
+                            {variableSelectionMsg}
                         </div>{/*<!-- /.col-lg-4 -->*/}
                     </div>
                     {/*<!-------------------------------------------------------------------------------->*/}
@@ -215,11 +244,9 @@ export class DataVariableSelection extends React.Component {
 
 											<div class="input-group">
 											<div className="search-wrapper">
-											<form>
-											<input type="text" name="measure" onChange={this.handleDVSearch.bind(this)} title="Search Measures" id="measureSearch" className="form-control search-box" placeholder="Search measures..." required />
+											<input type="text" name="measure" onChange={this.handleDVSearch.bind(this)} title="Search Measures" id="measureSearch" className="form-control search-box" placeholder="Search measures..."  />
 											<span className="zmdi zmdi-search form-control-feedback"></span>
 											<button className="close-icon" name="measure" onClick={this.handleDVSearch.bind(this)}  type="reset"></button>
-											</form>
 											</div>
 											</div>
 											<div class="btn-group">
@@ -276,11 +303,11 @@ export class DataVariableSelection extends React.Component {
 
 												<div class="input-group">
 												<div className="search-wrapper">
-												<form>
-												<input type="text" name="dimension" onChange={this.handleDVSearch.bind(this)} title="Search Dimension" id="dimensionSearch" className="form-control search-box" placeholder="Search dimension..." required />
+
+												<input type="text" name="dimension" onChange={this.handleDVSearch.bind(this)} title="Search Dimension" id="dimensionSearch" className="form-control search-box" placeholder="Search dimension..."  />
 												<span className="zmdi zmdi-search form-control-feedback"></span>
 												<button className="close-icon"  name="dimension"  onClick={this.handleDVSearch.bind(this)}  type="reset"></button>
-												</form>
+
 												</div>
 												</div>
 												 <div class="btn-group">
@@ -337,11 +364,11 @@ export class DataVariableSelection extends React.Component {
 
 												<div class="input-group">
 												<div className="search-wrapper">
-												<form>
-												<input type="text" name="datetime" onChange={this.handleDVSearch.bind(this)} title="Search Time Dimensions" id="datetimeSearch" className="form-control search-box" placeholder="Search time dimensions..." required />
+
+												<input type="text" name="datetime" onChange={this.handleDVSearch.bind(this)} title="Search Time Dimensions" id="datetimeSearch" className="form-control search-box" placeholder="Search time dimensions..."/>
 												<span className="zmdi zmdi-search form-control-feedback"></span>
 												<button className="close-icon" name="datetime" onClick={this.handleDVSearch.bind(this)} type="reset"></button>
-												</form>
+
 												</div>
 												</div>
 

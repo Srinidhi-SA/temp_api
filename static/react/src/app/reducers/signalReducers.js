@@ -5,7 +5,7 @@ export default function reducer(state = {
   newSignalShowModal:false,
   signalData:null,
   createSignalLoaderModal:false,
-  createSignalLoaderValue:0,
+  createSignalLoaderValue:-1,
   current_page:1,
   urlPrefix:"/signals",
   signalAnalysis: {},
@@ -18,7 +18,7 @@ export default function reducer(state = {
   signal_sorton:null,
   signal_sorttype:null,
   sideCardListFlag:null,
-  loaderText:"Analyzing Target Variable",
+  loaderText:"Submitting for analysis",
   advanceSettingsModal:false,
   getVarType:null,
   getVarText:null,
@@ -31,6 +31,7 @@ export default function reducer(state = {
   chartDataClassId :"",
   selectedL1: "",
   latestSignals:{},
+  selected_signal_type:""
 }, action) {
   console.log("in SIGNAL reducer!!");
   console.log(action);
@@ -210,7 +211,7 @@ export default function reducer(state = {
       return{
         ...state,
         loading_message:[],
-        createSignalLoaderValue:0,
+        createSignalLoaderValue:-1,
         loaderText:"Analyzing Target Variable"
       }
     }
@@ -260,6 +261,13 @@ export default function reducer(state = {
     }
   }
   break;
+  case "SELECTED_SIGNAL_TYPE":
+  {
+    return{
+      ...state,
+      selected_signal_type:action.signal_type
+    }
+  }
   }
   return state
 }

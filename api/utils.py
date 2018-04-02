@@ -192,6 +192,13 @@ class InsightSerializer(serializers.ModelSerializer):
                 ret['file_size']=-1
                 ret['proceed_for_loading'] = True
         ret['job_status'] = instance.job.status
+
+        # permission details
+        permission_details = get_permissions(
+            user=self.context['request'].user,
+            model=self.Meta.model.__name__.lower(),
+        )
+        ret['permission_details'] = permission_details
         return ret
 
     def update(self, instance, validated_data):
@@ -234,6 +241,12 @@ class InsightListSerializers(serializers.ModelSerializer):
             ret['completed_percentage'] = 0
             ret['completed_message']="Analyzing Target Variable"
         ret['job_status'] = instance.job.status
+        # permission details
+        permission_details = get_permissions(
+            user=self.context['request'].user,
+            model=self.Meta.model.__name__.lower(),
+        )
+        ret['permission_details'] = permission_details
         return ret
 
     def get_brief_info(self):
@@ -288,6 +301,12 @@ class TrainerSerlializer(serializers.ModelSerializer):
                 ret['file_size']=-1
                 ret['proceed_for_loading'] = True
         ret['job_status'] = instance.job.status
+        # permission details
+        permission_details = get_permissions(
+            user=self.context['request'].user,
+            model=self.Meta.model.__name__.lower(),
+        )
+        ret['permission_details'] = permission_details
         return ret
 
     def update(self, instance, validated_data):
@@ -329,6 +348,12 @@ class TrainerListSerializer(serializers.ModelSerializer):
             ret['completed_percentage'] = 0
             ret['completed_message']="Analyzing Target Variable"
         ret['job_status'] = instance.job.status
+        # permission details
+        permission_details = get_permissions(
+            user=self.context['request'].user,
+            model=self.Meta.model.__name__.lower(),
+        )
+        ret['permission_details'] = permission_details
         return ret
 
 
@@ -382,6 +407,11 @@ class ScoreSerlializer(serializers.ModelSerializer):
              #   ret['file_size']=-1
               #  ret['proceed_for_loading'] = True
         ret['job_status'] = instance.job.status
+        permission_details = get_permissions(
+            user=self.context['request'].user,
+            model=self.Meta.model.__name__.lower(),
+        )
+        ret['permission_details'] = permission_details
         return ret
 
     def update(self, instance, validated_data):
@@ -423,6 +453,11 @@ class ScoreListSerializer(serializers.ModelSerializer):
             ret['completed_percentage'] = 0
             ret['completed_message']="Analyzing Target Variable"
         ret['job_status'] = instance.job.status
+        permission_details = get_permissions(
+            user=self.context['request'].user,
+            model=self.Meta.model.__name__.lower(),
+        )
+        ret['permission_details'] = permission_details
         return ret
 
     class Meta:
@@ -489,6 +524,7 @@ class RoboSerializer(serializers.ModelSerializer):
                 instance.status = 'FAILED'
             else:
                 instance.status = "SUCCESS"
+            instance.status = "SUCCESS"
             instance.save()
 
         ret = convert_to_json(ret)
@@ -498,14 +534,14 @@ class RoboSerializer(serializers.ModelSerializer):
         if instance.viewed == False and instance.status=='SUCCESS':
             instance.viewed = True
             instance.save()
-        try:
-            message_list = get_message(instance)
-
-            if message_list is not None:
-                message_list = [message_list[-1]]
-            ret['message'] = message_list
-        except:
-            ret['message'] = None
+        # try:
+        #     message_list = get_message(instance)
+        #
+        #     if message_list is not None:
+        #         message_list = [message_list[-1]]
+        #     ret['message'] = message_list
+        # except:
+        #     ret['message'] = None
 
         return ret
 
@@ -581,18 +617,17 @@ class StockDatasetSerializer(serializers.ModelSerializer):
         ret = convert_to_json(ret)
         ret = convert_time_to_human(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
-
         if instance.viewed == False and instance.status=='SUCCESS':
             instance.viewed = True
             instance.save()
-        try:
-            message_list = get_message(instance)
-
-            if message_list is not None:
-                message_list = [message_list[-1]]
-            ret['message'] = message_list
-        except:
-            ret['message'] = None
+        # try:
+        #     message_list = get_message(instance)
+        #
+        #     if message_list is not None:
+        #         message_list = [message_list[-1]]
+        #     ret['message'] = message_list
+        # except:
+        #     ret['message'] = None
 
         return ret
 
@@ -790,6 +825,7 @@ class AppSerializer(serializers.ModelSerializer):
             instance.iconName = validated_data.get("iconName", instance.iconName)
             instance.name = validated_data.get("name", instance.name)
             instance.app_url = validated_data.get("app_url", instance.app_url)
+            instance.app_type = validated_data.get("app_type", instance.app_type)
 
             instance.save()
 
@@ -798,6 +834,108 @@ class AppSerializer(serializers.ModelSerializer):
         class Meta:
             model = CustomApps
             fields = '__all__'
+
+#
+# class RegressionSerlializer(serializers.ModelSerializer):
+#
+#     def to_representation(self, instance):
+#         get_job_status(instance)
+#         ret = super(RegressionSerlializer, self).to_representation(instance)
+#         dataset = ret['dataset']
+#         dataset_object = Dataset.objects.get(pk=dataset)
+#         ret['dataset'] = dataset_object.slug
+#         ret['dataset_name'] = dataset_object.name
+#         ret = convert_to_json(ret)
+#         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+#         if instance.viewed == False and instance.status=='SUCCESS':
+#             instance.viewed = True
+#             instance.save()
+#         try:
+#             message_list = get_message(instance.job)
+#
+#             if message_list is not None:
+#                 message_list = [message_list[-1]]
+#             ret['message'] = message_list
+#         except:
+#             ret['message'] = None
+#
+#         if dataset_object.datasource_type=='fileUpload':
+#             PROCEED_TO_UPLOAD_CONSTANT = settings.PROCEED_TO_UPLOAD_CONSTANT
+#             try:
+#                 from api.helper import convert_to_humanize
+#                 ret['file_size']=convert_to_humanize(dataset_object.input_file.size)
+#                 if(dataset_object.input_file.size < PROCEED_TO_UPLOAD_CONSTANT or ret['status']=='SUCCESS'):
+#                     ret['proceed_for_loading']=True
+#                 else:
+#                     ret['proceed_for_loading'] = False
+#             except:
+#                 ret['file_size']=-1
+#                 ret['proceed_for_loading'] = True
+#         ret['job_status'] = instance.job.status
+#         # permission details
+#         permission_details = get_permissions(
+#             user=self.context['request'].user,
+#             model=self.Meta.model.__name__.lower(),
+#         )
+#         ret['permission_details'] = permission_details
+#         return ret
+#
+#     def update(self, instance, validated_data):
+#         instance.name = validated_data.get("name", instance.name)
+#         instance.column_data_raw = validated_data.get("column_data_raw", instance.column_data_raw)
+#         instance.deleted = validated_data.get("deleted", instance.deleted)
+#         instance.bookmarked = validated_data.get("bookmarked", instance.bookmarked)
+#         instance.data = validated_data.get("data", instance.data)
+#         instance.live_status = validated_data.get("live_status", instance.live_status)
+#         instance.status = validated_data.get("status", instance.status)
+#
+#
+#
+#         instance.save()
+#
+#         return instance
+#
+#     class Meta:
+#         model = Regression
+#         exclude = ('id', 'job')
+
+#
+# class RegressionListSerializer(serializers.ModelSerializer):
+#
+#     def to_representation(self, instance):
+#         get_job_status(instance)
+#         ret = super(RegressionListSerializer, self).to_representation(instance)
+#         dataset = ret['dataset']
+#         dataset_object = Dataset.objects.get(pk=dataset)
+#         ret['dataset'] = dataset_object.slug
+#         ret['dataset_name'] = dataset_object.name
+#         ret = convert_to_json(ret)
+#         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+#         ret['brief_info'] = instance.get_brief_info()
+#         try:
+#             ret['completed_percentage']=get_message(instance.job)[-1]['globalCompletionPercentage']
+#             ret['completed_message']=get_message(instance.job)[-1]['shortExplanation']
+#         except:
+#             ret['completed_percentage'] = 0
+#             ret['completed_message']="Analyzing Target Variable"
+#         ret['job_status'] = instance.job.status
+#         # permission details
+#         permission_details = get_permissions(
+#             user=self.context['request'].user,
+#             model=self.Meta.model.__name__.lower(),
+#         )
+#         ret['permission_details'] = permission_details
+#         return ret
+#
+#
+#     class Meta:
+#         model = Regression
+#         exclude =  (
+#             'column_data_raw',
+#             'id',
+#             'config',
+#             'data'
+#         )
 
 
 def correct_base_dir():
@@ -813,3 +951,95 @@ def json_prettify_for_admin(json_val):
     style = "<style>" + formatter.get_style_defs() + "</style><br>"
 
     return mark_safe(style + response +"<hr>")
+
+
+def get_permissions(user, model, type='retrieve'):
+    if model == 'dataset':
+        if type == 'retrieve':
+            return {
+               'view_dataset': user.has_perm('api.view_dataset'),
+               'rename_dataset': user.has_perm('api.rename_dataset'),
+               # 'rename_dataset': get_random_true_false(),
+               # 'remove_dataset': get_random_true_false(),
+               'remove_dataset': user.has_perm('api.remove_dataset'),
+               'data_validation': user.has_perm('api.data_validation'),
+               'subsetting_dataset': user.has_perm('api.subsetting_dataset'),
+               'create_signal': user.has_perm('api.create_signal'),
+               'create_trainer': user.has_perm('api.create_trainer'),
+               'create_score': user.has_perm('api.create_score'),
+            }
+        if type=='list':
+            return {
+                'create_dataset': user.has_perm('api.create_dataset'),
+                'upload_from_file': user.has_perm('api.upload_from_file'),
+                'upload_from_mysql': user.has_perm('api.upload_from_mysql'),
+                'upload_from_mssql': user.has_perm('api.upload_from_mssql'),
+                'upload_from_hana': user.has_perm('api.upload_from_hana'),
+                'upload_from_hdfs': user.has_perm('api.upload_from_hdfs'),
+            }
+    if model == 'insight':
+        if type == 'retrieve':
+            return {
+               'view_signal': user.has_perm('api.view_signal'),
+               'rename_signal': user.has_perm('api.rename_signal'),
+               'remove_signal': user.has_perm('api.remove_signal'),
+            }
+        if type=='list':
+            return {
+                'create_signal': user.has_perm('api.create_signal'),
+            }
+    if model == 'trainer':
+        if type == 'retrieve':
+            return {
+               'create_score': user.has_perm('api.create_score'),
+               'view_trainer': user.has_perm('api.view_trainer'),
+               'downlad_pmml': user.has_perm('api.downlad_pmml'),
+               'rename_trainer': user.has_perm('api.rename_trainer'),
+               'remove_trainer': user.has_perm('api.remove_trainer'),
+            }
+        if type=='list':
+            return {
+                'create_trainer': user.has_perm('api.create_trainer'),
+            }
+    if model == 'score':
+        if type == 'retrieve':
+            return {
+               'view_score': user.has_perm('api.view_score'),
+               'download_score': user.has_perm('api.download_score'),
+               'rename_score': user.has_perm('api.rename_score'),
+               'remove_score': user.has_perm('api.remove_score'),
+            }
+        if type=='list':
+            return {
+                'create_score': user.has_perm('api.create_score'),
+            }
+    if model == 'regression':
+        if type == 'retrieve':
+            return {
+                'create_score': user.has_perm('api.create_score'),
+                'view_regression': user.has_perm('api.view_regression'),
+                'downlad_pmml': user.has_perm('api.downlad_pmml'),
+                'rename_regression': user.has_perm('api.rename_regression'),
+                'remove_regression': user.has_perm('api.remove_regression'),
+            }
+        if type == 'list':
+            return {
+                'create_regression': user.has_perm('api.create_regression'),
+            }
+    return {}
+
+
+def get_all_view_permission(user):
+    return {
+        'view_score': user.has_perm('api.view_score'),
+        'view_trainer': user.has_perm('api.view_trainer'),
+        'view_signal': user.has_perm('api.view_signal'),
+        'view_dataset': user.has_perm('api.view_dataset'),
+    }
+
+
+
+def get_random_true_false():
+    import random
+    return True if random.randint(0, 1) else False
+

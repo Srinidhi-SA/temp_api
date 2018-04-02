@@ -58,6 +58,8 @@ export class Signals extends React.Component {
     var pageNo = 1;
     //this.props.dispatch(storeSearchElement(""));
     this.props.dispatch(hideDataPreview())
+    //console.log(getUserDetailsOrRestart.get().view_data_permission)
+    if(getUserDetailsOrRestart.get().view_data_permission=="true")
     this.props.dispatch(getAllDataList());
     this.props.dispatch(emptySignalData());
     // thvar dateFormat = require('dateformat');is.props.dispatch(emptySignalAnalysis());
@@ -67,7 +69,7 @@ export class Signals extends React.Component {
     } else{
         this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, pageNo));
     }
-    
+
     }
 
   componentDidMount() {
@@ -141,7 +143,7 @@ export class Signals extends React.Component {
       this.props.dispatch(storeSearchElement(e.target.value));
       this.props.dispatch(getList(getUserDetailsOrRestart.get().userToken, 1));
     }else{
-        this.props.dispatch(storeSearchElement(e.target.value));  
+        this.props.dispatch(storeSearchElement(e.target.value));
     }
   }
   clearSearchElement(e){
@@ -187,7 +189,7 @@ export class Signals extends React.Component {
 
       return (
         <div className="side-body">
-        
+
         <LatestSignals props={this.props}/>
 
             <div className="main-content">
@@ -196,11 +198,9 @@ export class Signals extends React.Component {
                 <div class="btn-toolbar pull-right">
                   <div class="input-group">
                     <div className="search-wrapper">
-                      <form>
-                        <input type="text" value={this.props.signal_search_element} name="search_signals" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search Signals" id="search_signals" className="form-control search-box" placeholder="Search signals..." required/>
+                      <input type="text" value={this.props.signal_search_element} name="search_signals" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search Signals" id="search_signals" className="form-control search-box" placeholder="Search signals..." required/>
                         <span className="zmdi zmdi-search form-control-feedback"></span>
                         <button className="close-icon" onClick={this.clearSearchElement.bind(this)} type="reset"></button>
-                      </form>
                     </div>
                   </div>
                   <div class="btn-group">
@@ -234,10 +234,10 @@ export class Signals extends React.Component {
 
 				</div>
               </div>
-           
 
 
-         
+
+
             <div className="row">
               {storyList}
               <div className="clearfix"></div>

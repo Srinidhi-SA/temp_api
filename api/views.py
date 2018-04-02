@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 import json
 import random
+import copy
 
 from django.conf import settings
 from django.http import JsonResponse
@@ -32,8 +33,12 @@ from api.utils import \
     StockDatasetSerializer, \
     AppListSerializers, \
     AppSerializer
+    # RegressionSerlializer, \
+    # RegressionListSerializer
 from models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData, StockDataset, CustomApps
 from api.tasks import clean_up_on_delete
+
+from api.permission import TrainerRelatedPermission, ScoreRelatedPermission, SignalsRelatedPermission
 
 import sys
 reload(sys)
@@ -57,10 +62,14 @@ class SignalView(viewsets.ModelViewSet):
     def get_object_from_all(self):
         return Insight.objects.get(slug=self.kwargs.get('slug'))
 
+    def get_serializer_context(self):
+        return {'request': self.request}
+
     lookup_field = 'slug'
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('bookmarked', 'deleted', 'type', 'name', 'status', 'analysis_done')
     pagination_class = CustomPagination
+    permission_classes = (SignalsRelatedPermission, )
 
     def create(self, request, *args, **kwargs):
 
@@ -80,7 +89,7 @@ class SignalView(viewsets.ModelViewSet):
 
         data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
         data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
-        serializer = InsightSerializer(data=data)
+        serializer = InsightSerializer(data=data, context={"request": self.request})
         if serializer.is_valid():
             signal_object = serializer.save()
             signal_object.create(advanced_settings=data.get('advanced_settings', {}))
@@ -128,7 +137,7 @@ class SignalView(viewsets.ModelViewSet):
         if instance is None:
             return retrieve_failed_exception("File Doesn't exist.")
 
-        serializer = InsightSerializer(instance=instance)
+        serializer = InsightSerializer(instance=instance, context={"request": self.request})
         return Response(serializer.data)
 
 
@@ -149,10 +158,14 @@ class TrainerView(viewsets.ModelViewSet):
     def get_object_from_all(self):
         return Trainer.objects.get(slug=self.kwargs.get('slug'))
 
+    def get_serializer_context(self):
+        return {'request': self.request}
+
     lookup_field = 'slug'
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('bookmarked', 'deleted', 'name', "app_id")
     pagination_class = CustomPagination
+    permission_classes = (TrainerRelatedPermission, )
 
     def create(self, request, *args, **kwargs):
         # try:
@@ -160,7 +173,7 @@ class TrainerView(viewsets.ModelViewSet):
         data = convert_to_string(data)
         data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
         data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
-        serializer = TrainerSerlializer(data=data)
+        serializer = TrainerSerlializer(data=data, context={"request": self.request})
         if serializer.is_valid():
             trainer_object = serializer.save()
             trainer_object.create()
@@ -184,7 +197,7 @@ class TrainerView(viewsets.ModelViewSet):
         except:
             return creation_failed_exception("File Doesn't exist.")
 
-        serializer = self.get_serializer(instance=instance, data=data, partial=True)
+        serializer = self.get_serializer(instance=instance, data=data, partial=True, context={"request": self.request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -208,7 +221,7 @@ class TrainerView(viewsets.ModelViewSet):
         if instance is None:
             return creation_failed_exception("File Doesn't exist.")
 
-        serializer = TrainerSerlializer(instance=instance)
+        serializer = TrainerSerlializer(instance=instance, context={"request": self.request})
         return Response(serializer.data)
 
     @detail_route(methods=['get'])
@@ -222,7 +235,7 @@ class TrainerView(viewsets.ModelViewSet):
         if instance is None:
             return creation_failed_exception("File Doesn't exist.")
 
-        serializer = TrainerSerlializer(instance=instance)
+        serializer = TrainerSerlializer(instance=instance, context={"request": self.request})
         trainer_data = serializer.data
         t_d_c = trainer_data['config']['config']['COLUMN_SETTINGS']['variableSelection']
         uidColArray= [x["name"] for x in t_d_c if x["uidCol"] == True]
@@ -238,7 +251,7 @@ class TrainerView(viewsets.ModelViewSet):
         if dataset_instance is None:
             return creation_failed_exception("File Doesn't exist.")
 
-        dataset_serializer = DatasetSerializer(instance=dataset_instance)
+        dataset_serializer = DatasetSerializer(instance=dataset_instance, context={"request": self.request})
         object_details = dataset_serializer.data
         original_meta_data_from_scripts = object_details['meta_data']
         if original_meta_data_from_scripts is None:
@@ -279,6 +292,23 @@ class TrainerView(viewsets.ModelViewSet):
             'message': message
         })
 
+    @detail_route(methods=['get'])
+    def get_pmml(self, request, *args, **kwargs):
+        from api.redis_access import AccessFeedbackMessage
+        from helper import generate_pmml_name
+        jobslug = request.query_params.get('jobslug', None)
+        algoname = request.query_params.get('algoname', None)
+        ac = AccessFeedbackMessage()
+        job_object = Job.objects.filter(object_id=jobslug).first()
+        job_slug = job_object.slug
+        key_pmml_name = generate_pmml_name(job_slug)
+        data = ac.get_using_key(key_pmml_name)
+        if data is None:
+            sample_xml = "<mydocument has=\"an attribute\">\n  <and>\n    <many>elements</many>\n    <many>more elements</many>\n  </and>\n  <plus a=\"complex\">\n    element as well\n  </plus>\n</mydocument>"
+            return return_xml_data(sample_xml, algoname)
+        xml_data = data[-1].get(algoname)
+        return return_xml_data(xml_data, algoname)
+
 
 class ScoreView(viewsets.ModelViewSet):
     def get_queryset(self):
@@ -296,10 +326,14 @@ class ScoreView(viewsets.ModelViewSet):
     def get_object_from_all(self):
         return Score.objects.get(slug=self.kwargs.get('slug'))
 
+    def get_serializer_context(self):
+        return {'request': self.request}
+
     lookup_field = 'slug'
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('bookmarked', 'deleted', 'name')
     pagination_class = CustomPagination
+    permission_classes = (ScoreRelatedPermission, )
 
     def create(self, request, *args, **kwargs):
         # try:
@@ -309,7 +343,7 @@ class ScoreView(viewsets.ModelViewSet):
         data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
         data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
         data['app_id'] = int(json.loads(data['config'])['app_id'])
-        serializer = ScoreSerlializer(data=data)
+        serializer = ScoreSerlializer(data=data, context={"request": self.request})
         if serializer.is_valid():
             score_object = serializer.save()
             score_object.create()
@@ -334,7 +368,7 @@ class ScoreView(viewsets.ModelViewSet):
         except:
             return creation_failed_exception("File Doesn't exist.")
 
-        serializer = self.get_serializer(instance=instance, data=data, partial=True)
+        serializer = self.get_serializer(instance=instance, data=data, partial=True, context={"request": self.request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -358,7 +392,7 @@ class ScoreView(viewsets.ModelViewSet):
         if instance is None:
             return creation_failed_exception("File Doesn't exist.")
 
-        serializer = ScoreSerlializer(instance=instance)
+        serializer = ScoreSerlializer(instance=instance, context={"request": self.request})
         return Response(serializer.data)
 
     @detail_route(methods=['get'])
@@ -397,9 +431,11 @@ class ScoreView(viewsets.ModelViewSet):
                 else:
                     csv_text = f.read()
                     csv_list = csv_text.split('\n')
+                    csv_list = csv_list[:count]
+                    csv_text_list = [text.split(',') for text in csv_list]
                     return JsonResponse({
                         'Message': 'Success',
-                        'csv_data': csv_list[:count]
+                        'csv_data': csv_text_list
                     })
         else:
             return JsonResponse({'result': 'failed to download'})
@@ -421,6 +457,9 @@ class RoboView(viewsets.ModelViewSet):
     def get_object_from_all(self):
         return Robo.objects.get(slug=self.kwargs.get('slug'))
 
+    def get_serializer_context(self):
+        return {'request': self.request}
+
     lookup_field = 'slug'
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('bookmarked', 'deleted', 'name')
@@ -435,39 +474,41 @@ class RoboView(viewsets.ModelViewSet):
     # TODO: config missing
     def create(self, request, *args, **kwargs):
 
-        try:
-            data = request.data
-            data = convert_to_string(data)
-            files = request.FILES
-            name = data.get('name', "robo" + "_" + str(random.randint(1000000, 10000000)))
-            real_data = {
-                'name': name,
-                'created_by': request.user.id
-            }
+        # try:
+        data = request.data
+        data = convert_to_string(data)
+        files = request.FILES
+        if data.get('name') == "":
+            data['name'] = 'robo' + str(random.randint(100, 1000)) + "_"
+        name = data.get('name', "robo" + "_" + str(random.randint(1000000, 10000000)))
+        real_data = {
+            'name': name,
+            'created_by': request.user.id
+        }
 
-            for file in files:
-                dataset = dict()
-                input_file = files[file]
-                dataset['input_file'] = input_file
-                dataset['name'] = input_file.name
-                dataset['created_by'] = request.user.id
-                dataset['datasource_type'] = 'fileUpload'
-                from api.datasets.serializers import DatasetSerializer
-                serializer = DatasetSerializer(data=dataset)
-                if serializer.is_valid():
-                    dataset_object = serializer.save()
-                    dataset_object.create()
-                    real_data[self.dataset_name_mapping[file]] = dataset_object.id
-            serializer = RoboSerializer(data=real_data)
+        for file in files:
+            dataset = dict()
+            input_file = files[file]
+            dataset['input_file'] = input_file
+            dataset['name'] = input_file.name
+            dataset['created_by'] = request.user.id
+            dataset['datasource_type'] = 'fileUpload'
+            from api.datasets.serializers import DatasetSerializer
+            serializer = DatasetSerializer(data=dataset, context={"request": self.request})
             if serializer.is_valid():
-                robo_object = serializer.save()
-                robo_object.create()
-                robo_object.data = json.dumps(dummy_robo_data)
-                robo_object.save()
-                return Response(serializer.data)
-            return creation_failed_exception(serializer.errors)
-        except Exception as error:
-            creation_failed_exception(error)
+                dataset_object = serializer.save()
+                dataset_object.create()
+                real_data[self.dataset_name_mapping[file]] = dataset_object.id
+        serializer = RoboSerializer(data=real_data, context={"request": self.request})
+        if serializer.is_valid():
+            robo_object = serializer.save()
+            robo_object.create()
+            robo_object.data = json.dumps(dummy_robo_data)
+            robo_object.save()
+            return Response(serializer.data)
+        return creation_failed_exception(serializer.errors)
+        # except Exception as error:
+        #     creation_failed_exception(error)
 
     def update(self, request, *args, **kwargs):
         data = request.data
@@ -499,7 +540,7 @@ class RoboView(viewsets.ModelViewSet):
         if instance is None:
             return creation_failed_exception("File Doesn't exist.")
 
-        serializer = RoboSerializer(instance=instance)
+        serializer = RoboSerializer(instance=instance, context={"request": self.request})
         return Response(serializer.data)
 
     def list(self, request, *args, **kwargs):
@@ -528,6 +569,9 @@ class StockDatasetView(viewsets.ModelViewSet):
     def get_object_from_all(self):
         return StockDataset.objects.get(slug=self.kwargs.get('slug'))
 
+    def get_serializer_context(self):
+        return {'request': self.request}
+
     serializer_class = StockDatasetSerializer
     lookup_field = 'slug'
     filter_backends = (DjangoFilterBackend,)
@@ -546,7 +590,7 @@ class StockDatasetView(viewsets.ModelViewSet):
         new_data['input_file'] = None
         new_data['created_by'] = request.user.id
 
-        serializer = StockDatasetSerializer(data=new_data)
+        serializer = StockDatasetSerializer(data=new_data, context={"request": self.request})
         if serializer.is_valid():
             stock_object = serializer.save()
             stock_object.create()
@@ -562,7 +606,7 @@ class StockDatasetView(viewsets.ModelViewSet):
         if instance is None:
             return creation_failed_exception("File Doesn't exist.")
 
-        serializer = StockDatasetSerializer(instance=instance)
+        serializer = StockDatasetSerializer(instance=instance, context={"request": self.request})
         return Response(serializer.data)
 
     def list(self, request, *args, **kwargs):
@@ -621,7 +665,7 @@ class StockDatasetView(viewsets.ModelViewSet):
                 stock_instance.call_mlscripts()
             return Response(serializer.data)
 
-        serializer = StockDatasetSerializer(instance=instance)
+        serializer = StockDatasetSerializer(instance=instance, context={"request": self.request})
         return Response(serializer.data)
 
     @detail_route(methods=['get'])
@@ -629,13 +673,15 @@ class StockDatasetView(viewsets.ModelViewSet):
 
         try:
             instance = self.get_object_from_all()
+            if instance.data is None:
+                instance.fake_call_mlscripts()
         except:
             return creation_failed_exception("File Doesn't exist.")
 
         if instance is None:
             return creation_failed_exception("File Doesn't exist.")
 
-        serializer = StockDatasetSerializer(instance=instance)
+        serializer = StockDatasetSerializer(instance=instance, context={"request": self.request})
         return Response(serializer.data)
 
     """
@@ -656,6 +702,9 @@ class AudiosetView(viewsets.ModelViewSet):
 
     def get_object_from_all(self):
         return Audioset.objects.get(slug=self.kwargs.get('slug'))
+
+    def get_serializer_context(self):
+        return {'request': self.request}
 
     serializer_class = AudiosetSerializer
     lookup_field = 'slug'
@@ -689,7 +738,7 @@ class AudiosetView(viewsets.ModelViewSet):
             # answer: I tried. Sighhh but it gave this error "Incorrect type. Expected pk value, received User."
             data['created_by'] = request.user.id
             try:
-                serializer = AudiosetSerializer(data=data)
+                serializer = AudiosetSerializer(data=data, context={"request": self.request})
                 if serializer.is_valid():
                     audioset_object = serializer.save()
                     audioset_object.create()
@@ -709,7 +758,7 @@ class AudiosetView(viewsets.ModelViewSet):
         if instance is None:
             return creation_failed_exception("File Doesn't exist.")
 
-        serializer = AudiosetSerializer(instance=instance)
+        serializer = AudiosetSerializer(instance=instance, context={"request": self.request})
         return Response(serializer.data)
 
     def list(self, request, *args, **kwargs):
@@ -758,6 +807,9 @@ class AppView(viewsets.ModelViewSet):
     def get_object_from_all(self):
         return CustomApps.objects.get(slug=self.kwargs.get('slug'))
 
+    def get_serializer_context(self):
+        return {'request': self.request}
+
     lookup_field = 'slug'
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('name', 'tags')
@@ -765,20 +817,20 @@ class AppView(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
 
-        try:
-            data = request.data
-            data = convert_to_string(data)
-            # data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
-            data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
-            serializer = AppSerializer(data=data)
-            if serializer.is_valid():
-                app_obj = serializer.save()
-                app_obj.create()
-                return Response(serializer.data)
+        # try:
+        data = request.data
+        data = convert_to_string(data)
+        # data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
+        data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
+        serializer = AppSerializer(data=data, context={"request": self.request})
+        if serializer.is_valid():
+            app_obj = serializer.save()
+            app_obj.create()
+            return Response(serializer.data)
 
-            return creation_failed_exception(serializer.errors)
-        except Exception as error:
-            creation_failed_exception(error)
+        return creation_failed_exception(serializer.errors)
+        # except Exception as error:
+        #     creation_failed_exception(error)
 
     def update(self, request, *args, **kwargs):
         data = request.data
@@ -813,12 +865,39 @@ class AppView(viewsets.ModelViewSet):
         if instance is None:
             return creation_failed_exception("App Doesn't exist.")
 
-        serializer = AppSerializer(instance=instance)
+        serializer = AppSerializer(instance=instance, context={"request": self.request})
         return Response(serializer.data)
 
 
+
 def get_datasource_config_list(request):
-    return JsonResponse(settings.DATA_SOURCES_CONFIG)
+
+    user = request.user
+    data_source_config = copy.deepcopy(settings.DATA_SOURCES_CONFIG)
+    upload_permission_map = {
+        'api.upload_from_file': 'fileUpload',
+        'api.upload_from_mysql': 'MySQL',
+        'api.upload_from_mssql': 'mssql',
+        'api.upload_from_hana': 'Hana',
+        'api.upload_from_hdfs': 'Hdfs'
+    }
+
+    upload_permitted_list = []
+
+    for key in upload_permission_map:
+        if user.has_perm(key):
+            upload_permitted_list.append(upload_permission_map[key])
+
+    permitted_source_config = {
+        "conf": []
+    }
+
+    print data_source_config.keys()
+    for data in data_source_config['conf']:
+        if data['dataSourceType'] in upload_permitted_list:
+            permitted_source_config['conf'].append(data)
+
+    return JsonResponse(permitted_source_config)
 
 
 def get_config(request, slug=None):
@@ -843,6 +922,10 @@ def set_result(request, slug=None):
         slug,
         results
     )
+    # tasks.save_results_to_job1(
+    #     slug,
+    #     results
+    # )
     if "status=failed" in request.body:
         results = {'error_message': 'Failed'}
         results = tasks.write_into_databases.delay(
@@ -850,12 +933,22 @@ def set_result(request, slug=None):
             object_slug=job.object_id,
             results=results
         )
+        job.status = 'FAILED'
+        job.save()
     else:
-        results = tasks.write_into_databases.delay(
+        # results = tasks.write_into_databases.delay(
+        #     job_type=job.job_type,
+        #     object_slug=job.object_id,
+        #     results=json.loads(results)
+        # )
+
+        results = tasks.write_into_databases1(
             job_type=job.job_type,
             object_slug=job.object_id,
             results=json.loads(results)
         )
+        job.status = 'SUCCESS'
+        job.save()
     return JsonResponse({'result': "success"})
 
 
@@ -867,11 +960,13 @@ def use_set_result(request, slug=None):
 
     results = job.results
 
-    results = write_into_databases(
+    results = tasks.write_into_databases1(
         job_type=job.job_type,
         object_slug=job.object_id,
         results=json.loads(results)
     )
+    job.status = 'SUCCESS'
+    job.save()
 
     return JsonResponse({'result': results})
 
@@ -1023,17 +1118,29 @@ def convert_chart_data_to_beautiful_things(data, object_slug=""):
             except Exception as e:
                 print e
                 card["data"] = {}
+        if card["dataType"] == "button":
+            button_card = card["data"]
+            if button_card["dataType"] == "c3Chart":
+                chart_raw_data = button_card["data"]
+                # function
+                try:
+                    button_card["data"] = helper.decode_and_convert_chart_raw_data(chart_raw_data, object_slug=object_slug)
+                    card["data"] = button_card["data"]
+                except Exception as e:
+                    print e
+                    button_card["data"] = {}
+
 
 
 def home(request):
     host = request.get_host()
 
     APP_BASE_URL = ""
-    protocol = "http"
+    protocol = "https"
     if request.is_secure():
         protocol = "https"
 
-    SCORES_BASE_URL = "http://{}:8001/".format(settings.HDFS.get("host", "ec2-34-205-203-38.compute-1.amazonaws.com"))
+    SCORES_BASE_URL = "https://{}:8001/".format(settings.HDFS.get("host", "ec2-34-205-203-38.compute-1.amazonaws.com"))
     APP_BASE_URL = "{}://{}".format(protocol, host)
 
     context = {"UI_VERSION": settings.UI_VERSION, "APP_BASE_URL": APP_BASE_URL, "SCORES_BASE_URL": SCORES_BASE_URL, "STATIC_URL" : settings.STATIC_URL}
@@ -1045,6 +1152,7 @@ def home(request):
 def get_info(request):
     user = request.user
     from api.helper import convert_to_humanize
+    from api.user_helper import UserSerializer
     def get_all_info_related_to_user(user):
         # things = ['dataset', 'insight', 'trainer', 'score', 'robo', 'audioset']
         things = ['dataset', 'insight', 'trainer', 'score']
@@ -1179,7 +1287,9 @@ def get_info(request):
         'used_size': convert_to_humanize(used_data_size),
         'chart_c3': get_size_pie_chart(used_data_size),
         'comment': get_html_template(),
-        'recent_activity': get_recent_activity()
+        'recent_activity': get_recent_activity(),
+        'user': UserSerializer(user, context={'request': request}).data,
+        'profile': user.profile.json_serialized() if user.profile is not None else None
     })
 
 
@@ -4839,18 +4949,43 @@ def set_pmml(request, slug=None):
 @csrf_exempt
 def get_pmml(request, slug=None, algoname='algo'):
 
-    from api.redis_access import AccessFeedbackMessage
-    from helper import generate_pmml_name
-    ac = AccessFeedbackMessage()
-    job_object = Job.objects.filter(object_id=slug).first()
-    job_slug = job_object.slug
-    key_pmml_name = generate_pmml_name(job_slug)
-    data = ac.get_using_key(key_pmml_name)
-    if data is None:
-        sample_xml =  "<mydocument has=\"an attribute\">\n  <and>\n    <many>elements</many>\n    <many>more elements</many>\n  </and>\n  <plus a=\"complex\">\n    element as well\n  </plus>\n</mydocument>"
-        return return_xml_data(sample_xml, algoname)
-    xml_data = data[-1].get(algoname)
-    return return_xml_data(xml_data, algoname)
+    from api.user_helper import return_user_using_token
+    from api.exceptions import retrieve_failed_exception
+    token = request.GET.get('token')
+    token = token.split(' ')[1]
+
+    user = return_user_using_token(token=token)
+
+    try:
+        if not user.has_perm('api.downlad_pmml'):
+
+            return JsonResponse(
+                {
+                    "message": "failed.",
+                    "errors": "permission_denied",
+                    "status": False
+                }
+            )
+        from api.redis_access import AccessFeedbackMessage
+        from helper import generate_pmml_name
+        ac = AccessFeedbackMessage()
+        job_object = Job.objects.filter(object_id=slug).first()
+        job_slug = job_object.slug
+        key_pmml_name = generate_pmml_name(job_slug)
+        data = ac.get_using_key(key_pmml_name)
+        if data is None:
+            sample_xml =  "<mydocument has=\"an attribute\">\n  <and>\n    <many>elements</many>\n    <many>more elements</many>\n  </and>\n  <plus a=\"complex\">\n    element as well\n  </plus>\n</mydocument>"
+            return return_xml_data(sample_xml, algoname)
+        xml_data = data[-1].get(algoname)
+        return return_xml_data(xml_data, algoname)
+    except:
+        return JsonResponse(
+                {
+                    "message": "failed.",
+                    "errors": "permission_denied",
+                    "status": False
+                }
+            )
 
 
 @csrf_exempt
@@ -4958,13 +5093,12 @@ def get_metadata_for_mlscripts(request, slug=None):
         return JsonResponse({'Message': 'Failed. No analysis of this dataset'})
 
     from api.datasets.serializers import DatasetSerializer
-    ds_serializer = DatasetSerializer(instance=ds)
+    ds_serializer = DatasetSerializer(instance=ds, context={})
     meta_data = ds_serializer.data.get('meta_data')
     return JsonResponse({
         "metaData": meta_data.get('metaData'),
         'columnData': meta_data.get('columnData'),
         'headers': meta_data.get('headers')
-
     })
 
 
@@ -5001,9 +5135,11 @@ def get_score_data_and_return_top_n(request):
 
             csv_text = fp.read()
             csv_list = csv_text.split('\n')
+            csv_list = csv_list[:count]
+            csv_text_list = [text.split(',') for text in csv_list]
             return JsonResponse({
                 'Message': 'Success',
-                'csv_data': csv_list[:count]
+                'csv_data': csv_text_list
             })
 
 
@@ -5040,3 +5176,27 @@ def delete_and_keep_only_ten_from_all_models(request):
         'ok': 'ok'
 
     })
+
+
+#for regression modal algorithm config
+def get_algorithm_config_list(request):
+
+    user = request.user
+    algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST)
+
+    print algorithm_config_list.keys()
+
+    return JsonResponse(algorithm_config_list)
+
+def get_appID_appName_map(request):
+    #from django.core import serializers
+    from api.models import CustomApps
+    appIDmapfromDB=CustomApps.objects.only('app_id','name','app_type')
+    #appIDmap_serialized = serializers.serialize('json', appIDmap)
+    appIDmap=[]
+    for row in appIDmapfromDB:
+        appIDmap.append({
+            "app_id":row.app_id,"app_name":row.name,"app_type":row.app_type
+        })
+
+    return JsonResponse({"appIDMapping":appIDmap})

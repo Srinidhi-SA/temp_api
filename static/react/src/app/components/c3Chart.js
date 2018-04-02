@@ -12,7 +12,8 @@ import {showZoomChart, showChartData} from "../actions/signalActions";
 
 @connect((store) => {
   return {sideCardListFlag: store.signals.sideCardListFlag,
-  selectedL1:store.signals.selectedL1};
+  selectedL1:store.signals.selectedL1,
+  selected_signal_type:store.signals.selected_signal_type};
 })
 
 //var data= {}, toolData = [], toolLegend=[], chartDiv =null;
@@ -116,55 +117,35 @@ export class C3Chart extends React.Component {
       data.padding.top=35
     }
     if (this.props.yformat) {
-      if (data.data.type == "donut") {
-        console.log("in donut")
-        let formats = [
-          '.2s',
-          '$',
-          '$,.2s',
-          '.2f','.4f',
-          ',.0f',
-          '.4r'
-        ];
-        if (formats.indexOf(this.props.yformat) >= 0) {
-          data.donut.label.format = d3.format(this.props.yformat);
-        } else {
-          data.donut.label.format = d3.format('');
-        }
-      } else if (data.data.type == "pie") {
-        console.log("in pie")
-        let formats = [
-          '.2s',
-          '$',
-          '$,.2s',
-          '.2f','.4f',
-          ',.0f',
-          '.4r'
-        ];
-        if (formats.indexOf(this.props.yformat) >= 0) {
-          data.pie.label.format = d3.format(this.props.yformat);
-        } else {
-          data.pie.label.format = d3.format('');
-        }
+      if (data.data.type == "donut")
+      this.props.yformat == '.4f' ? data.donut.label.format = d3.format('.4f'):data.donut.label.format = d3.format('.2s');//If the y-format from API is .4f then making format for measure is .4f only, otherwise making it to .2s
+      else if(data.data.type == "pie")
+      {//removing logic for pie formatting >>this.props.yformat == '.4f' ? data.pie.label.format = d3.format('.4f'):data.pie.label.format = d3.format('.2s');//If the y-format from API is .4f then making format for measure is .4f only, otherwise making it to .2s}
+      }else
+      this.props.yformat == '.4f' ? data.axis.y.tick.format = d3.format('.4f'):data.axis.y.tick.format = d3.format('.2s');//If the y-format from API is .4f then making format for measure is .4f only, otherwise making it to .2s
 
-      } else {
-        let formats = [
-          '.2s',
-          '$',
-          '$,.2s',
-          '.2f','.4f',
-          ',.0f',
-          '.4r'
-        ];
-        if (formats.indexOf(this.props.yformat) >= 0) {
-          data.axis.y.tick.format = d3.format(this.props.yformat);
-
-        } else {
-          data.axis.y.tick.format = d3.format('');
-        }
-
+      if (data.tooltip && data.tooltip.format){
+        if(data.data.columns[0][0] == "Count" || this.props.selectedL1 == "Prediction") // setting as Integer format for the charts coming under Overview and Prediction
+        data.tooltip.format.value = d3.format('');
+        else if(this.props.yformat == '.4f')//If .4f is coming from API then set tooltip format is also .4f
+        data.tooltip.format.value = d3.format('.4f');
+        else//set tooltip format as .2f for all the formats other than .4f
+        data.tooltip.format.value = d3.format('.2f');
       }
     }
+    else
+    {
+      if (data.data.type == "donut")
+      data.donut.label.format = d3.format('.2s');
+      else if(data.data.type == "pie"){
+    //removing logic for pie formatting as profile page is failing>>> data.pie.label.format = d3.format('.2s');
+      }else
+      data.axis.y.tick.format = d3.format('.2s');
+
+      if (data.tooltip && data.tooltip.format)
+      data.tooltip.format.value = d3.format('.2f');
+    }
+
 
     if (this.props.y2format) {
       let formats = [
@@ -187,7 +168,7 @@ export class C3Chart extends React.Component {
       let yformat=".2s"
       if(this.props.yformat)
         yformat=this.props.yformat
-
+    if(data.axis&&data.axis.y.tick.format){
     data.axis.y.tick.format=function(f){
       //console.log("f of tick")
       if(f>999){
@@ -198,7 +179,7 @@ export class C3Chart extends React.Component {
       let si = d3.format('.0f');
     return String(si(f));
       }
-    }}
+    }}}
 
     if (this.props.guage) {
       data.gauge.label.format = function(value, ratio) {
@@ -238,32 +219,9 @@ export class C3Chart extends React.Component {
 
     }
 
-    if (data.data.type == "donut") {
-      console.log("in donut tooltip")
-      let formats = [
-        '.2s',
-        '$',
-        '$,.2s',
-        '.2f','.4f',
-        ',.0f',
-        '.4r'
-      ];
-      //  data.tooltip.format.title = function (d) { return 'Data ' + d; };
-      if (formats.indexOf(data.tooltip.format.value) >= 0) {
-
-        data.tooltip.format.value = function(value, ratio, id) {
-          var format = id === 'data1'
-            ? d3.format(',')
-            : d3.format(data.tooltip.format.value);
-          return format(value);
-        }
-      } else {
-        data.tooltip.format.value = d3.format('');
-      }
-    }
 
 //fix for common point colour in trend
-    if(this.props.selectedL1=="Trend"&&data.data.type=="line"){
+    if(this.props.selectedL1=="Trend"&&data.data.type=="line"&&this.props.selected_signal_type=="measure"){
       console.log("in dtrend##########")
       console.log(data)
       let colors=data.color.pattern
@@ -272,30 +230,6 @@ export class C3Chart extends React.Component {
        }
     }
 
-    if (data.data.type == "pie") {
-      console.log("in pie tooltip")
-      let formats = [
-        '.2s',
-        '$',
-        '$,.2s',
-        '.2f','.4f',
-        ',.0f',
-        '.4r'
-      ];
-      //  data.tooltip.format.title = function (d) { return 'Data ' + d; };
-      if (data.tooltip && data.tooltip.format) {
-        if (formats.indexOf(data.tooltip.format.value) >= 0) {
-          data.tooltip.format.value = function(value, ratio, id) {
-            var format = id === 'data1'
-              ? d3.format(',')
-              : d3.format(data.tooltip.format.value);
-            return format(value);
-          }
-        } else {
-          data.tooltip.format.value = d3.format('');
-        }
-      }
-    }
     this.chartData = data;
     data['bindto'] = this.getChartElement().get(0); // binding chart to html element
     console.log(data);

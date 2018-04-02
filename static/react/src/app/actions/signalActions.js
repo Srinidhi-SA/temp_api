@@ -283,6 +283,7 @@ function fetchPostsSuccess_analysis(signalAnalysis, errandId, dispatch) {
     dispatch(closeCsLoaderModal())
     dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
     dispatch(clearLoadingMsg());
+    dispatch(updateTargetTypForSelSignal(signalAnalysis.type))
   } else if (signalAnalysis.status == FAILED || signalAnalysis.status == false) {
     //bootbox.alert("Your signal could not be created. Please try later.")
     bootbox.alert("The signal could not be created. Please check the dataset and try again.")
@@ -355,10 +356,10 @@ function updateTargetVariable(slug,array){
     if(array[i].slug == slug){
         array[i].targetColumn = !array[i].targetColumn;
         array[i].targetColSetVarAs = null;
-        break;
+         break;
     }
 }
-return array;
+    return array;
 }
 
 function handleSelectAllFlag(array){
@@ -369,7 +370,7 @@ function handleSelectAllFlag(array){
             return selectAllFlag;
         }
     }
-
+    return selectAllFlag;
 }
 export function clearMeasureSearchIfTargetIsSelected(name){
     $("#measureSearch").val("");
@@ -763,4 +764,11 @@ export function resetSelectedTargetVariable(){
     var varText = null;
     var varSlug = null;
     return {type: "SET_POSSIBLE_LIST", varType, varText, varSlug}
+}
+
+export function updateTargetTypForSelSignal(signal_type){
+  return{
+    type:"SELECTED_SIGNAL_TYPE",
+    signal_type
+  }
 }

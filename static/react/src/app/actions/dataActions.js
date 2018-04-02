@@ -19,6 +19,8 @@ function getHeader(token){
 
 export function refreshDatasets(props){
     return (dispatch) => {
+        if(refreshDatasetsInterval != null)
+        clearInterval(refreshDatasetsInterval);
         refreshDatasetsInterval = setInterval(function() {
             var pageNo = window.location.href.split("=")[1];
             if(pageNo == undefined) pageNo = 1;
@@ -126,7 +128,7 @@ function fetchStockDataPreview(slug) {
 }
 export function getDataSetPreview(slug,interval) {
     return (dispatch) => {
-        return fetchDataPreview(slug,dispatch).then(([response, json]) =>{
+        return fetchDataPreview(slug,dispatch,interval).then(([response, json]) =>{
             if(response.status === 200){
                 console.log(json)
                 dispatch(fetchDataPreviewSuccess(json,interval,dispatch))
@@ -141,14 +143,14 @@ export function getDataSetPreview(slug,interval) {
 }
 
 
-function fetchDataPreview(slug,dispatch) {
+function fetchDataPreview(slug,dispatch,interval) {
     return fetch(API+'/api/datasets/'+slug+'/',{
         method: 'get',
         headers: getHeader(getUserDetailsOrRestart.get().userToken)
     }).then( response => Promise.all([response, response.json()])).catch(function(error){
 
         dispatch(hideDULoaderPopup());
-        //let msg=statusMessages("error","Unable to connect to server. Check your connection please try again.","small_mascot")
+        clearInterval(interval);
         bootbox.alert("Unable to connect to server. Check your connection please try again.")
     });
 }
@@ -178,7 +180,9 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
     }else if(dataPreview.status == FAILED){
         clearInterval(interval);
         dispatch(hideDULoaderPopup());
-        bootbox.alert("The uploaded file does not contain data in readable format. Please check the source file.")
+        bootbox.alert("The uploaded file does not contain data in readable format. Please check the source file.", function() {
+            window.history.go(-2);
+          });
         dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
         dispatch(clearLoadingMsg())
         //clearDatasetPreview()
@@ -536,10 +540,10 @@ function updateList(slug,array){
     for(var i=0;i<array.length;i++){
         if(array[i].slug == slug){
             array[i].selected = !array[i].selected;
-            return array;
+            break;
         }
     }
-    
+  return array;
 }
 function updateTimeDimList(slug,array,evt){
     for(var i=0;i<array.length;i++){
@@ -596,7 +600,7 @@ function applyFilterOnVaraibles(){
             evt.target.name = "dimension"
                 dispatch(handleDVSearch(evt));
         }
-        
+
         if($("#datetimeSearch").val() != ""){
             evt.target.value = $("#datetimeSearch").val();
             evt.target.name = "datetime"
@@ -610,7 +614,7 @@ export function updateSelectedVariables(evt){
         var dataSetMeasures = store.getState().datasets.CopyOfMeasures.slice();
         var dataSetDimensions = store.getState().datasets.CopyOfDimension.slice();
         var dataSetTimeDimensions = store.getState().datasets.CopyTimeDimension.slice();
-        
+
         var dimFlag =  store.getState().datasets.dimensionAllChecked;
         var meaFlag = store.getState().datasets.measureAllChecked;
         var count = store.getState().datasets.selectedVariablesCount;
@@ -635,6 +639,34 @@ export function updateSelectedVariables(evt){
         dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
         count = getTotalVariablesSelected();
         dispatch(updateVariablesCount(count));
+        if(evt.target.baseURI.includes("/createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
+            if(count >= 5){
+                $('.measure[type="checkbox"]').each(function() {
+                    if (!$(this).is(":checked"))
+                    $(this).prop('disabled', true);
+                });
+                $('.dimension[type="checkbox"]').each(function() {
+                    if (!$(this).is(":checked"))
+                    $(this).prop('disabled', true);
+                });
+                $('.measureAll[type="checkbox"]').each(function() {
+                    $(this).prop('disabled', true);
+                });
+                $('.dimensionAll').prop("disabled",true);
+                $('.measureAll').prop("disabled",true);
+                //document.getElementById('measure').disabled = true;
+            }
+            else{
+                $('.measure[type="checkbox"]').each(function() {
+                    $(this).prop('disabled', false);
+                });
+                $('.dimension[type="checkbox"]').each(function() {
+                    $(this).prop('disabled', false);
+                });
+            }
+        }
+        if(evt.target.baseURI.includes("/createSignal"))
+        dispatch(uncheckHideAnalysisList());
     }
 
 }
@@ -667,9 +699,13 @@ export function updateDatasetName(dataset){
         dataset,
     }
 }
-export function resetSelectedVariables(){
+export function resetSelectedVariables(flag){
+    if(flag == undefined)
+    var selectChk = true;
+    else
+    var selectChk = flag;
     return {
-        type: "RESET_VARIABLES",
+        type: "RESET_VARIABLES",selectChk
     }
 }
 
@@ -979,6 +1015,44 @@ export function handleSelectAll(evt){
         dispatch(updateStoreVariables(dataSetMeasures,dataSetDimensions,dataSetTimeDimensions,dimFlag,meaFlag,count));
         count = getTotalVariablesSelected();
         dispatch(updateVariablesCount(count));
+        if(evt.target.baseURI.includes("/createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
+            if(evt.target.checked == false)
+            {
+                $('.measure[type="checkbox"]').each(function() {
+                    $(this).prop('disabled', false);
+                });
+                $('.dimension[type="checkbox"]').each(function() {
+                    $(this).prop('disabled', false);
+                });
+            }
+            else
+            {
+                if(count >= 5){
+                    if(varType == "dimension"){
+                        $('.measure[type="checkbox"]').each(function() {
+                            if (!$(this).is(":checked"))
+                            $(this).prop('disabled', true);
+                        });
+                    }
+                    if(varType == "measure"){
+                        $('.dimension[type="checkbox"]').each(function() {
+                            if (!$(this).is(":checked"))
+                            $(this).prop('disabled', true);
+                        });
+                    }
+                }
+                else{
+                    $('.measure[type="checkbox"]').each(function() {
+                        $(this).prop('disabled', false);
+                    });
+                    $('.dimension[type="checkbox"]').each(function() {
+                        $(this).prop('disabled', false);
+                    });
+                }
+            }
+        }
+        if(evt.target.baseURI.includes("/createSignal"))
+        dispatch(uncheckHideAnalysisList());
     }
 }
 
@@ -1139,14 +1213,14 @@ export function updateColumnStatus(dispatch,colSlug,colName,actionName,subAction
     }
     if(actionName != SET_VARIABLE && actionName != UNIQUE_IDENTIFIER && actionName != SET_POLARITY && actionName != IGNORE_SUGGESTION){
         isSubsetting = true;
-    }else{ 
-        //Enable subsetting when any one of the column is deleted,renamed, removed  
-        if(store.getState().datasets.subsettingDone == false) { 
-            isSubsetting = false;    
-        }else{ 
-            isSubsetting = true;    
-        } 
-    } 
+    }else{
+        //Enable subsetting when any one of the column is deleted,renamed, removed
+        if(store.getState().datasets.subsettingDone == false) {
+            isSubsetting = false;
+        }else{
+            isSubsetting = true;
+        }
+    }
     dispatch(handleColumnActions(transformSettings,slug,isSubsetting))
     dispatch(updateVLPopup(false));
     //dispatch(updateTransformSettings(transformSettings));
@@ -1424,4 +1498,122 @@ export function popupAlertBox(msg,props,url){
     bootbox.alert(msg,function(){
         props.history.push(url)
     });
+}
+export function deselectAllVariablesDataPrev(){
+  let dataPrev=store.getState().datasets.dataPreview
+  let slug=store.getState().datasets.selectedDataSet
+  if(dataPrev&&dataPrev.meta_data){
+  for(var i=0;i<dataPrev.meta_data.uiMetaData.varibaleSelectionArray.length;i++){
+    dataPrev.meta_data.uiMetaData.varibaleSelectionArray[i].selected=false
+  }
+  dispatchDataPreview(dataPrev,slug)
+}
+}
+
+export function makeAllVariablesTrueOrFalse(value){
+  return{
+    type:"MAKE_ALL_TRUE_OR_FALSE",
+    value
+  }
+}
+
+export function DisableSelectAllCheckbox(){
+  let dataPrev=store.getState().datasets.dataPreview
+  let slug=store.getState().datasets.selectedDataSet
+  if(dataPrev&&dataPrev.meta_data){
+    let measureArray = $.grep(dataPrev.meta_data.uiMetaData.varibaleSelectionArray,function(val,key){
+        return(val.columnType == "measure");
+    });
+    let dimensionArray = $.grep(dataPrev.meta_data.uiMetaData.varibaleSelectionArray,function(val,key){
+        return(val.columnType == "dimension");
+    });
+    if(measureArray.length > 5)
+     $('.measureAll').prop("disabled",true);
+
+    if(dimensionArray.length > 5)
+     $(".dimensionAll").prop("disabled",true);
+}
+}
+export function uncheckHideAnalysisList(){
+    return (dispatch) => {
+        var dataSetMeasures = store.getState().datasets.CopyOfMeasures.slice();
+        var dataSetDimensions = store.getState().datasets.CopyOfDimension.slice();
+        var targetVariableType = store.getState().signals.getVarType;
+        let measureArray = $.grep(dataSetMeasures,function(val,key){
+            return(val.selected == true);
+        });
+        let dimensionArray = $.grep(dataSetDimensions,function(val,key){
+            return(val.selected == true);
+        });
+        if(targetVariableType == "dimension"){
+            if(measureArray.length < 1 || dimensionArray.length < 1){
+                dispatch(saveDeselectedAnalysisList($("#chk_analysis_association").val()));
+                dispatch(saveDeselectedAnalysisList($("#chk_analysis_prediction").val()));
+            }
+
+        }
+        else if(targetVariableType == "measure"){
+            if(dimensionArray.length < 1)
+            dispatch(saveDeselectedAnalysisList($("#chk_analysis_performance").val()));
+
+            if(measureArray.length < 1)
+            dispatch(saveDeselectedAnalysisList($("#chk_analysis_influencer").val()));
+
+            if(measureArray.length < 1 || dimensionArray.length < 1)
+            dispatch(saveDeselectedAnalysisList($("#chk_analysis_prediction").val()));
+        }
+    }
+}
+export function saveDeselectedAnalysisList(name){
+    var totalAnalysisList = store.getState().datasets.dataSetAnalysisList;
+    var prevAnalysisList = jQuery.extend(true, {}, store.getState().datasets.dataSetPrevAnalysisList);
+    var analysisList = [];
+    var renderList = {};
+    var trendSettings = [];
+    if(store.getState().signals.getVarType == "measure"){
+        analysisList = totalAnalysisList.measures.analysis;
+    }else{
+        analysisList = totalAnalysisList.dimensions.analysis;
+        trendSettings = totalAnalysisList.dimensions.trendSettings;
+    }
+
+    for(var i=0;i<analysisList.length;i++){
+                if(analysisList[i].name == name){
+                    analysisList[i].status = false;
+                    if(analysisList[i].noOfColumnsToUse != null){
+                            for(var j=0;j<analysisList[i].noOfColumnsToUse.length;j++){
+                                if(analysisList[i].noOfColumnsToUse[j].name == "custom"){
+                                    analysisList[i].noOfColumnsToUse[j].status = false;
+                                    analysisList[i].noOfColumnsToUse[j].value = null;
+                                }else{
+                                    analysisList[i].noOfColumnsToUse[j].status = false;
+                                }
+                            }
+                    }
+                    break;
+                }
+            }
+
+            if(name.indexOf("trend") != -1){
+            if(store.getState().signals.getVarType != "measure"){
+                for(var i in trendSettings){
+                    trendSettings[i].status = false;
+                }
+            }
+        }
+
+    if(store.getState().signals.getVarType == "measure"){
+    totalAnalysisList.measures.analysis = analysisList
+    }else{
+        totalAnalysisList.dimensions.analysis = analysisList
+        totalAnalysisList.dimensions.trendSettings = trendSettings;
+    }
+    renderList.measures = totalAnalysisList.measures;
+    renderList.dimensions = totalAnalysisList.dimensions;
+    return {
+        type: "UPDATE_ANALYSIS_LIST_SELECT_ALL",
+        renderList,
+        prevAnalysisList,
+        flag:false,
+    }
 }

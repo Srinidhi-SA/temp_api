@@ -1165,8 +1165,55 @@ def round_sig(x, sig=3):
 
 def get_message(instance):
     from api.redis_access import AccessFeedbackMessage
+    import json
     ac = AccessFeedbackMessage()
-    return ac.get_using_obj(instance)
+    message_log = json.loads(instance.message_log)
+    data = None
+    if message_log is None or len(message_log) <= 0:
+        data = get_message_for_job_status(instance.status)
+        if data is not None:
+            data = ac.append_using_key(instance.slug, data)
+            instance.message_log = json.dumps(data)
+            instance.save()
+    else:
+        keep_in_API = True
+        for msg_log in message_log:
+            if msg_log['analysisName'] != 'before_script':
+                keep_in_API = False
+                break
+
+        last_message = message_log[-1]
+        if 'analysisName' in last_message and keep_in_API:
+            if last_message['analysisName'] == 'before_script':
+                data = get_message_for_job_status(instance.status)
+                if data is not None:
+                    data = ac.append_using_key(instance.slug, data)
+                    instance.message_log = json.dumps(data)
+                    instance.save()
+
+    if data is None:
+        data = message_log
+
+    prev_true_message = None
+    for d in data:
+        if d['display'] == True:
+            prev_true_message = d['shortExplanation']
+    data[-1]['shortExplanation'] = prev_true_message
+    data[-1]['display'] = True
+
+    return [data[-1]]
+
+
+def get_message_for_job_status(status=""):
+    job_status_message = settings.JOB_STATUS_MESSAGE
+    import copy
+    job_message_json_format = copy.deepcopy(settings.JOB_MESSAGE_JSON_FORMAT)
+    if status == "":
+        status = "EMPTY"
+    job_message_json_format['messageType'] = status
+    job_message_json_format['shortExplanation'] = job_status_message[status]
+
+    return job_message_json_format
 
 
 from django.http import JsonResponse

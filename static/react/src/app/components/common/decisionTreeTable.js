@@ -13,7 +13,7 @@ export class DecisionTreeTable extends React.Component {
   componentDidMount() {
     
   }
-
+//currently not using , present in old version
   render() {
    var element = this.props.tableData.tableData;
  

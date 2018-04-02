@@ -114,6 +114,7 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
             
             
             const modelList = store.getState().apps.modelList.data;
+            var createModelPermission = store.getState().apps.modelList.permission_details;
             let appsModelList = null;
             if (modelList) {
                 const pages = store.getState().apps.modelList.total_number_of_pages;
@@ -126,7 +127,7 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                 appsModelList = <ModelsCard match={this.props.match} data={modelList}/>;
                 return (
                         <div>
-                        <LatestModels props={this.props}/>
+                        <LatestModels props={this.props} permissions={createModelPermission}/>
                         <div className="main-content">
                         <div className="row">
                         <div className="col-md-6">
@@ -139,11 +140,9 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                         {/*<input type="text" name="model_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Model Insights" id="model_insights" className="form-control" placeholder="Search Model insights..."/>*/}
                         
                         <div className="search-wrapper">
-                        <form>
                         <input type="text" name="model_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Model Insights" id="model_insights" className="form-control search-box" placeholder="Search Model insights..." required />
                         <span className="zmdi zmdi-search form-control-feedback"></span>
                         <button className="close-icon" type="reset"></button>
-                        </form>
                         </div>
                         
                         </div>

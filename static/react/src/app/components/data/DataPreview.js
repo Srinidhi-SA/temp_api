@@ -8,18 +8,25 @@ import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {C3Chart} from "../c3Chart";
 import ReactDOM from 'react-dom';
-import {hideDataPreview,getDataSetPreview,renameMetaDataColumn,updateTranformColumns,hideDataPreviewDropDown,popupAlertBox} from "../../actions/dataActions";
-import {dataSubsetting,clearDataPreview,clearLoadingMsg} from "../../actions/dataUploadActions"
-import {Button,Dropdown,Menu,MenuItem} from "react-bootstrap";
+import {
+  hideDataPreview,
+  getDataSetPreview,
+  renameMetaDataColumn,
+  updateTranformColumns,
+  hideDataPreviewDropDown,
+  popupAlertBox
+} from "../../actions/dataActions";
+import {dataSubsetting, clearDataPreview, clearLoadingMsg} from "../../actions/dataUploadActions"
+import {Button, Dropdown, Menu, MenuItem} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"
-import {showHideSideChart, showHideSideTable, MINROWINDATASET} from "../../helpers/helper.js"
-import {isEmpty} from "../../helpers/helper";
+import {showHideSideChart, showHideSideTable, MINROWINDATASET,toggleVisualization} from "../../helpers/helper.js"
+import {isEmpty, CREATESIGNAL, CREATESCORE, CREATEMODEL} from "../../helpers/helper";
 import {SubSetting} from "./SubSetting";
 import {DataUploadLoader} from "../common/DataUploadLoader";
 import {DataValidation} from "./DataValidation";
 import {DataValidationEditValues} from "./DataValidationEditValues";
 import Dialog from 'react-bootstrap-dialog';
-import {checkCreateScoreToProceed} from "../../actions/appActions";
+import {checkCreateScoreToProceed, getAppDetails} from "../../actions/appActions";
 
 @connect((store) => {
   return {
@@ -35,11 +42,10 @@ import {checkCreateScoreToProceed} from "../../actions/appActions";
     subsettingDone: store.datasets.subsettingDone,
     subsettedSlug: store.datasets.subsettedSlug,
     dataTransformSettings: store.datasets.dataTransformSettings,
-    scoreToProceed:store.apps.scoreToProceed,
+    scoreToProceed: store.apps.scoreToProceed,
+    currentAppDetails: store.apps.currentAppDetails
   };
 })
-
-
 
 export class DataPreview extends React.Component {
 
@@ -55,7 +61,8 @@ export class DataPreview extends React.Component {
     this.firstTimeSideChart = {};
     this.firstTimeColTypeForChart = null;
     this.isSubsetted = false;
-    this.new_subset = ""
+    this.new_subset = "";
+    this.toggleVisualizationSlug="";
   }
 
   hideDataPreview() {
@@ -68,11 +75,52 @@ export class DataPreview extends React.Component {
   componentWillMount() {
     console.log("------------------");
     console.log(this.props);
+    console.log("data prevvvvv");
     if (this.props.dataPreview == null || isEmpty(this.props.dataPreview) || this.props.dataPreview.status == 'FAILED') {
       this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
     }
-    console.log("data prevvvvv");
-    console.log(store.getState().datasets.curUrl.indexOf("models"));
+    //When user refresh get current app details
+    if (this.props.match.path.includes("AppId")) {
+      this.props.dispatch(getAppDetails(this.props.match.params.AppId));
+    }
+    if (this.props.match.path.includes("models") && this.props.match.path.includes("modelSlug") && this.props.match.path.includes("slug")) {
+      this.buttons['close'] = {
+        url: "/apps",
+        text: "Close"
+      };
+      this.buttons['create'] = {
+        url: "/apps/" + this.props.match.params.AppId + "/models/" + this.props.match.params.modelSlug + "/data/" + this.props.match.params.slug + "/createScore",
+        text: CREATESCORE
+      };
+    } else if (this.props.match.path.includes("models") && this.props.match.path.includes("slug")) {
+      this.buttons['close'] = {
+        url: "/apps",
+        text: "Close"
+      };
+      this.buttons['create'] = {
+        url: "/apps/" + this.props.match.params.AppId + "/models/data/" + this.props.match.params.slug + "/createModel",
+        text: CREATEMODEL
+      };
+    } else if (this.props.match.path.includes("robo")) {
+      this.buttons['close'] = {
+        url: "/apps/" + this.props.match.params.AppId + "/robo",
+        text: "Close"
+      };
+      this.buttons['create'] = {
+        url: "/apps-robo/" + store.getState().apps.roboDatasetSlug + "/" + store.getState().signals.signalAnalysis.slug,
+        text: "Compose Insight"
+      };
+    } else if (this.props.match.path.includes("slug")) {
+      this.buttons['close'] = {
+        url: "/data",
+        text: "Close"
+      };
+      this.buttons['create'] = {
+        url: "/data/" + this.props.match.params.slug + "/createSignal",
+        text: CREATESIGNAL
+      };
+    }
+    /* console.log(store.getState().datasets.curUrl.indexOf("models"));
     if (store.getState().datasets.curUrl) {
       if (store.getState().datasets.curUrl.startsWith("/signals")) {
         this.buttons['close'] = {
@@ -81,7 +129,7 @@ export class DataPreview extends React.Component {
         };
         this.buttons['create'] = {
           url: "/data/" + this.props.match.params.slug + "/createSignal",
-          text: "Create Signal"
+          text: CREATESIGNAL
         };
 
       } else if (store.getState().datasets.curUrl.startsWith("/data")) {
@@ -91,13 +139,13 @@ export class DataPreview extends React.Component {
         };
         this.buttons['create'] = {
           url: "/data/" + this.props.match.params.slug + "/createSignal",
-          text: "Create Signal"
+          text: CREATESIGNAL
         };
 
       } else if (store.getState().datasets.curUrl.startsWith("/apps")) {
         if (store.getState().datasets.curUrl.indexOf("robo") != -1) {
           this.buttons['close'] = {
-            url: "/apps/" + store.getState().apps.currentAppId + "/robo",
+            url: "/apps/" + store.getState().apps.currentAppDetails.slug + "/robo",
             text: "Close"
           };
           this.buttons['create'] = {
@@ -110,8 +158,8 @@ export class DataPreview extends React.Component {
             text: "Close"
           };
           this.buttons['create'] = {
-            url: "/apps/" + store.getState().apps.currentAppId + "/models/" + store.getState().apps.modelSlug + "/data/" + this.props.match.params.slug + "/createScore",
-            text: "Create Score"
+            url: "/apps/" + store.getState().apps.currentAppDetails.slug + "/models/" + store.getState().apps.modelSlug + "/data/" + this.props.match.params.slug + "/createScore",
+            text: CREATESCORE
           };
         } else {
           this.buttons['close'] = {
@@ -119,8 +167,8 @@ export class DataPreview extends React.Component {
             text: "Close"
           };
           this.buttons['create'] = {
-            url: "/apps/" + store.getState().apps.currentAppId + "/models/data/" + this.props.match.params.slug + "/createModel",
-            text: "Create Model"
+            url: "/apps/" + store.getState().apps.currentAppDetails.slug + "/models/data/" + this.props.match.params.slug + "/createModel",
+            text: CREATEMODEL
           };
         }
 
@@ -132,9 +180,9 @@ export class DataPreview extends React.Component {
       };
       this.buttons['create'] = {
         url: "/data/" + this.props.match.params.slug + "/createSignal",
-        text: "Create Signal"
+        text: CREATESIGNAL
       };
-    }
+    }*/
 
   }
 
@@ -162,30 +210,32 @@ export class DataPreview extends React.Component {
 		});*/
     }
 
-		showHideSideTable(this.firstTimeSideTable);
-		showHideSideChart(this.firstTimeColTypeForChart,this.firstTimeSideChart);
-		hideDataPreviewDropDown(this.props.curUrl);
+    showHideSideTable(this.firstTimeSideTable);
+    showHideSideChart(this.firstTimeColTypeForChart, this.firstTimeSideChart);
+    hideDataPreviewDropDown(this.props.curUrl);
+    toggleVisualization(this.toggleVisualizationSlug,this.props.dataTransformSettings);
 
+  }
 
-	}
-
-  componentWillUpdate(){
-      let currentDataset = store.getState().datasets.selectedDataSet
-      if (!isEmpty(this.props.dataPreview) && currentDataset != this.props.match.params.slug && this.props.dataPreview != null && this.props.dataPreview.status != 'FAILED') {
+  componentWillUpdate() {
+    let currentDataset = store.getState().datasets.selectedDataSet
+    if (!isEmpty(this.props.dataPreview) && currentDataset != this.props.match.params.slug && this.props.dataPreview != null && this.props.dataPreview.status != 'FAILED') {
+      if (!this.props.match.path.includes("robo")) {
         let url = '/data/' + currentDataset;
         console.log(this.props);
         this.props.history.push(url)
-       // return (<Redirect to={url}/>)
+        // return (<Redirect to={url}/>)
       }
-      if (!isEmpty(this.props.dataPreview) && this.props.dataPreview != null && this.props.dataPreview.status == 'FAILED') {
-          console.log("goitn to data url")
-          this.props.dispatch(clearDataPreview())
-          this.props.dispatch(clearLoadingMsg())
-          let url = '/data/'
-          this.props.history.push(url)
-        }
+    }
+    if (!isEmpty(this.props.dataPreview) && this.props.dataPreview != null && this.props.dataPreview.status == 'FAILED') {
+      console.log("goitn to data url")
+      this.props.dispatch(clearDataPreview())
+      this.props.dispatch(clearLoadingMsg())
+      let url = '/data/'
+      this.props.history.push(url)
+    }
   }
-	setSideElements(e){
+  setSideElements(e) {
 
     //renderFlag=true;
     //alert("setting side element!!")
@@ -197,6 +247,7 @@ export class DataPreview extends React.Component {
         console.log(item);
         $("#side-chart").empty();
         showHideSideChart(item.columnType, item.chartData); // hide side chart on datetime selection
+        toggleVisualization(item.slug,this.props.dataTransformSettings);
         if (!$.isEmptyObject(item.chartData)) {
           const sideChartUpdate = item.chartData.chart_c3;
           let yformat = item.chartData.yformat;
@@ -218,8 +269,10 @@ export class DataPreview extends React.Component {
               return (
                 <tr key={tableIndex}>
                   <td className="item">{tableItem.displayName}</td>
-                  <td>&nbsp; : &nbsp;</td>
-                  <td>&nbsp;&nbsp;{tableItem.value}</td>
+                  <td>&nbsp;:&nbsp;</td>
+                  <td>
+                    <span title={tableItem.value} className="stat-txtControl">{tableItem.value}</span>
+                  </td>
                 </tr>
               );
             }
@@ -228,13 +281,13 @@ export class DataPreview extends React.Component {
         $("#side-table").empty();
         ReactDOM.render(
           <tbody className="no-border-x no-border-y">{sideTableUpdatedTemplate}</tbody>, document.getElementById('side-table'));
-
-        // column subsetting starts
-        const sideSubsetting = item.columnStats;
-        $("#sub_settings").empty();
-        ReactDOM.render(
-          <Provider store={store}><SubSetting item={item}/></Provider>, document.getElementById('sub_settings'));
-
+        if (this.props.dataPreview.permission_details.subsetting_dataset) {
+          // column subsetting starts
+          const sideSubsetting = item.columnStats;
+          $("#sub_settings").empty();
+          ReactDOM.render(
+            <Provider store={store}><SubSetting item={item}/></Provider>, document.getElementById('sub_settings'));
+        }
         // column subsetting ends
 
       }
@@ -254,30 +307,28 @@ export class DataPreview extends React.Component {
   moveToVariableSelection() {
     //alert(this.buttons.create.url);
     //check for minimum rows in datasets
-      if (this.props.dataPreview.meta_data.uiMetaData.metaDataUI[0].value < MINROWINDATASET)
-          bootbox.alert("Minimum " + MINROWINDATASET + " rows are required for analysis!!")
-          else if (this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray && (this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray.length == 0 || (this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray.length == 1 && this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray[0].dateSuggestionFlag == true))) {
-              bootbox.alert("Not enough data to run analysis. Please upload/connect a differenct dataset.")
-          } else {
-              let url = this.buttons.create.url;
-              if (this.buttons.create.url.indexOf("apps-robo") != -1) {
-                  $(".cst_table").find("thead").find("." + colSlug).first()
-                  url = "/apps-robo/" + store.getState().apps.roboDatasetSlug + "/" + store.getState().signals.signalAnalysis.slug
-                  this.props.history.push(url);
-              }else if(store.getState().datasets.curUrl.indexOf("scores") != -1){
-                  if(store.getState().apps.scoreToProceed  == true){
-                      this.props.history.push(url);
-                  }
-                  else {
-                      this.props.dispatch(hideDataPreview());
-                      popupAlertBox("One or few variables are missing from the scoring data. Score cannot be created",this.props,url.split("/data")[0])
-                  }
-              }
-              else this.props.history.push(url);
-          } 
-  }
-    
-    
+    if (this.props.dataPreview.meta_data.uiMetaData.metaDataUI[0].value < MINROWINDATASET && this.buttons.create.url.indexOf("apps-robo") == -1)
+      bootbox.alert("Minimum " + MINROWINDATASET + " rows are required for analysis!!")
+    else if (this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray && (this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray.length == 0 || (this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray.length == 1 && this.props.dataPreview.meta_data.uiMetaData.varibaleSelectionArray[0].dateSuggestionFlag == true))) {
+      bootbox.alert("Not enough data to run analysis. Please upload/connect a differenct dataset.")
+    } else {
+      let url = this.buttons.create.url;
+      if (this.buttons.create.url.indexOf("apps-robo") != -1) {
+        //  $(".cst_table").find("thead").find("." + colSlug).first()
+        url = "/apps-robo/" + store.getState().apps.roboDatasetSlug + "/" + store.getState().signals.signalAnalysis.slug
+        this.props.history.push(url);
+      } else if (store.getState().datasets.curUrl.indexOf("scores") != -1) {
+        if (store.getState().apps.scoreToProceed == true) {
+          this.props.history.push(url);
+        } else {
+          this.props.dispatch(hideDataPreview());
+
+          popupAlertBox("One or few variables are missing from the scoring data. Score cannot be created",this.props,url.split("/data")[0])
+        }
+      } else
+        this.props.history.push(url);
+      }
+    }
 
   applyDataSubset() {
     //alert("working");
@@ -298,6 +349,7 @@ export class DataPreview extends React.Component {
     }
   }
   shouldComponentUpdate(nextProps) {
+    toggleVisualization(this.toggleVisualizationSlug,this.props.dataTransformSettings);
     return true;
   }
 
@@ -334,8 +386,6 @@ export class DataPreview extends React.Component {
       });
     });
 
-  
-   
     this.isSubsetted = this.props.subsettingDone;
     //  const data = store.getState().data.dataPreview.meta_data.data;
 
@@ -346,10 +396,25 @@ export class DataPreview extends React.Component {
     // 	 </div>
 
     let dataPrev = this.props.dataPreview;
-    if (dataPrev && !isEmpty(dataPrev)) {
+    let isSubsettingAllowed = false;
+    let isDataValidationAllowed = false;
+    let isCreateAllowed = false
+    if (dataPrev && !isEmpty(dataPrev) && dataPrev.status != "FAILED") {
       dataPrev = this.props.dataPreview.meta_data;
-      //  console.log(data[0]);
-      //const tableThTemplate=data[0].map((thElement, thIndex) => {
+      let permission_details = this.props.dataPreview.permission_details;
+      isSubsettingAllowed = permission_details.subsetting_dataset;
+      isDataValidationAllowed = permission_details.data_validation;
+      if (this.buttons.create.text == CREATESIGNAL) {
+        isCreateAllowed = permission_details.create_signal;
+
+      } else if (this.buttons.create.text == CREATEMODEL) {
+        isCreateAllowed = permission_details.create_trainer;
+      } else if (this.buttons.create.text == CREATESCORE) {
+        isCreateAllowed = permission_details.create_score;
+      } else if (this.buttons.create.text == "Compose Insight") {
+        //need to change in future
+        isCreateAllowed = true
+      }
       if (dataPrev && !isEmpty(dataPrev)) {
         const topInfo = dataPrev.uiMetaData.metaDataUI.map((item, i) => {
           if (item.display) {
@@ -372,6 +437,7 @@ export class DataPreview extends React.Component {
           // console.log(thElement);
           let cls = thElement.slug + " dropdown";
           let iconCls = null;
+          let dataValidationCom = ""
           switch (thElement.columnType) {
             case "measure":
               iconCls = "mAd_icons ic_mes_s";
@@ -386,8 +452,8 @@ export class DataPreview extends React.Component {
           }
 
           const anchorCls = thElement.slug + " dropdown-toggle cursor";
-          //if(thElement.chartData != null){
-          //if(thElement.ignoreSuggestionFlag && !flag ){
+          if (isDataValidationAllowed)
+            dataValidationCom = <DataValidation name={thElement.name} slug={thElement.slug}/>
           if (!thElement.consider) {
             cls = cls + " greyout-col";
 
@@ -397,7 +463,7 @@ export class DataPreview extends React.Component {
                   <i className={iconCls}></i>
                   {thElement.name}<b className="caret"></b>
                 </a>
-                <DataValidation name={thElement.name} slug={thElement.slug}/>
+                {dataValidationCom}
               </th>
             );
           } else {
@@ -407,7 +473,7 @@ export class DataPreview extends React.Component {
                   <i className={iconCls}></i>
                   {thElement.name}<b className="caret"></b>
                 </a>
-                <DataValidation name={thElement.name} slug={thElement.slug}/>
+                {dataValidationCom}
               </th>
             );
 
@@ -438,7 +504,6 @@ export class DataPreview extends React.Component {
               );
             }
 
- 
           });
           return (
             <tr key={trIndex}>
@@ -459,6 +524,7 @@ export class DataPreview extends React.Component {
           this.firstTimeSideTable = sideTable; //show hide side table
           this.firstTimeSideChart = dataPrev.scriptMetaData.columnData[0].chartData;
           this.firstTimeColTypeForChart = dataPrev.scriptMetaData.columnData[0].columnType;
+          this.toggleVisualizationSlug = dataPrev.scriptMetaData.columnData[0].slug;
           if (!$.isEmptyObject(this.firstTimeSideChart)) {
             let chartInfo = [];
             firstChart = <C3Chart chartInfo={chartInfo} classId={this.chartId} data={sideChart} yformat={yformat} xdata={xdata} sideChart={true}/>;
@@ -472,7 +538,10 @@ export class DataPreview extends React.Component {
               return (
                 <tr key={tableIndex}>
                   <td className="item">{tableItem.displayName}</td>
-                  <td>&nbsp; : &nbsp;&nbsp;{tableItem.value}</td>
+                  <td>&nbsp;:&nbsp;</td>
+                  <td>
+                    <span title={tableItem.value} className="stat-txtControl">{tableItem.value}</span>
+                  </td>
                 </tr>
               );
             }
@@ -570,9 +639,12 @@ export class DataPreview extends React.Component {
                   {/*<!-- ./ End Tab Visualizations -->*/}
 
                   {/*<!-- Start Tab Subsettings -->*/}
-                  <div id="sub_settings" className="box-shadow">
-                    <SubSetting item={firstTimeSubSetting}/>
-                  </div>
+
+                  {isSubsettingAllowed == true
+                    ? <div id="sub_settings" className="box-shadow"><SubSetting item={firstTimeSubSetting}/>
+                      </div>
+                    : ""}
+
                   {/* End Tab Subsettings */}
                 </div>
                 <div className="clearfix"></div>
@@ -606,7 +678,7 @@ export class DataPreview extends React.Component {
                                 <Button onClick={this.applyDataSubset.bind(this)} bsStyle="primary">Save Config</Button>
                               )
                               : (
-                                <Button onClick={this.moveToVariableSelection.bind(this)} bsStyle="primary">
+                                <Button onClick={this.moveToVariableSelection.bind(this)} disabled={!isCreateAllowed} bsStyle="primary">
                                   {this.buttons.create.text}</Button>
                               )
 }
@@ -648,5 +720,5 @@ export class DataPreview extends React.Component {
         </div>
       );
     }
-  } 
+  }
 }

@@ -89,15 +89,35 @@ class UserProfileSerializer(serializers.Serializer):
     #     instance.save()
     #     return instance
 
+    def update(self, instance, validated_data):
+        instance.email = validated_data.get('email', instance.email)
+        instance.website = validated_data.get('website', instance.website)
+        instance.bio = validated_data.get('bio', instance.bio)
+        instance.phone = validated_data.get('phone', instance.phone)
+        instance.city = validated_data.get('city', instance.city)
+        instance.country = validated_data.get('country', instance.country)
+        instance.organization = validated_data.get('organization', instance.organization)
+        return instance
+
 
     def to_representation(self, instance):
         ret = super(UserProfileSerializer, self).to_representation(instance)
-        ret['photo'] = instance.photo.path
+        try:
+            ret['photo'] = instance.photo.path
+        except:
+            ret['photo'] = ""
+
         return ret
 
 
+# class UserProfileView(generics.CreateAPIView, generics.UpdateAPIView):
+#     serializer_class = UserProfileSerializer
+#     queryset = User.objects.all()
+#     lookup_field = 'slug'
+
+
+
 class UserSerializer(serializers.ModelSerializer):
-    # user_profile = UserProfileSerializer(allow_null=True)
 
     class Meta:
         model = User
@@ -111,8 +131,9 @@ def jwt_response_payload_handler(token, user=None, request=None):
     #     return {
     #         'error': "Subscription expired."
     #     }
-    profile = Profile.objects.filter(user=user).first()
+    from api.utils import get_all_view_permission
 
+    profile = Profile.objects.filter(user=user).first()
     if profile is None:
         profile = Profile(user=user)
         profile.save()
@@ -120,8 +141,22 @@ def jwt_response_payload_handler(token, user=None, request=None):
     return {
         'token': "JWT " + token,
         'user': UserSerializer(user, context={'request': request}).data,
-        'profile': profile.json_serialized() if profile is not None else None
+        'profile': profile.json_serialized() if profile is not None else None,
+        'view_permission': get_all_view_permission(user)
     }
+
+
+def return_user_using_token(token=None):
+
+    try:
+        from rest_framework_jwt.serializers import VerificationBaseSerializer
+        from rest_framework_jwt.settings import api_settings
+        vbs = VerificationBaseSerializer()
+        payload = vbs._check_payload(token=token)
+        user = vbs._check_user(payload=payload)
+        return user
+    except:
+        return False
 
 
 def create_profile(sender, **kwargs):
@@ -201,29 +236,6 @@ def get_profile_image(request, slug=None):
         return response
     except Exception as err:
         return JsonResponse({'message': 'No Image. Upload an image.'})
-
-
-class UserProfileView(generics.CreateAPIView, generics.UpdateAPIView):
-
-    def get_queryset(self):
-        pass
-
-    def get_serializer(self, *args, **kwargs):
-        return Profile
-
-    def create(self, request, *args, **kwargs):
-        data = request.data
-        serializers = self.get_serializer()
-        ser = serializers(data = data)
-        if ser.is_valid():
-            ser.save()
-            return Response(ser.data)
-
-        return Response({'message': 'Failed'})
-
-    def update(self, request, *args, **kwargs):
-        data = request.data
-        user = request.user
 
 
 

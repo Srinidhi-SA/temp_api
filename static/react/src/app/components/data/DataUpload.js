@@ -14,14 +14,13 @@ import {
 import Dropzone from 'react-dropzone'
 import store from "../../store";
 import $ from "jquery";
-import {open,close,fileUpload,dataUpload} from "../../actions/dataUploadActions";
-import {saveFileToStore,updateSelectedDataSrc} from "../../actions/dataSourceListActions";
+import {isEmpty, ACCESSDENIED} from "../../helpers/helper";
+import {open, close, fileUpload, dataUpload} from "../../actions/dataUploadActions";
+import {saveFileToStore, updateSelectedDataSrc} from "../../actions/dataSourceListActions";
 import {DataSourceList} from "./DataSourceList";
 
 @connect((store) => {
-	return {login_response: store.login.login_response, showModal:store.dataUpload.dataUploadShowModal,
-	fileDataUpload:store.dataUpload.fileUpload,
-	selectedDataset:store.datasets.selectedDataSet,};
+  return {login_response: store.login.login_response, showModal: store.dataUpload.dataUploadShowModal, fileDataUpload: store.dataUpload.fileUpload, selectedDataset: store.datasets.selectedDataSet, dataList: store.datasets.dataList};
 })
 
 export class DataUpload extends React.Component {
@@ -52,31 +51,41 @@ export class DataUpload extends React.Component {
   uploadData() {
     this.props.dispatch(dataUpload());
   }
-	render() {
-			return (
-					<div className="col-md-3 xs-mb-15 list-boxes" onClick={this.openPopup.bind(this)}>
-					<div className="newCardStyle firstCard">
-					<div className="card-header"></div>
-					<div className="card-center newStoryCard">
-					<div className="col-xs-12 text-center">+<br/><small>UPLOAD DATA</small> </div>
-					</div>
-					</div>
-					<div id="uploadData"  role="dialog" className="modal fade modal-colored-header">
-					<Modal show={store.getState().dataUpload.dataUploadShowModal} onHide={this.closePopup.bind(this)} dialogClassName="modal-colored-header uploadData">
-					<Modal.Header closeButton>
-					<h3 className="modal-title">Upload Data</h3>
-					</Modal.Header>
-					<Modal.Body>
-					<DataSourceList/>
-					</Modal.Body>
-					<Modal.Footer>
-					<Button onClick={this.closePopup.bind(this)}>Close</Button>
-				    <Button bsStyle="primary" onClick={this.uploadData.bind(this)}>Load Data</Button>
-					</Modal.Footer>
-					</Modal>
-					</div>
-					</div>
-        );
+  render() {
+    var isDataUpload = this.props.dataList.permission_details.create_dataset;
+    let cls = "newCardStyle firstCard"
+    let title = "";
+    if (!isDataUpload) {
+      cls += " disable-card";
+      title = ACCESSDENIED
+    }
+    return (
+      <div className="col-md-3 xs-mb-15 list-boxes" title={title}>
+        <div className={cls} onClick={this.openPopup.bind(this)}>
+          <div className="card-header"></div>
+          <div className="card-center newStoryCard">
+            <div className="col-xs-12 text-center">+<br/>
+              <small>UPLOAD DATA</small>
+            </div>
+          </div>
+        </div>
+        <div id="uploadData" role="dialog" className="modal fade modal-colored-header">
+          <Modal show={store.getState().dataUpload.dataUploadShowModal} onHide={this.closePopup.bind(this)} dialogClassName="modal-colored-header uploadData">
+            <Modal.Header closeButton>
+              <h3 className="modal-title">Upload Data</h3>
+            </Modal.Header>
+            <Modal.Body>
+              <DataSourceList/>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button onClick={this.closePopup.bind(this)}>Close</Button>
+              <Button bsStyle="primary" onClick={this.uploadData.bind(this)}>Load Data</Button>
+            </Modal.Footer>
+          </Modal>
+        </div>
+      </div>
 
-}
+    )
+  }
+
 }

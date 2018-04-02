@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 import os
 
 import datetime
+import config_file_name_to_run
+from mlSettings import *
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -46,7 +48,7 @@ INSTALLED_APPS = [
     'api',
     'django_filters',
     'auditlog',
-
+    'guardian'
 ]
 
 MIDDLEWARE = [
@@ -1202,7 +1204,24 @@ CUSTOM_WORD1_APPS = {
     'EMPLOYEE ATTRITION': 'attrition',
     'SPEECH ANALYTICS': 'speech',
     'STOCK SENSE': 'stock',
-    'STOCK  SENSE': 'stock'
+    'STOCK  SENSE': 'stock',
+    'REGRESSION APP': 'regression',
+    #newly added
+    'AUTOMATED_PREDICTION': '',
+    'ROBO_ADVISOR_INSIGHTS': '',
+    'OPPORTUNITY_SCORING': 'opportunity',
+    'CHURN_PREDICTION': 'churn',
+    'RE_ADMISSION_PREDICTION': 're-admission',
+    'READMISSION_PREDICTION': 're-admission',
+    'PHYSICIAN_ATTRITION': 'attrition',
+    'CREDIT_CARD_FRAUD': 'Credit Card Fraud',
+    'CLAIMS_PREDICTION': 'claims',
+    'ASSET_HEALTH_PREDICTION': 'asset health',
+    'EMPLOYEE_ATTRITION': 'attrition',
+    'SPEECH_ANALYTICS': 'speech',
+    'STOCK_SENSE': 'stock',
+    'STOCK_SENSE': 'stock',
+    'REGRESSION_APP': 'regression'
 }
 
 CUSTOM_WORD2_APPS = {
@@ -1219,7 +1238,24 @@ CUSTOM_WORD2_APPS = {
     'EMPLOYEE ATTRITION': 'attrition',
     'SPEECH ANALYTICS': 'speech',
     'STOCK SENSE': 'stock',
-    'STOCK  SENSE': 'stock'
+    'STOCK  SENSE': 'stock',
+    'REGRESSION APP': 'regression',
+    #after name change
+    'AUTOMATED_PREDICTION': 'prediction',
+    'ROBO_ADVISOR_INSIGHTS': '',
+    'OPPORTUNITY_SCORING': 'opportunity',
+    'CHURN_PREDICTION': 'churn',
+    'RE_ADMISSION_PREDICTION': 're-admission',
+    'READMISSION_PREDICTION': 're-admission',
+    'PHYSICIAN_ATTRITION': 'attrition',
+    'CREDIT_CARD_FRAUD': 'fraud',
+    'CLAIMS_PREDICTION': 'claims',
+    'ASSET_HEALTH_PREDICTION': 'asset health',
+    'EMPLOYEE_ATTRITION': 'attrition',
+    'SPEECH_ANALYTICS': 'speech',
+    'STOCK_SENSE': 'stock',
+    'STOCK_SENSE': 'stock',
+    'REGRESSION_APP': 'regression'
 }
 
 ############# YARN related items
@@ -1282,5 +1318,85 @@ CELERY_TIMEZONE = TIME_ZONE
 
 HDFS_SECRET_KEY = 'xfBmEcr_hFHGqVrTo2gMFpER3ks9x841UcvJbEQJesI='
 
+PERMISSIONS_RELATED_TO_DATASET = (
+    ('view_dataset', 'View dataset'),
+    ('create_dataset', 'Create dataset'),
+    ('rename_dataset', 'Rename dataset'),
+    ('remove_dataset', 'remove dataset'),
+    ('upload_from_file', 'Upload from file'),
+    ('upload_from_mysql', 'Upload from mysql'),
+    ('upload_from_mssql', 'Upload from mssql'),
+    ('upload_from_hdfs', 'Upload from hdfs'),
+    ('upload_from_hana', 'Upload from hana'),
+    ('data_validation', 'Data Validation'),
+    ('subsetting_dataset', 'Subsetting dataset'),
+)
 
+
+PERMISSIONS_RELATED_TO_SIGNAL = (
+    ('view_signal', 'View signal'),
+    ('create_signal', 'Create signal'),
+    ('rename_signal', 'Rename signal'),
+    ('remove_signal', 'remove signal'),
+)
+
+PERMISSIONS_RELATED_TO_TRAINER = (
+    ('view_trainer', 'View trainer'),
+    ('create_trainer', 'Create trainer'),
+    ('rename_trainer', 'Rename trainer'),
+    ('remove_trainer', 'remove trainer'),
+    ('downlad_pmml', 'Download PMML')
+)
+
+PERMISSIONS_RELATED_TO_SCORE = (
+    ('view_score', 'View score'),
+    ('create_score', 'Create score'),
+    ('rename_score', 'Rename score'),
+    ('remove_score', 'remove score'),
+    ('download_score', 'Download Score')
+)
+
+PERMISSIONS_RELATED_TO_REGRESSION = (
+    ('view_regression', 'View regression'),
+    ('create_regression', 'Create regression'),
+    ('rename_regression', 'Rename regression'),
+    ('remove_regression', 'remove regression'),
+    ('downlad_pmml', 'Download PMML')
+)
+
+JOB_STATUS_MESSAGE = {
+    "EMPTY": "Submitting for analysis",
+    "SUBMITTED": "Submitting for analysis.",
+    "ACCEPTED": "Analysis submitted. Waiting in queue.",
+    "RUNNING": "Analyzing target variable.",
+    "FINISHED": "Completed",
+    "SUCCESS": "Completed"
+}
+'''
+    "EMPTY": "Submitting for analysis",
+    "SUBMITTED": "Submitting for analysis.",
+    "ACCEPTED": "{0} submitted. Waiting in queue.",
+    "RUNNING": "Analyzing target variable.",
+    "FINISHED": "your {0} is ready.",
+    "SUCCESS": "your {0} is ready."
+'''
+JOB_MESSAGE_JSON_FORMAT = {
+    "analysisName" : "before_script",
+    "stageName" : "before_script",
+    "messageType" : "",
+    "shortExplanation" : "",
+    "stageCompletionTimestamp" : "",
+    "gmtDateTime":"",
+    "globalCompletionPercentage" : -1,
+    "stageCompletionPercentage" : -1,
+    "display": True
+}
+
+
+
+'''
+time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(timestamp))
+'''
+
+REGRESSION_APP_ID=13
 USE_YARN_DEFAULT_QUEUE=False

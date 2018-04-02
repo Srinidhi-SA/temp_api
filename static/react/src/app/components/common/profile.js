@@ -33,6 +33,7 @@ export class Profile extends React.Component {
   componentWillMount() {
       this.props.dispatch(getUserProfile(getUserDetailsOrRestart.get().userToken))
       this.props.dispatch(saveProfileImage(getUserDetailsOrRestart.get().image_url))
+      //clear dataSource variable as it is common in data upload
       this.props.dispatch(clearDataUploadFile())
 
   }
@@ -263,6 +264,13 @@ export class Profile extends React.Component {
                                       </b>
                                     </td>
                                   </tr>
+								  <tr>
+									<td className="item xs-pt-5">
+									</td>
+									<td>
+										<a href="javascript:;">Change Password</a>
+									</td>
+								  </tr>
                                 </tbody>
                               </table>
                             </div>

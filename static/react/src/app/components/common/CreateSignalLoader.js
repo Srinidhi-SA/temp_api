@@ -51,7 +51,7 @@ export class CreateSignalLoader extends React.Component {
                 }
             },DYNAMICLOADERINTERVAL)}
         
-        let imgsrc_url=STATIC_URL+"assets/images/brain_loading.gif"
+        let imgsrc_url=STATIC_URL+"assets/images/Processing.gif"
         return (
                 <div id="createSignalLoader">
                 
@@ -64,16 +64,17 @@ export class CreateSignalLoader extends React.Component {
                   <div className="panel-body no-border">
                     <h4 className="text-center"><br/>
                       <img src={imgsrc_url}/><br/>
+					  <h2 class="loaderValue">{store.getState().signals.createSignalLoaderValue} %</h2>
                       <br/> {store.getState().signals.loaderText}
                     </h4><br/>
 
-                    <div className="p_bar_body">
+                    {store.getState().signals.createSignalLoaderValue >= 0?<div className="p_bar_body">
                       <progress className="prg_bar" value={store.getState().signals.createSignalLoaderValue} max={95}></progress>
                       <div className="progress-value">
                         <h3>{store.getState().signals.createSignalLoaderValue}
                           %</h3>
                       </div>
-                    </div>
+                    </div>:""}
 
                   </div>
                 </div>
