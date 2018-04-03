@@ -4,6 +4,7 @@ import {connect} from "react-redux";
 import {hideDataPreview, getDataList,storeSearchElement_data} from "../../actions/dataActions";
 import {getList,storeSearchElement,emptySignalAnalysis} from "../../actions/signalActions";
 import {getUserDetailsOrRestart} from "../../helpers/helper"
+import {APPS_ALLOWED} from "../../helpers/env.js"
 
 @connect((store) => {
   return {dataPreviewFlag: store.datasets.dataPreviewFlag};
@@ -69,12 +70,12 @@ class LeftPanel extends React.Component {
                       <span></span>
                       STORY</NavLink>
                   </li>*/}
-
+                {(APPS_ALLOWED==true)?
                 <li>
                   <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" isActive={(match,location) => /^[/]apps/.test(location.pathname)} className=" sdb sdb_app" to="/apps">
                     <span></span>
                     APPS</NavLink>
-                </li>
+                </li>:""}
                 {(view_data_permission=="true")?
                 <li>
                   <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" className="sdb sdb_data" to="/data">

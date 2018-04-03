@@ -440,7 +440,7 @@ export class SubSetting extends React.Component {
 
     }
     if ((this.state.curmin < this.state.min) || (this.state.curmax > this.state.max)) {
-      alert("please select a range between " + this.state.min + " and " + this.state.max)
+      bootbox.alert("please select a range between " + this.state.min + " and " + this.state.max)
       $("#saveButton").removeClass('btn-alt4')
       $("#saveButton").addClass('btn-primary')
       $("#saveButton").removeAttr('disabled')
