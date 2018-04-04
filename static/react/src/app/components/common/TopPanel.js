@@ -34,7 +34,7 @@ export default class TopPanel extends React.Component {
 			return(<Redirect to="/login" />);
 		}else{
 		console.log("top panel & user name"+getUserDetailsOrRestart.get().userName);
-    var userManualPath=STATIC_URL+"/userManual/UserManual.html"
+    var userManualPath=STATIC_URL+"userManual/UserManual.html"
 			return(
 		            <div>
 								{/* // Header Menu*/}
