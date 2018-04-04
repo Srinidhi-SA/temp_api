@@ -11572,6 +11572,7 @@ h3.modal-title, h4.modal-title { font-size: 19px; }
 .table>tbody>tr>td {
 	font-weight: 300;
 	vertical-align: middle
+	
 }
 .table>tbody.no-border-x>tr>td {
 	border-top-width: 0
@@ -11753,7 +11754,8 @@ label {
 	text-align: center;
 	background-color: #fff;
 	cursor: pointer;
-	pointer-events: none
+	pointer-events: none;
+	float:left;
 }
 .ma-checkbox input[type=checkbox]+label:hover:before, .ma-checkbox input[type=checkbox]:hover+label:before, .ma-checkbox input[type=radio]+label:hover:before, .ma-checkbox input[type=radio]:hover+label:before, .ma-radio input[type=checkbox]+label:hover:before, .ma-radio input[type=checkbox]:hover+label:before, .ma-radio input[type=radio]+label:hover:before, .ma-radio input[type=radio]:hover+label:before {
 	border-color: #d1d1d1
