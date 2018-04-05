@@ -1001,7 +1001,7 @@ class Trainer(models.Model):
                     })
                 elif 'validationTechnique' in file_setting:
                     validationTechnique = file_setting.get('validationTechnique')[0]
-                    valueKey = validationTechnique.value
+                    valueKey = validationTechnique
                     brief_info.update({
                         'train_test_split': valueKey
                     })
