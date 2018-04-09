@@ -50,8 +50,12 @@ export class ModelVariableSelection extends React.Component {
             let msg= statusMessages("warning","Please select a variable to analyze...","small_mascot");
               bootbox.alert(msg);
             return false;
+        }else if (this.props.targetLevelCounts!=null && ($("#createModelLevelCount").val()==null||$("#createModelLevelCount").val()=="")) {
+          let msg= statusMessages("warning","Please select a sublevel value to analyze...","small_mascot");
+            bootbox.alert(msg);
+          return false;
         }
-		
+
 		if(store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
 		this.props.dispatch(saveSelectedValuesForModel($("#createModelName").val(),$("#createModelAnalysisList").val(),$("#createModelLevelCount").val()));
             let regressionProccedUrl = this.props.match.url+'/Proceed';
@@ -111,7 +115,7 @@ export class ModelVariableSelection extends React.Component {
                 renderLevelCountSelectBox =  <select className="form-control" id="createModelLevelCount">
                     <option value=""></option>
                 {this.props.targetLevelCounts.map((item,index) =>{
-                   
+
                         return(<option key={item}  name={item}  value={item}>{item}</option>)
                 }
                 )}
@@ -134,7 +138,7 @@ export class ModelVariableSelection extends React.Component {
                                 <div class="form-group">
                                     <label class="col-lg-2 xs-pt-10" for="noOffolds">No of Folds :</label>
                                     <div class="col-lg-10">
-                                        <input type="number" name="" class="form-control" required={true} id="noOffolds" onChange={this.changecrossValidationValue.bind(this)} value={store.getState().apps.regression_crossvalidationvalue}/>
+                                        <input type="number" name="" class="form-control" required={true} id="noOffolds" onChange={this.changecrossValidationValue.bind(this)} min={2} max={10} value={store.getState().apps.regression_crossvalidationvalue}/>
                                     </div>
                                 </div>:
                                 <div id="range">
@@ -172,14 +176,14 @@ export class ModelVariableSelection extends React.Component {
                 <div className="panel-body">
                 <Form onSubmit={this.createModel.bind(this)}>
                 <FormGroup role="form">
-                
+
                  <div className="row">
 
                 <div className="form-group hidden">
                 <label className="col-lg-4"><h4>I want to predict {custom_word1}</h4></label>
                 </div>
                 </div>
-                
+
                 <div className="row">
 
                 <div className="form-group">
@@ -195,14 +199,14 @@ export class ModelVariableSelection extends React.Component {
                     </div>
                      {/*<!-- /.col-lg-4 -->*/}
                     </div>) : (<div></div>)
-                    
+
                 }
-             
+
                 <DataVariableSelection match={this.props.match}/>
                 <div className="row">
                     {modelValidation}
                  </div>
-                 <div class="row">      
+                 <div class="row">
                 <div className="col-lg-4 col-lg-offset-8">
                 <div className="form-group">
                 <input type="text" name="createModelName" required={true} id="createModelName" className="form-control input-sm" placeholder="Create Model Name" />
@@ -222,6 +226,6 @@ export class ModelVariableSelection extends React.Component {
                 <AppsLoader match={this.props.match}/>
                 </div>
         );
-        
+
     }
 }

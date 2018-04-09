@@ -83,7 +83,7 @@ export default function reducer(state = {
         regression_algorithm_data_manual:[],
         regression_isAutomatic:1,
         regression_selectedTechnique:"crossValidation",
-        regression_crossvalidationvalue:1,
+        regression_crossvalidationvalue:2,
 
 }, action) {
     console.log("In APPs reducer!!");
@@ -830,7 +830,7 @@ export default function reducer(state = {
             regression_algorithm_data_manual:[],
             regression_isAutomatic:1,
             regression_selectedTechnique:"crossValidation",
-            regression_crossvalidationvalue:1,
+            regression_crossvalidationvalue:2,
         }
     }
     break;
