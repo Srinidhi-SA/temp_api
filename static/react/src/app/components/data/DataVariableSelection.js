@@ -156,7 +156,7 @@ export class DataVariableSelection extends React.Component {
                  if(mItem.targetColumn || mItem.uidCol)varCls="hidden";
                  else varCls = "";
                     return (
-                        <li className={varCls} key={mItem.slug}><div className="ma-checkbox inline"><input id={mItem.slug} name={mItem.setVarAs} type="checkbox" className="measure" onChange={this.handleCheckboxEvents} value={mItem.name} checked={mItem.selected} /><label htmlFor={mItem.slug} className="radioLabels">{mItem.name}</label></div> </li>
+                        <li className={varCls} key={mItem.slug}><div className="ma-checkbox inline"><input id={mItem.slug} name={mItem.setVarAs} type="checkbox" className="measure" onChange={this.handleCheckboxEvents} value={mItem.name} checked={mItem.selected} /><label htmlFor={mItem.slug} className="radioLabels"><span>{mItem.name}</span></label></div> </li>
                     );
                 } );
             } else {
@@ -169,7 +169,7 @@ export class DataVariableSelection extends React.Component {
                     if(dItem.targetColumn ||  dItem.uidCol)varCls="hidden";
                     else varCls = "";
                     return (
-                        <li className={varCls} key={dItem.slug}><div className="ma-checkbox inline"><input id={dItem.slug} name={dItem.setVarAs} type="checkbox" className="dimension" onChange={this.handleCheckboxEvents} value={dItem.name} checked={dItem.selected} /><label htmlFor={dItem.slug}>{dItem.name}</label></div> </li>
+                        <li className={varCls} key={dItem.slug}><div className="ma-checkbox inline"><input id={dItem.slug} name={dItem.setVarAs} type="checkbox" className="dimension" onChange={this.handleCheckboxEvents} value={dItem.name} checked={dItem.selected} /><label htmlFor={dItem.slug}> <span>{dItem.name}</span></label></div> </li>
                     );
                 } );
             } else {
