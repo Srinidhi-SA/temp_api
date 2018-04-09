@@ -190,8 +190,8 @@ export class ModelVariableSelection extends React.Component {
                 </div>
                 {(this.props.targetLevelCounts != null)? ( <div className="row xs-mb-20">
                     <div className="form-group">
-                    <label className="col-lg-4 xs-pt-10">Choose Value for {custom_word2}</label>
-                    <div className="col-lg-8"> {renderLevelCountSelectBox}</div>
+                    <label className="col-lg-2 xs-pt-10">Choose Value for {custom_word2}</label>
+                    <div className="col-lg-4"> {renderLevelCountSelectBox}</div>
                     </div>
                      {/*<!-- /.col-lg-4 -->*/}
                     </div>) : (<div></div>)
@@ -207,9 +207,10 @@ export class ModelVariableSelection extends React.Component {
 					<h4 class="xs-pb-20"></h4>
 					<div class="xs-pb-40">
 					</div>
-					  <div className="form-group">
-                <input type="text" name="createModelName" required={true} id="createModelName" className="form-control input-sm" placeholder="Create Model Name" />
-                    </div>
+					<div className="form-group">
+					<input type="text" name="createModelName" required={true} id="createModelName" className="form-control input-sm" placeholder="Create Model Name" />
+					</div>
+					
 					</div>
                  </div>
                   
