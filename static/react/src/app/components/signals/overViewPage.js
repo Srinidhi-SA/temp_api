@@ -18,7 +18,7 @@ import store from "../../store";
 import {getSignalAnalysis, setSideCardListFlag, updateselectedL1} from "../../actions/signalActions";
 import {STATIC_URL,API} from "../../helpers/env.js"
 import Slider from "react-slick";
-import {getRoboDataset, getStockAnalysis,getAppsScoreSummary,getScoreSummaryInCSV} from "../../actions/appActions";
+import {getRoboDataset, getStockAnalysis,getAppsScoreSummary,getScoreSummaryInCSV,uploadStockAnalysisFlag} from "../../actions/appActions";
 import {hideDataPreview} from "../../actions/dataActions";
 import {Button} from "react-bootstrap";
 
@@ -165,6 +165,12 @@ export class OverViewPage extends React.Component {
     this.props.dispatch(hideDataPreview());
     if(this.urlPrefix.indexOf("apps-regression") != -1)
     this.props.history.push("/apps-regression/scores")
+    else if(this.props.match.url.indexOf("apps-robo") != -1)
+    this.props.history.push("/apps-robo")
+    else if (this.props.match.url.indexOf("apps-stock") != -1){
+    this.props.dispatch(uploadStockAnalysisFlag(false))
+    this.props.history.push("/apps-stock-advisor")
+    }
     else
     this.props.history.push("/signals");
 
