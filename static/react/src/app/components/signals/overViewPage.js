@@ -165,6 +165,10 @@ export class OverViewPage extends React.Component {
     this.props.dispatch(hideDataPreview());
     if(this.urlPrefix.indexOf("apps-regression") != -1)
     this.props.history.push("/apps-regression/scores")
+    else if(this.props.match.url.indexOf("apps-robo") != -1)
+    this.props.history.push("/apps-robo")
+    else if (this.props.match.url.indexOf("apps-stock") != -1)
+    this.props.history.push("/apps-stock");
     else
     this.props.history.push("/signals");
 
