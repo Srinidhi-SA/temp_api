@@ -168,7 +168,7 @@ export class OverViewPage extends React.Component {
     else if(this.props.match.url.indexOf("apps-robo") != -1)
     this.props.history.push("/apps-robo")
     else if (this.props.match.url.indexOf("apps-stock") != -1)
-    this.props.history.push("/apps-stock");
+    this.props.history.push("/apps-stock-advisor");
     else
     this.props.history.push("/signals");
 
