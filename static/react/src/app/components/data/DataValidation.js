@@ -47,7 +47,7 @@ export class DataValidation extends React.Component {
                 <ul>{actionNames.listOfActions.map((subItem,subIndex)=>{
                     let randomNum = Math.random().toString(36).substr(2,8);
                     var id=colSlug+subIndex+randomNum;
-                      return(<li key={id} className="cursor"><div key={id} className="ma-radio radio-pt-2 inlinev"><input id={id} type="radio"   onClick={this.handleChangeTypeEvent.bind(this,actionNames.actionName,colSlug,colName,subItem.name)} checked={subItem.status} name={id}  value={subItem.name} /><label  className="text-nowrap" htmlFor={id}>{subItem.displayName}</label></div></li>)
+                      return(<li key={id} className="cursor"><div key={id} className="ma-radio radio-pt-2 inlinev"><input id={id} type="radio"   onClick={this.handleChangeTypeEvent.bind(this,actionNames.actionName,colSlug,colName,subItem.name)} defaultChecked={subItem.status} name={id}  value={subItem.name} /><label  className="text-nowrap" htmlFor={id}>{subItem.displayName}</label></div></li>)
                     })}</ul>
                  </li>)
                }
@@ -55,19 +55,19 @@ export class DataValidation extends React.Component {
                    if(actionNames.actionName == UNIQUE_IDENTIFIER)
                        return(<li  onClick={this.handleClickEvent.bind(this,colSlug,colName,actionNames.status)}  key={index}>
                                <div class="ma-radio inline cursor">
-                               <input type="radio" checked={actionNames.status}  name="uniqueBtn" id={actionNames.actionName}/>
+                               <input type="radio" defaultChecked={actionNames.status}  name="uniqueBtn" id={actionNames.actionName}/>
                                <label for={actionNames.actionName}><a className="inline-block">{actionNames.displayName}</a></label>
                                </div>
                        </li>)
-              
+
                        else
                   return (<li onClick={this.handleClickEvent.bind(this,colSlug,colName,actionNames.status)} key={index}><a className="cursor" name={actionNames.actionName}>{actionNames.displayName}</a></li>)
-               
-               
-               } 
-                   
-                   
-                  
+
+
+               }
+
+
+
           })
           return list;
        }
@@ -87,12 +87,12 @@ export class DataValidation extends React.Component {
 					 });
 			 }
 			return (
-			      
+
 					<ul  className="dropdown-menu scrollable-menu">
-					   
+
 					  <Dialog ref="dialog"/>
 					{settingsTemplate}</ul>
-					
+
 			)
 		}
 

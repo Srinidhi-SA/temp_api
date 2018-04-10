@@ -26,10 +26,10 @@ export class AdvanceSettings extends React.Component {
 		console.log(props)
 		this.openAdvanceSettingsModal = this.openAdvanceSettingsModal.bind(this);
 		this.dimensionSubLevel =null;
-		//this.dimensionCountForMeasure = 
+		//this.dimensionCountForMeasure =
 
 	}
-			
+
 	openAdvanceSettingsModal(){
 		this.props.dispatch(advanceSettingsModal(true));
 	}
@@ -37,7 +37,7 @@ export class AdvanceSettings extends React.Component {
 		this.props.dispatch(cancelAdvanceSettings());
 		this.props.dispatch(advanceSettingsModal(false));
 		this.props.dispatch(checkAllAnalysisSelected())
-	}	
+	}
 	updateAdvanceSettings(){
 		this.props.dispatch(saveAdvanceSettings());
 		this.props.dispatch(advanceSettingsModal(false));
@@ -55,34 +55,34 @@ export class AdvanceSettings extends React.Component {
 	handleCustomInput(evt){
 	    if(evt.target.value){
 	        if(parseInt(evt.target.value) <= parseInt(evt.target.max)){
-	            this.props.dispatch(selectedAnalysisList(evt.target,"noOfColumnsToUse"))   
+	            this.props.dispatch(selectedAnalysisList(evt.target,"noOfColumnsToUse"))
 	        }else{
 	            evt.target.value = "";
 	        }
 	    }else{
-	        this.props.dispatch(selectedAnalysisList(evt.target,"noOfColumnsToUse"))   
+	        this.props.dispatch(selectedAnalysisList(evt.target,"noOfColumnsToUse"))
 	    }
 	}
 	handleBinningInput(evt){
 	    if(evt.target.value){
             if(parseInt(evt.target.value) <= parseInt(evt.target.max)){
-                this.props.dispatch(selectedAnalysisList(evt.target,"association"))   
+                this.props.dispatch(selectedAnalysisList(evt.target,"association"))
             }else{
                 evt.target.value = "";
             }
         }else{
             //evt.target.value = evt.target.defaultValue;
-            this.props.dispatch(selectedAnalysisList(evt.target,"association"))   
+            this.props.dispatch(selectedAnalysisList(evt.target,"association"))
         }
 	}
 	handleTrendAnalysis(evt){
 		this.props.dispatch(selectedAnalysisList(evt.target,"trend"))
 	}
 	renderAllAnalysisList(analysisList,trendSettings){
-	
+
 		let associationPlaceholder = "0-"+ store.getState().datasets.dataSetDimensions.length;
 		let customMaxValue = store.getState().datasets.dataSetDimensions.length;
-		
+
 		var that = this;
 		let list =   analysisList.map((metaItem,metaIndex) =>{
 			let id = "chk_analysis_advance"+ metaIndex;
@@ -95,7 +95,7 @@ export class AdvanceSettings extends React.Component {
 						let val = trendSubItem.name;
 						if(trendSubItem.name.toLowerCase() == "count"){
 							return(
-									<li ><div className="col-md-4"><div className="ma-checkbox inline sub-analysis"><input className="possibleSubAnalysis" id="trend-count" type="radio" value="count" name="trend-sub"  checked={trendSubItem.status} onChange={this.handleTrendAnalysis.bind(this)}  /><label htmlFor="trend-count">Count</label></div></div><div class="clearfix"></div></li>
+									<li key={trendSubIndex}><div className="col-md-4"><div className="ma-checkbox inline sub-analysis"><input className="possibleSubAnalysis" id="trend-count" type="radio" value="count" name="trend-sub"  checked={trendSubItem.status} onChange={this.handleTrendAnalysis.bind(this)}  /><label htmlFor="trend-count">Count</label></div></div><div class="clearfix"></div></li>
 							);
 						}else if(trendSubItem.name.toLowerCase().indexOf("specific measure") != -1){
 							if(trendSubItem.status){
@@ -103,12 +103,12 @@ export class AdvanceSettings extends React.Component {
 								specificMeasureStatus = true;
 							}
 							return(
-									<li ><div className="col-md-4">
-									<div className="ma-checkbox inline sub-analysis"><input className="possibleSubAnalysis" id="trend-specific-measure" type="radio" value="specific measure" name="trend-sub"  checked={specificMeasureStatus}  onChange={this.handleTrendAnalysis.bind(this)} /><label htmlFor="trend-specific-measure">Specific Measure</label></div> 
+									<li key={trendSubIndex} ><div className="col-md-4">
+									<div className="ma-checkbox inline sub-analysis"><input className="possibleSubAnalysis" id="trend-specific-measure" type="radio" value="specific measure" name="trend-sub"  checked={specificMeasureStatus}  onChange={this.handleTrendAnalysis.bind(this)} /><label htmlFor="trend-specific-measure">Specific Measure</label></div>
 									</div>
 									<div className={specificMeasureClsName}> <select id="specific-trend-measure" className="form-control " onChange={this.handleTrendAnalysis.bind(this)}>
 									{store.getState().datasets.dataSetMeasures.map(function(item,index){
-										return(<option>{item.name}</option>)
+										return(<option key={index}>{item.name}</option>)
 									})
 									}
 									</select>
@@ -118,7 +118,7 @@ export class AdvanceSettings extends React.Component {
 						}
 					})
 					return(
-							<li><div key={metaIndex} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisListActions.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>
+							<li key={metaIndex}><div className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisListActions.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>
 							<ul className="list-unstyled">
 
 							{trendSub}
@@ -129,7 +129,7 @@ export class AdvanceSettings extends React.Component {
 							</li>);
 				}else{
 					return(
-							<li><div key={metaIndex} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisListActions.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>
+							<li key={metaIndex}><div className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisListActions.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>
 							</li>)
 				}//end of trendsetting check
 			}else{
@@ -161,7 +161,7 @@ export class AdvanceSettings extends React.Component {
 							status = true;
 						}
 						return(
-								<label key={subIndex} class={labelCls} onClick={this.handleSubLevelAnalysis.bind(this)}><input type="radio" className={clsName} id={idName} name={name} value={subItem.name} checked={status}/>{subItem.displayName}</label> 
+								<label key={subIndex} class={labelCls} onClick={this.handleSubLevelAnalysis.bind(this)}><input type="radio" className={clsName} id={idName} name={name} value={subItem.name} checked={status}/>{subItem.displayName}</label>
 						);
 					});
 					countOptions  = (function(){
@@ -180,19 +180,19 @@ export class AdvanceSettings extends React.Component {
 					})();
 				}
 				if(metaItem.hasOwnProperty("binSetting")){
-				    
+
 				    binTemplate = metaItem.binSetting.map((binItem,binIndex)=>{
 				        if(!binItem.hasOwnProperty("defaultValue")){
-				            return (<label key={binIndex}><b>{binItem.displayName}</b></label>)  
+				            return (<label key={binIndex}><b>{binItem.displayName}</b></label>)
 				        }else{
-				            return (<div className="form-group md-pt-15" id={binIndex}><label for="fl1" className="col-sm-9 control-label">{binItem.displayName}</label>
+				            return (<div key={binIndex} className="form-group md-pt-15" id={binIndex}><label for="fl1" className="col-sm-9 control-label">{binItem.displayName}</label>
 				            <div className="col-sm-3">
 	                        <input id={binIndex} type="number" name={metaItem.name}  className="form-control" min={binItem.min} max={binItem.max} placeholder={binItem.defaultValue} defaultValue={binItem.value}   onChange={this.handleBinningInput.bind(this)}/>
 	                        </div>
-	                        </div>)    
+	                        </div>)
 				        }
 				    });
-				    
+
 				    binOptions  = (function(){
                         return(
                                 <div>
@@ -202,11 +202,11 @@ export class AdvanceSettings extends React.Component {
                                 </div>
                         );
                     })();
-				    
+
 				}
 
 				return(
-						<li><div key={metaIndex} className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisListActions.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>
+						<li key={metaIndex}><div className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisListActions.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>
 						<div className="clearfix"></div>
 						{countOptions}
 						<div className="clearfix"></div>

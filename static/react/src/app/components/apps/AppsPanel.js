@@ -195,7 +195,7 @@ export class AppsPanel extends React.Component {
           )
         });
         return (
-          <div class="col-md-4 xs-mb-20">
+          <div class="col-md-4 xs-mb-20" key={index}>
             <div>
 
               <div className="app-block">

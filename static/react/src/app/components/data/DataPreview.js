@@ -207,7 +207,7 @@ export class DataPreview extends React.Component {
 
 
 
-		});*/  
+		});*/
     }
 
     showHideSideTable(this.firstTimeSideTable);
@@ -616,7 +616,7 @@ export class DataPreview extends React.Component {
                       </div>
                       <div id="pnl_stc" className="panel-collapse collapse in" aria-expanded="true">
                         <div className="xs-pt-5 xs-pr-5 xs-pb-5 xs-pl-5">
-                          <table className="no-border no-strip skills" cellpadding="3" cellspacing="0" id="side-table">
+                          <table className="no-border no-strip skills" cellPadding="3" cellSpacing="0" id="side-table">
                             <tbody className="no-border-x no-border-y">
                               {sideTableTemaplte}
 
