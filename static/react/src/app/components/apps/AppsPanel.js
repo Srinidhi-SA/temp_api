@@ -20,7 +20,7 @@ import {
   updateAppsFilterList,
   getAppsFilteredList
 } from "../../actions/appActions";
-import {STATIC_URL} from "../../helpers/env.js"
+import {STATIC_URL,APPS_ALLOWED} from "../../helpers/env.js"
 import {
   SEARCHCHARLIMIT,
   APPID1,
@@ -36,6 +36,7 @@ import {
   getUserDetailsOrRestart,
   isEmpty
 } from "../../helpers/helper.js"
+import {cookieObj} from '../../helpers/cookiesHandler'
 
 @connect((store) => {
   return {
@@ -60,6 +61,7 @@ export class AppsPanel extends React.Component {
 
   }
   componentWillMount() {
+
     var pageNo = 1;
     if (this.props.history.location.search.indexOf("page") != -1) {
       pageNo = this.props.history.location.search.split("page=")[1];
@@ -143,6 +145,18 @@ export class AppsPanel extends React.Component {
 
   render() {
     console.log("Apps panel is called##########3");
+    //restrict apps to show to user as per env js file starts
+    if(APPS_ALLOWED==false){
+      if(getUserDetailsOrRestart.get().view_signal_permission=="true")
+      return (<Redirect to="/signals"/>)
+      else if (getUserDetailsOrRestart.get().view_data_permission=="true") {
+        return (<Redirect to="/data"/>)
+      }else{
+        cookieObj.clearCookies();
+        return (<Redirect to="/login"/>)
+      }
+    }
+    //restrict user ends
     var appsLists = this.props.appsList.data;
     var appListTemplate = "";
     let filterListTemplate = "";
@@ -231,7 +245,7 @@ export class AppsPanel extends React.Component {
             </div>
           </li>
         )
-  
+
       });
     }
     else{

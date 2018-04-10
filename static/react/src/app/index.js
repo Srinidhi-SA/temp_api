@@ -39,6 +39,7 @@ import {ModelAlgorithmSelection} from "./components/apps/ModelAlgorithmSelection
 import {RegressionAppList} from "./components/apps/RegressionAppList";
 import {getUserDetailsOrRestart} from "./helpers/helper";
 import {Redirect} from "react-router-dom";
+import {APPS_ALLOWED} from "./helpers/env.js"
 
 class App extends React.Component {
   hasSignalRoutePermission() {
@@ -56,15 +57,15 @@ class App extends React.Component {
       return false
   }
   hasTrainerRoutePermission() {
-    //alert("working!!!")
-    if (getUserDetailsOrRestart.get().view_trainer_permission == "true")
+    //check for apps exposure also
+    if (getUserDetailsOrRestart.get().view_trainer_permission == "true"&&APPS_ALLOWED==true)
       return true
     else
       return false
   }
   hasScoreRoutePermission() {
     //alert("working!!!")
-    if (getUserDetailsOrRestart.get().view_score_permission == "true")
+    if (getUserDetailsOrRestart.get().view_score_permission == "true"&&APPS_ALLOWED==true)
       return true
     else
       return false

@@ -9,7 +9,7 @@ import {C3Chart} from "../c3Chart";
 import {DataVariableSelection} from "../data/DataVariableSelection";
 import {updateTrainAndTest,createModel,updateSelectedVariable,showLevelCountsForTarget,updateTargetLevel,saveSelectedValuesForModel,updateRegressionTechnique,updateCrossValidationValue,getAppDetails,reSetRegressionVariables} from "../../actions/appActions";
 import {AppsLoader} from "../common/AppsLoader";
-import {getDataSetPreview} from "../../actions/dataActions";
+import {getDataSetPreview,showAllVariables} from "../../actions/dataActions";
 import {hideTargetVariable} from "../../actions/signalActions";
 
 @connect((store) => {
@@ -37,6 +37,8 @@ export class ModelVariableSelection extends React.Component {
         this.props.dispatch(reSetRegressionVariables());
         this.props.dispatch(updateTrainAndTest(50));
         this.props.dispatch(updateTargetLevel(null));
+        if(this.props.dataPreview != null)
+        this.props.dispatch(showAllVariables(this.props.dataPreview,this.props.match.params.slug));
     }
     handleRangeSlider(e){
         this.props.dispatch(updateTrainAndTest(e.target.value))
@@ -46,6 +48,9 @@ export class ModelVariableSelection extends React.Component {
         if($('#createModelAnalysisList option:selected').val() == ""){
               bootbox.alert("Please select a variable to analyze...");
             return false;
+        }else if (this.props.targetLevelCounts!=null && ($("#createModelLevelCount").val()==null||$("#createModelLevelCount").val()=="")) {
+            bootbox.alert("Please select a sublevel value to analyze...");
+          return false;
         }
 
 		if(store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
@@ -128,9 +133,11 @@ export class ModelVariableSelection extends React.Component {
                             </div>
                             {store.getState().apps.regression_selectedTechnique == "crossValidation" ?
                                 <div class="form-group">
-                                    <label class="col-lg-2 xs-pt-10">No of Folds :</label>
-                                    <div class="col-lg-10">
-                                        <input type="number" name="" class="form-control" required={true} id="" onChange={this.changecrossValidationValue.bind(this)} value={store.getState().apps.regression_crossvalidationvalue}/>
+
+                                    <label class="col-lg-4 xs-pt-10" for="noOffolds">No of Folds :</label>
+                                    <div class="col-lg-8">
+                                        <input type="number" name="" class="form-control" required={true} id="noOffolds" onChange={this.changecrossValidationValue.bind(this)} min={2} max={10} value={store.getState().apps.regression_crossvalidationvalue}/>
+
                                     </div>
                                 </div>:
                                 <div id="range">
@@ -171,7 +178,7 @@ export class ModelVariableSelection extends React.Component {
 
                  <div className="row">
 
-                <div className="form-group">
+                <div className="form-group hidden">
                 <label className="col-lg-4"><h4>I want to predict {custom_word1}</h4></label>
                 </div>
                 </div>
@@ -179,7 +186,7 @@ export class ModelVariableSelection extends React.Component {
                 <div className="row">
 
                 <div className="form-group">
-                <label className="col-lg-2 xs-pt-10">Select Target Variable :</label>
+                <label className="col-lg-2 xs-pt-10">I want to predict :</label>
                 <div className="col-lg-4"> {renderSelectBox}</div>
                 </div>
                  {/*<!-- /.col-lg-4 -->*/}
@@ -196,15 +203,22 @@ export class ModelVariableSelection extends React.Component {
 
                 <DataVariableSelection match={this.props.match}/>
                 <div className="row">
-                    {modelValidation}
+
+					<div class="col-md-8">
+					{modelValidation}
+					</div>
+                    <div class="col-md-4">
+					<h4 class="xs-pb-20"></h4>
+					<div class="xs-pb-40">
+					</div>
+
+					<div className="form-group">
+					<input type="text" name="createModelName" required={true} id="createModelName" className="form-control input-sm" placeholder="Create Model Name" />
+					</div>
+
+					</div>
                  </div>
-                 <div class="row">
-                <div className="col-lg-4 col-lg-offset-8">
-                <div className="form-group">
-                <input type="text" name="createModelName" required={true} id="createModelName" className="form-control input-sm" placeholder="Create Model Name" />
-                    </div>
-                </div>
-                </div>
+
                 <div className="row">
                 <div className="col-lg-12 text-right">
                 <Button type="submit" bsStyle="primary">{buttonName}</Button>

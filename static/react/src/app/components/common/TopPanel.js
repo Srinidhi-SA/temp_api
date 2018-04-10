@@ -5,6 +5,7 @@ import LoadingBar from 'react-redux-loading-bar';
 import {Link} from "react-router-dom";
 import {cookieObj} from '../../helpers/cookiesHandler';
 import {getUserDetailsOrRestart} from  "../../helpers/helper"
+import {STATIC_URL} from "../../helpers/env";
 // import $ from 'jquery';
 
 // import store from "../../store";
@@ -33,6 +34,7 @@ export default class TopPanel extends React.Component {
 			return(<Redirect to="/login" />);
 		}else{
 		console.log("top panel & user name"+getUserDetailsOrRestart.get().userName);
+    var userManualPath=STATIC_URL+"userManual/UserManual.html"
 			return(
 		            <div>
 								{/* // Header Menu*/}
@@ -67,7 +69,7 @@ export default class TopPanel extends React.Component {
 											<li>
 												<Link to="/user-profile"><i class="zmdi zmdi-account-o zmdi-hc-lg" aria-hidden="true"></i>&nbsp;&nbsp;Profile</Link>
 											</li>
-											<li><a href="#" target="_blank"><i class="zmdi zmdi-help-outline zmdi-hc-lg" aria-hidden="true"></i>&nbsp;&nbsp;How to use ?</a></li>
+											<li><a href={userManualPath} target="_blank"><i class="zmdi zmdi-help-outline zmdi-hc-lg" aria-hidden="true"></i>&nbsp;&nbsp;User Manual</a></li>
 											<li>
 												<a href="javascript:;" className="logout" onClick={this.logout.bind(this)}><i class="zmdi zmdi-sign-in zmdi-hc-lg" aria-hidden="true"></i>&nbsp;&nbsp;Logout</a>
 											</li>

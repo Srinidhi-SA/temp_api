@@ -111,13 +111,13 @@ export class RegressionParameter extends React.Component {
                     return (
                             <div className="row">                            
                             <div className="col-md-8 col-sm-2">
-                                <div className="row">
+                                
                                     <div className="col-xs-1">{this.state.min}</div>
                                     <div className="col-xs-10">
                                     <ReactBootstrapSlider value={this.state.defaultVal} triggerSlideEvent="true" change={this.changeSliderValue.bind(this)} step={step} max={this.state.max} min={this.state.min} tooltip="hide" disabled={store.getState().apps.regression_isAutomatic == 1?"disabled":""}/>
                                     </div>
                                     <div className="col-xs-1"> {this.state.max}</div>
-                                </div>
+                                 
                             </div>
                             <div className="col-md-2 col-sm-2"><input type="number" min = {this.state.min} max = {this.state.max} className="form-control" value={this.state.defaultVal} onChange={this.changeSliderValueFromText.bind(this)} disabled={store.getState().apps.regression_isAutomatic == 1}/>
                             </div>

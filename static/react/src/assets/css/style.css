@@ -11572,6 +11572,7 @@ h3.modal-title, h4.modal-title { font-size: 19px; }
 .table>tbody>tr>td {
 	font-weight: 300;
 	vertical-align: middle
+	
 }
 .table>tbody.no-border-x>tr>td {
 	border-top-width: 0
@@ -11753,7 +11754,8 @@ label {
 	text-align: center;
 	background-color: #fff;
 	cursor: pointer;
-	pointer-events: none
+	pointer-events: none;
+	float:left;
 }
 .ma-checkbox input[type=checkbox]+label:hover:before, .ma-checkbox input[type=checkbox]:hover+label:before, .ma-checkbox input[type=radio]+label:hover:before, .ma-checkbox input[type=radio]:hover+label:before, .ma-radio input[type=checkbox]+label:hover:before, .ma-radio input[type=checkbox]:hover+label:before, .ma-radio input[type=radio]+label:hover:before, .ma-radio input[type=radio]:hover+label:before {
 	border-color: #d1d1d1
@@ -14498,14 +14500,14 @@ background: #FFFFFF;
 }
 #testPercent{
 	display: inline-block;
-	border: 1px solid #999;
+	border: 1px solid #e0e0e0;
 	height: 25px;
     width: 29px;
     text-align: center;
 }
 #trainPercent{
 	display: inline-block;
-	border: 1px solid #999;
+	border: 1px solid #e0e0e0;
 	height: 25px;
     width: 29px;
     text-align: center;
@@ -14756,7 +14758,7 @@ a.disabled { color:#ccc !important; }
     padding: 3px;
     vertical-align: middle;
 }
-.slider.slider-horizontal {width: 94%;}
+.slider.slider-horizontal { width: 94%; margin-top: 9px; margin-left: 10px; margin-right: 10px; }
 .scrollable-menu {
    /* height: auto;
     max-height: 200px;
@@ -14965,6 +14967,12 @@ a.more_button { color: #b3b3b3; padding: 0 10px; margin-right: 9px; cursor:point
 #welCome_message .bg-color { background:#f3f3f4; border:1px solid #cccccc; border-radius:10px; width:60%; }
 .loaderValue { position:absolute; top:190px; right:100px; color:#FFFFFF; }
 .tab-pane .newCardStyle { border-top: 1px solid #f3f4f4;}
+.accordion .read { padding-top: 2px;}
+.accordion .col-xs-1 {  border: 1px solid #e0e0e0; background: #edecec; padding: 4px; text-align:center}
+#manualBlock_111 .accordion .col-xs-1 { background: #FFFFFF; }
+.cst-panel-shadow .list-unstyled li .ma-checkbox, .cst-panel-shadow .list-unstyled li .ma-checkbox label { width: 100%; }
+.cst-panel-shadow .ma-checkbox label span { display: inline-block; width: 90%; }
+
 /**************** Css realated to developers, keep the source down ***/
 #prediction_dropdown{
 	    width: 40%;

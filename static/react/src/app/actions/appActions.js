@@ -1,5 +1,5 @@
 import {API, EMR, STATIC_URL} from "../helpers/env";
-import {PERPAGE, isEmpty, getUserDetailsOrRestart, APPSPERPAGE, statusMessages} from "../helpers/helper";
+import {PERPAGE, isEmpty, getUserDetailsOrRestart, APPSPERPAGE} from "../helpers/helper";
 import store from "../store";
 import {
   APPSLOADERPERVALUE,
