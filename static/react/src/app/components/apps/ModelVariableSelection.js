@@ -136,9 +136,11 @@ export class ModelVariableSelection extends React.Component {
                             </div>
                             {store.getState().apps.regression_selectedTechnique == "crossValidation" ?
                                 <div class="form-group">
-                                    <label class="col-lg-2 xs-pt-10" for="noOffolds">No of Folds :</label>
-                                    <div class="col-lg-10">
+
+                                    <label class="col-lg-4 xs-pt-10" for="noOffolds">No of Folds :</label>
+                                    <div class="col-lg-8">
                                         <input type="number" name="" class="form-control" required={true} id="noOffolds" onChange={this.changecrossValidationValue.bind(this)} min={2} max={10} value={store.getState().apps.regression_crossvalidationvalue}/>
+
                                     </div>
                                 </div>:
                                 <div id="range">
@@ -204,15 +206,22 @@ export class ModelVariableSelection extends React.Component {
 
                 <DataVariableSelection match={this.props.match}/>
                 <div className="row">
-                    {modelValidation}
+
+					<div class="col-md-8">
+					{modelValidation}
+					</div>
+                    <div class="col-md-4">
+					<h4 class="xs-pb-20"></h4>
+					<div class="xs-pb-40">
+					</div>
+
+					<div className="form-group">
+					<input type="text" name="createModelName" required={true} id="createModelName" className="form-control input-sm" placeholder="Create Model Name" />
+					</div>
+
+					</div>
                  </div>
-                 <div class="row">
-                <div className="col-lg-4 col-lg-offset-8">
-                <div className="form-group">
-                <input type="text" name="createModelName" required={true} id="createModelName" className="form-control input-sm" placeholder="Create Model Name" />
-                    </div>
-                </div>
-                </div>
+                  
                 <div className="row">
                 <div className="col-lg-12 text-right">
                 <Button type="submit" bsStyle="primary">{buttonName}</Button>

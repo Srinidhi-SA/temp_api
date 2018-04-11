@@ -13,9 +13,12 @@ export class PredictionDropDown extends React.Component {
   constructor(props){
     super(props);
   }
-  
-  componentWillMount(){
-	  var sel= null;
+   componentDidUpdate(){
+      var sel =$('#prediction_dropdown').val();
+			this.props.dispatch(showPredictions(sel));
+   }
+	componentWillMount(){
+		var sel= null;
 	  var data = this.props.jsonData;
 	  for (var prop in data) {
 	      if(data[prop].selected){
@@ -23,9 +26,8 @@ export class PredictionDropDown extends React.Component {
 	          break;
 	      }
 	  }
-	 this.props.dispatch(showPredictions(sel));  
-  }
-  
+	  this.props.dispatch(showPredictions(sel));
+	}
  checkSelection(e){
 	 console.log("change predictive dropdown");
 	  var sel =$('#prediction_dropdown').val();

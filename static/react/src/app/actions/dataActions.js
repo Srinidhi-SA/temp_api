@@ -1139,6 +1139,19 @@ export function handleColumnClick(dialog,actionName,colSlug,colName,subActionNam
 }
 
 function deleteMetaDataColumn(dialog,colName,colSlug,dispatch,actionName,colStatus){
+    var nonDeletedColumns = 0;
+    let dataPrev = store.getState().datasets.dataPreview.meta_data;
+    $.each(dataPrev.uiMetaData.metaDataUI,function(key,val){
+        if(val.name == "noOfColumns"){
+            nonDeletedColumns = val.value;
+            return false;
+        }
+    });
+    if(nonDeletedColumns <= 2 && colStatus != true){
+        let errormsg = statusMessages("warning", "Cannot delete any more columns", "small_mascot");
+        bootbox.alert(errormsg)
+        return;
+    }
     var text = "Are you sure, you want to delete the selected column?";
     if(colStatus == true){
         text = "Are you sure, you want to undelete the selected column?"

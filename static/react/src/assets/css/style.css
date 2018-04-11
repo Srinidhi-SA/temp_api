@@ -14500,14 +14500,14 @@ background: #FFFFFF;
 }
 #testPercent{
 	display: inline-block;
-	border: 1px solid #999;
+	border: 1px solid #e0e0e0;
 	height: 25px;
     width: 29px;
     text-align: center;
 }
 #trainPercent{
 	display: inline-block;
-	border: 1px solid #999;
+	border: 1px solid #e0e0e0;
 	height: 25px;
     width: 29px;
     text-align: center;
@@ -14758,7 +14758,7 @@ a.disabled { color:#ccc !important; }
     padding: 3px;
     vertical-align: middle;
 }
-.slider.slider-horizontal {width: 94%;}
+.slider.slider-horizontal { width: 94%; margin-top: 9px; margin-left: 10px; margin-right: 10px; }
 .scrollable-menu {
    /* height: auto;
     max-height: 200px;
@@ -14968,8 +14968,11 @@ a.more_button { color: #b3b3b3; padding: 0 10px; margin-right: 9px; cursor:point
 .loaderValue { position:absolute; top:190px; right:100px; color:#FFFFFF; }
 .tab-pane .newCardStyle { border-top: 1px solid #f3f4f4;}
 .accordion .read { padding-top: 2px;}
-.accordion .col-xs-1 {  border: 1px solid #e0e0e0; background: #edecec; padding: 4px;}
+.accordion .col-xs-1 {  border: 1px solid #e0e0e0; background: #edecec; padding: 4px; text-align:center}
 #manualBlock_111 .accordion .col-xs-1 { background: #FFFFFF; }
+.cst-panel-shadow .list-unstyled li .ma-checkbox, .cst-panel-shadow .list-unstyled li .ma-checkbox label { width: 100%; }
+.cst-panel-shadow .ma-checkbox label span { display: inline-block; width: 90%; }
+
 /**************** Css realated to developers, keep the source down ***/
 #prediction_dropdown{
 	    width: 40%;
