@@ -62,6 +62,7 @@ export class NormalHideColumn extends React.Component {
    var rowComponents = this.generateNormalTableRows(data);
    return (
            <div class="table-style_2">
+               <h5 className="xs-mt-5"><strong>{this.props.selectedPrediction}: Top Observations</strong></h5>
            <table className={className}>
                <thead><tr>{headerComponents}</tr></thead>
                <tbody>{rowComponents}</tbody>
