@@ -13,14 +13,11 @@ export class PredictionDropDown extends React.Component {
   constructor(props){
     super(props);
   }
-  
-  componentDidMount(){
-     this.updateSelection();
-  }
-  componentDidUpdate(){
-     this.updateSelection();
-  }
-	updateSelection(){
+   componentDidUpdate(){
+      var sel =$('#prediction_dropdown').val();
+			this.props.dispatch(showPredictions(sel));
+   }
+	componentWillMount(){
 		var sel= null;
 	  var data = this.props.jsonData;
 	  for (var prop in data) {
