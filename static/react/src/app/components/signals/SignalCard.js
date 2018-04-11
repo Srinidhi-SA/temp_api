@@ -85,7 +85,7 @@ export class SignalCard extends React.Component {
               {story.name}
               </Link>
               if(story.status == INPROGRESS){
-                  percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">&nbsp;{completed_percent}&nbsp;%</span></div>
+                  percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">&nbsp;{completed_percent >= 0 ? completed_percent+' %':"In Progress"}&nbsp;</span></div>
                   signalClick = <a class="cursor" onClick={this.openLoaderScreen.bind(this,story.slug,completed_percent,story.completed_message)}> {story.name}</a>
               }else if(story.status == SUCCESS && !story.viewed){
                   story.completed_percentage = 100;
