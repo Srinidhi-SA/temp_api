@@ -1447,3 +1447,18 @@ time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(timestamp))
 '''
 
 REGRESSION_APP_ID=13
+APPORDERLIST=[
+"automated_prediction",
+"regression_app",
+"opportunity_scoring",
+"robo_advisor_insights",
+"speech_analytics",
+"stock_sense",
+"churn_prediction",
+"re_admission_prediction",
+"physician_attrition",
+"credit_card_fraud",
+"claims_prediction",
+"asset_health_prediction",
+"employee_attrition"
+]
