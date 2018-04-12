@@ -1,101 +1,112 @@
-from django.conf.urls import include, url
-from rest_framework.decorators import renderer_classes, api_view
-from rest_framework.renderers import JSONRenderer
-from rest_framework.response import Response
-from django.contrib.auth.decorators import login_required
-from rest_framework_jwt.views import obtain_jwt_token
-from rest_framework_jwt.views import refresh_jwt_token
-from rest_framework_jwt.views import verify_jwt_token
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 
-from api.views import errand, dataset, robo, option, user, trainer, score
+from django.conf.urls import url
+from rest_framework import routers
 
-@login_required
-@api_view(['GET'])
-@renderer_classes((JSONRenderer, ))
-def test(request):
-    return Response({"message": "Is this a test?", "data": "Yes it is!"});
+from api import views
+from datasets.views import DatasetView
+from views import ScoreView, StockDatasetView, get_concepts_to_show_in_ui
+from views import SignalView, get_datasource_config_list, get_algorithm_config_list
+from views import AppView
 
+from views import TrainerView
+from views import RoboView
+from views import AudiosetView
+# from views import RegressionView
+from dummyModel.models import DummyView
+
+# Start adding urlconf from here
+
+router = routers.DefaultRouter()
+router.register(
+    'datasets',
+    DatasetView,
+    base_name='datasets'
+)
+
+router.register(
+    'signals',
+    SignalView,
+    base_name='signals'
+)
+
+
+router.register(
+    'trainer',
+    TrainerView,
+    base_name='trainer'
+)
+
+router.register(
+    'score',
+    ScoreView,
+    base_name='score'
+)
+
+router.register(
+    'robo',
+    RoboView,
+    base_name='robo'
+)
+
+router.register(
+    'audioset',
+    AudiosetView,
+    base_name='audioset'
+)
+
+router.register(
+    'stockdataset',
+    StockDatasetView,
+    base_name='stockdataset'
+)
+
+router.register(
+    'apps',
+    AppView,
+    base_name='apps'
+)
+
+router.register(
+    'dummy',
+    DummyView,
+    base_name='dummy'
+)
+# router.register(
+#     'regression',
+#     RegressionView,
+#     base_name='regression'
+# )
+
+from api.user_helper import upload_photo, get_profile_image
 urlpatterns = [
-    url(r'test', test),
-    url(r'env', errand.get_env),
-
-    # USERS
-    url(r'user/login', user.login),
-    url(r'user/profile', user.profile),
-    url(r'user/logout', user.logout),
-    url(r'user/api-token-auth', obtain_jwt_token),
-    url(r'user/api-token-refresh', refresh_jwt_token),
-    url(r'user/api-token-verify', verify_jwt_token),
-
-    # DATASETSS
-    url(r'dataset/create', dataset.create),
-    url(r'dataset/all', dataset.all),
-    url(r'dataset/preview', dataset.preview),
-    url(r'dataset/get_meta', dataset.get_meta),
-    url(r'dataset/edit', dataset.edit),
-    url(r'dataset/delete', dataset.delete),
-    url(r'dataset/quickinfo', dataset.quickinfo),
-    url(r'dataset/trick', dataset.trick),
-    url(r'dataset/filter', dataset.filter_sample),
-
-    # filter_sample
-    # ERRANDS
-    url(r'errand/uploaded_files', errand.get_uploaded_files),
-    url(r'errand/make', errand.make),
-    url(r'errand/columns', errand.columns),
-    url(r'errand/get_measures', errand.columns),
-    url(r'errand/set_dimension', errand.set_dimension),
-    url(r'errand/set_column_data', errand.set_column_data),
-    url(r'errand/set_measure', errand.set_measure),
-    url(r'errand/get_results', errand.get_results),
-    url(r'errand/archived', errand.get_archived),
-    url(r'errand/archive', errand.set_archived),
-    url(r'errand/get_frequency_results', errand.get_frequency_results),
-    url(r'errand/get_tree_results_raw', errand.get_tree_results_raw),
-    url(r'errand/get_tree_results', errand.get_tree_results),
-    url(r'errand/get_tree_narratives', errand.get_tree_narratives),
-    url(r'errand/get_chi_results', errand.get_chi_results),
-    url(r'errand/edit', errand.edit),
-    url(r'errand/delete', errand.delete),
-    url(r'errand/configure_data', errand.configure_data),
-    url(r'errand/(?P<errand_id>\d+)/log_status', errand.log_status),
-    url(r'errand/quickinfo', errand.quickinfo),
-    url(r'errand/get_trend_analysis', errand.get_trend_analysis),
-    url(r'errand/get_dimension_all_results', errand.get_dimension_all_results),
-    url(r'errand/filter', errand.filter_sample),
-    url(r'errand/drill_down_anova', errand.drill_down_anova),
-
-    # ROBOS
-    url(r'robo/create', robo.create),
-    url(r'robo/all', robo.all),
-    url(r'robo/preview', robo.preview),
-    url(r'robo/get_results', robo.get_results),
-    url(r'robo/edit', robo.edit),
-    url(r'robo/delete', robo.delete),
-
-    # OPTIONS
-    url(r'option/get_all', option.get_all),
-    url(r'option/get_dict', option.get_dict),
-    url(r'option/set', option.set),
-    url(r'option/test', option.test),
-
-    # TRAINER
-    url(r'trainer/make', trainer.create_trainer),
-    url(r'trainer/all', trainer.get_all_trainer),
-    url(r'trainer/model', trainer.retrieve_trainer),
-    url(r'trainer/set_column_data', trainer.set_column_data),
-    url(r'trainer/create', trainer.setup_and_call_script),
-    url(r'trainer/download', trainer.download_file),
-    url(r'trainer/remote', trainer.remote_folder),
-    url(r'trainer/edit', trainer.edit_trainer),
-    url(r'trainer/delete', trainer.delete_tariner),
-
-    # SCORE
-    url(r'score/make', score.create_score),
-    url(r'score/all', score.retrieve_all_score),
-    url(r'score/score', score.retrieve_score),
-    url(r'score/download', score.download_file),
-    url(r'score/unknown_api', score.unknown_api),
-    url(r'score/edit', score.edit_score),
-    url(r'score/delete', score.delete_score),
+    url(r'^datasource/get_config_list$',get_datasource_config_list , name="datasource_get_config_list"),
+    url(r'^job/(?P<slug>[^/.]+)/get_config$',views.get_config , name="get_config"),
+    url(r'^job/(?P<slug>[^/.]+)/set_result',views.set_result , name="set_result"),
+    url(r'^job/(?P<slug>[^/.]+)/use_set_result',views.use_set_result , name="use_set_result"),
+    url(r'^download_data/(?P<slug>[^/.]+)',views.get_chart_or_small_data , name="get_chart_or_small_data"),
+    url(r'^get_info',views.get_info , name="get_info"),
+    url(r'^messages/(?P<slug>[^/.]+)/',views.set_messages , name="set_messages"),
+    url(r'^xml/(?P<slug>[^/.]+)/',views.set_pmml , name="set_pmml"),
+    url(r'^get_job_kill/(?P<slug>[^/.]+)/',views.get_job_kill , name="get_job_kill"),
+    url(r'^get_job_refreshed/(?P<slug>[^/.]+)/',views.get_job_refreshed , name="get_job_refreshed"),
+    url(r'^get_job_restarted/(?P<slug>[^/.]+)/',views.get_job_restarted , name="get_job_restarted"),
+    url(r'^get_xml/(?P<slug>[^/.]+)/(?P<algoname>[^/.]+)/',views.get_pmml , name="get_pmml"),
+    url(r'^set_job_report/(?P<slug>[^/.]+)/(?P<report_name>[^/.]+)/',views.set_job_reporting , name="set_job_reporting"),
+    url(r'^get_job_report/(?P<slug>[^/.]+)/',views.get_job_report , name="get_job_report"),
+    url(r'^upload_photo',upload_photo , name="upload_photo"),
+    url(r'^get_profile_image/(?P<slug>[^/.]+)/',get_profile_image , name="get_profile_image"),
+    url(r'^stockdatasetfiles/(?P<slug>[^/.]+)/',views.get_stockdatasetfiles , name="get_stockdatasetfiles"),
+    url(r'^get_concepts/', get_concepts_to_show_in_ui, name="get_concepts"),
+    url(r'^get_metadata_for_mlscripts/(?P<slug>[^/.]+)/', views.get_metadata_for_mlscripts, name="get_metadata_for_mlscripts"),
+    url(r'^get_score_data_and_return_top_n/', views.get_score_data_and_return_top_n, name="get_score_data_and_return_top_n"),
+    url(r'^get_recent_activity',views.get_recent_activity , name="get_recent_activity"),
+    url(r'^delete_and_keep_only_ten_from_all_models',views.delete_and_keep_only_ten_from_all_models , name="delete_and_keep_only_ten_from_all_models"),
+    url(r'^regression_app/get_algorithm_config_list$',get_algorithm_config_list , name="algorithm_get_config_list"),
+    url(r'^get_app_id_map',views.get_appID_appName_map,name="get_app_id_map"),
 ]
+
+
+urlpatterns += router.urls
+# print urlpatterns

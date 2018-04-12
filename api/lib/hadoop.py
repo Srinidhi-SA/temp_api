@@ -7,18 +7,15 @@ from pywebhdfs.webhdfs import PyWebHdfsClient
 from pywebhdfs.errors import FileNotFound
 from django.conf import settings
 
+
 def hadoop_put(from_path, to_dir):
-    to = to_dir + os.path.basename(from_path)
-    print "Sending {} to: {}".format(from_path, to_dir)
-    print "Reading the file {}".format(from_path)
+    hdfs_file_path = to_dir + '/' + os.path.basename(from_path)
+    print "Uploading to hdfs {} : {}".format(from_path, to_dir)
     # subprocess.call(["/usr/local/hadoop/bin/hadoop", "fs", "-put", from_path, to])
+
+    hdfs_client = hadoop_hdfs()
     with open(from_path, 'r') as file:
-        data = file.read()
-    print "Creating on HDFS"
-    hadoop_del_file(to)
-    hdfs = hadoop_hdfs()
-    print to
-    print hdfs.create_file(to, data)
+        hdfs_client.create_file(hdfs_file_path, file)
 
 def hadoop_mkdir(path):
     print "Creating directory {}".format(path)
