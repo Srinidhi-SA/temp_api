@@ -47,12 +47,13 @@ export function closeModelPopup() {
 
 export function refreshAppsModelList(props) {
   return (dispatch) => {
-
+    if(refreshAppsModelInterval != null)
+    clearInterval(refreshAppsModelInterval);
     refreshAppsModelInterval = setInterval(function() {
       var pageNo = window.location.href.split("=")[1];
       if (pageNo == undefined)
         pageNo = 1;
-      if (window.location.pathname == "/apps/" + store.getState().apps.currentAppId + "/models")
+      if (window.location.pathname == "/"+store.getState().apps.currentAppDetails.app_url)
         dispatch(getAppsModelList(parseInt(pageNo)));
       }
     , APPSDEFAULTINTERVAL);
@@ -216,11 +217,13 @@ export function createModelSuccessAnalysis(data) {
 }
 export function refreshAppsScoreList(props) {
   return (dispatch) => {
+    if(refreshAppsScoresInterval != null)
+    clearInterval(refreshAppsScoresInterval);
     refreshAppsScoresInterval = setInterval(function() {
       var pageNo = window.location.href.split("=")[1];
       if (pageNo == undefined)
         pageNo = 1;
-      if (window.location.pathname == "/apps/" + store.getState().apps.currentAppId + "/scores")
+      if (window.location.pathname == "/apps/" + store.getState().apps.currentAppDetails.slug + "/scores")
         dispatch(getAppsScoreList(parseInt(pageNo)));
       }
     , APPSDEFAULTINTERVAL);
