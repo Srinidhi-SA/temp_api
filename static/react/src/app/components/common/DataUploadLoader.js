@@ -49,22 +49,23 @@ export class DataUploadLoader extends React.Component {
     return (
       <div id="dULoader">
         <Modal show={store.getState().datasets.dataUploadLoaderModal} backdrop="static" onHide={this.closeModelPopup.bind(this)} dialogClassName="modal-colored-header">
-          <Modal.Body>
+          <Modal.Body style={{marginBottom:"0"}}>
             <div className="row">
               <div className="col-md-12">
-                <div className="panel">
+                <div className="panel xs-mb-0">
                   <div className="panel-body no-border">
                     <h4 className="text-center"><br/>
                       <img src={img_src}/><br/>
+                      {store.getState().datasets.dULoaderValue >= 0?<h2 class="loaderValue">{store.getState().datasets.dULoaderValue}%</h2>:<h5 class="loaderValue" style={{display:"block", textAlign: "center", paddingTop: "15px" }}>In Progress</h5>} 
                       <br/> {store.getState().datasets.dataLoaderText}
-                    </h4><br/>
+                    </h4>
 
                     {store.getState().datasets.dULoaderValue >= 0?<div className="p_bar_body">
                       <progress className="prg_bar" value={store.getState().datasets.dULoaderValue} max={95}></progress>
-                      <div className="progress-value">
+                      {/*<div className="progress-value">
                         <h3>{store.getState().datasets.dULoaderValue}
                           %</h3>
-                      </div>
+                      </div>*/}
                     </div>:""}
                   </div>
                 </div>

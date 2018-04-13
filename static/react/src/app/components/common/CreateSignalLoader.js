@@ -50,30 +50,30 @@ export class CreateSignalLoader extends React.Component {
                     that.props.history.push("/signals");
                 }
             },DYNAMICLOADERINTERVAL)}
-        
+
         let imgsrc_url=STATIC_URL+"assets/images/Processing.gif"
         return (
                 <div id="createSignalLoader">
-                
+
                 <Modal show={store.getState().signals.createSignalLoaderModal}  backdrop="static" onHide={this.closeModelPopup.bind(this)} dialogClassName="modal-colored-header">
-                
-                <Modal.Body>
+
+                <Modal.Body style={{marginBottom:"0"}}>
                 <div className="row">
                 <div className="col-md-12">
-                <div className="panel">
+                <div className="panel xs-mb-0">
                   <div className="panel-body no-border">
                     <h4 className="text-center"><br/>
                       <img src={imgsrc_url}/><br/>
-					  <h2 class="loaderValue">{store.getState().signals.createSignalLoaderValue >= 0?store.getState().signals.createSignalLoaderValue+"%":""} </h2>
+                      {store.getState().signals.createSignalLoaderValue >= 0?<h2 class="loaderValue">{store.getState().signals.createSignalLoaderValue}%</h2>:<h5 class="loaderValue" style={{display:"block", textAlign: "center", paddingTop: "15px" }}>In Progress</h5>}
                       <br/> {store.getState().signals.loaderText}
-                    </h4><br/>
+                    </h4>
 
                     {store.getState().signals.createSignalLoaderValue >= 0?<div className="p_bar_body">
                       <progress className="prg_bar" value={store.getState().signals.createSignalLoaderValue} max={95}></progress>
-                      <div className="progress-value">
+                      {/*<div className="progress-value">
                         <h3>{store.getState().signals.createSignalLoaderValue}
                           %</h3>
-                      </div>
+                      </div>*/}
                     </div>:""}
 
                   </div>
