@@ -64,7 +64,7 @@ export class CreateSignalLoader extends React.Component {
                   <div className="panel-body no-border">
                     <h4 className="text-center"><br/>
                       <img src={imgsrc_url}/><br/>
-					  <h2 class="loaderValue">{store.getState().signals.createSignalLoaderValue} %</h2>
+					  <h2 class="loaderValue">{store.getState().signals.createSignalLoaderValue >= 0?store.getState().signals.createSignalLoaderValue+"%":""} </h2>
                       <br/> {store.getState().signals.loaderText}
                     </h4><br/>
 
