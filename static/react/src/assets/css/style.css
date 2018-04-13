@@ -11572,7 +11572,7 @@ h3.modal-title, h4.modal-title { font-size: 19px; }
 .table>tbody>tr>td {
 	font-weight: 300;
 	vertical-align: middle
-	
+
 }
 .table>tbody.no-border-x>tr>td {
 	border-top-width: 0
@@ -14965,7 +14965,7 @@ a.more_button { color: #b3b3b3; padding: 0 10px; margin-right: 9px; cursor:point
 .notAllowed a.deactivate { pointer-events: none;}
 
 #welCome_message .bg-color { background:#f3f3f4; border:1px solid #cccccc; border-radius:10px; width:60%; }
-.loaderValue { position:absolute; top:190px; right:100px; color:#FFFFFF; }
+.loaderValue { position:absolute; top:190px; right:110px; color:#FFFFFF; }
 .tab-pane .newCardStyle { border-top: 1px solid #f3f4f4;}
 .accordion .read { padding-top: 2px;}
 .accordion .col-xs-1 {  border: 1px solid #e0e0e0; background: #edecec; padding: 4px; text-align:center}
@@ -15538,7 +15538,4 @@ input[type=range]:focus::-ms-fill-upper {
   background: #00998c;
 }
 
-.tablesorter-ice .header, .tablesorter-ice .tablesorter-header{ text-transform: uppercase; } 
-
-
-
+.tablesorter-ice .header, .tablesorter-ice .tablesorter-header{ text-transform: uppercase; }
