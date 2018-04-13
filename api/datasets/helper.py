@@ -785,7 +785,7 @@ def add_ui_metadata_to_metadata(meta_data, signal_permission=None):
     return output
 
 def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
-    validcols = [ {"name":x["name"],"slug":x["slug"],"columnType":x["columnType"],"dateSuggestionFlag":x["dateSuggestionFlag"],"targetColumn":False,"targetColSetVarAs":None} for x in columnDataUI if x["consider"]==True]
+    validcols = [ {"name":x["name"],"slug":x["slug"],"columnType":x["columnType"],"originalColumnType":x["columnType"],"dateSuggestionFlag":x["dateSuggestionFlag"],"targetColumn":False,"targetColSetVarAs":None} for x in columnDataUI if x["consider"]==True]
     timeDimensionCols = []
     dateSuggestionCols = []
     validcols1 = []
@@ -824,12 +824,12 @@ def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
             if len(relevantAction) > 0:
                 setVarAs.append({"name": obj["name"], "slug": obj["slug"], "setVarAs": relevantAction[0]["name"]})
 
-        changeDataTypeCols = filter(lambda x: x["actionName"] == "data_type" and x["status"] == True, colset)
-        if len(changeDataTypeCols) > 0:
-            changeDataTypeActions = changeDataTypeCols[0]["listOfActions"]
-            relevantAction = filter(lambda x: x["status"] == True, changeDataTypeActions)
-            if len(relevantAction) > 0:
-                changeDataType.append({"name": obj["name"], "slug": obj["slug"], "changeDataType": relevantAction[0]["name"]})
+        # changeDataTypeCols = filter(lambda x: x["actionName"] == "data_type" and x["status"] == True, colset)
+        # if len(changeDataTypeCols) > 0:
+        #     changeDataTypeActions = changeDataTypeCols[0]["listOfActions"]
+        #     relevantAction = filter(lambda x: x["status"] == True, changeDataTypeActions)
+        #     if len(relevantAction) > 0:
+        #         changeDataType.append({"name": obj["name"], "slug": obj["slug"], "changeDataType": relevantAction[0]["name"]})
 
     ######
     output = []
@@ -859,11 +859,11 @@ def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
         else:
             obj.update({"setVarAs": None})
 
-        changeDataTypeFilter = filter(lambda x:x["slug"] == obj["slug"],changeDataType)
-        if len(changeDataTypeFilter) > 0:
-            obj.update({"changeDataType": changeDataTypeFilter[0]["changeDataType"]})
-        else:
-            obj.update({"changeDataType": None})
+        # changeDataTypeFilter = filter(lambda x:x["slug"] == obj["slug"],changeDataType)
+        # if len(changeDataTypeFilter) > 0:
+        #     obj.update({"changeDataType": changeDataTypeFilter[0]["changeDataType"]})
+        # else:
+        #     obj.update({"changeDataType": None})
         output.append(obj)
 
 
