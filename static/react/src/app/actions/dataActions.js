@@ -1237,7 +1237,7 @@ export function updateColumnStatus(dispatch,colSlug,colName,actionName,subAction
             break;
         }
     }
-    if(actionName != SET_VARIABLE && actionName != UNIQUE_IDENTIFIER && actionName != SET_POLARITY && actionName != IGNORE_SUGGESTION){
+    if(actionName != SET_VARIABLE && actionName != UNIQUE_IDENTIFIER && actionName != SET_POLARITY && actionName != IGNORE_SUGGESTION && actionName !=DATA_TYPE){
         isSubsetting = true;
     }else{
         //Enable subsetting when any one of the column is deleted,renamed, removed
@@ -1560,7 +1560,7 @@ export function DisableSelectAllCheckbox(){
     });
     if(measureArray.length > 5)
      $('.measureAll').prop("disabled",true);
-  
+
     if(dimensionArray.length > 5)
      $(".dimensionAll").prop("disabled",true);
 }
@@ -1581,7 +1581,7 @@ export function uncheckHideAnalysisList(){
                 dispatch(saveDeselectedAnalysisList($("#chk_analysis_association").val()));
                 dispatch(saveDeselectedAnalysisList($("#chk_analysis_prediction").val()));
             }
-            
+
         }
         else if(targetVariableType == "measure"){
             if(dimensionArray.length < 1)
@@ -1646,7 +1646,7 @@ export function saveDeselectedAnalysisList(name){
         renderList,
         prevAnalysisList,
         flag:false,
-    }  
+    }
 }
 export function showAllVariables(array,slug){
     $.each(array.meta_data.uiMetaData.varibaleSelectionArray,function(key,item){
