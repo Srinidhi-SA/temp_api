@@ -67,7 +67,7 @@ class QueryCommonFiltering(object):
                 self.filter_fields = temp_app_filter
 
     def execute_common_filtering_and_sorting_and_ordering(self):
-
+        from django.db.models.query import EmptyQuerySet
         if self.name is not None:
             self.query_set = self.query_set.filter(name__icontains=self.name)
 
@@ -84,7 +84,8 @@ class QueryCommonFiltering(object):
             self.filter_fields=self.filter_fields.replace(',','\",\"').replace('[','[\"').replace(']','\"]')
             self.filter_fields=eval(self.filter_fields)
             from itertools import chain
-            final_query_set=self.query_set.none()
+            # final_query_set=self.query_set.none()
+            final_query_set=EmptyQuerySet()
             for tag in self.filter_fields:
                 query_set_temp=self.query_set.filter(tags__icontains=tag).distinct()
                 final_query_set=(final_query_set | query_set_temp).distinct()
