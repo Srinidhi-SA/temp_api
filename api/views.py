@@ -974,6 +974,7 @@ class AppView(viewsets.ModelViewSet):
         from itertools import chain
         qs_none = CustomApps.objects.none()
         print type(queryset)
+        print (qs_none)
         queryset = list(chain(qs_none, matched_and_ordered_app_list))
         print type(queryset)
         return queryset
