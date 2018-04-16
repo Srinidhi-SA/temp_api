@@ -1710,7 +1710,7 @@ export function saveSelectedValuesForModel(modelName, targetType, levelCount) {
   return {type: "SAVE_SELECTED_VALES_FOR_MODEL", modelName, targetType, levelCount}
 }
 
-export function getRegressionAppAlgorithmData(appType) {
+export function getRegressionAppAlgorithmData(slug,appType) {
   return (dispatch) => {
     return triggerRegressionAppAlgorithmAPI(appType).then(([response, json]) => {
       if (response.status === 200) {
