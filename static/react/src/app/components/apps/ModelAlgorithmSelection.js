@@ -22,6 +22,7 @@ import {statusMessages} from "../../helpers/helper";
         manualAlgorithmData:store.apps.regression_algorithm_data_manual,
         isAutomatic:store.apps.regression_isAutomatic,
         apps_regression_modelName:store.apps.apps_regression_modelName,
+        currentAppDetails:store.apps.currentAppDetails,
     };
 })
 
@@ -31,10 +32,10 @@ export class ModelAlgorithmSelection extends React.Component {
     }
     componentWillMount() {
         //It will trigger when refresh happens on url
-        if(this.props.apps_regression_modelName == ""){
+        if(this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null){
             window.history.go(-1);
         }
-        this.props.dispatch(getRegressionAppAlgorithmData(this.props.match.params.slug));
+        this.props.dispatch(getRegressionAppAlgorithmData(this.props.match.params.slug,this.props.currentAppDetails.app_type));
         
     }
     componentDidMount() {
