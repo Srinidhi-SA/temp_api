@@ -977,7 +977,7 @@ class AppView(viewsets.ModelViewSet):
         # print (qs_none)
         # queryset = list(chain(qs_none, matched_and_ordered_app_list))
         # print type(queryset)
-        queryset = queryset.objects.filter(name__in=app_ordered_list)
+        queryset = queryset.filter(name__in=app_ordered_list)
 
         return queryset
 
