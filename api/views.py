@@ -5354,9 +5354,16 @@ def delete_and_keep_only_ten_from_all_models(request):
 
 #for regression modal algorithm config
 def get_algorithm_config_list(request):
+    try:
+        app_type=request.GET['app_type']
+    except:
+        app_type="CLASSIFICATION"
 
     user = request.user
-    algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST)
+    if app_type =="CLASSIFICATION":
+        algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
+    else:
+        algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_REGRESSION)
 
     print algorithm_config_list.keys()
 

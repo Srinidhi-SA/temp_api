@@ -103,7 +103,7 @@ urlpatterns = [
     url(r'^get_score_data_and_return_top_n/', views.get_score_data_and_return_top_n, name="get_score_data_and_return_top_n"),
     url(r'^get_recent_activity',views.get_recent_activity , name="get_recent_activity"),
     url(r'^delete_and_keep_only_ten_from_all_models',views.delete_and_keep_only_ten_from_all_models , name="delete_and_keep_only_ten_from_all_models"),
-    url(r'^regression_app/get_algorithm_config_list$',get_algorithm_config_list , name="algorithm_get_config_list"),
+    url(r'^get_app_algorithm_config_list/',get_algorithm_config_list , name="get_app_algorithm_config_list"),
     url(r'^get_app_id_map',views.get_appID_appName_map,name="get_app_id_map"),
 ]
 
