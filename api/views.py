@@ -973,7 +973,9 @@ class AppView(viewsets.ModelViewSet):
 
         from itertools import chain
         qs_none = CustomApps.objects.none()
+        print type(queryset)
         queryset = list(chain(qs_none, matched_and_ordered_app_list))
+        print type(queryset)
         return queryset
 
     def get_serializer_class(self):
