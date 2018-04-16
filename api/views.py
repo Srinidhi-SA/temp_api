@@ -971,7 +971,9 @@ class AppView(viewsets.ModelViewSet):
                 if app_info.name == app:
                     matched_and_ordered_app_list.append(app_info)
 
-        queryset = matched_and_ordered_app_list
+        from itertools import chain
+        qs_none = CustomApps.objects.none()
+        queryset = list(chain(qs_none, matched_and_ordered_app_list))
         return queryset
 
     def get_serializer_class(self):
