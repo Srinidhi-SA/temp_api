@@ -965,18 +965,20 @@ class AppView(viewsets.ModelViewSet):
         # if tagsRq is not None:
         #     queryset = queryset.filter(tags__icontains=tagsRq)
         app_ordered_list = copy.deepcopy(settings.APPORDERLIST)
-        matched_and_ordered_app_list = []
-        for app in app_ordered_list:
-            for app_info in queryset:
-                if app_info.name == app:
-                    matched_and_ordered_app_list.append(app_info)
+        # matched_and_ordered_app_list = []
+        # for app in app_ordered_list:
+        #     for app_info in queryset:
+        #         if app_info.name == app:
+        #             matched_and_ordered_app_list.append(app_info)
+        #
+        # from itertools import chain
+        # qs_none = CustomApps.objects.none()
+        # print type(queryset)
+        # print (qs_none)
+        # queryset = list(chain(qs_none, matched_and_ordered_app_list))
+        # print type(queryset)
+        queryset = queryset.objects.filter(name__in=app_ordered_list)
 
-        from itertools import chain
-        qs_none = CustomApps.objects.none()
-        print type(queryset)
-        print (qs_none)
-        queryset = list(chain(qs_none, matched_and_ordered_app_list))
-        print type(queryset)
         return queryset
 
     def get_serializer_class(self):
