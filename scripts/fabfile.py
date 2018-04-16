@@ -92,43 +92,43 @@ def deploy_api(branch="dev"):
     deployment_config= details['deployment_config']
     base_remote_path = path_details['base_remote_path']
     config_file_path = BASE_DIR + '/config/settings/config_file_name_to_run.py'
-    all_lines = []
-    with open(config_file_path) as fp:
-        for line in fp:
-            all_lines.append(line)
+    # all_lines = []
+    # with open(config_file_path) as fp:
+    #     for line in fp:
+    #         all_lines.append(line)
+    #
+    # UI_VERSION = None
+    # for line in all_lines:
+    #     if "UI_VERSION" in line:
+    #         UI_VERSION = line.split("'")[1]
 
-    UI_VERSION = None
-    for line in all_lines:
-        if "UI_VERSION" in line:
-            UI_VERSION = line.split("'")[1]
-
-    # if UI_VERSION is None:
-    text_command = """CONFIG_FILE_NAME = '{0}'\nUI_VERSION = '{1}'
-    """.format(deployment_config, random.randint(100000,10000000))
-    # else:
-    #     text_command = """CONFIG_FILE_NAME = '{0}'\nUI_VERSION = '{1}'\nV=1
-    #     """.format(deployment_config, UI_VERSION)
-
-    react_env = BASE_DIR + '/static/react/src/app/helpers/env.js'
-    react_npm_log = BASE_DIR + '/static/react/npm-debug.log'
-    local('rm {0}'.format(config_file_path))
-    local('echo "{0}" > {1}'.format(text_command, config_file_path))
-
-    # if UI_VERSION is None:
-    with cd(BASE_DIR):
-        if os.path.exists(config_file_path) is True:
-            local('git add {0}'.format(config_file_path))
-
-        if os.path.exists(react_env) is True:
-            local('git checkout {0}'.format(react_env))
-
-        if os.path.exists(react_npm_log) is True:
-            ls_react_npm_log = local('ls {0}'.format(react_npm_log), capture=True)
-            if 'cannot access' in ls_react_npm_log:
-                pass
-            else:
-                local('git checkout {0}'.format(react_npm_log))
-        commit_capture = local('git commit -m "version changed. Automated Deployment."', capture=True)
+    # # if UI_VERSION is None:
+    # text_command = """CONFIG_FILE_NAME = '{0}'\nUI_VERSION = '{1}'
+    # """.format(deployment_config, random.randint(100000,10000000))
+    # # else:
+    # #     text_command = """CONFIG_FILE_NAME = '{0}'\nUI_VERSION = '{1}'\nV=1
+    # #     """.format(deployment_config, UI_VERSION)
+    #
+    # react_env = BASE_DIR + '/static/react/src/app/helpers/env.js'
+    # react_npm_log = BASE_DIR + '/static/react/npm-debug.log'
+    # local('rm {0}'.format(config_file_path))
+    # local('echo "{0}" > {1}'.format(text_command, config_file_path))
+    #
+    # # if UI_VERSION is None:
+    # with cd(BASE_DIR):
+    #     if os.path.exists(config_file_path) is True:
+    #         local('git add {0}'.format(config_file_path))
+    #
+    #     if os.path.exists(react_env) is True:
+    #         local('git checkout {0}'.format(react_env))
+    #
+    #     if os.path.exists(react_npm_log) is True:
+    #         ls_react_npm_log = local('ls {0}'.format(react_npm_log), capture=True)
+    #         if 'cannot access' in ls_react_npm_log:
+    #             pass
+    #         else:
+    #             local('git checkout {0}'.format(react_npm_log))
+    #     commit_capture = local('git commit -m "version changed. Automated Deployment."', capture=True)
 
     only_for_api_push_and_pull(
         server_details=server_details,
