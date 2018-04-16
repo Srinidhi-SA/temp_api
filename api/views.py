@@ -5353,8 +5353,10 @@ def get_algorithm_config_list(request):
     user = request.user
     if app_type =="CLASSIFICATION":
         algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
-    else:
+    elif app_type =="REGRESSION":
         algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_REGRESSION)
+    else:
+        algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
 
     print algorithm_config_list.keys()
 
