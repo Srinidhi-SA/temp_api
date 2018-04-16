@@ -898,7 +898,7 @@ class Trainer(models.Model):
         targetLevel = None
         if 'targetLevel' in config:
             targetLevel = config.get('targetLevel')
-        if(self.app_id==settings.REGRESSION_APP_ID):
+        if(self.app_id in settings.REGRESSION_APP_ID):
             validationTechnique=config.get('validationTechnique')
             return {
                 'inputfile': [self.dataset.get_input_file()],
@@ -909,12 +909,13 @@ class Trainer(models.Model):
                 'targetLevel': targetLevel,
                 'app_type':'regression'
             }
-        else:
-            train_test_split = float(config.get('trainValue')) / 100
+        elif self.app_id in settings.CLASSIFICATION_APP_ID:
+
+            validationTechnique = config.get('validationTechnique')
             return {
             'inputfile': [self.dataset.get_input_file()],
             'modelpath': [self.slug],
-            'train_test_split': [train_test_split],
+            'validationTechnique': [validationTechnique],
             'analysis_type': ['training'],
             'metadata': self.dataset.get_metadata_url_config(),
             'targetLevel': targetLevel,

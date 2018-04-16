@@ -1446,7 +1446,8 @@ JOB_MESSAGE_JSON_FORMAT = {
 time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(timestamp))
 '''
 
-REGRESSION_APP_ID=13
+REGRESSION_APP_ID=[13]
+CLASSIFICATION_APP_ID= [1, 2, 6, 7, 8, 9, 10, 11, 12]
 APPORDERLIST=[
 "automated_prediction",
 "regression_app",
