@@ -49,8 +49,10 @@ export class AdvanceSettings extends React.Component {
 		this.props.dispatch(checkAllAnalysisSelected())
 	}
 	handleSubLevelAnalysis(evt){
-		var id = evt.target.childNodes[0].id;
-		this.props.dispatch(selectedAnalysisList(evt.target.childNodes[0],"noOfColumnsToUse"))
+		if(!(evt.target.childNodes[0].disabled)){
+			var id =  evt.target.childNodes[0].id;
+			this.props.dispatch(selectedAnalysisList(evt.target.childNodes[0],"noOfColumnsToUse"))
+		}
 	}
 	handleCustomInput(evt){
 	    if(evt.target.value){
@@ -86,7 +88,15 @@ export class AdvanceSettings extends React.Component {
 		var that = this;
 		let list =   analysisList.map((metaItem,metaIndex) =>{
 			let id = "chk_analysis_advance"+ metaIndex;
-
+			let disableElement = false;
+			if(metaItem.name == "performance")
+			disableElement = store.getState().datasets.advancedAnalysisPerformance;
+			else if(metaItem.name == "prediction")
+			disableElement = store.getState().datasets.advancedAnalysisPrediction;
+			else if(metaItem.name == "association")
+			disableElement = store.getState().datasets.advancedAnalysisAssociation;
+			else if(metaItem.name == "influencer")
+			disableElement = store.getState().datasets.advancedAnalysisInfluencer;
 			if(metaItem.name.indexOf("trend") != -1){
 				if(trendSettings){
 					var specificMeasureClsName = "col-md-8 visibilityHidden";
@@ -153,7 +163,7 @@ export class AdvanceSettings extends React.Component {
 							if(subItem.status){
 								customInputDivClass = "col-md-5 md-p-0";
 							}
-							customValueInput =     <OverlayTrigger  placement="top" overlay={tooltipText}><input type="number" id={subIndex} min="1" max={customMaxValue} value={subItem.value} onChange={this.handleCustomInput.bind(this)} placeholder={associationPlaceholder} className={customClsName} id={customIdName} name={customName}/></OverlayTrigger>
+							customValueInput =     <OverlayTrigger  placement="top" overlay={tooltipText} disabled={disableElement}><input type="number" id={subIndex} min="1" max={customMaxValue} value={subItem.value} onChange={this.handleCustomInput.bind(this)} placeholder={associationPlaceholder} className={customClsName} id={customIdName} name={customName} disabled={disableElement}/></OverlayTrigger>
 
 						}
 						if(subItem.status){
@@ -161,7 +171,7 @@ export class AdvanceSettings extends React.Component {
 							status = true;
 						}
 						return(
-								<label key={subIndex} class={labelCls} onClick={this.handleSubLevelAnalysis.bind(this)}><input type="radio" className={clsName} id={idName} name={name} value={subItem.name} checked={status}/>{subItem.displayName}</label>
+								<label key={subIndex} class={labelCls} onClick={this.handleSubLevelAnalysis.bind(this)} disabled={disableElement}><input type="radio" className={clsName} id={idName} name={name} value={subItem.name} checked={status} disabled={disableElement}/>{subItem.displayName}</label>
 						);
 					});
 					countOptions  = (function(){
@@ -187,7 +197,7 @@ export class AdvanceSettings extends React.Component {
 				        }else{
 				            return (<div key={binIndex} className="form-group md-pt-15" id={binIndex}><label for="fl1" className="col-sm-9 control-label">{binItem.displayName}</label>
 				            <div className="col-sm-3">
-	                        <input id={binIndex} type="number" name={metaItem.name}  className="form-control" min={binItem.min} max={binItem.max} placeholder={binItem.defaultValue} defaultValue={binItem.value}   onChange={this.handleBinningInput.bind(this)}/>
+	                        <input id={binIndex} type="number" name={metaItem.name}  className="form-control" min={binItem.min} max={binItem.max} placeholder={binItem.defaultValue} defaultValue={binItem.value}   onChange={this.handleBinningInput.bind(this)} disabled={disableElement}/>
 	                        </div>
 	                        </div>)
 				        }
@@ -206,7 +216,7 @@ export class AdvanceSettings extends React.Component {
 				}
 
 				return(
-						<li key={metaIndex}><div className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisListActions.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>
+						<li key={metaIndex}><div className="ma-checkbox inline"><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisListActions.bind(this)} disabled={disableElement} /><label htmlFor={id}>{metaItem.displayName}</label></div>
 						<div className="clearfix"></div>
 						{countOptions}
 						<div className="clearfix"></div>

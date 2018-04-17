@@ -1658,3 +1658,25 @@ export function showAllVariables(array,slug){
             slug,
     }
 }
+export function disableAdvancedAnalysisElements(elementName,action){
+    if(elementName == "association")
+    return {
+            type: "ADVANCE_ANALYSIS_ASSOCIATION",
+            disble:action,
+    }
+    else if(elementName == "prediction")
+    return {
+            type: "ADVANCE_ANALYSIS_PREDICTION",
+            disble:action,
+    }
+    else if(elementName == "performance")
+    return {
+            type: "ADVANCE_ANALYSIS_PERFORMANCE",
+            disble:action,
+    }
+    else if(elementName == "influencer")
+    return {
+            type: "ADVANCE_ANALYSIS_INFLUENCER",
+            disble:action,
+    }
+}
