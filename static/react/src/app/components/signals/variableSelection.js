@@ -177,7 +177,7 @@ export class VariableSelection extends React.Component {
                 return(val.columnType == "dimension"  && val.selected == true);
             });
             if(that.props.getVarType == "dimension"){
-                if(measureArray.length >= 1 && dimensionArray.length >= 1){
+                if(measureArray.length >= 1 || dimensionArray.length >= 1){
                     $("#chk_analysis_association").prop("disabled",false);
                     $("#chk_analysis_prediction").prop("disabled",false);
                     this.props.dispatch(disableAdvancedAnalysisElements("association",false));
@@ -205,7 +205,7 @@ export class VariableSelection extends React.Component {
                     $("#chk_analysis_influencer").prop("disabled",true);
                     this.props.dispatch(disableAdvancedAnalysisElements("influencer",true));
                 }
-                if(measureArray.length >= 1 && dimensionArray.length >= 1){
+                if(measureArray.length >= 1 || dimensionArray.length >= 1){
                     $("#chk_analysis_prediction").prop("disabled",false);
                     this.props.dispatch(disableAdvancedAnalysisElements("prediction",false));
                 }else{

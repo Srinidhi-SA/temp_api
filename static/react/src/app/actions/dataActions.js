@@ -1577,7 +1577,7 @@ export function uncheckHideAnalysisList(){
             return(val.selected == true);
         });
         if(targetVariableType == "dimension"){
-            if(measureArray.length < 1 || dimensionArray.length < 1){
+            if(measureArray.length < 1 && dimensionArray.length < 1){
                 dispatch(saveDeselectedAnalysisList($("#chk_analysis_association").val()));
                 dispatch(saveDeselectedAnalysisList($("#chk_analysis_prediction").val()));
             }
@@ -1590,7 +1590,7 @@ export function uncheckHideAnalysisList(){
             if(measureArray.length < 1)
             dispatch(saveDeselectedAnalysisList($("#chk_analysis_influencer").val()));
 
-            if(measureArray.length < 1 || dimensionArray.length < 1)
+            if(measureArray.length < 1 && dimensionArray.length < 1)
             dispatch(saveDeselectedAnalysisList($("#chk_analysis_prediction").val()));
         }
     }
