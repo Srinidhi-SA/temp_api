@@ -1,5 +1,7 @@
-from pySparkMlParams import *
-from sklernMlParams import *
+from pySparkMLClassificationParams import *
+from pySparkMLRegressionParams import *
+from sklearnMLClassificationParams import *
+from sklearnMLRegressionParams import *
 
 ALGORITHMRANDOMSLUG = "f77631ce2ab24cf78c55bb6a5fce4db8"
 MLENVIRONMENT = "python" #can be python or spark
