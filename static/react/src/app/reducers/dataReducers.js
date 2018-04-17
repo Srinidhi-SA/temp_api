@@ -581,6 +581,22 @@ export default function reducer(state = {
         }
       }
       break;
+      case "RESET_SUBSETTED_DATASET":
+      {
+        return {
+          ...state,
+          subsettedSlug: action.slug,
+          updatedSubSetting: {
+            "measureColumnFilters": [],
+            "dimensionColumnFilters": [],
+            "timeDimensionColumnFilters": []
+          },
+          subsettingDone: false,
+          selectedDataSet: action.slug
+
+        }
+      }
+      break;
   }
   return state
 

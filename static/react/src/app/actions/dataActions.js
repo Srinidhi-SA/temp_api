@@ -1680,3 +1680,9 @@ export function disableAdvancedAnalysisElements(elementName,action){
             disble:action,
     }
 }
+export function resetSubsetting(slug){
+    return {
+            type: "RESET_SUBSETTED_DATASET",
+            slug,
+    }
+}
