@@ -261,7 +261,8 @@ def decode_and_convert_chart_raw_data(data, object_slug=None):
         c3 = C3Chart(
             data=chart_data,
             chart_type=chart_type,
-            x_column_name=axes.get('x', 'key')
+            x_column_name=axes.get('x', 'key'),
+            title=title
         )
         c3.set_all_basics()
 
