@@ -308,6 +308,7 @@ def save_results_to_job1(slug, results):
         results = json.dumps(results)
         job.results = results
     job.save()
+    print "save hogaya "*100
 
 
 

@@ -327,7 +327,8 @@ def decode_and_convert_chart_raw_data(data, object_slug=None):
         c3 = C3Chart(
             data=chart_data,
             chart_type=chart_type,
-            x_column_name=axes.get('x', 'key')
+            x_column_name=axes.get('x', 'key'),
+            title=title
         )
         c3.set_all_basics()
 
@@ -394,7 +395,8 @@ def decode_and_convert_chart_raw_data(data, object_slug=None):
         c3_chart_details['download_url'] = sd.get_url()
         c3 = ScatterChart(
             data=chart_data,
-            data_type='columns'
+            data_type='columns',
+            title=title
         )
         c3.set_xs(xs)
 
@@ -448,7 +450,8 @@ def decode_and_convert_chart_raw_data(data, object_slug=None):
         c3_chart_details['download_url'] = sd.get_url()
         c3 = ScatterChart(
             data=chart_data,
-            data_type='columns'
+            data_type='columns',
+            title=title
         )
         c3.set_xs(xs)
 
@@ -505,7 +508,8 @@ def decode_and_convert_chart_raw_data(data, object_slug=None):
         c3_chart_details['download_url'] = sd.get_url()
         c3 = ScatterChart(
             data=card3_data,
-            data_type='columns'
+            data_type='columns',
+            title=title
         )
         c3.set_xs(xs)
 
