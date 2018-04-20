@@ -111,15 +111,19 @@ export class Card extends React.Component {
             break;
             case "box":
             let boxData = story.data;
-            let boxId = "box"+i;
-            return (
-                <div id={boxId} className="col-md-2 co-sm-4 col-xs-6 well xs-p-5 xs-m-5 col-centered" key={randomNum}>
-                <h5>{boxData.data.best}</h5>
-                <h3 className="text-center xs-mt-0">{boxData.data.value}<br />
-                <small>{boxData.data.algorithmName}</small>
-                </h3>
-                </div>
-            );
+            let divClass = "text-center";
+              if(story.widthPercent &&  story.widthPercent != 100){
+                        let width  = parseInt((story.widthPercent/100)*12);
+                        divClass="col-md-"+width+" text-center";
+              }
+			 return(
+			<div className={divClass}>
+                <div className="col-md-12 col-sm-12 col-xs-12 bgStockBox">
+			    <h3 className="text-center">{boxData.value}</h3>
+			    </div>
+                <i>{boxData.text}</i>
+            </div>
+			);
             break;
             case "button":
             return (<ModelSummeryButton key={randomNum} data={story.data.chart_c3} tabledownload={story.data.download_url} classId={randomNum} type={story.dataType}/>);

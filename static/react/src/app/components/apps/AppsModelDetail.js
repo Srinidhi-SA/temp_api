@@ -17,7 +17,8 @@ import {ExportAsPMML} from "./ExportAsPMML";
 	return {login_response: store.login.login_response,
 		modelList:store.apps.modelList,modelSummary:store.apps.modelSummary,
 		modelSlug:store.apps.modelSlug,
-		currentAppId:store.apps.currentAppId
+		currentAppId:store.apps.currentAppId,
+		currentAppDetails:store.apps.currentAppDetails,
 		};
 })
 
@@ -28,6 +29,7 @@ export class AppsModelDetail extends React.Component {
   }
   componentWillMount() {
 		this.props.dispatch(storeSignalMeta(null,this.props.match.url));
+		if(this.props.currentAppDetails == null)
 		this.props.dispatch(getAppDetails(this.props.match.params.AppId));
 		//It will trigger when refresh happens on url
 		if(isEmpty(this.props.modelSummary)){
@@ -56,6 +58,21 @@ export class AppsModelDetail extends React.Component {
   updateModelSummaryFlag(flag){
       this.props.dispatch(updateModelSummaryFlag(flag))
   }
+	showMore(evt){
+			evt.preventDefault();
+			$.each(evt.target.parentElement.children,function(k1,v1){
+				$.each(v1.children,function(k2,v2){
+					if(v2.className == "modelSummery hidden")
+					v2.className = "modelSummery";
+					else if(v2.className == "modelSummery")
+					v2.className = "modelSummery hidden";
+				})
+			});
+		if(evt.target.innerHTML == "Show More")
+		evt.target.innerHTML = "Show Less";
+		else
+		evt.target.innerHTML = "Show More";
+	}
   render() {
     console.log("apps Model Detail View is called##########3");
   	const modelSummary = store.getState().apps.modelSummary;
@@ -66,20 +83,23 @@ export class AppsModelDetail extends React.Component {
 		console.log(this.props)
         showExportPmml = modelSummary.permission_details.downlad_pmml;
 		showCreateScore = modelSummary.permission_details.create_score;
-		if(store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
+		if(this.props.currentAppDetails != null && this.props.currentAppDetails.app_type == "REGRESSION"){
 			var listOfCardList = modelSummary.data.model_summary.listOfCards;
 			var componentsWidth = 0;
 			var cardDataList = listOfCardList.map((data, i) => {
 				var clearfixClass = "col-md-"+data.cardWidth*0.12+" xs-p-30 clearfix";
 				var nonClearfixClass = "col-md-"+data.cardWidth*0.12+" xs-p-30";
 				var cardDataArray = data.cardData;
+				var isHideData = $.grep(cardDataArray,function(val,key){
+					return(val.dataType == "html" && val.classTag == "hidden");
+				});
 				if(data.cardWidth == 100){
 					componentsWidth = 0;
 					return (<div className={clearfixClass}><Card cardData={cardDataArray} /></div>)
 				}
 				else if(componentsWidth == 0 || componentsWidth+data.cardWidth > 100){
 					componentsWidth = data.cardWidth;
-					return (<div className={clearfixClass}><Card cardData={cardDataArray} /></div>)
+					return (<div className={clearfixClass}><Card cardData={cardDataArray} />{isHideData.length>0?<a href="" onClick={this.showMore.bind(this)}>Show More</a>:""}</div>)
 				}
 				else{
 					componentsWidth = componentsWidth+data.cardWidth;
