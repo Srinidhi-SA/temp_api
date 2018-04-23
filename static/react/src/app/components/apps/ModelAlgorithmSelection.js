@@ -23,6 +23,7 @@ import {statusMessages} from "../../helpers/helper";
         isAutomatic:store.apps.regression_isAutomatic,
         apps_regression_modelName:store.apps.apps_regression_modelName,
         currentAppDetails:store.apps.currentAppDetails,
+        modelSummaryFlag:store.apps.modelSummaryFlag,
     };
 })
 
