@@ -56,19 +56,51 @@ export class AppsScoreDetail extends React.Component {
     console.log(scoreSummary)
 		if (!$.isEmptyObject(scoreSummary)) {
 		console.log(this.props)
-		if(scoreSummary.data.listOfNodes.length>0&&this.props.match.params.AppId.indexOf("regression")!=-1){
+		/*if(scoreSummary.data.listOfNodes.length>0&&this.props.match.params.AppId.indexOf("regression")!=-1){
 		var url = "/apps-regression-score/"+store.getState().apps.scoreSlug
 		//this.props.history.push(url)
 		return(<Redirect to={url}/>)
-		}else{
-		let listOfCardList = getListOfCards(scoreSummary.data.listOfCards);
+	}else{*/
 		showViewButton = scoreSummary.permission_details.download_score;
 		showDownloadButton = scoreSummary.permission_details.download_score;
-		let cardDataList = listOfCardList.map((data, i) => {
+		if(this.props.currentAppDetails != null && this.props.currentAppDetails.app_type == "REGRESSION"){
+			var listOfCardList = scoreSummary.data.listOfCards;
+			var componentsWidth = 0;
+			var cardDataList = listOfCardList.map((data, i) => {
+				var clearfixClass = "col-md-"+data.cardWidth*0.12+" xs-p-30 clearfix";
+				var nonClearfixClass = "col-md-"+data.cardWidth*0.12+" xs-p-30";
+				if(data.cardType == "kpi"){
+					var clearfixClass = "col-md-"+data.cardWidth*0.12+" xs-p-30 clearfix cardKpi";
+				var nonClearfixClass = "col-md-"+data.cardWidth*0.12+" xs-p-30 cardKpi";
+				}
+				var cardDataArray = data.cardData;
+				var isHideData = $.grep(cardDataArray,function(val,key){
+					return(val.dataType == "html" && val.classTag == "hidden");
+				});
+				if(data.cardWidth == 100){
+					componentsWidth = 0;
+					return (<div className={clearfixClass}><Card cardData={cardDataArray} /></div>)
+				}
+				else if(componentsWidth == 0 || componentsWidth+data.cardWidth > 100){
+					componentsWidth = data.cardWidth;
+					return (<div className={clearfixClass}><Card cardData={cardDataArray} /></div>)
+				}
+				else{
+					componentsWidth = componentsWidth+data.cardWidth;
+									return (<div className={nonClearfixClass}><Card cardData={cardDataArray} /></div>)
+							}
+				});
+		}
+		else
+		{
+		var listOfCardList = getListOfCards(scoreSummary.data.listOfCards);
+		
+		var cardDataList = listOfCardList.map((data, i) => {
 
             return (<Card key={i} cardData={data} />)
 
 		                    });
+		}
 		if(listOfCardList){
 			let downloadURL=API+'/api/get_score_data_and_return_top_n/?url='+store.getState().apps.scoreSlug+'&download_csv=true&count=100'
 			return (
@@ -123,7 +155,8 @@ export class AppsScoreDetail extends React.Component {
 			          </div>
 			      );
 		}
-	}}
+	
+}
 	else{
 		return (
 				 <div className="side-body">

@@ -114,12 +114,12 @@ export class Card extends React.Component {
             let divClass = "text-center";
               if(story.widthPercent &&  story.widthPercent != 100){
                         let width  = parseInt((story.widthPercent/100)*12);
-                        divClass="col-md-"+width+" text-center";
+                        divClass="col-md-"+width+" text-center card_kpi";
               }
 			 return(
 			<div className={divClass}>
-                <div className="col-md-12 col-sm-12 col-xs-12 bgStockBox">
-			    <h3 className="text-center">{boxData.value}</h3>
+                <div className="alert-primary">
+			    <h3 className="text-center xs-m-5 xs-p-10">{boxData.value}</h3>
 			    </div>
                 <i>{boxData.text}</i>
             </div>
