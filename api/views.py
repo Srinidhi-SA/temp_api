@@ -5298,10 +5298,20 @@ def get_score_data_and_return_top_n(request):
             except:
                 count = 100
 
-            csv_text = fp.read()
-            csv_list = csv_text.split('\n')
-            csv_list = csv_list[:count]
-            csv_text_list = [text.split(',') for text in csv_list]
+            import csv
+            csv_text_list = []
+            with open(download_path, 'rb') as f:
+                reader = csv.reader(f)
+                for index, row in enumerate(reader):
+                    csv_text_list.append(row)
+                    if index > count:
+                        break
+                    print row
+
+            # csv_text = fp.read()
+            # csv_list = csv_text.split('\n')
+            # csv_list = csv_list[:count]
+            # csv_text_list = [text.split(',') for text in csv_list]
             return JsonResponse({
                 'Message': 'Success',
                 'csv_data': csv_text_list
