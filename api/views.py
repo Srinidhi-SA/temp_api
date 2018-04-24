@@ -5420,5 +5420,5 @@ def updateFromNifi(request):
     data_modified={'datasource_details': dataSourceDetails, 'datasource_type': 'Hive'}
 
     datasetView=DatasetView()
-    return datasetView.create(request,data=data_modified)
-    # return JsonResponse({"status":True})
+    # return datasetView.create(request,data=data_modified)
+    return JsonResponse({"status":True})
