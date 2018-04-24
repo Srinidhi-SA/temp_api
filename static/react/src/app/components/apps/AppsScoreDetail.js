@@ -69,7 +69,7 @@ export class AppsScoreDetail extends React.Component {
 			var cardDataList = listOfCardList.map((data, i) => {
 				var clearfixClass = "col-md-"+data.cardWidth*0.12+" xs-p-30 clearfix";
 				var nonClearfixClass = "col-md-"+data.cardWidth*0.12+" xs-p-30";
-				if(data.cardType == "kpi"){
+				if(data.centerAlign){
 					var clearfixClass = "col-md-"+data.cardWidth*0.12+" xs-p-30 clearfix cardKpi";
 				var nonClearfixClass = "col-md-"+data.cardWidth*0.12+" xs-p-30 cardKpi";
 				}
