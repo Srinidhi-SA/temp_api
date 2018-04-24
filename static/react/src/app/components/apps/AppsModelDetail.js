@@ -83,7 +83,7 @@ export class AppsModelDetail extends React.Component {
 		console.log(this.props)
         showExportPmml = modelSummary.permission_details.downlad_pmml;
 		showCreateScore = modelSummary.permission_details.create_score;
-		if(this.props.currentAppDetails != null && this.props.currentAppDetails.app_type == "REGRESSION"){
+		//if(this.props.currentAppDetails != null && this.props.currentAppDetails.app_type == "REGRESSION"){
 			var listOfCardList = modelSummary.data.model_summary.listOfCards;
 			var componentsWidth = 0;
 			var cardDataList = listOfCardList.map((data, i) => {
@@ -106,7 +106,7 @@ export class AppsModelDetail extends React.Component {
 									return (<div className={nonClearfixClass}><Card cardData={cardDataArray} /></div>)
 							}
 				});
-		}
+		/*}
 		else{
 			var listOfCardList = getListOfCards(modelSummary.data.model_summary.listOfCards);
 			var cardDataList = listOfCardList.map((data, i) => {
@@ -118,7 +118,7 @@ export class AppsModelDetail extends React.Component {
 				}
 				else return (<Card key={i} cardData={data} />)
 			});
-		}
+		}*/
 		
 		if(listOfCardList){
 			return (
