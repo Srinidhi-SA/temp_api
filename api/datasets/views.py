@@ -269,9 +269,8 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         return Response({})
 
     def createFromKylo(self, request, *args, **kwargs):
-        import pdb;pdb.set_trace()
         try:
-            data=request
+            data=kwargs.get('data')
             data = convert_to_string(data)
 
             if 'datasource_details' in data:

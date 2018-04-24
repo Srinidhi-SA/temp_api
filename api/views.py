@@ -5394,35 +5394,31 @@ def updateFromNifi(request):
     # from pprint import pprint
     # pprint( request )
 
-    import pdb;pdb.set_trace()
+    # import pdb;pdb.set_trace()
     # print request.GET.get("username",None)
-    print request.data
+    # print request.data
+
     hive_info=copy.deepcopy(settings.DATASET_HIVE)
-    hive_host=hive_info['host']
-    hive_port=hive_info['port']
+    host=request.data['host']
+    port=request.data['port']
     hive_username=hive_info['username']
     hive_password=hive_info['password']
     schema=request.data["category"]
     table_name=request.data["feed"]+'_feed'
     feed=request.data['feed']
-    user=request.user
-
 
     dataSourceDetails = {
         'datasetname':feed,
-        "host": hive_host,
-        "port": hive_port,
+        "host": host,
+        "port": port,
         "databasename":schema,
         "username": hive_username,
         "tablename": table_name,
         "password": hive_password,
         "datasourceType": 'Hive'
     }
-    data={'datasource_details': dataSourceDetails, 'datasource_type': 'Hive','user':user}
+    data_modified={'datasource_details': dataSourceDetails, 'datasource_type': 'Hive'}
 
-    #modified_request=copy.deepcopy(request)
-    #modified_request=Request()
-    #modified_request.data=data
     datasetView=DatasetView()
-    datasetView.createFromKylo(data)
-    return JsonResponse({"status":True})
+    return datasetView.createFromKylo(request,data=data_modified)
+    # return JsonResponse({"status":True})
