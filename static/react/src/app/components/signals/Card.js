@@ -109,7 +109,7 @@ export class Card extends React.Component {
             </div>
             return (<div key={randomNum}>{inputChk}{toggleData}{toggleData1}</div>);
             break;
-            case "box":
+            case "kpi":
             let boxData = story.data;
             let divClass = "text-center";
               if(story.widthPercent &&  story.widthPercent != 100){
