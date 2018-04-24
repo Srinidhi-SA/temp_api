@@ -82,7 +82,8 @@ class PrintRequestMiddleware(object):
         self.get_response = get_response
 
     def __call__(self, request):
-        print request.META['HTTP_AUTHORIZATION']
+        if 'HTTP_AUTHORIZATION' in request.META:
+            print request.META['HTTP_AUTHORIZATION']
         return self.get_response(request)
 
 #
