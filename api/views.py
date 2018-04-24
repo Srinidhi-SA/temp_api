@@ -13,6 +13,7 @@ from rest_framework import viewsets
 from rest_framework.decorators import api_view
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
+from rest_framework.request import Request
 
 from api.datasets.helper import add_ui_metadata_to_metadata
 from api.datasets.serializers import DatasetSerializer
@@ -40,6 +41,7 @@ from api.tasks import clean_up_on_delete
 
 from api.permission import TrainerRelatedPermission, ScoreRelatedPermission, SignalsRelatedPermission
 
+from api.datasets.views import DatasetView
 
 class SignalView(viewsets.ModelViewSet):
     def get_queryset(self):
@@ -1043,7 +1045,8 @@ def get_datasource_config_list(request):
         'api.upload_from_mysql': 'MySQL',
         'api.upload_from_mssql': 'mssql',
         'api.upload_from_hana': 'Hana',
-        'api.upload_from_hdfs': 'Hdfs'
+        'api.upload_from_hdfs': 'Hdfs',
+        'api.upload_from_hive': 'Hive'
     }
 
     upload_permitted_list = []
@@ -5384,3 +5387,42 @@ def get_appID_appName_map(request):
         })
 
     return JsonResponse({"appIDMapping":appIDmap})
+
+
+@api_view(['POST'])
+def updateFromNifi(request):
+    # from pprint import pprint
+    # pprint( request )
+
+    import pdb;pdb.set_trace()
+    # print request.GET.get("username",None)
+    print request.data
+    hive_info=copy.deepcopy(settings.DATASET_HIVE)
+    hive_host=hive_info['host']
+    hive_port=hive_info['port']
+    hive_username=hive_info['username']
+    hive_password=hive_info['password']
+    schema=request.data["category"]
+    table_name=request.data["feed"]+'_feed'
+    feed=request.data['feed']
+    user=request.user
+
+
+    dataSourceDetails = {
+        'datasetname':feed,
+        "host": hive_host,
+        "port": hive_port,
+        "databasename":schema,
+        "username": hive_username,
+        "tablename": table_name,
+        "password": hive_password,
+        "datasourceType": 'Hive'
+    }
+    data={'datasource_details': dataSourceDetails, 'datasource_type': 'Hive','user':user}
+
+    #modified_request=copy.deepcopy(request)
+    #modified_request=Request()
+    #modified_request.data=data
+    datasetView=DatasetView()
+    datasetView.createFromKylo(data)
+    return JsonResponse({"status":True})
