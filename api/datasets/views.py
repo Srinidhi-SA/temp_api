@@ -57,7 +57,10 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
     def create(self, request, *args, **kwargs):
 
         try:
-            data = request.data
+            if 'data' in kwargs:
+                data = kwargs.get('data')
+            else:
+                data = request.data
             data = convert_to_string(data)
 
             if 'input_file' in data:
