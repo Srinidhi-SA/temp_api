@@ -59,6 +59,7 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         # try:
         if 'data' in kwargs:
             data = kwargs.get('data')
+            self.request = request
         else:
             data = request.data
         data = convert_to_string(data)
