@@ -456,7 +456,75 @@ DATA_SOURCES_CONFIG = {"conf": [{
                 "required": "true"
             }
         ]
-    }
+    },
+    {
+            "dataSourceType": "Hive",
+            "dataSourceName": "Hive",
+            "formFields": [
+                {
+                    "fieldType": "text",
+                    "fieldName" : "datasetname",
+                    "placeHolder": "Dataset Name",
+                    "labelName": "Name",
+                    "required" : "true"
+                },
+                {
+
+                    "fieldType": "text",
+                    "fieldName" : "host",
+                    "placeHolder": "Host",
+                    "labelName": "host",
+                    "required" : "true"
+                },
+                {
+
+                    "fieldType": "number",
+                    "fieldName": "port",
+                    "placeHolder": "Port",
+                    "labelName": "Port",
+                    "required": "true",
+                    "defaultValue" : 10000,
+                    "maxLength":5
+
+
+                },
+                {
+
+                    "fieldType": "text",
+                    "fieldName": "databasename",
+                    "placeHolder": "DataBase Name",
+                    "labelName": "DBName",
+                    "required": "true"
+
+                },
+                {
+
+                    "fieldType": "text",
+                    "fieldName": "tablename",
+                    "placeHolder": "tablename",
+                    "labelName": "Table Name",
+                    "required": "true"
+                },
+                {
+
+                    "fieldType": "text",
+                    "fieldName": "username",
+                    "placeHolder": "username",
+                    "labelName": "Username",
+                     "required": "true"
+                },
+                {
+
+
+                    "fieldType": "Password",
+                    "fieldName": "password",
+                    "placeHolder": "password",
+                    "labelName": "Password",
+                     "required": "true"
+                }
+
+            ]
+        }
 
 ]
 }
@@ -489,6 +557,14 @@ JOBSERVER = {
     'class_path_master': 'bi.sparkjobs.madvisor.JobScript',
     'class_path_metadata': 'bi.sparkjobs.metadata.JobScript',
     'class_path_filter': 'bi.sparkjobs.filter.JobScript'
+
+}
+
+DATASET_HIVE = {
+    'host':'192.168.57.51',
+    'port':'10000',
+    'username':'root',
+    'password':'hadoop'
 
 }
 
