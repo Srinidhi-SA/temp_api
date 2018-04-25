@@ -1020,7 +1020,7 @@ class AppView(viewsets.ModelViewSet):
             request=request,
             list_serializer=AppListSerializers
         )
-        data = resp['data']
+        data = resp.data
         app_ordered_list = copy.deepcopy(settings.APPORDERLIST)
         new_data_list = []
 
@@ -1028,8 +1028,8 @@ class AppView(viewsets.ModelViewSet):
             for d in data:
                 if d['name'] == app:
                     new_data_list.append(d)
-        
-        resp['data'] = new_data_list
+
+        resp.data = new_data_list
         return resp
 
     def retrieve(self, request, *args, **kwargs):
