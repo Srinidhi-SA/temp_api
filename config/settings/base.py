@@ -14,8 +14,7 @@ import os
 
 import datetime
 import config_file_name_to_run
-from mlSettings import *
-
+from mlsettings import *
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -410,6 +409,122 @@ DATA_SOURCES_CONFIG = {"conf": [{
 
         ]
     },
+    {
+        "dataSourceType": "Hdfs",
+        "dataSourceName": "HDFS",
+        "formFields": [
+            {
+                "fieldType": "text",
+                "fieldName": "datasetname",
+                "placeHolder": "Dataset Name",
+                "labelName": "Name",
+                "required": "true"
+            },
+            {
+
+                "fieldType": "text",
+                "fieldName": "host",
+                "placeHolder": "Host",
+                "labelName": "host",
+                "required": "true"
+            },
+            {
+
+                "fieldType": "number",
+                "fieldName": "port",
+                "placeHolder": "Port",
+                "labelName": "Port",
+                "required": "true",
+                "defaultValue": 30015,
+                "maxLength": 5
+
+            },
+            {
+
+                "fieldType": "text",
+                "fieldName": "username",
+                "placeHolder": "username",
+                "labelName": "Username",
+                "required": "true"
+            },
+            {
+
+                "fieldType": "Password",
+                "fieldName": "password",
+                "placeHolder": "password",
+                "labelName": "Password",
+                "required": "true"
+            }
+        ]
+    },
+    {
+            "dataSourceType": "Hive",
+            "dataSourceName": "Hive",
+            "formFields": [
+                {
+                    "fieldType": "text",
+                    "fieldName" : "datasetname",
+                    "placeHolder": "Dataset Name",
+                    "labelName": "Name",
+                    "required" : "true"
+                },
+                {
+
+                    "fieldType": "text",
+                    "fieldName" : "host",
+                    "placeHolder": "Host",
+                    "labelName": "host",
+                    "required" : "true"
+                },
+                {
+
+                    "fieldType": "number",
+                    "fieldName": "port",
+                    "placeHolder": "Port",
+                    "labelName": "Port",
+                    "required": "true",
+                    "defaultValue" : 10000,
+                    "maxLength":5
+
+
+                },
+                {
+
+                    "fieldType": "text",
+                    "fieldName": "databasename",
+                    "placeHolder": "DataBase Name",
+                    "labelName": "DBName",
+                    "required": "true"
+
+                },
+                {
+
+                    "fieldType": "text",
+                    "fieldName": "tablename",
+                    "placeHolder": "tablename",
+                    "labelName": "Table Name",
+                    "required": "true"
+                },
+                {
+
+                    "fieldType": "text",
+                    "fieldName": "username",
+                    "placeHolder": "username",
+                    "labelName": "Username",
+                     "required": "true"
+                },
+                {
+
+
+                    "fieldType": "Password",
+                    "fieldName": "password",
+                    "placeHolder": "password",
+                    "labelName": "Password",
+                     "required": "true"
+                }
+
+            ]
+        }
 
 ]
 }
@@ -442,6 +557,14 @@ JOBSERVER = {
     'class_path_master': 'bi.sparkjobs.madvisor.JobScript',
     'class_path_metadata': 'bi.sparkjobs.metadata.JobScript',
     'class_path_filter': 'bi.sparkjobs.filter.JobScript'
+
+}
+
+DATASET_HIVE = {
+    'host':'192.168.57.51',
+    'port':'10000',
+    'username':'root',
+    'password':'hadoop'
 
 }
 
@@ -1316,6 +1439,7 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE
 
+
 HDFS_SECRET_KEY = 'xfBmEcr_hFHGqVrTo2gMFpER3ks9x841UcvJbEQJesI='
 
 PERMISSIONS_RELATED_TO_DATASET = (
@@ -1398,5 +1522,21 @@ JOB_MESSAGE_JSON_FORMAT = {
 time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(timestamp))
 '''
 
-REGRESSION_APP_ID=13
 USE_YARN_DEFAULT_QUEUE=False
+REGRESSION_APP_ID=[13]
+CLASSIFICATION_APP_ID= [1, 2, 6, 7, 8, 9, 10, 11, 12]
+APPORDERLIST=[
+"automated_prediction",
+"regression_app",
+"opportunity_scoring",
+"robo_advisor_insights",
+"speech_analytics",
+"stock_sense",
+"churn_prediction",
+"re_admission_prediction",
+"physician_attrition",
+"credit_card_fraud",
+"claims_prediction",
+"asset_health_prediction",
+"employee_attrition"
+]

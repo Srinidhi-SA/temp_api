@@ -15539,3 +15539,6 @@ input[type=range]:focus::-ms-fill-upper {
 }
 
 .tablesorter-ice .header, .tablesorter-ice .tablesorter-header{ text-transform: uppercase; }
+.cardKpi {text-align: center}
+.card_kpi {float:none; display: inline-block; vertical-align: top;}
+div.text-center.tbl_th_center th {text-align: center}

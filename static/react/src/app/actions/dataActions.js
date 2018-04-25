@@ -1,6 +1,6 @@
 import React from "react";
 import {API,STATIC_URL} from "../helpers/env";
-import {PERPAGE,DULOADERPERVALUE,DEFAULTINTERVAL,SUCCESS,FAILED,getUserDetailsOrRestart,DEFAULTANALYSISVARIABLES} from "../helpers/helper";
+import {PERPAGE,DULOADERPERVALUE,DEFAULTINTERVAL,SUCCESS,FAILED,getUserDetailsOrRestart,DEFAULTANALYSISVARIABLES,statusMessages} from "../helpers/helper";
 import store from "../store";
 import {dataPreviewInterval,dataUploadLoaderValue,clearLoadingMsg,clearDatasetPreview} from "./dataUploadActions";
 import {closeAppsLoaderValue} from "./appActions";
@@ -151,7 +151,8 @@ function fetchDataPreview(slug,dispatch,interval) {
 
         dispatch(hideDULoaderPopup());
         clearInterval(interval);
-        bootbox.alert("Unable to connect to server. Check your connection please try again.")
+        let msg=statusMessages("error","Unable to connect to server. Check your connection please try again.","small_mascot")
+        bootbox.alert(msg)
     });
 }
 //get preview data
@@ -640,7 +641,7 @@ export function updateSelectedVariables(evt){
         count = getTotalVariablesSelected();
         dispatch(updateVariablesCount(count));
         if(evt.target.baseURI.includes("/createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
-            if(count >= 5){
+            if(count >= 10){
                 $('.measure[type="checkbox"]').each(function() {
                     if (!$(this).is(":checked"))
                     $(this).prop('disabled', true);
@@ -1027,7 +1028,7 @@ export function handleSelectAll(evt){
             }
             else
             {
-                if(count >= 5){
+                if(count >= 10){
                     if(varType == "dimension"){
                         $('.measure[type="checkbox"]').each(function() {
                             if (!$(this).is(":checked"))
@@ -1147,7 +1148,8 @@ function deleteMetaDataColumn(dialog,colName,colSlug,dispatch,actionName,colStat
         }
     });
     if(nonDeletedColumns <= 2 && colStatus != true){
-        bootbox.alert("Cannot delete any more columns")
+        let errormsg = statusMessages("warning", "Cannot delete any more columns", "small_mascot");
+        bootbox.alert(errormsg)
         return;
     }
     var text = "Are you sure, you want to delete the selected column?";
@@ -1235,7 +1237,7 @@ export function updateColumnStatus(dispatch,colSlug,colName,actionName,subAction
             break;
         }
     }
-    if(actionName != SET_VARIABLE && actionName != UNIQUE_IDENTIFIER && actionName != SET_POLARITY && actionName != IGNORE_SUGGESTION){
+    if(actionName != SET_VARIABLE && actionName != UNIQUE_IDENTIFIER && actionName != SET_POLARITY && actionName != IGNORE_SUGGESTION && actionName !=DATA_TYPE){
         isSubsetting = true;
     }else{
         //Enable subsetting when any one of the column is deleted,renamed, removed
@@ -1310,11 +1312,13 @@ export function handleColumnActions(transformSettings,slug,isSubsetting) {
                 dispatch(fetchDataPreviewError(json));
                 dispatch(vaiableSelectionUpdate(false));
                 dispatch(hideLoading());
-                bootbox.alert("Something went wrong. Please try again later.")            }
+                let msg=statusMessages("error","Something went wrong. Please try again later.","small_mascot")
+                bootbox.alert(msg)            }
         }).catch(function(error){
             dispatch(hideLoading());
             dispatch(vaiableSelectionUpdate(false));
-            bootbox.alert("Something went wrong. Please try again later.")
+            let msg=statusMessages("error","Something went wrong. Please try again later.","small_mascot")
+            bootbox.alert(msg)
         });
     }
 }
@@ -1554,10 +1558,10 @@ export function DisableSelectAllCheckbox(){
     let dimensionArray = $.grep(dataPrev.meta_data.uiMetaData.varibaleSelectionArray,function(val,key){
         return(val.columnType == "dimension");
     });
-    if(measureArray.length > 5)
+    if(measureArray.length > 10)
      $('.measureAll').prop("disabled",true);
 
-    if(dimensionArray.length > 5)
+    if(dimensionArray.length > 10)
      $(".dimensionAll").prop("disabled",true);
 }
 }
@@ -1573,7 +1577,7 @@ export function uncheckHideAnalysisList(){
             return(val.selected == true);
         });
         if(targetVariableType == "dimension"){
-            if(measureArray.length < 1 || dimensionArray.length < 1){
+            if(measureArray.length < 1 && dimensionArray.length < 1){
                 dispatch(saveDeselectedAnalysisList($("#chk_analysis_association").val()));
                 dispatch(saveDeselectedAnalysisList($("#chk_analysis_prediction").val()));
             }
@@ -1586,7 +1590,7 @@ export function uncheckHideAnalysisList(){
             if(measureArray.length < 1)
             dispatch(saveDeselectedAnalysisList($("#chk_analysis_influencer").val()));
 
-            if(measureArray.length < 1 || dimensionArray.length < 1)
+            if(measureArray.length < 1 && dimensionArray.length < 1)
             dispatch(saveDeselectedAnalysisList($("#chk_analysis_prediction").val()));
         }
     }
@@ -1651,6 +1655,34 @@ export function showAllVariables(array,slug){
     return {
             type: "DATA_PREVIEW",
             dataPreview:array,
+            slug,
+    }
+}
+export function disableAdvancedAnalysisElements(elementName,action){
+    if(elementName == "association")
+    return {
+            type: "ADVANCE_ANALYSIS_ASSOCIATION",
+            disble:action,
+    }
+    else if(elementName == "prediction")
+    return {
+            type: "ADVANCE_ANALYSIS_PREDICTION",
+            disble:action,
+    }
+    else if(elementName == "performance")
+    return {
+            type: "ADVANCE_ANALYSIS_PERFORMANCE",
+            disble:action,
+    }
+    else if(elementName == "influencer")
+    return {
+            type: "ADVANCE_ANALYSIS_INFLUENCER",
+            disble:action,
+    }
+}
+export function resetSubsetting(slug){
+    return {
+            type: "RESET_SUBSETTED_DATASET",
             slug,
     }
 }

@@ -53,7 +53,7 @@ export class ModelVariableSelection extends React.Component {
           return false;
         }
 
-		if(store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
+		if(store.getState().apps.currentAppDetails.app_type == "REGRESSION" || store.getState().apps.currentAppDetails.app_type == "CLASSIFICATION"){
 		this.props.dispatch(saveSelectedValuesForModel($("#createModelName").val(),$("#createModelAnalysisList").val(),$("#createModelLevelCount").val()));
             let regressionProccedUrl = this.props.match.url+'/Proceed';
             this.props.history.push(regressionProccedUrl);
@@ -123,7 +123,7 @@ export class ModelVariableSelection extends React.Component {
             custom_word1 = this.props.currentAppDetails.custom_word1;
             custom_word2 = this.props.currentAppDetails.custom_word2;
 
-             if(store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
+             if(store.getState().apps.currentAppDetails.app_type == "REGRESSION" || store.getState().apps.currentAppDetails.app_type == "CLASSIFICATION"){
                  buttonName = "Proceed";
                        modelValidation = <div className="col-lg-8">
                             <h4>Model Validation</h4>

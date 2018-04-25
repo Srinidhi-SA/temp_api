@@ -13,6 +13,7 @@ from rest_framework import viewsets
 from rest_framework.decorators import api_view
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
+from rest_framework.request import Request
 
 from api.datasets.helper import add_ui_metadata_to_metadata
 from api.datasets.serializers import DatasetSerializer
@@ -45,6 +46,7 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 
 
+from api.datasets.views import DatasetView
 
 class SignalView(viewsets.ModelViewSet):
     def get_queryset(self):
@@ -551,6 +553,176 @@ class RoboView(viewsets.ModelViewSet):
             list_serializer=RoboListSerializer
         )
 
+#
+# class RegressionView(viewsets.ModelViewSet):
+#     def get_queryset(self):
+#         queryset = Regression.objects.filter(
+#             created_by=self.request.user,
+#             deleted=False,
+#             #analysis_done=True,
+#             status__in=['SUCCESS', 'INPROGRESS']
+#
+#         )
+#         return queryset
+#
+#     def get_serializer_class(self):
+#         return RegressionSerlializer
+#
+#     def get_object_from_all(self):
+#         return Regression.objects.get(slug=self.kwargs.get('slug'))
+#
+#     def get_serializer_context(self):
+#         return {'request': self.request}
+#
+#     lookup_field = 'slug'
+#     filter_backends = (DjangoFilterBackend,)
+#     filter_fields = ('bookmarked', 'deleted', 'name', "app_id")
+#     pagination_class = CustomPagination
+#     permission_classes = (RegressionRelatedPermission, )
+#
+#     def create(self, request, *args, **kwargs):
+#         # try:
+#         data = request.data
+#         data = convert_to_string(data)
+#         data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
+#         data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
+#         serializer = RegressionSerlializer(data=data, context={"request": self.request})
+#         if serializer.is_valid():
+#             trainer_object = serializer.save()
+#             trainer_object.create()
+#             return Response(serializer.data)
+#
+#         return creation_failed_exception(serializer.errors)
+#         # except Exception as error:
+#         #     creation_failed_exception(error)
+#
+#     def update(self, request, *args, **kwargs):
+#         data = request.data
+#         data = convert_to_string(data)
+#         # instance = self.get_object()
+#         try:
+#             instance = self.get_object_from_all()
+#             if 'deleted' in data:
+#                 if data['deleted'] == True:
+#                     print 'let us delete'
+#                     clean_up_on_delete.delay(instance.slug, Trainer.__name__)
+#                     return JsonResponse({'message':'Deleted'})
+#         except:
+#             return creation_failed_exception("File Doesn't exist.")
+#
+#         serializer = self.get_serializer(instance=instance, data=data, partial=True, context={"request": self.request})
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data)
+#         return Response(serializer.errors)
+#
+#     def list(self, request, *args, **kwargs):
+#
+#         return get_listed_data(
+#             viewset=self,
+#             request=request,
+#             list_serializer=RegressionListSerializer
+#         )
+#
+#     def retrieve(self, request, *args, **kwargs):
+#         # return get_retrieve_data(self)
+#         try:
+#             instance = self.get_object_from_all()
+#         except:
+#             return creation_failed_exception("File Doesn't exist.")
+#
+#         if instance is None:
+#             return creation_failed_exception("File Doesn't exist.")
+#
+#         serializer = RegressionSerlializer(instance=instance, context={"request": self.request})
+#         return Response(serializer.data)
+#
+#     @detail_route(methods=['get'])
+#     def comparision(self, request, *args, **kwargs):
+#
+#         try:
+#             instance = self.get_object_from_all()
+#         except:
+#             return creation_failed_exception("File Doesn't exist.")
+#
+#         if instance is None:
+#             return creation_failed_exception("File Doesn't exist.")
+#
+#         serializer = RegressionSerlializer(instance=instance, context={"request": self.request})
+#         trainer_data = serializer.data
+#         t_d_c = trainer_data['config']['config']['COLUMN_SETTINGS']['variableSelection']
+#         uidColArray= [x["name"] for x in t_d_c if x["uidCol"] == True]
+#
+#
+#
+#         score_datatset_slug = request.GET.get('score_datatset_slug')
+#         try:
+#             dataset_instance = Dataset.objects.get(slug=score_datatset_slug)
+#         except:
+#             return creation_failed_exception("File Doesn't exist.")
+#
+#         if dataset_instance is None:
+#             return creation_failed_exception("File Doesn't exist.")
+#
+#         dataset_serializer = DatasetSerializer(instance=dataset_instance, context={"request": self.request})
+#         object_details = dataset_serializer.data
+#         original_meta_data_from_scripts = object_details['meta_data']
+#         if original_meta_data_from_scripts is None:
+#             uiMetaData = None
+#         if original_meta_data_from_scripts == {}:
+#             uiMetaData = None
+#         else:
+#             uiMetaData = add_ui_metadata_to_metadata(original_meta_data_from_scripts)
+#
+#         object_details['meta_data'] = {
+#             "scriptMetaData": original_meta_data_from_scripts,
+#             "uiMetaData": uiMetaData
+#         }
+#
+#         d_d_c = uiMetaData['varibaleSelectionArray']
+#
+#         t_d_c_s = set([item['name'] for item in t_d_c if item["targetColumn"] != True])
+#         d_d_c_s = set([item['name'] for item in d_d_c]).union(set(uidColArray))
+#
+#         proceedFlag = d_d_c_s.issuperset(t_d_c_s)
+#
+#         if proceedFlag != True:
+#             missing = t_d_c_s.difference(d_d_c_s)
+#             extra = d_d_c_s.difference(t_d_c_s)
+#             message = "These are the missing Columns {0}".format(missing)
+#             if len(extra) > 0:
+#                 message += "and these are the new columns {0}".format(extra)
+#         else:
+#             extra = d_d_c_s.difference(t_d_c_s)
+#             if len(extra) > 0:
+#                 message = "These are the new columns {0}".format(extra)
+#             else:
+#                 message = ""
+#
+#
+#         return JsonResponse({
+#             'proceed': proceedFlag,
+#             'message': message
+#         })
+#
+#     @detail_route(methods=['get'])
+#     def get_pmml(self, request, *args, **kwargs):
+#         from api.redis_access import AccessFeedbackMessage
+#         from helper import generate_pmml_name
+#         jobslug = request.query_params.get('jobslug', None)
+#         algoname = request.query_params.get('algoname', None)
+#         ac = AccessFeedbackMessage()
+#         job_object = Job.objects.filter(object_id=jobslug).first()
+#         job_slug = job_object.slug
+#         key_pmml_name = generate_pmml_name(job_slug)
+#         data = ac.get_using_key(key_pmml_name)
+#         if data is None:
+#             sample_xml = "<mydocument has=\"an attribute\">\n  <and>\n    <many>elements</many>\n    <many>more elements</many>\n  </and>\n  <plus a=\"complex\">\n    element as well\n  </plus>\n</mydocument>"
+#             return return_xml_data(sample_xml, algoname)
+#         xml_data = data[-1].get(algoname)
+#         return return_xml_data(xml_data, algoname)
+
+
 
 from api.models import Audioset
 from api.utils import AudiosetSerializer, AudioListSerializer
@@ -795,10 +967,9 @@ class AppView(viewsets.ModelViewSet):
             status="Active"
             #status__in=['SUCCESS', 'INPROGRESS']
         )
+        app_ordered_list = copy.deepcopy(settings.APPORDERLIST)
+        queryset = queryset.filter(name__in=app_ordered_list)
 
-        # tagsRq = self.request.query_params.get('tag', None)
-        # if tagsRq is not None:
-        #     queryset = queryset.filter(tags__icontains=tagsRq)
         return queryset
 
     def get_serializer_class(self):
@@ -879,7 +1050,8 @@ def get_datasource_config_list(request):
         'api.upload_from_mysql': 'MySQL',
         'api.upload_from_mssql': 'mssql',
         'api.upload_from_hana': 'Hana',
-        'api.upload_from_hdfs': 'Hdfs'
+        'api.upload_from_hdfs': 'Hdfs',
+        'api.upload_from_hive': 'Hive'
     }
 
     upload_permitted_list = []
@@ -1088,6 +1260,7 @@ def chart_changes_in_metadata_chart(chart_data):
 
 def add_slugs(results, object_slug=""):
     from api import helper
+    print results.keys()
     listOfNodes = results.get('listOfNodes', [])
     listOfCards = results.get('listOfCards', [])
 
@@ -5133,10 +5306,20 @@ def get_score_data_and_return_top_n(request):
             except:
                 count = 100
 
-            csv_text = fp.read()
-            csv_list = csv_text.split('\n')
-            csv_list = csv_list[:count]
-            csv_text_list = [text.split(',') for text in csv_list]
+            import csv
+            csv_text_list = []
+            with open(download_path, 'rb') as f:
+                reader = csv.reader(f)
+                for index, row in enumerate(reader):
+                    csv_text_list.append(row)
+                    if index > count:
+                        break
+                    print row
+
+            # csv_text = fp.read()
+            # csv_list = csv_text.split('\n')
+            # csv_list = csv_list[:count]
+            # csv_text_list = [text.split(',') for text in csv_list]
             return JsonResponse({
                 'Message': 'Success',
                 'csv_data': csv_text_list
@@ -5180,9 +5363,18 @@ def delete_and_keep_only_ten_from_all_models(request):
 
 #for regression modal algorithm config
 def get_algorithm_config_list(request):
+    try:
+        app_type=request.GET['app_type']
+    except:
+        app_type="CLASSIFICATION"
 
     user = request.user
-    algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST)
+    if app_type =="CLASSIFICATION":
+        algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
+    elif app_type =="REGRESSION":
+        algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_REGRESSION)
+    else:
+        algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
 
     print algorithm_config_list.keys()
 
@@ -5200,3 +5392,38 @@ def get_appID_appName_map(request):
         })
 
     return JsonResponse({"appIDMapping":appIDmap})
+
+
+@api_view(['POST'])
+def updateFromNifi(request):
+    # from pprint import pprint
+    # pprint( request )
+
+    # import pdb;pdb.set_trace()
+    # print request.GET.get("username",None)
+    # print request.data
+
+    hive_info=copy.deepcopy(settings.DATASET_HIVE)
+    host=request.data['host']
+    port=request.data['port']
+    hive_username=hive_info['username']
+    hive_password=hive_info['password']
+    schema=request.data["category"]
+    table_name=request.data["feed"]+'_feed'
+    feed=request.data['feed']
+
+    dataSourceDetails = {
+        'datasetname':feed,
+        "host": host,
+        "port": port,
+        "databasename":schema,
+        "username": hive_username,
+        "tablename": table_name,
+        "password": hive_password,
+        "datasourceType": 'Hive'
+    }
+    data_modified={'datasource_details': dataSourceDetails, 'datasource_type': 'Hive'}
+
+    datasetView=DatasetView()
+    datasetView.create(request,data=data_modified)
+    return JsonResponse({"status":True})

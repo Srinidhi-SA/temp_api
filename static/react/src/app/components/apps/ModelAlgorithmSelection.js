@@ -9,6 +9,7 @@ import {AppsLoader} from "../common/AppsLoader";
 import {getDataSetPreview} from "../../actions/dataActions";
 import {RegressionParameter} from "./RegressionParameter";
 import {STATIC_URL} from "../../helpers/env.js";
+import {statusMessages} from "../../helpers/helper";
 
 @connect((store) => {
     return {login_response: store.login.login_response,
@@ -21,6 +22,8 @@ import {STATIC_URL} from "../../helpers/env.js";
         manualAlgorithmData:store.apps.regression_algorithm_data_manual,
         isAutomatic:store.apps.regression_isAutomatic,
         apps_regression_modelName:store.apps.apps_regression_modelName,
+        currentAppDetails:store.apps.currentAppDetails,
+        modelSummaryFlag:store.apps.modelSummaryFlag,
     };
 })
 
@@ -30,22 +33,23 @@ export class ModelAlgorithmSelection extends React.Component {
     }
     componentWillMount() {
         //It will trigger when refresh happens on url
-        if(this.props.apps_regression_modelName == ""){
+        if(this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null){
             window.history.go(-1);
         }
-        this.props.dispatch(getRegressionAppAlgorithmData(this.props.match.params.slug));
-
+        this.props.dispatch(getRegressionAppAlgorithmData(this.props.match.params.slug,this.props.currentAppDetails.app_type));
+        
     }
     componentDidMount() {
         $("#manualBlock_111").addClass("dispnone");
         $("#automaticBlock_111").removeClass("dispnone");
-
+          
     }
     createModel(event){
         event.preventDefault();
         let isSelected = checkAtleastOneSelected();
         if(isSelected == false){
-            bootbox.alert("Please select atleast one algorithm...");
+            let msg= statusMessages("warning","Please select atleast one algorithm...","small_mascot");
+            bootbox.alert(msg);
             return false;
         }
         this.props.dispatch(createModel(store.getState().apps.apps_regression_modelName,store.getState().apps.apps_regression_targetType,store.getState().apps.apps_regression_levelCount));
@@ -81,7 +85,7 @@ export class ModelAlgorithmSelection extends React.Component {
                                                         if(params.display == true){
                                                             return(
                                                                     <div class="form-group">
-                                                                        <label class="col-md-3 control-label read">{params.displayName}</label>
+                                                                        <label class="col-md-3 control-label read">{params.displayName}</label>  
                                                                         <RegressionParameter key={automaticKey} uniqueTag={automaticKey} parameterData={params} algorithmSlug={data.algorithmSlug}/>
                                                                     </div>
                                                                 );
@@ -89,8 +93,8 @@ export class ModelAlgorithmSelection extends React.Component {
                                                         });
                        return(
                                 <div class="panel panel-default">
-                                    <div class="panel-heading">
-                                        <h4 class="panel-title"><a data-toggle="collapse" data-parent="#accordion8" href={collapse}><i class="fa fa-angle-down"></i> {data.algorithmName}</a></h4>
+                                    <div class="panel-heading">					
+                                        <h4 class="panel-title"><a data-toggle="collapse" data-parent="#accordion8" href={collapse}><i class="fa fa-angle-down"></i> {data.algorithmName}</a></h4>					
                                     </div>
                                     <div id={collapseId} class="panel-collapse collapse in">
                                         <div class="panel-body">
@@ -98,7 +102,7 @@ export class ModelAlgorithmSelection extends React.Component {
                                                 <form class="form-horizontal">
                                                     <div class="row">
                                                     {automaticDataParams}
-
+                                                       			
                                                     </div>
                                                 </form>
                                             </div>
@@ -116,7 +120,7 @@ export class ModelAlgorithmSelection extends React.Component {
                                                          if(params.display == true){
                                                             return(
                                                                     <div class="form-group">
-                                                                        <label class="col-md-3 control-label read">{params.displayName}</label>
+                                                                        <label class="col-md-3 control-label read">{params.displayName}</label>  
                                                                         <RegressionParameter key={manualKey} uniqueTag={manualKey} parameterData={params} algorithmSlug={data.algorithmSlug}/>
                                                                     </div>
                                                             );
@@ -124,7 +128,7 @@ export class ModelAlgorithmSelection extends React.Component {
                                                         });
                        return(
                                 <div className="panel panel-default">
-                                    <div className="panel-heading">
+                                    <div className="panel-heading">	
 
                                     <div className="checkbox">
                                     <div className="ma-checkbox inline">
@@ -144,7 +148,7 @@ export class ModelAlgorithmSelection extends React.Component {
                                                 <form className="form-horizontal">
                                                     <div className="row">
                                                     {manualDataParams}
-
+                                                       			
                                                     </div>
                                                 </form>
                                             </div>
@@ -179,7 +183,7 @@ export class ModelAlgorithmSelection extends React.Component {
                                             <div id="accordion8" class="panel-group accordion accordion-color">
                                             {automaticData}
                                             </div>
-                                        </div>
+                                        </div> 
                                         <div class="manualBlock" id="manualBlock_111">
                                             <div id="accordion9" class="panel-group accordion accordion-color">
                                             {manualData}

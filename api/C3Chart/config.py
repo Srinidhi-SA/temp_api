@@ -5,7 +5,7 @@ CHART_HEIGHT = 340
 CHART_WIDTH = 200
 
 # Title
-TITLE = 'Unnamed Chart'
+TITLE = None
 
 # Data
 DEFAULT_CHART_TYPE = 'line'

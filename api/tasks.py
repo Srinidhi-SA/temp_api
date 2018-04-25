@@ -41,7 +41,6 @@ def submit_job_separate_task(command_array, slug):
         my_env["HADOOP_USER_NAME"] = settings.HADOOP_USER_NAME
     cur_process = subprocess.Popen(command_array, stderr=subprocess.PIPE, env=my_env)
     print cur_process
-    print command_array
     # TODO: @Ankush need to write the error to error log and standard out to normal log
     for line in iter(lambda: cur_process.stderr.readline(), ''):
         # print(line.strip())
@@ -56,7 +55,6 @@ def submit_job_separate_task(command_array, slug):
             model_instance.url = application_id
             model_instance.save()
             break
-    # os.killpg(os.getpgid(cur_process.pid), signal.SIGTERM)
 
 @task(name='write_into_databases', queue=CONFIG_FILE_NAME)
 def write_into_databases(job_type, object_slug, results):
@@ -306,6 +304,25 @@ def save_results_to_job(slug, results):
 
 
 @task(name='cleanup_logentry', queue=CONFIG_FILE_NAME)
+def save_results_to_job1(slug, results):
+    from api.helper import get_db_object
+    import json
+
+    job = get_db_object(model_name=Job.__name__,
+                                   model_slug=slug
+                                   )
+
+    if isinstance(results, str) or isinstance(results, unicode):
+        job.results = results
+    elif isinstance(results, dict):
+        results = json.dumps(results)
+        job.results = results
+    job.save()
+    print "save hogaya "*100
+
+
+
+@task(name='cleanup_logentry')
 def clean_up_logentry():
 
     from auditlog.models import LogEntry

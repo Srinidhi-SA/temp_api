@@ -221,8 +221,9 @@ function fetchPosts(token, pageNo,dispatch) {
 
 export function refreshSignals(props) {
   return (dispatch) => {
+    if(refreshSignalInterval != null)
+    clearInterval(refreshSignalInterval);
     refreshSignalInterval = setInterval(function() {
-
       var pageNo = window.location.href.split("=")[1];
       if (pageNo == undefined)
         pageNo = 1;
@@ -230,7 +231,6 @@ export function refreshSignals(props) {
         dispatch(getList(getUserDetailsOrRestart.get().userToken, parseInt(pageNo)));
       }
     , DEFAULTINTERVAL);
-
   }
 }
 function fetchPostsSuccess(signalList) {
