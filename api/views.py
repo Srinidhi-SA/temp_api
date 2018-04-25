@@ -964,9 +964,14 @@ class AppView(viewsets.ModelViewSet):
         )
         app_ordered_list = copy.deepcopy(settings.APPORDERLIST)
 
-        print 'FIELD(name,{0})'.format(','.join(map(str, app_ordered_list)))
+        field_name = '''
+        "FIELD(name,'automated_prediction','regression_app',
+        'opportunity_scoring','robo_advisor_insights','speech_analytics','stock_sense','churn_prediction','re_admission_prediction',
+        'physician_attrition','credit_card_fraud','claims_prediction','asset_health_prediction','employee_attrition')"
+        '''
+
         queryset = queryset.filter(name__in=app_ordered_list).extra(
-                    select={'manual': 'FIELD(name,{0})'.format(','.join(map(str, app_ordered_list)))},
+                    select={'manual': field_name},
                     order_by=['manual']
                 )
         return queryset
@@ -1024,19 +1029,6 @@ class AppView(viewsets.ModelViewSet):
             request=request,
             list_serializer=AppListSerializers
         )
-        data = resp.data
-        actual_data = data['data']
-        app_ordered_list = copy.deepcopy(settings.APPORDERLIST)
-        new_data_list = []
-
-        for app in app_ordered_list:
-            for d in actual_data:
-                if d['name'] == app:
-                    new_data_list.append(d)
-
-        data['data'] = new_data_list
-        resp.data = data
-        return resp
 
     def retrieve(self, request, *args, **kwargs):
         # return get_retrieve_data(self)
