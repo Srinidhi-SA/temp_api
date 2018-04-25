@@ -1015,11 +1015,22 @@ class AppView(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
 
-        return get_listed_data(
+        resp = get_listed_data(
             viewset=self,
             request=request,
             list_serializer=AppListSerializers
         )
+        data = resp['data']
+        app_ordered_list = copy.deepcopy(settings.APPORDERLIST)
+        new_data_list = []
+
+        for app in app_ordered_list:
+            for d in data:
+                if d['name'] == app:
+                    new_data_list.append(d)
+        
+        resp['data'] = new_data_list
+        return resp
 
     def retrieve(self, request, *args, **kwargs):
         # return get_retrieve_data(self)
