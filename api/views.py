@@ -975,7 +975,7 @@ class AppView(viewsets.ModelViewSet):
                     order_by=['manual']
                 )
         print app_ordered_list
-        print queryset.query()
+        print queryset.query
         print queryset
         return queryset
 
