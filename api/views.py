@@ -963,8 +963,10 @@ class AppView(viewsets.ModelViewSet):
             #status__in=['SUCCESS', 'INPROGRESS']
         )
         app_ordered_list = copy.deepcopy(settings.APPORDERLIST)
+
+        print 'FIELD(name,{0})'.format(','.join(map(str, app_ordered_list)))
         queryset = queryset.filter(name__in=app_ordered_list).extra(
-                    select={'manual': 'FIELD(name,%s)' % ','.join(map(str, app_ordered_list))},
+                    select={'manual': 'FIELD(name,{0})'.format(','.join(map(str, app_ordered_list)))},
                     order_by=['manual']
                 )
         return queryset
