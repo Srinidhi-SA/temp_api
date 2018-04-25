@@ -974,6 +974,9 @@ class AppView(viewsets.ModelViewSet):
                     select={'manual': field_name},
                     order_by=['manual']
                 )
+        print app_ordered_list
+        print queryset.query()
+        print queryset
         return queryset
 
     def get_serializer_class(self):
