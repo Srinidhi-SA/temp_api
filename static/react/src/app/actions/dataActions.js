@@ -641,7 +641,7 @@ export function updateSelectedVariables(evt){
         count = getTotalVariablesSelected();
         dispatch(updateVariablesCount(count));
         if(evt.target.baseURI.includes("/createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
-            if(count >= 5){
+            if(count >= 10){
                 $('.measure[type="checkbox"]').each(function() {
                     if (!$(this).is(":checked"))
                     $(this).prop('disabled', true);
@@ -1028,7 +1028,7 @@ export function handleSelectAll(evt){
             }
             else
             {
-                if(count >= 5){
+                if(count >= 10){
                     if(varType == "dimension"){
                         $('.measure[type="checkbox"]').each(function() {
                             if (!$(this).is(":checked"))
@@ -1558,10 +1558,10 @@ export function DisableSelectAllCheckbox(){
     let dimensionArray = $.grep(dataPrev.meta_data.uiMetaData.varibaleSelectionArray,function(val,key){
         return(val.columnType == "dimension");
     });
-    if(measureArray.length > 5)
+    if(measureArray.length > 10)
      $('.measureAll').prop("disabled",true);
 
-    if(dimensionArray.length > 5)
+    if(dimensionArray.length > 10)
      $(".dimensionAll").prop("disabled",true);
 }
 }

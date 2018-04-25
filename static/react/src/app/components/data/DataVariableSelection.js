@@ -68,6 +68,8 @@ export class DataVariableSelection extends React.Component {
     }
 
     handleDVSearch(evt){
+        $(".measureAll").prop("disabled",false);
+        $(".dimensionAll").prop("disabled",false);
     this.props.dispatch(handleDVSearch(evt))
     }
     handelSort(variableType,sortOrder){
@@ -207,18 +209,18 @@ export class DataVariableSelection extends React.Component {
                 let dimensionArray = $.grep(dataPrev.meta_data.uiMetaData.varibaleSelectionArray,function(val,key){
                     return(val.columnType == "dimension"  && val.selected == false);
                 });
-                if(measureArray.length > 5 || (store.getState().datasets.selectedVariablesCount+measureArray.length > 5)){
+                if(measureArray.length > 10 || (store.getState().datasets.selectedVariablesCount+measureArray.length > 10)){
                     if(store.getState().datasets.measureAllChecked == false)$('.measureAll').prop("disabled",true);
                 }
                 else
                 $('.measureAll').prop("disabled",false);
-                if(dimensionArray.length > 5 || (store.getState().datasets.selectedVariablesCount+dimensionArray.length > 5)){
+                if(dimensionArray.length > 10 || (store.getState().datasets.selectedVariablesCount+dimensionArray.length > 10)){
                     if(store.getState().datasets.dimensionAllChecked == false)$(".dimensionAll").prop("disabled",true);
                 }
                 else
                 $(".dimensionAll").prop("disabled",false);
 
-                variableSelectionMsg = <h4>Including performance analysis across the following variables (Upto 5)</h4>;
+                variableSelectionMsg = <h4>Including performance analysis across the following variables (4 to 10)</h4>;
             }
             return (
                 <div>
