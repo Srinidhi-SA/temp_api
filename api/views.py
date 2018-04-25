@@ -5409,7 +5409,7 @@ def updateFromNifi(request):
 
     # import pdb;pdb.set_trace()
     # print request.GET.get("username",None)
-    # print request.data
+    print request.data
 
     hive_info=copy.deepcopy(settings.DATASET_HIVE)
     host=request.data['host']
