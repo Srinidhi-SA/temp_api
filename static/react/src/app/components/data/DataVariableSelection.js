@@ -68,8 +68,13 @@ export class DataVariableSelection extends React.Component {
     }
 
     handleDVSearch(evt){
-        $(".measureAll").prop("disabled",false);
-        $(".dimensionAll").prop("disabled",false);
+    evt.preventDefault();
+    if(evt.target.name == "measure" && evt.target.value == "")
+    $("#measureSearch").val("");
+    if(evt.target.name == "dimension" && evt.target.value == "")
+    $("#dimensionSearch").val("");
+    if(evt.target.name == "datetime" && evt.target.value == "")
+    $("#datetimeSearch").val("");
     this.props.dispatch(handleDVSearch(evt))
     }
     handelSort(variableType,sortOrder){
@@ -161,6 +166,7 @@ export class DataVariableSelection extends React.Component {
                         <li className={varCls} key={mItem.slug}><div className="ma-checkbox inline"><input id={mItem.slug} name={mItem.setVarAs} type="checkbox" className="measure" onChange={this.handleCheckboxEvents} value={mItem.name} checked={mItem.selected} /><label htmlFor={mItem.slug} className="radioLabels"><span>{mItem.name}</span></label></div> </li>
                     );
                 } );
+                $(".measureAll").prop("disabled",false);
             } else {
                 $(".measureAll").prop("disabled",true);
                 var measureTemplate = <label>No measure variable present</label>
@@ -174,6 +180,7 @@ export class DataVariableSelection extends React.Component {
                         <li className={varCls} key={dItem.slug}><div className="ma-checkbox inline"><input id={dItem.slug} name={dItem.setVarAs} type="checkbox" className="dimension" onChange={this.handleCheckboxEvents} value={dItem.name} checked={dItem.selected} /><label htmlFor={dItem.slug}> <span>{dItem.name}</span></label></div> </li>
                     );
                 } );
+                $(".dimensionAll").prop("disabled",false);
             } else {
                 $(".dimensionAll").prop("disabled",true);
                 var dimensionTemplate = <label>No dimension variable present</label>
