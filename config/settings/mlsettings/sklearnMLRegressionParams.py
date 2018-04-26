@@ -118,7 +118,7 @@ SKLEARN_ML_TREE_BASED_REGRESSION_COMMON_PARAMS = [
                 {
                     "name":"max_features",
                     "displayName":"Maximum Features for Split",
-                    "defaultValue":None,
+                    "defaultValue":0,
                     "acceptedValue":None,
                     "valueRange":[0.0,1.0],
                     "paramType":"number",
