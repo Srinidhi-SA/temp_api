@@ -173,7 +173,7 @@ export class ModelAlgorithmSelection extends React.Component {
                                 <div class="panel box-shadow">
                                     <div class="panel-body no-border xs-p-20">
                                         <div class="ma-radio inline">
-                                            <input type="radio" name="alg_selectionauto" id="radAuto" checked={store.getState().apps.regression_isAutomatic=='1'} value="1" onChange={this.handleOptionChange.bind(this)} /><label for="radAuto">Automatic</label>
+                                            <input type="radio" name="alg_selectionauto" id="radAuto" checked={this.props.isAutomatic == 1} value="1" onChange={this.handleOptionChange.bind(this)} /><label for="radAuto">Automatic</label>
                                         </div>
                                         <div class="ma-radio inline">
                                             <input type="radio" name="alg_selectionauto" id="radManu" value="0" onChange={this.handleOptionChange.bind(this)} /><label for="radManu">Manual</label>
