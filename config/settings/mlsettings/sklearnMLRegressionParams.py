@@ -128,7 +128,7 @@ SKLEARN_ML_TREE_BASED_REGRESSION_COMMON_PARAMS = [
                 {
                     "name":"max_leaf_nodes",
                     "displayName":"Maximum Number of Leaf Nodes",
-                    "defaultValue":None,
+                    "defaultValue":0,
                     "acceptedValue":None,
                     "valueRange":[],
                     "paramType":"number",
@@ -149,7 +149,7 @@ SKLEARN_ML_TREE_BASED_REGRESSION_COMMON_PARAMS = [
                  {
                  "name":"random_state",
                  "displayName":"Random Seed",
-                 "defaultValue":None,
+                 "defaultValue":0,
                  "acceptedValue":None,
                  "valueRange":[],
                  "paramType":"number",
