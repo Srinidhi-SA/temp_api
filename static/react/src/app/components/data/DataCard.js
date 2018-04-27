@@ -15,7 +15,7 @@ import store from "../../store";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {MainHeader} from "../common/MainHeader";
 import {BreadCrumb} from "../common/BreadCrumb";
-import {getDataList, getDataSetPreview, storeSignalMeta, handleDelete, handleRename,refreshDatasets} from "../../actions/dataActions";
+import {getDataList, getDataSetPreview, storeSignalMeta, handleDelete, handleRename,refreshDatasets,resetSubsetting} from "../../actions/dataActions";
 import {fetchProductList, openDULoaderPopup, closeDULoaderPopup, storeSearchElement,storeSortElements,updateDatasetName} from "../../actions/dataActions";
 import {open, close,triggerDataUploadAnalysis,updateHideData} from "../../actions/dataUploadActions";
 import {STATIC_URL} from "../../helpers/env.js"
@@ -54,6 +54,7 @@ export class DataCard extends React.Component {
         this.props.dispatch(clearDataPreview());
         this.props.dispatch(storeSignalMeta(null, that.props.match.url));
         this.props.dispatch(getDataSetPreview(this.selectedData));
+        this.props.dispatch(resetSubsetting(this.selectedData));
     }
     
     handleDelete(slug,evt) {

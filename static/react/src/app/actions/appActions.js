@@ -47,12 +47,13 @@ export function closeModelPopup() {
 
 export function refreshAppsModelList(props) {
   return (dispatch) => {
-
+    if(refreshAppsModelInterval != null)
+    clearInterval(refreshAppsModelInterval);
     refreshAppsModelInterval = setInterval(function() {
       var pageNo = window.location.href.split("=")[1];
       if (pageNo == undefined)
         pageNo = 1;
-      if (window.location.pathname == "/apps/" + store.getState().apps.currentAppId + "/models")
+      if (window.location.pathname == "/"+store.getState().apps.currentAppDetails.app_url)
         dispatch(getAppsModelList(parseInt(pageNo)));
       }
     , APPSDEFAULTINTERVAL);
@@ -145,7 +146,7 @@ export function createModel(modelName, targetVariable, targetLevel) {
         var datasetSlug = store.getState().datasets.dataPreview.slug;
         var app_id=store.getState().apps.currentAppId;
         var customDetails = createcustomAnalysisDetails();
-        if(store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
+        if(store.getState().apps.currentAppDetails.app_type == "REGRESSION" || store.getState().apps.currentAppDetails.app_type == "CLASSIFICATION"){
             if(store.getState().apps.regression_selectedTechnique == "crossValidation")
             {
                 var validationTechnique={
@@ -216,11 +217,13 @@ export function createModelSuccessAnalysis(data) {
 }
 export function refreshAppsScoreList(props) {
   return (dispatch) => {
+    if(refreshAppsScoresInterval != null)
+    clearInterval(refreshAppsScoresInterval);
     refreshAppsScoresInterval = setInterval(function() {
       var pageNo = window.location.href.split("=")[1];
       if (pageNo == undefined)
         pageNo = 1;
-      if (window.location.pathname == "/apps/" + store.getState().apps.currentAppId + "/scores")
+      if (window.location.pathname == "/apps/" + store.getState().apps.currentAppDetails.slug + "/scores")
         dispatch(getAppsScoreList(parseInt(pageNo)));
       }
     , APPSDEFAULTINTERVAL);
@@ -1707,9 +1710,9 @@ export function saveSelectedValuesForModel(modelName, targetType, levelCount) {
   return {type: "SAVE_SELECTED_VALES_FOR_MODEL", modelName, targetType, levelCount}
 }
 
-export function getRegressionAppAlgorithmData() {
+export function getRegressionAppAlgorithmData(slug,appType) {
   return (dispatch) => {
-    return triggerRegressionAppAlgorithmAPI().then(([response, json]) => {
+    return triggerRegressionAppAlgorithmAPI(appType).then(([response, json]) => {
       if (response.status === 200) {
         dispatch(saveRegressionAppAlgorithmData(json));
       }
@@ -1717,8 +1720,12 @@ export function getRegressionAppAlgorithmData() {
   }
 }
 
-function triggerRegressionAppAlgorithmAPI() {
-  return fetch(API + '/api/regression_app/get_algorithm_config_list', {
+function triggerRegressionAppAlgorithmAPI(appType) {
+  /*return fetch(API + '/api/regression_app/get_algorithm_config_list', {
+    method: 'get',
+    headers: getHeader(getUserDetailsOrRestart.get().userToken)
+  }).then(response => Promise.all([response, response.json()]));*/
+  return fetch(API + '/api/get_app_algorithm_config_list/?app_type='+appType, {
     method: 'get',
     headers: getHeader(getUserDetailsOrRestart.get().userToken)
   }).then(response => Promise.all([response, response.json()]));
@@ -1738,7 +1745,7 @@ export function updateAlgorithmData(algSlug, parSlug, parVal) {
         $.each(paramerterList, function(key1, val1) {
           if (val1.name == parSlug) {
             if (val1.paramType == 'number' || val1.paramType == 'textbox') {
-              val1.defaultValue = parVal;
+              val1.acceptedValue = parVal;
             } else if (val1.paramType == 'list') {
               let allValues = val1.defaultValue;
               $.each(allValues, function(i, dat) {
@@ -1749,7 +1756,7 @@ export function updateAlgorithmData(algSlug, parSlug, parVal) {
                 }
               );
             } else {
-              val1.defaultValue = parVal;
+              val1.acceptedValue = parVal;
             }
           }
         })

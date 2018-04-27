@@ -21,6 +21,8 @@ import {STATIC_URL} from "../../helpers/env.js";
         manualAlgorithmData:store.apps.regression_algorithm_data_manual,
         isAutomatic:store.apps.regression_isAutomatic,
         apps_regression_modelName:store.apps.apps_regression_modelName,
+        currentAppDetails:store.apps.currentAppDetails,
+        modelSummaryFlag:store.apps.modelSummaryFlag,
     };
 })
 
@@ -30,10 +32,10 @@ export class ModelAlgorithmSelection extends React.Component {
     }
     componentWillMount() {
         //It will trigger when refresh happens on url
-        if(this.props.apps_regression_modelName == ""){
+        if(this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null){
             window.history.go(-1);
         }
-        this.props.dispatch(getRegressionAppAlgorithmData(this.props.match.params.slug));
+        this.props.dispatch(getRegressionAppAlgorithmData(this.props.match.params.slug,this.props.currentAppDetails.app_type));
 
     }
     componentDidMount() {
@@ -169,7 +171,7 @@ export class ModelAlgorithmSelection extends React.Component {
                                 <div class="panel box-shadow">
                                     <div class="panel-body no-border xs-p-20">
                                         <div class="ma-radio inline">
-                                            <input type="radio" name="alg_selectionauto" id="radAuto" checked={store.getState().apps.regression_isAutomatic=='1'} value="1" onChange={this.handleOptionChange.bind(this)} /><label for="radAuto">Automatic</label>
+                                            <input type="radio" name="alg_selectionauto" id="radAuto" checked={this.props.isAutomatic == 1} value="1" onChange={this.handleOptionChange.bind(this)} /><label for="radAuto">Automatic</label>
                                         </div>
                                         <div class="ma-radio inline">
                                             <input type="radio" name="alg_selectionauto" id="radManu" value="0" onChange={this.handleOptionChange.bind(this)} /><label for="radManu">Manual</label>

@@ -10,6 +10,7 @@ import {DataVariableSelection} from "../data/DataVariableSelection";
 import {updateTrainAndTest,createScore,getAppsModelSummary,getAppDetails} from "../../actions/appActions";
 import {AppsLoader} from "../common/AppsLoader";
 import {getDataSetPreview,deselectAllVariablesDataPrev,makeAllVariablesTrueOrFalse} from "../../actions/dataActions";
+import {statusMessages} from "../../helpers/helper";
 
 @connect((store) => {
     return {login_response: store.login.login_response,
@@ -17,7 +18,9 @@ import {getDataSetPreview,deselectAllVariablesDataPrev,makeAllVariablesTrueOrFal
         modelTargetVariable:store.apps.modelTargetVariable,
         selectedAlg:store.apps.selectedAlg,
         scoreSummaryFlag:store.apps.scoreSummaryFlag,
-        currentAppId:store.apps.currentAppId
+        currentAppId:store.apps.currentAppId,
+        selectedVariablesCount: store.datasets.selectedVariablesCount,
+        currentAppDetails:store.apps.currentAppDetails,
     };
 })
 
@@ -28,6 +31,13 @@ export class ScoreVariableSelection extends React.Component {
     }
     createScore(event){
         event.preventDefault();
+        if(this.props.match.path.includes("/createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
+            if(this.props.selectedVariablesCount < 4 || this.props.selectedVariablesCount > 10){
+                let msg= statusMessages("warning","Number of variables selected should be 4 to 10","small_mascot");
+                bootbox.alert(msg);
+                return false;
+            }
+        }
         this.props.dispatch(createScore($("#createScoreName").val(),$("#createScoreAnalysisList").val()))
     }
     componentWillMount() {

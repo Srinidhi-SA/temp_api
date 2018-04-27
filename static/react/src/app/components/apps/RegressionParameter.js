@@ -74,15 +74,18 @@ export class RegressionParameter extends React.Component {
             switch (parameterData.paramType) {
             case "list":
             var optionsTemp =[];
+            var selectedValue = "";
             //optionsTemp.push(<option value={parameterData.displayName} disabled="true">{parameterData.displayName}</option>);
             let options = parameterData.defaultValue;
             for (var prop in options) {
-                optionsTemp.push(<option key={prop} className={prop} value={options[prop].name} selected={options[prop].selected}>{options[prop].displayName}</option>);
+                if(options[prop].selected)
+                selectedValue = options[prop].name;
+                optionsTemp.push(<option key={prop} className={prop} value={options[prop].name}>{options[prop].displayName}</option>);
             }
                return(
                    <div className="row">
                   <div className="col-md-6">
-                 <select  class="form-control" onChange={this.selecthandleChange.bind(this)} disabled={store.getState().apps.regression_isAutomatic == 1}>
+                 <select  class="form-control" onChange={this.selecthandleChange.bind(this)} value={selectedValue} disabled={this.props.isAutomatic == 1}>
                  {optionsTemp}
                  </select>
 				</div>
@@ -95,7 +98,7 @@ export class RegressionParameter extends React.Component {
                     return (
                          <div className="row">
                         <div className="col-md-6">
-                            <input type="number" className="form-control" value={this.state.defaultVal} onChange={this.changeTextboxValue.bind(this)} disabled={store.getState().apps.regression_isAutomatic == 1}/>
+                            <input type="number" className="form-control" value={this.state.defaultVal} onChange={this.changeTextboxValue.bind(this)} disabled={this.props.isAutomatic == 1}/>
                         </div>
                         </div>
                        );
@@ -114,12 +117,12 @@ export class RegressionParameter extends React.Component {
                                 
                                     <div className="col-xs-1">{this.state.min}</div>
                                     <div className="col-xs-10">
-                                    <ReactBootstrapSlider value={this.state.defaultVal} triggerSlideEvent="true" change={this.changeSliderValue.bind(this)} step={step} max={this.state.max} min={this.state.min} tooltip="hide" disabled={store.getState().apps.regression_isAutomatic == 1?"disabled":""}/>
+                                    <ReactBootstrapSlider value={this.state.defaultVal} triggerSlideEvent="true" change={this.changeSliderValue.bind(this)} step={step} max={this.state.max} min={this.state.min} tooltip="hide" disabled={this.props.isAutomatic == 1?"disabled":""}/>
                                     </div>
                                     <div className="col-xs-1"> {this.state.max}</div>
                                  
                             </div>
-                            <div className="col-md-2 col-sm-2"><input type="number" min = {this.state.min} max = {this.state.max} className="form-control" value={this.state.defaultVal} onChange={this.changeSliderValueFromText.bind(this)} disabled={store.getState().apps.regression_isAutomatic == 1}/>
+                            <div className="col-md-2 col-sm-2"><input type="number" min = {this.state.min} max = {this.state.max} className="form-control" value={this.state.defaultVal} onChange={this.changeSliderValueFromText.bind(this)} disabled={this.props.isAutomatic == 1}/>
                             </div>
                             </div>
                         );
@@ -130,7 +133,7 @@ export class RegressionParameter extends React.Component {
                  return (
                      <div className="row">
                         <div className="col-md-6">
-                            <input type="text" className="form-control" value={this.state.defaultVal} onChange={this.changeTextboxValue.bind(this)} disabled={store.getState().apps.regression_isAutomatic == 1}/>
+                            <input type="text" className="form-control" value={this.state.defaultVal} onChange={this.changeTextboxValue.bind(this)} disabled={this.props.isAutomatic == 1}/>
                         </div>
                         </div>
                        );
@@ -140,7 +143,7 @@ export class RegressionParameter extends React.Component {
            var chkBox = this.props.uniqueTag+this.props.parameterData.name;
          
                  return ( 
-                        <div className="ma-checkbox inline"><input  type="checkbox" id={chkBox} name={chkBox} onChange={this.handleCheckboxEvents.bind(this)} checked={this.state.defaultVal} disabled={store.getState().apps.regression_isAutomatic == 1}/><label htmlFor={chkBox}>&nbsp;</label>
+                        <div className="ma-checkbox inline"><input  type="checkbox" id={chkBox} name={chkBox} onChange={this.handleCheckboxEvents.bind(this)} checked={this.state.defaultVal} disabled={this.props.isAutomatic == 1}/><label htmlFor={chkBox}>&nbsp;</label>
                         </div> 
 
                        );
@@ -150,7 +153,7 @@ export class RegressionParameter extends React.Component {
                 return (
                     <div className="row">
                     <div className="col-md-6">
-                    <input type="text" className="form-control" value={this.state.defaultVal} onChange={this.changeTextboxValue.bind(this)} disabled={store.getState().apps.regression_isAutomatic == 1}/>
+                    <input type="text" className="form-control" value={this.state.defaultVal} onChange={this.changeTextboxValue.bind(this)} disabled={this.props.isAutomatic == 1}/>
                     </div>
                     </div>
                 );

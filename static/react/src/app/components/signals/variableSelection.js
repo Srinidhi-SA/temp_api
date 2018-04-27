@@ -4,7 +4,7 @@ import {Link, Redirect} from "react-router-dom";
 import {push} from "react-router-redux";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "react-bootstrap";
 import store from "../../store";
-import {selectedAnalysisList,resetSelectedVariables,unselectAllPossibleAnalysis,getDataSetPreview,setDimensionSubLevels,selectAllAnalysisList,updateSelectAllAnlysis,saveAdvanceSettings,checkAllAnalysisSelected,showAllVariables} from "../../actions/dataActions";
+import {selectedAnalysisList,resetSelectedVariables,unselectAllPossibleAnalysis,getDataSetPreview,setDimensionSubLevels,selectAllAnalysisList,updateSelectAllAnlysis,saveAdvanceSettings,checkAllAnalysisSelected,showAllVariables,disableAdvancedAnalysisElements} from "../../actions/dataActions";
 import {openCreateSignalModal,closeCreateSignalModal,updateCsLoaderValue} from "../../actions/createSignalActions";
 import {createSignal,setPossibleAnalysisList,emptySignalAnalysis,advanceSettingsModal,checkIfDateTimeIsSelected,checkIfTrendIsSelected,updateCategoricalVariables,createcustomAnalysisDetails,checkAnalysisIsChecked,changeSelectedVariableType,hideTargetVariable,updateAdvanceSettings,resetSelectedTargetVariable} from "../../actions/signalActions";
 import {DataVariableSelection} from "../data/DataVariableSelection";
@@ -175,30 +175,41 @@ export class VariableSelection extends React.Component {
                 return(val.columnType == "dimension"  && val.selected == true);
             });
             if(that.props.getVarType == "dimension"){
-                if(measureArray.length >= 1 && dimensionArray.length >= 1){
+                if(measureArray.length >= 1 || dimensionArray.length >= 1){
                     $("#chk_analysis_association").prop("disabled",false);
                     $("#chk_analysis_prediction").prop("disabled",false);
+                    this.props.dispatch(disableAdvancedAnalysisElements("association",false));
+                    this.props.dispatch(disableAdvancedAnalysisElements("prediction",false));
                 }
                 else{
                     $("#chk_analysis_association").prop("disabled",true);
                     $("#chk_analysis_prediction").prop("disabled",true);
+                    this.props.dispatch(disableAdvancedAnalysisElements("association",true));
+                    this.props.dispatch(disableAdvancedAnalysisElements("prediction",true));
                 }
             }
             else if(that.props.getVarType == "measure"){
-                if(dimensionArray.length >= 1)
-                $("#chk_analysis_performance").prop("disabled",false);
-                else
-                $("#chk_analysis_performance").prop("disabled",true);
-
-                if(measureArray.length >= 1)
-                $("#chk_analysis_influencer").prop("disabled",false);
-                else
-                $("#chk_analysis_influencer").prop("disabled",true);
-
-                if(measureArray.length >= 1 && dimensionArray.length >= 1)
-                $("#chk_analysis_prediction").prop("disabled",false);
-                else
-                $("#chk_analysis_prediction").prop("disabled",true);
+                if(dimensionArray.length >= 1){
+                    $("#chk_analysis_performance").prop("disabled",false);
+                    this.props.dispatch(disableAdvancedAnalysisElements("performance",false));
+                }else{
+                    $("#chk_analysis_performance").prop("disabled",true);
+                    this.props.dispatch(disableAdvancedAnalysisElements("performance",true));
+                }
+                if(measureArray.length >= 1){
+                    $("#chk_analysis_influencer").prop("disabled",false);
+                    this.props.dispatch(disableAdvancedAnalysisElements("influencer",false));
+                }else{
+                    $("#chk_analysis_influencer").prop("disabled",true);
+                    this.props.dispatch(disableAdvancedAnalysisElements("influencer",true));
+                }
+                if(measureArray.length >= 1 || dimensionArray.length >= 1){
+                    $("#chk_analysis_prediction").prop("disabled",false);
+                    this.props.dispatch(disableAdvancedAnalysisElements("prediction",false));
+                }else{
+                    $("#chk_analysis_prediction").prop("disabled",true);
+                    this.props.dispatch(disableAdvancedAnalysisElements("prediction",true));
+                }
             }
         }
 

@@ -36,6 +36,13 @@ export class CardHtml extends React.Component {
                 </div>
            );   
    }
+   else if(this.props.classTag == "hidden"){
+     return(
+               <div className="modelSummery hidden">
+                {renderHTML(element)}
+                </div>
+           );
+   }
    else {
        return(
                <div>

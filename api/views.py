@@ -13,6 +13,7 @@ from rest_framework import viewsets
 from rest_framework.decorators import api_view
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
+from rest_framework.request import Request
 
 from api.datasets.helper import add_ui_metadata_to_metadata
 from api.datasets.serializers import DatasetSerializer
@@ -45,6 +46,7 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 
 
+from api.datasets.views import DatasetView
 
 class SignalView(viewsets.ModelViewSet):
     def get_queryset(self):
@@ -795,10 +797,8 @@ class AppView(viewsets.ModelViewSet):
             status="Active"
             #status__in=['SUCCESS', 'INPROGRESS']
         )
-
-        # tagsRq = self.request.query_params.get('tag', None)
-        # if tagsRq is not None:
-        #     queryset = queryset.filter(tags__icontains=tagsRq)
+        app_ordered_list = copy.deepcopy(settings.APPORDERLIST)
+        queryset = queryset.filter(name__in=app_ordered_list)
         return queryset
 
     def get_serializer_class(self):
@@ -879,7 +879,8 @@ def get_datasource_config_list(request):
         'api.upload_from_mysql': 'MySQL',
         'api.upload_from_mssql': 'mssql',
         'api.upload_from_hana': 'Hana',
-        'api.upload_from_hdfs': 'Hdfs'
+        'api.upload_from_hdfs': 'Hdfs',
+        'api.upload_from_hive': 'Hive'
     }
 
     upload_permitted_list = []
@@ -1088,6 +1089,7 @@ def chart_changes_in_metadata_chart(chart_data):
 
 def add_slugs(results, object_slug=""):
     from api import helper
+    print results.keys()
     listOfNodes = results.get('listOfNodes', [])
     listOfCards = results.get('listOfCards', [])
 
@@ -5133,10 +5135,20 @@ def get_score_data_and_return_top_n(request):
             except:
                 count = 100
 
-            csv_text = fp.read()
-            csv_list = csv_text.split('\n')
-            csv_list = csv_list[:count]
-            csv_text_list = [text.split(',') for text in csv_list]
+            import csv
+            csv_text_list = []
+            with open(download_path, 'rb') as f:
+                reader = csv.reader(f)
+                for index, row in enumerate(reader):
+                    csv_text_list.append(row)
+                    if index > count:
+                        break
+                    print row
+
+            # csv_text = fp.read()
+            # csv_list = csv_text.split('\n')
+            # csv_list = csv_list[:count]
+            # csv_text_list = [text.split(',') for text in csv_list]
             return JsonResponse({
                 'Message': 'Success',
                 'csv_data': csv_text_list
@@ -5180,9 +5192,18 @@ def delete_and_keep_only_ten_from_all_models(request):
 
 #for regression modal algorithm config
 def get_algorithm_config_list(request):
+    try:
+        app_type=request.GET['app_type']
+    except:
+        app_type="CLASSIFICATION"
 
     user = request.user
-    algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST)
+    if app_type =="CLASSIFICATION":
+        algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
+    elif app_type =="REGRESSION":
+        algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_REGRESSION)
+    else:
+        algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
 
     print algorithm_config_list.keys()
 
@@ -5200,3 +5221,38 @@ def get_appID_appName_map(request):
         })
 
     return JsonResponse({"appIDMapping":appIDmap})
+
+
+@api_view(['POST'])
+def updateFromNifi(request):
+    # from pprint import pprint
+    # pprint( request )
+
+    # import pdb;pdb.set_trace()
+    # print request.GET.get("username",None)
+    print request.data
+
+    hive_info=copy.deepcopy(settings.DATASET_HIVE)
+    host=request.data['host']
+    port=request.data['port']
+    hive_username=hive_info['username']
+    hive_password=hive_info['password']
+    schema=request.data["category"]
+    table_name=request.data["feed"]+'_feed'
+    feed=request.data['feed']
+
+    dataSourceDetails = {
+        'datasetname':feed,
+        "host": host,
+        "port": port,
+        "databasename":schema,
+        "username": hive_username,
+        "tablename": table_name,
+        "password": hive_password,
+        "datasourceType": 'Hive'
+    }
+    data_modified={'datasource_details': dataSourceDetails, 'datasource_type': 'Hive'}
+
+    datasetView=DatasetView()
+    datasetView.create(request,data=data_modified)
+    return JsonResponse({"status":True})
