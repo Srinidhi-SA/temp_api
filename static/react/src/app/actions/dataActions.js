@@ -1171,7 +1171,7 @@ function deleteMetaDataColumn(dialog,colName,colSlug,dispatch,actionName,colStat
     }
 	var body_msg=statusMessages("warning","Are you sure, you want to delete the selected column?","small_mascot");
     if(colStatus == true){
-        text = "Are you sure, you want to undelete the selected column?"
+        body_msg = statusMessages("warning","Are you sure, you want to undelete the selected column?","small_mascot");
     }
     bootbox.confirm({
       title:"Delete Column",
