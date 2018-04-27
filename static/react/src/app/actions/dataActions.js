@@ -1081,7 +1081,7 @@ export function renameMetaDataColumn(dialog,colName,colSlug,dispatch,actionName)
     const customBody = (
 		<div className="row">	
 			<div className="col-md-4">
-				<img src="../assets/images/alert_thinking.gif" class="img-responsive" />
+				<img src={STATIC_URL + "assets/images/alert_thinking.gif"} class="img-responsive" />
 			</div>
 			<div className="col-md-8">
             <div className="form-group">
