@@ -121,7 +121,7 @@ export class StockUploadDomainModel extends React.Component {
                 <div className="xs-pt-20"></div>
                 {/*<div className="stockDropzone">
 					<Dropzone id={1} onDrop={this.onDrop} accept=".csv" >
-					<p>Try dropping some files here, or click to select files to upload.</p>
+					<p>Please drag and drop your file here or browse.</p>
 					</Dropzone>
 					<aside>
 			          <ul className={fileName != "" ? "list-unstyled bullets_primary":"list-unstyled"}>

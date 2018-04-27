@@ -5,6 +5,7 @@ import {CSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,PERPAGE,SUCCESS,FAILE
 import {connect} from "react-redux";
 import store from "../store";
 import {openCsLoaderModal, closeCsLoaderModal, updateCsLoaderValue, updateCsLoaderMsg} from "./createSignalActions";
+import renderHTML from 'react-render-html';
 import Dialog from 'react-bootstrap-dialog'
 import {showLoading, hideLoading} from 'react-redux-loading-bar'
 import {updateColumnStatus,handleDVSearch,updateStoreVariables,updateDatasetVariables,updateSelectAllAnlysis,hideDataPreview,updateTargetAnalysisList,getTotalVariablesSelected} from './dataActions';
@@ -555,9 +556,10 @@ export function showDialogBox(slug,dialog,dispatch,evt){
 		  defaultOkLabel: 'Yes',
 		  defaultCancelLabel: 'No',
 		})
+	var body_msg=renderHTML(statusMessages("warning","Are you sure you want to delete this Signal?","small_mascot"))
 	dialog.show({
 		  title: 'Delete Signal',
-		  body: 'Are you sure you want to delete this Signal?',
+		  body: body_msg,
 		  actions: [
 		    Dialog.CancelAction(),
 		    Dialog.OKAction(() => {
@@ -623,11 +625,19 @@ export function handleRename(slug, dialog, name) {
 }
 function showRenameDialogBox(slug, dialog, dispatch, name) {
   const customBody = (
-    <div className="form-group">
-
-      <label for="fl1" className="control-label">Enter a new name</label>
-      <input className="form-control" id="idRenameSignal" type="text" defaultValue={name}/>
-    </div>
+    
+	<div className="row">	
+			<div className="col-md-4">
+				<img src="assets/images/alert_thinking.gif" class="img-responsive" />
+			</div>
+			<div className="col-md-8">
+			<div className="form-group">
+			<label for="fl1" className="control-label">Enter a new name</label>
+			<input className="form-control" id="idRenameSignal" type="text" defaultValue={name}/>
+			</div>
+			</div>
+		</div>
+	
   )
 
   dialog.show({

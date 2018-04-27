@@ -209,7 +209,7 @@ export class Profile extends React.Component {
 
                                 <div className="dropzone md-pl-50">
                                   <Dropzone id={1} onDrop={this.onDrop.bind(this)} accept=".png, .jpg,.jpeg" onDropRejected={this.popupMsg}>
-                                    <p>Try dropping some files here, or click to select files to upload.</p>
+                                    <p>Please drag and drop your file here or browse.</p>
                                   </Dropzone>
                                   <aside>
                                     <ul className={fileName != ""

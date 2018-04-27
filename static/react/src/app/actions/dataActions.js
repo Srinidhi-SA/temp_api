@@ -4,6 +4,7 @@ import {PERPAGE,DULOADERPERVALUE,DEFAULTINTERVAL,SUCCESS,FAILED,getUserDetailsOr
 import store from "../store";
 import {dataPreviewInterval,dataUploadLoaderValue,clearLoadingMsg,clearDatasetPreview} from "./dataUploadActions";
 import {closeAppsLoaderValue} from "./appActions";
+import renderHTML from 'react-render-html';
 import Dialog from 'react-bootstrap-dialog'
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
 import {isEmpty,RENAME,DELETE,REPLACE,DATA_TYPE,REMOVE,CURRENTVALUE,NEWVALUE,SET_VARIABLE,UNIQUE_IDENTIFIER,SET_POLARITY,handleJobProcessing,IGNORE_SUGGESTION} from "../helpers/helper";
@@ -728,9 +729,10 @@ export function showDialogBox(slug,dialog,dispatch,evt){
         defaultOkLabel: 'Yes',
         defaultCancelLabel: 'No',
     })
+	var body_msg=renderHTML(statusMessages("warning","Are you sure you want to delete the selected data set?","small_mascot"))
     dialog.show({
         title: 'Delete Dataset',
-        body: 'Are you sure you want to delete the selected data set?',
+        body: body_msg,
         actions: [
                   Dialog.CancelAction(),
                   Dialog.OKAction(() => {
@@ -784,11 +786,18 @@ export function handleRename(slug,dialog,name){
     }
 }
 function showRenameDialogBox(slug,dialog,dispatch,name){
-    const customBody = (
+    const customBody = (            
+			<div className="row">	
+			<div className="col-md-4">
+				<img src="assets/images/alert_thinking.gif" class="img-responsive" />
+			</div>
+			<div className="col-md-8">
             <div className="form-group">
             <label for="fl1" className="control-label">Enter a new  Name</label>
             <input className="form-control"  id="idRenameDataset" type="text" defaultValue={name}/>
             </div>
+			</div>
+		</div>
     )
 
     dialog.show({
@@ -1070,10 +1079,17 @@ export function updateSubSetting(updatedSubSetting){
 //Rename Metadata column
 export function renameMetaDataColumn(dialog,colName,colSlug,dispatch,actionName){
     const customBody = (
+		<div className="row">	
+			<div className="col-md-4">
+				<img src="../assets/images/alert_thinking.gif" class="img-responsive" />
+			</div>
+			<div className="col-md-8">
             <div className="form-group">
             <label for="fl1" className="control-label">Enter a new Name</label>
             <input className="form-control"  id="idRenameMetaCloumn" type="text" defaultValue={colName}/>
             </div>
+			</div>
+		</div>
     )
 
     dialog.show({
@@ -1139,13 +1155,15 @@ export function handleColumnClick(dialog,actionName,colSlug,colName,subActionNam
 }
 
 function deleteMetaDataColumn(dialog,colName,colSlug,dispatch,actionName,colStatus){
-    var text = "Are you sure, you want to delete the selected column?";
+	var body_msg=statusMessages("warning","Are you sure, you want to delete the selected column?","small_mascot");
+	  
+    //var text = "Are you sure, you want to delete the selected column?";
     if(colStatus == true){
         text = "Are you sure, you want to undelete the selected column?"
     }
     bootbox.confirm({
       title:"Delete Column",
-      message:text,
+      message:body_msg,
       //size:"small",
       buttons: {
       'cancel': {

@@ -23,6 +23,7 @@ import {
 } from "../helpers/helper";
 import {hideDataPreview, getStockDataSetPreview, showDataPreview, getDataSetPreview} from "./dataActions";
 import {getHeaderWithoutContent} from "./dataUploadActions";
+import renderHTML from 'react-render-html';
 import Dialog from 'react-bootstrap-dialog';
 import React from "react";
 import {showLoading, hideLoading} from 'react-redux-loading-bar';
@@ -724,7 +725,8 @@ export function showDialogBox(slug, dialog, dispatch, title, msgText) {
 }
 export function handleModelDelete(slug, dialog) {
   return (dispatch) => {
-    showDialogBox(slug, dialog, dispatch, DELETEMODEL, "Are you sure, you want to delete model?")
+    showDialogBox(slug, dialog, dispatch, DELETEMODEL, renderHTML(statusMessages("warning","Are you sure, you want to delete model?","small_mascot")))
+	 
   }
 }
 function deleteModel(slug, dialog, dispatch) {
@@ -752,10 +754,18 @@ function deleteModelAPI(slug) {
 
 export function handleModelRename(slug, dialog, name) {
   const customBody = (
-    <div className="form-group">
-      <label for="fl1" className="control-label">Enter a new Name</label>
-      <input className="form-control" id="idRenameModel" type="text" defaultValue={name}/>
-    </div>
+		<div className="row">	
+			<div className="col-md-4">
+				<img src={STATIC_URL + "assets/images/alert_thinking.gif"} class="img-responsive" />
+			</div>
+			<div className="col-md-8">
+			<div className="form-group">
+			<label for="idRenameModel" className="control-label">Enter a new Name</label>
+			<input className="form-control" id="idRenameModel" type="text" defaultValue={name}/>
+			</div>
+			</div>
+		</div>
+    
   )
   return (dispatch) => {
     showRenameDialogBox(slug, dialog, dispatch, RENAMEMODEL, customBody)
@@ -810,7 +820,8 @@ function renameModelAPI(slug, newName) {
 
 export function handleScoreDelete(slug, dialog) {
   return (dispatch) => {
-    showDialogBox(slug, dialog, dispatch, DELETESCORE, "Are you sure, you want to delete score?")
+    showDialogBox(slug, dialog, dispatch, DELETESCORE, renderHTML(statusMessages("warning","Are you sure, you want to delete score?","small_mascot")))
+	//renderHTML(statusMessages("warning","Are you sure, you want to delete score?","small_mascot"))
   }
 }
 function deleteScore(slug, dialog, dispatch) {
@@ -838,10 +849,17 @@ function deleteScoreAPI(slug) {
 
 export function handleScoreRename(slug, dialog, name) {
   const customBody = (
-    <div className="form-group">
-      <label for="fl1" className="control-label">Enter a new Name</label>
-      <input className="form-control" id="idRenameScore" type="text" defaultValue={name}/>
-    </div>
+	<div className="row">	
+	<div className="col-md-4">
+		<img src={STATIC_URL + "assets/images/alert_thinking.gif"} class="img-responsive" />
+	</div>
+	<div className="col-md-8">
+	<div className="form-group">
+	<label for="idRenameScore" className="control-label">Enter a new Name</label>
+	<input className="form-control" id="idRenameScore" type="text" defaultValue={name}/>
+	</div>
+	</div>
+	</div>
   )
   return (dispatch) => {
     showRenameDialogBox(slug, dialog, dispatch, RENAMESCORE, customBody)
@@ -877,7 +895,7 @@ export function activateModelScoreTabs(id) {
 
 export function handleInsightDelete(slug, dialog) {
   return (dispatch) => {
-    showDialogBox(slug, dialog, dispatch, DELETEINSIGHT, "Are you sure, you want to delete Insight?")
+    showDialogBox(slug, dialog, dispatch, DELETEINSIGHT, renderHTML(statusMessages("warning","Are you sure, you want to delete Insight?","small_mascot")))
   }
 }
 function deleteInsight(slug, dialog, dispatch) {
@@ -905,10 +923,17 @@ function deleteInsightAPI(slug) {
 
 export function handleInsightRename(slug, dialog, name) {
   const customBody = (
-    <div className="form-group">
-      <label for="fl1" className="control-label">Enter a new Name</label>
-      <input className="form-control" id="idRenameInsight" type="text" defaultValue={name}/>
-    </div>
+		<div className="row">	
+		<div className="col-md-4">
+		<img src={STATIC_URL + "assets/images/alert_thinking.gif"} class="img-responsive" />
+		</div>
+		<div className="col-md-8">
+		<div className="form-group">
+		<label for="idRenameInsight" className="control-label">Enter a new Name</label>
+		<input className="form-control" id="idRenameInsight" type="text" defaultValue={name}/>
+		</div>
+		</div>
+		</div>
   )
   return (dispatch) => {
     showRenameDialogBox(slug, dialog, dispatch, RENAMEINSIGHT, customBody)
@@ -1100,7 +1125,7 @@ export function storeAudioSearchElement(search_element) {
 
 export function handleAudioDelete(slug, dialog) {
   return (dispatch) => {
-    showDialogBox(slug, dialog, dispatch, DELETEAUDIO, "Are you sure, you want to delete media file?")
+    showDialogBox(slug, dialog, dispatch, DELETEAUDIO, renderHTML(statusMessages("warning","Are you sure, you want to delete media file?","small_mascot")))
   }
 }
 function deleteAudio(slug, dialog, dispatch) {
@@ -1128,10 +1153,17 @@ function deleteAudioAPI(slug) {
 
 export function handleAudioRename(slug, dialog, name) {
   const customBody = (
-    <div className="form-group">
-      <label for="fl1" className="col-sm-6 control-label">Enter Media file name</label>
-      <input className="form-control" id="idRenameAudio" type="text" defaultValue={name}/>
-    </div>
+		<div className="row">	
+		<div className="col-md-4">
+		<img src={STATIC_URL + "assets/images/alert_thinking.gif"} class="img-responsive" />
+		</div>
+		<div className="col-md-8">
+		<div className="form-group">
+		<label for="idRenameAudio" className="control-label">Enter a new Name</label>
+		<input className="form-control" id="idRenameAudio" type="text" defaultValue={name}/>
+		</div>
+		</div>
+		</div>
   )
   return (dispatch) => {
     showRenameDialogBox(slug, dialog, dispatch, RENAMEAUDIO, customBody)
@@ -1172,7 +1204,8 @@ export function playAudioFile() {
     $("#audioPlay").addClass("hide");
     audioEle.play();
   } else {
-    bootbox.alert("Please upload audio file to play.");
+	    var body_msg=statusMessages("warning","Please upload audio file to play.","small_mascot");
+    bootbox.alert(body_msg);
   }
 
 }
@@ -1187,7 +1220,8 @@ export function pauseAudioFile() {
     $("#audioPause").removeClass("show");
     audioEle.pause();
   } else {
-    bootbox.alert("Please upload audio file to play.");
+	  var body_msg=statusMessages("warning","Please upload audio file to play.","small_mascot");
+    bootbox.alert(body_msg);
   }
 }
 
