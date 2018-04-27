@@ -1,6 +1,6 @@
 import React from "react";
 import {API,STATIC_URL} from "../helpers/env";
-import {PERPAGE,DULOADERPERVALUE,DEFAULTINTERVAL,SUCCESS,FAILED,getUserDetailsOrRestart,DEFAULTANALYSISVARIABLES} from "../helpers/helper";
+import {PERPAGE,DULOADERPERVALUE,DEFAULTINTERVAL,SUCCESS,FAILED,getUserDetailsOrRestart,DEFAULTANALYSISVARIABLES,statusMessages} from "../helpers/helper";
 import store from "../store";
 import {dataPreviewInterval,dataUploadLoaderValue,clearLoadingMsg,clearDatasetPreview} from "./dataUploadActions";
 import {closeAppsLoaderValue} from "./appActions";
@@ -151,7 +151,8 @@ function fetchDataPreview(slug,dispatch,interval) {
 
         dispatch(hideDULoaderPopup());
         clearInterval(interval);
-        bootbox.alert("Unable to connect to server. Check your connection please try again.")
+        let msg=statusMessages("error","Unable to connect to server. Check your connection please try again.","small_mascot")
+        bootbox.alert(msg)
     });
 }
 //get preview data
@@ -1147,7 +1148,8 @@ function deleteMetaDataColumn(dialog,colName,colSlug,dispatch,actionName,colStat
         }
     });
     if(nonDeletedColumns <= 2 && colStatus != true){
-        bootbox.alert("Cannot delete any more columns")
+        let errormsg = statusMessages("warning", "Cannot delete any more columns", "small_mascot");
+        bootbox.alert(errormsg)
         return;
     }
     var text = "Are you sure, you want to delete the selected column?";
@@ -1310,11 +1312,13 @@ export function handleColumnActions(transformSettings,slug,isSubsetting) {
                 dispatch(fetchDataPreviewError(json));
                 dispatch(vaiableSelectionUpdate(false));
                 dispatch(hideLoading());
-                bootbox.alert("Something went wrong. Please try again later.")            }
+                let msg=statusMessages("error","Something went wrong. Please try again later.","small_mascot")
+                bootbox.alert(msg)            }
         }).catch(function(error){
             dispatch(hideLoading());
             dispatch(vaiableSelectionUpdate(false));
-            bootbox.alert("Something went wrong. Please try again later.")
+            let msg=statusMessages("error","Something went wrong. Please try again later.","small_mascot")
+            bootbox.alert(msg)
         });
     }
 }

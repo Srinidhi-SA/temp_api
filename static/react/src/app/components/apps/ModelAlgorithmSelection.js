@@ -9,6 +9,7 @@ import {AppsLoader} from "../common/AppsLoader";
 import {getDataSetPreview} from "../../actions/dataActions";
 import {RegressionParameter} from "./RegressionParameter";
 import {STATIC_URL} from "../../helpers/env.js";
+import {statusMessages} from "../../helpers/helper";
 
 @connect((store) => {
     return {login_response: store.login.login_response,
@@ -47,7 +48,8 @@ export class ModelAlgorithmSelection extends React.Component {
         event.preventDefault();
         let isSelected = checkAtleastOneSelected();
         if(isSelected == false){
-            bootbox.alert("Please select atleast one algorithm...");
+            let msg= statusMessages("warning","Please select atleast one algorithm...","small_mascot");
+            bootbox.alert(msg);
             return false;
         }
         this.props.dispatch(createModel(store.getState().apps.apps_regression_modelName,store.getState().apps.apps_regression_targetType,store.getState().apps.apps_regression_levelCount));
