@@ -6629,16 +6629,16 @@ body.open-right-sidebar .ma-right-sidebar {
   bottom: 0px;
   width: 50%;
   height: 100%;
-  background-image: url(../images/ma_lgBanner.png);
+  background-image: url(../images/dataScienceinbox.gif);
   background-repeat: no-repeat;
   background-position:center center;
 
 /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#079088+0,0c6965+100 */
-background-color: #079088; /* Old browsers */
-background-color: -moz-linear-gradient(top, #079088 0%, #0c6965 100%); /* FF3.6-15 */
-background-color: -webkit-linear-gradient(top, #079088 0%,#0c6965 100%); /* Chrome10-25,Safari5.1-6 */
-background-color: linear-gradient(to bottom, #079088 0%,#0c6965 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#079088', endColorstr='#0c6965',GradientType=0 ); /* IE6-9 */
+background-color: #00998c; /* Old browsers */
+background-color: -moz-linear-gradient(top, #00998c 0%, #0c6965 100%); /* FF3.6-15 */
+background-color: -webkit-linear-gradient(top, #00998c 0%,#0c6965 100%); /* Chrome10-25,Safari5.1-6 */
+background-color: linear-gradient(to bottom, #00998c 0%,#0c6965 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00998c', endColorstr='#0c6965',GradientType=0 ); /* IE6-9 */
 }
 .ma-login .ma-content-right {
   overflow: auto;
