@@ -295,6 +295,7 @@ PYSPARK_ML_TREE_BASED_REGRESSION_COMMON_PARAMS = [
                     "paramType":"number",
                     "uiElemType":"slider",
                     "display":True
+
                 },
                 {
                     "name":"maxBins",
