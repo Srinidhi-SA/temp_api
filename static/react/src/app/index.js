@@ -40,6 +40,8 @@ import {RegressionAppList} from "./components/apps/RegressionAppList";
 import {getUserDetailsOrRestart} from "./helpers/helper";
 import {Redirect} from "react-router-dom";
 import {APPS_ALLOWED} from "./helpers/env.js"
+import {SampleFrame} from "./components/common/SampleFrame"
+import {KyloMenuList} from "./components/common/KyloMenuList"
 
 class App extends React.Component {
   hasSignalRoutePermission() {
@@ -298,6 +300,8 @@ class App extends React.Component {
             <Route exact path="/apps-regression-score/:slug/:l1/:l2/:l3" component={OverViewPage}/>
             <Route exact path="/apps-regression-score/:slug/:l1/:l2" component={OverViewPage}/>
             <Route exact path="/apps-regression-score-document/:slug" component={SignalDocumentMode}/>
+            <Route exact path="/kylo" component={KyloMenuList}/>
+            <Route exact path="/kylo/selected_menu/:kylo_url" component={SampleFrame}/>
 
           </Main>
         </Switch>

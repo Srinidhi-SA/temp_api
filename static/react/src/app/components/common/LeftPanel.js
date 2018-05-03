@@ -91,6 +91,11 @@ class LeftPanel extends React.Component {
                       <span></span>
                       SETTINGS</NavLink>
                   </li> */}
+                  <li>
+                    <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" isActive={(match,location) => /^[/]kylo/.test(location.pathname)} className=" sdb sdb_app" to="/kylo">
+                      <span></span>
+                      KYLO</NavLink>
+                  </li>
               </ul>
             </div>
             {/* // /.Side bar Main Menu  -->*/}
