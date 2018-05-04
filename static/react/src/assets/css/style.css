@@ -14972,7 +14972,9 @@ a.more_button { color: #b3b3b3; padding: 0 10px; margin-right: 9px; cursor:point
 #manualBlock_111 .accordion .col-xs-1 { background: #FFFFFF; }
 .cst-panel-shadow .list-unstyled li .ma-checkbox, .cst-panel-shadow .list-unstyled li .ma-checkbox label { width: 100%; }
 .cst-panel-shadow .ma-checkbox label span { display: inline-block; width: 90%; }
-
+a:hover .icon-container .icon { background:#e6e6e6; }
+a .icon-container .class { color: #333333;}
+a:hover .icon-container .class { color: #02988c;}
 /**************** Css realated to developers, keep the source down ***/
 #prediction_dropdown{
 	    width: 40%;
