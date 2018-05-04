@@ -35,6 +35,7 @@ export class AppsScoreDetail extends React.Component {
       }
   }
   componentDidMount() {
+		window.scrollTo(0, 0);
 	  if(!isEmpty(store.getState().apps.scoreSummary)){
 		  if(store.getState().apps.scoreSummary.slug != store.getState().apps.scoreSlug)
 		  this.props.dispatch(getAppsScoreSummary(store.getState().apps.scoreSlug));
