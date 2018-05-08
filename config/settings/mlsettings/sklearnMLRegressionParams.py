@@ -25,7 +25,7 @@ SKLEARN_ML_LINEAR_REGRESSION_PARAMS = [
                          "selected":True,
                          "displayName":"True"
                      }
-                    ],,
+                    ],
                 "paramType":"list",
                 "uiElemType":"checkbox",
                 "display":True,
@@ -45,7 +45,7 @@ SKLEARN_ML_LINEAR_REGRESSION_PARAMS = [
                          "selected":False,
                          "displayName":"True"
                      }
-                    ],,
+                    ],
                 "paramType":"list",
                 "uiElemType":"checkbox",
                 "display":True,
@@ -65,7 +65,7 @@ SKLEARN_ML_LINEAR_REGRESSION_PARAMS = [
                          "selected":True,
                          "displayName":"True"
                      }
-                    ],,
+                    ],
                 "paramType":"list",
                 "uiElemType":"checkbox",
                 "display":True,
@@ -249,7 +249,7 @@ SKLEARN_ML_GBT_REGRESSION_PARAMS = [
                  "selected":False,
                  "displayName":"True"
              }
-            ],,
+            ],
             "paramType":"list",
             "uiElemType":"checkbox",
             "display":True,
@@ -273,7 +273,7 @@ SKLEARN_ML_RF_REGRESSION_PARAMS = SKLEARN_ML_TREE_BASED_REGRESSION_COMMON_PARAMS
                  "selected":True,
                  "displayName":"True"
              }
-            ],,
+            ],
             "paramType":"list",
             "uiElemType":"checkbox",
             "display":True,
@@ -293,7 +293,7 @@ SKLEARN_ML_RF_REGRESSION_PARAMS = SKLEARN_ML_TREE_BASED_REGRESSION_COMMON_PARAMS
                  "selected":True,
                  "displayName":"True"
              }
-            ],,
+            ],
             "paramType":"list",
             "uiElemType":"checkbox",
             "display":True,
@@ -324,7 +324,7 @@ SKLEARN_ML_RF_REGRESSION_PARAMS = SKLEARN_ML_TREE_BASED_REGRESSION_COMMON_PARAMS
                  "selected":False,
                  "displayName":"True"
              }
-            ],,
+            ],
             "paramType":"list",
             "uiElemType":"checkbox",
             "display":True,

@@ -156,7 +156,7 @@ SKLEARN_ML_DTREE_CLASSIFICATION_PARAMS = SKLEARN_ML_TREE_BASED_CLASSIFICATION_CO
                  "selected":False,
                  "displayName":"True"
              }
-            ],,
+            ],
             "paramType":"list",
             "uiElemType":"checkbox",
             "display":True,
@@ -192,7 +192,7 @@ SKLEANR_ML_RF_CLASSIFICATION_PARAMS = SKLEARN_ML_TREE_BASED_CLASSIFICATION_COMMO
                  "selected":True,
                  "displayName":"True"
              }
-            ],,
+            ],
             "paramType":"list",
             "uiElemType":"checkbox",
             "display":True,
@@ -212,7 +212,7 @@ SKLEANR_ML_RF_CLASSIFICATION_PARAMS = SKLEARN_ML_TREE_BASED_CLASSIFICATION_COMMO
                  "selected":False,
                  "displayName":"True"
              }
-            ],,
+            ],
             "paramType":"list",
             "uiElemType":"checkbox",
             "display":True,
@@ -243,7 +243,7 @@ SKLEANR_ML_RF_CLASSIFICATION_PARAMS = SKLEARN_ML_TREE_BASED_CLASSIFICATION_COMMO
                  "selected":False,
                  "displayName":"True"
              }
-            ],,
+            ],
             "paramType":"list",
             "uiElemType":"checkbox",
             "display":True,
@@ -266,7 +266,7 @@ SKLEARN_ML_LOGISTIC_REGRESSION_PARAMS = [
                  "selected":True,
                  "displayName":"True"
              }
-            ],,
+            ],
             "paramType":"list",
             "uiElemType":"checkbox",
             "display":True,
@@ -326,7 +326,7 @@ SKLEARN_ML_LOGISTIC_REGRESSION_PARAMS = [
                  "selected":False,
                  "displayName":"True"
              }
-            ],,
+            ],
             "paramType":"list",
             "uiElemType":"checkbox",
             "display":True,
