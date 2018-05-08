@@ -367,14 +367,14 @@ class MetaDataChange(object):
                 if data.get('name') == 'dimensions':
                     data['value'] = data['value'] - 1
                 if data.get('name') == 'dimensionColumns':
-                    if 'colName' in data['value']:
+                    if colName in data['value']:
                         data['value'].remove(colName)
         elif type == 'text':
             for data in self.metaData:
                 if data.get('name') == 'measures':
                     data['value'] = data['value'] - 1
                 if data.get('name') == 'measureColumns':
-                    if 'colName' in data['value']:
+                    if colName in data['value']:
                         data['value'].remove(colName)
                 if data.get('name') == 'dimensions':
                     data['value'] = data['value'] + 1
