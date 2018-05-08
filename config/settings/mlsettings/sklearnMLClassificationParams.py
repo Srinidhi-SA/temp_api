@@ -145,12 +145,22 @@ SKLEARN_ML_DTREE_CLASSIFICATION_PARAMS = SKLEARN_ML_TREE_BASED_CLASSIFICATION_CO
         {
              "name":"presort",
              "displayName":"Pre Sort",
-             "defaultValue":False,
-             "acceptedValue":None,
-             "paramType":"boolean",
-             "uiElemType":"checkbox",
-             "display":True,
-             "hyperpatameterTuningCandidate":False,
+             "defaultValue":[
+             {
+                 "name":"false",
+                 "selected":True,
+                 "displayName":"False"
+             },
+             {
+                 "name":"true",
+                 "selected":False,
+                 "displayName":"True"
+             }
+            ],,
+            "paramType":"list",
+            "uiElemType":"checkbox",
+            "display":True,
+            "hyperpatameterTuningCandidate":False,
          },
 
 
@@ -171,9 +181,19 @@ SKLEANR_ML_RF_CLASSIFICATION_PARAMS = SKLEARN_ML_TREE_BASED_CLASSIFICATION_COMMO
         {
             "name":"bootstrap",
             "displayName":"Bootstrap Sampling",
-            "defaultValue":True,
-            "acceptedValue":None,
-            "paramType":"boolean",
+            "defaultValue":[
+             {
+                 "name":"false",
+                 "selected":False,
+                 "displayName":"False"
+             },
+             {
+                 "name":"true",
+                 "selected":True,
+                 "displayName":"True"
+             }
+            ],,
+            "paramType":"list",
             "uiElemType":"checkbox",
             "display":True,
             "hyperpatameterTuningCandidate":False,
@@ -181,9 +201,19 @@ SKLEANR_ML_RF_CLASSIFICATION_PARAMS = SKLEARN_ML_TREE_BASED_CLASSIFICATION_COMMO
         {
             "name":"oob_score",
             "displayName":"use out-of-bag samples",
-            "defaultValue":False,
-            "acceptedValue":None,
-            "paramType":"boolean",
+            "defaultValue":[
+             {
+                 "name":"false",
+                 "selected":True,
+                 "displayName":"False"
+             },
+             {
+                 "name":"true",
+                 "selected":False,
+                 "displayName":"True"
+             }
+            ],,
+            "paramType":"list",
             "uiElemType":"checkbox",
             "display":True,
             "hyperpatameterTuningCandidate":False,
@@ -202,9 +232,19 @@ SKLEANR_ML_RF_CLASSIFICATION_PARAMS = SKLEARN_ML_TREE_BASED_CLASSIFICATION_COMMO
         {
             "name":"warm_start",
             "displayName":"Warm Start",
-            "defaultValue":False,
-            "acceptedValue":None,
-            "paramType":"boolean",
+            "defaultValue":[
+             {
+                 "name":"false",
+                 "selected":True,
+                 "displayName":"False"
+             },
+             {
+                 "name":"true",
+                 "selected":False,
+                 "displayName":"True"
+             }
+            ],,
+            "paramType":"list",
             "uiElemType":"checkbox",
             "display":True,
             "hyperpatameterTuningCandidate":False,
@@ -215,12 +255,22 @@ SKLEARN_ML_LOGISTIC_REGRESSION_PARAMS = [
         {
              "name":"fit_intercept",
              "displayName":"Fit Intercept",
-             "defaultValue":True,
-             "acceptedValue":None,
-             "paramType":"boolean",
-             "uiElemType":"checkbox",
-             "display":True,
-             "hyperpatameterTuningCandidate":False,
+             "defaultValue":[
+             {
+                 "name":"false",
+                 "selected":False,
+                 "displayName":"False"
+             },
+             {
+                 "name":"true",
+                 "selected":True,
+                 "displayName":"True"
+             }
+            ],,
+            "paramType":"list",
+            "uiElemType":"checkbox",
+            "display":True,
+            "hyperpatameterTuningCandidate":True,
          },
         {
             "name":"solver",
@@ -265,9 +315,19 @@ SKLEARN_ML_LOGISTIC_REGRESSION_PARAMS = [
         {
             "name":"warm_start",
             "displayName":"Warm Start",
-            "defaultValue":False,
-            "acceptedValue":None,
-            "paramType":"boolean",
+            "defaultValue":[
+             {
+                 "name":"false",
+                 "selected":True,
+                 "displayName":"False"
+             },
+             {
+                 "name":"true",
+                 "selected":False,
+                 "displayName":"True"
+             }
+            ],,
+            "paramType":"list",
             "uiElemType":"checkbox",
             "display":True,
             "hyperpatameterTuningCandidate":False,

@@ -166,7 +166,7 @@ SKLEARN_HYPERPARAMETER_OBJECT = [
     },
     {
         "name":"none",
-        "params":SKLEARN_NONE_PARAMS,
+        "params":None,
         "displayName":"None",
         "selected": True
     }
@@ -188,7 +188,7 @@ PYSPARK_HYPERPARAMETER_OBJECT = [
     },
     {
         "name":"none",
-        "params":SKLEARN_NONE_PARAMS,
+        "params":None,
         "displayName":"None",
         "selected": True
     }
