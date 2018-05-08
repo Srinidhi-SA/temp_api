@@ -20,6 +20,7 @@
   "license": "Private",
   "dependencies": {
     "bootbox": "^4.4.0",
+    "bootstrap-multiselect": "^0.9.13-1",
     "dateformat": "^2.0.0",
     "react": "^15.6.1",
     "react-addons-shallow-compare": "^15.6.2",

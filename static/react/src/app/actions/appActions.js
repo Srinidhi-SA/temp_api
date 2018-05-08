@@ -164,9 +164,6 @@ export function createModel(modelName, targetVariable, targetLevel) {
                 "value":(store.getState().apps.trainValue/100)
                 }
             }
-            if(store.getState().apps.regression_isAutomatic == "1")
-            var AlgorithmSettings = store.getState().apps.regression_algorithm_data;
-            else
             var AlgorithmSettings = store.getState().apps.regression_algorithm_data_manual;
 
             var details = {
@@ -1767,7 +1764,7 @@ function triggerRegressionAppAlgorithmAPI(appType) {
 export function saveRegressionAppAlgorithmData(data) {
   return {type: "SAVE_REGRESSION_ALGORITHM_DATA", data}
 }
-export function updateAlgorithmData(algSlug, parSlug, parVal) {
+export function updateAlgorithmData(algSlug, parSlug, parVal,type) {
   var AlgorithmCopy = jQuery.extend(true, [], store.getState().apps.regression_algorithm_data_manual);
 
   var newAlgorithm = $.each(AlgorithmCopy, function(key, val) {
@@ -1775,7 +1772,13 @@ export function updateAlgorithmData(algSlug, parSlug, parVal) {
       if (parSlug === undefined && parVal === undefined) {
         val.selected = !val.selected;
       } else {
-        let paramerterList = val.parameters;
+        var paramerterList = val.parameters;
+        if(type == "TuningOption"){
+          let selectedOption = $.grep(val.hyperParameterSetting,function(dat,ind){
+            return(dat.selected == true)
+          });
+          paramerterList = selectedOption[0].params;
+        }
         $.each(paramerterList, function(key1, val1) {
           if (val1.name == parSlug) {
             if (val1.paramType == 'number' || val1.paramType == 'textbox') {
@@ -1783,9 +1786,13 @@ export function updateAlgorithmData(algSlug, parSlug, parVal) {
             } else if (val1.paramType == 'list') {
               let allValues = val1.defaultValue;
               $.each(allValues, function(i, dat) {
-                if (dat.name == parVal)
+                if (dat.name == parVal){
+                  if(type == "TuningParameter")
+                  dat.selected = !dat.selected;
+                  else
                   dat.selected = true;
-                else
+                }
+                else if(type == "NonTuningParameter" || type == "TuningOption")
                   dat.selected = false;
                 }
               );
@@ -1814,16 +1821,11 @@ export function reSetRegressionVariables() {
 }
 export function checkAtleastOneSelected(){
         let isSelected = false;
-        if(store.getState().apps.regression_isAutomatic == 0){
-            let algorithmData = store.getState().apps.regression_algorithm_data_manual;
-            $.each(algorithmData,function(i,dat){
-                if(dat.selected == true)
-                isSelected = true;
-            });
-        }
-        else
-        isSelected = true;
-
+        let algorithmData = store.getState().apps.regression_algorithm_data_manual;
+        $.each(algorithmData,function(i,dat){
+            if(dat.selected == true)
+            isSelected = true;
+        });
         return isSelected;
     }
 
@@ -1846,4 +1848,25 @@ function triggerCurrentAppByID(app_id){
     method: 'get',
     headers: getHeader(getUserDetailsOrRestart.get().userToken)
   }).then(response => Promise.all([response, response.json()]));
+}
+export function saveParameterTuning(){
+  var newAlgorithm = jQuery.extend(true, [], store.getState().apps.regression_algorithm_data_manual);
+  return {type: "EDIT_REGRESSION_ALGORITHM_DATA", newAlgorithm}
+}
+export function changeHyperParameterType(slug,nameVal){
+  var AlgorithmCopy = jQuery.extend(true, [], store.getState().apps.regression_algorithm_data);
+  var newAlgorithm = $.each(AlgorithmCopy, function(key, val) {
+    if (val.algorithmSlug == slug) {
+      $.each(val.hyperParameterSetting, function(key1, val1) {
+        if(val1.name == nameVal)
+        val1.selected = true;
+        else
+        val1.selected = false;
+      });
+    }
+  });
+  var data = {};
+  data.ALGORITHM_SETTING=[];
+  data.ALGORITHM_SETTING = jQuery.extend(true, [], newAlgorithm);
+  return {type: "SAVE_REGRESSION_ALGORITHM_DATA", data}
 }

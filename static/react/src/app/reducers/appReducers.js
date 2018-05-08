@@ -834,6 +834,14 @@ export default function reducer(state = {
         }
     }
     break;
+    case "EDIT_REGRESSION_ALGORITHM_DATA":
+    {
+        return{
+            ...state,
+            regression_algorithm_data:action.newAlgorithm,
+        }
+    }
+    break;
     }
     return state
 }
