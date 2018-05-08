@@ -1303,7 +1303,7 @@ def home(request):
     host = request.get_host()
 
     APP_BASE_URL = ""
-    protocol = "https"
+    protocol = "http"
     if request.is_secure():
         protocol = "https"
 
