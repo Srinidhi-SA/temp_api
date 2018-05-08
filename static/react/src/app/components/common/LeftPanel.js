@@ -92,9 +92,9 @@ class LeftPanel extends React.Component {
                       SETTINGS</NavLink>
                   </li> */}
                   <li>
-                    <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" isActive={(match,location) => /^[/]kylo/.test(location.pathname)} className=" sdb sdb_app" to="/kylo">
+                    <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" isActive={(match,location) => /^[/]kylo/.test(location.pathname)} className=" sdb sdb_story" to="/kylo">
                       <span></span>
-                      KYLO</NavLink>
+                      DATA MANAGE</NavLink>
                   </li>
               </ul>
             </div>
