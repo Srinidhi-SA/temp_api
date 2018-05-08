@@ -202,28 +202,32 @@ if MLENVIRONMENT == "spark":
             "selected": True,
             "parameters": PYSPARK_ML_LINEAR_REGRESSION_PARAMS,
             "algorithmSlug": ALGORITHMRANDOMSLUG+"linr",
-            "hyperParameterSetting": PYSPARK_HYPERPARAMETER_OBJECT
+            "hyperParameterSetting": PYSPARK_HYPERPARAMETER_OBJECT,
+            "description":"fill in the blanks"
           },
           {
             "algorithmName": "Gradient Boosted Tree Regression",
             "selected": True,
             "parameters": PYSPARK_ML_GBT_REGRESSION_PARAMS,
             "algorithmSlug": ALGORITHMRANDOMSLUG+"gbtr",
-            "hyperParameterSetting": PYSPARK_HYPERPARAMETER_OBJECT
+            "hyperParameterSetting": PYSPARK_HYPERPARAMETER_OBJECT,
+            "description":"fill in the blanks"
           },
           {
             "algorithmName": "Decision Tree Regression",
             "selected": True,
             "parameters": PYSPARK_ML_DTREE_REGRESSION_PARAMS,
             "algorithmSlug": ALGORITHMRANDOMSLUG+"dtreer",
-            "hyperParameterSetting": PYSPARK_HYPERPARAMETER_OBJECT
+            "hyperParameterSetting": PYSPARK_HYPERPARAMETER_OBJECT,
+            "description":"fill in the blanks"
           },
           {
             "algorithmName": "Random Forest Regression",
             "selected": True,
             "parameters": PYSPARK_ML_RF_REGRESSION_PARAMS,
             "algorithmSlug": ALGORITHMRANDOMSLUG+"rfr",
-            "hyperParameterSetting": PYSPARK_HYPERPARAMETER_OBJECT
+            "hyperParameterSetting": PYSPARK_HYPERPARAMETER_OBJECT,
+            "description":"fill in the blanks"
           }
         ]
     }
@@ -234,28 +238,32 @@ if MLENVIRONMENT == "spark":
             #     "selected": True,
             #     "parameters": PYSPARK_ML_LINEAR_REGRESSION_PARAMS,
             #     "algorithmSlug": ALGORITHMRANDOMSLUG + "linr",
-            # "hyperParameterSetting": PYSPARK_HYPERPARAMETER_OBJECT
+            # "hyperParameterSetting": PYSPARK_HYPERPARAMETER_OBJECT,
+            # "description":"fill in the blanks"
             # },
             # {
             #     "algorithmName": "Random Forest",
             #     "selected": True,
             #     "parameters": PYSPARK_ML_GBT_REGRESSION_PARAMS,
             #     "algorithmSlug": ALGORITHMRANDOMSLUG + "gbtr",
-            # "hyperParameterSetting": PYSPARK_HYPERPARAMETER_OBJECT
+            # "hyperParameterSetting": PYSPARK_HYPERPARAMETER_OBJECT,
+            # "description":"fill in the blanks"
             # },
             # {
             #     "algorithmName": "XGBoost",
             #     "selected": True,
             #     "parameters": PYSPARK_ML_DTREE_REGRESSION_PARAMS,
             #     "algorithmSlug": ALGORITHMRANDOMSLUG + "dtreer",
-            #     "hyperParameterSetting": PYSPARK_HYPERPARAMETER_OBJECT
+            #     "hyperParameterSetting": PYSPARK_HYPERPARAMETER_OBJECT,
+            # "description":"fill in the blanks"
             # },
             # {
             #     "algorithmName": "SVM",
             #     "selected": True,
             #     "parameters": PYSPARK_ML_RF_REGRESSION_PARAMS,
             #     "algorithmSlug": ALGORITHMRANDOMSLUG + "rfr",
-            # "hyperParameterSetting": PYSPARK_HYPERPARAMETER_OBJECT
+            # "hyperParameterSetting": PYSPARK_HYPERPARAMETER_OBJECT,
+            # "description":"fill in the blanks"
             # }
         ]
     }
@@ -267,14 +275,16 @@ else:
             "selected": True,
             "parameters": SKLEARN_ML_LINEAR_REGRESSION_PARAMS,
             "algorithmSlug": ALGORITHMRANDOMSLUG+"linr",
-            "hyperParameterSetting":SKLEARN_HYPERPARAMETER_OBJECT
+            "hyperParameterSetting":SKLEARN_HYPERPARAMETER_OBJECT,
+            "description":"fill in the blanks"
           },
           {
             "algorithmName": "Gradient Boosted Tree Regression",
             "selected": True,
             "parameters": SKLEARN_ML_GBT_REGRESSION_PARAMS,
             "algorithmSlug": ALGORITHMRANDOMSLUG+"gbtr",
-            "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT
+            "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT,
+            "description":"fill in the blanks"
 
           },
           {
@@ -282,14 +292,16 @@ else:
             "selected": True,
             "parameters": SKLEARN_ML_DTREE_REGRESSION_PARAMS,
             "algorithmSlug": ALGORITHMRANDOMSLUG+"dtreer",
-            "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT
+            "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT,
+            "description":"fill in the blanks"
           },
           {
             "algorithmName": "Random Forest Regression",
             "selected": True,
             "parameters": SKLEARN_ML_RF_REGRESSION_PARAMS,
             "algorithmSlug": ALGORITHMRANDOMSLUG+"rfr",
-            "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT
+            "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT,
+            "description":"fill in the blanks"
           }
         ]
     }
@@ -300,28 +312,36 @@ else:
                 "selected": True,
                 "parameters": SKLEARN_ML_LOGISTIC_REGRESSION_PARAMS,
                 "algorithmSlug": ALGORITHMRANDOMSLUG + "lr",
-                "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT
+                "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT,
+                "description":"A statistical method to predict the likely outcome of any qualitative attribute. It is invariably used for predicting binary outcomes (such as Yes or No)."
             },
             {
                 "algorithmName": "Random Forest",
                 "selected": True,
                 "parameters": SKLEANR_ML_RF_CLASSIFICATION_PARAMS,
                 "algorithmSlug": ALGORITHMRANDOMSLUG + "rf",
-                "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT
+                "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT,
+                "description":"""A meta estimator that uses averaging predictive power of a number of decision tree
+                classification models. This is very effective in predicting the likelihood in multi-class
+                classifications and also to control overfitting."""
             },
             {
                 "algorithmName": "XGBoost",
                 "selected": True,
                 "parameters": SKLEARN_ML_XGBOOST_CLASSIFICATION_PARAMS,
                 "algorithmSlug": ALGORITHMRANDOMSLUG + "xgb",
-                "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT
+                "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT,
+                "description":"""A machine learning technique that produces an ensemble of multiple decision tree
+                models to predict categorical variables. It is highly preferred to leverage
+                computational power to build scalable and accurate models."""
             },
             # {
             #     "algorithmName": "SVM",
             #     "selected": False,
             #     "parameters": SKLEARN_ML_RF_REGRESSION_PARAMS,
             #     "algorithmSlug": ALGORITHMRANDOMSLUG + "rfr",
-            #     "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT
+            #     "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT,
+            # "description":"fill in the blanks"
             # }
         ]
     }
