@@ -982,9 +982,7 @@ class AppView(viewsets.ModelViewSet):
         return AppSerializer
 
     def get_object_from_all(self):
-        return CustomApps.objects.get(slug=self.kwargs.get('slug'),
-            created_by=self.request.user
-        )
+        return CustomApps.objects.get(slug=self.kwargs.get('slug'))
 
     def get_serializer_context(self):
         return {'request': self.request}
