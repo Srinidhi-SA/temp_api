@@ -49,7 +49,7 @@ export class ModelAlgorithmSelection extends React.Component {
     }
     
     createModel(event){
-        //event.preventDefault();
+        event.preventDefault();
         let isSelected = checkAtleastOneSelected();
         if(isSelected == false){
             let msg= statusMessages("warning","Please select atleast one algorithm...","small_mascot");
@@ -62,8 +62,17 @@ export class ModelAlgorithmSelection extends React.Component {
             showParameterTuning:true
             });
         }
-        else
-        this.props.dispatch(createModel(store.getState().apps.apps_regression_modelName,store.getState().apps.apps_regression_targetType,store.getState().apps.apps_regression_levelCount));
+        else{
+            var isContinue = this.checkRangeValidation();
+            if(!isContinue){
+                let msg= statusMessages("warning","Please resolve errors...","small_mascot");
+                bootbox.alert(msg);
+                return false;
+            }
+            else
+            this.props.dispatch(createModel(store.getState().apps.apps_regression_modelName,store.getState().apps.apps_regression_targetType,store.getState().apps.apps_regression_levelCount));
+        }
+        
     }
     handleOptionChange(e){
         if(e.target.value == 1){
@@ -259,5 +268,13 @@ export class ModelAlgorithmSelection extends React.Component {
 			      </div>
 			    );
 	}
+    }
+    checkRangeValidation(){
+        var isGo = true;
+        $('.range-validate').each(function(){
+            if($(this)[0].innerHTML != "")
+            isGo =false;
+        });
+        return isGo;
     }
 }
