@@ -42,7 +42,10 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         return queryset
 
     def get_object_from_all(self):
-        return Dataset.objects.get(slug=self.kwargs.get('slug'))
+        return Dataset.objects.get(
+            slug=self.kwargs.get('slug'),
+            created_by=self.request.user
+        )
 
     def get_serializer_context(self):
         return {'request': self.request}
