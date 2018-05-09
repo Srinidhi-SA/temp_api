@@ -978,7 +978,7 @@ def get_permissions(user, model, type='retrieve'):
             }
         if type=='list':
             return {
-                'create_dataset': user.has_perm('api.create_dataset'),
+                'create_dataset': user.has_perm('api.create_dataset') and user.has_perm('api.view_dataset'),
                 'upload_from_file': user.has_perm('api.upload_from_file'),
                 'upload_from_mysql': user.has_perm('api.upload_from_mysql'),
                 'upload_from_mssql': user.has_perm('api.upload_from_mssql'),
@@ -994,12 +994,12 @@ def get_permissions(user, model, type='retrieve'):
             }
         if type=='list':
             return {
-                'create_signal': user.has_perm('api.create_signal'),
+                'create_signal': user.has_perm('api.create_signal') and user.has_perm('api.view_signal'),
             }
     if model == 'trainer':
         if type == 'retrieve':
             return {
-               'create_score': user.has_perm('api.create_score'),
+               'create_score': user.has_perm('api.create_score') and user.has_perm('api.view_score') and user.has_perm('api.view_trainer'),
                'view_trainer': user.has_perm('api.view_trainer'),
                'downlad_pmml': user.has_perm('api.downlad_pmml'),
                'rename_trainer': user.has_perm('api.rename_trainer'),
@@ -1007,24 +1007,24 @@ def get_permissions(user, model, type='retrieve'):
             }
         if type=='list':
             return {
-                'create_trainer': user.has_perm('api.create_trainer'),
+                'create_trainer': user.has_perm('api.create_trainer') and user.has_perm('api.view_trainer'),
             }
     if model == 'score':
         if type == 'retrieve':
             return {
                'view_score': user.has_perm('api.view_score'),
-               'download_score': user.has_perm('api.download_score'),
+               'download_score': user.has_perm('api.download_score') and user.has_perm('api.view_score'),
                'rename_score': user.has_perm('api.rename_score'),
                'remove_score': user.has_perm('api.remove_score'),
             }
         if type=='list':
             return {
-                'create_score': user.has_perm('api.create_score'),
+                'create_score': user.has_perm('api.create_score') and user.has_perm('api.view_score') and user.has_perm('api.view_trainer'),
             }
     if model == 'regression':
         if type == 'retrieve':
             return {
-                'create_score': user.has_perm('api.create_score'),
+                'create_score': user.has_perm('api.create_score') and user.has_perm('api.view_score') and user.has_perm('api.view_trainer'),
                 'view_regression': user.has_perm('api.view_regression'),
                 'downlad_pmml': user.has_perm('api.downlad_pmml'),
                 'rename_regression': user.has_perm('api.rename_regression'),
