@@ -1304,8 +1304,8 @@ def home(request):
 
     APP_BASE_URL = ""
     protocol = "http"
-    if request.is_secure():
-        protocol = "https"
+    # if request.is_secure():
+    #     protocol = "https"
 
     SCORES_BASE_URL = "https://{}:8001/".format(settings.HDFS.get("host", "ec2-34-205-203-38.compute-1.amazonaws.com"))
     APP_BASE_URL = "{}://{}".format(protocol, host)
