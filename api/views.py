@@ -57,7 +57,9 @@ class SignalView(viewsets.ModelViewSet):
         return InsightSerializer
 
     def get_object_from_all(self):
-        return Insight.objects.get(slug=self.kwargs.get('slug'))
+        return Insight.objects.get(slug=self.kwargs.get('slug'),
+            created_by=self.request.user
+        )
 
     def get_serializer_context(self):
         return {'request': self.request}
@@ -153,7 +155,9 @@ class TrainerView(viewsets.ModelViewSet):
         return TrainerSerlializer
 
     def get_object_from_all(self):
-        return Trainer.objects.get(slug=self.kwargs.get('slug'))
+        return Trainer.objects.get(slug=self.kwargs.get('slug'),
+            created_by=self.request.user
+        )
 
     def get_serializer_context(self):
         return {'request': self.request}
@@ -321,7 +325,9 @@ class ScoreView(viewsets.ModelViewSet):
         return ScoreSerlializer
 
     def get_object_from_all(self):
-        return Score.objects.get(slug=self.kwargs.get('slug'))
+        return Score.objects.get(slug=self.kwargs.get('slug'),
+            created_by=self.request.user
+        )
 
     def get_serializer_context(self):
         return {'request': self.request}
@@ -452,7 +458,9 @@ class RoboView(viewsets.ModelViewSet):
         return RoboSerializer
 
     def get_object_from_all(self):
-        return Robo.objects.get(slug=self.kwargs.get('slug'))
+        return Robo.objects.get(slug=self.kwargs.get('slug'),
+            created_by=self.request.user
+        )
 
     def get_serializer_context(self):
         return {'request': self.request}
@@ -734,7 +742,9 @@ class StockDatasetView(viewsets.ModelViewSet):
         return queryset
 
     def get_object_from_all(self):
-        return StockDataset.objects.get(slug=self.kwargs.get('slug'))
+        return StockDataset.objects.get(slug=self.kwargs.get('slug'),
+            created_by=self.request.user
+        )
 
     def get_serializer_context(self):
         return {'request': self.request}
@@ -868,7 +878,9 @@ class AudiosetView(viewsets.ModelViewSet):
         return queryset
 
     def get_object_from_all(self):
-        return Audioset.objects.get(slug=self.kwargs.get('slug'))
+        return Audioset.objects.get(slug=self.kwargs.get('slug'),
+            created_by=self.request.user
+        )
 
     def get_serializer_context(self):
         return {'request': self.request}
@@ -970,7 +982,9 @@ class AppView(viewsets.ModelViewSet):
         return AppSerializer
 
     def get_object_from_all(self):
-        return CustomApps.objects.get(slug=self.kwargs.get('slug'))
+        return CustomApps.objects.get(slug=self.kwargs.get('slug'),
+            created_by=self.request.user
+        )
 
     def get_serializer_context(self):
         return {'request': self.request}
