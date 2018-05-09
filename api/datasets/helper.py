@@ -650,10 +650,11 @@ def add_trend_in_advanced_setting(things_to_add):
     #     return settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND
 
 
-def add_transformation_setting_to_ui_metadata(meta_data, signal_permission=None):
+def add_transformation_setting_to_ui_metadata(meta_data, permissions_dict=None):
     transformation_final_obj = {"existingColumns": None, "newColumns": None}
     transformation_data = []
-
+    create_signal_permission = permissions_dict['create_signal']
+    subsetting_dataset_permission = permissions_dict['subsetting_dataset']
     if 'columnData' in meta_data:
         columnData = meta_data['columnData']
         transformation_settings = settings.TRANSFORMATION_SETTINGS_CONSTANT
@@ -669,17 +670,17 @@ def add_transformation_setting_to_ui_metadata(meta_data, signal_permission=None)
             columnType = head.get('columnType')
 
             if "dimension" == columnType:
-                if signal_permission is False:
+                if subsetting_dataset_permission is False:
                     temp['columnSetting'] = columnSettingCopy[:1]
                 else:
                     temp['columnSetting'] = columnSettingCopy[:4]
             elif "boolean" == columnType:
-                if signal_permission is False:
+                if subsetting_dataset_permission is False:
                     temp['columnSetting'] = columnSettingCopy[:1]
                 else:
                     temp['columnSetting'] = columnSettingCopy[:4]
             elif "measure" == columnType:
-                if signal_permission is False:
+                if subsetting_dataset_permission is False:
                     columnSettingTemp = columnSettingCopy[0:1] + columnSettingCopy[5:]
                     columnSettingTemp[1]['listOfActions'][0]["status"] = True
                     columnSettingTemp[2]['listOfActions'][0]["status"] = True
@@ -692,7 +693,7 @@ def add_transformation_setting_to_ui_metadata(meta_data, signal_permission=None)
                     temp['columnSetting'] = columnSettingCopy
 
             elif "datetime" == columnType:
-                if signal_permission is False:
+                if create_signal_permission is False:
                     temp['columnSetting'] = columnSettingCopy[:1]
                 else:
                     temp['columnSetting'] = columnSettingCopy[:3]
@@ -769,10 +770,10 @@ def add_headers_to_ui_metadata(meta_data):
     return []
 
 
-def add_ui_metadata_to_metadata(meta_data, signal_permission=None):
+def add_ui_metadata_to_metadata(meta_data, permissions_dict=None):
     output = {
         'possibleAnalysis': add_possible_analysis_to_ui_metadata(meta_data),
-        'transformation_settings': add_transformation_setting_to_ui_metadata(meta_data, signal_permission),
+        'transformation_settings': add_transformation_setting_to_ui_metadata(meta_data, permissions_dict),
         'metaDataUI': add_metaData_to_ui_metadata(meta_data),
         'columnDataUI': add_columnData_to_ui_metatdata(meta_data),
         'sampleDataUI': add_sampleData_to_ui_metadata(meta_data),
