@@ -36,11 +36,10 @@ export class ModelAlgorithmSelection extends React.Component {
     }
     componentWillMount() {
         //It will trigger when refresh happens on url
-        /*if(this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null){
+        if(this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null){
             window.history.go(-1);
         }
-        this.props.dispatch(getRegressionAppAlgorithmData(this.props.match.params.slug,this.props.currentAppDetails.app_type));*/
-        this.props.dispatch(getRegressionAppAlgorithmData(this.props.match.params.slug,"CLASSIFICATION"));
+        this.props.dispatch(getRegressionAppAlgorithmData(this.props.match.params.slug,this.props.currentAppDetails.app_type));
     }
     componentDidMount() {
         $("#manualBlock_111").addClass("dispnone");
