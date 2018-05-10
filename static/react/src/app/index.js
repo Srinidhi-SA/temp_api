@@ -300,8 +300,8 @@ class App extends React.Component {
             <Route exact path="/apps-regression-score/:slug/:l1/:l2/:l3" component={OverViewPage}/>
             <Route exact path="/apps-regression-score/:slug/:l1/:l2" component={OverViewPage}/>
             <Route exact path="/apps-regression-score-document/:slug" component={SignalDocumentMode}/>
-            <Route exact path="/kylo" component={KyloMenuList}/>
-            <Route exact path="/kylo/selected_menu/:kylo_url" component={SampleFrame}/>
+            <Route exact path="/datamgmt" component={KyloMenuList}/>
+            <Route exact path="/datamgmt/selected_menu/:kylo_url" component={SampleFrame}/>
 
           </Main>
         </Switch>

@@ -16,7 +16,7 @@ export class KyloMenuList extends React.Component {
     const cardListDetails = LIST_OF_KYLO_OPERATIONS.map((card, i) => {
       var iconDetails = "";
       var percentageDetails = "";
-      var kyloLink = "/kylo/selected_menu/" + card.relative_url;
+      var kyloLink = "/datamgmt/selected_menu/" + card.relative_url;
       var kyloClick = <Link to={kyloLink} id={card.slug} className="title">
         {card.displayName}
       </Link>
