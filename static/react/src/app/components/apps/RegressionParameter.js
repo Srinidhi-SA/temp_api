@@ -86,7 +86,7 @@ export class RegressionParameter extends React.Component {
         validateResult = this.validateTextboxValue(e.target.value,min,max);
         if(validateResult && validateResult.iserror){
             e.target.parentElement.nextElementSibling.innerHTML=validateResult.errmsg;
-            e.target.focus();
+            //e.target.focus();
         }
         this.setState({
         defaultVal: e.target.value
@@ -165,7 +165,7 @@ export class RegressionParameter extends React.Component {
                                 <div className="col-md-6">
                                     <input type="text" className="form-control" value={this.state.defaultVal} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max)} onChange={this.changeTextboxValue.bind(this)} placeholder="e.g. 1-3, 4, 5-10"/>
                                 </div>
-                                <div className="col-xs-3 text-danger"></div>
+                                <div className="col-xs-3 range-validate text-danger"></div>
                             </div>
                             </div>
                         );
@@ -273,7 +273,6 @@ export class RegressionParameter extends React.Component {
         return parseInt(value, 10) >= 0;
     }
     isInteger(toTest) {
-        nu
         const numericExp = /^\s*[0-9]+\s*$/;
         return numericExp.test(toTest);
     }
