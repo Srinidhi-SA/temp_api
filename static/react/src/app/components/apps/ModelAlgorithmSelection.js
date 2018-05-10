@@ -36,11 +36,11 @@ export class ModelAlgorithmSelection extends React.Component {
     }
     componentWillMount() {
         //It will trigger when refresh happens on url
-        if(this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null){
+        /*if(this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null){
             window.history.go(-1);
         }
-        this.props.dispatch(getRegressionAppAlgorithmData(this.props.match.params.slug,this.props.currentAppDetails.app_type));
-        
+        this.props.dispatch(getRegressionAppAlgorithmData(this.props.match.params.slug,this.props.currentAppDetails.app_type));*/
+        this.props.dispatch(getRegressionAppAlgorithmData(this.props.match.params.slug,"CLASSIFICATION"));
     }
     componentDidMount() {
         $("#manualBlock_111").addClass("dispnone");
@@ -141,10 +141,11 @@ export class ModelAlgorithmSelection extends React.Component {
                                     hyperparameterOptionsData = hyperparameterOptions.map((param,index) =>{
                                         var hyperpameterOptionsPath = algorithmPath+".hyperParameterSetting["+prop+"].params["+index+"]";
                                         return(
-                                            <div class="row">
+                                            <div className="row">
                                                 <div class="form-group">
                                                     <label class="col-md-3 control-label read">{param.displayName}</label>  
                                                     <RegressionParameter parameterData={param} tuneName={selectedValue} algorithmSlug={data.algorithmSlug} type="TuningOption"/>
+                                                <div class="clearfix"></div>
                                                 </div>
                                             </div>
                                         );
@@ -164,6 +165,7 @@ export class ModelAlgorithmSelection extends React.Component {
                                             <label class="col-md-3 control-label read">{params.displayName}</label>  
                                             <label class="col-md-3 control-label read">{params.displayName}</label>  
                                             <RegressionParameter parameterData={params} tuneName={selectedValue} algorithmSlug={data.algorithmSlug} isTuning={true} type="TuningParameter"/>
+                                        <div class="clearfix"></div>
                                         </div>
                                     </div>
                                 );
@@ -180,6 +182,7 @@ export class ModelAlgorithmSelection extends React.Component {
                                     <label class="col-md-3 control-label read">{params.displayName}</label>  
                                     <label class="col-md-3 control-label read">{params.displayName}</label>  
                                     <RegressionParameter parameterData={params} tuneName={selectedValue} algorithmSlug={data.algorithmSlug} type="NonTuningParameter"/>
+                                <div class="clearfix"></div>
                                 </div>
                             </div>
                             );
@@ -190,21 +193,33 @@ export class ModelAlgorithmSelection extends React.Component {
                         return(
                             <Tab eventKey={data.algorithmSlug} title={data.algorithmName}>
                                 <div className="row">
-                                    <label class="col-md-3 control-label read">Hyperparameter Tuning :</label>
+                                    <div className="form-group">
+                                    <label class="col-md-3 control-label">Hyperparameter Tuning :</label>
                                     <div className="col-md-3">
                                         <select  class="form-control" onChange={this.changeHyperParameterType.bind(this,data.algorithmSlug)} value={selectedValue}>
                                         {hyperParameterTypes}
                                         </select>
                                     </div>
+                                    <div class="clearfix"></div>
+                                    </div>
                                 </div>
                                 <div>{hyperparameterOptionsData}</div>
                                 <div className="row">
-                                    You can provide the intervals or options that we use for optimization using hyperparameter tuning.
+                                    <div className="col-md-12">
+                                    {selectedValue != "none"?
+                                    <h4>You can provide the intervals or options that we use for optimization using hyperparameter tuning.</h4>
+                                    :<h4>The parameter specifications below are recommended by mAdvisor.  You can still go ahead and tune any of them.</h4>}
+                                    </div>
                                 </div>
                                 {selectedValue != "none"?
                                 <div className="row">
                                      <label class="col-md-6 control-label read"></label>
-                                     <label class="col-md-1 xs-ml-10 control-label read"><span class="pull-left"><b>Min</b>&nbsp;</span><span class="pull-right"><b>Max</b></span></label>
+                                     <label class="col-md-1 control-label read text-center">
+                                            <b>Min</b>
+                                    </label>
+                                     <label class="col-md-1 control-label read text-center">                                          
+                                         <b>Max</b>
+                                    </label>
                                      <label class="col-md-4 control-label read"><b><span class="xs-ml-30">Select one or multiple intervals</span></b></label>
                                 </div>:""}
                                 <div>{parametersData}</div>
@@ -239,7 +254,7 @@ export class ModelAlgorithmSelection extends React.Component {
                                 </div>:
                                 
                                 
-                               <Tabs  id="algosel" onSelect={this.changeParameter.bind(this)} className="apps_list">
+                               <Tabs  id="algosel" onSelect={this.changeParameter.bind(this)} className="tab-container">
                                 {pageData}
                                 </Tabs>
                                 }

@@ -85,7 +85,7 @@ export class RegressionParameter extends React.Component {
         var validateResult = {"iserror":false,"errmsg":""};
         validateResult = this.validateTextboxValue(e.target.value,min,max);
         if(validateResult && validateResult.iserror){
-            e.target.parentElement.nextElementSibling.innerHTML=validateResult.errmsg;
+            e.target.parentElement.lastElementChild.innerHTML=validateResult.errmsg;
             //e.target.focus();
         }
         this.setState({
@@ -94,8 +94,8 @@ export class RegressionParameter extends React.Component {
         this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value,this.props.type));
     }
     changeTextboxValue(e){
-        if(e.target.parentElement.nextElementSibling != null)
-        e.target.parentElement.nextElementSibling.innerHTML="";
+        if(e.target.parentElement.lastElementChild != null)
+        e.target.parentElement.lastElementChild.innerHTML="";
         this.setState({
         defaultVal: e.target.value
         });
@@ -135,7 +135,7 @@ export class RegressionParameter extends React.Component {
             }
                return(
                    <div className="row">
-                  <div className="col-md-6">
+                  <div className="col-md-6 for_multiselect">
                  <select ref={(el) => { this.eleSel = el }} className={cls} onChange={this.selecthandleChange.bind(this)} value={selectedValue} multiple={tune?"multiple":false}>
                  {optionsTemp}
                  </select>
@@ -159,13 +159,19 @@ export class RegressionParameter extends React.Component {
                     if(tune){
                         return(
                             <div className="row">                            
-                            <div className="col-md-12 col-sm-2">
-                                <div className="col-xs-1 clr-alt4">{this.state.min}</div>
-                                <div className="col-xs-1 xs-ml-10 clr-alt4"> {this.state.max}</div>
+                            <div className="col-md-12">
+                                <div className="row">
+                                <div className="col-md-2">
+                                    <div className="clr-alt4 gray-box">
+                                    {this.state.min}
+                                    </div></div>
+                                <div className="col-md-2"><div className="clr-alt4 gray-box"> {this.state.max}</div></div>
                                 <div className="col-md-6">
                                     <input type="text" className="form-control" value={this.state.defaultVal} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max)} onChange={this.changeTextboxValue.bind(this)} placeholder="e.g. 1-3, 4, 5-10"/>
+                                <div className="clearfix"></div>
+                                <div className="range-validate text-danger"></div>
                                 </div>
-                                <div className="col-xs-3 range-validate text-danger"></div>
+                                </div>
                             </div>
                             </div>
                         );
