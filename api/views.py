@@ -5407,6 +5407,7 @@ def updateFromNifi(request):
 
     # import pdb;pdb.set_trace()
     # print request.GET.get("username",None)
+    print "################nifi api request##############"
     print request.data
 
     hive_info=copy.deepcopy(settings.DATASET_HIVE)
