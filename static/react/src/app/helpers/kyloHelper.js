@@ -9,8 +9,8 @@ var LIST_OF_KYLO_OPERATIONS=[
     "slug":"dashboardfhiufbewuf"
 },
 {
-  "name":"feeds",
-  "displayName":"Feeds",
+  "name":"datasets",
+  "displayName":"Datasets",
   "logo":"icon_ctrl_feeds.png",
   "relative_url":"feeds",
   "slug":"feed434344fhiufbewuf"

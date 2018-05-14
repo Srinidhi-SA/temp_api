@@ -15544,3 +15544,8 @@ input[type=range]:focus::-ms-fill-upper {
 .cardKpi {text-align: center}
 .card_kpi {float:none; display: inline-block; vertical-align: top;}
 div.text-center.tbl_th_center th {text-align: center}
+.col-xs-1.clr-alt4, .gray-box { padding: 5px 0px;
+    text-align: center; }
+.for_multiselect .btn-group { min-width:180px; }
+.for_multiselect .btn-group .btn.btn-default {width:100%; text-align: left;  }
+.for_multiselect .btn-group .btn.btn-default .caret { float: right; margin-top: 5px;}
