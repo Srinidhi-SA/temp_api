@@ -43,6 +43,7 @@ export class AppsModelDetail extends React.Component {
     window.print();
   }
   componentDidMount() {
+		window.scrollTo(0, 0);
 	  if(!isEmpty(store.getState().apps.modelSummary)){
 		  if(store.getState().apps.modelSummary.slug != store.getState().apps.modelSlug)
 		  this.props.dispatch(getAppsModelSummary(store.getState().apps.modelSlug));

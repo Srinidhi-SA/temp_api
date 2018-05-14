@@ -20,6 +20,7 @@
   <link rel="icon" href="/static/assets/images/favicon.ico" />
   <link rel="stylesheet" href="/static/assets/css/fancy_fileupload.css?v={{ UI_VERSION }}" type="text/css" media="all" />
   <link href="/static/assets/css/theme.ice.css" rel="stylesheet">
+  <link rel="stylesheet" href="/static/assets/css/bootstrap-multiselect.css" type="text/css" />
   <title>Euclid - Welcome to Euclid</title>
 </head>
 
@@ -30,6 +31,7 @@
     var APP_BASE_URL = "{{APP_BASE_URL}}";
       var SCORES_BASE_URL = "{{SCORES_BASE_URL}}"
       var STATIC_URL_PATH = "{{STATIC_URL}}"
+      var KYLO_UI_URL = "http://datamdev.marlabsai.com"
     console.log(SCORES_BASE_URL);
   </script>
   <script src="/static/assets/js/jquery.min.js"></script>
@@ -45,8 +47,10 @@
 
   <script type="text/javascript" src="/static/assets/js/jquery.tablesorter.js"></script>
   <script type="text/javascript" src="/static/assets/js/jquery.tablesorter.widgets.js"></script>
+    <script type="text/javascript" src="/static/assets/js/bootstrap-multiselect.js"></script>
     <!--<script src="/assets/js/bootstrap.min.js"></script>-->
   <script src="/static/react/dist/app/bundle.js?v={{ UI_VERSION }}"></script>
+
 <!--  <script src="/assets/js/uiScripts.js"></script>-->
   <!-- Latest compiled and minified JavaScript -->
 

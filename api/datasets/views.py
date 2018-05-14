@@ -42,7 +42,10 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         return queryset
 
     def get_object_from_all(self):
-        return Dataset.objects.get(slug=self.kwargs.get('slug'))
+        return Dataset.objects.get(
+            slug=self.kwargs.get('slug'),
+            created_by=self.request.user
+        )
 
     def get_serializer_context(self):
         return {'request': self.request}
@@ -183,8 +186,12 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         if original_meta_data_from_scripts == {}:
             uiMetaData = None
         else:
-            signal_permission = request.user.has_perm('api.create_signal')
-            uiMetaData = add_ui_metadata_to_metadata(original_meta_data_from_scripts, signal_permission=signal_permission)
+            permissions_dict = {
+                'create_signal': request.user.has_perm('api.create_signal'),
+                'subsetting_dataset': request.user.has_perm('api.subsetting_dataset')
+
+            }
+            uiMetaData = add_ui_metadata_to_metadata(original_meta_data_from_scripts, permissions_dict=permissions_dict)
 
         object_details['meta_data'] = {
             "scriptMetaData": original_meta_data_from_scripts,

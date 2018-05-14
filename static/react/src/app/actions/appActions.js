@@ -23,6 +23,7 @@ import {
 } from "../helpers/helper";
 import {hideDataPreview, getStockDataSetPreview, showDataPreview, getDataSetPreview} from "./dataActions";
 import {getHeaderWithoutContent} from "./dataUploadActions";
+import renderHTML from 'react-render-html';
 import Dialog from 'react-bootstrap-dialog';
 import React from "react";
 import {showLoading, hideLoading} from 'react-redux-loading-bar';
@@ -163,9 +164,6 @@ export function createModel(modelName, targetVariable, targetLevel) {
                 "value":(store.getState().apps.trainValue/100)
                 }
             }
-            if(store.getState().apps.regression_isAutomatic == "1")
-            var AlgorithmSettings = store.getState().apps.regression_algorithm_data;
-            else
             var AlgorithmSettings = store.getState().apps.regression_algorithm_data_manual;
 
             var details = {
@@ -727,7 +725,8 @@ export function showDialogBox(slug, dialog, dispatch, title, msgText) {
 }
 export function handleModelDelete(slug, dialog) {
   return (dispatch) => {
-    showDialogBox(slug, dialog, dispatch, DELETEMODEL, "Are you sure, you want to delete model?")
+    showDialogBox(slug, dialog, dispatch, DELETEMODEL, renderHTML(statusMessages("warning","Are you sure, you want to delete model?","small_mascot")))
+	 
   }
 }
 function deleteModel(slug, dialog, dispatch) {
@@ -755,10 +754,18 @@ function deleteModelAPI(slug) {
 
 export function handleModelRename(slug, dialog, name) {
   const customBody = (
-    <div className="form-group">
-      <label for="fl1" className="control-label">Enter a new Name</label>
-      <input className="form-control" id="idRenameModel" type="text" defaultValue={name}/>
-    </div>
+		<div className="row">	
+			<div className="col-md-4">
+				<img src={STATIC_URL + "assets/images/alert_thinking.gif"} class="img-responsive" />
+			</div>
+			<div className="col-md-8">
+			<div className="form-group">
+			<label for="idRenameModel" className="control-label">Enter a new Name</label>
+			<input className="form-control" id="idRenameModel" type="text" defaultValue={name}/>
+			</div>
+			</div>
+		</div>
+    
   )
   return (dispatch) => {
     showRenameDialogBox(slug, dialog, dispatch, RENAMEMODEL, customBody)
@@ -813,7 +820,8 @@ function renameModelAPI(slug, newName) {
 
 export function handleScoreDelete(slug, dialog) {
   return (dispatch) => {
-    showDialogBox(slug, dialog, dispatch, DELETESCORE, "Are you sure, you want to delete score?")
+    showDialogBox(slug, dialog, dispatch, DELETESCORE, renderHTML(statusMessages("warning","Are you sure, you want to delete score?","small_mascot")))
+	//renderHTML(statusMessages("warning","Are you sure, you want to delete score?","small_mascot"))
   }
 }
 function deleteScore(slug, dialog, dispatch) {
@@ -841,10 +849,17 @@ function deleteScoreAPI(slug) {
 
 export function handleScoreRename(slug, dialog, name) {
   const customBody = (
-    <div className="form-group">
-      <label for="fl1" className="control-label">Enter a new Name</label>
-      <input className="form-control" id="idRenameScore" type="text" defaultValue={name}/>
-    </div>
+	<div className="row">	
+	<div className="col-md-4">
+		<img src={STATIC_URL + "assets/images/alert_thinking.gif"} class="img-responsive" />
+	</div>
+	<div className="col-md-8">
+	<div className="form-group">
+	<label for="idRenameScore" className="control-label">Enter a new Name</label>
+	<input className="form-control" id="idRenameScore" type="text" defaultValue={name}/>
+	</div>
+	</div>
+	</div>
   )
   return (dispatch) => {
     showRenameDialogBox(slug, dialog, dispatch, RENAMESCORE, customBody)
@@ -880,7 +895,7 @@ export function activateModelScoreTabs(id) {
 
 export function handleInsightDelete(slug, dialog) {
   return (dispatch) => {
-    showDialogBox(slug, dialog, dispatch, DELETEINSIGHT, "Are you sure, you want to delete Insight?")
+    showDialogBox(slug, dialog, dispatch, DELETEINSIGHT, renderHTML(statusMessages("warning","Are you sure, you want to delete Insight?","small_mascot")))
   }
 }
 function deleteInsight(slug, dialog, dispatch) {
@@ -908,10 +923,17 @@ function deleteInsightAPI(slug) {
 
 export function handleInsightRename(slug, dialog, name) {
   const customBody = (
-    <div className="form-group">
-      <label for="fl1" className="control-label">Enter a new Name</label>
-      <input className="form-control" id="idRenameInsight" type="text" defaultValue={name}/>
-    </div>
+		<div className="row">	
+		<div className="col-md-4">
+		<img src={STATIC_URL + "assets/images/alert_thinking.gif"} class="img-responsive" />
+		</div>
+		<div className="col-md-8">
+		<div className="form-group">
+		<label for="idRenameInsight" className="control-label">Enter a new Name</label>
+		<input className="form-control" id="idRenameInsight" type="text" defaultValue={name}/>
+		</div>
+		</div>
+		</div>
   )
   return (dispatch) => {
     showRenameDialogBox(slug, dialog, dispatch, RENAMEINSIGHT, customBody)
@@ -1103,7 +1125,7 @@ export function storeAudioSearchElement(search_element) {
 
 export function handleAudioDelete(slug, dialog) {
   return (dispatch) => {
-    showDialogBox(slug, dialog, dispatch, DELETEAUDIO, "Are you sure, you want to delete media file?")
+    showDialogBox(slug, dialog, dispatch, DELETEAUDIO, renderHTML(statusMessages("warning","Are you sure, you want to delete media file?","small_mascot")))
   }
 }
 function deleteAudio(slug, dialog, dispatch) {
@@ -1131,10 +1153,17 @@ function deleteAudioAPI(slug) {
 
 export function handleAudioRename(slug, dialog, name) {
   const customBody = (
-    <div className="form-group">
-      <label for="fl1" className="col-sm-6 control-label">Enter Media file name</label>
-      <input className="form-control" id="idRenameAudio" type="text" defaultValue={name}/>
-    </div>
+		<div className="row">	
+		<div className="col-md-4">
+		<img src={STATIC_URL + "assets/images/alert_thinking.gif"} class="img-responsive" />
+		</div>
+		<div className="col-md-8">
+		<div className="form-group">
+		<label for="idRenameAudio" className="control-label">Enter a new Name</label>
+		<input className="form-control" id="idRenameAudio" type="text" defaultValue={name}/>
+		</div>
+		</div>
+		</div>
   )
   return (dispatch) => {
     showRenameDialogBox(slug, dialog, dispatch, RENAMEAUDIO, customBody)
@@ -1175,7 +1204,8 @@ export function playAudioFile() {
     $("#audioPlay").addClass("hide");
     audioEle.play();
   } else {
-    bootbox.alert("Please upload audio file to play.");
+	    var body_msg=statusMessages("warning","Please upload audio file to play.","small_mascot");
+    bootbox.alert(body_msg);
   }
 
 }
@@ -1190,7 +1220,8 @@ export function pauseAudioFile() {
     $("#audioPause").removeClass("show");
     audioEle.pause();
   } else {
-    bootbox.alert("Please upload audio file to play.");
+	  var body_msg=statusMessages("warning","Please upload audio file to play.","small_mascot");
+    bootbox.alert(body_msg);
   }
 }
 
@@ -1733,7 +1764,7 @@ function triggerRegressionAppAlgorithmAPI(appType) {
 export function saveRegressionAppAlgorithmData(data) {
   return {type: "SAVE_REGRESSION_ALGORITHM_DATA", data}
 }
-export function updateAlgorithmData(algSlug, parSlug, parVal) {
+export function updateAlgorithmData(algSlug, parSlug, parVal,type) {
   var AlgorithmCopy = jQuery.extend(true, [], store.getState().apps.regression_algorithm_data_manual);
 
   var newAlgorithm = $.each(AlgorithmCopy, function(key, val) {
@@ -1741,7 +1772,13 @@ export function updateAlgorithmData(algSlug, parSlug, parVal) {
       if (parSlug === undefined && parVal === undefined) {
         val.selected = !val.selected;
       } else {
-        let paramerterList = val.parameters;
+        var paramerterList = val.parameters;
+        if(type == "TuningOption"){
+          let selectedOption = $.grep(val.hyperParameterSetting,function(dat,ind){
+            return(dat.selected == true)
+          });
+          paramerterList = selectedOption[0].params;
+        }
         $.each(paramerterList, function(key1, val1) {
           if (val1.name == parSlug) {
             if (val1.paramType == 'number' || val1.paramType == 'textbox') {
@@ -1749,9 +1786,13 @@ export function updateAlgorithmData(algSlug, parSlug, parVal) {
             } else if (val1.paramType == 'list') {
               let allValues = val1.defaultValue;
               $.each(allValues, function(i, dat) {
-                if (dat.name == parVal)
+                if (dat.name == parVal){
+                  if(type == "TuningParameter")
+                  dat.selected = !dat.selected;
+                  else
                   dat.selected = true;
-                else
+                }
+                else if(type == "NonTuningParameter" || type == "TuningOption")
                   dat.selected = false;
                 }
               );
@@ -1780,16 +1821,11 @@ export function reSetRegressionVariables() {
 }
 export function checkAtleastOneSelected(){
         let isSelected = false;
-        if(store.getState().apps.regression_isAutomatic == 0){
-            let algorithmData = store.getState().apps.regression_algorithm_data_manual;
-            $.each(algorithmData,function(i,dat){
-                if(dat.selected == true)
-                isSelected = true;
-            });
-        }
-        else
-        isSelected = true;
-
+        let algorithmData = store.getState().apps.regression_algorithm_data_manual;
+        $.each(algorithmData,function(i,dat){
+            if(dat.selected == true)
+            isSelected = true;
+        });
         return isSelected;
     }
 
@@ -1812,4 +1848,25 @@ function triggerCurrentAppByID(app_id){
     method: 'get',
     headers: getHeader(getUserDetailsOrRestart.get().userToken)
   }).then(response => Promise.all([response, response.json()]));
+}
+export function saveParameterTuning(){
+  var newAlgorithm = jQuery.extend(true, [], store.getState().apps.regression_algorithm_data_manual);
+  return {type: "EDIT_REGRESSION_ALGORITHM_DATA", newAlgorithm}
+}
+export function changeHyperParameterType(slug,nameVal){
+  var AlgorithmCopy = jQuery.extend(true, [], store.getState().apps.regression_algorithm_data);
+  var newAlgorithm = $.each(AlgorithmCopy, function(key, val) {
+    if (val.algorithmSlug == slug) {
+      $.each(val.hyperParameterSetting, function(key1, val1) {
+        if(val1.name == nameVal)
+        val1.selected = true;
+        else
+        val1.selected = false;
+      });
+    }
+  });
+  var data = {};
+  data.ALGORITHM_SETTING=[];
+  data.ALGORITHM_SETTING = jQuery.extend(true, [], newAlgorithm);
+  return {type: "SAVE_REGRESSION_ALGORITHM_DATA", data}
 }

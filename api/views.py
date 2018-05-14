@@ -62,7 +62,9 @@ class SignalView(viewsets.ModelViewSet):
         return InsightSerializer
 
     def get_object_from_all(self):
-        return Insight.objects.get(slug=self.kwargs.get('slug'))
+        return Insight.objects.get(slug=self.kwargs.get('slug'),
+            created_by=self.request.user
+        )
 
     def get_serializer_context(self):
         return {'request': self.request}
@@ -158,7 +160,9 @@ class TrainerView(viewsets.ModelViewSet):
         return TrainerSerlializer
 
     def get_object_from_all(self):
-        return Trainer.objects.get(slug=self.kwargs.get('slug'))
+        return Trainer.objects.get(slug=self.kwargs.get('slug'),
+            created_by=self.request.user
+        )
 
     def get_serializer_context(self):
         return {'request': self.request}
@@ -256,12 +260,19 @@ class TrainerView(viewsets.ModelViewSet):
         dataset_serializer = DatasetSerializer(instance=dataset_instance, context={"request": self.request})
         object_details = dataset_serializer.data
         original_meta_data_from_scripts = object_details['meta_data']
+
+        permissions_dict = {
+            'create_signal': request.user.has_perm('api.create_signal'),
+            'subsetting_dataset': request.user.has_perm('api.subsetting_dataset')
+
+        }
+
         if original_meta_data_from_scripts is None:
             uiMetaData = None
         if original_meta_data_from_scripts == {}:
             uiMetaData = None
         else:
-            uiMetaData = add_ui_metadata_to_metadata(original_meta_data_from_scripts)
+            uiMetaData = add_ui_metadata_to_metadata(original_meta_data_from_scripts, permissions_dict=permissions_dict)
 
         object_details['meta_data'] = {
             "scriptMetaData": original_meta_data_from_scripts,
@@ -326,7 +337,9 @@ class ScoreView(viewsets.ModelViewSet):
         return ScoreSerlializer
 
     def get_object_from_all(self):
-        return Score.objects.get(slug=self.kwargs.get('slug'))
+        return Score.objects.get(slug=self.kwargs.get('slug'),
+            created_by=self.request.user
+        )
 
     def get_serializer_context(self):
         return {'request': self.request}
@@ -457,7 +470,9 @@ class RoboView(viewsets.ModelViewSet):
         return RoboSerializer
 
     def get_object_from_all(self):
-        return Robo.objects.get(slug=self.kwargs.get('slug'))
+        return Robo.objects.get(slug=self.kwargs.get('slug'),
+            created_by=self.request.user
+        )
 
     def get_serializer_context(self):
         return {'request': self.request}
@@ -739,7 +754,9 @@ class StockDatasetView(viewsets.ModelViewSet):
         return queryset
 
     def get_object_from_all(self):
-        return StockDataset.objects.get(slug=self.kwargs.get('slug'))
+        return StockDataset.objects.get(slug=self.kwargs.get('slug'),
+            created_by=self.request.user
+        )
 
     def get_serializer_context(self):
         return {'request': self.request}
@@ -873,7 +890,9 @@ class AudiosetView(viewsets.ModelViewSet):
         return queryset
 
     def get_object_from_all(self):
-        return Audioset.objects.get(slug=self.kwargs.get('slug'))
+        return Audioset.objects.get(slug=self.kwargs.get('slug'),
+            created_by=self.request.user
+        )
 
     def get_serializer_context(self):
         return {'request': self.request}
@@ -969,7 +988,6 @@ class AppView(viewsets.ModelViewSet):
         )
         app_ordered_list = copy.deepcopy(settings.APPORDERLIST)
         queryset = queryset.filter(name__in=app_ordered_list)
-
         return queryset
 
     def get_serializer_class(self):
@@ -1094,10 +1112,6 @@ def set_result(request, slug=None):
         slug,
         results
     )
-    # tasks.save_results_to_job1(
-    #     slug,
-    #     results
-    # )
     if "status=failed" in request.body:
         results = {'error_message': 'Failed'}
         results = tasks.write_into_databases.delay(
@@ -1310,8 +1324,8 @@ def home(request):
 
     APP_BASE_URL = ""
     protocol = "http"
-    if request.is_secure():
-        protocol = "https"
+    # if request.is_secure():
+    #     protocol = "https"
 
     SCORES_BASE_URL = "https://{}:8001/".format(settings.HDFS.get("host", "ec2-34-205-203-38.compute-1.amazonaws.com"))
     APP_BASE_URL = "{}://{}".format(protocol, host)
@@ -5401,7 +5415,8 @@ def updateFromNifi(request):
 
     # import pdb;pdb.set_trace()
     # print request.GET.get("username",None)
-    # print request.data
+    print "################nifi api request##############"
+    print request.data
 
     hive_info=copy.deepcopy(settings.DATASET_HIVE)
     host=request.data['host']
