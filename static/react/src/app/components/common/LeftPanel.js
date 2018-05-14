@@ -91,11 +91,11 @@ class LeftPanel extends React.Component {
                       <span></span>
                       SETTINGS</NavLink>
                   </li> */}
-                  <li>
+                  {/*<li>
                     <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" isActive={(match,location) => /^[/]datamgmt/.test(location.pathname)} className=" sdb sdb_story" to="/datamgmt">
                       <span></span>
                       DATA MANAGE</NavLink>
-                  </li>
+                  </li>*/}
               </ul>
             </div>
             {/* // /.Side bar Main Menu  -->*/}

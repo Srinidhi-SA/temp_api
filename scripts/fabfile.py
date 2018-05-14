@@ -281,7 +281,7 @@ def pull_api_at_remote(base_remote_path, api_branch):
             # run("git stash apply")
 
             sudo("pip install -r requirements.txt")
-            run('python manage.py makemigrations')
+            #run('python manage.py makemigrations')
             run('python manage.py migrate')
 
     except Exception as err:

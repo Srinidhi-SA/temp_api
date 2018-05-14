@@ -51,6 +51,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'api.auditLogMiddleware_modified.PrintRequestMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -1522,7 +1523,6 @@ JOB_MESSAGE_JSON_FORMAT = {
 time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(timestamp))
 '''
 
-USE_YARN_DEFAULT_QUEUE=False
 REGRESSION_APP_ID=[13]
 CLASSIFICATION_APP_ID= [1, 2, 6, 7, 8, 9, 10, 11, 12]
 APPORDERLIST=[
@@ -1540,3 +1540,5 @@ APPORDERLIST=[
 "asset_health_prediction",
 "employee_attrition"
 ]
+
+USE_YARN_DEFAULT_QUEUE=False
