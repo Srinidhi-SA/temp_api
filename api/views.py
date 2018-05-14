@@ -255,12 +255,19 @@ class TrainerView(viewsets.ModelViewSet):
         dataset_serializer = DatasetSerializer(instance=dataset_instance, context={"request": self.request})
         object_details = dataset_serializer.data
         original_meta_data_from_scripts = object_details['meta_data']
+
+        permissions_dict = {
+            'create_signal': request.user.has_perm('api.create_signal'),
+            'subsetting_dataset': request.user.has_perm('api.subsetting_dataset')
+
+        }
+
         if original_meta_data_from_scripts is None:
             uiMetaData = None
         if original_meta_data_from_scripts == {}:
             uiMetaData = None
         else:
-            uiMetaData = add_ui_metadata_to_metadata(original_meta_data_from_scripts)
+            uiMetaData = add_ui_metadata_to_metadata(original_meta_data_from_scripts, permissions_dict=permissions_dict)
 
         object_details['meta_data'] = {
             "scriptMetaData": original_meta_data_from_scripts,
