@@ -11,7 +11,7 @@ from django.shortcuts import render
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.decorators import api_view
-from rest_framework.decorators import detail_route
+from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
 from rest_framework.request import Request
 
@@ -980,7 +980,7 @@ class AppView(viewsets.ModelViewSet):
             #created_by=self.request.user,
             status="Active"
             #status__in=['SUCCESS', 'INPROGRESS']
-        )
+        ).order_by('rank')
         app_ordered_list = copy.deepcopy(settings.APPORDERLIST)
         queryset = queryset.filter(name__in=app_ordered_list)
         return queryset
@@ -1052,6 +1052,34 @@ class AppView(viewsets.ModelViewSet):
         serializer = AppSerializer(instance=instance, context={"request": self.request})
         return Response(serializer.data)
 
+    @list_route(methods=['put'])
+    def rank(self, request, *args, **kwargs):
+
+
+
+        data = request.data
+        if data is None or data == dict():
+            APPORDERLIST = settings.APPORDERLIST
+        else:
+            APPORDERLIST = data['APPORDERLIST']
+
+        custom_apps_all = CustomApps.objects.all()
+
+        for app in custom_apps_all:
+            app.null_the_rank()
+
+        import pdb;
+        pdb.set_trace()
+        for index, name in enumerate(APPORDERLIST):
+            app_instance = CustomApps.objects.filter(name=name).first()
+            if app_instance is not None:
+                app_instance.adjust_rank(index=index)
+
+        return get_listed_data(
+            viewset=self,
+            request=request,
+            list_serializer=AppListSerializers
+        )
 
 
 def get_datasource_config_list(request):
