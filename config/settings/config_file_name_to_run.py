@@ -1,3 +1,3 @@
-CONFIG_FILE_NAME = 'local'
-UI_VERSION = '5751955'
+CONFIG_FILE_NAME = 'development'
+UI_VERSION = '9488759'
     
