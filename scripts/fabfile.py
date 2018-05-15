@@ -90,6 +90,7 @@ def deploy_api(branch="dev"):
     print details
     path_details= details['path_details']
     server_details= details['server_details']
+    change_config_file(branch)
     only_for_api_push_and_pull(
         server_details=server_details,
         path_details=path_details
