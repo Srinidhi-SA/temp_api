@@ -1371,6 +1371,7 @@ class CustomApps(models.Model):
     live_status = models.CharField(max_length=300, default='0', choices=STATUS_CHOICES)
     viewed = models.BooleanField(default=False)
     app_type = models.CharField(max_length=300, null=True, default="")
+    rank = models.IntegerField(unique=True, null=True)
 
     class Meta:
         ordering = ['app_id']
@@ -1419,6 +1420,17 @@ class CustomApps(models.Model):
         #             'created_by': self.created_by.username,
         #         })
         #     return convert_json_object_into_list_of_object(brief_info, 'apps')
+
+
+    def adjust_rank(self, index):
+        self.rank = index
+        self.save()
+
+    def null_the_rank(self):
+        self.rank = None
+        self.save()
+
+
 
 
 auditlog.register(Dataset)
