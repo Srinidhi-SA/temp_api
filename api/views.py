@@ -322,6 +322,75 @@ class TrainerView(viewsets.ModelViewSet):
         xml_data = data[-1].get(algoname)
         return return_xml_data(xml_data, algoname)
 
+    @detail_route(methods=['put'])
+    def save_hyperparameter(self, request, *args, **kwargs):
+
+        try:
+            instance = self.get_object_from_all()
+
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
+        if instance is None:
+            return creation_failed_exception("File Doesn't exist.")
+
+        data = request.data
+        model_list = data['model_list']
+        """
+        data --> list of indexes to be true
+        """
+
+        trainer_data = json.loads(instance.data)
+        hyper_paramter_data = trainer_data['model_hyperparameter']
+
+        for model_name in model_list:
+            hyper_parameter_to_change = None
+            for hyper_param in hyper_paramter_data:
+                if hyper_param['slug'] == model_name['slug']:
+                    hyper_parameter_to_change = hyper_param
+                    break
+
+            if hyper_parameter_to_change is None:
+                continue
+
+            hyper_card_data = hyper_parameter_to_change['cardData'][0]['data']
+            for data in hyper_card_data:
+                if data['Model Id'] == model_name['Model Id']:
+                    data['selected'] = model_name['selected']
+                    break
+
+        instance.data = json.dumps(trainer_data)
+
+        new_model_dropdown_list = []
+
+        for hyper_param in hyper_paramter_data:
+            for model_data in hyper_param['cardData'][0]['data']:
+                if model_data['selected'] == True:
+                    model_data_short = {
+                                           "slug":hyper_param['slug'],
+                                           "Model Id":model_data['Model Id'],
+                                           "name":model_data['name'],
+                                           "accuracy": model_data['accuracy'],
+                                           'selected': model_data['selected']
+                                       }
+                    new_model_dropdown_list.append(model_data_short)
+
+        return Response({
+            "model_dropdown": new_model_dropdown_list
+        })
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 class ScoreView(viewsets.ModelViewSet):
     def get_queryset(self):
