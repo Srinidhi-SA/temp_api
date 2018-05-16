@@ -369,7 +369,6 @@ class TrainerView(viewsets.ModelViewSet):
                     model_data_short = {
                                            "slug":hyper_param['slug'],
                                            "Model Id":model_data['Model Id'],
-                                           "name":model_data['name'],
                                            "accuracy": model_data['accuracy'],
                                            'selected': model_data['selected']
                                        }
