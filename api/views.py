@@ -1072,7 +1072,7 @@ class AppView(viewsets.ModelViewSet):
 
         for app in custom_apps_all:
             app.null_the_rank()
-            
+
         for index, name in enumerate(APPORDERLIST):
             app_instance = CustomApps.objects.filter(name=name).first()
             if app_instance is not None:
