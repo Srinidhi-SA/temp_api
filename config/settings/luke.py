@@ -2,25 +2,27 @@ from base import *
 import datetime
 
 
+
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
-
 DATABASES = {
-    'default': {
+    'default1': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    },
+    "default": {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'madvisor',
+        'USER': 'root',
+        'PASSWORD': 'Marlabs@123',
+        'HOST': 'localhost',
+        'PORT': '',
+        }
 }
 
 PROJECT_APP = [
@@ -76,7 +78,7 @@ JOBSERVER = {
 
 THIS_SERVER_DETAILS = {
     "host": "34.196.22.246",
-    "port": "9013",
+    "port": "9012",
     "initail_domain": "/api"
 }
 
@@ -124,3 +126,28 @@ FUNNY_EMAIL_LIST = [
 JOBSERVER_EMAIL_TEMPLATE = "Please restart jobserver- IP-"
 
 DEPLOYMENT_ENV = "prod"
+
+HADOOP_CONF_DIR= False
+HADOOP_USER_NAME="hduser"
+
+CELERY_BROKER_URL = 'redis://localhost:6379/'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE
+# load related settings
+CELERYD_MAX_TASKS_PER_CHILD = 4
+CELERYD_CONCURRENCY = 2
+# queue related settings
+CELERY_DEFAULT_QUEUE = config_file_name_to_run.CONFIG_FILE_NAME
+CELERY_QUEUES = {
+    config_file_name_to_run.CONFIG_FILE_NAME: {
+        "binding_key": "task.#",
+        "exchange": config_file_name_to_run.CONFIG_FILE_NAME,
+        "routing": config_file_name_to_run.CONFIG_FILE_NAME
+    }
+}
+
+
+PEM_KEY = "/keyfiles/TIAA.pem"

@@ -80,12 +80,12 @@ export class SignalCard extends React.Component {
             var signalLink = "/signals/" + story.slug;
             var completed_percent = story.completed_percentage
             if(completed_percent>99)
-            completed_percent = 99
-            var signalClick = <Link to={signalLink} id={story.slug} onClick={this.getSignalAnalysis.bind(this,signalType)} className="title">
+            completed_percent=99
+            var signalClick = <Link to={signalLink} id={story.slug} onClick={this.getSignalAnalysis.bind(this)} className="title">
               {story.name}
               </Link>
               if(story.status == INPROGRESS){
-                  percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{completed_percent >= 0 ? completed_percent+' %':"In Progress"}</span></div>
+                  percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">&nbsp;{completed_percent >= 0 ? completed_percent+' %':"In Progress"}&nbsp;</span></div>
                   signalClick = <a class="cursor" onClick={this.openLoaderScreen.bind(this,story.slug,completed_percent,story.completed_message)}> {story.name}</a>
               }else if(story.status == SUCCESS && !story.viewed){
                   story.completed_percentage = 100;
@@ -134,8 +134,6 @@ export class SignalCard extends React.Component {
                       {/*<!-- End Rename and Delete BLock  -->*/}
                           </div>:<div class="btn-toolbar pull-right"></div>
                         }
-
-
 
                           <div className="clearfix"></div>
 

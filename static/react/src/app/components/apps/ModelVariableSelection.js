@@ -11,7 +11,6 @@ import {updateTrainAndTest,createModel,updateSelectedVariable,showLevelCountsFor
 import {AppsLoader} from "../common/AppsLoader";
 import {getDataSetPreview,showAllVariables} from "../../actions/dataActions";
 import {hideTargetVariable} from "../../actions/signalActions";
-import {statusMessages} from "../../helpers/helper";
 
 @connect((store) => {
     return {login_response: store.login.login_response, dataPreview: store.datasets.dataPreview,
@@ -47,12 +46,10 @@ export class ModelVariableSelection extends React.Component {
     createModel(event){
         event.preventDefault();
         if($('#createModelAnalysisList option:selected').val() == ""){
-            let msg= statusMessages("warning","Please select a variable to analyze...","small_mascot");
-              bootbox.alert(msg);
+              bootbox.alert("Please select a variable to analyze...");
             return false;
         }else if (this.props.targetLevelCounts!=null && ($("#createModelLevelCount").val()==null||$("#createModelLevelCount").val()=="")) {
-          let msg= statusMessages("warning","Please select a sublevel value to analyze...","small_mascot");
-            bootbox.alert(msg);
+            bootbox.alert("Please select a sublevel value to analyze...");
           return false;
         }
 
@@ -221,7 +218,7 @@ export class ModelVariableSelection extends React.Component {
 
 					</div>
                  </div>
-                  
+
                 <div className="row">
                 <div className="col-lg-12 text-right">
                 <Button type="submit" bsStyle="primary">{buttonName}</Button>

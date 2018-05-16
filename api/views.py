@@ -41,6 +41,11 @@ from api.tasks import clean_up_on_delete
 
 from api.permission import TrainerRelatedPermission, ScoreRelatedPermission, SignalsRelatedPermission
 
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
+
 from api.datasets.views import DatasetView
 
 class SignalView(viewsets.ModelViewSet):
@@ -1129,11 +1134,7 @@ def set_result(request, slug=None):
     if not job:
         return JsonResponse({'result': 'Failed'})
     results = request.body
-    # tasks.save_results_to_job.delay(
-    #     slug,
-    #     results
-    # )
-    tasks.save_results_to_job1(
+    tasks.save_results_to_job.delay(
         slug,
         results
     )
@@ -1153,7 +1154,7 @@ def set_result(request, slug=None):
         #     results=json.loads(results)
         # )
 
-        results = tasks.write_into_databases1(
+        results = tasks.write_into_databases.delay(
             job_type=job.job_type,
             object_slug=job.object_id,
             results=json.loads(results)
@@ -1171,7 +1172,7 @@ def use_set_result(request, slug=None):
 
     results = job.results
 
-    results = tasks.write_into_databases1(
+    results = tasks.write_into_databases.delay(
         job_type=job.job_type,
         object_slug=job.object_id,
         results=json.loads(results)
@@ -1182,102 +1183,102 @@ def use_set_result(request, slug=None):
     return JsonResponse({'result': results})
 
 
-def write_into_databases(job_type, object_slug, results):
-    from api import helper
-    import json
-    if job_type in ["metadata", "subSetting"]:
-        dataset_object = Dataset.objects.get(slug=object_slug)
-
-        if "error_message" in results:
-            dataset_object.status = "FAILED"
-            dataset_object.save()
-            return results
-
-        columnData = results['columnData']
-        for data in columnData:
-            # data["chartData"] = helper.find_chart_data_and_replace_with_chart_data(data["chartData"])
-            card_data = data["chartData"]
-            if 'dataType' in card_data and card_data['dataType'] == 'c3Chart':
-                chart_data = card_data['data']
-                final_chart_data = helper.decode_and_convert_chart_raw_data(chart_data, object_slug=object_slug)
-                data["chartData"] = chart_changes_in_metadata_chart(final_chart_data)
-                data["chartData"]["table_c3"] = []
-
-        results['columnData'] = columnData
-        # results['possibleAnalysis'] = settings.ANALYSIS_FOR_TARGET_VARIABLE
-        da = []
-        for d in results.get('sampleData'):
-            da.append(map(str, d))
-        results['sampleData'] = da
-        # results["modified"] = False
-
-        dataset_object.meta_data = json.dumps(results)
-        dataset_object.analysis_done = True
-        dataset_object.save()
-        return results
-    elif job_type == "master":
-        insight_object = Insight.objects.get(slug=object_slug)
-
-        if "error_message" in results:
-            insight_object.status = "FAILED"
-            insight_object.save()
-            return results
-
-        results = add_slugs(results, object_slug=object_slug)
-        insight_object.data = json.dumps(results)
-        insight_object.analysis_done = True
-        insight_object.status = 'SUCCESS'
-        insight_object.save()
-        return results
-    elif job_type == "model":
-        trainer_object = Trainer.objects.get(slug=object_slug)
-
-        if "error_message" in results:
-            trainer_object.status = "FAILED"
-            trainer_object.save()
-            return results
-
-        results['model_summary'] = add_slugs(results['model_summary'], object_slug=object_slug)
-        trainer_object.data = json.dumps(results)
-        trainer_object.analysis_done = True
-        trainer_object.save()
-        return results
-    elif job_type == 'score':
-        score_object = Score.objects.get(slug=object_slug)
-
-        if "error_message" in results:
-            score_object.status = "FAILED"
-            score_object.save()
-            return results
-
-        results = add_slugs(results, object_slug=object_slug)
-        score_object.data = json.dumps(results)
-        score_object.analysis_done = True
-        score_object.save()
-        return results
-    elif job_type == 'robo':
-        robo_object = Robo.objects.get(slug=object_slug)
-
-        if "error_message" in results:
-            robo_object.status = "FAILED"
-            robo_object.save()
-            return results
-
-        results = add_slugs(results, object_slug=object_slug)
-        robo_object.data = json.dumps(results)
-        robo_object.robo_analysis_done = True
-        robo_object.save()
-        return results
-    elif job_type == 'stockAdvisor':
-        stock_objects = StockDataset.objects.get(slug=object_slug)
-        results = add_slugs(results, object_slug=object_slug)
-        stock_objects.data = json.dumps(results)
-        stock_objects.analysis_done = True
-        stock_objects.status = 'SUCCESS'
-        stock_objects.save()
-        return results
-    else:
-        print "No where to write"
+# def write_into_databases(job_type, object_slug, results):
+#     from api import helper
+#     import json
+#     if job_type in ["metadata", "subSetting"]:
+#         dataset_object = Dataset.objects.get(slug=object_slug)
+#
+#         if "error_message" in results:
+#             dataset_object.status = "FAILED"
+#             dataset_object.save()
+#             return results
+#
+#         columnData = results['columnData']
+#         for data in columnData:
+#             # data["chartData"] = helper.find_chart_data_and_replace_with_chart_data(data["chartData"])
+#             card_data = data["chartData"]
+#             if 'dataType' in card_data and card_data['dataType'] == 'c3Chart':
+#                 chart_data = card_data['data']
+#                 final_chart_data = helper.decode_and_convert_chart_raw_data(chart_data, object_slug=object_slug)
+#                 data["chartData"] = chart_changes_in_metadata_chart(final_chart_data)
+#                 data["chartData"]["table_c3"] = []
+#
+#         results['columnData'] = columnData
+#         # results['possibleAnalysis'] = settings.ANALYSIS_FOR_TARGET_VARIABLE
+#         da = []
+#         for d in results.get('sampleData'):
+#             da.append(map(str, d))
+#         results['sampleData'] = da
+#         # results["modified"] = False
+#
+#         dataset_object.meta_data = json.dumps(results)
+#         dataset_object.analysis_done = True
+#         dataset_object.save()
+#         return results
+#     elif job_type == "master":
+#         insight_object = Insight.objects.get(slug=object_slug)
+#
+#         if "error_message" in results:
+#             insight_object.status = "FAILED"
+#             insight_object.save()
+#             return results
+#
+#         results = add_slugs(results, object_slug=object_slug)
+#         insight_object.data = json.dumps(results)
+#         insight_object.analysis_done = True
+#         insight_object.status = 'SUCCESS'
+#         insight_object.save()
+#         return results
+#     elif job_type == "model":
+#         trainer_object = Trainer.objects.get(slug=object_slug)
+#
+#         if "error_message" in results:
+#             trainer_object.status = "FAILED"
+#             trainer_object.save()
+#             return results
+#
+#         results['model_summary'] = add_slugs(results['model_summary'], object_slug=object_slug)
+#         trainer_object.data = json.dumps(results)
+#         trainer_object.analysis_done = True
+#         trainer_object.save()
+#         return results
+#     elif job_type == 'score':
+#         score_object = Score.objects.get(slug=object_slug)
+#
+#         if "error_message" in results:
+#             score_object.status = "FAILED"
+#             score_object.save()
+#             return results
+#
+#         results = add_slugs(results, object_slug=object_slug)
+#         score_object.data = json.dumps(results)
+#         score_object.analysis_done = True
+#         score_object.save()
+#         return results
+#     elif job_type == 'robo':
+#         robo_object = Robo.objects.get(slug=object_slug)
+#
+#         if "error_message" in results:
+#             robo_object.status = "FAILED"
+#             robo_object.save()
+#             return results
+#
+#         results = add_slugs(results, object_slug=object_slug)
+#         robo_object.data = json.dumps(results)
+#         robo_object.robo_analysis_done = True
+#         robo_object.save()
+#         return results
+#     elif job_type == 'stockAdvisor':
+#         stock_objects = StockDataset.objects.get(slug=object_slug)
+#         results = add_slugs(results, object_slug=object_slug)
+#         stock_objects.data = json.dumps(results)
+#         stock_objects.analysis_done = True
+#         stock_objects.status = 'SUCCESS'
+#         stock_objects.save()
+#         return results
+#     else:
+#         print "No where to write"
 
 
 def chart_changes_in_metadata_chart(chart_data):
@@ -5440,7 +5441,6 @@ def updateFromNifi(request):
 
     # import pdb;pdb.set_trace()
     # print request.GET.get("username",None)
-    print "################nifi api request##############"
     print request.data
 
     hive_info=copy.deepcopy(settings.DATASET_HIVE)

@@ -1426,6 +1426,7 @@ LIST_OF_ADMIN_EMAILS = [
             # 'gulshan.gaurav@marlabs.com'
         ]
 
+import config_file_name_to_run
 
 UI_VERSION = config_file_name_to_run.UI_VERSION
 
@@ -1539,3 +1540,5 @@ APPORDERLIST=[
 "asset_health_prediction",
 "employee_attrition"
 ]
+
+USE_YARN_DEFAULT_QUEUE=False

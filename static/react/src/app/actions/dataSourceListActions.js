@@ -120,9 +120,8 @@ export function updateDbDetails(evt){
     }*/
 }
 
-
 export function clearDataUploadFile(){
 	return {
-		type: "CLEAR_DATA_UPLOAD_FILE"		
+		type: "CLEAR_DATA_UPLOAD_FILE"
 	}
 }

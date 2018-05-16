@@ -1,4 +1,3 @@
-import {statusMessages} from "../helpers/helper";
 export default function reducer(state = {
         appsModelShowModal:false,
         modelList: {},
@@ -284,9 +283,7 @@ export default function reducer(state = {
     case "CREATE_MODEL_ERROR":
     {
         //alert(action.json.non_field_errors);
-        //throw new Error("Unable to create model!");
-        bootbox.alert(statusMessages("error","The data set selected for analysis is currupt. Please check and reupload","small_mascot"))
-
+        throw new Error("Unable to create model!");
     }
     break;
     case "UPDATE_MODEL_FLAG":
@@ -754,7 +751,7 @@ export default function reducer(state = {
         }
     }
     break;
-
+    
     case "SCORE_TO_PROCEED":
     {
         return{

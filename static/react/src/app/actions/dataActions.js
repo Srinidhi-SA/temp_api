@@ -1675,6 +1675,7 @@ export function showAllVariables(array,slug){
             slug,
     }
 }
+
 export function disableAdvancedAnalysisElements(elementName,action){
     if(elementName == "association")
     return {

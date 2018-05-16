@@ -6,6 +6,8 @@ import signal
 
 import os
 from celery.decorators import task
+from config.settings.config_file_name_to_run import CONFIG_FILE_NAME
+from django.conf import settings
 
 
 @task(name="sum_two_numbers")
@@ -30,9 +32,14 @@ import re
 from api.models import Job, Dataset, Score, Insight, Trainer, StockDataset, Robo
 
 
-@task(name='hum_se_hai_zamana_sara')
+@task(name='hum_se_hai_zamana_sara', queue=CONFIG_FILE_NAME)
 def submit_job_separate_task(command_array, slug):
-    cur_process = subprocess.Popen(command_array, stderr=subprocess.PIPE)
+    import subprocess, os
+    my_env = os.environ.copy()
+    if settings.HADOOP_CONF_DIR:
+        my_env["HADOOP_CONF_DIR"] = settings.HADOOP_CONF_DIR
+        my_env["HADOOP_USER_NAME"] = settings.HADOOP_USER_NAME
+    cur_process = subprocess.Popen(command_array, stderr=subprocess.PIPE, env=my_env)
     print cur_process
     # TODO: @Ankush need to write the error to error log and standard out to normal log
     for line in iter(lambda: cur_process.stderr.readline(), ''):
@@ -49,7 +56,7 @@ def submit_job_separate_task(command_array, slug):
             model_instance.save()
             break
 
-@task(name='write_into_databases')
+@task(name='write_into_databases', queue=CONFIG_FILE_NAME)
 def write_into_databases(job_type, object_slug, results):
     from api import helper
     import json
@@ -230,7 +237,7 @@ def write_into_databases1(job_type, object_slug, results):
         results['model_summary'] = add_slugs(results['model_summary'],object_slug=object_slug)
         trainer_object.data = json.dumps(results)
         trainer_object.analysis_done = True
-        trainer_object.status = "SUCCESS"
+        trainer_object.status = 'SUCCESS'
         trainer_object.save()
         return results
     elif job_type == 'score':
@@ -246,6 +253,7 @@ def write_into_databases1(job_type, object_slug, results):
         results = add_slugs(results, object_slug=object_slug)
         score_object.data = json.dumps(results)
         score_object.analysis_done = True
+        score_object.status = 'SUCCESS'
         score_object.save()
         return results
     elif job_type == 'robo':
@@ -261,6 +269,7 @@ def write_into_databases1(job_type, object_slug, results):
         results = add_slugs(results, object_slug=object_slug)
         robo_object.data = json.dumps(results)
         robo_object.robo_analysis_done = True
+        robo_object.status = 'SUCCESS'
         robo_object.save()
         return results
     elif job_type == 'stockAdvisor':
@@ -277,7 +286,7 @@ def write_into_databases1(job_type, object_slug, results):
         print "No where to write"
 
 
-@task(name='save_results_to_job')
+@task(name='save_results_to_job', queue=CONFIG_FILE_NAME)
 def save_results_to_job(slug, results):
     from api.helper import get_db_object
     import json
@@ -294,6 +303,7 @@ def save_results_to_job(slug, results):
     job.save()
 
 
+@task(name='cleanup_logentry', queue=CONFIG_FILE_NAME)
 def save_results_to_job1(slug, results):
     from api.helper import get_db_object
     import json
@@ -326,7 +336,7 @@ def clean_up_logentry():
         print "delete object(s) :- %{0}".format(log_entries)
 
 
-@task(name='cleanup_on_delete')
+@task(name='cleanup_on_delete', queue=CONFIG_FILE_NAME)
 def clean_up_on_delete(slug, model_name):
 
     from api.helper import get_db_object
@@ -353,7 +363,7 @@ def clean_up_on_delete(slug, model_name):
     sd_instance.delete()
 
 
-@task(name='kill_job_using_application_id')
+@task(name='kill_job_using_application_id', queue=CONFIG_FILE_NAME)
 def kill_application_using_fabric(app_id=None):
 
     if None == app_id:
@@ -364,10 +374,13 @@ def kill_application_using_fabric(app_id=None):
 
     HDFS = settings.HDFS
     BASEDIR = settings.BASE_DIR
-    emr_file = BASEDIR + "/keyfiles/TIAA.pem"
+    emr_file = BASEDIR + settings.PEM_KEY
 
     env.key_filename = [emr_file]
-    env.host_string = "{0}@{1}".format(HDFS["user.name"], HDFS["host"])
+    if CONFIG_FILE_NAME == 'cwpoc':
+        env.host_string = "{0}@{1}".format("ankush", HDFS["host"])
+    else:
+        env.host_string = "{0}@{1}".format(HDFS["user.name"], HDFS["host"])
 
     try:
         capture = run("yarn application --kill {0}".format(app_id))

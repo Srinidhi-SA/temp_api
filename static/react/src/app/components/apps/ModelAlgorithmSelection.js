@@ -44,9 +44,9 @@ export class ModelAlgorithmSelection extends React.Component {
     componentDidMount() {
         $("#manualBlock_111").addClass("dispnone");
         $("#automaticBlock_111").removeClass("dispnone");
-          
+
     }
-    
+
     createModel(event){
         event.preventDefault();
         let isSelected = checkAtleastOneSelected();
@@ -71,7 +71,7 @@ export class ModelAlgorithmSelection extends React.Component {
             else
             this.props.dispatch(createModel(store.getState().apps.apps_regression_modelName,store.getState().apps.apps_regression_targetType,store.getState().apps.apps_regression_levelCount));
         }
-        
+
     }
     handleOptionChange(e){
         if(e.target.value == 1){
@@ -142,7 +142,7 @@ export class ModelAlgorithmSelection extends React.Component {
                                         return(
                                             <div className="row">
                                                 <div class="form-group">
-                                                    <label class="col-md-3 control-label read">{param.displayName}</label>  
+                                                    <label class="col-md-3 control-label read">{param.displayName}</label>
                                                     <RegressionParameter parameterData={param} tuneName={selectedValue} algorithmSlug={data.algorithmSlug} type="TuningOption"/>
                                                 <div class="clearfix"></div>
                                                 </div>
@@ -161,8 +161,8 @@ export class ModelAlgorithmSelection extends React.Component {
                                 return(
                                     <div class="row">
                                         <div class="form-group">
-                                            <label class="col-md-3 control-label read">{params.displayName}</label>  
-                                            <label class="col-md-3 control-label read">{params.displayName}</label>  
+                                            <label class="col-md-3 control-label read">{params.displayName}</label>
+                                            <label class="col-md-3 control-label read">{params.displayName}</label>
                                             <RegressionParameter parameterData={params} tuneName={selectedValue} algorithmSlug={data.algorithmSlug} isTuning={true} type="TuningParameter"/>
                                         <div class="clearfix"></div>
                                         </div>
@@ -178,8 +178,8 @@ export class ModelAlgorithmSelection extends React.Component {
                             return(
                             <div class="row">
                                 <div class="form-group">
-                                    <label class="col-md-3 control-label read">{params.displayName}</label>  
-                                    <label class="col-md-3 control-label read">{params.displayName}</label>  
+                                    <label class="col-md-3 control-label read">{params.displayName}</label>
+                                    <label class="col-md-3 control-label read">{params.displayName}</label>
                                     <RegressionParameter parameterData={params} tuneName={selectedValue} algorithmSlug={data.algorithmSlug} type="NonTuningParameter"/>
                                 <div class="clearfix"></div>
                                 </div>
@@ -216,7 +216,7 @@ export class ModelAlgorithmSelection extends React.Component {
                                      <label class="col-md-1 control-label read text-center">
                                             <b>Min</b>
                                     </label>
-                                     <label class="col-md-1 control-label read text-center">                                          
+                                     <label class="col-md-1 control-label read text-center">
                                          <b>Max</b>
                                     </label>
                                      <label class="col-md-4 control-label read"><b><span class="xs-ml-30">Select one or multiple intervals</span></b></label>
@@ -225,10 +225,10 @@ export class ModelAlgorithmSelection extends React.Component {
                             </Tab>
                         );
                     }
-                
+
                 });
             }
-       
+
         return(
                 <div className="side-body">
                     <div className="page-head">
@@ -244,20 +244,20 @@ export class ModelAlgorithmSelection extends React.Component {
                             <div class="col-md-12">
                                 {this.state.showParameterTuning == false ?
                                 <div className="panel panel-mAd documentModeSpacing box-shadow">
-		                            <div className="panel-heading">
+                                    <div className="panel-heading">
                                         <h5 class="panel-title">Please use the following learning algorithms for prediction</h5>
                                     </div>
                                     <div className="panel-body no-border">
                                      {pageData}
                                      </div>
                                 </div>:
-                                
-                                
+
+
                                <Tabs  id="algosel" onSelect={this.changeParameter.bind(this)} className="tab-container">
                                 {pageData}
                                 </Tabs>
                                 }
-                               
+
                             </div>
                         </div>
 
@@ -272,16 +272,16 @@ export class ModelAlgorithmSelection extends React.Component {
         );
     }
     else{
-		return (
-				 <div className="side-body">
-			        <div className="page-head">
-			        </div>
-			        <div className="main-content">
-			          <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif" } />
-			        </div>
-			      </div>
-			    );
-	}
+        return (
+                 <div className="side-body">
+                    <div className="page-head">
+                    </div>
+                    <div className="main-content">
+                      <img id="loading" src={ STATIC_URL + "assets/images/Preloader_2.gif" } />
+                    </div>
+                  </div>
+                );
+    }
     }
     checkRangeValidation(){
         var isGo = true;

@@ -92,11 +92,8 @@ class Job(models.Model):
 
     def start(self):
         command_array = json.loads(self.command_array)
-        from api.yarn_job_api import start_yarn_application_again
-        newly_spawned_job = start_yarn_application_again(
-            command_array=command_array
-        )
-        self.url = newly_spawned_job.get('application_id')
+        from tasks import submit_job_separate_task
+        submit_job_separate_task.delay(command_array, self.object_id)
         original_object = self.get_original_object()
 
         if original_object is not None:
@@ -1527,8 +1524,11 @@ def get_queue_job_type_name(job_type):
 
 
 def get_queue_to_use(job_type, data_size=None):
-    return get_queue_deployment_env_name() + '-' + settings.YARN_QUEUE_NAMES.get(job_type) + get_queue_size_name(
-        job_type, data_size)
+    if settings.USE_YARN_DEFAULT_QUEUE:
+        return "default"
+    else:
+        return get_queue_deployment_env_name() + '-' + settings.YARN_QUEUE_NAMES.get(job_type) + get_queue_size_name(
+            job_type, data_size)
 
 
 def get_queue_size_name(job_type, data_size):

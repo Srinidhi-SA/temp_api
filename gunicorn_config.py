@@ -71,6 +71,7 @@ worker_connections = 1000
 timeout = 30000000
 keepalive = 300
 max_requests = 5
+max_requests = 5
 
 #
 #   spew - Install a trace function that spews every line of Python
