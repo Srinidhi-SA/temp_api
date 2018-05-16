@@ -365,12 +365,12 @@ class TrainerView(viewsets.ModelViewSet):
 
         for hyper_param in hyper_paramter_data:
             for model_data in hyper_param['cardData'][0]['data']:
-                if model_data['selected'] == True:
+                if model_data['Selected'] == True:
                     model_data_short = {
                                            "slug":hyper_param['slug'],
                                            "Model Id":model_data['Model Id'],
                                            # "accuracy": model_data['accuracy'],
-                                           'selected': model_data['selected']
+                                           'Selected': model_data['Selected']
                                        }
                     new_model_dropdown_list.append(model_data_short)
 
