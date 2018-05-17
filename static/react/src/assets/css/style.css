@@ -15549,3 +15549,8 @@ div.text-center.tbl_th_center th {text-align: center}
 .for_multiselect .btn-group { min-width:180px; }
 .for_multiselect .btn-group .btn.btn-default {width:100%; text-align: left;  }
 .for_multiselect .btn-group .btn.btn-default .caret { float: right; margin-top: 5px;}
+.parcoords{height:200px;}
+.arn_table {border:1px solid #ddd}
+.rowhead { text-transform: capitalize}
+.rowhead, .rowbody { border-bottom:1px solid #ddd}
+.rowhead th, .rowbody td { padding:2px; text-align:center; }

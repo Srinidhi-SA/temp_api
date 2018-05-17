@@ -203,7 +203,7 @@ function createModelSuccess(data, dispatch) {
     /*if(store.getState().apps.appsLoaderPerValue < LOADERMAXPERVALUE){
                 dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+APPSLOADERPERVALUE));
             }*/
-    dispatch(getAppsModelSummary(data.slug));
+    dispatch(getAppsModelSummary(data.slug,true));
     return {type: "CREATE_MODEL_SUCCESS", slug}
   }, APPSDEFAULTINTERVAL);
   return {type: "CREATE_MODEL_SUCCESS", slug}
@@ -287,7 +287,7 @@ export function hideCreateScorePopup() {
   return {type: "APPS_SCORE_HIDE_POPUP"}
 }
 
-export function getAppsModelSummary(slug) {
+export function getAppsModelSummary(slug,fromCreateModel) {
   return (dispatch) => {
     return fetchModelSummary(getUserDetailsOrRestart.get().userToken, slug).then(([response, json]) => {
       if (response.status === 200) {
@@ -297,8 +297,12 @@ export function getAppsModelSummary(slug) {
           dispatch(closeAppsLoaderValue());
           dispatch(hideDataPreview());
           dispatch(updateModelSummaryFlag(true));
-          if (store.getState().apps.currentAppDetails.app_type == "REGRESSION")
+          //if (store.getState().apps.currentAppDetails.app_type == "REGRESSION")
             dispatch(reSetRegressionVariables());
+            if(fromCreateModel)
+            dispatch(isFromModelCreation(true));
+            else
+            dispatch(isFromModelCreation(false));
           }
         else if (json.status == FAILED) {
           bootbox.alert("Your model could not be created.Please try later.", function() {
@@ -309,6 +313,7 @@ export function getAppsModelSummary(slug) {
           dispatch(hideDataPreview());
           if (store.getState().apps.currentAppDetails.app_type == "REGRESSION")
             dispatch(reSetRegressionVariables());
+            dispatch(isFromModelCreation(false));
           }
         else if (json.status == INPROGRESS) {
           if (json.message !== null && json.message.length > 0) {
@@ -319,6 +324,7 @@ export function getAppsModelSummary(slug) {
         dispatch(closeAppsLoaderValue())
         dispatch(fetchModelSummaryError(json));
         dispatch(updateModelSummaryFlag(false));
+        dispatch(isFromModelCreation(false));
       }
     })
   }
@@ -1869,4 +1875,63 @@ export function changeHyperParameterType(slug,nameVal){
   data.ALGORITHM_SETTING=[];
   data.ALGORITHM_SETTING = jQuery.extend(true, [], newAlgorithm);
   return {type: "SAVE_REGRESSION_ALGORITHM_DATA", data}
+}
+export function isFromModelCreation(val) {
+  return {type: "FROM_MODEL_CREATION",val}
+}
+export function checkSaveSelectedModels(checkObj) {
+  var selectedAlgorithms = store.getState().apps.algorithmsList;
+  var slug = checkObj.slug;
+  var model = checkObj.modelName;
+  var isExist = $.grep(selectedAlgorithms,function(val,key){
+	return (val.slug == slug && val.modelName == model)
+  });
+  if(isExist.length == 1){
+    $.each(selectedAlgorithms,function(k,val1){
+      if(val1.slug == slug && val1.modelName == model)
+        val1.selected = !val1.selected;
+    });
+  }
+  else{
+    selectedAlgorithms.push(checkObj);
+  }
+  var selectedArry = $.grep(selectedAlgorithms,function(v,k){
+    return(v.selected == true);
+  });
+  var selectedModelCount = selectedArry.length;
+  var modelSummary = store.getState().apps.modelSummary;
+  var hyperChartData = modelSummary.data.model_hyperparameter;
+  var newHyperChartData = $.each(hyperChartData,function(mk,mv){
+      if(mv.slug == slug){
+        var parallelchartData = mv.cardData[0].data;
+        $.each(parallelchartData,function(pk,pv){
+          if(pv['Model Id'] == model)
+          {
+            if(checkObj.selected)
+            pv.Selected = "True";
+            else
+            pv.Selected = "False";
+          }
+        });
+      }
+  });
+  modelSummary.data.model_hyperparameter = newHyperChartData;
+  return{type:"SAVE_CHECKED_ALGORITHMS",selectedAlgorithms,selectedModelCount,modelSummary}
+}
+export function sendSelectedAlgorithms(){
+  return (dispatch) => {
+        return triggerSendSelectedAlgorithmApi(getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
+      if (response.status === 200)
+        dispatch(saveSelectedModels(json, dispatch))
+    })
+  }
+}
+function triggerSendSelectedAlgorithmApi(token) {
+  var selectedAlgos = store.getState().apps.algorithmsList;
+  var data={"model_list":selectedAlgos};
+  return fetch(API + '/api/audioset/', {
+    method: 'post',
+    headers: getHeaderWithoutContent(token),
+    body: data
+  }).then(response => Promise.all([response, response.json()]));
 }

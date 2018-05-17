@@ -269,7 +269,7 @@ export class RegressionParameter extends React.Component {
             else{
                 if (!this.isPositiveInteger(parts[i]))
                 return {"iserror":true,"errmsg":"Invalid Range"};
-                const singleNumber = parseInt(parts[i], 10);
+                const singleNumber = parseFloat(parts[i], 10);
                 if (singleNumber > max || singleNumber < min)
                 return {"iserror":true,"errmsg":"Invalid Range"};
             }

@@ -84,6 +84,8 @@ export default function reducer(state = {
         regression_isAutomatic:1,
         regression_selectedTechnique:"crossValidation",
         regression_crossvalidationvalue:2,
+        is_from_create_model:false,
+        selectedModelCount:0,
 
 }, action) {
     console.log("In APPs reducer!!");
@@ -839,6 +841,24 @@ export default function reducer(state = {
         return{
             ...state,
             regression_algorithm_data:action.newAlgorithm,
+        }
+    }
+    break;
+     case "FROM_MODEL_CREATION":
+    {
+        return{
+            ...state,
+            is_from_create_model:action.val,
+        }
+    }
+    break;
+     case "SAVE_CHECKED_ALGORITHMS":
+    {
+        return{
+            ...state,
+            algorithmsList:action.selectedAlgorithms,
+            selectedModelCount:action.selectedModelCount,
+            modelSummary:action.modelSummary,
         }
     }
     break;

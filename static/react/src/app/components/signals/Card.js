@@ -18,7 +18,7 @@ import {WordCloud} from "../common/WordCloud";
 import $ from "jquery";
 import {handleSignalToggleButton,predictionLabelClick} from "../../helpers/helper";
 import {ModelSummeryButton} from "../common/ModelSummeryButton";
-
+import {D3ParallelChartt} from "../D3ParallelChartt";
 
 var data = null,
 yformat = null,
@@ -127,6 +127,9 @@ export class Card extends React.Component {
             break;
             case "button":
             return (<ModelSummeryButton key={randomNum} data={story.data.chart_c3} tabledownload={story.data.download_url} classId={randomNum} type={story.dataType}/>);
+            break;
+            case "parallelCoordinates":
+            return(<D3ParallelChartt key={randomNum} data={story.data} hideColumns={story.hideColumns} hideaxes={story.ignoreList} id={this.props.id} evaluationMetricColName={story.evaluationMetricColName}/>);
             break;
             }
 

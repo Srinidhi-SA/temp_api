@@ -21,6 +21,7 @@ import {VariableSelection} from "./components/signals/variableSelection";
 import {DataVariableSelection} from "./components/data/DataVariableSelection";
 import {ModelVariableSelection} from "./components/apps/ModelVariableSelection";
 import {AppsModelDetail} from "./components/apps/AppsModelDetail";
+import {AppsModelHyperDetail} from "./components/apps/AppsModelHyperDetail";
 import {ScoreVariableSelection} from "./components/apps/ScoreVariableSelection";
 import {AppsScoreDetail} from "./components/apps/AppsScoreDetail";
 import {AppsPanel} from "./components/apps/AppsPanel";
@@ -186,7 +187,7 @@ class App extends React.Component {
             break;
           case "/apps/:AppId/models/:slug":
             {
-              return (<AppsModelDetail {...props}/>)
+              return (<AppsModelHyperDetail {...props}/>)
             }
             break;
 
