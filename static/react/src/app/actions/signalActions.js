@@ -367,7 +367,7 @@ function handleSelectAllFlag(array){
     for(var i=0;i<array.length;i++){
        if(array[i].selected == false && array[i].targetColumn == false){
             selectAllFlag = false;
-            break;
+            return selectAllFlag;
         }
     }
     return selectAllFlag;
@@ -625,8 +625,8 @@ export function handleRename(slug, dialog, name) {
 }
 function showRenameDialogBox(slug, dialog, dispatch, name) {
   const customBody = (
-    
-	<div className="row">	
+
+	<div className="row">
 			<div className="col-md-4">
 				<img src="assets/images/alert_thinking.gif" class="img-responsive" />
 			</div>
@@ -637,7 +637,7 @@ function showRenameDialogBox(slug, dialog, dispatch, name) {
 			</div>
 			</div>
 		</div>
-	
+
   )
 
   dialog.show({

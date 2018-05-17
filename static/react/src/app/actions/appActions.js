@@ -1,5 +1,5 @@
 import {API, EMR, STATIC_URL} from "../helpers/env";
-import {PERPAGE, isEmpty, getUserDetailsOrRestart, APPSPERPAGE, statusMessages} from "../helpers/helper";
+import {PERPAGE, isEmpty, getUserDetailsOrRestart, APPSPERPAGE} from "../helpers/helper";
 import store from "../store";
 import {
   APPSLOADERPERVALUE,
@@ -194,7 +194,7 @@ export function createModel(modelName, targetVariable, targetLevel) {
   }).then(response => Promise.all([response, response.json()])).catch(function(error) {
     dispatch(closeAppsLoaderValue());
     dispatch(updateModelSummaryFlag(false));
-    bootbox.alert(statusMessages("error", "Unable to connect to server. Check your connection please try again.", "small_mascot"))
+    bootbox.alert("Unable to connect to server. Check your connection please try again.")
   });
 }
 function createModelSuccess(data, dispatch) {

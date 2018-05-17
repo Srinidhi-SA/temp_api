@@ -5,11 +5,13 @@ Usage
         e.g. fab deploy_api:branch=leia
         e.g. fab deploy_api:branch=luke
         e.g. fab deploy_api:branch=dev_9015
+        e.g. fab deploy_api:branch=cwpoc
 
         e.g. fab deploy_react:branch=dev
         e.g. fab deploy_react:branch=leia
         e.g. fab deploy_react:branch=luke
         e.g. fab deploy_react:branch=dev_9015
+        e.g. fab deploy_react:branch=cwpoc
 
         e.g. fab deploy_api_and_migrate:branch=dev
         e.g. fab deploy_api_and_migrate:branch=leia
@@ -88,6 +90,7 @@ def deploy_api(branch="dev"):
     print details
     path_details= details['path_details']
     server_details= details['server_details']
+    change_config_file(branch)
     only_for_api_push_and_pull(
         server_details=server_details,
         path_details=path_details
@@ -176,6 +179,8 @@ def do_npm_run(branch, react_path):
             local("npm run buildLuke")
         elif "leia" == branch:
             local("npm run buildLeia")
+        elif "cwpoc" == branch:
+            local("npm run buildCwpoc")
 
 def deploy_dist_to_destination(base_remote_path, react_path):
     import random
@@ -277,7 +282,7 @@ def pull_api_at_remote(base_remote_path, api_branch):
             # run("git stash apply")
 
             sudo("pip install -r requirements.txt")
-            run('python manage.py makemigrations')
+            #run('python manage.py makemigrations')
             run('python manage.py migrate')
 
     except Exception as err:
@@ -485,8 +490,8 @@ def configuration_details():
                 "react_path": "/static/react",
                 "asset_path": "/static/asset",
                 "base_remote_path": "/home/ubuntu/codebase/mAdvisor-api",
-                "ui_branch": "api_ui_dev",
-                "api_branch": "api_ui_dev"
+                "ui_branch": "api_ui_dev_staging",
+                "api_branch": "api_ui_dev_staging"
             },
             'type': 'luke',
             'gunicorn_details': {
@@ -582,8 +587,8 @@ def configuration_details():
                 "react_path": "/static/react",
                 "asset_path": "/static/asset",
                 "base_remote_path": "/home/ubuntu/codebase/mAdvisor-api_2",
-                "ui_branch": "api_ui_dev_metadata_qubeware_demo",
-                "api_branch": "api_ui_dev_metadata_qubeware_demo"
+                "ui_branch": "api_ui_dev_staging",
+                "api_branch": "api_ui_dev_staging"
             },
             'type':'leia',
             'gunicorn_details': {
@@ -592,7 +597,31 @@ def configuration_details():
                 'gunicorn_bind': "0.0.0.0:9015"
             },
             'deployment_config': 'leia'
-        }
+        },
+        'cwpoc': {
+            'server_details': {
+                "known name": "cwpoc.marlabsai.com",
+                "username": "ubuntu",
+                "host": "34.196.22.246",
+                "port": "9016",
+                "initail_domain": "/api",
+                'pem_detail': "/config/keyfiles/TIAA.pem"
+            },
+            'path_details': {
+                "react_path": "/static/react",
+                "asset_path": "/static/asset",
+                "base_remote_path": "/home/ubuntu/codebase/mAdvisor-api_cwpoc",
+                "ui_branch": "api_ui_dev_staging",
+                "api_branch": "api_ui_dev_staging"
+            },
+            'type': 'cwpoc',
+            'gunicorn_details': {
+                'gunicorn_wsgi_app': 'config.wsgi:application',
+                'gunicorn_pidpath': "/gunicorn.pid",
+                'gunicorn_bind': "0.0.0.0:9016"
+            },
+            'deployment_config': 'cwpoc'
+        },
     }
 
     return configuration_detail

@@ -4,6 +4,7 @@ from math import floor, log10
 
 from django.conf import settings
 import yarn_api_client
+from config.settings.config_file_name_to_run import CONFIG_FILE_NAME
 
 JOBSERVER = settings.JOBSERVER
 THIS_SERVER_DETAILS = settings.THIS_SERVER_DETAILS
@@ -950,7 +951,7 @@ def get_db_object(model_name, model_slug):
     return obj
 
 
-@task(name='get_job_from_yarn')
+@task(name='get_job_from_yarn', queue=CONFIG_FILE_NAME)
 def get_job_from_yarn(model_name=None,model_slug=None):
 
     model_instance = get_db_object(model_name=model_name,

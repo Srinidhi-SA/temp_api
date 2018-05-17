@@ -3,7 +3,7 @@ import CircularProgressbar from 'react-circular-progressbar';
 import {Redirect} from 'react-router';
 import {handleDecisionTreeTable} from "../actions/signalActions";
 import renderHTML from 'react-render-html';
-import {API,STATIC_URL} from "./env";
+import {API} from "./env";
 import { showLoading, hideLoading } from 'react-redux-loading-bar'
 
 function getHeader(token){
@@ -523,38 +523,6 @@ export function downloadSVGAsPNG(chartClassId) {
     height: "500"
   });
 
-}
-
-//return status msg html string, msg_type can be error, warning,or info.mascot_type will be small_mascot,large_mascot or without_mascot
-export function statusMessages(msg_type,msg,mascot_type){
-  let imgsrc_url=""
-  let status_text=""
-  let htmlString=""
-switch(msg_type){
-  case "warning":{
-    imgsrc_url=STATIC_URL+"assets/images/alert_warning.png"
-    status_text='<h4 class="text-warning">Warning !</h4>'
-  }break;
-  case "error":{
-    imgsrc_url=STATIC_URL+"assets/images/alert_danger.png"
-    status_text='<h4 class="text-danger">Ooops !</h4>'
-  }break;
-  case "info":{
-    imgsrc_url=STATIC_URL+""
-    status_text=''
-  }break;
-  case "success":{
-    imgsrc_url=STATIC_URL+"assets/images/alert_success.png"
-    status_text='<h4 class="text-primary">Success !</h4>'
-  }
-
-}
-if(mascot_type=="without_mascot"){
-  htmlString='<div class="border border-danger"><h4 class="alert-heading">Error !</h4><p>'+msg+'</p></div>'
-}else{
-htmlString='<div class="row"><div class="col-md-4"><img src='+imgsrc_url+' class="img-responsive" /></div><div class="col-md-8">'+status_text+'<p>'+msg+'</p></div></div>';
-}
-return htmlString
 }
 
 export function toggleVisualization(slug,actionsData){

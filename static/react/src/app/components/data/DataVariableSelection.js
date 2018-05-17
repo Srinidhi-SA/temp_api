@@ -56,7 +56,7 @@ export class DataVariableSelection extends React.Component {
     	window.scrollTo(0, 0);
         if(this.props.match.path.includes("createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
             deselectAllVariablesDataPrev();
-            DisableSelectAllCheckbox(); 
+            DisableSelectAllCheckbox();
             this.props.dispatch( resetSelectedVariables(false) );
         }
         else
@@ -144,12 +144,12 @@ export class DataVariableSelection extends React.Component {
             } );
 
             this.datetime = this.datetime.concat(this.dimensionDateTime);
-        
+
             if ( this.props.isUpdate ) {
             if(this.props.match.path.includes("createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
                 this.props.dispatch(resetSelectedVariables(false));
                 deselectAllVariablesDataPrev();
-                DisableSelectAllCheckbox();    
+                DisableSelectAllCheckbox();
             }
             else
             this.props.dispatch( resetSelectedVariables(true) );
@@ -206,7 +206,7 @@ export class DataVariableSelection extends React.Component {
 
                 } );
             } else {
-                
+
                 var datetimeTemplate = <label>No date dimensions to display</label>
             }
             if(this.props.match.path.includes("/createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
@@ -312,11 +312,11 @@ export class DataVariableSelection extends React.Component {
 
 												<div class="input-group">
 												<div className="search-wrapper">
-									
+
 												<input type="text" name="dimension" onChange={this.handleDVSearch.bind(this)} title="Search Dimension" id="dimensionSearch" className="form-control search-box" placeholder="Search dimension..."  />
 												<span className="zmdi zmdi-search form-control-feedback"></span>
 												<button className="close-icon"  name="dimension"  onClick={this.handleDVSearch.bind(this)}  type="reset"></button>
-												
+
 												</div>
 												</div>
 												 <div class="btn-group">
@@ -373,11 +373,11 @@ export class DataVariableSelection extends React.Component {
 
 												<div class="input-group">
 												<div className="search-wrapper">
-												
+
 												<input type="text" name="datetime" onChange={this.handleDVSearch.bind(this)} title="Search Time Dimensions" id="datetimeSearch" className="form-control search-box" placeholder="Search time dimensions..."/>
 												<span className="zmdi zmdi-search form-control-feedback"></span>
 												<button className="close-icon" name="datetime" onClick={this.handleDVSearch.bind(this)} type="reset"></button>
-												
+
 												</div>
 												</div>
 

@@ -11,7 +11,7 @@ from django.shortcuts import render
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.decorators import api_view
-from rest_framework.decorators import detail_route
+from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
 from rest_framework.request import Request
 
@@ -40,6 +40,11 @@ from models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData, StockD
 from api.tasks import clean_up_on_delete
 
 from api.permission import TrainerRelatedPermission, ScoreRelatedPermission, SignalsRelatedPermission
+
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
 
 from api.datasets.views import DatasetView
 
@@ -255,12 +260,19 @@ class TrainerView(viewsets.ModelViewSet):
         dataset_serializer = DatasetSerializer(instance=dataset_instance, context={"request": self.request})
         object_details = dataset_serializer.data
         original_meta_data_from_scripts = object_details['meta_data']
+
+        permissions_dict = {
+            'create_signal': request.user.has_perm('api.create_signal'),
+            'subsetting_dataset': request.user.has_perm('api.subsetting_dataset')
+
+        }
+
         if original_meta_data_from_scripts is None:
             uiMetaData = None
         if original_meta_data_from_scripts == {}:
             uiMetaData = None
         else:
-            uiMetaData = add_ui_metadata_to_metadata(original_meta_data_from_scripts)
+            uiMetaData = add_ui_metadata_to_metadata(original_meta_data_from_scripts, permissions_dict=permissions_dict)
 
         object_details['meta_data'] = {
             "scriptMetaData": original_meta_data_from_scripts,
@@ -309,6 +321,74 @@ class TrainerView(viewsets.ModelViewSet):
             return return_xml_data(sample_xml, algoname)
         xml_data = data[-1].get(algoname)
         return return_xml_data(xml_data, algoname)
+
+    @detail_route(methods=['put'])
+    def save_hyperparameter(self, request, *args, **kwargs):
+
+        try:
+            instance = self.get_object_from_all()
+
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
+        if instance is None:
+            return creation_failed_exception("File Doesn't exist.")
+
+        data = request.data
+        model_list = data['model_list']
+        """
+        data --> list of indexes to be true
+        """
+
+        trainer_data = json.loads(instance.data)
+        hyper_paramter_data = trainer_data['model_hyperparameter']
+
+        for model_name in model_list:
+            hyper_parameter_to_change = None
+            for hyper_param in hyper_paramter_data:
+                if hyper_param['slug'] == model_name['slug']:
+                    hyper_parameter_to_change = hyper_param
+                    break
+
+            if hyper_parameter_to_change is None:
+                continue
+
+            hyper_card_data = hyper_parameter_to_change['cardData'][0]['data']
+            for data in hyper_card_data:
+                if data['Model Id'] == model_name['Model Id']:
+                    data['selected'] = model_name['selected']
+                    break
+
+        instance.data = json.dumps(trainer_data)
+
+        new_model_dropdown_list = []
+
+        for hyper_param in hyper_paramter_data:
+            for model_data in hyper_param['cardData'][0]['data']:
+                if model_data['Selected'] == True:
+                    model_data_short = {
+                                           "slug":hyper_param['slug'],
+                                           "Model Id":model_data['Model Id'],
+                                           # "accuracy": model_data['accuracy'],
+                                           'Selected': model_data['Selected']
+                                       }
+                    new_model_dropdown_list.append(model_data_short)
+
+        return Response({
+            "model_dropdown": new_model_dropdown_list
+        })
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 class ScoreView(viewsets.ModelViewSet):
@@ -973,7 +1053,7 @@ class AppView(viewsets.ModelViewSet):
             #created_by=self.request.user,
             status="Active"
             #status__in=['SUCCESS', 'INPROGRESS']
-        )
+        ).order_by('rank')
         app_ordered_list = copy.deepcopy(settings.APPORDERLIST)
         queryset = queryset.filter(name__in=app_ordered_list)
         return queryset
@@ -1045,6 +1125,32 @@ class AppView(viewsets.ModelViewSet):
         serializer = AppSerializer(instance=instance, context={"request": self.request})
         return Response(serializer.data)
 
+    @list_route(methods=['put'])
+    def rank(self, request, *args, **kwargs):
+
+
+
+        data = request.data
+        if data is None or data == dict():
+            APPORDERLIST = settings.APPORDERLIST
+        else:
+            APPORDERLIST = data['APPORDERLIST']
+
+        custom_apps_all = CustomApps.objects.all()
+
+        for app in custom_apps_all:
+            app.null_the_rank()
+
+        for index, name in enumerate(APPORDERLIST):
+            app_instance = CustomApps.objects.filter(name=name).first()
+            if app_instance is not None:
+                app_instance.adjust_rank(index=index)
+
+        return get_listed_data(
+            viewset=self,
+            request=request,
+            list_serializer=AppListSerializers
+        )
 
 
 def get_datasource_config_list(request):
@@ -1096,11 +1202,7 @@ def set_result(request, slug=None):
     if not job:
         return JsonResponse({'result': 'Failed'})
     results = request.body
-    # tasks.save_results_to_job.delay(
-    #     slug,
-    #     results
-    # )
-    tasks.save_results_to_job1(
+    tasks.save_results_to_job.delay(
         slug,
         results
     )
@@ -1120,7 +1222,7 @@ def set_result(request, slug=None):
         #     results=json.loads(results)
         # )
 
-        results = tasks.write_into_databases1(
+        results = tasks.write_into_databases.delay(
             job_type=job.job_type,
             object_slug=job.object_id,
             results=json.loads(results)
@@ -1138,7 +1240,7 @@ def use_set_result(request, slug=None):
 
     results = job.results
 
-    results = tasks.write_into_databases1(
+    results = tasks.write_into_databases.delay(
         job_type=job.job_type,
         object_slug=job.object_id,
         results=json.loads(results)
@@ -1149,102 +1251,102 @@ def use_set_result(request, slug=None):
     return JsonResponse({'result': results})
 
 
-def write_into_databases(job_type, object_slug, results):
-    from api import helper
-    import json
-    if job_type in ["metadata", "subSetting"]:
-        dataset_object = Dataset.objects.get(slug=object_slug)
-
-        if "error_message" in results:
-            dataset_object.status = "FAILED"
-            dataset_object.save()
-            return results
-
-        columnData = results['columnData']
-        for data in columnData:
-            # data["chartData"] = helper.find_chart_data_and_replace_with_chart_data(data["chartData"])
-            card_data = data["chartData"]
-            if 'dataType' in card_data and card_data['dataType'] == 'c3Chart':
-                chart_data = card_data['data']
-                final_chart_data = helper.decode_and_convert_chart_raw_data(chart_data, object_slug=object_slug)
-                data["chartData"] = chart_changes_in_metadata_chart(final_chart_data)
-                data["chartData"]["table_c3"] = []
-
-        results['columnData'] = columnData
-        # results['possibleAnalysis'] = settings.ANALYSIS_FOR_TARGET_VARIABLE
-        da = []
-        for d in results.get('sampleData'):
-            da.append(map(str, d))
-        results['sampleData'] = da
-        # results["modified"] = False
-
-        dataset_object.meta_data = json.dumps(results)
-        dataset_object.analysis_done = True
-        dataset_object.save()
-        return results
-    elif job_type == "master":
-        insight_object = Insight.objects.get(slug=object_slug)
-
-        if "error_message" in results:
-            insight_object.status = "FAILED"
-            insight_object.save()
-            return results
-
-        results = add_slugs(results, object_slug=object_slug)
-        insight_object.data = json.dumps(results)
-        insight_object.analysis_done = True
-        insight_object.status = 'SUCCESS'
-        insight_object.save()
-        return results
-    elif job_type == "model":
-        trainer_object = Trainer.objects.get(slug=object_slug)
-
-        if "error_message" in results:
-            trainer_object.status = "FAILED"
-            trainer_object.save()
-            return results
-
-        results['model_summary'] = add_slugs(results['model_summary'], object_slug=object_slug)
-        trainer_object.data = json.dumps(results)
-        trainer_object.analysis_done = True
-        trainer_object.save()
-        return results
-    elif job_type == 'score':
-        score_object = Score.objects.get(slug=object_slug)
-
-        if "error_message" in results:
-            score_object.status = "FAILED"
-            score_object.save()
-            return results
-
-        results = add_slugs(results, object_slug=object_slug)
-        score_object.data = json.dumps(results)
-        score_object.analysis_done = True
-        score_object.save()
-        return results
-    elif job_type == 'robo':
-        robo_object = Robo.objects.get(slug=object_slug)
-
-        if "error_message" in results:
-            robo_object.status = "FAILED"
-            robo_object.save()
-            return results
-
-        results = add_slugs(results, object_slug=object_slug)
-        robo_object.data = json.dumps(results)
-        robo_object.robo_analysis_done = True
-        robo_object.save()
-        return results
-    elif job_type == 'stockAdvisor':
-        stock_objects = StockDataset.objects.get(slug=object_slug)
-        results = add_slugs(results, object_slug=object_slug)
-        stock_objects.data = json.dumps(results)
-        stock_objects.analysis_done = True
-        stock_objects.status = 'SUCCESS'
-        stock_objects.save()
-        return results
-    else:
-        print "No where to write"
+# def write_into_databases(job_type, object_slug, results):
+#     from api import helper
+#     import json
+#     if job_type in ["metadata", "subSetting"]:
+#         dataset_object = Dataset.objects.get(slug=object_slug)
+#
+#         if "error_message" in results:
+#             dataset_object.status = "FAILED"
+#             dataset_object.save()
+#             return results
+#
+#         columnData = results['columnData']
+#         for data in columnData:
+#             # data["chartData"] = helper.find_chart_data_and_replace_with_chart_data(data["chartData"])
+#             card_data = data["chartData"]
+#             if 'dataType' in card_data and card_data['dataType'] == 'c3Chart':
+#                 chart_data = card_data['data']
+#                 final_chart_data = helper.decode_and_convert_chart_raw_data(chart_data, object_slug=object_slug)
+#                 data["chartData"] = chart_changes_in_metadata_chart(final_chart_data)
+#                 data["chartData"]["table_c3"] = []
+#
+#         results['columnData'] = columnData
+#         # results['possibleAnalysis'] = settings.ANALYSIS_FOR_TARGET_VARIABLE
+#         da = []
+#         for d in results.get('sampleData'):
+#             da.append(map(str, d))
+#         results['sampleData'] = da
+#         # results["modified"] = False
+#
+#         dataset_object.meta_data = json.dumps(results)
+#         dataset_object.analysis_done = True
+#         dataset_object.save()
+#         return results
+#     elif job_type == "master":
+#         insight_object = Insight.objects.get(slug=object_slug)
+#
+#         if "error_message" in results:
+#             insight_object.status = "FAILED"
+#             insight_object.save()
+#             return results
+#
+#         results = add_slugs(results, object_slug=object_slug)
+#         insight_object.data = json.dumps(results)
+#         insight_object.analysis_done = True
+#         insight_object.status = 'SUCCESS'
+#         insight_object.save()
+#         return results
+#     elif job_type == "model":
+#         trainer_object = Trainer.objects.get(slug=object_slug)
+#
+#         if "error_message" in results:
+#             trainer_object.status = "FAILED"
+#             trainer_object.save()
+#             return results
+#
+#         results['model_summary'] = add_slugs(results['model_summary'], object_slug=object_slug)
+#         trainer_object.data = json.dumps(results)
+#         trainer_object.analysis_done = True
+#         trainer_object.save()
+#         return results
+#     elif job_type == 'score':
+#         score_object = Score.objects.get(slug=object_slug)
+#
+#         if "error_message" in results:
+#             score_object.status = "FAILED"
+#             score_object.save()
+#             return results
+#
+#         results = add_slugs(results, object_slug=object_slug)
+#         score_object.data = json.dumps(results)
+#         score_object.analysis_done = True
+#         score_object.save()
+#         return results
+#     elif job_type == 'robo':
+#         robo_object = Robo.objects.get(slug=object_slug)
+#
+#         if "error_message" in results:
+#             robo_object.status = "FAILED"
+#             robo_object.save()
+#             return results
+#
+#         results = add_slugs(results, object_slug=object_slug)
+#         robo_object.data = json.dumps(results)
+#         robo_object.robo_analysis_done = True
+#         robo_object.save()
+#         return results
+#     elif job_type == 'stockAdvisor':
+#         stock_objects = StockDataset.objects.get(slug=object_slug)
+#         results = add_slugs(results, object_slug=object_slug)
+#         stock_objects.data = json.dumps(results)
+#         stock_objects.analysis_done = True
+#         stock_objects.status = 'SUCCESS'
+#         stock_objects.save()
+#         return results
+#     else:
+#         print "No where to write"
 
 
 def chart_changes_in_metadata_chart(chart_data):
@@ -5407,7 +5509,6 @@ def updateFromNifi(request):
 
     # import pdb;pdb.set_trace()
     # print request.GET.get("username",None)
-    print "################nifi api request##############"
     print request.data
 
     hive_info=copy.deepcopy(settings.DATASET_HIVE)
