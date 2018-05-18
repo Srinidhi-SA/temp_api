@@ -323,8 +323,7 @@ class TrainerView(viewsets.ModelViewSet):
         xml_data = data[-1].get(algoname)
         return return_xml_data(xml_data, algoname)
 
-    @csrf_exempt
-    @detail_route(methods=['put'])
+    @detail_route(methods=['get'])
     def save_hyperparameter_selected_models(self, request, *args, **kwargs):
 
         try:
@@ -335,33 +334,36 @@ class TrainerView(viewsets.ModelViewSet):
         if instance is None:
             return creation_failed_exception("File Doesn't exist.")
 
-        data = request.data
-        model_list = data['model_list']
-        """
-        data --> list of indexes to be true
-        """
-
         trainer_data = json.loads(instance.data)
-        hyper_paramter_data = trainer_data['model_hyperparameter']
+        data = request.data
+        if data is not None and 'model_list' in data:
+            model_list = data['model_list']
+            """
+            data --> list of indexes to be true
+            """
 
-        for model_name in model_list:
-            hyper_parameter_to_change = None
-            for hyper_param in hyper_paramter_data:
-                if hyper_param['slug'] == model_name['slug']:
-                    hyper_parameter_to_change = hyper_param
-                    break
 
-            if hyper_parameter_to_change is None:
-                continue
+            hyper_paramter_data = trainer_data['model_hyperparameter']
 
-            hyper_card_data = hyper_parameter_to_change['cardData'][0]['data']
-            for data in hyper_card_data:
-                if data['Model Id'] == model_name['Model Id']:
-                    data['Selected'] = 'True'
-                    break
+            for model_name in model_list:
+                hyper_parameter_to_change = None
+                for hyper_param in hyper_paramter_data:
+                    if hyper_param['slug'] == model_name['slug']:
+                        hyper_parameter_to_change = hyper_param
+                        break
+
+                if hyper_parameter_to_change is None:
+                    continue
+
+                hyper_card_data = hyper_parameter_to_change['cardData'][0]['data']
+                for data in hyper_card_data:
+                    if data['Model Id'] == model_name['Model Id']:
+                        data['Selected'] = 'True'
+                        break
+
+            trainer_data['model_dropdown'] = model_list
 
         trainer_data['modelSelected'] = True
-        trainer_data['model_dropdown'] = model_list
         instance.data = json.dumps(trainer_data)
         instance.save()
 
