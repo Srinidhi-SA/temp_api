@@ -5480,7 +5480,7 @@ def get_appID_appName_map(request):
     return JsonResponse({"appIDMapping":appIDmap})
 
 
-@api_view(['POST'])
+# @api_view(['POST'])
 def updateFromNifi(request):
     # from pprint import pprint
     # pprint( request )
@@ -5488,6 +5488,9 @@ def updateFromNifi(request):
     # import pdb;pdb.set_trace()
     # print request.GET.get("username",None)
     print request.data
+    username = request.data['username']
+    from django.contrib.auth.models import User
+    request.user = User.objects.filter(username=username).first()
 
     hive_info=copy.deepcopy(settings.DATASET_HIVE)
     host=request.data['host']
@@ -5513,3 +5516,15 @@ def updateFromNifi(request):
     datasetView=DatasetView()
     datasetView.create(request,data=data_modified)
     return JsonResponse({"status":True})
+
+
+# def some_random_things(request):
+#     import pdb;pdb.set_trace()
+#     from django.contrib.auth.models import User
+#     user = User.objects.all().first()
+#     request.user = user
+#     return JsonResponse({
+#         "status": True,
+#         "user":request.user.id
+#     })
+

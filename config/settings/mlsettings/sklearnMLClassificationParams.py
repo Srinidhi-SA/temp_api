@@ -289,7 +289,7 @@ SKLEARN_ML_LOGISTIC_REGRESSION_PARAMS = [
             "name":"solver",
             "displayName":"Solver Used",
             "shortDescription": "Algorithm to use in the Optimization",
-            "defaultValue":[obj if obj["name"] != "liblinear" else {"name":obj["name"],"selected":True,"displayName":obj["displayName"]} for obj in SKLEARN_ML_SUPPORTED_SOLVER_CLASSIFICATION],
+            "defaultValue":[obj if obj["name"] != "lbfgs" else {"name":obj["name"],"selected":True,"displayName":obj["displayName"]} for obj in SKLEARN_ML_SUPPORTED_SOLVER_CLASSIFICATION],
             "paramType":"list",
             "uiElemType":"checkbox",
             "display":True,
