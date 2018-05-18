@@ -1108,7 +1108,8 @@ class Score(models.Model):
     def create_configuration_url_settings(self):
 
         config = json.loads(self.config)
-        algorithmslug = config.get('algorithmName')
+        selectedModel = config['selectedModel']
+        algorithmslug = selectedModel.get('slug')
 
         trainer_slug = self.trainer.slug
         score_slug = self.slug
@@ -1129,6 +1130,7 @@ class Score(models.Model):
         return {
             'inputfile': [self.dataset.get_input_file()],
             'modelpath': [trainer_slug],
+            'selectedModel' : [selectedModel],
             'scorepath': [score_slug],
             'analysis_type': ['score'],
             'levelcounts': targetVariableLevelcount if targetVariableLevelcount is not None else [],
