@@ -14,6 +14,7 @@ from rest_framework.decorators import api_view
 from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
 from rest_framework.request import Request
+from django.utils.decorators import method_decorator
 
 from api.datasets.helper import add_ui_metadata_to_metadata
 from api.datasets.serializers import DatasetSerializer
@@ -322,6 +323,7 @@ class TrainerView(viewsets.ModelViewSet):
         xml_data = data[-1].get(algoname)
         return return_xml_data(xml_data, algoname)
 
+    @method_decorator(csrf_exempt)
     @detail_route(methods=['put'])
     def save_hyperparameter_selected_models(self, request, *args, **kwargs):
 
