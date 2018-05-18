@@ -299,10 +299,6 @@ export function getAppsModelSummary(slug,fromCreateModel) {
           dispatch(updateModelSummaryFlag(true));
           //if (store.getState().apps.currentAppDetails.app_type == "REGRESSION")
             dispatch(reSetRegressionVariables());
-            if(fromCreateModel)
-            dispatch(isFromModelCreation(true));
-            else
-            dispatch(isFromModelCreation(false));
           }
         else if (json.status == FAILED) {
           bootbox.alert("Your model could not be created.Please try later.", function() {
@@ -313,7 +309,6 @@ export function getAppsModelSummary(slug,fromCreateModel) {
           dispatch(hideDataPreview());
           if (store.getState().apps.currentAppDetails.app_type == "REGRESSION")
             dispatch(reSetRegressionVariables());
-            dispatch(isFromModelCreation(false));
           }
         else if (json.status == INPROGRESS) {
           if (json.message !== null && json.message.length > 0) {
@@ -390,7 +385,7 @@ function triggerCreateScore(token, scoreName, targetVariable) {
                 'customAnalysisDetails':customDetails["customAnalysisDetails"],
                 'polarity':customDetails["polarity"],
                 'uidColumn':customDetails["uidColumn"],*/
-    "algorithmName": store.getState().apps.selectedAlg,
+    "selectedModel": store.getState().apps.selectedAlgObj,
     "variablesSelection": store.getState().datasets.dataPreview.meta_data.uiMetaData.varibaleSelectionArray,
     "app_id": app_id
   }
@@ -1876,29 +1871,25 @@ export function changeHyperParameterType(slug,nameVal){
   data.ALGORITHM_SETTING = jQuery.extend(true, [], newAlgorithm);
   return {type: "SAVE_REGRESSION_ALGORITHM_DATA", data}
 }
-export function isFromModelCreation(val) {
-  return {type: "FROM_MODEL_CREATION",val}
-}
-export function checkSaveSelectedModels(checkObj) {
+export function checkSaveSelectedModels(checkObj,isChecked) {
   var selectedAlgorithms = store.getState().apps.algorithmsList;
   var slug = checkObj.slug;
-  var model = checkObj.modelName;
+  var model = checkObj['Model Id'];
   var isExist = $.grep(selectedAlgorithms,function(val,key){
 	return (val.slug == slug && val.modelName == model)
   });
   if(isExist.length == 1){
+    var deletedIndex;
     $.each(selectedAlgorithms,function(k,val1){
       if(val1.slug == slug && val1.modelName == model)
-        val1.selected = !val1.selected;
+        deletedIndex = k;
     });
+    selectedAlgorithms.splice( deletedIndex, 1 );
   }
   else{
     selectedAlgorithms.push(checkObj);
   }
-  var selectedArry = $.grep(selectedAlgorithms,function(v,k){
-    return(v.selected == true);
-  });
-  var selectedModelCount = selectedArry.length;
+  var selectedModelCount = selectedAlgorithms.length;
   var modelSummary = store.getState().apps.modelSummary;
   var hyperChartData = modelSummary.data.model_hyperparameter;
   var newHyperChartData = $.each(hyperChartData,function(mk,mv){
@@ -1907,7 +1898,7 @@ export function checkSaveSelectedModels(checkObj) {
         $.each(parallelchartData,function(pk,pv){
           if(pv['Model Id'] == model)
           {
-            if(checkObj.selected)
+            if(isChecked)
             pv.Selected = "True";
             else
             pv.Selected = "False";
@@ -1918,20 +1909,23 @@ export function checkSaveSelectedModels(checkObj) {
   modelSummary.data.model_hyperparameter = newHyperChartData;
   return{type:"SAVE_CHECKED_ALGORITHMS",selectedAlgorithms,selectedModelCount,modelSummary}
 }
-export function sendSelectedAlgorithms(){
+export function sendSelectedAlgorithms(slug){
   return (dispatch) => {
-        return triggerSendSelectedAlgorithmApi(getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
-      if (response.status === 200)
-        dispatch(saveSelectedModels(json, dispatch))
+        return triggerSendSelectedAlgorithmApi(getUserDetailsOrRestart.get().userToken,slug).then(([response, json]) => {
+      //if (response.status === 200)
+        //dispatch(saveSelectedModels(json, dispatch))
     })
   }
 }
-function triggerSendSelectedAlgorithmApi(token) {
+function triggerSendSelectedAlgorithmApi(token,slug) {
   var selectedAlgos = store.getState().apps.algorithmsList;
   var data={"model_list":selectedAlgos};
-  return fetch(API + '/api/audioset/', {
-    method: 'post',
-    headers: getHeaderWithoutContent(token),
-    body: data
+  return fetch(API + '/api/trainer/'+slug+'/save_selected_hyperparameter_models/', {
+    method: 'put',
+    headers: getHeader(getUserDetailsOrRestart.get().userToken),
+    body: JSON.stringify(data)
   }).then(response => Promise.all([response, response.json()]));
+}
+export function updateSelectedAlgObj(obj){
+  return {type: "SELECTED_ALGORITHM_OBJECT", obj}
 }

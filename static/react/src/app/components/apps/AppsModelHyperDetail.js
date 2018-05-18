@@ -5,7 +5,7 @@ import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Button} from "react-bootstrap";
 import {AppsCreateScore} from "./AppsCreateScore";
 import {Card} from "../signals/Card";
-import {getListOfCards,getAppsModelSummary,updateModelSlug,handleExportAsPMMLModal,getAppDetails,updateModelSummaryFlag,isFromModelCreation,sendSelectedAlgorithms} from "../../actions/appActions";
+import {getListOfCards,getAppsModelSummary,updateModelSlug,handleExportAsPMMLModal,getAppDetails,updateModelSummaryFlag,sendSelectedAlgorithms} from "../../actions/appActions";
 import {storeSignalMeta} from "../../actions/dataActions";
 import CircularProgressbar from 'react-circular-progressbar';
 import {STATIC_URL} from "../../helpers/env.js"
@@ -45,12 +45,9 @@ export class AppsModelHyperDetail extends React.Component {
 		window.scrollTo(0, 0);
 	  
   }
-  componentWillUnmount(){
-	this.props.dispatch(isFromModelCreation(false))
-  }
   saveAndShowModelSummary(){
-	 // if(!store.getState().apps.is_from_create_model)
-	 // this.props.dispatch(sendSelectedAlgorithms());
+	  if(!store.getState().apps.modelSummary.data.modelSelected)
+	  this.props.dispatch(sendSelectedAlgorithms(this.props.match.params.slug));
 	  this.setState({
             showSummery:true,
 	});
@@ -113,7 +110,7 @@ export class AppsModelHyperDetail extends React.Component {
 
                         <div className="row">
                             <div className="col-lg-12 text-right">
-                                <Button type="button" onClick={this.saveAndShowModelSummary.bind(this)} bsStyle="primary">{store.getState().apps.is_from_create_model?"Save and show Model summery":"Model summery"}</Button>
+                                <Button type="button" onClick={this.saveAndShowModelSummary.bind(this)} bsStyle="primary">{(store.getState().apps.modelSummary.data.modelSelected)?"Model summery":"Save and show Model summery"}</Button>
                             </div>
                         </div>
                     </div>

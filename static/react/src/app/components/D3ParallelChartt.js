@@ -12,8 +12,8 @@ import {checkSaveSelectedModels} from "../actions/appActions";
   return {sideCardListFlag: store.signals.sideCardListFlag,
   selectedL1:store.signals.selectedL1,
   selected_signal_type:store.signals.selected_signal_type,
-  is_from_create_model:store.apps.is_from_create_model,
   selectedModelCount:store.apps.selectedModelCount,
+  modelSummary:store.apps.modelSummary,
 };
 })
 
@@ -43,7 +43,8 @@ var parcoords = d3.parcoords()("#"+this.state.chartId)
     .render()
     .brushMode("1D-axes")
     .id(this.state.gridId);  // enable brushing
-var config={ignoleTableList:this.props.hideColumns,fromModel:this.props.is_from_create_model,evaluationMetricColName:this.props.evaluationMetricColName,selectedModelCount:this.props.selectedModelCount}
+  var fromModel = !this.props.modelSummary.data.modelSelected;
+var config={ignoleTableList:this.props.hideColumns,fromModel:fromModel,evaluationMetricColName:this.props.evaluationMetricColName,selectedModelCount:this.props.selectedModelCount}
   // create data table, row hover highlighting
   var grid = d3.divgrid(config);
     d3.select("#"+this.state.gridId)
@@ -58,10 +59,16 @@ var config={ignoleTableList:this.props.hideColumns,fromModel:this.props.is_from_
       .on({
         "click":function(d){
           var keyName = this.dataset.key;
-          var checkedData = {"name":this.dataset.name,"slug":this.dataset.slug,"modelName":this.dataset.model,"selected":this.checked,[keyName]:this.dataset.acc}
-          that.props.dispatch(checkSaveSelectedModels(checkedData));
+          var checkedData = {"name":(this.dataset.name).replace(/_/g," "),"slug":this.dataset.slug,"Model Id":this.dataset.model,"evaluationMetricValue":this.dataset.acc,"evaluationMetricName":keyName}
+          that.props.dispatch(checkSaveSelectedModels(checkedData,this.checked));
+          if(this.checked)
+          d3.select(this).attr("class","chkBoxSelect");
+          else
+          d3.select(this).attr("class","chkBox");
           if(that.props.selectedModelCount == 10)
           d3.select("#"+that.state.gridId).selectAll(".chkBox").attr("disabled","true");
+          else if(that.props.selectedModelCount < 10 && !this.checked)
+          d3.select("#"+that.state.gridId).selectAll(".chkBox").attr("disabled",null);
         }
       });
   // update data table on brush event
