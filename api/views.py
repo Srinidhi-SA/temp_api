@@ -359,7 +359,7 @@ class TrainerView(viewsets.ModelViewSet):
                     data['Selected'] = 'True'
                     break
 
-
+        trainer_data['modelSelected'] = True
         trainer_data['model_dropdown'] = model_list
         instance.data = json.dumps(trainer_data)
         instance.save()
