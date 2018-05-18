@@ -231,7 +231,7 @@ SKLEARN_ML_GBT_REGRESSION_PARAMS = [
             "displayName":"alpha-quantile for huber and quantile loss",
             "defaultValue":0.9,
             "acceptedValue":None,
-            "valueRange":[0.0,1.0],
+            "valueRange":[0.1,1.0],
             "paramType":"number",
             "uiElemType":"slider",
             "display":False,
