@@ -323,7 +323,7 @@ class TrainerView(viewsets.ModelViewSet):
         return return_xml_data(xml_data, algoname)
 
     @detail_route(methods=['put'])
-    def save_hyperparameter(self, request, *args, **kwargs):
+    def save_hyperparameter_seleted_models(self, request, *args, **kwargs):
 
         try:
             instance = self.get_object_from_all()
@@ -356,39 +356,17 @@ class TrainerView(viewsets.ModelViewSet):
             hyper_card_data = hyper_parameter_to_change['cardData'][0]['data']
             for data in hyper_card_data:
                 if data['Model Id'] == model_name['Model Id']:
-                    data['selected'] = model_name['selected']
+                    data['Selected'] = 'True'
                     break
 
+
+        trainer_data['model_dropdown'] = model_list
         instance.data = json.dumps(trainer_data)
-
-        new_model_dropdown_list = []
-
-        for hyper_param in hyper_paramter_data:
-            for model_data in hyper_param['cardData'][0]['data']:
-                if model_data['Selected'] == True:
-                    model_data_short = {
-                                           "slug":hyper_param['slug'],
-                                           "Model Id":model_data['Model Id'],
-                                           # "accuracy": model_data['accuracy'],
-                                           'Selected': model_data['Selected']
-                                       }
-                    new_model_dropdown_list.append(model_data_short)
+        instance.save()
 
         return Response({
-            "model_dropdown": new_model_dropdown_list
+            "hyperparamter_saved": "Success"
         })
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 class ScoreView(viewsets.ModelViewSet):
