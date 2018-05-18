@@ -4,7 +4,7 @@ import {Link, Redirect} from "react-router-dom";
 import {push} from "react-router-redux";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
 import store from "../../store";
-import {showCreateScorePopup,hideCreateScorePopup,updateSelectedAlg,updateModelSummaryFlag,checkCreateScoreToProceed} from "../../actions/appActions";
+import {showCreateScorePopup,hideCreateScorePopup,updateSelectedAlg,updateModelSummaryFlag,checkCreateScoreToProceed,updateSelectedAlgObj} from "../../actions/appActions";
 import {getAllDataList,getDataSetPreview,storeSignalMeta,updateDatasetName} from "../../actions/dataActions";
 
 
@@ -46,6 +46,7 @@ export class AppsCreateScore extends React.Component {
     	this.selectedData = $("#score_Dataset").val();
     	this.props.dispatch(checkCreateScoreToProceed(this.selectedData));
     	this.props.dispatch(updateSelectedAlg($("#algorithms").val()));
+		this.props.dispatch(updateSelectedAlgObj($("#algorithms").find(":selected").data("value")));
     	this.props.dispatch(getDataSetPreview(this.selectedData));
     	this.props.dispatch(hideCreateScorePopup());
     	
@@ -75,7 +76,7 @@ export class AppsCreateScore extends React.Component {
 		if(algorithms){
 			algorithmNames = <select id="algorithms" name="selectbasic" class="form-control">
 			{algorithms.map(algorithm =>
-			<option key={algorithm.slug} value={algorithm.slug}>{algorithm.name} {algorithm.accuracy}</option>
+			<option key={algorithm.slug+algorithm['Model Id']} data-value={JSON.stringify(algorithm)} value={algorithm.slug}>{algorithm.name}-{algorithm['Model Id']}-{algorithm.evaluationMetricValue}({algorithm.evaluationMetricName})</option>
 			)}
 			</select>
 		}else{

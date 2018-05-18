@@ -10,6 +10,7 @@ d3.divgrid = function(config) {
       columns.splice( columns.indexOf(val), 1 );
     });
    
+ // columns =["Model Id","max_depth","Recall","Precision","min_samples_leaf","Run Time","n_estimators","min_samples_split","ROC-AUC","Select For Scoring"];
    var rowhead = selection.selectAll(".rowhead")
       .data([true]);
 
@@ -39,9 +40,9 @@ d3.divgrid = function(config) {
                 else if(d["Selected"] == "True" && settings.selectedModelCount < 10)
                 return ('<input type="checkbox" checked class="chkBox" data-name='+d["algorithmName"].replace(/ /g,"_")+' data-slug='+d["Slug"]+' data-model='+d["Model Id"]+' data-key='+d[settings.evaluationMetricColName]+' data-acc='+d[d[settings.evaluationMetricColName]]+' />');
                 else if (d["Selected"] == "True" && settings.selectedModelCount == 10)
-                return ('<input type="checkbox" checked class="chkBox" disabled/>');
+                return ('<input type="checkbox" checked class="chkBox" data-name='+d["algorithmName"].replace(/ /g,"_")+' data-slug='+d["Slug"]+' data-model='+d["Model Id"]+' data-key='+d[settings.evaluationMetricColName]+' data-acc='+d[d[settings.evaluationMetricColName]]+' />');
                 else if (d["Selected"] == "False" && settings.selectedModelCount == 10)
-                return ('<input type="checkbox" class="chkBox" disabled/>');
+                return ('<input type="checkbox" class="chkBox" disabled data-name='+d["algorithmName"].replace(/ /g,"_")+' data-slug='+d["Slug"]+' data-model='+d["Model Id"]+' data-key='+d[settings.evaluationMetricColName]+' data-acc='+d[d[settings.evaluationMetricColName]]+' />');
                 else if (d["Selected"] == "False" && settings.selectedModelCount < 10)
                 return ('<input type="checkbox" class="chkBox" data-name='+d["algorithmName"].replace(/ /g,"_")+' data-slug='+d["Slug"]+' data-model='+d["Model Id"]+' data-key='+d[settings.evaluationMetricColName]+' data-acc='+d[d[settings.evaluationMetricColName]]+' />');
               }
