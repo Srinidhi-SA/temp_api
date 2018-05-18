@@ -12,7 +12,7 @@ SKLEARN_ML_SUPPORTED_SOLVER_CLASSIFICATION = [
     {"name":"newton-cg","selected":False,"displayName":"newton-cg","penalty":"l2"},
     {"name":"lbfgs","selected":False,"displayName":"lbfgs","penalty":"l2"},
     {"name":"sag","selected":False,"displayName":"sag","penalty":"l2"},
-    {"name":"liblinear","selected":False,"displayName":"liblinear","penalty":"l1"},
+    # {"name":"liblinear","selected":False,"displayName":"liblinear","penalty":"l1"},
     {"name":"saga","selected":False,"displayName":"saga","penalty":"l1"},
 
 ]
@@ -57,7 +57,7 @@ SKLEARN_ML_TREE_BASED_CLASSIFICATION_COMMON_PARAMS = [
                     "displayName":"Minimum Instances For Split",
                     "defaultValue":2,
                     "acceptedValue":None,
-                    "valueRange":[1,100],
+                    "valueRange":[2,10],
                     "paramType":"number",
                     "uiElemType":"slider",
                     "display":True,
@@ -69,7 +69,7 @@ SKLEARN_ML_TREE_BASED_CLASSIFICATION_COMMON_PARAMS = [
                     "displayName":"Minimum Instances For Leaf Node",
                     "defaultValue":1,
                     "acceptedValue":None,
-                    "valueRange":[1,1000],
+                    "valueRange":[1,100],
                     "paramType":"number",
                     "uiElemType":"slider",
                     "display":True,
@@ -106,7 +106,7 @@ SKLEARN_ML_TREE_BASED_CLASSIFICATION_COMMON_PARAMS = [
                  "displayName":"Random Seed",
                  "defaultValue":None,
                  "acceptedValue":None,
-                 "valueRange":[],
+                 "valueRange":[1,100],
                  "paramType":"number",
                  "uiElemType":"textBox",
                  "display":True,
@@ -123,7 +123,7 @@ SKLEARN_ML_DTREE_CLASSIFICATION_PARAMS = SKLEARN_ML_TREE_BASED_CLASSIFICATION_CO
             "paramType":"list",
             "uiElemType":"checkbox",
             "display":True,
-            "hyperpatameterTuningCandidate":False,
+            "hyperpatameterTuningCandidate":True,
             "expectedDataType":["int"]
         },
         {
@@ -178,7 +178,7 @@ SKLEANR_ML_RF_CLASSIFICATION_PARAMS = SKLEARN_ML_TREE_BASED_CLASSIFICATION_COMMO
             "displayName":"No of Estimators",
             "defaultValue":10,
             "acceptedValue":None,
-            "valueRange":[1,1000],
+            "valueRange":[10,1000],
             "paramType":"number",
             "uiElemType":"slider",
             "display":True,
@@ -266,6 +266,7 @@ SKLEARN_ML_LOGISTIC_REGRESSION_PARAMS = [
         {
              "name":"fit_intercept",
              "displayName":"Fit Intercept",
+             "shortDescription":"Specifies if a constant(a.k.a bias or intercept) should be added to the decision function",
              "defaultValue":[
              {
                  "name":"false",
@@ -287,6 +288,7 @@ SKLEARN_ML_LOGISTIC_REGRESSION_PARAMS = [
         {
             "name":"solver",
             "displayName":"Solver Used",
+            "shortDescription": "Algorithm to use in the Optimization",
             "defaultValue":[obj if obj["name"] != "liblinear" else {"name":obj["name"],"selected":True,"displayName":obj["displayName"]} for obj in SKLEARN_ML_SUPPORTED_SOLVER_CLASSIFICATION],
             "paramType":"list",
             "uiElemType":"checkbox",
@@ -301,7 +303,7 @@ SKLEARN_ML_LOGISTIC_REGRESSION_PARAMS = [
             "paramType":"list",
             "uiElemType":"checkbox",
             "display":True,
-            "hyperpatameterTuningCandidate":False,
+            "hyperpatameterTuningCandidate":True,
             "expectedDataType": ["string"]
         },
         {
@@ -445,7 +447,7 @@ SKLEARN_ML_XGBOOST_CLASSIFICATION_PARAMS = [
         "paramType":"number",
         "uiElemType":"slider",
         "display":True,
-        "hyperpatameterTuningCandidate":False,
+        "hyperpatameterTuningCandidate":True,
         "expectedDataType": ["int","float"]
     },
     {
@@ -462,7 +464,7 @@ SKLEARN_ML_XGBOOST_CLASSIFICATION_PARAMS = [
     },
     {
         "name":"min_child_weight",
-        "displayName":"Maximum Depth of Tree",
+        "displayName":"Minimum Child Weight",
         "defaultValue":6,
         "acceptedValue":None,
         "valueRange":[0,100],
@@ -481,7 +483,7 @@ SKLEARN_ML_XGBOOST_CLASSIFICATION_PARAMS = [
         "paramType":"number",
         "uiElemType":"slider",
         "display":True,
-        "hyperpatameterTuningCandidate":False,
+        "hyperpatameterTuningCandidate":True,
         "expectedDataType": ["float"]
     },
     {
@@ -515,7 +517,7 @@ SKLEARN_ML_XGBOOST_CLASSIFICATION_PARAMS = [
         "paramType":"list",
         "uiElemType":"checkbox",
         "display":True,
-        "hyperpatameterTuningCandidate":False,
+        "hyperpatameterTuningCandidate":True,
         "expectedDataType": ["string"]
     },
     {
