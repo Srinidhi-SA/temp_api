@@ -323,7 +323,7 @@ class TrainerView(viewsets.ModelViewSet):
         return return_xml_data(xml_data, algoname)
 
     @detail_route(methods=['put'])
-    def save_hyperparameter_seleted_models(self, request, *args, **kwargs):
+    def save_hyperparameter_selected_models(self, request, *args, **kwargs):
 
         try:
             instance = self.get_object_from_all()
