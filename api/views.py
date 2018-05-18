@@ -327,7 +327,6 @@ class TrainerView(viewsets.ModelViewSet):
 
         try:
             instance = self.get_object_from_all()
-
         except:
             return creation_failed_exception("File Doesn't exist.")
 
@@ -5480,7 +5479,7 @@ def get_appID_appName_map(request):
     return JsonResponse({"appIDMapping":appIDmap})
 
 
-# @api_view(['POST'])
+@api_view(['POST'])
 def updateFromNifi(request):
     # from pprint import pprint
     # pprint( request )
