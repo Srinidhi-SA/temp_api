@@ -323,7 +323,7 @@ class TrainerView(viewsets.ModelViewSet):
         xml_data = data[-1].get(algoname)
         return return_xml_data(xml_data, algoname)
 
-    @method_decorator(csrf_exempt)
+    @csrf_exempt
     @detail_route(methods=['put'])
     def save_hyperparameter_selected_models(self, request, *args, **kwargs):
 
