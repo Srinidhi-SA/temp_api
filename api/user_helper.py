@@ -315,6 +315,7 @@ class myJSONWebTokenSerializer(Serializer):
 
 
 def create_or_update_kylo_auth_file():
+    print "create_or_update_kylo_auth_file"
     if settings.USING_KYLO is True:
         return True
     KYLO_SERVER_DETAILS = settings.KYLO_SERVER_DETAILS
@@ -328,11 +329,9 @@ def create_or_update_kylo_auth_file():
 
     with open('/tmp/users.properties', 'w') as fp:
         fp.write(user_properties)
-    fp.close()
 
     with open('/tmp/groups.properties', 'w') as fp:
         fp.write(groups_properties)
-    fp.close()
 
     ssh_command_users = "scp -i {0} /tmp/users.properties {1}@{2}:{3}".format(
         KYLO_SERVER_DETAILS['key_path'],
