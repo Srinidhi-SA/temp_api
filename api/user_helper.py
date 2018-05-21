@@ -316,7 +316,7 @@ class myJSONWebTokenSerializer(Serializer):
 
 def create_or_update_kylo_auth_file():
     print "create_or_update_kylo_auth_file"
-    if settings.USING_KYLO is True:
+    if settings.USING_KYLO is False:
         return True
     KYLO_SERVER_DETAILS = settings.KYLO_SERVER_DETAILS
     group_propertie_quote = KYLO_SERVER_DETAILS['group_propertie_quote']
