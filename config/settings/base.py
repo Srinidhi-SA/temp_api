@@ -1249,7 +1249,7 @@ APPS_KEYWORD_TEMPLATE = [
 },
     {
         'name': 'Marketing',
-        'displayName': 'Marketting',
+        'displayName': 'Marketing',
         'description': " "
     },
     {
