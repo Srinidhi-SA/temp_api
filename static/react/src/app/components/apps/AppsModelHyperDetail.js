@@ -68,7 +68,7 @@ export class AppsModelHyperDetail extends React.Component {
 	  var pageData = "";
 	  if(!$.isEmptyObject(modelSummary))
 	  hyperParameterData = store.getState().apps.modelSummary.data.model_hyperparameter;
-	  if(!$.isEmptyObject(hyperParameterData) && !$.isEmptyObject(modelSummary) && this.state.showSummery)
+	  if(!$.isEmptyObject(hyperParameterData) && !$.isEmptyObject(modelSummary) && this.state.showSummery || $.isEmptyObject(hyperParameterData) && !$.isEmptyObject(modelSummary))
 	  return(<AppsModelDetail match={this.props.match}/>)
 	if(!$.isEmptyObject(hyperParameterData)){
 		hyperParameterData = JSON.stringify(hyperParameterData);
