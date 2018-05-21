@@ -51,7 +51,7 @@ export class ModelAlgorithmSelection extends React.Component {
         event.preventDefault();
         let isSelected = checkAtleastOneSelected();
         if(isSelected == false){
-            let msg= statusMessages("warning","Please select atleast one algorithm...","small_mascot");
+            let msg= statusMessages("warning","Please select at least one algorithm that you want to use for prediction.","small_mascot");
             bootbox.alert(msg);
             return false;
         }
