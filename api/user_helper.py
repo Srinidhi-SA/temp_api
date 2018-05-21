@@ -14,6 +14,7 @@ from django.template.defaultfilters import slugify
 import random
 import string
 from django.http import JsonResponse
+from api.helper import encrypt_for_kylo
 
 
 class Profile(models.Model):
@@ -60,7 +61,8 @@ class Profile(models.Model):
             "image_url": self.get_image_url(),
             "website": self.website,
             "bio": self.bio,
-            "phone": self.phone
+            "phone": self.phone,
+            "kylo_password": encrypt_for_kylo(self.user.username, self.user.password)
         }
 
         # user_profile.update(self.user)
@@ -313,19 +315,20 @@ class myJSONWebTokenSerializer(Serializer):
 
 
 def create_or_update_kylo_auth_file():
+    if settings.USING_KYLO is True:
+        return True
     KYLO_SERVER_DETAILS = settings.KYLO_SERVER_DETAILS
     group_propertie_quote = KYLO_SERVER_DETAILS['group_propertie_quote']
     user_properties = ""
     groups_properties = ""
     all_users = User.objects.all()
     for user in all_users:
-        user_properties += "{0}={1}\n".format(user.username, user.password)
+        user_properties += "{0}={1}\n".format(user.username, encrypt_for_kylo(user.username, user.password))
         groups_properties += "{0}={1}\n".format(user.username, group_propertie_quote)
 
     with open('/tmp/users.properties', 'w') as fp:
         fp.write(user_properties)
     fp.close()
-
 
     with open('/tmp/groups.properties', 'w') as fp:
         fp.write(groups_properties)

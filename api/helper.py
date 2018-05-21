@@ -1275,3 +1275,10 @@ def encrypt_url(url):
     #     bytes_url = base64.urlsafe_b64decode(url)
     cipher_text = cipher_suite.encrypt(bytes_url)
     return cipher_text
+
+def encrypt_for_kylo(username, password_encrypted):
+    newhash = md5.new()
+    existing_key = username + password_encrypted
+    newhash.update(existing_key)
+    value = newhash.hexdigest()
+    return value
