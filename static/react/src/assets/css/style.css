@@ -15554,3 +15554,5 @@ div.text-center.tbl_th_center th {text-align: center}
 .rowhead { text-transform: capitalize}
 .rowhead, .rowbody { border-bottom:1px solid #ddd}
 .rowhead th, .rowbody td { padding:2px; text-align:center; }
+.break-if-longText>tbody>tr>td{word-break: break-all;}
+.break-if-longText>thead>tr>th{vertical-align: middle;}
