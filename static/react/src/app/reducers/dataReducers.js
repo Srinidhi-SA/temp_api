@@ -286,6 +286,7 @@ export default function reducer(state = {
         return {
           ...state,
           dataSetMeasures: action.measures,
+          CopyOfMeasures: action.measures,
           //measureChecked: action.checkBoxList
         }
       }
@@ -296,6 +297,7 @@ export default function reducer(state = {
         return {
           ...state,
           dataSetDimensions: action.dimensions,
+          CopyOfDimension: action.dimensions,
          // dimensionChecked: action.checkBoxList1
         }
       }
@@ -306,6 +308,7 @@ export default function reducer(state = {
         return {
           ...state,
           dataSetTimeDimensions: action.timedimensions,
+          CopyTimeDimension: action.timedimensions,
          // dateTimeChecked: action.checkBoxList2
         }
       }
