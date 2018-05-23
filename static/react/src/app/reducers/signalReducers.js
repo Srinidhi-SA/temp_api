@@ -268,6 +268,14 @@ export default function reducer(state = {
       selected_signal_type:action.signal_type
     }
   }
+  break;
+  case "CLEAR_SIGNAL_ANALYSIS_BEFORE_LOGOUT":
+  {
+    return{
+      ...state,
+      signalAnalysis:{}
+    }
+  }
   }
   return state
 }

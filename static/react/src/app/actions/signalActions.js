@@ -784,3 +784,8 @@ export function updateTargetTypForSelSignal(signal_type){
     signal_type
   }
 }
+export function clearSignalAnalysisBeforeLogout(){
+  return {
+    type:"CLEAR_SIGNAL_ANALYSIS_BEFORE_LOGOUT"
+  }
+}
