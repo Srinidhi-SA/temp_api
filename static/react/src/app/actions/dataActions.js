@@ -1704,3 +1704,27 @@ export function resetSubsetting(slug){
             slug,
     }
 }
+export function updateVariableSelectionArray(summary){
+    if(!$.isEmptyObject(summary))
+    {
+        var newVariableSelectionArray = store.getState().apps.modelSummary.config.config.COLUMN_SETTINGS.variableSelection;
+        var newDataPreview = store.getState().datasets.dataPreview;
+        newDataPreview.meta_data.uiMetaData.varibaleSelectionArray = newVariableSelectionArray;
+        var flag = true;
+        return {
+            type:"UPDATE_VARAIABLE_SELECTION_ARRAY",
+            newDataPreview,
+            flag,
+            
+        }
+    }
+    else{
+        var newDataPreview = store.getState().datasets.dataPreview;
+        var flag = false;
+        return {
+            type:"UPDATE_VARAIABLE_SELECTION_ARRAY",
+            newDataPreview,
+            flag,
+        }
+    }
+}

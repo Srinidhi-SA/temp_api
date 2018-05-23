@@ -9,7 +9,7 @@ import store from "../../store";
 import { C3Chart } from "../c3Chart";
 import $ from "jquery";
 
-import {updateSelectedVariables, resetSelectedVariables, setSelectedVariables,updateDatasetVariables,handleDVSearch,handelSort,handleSelectAll,checkColumnIsIgnored,deselectAllVariablesDataPrev,makeAllVariablesTrueOrFalse,DisableSelectAllCheckbox} from "../../actions/dataActions";
+import {updateSelectedVariables, resetSelectedVariables, setSelectedVariables,updateDatasetVariables,handleDVSearch,handelSort,handleSelectAll,checkColumnIsIgnored,deselectAllVariablesDataPrev,makeAllVariablesTrueOrFalse,DisableSelectAllCheckbox,updateVariableSelectionArray} from "../../actions/dataActions";
 import {resetSelectedTargetVariable} from "../../actions/signalActions";
 
 @connect(( store ) => {
@@ -29,6 +29,8 @@ import {resetSelectedTargetVariable} from "../../actions/signalActions";
         dateTimeChecked:store.datasets.dateTimeChecked,
         dataSetAnalysisList:store.datasets.dataSetAnalysisList,
         isUpdate:store.datasets.isUpdate,
+        modelSummary:store.apps.modelSummary,
+        createScoreShowVariables:store.datasets.createScoreShowVariables,
     };
 } )
 
@@ -64,7 +66,6 @@ export class DataVariableSelection extends React.Component {
         this.props.dispatch(resetSelectedTargetVariable());
        // this.setVariables( this.dimensions, this.measures, this.selectedTimeDimension );
         this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.possibleAnalysisList,true));
-
     }
 
     handleDVSearch(evt){
@@ -89,7 +90,7 @@ export class DataVariableSelection extends React.Component {
         var variableSelectionMsg = <label>Including the follwing variables:</label>;
 
         let dataPrev = store.getState().datasets.dataPreview;
-
+        let modelSummary = this.props.modelSummary;
         var that = this;
         const popoverLeft = (
         		  <Popover id="popover-trigger-hover-focus">
@@ -103,9 +104,10 @@ export class DataVariableSelection extends React.Component {
       </a>
     </OverlayTrigger></div>)
 
-        if ( dataPrev ) {
+        if ( dataPrev && !$.isEmptyObject(modelSummary)) {
             console.log( "data variable selection" );
             console.log( dataPrev );
+            this.props.dispatch(updateVariableSelectionArray(modelSummary));
             this.possibleAnalysisList = dataPrev.meta_data.uiMetaData.advanced_settings;
             const metaData = dataPrev.meta_data.uiMetaData.varibaleSelectionArray;
             this.measures = [];
@@ -114,7 +116,7 @@ export class DataVariableSelection extends React.Component {
             this.dimensionDateTime =[];
             metaData.map(( metaItem, metaIndex ) => {
 
-                if ( this.props.isUpdate ) {
+                if ( this.props.isUpdate && this.props.createScoreShowVariables) {
 
                     switch ( metaItem.columnType ) {
                         case "measure":
@@ -145,16 +147,16 @@ export class DataVariableSelection extends React.Component {
 
             this.datetime = this.datetime.concat(this.dimensionDateTime);
 
-            if ( this.props.isUpdate ) {
+            if ( this.props.isUpdate && this.props.createScoreShowVariables) {
             if(this.props.match.path.includes("createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
                 this.props.dispatch(resetSelectedVariables(false));
                 deselectAllVariablesDataPrev();
                 DisableSelectAllCheckbox();
             }
             else
-            this.props.dispatch( resetSelectedVariables(true) );
-            this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.possibleAnalysisList,false));
-            }
+            this.props.dispatch( resetSelectedVariables(true));
+            this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.possibleAnalysisList,false)); 
+        }
 
             var varCls = "";
 

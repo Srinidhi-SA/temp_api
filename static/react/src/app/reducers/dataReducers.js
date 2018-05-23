@@ -52,6 +52,7 @@ export default function reducer(state = {
   advancedAnalysisInfluencer:true,
   advancedAnalysisPrediction:true,
   advancedAnalysisPerformance:true,
+  createScoreShowVariables:false,
 
 }, action) {
   console.log("In DATA reducer!!");
@@ -597,6 +598,15 @@ export default function reducer(state = {
           subsettingDone: false,
           selectedDataSet: action.slug
 
+        }
+      }
+      break;
+      case "UPDATE_VARAIABLE_SELECTION_ARRAY":
+      {
+        return {
+          ...state,
+          dataPreview: action.newDataPreview,
+          createScoreShowVariables:action.flag
         }
       }
       break;
