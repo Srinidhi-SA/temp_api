@@ -5490,6 +5490,7 @@ def updateFromNifi(request):
 
     # import pdb;pdb.set_trace()
     # print request.GET.get("username",None)
+    print "request from nifi====================>"
     print request.data
     username = request.data['username']
     from django.contrib.auth.models import User
