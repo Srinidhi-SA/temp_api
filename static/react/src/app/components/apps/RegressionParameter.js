@@ -81,9 +81,9 @@ export class RegressionParameter extends React.Component {
         console.log(e.target.value);
         this.props.dispatch(updateAlgorithmData(this.props.algorithmSlug,this.props.parameterData.name,e.target.value,this.props.type));
     }
-    checkChangeTextboxValue(min,max,e){
+    checkChangeTextboxValue(min,max,expectedDataType,e){
         var validateResult = {"iserror":false,"errmsg":""};
-        validateResult = this.validateTextboxValue(e.target.value,min,max);
+        validateResult = this.validateTextboxValue(e.target.value,min,max,expectedDataType);
         if(validateResult && validateResult.iserror){
             e.target.parentElement.lastElementChild.innerHTML=validateResult.errmsg;
             //e.target.focus();
@@ -167,7 +167,7 @@ export class RegressionParameter extends React.Component {
                                     </div></div>
                                 <div className="col-md-2"><div className="clr-alt4 gray-box"> {this.state.max}</div></div>
                                 <div className="col-md-6">
-                                    <input type="text" className="form-control" value={this.state.defaultVal} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max)} onChange={this.changeTextboxValue.bind(this)} placeholder="e.g. 1-3, 4, 5-10"/>
+                                    <input type="text" className="form-control" value={this.state.defaultVal} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)} onChange={this.changeTextboxValue.bind(this)} placeholder="e.g. 1-3, 4, 5-10"/>
                                 <div className="clearfix"></div>
                                 <div className="range-validate text-danger"></div>
                                 </div>
@@ -248,19 +248,25 @@ export class RegressionParameter extends React.Component {
 
     }
     
-    validateTextboxValue(textboxVal,min,max){
-        const regex = /^\s*([0-9]*)\s*-\s*([0-9]*)\s*$/;
+    validateTextboxValue(textboxVal,min,max,type){
+        const regex = /^\s*([0-9]\d*(\.\d+)?)\s*-\s*([0-9]\d*(\.\d+)?)\s*$/;
         const parts = textboxVal.split(/,|\u3001/);
         for (let i = 0; i < parts.length; ++i)
         {
             const match = parts[i].match(regex);
             if (match) {
+                var checkType = this.checkType(match[1],type,min,max);
+                if(checkType.iserror == true)
+                return {"iserror":true,"errmsg":checkType.errmsg};
+                var checkType2 = this.checkType(match[3],type);
+                if(checkType2.iserror == true)
+                return {"iserror":true,"errmsg":checkType2.errmsg};                
                 if (!this.isPositiveInteger(match[1]) && match[1] !== '')
                 return {"iserror":true,"errmsg":"Invalid Range"};
-                else if (!this.isPositiveInteger(match[2]) && match[2] !== '')
+                else if (!this.isPositiveInteger(match[3]) && match[2] !== '')
                 return {"iserror":true,"errmsg":"Invalid Range"};
-                const from = match[1] ? parseInt(match[1], 10) : min;
-                const to = match[2] ? parseInt(match[2], 10) : max;
+                const from = match[1] ? parseFloat(match[1], 10) : min;
+                const to = match[2] ? parseFloat(match[3], 10) : max;
                 if (from > to || from < min || from > max)
                 return {"iserror":true,"errmsg":"Invalid Range"};
                 if (to > max || to < min || to > max)
@@ -272,6 +278,9 @@ export class RegressionParameter extends React.Component {
                 const singleNumber = parseFloat(parts[i], 10);
                 if (singleNumber > max || singleNumber < min)
                 return {"iserror":true,"errmsg":"Invalid Range"};
+                var checkType = this.checkType(parts[i],type,min,max);
+                if(checkType.iserror == true)
+                return {"iserror":true,"errmsg":checkType.errmsg};
             }
         }
     }
@@ -281,5 +290,32 @@ export class RegressionParameter extends React.Component {
     isInteger(toTest) {
         const numericExp = /^\s*[0-9]+\s*$/;
         return numericExp.test(toTest);
+    }
+    checkType(val,type,min,max){
+        if(val === min && val === max)
+        {
+            return {"iserror":false,"errmsg":""};
+        }
+        else{
+            var allowedTypes = "";
+            var wrongCount = 0;
+            $.each(type,function(k,v){
+                if(v == "float"){
+                    (k == 0)?allowedTypes = "Decimals" : allowedTypes+= ", Decimals";
+                    if(val % 1 == 0)
+                    wrongCount++;
+                }
+                else if(v == "int"){
+                    (k == 0)?allowedTypes = "Numbers" : allowedTypes+= ", Numbers";
+                    if(val % 1 != 0)
+                    wrongCount++;
+                }
+            });
+            if(wrongCount == 0)
+            return {"iserror":false,"errmsg":""};
+            else
+            return {"iserror":true,"errmsg":"Only "+allowedTypes+" are allowed"};
+        }
+        
     }
 }
