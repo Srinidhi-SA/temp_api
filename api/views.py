@@ -5483,16 +5483,19 @@ def get_appID_appName_map(request):
     return JsonResponse({"appIDMapping":appIDmap})
 
 
-@api_view(['POST'])
+# @api_view(['POST'])
+@csrf_exempt
 def updateFromNifi(request):
     # from pprint import pprint
     # pprint( request )
 
-    # import pdb;pdb.set_trace()
+
     # print request.GET.get("username",None)
+    request.data = json.loads(request.body)
+    username = request.data['username']
+
     print "request from nifi====================>"
     print request.data
-    username = request.data['username']
     from django.contrib.auth.models import User
     request.user = User.objects.filter(username=username).first()
 
