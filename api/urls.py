@@ -107,7 +107,6 @@ urlpatterns = [
     url(r'^get_app_id_map',views.get_appID_appName_map,name="get_app_id_map"),
     url(r'^nifi_update', views.updateFromNifi, name="nifi_update"),
     # url(r'^some_random_things', views.some_random_things, name="nifi_update"),
-
 ]
 
 
