@@ -104,10 +104,10 @@ export class DataVariableSelection extends React.Component {
       </a>
     </OverlayTrigger></div>)
 
-        if ( dataPrev && (!$.isEmptyObject(modelSummary) || this.props.match.path.includes("/createModel"))) {
+        if ( dataPrev ) {
             console.log( "data variable selection" );
             console.log( dataPrev );
-            if(this.props.match.path.includes("/createScore"))
+            if(this.props.match.path.includes("/createScore") && !$.isEmptyObject(modelSummary))
             this.props.dispatch(updateVariableSelectionArray(modelSummary));
             this.possibleAnalysisList = dataPrev.meta_data.uiMetaData.advanced_settings;
             const metaData = dataPrev.meta_data.uiMetaData.varibaleSelectionArray;
@@ -117,7 +117,7 @@ export class DataVariableSelection extends React.Component {
             this.dimensionDateTime =[];
             metaData.map(( metaItem, metaIndex ) => {
 
-                if ( this.props.isUpdate && (this.props.createScoreShowVariables || this.props.match.path.includes("/createModel"))) {
+                if ( (this.props.isUpdate && this.props.createScoreShowVariables && this.props.match.path.includes("/createScore")) || (this.props.isUpdate && !this.props.match.path.includes("/createScore"))) {
 
                     switch ( metaItem.columnType ) {
                         case "measure":
@@ -148,7 +148,7 @@ export class DataVariableSelection extends React.Component {
 
             this.datetime = this.datetime.concat(this.dimensionDateTime);
 
-            if ( this.props.isUpdate && (this.props.createScoreShowVariables || this.props.match.path.includes("/createModel"))) {
+            if ( (this.props.isUpdate && this.props.createScoreShowVariables && this.props.match.path.includes("/createScore")) || (this.props.isUpdate && !this.props.match.path.includes("/createScore"))) {
             if(this.props.match.path.includes("createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
                 this.props.dispatch(resetSelectedVariables(false));
                 deselectAllVariablesDataPrev();
