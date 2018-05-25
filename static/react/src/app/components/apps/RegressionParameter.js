@@ -273,6 +273,9 @@ export class RegressionParameter extends React.Component {
                 return {"iserror":true,"errmsg":"Invalid Range"};
             }
             else{
+                var isSingleNumber = parts[i].split(/-|\u3001/);
+                if(isSingleNumber.length > 1)
+                return {"iserror":true,"errmsg":"Invalid Range"};
                 if (!this.isPositiveInteger(parts[i]))
                 return {"iserror":true,"errmsg":"Invalid Range"};
                 const singleNumber = parseFloat(parts[i], 10);
@@ -311,10 +314,11 @@ export class RegressionParameter extends React.Component {
                     wrongCount++;
                 }
             });
-            if(wrongCount == 0)
-            return {"iserror":false,"errmsg":""};
-            else
+            if(wrongCount != 0 && wrongCount == type.length)
             return {"iserror":true,"errmsg":"Only "+allowedTypes+" are allowed"};
+            else
+            return {"iserror":false,"errmsg":""};
+            
         }
         
     }
