@@ -46,8 +46,9 @@ def retrieve_failed_exception(err):
             errors.append("{} : {}".format(field, " ".join(value)))
 
         response.data['errors'] = "Retrieve failed"
-        response.data['status'] = False
+        response.data['status'] = "Not Found"
         response.data['message'] = 'failed'
+        response.data['data'] = 'Requested item not found.'
 
         response.data['exception'] = err
 
