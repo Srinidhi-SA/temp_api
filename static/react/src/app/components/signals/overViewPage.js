@@ -383,7 +383,7 @@ export class OverViewPage extends React.Component {
       //handler when previous is null
       if (expectedURL.prev == null) {
         if (this.props.signal.listOfCards.length > 0) {
-          if (expectedURL.prev == this.props.signal.listOfCards[0].slug) {
+          if (this.props.signal.listOfCards[0].slug) {
             prevURL = that.urlPrefix + "/" + this.props.match.params.slug;
           }
         }else if (regression_app) {
