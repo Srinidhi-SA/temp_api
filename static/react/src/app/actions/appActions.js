@@ -1255,12 +1255,16 @@ function updateStockSymbolsArray(stockSymbolsArray) {
 export function addMoreStockSymbols() {
   return (dispatch) => {
     var stockSymbolsArray = store.getState().apps.appsStockSymbolsInputs.slice();
-    var max = stockSymbolsArray.reduce(function(prev, current) {
-      return (prev.id > current.id)
-        ? prev
-        : current
+    if(stockSymbolsArray.length > 0){
+      var max = stockSymbolsArray.reduce(function(prev, current) {
+        return (prev.id > current.id)
+          ? prev
+          : current
 
-    });
+      });
+    }else{
+      var max = 0;
+    }
     let length = max.id + 1;
     stockSymbolsArray.push({
       "id": length,
