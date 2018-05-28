@@ -5456,7 +5456,6 @@ def get_algorithm_config_list(request):
         app_type=request.GET['app_type']
     except:
         app_type="CLASSIFICATION"
-
     user = request.user
     if app_type =="CLASSIFICATION":
         algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
@@ -5464,9 +5463,6 @@ def get_algorithm_config_list(request):
         algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_REGRESSION)
     else:
         algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
-
-    print algorithm_config_list.keys()
-
     return JsonResponse(algorithm_config_list)
 
 def get_appID_appName_map(request):
