@@ -575,7 +575,7 @@ def get_advanced_setting(varibaleSelectionArray):
     dimension_count_without_target = dimension_count
     if target_data_type == 'measure':
         measure_count_without_target = measure_count - 1
-    elif target_column_name == 'dimension':
+    elif target_data_type == 'dimension':
         dimension_count_without_target = dimension_count - 1
 
     if measure_count_without_target + dimension_count_without_target >= 1:
