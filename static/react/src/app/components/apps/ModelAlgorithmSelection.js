@@ -62,8 +62,9 @@ export class ModelAlgorithmSelection extends React.Component {
             });
         }
         else{
-            var isContinue = this.checkRangeValidation();
-            if(!isContinue){
+            var isContinueRange = this.checkRangeValidation();
+            var isContinueMulticheck = this.checkMultiSelectValidation();            
+            if(!isContinueRange || !isContinueMulticheck){
                 let msg= statusMessages("warning","Please resolve errors...","small_mascot");
                 bootbox.alert(msg);
                 return false;
@@ -286,6 +287,14 @@ export class ModelAlgorithmSelection extends React.Component {
     checkRangeValidation(){
         var isGo = true;
         $('.range-validate').each(function(){
+            if($(this)[0].innerHTML != "")
+            isGo =false;
+        });
+        return isGo;
+    }
+    checkMultiSelectValidation(){
+        var isGo = true;
+        $('.check-multiselect').each(function(){
             if($(this)[0].innerHTML != "")
             isGo =false;
         });
