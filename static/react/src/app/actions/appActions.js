@@ -1887,12 +1887,12 @@ export function checkSaveSelectedModels(checkObj,isChecked) {
   var slug = checkObj.slug;
   var model = checkObj['Model Id'];
   var isExist = $.grep(selectedAlgorithms,function(val,key){
-	return (val.slug == slug && val.modelName == model)
+	return (val.slug == slug && val['Model Id'] == model)
   });
   if(isExist.length == 1){
     var deletedIndex;
     $.each(selectedAlgorithms,function(k,val1){
-      if(val1.slug == slug && val1.modelName == model)
+      if(val1.slug == slug && val1['Model Id'] == model)
         deletedIndex = k;
     });
     selectedAlgorithms.splice( deletedIndex, 1 );
@@ -1939,4 +1939,8 @@ function triggerSendSelectedAlgorithmApi(token,slug) {
 }
 export function updateSelectedAlgObj(obj){
   return {type: "SELECTED_ALGORITHM_OBJECT", obj}
+}
+export function clearSelectedModelsCount(){
+  var count = 0;
+  return {type: "CLEAR_SELECT_MODEL_COUNT", count}
 }
