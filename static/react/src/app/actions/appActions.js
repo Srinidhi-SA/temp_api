@@ -1,5 +1,5 @@
 import {API, EMR, STATIC_URL} from "../helpers/env";
-import {PERPAGE, isEmpty, getUserDetailsOrRestart, APPSPERPAGE} from "../helpers/helper";
+import {PERPAGE, isEmpty, getUserDetailsOrRestart, APPSPERPAGE,statusMessages} from "../helpers/helper";
 import store from "../store";
 import {
   APPSLOADERPERVALUE,
@@ -990,7 +990,14 @@ export function uploadAudioFileToStore(files) {
 
 export function uploadAudioFile() {
   return (dispatch) => {
+    let uploadedFile = store.getState().apps.audioFileUpload;
+    if($.isEmptyObject(uploadedFile)){
+      let msg= statusMessages("warning","Please select audio file.","small_mascot");
+      bootbox.alert(msg);
+      return false;
+    }
     dispatch(hideAudioFUModal());
+    dispatch(clearAudioFile());
     dispatch(openAppsLoader(APPSLOADERPERVALUE, "Please wait while mAdvisor analyzes the audio file... "));
     return triggerAudioUpload(getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
       if (response.status === 200) {
