@@ -5,7 +5,7 @@ import {MainHeader} from "../common/MainHeader";
 import {Tabs,Tab,Button} from "react-bootstrap";
 import {AppsCreateScore} from "./AppsCreateScore";
 import {Card} from "../signals/Card";
-import {getListOfCards,getAppsModelSummary,updateModelSlug,handleExportAsPMMLModal,getAppDetails,updateModelSummaryFlag,sendSelectedAlgorithms} from "../../actions/appActions";
+import {getListOfCards,getAppsModelSummary,updateModelSlug,handleExportAsPMMLModal,getAppDetails,updateModelSummaryFlag,sendSelectedAlgorithms,clearSelectedModelsCount} from "../../actions/appActions";
 import {storeSignalMeta} from "../../actions/dataActions";
 import CircularProgressbar from 'react-circular-progressbar';
 import {STATIC_URL} from "../../helpers/env.js"
@@ -43,6 +43,7 @@ export class AppsModelHyperDetail extends React.Component {
 	}
   componentDidMount() {
 		window.scrollTo(0, 0);
+		this.props.dispatch(clearSelectedModelsCount());
 	  
   }
   saveAndShowModelSummary(){

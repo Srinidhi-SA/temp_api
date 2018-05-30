@@ -7,6 +7,7 @@ import { Redirect } from "react-router";
 import store from "../store";
 import {isEmpty,setUserDetails,getUserDetailsOrRestart} from "../helpers/helper";
 import {cookieObj} from '../helpers/cookiesHandler';
+import Notifications, {notify} from 'react-notify-toast';
 
 @connect((store) => {
   return {
@@ -29,6 +30,7 @@ export class Main extends React.Component {
         <div className="main_wrapper">
           <LeftPanel/>
           <TopPanel/>
+          <Notifications options={{zIndex: 200, top: '70px'}} />
             {this.props.children}
         </div>
       );

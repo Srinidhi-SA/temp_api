@@ -1,5 +1,5 @@
 import {API, EMR, STATIC_URL} from "../helpers/env";
-import {PERPAGE, isEmpty, getUserDetailsOrRestart, APPSPERPAGE} from "../helpers/helper";
+import {PERPAGE, isEmpty, getUserDetailsOrRestart, APPSPERPAGE,statusMessages} from "../helpers/helper";
 import store from "../store";
 import {
   APPSLOADERPERVALUE,
@@ -990,7 +990,14 @@ export function uploadAudioFileToStore(files) {
 
 export function uploadAudioFile() {
   return (dispatch) => {
+    let uploadedFile = store.getState().apps.audioFileUpload;
+    if($.isEmptyObject(uploadedFile)){
+      let msg= statusMessages("warning","Please select audio file.","small_mascot");
+      bootbox.alert(msg);
+      return false;
+    }
     dispatch(hideAudioFUModal());
+    dispatch(clearAudioFile());
     dispatch(openAppsLoader(APPSLOADERPERVALUE, "Please wait while mAdvisor analyzes the audio file... "));
     return triggerAudioUpload(getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
       if (response.status === 200) {
@@ -1255,12 +1262,16 @@ function updateStockSymbolsArray(stockSymbolsArray) {
 export function addMoreStockSymbols() {
   return (dispatch) => {
     var stockSymbolsArray = store.getState().apps.appsStockSymbolsInputs.slice();
-    var max = stockSymbolsArray.reduce(function(prev, current) {
-      return (prev.id > current.id)
-        ? prev
-        : current
+    if(stockSymbolsArray.length > 0){
+      var max = stockSymbolsArray.reduce(function(prev, current) {
+        return (prev.id > current.id)
+          ? prev
+          : current
 
-    });
+      });
+    }else{
+      var max = 0;
+    }
     let length = max.id + 1;
     stockSymbolsArray.push({
       "id": length,
@@ -1876,12 +1887,12 @@ export function checkSaveSelectedModels(checkObj,isChecked) {
   var slug = checkObj.slug;
   var model = checkObj['Model Id'];
   var isExist = $.grep(selectedAlgorithms,function(val,key){
-	return (val.slug == slug && val.modelName == model)
+	return (val.slug == slug && val['Model Id'] == model)
   });
   if(isExist.length == 1){
     var deletedIndex;
     $.each(selectedAlgorithms,function(k,val1){
-      if(val1.slug == slug && val1.modelName == model)
+      if(val1.slug == slug && val1['Model Id'] == model)
         deletedIndex = k;
     });
     selectedAlgorithms.splice( deletedIndex, 1 );
@@ -1928,4 +1939,8 @@ function triggerSendSelectedAlgorithmApi(token,slug) {
 }
 export function updateSelectedAlgObj(obj){
   return {type: "SELECTED_ALGORITHM_OBJECT", obj}
+}
+export function clearSelectedModelsCount(){
+  var count = 0;
+  return {type: "CLEAR_SELECT_MODEL_COUNT", count}
 }

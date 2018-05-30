@@ -57,7 +57,14 @@ export class RegressionParameter extends React.Component {
         $(this.eleSel).multiselect({
             onChange: function(option, checked, select) {
             that.props.dispatch(updateAlgorithmData(that.props.algorithmSlug,that.props.parameterData.name,$(option).val(),that.props.type));
-           }
+           },
+            onDropdownHide: function(event) {
+               if(this.getSelected().length == 0)
+                event.target.parentElement.parentElement.lastElementChild.innerHTML = "Please select atleast one";
+            },
+            onDropdownShow: function(event) {
+                event.target.parentElement.parentElement.lastElementChild.innerHTML = "";
+            }
         });
         }
     }
@@ -140,7 +147,8 @@ export class RegressionParameter extends React.Component {
                  {optionsTemp}
                  </select>
 				</div>
-                  
+                  <div className="clearfix"></div>
+                                <div className="col-md-6 check-multiselect text-danger"></div>
                 </div>
                );
                 break;
