@@ -2,7 +2,6 @@ from pySparkMLClassificationParams import *
 from pySparkMLRegressionParams import *
 from sklearnMLClassificationParams import *
 from sklearnMLRegressionParams import *
-import copy
 
 ALGORITHMRANDOMSLUG = "f77631ce2ab24cf78c55bb6a5fce4db8"
 MLENVIRONMENT = "python" #can be python or spark
@@ -82,14 +81,14 @@ SKLEARN_GRIDSEARCH_PARAMS = [
                 "display":True
             },
             {
-                    "name":"kFold",
-                    "displayName":"No Of Folds to Use",
-                    "defaultValue":3,
-                    "acceptedValue":None,
-                    "valueRange":[2,10],
-                    "paramType":"number",
-                    "uiElemType":"slider",
-                    "display":True
+                "name":"kFold",
+                "displayName":"No Of Folds to Use",
+                "defaultValue":3,
+                "acceptedValue":None,
+                "valueRange":[2,10],
+                "paramType":"number",
+                "uiElemType":"slider",
+                "display":True
             }
 ]
 SKLEARN_RANDOMSEARCH_PARAMS = [
@@ -170,13 +169,12 @@ SKLEARN_HYPERPARAMETER_OBJECT = [
         "displayName":"Grid Search",
         "selected":False
     },
-    {
-        "name":"randomsearchcv",
-        "params":SKLEARN_RANDOMSEARCH_PARAMS,
-        "displayName":"Random Search",
-        "selected": False
-
-    },
+    # {
+    #     "name":"randomsearchcv",
+    #     "params":SKLEARN_RANDOMSEARCH_PARAMS,
+    #     "displayName":"Random Search",
+    #     "selected": False
+    # },
     {
         "name":"none",
         "params":None,
@@ -185,9 +183,9 @@ SKLEARN_HYPERPARAMETER_OBJECT = [
     }
 ]
 
-SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION = copy.deepcopy(SKLEARN_HYPERPARAMETER_OBJECT)
+SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION = SKLEARN_HYPERPARAMETER_OBJECT
 SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION[0]["params"][0]["defaultValue"] = SKLEARN_CLASSIFICATION_EVALUATION_METRICS
-SKLEARN_HYPERPARAMETER_OBJECT_REGRESSION = copy.deepcopy(SKLEARN_HYPERPARAMETER_OBJECT)
+SKLEARN_HYPERPARAMETER_OBJECT_REGRESSION = SKLEARN_HYPERPARAMETER_OBJECT
 SKLEARN_HYPERPARAMETER_OBJECT_REGRESSION[0]["params"][0]["defaultValue"] = SKLEARN_REGRESSION_EVALUATION_METRICS
 
 PYSPARK_HYPERPARAMETER_OBJECT = [
