@@ -583,6 +583,7 @@ def decode_and_convert_chart_raw_data(data, object_slug=None):
         c3.add_tooltip_for_donut()
         if len(chart_data) >= 1:
             name_list = [i[0] for i in chart_data]
+            name_list = sorted(name_list, key=lambda x: int(x.split("-")[0]), reverse=True)
             from api.C3Chart.config import PATTERN1
             color_list = PATTERN1
             length = len(name_list)
