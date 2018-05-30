@@ -15,7 +15,7 @@ export class SampleFrame extends React.Component {
     var encodedUri= encodeURIComponent("/index.html#!/"+this.props.match.params.kylo_url)
     console.log("url encoded====>"+encodedUri)
     // if(document.cookie.indexOf("remember")>-1)
-    var kylo_url= KYLO_UI+"/integration.html?username=dladmin&password=thinkbig&redirect="+encodedUri
+    var kylo_url= KYLO_UI+"/kylo/integration.html?username="+getUserDetailsOrRestart.get().userName+"&password="+getUserDetailsOrRestart.get().dm_token+"&redirect="+encodedUri
     // else
     // var kylo_url="http://localhost:3000/index.html#!/"+this.props.match.params.kylo_url
     console.log("url====>"+kylo_url)

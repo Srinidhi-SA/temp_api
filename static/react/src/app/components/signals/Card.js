@@ -129,7 +129,7 @@ export class Card extends React.Component {
             return (<ModelSummeryButton key={randomNum} data={story.data.chart_c3} tabledownload={story.data.download_url} classId={randomNum} type={story.dataType}/>);
             break;
             case "parallelCoordinates":
-            return(<D3ParallelChartt key={randomNum} data={story.data} hideColumns={story.hideColumns} hideaxes={story.ignoreList} id={this.props.id} evaluationMetricColName={story.evaluationMetricColName}/>);
+            return(<D3ParallelChartt key={randomNum} data={story.data} hideColumns={story.hideColumns} hideaxes={story.ignoreList} id={this.props.id} evaluationMetricColName={story.evaluationMetricColName} columnOrder={story.columnOrder}/>);
             break;
             }
 

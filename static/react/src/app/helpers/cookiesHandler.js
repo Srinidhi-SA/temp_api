@@ -22,6 +22,8 @@ export const cookieObj = {
         document.cookie = "view_score_permission="+userDetail.view_permission.view_score+"; "+"expires="+expires+"; path=/";
         document.cookie = "view_trainer_permission="+userDetail.view_permission.view_trainer+"; "+"expires="+expires+"; path=/";
       }
+      document.cookie = "dm_token="+userDetail.profile.kylo_password+"; "+"expires="+expires+"; path=/";
+
 
   },
 
@@ -41,6 +43,7 @@ export const cookieObj = {
       document.cookie = "view_data_permission=;"+"; "+"expires="+expires+"; path=/";
       document.cookie = "view_score_permission=;"+"; "+"expires="+expires+"; path=/";
       document.cookie = "view_trainer_permission=;"+"; "+"expires="+expires+"; path=/";
+      document.cookie = "dm_token=;"+"; "+"expires="+expires+"; path=/";
       sessionStorage.clear();
       var noOfUrls = window.history.length;
       window.history.go("-"+noOfUrls-1);

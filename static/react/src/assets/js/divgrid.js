@@ -6,12 +6,18 @@ d3.divgrid = function(config) {
     if (columns.length == 0) columns = d3.keys(selection.data()[0][0]);
     if(columns[columns.length-1] != "Select for Scoring")columns.push("Select for Scoring");
 
-    $.each(settings.ignoleTableList,function(key,val){
-      columns.splice( columns.indexOf(val), 1 );
-    });
-   
- // columns =["Model Id","max_depth","Recall","Precision","min_samples_leaf","Run Time","n_estimators","min_samples_split","ROC-AUC","Select For Scoring"];
-   var rowhead = selection.selectAll(".rowhead")
+    if(settings.columnOrder.length > 0){
+      if(selection.attr('id') == settings.id){
+        columns = settings.columnOrder;
+        if(columns[columns.length-1] != "Select for Scoring")columns.push("Select for Scoring");
+      }
+    }
+    else{
+      $.each(settings.ignoleTableList,function(key,val){
+        columns.splice( columns.indexOf(val), 1 );
+      });
+    }
+    var rowhead = selection.selectAll(".rowhead")
       .data([true]);
 
       rowhead.enter().append("tr").attr("class","rowhead");
@@ -33,7 +39,7 @@ d3.divgrid = function(config) {
     var cells = selection.selectAll(".rowbody").selectAll(".cell")
         .data(function(d) { 
           return columns.map(function(col){
-            if(d[col] == undefined){
+            if(d[col] == undefined && col == "Select for Scoring"){
               if (settings.fromModel){
                 if(d["alwaysSelected"] == "True")
                 return ('<input type="checkbox" checked class="chkBoxTop" disabled />');

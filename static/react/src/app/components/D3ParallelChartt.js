@@ -44,7 +44,7 @@ var parcoords = d3.parcoords()("#"+this.state.chartId)
     .brushMode("1D-axes")
     .id(this.state.gridId);  // enable brushing
   var fromModel = !this.props.modelSummary.data.modelSelected;
-var config={ignoleTableList:this.props.hideColumns,fromModel:fromModel,evaluationMetricColName:this.props.evaluationMetricColName,selectedModelCount:this.props.selectedModelCount}
+var config={ignoleTableList:this.props.hideColumns,fromModel:fromModel,evaluationMetricColName:this.props.evaluationMetricColName,selectedModelCount:this.props.selectedModelCount,columnOrder:this.props.columnOrder,id:this.state.gridId}
   // create data table, row hover highlighting
   var grid = d3.divgrid(config);
     d3.select("#"+this.state.gridId)

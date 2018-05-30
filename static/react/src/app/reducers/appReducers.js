@@ -859,6 +859,13 @@ export default function reducer(state = {
         }
     }
     break;
+     case "CLEAR_SELECT_MODEL_COUNT":
+    {
+        return{
+            ...state,
+            selectedModelCount:action.count,
+        }
+    }
     }
     return state
 }

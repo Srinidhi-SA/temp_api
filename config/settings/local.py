@@ -175,3 +175,11 @@ LOGGING = {
     }
 }
 
+KYLO_SERVER_DETAILS = {
+    "host": "52.205.59.95",
+    "port" : 8088,
+    "user": "ubuntu",
+    "key_path": "~/.ssh/TIAA.pem",
+    "group_propertie_quote": "admin,user",
+    "kylo_file_path":"/home/ubuntu/kylodir2/"
+}
