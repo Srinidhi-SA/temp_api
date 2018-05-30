@@ -162,28 +162,40 @@ export class DataVariableSelection extends React.Component {
             var varCls = "";
 
             if ( store.getState().datasets.dataSetMeasures.length > 0 ) {
-                var measureTemplate = store.getState().datasets.dataSetMeasures.map(( mItem, mIndex ) => {
-                 if(mItem.targetColumn || mItem.uidCol)varCls="hidden";
-                 else varCls = "";
-                    return (
-                        <li className={varCls} key={mItem.slug}><div className="ma-checkbox inline"><input id={mItem.slug} name={mItem.setVarAs} type="checkbox" className="measure" onChange={this.handleCheckboxEvents} value={mItem.name} checked={mItem.selected} /><label htmlFor={mItem.slug} className="radioLabels"><span>{mItem.name}</span></label></div> </li>
-                    );
-                } );
-                $(".measureAll").prop("disabled",false);
+                if(store.getState().datasets.dataSetMeasures.length == 1 && store.getState().datasets.dataSetMeasures[0].targetColumn){
+                    $(".measureAll").prop("disabled",true);
+                    var measureTemplate = <label>No measure variable present</label>
+                }
+                else{
+                    var measureTemplate = store.getState().datasets.dataSetMeasures.map(( mItem, mIndex ) => {
+                    if(mItem.targetColumn || mItem.uidCol)varCls="hidden";
+                    else varCls = "";
+                        return (
+                            <li className={varCls} key={mItem.slug}><div className="ma-checkbox inline"><input id={mItem.slug} name={mItem.setVarAs} type="checkbox" className="measure" onChange={this.handleCheckboxEvents} value={mItem.name} checked={mItem.selected} /><label htmlFor={mItem.slug} className="radioLabels"><span>{mItem.name}</span></label></div> </li>
+                        );
+                    } );
+                    $(".measureAll").prop("disabled",false);
+                }
             } else {
                 $(".measureAll").prop("disabled",true);
                 var measureTemplate = <label>No measure variable present</label>
             }
             if ( store.getState().datasets.dataSetDimensions.length > 0 ) {
-                var dimensionTemplate = store.getState().datasets.dataSetDimensions.map(( dItem, dIndex ) => {
+                if(store.getState().datasets.dataSetDimensions.length == 1 && store.getState().datasets.dataSetDimensions[0].targetColumn){
+                    $(".dimensionAll").prop("disabled",true);
+                    var dimensionTemplate = <label>No dimension variable present</label>
+                }
+                else{
+                    var dimensionTemplate = store.getState().datasets.dataSetDimensions.map(( dItem, dIndex ) => {
 
-                    if(dItem.targetColumn ||  dItem.uidCol)varCls="hidden";
-                    else varCls = "";
-                    return (
-                        <li className={varCls} key={dItem.slug}><div className="ma-checkbox inline"><input id={dItem.slug} name={dItem.setVarAs} type="checkbox" className="dimension" onChange={this.handleCheckboxEvents} value={dItem.name} checked={dItem.selected} /><label htmlFor={dItem.slug}> <span>{dItem.name}</span></label></div> </li>
-                    );
-                } );
-                $(".dimensionAll").prop("disabled",false);
+                        if(dItem.targetColumn ||  dItem.uidCol)varCls="hidden";
+                        else varCls = "";
+                        return (
+                            <li className={varCls} key={dItem.slug}><div className="ma-checkbox inline"><input id={dItem.slug} name={dItem.setVarAs} type="checkbox" className="dimension" onChange={this.handleCheckboxEvents} value={dItem.name} checked={dItem.selected} /><label htmlFor={dItem.slug}> <span>{dItem.name}</span></label></div> </li>
+                        );
+                    } );
+                    $(".dimensionAll").prop("disabled",false);
+                }
             } else {
                 $(".dimensionAll").prop("disabled",true);
                 var dimensionTemplate = <label>No dimension variable present</label>
