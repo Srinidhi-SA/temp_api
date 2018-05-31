@@ -151,3 +151,4 @@ CELERY_QUEUES = {
 
 
 PEM_KEY = "/keyfiles/TIAA.pem"
+USING_KYLO = False

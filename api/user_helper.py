@@ -81,7 +81,9 @@ class UserProfileSerializer(serializers.Serializer):
         user.set_password(validated_data['password'])  # Hash to the Password of the user instance
         user.save()  # Save the Hashed Password
         Profile.objects.create(user=user, **userprofile_data)
-        create_or_update_kylo_auth_file()
+
+        if settings.USING_KYLO:
+            create_or_update_kylo_auth_file()
         return user  # Return user object
 
     # def update(self, instance, validated_data):
@@ -167,7 +169,9 @@ def create_profile(sender, **kwargs):
     if kwargs["created"]:
         user_profile = Profile(user=user)
         user_profile.save()
-    create_or_update_kylo_auth_file()
+
+    if settings.USING_KYLO:
+        create_or_update_kylo_auth_file()
 
 post_save.connect(create_profile, sender=User)
 

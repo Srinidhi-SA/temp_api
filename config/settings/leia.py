@@ -157,3 +157,9 @@ CELERY_QUEUES = {
 }
 
 PEM_KEY = "/keyfiles/TIAA.pem"
+USING_KYLO = False
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'guardian.backends.ObjectPermissionBackend'
+)
