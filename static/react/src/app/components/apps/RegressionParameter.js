@@ -72,6 +72,7 @@ export class RegressionParameter extends React.Component {
         if (isNaN(e.target.value))
             alert("please enter a valid number")
         else {
+            e.target.parentElement.lastElementChild.innerHTML="";
             this.setState({
             defaultVal: e.target.value
             })
@@ -158,7 +159,9 @@ export class RegressionParameter extends React.Component {
                     return (
                          <div className="row">
                         <div className="col-md-6">
-                            <input type="number" className="form-control" value={this.state.defaultVal} onChange={this.changeTextboxValue.bind(this)}/>
+                            <input type="number" className="form-control" value={this.state.defaultVal} onChange={this.changeTextboxValue.bind(this)} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)} />
+                            <div className="clearfix"></div>
+                                <div className="range-validate text-danger"></div>
                         </div>
                         </div>
                        );
@@ -192,6 +195,10 @@ export class RegressionParameter extends React.Component {
                     let precision = decimalPlaces(this.state.max);
                     var step = (1 / Math.pow(10, precision));
                     }
+                    if(parameterData.expectedDataType)
+                    var dataTypes = parameterData.expectedDataType;
+                    else
+                    var dataTypes = ["int"];
                     return (
                             <div className="row">                            
                             <div className="col-md-8 col-sm-2">
@@ -203,7 +210,9 @@ export class RegressionParameter extends React.Component {
                                     <div className="col-xs-1 clr-alt4"> {this.state.max}</div>
                                  
                             </div>
-                            <div className="col-md-2 col-sm-2"><input type="number" min = {this.state.min} max = {this.state.max} className="form-control" value={this.state.defaultVal} onChange={this.changeSliderValueFromText.bind(this)}/>
+                            <div className="col-md-4 col-sm-4"><input type="number" min = {this.state.min} max = {this.state.max} className="form-control inputWidth" value={this.state.defaultVal} onChange={this.changeSliderValueFromText.bind(this)} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,dataTypes)} />
+                            <div className="clearfix"></div>
+                            <div className="range-validate text-danger"></div>
                             </div>
                             </div>
                         );
@@ -303,7 +312,7 @@ export class RegressionParameter extends React.Component {
         return numericExp.test(toTest);
     }
     checkType(val,type,min,max){
-        if(val === min && val === max)
+        if(val === min || val === max)
         {
             return {"iserror":false,"errmsg":""};
         }
