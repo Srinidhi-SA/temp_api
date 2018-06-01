@@ -139,16 +139,17 @@ export class ModelAlgorithmSelection extends React.Component {
                                 if(options[prop].params != null && options[prop].params.length >0){
                                     var hyperparameterOptions = options[prop].params;
                                     hyperparameterOptionsData = hyperparameterOptions.map((param,index) =>{
-                                        var hyperpameterOptionsPath = algorithmPath+".hyperParameterSetting["+prop+"].params["+index+"]";
-                                        return(
-                                            <div className="row">
-                                                <div class="form-group">
-                                                    <label class="col-md-3 control-label read">{param.displayName}</label>
-                                                    <RegressionParameter parameterData={param} tuneName={selectedValue} algorithmSlug={data.algorithmSlug} type="TuningOption"/>
-                                                <div class="clearfix"></div>
+                                        if(param.display){ 
+                                            return(
+                                                <div className="row">
+                                                    <div class="form-group">
+                                                        <label class="col-md-3 control-label read">{param.displayName}</label>
+                                                        <RegressionParameter parameterData={param} tuneName={selectedValue} algorithmSlug={data.algorithmSlug} type="TuningOption"/>
+                                                    <div class="clearfix"></div>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        );
+                                            );
+                                        }
                                     });
                                 }
                             }
@@ -157,13 +158,12 @@ export class ModelAlgorithmSelection extends React.Component {
                     var algorithmParameters = data.parameters;
                     if(selectedValue != "none"){
                         var parametersData = algorithmParameters.map((params,Index) =>{
-                            if(params.hyperpatameterTuningCandidate){
-                                var parameterPath = algorithmPath+".parameters["+Index+"]";
+                            if(params.hyperpatameterTuningCandidate && params.display){
                                 return(
                                     <div class="row">
                                         <div class="form-group">
-                                            <label class="col-md-3 control-label read">{params.displayName}</label>
-                                            <label class="col-md-3 control-label read">{params.displayName}</label>
+                                            <label class="col-md-2 control-label read">{params.displayName}</label>
+                                            <label class="col-md-4 control-label read">{params.description}</label>
                                             <RegressionParameter parameterData={params} tuneName={selectedValue} algorithmSlug={data.algorithmSlug} isTuning={true} type="TuningParameter"/>
                                         <div class="clearfix"></div>
                                         </div>
@@ -175,17 +175,18 @@ export class ModelAlgorithmSelection extends React.Component {
                     else
                     {
                         var parametersData = algorithmParameters.map((params,Index) =>{
-                            var parameterPath = algorithmPath+".parameters["+Index+"]";
-                            return(
-                            <div class="row">
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label read">{params.displayName}</label>
-                                    <label class="col-md-3 control-label read">{params.displayName}</label>
-                                    <RegressionParameter parameterData={params} tuneName={selectedValue} algorithmSlug={data.algorithmSlug} type="NonTuningParameter"/>
-                                <div class="clearfix"></div>
+                            if(params.display){
+                                return(
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label read">{params.displayName}</label>
+                                        <label class="col-md-4 control-label read">{params.description}</label>
+                                        <RegressionParameter parameterData={params} tuneName={selectedValue} algorithmSlug={data.algorithmSlug} type="NonTuningParameter"/>
+                                    <div class="clearfix"></div>
+                                    </div>
                                 </div>
-                            </div>
-                            );
+                                );
+                            }
                         });
                     }
                     if(data.selected == true)
