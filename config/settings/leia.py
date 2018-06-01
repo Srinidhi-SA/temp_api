@@ -84,8 +84,8 @@ JOBSERVER = {
 }
 
 THIS_SERVER_DETAILS = {
-    "host": "34.196.22.246",
-    "port": "9015",
+    "host": "madvisor2.marlabsai.com",
+    "port": "80",
     "initail_domain": "/api"
 }
 
@@ -157,3 +157,9 @@ CELERY_QUEUES = {
 }
 
 PEM_KEY = "/keyfiles/TIAA.pem"
+USING_KYLO = False
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'guardian.backends.ObjectPermissionBackend'
+)
