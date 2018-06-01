@@ -75,7 +75,7 @@ export class AppsModelHyperDetail extends React.Component {
 		hyperParameterData = JSON.stringify(hyperParameterData);
 		hyperParameterData = JSON.parse(hyperParameterData);
 		var pageData = hyperParameterData.map((data,Index) =>{
-			var clearfixClass = "col-md-"+data.cardWidth*0.12+" xs-pl-30 xs-pl-30 xs-pt-5 clearfix";
+			var clearfixClass = "col-md-"+data.cardWidth*0.12+" xs-pl-30 xs-pl-30 xs-pt-5 clearfix removeBreak";
 			var cardDataArray = data.cardData;
 			var cardId = "id_"+data.slug;
 			console.log(cardId);
