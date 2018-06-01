@@ -60,27 +60,29 @@ SKLEARN_GRIDSEARCH_PARAMS = [
                 "defaultValue":None,
                 "paramType":"list",
                 "uiElemType":"dropDown",
-                "display":True
+                "display":True,
+                "expectedDataType":[None,"string"]
             },
-            {
-                "name":"iidAssumption",
-                "displayName":"Independent and Identical Distributed",
-                 "defaultValue":[
-                        {
-                            "name":"true",
-                            "selected":True,
-                            "displayName":"True"
-                        },
-                        {
-                            "name":"false",
-                            "selected":False,
-                            "displayName":"False"
-                        }
-                       ],
-                "paramType":"list",
-                "uiElemType":"dropDown",
-                "display":True
-            },
+            # {
+            #     "name":"iidAssumption",
+            #     "displayName":"Independent and Identical Distributed",
+            #      "defaultValue":[
+            #             {
+            #                 "name":"true",
+            #                 "selected":True,
+            #                 "displayName":"True"
+            #             },
+            #             {
+            #                 "name":"false",
+            #                 "selected":False,
+            #                 "displayName":"False"
+            #             }
+            #            ],
+            #     "paramType":"list",
+            #     "uiElemType":"dropDown",
+            #     "display":True,
+            #     "expectedDataType":["string"]
+            # },
             {
                 "name":"kFold",
                 "displayName":"No Of Folds to Use",
@@ -89,7 +91,8 @@ SKLEARN_GRIDSEARCH_PARAMS = [
                 "valueRange":[2,10],
                 "paramType":"number",
                 "uiElemType":"slider",
-                "display":True
+                "display":True,
+                "expectedDataType":[None,"int"]
             }
 ]
 SKLEARN_RANDOMSEARCH_PARAMS = [
@@ -101,25 +104,25 @@ SKLEARN_RANDOMSEARCH_PARAMS = [
                 "uiElemType":"dropDown",
                 "display":True
             },
-            {
-                "name":"iidAssumption",
-                "displayName":"Independent and Identical Distributed",
-                 "defaultValue":[
-                        {
-                            "name":"true",
-                            "selected":True,
-                            "displayName":"True"
-                        },
-                        {
-                            "name":"false",
-                            "selected":False,
-                            "displayName":"False"
-                        }
-                       ],
-                "paramType":"list",
-                "uiElemType":"dropDown",
-                "display":True
-            },
+            # {
+            #     "name":"iidAssumption",
+            #     "displayName":"Independent and Identical Distributed",
+            #      "defaultValue":[
+            #             {
+            #                 "name":"true",
+            #                 "selected":True,
+            #                 "displayName":"True"
+            #             },
+            #             {
+            #                 "name":"false",
+            #                 "selected":False,
+            #                 "displayName":"False"
+            #             }
+            #            ],
+            #     "paramType":"list",
+            #     "uiElemType":"dropDown",
+            #     "display":True
+            # },
             {
                 "name":"kFold",
                 "displayName":"No Of Folds to Use",
@@ -141,15 +144,15 @@ SKLEARN_NONE_PARAMS = [
                 "uiElemType":"dropDown",
                 "display":True
             },
-            {
-                "name":"iidAssumption",
-                "displayName":"Independent and Identical Distributed",
-                 "defaultValue":[
-                       ],
-                "paramType":"list",
-                "uiElemType":"dropDown",
-                "display":True
-            },
+            # {
+            #     "name":"iidAssumption",
+            #     "displayName":"Independent and Identical Distributed",
+            #      "defaultValue":[
+            #            ],
+            #     "paramType":"list",
+            #     "uiElemType":"dropDown",
+            #     "display":True
+            # },
             {
                 "name":"kFold",
                 "displayName":"No Of Folds to Use",
