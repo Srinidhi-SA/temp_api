@@ -330,6 +330,7 @@ SKLEARN_ML_LOGISTIC_REGRESSION_PARAMS = [
         {
             "name":"multi_class",
             "displayName":"Multiclass Option",
+            "description": "Optimization Strategy to use for multi class Target values",
             "defaultValue":[obj if obj["name"] != "ovr" else {"name":obj["name"],"selected":True,"displayName":obj["displayName"]} for obj in SKLEARN_ML_SUPPORTED_MULTICLASS_OPTION],
             "paramType":"list",
             "uiElemType":"checkbox",
@@ -341,6 +342,7 @@ SKLEARN_ML_LOGISTIC_REGRESSION_PARAMS = [
         {
             "name":"max_iter",
             "displayName":"Maximum Solver Iterations",
+            "description": "Maximum number of iterations taken for the solvers to converge",
             "defaultValue":100,
             "acceptedValue":None,
             "valueRange":[10,400],
@@ -354,6 +356,7 @@ SKLEARN_ML_LOGISTIC_REGRESSION_PARAMS = [
         {
             "name":"n_jobs",
             "displayName":"No Of Jobs",
+            "description": "Number of CPU cores used when parallelizing over classes",
             "defaultValue":1,
             "acceptedValue":None,
             "valueRange":[-1,4],
@@ -367,6 +370,7 @@ SKLEARN_ML_LOGISTIC_REGRESSION_PARAMS = [
         {
             "name":"warm_start",
             "displayName":"Warm Start",
+            "description":"When set to True, reuse the solution of the previous call to fit as initialization, otherwise, just erase the previous solution. Useless for liblinear solver",
             "defaultValue":[
              {
                  "name":"false",
@@ -389,6 +393,7 @@ SKLEARN_ML_LOGISTIC_REGRESSION_PARAMS = [
          {
              "name":"random_state",
              "displayName":"Random Seed",
+             "description":"The seed of the pseudo random number generator to use when shuffling the data",
              "defaultValue":None,
              "acceptedValue":None,
              "valueRange":[1,100],
@@ -402,6 +407,7 @@ SKLEARN_ML_LOGISTIC_REGRESSION_PARAMS = [
          {
              "name":"tol",
              "displayName":"Convergence tolerance of iterations(e^-n)",
+             "description":"Tolerance for stopping criteria",
              "defaultValue":4,
              "acceptedValue":None,
              "valueRange":[3,10],
@@ -416,6 +422,7 @@ SKLEARN_ML_LOGISTIC_REGRESSION_PARAMS = [
          {
              "name":"C",
              "displayName":"Inverse of regularization strength",
+             "description":"Must be a positive float, Smaller values specify stronger regularization",
              "defaultValue":1.0,
              "acceptedValue":None,
              "valueRange":[0.1,20.0],
