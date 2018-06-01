@@ -77,8 +77,8 @@ JOBSERVER = {
 }
 
 THIS_SERVER_DETAILS = {
-    "host": "34.196.22.246",
-    "port": "9012",
+    "host": "madvisor.marlabsai.com",
+    "port": "80",
     "initail_domain": "/api"
 }
 
