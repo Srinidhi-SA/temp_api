@@ -3,7 +3,7 @@ import CircularProgressbar from 'react-circular-progressbar';
 import {Redirect} from 'react-router';
 import {handleDecisionTreeTable} from "../actions/signalActions";
 import renderHTML from 'react-render-html';
-import {API} from "./env";
+import {API,STATIC_URL} from "./env";
 import { showLoading, hideLoading } from 'react-redux-loading-bar'
 
 function getHeader(token){
@@ -59,6 +59,9 @@ function redirectToLogin() {
 
 const FILEUPLOAD = "fileUpload";
 const MYSQL = "MySQL";
+const MSSQL = "mssql";
+const HANA = "Hana";
+const HDFS = "Hdfs";
 const INPUT = "Input";
 const HOST = "Host";
 const PORT = "Port";
@@ -66,14 +69,14 @@ const SCHEMA = "Schema";
 const USERNAME = "Username";
 const PASSWORD = "Password";
 const TABLENAME = "tablename";
-const PERPAGE = 11;
+const PERPAGE = 12;
 const NORMALTABLE = "normal";
 const CONFUSIONMATRIX = "confusionMatrix";
 const HEATMAPTABLE = "heatMap";
 const CIRCULARCHARTTABLE = "circularChartTable";
 const DECISIONTREETABLE = "decisionTreeTable"
-const DULOADERPERVALUE = 1;
-const CSLOADERPERVALUE = 1;
+const DULOADERPERVALUE = 0;
+const CSLOADERPERVALUE = 0;
 const APPSLOADERPERVALUE = 10;
 const LOADERMAXPERVALUE = 99;
 const DEFAULTINTERVAL = 10000;
@@ -355,13 +358,13 @@ export function  subTreeSetting(urlLength, length,paramL2,classname=".sb_navigat
   export function handleJobProcessing(slug){
       return (dispatch) => {
           dispatch(showLoading());
-          return updateJobStatus(slug).then(([response, json]) =>{
+          return updateJobStatus(slug,dispatch).then(([response, json]) =>{
               dispatch(hideLoading());
           })
       }
 
   }
- export function updateJobStatus(slug){
+ export function updateJobStatus(slug,dispatch){
      return fetch(API+'/api/get_job_kill/'+slug+'/',{
          method: 'get',
          headers: getHeader(getUserDetailsOrRestart.get().userToken)
@@ -443,7 +446,10 @@ export{
   SET_POLARITY,
   UNIQUE_IDENTIFIER,
   DYNAMICLOADERINTERVAL,
-  IGNORE_SUGGESTION
+  IGNORE_SUGGESTION,
+  HDFS,
+  HANA,
+  MSSQL
 	}
 export function capitalizeArray(array){
   let a =[]
@@ -489,8 +495,12 @@ export function downloadSVGAsPNG(chartClassId) {
     //This is code to remove background black color in chart and ticks adjustment
   var nodeList = document.querySelector("."+chartClassId + ">svg").querySelectorAll('.c3-chart .c3-chart-lines path');
   var nodeList2 = document.querySelector("."+chartClassId+ ">svg").querySelectorAll('.c3-axis path');
+  var nodeList3 =document.querySelector("."+chartClassId+ ">svg").querySelectorAll("svg text");
+
   var line_graph = Array.from(nodeList);
   var x_and_y = Array.from(nodeList2); //.concat(Array.from(nodeList2));
+  var labels = Array.from(nodeList3)
+
   line_graph.forEach(function(element) {
     element.style.fill = "none";
   });
@@ -498,9 +508,44 @@ export function downloadSVGAsPNG(chartClassId) {
     element.style.fill = "none";
     element.style.stroke = "black";
   });
+  labels.forEach(function(element){
+    element.style.fontSize = "12px"
+  })
   saveSvgAsPng(document.querySelector("."+chartClassId + ">svg"), "chart.png", {
     backgroundColor: "white",
     height: "500"
   });
 
+}
+
+//return status msg html string, msg_type can be error, warning,or info.mascot_type will be small_mascot,large_mascot or without_mascot
+export function statusMessages(msg_type,msg,mascot_type){
+  let imgsrc_url=""
+  let status_text=""
+  let htmlString=""
+switch(msg_type){
+  case "warning":{
+    imgsrc_url=STATIC_URL+"assets/images/alert_warning.png"
+    status_text='<h4 class="text-warning">Warning !</h4>'
+  }break;
+  case "error":{
+    imgsrc_url=STATIC_URL+"assets/images/alert_danger.png"
+    status_text='<h4 class="text-danger">Ooops !</h4>'
+  }break;
+  case "info":{
+    imgsrc_url=STATIC_URL+""
+    status_text=''
+  }break;
+  case "success":{
+    imgsrc_url=STATIC_URL+"assets/images/alert_success.png"
+    status_text='<h4 class="text-primary">Success !</h4>'
+  }
+
+}
+if(mascot_type=="without_mascot"){
+  htmlString='<div class="border border-danger"><h4 class="alert-heading">Error !</h4><p>'+msg+'</p></div>'
+}else{
+htmlString='<div class="row"><div class="col-md-4"><img src='+imgsrc_url+' class="img-responsive" /></div><div class="col-md-8">'+status_text+'<p>'+msg+'</p></div></div>';
+}
+return htmlString
 }

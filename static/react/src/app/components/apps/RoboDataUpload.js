@@ -61,7 +61,7 @@ export class RoboDataUpload extends React.Component {
 				<div class="newCardStyle firstCard">
 				<div class="card-header"></div>
 				<div class="card-center newStoryCard">
-				<div class="col-xs-12 text-center">UPLOAD DATA</div>
+				<div class="col-xs-12 text-center">+<br/><small>ROBO ADVISOR INSIGHTS</small></div>
 				</div>
 				</div>
 				

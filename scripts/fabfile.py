@@ -4,10 +4,12 @@ Usage
         e.g. fab deploy_api:branch=dev
         e.g. fab deploy_api:branch=leia
         e.g. fab deploy_api:branch=luke
+        e.g. fab deploy_api:branch=dev_9015
 
         e.g. fab deploy_react:branch=dev
         e.g. fab deploy_react:branch=leia
         e.g. fab deploy_react:branch=luke
+        e.g. fab deploy_react:branch=dev_9015
 
         e.g. fab deploy_api_and_migrate:branch=dev
         e.g. fab deploy_api_and_migrate:branch=leia
@@ -89,14 +91,30 @@ def deploy_api(branch="dev"):
     server_details= details['server_details']
     deployment_config= details['deployment_config']
     base_remote_path = path_details['base_remote_path']
+    config_file_path = BASE_DIR + '/config/settings/config_file_name_to_run.py'
+    all_lines = []
+    with open(config_file_path) as fp:
+        for line in fp:
+            all_lines.append(line)
+
+    UI_VERSION = None
+    for line in all_lines:
+        if "UI_VERSION" in line:
+            UI_VERSION = line.split("'")[1]
+
+    # if UI_VERSION is None:
     text_command = """CONFIG_FILE_NAME = '{0}'\nUI_VERSION = '{1}'
     """.format(deployment_config, random.randint(100000,10000000))
-    config_file_path = BASE_DIR + '/config/settings/config_file_name_to_run.py'
+    # else:
+    #     text_command = """CONFIG_FILE_NAME = '{0}'\nUI_VERSION = '{1}'\nV=1
+    #     """.format(deployment_config, UI_VERSION)
+
     react_env = BASE_DIR + '/static/react/src/app/helpers/env.js'
     react_npm_log = BASE_DIR + '/static/react/npm-debug.log'
     local('rm {0}'.format(config_file_path))
     local('echo "{0}" > {1}'.format(text_command, config_file_path))
 
+    # if UI_VERSION is None:
     with cd(BASE_DIR):
         if os.path.exists(config_file_path) is True:
             local('git add {0}'.format(config_file_path))
@@ -110,7 +128,7 @@ def deploy_api(branch="dev"):
                 pass
             else:
                 local('git checkout {0}'.format(react_npm_log))
-        local('git commit -m "version changed. Automated Deployment."')
+        commit_capture = local('git commit -m "version changed. Automated Deployment."', capture=True)
 
     only_for_api_push_and_pull(
         server_details=server_details,
@@ -180,24 +198,6 @@ def deploy_api_and_migrate(branch="dev"):
         base_remote_path=path_details['base_remote_path']
     )
     gunicorn.reload()
-
-
-
-
-def deploy_ml(branch="development"):
-    pass
-
-@task
-def copy_egg_from_emr_to_api_dev():
-
-    command_to_copy = "scp emr_dev:/home/hadoop/codebase/mAdvisor-MLScripts/dist/marlabs_bi_jobs-0.0.0-py2.7.egg ."
-    command_to_paste = "scp marlabs_bi_jobs-0.0.0-py2.7.egg development_api:/home/ubuntu/codebase/mAdvisor-api/scripts/"
-    local(command_to_copy)
-    local(command_to_paste)
-
-
-def remote_uname():
-    run('uname -a')
 
 
 def do_npm_install(react_path):
@@ -339,6 +339,7 @@ def only_for_api_push_and_pull(server_details, path_details):
 def apt_get(*packages):
     sudo('apt-get -y --no-upgrade install %s' % ' '.join(packages), shell=False)
 
+
 def install_mysql():
     with settings(hide('warnings', 'stderr'), warn_only=True):
         result = sudo('dpkg-query --show mysql-server')
@@ -353,25 +354,27 @@ def install_mysql():
     apt_get('mysql-server')
 
 
-def save_db_copy(branch="local"):
-    pass
+@task
+def uptime(branch="dev"):
 
-def get_remote_db(branch="development"):
-    pass
+    details = get_branch_details(branch)
+    set_fabric_env(details)
+    print details
+    path_details= details['path_details']
+    server_details= details['server_details']
+    run('ls')
+
 
 @task
-def uptime():
-    res = run('cat /proc/uptime')
-
-@task
-def remember_git_cache_local_and_remote(type="development"):
+def remember_git_cache_local_and_remote(branch="dev"):
     """
     remember git password.
     """
-    if type == "development":
-        dev()
-    elif type == "production":
-        prod()
+    details = get_branch_details(branch)
+    set_fabric_env(details)
+    print details
+    path_details= details['path_details']
+    server_details= details['server_details']
 
     local("git config --global credential.helper cache")
     local("git config --global credential.helper 'cache --timeout=360000'")
@@ -379,17 +382,16 @@ def remember_git_cache_local_and_remote(type="development"):
     run("git config --global credential.helper 'cache --timeout=360000'")
 
 @task
-def cleanup_static_react_old_dist(type="development"):
+def cleanup_static_react_old_dist(branch="dev"):
     """
     cleaup dist_files from static_react
     """
-    if type == "development":
-        dev()
-    elif type == "production":
-        prod()
+    details = get_branch_details(branch)
+    set_fabric_env(details)
+    print details
+    path_details= details['path_details']
+    server_details= details['server_details']
 
-    server_details = env.get('server_details')
-    path_details = env.get('path_details')
     base_remote_path = path_details.get('base_remote_path')
     react_path = path_details.get('react_path')
 
@@ -397,14 +399,12 @@ def cleanup_static_react_old_dist(type="development"):
         run('mv dist_* ~/old_dist')
 
 
-def create_database(type="development"):
-    if type == "development":
-        dev()
-    elif type == "production":
-        prod()
-
-    server_details = env.get('server_details')
-    path_details = env.get('path_details')
+def create_database(branch="development"):
+    details = get_branch_details(branch)
+    set_fabric_env(details)
+    print details
+    path_details = details['path_details']
+    server_details = details['server_details']
 
     db_name = "madvisor"
     user_name = "marlabs"
@@ -420,8 +420,9 @@ def create_database(type="development"):
     # GRANT ALL PRIVILEGES ON madvisor.* TO marlabs@localhost;
     run("GRANT ALL PRIVILEGES ON {0}.* TO {1}@{2};".format(db_name, user_name, host))
 
+
 @task
-def download_sql_and_dump(branch='development'):
+def download_sql_and_dump(branch='dev'):
     import time
     details = get_branch_details(branch)
     set_fabric_env(details)
@@ -430,53 +431,33 @@ def download_sql_and_dump(branch='development'):
     server_details= details['server_details']
     current_time = time.strftime("%Y%m%dT%H%M%S", time.gmtime())
     base_remote_path = path_details.get('base_remote_path')
-    with cd(base_remote_path):
+    dump_file_name = "datadump{0}.json".format(current_time)
+    tar_dump_file_name = dump_file_name + ".tar.gz"
+    base_remote_path_json = base_remote_path + "/" + tar_dump_file_name
+    local_dumping_path = '/tmp'
+    local_tar_dumping_file_path = local_dumping_path + '/' + tar_dump_file_name
+    local_dumping_file_path = local_dumping_path + '/' + dump_file_name
 
-        run("python manage.py dumpdata -e contenttypes -e auth.Permission > datadump{0}.json".format(current_time))
-        path_json = base_remote_path + "/" + "datadump{0}.json".format(current_time)
-        local_dumping_path = '/tmp'
-        get(path_json, local_dumping_path)
+    with cd(base_remote_path):
+        run("python manage.py dumpdata -e contenttypes -e auth.Permission > {0}".format(dump_file_name))
+        run("tar -zcvf {0} {1}".format(tar_dump_file_name, dump_file_name))
+        get(base_remote_path_json, local_dumping_path)
+        run('rm {0}'.format(dump_file_name))
+        run('rm {0}'.format(tar_dump_file_name))
+
+    with lcd(local_dumping_path):
+        local('tar -xzvf {0}'.format(local_tar_dumping_file_path))
 
     with lcd(BASE_DIR):
-        file_name = '{0}.json'.format(current_time)
-        locapath = '/home/ankush/dump_files/' + file_name
-        local('python manage.py loaddata {0}'.format(locapath))
+        local('python manage.py loaddata {0}'.format(local_dumping_file_path))
 
 
 @task
-def load_sql_dump_data():
+def load_local_sql_dump_data(filepath=None):
     with lcd(BASE_DIR):
-        file_name = 'datadump1514902040.15.json'
-        locapath = '/home/ankush/dump_files/' + file_name
-        local('python manage.py loaddata {0}'.format(locapath))
+        local('python manage.py loaddata {0}'.format(filepath))
     local("cat 'Done.'")
 
-
-def recreate_database(type='local'):
-
-
-    db_name = "madvisor"
-    user_name = "marlabs"
-    host= "localhost"
-    passowrd = "Password@123"
-
-def move_css_from_react_css_to_static_assets_css(type='development'):
-
-    if type == "development":
-        dev()
-    elif type == "production":
-        prod()
-
-    server_details = env.get('server_details')
-    path_details = env.get('path_details')
-
-    react_path = path_details['react_path']
-    style_css = react_path + "/src/assets/css/style.css"
-    asset_path = path_details['asset_path']
-    asset_css = asset_path + "/css"
-    run("mv {0} {1}".format(style_css, asset_css))
-
-# api_ui_dev
 
 @task
 def restart_jobserver(branch="development"):
@@ -594,14 +575,38 @@ def configuration_details():
                 "react_path": "/static/react",
                 "asset_path": "/static/asset",
                 "base_remote_path": "/home/ubuntu/codebase/mAdvisor-api",
-                "ui_branch": "api_ui_dev",
-                "api_branch": "api_ui_dev"
+                "ui_branch": "api_ui_dev_metadata",
+                "api_branch": "api_ui_dev_metadata"
             },
             'type':'development',
             'gunicorn_details': {
                 'gunicorn_wsgi_app': 'config.wsgi:application',
                 'gunicorn_pidpath': "/gunicorn.pid",
                 'gunicorn_bind': "0.0.0.0:9012"
+            },
+            'deployment_config': 'development'
+        },
+        'dev_9015': {
+            'server_details': {
+                "known name": "madvisordev.marlabsai.com",
+                "username": "ubuntu",
+                "host": "34.196.204.54",
+                "port": "9015",
+                "initail_domain": "/api",
+                'pem_detail': "/config/keyfiles/TIAA.pem"
+            },
+            'path_details': {
+                "react_path": "/static/react",
+                "asset_path": "/static/asset",
+                "base_remote_path": "/home/ubuntu/codebase/dummy_servers/mAdvisor-api",
+                "ui_branch": "api_ui_dev_metadata",
+                "api_branch": "api_ui_dev_metadata"
+            },
+            'type': 'development',
+            'gunicorn_details': {
+                'gunicorn_wsgi_app': 'config.wsgi:application',
+                'gunicorn_pidpath': "/gunicorn.pid",
+                'gunicorn_bind': "0.0.0.0:9015"
             },
             'deployment_config': 'development'
         },
@@ -618,8 +623,8 @@ def configuration_details():
                 "react_path": "/static/react",
                 "asset_path": "/static/asset",
                 "base_remote_path": "/home/ubuntu/codebase/mAdvisor-api_2",
-                "ui_branch": "api_ui_dev",
-                "api_branch": "api_ui_dev"
+                "ui_branch": "api_ui_dev_metadata_qubeware_demo",
+                "api_branch": "api_ui_dev_metadata_qubeware_demo"
             },
             'type':'leia',
             'gunicorn_details': {

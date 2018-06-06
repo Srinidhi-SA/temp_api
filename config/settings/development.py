@@ -101,7 +101,7 @@ REDIS_SALT = "123"
 APPEND_SLASH=False
 DATA_UPLOAD_MAX_MEMORY_SIZE = 1024*1024*1024
 
-mAdvisorScores = '/home/hadoop/mAdvisorScores/'
+SCORES_SCRIPTS_FOLDER = '/home/ubuntu/mAdvisorScores/'
 IMAGE_URL = "/api/get_profile_image/"
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

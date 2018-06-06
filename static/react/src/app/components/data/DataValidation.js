@@ -28,7 +28,7 @@ export class DataValidation extends React.Component {
 		 event.target.name = event.target.htmlFor;
 		//this is to prevent parent click on UInique identifier
 		if(event.target.name != "uniqueBtn")
-		this.props.dispatch(handleColumnClick(this.refs.dialog,event.target.name,colSlug,colName,"",colStatus));
+		this.props.dispatch(handleColumnClick(this.refs.dialog,event.target.name,colSlug,this.props.name,"",colStatus));
 	}
 	handleChangeTypeEvent(actionName,colSlug,colName,subActionName,event){
 		event.stopPropagation();

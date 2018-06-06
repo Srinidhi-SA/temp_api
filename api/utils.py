@@ -25,8 +25,8 @@ from pygments.formatters import HtmlFormatter
 from django.utils.safestring import mark_safe
 
 
-def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message_slug=None, queue_name=None):
-    config = generate_job_config(class_name, job_config, job_name, message_slug, slug)
+def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message_slug=None, queue_name=None,app_id= None):
+    config = generate_job_config(class_name, job_config, job_name, message_slug, slug,app_id)
 
     try:
         base_dir = correct_base_dir()
@@ -47,29 +47,18 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
                              "--py-files", egg_file_path, driver_file,
                              json.dumps(config)]
 
-        print "command array", command_array
-        print "=" * 100
-        print " ".join(command_array)
-        print "=" * 100
-
         application_id = ""
 
-        cur_process = subprocess.Popen(command_array, stderr=subprocess.PIPE)
-        # TODO: @Ankush need to write the error to error log and standard out to normal log
-        for line in iter(lambda: cur_process.stderr.readline(), ''):
-            print(line.strip())
-            match = re.search('Submitted application (.*)$', line)
-            if match:
-                application_id = match.groups()[0]
-                print "$" * 100
-                print application_id
-                print "$" * 100
-                break
-        print "process", cur_process
+        from tasks import submit_job_separate_task
+
+        submit_job_separate_task.delay(command_array, slug)
 
     except Exception as e:
-        from smtp_email import send_alert_through_email
-        send_alert_through_email(e)
+        print 'Error-->submit_job_through_yarn--->'
+        print e
+        pass
+        # from smtp_email import send_alert_through_email
+        # send_alert_through_email(e)
 
     return {
         "application_id": application_id,
@@ -81,18 +70,17 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
     }
 
 
-def generate_job_config(class_name, job_config, job_name, message_slug, slug):
+def generate_job_config(class_name, job_config, job_name, message_slug, slug,app_id=None):
     # here
     temp_config = JobserverDetails.get_config(slug=slug,
                                               class_name=class_name,
                                               job_name=job_name,
-                                              message_slug=message_slug
+                                              message_slug=message_slug,
+                                              app_id=app_id
                                               )
     config = {}
     config['job_config'] = job_config
     config['job_config'].update(temp_config)
-    print "overall---------config"
-    print config
 
     return config
 
@@ -121,12 +109,10 @@ def submit_job_through_job_server(slug, class_name, job_config, job_name=None, m
     return job_url
 
 
-def submit_job(slug, class_name, job_config, job_name=None, message_slug=None,queue_name=None):
+def submit_job(slug, class_name, job_config, job_name=None, message_slug=None,queue_name=None,app_id=None):
     """Based on config, submit jobs either through YARN or job server"""
-    print("came to submit job")
     if settings.SUBMIT_JOB_THROUGH_YARN:
-        print("Submitting job through YARN")
-        return submit_job_through_yarn(slug, class_name, job_config, job_name, message_slug,queue_name=queue_name)
+        return submit_job_through_yarn(slug, class_name, job_config, job_name, message_slug,queue_name=queue_name,app_id=app_id)
     else:
         return submit_job_through_job_server(slug, class_name, job_config, job_name, message_slug)
 
@@ -267,7 +253,7 @@ class InsightListSerializers(serializers.ModelSerializer):
 class TrainerSerlializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
-        print get_job_status(instance)
+        get_job_status(instance)
         ret = super(TrainerSerlializer, self).to_representation(instance)
         dataset = ret['dataset']
         dataset_object = Dataset.objects.get(pk=dataset)
@@ -300,7 +286,7 @@ class TrainerSerlializer(serializers.ModelSerializer):
 class TrainerListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
-        print get_job_status(instance)
+        get_job_status(instance)
         ret = super(TrainerListSerializer, self).to_representation(instance)
         dataset = ret['dataset']
         dataset_object = Dataset.objects.get(pk=dataset)
@@ -325,7 +311,7 @@ class TrainerListSerializer(serializers.ModelSerializer):
 class ScoreSerlializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
-        print get_job_status(instance)
+        get_job_status(instance)
         ret = super(ScoreSerlializer, self).to_representation(instance)
         trainer = ret['trainer']
         trainer_object = Trainer.objects.get(pk=trainer)
@@ -362,7 +348,7 @@ class ScoreSerlializer(serializers.ModelSerializer):
 class ScoreListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
-        print get_job_status(instance)
+        get_job_status(instance)
         ret = super(ScoreListSerializer, self).to_representation(instance)
         trainer = ret['trainer']
         trainer_object = Trainer.objects.get(pk=trainer)
@@ -408,7 +394,6 @@ class RoboSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
 
-        # print get_jobserver_status(instance)
         from api.datasets.serializers import DatasetSerializer
         ret = super(RoboSerializer, self).to_representation(instance)
 
@@ -630,6 +615,13 @@ class AppListSerializers(serializers.ModelSerializer):
                 ret['tags'] = tag_object
                 #add all keys list
                 ret['tag_keywords'] = self.add_all_tag_keywords(template_tags)
+
+                CUSTOM_WORD1_APPS = settings.CUSTOM_WORD1_APPS
+                CUSTOM_WORD2_APPS = settings.CUSTOM_WORD2_APPS
+                upper_case_name = ret['name'].upper()
+                print upper_case_name
+                ret['custom_word1'] = CUSTOM_WORD1_APPS[upper_case_name]
+                ret['custom_word2'] = CUSTOM_WORD2_APPS[upper_case_name]
             return ret
 
         def add_all_tag_keywords(self,template_tags):
@@ -659,6 +651,13 @@ class AppSerializer(serializers.ModelSerializer):
                 print tag_object
 
                 ret['tags'] = tag_object
+
+            CUSTOM_WORD1_APPS = settings.CUSTOM_WORD1_APPS
+            CUSTOM_WORD2_APPS = settings.CUSTOM_WORD2_APPS
+            upper_case_name = ret['name'].upper()
+            print upper_case_name
+            ret['CUSTOM_WORD1_APPS'] = CUSTOM_WORD1_APPS[upper_case_name]
+            ret['CUSTOM_WORD2_APPS'] = CUSTOM_WORD2_APPS[upper_case_name]
             return ret
 
 
@@ -682,7 +681,7 @@ class AppSerializer(serializers.ModelSerializer):
 
 
 def correct_base_dir():
-    if  settings.BASE_DIR.endswith("config") or settings.BASE_URL.endswith("config/"):
+    if  settings.BASE_DIR.endswith("config") or settings.BASE_DIR.endswith("config/"):
         return os.path.dirname(settings.BASE_DIR)
     else:
         return settings.BASE_DIR

@@ -32,6 +32,8 @@ DATABASES = {
 PROJECT_APP = [
     # 'silk',
     # 'django_extensions'
+    # 'django_celery_beat',
+    # 'django_celery_results'
 ]
 
 INSTALLED_APPS += PROJECT_APP
@@ -40,6 +42,13 @@ LOCAL_MIDDLEWARE = [
     # 'django_cprofile_middleware.middleware.ProfilerMiddleware',
     # 'silk.middleware.SilkyMiddleware'
 ]
+
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE
 
 MIDDLEWARE += LOCAL_MIDDLEWARE
 
@@ -111,7 +120,7 @@ REDIS_SALT = "123"
 APPEND_SLASH=False
 DATA_UPLOAD_MAX_MEMORY_SIZE = 1024*1024*1024
 
-mAdvisorScores = '/home/hadoop/mAdvisorScores/'
+SCORES_SCRIPTS_FOLDER = '/home/ubuntu/mAdvisorScores/'
 IMAGE_URL = "/api/get_profile_image/"
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

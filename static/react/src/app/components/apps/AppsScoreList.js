@@ -22,12 +22,16 @@ import {
     handleScoreDelete,
     activateModelScoreTabs,
     storeScoreSearchElement,
-    storeAppsScoreSortElements
+    storeAppsScoreSortElements,
+    refreshAppsScoreList
 } from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {STATIC_URL} from "../../helpers/env.js"
 import {SEARCHCHARLIMIT,getUserDetailsOrRestart} from  "../../helpers/helper"
 import Dialog from 'react-bootstrap-dialog'
+import {ScoreCard}  from "./ScoreCard";
+import {LatestScores} from "./LatestScores";
+
 
 var dateFormat = require('dateformat');
 
@@ -52,6 +56,9 @@ export class AppsScoreList extends React.Component {
             // this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/scores')
         }
         
+    }
+    componentDidMount(){
+        this.props.dispatch(refreshAppsScoreList(this.props));
     }
     getScoreSummary(slug) {
         this.props.dispatch(updateScoreSlug(slug))
@@ -117,6 +124,7 @@ export class AppsScoreList extends React.Component {
         }
         
         const scoreList = store.getState().apps.scoreList.data;
+        var appsScoreList = null;
         if (scoreList) {
             const pages = store.getState().apps.scoreList.total_number_of_pages;
             const current_page = store.getState().apps.current_page;
@@ -124,71 +132,13 @@ export class AppsScoreList extends React.Component {
             if (pages > 1) {
                 paginationTag = <Pagination ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
             }
-            const appsScoreList = scoreList.map((data, i) => {
-                var scoreLink = "/apps/" + store.getState().apps.currentAppId + "/scores/" + data.slug;
-                return (
-                        <div className="col-md-3 xs-mb-15 list-boxes" key={i}>
-                        <div className="rep_block newCardStyle" name={data.name}>
-                        <div className="card-header"></div>
-                        <div className="card-center-tile">
-                        <div className="row">
-                        <div className="col-xs-9">
-                        <h4 className="title newCardTitle">
-                        <a href="javascript:void(0);" id={data.slug} onClick={this.getScoreSummary.bind(this, data.slug)}>
-                        <Link to={scoreLink}>{data.name}</Link>
-                        </a>
-                        </h4>
-                        </div>
-                        <div className="col-xs-3">
-                        <img src={STATIC_URL + "assets/images/apps_score_icon.png"} className="img-responsive" alt="LOADING"/>
-                            </div>
-                        </div>
-                        </div>
-                        <div className="card-footer">
-                        <div className="left_div">
-                        <span className="footerTitle"></span>{getUserDetailsOrRestart.get().userName}
-                        <span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy HH:MM")}</span>
-                        </div>
-                        
-                        <div className="card-deatils">
-                        {/*<!-- Popover Content link -->*/}
-                        <OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={data}/> </Popover>}>
-                        <a className="pover cursor">
-                        <i className="ci pe-7s-info pe-2x"></i>
-                        </a>
-                        </OverlayTrigger>
-                        
-                        {/*<!-- Rename and Delete BLock  -->*/}
-                        <a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
-                        <i className="ci pe-7s-more pe-rotate-90 pe-2x"></i>
-                        </a>
-                        <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                        <li onClick={this.handleScoreRename.bind(this, data.slug, data.name)}>
-                        <a className="dropdown-item" href="#renameCard" data-toggle="modal">
-                        <i className="fa fa-edit"></i>
-                        &nbsp;&nbsp;Rename</a>
-                        </li>
-                        <li onClick={this.handleScoreDelete.bind(this, data.slug)}>
-                        <a className="dropdown-item" href="#deleteCard" data-toggle="modal">
-                        <i className="fa fa-trash-o"></i>
-                        &nbsp;&nbsp;Delete</a>
-                        </li>
-                        </ul>
-                        {/*<!-- End Rename and Delete BLock  -->*/}
-                        </div>
-                        </div>
-                        </div>
-                        </div>
-                )
-            });
+            appsScoreList = <ScoreCard data={scoreList} />
             return (
                     
                     <div>
-                    <div className="page-head">
-                    {/*<!-- <ol class="breadcrumb">
-							<li><a href="#">Story</a></li>
-							<li class="active">Sales Performance Report</li>
-						</ol> -->*/}
+                    <LatestScores props={this.props}/>
+                     <div className="main-content">
+      
  
             <div className="row">
               <div className="col-md-8"></div>

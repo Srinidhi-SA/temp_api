@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ["192.168.33.128"]
 # Application definition
 
 INSTALLED_APPS = [
+    'material.theme.teal',
     'material',
     'material.admin',
     'django.contrib.admin',
@@ -190,7 +191,8 @@ STATICFILES_DIRS = [
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = '/media/'
 
-UPLOAD_FOLDER = '/uploads/datasets/'
+# @depricated
+# UPLOAD_FOLDER = '/uploads/datasets/'
 
 """
 fieldType -> password, text, number, email
@@ -684,6 +686,172 @@ ADANCED_SETTING_FOR_POSSIBLE_ANALYSIS_TREND = {
     "noOfColumnsToUse": None
 }
 
+ADVANCED_SETTINGS_OVERVIEW = {
+                "name": "overview",
+                "displayName": "Overview",
+                "status": False,
+                "analysisSubTypes": [],
+                "noOfColumnsToUse": None
+            }
+
+ADVANCED_SETTINGS_ASSOCIATION = {
+                "name": "association",
+                "displayName": "Association",
+                "status": False,
+                "analysisSubTypes": [],
+                "binSetting": [
+                    {"name": "heading", "displayName": "Binning of Numerical Values"},
+                    {"name": "binLevels", "value": 5, "displayName": "Number of Bin Levels", "defaultValue": 5,
+                     "min": 2, "max": 10},
+                    {"name": "binCardinality", "value": 5,
+                     "displayName": "Do not bin numerical values with cardinality less than:", "defaultValue": 5,
+                     "min": 2, "max": 10}
+                ],
+                "noOfColumnsToUse": [
+                    {
+                        "name": "low",
+                        "displayName": "Low",
+                        "status": False,
+                        "defaultValue": 3
+                    },
+                    {
+                        "name": "medium",
+                        "displayName": "Medium",
+                        "status": False,
+                        "defaultValue": 5
+                    },
+                    {
+                        "name": "high",
+                        "displayName": "High",
+                        "status": False,
+                        "defaultValue": 8
+                    },
+                    {
+                        "name": "custom",
+                        "displayName": "Custom",
+                        "status": False,
+                        "defaultValue": 3,
+                        "value": None
+                    }
+                ]
+            }
+
+ADVANCED_SETTINGS_PREDICTION = {
+                "name": "prediction",
+                "displayName": "Prediction",
+                "status": False,
+                "analysisSubTypes": [],
+                "noOfColumnsToUse": None,
+                "levelSetting":[]
+            }
+
+ADVANCED_SETTINGS_TARGET_LEVEL = []
+
+ADVANCED_SETTINGS_TARGET_SETTINGS = [
+            {"name": "Count", "status": False},
+            {"name": "Specific Measure", "status": False, "selectedMeasure": None}
+        ]
+
+ADVANCED_SETTINGS_PERFORMANCE = {
+                "name": "performance",
+                "displayName": "Performance",
+                "status": False,
+                "analysisSubTypes": [],
+                "noOfColumnsToUse": [
+                    {
+                        "name": "low",
+                        "displayName": "Low",
+                        "status": False,
+                        "defaultValue": 3
+                    },
+                    {
+                        "name": "medium",
+                        "displayName": "Medium",
+                        "status": False,
+                        "defaultValue": 5
+                    },
+                    {
+                        "name": "high",
+                        "displayName": "High",
+                        "status": False,
+                        "defaultValue": 8
+                    },
+                    {
+                        "name": "custom",
+                        "displayName": "Custom",
+                        "status": False,
+                        "defaultValue": 3,
+                        "value": None
+                    }
+                ],
+            }
+
+ADVANCED_SETTINGS_INFLUENCER = {
+                "name": "influencer",
+                "displayName": "Influencer",
+                "status": False,
+                "analysisSubTypes": [
+                    # {
+                    #     "name": "overview",
+                    #     "displayName": "Overview",
+                    #     "status": False
+                    # },
+                    # {
+                    #     "name": "Key areas of Impact",
+                    #     "displayName": "Key areas of Impact",
+                    #     "status": False
+                    # },
+                    # {
+                    #     "name": "Trend analysis",
+                    #     "displayName": "Trend analysis",
+                    #     "status": False
+                    # }
+                ],
+                "noOfColumnsToUse": [
+                    {
+                        "name": "low",
+                        "displayName": "Low",
+                        "status": False,
+                        "defaultValue": 3
+                    },
+                    {
+                        "name": "medium",
+                        "displayName": "Medium",
+                        "status": False,
+                        "defaultValue": 5
+                    },
+                    {
+                        "name": "high",
+                        "displayName": "High",
+                        "status": False,
+                        "defaultValue": 8
+                    },
+                    {
+                        "name": "custom",
+                        "displayName": "Custom",
+                        "status": False,
+                        "defaultValue": 3,
+                        "value": None
+                    }
+                ]
+            }
+
+ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS =  {
+    "dimensions": {
+        "analysis": [],
+        "targetLevels": [],
+        "trendSettings": [
+            {"name": "Count", "status": False},
+            {"name": "Specific Measure", "status": False, "selectedMeasure": None}
+        ]
+    },
+    "measures": {
+        "analysis": []
+    },
+}
+ADVANCED_SETTINGS_FOR_POSSIBLE_DIMENSION_ANALYSIS_CHECK_LIST = ['overview', 'trend', 'association', 'prediction']
+ADVANCED_SETTINGS_FOR_POSSIBLE_MEASURE_ANALYSIS_CHECK_LIST = ['overview', 'trend', 'performance', 'influencer', 'prediction']
+
 ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND = {
     "dimensions": {
         "analysis": [
@@ -740,7 +908,8 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND = {
                 "displayName": "Prediction",
                 "status": False,
                 "analysisSubTypes": [],
-                "noOfColumnsToUse": None
+                "noOfColumnsToUse": None,
+                "levelSetting":[]
             }
         ],
         "targetLevels": [],
@@ -845,7 +1014,8 @@ ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND = {
                 "displayName": "Prediction",
                 "status": False,
                 "analysisSubTypes": [],
-                "noOfColumnsToUse": None
+                "noOfColumnsToUse": None,
+                "levelSetting":[]
             }
         ]
     },
@@ -954,7 +1124,9 @@ TRANSFORMATION_SETTINGS_CONSTANT_DELETE = {
 }
 
 
-TRANSFORMATION_SETTINGS_IGNORE = {"actionName": "ignore_suggestion", "displayName": "Consider for Analysis", "status": False}
+TRANSFORMATION_SETTINGS_IGNORE = {
+    "actionName": "ignore_suggestion", "displayName": "Consider for Analysis", "status": False
+}
 
 CONCEPTS = {'corporate': ['leadership change', 'public relations'],
             'expansion - geography/segment': ['acquisition',
@@ -987,11 +1159,12 @@ ANALYSIS_LIST_SEQUENCE = [
     "Prediction"
 ]
 
-ML_SECRET_KEY = 'GETMETADATAOBJECT'
+ML_SECRET_KEY = 'xfBmEcr_hFHGqVrTo2gMFpER3ks9x841UcvJbEQJesI='
 
 SIGNATURE_LIFETIME = 30
 
-APPS_KEYWORD_TEMPLATE = [{
+APPS_KEYWORD_TEMPLATE = [
+    {
     'name': 'Sales',
     'displayName': 'Sales',
     'description': " "
@@ -1062,6 +1235,41 @@ APPS_KEYWORD_TEMPLATE = [{
     },
 ]
 
+
+CUSTOM_WORD1_APPS = {
+    'AUTOMATED PREDICTION': '',
+    'ROBO-ADVISOR INSIGHTS': '',
+    'OPPORTUNITY SCORING': 'opportunity',
+    'CHURN PREDICTION': 'churn',
+    'RE-ADMISSION PREDICTION': 're-admission',
+    'READMISSION PREDICTION': 're-admission',
+    'PHYSICIAN ATTRITION': 'attrition',
+    'CREDIT CARD FRAUD': 'Credit Card Fraud',
+    'CLAIMS PREDICTION': 'claims',
+    'ASSET HEALTH PREDICTION': 'asset health',
+    'EMPLOYEE ATTRITION': 'attrition',
+    'SPEECH ANALYTICS': 'speech',
+    'STOCK SENSE': 'stock',
+    'STOCK  SENSE': 'stock'
+}
+
+CUSTOM_WORD2_APPS = {
+    'AUTOMATED PREDICTION': 'prediction',
+    'ROBO-ADVISOR INSIGHTS': '',
+    'OPPORTUNITY SCORING': 'opportunity',
+    'CHURN PREDICTION': 'churn',
+    'RE-ADMISSION PREDICTION': 're-admission',
+    'READMISSION PREDICTION': 're-admission',
+    'PHYSICIAN ATTRITION': 'attrition',
+    'CREDIT CARD FRAUD': 'fraud',
+    'CLAIMS PREDICTION': 'claims',
+    'ASSET HEALTH PREDICTION': 'asset health',
+    'EMPLOYEE ATTRITION': 'attrition',
+    'SPEECH ANALYTICS': 'speech',
+    'STOCK SENSE': 'stock',
+    'STOCK  SENSE': 'stock'
+}
+
 ############# YARN related items
 
 DEPLOYMENT_ENV = "dev"
@@ -1111,3 +1319,22 @@ import config_file_name_to_run
 UI_VERSION = config_file_name_to_run.UI_VERSION
 
 PROCEED_TO_UPLOAD_CONSTANT = 15000000
+
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE
+
+from celery.schedules import crontab
+CELERYBEAT_SCHEDULE = {
+	# executes every night at 4:15
+	'every-night': {
+		'task': 'multiply_two_numbers',
+		'schedule': crontab(),
+        'args': (1,2)
+	}
+}
+
+HDFS_SECRET_KEY = 'xfBmEcr_hFHGqVrTo2gMFpER3ks9x841UcvJbEQJesI='

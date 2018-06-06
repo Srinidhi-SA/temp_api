@@ -14,7 +14,7 @@ import {Link} from "react-router-dom";
 
 
 @connect((store) => {
-	return {login_response: store.login.login_response, 
+	return {login_response: store.login.login_response,
 		scoreList:store.apps.scoreList,scoreSummary:store.apps.scoreSummary,
 		scoreSlug:store.apps.scoreSlug,
 		};
@@ -28,7 +28,7 @@ export class AppsScoreDetail extends React.Component {
   componentWillMount() {
       //It will trigger when refresh happens on url
       if(isEmpty(this.props.scoreSummary)){
-          this.props.dispatch(getAppsScoreSummary(this.props.match.params.slug));   
+          this.props.dispatch(getAppsScoreSummary(this.props.match.params.slug));
       }
   }
   componentDidMount() {
@@ -38,7 +38,7 @@ export class AppsScoreDetail extends React.Component {
 	  }else{
 		  this.props.dispatch(getAppsScoreSummary(store.getState().apps.scoreSlug));
 	  }
-	
+
   }
   gotoScoreData(){
       this.props.dispatch(getScoreSummaryInCSV(store.getState().apps.scoreSlug))
@@ -53,49 +53,50 @@ export class AppsScoreDetail extends React.Component {
 		console.log(this.props)
 		let listOfCardList = getListOfCards(scoreSummary.data.listOfCards)
 		let cardDataList = listOfCardList.map((data, i) => {
-		
+
             return (<Card key={i} cardData={data} />)
-			
+
 		                    });
 		if(listOfCardList){
+			let downloadURL=API+'/api/get_score_data_and_return_top_n/?url='+store.getState().apps.scoreSlug+'&download_csv=true&count=100'
 			return (
 			          <div className="side-body">
-			          
+
 			          <div className="main-content">
 			          <div className="row">
 		                <div className="col-md-12">
-		                 
-		                <div className="panel panel-mAd documentModeSpacing ">
+
+		                <div className="panel panel-mAd documentModeSpacing box-shadow">
 		                    <div className="panel-heading">
 		                      {/* <h2 className="pull-left">{store.getState().apps.scoreSummary.name}</h2>*/}
-		                      
+
 		                      <div className="btn-toolbar pull-right">
 		                        <div className="btn-group btn-space">
-		                        
+
 		                          <button type="button" className="btn btn-default" disabled = "true" title="Document Mode">
 		                               <i class="zmdi zmdi-hc-lg zmdi-view-web"></i>
 		                            </button>
 							   <Link className="continue btn btn-default" to={scoreLink}>
-		                          
+
 		                            <i class="zmdi zmdi-hc-lg zmdi-close"></i>
-		                          
+
 								 </Link>
 		                        </div>
 		                      </div>
-		                      
-		                      
+
+
 		                      <div className="clearfix"></div>
 		                    </div>
 		                   <div className="panel-body no-border">
-		                   <div className="row-fluid"> 
-		           
+		                   <div className="row-fluid">
+
 		                  {cardDataList}
 
 		                    </div>
-		                    <div className="row">		                   
+		                    <div className="row">
 		                    <div className="col-md-12 text-right">
 		                   	<Link to={scoreDataLink} onClick={this.gotoScoreData.bind(this)} className="btn btn-primary xs-pr-10"> View </Link>
-		                    	<a  href={''+EMR+'/'+store.getState().apps.scoreSlug+'/data.csv'} id="download" className="btn btn-primary" download>Download</a>
+		                    	<a  href={downloadURL} id="download" className="btn btn-primary" download>Download</a>
 		                   </div>
 
 		                   </div>
@@ -104,11 +105,11 @@ export class AppsScoreDetail extends React.Component {
 		                  </div>
 		                </div>
 		              </div>
-		  
-		             
-			           
+
+
+
 			          </div>
-			      );	
+			      );
 		}
 	}
 	else{
@@ -122,7 +123,7 @@ export class AppsScoreDetail extends React.Component {
 			      </div>
 			    );
 	}
-	 
-    
+
+
   }
 }

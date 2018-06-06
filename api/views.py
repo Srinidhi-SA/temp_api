@@ -13,6 +13,8 @@ from rest_framework.decorators import api_view
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
 
+from api.datasets.helper import add_ui_metadata_to_metadata
+from api.datasets.serializers import DatasetSerializer
 from api.exceptions import creation_failed_exception, update_failed_exception
 from api.pagination import CustomPagination
 from api.query_filtering import get_listed_data
@@ -30,7 +32,6 @@ from api.utils import \
     StockDatasetSerializer, \
     AppListSerializers, \
     AppSerializer
-
 from models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData, StockDataset, CustomApps
 
 
@@ -57,20 +58,20 @@ class SignalView(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
 
-        try:
-            data = request.data
-            data = convert_to_string(data)
-            data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
-            data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
-            serializer = InsightSerializer(data=data)
-            if serializer.is_valid():
-                signal_object = serializer.save()
-                signal_object.create(advanced_settings=data.get('advanced_settings', {}))
-                return Response(serializer.data)
+        # try:
+        data = request.data
+        data = convert_to_string(data)
+        data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
+        data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
+        serializer = InsightSerializer(data=data)
+        if serializer.is_valid():
+            signal_object = serializer.save()
+            signal_object.create(advanced_settings=data.get('advanced_settings', {}))
+            return Response(serializer.data)
 
-            return creation_failed_exception(serializer.errors)
-        except Exception as error:
-            creation_failed_exception(error)
+        return creation_failed_exception(serializer.errors)
+        # except Exception as error:
+        #     creation_failed_exception(error)
 
     def update(self, request, *args, **kwargs):
         data = request.data
@@ -130,20 +131,20 @@ class TrainerView(viewsets.ModelViewSet):
     pagination_class = CustomPagination
 
     def create(self, request, *args, **kwargs):
-        try:
-            data = request.data
-            data = convert_to_string(data)
-            data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
-            data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
-            serializer = TrainerSerlializer(data=data)
-            if serializer.is_valid():
-                trainer_object = serializer.save()
-                trainer_object.create()
-                return Response(serializer.data)
+        # try:
+        data = request.data
+        data = convert_to_string(data)
+        data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
+        data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
+        serializer = TrainerSerlializer(data=data)
+        if serializer.is_valid():
+            trainer_object = serializer.save()
+            trainer_object.create()
+            return Response(serializer.data)
 
-            return creation_failed_exception(serializer.errors)
-        except Exception as error:
-            creation_failed_exception(error)
+        return creation_failed_exception(serializer.errors)
+        # except Exception as error:
+        #     creation_failed_exception(error)
 
     def update(self, request, *args, **kwargs):
         data = request.data
@@ -181,6 +182,74 @@ class TrainerView(viewsets.ModelViewSet):
         serializer = TrainerSerlializer(instance=instance)
         return Response(serializer.data)
 
+    @detail_route(methods=['get'])
+    def comparision(self, request, *args, **kwargs):
+
+        try:
+            instance = self.get_object_from_all()
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
+        if instance is None:
+            return creation_failed_exception("File Doesn't exist.")
+
+        serializer = TrainerSerlializer(instance=instance)
+        trainer_data = serializer.data
+        t_d_c = trainer_data['config']['config']['COLUMN_SETTINGS']['variableSelection']
+        uidColArray= [x["name"] for x in t_d_c if x["uidCol"] == True]
+
+
+
+        score_datatset_slug = request.GET.get('score_datatset_slug')
+        try:
+            dataset_instance = Dataset.objects.get(slug=score_datatset_slug)
+        except:
+            return creation_failed_exception("File Doesn't exist.")
+
+        if dataset_instance is None:
+            return creation_failed_exception("File Doesn't exist.")
+
+        dataset_serializer = DatasetSerializer(instance=dataset_instance)
+        object_details = dataset_serializer.data
+        original_meta_data_from_scripts = object_details['meta_data']
+        if original_meta_data_from_scripts is None:
+            uiMetaData = None
+        if original_meta_data_from_scripts == {}:
+            uiMetaData = None
+        else:
+            uiMetaData = add_ui_metadata_to_metadata(original_meta_data_from_scripts)
+
+        object_details['meta_data'] = {
+            "scriptMetaData": original_meta_data_from_scripts,
+            "uiMetaData": uiMetaData
+        }
+
+        d_d_c = uiMetaData['varibaleSelectionArray']
+
+        t_d_c_s = set([item['name'] for item in t_d_c if item["targetColumn"] != True])
+        d_d_c_s = set([item['name'] for item in d_d_c]).union(set(uidColArray))
+
+        proceedFlag = d_d_c_s.issuperset(t_d_c_s)
+
+        if proceedFlag != True:
+            missing = t_d_c_s.difference(d_d_c_s)
+            extra = d_d_c_s.difference(t_d_c_s)
+            message = "These are the missing Columns {0}".format(missing)
+            if len(extra) > 0:
+                message += "and these are the new columns {0}".format(extra)
+        else:
+            extra = d_d_c_s.difference(t_d_c_s)
+            if len(extra) > 0:
+                message = "These are the new columns {0}".format(extra)
+            else:
+                message = ""
+
+
+        return JsonResponse({
+            'proceed': proceedFlag,
+            'message': message
+        })
+
 
 class ScoreView(viewsets.ModelViewSet):
     def get_queryset(self):
@@ -203,21 +272,22 @@ class ScoreView(viewsets.ModelViewSet):
     pagination_class = CustomPagination
 
     def create(self, request, *args, **kwargs):
-        try:
-            data = request.data
-            data = convert_to_string(data)
-            data['trainer'] = Trainer.objects.filter(slug=data['trainer'])
-            data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
-            data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
-            serializer = ScoreSerlializer(data=data)
-            if serializer.is_valid():
-                score_object = serializer.save()
-                score_object.create()
-                return Response(serializer.data)
+        # try:
+        data = request.data
+        data = convert_to_string(data)
+        data['trainer'] = Trainer.objects.filter(slug=data['trainer'])
+        data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
+        data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
+        data['app_id'] = int(json.loads(data['config'])['app_id'])
+        serializer = ScoreSerlializer(data=data)
+        if serializer.is_valid():
+            score_object = serializer.save()
+            score_object.create()
+            return Response(serializer.data)
 
-            return creation_failed_exception(serializer.errors)
-        except Exception as error:
-            creation_failed_exception(error)
+        return creation_failed_exception(serializer.errors)
+        # except Exception as error:
+        #     creation_failed_exception(error)
 
     def update(self, request, *args, **kwargs):
         data = request.data
@@ -260,28 +330,42 @@ class ScoreView(viewsets.ModelViewSet):
     def download(self, request, slug=None):
         instance = self.get_object()
         from django.conf import settings
-        hadoop_base_file_path = settings.mAdvisorScores
-
-        download_path = hadoop_base_file_path + instance.slug + '/data.csv'
-        save_file_to = instance.get_local_file_path()
-
-        from api.lib.fab_helper import get_file
-
-        get_file(
-            from_file=download_path,
-            to_dir=save_file_to
-        )
-
-        filepath = save_file_to
+        base_file_path = settings.SCORES_SCRIPTS_FOLDER
+        download_path = base_file_path + instance.slug + '/data.csv'
+        # save_file_to = instance.get_local_file_path()
+        #
+        # from api.lib.fab_helper import get_file
+        #
+        # get_file(
+        #     from_file=download_path,
+        #     to_dir=save_file_to
+        # )
+        #
+        # filepath = save_file_to
+        filepath = download_path
 
         from django.http import HttpResponse
         import os
-
+        download_csv = request.query_params.get('download_csv', None)
+        count = request.query_params.get('count', 100)
+        try:
+            count = int(count)
+        except:
+            count = 100
         if download_path is not None:
             with open(filepath, 'rb') as f:
-                response = HttpResponse(f.read(), content_type='application/csv')
-                response['Content-Disposition'] = 'inline; filename=' + os.path.basename(filepath)
-                return response
+
+                if download_csv is None:
+                    response = HttpResponse(f.read(), content_type='application/csv')
+                    response['Content-Disposition'] = 'inline; filename=' + os.path.basename(instance.name)
+                    return response
+                else:
+                    csv_text = f.read()
+                    csv_list = csv_text.split('\n')
+                    return JsonResponse({
+                        'Message': 'Success',
+                        'csv_data': csv_list[:count]
+                    })
         else:
             return JsonResponse({'result': 'failed to download'})
 
@@ -701,38 +785,29 @@ def get_config(request, slug=None):
 
 
 from django.views.decorators.csrf import csrf_exempt
+from api import tasks
 
 
 @csrf_exempt
 def set_result(request, slug=None):
-    print "Welcome to API."
-    print "So you wanna write."
     job = Job.objects.get(slug=slug)
 
     if not job:
         return JsonResponse({'result': 'Failed'})
     results = request.body
-    if isinstance(results, str) or isinstance(results, unicode):
-        job.results = results
-    elif isinstance(results, dict):
-        results = json.dumps(results)
-        job.results = results
-
-    print "data----------->"
-    print request.body
-
-    job.save()
-    print "Data has been saved to job table."
-
+    tasks.save_results_to_job.delay(
+        slug,
+        results
+    )
     if "status=failed" in request.body:
         results = {'error_message': 'Failed'}
-        results = write_into_databases(
+        results = tasks.write_into_databases.delay(
             job_type=job.job_type,
             object_slug=job.object_id,
             results=results
         )
     else:
-        results = write_into_databases(
+        results = tasks.write_into_databases.delay(
             job_type=job.job_type,
             object_slug=job.object_id,
             results=json.loads(results)
@@ -779,19 +854,18 @@ def write_into_databases(job_type, object_slug, results):
                 data["chartData"]["table_c3"] = []
 
         results['columnData'] = columnData
-        results['possibleAnalysis'] = settings.ANALYSIS_FOR_TARGET_VARIABLE
+        # results['possibleAnalysis'] = settings.ANALYSIS_FOR_TARGET_VARIABLE
         da = []
         for d in results.get('sampleData'):
             da.append(map(str, d))
         results['sampleData'] = da
-        results["modified"] = False
+        # results["modified"] = False
 
         dataset_object.meta_data = json.dumps(results)
         dataset_object.analysis_done = True
         dataset_object.save()
         return results
     elif job_type == "master":
-        # print "inside job_type==master"
         insight_object = Insight.objects.get(slug=object_slug)
 
         if "error_message" in results:
@@ -854,7 +928,6 @@ def write_into_databases(job_type, object_slug, results):
         return results
     else:
         print "No where to write"
-    print "written to the database."
 
 
 def chart_changes_in_metadata_chart(chart_data):
@@ -877,7 +950,6 @@ def chart_changes_in_metadata_chart(chart_data):
 @csrf_exempt
 def random_test_api(request):
     import json
-    print "Welcome to Random Test API."
     data = json.loads(request.body)
     data = add_slugs(data)
 
@@ -908,14 +980,12 @@ def add_slugs(results):
 def convert_chart_data_to_beautiful_things(data):
     from api import helper
     for card in data:
-        print card["dataType"]
         if card["dataType"] == "c3Chart":
             chart_raw_data = card["data"]
             # function
             try:
                 card["data"] = helper.decode_and_convert_chart_raw_data(chart_raw_data)
             except Exception as e:
-                print "Error in Cards"
                 print e
                 card["data"] = {}
 
@@ -986,7 +1056,6 @@ def get_info(request):
                 size += dataset.input_file.size
             except Exception as err:
                 pass
-                # print err
 
         return size
 
@@ -1016,15 +1085,22 @@ def get_info(request):
         return chart_data
 
     def get_html_template():
-        return """<p> Your maximum file upload size is <b>5 GB</b> and maximum number of columns allowed in your data set is 50 columns."""
+        '''
+        Maximum File Upload Limit: 5 GB
+        Maximum Column Limit : 50
+        :return:
+        '''
+
+        return """<p> Maximum File Upload Limit: <b>5 GB</b></p> <p>Maximum Column Limit : <b>50</b></p>"""
 
     used_data_size = get_total_size(user)
 
     # get recent activity
     def get_recent_activity():
         from auditlog.models import LogEntry
-        logs = LogEntry.objects.order_by('-timestamp')[:30]
+        logs = LogEntry.objects.filter(actor=user.id).order_by('-timestamp')[:30]
         # logCount = LogEntry.objects.exclude(change_message="No fields changed.").order_by('-action_time')[:20].count()
+
         recent_activity = []
         for obj in logs:
             log_user = str(obj.actor)
@@ -4637,6 +4713,7 @@ def get_job_kill(request, slug=None):
         return JsonResponse({
             'message': 'Unable to Delete.'
         })
+
     original_object.deleted = True
     original_object.save()
     if job_object.kill() is True:
@@ -4645,7 +4722,7 @@ def get_job_kill(request, slug=None):
         })
     else:
         return JsonResponse({
-            'message': 'Unable to kill. but Deleted.'
+            'message': 'Unable to kill.'
         })
 
 
@@ -4674,12 +4751,16 @@ def set_messages(request, slug=None):
     if slug is None:
         return JsonResponse({"message": "Failed"})
 
-    from api.models import get_message_slug, get_slug_from_message_url
+    from api.models import get_slug_from_message_url
     job_slug = get_slug_from_message_url(slug)
     job = Job.objects.get(slug=job_slug)
 
     if not job:
         return JsonResponse({'result': 'No job exist.'})
+
+    emptyBin = request.GET.get('emptyBin', None)
+    if emptyBin is True or emptyBin == 'True':
+        job.reset_message()
 
     return_data = request.GET.get('data', None)
     data = request.body
@@ -4711,7 +4792,6 @@ def set_pmml(request, slug=None):
         return JsonResponse({"message": "Failed"})
     data = request.body
     data = json.loads(data)
-    print "keys ", data.keys()
     from api.redis_access import AccessFeedbackMessage
     from helper import generate_pmml_name
     ac = AccessFeedbackMessage()
@@ -4746,18 +4826,22 @@ def set_job_reporting(request, slug=None, report_name=None):
         return JsonResponse({'result': 'Failed'})
     new_error = request.body
     error_log = json.loads(job.error_report)
+    json_formatted_new_error = None
     if isinstance(new_error, str) or isinstance(new_error, unicode):
         json_formatted_new_error = json.loads(new_error)
     elif isinstance(new_error, dict):
         json_formatted_new_error = new_error
 
-    if report_name in error_log:
-        error_log[report_name].append(json_formatted_new_error)
+    if json_formatted_new_error is None:
+        pass
     else:
-        error_log[report_name] = [json_formatted_new_error]
+        if report_name in error_log:
+            error_log[report_name].append(json_formatted_new_error)
+        else:
+            error_log[report_name] = [json_formatted_new_error]
 
-    job.error_report = json.dumps(error_log)
-    job.save()
+        job.error_report = json.dumps(error_log)
+        job.save()
 
     return JsonResponse({'messgae':'error reported.'})
 
@@ -4852,31 +4936,48 @@ def get_metadata_for_mlscripts(request, slug=None):
 @csrf_exempt
 def get_score_data_and_return_top_n(request):
     url = request.GET['url']
-    count = request.GET['count']
-    if count is None:
-        count = 100
-    try:
-        if int(count) < 10:
-            count = 100
-        else:
-            count = int(count)
-    except:
-        count = 100
-    import requests
-    data = requests.get(url)
-    text_data = data.text
-    csv_data = text_data.split('\n')
+    download_csv = request.GET['download_csv']
 
-    return JsonResponse({
-        'Message': 'Success',
-        'csv_data': csv_data[:count]
-    })
+    from django.conf import settings
+    base_file_path = settings.SCORES_SCRIPTS_FOLDER
+    download_path = base_file_path + url + '/data.csv'
+    from django.http import HttpResponse
+    import os
+
+    instance = Score.objects.get(slug=url)
+
+    with open(download_path, 'rb') as fp:
+
+        if download_csv == 'true':
+            response = HttpResponse(fp.read(), content_type='application/csv')
+            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(instance.name) + '.csv'
+            return response
+        else:
+            count = request.GET['count']
+            if count is None:
+                count = 100
+            try:
+                if int(count) < 10:
+                    count = 100
+                else:
+                    count = int(count)
+            except:
+                count = 100
+
+            csv_text = fp.read()
+            csv_list = csv_text.split('\n')
+            return JsonResponse({
+                'Message': 'Success',
+                'csv_data': csv_list[:count]
+            })
+
+
 
 
 @api_view(['GET'])
 def get_recent_activity(request):
     user = request.user
-    from django.contrib.admin.models import LogEntry, ADDITION, CHANGE, DELETION
+    from django.contrib.admin.models import LogEntry
 
     logs = LogEntry.objects.order_by('-action_time')
     # logCount = LogEntry.objects.exclude(change_message="No fields changed.").order_by('-action_time')[:20].count()
@@ -4885,8 +4986,23 @@ def get_recent_activity(request):
         log_user = str(obj.user)
         recent_activity.append({"message":obj.change_message,"action_time":obj.action_time,"repr":obj.object_repr,"content_type":obj.content_type.model,"content_type_app_label":obj.content_type.app_label,"user":log_user})
 
-
     return JsonResponse({
         "recent_activity": recent_activity
+
+    })
+
+
+@api_view(['GET'])
+def delete_and_keep_only_ten_from_all_models(request):
+    from api.models import SaveAnyData
+    model_list = [Dataset, Insight, Trainer, Score, Job, SaveData, SaveAnyData ]
+
+    for model_item in model_list:
+        all_database_object = model_item.objects.all().order_by('created_at')
+        for database_object in all_database_object:
+            database_object.delete()
+
+    return JsonResponse({
+        'ok' : 'ok'
 
     })

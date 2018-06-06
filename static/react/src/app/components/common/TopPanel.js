@@ -1,6 +1,5 @@
 import React from "react";
 import {Redirect} from 'react-router';
-import ReactDOM from 'react-dom';
 import {sessionObject} from '../../helpers/manageSessionStorage';
 import LoadingBar from 'react-redux-loading-bar';
 import {Link} from "react-router-dom";
@@ -66,10 +65,10 @@ export default class TopPanel extends React.Component {
 										</a>
 										<ul className="dropdown-menu dropdown-menu-right">
 											<li>
-												<Link to="/user-profile"><i class="fa fa-user" aria-hidden="true"></i> &nbsp;Profile</Link>
+												<Link to="/user-profile"><i class="zmdi zmdi-account-circle zmdi-hc-lg" aria-hidden="true"></i>&nbsp;Profile</Link>
 											</li>
 											<li>
-												<a href="javascript:;" className="logout" onClick={this.logout.bind(this)}><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a>
+												<a href="javascript:;" className="logout" onClick={this.logout.bind(this)}><i class="zmdi zmdi-sign-in zmdi-hc-lg" aria-hidden="true"></i>&nbsp;Logout</a>
 											</li>
 										</ul>
 									</div>

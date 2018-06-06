@@ -9,9 +9,6 @@ export default function reducer(state = {
   current_page: 1,
   dataPreview: null,
   allDataSets: {},
-  selectedDimensions: [],
-  selectedMeasures: [],
-  selectedTimeDimensions: "",
   dataPreviewFlag: false,
   selectedAnalysis: [],
   selectedVariablesCount: 0,
@@ -23,9 +20,9 @@ export default function reducer(state = {
   dataSetMeasures: [],
   dataSetDimensions: [],
   dataSetTimeDimensions: [],
-  ImmutableMeasures: [],
-  ImmutableDimension: [],
-  ImmutableTimeDimension: [],
+  CopyOfMeasures: [],
+  CopyOfDimension: [],
+  CopyTimeDimension: [],
   measureAllChecked: true,
   measureChecked: [],
   dimensionAllChecked: true,
@@ -49,6 +46,8 @@ export default function reducer(state = {
   dataSetColumnRemoveValues:[],
   dataSetColumnReplaceValues:[],
   dataSetSelectAllAnalysis:false,
+  isUpdate:false,
+  latestDatasets:{},
 
 }, action) {
   console.log("In DATA reducer!!");
@@ -60,6 +59,7 @@ export default function reducer(state = {
         return {
           ...state,
           dataList: action.data,
+          latestDatasets:action.latestDatasets,
           current_page: action.current_page
         }
       }
@@ -79,7 +79,7 @@ export default function reducer(state = {
           selectedDataSet: action.slug,
           subsettedSlug: "",
           subsettingDone: false,
-          dataTransformSettings:action.dataPreview.meta_data.transformation_settings.existingColumns,
+          dataTransformSettings:action.dataPreview.meta_data.uiMetaData.transformation_settings.existingColumns,
         }
       }
       break;
@@ -139,18 +139,6 @@ export default function reducer(state = {
       }
       break;
 
-    case "SELECTED_MEASURES":
-      {
-        return {
-          ...state,
-          selectedMeasures: state.selectedMeasures.concat(action.variableName),
-          selectedVariablesCount: state.selectedVariablesCount + 1,
-          measureChecked: action.meaChkBoxList,
-          measureAllChecked: action.isAllChecked
-
-        }
-      }
-      break;
     case "SHOW_DATA_PREVIEW":
       {
         return {
@@ -167,60 +155,7 @@ export default function reducer(state = {
         }
       }
       break;
-    case "UNSELECT_MEASURES":
-      {
-        return {
-          ...state,
-          selectedMeasures: state.selectedMeasures.filter(item => action.variableName !== item),
-          selectedVariablesCount: state.selectedVariablesCount - 1,
-          measureChecked: action.meaChkBoxList,
-          measureAllChecked: action.isAllChecked
 
-        }
-      }
-      break;
-    case "SELECTED_DIMENSIONS":
-      {
-        return {
-          ...state,
-          selectedDimensions: state.selectedDimensions.concat(action.variableName),
-          selectedVariablesCount: state.selectedVariablesCount + 1,
-          dimensionAllChecked: action.isAllChecked,
-          dimensionChecked: action.dimChkBoxList
-        }
-      }
-      break;
-    case "UNSELECT_DIMENSION":
-      {
-        return {
-          ...state,
-          selectedDimensions: state.selectedDimensions.filter(item => action.variableName !== item),
-          selectedVariablesCount: state.selectedVariablesCount - 1,
-          dimensionAllChecked: action.isAllChecked,
-          dimensionChecked: action.dimChkBoxList
-        }
-      }
-      break;
-    case "SELECTED_TIMEDIMENSION":
-      {
-        return {
-          ...state,
-          selectedTimeDimensions: action.variableName,
-          selectedVariablesCount: state.selectedVariablesCount,
-          dateTimeChecked: action.timeChkBoxList
-        }
-      }
-      break;
-    case "UNSELECT_TIMEDIMENSION":
-      {
-        return {
-          ...state,
-          selectedTimeDimensions: action.variableName,
-          selectedVariablesCount: state.selectedVariablesCount - 1,
-          dateTimeChecked: action.timeChkBoxList
-        }
-      }
-      break;
     case "STORE_SIGNAL_META":
       {
         return {
@@ -242,24 +177,20 @@ export default function reducer(state = {
       {
         return {
           ...state,
-          selectedDimensions: [],
-          selectedTimeDimensions: [],
-          selectedVariablesCount: 0,
-          selectedMeasures: []
+          dataSetMeasures: [],
+          dataSetDimensions: [],
+          dataSetTimeDimensions: [],
+          CopyOfMeasures: [],
+          CopyOfDimension: [],
+          CopyTimeDimension: [],
+          measureAllChecked:true,
+          dimensionAllChecked:true,
+          
+          
         }
       }
       break;
-    case "SET_VARIABLES":
-      {
-        return {
-          ...state,
-          selectedDimensions: action.dimensions,
-          selectedTimeDimensions: action.timeDimension,
-          selectedMeasures: action.measures,
-          selectedVariablesCount: action.count
-        }
-      }
-      break;
+
     case "SHOW_DATA_PREVIEW":
       {
         return {
@@ -320,25 +251,29 @@ export default function reducer(state = {
           dataSetMeasures: action.measures,
           dataSetDimensions: action.dimensions,
           dataSetTimeDimensions: action.timeDimensions,
-          ImmutableMeasures: action.measures,
-          ImmutableDimension: action.dimensions,
-          ImmutableTimeDimension: action.timeDimensions,
-          measureChecked: action.measureChkBoxList,
-          dimensionChecked: action.dimChkBoxList,
-          measureAllChecked: true,
-          dimensionAllChecked: true,
-          dateTimeChecked: action.dateTimeChkBoxList,
+          CopyOfMeasures: action.measures,
+          CopyOfDimension: action.dimensions,
+          CopyTimeDimension: action.timeDimensions,
           dataSetAnalysisList: action.possibleAnalysisList,
           dataSetPrevAnalysisList:action.prevAnalysisList,
+          selectedVariablesCount:action.count,
+          isUpdate:action.flag
         }
       }
       break;
-
+    case "IS_VARIABLE_SELECTION_UPDATE":
+    {
+      return {
+        ...state,
+        isUpdate:action.flag
+      }
+    }
+    break;
     case "SEARCH_MEASURE":
       {
         return {
           ...state,
-          dataSetMeasures: state.ImmutableMeasures.filter((item) => item.toLowerCase().includes(action.name.toLowerCase()))
+          dataSetMeasures: state.CopyOfMeasures.filter((item) => item.name.toLowerCase().includes(action.name.toLowerCase()))
         }
       }
       break;
@@ -376,7 +311,7 @@ export default function reducer(state = {
       {
         return {
           ...state,
-          dataSetDimensions: state.ImmutableDimension.filter((item) => item.toLowerCase().includes(action.name.toLowerCase()))
+          dataSetDimensions: state.CopyOfDimension.filter((item) => item.name.toLowerCase().includes(action.name.toLowerCase()))
         }
       }
       break;
@@ -385,72 +320,24 @@ export default function reducer(state = {
       {
         return {
           ...state,
-          dataSetTimeDimensions: state.ImmutableTimeDimension.filter((item) => item.toLowerCase().includes(action.name.toLowerCase()))
+          dataSetTimeDimensions: state.CopyTimeDimension.filter((item) => item.name.toLowerCase().includes(action.name.toLowerCase()))
         }
       }
       break;
 
-    case "SELECT_ALL_MEASURES":
-      {
-        return {
-          ...state,
-          selectedMeasures: action.measures,
-          measureAllChecked: true,
-          measureChecked: action.meaChkBoxList,
-          selectedVariablesCount: state.selectedDimensions.length + action.measures.length + action.dataTimeCount,
-          dataSetMeasures: action.measures
-
-        }
-      }
-      break;
-    case "UNSELECT_ALL_MEASURES":
-      {
-        return {
-          ...state,
-          selectedMeasures: [],
-          measureAllChecked: false,
-          measureChecked: action.meaChkBoxList,
-          selectedVariablesCount: state.selectedVariablesCount - state.selectedMeasures.length,
-          dataSetMeasures: state.ImmutableMeasures
-        }
-      }
-      break;
-
-    case "SELECT_ALL_DIMENSION":
-      {
-        return {
-          ...state,
-          selectedDimensions: action.dimension,
-          dimensionAllChecked: true,
-          dimensionChecked: action.diaChkBoxList,
-          selectedVariablesCount: state.selectedMeasures.length + action.dimension.length + action.dataTimeCount,
-          dataSetDimensions: action.dimension
-        }
-      }
-      break;
-    case "UNSELECT_ALL_DIMENSION":
-      {
-        return {
-          ...state,
-          selectedDimensions: [],
-          dimensionAllChecked: false,
-          dimensionChecked: action.diaChkBoxList,
-          selectedVariablesCount: state.selectedVariablesCount - state.selectedDimensions.length,
-          dataSetDimensions: state.ImmutableDimension
-        }
-      }
-      break;
     case "UPADTE_VARIABLES_LIST":
     {
         return {
             ...state,
-            //selectedMeasures: action.selectedMeasures,
-            measureChecked: action.measuresChkList,
-            dataSetMeasures: action.measuresList,
+            dataSetMeasures: action.measures,
+            dataSetDimensions: action.dimensions,
+            dataSetTimeDimensions: action.timeDimensions,
+            dimensionAllChecked: action.dimFlag,
+            measureAllChecked: action.meaFlag,
             selectedVariablesCount:action.count,
-            //selectedDimensions:action.selectedDimensions,
-            dimensionChecked:action.dimChkList,
-            dataSetDimensions:action.dimensionList
+            CopyOfMeasures: action.measures,
+            CopyOfDimension: action.dimensions,
+            CopyTimeDimension: action.timeDimensions,
             
         }
     }
@@ -603,7 +490,7 @@ export default function reducer(state = {
         dataPreview: action.dataPreview,
         subsettedSlug: "",
         subsettingDone: action.isSubsetting,
-        dataTransformSettings:action.dataPreview.meta_data.transformation_settings.existingColumns,
+        dataTransformSettings:action.dataPreview.meta_data.uiMetaData.transformation_settings.existingColumns,
       }
     }
     break;

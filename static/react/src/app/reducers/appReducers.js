@@ -1,3 +1,4 @@
+import {statusMessages} from "../helpers/helper";
 export default function reducer(state = {
         appsModelShowModal:false,
         modelList: {},
@@ -66,7 +67,14 @@ export default function reducer(state = {
         storeAppsSortType:"",
         app_filtered_keywords:[],
         exportAsPMMLModal:false,
-
+        scoreToProceed:false,
+        latestScores : {},
+        latestModels :{},
+        latestRoboInsights:{},
+        latestAudioList:{},
+        latestStocks:{},
+        targetLevelCounts:null,
+        currentAppDetails:null,
 
 }, action) {
     console.log("In APPs reducer!!");
@@ -95,6 +103,7 @@ export default function reducer(state = {
         return {
             ...state,
             modelList: action.data,
+            latestModels:action.latestModels,
             current_page:action.current_page,
         }
     }
@@ -121,6 +130,7 @@ export default function reducer(state = {
         return {
             ...state,
             scoreList: action.data,
+            latestScores:action.latestScores,
             current_page:action.current_page,
         }
     }
@@ -217,6 +227,7 @@ export default function reducer(state = {
             ...state,
             currentAppId: action.appId,
             currentAppName:action.appName,
+            currentAppDetails:action.appDetails
         }
     }
     break;
@@ -262,7 +273,9 @@ export default function reducer(state = {
     case "CREATE_MODEL_ERROR":
     {
         //alert(action.json.non_field_errors);
-        throw new Error("Unable to create model!");
+        //throw new Error("Unable to create model!");
+        bootbox.alert(statusMessages("error","The data set selected for analysis is currupt. Please check and reupload","small_mascot"))
+
     }
     break;
     case "UPDATE_MODEL_FLAG":
@@ -300,6 +313,7 @@ export default function reducer(state = {
         return {
             ...state,
             roboList: action.data,
+            latestRoboInsights:action.latestRoboInsights,
             current_page:action.current_page,
         }
     }
@@ -533,6 +547,7 @@ export default function reducer(state = {
             ...state,
             audioList: action.data,
             current_page:action.current_page,
+            latestAudioList:action.latestAudioFiles,
         }
     }
     break;
@@ -605,6 +620,7 @@ export default function reducer(state = {
             ...state,
             stockAnalysisList: action.data,
             current_page:action.current_page,
+            latestStocks:action.latestStocks,
         }
     }
     break;
@@ -726,6 +742,24 @@ export default function reducer(state = {
         }
     }
     break;
+
+    case "SCORE_TO_PROCEED":
+    {
+        return{
+            ...state,
+            scoreToProceed:action.flag
+        }
+    }
+    break;
+    case "SET_TARGET_LEVEL_COUNTS":
+    {
+        return{
+            ...state,
+            targetLevelCounts:action.levelCounts
+        }
+    }
+    break;
+    
     }
     return state
 }

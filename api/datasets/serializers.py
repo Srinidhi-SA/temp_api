@@ -41,9 +41,7 @@ class DatasetSerializer(serializers.ModelSerializer):
         ret = convert_to_json(ret)
         ret = convert_time_to_human(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
-        meta_data = ret.get('meta_data')
-        modified_meta_data = self.changes_to_metadata(meta_data)
-        # instance.meta_data = json.dumps(modified_meta_data)
+
         try:
             ret['message'] = get_message(instance.job)
         except:
@@ -67,121 +65,6 @@ class DatasetSerializer(serializers.ModelSerializer):
                 ret['proceed_for_loading'] = True
 
         return ret
-
-    def changes_to_metadata(self, meta_data):
-
-        if 'possibleAnalysis' in meta_data:
-            meta_data['possibleAnalysis'] = settings.ANALYSIS_FOR_TARGET_VARIABLE
-        meta_data['advanced_settings'] = self.get_advanced_setting(meta_data)
-
-        transformation_final_obj = {"existingColumns":None,"newColumns":None}
-        transformation_data = []
-        if 'columnData' in meta_data:
-            columnData = meta_data['columnData']
-            transformation_settings = settings.TRANSFORMATION_SETTINGS_CONSTANT
-
-            percentage_slug_list = self.collect_slug_for_percentage_columns(meta_data)
-
-            for head in columnData:
-                import copy
-                temp = dict()
-                temp['name'] = head.get('name')
-                temp['slug'] = head.get('slug')
-                columnSettingCopy = copy.deepcopy(transformation_settings.get('columnSetting'))
-                columnType = head.get('columnType')
-
-                if "dimension" == columnType:
-                    temp['columnSetting'] = columnSettingCopy[:4]
-                elif "boolean" == columnType:
-                    temp['columnSetting'] = columnSettingCopy[:4]
-                elif "measure" == columnType:
-                    datatype_element = columnSettingCopy[4]
-                    datatype_element['listOfActions'][0]["status"] = True
-                    columnSettingCopy[5]['listOfActions'][0]["status"]=True
-                    columnSettingCopy[6]['listOfActions'][0]["status"]=True
-
-                    temp['columnSetting'] = columnSettingCopy
-                elif "datetime" == columnType:
-                    temp['columnSetting'] = columnSettingCopy[:3]
-
-                if head.get('ignoreSuggestionFlag') is True:
-                    # transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
-                    # transformation_settings_ignore['status'] = True
-                    # # transformation_settings_ignore['displayName'] = 'Consider for Analysis'
-                    # temp['columnSetting'].append(transformation_settings_ignore)
-                    head['consider'] = False
-                else:
-                    # transformation_settings_ignore = copy.deepcopy(settings.TRANSFORMATION_SETTINGS_IGNORE)
-                    # transformation_settings_ignore['status'] = False
-                    # # transformation_settings_ignore['displayName'] = 'Ignore for Analysis'
-                    # temp['columnSetting'].append(transformation_settings_ignore)
-                    head['consider'] = True
-
-                if head['slug'] in percentage_slug_list:
-                    for colSet in temp['columnSetting']:
-                        if 'set_variable' == colSet['actionName']:
-                            colSet['status'] = True
-                            if 'listOfActions' in colSet:
-                                for listAct in colSet['listOfActions']:
-                                    if 'percentage' == listAct['name']:
-                                        listAct['status'] = True
-                                    else:
-                                        listAct['status'] = False
-
-                transformation_data.append(temp)
-
-            transformation_final_obj["existingColumns"] = transformation_data
-            transformation_final_obj["newColumns"] = transformation_settings.get('new_columns')
-            meta_data['transformation_settings'] = transformation_final_obj
-            meta_data['columnData'] = columnData
-
-            return meta_data
-
-    def collect_slug_for_percentage_columns(self, meta_data):
-        metaData = meta_data['metaData']
-        name_list = []
-        slug_list = []
-        for data in metaData:
-            if 'percentageColumns' == data['name']:
-                name_list = data['value']
-
-        columnData = meta_data['columnData']
-        for name in name_list:
-            for data in columnData:
-                if name == data['name']:
-                    slug_list.append(data['slug'])
-
-        return slug_list
-
-    def get_advanced_setting(self, meta_data):
-        metaData = meta_data.get('metaData')
-
-        time_count = 0
-        try:
-            for data in metaData:
-                if data.get('name') == 'timeDimension':
-                    time_count += data.get('value')
-                if data.get('name') == 'dateTimeSuggestions':
-                    time_count += len(data.get('value').keys())
-        except:
-            pass
-
-        print "get_advanced_setting    ", time_count
-
-        return self.add_trend_in_advanced_setting(time_count)
-
-
-    def add_trend_in_advanced_setting(self, time_count):
-
-        if time_count > 0:
-            main_setting = copy.deepcopy(settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND)
-            trend_setting = copy.deepcopy(settings.ADANCED_SETTING_FOR_POSSIBLE_ANALYSIS_TREND)
-
-            main_setting["dimensions"]["analysis"].insert(1, trend_setting)
-            main_setting["measures"]["analysis"].insert(1, trend_setting)
-            return main_setting
-        else:
-            return settings.ADVANCED_SETTINGS_FOR_POSSIBLE_ANALYSIS_WITHOUT_TREND
 
 
     class Meta:

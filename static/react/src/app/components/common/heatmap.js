@@ -12,22 +12,24 @@ import { Scrollbars } from 'react-custom-scrollbars';
 export class HeatMapTable extends React.Component {
   constructor(){
     super();
+    this.randomNum = "";
   }
 
   componentDidMount(){
-	  HeatMap("heat-table-map");
+	  HeatMap(this.randomNum);
   }
 
   render() {
+      this.randomNum = Math.random().toString(36).substr(2,8);
    var data = this.props.tableData;
    var tableTitle ="";
-   var className = "table table-bordered heat-table-map"
-       if(this.props.classId)
-    className = className+" "+this.props.classId;
+   var className = "table table-bordered heat-table-map"+" "+this.randomNum
+   if(this.props.classId)
+       className = className+" "+this.props.classId;
    if(this.props.tableData.topHeader){
-   tableTitle = this.props.tableData.topHeader;
+       tableTitle = this.props.tableData.topHeader;
    }
-   HeatMap("heat-table-map");
+   HeatMap(this.randomNum);
    console.log("checking circular chart tabletable element");
    var headerComponents = generateHeatMapHeaders(data);
    var rowComponents = generateHeatMapRows(data);

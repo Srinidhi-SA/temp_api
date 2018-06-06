@@ -1,8 +1,6 @@
 import React from "react";
 import {Scrollbars} from 'react-custom-scrollbars';
 import {connect} from "react-redux";
-import ReactDOM from "react-dom";
-import {Link} from "react-router-dom";
 import store from "../../store";
 import {isEmpty, getUserDetailsOrRestart} from "../../helpers/helper";
 var dateFormat = require('dateformat');
@@ -40,7 +38,8 @@ export class Profile extends React.Component {
 
 
   popupMsg() {
-    bootbox.alert("Only PNG and JPEG files are allowed to upload")
+    $("#fileErrorMsg").removeClass("visibilityHidden");
+    $("#fileErrorMsg").html("Only PNG and JPEG files are allowed to upload.Please retry.");
   }
   popupMsgForSize() {
     bootbox.alert("Maximum allowed file size is 2MB")
@@ -64,7 +63,13 @@ export class Profile extends React.Component {
   }
 
   uploadProfileImage() {
+    if(this.props.fileUpload)
     this.props.dispatch(uploadImg());
+    else {
+      $("#fileErrorMsg").removeClass("visibilityHidden");
+      $("#fileErrorMsg").html("Please select a file");
+
+    }
   }
 
   //in your component
@@ -101,8 +106,13 @@ export class Profile extends React.Component {
     } else {
       console.log("profile info!!")
       console.log(this.props)
-      var fileName = store.getState().dataSource.fileUpload.name;
-      var fileSize = store.getState().dataSource.fileUpload.size;
+      var fileName = ""
+      var fileSize=0
+      if(store.getState().dataSource.fileUpload){
+        fileName=store.getState().dataSource.fileUpload.name;
+        fileSize=store.getState().dataSource.fileUpload.size
+      }
+
       let fileSizeInKB = (fileSize / 1024).toFixed(3)
       if (fileSizeInKB > 2000)
         this.popupMsgForSize()
@@ -173,7 +183,7 @@ export class Profile extends React.Component {
           <div className="main-content">
             <div className="user-profile">
               <div className="panel panel-default xs-mb-15">
-                <div className="panel-body">
+                <div className="panel-body no-border box-shadow">
                   <div className="user-display">
                     <div className="user-avatar col-md-2 text-center">
                       <img src={imgSrc} className="img-responsive img-center img-circle"/>
@@ -204,6 +214,7 @@ export class Profile extends React.Component {
                                       ? "list-unstyled bullets_primary"
                                       : "list-unstyled"}>
                                       <li>{fileName}</li>
+                                      <li className="text-danger visibilityHidden" id="fileErrorMsg">Please select .png or .jpg file to upload.</li>
                                     </ul>
                                   </aside>
                                 </div>
@@ -284,8 +295,8 @@ export class Profile extends React.Component {
             </div>
             <div className="row">
               <div className="col-md-4">
-                <div className="panel">
-                  <div className="panel-body no-border">
+                <div className="panel xs-mb-0">
+                  <div className="panel-body no-border box-shadow">
                     <div className="minHP">
                       <h5 class="text-center">TOTAL SPACE</h5>
                       <C3Chart chartInfo={chartInfo} classId="_profile" data={this.props.profileInfo.chart_c3}/>
@@ -313,13 +324,11 @@ export class Profile extends React.Component {
                   </div>
                   <div className="clearfix"></div>
                   <div className="col-md-12">
-                    <div className="panel">
-                      <div className="panel-body no-border">
+                    <div className="panel xs-mb-0">
+                      <div className="panel-body no-border box-shadow">
                         <div className="minHP">
                           <h5>RECENT ACTIVITY</h5>
-                          <Scrollbars style={{
-                            height: 293
-                          }} renderTrackHorizontal={props => <div {...props} className="track-horizontal" style={{
+                          <Scrollbars style={{ height: 302 }} renderTrackHorizontal={props => <div {...props} className="track-horizontal" style={{
                             display: "none"
                           }}/>} renderThumbHorizontal={props => <div {...props} className="thumb-horizontal" style={{
                             display: "none"

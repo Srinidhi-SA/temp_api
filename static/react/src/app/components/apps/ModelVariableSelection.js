@@ -6,29 +6,31 @@ import store from "../../store";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem,Form,FormGroup,FormControl} from "react-bootstrap";
 
 import {C3Chart} from "../c3Chart";
-import ReactDOM from 'react-dom';
 import {DataVariableSelection} from "../data/DataVariableSelection";
-import {updateTrainAndTest,createModel} from "../../actions/appActions";
+import {updateTrainAndTest,createModel,updateSelectedVariable,showLevelCountsForTarget} from "../../actions/appActions";
 import {AppsLoader} from "../common/AppsLoader";
 import {getDataSetPreview} from "../../actions/dataActions";
+import {hideTargetVariable} from "../../actions/signalActions";
 
 @connect((store) => {
     return {login_response: store.login.login_response, dataPreview: store.datasets.dataPreview,
         trainValue:store.apps.trainValue,testValue:store.apps.testValue,
         modelSummaryFlag:store.apps.modelSummaryFlag,
         modelSlug:store.apps.modelSlug,
+        targetLevelCounts:store.apps.targetLevelCounts,
+        currentAppDetails:store.apps.currentAppDetails,
     };
 })
 
 export class ModelVariableSelection extends React.Component {
     constructor(props) {
         super(props);
-        
+
     }
     componentWillMount() {
         //It will trigger when refresh happens on url
         if(this.props.dataPreview == null){
-            this.props.dispatch(getDataSetPreview(this.props.match.params.slug));   
+            this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
         }
         this.props.dispatch(updateTrainAndTest(50))
     }
@@ -37,24 +39,32 @@ export class ModelVariableSelection extends React.Component {
     }
     createModel(event){
         event.preventDefault();
-        this.props.dispatch(createModel($("#createModelName").val(),$("#createModelAnalysisList").val()))
+        this.props.dispatch(createModel($("#createModelName").val(),$("#createModelAnalysisList").val(),$("#createModelLevelCount").val()))
+    }
+    setPossibleList(event){
+        this.props.dispatch(showLevelCountsForTarget(event))
+        this.props.dispatch(hideTargetVariable(event));
+        this.props.dispatch(updateSelectedVariable(event));
     }
     render() {
         console.log("Create Model Variable Selection  is called##########3");
-        {/* */}
+       let custom_word1 = "";
+       let custom_word2 = "";
         if(store.getState().apps.modelSummaryFlag){
             let _link = "/apps/"+store.getState().apps.currentAppId+'/models/'+store.getState().apps.modelSlug;
             return(<Redirect to={_link}/>);
         }
         let dataPrev = store.getState().datasets.dataPreview;
         let renderSelectBox = null;
+        let renderLevelCountSelectBox = null;
         if(dataPrev){
-            const metaData = dataPrev.meta_data.columnData;
+            const metaData = dataPrev.meta_data.uiMetaData.varibaleSelectionArray;
             if(metaData){
-                renderSelectBox =  <select className="form-control" id="createModelAnalysisList">
+                renderSelectBox =  <select className="form-control" onChange={this.setPossibleList.bind(this)} id="createModelAnalysisList">
+                    <option value=""></option>
                 {metaData.map((metaItem,metaIndex) =>{
-                    if(metaItem.columnType !="datetime" && !metaItem.ignoreSuggestionFlag && !metaItem.dateSuggestionFlag){
-                        return(<option key={metaIndex} value={metaItem.name}>{metaItem.name}</option>)
+                    if(metaItem.columnType !="measure" && metaItem.columnType !="datetime" && !metaItem.dateSuggestionFlag){
+                        return(<option key={metaItem.slug}  name={metaItem.slug}  value={metaItem.columnType}>{metaItem.name}</option>)
                     }
                 }
                 )}
@@ -62,6 +72,20 @@ export class ModelVariableSelection extends React.Component {
             }else{
                 renderSelectBox = <option>No Variables</option>
             }
+            if(this.props.targetLevelCounts != null){
+                renderLevelCountSelectBox =  <select className="form-control" id="createModelLevelCount">
+                    <option value=""></option>
+                {this.props.targetLevelCounts.map((item,index) =>{
+                   
+                        return(<option key={item}  name={item}  value={item}>{item}</option>)
+                }
+                )}
+                </select>
+            }
+        }
+        if(this.props.currentAppDetails != null){
+            custom_word1 = this.props.currentAppDetails.custom_word1;
+            custom_word2 = this.props.currentAppDetails.custom_word2
         }
         return(
                 <div className="side-body">
@@ -74,19 +98,37 @@ export class ModelVariableSelection extends React.Component {
                 <div className="clearfix"></div>
                 </div>
                 <div className="main-content">
-                <div className="panel panel-default">
-                <div className="panel-body">    
+
+                <div className="panel panel-default box-shadow">
+                <div className="panel-body">
                 <Form onSubmit={this.createModel.bind(this)}>
                 <FormGroup role="form">
-                <div className="row">			          
-                 
+                
+                 <div className="row">
+
                 <div className="form-group">
-                <label className="col-lg-2">I want to predict</label>
+                <label className="col-lg-4"><h4>I want to predict {custom_word1}</h4></label>
+                </div>
+                </div>
+                
+                <div className="row">
+
+                <div className="form-group">
+                <label className="col-lg-2">Select Target Variable :</label>
                 <div className="col-lg-4"> {renderSelectBox}</div>
                 </div>
                  {/*<!-- /.col-lg-4 -->*/}
                 </div>
-                
+                {(this.props.targetLevelCounts != null)? ( <div className="row xs-mt-10">
+                    <div className="form-group">
+                    <label className="col-lg-2">Choose Value for {custom_word2}</label>
+                    <div className="col-lg-4"> {renderLevelCountSelectBox}</div>
+                    </div>
+                     {/*<!-- /.col-lg-4 -->*/}
+                    </div>) : (<div></div>)
+                    
+                }
+             
                 <DataVariableSelection/>
                 <div className="row">
                 <div className="col-lg-8">

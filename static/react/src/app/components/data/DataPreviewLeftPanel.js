@@ -4,7 +4,6 @@ import {connect} from "react-redux";
 import {Redirect} from 'react-router';
 import store from "../../store";
 import {C3Chart} from "../c3Chart";
-import ReactDOM from 'react-dom';
 import {STATIC_URL} from "../../helpers/env.js";
 import { Scrollbars } from 'react-custom-scrollbars';
 import {getScoreSummaryInCSV,emptyScoreCSVData} from "../../actions/appActions";
@@ -23,7 +22,7 @@ export class DataPreviewLeftPanel extends React.Component {
 	}
 	 componentWillMount(){
 	     if(!isEmpty(this.props.scoreCSVData)){
-	         this.props.dispatch(getScoreSummaryInCSV(this.props.match.params.slug))   
+	         this.props.dispatch(getScoreSummaryInCSV(this.props.match.params.slug))
 	     }
 	  }
 	 emptyScoreCSVData(){
@@ -54,7 +53,7 @@ export class DataPreviewLeftPanel extends React.Component {
                 if(id > 0){
                         colData =  row.match(pattern).map((colData,index) =>{
                             return(<td>{colData}</td>)
-                        })   
+                        })
                     }
                 return <tr key = {colIndex}>{colData}</tr>;
                 }
@@ -68,19 +67,19 @@ export class DataPreviewLeftPanel extends React.Component {
 					<h3 className="xs-mt-0 text-capitalize">Score Data Preview</h3>
 					</div>
 					</div>
-					</div> 
-					
-					
+					</div>
+
+
                     { /*<!-- /.Page Title and Breadcrumbs -->*/ }
                     { /*<!-- Page Content Area -->*/}
                     <div className="main-content">
                     <div className="row">
                     <div className="col-md-12">
-                    <div className="panel panel-borders">
+                    <div className="panel no-borders box-shadow xs-p-10">
 
                     <div className="clearfix"></div>
                     <div className="table-responsive scoreDataPreview">
-                    
+
                     <Scrollbars>
                     <table className="table table-condensed table-hover table-bordered table-striped cst_table">
                     <thead>
@@ -94,23 +93,25 @@ export class DataPreviewLeftPanel extends React.Component {
 
                     </table>
                     </Scrollbars>
-                    
+
                     </div>
                     </div>
                     </div>
                     </div>
-                    
+
                     <div className="row">
+					<div className="col-md-12">
                     <div className="panel">
-                    <div className="panel-body no-border text-right">
+                    <div className="panel-body no-border text-right box-shadow">
                     <Link to={scoreLink} onClick={this.emptyScoreCSVData.bind(this)}><Button> Close</Button></Link>
                     </div>
                     </div>
+					</div>
                     </div>
-                    
+
                     </div>
                     </div>
-                    
+
             );
 		}else{
 		    return (
@@ -123,7 +124,7 @@ export class DataPreviewLeftPanel extends React.Component {
 	                  </div>
 	                );
 		}
-			
+
 
 		}
 }
