@@ -5455,19 +5455,22 @@ def delete_and_keep_only_ten_from_all_models(request):
 def get_algorithm_config_list(request):
     try:
         app_type=request.GET['app_type']
-        levels=request.GET['levels']
     except:
         app_type="CLASSIFICATION"
-        levels = None
+    try:
+        levels = int(request.GET['levels'])
+    except:
+        levels = 2
     user = request.user
     if app_type =="CLASSIFICATION":
         algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
-        tempArray = algorithm_config_list[0]["params"][0]["defaultValue"]
-        if levels == None:
-            levels = 2
+        algoArray = algorithm_config_list["ALGORITHM_SETTING"]
+        tempArray = algoArray[0]["hyperParameterSetting"][0]["params"][0]["defaultValue"]
         if levels > 2:
             tempArray.append(settings.SKLEARN_ROC_OBJ)
-            algorithm_config_list[0]["params"][0]["defaultValue"] = tempArray
+
+        for obj in algoArray:
+            obj["hyperParameterSetting"][0]["params"][0]["defaultValue"] = tempArray
     elif app_type =="REGRESSION":
         algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_REGRESSION)
     else:
