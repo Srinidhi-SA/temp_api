@@ -22,13 +22,14 @@ SKLEARN_CLASSIFICATION_EVALUATION_METRICS = [
             "name":"recall",
             "selected":False,
             "displayName":"Recall"
-        },
-        {
-            "name":"roc_auc",
-            "selected":False,
-            "displayName":"ROC-AUC"
         }
        ]
+
+SKLEARN_ROC_OBJ = {
+            "name":"roc_auc",
+            "selected":False,
+            "displayName":"ROC-AUC",
+        }
 
 SKLEARN_REGRESSION_EVALUATION_METRICS = [
         {
