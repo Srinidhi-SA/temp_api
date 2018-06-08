@@ -49,9 +49,12 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
 
         application_id = ""
 
-        from tasks import submit_job_separate_task
+        from tasks import submit_job_separate_task1, submit_job_separate_task
 
-        submit_job_separate_task.delay(command_array, slug)
+        if settings.SUBMIT_JOB_THROUGH_CELERY:
+            submit_job_separate_task.delay(command_array, slug)
+        else:
+            submit_job_separate_task1(command_array, slug)
 
     except Exception as e:
         print 'Error-->submit_job_through_yarn--->'
