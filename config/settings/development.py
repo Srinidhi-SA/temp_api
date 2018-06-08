@@ -21,7 +21,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'madvisor',
         'USER': 'marlabs',
-        'PASSWORD': 'Password@123',
+        'PASSWORD': 'Marlabs@123',
         # 'USER': 'root',
         # 'PASSWORD': 'root',
         'HOST': 'localhost',
@@ -162,3 +162,6 @@ KYLO_SERVER_DETAILS = {
     "group_propertie_quote": "admin,user",
     "kylo_file_path":"/home/ubuntu/kylodir2/"
 }
+
+HADOOP_CONF_DIR= False
+HADOOP_USER_NAME="hduser"
