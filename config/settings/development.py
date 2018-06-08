@@ -39,7 +39,7 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend', # this is default
     'guardian.backends.ObjectPermissionBackend',
 )
-HADOOP_MASTER = "34.201.31.116"
+HADOOP_MASTER = "172.31.70.80"
 
 YARN = {
     "host": HADOOP_MASTER,
