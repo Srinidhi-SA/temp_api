@@ -1270,7 +1270,7 @@ export function addMoreStockSymbols() {
 
       });
     }else{
-      var max = 0;
+      var max = {id:0};
     }
     let length = max.id + 1;
     stockSymbolsArray.push({
