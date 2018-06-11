@@ -24,7 +24,7 @@ DATABASES = {
         'PASSWORD': 'Marlabs@123',
         # 'USER': 'root',
         # 'PASSWORD': 'root',
-        'HOST': 'localhost',
+        'HOST': '172.31.64.145',
         'PORT': '',
     }
 }
@@ -93,7 +93,7 @@ THIS_SERVER_DETAILS = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
+        "LOCATION": "redis://172.31.64.145:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient"
         },
@@ -170,5 +170,5 @@ HADOOP_USER_NAME="hduser"
 USE_YARN_DEFAULT_QUEUE=True
 # USE_YARN_DEFAULT_QUEUE=False
 
-SUBMIT_JOB_THROUGH_CELERY = False
-# SUBMIT_JOB_THROUGH_CELERY = True
+# SUBMIT_JOB_THROUGH_CELERY = False
+SUBMIT_JOB_THROUGH_CELERY = True
