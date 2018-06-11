@@ -293,10 +293,10 @@ export class RegressionParameter extends React.Component {
                 var isSingleNumber = parts[i].split(/-|\u3001/);
                 if(isSingleNumber.length > 1)
                 return {"iserror":true,"errmsg":"Invalid Range"};
-                if (!this.isPositiveInteger(parts[i]))
+                if (!this.isPositiveInteger(parts[i]) && type.indexOf(null) < 0)
                 return {"iserror":true,"errmsg":"Invalid Range"};
                 const singleNumber = parseFloat(parts[i], 10);
-                if (singleNumber > max || singleNumber < min)
+                if ((singleNumber > max || singleNumber < min ) && type.indexOf(null) < 0)
                 return {"iserror":true,"errmsg":"Invalid Range"};
                 var checkType = this.checkType(parts[i],type,min,max);
                 if(checkType.iserror == true)
@@ -319,6 +319,7 @@ export class RegressionParameter extends React.Component {
         else{
             var allowedTypes = "";
             var wrongCount = 0;
+            var that = this;
             $.each(type,function(k,v){
                 if(v == "float"){
                     (k == 0)?allowedTypes = "Decimals" : allowedTypes+= ", Decimals";
@@ -329,6 +330,10 @@ export class RegressionParameter extends React.Component {
                     (k == 0)?allowedTypes = "Numbers" : allowedTypes+= ", Numbers";
                     if(val % 1 != 0)
                     wrongCount++;
+                }
+                else if(v == null && val != null){
+                    type.splice(k,1);
+                    that.checkType(val,type,min,max);
                 }
             });
             if(wrongCount != 0 && wrongCount == type.length)

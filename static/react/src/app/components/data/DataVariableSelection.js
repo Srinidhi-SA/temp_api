@@ -9,7 +9,7 @@ import store from "../../store";
 import { C3Chart } from "../c3Chart";
 import $ from "jquery";
 
-import {updateSelectedVariables, resetSelectedVariables, setSelectedVariables,updateDatasetVariables,handleDVSearch,handelSort,handleSelectAll,checkColumnIsIgnored,deselectAllVariablesDataPrev,makeAllVariablesTrueOrFalse,DisableSelectAllCheckbox,updateVariableSelectionArray} from "../../actions/dataActions";
+import {updateSelectedVariables, resetSelectedVariables, setSelectedVariables,updateDatasetVariables,handleDVSearch,handelSort,handleSelectAll,checkColumnIsIgnored,deselectAllVariablesDataPrev,makeAllVariablesTrueOrFalse,DisableSelectAllCheckbox,updateVariableSelectionArray,getTotalVariablesSelected} from "../../actions/dataActions";
 import {resetSelectedTargetVariable} from "../../actions/signalActions";
 
 @connect(( store ) => {
@@ -67,6 +67,35 @@ export class DataVariableSelection extends React.Component {
        // this.setVariables( this.dimensions, this.measures, this.selectedTimeDimension );
         this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.possibleAnalysisList,true));
     }
+    componentDidUpdate(){
+        var count = getTotalVariablesSelected();
+        if(this.props.match.path.includes("/createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
+            if(count >= 10){
+                $('.measure[type="checkbox"]').each(function() {
+                    if (!$(this).is(":checked"))
+                    $(this).prop('disabled', true);
+                });
+                $('.dimension[type="checkbox"]').each(function() {
+                    if (!$(this).is(":checked"))
+                    $(this).prop('disabled', true);
+                });
+                $('.measureAll[type="checkbox"]').each(function() {
+                    $(this).prop('disabled', true);
+                });
+                $('.dimensionAll').prop("disabled",true);
+                $('.measureAll').prop("disabled",true);
+                //document.getElementById('measure').disabled = true;
+            }
+            else{
+                $('.measure[type="checkbox"]').each(function() {
+                    $(this).prop('disabled', false);
+                });
+                $('.dimension[type="checkbox"]').each(function() {
+                    $(this).prop('disabled', false);
+                });
+            }
+        }
+    }
 
     handleDVSearch(evt){
     evt.preventDefault();
@@ -76,7 +105,7 @@ export class DataVariableSelection extends React.Component {
     $("#dimensionSearch").val("");
     if(evt.target.name == "datetime" && evt.target.value == "")
     $("#datetimeSearch").val("");
-    this.props.dispatch(handleDVSearch(evt))
+    this.props.dispatch(handleDVSearch(evt));
     }
     handelSort(variableType,sortOrder){
     	this.props.dispatch(handelSort(variableType,sortOrder))
@@ -226,19 +255,23 @@ export class DataVariableSelection extends React.Component {
             }
             if(this.props.match.path.includes("/createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
                 let measureArray = $.grep(dataPrev.meta_data.uiMetaData.varibaleSelectionArray,function(val,key){
-                    return(val.columnType == "measure" && val.selected == false);
+                    return(val.columnType == "measure" && val.selected == false && val.targetColumn == false);
                 });
                 let dimensionArray = $.grep(dataPrev.meta_data.uiMetaData.varibaleSelectionArray,function(val,key){
-                    return(val.columnType == "dimension"  && val.selected == false);
+                    return(val.columnType == "dimension"  && val.selected == false && val.targetColumn == false);
                 });
                 if(measureArray.length > 10 || (store.getState().datasets.selectedVariablesCount+measureArray.length > 10)){
                     if(store.getState().datasets.measureAllChecked == false)$('.measureAll').prop("disabled",true);
                 }
+                else if(measureArray.length == 0)
+                $('.measureAll').prop("disabled",true);
                 else
                 $('.measureAll').prop("disabled",false);
                 if(dimensionArray.length > 10 || (store.getState().datasets.selectedVariablesCount+dimensionArray.length > 10)){
                     if(store.getState().datasets.dimensionAllChecked == false)$(".dimensionAll").prop("disabled",true);
                 }
+                else if(dimensionArray.length == 0)
+                $(".dimensionAll").prop("disabled",true);
                 else
                 $(".dimensionAll").prop("disabled",false);
 

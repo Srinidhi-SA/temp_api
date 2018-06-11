@@ -1588,10 +1588,10 @@ export function uncheckHideAnalysisList(){
         var dataSetDimensions = store.getState().datasets.CopyOfDimension.slice();
         var targetVariableType = store.getState().signals.getVarType;
         let measureArray = $.grep(dataSetMeasures,function(val,key){
-            return(val.selected == true);
+            return(val.selected == true && val.targetColumn == false);
         });
         let dimensionArray = $.grep(dataSetDimensions,function(val,key){
-            return(val.selected == true);
+            return(val.selected == true && val.targetColumn == false);
         });
         if(targetVariableType == "dimension"){
             if(measureArray.length < 1 && dimensionArray.length < 1){
