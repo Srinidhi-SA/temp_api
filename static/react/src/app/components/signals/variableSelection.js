@@ -169,10 +169,10 @@ export class VariableSelection extends React.Component {
         let dataPrev = this.props.dataPreview;
         if(this.props.match.path.includes("/createSignal")){
             let measureArray = $.grep(dataPrev.meta_data.uiMetaData.varibaleSelectionArray,function(val,key){
-                return(val.columnType == "measure" && val.selected == true);
+                return(val.columnType == "measure" && val.selected == true && val.targetColumn == false);
             });
             let dimensionArray = $.grep(dataPrev.meta_data.uiMetaData.varibaleSelectionArray,function(val,key){
-                return(val.columnType == "dimension"  && val.selected == true);
+                return(val.columnType == "dimension"  && val.selected == true && val.targetColumn == false);
             });
             if(that.props.getVarType == "dimension"){
                 if(measureArray.length >= 1 || dimensionArray.length >= 1){
