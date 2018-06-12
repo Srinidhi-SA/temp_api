@@ -153,7 +153,7 @@ CELERY_QUEUES = {
     }
 }
 
-USING_KYLO = True
+USING_KYLO = False
 KYLO_SERVER_DETAILS = {
     "host": "52.205.59.95",
     "port" : 8088,
