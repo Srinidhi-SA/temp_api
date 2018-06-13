@@ -55,7 +55,7 @@ var config={ignoleTableList:this.props.hideColumns,fromModel:fromModel,evaluatio
       "mouseover": function(d) { parcoords.highlight([d]) },
       "mouseout": parcoords.unhighlight
     })
-    .selectAll(".chkBox")
+    .selectAll(".chkBox,.chkBoxSelect")
       .on({
         "click":function(d){
           var keyName = this.dataset.key;
