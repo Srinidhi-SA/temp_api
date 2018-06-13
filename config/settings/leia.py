@@ -132,7 +132,7 @@ FUNNY_EMAIL_LIST = [
 
 JOBSERVER_EMAIL_TEMPLATE = "Please restart jobserver- IP-"
 
-DEPLOYMENT_ENV = "prod"
+DEPLOYMENT_ENV = "cwpoc"
 
 
 HADOOP_CONF_DIR= False
