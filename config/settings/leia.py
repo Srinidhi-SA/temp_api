@@ -135,7 +135,7 @@ JOBSERVER_EMAIL_TEMPLATE = "Please restart jobserver- IP-"
 DEPLOYMENT_ENV = "cwpoc"
 
 
-HADOOP_CONF_DIR= False
+HADOOP_CONF_DIR= "/usr/local/hadoop/etc/hadoop/"
 HADOOP_USER_NAME="hduser"
 
 CELERY_BROKER_URL = 'redis://172.31.68.98:6379/'
