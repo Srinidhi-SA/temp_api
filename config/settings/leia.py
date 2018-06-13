@@ -26,7 +26,7 @@ DATABASES = {
         'NAME': 'madvisor2',
         'USER': 'root',
         'PASSWORD': 'Marlabs@123',
-        'HOST': 'localhost',
+        'HOST': '172.31.53.141',
         'PORT': '',
         }
 }
