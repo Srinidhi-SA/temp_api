@@ -5457,9 +5457,20 @@ def get_algorithm_config_list(request):
         app_type=request.GET['app_type']
     except:
         app_type="CLASSIFICATION"
+    try:
+        levels = int(request.GET['levels'])
+    except:
+        levels = 2
     user = request.user
     if app_type =="CLASSIFICATION":
         algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_CLASSIFICATION)
+        algoArray = algorithm_config_list["ALGORITHM_SETTING"]
+        tempArray = algoArray[0]["hyperParameterSetting"][0]["params"][0]["defaultValue"]
+        if levels > 2:
+            tempArray.append(settings.SKLEARN_ROC_OBJ)
+
+        for obj in algoArray:
+            obj["hyperParameterSetting"][0]["params"][0]["defaultValue"] = tempArray
     elif app_type =="REGRESSION":
         algorithm_config_list = copy.deepcopy(settings.ALGORITHM_LIST_REGRESSION)
     else:

@@ -74,6 +74,7 @@ def get_data_from_bluemix(target_url):
 
             if nl_understanding:
                 break
+
         cache_put(target_url, nl_understanding)
 
     return nl_understanding

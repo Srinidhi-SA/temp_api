@@ -149,7 +149,7 @@ export class RegressionParameter extends React.Component {
                  </select>
 				</div>
                   <div className="clearfix"></div>
-                                <div className="col-md-6 check-multiselect text-danger"></div>
+                  {tune?<div className="col-md-6 check-multiselect text-danger"></div>:""}
                 </div>
                );
                 break;
