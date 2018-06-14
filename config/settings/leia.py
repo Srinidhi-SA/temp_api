@@ -163,3 +163,7 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'guardian.backends.ObjectPermissionBackend'
 )
+
+
+# SUBMIT_JOB_THROUGH_CELERY = False
+SUBMIT_JOB_THROUGH_CELERY = True
