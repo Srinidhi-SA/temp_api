@@ -21,10 +21,10 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'madvisor',
         'USER': 'marlabs',
-        'PASSWORD': 'Password@123',
+        'PASSWORD': 'Marlabs@123',
         # 'USER': 'root',
         # 'PASSWORD': 'root',
-        'HOST': 'localhost',
+        'HOST': '172.31.64.145',
         'PORT': '',
     }
 }
@@ -39,7 +39,7 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend', # this is default
     'guardian.backends.ObjectPermissionBackend',
 )
-HADOOP_MASTER = "ec2-34-205-203-38.compute-1.amazonaws.com"
+HADOOP_MASTER = "172.31.70.80"
 
 YARN = {
     "host": HADOOP_MASTER,
@@ -93,7 +93,7 @@ THIS_SERVER_DETAILS = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
+        "LOCATION": "redis://172.31.64.145:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient"
         },
@@ -135,8 +135,8 @@ JOBSERVER_EMAIL_TEMPLATE = "Please restart jobserver- IP-"
 
 DEPLOYMENT_ENV = "dev"
 
-CELERY_BROKER_URL = 'redis://localhost:6379'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_BROKER_URL = 'redis://172.31.64.145:6379'
+CELERY_RESULT_BACKEND = 'redis://172.31.64.145:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
@@ -153,7 +153,7 @@ CELERY_QUEUES = {
     }
 }
 
-USING_KYLO = True
+USING_KYLO = False
 KYLO_SERVER_DETAILS = {
     "host": "52.205.59.95",
     "port" : 8088,
@@ -162,3 +162,15 @@ KYLO_SERVER_DETAILS = {
     "group_propertie_quote": "admin,user",
     "kylo_file_path":"/home/ubuntu/kylodir2/"
 }
+
+HADOOP_CONF_DIR= False
+HADOOP_USER_NAME="hduser"
+
+
+USE_YARN_DEFAULT_QUEUE=True
+# USE_YARN_DEFAULT_QUEUE=False
+
+PEM_KEY = "/keyfiles/TIAA.pem"
+
+# SUBMIT_JOB_THROUGH_CELERY = False
+SUBMIT_JOB_THROUGH_CELERY = True

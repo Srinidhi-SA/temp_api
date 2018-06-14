@@ -43,10 +43,8 @@ d3.divgrid = function(config) {
               if (settings.fromModel){
                 if(d["alwaysSelected"] == "True")
                 return ('<input type="checkbox" checked class="chkBoxTop" disabled />');
-                else if(d["Selected"] == "True" && settings.selectedModelCount < 10)
-                return ('<input type="checkbox" checked class="chkBox" data-name='+d["algorithmName"].replace(/ /g,"_")+' data-slug='+d["Slug"]+' data-model='+d["Model Id"]+' data-key='+d[settings.evaluationMetricColName]+' data-acc='+d[d[settings.evaluationMetricColName]]+' />');
-                else if (d["Selected"] == "True" && settings.selectedModelCount == 10)
-                return ('<input type="checkbox" checked class="chkBox" data-name='+d["algorithmName"].replace(/ /g,"_")+' data-slug='+d["Slug"]+' data-model='+d["Model Id"]+' data-key='+d[settings.evaluationMetricColName]+' data-acc='+d[d[settings.evaluationMetricColName]]+' />');
+                else if(d["Selected"] == "True" && settings.selectedModelCount <= 10)
+                return ('<input type="checkbox" checked class="chkBoxSelect" data-name='+d["algorithmName"].replace(/ /g,"_")+' data-slug='+d["Slug"]+' data-model='+d["Model Id"]+' data-key='+d[settings.evaluationMetricColName]+' data-acc='+d[d[settings.evaluationMetricColName]]+' />');
                 else if (d["Selected"] == "False" && settings.selectedModelCount == 10)
                 return ('<input type="checkbox" class="chkBox" disabled data-name='+d["algorithmName"].replace(/ /g,"_")+' data-slug='+d["Slug"]+' data-model='+d["Model Id"]+' data-key='+d[settings.evaluationMetricColName]+' data-acc='+d[d[settings.evaluationMetricColName]]+' />');
                 else if (d["Selected"] == "False" && settings.selectedModelCount < 10)

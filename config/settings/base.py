@@ -1542,3 +1542,5 @@ APPORDERLIST=[
 ]
 
 USE_YARN_DEFAULT_QUEUE=False
+
+CELERY_SCRIPTS_DIR="/home/hadoop/codebase/mAdvisor-api/scripts/"

@@ -530,7 +530,7 @@ def configuration_details():
             'server_details': {
                 "known name": "madvisordev.marlabsai.com",
                 "username": "ubuntu",
-                "host": "34.196.204.54",
+                "host": "35.172.209.49",
                 "port": "9012",
                 "initail_domain": "/api",
                 'pem_detail': "/config/keyfiles/TIAA.pem"

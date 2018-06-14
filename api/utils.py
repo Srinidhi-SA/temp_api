@@ -29,8 +29,12 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
     config = generate_job_config(class_name, job_config, job_name, message_slug, slug,app_id)
 
     try:
-        base_dir = correct_base_dir()
-        scripts_dir = os.path.join(base_dir, "scripts")
+        if hasattr(settings, 'CELERY_SCRIPTS_DIR'):
+            scripts_dir = settings.CELERY_SCRIPTS_DIR
+        else:
+            base_dir = correct_base_dir()
+            scripts_dir = os.path.join(base_dir, "scripts")
+
         egg_file_path = os.path.join(scripts_dir, "marlabs_bi_jobs-0.0.0-py2.7.egg")
         driver_file = os.path.join(scripts_dir, "driver.py")
 
@@ -49,9 +53,12 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
 
         application_id = ""
 
-        from tasks import submit_job_separate_task
+        from tasks import submit_job_separate_task1, submit_job_separate_task
 
-        submit_job_separate_task.delay(command_array, slug)
+        if settings.SUBMIT_JOB_THROUGH_CELERY:
+            submit_job_separate_task.delay(command_array, slug)
+        else:
+            submit_job_separate_task1(command_array, slug)
 
     except Exception as e:
         print 'Error-->submit_job_through_yarn--->'
