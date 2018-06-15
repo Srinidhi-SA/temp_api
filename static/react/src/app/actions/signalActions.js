@@ -1,5 +1,5 @@
 import React from "react";
-import {API} from "../helpers/env";
+import {API,STATIC_URL} from "../helpers/env";
 import {CSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,PERPAGE,SUCCESS,FAILED,getUserDetailsOrRestart,DIMENSION,
     MEASURE,SET_VARIABLE,PERCENTAGE,GENERIC_NUMERIC,SET_POLARITY,DYNAMICLOADERINTERVAL,UNIQUE_IDENTIFIER,handleJobProcessing,statusMessages} from "../helpers/helper";
 import {connect} from "react-redux";
@@ -628,7 +628,7 @@ function showRenameDialogBox(slug, dialog, dispatch, name) {
 
 	<div className="row">
 			<div className="col-md-4">
-				<img src="assets/images/alert_thinking.gif" class="img-responsive" />
+				<img src={STATIC_URL + "assets/images/alert_thinking.gif"} class="img-responsive" />
 			</div>
 			<div className="col-md-8">
 			<div className="form-group">
