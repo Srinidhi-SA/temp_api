@@ -37,7 +37,7 @@ PROJECT_APP = [
 
 INSTALLED_APPS += PROJECT_APP
 
-HADOOP_MASTER = '172.31.64.29'
+HADOOP_MASTER = '172.31.50.84'
 
 YARN = {
     "host": HADOOP_MASTER,
@@ -92,7 +92,7 @@ THIS_SERVER_DETAILS = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://172.31.68.98:6379/1",
+        "LOCATION": "redis://localhost:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient"
         },
@@ -132,14 +132,13 @@ FUNNY_EMAIL_LIST = [
 
 JOBSERVER_EMAIL_TEMPLATE = "Please restart jobserver- IP-"
 
-DEPLOYMENT_ENV = "cwpoc"
-
+DEPLOYMENT_ENV = "prod"
 
 HADOOP_CONF_DIR= "/usr/local/hadoop/etc/hadoop/"
 HADOOP_USER_NAME="hduser"
 
-CELERY_BROKER_URL = 'redis://172.31.68.98:6379/'
-CELERY_RESULT_BACKEND = 'redis://172.31.68.98:6379/'
+CELERY_BROKER_URL = 'redis://localhost:6379/'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
