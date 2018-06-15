@@ -199,6 +199,9 @@ class TrainerView(viewsets.ModelViewSet):
             if 'deleted' in data:
                 if data['deleted'] == True:
                     print 'let us delete'
+                    instance.data = '{}'
+                    instance.deleted = True
+                    instance.save()
                     clean_up_on_delete.delay(instance.slug, Trainer.__name__)
                     return JsonResponse({'message':'Deleted'})
         except:
