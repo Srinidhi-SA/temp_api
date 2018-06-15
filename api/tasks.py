@@ -361,16 +361,7 @@ def clean_up_logentry():
 
 @task(name='cleanup_on_delete', queue=CONFIG_FILE_NAME)
 def clean_up_on_delete(slug, model_name):
-
-    from api.helper import get_db_object
     from api.models import SaveAnyData, Job, SaveData
-
-    model_instance = get_db_object(model_name=model_name,
-                                   model_slug=slug
-                                   )
-    model_instance.data = '{}'
-    model_instance.deleted = True
-    model_instance.save()
 
     job_instance = Job.objects.filter(object_id__contains=slug).first()
     if job_instance:
