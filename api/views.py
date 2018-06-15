@@ -113,6 +113,9 @@ class SignalView(viewsets.ModelViewSet):
             if 'deleted' in data:
                 if data['deleted'] == True:
                     print 'let us delete'
+                    instance.data = '{}'
+                    instance.deleted = True
+                    instance.save()
                     clean_up_on_delete.delay(instance.slug, Insight.__name__)
                     return JsonResponse({'message':'Deleted'})
         except:
@@ -430,6 +433,9 @@ class ScoreView(viewsets.ModelViewSet):
             if 'deleted' in data:
                 if data['deleted'] == True:
                     print 'let us delete'
+                    instance.data = '{}'
+                    instance.deleted = True
+                    instance.save()
                     clean_up_on_delete.delay(instance.slug, Score.__name__)
                     return JsonResponse({'message':'Deleted'})
         except:
@@ -588,6 +594,10 @@ class RoboView(viewsets.ModelViewSet):
             if 'deleted' in data:
                 if data['deleted'] == True:
                     print 'let us delete'
+
+                    instance.data = '{}'
+                    instance.deleted = True
+                    instance.save()
                     clean_up_on_delete.delay(instance.slug, Robo.__name__)
                     return JsonResponse({'message':'Deleted'})
         except:
