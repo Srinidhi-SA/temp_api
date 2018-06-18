@@ -62,8 +62,8 @@ EMR = {
 }
 
 THIS_SERVER_DETAILS = {
-    "host": "172.31.53.141",
-    "port": "9016",
+    "host": "webinar.marlabsai.com",
+    "port": "80",
     "initail_domain": "/api"
 }
 
