@@ -150,4 +150,4 @@ AUTHENTICATION_BACKENDS = (
 # SUBMIT_JOB_THROUGH_CELERY = False
 SUBMIT_JOB_THROUGH_CELERY = True
 
-CELERY_SCRIPTS_DIR="/home/hadoop/codebase/mAdvisor-api_2/scripts/"
+CELERY_SCRIPTS_DIR="/home/hadoop/codebase/mAdvisor-api_staging/scripts/"
