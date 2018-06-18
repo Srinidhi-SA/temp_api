@@ -622,6 +622,30 @@ def configuration_details():
             },
             'deployment_config': 'cwpoc'
         },
+        'staging2': {
+            'server_details': {
+                "known name": "webinar.marlabsai.com",
+                "username": "ubuntu",
+                "host": "34.196.22.246",
+                "port": "9017",
+                "initail_domain": "/api",
+                'pem_detail': "/config/keyfiles/TIAA.pem"
+            },
+            'path_details': {
+                "react_path": "/static/react",
+                "asset_path": "/static/asset",
+                "base_remote_path": "/home/ubuntu/codebase/mAdvisor-api_staging",
+                "ui_branch": "staging2",
+                "api_branch": "staging2"
+            },
+            'type': 'staging2',
+            'gunicorn_details': {
+                'gunicorn_wsgi_app': 'config.wsgi:application',
+                'gunicorn_pidpath': "/gunicorn.pid",
+                'gunicorn_bind': "0.0.0.0:9017"
+            },
+            'deployment_config': 'staging2'
+        },
     }
 
     return configuration_detail
