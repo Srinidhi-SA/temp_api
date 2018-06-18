@@ -149,3 +149,5 @@ AUTHENTICATION_BACKENDS = (
 
 # SUBMIT_JOB_THROUGH_CELERY = False
 SUBMIT_JOB_THROUGH_CELERY = True
+
+CELERY_SCRIPTS_DIR="/home/ubuntu/codebase/mAdvisor-api_staging/scripts/"
