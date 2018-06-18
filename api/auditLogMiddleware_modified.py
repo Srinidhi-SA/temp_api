@@ -72,6 +72,20 @@ class AuthenticationMiddlewareJWT(object):
         if jwt_authentication.get_jwt_value(request):
             user, jwt = jwt_authentication.authenticate(request)
         return user
+
+class PrintRequestMiddleware(object):
+    """
+    Provides full logging of requests and responses
+    """
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        if 'HTTP_AUTHORIZATION' in request.META:
+            print request.META['HTTP_AUTHORIZATION']
+        return self.get_response(request)
+
 #
 # class JWTAuthMiddleware(object):
 #     """

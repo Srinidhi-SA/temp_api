@@ -21,6 +21,7 @@
   "license": "Private",
   "dependencies": {
     "bootbox": "^4.4.0",
+    "bootstrap-multiselect": "^0.9.13-1",
     "dateformat": "^2.0.0",
     "react": "^15.6.1",
     "react-addons-shallow-compare": "^15.6.2",
@@ -36,6 +37,8 @@
     "react-d3-speedometer": "^0.1.11",
     "react-dom": "^15.6.1",
     "react-dropzone": "^4.2.7",
+    "react-iframe": "^1.1.0",
+    "react-notify-toast": "^0.5.0",
     "react-redux": "^5.0.5",
     "react-redux-loading-bar": "^2.9.2",
     "react-render-html": "^0.5.0",

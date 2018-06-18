@@ -42,7 +42,10 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         return queryset
 
     def get_object_from_all(self):
-        return Dataset.objects.get(slug=self.kwargs.get('slug'))
+        return Dataset.objects.get(
+            slug=self.kwargs.get('slug'),
+            created_by=self.request.user
+        )
 
     def get_serializer_context(self):
         return {'request': self.request}
@@ -56,37 +59,41 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
     def create(self, request, *args, **kwargs):
 
-        try:
+        # try:
+        if 'data' in kwargs:
+            data = kwargs.get('data')
+            self.request = request
+        else:
             data = request.data
-            data = convert_to_string(data)
+        data = convert_to_string(data)
 
-            if 'input_file' in data:
-                data['input_file'] =  request.FILES.get('input_file')
-                data['datasource_type'] = 'fileUpload'
-                if data['input_file'] is None:
-                    data['name'] = data.get('name', data.get('datasource_type', "H") + "_"+ str(random.randint(1000000,10000000)))
-                else:
-                    data['name'] = data.get('name', data['input_file'].name)
-            elif 'datasource_details' in data:
-                data['input_file'] = None
-                if "datasetname" in data['datasource_details']:
-                    datasource_details = json.loads(data['datasource_details'])
-                    data['name'] = datasource_details['datasetname']
-                else:
-                    data['name'] = data.get('name', data.get('datasource_type', "H") + "_" + str(random.randint(1000000, 10000000)))
+        if 'input_file' in data:
+            data['input_file'] =  request.FILES.get('input_file')
+            data['datasource_type'] = 'fileUpload'
+            if data['input_file'] is None:
+                data['name'] = data.get('name', data.get('datasource_type', "H") + "_"+ str(random.randint(1000000,10000000)))
+            else:
+                data['name'] = data.get('name', data['input_file'].name)
+        elif 'datasource_details' in data:
+            data['input_file'] = None
+            if "datasetname" in data['datasource_details']:
+                datasource_details = json.loads(data['datasource_details'])
+                data['name'] = datasource_details['datasetname']
+            else:
+                data['name'] = data.get('name', data.get('datasource_type', "H") + "_" + str(random.randint(1000000, 10000000)))
 
-            # question: why to use user.id when it can take, id, pk, object.
-            # answer: I tried. Sighhh but it gave this error "Incorrect type. Expected pk value, received User."
-            data['created_by'] = request.user.id
+        # question: why to use user.id when it can take, id, pk, object.
+        # answer: I tried. Sighhh but it gave this error "Incorrect type. Expected pk value, received User."
+        data['created_by'] = request.user.id
 
-            serializer = DatasetSerializer(data=data, context={"request": self.request})
-            if serializer.is_valid():
-                dataset_object = serializer.save()
-                dataset_object.create()
-                return Response(serializer.data)
-            return creation_failed_exception(serializer.errors)
-        except Exception as err:
-            return creation_failed_exception(err)
+        serializer = DatasetSerializer(data=data, context={"request": self.request})
+        if serializer.is_valid():
+            dataset_object = serializer.save()
+            dataset_object.create()
+            return Response(serializer.data)
+        return creation_failed_exception(serializer.errors)
+        # except Exception as err:
+        #     return creation_failed_exception(err)
 
     def update(self, request, *args, **kwargs):
         data = request.data
@@ -97,6 +104,9 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             if 'deleted' in data:
                 if data['deleted'] == True:
                     print 'let us delete'
+                    instance.data = '{}'
+                    instance.deleted = True
+                    instance.save()
                     clean_up_on_delete.delay(instance.slug, Dataset.__name__)
                     return JsonResponse({'message': 'Deleted'})
         except:
@@ -179,8 +189,12 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         if original_meta_data_from_scripts == {}:
             uiMetaData = None
         else:
-            signal_permission = request.user.has_perm('api.create_signal')
-            uiMetaData = add_ui_metadata_to_metadata(original_meta_data_from_scripts, signal_permission=signal_permission)
+            permissions_dict = {
+                'create_signal': request.user.has_perm('api.create_signal'),
+                'subsetting_dataset': request.user.has_perm('api.subsetting_dataset')
+
+            }
+            uiMetaData = add_ui_metadata_to_metadata(original_meta_data_from_scripts, permissions_dict=permissions_dict)
 
         object_details['meta_data'] = {
             "scriptMetaData": original_meta_data_from_scripts,
@@ -267,3 +281,29 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             assign_perm('api.view_dataset', request.user, insta)
 
         return Response({})
+
+    def createFromKylo(self, request, *args, **kwargs):
+        try:
+            data=kwargs.get('data')
+            data = convert_to_string(data)
+
+            if 'datasource_details' in data:
+                data['input_file'] = None
+                if "datasetname" in data['datasource_details']:
+                    datasource_details = json.loads(data['datasource_details'])
+                    data['name'] = datasource_details['datasetname']
+                else:
+                    data['name'] = data.get('name', data.get('datasource_type', "H") + "_" + str(random.randint(1000000, 10000000)))
+
+            # question: why to use user.id when it can take, id, pk, object.
+            # answer: I tried. Sighhh but it gave this error "Incorrect type. Expected pk value, received User."
+                data['created_by']=request['user']
+
+            serializer = DatasetSerializer(data=data, context={"request": request})
+            if serializer.is_valid():
+                dataset_object = serializer.save()
+                dataset_object.create()
+                return Response(serializer.data)
+            return creation_failed_exception(serializer.errors)
+        except Exception as err:
+            return creation_failed_exception(err)

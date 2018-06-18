@@ -262,7 +262,8 @@ def decode_and_convert_chart_raw_data(data, object_slug=None):
         c3 = C3Chart(
             data=chart_data,
             chart_type=chart_type,
-            x_column_name=axes.get('x', 'key')
+            x_column_name=axes.get('x', 'key'),
+            title=title
         )
         c3.set_all_basics()
 
@@ -327,7 +328,8 @@ def decode_and_convert_chart_raw_data(data, object_slug=None):
         c3 = C3Chart(
             data=chart_data,
             chart_type=chart_type,
-            x_column_name=axes.get('x', 'key')
+            x_column_name=axes.get('x', 'key'),
+            title=title
         )
         c3.set_all_basics()
 
@@ -394,7 +396,8 @@ def decode_and_convert_chart_raw_data(data, object_slug=None):
         c3_chart_details['download_url'] = sd.get_url()
         c3 = ScatterChart(
             data=chart_data,
-            data_type='columns'
+            data_type='columns',
+            title=title
         )
         c3.set_xs(xs)
 
@@ -448,7 +451,8 @@ def decode_and_convert_chart_raw_data(data, object_slug=None):
         c3_chart_details['download_url'] = sd.get_url()
         c3 = ScatterChart(
             data=chart_data,
-            data_type='columns'
+            data_type='columns',
+            title=title
         )
         c3.set_xs(xs)
 
@@ -505,7 +509,8 @@ def decode_and_convert_chart_raw_data(data, object_slug=None):
         c3_chart_details['download_url'] = sd.get_url()
         c3 = ScatterChart(
             data=card3_data,
-            data_type='columns'
+            data_type='columns',
+            title=title
         )
         c3.set_xs(xs)
 
@@ -578,6 +583,10 @@ def decode_and_convert_chart_raw_data(data, object_slug=None):
         c3.add_tooltip_for_donut()
         if len(chart_data) >= 1:
             name_list = [i[0] for i in chart_data]
+            try:
+                name_list = sorted(name_list, key=lambda x: int(x.split("-")[0]), reverse=True)
+            except:
+                pass
             from api.C3Chart.config import PATTERN1
             color_list = PATTERN1
             length = len(name_list)
@@ -1270,3 +1279,10 @@ def encrypt_url(url):
     #     bytes_url = base64.urlsafe_b64decode(url)
     cipher_text = cipher_suite.encrypt(bytes_url)
     return cipher_text
+
+def encrypt_for_kylo(username, password_encrypted):
+    newhash = md5.new()
+    existing_key = username + password_encrypted
+    newhash.update(existing_key)
+    value = newhash.hexdigest()
+    return value

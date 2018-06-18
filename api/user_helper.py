@@ -14,6 +14,7 @@ from django.template.defaultfilters import slugify
 import random
 import string
 from django.http import JsonResponse
+from api.helper import encrypt_for_kylo
 
 
 class Profile(models.Model):
@@ -60,7 +61,8 @@ class Profile(models.Model):
             "image_url": self.get_image_url(),
             "website": self.website,
             "bio": self.bio,
-            "phone": self.phone
+            "phone": self.phone,
+            "kylo_password": encrypt_for_kylo(self.user.username, self.user.password)
         }
 
         # user_profile.update(self.user)
@@ -79,6 +81,9 @@ class UserProfileSerializer(serializers.Serializer):
         user.set_password(validated_data['password'])  # Hash to the Password of the user instance
         user.save()  # Save the Hashed Password
         Profile.objects.create(user=user, **userprofile_data)
+
+        if settings.USING_KYLO:
+            create_or_update_kylo_auth_file()
         return user  # Return user object
 
     # def update(self, instance, validated_data):
@@ -164,6 +169,9 @@ def create_profile(sender, **kwargs):
     if kwargs["created"]:
         user_profile = Profile(user=user)
         user_profile.save()
+
+    if settings.USING_KYLO:
+        create_or_update_kylo_auth_file()
 
 post_save.connect(create_profile, sender=User)
 
@@ -308,3 +316,44 @@ class myJSONWebTokenSerializer(Serializer):
             msg = _('Must include "{username_field}" and "password".')
             msg = msg.format(username_field=self.username_field)
             raise serializers.ValidationError(msg)
+
+
+def create_or_update_kylo_auth_file():
+    print "create_or_update_kylo_auth_file"
+    if settings.USING_KYLO is False:
+        return True
+    KYLO_SERVER_DETAILS = settings.KYLO_SERVER_DETAILS
+    group_propertie_quote = KYLO_SERVER_DETAILS['group_propertie_quote']
+    user_properties = ""
+    groups_properties = ""
+    all_users = User.objects.all()
+    for user in all_users:
+        user_properties += "{0}={1}\n".format(user.username, encrypt_for_kylo(user.username, user.password))
+        groups_properties += "{0}={1}\n".format(user.username, group_propertie_quote)
+
+    with open('/tmp/users.properties', 'w') as fp:
+        fp.write(user_properties)
+
+    with open('/tmp/groups.properties', 'w') as fp:
+        fp.write(groups_properties)
+
+    ssh_command_users = "scp -i {0} /tmp/users.properties {1}@{2}:{3}".format(
+        KYLO_SERVER_DETAILS['key_path'],
+        KYLO_SERVER_DETAILS['user'],
+        KYLO_SERVER_DETAILS['host'],
+        KYLO_SERVER_DETAILS['kylo_file_path'],
+    )
+
+    ssh_command_groups = "scp -i {0} /tmp/groups.properties {1}@{2}:{3}".format(
+        KYLO_SERVER_DETAILS['key_path'],
+        KYLO_SERVER_DETAILS['user'],
+        KYLO_SERVER_DETAILS['host'],
+        KYLO_SERVER_DETAILS['kylo_file_path'],
+    )
+
+    print ssh_command_users.split(' ')
+    import subprocess
+    subprocess.call(ssh_command_users.split(' '))
+    subprocess.call(ssh_command_groups.split(' '))
+
+

@@ -48,6 +48,11 @@ export default function reducer(state = {
   dataSetSelectAllAnalysis:false,
   isUpdate:false,
   latestDatasets:{},
+  advancedAnalysisAssociation:true,
+  advancedAnalysisInfluencer:true,
+  advancedAnalysisPrediction:true,
+  advancedAnalysisPerformance:true,
+  createScoreShowVariables:false,
 
 }, action) {
   console.log("In DATA reducer!!");
@@ -282,6 +287,7 @@ export default function reducer(state = {
         return {
           ...state,
           dataSetMeasures: action.measures,
+          CopyOfMeasures: action.measures,
           //measureChecked: action.checkBoxList
         }
       }
@@ -292,6 +298,7 @@ export default function reducer(state = {
         return {
           ...state,
           dataSetDimensions: action.dimensions,
+          CopyOfDimension: action.dimensions,
          // dimensionChecked: action.checkBoxList1
         }
       }
@@ -302,6 +309,7 @@ export default function reducer(state = {
         return {
           ...state,
           dataSetTimeDimensions: action.timedimensions,
+          CopyTimeDimension: action.timedimensions,
          // dateTimeChecked: action.checkBoxList2
         }
       }
@@ -540,8 +548,65 @@ export default function reducer(state = {
         return {
           ...state,
           dataSetAnalysisList: action.renderList,
-          dataSetPrevAnalysisList:action.prevAnalysisList,
+          dataSetPrevAnalysisList:action.renderList,
           dataSetSelectAllAnalysis:action.flag,
+        }
+      }
+      break;
+      case "ADVANCE_ANALYSIS_ASSOCIATION":
+      {
+        return {
+          ...state,
+          advancedAnalysisAssociation: action.disble,
+        }
+      }
+      break;
+      case "ADVANCE_ANALYSIS_PREDICTION":
+      {
+        return {
+          ...state,
+          advancedAnalysisPrediction: action.disble,
+        }
+      }
+      break;
+      case "ADVANCE_ANALYSIS_PERFORMANCE":
+      {
+        return {
+          ...state,
+          advancedAnalysisPerformance: action.disble,
+        }
+      }
+      break;
+      case "ADVANCE_ANALYSIS_INFLUENCER":
+      {
+        return {
+          ...state,
+          advancedAnalysisInfluencer: action.disble,
+        }
+      }
+      break;
+      case "RESET_SUBSETTED_DATASET":
+      {
+        return {
+          ...state,
+          subsettedSlug: action.slug,
+          updatedSubSetting: {
+            "measureColumnFilters": [],
+            "dimensionColumnFilters": [],
+            "timeDimensionColumnFilters": []
+          },
+          subsettingDone: false,
+          selectedDataSet: action.slug
+
+        }
+      }
+      break;
+      case "UPDATE_VARAIABLE_SELECTION_ARRAY":
+      {
+        return {
+          ...state,
+          dataPreview: action.newDataPreview,
+          createScoreShowVariables:action.flag
         }
       }
       break;

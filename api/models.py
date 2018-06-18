@@ -92,8 +92,12 @@ class Job(models.Model):
 
     def start(self):
         command_array = json.loads(self.command_array)
-        from tasks import submit_job_separate_task
-        submit_job_separate_task.delay(command_array, self.object_id)
+        from tasks import submit_job_separate_task1, submit_job_separate_task
+
+        if settings.SUBMIT_JOB_THROUGH_CELERY:
+            submit_job_separate_task.delay(command_array, self.object_id)
+        else:
+            submit_job_separate_task1(command_array, self.object_id)
         original_object = self.get_original_object()
 
         if original_object is not None:
@@ -852,8 +856,10 @@ class Trainer(models.Model):
         config['config']["DATA_SOURCE"] = self.dataset.get_datasource_info()
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
         # config['config']["META_HELPER"] = self.create_configuration_meta_data()
-        if(self.app_id==settings.REGRESSION_APP_ID):
+        if (self.app_id in settings.REGRESSION_APP_ID):
             config['config']["ALGORITHM_SETTING"]=self.make_config_algorithm_setting()
+        elif self.app_id in settings.CLASSIFICATION_APP_ID:
+            config['config']["ALGORITHM_SETTING"] = self.make_config_algorithm_setting()
 
         self.config = json.dumps(config)
         self.save()
@@ -895,7 +901,7 @@ class Trainer(models.Model):
         targetLevel = None
         if 'targetLevel' in config:
             targetLevel = config.get('targetLevel')
-        if(self.app_id==settings.REGRESSION_APP_ID):
+        if(self.app_id in settings.REGRESSION_APP_ID):
             validationTechnique=config.get('validationTechnique')
             return {
                 'inputfile': [self.dataset.get_input_file()],
@@ -906,12 +912,13 @@ class Trainer(models.Model):
                 'targetLevel': targetLevel,
                 'app_type':'regression'
             }
-        else:
-            train_test_split = float(config.get('trainValue')) / 100
+        elif self.app_id in settings.CLASSIFICATION_APP_ID:
+
+            validationTechnique = config.get('validationTechnique')
             return {
             'inputfile': [self.dataset.get_input_file()],
             'modelpath': [self.slug],
-            'train_test_split': [train_test_split],
+            'validationTechnique': [validationTechnique],
             'analysis_type': ['training'],
             'metadata': self.dataset.get_metadata_url_config(),
             'targetLevel': targetLevel,
@@ -1105,7 +1112,8 @@ class Score(models.Model):
     def create_configuration_url_settings(self):
 
         config = json.loads(self.config)
-        algorithmslug = config.get('algorithmName')
+        selectedModel = config['selectedModel']
+        algorithmslug = selectedModel.get('slug')
 
         trainer_slug = self.trainer.slug
         score_slug = self.slug
@@ -1126,6 +1134,7 @@ class Score(models.Model):
         return {
             'inputfile': [self.dataset.get_input_file()],
             'modelpath': [trainer_slug],
+            'selectedModel' : [selectedModel],
             'scorepath': [score_slug],
             'analysis_type': ['score'],
             'levelcounts': targetVariableLevelcount if targetVariableLevelcount is not None else [],
@@ -1365,6 +1374,7 @@ class CustomApps(models.Model):
     live_status = models.CharField(max_length=300, default='0', choices=STATUS_CHOICES)
     viewed = models.BooleanField(default=False)
     app_type = models.CharField(max_length=300, null=True, default="")
+    rank = models.IntegerField(unique=True, null=True)
 
     class Meta:
         ordering = ['app_id']
@@ -1413,6 +1423,17 @@ class CustomApps(models.Model):
         #             'created_by': self.created_by.username,
         #         })
         #     return convert_json_object_into_list_of_object(brief_info, 'apps')
+
+
+    def adjust_rank(self, index):
+        self.rank = index
+        self.save()
+
+    def null_the_rank(self):
+        self.rank = None
+        self.save()
+
+
 
 
 auditlog.register(Dataset)

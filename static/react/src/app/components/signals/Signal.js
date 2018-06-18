@@ -7,7 +7,8 @@ import {MasterSummary} from "./MasterSummary";
 import {isEmpty,getUserDetailsOrRestart} from "../../helpers/helper";
 import {MainHeader} from "../common/MainHeader";
 import Breadcrumb from 'react-breadcrumb';
-import {STATIC_URL} from "../../helpers/env.js"
+import {STATIC_URL} from "../../helpers/env.js";
+import Notifications, {notify} from 'react-notify-toast';
 
 
 
@@ -66,8 +67,14 @@ export class Signal extends React.Component {
           </div>
           </div>
       );
-    }else{
+    }else if(!$.isPlainObject(this.props.signal)){
+      let myColor = { background: '#00998c', text: "#FFFFFF" };
+      notify.show("You are not authorized to view the signal.", "custom", 2000,myColor);
+     //var signlasPage = "/signals";
+              return (<Redirect to="/signals"/>);
+    }
+    else
     return (<MasterSummary signalId={this.props.match.params.slug} />);
-  }
+  
 }
 }

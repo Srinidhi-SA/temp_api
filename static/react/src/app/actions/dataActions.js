@@ -1,9 +1,10 @@
 import React from "react";
 import {API,STATIC_URL} from "../helpers/env";
-import {PERPAGE,DULOADERPERVALUE,DEFAULTINTERVAL,SUCCESS,FAILED,getUserDetailsOrRestart,DEFAULTANALYSISVARIABLES} from "../helpers/helper";
+import {PERPAGE,DULOADERPERVALUE,DEFAULTINTERVAL,SUCCESS,FAILED,getUserDetailsOrRestart,DEFAULTANALYSISVARIABLES,statusMessages} from "../helpers/helper";
 import store from "../store";
 import {dataPreviewInterval,dataUploadLoaderValue,clearLoadingMsg,clearDatasetPreview} from "./dataUploadActions";
 import {closeAppsLoaderValue} from "./appActions";
+import renderHTML from 'react-render-html';
 import Dialog from 'react-bootstrap-dialog'
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
 import {isEmpty,RENAME,DELETE,REPLACE,DATA_TYPE,REMOVE,CURRENTVALUE,NEWVALUE,SET_VARIABLE,UNIQUE_IDENTIFIER,SET_POLARITY,handleJobProcessing,IGNORE_SUGGESTION} from "../helpers/helper";
@@ -151,7 +152,8 @@ function fetchDataPreview(slug,dispatch,interval) {
 
         dispatch(hideDULoaderPopup());
         clearInterval(interval);
-        bootbox.alert("Unable to connect to server. Check your connection please try again.")
+        let msg=statusMessages("error","Unable to connect to server. Check your connection please try again.","small_mascot")
+        bootbox.alert(msg)
     });
 }
 //get preview data
@@ -640,7 +642,7 @@ export function updateSelectedVariables(evt){
         count = getTotalVariablesSelected();
         dispatch(updateVariablesCount(count));
         if(evt.target.baseURI.includes("/createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
-            if(count >= 5){
+            if(count >= 10){
                 $('.measure[type="checkbox"]').each(function() {
                     if (!$(this).is(":checked"))
                     $(this).prop('disabled', true);
@@ -727,9 +729,10 @@ export function showDialogBox(slug,dialog,dispatch,evt){
         defaultOkLabel: 'Yes',
         defaultCancelLabel: 'No',
     })
+	var body_msg=renderHTML(statusMessages("warning","Are you sure you want to delete the selected data set?","small_mascot"))
     dialog.show({
         title: 'Delete Dataset',
-        body: 'Are you sure you want to delete the selected data set?',
+        body: body_msg,
         actions: [
                   Dialog.CancelAction(),
                   Dialog.OKAction(() => {
@@ -783,11 +786,18 @@ export function handleRename(slug,dialog,name){
     }
 }
 function showRenameDialogBox(slug,dialog,dispatch,name){
-    const customBody = (
+    const customBody = (            
+			<div className="row">	
+			<div className="col-md-4">
+				<img src={STATIC_URL + "assets/images/alert_thinking.gif"} class="img-responsive" />
+			</div>
+			<div className="col-md-8">
             <div className="form-group">
             <label for="fl1" className="control-label">Enter a new  Name</label>
             <input className="form-control"  id="idRenameDataset" type="text" defaultValue={name}/>
             </div>
+			</div>
+		</div>
     )
 
     dialog.show({
@@ -1027,7 +1037,7 @@ export function handleSelectAll(evt){
             }
             else
             {
-                if(count >= 5){
+                if(count >= 10){
                     if(varType == "dimension"){
                         $('.measure[type="checkbox"]').each(function() {
                             if (!$(this).is(":checked"))
@@ -1069,10 +1079,17 @@ export function updateSubSetting(updatedSubSetting){
 //Rename Metadata column
 export function renameMetaDataColumn(dialog,colName,colSlug,dispatch,actionName){
     const customBody = (
+		<div className="row">	
+			<div className="col-md-4">
+				<img src={STATIC_URL + "assets/images/alert_thinking.gif"} class="img-responsive" />
+			</div>
+			<div className="col-md-8">
             <div className="form-group">
             <label for="fl1" className="control-label">Enter a new Name</label>
             <input className="form-control"  id="idRenameMetaCloumn" type="text" defaultValue={colName}/>
             </div>
+			</div>
+		</div>
     )
 
     dialog.show({
@@ -1119,7 +1136,8 @@ export function handleColumnClick(dialog,actionName,colSlug,colName,subActionNam
             //updateColumnStatus(dispatch,colSlug,colName,actionName,subActionName);
         }else if(actionName == UNIQUE_IDENTIFIER){
             if(!colStatus){
-                bootbox.confirm("Setting this column as unique identifier will unset previous selection.",
+				let prevUniqueid = statusMessages("warning","Setting this column as unique identifier will unset previous selection.","small_mascot");
+                bootbox.confirm(prevUniqueid,
                         function(result){
                     if(result){
                         $(".cst_table").find("thead").find("."+colSlug).first().find("a").addClass("text-primary");
@@ -1147,16 +1165,17 @@ function deleteMetaDataColumn(dialog,colName,colSlug,dispatch,actionName,colStat
         }
     });
     if(nonDeletedColumns <= 2 && colStatus != true){
-        bootbox.alert("Cannot delete any more columns")
+        let errormsg = statusMessages("warning", "Cannot delete any more columns", "small_mascot");
+        bootbox.alert(errormsg)
         return;
     }
-    var text = "Are you sure, you want to delete the selected column?";
+	var body_msg=statusMessages("warning","Are you sure, you want to delete the selected column?","small_mascot");
     if(colStatus == true){
-        text = "Are you sure, you want to undelete the selected column?"
+        body_msg = statusMessages("warning","Are you sure, you want to undelete the selected column?","small_mascot");
     }
     bootbox.confirm({
       title:"Delete Column",
-      message:text,
+      message:body_msg,
       //size:"small",
       buttons: {
       'cancel': {
@@ -1235,7 +1254,7 @@ export function updateColumnStatus(dispatch,colSlug,colName,actionName,subAction
             break;
         }
     }
-    if(actionName != SET_VARIABLE && actionName != UNIQUE_IDENTIFIER && actionName != SET_POLARITY && actionName != IGNORE_SUGGESTION){
+    if(actionName != SET_VARIABLE && actionName != UNIQUE_IDENTIFIER && actionName != SET_POLARITY && actionName != IGNORE_SUGGESTION && actionName !=DATA_TYPE){
         isSubsetting = true;
     }else{
         //Enable subsetting when any one of the column is deleted,renamed, removed
@@ -1310,11 +1329,13 @@ export function handleColumnActions(transformSettings,slug,isSubsetting) {
                 dispatch(fetchDataPreviewError(json));
                 dispatch(vaiableSelectionUpdate(false));
                 dispatch(hideLoading());
-                bootbox.alert("Something went wrong. Please try again later.")            }
+                let msg=statusMessages("error","Something went wrong. Please try again later.","small_mascot")
+                bootbox.alert(msg)            }
         }).catch(function(error){
             dispatch(hideLoading());
             dispatch(vaiableSelectionUpdate(false));
-            bootbox.alert("Something went wrong. Please try again later.")
+            let msg=statusMessages("error","Something went wrong. Please try again later.","small_mascot")
+            bootbox.alert(msg)
         });
     }
 }
@@ -1554,10 +1575,10 @@ export function DisableSelectAllCheckbox(){
     let dimensionArray = $.grep(dataPrev.meta_data.uiMetaData.varibaleSelectionArray,function(val,key){
         return(val.columnType == "dimension");
     });
-    if(measureArray.length > 5)
+    if(measureArray.length > 10)
      $('.measureAll').prop("disabled",true);
 
-    if(dimensionArray.length > 5)
+    if(dimensionArray.length > 10)
      $(".dimensionAll").prop("disabled",true);
 }
 }
@@ -1567,13 +1588,13 @@ export function uncheckHideAnalysisList(){
         var dataSetDimensions = store.getState().datasets.CopyOfDimension.slice();
         var targetVariableType = store.getState().signals.getVarType;
         let measureArray = $.grep(dataSetMeasures,function(val,key){
-            return(val.selected == true);
+            return(val.selected == true && val.targetColumn == false);
         });
         let dimensionArray = $.grep(dataSetDimensions,function(val,key){
-            return(val.selected == true);
+            return(val.selected == true && val.targetColumn == false);
         });
         if(targetVariableType == "dimension"){
-            if(measureArray.length < 1 || dimensionArray.length < 1){
+            if(measureArray.length < 1 && dimensionArray.length < 1){
                 dispatch(saveDeselectedAnalysisList($("#chk_analysis_association").val()));
                 dispatch(saveDeselectedAnalysisList($("#chk_analysis_prediction").val()));
             }
@@ -1586,7 +1607,7 @@ export function uncheckHideAnalysisList(){
             if(measureArray.length < 1)
             dispatch(saveDeselectedAnalysisList($("#chk_analysis_influencer").val()));
 
-            if(measureArray.length < 1 || dimensionArray.length < 1)
+            if(measureArray.length < 1 && dimensionArray.length < 1)
             dispatch(saveDeselectedAnalysisList($("#chk_analysis_prediction").val()));
         }
     }
@@ -1652,5 +1673,58 @@ export function showAllVariables(array,slug){
             type: "DATA_PREVIEW",
             dataPreview:array,
             slug,
+    }
+}
+
+export function disableAdvancedAnalysisElements(elementName,action){
+    if(elementName == "association")
+    return {
+            type: "ADVANCE_ANALYSIS_ASSOCIATION",
+            disble:action,
+    }
+    else if(elementName == "prediction")
+    return {
+            type: "ADVANCE_ANALYSIS_PREDICTION",
+            disble:action,
+    }
+    else if(elementName == "performance")
+    return {
+            type: "ADVANCE_ANALYSIS_PERFORMANCE",
+            disble:action,
+    }
+    else if(elementName == "influencer")
+    return {
+            type: "ADVANCE_ANALYSIS_INFLUENCER",
+            disble:action,
+    }
+}
+export function resetSubsetting(slug){
+    return {
+            type: "RESET_SUBSETTED_DATASET",
+            slug,
+    }
+}
+export function updateVariableSelectionArray(summary){
+    if(!$.isEmptyObject(summary))
+    {
+        var newVariableSelectionArray = store.getState().apps.modelSummary.config.config.COLUMN_SETTINGS.variableSelection;
+        var newDataPreview = store.getState().datasets.dataPreview;
+        newDataPreview.meta_data.uiMetaData.varibaleSelectionArray = newVariableSelectionArray;
+        var flag = true;
+        return {
+            type:"UPDATE_VARAIABLE_SELECTION_ARRAY",
+            newDataPreview,
+            flag,
+            
+        }
+    }
+    else{
+        var newDataPreview = store.getState().datasets.dataPreview;
+        var flag = false;
+        return {
+            type:"UPDATE_VARAIABLE_SELECTION_ARRAY",
+            newDataPreview,
+            flag,
+        }
     }
 }

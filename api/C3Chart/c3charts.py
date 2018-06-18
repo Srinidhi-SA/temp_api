@@ -613,20 +613,38 @@ class C3Chart(object):
         self.set_d3_format_y()
 
     def get_json(self):
-        return {
-            'data': self._data,
-            'axis': self._axis,
-            'tooltip': self._tooltip,
-            'grid': self._grid,
-            'legend': self._legend,
-            'color': self._color,
-            'padding': self._padding,
-            # 'title': self._title,
-            'subchart': self._subchart,
-            'point': self._point,
-            'bar': self.set_basic_bar_chart(),
-            'size': self._size
-        }
+
+        if self._title == 'Unnamed Chart' or self._title is None:
+            return {
+                'data': self._data,
+                'axis': self._axis,
+                'tooltip': self._tooltip,
+                'grid': self._grid,
+                'legend': self._legend,
+                'color': self._color,
+                'padding': self._padding,
+                # 'title': self._title,
+                'subchart': self._subchart,
+                'point': self._point,
+                'bar': self.set_basic_bar_chart(),
+                'size': self._size
+            }
+        else:
+            return {
+                'data': self._data,
+                'axis': self._axis,
+                'tooltip': self._tooltip,
+                'grid': self._grid,
+                'legend': self._legend,
+                'color': self._color,
+                'padding': self._padding,
+                'title': self._title,
+                'subchart': self._subchart,
+                'point': self._point,
+                'bar': self.set_basic_bar_chart(),
+                'size': self._size
+            }
+
     def add_tooltip_for_donut(self):
         self._tooltip={
             'format':{

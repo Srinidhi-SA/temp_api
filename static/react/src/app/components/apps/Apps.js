@@ -90,13 +90,13 @@ export class Apps extends React.Component {
     return (
       <div className="side-body">
         <div className="main-content">
-          <Tabs defaultActiveKey="score" activeKey={store.getState().apps.appsSelectedTabId} onSelect={this.modifyUrl.bind(this)} className="apps_list">
+          <Tabs id="apps_tab" defaultActiveKey="score" activeKey={store.getState().apps.appsSelectedTabId} onSelect={this.modifyUrl.bind(this)} className="apps_list">
             {(getUserDetailsOrRestart.get().view_trainer_permission == "true")
-              ? <Tab eventKey="model" id="model" title="Models">{models}</Tab>
-              : <Tab eventKey="model" disabled id="model" title="Models">{models}</Tab>}
+              ? <Tab eventKey="model"  title="Models">{models}</Tab>
+              : <Tab eventKey="model" disabled title="Models">{models}</Tab>}
             {(getUserDetailsOrRestart.get().view_score_permission == "true")
-              ? <Tab eventKey="score" id="score" title="Scores">{scores}</Tab>
-              : <Tab eventKey="score" disabled id="score" title="Scores">{scores}</Tab>}
+              ? <Tab eventKey="score" title="Scores">{scores}</Tab>
+              : <Tab eventKey="score" disabled  title="Scores">{scores}</Tab>}
           </Tabs>
           <AppsLoader match={this.props.match}/>
         </div>

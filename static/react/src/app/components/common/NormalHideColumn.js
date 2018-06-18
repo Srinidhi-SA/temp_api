@@ -46,7 +46,7 @@ export class NormalHideColumn extends React.Component {
                   if(j == colLength-1)
                     return<td key={j} class="hidden">{colData}</td>; 
                     else
-                     return<td class="cursor" key={j}><span title={colData}>{renderHTML(colData.length > 15 ? colData.slice(0, 15).concat("...") : colData)}</span></td>;
+                     return<td class="cursor" key={j}><span title={colData}>{renderHTML(colData.toString().length > 15 ? colData.toString().slice(0, 15).concat("...") : colData.toString())}</span></td>;
                 });
              return<tr key={i}>{rows}</tr>;
          }
@@ -62,6 +62,7 @@ export class NormalHideColumn extends React.Component {
    var rowComponents = this.generateNormalTableRows(data);
    return (
            <div class="table-style_2">
+               <h5 className="xs-mt-5"><strong>{this.props.selectedPrediction}: Top Observations</strong></h5>
            <table className={className}>
                <thead><tr>{headerComponents}</tr></thead>
                <tbody>{rowComponents}</tbody>

@@ -29,8 +29,12 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
     config = generate_job_config(class_name, job_config, job_name, message_slug, slug,app_id)
 
     try:
-        base_dir = correct_base_dir()
-        scripts_dir = os.path.join(base_dir, "scripts")
+        if hasattr(settings, 'CELERY_SCRIPTS_DIR'):
+            scripts_dir = settings.CELERY_SCRIPTS_DIR
+        else:
+            base_dir = correct_base_dir()
+            scripts_dir = os.path.join(base_dir, "scripts")
+
         egg_file_path = os.path.join(scripts_dir, "marlabs_bi_jobs-0.0.0-py2.7.egg")
         driver_file = os.path.join(scripts_dir, "driver.py")
 
@@ -49,9 +53,12 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
 
         application_id = ""
 
-        from tasks import submit_job_separate_task
+        from tasks import submit_job_separate_task1, submit_job_separate_task
 
-        submit_job_separate_task.delay(command_array, slug)
+        if settings.SUBMIT_JOB_THROUGH_CELERY:
+            submit_job_separate_task.delay(command_array, slug)
+        else:
+            submit_job_separate_task1(command_array, slug)
 
     except Exception as e:
         print 'Error-->submit_job_through_yarn--->'
@@ -978,7 +985,7 @@ def get_permissions(user, model, type='retrieve'):
             }
         if type=='list':
             return {
-                'create_dataset': user.has_perm('api.create_dataset'),
+                'create_dataset': user.has_perm('api.create_dataset') and user.has_perm('api.view_dataset'),
                 'upload_from_file': user.has_perm('api.upload_from_file'),
                 'upload_from_mysql': user.has_perm('api.upload_from_mysql'),
                 'upload_from_mssql': user.has_perm('api.upload_from_mssql'),
@@ -994,12 +1001,12 @@ def get_permissions(user, model, type='retrieve'):
             }
         if type=='list':
             return {
-                'create_signal': user.has_perm('api.create_signal'),
+                'create_signal': user.has_perm('api.create_signal') and user.has_perm('api.view_signal'),
             }
     if model == 'trainer':
         if type == 'retrieve':
             return {
-               'create_score': user.has_perm('api.create_score'),
+               'create_score': user.has_perm('api.create_score') and user.has_perm('api.view_score') and user.has_perm('api.view_trainer'),
                'view_trainer': user.has_perm('api.view_trainer'),
                'downlad_pmml': user.has_perm('api.downlad_pmml'),
                'rename_trainer': user.has_perm('api.rename_trainer'),
@@ -1007,24 +1014,24 @@ def get_permissions(user, model, type='retrieve'):
             }
         if type=='list':
             return {
-                'create_trainer': user.has_perm('api.create_trainer'),
+                'create_trainer': user.has_perm('api.create_trainer') and user.has_perm('api.view_trainer'),
             }
     if model == 'score':
         if type == 'retrieve':
             return {
                'view_score': user.has_perm('api.view_score'),
-               'download_score': user.has_perm('api.download_score'),
+               'download_score': user.has_perm('api.download_score') and user.has_perm('api.view_score'),
                'rename_score': user.has_perm('api.rename_score'),
                'remove_score': user.has_perm('api.remove_score'),
             }
         if type=='list':
             return {
-                'create_score': user.has_perm('api.create_score'),
+                'create_score': user.has_perm('api.create_score') and user.has_perm('api.view_score') and user.has_perm('api.view_trainer'),
             }
     if model == 'regression':
         if type == 'retrieve':
             return {
-                'create_score': user.has_perm('api.create_score'),
+                'create_score': user.has_perm('api.create_score') and user.has_perm('api.view_score') and user.has_perm('api.view_trainer'),
                 'view_regression': user.has_perm('api.view_regression'),
                 'downlad_pmml': user.has_perm('api.downlad_pmml'),
                 'rename_regression': user.has_perm('api.rename_regression'),
