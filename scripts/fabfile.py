@@ -179,6 +179,8 @@ def do_npm_run(branch, react_path):
             local("npm run buildLeia")
         elif "cwpoc" == branch:
             local("npm run buildCwpoc")
+        elif "staging2" == branch:
+            local("npm run buildStaging2")
 
 def deploy_dist_to_destination(base_remote_path, react_path):
     import random
