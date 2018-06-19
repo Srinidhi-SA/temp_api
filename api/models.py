@@ -1714,7 +1714,7 @@ class StockDataset(models.Model):
             {
                 'created_by': self.created_by.username,
                 'updated_at': self.updated_at,
-                'stockdataset': self.name,
+                'name': self.name,
                 'stock_symbols': self.stock_symbols.upper()
                 # 'file_size': convert_to_humanize(self.input_file.size)
             })
