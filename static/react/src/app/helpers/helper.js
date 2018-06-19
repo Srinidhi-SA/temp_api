@@ -135,7 +135,9 @@ const IGNORE_SUGGESTION = "ignore_suggestion";
 const ACCESSDENIED ="Access Denied"
 const CREATESIGNAL = "Create Signal";
 const CREATEMODEL = "Create Model";
-const CREATESCORE = "Create Score"
+const CREATESCORE = "Create Score";
+const DELETESTOCKMODEL = "Delete Analysis";
+const RENAMESTOCKMODEL = "Rename Analysis";
 
 export function generateHeaders(table) {
     var cols = table.tableData.map(function(rowData,i){
@@ -456,7 +458,9 @@ export{
   ACCESSDENIED,
   CREATESIGNAL,
   CREATESCORE,
-  CREATEMODEL
+  CREATEMODEL,
+  DELETESTOCKMODEL,
+  RENAMESTOCKMODEL
 	}
 export function capitalizeArray(array){
   let a =[]

@@ -19,7 +19,9 @@ import {
   FAILED,
   DELETEAUDIO,
   RENAMEAUDIO,
-  INPROGRESS
+  INPROGRESS,
+  DELETESTOCKMODEL,
+  RENAMESTOCKMODEL
 } from "../helpers/helper";
 import {hideDataPreview, getStockDataSetPreview, showDataPreview, getDataSetPreview} from "./dataActions";
 import {getHeaderWithoutContent} from "./dataUploadActions";
@@ -712,6 +714,8 @@ export function showDialogBox(slug, dialog, dispatch, title, msgText) {
           deleteInsight(slug, dialog, dispatch)
         else if (title == DELETEAUDIO)
           deleteAudio(slug, dialog, dispatch)
+        else if (title == DELETESTOCKMODEL)
+          deleteStockModel(slug, dialog, dispatch)
         else
           deleteScore(slug, dialog, dispatch)
 
@@ -784,6 +788,8 @@ function showRenameDialogBox(slug, dialog, dispatch, title, customBody) {
           renameInsight(slug, dialog, $("#idRenameInsight").val(), dispatch)
         else if (title == RENAMEAUDIO)
           renameAudio(slug, dialog, $("#idRenameAudio").val(), dispatch)
+        else if (title == RENAMESTOCKMODEL)
+          renameStockModel(slug, dialog, $("#idRenameStockModel").val(), dispatch)
         else
           renameScore(slug, dialog, $("#idRenameScore").val(), dispatch)
       })
@@ -1428,9 +1434,11 @@ function triggerCrawlingAPI(urlForPrices, urlForNews, analysisName) {
 }
 
 export function hideDataPreviewRightPanels() {
+  $("#tab_statistics").hide();
   $("#tab_visualizations").hide();
   $("#sub_settings").hide();
   $("#dataPreviewButton").hide();
+  $(".preview_content").css('width','100%');
 }
 export function updateUploadStockPopup(flag) {
   return {type: "UPLOAD_STOCK_MODAL", flag}
@@ -1943,4 +1951,75 @@ export function updateSelectedAlgObj(obj){
 export function clearSelectedModelsCount(){
   var count = 0;
   return {type: "CLEAR_SELECT_MODEL_COUNT", count}
+}
+export function handleStockDelete(slug, dialog) {
+  return (dispatch) => {
+    showDialogBox(slug, dialog, dispatch, DELETESTOCKMODEL, renderHTML(statusMessages("warning","Are you sure, you want to delete analysis?","small_mascot")))
+	 
+  }
+}
+function deleteStockModel(slug, dialog, dispatch) {
+  dispatch(showLoading());
+  Dialog.resetOptions();
+  return deleteStockModelAPI(slug).then(([response, json]) => {
+    if (response.status === 200) {
+      dispatch(getAppsStockList(store.getState().apps.current_page));
+      dispatch(hideLoading());
+    } else {
+      dispatch(hideLoading());
+      dialog.showAlert("Something went wrong. Please try again later.");
+
+    }
+  })
+}
+function deleteStockModelAPI(slug) {
+  return fetch(API + '/api/stockdataset/' + slug + '/', {
+    method: 'put',
+    headers: getHeader(getUserDetailsOrRestart.get().userToken),
+    body: JSON.stringify({deleted: true})
+  }).then(response => Promise.all([response, response.json()]));
+
+}
+
+
+export function handleStockModelRename(slug, dialog, name) {
+  const customBody = (
+		<div className="row">	
+			<div className="col-md-4">
+				<img src={STATIC_URL + "assets/images/alert_thinking.gif"} class="img-responsive" />
+			</div>
+			<div className="col-md-8">
+			<div className="form-group">
+			<label for="idRenameStockModel" className="control-label">Enter a new Name</label>
+			<input className="form-control" id="idRenameStockModel" type="text" defaultValue={name}/>
+			</div>
+			</div>
+		</div>
+    
+  )
+  return (dispatch) => {
+    showRenameDialogBox(slug, dialog, dispatch, RENAMESTOCKMODEL, customBody)
+  }
+}
+function renameStockModel(slug, dialog, newName, dispatch) {
+  dispatch(showLoading());
+  Dialog.resetOptions();
+  return renameStockModelAPI(slug, newName).then(([response, json]) => {
+    if (response.status === 200) {
+      dispatch(getAppsStockList(store.getState().apps.current_page));
+      dispatch(hideLoading());
+    } else {
+      dispatch(hideLoading());
+      dialog.showAlert("Something went wrong. Please try again later.");
+
+    }
+  })
+}
+function renameStockModelAPI(slug, newName) {
+  return fetch(API + '/api/stockdataset/' + slug + '/', {
+    method: 'put',
+    headers: getHeader(getUserDetailsOrRestart.get().userToken),
+    body: JSON.stringify({name: newName})
+  }).then(response => Promise.all([response, response.json()]));
+
 }

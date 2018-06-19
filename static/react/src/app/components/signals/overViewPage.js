@@ -21,6 +21,7 @@ import Slider from "react-slick";
 import {getRoboDataset, getStockAnalysis,getAppsScoreSummary,getScoreSummaryInCSV,uploadStockAnalysisFlag} from "../../actions/appActions";
 import {hideDataPreview} from "../../actions/dataActions";
 import {Button} from "react-bootstrap";
+import {AppsStockDataPreview} from "../apps/AppsStockDataPreview";
 
 //import {SignalAnalysisPage} from "./signals/SignalAnalysisPage";
 //let showSubTree=false;
@@ -35,7 +36,10 @@ export class OverViewPage extends React.Component {
     super(props);
     this.nextRedirect = null;
     this.showSubTree = false;
-    this.l1Name = ""
+    this.l1Name = "";
+    this.state={
+      showStockSenceDataPreview:false
+    }
 
   }
 
@@ -159,7 +163,9 @@ export class OverViewPage extends React.Component {
   //     that.refs.slider.slickGoTo(index-5);
   //   });
   // }
-
+  showStockSenceDataPreview(){
+    this.setState({showStockSenceDataPreview:!this.state.showStockSenceDataPreview})
+  }
   closeDocumentMode() {
     console.log("closing card mode")
     this.props.dispatch(hideDataPreview());
@@ -366,9 +372,9 @@ export class OverViewPage extends React.Component {
       if (that.urlPrefix.indexOf("signals") != -1) {
         documentModeLink = "/signaldocumentMode/" + this.props.match.params.slug;
       } else if (that.urlPrefix.indexOf("stock") != -1) {
-        documentModeLink = "/apps-stock-advisor"
+        documentModeLink = "/apps-stock-document-mode/"+this.props.match.params.slug;
       } else if (regression_app) {
-        documentModeLink = "/apps-regression-score-document/"+this.props.match.params.slug
+        documentModeLink = "/apps-regression-score-document/"+this.props.match.params.slug;
       }
       else {
         documentModeLink = "/apps-robo-document-mode/" + this.props.match.params.slug;
@@ -444,7 +450,10 @@ export class OverViewPage extends React.Component {
       }
       return (
         <div>
-          <div className="side-body">
+          {this.state.showStockSenceDataPreview?
+          <AppsStockDataPreview  history={this.props.history} match={this.props.match} showPreview={true} updatePreviewState={this.showStockSenceDataPreview.bind(this)}/>
+          
+          :<div className="side-body">
             {/* Page Title and Breadcrumbs */}
             <div className="page-head hidden">
               <div class="row">
@@ -483,6 +492,9 @@ export class OverViewPage extends React.Component {
                         <div className="btn-toolbar pull-right">
                           <div className="btn-group">
                             {/*<button type="button" className="btn btn-default" disabled="true" title="Card mode"><i className="fa fa-print"></i></button>*/}
+                            {(this.props.match.url.indexOf('/apps-stock-advisor') >= 0) ?<button type="button" className="btn btn-default" onClick={this.showStockSenceDataPreview.bind(this)} title="Show Data Preview">
+                              <i class="zmdi zmdi-hc-lg zmdi-grid"></i>
+                            </button>:""}
                             <button type="button" className="btn btn-default" disabled="true" title="Card mode">
                               <i class="zmdi zmdi-hc-lg zmdi-view-carousel"></i>
                             </button>
@@ -593,6 +605,7 @@ export class OverViewPage extends React.Component {
             {/* /.Page Content Area */}
 
           </div>
+          }
         </div>
       );
     }

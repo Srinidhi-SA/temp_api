@@ -473,9 +473,9 @@ export class DataPreview extends React.Component {
               <th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)} title={thElement.ignoreSuggestionMsg}>
                 <a href="#" data-toggle="dropdown" className={anchorCls}>
                   <i className={iconCls}></i>
-                  {thElement.name}<b className="caret"></b>
+                  {thElement.name}{this.props.match.url.indexOf('/apps-stock-advisor/')<0?<b className="caret"></b>:""}
                 </a>
-                {dataValidationCom}
+                {this.props.match.url.indexOf('/apps-stock-advisor/')<0?{dataValidationCom}:""}
               </th>
             );
           } else {
