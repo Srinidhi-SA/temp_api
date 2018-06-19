@@ -676,7 +676,8 @@ BRIEF_INFO_CONFIG = {
     'algorithm name': 'Algorithm Name',
     'model': 'Model',
     'file_size': 'File Size',
-    'audioset': 'Audio'
+    'audioset': 'Audio',
+    'name': 'Name'
 }
 
 FIRST_ORDER = [
