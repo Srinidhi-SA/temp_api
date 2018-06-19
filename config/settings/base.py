@@ -678,7 +678,7 @@ BRIEF_INFO_CONFIG = {
     'file_size': 'File Size',
     'audioset': 'Audio',
     'name': 'Name',
-    'stock_symbols': 'STOCK SYMBOLS'
+    'stock_symbols': 'Stocks'
 }
 
 FIRST_ORDER = [
