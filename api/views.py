@@ -870,12 +870,19 @@ class StockDatasetView(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         data = request.data
         data = convert_to_string(data)
-        # instance = self.get_object()
 
         try:
             instance = self.get_object_from_all()
+            if 'deleted' in data:
+                if data['deleted'] == True:
+                    print 'let us delete'
+                    instance.data = '{}'
+                    instance.deleted = True
+                    instance.save()
+                    clean_up_on_delete.delay(instance.slug, Insight.__name__)
+                    return JsonResponse({'message':'Deleted'})
         except:
-            return creation_failed_exception("File Doesn't exist.")
+            return update_failed_exception("File Doesn't exist.")
 
         # question: do we need update method in views/ as well as in serializers?
         # answer: Yes. LoL
