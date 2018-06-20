@@ -673,7 +673,9 @@ class StockDatasetListSerializer(serializers.ModelSerializer):
             "updated_at",
             "input_file",
             "bookmarked",
-            "analysis_done"
+            "analysis_done",
+            "status",
+            "viewed"
         )
 
 
