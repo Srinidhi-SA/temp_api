@@ -662,7 +662,15 @@ class StockDatasetListSerializer(serializers.ModelSerializer):
         except:
             ret['completed_percentage'] = 0
             ret['completed_message']="Analyzing Target Variable"
+
+        permission_details = get_permissions(
+            user=self.context['request'].user,
+            model=self.Meta.model.__name__.lower(),
+        )
+        ret['permission_details'] = permission_details
         return ret
+
+
 
     class Meta:
         model = StockDataset
@@ -675,7 +683,7 @@ class StockDatasetListSerializer(serializers.ModelSerializer):
             "bookmarked",
             "analysis_done",
             "status",
-            "viewed"
+            "viewed",
         )
 
 
