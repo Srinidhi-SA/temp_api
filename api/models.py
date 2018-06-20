@@ -1592,7 +1592,7 @@ class StockDataset(models.Model):
 
     class Meta:
         ordering = ['-created_at', '-updated_at']
-        # permissions = settings.NEW_PERMISSIONS
+        permissions = settings.PERMISSIONS_RELATED_TO_STOCK
 
     def __str__(self):
         return " : ".join(["{}".format(x) for x in [self.name, self.slug]])

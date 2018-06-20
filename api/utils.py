@@ -640,7 +640,7 @@ class StockDatasetSerializer(serializers.ModelSerializer):
             # permission details
             permission_details = get_permissions(
                 user=self.context['request'].user,
-                model=Dataset.__name__.lower(),
+                model=StockDataset.__name__.lower(),
             )
             ret['permission_details'] = permission_details
 
@@ -1042,6 +1042,17 @@ def get_permissions(user, model, type='retrieve'):
         if type == 'list':
             return {
                 'create_regression': user.has_perm('api.create_regression'),
+            }
+    if model == 'stock':
+        if type == 'retrieve':
+            return {
+                'view_stock': user.has_perm('api.view_stock'),
+                'rename_stock': user.has_perm('api.rename_stock'),
+                'remove_stock': user.has_perm('api.remove_stock'),
+            }
+        if type == 'list':
+            return {
+                'create_stock': user.has_perm('api.create_stock') and user.has_perm('api.view_stock'),
             }
     return {}
 

@@ -40,7 +40,8 @@ from api.utils import \
 from models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData, StockDataset, CustomApps
 from api.tasks import clean_up_on_delete
 
-from api.permission import TrainerRelatedPermission, ScoreRelatedPermission, SignalsRelatedPermission
+from api.permission import TrainerRelatedPermission, ScoreRelatedPermission, \
+    SignalsRelatedPermission, StocksRelatedPermission
 
 import sys
 reload(sys)
@@ -828,6 +829,7 @@ class StockDatasetView(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('deleted', 'name')
     pagination_class = CustomPagination
+    permission_classes = (StocksRelatedPermission, )
 
     def create(self, request, *args, **kwargs):
 
