@@ -1608,9 +1608,11 @@ class StockDataset(models.Model):
 
     def create(self):
         # self.meta_data = json.dumps(dummy_audio_data_3)
-        self.meta_data = self.generate_meta_data()
-        self.fake_call_mlscripts()
-        self.save()
+        from api.tasks import stock_sense_crawl
+        stock_sense_crawl(object_slug=self.slug)
+        # self.meta_data = self.generate_meta_data()
+        # self.fake_call_mlscripts()
+        # self.save()
 
     def crawl_data(self):
 
