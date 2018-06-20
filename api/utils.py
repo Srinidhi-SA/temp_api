@@ -1043,7 +1043,7 @@ def get_permissions(user, model, type='retrieve'):
             return {
                 'create_regression': user.has_perm('api.create_regression'),
             }
-    if model == 'stock':
+    if model == 'stockdataset':
         if type == 'retrieve':
             return {
                 'view_stock': user.has_perm('api.view_stock'),
