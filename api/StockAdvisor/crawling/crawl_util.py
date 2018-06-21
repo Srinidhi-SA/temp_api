@@ -10,27 +10,27 @@ import string
 import api.StockAdvisor.utils as myutils
 
 def crawl_extract(urls,regex_dict={},remove_tags=[], slug=None):
-	all_data=[]
-	crawl_obj=generic_crawler.GenericCrawler()
-	fobj=open("/tmp/stock_info_{0}.json".format(slug),"w")
-	for url in urls:
-		content=crawl_obj.get_data(url)
-		json_list=[]
-		if 'finance.google.com/finance?' in url:
-			json_list=process.process_json_data(url,content,regex_dict=regex_dict)
-		else:
-			json_list=process.process_data(url,content,regex_dict=regex_dict,remove_tags=remove_tags)
+    all_data=[]
+    crawl_obj=generic_crawler.GenericCrawler()
+    fobj=open("/tmp/stock_info_{0}.json".format(slug),"w")
+    for url in urls:
+        content=crawl_obj.get_data(url)
+        json_list=[]
+        if 'finance.google.com/finance?' in url:
+            json_list=process.process_json_data(url,content,regex_dict=regex_dict)
+        else:
+            json_list=process.process_data(url,content,regex_dict=regex_dict,remove_tags=remove_tags)
 
-		for json_obj in json_list:
-			if not json_obj.get("url"):
-				continue
-			if "date" in json_obj:
-				json_obj["date"] = myutils.normalize_date_time(json_obj.get("date","1 min ago")).strftime("%Y%m%d")
-			fobj.write(json.dumps(json_obj)+"\n")
-			all_data.append(json_obj)
+        for json_obj in json_list:
+            if not json_obj.get("url"):
+                continue
+            if "date" in json_obj:
+                json_obj["date"] = myutils.normalize_date_time(json_obj.get("date","1 min ago")).strftime("%Y%m%d")
+            fobj.write(json.dumps(json_obj)+"\n")
+            all_data.append(json_obj)
 
     fobj.close()
-	all_data_json = open('/tmp/all_data_json_{0}.json'.format(slug), 'w')
+    all_data_json = open('/tmp/all_data_json_{0}.json'.format(slug), 'w')
     all_data_json.write(all_data)
     return all_data
 
