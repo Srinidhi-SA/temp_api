@@ -1625,10 +1625,7 @@ class StockDataset(models.Model):
             regex_dict=get_regex(GOOGLE_REGEX_FILE),
             slug=self.slug
         )
-        all_data_json = open('/tmp/all_data_json_{0}.json'.format(self.slug), 'r')
-        all_data_json_data = all_data_json.read()
-        print "crawl_extract"*3
-        extracted_data = json.loads(all_data_json_data)
+
         if len(extracted_data) < 1:
             return {}
         meta_data = convert_crawled_data_to_metadata_format(
@@ -1639,18 +1636,14 @@ class StockDataset(models.Model):
             slug=self.slug
         )
 
-        metafile = open('/tmp/metafile_{0}'.format(slug), 'w')
-        meta_data = metafile.read()
-        meta_data = json.loads(meta_data)
-        meta_data['extracted_data'] = extracted_data
+
         self.write_to_concepts_folder(
             stockDataType="news",
             stockName="",
             data=extracted_data,
             type='json'
         )
-        metafile = open('/tmp/metafile_{0}'.format(slug), 'w')
-        metafile.write(meta_data)
+
 
         return json.dumps(meta_data)
 
@@ -1662,6 +1655,10 @@ class StockDataset(models.Model):
             urls=generate_urls_for_historic_data(stock_symbols),
             regex_dict=get_regex(GOOGLE_REGEX_FILE)
         )
+        all_data_json = open('/tmp/all_data_json_{0}.json'.format(self.slug), 'r')
+        all_data_json_data = all_data_json.read()
+        extracted_data = json.loads(all_data_json_data)
+        print "crawl_extract"*3
         if len(extracted_data) < 1:
             return {}
         meta_data = convert_crawled_data_to_metadata_format(
@@ -1670,14 +1667,18 @@ class StockDataset(models.Model):
                 'type': 'historical_data'
             }
         )
+        metafile = open('/tmp/metafile_{0}'.format(self.slug), 'w')
+        meta_data = metafile.read()
+        meta_data = json.loads(meta_data)
         meta_data['extracted_data'] = extracted_data
-
         self.write_to_concepts_folder(
             stockDataType="historic",
             stockName="all",
             data=extracted_data,
             type='json'
         )
+        metafile = open('/tmp/metafile_{0}'.format(self.slug), 'w')
+        metafile.write(meta_data)
         return meta_data
 
     def get_bluemix_natural_language_understanding(self, name=None):

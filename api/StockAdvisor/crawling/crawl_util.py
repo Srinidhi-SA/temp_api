@@ -31,7 +31,7 @@ def crawl_extract(urls,regex_dict={},remove_tags=[], slug=None):
 
     fobj.close()
     all_data_json = open('/tmp/all_data_json_{0}.json'.format(slug), 'w')
-    all_data_json.write(all_data)
+    json.dump(all_data, all_data_json)
     return all_data
 
 def generate_urls_for_historic_data(list_of_company_name):
@@ -83,7 +83,7 @@ def convert_crawled_data_to_metadata_format(news_data, other_details=None, slug=
     }
 
     metafile = open('/tmp/metafile_{0}'.format(slug),'w')
-    metafile.write(metadata_json)
+    json.dump(metadata_json, metafile)
 
 def transform_into_uiandscripts_metadata():
     return {
