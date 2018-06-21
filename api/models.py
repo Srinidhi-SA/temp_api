@@ -1622,16 +1622,25 @@ class StockDataset(models.Model):
         GOOGLE_REGEX_FILE = "google_regex.json"
         extracted_data = crawl_extract(
             urls=generate_urls_for_crawl_news(stock_symbols),
-            regex_dict=get_regex(GOOGLE_REGEX_FILE)
+            regex_dict=get_regex(GOOGLE_REGEX_FILE),
+            slug=self.slug
         )
+        all_data_json = open('/tmp/all_data_json_{0}.json'.format(self.slug), 'r')
+        all_data_json_data = all_data_json.read()
+        extracted_data = json.loads(all_data_json_data)
         if len(extracted_data) < 1:
             return {}
         meta_data = convert_crawled_data_to_metadata_format(
             news_data=extracted_data,
             other_details={
                 'type': 'news_data'
-            }
+            },
+            slug=self.slug
         )
+
+        metafile = open('/tmp/metafile_{0}'.format(slug), 'w')
+        meta_data = metafile.read()
+        meta_data = json.loads(meta_data)
         meta_data['extracted_data'] = extracted_data
         self.write_to_concepts_folder(
             stockDataType="news",
@@ -1639,8 +1648,11 @@ class StockDataset(models.Model):
             data=extracted_data,
             type='json'
         )
+        metafile = open('/tmp/metafile_{0}'.format(slug), 'w')
+        metafile.write(meta_data)
 
         return json.dumps(meta_data)
+
 
     def crawl_for_historic_data(self):
         stock_symbols = self.get_stock_symbol_names()

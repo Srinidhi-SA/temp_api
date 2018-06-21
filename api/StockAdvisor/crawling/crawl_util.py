@@ -9,10 +9,10 @@ import random
 import string
 import api.StockAdvisor.utils as myutils
 
-def crawl_extract(urls,regex_dict={},remove_tags=[]):
+def crawl_extract(urls,regex_dict={},remove_tags=[], slug=None):
 	all_data=[]
 	crawl_obj=generic_crawler.GenericCrawler()
-	fobj=open("/tmp/stock_info.json","w")
+	fobj=open("/tmp/stock_info_{0}.json".format(slug),"w")
 	for url in urls:
 		content=crawl_obj.get_data(url)
 		json_list=[]
@@ -28,8 +28,11 @@ def crawl_extract(urls,regex_dict={},remove_tags=[]):
 				json_obj["date"] = myutils.normalize_date_time(json_obj.get("date","1 min ago")).strftime("%Y%m%d")
 			fobj.write(json.dumps(json_obj)+"\n")
 			all_data.append(json_obj)
-	fobj.close()
-	return all_data
+
+    fobj.close()
+	all_data_json = open('/tmp/all_data_json_{0}.json'.format(slug), 'w')
+    all_data_json.write(all_data)
+    return all_data
 
 def generate_urls_for_historic_data(list_of_company_name):
 	return ["http://www.nasdaq.com/symbol/{0}/historical".format(name) for name in list_of_company_name]
@@ -40,7 +43,7 @@ def generate_urls_for_crawl_news(stock_symbols):
 
 
 # columnData, headers, sampledata, metadata
-def convert_crawled_data_to_metadata_format(news_data, other_details=None):
+def convert_crawled_data_to_metadata_format(news_data, other_details=None, slug=None):
     if other_details is None:
         type = 'news_data'
     else:
@@ -60,7 +63,7 @@ def convert_crawled_data_to_metadata_format(news_data, other_details=None):
     #     "transformation_settings": transformation_settings
     # }
 
-    return {
+    metadata_json = {
         'scriptMetaData': {
             'columnData': columnData,
             'headers': headers,
@@ -78,6 +81,9 @@ def convert_crawled_data_to_metadata_format(news_data, other_details=None):
             'varibaleSelectionArray': []
         }
     }
+
+    metafile = open('/tmp/metafile_{0}'.format(slug),'w')
+    metafile.write(metadata_json)
 
 def transform_into_uiandscripts_metadata():
     return {
