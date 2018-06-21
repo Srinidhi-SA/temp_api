@@ -49,11 +49,16 @@ def convert_crawled_data_to_metadata_format(news_data, other_details=None, slug=
     else:
         type= other_details['type']
 
-    headers = find_headers(news_data=news_data, type=type)
-    columnData = get_column_data_for_metadata(headers)
-    sampleData = get_sample_data(news_data=news_data, type=type)
-    metaData = get_metaData(news_data=news_data)
-    transformation_settings = get_transformation_settings()
+    headers = find_headers(news_data=news_data, type=type, slug=slug)
+    headers = read_from_a_file(slug=slug)
+    columnData = get_column_data_for_metadata(headers, slug=slug)
+    columnData = read_from_a_file(slug=slug)
+    sampleData = get_sample_data(news_data=news_data, type=type, slug=slug)
+    sampleData = read_from_a_file(slug=slug)
+    metaData = get_metaData(news_data=news_data, slug=slug)
+    metaData = read_from_a_file(slug=slug)
+    transformation_settings = get_transformation_settings(slug=slug)
+    transformation_settings = read_from_a_file(slug=slug)
     #
     # return {
     #     "headers": headers,
@@ -106,12 +111,15 @@ def transform_into_uiandscripts_metadata():
     }
 
 
-def get_transformation_settings():
-    return {
+def get_transformation_settings(slug=None):
+    existingColumn = {
             "existingColumns": []
         }
+    write_to_a_file(slug=slug, data=existingColumn)
+    return existingColumn
 
-def find_headers(news_data, type='historical_data'):
+
+def find_headers(news_data, type='historical_data', slug=None):
     headers_name = news_data[0].keys()
     required_fields = get_required_fields(type)
 
@@ -122,9 +130,10 @@ def find_headers(news_data, type='historical_data'):
         temp['name'] = header
         temp['slug'] = generate_slug(header)
         headers.append(temp)
+    write_to_a_file(slug=slug, data=headers)
     return headers
 
-def get_column_data_for_metadata(headers):
+def get_column_data_for_metadata(headers, slug=None):
     import copy
     sample_column_data = {
                 "ignoreSuggestionFlag": False,
@@ -144,14 +153,17 @@ def get_column_data_for_metadata(headers):
         temp['name'] = header['name']
         temp['slug'] = header['slug']
         columnData.append(temp)
-
+    write_to_a_file(slug=slug, data=columnData)
     return columnData
 
-def get_sample_data(news_data, type='historical_data'):
+def get_sample_data(news_data, type='historical_data', slug=None):
     required_fields = get_required_fields(type)
-    return [ [row[key] for key in required_fields] for row in news_data ]
+    sampleData = [ [row[key] for key in required_fields] for row in news_data ]
 
-def get_metaData(news_data):
+    write_to_a_file(slug=slug, data=sampleData)
+    return sampleData
+
+def get_metaData(news_data, slug=None):
     # return  [{
     #             "displayName": "Number of records",
     #             "name": "noOfRows",
@@ -166,12 +178,13 @@ def get_metaData(news_data):
     #     },
     #
     #          ]
-
-    return [
+    metaData = [
         {"displayName": "News source", "name": "newsSource", "value": "Google Finance", "display": True},
         {"displayName": "Stock Prices", "name": "stockPrices", "value": "NASDAQ", "display": True},
         {"displayName": "Number of Articles", "name": "numberOfArticles", "value": 1249 , "display": True},
     ]
+    write_to_a_file(slug=slug, data=metaData)
+    return metaData
 
 def get_required_fields(type='historical_data'):
     matching = {
@@ -185,3 +198,15 @@ def generate_slug(name=None):
 
     return slugify(str(name) + "-" + ''.join(
         random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
+
+
+def write_to_a_file(slug=None, data=None):
+
+    with open('/tmp/temp_{0}'.format(slug), 'w') as temp:
+        json.dump(temp, data)
+
+
+def read_from_a_file(slug=None):
+
+    temp = open('/tmp/temp_{0}'.format(slug), 'r')
+    return json.loads(temp.read())
