@@ -203,7 +203,7 @@ def generate_slug(name=None):
 def write_to_a_file(slug=None, data=None):
 
     with open('/tmp/temp_{0}'.format(slug), 'w') as temp:
-        json.dump(temp, data)
+        json.dump(data, temp)
 
 
 def read_from_a_file(slug=None):

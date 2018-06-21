@@ -3966,6 +3966,7 @@ def smaller_name_and_slug_in_individual(name):
         "cardType": "normal",
         "name": "node2-caasdasd",
         "slug": "node2-card2asda",
+        "display": False,
         "cardData": [
             change_html_data(
                 '<br/><br/><div style="text-align:center"><h2>{}</h2></div><br/><br/>'.format(text_overview)),
