@@ -1669,7 +1669,7 @@ class StockDataset(models.Model):
             },
             slug=self.slug
         )
-        metafile = open('/tmp/metafile_{0}'.format(self.slug), 'w')
+        metafile = open('/tmp/metafile_{0}'.format(self.slug), 'r')
         meta_data = metafile.read()
         meta_data = json.loads(meta_data)
         meta_data['extracted_data'] = extracted_data
