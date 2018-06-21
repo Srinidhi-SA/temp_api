@@ -1653,7 +1653,8 @@ class StockDataset(models.Model):
         GOOGLE_REGEX_FILE = "nasdaq_stock.json"
         extracted_data = crawl_extract(
             urls=generate_urls_for_historic_data(stock_symbols),
-            regex_dict=get_regex(GOOGLE_REGEX_FILE)
+            regex_dict=get_regex(GOOGLE_REGEX_FILE),
+            slug=self.slug
         )
         all_data_json = open('/tmp/all_data_json_{0}.json'.format(self.slug), 'r')
         all_data_json_data = all_data_json.read()
@@ -1665,7 +1666,8 @@ class StockDataset(models.Model):
             news_data=extracted_data,
             other_details={
                 'type': 'historical_data'
-            }
+            },
+            slug=self.slug
         )
         metafile = open('/tmp/metafile_{0}'.format(self.slug), 'w')
         meta_data = metafile.read()
