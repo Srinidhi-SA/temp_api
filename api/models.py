@@ -1625,6 +1625,10 @@ class StockDataset(models.Model):
             regex_dict=get_regex(GOOGLE_REGEX_FILE),
             slug=self.slug
         )
+        all_data_json = open('/tmp/all_data_json_{0}.json'.format(self.slug), 'r')
+        all_data_json_data = all_data_json.read()
+        extracted_data = json.loads(all_data_json_data)
+        print "crawl_extract"*3
 
         if len(extracted_data) < 1:
             return {}
@@ -1635,7 +1639,10 @@ class StockDataset(models.Model):
             },
             slug=self.slug
         )
-
+        metafile = open('/tmp/metafile_{0}'.format(self.slug), 'r')
+        meta_data = metafile.read()
+        meta_data = json.loads(meta_data)
+        meta_data['extracted_data'] = extracted_data
 
         self.write_to_concepts_folder(
             stockDataType="news",
@@ -1644,6 +1651,8 @@ class StockDataset(models.Model):
             type='json'
         )
 
+        with open('/tmp/metafile_{0}'.format(self.slug), 'w') as metafile:
+            json.dump(meta_data, metafile)
 
         return json.dumps(meta_data)
 
@@ -1679,8 +1688,8 @@ class StockDataset(models.Model):
             data=extracted_data,
             type='json'
         )
-        metafile = open('/tmp/metafile_{0}'.format(self.slug), 'w')
-        metafile.write(meta_data)
+        with open('/tmp/metafile_{0}'.format(self.slug), 'w') as metafile:
+            json.dump(meta_data, metafile)
         return meta_data
 
     def get_bluemix_natural_language_understanding(self, name=None):
