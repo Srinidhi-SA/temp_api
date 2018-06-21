@@ -421,7 +421,7 @@ def stock_sense_crawl(object_slug):
     print "got_object"*10
     stock_dataset_object.generate_meta_data()
     print "stock_sense_crawl"*2
-    metafile = open('/tmp/metafile_{0}'.format(stock_dataset_object.slug), 'w')
+    metafile = open('/tmp/metafile_{0}'.format(stock_dataset_object.slug), 'r')
     stock_dataset_object.meta_data = metafile.write(json.loads(metafile.read()))
     stock_dataset_object.fake_call_mlscripts()
     stock_dataset_object.save()
