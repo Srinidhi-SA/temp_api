@@ -1627,6 +1627,7 @@ class StockDataset(models.Model):
         )
         all_data_json = open('/tmp/all_data_json_{0}.json'.format(self.slug), 'r')
         all_data_json_data = all_data_json.read()
+        print "crawl_extract"*3
         extracted_data = json.loads(all_data_json_data)
         if len(extracted_data) < 1:
             return {}
@@ -1694,6 +1695,7 @@ class StockDataset(models.Model):
         self.create_folder_in_scripts_data()
         self.crawl_for_historic_data()
         self.get_bluemix_natural_language_understanding()
+        print "generate_meta_data"*3
         return self.crawl_data()
 
     def create_folder_in_scripts_data(self):
