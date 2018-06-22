@@ -1640,7 +1640,7 @@ class StockDataset(models.Model):
             data=extracted_data,
             type='json'
         )
-
+        print meta_data
         return json.dumps(meta_data)
 
     def crawl_for_historic_data(self):
@@ -1666,7 +1666,7 @@ class StockDataset(models.Model):
             data=extracted_data,
             type='json'
         )
-        return meta_data
+        return json.dumps(meta_data)
 
     def get_bluemix_natural_language_understanding(self, name=None):
         from StockAdvisor.bluemix.process_urls import ProcessUrls
@@ -1681,9 +1681,10 @@ class StockDataset(models.Model):
 
     def generate_meta_data(self):
         self.create_folder_in_scripts_data()
-        self.crawl_for_historic_data()
+        data = self.crawl_for_historic_data()
         self.get_bluemix_natural_language_understanding()
-        return self.crawl_data()
+        # return self.crawl_data()
+        return data
 
     def create_folder_in_scripts_data(self):
         path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug
