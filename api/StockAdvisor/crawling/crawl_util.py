@@ -169,7 +169,7 @@ def get_metaData(news_data):
 
 def get_required_fields(type='historical_data'):
     matching = {
-        'historical_data': [],
+        'historical_data': ['url',  'source', 'date', 'title','desc'],
         'news_data': ['url',  'source', 'date', 'title','desc'],
     }
 
