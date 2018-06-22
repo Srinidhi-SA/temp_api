@@ -418,6 +418,5 @@ def stock_sense_crawl(object_slug):
     stock_dataset_object = get_db_object(model_name=StockDataset.__name__,
                                    model_slug=object_slug
                                    )
-    stock_dataset_object.meta_data = stock_dataset_object.generate_meta_data()
     stock_dataset_object.fake_call_mlscripts()
     stock_dataset_object.save()

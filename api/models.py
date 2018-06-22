@@ -1610,6 +1610,7 @@ class StockDataset(models.Model):
         # self.meta_data = json.dumps(dummy_audio_data_3)
         from api.tasks import stock_sense_crawl
         self.status = "INPROGRESS"
+        self.meta_data = self.generate_meta_data()
         self.save()
         stock_sense_crawl.delay(object_slug=self.slug)
         # self.meta_data = self.generate_meta_data()
