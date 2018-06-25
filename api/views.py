@@ -877,16 +877,34 @@ class AudiosetView(viewsets.ModelViewSet):
 
         return update_failed_exception(serializer.errors)
 
+'''
+create app_view for a new user
+http://<ip>:<port>/api/all_apps_for_users/?username=marlabs
 
+create app_view for all users or reset for all users
+http://<ip>:<port>/api/all_apps_for_users/
+
+Note: It looks into CustomApps table for apps.
+'''
 class AppView(viewsets.ModelViewSet):
     def get_queryset(self):
-        queryset = CustomApps.objects.filter(
-            #created_by=self.request.user,
-            status="Active"
-            #status__in=['SUCCESS', 'INPROGRESS']
+        from api.models import CustomAppsUserMapping
+        user_app_list = CustomAppsUserMapping.objects.filter(
+            user=self.request.user,
+            active=True
         ).order_by('rank')
-        app_ordered_list = copy.deepcopy(settings.APPORDERLIST)
-        queryset = queryset.filter(name__in=app_ordered_list)
+
+        custom_apps = [custom_app.app for custom_app in user_app_list]
+        print custom_apps
+        queryset = custom_apps
+
+        # queryset = CustomApps.objects.filter(
+        #     #created_by=self.request.user,
+        #     status="Active"
+        #     #status__in=['SUCCESS', 'INPROGRESS']
+        # ).order_by('rank')
+        # app_ordered_list = copy.deepcopy(settings.APPORDERLIST)
+        # queryset = queryset.filter(name__in=app_ordered_list)
         return queryset
 
     def get_serializer_class(self):
@@ -5393,3 +5411,41 @@ def updateFromNifi(request):
 #         "user":request.user.id
 #     })
 
+@csrf_exempt
+def all_apps_for_users(request):
+    from django.contrib.auth.models import User
+
+    if 'username' in request.GET:
+        username = request.GET['username']
+    else:
+        username = None
+
+    if username is not None:
+        try:
+            user = User.objects.filter(username=username).first()
+        except:
+            return JsonResponse({"message": "User doesn't exist."})
+        all_apps = CustomApps.objects.all()
+        from api.models import CustomAppsUserMapping
+        CustomAppsUserMapping.objects.filter(user=user).delete()
+        for app in all_apps:
+            caum = CustomAppsUserMapping()
+            caum.user = user
+            caum.app = app
+            caum.rank = app.rank
+            caum.save()
+        return JsonResponse({'message': 'done'})
+
+    all_users = User.objects.all()
+    all_apps = CustomApps.objects.all()
+    from api.models import CustomAppsUserMapping
+    CustomAppsUserMapping.objects.all().delete()
+    for user in all_users:
+        for app in all_apps:
+            caum = CustomAppsUserMapping()
+            caum.user = user
+            caum.app = app
+            caum.rank = app.rank
+            caum.save()
+
+    return JsonResponse({'message': 'done'})
