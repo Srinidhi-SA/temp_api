@@ -1434,6 +1434,14 @@ class CustomApps(models.Model):
         self.save()
 
 
+class CustomAppsUserMapping(models.Model):
+    user = models.ForeignKey(User)
+    app = models.ForeignKey(CustomApps)
+    active = models.BooleanField(default=True)
+    rank = models.IntegerField(null=True)
+
+    class Meta:
+        unique_together = (('user', 'app'),)
 
 
 auditlog.register(Dataset)
