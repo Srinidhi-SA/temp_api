@@ -749,10 +749,11 @@ class StockDatasetView(viewsets.ModelViewSet):
         if serializer.is_valid():
             stock_instance = serializer.save()
             # stock_instance.stats(file=new_data['input_file'])
-            if fake is None:
-                stock_instance.fake_call_mlscripts()
-            else:
-                stock_instance.call_mlscripts()
+            # if fake is None:
+            #     stock_instance.fake_call_mlscripts()
+            # else:
+            #     stock_instance.call_mlscripts()
+            stock_instance.call_mlscripts()
             return Response(serializer.data)
 
         serializer = StockDatasetSerializer(instance=instance, context={"request": self.request})

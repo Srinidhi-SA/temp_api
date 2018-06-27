@@ -1653,7 +1653,8 @@ class StockDataset(models.Model):
         return json.dumps(meta_data)
 
     def read_stock_json_file(self):
-        with open('/home/ubuntu/stock_info.json') as stock_file:
+
+        with open('data/googl.json') as stock_file:
             all_data = []
             for l in stock_file:
                 all_data.append(json.loads(l))
@@ -1666,6 +1667,7 @@ class StockDataset(models.Model):
             urls=generate_urls_for_historic_data(stock_symbols),
             regex_dict=get_regex(GOOGLE_REGEX_FILE)
         )
+
         if len(extracted_data) < 1:
             return {}
         meta_data = convert_crawled_data_to_metadata_format(
@@ -1697,6 +1699,7 @@ class StockDataset(models.Model):
 
     def generate_meta_data(self):
         self.create_folder_in_scripts_data()
+        self.paste_essential_files_in_scripts_folder()
         data = self.crawl_for_historic_data()
         self.get_bluemix_natural_language_understanding()
         return self.crawl_data()
@@ -1706,6 +1709,57 @@ class StockDataset(models.Model):
         path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug
         if not os.path.exists(path):
             os.makedirs(path)
+
+    def paste_essential_files_in_scripts_folder(self):
+
+        import shutil
+        file_names = [
+            'concepts.json',
+            'appl.json',
+            'app_historic',
+            'googl.json',
+            'googl_historic.json',
+            'ibm.json',
+            'ibm_historic.json',
+            'msft.json',
+            'msft_historic.json'
+        ]
+        path = path = os.path.dirname(os.path.dirname(__file__)) + "/scripts"
+        path_slug = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug + "/"
+
+        for name in file_names:
+            path1 = path + name
+            path2 = path_slug + name
+            shutil.copyfile(path1, path2)
+
+
+    def put_files_into_remote(self):
+        import shutil
+        file_names = [
+            'concepts.json',
+            'appl.json',
+            'app_historic',
+            'googl.json',
+            'googl_historic.json',
+            'ibm.json',
+            'ibm_historic.json',
+            'msft.json',
+            'msft_historic.json'
+        ]
+        path = path = os.path.dirname(os.path.dirname(__file__)) + "/scripts"
+        path_slug = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug + "/"
+
+
+        from api.lib.fab_helper import mkdir_remote, put_file
+        remote_path = 'home/hadoop/stock'
+
+        for name in file_names:
+            dest_path = remote_path + "/" + name
+            src_path = path_slug + name
+            put_file(src_path, dest_path)
+
+    def create_folder_in_remote(self):
+        pass
 
     def stats(self, file):
         self.input_file = file
