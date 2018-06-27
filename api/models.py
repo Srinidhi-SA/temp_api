@@ -1620,7 +1620,8 @@ class StockDataset(models.Model):
         self.status = "INPROGRESS"
         self.meta_data = self.generate_meta_data()
         self.save()
-        stock_sense_crawl.delay(object_slug=self.slug)
+        self.call_mlscripts()
+        # stock_sense_crawl.delay(object_slug=self.slug)
         # self.meta_data = self.generate_meta_data()
         # self.fake_call_mlscripts()
         # self.save()
