@@ -1754,13 +1754,13 @@ class StockDataset(models.Model):
         path_slug = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug + "/"
 
 
-        from api.lib.fab_helper import mkdir_remote, put_file
+        from api.lib.fab_helper import mkdir_remote, put_file, remote_uname
         remote_path = 'home/hadoop/stock'
-
-        for name in file_names:
-            dest_path = remote_path + "/" + name
-            src_path = path_slug + name
-            put_file(src_path, dest_path)
+        remote_uname()
+        # for name in file_names:
+        #     dest_path = remote_path + "/" + name
+        #     src_path = path_slug + name
+        #     put_file(src_path, dest_path)
 
     def create_folder_in_remote(self):
         pass
