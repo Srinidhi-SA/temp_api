@@ -5178,7 +5178,7 @@ def return_json_data(stockDataType, stockName, slug):
     matching = {
         # "bluemix": stockDataType + "_" + stockName + ".json",
         "bluemix": stockName + ".json",
-        "historical":  stockName + "_" + stockDataType + ".json",
+        "historical":  stockName + "_" + "historic" + ".json",
         "concepts": "concepts.json"
     }
 
