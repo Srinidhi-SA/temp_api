@@ -1724,7 +1724,7 @@ class StockDataset(models.Model):
             'msft.json',
             'msft_historic.json'
         ]
-        path = path = os.path.dirname(os.path.dirname(__file__)) + "/scripts"
+        path = path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data"
         path_slug = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug + "/"
 
         for name in file_names:
