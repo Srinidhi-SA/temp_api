@@ -1633,7 +1633,6 @@ class StockDataset(models.Model):
             urls=generate_urls_for_crawl_news(stock_symbols),
             regex_dict=get_regex(GOOGLE_REGEX_FILE)
         )
-        print extracted_data
         if len(extracted_data) < 1:
             return {}
         meta_data = convert_crawled_data_to_metadata_format(
@@ -1649,7 +1648,7 @@ class StockDataset(models.Model):
             data=extracted_data,
             type='json'
         )
-        print meta_data
+
         return json.dumps(meta_data)
 
     def crawl_for_historic_data(self):
@@ -1675,7 +1674,7 @@ class StockDataset(models.Model):
             data=extracted_data,
             type='json'
         )
-        return json.dumps(meta_data)
+        return meta_data
 
     def get_bluemix_natural_language_understanding(self, name=None):
         from StockAdvisor.bluemix.process_urls import ProcessUrls
