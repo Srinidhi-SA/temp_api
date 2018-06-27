@@ -1633,6 +1633,7 @@ class StockDataset(models.Model):
             urls=generate_urls_for_crawl_news(stock_symbols),
             regex_dict=get_regex(GOOGLE_REGEX_FILE)
         )
+        print extracted_data
         if len(extracted_data) < 1:
             return {}
         meta_data = convert_crawled_data_to_metadata_format(
@@ -1691,8 +1692,8 @@ class StockDataset(models.Model):
         self.create_folder_in_scripts_data()
         data = self.crawl_for_historic_data()
         self.get_bluemix_natural_language_understanding()
-        # return self.crawl_data()
-        return data
+        return self.crawl_data()
+        # return data
 
     def create_folder_in_scripts_data(self):
         path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug
