@@ -1657,7 +1657,7 @@ class StockDataset(models.Model):
             all_data = []
             for l in stock_file:
                 all_data.append(json.loads(l))
-            return return all_data
+            return all_data
 
     def crawl_for_historic_data(self):
         stock_symbols = self.get_stock_symbol_names()
