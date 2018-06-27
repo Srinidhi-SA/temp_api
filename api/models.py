@@ -1654,7 +1654,10 @@ class StockDataset(models.Model):
 
     def read_stock_json_file(self):
         with open('/home/ubuntu/stock_info.json') as stock_file:
-            return json.loads(stock_file.read())
+            all_data = []
+            for l in stock_file:
+                all_data.append(json.loads(l))
+            return return all_data
 
     def crawl_for_historic_data(self):
         stock_symbols = self.get_stock_symbol_names()
