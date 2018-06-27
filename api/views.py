@@ -5185,7 +5185,7 @@ def return_json_data(stockDataType, stockName, slug):
     if stockDataType in ["bluemix", "historical"]:
         path = base_path + matching[stockDataType]
     else:
-        path = base_path + "/scripts/data/" + matching[stockDataType]
+        path = base_path + matching[stockDataType]
     temp_path = base_path + matching[stockDataType]
 
     from django.http import HttpResponse
