@@ -1728,7 +1728,7 @@ class StockDataset(models.Model):
         path_slug = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug + "/"
 
         for name in file_names:
-            path1 = path + name
+            path1 = path + "/"+ name
             path2 = path_slug + name
             shutil.copyfile(path1, path2)
 
