@@ -1472,6 +1472,8 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
             data_size = instance.get_number_of_row_size()
         elif job_type in ['master', 'model', 'score']:
             data_size = instance.dataset.get_number_of_row_size()
+        else:
+            data_size = 3000
 
         queue_name = get_queue_to_use(job_type=job_type, data_size=data_size)
     except Exception as e:
