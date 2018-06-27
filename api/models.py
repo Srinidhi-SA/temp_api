@@ -1715,8 +1715,8 @@ class StockDataset(models.Model):
         import shutil
         file_names = [
             'concepts.json',
-            'appl.json',
-            'app_historic',
+            'aapl.json',
+            'aap_historic.json',
             'googl.json',
             'googl_historic.json',
             'ibm.json',
