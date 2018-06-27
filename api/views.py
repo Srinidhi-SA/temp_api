@@ -5176,9 +5176,10 @@ def return_json_data(stockDataType, stockName, slug):
     base_path = os.path.dirname(os.path.dirname(__file__))
     base_path = base_path + "/scripts/data/{0}/".format(slug)
     matching = {
-        "bluemix": stockDataType + "_" + stockName + ".json",
-        "historical": stockDataType + "_" + stockName + ".json",
-        "concepts": "old_concepts.json"
+        # "bluemix": stockDataType + "_" + stockName + ".json",
+        "bluemix": stockName + ".json",
+        "historical":  stockName + "_" + stockDataType + ".json",
+        "concepts": "concepts.json"
     }
 
     if stockDataType in ["bluemix", "historical"]:
