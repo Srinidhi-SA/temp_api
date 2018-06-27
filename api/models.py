@@ -1654,7 +1654,7 @@ class StockDataset(models.Model):
 
     def read_stock_json_file(self):
 
-        with open('scripts/data/googl.json') as stock_file:
+        with open('/home/ubuntu/stock_info.json') as stock_file:
             all_data = []
             for l in stock_file:
                 all_data.append(json.loads(l))
