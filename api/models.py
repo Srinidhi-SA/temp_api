@@ -1735,6 +1735,7 @@ class StockDataset(models.Model):
             path2 = path_slug + name
             shutil.copyfile(path1, path2)
 
+        self.put_files_into_remote()
 
     def put_files_into_remote(self):
         import shutil
@@ -1749,7 +1750,7 @@ class StockDataset(models.Model):
             'msft.json',
             'msft_historic.json'
         ]
-        path = path = os.path.dirname(os.path.dirname(__file__)) + "/scripts"
+
         path_slug = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug + "/"
 
 
