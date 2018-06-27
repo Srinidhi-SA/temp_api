@@ -1716,7 +1716,7 @@ class StockDataset(models.Model):
         file_names = [
             'concepts.json',
             'aapl.json',
-            'aap_historic.json',
+            'aapl_historic.json',
             'googl.json',
             'googl_historic.json',
             'ibm.json',
