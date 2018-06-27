@@ -1629,10 +1629,11 @@ class StockDataset(models.Model):
 
         stock_symbols = self.get_stock_symbol_names()
         GOOGLE_REGEX_FILE = "google_regex.json"
-        extracted_data = crawl_extract(
-            urls=generate_urls_for_crawl_news(stock_symbols),
-            regex_dict=get_regex(GOOGLE_REGEX_FILE)
-        )
+        # extracted_data = crawl_extract(
+        #     urls=generate_urls_for_crawl_news(stock_symbols),
+        #     regex_dict=get_regex(GOOGLE_REGEX_FILE)
+        # )
+        extracted_data = self.read_stock_json_file()
         if len(extracted_data) < 1:
             return {}
         meta_data = convert_crawled_data_to_metadata_format(
@@ -1650,6 +1651,10 @@ class StockDataset(models.Model):
         )
 
         return json.dumps(meta_data)
+
+    def read_stock_json_file(self):
+        with open('/home/ubuntu/stock_info.json') as stock_file:
+            return json.loads(stock_file.read())
 
     def crawl_for_historic_data(self):
         stock_symbols = self.get_stock_symbol_names()
