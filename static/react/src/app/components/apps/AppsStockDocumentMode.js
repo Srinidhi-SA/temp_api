@@ -122,6 +122,9 @@ export class AppsStockDocumentMode extends React.Component {
                         <h2 class="pull-left">{this.props.signal.name}</h2>
                         <div className="btn-toolbar pull-right">
                           <div className="btn-group btn-space">
+                            <button className="btn btn-default" type="button" onClick={this.print.bind(this)} title="Print Document">
+                            <i class="fa fa-print" aria-hidden="true"></i>
+                          </button>
                             <Link className="tabs-control right grp_legends_green continue" to={cardModeLink}>
                               <button type="button" className="btn btn-default" title="Card mode">
                                 <i class="zmdi zmdi-hc-lg zmdi-view-carousel"></i>
@@ -138,15 +141,6 @@ export class AppsStockDocumentMode extends React.Component {
                           </div>
                         </div>
                         <div className="clearfix"></div>
-                      </div>
-                      <div className="btn-toolbar pull-right">
-                        <div className="btn-group btn-space">
-
-                          <button className="btn btn-default" type="button" onClick={this.print.bind(this)} title="Print Document">
-                            <i class="fa fa-print" aria-hidden="true"></i>
-                          </button>
-
-                        </div>
                       </div>
                       <div className="clearfix"></div>
                       <br/>
