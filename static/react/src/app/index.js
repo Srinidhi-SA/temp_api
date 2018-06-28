@@ -284,7 +284,7 @@ class App extends React.Component {
             <Route exact path="/apps/audio/:audioSlug" component={AudioFileSummary}/>
             <Route exact path="/apps/audio?page=:pageNo" component={AudioFileList}/>
             <Route exact path="/apps-stock-advisor" component={AppsStockAdvisorList}/>
-            <Route exact path="/apps-stock-advisor-analyze/data/:slug" component={AppsStockDataPreview}/>" +
+            <Route exact path="/apps-stock-advisor-analyze/data/:slug" component={AppsStockDataPreview}/>
             <Route exact path="/apps-stock-advisor/:slug" component={OverViewPage}/>
             <Route exact path="/apps-stock-advisor/:slug/:l1" component={OverViewPage}/>
             <Route exact path="/apps-stock-advisor/:slug/:l1/:l2/:l3" component={OverViewPage}/>

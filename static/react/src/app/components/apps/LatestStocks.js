@@ -39,13 +39,6 @@ export class LatestStocks extends React.Component {
         this.props.dispatch(updateStockSlug(e.target.id))
         this.props.dispatch(getStockAnalysis(e.target.id))
     }
-    handleDelete(slug){
-
-    }
-    handleRename(slug,name){
-
-    }
-  
     render() {
         var data = this.props.latestStocks;
         console.log(this.props)
