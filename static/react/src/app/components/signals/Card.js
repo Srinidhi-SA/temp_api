@@ -46,7 +46,7 @@ export class Card extends React.Component {
         let divClass="col-md-"+colWidth;
         return divClass;
     }
-    renderCardData(cardData,toggleTable){
+    renderCardData(cardData,toggleTable,cardWidth){
         var htmlData = cardData.map((story, i) => {
             let randomNum = Math.random().toString(36).substr(2,8);
             switch (story.dataType) {
@@ -69,11 +69,16 @@ export class Card extends React.Component {
                         if(story.widthPercent < 50)sideChart=true;
                         return (<div key={randomNum} class={divClass} style={{display:"inline-block",paddingLeft:"30px"}}><C3Chart chartInfo={chartInfo} sideChart={sideChart} classId={randomNum}  widthPercent = {story.widthPercent} data={story.data.chart_c3}  yformat={story.data.yformat} y2format={story.data.y2format} guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div>);
                     }else if(story.widthPercent == 100){
-                        let divClass = "col-md-7 col-md-offset-2";
+                        let divClass="";
+                        let parentDivClass = "col-md-12";
+                        if(!cardWidth || cardWidth > 50)
+                        divClass = "col-md-7 col-md-offset-2"
+                        else
+                        divClass = "col-md-12";
                         let sideChart=false;
-                        return (<div key={randomNum} class={divClass} style={{display:"inline-block",paddingLeft:"30px"}}><C3Chart chartInfo={chartInfo} sideChart={sideChart} classId={randomNum}  widthPercent = {story.widthPercent} data={story.data.chart_c3}  yformat={story.data.yformat} y2format={story.data.y2format} guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div>);
+                        return (<div className={parentDivClass}><div key={randomNum} class={divClass} style={{display:"inline-block",paddingLeft:"30px"}}><C3Chart chartInfo={chartInfo} sideChart={sideChart} classId={randomNum}  widthPercent = {story.widthPercent} data={story.data.chart_c3}  yformat={story.data.yformat} y2format={story.data.y2format} guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div></div>);
                     }else{
-                        return (<div key={randomNum}><C3Chart chartInfo={chartInfo} classId={randomNum} data={story.data.chart_c3} yformat={story.data.yformat} y2format={story.data.y2format}  guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div>);
+                        return (<div className={parentDivClass}><div key={randomNum}><C3Chart chartInfo={chartInfo} classId={randomNum} data={story.data.chart_c3} yformat={story.data.yformat} y2format={story.data.y2format}  guage={story.data.gauge_format} tooltip={story.data.tooltip_c3} tabledata={story.data.table_c3} tabledownload={story.data.download_url} xdata={story.data.xdata}/><div className="clearfix"/></div></div>);
                     }
                 }
                 break;
@@ -143,7 +148,8 @@ export class Card extends React.Component {
     render() {
         console.log("card is called!!!! with data:----");
         cardData = this.props.cardData;
-        const cardElements = this.renderCardData(cardData);
+        let cardWidth = this.props.cardWidth;
+        const cardElements = this.renderCardData(cardData,'',cardWidth);
         return (
                 <div>
                 {cardElements}

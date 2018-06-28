@@ -6,8 +6,8 @@ import {AppsScoreList} from "./AppsScoreList";
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {connect} from "react-redux";
-import {APPID1,APPID2,APPID3,APPNAME1,APPNAME2,APPNAME3,getUserDetailsOrRestart} from "../../helpers/helper.js"
-import {getAppsStockList,getStockAnalysis,updateStockSlug,handleStockDelete,handleStockModelRename} from "../../actions/appActions";
+import {APPID1,APPID2,APPID3,APPNAME1,APPNAME2,APPNAME3,getUserDetailsOrRestart,SUCCESS,INPROGRESS} from "../../helpers/helper.js"
+import {getAppsStockList,getStockAnalysis,updateStockSlug,handleStockDelete,handleStockModelRename,openAppsLoader,crawlSuccessAnalysis} from "../../actions/appActions";
 import Dialog from 'react-bootstrap-dialog'
 import {AppsCreateStockAnalysis} from "./AppsCreateStockAnalysis";
 import {STATIC_URL} from "../../helpers/env.js";
@@ -43,11 +43,26 @@ export class StocksCard extends React.Component {
         this.props.dispatch(handleStockModelRename(slug,this.dialog,name));
     }
 
+    openDataLoaderScreen(data){
+        this.props.dispatch(openAppsLoader(data.completed_percentage,data.completed_message));
+        this.props.dispatch(crawlSuccessAnalysis(data));
+    }
+
     render() {
                 const stockAnalysisList = this.props.data;
       
             const stockTemplateList = stockAnalysisList.map((data, i) => {
-
+                var stockLink = <a class="cursor" id={data.slug} onClick={this.getPreviewData.bind(this)}>{data.name}</a>;
+                var percentageDetails = "";
+                if(data.status == INPROGRESS){
+                    percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{data.completed_percentage >= 0 ?data.completed_percentage+' %':"In Progress"}</span></div>;
+                    stockLink = <a class="cursor" onClick={this.openDataLoaderScreen.bind(this,data)}> {data.name}</a>;
+                }else if(data.status == SUCCESS && !data.viewed){
+                    data.completed_percentage = 100;
+                    percentageDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>;
+                }
+                var permissionDetails = data.permission_details;
+                var isDropDown = permissionDetails.remove_stock || permissionDetails.rename_stock; 
                 return (
                         <div className="col-md-3 top20 list-boxes" key={i}>
                         <div className="rep_block newCardStyle" name={data.name}>
@@ -57,31 +72,35 @@ export class StocksCard extends React.Component {
                         
                         <div className="col-xs-12">
                         <h5 className="title newCardTitle pull-left">
-                        <a href="javascript:void(0);" id={data.slug} onClick={this.getPreviewData.bind(this)}>{data.name}</a>
+                        {stockLink}
                         </h5>
-                        
-                        <div class="btn-toolbar pull-right">
+                        {
+                                isDropDown == true ? <div class="btn-toolbar pull-right">
                         {/*<!-- Rename and Delete BLock  -->*/}
                         <a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
                         <i className="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
                         </a>
                         <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                        {permissionDetails.rename_stock == true ?
                         <li onClick={this.handleRename.bind(this, data.slug, data.name)}>
                         <a className="dropdown-item" href="#renameCard" data-toggle="modal">
                         <i className="fa fa-edit"></i>
                         &nbsp;&nbsp;Rename</a>
-                        </li>
+                        </li>:""}
+                        {permissionDetails.remove_stock == true ?
                         <li onClick={this.handleDelete.bind(this, data.slug)}>
                         <a className="dropdown-item" href="#deleteCard" data-toggle="modal">
-                        <i className="fa fa-trash-o"></i>
-                        &nbsp;&nbsp;Delete</a>
-                        </li>
+                        <i className="fa fa-trash-o"></i>&nbsp;&nbsp;{data.status == "INPROGRESS"
+                                ? "Stop and Delete "
+                                : "Delete"}</a>
+                        </li>:""}
                         </ul>
                         {/*<!-- End Rename and Delete BLock  -->*/}
                         </div>
-                        
+                        :""}
                         <div className="clearfix"></div>
-                        
+                        {percentageDetails}
+
                         {/* <div class="inProgressIcon">
                             <i class="fa fa-circle"></i>
                             <span class="inProgressIconText">&nbsp;{story.completed_percentage}&nbsp;%</span>

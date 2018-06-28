@@ -80,15 +80,15 @@ export class AppsScoreDetail extends React.Component {
 				});
 				if(data.cardWidth == 100){
 					componentsWidth = 0;
-					return (<div className={clearfixClass}><Card cardData={cardDataArray} /></div>)
+					return (<div className={clearfixClass}><Card cardData={cardDataArray} cardWidth={data.cardWidth}/></div>)
 				}
 				else if(componentsWidth == 0 || componentsWidth+data.cardWidth > 100){
 					componentsWidth = data.cardWidth;
-					return (<div className={clearfixClass}><Card cardData={cardDataArray} /></div>)
+					return (<div className={clearfixClass}><Card cardData={cardDataArray} cardWidth={data.cardWidth}/></div>)
 				}
 				else{
 					componentsWidth = componentsWidth+data.cardWidth;
-									return (<div className={nonClearfixClass}><Card cardData={cardDataArray} /></div>)
+									return (<div className={nonClearfixClass}><Card cardData={cardDataArray} cardWidth={data.cardWidth}/></div>)
 							}
 				});
 		}

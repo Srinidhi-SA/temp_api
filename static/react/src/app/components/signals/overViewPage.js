@@ -38,7 +38,8 @@ export class OverViewPage extends React.Component {
     this.showSubTree = false;
     this.l1Name = "";
     this.state={
-      showStockSenceDataPreview:false
+      showStockSenceDataPreview:false,
+      loading:true
     }
 
   }
@@ -87,6 +88,9 @@ export class OverViewPage extends React.Component {
     //   $('.sdbar_switch i').removeClass('sw_on');
     //   $('.sdbar_switch i').addClass('sw_off');
     // }
+    setTimeout(() => {
+          this.setState({ loading: false });
+           }, 2000);
 
   }
   componentDidUpdate(){
@@ -212,7 +216,13 @@ export class OverViewPage extends React.Component {
       slidesToScroll: 1
       //swipeToSlide: true
     };
-
+     const { loading } = this.state;
+     if(loading) { // if your component doesn't have to wait for an async action, remove this block 
+        return (
+            <img id="loading" src={STATIC_URL + "assets/images/Preloader_2.gif"}/>
+        );
+    }
+    else{
     if (isEmpty(this.props.signal)) {
 
       return (
@@ -244,11 +254,14 @@ export class OverViewPage extends React.Component {
       );
     } else {
 
-      let regression_app=false
+      let regression_app=false;
+      let stock_sense_app = false;
       if(that.urlPrefix.indexOf("apps-regression") != -1)
-      regression_app=true
+      regression_app=true;
+      if(that.urlPrefix.indexOf("/apps-stock-advisor") != -1)
+      stock_sense_app=true;
       //check for l1 of regression  scoreSummary
-      if (regression_app&&!this.props.match.params.l1) {
+      if ((regression_app || stock_sense_app) && !this.props.match.params.l1) {
         var url=that.urlPrefix+"/"+this.props.match.params.slug+"/"+this.props.signal.listOfNodes[0].slug
         //this.props.history.push(url)
         return(<Redirect to ={url}/>)
@@ -403,7 +416,7 @@ export class OverViewPage extends React.Component {
             prevURL = that.urlPrefix + "/" + this.props.match.params.slug;
           }
         }else {
-          if(!regression_app)
+          if(!regression_app && !stock_sense_app)
           prevURL = that.urlPrefix;
         }
       }
@@ -609,5 +622,6 @@ export class OverViewPage extends React.Component {
         </div>
       );
     }
+  }
   }
 }

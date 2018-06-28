@@ -1329,11 +1329,30 @@ export function getAppsStockList(pageNo) {
 }
 
 function fetchStockList(pageNo, token) {
-  return fetch(API + '/api/stockdataset/?page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
-    method: 'get',
-    headers: getHeader(getUserDetailsOrRestart.get().userToken)
-  }).then(response => Promise.all([response, response.json()]));
+  let search_element = store.getState().apps.stock_model_search_element;
+  let stock_apps_model_sorton = store.getState().apps.stock_apps_model_sorton;
+  let stock_apps_model_sorttype = store.getState().apps.stock_apps_model_sorttype;
+  if (stock_apps_model_sorttype == 'asc')
+    stock_apps_model_sorttype = ""
+  else if (stock_apps_model_sorttype == 'desc')
+    stock_apps_model_sorttype = "-"
 
+  if (search_element != "" && search_element != null) {
+    return fetch(API + '/api/stockdataset/?name=' + search_element + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
+      method: 'get',
+      headers: getHeader(token)
+    }).then(response => Promise.all([response, response.json()]));
+  } else if ((stock_apps_model_sorton != "" && stock_apps_model_sorton != null) && (stock_apps_model_sorttype != null)) {
+    return fetch(API + '/api/stockdataset/?sorted_by=' + stock_apps_model_sorton + '&ordering=' + stock_apps_model_sorttype + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
+      method: 'get',
+      headers: getHeader(token)
+    }).then(response => Promise.all([response, response.json()]));
+  } else {
+    return fetch(API + '/api/stockdataset/?page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
+      method: 'get',
+      headers: getHeader(getUserDetailsOrRestart.get().userToken)
+    }).then(response => Promise.all([response, response.json()]));
+  }
 }
 
 function fetchStockListError(json) {
@@ -1385,35 +1404,13 @@ export function updateAppsLoaderText(text) {
 }
 export function crawlSuccess(json, dispatch) {
   var slug = json.slug;
+  
+ // dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue + APPSLOADERPERVALUE));
   //dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+APPSLOADERPERVALUE));
-  setTimeout(function() {
-    dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue + APPSLOADERPERVALUE));
-    dispatch(updateAppsLoaderText("Fetching metadata information for news portals...."))
-  }, 10000);
-  setTimeout(function() {
-    dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue + APPSLOADERPERVALUE));
-    dispatch(updateAppsLoaderText("Extracting articles from news portals....."))
-  }, 30000);
-  setTimeout(function() {
-    dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue + APPSLOADERPERVALUE));
-    dispatch(updateAppsLoaderText("Creating dataset...."))
-  }, 40000);
-  setTimeout(function() {
-    dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue + APPSLOADERPERVALUE));
-  }, 45000);
-  setTimeout(function() {
-    dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue + APPSLOADERPERVALUE));
-  }, 50000);
-  setTimeout(function() {
-    dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue + APPSLOADERPERVALUE));
-  }, 55000);
   appsInterval = setInterval(function() {
-    dispatch(getStockDataSetPreview(slug, appsInterval))
-    if (store.getState().apps.appsLoaderPerValue + 10 < LOADERMAXPERVALUE) {
-      dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue + APPSLOADERPERVALUE));
-    }
-
-  }, 60000);
+    dispatch(getStockDataSetPreview(slug, appsInterval));
+    return {type: "STOCK_CRAWL_SUCCESS", slug}
+  }, APPSDEFAULTINTERVAL);
   return {type: "STOCK_CRAWL_SUCCESS", slug}
 }
 function triggerCrawlingAPI(urlForPrices, urlForNews, analysisName) {
@@ -1471,54 +1468,38 @@ function triggerStockUpload(token, slug) {
 }
 export function triggerStockAnalysis(slug) {
   return (dispatch) => {
-    //dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+APPSLOADERPERVALUE+7));
-    setTimeout(function() {
-      dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue + APPSLOADERPERVALUE));
-      dispatch(updateAppsLoaderText("Applying domain model for stock analysis...."))
-    }, 10000);
-    setTimeout(function() {
-      dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue + APPSLOADERPERVALUE));
-      dispatch(updateAppsLoaderText("Extracting relevant entities and keywords....."))
-    }, 20000);
-    setTimeout(function() {
-      dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue + APPSLOADERPERVALUE));
-      dispatch(updateAppsLoaderText("Tagging articles to relevant concepts ...."))
-    }, 30000);
-    setTimeout(function() {
-      dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue + APPSLOADERPERVALUE));
-      dispatch(updateAppsLoaderText("Performing sentiment analysis...."))
-    }, 40000);
-    setTimeout(function() {
-      dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue + APPSLOADERPERVALUE));
-      dispatch(updateAppsLoaderText("Identifying key events during the selected period....."))
-    }, 50000);
-    setTimeout(function() {
-      dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue + APPSLOADERPERVALUE));
-      dispatch(updateAppsLoaderText("Analyze the impact of concepts on stock performance...."))
-    }, 60000);
-    appsInterval = setInterval(function() {
-      dispatch(getStockAnalysis(slug));
-      if (store.getState().apps.appsLoaderPerValue + 10 < LOADERMAXPERVALUE) {
-        dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue + APPSLOADERPERVALUE));
-      }
-    }, 60000)
+     appsInterval = setInterval(function() {
+       dispatch(getStockAnalysis(slug, appsInterval));
+    return {type: "STOCK_CRAWL_SUCCESS", slug}
+  }, APPSDEFAULTINTERVAL);
+  return {type: "STOCK_CRAWL_SUCCESS", slug}
+    
   }
 }
-export function getStockAnalysis(slug) {
+export function getStockAnalysis(slug,appsInterval) {
   return (dispatch) => {
     return fetchStockAnalysisAPI(getUserDetailsOrRestart.get().userToken, slug).then(([response, json]) => {
       if (response.status === 200) {
         if (json.status == SUCCESS) {
-          clearInterval(appsInterval);
-          dispatch(updateRoboAnalysisData(json, "/apps-stock-advisor"));
-          dispatch(uploadStockAnalysisFlag(true));
-          dispatch(closeAppsLoaderValue());
+          if(appsInterval != undefined){
+            clearInterval(appsInterval);
+            dispatch(updateRoboAnalysisData(json, "/apps-stock-advisor"));
+            dispatch(uploadStockAnalysisFlag(true));
+            dispatch(closeAppsLoaderValue());
+          }else{
+            dispatch(updateRoboAnalysisData(json, "/apps-stock-advisor"));
+            dispatch(uploadStockAnalysisFlag(true));
+          }
         } else if (json.status == FAILED) {
           bootbox.alert("Your stock analysis could not created.Please try later.", function(result) {
             window.history.go(-2);
           });
           clearInterval(appsInterval);
           dispatch(closeAppsLoaderValue());
+        }else if(json.status == "INPROGRESS"){
+          if (json.message !== null && json.message.length > 0) {
+              dispatch(openAppsLoaderValue(json.message[0].stageCompletionPercentage, json.message[0].shortExplanation));
+          }
         }
       } else {
         dispatch(closeAppsLoaderValue());
@@ -2022,4 +2003,29 @@ function renameStockModelAPI(slug, newName) {
     body: JSON.stringify({name: newName})
   }).then(response => Promise.all([response, response.json()]));
 
+}
+export function crawlSuccessAnalysis(data) {
+  return (dispatch) => {
+    dispatch(crawlSuccess(data, dispatch))
+  }
+}
+export function storeStockModelSearchElement(search_element){
+  return {type: "STOCK_SEARCH_MODEL", search_element}
+}
+export function storeStockAppsModelSortElements(appsModelSorton,appsModelSorttype){
+  return {type: "STOCK_SORT_APPS_MODEL", appsModelSorton, appsModelSorttype}
+}
+export function refreshStockAppsList(props) {
+  return (dispatch) => {
+    if(refreshAppsModelInterval != null)
+    clearInterval(refreshAppsModelInterval);
+    refreshAppsModelInterval = setInterval(function() {
+      var pageNo = window.location.href.split("=")[1];
+      if (pageNo == undefined)
+        pageNo = 1;
+      if (window.location.pathname == "/"+store.getState().apps.currentAppDetails.app_url)
+        dispatch(getAppsStockList(parseInt(pageNo)));
+      }
+    , APPSDEFAULTINTERVAL);
+  }
 }
