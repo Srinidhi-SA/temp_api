@@ -631,176 +631,6 @@ class RoboView(viewsets.ModelViewSet):
             list_serializer=RoboListSerializer
         )
 
-#
-# class RegressionView(viewsets.ModelViewSet):
-#     def get_queryset(self):
-#         queryset = Regression.objects.filter(
-#             created_by=self.request.user,
-#             deleted=False,
-#             #analysis_done=True,
-#             status__in=['SUCCESS', 'INPROGRESS']
-#
-#         )
-#         return queryset
-#
-#     def get_serializer_class(self):
-#         return RegressionSerlializer
-#
-#     def get_object_from_all(self):
-#         return Regression.objects.get(slug=self.kwargs.get('slug'))
-#
-#     def get_serializer_context(self):
-#         return {'request': self.request}
-#
-#     lookup_field = 'slug'
-#     filter_backends = (DjangoFilterBackend,)
-#     filter_fields = ('bookmarked', 'deleted', 'name', "app_id")
-#     pagination_class = CustomPagination
-#     permission_classes = (RegressionRelatedPermission, )
-#
-#     def create(self, request, *args, **kwargs):
-#         # try:
-#         data = request.data
-#         data = convert_to_string(data)
-#         data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
-#         data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
-#         serializer = RegressionSerlializer(data=data, context={"request": self.request})
-#         if serializer.is_valid():
-#             trainer_object = serializer.save()
-#             trainer_object.create()
-#             return Response(serializer.data)
-#
-#         return creation_failed_exception(serializer.errors)
-#         # except Exception as error:
-#         #     creation_failed_exception(error)
-#
-#     def update(self, request, *args, **kwargs):
-#         data = request.data
-#         data = convert_to_string(data)
-#         # instance = self.get_object()
-#         try:
-#             instance = self.get_object_from_all()
-#             if 'deleted' in data:
-#                 if data['deleted'] == True:
-#                     print 'let us delete'
-#                     clean_up_on_delete.delay(instance.slug, Trainer.__name__)
-#                     return JsonResponse({'message':'Deleted'})
-#         except:
-#             return creation_failed_exception("File Doesn't exist.")
-#
-#         serializer = self.get_serializer(instance=instance, data=data, partial=True, context={"request": self.request})
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data)
-#         return Response(serializer.errors)
-#
-#     def list(self, request, *args, **kwargs):
-#
-#         return get_listed_data(
-#             viewset=self,
-#             request=request,
-#             list_serializer=RegressionListSerializer
-#         )
-#
-#     def retrieve(self, request, *args, **kwargs):
-#         # return get_retrieve_data(self)
-#         try:
-#             instance = self.get_object_from_all()
-#         except:
-#             return creation_failed_exception("File Doesn't exist.")
-#
-#         if instance is None:
-#             return creation_failed_exception("File Doesn't exist.")
-#
-#         serializer = RegressionSerlializer(instance=instance, context={"request": self.request})
-#         return Response(serializer.data)
-#
-#     @detail_route(methods=['get'])
-#     def comparision(self, request, *args, **kwargs):
-#
-#         try:
-#             instance = self.get_object_from_all()
-#         except:
-#             return creation_failed_exception("File Doesn't exist.")
-#
-#         if instance is None:
-#             return creation_failed_exception("File Doesn't exist.")
-#
-#         serializer = RegressionSerlializer(instance=instance, context={"request": self.request})
-#         trainer_data = serializer.data
-#         t_d_c = trainer_data['config']['config']['COLUMN_SETTINGS']['variableSelection']
-#         uidColArray= [x["name"] for x in t_d_c if x["uidCol"] == True]
-#
-#
-#
-#         score_datatset_slug = request.GET.get('score_datatset_slug')
-#         try:
-#             dataset_instance = Dataset.objects.get(slug=score_datatset_slug)
-#         except:
-#             return creation_failed_exception("File Doesn't exist.")
-#
-#         if dataset_instance is None:
-#             return creation_failed_exception("File Doesn't exist.")
-#
-#         dataset_serializer = DatasetSerializer(instance=dataset_instance, context={"request": self.request})
-#         object_details = dataset_serializer.data
-#         original_meta_data_from_scripts = object_details['meta_data']
-#         if original_meta_data_from_scripts is None:
-#             uiMetaData = None
-#         if original_meta_data_from_scripts == {}:
-#             uiMetaData = None
-#         else:
-#             uiMetaData = add_ui_metadata_to_metadata(original_meta_data_from_scripts)
-#
-#         object_details['meta_data'] = {
-#             "scriptMetaData": original_meta_data_from_scripts,
-#             "uiMetaData": uiMetaData
-#         }
-#
-#         d_d_c = uiMetaData['varibaleSelectionArray']
-#
-#         t_d_c_s = set([item['name'] for item in t_d_c if item["targetColumn"] != True])
-#         d_d_c_s = set([item['name'] for item in d_d_c]).union(set(uidColArray))
-#
-#         proceedFlag = d_d_c_s.issuperset(t_d_c_s)
-#
-#         if proceedFlag != True:
-#             missing = t_d_c_s.difference(d_d_c_s)
-#             extra = d_d_c_s.difference(t_d_c_s)
-#             message = "These are the missing Columns {0}".format(missing)
-#             if len(extra) > 0:
-#                 message += "and these are the new columns {0}".format(extra)
-#         else:
-#             extra = d_d_c_s.difference(t_d_c_s)
-#             if len(extra) > 0:
-#                 message = "These are the new columns {0}".format(extra)
-#             else:
-#                 message = ""
-#
-#
-#         return JsonResponse({
-#             'proceed': proceedFlag,
-#             'message': message
-#         })
-#
-#     @detail_route(methods=['get'])
-#     def get_pmml(self, request, *args, **kwargs):
-#         from api.redis_access import AccessFeedbackMessage
-#         from helper import generate_pmml_name
-#         jobslug = request.query_params.get('jobslug', None)
-#         algoname = request.query_params.get('algoname', None)
-#         ac = AccessFeedbackMessage()
-#         job_object = Job.objects.filter(object_id=jobslug).first()
-#         job_slug = job_object.slug
-#         key_pmml_name = generate_pmml_name(job_slug)
-#         data = ac.get_using_key(key_pmml_name)
-#         if data is None:
-#             sample_xml = "<mydocument has=\"an attribute\">\n  <and>\n    <many>elements</many>\n    <many>more elements</many>\n  </and>\n  <plus a=\"complex\">\n    element as well\n  </plus>\n</mydocument>"
-#             return return_xml_data(sample_xml, algoname)
-#         xml_data = data[-1].get(algoname)
-#         return return_xml_data(xml_data, algoname)
-
-
 
 from api.models import Audioset
 from api.utils import AudiosetSerializer, AudioListSerializer
@@ -919,10 +749,11 @@ class StockDatasetView(viewsets.ModelViewSet):
         if serializer.is_valid():
             stock_instance = serializer.save()
             # stock_instance.stats(file=new_data['input_file'])
-            if fake is None:
-                stock_instance.fake_call_mlscripts()
-            else:
-                stock_instance.call_mlscripts()
+            # if fake is None:
+            #     stock_instance.fake_call_mlscripts()
+            # else:
+            #     stock_instance.call_mlscripts()
+            stock_instance.call_mlscripts()
             return Response(serializer.data)
 
         serializer = StockDatasetSerializer(instance=instance, context={"request": self.request})
@@ -1049,16 +880,34 @@ class AudiosetView(viewsets.ModelViewSet):
 
         return update_failed_exception(serializer.errors)
 
+'''
+create app_view for a new user
+http://<ip>:<port>/api/all_apps_for_users/?username=marlabs
 
+create app_view for all users or reset for all users
+http://<ip>:<port>/api/all_apps_for_users/
+
+Note: It looks into CustomApps table for apps.
+'''
 class AppView(viewsets.ModelViewSet):
     def get_queryset(self):
-        queryset = CustomApps.objects.filter(
-            #created_by=self.request.user,
-            status="Active"
-            #status__in=['SUCCESS', 'INPROGRESS']
+        from api.models import CustomAppsUserMapping
+        user_app_list = CustomAppsUserMapping.objects.filter(
+            user=self.request.user,
+            active=True
         ).order_by('rank')
-        app_ordered_list = copy.deepcopy(settings.APPORDERLIST)
-        queryset = queryset.filter(name__in=app_ordered_list)
+
+        custom_apps = [custom_app.app for custom_app in user_app_list]
+        print custom_apps
+        queryset = custom_apps
+
+        # queryset = CustomApps.objects.filter(
+        #     #created_by=self.request.user,
+        #     status="Active"
+        #     #status__in=['SUCCESS', 'INPROGRESS']
+        # ).order_by('rank')
+        # app_ordered_list = copy.deepcopy(settings.APPORDERLIST)
+        # queryset = queryset.filter(name__in=app_ordered_list)
         return queryset
 
     def get_serializer_class(self):
@@ -5327,15 +5176,16 @@ def return_json_data(stockDataType, stockName, slug):
     base_path = os.path.dirname(os.path.dirname(__file__))
     base_path = base_path + "/scripts/data/{0}/".format(slug)
     matching = {
-        "bluemix": stockDataType + "_" + stockName + ".json",
-        "historical": stockDataType + "_" + stockName + ".json",
-        "concepts": "old_concepts.json"
+        # "bluemix": stockDataType + "_" + stockName + ".json",
+        "bluemix": stockName + ".json",
+        "historical":  stockName + "_" + "historic" + ".json",
+        "concepts": "concepts.json"
     }
 
     if stockDataType in ["bluemix", "historical"]:
         path = base_path + matching[stockDataType]
     else:
-        path = base_path + "/scripts/data/" + matching[stockDataType]
+        path = base_path + matching[stockDataType]
     temp_path = base_path + matching[stockDataType]
 
     from django.http import HttpResponse
@@ -5565,3 +5415,41 @@ def updateFromNifi(request):
 #         "user":request.user.id
 #     })
 
+@csrf_exempt
+def all_apps_for_users(request):
+    from django.contrib.auth.models import User
+
+    if 'username' in request.GET:
+        username = request.GET['username']
+    else:
+        username = None
+
+    if username is not None:
+        try:
+            user = User.objects.filter(username=username).first()
+        except:
+            return JsonResponse({"message": "User doesn't exist."})
+        all_apps = CustomApps.objects.all()
+        from api.models import CustomAppsUserMapping
+        CustomAppsUserMapping.objects.filter(user=user).delete()
+        for app in all_apps:
+            caum = CustomAppsUserMapping()
+            caum.user = user
+            caum.app = app
+            caum.rank = app.rank
+            caum.save()
+        return JsonResponse({'message': 'done'})
+
+    all_users = User.objects.all()
+    all_apps = CustomApps.objects.all()
+    from api.models import CustomAppsUserMapping
+    CustomAppsUserMapping.objects.all().delete()
+    for user in all_users:
+        for app in all_apps:
+            caum = CustomAppsUserMapping()
+            caum.user = user
+            caum.app = app
+            caum.rank = app.rank
+            caum.save()
+
+    return JsonResponse({'message': 'done'})

@@ -188,7 +188,7 @@ def get_metaData(news_data, slug=None):
 
 def get_required_fields(type='historical_data'):
     matching = {
-        'historical_data': [],
+        'historical_data': ['url',  'source', 'date'],
         'news_data': ['url',  'source', 'date', 'title','desc'],
     }
 
