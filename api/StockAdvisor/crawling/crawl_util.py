@@ -31,6 +31,16 @@ def crawl_extract(urls,regex_dict={},remove_tags=[]):
 	fobj.close()
 	return all_data
 
+def random_but_cool_stuff():
+    stock_symbols = ['googl', 'aapl']
+    GOOGLE_REGEX_FILE = "nasdaq_stock.json"
+    from api.StockAdvisor.crawling.common_utils import get_regex
+    extracted_data = crawl_extract(
+        urls=generate_urls_for_historic_data(stock_symbols),
+        regex_dict=get_regex(GOOGLE_REGEX_FILE)
+    )
+    return extracted_data
+
 def generate_urls_for_historic_data(list_of_company_name):
 	return ["http://www.nasdaq.com/symbol/{0}/historical".format(name) for name in list_of_company_name]
 
