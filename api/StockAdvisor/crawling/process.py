@@ -1,6 +1,8 @@
 import re
 import sys
 import common_utils
+import requests
+from bs4 import BeautifulSoup
 
 def sanitize(content,remove_tags=[]):
 	for html_tag in remove_tags:
@@ -63,4 +65,46 @@ def process_json_data(url,content,regex_dict={},remove_tags=[]):
 			json_obj["source"]=tmp_json.get("s")
 			json_obj["time"]=tmp_json.get("d")
 			all_data.append(json_obj)
+	return all_data
+
+def process_nasdaq_news_article(url, content, stock):
+	soup = BeautifulSoup(content)
+	new_headlines = soup.find_all('div', class_="news-headlines")
+	all_data = []
+	for i, tag in enumerate(new_headlines[0]):
+		json_data = {}
+		if i % 10 == 3 and 'class' not in tag.attrs:
+			#         print i, tag
+			json_data['title'] = sanitize(tag.span.a.text)
+			json_data['final_url'] = tag.span.a['href']
+			json_data['google_url'] = url
+			date_and_author = tag.small.text
+			json_data['time'] = sanitize(date_and_author.split('-')[0])
+			json_data['source'] = sanitize(date_and_author.split('-')[1])
+			json_data['stock'] = stock
+			json_data['short_desc'] = ""
+
+			all_data.append(json_data)
+	return all_data
+
+
+def process_marketwatch_news_article(content):
+	soup = BeautifulSoup(content)
+	article__content = soup.find_all('div', class_="article__content")
+	from bs4.element import Tag
+	all_data = []
+	for article in article__content:
+		json_data = {}
+		json_data['title'] = article.h3.a.text
+		json_data['final_url'] = article.h3.a['href']
+		for l in article.ul.children:
+
+			if type(l) == Tag:
+				print l['class'][0]
+				if l['class'][0] == 'article__timestamp':
+					json_data['time'] = l.text
+				if l['class'][0] == 'article__author':
+					json_data['author'] = l.text.split(" ")[-1]
+		all_data.append(json_data)
+
 	return all_data

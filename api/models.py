@@ -16,7 +16,8 @@ from StockAdvisor.crawling.common_utils import get_regex
 from StockAdvisor.crawling.crawl_util import crawl_extract, \
     generate_urls_for_crawl_news, \
     convert_crawled_data_to_metadata_format, \
-    generate_urls_for_historic_data
+    generate_urls_for_historic_data, \
+    fetch_news_article_from_nasdaq
 from api.helper import convert_json_object_into_list_of_object
 from api.lib import hadoop, fab_helper
 
@@ -1631,12 +1632,8 @@ class StockDataset(models.Model):
     def crawl_data(self):
 
         stock_symbols = self.get_stock_symbol_names()
-        GOOGLE_REGEX_FILE = "google_regex.json"
-        # extracted_data = crawl_extract(
-        #     urls=generate_urls_for_crawl_news(stock_symbols),
-        #     regex_dict=get_regex(GOOGLE_REGEX_FILE)
-        # )
-        extracted_data = self.read_stock_json_file()
+        extracted_data = fetch_news_article_from_nasdaq(stock_symbols)
+        # extracted_data = self.read_stock_json_file()
         if len(extracted_data) < 1:
             return {}
         meta_data = convert_crawled_data_to_metadata_format(
