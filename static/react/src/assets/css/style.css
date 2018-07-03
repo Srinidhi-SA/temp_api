@@ -15558,3 +15558,5 @@ div.text-center.tbl_th_center th {text-align: center}
 .break-if-longText>thead>tr>th{vertical-align: middle;}
 .inputWidth { width:80px !important}
 .removeBreak .break-if-longText>tbody>tr>td{word-break: normal}
+.border-box { background: #f6f6f6;border: 1px solid #dedede; min-height:116px; }
+.border-box .col-xs-12 a { cursor: pointer}

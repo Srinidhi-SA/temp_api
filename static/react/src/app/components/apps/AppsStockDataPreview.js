@@ -50,7 +50,7 @@ export class AppsStockDataPreview extends React.Component {
   	this.props.dispatch(updateUploadStockPopup(flag))
   }
   render() {
-	  if(store.getState().apps.stockAnalysisFlag){
+	  if(store.getState().apps.stockAnalysisFlag && !this.props.showPreview){
 			let _linkAnalysis = "/apps-stock-advisor/"+store.getState().apps.stockSlug+ "/" + this.props.signal.listOfNodes[0].slug;
 	    	return (<Redirect to={_linkAnalysis}/>);
 	 }
@@ -68,14 +68,20 @@ export class AppsStockDataPreview extends React.Component {
 				<div class="panel-body no-border">
 				
 				<div className="navbar xs-mb-0">
+						
+						 {this.props.showPreview?
+						 <ul className="nav navbar-nav navbar-right">
+						 <li className="text-right"><Button onClick={this.props.updatePreviewState} bsStyle="primary"> Close </Button>
+						</li></ul>
+						:
 						<ul className="nav navbar-nav navbar-right">
-						 
 						<li className="text-right"><Button to="/apps"> Close </Button> 
 						</li>
 						<li className="text-right">
 							<Button bsStyle="primary" onClick={this.updateUploadStockPopup.bind(this,true)}> Proceed</Button>
 						</li>
 						</ul>
+						 }
 						</div> 
 				
 				</div>
