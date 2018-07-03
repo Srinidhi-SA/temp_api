@@ -1884,7 +1884,8 @@ class StockDataset(models.Model):
     def write_to_concepts_folder(self, stockDataType, stockName, data, type='csv'):
         name = stockDataType + "_" + stockName
         path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug + "/"
-        file_path = path + name + "." + type
+        file_path = path + stockName + "." + type
+        print "fo"*10
         print file_path
         with open(file_path, "wb") as file_to_write_on:
             if 'csv' == type:
