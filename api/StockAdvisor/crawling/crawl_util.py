@@ -30,8 +30,6 @@ def crawl_extract(urls,regex_dict={},remove_tags=[], slug=None):
             all_data.append(json_obj)
 
     fobj.close()
-    with open('/tmp/all_data_json_{0}.json'.format(slug), 'w') as all_data_json:
-        json.dump(all_data, all_data_json)
     return all_data
 
 def random_but_cool_stuff():
@@ -118,8 +116,7 @@ def convert_crawled_data_to_metadata_format(news_data, other_details=None, slug=
         }
     }
 
-    with open('/tmp/metafile_{0}'.format(slug),'w') as metafile:
-        json.dump(metadata_json, metafile)
+    return metadata_json
 
 def transform_into_uiandscripts_metadata():
     return {
