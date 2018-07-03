@@ -78,6 +78,7 @@ def process_nasdaq_news_article(url, content, stock):
 			json_data['title'] = sanitize(tag.span.a.text)
 			json_data['final_url'] = tag.span.a['href']
 			json_data['google_url'] = url
+			json_data['url'] = url
 			date_and_author = tag.small.text
 			json_data['time'] = sanitize(date_and_author.split('-')[0])
 			json_data['source'] = sanitize(date_and_author.split('-')[1])
