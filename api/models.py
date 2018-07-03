@@ -1717,25 +1717,25 @@ class StockDataset(models.Model):
 
     def paste_essential_files_in_scripts_folder(self):
 
-        import shutil
-        file_names = [
-            'concepts.json',
-            # 'aapl.json',
-            # 'aapl_historic.json',
-            # 'googl.json',
-            # 'googl_historic.json',
-            # 'ibm.json',
-            # 'ibm_historic.json',
-            # 'msft.json',
-            # 'msft_historic.json'
-        ]
-        path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data"
-        path_slug = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug + "/"
-        self.sanitize(path + "/concepts.json")
-        for name in file_names:
-            path1 = path + "/"+ name
-            path2 = path_slug + name
-            shutil.copyfile(path1, path2)
+        # import shutil
+        # file_names = [
+        #     'concepts.json',
+        #     # 'aapl.json',
+        #     # 'aapl_historic.json',
+        #     # 'googl.json',
+        #     # 'googl_historic.json',
+        #     # 'ibm.json',
+        #     # 'ibm_historic.json',
+        #     # 'msft.json',
+        #     # 'msft_historic.json'
+        # ]
+        # path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data"
+        # path_slug = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug + "/"
+        # self.sanitize(path + "/concepts.json")
+        # for name in file_names:
+        #     path1 = path + "/"+ name
+        #     path2 = path_slug + name
+        #     shutil.copyfile(path1, path2)
 
         self.put_files_into_remote()
 
