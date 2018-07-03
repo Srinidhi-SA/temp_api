@@ -48,10 +48,10 @@ def fetch_news_article_from_nasdaq(stock_symbols):
     crawl_obj = generic_crawler.GenericCrawler()
     for stock in stock_symbols:
         url = get_nasdaq_news_article(stock)
-        print url
+        # print url
         content = crawl_obj.get_data(url)
         json_list = process.process_nasdaq_news_article(url, content, stock=stock)
-        print json_list
+        # print json_list
         for json_obj in json_list:
             if not json_obj.get("url"):
                 continue
@@ -79,15 +79,15 @@ def convert_crawled_data_to_metadata_format(news_data, other_details=None, slug=
         type= other_details['type']
 
     headers = find_headers(news_data=news_data, type=type, slug=slug)
-    headers = read_from_a_file(slug=slug)
+    # headers = read_from_a_file(slug=slug)
     columnData = get_column_data_for_metadata(headers, slug=slug)
-    columnData = read_from_a_file(slug=slug)
+    # columnData = read_from_a_file(slug=slug)
     sampleData = get_sample_data(news_data=news_data, type=type, slug=slug)
-    sampleData = read_from_a_file(slug=slug)
+    # sampleData = read_from_a_file(slug=slug)
     metaData = get_metaData(news_data=news_data, slug=slug)
-    metaData = read_from_a_file(slug=slug)
+    # metaData = read_from_a_file(slug=slug)
     transformation_settings = get_transformation_settings(slug=slug)
-    transformation_settings = read_from_a_file(slug=slug)
+    # transformation_settings = read_from_a_file(slug=slug)
     #
     # return {
     #     "headers": headers,
@@ -186,9 +186,15 @@ def get_column_data_for_metadata(headers, slug=None):
 
 def get_sample_data(news_data, type='historical_data', slug=None):
     required_fields = get_required_fields(type)
-    sampleData = [ [row[key] for key in required_fields] for row in news_data ]
-
-    write_to_a_file(slug=slug, data=sampleData)
+    # sampleData = [ [row[key] for key in required_fields] for row in news_data ]
+    sampleData = []
+    for row in news_data:
+        row_data = []
+        for key in required_fields:
+            if key in row:
+                row_data.append(row[key])
+        sampleData.append(row_data)
+    # write_to_a_file(slug=slug, data=sampleData)
     return sampleData
 
 def get_metaData(news_data, slug=None):
@@ -216,8 +222,8 @@ def get_metaData(news_data, slug=None):
 
 def get_required_fields(type='historical_data'):
     matching = {
-        'historical_data': ['url',  'source', 'date'],
-        'news_data': ['url',  'source', 'date', 'title','desc'],
+        'historical_data': ['url',  'source', 'date', 'time'],
+        'news_data': ['url',  'source', 'date', 'title','desc', 'time'],
     }
 
     return matching[type]
