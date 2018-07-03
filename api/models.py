@@ -1729,15 +1729,34 @@ class StockDataset(models.Model):
             # 'msft.json',
             # 'msft_historic.json'
         ]
-        path = path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data"
+        path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data"
         path_slug = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug + "/"
-
+        self.sanitize(path + "/concepts.json")
         for name in file_names:
             path1 = path + "/"+ name
             path2 = path_slug + name
             shutil.copyfile(path1, path2)
 
         self.put_files_into_remote()
+
+    def sanitize(path, remove_tags=[]):
+        import re
+        import sys
+        content = open(path, 'r').read()
+        for html_tag in remove_tags:
+            tag_regex = '(?is)<' + html_tag + '[^>]*?>.*?</' + html_tag + '>'  # (?is) is important to add,as it ignores case and new lines in text
+            content = re.sub(tag_regex, '', content)
+        text = ''
+        text = re.sub('<.*?>', ' ', content)
+        if text:
+            text = text.replace("\n", "").replace("&nbsp;", "").replace("\t", " ").replace("\u", " ").replace("\r",
+                                                                                                              " ").strip()
+        text = text.encode('utf-8')
+
+        f = open(path, 'w')
+        f.write(text)
+        f.close()
+
 
     def put_files_into_remote(self):
 
