@@ -414,7 +414,7 @@ def stock_sense_crawl(object_slug):
     import json
     from api.helper import get_db_object
     from api.views import chart_changes_in_metadata_chart, add_slugs
-
+    print "stock_sense_crawl"*2
     stock_dataset_object = get_db_object(model_name=StockDataset.__name__,
                                    model_slug=object_slug
                                    )

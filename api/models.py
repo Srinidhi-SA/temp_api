@@ -1640,15 +1640,23 @@ class StockDataset(models.Model):
             news_data=extracted_data,
             other_details={
                 'type': 'news_data'
-            }
+            },
+            slug=self.slug
         )
+        metafile = open('/tmp/metafile_{0}'.format(self.slug), 'r')
+        meta_data = metafile.read()
+        meta_data = json.loads(meta_data)
         meta_data['extracted_data'] = extracted_data
+
         self.write_to_concepts_folder(
             stockDataType="news",
             stockName="",
             data=extracted_data,
             type='json'
         )
+
+        with open('/tmp/metafile_{0}'.format(self.slug), 'w') as metafile:
+            json.dump(meta_data, metafile)
 
         return json.dumps(meta_data)
 
@@ -1665,25 +1673,30 @@ class StockDataset(models.Model):
         GOOGLE_REGEX_FILE = "nasdaq_stock.json"
         extracted_data = crawl_extract(
             urls=generate_urls_for_historic_data(stock_symbols),
-            regex_dict=get_regex(GOOGLE_REGEX_FILE)
+            regex_dict=get_regex(GOOGLE_REGEX_FILE),
+            slug=self.slug
         )
-
         if len(extracted_data) < 1:
             return {}
         meta_data = convert_crawled_data_to_metadata_format(
             news_data=extracted_data,
             other_details={
                 'type': 'historical_data'
-            }
+            },
+            slug=self.slug
         )
+        metafile = open('/tmp/metafile_{0}'.format(self.slug), 'r')
+        meta_data = metafile.read()
+        meta_data = json.loads(meta_data)
         meta_data['extracted_data'] = extracted_data
-
         self.write_to_concepts_folder(
             stockDataType="historic",
             stockName="all",
             data=extracted_data,
             type='json'
         )
+        with open('/tmp/metafile_{0}'.format(self.slug), 'w') as metafile:
+            json.dump(meta_data, metafile)
         return meta_data
 
     def get_bluemix_natural_language_understanding(self, name=None):
@@ -1702,6 +1715,7 @@ class StockDataset(models.Model):
         self.paste_essential_files_in_scripts_folder()
         data = self.crawl_for_historic_data()
         self.get_bluemix_natural_language_understanding()
+        print "generate_meta_data"*3
         return self.crawl_data()
         # return data
 
