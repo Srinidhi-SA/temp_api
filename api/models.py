@@ -1739,7 +1739,7 @@ class StockDataset(models.Model):
 
         self.put_files_into_remote()
 
-    def sanitize(path, remove_tags=[]):
+    def sanitize(self, path, remove_tags=[]):
         import re
         import sys
         content = open(path, 'r').read()
@@ -1749,7 +1749,7 @@ class StockDataset(models.Model):
         text = ''
         text = re.sub('<.*?>', ' ', content)
         if text:
-            text = text.replace("\n", "").replace("&nbsp;", "").replace("\t", " ").replace("\u", " ").replace("\r",
+            text = text.replace("\n", "").replace("&nbsp;", "").replace("\t", " ").replace("\\u", " ").replace("\r",
                                                                                                               " ").strip()
         text = text.encode('utf-8')
 
