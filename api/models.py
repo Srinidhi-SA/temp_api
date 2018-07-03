@@ -1765,6 +1765,7 @@ class StockDataset(models.Model):
         from os import listdir
         from os.path import isfile, join
         file_names = listdir(path_slug)
+        print file_names
         # onlyfiles = [f for f in listdir(path_slug) if isfile(join(path_slug, f))]
 
         from api.lib.fab_helper import mkdir_remote, put_file, remote_uname
@@ -1884,7 +1885,7 @@ class StockDataset(models.Model):
         name = stockDataType + "_" + stockName
         path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug + "/"
         file_path = path + name + "." + type
-
+        print file_path
         with open(file_path, "wb") as file_to_write_on:
             if 'csv' == type:
                 writer = csv.writer(file_to_write_on)
@@ -1898,6 +1899,7 @@ class StockDataset(models.Model):
             name = name + "_" + key
             path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug + "/"
             file_path = path + name + "." + type
+            print file_path
             out_file = open(file_path, "wb")
             json.dump(data[key], out_file)
             out_file.close()
