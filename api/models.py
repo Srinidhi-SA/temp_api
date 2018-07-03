@@ -1720,14 +1720,14 @@ class StockDataset(models.Model):
         import shutil
         file_names = [
             'concepts.json',
-            'aapl.json',
-            'aapl_historic.json',
-            'googl.json',
-            'googl_historic.json',
-            'ibm.json',
-            'ibm_historic.json',
-            'msft.json',
-            'msft_historic.json'
+            # 'aapl.json',
+            # 'aapl_historic.json',
+            # 'googl.json',
+            # 'googl_historic.json',
+            # 'ibm.json',
+            # 'ibm_historic.json',
+            # 'msft.json',
+            # 'msft_historic.json'
         ]
         path = path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data"
         path_slug = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug + "/"
@@ -1740,21 +1740,13 @@ class StockDataset(models.Model):
         self.put_files_into_remote()
 
     def put_files_into_remote(self):
-        import shutil
-        file_names = [
-            'concepts.json',
-            'appl.json',
-            'app_historic',
-            'googl.json',
-            'googl_historic.json',
-            'ibm.json',
-            'ibm_historic.json',
-            'msft.json',
-            'msft_historic.json'
-        ]
 
         path_slug = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug + "/"
 
+        from os import listdir
+        from os.path import isfile, join
+        file_names = listdir(path_slug)
+        # onlyfiles = [f for f in listdir(path_slug) if isfile(join(path_slug, f))]
 
         from api.lib.fab_helper import mkdir_remote, put_file, remote_uname
         remote_path = 'home/hadoop/stock'
