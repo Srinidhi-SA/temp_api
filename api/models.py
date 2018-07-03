@@ -1567,7 +1567,6 @@ def get_slug_from_message_url(url):
     return "_".join(split_with_underscore[1:-1])
 
 
-
 class StockDataset(models.Model):
     name = models.CharField(max_length=100, null=True)
     stock_symbols = models.CharField(max_length=500, null=True, blank=True)
@@ -1715,7 +1714,8 @@ class StockDataset(models.Model):
             {
                 'created_by': self.created_by.username,
                 'updated_at': self.updated_at,
-                'stockdataset': self.name,
+                'name': self.name,
+                'stock_symbols': self.stock_symbols.upper()
                 # 'file_size': convert_to_humanize(self.input_file.size)
             })
         return convert_json_object_into_list_of_object(brief_info, 'stockdataset')

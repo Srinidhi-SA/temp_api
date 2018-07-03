@@ -115,7 +115,7 @@ def put_file(from_file, to_dir):
         local_path=from_file,
         remote_path=to_dir,
         use_sudo=True,
-        mirror_local_mode=True
+        # mirror_local_mode=True
     )
 
 def get_file(from_file, to_dir):
