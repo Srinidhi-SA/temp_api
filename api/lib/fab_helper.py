@@ -79,7 +79,6 @@ def mkdir_remote(dir_paths):
     :param dir_path: string or list of path at remote
     :return: None
     """
-
     if isinstance(dir_paths, str):
         run("mkdir -p {0}".format(dir_paths))
     elif isinstance(dir_paths, list) or isinstance(dir_paths, tuple):

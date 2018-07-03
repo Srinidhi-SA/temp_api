@@ -9,61 +9,63 @@ import random
 import string
 import api.StockAdvisor.utils as myutils
 
-def crawl_extract(urls,regex_dict={},remove_tags=[], slug=None):
+def crawl_extract(url,regex_dict={},remove_tags=[], slug=None):
     all_data=[]
     crawl_obj=generic_crawler.GenericCrawler()
-    fobj=open("/tmp/stock_info_{0}.json".format(slug),"w")
-    for url in urls:
-        content=crawl_obj.get_data(url)
-        json_list=[]
-        if 'finance.google.com/finance?' in url:
-            json_list=process.process_json_data(url,content,regex_dict=regex_dict)
-        else:
-            json_list=process.process_data(url,content,regex_dict=regex_dict,remove_tags=remove_tags)
 
-        for json_obj in json_list:
-            if not json_obj.get("url"):
-                continue
-            if "date" in json_obj:
-                json_obj["date"] = myutils.normalize_date_time(json_obj.get("date","1 min ago")).strftime("%Y%m%d")
-            fobj.write(json.dumps(json_obj)+"\n")
-            all_data.append(json_obj)
+    content=crawl_obj.get_data(url)
+    json_list=process.process_data(url,content,regex_dict=regex_dict,remove_tags=remove_tags)
 
-    fobj.close()
+    for json_obj in json_list:
+        if not json_obj.get("url"):
+            continue
+        if "date" in json_obj:
+            json_obj["date"] = myutils.normalize_date_time(json_obj.get("date","1 min ago")).strftime("%Y%m%d")
+        all_data.append(json_obj)
+
     return all_data
 
-def random_but_cool_stuff():
-    stock_symbols = ['googl', 'aapl']
-    GOOGLE_REGEX_FILE = "nasdaq_stock.json"
-    from api.StockAdvisor.crawling.common_utils import get_regex
-    extracted_data = crawl_extract(
-        urls=generate_urls_for_historic_data(stock_symbols),
-        regex_dict=get_regex(GOOGLE_REGEX_FILE)
-    )
-    return extracted_data
 
-
-def fetch_news_article_from_nasdaq(stock_symbols):
-    all_data = []
+def fetch_news_article_from_nasdaq(stock):
     crawl_obj = generic_crawler.GenericCrawler()
-    for stock in stock_symbols:
-        url = get_nasdaq_news_article(stock)
-        # print url
-        content = crawl_obj.get_data(url)
-        json_list = process.process_nasdaq_news_article(url, content, stock=stock)
-        # print json_list
-        for json_obj in json_list:
-            if not json_obj.get("url"):
-                continue
-            # if "date" in json_obj:
-            #     json_obj["date"] = myutils.normalize_date_time(json_obj.get("date", "1 min ago")).strftime("%Y%m%d")
-            # fobj.write(json.dumps(json_obj) + "\n")
-            all_data.append(json_obj)
-    return all_data
+    stock_news = []
+    url = get_nasdaq_news_article(stock)
+    print url
+    content = crawl_obj.get_data(url)
+    json_list = process.process_nasdaq_news_article(url, content, stock=stock)
+    # print json_list
+    for json_obj in json_list:
+        if not json_obj.get("url"):
+            continue
+        # if "date" in json_obj:
+        #     json_obj["date"] = myutils.normalize_date_time(json_obj.get("date", "1 min ago")).strftime("%Y%m%d")
+        # fobj.write(json.dumps(json_obj) + "\n")
+        stock_news.append(json_obj)
+    return stock_news
+
+
+def write_to_news_data_in_folder(stockName, data):
+    import os
+    import csv
+    path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))) + "/scripts/data/" + self.slug + "/"
+    # file_path = path + stockName + "." + type
+    file_path = path + stockName + "." + type
+    print "fo"*10
+    print file_path
+    with open(file_path, "wb") as file_to_write_on:
+        if 'csv' == type:
+            writer = csv.writer(file_to_write_on)
+            writer.writerow(data)
+        elif 'json' == type:
+            json.dump(data, file_to_write_on)
 
 
 def generate_urls_for_historic_data(list_of_company_name):
 	return ["http://www.nasdaq.com/symbol/{0}/historical".format(name) for name in list_of_company_name]
+
+def generate_url_for_historic_data(name):
+	return "http://www.nasdaq.com/symbol/{0}/historical".format(name)
+
 
 def generate_urls_for_crawl_news(stock_symbols):
 	return ["https://finance.google.com/finance/company_news?q=NASDAQ:{}".format(stock_symbol.upper()) for stock_symbol in stock_symbols]

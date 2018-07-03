@@ -619,7 +619,7 @@ class StockDatasetSerializer(serializers.ModelSerializer):
         return instance
 
     def to_representation(self, instance):
-        print get_job_status(instance)
+        # print get_job_status(instance)
         ret = super(StockDatasetSerializer, self).to_representation(instance)
         ret = convert_to_json(ret)
         ret = convert_time_to_human(ret)

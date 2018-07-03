@@ -17,7 +17,8 @@ from StockAdvisor.crawling.crawl_util import crawl_extract, \
     generate_urls_for_crawl_news, \
     convert_crawled_data_to_metadata_format, \
     generate_urls_for_historic_data, \
-    fetch_news_article_from_nasdaq
+    fetch_news_article_from_nasdaq, \
+    generate_url_for_historic_data
 from api.helper import convert_json_object_into_list_of_object
 from api.lib import hadoop, fab_helper
 
@@ -1618,10 +1619,15 @@ class StockDataset(models.Model):
         super(StockDataset, self).save(*args, **kwargs)
 
     def create(self):
+        self.create_folder_in_scripts_data()
+        self.crawl_news_data()
+        self.crawl_for_historic_data()
+
+
         # self.meta_data = json.dumps(dummy_audio_data_3)
         from api.tasks import stock_sense_crawl
         self.status = "INPROGRESS"
-        self.meta_data = self.generate_meta_data()
+        self.generate_meta_data()
         self.save()
         self.call_mlscripts()
         # stock_sense_crawl.delay(object_slug=self.slug)
@@ -1629,13 +1635,24 @@ class StockDataset(models.Model):
         # self.fake_call_mlscripts()
         # self.save()
 
-    def crawl_data(self):
+    def crawl_news_data(self):
 
         stock_symbols = self.get_stock_symbol_names()
-        extracted_data = fetch_news_article_from_nasdaq(stock_symbols)
-        # extracted_data = self.read_stock_json_file()
+
+        extracted_data = []
+        for stock in stock_symbols:
+            stock_data = fetch_news_article_from_nasdaq(stock)
+            self.write_to_concepts_folder(
+                stockDataType="news",
+                stockName=stock,
+                data=stock_data,
+                type='json'
+            )
+            extracted_data += stock_data
+
         if len(extracted_data) < 1:
             return {}
+
         meta_data = convert_crawled_data_to_metadata_format(
             news_data=extracted_data,
             other_details={
@@ -1645,13 +1662,6 @@ class StockDataset(models.Model):
         )
 
         meta_data['extracted_data'] = extracted_data
-
-        self.write_to_concepts_folder(
-            stockDataType="news",
-            stockName="",
-            data=extracted_data,
-            type='json'
-        )
 
         return json.dumps(meta_data)
 
@@ -1666,29 +1676,21 @@ class StockDataset(models.Model):
     def crawl_for_historic_data(self):
         stock_symbols = self.get_stock_symbol_names()
         GOOGLE_REGEX_FILE = "nasdaq_stock.json"
-        extracted_data = crawl_extract(
-            urls=generate_urls_for_historic_data(stock_symbols),
-            regex_dict=get_regex(GOOGLE_REGEX_FILE),
-            slug=self.slug
-        )
-        if len(extracted_data) < 1:
-            return {}
-        meta_data = convert_crawled_data_to_metadata_format(
-            news_data=extracted_data,
-            other_details={
-                'type': 'historical_data'
-            },
-            slug=self.slug
-        )
 
-        self.write_to_concepts_folder(
-            stockDataType="historic",
-            stockName="all",
-            data=extracted_data,
-            type='json'
-        )
+        for stock in stock_symbols:
+            url = generate_url_for_historic_data(stock)
+            stock_data = crawl_extract(
+                url=url,
+                regex_dict=get_regex(GOOGLE_REGEX_FILE),
+                slug=self.slug
+            )
 
-        return meta_data
+            self.write_to_concepts_folder(
+                stockDataType="historic",
+                stockName=stock,
+                data=stock_data,
+                type='json'
+            )
 
     def get_bluemix_natural_language_understanding(self, name=None):
         from StockAdvisor.bluemix.process_urls import ProcessUrls
@@ -1703,12 +1705,12 @@ class StockDataset(models.Model):
 
     def generate_meta_data(self):
         self.create_folder_in_scripts_data()
+        # self.paste_essential_files_in_scripts_folder()
+        self.crawl_for_historic_data()
+        # self.get_bluemix_natural_language_understanding()
+        print "generate_meta_data "*3
+        self.meta_data = self.crawl_news_data()
         self.paste_essential_files_in_scripts_folder()
-        data = self.crawl_for_historic_data()
-        self.get_bluemix_natural_language_understanding()
-        print "generate_meta_data"*3
-        return self.crawl_data()
-        # return data
 
     def create_folder_in_scripts_data(self):
         path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug
@@ -1717,25 +1719,25 @@ class StockDataset(models.Model):
 
     def paste_essential_files_in_scripts_folder(self):
 
-        # import shutil
-        # file_names = [
-        #     'concepts.json',
-        #     # 'aapl.json',
-        #     # 'aapl_historic.json',
-        #     # 'googl.json',
-        #     # 'googl_historic.json',
-        #     # 'ibm.json',
-        #     # 'ibm_historic.json',
-        #     # 'msft.json',
-        #     # 'msft_historic.json'
-        # ]
-        # path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data"
-        # path_slug = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug + "/"
-        # self.sanitize(path + "/concepts.json")
-        # for name in file_names:
-        #     path1 = path + "/"+ name
-        #     path2 = path_slug + name
-        #     shutil.copyfile(path1, path2)
+        import shutil
+        file_names = [
+            'concepts.json',
+            # 'aapl.json',
+            # 'aapl_historic.json',
+            # 'googl.json',
+            # 'googl_historic.json',
+            # 'ibm.json',
+            # 'ibm_historic.json',
+            # 'msft.json',
+            # 'msft_historic.json'
+        ]
+        path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data"
+        path_slug = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug + "/"
+        self.sanitize(path + "/concepts.json")
+        for name in file_names:
+            path1 = path + "/"+ name
+            path2 = path_slug + name
+            shutil.copyfile(path1, path2)
 
         self.put_files_into_remote()
 
@@ -1757,7 +1759,6 @@ class StockDataset(models.Model):
         f.write(text)
         f.close()
 
-
     def put_files_into_remote(self):
 
         path_slug = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug + "/"
@@ -1769,7 +1770,9 @@ class StockDataset(models.Model):
         # onlyfiles = [f for f in listdir(path_slug) if isfile(join(path_slug, f))]
 
         from api.lib.fab_helper import mkdir_remote, put_file, remote_uname
-        remote_path = 'home/hadoop/stock'
+        remote_path = '/home/hadoop/stock' + "/" + self.slug
+        remote_path = str(remote_path)
+        mkdir_remote(dir_paths=remote_path)
         remote_uname()
         for name in file_names:
             dest_path = remote_path + "/" + name
@@ -1778,7 +1781,9 @@ class StockDataset(models.Model):
             put_file(src_path, dest_path)
 
     def create_folder_in_remote(self):
-        pass
+        from api.lib.fab_helper import mkdir_remote, put_file, remote_uname
+        remote_path = '/home/hadoop/stock' + "/" + self.slug
+        mkdir_remote(dir_paths=remote_path)
 
     def stats(self, file):
         self.input_file = file
@@ -1881,10 +1886,15 @@ class StockDataset(models.Model):
             self.status = "INPROGRESS"
         self.save()
 
-    def write_to_concepts_folder(self, stockDataType, stockName, data, type='csv'):
-        name = stockDataType + "_" + stockName
+    def write_to_concepts_folder(self, stockDataType, stockName, data, type='json'):
+        print stockDataType
+        if stockDataType == "historic":
+            name = stockName + "_" + stockDataType
+        else:
+            name = stockName
         path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug + "/"
-        file_path = path + stockName + "." + type
+        # file_path = path + stockName + "." + type
+        file_path = path + name + "." + type
         print "fo"*10
         print file_path
         with open(file_path, "wb") as file_to_write_on:

@@ -68,7 +68,7 @@ def process_json_data(url,content,regex_dict={},remove_tags=[]):
 	return all_data
 
 def process_nasdaq_news_article(url, content, stock):
-	soup = BeautifulSoup(content)
+	soup = BeautifulSoup(content, "html.parser")
 	new_headlines = soup.find_all('div', class_="news-headlines")
 	all_data = []
 	for i, tag in enumerate(new_headlines[0]):
