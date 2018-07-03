@@ -82,7 +82,7 @@ def process_nasdaq_news_article(url, content, stock):
 			json_data['time'] = sanitize(date_and_author.split('-')[0])
 			json_data['source'] = sanitize(date_and_author.split('-')[1])
 			json_data['stock'] = stock
-			json_data['short_desc'] = ""
+			json_data['short_desc'] = process_nasdaq_news_paragraph(tag.span.a['href'])
 
 			all_data.append(json_data)
 	return all_data
@@ -108,3 +108,17 @@ def process_marketwatch_news_article(content):
 		all_data.append(json_data)
 
 	return all_data
+
+def process_nasdaq_news_paragraph(url):
+	from bs4 import BeautifulSoup
+	import requests
+	r = requests.get(url)
+	data = r.text
+
+	soup = BeautifulSoup(data)
+	all_para = soup.find_all('p')
+	article_text = ""
+	for para in all_para[2:]:
+		article_text += sanitize(para.text)
+
+	return article_text
