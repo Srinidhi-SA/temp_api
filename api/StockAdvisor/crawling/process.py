@@ -11,7 +11,7 @@ def sanitize(content,remove_tags=[]):
 	text=''
 	text=re.sub('<.*?>',' ',content)
 	if text:
-		text=text.replace("\n","").replace("&nbsp;","").replace("\t"," ").replace("\u"," ").strip()
+		text=text.replace("\n","").replace("&nbsp;","").replace("\t"," ").replace("\u"," ").replace("\r"," ").strip()
 	text =text.encode('utf-8')
 	return text
 
