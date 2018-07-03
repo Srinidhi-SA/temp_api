@@ -81,6 +81,7 @@ def process_nasdaq_news_article(url, content, stock):
 			json_data['url'] = url
 			date_and_author = tag.small.text
 			json_data['time'] = sanitize(date_and_author.split('-')[0])
+			json_data['date'] = sanitize(date_and_author.split('-')[0])
 			json_data['source'] = sanitize(date_and_author.split('-')[1])
 			json_data['stock'] = stock
 			json_data['short_desc'] = process_nasdaq_news_paragraph(tag.span.a['href'])

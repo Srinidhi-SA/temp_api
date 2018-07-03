@@ -29,18 +29,19 @@ def crawl_extract(url,regex_dict={},remove_tags=[], slug=None):
 def fetch_news_article_from_nasdaq(stock):
     crawl_obj = generic_crawler.GenericCrawler()
     stock_news = []
-    url = get_nasdaq_news_article(stock)
-    print url
-    content = crawl_obj.get_data(url)
-    json_list = process.process_nasdaq_news_article(url, content, stock=stock)
-    # print json_list
-    for json_obj in json_list:
-        if not json_obj.get("url"):
-            continue
-        # if "date" in json_obj:
-        #     json_obj["date"] = myutils.normalize_date_time(json_obj.get("date", "1 min ago")).strftime("%Y%m%d")
-        # fobj.write(json.dumps(json_obj) + "\n")
-        stock_news.append(json_obj)
+    urls = [get_nasdaq_news_article(stock)] + get_nasdaq_news_articles(stock)
+
+    for url in urls:
+        print url
+        content = crawl_obj.get_data(url)
+        json_list = process.process_nasdaq_news_article(url, content, stock=stock)
+        # print json_list
+        for json_obj in json_list:
+            if not json_obj.get("url"):
+                continue
+            # if "date" in json_obj:
+            #     json_obj["date"] = myutils.normalize_date_time(json_obj.get("date", "1 min ago")).strftime("%Y%m%d")
+            stock_news.append(json_obj)
     return stock_news
 
 
@@ -72,6 +73,9 @@ def generate_urls_for_crawl_news(stock_symbols):
 
 def get_nasdaq_news_article(stock_symbol):
     return "http://www.nasdaq.com/symbol/{0}/news-headlines".format(stock_symbol)
+
+def get_nasdaq_news_articles(stock_symbol):
+    return ["https://www.nasdaq.com/symbol/{0}/news-headlines?page={1}".format(stock_symbol, str(i)) for i in range(2,9)]
 
 # columnData, headers, sampledata, metadata
 def convert_crawled_data_to_metadata_format(news_data, other_details=None, slug=None):
