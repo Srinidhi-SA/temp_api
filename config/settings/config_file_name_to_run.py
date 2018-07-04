@@ -1,3 +1,3 @@
-CONFIG_FILE_NAME = 'staging2'
+CONFIG_FILE_NAME = 'master'
 UI_VERSION = '3763503'
     
