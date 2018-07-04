@@ -25,7 +25,9 @@ export class CardTable extends React.Component {
 		var element = this.props.jsonData;
 		console.log("checking table element");
 		let tableEle = "";
+		var tableCls = "";
 		if(element.tableType == CIRCULARCHARTTABLE){
+			tableCls = "text-center tbl_th_center";
 			tableEle =  <CircularChartTable  tableData={element} />;
 		}
 		if(element.tableType == CONFUSIONMATRIX){
@@ -49,7 +51,7 @@ export class CardTable extends React.Component {
             tableEle = <NormalHideColumn tableData={element}/>;
         }
 		return (
-				<div>
+				<div className={tableCls}>
 				{tableEle}
 				</div>
 		);

@@ -6629,16 +6629,16 @@ body.open-right-sidebar .ma-right-sidebar {
   bottom: 0px;
   width: 50%;
   height: 100%;
-  background-image: url(../images/ma_lgBanner.png);
+  background-image: url(../images/dataScienceinbox.gif);
   background-repeat: no-repeat;
   background-position:center center;
 
 /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#079088+0,0c6965+100 */
-background-color: #079088; /* Old browsers */
-background-color: -moz-linear-gradient(top, #079088 0%, #0c6965 100%); /* FF3.6-15 */
-background-color: -webkit-linear-gradient(top, #079088 0%,#0c6965 100%); /* Chrome10-25,Safari5.1-6 */
-background-color: linear-gradient(to bottom, #079088 0%,#0c6965 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#079088', endColorstr='#0c6965',GradientType=0 ); /* IE6-9 */
+background-color: #00998c; /* Old browsers */
+background-color: -moz-linear-gradient(top, #00998c 0%, #0c6965 100%); /* FF3.6-15 */
+background-color: -webkit-linear-gradient(top, #00998c 0%,#0c6965 100%); /* Chrome10-25,Safari5.1-6 */
+background-color: linear-gradient(to bottom, #00998c 0%,#0c6965 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00998c', endColorstr='#0c6965',GradientType=0 ); /* IE6-9 */
 }
 .ma-login .ma-content-right {
   overflow: auto;
@@ -11572,7 +11572,7 @@ h3.modal-title, h4.modal-title { font-size: 19px; }
 .table>tbody>tr>td {
 	font-weight: 300;
 	vertical-align: middle
-	
+
 }
 .table>tbody.no-border-x>tr>td {
 	border-top-width: 0
@@ -14965,14 +14965,16 @@ a.more_button { color: #b3b3b3; padding: 0 10px; margin-right: 9px; cursor:point
 .notAllowed a.deactivate { pointer-events: none;}
 
 #welCome_message .bg-color { background:#f3f3f4; border:1px solid #cccccc; border-radius:10px; width:60%; }
-.loaderValue { position:absolute; top:190px; right:100px; color:#FFFFFF; }
+.loaderValue { position:absolute; top:190px; right:110px; color:#FFFFFF; }
 .tab-pane .newCardStyle { border-top: 1px solid #f3f4f4;}
 .accordion .read { padding-top: 2px;}
 .accordion .col-xs-1 {  border: 1px solid #e0e0e0; background: #edecec; padding: 4px; text-align:center}
 #manualBlock_111 .accordion .col-xs-1 { background: #FFFFFF; }
 .cst-panel-shadow .list-unstyled li .ma-checkbox, .cst-panel-shadow .list-unstyled li .ma-checkbox label { width: 100%; }
 .cst-panel-shadow .ma-checkbox label span { display: inline-block; width: 90%; }
-
+a:hover .icon-container .icon { background:#e6e6e6; }
+a .icon-container .class { color: #333333;}
+a:hover .icon-container .class { color: #02988c;}
 /**************** Css realated to developers, keep the source down ***/
 #prediction_dropdown{
 	    width: 40%;
@@ -15538,7 +15540,21 @@ input[type=range]:focus::-ms-fill-upper {
   background: #00998c;
 }
 
-.tablesorter-ice .header, .tablesorter-ice .tablesorter-header{ text-transform: uppercase; } 
-
-
-
+.tablesorter-ice .header, .tablesorter-ice .tablesorter-header{ text-transform: uppercase; }
+.cardKpi {text-align: center}
+.card_kpi {float:none; display: inline-block; vertical-align: top;}
+div.text-center.tbl_th_center th {text-align: center}
+.col-xs-1.clr-alt4, .gray-box { padding: 5px 0px;
+    text-align: center; }
+.for_multiselect .btn-group { min-width:180px; }
+.for_multiselect .btn-group .btn.btn-default {width:100%; text-align: left;  }
+.for_multiselect .btn-group .btn.btn-default .caret { float: right; margin-top: 5px;}
+.parcoords{height:200px;}
+.arn_table {border:1px solid #ddd}
+.rowhead { text-transform: capitalize}
+.rowhead, .rowbody { border-bottom:1px solid #ddd}
+.rowhead th, .rowbody td { padding:2px; text-align:center; }
+.break-if-longText>tbody>tr>td{word-break: break-all;}
+.break-if-longText>thead>tr>th{vertical-align: middle;}
+.inputWidth { width:80px !important}
+.removeBreak .break-if-longText>tbody>tr>td{word-break: normal}

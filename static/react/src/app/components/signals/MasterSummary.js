@@ -72,22 +72,23 @@ export class MasterSummary extends React.Component {
           <div class="clearfix"></div>
         </div>
         <div className="main-content">
-			   
+
 				<div className="panel panel-default">
 					<div className="panel-body no-border box-shadow">
-					
-					
+
+
                   <div className="row">
-                    
+
                       <div className="col-md-9">
                         <div className="md-p-50">
                           <div className="row">
                             <div className="col-md-4 col-md-offset-2 col-sm-6 data-info">
                               <table>
+                              <tbody>
                                 <tr>
                                   <td></td>
-                                  <td class="text-center">                                   
-                                      <h1>{noOfDimention}</h1>                                    
+                                  <td class="text-center">
+                                      <h1>{noOfDimention}</h1>
                                   </td>
                                 </tr>
                                 <tr>
@@ -98,10 +99,12 @@ export class MasterSummary extends React.Component {
                                       {dText}</h3>
                                   </td>
                                 </tr>
+                                </tbody>
                               </table>
                             </div>
                             <div className="col-md-4 col-md-offset-1 col-sm-6 data-info">
                               <table>
+                              <tbody>
                                 <tr>
                                   <td></td>
                                   <td class="text-center">
@@ -115,13 +118,14 @@ export class MasterSummary extends React.Component {
                                       {mText}</h3>
                                   </td>
                                 </tr>
+                                </tbody>
                               </table>
 
                             </div>
                             <div className="clearfix"></div>
                             <div className="col-md-12 xs-pt-30">
-                              <p className="lead txt-justify"><Card cardData={summary}/>
-                              </p>
+                              <div className="lead txt-justify"><Card cardData={summary}/>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -138,12 +142,12 @@ export class MasterSummary extends React.Component {
 						</div>
                       </div>
                       <div class="clearfix"></div>
-                     
+
                   </div>
-				  
+
              </div>
 				</div>
-            
+
 
         </div>
       </div>

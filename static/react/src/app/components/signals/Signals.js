@@ -167,7 +167,7 @@ export class Signals extends React.Component {
         document.getElementById('search_signals').value = "";
       }*/
 
-    if (!isEmpty(store.getState().signals.signalAnalysis)) {
+    if (!isEmpty(store.getState().signals.signalAnalysis) && $.isPlainObject(store.getState().signals.signalAnalysis)) {
       let _link = "/signals/" + store.getState().signals.signalAnalysis.slug;
       return (<Redirect to={_link}/>);
     }

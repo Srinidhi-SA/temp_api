@@ -41,7 +41,6 @@ def submit_job_separate_task(command_array, slug):
         my_env["HADOOP_USER_NAME"] = settings.HADOOP_USER_NAME
     cur_process = subprocess.Popen(command_array, stderr=subprocess.PIPE, env=my_env)
     print cur_process
-    print command_array
     # TODO: @Ankush need to write the error to error log and standard out to normal log
     for line in iter(lambda: cur_process.stderr.readline(), ''):
         # print(line.strip())
@@ -56,7 +55,29 @@ def submit_job_separate_task(command_array, slug):
             model_instance.url = application_id
             model_instance.save()
             break
-    # os.killpg(os.getpgid(cur_process.pid), signal.SIGTERM)
+
+def submit_job_separate_task1(command_array, slug):
+    import subprocess, os
+    my_env = os.environ.copy()
+    if settings.HADOOP_CONF_DIR:
+        my_env["HADOOP_CONF_DIR"] = settings.HADOOP_CONF_DIR
+        my_env["HADOOP_USER_NAME"] = settings.HADOOP_USER_NAME
+    cur_process = subprocess.Popen(command_array, stderr=subprocess.PIPE, env=my_env)
+    print cur_process
+    # TODO: @Ankush need to write the error to error log and standard out to normal log
+    for line in iter(lambda: cur_process.stderr.readline(), ''):
+        # print(line.strip())
+        match = re.search('Submitted application (.*)$', line)
+        if match:
+            application_id = match.groups()[0]
+            from api.helper import get_db_object
+
+            model_instance = get_db_object(model_name=Job.__name__,
+                                           model_slug=slug
+                                           )
+            model_instance.url = application_id
+            model_instance.save()
+            break
 
 @task(name='write_into_databases', queue=CONFIG_FILE_NAME)
 def write_into_databases(job_type, object_slug, results):
@@ -306,6 +327,25 @@ def save_results_to_job(slug, results):
 
 
 @task(name='cleanup_logentry', queue=CONFIG_FILE_NAME)
+def save_results_to_job1(slug, results):
+    from api.helper import get_db_object
+    import json
+
+    job = get_db_object(model_name=Job.__name__,
+                                   model_slug=slug
+                                   )
+
+    if isinstance(results, str) or isinstance(results, unicode):
+        job.results = results
+    elif isinstance(results, dict):
+        results = json.dumps(results)
+        job.results = results
+    job.save()
+    print "save hogaya "*100
+
+
+
+@task(name='cleanup_logentry')
 def clean_up_logentry():
 
     from auditlog.models import LogEntry
@@ -321,16 +361,7 @@ def clean_up_logentry():
 
 @task(name='cleanup_on_delete', queue=CONFIG_FILE_NAME)
 def clean_up_on_delete(slug, model_name):
-
-    from api.helper import get_db_object
     from api.models import SaveAnyData, Job, SaveData
-
-    model_instance = get_db_object(model_name=model_name,
-                                   model_slug=slug
-                                   )
-    model_instance.data = '{}'
-    model_instance.deleted = True
-    model_instance.save()
 
     job_instance = Job.objects.filter(object_id__contains=slug).first()
     if job_instance:

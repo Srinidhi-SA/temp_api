@@ -6,22 +6,20 @@ import {Link} from "react-router-dom";
 import {cookieObj} from '../../helpers/cookiesHandler';
 import {getUserDetailsOrRestart} from  "../../helpers/helper"
 import {STATIC_URL} from "../../helpers/env";
+import {clearSignalAnalysisBeforeLogout} from "../../actions/signalActions";
 // import $ from 'jquery';
-
-// import store from "../../store";
-// import {connect} from "react-redux";
-//
-//
-// @connect((store) => {
-//   return {login_res:store.login.login_response};
-// })
+ import store from "../../store";
+ import {connect} from "react-redux";
+ @connect((store) => {
+   return {login_res:store.login.login_response};
+ })
 export default class TopPanel extends React.Component {
     constructor(props){
 		super(props);
 		this.state = {loginFlag: true}
 	}
 	logout(){
-
+		this.props.dispatch(clearSignalAnalysisBeforeLogout());
 		  this.setState({
              loginFlag: false
          });

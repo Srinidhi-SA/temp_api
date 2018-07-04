@@ -1,10 +1,11 @@
 import React from "react";
-import {API} from "../helpers/env";
+import {API,STATIC_URL} from "../helpers/env";
 import {CSLOADERPERVALUE,LOADERMAXPERVALUE,DEFAULTINTERVAL,PERPAGE,SUCCESS,FAILED,getUserDetailsOrRestart,DIMENSION,
-    MEASURE,SET_VARIABLE,PERCENTAGE,GENERIC_NUMERIC,SET_POLARITY,DYNAMICLOADERINTERVAL,UNIQUE_IDENTIFIER,handleJobProcessing} from "../helpers/helper";
+    MEASURE,SET_VARIABLE,PERCENTAGE,GENERIC_NUMERIC,SET_POLARITY,DYNAMICLOADERINTERVAL,UNIQUE_IDENTIFIER,handleJobProcessing,statusMessages} from "../helpers/helper";
 import {connect} from "react-redux";
 import store from "../store";
 import {openCsLoaderModal, closeCsLoaderModal, updateCsLoaderValue, updateCsLoaderMsg} from "./createSignalActions";
+import renderHTML from 'react-render-html';
 import Dialog from 'react-bootstrap-dialog'
 import {showLoading, hideLoading} from 'react-redux-loading-bar'
 import {updateColumnStatus,handleDVSearch,updateStoreVariables,updateDatasetVariables,updateSelectAllAnlysis,hideDataPreview,updateTargetAnalysisList,getTotalVariablesSelected} from './dataActions';
@@ -221,8 +222,9 @@ function fetchPosts(token, pageNo,dispatch) {
 
 export function refreshSignals(props) {
   return (dispatch) => {
+    if(refreshSignalInterval != null)
+    clearInterval(refreshSignalInterval);
     refreshSignalInterval = setInterval(function() {
-
       var pageNo = window.location.href.split("=")[1];
       if (pageNo == undefined)
         pageNo = 1;
@@ -230,7 +232,6 @@ export function refreshSignals(props) {
         dispatch(getList(getUserDetailsOrRestart.get().userToken, parseInt(pageNo)));
       }
     , DEFAULTINTERVAL);
-
   }
 }
 function fetchPostsSuccess(signalList) {
@@ -250,7 +251,6 @@ export function getSignalAnalysis(token, errandId) {
   return (dispatch) => {
     return fetchPosts_analysis(token, errandId).then(([response, json]) => {
       if (response.status === 200) {
-
         dispatch(fetchPostsSuccess_analysis(json, errandId, dispatch))
       } else {
         dispatch(fetchPostsError_analysis(json));
@@ -271,7 +271,7 @@ function fetchPosts_analysis(token, errandId) {
       'Content-Type': 'application/x-www-form-urlencoded'
     }
   }).then(response => Promise.all([response, response.json()])).catch(function(error) {
-    bootbox.alert("Something went wrong. Please try again later.")
+      bootbox.alert(statusMessages("error","Something went wrong. Please try again later.","small_mascot"))
   });
 
 }
@@ -286,7 +286,7 @@ function fetchPostsSuccess_analysis(signalAnalysis, errandId, dispatch) {
     dispatch(updateTargetTypForSelSignal(signalAnalysis.type))
   } else if (signalAnalysis.status == FAILED || signalAnalysis.status == false) {
     //bootbox.alert("Your signal could not be created. Please try later.")
-    bootbox.alert("The signal could not be created. Please check the dataset and try again.")
+    bootbox.alert(statusMessages("error","The signal could not be created. Please check the dataset and try again.","small_mascot"))
     clearInterval(createSignalInterval);
     dispatch(closeCsLoaderModal())
     dispatch(updateCsLoaderValue(CSLOADERPERVALUE))
@@ -556,9 +556,10 @@ export function showDialogBox(slug,dialog,dispatch,evt){
 		  defaultOkLabel: 'Yes',
 		  defaultCancelLabel: 'No',
 		})
+	var body_msg=renderHTML(statusMessages("warning","Are you sure you want to delete this Signal?","small_mascot"))
 	dialog.show({
 		  title: 'Delete Signal',
-		  body: 'Are you sure you want to delete this Signal ? Yes , No',
+		  body: body_msg,
 		  actions: [
 		    Dialog.CancelAction(),
 		    Dialog.OKAction(() => {
@@ -586,7 +587,8 @@ function deleteSignal(slug, dialog, dispatch) {
       dispatch(getList(getUserDetailsOrRestart.get().userToken, store.getState().signals.signalList.current_page));
       dispatch(hideLoading());
     } else {
-      dialog.showAlert("The card could not be deleted. Please try again later.");
+      //dialog.showAlert("The card could not be deleted. Please try again later.");
+      bootbox.alert(statusMessages("error","The card could not be deleted. Please try again later.","without_mascot"))
       dispatch(hideLoading());
     }
   })
@@ -623,11 +625,19 @@ export function handleRename(slug, dialog, name) {
 }
 function showRenameDialogBox(slug, dialog, dispatch, name) {
   const customBody = (
-    <div className="form-group">
 
-      <label for="fl1" className="control-label">Enter a new name</label>
-      <input className="form-control" id="idRenameSignal" type="text" defaultValue={name}/>
-    </div>
+	<div className="row">
+			<div className="col-md-4">
+				<img src={STATIC_URL + "assets/images/alert_thinking.gif"} class="img-responsive" />
+			</div>
+			<div className="col-md-8">
+			<div className="form-group">
+			<label for="fl1" className="control-label">Enter a new name</label>
+			<input className="form-control" id="idRenameSignal" type="text" defaultValue={name}/>
+			</div>
+			</div>
+		</div>
+
   )
 
   dialog.show({
@@ -772,5 +782,10 @@ export function updateTargetTypForSelSignal(signal_type){
   return{
     type:"SELECTED_SIGNAL_TYPE",
     signal_type
+  }
+}
+export function clearSignalAnalysisBeforeLogout(){
+  return {
+    type:"CLEAR_SIGNAL_ANALYSIS_BEFORE_LOGOUT"
   }
 }

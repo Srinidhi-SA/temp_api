@@ -16,7 +16,7 @@ export class NormalTable extends React.Component {
  
   render() {
    var data = this.props.tableData;
-   var className = "table table-bordered"
+   var className = "table table-bordered break-if-longText"
    console.log("checking normal tabletable element");
    var headerComponents = generateHeaders(data);
    var rowComponents = generateNormalTableRows(data);

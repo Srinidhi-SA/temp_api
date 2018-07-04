@@ -9,7 +9,7 @@ import store from "../../store";
 import { C3Chart } from "../c3Chart";
 import $ from "jquery";
 
-import {updateSelectedVariables, resetSelectedVariables, setSelectedVariables,updateDatasetVariables,handleDVSearch,handelSort,handleSelectAll,checkColumnIsIgnored,deselectAllVariablesDataPrev,makeAllVariablesTrueOrFalse,DisableSelectAllCheckbox} from "../../actions/dataActions";
+import {updateSelectedVariables, resetSelectedVariables, setSelectedVariables,updateDatasetVariables,handleDVSearch,handelSort,handleSelectAll,checkColumnIsIgnored,deselectAllVariablesDataPrev,makeAllVariablesTrueOrFalse,DisableSelectAllCheckbox,updateVariableSelectionArray,getTotalVariablesSelected} from "../../actions/dataActions";
 import {resetSelectedTargetVariable} from "../../actions/signalActions";
 
 @connect(( store ) => {
@@ -29,6 +29,8 @@ import {resetSelectedTargetVariable} from "../../actions/signalActions";
         dateTimeChecked:store.datasets.dateTimeChecked,
         dataSetAnalysisList:store.datasets.dataSetAnalysisList,
         isUpdate:store.datasets.isUpdate,
+        modelSummary:store.apps.modelSummary,
+        createScoreShowVariables:store.datasets.createScoreShowVariables,
     };
 } )
 
@@ -64,11 +66,46 @@ export class DataVariableSelection extends React.Component {
         this.props.dispatch(resetSelectedTargetVariable());
        // this.setVariables( this.dimensions, this.measures, this.selectedTimeDimension );
         this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.possibleAnalysisList,true));
-
+    }
+    componentDidUpdate(){
+        var count = getTotalVariablesSelected();
+        if(this.props.match.path.includes("/createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
+            if(count >= 10){
+                $('.measure[type="checkbox"]').each(function() {
+                    if (!$(this).is(":checked"))
+                    $(this).prop('disabled', true);
+                });
+                $('.dimension[type="checkbox"]').each(function() {
+                    if (!$(this).is(":checked"))
+                    $(this).prop('disabled', true);
+                });
+                $('.measureAll[type="checkbox"]').each(function() {
+                    $(this).prop('disabled', true);
+                });
+                $('.dimensionAll').prop("disabled",true);
+                $('.measureAll').prop("disabled",true);
+                //document.getElementById('measure').disabled = true;
+            }
+            else{
+                $('.measure[type="checkbox"]').each(function() {
+                    $(this).prop('disabled', false);
+                });
+                $('.dimension[type="checkbox"]').each(function() {
+                    $(this).prop('disabled', false);
+                });
+            }
+        }
     }
 
     handleDVSearch(evt){
-    this.props.dispatch(handleDVSearch(evt))
+    evt.preventDefault();
+    if(evt.target.name == "measure" && evt.target.value == "")
+    $("#measureSearch").val("");
+    if(evt.target.name == "dimension" && evt.target.value == "")
+    $("#dimensionSearch").val("");
+    if(evt.target.name == "datetime" && evt.target.value == "")
+    $("#datetimeSearch").val("");
+    this.props.dispatch(handleDVSearch(evt));
     }
     handelSort(variableType,sortOrder){
     	this.props.dispatch(handelSort(variableType,sortOrder))
@@ -82,7 +119,7 @@ export class DataVariableSelection extends React.Component {
         var variableSelectionMsg = <label>Including the follwing variables:</label>;
 
         let dataPrev = store.getState().datasets.dataPreview;
-
+        let modelSummary = this.props.modelSummary;
         var that = this;
         const popoverLeft = (
         		  <Popover id="popover-trigger-hover-focus">
@@ -99,6 +136,8 @@ export class DataVariableSelection extends React.Component {
         if ( dataPrev ) {
             console.log( "data variable selection" );
             console.log( dataPrev );
+            if(this.props.match.path.includes("/createScore") && !$.isEmptyObject(modelSummary))
+            this.props.dispatch(updateVariableSelectionArray(modelSummary));
             this.possibleAnalysisList = dataPrev.meta_data.uiMetaData.advanced_settings;
             const metaData = dataPrev.meta_data.uiMetaData.varibaleSelectionArray;
             this.measures = [];
@@ -107,7 +146,7 @@ export class DataVariableSelection extends React.Component {
             this.dimensionDateTime =[];
             metaData.map(( metaItem, metaIndex ) => {
 
-                if ( this.props.isUpdate ) {
+                if ( (this.props.isUpdate && this.props.createScoreShowVariables && this.props.match.path.includes("/createScore")) || (this.props.isUpdate && !this.props.match.path.includes("/createScore"))) {
 
                     switch ( metaItem.columnType ) {
                         case "measure":
@@ -138,40 +177,54 @@ export class DataVariableSelection extends React.Component {
 
             this.datetime = this.datetime.concat(this.dimensionDateTime);
 
-            if ( this.props.isUpdate ) {
+            if ( (this.props.isUpdate && this.props.createScoreShowVariables && this.props.match.path.includes("/createScore")) || (this.props.isUpdate && !this.props.match.path.includes("/createScore"))) {
             if(this.props.match.path.includes("createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
                 this.props.dispatch(resetSelectedVariables(false));
                 deselectAllVariablesDataPrev();
                 DisableSelectAllCheckbox();
             }
             else
-            this.props.dispatch( resetSelectedVariables(true) );
-            this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.possibleAnalysisList,false));
-            }
+            this.props.dispatch( resetSelectedVariables(true));
+            this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.possibleAnalysisList,false)); 
+        }
 
             var varCls = "";
 
             if ( store.getState().datasets.dataSetMeasures.length > 0 ) {
-                var measureTemplate = store.getState().datasets.dataSetMeasures.map(( mItem, mIndex ) => {
-                 if(mItem.targetColumn || mItem.uidCol)varCls="hidden";
-                 else varCls = "";
-                    return (
-                        <li className={varCls} key={mItem.slug}><div className="ma-checkbox inline"><input id={mItem.slug} name={mItem.setVarAs} type="checkbox" className="measure" onChange={this.handleCheckboxEvents} value={mItem.name} checked={mItem.selected} /><label htmlFor={mItem.slug} className="radioLabels"><span>{mItem.name}</span></label></div> </li>
-                    );
-                } );
+                if(store.getState().datasets.dataSetMeasures.length == 1 && store.getState().datasets.dataSetMeasures[0].targetColumn){
+                    $(".measureAll").prop("disabled",true);
+                    var measureTemplate = <label>No measure variable present</label>
+                }
+                else{
+                    var measureTemplate = store.getState().datasets.dataSetMeasures.map(( mItem, mIndex ) => {
+                    if(mItem.targetColumn || mItem.uidCol)varCls="hidden";
+                    else varCls = "";
+                        return (
+                            <li className={varCls} key={mItem.slug}><div className="ma-checkbox inline"><input id={mItem.slug} name={mItem.setVarAs} type="checkbox" className="measure" onChange={this.handleCheckboxEvents} value={mItem.name} checked={mItem.selected} /><label htmlFor={mItem.slug} className="radioLabels"><span>{mItem.name}</span></label></div> </li>
+                        );
+                    } );
+                    $(".measureAll").prop("disabled",false);
+                }
             } else {
                 $(".measureAll").prop("disabled",true);
                 var measureTemplate = <label>No measure variable present</label>
             }
             if ( store.getState().datasets.dataSetDimensions.length > 0 ) {
-                var dimensionTemplate = store.getState().datasets.dataSetDimensions.map(( dItem, dIndex ) => {
+                if(store.getState().datasets.dataSetDimensions.length == 1 && store.getState().datasets.dataSetDimensions[0].targetColumn){
+                    $(".dimensionAll").prop("disabled",true);
+                    var dimensionTemplate = <label>No dimension variable present</label>
+                }
+                else{
+                    var dimensionTemplate = store.getState().datasets.dataSetDimensions.map(( dItem, dIndex ) => {
 
-                    if(dItem.targetColumn ||  dItem.uidCol)varCls="hidden";
-                    else varCls = "";
-                    return (
-                        <li className={varCls} key={dItem.slug}><div className="ma-checkbox inline"><input id={dItem.slug} name={dItem.setVarAs} type="checkbox" className="dimension" onChange={this.handleCheckboxEvents} value={dItem.name} checked={dItem.selected} /><label htmlFor={dItem.slug}> <span>{dItem.name}</span></label></div> </li>
-                    );
-                } );
+                        if(dItem.targetColumn ||  dItem.uidCol)varCls="hidden";
+                        else varCls = "";
+                        return (
+                            <li className={varCls} key={dItem.slug}><div className="ma-checkbox inline"><input id={dItem.slug} name={dItem.setVarAs} type="checkbox" className="dimension" onChange={this.handleCheckboxEvents} value={dItem.name} checked={dItem.selected} /><label htmlFor={dItem.slug}> <span>{dItem.name}</span></label></div> </li>
+                        );
+                    } );
+                    $(".dimensionAll").prop("disabled",false);
+                }
             } else {
                 $(".dimensionAll").prop("disabled",true);
                 var dimensionTemplate = <label>No dimension variable present</label>
@@ -202,23 +255,27 @@ export class DataVariableSelection extends React.Component {
             }
             if(this.props.match.path.includes("/createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
                 let measureArray = $.grep(dataPrev.meta_data.uiMetaData.varibaleSelectionArray,function(val,key){
-                    return(val.columnType == "measure" && val.selected == false);
+                    return(val.columnType == "measure" && val.selected == false && val.targetColumn == false);
                 });
                 let dimensionArray = $.grep(dataPrev.meta_data.uiMetaData.varibaleSelectionArray,function(val,key){
-                    return(val.columnType == "dimension"  && val.selected == false);
+                    return(val.columnType == "dimension"  && val.selected == false && val.targetColumn == false);
                 });
-                if(measureArray.length > 5 || (store.getState().datasets.selectedVariablesCount+measureArray.length > 5)){
+                if(measureArray.length > 10 || (store.getState().datasets.selectedVariablesCount+measureArray.length > 10)){
                     if(store.getState().datasets.measureAllChecked == false)$('.measureAll').prop("disabled",true);
                 }
+                else if(measureArray.length == 0)
+                $('.measureAll').prop("disabled",true);
                 else
                 $('.measureAll').prop("disabled",false);
-                if(dimensionArray.length > 5 || (store.getState().datasets.selectedVariablesCount+dimensionArray.length > 5)){
+                if(dimensionArray.length > 10 || (store.getState().datasets.selectedVariablesCount+dimensionArray.length > 10)){
                     if(store.getState().datasets.dimensionAllChecked == false)$(".dimensionAll").prop("disabled",true);
                 }
+                else if(dimensionArray.length == 0)
+                $(".dimensionAll").prop("disabled",true);
                 else
                 $(".dimensionAll").prop("disabled",false);
 
-                variableSelectionMsg = <h4>Including performance analysis across the following variables (Upto 5)</h4>;
+                variableSelectionMsg = <h4>Including performance analysis across the following variables (4 to 10)</h4>;
             }
             return (
                 <div>

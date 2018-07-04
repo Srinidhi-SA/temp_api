@@ -7,7 +7,7 @@ import datetime
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['*', '192.168.18.80', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['*']
 
 # DATABASES = {
 #     'default': {
@@ -30,41 +30,16 @@ DATABASES = {
 }
 
 PROJECT_APP = [
-    # 'silk',
-    # 'django_extensions'
 ]
+
 
 INSTALLED_APPS += PROJECT_APP
-
-LOCAL_MIDDLEWARE = [
-    # 'django_cprofile_middleware.middleware.ProfilerMiddleware',
-    # 'silk.middleware.SilkyMiddleware'
-]
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend', # this is default
     'guardian.backends.ObjectPermissionBackend',
 )
-
-CELERY_BROKER_URL = 'redis://localhost:6379'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379'
-CELERY_ACCEPT_CONTENT = ['application/json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = TIME_ZONE
-CELERY_DEFAULT_QUEUE = "default1"
-CELERY_QUEUES = {
-    "default1": {
-        "binding_key": "task.#",
-        "exchange": "default1",
-        "routing": "default1"
-
-    }
-}
-
-MIDDLEWARE += LOCAL_MIDDLEWARE
-
-HADOOP_MASTER = "ec2-34-205-203-38.compute-1.amazonaws.com"
+HADOOP_MASTER = "172.31.70.80"
 
 YARN = {
     "host": HADOOP_MASTER,
@@ -110,15 +85,15 @@ JOBSERVER = {
 }
 
 THIS_SERVER_DETAILS = {
-    "host": "34.196.204.54",
-    "port": "9012",
+    "host": "madvisordev.marlabsai.com",
+    "port": "80",
     "initail_domain": "/api"
 }
 
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
+        "LOCATION": "redis://172.31.64.145:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient"
         },
@@ -158,20 +133,44 @@ FUNNY_EMAIL_LIST = [
 
 JOBSERVER_EMAIL_TEMPLATE = "Please restart jobserver- IP-"
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-        }
-    },
-    'loggers': {
-        'django.db.backends': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-        },
+DEPLOYMENT_ENV = "dev"
+
+CELERY_BROKER_URL = 'redis://172.31.64.145:6379'
+CELERY_RESULT_BACKEND = 'redis://172.31.64.145:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE
+CELERYD_MAX_TASKS_PER_CHILD = 4
+CELERYD_CONCURRENCY = 2
+# queue related settings
+CELERY_DEFAULT_QUEUE = config_file_name_to_run.CONFIG_FILE_NAME
+CELERY_QUEUES = {
+    config_file_name_to_run.CONFIG_FILE_NAME: {
+        "binding_key": "task.#",
+        "exchange": config_file_name_to_run.CONFIG_FILE_NAME,
+        "routing": config_file_name_to_run.CONFIG_FILE_NAME
     }
 }
 
+USING_KYLO = False
+KYLO_SERVER_DETAILS = {
+    "host": "52.205.59.95",
+    "port" : 8088,
+    "user": "ubuntu",
+    "key_path": "~/.ssh/TIAA.pem",
+    "group_propertie_quote": "admin,user",
+    "kylo_file_path":"/home/ubuntu/kylodir2/"
+}
+
+HADOOP_CONF_DIR= False
+HADOOP_USER_NAME="hduser"
+
+
+USE_YARN_DEFAULT_QUEUE=True
+# USE_YARN_DEFAULT_QUEUE=False
+
+PEM_KEY = "/keyfiles/TIAA.pem"
+
+# SUBMIT_JOB_THROUGH_CELERY = False
+SUBMIT_JOB_THROUGH_CELERY = True

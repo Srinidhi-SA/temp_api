@@ -92,8 +92,12 @@ class Job(models.Model):
 
     def start(self):
         command_array = json.loads(self.command_array)
-        from tasks import submit_job_separate_task
-        submit_job_separate_task.delay(command_array, self.object_id)
+        from tasks import submit_job_separate_task1, submit_job_separate_task
+
+        if settings.SUBMIT_JOB_THROUGH_CELERY:
+            submit_job_separate_task.delay(command_array, self.object_id)
+        else:
+            submit_job_separate_task1(command_array, self.object_id)
         original_object = self.get_original_object()
 
         if original_object is not None:
@@ -852,8 +856,10 @@ class Trainer(models.Model):
         config['config']["DATA_SOURCE"] = self.dataset.get_datasource_info()
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
         # config['config']["META_HELPER"] = self.create_configuration_meta_data()
-        if(self.app_id==settings.REGRESSION_APP_ID):
+        if (self.app_id in settings.REGRESSION_APP_ID):
             config['config']["ALGORITHM_SETTING"]=self.make_config_algorithm_setting()
+        elif self.app_id in settings.CLASSIFICATION_APP_ID:
+            config['config']["ALGORITHM_SETTING"] = self.make_config_algorithm_setting()
 
         self.config = json.dumps(config)
         self.save()
@@ -895,7 +901,7 @@ class Trainer(models.Model):
         targetLevel = None
         if 'targetLevel' in config:
             targetLevel = config.get('targetLevel')
-        if(self.app_id==settings.REGRESSION_APP_ID):
+        if(self.app_id in settings.REGRESSION_APP_ID):
             validationTechnique=config.get('validationTechnique')
             return {
                 'inputfile': [self.dataset.get_input_file()],
@@ -906,12 +912,13 @@ class Trainer(models.Model):
                 'targetLevel': targetLevel,
                 'app_type':'regression'
             }
-        else:
-            train_test_split = float(config.get('trainValue')) / 100
+        elif self.app_id in settings.CLASSIFICATION_APP_ID:
+
+            validationTechnique = config.get('validationTechnique')
             return {
             'inputfile': [self.dataset.get_input_file()],
             'modelpath': [self.slug],
-            'train_test_split': [train_test_split],
+            'validationTechnique': [validationTechnique],
             'analysis_type': ['training'],
             'metadata': self.dataset.get_metadata_url_config(),
             'targetLevel': targetLevel,
@@ -1105,7 +1112,8 @@ class Score(models.Model):
     def create_configuration_url_settings(self):
 
         config = json.loads(self.config)
-        algorithmslug = config.get('algorithmName')
+        selectedModel = config['selectedModel']
+        algorithmslug = selectedModel.get('slug')
 
         trainer_slug = self.trainer.slug
         score_slug = self.slug
@@ -1126,6 +1134,7 @@ class Score(models.Model):
         return {
             'inputfile': [self.dataset.get_input_file()],
             'modelpath': [trainer_slug],
+            'selectedModel' : [selectedModel],
             'scorepath': [score_slug],
             'analysis_type': ['score'],
             'levelcounts': targetVariableLevelcount if targetVariableLevelcount is not None else [],
@@ -1365,6 +1374,7 @@ class CustomApps(models.Model):
     live_status = models.CharField(max_length=300, default='0', choices=STATUS_CHOICES)
     viewed = models.BooleanField(default=False)
     app_type = models.CharField(max_length=300, null=True, default="")
+    rank = models.IntegerField(unique=True, null=True)
 
     class Meta:
         ordering = ['app_id']
@@ -1413,6 +1423,25 @@ class CustomApps(models.Model):
         #             'created_by': self.created_by.username,
         #         })
         #     return convert_json_object_into_list_of_object(brief_info, 'apps')
+
+
+    def adjust_rank(self, index):
+        self.rank = index
+        self.save()
+
+    def null_the_rank(self):
+        self.rank = None
+        self.save()
+
+
+class CustomAppsUserMapping(models.Model):
+    user = models.ForeignKey(User)
+    app = models.ForeignKey(CustomApps)
+    active = models.BooleanField(default=True)
+    rank = models.IntegerField(null=True)
+
+    class Meta:
+        unique_together = (('user', 'app'),)
 
 
 auditlog.register(Dataset)
@@ -1544,7 +1573,6 @@ def get_message_slug(instance):
 def get_slug_from_message_url(url):
     split_with_underscore = url.split('_')
     return "_".join(split_with_underscore[1:-1])
-
 
 
 class StockDataset(models.Model):
@@ -1694,7 +1722,8 @@ class StockDataset(models.Model):
             {
                 'created_by': self.created_by.username,
                 'updated_at': self.updated_at,
-                'stockdataset': self.name,
+                'name': self.name,
+                'stock_symbols': self.stock_symbols.upper()
                 # 'file_size': convert_to_humanize(self.input_file.size)
             })
         return convert_json_object_into_list_of_object(brief_info, 'stockdataset')
@@ -1916,211 +1945,6 @@ class SaveAnyData(models.Model):
         self.data = json.dumps(json_data)
         self.save()
         return True
-
-#regression app
-# class Regression(models.Model):
-#     name = models.CharField(max_length=300, null=True)
-#     slug = models.SlugField(null=False, blank=True, max_length=300)
-#     dataset = models.ForeignKey(Dataset, null=False)
-#     column_data_raw = models.TextField(default="{}")
-#     config = models.TextField(default="{}")
-#     app_id = models.IntegerField(null=True, default=0)
-#
-#     data = models.TextField(default="{}")
-#
-#     created_at = models.DateTimeField(auto_now_add=True, null=True)
-#     updated_at = models.DateTimeField(auto_now=True, null=True)
-#     created_by = models.ForeignKey(User, null=False, db_index=True)
-#     deleted = models.BooleanField(default=False, db_index=True)
-#
-#     bookmarked = models.BooleanField(default=False)
-#     analysis_done = models.BooleanField(default=False)
-#
-#     job = models.ForeignKey(Job, null=True)
-#     status = models.CharField(max_length=100, null=True, default="Not Registered", db_index=True)
-#     live_status = models.CharField(max_length=300, default='0', choices=STATUS_CHOICES)
-#     viewed = models.BooleanField(default=False)
-#
-#
-#
-#     class Meta:
-#         ordering = ['-created_at', '-updated_at']
-#         permissions = settings.PERMISSIONS_RELATED_TO_REGRESSION
-#
-#     def __str__(self):
-#         return " : ".join(["{}".format(x) for x in [self.name, self.created_at, self.slug, self.app_id]])
-#
-#     def generate_slug(self):
-#         if not self.slug:
-#             self.slug = slugify(self.name + "-" + ''.join(
-#                 random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
-#
-#     def save(self, *args, **kwargs):
-#         self.generate_slug()
-#         super(Regression, self).save(*args, **kwargs)
-#
-#     def create(self):
-#         self.add_to_job()
-#
-#     def generate_config(self, *args, **kwargs):
-#         config = {
-#             "config": {}
-#         }
-#
-#         config['config']["FILE_SETTINGS"] = self.create_configuration_url_settings()
-#
-#         try:
-#             config['config']["COLUMN_SETTINGS"] = self.make_config_for_colum_setting()
-#         except:
-#             config['config']["COLUMN_SETTINGS"] = self.create_configuration_column_settings()
-#
-#         config['config']['ALGORITHM_SETTING'] = self.create_config_for_algorithm_settings()
-#         config['config']["DATA_SOURCE"] = self.dataset.get_datasource_info()
-#         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
-#         # config['config']["META_HELPER"] = self.create_configuration_meta_data()
-#
-#         self.config = json.dumps(config)
-#         self.save()
-#         return config
-#
-#     def make_config_for_colum_setting(self):
-#         config = self.get_config()
-#         return {
-#             'variableSelection': config['variablesSelection'],
-#             'validationTechnique':config['validationTechnique']
-#         }
-#
-#     def create_config_for_algorithm_settings(self):
-#         config = self.get_config()
-#         return{
-#             'ALGORITHM_SETTING':config['ALGORITHM_SETTING']
-#         }
-#
-#     def get_config_from_config(self):
-#         config = json.loads(self.config)
-#         consider_columns_type = ['including']
-#         data_columns = config.get("timeDimension", None)
-#
-#         if data_columns is None:
-#             consider_columns = config.get('dimension', []) + config.get('measures', [])
-#             data_columns = ""
-#         else:
-#             if data_columns is "":
-#                 consider_columns = config.get('dimension', []) + config.get('measures', [])
-#             else:
-#                 consider_columns = config.get('dimension', []) + config.get('measures', []) + [data_columns]
-#
-#         if len(consider_columns) < 1:
-#             consider_columns_type = ['excluding']
-#
-#         ret = {
-#             'consider_columns_type': consider_columns_type,
-#             'consider_columns': consider_columns,
-#             'date_columns': [] if data_columns is "" else [data_columns],
-#         }
-#         return ret
-#
-#     def create_configuration_url_settings(self):
-#
-#         config = json.loads(self.config)
-#         train_test_split = float(config.get('trainValue')) / 100
-#         targetLevel = None
-#         if 'targetLevel' in config:
-#             targetLevel = config.get('targetLevel')
-#         return {
-#             'inputfile': [self.dataset.get_input_file()],
-#             'modelpath': [self.slug],
-#             'train_test_split': [train_test_split],
-#             'analysis_type': ['training'],
-#             'metadata': self.dataset.get_metadata_url_config(),
-#             'targetLevel': targetLevel
-#         }
-#
-#     def create_configuration_column_settings(self):
-#         config = json.loads(self.config)
-#         result_column = config.get('analysisVariable')
-#
-#         ret = {
-#             'polarity': ['positive'],
-#             'result_column': [result_column],
-#             'date_format': None,
-#         }
-#
-#         get_config_from_config = self.get_config_from_config()
-#         meta_data_related_config = self.dataset.common_config()
-#
-#         ret.update(get_config_from_config)
-#         ret.update(meta_data_related_config)
-#
-#         return ret
-#
-#     def add_to_job(self, *args, **kwargs):
-#         jobConfig = self.generate_config(*args, **kwargs)
-#
-#         job = job_submission(
-#             instance=self,
-#             jobConfig=jobConfig,
-#             job_type='model'
-#         )
-#
-#         self.job = job
-#         if job is None:
-#             self.status = "FAILED"
-#         else:
-#             self.status = "INPROGRESS"
-#         self.save()
-#
-#     def get_config(self):
-#         return json.loads(self.config)
-#
-#     def get_variable_details_from_variable_selection(self):
-#         config = self.get_config()
-#         COLUMN_SETTINGS = config['config']['COLUMN_SETTINGS']
-#         variableSelection = COLUMN_SETTINGS.get('variableSelection')
-#
-#         variable_selected = []
-#
-#         for variables in variableSelection:
-#             if 'targetColumn' in variables:
-#                 if variables['targetColumn'] is True:
-#                     variable_selected.append(variables['name'])
-#                     break
-#
-#         return {
-#             'variable selected': variable_selected
-#         }
-#
-#     def get_brief_info(self):
-#         brief_info = dict()
-#         config = self.get_config()
-#         config = config.get('config')
-#         if config is not None:
-#             if 'COLUMN_SETTINGS' in config:
-#                 try:
-#                     brief_info.update(self.get_variable_details_from_variable_selection())
-#                 except:
-#                     column_settings = config['COLUMN_SETTINGS']
-#                     brief_info.update({
-#                         'variable selected': column_settings.get('result_column')[0]
-#                     })
-#
-#             if 'FILE_SETTINGS' in config:
-#                 file_setting = config['FILE_SETTINGS']
-#                 brief_info.update({
-#                     'analysis type': file_setting.get('analysis_type')[0],
-#                     'train_test_split': file_setting.get('train_test_split')[0]
-#                 })
-#
-#         brief_info.update(
-#             {
-#                 'created_by': self.created_by.username,
-#                 'updated_at': self.updated_at,
-#                 'dataset': self.dataset.name
-#             }
-#         )
-#
-#         return convert_json_object_into_list_of_object(brief_info, 'trainer')
-
 
 
 bar_chart = {

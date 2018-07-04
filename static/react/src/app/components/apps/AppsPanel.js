@@ -158,6 +158,7 @@ export class AppsPanel extends React.Component {
     }
     //restrict user ends
     var appsLists = this.props.appsList.data;
+    var top3 = this.props.appsList.top_3;
     var appListTemplate = "";
     let filterListTemplate = "";
     let paginationTag = null
@@ -195,7 +196,7 @@ export class AppsPanel extends React.Component {
           )
         });
         return (
-          <div class="col-md-4 xs-mb-20">
+          <div class="col-md-4 xs-mb-20" key={index}>
             <div>
 
               <div className="app-block">
@@ -249,9 +250,30 @@ export class AppsPanel extends React.Component {
       });
     }
     else{
+      if (appsLists != undefined && appsLists.length == 0) {
+        if(top3.length > 0){
+          filterListTemplate = top3[0].tag_keywords.map((tag, i) => {
+            const dId = "chk_mes1_" + i;
+            let checked = false
+            if (this.props.app_filtered_keywords.indexOf(tag) > -1)
+            checked = true
+            return (
+              <li key={i} className="xs-pl-10">
+              <div key={i} className="ma-checkbox inline">
+              <input id={dId} type="checkbox" name={tag} checked={checked} onClick={this.handleCheckboxChange.bind(this)}/>
+              <label htmlFor={dId}>{tag}</label>
+              </div>
+              </li>
+            )
+          });
+        }
+        appListTemplate =  <div><br/><div className="text-center text-muted xs-mt-50"><h2>No results found..</h2></div></div>
+
+      }else{
         return(<div>
         <img id="loading" src={STATIC_URL + "assets/images/Preloader_2.gif"}/>
       </div>)
+      }
     }
     return (
       <div className="side-body">

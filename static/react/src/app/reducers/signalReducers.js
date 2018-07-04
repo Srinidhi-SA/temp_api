@@ -8,12 +8,6 @@ export default function reducer(state = {
   createSignalLoaderValue:-1,
   current_page:1,
   urlPrefix:"/signals",
-  signalAnalysis: {},
-  selectedSignal: {},
-  newSignalShowModal: false,
-  signalData: null,
-  createSignalLoaderModal: false,
-  current_page: 1,
   signal_search_element:"",
   signal_sorton:null,
   signal_sorttype:null,
@@ -266,6 +260,14 @@ export default function reducer(state = {
     return{
       ...state,
       selected_signal_type:action.signal_type
+    }
+  }
+  break;
+  case "CLEAR_SIGNAL_ANALYSIS_BEFORE_LOGOUT":
+  {
+    return{
+      ...state,
+      signalAnalysis:{}
     }
   }
   }

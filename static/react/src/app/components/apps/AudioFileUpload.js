@@ -62,25 +62,28 @@ export class AudioFileUpload extends React.Component {
 				<h3 className="modal-title">Media Upload</h3>
 				</Modal.Header>
 				<Modal.Body>
-				  <div className="form-group">
-				  <div className="pull-right">
-				  <audio id="myAudio" />
-					<div ><i className="fa fa-play fa-3x cursor xs-p-5" id="audioPlay" onClick={this.playUploadedFile.bind(this)} aria-hidden="true"></i>
-					<i className="fa fa-pause fa-3x cursor xs-p-5 hide" id="audioPause" onClick={this.pauseUploadedFile.bind(this)} aria-hidden="true"></i></div>
-					</div>
-					<div className="clearfix"></div>
-					<div className="xs-pt-20"></div>
+					<div className="row">
+					<div className="col-xs-9">						
+					<div className="form-group xs-ml-40 xs-mt-20">
 					<div className="dropzone ">
 					<Dropzone id={2} onDrop={this.onDropAudioFile} onDropRejected={this.showMsg} accept=".wav" >
-					<p>Try dropping some files here, or click to select files to upload.</p>
+					<p>Please drag and drop your file here or browse.</p>
 					</Dropzone>
 					<aside>
-			          <ul className={fileName != undefined ? "list-unstyled bullets_primary":"list-unstyled"}>
-			           <li>{fileName}{fileName != undefined ? " - ":""}{fileSize}{fileName != undefined ? " bytes ":""}</li>
-			          </ul>
-			        </aside>
+					<ul className={fileName != undefined ? "list-unstyled bullets_primary":"list-unstyled"}>
+					<li>{fileName}{fileName != undefined ? " - ":""}{fileSize}{fileName != undefined ? " bytes ":""}</li>
+					</ul>
+					</aside>
 					</div>
-				</div>
+					</div>
+					</div>
+					<div className="col-xs-3">
+					<audio id="myAudio" />
+					<div className="xs-pt-50" ><i className="fa fa-play fa-3x cursor xs-p-5" id="audioPlay" onClick={this.playUploadedFile.bind(this)} aria-hidden="true"></i>
+					<i className="fa fa-pause fa-3x cursor xs-p-5 hide" id="audioPause" onClick={this.pauseUploadedFile.bind(this)} aria-hidden="true"></i></div>
+					</div>
+					</div>
+					
 				</Modal.Body>
 				<Modal.Footer>
 				<Button className="btn btn-primary md-close" onClick={this.closeAudioFUPopup.bind(this)}>Close</Button>

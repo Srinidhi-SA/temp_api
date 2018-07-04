@@ -128,8 +128,8 @@ def get_column_data_for_metadata(headers):
                 "columnStats": None,
                 "columnType": None,
                 "ignoreSuggestionMsg": None,
-                "slug": None
-
+                "slug": None,
+                "consider": True
             }
 
     columnData = []

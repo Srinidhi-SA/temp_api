@@ -26,7 +26,7 @@ DATABASES = {
         'NAME': 'madvisor2',
         'USER': 'root',
         'PASSWORD': 'Marlabs@123',
-        'HOST': 'localhost',
+        'HOST': '172.31.53.141',
         'PORT': '',
         }
 }
@@ -84,15 +84,15 @@ JOBSERVER = {
 }
 
 THIS_SERVER_DETAILS = {
-    "host": "34.196.22.246",
-    "port": "9015",
+    "host": "madvisor2.marlabsai.com",
+    "port": "80",
     "initail_domain": "/api"
 }
 
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
+        "LOCATION": "redis://localhost:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient"
         },
@@ -134,7 +134,6 @@ JOBSERVER_EMAIL_TEMPLATE = "Please restart jobserver- IP-"
 
 DEPLOYMENT_ENV = "prod"
 
-
 HADOOP_CONF_DIR= False
 HADOOP_USER_NAME="hduser"
 
@@ -157,3 +156,18 @@ CELERY_QUEUES = {
 }
 
 PEM_KEY = "/keyfiles/TIAA.pem"
+USING_KYLO = False
+
+# USE_YARN_DEFAULT_QUEUE=True
+USE_YARN_DEFAULT_QUEUE=False
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'guardian.backends.ObjectPermissionBackend'
+)
+
+
+# SUBMIT_JOB_THROUGH_CELERY = False
+SUBMIT_JOB_THROUGH_CELERY = True
+
+CELERY_SCRIPTS_DIR="/home/hadoop/codebase/mAdvisor-api_2/scripts/"

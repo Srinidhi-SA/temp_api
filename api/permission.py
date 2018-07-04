@@ -23,7 +23,7 @@ class DatasetRelatedPermission(permissions.BasePermission):
         if request.method in ['POST']:
             data = request.data
             datasource_type = data.get('datasource_type')
-            if user.has_perm('api.create_dataset'):
+            if user.has_perm('api.create_dataset') and user.has_perm('api.view_dataset'):
                 if datasource_type == 'fileUpload':
                     return user.has_perm('api.upload_from_file')
                 elif datasource_type == 'MySQL':
@@ -71,7 +71,7 @@ class SignalsRelatedPermission(permissions.BasePermission):
             return user.has_perm('api.view_signal')
 
         if request.method in ['POST']:
-            return user.has_perm('api.create_signal')
+            return user.has_perm('api.create_signal') and user.has_perm('api.view_signal')
 
         if request.method in ['PUT']:
             data = request.data
@@ -97,7 +97,7 @@ class TrainerRelatedPermission(permissions.BasePermission):
             return user.has_perm('api.view_trainer')
 
         if request.method in ['POST']:
-            return user.has_perm('api.create_trainer')
+            return user.has_perm('api.create_trainer') and user.has_perm('api.view_trainer')
 
         if request.method in ['PUT']:
             data = request.data
@@ -121,7 +121,7 @@ class ScoreRelatedPermission(permissions.BasePermission):
             return user.has_perm('api.view_score')
 
         if request.method in ['POST']:
-            return user.has_perm('api.create_score')
+            return user.has_perm('api.create_score') and user.has_perm('api.view_score') and user.has_perm('api.view_trainer')
 
         if request.method in ['PUT']:
             data = request.data

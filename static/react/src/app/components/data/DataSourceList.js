@@ -64,7 +64,7 @@ export class DataSourceList extends React.Component {
   popupMsg() {
   //  console.log(e.taget.value)
     $("#fileErrorMsg").removeClass("visibilityHidden");
-    $("#fileErrorMsg").html("File format is not supported. Please upload a CSV and retry.");
+    $("#fileErrorMsg").html("The file format is not supported. Please try again with a csv file.");
 
   }
   handleSelect(key) {
@@ -122,7 +122,7 @@ export class DataSourceList extends React.Component {
                   <div className="xs-pt-20"></div>
                   <div className="dropzone ">
                     <Dropzone id={1} onDrop={this.onDrop} accept=".csv" multiple={false} onDropRejected={this.popupMsg}>
-                      <p>Try dropping some files here, or click to select files to upload.</p>
+                      <p>Please drag and drop your file here or browse.</p>
                     </Dropzone>
                     <aside>
                       <ul className={fileName != ""

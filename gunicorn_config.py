@@ -68,8 +68,8 @@ backlog = 2048
 workers = 10
 worker_class = 'sync'
 worker_connections = 1000
-timeout = 3000
-keepalive = 30
+timeout = 30000000
+keepalive = 300
 max_requests = 5
 max_requests = 5
 

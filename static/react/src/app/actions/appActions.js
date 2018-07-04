@@ -1,5 +1,5 @@
 import {API, EMR, STATIC_URL} from "../helpers/env";
-import {PERPAGE, isEmpty, getUserDetailsOrRestart, APPSPERPAGE} from "../helpers/helper";
+import {PERPAGE, isEmpty, getUserDetailsOrRestart, APPSPERPAGE,statusMessages} from "../helpers/helper";
 import store from "../store";
 import {
   APPSLOADERPERVALUE,
@@ -23,6 +23,7 @@ import {
 } from "../helpers/helper";
 import {hideDataPreview, getStockDataSetPreview, showDataPreview, getDataSetPreview} from "./dataActions";
 import {getHeaderWithoutContent} from "./dataUploadActions";
+import renderHTML from 'react-render-html';
 import Dialog from 'react-bootstrap-dialog';
 import React from "react";
 import {showLoading, hideLoading} from 'react-redux-loading-bar';
@@ -47,12 +48,13 @@ export function closeModelPopup() {
 
 export function refreshAppsModelList(props) {
   return (dispatch) => {
-
+    if(refreshAppsModelInterval != null)
+    clearInterval(refreshAppsModelInterval);
     refreshAppsModelInterval = setInterval(function() {
       var pageNo = window.location.href.split("=")[1];
       if (pageNo == undefined)
         pageNo = 1;
-      if (window.location.pathname == "/apps/" + store.getState().apps.currentAppId + "/models")
+      if (window.location.pathname == "/"+store.getState().apps.currentAppDetails.app_url)
         dispatch(getAppsModelList(parseInt(pageNo)));
       }
     , APPSDEFAULTINTERVAL);
@@ -145,7 +147,7 @@ export function createModel(modelName, targetVariable, targetLevel) {
         var datasetSlug = store.getState().datasets.dataPreview.slug;
         var app_id=store.getState().apps.currentAppId;
         var customDetails = createcustomAnalysisDetails();
-        if(store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
+        if(store.getState().apps.currentAppDetails.app_type == "REGRESSION" || store.getState().apps.currentAppDetails.app_type == "CLASSIFICATION"){
             if(store.getState().apps.regression_selectedTechnique == "crossValidation")
             {
                 var validationTechnique={
@@ -162,9 +164,6 @@ export function createModel(modelName, targetVariable, targetLevel) {
                 "value":(store.getState().apps.trainValue/100)
                 }
             }
-            if(store.getState().apps.regression_isAutomatic == "1")
-            var AlgorithmSettings = store.getState().apps.regression_algorithm_data;
-            else
             var AlgorithmSettings = store.getState().apps.regression_algorithm_data_manual;
 
             var details = {
@@ -204,7 +203,7 @@ function createModelSuccess(data, dispatch) {
     /*if(store.getState().apps.appsLoaderPerValue < LOADERMAXPERVALUE){
                 dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+APPSLOADERPERVALUE));
             }*/
-    dispatch(getAppsModelSummary(data.slug));
+    dispatch(getAppsModelSummary(data.slug,true));
     return {type: "CREATE_MODEL_SUCCESS", slug}
   }, APPSDEFAULTINTERVAL);
   return {type: "CREATE_MODEL_SUCCESS", slug}
@@ -216,11 +215,13 @@ export function createModelSuccessAnalysis(data) {
 }
 export function refreshAppsScoreList(props) {
   return (dispatch) => {
+    if(refreshAppsScoresInterval != null)
+    clearInterval(refreshAppsScoresInterval);
     refreshAppsScoresInterval = setInterval(function() {
       var pageNo = window.location.href.split("=")[1];
       if (pageNo == undefined)
         pageNo = 1;
-      if (window.location.pathname == "/apps/" + store.getState().apps.currentAppId + "/scores")
+      if (window.location.pathname == "/apps/" + store.getState().apps.currentAppDetails.slug + "/scores")
         dispatch(getAppsScoreList(parseInt(pageNo)));
       }
     , APPSDEFAULTINTERVAL);
@@ -286,7 +287,7 @@ export function hideCreateScorePopup() {
   return {type: "APPS_SCORE_HIDE_POPUP"}
 }
 
-export function getAppsModelSummary(slug) {
+export function getAppsModelSummary(slug,fromCreateModel) {
   return (dispatch) => {
     return fetchModelSummary(getUserDetailsOrRestart.get().userToken, slug).then(([response, json]) => {
       if (response.status === 200) {
@@ -296,7 +297,7 @@ export function getAppsModelSummary(slug) {
           dispatch(closeAppsLoaderValue());
           dispatch(hideDataPreview());
           dispatch(updateModelSummaryFlag(true));
-          if (store.getState().apps.currentAppDetails.app_type == "REGRESSION")
+          //if (store.getState().apps.currentAppDetails.app_type == "REGRESSION")
             dispatch(reSetRegressionVariables());
           }
         else if (json.status == FAILED) {
@@ -318,6 +319,7 @@ export function getAppsModelSummary(slug) {
         dispatch(closeAppsLoaderValue())
         dispatch(fetchModelSummaryError(json));
         dispatch(updateModelSummaryFlag(false));
+        dispatch(isFromModelCreation(false));
       }
     })
   }
@@ -383,7 +385,7 @@ function triggerCreateScore(token, scoreName, targetVariable) {
                 'customAnalysisDetails':customDetails["customAnalysisDetails"],
                 'polarity':customDetails["polarity"],
                 'uidColumn':customDetails["uidColumn"],*/
-    "algorithmName": store.getState().apps.selectedAlg,
+    "selectedModel": store.getState().apps.selectedAlgObj,
     "variablesSelection": store.getState().datasets.dataPreview.meta_data.uiMetaData.varibaleSelectionArray,
     "app_id": app_id
   }
@@ -724,7 +726,8 @@ export function showDialogBox(slug, dialog, dispatch, title, msgText) {
 }
 export function handleModelDelete(slug, dialog) {
   return (dispatch) => {
-    showDialogBox(slug, dialog, dispatch, DELETEMODEL, "Are you sure, you want to delete model?")
+    showDialogBox(slug, dialog, dispatch, DELETEMODEL, renderHTML(statusMessages("warning","Are you sure, you want to delete model?","small_mascot")))
+	 
   }
 }
 function deleteModel(slug, dialog, dispatch) {
@@ -752,10 +755,18 @@ function deleteModelAPI(slug) {
 
 export function handleModelRename(slug, dialog, name) {
   const customBody = (
-    <div className="form-group">
-      <label for="fl1" className="control-label">Enter a new Name</label>
-      <input className="form-control" id="idRenameModel" type="text" defaultValue={name}/>
-    </div>
+		<div className="row">	
+			<div className="col-md-4">
+				<img src={STATIC_URL + "assets/images/alert_thinking.gif"} class="img-responsive" />
+			</div>
+			<div className="col-md-8">
+			<div className="form-group">
+			<label for="idRenameModel" className="control-label">Enter a new Name</label>
+			<input className="form-control" id="idRenameModel" type="text" defaultValue={name}/>
+			</div>
+			</div>
+		</div>
+    
   )
   return (dispatch) => {
     showRenameDialogBox(slug, dialog, dispatch, RENAMEMODEL, customBody)
@@ -810,7 +821,8 @@ function renameModelAPI(slug, newName) {
 
 export function handleScoreDelete(slug, dialog) {
   return (dispatch) => {
-    showDialogBox(slug, dialog, dispatch, DELETESCORE, "Are you sure, you want to delete score?")
+    showDialogBox(slug, dialog, dispatch, DELETESCORE, renderHTML(statusMessages("warning","Are you sure, you want to delete score?","small_mascot")))
+	//renderHTML(statusMessages("warning","Are you sure, you want to delete score?","small_mascot"))
   }
 }
 function deleteScore(slug, dialog, dispatch) {
@@ -838,10 +850,17 @@ function deleteScoreAPI(slug) {
 
 export function handleScoreRename(slug, dialog, name) {
   const customBody = (
-    <div className="form-group">
-      <label for="fl1" className="control-label">Enter a new Name</label>
-      <input className="form-control" id="idRenameScore" type="text" defaultValue={name}/>
-    </div>
+	<div className="row">	
+	<div className="col-md-4">
+		<img src={STATIC_URL + "assets/images/alert_thinking.gif"} class="img-responsive" />
+	</div>
+	<div className="col-md-8">
+	<div className="form-group">
+	<label for="idRenameScore" className="control-label">Enter a new Name</label>
+	<input className="form-control" id="idRenameScore" type="text" defaultValue={name}/>
+	</div>
+	</div>
+	</div>
   )
   return (dispatch) => {
     showRenameDialogBox(slug, dialog, dispatch, RENAMESCORE, customBody)
@@ -877,7 +896,7 @@ export function activateModelScoreTabs(id) {
 
 export function handleInsightDelete(slug, dialog) {
   return (dispatch) => {
-    showDialogBox(slug, dialog, dispatch, DELETEINSIGHT, "Are you sure, you want to delete Insight?")
+    showDialogBox(slug, dialog, dispatch, DELETEINSIGHT, renderHTML(statusMessages("warning","Are you sure, you want to delete Insight?","small_mascot")))
   }
 }
 function deleteInsight(slug, dialog, dispatch) {
@@ -905,10 +924,17 @@ function deleteInsightAPI(slug) {
 
 export function handleInsightRename(slug, dialog, name) {
   const customBody = (
-    <div className="form-group">
-      <label for="fl1" className="control-label">Enter a new Name</label>
-      <input className="form-control" id="idRenameInsight" type="text" defaultValue={name}/>
-    </div>
+		<div className="row">	
+		<div className="col-md-4">
+		<img src={STATIC_URL + "assets/images/alert_thinking.gif"} class="img-responsive" />
+		</div>
+		<div className="col-md-8">
+		<div className="form-group">
+		<label for="idRenameInsight" className="control-label">Enter a new Name</label>
+		<input className="form-control" id="idRenameInsight" type="text" defaultValue={name}/>
+		</div>
+		</div>
+		</div>
   )
   return (dispatch) => {
     showRenameDialogBox(slug, dialog, dispatch, RENAMEINSIGHT, customBody)
@@ -964,7 +990,14 @@ export function uploadAudioFileToStore(files) {
 
 export function uploadAudioFile() {
   return (dispatch) => {
+    let uploadedFile = store.getState().apps.audioFileUpload;
+    if($.isEmptyObject(uploadedFile)){
+      let msg= statusMessages("warning","Please select audio file.","small_mascot");
+      bootbox.alert(msg);
+      return false;
+    }
     dispatch(hideAudioFUModal());
+    dispatch(clearAudioFile());
     dispatch(openAppsLoader(APPSLOADERPERVALUE, "Please wait while mAdvisor analyzes the audio file... "));
     return triggerAudioUpload(getUserDetailsOrRestart.get().userToken).then(([response, json]) => {
       if (response.status === 200) {
@@ -1100,7 +1133,7 @@ export function storeAudioSearchElement(search_element) {
 
 export function handleAudioDelete(slug, dialog) {
   return (dispatch) => {
-    showDialogBox(slug, dialog, dispatch, DELETEAUDIO, "Are you sure, you want to delete media file?")
+    showDialogBox(slug, dialog, dispatch, DELETEAUDIO, renderHTML(statusMessages("warning","Are you sure, you want to delete media file?","small_mascot")))
   }
 }
 function deleteAudio(slug, dialog, dispatch) {
@@ -1128,10 +1161,17 @@ function deleteAudioAPI(slug) {
 
 export function handleAudioRename(slug, dialog, name) {
   const customBody = (
-    <div className="form-group">
-      <label for="fl1" className="col-sm-6 control-label">Enter Media file name</label>
-      <input className="form-control" id="idRenameAudio" type="text" defaultValue={name}/>
-    </div>
+		<div className="row">	
+		<div className="col-md-4">
+		<img src={STATIC_URL + "assets/images/alert_thinking.gif"} class="img-responsive" />
+		</div>
+		<div className="col-md-8">
+		<div className="form-group">
+		<label for="idRenameAudio" className="control-label">Enter a new Name</label>
+		<input className="form-control" id="idRenameAudio" type="text" defaultValue={name}/>
+		</div>
+		</div>
+		</div>
   )
   return (dispatch) => {
     showRenameDialogBox(slug, dialog, dispatch, RENAMEAUDIO, customBody)
@@ -1172,7 +1212,8 @@ export function playAudioFile() {
     $("#audioPlay").addClass("hide");
     audioEle.play();
   } else {
-    bootbox.alert("Please upload audio file to play.");
+	    var body_msg=statusMessages("warning","Please upload audio file to play.","small_mascot");
+    bootbox.alert(body_msg);
   }
 
 }
@@ -1187,7 +1228,8 @@ export function pauseAudioFile() {
     $("#audioPause").removeClass("show");
     audioEle.pause();
   } else {
-    bootbox.alert("Please upload audio file to play.");
+	  var body_msg=statusMessages("warning","Please upload audio file to play.","small_mascot");
+    bootbox.alert(body_msg);
   }
 }
 
@@ -1220,12 +1262,16 @@ function updateStockSymbolsArray(stockSymbolsArray) {
 export function addMoreStockSymbols() {
   return (dispatch) => {
     var stockSymbolsArray = store.getState().apps.appsStockSymbolsInputs.slice();
-    var max = stockSymbolsArray.reduce(function(prev, current) {
-      return (prev.id > current.id)
-        ? prev
-        : current
+    if(stockSymbolsArray.length > 0){
+      var max = stockSymbolsArray.reduce(function(prev, current) {
+        return (prev.id > current.id)
+          ? prev
+          : current
 
-    });
+      });
+    }else{
+      var max = {id:0};
+    }
     let length = max.id + 1;
     stockSymbolsArray.push({
       "id": length,
@@ -1707,9 +1753,9 @@ export function saveSelectedValuesForModel(modelName, targetType, levelCount) {
   return {type: "SAVE_SELECTED_VALES_FOR_MODEL", modelName, targetType, levelCount}
 }
 
-export function getRegressionAppAlgorithmData() {
+export function getRegressionAppAlgorithmData(slug,appType) {
   return (dispatch) => {
-    return triggerRegressionAppAlgorithmAPI().then(([response, json]) => {
+    return triggerRegressionAppAlgorithmAPI(appType).then(([response, json]) => {
       if (response.status === 200) {
         dispatch(saveRegressionAppAlgorithmData(json));
       }
@@ -1717,8 +1763,12 @@ export function getRegressionAppAlgorithmData() {
   }
 }
 
-function triggerRegressionAppAlgorithmAPI() {
-  return fetch(API + '/api/regression_app/get_algorithm_config_list', {
+function triggerRegressionAppAlgorithmAPI(appType) {
+  /*return fetch(API + '/api/regression_app/get_algorithm_config_list', {
+    method: 'get',
+    headers: getHeader(getUserDetailsOrRestart.get().userToken)
+  }).then(response => Promise.all([response, response.json()]));*/
+  return fetch(API + '/api/get_app_algorithm_config_list/?app_type='+appType, {
     method: 'get',
     headers: getHeader(getUserDetailsOrRestart.get().userToken)
   }).then(response => Promise.all([response, response.json()]));
@@ -1726,7 +1776,7 @@ function triggerRegressionAppAlgorithmAPI() {
 export function saveRegressionAppAlgorithmData(data) {
   return {type: "SAVE_REGRESSION_ALGORITHM_DATA", data}
 }
-export function updateAlgorithmData(algSlug, parSlug, parVal) {
+export function updateAlgorithmData(algSlug, parSlug, parVal,type) {
   var AlgorithmCopy = jQuery.extend(true, [], store.getState().apps.regression_algorithm_data_manual);
 
   var newAlgorithm = $.each(AlgorithmCopy, function(key, val) {
@@ -1734,22 +1784,32 @@ export function updateAlgorithmData(algSlug, parSlug, parVal) {
       if (parSlug === undefined && parVal === undefined) {
         val.selected = !val.selected;
       } else {
-        let paramerterList = val.parameters;
+        var paramerterList = val.parameters;
+        if(type == "TuningOption"){
+          let selectedOption = $.grep(val.hyperParameterSetting,function(dat,ind){
+            return(dat.selected == true)
+          });
+          paramerterList = selectedOption[0].params;
+        }
         $.each(paramerterList, function(key1, val1) {
           if (val1.name == parSlug) {
             if (val1.paramType == 'number' || val1.paramType == 'textbox') {
-              val1.defaultValue = parVal;
+              val1.acceptedValue = parVal;
             } else if (val1.paramType == 'list') {
               let allValues = val1.defaultValue;
               $.each(allValues, function(i, dat) {
-                if (dat.name == parVal)
+                if (dat.name == parVal){
+                  if(type == "TuningParameter")
+                  dat.selected = !dat.selected;
+                  else
                   dat.selected = true;
-                else
+                }
+                else if(type == "NonTuningParameter" || type == "TuningOption")
                   dat.selected = false;
                 }
               );
             } else {
-              val1.defaultValue = parVal;
+              val1.acceptedValue = parVal;
             }
           }
         })
@@ -1773,16 +1833,11 @@ export function reSetRegressionVariables() {
 }
 export function checkAtleastOneSelected(){
         let isSelected = false;
-        if(store.getState().apps.regression_isAutomatic == 0){
-            let algorithmData = store.getState().apps.regression_algorithm_data_manual;
-            $.each(algorithmData,function(i,dat){
-                if(dat.selected == true)
-                isSelected = true;
-            });
-        }
-        else
-        isSelected = true;
-
+        let algorithmData = store.getState().apps.regression_algorithm_data_manual;
+        $.each(algorithmData,function(i,dat){
+            if(dat.selected == true)
+            isSelected = true;
+        });
         return isSelected;
     }
 
@@ -1805,4 +1860,87 @@ function triggerCurrentAppByID(app_id){
     method: 'get',
     headers: getHeader(getUserDetailsOrRestart.get().userToken)
   }).then(response => Promise.all([response, response.json()]));
+}
+export function saveParameterTuning(){
+  var newAlgorithm = jQuery.extend(true, [], store.getState().apps.regression_algorithm_data_manual);
+  return {type: "EDIT_REGRESSION_ALGORITHM_DATA", newAlgorithm}
+}
+export function changeHyperParameterType(slug,nameVal){
+  var AlgorithmCopy = jQuery.extend(true, [], store.getState().apps.regression_algorithm_data);
+  var newAlgorithm = $.each(AlgorithmCopy, function(key, val) {
+    if (val.algorithmSlug == slug) {
+      $.each(val.hyperParameterSetting, function(key1, val1) {
+        if(val1.name == nameVal)
+        val1.selected = true;
+        else
+        val1.selected = false;
+      });
+    }
+  });
+  var data = {};
+  data.ALGORITHM_SETTING=[];
+  data.ALGORITHM_SETTING = jQuery.extend(true, [], newAlgorithm);
+  return {type: "SAVE_REGRESSION_ALGORITHM_DATA", data}
+}
+export function checkSaveSelectedModels(checkObj,isChecked) {
+  var selectedAlgorithms = store.getState().apps.algorithmsList;
+  var slug = checkObj.slug;
+  var model = checkObj['Model Id'];
+  var isExist = $.grep(selectedAlgorithms,function(val,key){
+	return (val.slug == slug && val['Model Id'] == model)
+  });
+  if(isExist.length == 1){
+    var deletedIndex;
+    $.each(selectedAlgorithms,function(k,val1){
+      if(val1.slug == slug && val1['Model Id'] == model)
+        deletedIndex = k;
+    });
+    selectedAlgorithms.splice( deletedIndex, 1 );
+  }
+  else{
+    selectedAlgorithms.push(checkObj);
+  }
+  var selectedModelCount = selectedAlgorithms.length;
+  var modelSummary = store.getState().apps.modelSummary;
+  var hyperChartData = modelSummary.data.model_hyperparameter;
+  var newHyperChartData = $.each(hyperChartData,function(mk,mv){
+      if(mv.slug == slug){
+        var parallelchartData = mv.cardData[0].data;
+        $.each(parallelchartData,function(pk,pv){
+          if(pv['Model Id'] == model)
+          {
+            if(isChecked)
+            pv.Selected = "True";
+            else
+            pv.Selected = "False";
+          }
+        });
+      }
+  });
+  modelSummary.data.model_hyperparameter = newHyperChartData;
+  return{type:"SAVE_CHECKED_ALGORITHMS",selectedAlgorithms,selectedModelCount,modelSummary}
+}
+export function sendSelectedAlgorithms(slug){
+  return (dispatch) => {
+        return triggerSendSelectedAlgorithmApi(getUserDetailsOrRestart.get().userToken,slug).then(([response, json]) => {
+      //if (response.status === 200)
+        //dispatch(saveSelectedModels(json, dispatch))
+    })
+  }
+}
+function triggerSendSelectedAlgorithmApi(token,slug) {
+  var selectedAlgos = store.getState().apps.algorithmsList;
+  var data={"model_list":selectedAlgos};
+  return fetch(API + '/api/trainer/'+slug+'/save_selected_hyperparameter_models/', {
+    method: 'put',
+    headers: getHeader(getUserDetailsOrRestart.get().userToken),
+    body: JSON.stringify(data)
+  }).then(response => Promise.all([response, response.json()]));
+}
+export function updateSelectedAlgObj(obj){
+  return {type: "SELECTED_ALGORITHM_OBJECT", obj}
+}
+export function clearSelectedModelsCount(){
+  var count = 0;
+  return {type: "CLEAR_SELECT_MODEL_COUNT", count}
 }

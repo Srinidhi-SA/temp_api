@@ -85,7 +85,7 @@ export class RoboDataUpload extends React.Component {
 				  <div className="col-md-9">
 				  <div className="dropzone rb_insight_upload">
 					<Dropzone onDrop={this.onDropCustomerData.bind(this)} accept=".csv" onDropRejected={this.popupMsg}>
-					<p>Try dropping some files here, or click to select files to upload.</p>
+					<p>Please drag and drop your file here or browse.</p>
 					</Dropzone>
 					<aside>
 			          <ul className="list-unstyled">
@@ -102,7 +102,7 @@ export class RoboDataUpload extends React.Component {
 				  <div className="col-md-9">
 				  <div className="dropzone rb_insight_upload">
 					<Dropzone onDrop={this.onDropHistorialData.bind(this)} accept=".csv" onDropRejected={this.popupMsg}>
-					<p>Try dropping some files here, or click to select files to upload.</p>
+					<p>Please drag and drop your file here or browse.</p>
 					</Dropzone>
 					<aside>
 			          <ul className="list-unstyled">
@@ -118,7 +118,7 @@ export class RoboDataUpload extends React.Component {
 				  <div className="col-md-9">
 				  <div className="dropzone rb_insight_upload">
 					<Dropzone onDrop={this.onDropExternalData.bind(this)} accept=".csv" onDropRejected={this.popupMsg}>
-					<p>Try dropping some files here, or click to select files to upload.</p>
+					<p>Please drag and drop your file here or browse.</p>
 					</Dropzone>
 					<aside>
 			          <ul className="list-unstyled">
