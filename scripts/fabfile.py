@@ -2,8 +2,10 @@
 Usage
         fab <function_name>:[arg,arg1=val1]
         e.g. fab deploy_api:branch=master
+        e.g. fab deploy_api:branch=leia
 
         e.g. fab deploy_react:branch=master
+        e.g. fab deploy_react:branch=leia
 
 List
         fab -list
@@ -283,7 +285,10 @@ def pull_api_at_remote(base_remote_path, api_branch):
 
 
 def only_for_api_push_and_pull(server_details, path_details):
-    push_api_to_remote(path_details['api_branch'])
+    if path_details['api_branch'] == 'master':
+        pass
+    else:
+        push_api_to_remote(path_details['api_branch'])
     pull_api_at_remote(
         path_details['base_remote_path'],
         path_details['api_branch']
