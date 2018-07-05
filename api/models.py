@@ -1710,7 +1710,6 @@ class StockDataset(models.Model):
         # self.get_bluemix_natural_language_understanding()
         print "generate_meta_data "*3
         self.meta_data = self.crawl_news_data()
-        self.paste_essential_files_in_scripts_folder()
 
     def create_folder_in_scripts_data(self):
         path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug
@@ -1821,6 +1820,7 @@ class StockDataset(models.Model):
         return convert_json_object_into_list_of_object(brief_info, 'stockdataset')
 
     def call_mlscripts(self):
+        self.paste_essential_files_in_scripts_folder()
         self.add_to_job()
         self.analysis_done = False
         self.status = 'INPROGRESS'
