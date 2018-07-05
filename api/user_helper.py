@@ -365,7 +365,7 @@ def create_or_update_kylo_auth_file():
     user=User.objects.last()
     grps=["madvisor"]
     displayName=user.first_name+" "+user.last_name
-    user_data={"displayName": displayName,"email": user.email,"enabled": True,"groups":grps,"systemName": user.username}
+    user_data={"displayName": user.username,"email": user.email,"enabled": True,"groups":grps,"systemName": user.username}
     print "user_data: "
     print user_data
     import json
