@@ -160,7 +160,7 @@ KYLO_SERVER_DETAILS = {
     "user": "ubuntu",
     "key_path": "~/.ssh/TIAA.pem",
     "group_propertie_quote": "madvisor,user",
-    "kylo_file_path":"/home/ubuntu/kylotmp/"
+    "kylo_file_path":"/opt/kylo/"
 }
 
 HADOOP_CONF_DIR= False

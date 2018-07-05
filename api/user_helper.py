@@ -324,12 +324,12 @@ def create_or_update_kylo_auth_file():
         return True
     KYLO_SERVER_DETAILS = settings.KYLO_SERVER_DETAILS
     group_propertie_quote = KYLO_SERVER_DETAILS['group_propertie_quote']
-    user_properties = "dladmin=thinkbig\n"
-    groups_properties = "dladmin=admin,user\nanalyst=analyst,user\n"
+    user_properties = "dladmin=thinkbig\n\n"
+    groups_properties = "dladmin=admin,user\n\nanalyst=analyst,user\n\ndesigner=designer,user\n\noperator=operations,user\n\n"
     all_users = User.objects.all()
     for user in all_users:
-        user_properties += "{0}={1}\n".format(user.username, encrypt_for_kylo(user.username, user.password))
-        groups_properties += "{0}={1}\n".format(user.username, group_propertie_quote)
+        user_properties += "{0}={1}\n\n".format(user.username, encrypt_for_kylo(user.username, user.password))
+        groups_properties += "{0}={1}\n\n".format(user.username, group_propertie_quote)
 
     with open('/tmp/users.properties', 'w') as fp:
         fp.write(user_properties)
