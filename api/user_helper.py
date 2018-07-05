@@ -360,3 +360,15 @@ def create_or_update_kylo_auth_file():
     import subprocess
     subprocess.call(ssh_command_users.split(' '))
     subprocess.call(ssh_command_groups.split(' '))
+
+    #call kylo api from admin user to create user from config group
+    user=all_users[-1]
+    grps=["madvisor"]
+    displayName=user.first_name+" "+user.last_name
+    user_data={"displayName": displayName,"email": user.email,"enabled": True,"groups":groups,"systemName": user.username}
+    import json
+    import requests
+    user_data=json.dumps(user_data)
+    headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+    r=requests.post("http://data-management-dev.marlabsai.com/proxy/v1/security/users",data=user_data,auth=('dladmin','thinkbig'),headers=headers)
+    print r.text
