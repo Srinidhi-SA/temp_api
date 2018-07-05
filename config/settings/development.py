@@ -153,14 +153,14 @@ CELERY_QUEUES = {
     }
 }
 
-USING_KYLO = False
+USING_KYLO = True
 KYLO_SERVER_DETAILS = {
-    "host": "52.205.59.95",
+    "host": "34.205.54.15",
     "port" : 8088,
     "user": "ubuntu",
     "key_path": "~/.ssh/TIAA.pem",
-    "group_propertie_quote": "admin,user",
-    "kylo_file_path":"/home/ubuntu/kylodir2/"
+    "group_propertie_quote": "madvisor,user",
+    "kylo_file_path":"/home/ubuntu/kylotmp/"
 }
 
 HADOOP_CONF_DIR= False

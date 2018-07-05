@@ -51,7 +51,7 @@ class Profile(models.Model):
             image = self.photo.path
         except:
             return None
-            
+
         return image_url + self.slug + "/"
 
     def json_serialized(self):
@@ -324,8 +324,8 @@ def create_or_update_kylo_auth_file():
         return True
     KYLO_SERVER_DETAILS = settings.KYLO_SERVER_DETAILS
     group_propertie_quote = KYLO_SERVER_DETAILS['group_propertie_quote']
-    user_properties = ""
-    groups_properties = ""
+    user_properties = "dladmin=thinkbig\n"
+    groups_properties = "dladmin=admin,user\nanalyst=analyst,user\n"
     all_users = User.objects.all()
     for user in all_users:
         user_properties += "{0}={1}\n".format(user.username, encrypt_for_kylo(user.username, user.password))
@@ -355,5 +355,3 @@ def create_or_update_kylo_auth_file():
     import subprocess
     subprocess.call(ssh_command_users.split(' '))
     subprocess.call(ssh_command_groups.split(' '))
-
-
