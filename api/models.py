@@ -1618,22 +1618,22 @@ class StockDataset(models.Model):
         self.generate_slug()
         super(StockDataset, self).save(*args, **kwargs)
 
+    # def create(self):
+    #     from api.tasks import stock_sense_crawl
+    #     self.status = "INPROGRESS"
+    #     self.generate_meta_data()
+    #     self.save()
+    #     self.call_mlscripts()
+    #     # stock_sense_crawl.delay(object_slug=self.slug)
+    #     # self.meta_data = self.generate_meta_data()
+    #     # self.fake_call_mlscripts()
+    #     # self.save()
+
     def create(self):
-        self.create_folder_in_scripts_data()
-        self.crawl_news_data()
-        self.crawl_for_historic_data()
-
-
-        # self.meta_data = json.dumps(dummy_audio_data_3)
         from api.tasks import stock_sense_crawl
         self.status = "INPROGRESS"
-        self.generate_meta_data()
         self.save()
-        self.call_mlscripts()
-        # stock_sense_crawl.delay(object_slug=self.slug)
-        # self.meta_data = self.generate_meta_data()
-        # self.fake_call_mlscripts()
-        # self.save()
+        stock_sense_crawl.delay(object_slug=self.slug)
 
     def crawl_news_data(self):
 

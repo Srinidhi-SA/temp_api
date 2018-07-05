@@ -30,6 +30,7 @@ def fetch_news_article_from_nasdaq(stock):
     crawl_obj = generic_crawler.GenericCrawler()
     stock_news = []
     urls = [get_nasdaq_news_article(stock)] + get_nasdaq_news_articles(stock)
+    # urls = [get_nasdaq_news_article(stock)]
 
     for url in urls:
         print url
