@@ -1820,7 +1820,6 @@ class StockDataset(models.Model):
         return convert_json_object_into_list_of_object(brief_info, 'stockdataset')
 
     def call_mlscripts(self):
-        self.paste_essential_files_in_scripts_folder()
         self.add_to_job()
         self.analysis_done = False
         self.status = 'INPROGRESS'
