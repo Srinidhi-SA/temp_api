@@ -51,7 +51,7 @@ class Profile(models.Model):
             image = self.photo.path
         except:
             return None
-            
+
         return image_url + self.slug + "/"
 
     def json_serialized(self):
@@ -328,8 +328,13 @@ def create_or_update_kylo_auth_file():
     groups_properties = ""
     all_users = User.objects.all()
     for user in all_users:
-        user_properties += "{0}={1}\n".format(user.username, encrypt_for_kylo(user.username, user.password))
-        groups_properties += "{0}={1}\n".format(user.username, group_propertie_quote)
+        user_properties += "{0}={1}\n\n".format(user.username, encrypt_for_kylo(user.username, user.password))
+        groups_properties += "{0}={1}\n\n".format(user.username, group_propertie_quote)
+
+    #add dladmin and default users of kylo
+    user_properties +="dladmin=thinkbig"
+    groups_properties += "dladmin=admin,user\n\nanalyst=analyst,user\n\ndesigner=designer,user\n\noperator=operations,user"
+
 
     with open('/tmp/users.properties', 'w') as fp:
         fp.write(user_properties)
@@ -356,4 +361,19 @@ def create_or_update_kylo_auth_file():
     subprocess.call(ssh_command_users.split(' '))
     subprocess.call(ssh_command_groups.split(' '))
 
-
+    #call kylo api from admin user to create user from config group
+    user=User.objects.last()
+    grps=["madvisor"]
+    displayName=user.first_name+" "+user.last_name
+    user_data={"displayName": user.username,"email": user.email,"enabled": True,"groups":grps,"systemName": user.username}
+    print "user_data: "
+    print user_data
+    import json
+    import requests
+    user_data=json.dumps(user_data)
+    print "user data after dump: "
+    print user_data
+    headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
+    r=requests.post("http://data-management-dev.marlabsai.com/proxy/v1/security/users",data=user_data,auth=('dladmin','thinkbig'),headers=headers)
+    print "response from kylo: "
+    print r.text
