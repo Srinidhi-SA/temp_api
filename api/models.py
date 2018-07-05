@@ -1602,6 +1602,8 @@ class StockDataset(models.Model):
     live_status = models.CharField(max_length=300, default='0', choices=STATUS_CHOICES)
     viewed = models.BooleanField(default=False)
 
+    crawled_data = models.TextField(default="{}")
+
     class Meta:
         ordering = ['-created_at', '-updated_at']
         permissions = settings.PERMISSIONS_RELATED_TO_STOCK
@@ -1704,7 +1706,7 @@ class StockDataset(models.Model):
         )
 
     def generate_meta_data(self):
-        self.create_folder_in_scripts_data()
+        # self.create_folder_in_scripts_data()
         # self.paste_essential_files_in_scripts_folder()
         self.crawl_for_historic_data()
         # self.get_bluemix_natural_language_understanding()
@@ -1902,6 +1904,42 @@ class StockDataset(models.Model):
                 writer.writerow(data)
             elif 'json' == type:
                 json.dump(data, file_to_write_on)
+
+        self.write_crawled_databases(stockDataType, stockName, data)
+
+
+    def write_crawled_databases(self, stockDataType, stockName, data):
+
+        if stockDataType == "historic":
+            name = stockName + "_" + stockDataType
+        else:
+            name = stockName
+
+        crawled_data = self.crawled_data
+        crawled_data = json.loads(crawled_data)
+
+        if stockName in crawled_data:
+            stockName_crawled_data = crawled_data[stockName]
+            if name in stockName_crawled_data:
+                pass
+            else:
+                stockName_crawled_data[name] = data
+        else:
+            crawled_data[stockName] = {
+                name: data
+            }
+
+        if 'concepts' in crawled_data:
+            pass
+        else:
+            path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data"
+            path = path + "/concepts.json"
+            with open(path) as fp:
+                crawled_data['concepts'] = json.loads(fp.read())
+
+        self.crawled_data = json.dumps(crawled_data)
+        self.save()
+
 
     def write_bluemix_data_into_concepts(self, name, data, type='json'):
 
