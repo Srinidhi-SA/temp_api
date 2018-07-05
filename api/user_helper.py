@@ -373,7 +373,7 @@ def create_or_update_kylo_auth_file():
     user_data=json.dumps(user_data)
     print "user data after dump: "
     print user_data
-    headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+    headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
     r=requests.post("http://data-management-dev.marlabsai.com/proxy/v1/security/users",data=user_data,auth=('dladmin','thinkbig'),headers=headers)
     print "response from kylo: "
     print r.text
