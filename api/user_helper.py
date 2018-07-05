@@ -362,7 +362,7 @@ def create_or_update_kylo_auth_file():
     subprocess.call(ssh_command_groups.split(' '))
 
     #call kylo api from admin user to create user from config group
-    user=all_users[-1]
+    user=User.objects.last()
     grps=["madvisor"]
     displayName=user.first_name+" "+user.last_name
     user_data={"displayName": displayName,"email": user.email,"enabled": True,"groups":groups,"systemName": user.username}
