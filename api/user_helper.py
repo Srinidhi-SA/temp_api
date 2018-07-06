@@ -673,7 +673,7 @@ KYLO_ROLE_MEMBERSHIPS= [{
     "groups": [],
     "ui": {
       "members": {
-        "selectedItem": null,
+        "selectedItem": None,
         "searchText": ""
       }
     },
@@ -782,7 +782,7 @@ KYLO_ROLE_MEMBERSHIPS= [{
     "groups": [],
     "ui": {
       "members": {
-        "selectedItem": null,
+        "selectedItem": None,
         "searchText": ""
       }
     },
