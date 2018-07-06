@@ -680,7 +680,7 @@ KYLO_ROLE_MEMBERSHIPS= [{
     "members": [{
       "displayName": "user1",
       "email": "",
-      "enabled": true,
+      "enabled": True,
       "groups": ["madvisor"],
       "systemName": "user1",
       "name": "user1",
