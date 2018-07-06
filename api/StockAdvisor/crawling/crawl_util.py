@@ -23,7 +23,7 @@ def crawl_extract(url,regex_dict={},remove_tags=[], slug=None):
             json_obj["date"] = myutils.normalize_date_time(json_obj.get("date","1 min ago")).strftime("%Y%m%d")
         all_data.append(json_obj)
 
-    return all_data
+    return all_data[4:]
 
 
 def fetch_news_article_from_nasdaq(stock):
