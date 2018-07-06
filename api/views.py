@@ -753,7 +753,7 @@ class StockDatasetView(viewsets.ModelViewSet):
             #     stock_instance.fake_call_mlscripts()
             # else:
             #     stock_instance.call_mlscripts()
-            stock_instance.paste_essential_files_in_scripts_folder()
+            # stock_instance.paste_essential_files_in_scripts_folder()
             stock_instance.call_mlscripts()
             return Response(serializer.data)
 
