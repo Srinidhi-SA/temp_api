@@ -138,7 +138,7 @@ def convert_to_string(data):
 
 
 def convert_to_json(data):
-    keys = ['compare_type', 'column_data_raw', 'config', 'data', 'model_data', 'meta_data']
+    keys = ['compare_type', 'column_data_raw', 'config', 'data', 'model_data', 'meta_data', 'crawled_data']
 
     for key in keys:
         if key in data:
