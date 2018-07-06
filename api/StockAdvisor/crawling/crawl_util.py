@@ -40,8 +40,9 @@ def fetch_news_article_from_nasdaq(stock):
         for json_obj in json_list:
             if not json_obj.get("url"):
                 continue
-            # if "date" in json_obj:
-            #     json_obj["date"] = myutils.normalize_date_time(json_obj.get("date", "1 min ago")).strftime("%Y%m%d")
+            if "date" in json_obj:
+                date_string = json_obj.get("date").split(" ")[0]
+                json_obj["date"] = myutils.normalize_date_time(date_string).strftime("%Y%m%d")
             stock_news.append(json_obj)
     return stock_news
 
