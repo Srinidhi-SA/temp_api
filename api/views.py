@@ -5170,7 +5170,7 @@ def get_stockdatasetfiles(request, slug=None):
     stockName = request.GET.get('stockName')
 
     return return_crawled_json_data(stockDataType, stockName, slug)
-    
+
 
 def return_json_data(stockDataType, stockName, slug):
     import os

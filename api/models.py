@@ -1706,7 +1706,7 @@ class StockDataset(models.Model):
         )
 
     def generate_meta_data(self):
-        # self.create_folder_in_scripts_data()
+        self.create_folder_in_scripts_data()
         # self.paste_essential_files_in_scripts_folder()
         self.crawl_for_historic_data()
         # self.get_bluemix_natural_language_understanding()
