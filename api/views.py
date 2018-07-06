@@ -753,6 +753,7 @@ class StockDatasetView(viewsets.ModelViewSet):
             #     stock_instance.fake_call_mlscripts()
             # else:
             #     stock_instance.call_mlscripts()
+            # stock_instance.paste_essential_files_in_scripts_folder()
             stock_instance.call_mlscripts()
             return Response(serializer.data)
 
@@ -5168,7 +5169,7 @@ def get_stockdatasetfiles(request, slug=None):
     stockDataType = request.GET.get('stockDataType')
     stockName = request.GET.get('stockName')
 
-    return return_json_data(stockDataType, stockName, slug)
+    return return_crawled_json_data(stockDataType, stockName, slug)
 
 
 def return_json_data(stockDataType, stockName, slug):
@@ -5195,6 +5196,28 @@ def return_json_data(stockDataType, stockName, slug):
     response['Content-Disposition'] = 'attachment; filename="{0}.json"'.format(path)
 
     return response
+
+
+def return_crawled_json_data(stockDataType, stockName, slug):
+    sdd = StockDataset.objects.get(slug=slug)
+    matching = {
+        "bluemix": stockName,
+        "historical":  stockName + "_" + "historic",
+        "concepts": "concepts"
+    }
+    crawled_data = json.loads(sdd.crawled_data)
+    # import pdb;pdb.set_trace()
+    from django.http import HttpResponse
+    if stockDataType in ["bluemix", "historical"]:
+        file_content = json.dumps(crawled_data[stockName][matching[stockDataType]])
+    else:
+        file_content = json.dumps(crawled_data[matching[stockDataType]])
+
+    response = HttpResponse(file_content, content_type='application/json')
+    response['Content-Disposition'] = 'attachment; filename="{0}.json"'.format(matching[stockDataType] )
+
+    return response
+
 
 
 def return_xml_data(xml_data_str, algoname):

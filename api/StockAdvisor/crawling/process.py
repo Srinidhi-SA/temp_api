@@ -42,12 +42,23 @@ def process_data(url,content,regex_dict={},remove_tags=[]):
 			if obj:
 				value=obj.group(1)
 				value=sanitize(value)
-			json_data[key]=value.strip()
+			if key in ['close', 'low', 'high', 'open', "volume"]:
+				value = value.strip()
+				if value == "":
+					continue
+				value = value.replace(',', '')
+				json_data[key] = value.strip()
+			else:
+				json_data[key]=value.strip()
 		if not json_data.get("url"):
 			json_data["url"]=url
 		if not json_data.get("source"):
 			json_data["source"]=regex_dict.get("source","source-not-added-in-regex")
-		all_data.append(json_data)
+
+		json_data_keys_set = set(json_data.keys())
+		required_keys_set = set(['close', 'low', 'high', 'open', "volume"])
+		if required_keys_set.issubset(json_data_keys_set):
+			all_data.append(json_data)
 	return all_data
 
 def process_json_data(url,content,regex_dict={},remove_tags=[]):
