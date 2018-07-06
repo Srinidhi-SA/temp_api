@@ -42,7 +42,12 @@ def process_data(url,content,regex_dict={},remove_tags=[]):
 			if obj:
 				value=obj.group(1)
 				value=sanitize(value)
-			json_data[key]=value.strip()
+			if key in ['close', 'low', 'high', 'open']:
+				value = value.strip()
+				value = value.replace(',', '')
+				json_data[key] = value.strip()
+			else:
+				json_data[key]=value.strip()
 		if not json_data.get("url"):
 			json_data["url"]=url
 		if not json_data.get("source"):
