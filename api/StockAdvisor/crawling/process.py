@@ -54,7 +54,11 @@ def process_data(url,content,regex_dict={},remove_tags=[]):
 			json_data["url"]=url
 		if not json_data.get("source"):
 			json_data["source"]=regex_dict.get("source","source-not-added-in-regex")
-		all_data.append(json_data)
+
+		json_data_keys_set = set(json_data.keys())
+		required_keys_set = set(['close', 'low', 'high', 'open', "volume"])
+		if required_keys_set.issubset(json_data_keys_set):
+			all_data.append(json_data)
 	return all_data
 
 def process_json_data(url,content,regex_dict={},remove_tags=[]):
