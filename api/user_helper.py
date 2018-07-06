@@ -443,9 +443,9 @@ def create_or_update_kylo_auth_file():
       "createFeed": True,
       "roleMembershipsUpdated": False
     }
-     r=requests.post(cat_url,data=json.dumps(cat_data),auth=('dladmin','thinkbig'),headers=headers)
-     print "rs from create/update category of kylo"
-     print r.text
+    r=requests.post(cat_url,data=json.dumps(cat_data),auth=('dladmin','thinkbig'),headers=headers)
+    print "rs from create/update category of kylo"
+    print r.text
 
 
 
