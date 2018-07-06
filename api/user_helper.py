@@ -802,10 +802,10 @@ KYLO_ROLE_MEMBERSHIPS= [{
   }]
 
 KYLO_CREATE_CATEGORY_TEMPLATE={
-  "owner": owner,
-  "allowedActions": allowedActions,
-  "roleMemberships": roleMemberships,
-  "feedRoleMemberships": feedRoleMemberships,
+  "owner": KYLO_OWNER,
+  "allowedActions": KYLO_ALLOWED_ACTIONS,
+  "roleMemberships": KYLO_ROLE_MEMBERSHIPS,
+  "feedRoleMemberships": KYLO_FEED_ROLE_MEMBERSHIPS,
   "id": "fa893dda-5522-45a0-95d5-640bcf4797aa",
   "name": "user1_cat",
   "systemName": "user1_cat",
