@@ -42,8 +42,10 @@ def process_data(url,content,regex_dict={},remove_tags=[]):
 			if obj:
 				value=obj.group(1)
 				value=sanitize(value)
-			if key in ['close', 'low', 'high', 'open']:
+			if key in ['close', 'low', 'high', 'open', "volume"]:
 				value = value.strip()
+				if value == "":
+					continue
 				value = value.replace(',', '')
 				json_data[key] = value.strip()
 			else:
