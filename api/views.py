@@ -5206,8 +5206,13 @@ def return_crawled_json_data(stockDataType, stockName, slug):
         "concepts": "concepts"
     }
     crawled_data = json.loads(sdd.crawled_data)
+    # import pdb;pdb.set_trace()
     from django.http import HttpResponse
-    file_content = json.dumps(crawled_data[stockName][matching[stockDataType]])
+    if stockDataType in ["bluemix", "historical"]:
+        file_content = json.dumps(crawled_data[stockName][matching[stockDataType]])
+    else:
+        file_content = json.dumps(crawled_data[matching[stockDataType]])
+
     response = HttpResponse(file_content, content_type='application/json')
     response['Content-Disposition'] = 'attachment; filename="{0}.json"'.format(matching[stockDataType] )
 
