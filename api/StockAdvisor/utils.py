@@ -62,7 +62,7 @@ def get_data_from_bluemix(content_url_or_text, content=False):
                 Features.SemanticRoles(),
 
             ]
-        features = {"sentiment": {}, "keywords": {}}
+        # features = {"sentiment": {}, "keywords": {}}
         nl_understanding = None
         print "get_data_from_bluemix " *20
         print natural_language_understanding
@@ -70,7 +70,7 @@ def get_data_from_bluemix(content_url_or_text, content=False):
         print content
         for i in range(NUMBEROFTRIES):
             try:
-                if content_url_or_text == True:
+                if content == True:
                     nl_understanding = natural_language_understanding.analyze(
                         text=content_url_or_text,
                         features=features
