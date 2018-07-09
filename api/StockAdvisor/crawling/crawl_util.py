@@ -43,6 +43,7 @@ def fetch_news_article_from_nasdaq(stock):
             if "date" in json_obj:
                 date_string = json_obj.get("date").split(" ")[0]
                 json_obj["date"] = myutils.normalize_date_time(date_string).strftime("%Y%m%d")
+                json_obj["time"] = myutils.normalize_date_time(date_string).strftime("%Y%m%d")
             stock_news.append(json_obj)
 
     stock_news_with_sentiments = []
