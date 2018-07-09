@@ -73,7 +73,7 @@ def get_data_from_bluemix(target_url):
                     url=target_url,
                     features=features
                 )
-                print nl_understanding
+                print nl_understanding.__dict__
             except:
                 pass
 
