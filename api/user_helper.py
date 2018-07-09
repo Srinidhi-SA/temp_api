@@ -370,10 +370,456 @@ def create_or_update_kylo_auth_file():
     print user_data
     import json
     import requests
+    import uuid
+    import time
     user_data=json.dumps(user_data)
     print "user data after dump: "
     print user_data
     headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
-    r=requests.post("http://data-management-dev.marlabsai.com/proxy/v1/security/users",data=user_data,auth=('dladmin','thinkbig'),headers=headers)
+    url="http://data-management-dev.marlabsai.com/proxy/v1/security/users"
+    r=requests.post(url,data=user_data,auth=('dladmin','thinkbig'),headers=headers)
     print "response from kylo: "
     print r.text
+    #add personal category with Permissions
+    cat_url="http://data-management-dev.marlabsai.com/proxy/v1/feedmgr/categories"
+    id=str(uuid.uuid4())
+    millis = int(round(time.time() * 1000))
+    print millis
+    createDate=millis
+    updateDate=millis
+    cat_id=str(uuid.uuid4())
+    owner=KYLO_OWNER
+    allowedActions=KYLO_ALLOWED_ACTIONS
+    feedRoleMemberships=KYLO_FEED_ROLE_MEMBERSHIPS
+    roleMemberships=KYLO_ROLE_MEMBERSHIPS
+    #cat_data=KYLO_CREATE_CATEGORY_TEMPLATE
+    allowed_roles=["editor","feedCreator"]
+    allowed_feed_roles=["editor","admin"]
+    members=[{    "displayName": user.username,
+                  "email": user.email,
+                  "enabled": True,
+                  "groups": ["madvisor"],
+                  "systemName": user.username,
+                  "name": user.username,
+                  "title": user.username,
+                  "type": "user",
+                  "_lowername": user.username,
+                  "_lowerSystemName":user.username,
+                  "_lowerDisplayName": user.username
+                }]
+
+    for role in roleMemberships:
+        if role["role"]["systemName"] in allowed_roles:
+            role["users"]=[user.username]
+            role["members"]=members
+    for role in feedRoleMemberships:
+        if role["role"]["systemName"] in allowed_feed_roles:
+            role["users"]=[user.username]
+            role["members"]=members
+
+    cat_name=user.username+"_cat"
+    cat_desc="for "+user.username+ " only"
+
+
+    cat_data={
+      "owner": owner,
+      "allowedActions": allowedActions,
+      "roleMemberships": roleMemberships,
+      "feedRoleMemberships": feedRoleMemberships,
+      "id": cat_id,
+      "name": cat_name,
+      "systemName": cat_name,
+      "icon": "account_circle",
+      "iconColor": "#80CBC4",
+      "description": cat_desc,
+      "allowIndexing": True,
+      "securityGroups": [],
+      "userFields": [],
+      "userProperties": [],
+      "relatedFeeds": 0,
+      "createDate": createDate,
+      "updateDate": updateDate,
+      "_lowername": cat_name,
+      "createFeed": True,
+      "roleMembershipsUpdated": False
+    }
+    r=requests.post(cat_url,data=json.dumps(cat_data),auth=('dladmin','thinkbig'),headers=headers)
+    print "rs from create/update category of kylo"
+    print r.text
+
+
+
+#for kylo category creation
+## there will be two post calls
+#kylo_cat_call1_template={"id":None,"name":"user1_cat","description":"for user 1 only","icon":"account_circle","iconColor":"#80CBC4","userFields":[],"userProperties":[],"relatedFeedSummaries":[],"securityGroups":[],"roleMemberships":[],"feedRoleMemberships":[],"owner":None,"allowIndexing":True,"systemName":"user1_cat"}
+
+KYLO_ALLOWED_ACTIONS= {
+        "actions": [{
+          "systemName": "accessCategory",
+          "actions": [{
+            "systemName": "editCategorySummary"
+          }, {
+            "systemName": "accessCategoryDetails",
+            "actions": [{
+              "systemName": "editCategoryDetails"
+            }, {
+              "systemName": "deleteCategory"
+            }]
+          }, {
+            "systemName": "createFeedUnderCategory"
+          }, {
+            "systemName": "changeCategoryPermissions"
+          }]
+        }]
+}
+
+KYLO_FEED_ROLE_MEMBERSHIPS= [{
+"role": {
+  "systemName": "editor",
+  "title": "Editor",
+  "description": "Allows a user to edit, enable/disable, start, delete and export feed. Allows access to job operations for feed. If role inherited via a category, allows these operations for feeds under that category.",
+  "allowedActions": {
+    "actions": [{
+      "systemName": "accessFeed",
+      "actions": [{
+        "systemName": "accessFeedDetails",
+        "actions": [{
+          "systemName": "editFeedDetails",
+          "title": "Edit Details",
+          "description": "Allows editing of the details about the feed"
+        }, {
+          "systemName": "deleteFeed",
+          "title": "Delete",
+          "description": "Allows deleting the feed"
+        }, {
+          "systemName": "enableFeed",
+          "title": "Enable/Disable",
+          "description": "Allows enabling and disabling the feed"
+        }, {
+          "systemName": "startFeed",
+          "title": "Start Feed",
+          "description": "Allows manually triggering the start of a feed"
+        }, {
+          "systemName": "exportFeed",
+          "title": "Export",
+          "description": "Allows exporting the feed"
+        }]
+      }, {
+        "systemName": "accessFeedOperations",
+        "title": "Access Operations",
+        "description": "Allows the ability to see the operational history of the feed"
+      }]
+    }]
+  }
+},
+"users": ["user2"],
+"groups": [],
+"ui": {
+  "members": {
+    "selectedItem": None,
+    "searchText": ""
+  }
+},
+"members": [{
+  "displayName": "user2",
+  "email": "",
+  "enabled": True,
+  "groups": ["madvisor"],
+  "systemName": "user2",
+  "name": "user2",
+  "title": "user2",
+  "type": "user",
+  "_lowername": "user2",
+  "_lowerSystemName": "user2",
+  "_lowerDisplayName": "user2"
+}]
+}, {
+"role": {
+  "systemName": "admin",
+  "title": "Admin",
+  "description": "All capabilities defined in the 'Editor' role along with the ability to change the permissions",
+  "allowedActions": {
+    "actions": [{
+      "systemName": "accessFeed",
+      "actions": [{
+        "systemName": "accessFeedDetails",
+        "actions": [{
+          "systemName": "editFeedDetails",
+          "title": "Edit Details",
+          "description": "Allows editing of the details about the feed"
+        }, {
+          "systemName": "deleteFeed",
+          "title": "Delete",
+          "description": "Allows deleting the feed"
+        }, {
+          "systemName": "enableFeed",
+          "title": "Enable/Disable",
+          "description": "Allows enabling and disabling the feed"
+        }, {
+          "systemName": "startFeed",
+          "title": "Start Feed",
+          "description": "Allows manually triggering the start of a feed"
+        }, {
+          "systemName": "exportFeed",
+          "title": "Export",
+          "description": "Allows exporting the feed"
+        }]
+      }, {
+        "systemName": "accessFeedOperations",
+        "title": "Access Operations",
+        "description": "Allows the ability to see the operational history of the feed"
+      }, {
+        "systemName": "changeFeedPermissions",
+        "title": "Change Permissions",
+        "description": "Allows editing of the permissions that grant access to the feed"
+      }]
+    }]
+  }
+},
+"users": ["user2"],
+"groups": [],
+"ui": {
+  "members": {
+    "selectedItem": None,
+    "searchText": ""
+  }
+},
+"members": [{
+  "displayName": "user2",
+  "email": "",
+  "enabled": True,
+  "groups": ["madvisor"],
+  "systemName": "user2",
+  "name": "user2",
+  "title": "user2",
+  "type": "user",
+  "_lowername": "user2",
+  "_lowerSystemName": "user2",
+  "_lowerDisplayName": "user2"
+}]
+}, {
+"role": {
+  "systemName": "readOnly",
+  "title": "Read-Only",
+  "description": "Allows a user to view the feed and access job operations",
+  "allowedActions": {
+    "actions": [{
+      "systemName": "accessFeed",
+      "actions": [{
+        "systemName": "accessFeedDetails",
+        "title": "Access Details",
+        "description": "Allows viewing the full details about the feed"
+      }, {
+        "systemName": "accessFeedOperations",
+        "title": "Access Operations",
+        "description": "Allows the ability to see the operational history of the feed"
+      }]
+    }]
+  }
+},
+"users": [],
+"groups": [],
+"ui": {
+  "members": {
+    "selectedItem": "",
+    "searchText": ""
+  }
+},
+"members": []
+}]
+
+KYLO_OWNER={
+"displayName": "Data Lake Administrator",
+"email": None,
+"enabled": True,
+"groups": ["admin", "user"],
+"systemName": "dladmin"
+}
+
+KYLO_ROLE_MEMBERSHIPS= [{
+    "role": {
+      "systemName": "editor",
+      "title": "Editor",
+      "description": "Allows a user to edit, export and delete category. Allows creating feeds under the category",
+      "allowedActions": {
+        "actions": [{
+          "systemName": "accessCategory",
+          "title": "Access Category",
+          "description": "Allows the ability to view the category and see basic summary information about it",
+          "actions": [{
+            "systemName": "accessCategoryDetails",
+            "actions": [{
+              "systemName": "editCategoryDetails",
+              "title": "Edit Details",
+              "description": "Allows editing of the details about the category"
+            }, {
+              "systemName": "deleteCategory",
+              "title": "Delete",
+              "description": "Allows deleting the category"
+            }]
+          }, {
+            "systemName": "editCategorySummary",
+            "title": "Edit Summary",
+            "description": "Allows editing of the summary information about the category"
+          }, {
+            "systemName": "createFeedUnderCategory",
+            "title": "Create Feed under Category",
+            "description": "Allows creating feeds under this category"
+          }]
+        }]
+      }
+    },
+    "users": ["user1"],
+    "groups": [],
+    "ui": {
+      "members": {
+        "selectedItem": None,
+        "searchText": ""
+      }
+    },
+    "members": [{
+      "displayName": "user1",
+      "email": "",
+      "enabled": True,
+      "groups": ["madvisor"],
+      "systemName": "user1",
+      "name": "user1",
+      "title": "user1",
+      "type": "user",
+      "_lowername": "user1",
+      "_lowerSystemName": "user1",
+      "_lowerDisplayName": "user1"
+    }]
+  }, {
+    "role": {
+      "systemName": "admin",
+      "title": "Admin",
+      "description": "All capabilities defined in the 'Editor' role along with the ability to change the permissions",
+      "allowedActions": {
+        "actions": [{
+          "systemName": "accessCategory",
+          "title": "Access Category",
+          "description": "Allows the ability to view the category and see basic summary information about it",
+          "actions": [{
+            "systemName": "accessCategoryDetails",
+            "actions": [{
+              "systemName": "editCategoryDetails",
+              "title": "Edit Details",
+              "description": "Allows editing of the details about the category"
+            }, {
+              "systemName": "deleteCategory",
+              "title": "Delete",
+              "description": "Allows deleting the category"
+            }]
+          }, {
+            "systemName": "editCategorySummary",
+            "title": "Edit Summary",
+            "description": "Allows editing of the summary information about the category"
+          }, {
+            "systemName": "createFeedUnderCategory",
+            "title": "Create Feed under Category",
+            "description": "Allows creating feeds under this category"
+          }, {
+            "systemName": "changeCategoryPermissions",
+            "title": "Change Permissions",
+            "description": "Allows editing of the permissions that grant access to the category"
+          }]
+        }]
+      }
+    },
+    "users": [],
+    "groups": [],
+    "ui": {
+      "members": {
+        "selectedItem": "",
+        "searchText": ""
+      }
+    },
+    "members": []
+  }, {
+    "role": {
+      "systemName": "readOnly",
+      "title": "Read-Only",
+      "description": "Allows a user to view the category",
+      "allowedActions": {
+        "actions": [{
+          "systemName": "accessCategory",
+          "title": "Access Category",
+          "description": "Allows the ability to view the category and see basic summary information about it"
+        }]
+      }
+    },
+    "users": [],
+    "groups": [],
+    "ui": {
+      "members": {
+        "selectedItem": "",
+        "searchText": ""
+      }
+    },
+    "members": []
+  }, {
+    "role": {
+      "systemName": "feedCreator",
+      "title": "Feed Creator",
+      "description": "Allows a user to create a new feed using this category",
+      "allowedActions": {
+        "actions": [{
+          "systemName": "accessCategory",
+          "actions": [{
+            "systemName": "accessCategoryDetails",
+            "title": "Access Details",
+            "description": "Allows viewing the full details about the category"
+          }, {
+            "systemName": "createFeedUnderCategory",
+            "title": "Create Feed under Category",
+            "description": "Allows creating feeds under this category"
+          }]
+        }]
+      }
+    },
+    "users": ["user1"],
+    "groups": [],
+    "ui": {
+      "members": {
+        "selectedItem": None,
+        "searchText": ""
+      }
+    },
+    "members": [{
+      "displayName": "user1",
+      "email": "",
+      "enabled": True,
+      "groups": ["madvisor"],
+      "systemName": "user1",
+      "name": "user1",
+      "title": "user1",
+      "type": "user",
+      "_lowername": "user1",
+      "_lowerSystemName": "user1",
+      "_lowerDisplayName": "user1"
+    }]
+  }]
+
+KYLO_CREATE_CATEGORY_TEMPLATE={
+  "owner": KYLO_OWNER,
+  "allowedActions": KYLO_ALLOWED_ACTIONS,
+  "roleMemberships": KYLO_ROLE_MEMBERSHIPS,
+  "feedRoleMemberships": KYLO_FEED_ROLE_MEMBERSHIPS,
+  "id": "fa893dda-5522-45a0-95d5-640bcf4797aa",
+  "name": "user1_cat",
+  "systemName": "user1_cat",
+  "icon": "account_circle",
+  "iconColor": "#80CBC4",
+  "description": "for user 1 only",
+  "allowIndexing": True,
+  "securityGroups": [],
+  "userFields": [],
+  "userProperties": [],
+  "relatedFeeds": 0,
+  "createDate": 1530868419727,
+  "updateDate": 1530868419727,
+  "_lowername": "user1_cat",
+  "createFeed": True,
+  "roleMembershipsUpdated": False
+}
