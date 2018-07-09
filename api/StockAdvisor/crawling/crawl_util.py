@@ -44,7 +44,17 @@ def fetch_news_article_from_nasdaq(stock):
                 date_string = json_obj.get("date").split(" ")[0]
                 json_obj["date"] = myutils.normalize_date_time(date_string).strftime("%Y%m%d")
             stock_news.append(json_obj)
-    return stock_news
+
+    stock_news_with_sentiments = []
+    for news in stock_news:
+        final_url = news["final_url"]
+        nl_understanding = myutils.get_data_from_bluemix(final_url)
+        if nl_understanding:
+            news['keywords'] = nl_understanding['keywords']
+            news['sentiment'] = nl_understanding['sentiment']
+            stock_news_with_sentiments.append(news)
+
+    return stock_news_with_sentiments
 
 
 def write_to_news_data_in_folder(stockName, data):
