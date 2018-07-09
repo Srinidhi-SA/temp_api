@@ -47,8 +47,8 @@ def fetch_news_article_from_nasdaq(stock):
 
     stock_news_with_sentiments = []
     for news in stock_news:
-        final_url = news["final_url"]
-        nl_understanding = myutils.get_data_from_bluemix(final_url)
+        short_desc = news["short_desc"]
+        nl_understanding = myutils.get_data_from_bluemix(short_desc, content=True)
         if nl_understanding:
             news['keywords'] = nl_understanding.get('keywords', [])
             news['sentiment'] = nl_understanding.get('sentiment', [])

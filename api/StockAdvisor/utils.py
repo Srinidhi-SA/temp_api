@@ -41,8 +41,9 @@ def normalize_date_time(date_string):
     return date
 
 
-def get_data_from_bluemix(target_url):
-    nl_understanding = cache_get(target_url)
+def get_data_from_bluemix(content_url_or_text, content=False):
+
+    nl_understanding = cache_get(content_url_or_text)
     if not nl_understanding:
         natural_language_understanding = NaturalLanguageUnderstandingV1(
             username=nlu_settings.get("username"),
@@ -66,21 +67,29 @@ def get_data_from_bluemix(target_url):
         print "get_data_from_bluemix " *20
         print natural_language_understanding
         print features
-        print target_url
+        print content
         for i in range(NUMBEROFTRIES):
             try:
-                nl_understanding = natural_language_understanding.analyze(
-                    url=target_url,
-                    features=features
-                )
-                print nl_understanding.__dict__
+                if content_url_or_text == True:
+                    nl_understanding = natural_language_understanding.analyze(
+                        text=content_url_or_text,
+                        features=features
+                    )
+                else:
+                    nl_understanding = natural_language_understanding.analyze(
+                        url=content_url_or_text,
+                        features=features
+                    )
+
+                print nl_understanding
             except:
+                print "FAILED "*10
                 pass
 
             if nl_understanding:
                 break
 
-        cache_put(target_url, nl_understanding)
+        cache_put(content_url_or_text, nl_understanding)
 
     return nl_understanding
 
