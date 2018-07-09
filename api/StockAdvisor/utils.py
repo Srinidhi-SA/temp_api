@@ -61,6 +61,7 @@ def get_data_from_bluemix(target_url):
                 Features.SemanticRoles(),
 
             ]
+        features = {"sentiment": {}, "keywords": {}}
         nl_understanding = None
 
         for i in range(NUMBEROFTRIES):
