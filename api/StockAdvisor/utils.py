@@ -63,13 +63,17 @@ def get_data_from_bluemix(target_url):
             ]
         features = {"sentiment": {}, "keywords": {}}
         nl_understanding = None
-
+        print "get_data_from_bluemix " *20
+        print natural_language_understanding
+        print features
+        print target_url
         for i in range(NUMBEROFTRIES):
             try:
                 nl_understanding = natural_language_understanding.analyze(
                     url=target_url,
                     features=features
                 )
+                print nl_understanding
             except:
                 pass
 
