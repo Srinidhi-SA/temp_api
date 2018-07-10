@@ -636,7 +636,7 @@ class StockDatasetSerializer(serializers.ModelSerializer):
         # except:
         #     ret['message'] = None
 
-        if ret['meta_data'] == '{}':
+        if ret['meta_data'] == dict():
             ret['meta_data_status'] = "INPROGRESS"
         else:
             ret['meta_data_status'] = "SUCCESS"
