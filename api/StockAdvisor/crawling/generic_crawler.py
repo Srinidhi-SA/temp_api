@@ -26,13 +26,17 @@ class GenericCrawler:
 			print "File is : ", fname
 		content=""
 		if os.path.exists(fname):
+			print "File was there: H"
 			obj=open(fname)
 			content=obj.read()
 		else:
 			# resp=requests.get(url,headers=self.headers)
 			resp=requests.get(url,headers={})
-			time.sleep(2)
+			# time.sleep(2)
+			print "get_data get_data"
 			content=resp.content
+			if "historic" in url:
+				print url, content
 			html_dir=os.path.dirname(fname)
 			if not os.path.exists(html_dir):
 				os.makedirs(html_dir)
