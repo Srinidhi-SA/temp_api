@@ -434,4 +434,5 @@ def stock_sense_crawl(object_slug):
                                    )
     stock_dataset_object.generate_meta_data()
     stock_dataset_object.save()
+    stock_dataset_object.call_mlscripts()
     print stock_dataset_object.meta_data
