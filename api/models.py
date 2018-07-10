@@ -1654,7 +1654,7 @@ class StockDataset(models.Model):
 
         if len(extracted_data) < 1:
             return {}
-
+        print "Total News Article are {0}".format(len(extracted_data))
         meta_data = convert_crawled_data_to_metadata_format(
             news_data=extracted_data,
             other_details={
@@ -1896,7 +1896,7 @@ class StockDataset(models.Model):
         path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug + "/"
         # file_path = path + stockName + "." + type
         file_path = path + name + "." + type
-        print "fo"*10
+        print "Writing {1} for {0}".format(stockName, stockDataType)
         print file_path
         with open(file_path, "wb") as file_to_write_on:
             if 'csv' == type:

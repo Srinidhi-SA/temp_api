@@ -90,7 +90,7 @@ def get_nasdaq_news_article(stock_symbol):
 def get_nasdaq_news_articles(stock_symbol):
     return ["https://www.nasdaq.com/symbol/{0}/news-headlines?page={1}".format(stock_symbol, str(i)) for i in range(2,9)]
 
-# columnData, headers, sampledata, metadata
+
 def convert_crawled_data_to_metadata_format(news_data, other_details=None, slug=None):
     if other_details is None:
         type = 'news_data'
@@ -98,23 +98,10 @@ def convert_crawled_data_to_metadata_format(news_data, other_details=None, slug=
         type= other_details['type']
 
     headers = find_headers(news_data=news_data, type=type, slug=slug)
-    # headers = read_from_a_file(slug=slug)
     columnData = get_column_data_for_metadata(headers, slug=slug)
-    # columnData = read_from_a_file(slug=slug)
     sampleData = get_sample_data(news_data=news_data, type=type, slug=slug)
-    # sampleData = read_from_a_file(slug=slug)
     metaData = get_metaData(news_data=news_data, slug=slug)
-    # metaData = read_from_a_file(slug=slug)
     transformation_settings = get_transformation_settings(slug=slug)
-    # transformation_settings = read_from_a_file(slug=slug)
-    #
-    # return {
-    #     "headers": headers,
-    #     "sampleData": sampleData,
-    #     "columnData": columnData,
-    #     "metaData": metaData,
-    #     "transformation_settings": transformation_settings
-    # }
 
     metadata_json = {
         'scriptMetaData': {
@@ -136,6 +123,7 @@ def convert_crawled_data_to_metadata_format(news_data, other_details=None, slug=
     }
 
     return metadata_json
+
 
 def transform_into_uiandscripts_metadata():
     return {
@@ -169,8 +157,9 @@ def find_headers(news_data, type='historical_data', slug=None):
     if len(news_data) < 1:
         return []
     headers_name = news_data[0].keys()
+    print "headers_name", headers_name
     required_fields = get_required_fields(type)
-
+    print "required_fields", required_fields
     headers_name = list(set(required_fields).intersection(set(headers_name)))
     headers = []
     for header in headers_name:
@@ -178,6 +167,7 @@ def find_headers(news_data, type='historical_data', slug=None):
         temp['name'] = header
         temp['slug'] = generate_slug(header)
         headers.append(temp)
+    print "headers", headers
     return headers
 
 
@@ -205,31 +195,19 @@ def get_column_data_for_metadata(headers, slug=None):
 
 def get_sample_data(news_data, type='historical_data', slug=None):
     required_fields = get_required_fields(type)
-    # sampleData = [ [row[key] for key in required_fields] for row in news_data ]
+    headers_name = news_data[0].keys()
+    headers_name = list(set(required_fields).intersection(set(headers_name)))
     sampleData = []
     for row in news_data:
         row_data = []
-        for key in required_fields:
-            if key in row:
-                row_data.append(row[key])
+        for key in headers_name:
+            row_data.append(row[key])
         sampleData.append(row_data)
     return sampleData
 
+
 def get_metaData(news_data, slug=None):
-    # return  [{
-    #             "displayName": "Number of records",
-    #             "name": "noOfRows",
-    #             "value": len(news_data),
-    #             "display": True
-    #         },
-    #     {
-    #         "displayName": "Source",
-    #         "name": "source",
-    #         "value": "Google Finance",
-    #         "display": True
-    #     },
-    #
-    #          ]
+
     metaData = [
         {"displayName": "News source", "name": "newsSource", "value": "NASDAQ", "display": True},
         {"displayName": "Stock Prices", "name": "stockPrices", "value": "NASDAQ", "display": True},
