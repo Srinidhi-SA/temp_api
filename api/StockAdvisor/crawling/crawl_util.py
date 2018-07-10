@@ -29,8 +29,8 @@ def crawl_extract(url,regex_dict={},remove_tags=[], slug=None):
 def fetch_news_article_from_nasdaq(stock):
     crawl_obj = generic_crawler.GenericCrawler()
     stock_news = []
-    # urls = [get_nasdaq_news_article(stock)] + get_nasdaq_news_articles(stock)
-    urls = [get_nasdaq_news_article(stock)]
+    urls = [get_nasdaq_news_article(stock)] + get_nasdaq_news_articles(stock)
+    # urls = [get_nasdaq_news_article(stock)]
 
     for url in urls:
         print url
@@ -87,7 +87,7 @@ def get_nasdaq_news_article(stock_symbol):
     return "http://www.nasdaq.com/symbol/{0}/news-headlines".format(stock_symbol)
 
 def get_nasdaq_news_articles(stock_symbol):
-    return ["https://www.nasdaq.com/symbol/{0}/news-headlines?page={1}".format(stock_symbol, str(i)) for i in range(2,9)]
+    return ["https://www.nasdaq.com/symbol/{0}/news-headlines?page={1}".format(stock_symbol, str(i)) for i in range(2,10)]
 
 
 def convert_crawled_data_to_metadata_format(news_data, other_details=None, slug=None):
