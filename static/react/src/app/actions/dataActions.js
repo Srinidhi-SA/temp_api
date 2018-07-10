@@ -162,7 +162,7 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
     console.log(dataPreview)
     var  slug = dataPreview.slug;
     var dataset = slug;
-    if(dataPreview.status == SUCCESS){
+    if(dataPreview.meta_data_status == SUCCESS){
 
         if(interval != undefined){
             clearInterval(interval);
@@ -179,7 +179,7 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
             dataPreview,
             slug,
         }
-    }else if(dataPreview.status == FAILED){
+    }else if(dataPreview.meta_data_status == FAILED){
         clearInterval(interval);
         dispatch(hideDULoaderPopup());
         bootbox.alert("The uploaded file does not contain data in readable format. Please check the source file.", function() {
@@ -196,7 +196,7 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
             dataPreview,
             slug,
         }
-    }else if(dataPreview.status == "INPROGRESS"){
+    }else if(dataPreview.meta_data_status == "INPROGRESS"){
         dispatch(dispatchDataPreviewLoadingMsg(dataPreview));
         if (dataPreview.message !== null && dataPreview.message.length > 0) {
             dispatch(openAppsLoaderValue(dataPreview.message[0].stageCompletionPercentage, dataPreview.message[0].shortExplanation));
