@@ -1722,7 +1722,7 @@ class StockDataset(models.Model):
         if hadoop.hadoop_exists(hadoop_path):
             pass
         else:
-            hadoop.hadoop_mkdir(hadoop)
+            hadoop.hadoop_mkdir(hadoop_path)
         return hadoop_path
 
     def generate_meta_data(self):
@@ -1866,6 +1866,8 @@ class StockDataset(models.Model):
                                                                       THIS_SERVER_DETAILS.get('port'),
                                                                       self.get_data_api())
 
+        hdfs_path = self.get_hdfs_relative_path()
+
         return {
             "config": {
                 "FILE_SETTINGS": {
@@ -1883,7 +1885,8 @@ class StockDataset(models.Model):
                 },
                 "STOCK_SETTINGS": {
                     "stockSymbolList": stockSymbolList,
-                    "dataAPI": data_api  # + "?" + 'stockDataType = "bluemix"' + '&' + 'stockName = "googl"'
+                    "dataAPI": data_api,  # + "?" + 'stockDataType = "bluemix"' + '&' + 'stockName = "googl"'
+                    "hdfs_path": hdfs_path
                 }
             }
         }
@@ -1924,7 +1927,7 @@ class StockDataset(models.Model):
                 writer.writerow(data)
             elif 'json' == type:
                 json.dump(data, file_to_write_on)
-        self.copy_file_to_hdfs(file_to_write_on, stockDataType)
+        self.copy_file_to_hdfs(file_path, stockDataType)
 
         self.write_crawled_databases(stockDataType, stockName, data)
 
@@ -1954,6 +1957,7 @@ class StockDataset(models.Model):
         else:
             path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data"
             path = path + "/concepts.json"
+            self.copy_file_to_hdfs(path, extra_path='concepts')
             with open(path) as fp:
                 crawled_data['concepts'] = json.loads(fp.read())
 
