@@ -30,12 +30,13 @@ def fetch_news_article_from_nasdaq(stock):
     crawl_obj = generic_crawler.GenericCrawler()
     stock_news = []
     urls = [get_nasdaq_news_article(stock)] + get_nasdaq_news_articles(stock)
-    # urls = [get_nasdaq_news_article(stock)]
 
     for url in urls:
         print url
         content = crawl_obj.get_data(url, crawl_options={'date_of_crawl': True })
         json_list = process.process_nasdaq_news_article(url, content, stock=stock)
+        if len(json_list) < 1:
+            break
         for json_obj in json_list:
             if not json_obj.get("url"):
                 continue

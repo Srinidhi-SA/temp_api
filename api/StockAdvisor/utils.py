@@ -63,10 +63,6 @@ def get_data_from_bluemix(content_url_or_text, content=False):
             ]
         # features = {"sentiment": {}, "keywords": {}}
         nl_understanding = None
-        print "get_data_from_bluemix " *20
-        print natural_language_understanding
-        print features
-        print content
         for i in range(NUMBEROFTRIES):
             try:
                 if content == True:
@@ -80,7 +76,6 @@ def get_data_from_bluemix(content_url_or_text, content=False):
                         features=features
                     )
 
-                print nl_understanding
             except:
                 print "FAILED "*10
                 pass

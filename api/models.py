@@ -1705,6 +1705,26 @@ class StockDataset(models.Model):
             type='json'
         )
 
+    def copy_file_to_hdfs(self, localpath, extra_path=None):
+
+        hadoop_path = self.get_hdfs_relative_path(extra_path)
+        try:
+            hadoop.hadoop_put(localpath, hadoop_path)
+        except:
+            raise Exception("Failed to copy file to HDFS.")
+
+    def get_hdfs_relative_path(self, extra_path=None):
+
+        if extra_path is not None:
+            hadoop_path = "/stockdataset/" + self.slug + "/" + extra_path
+        else:
+            hadoop_path = "/stockdataset/" + self.slug
+        if hadoop.hadoop_exists(hadoop_path):
+            pass
+        else:
+            hadoop.hadoop_mkdir(hadoop)
+        return hadoop_path
+
     def generate_meta_data(self):
         self.create_folder_in_scripts_data()
         # self.paste_essential_files_in_scripts_folder()
@@ -1904,9 +1924,9 @@ class StockDataset(models.Model):
                 writer.writerow(data)
             elif 'json' == type:
                 json.dump(data, file_to_write_on)
+        self.copy_file_to_hdfs(file_to_write_on, stockDataType)
 
         self.write_crawled_databases(stockDataType, stockName, data)
-
 
     def write_crawled_databases(self, stockDataType, stockName, data):
 
