@@ -636,6 +636,11 @@ class StockDatasetSerializer(serializers.ModelSerializer):
         # except:
         #     ret['message'] = None
 
+        if ret['meta_data'] == '{}':
+            ret['meta_data_status'] = "INPROGRESS"
+        else:
+            ret['meta_data_status'] = "SUCCESS"
+
         if 'request' in self.context:
             # permission details
             permission_details = get_permissions(
