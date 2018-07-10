@@ -13,7 +13,7 @@ def crawl_extract(url,regex_dict={},remove_tags=[], slug=None):
     all_data=[]
     crawl_obj=generic_crawler.GenericCrawler()
 
-    content=crawl_obj.get_data(url)
+    content=crawl_obj.get_data(url, crawl_options={'fresh': True })
     json_list=process.process_data(url,content,regex_dict=regex_dict,remove_tags=remove_tags)
 
     for json_obj in json_list:
@@ -34,9 +34,8 @@ def fetch_news_article_from_nasdaq(stock):
 
     for url in urls:
         print url
-        content = crawl_obj.get_data(url)
+        content = crawl_obj.get_data(url, crawl_options={'date_of_crawl': True })
         json_list = process.process_nasdaq_news_article(url, content, stock=stock)
-        # print json_list
         for json_obj in json_list:
             if not json_obj.get("url"):
                 continue
@@ -64,8 +63,6 @@ def write_to_news_data_in_folder(stockName, data):
     path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))) + "/scripts/data/" + self.slug + "/"
     # file_path = path + stockName + "." + type
     file_path = path + stockName + "." + type
-    print "fo"*10
-    print file_path
     with open(file_path, "wb") as file_to_write_on:
         if 'csv' == type:
             writer = csv.writer(file_to_write_on)
@@ -157,9 +154,7 @@ def find_headers(news_data, type='historical_data', slug=None):
     if len(news_data) < 1:
         return []
     headers_name = news_data[0].keys()
-    print "headers_name", headers_name
     required_fields = get_required_fields(type)
-    print "required_fields", required_fields
     headers_name = list(set(required_fields).intersection(set(headers_name)))
     headers = []
     for header in headers_name:
@@ -167,7 +162,6 @@ def find_headers(news_data, type='historical_data', slug=None):
         temp['name'] = header
         temp['slug'] = generate_slug(header)
         headers.append(temp)
-    print "headers", headers
     return headers
 
 

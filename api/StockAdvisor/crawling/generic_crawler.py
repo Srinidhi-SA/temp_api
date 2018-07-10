@@ -3,6 +3,8 @@ import hashlib
 import common_utils
 import requests
 import time
+from datetime import datetime
+import random
 
 class GenericCrawler:
 	def __init__(self,crawl_options={}):
@@ -10,8 +12,18 @@ class GenericCrawler:
 		self.fdir=os.environ["HOME"]+"/html/"+crawl_options.get("source","misc")
 
 	def get_data(self,url,crawl_options={}):
-		fname=self.fdir+"/"+common_utils.get_sha(url)
-		print "File is : ",fname
+
+		if 'date_of_crawl' in crawl_options:
+			if crawl_options['date_of_crawl'] == True:
+				fname=self.fdir+"/"+common_utils.get_sha(url + str(datetime.now().date()))
+				print "File is : ",fname
+		elif "fresh" in crawl_options:
+			if crawl_options['fresh'] == True:
+				fname = self.fdir + "/" + common_utils.get_sha(url + str(random.randint(100000,9999999)))
+				print "File is : ", fname
+		else:
+			fname = self.fdir + "/" + common_utils.get_sha(url)
+			print "File is : ", fname
 		content=""
 		if os.path.exists(fname):
 			obj=open(fname)
