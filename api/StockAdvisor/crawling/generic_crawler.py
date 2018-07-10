@@ -36,7 +36,7 @@ class GenericCrawler:
 			print "get_data get_data"
 			content=resp.content
 			if "historic" in url:
-				print url, content
+				print url, resp
 			html_dir=os.path.dirname(fname)
 			if not os.path.exists(html_dir):
 				os.makedirs(html_dir)
