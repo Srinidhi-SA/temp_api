@@ -29,8 +29,8 @@ def crawl_extract(url,regex_dict={},remove_tags=[], slug=None):
 def fetch_news_article_from_nasdaq(stock):
     crawl_obj = generic_crawler.GenericCrawler()
     stock_news = []
-    # urls = [get_nasdaq_news_article(stock)] + get_nasdaq_news_articles(stock)
-    urls = [get_nasdaq_news_article(stock)]
+    urls = [get_nasdaq_news_article(stock)] + get_nasdaq_news_articles(stock)
+    # urls = [get_nasdaq_news_article(stock)]
 
     for url in urls:
         print url
@@ -162,11 +162,12 @@ def get_transformation_settings(slug=None):
     existingColumn = {
             "existingColumns": []
         }
-    write_to_a_file(slug=slug, data=existingColumn)
     return existingColumn
 
 
 def find_headers(news_data, type='historical_data', slug=None):
+    if len(news_data) < 1:
+        return []
     headers_name = news_data[0].keys()
     required_fields = get_required_fields(type)
 
@@ -177,8 +178,8 @@ def find_headers(news_data, type='historical_data', slug=None):
         temp['name'] = header
         temp['slug'] = generate_slug(header)
         headers.append(temp)
-    write_to_a_file(slug=slug, data=headers)
     return headers
+
 
 def get_column_data_for_metadata(headers, slug=None):
     import copy
@@ -200,7 +201,6 @@ def get_column_data_for_metadata(headers, slug=None):
         temp['name'] = header['name']
         temp['slug'] = header['slug']
         columnData.append(temp)
-    write_to_a_file(slug=slug, data=columnData)
     return columnData
 
 def get_sample_data(news_data, type='historical_data', slug=None):
@@ -213,7 +213,6 @@ def get_sample_data(news_data, type='historical_data', slug=None):
             if key in row:
                 row_data.append(row[key])
         sampleData.append(row_data)
-    # write_to_a_file(slug=slug, data=sampleData)
     return sampleData
 
 def get_metaData(news_data, slug=None):
@@ -232,17 +231,16 @@ def get_metaData(news_data, slug=None):
     #
     #          ]
     metaData = [
-        {"displayName": "News source", "name": "newsSource", "value": "Google Finance", "display": True},
+        {"displayName": "News source", "name": "newsSource", "value": "NASDAQ", "display": True},
         {"displayName": "Stock Prices", "name": "stockPrices", "value": "NASDAQ", "display": True},
-        {"displayName": "Number of Articles", "name": "numberOfArticles", "value": 1249 , "display": True},
+        {"displayName": "Number of Articles", "name": "numberOfArticles", "value": len(news_data) , "display": True},
     ]
-    write_to_a_file(slug=slug, data=metaData)
     return metaData
 
 def get_required_fields(type='historical_data'):
     matching = {
         'historical_data': ['url',  'source', 'date', 'time'],
-        'news_data': ['url',  'source', 'date', 'title','desc', 'time'],
+        'news_data': ['url',  'source', 'date', 'title','short_desc'],
     }
 
     return matching[type]
