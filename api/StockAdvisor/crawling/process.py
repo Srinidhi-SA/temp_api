@@ -3,6 +3,7 @@ import sys
 import common_utils
 import requests
 from bs4 import BeautifulSoup
+import generic_crawler
 
 def sanitize(content,remove_tags=[]):
 	for html_tag in remove_tags:
@@ -123,12 +124,14 @@ def process_marketwatch_news_article(content):
 	return all_data
 
 def process_nasdaq_news_paragraph(url):
+	crawl_obj = generic_crawler.GenericCrawler()
+	content = crawl_obj.get_data(url)
 	from bs4 import BeautifulSoup
-	import requests
-	r = requests.get(url)
-	data = r.text
+	# import requests
+	# r = requests.get(url)
+	# data = r.text
 
-	soup = BeautifulSoup(data)
+	soup = BeautifulSoup(content)
 	all_para = soup.find_all('p')
 	article_text = ""
 	for para in all_para[2:]:
