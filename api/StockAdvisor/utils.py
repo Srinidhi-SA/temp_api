@@ -43,10 +43,12 @@ def normalize_date_time(date_string):
 def get_data_from_bluemix(content_url_or_text, content=False, unique_id=None):
     found = False
     if unique_id is not None:
-        nl_understanding = cache_get(unique_id)
+        nl_understanding = cache_get(unique_id + "_bluemix")
         found = True
+        print "Article Found in cache---> {0}".format(unique_id + "_bluemix")
     elif content==False:
-        nl_understanding = cache_get(content_url_or_text)
+        nl_understanding = cache_get(content_url_or_text + "_bluemix")
+        print "Article found in cache---> {0}".format(content_url_or_text + "_bluemix")
         found = True
     else:
         nl_understanding = None
@@ -92,12 +94,14 @@ def get_data_from_bluemix(content_url_or_text, content=False, unique_id=None):
                 break
 
         if unique_id is not None and found == False:
-            nl_understanding = cache_get(unique_id)
+            nl_understanding = cache_get(unique_id + "_bluemix")
+            print "Article added in cache---> {0}".format(unique_id + "_bluemix")
         elif content == False and found == False:
-            nl_understanding = cache_get(content_url_or_text)
+            nl_understanding = cache_get(content_url_or_text + "_bluemix")
+            print "Article added in cache---> {0}".format(content_url_or_text + "_bluemix")
         else:
             pass
-    print "found article in cache---> {0}".format(found)
+
     return nl_understanding
 
 def get_cache_file_name(input_key):
