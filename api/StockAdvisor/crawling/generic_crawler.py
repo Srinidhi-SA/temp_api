@@ -18,9 +18,9 @@ class GenericCrawler:
 				fname=self.fdir+"/"+common_utils.get_sha(url + str(datetime.now().date()))
 				print "File is : ",fname
 		elif "fresh" in crawl_options:
-			if crawl_options['fresh'] == True:
-				fname = self.fdir + "/" + common_utils.get_sha(url + str(random.randint(100000,9999999)))
-				print "File is : ", fname
+			# if crawl_options['fresh'] == True:
+			fname = self.fdir + "/" + common_utils.get_sha(url)
+				# print "File is : ", fname
 		else:
 			fname = self.fdir + "/" + common_utils.get_sha(url)
 			print "File is : ", fname
