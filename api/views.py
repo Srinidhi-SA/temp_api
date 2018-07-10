@@ -642,7 +642,7 @@ class StockDatasetView(viewsets.ModelViewSet):
             created_by=self.request.user,
             deleted=False,
             #analysis_done=True
-            status__in=['SUCCESS', 'INPROGRESS', 'Not Registered']
+            status__in=['SUCCESS', 'INPROGRESS']
         )
         return queryset
 
