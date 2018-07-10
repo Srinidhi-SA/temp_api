@@ -23,6 +23,7 @@ import {handleJobProcessing} from "../../helpers/helper";
     modelSlug: store.apps.modelSlug,
 		updateCreateModelHideShow:store.apps.updateCreateModelHideShow,
 		scoreSlug:store.apps.scoreSlug,
+		stockSlug:store.apps.stockSlug,
 	};
 })
 
@@ -46,6 +47,8 @@ export class AppsLoader extends React.Component {
 		this.props.dispatch(hideDataPreview());
 		if((this.props.match.url).indexOf("/createScore") > 0 || (this.props.match.url).indexOf("/scores") > 0)
 		this.props.dispatch(handleJobProcessing(this.props.scoreSlug));
+		else if((this.props.match.url).indexOf("/apps-stock-advisor") >=0 )
+		this.props.dispatch(handleJobProcessing(this.props.stockSlug));
 		else
 		this.props.dispatch(handleJobProcessing(this.props.modelSlug));
 		this.props.dispatch(closeAppsLoaderValue());
