@@ -40,9 +40,17 @@ def normalize_date_time(date_string):
     return date
 
 
-def get_data_from_bluemix(content_url_or_text, content=False):
+def get_data_from_bluemix(content_url_or_text, content=False, unique_id=None):
+    found = False
+    if unique_id is not None:
+        nl_understanding = cache_get(unique_id)
+        found = True
+    elif content==False:
+        nl_understanding = cache_get(content_url_or_text)
+        found = True
+    else:
+        nl_understanding = None
 
-    nl_understanding = cache_get(content_url_or_text)
     if not nl_understanding:
         natural_language_understanding = NaturalLanguageUnderstandingV1(
             username=nlu_settings.get("username"),
@@ -83,12 +91,14 @@ def get_data_from_bluemix(content_url_or_text, content=False):
             if nl_understanding:
                 break
 
-        cache_put(content_url_or_text, nl_understanding)
-
+        if unique_id is not None and found == False:
+            nl_understanding = cache_get(unique_id)
+        elif content == False and found == False:
+            nl_understanding = cache_get(content_url_or_text)
+        else:
+            pass
+    print "found article in cache---> {0}".format(found)
     return nl_understanding
-
-
-
 
 def get_cache_file_name(input_key):
 
