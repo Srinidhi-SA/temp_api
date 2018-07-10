@@ -30,8 +30,8 @@ class GenericCrawler:
 			obj=open(fname)
 			content=obj.read()
 		else:
-			# resp=requests.get(url,headers=self.headers)
-			resp=requests.get(url,headers={})
+			resp=requests.get(url,headers=self.headers)
+			# resp=requests.get(url,headers={})
 			# time.sleep(2)
 			print "get_data get_data"
 			content=resp.content
