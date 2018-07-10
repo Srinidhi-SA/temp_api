@@ -85,11 +85,10 @@ export class AppsModelDetail extends React.Component {
         showExportPmml = modelSummary.permission_details.downlad_pmml;
 		showCreateScore = modelSummary.permission_details.create_score;
 		//if(this.props.currentAppDetails != null && this.props.currentAppDetails.app_type == "REGRESSION"){
-			var listOfCardList = modelSummary.data.model_summary.listOfCards;
-			var componentsWidth = 0;
-			var cardDataList = listOfCardList.map((data, i) => {
-				var clearfixClass = "col-md-"+data.cardWidth*0.12+" xs-p-30 clearfix";
-				var nonClearfixClass = "col-md-"+data.cardWidth*0.12+" xs-p-30";
+				var listOfCardList = modelSummary.data.model_summary.listOfCards;	var componentsWidth = 0;
+				var cardDataList = listOfCardList.map((data, i) => {
+				var clearfixClass = "col-md-"+data.cardWidth*0.12+" clearfix";
+				var nonClearfixClass = "col-md-"+data.cardWidth*0.12;
 				var cardDataArray = data.cardData;
 				var isHideData = $.grep(cardDataArray,function(val,key){
 					return(val.dataType == "html" && val.classTag == "hidden");
@@ -131,7 +130,7 @@ export class AppsModelDetail extends React.Component {
 
 		                <div className="panel panel-mAd documentModeSpacing box-shadow">
 		                    <div className="panel-heading">
-		                      <h3 className="xs-mt-0">{store.getState().apps.modelSummary.name}
+		                      <h3 className="page-title-4">{store.getState().apps.modelSummary.name}
 
 		                      <div className="btn-toolbar pull-right">
 		                        <div className="btn-group">
@@ -147,16 +146,15 @@ export class AppsModelDetail extends React.Component {
 		                        </div>
 		                      </div>
 		                     </h3>
-		                      <div className="clearfix"></div>
 		                    </div>
 		                   <div className="panel-body no-border">
-		                   <div className="row-fluid">
+		                   <div className="container-fluid">
 
 		                  {cardDataList}
 
 		                    </div>
 												<div class="row">
-		                    <div className="col-md-12 text-right ">
+		                    <div className="col-md-12 text-right xs-mt-30">
 												{showExportPmml?
 		                    <Button bsStyle="primary" onClick={this.handleExportAsPMMLModal.bind(this,true)}>Export As PMML</Button>:""}
 		                  	{showCreateScore? <AppsCreateScore match={this.props.match}/>:""}
