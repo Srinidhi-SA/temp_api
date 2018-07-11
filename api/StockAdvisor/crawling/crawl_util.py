@@ -30,31 +30,37 @@ def fetch_news_article_from_nasdaq(stock):
     crawl_obj = generic_crawler.GenericCrawler()
     stock_news = []
     # urls = [get_nasdaq_news_article(stock)] + get_nasdaq_news_articles(stock)
-    urls = [get_nasdaq_news_article(stock)]
 
-    for url in urls:
-        print url
-        content = crawl_obj.get_data(url)
-        json_list = process.process_nasdaq_news_article(url, content, stock=stock)
-        if len(json_list) < 1:
-            break
-        for json_obj in json_list:
-            if not json_obj.get("url"):
-                continue
-            if "date" in json_obj:
-                date_string = json_obj.get("date").split(" ")[0]
-                json_obj["date"] = myutils.normalize_date_time(date_string).strftime("%Y%m%d")
-                json_obj["time"] = myutils.normalize_date_time(date_string).strftime("%Y%m%d")
-            stock_news.append(json_obj)
 
-    stock_news_with_sentiments = []
-    for news in stock_news:
-        short_desc = news["short_desc"]
-        nl_understanding = myutils.get_data_from_bluemix(short_desc, content=True, unique_id=news['final_url'])
-        if nl_understanding:
-            news['keywords'] = nl_understanding.get('keywords', [])
-            news['sentiment'] = nl_understanding.get('sentiment', [])
-            stock_news_with_sentiments.append(news)
+    # urls = [get_nasdaq_news_article(stock)]
+    #
+    # for url in urls:
+    #     print url
+    #     content = crawl_obj.get_data(url)
+    #     json_list = process.process_nasdaq_news_article(url, content, stock=stock)
+    #     if len(json_list) < 1:
+    #         break
+    #     for json_obj in json_list:
+    #         if not json_obj.get("url"):
+    #             continue
+    #         if "date" in json_obj:
+    #             date_string = json_obj.get("date").split(" ")[0]
+    #             json_obj["date"] = myutils.normalize_date_time(date_string).strftime("%Y%m%d")
+    #             json_obj["time"] = myutils.normalize_date_time(date_string).strftime("%Y%m%d")
+    #         stock_news.append(json_obj)
+    #
+    # stock_news_with_sentiments = []
+    # for news in stock_news:
+    #     short_desc = news["short_desc"]
+    #     nl_understanding = myutils.get_data_from_bluemix(short_desc, content=True, unique_id=news['final_url'])
+    #     if nl_understanding:
+    #         news['keywords'] = nl_understanding.get('keywords', [])
+    #         news['sentiment'] = nl_understanding.get('sentiment', [])
+    #         stock_news_with_sentiments.append(news)
+
+    from api.models import StockDataset
+    sdd = StockDataset.objects.get(slug='asd23-yzce2di0zg')
+    stock_news_with_sentiments = json.loads(sdd.crawled_data)[stock][stock]
 
     return stock_news_with_sentiments
 
