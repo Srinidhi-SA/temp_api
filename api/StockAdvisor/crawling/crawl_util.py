@@ -34,7 +34,7 @@ def fetch_news_article_from_nasdaq(stock):
 
     for url in urls:
         print url
-        content = crawl_obj.get_data(url, crawl_options={'date_of_crawl': True })
+        content = crawl_obj.get_data(url)
         json_list = process.process_nasdaq_news_article(url, content, stock=stock)
         if len(json_list) < 1:
             break
