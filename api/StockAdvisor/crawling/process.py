@@ -142,3 +142,41 @@ def process_nasdaq_news_paragraph(url):
 		article_text += sanitize(para.text)
 
 	return article_text
+
+import json
+
+def fetch_historical_data_from_alphavintage(stock):
+	apikey = "NZ4C53A0LJJU6MKM"
+	function = "TIME_SERIES_DAILY"
+	symbol = stock
+	url = "https://www.alphavantage.co/query?function={0}&symbol={1}&apikey={2}".format(
+		function,
+		symbol,
+		apikey
+	)
+	resp = requests.get(url)
+	historical_data = json.loads(resp.text)
+
+	def reformat_date(date_string):
+		from datetime import datetime
+		return datetime.strptime(date_string, "%Y-%m-%d").date().strftime('%Y%m%d')
+
+	def sanitize_name(name):
+		return name[3:]
+
+	raw_data = historical_data['Time Series (Daily)']
+	all_data = []
+	for date_name in raw_data:
+		data = raw_data[date_name]
+		json_data = {
+			'date': reformat_date(date_name)
+		}
+
+		for d in data:
+			json_data[sanitize_name(d)] = data[d]
+		json_data['url'] = url
+		json_data['source'] = 'alphavinatge'
+		json_data['seed_url'] = url
+		all_data.append(json_data)
+
+	return all_data

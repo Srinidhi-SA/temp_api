@@ -1675,15 +1675,10 @@ class StockDataset(models.Model):
 
     def crawl_for_historic_data(self):
         stock_symbols = self.get_stock_symbol_names()
-        GOOGLE_REGEX_FILE = "nasdaq_stock.json"
 
         for stock in stock_symbols:
-            url = generate_url_for_historic_data(stock)
-            stock_data = crawl_extract(
-                url=url,
-                regex_dict=get_regex(GOOGLE_REGEX_FILE),
-                slug=self.slug
-            )
+            from api.StockAdvisor.crawling.process import fetch_historical_data_from_alphavintage
+            stock_data = fetch_historical_data_from_alphavintage(stock)
 
             self.write_to_concepts_folder(
                 stockDataType="historic",
