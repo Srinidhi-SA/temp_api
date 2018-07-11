@@ -887,22 +887,15 @@ Note: It looks into CustomApps table for apps.
 class AppView(viewsets.ModelViewSet):
     def get_queryset(self):
         from api.models import CustomAppsUserMapping
+        # import pdb;pdb.set_trace()
         user_app_list = CustomAppsUserMapping.objects.filter(
             user=self.request.user,
             active=True
         ).order_by('rank')
 
-        custom_apps = [custom_app.app for custom_app in user_app_list]
-        print custom_apps
-        queryset = custom_apps
+        custom_apps_id = [custom_app.app.id for custom_app in user_app_list]
 
-        # queryset = CustomApps.objects.filter(
-        #     #created_by=self.request.user,
-        #     status="Active"
-        #     #status__in=['SUCCESS', 'INPROGRESS']
-        # ).order_by('rank')
-        # app_ordered_list = copy.deepcopy(settings.APPORDERLIST)
-        # queryset = queryset.filter(name__in=app_ordered_list)
+        queryset = CustomApps.objects.filter(id__in=custom_apps_id).all()
         return queryset
 
     def get_serializer_class(self):
