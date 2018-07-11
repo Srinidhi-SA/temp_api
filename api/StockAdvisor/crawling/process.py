@@ -168,6 +168,7 @@ def fetch_historical_data_from_alphavintage(stock):
 	def sanitize_name(name):
 		return name[3:]
 
+	print historical_data.keys()
 	raw_data = historical_data['Time Series (Daily)']
 	all_data = []
 	for date_name in raw_data:
