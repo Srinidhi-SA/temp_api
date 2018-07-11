@@ -83,22 +83,26 @@ def process_nasdaq_news_article(url, content, stock):
 	soup = BeautifulSoup(content, "html.parser")
 	new_headlines = soup.find_all('div', class_="news-headlines")
 	all_data = []
-	for i, tag in enumerate(new_headlines[0]):
-		json_data = {}
-		if i % 10 == 3 and 'class' not in tag.attrs:
-			json_data['title'] = sanitize(tag.span.a.text)
-			json_data['final_url'] = tag.span.a['href']
-			json_data['google_url'] = url
-			json_data['url'] = url
-			date_and_author = tag.small.text
-			date_and_time = sanitize(date_and_author.split('-')[0])
-			json_data['time'] = date_and_time
-			json_data['date'] = date_and_time
-			json_data['source'] = sanitize(date_and_author.split('-')[1])
-			json_data['stock'] = stock
-			json_data['short_desc'] = process_nasdaq_news_paragraph(tag.span.a['href'])
 
-			all_data.append(json_data)
+	try:
+		for i, tag in enumerate(new_headlines[0]):
+			json_data = {}
+			if i % 10 == 3 and 'class' not in tag.attrs:
+				json_data['title'] = sanitize(tag.span.a.text)
+				json_data['final_url'] = tag.span.a['href']
+				json_data['google_url'] = url
+				json_data['url'] = url
+				date_and_author = tag.small.text
+				date_and_time = sanitize(date_and_author.split('-')[0])
+				json_data['time'] = date_and_time
+				json_data['date'] = date_and_time
+				json_data['source'] = sanitize(date_and_author.split('-')[1])
+				json_data['stock'] = stock
+				json_data['short_desc'] = process_nasdaq_news_paragraph(tag.span.a['href'])
+
+				all_data.append(json_data)
+	except:
+		pass
 	return all_data
 
 
