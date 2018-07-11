@@ -39,8 +39,8 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend', # this is default
     'guardian.backends.ObjectPermissionBackend',
 )
-HADOOP_MASTER = "172.31.70.80"
-
+#HADOOP_MASTER = "172.31.70.80"
+HADOOP_MASTER = "172.31.79.247"
 YARN = {
     "host": HADOOP_MASTER,
     "port" : 8088,
@@ -50,10 +50,10 @@ HDFS = {
 
     # Give host name without http
     'host': HADOOP_MASTER,
-    'port': '14000', #webhdfs port
+    'port': '50070', #webhdfs port
     'uri': '/webhdfs/v1',
     'user.name': 'hadoop',
-    'hdfs_port': '8020', #hdfs port
+    'hdfs_port': '9000', #hdfs port
     'base_path' : '/dev/dataset/'
 }
 
