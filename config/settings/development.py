@@ -39,8 +39,8 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend', # this is default
     'guardian.backends.ObjectPermissionBackend',
 )
-#HADOOP_MASTER = "172.31.70.80"
-HADOOP_MASTER = "172.31.79.247"
+HADOOP_MASTER = "172.31.70.80"
+# HADOOP_MASTER = "172.31.79.247"
 YARN = {
     "host": HADOOP_MASTER,
     "port" : 8088,
@@ -175,4 +175,4 @@ PEM_KEY = "/keyfiles/TIAA.pem"
 # SUBMIT_JOB_THROUGH_CELERY = False
 SUBMIT_JOB_THROUGH_CELERY = True
 
-CELERY_SCRIPTS_DIR="/home/ubuntu/mAdvisor-api/scripts/"
+# CELERY_SCRIPTS_DIR="/home/ubuntu/mAdvisor-api/scripts/"
