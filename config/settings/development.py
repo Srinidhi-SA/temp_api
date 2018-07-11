@@ -174,3 +174,5 @@ PEM_KEY = "/keyfiles/TIAA.pem"
 
 # SUBMIT_JOB_THROUGH_CELERY = False
 SUBMIT_JOB_THROUGH_CELERY = True
+
+CELERY_SCRIPTS_DIR="/home/ubuntu/mAdvisor-api/scripts/"
