@@ -155,7 +155,8 @@ CELERY_QUEUES = {
     }
 }
 
-USING_KYLO = True
+ENABLE_KYLO = True
+KYLO_UI_URL = "http://data-management-dev.marlabsai.com"
 KYLO_SERVER_DETAILS = {
     "host": "34.205.54.15",
     "port" : 8088,
