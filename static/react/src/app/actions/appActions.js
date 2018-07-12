@@ -1375,10 +1375,12 @@ export function crawlDataForAnalysis(url, analysisName, urlForNews) {
       break;
     }
   }
-  /*if(analysisName == ""){
-			bootbox.alert("Please enter stock analysis name.");
-		}
-		else if(url == ""){
+  if(analysisName == ""){
+    var body_msg=statusMessages("warning","Please enter stock analysis name.","small_mascot");
+    bootbox.alert(body_msg);
+    return;
+	}
+		/*else if(url == ""){
 			bootbox.alert("Please enter stock analysis url.");
 		}*/
   if (found) {
@@ -1396,7 +1398,8 @@ export function crawlDataForAnalysis(url, analysisName, urlForNews) {
       });
     }
   } else {
-    bootbox.alert("Please enter text/symbols to analyze stocks")
+    var body_msg=statusMessages("warning","Please enter text/symbols to analyze stocks.","small_mascot");
+    bootbox.alert(body_msg);
   }
 }
 export function updateAppsLoaderText(text) {
@@ -1404,14 +1407,14 @@ export function updateAppsLoaderText(text) {
 }
 export function crawlSuccess(json, dispatch) {
   var slug = json.slug;
-  
+  var displayHideCancel = false;
  // dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue + APPSLOADERPERVALUE));
   //dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+APPSLOADERPERVALUE));
   appsInterval = setInterval(function() {
     dispatch(getStockDataSetPreview(slug, appsInterval));
-    return {type: "STOCK_CRAWL_SUCCESS", slug}
+    return {type: "STOCK_CRAWL_SUCCESS", slug, displayHideCancel}
   }, APPSDEFAULTINTERVAL);
-  return {type: "STOCK_CRAWL_SUCCESS", slug}
+  return {type: "STOCK_CRAWL_SUCCESS", slug, displayHideCancel}
 }
 function triggerCrawlingAPI(urlForPrices, urlForNews, analysisName) {
 
@@ -1453,7 +1456,7 @@ export function uploadStockFile(slug) {
     dispatch(openAppsLoader(APPSLOADERPERVALUE, "Preparing data for analysis... "));
     return triggerStockUpload(getUserDetailsOrRestart.get().userToken, slug).then(([response, json]) => {
       if (response.status === 200) {
-        dispatch(triggerStockAnalysis(slug));
+        dispatch(triggerStockAnalysis(slug,dispatch));
       } else {
         dispatch(closeAppsLoaderValue());
       }
@@ -1466,15 +1469,14 @@ function triggerStockUpload(token, slug) {
     headers: getHeader(token)
   }).then(response => Promise.all([response, response.json()]));
 }
-export function triggerStockAnalysis(slug) {
-  return (dispatch) => {
+export function triggerStockAnalysis(slug,dispatch) {
+    var displayHideCancel = true;
      appsInterval = setInterval(function() {
        dispatch(getStockAnalysis(slug, appsInterval));
-    return {type: "STOCK_CRAWL_SUCCESS", slug}
+    return {type: "STOCK_CRAWL_SUCCESS", slug, displayHideCancel}
   }, APPSDEFAULTINTERVAL);
-  return {type: "STOCK_CRAWL_SUCCESS", slug}
+  return {type: "STOCK_CRAWL_SUCCESS", slug, displayHideCancel}
     
-  }
 }
 export function getStockAnalysis(slug,appsInterval) {
   return (dispatch) => {
@@ -1497,7 +1499,7 @@ export function getStockAnalysis(slug,appsInterval) {
           clearInterval(appsInterval);
           dispatch(closeAppsLoaderValue());
         }else if(json.status == "INPROGRESS"){
-          if (json.message !== null && json.message.length > 0) {
+          if (json.message && json.message !== null && json.message.length > 0) {
               dispatch(openAppsLoaderValue(json.message[0].stageCompletionPercentage, json.message[0].shortExplanation));
           }
         }
@@ -1516,7 +1518,8 @@ function fetchStockAnalysisAPI(token, slug) {
 }
 
 export function updateStockSlug(slug) {
-  return {type: "STOCK_CRAWL_SUCCESS", slug}
+  var displayHideCancel = false;
+  return {type: "STOCK_CRAWL_SUCCESS", slug, displayHideCancel}
 }
 
 export function getConceptsList() {
@@ -2023,9 +2026,19 @@ export function refreshStockAppsList(props) {
       var pageNo = window.location.href.split("=")[1];
       if (pageNo == undefined)
         pageNo = 1;
-      if (window.location.pathname == "/"+store.getState().apps.currentAppDetails.app_url)
+        let stockAppLocation = "";
+        if(store.getState().apps.currentAppDetails == null)
+        stockAppLocation = "/apps-stock-advisor";
+        else
+        stockAppLocation = "/"+store.getState().apps.currentAppDetails.app_url;
+      if (window.location.pathname == stockAppLocation)
         dispatch(getAppsStockList(parseInt(pageNo)));
       }
     , APPSDEFAULTINTERVAL);
+  }
+}
+export function callStockAnalysisApi(slug) {
+  return (dispatch) => {
+    dispatch(triggerStockAnalysis(slug,dispatch));
   }
 }

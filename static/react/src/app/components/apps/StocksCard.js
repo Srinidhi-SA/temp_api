@@ -7,7 +7,7 @@ import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {connect} from "react-redux";
 import {APPID1,APPID2,APPID3,APPNAME1,APPNAME2,APPNAME3,getUserDetailsOrRestart,SUCCESS,INPROGRESS} from "../../helpers/helper.js"
-import {getAppsStockList,getStockAnalysis,updateStockSlug,handleStockDelete,handleStockModelRename,openAppsLoader,crawlSuccessAnalysis} from "../../actions/appActions";
+import {getAppsStockList,getStockAnalysis,updateStockSlug,handleStockDelete,handleStockModelRename,openAppsLoader,callStockAnalysisApi} from "../../actions/appActions";
 import Dialog from 'react-bootstrap-dialog'
 import {AppsCreateStockAnalysis} from "./AppsCreateStockAnalysis";
 import {STATIC_URL} from "../../helpers/env.js";
@@ -35,6 +35,7 @@ export class StocksCard extends React.Component {
     getPreviewData(e) {
         this.props.dispatch(updateStockSlug(e.target.id))
         this.props.dispatch(getStockAnalysis(e.target.id))
+        this.props.loadfunc();
     }
     handleDelete(slug){
         this.props.dispatch(handleStockDelete(slug,this.dialog));
@@ -45,7 +46,7 @@ export class StocksCard extends React.Component {
 
     openDataLoaderScreen(data){
         this.props.dispatch(openAppsLoader(data.completed_percentage,data.completed_message));
-        this.props.dispatch(crawlSuccessAnalysis(data));
+        this.props.dispatch(callStockAnalysisApi(data.slug));
     }
 
     render() {
@@ -147,6 +148,5 @@ export class StocksCard extends React.Component {
                     </div>);
 
         } 
-
 
 }
