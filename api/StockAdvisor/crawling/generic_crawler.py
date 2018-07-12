@@ -55,7 +55,15 @@ class GenericCrawler:
 			content=obj.read()
 		else:
 			print "Requesting New Page -->", self.headers, self.get_proxy()
-			resp=requests.get(url,headers=self.headers, proxies=self.get_proxy())
+			try:
+				resp=requests.get(url,headers=self.headers)
+			except:
+				try:
+					resp = requests.get(url, headers=self.headers, proxies=self.get_proxy())
+				except:
+					resp = requests.get(url,headers=self.headers, proxies=self.get_proxy())
+
+
 			print "Response Came"
 			content=resp.content
 			html_dir=os.path.dirname(fname)
