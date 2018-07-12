@@ -1693,6 +1693,7 @@ class StockDataset(models.Model):
 
             NASDAQ_REGEX_FILE = "nasdaq_stock.json"
             for stock in stock_symbols:
+                print "Using Nasdaq Site for historic stock data for {0}".format(stock)
                 url = generate_url_for_historic_data(stock)
                 stock_data = crawl_extract(
                     url=url,
