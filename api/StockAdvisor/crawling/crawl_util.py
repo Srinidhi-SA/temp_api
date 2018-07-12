@@ -13,7 +13,7 @@ def crawl_extract(url,regex_dict={},remove_tags=[], slug=None):
     all_data=[]
     crawl_obj=generic_crawler.GenericCrawler()
 
-    content=crawl_obj.get_data(url, crawl_options={'fresh': True })
+    content=crawl_obj.get_data(url)
     json_list=process.process_data(url,content,regex_dict=regex_dict,remove_tags=remove_tags)
 
     for json_obj in json_list:
@@ -34,7 +34,7 @@ def fetch_news_article_from_nasdaq(stock):
     #
     for url in urls:
         print url
-        content = crawl_obj.get_data(url, {'date_of_crawl': True})
+        content = crawl_obj.get_data(url)
         json_list = process.process_nasdaq_news_article(url, content, stock=stock)
         if len(json_list) < 1:
             break
