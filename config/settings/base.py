@@ -1496,6 +1496,14 @@ PERMISSIONS_RELATED_TO_REGRESSION = (
     ('downlad_pmml', 'Download PMML')
 )
 
+
+PERMISSIONS_RELATED_TO_STOCK = (
+    ('view_stock', 'View stock'),
+    ('create_stock', 'Create stock'),
+    ('rename_stock', 'Rename stock'),
+    ('remove_stock', 'remove stock'),
+)
+
 JOB_STATUS_MESSAGE = {
     "EMPTY": "Submitting for analysis",
     "SUBMITTED": "Submitting for analysis.",

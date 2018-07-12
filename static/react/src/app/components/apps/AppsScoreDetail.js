@@ -68,11 +68,11 @@ export class AppsScoreDetail extends React.Component {
 			var listOfCardList = scoreSummary.data.listOfCards;
 			var componentsWidth = 0;
 			var cardDataList = listOfCardList.map((data, i) => {
-				var clearfixClass = "col-md-"+data.cardWidth*0.12+" xs-p-30 clearfix";
-				var nonClearfixClass = "col-md-"+data.cardWidth*0.12+" xs-p-30";
+				var clearfixClass = "col-md-"+data.cardWidth*0.12+" clearfix";
+				var nonClearfixClass = "col-md-"+data.cardWidth*0.12;
 				if(data.centerAlign){
-					var clearfixClass = "col-md-"+data.cardWidth*0.12+" xs-p-30 clearfix cardKpi";
-				var nonClearfixClass = "col-md-"+data.cardWidth*0.12+" xs-p-30 cardKpi";
+					var clearfixClass = "col-md-"+data.cardWidth*0.12+" clearfix cardKpi";
+				var nonClearfixClass = "col-md-"+data.cardWidth*0.12+" cardKpi";
 				}
 				var cardDataArray = data.cardData;
 				var isHideData = $.grep(cardDataArray,function(val,key){
@@ -80,15 +80,15 @@ export class AppsScoreDetail extends React.Component {
 				});
 				if(data.cardWidth == 100){
 					componentsWidth = 0;
-					return (<div className={clearfixClass}><Card cardData={cardDataArray} /></div>)
+					return (<div className={clearfixClass}><Card cardData={cardDataArray} cardWidth={data.cardWidth}/></div>)
 				}
 				else if(componentsWidth == 0 || componentsWidth+data.cardWidth > 100){
 					componentsWidth = data.cardWidth;
-					return (<div className={clearfixClass}><Card cardData={cardDataArray} /></div>)
+					return (<div className={clearfixClass}><Card cardData={cardDataArray} cardWidth={data.cardWidth}/></div>)
 				}
 				else{
 					componentsWidth = componentsWidth+data.cardWidth;
-									return (<div className={nonClearfixClass}><Card cardData={cardDataArray} /></div>)
+									return (<div className={nonClearfixClass}><Card cardData={cardDataArray} cardWidth={data.cardWidth}/></div>)
 							}
 				});
 		}
@@ -114,9 +114,10 @@ export class AppsScoreDetail extends React.Component {
 		                <div className="panel panel-mAd documentModeSpacing box-shadow">
 		                    <div className="panel-heading">
 		                      {/* <h2 className="pull-left">{store.getState().apps.scoreSummary.name}</h2>*/}
+													<h3 className="page-title-4">{store.getState().apps.scoreSummary.name}
 
 		                      <div className="btn-toolbar pull-right">
-		                        <div className="btn-group btn-space">
+		                        <div className="btn-group">
 
 		                          <button type="button" className="btn btn-default" disabled = "true" title="Document Mode">
 		                               <i class="zmdi zmdi-hc-lg zmdi-view-web"></i>
@@ -128,9 +129,7 @@ export class AppsScoreDetail extends React.Component {
 								 </Link>
 		                        </div>
 		                      </div>
-
-
-		                      <div className="clearfix"></div>
+													</h3>
 		                    </div>
 		                   <div className="panel-body no-border">
 		                   <div className="row-fluid">

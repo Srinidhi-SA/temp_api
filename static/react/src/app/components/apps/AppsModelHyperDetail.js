@@ -80,7 +80,7 @@ export class AppsModelHyperDetail extends React.Component {
 				<Tab eventKey={data.slug} title={data.name} key={cardId}>
 					<div className="row" key={cardId}>
 						<div className="form-group">
-							<div className={clearfixClass}><Card key={cardId} id={cardId} cardData={cardDataArray} /></div>
+							<div className={clearfixClass}><Card key={cardId} id={cardId} cardData={cardDataArray} cardWidth={data.cardWidth}/></div>
 						</div>
 					</div>
 				</Tab>

@@ -37,12 +37,22 @@ def normalize_date_time(date_string):
         except:
             pass
 
-    print date
     return date
 
 
-def get_data_from_bluemix(target_url):
-    nl_understanding = cache_get(target_url)
+def get_data_from_bluemix(content_url_or_text, content=False, unique_id=None):
+    found = False
+    if unique_id is not None:
+        nl_understanding = cache_get(unique_id + "_bluemix")
+        found = True
+        # print "Article Found in cache---> {0}".format(unique_id + "_bluemix")
+    elif content==False:
+        nl_understanding = cache_get(content_url_or_text + "_bluemix")
+        # print "Article found in cache---> {0}".format(content_url_or_text + "_bluemix")
+        found = True
+    else:
+        nl_understanding = None
+
     if not nl_understanding:
         natural_language_understanding = NaturalLanguageUnderstandingV1(
             username=nlu_settings.get("username"),
@@ -61,26 +71,38 @@ def get_data_from_bluemix(target_url):
                 Features.SemanticRoles(),
 
             ]
+        # features = {"sentiment": {}, "keywords": {}}
         nl_understanding = None
-
         for i in range(NUMBEROFTRIES):
             try:
-                nl_understanding = natural_language_understanding.analyze(
-                    url=target_url,
-                    features=features
-                )
+                if content == True:
+                    nl_understanding = natural_language_understanding.analyze(
+                        text=content_url_or_text,
+                        features=features
+                    )
+                else:
+                    nl_understanding = natural_language_understanding.analyze(
+                        url=content_url_or_text,
+                        features=features
+                    )
+
             except:
+                print "FAILED "*10
                 pass
 
             if nl_understanding:
                 break
 
-        cache_put(target_url, nl_understanding)
+        if unique_id is not None and found == False:
+            nl_understanding = cache_get(unique_id + "_bluemix")
+            # print "Article added in cache---> {0}".format(unique_id + "_bluemix")
+        elif content == False and found == False:
+            nl_understanding = cache_get(content_url_or_text + "_bluemix")
+            # print "Article added in cache---> {0}".format(content_url_or_text + "_bluemix")
+        else:
+            pass
 
     return nl_understanding
-
-
-
 
 def get_cache_file_name(input_key):
 

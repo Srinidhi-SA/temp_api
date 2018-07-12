@@ -93,6 +93,9 @@ export class AppsScoreList extends React.Component {
             this.props.dispatch(storeScoreSearchElement(e.target.value));
             this.props.dispatch(getAppsScoreList(1));
         }
+        else{
+            this.props.dispatch(storeScoreSearchElement(e.target.value));
+        }
     }
     
     doSorting(sortOn, type){
@@ -106,7 +109,7 @@ export class AppsScoreList extends React.Component {
     render() {
         console.log("apps score list is called##########3");
         //empty search element
-        let search_element = document.getElementById('score_insights');
+       /* let search_element = document.getElementById('score_insights');
         if (this.props.score_search_element != "" && (this.props.history.location.search == "" || this.props.history.location.search == null)) {
             console.log("search is empty");
             this.props.dispatch(storeScoreSearchElement(""));
@@ -117,7 +120,7 @@ export class AppsScoreList extends React.Component {
             if (search_element)
                 document.getElementById('score_insights').value = "";
         }
-        //search element ends..
+        //search element ends..*/
         
         if(this.props.history.location.sort == "" || this.props.history.location.sort == null){
             this.props.dispatch(storeAppsScoreSortElements("",null));
@@ -151,9 +154,9 @@ export class AppsScoreList extends React.Component {
 							{/*<input type="text" name="score_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Model Insights" id="model_insights" className="form-control" placeholder="Search Model insights..."/>*/}
 							
 							<div className="search-wrapper">
-								<input type="text" name="score_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Score Insights" id="score_insights" className="form-control search-box"  placeholder="Search Score insights... " required />
+								<input type="text" name="score_insights" value={this.props.score_search_element} onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Score Insights" id="score_insights" className="form-control search-box"  placeholder="Search Score insights... " required />
 								<span className="zmdi zmdi-search form-control-feedback"></span>
-								<button className="close-icon" type="reset"></button>
+								<button className="close-icon" type="reset" onClick={this.clearSearchElement.bind(this)}></button>
 							</div>							
 				</div>
 				
@@ -217,13 +220,21 @@ export class AppsScoreList extends React.Component {
     }
     handleSelect(eventKey) {
         if (this.props.score_search_element) {
-            this.props.history.push('/apps/' + store.getState().apps.currentAppId + '/scores?search=' + this.props.score_search_element + '?page=' + eventKey + '')
+            this.props.history.push('/apps/'+this.props.match.params.AppId+'/scores?search=' + this.props.score_search_element + '?page=' + eventKey + '')
         }  else if(this.props.apps_score_sorton){
-            this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/score?sort=' + this.props.apps_score_sorton +'&type='+this.props.apps_score_sorttype+'&page=' + eventKey + '');
+            this.props.history.push('/apps/'+this.props.match.params.AppId+'/score?sort=' + this.props.apps_score_sorton +'&type='+this.props.apps_score_sorttype+'&page=' + eventKey + '');
         }else
-            this.props.history.push('/apps/' + store.getState().apps.currentAppId + '/scores?page=' + eventKey + '')
+            this.props.history.push('/apps/'+this.props.match.params.AppId+'/scores?page=' + eventKey + '')
             
-            this.props.dispatch(activateModelScoreTabs(2));
+          //  this.props.dispatch(activateModelScoreTabs(2));
         this.props.dispatch(getAppsScoreList(eventKey));
+    }
+    clearSearchElement(e){
+        this.props.dispatch(storeScoreSearchElement(""));
+        if(this.props.apps_score_sorton)
+        this.props.history.push('/apps/'+this.props.match.params.AppId+'/score?sort=' + this.props.apps_score_sorton +'&type='+this.props.apps_score_sorttype);
+        else
+        this.props.history.push('/apps/'+this.props.match.params.AppId+'/scores');
+        this.props.dispatch(getAppsScoreList(1));
     }
 }

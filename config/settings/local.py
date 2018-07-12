@@ -30,16 +30,23 @@ DATABASES = {
 }
 
 PROJECT_APP = [
+    # 'silk',
+    # 'django_extensions'
 ]
 
-
 INSTALLED_APPS += PROJECT_APP
+
+LOCAL_MIDDLEWARE = [
+    # 'django_cprofile_middleware.middleware.ProfilerMiddleware',
+    # 'silk.middleware.SilkyMiddleware'
+]
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend', # this is default
     'guardian.backends.ObjectPermissionBackend',
 )
 HADOOP_MASTER = "172.31.70.80"
+HADOOP_MASTER = "34.201.31.116"
 
 YARN = {
     "host": HADOOP_MASTER,

@@ -47,7 +47,7 @@ export class SignalCard extends React.Component {
     }
     getSignalAnalysis(signalType,e) {
         console.log("Link Onclick is called")
-        console.log(e.target.id);
+        //console.log(e.target.id);
         this.props.dispatch(emptySignalAnalysis());
         //this.props.dispatch(updateTargetTypForSelSignal(signalType));
       }

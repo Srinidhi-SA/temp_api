@@ -40,7 +40,8 @@ from api.utils import \
 from models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData, StockDataset, CustomApps
 from api.tasks import clean_up_on_delete
 
-from api.permission import TrainerRelatedPermission, ScoreRelatedPermission, SignalsRelatedPermission
+from api.permission import TrainerRelatedPermission, ScoreRelatedPermission, \
+    SignalsRelatedPermission, StocksRelatedPermission
 
 import sys
 reload(sys)
@@ -658,6 +659,7 @@ class StockDatasetView(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('deleted', 'name')
     pagination_class = CustomPagination
+    permission_classes = (StocksRelatedPermission, )
 
     def create(self, request, *args, **kwargs):
 
@@ -746,11 +748,7 @@ class StockDatasetView(viewsets.ModelViewSet):
         serializer = self.serializer_class(instance=instance, data=new_data, partial=True)
         if serializer.is_valid():
             stock_instance = serializer.save()
-            # stock_instance.stats(file=new_data['input_file'])
-            if fake is None:
-                stock_instance.fake_call_mlscripts()
-            else:
-                stock_instance.call_mlscripts()
+            stock_instance.call_mlscripts()
             return Response(serializer.data)
 
         serializer = StockDatasetSerializer(instance=instance, context={"request": self.request})
@@ -5158,7 +5156,7 @@ def get_stockdatasetfiles(request, slug=None):
     stockDataType = request.GET.get('stockDataType')
     stockName = request.GET.get('stockName')
 
-    return return_json_data(stockDataType, stockName, slug)
+    return return_crawled_json_data(stockDataType, stockName, slug)
 
 
 def return_json_data(stockDataType, stockName, slug):
@@ -5166,15 +5164,16 @@ def return_json_data(stockDataType, stockName, slug):
     base_path = os.path.dirname(os.path.dirname(__file__))
     base_path = base_path + "/scripts/data/{0}/".format(slug)
     matching = {
-        "bluemix": stockDataType + "_" + stockName + ".json",
-        "historical": stockDataType + "_" + stockName + ".json",
-        "concepts": "old_concepts.json"
+        # "bluemix": stockDataType + "_" + stockName + ".json",
+        "bluemix": stockName + ".json",
+        "historical":  stockName + "_" + "historic" + ".json",
+        "concepts": "concepts.json"
     }
 
     if stockDataType in ["bluemix", "historical"]:
         path = base_path + matching[stockDataType]
     else:
-        path = base_path + "/scripts/data/" + matching[stockDataType]
+        path = base_path + matching[stockDataType]
     temp_path = base_path + matching[stockDataType]
 
     from django.http import HttpResponse
@@ -5184,6 +5183,28 @@ def return_json_data(stockDataType, stockName, slug):
     response['Content-Disposition'] = 'attachment; filename="{0}.json"'.format(path)
 
     return response
+
+
+def return_crawled_json_data(stockDataType, stockName, slug):
+    sdd = StockDataset.objects.get(slug=slug)
+    matching = {
+        "bluemix": stockName,
+        "historical":  stockName + "_" + "historic",
+        "concepts": "concepts"
+    }
+    crawled_data = json.loads(sdd.crawled_data)
+    # import pdb;pdb.set_trace()
+    from django.http import HttpResponse
+    if stockDataType in ["bluemix", "historical"]:
+        file_content = json.dumps(crawled_data[stockName][matching[stockDataType]])
+    else:
+        file_content = json.dumps(crawled_data[matching[stockDataType]])
+
+    response = HttpResponse(file_content, content_type='application/json')
+    response['Content-Disposition'] = 'attachment; filename="{0}.json"'.format(matching[stockDataType] )
+
+    return response
+
 
 
 def return_xml_data(xml_data_str, algoname):

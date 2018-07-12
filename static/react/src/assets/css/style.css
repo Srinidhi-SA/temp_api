@@ -11398,7 +11398,9 @@ h3.modal-title, h4.modal-title { font-size: 19px; }
 .alert-primary {
 	background-color: #00998c;
 	border-color: #00998c;
-	color: #fff
+	color: #fff;
+	padding-top: 10px;
+	padding-bottom: 10px;
 }
 .alert-primary hr {
 	border-top-color: #007a70
@@ -15554,7 +15556,29 @@ div.text-center.tbl_th_center th {text-align: center}
 .rowhead { text-transform: capitalize}
 .rowhead, .rowbody { border-bottom:1px solid #ddd}
 .rowhead th, .rowbody td { padding:2px; text-align:center; }
-.break-if-longText>tbody>tr>td{word-break: break-all;}
-.break-if-longText>thead>tr>th{vertical-align: middle;}
+.break-if-longText>tbody>tr>td:nth-child(n+2){word-break: break-all; text-align: center;}
+.break-if-longText>thead>tr>th,.break-if-longText tr td{vertical-align: middle;text-align: center;}
 .inputWidth { width:80px !important}
-.removeBreak .break-if-longText>tbody>tr>td{word-break: normal}
+.removeBreak .break-if-longText>tbody>tr>td{word-break: normal;text-align: center;}
+.border-box { background: #f6f6f6;border: 1px solid #dedede; min-height:116px; }
+.border-box .col-xs-12 a { cursor: pointer}
+.c3-axis-y text {
+   fill: #333333;
+   font-family: 'Roboto', sans-serif;
+    font-size: 13px;
+}
+.c3-axis-x text {
+    fill: #333333;
+	font-family: 'Roboto', sans-serif;
+    font-size: 13px;
+}
+.c3-axis-y2 text {
+   fill: #333333;
+   font-family: 'Roboto', sans-serif;
+    font-size: 13px;
+}
+.chart-area .c3 svg .c3-title{
+	font-family: 'Roboto', sans-serif !important;
+    font-size: 17px !important;
+	fill : #333333 !important;
+}

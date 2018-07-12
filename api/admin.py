@@ -5,7 +5,7 @@ import json
 
 # Register your models here.
 
-from api.models import Dataset, Insight, Job, Score, Trainer,CustomApps, CustomAppsUserMapping
+from api.models import Dataset, Insight, Job, Score, Trainer,CustomApps, CustomAppsUserMapping, StockDataset
 from api.user_helper import Profile
 
 
@@ -218,8 +218,11 @@ class CustomAppUserMappingAdmin(admin.ModelAdmin):
     list_display = ["user", "app", "active", "rank"]
     list_filter = ["user", "app", "active", "rank"]
 
+class StockDatasetAdmin(admin.ModelAdmin):
+    pass
 
 admin.site.register(CustomAppsUserMapping, CustomAppUserMappingAdmin)
+admin.site.register(StockDataset, StockDatasetAdmin)
 admin.site.register(User, MyUserAdmin)
 
 

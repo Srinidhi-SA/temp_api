@@ -961,6 +961,8 @@ def get_job_from_yarn(model_name=None,model_slug=None):
     model_instance = get_db_object(model_name=model_name,
                                    model_slug=model_slug
                                    )
+    if model_instance.job == None:
+        return 1
     if model_instance.job.url == '':
         return model_instance.status
 

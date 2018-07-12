@@ -82,6 +82,9 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                 this.props.dispatch(storeModelSearchElement(e.target.value));
                 this.props.dispatch(getAppsModelList(1));
             }
+            else{
+                this.props.dispatch(storeModelSearchElement(e.target.value));
+            }
         }
         
         doSorting(sortOn, type){
@@ -95,7 +98,7 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
             console.log("apps model list is called##########3");
             console.log(this.props);
             //empty search element
-            let search_element = document.getElementById('model_insights');
+           /* let search_element = document.getElementById('model_insights');
             if (this.props.model_search_element != "" && (this.props.history.location.search == "" || this.props.history.location.search == null)) {
                 console.log("search is empty");
                 this.props.dispatch(storeModelSearchElement(""));
@@ -107,7 +110,7 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                     document.getElementById('model_insights').value = "";
             }
             //search element ends..
-            
+            */
             if(this.props.history.location.sort == "" || this.props.history.location.sort == null){
                 this.props.dispatch(storeAppsModelSortElements("",null));
             }
@@ -140,9 +143,9 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                         {/*<input type="text" name="model_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Model Insights" id="model_insights" className="form-control" placeholder="Search Model insights..."/>*/}
                         
                         <div className="search-wrapper">
-                        <input type="text" name="model_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Model Insights" id="model_insights" className="form-control search-box" placeholder="Search Model insights..." required />
+                        <input type="text" name="model_insights" value={this.props.model_search_element} onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Model Insights" id="model_insights" className="form-control search-box" placeholder="Search Model insights..." required />
                         <span className="zmdi zmdi-search form-control-feedback"></span>
-                        <button className="close-icon" type="reset"></button>
+                        <button className="close-icon" type="reset" onClick={this.clearSearchElement.bind(this)}></button>
                         </div>
                         
                         </div>
@@ -202,11 +205,19 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
         handleSelect(eventKey) {
             
             if (this.props.model_search_element) {
-                this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models?search=' + this.props.model_search_element+'?page='+eventKey+'')
+                this.props.history.push('/apps/'+this.props.match.params.AppId+'/models?search=' + this.props.model_search_element+'?page='+eventKey+'')
             }  else if(this.props.apps_model_sorton){
-                this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models?sort=' + this.props.apps_model_sorton +'&type='+this.props.apps_model_sorttype+'&page=' + eventKey + '');
+                this.props.history.push('/apps/'+this.props.match.params.AppId+'/models?sort=' + this.props.apps_model_sorton +'&type='+this.props.apps_model_sorttype+'&page=' + eventKey + '');
             }else
-                this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models?page='+eventKey+'')
+                this.props.history.push('/apps/'+this.props.match.params.AppId+'/models?page='+eventKey+'')
                 this.props.dispatch(getAppsModelList(eventKey));
+        }
+        clearSearchElement(e){
+            this.props.dispatch(storeModelSearchElement(""));
+            if(this.props.apps_model_sorton)
+            this.props.history.push('/apps/'+this.props.match.params.AppId+'/models?sort=' + this.props.apps_model_sorton +'&type='+this.props.apps_model_sorttype);
+            else
+            this.props.history.push('/apps/'+this.props.match.params.AppId+'/models');
+            this.props.dispatch(getAppsModelList(1));
         }
     }
