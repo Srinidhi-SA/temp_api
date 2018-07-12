@@ -157,7 +157,9 @@ CELERY_QUEUES = {
 }
 
 PEM_KEY = "/keyfiles/TIAA.pem"
-USING_KYLO = False
+ENABLE_KYLO = False
+KYLO_UI_URL = "http://data-management.marlabsai.com"
+
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',

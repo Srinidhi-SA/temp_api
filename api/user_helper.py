@@ -82,7 +82,7 @@ class UserProfileSerializer(serializers.Serializer):
         user.save()  # Save the Hashed Password
         Profile.objects.create(user=user, **userprofile_data)
 
-        if settings.USING_KYLO:
+        if settings.ENABLE_KYLO:
             create_or_update_kylo_auth_file()
         return user  # Return user object
 
@@ -170,7 +170,7 @@ def create_profile(sender, **kwargs):
         user_profile = Profile(user=user)
         user_profile.save()
 
-    if settings.USING_KYLO:
+    if settings.ENABLE_KYLO:
         create_or_update_kylo_auth_file()
 
 post_save.connect(create_profile, sender=User)
@@ -320,7 +320,7 @@ class myJSONWebTokenSerializer(Serializer):
 
 def create_or_update_kylo_auth_file():
     print "create_or_update_kylo_auth_file"
-    if settings.USING_KYLO is False:
+    if settings.ENABLE_KYLO is False:
         return True
     KYLO_SERVER_DETAILS = settings.KYLO_SERVER_DETAILS
     group_propertie_quote = KYLO_SERVER_DETAILS['group_propertie_quote']
