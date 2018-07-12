@@ -135,9 +135,6 @@ def process_nasdaq_news_paragraph(url):
 	crawl_obj = generic_crawler.GenericCrawler()
 	content = crawl_obj.get_data(url)
 	from bs4 import BeautifulSoup
-	# import requests
-	# r = requests.get(url)
-	# data = r.text
 
 	soup = BeautifulSoup(content)
 	all_para = soup.find_all('p')

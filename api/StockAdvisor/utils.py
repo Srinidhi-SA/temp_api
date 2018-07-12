@@ -86,7 +86,8 @@ def get_data_from_bluemix(content_url_or_text, content=False, unique_id=None):
                         features=features
                     )
 
-            except:
+            except Exception as err:
+                print err
                 print "FAILED "*10
                 pass
 
