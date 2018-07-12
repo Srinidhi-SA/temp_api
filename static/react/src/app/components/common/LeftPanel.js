@@ -97,7 +97,7 @@ class LeftPanel extends React.Component {
                       <span></span>
                       DATA MANAGE</NavLink>
                   </li>:<div/>}
-                  </li>*/}
+
               </ul>
             </div>
             {/* // /.Side bar Main Menu  -->*/}
