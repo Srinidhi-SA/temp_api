@@ -90,7 +90,7 @@ export class OverViewPage extends React.Component {
     // }
     setTimeout(() => {
           this.setState({ loading: false });
-           }, 2000);
+           }, 0);
 
   }
   componentDidUpdate(){
@@ -217,7 +217,7 @@ export class OverViewPage extends React.Component {
       //swipeToSlide: true
     };
      const { loading } = this.state;
-     if(loading) { // if your component doesn't have to wait for an async action, remove this block 
+     if(loading && isEmpty(this.props.signal)) { // if your component doesn't have to wait for an async action, remove this block 
         return (
             <img id="loading" src={STATIC_URL + "assets/images/Preloader_2.gif"}/>
         );

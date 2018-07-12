@@ -198,7 +198,7 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
         }
     }else if(dataPreview.meta_data_status == "INPROGRESS"){
         dispatch(dispatchDataPreviewLoadingMsg(dataPreview));
-        if (dataPreview.message !== null && dataPreview.message.length > 0) {
+        if (dataPreview.message && dataPreview.message !== null && dataPreview.message.length > 0) {
             dispatch(openAppsLoaderValue(dataPreview.message[0].stageCompletionPercentage, dataPreview.message[0].shortExplanation));
         }
         return {

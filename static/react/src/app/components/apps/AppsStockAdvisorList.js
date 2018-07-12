@@ -36,6 +36,10 @@ export class AppsStockAdvisorList extends React.Component {
 	constructor(props) {
 		super(props);
 		console.log(this.props);
+		this.state={
+			showLoader : false
+		}
+		 this.callShowloader = this.callShowloader.bind(this);
 	}
 	componentWillMount(){
 		var pageNo = 1;
@@ -48,10 +52,10 @@ export class AppsStockAdvisorList extends React.Component {
 	}
 	componentDidMount(){
 		this.props.dispatch(refreshStockAppsList(this.props));
+		this.setState({showloader:false})
 	}
-	getPreviewData(e) {
-		this.props.dispatch(updateStockSlug(e.target.id))
-		this.props.dispatch(getStockAnalysis(e.target.id))
+	callShowloader(){
+		this.setState({showLoader:true});
 	}
 	_handleKeyPress = (e) => {
 		if (e.key === 'Enter') {
@@ -110,10 +114,17 @@ export class AppsStockAdvisorList extends React.Component {
 			if (pages > 1) {
 				paginationTag = <Pagination ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
 			}
-			var stockList = <StocksCard data={stockAnalysisList}/>;
+			var stockList = <StocksCard data={stockAnalysisList} loadfunc={this.callShowloader}/>;
+			const {showLoader} = this.state;
+			if(showLoader) { // if your component doesn't have to wait for an async action, remove this block 
+				return (
+					<img id="loading" src={STATIC_URL + "assets/images/Preloader_2.gif"}/>
+				);
+			}
+			else{
 				return (
 					<div className="side-body">
-					<LatestStocks props={this.props}/>
+					<LatestStocks props={this.props} loadfunc={this.callShowloader}/>
 					<div class="main-content">
 					<div class="row">
 
@@ -171,6 +182,7 @@ export class AppsStockAdvisorList extends React.Component {
 					</div>
 					</div>
 			);
+			}
 		} else {
 			return (
 					<div>
