@@ -36,6 +36,11 @@ class GenericCrawler:
 		get_number = random.randint(0, 17)
 		return self.proxy_list[get_number]
 
+	def download_using_proxy(self,url):
+		temp_proxy = self.get_proxy()
+		print "Requesting New Page -->", self.headers, temp_proxy
+		return requests.get(url, headers=self.headers, proxies=temp_proxy)
+
 	def get_data(self,url,crawl_options={}):
 		if 'date_of_crawl' in crawl_options:
 			if crawl_options['date_of_crawl'] == True:
@@ -54,14 +59,14 @@ class GenericCrawler:
 			obj=open(fname)
 			content=obj.read()
 		else:
-			print "Requesting New Page -->", self.headers, self.get_proxy()
+
 			try:
 				resp=requests.get(url,headers=self.headers)
 			except:
 				try:
-					resp = requests.get(url, headers=self.headers, proxies=self.get_proxy())
+					resp = self.download_using_proxy(url)
 				except:
-					resp = requests.get(url,headers=self.headers, proxies=self.get_proxy())
+					resp = self.download_using_proxy(url)
 
 
 			print "Response Came"
