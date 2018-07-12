@@ -675,7 +675,7 @@ export default function reducer(state = {
         return{
             ...state,
             stockSlug:action.slug,
-            updateCreateModelHideShow:true,
+            updateCreateModelHideShow:action.displayHideCancel,
         }
     }
     break;
