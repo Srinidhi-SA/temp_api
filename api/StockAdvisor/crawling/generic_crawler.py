@@ -5,6 +5,7 @@ import requests
 import time
 from datetime import datetime
 import random
+from django.conf import settings
 
 class GenericCrawler:
 	def __init__(self,crawl_options={}):
@@ -39,7 +40,9 @@ class GenericCrawler:
 	def download_using_proxy(self,url):
 		temp_proxy = self.get_proxy()
 		print "Requesting New Page -->", self.headers, temp_proxy
-		return requests.get(url, headers=self.headers, proxies=temp_proxy)
+		return requests.get(url, headers=self.headers, proxies=temp_proxy, timeout = (
+			settings.REQUEST_CONNECTION_TIMEOUT,
+			settings.REQUEST_READ_TIMEOUT))
 
 	def get_data(self,url,crawl_options={}):
 		if 'date_of_crawl' in crawl_options:
@@ -60,21 +63,24 @@ class GenericCrawler:
 			content=obj.read()
 		else:
 
-			try:
-				resp=requests.get(url,headers=self.headers)
-			except:
+			i = 0
+			while i <= settings.REQUEST_RETRY_LIMIT :
+				i += 1
+				print "Trying for {0} time.".format(i)
 				try:
 					resp = self.download_using_proxy(url)
-				except:
-					resp = self.download_using_proxy(url)
-
-
-			print "Response Came"
-			content=resp.content
-			html_dir=os.path.dirname(fname)
-			if not os.path.exists(html_dir):
-				os.makedirs(html_dir)
-			obj=open(fname,"w")
-			obj.write(content)
-			obj.close()
+					print "Response Came"
+					content = resp.content
+					html_dir = os.path.dirname(fname)
+					if not os.path.exists(html_dir):
+						os.makedirs(html_dir)
+					obj = open(fname, "w")
+					obj.write(content)
+					obj.close()
+					break
+				except Exception as err:
+					print err
 		return content
+
+
+

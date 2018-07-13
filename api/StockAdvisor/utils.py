@@ -43,6 +43,7 @@ def normalize_date_time(date_string):
 def get_data_from_bluemix(content_url_or_text, content=False, unique_id=None):
     found = False
     if unique_id is not None:
+        print unique_id
         nl_understanding = cache_get(unique_id + "_bluemix")
         found = True
         # print "Article Found in cache---> {0}".format(unique_id + "_bluemix")
@@ -71,20 +72,34 @@ def get_data_from_bluemix(content_url_or_text, content=False, unique_id=None):
                 Features.SemanticRoles(),
 
             ]
-        # features = {"sentiment": {}, "keywords": {}}
+
         nl_understanding = None
         for i in range(NUMBEROFTRIES):
             try:
+                print "="*20
+                print unique_id
+                print content_url_or_text[:100]
+                print features
+                print content
+                print "-"*20
                 if content == True:
-                    nl_understanding = natural_language_understanding.analyze(
-                        text=content_url_or_text,
-                        features=features
-                    )
+                    if i %2 == 0:
+                        nl_understanding = natural_language_understanding.analyze(
+                            text=content_url_or_text,
+                            features=features
+                        )
+                    else:
+                        features = {"sentiment": {}, "keywords": {}}
+                        nl_understanding = natural_language_understanding.analyze(
+                            text=content_url_or_text,
+                            features=features
+                        )
                 else:
                     nl_understanding = natural_language_understanding.analyze(
                         url=content_url_or_text,
                         features=features
                     )
+                print dir(nl_understanding)
 
             except Exception as err:
                 print err

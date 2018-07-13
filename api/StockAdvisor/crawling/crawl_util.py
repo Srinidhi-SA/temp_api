@@ -8,12 +8,13 @@ from django.template.defaultfilters import slugify
 import random
 import string
 import api.StockAdvisor.utils as myutils
+from django.conf import settings
 
 def crawl_extract(url,regex_dict={},remove_tags=[], slug=None):
     all_data=[]
     crawl_obj=generic_crawler.GenericCrawler()
 
-    content=crawl_obj.get_data(url)
+    content=crawl_obj.get_data(url, crawl_options={'fresh': True})
     json_list=process.process_data(url,content,regex_dict=regex_dict,remove_tags=remove_tags)
 
     for json_obj in json_list:
@@ -32,9 +33,11 @@ def fetch_news_article_from_nasdaq(stock):
     urls = [get_nasdaq_news_article(stock)] + get_nasdaq_news_articles(stock)
     # urls = [get_nasdaq_news_article(stock)]
     #
+    print urls
     for url in urls:
         print url
-        content = crawl_obj.get_data(url)
+        content = crawl_obj.get_data(url, crawl_options={'fresh': True})
+        # content = crawl_obj.get_data(url)
         json_list = process.process_nasdaq_news_article(url, content, stock=stock)
         if len(json_list) < 1:
             break
@@ -47,6 +50,7 @@ def fetch_news_article_from_nasdaq(stock):
                 json_obj["time"] = myutils.normalize_date_time(date_string).strftime("%Y%m%d")
             stock_news.append(json_obj)
 
+    print "Let us do sentiment on {0}".format(len(stock_news))
     stock_news_with_sentiments = []
     for news in stock_news:
         short_desc = news["short_desc"]
@@ -91,7 +95,7 @@ def get_nasdaq_news_article(stock_symbol):
     return "http://www.nasdaq.com/symbol/{0}/news-headlines".format(stock_symbol)
 
 def get_nasdaq_news_articles(stock_symbol):
-    return ["https://www.nasdaq.com/symbol/{0}/news-headlines?page={1}".format(stock_symbol, str(i)) for i in range(2,10)]
+    return ["https://www.nasdaq.com/symbol/{0}/news-headlines?page={1}".format(stock_symbol, str(i)) for i in range(1, settings.NASDAQ_NEWS_HEADLINE_COUNT)]
 
 
 def convert_crawled_data_to_metadata_format(news_data, other_details=None, slug=None):
