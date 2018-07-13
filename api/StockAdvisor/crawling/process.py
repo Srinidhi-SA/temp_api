@@ -80,7 +80,7 @@ def process_json_data(url,content,regex_dict={},remove_tags=[]):
 	return all_data
 
 def process_nasdaq_news_article(url, content, stock):
-	soup = BeautifulSoup(content, 'html5lib')
+	soup = BeautifulSoup(content, 'html.parser')
 	new_headlines = soup.find_all('div', class_="news-headlines")
 	all_data = []
 	print new_headlines
@@ -140,7 +140,7 @@ def process_nasdaq_news_paragraph(url):
 	content = crawl_obj.get_data(url)
 	from bs4 import BeautifulSoup
 	try:
-		soup = BeautifulSoup(content, 'html5lib')
+		soup = BeautifulSoup(content, 'html.parser')
 		all_para = soup.find_all('p')
 		article_text = ""
 		for para in all_para[2:]:

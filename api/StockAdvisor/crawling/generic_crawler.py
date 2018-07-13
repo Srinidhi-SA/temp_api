@@ -39,8 +39,14 @@ class GenericCrawler:
 
 	def download_using_proxy(self,url):
 		temp_proxy = self.get_proxy()
-		print "Requesting New Page -->", self.headers, temp_proxy
+		print "Requesting New Page using proxy -->", self.headers, temp_proxy
 		return requests.get(url, headers=self.headers, proxies=temp_proxy, timeout = (
+			settings.REQUEST_CONNECTION_TIMEOUT,
+			settings.REQUEST_READ_TIMEOUT))
+
+	def download_without_using_proxy(self, url):
+		print "Requesting New Page without proxy -->", self.headers,
+		return requests.get(url, headers=self.headers, timeout = (
 			settings.REQUEST_CONNECTION_TIMEOUT,
 			settings.REQUEST_READ_TIMEOUT))
 
@@ -67,6 +73,19 @@ class GenericCrawler:
 			while i <= settings.REQUEST_RETRY_LIMIT :
 				i += 1
 				print "Trying for {0} time.".format(i)
+
+				if i == 1:
+					resp = self.download_using_proxy(url)
+					print "Response Came"
+					content = resp.content
+					html_dir = os.path.dirname(fname)
+					if not os.path.exists(html_dir):
+						os.makedirs(html_dir)
+					obj = open(fname, "w")
+					obj.write(content)
+					obj.close()
+					break
+
 				try:
 					resp = self.download_using_proxy(url)
 					print "Response Came"

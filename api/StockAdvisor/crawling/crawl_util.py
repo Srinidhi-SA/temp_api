@@ -92,7 +92,7 @@ def generate_urls_for_crawl_news(stock_symbols):
 	return ["https://finance.google.com/finance/company_news?q=NASDAQ:{}".format(stock_symbol.upper()) for stock_symbol in stock_symbols]
 
 def get_nasdaq_news_article(stock_symbol):
-    return "http://www.nasdaq.com/symbol/{0}/news-headlines".format(stock_symbol)
+    return "https://www.nasdaq.com/symbol/{0}/news-headlines".format(stock_symbol)
 
 def get_nasdaq_news_articles(stock_symbol):
     return ["https://www.nasdaq.com/symbol/{0}/news-headlines?page={1}".format(stock_symbol, str(i)) for i in range(1, settings.NASDAQ_NEWS_HEADLINE_COUNT)]
