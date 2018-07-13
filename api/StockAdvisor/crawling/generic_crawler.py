@@ -46,9 +46,7 @@ class GenericCrawler:
 
 	def download_without_using_proxy(self, url):
 		print "Requesting New Page without proxy -->", self.headers,
-		return requests.get(url, headers=self.headers, timeout = (
-			settings.REQUEST_CONNECTION_TIMEOUT,
-			settings.REQUEST_READ_TIMEOUT))
+		return requests.get(url)
 
 	def get_data(self,url,crawl_options={}):
 		if 'date_of_crawl' in crawl_options:
@@ -75,16 +73,20 @@ class GenericCrawler:
 				print "Trying for {0} time.".format(i)
 
 				if i == 1:
-					resp = self.download_using_proxy(url)
-					print "Response Came"
-					content = resp.content
-					html_dir = os.path.dirname(fname)
-					if not os.path.exists(html_dir):
-						os.makedirs(html_dir)
-					obj = open(fname, "w")
-					obj.write(content)
-					obj.close()
-					break
+					try:
+						resp = self.download_without_using_proxy(url)
+						print "Response Came"
+						content = resp.content
+						html_dir = os.path.dirname(fname)
+						if not os.path.exists(html_dir):
+							os.makedirs(html_dir)
+						obj = open(fname, "w")
+						obj.write(content)
+						obj.close()
+						break
+					except Exception as err:
+						print err
+
 
 				try:
 					resp = self.download_using_proxy(url)
