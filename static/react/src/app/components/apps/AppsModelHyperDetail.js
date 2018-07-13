@@ -43,6 +43,9 @@ export class AppsModelHyperDetail extends React.Component {
 		this.props.dispatch(clearSelectedModelsCount());
 	  
   }
+  componentWillReceiveProps(){
+	  this.setState({showSummery:false});
+  }
   saveAndShowModelSummary(){
 	  if(!store.getState().apps.modelSummary.data.modelSelected)
 	  this.props.dispatch(sendSelectedAlgorithms(this.props.match.params.slug));

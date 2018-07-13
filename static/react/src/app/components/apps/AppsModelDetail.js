@@ -12,6 +12,7 @@ import {STATIC_URL} from "../../helpers/env.js"
 import {isEmpty} from "../../helpers/helper";
 import {Link} from "react-router-dom";
 import {ExportAsPMML} from "./ExportAsPMML";
+import {AppsModelHyperDetail} from "./AppsModelHyperDetail"
 
 @connect((store) => {
 	return {login_response: store.login.login_response,
@@ -26,6 +27,9 @@ import {ExportAsPMML} from "./ExportAsPMML";
 export class AppsModelDetail extends React.Component {
   constructor(props) {
     super(props);
+		this.state={
+			showHyperparameterSummary:false
+		}
   }
   componentWillMount() {
 		this.props.dispatch(storeSignalMeta(null,this.props.match.url));
@@ -59,6 +63,9 @@ export class AppsModelDetail extends React.Component {
   updateModelSummaryFlag(flag){
       this.props.dispatch(updateModelSummaryFlag(flag))
   }
+	gotoHyperparameterSummary(){
+		this.setState({showHyperparameterSummary:true})
+	}
 	showMore(evt){
 			evt.preventDefault();
 			$.each(evt.target.parentElement.children,function(k1,v1){
@@ -75,13 +82,17 @@ export class AppsModelDetail extends React.Component {
 		evt.target.innerHTML = "Show More";
 	}
   render() {
+		if(this.state.showHyperparameterSummary)
+		return(<AppsModelHyperDetail match={this.props.match}/>)
     console.log("apps Model Detail View is called##########3");
   	const modelSummary = store.getState().apps.modelSummary;
 	 	var showExportPmml = true;
 		var showCreateScore = true;
+		var hyperParameterData;
     const modelLink = "/apps/"+this.props.match.params.AppId+"/models";
 	if (!$.isEmptyObject(modelSummary)) {
 		console.log(this.props)
+		 hyperParameterData = store.getState().apps.modelSummary.data.model_hyperparameter;
         showExportPmml = modelSummary.permission_details.downlad_pmml;
 		showCreateScore = modelSummary.permission_details.create_score;
 		//if(this.props.currentAppDetails != null && this.props.currentAppDetails.app_type == "REGRESSION"){
@@ -155,6 +166,10 @@ export class AppsModelDetail extends React.Component {
 		                    </div>
 												<div class="row">
 		                    <div className="col-md-12 text-right xs-mt-30">
+												{!$.isEmptyObject(hyperParameterData)?
+												<span>
+												<Button bsStyle="warning" onClick={this.gotoHyperparameterSummary.bind(this,true)}><i className="zmdi zmdi-hc-lg zmdi-undo"></i> Back</Button>
+												<span className="xs-pl-10"></span></span>:""}
 												{showExportPmml?
 		                    <Button bsStyle="primary" onClick={this.handleExportAsPMMLModal.bind(this,true)}>Export As PMML</Button>:""}
 		                  	{showCreateScore? <AppsCreateScore match={this.props.match}/>:""}
