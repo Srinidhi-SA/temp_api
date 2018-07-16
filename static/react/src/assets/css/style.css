@@ -15582,3 +15582,10 @@ div.text-center.tbl_th_center th {text-align: center}
     font-size: 17px !important;
 	fill : #333333 !important;
 }
+
+.modal-body .thumb-horizontal > div {  padding-top: 10px; }
+.chart-data-icon .btn-group.pull-right {
+    visibility: visible;
+    position: absolute;
+    right: 3%;
+}
