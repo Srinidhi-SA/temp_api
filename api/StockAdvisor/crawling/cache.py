@@ -1,0 +1,68 @@
+import hashlib
+import os
+
+from django.conf import settings
+
+__author__ = "Vivekananda Tadala"
+__copyright__ = "Copyright 2018, The mAdvisor Project"
+__credits__ = ["Vivekananda", ]
+__license__ = ""
+__version__ = "0.0.1"
+__maintainer__ = "Vivekananda Tadala"
+__email__ = "vivekananda.tadala@marlabs.com"
+__status__ = "Development"
+
+
+class Cache:
+    """
+    Class to manage cache
+    """
+
+    def __init__(self, namespace="default", base_dir=""):
+        self.namespace = namespace
+        if base_dir:
+            self.base_dir = base_dir
+        else:
+            self.base_dir = settings.CACHE_BASE_DIR
+
+    def __get_hash(self):
+        """
+        private method to generate md5 or sha1 hash of the key
+        :return:
+        """
+        return hashlib.sha1(self.key).hexdigest()
+
+    def __get_file_path(self, key):
+        return os.path.join([self.base_dir, self.namespace, self.__get_hash(key)])
+
+    def put(self, key, content):
+        """
+        Save the content in the cache with given key
+        :param key:
+        :param content:
+        :return:
+        """
+        try:
+            file_path = self.__get_file_path(key)
+            os.makedirs(os.path.dirname(file_path), exist_ok=True)
+
+            file_obj = open(file_path, "w")
+            file_obj.write(content)
+            file_obj.close()
+        except IOError:
+            print "CACHE: not able to cache the content"
+        pass
+
+    def get(self, key):
+        """
+        Get the content from the cache
+        :param key:
+        :return: content if key exists
+        """
+        try:
+            file_path = self.__get_file_path(key)
+            if os.path.exists(file_path):
+                return open(file_path).read()
+        except IOError:
+            pass
+        return None

@@ -26,3 +26,4 @@ knit==0.2.4
 pygments
 celery==4.1.1
 django-guardian==1.4.9
+deprecation

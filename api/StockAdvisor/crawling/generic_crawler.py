@@ -1,60 +1,111 @@
 import os
-import hashlib
-import common_utils
-import requests
-import time
-from datetime import datetime
 import random
+from datetime import datetime
+
+import requests
+from deprecation import deprecated
 from django.conf import settings
+
+import common_utils
+from cache import Cache
 
 
 class GenericCrawler:
+    PREFIX = "GENERIC CRAWLER"
+    PROXY_LIST = [
+        {'http': u'http://46.225.241.6:8080'},
+        {'http': u'http://66.119.180.104:80'},
+        {'http': u'http://202.51.17.246:80'},
+        {'http': u'http://202.179.190.210:8080'},
+        {'http': u'http://103.94.64.90:8080'},
+        {'http': u'http://202.138.254.29:8080'},
+        {'http': u'http://197.159.16.2:8080'},
+        {'http': u'http://host131-186-static.58-217-b.business.telecomitalia.it:8080'},
+        {'http': u'http://182.253.142.16:8080'},
+        {'http': u'http://152.231.29.210:8080'},
+        {'http': u'http://103.234.137.158:8080'},
+        {'http': u'http://131.161.124.36:3128'},
+        {'http': u'http://195.138.91.117:8080'},
+        {'http': u'http://185.36.172.190:8080'},
+        {'http': u'http://client-90-123-107-176.kk-net.cz:8080'},
+        {'http': u'http://46.209.25.1:8080'},
+        {'http': u'http://165.16.113.210:8080'},
+        {'http': u'http://168.232.157.142:8080'}
+    ]
+    USER_AGENT = {"User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:53.0) Gecko/20100101 Firefox/53.0",
+                  "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                  "Accept-Language": "en-US,en;q=0.5", "Accept-Encoding": "gzip, deflate, br"}
+
+    REQUEST_CONNECTION_TIMEOUT = 10
+    REQUEST_READ_TIMEOUT = 10
+    REQUEST_RETRY_LIMIT = 10
+
     def __init__(self, crawl_options={}):
-        self.headers = {"User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:53.0) Gecko/20100101 Firefox/53.0",
-                        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-                        "Accept-Language": "en-US,en;q=0.5", "Accept-Encoding": "gzip, deflate, br"}
         self.fdir = os.environ["HOME"] + "/html/" + crawl_options.get("source", "misc")
         self.crawl_options = crawl_options
-        self.proxy_list = [
-            {'http': u'http://46.225.241.6:8080'},
-            {'http': u'http://66.119.180.104:80'},
-            {'http': u'http://202.51.17.246:80'},
-            {'http': u'http://202.179.190.210:8080'},
-            {'http': u'http://103.94.64.90:8080'},
-            {'http': u'http://202.138.254.29:8080'},
-            {'http': u'http://197.159.16.2:8080'},
-            {'http': u'http://host131-186-static.58-217-b.business.telecomitalia.it:8080'},
-            {'http': u'http://182.253.142.16:8080'},
-            {'http': u'http://152.231.29.210:8080'},
-            {'http': u'http://103.234.137.158:8080'},
-            {'http': u'http://131.161.124.36:3128'},
-            {'http': u'http://195.138.91.117:8080'},
-            {'http': u'http://185.36.172.190:8080'},
-            {'http': u'http://client-90-123-107-176.kk-net.cz:8080'},
-            {'http': u'http://46.209.25.1:8080'},
-            {'http': u'http://165.16.113.210:8080'},
-            {'http': u'http://168.232.157.142:8080'}
-        ]
+        if "REQUEST_CONNECTION_TIMEOUT" in settings:
+            self.REQUEST_CONNECTION_TIMEOUT = settings.REQUEST_CONNECTION_TIMEOUT,
+
+        if "REQUEST_READ_TIMEOUT" in settings:
+            self.REQUEST_READ_TIMEOUT = settings.REQUEST_READ_TIMEOUT
+
+        if "REQUEST_RETRY_LIMIT" in settings:
+            self.REQUEST_RETRY_LIMIT =  settings.REQUEST_RETRY_LIMIT
+
+    def run(self):
+        crawl_cache = Cache("stocksense")
+        content = crawl_cache.get(self.url)
+        if content:
+            return content
+        else:
+            content = self.fetch_content(self.url)
+            crawl_cache.put(self.url, content)
+            return content
 
     def get_proxy(self):
         import random
-        get_number = random.randint(0, len(self.proxy_list) + 1)
-        return self.proxy_list[get_number]
+        get_number = random.randint(0, len(self.PROXY_LIST) + 1)
+        return self.PROXY_LIST[get_number]
 
     def download_using_proxy(self, url):
         temp_proxy = self.get_proxy()
-        print "Requesting New Page using proxy -->", self.headers, temp_proxy
-        return requests.get(url, headers=self.headers, proxies=temp_proxy, timeout=(
-            settings.REQUEST_CONNECTION_TIMEOUT,
-            settings.REQUEST_READ_TIMEOUT))
+        print self.PREFIX, "Requesting New Page using proxy -->", temp_proxy, url
+        return requests.get(url, headers=self.USER_AGENT, proxies=temp_proxy, timeout=(
+            self.REQUEST_CONNECTION_TIMEOUT,
+            self.REQUEST_READ_TIMEOUT))
 
     def download_without_using_proxy(self, url):
-        print "Requesting New Page without proxy -->", self.headers,
+        print self.PREFIX, "Requesting New Page without proxy -->", self.USER_AGENT,
         return requests.get(url)
 
-    def get_data(self, url, crawl_options={}):
+    def fetch_content(self, url):
+        """
+        For a given url fetch content from the internet
+        :param url:
+        :return:
+        """
+        content = ""
+        for i in range(self.REQUEST_RETRY_LIMIT):
+            print self.PREFIX, "Trying for {0} time.".format(i), url
+
+            try:
+                if 0 == i:
+                    resp = self.download_without_using_proxy(url)
+                else:
+                    resp = self.download_using_proxy(url)
+                content = resp.content
+                if content:
+                    break
+            except Exception as err:
+                print self.PREFIX, err
+        return content
+
+    @deprecated(details="use fetch content instead")
+    def get_data(self, url="", crawl_options={}):
         if not crawl_options:
             crawl_options = self.crawl_options
+        if not url:
+            url = self.url
 
         if 'date_of_crawl' in crawl_options:
             if crawl_options['date_of_crawl'] == True:
@@ -67,36 +118,22 @@ class GenericCrawler:
         else:
             print "Asked for Archieved Page?"
             fname = self.fdir + "/" + common_utils.get_sha(url)
+
         content = ""
         if os.path.exists(fname):
-            print "Archieved Page."
+            print "Cache hit"
             obj = open(fname)
             content = obj.read()
         else:
-
-            i = 0
-            while i <= settings.REQUEST_RETRY_LIMIT:
-                i += 1
+            for i in range(settings.REQUEST_RETRY_LIMIT):
                 print "Trying for {0} time.".format(i)
 
-                if i == 1:
-                    try:
-                        resp = self.download_without_using_proxy(url)
-                        print "Response Came"
-                        content = resp.content
-                        html_dir = os.path.dirname(fname)
-                        if not os.path.exists(html_dir):
-                            os.makedirs(html_dir)
-                        obj = open(fname, "w")
-                        obj.write(content)
-                        obj.close()
-                        break
-                    except Exception as err:
-                        print err
-
-                try:
+                if 0 == i:
+                    resp = self.download_without_using_proxy(url)
+                else:
                     resp = self.download_using_proxy(url)
-                    print "Response Came"
+                try:
+                    print "Got Response"
                     content = resp.content
                     html_dir = os.path.dirname(fname)
                     if not os.path.exists(html_dir):
