@@ -21,7 +21,7 @@ for (i, row) in enumerate(csv_reader):
         if date_key in cur_dictionary.keys():
             cur_dictionary[date_key] = myutils.normalize_date_time(cur_dictionary.get(date_key)).strftime("%Y%m%d")
 
-        nl_understanding = myutils.get_data_from_bluemix(row[2])
+        nl_understanding = myutils.get_nl_understanding_from_bluemix(row[2])
         if nl_understanding:
             cur_dictionary["sentiment"] = nl_understanding.get("sentiment", [])
             cur_dictionary["keywords"] = nl_understanding.get("keywords", [])

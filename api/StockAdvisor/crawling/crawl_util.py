@@ -35,7 +35,7 @@ def fetch_news_article_from_nasdaq(stock):
     print urls
     content_array = []
     for url in urls:
-        content_array.append(crawl_obj.fetch_content(url), use_cache=True)
+        content_array.append(crawl_obj.fetch_content(url), use_cache=False)
 
     # from multiprocessing import Pool
     # p = Pool(5)
@@ -60,7 +60,7 @@ def fetch_news_article_from_nasdaq(stock):
     stock_news_with_sentiments = []
     for news in stock_news:
         short_desc = news["short_desc"]
-        nl_understanding = myutils.get_data_from_bluemix(short_desc, content=True, unique_id=news['final_url'])
+        nl_understanding = myutils.get_nl_understanding_from_bluemix(short_desc, content=True, unique_id=news['final_url'])
         if nl_understanding:
             news['keywords'] = nl_understanding.get('keywords', [])
             news['sentiment'] = nl_understanding.get('sentiment', [])

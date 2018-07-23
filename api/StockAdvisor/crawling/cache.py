@@ -44,6 +44,8 @@ class Cache:
         """
         try:
             file_path = self.__get_file_path(key)
+            print file_path
+
             os.makedirs(os.path.dirname(file_path), exist_ok=True)
 
             file_obj = open(file_path, "w")
