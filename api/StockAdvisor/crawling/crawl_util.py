@@ -35,7 +35,7 @@ def fetch_news_article_from_nasdaq(stock):
     print urls
     content_array = []
     for url in urls:
-        content_array.append(crawl_obj.fetch_content(url))
+        content_array.append(crawl_obj.fetch_content(url), use_cache=True)
 
     # from multiprocessing import Pool
     # p = Pool(5)
@@ -43,17 +43,18 @@ def fetch_news_article_from_nasdaq(stock):
 
     for content in content_array:
         # content = crawl_obj.get_data(url)
-        json_list = process.process_nasdaq_news_article(url, content, stock=stock)
-        if len(json_list) < 1:
-            break
-        for json_obj in json_list:
-            if not json_obj.get("url"):
-                continue
-            if "date" in json_obj:
-                date_string = json_obj.get("date").split(" ")[0]
-                json_obj["date"] = myutils.normalize_date_time(date_string).strftime("%Y%m%d")
-                json_obj["time"] = myutils.normalize_date_time(date_string).strftime("%Y%m%d")
-            stock_news.append(json_obj)
+        if content:
+            json_list = process.process_nasdaq_news_article(url, content, stock=stock)
+            if len(json_list) < 1:
+                break
+            for json_obj in json_list:
+                if not json_obj.get("url"):
+                    continue
+                if "date" in json_obj:
+                    date_string = json_obj.get("date").split(" ")[0]
+                    json_obj["date"] = myutils.normalize_date_time(date_string).strftime("%Y%m%d")
+                    json_obj["time"] = myutils.normalize_date_time(date_string).strftime("%Y%m%d")
+                stock_news.append(json_obj)
 
     print "Let us do sentiment on {0}".format(len(stock_news))
     stock_news_with_sentiments = []

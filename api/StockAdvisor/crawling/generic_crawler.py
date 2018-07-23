@@ -78,13 +78,29 @@ class GenericCrawler:
         print self.PREFIX, "Requesting New Page without proxy -->", self.USER_AGENT,
         return requests.get(url)
 
-    def fetch_content(self, url):
+    def fetch_content(self, url, use_cache=False):
         """
         For a given url fetch content from the internet
         :param url:
         :return:
         """
         content = ""
+        crawl_cache = Cache("stocksense")
+        if use_cache:
+            content = crawl_cache.get(self.url)
+            
+        if content:
+            return content
+        content = self.__download_content_with_retry(url)
+        crawl_cache.put(self.url, content)
+        return content
+
+    def __download_content_with_retry(self, url):
+        """
+        Download content with
+        :param url:
+        :return:
+        """
         for i in range(self.REQUEST_RETRY_LIMIT):
             print self.PREFIX, "Trying for {0} time.".format(i), url
 
@@ -94,7 +110,9 @@ class GenericCrawler:
                 else:
                     resp = self.download_using_proxy(url)
                 content = resp.content
-                if content:
+                print "res " * 10, ":: ", resp.status_code
+
+                if resp.status_code == 200:
                     break
             except Exception as err:
                 print self.PREFIX, err
