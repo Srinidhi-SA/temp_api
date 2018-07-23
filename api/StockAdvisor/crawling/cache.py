@@ -25,12 +25,12 @@ class Cache:
         else:
             self.base_dir = settings.CACHE_BASE_DIR
 
-    def __get_hash(self):
+    def __get_hash(self, key):
         """
         private method to generate md5 or sha1 hash of the key
         :return:
         """
-        return hashlib.sha1(self.key).hexdigest()
+        return hashlib.sha1(key).hexdigest()
 
     def __get_file_path(self, key):
         return os.path.join([self.base_dir, self.namespace, self.__get_hash(key)])
