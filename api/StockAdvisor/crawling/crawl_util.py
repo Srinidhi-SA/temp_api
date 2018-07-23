@@ -33,7 +33,7 @@ def fetch_news_article_from_nasdaq(stock):
     urls = get_nasdaq_news_articles(stock)
 
     print urls
-
+    content_array = []
     for url in urls:
         content_array.append(crawl_obj.fetch_content(url))
 
