@@ -1649,7 +1649,7 @@ class StockDataset(models.Model):
                 data=stock_data,
                 type='json'
             )
-            extracted_data += stock_data
+            extracted_data.extend(stock_data)
 
         if len(extracted_data) < 1:
             return {}
