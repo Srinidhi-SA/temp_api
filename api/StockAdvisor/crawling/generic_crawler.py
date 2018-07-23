@@ -87,12 +87,12 @@ class GenericCrawler:
         content = ""
         crawl_cache = Cache("stocksense")
         if use_cache:
-            content = crawl_cache.get(self.url)
-            
+            content = crawl_cache.get(url)
+
         if content:
             return content
         content = self.__download_content_with_retry(url)
-        crawl_cache.put(self.url, content)
+        crawl_cache.put(url, content)
         return content
 
     def __download_content_with_retry(self, url):
