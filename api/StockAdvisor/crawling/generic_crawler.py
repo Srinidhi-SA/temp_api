@@ -75,7 +75,7 @@ class GenericCrawler:
             self.REQUEST_READ_TIMEOUT))
 
     def download_without_using_proxy(self, url):
-        print self.PREFIX, "Requesting New Page without proxy -->", self.USER_AGENT,
+        print self.PREFIX, "Requesting New Page without proxy -->", url
         return requests.get(url)
 
     def fetch_content(self, url, use_cache=False):
@@ -110,7 +110,6 @@ class GenericCrawler:
                 else:
                     resp = self.download_using_proxy(url)
                 content = resp.content
-                print "res " * 10, ":: ", resp.status_code
 
                 if resp.status_code == 200:
                     break

@@ -56,7 +56,7 @@ def fetch_news_article_from_nasdaq(stock):
                     json_obj["time"] = myutils.normalize_date_time(date_string).strftime("%Y%m%d")
                 stock_news.append(json_obj)
 
-    print "Let us do sentiment on {0}".format(len(stock_news))
+    print "Let us do sentiment on {0}".format(len(stock_news)) * 2
     stock_news_with_sentiments = []
     for news in stock_news:
         short_desc = news["short_desc"]
