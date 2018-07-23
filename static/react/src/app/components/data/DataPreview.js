@@ -475,7 +475,7 @@ export class DataPreview extends React.Component {
                   <i className={iconCls}></i>
                   {thElement.name}{this.props.match.url.indexOf('/apps-stock-advisor/')<0?<b className="caret"></b>:""}
                 </a>
-                {this.props.match.url.indexOf('/apps-stock-advisor/')<0?{dataValidationCom}:""}
+                {this.props.match.url.indexOf('/apps-stock-advisor/')<0?dataValidationCom:""}
               </th>
             );
           } else {

@@ -67,7 +67,7 @@ class ProcessUrls:
                 #     content = soup.get_text()
                 # except:
                 #     pass
-                nl_understanding =myutils.get_data_from_bluemix(row[2])
+                nl_understanding =myutils.get_nl_understanding_from_bluemix(row[2])
 
                 if nl_understanding:
                     cur_dictionary["sentiment"] = nl_understanding.get("sentiment", [])

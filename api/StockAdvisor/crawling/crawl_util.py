@@ -30,31 +30,38 @@ def crawl_extract(url,regex_dict={},remove_tags=[], slug=None):
 def fetch_news_article_from_nasdaq(stock):
     crawl_obj = generic_crawler.GenericCrawler()
     stock_news = []
-    urls = [get_nasdaq_news_article(stock)] + get_nasdaq_news_articles(stock)
-    # urls = [get_nasdaq_news_article(stock)]
-    #
-    print urls
-    for url in urls:
-        print url
-        content = crawl_obj.get_data(url, crawl_options={'fresh': True})
-        # content = crawl_obj.get_data(url)
-        json_list = process.process_nasdaq_news_article(url, content, stock=stock)
-        if len(json_list) < 1:
-            break
-        for json_obj in json_list:
-            if not json_obj.get("url"):
-                continue
-            if "date" in json_obj:
-                date_string = json_obj.get("date").split(" ")[0]
-                json_obj["date"] = myutils.normalize_date_time(date_string).strftime("%Y%m%d")
-                json_obj["time"] = myutils.normalize_date_time(date_string).strftime("%Y%m%d")
-            stock_news.append(json_obj)
+    urls = get_nasdaq_news_articles(stock)
 
-    print "Let us do sentiment on {0}".format(len(stock_news))
+    print urls
+    content_array = []
+    for url in urls:
+        content_array.append(crawl_obj.fetch_content(url, use_cache=False))
+
+    # from multiprocessing import Pool
+    # p = Pool(5)
+    # content_array = p.map(crawl_obj.fetch_content, urls)
+
+    for content in content_array:
+        # content = crawl_obj.get_data(url)
+        if content:
+            json_list = process.process_nasdaq_news_article(url, content, stock=stock)
+            if len(json_list) < 1:
+                break
+            for json_obj in json_list:
+                if not json_obj.get("url"):
+                    continue
+                if "date" in json_obj:
+                    date_string = json_obj.get("date").split(" ")[0]
+                    json_obj["date"] = myutils.normalize_date_time(date_string).strftime("%Y%m%d")
+                    json_obj["time"] = myutils.normalize_date_time(date_string).strftime("%Y%m%d")
+                stock_news.append(json_obj)
+
+    print "Let us do sentiment on {0}".format(len(stock_news)) * 2
     stock_news_with_sentiments = []
     for news in stock_news:
         short_desc = news["short_desc"]
-        nl_understanding = myutils.get_data_from_bluemix(short_desc, content=True, unique_id=news['final_url'])
+        nl_understanding = myutils.get_nl_understanding_from_bluemix(
+            url=news['final_url'], content_of_the_url=short_desc)
         if nl_understanding:
             news['keywords'] = nl_understanding.get('keywords', [])
             news['sentiment'] = nl_understanding.get('sentiment', [])
@@ -91,11 +98,10 @@ def generate_url_for_historic_data(name):
 def generate_urls_for_crawl_news(stock_symbols):
 	return ["https://finance.google.com/finance/company_news?q=NASDAQ:{}".format(stock_symbol.upper()) for stock_symbol in stock_symbols]
 
-def get_nasdaq_news_article(stock_symbol):
-    return "https://www.nasdaq.com/symbol/{0}/news-headlines".format(stock_symbol)
-
 def get_nasdaq_news_articles(stock_symbol):
-    return ["https://www.nasdaq.com/symbol/{0}/news-headlines?page={1}".format(stock_symbol, str(i)) for i in range(1, settings.NASDAQ_NEWS_HEADLINE_COUNT)]
+    urls = ["https://www.nasdaq.com/symbol/{0}/news-headlines".format(stock_symbol)]
+    urls.extend( ["https://www.nasdaq.com/symbol/{0}/news-headlines?page={1}".format(stock_symbol, str(i)) for i in range(1, settings.NASDAQ_NEWS_HEADLINE_COUNT)])
+    return urls
 
 
 def convert_crawled_data_to_metadata_format(news_data, other_details=None, slug=None):

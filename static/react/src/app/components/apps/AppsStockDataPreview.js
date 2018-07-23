@@ -7,7 +7,7 @@ import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {connect} from "react-redux";
 import {APPID1,APPID2,APPID3,APPNAME1,APPNAME2,APPNAME3} from "../../helpers/helper.js"
-import {hideDataPreviewRightPanels,updateUploadStockPopup,getConceptsList,updateStockSlug} from "../../actions/appActions";
+import {hideDataPreviewRightPanels,updateUploadStockPopup,getConceptsList,updateStockSlug,clearDataPreview,uploadStockAnalysisFlag} from "../../actions/appActions";
 import {STATIC_URL} from "../../helpers/env.js"
 import {isEmpty} from "../../helpers/helper";
 import {getStockDataSetPreview} from "../../actions/dataActions";
@@ -31,10 +31,11 @@ export class AppsStockDataPreview extends React.Component {
     console.log(this.props);
   }
   componentWillMount(){
-	  if (this.props.dataPreview == null || isEmpty(this.props.dataPreview)||this.props.dataPreview.status == 'FAILED') {
+	  //if (this.props.dataPreview == null || isEmpty(this.props.dataPreview)||this.props.dataPreview.status == 'FAILED') {
+		  this.props.dispatch(clearDataPreview());
 		  this.props.dispatch(getStockDataSetPreview(this.props.match.params.slug));
 		  this.props.dispatch(updateStockSlug(this.props.match.params.slug));
-	  }
+	 // }
   }
   componentDidMount(){
       hideDataPreviewRightPanels();
@@ -49,13 +50,17 @@ export class AppsStockDataPreview extends React.Component {
   updateUploadStockPopup(flag){
   	this.props.dispatch(updateUploadStockPopup(flag))
   }
+  clearDataPreview(){
+	  this.props.dispatch(clearDataPreview());
+	  this.props.dispatch(uploadStockAnalysisFlag(false));
+  }
   render() {
 	  if(store.getState().apps.stockAnalysisFlag && !this.props.showPreview){
 			let _linkAnalysis = "/apps-stock-advisor/"+store.getState().apps.stockSlug+ "/" + this.props.signal.listOfNodes[0].slug;
 	    	return (<Redirect to={_linkAnalysis}/>);
 	 }
 	  let dataPreview = store.getState().datasets.dataPreview;
-		if(dataPreview){
+		if(!$.isEmptyObject(dataPreview)){
 			return (
 					<div >
 	            <DataPreview history={this.props.history} match={this.props.match}/>" +
@@ -75,7 +80,7 @@ export class AppsStockDataPreview extends React.Component {
 						</li></ul>
 						:
 						<ul className="nav navbar-nav navbar-right">
-						<li className="text-right"><Button to="/apps"> Close </Button> 
+						<li className="text-right"><Link to="/apps-stock-advisor"><Button onClick={this.clearDataPreview.bind(this)}> Close </Button> </Link>
 						</li>
 						<li className="text-right">
 							<Button bsStyle="primary" onClick={this.updateUploadStockPopup.bind(this,true)}> Proceed</Button>

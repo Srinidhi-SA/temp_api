@@ -79,35 +79,36 @@ def process_json_data(url,content,regex_dict={},remove_tags=[]):
 			all_data.append(json_obj)
 	return all_data
 
+
 def process_nasdaq_news_article(url, content, stock):
 	soup = BeautifulSoup(content, 'html.parser')
 	new_headlines = soup.find_all('div', class_="news-headlines")
-	all_data = []
+	all_articles_data = []
 	print new_headlines
 	try:
 		for i, tag in enumerate(new_headlines[0]):
 			try:
-				json_data = {}
+				article_data = {}
 				if i % 10 == 3 and 'class' not in tag.attrs:
 					print "collected {0}".format(tag.span.a['href'])
-					json_data['title'] = sanitize(tag.span.a.text)
-					json_data['final_url'] = tag.span.a['href']
-					json_data['google_url'] = url
-					json_data['url'] = url
+					article_data['title'] = sanitize(tag.span.a.text)
+					article_data['final_url'] = tag.span.a['href']
+					article_data['google_url'] = url
+					article_data['url'] = url
 					date_and_author = tag.small.text
 					date_and_time = sanitize(date_and_author.split('-')[0])
-					json_data['time'] = date_and_time
-					json_data['date'] = date_and_time
-					json_data['source'] = sanitize(date_and_author.split('-')[1])
-					json_data['stock'] = stock
-					json_data['short_desc'] = process_nasdaq_news_paragraph(tag.span.a['href'])
-					all_data.append(json_data)
+					article_data['time'] = date_and_time
+					article_data['date'] = date_and_time
+					article_data['source'] = sanitize(date_and_author.split('-')[1])
+					article_data['stock'] = stock
+					article_data['short_desc'] = process_nasdaq_news_paragraph(tag.span.a['href'])
+					all_articles_data.append(article_data)
 			except Exception as err:
 				print err
-				print "No ArTicle Extracted"*7
+				print "No ArTicle Extracted" * 7
 	except:
 		pass
-	return all_data
+	return all_articles_data
 
 
 def less_then_six_months(date_and_time, str=True):
@@ -137,7 +138,7 @@ def process_marketwatch_news_article(content):
 
 def process_nasdaq_news_paragraph(url):
 	crawl_obj = generic_crawler.GenericCrawler()
-	content = crawl_obj.get_data(url)
+	content = crawl_obj.fetch_content(url, use_cache=True)
 	from bs4 import BeautifulSoup
 	try:
 		soup = BeautifulSoup(content, 'html.parser')
