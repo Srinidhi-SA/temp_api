@@ -33,7 +33,7 @@ class Cache:
         return hashlib.sha1(key).hexdigest()
 
     def __get_file_path(self, key):
-        return os.path.join([self.base_dir, self.namespace, self.__get_hash(key)])
+        return os.path.join(self.base_dir, self.namespace, self.__get_hash(key))
 
     def put(self, key, content):
         """
@@ -44,9 +44,8 @@ class Cache:
         """
         try:
             file_path = self.__get_file_path(key)
-            print file_path
-
-            os.makedirs(os.path.dirname(file_path), exist_ok=True)
+            if not os.path.exists(os.path.dirname(file_path)):
+                os.makedirs(os.path.dirname(file_path))
 
             file_obj = open(file_path, "w")
             file_obj.write(content)

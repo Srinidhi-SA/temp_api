@@ -35,7 +35,7 @@ def fetch_news_article_from_nasdaq(stock):
     print urls
     content_array = []
     for url in urls:
-        content_array.append(crawl_obj.fetch_content(url), use_cache=False)
+        content_array.append(crawl_obj.fetch_content(url, use_cache=False))
 
     # from multiprocessing import Pool
     # p = Pool(5)
