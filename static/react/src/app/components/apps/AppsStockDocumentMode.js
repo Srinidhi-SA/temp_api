@@ -97,7 +97,7 @@ export class AppsStockDocumentMode extends React.Component {
           <div>
             <div className="side-body" id="side-body">
               {/* Page Title and Breadcrumbs */}
-              <div className="page-head">
+              {/*<div className="page-head">
                 <div class="row">
                   <div class="col-md-12">
                     <Breadcrumb path={[
@@ -112,7 +112,7 @@ export class AppsStockDocumentMode extends React.Component {
                   </div>
                 </div>
                 <div class="clearfix"></div>
-              </div>
+              </div>*/}
               {/* Page Content Area */}
               <div className="main-content">
                 <div className="row">
@@ -161,13 +161,13 @@ export class AppsStockDocumentMode extends React.Component {
         <div className="side-body">
           <div className="page-head">
             <div class="row">
-              <div class="col-md-12">
+              {/*<div class="col-md-12">
                 <Breadcrumb path={[{
                     path: '/apps-stock-advisor',
                     label: 'Apps-Stock'
                   }
                 ]}/>
-              </div>
+              </div>*/}
               <div class="col-md-8">
                 <h2>{this.props.signal.name}</h2>
               </div>
