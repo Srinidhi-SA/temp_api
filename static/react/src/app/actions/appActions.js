@@ -626,10 +626,11 @@ function triggerDataUpload(token, insightName) {
 function dataUploadFilesSuccess(data, dispatch) {
   var slug = data.slug;
   appsInterval = setInterval(function() {
-    if (store.getState().apps.appsLoaderPerValue < LOADERMAXPERVALUE) {
+   /* if (store.getState().apps.appsLoaderPerValue < LOADERMAXPERVALUE) {
       dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue + APPSLOADERPERVALUE));
-    }
+    }*/
     dispatch(getRoboDataset(data.slug));
+    return {type: "ROBO_DATA_UPLOAD_SUCCESS", slug}
   }, APPSDEFAULTINTERVAL);
   return {type: "ROBO_DATA_UPLOAD_SUCCESS", slug}
 }
