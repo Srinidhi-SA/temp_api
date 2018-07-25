@@ -18,7 +18,8 @@ import {
   showRoboDataUploadPreview,
   updateAudioFileSummaryFlag,
   updateAppsFilterList,
-  getAppsFilteredList
+  getAppsFilteredList,
+  clearDataPreview
 } from "../../actions/appActions";
 import {STATIC_URL,APPS_ALLOWED} from "../../helpers/env.js"
 import {
@@ -71,7 +72,6 @@ export class AppsPanel extends React.Component {
       this.props.dispatch(getAppsList(getUserDetailsOrRestart.get().userToken, pageNo));
     this.props.dispatch(updateAppsFilterList([]))
   }
-
   onChangeAppsSearchBox(e) {
     if (e.target.value == "" || e.target.value == null) {
       this.props.dispatch(appsStoreSearchEle(""));
@@ -122,6 +122,7 @@ export class AppsPanel extends React.Component {
     this.props.dispatch(closeAppsLoaderValue());
     this.props.dispatch(uploadStockAnalysisFlag(false));
     this.props.dispatch(clearModelSummary());
+    this.props.dispatch(clearDataPreview());
   }
   handleSelect(eventKey) {
     if (this.props.app_filtered_keywords.length == this.props.appsList.data[0].tag_keywords.length) {

@@ -115,7 +115,7 @@ export class RoboInsightList extends React.Component {
 		  this.props.dispatch(storeRoboSortElements("",null));
 	  }
 
-    if (store.getState().datasets.dataPreviewFlag) {
+    if (this.props.dataPreviewFlag) {
       let _link = "/apps-robo-list/" + store.getState().apps.roboDatasetSlug+"/customer/data/"+store.getState().apps.customerDataset_slug
       return (<Redirect to={_link}/>);
     }
