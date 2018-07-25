@@ -386,6 +386,7 @@ export default function reducer(state = {
         return {
             ...state,
             roboDatasetSlug:action.slug,
+            updateCreateModelHideShow:true,
         }
     }
     break;

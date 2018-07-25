@@ -24,6 +24,7 @@ import {handleJobProcessing} from "../../helpers/helper";
 		updateCreateModelHideShow:store.apps.updateCreateModelHideShow,
 		scoreSlug:store.apps.scoreSlug,
 		stockSlug:store.apps.stockSlug,
+		roboDatasetSlug:store.apps.roboDatasetSlug,
 	};
 })
 
@@ -49,6 +50,8 @@ export class AppsLoader extends React.Component {
 		this.props.dispatch(handleJobProcessing(this.props.scoreSlug));
 		else if((this.props.match.url).indexOf("/apps-stock-advisor") >=0 )
 		this.props.dispatch(handleJobProcessing(this.props.stockSlug));
+		else if((this.props.match.url).indexOf("/apps-robo") >=0 )
+		this.props.dispatch(handleJobProcessing(this.props.roboDatasetSlug));
 		else
 		this.props.dispatch(handleJobProcessing(this.props.modelSlug));
 		this.props.dispatch(closeAppsLoaderValue());
