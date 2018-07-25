@@ -72,21 +72,20 @@ export class AppsStockDataPreview extends React.Component {
 				<div class="panel">
 				<div class="panel-body no-border">
 				
-				<div className="navbar xs-mb-0">
+				<div className="navbar xs-mb-0 text-right">
 						
 						 {this.props.showPreview?
 						 <ul className="nav navbar-nav navbar-right">
 						 <li className="text-right"><Button onClick={this.props.updatePreviewState} bsStyle="primary"> Close </Button>
 						</li></ul>
 						:
-						<ul className="nav navbar-nav navbar-right">
-						<li className="text-right"><Link to="/apps-stock-advisor"><Button onClick={this.clearDataPreview.bind(this)}> Close </Button> </Link>
-						</li>
-						<li className="text-right">
+						
+						<span>
+							<Link to="/apps-stock-advisor"><Button onClick={this.clearDataPreview.bind(this)}> Close </Button> </Link>
+						&nbsp;&nbsp;&nbsp;
 							<Button bsStyle="primary" onClick={this.updateUploadStockPopup.bind(this,true)}> Proceed</Button>
-						</li>
-						</ul>
-						 }
+						</span>
+						}
 						</div> 
 				
 				</div>
