@@ -35,7 +35,14 @@ def fetch_news_article_from_nasdaq(stock):
     print urls
     content_array = []
     for url in urls:
-        content_array.append(crawl_obj.fetch_content(url, use_cache=False))
+        content = crawl_obj.fetch_content(url, use_cache=False)
+        if content:
+            content_array.append(
+                {
+                    "url": url,
+                    "content": content
+                }
+            )
 
     # from multiprocessing import Pool
     # p = Pool(5)
@@ -44,7 +51,11 @@ def fetch_news_article_from_nasdaq(stock):
     for content in content_array:
         # content = crawl_obj.get_data(url)
         if content:
-            json_list = process.process_nasdaq_news_article(url, content, stock=stock)
+            json_list = process.process_nasdaq_news_article(
+                content['url'],
+                content['content'],
+                stock=stock
+            )
             if len(json_list) < 1:
                 break
             for json_obj in json_list:

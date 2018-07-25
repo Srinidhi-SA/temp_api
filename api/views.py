@@ -580,6 +580,8 @@ class RoboView(viewsets.ModelViewSet):
             robo_object = serializer.save()
             robo_object.create()
             robo_object.data = json.dumps(dummy_robo_data)
+            robo_object.status = "INPROGRESS"
+            robo_object.robo_analysis_done = True
             robo_object.save()
             return Response(serializer.data)
         return creation_failed_exception(serializer.errors)
@@ -599,7 +601,7 @@ class RoboView(viewsets.ModelViewSet):
                     instance.data = '{}'
                     instance.deleted = True
                     instance.save()
-                    clean_up_on_delete.delay(instance.slug, Robo.__name__)
+                    # clean_up_on_delete.delay(instance.slug, Robo.__name__)
                     return JsonResponse({'message':'Deleted'})
         except:
             return creation_failed_exception("File Doesn't exist.")

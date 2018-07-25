@@ -522,15 +522,6 @@ class RoboSerializer(serializers.ModelSerializer):
 
         if instance.robo_analysis_done and instance.dataset_analysis_done:
             instance.analysis_done = True
-
-            if 'FAILED' in [
-                customer_dataset_object.status,
-                historical_dataset_object.status,
-                market_dataset_object.status
-                ]:
-                instance.status = 'FAILED'
-            else:
-                instance.status = "SUCCESS"
             instance.status = "SUCCESS"
             instance.save()
 
@@ -577,6 +568,7 @@ class RoboListSerializer(serializers.ModelSerializer):
                 historical_dataset_object.analysis_done and \
                     market_dataset_object.analysis_done:
                 instance.analysis_done = True
+                instance.status = "SUCCESS"
                 instance.save()
 
         ret = convert_to_json(ret)
