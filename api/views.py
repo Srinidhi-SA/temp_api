@@ -5001,6 +5001,9 @@ def killing_for_robo(slug):
     original_object = Robo.objects.get(slug=slug)
     original_object.deleted = True
     original_object.save()
+    original_object.customer_dataset.job.kill()
+    original_object.historical_dataset.job.kill()
+    original_object.market_dataset.job.kill()
     return JsonResponse({
         'message': 'killed. and Deleted'
     })
