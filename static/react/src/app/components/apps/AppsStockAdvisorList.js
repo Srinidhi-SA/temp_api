@@ -112,7 +112,7 @@ export class AppsStockAdvisorList extends React.Component {
 			const current_page = this.props.stockList.current_page;
 			let paginationTag = null;	
 			if (pages > 1) {
-				paginationTag = <Pagination ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
+				paginationTag = <Pagination ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect.bind(this)} first last next prev boundaryLinks items={pages} activePage={current_page}/>
 			}
 			var stockList = <StocksCard data={stockAnalysisList} loadfunc={this.callShowloader}/>;
 			const {showLoader} = this.state;
