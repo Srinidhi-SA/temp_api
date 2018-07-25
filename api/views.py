@@ -4978,13 +4978,9 @@ def get_job_kill(request, slug=None):
     job_object = Job.objects.filter(object_id=slug).first()
 
     if not job_object:
-        original_object = Robo.objects.get(slug=slug)
-        if not original_object:
-            return JsonResponse({
-                'message': 'Unable to kill.'
-            })
-    else:
-        original_object = job_object.get_original_object()
+        killing_for_robo(slug)
+
+    original_object = job_object.get_original_object()
     if original_object is None:
         return JsonResponse({
             'message': 'Unable to Delete.'
@@ -5001,6 +4997,13 @@ def get_job_kill(request, slug=None):
             'message': 'Unable to kill.'
         })
 
+def killing_for_robo(slug):
+    original_object = Robo.objects.get(slug=slug)
+    original_object.deleted = True
+    original_object.save()
+    return JsonResponse({
+        'message': 'killed. and Deleted'
+    })
 
 @api_view(['GET'])
 def get_job_refreshed(request, slug=None):
