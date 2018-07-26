@@ -1675,25 +1675,27 @@ class StockDataset(models.Model):
             return all_data
 
     def crawl_for_historic_data(self):
+        PRINTPREFIX = "crawl_historic"
         from api.StockAdvisor.crawling.generic_crawler import Cache
         import pickle
 
         historic_cache = Cache("historic")
 
-        stock_symbols = self.get_stock_symbol_names()
-        for stock in stock_symbols:
+        for stock_symbol in self.get_stock_symbol_names():
             stock_data = None
-            cache_key = "historic_{}".format(stock)
+            cache_key = "historic_{}".format(stock_symbol)
+            print PRINTPREFIX, cache_key
+
             from api.StockAdvisor.crawling.process import fetch_historical_data_from_alphavintage
             try:
-                stock_data = fetch_historical_data_from_alphavintage(stock)
+                stock_data = fetch_historical_data_from_alphavintage(stock_symbol)
             except:
                 pass
 
             if not stock_data:
-                print "Using Nasdaq Site for historic stock data for {0}".format(stock)
+                print PRINTPREFIX, "Using Nasdaq Site for historic stock data for {0}".format(stock_symbol)
                 NASDAQ_REGEX_FILE = "nasdaq_stock.json"
-                url = generate_url_for_historic_data(stock)
+                url = generate_url_for_historic_data(stock_symbol)
 
                 for i in range(10):
 
@@ -1703,21 +1705,26 @@ class StockDataset(models.Model):
                         slug=self.slug
                         )
 
-                    if not stock_data and i == 0:
+                    if len(stock_data) == 0 and i == 0:
                         try:
                             cached_data = historic_cache.get(cache_key)
                             stock_data = pickle.loads(cached_data)
+                            print PRINTPREFIX, "CACHE HIT :: Picked historic data from cache {}".format(stock_symbol)
                         except:
+
                             pass
 
-                    if stock_data:
+                    if len(stock_data) >0 :
                         break
 
             if stock_data is not None:
-                historic_cache.put(cache_key,pickle.dumps(stock_data))
+                if len(stock_data) > 0:
+                    print PRINTPREFIX, "caching for{}".format(stock_symbol)
+                    historic_cache.put(cache_key,pickle.dumps(stock_data))
+
                 self.write_to_concepts_folder(
                     stockDataType="historic",
-                    stockName=stock,
+                    stockName=stock_symbol,
                     data=stock_data,
                     type='json'
                 )
