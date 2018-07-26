@@ -4976,6 +4976,17 @@ def get_chart_or_small_data(request, slug=None):
 def get_job_kill(request, slug=None):
 
     job_object = Job.objects.filter(object_id=slug).first()
+
+    if not job_object:
+        if killing_for_robo(slug) == True:
+            return JsonResponse({
+                'message': 'killed. and Deleted'
+            })
+        else:
+            return JsonResponse({
+                'message': 'Unable to kill.'
+            })
+
     original_object = job_object.get_original_object()
     if original_object is None:
         return JsonResponse({
@@ -4993,6 +5004,18 @@ def get_job_kill(request, slug=None):
             'message': 'Unable to kill.'
         })
 
+
+def killing_for_robo(slug):
+    try:
+        original_object = Robo.objects.get(slug=slug)
+        original_object.deleted = True
+        original_object.save()
+        original_object.customer_dataset.job.kill()
+        original_object.historical_dataset.job.kill()
+        original_object.market_dataset.job.kill()
+        return True
+    except:
+        return False
 
 @api_view(['GET'])
 def get_job_refreshed(request, slug=None):

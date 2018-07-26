@@ -13,7 +13,7 @@ import {
   OverlayTrigger,
   Popover
 } from "react-bootstrap";
-import {getAppsRoboList, getRoboDataset, handleInsightDelete, handleInsightRename, storeRoboSearchElement,clearRoboSummary,storeRoboSortElements} from "../../actions/appActions";
+import {getAppsRoboList, getRoboDataset, handleInsightDelete, handleInsightRename, storeRoboSearchElement,clearRoboSummary,storeRoboSortElements,refreshRoboInsightsList} from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {STATIC_URL} from "../../helpers/env.js";
 import {RoboDataUpload} from "./RoboDataUpload";
@@ -77,6 +77,9 @@ export class RoboInsightList extends React.Component {
       this.props.dispatch(getAppsRoboList(1));
 
     }
+  }
+  componentDidMount(){
+      this.props.dispatch(refreshRoboInsightsList(this.props));
   }
   onChangeOfSearchBox(e) {
     if (e.target.value == "" || e.target.value == null) {

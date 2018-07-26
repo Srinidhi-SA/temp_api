@@ -2043,3 +2043,22 @@ export function callStockAnalysisApi(slug) {
     dispatch(triggerStockAnalysis(slug,dispatch));
   }
 }
+export function roboDataUploadFilesSuccessAnalysis(data) {
+  return (dispatch) => {
+    dispatch(dataUploadFilesSuccess(data, dispatch))
+  }
+}
+export function refreshRoboInsightsList(props){
+  return (dispatch) => {
+    if(refreshAppsModelInterval != null)
+    clearInterval(refreshAppsModelInterval);
+    refreshAppsModelInterval = setInterval(function() {
+      var pageNo = window.location.href.split("=")[1];
+      if (pageNo == undefined)
+        pageNo = 1;
+      if (window.location.pathname == "/apps-robo")
+        dispatch(getAppsRoboList(parseInt(pageNo)));
+      }
+    , APPSDEFAULTINTERVAL);
+  }
+}
