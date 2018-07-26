@@ -1673,7 +1673,7 @@ class StockDataset(models.Model):
             for l in stock_file:
                 all_data.append(json.loads(l))
             return all_data
-
+    '''
     def crawl_for_historic_data(self):
         stock_symbols = self.get_stock_symbol_names()
 
@@ -1701,6 +1701,31 @@ class StockDataset(models.Model):
                     slug=self.slug
                 )
 
+                self.write_to_concepts_folder(
+                    stockDataType="historic",
+                    stockName=stock,
+                    data=stock_data,
+                    type='json'
+                )
+    '''
+    def crawl_for_historic_data(self):
+        stock_symbols = self.get_stock_symbol_names()
+        for stock in stock_symbols:
+            stock_data = None
+            from api.StockAdvisor.crawling.process import fetch_historical_data_from_alphavintage
+            try:
+                stock_data = fetch_historical_data_from_alphavintage(stock)
+            except:
+                NASDAQ_REGEX_FILE = "nasdaq_stock.json"
+
+                print "Using Nasdaq Site for historic stock data for {0}".format(stock)
+                url = generate_url_for_historic_data(stock)
+                stock_data = crawl_extract(
+                    url=url,
+                    regex_dict=get_regex(NASDAQ_REGEX_FILE),
+                    slug=self.slug
+                )
+            if stock_data is not None:
                 self.write_to_concepts_folder(
                     stockDataType="historic",
                     stockName=stock,

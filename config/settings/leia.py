@@ -37,7 +37,8 @@ PROJECT_APP = [
 
 INSTALLED_APPS += PROJECT_APP
 
-HADOOP_MASTER = '172.31.50.84'
+
+HADOOP_MASTER = '172.31.64.29'
 
 YARN = {
     "host": HADOOP_MASTER,
@@ -49,12 +50,13 @@ HDFS = {
 
     # Give host name without http
     'host': HADOOP_MASTER,
-    'port': '14000', #webhdfs port
+    'port': '50070', #webhdfs port
     'uri': '/webhdfs/v1',
-    'user.name': 'hadoop',
-    'hdfs_port': '8020', #hdfs port
+    'user.name': 'hduser',
+    'hdfs_port': '9000', #hdfs port
     'base_path' : '/dev/dataset/'
 }
+
 
 EMR = {
     "emr_pem_path": "",
@@ -92,7 +94,7 @@ THIS_SERVER_DETAILS = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://localhost:6379/1",
+        "LOCATION": "redis://172.31.53.141:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient"
         },
@@ -137,8 +139,8 @@ DEPLOYMENT_ENV = "prod"
 HADOOP_CONF_DIR= False
 HADOOP_USER_NAME="hduser"
 
-CELERY_BROKER_URL = 'redis://localhost:6379/'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/'
+CELERY_BROKER_URL = 'redis://172.31.53.141:6379/'
+CELERY_RESULT_BACKEND = 'redis://172.31.53.141:6379/'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
