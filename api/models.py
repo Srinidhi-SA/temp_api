@@ -19,7 +19,7 @@ from StockAdvisor.crawling.crawl_util import crawl_extract, \
     generate_urls_for_historic_data, \
     fetch_news_article_from_nasdaq, \
     generate_url_for_historic_data, \
-    generate_urls_for_historic_data
+    generate_urls_for_historic_data, fetch_news_sentiments_from_newsapi
 from api.helper import convert_json_object_into_list_of_object
 from api.lib import hadoop, fab_helper
 
@@ -1642,7 +1642,7 @@ class StockDataset(models.Model):
 
         extracted_data = []
         for stock in stock_symbols:
-            stock_data = fetch_news_article_from_nasdaq(stock)
+            stock_data = fetch_news_sentiments_from_newsapi(stock)
             self.write_to_concepts_folder(
                 stockDataType="news",
                 stockName=stock,
