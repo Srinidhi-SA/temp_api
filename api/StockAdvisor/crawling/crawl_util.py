@@ -26,6 +26,19 @@ def crawl_extract(url,regex_dict={},remove_tags=[], slug=None):
 
     return all_data[4:]
 
+def fetch_news_sentiments_from_newsapi(stock):
+    stock_news = process.fetch_stock_news_from_newsapi(stock)
+    stock_news_with_sentiments = []
+    for news in stock_news:
+        short_desc = news["short_desc"]
+        nl_understanding = myutils.get_nl_understanding_from_bluemix(
+            url=news['final_url'], content_of_the_url=short_desc)
+        if nl_understanding:
+            news['keywords'] = nl_understanding.get('keywords', [])
+            news['sentiment'] = nl_understanding.get('sentiment', [])
+            stock_news_with_sentiments.append(news)
+
+    return stock_news_with_sentiments
 
 def fetch_news_article_from_nasdaq(stock):
     crawl_obj = generic_crawler.GenericCrawler()

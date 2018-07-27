@@ -110,6 +110,47 @@ def process_nasdaq_news_article(url, content, stock):
 		pass
 	return all_articles_data
 
+def fetch_stock_news_from_newsapi(cur_stock):
+    from newsapi import NewsApiClient
+
+    API_KEY = "61b9fb7eac124c678dc2d6d8a0a9e9af"
+    # cur_stock = "goog"
+    # "https://newsapi.org/v2/everything?q=bitcoin&apiKey=API_KEY"
+    URL = "https://newsapi.org/v2/everything?q={}&apiKey={}".format(cur_stock, API_KEY)
+
+    # Init
+    newsapi = NewsApiClient(api_key=API_KEY)
+
+    # /v2/everything
+    top_headlines = newsapi.get_everything(q=cur_stock,
+                                           language='en',
+                                           page_size=100,
+                                           domains='fool.com,bloomberg.com,nasdaq.com',
+                                           sort_by='publishedAt',
+                                              )
+
+
+    for item in top_headlines['articles']:
+        item['time']="".join(item['publishedAt'].split("T")[0].split("-"))
+        item['date'] = item['time']
+        item['source'] = item['source']['name']
+        item['short_desc'] = item['description']
+        item['google_url'] = item['url']
+        item['final_url'] = item['url']
+        item['stock'] = cur_stock
+    articles = top_headlines["articles"][:]
+
+    histogram = {}
+
+    for item in articles:
+        cur_key = item['time']
+        if cur_key in histogram.keys():
+            things_to_append = ["description", "title" , "short_desc"]
+            for key_to_append in things_to_append:
+                histogram[cur_key][key_to_append] = histogram[cur_key][key_to_append] + " " + item[key_to_append]
+        else:
+            histogram[cur_key] = item
+    return [v for k,v in histogram.items()]
 
 def less_then_six_months(date_and_time, str=True):
 	pass
