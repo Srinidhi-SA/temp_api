@@ -4935,11 +4935,17 @@ dummy_robo_data = {
                 },
                 {
                     "dataType": "html",
-                    "data": "Based on analysis of your portfolio composition, performance of various funds, and the projected outlook, mAdvisor recommends the following."
+                    "data": "Based on analysis of your portfolio composition, risk appetite, performance of various funds, and the projected outlook, mAdvisor recommends the following to maximize your wealth."
                 },
                 {
                     "dataType": "html",
-                    "data": "<ul><li><b>Reallocate investments</b> from some of the low-performing assets such as Franklin - India Ultra Short Bond Super Ins (G): Our suggestion is that you can maximize returns by investing more in other existing equity funds.</li><li>Invest in funds that are going to outperform, <b>Technology and Telecom</b> equity funds. Our suggestion is that you consider investing in ICICI Prudential Large Cap Fund, top performer in Technology, which has an annual return of 25.4%.</li><li><b>Consider investing in Tax Saver</b> equity funds that would help you manage taxes more effectively and save more money.</li></ul>"
+                    "data": """
+                    <ul>
+                    <li><b>Sell</b> <i>"Franklin - India Ultra Short Bond Super Ins (G)"</i>.</li>
+                    <li><b>Invest</b> in <i>"ICICI Prudential Large Cap Fund"</i> which is found to be the mutual fund with high probability of success rate given your risk appetite.</li>
+                    <li><b>Invest</b>  in <i>"DSP BlackRock Tax Saver Fund"</i> that would help you manage taxes more effectively and save more money.</li>
+                    </ul>
+                    """
                 }
             ],
             "cardType": "normal",
