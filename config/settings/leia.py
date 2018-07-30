@@ -162,8 +162,8 @@ ENABLE_KYLO = False
 KYLO_UI_URL = "http://data-management.marlabsai.com"
 
 
-# USE_YARN_DEFAULT_QUEUE=True
-USE_YARN_DEFAULT_QUEUE=False
+USE_YARN_DEFAULT_QUEUE=True
+# USE_YARN_DEFAULT_QUEUE=False
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
