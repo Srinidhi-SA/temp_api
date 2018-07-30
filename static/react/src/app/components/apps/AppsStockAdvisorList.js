@@ -79,7 +79,9 @@ export class AppsStockAdvisorList extends React.Component {
 			this.props.history.push('apps-stock-advisor?search=' + e.target.value + '')
 			this.props.dispatch(storeStockModelSearchElement(e.target.value));
 			this.props.dispatch(getAppsStockList(1));
-		}
+		}else{
+        	this.props.dispatch(storeStockModelSearchElement(e.target.value));
+    	}
 	}
 
 	render() {
@@ -91,7 +93,7 @@ export class AppsStockAdvisorList extends React.Component {
 				let _linkAnalysis = "/apps-stock-advisor/"+this.props.stockSlug+"/"+this.props.signal.listOfNodes[0].slug;
 		    	return (<Redirect to={_linkAnalysis}/>);
 		 }
-		let search_element = document.getElementById('search_stock');
+		/*let search_element = document.getElementById('search_stock');
 		if (this.props.stock_model_search_element != "" && (this.props.history.location.search == "" || this.props.history.location.search == null)) {
 			console.log("search is empty");
 			this.props.dispatch(storeStockModelSearchElement(""));
@@ -105,7 +107,7 @@ export class AppsStockAdvisorList extends React.Component {
 		//search element ends..
 		if(this.props.history.location.sort == "" || this.props.history.location.sort == null){
 			this.props.dispatch(storeStockAppsModelSortElements("",null));
-		}
+		}*/
 		const stockAnalysisList = this.props.stockList.data;
 		if (stockAnalysisList) {
 			const pages = this.props.stockList.total_number_of_pages;
@@ -134,9 +136,9 @@ export class AppsStockAdvisorList extends React.Component {
 				<div class="btn-toolbar pull-right">
                 <div class="input-group">
                 <div className="search-wrapper">
-                    <input type="text" name="search_stock" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search Stock" id="search_stock" className="form-control search-box" placeholder="Search Stock Analysis..." required />
+                    <input type="text" name="search_stock" value={this.props.stock_model_search_element} onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search Stock" id="search_stock" className="form-control search-box" placeholder="Search Stock Analysis..." required />
                     <span className="zmdi zmdi-search form-control-feedback"></span>
-                    <button className="close-icon" type="reset"></button>
+                    <button className="close-icon" type="reset" onClick={this.clearSearchElement.bind(this)}></button>
                 </div>
                 </div>
                   <div class="btn-group">
@@ -195,12 +197,20 @@ export class AppsStockAdvisorList extends React.Component {
 	handleSelect(eventKey) {
             
             if (this.props.stock_model_search_element) {
-                this.props.history.push('apps-stock-advisor?search=' + this.props.stock_model_search_element+'?page='+eventKey+'')
+                this.props.history.push('/apps-stock-advisor?search=' + this.props.stock_model_search_element+'?page='+eventKey+'')
             }  else if(this.props.stock_apps_model_sorton){
-                this.props.history.push('apps-stock-advisor?sort=' + this.props.stock_apps_model_sorton +'&type='+this.props.stock_apps_model_sorton+'&page=' + eventKey + '');
+                this.props.history.push('/apps-stock-advisor?sort=' + this.props.stock_apps_model_sorton +'&type='+this.props.stock_apps_model_sorton+'&page=' + eventKey + '');
             }else
-                this.props.history.push('apps-stock-advisor?page='+eventKey+'')
+                this.props.history.push('/apps-stock-advisor?page='+eventKey+'')
                 this.props.dispatch(getAppsStockList(eventKey));
         }
+	clearSearchElement(e){
+		this.props.dispatch(storeStockModelSearchElement(""));
+		if(this.props.stock_apps_model_sorton)
+		this.props.history.push('/apps-stock-advisor?sort=' + this.props.stock_apps_model_sorton +'&type='+this.props.stock_apps_model_sorttype);
+		else
+		this.props.history.push('/apps-stock-advisor');
+		this.props.dispatch(getAppsStockList(1));
+	}
 
 }
