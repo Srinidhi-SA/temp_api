@@ -103,7 +103,7 @@ export class DataPreview extends React.Component {
       };
     } else if (this.props.match.path.includes("robo")) {
       this.buttons['close'] = {
-        url: "/apps/" + this.props.match.params.AppId + "/robo",
+        url: "/apps-robo",
         text: "Close"
       };
       this.buttons['create'] = {
