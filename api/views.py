@@ -1427,7 +1427,7 @@ dummy_robo_data = {
                 },
                 {
                     "dataType": "html",
-                    "data": "<div className='row xs-mt-50'><div className='col-md-4 col-xs-12'><h2 className='text-center'><span>1.39M</span><br /><small>Total Net Investments</small></h2></div><div className='col-md-4 col-xs-12'><h2 className='text-center'><span>1.48M</span><br /><small>Current Market Value</small></h2></div><div className='col-md-4 col-xs-12'><h2 className='text-center'><span>13.81%</span><br /><small>Compounded Annual Growth</small></h2></div></div>"
+                    "data": "<div className='row xs-mt-50'><div className='col-md-4 col-xs-12 bgStockBox'><h3 className='text-center'><span><b>1.39M</b></span><br /><small>Total Net Investments</small></h3></div><div className='col-md-4 col-xs-12 bgStockBox'><h3 className='text-center'><span><b>1.48M</b></span><br /><small>Current Market Value</small></h3></div><div className='col-md-4 col-xs-12 bgStockBox'><h3 className='text-center'><span><b>13.81%</b></span><br /><small>Compounded Annual Growth</small></h3></div></div>"
                 }
             ],
             "cardType": "normal",

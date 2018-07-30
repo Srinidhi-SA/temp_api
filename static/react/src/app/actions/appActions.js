@@ -54,7 +54,7 @@ export function refreshAppsModelList(props) {
     clearInterval(refreshAppsModelInterval);
     refreshAppsModelInterval = setInterval(function() {
       var pageNo = window.location.href.split("=")[1];
-      if (pageNo == undefined)
+      if (pageNo == undefined || isNaN(parseInt(pageNo)))
         pageNo = 1;
       if (window.location.pathname == "/"+store.getState().apps.currentAppDetails.app_url)
         dispatch(getAppsModelList(parseInt(pageNo)));
@@ -221,7 +221,7 @@ export function refreshAppsScoreList(props) {
     clearInterval(refreshAppsScoresInterval);
     refreshAppsScoresInterval = setInterval(function() {
       var pageNo = window.location.href.split("=")[1];
-      if (pageNo == undefined)
+      if (pageNo == undefined || isNaN(parseInt(pageNo)))
         pageNo = 1;
       if (window.location.pathname == "/apps/" + store.getState().apps.currentAppDetails.slug + "/scores")
         dispatch(getAppsScoreList(parseInt(pageNo)));
@@ -2025,7 +2025,7 @@ export function refreshStockAppsList(props) {
     clearInterval(refreshAppsModelInterval);
     refreshAppsModelInterval = setInterval(function() {
       var pageNo = window.location.href.split("=")[1];
-      if (pageNo == undefined)
+      if (pageNo == undefined || isNaN(parseInt(pageNo)))
         pageNo = 1;
         let stockAppLocation = "";
         if(store.getState().apps.currentAppDetails == null)
@@ -2054,7 +2054,7 @@ export function refreshRoboInsightsList(props){
     clearInterval(refreshAppsModelInterval);
     refreshAppsModelInterval = setInterval(function() {
       var pageNo = window.location.href.split("=")[1];
-      if (pageNo == undefined)
+      if (pageNo == undefined || isNaN(parseInt(pageNo)))
         pageNo = 1;
       if (window.location.pathname == "/apps-robo")
         dispatch(getAppsRoboList(parseInt(pageNo)));

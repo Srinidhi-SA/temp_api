@@ -184,7 +184,8 @@ ENABLE_KYLO = False
 KYLO_UI_URL = "http://data-management.marlabsai.com"
 
 
-# USE_YARN_DEFAULT_QUEUE=True
+USE_YARN_DEFAULT_QUEUE=True
+# USE_YARN_DEFAULT_QUEUE=False
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
@@ -196,4 +197,3 @@ AUTHENTICATION_BACKENDS = (
 SUBMIT_JOB_THROUGH_CELERY = True
 
 CELERY_SCRIPTS_DIR="/home/hadoop/codebase/mAdvisor-api_2/scripts/"
-USE_YARN_DEFAULT_QUEUE=True
