@@ -668,9 +668,9 @@ class StockDatasetView(viewsets.ModelViewSet):
         data = request.data
         config = data.get('config')
         stock_symbol = config.get('stock_symbols')
-        stock_values = [item.get('value') for item in stock_symbol if item.get('value') != ""]
+        stock_values = [item.get('value').lower() for item in stock_symbol if item.get('value') != ""]
         new_data = {}
-        new_data['stock_symbols'] = (", ").join(stock_values)
+        new_data['stock_symbols'] = list(set((", ").join(stock_values)))
         new_data['name'] = config.get('name')
         new_data['input_file'] = None
         new_data['created_by'] = request.user.id
