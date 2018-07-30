@@ -39,6 +39,28 @@ INSTALLED_APPS += PROJECT_APP
 
 
 HADOOP_MASTER = '172.31.64.29'
+"""
+HADOOP_MASTER = '172.31.50.84'
+
+YARN = {
+    "host": HADOOP_MASTER,
+    "port": 8088,
+    "timeout": 30
+}
+
+HDFS = {
+
+    # Give host name without http
+    'host': HADOOP_MASTER,
+    'port': '50070', #webhdfs port
+    'uri': '/webhdfs/v1',
+    'user.name': 'hduser',
+    'hdfs_port': '9000', #hdfs port
+    'base_path' : '/dev/dataset/'
+}
+"""
+
+HADOOP_MASTER = '172.31.64.29'
 
 YARN = {
     "host": HADOOP_MASTER,
@@ -163,7 +185,6 @@ KYLO_UI_URL = "http://data-management.marlabsai.com"
 
 
 # USE_YARN_DEFAULT_QUEUE=True
-USE_YARN_DEFAULT_QUEUE=False
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
@@ -175,3 +196,4 @@ AUTHENTICATION_BACKENDS = (
 SUBMIT_JOB_THROUGH_CELERY = True
 
 CELERY_SCRIPTS_DIR="/home/hadoop/codebase/mAdvisor-api_2/scripts/"
+USE_YARN_DEFAULT_QUEUE=True
