@@ -88,6 +88,7 @@ export default function reducer(state = {
         stock_model_search_element:"",
         stock_apps_model_sorton:null,
         stock_apps_model_sorttype:null,
+        unselectedModelsCount:0,
 
 }, action) {
     console.log("In APPs reducer!!");
@@ -181,6 +182,7 @@ export default function reducer(state = {
             algorithmsList:action.data.data.model_dropdown,
             modelSlug:action.data.slug,
             modelTargetVariable:action.data.data.config.target_variable[0],
+            unselectedModelsCount:action.data.data.model_dropdown.length - (action.data.data.model_hyperparameter.length-1),
         }
     }
     break;
@@ -190,6 +192,7 @@ export default function reducer(state = {
             ...state,
             modelSummary: {},
             modelSlug:"",
+            unselectedModelsCount:0,
         }
     }
     break;

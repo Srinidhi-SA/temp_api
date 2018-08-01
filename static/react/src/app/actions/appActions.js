@@ -1893,7 +1893,8 @@ export function checkSaveSelectedModels(checkObj,isChecked) {
   else{
     selectedAlgorithms.push(checkObj);
   }
-  var selectedModelCount = selectedAlgorithms.length;
+  var unselectedModelsCount = store.getState().apps.unselectedModelsCount;
+  var selectedModelCount = selectedAlgorithms.length-unselectedModelsCount;
   var modelSummary = store.getState().apps.modelSummary;
   var hyperChartData = modelSummary.data.model_hyperparameter;
   var newHyperChartData = $.each(hyperChartData,function(mk,mv){
