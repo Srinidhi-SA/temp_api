@@ -24,8 +24,8 @@ export function refreshDatasets(props){
         if(refreshDatasetsInterval != null)
         clearInterval(refreshDatasetsInterval);
         refreshDatasetsInterval = setInterval(function() {
-            var pageNo = window.location.href.split("=")[1];
-            if(pageNo == undefined) pageNo = 1;
+            var pageNo = window.location.href.split("=").pop();
+            if(isNaN(pageNo)) pageNo = 1;
             if(window.location.pathname == "/data")
                 dispatch(getDataList(parseInt(pageNo)));
         },DEFAULTINTERVAL);
