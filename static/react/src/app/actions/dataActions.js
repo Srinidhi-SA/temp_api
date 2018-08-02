@@ -9,6 +9,7 @@ import Dialog from 'react-bootstrap-dialog'
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
 import {isEmpty,RENAME,DELETE,REPLACE,DATA_TYPE,REMOVE,CURRENTVALUE,NEWVALUE,SET_VARIABLE,UNIQUE_IDENTIFIER,SET_POLARITY,handleJobProcessing,IGNORE_SUGGESTION} from "../helpers/helper";
 import {updateVariablesCount} from "./signalActions";
+import Notifications, {notify} from 'react-notify-toast';
 let refDialogBox = "";
 var refreshDatasetsInterval = null;
 function getHeader(token){
@@ -132,6 +133,14 @@ export function getDataSetPreview(slug,interval) {
         return fetchDataPreview(slug,dispatch,interval).then(([response, json]) =>{
             if(response.status === 200){
                 console.log(json)
+                if(json.message && json.message == "failed"){
+                    let myColor = { background: '#00998c', text: "#FFFFFF" };
+                    notify.show("You are not authorized to view this content.", "custom", 2000,myColor);
+                    setTimeout(function() {
+                    window.location.pathname="/signals";
+                    },2000);
+                }
+                else
                 dispatch(fetchDataPreviewSuccess(json,interval,dispatch))
             }
             else{
