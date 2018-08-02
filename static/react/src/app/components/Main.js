@@ -20,15 +20,15 @@ export class Main extends React.Component {
 	console.log("props in main:::");
 	console.log(props);
   }
-  componentDidMount () {
-    //for chatbot
-       const script = document.createElement("script");
-
-       script.src = "https://prodx.in/m-advisor-measure/client-plugin/bot.js";
-       script.async = true;
-
-       document.body.appendChild(script);
-   }
+  // componentDidMount () {
+  //   //for chatbot
+  //      const script = document.createElement("script");
+  //
+  //      script.src = "https://prodx.in/m-advisor-measure/client-plugin/bot.js";
+  //      script.async = true;
+  //
+  //      document.body.appendChild(script);
+  //  }
   render() {
 
     console.log("Main is called!!");

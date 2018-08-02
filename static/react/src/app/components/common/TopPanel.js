@@ -25,9 +25,9 @@ export default class TopPanel extends React.Component {
          });
          //sessionObject.clearSession();
          // cookieObj.clearCookies();
-         location.reload();
+         //location.reload();
          cookieObj.clearCookies();
-    removeChatbotOnLogout()
+  //  removeChatbotOnLogout()
 	}
 	render(){
 		if(!this.state.loginFlag){

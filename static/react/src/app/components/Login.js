@@ -32,7 +32,7 @@ export class Login extends React.Component {
     this.setState({pwd: password});
   }
   componentDidMount(){
-    removeChatbotOnLogout()
+    //removeChatbotOnLogout()
   }
 
   doAuth() {
