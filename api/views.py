@@ -66,7 +66,7 @@ class SignalView(viewsets.ModelViewSet):
     def get_object_from_all(self):
         return Insight.objects.get(slug=self.kwargs.get('slug'),
             created_by=self.request.user
-        ).select_related('created_by', 'job', 'dataset')
+        )
 
     def get_serializer_context(self):
         return {'request': self.request}
@@ -167,7 +167,7 @@ class TrainerView(viewsets.ModelViewSet):
     def get_object_from_all(self):
         return Trainer.objects.get(slug=self.kwargs.get('slug'),
             created_by=self.request.user
-        ).select_related('created_by', 'job', 'dataset')
+        )
 
     def get_serializer_context(self):
         return {'request': self.request}
