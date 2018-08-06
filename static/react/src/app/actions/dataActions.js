@@ -579,7 +579,7 @@ function getIsAllSelected(array){
     var isAllSelected = true;
 
     for(var i=0;i<array.length;i++){
-        isAllSelected = array[i].selected;
+        isAllSelected = array[i].selected || array[i].targetColumn;
         if(!isAllSelected)break;
     }
 
@@ -668,11 +668,8 @@ export function updateSelectedVariables(evt){
                     if (!$(this).is(":checked"))
                     $(this).prop('disabled', true);
                 });
-                $('.measureAll[type="checkbox"]').each(function() {
-                    $(this).prop('disabled', true);
-                });
-                $('.dimensionAll').prop("disabled",true);
-                $('.measureAll').prop("disabled",true);
+                if(!($("input[name='date_type']:checked").val()))
+                $('.timeDimension').prop("disabled",true);
                 //document.getElementById('measure').disabled = true;
             }
             else{
@@ -682,6 +679,7 @@ export function updateSelectedVariables(evt){
                 $('.dimension[type="checkbox"]').each(function() {
                     $(this).prop('disabled', false);
                 });
+                $('.timeDimension').prop("disabled",false);
             }
         }
         if(evt.target.baseURI.includes("/createSignal"))

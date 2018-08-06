@@ -182,7 +182,7 @@ export default function reducer(state = {
             algorithmsList:action.data.data.model_dropdown,
             modelSlug:action.data.slug,
             modelTargetVariable:action.data.data.config.target_variable[0],
-            unselectedModelsCount:action.data.data.model_dropdown.length - (action.data.data.model_hyperparameter.length-1),
+            unselectedModelsCount:(action.data.data.model_hyperparameter != null)?(action.data.data.model_dropdown.length - (action.data.data.model_hyperparameter.length-1)):0,
         }
     }
     break;
