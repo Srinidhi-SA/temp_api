@@ -128,7 +128,6 @@ class SignalView(viewsets.ModelViewSet):
             return Response(serializer.data)
         return Response(serializer.errors)
 
-    @print_sql_decorator(count_only=True)
     def list(self, request, *args, **kwargs):
 
         return get_listed_data(
@@ -137,7 +136,6 @@ class SignalView(viewsets.ModelViewSet):
             list_serializer=InsightListSerializers
         )
 
-    @print_sql_decorator(count_only=True)
     def retrieve(self, request, *args, **kwargs):
         # return get_retrieve_data(self)
         try:
