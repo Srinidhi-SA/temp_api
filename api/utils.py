@@ -346,7 +346,7 @@ class TrainerListSerializer(serializers.ModelSerializer):
         get_job_status(instance)
         ret = super(TrainerListSerializer, self).to_representation(instance)
         dataset = ret['dataset']
-        dataset_object = instance.datasets
+        dataset_object = instance.dataset
         ret['dataset'] = dataset_object.slug
         ret['dataset_name'] = dataset_object.name
         ret = convert_to_json(ret)
