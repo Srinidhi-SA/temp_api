@@ -47,7 +47,7 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-
+from django_print_sql import print_sql_decorator
 from api.datasets.views import DatasetView
 
 class SignalView(viewsets.ModelViewSet):
@@ -57,7 +57,7 @@ class SignalView(viewsets.ModelViewSet):
             deleted=False,
             # analysis_done=True
             status__in=['SUCCESS','INPROGRESS']
-        )
+        ).select_related('created_by', 'job', 'dataset')
         return queryset
 
     def get_serializer_class(self):
@@ -66,7 +66,7 @@ class SignalView(viewsets.ModelViewSet):
     def get_object_from_all(self):
         return Insight.objects.get(slug=self.kwargs.get('slug'),
             created_by=self.request.user
-        )
+        ).select_related('created_by', 'job', 'dataset')
 
     def get_serializer_context(self):
         return {'request': self.request}
@@ -128,6 +128,7 @@ class SignalView(viewsets.ModelViewSet):
             return Response(serializer.data)
         return Response(serializer.errors)
 
+    @print_sql_decorator(count_only=True)
     def list(self, request, *args, **kwargs):
 
         return get_listed_data(
@@ -136,6 +137,7 @@ class SignalView(viewsets.ModelViewSet):
             list_serializer=InsightListSerializers
         )
 
+    @print_sql_decorator(count_only=True)
     def retrieve(self, request, *args, **kwargs):
         # return get_retrieve_data(self)
         try:

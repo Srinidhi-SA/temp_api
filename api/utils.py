@@ -170,11 +170,13 @@ class InsightSerializer(serializers.ModelSerializer):
         get_job_status(instance)
         ret = super(InsightSerializer, self).to_representation(instance)
         dataset = ret['dataset']
-        dataset_object = Dataset.objects.get(pk=dataset)
+        # dataset_object = Dataset.objects.get(pk=dataset)
+        dataset_object = instance.dataset
         ret['dataset'] = dataset_object.slug
         ret['dataset_name'] = dataset_object.name
         ret = convert_to_json(ret)
-        ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        # ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        ret['created_by'] = UserSerializer(instance.created_by).data
         if instance.viewed == False and instance.status=='SUCCESS':
             instance.viewed = True
             instance.save()
@@ -233,11 +235,13 @@ class InsightListSerializers(serializers.ModelSerializer):
         get_job_status(instance)
         ret = super(InsightListSerializers, self).to_representation(instance)
         dataset = ret['dataset']
-        dataset_object = Dataset.objects.get(pk=dataset)
+        # dataset_object = Dataset.objects.get(pk=dataset)
+        dataset_object = instance.dataset
         ret['dataset'] = dataset_object.slug
         ret['dataset_name'] = dataset_object.name
         ret = convert_to_json(ret)
-        ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        # ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        ret['created_by'] = UserSerializer(instance.created_by).data
         ret['brief_info'] = instance.get_brief_info()
 
         # ret['is_viewed'] = False
