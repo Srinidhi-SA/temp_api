@@ -150,7 +150,6 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         serializer = self.serializer_class(instance=instance)
         return Response(serializer.data.get('db_details'))
 
-    @print_sql_decorator(count_only=True)
     @list_route(methods=['get'])
     def all(self, request):
         queryset = Dataset.objects.filter(
