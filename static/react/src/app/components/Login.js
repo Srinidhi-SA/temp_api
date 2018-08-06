@@ -5,7 +5,7 @@ import {Redirect} from 'react-router';
 import {authenticateFunc} from "../actions/loginActions";
 import store from "../store";
 import {STATIC_URL} from "../helpers/env";
-import {isEmpty,getUserDetailsOrRestart,USERDETAILS,removeChatbotOnLogout} from "../helpers/helper";
+import {isEmpty,getUserDetailsOrRestart,USERDETAILS,removeChatbotOnLogout,hidechatbot} from "../helpers/helper";
 import {sessionObject} from '../helpers/manageSessionStorage';
 // import $ from "jquery";
 
@@ -32,7 +32,7 @@ export class Login extends React.Component {
     this.setState({pwd: password});
   }
   componentDidMount(){
-    removeChatbotOnLogout()
+    hidechatbot()
   }
 
   doAuth() {
