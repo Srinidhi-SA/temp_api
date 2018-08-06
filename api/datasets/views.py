@@ -28,7 +28,7 @@ from api.permission import DatasetRelatedPermission
 from guardian.shortcuts import assign_perm
 
 # Create your views here.
-
+from django_print_sql import print_sql_decorator
 
 class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
@@ -37,7 +37,7 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             created_by=self.request.user,
             deleted=False,
             status__in=['SUCCESS', 'INPROGRESS']
-        )
+        ).select_related('created_by', 'job')
 
         return queryset
 
@@ -45,7 +45,7 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         return Dataset.objects.get(
             slug=self.kwargs.get('slug'),
             created_by=self.request.user
-        )
+        ).select_related('created_by', 'job')
 
     def get_serializer_context(self):
         return {'request': self.request}
@@ -151,6 +151,7 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
         serializer = self.serializer_class(instance=instance)
         return Response(serializer.data.get('db_details'))
 
+    @print_sql_decorator(count_only=True)
     @list_route(methods=['get'])
     def all(self, request):
         queryset = Dataset.objects.filter(
@@ -163,6 +164,7 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             "data": serializer.data
         })
 
+    @print_sql_decorator(count_only=True)
     def list(self, request, *args, **kwargs):
         return get_listed_data(
             viewset=self,
@@ -170,6 +172,7 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             list_serializer=DataListSerializer
         )
 
+    @print_sql_decorator(count_only=True)
     def retrieve(self, request, *args, **kwargs):
         # return get_retrieve_data(self)
         try:
