@@ -225,8 +225,8 @@ export function refreshSignals(props) {
     if(refreshSignalInterval != null)
     clearInterval(refreshSignalInterval);
     refreshSignalInterval = setInterval(function() {
-      var pageNo = window.location.href.split("=")[1];
-      if (pageNo == undefined)
+      var pageNo = window.location.href.split("=").pop();
+      if (isNaN(pageNo))
         pageNo = 1;
       if (window.location.pathname == "/signals")
         dispatch(getList(getUserDetailsOrRestart.get().userToken, parseInt(pageNo)));

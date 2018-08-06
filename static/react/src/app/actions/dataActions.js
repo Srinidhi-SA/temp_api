@@ -9,6 +9,7 @@ import Dialog from 'react-bootstrap-dialog'
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
 import {isEmpty,RENAME,DELETE,REPLACE,DATA_TYPE,REMOVE,CURRENTVALUE,NEWVALUE,SET_VARIABLE,UNIQUE_IDENTIFIER,SET_POLARITY,handleJobProcessing,IGNORE_SUGGESTION} from "../helpers/helper";
 import {updateVariablesCount} from "./signalActions";
+import Notifications, {notify} from 'react-notify-toast';
 let refDialogBox = "";
 var refreshDatasetsInterval = null;
 function getHeader(token){
@@ -23,8 +24,8 @@ export function refreshDatasets(props){
         if(refreshDatasetsInterval != null)
         clearInterval(refreshDatasetsInterval);
         refreshDatasetsInterval = setInterval(function() {
-            var pageNo = window.location.href.split("=")[1];
-            if(pageNo == undefined) pageNo = 1;
+            var pageNo = window.location.href.split("=").pop();
+            if(isNaN(pageNo)) pageNo = 1;
             if(window.location.pathname == "/data")
                 dispatch(getDataList(parseInt(pageNo)));
         },DEFAULTINTERVAL);
@@ -132,6 +133,14 @@ export function getDataSetPreview(slug,interval) {
         return fetchDataPreview(slug,dispatch,interval).then(([response, json]) =>{
             if(response.status === 200){
                 console.log(json)
+                if(json.message && json.message == "failed"){
+                    let myColor = { background: '#00998c', text: "#FFFFFF" };
+                    notify.show("You are not authorized to view this content.", "custom", 2000,myColor);
+                    setTimeout(function() {
+                    window.location.pathname="/signals";
+                    },2000);
+                }
+                else
                 dispatch(fetchDataPreviewSuccess(json,interval,dispatch))
             }
             else{
@@ -570,7 +579,7 @@ function getIsAllSelected(array){
     var isAllSelected = true;
 
     for(var i=0;i<array.length;i++){
-        isAllSelected = array[i].selected;
+        isAllSelected = array[i].selected || array[i].targetColumn;
         if(!isAllSelected)break;
     }
 
@@ -659,11 +668,8 @@ export function updateSelectedVariables(evt){
                     if (!$(this).is(":checked"))
                     $(this).prop('disabled', true);
                 });
-                $('.measureAll[type="checkbox"]').each(function() {
-                    $(this).prop('disabled', true);
-                });
-                $('.dimensionAll').prop("disabled",true);
-                $('.measureAll').prop("disabled",true);
+                if(!($("input[name='date_type']:checked").val()))
+                $('.timeDimension').prop("disabled",true);
                 //document.getElementById('measure').disabled = true;
             }
             else{
@@ -673,6 +679,7 @@ export function updateSelectedVariables(evt){
                 $('.dimension[type="checkbox"]').each(function() {
                     $(this).prop('disabled', false);
                 });
+                $('.timeDimension').prop("disabled",false);
             }
         }
         if(evt.target.baseURI.includes("/createSignal"))
