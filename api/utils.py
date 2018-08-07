@@ -171,10 +171,12 @@ class InsightSerializer(serializers.ModelSerializer):
         ret = super(InsightSerializer, self).to_representation(instance)
         dataset = ret['dataset']
         dataset_object = Dataset.objects.get(pk=dataset)
+        # dataset_object = instance.dataset
         ret['dataset'] = dataset_object.slug
         ret['dataset_name'] = dataset_object.name
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        # ret['created_by'] = UserSerializer(instance.created_by).data
         if instance.viewed == False and instance.status=='SUCCESS':
             instance.viewed = True
             instance.save()
@@ -233,11 +235,13 @@ class InsightListSerializers(serializers.ModelSerializer):
         get_job_status(instance)
         ret = super(InsightListSerializers, self).to_representation(instance)
         dataset = ret['dataset']
-        dataset_object = Dataset.objects.get(pk=dataset)
+        # dataset_object = Dataset.objects.get(pk=dataset)
+        dataset_object = instance.dataset
         ret['dataset'] = dataset_object.slug
         ret['dataset_name'] = dataset_object.name
         ret = convert_to_json(ret)
-        ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        # ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        ret['created_by'] = UserSerializer(instance.created_by).data
         ret['brief_info'] = instance.get_brief_info()
 
         # ret['is_viewed'] = False
@@ -342,11 +346,11 @@ class TrainerListSerializer(serializers.ModelSerializer):
         get_job_status(instance)
         ret = super(TrainerListSerializer, self).to_representation(instance)
         dataset = ret['dataset']
-        dataset_object = Dataset.objects.get(pk=dataset)
+        dataset_object = instance.dataset
         ret['dataset'] = dataset_object.slug
         ret['dataset_name'] = dataset_object.name
         ret = convert_to_json(ret)
-        ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        ret['created_by'] = UserSerializer(instance.created_by).data
         ret['brief_info'] = instance.get_brief_info()
         try:
             ret['completed_percentage']=get_message(instance.job)[-1]['globalCompletionPercentage']
@@ -445,13 +449,13 @@ class ScoreListSerializer(serializers.ModelSerializer):
         get_job_status(instance)
         ret = super(ScoreListSerializer, self).to_representation(instance)
         trainer = ret['trainer']
-        trainer_object = Trainer.objects.get(pk=trainer)
+        trainer_object = instance.trainer
         ret['trainer'] = trainer_object.slug
         ret['trainer_name'] = trainer_object.name
-        ret['dataset'] = trainer_object.dataset.slug
-        ret['dataset_name'] = trainer_object.dataset.name
+        ret['dataset'] = instance.dataset.slug
+        ret['dataset_name'] = instance.dataset.name
         ret = convert_to_json(ret)
-        ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        ret['created_by'] = UserSerializer(instance.created_by).data
         ret['brief_info'] = instance.get_brief_info()
         try:
             ret['completed_percentage']=get_message(instance.job)[-1]['globalCompletionPercentage']

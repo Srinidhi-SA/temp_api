@@ -47,7 +47,7 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-
+from django_print_sql import print_sql_decorator
 from api.datasets.views import DatasetView
 
 class SignalView(viewsets.ModelViewSet):
@@ -57,7 +57,7 @@ class SignalView(viewsets.ModelViewSet):
             deleted=False,
             # analysis_done=True
             status__in=['SUCCESS','INPROGRESS']
-        )
+        ).select_related('created_by', 'job', 'dataset')
         return queryset
 
     def get_serializer_class(self):
@@ -158,7 +158,7 @@ class TrainerView(viewsets.ModelViewSet):
             #analysis_done=True,
             status__in=['SUCCESS', 'INPROGRESS']
 
-        )
+        ).select_related('created_by', 'job', 'dataset')
         return queryset
 
     def get_serializer_class(self):
@@ -217,6 +217,7 @@ class TrainerView(viewsets.ModelViewSet):
             return Response(serializer.data)
         return Response(serializer.errors)
 
+    @print_sql_decorator(count_only=True)
     def list(self, request, *args, **kwargs):
 
         return get_listed_data(
@@ -225,6 +226,7 @@ class TrainerView(viewsets.ModelViewSet):
             list_serializer=TrainerListSerializer
         )
 
+    @print_sql_decorator(count_only=True)
     def retrieve(self, request, *args, **kwargs):
         # return get_retrieve_data(self)
         try:
@@ -386,7 +388,7 @@ class ScoreView(viewsets.ModelViewSet):
             deleted=False,
             #analysis_done=True
             status__in=['SUCCESS', 'INPROGRESS']
-        )
+        ).select_related('created_by', 'job', 'dataset', 'trainer')
         return queryset
 
     def get_serializer_class(self):
@@ -448,6 +450,7 @@ class ScoreView(viewsets.ModelViewSet):
             return Response(serializer.data)
         return Response(serializer.errors)
 
+    @print_sql_decorator(count_only=True)
     def list(self, request, *args, **kwargs):
 
         return get_listed_data(
@@ -456,6 +459,7 @@ class ScoreView(viewsets.ModelViewSet):
             list_serializer=ScoreListSerializer
         )
 
+    @print_sql_decorator(count_only=True)
     def retrieve(self, request, *args, **kwargs):
         # return get_retrieve_data(self)
         try:
