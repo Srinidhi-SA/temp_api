@@ -23,6 +23,8 @@ import {handleJobProcessing} from "../../helpers/helper";
     modelSlug: store.apps.modelSlug,
 		updateCreateModelHideShow:store.apps.updateCreateModelHideShow,
 		scoreSlug:store.apps.scoreSlug,
+		stockSlug:store.apps.stockSlug,
+		roboDatasetSlug:store.apps.roboDatasetSlug,
 	};
 })
 
@@ -46,6 +48,10 @@ export class AppsLoader extends React.Component {
 		this.props.dispatch(hideDataPreview());
 		if((this.props.match.url).indexOf("/createScore") > 0 || (this.props.match.url).indexOf("/scores") > 0)
 		this.props.dispatch(handleJobProcessing(this.props.scoreSlug));
+		else if((this.props.match.url).indexOf("/apps-stock-advisor") >=0 )
+		this.props.dispatch(handleJobProcessing(this.props.stockSlug));
+		else if((this.props.match.url).indexOf("/apps-robo") >=0 )
+		this.props.dispatch(handleJobProcessing(this.props.roboDatasetSlug));
 		else
 		this.props.dispatch(handleJobProcessing(this.props.modelSlug));
 		this.props.dispatch(closeAppsLoaderValue());
@@ -70,14 +76,15 @@ export class AppsLoader extends React.Component {
 				<h4 className="text-center"><br/>
 				<img src={img_src} />
 				<br/>
+				{store.getState().apps.appsLoaderPerValue >= 0?<h2 class="loaderValue">{store.getState().apps.appsLoaderPerValue}%</h2>:<h5 class="loaderValue" style={{display:"block", textAlign: "center", paddingTop: "15px" }}>In Progress</h5>} 
 				<br/>
 				{store.getState().apps.appsLoaderText}
 				</h4><br/>
 
-				{store.getState().apps.appsLoaderPerValue >= 0 ?<div className="p_bar_body">
+				{/*store.getState().apps.appsLoaderPerValue >= 0 ?<div className="p_bar_body">
 				<progress className="prg_bar" value={store.getState().apps.appsLoaderPerValue} max={95}></progress>
 				<div className="progress-value"><h3>{store.getState().apps.appsLoaderPerValue} %</h3></div>
-				</div>:""}
+				</div>:""*/}
 			</div>
 		</div>
 		</div>

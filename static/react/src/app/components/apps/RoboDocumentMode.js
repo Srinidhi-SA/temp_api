@@ -70,7 +70,7 @@ export class RoboDocumentMode extends React.Component {
 		                            </button>
 							   <Link className="continue" to="/apps-robo">
 		                          <button type="button" className="btn btn-default">
-		                            <i class="fa zmdi-hc-lg zmdi-close"></i>
+		                            <i class="zmdi zmdi-hc-lg zmdi-close"></i>
 		                          </button>
 								 </Link>
 		                        </div>

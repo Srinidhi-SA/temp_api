@@ -40,7 +40,7 @@ AUTHENTICATION_BACKENDS = (
     'guardian.backends.ObjectPermissionBackend',
 )
 HADOOP_MASTER = "172.31.70.80"
-
+# HADOOP_MASTER = "172.31.79.247"
 YARN = {
     "host": HADOOP_MASTER,
     "port" : 8088,
@@ -50,9 +50,11 @@ HDFS = {
 
     # Give host name without http
     'host': HADOOP_MASTER,
+    # 'port': '50070', #webhdfs port
     'port': '14000', #webhdfs port
     'uri': '/webhdfs/v1',
     'user.name': 'hadoop',
+    # 'hdfs_port': '9000', #hdfs port
     'hdfs_port': '8020', #hdfs port
     'base_path' : '/dev/dataset/'
 }
@@ -153,14 +155,15 @@ CELERY_QUEUES = {
     }
 }
 
-USING_KYLO = False
+ENABLE_KYLO = True
+KYLO_UI_URL = "http://data-management-dev.marlabsai.com"
 KYLO_SERVER_DETAILS = {
-    "host": "52.205.59.95",
+    "host": "34.205.54.15",
     "port" : 8088,
     "user": "ubuntu",
     "key_path": "~/.ssh/TIAA.pem",
-    "group_propertie_quote": "admin,user",
-    "kylo_file_path":"/home/ubuntu/kylodir2/"
+    "group_propertie_quote": "madvisor,user",
+    "kylo_file_path":"/opt/kylo/"
 }
 
 HADOOP_CONF_DIR= False
@@ -174,3 +177,5 @@ PEM_KEY = "/keyfiles/TIAA.pem"
 
 # SUBMIT_JOB_THROUGH_CELERY = False
 SUBMIT_JOB_THROUGH_CELERY = True
+
+# CELERY_SCRIPTS_DIR="/home/ubuntu/mAdvisor-api/scripts/"

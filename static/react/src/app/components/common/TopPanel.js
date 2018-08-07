@@ -4,7 +4,7 @@ import {sessionObject} from '../../helpers/manageSessionStorage';
 import LoadingBar from 'react-redux-loading-bar';
 import {Link} from "react-router-dom";
 import {cookieObj} from '../../helpers/cookiesHandler';
-import {getUserDetailsOrRestart} from  "../../helpers/helper"
+import {getUserDetailsOrRestart,removeChatbotOnLogout} from  "../../helpers/helper"
 import {STATIC_URL} from "../../helpers/env";
 import {clearSignalAnalysisBeforeLogout} from "../../actions/signalActions";
 // import $ from 'jquery';
@@ -24,8 +24,10 @@ export default class TopPanel extends React.Component {
              loginFlag: false
          });
          //sessionObject.clearSession();
-         cookieObj.clearCookies();
+         // cookieObj.clearCookies();
          //location.reload();
+         cookieObj.clearCookies();
+  //  removeChatbotOnLogout()
 	}
 	render(){
 		if(!this.state.loginFlag){

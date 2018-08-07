@@ -6,8 +6,8 @@ import {AppsScoreList} from "./AppsScoreList";
 import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {connect} from "react-redux";
-import {APPID1,APPID2,APPID3,APPNAME1,APPNAME2,APPNAME3,getUserDetailsOrRestart} from "../../helpers/helper.js"
-import {getAppsStockList,getStockAnalysis,updateStockSlug} from "../../actions/appActions";
+import {APPID1,APPID2,APPID3,APPNAME1,APPNAME2,APPNAME3,getUserDetailsOrRestart,SEARCHCHARLIMIT} from "../../helpers/helper.js"
+import {getAppsStockList,getStockAnalysis,updateStockSlug,storeStockModelSearchElement,storeStockAppsModelSortElements,refreshStockAppsList} from "../../actions/appActions";
 import Dialog from 'react-bootstrap-dialog'
 import {AppsCreateStockAnalysis} from "./AppsCreateStockAnalysis";
 import {STATIC_URL} from "../../helpers/env.js";
@@ -22,10 +22,13 @@ var dateFormat = require('dateformat');
 	return {login_response: store.login.login_response,
 		currentAppId:store.apps.currentAppId,
 		stockList: store.apps.stockAnalysisList,
-		 dataPreviewFlag: store.datasets.dataPreviewFlag,
-		 stockAnalysisFlag:store.apps.stockAnalysisFlag,
-		 stockSlug:store.apps.stockSlug,
+		dataPreviewFlag: store.datasets.dataPreviewFlag,
+		stockAnalysisFlag:store.apps.stockAnalysisFlag,
+		stockSlug:store.apps.stockSlug,
 		signal: store.signals.signalAnalysis,
+		stock_model_search_element: store.apps.stock_model_search_element,
+		stock_apps_model_sorton:store.apps.stock_apps_model_sorton,
+		stock_apps_model_sorttype:store.apps.stock_apps_model_sorttype
 	};
 })
 
@@ -33,6 +36,10 @@ export class AppsStockAdvisorList extends React.Component {
 	constructor(props) {
 		super(props);
 		console.log(this.props);
+		this.state={
+			showLoader : false
+		}
+		 this.callShowloader = this.callShowloader.bind(this);
 	}
 	componentWillMount(){
 		var pageNo = 1;
@@ -42,69 +49,84 @@ export class AppsStockAdvisorList extends React.Component {
 		}else{
 			this.props.dispatch(getAppsStockList(pageNo));
 		}
-		
 	}
-	getPreviewData(e) {
-		this.props.dispatch(updateStockSlug(e.target.id))
-		this.props.dispatch(getStockAnalysis(e.target.id))
+	componentDidMount(){
+		this.props.dispatch(refreshStockAppsList(this.props));
+		this.setState({showloader:false})
 	}
-	handleDelete(slug){
-
-	}
-	handleRename(slug,name){
-
+	callShowloader(){
+		this.setState({showLoader:true});
 	}
 	_handleKeyPress = (e) => {
 		if (e.key === 'Enter') {
-			//console.log('searching in data list');
 			if (e.target.value != "" && e.target.value != null)
-				this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models?search=' + e.target.value + '')
-
-				this.props.dispatch(storeModelSearchElement(e.target.value));
-			this.props.dispatch(getAppsModelList(1));
-
+			this.props.history.push('apps-stock-advisor?search=' + e.target.value + '');
+			this.props.dispatch(storeStockModelSearchElement(e.target.value));
+			this.props.dispatch(getAppsStockList(1));
 		}
 	}
 	doSorting(sortOn, type){
-		this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models?sort=' + sortOn + '&type='+type);
-
-		this.props.dispatch(storeAppsModelSortElements(sortOn,type));
-		this.props.dispatch(getAppsModelList(1));
+		this.props.history.push('apps-stock-advisor?sort=' + sortOn + '&type='+type);
+		this.props.dispatch(storeStockAppsModelSortElements(sortOn,type));
+		this.props.dispatch(getAppsStockList(1));
 	}
 	onChangeOfSearchBox(e){
 		if(e.target.value==""||e.target.value==null){
-			this.props.dispatch(storeModelSearchElement(""));
-			this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models'+'')
-			this.props.dispatch(getAppsModelList(1));
-
+			this.props.dispatch(storeStockModelSearchElement(""));
+			this.props.history.push('apps-stock-advisor'+'')
+			this.props.dispatch(getAppsStockList(1));
 		}else if (e.target.value.length > SEARCHCHARLIMIT) {
-			this.props.history.push('/apps/'+store.getState().apps.currentAppId+'/models?search=' + e.target.value + '')
-			this.props.dispatch(storeModelSearchElement(e.target.value));
-			this.props.dispatch(getAppsModelList(1));
-		}
+			this.props.history.push('apps-stock-advisor?search=' + e.target.value + '')
+			this.props.dispatch(storeStockModelSearchElement(e.target.value));
+			this.props.dispatch(getAppsStockList(1));
+		}else{
+        	this.props.dispatch(storeStockModelSearchElement(e.target.value));
+    	}
 	}
 
 	render() {
-		 if (store.getState().datasets.dataPreviewFlag) {
+		 if (this.props.dataPreviewFlag) {
 		    	let _link = "/apps-stock-advisor-analyze/data/" + store.getState().datasets.selectedDataSet;
 		    	return (<Redirect to={_link}/>);
 		    }
-		 if(store.getState().apps.stockAnalysisFlag){
-				let _linkAnalysis = "/apps-stock-advisor/"+store.getState().apps.stockSlug+"/"+this.props.signal.listOfNodes[0].slug;
+		 if(this.props.stockAnalysisFlag){
+				let _linkAnalysis = "/apps-stock-advisor/"+this.props.stockSlug+"/"+this.props.signal.listOfNodes[0].slug;
 		    	return (<Redirect to={_linkAnalysis}/>);
 		 }
+		/*let search_element = document.getElementById('search_stock');
+		if (this.props.stock_model_search_element != "" && (this.props.history.location.search == "" || this.props.history.location.search == null)) {
+			console.log("search is empty");
+			this.props.dispatch(storeStockModelSearchElement(""));
+			if (search_element)
+			document.getElementById('search_stock').value = "";
+		}
+		if(this.props.stock_model_search_element==""&&this.props.history.location.search!=""){
+			if(search_element)
+			document.getElementById('search_stock').value = "";
+		}
+		//search element ends..
+		if(this.props.history.location.sort == "" || this.props.history.location.sort == null){
+			this.props.dispatch(storeStockAppsModelSortElements("",null));
+		}*/
 		const stockAnalysisList = this.props.stockList.data;
 		if (stockAnalysisList) {
 			const pages = this.props.stockList.total_number_of_pages;
 			const current_page = this.props.stockList.current_page;
 			let paginationTag = null;	
 			if (pages > 1) {
-				paginationTag = <Pagination ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect} first last next prev boundaryLinks items={pages} activePage={current_page}/>
+				paginationTag = <Pagination ellipsis bsSize="medium" maxButtons={10} onSelect={this.handleSelect.bind(this)} first last next prev boundaryLinks items={pages} activePage={current_page}/>
 			}
-			var stockList = <StocksCard data={stockAnalysisList}/>;
+			var stockList = <StocksCard data={stockAnalysisList} loadfunc={this.callShowloader}/>;
+			const {showLoader} = this.state;
+			if(showLoader) { // if your component doesn't have to wait for an async action, remove this block 
+				return (
+					<img id="loading" src={STATIC_URL + "assets/images/Preloader_2.gif"}/>
+				);
+			}
+			else{
 				return (
 					<div className="side-body">
-					<LatestStocks props={this.props}/>
+					<LatestStocks props={this.props} loadfunc={this.callShowloader}/>
 					<div class="main-content">
 					<div class="row">
 
@@ -114,11 +136,9 @@ export class AppsStockAdvisorList extends React.Component {
 				<div class="btn-toolbar pull-right">
                 <div class="input-group">
                 <div className="search-wrapper">
-                    <form>
-                    <input type="text" name="search_stock" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search Stock" id="search_stock" className="form-control search-box" placeholder="Search Stock Analysis..." required />
+                    <input type="text" name="search_stock" value={this.props.stock_model_search_element} onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search Stock" id="search_stock" className="form-control search-box" placeholder="Search Stock Analysis..." required />
                     <span className="zmdi zmdi-search form-control-feedback"></span>
-                    <button className="close-icon" type="reset"></button>
-                    </form>
+                    <button className="close-icon" type="reset" onClick={this.clearSearchElement.bind(this)}></button>
                 </div>
                 </div>
                   <div class="btn-group">
@@ -164,6 +184,7 @@ export class AppsStockAdvisorList extends React.Component {
 					</div>
 					</div>
 			);
+			}
 		} else {
 			return (
 					<div>
@@ -173,6 +194,23 @@ export class AppsStockAdvisorList extends React.Component {
 			)
 		}
 	}
-
+	handleSelect(eventKey) {
+            
+            if (this.props.stock_model_search_element) {
+                this.props.history.push('/apps-stock-advisor?search=' + this.props.stock_model_search_element+'?page='+eventKey+'')
+            }  else if(this.props.stock_apps_model_sorton){
+                this.props.history.push('/apps-stock-advisor?sort=' + this.props.stock_apps_model_sorton +'&type='+this.props.stock_apps_model_sorton+'&page=' + eventKey + '');
+            }else
+                this.props.history.push('/apps-stock-advisor?page='+eventKey+'')
+                this.props.dispatch(getAppsStockList(eventKey));
+        }
+	clearSearchElement(e){
+		this.props.dispatch(storeStockModelSearchElement(""));
+		if(this.props.stock_apps_model_sorton)
+		this.props.history.push('/apps-stock-advisor?sort=' + this.props.stock_apps_model_sorton +'&type='+this.props.stock_apps_model_sorttype);
+		else
+		this.props.history.push('/apps-stock-advisor');
+		this.props.dispatch(getAppsStockList(1));
+	}
 
 }

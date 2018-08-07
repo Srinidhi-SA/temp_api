@@ -84,6 +84,9 @@ export function getPrevNext( rootNode, curSufix ) {
     let generateAllUrls = function( rootNode, prefix ) {
         // Generate all sets of urls for all cards
         for ( var i = 0; i < rootNode.listOfCards.length; i++ ) {
+            if(rootNode.listOfCards[i]['display'] && rootNode.listOfCards[i]['display'] == false)
+            continue;
+            else
             listOfUrls.push( prefix + rootNode.listOfCards[i]['slug'] );
         }
         for ( var i = 0; i < rootNode.listOfNodes.length; i++ ) {

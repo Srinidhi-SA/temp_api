@@ -16,7 +16,10 @@ from StockAdvisor.crawling.common_utils import get_regex
 from StockAdvisor.crawling.crawl_util import crawl_extract, \
     generate_urls_for_crawl_news, \
     convert_crawled_data_to_metadata_format, \
-    generate_urls_for_historic_data
+    generate_urls_for_historic_data, \
+    fetch_news_article_from_nasdaq, \
+    generate_url_for_historic_data, \
+    generate_urls_for_historic_data, fetch_news_sentiments_from_newsapi
 from api.helper import convert_json_object_into_list_of_object
 from api.lib import hadoop, fab_helper
 
@@ -1472,6 +1475,8 @@ def job_submission(instance=None, jobConfig=None, job_type=None):
             data_size = instance.get_number_of_row_size()
         elif job_type in ['master', 'model', 'score']:
             data_size = instance.dataset.get_number_of_row_size()
+        else:
+            data_size = 3000
 
         queue_name = get_queue_to_use(job_type=job_type, data_size=data_size)
     except Exception as e:
@@ -1598,9 +1603,11 @@ class StockDataset(models.Model):
     live_status = models.CharField(max_length=300, default='0', choices=STATUS_CHOICES)
     viewed = models.BooleanField(default=False)
 
+    crawled_data = models.TextField(default="{}")
+
     class Meta:
         ordering = ['-created_at', '-updated_at']
-        # permissions = settings.NEW_PERMISSIONS
+        permissions = settings.PERMISSIONS_RELATED_TO_STOCK
 
     def __str__(self):
         return " : ".join(["{}".format(x) for x in [self.name, self.slug]])
@@ -1614,62 +1621,138 @@ class StockDataset(models.Model):
         self.generate_slug()
         super(StockDataset, self).save(*args, **kwargs)
 
-    def create(self):
-        # self.meta_data = json.dumps(dummy_audio_data_3)
-        self.meta_data = self.generate_meta_data()
-        self.fake_call_mlscripts()
-        self.save()
+    # def create(self):
+    #     from api.tasks import stock_sense_crawl
+    #     self.status = "INPROGRESS"
+    #     self.generate_meta_data()
+    #     self.save()
+    #     self.call_mlscripts()
+    #     # stock_sense_crawl.delay(object_slug=self.slug)
+    #     # self.meta_data = self.generate_meta_data()
+    #     # self.fake_call_mlscripts()
+    #     # self.save()
 
-    def crawl_data(self):
+    def create(self):
+        from api.tasks import stock_sense_crawl
+        stock_sense_crawl.delay(object_slug=self.slug)
+
+    def crawl_news_data(self):
 
         stock_symbols = self.get_stock_symbol_names()
-        GOOGLE_REGEX_FILE = "google_regex.json"
-        extracted_data = crawl_extract(
-            urls=generate_urls_for_crawl_news(stock_symbols),
-            regex_dict=get_regex(GOOGLE_REGEX_FILE)
-        )
+
+        extracted_data = []
+        for stock in stock_symbols:
+            stock_data = fetch_news_sentiments_from_newsapi(stock)
+            self.write_to_concepts_folder(
+                stockDataType="news",
+                stockName=stock,
+                data=stock_data,
+                type='json'
+            )
+            extracted_data.extend(stock_data)
+
         if len(extracted_data) < 1:
             return {}
+        print "Total News Article are {0}".format(len(extracted_data))
         meta_data = convert_crawled_data_to_metadata_format(
             news_data=extracted_data,
             other_details={
                 'type': 'news_data'
-            }
+            },
+            slug=self.slug
         )
+
         meta_data['extracted_data'] = extracted_data
-        self.write_to_concepts_folder(
-            stockDataType="news",
-            stockName="",
-            data=extracted_data,
-            type='json'
-        )
 
         return json.dumps(meta_data)
 
-    def crawl_for_historic_data(self):
-        stock_symbols = self.get_stock_symbol_names()
-        GOOGLE_REGEX_FILE = "nasdaq_stock.json"
-        extracted_data = crawl_extract(
-            urls=generate_urls_for_historic_data(stock_symbols),
-            regex_dict=get_regex(GOOGLE_REGEX_FILE)
-        )
-        if len(extracted_data) < 1:
-            return {}
-        meta_data = convert_crawled_data_to_metadata_format(
-            news_data=extracted_data,
-            other_details={
-                'type': 'historical_data'
-            }
-        )
-        meta_data['extracted_data'] = extracted_data
+    def read_stock_json_file(self):
 
-        self.write_to_concepts_folder(
-            stockDataType="historic",
-            stockName="all",
-            data=extracted_data,
-            type='json'
-        )
-        return meta_data
+        with open('/home/ubuntu/stock_info.json') as stock_file:
+            all_data = []
+            for l in stock_file:
+                all_data.append(json.loads(l))
+            return all_data
+
+    def crawl_for_historic_data(self):
+        PRINTPREFIX = "crawl_historic"
+        from api.StockAdvisor.crawling.generic_crawler import Cache
+        import pickle
+
+        historic_cache = Cache("historic")
+
+        for stock_symbol in self.get_stock_symbol_names():
+            stock_data = None
+            cache_key = "historic_{}".format(stock_symbol)
+            print PRINTPREFIX, cache_key
+
+            from api.StockAdvisor.crawling.process import fetch_historical_data_from_alphavintage
+            try:
+                stock_data = fetch_historical_data_from_alphavintage(stock_symbol)
+            except:
+                pass
+
+            if not stock_data:
+                print PRINTPREFIX, "Using Nasdaq Site for historic stock data for {0}".format(stock_symbol)
+                NASDAQ_REGEX_FILE = "nasdaq_stock.json"
+                url = generate_url_for_historic_data(stock_symbol)
+
+                for i in range(10):
+
+                    stock_data = crawl_extract(
+                        url=url,
+                        regex_dict=get_regex(NASDAQ_REGEX_FILE),
+                        slug=self.slug
+                        )
+
+                    if len(stock_data) == 0 and i == 0:
+                        try:
+                            cached_data = historic_cache.get(cache_key)
+                            stock_data = pickle.loads(cached_data)
+                            print PRINTPREFIX, "CACHE HIT :: Picked historic data from cache {}".format(stock_symbol)
+                        except:
+
+                            pass
+
+                    if len(stock_data) >0 :
+                        break
+
+            if stock_data is not None:
+                if len(stock_data) > 0:
+                    print PRINTPREFIX, "caching for{}".format(stock_symbol)
+                    historic_cache.put(cache_key,pickle.dumps(stock_data))
+
+                self.write_to_concepts_folder(
+                    stockDataType="historic",
+                    stockName=stock_symbol,
+                    data=stock_data,
+                    type='json'
+                )
+
+    # def crawl_for_historic_data(self):
+    #     stock_symbols = self.get_stock_symbol_names()
+    #     for stock in stock_symbols:
+    #         stock_data = None
+    #         from api.StockAdvisor.crawling.process import fetch_historical_data_from_alphavintage
+    #         try:
+    #             stock_data = fetch_historical_data_from_alphavintage(stock)
+    #         except:
+    #             NASDAQ_REGEX_FILE = "nasdaq_stock.json"
+    #
+    #             print "Using Nasdaq Site for historic stock data for {0}".format(stock)
+    #             url = generate_url_for_historic_data(stock)
+    #             stock_data = crawl_extract(
+    #                 url=url,
+    #                 regex_dict=get_regex(NASDAQ_REGEX_FILE),
+    #                 slug=self.slug
+    #             )
+    #         if stock_data is not None:
+    #             self.write_to_concepts_folder(
+    #                 stockDataType="historic",
+    #                 stockName=stock,
+    #                 data=stock_data,
+    #                 type='json'
+    #             )
 
     def get_bluemix_natural_language_understanding(self, name=None):
         from StockAdvisor.bluemix.process_urls import ProcessUrls
@@ -1682,16 +1765,106 @@ class StockDataset(models.Model):
             type='json'
         )
 
+    def copy_file_to_hdfs(self, localpath, extra_path=None):
+
+        hadoop_path = self.get_hdfs_relative_path(extra_path)
+        try:
+            hadoop.hadoop_put(localpath, hadoop_path)
+        except:
+            raise Exception("Failed to copy file to HDFS.")
+
+    def get_hdfs_relative_path(self, extra_path=None):
+
+        if extra_path is not None:
+            hadoop_path = "/stockdataset/" + self.slug + "/" + extra_path
+        else:
+            hadoop_path = "/stockdataset/" + self.slug
+        if hadoop.hadoop_exists(hadoop_path):
+            pass
+        else:
+            hadoop.hadoop_mkdir(hadoop_path)
+        return hadoop_path
+
     def generate_meta_data(self):
         self.create_folder_in_scripts_data()
+        # self.paste_essential_files_in_scripts_folder()
         self.crawl_for_historic_data()
-        self.get_bluemix_natural_language_understanding()
-        return self.crawl_data()
+        # self.get_bluemix_natural_language_understanding()
+        print "generate_meta_data "*3
+        self.meta_data = self.crawl_news_data()
 
     def create_folder_in_scripts_data(self):
         path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug
         if not os.path.exists(path):
             os.makedirs(path)
+
+    def paste_essential_files_in_scripts_folder(self):
+
+        import shutil
+        file_names = [
+            'concepts.json',
+            # 'aapl.json',
+            # 'aapl_historic.json',
+            # 'googl.json',
+            # 'googl_historic.json',
+            # 'ibm.json',
+            # 'ibm_historic.json',
+            # 'msft.json',
+            # 'msft_historic.json'
+        ]
+        path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data"
+        path_slug = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug + "/"
+        self.sanitize(path + "/concepts.json")
+        for name in file_names:
+            path1 = path + "/"+ name
+            path2 = path_slug + name
+            shutil.copyfile(path1, path2)
+
+        self.put_files_into_remote()
+
+    def sanitize(self, path, remove_tags=[]):
+        import re
+        import sys
+        content = open(path, 'r').read()
+        for html_tag in remove_tags:
+            tag_regex = '(?is)<' + html_tag + '[^>]*?>.*?</' + html_tag + '>'  # (?is) is important to add,as it ignores case and new lines in text
+            content = re.sub(tag_regex, '', content)
+        text = ''
+        text = re.sub('<.*?>', ' ', content)
+        if text:
+            text = text.replace("\n", "").replace("&nbsp;", "").replace("\t", " ").replace("\\u", " ").replace("\r",
+                                                                                                              " ").strip()
+        text = text.encode('utf-8')
+
+        f = open(path, 'w')
+        f.write(text)
+        f.close()
+
+    def put_files_into_remote(self):
+
+        path_slug = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug + "/"
+
+        from os import listdir
+        from os.path import isfile, join
+        file_names = listdir(path_slug)
+        print file_names
+        # onlyfiles = [f for f in listdir(path_slug) if isfile(join(path_slug, f))]
+
+        from api.lib.fab_helper import mkdir_remote, put_file, remote_uname
+        remote_path = '/home/hadoop/stock' + "/" + self.slug
+        remote_path = str(remote_path)
+        mkdir_remote(dir_paths=remote_path)
+        remote_uname()
+        for name in file_names:
+            dest_path = remote_path + "/" + name
+            src_path = path_slug + name
+            print src_path, dest_path
+            put_file(src_path, dest_path)
+
+    def create_folder_in_remote(self):
+        from api.lib.fab_helper import mkdir_remote, put_file, remote_uname
+        remote_path = '/home/hadoop/stock' + "/" + self.slug
+        mkdir_remote(dir_paths=remote_path)
 
     def stats(self, file):
         self.input_file = file
@@ -1753,6 +1926,8 @@ class StockDataset(models.Model):
                                                                       THIS_SERVER_DETAILS.get('port'),
                                                                       self.get_data_api())
 
+        hdfs_path = self.get_hdfs_relative_path()
+
         return {
             "config": {
                 "FILE_SETTINGS": {
@@ -1770,7 +1945,8 @@ class StockDataset(models.Model):
                 },
                 "STOCK_SETTINGS": {
                     "stockSymbolList": stockSymbolList,
-                    "dataAPI": data_api  # + "?" + 'stockDataType = "bluemix"' + '&' + 'stockName = "googl"'
+                    "dataAPI": data_api,  # + "?" + 'stockDataType = "bluemix"' + '&' + 'stockName = "googl"'
+                    "hdfs_path": hdfs_path
                 }
             }
         }
@@ -1794,17 +1970,60 @@ class StockDataset(models.Model):
             self.status = "INPROGRESS"
         self.save()
 
-    def write_to_concepts_folder(self, stockDataType, stockName, data, type='csv'):
-        name = stockDataType + "_" + stockName
+    def write_to_concepts_folder(self, stockDataType, stockName, data, type='json'):
+        print stockDataType
+        if stockDataType == "historic":
+            name = stockName + "_" + stockDataType
+        else:
+            name = stockName
         path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug + "/"
+        # file_path = path + stockName + "." + type
         file_path = path + name + "." + type
-
+        print "Writing {1} for {0}".format(stockName, stockDataType)
+        print file_path
         with open(file_path, "wb") as file_to_write_on:
             if 'csv' == type:
                 writer = csv.writer(file_to_write_on)
                 writer.writerow(data)
             elif 'json' == type:
                 json.dump(data, file_to_write_on)
+        self.copy_file_to_hdfs(file_path, stockDataType)
+
+        self.write_crawled_databases(stockDataType, stockName, data)
+
+    def write_crawled_databases(self, stockDataType, stockName, data):
+
+        if stockDataType == "historic":
+            name = stockName + "_" + stockDataType
+        else:
+            name = stockName
+
+        crawled_data = self.crawled_data
+        crawled_data = json.loads(crawled_data)
+
+        if stockName in crawled_data:
+            stockName_crawled_data = crawled_data[stockName]
+            if name in stockName_crawled_data:
+                pass
+            else:
+                stockName_crawled_data[name] = data
+        else:
+            crawled_data[stockName] = {
+                name: data
+            }
+
+        if 'concepts' in crawled_data:
+            pass
+        else:
+            path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data"
+            path = path + "/concepts.json"
+            self.copy_file_to_hdfs(path, extra_path='concepts')
+            with open(path) as fp:
+                crawled_data['concepts'] = json.loads(fp.read())
+
+        self.crawled_data = json.dumps(crawled_data)
+        self.save()
+
 
     def write_bluemix_data_into_concepts(self, name, data, type='json'):
 
@@ -1812,6 +2031,7 @@ class StockDataset(models.Model):
             name = name + "_" + key
             path = os.path.dirname(os.path.dirname(__file__)) + "/scripts/data/" + self.slug + "/"
             file_path = path + name + "." + type
+            print file_path
             out_file = open(file_path, "wb")
             json.dump(data[key], out_file)
             out_file.close()
@@ -3739,6 +3959,7 @@ def smaller_name_and_slug_in_individual(name):
         "cardType": "normal",
         "name": "node2-caasdasd",
         "slug": "node2-card2asda",
+        "display": False,
         "cardData": [
             change_html_data(
                 '<br/><br/><div style="text-align:center"><h2>{}</h2></div><br/><br/>'.format(text_overview)),

@@ -9,7 +9,6 @@
   <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <!-- Custom Fonts -->
   <link href="/static/assets/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-  <link href="://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
   <!-- Latest compiled and minified CSS -->
   <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"> -->
   <link rel="stylesheet" href="/static/assets/css/bootstrap.min.css">
@@ -32,7 +31,8 @@
     var APP_BASE_URL = "{{APP_BASE_URL}}";
       var SCORES_BASE_URL = "{{SCORES_BASE_URL}}"
       var STATIC_URL_PATH = "{{STATIC_URL}}"
-      var KYLO_UI_URL = "http://datamdev.marlabsai.com"
+      var KYLO_UI_URL = "{{KYLO_UI_URL}}"
+      var ENABLE_KYLO  = "{{ENABLE_KYLO}}"
     console.log(SCORES_BASE_URL);
   </script>
   <script src="/static/assets/js/jquery.min.js"></script>
@@ -51,6 +51,10 @@
     <script type="text/javascript" src="/static/assets/js/bootstrap-multiselect.js"></script>
     <script src="/static/assets/js/d3.parcoords.js"></script>
 <script src="/static/assets/js/divgrid.js"></script>
+
+<!-- for chatbot-->
+<!-- <script src="https://prodx.in/m-advisor-measure/client-plugin/bot.js" async type="text/javascript"></script> -->
+
     <!--<script src="/assets/js/bootstrap.min.js"></script>-->
   <script src="/static/react/dist/app/bundle.js?v={{ UI_VERSION }}"></script>
 

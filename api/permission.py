@@ -148,6 +148,27 @@ class SuperUserPermission(permissions.BasePermission):
         pass
 
 
+class StocksRelatedPermission(permissions.BasePermission):
+    message = 'Permission for stocks.'
+
+    def has_permission(self, request, view):
+        user = request.user
+        if request.method in ['GET']:
+            return user.has_perm('api.view_stock')
+
+        if request.method in ['POST']:
+            return user.has_perm('api.create_stock') and user.has_perm('api.view_stock')
+
+        if request.method in ['PUT']:
+            data = request.data
+
+            if 'deleted' in data:
+                if data['deleted'] == True:
+                    return user.has_perm('api.remove_stock')
+
+            return user.has_perm('api.rename_stock')
+
+
 '''
 Some Instruction:
 

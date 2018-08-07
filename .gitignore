@@ -10,6 +10,7 @@ ENV
 *.pot
 *.py[co]
 .tox/
+*.pid
 __pycache__
 MANIFEST
 dist/

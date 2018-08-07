@@ -3,7 +3,7 @@ import {API,STATIC_URL} from "../helpers/env";
 import {PERPAGE,DULOADERPERVALUE,DEFAULTINTERVAL,SUCCESS,FAILED,getUserDetailsOrRestart,DEFAULTANALYSISVARIABLES,statusMessages} from "../helpers/helper";
 import store from "../store";
 import {dataPreviewInterval,dataUploadLoaderValue,clearLoadingMsg,clearDatasetPreview} from "./dataUploadActions";
-import {closeAppsLoaderValue} from "./appActions";
+import {closeAppsLoaderValue,openAppsLoaderValue} from "./appActions";
 import renderHTML from 'react-render-html';
 import Dialog from 'react-bootstrap-dialog'
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
@@ -162,7 +162,11 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
     console.log(dataPreview)
     var  slug = dataPreview.slug;
     var dataset = slug;
-    if(dataPreview.status == SUCCESS){
+    if(window.location.pathname == "/apps-stock-advisor")
+    var getStatus = dataPreview.meta_data_status;
+    else
+    var getStatus = dataPreview.status;
+    if(getStatus == SUCCESS){
 
         if(interval != undefined){
             clearInterval(interval);
@@ -179,7 +183,7 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
             dataPreview,
             slug,
         }
-    }else if(dataPreview.status == FAILED){
+    }else if(getStatus == FAILED){
         clearInterval(interval);
         dispatch(hideDULoaderPopup());
         bootbox.alert("The uploaded file does not contain data in readable format. Please check the source file.", function() {
@@ -187,6 +191,7 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
           });
         dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
         dispatch(clearLoadingMsg())
+        dispatch(closeAppsLoaderValue());
         //clearDatasetPreview()
         //dispatch(hideDataPreview())
 
@@ -195,8 +200,11 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
             dataPreview,
             slug,
         }
-    }else if(dataPreview.status == "INPROGRESS"){
+    }else if(getStatus == "INPROGRESS"){
         dispatch(dispatchDataPreviewLoadingMsg(dataPreview));
+        if (dataPreview.message && dataPreview.message !== null && dataPreview.message.length > 0) {
+            dispatch(openAppsLoaderValue(dataPreview.message[0].stageCompletionPercentage, dataPreview.message[0].shortExplanation));
+        }
         return {
             type: "SELECTED_DATASET",
             dataset,

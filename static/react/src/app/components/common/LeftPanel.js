@@ -4,7 +4,7 @@ import {connect} from "react-redux";
 import {hideDataPreview, getDataList,storeSearchElement_data} from "../../actions/dataActions";
 import {getList,storeSearchElement,emptySignalAnalysis} from "../../actions/signalActions";
 import {getUserDetailsOrRestart} from "../../helpers/helper"
-import {APPS_ALLOWED} from "../../helpers/env.js"
+import {APPS_ALLOWED,ENABLE_KYLO_UI} from "../../helpers/env.js"
 
 @connect((store) => {
   return {dataPreviewFlag: store.datasets.dataPreviewFlag};
@@ -48,6 +48,7 @@ class LeftPanel extends React.Component {
     let view_signal_permission = getUserDetailsOrRestart.get().view_signal_permission
     let view_trainer_permission = getUserDetailsOrRestart.get().view_trainer_permission
     let view_score_permission = getUserDetailsOrRestart.get().view_score_permission
+    let enable_kylo = ENABLE_KYLO_UI
     return (
       <div>
         <div>
@@ -91,11 +92,12 @@ class LeftPanel extends React.Component {
                       <span></span>
                       SETTINGS</NavLink>
                   </li> */}
-                  {/*<li>
+                  {(enable_kylo==true||enable_kylo=="True"||enable_kylo=="true")?<li>
                     <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" isActive={(match,location) => /^[/]datamgmt/.test(location.pathname)} className=" sdb sdb_story" to="/datamgmt">
                       <span></span>
                       DATA MANAGE</NavLink>
-                  </li>*/}
+                  </li>:<div/>}
+
               </ul>
             </div>
             {/* // /.Side bar Main Menu  -->*/}

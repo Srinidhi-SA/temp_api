@@ -39,6 +39,7 @@ export class ModelAlgorithmSelection extends React.Component {
         if(this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null){
             window.history.go(-1);
         }
+        else
         this.props.dispatch(getRegressionAppAlgorithmData(this.props.match.params.slug,this.props.currentAppDetails.app_type));
     }
     componentDidMount() {

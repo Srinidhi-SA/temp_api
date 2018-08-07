@@ -5,7 +5,7 @@ import {Redirect} from 'react-router';
 import {authenticateFunc} from "../actions/loginActions";
 import store from "../store";
 import {STATIC_URL} from "../helpers/env";
-import {isEmpty,getUserDetailsOrRestart,USERDETAILS} from "../helpers/helper";
+import {isEmpty,getUserDetailsOrRestart,USERDETAILS,removeChatbotOnLogout} from "../helpers/helper";
 import {sessionObject} from '../helpers/manageSessionStorage';
 // import $ from "jquery";
 
@@ -31,6 +31,10 @@ export class Login extends React.Component {
     const password = e.target.value;
     this.setState({pwd: password});
   }
+  componentDidMount(){
+    //removeChatbotOnLogout()
+  }
+
   doAuth() {
 
     //this.props.dispatch(authenticateFunc($("#username").val(),$("#password").val()))
@@ -59,6 +63,7 @@ export class Login extends React.Component {
     } else {
     	document.body.className = "ma-splash-screen";
     	   localStorage.JWT = "Test Local Storage"
+         removeChatbotOnLogout()
       return (
 
           <div className="ma-wrapper ma-login">

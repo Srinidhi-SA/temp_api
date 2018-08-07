@@ -1496,6 +1496,14 @@ PERMISSIONS_RELATED_TO_REGRESSION = (
     ('downlad_pmml', 'Download PMML')
 )
 
+
+PERMISSIONS_RELATED_TO_STOCK = (
+    ('view_stock', 'View stock'),
+    ('create_stock', 'Create stock'),
+    ('rename_stock', 'Rename stock'),
+    ('remove_stock', 'remove stock'),
+)
+
 JOB_STATUS_MESSAGE = {
     "EMPTY": "Submitting for analysis",
     "SUBMITTED": "Submitting for analysis.",
@@ -1551,3 +1559,10 @@ APPORDERLIST=[
 USE_YARN_DEFAULT_QUEUE=False
 
 CELERY_SCRIPTS_DIR="/home/hadoop/codebase/mAdvisor-api/scripts/"
+
+REQUEST_CONNECTION_TIMEOUT=30
+REQUEST_READ_TIMEOUT=50
+REQUEST_RETRY_LIMIT=10
+NASDAQ_NEWS_HEADLINE_COUNT = 1 
+
+CACHE_BASE_DIR="/tmp"

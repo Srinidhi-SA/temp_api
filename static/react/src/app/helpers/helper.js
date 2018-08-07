@@ -103,7 +103,7 @@ const APPID2 = 2;
 const APPID3 = 3;
 const APPID5 = 5;
 const CUSTOMER = "customer";
-const HISTORIAL = "historial";
+const HISTORIAL = "historical";
 const EXTERNAL = "external";
 const APPID4 = 4;
 const APPNAME4 = "Speech Analytics";
@@ -135,7 +135,9 @@ const IGNORE_SUGGESTION = "ignore_suggestion";
 const ACCESSDENIED ="Access Denied"
 const CREATESIGNAL = "Create Signal";
 const CREATEMODEL = "Create Model";
-const CREATESCORE = "Create Score"
+const CREATESCORE = "Create Score";
+const DELETESTOCKMODEL = "Delete Analysis";
+const RENAMESTOCKMODEL = "Rename Analysis";
 
 export function generateHeaders(table) {
     var cols = table.tableData.map(function(rowData,i){
@@ -456,7 +458,9 @@ export{
   ACCESSDENIED,
   CREATESIGNAL,
   CREATESCORE,
-  CREATEMODEL
+  CREATEMODEL,
+  DELETESTOCKMODEL,
+  RENAMESTOCKMODEL
 	}
 export function capitalizeArray(array){
   let a =[]
@@ -579,5 +583,26 @@ export function toggleVisualization(slug,actionsData){
 				$("#tab_visualizations #pnl_visl").removeAttr("style");
 			});
 		}
+
+}
+
+export function removeChatbotOnLogout(){
+ var tags = document.getElementsByTagName('script');
+ for (var i = tags.length; i >= 0; i--){ //search backwards within nodelist for matching elements to remove
+  if (tags[i] && tags[i].getAttribute('src') != null && tags[i].getAttribute('src').indexOf("client-plugin/bot.js") != -1)
+   tags[i].parentNode.removeChild(tags[i]); //remove element by calling parentNode.removeChild()
+ }
+
+//  var chatwindow= document.getElementById("welcome-body-frame")
+//  if(chatwindow!=null)
+//  chatwindow.style.visibility="hidden"
+//
+//  var chaticon= document.getElementsByClassName("chat-icon-container")[0]
+// if(chaticon!=null)
+//  chaticon.style.visibility="hidden"
+//
+//  var chatcontainer= document.getElementsByClassName("chat-container")[0]
+//  if(chatcontainer!=null)
+//  chatcontainer.style.visibility="hidden"
 
 }

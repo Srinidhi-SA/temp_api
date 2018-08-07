@@ -39,7 +39,7 @@ export default function reducer(state = {
         appsSelectedTabId:"model",
         audioFileUploadShowFlag:false,
         audioFileUpload:{},
-        appsLoaderImage:"assets/images/brain_loading.gif",
+        appsLoaderImage:"assets/images/Processing.gif",
         audioFileSummary:{},
         audioFileSlug :"",
         audioFileSummaryFlag:false,
@@ -85,6 +85,9 @@ export default function reducer(state = {
         regression_crossvalidationvalue:2,
         selectedModelCount:0,
         selectedAlgObj:{},
+        stock_model_search_element:"",
+        stock_apps_model_sorton:null,
+        stock_apps_model_sorttype:null,
 
 }, action) {
     console.log("In APPs reducer!!");
@@ -383,6 +386,7 @@ export default function reducer(state = {
         return {
             ...state,
             roboDatasetSlug:action.slug,
+            updateCreateModelHideShow:true,
         }
     }
     break;
@@ -672,6 +676,7 @@ export default function reducer(state = {
         return{
             ...state,
             stockSlug:action.slug,
+            updateCreateModelHideShow:action.displayHideCancel,
         }
     }
     break;
@@ -866,6 +871,24 @@ export default function reducer(state = {
             selectedModelCount:action.count,
         }
     }
+    break;
+    case "STOCK_SEARCH_MODEL":
+    {
+        return{
+            ...state,
+            stock_model_search_element:action.search_element
+        }
+    }
+    break;
+    case "STOCK_SORT_APPS_MODEL":
+    {
+        return{
+            ...state,
+            stock_apps_model_sorton:action.appsModelSorton,
+            stock_apps_model_sorttype:action.appsModelSorttype
+        }
+    }
+    break;
     }
     return state
 }
