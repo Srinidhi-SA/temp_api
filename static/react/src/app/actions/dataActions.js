@@ -1562,12 +1562,12 @@ export function popupAlertBox(msg,props,url){
         props.history.push(url)
     });
 }
-export function deselectAllVariablesDataPrev(){
+export function deselectAllVariablesDataPrev(flag){
   let dataPrev=store.getState().datasets.dataPreview
   let slug=store.getState().datasets.selectedDataSet
   if(dataPrev&&dataPrev.meta_data){
   for(var i=0;i<dataPrev.meta_data.uiMetaData.varibaleSelectionArray.length;i++){
-    dataPrev.meta_data.uiMetaData.varibaleSelectionArray[i].selected=false
+    dataPrev.meta_data.uiMetaData.varibaleSelectionArray[i].selected=flag;
   }
   dispatchDataPreview(dataPrev,slug)
 }

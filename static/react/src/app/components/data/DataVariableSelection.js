@@ -57,12 +57,14 @@ export class DataVariableSelection extends React.Component {
     componentDidMount() {
     	window.scrollTo(0, 0);
         if(this.props.match.path.includes("createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
-            deselectAllVariablesDataPrev();
+            deselectAllVariablesDataPrev(false);
             DisableSelectAllCheckbox();
             this.props.dispatch( resetSelectedVariables(false) );
         }
-        else
+        else{
         this.props.dispatch( resetSelectedVariables(true) );
+        deselectAllVariablesDataPrev(true);
+        }
         this.props.dispatch(resetSelectedTargetVariable());
        // this.setVariables( this.dimensions, this.measures, this.selectedTimeDimension );
         this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.possibleAnalysisList,true));
@@ -178,11 +180,13 @@ export class DataVariableSelection extends React.Component {
             if ( (this.props.isUpdate && this.props.createScoreShowVariables && this.props.match.path.includes("/createScore")) || (this.props.isUpdate && !this.props.match.path.includes("/createScore"))) {
             if(this.props.match.path.includes("createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
                 this.props.dispatch(resetSelectedVariables(false));
-                deselectAllVariablesDataPrev();
+                deselectAllVariablesDataPrev(false);
                 DisableSelectAllCheckbox();
             }
-            else
-            this.props.dispatch( resetSelectedVariables(true));
+            else{
+                this.props.dispatch( resetSelectedVariables(true));
+                deselectAllVariablesDataPrev(true);
+            }
             this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.possibleAnalysisList,false)); 
         }
 
