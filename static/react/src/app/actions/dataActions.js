@@ -1553,7 +1553,7 @@ export function updateSelectAllAnlysis(flag){
 export function hideDataPreviewDropDown(props){
   if(props.indexOf("scores") != -1){
       $("#sub_settings").hide();
-      $('.dropdown-toggle').removeAttr('data-toggle');
+      $('.cst_table .dropdown-toggle').removeAttr('data-toggle');
   }
 
 }
