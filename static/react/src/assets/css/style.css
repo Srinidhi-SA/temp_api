@@ -6434,14 +6434,16 @@ body.open-right-sidebar .ma-right-sidebar {
 .main-content {
 	padding-left: 25px;
 	padding-right: 25px;
-	padding-top: 15px
+	padding-top: 15px;
+	padding-bottom: 25px;
 }
 
 @media (min-width:768px) and (max-width:991px) {
 .main-content {
 	padding-left: 25px;
 	padding-right: 25px;
-	padding-top: 15px
+	padding-top: 15px;
+	padding-bottom: 25px;
 }
 }
 
@@ -6455,7 +6457,8 @@ body.open-right-sidebar .ma-right-sidebar {
 	-webkit-overflow-scrolling: touch;
 	padding-left: 15px;
 	padding-right: 15px;
-	padding-top: 15px
+	padding-top: 15px;
+	padding-bottom: 25px;
 }
 }
 .ma-no-padding .main-content {
