@@ -1,6 +1,7 @@
 import {API, EMR, STATIC_URL} from "../helpers/env";
 import {PERPAGE, isEmpty, getUserDetailsOrRestart, APPSPERPAGE,statusMessages} from "../helpers/helper";
 import store from "../store";
+import Notifications, {notify} from 'react-notify-toast';
 import {
   APPSLOADERPERVALUE,
   LOADERMAXPERVALUE,
@@ -293,7 +294,17 @@ export function getAppsModelSummary(slug,fromCreateModel) {
   return (dispatch) => {
     return fetchModelSummary(getUserDetailsOrRestart.get().userToken, slug).then(([response, json]) => {
       if (response.status === 200) {
-        if (json.status == SUCCESS) {
+
+          if(json.message && json.message == "failed")
+          {
+            let myColor = { background: '#00998c', text: "#FFFFFF" };
+            notify.show("You are not authorized to view this content.", "custom", 2000,myColor);
+            setTimeout(function() {
+            window.location.pathname="/signals";
+            },2000);
+          }
+
+        else if (json.status == SUCCESS) {
           clearInterval(appsInterval);
           dispatch(fetchModelSummarySuccess(json));
           dispatch(closeAppsLoaderValue());
@@ -414,7 +425,16 @@ export function getAppsScoreSummary(slug) {
   return (dispatch) => {
     return fetchScoreSummary(getUserDetailsOrRestart.get().userToken, slug).then(([response, json]) => {
       if (response.status === 200) {
-        if (json.status == SUCCESS) {
+        if(json.message && json.message == "failed")
+          {
+            let myColor = { background: '#00998c', text: "#FFFFFF" };
+            notify.show("You are not authorized to view this content.", "custom", 2000,myColor);
+            setTimeout(function() {
+            window.location.pathname="/signals";
+            },2000);
+          }
+
+        else if (json.status == SUCCESS) {
           clearInterval(appsInterval);
           dispatch(fetchScoreSummarySuccess(json));
           dispatch(updateRoboAnalysisData(json, "/apps-regression-score"));
