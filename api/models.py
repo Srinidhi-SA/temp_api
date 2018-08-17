@@ -1359,15 +1359,29 @@ class Robo(models.Model):
 
     def get_brief_info(self):
         brief_info = dict()
-
+        customer_dataset_name = ""
+        historical_dataset_name = ""
+        market_dataset_name = ""
+        try:
+            customer_dataset_name = self.customer_dataset.name
+        except:
+            pass
+        try:
+            historical_dataset_name = self.historical_dataset.name
+        except:
+            pass
+        try:
+            market_dataset_name = self.market_dataset.name
+        except:
+            pass
 
         brief_info.update(
             {
                 'created_by': self.created_by.username,
                 'updated_at': self.updated_at,
-                'customer_dataset': self.customer_dataset.name,
-                'historical_dataset': self.historical_dataset.name,
-                'market_dataset': self.market_dataset.name
+                'customer_dataset': customer_dataset_name,
+                'historical_dataset': historical_dataset_name,
+                'market_dataset': market_dataset_name
             }
         )
 

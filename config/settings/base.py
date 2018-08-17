@@ -678,7 +678,10 @@ BRIEF_INFO_CONFIG = {
     'file_size': 'File Size',
     'audioset': 'Audio',
     'name': 'Name',
-    'stock_symbols': 'Stocks'
+    'stock_symbols': 'Stocks',
+    'customer_dataset': 'Customer Dataset',
+    'historical_dataset': 'Historical Dataset',
+    'market_dataset': 'Market Dataset'
 }
 
 FIRST_ORDER = [
