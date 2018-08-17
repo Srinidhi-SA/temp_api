@@ -3191,6 +3191,7 @@ button.close {
 .modal {
   text-align: center;
   padding: 0!important;
+  z-index:9999;
 }
 
 .modal:before {
@@ -5398,6 +5399,7 @@ button:focus {
 .side-body {
 	margin-left: 80px;
 	margin-top: 60px;
+	padding-bottom: 80px; /*For chat bot */
 }
 
 /* small screen */
@@ -6432,14 +6434,16 @@ body.open-right-sidebar .ma-right-sidebar {
 .main-content {
 	padding-left: 25px;
 	padding-right: 25px;
-	padding-top: 15px
+	padding-top: 15px;
+	padding-bottom: 25px;
 }
 
 @media (min-width:768px) and (max-width:991px) {
 .main-content {
 	padding-left: 25px;
 	padding-right: 25px;
-	padding-top: 15px
+	padding-top: 15px;
+	padding-bottom: 25px;
 }
 }
 
@@ -6453,7 +6457,8 @@ body.open-right-sidebar .ma-right-sidebar {
 	-webkit-overflow-scrolling: touch;
 	padding-left: 15px;
 	padding-right: 15px;
-	padding-top: 15px
+	padding-top: 15px;
+	padding-bottom: 25px;
 }
 }
 .ma-no-padding .main-content {
@@ -15589,3 +15594,4 @@ div.text-center.tbl_th_center th {text-align: center}
     position: absolute;
     right: 3%;
 }
+div#welcome-body-frame { right:110px !important; bottom:30px !important}
