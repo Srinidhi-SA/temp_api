@@ -1357,6 +1357,22 @@ class Robo(models.Model):
             self.status = "INPROGRESS"
         self.save()
 
+    def get_brief_info(self):
+        brief_info = dict()
+
+
+        brief_info.update(
+            {
+                'created_by': self.created_by.username,
+                'updated_at': self.updated_at,
+                'customer_dataset': self.customer_dataset.name,
+                'historical_dataset': self.historical_dataset.name,
+                'market_dataset': self.market_dataset.name
+            }
+        )
+
+        return convert_json_object_into_list_of_object(brief_info, 'robo')
+
 
 class CustomApps(models.Model):
     app_id = models.IntegerField(null=False)
