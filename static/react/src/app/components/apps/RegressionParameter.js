@@ -329,7 +329,7 @@ export class RegressionParameter extends React.Component {
                 }
                 else if(v == "int"){
                     (k == 0)?allowedTypes = "Numbers" : allowedTypes+= ", Numbers";
-                    if(val % 1 != 0)
+                    if(val % 1 != 0 || parseInt(val.toString().split(".")[1])==0)
                     wrongCount++;
                 }
                 else if(v == null && val != null){
