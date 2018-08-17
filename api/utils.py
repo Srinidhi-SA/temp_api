@@ -515,7 +515,7 @@ class RoboSerializer(serializers.ModelSerializer):
 
         market_dataset_object = Dataset.objects.get(pk=ret['market_dataset'])
         ret['market_dataset'] = DatasetSerializer(market_dataset_object).data
-
+        ret['brief_info'] = instance.get_brief_info()
         if instance.dataset_analysis_done is False:
             if customer_dataset_object.analysis_done and \
                 historical_dataset_object.analysis_done and \
@@ -566,6 +566,7 @@ class RoboListSerializer(serializers.ModelSerializer):
         ret['dataset_name'] = market_dataset_object.name + ", " +\
                               customer_dataset_object.name + ", " + \
                               historical_dataset_object.name
+        ret['brief_info'] = instance.get_brief_info()
 
         if instance.analysis_done is False:
             if customer_dataset_object.analysis_done and \

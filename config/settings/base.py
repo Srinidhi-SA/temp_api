@@ -678,7 +678,10 @@ BRIEF_INFO_CONFIG = {
     'file_size': 'File Size',
     'audioset': 'Audio',
     'name': 'Name',
-    'stock_symbols': 'Stocks'
+    'stock_symbols': 'Stocks',
+    'customer_dataset': 'Customer Dataset',
+    'historical_dataset': 'Historical Dataset',
+    'market_dataset': 'Market Dataset'
 }
 
 FIRST_ORDER = [
@@ -714,11 +717,18 @@ STOCK_ORDER = [
     'stock_symbols'
 ]
 
+ROBO_ORDER = [
+    'customer_dataset',
+    'historical_dataset',
+    'market_dataset'
+]
+
 ORDER_DATASET = FIRST_ORDER + SECOND_ORDER + DATASET_ORDER
 ORDER_SIGNAL = FIRST_ORDER + SECOND_ORDER + THIRD_ORDER
 ORDER_TRAINER = FIRST_ORDER + SECOND_ORDER + THIRD_ORDER
 ORDER_SCORE = FIRST_ORDER + SECOND_ORDER + THIRD_ORDER
 ORDER_STOCK = FIRST_ORDER + STOCK_ORDER
+ORDER_ROBO = FIRST_ORDER + ROBO_ORDER
 
 ORDER_DICT = {
     'dataset': ORDER_DATASET,
@@ -726,7 +736,8 @@ ORDER_DICT = {
     'trainer': ORDER_TRAINER,
     'score': ORDER_SCORE,
     'audioset': ORDER_DATASET,
-    'stockdataset': ORDER_STOCK
+    'stockdataset': ORDER_STOCK,
+    'robo': ORDER_ROBO
 }
 
 NATURAL_LANGUAGE_UNDERSTANDING_SETTINGS = {
