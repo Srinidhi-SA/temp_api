@@ -53,13 +53,14 @@ export function refreshAppsModelList(props) {
   return (dispatch) => {
     if(refreshAppsModelInterval != null)
     clearInterval(refreshAppsModelInterval);
-    refreshAppsModelInterval = setInterval(function() {
-      var pageNo = window.location.href.split("=")[1];
+    refreshAppsModelInterval = setInterval(function() 
+    {
+      var pageNo = window.location.href.split("=").pop();
       if (pageNo == undefined || isNaN(parseInt(pageNo)))
         pageNo = 1;
       if (window.location.pathname == "/"+store.getState().apps.currentAppDetails.app_url)
         dispatch(getAppsModelList(parseInt(pageNo)));
-      }
+    }
     , APPSDEFAULTINTERVAL);
   }
 }
@@ -221,7 +222,7 @@ export function refreshAppsScoreList(props) {
     if(refreshAppsScoresInterval != null)
     clearInterval(refreshAppsScoresInterval);
     refreshAppsScoresInterval = setInterval(function() {
-      var pageNo = window.location.href.split("=")[1];
+      var pageNo = window.location.href.split("=").pop();
       if (pageNo == undefined || isNaN(parseInt(pageNo)))
         pageNo = 1;
       if (window.location.pathname == "/apps/" + store.getState().apps.currentAppDetails.slug + "/scores")
