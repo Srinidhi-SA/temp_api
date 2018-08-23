@@ -60,7 +60,7 @@ export class RegressionParameter extends React.Component {
            },
             onDropdownHide: function(event) {
                if(this.getSelected().length == 0)
-                event.target.parentElement.parentElement.lastElementChild.innerHTML = "Please select atleast one";
+                event.target.parentElement.parentElement.lastElementChild.innerHTML = "Please select at least one";
             },
             onDropdownShow: function(event) {
                 event.target.parentElement.parentElement.lastElementChild.innerHTML = "";
@@ -149,7 +149,8 @@ export class RegressionParameter extends React.Component {
                  </select>
 				</div>
                   <div className="clearfix"></div>
-                  {tune?<div className="col-md-6 check-multiselect text-danger"></div>:""}
+                  {tune ?<div className="col-md-6 check-multiselect text-danger">{(selectedValue.length == 0)?"Please select at least one":""}</div>:""}
+                  {/*{(tune && selectedValue.length == 0)?<div className="col-md-6 check-multiselect text-danger">Please select at least one</div>:""}*/}
                 </div>
                );
                 break;

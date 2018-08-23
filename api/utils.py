@@ -144,7 +144,7 @@ def convert_to_string(data):
 
 
 def convert_to_json(data):
-    keys = ['compare_type', 'column_data_raw', 'config', 'data', 'model_data', 'meta_data']
+    keys = ['compare_type', 'column_data_raw', 'config', 'data', 'model_data', 'meta_data', 'crawled_data']
 
     for key in keys:
         if key in data:
@@ -528,15 +528,6 @@ class RoboSerializer(serializers.ModelSerializer):
 
         if instance.robo_analysis_done and instance.dataset_analysis_done:
             instance.analysis_done = True
-
-            if 'FAILED' in [
-                customer_dataset_object.status,
-                historical_dataset_object.status,
-                market_dataset_object.status
-                ]:
-                instance.status = 'FAILED'
-            else:
-                instance.status = "SUCCESS"
             instance.status = "SUCCESS"
             instance.save()
 
@@ -583,6 +574,7 @@ class RoboListSerializer(serializers.ModelSerializer):
                 historical_dataset_object.analysis_done and \
                     market_dataset_object.analysis_done:
                 instance.analysis_done = True
+                instance.status = "SUCCESS"
                 instance.save()
 
         ret = convert_to_json(ret)
@@ -625,7 +617,7 @@ class StockDatasetSerializer(serializers.ModelSerializer):
         return instance
 
     def to_representation(self, instance):
-        print get_job_status(instance)
+        # print get_job_status(instance)
         ret = super(StockDatasetSerializer, self).to_representation(instance)
         ret = convert_to_json(ret)
         ret = convert_time_to_human(ret)
@@ -642,11 +634,16 @@ class StockDatasetSerializer(serializers.ModelSerializer):
         # except:
         #     ret['message'] = None
 
+        if ret['meta_data'] == dict():
+            ret['meta_data_status'] = "INPROGRESS"
+        else:
+            ret['meta_data_status'] = "SUCCESS"
+
         if 'request' in self.context:
             # permission details
             permission_details = get_permissions(
                 user=self.context['request'].user,
-                model=Dataset.__name__.lower(),
+                model=StockDataset.__name__.lower(),
             )
             ret['permission_details'] = permission_details
 
@@ -668,7 +665,15 @@ class StockDatasetListSerializer(serializers.ModelSerializer):
         except:
             ret['completed_percentage'] = 0
             ret['completed_message']="Analyzing Target Variable"
+
+        permission_details = get_permissions(
+            user=self.context['request'].user,
+            model=self.Meta.model.__name__.lower(),
+        )
+        ret['permission_details'] = permission_details
         return ret
+
+
 
     class Meta:
         model = StockDataset
@@ -679,7 +684,9 @@ class StockDatasetListSerializer(serializers.ModelSerializer):
             "updated_at",
             "input_file",
             "bookmarked",
-            "analysis_done"
+            "analysis_done",
+            "status",
+            "viewed",
         )
 
 
@@ -1046,6 +1053,17 @@ def get_permissions(user, model, type='retrieve'):
         if type == 'list':
             return {
                 'create_regression': user.has_perm('api.create_regression'),
+            }
+    if model == 'stockdataset':
+        if type == 'retrieve':
+            return {
+                'view_stock': user.has_perm('api.view_stock'),
+                'rename_stock': user.has_perm('api.rename_stock'),
+                'remove_stock': user.has_perm('api.remove_stock'),
+            }
+        if type == 'list':
+            return {
+                'create_stock': user.has_perm('api.create_stock') and user.has_perm('api.view_stock'),
             }
     return {}
 

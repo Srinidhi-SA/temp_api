@@ -30,16 +30,23 @@ DATABASES = {
 }
 
 PROJECT_APP = [
+    # 'silk',
+    # 'django_extensions'
 ]
 
-
 INSTALLED_APPS += PROJECT_APP
+
+LOCAL_MIDDLEWARE = [
+    # 'django_cprofile_middleware.middleware.ProfilerMiddleware',
+    # 'silk.middleware.SilkyMiddleware'
+]
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend', # this is default
     'guardian.backends.ObjectPermissionBackend',
 )
 HADOOP_MASTER = "172.31.70.80"
+HADOOP_MASTER = "34.201.31.116"
 
 YARN = {
     "host": HADOOP_MASTER,
@@ -93,7 +100,7 @@ THIS_SERVER_DETAILS = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://172.31.64.145:6379/1",
+        "LOCATION": "redis://localhost:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient"
         },
@@ -135,8 +142,8 @@ JOBSERVER_EMAIL_TEMPLATE = "Please restart jobserver- IP-"
 
 DEPLOYMENT_ENV = "dev"
 
-CELERY_BROKER_URL = 'redis://172.31.64.145:6379'
-CELERY_RESULT_BACKEND = 'redis://172.31.64.145:6379'
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
@@ -153,7 +160,8 @@ CELERY_QUEUES = {
     }
 }
 
-USING_KYLO = False
+ENABLE_KYLO = False
+KYLO_UI_URL = "http://data-management.marlabsai.com"
 KYLO_SERVER_DETAILS = {
     "host": "52.205.59.95",
     "port" : 8088,

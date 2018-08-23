@@ -1,9 +1,15 @@
 
     
+# natural_language_understanding_settings = {
+#           "url": "https://gateway.watsonplatform.net/natural-language-understanding/api",
+#           "username": "edf8e7fc-7fe9-4f8e-93a2-d68497fa15a2",
+#           "password": "BBeXnQU70YFf"
+#         }
+
 natural_language_understanding_settings = {
           "url": "https://gateway.watsonplatform.net/natural-language-understanding/api",
-          "username": "edf8e7fc-7fe9-4f8e-93a2-d68497fa15a2",
-          "password": "BBeXnQU70YFf"
+          "username": "ec09107d-e627-4c78-ad3b-38c1b3ffca45",
+          "password": "7s6GbZjamUO8"
         }
     
 voice_to_text_settings = { 

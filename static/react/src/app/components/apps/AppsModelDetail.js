@@ -12,6 +12,7 @@ import {STATIC_URL} from "../../helpers/env.js"
 import {isEmpty} from "../../helpers/helper";
 import {Link} from "react-router-dom";
 import {ExportAsPMML} from "./ExportAsPMML";
+import {AppsModelHyperDetail} from "./AppsModelHyperDetail"
 
 @connect((store) => {
 	return {login_response: store.login.login_response,
@@ -26,6 +27,9 @@ import {ExportAsPMML} from "./ExportAsPMML";
 export class AppsModelDetail extends React.Component {
   constructor(props) {
     super(props);
+		this.state={
+			showHyperparameterSummary:false
+		}
   }
   componentWillMount() {
 		this.props.dispatch(storeSignalMeta(null,this.props.match.url));
@@ -59,6 +63,9 @@ export class AppsModelDetail extends React.Component {
   updateModelSummaryFlag(flag){
       this.props.dispatch(updateModelSummaryFlag(flag))
   }
+	gotoHyperparameterSummary(){
+		this.setState({showHyperparameterSummary:true})
+	}
 	showMore(evt){
 			evt.preventDefault();
 			$.each(evt.target.parentElement.children,function(k1,v1){
@@ -75,36 +82,39 @@ export class AppsModelDetail extends React.Component {
 		evt.target.innerHTML = "Show More";
 	}
   render() {
+		if(this.state.showHyperparameterSummary)
+		return(<AppsModelHyperDetail match={this.props.match}/>)
     console.log("apps Model Detail View is called##########3");
   	const modelSummary = store.getState().apps.modelSummary;
 	 	var showExportPmml = true;
 		var showCreateScore = true;
+		var hyperParameterData;
     const modelLink = "/apps/"+this.props.match.params.AppId+"/models";
 	if (!$.isEmptyObject(modelSummary)) {
 		console.log(this.props)
+		 hyperParameterData = store.getState().apps.modelSummary.data.model_hyperparameter;
         showExportPmml = modelSummary.permission_details.downlad_pmml;
 		showCreateScore = modelSummary.permission_details.create_score;
 		//if(this.props.currentAppDetails != null && this.props.currentAppDetails.app_type == "REGRESSION"){
-			var listOfCardList = modelSummary.data.model_summary.listOfCards;
-			var componentsWidth = 0;
-			var cardDataList = listOfCardList.map((data, i) => {
-				var clearfixClass = "col-md-"+data.cardWidth*0.12+" xs-p-30 clearfix";
-				var nonClearfixClass = "col-md-"+data.cardWidth*0.12+" xs-p-30";
+				var listOfCardList = modelSummary.data.model_summary.listOfCards;	var componentsWidth = 0;
+				var cardDataList = listOfCardList.map((data, i) => {
+				var clearfixClass = "col-md-"+data.cardWidth*0.12+" clearfix";
+				var nonClearfixClass = "col-md-"+data.cardWidth*0.12;
 				var cardDataArray = data.cardData;
 				var isHideData = $.grep(cardDataArray,function(val,key){
 					return(val.dataType == "html" && val.classTag == "hidden");
 				});
 				if(data.cardWidth == 100){
 					componentsWidth = 0;
-					return (<div className={clearfixClass}><Card cardData={cardDataArray} /></div>)
+					return (<div className={clearfixClass}><Card cardData={cardDataArray} cardWidth={data.cardWidth}/></div>)
 				}
 				else if(componentsWidth == 0 || componentsWidth+data.cardWidth > 100){
 					componentsWidth = data.cardWidth;
-					return (<div className={clearfixClass}><Card cardData={cardDataArray} />{isHideData.length>0?<a href="" onClick={this.showMore.bind(this)}>Show More</a>:""}</div>)
+					return (<div className={clearfixClass}><Card cardData={cardDataArray} cardWidth={data.cardWidth}/>{isHideData.length>0?<a href="" onClick={this.showMore.bind(this)}>Show More</a>:""}</div>)
 				}
 				else{
 					componentsWidth = componentsWidth+data.cardWidth;
-									return (<div className={nonClearfixClass}><Card cardData={cardDataArray} /></div>)
+									return (<div className={nonClearfixClass}><Card cardData={cardDataArray} cardWidth={data.cardWidth}/></div>)
 							}
 				});
 		/*}
@@ -131,7 +141,7 @@ export class AppsModelDetail extends React.Component {
 
 		                <div className="panel panel-mAd documentModeSpacing box-shadow">
 		                    <div className="panel-heading">
-		                      <h3 className="xs-mt-0">{store.getState().apps.modelSummary.name}
+		                      <h3 className="page-title-4">{store.getState().apps.modelSummary.name}
 
 		                      <div className="btn-toolbar pull-right">
 		                        <div className="btn-group">
@@ -147,16 +157,19 @@ export class AppsModelDetail extends React.Component {
 		                        </div>
 		                      </div>
 		                     </h3>
-		                      <div className="clearfix"></div>
 		                    </div>
 		                   <div className="panel-body no-border">
-		                   <div className="row-fluid">
+		                   <div className="container-fluid">
 
 		                  {cardDataList}
 
 		                    </div>
 												<div class="row">
-		                    <div className="col-md-12 text-right ">
+		                    <div className="col-md-12 text-right xs-mt-30">
+												{!$.isEmptyObject(hyperParameterData)?
+												<span>
+												<Button bsStyle="warning" onClick={this.gotoHyperparameterSummary.bind(this,true)}><i className="zmdi zmdi-hc-lg zmdi-undo"></i> Back</Button>
+												<span className="xs-pl-10"></span></span>:""}
 												{showExportPmml?
 		                    <Button bsStyle="primary" onClick={this.handleExportAsPMMLModal.bind(this,true)}>Export As PMML</Button>:""}
 		                  	{showCreateScore? <AppsCreateScore match={this.props.match}/>:""}

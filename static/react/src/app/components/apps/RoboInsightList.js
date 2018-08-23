@@ -13,7 +13,7 @@ import {
   OverlayTrigger,
   Popover
 } from "react-bootstrap";
-import {getAppsRoboList, getRoboDataset, handleInsightDelete, handleInsightRename, storeRoboSearchElement,clearRoboSummary,storeRoboSortElements} from "../../actions/appActions";
+import {getAppsRoboList, getRoboDataset, handleInsightDelete, handleInsightRename, storeRoboSearchElement,clearRoboSummary,storeRoboSortElements,refreshRoboInsightsList} from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {STATIC_URL} from "../../helpers/env.js";
 import {RoboDataUpload} from "./RoboDataUpload";
@@ -78,6 +78,9 @@ export class RoboInsightList extends React.Component {
 
     }
   }
+  componentDidMount(){
+      this.props.dispatch(refreshRoboInsightsList(this.props));
+  }
   onChangeOfSearchBox(e) {
     if (e.target.value == "" || e.target.value == null) {
       this.props.dispatch(storeRoboSearchElement(""));
@@ -88,6 +91,8 @@ export class RoboInsightList extends React.Component {
       this.props.history.push('/apps-robo?search=' + e.target.value + '')
       this.props.dispatch(storeRoboSearchElement(e.target.value));
       this.props.dispatch(getAppsRoboList(1));
+    }else{
+        this.props.dispatch(storeRoboSearchElement(e.target.value));
     }
   }
 
@@ -100,7 +105,7 @@ export class RoboInsightList extends React.Component {
     console.log("apps robo list is called##########3");
     console.log(this.props);
     //empty search element
-    if (this.props.robo_search_element != "" && (this.props.location.search == "" || this.props.location.search == null)) {
+    /*if (this.props.robo_search_element != "" && (this.props.location.search == "" || this.props.location.search == null)) {
       console.log("search is empty");
       this.props.dispatch(storeRoboSearchElement(""));
       let search_element = document.getElementById('robo_insights');
@@ -110,9 +115,9 @@ export class RoboInsightList extends React.Component {
     //search element ends..
 	 if(this.props.location.sort == "" || this.props.location.sort == null){
 		  this.props.dispatch(storeRoboSortElements("",null));
-	  }
+	  }*/
 
-    if (store.getState().datasets.dataPreviewFlag) {
+    if (this.props.dataPreviewFlag) {
       let _link = "/apps-robo-list/" + store.getState().apps.roboDatasetSlug+"/customer/data/"+store.getState().apps.customerDataset_slug
       return (<Redirect to={_link}/>);
     }
@@ -147,11 +152,9 @@ export class RoboInsightList extends React.Component {
 				
 				<div className="input-group">
 					<div className="search-wrapper">
-						<form>
-						<input type="text" name="robo_insights" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Robo Insights" id="robo_insights" className="form-control search-box"  placeholder="Search robo insights..." required />
+						<input type="text" name="robo_insights" value={this.props.robo_search_element} onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Robo Insights" id="robo_insights" className="form-control search-box"  placeholder="Search robo insights..." required />
 						<span className="zmdi zmdi-search form-control-feedback"></span>
-						<button className="close-icon" type="reset"></button>
-						</form>
+						<button className="close-icon" type="reset" onClick={this.clearSearchElement.bind(this)}></button>
 					</div>
 				</div>
 				</div>
@@ -210,5 +213,13 @@ export class RoboInsightList extends React.Component {
       this.props.history.push('/apps-robo?page=' + eventKey + '')
 
     this.props.dispatch(getAppsRoboList(eventKey));
+  }
+  clearSearchElement(e){
+      this.props.dispatch(storeRoboSearchElement(""));
+      if(this.props.robo_sorton)
+      this.props.history.push('/apps-robo?sort=' + this.props.robo_sorton +'&type='+this.props.robo_sorttype);
+      else
+      this.props.history.push('/apps-robo');
+      this.props.dispatch(getAppsRoboList(1));
   }
 }
