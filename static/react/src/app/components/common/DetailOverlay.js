@@ -31,7 +31,10 @@ export class DetailOverlay extends React.Component {
    console.log("In overlay element");
    console.log(this.props.details)
    let templateList = "";
-   let template = details.map((key,index) =>{
+   let template = {};
+   if(typeof details!="undefined")
+   {
+   template = details.map((key,index) =>{
 	  if(key.name == "analysis list"){
 		  templateList = this.getAnalysisValues(key.displayName,key.value,key.name)
 	  }
@@ -46,6 +49,7 @@ export class DetailOverlay extends React.Component {
 	   else
 	  return( <div>{templateList}</div>);
    })
+  }
    return (
 		   <div id="myPopover" >
        {

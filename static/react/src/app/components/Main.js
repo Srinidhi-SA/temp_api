@@ -5,7 +5,7 @@ import {Login} from "./Login";
 import { connect } from "react-redux";
 import { Redirect } from "react-router";
 import store from "../store";
-import {isEmpty,setUserDetails,getUserDetailsOrRestart} from "../helpers/helper";
+import {isEmpty,setUserDetails,getUserDetailsOrRestart,enableChatbot,checkChatbotPresent} from "../helpers/helper";
 import {cookieObj} from '../helpers/cookiesHandler';
 import Notifications, {notify} from 'react-notify-toast';
 
@@ -20,21 +20,25 @@ export class Main extends React.Component {
 	console.log("props in main:::");
 	console.log(props);
   }
-   componentDidMount () {
-     //for chatbot
-        const script = document.createElement("script");
+  addChatbotScript() {
+    //for chatbot
+      if(!checkChatbotPresent()){
+       const script = document.createElement("script");
 
-        script.src = "https://prodx.in/m-advisor-measure/client-plugin/bot.js";
-        script.async = true;
+       script.src = "https://prodx.in/m-advisor-measure/client-plugin/bot.js";
+       script.async = true;
 
-        document.body.appendChild(script);
-    }
+       document.body.appendChild(script);
+       //enableChatbot();
+     }
+   }
   render() {
 
     console.log("Main is called!!");
     console.log(this.props);
     // console.log(this.props.login_response);
     if (document.cookie.indexOf("JWT ") > 0 ) {
+      this.addChatbotScript()
       return (
         <div className="main_wrapper">
           <LeftPanel/>

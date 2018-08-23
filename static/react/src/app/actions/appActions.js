@@ -1,6 +1,7 @@
 import {API, EMR, STATIC_URL} from "../helpers/env";
 import {PERPAGE, isEmpty, getUserDetailsOrRestart, APPSPERPAGE,statusMessages} from "../helpers/helper";
 import store from "../store";
+import Notifications, {notify} from 'react-notify-toast';
 import {
   APPSLOADERPERVALUE,
   LOADERMAXPERVALUE,
@@ -52,13 +53,14 @@ export function refreshAppsModelList(props) {
   return (dispatch) => {
     if(refreshAppsModelInterval != null)
     clearInterval(refreshAppsModelInterval);
-    refreshAppsModelInterval = setInterval(function() {
-      var pageNo = window.location.href.split("=")[1];
+    refreshAppsModelInterval = setInterval(function() 
+    {
+      var pageNo = window.location.href.split("=").pop();
       if (pageNo == undefined || isNaN(parseInt(pageNo)))
         pageNo = 1;
       if (window.location.pathname == "/"+store.getState().apps.currentAppDetails.app_url)
         dispatch(getAppsModelList(parseInt(pageNo)));
-      }
+    }
     , APPSDEFAULTINTERVAL);
   }
 }
@@ -220,7 +222,7 @@ export function refreshAppsScoreList(props) {
     if(refreshAppsScoresInterval != null)
     clearInterval(refreshAppsScoresInterval);
     refreshAppsScoresInterval = setInterval(function() {
-      var pageNo = window.location.href.split("=")[1];
+      var pageNo = window.location.href.split("=").pop();
       if (pageNo == undefined || isNaN(parseInt(pageNo)))
         pageNo = 1;
       if (window.location.pathname == "/apps/" + store.getState().apps.currentAppDetails.slug + "/scores")
@@ -293,7 +295,17 @@ export function getAppsModelSummary(slug,fromCreateModel) {
   return (dispatch) => {
     return fetchModelSummary(getUserDetailsOrRestart.get().userToken, slug).then(([response, json]) => {
       if (response.status === 200) {
-        if (json.status == SUCCESS) {
+
+          if(json.message && json.message == "failed")
+          {
+            let myColor = { background: '#00998c', text: "#FFFFFF" };
+            notify.show("You are not authorized to view this content.", "custom", 2000,myColor);
+            setTimeout(function() {
+            window.location.pathname="/signals";
+            },2000);
+          }
+
+        else if (json.status == SUCCESS) {
           clearInterval(appsInterval);
           dispatch(fetchModelSummarySuccess(json));
           dispatch(closeAppsLoaderValue());
@@ -414,7 +426,16 @@ export function getAppsScoreSummary(slug) {
   return (dispatch) => {
     return fetchScoreSummary(getUserDetailsOrRestart.get().userToken, slug).then(([response, json]) => {
       if (response.status === 200) {
-        if (json.status == SUCCESS) {
+        if(json.message && json.message == "failed")
+          {
+            let myColor = { background: '#00998c', text: "#FFFFFF" };
+            notify.show("You are not authorized to view this content.", "custom", 2000,myColor);
+            setTimeout(function() {
+            window.location.pathname="/signals";
+            },2000);
+          }
+
+        else if (json.status == SUCCESS) {
           clearInterval(appsInterval);
           dispatch(fetchScoreSummarySuccess(json));
           dispatch(updateRoboAnalysisData(json, "/apps-regression-score"));
@@ -1893,7 +1914,8 @@ export function checkSaveSelectedModels(checkObj,isChecked) {
   else{
     selectedAlgorithms.push(checkObj);
   }
-  var selectedModelCount = selectedAlgorithms.length;
+  var unselectedModelsCount = store.getState().apps.unselectedModelsCount;
+  var selectedModelCount = selectedAlgorithms.length-unselectedModelsCount;
   var modelSummary = store.getState().apps.modelSummary;
   var hyperChartData = modelSummary.data.model_hyperparameter;
   var newHyperChartData = $.each(hyperChartData,function(mk,mv){

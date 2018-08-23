@@ -57,12 +57,14 @@ export class DataVariableSelection extends React.Component {
     componentDidMount() {
     	window.scrollTo(0, 0);
         if(this.props.match.path.includes("createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
-            deselectAllVariablesDataPrev();
+            deselectAllVariablesDataPrev(false);
             DisableSelectAllCheckbox();
             this.props.dispatch( resetSelectedVariables(false) );
         }
-        else
+        else{
         this.props.dispatch( resetSelectedVariables(true) );
+        deselectAllVariablesDataPrev(true);
+        }
         this.props.dispatch(resetSelectedTargetVariable());
        // this.setVariables( this.dimensions, this.measures, this.selectedTimeDimension );
         this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.possibleAnalysisList,true));
@@ -79,11 +81,8 @@ export class DataVariableSelection extends React.Component {
                     if (!$(this).is(":checked"))
                     $(this).prop('disabled', true);
                 });
-                $('.measureAll[type="checkbox"]').each(function() {
-                    $(this).prop('disabled', true);
-                });
-                $('.dimensionAll').prop("disabled",true);
-                $('.measureAll').prop("disabled",true);
+                if(!($("input[name='date_type']:checked").val()))
+                $('.timeDimension').prop("disabled",true);
                 //document.getElementById('measure').disabled = true;
             }
             else{
@@ -93,6 +92,7 @@ export class DataVariableSelection extends React.Component {
                 $('.dimension[type="checkbox"]').each(function() {
                     $(this).prop('disabled', false);
                 });
+                $('.timeDimension').prop("disabled",false);
             }
         }
     }
@@ -180,11 +180,13 @@ export class DataVariableSelection extends React.Component {
             if ( (this.props.isUpdate && this.props.createScoreShowVariables && this.props.match.path.includes("/createScore")) || (this.props.isUpdate && !this.props.match.path.includes("/createScore"))) {
             if(this.props.match.path.includes("createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
                 this.props.dispatch(resetSelectedVariables(false));
-                deselectAllVariablesDataPrev();
+                deselectAllVariablesDataPrev(false);
                 DisableSelectAllCheckbox();
             }
-            else
-            this.props.dispatch( resetSelectedVariables(true));
+            else{
+                this.props.dispatch( resetSelectedVariables(true));
+                deselectAllVariablesDataPrev(true);
+            }
             this.props.dispatch(updateDatasetVariables(this.measures,this.dimensions,this.datetime,this.possibleAnalysisList,false)); 
         }
 
@@ -255,23 +257,19 @@ export class DataVariableSelection extends React.Component {
             }
             if(this.props.match.path.includes("/createScore") && store.getState().apps.currentAppDetails != null && store.getState().apps.currentAppDetails.app_type == "REGRESSION"){
                 let measureArray = $.grep(dataPrev.meta_data.uiMetaData.varibaleSelectionArray,function(val,key){
-                    return(val.columnType == "measure" && val.selected == false && val.targetColumn == false);
+                    return(val.columnType == "measure" && val.selected == false && val.targetColumn == false && val.dateSuggestionFlag == false);
                 });
                 let dimensionArray = $.grep(dataPrev.meta_data.uiMetaData.varibaleSelectionArray,function(val,key){
-                    return(val.columnType == "dimension"  && val.selected == false && val.targetColumn == false);
+                    return(val.columnType == "dimension"  && val.selected == false && val.targetColumn == false && val.dateSuggestionFlag == false);
                 });
                 if(measureArray.length > 10 || (store.getState().datasets.selectedVariablesCount+measureArray.length > 10)){
                     if(store.getState().datasets.measureAllChecked == false)$('.measureAll').prop("disabled",true);
                 }
-                else if(measureArray.length == 0)
-                $('.measureAll').prop("disabled",true);
                 else
                 $('.measureAll').prop("disabled",false);
                 if(dimensionArray.length > 10 || (store.getState().datasets.selectedVariablesCount+dimensionArray.length > 10)){
                     if(store.getState().datasets.dimensionAllChecked == false)$(".dimensionAll").prop("disabled",true);
                 }
-                else if(dimensionArray.length == 0)
-                $(".dimensionAll").prop("disabled",true);
                 else
                 $(".dimensionAll").prop("disabled",false);
 
