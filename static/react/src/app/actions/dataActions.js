@@ -1113,9 +1113,14 @@ export function renameMetaDataColumn(dialog,colName,colSlug,dispatch,actionName)
         actions: [
                   Dialog.CancelAction(),
                   Dialog.OKAction(() => {
+                      if($("#idRenameMetaCloumn").val().trim()=="")
+                      {
+                        bootbox.alert(statusMessages("warning","Please enter the valid column name.","small_mascot"));
+                      }
+                      else{
                       updateColumnName(dispatch,colSlug,$("#idRenameMetaCloumn").val());
                       updateColumnStatus(dispatch,colSlug,$("#idRenameMetaCloumn").val(),actionName);
-
+                      }
                   })
                   ],
                   bsSize: 'medium',

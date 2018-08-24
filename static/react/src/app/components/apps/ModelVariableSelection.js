@@ -11,6 +11,7 @@ import {updateTrainAndTest,createModel,updateSelectedVariable,showLevelCountsFor
 import {AppsLoader} from "../common/AppsLoader";
 import {getDataSetPreview,showAllVariables} from "../../actions/dataActions";
 import {hideTargetVariable} from "../../actions/signalActions";
+import {SET_VARIABLE,statusMessages} from "../../helpers/helper";
 
 @connect((store) => {
     return {login_response: store.login.login_response, dataPreview: store.datasets.dataPreview,
@@ -51,6 +52,13 @@ export class ModelVariableSelection extends React.Component {
         }else if (this.props.targetLevelCounts!=null && ($("#createModelLevelCount").val()==null||$("#createModelLevelCount").val()=="")) {
             bootbox.alert("Please select a sublevel value to analyze...");
           return false;
+        }else if($('#createModelAnalysisList option:selected').val() == ""){
+            bootbox.alert("Please select a variable to analyze...");
+          return false;
+       }else if($('#createModelName').val()!="" && $('#createModelName').val().trim() == ""){
+        bootbox.alert(statusMessages("warning","Please enter a valid model name.","small_mascot"));
+        $('#createModelName').val("").focus();
+        return false;
         }
 
 		if(store.getState().apps.currentAppDetails.app_type == "REGRESSION" || store.getState().apps.currentAppDetails.app_type == "CLASSIFICATION"){

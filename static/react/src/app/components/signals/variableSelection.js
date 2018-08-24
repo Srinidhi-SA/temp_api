@@ -12,7 +12,7 @@ import {CreateSignalLoader} from "../common/CreateSignalLoader";
 import {openCsLoaderModal,closeCsLoaderModal} from "../../actions/createSignalActions";
 import {AdvanceSettings} from "./AdvanceSettings";
 
-import {SET_VARIABLE} from "../../helpers/helper";
+import {SET_VARIABLE,statusMessages} from "../../helpers/helper";
 
 
 var selectedVariables = {measures:[],dimensions:[],date:null};  // pass selectedVariables to config
@@ -75,7 +75,11 @@ export class VariableSelection extends React.Component {
         //this.props.dispatch(handleTargetSelection());
         if($('#signalVariableList option:selected').val() == ""){
             bootbox.alert("Please select a variable to analyze...");
-
+            return false;
+        }
+        else if($('#createSname').val()!="" && $('#createSname').val().trim() == ""){
+            bootbox.alert(statusMessages("warning","Please enter a valid signal name.","small_mascot"));
+            $('#createSname').val("").focus();
             return false;
         }
         if(store.getState().datasets.dataSetTimeDimensions.length > 0){
@@ -128,7 +132,7 @@ export class VariableSelection extends React.Component {
         }
         postData["config"]=config;
         postData["dataset"]=this.props.dataPreview.slug;
-        postData["name"]=$("#createSname").val();
+        postData["name"]=$("#createSname").val().trim();
         console.log(postData);
        this.props.dispatch(createSignal(postData));
     }
