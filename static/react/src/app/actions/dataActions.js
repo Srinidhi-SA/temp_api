@@ -171,7 +171,7 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
     console.log(dataPreview)
     var  slug = dataPreview.slug;
     var dataset = slug;
-    if(window.location.pathname == "/apps-stock-advisor")
+    if(window.location.pathname == "/apps-stock-advisor" || window.location.pathname.includes("apps-stock-advisor-analyze") )
     var getStatus = dataPreview.meta_data_status;
     else
     var getStatus = dataPreview.status;
