@@ -122,7 +122,7 @@ def fetch_stock_news_from_newsapi(cur_stock):
     newsapi = NewsApiClient(api_key=API_KEY)
 
     # /v2/everything
-    top_headlines = newsapi.get_everything(q=cur_stock,
+    top_headlines = newsapi.get_everything(q=str(cur_stock),
                                            language='en',
                                            page_size=100,
                                            domains='fool.com,bloomberg.com,nasdaq.com',
@@ -143,11 +143,12 @@ def fetch_stock_news_from_newsapi(cur_stock):
     histogram = {}
 
     for item in articles:
+
         cur_key = item['time']
         if cur_key in histogram.keys():
             things_to_append = ["description", "title" , "short_desc"]
             for key_to_append in things_to_append:
-                histogram[cur_key][key_to_append] = histogram[cur_key][key_to_append] + " " + item[key_to_append]
+                histogram[cur_key][key_to_append] = str(histogram[cur_key][key_to_append]) + " " + str(item[key_to_append])
         else:
             histogram[cur_key] = item
     return [v for k,v in histogram.items()]
