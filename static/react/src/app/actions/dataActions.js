@@ -1572,6 +1572,8 @@ export function deselectAllVariablesDataPrev(flag){
   let slug=store.getState().datasets.selectedDataSet
   if(dataPrev&&dataPrev.meta_data){
   for(var i=0;i<dataPrev.meta_data.uiMetaData.varibaleSelectionArray.length;i++){
+    if(dataPrev.meta_data.uiMetaData.varibaleSelectionArray[i].columnType == "datetime" || dataPrev.meta_data.uiMetaData.varibaleSelectionArray[i].dateSuggestionFlag)
+    continue;
     dataPrev.meta_data.uiMetaData.varibaleSelectionArray[i].selected=flag;
   }
   dispatchDataPreview(dataPrev,slug)
