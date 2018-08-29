@@ -1392,7 +1392,7 @@ export function crawlDataForAnalysis(url, analysisName, urlForNews) {
   var found = false;
   var stockSymbolsArray = store.getState().apps.appsStockSymbolsInputs;
   for (var i = 0; i < stockSymbolsArray.length; i++) {
-    if (stockSymbolsArray[i].value != '') {
+    if (stockSymbolsArray[i].value != '' && stockSymbolsArray[i].value.trim() != '') {
       found = true;
       break;
     }
@@ -1401,7 +1401,11 @@ export function crawlDataForAnalysis(url, analysisName, urlForNews) {
     var body_msg=statusMessages("warning","Please enter stock analysis name.","small_mascot");
     bootbox.alert(body_msg);
     return;
-	}
+	}else if(analysisName != "" && analysisName.trim() == ""){
+    var body_msg=statusMessages("warning","Please enter valid stock analysis name.","small_mascot");
+    bootbox.alert(body_msg);
+    return;
+  }
 		/*else if(url == ""){
 			bootbox.alert("Please enter stock analysis url.");
 		}*/

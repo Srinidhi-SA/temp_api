@@ -171,7 +171,7 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
     console.log(dataPreview)
     var  slug = dataPreview.slug;
     var dataset = slug;
-    if(window.location.pathname == "/apps-stock-advisor")
+    if(window.location.pathname == "/apps-stock-advisor" || window.location.pathname.includes("apps-stock-advisor-analyze") )
     var getStatus = dataPreview.meta_data_status;
     else
     var getStatus = dataPreview.status;
@@ -1113,9 +1113,14 @@ export function renameMetaDataColumn(dialog,colName,colSlug,dispatch,actionName)
         actions: [
                   Dialog.CancelAction(),
                   Dialog.OKAction(() => {
+                      if($("#idRenameMetaCloumn").val().trim()=="")
+                      {
+                        bootbox.alert(statusMessages("warning","Please enter the valid column name.","small_mascot"));
+                      }
+                      else{
                       updateColumnName(dispatch,colSlug,$("#idRenameMetaCloumn").val());
                       updateColumnStatus(dispatch,colSlug,$("#idRenameMetaCloumn").val(),actionName);
-
+                      }
                   })
                   ],
                   bsSize: 'medium',
