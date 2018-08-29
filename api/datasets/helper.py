@@ -834,7 +834,8 @@ def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
     for obj in validcols:
         if selctedDateSuggestedCol != None:
             if obj["slug"]==selctedDateSuggestedCol:
-                obj.update({"selected":True})
+                # obj.update({"selected":True})
+                obj.update({"selected":False})
         uidFilter = filter(lambda x:x["slug"] == obj["slug"],uidcols)
         if len(uidFilter) > 0:
             obj.update({"uidCol": True})
