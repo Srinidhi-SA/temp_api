@@ -333,9 +333,11 @@ export class DataPreview extends React.Component {
   applyDataSubset() {
     //alert("working");
     this.new_subset = $("#newSubsetName").val()
-    //alert(this.new_subset)
     if (this.new_subset == "" || this.new_subset == null) {
       bootbox.alert("Please enter new config name!")
+    }else if ( (this.new_subset != "" || this.new_subset != null) && this.new_subset.trim()==""){
+      bootbox.alert("Please enter valid config name!");
+      $("#newSubsetName").val("").focus();
     } else {
       let transformationSettings = {};
       transformationSettings.existingColumns = store.getState().datasets.dataTransformSettings;

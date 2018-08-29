@@ -186,6 +186,7 @@ def write_into_databases(job_type, object_slug, results):
         stock_objects = get_db_object(model_name=StockDataset.__name__,
                                            model_slug=object_slug
                                            )
+        results['name'] = stock_objects.name
         results = add_slugs(results, object_slug=object_slug)
         stock_objects.data = json.dumps(results)
         stock_objects.analysis_done = True
@@ -194,6 +195,7 @@ def write_into_databases(job_type, object_slug, results):
         return results
     else:
         print "No where to write"
+
 
 def write_into_databases1(job_type, object_slug, results):
     from api import helper
