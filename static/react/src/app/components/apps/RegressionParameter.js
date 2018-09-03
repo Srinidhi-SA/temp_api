@@ -46,8 +46,8 @@ export class RegressionParameter extends React.Component {
 
    
     componentWillMount(){
-        $(".single").multiselect('destroy');
-        
+        setTimeout(function(){ $('.single').multiselect('destroy'); }, 0);
+       
     }
     componentDidUpdate(){
         var that = this;
