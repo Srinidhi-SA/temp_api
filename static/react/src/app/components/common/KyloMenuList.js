@@ -2,11 +2,16 @@ import React from "react";
 import {Link} from "react-router-dom";
 import {STATIC_URL} from "../../helpers/env";
 import {LIST_OF_KYLO_OPERATIONS} from "../../helpers/kyloHelper"
+import {hidechatbot,removeChatbotOnLogout} from "../../helpers/helper"
 
 export class KyloMenuList extends React.Component {
   constructor(props) {
     super(props);
 
+  }
+  componentWillMount(){
+    hidechatbot()
+    removeChatbotOnLogout()
   }
 
   render() {
