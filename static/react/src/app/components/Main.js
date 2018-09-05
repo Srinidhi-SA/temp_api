@@ -5,7 +5,7 @@ import {Login} from "./Login";
 import { connect } from "react-redux";
 import { Redirect } from "react-router";
 import store from "../store";
-import {isEmpty,setUserDetails,getUserDetailsOrRestart,enableChatbot,checkChatbotPresent} from "../helpers/helper";
+import {isEmpty,setUserDetails,getUserDetailsOrRestart,enableChatbot,checkChatbotPresent,hidechatbot} from "../helpers/helper";
 import {cookieObj} from '../helpers/cookiesHandler';
 import Notifications, {notify} from 'react-notify-toast';
 
@@ -23,6 +23,7 @@ export class Main extends React.Component {
   addChatbotScript() {
     //for chatbot
       if(!checkChatbotPresent()){
+        if(window.location.pathname.indexOf("datamgmt")==-1){
        const script = document.createElement("script");
 
        script.src = "https://prodx.in/m-advisor-measure/client-plugin/bot.js";
@@ -30,8 +31,9 @@ export class Main extends React.Component {
 
        document.body.appendChild(script);
        //enableChatbot();
-     }
+}
    }
+ }
   render() {
 
     console.log("Main is called!!");

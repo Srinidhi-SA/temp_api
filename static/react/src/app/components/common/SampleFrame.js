@@ -1,12 +1,17 @@
 import React from "react";
 import Iframe from 'react-iframe'
-import {getUserDetailsOrRestart} from "../../helpers/helper";
+import {getUserDetailsOrRestart,hidechatbot,removeChatbotOnLogout} from "../../helpers/helper";
 import {KYLO_UI,API} from "../../helpers/env";
 
 
 export class SampleFrame extends React.Component {
   constructor(){
     super();
+  }
+
+  componentWillMount(){
+   hidechatbot()
+  removeChatbotOnLogout()
   }
 
   render() {

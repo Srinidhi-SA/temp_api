@@ -62,9 +62,9 @@ export class AppsLoader extends React.Component {
 		var hideUrl = "";
 		if(this.props.match && (this.props.match.url).indexOf("/createModel") > 0 || this.props.match && (this.props.match.url).indexOf("/createScore") > 0)
 		store.getState().apps.currentAppDetails != null ? hideUrl = "/"+store.getState().apps.currentAppDetails.app_url:hideUrl = "/apps/"+store.getState().apps.currentAppId+"/models";
+		else if((this.props.match.url).includes("/apps-stock-advisor-analyze"))hideUrl = "/apps-stock-advisor";
 		else
 		hideUrl = this.props.match.url;
-
    return (
           <div id="dULoader">
       	<Modal show={store.getState().apps.appsLoaderModal} backdrop="static" onHide={this.closeModelPopup.bind(this)} dialogClassName="modal-colored-header">

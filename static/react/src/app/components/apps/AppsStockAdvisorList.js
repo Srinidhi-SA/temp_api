@@ -51,6 +51,7 @@ export class AppsStockAdvisorList extends React.Component {
 		}
 	}
 	componentDidMount(){
+		window.scrollTo(0, 0);
 		this.props.dispatch(refreshStockAppsList(this.props));
 		this.setState({showloader:false})
 	}
