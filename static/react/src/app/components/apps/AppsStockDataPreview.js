@@ -65,7 +65,7 @@ export class AppsStockDataPreview extends React.Component {
 					<div >
 	            <DataPreview history={this.props.history} match={this.props.match}/>" +
 	            
-	            <div className="row buttonRow" >
+	            <div className="row buttonRow buttonRowChat" >
 				
 				
 				<div class="col-md-11 col-md-offset-1 xs-pl-0">

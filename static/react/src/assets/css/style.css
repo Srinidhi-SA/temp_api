@@ -14822,7 +14822,8 @@ a.disabled { color:#ccc !important; }
 .sel_dset .col-md-10 { padding-left: 0; }
 
 .buttonRow .panel .navbar { min-height:auto; margin-bottom:inherit; }
-
+.buttonRowChat{ margin-top: -90px; margin-bottom: 90px;}
+.side-body .side-body{ padding-bottom: 0px;}
 @media only screen and (max-width: 412px) {
 .navbar-nav.navbar-right {
     float: none;
