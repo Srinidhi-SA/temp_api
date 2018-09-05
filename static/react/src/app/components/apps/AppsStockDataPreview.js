@@ -63,7 +63,7 @@ export class AppsStockDataPreview extends React.Component {
 		if(!$.isEmptyObject(dataPreview)){
 			return (
 					<div >
-	            <DataPreview history={this.props.history} match={this.props.match}/>" +
+	            <DataPreview history={this.props.history} match={this.props.match}/>
 	            
 	            <div className="row buttonRow buttonRowChat" >
 				
