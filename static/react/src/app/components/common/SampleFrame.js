@@ -30,15 +30,21 @@ export class SampleFrame extends React.Component {
     // var kylo_url="http://localhost:3000/index.html#!/"+this.props.match.params.kylo_url
     console.log("url====>"+kylo_url)
    return (
+   <div class="side-body">
+   <div class="page-head"></div>
+   <div class="clearfix"></div>
+	<div class="main-content">
      <Iframe url={kylo_url}
-             width="1150px"
+             width="100%"
              height="600px"
              id="myId"
              className="myClassname"
              display="initial"
              position="relative"
-             styles={{left:"100px",top:"80px"}}
              allowFullScreen/>
+	
+	</div>
+	</div>
        );
   }
 }
