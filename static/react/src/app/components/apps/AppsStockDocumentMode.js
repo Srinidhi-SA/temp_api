@@ -119,7 +119,8 @@ export class AppsStockDocumentMode extends React.Component {
                   <div className="col-md-12">
                     <div className="panel panel-mAd box-shadow">
                       <div className="panel-heading">
-                        <h2 class="pull-left">{this.props.signal.name}</h2>
+                        
+						<h3 class="xs-mt-0">{this.props.signal.name}
                         <div className="btn-toolbar pull-right">
                           <div className="btn-group btn-space">
                             <button className="btn btn-default" type="button" onClick={this.print.bind(this)} title="Print Document">
@@ -140,7 +141,9 @@ export class AppsStockDocumentMode extends React.Component {
                             {/*</Link>*/}
                           </div>
                         </div>
+						
                         <div className="clearfix"></div>
+						</h3>
                       </div>
                       <div className="clearfix"></div>
                       <br/>
