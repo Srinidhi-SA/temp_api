@@ -13804,7 +13804,7 @@ div.dataTables_wrapper div.dataTables_length label select {
     color: #333333;
     /* border: 1px solid; */
     text-overflow: ellipsis;
-    overflow: hidden; white-space: nowrap; text-transform: capitalize; font-weight:normal; display:block; }
+    overflow: hidden; white-space: nowrap; text-transform: capitalize; font-weight:normal; display:block; height:22px; }
 
 .newCardTitle a.title {
     display: inline-block;
