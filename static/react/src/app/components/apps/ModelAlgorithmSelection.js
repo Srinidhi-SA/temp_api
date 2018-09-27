@@ -109,17 +109,19 @@ export class ModelAlgorithmSelection extends React.Component {
                 pageData = algorithmData.map((data,Index) =>{
                     var checkboxId = "check"+Index;
                     return(
-                        <div className="row xs-mb-10">
-                        <div className="col-md-8 col-md-offset-2 bg-highlight-parent">
+                        <div className="row">
+                        <div className="col-md-12">
+						<div className="bg-highlight-parent xs-mb-10">
                         <div className="checkbox">
-                            <div className="ma-checkbox inline">
-                                <input type="checkbox" checked={data.selected} id={checkboxId} onChange={this.changeAlgorithmSelection.bind(this,data)}/><label for={checkboxId}><b>{data.algorithmName}</b></label>
-                                <div className="xs-mt-5">{data.description}</div>
-
+                            <div className="ma-checkbox inline">							
+                                <input type="checkbox" checked={data.selected} id={checkboxId} onChange={this.changeAlgorithmSelection.bind(this,data)}/><label for={checkboxId}><b>{data.algorithmName}</b></label>							
                             </div>
+							<div className="xs-mt-5"><p>{data.description}</p></div>
+                        </div>
+						</div>
                         </div>
                         </div>
-                        </div>
+						
                     );
                 });
                 var buttonName = "Proceed";
@@ -246,9 +248,9 @@ export class ModelAlgorithmSelection extends React.Component {
                         <div class="row">
                             <div class="col-md-12">
                                 {this.state.showParameterTuning == false ?
-                                <div className="panel panel-mAd documentModeSpacing box-shadow">
-                                    <div className="panel-heading">
-                                        <h5 class="panel-title">Please use the following learning algorithms for prediction</h5>
+                                <div className="panel panel-mAd box-shadow">
+                                    <div className="panel-heading xs-mb-10">
+                                        Please use the following learning algorithms for prediction
                                     </div>
                                     <div className="panel-body no-border">
                                      {pageData}
