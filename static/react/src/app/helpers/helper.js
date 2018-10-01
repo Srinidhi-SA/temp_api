@@ -480,7 +480,7 @@ export function renderC3ChartInfo(info) {
     });
     bootbox.dialog({
       title: "Statistical Info",
-      size: 'small',
+      size: 'medium',
       closeButton: true,
       message: "<div>" + listOfData + "</div>",
       onEscape: true

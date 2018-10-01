@@ -15576,17 +15576,17 @@ div.text-center.tbl_th_center th {text-align: center}
 .border-box .col-xs-12 a { cursor: pointer}
 .c3-axis-y text {
    fill: #333333;
-   font-family: "Times New Roman", Times, serif;;
+   /*font-family: "Times New Roman", Times, serif;;*/
     font-size: 13px;
 }
 .c3-axis-x text {
     fill: #333333;
-	font-family: "Times New Roman", Times, serif;;
+	/*font-family: "Times New Roman", Times, serif;;*/
     font-size: 13px;
 }
 .c3-axis-y2 text {
    fill: #333333;
-   font-family: "Times New Roman", Times, serif;;
+   /*font-family: "Times New Roman", Times, serif;;*/
     font-size: 13px;
 }
 .chart-area .c3 svg .c3-title{
