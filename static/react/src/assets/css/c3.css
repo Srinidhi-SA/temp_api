@@ -27,7 +27,7 @@
  .c3-axis-x .tick {
 	 fill: #848484;
 	 font-size:1.28em;
-	 font-family: 'Quicksand', sans-serif;
+	/* font-family: 'Quicksand', sans-serif;*/
 }
 .c3-axis-x:not(.c3-axis) .tick {
     /*visibility: hidden;*/
@@ -35,25 +35,26 @@
 }
 .c3-axis-x-label {
 	font-size:13px;
-	font-family: 'Quicksand', sans-serif;
+	/* font-family: 'Quicksand', sans-serif;*/
 }
 .c3-axis-y .tick {
 	fill: #848484;
 	font-size:1.28em;
-	font-family: 'Quicksand', sans-serif;
+	/* font-family: 'Quicksand', sans-serif;*/
 }
 .c3-axis-y-label {
 	font-size:13px;
-	font-family: 'Quicksand', sans-serif;
+	/* font-family: 'Quicksand', sans-serif;*/
+	margin-right: 5px;
 }
 .c3-axis-y2 .tick {
 	fill: #848484;
 	font-size:1.28em;
-	font-family: 'Quicksand', sans-serif;
+	/* font-family: 'Quicksand', sans-serif;*/
 }
 .c3-axis-y2-label {
 	font-size:13px;
-	font-family: 'Quicksand', sans-serif;
+	/* font-family: 'Quicksand', sans-serif;*/
 }
 /*-- Grid --*/
  .c3-grid line {
@@ -123,7 +124,7 @@
 /*-- Legend --*/
  .c3-legend-item {
     font-size: 12px;
-	font-family: 'Quicksand', sans-serif;
+	/* font-family: 'Quicksand', sans-serif;*/
 }
 .c3-legend-item-hidden {
     opacity: 0.15;
@@ -212,5 +213,5 @@
 .c3 svg .c3-title{
 	font-size:15px;
 	fill:#848484 !important;
-	font-family:quicksand;
+	/* font-family: 'Quicksand', sans-serif;*/
 }
