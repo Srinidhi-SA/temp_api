@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700&subset=cyrillic,cyrillic-ext,greek,greek-ext,latin-ext,vietnamese');
 @import 'font-awesome.min.css';
 @import 'material-design-iconic-font.min.css';
 @import 'pe-icon-7-stroke.css';
@@ -219,7 +220,11 @@ div.col-md-6.col-xs-12{ display:inline-block; float:left; width:48%; margin-bott
 	box-sizing: border-box
 }
 body {
-	font-family: 'Roboto', sans-serif; /* mAdv Old Style 'Open Sans', sans-serif; */
+/*	font-family: 'Roboto', sans-serif;  mAdv Old Style 'Open Sans', sans-serif; */
+
+	font-family: 'Roboto Condensed', sans-serif !important;
+
+
 	font-size: 13px;
 	line-height: 22px;/*1.42857143;*/
 	/*color: #555; mAdvisor Old */
@@ -14893,7 +14898,7 @@ div.pred_disp_block  p, .pred_disp_block_store p { font-size:12px; }
     border-color: transparent;
 }
 
-.btn-toolbar.pull-right .btn-default:hover, .btn-toolbar.pull-right .btn-default:focus, .btn-group.open .btn-default, .btn-group.pull-right .btn-default:hover { background:none; color:#00998c; border-color: transparent}
+.selected .btn-default, .btn-toolbar.pull-right .btn-default:hover, .btn-toolbar.pull-right .btn-default:focus, .btn-group.open .btn-default, .btn-group.pull-right .btn-default:hover { background:none; color:#00998c; border-color: transparent}
 
 .btn-toolbar .dropdown-menu-right .ma-checkbox input[type=checkbox]+label:before, .btn-toolbar .dropdown-menu-right .ma-checkbox input[type=radio]+label:before, .btn-toolbar .dropdown-menu-right .ma-radio input[type=checkbox]+label:before, .btn-toolbar .dropdown-menu-right .ma-radio input[type=radio]+label:before { display: block; float: left; margin-bottom: 3px; }
 

@@ -83,7 +83,10 @@ export class AppsPanel extends React.Component {
       this.props.dispatch(appsStoreSearchEle(e.target.value));
       this.props.dispatch(getAppsList(getUserDetailsOrRestart.get().userToken, 1));
     }
-  }
+      // Clear the Filter
+      if(this.props.app_filtered_keywords!=null)
+      this.props.dispatch(updateAppsFilterList([]));
+ }
   _handleKeyPress = (e) => {
     if (e.key === 'Enter') {
       console.log('searching');
@@ -111,7 +114,11 @@ export class AppsPanel extends React.Component {
     this.props.dispatch(getAppsFilteredList(getUserDetailsOrRestart.get().userToken, 1))
     if(array.length>0)
     this.props.history.push('/apps?filterApplied=' + array)
-
+    else
+    this.props.history.push('/apps')
+    if (document.getElementById('search_apps').value.trim() != ""){
+        document.getElementById('search_apps').value = "";
+    }
   }
   gotoAppsList(appId, appName,appDetails) {
     this.props.dispatch(updateSelectedApp(appId, appName,appDetails));
@@ -297,7 +304,7 @@ export class AppsPanel extends React.Component {
                   </div>
                 </div>
                 <div class="btn-group">
-                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                  <button type="button" title="Sorting" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                     <i className="zmdi zmdi-hc-lg zmdi-sort-asc"></i>
                   </button>
                   <ul role="menu" class="dropdown-menu dropdown-menu-right">
@@ -316,8 +323,8 @@ export class AppsPanel extends React.Component {
                 </li>*/}
                   </ul>
                 </div>
-
-                <div class="btn-group">
+                    
+                <div class={this.props.app_filtered_keywords.length>0? "btn-group selected":"btn-group"}>
 
                   {/*<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter fa-lg"></i> <span class="caret"></span></button>
 
@@ -349,7 +356,7 @@ export class AppsPanel extends React.Component {
 				<label>Operations</label>
 				</div>
 				</li>*/}
-                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                  <button type="button" title="Filter" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                     <i class="zmdi zmdi-hc-lg zmdi-filter-list"></i>
                   </button>
                   <ul role="menu" class="dropdown-menu dropdown-menu-right">
