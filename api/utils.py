@@ -52,7 +52,7 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
                              "--py-files", egg_file_path, driver_file,
                              json.dumps(config)]
         '''
-        command_array = ["spark-submit", "--py-files", egg_file_path,
+        command_array = ["spark-submit", "--master", "yarn", "--py-files", egg_file_path,
                              driver_file,
                              json.dumps(config)]
 
