@@ -165,3 +165,4 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'guardian.backends.ObjectPermissionBackend'
 )
+END_RESULTS_SHOULD_BE_PROCESSED_IN_CELERY = True
