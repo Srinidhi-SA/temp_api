@@ -5432,7 +5432,7 @@ def updateFromNifi(request):
     hive_username=hive_info['username']
     hive_password=hive_info['password']
     schema=request.data["category"]
-    table_name=request.data["feed"]+'_feed'
+    table_name=request.data["feed"]+'_valid'
     feed=request.data['feed']
 
     dataSourceDetails = {
