@@ -27,4 +27,5 @@ pygments
 celery==4.2.1
 django-guardian==1.4.9
 deprecation
+newsapi-python
 celery-once==2.0.0
