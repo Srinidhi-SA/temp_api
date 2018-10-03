@@ -153,3 +153,11 @@ CELERY_QUEUES = {
 PEM_KEY = "/keyfiles/TIAA.pem"
 ENABLE_KYLO = True
 KYLO_UI_URL = "http://data-management.marlabsai.com"
+KYLO_SERVER_DETAILS = {
+    "host": "34.200.233.5",
+    "port" : 8088,
+    "user": "vivek",
+    "key_path": "~/.ssh/vivek.pem",
+    "group_propertie_quote": "madvisor,user",
+    "kylo_file_path":"/opt/kylo/"
+}
