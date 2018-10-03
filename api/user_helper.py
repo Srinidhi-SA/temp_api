@@ -376,12 +376,13 @@ def create_or_update_kylo_auth_file():
     print "user data after dump: "
     print user_data
     headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
-    url="http://data-management-dev.marlabsai.com/proxy/v1/security/users"
+    settings.KYLO_UI_URL
+    url = settings.KYLO_UI_URL + "/proxy/v1/security/users"
     r=requests.post(url,data=user_data,auth=('dladmin','thinkbig'),headers=headers)
     print "response from kylo: "
     print r.text
     #add personal category with Permissions
-    cat_url="http://data-management-dev.marlabsai.com/proxy/v1/feedmgr/categories"
+    cat_url = settings.KYLO_UI_URL + "/proxy/v1/feedmgr/categories"
     id=str(uuid.uuid4())
     millis = int(round(time.time() * 1000))
     print millis
