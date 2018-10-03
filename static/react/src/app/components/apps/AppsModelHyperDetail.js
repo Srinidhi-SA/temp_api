@@ -111,7 +111,7 @@ export class AppsModelHyperDetail extends React.Component {
 
                         <div className="row">
                             <div className="col-lg-12 text-right">
-                                <Button type="button" onClick={this.saveAndShowModelSummary.bind(this)} bsStyle="primary">{(store.getState().apps.modelSummary.data.modelSelected)?"Model Summary":"Save and show Model Summary"}</Button>
+                                <Button type="button" onClick={this.saveAndShowModelSummary.bind(this)} bsStyle="primary">{(store.getState().apps.modelSummary.data.modelSelected)?"Model summery":"Save and show Model summery"}</Button>
                             </div>
                         </div>
                     </div>
