@@ -151,5 +151,5 @@ CELERY_QUEUES = {
 
 
 PEM_KEY = "/keyfiles/TIAA.pem"
-ENABLE_KYLO = False
+ENABLE_KYLO = True
 KYLO_UI_URL = "http://data-management.marlabsai.com"
