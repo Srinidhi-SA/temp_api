@@ -164,6 +164,13 @@ def convert_time_to_human(data):
     return data
 
 
+def update_name_in_json_data(ret):
+    if 'data' in ret:
+        if 'name' in ret['data']:
+            ret['data']['name'] = ret['name']
+    return ret
+
+
 # TODO: use dataserializer
 class InsightSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
@@ -208,6 +215,7 @@ class InsightSerializer(serializers.ModelSerializer):
             model=self.Meta.model.__name__.lower(),
         )
         ret['permission_details'] = permission_details
+        ret = update_name_in_json_data(ret)
         return ret
 
     def update(self, instance, validated_data):
@@ -318,6 +326,7 @@ class TrainerSerlializer(serializers.ModelSerializer):
             model=self.Meta.model.__name__.lower(),
         )
         ret['permission_details'] = permission_details
+        ret = update_name_in_json_data(ret)
         return ret
 
     def update(self, instance, validated_data):
@@ -423,6 +432,7 @@ class ScoreSerlializer(serializers.ModelSerializer):
             model=self.Meta.model.__name__.lower(),
         )
         ret['permission_details'] = permission_details
+        ret = update_name_in_json_data(ret)
         return ret
 
     def update(self, instance, validated_data):
@@ -544,7 +554,7 @@ class RoboSerializer(serializers.ModelSerializer):
         #     ret['message'] = message_list
         # except:
         #     ret['message'] = None
-
+        ret = update_name_in_json_data(ret)
         return ret
 
 
@@ -645,7 +655,7 @@ class StockDatasetSerializer(serializers.ModelSerializer):
                 model=StockDataset.__name__.lower(),
             )
             ret['permission_details'] = permission_details
-
+        ret = update_name_in_json_data(ret)
         return ret
 
     class Meta:
@@ -729,7 +739,7 @@ class AudiosetSerializer(serializers.ModelSerializer):
             ret['message'] = message_list
         except:
             ret['message'] = None
-
+        ret = update_name_in_json_data(ret)
         return ret
 
     class Meta:
