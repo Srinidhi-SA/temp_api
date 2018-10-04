@@ -1067,9 +1067,12 @@ def get_job_status(instance=None):
                 type(instance).__name__,
                 instance.slug
             )
+            print "JobStatusCheck QUEUED ---> {0} | {1}".format(type(instance).__name__, instance.slug)
         except AlreadyQueued:
+            print "JobStatusCheck ALREADY EXISTING ---> {0} | {1}".format(type(instance).__name__, instance.slug)
             pass
         except Exception as err:
+            print "JobStatusCheck.."
             print err
     else:
         get_job_status_from_jobserver(instance)
