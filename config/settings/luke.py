@@ -151,6 +151,14 @@ CELERY_QUEUES = {
 
 
 PEM_KEY = "/keyfiles/TIAA.pem"
-ENABLE_KYLO = False
+ENABLE_KYLO = True
 KYLO_UI_URL = "http://data-management.marlabsai.com"
 END_RESULTS_SHOULD_BE_PROCESSED_IN_CELERY = True
+KYLO_SERVER_DETAILS = {
+    "host": "34.200.233.5",
+    "port" : 8088,
+    "user": "ankush",
+    "key_path": "~/.ssh/ankush.pem",
+    "group_propertie_quote": "madvisor,user",
+    "kylo_file_path":"/opt/kylo/"
+}
