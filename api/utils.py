@@ -823,7 +823,7 @@ class AppListSerializers(serializers.ModelSerializer):
 
 class AppSerializer(serializers.ModelSerializer):
         def to_representation(self, instance):
-            print "in app serializers"
+            # print "in app serializers"
             ret = super(AppSerializer, self).to_representation(instance)
             ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
             if ret['tags'] != None:
@@ -835,14 +835,14 @@ class AppSerializer(serializers.ModelSerializer):
                     if obj['name'] in tags:
                         tag_object.append(obj)
 
-                print tag_object
+                # print tag_object
 
                 ret['tags'] = tag_object
 
             CUSTOM_WORD1_APPS = settings.CUSTOM_WORD1_APPS
             CUSTOM_WORD2_APPS = settings.CUSTOM_WORD2_APPS
             upper_case_name = ret['name'].upper()
-            print upper_case_name
+            # print upper_case_name
             ret['CUSTOM_WORD1_APPS'] = CUSTOM_WORD1_APPS[upper_case_name]
             ret['CUSTOM_WORD2_APPS'] = CUSTOM_WORD2_APPS[upper_case_name]
             if instance.viewed == False and instance.status == 'SUCCESS':
