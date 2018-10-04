@@ -22,10 +22,5 @@ app.autodiscover_tasks()
 # def debug_task(self):
 #     print('Request: {0!r}'.format(self.request))
 
-app.conf.ONCE = {
-  'backend': 'celery_once.backends.Redis',
-  'settings': {
-    'url': 'redis://localhost:6379/0',
-    'default_timeout': 60 * 60
-  }
-}
+from config.settings.base import CELERY_ONCE_CONFIG
+app.conf.ONCE = CELERY_ONCE_CONFIG

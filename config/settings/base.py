@@ -1581,3 +1581,10 @@ CACHE_BASE_DIR="/tmp"
 # SUBMIT_JOB_THROUGH_CELERY = False
 SUBMIT_JOB_THROUGH_CELERY = True
 END_RESULTS_SHOULD_BE_PROCESSED_IN_CELERY = True
+CELERY_ONCE_CONFIG = {
+  'backend': 'celery_once.backends.Redis',
+  'settings': {
+    'url': 'redis://localhost:6379/0',
+    'default_timeout': 60 * 60
+  }
+}
