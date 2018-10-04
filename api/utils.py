@@ -800,7 +800,7 @@ class AppListSerializers(serializers.ModelSerializer):
                 CUSTOM_WORD1_APPS = settings.CUSTOM_WORD1_APPS
                 CUSTOM_WORD2_APPS = settings.CUSTOM_WORD2_APPS
                 upper_case_name = ret['name'].upper()
-                print upper_case_name
+                # print upper_case_name
                 ret['custom_word1'] = CUSTOM_WORD1_APPS[upper_case_name]
                 ret['custom_word2'] = CUSTOM_WORD2_APPS[upper_case_name]
             try:
