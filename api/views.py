@@ -1068,11 +1068,20 @@ def set_result(request, slug=None):
         #     results=json.loads(results)
         # )
 
-        results = tasks.write_into_databases.delay(
-            job_type=job.job_type,
-            object_slug=job.object_id,
-            results=json.loads(results)
-        )
+        process_using_celery = settings.END_RESULTS_SHOULD_BE_PROCESSED_IN_CELERY
+
+        if process_using_celery:
+            results = tasks.write_into_databases.delay(
+                job_type=job.job_type,
+                object_slug=job.object_id,
+                results=json.loads(results)
+            )
+        else:
+            results = tasks.write_into_databases1(
+                job_type=job.job_type,
+                object_slug=job.object_id,
+                results=json.loads(results)
+            )
         job.status = 'SUCCESS'
         job.save()
     return JsonResponse({'result': "success"})

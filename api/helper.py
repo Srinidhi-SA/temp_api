@@ -946,7 +946,7 @@ def get_x_column_from_chart_data_without_xs(chart_data, axes):
 
 
 from celery.decorators import task
-
+from celery_once import QueueOnce, AlreadyQueued
 
 def get_db_object(model_name, model_slug):
     from django.apps import apps
@@ -955,7 +955,7 @@ def get_db_object(model_name, model_slug):
     return obj
 
 
-@task(name='get_job_from_yarn', queue=CONFIG_FILE_NAME)
+@task(base=QueueOnce, name='get_job_from_yarn', queue=CONFIG_FILE_NAME)
 def get_job_from_yarn(model_name=None,model_slug=None):
 
     model_instance = get_db_object(model_name=model_name,
@@ -1062,10 +1062,15 @@ def get_job_status(instance=None):
         return instance.status
 
     if settings.SUBMIT_JOB_THROUGH_YARN:
-        get_job_from_yarn.delay(
-            type(instance).__name__,
-            instance.slug
-        )
+        try:
+            get_job_from_yarn.delay(
+                type(instance).__name__,
+                instance.slug
+            )
+        except AlreadyQueued:
+            pass
+        except Exception as err:
+            print err
     else:
         get_job_status_from_jobserver(instance)
 
