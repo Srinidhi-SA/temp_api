@@ -180,3 +180,11 @@ SUBMIT_JOB_THROUGH_CELERY = True
 
 # CELERY_SCRIPTS_DIR="/home/ubuntu/mAdvisor-api/scripts/"
 END_RESULTS_SHOULD_BE_PROCESSED_IN_CELERY = True
+
+CELERY_ONCE_CONFIG = {
+  'backend': 'celery_once.backends.Redis',
+  'settings': {
+    'url': 'redis://172.31.64.145:6379',
+    'default_timeout': 60 * 60
+  }
+}

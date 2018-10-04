@@ -162,3 +162,11 @@ KYLO_SERVER_DETAILS = {
     "group_propertie_quote": "madvisor,user",
     "kylo_file_path":"/opt/kylo/"
 }
+
+CELERY_ONCE_CONFIG = {
+  'backend': 'celery_once.backends.Redis',
+  'settings': {
+    'url': 'redis://172.31.53.141:6379/',
+    'default_timeout': 60 * 60
+  }
+}
