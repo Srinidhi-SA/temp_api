@@ -169,7 +169,7 @@ export class AppsStockAdvisorList extends React.Component {
 					
 					<div class="clearfix"></div>
 					</div>
-					
+					<div class="clearfix xs-m-10"></div>
 					<div className="row">
 				
 					{stockList}

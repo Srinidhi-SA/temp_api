@@ -81,41 +81,21 @@ export class ScoreCard extends React.Component {
                     <h5 className="title newCardTitle pull-left">
                     {scoreLink1}
                     </h5>
-                    {
-                        isDropDown == true ? <div class="btn-toolbar pull-right">
-                    {/*<!-- Rename and Delete BLock  -->*/}
-                    <a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
-                    <i className="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
-                    </a>
-                    <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                    {permissionDetails.rename_score == true ?
-                    <li onClick={this.handleScoreRename.bind(this, data.slug, data.name)}>
-                    <a className="dropdown-item" href="#renameCard" data-toggle="modal">
-                    <i className="fa fa-edit"></i>
-                    &nbsp;&nbsp;Rename</a>
-                    </li>:""}
-                    {permissionDetails.remove_score == true ?
-                    <li onClick={this.handleScoreDelete.bind(this, data.slug)}>
-                    <a className="dropdown-item" href="#deleteCard" data-toggle="modal">
-                    <i className="fa fa-trash-o"></i>&nbsp;&nbsp;{data.status == "INPROGRESS"
-                                ? "Stop and Delete "
-                                : "Delete"}</a>
-                    </li>:""}
-                    </ul>
-                    {/*<!-- End Rename and Delete BLock  -->*/}
-                    </div>
-                    :""}
+					<div className="pull-right"><img src={STATIC_URL + "assets/images/apps_score_icon.png"} alt="LOADING"/></div>
+					<div className="clearfix"></div>
+					
+                    
                     <div className="clearfix"></div>
                     {percentageDetails}
                     
-                    {/*<!-- Popover Content link -->*/}
+                    {/*<!-- Popover Content link --> 
                     <OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={data}/> </Popover>}>
                     <a className="pover cursor">
                     <div class="card_icon">
                     <img src={STATIC_URL + "assets/images/apps_score_icon.png"} alt="LOADING"/>
                         </div>
                     </a>
-                    </OverlayTrigger>
+                    </OverlayTrigger> */}
                     
                     </div>
                     </div>
@@ -124,7 +104,40 @@ export class ScoreCard extends React.Component {
                     <div className="left_div">
                     <span className="footerTitle"></span>{getUserDetailsOrRestart.get().userName}
                     <span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy HH:MM")}</span>
-                    </div>                        
+                    </div>
+					
+					{
+                        isDropDown == true ? <div class="btn-toolbar pull-right">
+                    {/*<!-- Rename and Delete BLock  -->*/}
+                    <a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
+                    <i className="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
+                    </a>
+                    <ul className="dropdown-menu dropdown-menu-right drp_cst_width" aria-labelledby="dropdownMenuButton">
+					<li className="xs-pl-20 xs-pr-20 xs-pt-10 xs-pb-10"><DetailOverlay details={data}/> </li>
+					<li className="xs-pl-20 xs-pr-20 xs-pb-10">
+					
+						{permissionDetails.rename_score == true ?
+                    <span onClick={this.handleScoreRename.bind(this, data.slug, data.name)}>
+                    <a className="dropdown-item btn-primary" href="#renameCard" data-toggle="modal">
+                    <i className="fa fa-edit"></i>
+                    &nbsp;&nbsp;Rename</a>
+                    </span>:""}
+                    {permissionDetails.remove_score == true ?
+                    <span onClick={this.handleScoreDelete.bind(this, data.slug)}>
+                    <a className="dropdown-item btn-primary" href="#deleteCard" data-toggle="modal">
+                    <i className="fa fa-trash-o"></i>&nbsp;&nbsp;{data.status == "INPROGRESS"
+                                ? "Stop and Delete "
+                                : "Delete"}</a>
+                    </span>:""}
+					<div className="clearfix"></div>
+					</li>
+                    
+                    </ul>
+                    {/*<!-- End Rename and Delete BLock  -->*/}
+                    </div>
+                    :""}
+					
+					
                     </div>
                     </div>
                      <Dialog ref={(el) => { this.dialog = el }} />
