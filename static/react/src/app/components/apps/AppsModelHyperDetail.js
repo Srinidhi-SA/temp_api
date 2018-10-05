@@ -101,7 +101,7 @@ export class AppsModelHyperDetail extends React.Component {
                         <div className="clearfix"></div>
                     </div>
                     <div className="main-content">
-                        <div class="row">
+                        <div class="row predictions">
                             <div class="col-md-12">
                                <Tabs id="tabsName" onSelect={this.changeAlgo.bind(this)} className="tab-container">
                                 {pageData}
