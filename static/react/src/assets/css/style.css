@@ -233,7 +233,7 @@ body {
 	background-color: #f3f3f4; /* edecec f2f4f8height: 100% old bg-color: #ededed -- f0f0f0; #f7f7f7*/
 }
 button, input, select, textarea {
-	font-family: inherit;
+	 
 	font-size: inherit;
 	line-height: inherit
 }
@@ -3130,7 +3130,7 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:focus, a.list-g
 	filter: alpha(opacity=20)
 }
 .popover, .tooltip {
-	font-family: 'Roboto', sans-serif; /*'Open Sans', sans-serif;*/
+	/*font-family: 'Roboto', sans-serif; 'Open Sans', sans-serif;*/
 	font-style: normal;
 	font-weight: 400;
 	letter-spacing: normal;
@@ -4547,7 +4547,7 @@ button:focus {
 .ma-top-header .navbar-header .page-title {
 	display: none;
 	color: #00998c;
-	font-family: Raleway, sans-serif;
+	/*font-family: Raleway, sans-serif;*/
 	font-size: 19px;
 	line-height: 60px
 }
@@ -4566,7 +4566,7 @@ button:focus {
 .ma-top-header .navbar-collapse .navbar-nav>li>a {
 	line-height: 60px;
 	color: #fff;
-	font-family: Raleway, sans-serif;
+	/*font-family: Raleway, sans-serif;*/
 	font-size: 14px;
 	padding: 0 18px;
 	outline: 0
@@ -4707,7 +4707,7 @@ button:focus {
 	padding-bottom: 0
 }
 .ma-top-header .navbar-collapse .ma-icons-nav>li.dropdown .ma-connections .title, .ma-top-header .navbar-collapse .ma-icons-nav>li.dropdown .ma-messages .title, .ma-top-header .navbar-collapse .ma-icons-nav>li.dropdown .ma-notifications .title {
-	font-family: Raleway, sans-serif;
+	/*font-family: Raleway, sans-serif;*/
 	font-size: 13px;
 	color: #8a8a8a;
 	text-align: center;
@@ -4735,7 +4735,7 @@ button:focus {
 	border-top: 1px solid #ebebeb;
 	display: block;
 	outline: 0;
-	font-family: Raleway, sans-serif
+	/*font-family: Raleway, sans-serif*/
 }
 .ma-top-header .navbar-collapse .ma-icons-nav>li.dropdown .ma-connections .footer a:hover, .ma-top-header .navbar-collapse .ma-icons-nav>li.dropdown .ma-messages .footer a:hover, .ma-top-header .navbar-collapse .ma-icons-nav>li.dropdown .ma-notifications .footer a:hover {
 	background-color: #f5f5f5
@@ -4787,7 +4787,7 @@ button:focus {
 	top: 6px
 }
 .ma-top-header .navbar-collapse .ma-icons-nav>li.dropdown .ma-messages .ma-scroller>.content>ul>li>a .user-content .name, .ma-top-header .navbar-collapse .ma-icons-nav>li.dropdown .ma-messages .ma-scroller>.content>ul>li>a .user-content .text-content, .ma-top-header .navbar-collapse .ma-icons-nav>li.dropdown .ma-notifications .ma-scroller>.content>ul>li>a .user-content .name, .ma-top-header .navbar-collapse .ma-icons-nav>li.dropdown .ma-notifications .ma-scroller>.content>ul>li>a .user-content .text-content {
-	font-family: Raleway, sans-serif;
+	/*font-family: Raleway, sans-serif;*/
 	font-weight: 500;
 	font-size: 13px
 }
@@ -4875,7 +4875,7 @@ button:focus {
 	vertical-align: middle
 }
 .ma-top-header .navbar-collapse .ma-icons-nav>li.dropdown .ma-connections .content ul li .field>span {
-	font-family: Raleway, sans-serif;
+	/*font-family: Raleway, sans-serif;*/
 	color: #8a8a8a;
 	font-weight: 500;
 	font-size: 13px
@@ -5821,7 +5821,7 @@ body.open-right-sidebar .ma-right-sidebar {
 }
 .ma-right-sidebar .user-info span {
 	display: block;
-	font-family: Raleway, sans-serif
+	/*font-family: Raleway, sans-serif*/
 }
 .ma-right-sidebar .user-info span.name {
 	color: #e1e1e1;
@@ -6201,7 +6201,7 @@ body.open-right-sidebar .ma-right-sidebar {
 }
 .chat .chat-contact-list .user a .user-data .name, .chat .chat-contact-list .user a .user-data2 .name, .chat .contact .user a .user-data .name, .chat .contact .user a .user-data2 .name, .chat .recent .user a .user-data .name, .chat .recent .user a .user-data2 .name {
 	color: #555;
-	font-family: Raleway, sans-serif;
+	/*font-family: Raleway, sans-serif;*/
 	font-weight: 500
 }
 .ma-right-sidebar .chat .chat-contact-list .user a .user-data .name, .ma-right-sidebar .chat .chat-contact-list .user a .user-data2 .name, .ma-right-sidebar .chat .contact .user a .user-data .name, .ma-right-sidebar .chat .contact .user a .user-data2 .name, .ma-right-sidebar .chat .recent .user a .user-data .name, .ma-right-sidebar .chat .recent .user a .user-data2 .name {
@@ -7109,7 +7109,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00998c', end
 	text-align: center;
 	background-color: #fff;
 	line-height: 50px;
-	font-family: Raleway, sans-serif;
+	/*font-family: Raleway, sans-serif;*/
 	font-weight: 600;
 	color: #686868
 }
@@ -8713,7 +8713,7 @@ li.L1, li.L3, li.L5, li.L7, li.L9 {
 	line-height: 20px;
 	font-size: 15px;
 	font-weight: 400;
-	font-family: Raleway, sans-serif;
+	/*font-family: Raleway, sans-serif;*/
 	margin-top: 10px;
 	padding-bottom: 10px
 }
@@ -8763,7 +8763,7 @@ box-shadow: 0px 0px 14px 4px rgba(0,0,0,0.15); */
 	box-shadow: none;
 	color: #a3a2a2;
 	padding: 0;
-	font-family: Raleway, sans-serif;
+	/*font-family: Raleway, sans-serif;*/
 	font-size: 14px;
 	font-weight: 500;
 	height: 36px
@@ -8826,7 +8826,7 @@ box-shadow: 0px 0px 14px 4px rgba(0,0,0,0.15); */
 	display: block;
 	color: #fff;
 	font-size: 130px;
-	font-family: Raleway, sans-serif;
+	/*font-family: Raleway, sans-serif;*/
 	font-weight: 400;
 	line-height: 120px;
 	text-shadow: 6px 5px 0 rgba(0, 0, 0, .1);
@@ -12504,7 +12504,7 @@ form.dropzone .note {
 	overflow: auto
 }
 .md-editor>textarea {
-	font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+	/*font-family: Menlo, Monaco, Consolas, "Courier New", monospace;*/
 	font-size: 13px;
 	outline: 0;
 	outline: dotted thin\9;
@@ -14608,7 +14608,7 @@ table.apps_table_style thead th { font-weight:bold }
 .ex_bg { background: #f7f7f7; }
 
 .panel.panel-mAd { padding: 10px 15px; border:none;  }
-.txt-justify { text-align: justify }
+.txt-justify {/* text-align: justify */}
 
 .panel-primary-p1 .mAd_icons.ic_inflnce {
     width: 22px;
@@ -15595,7 +15595,7 @@ div.text-center.tbl_th_center th {text-align: center}
     font-size: 13px;
 }
 .chart-area .c3 svg .c3-title{
-	font-family: 'Roboto', sans-serif !important;
+	/*font-family: 'Roboto', sans-serif !important;*/
     font-size: 17px !important;
 	fill : #333333 !important;
 }

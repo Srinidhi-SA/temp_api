@@ -1,7 +1,7 @@
 /******c3 bar chart********************/
 
 .c3 svg {
-    font: 10px sans-serif;
+    font-size: 10px ;
 
 }
 .c3 path, .c3 line {

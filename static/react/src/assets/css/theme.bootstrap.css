@@ -11,7 +11,8 @@
 .tablesorter-bootstrap thead td,
 .tablesorter-bootstrap tfoot th,
 .tablesorter-bootstrap tfoot td {
-	font: 14px/20px Arial, Sans-serif;
+	/*font: 14px/20px Arial, Sans-serif;*/
+	font: 14px/20px;
 	font-weight: bold;
 	padding: 4px;
 	margin: 0 0 18px;
