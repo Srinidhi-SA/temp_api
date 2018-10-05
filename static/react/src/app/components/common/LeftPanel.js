@@ -58,8 +58,8 @@ class LeftPanel extends React.Component {
               <ul className="nav navbar-nav">
               {(view_signal_permission=="true")?
                 <li>
-                  <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" className="sdb sdb_signal" to="/signals">
-                    <span></span>
+                  <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" className="sdb" to="/signals">
+                    <i className="fa fa-podcast fa-2x" aria-hidden="true"></i><br />
                     SIGNALS</NavLink>
                 </li>:<li className="notAllowed" title="Access Denied">
                   <NavLink className="sdb sdb_signal deactivate" to="/signals">
@@ -73,14 +73,14 @@ class LeftPanel extends React.Component {
                   </li>*/}
                 {(APPS_ALLOWED==true)?
                 <li>
-                  <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" isActive={(match,location) => /^[/]apps/.test(location.pathname)} className=" sdb sdb_app" to="/apps">
-                    <span></span>
+                  <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" isActive={(match,location) => /^[/]apps/.test(location.pathname)} className=" sdb" to="/apps">
+                     <i className="fa fa-cubes fa-2x" aria-hidden="true"></i><br />
                     APPS</NavLink>
                 </li>:""}
                 {(view_data_permission=="true")?
                 <li>
-                  <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" className="sdb sdb_data" to="/data">
-                    <span></span>
+                  <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" className="sdb" to="/data">
+                    <i className="fa fa-database fa-2x" aria-hidden="true"></i><br />
                     DATA</NavLink>
                 </li>:<li className="notAllowed" title="Access Denied">
                   <NavLink className="sdb sdb_data deactivate" to="/data">
@@ -93,9 +93,9 @@ class LeftPanel extends React.Component {
                       SETTINGS</NavLink>
                   </li> */}
                   {(enable_kylo==true||enable_kylo=="True"||enable_kylo=="true")?<li>
-                    <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" isActive={(match,location) => /^[/]datamgmt/.test(location.pathname)} className=" sdb sdb_story" to="/datamgmt">
-                      <span></span>
-                      DATA MANAGE</NavLink>
+                    <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" isActive={(match,location) => /^[/]datamgmt/.test(location.pathname)} className=" sdb" to="/datamgmt">
+                      <i className="fa fa-folder-open fa-2x" aria-hidden="true"></i><br />
+                      DATA<br />MANAGE</NavLink>
                   </li>:<div/>}
               </ul>
             </div>

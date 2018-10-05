@@ -242,7 +242,7 @@ export class OverViewPage extends React.Component {
                 ]}/>*/}
               </div>
               <div class="col-md-8">
-                <h2>{storyName}</h2>
+                <h2><i class="zmdi zmdi-arrow-left"></i> {storyName}</h2>
               </div>
             </div>
             <div class="clearfix"></div>
@@ -500,7 +500,7 @@ export class OverViewPage extends React.Component {
                   <div className="panel panel-mAd box-shadow">
                     <div className="panel-heading">
 
-                      <h3 className="xs-mt-0">{storyName}
+                      <h3 className="xs-mt-0 xs-mb-0"><a href="javascript:history.back()"><i class="zmdi zmdi-arrow-left"></i></a> {storyName}
 
                         <div className="btn-toolbar pull-right">
                           <div className="btn-group">

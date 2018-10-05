@@ -475,7 +475,7 @@ export class DataPreview extends React.Component {
               <th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)} title={thElement.ignoreSuggestionMsg}>
                 <a href="#" data-toggle="dropdown" className={anchorCls}>
                   <i className={iconCls}></i>
-                  {thElement.name}{this.props.match.url.indexOf('/apps-stock-advisor/')<0?<b className="caret"></b>:""}
+                  <span>{thElement.name}</span>{this.props.match.url.indexOf('/apps-stock-advisor/')<0?<b className="caret"></b>:""}
                 </a>
                 {this.props.match.url.indexOf('/apps-stock-advisor/')<0?dataValidationCom:""}
               </th>
@@ -483,9 +483,9 @@ export class DataPreview extends React.Component {
           } else {
             return (
               <th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)}>
-                <a href="#" data-toggle="dropdown" id={thElement.slug} className={anchorCls}>
+                <a href="#" data-toggle="dropdown" id={thElement.slug} className={anchorCls} title={thElement.name}>
                   <i className={iconCls}></i>
-                  {thElement.name}<b className="caret"></b>
+                  <span>{thElement.name}</span> <b className="caret"></b>
                 </a>
                 {dataValidationCom}
               </th>
@@ -496,7 +496,7 @@ export class DataPreview extends React.Component {
           {/*else{
             	   return(
    						<th key={thIndex} className={cls} onClick={this.setSideElements.bind(this)}>
-   						<a href="#"  id={thElement.slug} className={anchorCls}><i className={iconCls}></i> {thElement.name}</a>
+   						<a href="#"  id={thElement.slug} className={anchorCls} title={thElement.name}><i className={iconCls}></i> <span>{thElement.name}</span></a>
    						</th>
    				);
                }*/
@@ -568,7 +568,7 @@ export class DataPreview extends React.Component {
             <div className="page-head">
               <div className="row">
                 <div className="col-md-8">
-                  <h3 className="xs-mt-0 text-capitalize">Data Preview</h3>
+                  <h3 className="xs-mt-0 xs-mb-0 text-capitalize">Data Preview</h3>
                 </div>
               </div>
               <div className="clearfix"></div>
