@@ -139,10 +139,9 @@ export class AudioFileList extends React.Component {
 				  </div>	
 							
 						</div>	<div class="clearfix"></div>
-					</div>
-
+				</div>
 				
-			
+				<div class="clearfix xs-m-10"></div>
 				
 				<div className="row">
 				{audioFileList}
