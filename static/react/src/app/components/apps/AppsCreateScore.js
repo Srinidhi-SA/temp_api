@@ -9,7 +9,7 @@ import {getAllDataList,getDataSetPreview,storeSignalMeta,updateDatasetName} from
 
 
 @connect((store) => {
-	return {login_response: store.login.login_response, 
+	return {login_response: store.login.login_response,
 		appsModelShowModal: store.apps.appsModelShowModal,
 		allDataList: store.datasets.allDataSets,
 		dataPreview: store.datasets.dataPreview,
@@ -39,6 +39,14 @@ export class AppsCreateScore extends React.Component {
 	openScorePopup(){
     	this.props.dispatch(showCreateScorePopup())
     }
+		findMaxEvaluationMetricValue(algorithms){
+			let max=0
+			for( let i=0;i<algorithms.length;i++){
+				if(algorithms[i].evaluationMetricValue>max)
+				max=algorithms[i].evaluationMetricValue
+			}
+			return max
+		}
     closeScorePopup(){
     	this.props.dispatch(hideCreateScorePopup())
     }
@@ -49,8 +57,8 @@ export class AppsCreateScore extends React.Component {
 		this.props.dispatch(updateSelectedAlgObj($("#algorithms").find(":selected").data("value")));
     	this.props.dispatch(getDataSetPreview(this.selectedData));
     	this.props.dispatch(hideCreateScorePopup());
-    	
-    	
+
+
     }
     updateDataset(e){
     	this.props.dispatch(updateDatasetName(e.target.value));
@@ -74,10 +82,14 @@ export class AppsCreateScore extends React.Component {
 			renderSelectBox = "No Datasets"
 		}
 		if(algorithms){
+			let max_evaluationMetricValue=this.findMaxEvaluationMetricValue(algorithms)
+
 			algorithmNames = <select id="algorithms" name="selectbasic" class="form-control">
 			{algorithms.map(algorithm =>
+			(algorithm.evaluationMetricValue==max_evaluationMetricValue)?
+			<option key={algorithm.slug+algorithm['Model Id']} data-value={JSON.stringify(algorithm)} value={algorithm.slug} selected="selected">{algorithm.name}-{algorithm['Model Id']}-{algorithm.evaluationMetricValue}({algorithm.evaluationMetricName})</option>:
 			<option key={algorithm.slug+algorithm['Model Id']} data-value={JSON.stringify(algorithm)} value={algorithm.slug}>{algorithm.name}-{algorithm['Model Id']}-{algorithm.evaluationMetricValue}({algorithm.evaluationMetricName})</option>
-			)}
+		)}
 			</select>
 		}else{
 			algorithmNames = "No Algorithms"
@@ -111,4 +123,4 @@ export class AppsCreateScore extends React.Component {
 		)
 	}
 
-}	  
+}
