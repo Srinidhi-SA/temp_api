@@ -63,7 +63,10 @@ export class AppsCreateStockAnalysis extends React.Component {
 				<div class="newCardStyle firstCard">
 				<div class="card-header"></div>
 				<div class="card-center newStoryCard">
-				<div class="col-xs-12 text-center">+<br/><small>Analyze</small></div>
+								
+				<div class="col-xs-3 col-xs-offset-2 xs-pr-0"><i class="fa fa-file-text-o fa-4x"></i></div>
+				<div class="col-xs-6 xs-m-0 xs-pl-0"><small>Analyze</small></div>
+				
 				</div>
 				</div>
 				
@@ -93,7 +96,7 @@ export class AppsCreateStockAnalysis extends React.Component {
 				<div class="col-md-10 col-md-offset-2">
 				 <div className="row">
 	              <div className="col-md-12 text-right">
-		         <Button bsStyle="info" onClick={this.addMoreStockSymbols.bind(this)}> <i className="fa fa-plus"></i></Button>
+		         <Button bsStyle="default" onClick={this.addMoreStockSymbols.bind(this)}> <i className="fa fa-plus"></i></Button>
 		         </div> 
 		         </div>
 				<div >

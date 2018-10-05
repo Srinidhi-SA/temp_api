@@ -76,7 +76,7 @@
 .tablesorter-ice tbody > tr:hover > td,
 .tablesorter-ice tbody > tr.even:hover > td,
 .tablesorter-ice tbody > tr.odd:hover > td {
-	background-color: #ebf2fa;
+	background-color: #f9f9f9;
 }
 
 /* table processing indicator */
