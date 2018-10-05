@@ -181,6 +181,7 @@ export class RoboInsightList extends React.Component {
 			  </div>
               </div>
             </div>
+			<div class="clearfix xs-m-10"></div>
             <div className="row">
              {appsRoboList}
               <div className="clearfix"></div>

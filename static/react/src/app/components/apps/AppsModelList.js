@@ -177,7 +177,7 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                         </div>
                         </div>
                         
-                        <div class="clearfix"></div>
+                        <div class="clearfix xs-m-10"></div>
 
                         <div className="row">
                         {appsModelList}

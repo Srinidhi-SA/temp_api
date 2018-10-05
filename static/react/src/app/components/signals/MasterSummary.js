@@ -66,7 +66,7 @@ export class MasterSummary extends React.Component {
               ]}/>
             </div>
             <div class="col-md-8">
-              <h3 className="xs-mt-0 text-capitalize">{heading}</h3>
+              <h3 className="xs-mt-0 xs-mb-0 text-capitalize"><a href="/signals"><i class="zmdi zmdi-arrow-left"></i></a> {heading}</h3>
             </div>
           </div>
           <div class="clearfix"></div>

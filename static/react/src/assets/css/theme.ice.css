@@ -7,7 +7,8 @@
 /* header */
 .tablesorter-ice th,
 .tablesorter-ice thead td {
-	font: 12px/18px Arial, Sans-serif;
+	/*font: 12px/18px Arial, Sans-serif;*/
+	font: 12px/18px;
 	color: #555;
 	background-color: #f6f8f9;
 	border-collapse: collapse;
@@ -76,7 +77,7 @@
 .tablesorter-ice tbody > tr:hover > td,
 .tablesorter-ice tbody > tr.even:hover > td,
 .tablesorter-ice tbody > tr.odd:hover > td {
-	background-color: #ebf2fa;
+	background-color: #f9f9f9;
 }
 
 /* table processing indicator */

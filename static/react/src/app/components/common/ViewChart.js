@@ -90,7 +90,7 @@ export class ViewChart extends React.Component {
                 <h3 className="modal-title">View Chart</h3>
                 </Modal.Header>
                 <Modal.Body>
-                <Scrollbars className="thumb-horizontal" style={{width:850, minHeight:350,maxheight:500 }}  >
+                <Scrollbars className="thumb-horizontal" style={{width:850, minHeight:380,maxheight:500 }}  >
 
 
                 <div className={imgDetails}>

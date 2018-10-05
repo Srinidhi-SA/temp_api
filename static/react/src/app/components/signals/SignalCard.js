@@ -111,29 +111,10 @@ export class SignalCard extends React.Component {
                         <h5 className="title newCardTitle pull-left">
                           {signalClick}
                         </h5>
-                        {
-                            isDropDown == true ? <div class="btn-toolbar pull-right">
-                             {/*<!-- Rename and Delete BLock  -->*/}
-                      <a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
-                        <i className="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
-                      </a>
-                      <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                     {permissionDetails.rename_signal == true ?
-                        <li onClick={this.handleRename.bind(this, story.slug, story.name)}>
-                          <a className="dropdown-item" href="#renameCard" data-toggle="modal">
-                            <i className="fa fa-edit"></i>&nbsp;&nbsp;Rename</a>
-                        </li>:""}
-{permissionDetails.remove_signal == true ?
-                        <li onClick={this.handleDelete.bind(this, story.slug)}>
-                          <a className="dropdown-item" href="#deleteCard" data-toggle="modal">
-                            <i className="fa fa-trash-o"></i>&nbsp;&nbsp;{story.status == "INPROGRESS"
-                              ? "Stop and Delete "
-                              : "Delete"}</a>
-                        </li> :""}
-                      </ul>
-                      {/*<!-- End Rename and Delete BLock  -->*/}
-                          </div>:<div class="btn-toolbar pull-right"></div>
-                        }
+						<div className="pull-right">{iconDetails}</div>
+                    <div className="clearfix"></div>
+					
+                        
 
                           <div className="clearfix"></div>
 
@@ -143,12 +124,12 @@ export class SignalCard extends React.Component {
                                <span class="inProgressIconText">&nbsp;{story.completed_percentage}&nbsp;%</span>
                         </div>*/}
 
-                        <OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={story}/> </Popover>}>
+                     {/* <OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={story}/> </Popover>}>
                         <a className="pover cursor">
                         <div class="card_icon">
                         {iconDetails}
                         </div></a>
-                        </OverlayTrigger>
+                        </OverlayTrigger>*/}
 
                       </div>
 
@@ -160,6 +141,39 @@ export class SignalCard extends React.Component {
                       <span className="footerTitle footerTitle">{dateFormat(story.created_at, "mmm d,yyyy HH:MM")}</span>
                     </div>
 
+					{
+
+                            isDropDown == true ? <div class="btn-toolbar pull-right">
+                             {/*<!-- Rename and Delete BLock  -->*/}
+                      <a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
+                        <i className="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
+                      </a>
+                      <ul className="dropdown-menu dropdown-menu-right drp_cst_width" aria-labelledby="dropdownMenuButton">
+						<li className="xs-pl-20 xs-pr-20 xs-pt-10 xs-pb-10"><DetailOverlay details={story}/> </li>
+						<li className="xs-pl-20 xs-pr-20 xs-pb-10">
+							
+							{permissionDetails.rename_signal == true ?
+                        <span onClick={this.handleRename.bind(this, story.slug, story.name)}>
+                          <a className="dropdown-item btn-primary" href="#renameCard" data-toggle="modal">
+                            <i className="fa fa-edit"></i>&nbsp;&nbsp;Rename</a>
+                        </span>:""}
+						
+					{permissionDetails.remove_signal == true ?
+                        <span onClick={this.handleDelete.bind(this, story.slug)}>
+                          <a className="dropdown-item btn-primary" href="#deleteCard" data-toggle="modal">
+                            <i className="fa fa-trash-o"></i>&nbsp;&nbsp;{story.status == "INPROGRESS"
+                              ? "Stop and Delete "
+                              : "Delete"}</a>
+                        </span> :""}
+						<div className="clearfix"></div>
+						</li>
+					 
+						
+						
+                      </ul>
+                      {/*<!-- End Rename and Delete BLock  -->*/}
+                          </div>:<div class="btn-toolbar pull-right"></div>
+                        }
 
                     {/*popover*/}
 
