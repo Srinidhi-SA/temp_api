@@ -76,9 +76,8 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                             {modelLink1}
                             </h5>
 							<div className="pull-right">{store.getState().apps.currentAppDetails.app_type == "REGRESSION"?<img src={ STATIC_URL + "assets/images/apps_regression_icon.png" } alt="LOADING"/>:<img src={ STATIC_URL + "assets/images/apps_model_icon.png" } alt="LOADING"/>}</div>
-                    <div className="clearfix"></div>
-							
-                            
+							<div className="clearfix"></div>
+							 
 							
                             <div className="clearfix"></div>
                                 {percentageDetails}
