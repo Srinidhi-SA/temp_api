@@ -72,11 +72,63 @@ export class MasterSummary extends React.Component {
           <div class="clearfix"></div>
         </div>
         <div className="main-content">
-
+			
+				<div class="row xs-mt-20">					
+						<div className="col-md-4 col-md-offset-2">
+							<div className="box-shadow xs-p-20">							
+							<div className="row">
+								<div className="col-xs-8">
+									<h4 class="xs-mt-15"><img src={STATIC_URL + "assets/images/s_d_carIcon.png"}/> {dText}							
+									 
+									</h4>
+								</div>
+								<div className="col-xs-4">
+										<h2 className="text-right"> 							
+										{noOfDimention}
+										</h2>
+								</div>
+							</div>
+							</div>
+						</div>
+						<div className="col-md-4">							
+							<div className="box-shadow xs-p-20">
+							<div className="row">
+								<div className="col-xs-8">
+									<h4 class="xs-mt-15"><img src={STATIC_URL + "assets/images/s_m_carIcon.png"}/> {mText}</h4>
+								</div>
+								<div className="col-xs-4">
+										<h2 className="text-right"> 							
+										{noOfMeasures}
+										</h2>
+								</div>
+							</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="row">					
+						<div className="col-md-8 col-md-offset-2">
+							<div className="xs-pt-50">
+							<Card cardData={summary}/>
+							</div>
+						</div>
+					</div>
+					
+					<div class="row">					
+						<div className="col-md-8 col-md-offset-2">
+							<div className="xs-pt-50 text-right">
+							 <Link to={overViewLink} className="btn btn-primary btn-md">
+                          View Summary
+                        </Link>
+							</div>
+						</div>
+					</div>
+					
+					{/*
 				<div className="panel panel-default">
-					<div className="panel-body no-border box-shadow">
-
-
+					<div className="panel-body no-border">
+					
+					
                   <div className="row">
 
                       <div className="col-md-9">
@@ -92,7 +144,7 @@ export class MasterSummary extends React.Component {
                                   </td>
                                 </tr>
                                 <tr>
-                                  <td ><img src={STATIC_URL + "assets/images/icon_dimension.png"}/>
+                                  <td ><img src={STATIC_URL + "assets/images/s_d_carIcon.png"}/>
                                   </td>
                                   <td class="text-center">
                                     <h3>
@@ -112,7 +164,7 @@ export class MasterSummary extends React.Component {
                                   </td>
                                 </tr>
                                 <tr>
-                                  <td ><img src={STATIC_URL + "assets/images/icon_measure.png"}/></td>
+                                  <td ><img src={STATIC_URL + "assets/images/s_m_carIcon.png"}/></td>
                                   <td class="text-center">
                                     <h3>
                                       {mText}</h3>
@@ -146,7 +198,7 @@ export class MasterSummary extends React.Component {
                   </div>
 
              </div>
-				</div>
+				</div> */}
 
 
         </div>
