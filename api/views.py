@@ -5076,7 +5076,7 @@ def set_messages(request, slug=None):
     data = request.body
     data = json.loads(data)
     if 'stageName' not in data:
-        return JsonResponse({'message': "Success"})
+        return JsonResponse({'message': "Failed"})
     from api.redis_access import AccessFeedbackMessage
     ac = AccessFeedbackMessage()
     data = ac.append_using_key(slug, data)
