@@ -1103,7 +1103,7 @@ def use_set_result(request, slug=None):
     job.status = 'SUCCESS'
     job.save()
 
-    return JsonResponse({'result': results})
+    return JsonResponse({'result': 'Success'})
 
 
 # def write_into_databases(job_type, object_slug, results):
