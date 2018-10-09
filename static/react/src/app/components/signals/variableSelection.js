@@ -303,33 +303,33 @@ export class VariableSelection extends React.Component {
 
                 <div className="panel panel-default xs-mb-0">
                 <div className="panel-body no-border box-shadow">
-                <Form onSubmit={this.createSignal.bind(this)}>
+                <Form onSubmit={this.createSignal.bind(this)} className="form-horizontal">
                 <FormGroup role="form">
-                <div className="row">
-                <div className="col-lg-2"><label for="signalVariableList">I want to analyze </label></div>
-                <div className="col-lg-4">
-                <div className="htmlForm-group">
+				 
+				<label for="signalVariableList" className="col-lg-2 control-label cst-fSize">I want to analyze </label>
+				<div className="col-lg-4">                 
                 <select className="form-control" id="signalVariableList"  onChange={this.setPossibleList.bind(this)}>
                 <option value=""></option>
                 {renderSelectBox}
-                </select>
+                </select>                 
                 </div>
-                </div>
-                <div className="col-lg-4">
+				 <div className="col-lg-4">
                 <div className="ma-checkbox inline treatAsCategorical hidden" ><input id="idCategoricalVar" type="checkbox" onClick={this.handleCategoricalChk.bind(this)}/><label htmlFor="idCategoricalVar">Treat as categorical variable</label></div>
                 </div>
-
-                {/*<!-- /.col-lg-4 -->*/}
-
-                </div>{/*<!-- /.row -->*/}
-                <br/>
-                {/*  adding selection component */}
+				</FormGroup>
+				<FormGroup role="form">
+				{/*  adding selection component */}
                 <DataVariableSelection match={this.props.match}/>
+				</FormGroup>
+                <FormGroup role="form"> 
+                
+                
                 <AdvanceSettings   />
                 {/*---------end of selection component----------------------*/}
-                <div className="row">
+                
+				 
                 <div className="col-md-12">
-                <div className="panel panel-alt4">
+                <div className="panel panel-alt4 panel-alt4 cst-panel-shadow">
                 <div className="panel-heading text-center">Type of Signals</div>
                 <div className="panel-body text-center" id="analysisList" >
                 <div className="ma-checkbox inline"><input id="allAnalysis" type="checkbox" className="allAnalysis" checked={store.getState().datasets.dataSetSelectAllAnalysis} onClick={this.handleAllAnlysis.bind(this)}  /><label htmlFor="allAnalysis">Select All</label></div>
@@ -341,22 +341,17 @@ export class VariableSelection extends React.Component {
 
                 </div>
                 </div>
-                </div>
-                <div className="row">
-                <div className="col-lg-6 col-lg-offset-6">
-
-                <div className="form-inline text-right">
-                <div class="form-group">
-                <label className="sr-only">Signal Name</label>
-                <div className="htmlForm-group lg-pr-10">
-                <input type="text" name="createSname" id="createSname"  required={true} className="form-control input-sm" placeholder="Enter a signal name"/>
-                    </div>
-                </div>
-                <button type="submit" className="btn btn-primary">CREATE SIGNAL</button>
-                </div>
-
-                </div>{/*<!-- /.col-lg-4 -->*/}
-                </div>
+                 
+				
+				<div class="clearfix xs-m-10"></div>
+                <div className="col-lg-5 col-lg-offset-7">
+				<div class="input-group xs-mb-15">
+                        <input type="text" name="createSname" id="createSname"  required={true} class="form-control" placeholder="Enter a signal name"/><span class="input-group-btn">
+                          <button type="submit" class="btn btn-primary">Create Signal</button></span>
+                      </div>
+				</div>
+               
+                 
 
                 </FormGroup>
                 </Form>

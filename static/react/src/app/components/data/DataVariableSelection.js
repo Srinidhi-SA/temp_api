@@ -279,13 +279,13 @@ export class DataVariableSelection extends React.Component {
                 <div>
 
 
-                    <div className="row">
-                        <div className="col-lg-6">
+                     
+                        <div className="col-lg-12">
                             {variableSelectionMsg}
                         </div>{/*<!-- /.col-lg-4 -->*/}
-                    </div>
+                     
                     {/*<!-------------------------------------------------------------------------------->*/}
-                    <div className="row">
+                   
                         <div className="col-lg-4">
                             <div className="panel panel-primary-p1 cst-panel-shadow">
                                 <div className="panel-heading"><i className="mAd_icons ic_inflnce"></i> Measures</div>
@@ -459,16 +459,14 @@ export class DataVariableSelection extends React.Component {
                                 </div>
                             </div>
                         </div>{/*<!-- /.col-lg-4 -->*/}
-                    </div>  {/*<!-- /.row -->*/}
+                      {/*<!-- /.row -->*/}
                     {/*<!-------------------------------------------------------------------------------->*/}
-                    <div className="row">
+                    
                         <div className="col-md-4 col-md-offset-5">
-
                             <h4>{store.getState().datasets.selectedVariablesCount} Variables selected </h4>
                             {/*<OverlayTrigger trigger="click" placement="left" overlay={popoverLeft}><a><i className="pe-7s-more pe-2x pe-va"></i></a></OverlayTrigger>*/}
-
                         </div>
-                    </div>
+                     
                 </div>
 
 
@@ -476,7 +474,7 @@ export class DataVariableSelection extends React.Component {
             );
         } else {
             return (
-                <div>No data Available</div>
+                <div className="col-lg-12"><h4 className="text-center">No data Available</h4></div>
             );
         }
     }

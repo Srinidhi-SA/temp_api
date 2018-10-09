@@ -437,16 +437,17 @@ export class DataPreview extends React.Component {
               <div key={i} className="col-md-5ths col-xs-6 data_preview xs-mb-15">
                 <div className="bgStockBox">
 				<div className="row">					
-					<div className="col-xs-8 ">
-							<h4 className="xs-mt-15 xs-mr-10 xs-mb-15 xs-ml-10 xs-p-0">
+					<div className="col-xs-8 xs-pr-0">
+							<h4 className="xs-pt-5 xs-pb-5">
 							{item.displayName}				  
 							</h4>
 					</div>
-					<div className="col-xs-4 xs-p-0 text-right">
-							<h4 className="xs-mt-15 xs-mr-10 xs-mb-15 xs-ml-10 xs-p-0 text-info">
+					<div className="col-xs-4 xs-pl-0 text-right">
+							<h4 className="xs-pt-5 xs-pb-5 text-info">
 							{item.value}
 							</h4>
 					</div>
+					<div class="clearfix"></div>
 				</div>				
 				</div>
               </div>
@@ -519,11 +520,11 @@ export class DataPreview extends React.Component {
             if (!dataPrev.uiMetaData.columnDataUI[tdIndex].consider) {
               let cls = dataPrev.uiMetaData.columnDataUI[tdIndex].slug + " greyout-col";
               return (
-                <td key={tdIndex} className={cls} onClick={this.setSideElements.bind(this)}>{tdElement}</td>
+                <td key={tdIndex} className={cls} onClick={this.setSideElements.bind(this)} title={tdElement}>{tdElement}</td>
               );
             } else {
               return (
-                <td key={tdIndex} className={dataPrev.uiMetaData.columnDataUI[tdIndex].slug} onClick={this.setSideElements.bind(this)}>{tdElement}</td>
+                <td key={tdIndex} className={dataPrev.uiMetaData.columnDataUI[tdIndex].slug} onClick={this.setSideElements.bind(this)} title={tdElement}>{tdElement}</td>
               );
             }
 
@@ -577,7 +578,7 @@ export class DataPreview extends React.Component {
             <div className="page-head">
               <div className="row">
                 <div className="col-md-8">
-                  <h3 className="xs-mt-0 xs-mb-0 text-capitalize"><a href="/data"><i class="zmdi zmdi-arrow-left"></i></a> Data Preview</h3>
+                  <h3 className="xs-mt-0 xs-mb-0 text-capitalize"> Data Preview</h3>
                 </div>
               </div>
               <div className="clearfix"></div>
@@ -585,7 +586,7 @@ export class DataPreview extends React.Component {
             {/*<!-- /.Page Title and Breadcrumbs -->*/}
             {/*<!-- Page Content Area -->*/}
             <div className="main-content">
-			<div className="row">
+			<div className="row d_preview">
 				 
 				 {topInfo}
 				 
