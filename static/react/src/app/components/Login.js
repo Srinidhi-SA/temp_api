@@ -80,7 +80,7 @@ export class Login extends React.Component {
                     <div className="panel-heading"><img src={STATIC_URL + "assets/images/m_adv_logo.png" } alt="mAdvisor" className="img-responsive logo-img"/></div>
                     <div className="panel-body no-border">
 
-                      <h3>SIGN IN</h3>
+                     {/* <h3>SIGN IN</h3> */}
                       <div className="login-form">
                         <div className="form-group">
                           <div className="input-group">
@@ -107,14 +107,16 @@ export class Login extends React.Component {
                             <label htmlFor="remember">Remember Me</label>
 
                           </div>*/}
-                          {/*<div className="col-xs-6 text-right">
-                            <a href="#">Forgot Password?</a>
-                          </div>*/}
+                          <div className="col-xs-6 text-right">
+                            
+                          </div>
 
                         </div>
-                        <div className="form-group login-submit text-right">
-                          <button onClick={this.doAuth.bind(this)} className="btn btn-primary">SIGN IN</button>
+						<a href="#" className="xs-mt-20 pull-left">Forgot Password?</a>
+                        <div className="form-group login-submit pull-right">
+                          <button onClick={this.doAuth.bind(this)} className="btn btn-primary xs-pl-20 xs-pr-20 xs-pt-5 xs-pb-5">SIGN IN</button>
                         </div>
+						<div className="clearfix"></div>
                         <div className = "text-danger text-center" id="errormsg">{this.state.errmsg}</div>
 
                       </div>
