@@ -15153,6 +15153,36 @@ a:hover .icon-container .class { color: #02988c;}
 .drp_cst_width li span { width: 48%; display: block; float:left; margin-left: 2%; text-align: center; }
 .drp_cst_width li span:first-child { margin-left:0; }
 .drp_cst_width li span a { display:block;  padding: 5px; border-radius:2px }
+
+blockquote {
+background:#f6f6f6;
+border:none;
+font-style:italic; 
+margin-bottom:-30px;
+position: relative;  
+    margin: 0 auto; 
+    padding: 2em; 
+	border-radius:10px;
+}
+
+blockquote p:before { 
+    content: "\201C";
+    font-weight: bold;
+    font-size:60px;
+    color:#adadad;
+    position: absolute; 
+    top: -0.2em;
+    left: -0.5em; 
+} 
+blockquote p:after { 
+    content: "\201D";
+    font-weight: bold;
+    font-size:60px;
+    color:#adadad;
+    position: absolute; 
+    bottom: -0.6em;
+    right: 0; 
+}
 /**************** Css realated to developers, keep the source down ***/
 #prediction_dropdown{
 	    width: 40%;
