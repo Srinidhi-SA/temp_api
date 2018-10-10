@@ -239,12 +239,15 @@ export class VariableSelection extends React.Component {
         this.props.dispatch(changeSelectedVariableType(this.props.selVarSlug,this.props.getVarText,SET_VARIABLE,event))
     }
     renderAnalysisList(analysisList){
+        var countSignal = 0;
         let list =  analysisList.map((metaItem,metaIndex) =>{
+            if(metaItem.status==true) countSignal++;
             let id = "chk_analysis_"+ metaItem.name;
-            let cls = "ma-checkbox inline "+metaItem.name
+            let cls = "ma-checkbox inline "+metaItem.name;
             return(<div key={metaIndex} className={cls}><input id={id} type="checkbox" className="possibleAnalysis" value={metaItem.name} checked={metaItem.status} onClick={this.handleAnlysisList.bind(this)}  /><label htmlFor={id}>{metaItem.displayName}</label></div>);
-
         });
+        if(analysisList.length!=countSignal){setTimeout(function(){ $("#allAnalysis").prop("checked",false);  }, 0);  }
+        if(analysisList.length==countSignal){setTimeout(function(){ $("#allAnalysis").prop("checked",true);  }, 0);  }
         return list;
     }
     render(){
