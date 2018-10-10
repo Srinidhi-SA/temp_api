@@ -9726,6 +9726,7 @@ pre {
 .btn-round { border-radius:20px !important; -webkit-box-shadow: 0px 0px 10px 3px rgba(0,0,0,0.1);
 	-moz-box-shadow: 0px 0px 10px 3px rgba(0,0,0,0.1);
 	box-shadow: 0px 0px 10px 3px rgba(0,0,0,0.1); }
+.btn-default.btn-round, .btn-warning.btn-round { padding: 5px 10px;}
 .btn-rounded.btn-lg {
 	border-radius: 5px
 }
@@ -14205,7 +14206,7 @@ text-align: center; padding: 14px 20px 12px 12px; text-transform: capitalize; di
 }
 /*.panel-mAd .full-width-tabs > ul.nav.nav-tabs > li > a   span { display:block; }*/
 
-.mAd_icons.tab_overview, .mAd_icons.tab_overview, .mAd_icons.tab_trend, .mAd_icons.tab_performance, .mAd_icons.tab_influencers, .mAd_icons.tab_prediction, .mAd_icons.tab_chi-square, .mAd_icons.tab_association, .mAd_icons.tab_summary, .mAd_icons.tab_decision-tree, .mAd_icons.tab_key, .mAd_icons.tab_single { display: inline-block; margin: 0 5px 0 5px;width: 27px;height: 19px; vertical-align: middle; }
+.mAd_icons.tab_overview, .mAd_icons.tab_overview, .mAd_icons.tab_trend, .mAd_icons.tab_performance, .mAd_icons.tab_influencers, .mAd_icons.tab_prediction, .mAd_icons.tab_chi-square, .mAd_icons.tab_association, .mAd_icons.tab_summary, .mAd_icons.tab_decision-tree, .mAd_icons.tab_key, .mAd_icons.tab_single, .mAd_icons.tab_business { display: inline-block; margin: 0 5px 0 5px;width: 27px;height: 19px; vertical-align: middle; }
 
 .mAd_icons.ic_mes_s, .mAd_icons.ic_dime_s { width:20px; height:18px; display:inline-block;}
 .mAd_icons.ic_mes_s { background-position: -260px -11px; }
@@ -14213,6 +14214,10 @@ text-align: center; padding: 14px 20px 12px 12px; text-transform: capitalize; di
 
 .mAd_icons.tab_overview{ background-position: 0 -3px;}
 .nav-tabs li a:hover .mAd_icons.tab_overview, .active .mAd_icons.tab_overview { background-position: 0 -27px;}
+
+.mAd_icons.tab_business{ background-position: -358px -4px;}
+.nav-tabs li a:hover .mAd_icons.tab_business, .active .mAd_icons.tab_business { background-position: -358px -28px;}
+
 
 .mAd_icons.tab_summary{ background-position: -142px -70px}
 .nav-tabs li a:hover .mAd_icons.tab_summary, .active .mAd_icons.tab_summary { background-position: -142px -100px}
