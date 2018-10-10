@@ -372,6 +372,9 @@ export class OverViewPage extends React.Component {
       }
       //console.log("selectedNode_slug is: " + selectedNode_slug);
       selectedNode = fetchNodeFromTree(selectedNode_slug, this.props.signal);
+      if(selectedNode.listOfCards.length!=1)
+      {
+      $("#sticky-container").removeClass("hidden");
       cardList = selectedNode.listOfCards.map((card, i) => {
         let selectedLink = selectedURL + "/" + card.slug;
         return (
@@ -381,6 +384,7 @@ export class OverViewPage extends React.Component {
           </NavLink></li>
         )
       });
+    }
       let documentModeLink = "";
       if (that.urlPrefix.indexOf("signals") != -1) {
         documentModeLink = "/signaldocumentMode/" + this.props.match.params.slug;
@@ -469,7 +473,7 @@ export class OverViewPage extends React.Component {
           :
 		  
 		  <div className="side-body">		 
-			<div class="sticky-container">			 
+			<div class="sticky-container hidden" id="sticky-container">			 
 				<div class="btn-group">
 				  <button type="button" data-toggle="dropdown" class="btn btn-primary btn-round" title="List of Analysis"><i class="fa fa-list-ul"></i></button>
 				  <ul role="menu" class="dropdown-menu">
