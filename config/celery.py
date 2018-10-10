@@ -21,3 +21,13 @@ app.autodiscover_tasks()
 # @app.task(bind=True)
 # def debug_task(self):
 #     print('Request: {0!r}'.format(self.request))
+
+
+if 'leia' == CONFIG_FILE_NAME:
+  from config.settings.leia import CELERY_ONCE_CONFIG
+elif 'luke' == CONFIG_FILE_NAME:
+  from config.settings.luke import CELERY_ONCE_CONFIG
+elif 'developement' == CONFIG_FILE_NAME:
+  from config.settings.development import CELERY_ONCE_CONFIG
+
+app.conf.ONCE = CELERY_ONCE_CONFIG

@@ -6,11 +6,18 @@
 #           "password": "BBeXnQU70YFf"
 #         }
 
+# natural_language_understanding_settings = {
+#           "url": "https://gateway.watsonplatform.net/natural-language-understanding/api",
+#           "username": "ec09107d-e627-4c78-ad3b-38c1b3ffca45",
+#           "password": "7s6GbZjamUO8"
+#         }
+
 natural_language_understanding_settings = {
-          "url": "https://gateway.watsonplatform.net/natural-language-understanding/api",
-          "username": "ec09107d-e627-4c78-ad3b-38c1b3ffca45",
-          "password": "7s6GbZjamUO8"
-        }
+  "url": "https://gateway.watsonplatform.net/natural-language-understanding/api",
+  "username": "0a2e65f0-774b-449a-b895-c074632794f7",
+  "password": "m6tgG3jaM4Xt"
+}
+
     
 voice_to_text_settings = { 
         "url": "https://stream.watsonplatform.net/speech-to-text/api",

@@ -42,6 +42,7 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
         # Submit_job to YARN
         print queue_name
 
+        '''
         if queue_name is None:
             command_array = ["spark-submit", "--name", job_name, "--master", "yarn", "--py-files", egg_file_path,
                              driver_file,
@@ -50,6 +51,11 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
             command_array = ["spark-submit", "--name", job_name, "--master", "yarn", "--queue", queue_name,
                              "--py-files", egg_file_path, driver_file,
                              json.dumps(config)]
+        '''
+        command_array = ["spark-submit", "--master", "yarn", "--py-files", egg_file_path,
+                             driver_file,
+                             json.dumps(config)]
+
 
         application_id = ""
 
@@ -164,6 +170,13 @@ def convert_time_to_human(data):
     return data
 
 
+def update_name_in_json_data(ret):
+    if 'data' in ret:
+        if 'name' in ret['data']:
+            ret['data']['name'] = ret['name']
+    return ret
+
+
 # TODO: use dataserializer
 class InsightSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
@@ -208,6 +221,7 @@ class InsightSerializer(serializers.ModelSerializer):
             model=self.Meta.model.__name__.lower(),
         )
         ret['permission_details'] = permission_details
+        ret = update_name_in_json_data(ret)
         return ret
 
     def update(self, instance, validated_data):
@@ -318,6 +332,7 @@ class TrainerSerlializer(serializers.ModelSerializer):
             model=self.Meta.model.__name__.lower(),
         )
         ret['permission_details'] = permission_details
+        ret = update_name_in_json_data(ret)
         return ret
 
     def update(self, instance, validated_data):
@@ -423,6 +438,7 @@ class ScoreSerlializer(serializers.ModelSerializer):
             model=self.Meta.model.__name__.lower(),
         )
         ret['permission_details'] = permission_details
+        ret = update_name_in_json_data(ret)
         return ret
 
     def update(self, instance, validated_data):
@@ -544,7 +560,7 @@ class RoboSerializer(serializers.ModelSerializer):
         #     ret['message'] = message_list
         # except:
         #     ret['message'] = None
-
+        ret = update_name_in_json_data(ret)
         return ret
 
 
@@ -645,7 +661,7 @@ class StockDatasetSerializer(serializers.ModelSerializer):
                 model=StockDataset.__name__.lower(),
             )
             ret['permission_details'] = permission_details
-
+        ret = update_name_in_json_data(ret)
         return ret
 
     class Meta:
@@ -729,7 +745,7 @@ class AudiosetSerializer(serializers.ModelSerializer):
             ret['message'] = message_list
         except:
             ret['message'] = None
-
+        ret = update_name_in_json_data(ret)
         return ret
 
     class Meta:
@@ -784,7 +800,7 @@ class AppListSerializers(serializers.ModelSerializer):
                 CUSTOM_WORD1_APPS = settings.CUSTOM_WORD1_APPS
                 CUSTOM_WORD2_APPS = settings.CUSTOM_WORD2_APPS
                 upper_case_name = ret['name'].upper()
-                print upper_case_name
+                # print upper_case_name
                 ret['custom_word1'] = CUSTOM_WORD1_APPS[upper_case_name]
                 ret['custom_word2'] = CUSTOM_WORD2_APPS[upper_case_name]
             try:
@@ -807,7 +823,7 @@ class AppListSerializers(serializers.ModelSerializer):
 
 class AppSerializer(serializers.ModelSerializer):
         def to_representation(self, instance):
-            print "in app serializers"
+            # print "in app serializers"
             ret = super(AppSerializer, self).to_representation(instance)
             ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
             if ret['tags'] != None:
@@ -819,14 +835,14 @@ class AppSerializer(serializers.ModelSerializer):
                     if obj['name'] in tags:
                         tag_object.append(obj)
 
-                print tag_object
+                # print tag_object
 
                 ret['tags'] = tag_object
 
             CUSTOM_WORD1_APPS = settings.CUSTOM_WORD1_APPS
             CUSTOM_WORD2_APPS = settings.CUSTOM_WORD2_APPS
             upper_case_name = ret['name'].upper()
-            print upper_case_name
+            # print upper_case_name
             ret['CUSTOM_WORD1_APPS'] = CUSTOM_WORD1_APPS[upper_case_name]
             ret['CUSTOM_WORD2_APPS'] = CUSTOM_WORD2_APPS[upper_case_name]
             if instance.viewed == False and instance.status == 'SUCCESS':

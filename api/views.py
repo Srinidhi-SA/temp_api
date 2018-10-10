@@ -674,7 +674,7 @@ class StockDatasetView(viewsets.ModelViewSet):
         stock_symbol = config.get('stock_symbols')
         stock_values = [item.get('value').lower() for item in stock_symbol if item.get('value') != ""]
         new_data = {}
-        new_data['stock_symbols'] = list(set((", ").join(stock_values)))
+        new_data['stock_symbols'] = (", ").join(list(set(stock_values)))
         new_data['name'] = config.get('name')
         new_data['input_file'] = None
         new_data['created_by'] = request.user.id
@@ -1068,11 +1068,20 @@ def set_result(request, slug=None):
         #     results=json.loads(results)
         # )
 
-        results = tasks.write_into_databases.delay(
-            job_type=job.job_type,
-            object_slug=job.object_id,
-            results=json.loads(results)
-        )
+        process_using_celery = settings.END_RESULTS_SHOULD_BE_PROCESSED_IN_CELERY
+
+        if process_using_celery:
+            results = tasks.write_into_databases.delay(
+                job_type=job.job_type,
+                object_slug=job.object_id,
+                results=json.loads(results)
+            )
+        else:
+            results = tasks.write_into_databases1(
+                job_type=job.job_type,
+                object_slug=job.object_id,
+                results=json.loads(results)
+            )
         job.status = 'SUCCESS'
         job.save()
     return JsonResponse({'result': "success"})
@@ -4939,11 +4948,17 @@ dummy_robo_data = {
                 },
                 {
                     "dataType": "html",
-                    "data": "Based on analysis of your portfolio composition, performance of various funds, and the projected outlook, mAdvisor recommends the following."
+                    "data": "Based on analysis of your portfolio composition, risk appetite, performance of various funds, and the projected outlook, mAdvisor recommends the following to maximize your wealth."
                 },
                 {
                     "dataType": "html",
-                    "data": "<ul><li><b>Reallocate investments</b> from some of the low-performing assets such as Franklin - India Ultra Short Bond Super Ins (G): Our suggestion is that you can maximize returns by investing more in other existing equity funds.</li><li>Invest in funds that are going to outperform, <b>Technology and Telecom</b> equity funds. Our suggestion is that you consider investing in ICICI Prudential Large Cap Fund, top performer in Technology, which has an annual return of 25.4%.</li><li><b>Consider investing in Tax Saver</b> equity funds that would help you manage taxes more effectively and save more money.</li></ul>"
+                    "data": """
+                    <ul>
+                    <li><b>Sell</b> <i>"Franklin - India Ultra Short Bond Super Ins (G)"</i>.</li>
+                    <li><b>Invest</b> in <i>"ICICI Prudential Large Cap Fund"</i> which is found to be the mutual fund with high probability of success rate given your risk appetite.</li>
+                    <li><b>Invest</b>  in <i>"DSP BlackRock Tax Saver Fund"</i> that would help you manage taxes more effectively and save more money.</li>
+                    </ul>
+                    """
                 }
             ],
             "cardType": "normal",
@@ -5060,6 +5075,8 @@ def set_messages(request, slug=None):
     return_data = request.GET.get('data', None)
     data = request.body
     data = json.loads(data)
+    if 'stageName' not in data:
+        return JsonResponse({'message': "Failed"})
     from api.redis_access import AccessFeedbackMessage
     ac = AccessFeedbackMessage()
     data = ac.append_using_key(slug, data)
@@ -5424,7 +5441,7 @@ def updateFromNifi(request):
     hive_username=hive_info['username']
     hive_password=hive_info['password']
     schema=request.data["category"]
-    table_name=request.data["feed"]+'_feed'
+    table_name=request.data["feed"]+'_valid'
     feed=request.data['feed']
 
     dataSourceDetails = {

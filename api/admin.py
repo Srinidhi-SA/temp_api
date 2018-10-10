@@ -233,5 +233,3 @@ admin.site.register(User, MyUserAdmin)
 
 
 
-
-
