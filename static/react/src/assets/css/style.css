@@ -15154,6 +15154,12 @@ a:hover .icon-container .class { color: #02988c;}
 .drp_cst_width li span:first-child { margin-left:0; }
 .drp_cst_width li span a { display:block;  padding: 5px; border-radius:2px }
 
+.d_analyst_block, .d_m_block { display:block; }
+.d_analyst_img { float:left; width:98px; height:113px; background: url(../images/icon_dataAnalyst.png) no-repeat}
+.d_m_img { float:left; width:197px; height:113px; background: url(../images/icon_bAmAdvisor.png) no-repeat }
+.d_m_block { color:#00998c }
+.bImpact_time_icon { width:21px; height:20px; display:inline-block; background: url(../images/icon_bAClock.png) no-repeat }
+
 blockquote {
 background:#f6f6f6;
 border:none;
