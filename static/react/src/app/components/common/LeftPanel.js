@@ -97,6 +97,7 @@ class LeftPanel extends React.Component {
                       <i className="fa fa-folder-open fa-2x" aria-hidden="true"></i><br />
                       DATA<br />MANAGE</NavLink>
                   </li>:<div/>}
+
               </ul>
             </div>
             {/* // /.Side bar Main Menu  -->*/}

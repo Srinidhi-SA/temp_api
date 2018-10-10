@@ -24,6 +24,8 @@ fabric-gunicorn==0.1
 matplotlib==2.1.1
 knit==0.2.4
 pygments
-celery==4.1.1
+celery==4.2.1
 django-guardian==1.4.9
 deprecation
+newsapi-python
+celery-once==2.0.0

@@ -26,7 +26,7 @@ DATABASES = {
         'NAME': 'madvisor2',
         'USER': 'root',
         'PASSWORD': 'Marlabs@123',
-        'HOST': 'localhost',
+        'HOST': '172.31.53.141',
         'PORT': '',
         }
 }
@@ -37,6 +37,9 @@ PROJECT_APP = [
 
 INSTALLED_APPS += PROJECT_APP
 
+
+HADOOP_MASTER = '172.31.64.29'
+"""
 HADOOP_MASTER = '172.31.50.84'
 
 YARN = {
@@ -49,12 +52,33 @@ HDFS = {
 
     # Give host name without http
     'host': HADOOP_MASTER,
-    'port': '14000', #webhdfs port
+    'port': '50070', #webhdfs port
     'uri': '/webhdfs/v1',
-    'user.name': 'hadoop',
-    'hdfs_port': '8020', #hdfs port
+    'user.name': 'hduser',
+    'hdfs_port': '9000', #hdfs port
     'base_path' : '/dev/dataset/'
 }
+"""
+
+HADOOP_MASTER = '172.31.64.29'
+
+YARN = {
+    "host": HADOOP_MASTER,
+    "port": 8088,
+    "timeout": 30
+}
+
+HDFS = {
+
+    # Give host name without http
+    'host': HADOOP_MASTER,
+    'port': '50070', #webhdfs port
+    'uri': '/webhdfs/v1',
+    'user.name': 'hduser',
+    'hdfs_port': '9000', #hdfs port
+    'base_path' : '/dev/dataset/'
+}
+
 
 EMR = {
     "emr_pem_path": "",
@@ -92,7 +116,7 @@ THIS_SERVER_DETAILS = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
+        "LOCATION": "redis://172.31.53.141:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient"
         },
@@ -134,12 +158,11 @@ JOBSERVER_EMAIL_TEMPLATE = "Please restart jobserver- IP-"
 
 DEPLOYMENT_ENV = "prod"
 
-
 HADOOP_CONF_DIR= False
 HADOOP_USER_NAME="hduser"
 
-CELERY_BROKER_URL = 'redis://localhost:6379/'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/'
+CELERY_BROKER_URL = 'redis://172.31.53.141:6379/'
+CELERY_RESULT_BACKEND = 'redis://172.31.53.141:6379/'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
@@ -157,11 +180,29 @@ CELERY_QUEUES = {
 }
 
 PEM_KEY = "/keyfiles/TIAA.pem"
-ENABLE_KYLO = False
+ENABLE_KYLO = True
 KYLO_UI_URL = "http://data-management.marlabsai.com"
 
+
+USE_YARN_DEFAULT_QUEUE=True
+# USE_YARN_DEFAULT_QUEUE=False
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'guardian.backends.ObjectPermissionBackend'
 )
+
+
+# SUBMIT_JOB_THROUGH_CELERY = False
+SUBMIT_JOB_THROUGH_CELERY = True
+
+CELERY_SCRIPTS_DIR="/home/hadoop/codebase/mAdvisor-api_2/scripts/"
+END_RESULTS_SHOULD_BE_PROCESSED_IN_CELERY = True
+
+CELERY_ONCE_CONFIG = {
+  'backend': 'celery_once.backends.Redis',
+  'settings': {
+    'url': 'redis://172.31.53.141:6379/',
+    'default_timeout': 60 * 60
+  }
+}

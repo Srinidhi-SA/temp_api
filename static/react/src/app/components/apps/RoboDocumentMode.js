@@ -53,10 +53,7 @@ export class RoboDocumentMode extends React.Component {
 			          <div className="main-content">
 			          <div className="row">
 		                <div className="col-md-12">
-		                 
-		                <div className="panel panel-mAd documentModeSpacing box-shadow">
-		                    <div className="panel-heading">
-		                      <h2>{store.getState().apps.roboSummary.name}
+								<h3 className="xs-mt-0">{store.getState().apps.roboSummary.name}
 							  
 							    <div className="btn-toolbar pull-right">
 		                        <div className="btn-group btn-space">
@@ -75,12 +72,12 @@ export class RoboDocumentMode extends React.Component {
 								 </Link>
 		                        </div>
 		                      </div>
-							  </h2>
-		                     
-		                    
-		                      
+							  </h3>
+		                     	                      
 		                      <div className="clearfix"></div>
-		                    </div>
+		                <div className="panel panel-mAd documentModeSpacing box-shadow">
+
+		                     
 		                   <div className="panel-body no-border">
 		                   <div className="row-fluid"> 
 		           

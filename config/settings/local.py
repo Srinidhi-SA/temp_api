@@ -30,15 +30,22 @@ DATABASES = {
 }
 
 PROJECT_APP = [
+    # 'silk',
+    # 'django_extensions'
 ]
 
-
 INSTALLED_APPS += PROJECT_APP
+
+LOCAL_MIDDLEWARE = [
+    # 'django_cprofile_middleware.middleware.ProfilerMiddleware',
+    # 'silk.middleware.SilkyMiddleware'
+]
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend', # this is default
     'guardian.backends.ObjectPermissionBackend',
 )
+HADOOP_MASTER = "172.31.70.80"
 HADOOP_MASTER = "34.201.31.116"
 
 YARN = {
@@ -175,3 +182,4 @@ PEM_KEY = "/keyfiles/TIAA.pem"
 
 # SUBMIT_JOB_THROUGH_CELERY = False
 SUBMIT_JOB_THROUGH_CELERY = True
+END_RESULTS_SHOULD_BE_PROCESSED_IN_CELERY = True

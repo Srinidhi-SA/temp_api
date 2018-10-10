@@ -51,7 +51,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'api.auditLogMiddleware_modified.PrintRequestMiddleware',
+    # 'api.auditLogMiddleware_modified.PrintRequestMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -1574,9 +1574,17 @@ CELERY_SCRIPTS_DIR="/home/hadoop/codebase/mAdvisor-api/scripts/"
 REQUEST_CONNECTION_TIMEOUT=30
 REQUEST_READ_TIMEOUT=50
 REQUEST_RETRY_LIMIT=10
-NASDAQ_NEWS_HEADLINE_COUNT = 1
+NASDAQ_NEWS_HEADLINE_COUNT = 10
 
 CACHE_BASE_DIR="/tmp"
 
 # SUBMIT_JOB_THROUGH_CELERY = False
 SUBMIT_JOB_THROUGH_CELERY = True
+END_RESULTS_SHOULD_BE_PROCESSED_IN_CELERY = True
+CELERY_ONCE_CONFIG = {
+  'backend': 'celery_once.backends.Redis',
+  'settings': {
+    'url': 'redis://localhost:6379/0',
+    'default_timeout': 60 * 60
+  }
+}
