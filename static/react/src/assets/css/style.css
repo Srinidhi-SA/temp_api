@@ -14477,7 +14477,7 @@ a.tabs-control.right span { right: -2px; border-radius: 50px; }
     min-height: 360px;
    /* max-height: 500px;*/; margin:0;
 }
-.col-xs-12.content { padding: 15px 40px; }
+.col-xs-12.content { padding: 15px 4%; }
 .col-xs-12.content .col-md-12 .col-xs-12 { padding:0; } 
 /*** Round Circle style for Data Upload ***/
 .glyphicon-ring {
