@@ -316,10 +316,12 @@ export class VariableSelection extends React.Component {
                 {renderSelectBox}
                 </select>                 
                 </div>
+				
 				 <div className="col-lg-4">
                 <div className="ma-checkbox inline treatAsCategorical hidden" ><input id="idCategoricalVar" type="checkbox" onClick={this.handleCategoricalChk.bind(this)}/><label htmlFor="idCategoricalVar">Treat as categorical variable</label></div>
                 </div>
 				</FormGroup>
+				
 				<FormGroup role="form">
 				{/*  adding selection component */}
                 <DataVariableSelection match={this.props.match}/>
@@ -351,7 +353,7 @@ export class VariableSelection extends React.Component {
 				<div class="input-group xs-mb-15">
                         <input type="text" name="createSname" id="createSname"  required={true} class="form-control" placeholder="Enter a signal name"/><span class="input-group-btn">
                           <button type="submit" class="btn btn-primary">Create Signal</button></span>
-                      </div>
+                 </div>
 				</div>
                
                  
