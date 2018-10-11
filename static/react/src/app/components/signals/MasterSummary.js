@@ -73,7 +73,7 @@ export class MasterSummary extends React.Component {
         </div>
         <div className="main-content">
 		
-		<div class="row">
+		<div class="row xs-pt-50">
 		<div class="col-md-3 col-md-offset-1">
 			<img src={STATIC_URL + "assets/images/data_overview.png"} className="img-responsive xs-mt-50"/>
 		</div>
