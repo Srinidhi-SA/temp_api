@@ -242,7 +242,7 @@ export class OverViewPage extends React.Component {
                 ]}/>*/}
               </div>
               <div class="col-md-8">
-                <h2><i class="zmdi zmdi-arrow-left"></i> {storyName}</h2>
+                <h2>{storyName}</h2>
               </div>
             </div>
             <div class="clearfix"></div>
@@ -372,15 +372,19 @@ export class OverViewPage extends React.Component {
       }
       //console.log("selectedNode_slug is: " + selectedNode_slug);
       selectedNode = fetchNodeFromTree(selectedNode_slug, this.props.signal);
+      if(selectedNode.listOfCards.length!=1)
+      {
+      $("#sticky-container").removeClass("hidden");
       cardList = selectedNode.listOfCards.map((card, i) => {
         let selectedLink = selectedURL + "/" + card.slug;
         return (
-          <NavLink to={selectedLink} key={i} className="list-group-item" title={card.name}>
+          <li><NavLink to={selectedLink} key={i} className="list-group-item" title={card.name}>
             <i className="fa fa-bar-chart"></i>
             <span>{card.name}</span>
-          </NavLink>
+          </NavLink></li>
         )
       });
+    }
       let documentModeLink = "";
       if (that.urlPrefix.indexOf("signals") != -1) {
         documentModeLink = "/signaldocumentMode/" + this.props.match.params.slug;
@@ -466,7 +470,17 @@ export class OverViewPage extends React.Component {
           {this.state.showStockSenceDataPreview?
           <AppsStockDataPreview  history={this.props.history} match={this.props.match} showPreview={true} updatePreviewState={this.showStockSenceDataPreview.bind(this)}/>
           
-          :<div className="side-body">
+          :
+		  
+		  <div className="side-body">		 
+			<div class="sticky-container hidden" id="sticky-container">			 
+				<div class="btn-group">
+				  <button type="button" data-toggle="dropdown" class="btn btn-primary btn-round" title="List of Analysis"><i class="fa fa-list-ul"></i></button>
+				  <ul role="menu" class="dropdown-menu">
+					{cardList}
+				  </ul>
+				</div>
+			</div>		
             {/* Page Title and Breadcrumbs */}
             <div className="page-head hidden">
               <div class="row">
@@ -497,10 +511,7 @@ export class OverViewPage extends React.Component {
 
               <div className="row">
                 <div className="col-md-12">
-                  <div className="panel panel-mAd box-shadow">
-                    <div className="panel-heading">
-
-                      <h3 className="xs-mt-0 xs-mb-0"><a href="javascript:history.back()"><i class="zmdi zmdi-arrow-left"></i></a> {storyName}
+					<h3 className="xs-mt-0 xs-mb-0"> {storyName}
 
                         <div className="btn-toolbar pull-right">
                           <div className="btn-group">
@@ -531,6 +542,12 @@ export class OverViewPage extends React.Component {
 					  </h3>
 
                       <div className="clearfix"></div>
+				
+                  <div className="panel panel-mAd box-shadow">
+				  
+                    <div className="panel-heading">
+
+                      
                     </div>
 
                     <div className="panel-body no-border">
@@ -541,26 +558,26 @@ export class OverViewPage extends React.Component {
                         {/* Tab panes */}
                         <div className="tab-content">
                           <div className="sb_navigation">
-                            <div className="row">
-                              <div className="col-xs-12" id="subTab">
+                           
+                              <div id="subTab">
                                 <Slider ref='slider' {...settings}>{varList}</Slider>
                               </div>
 
                               <div className="clearfix"></div>
-                            </div>
+                          
 
                           </div>
 
                           <div className="content_scroll container-fluid">
-                            <div className="row row-offcanvas row-offcanvas-left">
+                            <div className="row">
 
                               {/*/span*/}
-                              <div className="col-xs-12 col-sm-9 content ov_card_boxes">
+                              <div className="col-xs-12 content ov_card_boxes">
                                 <Card cardData={card.cardData} cardWidth={card.cardWidth}/>
                               </div>
-                              {/*/span*/}
+                              {/*/span
 
-                              <div className="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
+                              
                                 <div className="side_panel">
                                   <a href="javascript:void(0);" onClick={this.toggleSideList.bind(this)} data-toggle="offcanvas" className="sdbar_switch">
                                     <i className="mAd_icons sw_on" onClick={this.setSideListFlag.bind(this)}></i>
@@ -580,8 +597,8 @@ export class OverViewPage extends React.Component {
                                       </div>
                                     </div>
                                   </div>
-                                </div>
-                              </div>
+                                </div> */}
+                               
                               <div className="clearfix"></div>
                             </div>
                             {/*/row*/}
