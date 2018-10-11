@@ -14207,7 +14207,7 @@ text-align: center; padding: 14px 20px 12px 12px; text-transform: capitalize; di
 }
 /*.panel-mAd .full-width-tabs > ul.nav.nav-tabs > li > a   span { display:block; }*/
 
-.mAd_icons.tab_overview, .mAd_icons.tab_overview, .mAd_icons.tab_trend, .mAd_icons.tab_performance, .mAd_icons.tab_influencers, .mAd_icons.tab_prediction, .mAd_icons.tab_chi-square, .mAd_icons.tab_association, .mAd_icons.tab_summary, .mAd_icons.tab_decision-tree, .mAd_icons.tab_key, .mAd_icons.tab_single, .mAd_icons.tab_business { display: inline-block; margin: 0 5px 0 5px;width: 27px;height: 19px; vertical-align: middle; }
+.mAd_icons.tab_overview, .mAd_icons.tab_overview, .mAd_icons.tab_trend, .mAd_icons.tab_performance, .mAd_icons.tab_influencers, .mAd_icons.tab_prediction, .mAd_icons.tab_chi-square, .mAd_icons.tab_association, .mAd_icons.tab_summary, .mAd_icons.tab_decision-tree, .mAd_icons.tab_key, .mAd_icons.tab_single, .mAd_icons.tab_business, .mAd_icons.tab_impact { display: inline-block; margin: 0 5px 0 5px;width: 27px;height: 19px; vertical-align: middle; }
 
 .mAd_icons.ic_mes_s, .mAd_icons.ic_dime_s { width:20px; height:18px; display:inline-block;}
 .mAd_icons.ic_mes_s { background-position: -260px -11px; }
@@ -14216,8 +14216,8 @@ text-align: center; padding: 14px 20px 12px 12px; text-transform: capitalize; di
 .mAd_icons.tab_overview{ background-position: 0 -3px;}
 .nav-tabs li a:hover .mAd_icons.tab_overview, .active .mAd_icons.tab_overview { background-position: 0 -27px;}
 
-.mAd_icons.tab_business{ background-position: -358px -4px;}
-.nav-tabs li a:hover .mAd_icons.tab_business, .active .mAd_icons.tab_business { background-position: -358px -28px;}
+.mAd_icons.tab_business, .mAd_icons.tab_impact{ background-position: -358px -4px;}
+.nav-tabs li a:hover .mAd_icons.tab_business, .active .mAd_icons.tab_business, .nav-tabs li a:hover .mAd_icons.tab_impact, .active .mAd_icons.tab_impact { background-position: -358px -28px;}
 
 
 .mAd_icons.tab_summary{ background-position: -142px -70px}
@@ -15083,14 +15083,14 @@ div.pred_disp_block  p, .pred_disp_block_store p { font-size:12px; }
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap; }
-a.more_button { color: #b3b3b3; padding: 0 10px; margin-right: 9px; cursor:pointer}
+a.more_button { color: #b3b3b3; cursor:pointer}
 
 .card-center-tile .pull-right>.dropdown-menu {
     right: 15px;
     left: auto;
     top: 20px
 }
-
+.card-footer .btn-toolbar { margin-right:10px; }
 .border-success { border-color:#00998c}
 .border-danger { border-color:#EF6262}
 .border-warning { border-color:#FFC870}
@@ -15163,8 +15163,8 @@ a:hover .icon-container .class { color: #02988c;}
 
 .d_analyst_block, .d_m_block { display:block; }
 .d_analyst_img { float:left; width:98px; height:113px; background: url(../images/icon_dataAnalyst.png) no-repeat}
-.d_m_img { float:left; width:197px; height:113px; background: url(../images/icon_bAmAdvisor.png) no-repeat }
-.d_m_block h1 small { color:#00998c }
+.d_m_img { float:left; width:170px; height:113px; background: url(../images/icon_bAmAdvisor.png) no-repeat }
+.d_m_block h1 small { color: #00998c; width: 188px; display: inline-block; text-align: left; }
 .bImpact_time_icon { width:21px; height:20px; display:inline-block; background: url(../images/icon_bAClock.png) no-repeat }
 .bgStockBox h3.text-center { color: #5bc0de; }
 blockquote {
@@ -15198,6 +15198,7 @@ blockquote p:after {
 }
 #algosel .nav-tabs li a { font-weight:600 }
 .card_kpi .alert-primary { background-color: #24ccbe; border: 1px solid #2fd2c4; border-radius: 2px;}
+
 /**************** Css realated to developers, keep the source down ***/
 #prediction_dropdown{
 	    width: 40%;
@@ -15531,12 +15532,12 @@ display: inline-block;
 .bgStockBox h3 small { font-size: 58%; }
 
 .data_preview .bgStockBox { display: block; color: #969696; border: 1px solid #ececec; float: none; padding: 0 10px; margin-bottom:0; border-radius:2px; }
-.d_preview .col-md-5ths:first-child .bgStockBox, .ov_card_boxes .col-md-4.bgStockBox:first-child h3 { border-bottom:2px solid #99d4fa;}
-.d_preview .col-md-5ths:nth-child(2) .bgStockBox, .ov_card_boxes .col-md-4.bgStockBox:nth-child(2) h3 { border-bottom:2px solid #7be0d7;}
-.d_preview .col-md-5ths:nth-child(3) .bgStockBox, .ov_card_boxes .col-md-4.bgStockBox:nth-child(3) h3 { border-bottom:2px solid #99fad4;}
-.d_preview .col-md-5ths:nth-child(4) .bgStockBox, .ov_card_boxes .col-md-4.bgStockBox:nth-child(4) h3 { border-bottom:2px solid #f1c776;}
-.d_preview .col-md-5ths:nth-child(5) .bgStockBox, .ov_card_boxes .col-md-4.bgStockBox:nth-child(5) h3 { border-bottom:2px solid #ffac67;}
-.d_preview .col-md-5ths:nth-child(6) .bgStockBox, .ov_card_boxes .col-md-4.bgStockBox:nth-child(6) h3 { border-bottom:2px solid #fb9595}
+.d_preview .col-md-5ths:first-child .bgStockBox, .ov_card_boxes .col-md-4.bgStockBox:first-child h3 { border-bottom:2px solid #afe1ea ;}
+.d_preview .col-md-5ths:nth-child(2) .bgStockBox, .ov_card_boxes .col-md-4.bgStockBox:nth-child(2) h3 { border-bottom:2px solid #bebce1;}
+.d_preview .col-md-5ths:nth-child(3) .bgStockBox, .ov_card_boxes .col-md-4.bgStockBox:nth-child(3) h3 { border-bottom:2px solid #fedbc5;}
+.d_preview .col-md-5ths:nth-child(4) .bgStockBox, .ov_card_boxes .col-md-4.bgStockBox:nth-child(4) h3 { border-bottom:2px solid #b7dec3;}
+.d_preview .col-md-5ths:nth-child(5) .bgStockBox, .ov_card_boxes .col-md-4.bgStockBox:nth-child(5) h3 { border-bottom:2px solid #e2edc2;}
+.d_preview .col-md-5ths:nth-child(6) .bgStockBox, .ov_card_boxes .col-md-4.bgStockBox:nth-child(6) h3 { border-bottom:2px solid #e1d0d6}
 
 .list-boxes .rep_block  { text-transform: capitalize; }
 
@@ -15645,6 +15646,7 @@ border-bottom: 1px solid #2b9a8e;
 .newStoryCard:hover { background-color:transparent; color: #00998c}
 .newStoryCard small { display:block; font-size:22px; }
 .card-center.newStoryCard small { line-height: 2.3em; }
+.card-center.newStoryCard .lineHeight small { line-height:1.2em; }
 
 .card-center-tile {
 	height: 62px;
@@ -15823,12 +15825,11 @@ div.text-center.tbl_th_center th {text-align: center}
 #selekt-container {  background:url(../images/mAdvisor-cbLogo.png) no-repeat center center }
 body div#chat-icon-launcher { width: 60px !important; height: 60px !important; box-shadow: 0px 0px 10px #4bb9ad;}
 body #launcher-container .chat-launcher { width: 60px !important; height: 60px !important;}
-body div#welcome-body-frame { right: 90px !important; bottom: 20px !important; width: 178px !important; }
+body div#welcome-body-frame { right: 90px !important; bottom: 20px !important; width: 189px !important; }
 body .chat-launcher-open-icon { background-size: 68px 68px !important; }
 body div#welcome-body-frame { background: rgba(255, 255, 255, 0.42); transition: background-color 0.5s ease;}
 body div#welcome-body-frame:hover { background: rgba(255, 255, 255, 1);}
-
-
+body div#welcome-body-frame p#message { line-height: 19px; color: #8c8c8c !important; }
 /************************** 8888888888 *******************************/
  
 .sticky-container {
