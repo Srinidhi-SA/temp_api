@@ -138,11 +138,7 @@ export class AppsModelDetail extends React.Component {
 			          <div className="main-content">
 			          <div className="row">
 		                <div className="col-md-12">
-
-		                <div className="panel panel-mAd documentModeSpacing box-shadow">
-		                    <div className="panel-heading">
-		                      <h3 className="page-title-4">{store.getState().apps.modelSummary.name}
-
+							<h3 className="xs-mt-0">{store.getState().apps.modelSummary.name}
 		                      <div className="btn-toolbar pull-right">
 		                        <div className="btn-group">
 		                        <button type="button" className="btn btn-default" onClick={this.print.bind(this)} title="Print Document"><i className="fa fa-print"></i></button>
@@ -157,14 +153,17 @@ export class AppsModelDetail extends React.Component {
 		                        </div>
 		                      </div>
 		                     </h3>
-		                    </div>
+							 <div className="clearfix"></div>
+							 
+		                <div className="panel panel-mAd documentModeSpacing box-shadow">
+		                  
 		                   <div className="panel-body no-border">
 		                   <div className="container-fluid">
 
 		                  {cardDataList}
 
 		                    </div>
-												<div class="row">
+							 
 		                    <div className="col-md-12 text-right xs-mt-30">
 												{!$.isEmptyObject(hyperParameterData)?
 												<span>
@@ -174,7 +173,7 @@ export class AppsModelDetail extends React.Component {
 		                    <Button bsStyle="primary" onClick={this.handleExportAsPMMLModal.bind(this,true)}>Export As PMML</Button>:""}
 		                  	{showCreateScore? <AppsCreateScore match={this.props.match}/>:""}
 		                   </div>
-		                   </div>
+		                    
 		             </div>
 		             <ExportAsPMML/>
 		                    </div>

@@ -434,12 +434,22 @@ export class DataPreview extends React.Component {
           if (item.display) {
             return (
 
-              <div key={i} className="col-md-2 co-sm-4 col-xs-6">
-                <h3 className="text-center">
-                  {item.value}
-                  <br/>
-                  <small>{item.displayName}</small>
-                </h3>
+              <div key={i} className="col-md-5ths col-xs-6 data_preview xs-mb-15">
+                <div className="bgStockBox">
+				<div className="row">					
+					<div className="col-xs-8 xs-pr-0">
+							<h4 className="xs-pt-5 xs-pb-5">
+							{item.displayName}				  
+							</h4>
+					</div>
+					<div className="col-xs-4 xs-pl-0 text-right">
+							<h4 className="xs-pt-5 xs-pb-5 text-info">
+							{item.value}
+							</h4>
+					</div>
+					<div class="clearfix"></div>
+				</div>				
+				</div>
               </div>
 
             );
@@ -510,11 +520,11 @@ export class DataPreview extends React.Component {
             if (!dataPrev.uiMetaData.columnDataUI[tdIndex].consider) {
               let cls = dataPrev.uiMetaData.columnDataUI[tdIndex].slug + " greyout-col";
               return (
-                <td key={tdIndex} className={cls} onClick={this.setSideElements.bind(this)}>{tdElement}</td>
+                <td key={tdIndex} className={cls} onClick={this.setSideElements.bind(this)} title={tdElement}>{tdElement}</td>
               );
             } else {
               return (
-                <td key={tdIndex} className={dataPrev.uiMetaData.columnDataUI[tdIndex].slug} onClick={this.setSideElements.bind(this)}>{tdElement}</td>
+                <td key={tdIndex} className={dataPrev.uiMetaData.columnDataUI[tdIndex].slug} onClick={this.setSideElements.bind(this)} title={tdElement}>{tdElement}</td>
               );
             }
 
@@ -568,7 +578,7 @@ export class DataPreview extends React.Component {
             <div className="page-head">
               <div className="row">
                 <div className="col-md-8">
-                  <h3 className="xs-mt-0 xs-mb-0 text-capitalize">Data Preview</h3>
+                  <h3 className="xs-mt-0 xs-mb-0 text-capitalize"> Data Preview</h3>
                 </div>
               </div>
               <div className="clearfix"></div>
@@ -576,17 +586,20 @@ export class DataPreview extends React.Component {
             {/*<!-- /.Page Title and Breadcrumbs -->*/}
             {/*<!-- Page Content Area -->*/}
             <div className="main-content">
+			<div className="row d_preview">
+				 
+				 {topInfo}
+				 
+			</div>
               <div className="row">
                 <div className="col-md-9 preview_content">
-                  <div className="panel box-shadow">
-                    <div className="panel-body no-border xs-p-0">
-                      {topInfo}
-                    </div>
+                  
+                     
                     <div className="clearfix"></div>
-                    <div className="table-responsive noSwipe xs-pl-10 xs-pr-10 xs-pb-10">
+                    <div className="table-responsive noSwipe xs-pb-10">
 
                       <Scrollbars style={{
-                        height: 767
+                        height: 855
                       }}>
                         <table className="table table-condensed table-hover table-bordered table-striped cst_table">
                           <thead>
@@ -601,7 +614,7 @@ export class DataPreview extends React.Component {
                         </table>
                       </Scrollbars>
                     </div>
-                  </div>
+                 
                 </div>
                 <div className="col-md-3 preview_stats">
                   {/*<!-- Start Tab Statistics -->*/}

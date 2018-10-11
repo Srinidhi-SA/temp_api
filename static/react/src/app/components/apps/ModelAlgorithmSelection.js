@@ -116,7 +116,7 @@ export class ModelAlgorithmSelection extends React.Component {
                             <div className="ma-checkbox inline">							
                                 <input type="checkbox" checked={data.selected} id={checkboxId} onChange={this.changeAlgorithmSelection.bind(this,data)}/><label for={checkboxId}><b>{data.algorithmName}</b></label>							
                             </div>
-							<div className="xs-mt-5"><p>{data.description}</p></div>
+							<div className="xs-mt-5 xs-ml-20"><p>{data.description}</p></div>
                         </div>
 						</div>
                         </div>
@@ -144,13 +144,13 @@ export class ModelAlgorithmSelection extends React.Component {
                                     hyperparameterOptionsData = hyperparameterOptions.map((param,index) =>{
                                         if(param.display){ 
                                             return(
-                                                <div className="row">
+                                                 
                                                     <div class="form-group">
                                                         <label class="col-md-3 control-label read">{param.displayName}</label>
                                                         <RegressionParameter parameterData={param} tuneName={selectedValue} algorithmSlug={data.algorithmSlug} type="TuningOption"/>
                                                     <div class="clearfix"></div>
                                                     </div>
-                                                </div>
+                                                 
                                             );
                                         }
                                     });
@@ -163,14 +163,14 @@ export class ModelAlgorithmSelection extends React.Component {
                         var parametersData = algorithmParameters.map((params,Index) =>{
                             if(params.hyperpatameterTuningCandidate && params.display){
                                 return(
-                                    <div class="row">
+                                     
                                         <div class="form-group">
                                             <label class="col-md-2 control-label read">{params.displayName}</label>
                                             <label class="col-md-4 control-label read">{params.description}</label>
                                             <RegressionParameter parameterData={params} tuneName={selectedValue} algorithmSlug={data.algorithmSlug} isTuning={true} type="TuningParameter"/>
                                         <div class="clearfix"></div>
                                         </div>
-                                    </div>
+                                     
                                 );
                             }
                         });
@@ -180,14 +180,14 @@ export class ModelAlgorithmSelection extends React.Component {
                         var parametersData = algorithmParameters.map((params,Index) =>{
                             if(params.display){
                                 return(
-                                <div class="row">
+                                 
                                     <div class="form-group">
                                         <label class="col-md-2 control-label read">{params.displayName}</label>
                                         <label class="col-md-4 control-label read">{params.description}</label>
                                         <RegressionParameter parameterData={params} tuneName={selectedValue} algorithmSlug={data.algorithmSlug} type="NonTuningParameter"/>
                                     <div class="clearfix"></div>
                                     </div>
-                                </div>
+                                
                                 );
                             }
                         });
@@ -196,7 +196,8 @@ export class ModelAlgorithmSelection extends React.Component {
                     {
                         return(
                             <Tab eventKey={data.algorithmSlug} title={data.algorithmName}>
-                                <div className="row">
+                                <FormGroup role="form">
+								 <div className="xs-mt-20">
                                     <div className="form-group">
                                     <label class="col-md-3 control-label">Hyperparameter Tuning :</label>
                                     <div className="col-md-3">
@@ -206,17 +207,17 @@ export class ModelAlgorithmSelection extends React.Component {
                                     </div>
                                     <div class="clearfix"></div>
                                     </div>
-                                </div>
+                                 </div>
                                 <div>{hyperparameterOptionsData}</div>
-                                <div className="row">
+                                <div>
                                     <div className="col-md-12">
                                     {selectedValue != "none"?
-                                    <h4>You can provide the intervals or options that we use for optimization using hyperparameter tuning.</h4>
-                                    :<h4>The parameter specifications below are recommended by mAdvisor.  You can still go ahead and tune any of them.</h4>}
+                                    <h5 className="text-info xs-mb-20">You can provide the intervals or options that we use for optimization using hyperparameter tuning.</h5>
+                                    :<h5 className="text-info xs-mb-20">The parameter specifications below are recommended by mAdvisor.  You can still go ahead and tune any of them.</h5>}
                                     </div>
-                                </div>
+                                 </div>
                                 {selectedValue != "none"?
-                                <div className="row">
+                                <div>
                                      <label class="col-md-6 control-label read"></label>
                                      <label class="col-md-1 control-label read text-center">
                                             <b>Min</b>
@@ -227,6 +228,7 @@ export class ModelAlgorithmSelection extends React.Component {
                                      <label class="col-md-4 control-label read"><b><span class="xs-ml-30">Select one or multiple intervals</span></b></label>
                                 </div>:""}
                                 <div>{parametersData}</div>
+								</FormGroup>
                             </Tab>
                         );
                     }
@@ -237,19 +239,15 @@ export class ModelAlgorithmSelection extends React.Component {
         return(
                 <div className="side-body">
                     <div className="page-head">
-                        <div className="row">
-                            <div className="col-md-8">
+                         
                                 <h3 class="xs-mt-0 text-capitalize">{pageTitle}</h3>
-                            </div>
-                        </div>
-                        <div className="clearfix"></div>
+                            
                     </div>
                     <div className="main-content">
-                        <div class="row">
-                            <div class="col-md-12">
+                          <div className="panel panel-mAd xs-p-20 box-shadow">
                                 {this.state.showParameterTuning == false ?
-                                <div className="panel panel-mAd box-shadow">
-                                    <div className="panel-heading xs-mb-10">
+                                <div>
+                                    <div className="panel-heading xs-ml-0 xs-mb-10">
                                         Please use the following learning algorithms for prediction
                                     </div>
                                     <div className="panel-body no-border">
@@ -262,15 +260,12 @@ export class ModelAlgorithmSelection extends React.Component {
                                 {pageData}
                                 </Tabs>
                                 }
-
+							<div className="clearfix"></div>
+                            <div className="text-right">
+                                <Button type="button" bsStyle="primary xs-pl-20 xs-pr-20" onClick={this.createModel.bind(this)}>{buttonName}</Button>
                             </div>
-                        </div>
-
-                        <div className="row">
-                            <div className="col-lg-12 text-right">
-                                <Button type="button" bsStyle="primary" onClick={this.createModel.bind(this)}>{buttonName}</Button>
-                            </div>
-                        </div>
+							<div className="clearfix"></div>
+                         </div>
                     </div>
                     <AppsLoader match={this.props.match}/>
                 </div>
