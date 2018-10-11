@@ -159,7 +159,7 @@ export class RegressionParameter extends React.Component {
                 if(parameterData.uiElemType == "textBox"){
                     return (
                          <div className="row">
-                        <div className="col-md-6">
+                        <div className="col-md-2">
                             <input type="number" className="form-control" value={this.state.defaultVal} onChange={this.changeTextboxValue.bind(this)} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)} />
                             <div className="clearfix"></div>
                                 <div className="range-validate text-danger"></div>
@@ -202,7 +202,7 @@ export class RegressionParameter extends React.Component {
                     var dataTypes = ["int"];
                     return (
                             <div className="row">                            
-                            <div className="col-md-8 col-sm-2">
+                            <div className="col-md-6 col-sm-2">
                                 
                                     <div className="col-xs-1 clr-alt4">{this.state.min}</div>
                                     <div className="col-xs-10">

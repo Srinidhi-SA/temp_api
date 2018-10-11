@@ -142,7 +142,7 @@ export class ModelVariableSelection extends React.Component {
                             {store.getState().apps.regression_selectedTechnique == "crossValidation" ?
                                 <div class="form-group">
 
-                                    <label class="col-lg-4 xs-pt-10" for="noOffolds">No of Folds :</label>
+                                    <label class="col-lg-4 control-label xs-pt-10" for="noOffolds">No of Folds :</label>
                                     <div class="col-lg-8">
                                         <input type="number" name="" class="form-control" required={true} id="noOffolds" onChange={this.changecrossValidationValue.bind(this)} min={2} max={10} value={store.getState().apps.regression_crossvalidationvalue}/>
 
@@ -181,7 +181,7 @@ export class ModelVariableSelection extends React.Component {
 
                 <div className="panel panel-default box-shadow">
                 <div className="panel-body">
-                <Form onSubmit={this.createModel.bind(this)}>
+                <Form onSubmit={this.createModel.bind(this)} className="form-horizontal">
                 <FormGroup role="form">
 
                  <div className="row">
@@ -190,48 +190,43 @@ export class ModelVariableSelection extends React.Component {
                 <label className="col-lg-4"><h4>I want to predict {custom_word1}</h4></label>
                 </div>
                 </div>
-
-                <div className="row">
-
-                <div className="form-group">
-                <label className="col-lg-2 xs-pt-10">I want to predict :</label>
+                
+                <label className="col-lg-2 control-label cst-fSize">I want to predict :</label>
                 <div className="col-lg-4"> {renderSelectBox}</div>
-                </div>
+                 <div className="clearfix"></div>
+				 
                  {/*<!-- /.col-lg-4 -->*/}
-                </div>
-                {(this.props.targetLevelCounts != null)? ( <div className="row xs-mb-20">
-                    <div className="form-group">
-                    <label className="col-lg-2 xs-pt-10">Choose Value for {custom_word2}</label>
+                
+                {(this.props.targetLevelCounts != null)? ( <div className="xs-mt-20 xs-mb-20">
+                     
+                    <label className="col-lg-2 control-label">Choose Value for {custom_word2} :</label>
                     <div className="col-lg-4"> {renderLevelCountSelectBox}</div>
-                    </div>
+                     
                      {/*<!-- /.col-lg-4 -->*/}
                     </div>) : (<div></div>)
 
                 }
-
-                <DataVariableSelection match={this.props.match}/>
-                <div className="row">
-
+				</FormGroup>
+				<FormGroup role="form">
+						<DataVariableSelection match={this.props.match}/>
+                </FormGroup>
+				
+				<FormGroup role="form">					
 					<div class="col-md-8">
 					{modelValidation}
 					</div>
-                    <div class="col-md-4">
-					<h4 class="xs-pb-20"></h4>
+					<div class="col-md-4">
+					<h4 class="xs-pb-30"></h4>
 					<div class="xs-pb-40">
 					</div>
 
-					<div className="form-group">
-					<input type="text" name="createModelName" required={true} id="createModelName" className="form-control input-sm" placeholder="Create Model Name" />
+					<div class="input-group xs-mb-15">
+					<input type="text" name="createModelName" required={true} id="createModelName" className="form-control" placeholder="Create Model Name"/><span class="input-group-btn">
+					  <button type="submit" class="btn btn-primary">{buttonName}</button></span>
 					</div>
 
 					</div>
-                 </div>
-
-                <div className="row">
-                <div className="col-lg-12 text-right">
-                <Button type="submit" bsStyle="primary">{buttonName}</Button>
-                </div>
-                </div>
+					<div className="clearfix"></div>					
                 </FormGroup>
                 </Form>
                 </div>

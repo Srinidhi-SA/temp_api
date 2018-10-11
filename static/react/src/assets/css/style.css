@@ -451,7 +451,7 @@ a.bg-warning:focus, a.bg-warning:hover {
 a.bg-danger:focus, a.bg-danger:hover {
 	background-color: #ea3434
 }
-.bg-highlight-parent { background:#f9f9f9; padding:10px 10px 10px 10px; border: 1px solid #f6f6f6; text-align:left; }
+.bg-highlight-parent { background:#fbfbfb; padding:10px 10px 10px 10px; border: 1px solid #f6f6f6; text-align:left; border-radius: 2px; }
 .bg-highlight { background:url(../images/bg_highlight.png) no-repeat center left ; padding-left:100px; background-position-x: 25px; min-height: 50px; }
 .bg-highlight-parent:hover { background:#f6f6f6; }
 .bg-highlight-parent ul { padding:0; }
@@ -14165,6 +14165,7 @@ background: #f3f2f2;
 .panel-mAd .panel { padding: 10px; }
 .panel-mAd>.panel-heading { margin: 0; padding: 0; /*padding: 6px 0px 0 10px; background-color: #FFF; border-bottom:1px solid #ddd; */}
 .panel-mAd>.panel-heading h2 { margin-top: 8px; text-transform:capitalize}
+h3.xs-mt-0 { text-transform: capitalize; }
 .panel-mAd .panel-body { padding:0;}
 .panel-mAd div h2 small { font-size:65%; }
 /** For Card Tabs *
@@ -14342,8 +14343,8 @@ a.tabs-control.right span { right: -2px; border-radius: 50px; }
   float:left;
 }
 
-/** slide panel **/
-.panel-mAd .tab-pane { overflow:hidden; }
+/** slide panel *
+.panel-mAd .tab-pane { overflow:hidden; }*/
 
 
 /*************************/
@@ -15028,6 +15029,7 @@ a .btn-close {
     background: #f8f8f8;
     min-height: 214px;
     padding-top: 35px;
+	border-radius: 4px;
 }
 .pred_disp_block_store { background: transparent; }
 .pred_disp_block_store.cursor { cursor:auto; }
@@ -15162,11 +15164,11 @@ a:hover .icon-container .class { color: #02988c;}
 .d_analyst_block, .d_m_block { display:block; }
 .d_analyst_img { float:left; width:98px; height:113px; background: url(../images/icon_dataAnalyst.png) no-repeat}
 .d_m_img { float:left; width:197px; height:113px; background: url(../images/icon_bAmAdvisor.png) no-repeat }
-.d_m_block { color:#00998c }
+.d_m_block h1 small { color:#00998c }
 .bImpact_time_icon { width:21px; height:20px; display:inline-block; background: url(../images/icon_bAClock.png) no-repeat }
-
+.bgStockBox h3.text-center { color: #5bc0de; }
 blockquote {
-background:#f6f6f6;
+background:#f7f7f7;
 border:none;
 font-style:italic; 
 margin-bottom:-30px;
@@ -15194,6 +15196,8 @@ blockquote p:after {
     bottom: -0.6em;
     right: 0; 
 }
+#algosel .nav-tabs li a { font-weight:600 }
+.card_kpi .alert-primary { background-color: #24ccbe; border: 1px solid #2fd2c4; border-radius: 2px;}
 /**************** Css realated to developers, keep the source down ***/
 #prediction_dropdown{
 	    width: 40%;
@@ -15518,20 +15522,21 @@ float: inherit;
 display: inline-block;
 }
 .bgStockBox h3 {
-	background: #f6f6f6;
+	/*background: #f6f6f6;*/
     color: #9e9e9e;
-    border: 1px solid #dedede;
+    border: 1px solid #ececec;
     padding: 10px;
     margin: 0;
     }
 .bgStockBox h3 small { font-size: 58%; }
 
 .data_preview .bgStockBox { display: block; color: #969696; border: 1px solid #ececec; float: none; padding: 0 10px; margin-bottom:0; border-radius:2px; }
-.d_preview .col-md-5ths:first-child .bgStockBox { border-bottom:2px solid #99d4fa;}
-.d_preview .col-md-5ths:nth-child(2) .bgStockBox { border-bottom:2px solid #7be0d7;}
-.d_preview .col-md-5ths:nth-child(3) .bgStockBox { border-bottom:2px solid #99fad4;}
-.d_preview .col-md-5ths:nth-child(4) .bgStockBox { border-bottom:2px solid #f1c776;}
-.d_preview .col-md-5ths:nth-child(5) .bgStockBox { border-bottom:2px solid #ffac67;}
+.d_preview .col-md-5ths:first-child .bgStockBox, .ov_card_boxes .col-md-4.bgStockBox:first-child h3 { border-bottom:2px solid #99d4fa;}
+.d_preview .col-md-5ths:nth-child(2) .bgStockBox, .ov_card_boxes .col-md-4.bgStockBox:nth-child(2) h3 { border-bottom:2px solid #7be0d7;}
+.d_preview .col-md-5ths:nth-child(3) .bgStockBox, .ov_card_boxes .col-md-4.bgStockBox:nth-child(3) h3 { border-bottom:2px solid #99fad4;}
+.d_preview .col-md-5ths:nth-child(4) .bgStockBox, .ov_card_boxes .col-md-4.bgStockBox:nth-child(4) h3 { border-bottom:2px solid #f1c776;}
+.d_preview .col-md-5ths:nth-child(5) .bgStockBox, .ov_card_boxes .col-md-4.bgStockBox:nth-child(5) h3 { border-bottom:2px solid #ffac67;}
+.d_preview .col-md-5ths:nth-child(6) .bgStockBox, .ov_card_boxes .col-md-4.bgStockBox:nth-child(6) h3 { border-bottom:2px solid #fb9595}
 
 .list-boxes .rep_block  { text-transform: capitalize; }
 
@@ -15770,8 +15775,7 @@ input[type=range]:focus::-ms-fill-upper {
 .cardKpi {text-align: center}
 .card_kpi {float:none; display: inline-block; vertical-align: top;}
 div.text-center.tbl_th_center th {text-align: center}
-.col-xs-1.clr-alt4, .gray-box { padding: 5px 0px;
-    text-align: center; }
+.col-xs-1.clr-alt4, .gray-box { padding: 5px 0px; text-align: center; border-radius: 4px; }
 .for_multiselect .btn-group { min-width:180px; }
 .for_multiselect .btn-group .btn.btn-default {width:100%; text-align: left;  }
 .for_multiselect .btn-group .btn.btn-default .caret { float: right; margin-top: 5px;}

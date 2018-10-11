@@ -163,7 +163,7 @@ export class AppsModelDetail extends React.Component {
 		                  {cardDataList}
 
 		                    </div>
-												<div class="row">
+							 
 		                    <div className="col-md-12 text-right xs-mt-30">
 												{!$.isEmptyObject(hyperParameterData)?
 												<span>
@@ -173,7 +173,7 @@ export class AppsModelDetail extends React.Component {
 		                    <Button bsStyle="primary" onClick={this.handleExportAsPMMLModal.bind(this,true)}>Export As PMML</Button>:""}
 		                  	{showCreateScore? <AppsCreateScore match={this.props.match}/>:""}
 		                   </div>
-		                   </div>
+		                    
 		             </div>
 		             <ExportAsPMML/>
 		                    </div>
