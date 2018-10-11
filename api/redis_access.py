@@ -54,11 +54,14 @@ class AccessFeedbackMessage:
 
     # ------------------------
 
-    def get_or_set_using_key(self, key, default_value=list()):
+    def get_or_set_using_key(self, key, default_value=None):
         data = self.get_using_key(key)
 
         if data is None:
-            data = default_value
+            if default_value:
+                data = default_value
+            else:
+                data = list()
             self.set_using_key(key, data)
         return data
 
