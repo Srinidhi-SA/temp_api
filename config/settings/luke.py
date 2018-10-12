@@ -20,7 +20,7 @@ DATABASES = {
         'NAME': 'madvisor',
         'USER': 'root',
         'PASSWORD': 'Marlabs@123',
-        'HOST': 'localhost',
+        'HOST': '172.31.53.141',
         'PORT': '',
         }
 }
@@ -130,8 +130,8 @@ DEPLOYMENT_ENV = "prod"
 HADOOP_CONF_DIR= False
 HADOOP_USER_NAME="hduser"
 
-CELERY_BROKER_URL = 'redis://localhost:6379/'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/'
+CELERY_BROKER_URL = 'redis://172.31.53.141:6379/'
+CELERY_RESULT_BACKEND = 'redis://172.31.53.141:6379/'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
@@ -170,3 +170,7 @@ CELERY_ONCE_CONFIG = {
     'default_timeout': 60 * 60
   }
 }
+
+SUBMIT_JOB_THROUGH_CELERY = True
+CELERY_SCRIPTS_DIR="/home/hduser/codebase/mAdvisor-api/scripts/"
+USE_YARN_DEFAULT_QUEUE=True
