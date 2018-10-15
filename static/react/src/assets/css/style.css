@@ -13943,6 +13943,7 @@ ul.app_labels li:first-child { margin: 0; padding: 7px 5px }
 .app-block  .card-footer div.card-deatils { width: 46px; }
 
 .app-block  a.app-link { min-height: 135px; display: block; border-bottom: 1px solid #edecec; color:#949494; }
+.d_manage a.app-link {  border-bottom: none;  }
 .app-block  a.db_kylo { border-bottom: 1px solid transparent;}
 a.app-link h4 { font-size: 15px; color: #333333; padding-top: 20px; text-transform: uppercase; font-weight: bold;}
 .app_labels li a { /*border:1px solid #dae6e5; width: 100px; */ display: inline-block; line-height: 1.91em; color: #949494; padding-left: 5px;padding-right:5px }
