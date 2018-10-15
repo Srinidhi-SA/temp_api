@@ -24,7 +24,7 @@ export class KyloMenuList extends React.Component {
       return (
         <div class="col-md-4 xs-mb-20" key={i}>
           <div>
-            <div className="app-block">
+            <div className="app-block d_manage">
               <Link className="app-link" to={kyloCardLink} id={card.slug + "22"}>
 
                 <div className="col-md-4 col-sm-3 col-xs-5 xs-p-20">
