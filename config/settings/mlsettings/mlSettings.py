@@ -357,7 +357,7 @@ else:
                 computational power to build scalable and accurate models."""
             },
             {
-                "algorithmName": "Naive Bayes",
+                "algorithmName": "naivebayesmul",
                 "selected": True,
                 "parameters": SKLEARN_ML_NAIVE_BAYES_PARAMS,
                 "algorithmSlug": ALGORITHMRANDOMSLUG + "nb",
