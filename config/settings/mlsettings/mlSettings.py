@@ -165,6 +165,7 @@ SKLEARN_NONE_PARAMS = [
 
             }
 ]
+EMPTY_SKLEARN_HYPERPARAMETER_OBJECT = []
 
 SKLEARN_HYPERPARAMETER_OBJECT = [
     {
@@ -186,7 +187,7 @@ SKLEARN_HYPERPARAMETER_OBJECT = [
         "selected": True
     }
 ]
-
+EMPTY_SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION = copy.deepcopy(EMPTY_SKLEARN_HYPERPARAMETER_OBJECT)
 SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION = copy.deepcopy(SKLEARN_HYPERPARAMETER_OBJECT)
 SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION[0]["params"][0]["defaultValue"] = SKLEARN_CLASSIFICATION_EVALUATION_METRICS
 SKLEARN_HYPERPARAMETER_OBJECT_REGRESSION = copy.deepcopy(SKLEARN_HYPERPARAMETER_OBJECT)
@@ -354,6 +355,17 @@ else:
                 "description":"""A machine learning technique that produces an ensemble of multiple decision tree
                 models to predict categorical variables. It is highly preferred to leverage
                 computational power to build scalable and accurate models."""
+            },
+            {
+                "algorithmName": "Naive Bayes",
+                "selected": True,
+                "parameters": SKLEARN_ML_NAIVE_BAYES_PARAMS,
+                "algorithmSlug": ALGORITHMRANDOMSLUG + "nb",
+                "hyperParameterSetting": SKLEARN_HYPERPARAMETER_OBJECT_CLASSIFICATION,
+                "description": """The multinomial Naive Bayes classifier is suitable for classification with discrete 
+                features (e.g., word counts for text classification). 
+                The multinomial distribution normally requires integer feature counts. 
+                However, in practice, fractional counts such as tf-idf may also work."""
             },
             # {
             #     "algorithmName": "SVM",

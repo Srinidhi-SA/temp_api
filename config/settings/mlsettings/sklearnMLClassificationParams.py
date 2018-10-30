@@ -610,3 +610,20 @@ SKLEARN_ML_XGBOOST_CLASSIFICATION_PARAMS = [
     },
 
 ]
+
+SKLEARN_ML_NAIVE_BAYES_PARAMS = [
+         {
+            "name":"alpha",
+            "displayName":"Alpha",
+            "description" : "Additive (Laplace/Lidstone) smoothing parameter (0 for no smoothing).",
+            "defaultValue":1.0,
+            "acceptedValue":None,
+            "valueRange":[0.0,1.0],
+            "paramType":"number",
+            "uiElemType":"slider",
+            "display":True,
+            "hyperpatameterTuningCandidate":True,
+            "expectedDataType": ["float"],
+            "allowedDataType":["float"]
+        },
+    ]
