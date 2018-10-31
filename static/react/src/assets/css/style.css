@@ -152,6 +152,8 @@ td, th {
 
 .col-xs-5ths {  width: 20%; float: left; }
 
+.heatMapHeader th{ font-weight: bold !important; text-align: center;}
+
 @media (min-width: 768px) {
     .col-sm-5ths {
         width: 20%;
@@ -6901,7 +6903,8 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00998c', end
 	content: " %"
 }
 .switch-button.switch-button-yesno input[type=checkbox]:checked+span label:before {
-	content: "AVG"
+	/*content: "AVG"*/
+	content: "# "
 }
 .switch-button.switch-button-xs {
 	height: 20px;

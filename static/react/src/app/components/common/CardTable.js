@@ -23,6 +23,7 @@ export class CardTable extends React.Component {
 
 	render() {
 		var element = this.props.jsonData;
+		//alert(element.tableType);
 		console.log("checking table element");
 		let tableEle = "";
 		var tableCls = "";
