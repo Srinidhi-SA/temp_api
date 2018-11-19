@@ -14693,15 +14693,8 @@ table.apps_table_style thead th { font-weight:bold }
  * All of the styles in this file are optional and configurable!
  */
 
-.CircularProgressbar {
-  /*
-   * This fixes an issue where the CircularProgressbar svg has
-   * 0 width inside a "display: flex" container, and thus not visible.
-   *
-   * If you're not using "display: flex", you can remove this style.
-   */
-  width: 74%;
-}
+.CircularProgressbar { width: 30%;}
+.col-md-6 .col-md-12 .CircularProgressbar { width: 74%; }
 
 .CircularProgressbar .CircularProgressbar-path {
   stroke: #00998c;
@@ -15199,7 +15192,8 @@ blockquote p:after {
     right: -12px; 
 }
 #algosel .nav-tabs li a { font-weight:600 }
-.card_kpi .alert-primary { background-color: #24ccbe; border: 1px solid #2fd2c4; border-radius: 2px;}
+.card_kpi .alert-primary { background-color: #f6f6f6; border: 1px solid #ececec; color: #00998c; border-radius: 2px;	
+	/*background-color: #24ccbe; border: 1px solid #2fd2c4; border-radius: 2px; */}
 
 /**************** Css realated to developers, keep the source down ***/
 #prediction_dropdown{
