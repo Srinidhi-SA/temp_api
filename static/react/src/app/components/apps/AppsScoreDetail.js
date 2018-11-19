@@ -71,8 +71,8 @@ export class AppsScoreDetail extends React.Component {
 				var clearfixClass = "col-md-"+data.cardWidth*0.12+" clearfix";
 				var nonClearfixClass = "col-md-"+data.cardWidth*0.12;
 				if(data.centerAlign){
-					var clearfixClass = "col-md-"+data.cardWidth*0.12+" clearfix cardKpi";
-				var nonClearfixClass = "col-md-"+data.cardWidth*0.12+" cardKpi";
+					var clearfixClass = "col-md-"+data.cardWidth*0.12+" clearfix cardKpi ov_card_boxes";
+				var nonClearfixClass = "col-md-"+data.cardWidth*0.12+" cardKpi ov_card_boxes";
 				}
 				var cardDataArray = data.cardData;
 				var isHideData = $.grep(cardDataArray,function(val,key){
