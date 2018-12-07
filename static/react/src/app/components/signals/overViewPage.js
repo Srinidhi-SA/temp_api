@@ -543,7 +543,7 @@ export class OverViewPage extends React.Component {
 
                       <div className="clearfix"></div>
 				
-                  <div className="panel panel-mAd box-shadow">
+                  <div className="panel panel-mAd box-shadow wow bounceIn" data-wow-duration="1s" data-wow-delay="1s">
 				  
                     <div className="panel-heading">
 

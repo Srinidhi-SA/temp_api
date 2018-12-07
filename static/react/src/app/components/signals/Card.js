@@ -152,10 +152,14 @@ export class Card extends React.Component {
     render() {
         console.log("card is called!!!! with data:----");
         cardData = this.props.cardData;
+		let stockClassName = "";
+		if (window.location.pathname.indexOf("apps-stock-advisor")>-1)
+		stockClassName = "stockClassName";
+		
         let cardWidth = this.props.cardWidth;
         const cardElements = this.renderCardData(cardData,'',cardWidth);
         return (
-                <div>
+                <div className = {stockClassName}>
                 {cardElements}
                 </div>
         );

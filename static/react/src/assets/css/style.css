@@ -332,7 +332,7 @@ hr {
 .h1 .small, .h1 small, .h2 .small, .h2 small, .h3 .small, .h3 small, .h4 .small, .h4 small, .h5 .small, .h5 small, .h6 .small, .h6 small, h1 .small, h1 small, h2 .small, h2 small, h3 .small, h3 small, h4 .small, h4 small, h5 .small, h5 small, h6 .small, h6 small {
 	font-weight: 400;
 	line-height: 1;
-	color: #777
+	color: #191919
 }
 .h1, .h2, .h3, h1, h2, h3 {
 	margin-top: 18px;
@@ -5453,6 +5453,7 @@ color: #FFF; }
 
 /* small screen */
 @media (max-width: 768px) {
+	
 .side-menu {
 	position: relative;
 	width: 100%;
@@ -5462,6 +5463,10 @@ color: #FFF; }
 .side-menu .brand-name-wrapper .navbar-brand {
 	display: inline-block;
 }
+.side-menu-container {    position: fixed;
+    z-index: 1;
+    width: 86px;
+    height: 100%;}
   /* Slide in animation */
   @-moz-keyframes slidein {
  0% {
@@ -5524,14 +5529,14 @@ color: #FFF; }
 	top: 54px;
 }
 .side-menu-container > .navbar-nav {
-	/* Add position:absolute for scrollable menu -> see top comment */
-	position: fixed;
+	/* Add position:absolute for scrollable menu -> see top comment 
+	position: fixed;*/
 	left: -100px;
 	width: 100px;
 	top: 43px;
 	height: 100%;
 	border-right: 1px solid #e7e7e7;
-	background-color: #333333;
+	background-color: #FFFFFF;
 	-moz-animation: slideout 300ms forwards;
 	-o-animation: slideout 300ms forwards;
 	-webkit-animation: slideout 300ms forwards;
@@ -5651,6 +5656,13 @@ color: #FFF; }
 	float: left !important;
 	margin-top: 8px;
 }
+.side-menu .navbar-nav li { width:inherit; }
+}
+
+div#side-menu {
+    padding: 0;
+    height: 100% !important;
+    /* background: red; */
 }
 .navbar-right.ma-user-nav {
 	float: right;
@@ -14167,6 +14179,8 @@ background: #f3f2f2;
 .panel-mAd>.panel-heading { margin: 0; padding: 0; /*padding: 6px 0px 0 10px; background-color: #FFF; border-bottom:1px solid #ddd; */}
 .panel-mAd>.panel-heading h2 { margin-top: 8px; text-transform:capitalize}
 h3.xs-mt-0 { text-transform: capitalize; }
+h3.xs-mt-0.nText { text-transform:inherit; }
+
 .panel-mAd .panel-body { padding:0;}
 .panel-mAd div h2 small { font-size:65%; }
 /** For Card Tabs *
@@ -14906,11 +14920,15 @@ a.disabled { color:#ccc !important; }
 .sb_navigation li a { font-size: 13px; padding: 4px 3px;
     display: block;
     color: #636363;
-    /* background: #c2c2c2; */
     border-radius: 50px;
     margin: 10px 5px;
-    border: 1px solid #e8e8e8;}
-.sb_navigation li a span {white-space: nowrap; width: 143px; overflow: hidden; text-overflow: ellipsis; display: inline-block; vertical-align: middle; }
+    border: 1px solid #e8e8e8;
+	white-space:nowrap;
+	text-overflow:ellipsis;
+	overflow:hidden;
+	}
+/*.sb_navigation li a span {white-space: nowrap; width: 143px; overflow: hidden; text-overflow: ellipsis; display: inline-block; vertical-align: middle; }*/
+
 .sb_navigation li a.active {     color: #21c7b9;
     border: 1px solid #21c7b9;
     background: #FFFFFF; }
@@ -15160,7 +15178,7 @@ a:hover .icon-container .class { color: #02988c;}
 .d_m_img { float:left; width:170px; height:113px; background: url(../images/icon_bAmAdvisor.png) no-repeat }
 .d_m_block h1 small { color: #00998c; display: inline-block; text-align: left; }
 .bImpact_time_icon { width:21px; height:20px; display:inline-block; background: url(../images/icon_bAClock.png) no-repeat }
-.bgStockBox h3.text-center { color: #5bc0de; }
+.bgStockBox h3.text-center { color: #23cdff; }
 blockquote {
 background:#f7f7f7;
 border:none;
@@ -15194,7 +15212,11 @@ blockquote p:after {
 #algosel .nav-tabs li a { font-weight:600 }
 .card_kpi .alert-primary { background-color: #f6f6f6; border: 1px solid #ececec; color: #00998c; border-radius: 2px;	
 	/*background-color: #24ccbe; border: 1px solid #2fd2c4; border-radius: 2px; */}
-
+.stockClassName .col-md-6, .stockClassName	.col-md-12 { padding-left:12px !important; margin-top:20px; }
+.stockClassName	.col-md-12 .col-md-7 {padding:0 !important; margin:0 important;  }
+.stockClassName .col-md-12 .col-md-7.col-md-offset-2 { margin-left: 0 !Important; }
+.stockClassName .col-md-12 .col-md-7 { width:100% !Important; }
+.stockClassName	.col-md-6 .chart-area, .stockClassName	.col-md-12 .chart-area{ box-shadow:0px 0px 10px 3px rgba(219, 219, 219, 0.4196078431372549); padding:20px 10px; }
 /**************** Css realated to developers, keep the source down ***/
 #prediction_dropdown{
 	    width: 40%;
@@ -15337,6 +15359,8 @@ html{
     font-size: 24px;
     z-index:10 !important;
     position:absolute;
+	right: 20px;
+    top: 10px;
 }
 
 .chart-data-icon .fa-table{
@@ -15525,17 +15549,31 @@ display: inline-block;
     padding: 10px;
     margin: 0;
     }
-.bgStockBox h3 small { font-size: 58%; }
+.bgStockBox h3 small { font-size: 70%; }
 
 .data_preview .bgStockBox { display: block; color: #969696; border: 1px solid #ececec; float: none; padding: 0 10px; margin-bottom:0; border-radius:2px; }
-.d_preview .col-md-5ths:first-child .bgStockBox, .ov_card_boxes .col-md-4.bgStockBox:first-child h3, .documentModeSpacing .col-md-4.bgStockBox:first-child h3{ border-bottom:2px solid #afe1ea ;}
-.d_preview .col-md-5ths:nth-child(2) .bgStockBox, .ov_card_boxes .col-md-4.bgStockBox:nth-child(2) h3, .documentModeSpacing .col-md-4.bgStockBox:nth-child(2) h3{ border-bottom:2px solid #bebce1;}
-.d_preview .col-md-5ths:nth-child(3) .bgStockBox, .ov_card_boxes .col-md-4.bgStockBox:nth-child(3) h3, .documentModeSpacing .col-md-4.bgStockBox:nth-child(3) h3{ border-bottom:2px solid #f7e477;}
-.d_preview .col-md-5ths:nth-child(4) .bgStockBox, .ov_card_boxes .col-md-4.bgStockBox:nth-child(4) h3, .documentModeSpacing .col-md-4.bgStockBox:nth-child(4) h3{ border-bottom:2px solid #b7dec3;}
-.d_preview .col-md-5ths:nth-child(5) .bgStockBox, .ov_card_boxes .col-md-4.bgStockBox:nth-child(5) h3, .documentModeSpacing .col-md-4.bgStockBox:nth-child(5) h3{ border-bottom:2px solid #e1ec6c;}
-.d_preview .col-md-5ths:nth-child(6) .bgStockBox, .ov_card_boxes .col-md-4.bgStockBox:nth-child(6) h3, .documentModeSpacing .col-md-4.bgStockBox:nth-child(6) h3{ border-bottom:2px solid #87f0fd}
+.d_preview .col-md-5ths:first-child .bgStockBox, .ov_card_boxes .bgStockBox:first-child h3, .documentModeSpacing .col-md-4.bgStockBox:first-child h3{ border-bottom:2px solid #94d5e1 ;}
+.d_preview .col-md-5ths:nth-child(2) .bgStockBox, .ov_card_boxes .bgStockBox:nth-child(2) h3, .documentModeSpacing .col-md-4.bgStockBox:nth-child(2) h3{ border-bottom:2px solid #a6a4d5;}
+.d_preview .col-md-5ths:nth-child(3) .bgStockBox, .ov_card_boxes .bgStockBox:nth-child(3) h3, .documentModeSpacing .col-md-4.bgStockBox:nth-child(3) h3{ border-bottom:2px solid #f3d954;}
+.d_preview .col-md-5ths:nth-child(4) .bgStockBox, .ov_card_boxes .bgStockBox:nth-child(4) h3, .documentModeSpacing .col-md-4.bgStockBox:nth-child(4) h3{ border-bottom:2px solid #a0d6b0;}
+.d_preview .col-md-5ths:nth-child(5) .bgStockBox, .ov_card_boxes .bgStockBox:nth-child(5) h3, .documentModeSpacing .col-md-4.bgStockBox:nth-child(5) h3{ border-bottom:2px solid #d5e449;}
+.d_preview .col-md-5ths:nth-child(6) .bgStockBox, .ov_card_boxes .bgStockBox:nth-child(6) h3, .documentModeSpacing .col-md-4.bgStockBox:nth-child(6) h3{ border-bottom:2px solid #65eafc}
 
-.list-boxes .rep_block  { text-transform: capitalize; }
+.list-boxes .rep_block  { text-transform: capitalize; animation: color-me-in 5s; }
+
+@keyframes color-me-in {
+  /* You could think of as "step 1" */
+  0% {
+    background: #f3f3f3;
+  }
+  50% {
+    background: #fafafa;
+  }
+  /* You could think of as "step 2" */
+  100% {
+    background: #FFFFFF;
+  }
+}
 
 .ov_card_boxes .row { text-align:center }
 .modal-body.chart-data-modal-body table td { text-align: left }
@@ -15858,3 +15896,5 @@ body div#welcome-body-frame p#message { line-height: 19px; color: #8c8c8c !impor
 .tooltip-table td, .tooltip-table th{ padding: 2px 5px;}
 .tooltip-table tr{border-bottom: 1px solid #b3b3b3;}
 .heat-table-map { max-width: 800px; margin: 0 auto; } 
+
+	 
