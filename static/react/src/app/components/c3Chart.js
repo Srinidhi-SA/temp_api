@@ -335,8 +335,8 @@ export class C3Chart extends React.Component {
     return (
       <div className="chart-area">
 
-        <div className="row">
-          <div className="chart-data-icon col-md-12 xs-p-0 xs-mb-20">
+         
+          <div className="chart-data-icon">
 
             <div class="btn-group pull-right">
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
@@ -372,6 +372,7 @@ export class C3Chart extends React.Component {
                 </li>
               </ul>
             </div>
+			 <div className="clearfix"></div>
           </div>
 
           <div className="clearfix"></div>
@@ -379,7 +380,7 @@ export class C3Chart extends React.Component {
          <div className={chartDownloadCls} style={{display:"none"}}></div>
           <div className="clearfix"></div>
 
-        </div>
+         
         {/* chart data Popup */}
         <div id="" className={this.modalCls} role="dialog">
           <div className="modal-colored-header uploadData modal-dialog ">
