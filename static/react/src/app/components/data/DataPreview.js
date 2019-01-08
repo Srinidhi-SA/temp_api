@@ -718,7 +718,7 @@ export class DataPreview extends React.Component {
             <img id="loading" src={STATIC_URL + "assets/images/Preloader_2.gif"}/>
             <div>
               <div className="text-center text-muted xs-mt-50">
-                <h3> the page or try again later</h3>
+                <h3>Data preview failed to load. Please refresh the page or try again later</h3>
               </div>
             </div>
           </div>
