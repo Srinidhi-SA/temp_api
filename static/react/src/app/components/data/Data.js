@@ -80,7 +80,7 @@ export class Data extends React.Component {
     }
   }
   onChangeOfSearchBox(e){
-      
+
     if(e.target.value==""||e.target.value==null){
       this.props.dispatch(storeSearchElement(""));
       this.props.history.push('/data');
@@ -124,8 +124,8 @@ export class Data extends React.Component {
     	if (search_element)
     		document.getElementById('search_data').value = "";
     }*/
- 
-    
+
+
     //search element ends..
     if (store.getState().datasets.dataPreviewFlag && this.props.dataPreview &&this.props.dataPreview.status!="FAILED") {
     	let _link = "/data/" + store.getState().datasets.selectedDataSet;
@@ -153,7 +153,7 @@ export class Data extends React.Component {
 				<div class="input-group">
 				{/*   <input type="text" name="search_data" onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search Data" id="search_data" class="form-control" placeholder="Search data..."/>*/}
 				<div className="search-wrapper">
-					<input type="text" name="search_data"  value= {this.props.data_search_element} onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="Search data" id="search_data" className="form-control search-box" placeholder="Search data..." required />
+					<input type="text" name="search_data"  value= {this.props.data_search_element} onKeyPress={this._handleKeyPress.bind(this)} onChange={this.onChangeOfSearchBox.bind(this)} title="type here to Search data" id="search_data" className="form-control search-box" placeholder="Search data..." required />
 					<span className="zmdi zmdi-search form-control-feedback"></span>
 					<button className="close-icon" type="reset" onClick={this.clearSearchElement.bind(this)}></button>
 				</div>

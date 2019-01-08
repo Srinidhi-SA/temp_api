@@ -290,7 +290,7 @@ $('.dimension[type="checkbox"]').click(function(){
  });
 
 
- 
+
 }
 
 
@@ -412,7 +412,7 @@ if(datetime.length>0){
           <ul className="list-unstyled">
                               {measureTemplate}
           </ul>
-		 </Scrollbars> 
+		 </Scrollbars>
         </div>
       </div>
       {/*<!-- End Row htmlFor list of variables-->*/}
@@ -586,7 +586,7 @@ if(datetime.length>0){
   <hr/>
   <div className="row">
     <div className="col-md-12 text-right">
-      <button className="btn btn-primary">CREATE SIGNAL</button>
+      <button className="btn btn-primary">CREAsdsdTE SIGNAL</button>
     </div>
   </div>
 

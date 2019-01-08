@@ -54,7 +54,7 @@ export class Signal extends React.Component {
                 path:'/signals'+this.props.signal.name,
                 label: this.props.signal.name
               }
-            ]}/>*/}
+            ]}/>
             </div>
             <div class="col-md-8">
               {/*<h2>{this.props.signal.name}</h2>*/}
@@ -75,6 +75,6 @@ export class Signal extends React.Component {
     }
     else
     return (<MasterSummary signalId={this.props.match.params.slug} />);
-  
+
 }
 }

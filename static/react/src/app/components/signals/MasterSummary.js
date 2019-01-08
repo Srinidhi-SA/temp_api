@@ -54,7 +54,7 @@ export class MasterSummary extends React.Component {
       <div className="side-body">
         <div className="page-head">
           <div class="row">
-            <div class="col-md-12 hidden">
+            <div class="col-md-12">
               <Breadcrumb path={[
                 {
                   path: '/signals',

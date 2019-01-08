@@ -117,7 +117,7 @@ export class SignalDocumentMode extends React.Component {
           <div>
             <div className="side-body" id="side-body">
               {/* Page Title and Breadcrumbs */}
-              <div className="page-head hidden">
+              <div className="page-head">
                 <div class="row">
                   <div class="col-md-12">
                     <Breadcrumb path={[

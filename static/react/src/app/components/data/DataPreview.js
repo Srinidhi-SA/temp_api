@@ -75,7 +75,7 @@ export class DataPreview extends React.Component {
   componentWillMount() {
     console.log("------------------");
     console.log(this.props);
-    console.log("data prevvvvv");
+    console.log("data prevvvvvvvvvvvvvvvvvvvv$$$$$$$$$$$5555555555555555555555555555555555555555555555$$$$$");
     if (this.props.dataPreview == null || isEmpty(this.props.dataPreview) || this.props.dataPreview.status == 'FAILED') {
       this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
     }
@@ -718,7 +718,7 @@ export class DataPreview extends React.Component {
             <img id="loading" src={STATIC_URL + "assets/images/Preloader_2.gif"}/>
             <div>
               <div className="text-center text-muted xs-mt-50">
-                <h3>Data preview failed to load. Please refresh the page or try again later</h3>
+                <h3> the page or try again later</h3>
               </div>
             </div>
           </div>

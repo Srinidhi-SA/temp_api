@@ -12,6 +12,7 @@ import {Settings} from "./components/settings/Settings";
 import {Apps} from "./components/apps/Apps";
 import {Data} from "./components/data/Data";
 import {DataPreview} from "./components/data/DataPreview";
+import {DataCleansing} from "./components/data/DataCleansing";
 import {Stories} from "./components/stories/Stories";
 import {Signals} from "./components/signals/Signals";
 import {Signal} from "./components/signals/Signal";
@@ -133,11 +134,17 @@ class App extends React.Component {
     const data = (props) => {
       if (this.hasDataRoutePermission()) {
         switch (props.match.path) {
+        case "/data_cleansing/:slug":
+            {
+              return (<DataCleansing  {...props}/>)
+            }
+            break;
           case "/data":
             {
               return (<Data {...props}/>)
             }
             break;
+
           case "/data/:slug":
             {
               return (<DataPreview {...props}/>)
@@ -266,6 +273,7 @@ class App extends React.Component {
             <Route exact path="/apps/:AppId/models/:slug" render={trainer}/>
             <Route exact path="/apps/:AppId/models/:modelSlug/data/:slug/createScore" component={ScoreVariableSelection}/>
             <Route exact path="/data?page=:slug" render={data}/>
+            <Route exact path="/data_cleansing/:slug" render={data}/>
             <Route exact path="/apps/:AppId/scores/:slug" render={score}/>
             <Route exact path="/data/:slug/createSignal" render={data}/>
             <Route exact path="/signals?page=:slug" render={signals}/>
