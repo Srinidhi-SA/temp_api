@@ -93,34 +93,12 @@ export class DataCleansing extends React.Component {
 
 
 
-
-
-    // const tableRowsTemplate = dataPrev.uiMetaData.sampleDataUI.map((trElement, trIndex) => {
     //
-    //   const tds = trElement.map((tdElement, tdIndex) => {
-    //     if (!dataPrev.uiMetaData.columnDataUI[tdIndex].consider) {
-    //       let cls = dataPrev.uiMetaData.columnDataUI[tdIndex].slug + " greyout-col";
-    //       return (
-    //         <td key={tdIndex} className={cls} onClick={this.setSideElements.bind(this)}>{tdElement}</td>
-    //       );
-    //     } else {
-    //       return (
-    //         <td key={tdIndex} className={dataPrev.uiMetaData.columnDataUI[tdIndex].slug} onClick={this.setSideElements.bind(this)}>{tdElement}</td>
-    //       );
-    //     }
+    //         this.props.dataPreview.meta_data.scriptMetaData.columnData.forEach(function( item, i) {
+    //            return (
+    //            )
+    //         });
     //
-    //   });
-    //   return (
-    //     <tr key={trIndex}>
-    //       {tds}
-    //     </tr>
-    //
-    //   );
-    // });
-
-
-
-
 
 
 
@@ -132,14 +110,23 @@ export class DataCleansing extends React.Component {
 
           <tr>
             <td>{item.name}</td>
+          {/* <td>  {item.actualColumnType}</td> */}
                <td><select class="form-control">
                 <option selected>{item.actualColumnType}</option>
                 <option></option>
               </select></td>
 
 
-                  <td key={i}>     </td>
-                   <td>2%</td>
+                  <td>
+                    {item.columnStats.filter(function(item){return  item.name == "numberOfUniqueValues" }).map(option=>
+                  <td>{option.value}</td>
+                )}
+
+
+
+
+                      </td>
+                   <td>**need api**</td>
                    <td><select class="form-control">
                        <option selected>Mean Imputation</option>
                        <option>Discriminant Analysis</option>
