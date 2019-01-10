@@ -76,6 +76,16 @@ class DatasetSerializer(serializers.ModelSerializer):
                 model=self.Meta.model.__name__.lower(),
             )
             ret['permission_details'] = permission_details
+
+        if 'meta_data' in ret:
+            if "uiMetaData" in ret['meta_data']:
+                feature_engineering_static_settings = settings.feature_engineering_settings
+                ret['meta_data']["uiMetaData"]["fe_config"] = {
+                    "data_cleansing": feature_engineering_static_settings.data_cleansing_static,
+                    "column_format": feature_engineering_static_settings.column_format,
+                    "fe": {}
+                }
+
         return ret
 
     class Meta:
