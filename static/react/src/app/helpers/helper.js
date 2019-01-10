@@ -134,6 +134,7 @@ const DYNAMICLOADERINTERVAL = 2000;
 const IGNORE_SUGGESTION = "ignore_suggestion";
 const ACCESSDENIED ="Access Denied"
 const CREATESIGNAL = "Create Signal";
+const PROCEEDTODATACLEANSING = "Proceed to data cleansing";
 const CREATEMODEL = "Create Model";
 const CREATESCORE = "Create Score"
 
@@ -455,6 +456,7 @@ export{
   MSSQL,
   ACCESSDENIED,
   CREATESIGNAL,
+  PROCEEDTODATACLEANSING,
   CREATESCORE,
   CREATEMODEL
 	}
