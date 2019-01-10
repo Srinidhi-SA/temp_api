@@ -27,7 +27,7 @@ import {DataValidation} from "./DataValidation";
 import {DataValidationEditValues} from "./DataValidationEditValues";
 import Dialog from 'react-bootstrap-dialog';
 import {checkCreateScoreToProceed, getAppDetails} from "../../actions/appActions";
-import {missingValueTreatmentSelectedAction} from "../../actions/dataCleansingActions";
+import {missingValueTreatmentSelectedAction, outlierRemovalSelectedAction} from "../../actions/dataCleansingActions";
 
 @connect((store) => {
   return {
@@ -85,16 +85,20 @@ getMissingValueTreatmentOptions(dataType, colName){
   else { return "";}
 }
 missingValueTreatmentOnChange(event){
-  console.log(event);
   this.props.dispatch(missingValueTreatmentSelectedAction(event.target.dataset["colname"], event.target.value));
 
 }
+outlierRemovalOnChange(event){
+  this.props.dispatch(outlierRemovalSelectedAction(event.target.dataset["colname"], event.target.value));
+}
 
-getOutlierRemovalOptions(dataType){
+
+
+getOutlierRemovalOptions(dataType, colName){
   var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
   if (dataType in data_cleansing && "outlier_removal" in data_cleansing[dataType]){
     var dcHTML =  (data_cleansing[dataType].outlier_removal.operations.map(item => <option value={item.name} selected >{item.displayName}</option>))
-    return (<select className="form-control">{dcHTML}</select>);
+    return (<select className="form-control" data-colName={colName} onChange={this.outlierRemovalOnChange.bind(this)}>{dcHTML}</select>);
   }
   else { return "";}
 }
@@ -146,7 +150,7 @@ getOutlierRemovalOptions(dataType){
               {this.getMissingValueTreatmentOptions(item.actualColumnType, item.slug)}
          </td>
          <td>
-              {this.getOutlierRemovalOptions(item.actualColumnType, item.name)}
+              {this.getOutlierRemovalOptions(item.actualColumnType, item.slug)}
          </td>
 
           </tr>

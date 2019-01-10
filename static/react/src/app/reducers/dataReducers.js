@@ -54,6 +54,7 @@ export default function reducer(state = {
   advancedAnalysisPerformance:true,
   createScoreShowVariables:false,
   missingValueTreatment:{},
+  outlierRemoval:{},
 
 }, action) {
   console.log("In DATA reducer!!");
@@ -614,10 +615,21 @@ export default function reducer(state = {
       case "MISSING_VALUE_TREATMENT":
       {
         var curmissingValueTreatment = state.missingValueTreatment;
-        curmissingValueTreatment[action.colName] = action.treatment;
+        curmissingValueTreatment[action.colSlug] = action.treatment;
         return {
           ...state,
           missingValueTreatment : curmissingValueTreatment
+        }
+
+      }
+      break;
+      case "OUTLIER_REMOVAL":
+      {
+        var curOutlierRemoval = state.outlierRemoval;
+        curOutlierRemoval[action.colSlug] = action.treatment;
+        return {
+          ...state,
+          outlierRemoval : curOutlierRemoval
         }
 
       }
