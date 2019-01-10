@@ -189,7 +189,7 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
         dispatch(clearLoadingMsg())
         //clearDatasetPreview()
         //dispatch(hideDataPreview())
-
+columns
         return {
             type: "DATA_PREVIEW_FOR_LOADER",
             dataPreview,
@@ -786,8 +786,8 @@ export function handleRename(slug,dialog,name){
     }
 }
 function showRenameDialogBox(slug,dialog,dispatch,name){
-    const customBody = (            
-			<div className="row">	
+    const customBody = (
+			<div className="row">
 			<div className="col-md-4">
 				<img src={STATIC_URL + "assets/images/alert_thinking.gif"} class="img-responsive" />
 			</div>
@@ -1079,7 +1079,7 @@ export function updateSubSetting(updatedSubSetting){
 //Rename Metadata column
 export function renameMetaDataColumn(dialog,colName,colSlug,dispatch,actionName){
     const customBody = (
-		<div className="row">	
+		<div className="row">
 			<div className="col-md-4">
 				<img src={STATIC_URL + "assets/images/alert_thinking.gif"} class="img-responsive" />
 			</div>
@@ -1715,7 +1715,7 @@ export function updateVariableSelectionArray(summary){
             type:"UPDATE_VARAIABLE_SELECTION_ARRAY",
             newDataPreview,
             flag,
-            
+
         }
     }
     else{

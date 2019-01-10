@@ -82,6 +82,9 @@ export class DataCleansing extends React.Component {
     return true;
   }
 
+onchangeMissingValueTreatment(event, variable_name){
+
+}
 
   render() {
 
@@ -91,42 +94,74 @@ export class DataCleansing extends React.Component {
     console.log(this.props.signalMeta);
     console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$end");
 
-
-
-    //
-    //         this.props.dataPreview.meta_data.scriptMetaData.columnData.forEach(function( item, i) {
-    //            return (
-    //            )
-    //         });
-    //
-
-
-
-    var cleansingHtml = <h1>"cleansing html will come here"</h1>;
+      var cleansingHtml = <h1>"cleansing html will come here"</h1>;
     if(this.props.dataPreview!=null)
     {
-      cleansingHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map((item, i) => {
+      cleansingHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
         return (
 
           <tr>
+
+            {/* <td><div class="ma-checkbox inline">
+                <input id="check1" type="checkbox" class="needsclick"/>
+                <label for="check1"></label>
+              </div></td> */}
+
+
+
+
+
+
+
             <td>{item.name}</td>
-          {/* <td>  {item.actualColumnType}</td> */}
-               <td><select class="form-control">
+          <td>  {item.actualColumnType}</td>
+               {/* <td><select class="form-control">
                 <option selected>{item.actualColumnType}</option>
                 <option></option>
-              </select></td>
+              </select></td> */}
 
-
+         {/* using filter and map to retrive data from array inside array*/}
                   <td>
-                    {item.columnStats.filter(function(item){return  item.name == "numberOfUniqueValues" }).map(option=>
-                  <td>{option.value}</td>
+                    {item.columnStats.filter(function(items){
+                  return  items.name == "numberOfUniqueValues" }).map((option)=>{
+                    return(
+                      <td >{option.value}</td>);
+                }
                 )}
 
 
 
 
                       </td>
-                   <td>**need api**</td>
+                      <td>
+                        {item.columnStats.filter(function(items){
+                      return  items.name == "Outliers" }).map((option)=>{
+                        return(
+                          <td >{option.value}</td>);
+                    }
+                    )}
+
+
+
+
+                          </td>
+
+
+                          <td>
+                            {item.columnStats.filter(function(items){
+                          return  items.name == "PercentageMissingValue" }).map((option)=>{
+                            return(
+                              <td >{option.value}</td>);
+                        }
+                        )}
+
+
+
+
+                              </td>
+
+
+
                    <td><select class="form-control">
                        <option selected>Mean Imputation</option>
                        <option>Discriminant Analysis</option>
@@ -137,6 +172,7 @@ export class DataCleansing extends React.Component {
                          <option>Using IQR</option>
                          <option>None</option>
                        </select></td>
+
           </tr>
         );
       })
@@ -161,6 +197,8 @@ export class DataCleansing extends React.Component {
     // }
 
       return (
+
+          // <!-- Main Content starts with side-body -->
          <div className="side-body">
 
 
@@ -216,6 +254,13 @@ export class DataCleansing extends React.Component {
 
 
 
+                            {/* <th> <div class="ma-checkbox inline">
+                                <input id="checkAll" type="checkbox" class="needsclick"/>
+                                <label for="checkAll">All</label>
+                              </div>
+                            </th> */}
+
+
                             <th>Variable name</th>
                             <th>Data type</th>
                             <th># of unique values</th>
@@ -239,8 +284,13 @@ export class DataCleansing extends React.Component {
         <div class="xs-p-30"></div>
       </div>
     </div>
+
+
   </div>
+  {/*<!--End of Page Content Area -->*/}
 </div>
+// <!-- /. Main Content ends with side-body -->
+
 
       );
     }
