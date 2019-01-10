@@ -202,10 +202,10 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
 
         if 'meta_data' in object_details:
             if "uiMetaData" in object_details['meta_data']:
-                feature_engineering_static_settings = settings.feature_engineering_settings
+                from config.settings import feature_engineering_settings
                 object_details['meta_data']["uiMetaData"]["fe_config"] = {
-                    "data_cleansing": feature_engineering_static_settings.data_cleansing_static,
-                    "column_format": feature_engineering_static_settings.column_format,
+                    "data_cleansing": feature_engineering_settings.data_cleansing_static,
+                    "column_format": feature_engineering_settings.column_format,
                     "fe": {}
                 }
 
