@@ -161,26 +161,20 @@ getOutlierRemovalOptions(dataType, colName){
 
     }
 
+//          this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing.top_level_options.map(item => {
+//   return ({item.displayName});
+// })
 
 
 
-    // {
-    //   cleansingHtml = this.props.dataPreview.meta_data.scriptMetaData.columnata.map((item, i) => {
-    //     return (
-    //       <tr>
-    //         <td>{item.value}</td>
-    //
-    //       </tr>
-    //     );
-    //   })
-    //
-    // }
 
       return (
 
           // <!-- Main Content starts with side-body -->
          <div className="side-body">
 
+
+  //
 
   {/* <!-- Page Title and Breadcrumbs -->*/}
           <div class="page-head">
