@@ -1,3 +1,3 @@
-CONFIG_FILE_NAME = 'luke'
+CONFIG_FILE_NAME = 'liea'
 UI_VERSION = '1994044'
     
