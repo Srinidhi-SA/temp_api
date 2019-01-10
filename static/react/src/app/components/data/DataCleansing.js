@@ -1,10 +1,3 @@
-
-
-
-
-
-
-/////////////
 import React from "react";
 import {Scrollbars} from 'react-custom-scrollbars';
 import {Provider} from "react-redux";
@@ -34,6 +27,7 @@ import {DataValidation} from "./DataValidation";
 import {DataValidationEditValues} from "./DataValidationEditValues";
 import Dialog from 'react-bootstrap-dialog';
 import {checkCreateScoreToProceed, getAppDetails} from "../../actions/appActions";
+import {missingValueTreatmentSelectedAction} from "../../actions/dataCleansingActions";
 
 @connect((store) => {
   return {
@@ -51,6 +45,7 @@ import {checkCreateScoreToProceed, getAppDetails} from "../../actions/appActions
     dataTransformSettings: store.datasets.dataTransformSettings,
     scoreToProceed: store.apps.scoreToProceed,
     currentAppDetails: store.apps.currentAppDetails
+    //data_cleansing: store.datasets.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing
   };
 })
 
@@ -58,14 +53,10 @@ export class DataCleansing extends React.Component {
 
   constructor(props) {
     super(props);
-    console.log("in data");
-    console.log(props);
+
   }
 
   componentWillMount() {
-    console.log("------------------");
-    console.log(this.props);
-    console.log("data prevvvvv");
     if (this.props.dataPreview == null || isEmpty(this.props.dataPreview) || this.props.dataPreview.status == 'FAILED') {
       this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
     }
@@ -85,93 +76,78 @@ export class DataCleansing extends React.Component {
 onchangeMissingValueTreatment(event, variable_name){
 
 }
+getMissingValueTreatmentOptions(dataType, colName){
+  var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
+  if (dataType in data_cleansing && "missing_value_treatment" in data_cleansing[dataType]){
+    var dcHTML =  (data_cleansing[dataType].missing_value_treatment.operations.map(item => <option value={item.name} selected >{item.displayName}</option>))
+    return (<select className="form-control" data-colName={colName} onChange={this.missingValueTreatmentOnChange.bind(this)} >{dcHTML}</select>);
+  }
+  else { return "";}
+}
+missingValueTreatmentOnChange(event){
+  console.log(event);
+  this.props.dispatch(missingValueTreatmentSelectedAction(event.target.dataset["colname"], event.target.value));
+
+}
+
+getOutlierRemovalOptions(dataType){
+  var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
+  if (dataType in data_cleansing && "outlier_removal" in data_cleansing[dataType]){
+    var dcHTML =  (data_cleansing[dataType].outlier_removal.operations.map(item => <option value={item.name} selected >{item.displayName}</option>))
+    return (<select className="form-control">{dcHTML}</select>);
+  }
+  else { return "";}
+}
 
   render() {
 
-    console.log("data clean is called##########");
-    console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-    console.log(this.props.dataPreview);
-    console.log(this.props.signalMeta);
     console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$end");
 
-      var cleansingHtml = <h1>"cleansing html will come here"</h1>;
+      var cleansingHtml = <span>"Loading ... "</span>;
     if(this.props.dataPreview!=null)
     {
+      var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
+      console.log(data_cleansing);
       cleansingHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
         return (
 
           <tr>
 
-            {/* <td><div class="ma-checkbox inline">
+            <td><div class="ma-checkbox inline">
                 <input id="check1" type="checkbox" class="needsclick"/>
                 <label for="check1"></label>
-              </div></td> */}
+              </div></td>
 
-
-
-
-
-
-
-            <td>{item.name}</td>
+          <td>{item.name}</td>
           <td>  {item.actualColumnType}</td>
-               {/* <td><select class="form-control">
-                <option selected>{item.actualColumnType}</option>
-                <option></option>
-              </select></td> */}
-
          {/* using filter and map to retrive data from array inside array*/}
-                  <td>
-                    {item.columnStats.filter(function(items){
-                  return  items.name == "numberOfUniqueValues" }).map((option)=>{
-                    return(
-                      <td >{option.value}</td>);
-                }
-                )}
-
-
-
-
-                      </td>
-                      <td>
-                        {item.columnStats.filter(function(items){
-                      return  items.name == "Outliers" }).map((option)=>{
-                        return(
-                          <td >{option.value}</td>);
-                    }
-                    )}
-
-
-
-
-                          </td>
-
-
-                          <td>
-                            {item.columnStats.filter(function(items){
-                          return  items.name == "PercentageMissingValue" }).map((option)=>{
-                            return(
-                              <td >{option.value}</td>);
-                        }
-                        )}
-
-
-
-
-                              </td>
-
-
-
-                   <td><select class="form-control">
-                       <option selected>Mean Imputation</option>
-                       <option>Discriminant Analysis</option>
-                     </select></td>
-                     <td><select class="form-control">
-                         <option selected>Replace with Mean</option>
-                         <option>Replace with Median</option>
-                         <option>Using IQR</option>
-                         <option>None</option>
-                       </select></td>
+         <td>
+             {item.columnStats.filter(function(items){
+                 return  items.name == "numberOfUniqueValues" }).map((option)=>{
+                   return(<span>{option.value}</span>);
+               }
+               )}
+         </td>
+         <td>
+             {item.columnStats.filter(function(items){
+                 return  items.name == "Outliers" }).map((option)=>{
+                   return(<span>{option.value}</span>);
+               }
+               )}
+         </td>
+         <td>
+             {item.columnStats.filter(function(items){
+                 return  items.name == "PercentageMissingValue" }).map((option)=>{
+                   return(<span>{option.value}</span>);
+               }
+               )}
+         </td>
+         <td>
+              {this.getMissingValueTreatmentOptions(item.actualColumnType, item.slug)}
+         </td>
+         <td>
+              {this.getOutlierRemovalOptions(item.actualColumnType, item.name)}
+         </td>
 
           </tr>
         );
@@ -254,12 +230,11 @@ onchangeMissingValueTreatment(event, variable_name){
 
 
 
-                            {/* <th> <div class="ma-checkbox inline">
+                            <th> <div class="ma-checkbox inline">
                                 <input id="checkAll" type="checkbox" class="needsclick"/>
                                 <label for="checkAll">All</label>
                               </div>
-                            </th> */}
-
+                            </th>
 
                             <th>Variable name</th>
                             <th>Data type</th>

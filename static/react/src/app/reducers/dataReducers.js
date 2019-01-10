@@ -53,6 +53,7 @@ export default function reducer(state = {
   advancedAnalysisPrediction:true,
   advancedAnalysisPerformance:true,
   createScoreShowVariables:false,
+  missingValueTreatment:{},
 
 }, action) {
   console.log("In DATA reducer!!");
@@ -608,6 +609,17 @@ export default function reducer(state = {
           dataPreview: action.newDataPreview,
           createScoreShowVariables:action.flag
         }
+      }
+      break;
+      case "MISSING_VALUE_TREATMENT":
+      {
+        var curmissingValueTreatment = state.missingValueTreatment;
+        curmissingValueTreatment[action.colName] = action.treatment;
+        return {
+          ...state,
+          missingValueTreatment : curmissingValueTreatment
+        }
+
       }
       break;
   }
