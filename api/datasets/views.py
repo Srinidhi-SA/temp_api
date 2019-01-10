@@ -26,7 +26,7 @@ from api.tasks import clean_up_on_delete
 
 from api.permission import DatasetRelatedPermission
 from guardian.shortcuts import assign_perm
-
+from django.conf import settings
 # Create your views here.
 
 class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
@@ -199,6 +199,15 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
             "scriptMetaData": original_meta_data_from_scripts,
             "uiMetaData": uiMetaData
         }
+
+        if 'meta_data' in object_details:
+            if "uiMetaData" in object_details['meta_data']:
+                feature_engineering_static_settings = settings.feature_engineering_settings
+                object_details['meta_data']["uiMetaData"]["fe_config"] = {
+                    "data_cleansing": feature_engineering_static_settings.data_cleansing_static,
+                    "column_format": feature_engineering_static_settings.column_format,
+                    "fe": {}
+                }
 
         return Response(object_details)
 
