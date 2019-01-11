@@ -18,7 +18,6 @@
 <!-- Custom styles for this template 
 	<link href="css/nanoscroller.css" rel="stylesheet">-->
 <link href="css/style.css" rel="stylesheet">
-
 </head>
 
 <body>
@@ -40,500 +39,636 @@
     <div class="dropdown ma-user-nav"> <a class="dropdown-toggle" href="#" data-toggle="dropdown"> <i class="avatar-img img-circle">M</i> <img src="images/avatar.jpg" alt="M" class="avatar-img img-circle hide"><span class="user-name">Marlabs BI</span> <span class="caret"></span></a>
       <ul class="dropdown-menu dropdown-menu-right">
         <li><a href="#">Profile</a></li>
-        <li><a href="#">Logout</a></li>       
+        <li><a href="#">Logout</a></li>
       </ul>
     </div>
-    <div class="clearfix"></div>     
+    <div class="clearfix"></div>
   </nav>
-   <!--/.Header Menu -->
-   
-  <!-- Side bar Main Menu -->
-  <div class="side-menu">      
-      <div class="side-menu-container">
-        <ul class="nav navbar-nav">
-          <li class="active"><a href="typography.html"> <span><i class="fa fa-dashboard fa-2x"></i> </span> TYPOGR</a></li>
-          <li><a href="tabs_accordion.html"> <span><i class="fa fa-database fa-2x"></i></span> Tabs & ACC</a></li>
-          <li><a href="#" class="sdb_signal"> <span></span> SIGNAL</a></li>
-          <li><a href="#" class="sdb_story"> <span></span> STORY</a></li>
-          <li><a href="#" class="sdb_app"> <span></span> APPS</a></li>
-          <li><a href="#" class="sdb_data"> <span></span> DATA</a></li>
-          <li><a href="#" class="sdb_settings"> <span></span> SETTINGS</a></li>         
-        </ul>
-      </div>
-      <!-- /.Side bar Main Menu  -->       
-    </div>
-  <!-- ./Side bar Main Menu -->
+  <!--/.Header Menu --> 
   
-  <!-- Main Content starts with side-body -->  
-  <div class="side-body">
-    
-  	<!-- Page Title and Breadcrumbs -->
-    <div class="page-head">      
-      <h3 class="xs-mt-0 xs-mb-0 text-capitalize"> Feature Engineering
-</h3>
+  <!-- Side bar Main Menu -->
+  <div class="side-menu">
+    <div class="side-menu-container">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="typography.html"> <span><i class="fa fa-dashboard fa-2x"></i> </span> TYPOGR</a></li>
+        <li><a href="tabs_accordion.html"> <span><i class="fa fa-database fa-2x"></i></span> Tabs & ACC</a></li>
+        <li><a href="#" class="sdb_signal"> <span></span> SIGNAL</a></li>
+        <li><a href="#" class="sdb_story"> <span></span> STORY</a></li>
+        <li><a href="#" class="sdb_app"> <span></span> APPS</a></li>
+        <li><a href="#" class="sdb_data"> <span></span> DATA</a></li>
+        <li><a href="#" class="sdb_settings"> <span></span> SETTINGS</a></li>
+      </ul>
     </div>
-    <!-- /.Page Title and Breadcrumbs -->
+    <!-- /.Side bar Main Menu  --> 
+  </div>
+  <!-- ./Side bar Main Menu --> 
+  
+  <!-- Main Content starts with side-body -->
+  <div class="side-body"> 
+    
+    <!-- Page Title and Breadcrumbs -->
+    <div class="page-head">
+      <h3 class="xs-mt-0 xs-mb-0 text-capitalize"> Feature Engineering </h3>
+    </div>
+    <!-- /.Page Title and Breadcrumbs --> 
     
     <!-- Page Content Area -->
     <div class="main-content">
-		<div class="row">
-			<div class="col-md-12">
-				<div class="panel box-shadow xs-m-0">
-					<div class="panel-body no-border xs-p-20">
-						<h4>
-						The dataset contains 14 columns or features (7 measures and 7 dimensions).  If you would like to transform the existing features 
-						or create new features from the existing data, you can use the options provided below.</h4>
-				  </div>
-				</div>
-				
-				<div class="panel box-shadow">
-					<div class="panel-body no-border xs-p-20">
-						
-					<div class="table-responsive"> 
-					<table class="table table-striped table-bordered  break-if-longText">
-					<thead>
-						<tr>
-							<th> </th>
-							<th>Variable name</th>
-							<th>Data type</th>
-							<th> </th>
-							<th> </th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>0</td>
-							<td>Quantity</td>
-							<td>
-								<select class="form-control">
-									<option selected>Measure</option>
-									<option>Dimension</option>
-								</select>
-							</td>
-							<td>
-								<a href="#" class="btn btn-alt4" data-toggle="modal" data-target="#qnt_binrlevel">Create bins or levels</a>
-							</td>
-							<td><a href="#" class="btn btn-alt4" data-toggle="modal" data-target="#1st_trsColumn">Transform</a></td>
-						</tr>
-						<tr>
-							<td>1</td>
-							<td>State</td>
-							<td>
-								<select class="form-control">
-									<option>Measure</option>
-									<option selected>Dimension</option>
-								</select>
-							</td>
-							<td>
-								<a href="#" data-toggle="modal" data-target="#state_binrlevel" class="btn btn-alt4">Create bins or levels</a>
-							</td>
-							<td><a href="#" data-toggle="modal" data-target="#lst_stateColumn" class="btn btn-alt4">Transform</a></td>
-						</tr>
-						<tr>
-							<td>2</td>
-							<td>Sales</td>
-							<td>
-								<select class="form-control">
-									<option selected>Measure</option>
-									<option >Dimension</option>
-								</select>
-							</td>
-							<td>
-								<a href="#" class="btn btn-alt4">Create bins or levels</a>
-							</td>
-							<td><a href="#" class="btn btn-alt4">Transform</a></td>
-						</tr>						
-					</tbody>
-					</table>
-					</div>
-					
-					<div class="buttonRow text-right">					
-					<a href="data_cleansing1.html" class="btn btn-primary">Proceed <i class="fa fa-angle-double-right"></i> </a>
-					</div>
-					
-					</div>
-				</div>
-				
-				<div class="xs-p-30"></div>
-				  
-			</div> <!-- Open Column -->
-		</div> <!-- End Row -->
-	</div><!-- End Main Content -->
+      <div class="row">
+        <div class="col-md-12">
+          <div class="panel box-shadow xs-m-0">
+            <div class="panel-body no-border xs-p-20">
+              <h4> The dataset contains 14 columns or features (7 measures and 7 dimensions).  If you would like to transform the existing features or
+                create new features from the existing data, you can use the options provided below. </h4>
+            </div>
+          </div>
+          <div class="panel box-shadow">
+            <div class="panel-body no-border xs-p-20">
+              <div class="table-responsive">
+                <table class="table table-striped table-bordered  break-if-longText">
+                  <thead>
+                    <tr>
+                      <th> </th>
+                      <th>Variable name</th>
+                      <th>Data type</th>
+                      <th> </th>
+                      <th> </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>0</td>
+                      <td>Quantity</td>
+                      <td> Measure </td>
+                      <td><a href="#" class="btn btn-alt4" data-toggle="modal" data-target="#qnt_binrlevel">Create bins or levels</a></td>
+                      <td><a href="#" class="btn btn-alt4" data-toggle="modal" data-target="#1st_trsColumn">Transform</a></td>
+                    </tr>
+                    <tr>
+                      <td>1</td>
+                      <td>State</td>
+                      <td> Measure </td>
+                      <td><a href="#" data-toggle="modal" data-target="#state_binrlevel" class="btn btn-alt4">Create bins or levels</a></td>
+                      <td><a href="#" data-toggle="modal" data-target="#lst_stateColumn" class="btn btn-alt4">Transform</a></td>
+                    </tr>
+                    <tr>
+                      <td>2</td>
+                      <td>Quantity</td>
+                      <td> Measure </td>
+                      <td><a href="#" class="btn btn-alt4" data-toggle="modal" data-target="#">Create bins or levels</a></td>
+                      <td><a href="#" class="btn btn-alt4" data-toggle="modal" data-target="#">Transform</a></td>
+                    </tr>
+                    <tr>
+                      <td>3</td>
+                      <td>Quantity</td>
+                      <td> Measure </td>
+                      <td><a href="#" class="btn btn-alt4" data-toggle="modal" data-target="#">Create bins or levels</a></td>
+                      <td><a href="#" class="btn btn-alt4" data-toggle="modal" data-target="#">Transform</a></td>
+                    </tr>
+                    <tr>
+                      <td>4</td>
+                      <td>Date</td>
+                      <td> Measure </td>
+                      <td><a href="#" class="btn btn-alt4" data-toggle="modal" data-target="#dt_bins_modal">Create bins or levels</a></td>
+                      <td><a href="#" class="btn btn-alt4" data-toggle="modal" data-target="#dt_bins_transform_modal">Transform</a></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="buttonRow text-right"> <a href="data_cleansing1.html" class="btn btn-primary">Proceed <i class="fa fa-angle-double-right"></i> </a> </div>
+            </div>
+          </div>
+          <div class="xs-p-30"></div>
+        </div>
+        <!-- Open Column --> 
+      </div>
+      <!-- End Row --> 
     </div>
-    <!-- /.Page Content Area -->
-    
+    <!-- End Main Content --> 
   </div>
-  <!-- /. Main Content ends with side-body -->  
+  <!-- /.Page Content Area --> 
   
 </div>
-<!-- /. Main Wrapper ** Mandatory -->
-
-
+<!-- /. Main Wrapper ** Mandatory --> 
 
 <!-- Quantity Create Bin -->
 <div class="modal fade" id="qnt_binrlevel" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
   <div class="modal-dialog">
-	<div class="modal-content">
-		<div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-			<h3 class="modal-title" id="lineModalLabel">Create Bins</h3>
-		</div>
-		<div class="modal-body">
-			
-            <!-- content goes here -->
-			<form>
-               
-			<div class="row form-group">
-				<label for="rd1" class="col-sm-4 control-label">What you want to do?</label>
-			<div class="col-sm-8">						
-				<div class="btn-group radioBtn" data-toggle="buttons">
-				<label class="btn btn-default active"><input type="radio" id="rdb1" name="rd_wtd" value="New bins" /> New bins</label> 
-				<label class="btn btn-default"><input type="radio" id="rdb2" name="rd_wtd" value="New levels" /> New levels</label> 						
-				</div>
-			</div>
-			</div>
-			
-			<div id="blk-1" style="display:show">
-				first div text
-			</div>
-			<div id="blk-2" style="display:none">
-				div number 2 text
-			</div>
-
-
-			<div class="row form-group">
-				<label for="txt_cName" class="col-sm-4 control-label">Column name</label>
-			<div class="col-sm-8">						
-				<input type="text" id="txt_cName" class="form-control" placeholder="Quantity" >					  
-			</div>
-			</div>
-			<div class="row form-group">
-				<label for="sel_tob" class="col-sm-4 control-label">Type of binning</label>
-			<div class="col-sm-8">						
-				<select class="form-control" id="sel_tob">
-					<option>Equal sized bins</option>
-					<option>Custom bins</option>
-				</select>
-			</div>
-			</div>
-			<div class="row form-group">
-				<label for="txt_nBins" class="col-sm-4 control-label">Number of bins</label>
-				<div class="col-sm-8">						
-					<input type="text" class="form-control" id="txt_nBins" placeholder="Number of bins" value="10" >
-				</div>
-			</div>
-			<div class="row form-group">
-				<label for="txt_sIntervals" class="col-sm-4 control-label">Specify intervals</label>
-				<div class="col-sm-8">						
-					<input type="text" class="form-control" id="txt_sIntervals" placeholder="Specify intervals" value="50, 60, 70, 80" >					  
-				</div>
-			</div>
-			<div class="row form-group">
-				<label for="txt_nCname" class="col-sm-4 control-label">New column name</label>
-				<div class="col-sm-8">						
-					<input type="text" class="form-control" id="txt_nCname" placeholder="New column name"  value="Quantity_Binned" >					  
-				</div>
-			</div>
-			
-			
-			
-            </form>
-		</div>
-		<div class="modal-footer">
-			<div class="btn-group" role="group" aria-label="group button">
-				<div class="btn-group" role="group">
-					<button type="button" class="btn btn-default" data-dismiss="modal"  role="button">Close</button>
-				</div>
-				<div class="btn-group" role="group">
-					<button type="button" id="saveImage" class="btn btn-primary btn-hover-green" data-action="Create" role="button">Create</button>
-				</div>
-			</div>
-		</div>
-	</div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+        <h3 class="modal-title" >Create Bins</h3>
+      </div>
+      <div class="modal-body"> 
+        
+        <!-- content goes here -->
+        <form>
+          <div class="xs-m-20"></div>
+          <div class="row form-group">
+            <label for="txt_cName" class="col-sm-4 control-label">Column name</label>
+            <div class="col-sm-8">
+              <input type="text" id="txt_cName" class="form-control" placeholder="Quantity" >
+            </div>
+          </div>
+          <div class="row form-group">
+            <label for="sel_tobg" class="col-sm-4 control-label">Type of binning</label>
+            <div class="col-sm-8">
+              <select class="form-control" id="sel_tobg">
+                <option>Equal sized bins</option>
+                <option>Custom bins</option>
+              </select>
+            </div>
+          </div>
+          <div class="row form-group">
+            <label for="txt_nBins" class="col-sm-4 control-label">Number of bins</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" id="txt_nBins" placeholder="Number of bins" value="10" >
+            </div>
+          </div>
+          <div class="row form-group">
+            <label for="txt_sIntervals" class="col-sm-4 control-label">Specify intervals</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" id="txt_sIntervals" placeholder="Specify intervals" value="50, 60, 70, 80" >
+            </div>
+          </div>
+          <div class="row form-group">
+            <label for="txt_nCname" class="col-sm-4 control-label">New column name</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" id="txt_nCname" placeholder="New column name"  value="Quantity_Binned" >
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <div class="btn-group" role="group" aria-label="group button">
+          <div class="btn-group" role="group">
+            <button type="button" class="btn btn-default" data-dismiss="modal"  role="button">Cancel</button>
+          </div>
+          <div class="btn-group" role="group">
+            <button type="button"  class="btn btn-primary btn-hover-green" data-action="Create" role="button">Create</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
-
 
 <!-- State Bin Level -->
 <div class="modal fade" id="state_binrlevel" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
   <div class="modal-dialog">
-	<div class="modal-content">
-		<div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-			<h3 class="modal-title" id="lineModalLabel">Create Levels</h3>
-		</div>
-		<div class="modal-body">
-			
-            <!-- content goes here -->
-			<form class="form_withrowlabels">
-               
-			<div class="row form-group">
-			<div class="col-sm-1">
-				1
-			</div>
-			<div class="col-sm-4">
-				<input type="text" id="txt_lName" class="form-control" placeholder="Level Name" >
-			</div>
-				<label for="txt_sValue" class="col-sm-3 control-label">Which will include</label>
-			<div class="col-sm-4">				
-				<select class="form-control" id="txt_sValue">
-					<option>Select values</option>
-					<option>New York</option>
-					<option>California</option>
-					<option>Illinois</option>
-					<option>Ohio</option>
-					<option>Virginia</option>
-				</select>
-			</div>
-			</div>
-			 
-			 
-			
-			
-			
-            </form>
-		</div>
-		<div class="modal-footer">
-			<div class="btn-group" role="group" aria-label="group button">
-				<div class="btn-group" role="group">
-					<button type="button" class="btn btn-default" data-dismiss="modal"  role="button">Close</button>
-				</div>
-				<div class="btn-group" role="group">
-					<button type="button" id="saveImage" class="btn btn-primary btn-hover-green" data-action="Create" role="button">Create</button>
-				</div>
-			</div>
-		</div>
-	</div>
+    <div class="modal-content o-visible">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"> <span aria-hidden="true">×</span><span class="sr-only">Close</span> </button>
+        <h3 class="modal-title" >Create Levels</h3>
+      </div>
+      <div class="modal-body">
+        <div class="xs-m-20"></div>
+        <!-- content goes here -->
+        
+        <form class="form_withrowlabels form-inline">
+          <div class="form-group">
+            <label for="txt_clvlregion">1</label>
+            <input type="text" id="txt_clvlregion" class="form-control" placeholder="Level Name" value="Region 1" >
+          </div>
+          <div class="form-group">
+            <label for="txt_sPeriod">&nbsp;&nbsp;&nbsp; Which will include:</label>
+          </div>
+          <div class="form-group pos-relative">
+            <div class="button-group cst-dropdown-block">
+              <button type="button" class="btn btn-default btn-block form-control dropdown-toggle text-left" data-toggle="dropdown"> Select values &nbsp;&nbsp;&nbsp; <span class="caret pull-right"></span></button>
+              <ul class="dropdown-menu cst-dropdown">
+                <li>
+                  <div class="ma-checkbox"><a href="#" data-value="option1" tabIndex="-1">
+                    <input type="checkbox" id="option1"/>
+                    <label for="option1">New York</label>
+                    </a></div>
+                </li>
+                <li>
+                  <div class="ma-checkbox"><a href="#" data-value="option2" tabIndex="-1">
+                    <input type="checkbox" id="option2"/>
+                    <label for="option2">California</label>
+                    </a></div>
+                </li>
+                <li>
+                  <div class="ma-checkbox"><a href="#" data-value="option3" tabIndex="-1">
+                    <input type="checkbox" id="option3"/>
+                    <label for="option3">Illinois</label>
+                    </a></div>
+                </li>
+                <li>
+                  <div class="ma-checkbox"><a href="#" data-value="option4" tabIndex="-1">
+                    <input type="checkbox" id="option4"/>
+                    <label for="option4">Ohio</label>
+                    </a></div>
+                </li>
+                <li>
+                  <div class="ma-checkbox"><a href="#" data-value="option5" tabIndex="-1">
+                    <input type="checkbox" id="option5"/>
+                    <label for="option5">Virginia</label>
+                    </a></div>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <button class="btn btn-default b-inline"><i class="fa fa-close"></i></button>
+          <div class="clearfix"></div>
+          <div class="form-group">
+            <label for="txt_clvlregion1">2</label>
+            <input type="text" id="txt_clvlregion1" class="form-control" placeholder="Level Name" value="Region 2" >
+          </div>
+          <div class="form-group">
+            <label for="txt_sPeriod">&nbsp;&nbsp;&nbsp; Which will include:</label>
+          </div>
+          <div class="form-group pos-relative">
+            <div class="button-group cst-dropdown-block">
+              <button type="button" class="btn btn-default btn-block form-control dropdown-toggle text-left" data-toggle="dropdown"> Select values &nbsp;&nbsp;&nbsp; <span class="caret pull-right"></span></button>
+              <ul class="dropdown-menu cst-dropdown">
+                <li>
+                  <div class="ma-checkbox"><a href="#" data-value="rw2option1" tabIndex="-1">
+                    <input type="checkbox" id="rw2option1"/>
+                    <label for="option1">New York</label>
+                    </a></div>
+                </li>
+                <li>
+                  <div class="ma-checkbox"><a href="#" data-value="rw2option2" tabIndex="-1">
+                    <input type="checkbox" id="rw2option2"/>
+                    <label for="option2">California</label>
+                    </a></div>
+                </li>
+                <li>
+                  <div class="ma-checkbox"><a href="#" data-value="rw2option3" tabIndex="-1">
+                    <input type="checkbox" id="rw2option3"/>
+                    <label for="option3">Illinois</label>
+                    </a></div>
+                </li>
+                <li>
+                  <div class="ma-checkbox"><a href="#" data-value="rw2option4" tabIndex="-1">
+                    <input type="checkbox" id="rw2option4"/>
+                    <label for="option4">Ohio</label>
+                    </a></div>
+                </li>
+                <li>
+                  <div class="ma-checkbox"><a href="#" data-value="rw2option5" tabIndex="-1">
+                    <input type="checkbox" id="rw2option5"/>
+                    <label for="option5">Virginia</label>
+                    </a></div>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <button class="btn btn-primary b-inline"><i class="fa fa-plus"></i></button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <div class="btn-group" role="group" aria-label="group button">
+          <div class="btn-group" role="group">
+            <button type="button" class="btn btn-default" data-dismiss="modal"  role="button">Cancel</button>
+          </div>
+          <div class="btn-group" role="group">
+            <button type="button"  class="btn btn-primary btn-hover-green" data-action="Create" role="button">Create</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
-
 
 <!-- Quantity Column modal -->
 <div class="modal fade" id="1st_trsColumn" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
-	<div class="modal-content">
-		<div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-			<h3 class="modal-title" id="lineModalLabel">Transform column</h3>
-		</div>
-		<div class="modal-body">
-			<h4>What would you like to do with “Quantity” column?</h4>
-			<h1>
-            <!-- content goes here -->
-			<form class="form_withrowlabels">
-               
-			<div class="row form-group">
-			<div class="col-md-1 col-sm-1 text-center">
-				<div class="ma-checkbox inline">
-						<input id="qnty_chk1" type="checkbox" class="needsclick">
-						<label for="qnty_chk1"></label>
-				</div>
-			</div>
-			<label for="txt_qnt1" class="col-md-4 col-sm-4 control-label">Replace values where Quantity is:</label>
-			<div class="col-md-3 col-sm-3">
-				<input type="text" id="txt_qnt1" class="form-control" placeholder="Value" >
-			</div>
-			<label for="txt_qValue1" class="col-md-1 col-sm-1 control-label">With</label>
-			<div class="col-md-3 col-sm-3">				
-				<select class="form-control" id="txt_qValue1">
-					<option>Mean</option>
-					<option>Median</option>
-					<option>Mode</option>
-				</select>
-			</div>
-			</div>
-			
-			<div class="row form-group">
-			<div class="col-md-1 col-sm-1 text-center">
-				<div class="ma-checkbox inline">
-						<input id="qnty_chk2" type="checkbox" class="needsclick">
-						<label for="qnty_chk2"></label>
-				</div>
-			</div>
-			<label for="txt_qnt2" class="col-md-4 col-sm-4 control-label">Add Specific Value to:</label>
-			<div class="col-md-3 col-sm-3">
-				<input type="text" id="txt_qnt2" class="form-control" placeholder="Value" >
-			</div>
-			</div>
-			
-			<div class="row form-group">
-			<div class="col-md-1 col-sm-1 text-center">
-				<div class="ma-checkbox inline">
-						<input id="qnty_chk3" type="checkbox" class="needsclick">
-						<label for="qnty_chk3"></label>
-				</div>
-			</div>
-			<label for="txt_qnt3" class="col-md-4 col-sm-4 control-label">Subtract specific value:</label>
-			<div class="col-md-3 col-sm-3">
-				<input type="text" id="txt_qnt3" class="form-control" placeholder="Value" >
-			</div>
-			</div>
-			
-			<div class="row form-group">
-			<div class="col-md-1 col-sm-1 text-center">
-				<div class="ma-checkbox inline">
-						<input id="qnty_chk4" type="checkbox" class="needsclick">
-						<label for="qnty_chk4"></label>
-				</div>
-			</div>
-			<label for="txt_qnt4" class="col-md-4 col-sm-4 control-label">Multiply with specific value:</label>
-			<div class="col-md-3 col-sm-3">
-				<input type="text" id="txt_qnt4" class="form-control" placeholder="Value" >
-			</div>
-			</div>
-			
-			<div class="row form-group">
-			<div class="col-md-1 col-sm-1 text-center">
-				<div class="ma-checkbox inline">
-						<input id="qnty_chk5" type="checkbox" class="needsclick">
-						<label for="qnty_chk5"></label>
-				</div>
-			</div>
-			<label for="txt_qnt5" class="col-md-4 col-sm-4 control-label">Divide by specific value:</label>
-			<div class="col-md-3 col-sm-3">
-				<input type="text" id="txt_qnt5" class="form-control" placeholder="Value" >
-			</div>
-			</div>
-			
-			<div class="row form-group">
-			<div class="col-md-1 col-sm-1 text-center">
-				<div class="ma-checkbox inline">
-						<input id="qnty_chk6" type="checkbox" class="needsclick">
-						<label for="qnty_chk6"></label>
-				</div>
-			</div>
-			<label for="drp_qnt6" class="col-md-4 col-sm-4 control-label">Perform standardization:</label>
-			<div class="col-md-3 col-sm-3">
-				<select class="form-control" id="drp_qnt6">
-					<option selected>Min-Max Scaling</option>
-					<option>Log Transformation</option>					
-				</select>
-				
-			</div>
-			</div>
-			
-			<div class="row form-group">
-			<div class="col-md-1 col-sm-1 text-center">
-				<div class="ma-checkbox inline">
-						<input id="qnty_chk7" type="checkbox" class="needsclick">
-						<label for="qnty_chk7"></label>
-				</div>
-			</div>
-			<label for="drp_qnt7" class="col-md-4 col-sm-4 control-label">Transform variable using:</label>
-			<div class="col-md-3 col-sm-3">
-				<select class="form-control" id="drp_qnt7">
-					<option>Min-Max Scaling</option>
-					<option selected>Log Transformation</option>					
-				</select>
-				
-			</div>
-			</div>
-			 
-			 
-			
-			
-			
-            </form>
-		</div>
-		<div class="modal-footer">
-			<div class="btn-group" role="group" aria-label="group button">
-				<div class="btn-group" role="group">
-					<button type="button" class="btn btn-default" data-dismiss="modal"  role="button">Close</button>
-				</div>
-				<div class="btn-group" role="group">
-					<button type="button" id="saveImage" class="btn btn-primary btn-hover-green" data-action="Create" role="button">Create</button>
-				</div>
-			</div>
-		</div>
-	</div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+        <h3 class="modal-title" >Transform column</h3>
+      </div>
+      <div class="modal-body">
+        <h4>What would you like to do with “Quantity” column?</h4>
+        <p>Please select any of the options provided below that will help in transforming the chosen column into multiple new features.
+          Each option will create an additional feature derived out of the original column.</p>
+        <hr/>
+        <!-- content goes here -->
+        <form class="form_withrowlabels">
+          <div class="row form-group">
+            <div class="col-md-5 col-sm-5">
+              <div class="ma-checkbox inline">
+                <input id="qnty_chk1" type="checkbox" class="needsclick">
+                <label for="qnty_chk1">Replace values where Quantity is:</label>
+              </div>
+            </div>
+            <div class="col-md-3 col-sm-3">
+              <input type="text" id="txt_qnt1" class="form-control" placeholder="Value" >
+            </div>
+            <label for="txt_qValue1" class="col-md-1 col-sm-1 control-label xs-p-0 xs-mt-5 text-right">With</label>
+            <div class="col-md-3 col-sm-3">
+              <select class="form-control" id="txt_qValue1">
+                <option>Mean</option>
+                <option>Median</option>
+                <option>Mode</option>
+              </select>
+            </div>
+          </div>
+          <div class="row form-group">
+            <div class="col-md-5 col-sm-5">
+              <div class="ma-checkbox inline">
+                <input id="qnty_chk2" type="checkbox" class="needsclick">
+                <label for="qnty_chk2">Add Specific Value to:</label>
+              </div>
+            </div>
+            <div class="col-md-3 col-sm-3">
+              <input type="text" id="txt_qnt2" class="form-control" placeholder="Value" >
+            </div>
+          </div>
+          <div class="row form-group">
+            <div class="col-md-5 col-sm-5">
+              <div class="ma-checkbox inline">
+                <input id="qnty_chk3" type="checkbox" class="needsclick">
+                <label for="qnty_chk3">Subtract specific value:</label>
+              </div>
+            </div>
+            <div class="col-md-3 col-sm-3">
+              <input type="text" id="txt_qnt3" class="form-control" placeholder="Value" >
+            </div>
+          </div>
+          <div class="row form-group">
+            <div class="col-md-5 col-sm-5">
+              <div class="ma-checkbox inline">
+                <input id="qnty_chk4" type="checkbox" class="needsclick">
+                <label for="qnty_chk4">Multiply with specific value:</label>
+              </div>
+            </div>
+            <div class="col-md-3 col-sm-3">
+              <input type="text" id="txt_qnt4" class="form-control" placeholder="Value" >
+            </div>
+          </div>
+          <div class="row form-group">
+            <div class="col-md-5 col-sm-5">
+              <div class="ma-checkbox inline">
+                <input id="qnty_chk5" type="checkbox" class="needsclick">
+                <label for="qnty_chk5">Divide by specific value:</label>
+              </div>
+            </div>
+            <div class="col-md-3 col-sm-3">
+              <input type="text" id="txt_qnt5" class="form-control" placeholder="Value" >
+            </div>
+          </div>
+          <div class="row form-group">
+            <div class="col-md-5 col-sm-5">
+              <div class="ma-checkbox inline">
+                <input id="qnty_chk6" type="checkbox" class="needsclick">
+                <label for="qnty_chk6">Perform standardization:</label>
+              </div>
+            </div>
+            <div class="col-md-3 col-sm-3">
+              <select class="form-control" id="drp_qnt6">
+                <option selected>Min-Max Scaling</option>
+                <option>Log Transformation</option>
+              </select>
+            </div>
+          </div>
+          <div class="row form-group">
+            <div class="col-md-5 col-sm-5">
+              <div class="ma-checkbox inline">
+                <input id="qnty_chk7" type="checkbox" class="needsclick">
+                <label for="qnty_chk7">Transform variable using:</label>
+              </div>
+            </div>
+            <div class="col-md-3 col-sm-3">
+              <select class="form-control" id="drp_qnt7">
+                <option>Min-Max Scaling</option>
+                <option selected>Log Transformation</option>
+              </select>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <div class="btn-group" role="group" aria-label="group button">
+          <div class="btn-group" role="group">
+            <button type="button" class="btn btn-default" data-dismiss="modal"  role="button">Cancel</button>
+          </div>
+          <div class="btn-group" role="group">
+            <button type="button"  class="btn btn-primary btn-hover-green" data-action="Create" role="button">Create</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
-
 
 <!-- State Column modal -->
 <div class="modal fade" id="lst_stateColumn" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
-	<div class="modal-content">
-		<div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-			<h3 class="modal-title" id="lineModalLabel">Transform column</h3>
-		</div>
-		<div class="modal-body">
-			<h4>What would you like to do with “State” column?</h4>
-			<h1>
-            <!-- content goes here -->
-			<form class="form_withrowlabels">
-               
-			<div class="row form-group">
-			<div class="col-md-1 col-sm-1 text-center">
-				<div class="ma-checkbox inline">
-						<input id="state_chk1" type="checkbox" class="needsclick">
-						<label for="state_chk1"></label>
-				</div>
-			</div>
-			<label for="txt_qnt1" class="col-md-4 col-sm-4 control-label">Convert values into columns:</label>
-			<div class="col-md-6 col-sm-6">
-				 
-				 <div class="btn-group radioBtn" data-toggle="buttons">
-				<label class="btn btn-default active"><input type="radio" id="cvic1" name="cvic" value="One hot encoding" /> One hot encoding</label> 
-				<label class="btn btn-default"><input type="radio" id="cvic2" name="cvic" value="Label encoding" /> Label encoding</label> 						
-				</div>
-				 
-			</div>
-			 
-			</div>
-			
-			<div class="row form-group">
-			<div class="col-md-1 col-sm-1 text-center">
-				<div class="ma-checkbox inline">
-						<input id="state_chk2" type="checkbox" class="needsclick">
-						<label for="state_chk2"></label>
-				</div>
-			</div>
-			<label for="state_chk2" class="col-md-4 col-sm-4 control-label">Count of characters</label>
-			 
-			</div>
-			
-			<div class="row form-group">
-			<div class="col-md-1 col-sm-1 text-center">
-				<div class="ma-checkbox inline">
-						<input id="state_chk3" type="checkbox" class="needsclick">
-						<label for="state_chk3"></label>
-				</div>
-			</div>
-			<label for="txt_cfcs" class="col-md-4 col-sm-4 control-label">Check for custom string:</label>
-			<div class="col-md-3 col-sm-3">
-				<input type="text" id="txt_cfcs" class="form-control" placeholder="Value" >
-			</div>
-			</div>  
-			
-			 
-			 
-			
-			
-			
-            </form>
-		</div>
-		<div class="modal-footer">
-			<div class="btn-group" role="group" aria-label="group button">
-				<div class="btn-group" role="group">
-					<button type="button" class="btn btn-default" data-dismiss="modal"  role="button">Close</button>
-				</div>
-				<div class="btn-group" role="group">
-					<button type="button" id="saveImage" class="btn btn-primary btn-hover-green" data-action="Create" role="button">Create</button>
-				</div>
-			</div>
-		</div>
-	</div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+        <h3 class="modal-title" >Transform column</h3>
+      </div>
+      <div class="modal-body">
+        <h4>What would you like to do with “State” column?</h4>
+        <p>Please select any of the options provided below that will help in transforming the chosen column into multiple new features.
+          Each option will create an additional feature derived out of the original column.</p>
+        <hr />
+        <!-- content goes here -->
+        <form class="form_withrowlabels">
+          <div class="row form-group">
+            <div class="col-md-5 col-sm-5">
+              <div class="ma-checkbox inline">
+                <input id="state_chk1" type="checkbox" class="needsclick">
+                <label for="state_chk1">Convert values into columns:</label>
+              </div>
+            </div>
+            <div class="col-md-6 col-sm-6">
+              <div class="ma-checkbox inline">
+                <input type="radio" id="cvColumns1" name="cvColumns" checked="checked">
+                <label for="cvColumns1">One hot encoding</label>
+              </div>
+              <div class="ma-checkbox inline">
+                <input type="radio" id="cvColumns2" name="cvColumns">
+                <label for="cvColumns2">Label encoding</label>
+              </div>
+            </div>
+          </div>
+          <div class="row form-group">
+            <div class="col-md-5 col-sm-5">
+              <div class="ma-checkbox inline">
+                <input id="state_chk2" type="checkbox" class="needsclick">
+                <label for="state_chk2">Count of characters</label>
+              </div>
+            </div>
+          </div>
+          <div class="row form-group">
+            <div class="col-md-5 col-sm-5">
+              <div class="ma-checkbox inline">
+                <input id="state_chk3" type="checkbox" class="needsclick">
+                <label for="state_chk3">Check for custom string:</label>
+              </div>
+            </div>
+            <div class="col-md-3 col-sm-3">
+              <input type="text" id="txt_cfcs" class="form-control" placeholder="Please Type" >
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <div class="btn-group" role="group" aria-label="group button">
+          <div class="btn-group" role="group">
+            <button type="button" class="btn btn-default" data-dismiss="modal"  role="button">Cancel</button>
+          </div>
+          <div class="btn-group" role="group">
+            <button type="button"  class="btn btn-primary btn-hover-green" data-action="Create" role="button">Create</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
+<!-- Date Column modal -->
+<div class="modal fade" id="dt_bins_modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+        <h3 class="modal-title" >Create Levels</h3>
+      </div>
+      <div class="modal-body">
+        <div class="xs-m-20"></div>
+        <!-- content goes here -->
+        <form class="form_withrowlabels form-inline">
+          <div class="form-group">
+            <label for="txt_lName3">1</label>
+            <input type="text" id="txt_lName3" class="form-control" placeholder="Level Name" value="Q1 2012" >
+          </div>
+          <div class="form-group">
+            <label for="txt_sPeriod">&nbsp;&nbsp;&nbsp; Start period:</label>
+            <input type="text" id="txt_sPeriod" class="form-control" placeholder="Start Date" value="01/01/2012" >
+          </div>
+          <div class="form-group">
+            <label for="txt_ePeriod">&nbsp;&nbsp;&nbsp; End period:</label>
+            <input type="text" id="txt_ePeriod" class="form-control" placeholder="End Date" value="03/31/2012" >
+          </div>
+          <button class="btn btn-default b-inline"><i class="fa fa-close"></i></button>
+          <div class="clearfix"></div>
+          <div class="form-group">
+            <label for="txt_lName1">2</label>
+            <input type="text" id="txt_lName1" class="form-control" placeholder="Level Name" value="Q1 2012" >
+          </div>
+          <div class="form-group">
+            <label for="txt_sPeriod1">&nbsp;&nbsp;&nbsp; Start period:</label>
+            <input type="text" id="txt_sPeriod1" class="form-control" placeholder="Start Date" value="01/01/2012" >
+          </div>
+          <div class="form-group">
+            <label for="txt_ePeriod1">&nbsp;&nbsp;&nbsp; End period:</label>
+            <input type="text" id="txt_ePeriod1" class="form-control" placeholder="End Date" value="03/31/2012" >
+          </div>
+          <button class="btn btn-primary b-inline"><i class="fa fa-plus"></i></button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <div class="btn-group" role="group" aria-label="group button">
+          <div class="btn-group" role="group">
+            <button type="button" class="btn btn-default" data-dismiss="modal"  role="button">Cancel</button>
+          </div>
+          <div class="btn-group" role="group">
+            <button type="button"  class="btn btn-primary btn-hover-green" data-action="Create" role="button">Create</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Date Transform Column modal -->
+<div class="modal fade" id="dt_bins_transform_modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+        <h3 class="modal-title" >Create Levels</h3>
+      </div>
+      <div class="modal-body">
+        <h4>What would you like to do with “Date” column?</h4>
+        <p>Please select any of the options provided below that will help in transforming the chosen column into multiple new features.
+          Each option will create an additional feature derived out of the original column.</p>
+        <hr />
+        
+        <!-- content goes here -->
+        <form class="form_withrowlabels">
+          <div class="row form-group">
+            <div class="col-md-12 col-sm-12">
+              <div class="ma-checkbox inline">
+                <input id="date_chk1" type="checkbox" class="needsclick">
+                <label for="date_chk1">Is Date Weekend or not?</label>
+              </div>
+            </div>
+          </div>
+          <div class="row form-group">
+            <div class="col-md-4 col-sm-4">
+              <div class="ma-checkbox inline">
+                <input id="date_chk2" type="checkbox" class="needsclick">
+                <label for="date_chk2">Extract time-based features</label>
+              </div>
+            </div>
+            <div class="col-md-4 col-sm-4">
+              <select class="form-control">
+                <option>Day of week</option>
+              </select>
+            </div>
+          </div>
+          <div class="row form-group">
+            <div class="col-md-4 col-sm-4">
+              <div class="ma-checkbox inline">
+                <input id="date_chk3" type="checkbox" class="needsclick">
+                <label for="date_chk3">Time since specific date </label>
+              </div>
+            </div>
+            <div class="col-md-4 col-sm-4">
+              <input class="form-control" placeholder="Please type">
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <div class="btn-group" role="group" aria-label="group button">
+          <div class="btn-group" role="group">
+            <button type="button" class="btn btn-default" data-dismiss="modal"  role="button">Cancel</button>
+          </div>
+          <div class="btn-group" role="group">
+            <button type="button"  class="btn btn-primary btn-hover-green" data-action="Create" role="button">Create</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Bootstrap core JavaScript
     ================================================== --> 
 <!-- Placed at the end of the document so the pages load faster --> 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> 
-<script src="js/bootstrap.min.js"></script>
+<script src="js/bootstrap.min.js"></script> 
+<script>
+ var options = [];
 
+$( '.dropdown-menu a' ).on( 'click', function( event ) {
+
+   var $target = $( event.currentTarget ),
+       val = $target.attr( 'data-value' ),
+       $inp = $target.find( 'input' ),
+       idx;
+
+   if ( ( idx = options.indexOf( val ) ) > -1 ) {
+      options.splice( idx, 1 );
+      setTimeout( function() { $inp.prop( 'checked', false ) }, 0);
+   } else {
+      options.push( val );
+      setTimeout( function() { $inp.prop( 'checked', true ) }, 0);
+   }
+
+   $( event.target ).blur();
+      
+   console.log( options );
+   return false;
+});
+ </script>
 </body>
 </html>

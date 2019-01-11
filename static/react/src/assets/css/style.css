@@ -15900,6 +15900,11 @@ body div#welcome-body-frame p#message { line-height: 19px; color: #8c8c8c !impor
 .tooltip-table thead{ background: rgba(173,173,173,0.6); color: #fff;}
 .tooltip-table td, .tooltip-table th{ padding: 2px 5px;}
 .tooltip-table tr{border-bottom: 1px solid #b3b3b3;}
-.heat-table-map { max-width: 800px; margin: 0 auto; } 
-
-	 
+.heat-table-map { max-width: 800px; margin: 0 auto; }
+.cst-dropdown-block .caret { margin-top:5px;}
+.cst-dropdown { height:140px; overflow:auto; width: 100%;}
+.ma-checkbox a label { display: block; padding: 4px; margin-left: 10px; }
+.text-left { text-align:left !important}
+.o-visible { overflow:visible; }
+.form-inline .b-inline { vertical-align: top;}
+.pos-relative { position:relative }
