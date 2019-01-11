@@ -55,6 +55,7 @@ export default function reducer(state = {
   createScoreShowVariables:false,
   missingValueTreatment:{},
   outlierRemoval:{},
+  selectedVariables : {},
 
 }, action) {
   console.log("In DATA reducer!!");
@@ -634,6 +635,18 @@ export default function reducer(state = {
 
       }
       break;
+      case "VARIABLE_SELECTED":
+      {
+        var allSelectedVariables = state.selectedVariables;
+        allSelectedVariables[action.colSlug] = action.selecteOrNot;
+        return {
+          ...state,
+          selectedVariables : allSelectedVariables
+        }
+
+      }
+      break;
+
   }
   return state
 

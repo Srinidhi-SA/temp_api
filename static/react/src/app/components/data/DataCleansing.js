@@ -27,7 +27,7 @@ import {DataValidation} from "./DataValidation";
 import {DataValidationEditValues} from "./DataValidationEditValues";
 import Dialog from 'react-bootstrap-dialog';
 import {checkCreateScoreToProceed, getAppDetails} from "../../actions/appActions";
-import {missingValueTreatmentSelectedAction, outlierRemovalSelectedAction} from "../../actions/dataCleansingActions";
+import {missingValueTreatmentSelectedAction, outlierRemovalSelectedAction, variableSelectedAction} from "../../actions/dataCleansingActions";
 
 @connect((store) => {
   return {
@@ -92,6 +92,13 @@ outlierRemovalOnChange(event){
   this.props.dispatch(outlierRemovalSelectedAction(event.target.dataset["colname"], event.target.value));
 }
 
+variableCheckboxOnChange(event){
+  this.props.dispatch(variableSelectedAction(event.target.dataset["colslug"], event.target.checked));
+}
+
+
+
+
 
 
 getOutlierRemovalOptions(dataType, colName){
@@ -105,21 +112,19 @@ getOutlierRemovalOptions(dataType, colName){
 
   render() {
 
-    console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$end");
 
       var cleansingHtml = <span>"Loading ... "</span>;
     if(this.props.dataPreview!=null)
     {
       var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
-      console.log(data_cleansing);
       cleansingHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
         return (
 
           <tr>
 
             <td><div class="ma-checkbox inline">
-                <input id="check1" type="checkbox" class="needsclick"/>
-                <label for="check1"></label>
+                <input id={item.slug} type="checkbox" class="needsclick"  data-colslug={item.slug} onChange={this.variableCheckboxOnChange.bind(this)}/>
+                <label for={item.slug}> </label>
               </div></td>
 
           <td>{item.name}</td>
@@ -191,14 +196,14 @@ getOutlierRemovalOptions(dataType, colName){
                  <div class="panel box-shadow xs-m-0">
                  <div class="panel-body no-border xs-p-20">
                   <div class="form-group">
-                 <label for="rd1_Yes" class="col-sm-5 control-label"> Do you want to remove duplicate attributes/columns in the dataset?</label>
+                 <label class="col-sm-5 control-label"> Do you want to remove duplicate attributes/columns in the dataset?</label>
                    <div class="col-sm-7">
                       <div class="btn-group radioBtn" data-toggle="buttons">
-                    <label class="btn btn-default active">
+                    <label class="btn btn-default active" for="rd1_Yes">
                       <input type="radio" id="rd1_Yes" name="rdc_dataset" value="Yes" />
                       Yes</label>
-                    <label class="btn btn-default">
-                      <input type="radio" id="rd1_No" name="rdc_dataset" value="No" />
+                    <label class="btn btn-default" for="rd1_No">
+                      <input type="radio" id="rd1_No" name="rdc_dataset" value="No"  checked="true" />
                       No</label>
                   </div>
                 </div>
@@ -208,11 +213,11 @@ getOutlierRemovalOptions(dataType, colName){
                 <label for="rd2_Yes" class="col-sm-5 control-label"> Do you want to remove duplicate observations  in the dataset?</label>
                 <div class="col-sm-7">
                   <div class="btn-group radioBtn" data-toggle="buttons">
-                    <label class="btn btn-default active">
+                    <label class="btn btn-default active" for="rd2_Yes">
                       <input type="radio" id="rd2_Yes" name="rd_odataset" value="Yes" />
                       Yes</label>
-                    <label class="btn btn-default">
-                      <input type="radio" id="rd2_No" name="rd_odataset" value="No" />
+                    <label class="btn btn-default" for="rd2_No">
+                      <input type="radio" id="rd2_No" name="rd_odataset" value="No" checked="checked" />
                       No</label>
                   </div>
                 </div>

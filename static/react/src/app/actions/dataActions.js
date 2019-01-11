@@ -284,6 +284,10 @@ export function cancelAdvanceSettings(){
         prevAnalysisList
     }
 }
+
+
+
+       // function for select all in check
 export function checkAllAnalysisSelected(){
     return (dispatch) => {
         var totalAnalysisList = store.getState().datasets.dataSetAnalysisList;
