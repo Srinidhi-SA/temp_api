@@ -5509,17 +5509,3 @@ def all_apps_for_users(request):
             caum.save()
 
     return JsonResponse({'message': 'done'})
-
-
-@csrf_exempt
-def feature_engineering_static_content(request):
-    q = request.GET['q']
-    data = {}
-    feature_engineering_static_settings = settings.feature_engineering_settings
-    if q is not None:
-        if q == 'data_cleansing_static':
-            data = feature_engineering_static_settings.data_cleansing_static
-        elif q == 'feature_engineering_static':
-            data = feature_engineering_static_settings.feature_engineering_static
-
-    return JsonResponse(data)

@@ -864,6 +864,8 @@ class Trainer(models.Model):
         elif self.app_id in settings.CLASSIFICATION_APP_ID:
             config['config']["ALGORITHM_SETTING"] = self.make_config_algorithm_setting()
 
+        config['config']['FEATURE_ENGINEERING_SETTINGS'] = self.create_configuration_fe_settings()
+
         self.config = json.dumps(config)
         self.save()
         return config
@@ -1031,6 +1033,11 @@ class Trainer(models.Model):
     def make_config_algorithm_setting(self):
         config = self.get_config()
         return config['ALGORITHM_SETTING']
+
+    def create_configuration_fe_settings(self):
+        config = self.get_config()
+        data_cleansing_config = config['data_cleansing']
+
 
 # TODO: Add generate config
 # TODO: Add set_result function: it will be contain many things.
