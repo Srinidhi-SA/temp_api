@@ -27,7 +27,7 @@ import {DataValidation} from "./DataValidation";
 import {DataValidationEditValues} from "./DataValidationEditValues";
 import Dialog from 'react-bootstrap-dialog';
 import {checkCreateScoreToProceed, getAppDetails} from "../../actions/appActions";
-import {missingValueTreatmentSelectedAction, outlierRemovalSelectedAction, variableSelectedAction} from "../../actions/dataCleansingActions";
+import {missingValueTreatmentSelectedAction, outlierRemovalSelectedAction, variableSelectedAction,removeDuplicatesAction} from "../../actions/dataCleansingActions";
 
 @connect((store) => {
   return {
@@ -73,9 +73,6 @@ export class DataCleansing extends React.Component {
     return true;
   }
 
-onchangeMissingValueTreatment(event, variable_name){
-
-}
 getMissingValueTreatmentOptions(dataType, colName){
   var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
   if (dataType in data_cleansing && "missing_value_treatment" in data_cleansing[dataType]){
@@ -84,6 +81,19 @@ getMissingValueTreatmentOptions(dataType, colName){
   }
   else { return "";}
 }
+
+
+
+
+getOutlierRemovalOptions(dataType, colName){
+  var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
+  if (dataType in data_cleansing && "outlier_removal" in data_cleansing[dataType]){
+    var dcHTML =  (data_cleansing[dataType].outlier_removal.operations.map(item => <option value={item.name} selected >{item.displayName}</option>))
+    return (<select className="form-control" data-colName={colName} onChange={this.outlierRemovalOnChange.bind(this)}>{dcHTML}</select>);
+  }
+  else { return "";}
+}
+
 missingValueTreatmentOnChange(event){
   this.props.dispatch(missingValueTreatmentSelectedAction(event.target.dataset["colname"], event.target.value));
 
@@ -100,16 +110,20 @@ variableCheckboxOnChange(event){
 
 
 
+handleSelectAll(event){
 
-getOutlierRemovalOptions(dataType, colName){
-  var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
-  if (dataType in data_cleansing && "outlier_removal" in data_cleansing[dataType]){
-    var dcHTML =  (data_cleansing[dataType].outlier_removal.operations.map(item => <option value={item.name} selected >{item.displayName}</option>))
-    return (<select className="form-control" data-colName={colName} onChange={this.outlierRemovalOnChange.bind(this)}>{dcHTML}</select>);
-  }
-  else { return "";}
+      // $('.variableToBeSelected[type="checkbox"]').each(function() {
+      //     $(this).prop('checked', event.target.checked);
+      //     $(this).click();
+      // });
 }
 
+
+
+
+handleRemoveDuplicateChange(event){
+  this.props.dispatch(removeDuplicatesAction(event.target.dataset["removeDuplicateName"], event.target.value));
+}
   render() {
 
 
@@ -122,13 +136,13 @@ getOutlierRemovalOptions(dataType, colName){
 
           <tr>
 
-            <td><div class="ma-checkbox inline">
-                <input id={item.slug} type="checkbox" class="needsclick"  data-colslug={item.slug} onChange={this.variableCheckboxOnChange.bind(this)}/>
+            {/* <td><div class="ma-checkbox inline">
+                <input id={item.slug} type="checkbox" class="needsclick variableToBeSelected"  data-colslug={item.slug} onChange={this.variableCheckboxOnChange.bind(this)}/>
                 <label for={item.slug}> </label>
-              </div></td>
+              </div></td> */}
 
           <td>{item.name}</td>
-          <td>  {item.actualColumnType}</td>
+          <td>{item.columnType}</td>
          {/* using filter and map to retrive data from array inside array*/}
          <td>
              {item.columnStats.filter(function(items){
@@ -166,9 +180,8 @@ getOutlierRemovalOptions(dataType, colName){
 
     }
 
-//          this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing.top_level_options.map(item => {
-//   return ({item.displayName});
-// })
+//          {this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing.top_level_options.map(item => {
+//   return ({item.displayName}); })}
 
 
 
@@ -179,16 +192,25 @@ getOutlierRemovalOptions(dataType, colName){
          <div className="side-body">
 
 
-  //
-
   {/* <!-- Page Title and Breadcrumbs -->*/}
           <div class="page-head">
             <h3 class="xs-mt-0 xs-mb-0 text-capitalize"> Data Cleansing</h3>
           </div>
           {/*<!-- /.Page Title and Breadcrumbs -->*/}
 
-
           {/*<!-- Page Content Area -->*/}
+
+
+          {/* if(dtItem.columnType != "dimension"){
+              return (
+                  <li className={varCls} key={dtItem.slug}><div className="ma-radio inline"><input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents}  name="date_type" id={dtItem.slug} value={dtItem.name} checked={dtItem.selected} /><label htmlFor={dtItem.slug}>{dtItem.name}</label></div></li>
+              );
+            }else{
+              return (
+
+                  <li className={varCls} key={dtItem.slug}><div className="ma-radio inline col-md-10"><input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents}  name="date_type" id={dtItem.slug} value={dtItem.name} checked={dtItem.selected} /><label htmlFor={dtItem.slug}>{dtItem.name}</label></div>{timeSuggestionToolTip}</li>
+              );
+            } */}
 
        <div className="main-content">
        <div class="row">
@@ -200,10 +222,10 @@ getOutlierRemovalOptions(dataType, colName){
                    <div class="col-sm-7">
                       <div class="btn-group radioBtn" data-toggle="buttons">
                     <label class="btn btn-default active" for="rd1_Yes">
-                      <input type="radio" id="rd1_Yes" name="rdc_dataset" value="Yes" />
+                      <input type="radio" id="rd1_Yes" name="rdc_dataset" value="Yes" data-removeDuplicateName="remove_duplicate_attributes" onclick={this.handleRemoveDuplicateChange.bind(this)} />
                       Yes</label>
                     <label class="btn btn-default" for="rd1_No">
-                      <input type="radio" id="rd1_No" name="rdc_dataset" value="No"  checked="true" />
+                      <input type="radio" id="rd1_No" name="rdc_dataset" value="No"  checked="true" data-removeDuplicateName="remove_duplicate_attributes" onclick={this.handleRemoveDuplicateChange.bind(this)} />
                       No</label>
                   </div>
                 </div>
@@ -214,10 +236,10 @@ getOutlierRemovalOptions(dataType, colName){
                 <div class="col-sm-7">
                   <div class="btn-group radioBtn" data-toggle="buttons">
                     <label class="btn btn-default active" for="rd2_Yes">
-                      <input type="radio" id="rd2_Yes" name="rd_odataset" value="Yes" />
+                      <input type="radio" id="rd2_Yes" name="rd_odataset" value="Yes" checked="true" data-removeDuplicateName="remove_duplicate_observations" onclick={this.handleRemoveDuplicateChange.bind(this)} />
                       Yes</label>
                     <label class="btn btn-default" for="rd2_No">
-                      <input type="radio" id="rd2_No" name="rd_odataset" value="No" checked="checked" />
+                      <input type="radio" id="rd2_No" name="rd_odataset" value="No"  data-removeDuplicateName="remove_duplicate_observations" onclick={this.handleRemoveDuplicateChange.bind(this)} />
                       No</label>
                   </div>
                 </div>
@@ -232,12 +254,16 @@ getOutlierRemovalOptions(dataType, colName){
                           <tr>
 
 
+                                   {/* check box starts here */}
 
-                            <th> <div class="ma-checkbox inline">
-                                <input id="checkAll" type="checkbox" class="needsclick"/>
+                            {/* <th> <div class="ma-checkbox inline">
+                                <input id="checkAll" type="checkbox" class="needsclick" onChange={this.handleSelectAll.bind(this)}/>
                                 <label for="checkAll">All</label>
                               </div>
-                            </th>
+                            </th> */}
+
+                                   {/* check box starts here */}
+
 
                             <th>Variable name</th>
                             <th>Data type</th>

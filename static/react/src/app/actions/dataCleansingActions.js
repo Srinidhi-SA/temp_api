@@ -23,3 +23,12 @@ export function variableSelectedAction(colSlug, selecteOrNot, dispatch){
     selecteOrNot
 	}
 }
+
+
+ export function removeDuplicatesAction(duplicate_removal_name, yesOrNo, dispatch){
+  return {
+		type: "REMOVE_DUPLICATES",
+    yesOrNo,
+    duplicate_removal_name
+	}
+}

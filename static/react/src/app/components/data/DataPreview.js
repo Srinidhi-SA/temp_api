@@ -197,7 +197,7 @@ export class DataPreview extends React.Component {
 			$(".cst_table td,.cst_table th").click(function(){
 				$(".cst_table td").removeClass("activeColumn");
 				let cls = $(this).attr("class");
-				if(cls.indexOf(" ") !== -1){
+				if(cls.indexOf(" ") !== -1){{}
 					let tmp =[];
 					tmp = cls.split(" ");
 					cls = tmp[0];
@@ -545,7 +545,9 @@ export class DataPreview extends React.Component {
             firstTimeSubSetting = dataPrev.scriptMetaData.columnData[0]
           console.log("checking side table data:; ");
           console.log(sideTable);
-          sideTableTemaplte = sideTable.filter(item => item.name.toLowerCase() != "outliers").map((tableItem, tableIndex) => {
+          sideTableTemaplte = sideTable
+          // .filter(item => item.name.toLowerCase() != "outliers")
+          .map((tableItem, tableIndex) => {
             if (tableItem.display) {
               return (
                 <tr key={tableIndex}>
@@ -613,7 +615,7 @@ export class DataPreview extends React.Component {
                         </h4>
                       </div>
                       <div id="pnl_stc" className="panel-collapse collapse in" aria-expanded="true">
-                        <div className="xs-pt-5 xs-pr-5 xs-pb-5 xs-pl-5">
+                        <div className="xs-pt-100 xs-pr-5 xs-pb-5 xs-pl-5">
                           <table className="no-border no-strip skills" cellPadding="3" cellSpacing="0" id="side-table">
                             <tbody className="no-border-x no-border-y">
                               {sideTableTemaplte}
