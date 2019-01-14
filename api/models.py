@@ -864,7 +864,7 @@ class Trainer(models.Model):
         elif self.app_id in settings.CLASSIFICATION_APP_ID:
             config['config']["ALGORITHM_SETTING"] = self.make_config_algorithm_setting()
 
-        config['config']['FEATURE_ENGINEERING_SETTINGS'] = self.create_configuration_fe_settings()
+        # config['config']['FEATURE_ENGINEERING_SETTINGS'] = self.create_configuration_fe_settings()
 
         self.config = json.dumps(config)
         self.save()
