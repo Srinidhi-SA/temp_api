@@ -80,6 +80,21 @@
             <div class="panel-body no-border xs-p-20">
               <h4> The dataset contains 14 columns or features (7 measures and 7 dimensions).  If you would like to transform the existing features or
                 create new features from the existing data, you can use the options provided below. </h4>
+			  <p class="inline-block">
+				Do you want to convert all measures into dimension using binning? &nbsp;&nbsp;&nbsp;
+			  </p>
+			   <div class="ma-checkbox inline">
+                <input type="radio" id="mTod-binning1" name="mTod-binning">
+                <label for="mTod-binning1">Yes</label>
+              </div>
+              <div class="ma-checkbox inline">
+                <input type="radio" id="mTod-binning2" name="mTod-binning" checked="checked">
+                <label for="mTod-binning2">No </label>
+              </div>
+			  <div id="box-binning" class="xs-ml-20 block-inline" style="display:none">
+					<span class="inline-block"> Number of bins : <input type="text" oninput="numberOnly(this.id);" class="test_css" maxlength="2" id="flight_number" name="number"/></span>
+			  </div>
+			  
             </div>
           </div>
           <div class="panel box-shadow">
@@ -88,7 +103,7 @@
                 <table class="table table-striped table-bordered  break-if-longText">
                   <thead>
                     <tr>
-                      <th> </th>
+                       
                       <th>Variable name</th>
                       <th>Data type</th>
                       <th> </th>
@@ -97,35 +112,35 @@
                   </thead>
                   <tbody>
                     <tr>
-                      <td>0</td>
+                       
                       <td>Quantity</td>
                       <td> Measure </td>
                       <td><a href="#" class="btn btn-alt4" data-toggle="modal" data-target="#qnt_binrlevel">Create bins or levels</a></td>
                       <td><a href="#" class="btn btn-alt4" data-toggle="modal" data-target="#1st_trsColumn">Transform</a></td>
                     </tr>
                     <tr>
-                      <td>1</td>
+                      
                       <td>State</td>
                       <td> Measure </td>
                       <td><a href="#" data-toggle="modal" data-target="#state_binrlevel" class="btn btn-alt4">Create bins or levels</a></td>
                       <td><a href="#" data-toggle="modal" data-target="#lst_stateColumn" class="btn btn-alt4">Transform</a></td>
                     </tr>
                     <tr>
-                      <td>2</td>
+                       
                       <td>Quantity</td>
                       <td> Measure </td>
                       <td><a href="#" class="btn btn-alt4" data-toggle="modal" data-target="#">Create bins or levels</a></td>
                       <td><a href="#" class="btn btn-alt4" data-toggle="modal" data-target="#">Transform</a></td>
                     </tr>
                     <tr>
-                      <td>3</td>
+                       
                       <td>Quantity</td>
                       <td> Measure </td>
                       <td><a href="#" class="btn btn-alt4" data-toggle="modal" data-target="#">Create bins or levels</a></td>
                       <td><a href="#" class="btn btn-alt4" data-toggle="modal" data-target="#">Transform</a></td>
                     </tr>
                     <tr>
-                      <td>4</td>
+                       
                       <td>Date</td>
                       <td> Measure </td>
                       <td><a href="#" class="btn btn-alt4" data-toggle="modal" data-target="#dt_bins_modal">Create bins or levels</a></td>
@@ -669,6 +684,21 @@ $( '.dropdown-menu a' ).on( 'click', function( event ) {
    console.log( options );
    return false;
 });
+
+function numberOnly(id) {
+    var element = document.getElementById(id);
+    var regex = /[^0-9]/gi;
+    element.value = element.value.replace(regex, "");
+}
+
+$("input[name='mTod-binning']").click(function () {
+	if ($("#mTod-binning1").is(":checked")) {
+		$("#box-binning").show();
+	} else {
+		$("#box-binning").hide();
+	}
+});
+
  </script>
 </body>
 </html>
