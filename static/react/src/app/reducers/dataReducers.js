@@ -56,7 +56,8 @@ export default function reducer(state = {
   missingValueTreatment:{},
   outlierRemoval:{},
   selectedVariables : {},
-  removeDuplicates :{},
+  removeDuplicateAttributes :{},
+  removeDuplicateObservations:{}
 
 }, action) {
   console.log("In DATA reducer!!");
@@ -617,7 +618,7 @@ export default function reducer(state = {
       case "MISSING_VALUE_TREATMENT":
       {
         var curmissingValueTreatment = state.missingValueTreatment;
-        curmissingValueTreatment[action.colSlug] = action.treatment;
+        curmissingValueTreatment[action.colName] = action.treatment;
         return {
           ...state,
           missingValueTreatment : curmissingValueTreatment
@@ -648,17 +649,31 @@ export default function reducer(state = {
       }
       break;
 
-      case "REMOVE_DUPLICATES":
+      case "REMOVE_DUPLICATE_ATTRIBUTES":
       {
-        var removeDuplicates = state.removeDuplicates;
-        removeDuplicates[action.duplicate_removal_name] = action.yesOrNo;
+        var removeDuplicateAttributes = state.removeDuplicateAttributes;
+        removeDuplicateAttributes[action.removeDuplicateAttributesName] = action.yesOrNo;
         return {
           ...state,
-          removeDuplicates : removeDuplicates
+          removeDuplicateAttributes : removeDuplicateAttributes
         }
 
       }
       break;
+
+      case "REMOVE_DUPLICATE_OBSERVATIONS":
+      {
+        var removeDuplicateObservations = state.removeDuplicateObservations;
+        removeDuplicateObservations[action.duplicate_removal_observations_name] = action.yesOrNo;
+        return {
+          ...state,
+          removeDuplicateObservations : removeDuplicateObservations
+        }
+
+      }
+      break;
+
+
 
   }
   return state

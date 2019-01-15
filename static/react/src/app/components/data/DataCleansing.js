@@ -27,7 +27,7 @@ import {DataValidation} from "./DataValidation";
 import {DataValidationEditValues} from "./DataValidationEditValues";
 import Dialog from 'react-bootstrap-dialog';
 import {checkCreateScoreToProceed, getAppDetails} from "../../actions/appActions";
-import {missingValueTreatmentSelectedAction, outlierRemovalSelectedAction, variableSelectedAction,removeDuplicatesAction} from "../../actions/dataCleansingActions";
+import {missingValueTreatmentSelectedAction, outlierRemovalSelectedAction, variableSelectedAction, removeDuplicateAttributesAction,removeDuplicateObservationsAction } from "../../actions/dataCleansingActions";
 
 @connect((store) => {
   return {
@@ -73,51 +73,56 @@ export class DataCleansing extends React.Component {
     return true;
   }
 
-getMissingValueTreatmentOptions(dataType, colName){
+onchangeMissingValueTreatment(event, variable_name){
+
+}
+getMissingValueTreatmentOptions(dataType, colName, colSlug){
   var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
   if (dataType in data_cleansing && "missing_value_treatment" in data_cleansing[dataType]){
     var dcHTML =  (data_cleansing[dataType].missing_value_treatment.operations.map(item => <option value={item.name} selected >{item.displayName}</option>))
-    return (<select className="form-control" data-colName={colName} onChange={this.missingValueTreatmentOnChange.bind(this)} >{dcHTML}</select>);
+    return (<select className="form-control" data-colslug={colSlug} data-colname={colName} onChange={this.missingValueTreatmentOnChange.bind(this)} >{dcHTML}</select>);
   }
   else { return "";}
 }
 missingValueTreatmentOnChange(event){
-  this.props.dispatch(missingValueTreatmentSelectedAction(event.target.dataset["colname"], event.target.value));
+
+  console.log(event.target.dataset);
+
+  this.props.dispatch(missingValueTreatmentSelectedAction(event.target.dataset["colname"],event.target.dataset["colslug"], event.target.value));
 
 }
 outlierRemovalOnChange(event){
-  this.props.dispatch(outlierRemovalSelectedAction(event.target.dataset["colname"], event.target.value));
+  this.props.dispatch(outlierRemovalSelectedAction(event.target.dataset["colname"],event.target.dataset["colslug"], event.target.value));
 }
 
-// variableCheckboxOnChange(event){
-//   this.props.dispatch(variableSelectedAction(event.target.dataset["colslug"], event.target.checked));
-// }
+variableCheckboxOnChange(event){
+  this.props.dispatch(variableSelectedAction(event.target.dataset["colslug"], event.target.checked));
+}
 
+handleRemoveDuplicateAttributesOnChange(event){
+ this.props.dispatch(removeDuplicateAttributesAction(event.target.dataset["removeDuplicateAttributesName"], event.target.value));
+}
 
-
-
+handleRemoveDuplicateObservationsOnChange(event){
+ this.props.dispatch(removeDuplicateObservationsAction(event.target.dataset["removeDuplicateObservationsName"], event.target.value));
+}
 
 handleSelectAll(event){
-
-      // $('.variableToBeSelected[type="checkbox"]').each(function() {
-      //     $(this).prop('checked', event.target.checked);
-      //     $(this).click();
-      // });
+      $('.variableToBeSelected[type="checkbox"]').each(function() {
+          $(this).prop('checked', event.target.checked);
+          $(this).click();
+      });
 }
 
-
-
-getOutlierRemovalOptions(dataType, colName){
+getOutlierRemovalOptions(dataType, colName, colSlug){
   var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
   if (dataType in data_cleansing && "outlier_removal" in data_cleansing[dataType]){
     var dcHTML =  (data_cleansing[dataType].outlier_removal.operations.map(item => <option value={item.name} selected >{item.displayName}</option>))
-    return (<select className="form-control" data-colName={colName} onChange={this.outlierRemovalOnChange.bind(this)}>{dcHTML}</select>);
+    return (<select className="form-control" data-colName={colName} data-colslug={colSlug} onChange={this.outlierRemovalOnChange.bind(this)}>{dcHTML}</select>);
   }
   else { return "";}
 }
-handleRemoveDuplicateChange(event){
-  this.props.dispatch(removeDuplicatesAction(event.target.dataset["removeDuplicateName"], event.target.value));
-}
+
   render() {
 
 
@@ -127,9 +132,7 @@ handleRemoveDuplicateChange(event){
       var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
       cleansingHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
         return (
-
           <tr>
-
             {/* <td><div class="ma-checkbox inline">
                 <input id={item.slug} type="checkbox" class="needsclick variableToBeSelected"  data-colslug={item.slug} onChange={this.variableCheckboxOnChange.bind(this)}/>
                 <label for={item.slug}> </label>
@@ -160,85 +163,63 @@ handleRemoveDuplicateChange(event){
                )}
          </td>
          <td>
-              {this.getMissingValueTreatmentOptions(item.actualColumnType, item.slug)}
+              {this.getMissingValueTreatmentOptions(item.actualColumnType, item.name, item.slug)}
          </td>
          <td>
-              {this.getOutlierRemovalOptions(item.actualColumnType, item.slug)}
+              {this.getOutlierRemovalOptions(item.actualColumnType, item.name, item.slug)}
          </td>
 
           </tr>
         );
       })
-
-
-
     }
 
-//          {this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing.top_level_options.map(item => {
-//   return ({item.displayName}); })}
-
-
-
-
-      return (
-
-          // <!-- Main Content starts with side-body -->
-         <div className="side-body">
-
-
-  {/* <!-- Page Title and Breadcrumbs -->*/}
-          <div class="page-head">
-            <h3 class="xs-mt-0 xs-mb-0 text-capitalize"> Data Cleansing</h3>
-          </div>
-          {/*<!-- /.Page Title and Breadcrumbs -->*/}
-
-          {/*<!-- Page Content Area -->*/}
-
-
-          {/* if(dtItem.columnType != "dimension"){
-              return (
-                  <li className={varCls} key={dtItem.slug}><div className="ma-radio inline"><input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents}  name="date_type" id={dtItem.slug} value={dtItem.name} checked={dtItem.selected} /><label htmlFor={dtItem.slug}>{dtItem.name}</label></div></li>
-              );
-            }else{
-              return (
-
-                  <li className={varCls} key={dtItem.slug}><div className="ma-radio inline col-md-10"><input type="radio" className="timeDimension" onClick={this.handleCheckboxEvents}  name="date_type" id={dtItem.slug} value={dtItem.name} checked={dtItem.selected} /><label htmlFor={dtItem.slug}>{dtItem.name}</label></div>{timeSuggestionToolTip}</li>
-              );
-            } */}
-
-       <div className="main-content">
-       <div class="row">
-             <div class="col-md-12">
-                 <div class="panel box-shadow xs-m-0">
-                 <div class="panel-body no-border xs-p-20">
-                  <div class="form-group">
-                 <label class="col-sm-5 control-label"> Do you want to remove duplicate attributes/columns in the dataset?</label>
-                   <div class="col-sm-7">
-                      <div class="btn-group radioBtn" data-toggle="buttons">
-                    <label class="btn btn-default active" for="rd1_Yes">
-                      <input type="radio" id="rd1_Yes" name="rdc_dataset" value="Yes" data-removeDuplicateName="remove_duplicate_attributes" onchange={this.handleRemoveDuplicateChange.bind(this)} />
-                      Yes</label>
-                    <label class="btn btn-default" for="rd1_No">
-                      <input type="radio" id="rd1_No" name="rdc_dataset" value="No"   data-removeDuplicateName="remove_duplicate_attributes" onchange={this.handleRemoveDuplicateChange.bind(this)} />
-                      No</label>
+    return (
+        // <!-- Main Content starts with side-body -->
+       <div className="side-body">
+        {/* <!-- Page Title and Breadcrumbs -->*/}
+        <div class="page-head">
+          <h3 class="xs-mt-0 xs-mb-0 text-capitalize"> Data Cleansing</h3>
+        </div>
+        {/*<!-- /.Page Title and Breadcrumbs -->*/}
+        {/*<!-- Page Content Area -->*/}
+         <div className="main-content">
+         <div class="row">
+          <div class="col-md-12">
+          <div class="panel box-shadow xs-m-0">
+            <div class="panel-body no-border xs-p-20">
+              <div class="form-group">
+                <label for="rd1" class="col-sm-5 control-label"> Do you want to remove duplicate attributes/columns in the dataset?</label>
+                <div class="col-sm-7">
+                  <div class="btn-group radioBtn" data-toggle="buttons">
+                    {/* <label for="rd1_Yes" class="btn btn-default active"> */}
+                      <input type="radio" id="rd1_Yes" name="rdc_dataset" value="Yes" onClick={this.handleRemoveDuplicateAttributesOnChange.bind(this)}/>
+                      Yes
+                    {/* </label> */}
+                    {/* <label class="btn btn-default"> */}
+                      <input type="radio" id="rd1_No" name="rdc_dataset" value="No" checked onClick={this.handleRemoveDuplicateAttributesOnChange.bind(this)}/>
+                      No
+                    {/* </label> */}
                   </div>
                 </div>
               </div>
               <div class="clearfix xs-mb-5"></div>
               <div class="form-group">
-                <label for="rd2_Yes" class="col-sm-5 control-label"> Do you want to remove duplicate observations  in the dataset?</label>
+                <label for="rd2" class="col-sm-5 control-label"> Do you want to remove duplicate observations  in the dataset?</label>
                 <div class="col-sm-7">
                   <div class="btn-group radioBtn" data-toggle="buttons">
-                    <label class="btn btn-default active" for="rd2_Yes">
-                      <input type="radio" id="rd2_Yes" name="rd_odataset" value="Yes"  data-removeDuplicateName="remove_duplicate_observations" onchange={this.handleRemoveDuplicateChange.bind(this)} />
-                      Yes</label>
-                    <label class="btn btn-default" for="rd2_No">
-                      <input type="radio" id="rd2_No" name="rd_odataset" value="No"  data-removeDuplicateName="remove_duplicate_observations" onchange={this.handleRemoveDuplicateChange.bind(this)} />
-                      No</label>
+                    {/* <label class="btn btn-default active"> */}
+                      <input type="radio" id="rd2_Yes" name="rd_odataset" value="Yes"    onClick={this.handleRemoveDuplicateObservationsOnChange.bind(this)} />
+                      Yes
+                    {/* </label> */}
+                    {/* <label class="btn btn-default"> */}
+                      <input type="radio" id="rd2_No" name="rd_odataset" value="No"     onClick={this.handleRemoveDuplicateObservationsOnChange.bind(this)} checked/>
+                      No
+                    {/* </label> */}
                   </div>
                 </div>
               </div>
-           </div>
+            </div>
           </div>
                 <div className="panel box-shadow ">
                     <div class="panel-body no-border xs-p-20">
