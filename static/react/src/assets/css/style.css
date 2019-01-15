@@ -15924,15 +15924,13 @@ body div#welcome-body-frame p#message { line-height: 19px; color: #8c8c8c !impor
 .mod-process {
 	box-shadow: 0 0 4px 0 rgba(0, 0, 0, .04);
 	border-radius: 0;
-	border-top: 3px solid #c9c9c9;
+	border: 3px solid #f4f4f4;
 	padding: 35px 20px;
 	background: #fff;
 	text-align: center;
 	margin: 0 0 20px
 }
- .mod-process-table-primary {
-	border-color: #00998c
-}
+
 .mod-process-title {
 	font-size: 16px;
 	font-weight: 600;
@@ -15946,7 +15944,9 @@ body div#welcome-body-frame p#message { line-height: 19px; color: #8c8c8c !impor
  
 
 .mod-process-table-primary { transition: all .2s ease-in-out; }
-.mod-process-table-primary img { border:1px solid transparent; }
+.mod-process-table-primary img { border:1px solid #ededed; }
 .mod-process-table-primary:hover img { border:1px solid #c6c6c6; }
+
 .mod-process-table-primary:hover { background:#dddddd; transition-duration: 0.5s;}
+.mod-process:hover {border-color:#dddddd }
 .mod-process-table-primary:hover .btn-primary { background-color: #3a3a3a; border-color:#3a3a3a; transition-duration: 0.5s;}
