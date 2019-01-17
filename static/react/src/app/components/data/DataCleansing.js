@@ -191,15 +191,9 @@ getOutlierRemovalOptions(dataType, colName, colSlug){
               <div class="form-group">
                 <label for="rd1" class="col-sm-5 control-label"> Do you want to remove duplicate attributes/columns in the dataset?</label>
                 <div class="col-sm-7">
-                  <div class="btn-group radioBtn" data-toggle="buttons">
-                    {/* <label for="rd1_Yes" class="btn btn-default active" data-value="Yes" data-duplicatename="remove_duplicate_name" onClick={this.handleRemoveDuplicatesOnChange.bind(this)}> */}
-                      <input type="radio" id="rd1_Yes" name="rdc_dataset" value="Yes"  data-duplicatename="remove_duplicate_attributes" onClick={this.handleRemoveDuplicatesOnChange.bind(this)}/>
-                      Yes
-                    {/* </label> */}
-                    {/* <label class="btn btn-default" class="btn btn-default active" data-value="No" data-duplicatename="remove_duplicate_name" onClick={this.handleRemoveDuplicatesOnChange.bind(this)}> */}
-                      <input type="radio" id="rd1_No" name="rdc_dataset" value="No" data-duplicatename="remove_duplicate_attributes" onClick={this.handleRemoveDuplicatesOnChange.bind(this)}/>
-                      No
-                    {/* </label> */}
+                  <div class="btn-group" data-toggle="buttons">
+                      <input type="button" id="rd1_Yes" name="rdc_dataset" value="Yes" class="btn btn-default" data-duplicatename="remove_duplicate_attributes" onClick={this.handleRemoveDuplicatesOnChange.bind(this)}/>
+                      <input type="button" id="rd1_No" name="rdc_dataset" value="No" class="btn btn-default " data-duplicatename="remove_duplicate_attributes" onClick={this.handleRemoveDuplicatesOnChange.bind(this)}/>
                   </div>
                 </div>
               </div>
@@ -207,16 +201,10 @@ getOutlierRemovalOptions(dataType, colName, colSlug){
               <div class="form-group">
                 <label for="rd2" class="col-sm-5 control-label"> Do you want to remove duplicate observations  in the dataset?</label>
                 <div class="col-sm-7">
-                  <div class="btn-group radioBtn" data-toggle="buttons">
-                    {/* <label class="btn btn-default active"> */}
-                      <input type="radio" id="rd2_Yes" name="rd_odataset" value="Yes"  data-duplicatename="remove_duplicate_observations"  onClick={this.handleRemoveDuplicatesOnChange.bind(this)} />
-                      Yes
-                    {/* </label> */}
-                    {/* <label class="btn btn-default"> */}
-                      <input type="radio" id="rd2_No" name="rd_odataset" value="No"   data-duplicatename="remove_duplicate_observations"  onClick={this.handleRemoveDuplicatesOnChange.bind(this)} checked/>
-                      No
-                    {/* </label> */}
-                  </div>
+                  <div class="btn-group" data-toggle="buttons">
+                       <input type="button" id="rd2_Yes" name="rd_odataset" value="Yes"  class="btn btn-default" data-duplicatename="remove_duplicate_observations"  onClick={this.handleRemoveDuplicatesOnChange.bind(this)} />
+                      <input type="button" id="rd2_No" name="rd_odataset" value="No"  class="btn btn-default " data-duplicatename="remove_duplicate_observations"  onClick={this.handleRemoveDuplicatesOnChange.bind(this)} checked/>
+  </div>
                 </div>
               </div>
             </div>
