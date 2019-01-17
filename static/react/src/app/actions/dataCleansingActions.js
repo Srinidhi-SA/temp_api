@@ -27,40 +27,12 @@ export function variableSelectedAction(colSlug, selecteOrNot, dispatch){
 }
 
 
- export function removeDuplicateAttributesAction(removeDuplicateAttributesName, yesOrNo, dispatch){
+ export function removeDuplicatesAction(duplicate_removal_name, yesOrNo, dispatch){
   return {
-		type: "REMOVE_DUPLICATE_ATTRIBUTES",
+		type: "REMOVE_DUPLICATES",
     yesOrNo,
-    removeDuplicateAttributesName
+    duplicate_removal_name
 
 
 	}
 }
-
-
-export function removeDuplicateObservationsAction(duplicate_removal_observations_name, yesOrNo, dispatch){
- return {
-   type: "REMOVE_DUPLICATE_OBSERVATIONS",
-   yesOrNo,
-   duplicate_removal_observations_name
- }
-}
-
-
-
-// export function removeDuplicateAttributesAction(duplicate_removal_name, yesOrNo, dispatch){
-//  return {
-//    type: "REMOVE_DUPLICATE_ATTRIBUTES",
-//    yesOrNo,
-//    duplicate_removal_name
-//  }
-// }
-//
-//
-// export function removeDuplicateObservationsAction(duplicate_removal_name, yesOrNo, dispatch){
-// return {
-//   type: "REMOVE_DUPLICATE_OBSERVATIONS",
-//   yesOrNo,
-//   duplicate_removal_name
-// }
-// }

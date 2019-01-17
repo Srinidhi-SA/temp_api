@@ -27,7 +27,7 @@ import {DataValidation} from "./DataValidation";
 import {DataValidationEditValues} from "./DataValidationEditValues";
 import Dialog from 'react-bootstrap-dialog';
 import {checkCreateScoreToProceed, getAppDetails} from "../../actions/appActions";
-import {missingValueTreatmentSelectedAction, outlierRemovalSelectedAction, variableSelectedAction, removeDuplicateAttributesAction,removeDuplicateObservationsAction } from "../../actions/dataCleansingActions";
+import {missingValueTreatmentSelectedAction, outlierRemovalSelectedAction, variableSelectedAction, removeDuplicatesAction } from "../../actions/dataCleansingActions";
 
 @connect((store) => {
   return {
@@ -99,13 +99,10 @@ variableCheckboxOnChange(event){
   this.props.dispatch(variableSelectedAction(event.target.dataset["colslug"], event.target.checked));
 }
 
-handleRemoveDuplicateAttributesOnChange(event){
- this.props.dispatch(removeDuplicateAttributesAction(event.target.dataset["removeDuplicateAttributesName"], event.target.value));
+handleRemoveDuplicatesOnChange(event){
+this.props.dispatch(removeDuplicatesAction(event.target.dataset["duplicatename"], event.target.value));
 }
 
-handleRemoveDuplicateObservationsOnChange(event){
- this.props.dispatch(removeDuplicateObservationsAction(event.target.dataset["removeDuplicateObservationsName"], event.target.value));
-}
 
 handleSelectAll(event){
       $('.variableToBeSelected[type="checkbox"]').each(function() {
@@ -122,6 +119,9 @@ getOutlierRemovalOptions(dataType, colName, colSlug){
   }
   else { return "";}
 }
+
+
+
 
   render() {
 
@@ -192,12 +192,12 @@ getOutlierRemovalOptions(dataType, colName, colSlug){
                 <label for="rd1" class="col-sm-5 control-label"> Do you want to remove duplicate attributes/columns in the dataset?</label>
                 <div class="col-sm-7">
                   <div class="btn-group radioBtn" data-toggle="buttons">
-                    {/* <label for="rd1_Yes" class="btn btn-default active"> */}
-                      <input type="radio" id="rd1_Yes" name="rdc_dataset" value="Yes" onClick={this.handleRemoveDuplicateAttributesOnChange.bind(this)}/>
+                    {/* <label for="rd1_Yes" class="btn btn-default active" data-value="Yes" data-duplicatename="remove_duplicate_name" onClick={this.handleRemoveDuplicatesOnChange.bind(this)}> */}
+                      <input type="radio" id="rd1_Yes" name="rdc_dataset" value="Yes"  data-duplicatename="remove_duplicate_attributes" onClick={this.handleRemoveDuplicatesOnChange.bind(this)}/>
                       Yes
                     {/* </label> */}
-                    {/* <label class="btn btn-default"> */}
-                      <input type="radio" id="rd1_No" name="rdc_dataset" value="No" checked onClick={this.handleRemoveDuplicateAttributesOnChange.bind(this)}/>
+                    {/* <label class="btn btn-default" class="btn btn-default active" data-value="No" data-duplicatename="remove_duplicate_name" onClick={this.handleRemoveDuplicatesOnChange.bind(this)}> */}
+                      <input type="radio" id="rd1_No" name="rdc_dataset" value="No" data-duplicatename="remove_duplicate_attributes" onClick={this.handleRemoveDuplicatesOnChange.bind(this)}/>
                       No
                     {/* </label> */}
                   </div>
@@ -209,11 +209,11 @@ getOutlierRemovalOptions(dataType, colName, colSlug){
                 <div class="col-sm-7">
                   <div class="btn-group radioBtn" data-toggle="buttons">
                     {/* <label class="btn btn-default active"> */}
-                      <input type="radio" id="rd2_Yes" name="rd_odataset" value="Yes"    onClick={this.handleRemoveDuplicateObservationsOnChange.bind(this)} />
+                      <input type="radio" id="rd2_Yes" name="rd_odataset" value="Yes"  data-duplicatename="remove_duplicate_observations"  onClick={this.handleRemoveDuplicatesOnChange.bind(this)} />
                       Yes
                     {/* </label> */}
                     {/* <label class="btn btn-default"> */}
-                      <input type="radio" id="rd2_No" name="rd_odataset" value="No"     onClick={this.handleRemoveDuplicateObservationsOnChange.bind(this)} checked/>
+                      <input type="radio" id="rd2_No" name="rd_odataset" value="No"   data-duplicatename="remove_duplicate_observations"  onClick={this.handleRemoveDuplicatesOnChange.bind(this)} checked/>
                       No
                     {/* </label> */}
                   </div>
