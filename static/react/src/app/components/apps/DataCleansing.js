@@ -21,10 +21,8 @@ import {Button, Dropdown, Menu, MenuItem} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"
 import {showHideSideChart, showHideSideTable, MINROWINDATASET,toggleVisualization} from "../../helpers/helper.js"
 import {isEmpty, CREATESIGNAL, CREATESCORE, CREATEMODEL} from "../../helpers/helper";
-import {SubSetting} from "./SubSetting";
+
 import {DataUploadLoader} from "../common/DataUploadLoader";
-import {DataValidation} from "./DataValidation";
-import {DataValidationEditValues} from "./DataValidationEditValues";
 import Dialog from 'react-bootstrap-dialog';
 import {checkCreateScoreToProceed, getAppDetails} from "../../actions/appActions";
 import {missingValueTreatmentSelectedAction, outlierRemovalSelectedAction, variableSelectedAction, removeDuplicatesAction } from "../../actions/dataCleansingActions";
@@ -219,7 +217,7 @@ getOutlierRemovalOptions(dataType, colName, colSlug){
                 <label for="rd2" class="col-sm-5 control-label"> Do you want to remove duplicate observations  in the dataset?</label>
                 <div class="col-sm-7">
                   <div class="btn-group" data-toggle="buttons">
-                       <input type="button" id="rd2_Yes" name="rd_odataset" value="Yes"  class="btn btn-default" data-duplicatename="remove_duplicate_observations"  onClick={this.handleRemoveDuplicatesOnChange.bind(this)} selected />
+                       <input type="button" id="rd2_Yes" name="rd_odataset" value="Yes"  class="btn btn-default" data-duplicatename="remove_duplicate_observations"  onClick={this.handleRemoveDuplicatesOnChange.bind(this)} se />
                       <input type="button" id="rd2_No" name="rd_odataset" value="No"  class="btn btn-default " data-duplicatename="remove_duplicate_observations"  onClick={this.handleRemoveDuplicatesOnChange.bind(this)} />
   </div>
                 </div>

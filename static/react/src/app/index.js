@@ -12,7 +12,6 @@ import {Settings} from "./components/settings/Settings";
 import {Apps} from "./components/apps/Apps";
 import {Data} from "./components/data/Data";
 import {DataPreview} from "./components/data/DataPreview";
-import {DataCleansing} from "./components/data/DataCleansing";
 import {Stories} from "./components/stories/Stories";
 import {Signals} from "./components/signals/Signals";
 import {Signal} from "./components/signals/Signal";
@@ -21,6 +20,8 @@ import {OverViewPage} from "./components/signals/overViewPage";
 import {VariableSelection} from "./components/signals/variableSelection";
 import {DataVariableSelection} from "./components/data/DataVariableSelection";
 import {ModelVariableSelection} from "./components/apps/ModelVariableSelection";
+import {ModelBuildingModeSelection} from "./components/apps/ModelBuildingModeSelection"
+import {DataCleansing} from "./components/apps/DataCleansing"
 import {AppsModelDetail} from "./components/apps/AppsModelDetail";
 import {AppsModelHyperDetail} from "./components/apps/AppsModelHyperDetail";
 import {ScoreVariableSelection} from "./components/apps/ScoreVariableSelection";
@@ -301,7 +302,7 @@ class App extends React.Component {
             <Route exact path="/apps/:AppId/scores/:slug/dataPreview" render={score}/>
             <Route exact path="/apps/:AppId/models/data/:slug/createModel/Proceed" component={ModelAlgorithmSelection}/>
             <Route exact path="/apps/:AppId/models/data/:slug/createModel/modeSelection" component={ModelBuildingModeSelection}/>
-
+            <Route exact path="/apps/:AppId/models/data/:slug/createModel/dataCleansing" component={DataCleansing}/>
             <Route exact path="/apps-regression" component={RegressionAppList}/>
             <Route exact path="/apps-regression-score" component={RegressionAppList}/>
             <Route exact path="/apps-regression/scores" component={RegressionAppList}/>

@@ -36,6 +36,7 @@ export class ModelAlgorithmSelection extends React.Component {
     }
     componentWillMount() {
         //It will trigger when refresh happens on url
+        debugger;
         if(this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null){
             window.history.go(-1);
         }
@@ -64,7 +65,7 @@ export class ModelAlgorithmSelection extends React.Component {
         }
         else{
             var isContinueRange = this.checkRangeValidation();
-            var isContinueMulticheck = this.checkMultiSelectValidation();            
+            var isContinueMulticheck = this.checkMultiSelectValidation();
             if(!isContinueRange || !isContinueMulticheck){
                 let msg= statusMessages("warning","Please resolve errors...","small_mascot");
                 bootbox.alert(msg);
@@ -113,15 +114,15 @@ export class ModelAlgorithmSelection extends React.Component {
                         <div className="col-md-12">
 						<div className="bg-highlight-parent xs-mb-10">
                         <div className="checkbox">
-                            <div className="ma-checkbox inline">							
-                                <input type="checkbox" checked={data.selected} id={checkboxId} onChange={this.changeAlgorithmSelection.bind(this,data)}/><label for={checkboxId}><b>{data.algorithmName}</b></label>							
+                            <div className="ma-checkbox inline">
+                                <input type="checkbox" checked={data.selected} id={checkboxId} onChange={this.changeAlgorithmSelection.bind(this,data)}/><label for={checkboxId}><b>{data.algorithmName}</b></label>
                             </div>
 							<div className="xs-mt-5 xs-ml-20"><p>{data.description}</p></div>
                         </div>
 						</div>
                         </div>
                         </div>
-						
+
                     );
                 });
                 var buttonName = "Proceed";
@@ -142,15 +143,15 @@ export class ModelAlgorithmSelection extends React.Component {
                                 if(options[prop].params != null && options[prop].params.length >0){
                                     var hyperparameterOptions = options[prop].params;
                                     hyperparameterOptionsData = hyperparameterOptions.map((param,index) =>{
-                                        if(param.display){ 
+                                        if(param.display){
                                             return(
-                                                 
+
                                                     <div class="form-group">
                                                         <label class="col-md-3 control-label read">{param.displayName}</label>
                                                         <RegressionParameter parameterData={param} tuneName={selectedValue} algorithmSlug={data.algorithmSlug} type="TuningOption"/>
                                                     <div class="clearfix"></div>
                                                     </div>
-                                                 
+
                                             );
                                         }
                                     });
@@ -163,14 +164,14 @@ export class ModelAlgorithmSelection extends React.Component {
                         var parametersData = algorithmParameters.map((params,Index) =>{
                             if(params.hyperpatameterTuningCandidate && params.display){
                                 return(
-                                     
+
                                         <div class="form-group">
                                             <label class="col-md-2 control-label read">{params.displayName}</label>
                                             <label class="col-md-4 control-label read">{params.description}</label>
                                             <RegressionParameter parameterData={params} tuneName={selectedValue} algorithmSlug={data.algorithmSlug} isTuning={true} type="TuningParameter"/>
                                         <div class="clearfix"></div>
                                         </div>
-                                     
+
                                 );
                             }
                         });
@@ -180,14 +181,14 @@ export class ModelAlgorithmSelection extends React.Component {
                         var parametersData = algorithmParameters.map((params,Index) =>{
                             if(params.display){
                                 return(
-                                 
+
                                     <div class="form-group">
                                         <label class="col-md-2 control-label read">{params.displayName}</label>
                                         <label class="col-md-4 control-label read">{params.description}</label>
                                         <RegressionParameter parameterData={params} tuneName={selectedValue} algorithmSlug={data.algorithmSlug} type="NonTuningParameter"/>
                                     <div class="clearfix"></div>
                                     </div>
-                                
+
                                 );
                             }
                         });
@@ -239,9 +240,9 @@ export class ModelAlgorithmSelection extends React.Component {
         return(
                 <div className="side-body">
                     <div className="page-head">
-                         
+
                                 <h3 class="xs-mt-0 text-capitalize">{pageTitle}</h3>
-                            
+
                     </div>
                     <div className="main-content">
                           <div className="panel panel-mAd xs-p-20 box-shadow">

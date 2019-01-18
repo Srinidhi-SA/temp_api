@@ -46,6 +46,8 @@ export class ModelVariableSelection extends React.Component {
     }
     createModel(event){
         event.preventDefault();
+        console.log("came here: ================================");
+
         if($('#createModelAnalysisList option:selected').val() == ""){
               bootbox.alert("Please select a variable to analyze...");
             return false;
@@ -61,9 +63,9 @@ export class ModelVariableSelection extends React.Component {
         return false;
         }
 
-		if(store.getState().apps.currentAppDetails.app_type == "REGRESSION" || store.getState().apps.currentAppDetails.app_type == "CLASSIFICATION"){
+		if(this.props.currentAppDetails.app_type == "REGRESSION" || this.props.currentAppDetails.app_type == "CLASSIFICATION"){
 		this.props.dispatch(saveSelectedValuesForModel($("#createModelName").val(),$("#createModelAnalysisList").val(),$("#createModelLevelCount").val()));
-            let regressionProccedUrl = this.props.match.url+'/Proceed';
+            let regressionProccedUrl = this.props.match.url+'/modeSelection';
             this.props.history.push(regressionProccedUrl);
         }
         else
@@ -190,18 +192,18 @@ export class ModelVariableSelection extends React.Component {
                 <label className="col-lg-4"><h4>I want to predict {custom_word1}</h4></label>
                 </div>
                 </div>
-                
+
                 <label className="col-lg-2 control-label cst-fSize">I want to predict :</label>
                 <div className="col-lg-4"> {renderSelectBox}</div>
                  <div className="clearfix"></div>
-				 
+
                  {/*<!-- /.col-lg-4 -->*/}
-                
+
                 {(this.props.targetLevelCounts != null)? ( <div className="xs-mt-20 xs-mb-20">
-                     
+
                     <label className="col-lg-2 control-label">Choose Value for {custom_word2} :</label>
                     <div className="col-lg-4"> {renderLevelCountSelectBox}</div>
-                     
+
                      {/*<!-- /.col-lg-4 -->*/}
                     </div>) : (<div></div>)
 
@@ -210,8 +212,8 @@ export class ModelVariableSelection extends React.Component {
 				<FormGroup role="form">
 						<DataVariableSelection match={this.props.match}/>
                 </FormGroup>
-				
-				<FormGroup role="form">					
+
+				<FormGroup role="form">
 					<div class="col-md-8">
 					{modelValidation}
 					</div>
@@ -226,7 +228,7 @@ export class ModelVariableSelection extends React.Component {
 					</div>
 
 					</div>
-					<div className="clearfix"></div>					
+					<div className="clearfix"></div>
                 </FormGroup>
                 </Form>
                 </div>
