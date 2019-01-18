@@ -79,28 +79,31 @@ export class AppsCreateStockAnalysis extends React.Component {
 
 				<Modal.Body>
 				<form role="form" className="form-horizontal">
-	             <label className="control-label">Url for Stock Prices : </label>
-
-	              <input type="text" name="createStock" id="createStockUrl"  required={true} className="form-control input-sm" />
+				<div className="form-group">
+					<label className="col-sm-4 control-label">Url for Stock Prices :</label>
+					<div class="col-sm-8">
+						<input type="text" name="createStock" id="createStockUrl"  required={true} className="form-control input-sm" />
+					</div>
+				</div>
+			 
+				<div className="form-group">
+					<label className="col-sm-4 control-label">URL for News Articles :</label>
+					 <div class="col-sm-8">
+					 <input type="text" name="createStockNews" id="createStockUrlNews"  required={true} className="form-control input-sm" />
+					 </div>
+				 </div>
+				 <div className="form-group">
 				 
-			  <div className="xs-pb-20 clearfix"></div>
-				 
-				<label className="control-label">URL for News Articles </label>
-				 
-	             <input type="text" name="createStockNews" id="createStockUrlNews"  required={true} className="form-control input-sm" />
+						<label className=" control-label col-md-4">Ticker Symbols to Analyze :</label>
+						<div class="col-md-8 text-right">
+						<Button bsStyle="default" onClick={this.addMoreStockSymbols.bind(this)}> <i className="fa fa-plus"></i> Add</Button>
+						</div>
+						
+				</div>
+				<div class="col-md-8 col-md-offset-4">
 				  
-				  <div className="xs-pb-20 clearfix"></div>
-				 
-				<label className=" control-label">Ticker Symbols to Analyze </label>
-				
-				<div class="col-md-10 col-md-offset-2">
-				 <div className="row">
-	              <div className="col-md-12 text-right">
-		         <Button bsStyle="default" onClick={this.addMoreStockSymbols.bind(this)}> <i className="fa fa-plus"></i></Button>
-		         </div> 
-		         </div>
 				<div >
-				<Scrollbars style={{ height: 300 }} renderTrackHorizontal={props => <div {...props} className="track-horizontal" style={{display:"none"}}/>}
+				<Scrollbars style={{ height: 200 }} renderTrackHorizontal={props => <div {...props} className="track-horizontal" style={{display:"none"}}/>}
 		        renderThumbHorizontal={props => <div {...props} className="thumb-horizontal" style={{display:"none"}}/>}>
 	             {templateTextBoxes}
 				 </Scrollbars>
@@ -108,13 +111,13 @@ export class AppsCreateStockAnalysis extends React.Component {
 	             
 				 
 				  </div>
-			 
-					 <div className="xs-pb-25 clearfix"></div>
-					 
-				<label className="control-label">Name your Analysis </label>
-				 
-	             <input type="text" name="createStockAnalysisName" id="createStockAnalysisName"  required={true} className="form-control input-sm" />
-				 
+<div className="xs-pb-25 clearfix"></div>
+				<div class="form-group">
+					<label className="col-md-4 control-label">Name your Analysis :</label>
+					<div class="col-md-8">
+					<input type="text" name="createStockAnalysisName" id="createStockAnalysisName"  required={true} className="form-control input-sm" />
+					</div>
+				</div>
 				 
 	             <div className="clearfix"></div>
 	              </form>

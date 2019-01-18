@@ -53,7 +53,7 @@ class LeftPanel extends React.Component {
       <div>
         <div>
           {/* Side bar Main Menu -->*/}
-          <div className="side-menu">
+          <div className="side-menu collapse navbar-collapse" id="side-menu">
             <div className="side-menu-container">
               <ul className="nav navbar-nav">
               {(view_signal_permission=="true")?

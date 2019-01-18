@@ -123,15 +123,18 @@ export class Card extends React.Component {
             let boxData = story.data;
             let divClass = "text-center";
               if(story.widthPercent &&  story.widthPercent != 100){
-                        let width  = parseInt((story.widthPercent/100)*12);
-                        divClass="col-md-"+width+" text-center card_kpi";
+                        //let width  = parseInt((story.widthPercent/100)*20);
+                        divClass="col-md-4 bgStockBox";
               }
 			 return(
 			<div className={divClass}>
-                <div className="alert-primary">
-			    <h3 className="text-center xs-m-5 xs-p-10">{boxData.value}</h3>
-			    </div>
-                <i>{boxData.text}</i>
+               
+			    <h3 className="text-center xs-m-0">{boxData.value}
+				<br/>
+				<small>{boxData.text}</small>
+				</h3>
+			    
+                
             </div>
 			);
             break;
@@ -149,10 +152,14 @@ export class Card extends React.Component {
     render() {
         console.log("card is called!!!! with data:----");
         cardData = this.props.cardData;
+		let stockClassName = "";
+		if (window.location.pathname.indexOf("apps-stock-advisor")>-1)
+		stockClassName = "stockClassName";
+		
         let cardWidth = this.props.cardWidth;
         const cardElements = this.renderCardData(cardData,'',cardWidth);
         return (
-                <div>
+                <div className = {stockClassName}>
                 {cardElements}
                 </div>
         );

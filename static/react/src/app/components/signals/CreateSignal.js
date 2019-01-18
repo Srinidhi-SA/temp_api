@@ -83,7 +83,7 @@ export class CreateSignal extends React.Component {
 		let renderSelectBox = null;
 		  let title = "";
 		 var isDataUpload = this.props.signalList.permission_details.create_signal;
-	        let cls = "newCardStyle firstCard"
+	        let cls = "newCardStyle firstCard wow fadeInLeft"
 	        if(!isDataUpload){
 	            cls += " disable-card";
 	            title= ACCESSDENIED

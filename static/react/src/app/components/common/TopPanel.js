@@ -46,7 +46,7 @@ export default class TopPanel extends React.Component {
 									<div className="navbar-header">
 										<div className="brand-wrapper">
 											{/* Hamburger */}
-											<button type="button" className="navbar-toggle">
+											<button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#side-menu">
 												<span className="sr-only">Toggle navigation</span>
 												<span className="icon-bar"></span>
 												<span className="icon-bar"></span>
