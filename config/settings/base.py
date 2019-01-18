@@ -51,7 +51,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'api.auditLogMiddleware_modified.PrintRequestMiddleware',
+    # 'api.auditLogMiddleware_modified.PrintRequestMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -678,7 +678,10 @@ BRIEF_INFO_CONFIG = {
     'file_size': 'File Size',
     'audioset': 'Audio',
     'name': 'Name',
-    'stock_symbols': 'Stocks'
+    'stock_symbols': 'Stocks',
+    'customer_dataset': 'Customer Dataset',
+    'historical_dataset': 'Historical Dataset',
+    'market_dataset': 'Market Dataset'
 }
 
 FIRST_ORDER = [
@@ -714,11 +717,18 @@ STOCK_ORDER = [
     'stock_symbols'
 ]
 
+ROBO_ORDER = [
+    'customer_dataset',
+    'historical_dataset',
+    'market_dataset'
+]
+
 ORDER_DATASET = FIRST_ORDER + SECOND_ORDER + DATASET_ORDER
 ORDER_SIGNAL = FIRST_ORDER + SECOND_ORDER + THIRD_ORDER
 ORDER_TRAINER = FIRST_ORDER + SECOND_ORDER + THIRD_ORDER
 ORDER_SCORE = FIRST_ORDER + SECOND_ORDER + THIRD_ORDER
 ORDER_STOCK = FIRST_ORDER + STOCK_ORDER
+ORDER_ROBO = FIRST_ORDER + ROBO_ORDER
 
 ORDER_DICT = {
     'dataset': ORDER_DATASET,
@@ -726,7 +736,8 @@ ORDER_DICT = {
     'trainer': ORDER_TRAINER,
     'score': ORDER_SCORE,
     'audioset': ORDER_DATASET,
-    'stockdataset': ORDER_STOCK
+    'stockdataset': ORDER_STOCK,
+    'robo': ORDER_ROBO
 }
 
 NATURAL_LANGUAGE_UNDERSTANDING_SETTINGS = {
@@ -1496,6 +1507,14 @@ PERMISSIONS_RELATED_TO_REGRESSION = (
     ('downlad_pmml', 'Download PMML')
 )
 
+
+PERMISSIONS_RELATED_TO_STOCK = (
+    ('view_stock', 'View stock'),
+    ('create_stock', 'Create stock'),
+    ('rename_stock', 'Rename stock'),
+    ('remove_stock', 'remove stock'),
+)
+
 JOB_STATUS_MESSAGE = {
     "EMPTY": "Submitting for analysis",
     "SUBMITTED": "Submitting for analysis.",
@@ -1551,3 +1570,21 @@ APPORDERLIST=[
 USE_YARN_DEFAULT_QUEUE=False
 
 CELERY_SCRIPTS_DIR="/home/hadoop/codebase/mAdvisor-api/scripts/"
+
+REQUEST_CONNECTION_TIMEOUT=30
+REQUEST_READ_TIMEOUT=50
+REQUEST_RETRY_LIMIT=10
+NASDAQ_NEWS_HEADLINE_COUNT = 10
+
+CACHE_BASE_DIR="/tmp"
+
+# SUBMIT_JOB_THROUGH_CELERY = False
+SUBMIT_JOB_THROUGH_CELERY = True
+END_RESULTS_SHOULD_BE_PROCESSED_IN_CELERY = True
+CELERY_ONCE_CONFIG = {
+  'backend': 'celery_once.backends.Redis',
+  'settings': {
+    'url': 'redis://localhost:6379/0',
+    'default_timeout': 60 * 60
+  }
+}

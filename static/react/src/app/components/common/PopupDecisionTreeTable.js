@@ -69,7 +69,7 @@ generateDecisionTreeRows(table) {
                       else return  <td class="text-center" key={j}>{colData}</td>
 
               });
-              return<tr key={i}>{rows}<td class="cursor text-center" onClick={that.showDecisionTreePopup.bind(this,rule)}><a href="javascript:;" class="btn btn-space btn-primary btn-rounded btn-xs"><i class="zmdi zmdi-hc-lg zmdi-more"></i></a></td></tr>;
+              return<tr key={i}>{rows}<td class="cursor text-center" onClick={that.showDecisionTreePopup.bind(this,rule)}><a href="javascript:;" class="btn btn-space btn-default btn-round btn-xs"><i class="fa fa-info"></i></a></td></tr>;
           }
         })
       return tbodyData;

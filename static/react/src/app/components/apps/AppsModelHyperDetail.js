@@ -43,6 +43,9 @@ export class AppsModelHyperDetail extends React.Component {
 		this.props.dispatch(clearSelectedModelsCount());
 	  
   }
+  componentWillReceiveProps(){
+	  this.setState({showSummery:false});
+  }
   saveAndShowModelSummary(){
 	  if(!store.getState().apps.modelSummary.data.modelSelected)
 	  this.props.dispatch(sendSelectedAlgorithms(this.props.match.params.slug));
@@ -80,7 +83,7 @@ export class AppsModelHyperDetail extends React.Component {
 				<Tab eventKey={data.slug} title={data.name} key={cardId}>
 					<div className="row" key={cardId}>
 						<div className="form-group">
-							<div className={clearfixClass}><Card key={cardId} id={cardId} cardData={cardDataArray} /></div>
+							<div className={clearfixClass}><Card key={cardId} id={cardId} cardData={cardDataArray} cardWidth={data.cardWidth}/></div>
 						</div>
 					</div>
 				</Tab>
@@ -98,7 +101,7 @@ export class AppsModelHyperDetail extends React.Component {
                         <div className="clearfix"></div>
                     </div>
                     <div className="main-content">
-                        <div class="row">
+                        <div class="row predictions">
                             <div class="col-md-12">
                                <Tabs id="tabsName" onSelect={this.changeAlgo.bind(this)} className="tab-container">
                                 {pageData}
@@ -108,7 +111,7 @@ export class AppsModelHyperDetail extends React.Component {
 
                         <div className="row">
                             <div className="col-lg-12 text-right">
-                                <Button type="button" onClick={this.saveAndShowModelSummary.bind(this)} bsStyle="primary">{(store.getState().apps.modelSummary.data.modelSelected)?"Model Summary":"Save and show Model Summary"}</Button>
+                                <Button type="button" onClick={this.saveAndShowModelSummary.bind(this)} bsStyle="primary">{(store.getState().apps.modelSummary.data.modelSelected)?"Model summery":"Save and show Model summery"}</Button>
                             </div>
                         </div>
                     </div>

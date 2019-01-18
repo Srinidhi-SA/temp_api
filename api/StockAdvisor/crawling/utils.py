@@ -37,7 +37,6 @@ def normalize_date_time(date_string):
         except:
             pass
 
-    print date
     return date
 
 

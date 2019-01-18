@@ -121,11 +121,11 @@ export class AppsScoreList extends React.Component {
                 document.getElementById('score_insights').value = "";
         }
         //search element ends..*/
-        
+        /*
         if(this.props.history.location.sort == "" || this.props.history.location.sort == null){
             this.props.dispatch(storeAppsScoreSortElements("",null));
         }
-        
+        */
         const scoreList = store.getState().apps.scoreList.data;
         var appsScoreList = null;
         if (scoreList) {
@@ -193,9 +193,8 @@ export class AppsScoreList extends React.Component {
                     </div>
                     </div>
                     
-                    <div className="clearfix"></div>
-                    </div>
-                    <div class="main-content xs-pb-20">
+                    <div class="clearfix xs-m-10"></div>
+                    
                     <div className="row">
                     {appsScoreList}
                     <div className="clearfix"></div>
@@ -205,7 +204,9 @@ export class AppsScoreList extends React.Component {
                     {paginationTag}
                     </div>
                     </div>
+					
                     </div>
+					
                     <Dialog ref="dialog"/>
                         </div>
                     

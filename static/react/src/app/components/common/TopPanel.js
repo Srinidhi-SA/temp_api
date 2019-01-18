@@ -4,7 +4,7 @@ import {sessionObject} from '../../helpers/manageSessionStorage';
 import LoadingBar from 'react-redux-loading-bar';
 import {Link} from "react-router-dom";
 import {cookieObj} from '../../helpers/cookiesHandler';
-import {getUserDetailsOrRestart} from  "../../helpers/helper"
+import {getUserDetailsOrRestart,removeChatbotOnLogout,hidechatbot} from  "../../helpers/helper"
 import {STATIC_URL} from "../../helpers/env";
 import {clearSignalAnalysisBeforeLogout} from "../../actions/signalActions";
 // import $ from 'jquery';
@@ -24,8 +24,11 @@ export default class TopPanel extends React.Component {
              loginFlag: false
          });
          //sessionObject.clearSession();
-         cookieObj.clearCookies();
+         // cookieObj.clearCookies();
+         hidechatbot()
+         removeChatbotOnLogout()
          //location.reload();
+         cookieObj.clearCookies();
 	}
 	render(){
 		if(!this.state.loginFlag){
@@ -37,7 +40,7 @@ export default class TopPanel extends React.Component {
 		            <div>
 								{/* // Header Menu*/}
 
-								<nav className="navbar navbar-default navbar-fixed-top box-shadow" role="navigation">
+								<nav className="navbar navbar-default navbar-fixed-top" role="navigation">
 								<LoadingBar style={{ backgroundColor: '#148071', height: '3px' }} />
 									{/*/ Brand and toggle get grouped for better mobile display -->*/}
 									<div className="navbar-header">

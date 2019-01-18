@@ -46,8 +46,8 @@ export class RegressionParameter extends React.Component {
 
    
     componentWillMount(){
-        $(".single").multiselect('destroy');
-        
+        setTimeout(function(){ $('.single').multiselect('destroy'); }, 0);
+       
     }
     componentDidUpdate(){
         var that = this;
@@ -60,7 +60,7 @@ export class RegressionParameter extends React.Component {
            },
             onDropdownHide: function(event) {
                if(this.getSelected().length == 0)
-                event.target.parentElement.parentElement.lastElementChild.innerHTML = "Please select atleast one";
+                event.target.parentElement.parentElement.lastElementChild.innerHTML = "Please select at least one";
             },
             onDropdownShow: function(event) {
                 event.target.parentElement.parentElement.lastElementChild.innerHTML = "";
@@ -149,7 +149,8 @@ export class RegressionParameter extends React.Component {
                  </select>
 				</div>
                   <div className="clearfix"></div>
-                  {tune?<div className="col-md-6 check-multiselect text-danger"></div>:""}
+                  {tune ?<div className="col-md-6 check-multiselect text-danger">{(selectedValue.length == 0)?"Please select at least one":""}</div>:""}
+                  {/*{(tune && selectedValue.length == 0)?<div className="col-md-6 check-multiselect text-danger">Please select at least one</div>:""}*/}
                 </div>
                );
                 break;
@@ -158,7 +159,7 @@ export class RegressionParameter extends React.Component {
                 if(parameterData.uiElemType == "textBox"){
                     return (
                          <div className="row">
-                        <div className="col-md-6">
+                        <div className="col-md-2">
                             <input type="number" className="form-control" value={this.state.defaultVal} onChange={this.changeTextboxValue.bind(this)} onBlur={this.checkChangeTextboxValue.bind(this,this.state.min,this.state.max,parameterData.expectedDataType)} />
                             <div className="clearfix"></div>
                                 <div className="range-validate text-danger"></div>
@@ -201,7 +202,7 @@ export class RegressionParameter extends React.Component {
                     var dataTypes = ["int"];
                     return (
                             <div className="row">                            
-                            <div className="col-md-8 col-sm-2">
+                            <div className="col-md-6 col-sm-2">
                                 
                                     <div className="col-xs-1 clr-alt4">{this.state.min}</div>
                                     <div className="col-xs-10">
@@ -328,7 +329,7 @@ export class RegressionParameter extends React.Component {
                 }
                 else if(v == "int"){
                     (k == 0)?allowedTypes = "Numbers" : allowedTypes+= ", Numbers";
-                    if(val % 1 != 0)
+                    if(val % 1 != 0 || parseInt(val.toString().split(".")[1])==0)
                     wrongCount++;
                 }
                 else if(v == null && val != null){

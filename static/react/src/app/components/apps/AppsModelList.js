@@ -110,11 +110,11 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                     document.getElementById('model_insights').value = "";
             }
             //search element ends..
-            */
+            
             if(this.props.history.location.sort == "" || this.props.history.location.sort == null){
                 this.props.dispatch(storeAppsModelSortElements("",null));
             }
-            
+            */
             
             const modelList = store.getState().apps.modelList.data;
             var createModelPermission = store.getState().apps.modelList.permission_details;
@@ -177,7 +177,7 @@ import {getAppsModelList,getAppsModelSummary,updateModelSlug,updateScoreSummaryF
                         </div>
                         </div>
                         
-                        <div class="clearfix"></div>
+                        <div class="clearfix xs-m-10"></div>
 
                         <div className="row">
                         {appsModelList}

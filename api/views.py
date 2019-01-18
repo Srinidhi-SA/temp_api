@@ -40,13 +40,14 @@ from api.utils import \
 from models import Insight, Dataset, Job, Trainer, Score, Robo, SaveData, StockDataset, CustomApps
 from api.tasks import clean_up_on_delete
 
-from api.permission import TrainerRelatedPermission, ScoreRelatedPermission, SignalsRelatedPermission
+from api.permission import TrainerRelatedPermission, ScoreRelatedPermission, \
+    SignalsRelatedPermission, StocksRelatedPermission
 
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-
+# from django_print_sql import print_sql_decorator
 from api.datasets.views import DatasetView
 
 class SignalView(viewsets.ModelViewSet):
@@ -56,7 +57,7 @@ class SignalView(viewsets.ModelViewSet):
             deleted=False,
             # analysis_done=True
             status__in=['SUCCESS','INPROGRESS']
-        )
+        ).select_related('created_by', 'job', 'dataset')
         return queryset
 
     def get_serializer_class(self):
@@ -157,7 +158,7 @@ class TrainerView(viewsets.ModelViewSet):
             #analysis_done=True,
             status__in=['SUCCESS', 'INPROGRESS']
 
-        )
+        ).select_related('created_by', 'job', 'dataset')
         return queryset
 
     def get_serializer_class(self):
@@ -216,6 +217,7 @@ class TrainerView(viewsets.ModelViewSet):
             return Response(serializer.data)
         return Response(serializer.errors)
 
+    # @print_sql_decorator(count_only=True)
     def list(self, request, *args, **kwargs):
 
         return get_listed_data(
@@ -224,6 +226,7 @@ class TrainerView(viewsets.ModelViewSet):
             list_serializer=TrainerListSerializer
         )
 
+    # @print_sql_decorator(count_only=True)
     def retrieve(self, request, *args, **kwargs):
         # return get_retrieve_data(self)
         try:
@@ -385,7 +388,7 @@ class ScoreView(viewsets.ModelViewSet):
             deleted=False,
             #analysis_done=True
             status__in=['SUCCESS', 'INPROGRESS']
-        )
+        ).select_related('created_by', 'job', 'dataset', 'trainer')
         return queryset
 
     def get_serializer_class(self):
@@ -447,6 +450,7 @@ class ScoreView(viewsets.ModelViewSet):
             return Response(serializer.data)
         return Response(serializer.errors)
 
+    # @print_sql_decorator(count_only=True)
     def list(self, request, *args, **kwargs):
 
         return get_listed_data(
@@ -455,6 +459,7 @@ class ScoreView(viewsets.ModelViewSet):
             list_serializer=ScoreListSerializer
         )
 
+    # @print_sql_decorator(count_only=True)
     def retrieve(self, request, *args, **kwargs):
         # return get_retrieve_data(self)
         try:
@@ -579,6 +584,8 @@ class RoboView(viewsets.ModelViewSet):
             robo_object = serializer.save()
             robo_object.create()
             robo_object.data = json.dumps(dummy_robo_data)
+            robo_object.status = "INPROGRESS"
+            robo_object.robo_analysis_done = True
             robo_object.save()
             return Response(serializer.data)
         return creation_failed_exception(serializer.errors)
@@ -598,7 +605,7 @@ class RoboView(viewsets.ModelViewSet):
                     instance.data = '{}'
                     instance.deleted = True
                     instance.save()
-                    clean_up_on_delete.delay(instance.slug, Robo.__name__)
+                    # clean_up_on_delete.delay(instance.slug, Robo.__name__)
                     return JsonResponse({'message':'Deleted'})
         except:
             return creation_failed_exception("File Doesn't exist.")
@@ -658,15 +665,16 @@ class StockDatasetView(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('deleted', 'name')
     pagination_class = CustomPagination
+    permission_classes = (StocksRelatedPermission, )
 
     def create(self, request, *args, **kwargs):
 
         data = request.data
         config = data.get('config')
         stock_symbol = config.get('stock_symbols')
-        stock_values = [item.get('value') for item in stock_symbol if item.get('value') != ""]
+        stock_values = [item.get('value').lower() for item in stock_symbol if item.get('value') != ""]
         new_data = {}
-        new_data['stock_symbols'] = (", ").join(stock_values)
+        new_data['stock_symbols'] = (", ").join(list(set(stock_values)))
         new_data['name'] = config.get('name')
         new_data['input_file'] = None
         new_data['created_by'] = request.user.id
@@ -746,11 +754,7 @@ class StockDatasetView(viewsets.ModelViewSet):
         serializer = self.serializer_class(instance=instance, data=new_data, partial=True)
         if serializer.is_valid():
             stock_instance = serializer.save()
-            # stock_instance.stats(file=new_data['input_file'])
-            if fake is None:
-                stock_instance.fake_call_mlscripts()
-            else:
-                stock_instance.call_mlscripts()
+            stock_instance.call_mlscripts()
             return Response(serializer.data)
 
         serializer = StockDatasetSerializer(instance=instance, context={"request": self.request})
@@ -889,22 +893,15 @@ Note: It looks into CustomApps table for apps.
 class AppView(viewsets.ModelViewSet):
     def get_queryset(self):
         from api.models import CustomAppsUserMapping
+        # import pdb;pdb.set_trace()
         user_app_list = CustomAppsUserMapping.objects.filter(
             user=self.request.user,
             active=True
         ).order_by('rank')
 
-        custom_apps = [custom_app.app for custom_app in user_app_list]
-        print custom_apps
-        queryset = custom_apps
+        custom_apps_id = [custom_app.app.id for custom_app in user_app_list]
 
-        # queryset = CustomApps.objects.filter(
-        #     #created_by=self.request.user,
-        #     status="Active"
-        #     #status__in=['SUCCESS', 'INPROGRESS']
-        # ).order_by('rank')
-        # app_ordered_list = copy.deepcopy(settings.APPORDERLIST)
-        # queryset = queryset.filter(name__in=app_ordered_list)
+        queryset = CustomApps.objects.filter(id__in=custom_apps_id).all()
         return queryset
 
     def get_serializer_class(self):
@@ -1071,11 +1068,20 @@ def set_result(request, slug=None):
         #     results=json.loads(results)
         # )
 
-        results = tasks.write_into_databases.delay(
-            job_type=job.job_type,
-            object_slug=job.object_id,
-            results=json.loads(results)
-        )
+        process_using_celery = settings.END_RESULTS_SHOULD_BE_PROCESSED_IN_CELERY
+
+        if process_using_celery:
+            results = tasks.write_into_databases.delay(
+                job_type=job.job_type,
+                object_slug=job.object_id,
+                results=json.loads(results)
+            )
+        else:
+            results = tasks.write_into_databases1(
+                job_type=job.job_type,
+                object_slug=job.object_id,
+                results=json.loads(results)
+            )
         job.status = 'SUCCESS'
         job.save()
     return JsonResponse({'result': "success"})
@@ -1097,7 +1103,7 @@ def use_set_result(request, slug=None):
     job.status = 'SUCCESS'
     job.save()
 
-    return JsonResponse({'result': results})
+    return JsonResponse({'result': 'Success'})
 
 
 # def write_into_databases(job_type, object_slug, results):
@@ -1273,7 +1279,7 @@ def home(request):
     SCORES_BASE_URL = "https://{}:8001/".format(settings.HDFS.get("host", "ec2-34-205-203-38.compute-1.amazonaws.com"))
     APP_BASE_URL = "{}://{}".format(protocol, host)
 
-    context = {"UI_VERSION": settings.UI_VERSION, "APP_BASE_URL": APP_BASE_URL, "SCORES_BASE_URL": SCORES_BASE_URL, "STATIC_URL" : settings.STATIC_URL}
+    context = {"UI_VERSION": settings.UI_VERSION, "APP_BASE_URL": APP_BASE_URL, "SCORES_BASE_URL": SCORES_BASE_URL, "STATIC_URL" : settings.STATIC_URL,"ENABLE_KYLO": settings.ENABLE_KYLO,"KYLO_UI_URL":settings.KYLO_UI_URL}
 
     return render(request, 'home.html', context)
 
@@ -1434,7 +1440,7 @@ dummy_robo_data = {
                 },
                 {
                     "dataType": "html",
-                    "data": "<div className='row xs-mt-50'><div className='col-md-4 col-xs-12'><h2 className='text-center'><span>1.39M</span><br /><small>Total Net Investments</small></h2></div><div className='col-md-4 col-xs-12'><h2 className='text-center'><span>1.48M</span><br /><small>Current Market Value</small></h2></div><div className='col-md-4 col-xs-12'><h2 className='text-center'><span>13.81%</span><br /><small>Compounded Annual Growth</small></h2></div></div>"
+                    "data": "<div className='row xs-mt-50'><div className='col-md-4 col-xs-12 bgStockBox'><h3 className='text-center'><span><b>1.39M</b></span><br /><small>Total Net Investments</small></h3></div><div className='col-md-4 col-xs-12 bgStockBox'><h3 className='text-center'><span><b>1.48M</b></span><br /><small>Current Market Value</small></h3></div><div className='col-md-4 col-xs-12 bgStockBox'><h3 className='text-center'><span><b>13.81%</b></span><br /><small>Compounded Annual Growth</small></h3></div></div>"
                 }
             ],
             "cardType": "normal",
@@ -4942,11 +4948,17 @@ dummy_robo_data = {
                 },
                 {
                     "dataType": "html",
-                    "data": "Based on analysis of your portfolio composition, performance of various funds, and the projected outlook, mAdvisor recommends the following."
+                    "data": "Based on analysis of your portfolio composition, risk appetite, performance of various funds, and the projected outlook, mAdvisor recommends the following to maximize your wealth."
                 },
                 {
                     "dataType": "html",
-                    "data": "<ul><li><b>Reallocate investments</b> from some of the low-performing assets such as Franklin - India Ultra Short Bond Super Ins (G): Our suggestion is that you can maximize returns by investing more in other existing equity funds.</li><li>Invest in funds that are going to outperform, <b>Technology and Telecom</b> equity funds. Our suggestion is that you consider investing in ICICI Prudential Large Cap Fund, top performer in Technology, which has an annual return of 25.4%.</li><li><b>Consider investing in Tax Saver</b> equity funds that would help you manage taxes more effectively and save more money.</li></ul>"
+                    "data": """
+                    <ul>
+                    <li><b>Sell</b> <i>"Franklin - India Ultra Short Bond Super Ins (G)"</i>.</li>
+                    <li><b>Invest</b> in <i>"ICICI Prudential Large Cap Fund"</i> which is found to be the mutual fund with high probability of success rate given your risk appetite.</li>
+                    <li><b>Invest</b>  in <i>"DSP BlackRock Tax Saver Fund"</i> that would help you manage taxes more effectively and save more money.</li>
+                    </ul>
+                    """
                 }
             ],
             "cardType": "normal",
@@ -4983,6 +4995,17 @@ def get_chart_or_small_data(request, slug=None):
 def get_job_kill(request, slug=None):
 
     job_object = Job.objects.filter(object_id=slug).first()
+
+    if not job_object:
+        if killing_for_robo(slug) == True:
+            return JsonResponse({
+                'message': 'killed. and Deleted'
+            })
+        else:
+            return JsonResponse({
+                'message': 'Unable to kill.'
+            })
+
     original_object = job_object.get_original_object()
     if original_object is None:
         return JsonResponse({
@@ -5000,6 +5023,18 @@ def get_job_kill(request, slug=None):
             'message': 'Unable to kill.'
         })
 
+
+def killing_for_robo(slug):
+    try:
+        original_object = Robo.objects.get(slug=slug)
+        original_object.deleted = True
+        original_object.save()
+        original_object.customer_dataset.job.kill()
+        original_object.historical_dataset.job.kill()
+        original_object.market_dataset.job.kill()
+        return True
+    except:
+        return False
 
 @api_view(['GET'])
 def get_job_refreshed(request, slug=None):
@@ -5040,6 +5075,8 @@ def set_messages(request, slug=None):
     return_data = request.GET.get('data', None)
     data = request.body
     data = json.loads(data)
+    if 'stageName' not in data:
+        return JsonResponse({'message': "Failed"})
     from api.redis_access import AccessFeedbackMessage
     ac = AccessFeedbackMessage()
     data = ac.append_using_key(slug, data)
@@ -5165,7 +5202,7 @@ def get_stockdatasetfiles(request, slug=None):
     stockDataType = request.GET.get('stockDataType')
     stockName = request.GET.get('stockName')
 
-    return return_json_data(stockDataType, stockName, slug)
+    return return_crawled_json_data(stockDataType, stockName, slug)
 
 
 def return_json_data(stockDataType, stockName, slug):
@@ -5173,15 +5210,16 @@ def return_json_data(stockDataType, stockName, slug):
     base_path = os.path.dirname(os.path.dirname(__file__))
     base_path = base_path + "/scripts/data/{0}/".format(slug)
     matching = {
-        "bluemix": stockDataType + "_" + stockName + ".json",
-        "historical": stockDataType + "_" + stockName + ".json",
-        "concepts": "old_concepts.json"
+        # "bluemix": stockDataType + "_" + stockName + ".json",
+        "bluemix": stockName + ".json",
+        "historical":  stockName + "_" + "historic" + ".json",
+        "concepts": "concepts.json"
     }
 
     if stockDataType in ["bluemix", "historical"]:
         path = base_path + matching[stockDataType]
     else:
-        path = base_path + "/scripts/data/" + matching[stockDataType]
+        path = base_path + matching[stockDataType]
     temp_path = base_path + matching[stockDataType]
 
     from django.http import HttpResponse
@@ -5191,6 +5229,28 @@ def return_json_data(stockDataType, stockName, slug):
     response['Content-Disposition'] = 'attachment; filename="{0}.json"'.format(path)
 
     return response
+
+
+def return_crawled_json_data(stockDataType, stockName, slug):
+    sdd = StockDataset.objects.get(slug=slug)
+    matching = {
+        "bluemix": stockName,
+        "historical":  stockName + "_" + "historic",
+        "concepts": "concepts"
+    }
+    crawled_data = json.loads(sdd.crawled_data)
+    # import pdb;pdb.set_trace()
+    from django.http import HttpResponse
+    if stockDataType in ["bluemix", "historical"]:
+        file_content = json.dumps(crawled_data[stockName][matching[stockDataType]])
+    else:
+        file_content = json.dumps(crawled_data[matching[stockDataType]])
+
+    response = HttpResponse(file_content, content_type='application/json')
+    response['Content-Disposition'] = 'attachment; filename="{0}.json"'.format(matching[stockDataType] )
+
+    return response
+
 
 
 def return_xml_data(xml_data_str, algoname):
@@ -5381,7 +5441,7 @@ def updateFromNifi(request):
     hive_username=hive_info['username']
     hive_password=hive_info['password']
     schema=request.data["category"]
-    table_name=request.data["feed"]+'_feed'
+    table_name=request.data["feed"]+'_valid'
     feed=request.data['feed']
 
     dataSourceDetails = {

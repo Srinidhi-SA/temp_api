@@ -1,11 +1,21 @@
 """
 Usage
         fab <function_name>:[arg,arg1=val1]
-        e.g. fab deploy_api:branch=master
+        e.g. fab deploy_api:branch=dev
         e.g. fab deploy_api:branch=leia
+        e.g. fab deploy_api:branch=luke
+        e.g. fab deploy_api:branch=dev_9015
+        e.g. fab deploy_api:branch=cwpoc
 
-        e.g. fab deploy_react:branch=master
+        e.g. fab deploy_react:branch=dev
         e.g. fab deploy_react:branch=leia
+        e.g. fab deploy_react:branch=luke
+        e.g. fab deploy_react:branch=dev_9015
+        e.g. fab deploy_react:branch=cwpoc
+
+        e.g. fab deploy_api_and_migrate:branch=dev
+        e.g. fab deploy_api_and_migrate:branch=leia
+        e.g. fab deploy_api_and_migrate:branch=luke
 
 List
         fab -list
@@ -171,8 +181,6 @@ def do_npm_run(branch, react_path):
             local("npm run buildLeia")
         elif "cwpoc" == branch:
             local("npm run buildCwpoc")
-        elif "staging2" == branch:
-            local("npm run buildStaging2")
 
 def deploy_dist_to_destination(base_remote_path, react_path):
     import random
@@ -285,10 +293,7 @@ def pull_api_at_remote(base_remote_path, api_branch):
 
 
 def only_for_api_push_and_pull(server_details, path_details):
-    if path_details['api_branch'] == 'master':
-        pass
-    else:
-        push_api_to_remote(path_details['api_branch'])
+    push_api_to_remote(path_details['api_branch'])
     pull_api_at_remote(
         path_details['base_remote_path'],
         path_details['api_branch']
@@ -616,54 +621,6 @@ def configuration_details():
                 'gunicorn_bind': "0.0.0.0:9016"
             },
             'deployment_config': 'cwpoc'
-        },
-        'staging2': {
-            'server_details': {
-                "known name": "webinar.marlabsai.com",
-                "username": "ubuntu",
-                "host": "34.196.22.246",
-                "port": "9017",
-                "initail_domain": "/api",
-                'pem_detail': "/config/keyfiles/TIAA.pem"
-            },
-            'path_details': {
-                "react_path": "/static/react",
-                "asset_path": "/static/asset",
-                "base_remote_path": "/home/ubuntu/codebase/mAdvisor-api_staging",
-                "ui_branch": "staging2",
-                "api_branch": "staging2"
-            },
-            'type': 'staging2',
-            'gunicorn_details': {
-                'gunicorn_wsgi_app': 'config.wsgi:application',
-                'gunicorn_pidpath': "/gunicorn.pid",
-                'gunicorn_bind': "0.0.0.0:9017"
-            },
-            'deployment_config': 'staging2'
-        },
-        'master': {
-            'server_details': {
-                "known name": "madvisor.marlabsai.com",
-                "username": "ubuntu",
-                "host": "34.196.22.246",
-                "port": "9017",
-                "initail_domain": "/api",
-                'pem_detail': "/config/keyfiles/TIAA.pem"
-            },
-            'path_details': {
-                "react_path": "/static/react",
-                "asset_path": "/static/asset",
-                "base_remote_path": "/home/ubuntu/codebase/mAdvisor-api_staging",
-                "ui_branch": "master",
-                "api_branch": "master"
-            },
-            'type': 'master',
-            'gunicorn_details': {
-                'gunicorn_wsgi_app': 'config.wsgi:application',
-                'gunicorn_pidpath': "/gunicorn.pid",
-                'gunicorn_bind': "0.0.0.0:9017"
-            },
-            'deployment_config': 'master'
         },
     }
 

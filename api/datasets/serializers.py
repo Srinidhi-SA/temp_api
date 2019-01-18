@@ -43,7 +43,7 @@ class DatasetSerializer(serializers.ModelSerializer):
         ret = super(DatasetSerializer, self).to_representation(instance)
         ret = convert_to_json(ret)
         ret = convert_time_to_human(ret)
-        ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        ret['created_by'] = UserSerializer(instance.created_by).data
 
         try:
             ret['message'] = get_message(instance.job)

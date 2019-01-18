@@ -799,7 +799,10 @@ def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
         if x["dateSuggestionFlag"] == True:
             x.update({"selected": False})
         else:
-            x.update({"selected": True})
+            if x["columnType"] == "datetime":
+                x.update({"selected": False})
+            else:
+                x.update({"selected": True})
         validcols1.append(x)
     validcols = validcols1
     transformSetting = transformation_settings["existingColumns"]
@@ -834,7 +837,8 @@ def add_variable_selection_to_metadata(columnDataUI,transformation_settings):
     for obj in validcols:
         if selctedDateSuggestedCol != None:
             if obj["slug"]==selctedDateSuggestedCol:
-                obj.update({"selected":True})
+                # obj.update({"selected":True})
+                obj.update({"selected":False})
         uidFilter = filter(lambda x:x["slug"] == obj["slug"],uidcols)
         if len(uidFilter) > 0:
             obj.update({"uidCol": True})

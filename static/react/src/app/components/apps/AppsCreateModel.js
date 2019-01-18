@@ -93,7 +93,10 @@ export class AppsCreateModel extends React.Component {
 				<div className={cls} onClick={this.openModelPopup.bind(this)}>
 				<div class="card-header"></div>
 				<div class="card-center newStoryCard">
-				<div class="col-xs-12 text-center">+<br/><small>CREATE MODEL</small></div>
+				
+				<div class="col-xs-3 col-xs-offset-2 xs-pr-0"><i class="fa fa-file-text-o fa-4x"></i></div>
+				<div class="col-xs-6 xs-m-0 xs-pl-0"><small>Create Model</small></div>
+				
 				</div>
 				</div>
 

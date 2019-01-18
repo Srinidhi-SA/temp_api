@@ -31,16 +31,17 @@ export class D3ParallelChartt extends React.Component {
     var that = this;
     var blue_to_brown = d3.scale.linear()
   .domain([9, 50])
-  .range(["steelblue", "brown"])
+  .range(["#FCAA34", "#7AC143"])
   .interpolate(d3.interpolateLab);
 
 var color = function(d) { return blue_to_brown(d['Accuracy']); };
 var data = this.props.data;
 var hiddennames = this.props.hideaxes;
-var parcoords = d3.parcoords()("#"+this.state.chartId)
+var parcoords = d3.parcoords()("#"+this.state.chartId).color(color)
 .data(data)
     .hideAxis(hiddennames)
     .render()
+   
     .brushMode("1D-axes")
     .id(this.state.gridId);  // enable brushing
   var fromModel = !this.props.modelSummary.data.modelSelected;
@@ -86,7 +87,7 @@ var config={ignoleTableList:this.props.hideColumns,fromModel:fromModel,evaluatio
   render() {
     
     return (
-      <div>
+      <div class="geoChart">
         <div id={this.state.chartId} class="parcoords"></div>
         <div className="xs-p-10"></div>
          <Scrollbars style={{ height: 290}}>

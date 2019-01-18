@@ -71,40 +71,37 @@ export class ScoreVariableSelection extends React.Component {
         return(
                 <div className="side-body">
                 <div className="page-head">
-                <div className="row">
-                <div className="col-md-8">
                 <h3 class="xs-mt-0 text-capitalize">Variable Selection</h3>
-                </div>
-                </div>
                 <div className="clearfix"></div>
                 </div>
                 <div className="main-content">
 
                 <div className="panel panel-default box-shadow">
                 <div className="panel-body">
-                <Form onSubmit={this.createScore.bind(this)}>
+                <Form onSubmit={this.createScore.bind(this)} className="form-horizontal">
                 <FormGroup role="form">
-                <div className="row">
+                
 
-                <div className="form-group">
-                <div className="col-lg-2"><label>I want to analyse</label></div>
+                
+                <label className="control-label cst-fSize">I want to analyse</label>
                 <div className="col-lg-4"> {renderSelectBox}</div>
-                </div>
+                
                  {/*<!-- /.col-lg-4 -->*/}
-                </div>
-
+                 </FormGroup>
+				 
+				<FormGroup role="form">
                 <DataVariableSelection match={this.props.match}/>
-
-                <div className="row">
-                <div className="col-lg-12 text-right">
-				  <div className="form-inline">
-                <input type="text" name="createScoreName" required={true} id="createScoreName" className="form-control" placeholder="Create Score Name" />
-				&nbsp;&nbsp;  <Button type="submit" bsStyle="primary">SCORE MODEL</Button>
-                    </div>
-
-                </div>
-                </div>
+				</FormGroup>
+				
+				<FormGroup role="form">
+				<div className="col-lg-5 col-lg-offset-7">
+				<div class="input-group xs-mb-15">
+                        <input type="text" name="createScoreName" required={true} id="createScoreName" className="form-control" placeholder="Create Score Name"/><span class="input-group-btn">
+                          <button type="submit" class="btn btn-primary">Score Model</button></span>
+                 </div>
+				</div>
                 </FormGroup>
+				
                 </Form>
                 </div>
                 </div>

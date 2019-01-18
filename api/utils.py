@@ -52,7 +52,7 @@ def submit_job_through_yarn(slug, class_name, job_config, job_name=None, message
                              "--py-files", egg_file_path, driver_file,
                              json.dumps(config)]
         '''
-        command_array = ["spark-submit", "--py-files", egg_file_path,
+        command_array = ["spark-submit", "--master", "yarn", "--py-files", egg_file_path,
                              driver_file,
                              json.dumps(config)]
 
@@ -144,7 +144,7 @@ def convert_to_string(data):
 
 
 def convert_to_json(data):
-    keys = ['compare_type', 'column_data_raw', 'config', 'data', 'model_data', 'meta_data']
+    keys = ['compare_type', 'column_data_raw', 'config', 'data', 'model_data', 'meta_data', 'crawled_data']
 
     for key in keys:
         if key in data:
@@ -170,6 +170,13 @@ def convert_time_to_human(data):
     return data
 
 
+def update_name_in_json_data(ret):
+    if 'data' in ret:
+        if 'name' in ret['data']:
+            ret['data']['name'] = ret['name']
+    return ret
+
+
 # TODO: use dataserializer
 class InsightSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
@@ -177,10 +184,12 @@ class InsightSerializer(serializers.ModelSerializer):
         ret = super(InsightSerializer, self).to_representation(instance)
         dataset = ret['dataset']
         dataset_object = Dataset.objects.get(pk=dataset)
+        # dataset_object = instance.dataset
         ret['dataset'] = dataset_object.slug
         ret['dataset_name'] = dataset_object.name
         ret = convert_to_json(ret)
         ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        # ret['created_by'] = UserSerializer(instance.created_by).data
         if instance.viewed == False and instance.status=='SUCCESS':
             instance.viewed = True
             instance.save()
@@ -212,6 +221,7 @@ class InsightSerializer(serializers.ModelSerializer):
             model=self.Meta.model.__name__.lower(),
         )
         ret['permission_details'] = permission_details
+        ret = update_name_in_json_data(ret)
         return ret
 
     def update(self, instance, validated_data):
@@ -239,11 +249,13 @@ class InsightListSerializers(serializers.ModelSerializer):
         get_job_status(instance)
         ret = super(InsightListSerializers, self).to_representation(instance)
         dataset = ret['dataset']
-        dataset_object = Dataset.objects.get(pk=dataset)
+        # dataset_object = Dataset.objects.get(pk=dataset)
+        dataset_object = instance.dataset
         ret['dataset'] = dataset_object.slug
         ret['dataset_name'] = dataset_object.name
         ret = convert_to_json(ret)
-        ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        # ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        ret['created_by'] = UserSerializer(instance.created_by).data
         ret['brief_info'] = instance.get_brief_info()
 
         # ret['is_viewed'] = False
@@ -320,6 +332,7 @@ class TrainerSerlializer(serializers.ModelSerializer):
             model=self.Meta.model.__name__.lower(),
         )
         ret['permission_details'] = permission_details
+        ret = update_name_in_json_data(ret)
         return ret
 
     def update(self, instance, validated_data):
@@ -348,11 +361,11 @@ class TrainerListSerializer(serializers.ModelSerializer):
         get_job_status(instance)
         ret = super(TrainerListSerializer, self).to_representation(instance)
         dataset = ret['dataset']
-        dataset_object = Dataset.objects.get(pk=dataset)
+        dataset_object = instance.dataset
         ret['dataset'] = dataset_object.slug
         ret['dataset_name'] = dataset_object.name
         ret = convert_to_json(ret)
-        ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        ret['created_by'] = UserSerializer(instance.created_by).data
         ret['brief_info'] = instance.get_brief_info()
         try:
             ret['completed_percentage']=get_message(instance.job)[-1]['globalCompletionPercentage']
@@ -425,6 +438,7 @@ class ScoreSerlializer(serializers.ModelSerializer):
             model=self.Meta.model.__name__.lower(),
         )
         ret['permission_details'] = permission_details
+        ret = update_name_in_json_data(ret)
         return ret
 
     def update(self, instance, validated_data):
@@ -451,13 +465,13 @@ class ScoreListSerializer(serializers.ModelSerializer):
         get_job_status(instance)
         ret = super(ScoreListSerializer, self).to_representation(instance)
         trainer = ret['trainer']
-        trainer_object = Trainer.objects.get(pk=trainer)
+        trainer_object = instance.trainer
         ret['trainer'] = trainer_object.slug
         ret['trainer_name'] = trainer_object.name
-        ret['dataset'] = trainer_object.dataset.slug
-        ret['dataset_name'] = trainer_object.dataset.name
+        ret['dataset'] = instance.dataset.slug
+        ret['dataset_name'] = instance.dataset.name
         ret = convert_to_json(ret)
-        ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
+        ret['created_by'] = UserSerializer(instance.created_by).data
         ret['brief_info'] = instance.get_brief_info()
         try:
             ret['completed_percentage']=get_message(instance.job)[-1]['globalCompletionPercentage']
@@ -517,7 +531,7 @@ class RoboSerializer(serializers.ModelSerializer):
 
         market_dataset_object = Dataset.objects.get(pk=ret['market_dataset'])
         ret['market_dataset'] = DatasetSerializer(market_dataset_object).data
-
+        ret['brief_info'] = instance.get_brief_info()
         if instance.dataset_analysis_done is False:
             if customer_dataset_object.analysis_done and \
                 historical_dataset_object.analysis_done and \
@@ -528,15 +542,6 @@ class RoboSerializer(serializers.ModelSerializer):
 
         if instance.robo_analysis_done and instance.dataset_analysis_done:
             instance.analysis_done = True
-
-            if 'FAILED' in [
-                customer_dataset_object.status,
-                historical_dataset_object.status,
-                market_dataset_object.status
-                ]:
-                instance.status = 'FAILED'
-            else:
-                instance.status = "SUCCESS"
             instance.status = "SUCCESS"
             instance.save()
 
@@ -555,7 +560,7 @@ class RoboSerializer(serializers.ModelSerializer):
         #     ret['message'] = message_list
         # except:
         #     ret['message'] = None
-
+        ret = update_name_in_json_data(ret)
         return ret
 
 
@@ -577,12 +582,14 @@ class RoboListSerializer(serializers.ModelSerializer):
         ret['dataset_name'] = market_dataset_object.name + ", " +\
                               customer_dataset_object.name + ", " + \
                               historical_dataset_object.name
+        ret['brief_info'] = instance.get_brief_info()
 
         if instance.analysis_done is False:
             if customer_dataset_object.analysis_done and \
                 historical_dataset_object.analysis_done and \
                     market_dataset_object.analysis_done:
                 instance.analysis_done = True
+                instance.status = "SUCCESS"
                 instance.save()
 
         ret = convert_to_json(ret)
@@ -625,7 +632,7 @@ class StockDatasetSerializer(serializers.ModelSerializer):
         return instance
 
     def to_representation(self, instance):
-        print get_job_status(instance)
+        # print get_job_status(instance)
         ret = super(StockDatasetSerializer, self).to_representation(instance)
         ret = convert_to_json(ret)
         ret = convert_time_to_human(ret)
@@ -642,14 +649,19 @@ class StockDatasetSerializer(serializers.ModelSerializer):
         # except:
         #     ret['message'] = None
 
+        if ret['meta_data'] == dict():
+            ret['meta_data_status'] = "INPROGRESS"
+        else:
+            ret['meta_data_status'] = "SUCCESS"
+
         if 'request' in self.context:
             # permission details
             permission_details = get_permissions(
                 user=self.context['request'].user,
-                model=Dataset.__name__.lower(),
+                model=StockDataset.__name__.lower(),
             )
             ret['permission_details'] = permission_details
-
+        ret = update_name_in_json_data(ret)
         return ret
 
     class Meta:
@@ -668,7 +680,15 @@ class StockDatasetListSerializer(serializers.ModelSerializer):
         except:
             ret['completed_percentage'] = 0
             ret['completed_message']="Analyzing Target Variable"
+
+        permission_details = get_permissions(
+            user=self.context['request'].user,
+            model=self.Meta.model.__name__.lower(),
+        )
+        ret['permission_details'] = permission_details
         return ret
+
+
 
     class Meta:
         model = StockDataset
@@ -679,7 +699,9 @@ class StockDatasetListSerializer(serializers.ModelSerializer):
             "updated_at",
             "input_file",
             "bookmarked",
-            "analysis_done"
+            "analysis_done",
+            "status",
+            "viewed",
         )
 
 
@@ -723,7 +745,7 @@ class AudiosetSerializer(serializers.ModelSerializer):
             ret['message'] = message_list
         except:
             ret['message'] = None
-
+        ret = update_name_in_json_data(ret)
         return ret
 
     class Meta:
@@ -778,7 +800,7 @@ class AppListSerializers(serializers.ModelSerializer):
                 CUSTOM_WORD1_APPS = settings.CUSTOM_WORD1_APPS
                 CUSTOM_WORD2_APPS = settings.CUSTOM_WORD2_APPS
                 upper_case_name = ret['name'].upper()
-                print upper_case_name
+                # print upper_case_name
                 ret['custom_word1'] = CUSTOM_WORD1_APPS[upper_case_name]
                 ret['custom_word2'] = CUSTOM_WORD2_APPS[upper_case_name]
             try:
@@ -801,7 +823,7 @@ class AppListSerializers(serializers.ModelSerializer):
 
 class AppSerializer(serializers.ModelSerializer):
         def to_representation(self, instance):
-            print "in app serializers"
+            # print "in app serializers"
             ret = super(AppSerializer, self).to_representation(instance)
             ret['created_by'] = UserSerializer(User.objects.get(pk=ret['created_by'])).data
             if ret['tags'] != None:
@@ -813,14 +835,14 @@ class AppSerializer(serializers.ModelSerializer):
                     if obj['name'] in tags:
                         tag_object.append(obj)
 
-                print tag_object
+                # print tag_object
 
                 ret['tags'] = tag_object
 
             CUSTOM_WORD1_APPS = settings.CUSTOM_WORD1_APPS
             CUSTOM_WORD2_APPS = settings.CUSTOM_WORD2_APPS
             upper_case_name = ret['name'].upper()
-            print upper_case_name
+            # print upper_case_name
             ret['CUSTOM_WORD1_APPS'] = CUSTOM_WORD1_APPS[upper_case_name]
             ret['CUSTOM_WORD2_APPS'] = CUSTOM_WORD2_APPS[upper_case_name]
             if instance.viewed == False and instance.status == 'SUCCESS':
@@ -1046,6 +1068,17 @@ def get_permissions(user, model, type='retrieve'):
         if type == 'list':
             return {
                 'create_regression': user.has_perm('api.create_regression'),
+            }
+    if model == 'stockdataset':
+        if type == 'retrieve':
+            return {
+                'view_stock': user.has_perm('api.view_stock'),
+                'rename_stock': user.has_perm('api.rename_stock'),
+                'remove_stock': user.has_perm('api.remove_stock'),
+            }
+        if type == 'list':
+            return {
+                'create_stock': user.has_perm('api.create_stock') and user.has_perm('api.view_stock'),
             }
     return {}
 

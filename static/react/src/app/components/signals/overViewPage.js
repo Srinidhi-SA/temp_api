@@ -21,6 +21,7 @@ import Slider from "react-slick";
 import {getRoboDataset, getStockAnalysis,getAppsScoreSummary,getScoreSummaryInCSV,uploadStockAnalysisFlag} from "../../actions/appActions";
 import {hideDataPreview} from "../../actions/dataActions";
 import {Button} from "react-bootstrap";
+import {AppsStockDataPreview} from "../apps/AppsStockDataPreview";
 
 //import {SignalAnalysisPage} from "./signals/SignalAnalysisPage";
 //let showSubTree=false;
@@ -35,7 +36,11 @@ export class OverViewPage extends React.Component {
     super(props);
     this.nextRedirect = null;
     this.showSubTree = false;
-    this.l1Name = ""
+    this.l1Name = "";
+    this.state={
+      showStockSenceDataPreview:false,
+      loading:true
+    }
 
   }
 
@@ -83,6 +88,9 @@ export class OverViewPage extends React.Component {
     //   $('.sdbar_switch i').removeClass('sw_on');
     //   $('.sdbar_switch i').addClass('sw_off');
     // }
+    setTimeout(() => {
+          this.setState({ loading: false });
+           }, 0);
 
   }
   componentDidUpdate(){
@@ -159,7 +167,9 @@ export class OverViewPage extends React.Component {
   //     that.refs.slider.slickGoTo(index-5);
   //   });
   // }
-
+  showStockSenceDataPreview(){
+    this.setState({showStockSenceDataPreview:!this.state.showStockSenceDataPreview})
+  }
   closeDocumentMode() {
     console.log("closing card mode")
     this.props.dispatch(hideDataPreview());
@@ -206,7 +216,13 @@ export class OverViewPage extends React.Component {
       slidesToScroll: 1
       //swipeToSlide: true
     };
-
+     const { loading } = this.state;
+     if(loading && isEmpty(this.props.signal)) { // if your component doesn't have to wait for an async action, remove this block 
+        return (
+            <img id="loading" src={STATIC_URL + "assets/images/Preloader_2.gif"}/>
+        );
+    }
+    else{
     if (isEmpty(this.props.signal)) {
 
       return (
@@ -238,11 +254,14 @@ export class OverViewPage extends React.Component {
       );
     } else {
 
-      let regression_app=false
+      let regression_app=false;
+      let stock_sense_app = false;
       if(that.urlPrefix.indexOf("apps-regression") != -1)
-      regression_app=true
+      regression_app=true;
+      if(that.urlPrefix.indexOf("/apps-stock-advisor") != -1)
+      stock_sense_app=true;
       //check for l1 of regression  scoreSummary
-      if (regression_app&&!this.props.match.params.l1) {
+      if ((regression_app || stock_sense_app) && !this.props.match.params.l1) {
         var url=that.urlPrefix+"/"+this.props.match.params.slug+"/"+this.props.signal.listOfNodes[0].slug
         //this.props.history.push(url)
         return(<Redirect to ={url}/>)
@@ -353,22 +372,26 @@ export class OverViewPage extends React.Component {
       }
       //console.log("selectedNode_slug is: " + selectedNode_slug);
       selectedNode = fetchNodeFromTree(selectedNode_slug, this.props.signal);
+      if(selectedNode.listOfCards.length!=1)
+      {
+      $("#sticky-container").removeClass("hidden");
       cardList = selectedNode.listOfCards.map((card, i) => {
         let selectedLink = selectedURL + "/" + card.slug;
         return (
-          <NavLink to={selectedLink} key={i} className="list-group-item" title={card.name}>
+          <li><NavLink to={selectedLink} key={i} className="list-group-item" title={card.name}>
             <i className="fa fa-bar-chart"></i>
             <span>{card.name}</span>
-          </NavLink>
+          </NavLink></li>
         )
       });
+    }
       let documentModeLink = "";
       if (that.urlPrefix.indexOf("signals") != -1) {
         documentModeLink = "/signaldocumentMode/" + this.props.match.params.slug;
       } else if (that.urlPrefix.indexOf("stock") != -1) {
-        documentModeLink = "/apps-stock-advisor"
+        documentModeLink = "/apps-stock-document-mode/"+this.props.match.params.slug;
       } else if (regression_app) {
-        documentModeLink = "/apps-regression-score-document/"+this.props.match.params.slug
+        documentModeLink = "/apps-regression-score-document/"+this.props.match.params.slug;
       }
       else {
         documentModeLink = "/apps-robo-document-mode/" + this.props.match.params.slug;
@@ -397,7 +420,7 @@ export class OverViewPage extends React.Component {
             prevURL = that.urlPrefix + "/" + this.props.match.params.slug;
           }
         }else {
-          if(!regression_app)
+          if(!regression_app && !stock_sense_app)
           prevURL = that.urlPrefix;
         }
       }
@@ -444,7 +467,20 @@ export class OverViewPage extends React.Component {
       }
       return (
         <div>
-          <div className="side-body">
+          {this.state.showStockSenceDataPreview?
+          <AppsStockDataPreview  history={this.props.history} match={this.props.match} showPreview={true} updatePreviewState={this.showStockSenceDataPreview.bind(this)}/>
+          
+          :
+		  
+		  <div className="side-body">		 
+			<div class="sticky-container hidden" id="sticky-container">			 
+				<div class="btn-group">
+				  <button type="button" data-toggle="dropdown" class="btn btn-primary btn-round" title="List of Analysis"><i class="fa fa-list-ul"></i></button>
+				  <ul role="menu" class="dropdown-menu">
+					{cardList}
+				  </ul>
+				</div>
+			</div>		
             {/* Page Title and Breadcrumbs */}
             <div className="page-head ">
               <div class="row">
@@ -475,14 +511,14 @@ export class OverViewPage extends React.Component {
 
               <div className="row">
                 <div className="col-md-12">
-                  <div className="panel panel-mAd box-shadow">
-                    <div className="panel-heading">
-
-                      <h3 className="xs-mt-0">{storyName}
+					<h3 className="xs-mt-0 xs-mb-0"> {storyName}
 
                         <div className="btn-toolbar pull-right">
                           <div className="btn-group">
                             {/*<button type="button" className="btn btn-default" disabled="true" title="Card mode"><i className="fa fa-print"></i></button>*/}
+                            {(this.props.match.url.indexOf('/apps-stock-advisor') >= 0) ?<button type="button" className="btn btn-default" onClick={this.showStockSenceDataPreview.bind(this)} title="Show Data Preview">
+                              <i class="zmdi zmdi-hc-lg zmdi-grid"></i>
+                            </button>:""}
                             <button type="button" className="btn btn-default" disabled="true" title="Card mode">
                               <i class="zmdi zmdi-hc-lg zmdi-view-carousel"></i>
                             </button>
@@ -506,6 +542,12 @@ export class OverViewPage extends React.Component {
 					  </h3>
 
                       <div className="clearfix"></div>
+				
+                  <div className="panel panel-mAd box-shadow">
+				  
+                    <div className="panel-heading">
+
+                      
                     </div>
 
                     <div className="panel-body no-border">
@@ -516,26 +558,26 @@ export class OverViewPage extends React.Component {
                         {/* Tab panes */}
                         <div className="tab-content">
                           <div className="sb_navigation">
-                            <div className="row">
-                              <div className="col-xs-12" id="subTab">
+                           
+                              <div id="subTab">
                                 <Slider ref='slider' {...settings}>{varList}</Slider>
                               </div>
 
                               <div className="clearfix"></div>
-                            </div>
+                          
 
                           </div>
 
                           <div className="content_scroll container-fluid">
-                            <div className="row row-offcanvas row-offcanvas-left">
+                            <div className="row">
 
                               {/*/span*/}
-                              <div className="col-xs-12 col-sm-9 content ov_card_boxes">
+                              <div className="col-xs-12 content ov_card_boxes">
                                 <Card cardData={card.cardData} cardWidth={card.cardWidth}/>
                               </div>
-                              {/*/span*/}
+                              {/*/span
 
-                              <div className="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
+                              
                                 <div className="side_panel">
                                   <a href="javascript:void(0);" onClick={this.toggleSideList.bind(this)} data-toggle="offcanvas" className="sdbar_switch">
                                     <i className="mAd_icons sw_on" onClick={this.setSideListFlag.bind(this)}></i>
@@ -555,8 +597,8 @@ export class OverViewPage extends React.Component {
                                       </div>
                                     </div>
                                   </div>
-                                </div>
-                              </div>
+                                </div> */}
+                               
                               <div className="clearfix"></div>
                             </div>
                             {/*/row*/}
@@ -593,8 +635,10 @@ export class OverViewPage extends React.Component {
             {/* /.Page Content Area */}
 
           </div>
+          }
         </div>
       );
     }
+  }
   }
 }

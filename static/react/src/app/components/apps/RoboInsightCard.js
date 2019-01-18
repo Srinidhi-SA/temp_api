@@ -13,13 +13,13 @@ import {
   OverlayTrigger,
   Popover
 } from "react-bootstrap";
-import {getAppsRoboList, getRoboDataset, handleInsightDelete, handleInsightRename, storeRoboSearchElement,clearRoboSummary,storeRoboSortElements} from "../../actions/appActions";
+import {getAppsRoboList, getRoboDataset, handleInsightDelete, handleInsightRename, storeRoboSearchElement,clearRoboSummary,storeRoboSortElements,openAppsLoader,roboDataUploadFilesSuccessAnalysis} from "../../actions/appActions";
 import {DetailOverlay} from "../common/DetailOverlay";
 import {STATIC_URL} from "../../helpers/env.js";
 import {RoboDataUpload} from "./RoboDataUpload";
 import {AppsLoader} from "../common/AppsLoader";
 import Dialog from 'react-bootstrap-dialog'
-import {SEARCHCHARLIMIT,getUserDetailsOrRestart} from "../../helpers/helper"
+import {SEARCHCHARLIMIT,getUserDetailsOrRestart,SUCCESS,INPROGRESS} from "../../helpers/helper"
 
 var dateFormat = require('dateformat');
 
@@ -54,6 +54,10 @@ export class RoboInsightCard extends React.Component {
   handleInsightDelete(slug) {
     this.props.dispatch(handleInsightDelete(slug, this.dialog))
   }
+  openDataLoaderScreen(data){
+    this.props.dispatch(openAppsLoader(data.completed_percentage,data.completed_message));
+    this.props.dispatch(roboDataUploadFilesSuccessAnalysis(data));
+  }
 
   render() {
       const roboList = this.props.data;
@@ -61,6 +65,15 @@ export class RoboInsightCard extends React.Component {
 
       const appsRoboList = roboList.map((data, i) => {
         var modelLink = "/apps-robo-list/" + data.slug+"/customer/data/"+data.customer_dataset;
+        var modelLink1 = <Link id={data.slug} onClick={this.getInsightPreview.bind(this, data.slug)} to={modelLink}>{data.name}</Link>
+        var percentageDetails = "";
+        if(data.status == INPROGRESS){
+          percentageDetails =   <div class=""><i className="fa fa-circle inProgressIcon"></i><span class="inProgressIconText">{data.completed_percentage > 0 ?data.completed_percentage+' %':"In Progress"}</span></div>;
+          modelLink1 = <a class="cursor" onClick={this.openDataLoaderScreen.bind(this,data)}> {data.name}</a>;
+        }else if(data.status == SUCCESS && !data.viewed){
+          data.completed_percentage = 100;
+          percentageDetails =   <div class=""><i className="fa fa-check completedIcon"></i><span class="inProgressIconText">{data.completed_percentage}&nbsp;%</span></div>;
+        }
         return (
           <div className="col-md-3 top20 list-boxes" key={i}>
             <div className="rep_block newCardStyle" name={data.name}>
@@ -70,39 +83,25 @@ export class RoboInsightCard extends React.Component {
                 
                   <div className="col-xs-12">
                     <h5 className="title newCardTitle pull-left">
-                        <Link id={data.slug} onClick={this.getInsightPreview.bind(this, data.slug)} to={modelLink}>{data.name}</Link>
+                       {modelLink1}
                     </h5>
-                    <div class="btn-toolbar pull-right">
-                {/*<!-- Rename and Delete BLock  -->*/}
-                  <a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
-                    <i className="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
-                  </a>
-                  <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                    <li onClick={this.handleInsightRename.bind(this, data.slug, data.name)}>
-                      <a className="dropdown-item" href="#renameCard" data-toggle="modal">
-                        <i className="fa fa-edit"></i>
-                        &nbsp;&nbsp;Rename</a>
-                    </li>
-                    <li onClick={this.handleInsightDelete.bind(this, data.slug)}>
-                      <a className="dropdown-item" href="#deleteCard" data-toggle="modal">
-                        <i className="fa fa-trash-o"></i>
-                       &nbsp;&nbsp; Delete</a>
-                    </li>
-                  </ul>
-                  {/*<!-- End Rename and Delete BLock  -->*/}
-                    </div>
+					
+					<div className="pull-right"><img src={STATIC_URL + "assets/images/apps_model_icon.png"} alt="LOADING"/></div>
+					<div className="clearfix"></div>
+					
+                    
                     
                     <div className="clearfix"></div>
-             
+                     {percentageDetails}
                     
-                     {/*<!-- Popover Content link -->*/}
+                     {/*<!-- Popover Content link -->
                   <OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={data}/> </Popover>}>
                     <a className="pover cursor">
                     <div class="card_icon">
                       <img src={STATIC_URL + "assets/images/apps_model_icon.png"} alt="LOADING"/>
                     </div>
                     </a>
-                  </OverlayTrigger>
+                  </OverlayTrigger>*/}
                     
                   </div>
                 </div>
@@ -111,7 +110,36 @@ export class RoboInsightCard extends React.Component {
                 <div className="left_div">
                   <span className="footerTitle"></span>{getUserDetailsOrRestart.get().userName}
                   <span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy HH:MM")}</span>
-                </div>                 
+                </div>
+				
+				<div class="btn-toolbar pull-right">
+                {/*<!-- Rename and Delete BLock  -->*/}
+                  <a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
+                    <i className="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
+                  </a>
+                  <ul className="dropdown-menu dropdown-menu-right drp_cst_width" aria-labelledby="dropdownMenuButton">
+                    
+					<li className="xs-pl-20 xs-pr-20 xs-pt-10 xs-pb-10"><DetailOverlay details={data}/> </li>
+					<li className="xs-pl-20 xs-pr-20 xs-pb-10">
+						
+					<span onClick={this.handleInsightRename.bind(this, data.slug, data.name)}>
+                      <a className="dropdown-item btn-primary" href="#renameCard" data-toggle="modal">
+                        <i className="fa fa-edit"></i>
+                        &nbsp;&nbsp;Rename</a>
+                    </span>
+                    <span onClick={this.handleInsightDelete.bind(this, data.slug)}>
+                      <a className="dropdown-item btn-primary" href="#deleteCard" data-toggle="modal">
+                        <i className="fa fa-trash-o"></i>&nbsp;&nbsp;{data.status == "INPROGRESS"
+                                ? "Stop and Delete "
+                                : "Delete"}</a>
+                    </span>
+						 <div className="clearfix"></div>
+					</li>					
+                  </ul>
+                  {/*<!-- End Rename and Delete BLock  -->*/}
+                    </div>
+				
+				
               </div>
                <Dialog ref={(el) => { this.dialog = el }} />
 

@@ -1,6 +1,7 @@
 import {API, EMR, STATIC_URL} from "../helpers/env";
 import {PERPAGE, isEmpty, getUserDetailsOrRestart, APPSPERPAGE,statusMessages} from "../helpers/helper";
 import store from "../store";
+import Notifications, {notify} from 'react-notify-toast';
 import {
   APPSLOADERPERVALUE,
   LOADERMAXPERVALUE,
@@ -19,7 +20,9 @@ import {
   FAILED,
   DELETEAUDIO,
   RENAMEAUDIO,
-  INPROGRESS
+  INPROGRESS,
+  DELETESTOCKMODEL,
+  RENAMESTOCKMODEL
 } from "../helpers/helper";
 import {hideDataPreview, getStockDataSetPreview, showDataPreview, getDataSetPreview} from "./dataActions";
 import {getHeaderWithoutContent} from "./dataUploadActions";
@@ -50,13 +53,14 @@ export function refreshAppsModelList(props) {
   return (dispatch) => {
     if(refreshAppsModelInterval != null)
     clearInterval(refreshAppsModelInterval);
-    refreshAppsModelInterval = setInterval(function() {
-      var pageNo = window.location.href.split("=")[1];
-      if (pageNo == undefined)
+    refreshAppsModelInterval = setInterval(function() 
+    {
+      var pageNo = window.location.href.split("=").pop();
+      if (pageNo == undefined || isNaN(parseInt(pageNo)))
         pageNo = 1;
       if (window.location.pathname == "/"+store.getState().apps.currentAppDetails.app_url)
         dispatch(getAppsModelList(parseInt(pageNo)));
-      }
+    }
     , APPSDEFAULTINTERVAL);
   }
 }
@@ -218,8 +222,8 @@ export function refreshAppsScoreList(props) {
     if(refreshAppsScoresInterval != null)
     clearInterval(refreshAppsScoresInterval);
     refreshAppsScoresInterval = setInterval(function() {
-      var pageNo = window.location.href.split("=")[1];
-      if (pageNo == undefined)
+      var pageNo = window.location.href.split("=").pop();
+      if (pageNo == undefined || isNaN(parseInt(pageNo)))
         pageNo = 1;
       if (window.location.pathname == "/apps/" + store.getState().apps.currentAppDetails.slug + "/scores")
         dispatch(getAppsScoreList(parseInt(pageNo)));
@@ -291,7 +295,17 @@ export function getAppsModelSummary(slug,fromCreateModel) {
   return (dispatch) => {
     return fetchModelSummary(getUserDetailsOrRestart.get().userToken, slug).then(([response, json]) => {
       if (response.status === 200) {
-        if (json.status == SUCCESS) {
+
+          if(json.message && json.message == "failed")
+          {
+            let myColor = { background: '#00998c', text: "#FFFFFF" };
+            notify.show("You are not authorized to view this content.", "custom", 2000,myColor);
+            setTimeout(function() {
+            window.location.pathname="/signals";
+            },2000);
+          }
+
+        else if (json.status == SUCCESS) {
           clearInterval(appsInterval);
           dispatch(fetchModelSummarySuccess(json));
           dispatch(closeAppsLoaderValue());
@@ -412,7 +426,16 @@ export function getAppsScoreSummary(slug) {
   return (dispatch) => {
     return fetchScoreSummary(getUserDetailsOrRestart.get().userToken, slug).then(([response, json]) => {
       if (response.status === 200) {
-        if (json.status == SUCCESS) {
+        if(json.message && json.message == "failed")
+          {
+            let myColor = { background: '#00998c', text: "#FFFFFF" };
+            notify.show("You are not authorized to view this content.", "custom", 2000,myColor);
+            setTimeout(function() {
+            window.location.pathname="/signals";
+            },2000);
+          }
+
+        else if (json.status == SUCCESS) {
           clearInterval(appsInterval);
           dispatch(fetchScoreSummarySuccess(json));
           dispatch(updateRoboAnalysisData(json, "/apps-regression-score"));
@@ -624,10 +647,11 @@ function triggerDataUpload(token, insightName) {
 function dataUploadFilesSuccess(data, dispatch) {
   var slug = data.slug;
   appsInterval = setInterval(function() {
-    if (store.getState().apps.appsLoaderPerValue < LOADERMAXPERVALUE) {
+   /* if (store.getState().apps.appsLoaderPerValue < LOADERMAXPERVALUE) {
       dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue + APPSLOADERPERVALUE));
-    }
+    }*/
     dispatch(getRoboDataset(data.slug));
+    return {type: "ROBO_DATA_UPLOAD_SUCCESS", slug}
   }, APPSDEFAULTINTERVAL);
   return {type: "ROBO_DATA_UPLOAD_SUCCESS", slug}
 }
@@ -712,6 +736,8 @@ export function showDialogBox(slug, dialog, dispatch, title, msgText) {
           deleteInsight(slug, dialog, dispatch)
         else if (title == DELETEAUDIO)
           deleteAudio(slug, dialog, dispatch)
+        else if (title == DELETESTOCKMODEL)
+          deleteStockModel(slug, dialog, dispatch)
         else
           deleteScore(slug, dialog, dispatch)
 
@@ -784,6 +810,8 @@ function showRenameDialogBox(slug, dialog, dispatch, title, customBody) {
           renameInsight(slug, dialog, $("#idRenameInsight").val(), dispatch)
         else if (title == RENAMEAUDIO)
           renameAudio(slug, dialog, $("#idRenameAudio").val(), dispatch)
+        else if (title == RENAMESTOCKMODEL)
+          renameStockModel(slug, dialog, $("#idRenameStockModel").val(), dispatch)
         else
           renameScore(slug, dialog, $("#idRenameScore").val(), dispatch)
       })
@@ -1323,11 +1351,30 @@ export function getAppsStockList(pageNo) {
 }
 
 function fetchStockList(pageNo, token) {
-  return fetch(API + '/api/stockdataset/?page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
-    method: 'get',
-    headers: getHeader(getUserDetailsOrRestart.get().userToken)
-  }).then(response => Promise.all([response, response.json()]));
+  let search_element = store.getState().apps.stock_model_search_element;
+  let stock_apps_model_sorton = store.getState().apps.stock_apps_model_sorton;
+  let stock_apps_model_sorttype = store.getState().apps.stock_apps_model_sorttype;
+  if (stock_apps_model_sorttype == 'asc')
+    stock_apps_model_sorttype = ""
+  else if (stock_apps_model_sorttype == 'desc')
+    stock_apps_model_sorttype = "-"
 
+  if (search_element != "" && search_element != null) {
+    return fetch(API + '/api/stockdataset/?name=' + search_element + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
+      method: 'get',
+      headers: getHeader(token)
+    }).then(response => Promise.all([response, response.json()]));
+  } else if ((stock_apps_model_sorton != "" && stock_apps_model_sorton != null) && (stock_apps_model_sorttype != null)) {
+    return fetch(API + '/api/stockdataset/?sorted_by=' + stock_apps_model_sorton + '&ordering=' + stock_apps_model_sorttype + '&page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
+      method: 'get',
+      headers: getHeader(token)
+    }).then(response => Promise.all([response, response.json()]));
+  } else {
+    return fetch(API + '/api/stockdataset/?page_number=' + pageNo + '&page_size=' + PERPAGE + '', {
+      method: 'get',
+      headers: getHeader(getUserDetailsOrRestart.get().userToken)
+    }).then(response => Promise.all([response, response.json()]));
+  }
 }
 
 function fetchStockListError(json) {
@@ -1345,15 +1392,21 @@ export function crawlDataForAnalysis(url, analysisName, urlForNews) {
   var found = false;
   var stockSymbolsArray = store.getState().apps.appsStockSymbolsInputs;
   for (var i = 0; i < stockSymbolsArray.length; i++) {
-    if (stockSymbolsArray[i].value != '') {
+    if (stockSymbolsArray[i].value != '' && stockSymbolsArray[i].value.trim() != '') {
       found = true;
       break;
     }
   }
-  /*if(analysisName == ""){
-			bootbox.alert("Please enter stock analysis name.");
-		}
-		else if(url == ""){
+  if(analysisName == ""){
+    var body_msg=statusMessages("warning","Please enter stock analysis name.","small_mascot");
+    bootbox.alert(body_msg);
+    return;
+	}else if(analysisName != "" && analysisName.trim() == ""){
+    var body_msg=statusMessages("warning","Please enter valid stock analysis name.","small_mascot");
+    bootbox.alert(body_msg);
+    return;
+  }
+		/*else if(url == ""){
 			bootbox.alert("Please enter stock analysis url.");
 		}*/
   if (found) {
@@ -1371,7 +1424,8 @@ export function crawlDataForAnalysis(url, analysisName, urlForNews) {
       });
     }
   } else {
-    bootbox.alert("Please enter text/symbols to analyze stocks")
+    var body_msg=statusMessages("warning","Please enter text/symbols to analyze stocks.","small_mascot");
+    bootbox.alert(body_msg);
   }
 }
 export function updateAppsLoaderText(text) {
@@ -1379,36 +1433,14 @@ export function updateAppsLoaderText(text) {
 }
 export function crawlSuccess(json, dispatch) {
   var slug = json.slug;
+  var displayHideCancel = false;
+ // dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue + APPSLOADERPERVALUE));
   //dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+APPSLOADERPERVALUE));
-  setTimeout(function() {
-    dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue + APPSLOADERPERVALUE));
-    dispatch(updateAppsLoaderText("Fetching metadata information for news portals...."))
-  }, 10000);
-  setTimeout(function() {
-    dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue + APPSLOADERPERVALUE));
-    dispatch(updateAppsLoaderText("Extracting articles from news portals....."))
-  }, 30000);
-  setTimeout(function() {
-    dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue + APPSLOADERPERVALUE));
-    dispatch(updateAppsLoaderText("Creating dataset...."))
-  }, 40000);
-  setTimeout(function() {
-    dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue + APPSLOADERPERVALUE));
-  }, 45000);
-  setTimeout(function() {
-    dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue + APPSLOADERPERVALUE));
-  }, 50000);
-  setTimeout(function() {
-    dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue + APPSLOADERPERVALUE));
-  }, 55000);
   appsInterval = setInterval(function() {
-    dispatch(getStockDataSetPreview(slug, appsInterval))
-    if (store.getState().apps.appsLoaderPerValue + 10 < LOADERMAXPERVALUE) {
-      dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue + APPSLOADERPERVALUE));
-    }
-
-  }, 60000);
-  return {type: "STOCK_CRAWL_SUCCESS", slug}
+    dispatch(getStockDataSetPreview(slug, appsInterval));
+    return {type: "STOCK_CRAWL_SUCCESS", slug, displayHideCancel}
+  }, APPSDEFAULTINTERVAL);
+  return {type: "STOCK_CRAWL_SUCCESS", slug, displayHideCancel}
 }
 function triggerCrawlingAPI(urlForPrices, urlForNews, analysisName) {
 
@@ -1428,9 +1460,11 @@ function triggerCrawlingAPI(urlForPrices, urlForNews, analysisName) {
 }
 
 export function hideDataPreviewRightPanels() {
+  $("#tab_statistics").hide();
   $("#tab_visualizations").hide();
   $("#sub_settings").hide();
   $("#dataPreviewButton").hide();
+  $(".preview_content").css('width','100%');
 }
 export function updateUploadStockPopup(flag) {
   return {type: "UPLOAD_STOCK_MODAL", flag}
@@ -1448,7 +1482,7 @@ export function uploadStockFile(slug) {
     dispatch(openAppsLoader(APPSLOADERPERVALUE, "Preparing data for analysis... "));
     return triggerStockUpload(getUserDetailsOrRestart.get().userToken, slug).then(([response, json]) => {
       if (response.status === 200) {
-        dispatch(triggerStockAnalysis(slug));
+        dispatch(triggerStockAnalysis(slug,dispatch));
       } else {
         dispatch(closeAppsLoaderValue());
       }
@@ -1461,56 +1495,39 @@ function triggerStockUpload(token, slug) {
     headers: getHeader(token)
   }).then(response => Promise.all([response, response.json()]));
 }
-export function triggerStockAnalysis(slug) {
-  return (dispatch) => {
-    //dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue+APPSLOADERPERVALUE+7));
-    setTimeout(function() {
-      dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue + APPSLOADERPERVALUE));
-      dispatch(updateAppsLoaderText("Applying domain model for stock analysis...."))
-    }, 10000);
-    setTimeout(function() {
-      dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue + APPSLOADERPERVALUE));
-      dispatch(updateAppsLoaderText("Extracting relevant entities and keywords....."))
-    }, 20000);
-    setTimeout(function() {
-      dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue + APPSLOADERPERVALUE));
-      dispatch(updateAppsLoaderText("Tagging articles to relevant concepts ...."))
-    }, 30000);
-    setTimeout(function() {
-      dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue + APPSLOADERPERVALUE));
-      dispatch(updateAppsLoaderText("Performing sentiment analysis...."))
-    }, 40000);
-    setTimeout(function() {
-      dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue + APPSLOADERPERVALUE));
-      dispatch(updateAppsLoaderText("Identifying key events during the selected period....."))
-    }, 50000);
-    setTimeout(function() {
-      dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue + APPSLOADERPERVALUE));
-      dispatch(updateAppsLoaderText("Analyze the impact of concepts on stock performance...."))
-    }, 60000);
-    appsInterval = setInterval(function() {
-      dispatch(getStockAnalysis(slug));
-      if (store.getState().apps.appsLoaderPerValue + 10 < LOADERMAXPERVALUE) {
-        dispatch(updateAppsLoaderValue(store.getState().apps.appsLoaderPerValue + APPSLOADERPERVALUE));
-      }
-    }, 60000)
-  }
+export function triggerStockAnalysis(slug,dispatch) {
+    var displayHideCancel = true;
+     appsInterval = setInterval(function() {
+       dispatch(getStockAnalysis(slug, appsInterval));
+    return {type: "STOCK_CRAWL_SUCCESS", slug, displayHideCancel}
+  }, APPSDEFAULTINTERVAL);
+  return {type: "STOCK_CRAWL_SUCCESS", slug, displayHideCancel}
+    
 }
-export function getStockAnalysis(slug) {
+export function getStockAnalysis(slug,appsInterval) {
   return (dispatch) => {
     return fetchStockAnalysisAPI(getUserDetailsOrRestart.get().userToken, slug).then(([response, json]) => {
       if (response.status === 200) {
         if (json.status == SUCCESS) {
-          clearInterval(appsInterval);
-          dispatch(updateRoboAnalysisData(json, "/apps-stock-advisor"));
-          dispatch(uploadStockAnalysisFlag(true));
-          dispatch(closeAppsLoaderValue());
+          if(appsInterval != undefined){
+            clearInterval(appsInterval);
+            dispatch(updateRoboAnalysisData(json, "/apps-stock-advisor"));
+            dispatch(uploadStockAnalysisFlag(true));
+            dispatch(closeAppsLoaderValue());
+          }else{
+            dispatch(updateRoboAnalysisData(json, "/apps-stock-advisor"));
+            dispatch(uploadStockAnalysisFlag(true));
+          }
         } else if (json.status == FAILED) {
           bootbox.alert("Your stock analysis could not created.Please try later.", function(result) {
             window.history.go(-2);
           });
           clearInterval(appsInterval);
           dispatch(closeAppsLoaderValue());
+        }else if(json.status == "INPROGRESS"){
+          if (json.message && json.message !== null && json.message.length > 0) {
+              dispatch(openAppsLoaderValue(json.message[0].stageCompletionPercentage, json.message[0].shortExplanation));
+          }
         }
       } else {
         dispatch(closeAppsLoaderValue());
@@ -1527,7 +1544,8 @@ function fetchStockAnalysisAPI(token, slug) {
 }
 
 export function updateStockSlug(slug) {
-  return {type: "STOCK_CRAWL_SUCCESS", slug}
+  var displayHideCancel = false;
+  return {type: "STOCK_CRAWL_SUCCESS", slug, displayHideCancel}
 }
 
 export function getConceptsList() {
@@ -1900,7 +1918,8 @@ export function checkSaveSelectedModels(checkObj,isChecked) {
   else{
     selectedAlgorithms.push(checkObj);
   }
-  var selectedModelCount = selectedAlgorithms.length;
+  var unselectedModelsCount = store.getState().apps.unselectedModelsCount;
+  var selectedModelCount = selectedAlgorithms.length-unselectedModelsCount;
   var modelSummary = store.getState().apps.modelSummary;
   var hyperChartData = modelSummary.data.model_hyperparameter;
   var newHyperChartData = $.each(hyperChartData,function(mk,mv){
@@ -1943,4 +1962,129 @@ export function updateSelectedAlgObj(obj){
 export function clearSelectedModelsCount(){
   var count = 0;
   return {type: "CLEAR_SELECT_MODEL_COUNT", count}
+}
+export function handleStockDelete(slug, dialog) {
+  return (dispatch) => {
+    showDialogBox(slug, dialog, dispatch, DELETESTOCKMODEL, renderHTML(statusMessages("warning","Are you sure, you want to delete analysis?","small_mascot")))
+	 
+  }
+}
+function deleteStockModel(slug, dialog, dispatch) {
+  dispatch(showLoading());
+  Dialog.resetOptions();
+  return deleteStockModelAPI(slug).then(([response, json]) => {
+    if (response.status === 200) {
+      dispatch(getAppsStockList(store.getState().apps.current_page));
+      dispatch(hideLoading());
+    } else {
+      dispatch(hideLoading());
+      dialog.showAlert("Something went wrong. Please try again later.");
+
+    }
+  })
+}
+function deleteStockModelAPI(slug) {
+  return fetch(API + '/api/stockdataset/' + slug + '/', {
+    method: 'put',
+    headers: getHeader(getUserDetailsOrRestart.get().userToken),
+    body: JSON.stringify({deleted: true})
+  }).then(response => Promise.all([response, response.json()]));
+
+}
+
+
+export function handleStockModelRename(slug, dialog, name) {
+  const customBody = (
+		<div className="row">	
+			<div className="col-md-4">
+				<img src={STATIC_URL + "assets/images/alert_thinking.gif"} class="img-responsive" />
+			</div>
+			<div className="col-md-8">
+			<div className="form-group">
+			<label for="idRenameStockModel" className="control-label">Enter a new Name</label>
+			<input className="form-control" id="idRenameStockModel" type="text" defaultValue={name}/>
+			</div>
+			</div>
+		</div>
+    
+  )
+  return (dispatch) => {
+    showRenameDialogBox(slug, dialog, dispatch, RENAMESTOCKMODEL, customBody)
+  }
+}
+function renameStockModel(slug, dialog, newName, dispatch) {
+  dispatch(showLoading());
+  Dialog.resetOptions();
+  return renameStockModelAPI(slug, newName).then(([response, json]) => {
+    if (response.status === 200) {
+      dispatch(getAppsStockList(store.getState().apps.current_page));
+      dispatch(hideLoading());
+    } else {
+      dispatch(hideLoading());
+      dialog.showAlert("Something went wrong. Please try again later.");
+
+    }
+  })
+}
+function renameStockModelAPI(slug, newName) {
+  return fetch(API + '/api/stockdataset/' + slug + '/', {
+    method: 'put',
+    headers: getHeader(getUserDetailsOrRestart.get().userToken),
+    body: JSON.stringify({name: newName})
+  }).then(response => Promise.all([response, response.json()]));
+
+}
+export function crawlSuccessAnalysis(data) {
+  return (dispatch) => {
+    dispatch(crawlSuccess(data, dispatch))
+  }
+}
+export function storeStockModelSearchElement(search_element){
+  return {type: "STOCK_SEARCH_MODEL", search_element}
+}
+export function storeStockAppsModelSortElements(appsModelSorton,appsModelSorttype){
+  return {type: "STOCK_SORT_APPS_MODEL", appsModelSorton, appsModelSorttype}
+}
+export function refreshStockAppsList(props) {
+  return (dispatch) => {
+    if(refreshAppsModelInterval != null)
+    clearInterval(refreshAppsModelInterval);
+    refreshAppsModelInterval = setInterval(function() {
+      var pageNo = window.location.href.split("=")[1];
+      if (pageNo == undefined || isNaN(parseInt(pageNo)))
+        pageNo = 1;
+        let stockAppLocation = "";
+        if(store.getState().apps.currentAppDetails == null)
+        stockAppLocation = "/apps-stock-advisor";
+        else
+        stockAppLocation = "/"+store.getState().apps.currentAppDetails.app_url;
+      if (window.location.pathname == stockAppLocation)
+        dispatch(getAppsStockList(parseInt(pageNo)));
+      }
+    , APPSDEFAULTINTERVAL);
+  }
+}
+export function callStockAnalysisApi(slug) {
+  return (dispatch) => {
+    dispatch(triggerStockAnalysis(slug,dispatch));
+  }
+}
+export function roboDataUploadFilesSuccessAnalysis(data) {
+  return (dispatch) => {
+    dispatch(dataUploadFilesSuccess(data, dispatch))
+  }
+}
+export function refreshRoboInsightsList(props){
+  return (dispatch) => {
+    if(refreshAppsModelInterval != null)
+    clearInterval(refreshAppsModelInterval);
+    refreshAppsModelInterval = setInterval(function() {
+      var pageNo = window.location.href.split("=")[1];
+      if (pageNo == undefined || isNaN(parseInt(pageNo)))
+        pageNo = 1;
+      if (window.location.pathname == "/apps-robo")
+        dispatch(getAppsRoboList(parseInt(pageNo)));
+      }
+    , APPSDEFAULTINTERVAL);
+  }
 }

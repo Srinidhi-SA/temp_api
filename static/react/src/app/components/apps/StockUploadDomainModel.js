@@ -52,99 +52,72 @@ export class StockUploadDomainModel extends React.Component {
     if (this.props.stockUploadDomainFiles[0]) {
       fileName = this.props.stockUploadDomainFiles[0].name;
       fileSize = this.props.stockUploadDomainFiles[0].size;
-		}
-		let conceptRs = this.props.conceptList
-    let concepts = Object.keys(conceptRs)
-    var imgLink = STATIC_URL + "assets/images/m_carIcon.png"
+    }
+    let conceptRs = this.props.conceptList;
+    let concepts = Object.keys(conceptRs);
+    var imgLink = STATIC_URL + "assets/images/m_carIcon.png";
     const conceptList = concepts.map((concept, i) => {
-        let subconcepts = capitalizeArray(conceptRs[concept])
-      subconcepts = subconcepts.join(", ")
+      let subconcepts = capitalizeArray(conceptRs[concept]);
+      subconcepts = subconcepts.join(", ");
       return (
-        <div className="col-md-4 top20 list-boxes" key={i}>
-          <div className="rep_block newCardStyle" name={concept}>
+        <div className="col-md-4  top20 " key={i}>
+          <div className="rep_block border-box" name={concept}>
             <div className="card-header"></div>
             <div className="card-center-tile">
               <div className="row">
-                <div className="col-xs-12">
-					<h5 className="title newCardTitle pull-left">
+                
+                
+                <div className="col-xs-8">
+                  <h5 className="title newCardTitle pull-left">
                     {concept}
                   </h5>
-				  <div class="btn-toolbar pull-right">
-				  
-				  </div>
-				  <div className="clearfix"></div>
-				  {/*<!-- Popover Content link -->*/}
-                <OverlayTrigger trigger="click" rootClose placement="right" overlay={< Popover id = "popover-trigger-focus" > <h4>Sub-Concepts:</h4><br/><p>{subconcepts}</p> < /Popover>}>
-                  <a>
-                  View Sub-Concepts
-				  <div class="card_icon">
-                    {/*<i className="ci pe-7s-info pe-2x"></i>*/}
-					<img src={imgLink} alt="LOADING"/>
-					</div>
-                  </a>
-                </OverlayTrigger>
-				  
+                  </div>
+                  <div className="col-xs-4">
+                     <div class="card_icon">
+                      <img src={imgLink} alt="LOADING"/>
+                    </div>
+                  </div>
+                  <div className="clearfix"></div>
+                  <div className="col-xs-12">
+                  <OverlayTrigger trigger="click" rootClose placement="right" overlay={< Popover id = "popover-trigger-focus" > <h4>Sub-Concepts:</h4><br/><p>{subconcepts}</p> </Popover>}>
+                    <a>
+                    View Sub-Concepts
+                   
+                    </a>
+                  </OverlayTrigger>
+                  
                 </div>
-                 {/* <i class="fa fa-bullseye fa-4x" aria-hidden="true" style={{color:"rgba(128, 128, 128, 0.78)"}}></i> */}
-				
+
+
               </div>
             </div>
-			
-			
-            <div className="card-footer">
-			<div className="xs-pt-10"></div>
-              {/*<div className="left_div">
-								<span className="footerTitle"></span>{story.username}
-								<span className="footerTitle">{dateFormat(story.created_at, "mmm d,yyyy HH:MM")}</span>
-							</div>*/}
-
-              
-              {/*popover*/}
-
-            </div>
+            
           </div>
+        <div className="clearfix"></div>
         </div>
+        
       )
     });
 
     return (
-
       <div id="uploadDomainModel" role="dialog" className="modal fade modal-colored-header">
         <Modal show={store.getState().apps.stockUploadDomainModal} onHide={this.updateUploadStockPopup.bind(this, false)} dialogClassName="modal-colored-header modal-lg uploadData">
-        <Modal.Header closeButton>
-		<h3 className="modal-title">Concepts - Stock Performance Analysis</h3>
-		</Modal.Header>
+          <Modal.Header closeButton>
+            <h3 className="modal-title">Concepts - Stock Performance Analysis</h3>
+          </Modal.Header>
           <Modal.Body>
-		  <div className="xs-p-20">
-            <div className="row">
-              <div className="col-md-12">
-                <div className="xs-pt-20"></div>
-                {/*<div className="stockDropzone">
-					<Dropzone id={1} onDrop={this.onDrop} accept=".csv" >
-					<p>Please drag and drop your file here or browse.</p>
-					</Dropzone>
-					<aside>
-			          <ul className={fileName != "" ? "list-unstyled bullets_primary":"list-unstyled"}>
-			            	<li>{fileName}{fileName != "" ? " - ":""}{fileSize}{fileName != "" ? " bytes ":""}</li>
-			          </ul>
-			        </aside>
-					</div>*/}
-                {conceptList}
-              </div>
-              {/*  <div className="col-md-2 xs-pt-20">
-					<Button>Upload</Button>
-					</div> */}
-            </div>
-          </div>
-		  </Modal.Body>
+            <div className="xs-p-20">
+             
+                  <div className="xs-pt-20"></div>
+                    {conceptList}
+                </div>
+             <div className="clearfix"></div>
+          </Modal.Body>
           <Modal.Footer>
-            {/*<Button onClick={this.updateUploadStockPopup.bind(this,false)}>Close</Button>*/}
-           <Button bsStyle="primary" onClick={this.triggerStockAnalysis.bind(this,false)}>Analyse</Button>
+            <Button bsStyle="primary" onClick={this.triggerStockAnalysis.bind(this,false)}>Analyse</Button>
           </Modal.Footer>
         </Modal>
       </div>
-
-
     )
   }
 }

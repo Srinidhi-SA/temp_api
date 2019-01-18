@@ -1,5 +1,5 @@
 .parcoords > canvas {
-  font: 14px sans-serif;
+  font-size: 14px;
   position: absolute;
 }
 .parcoords > canvas {

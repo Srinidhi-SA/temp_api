@@ -122,39 +122,19 @@ export class DataCard extends React.Component {
                     <h5 className="title newCardTitle pull-left">
                     {dataClick}
                     </h5>
+                    <div className="pull-right">{iconDetails}</div>
+                    <div className="clearfix"></div>
                     
-                    
-                    
-                    {/*<!-- Rename and Delete BLock  -->*/}
-                    {isDropDown == true ?<div class="btn-toolbar pull-right"><a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
-                            <i className="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
-                            </a>
-                            <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                           {permissionDetails.rename_dataset == true ?  <li onClick={this.handleRename.bind(this, data.slug, data.name)}>
-                                   <a className="dropdown-item" href="#renameCard" data-toggle="modal">
-                                   <i className="fa fa-edit"></i>&nbsp;&nbsp;Rename</a>
-                                   </li>:""}
-                           
-                            
-                            {permissionDetails.remove_dataset == true ? <li onClick={this.handleDelete.bind(this, data.slug)}>
-                                    <a className="dropdown-item" href="#deleteCard" data-toggle="modal">
-                                    <i className="fa fa-trash-o"></i>&nbsp;&nbsp;{data.status == "INPROGRESS"
-                                        ? "Stop and Delete "
-                                                : "Delete"}</a>
-                                                </li>: ""}
-                                        </ul></div>:<div class="btn-toolbar pull-right"></div>} 
-
-                                
-                                <div className="clearfix"></div>
+					<div className="clearfix"></div>
                                 {percentageDetails}
                                 
-                                <OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={data}/> </Popover>}>
+                             {/*   <OverlayTrigger trigger="click" rootClose placement="left" overlay={< Popover id = "popover-trigger-focus" > <DetailOverlay details={data}/> </Popover>}>
                                 <a  className="pover cursor">
                                 <div class="card_icon">
                                 {iconDetails}
                                 </div>
                                 </a>
-                                </OverlayTrigger>
+                                </OverlayTrigger> */}
                                 
                                 </div>
                                 
@@ -165,7 +145,29 @@ export class DataCard extends React.Component {
                                 <span className="footerTitle"></span>{getUserDetailsOrRestart.get().userName}
                                 <span className="footerTitle">{dateFormat(data.created_at, "mmm d,yyyy HH:MM")}</span>
                                 </div>
-                                
+								
+                                {/*<!-- Rename and Delete BLock  -->*/}
+                    {isDropDown == true ?<div class="btn-toolbar pull-right"><a className="dropdown-toggle more_button" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="More..">
+                            <i className="ci zmdi zmdi-hc-lg zmdi-more-vert"></i>
+                            </a>
+                            <ul className="dropdown-menu dropdown-menu-right drp_cst_width" aria-labelledby="dropdownMenuButton">
+							<li className="xs-pl-20 xs-pr-20 xs-pt-10 xs-pb-10"><DetailOverlay details={data}/> </li>
+							<li className="xs-pl-20 xs-pr-20 xs-pb-10">
+								{permissionDetails.rename_dataset == true ?  <span onClick={this.handleRename.bind(this, data.slug, data.name)}>
+								<a className="dropdown-item btn-primary" href="#renameCard" data-toggle="modal">
+								<i className="fa fa-edit"></i>&nbsp;&nbsp;Rename</a>
+								</span>:""}
+
+
+								{permissionDetails.remove_dataset == true ? <span onClick={this.handleDelete.bind(this, data.slug)}>
+								<a className="dropdown-item btn-primary" href="#deleteCard" data-toggle="modal">
+								<i className="fa fa-trash-o"></i>&nbsp;&nbsp;{data.status == "INPROGRESS"
+								? "Stop and Delete "
+								: "Delete"}</a>
+								</span>: ""}
+								<div className="clearfix"></div>
+							</li>
+							</ul></div>:<div class="btn-toolbar pull-right"></div>}
                                 
                                 {/*popover*/}
                                 

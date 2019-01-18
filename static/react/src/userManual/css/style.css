@@ -5,7 +5,7 @@
 body {
   background: #fff;
   color: #666666;
-  font-family: "Open Sans", sans-serif;
+  /*font-family: "Open Sans", sans-serif;*/
   font-size:0.9rem;
   line-height: 24px;
 }
@@ -27,7 +27,7 @@ p {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Roboto', sans-serif;
+  /*font-family: 'Roboto', sans-serif;*/
   font-weight: 400;
   margin: 0 0 20px 0;
   padding: 0;
@@ -100,7 +100,7 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0;
   padding: 0;
   line-height: 1;
-  font-family: 'Roboto', sans-serif;
+  /*font-family: 'Roboto', sans-serif;*/
   font-weight: 700;
   letter-spacing: 3px;
 }
@@ -159,6 +159,7 @@ h1, h2, h3, h4, h5, h6 {
 #intro .carousel-container {
   display: flex;
   justify-content: center;
+  text-align: left;
   align-items: center;
   position: absolute;
   bottom: 0;
@@ -244,7 +245,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 #intro .btn-get-started {
-  font-family: 'Roboto', sans-serif;
+  /*font-family: 'Roboto', sans-serif;*/
   font-weight: 500;
   font-size: 16px;
   letter-spacing: 1px;
@@ -345,7 +346,7 @@ h1, h2, h3, h4, h5, h6 {
   text-decoration: none;
   display: inline-block;
   color: #525252;
-  font-family: 'Roboto', sans-serif;
+  /*font-family: 'Roboto', sans-serif;*/
   font-weight: 700;
   font-size: 13px;
   text-transform: uppercase;
@@ -450,7 +451,7 @@ h1, h2, h3, h4, h5, h6 {
   display: block;
   outline: none;
   font-weight: 700;
-  font-family: 'Roboto', sans-serif;
+  /*font-family: 'Roboto', sans-serif;*/
 }
 
 #mobile-nav ul li a:hover {
@@ -739,7 +740,7 @@ body.mobile-nav-active #mobile-nav-toggle {
   margin-left: 60px;
   line-height: 24px;
   margin-bottom: 0;
-  text-align:justify;
+  /*text-align:justify;*/
 }
 
 /* Call To Action Section
@@ -761,7 +762,7 @@ body.mobile-nav-active #mobile-nav-toggle {
 }
 
 #call-to-action .cta-btn {
-  font-family: 'Roboto', sans-serif;
+  /*font-family: 'Roboto', sans-serif;*/
   text-transform: uppercase;
   font-weight: 500;
   font-size: 16px;
@@ -792,7 +793,7 @@ body.mobile-nav-active #mobile-nav-toggle {
 }
 
 #skills .progress .skill {
-  font-family: "Open Sans", sans-serif;
+  /*font-family: "Open Sans", sans-serif;*/
   line-height: 35px;
   padding: 0;
   margin: 0 0 0 20px;
@@ -837,7 +838,7 @@ body.mobile-nav-active #mobile-nav-toggle {
 }
 
 #facts .counters span {
-  font-family: 'Roboto', sans-serif;
+  /*font-family: 'Roboto', sans-serif;*/
   font-weight: bold;
   font-size: 48px;
   display: block;
@@ -847,7 +848,7 @@ body.mobile-nav-active #mobile-nav-toggle {
 #facts .counters p {
   padding: 0;
   margin: 0 0 20px 0;
-  font-family: 'Roboto', sans-serif;
+  /*font-family: 'Roboto', sans-serif;*/
   font-size: 14px;
   color: #535a59;
 }
@@ -1327,7 +1328,7 @@ body.mobile-nav-active #mobile-nav-toggle {
   margin: 0 0 20px 0;
   padding: 2px 0 2px 10px;
   line-height: 1;
-  font-family: 'Roboto', sans-serif;
+  /*font-family: 'Roboto', sans-serif;*/
   font-weight: 700;
   letter-spacing: 3px;
   border-left: 4px solid #00998c;
@@ -1337,7 +1338,7 @@ body.mobile-nav-active #mobile-nav-toggle {
   font-size: 14px;
   line-height: 24px;
   margin-bottom: 0;
-  font-family: 'Roboto', sans-serif;
+  /*font-family: 'Roboto', sans-serif;*/
   color: #eee;
 }
 
@@ -1495,7 +1496,7 @@ body.mobile-nav-active #mobile-nav-toggle {
 .color-3{ color:rgba(204, 204, 204, 0.6)}
 .color-4{ color: rgba(204, 204, 204, 0.6)}
 
-.description { text-align:justify }
+.description {/* text-align:justify */}
 .sign-in { background-color:#13c2b4}
 .sign-in a { color:#FFFFFF; }
 #header.header-scrolled .sign-in a { color:#FFFFFF; }

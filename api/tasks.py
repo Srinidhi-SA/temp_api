@@ -186,6 +186,7 @@ def write_into_databases(job_type, object_slug, results):
         stock_objects = get_db_object(model_name=StockDataset.__name__,
                                            model_slug=object_slug
                                            )
+        results['name'] = stock_objects.name
         results = add_slugs(results, object_slug=object_slug)
         stock_objects.data = json.dumps(results)
         stock_objects.analysis_done = True
@@ -194,6 +195,7 @@ def write_into_databases(job_type, object_slug, results):
         return results
     else:
         print "No where to write"
+
 
 def write_into_databases1(job_type, object_slug, results):
     from api import helper
@@ -230,6 +232,7 @@ def write_into_databases1(job_type, object_slug, results):
 
         dataset_object.meta_data = json.dumps(results)
         dataset_object.analysis_done = True
+        dataset_object.status = 'SUCCESS'
         dataset_object.save()
         return results
     elif job_type == "master":
@@ -252,6 +255,7 @@ def write_into_databases1(job_type, object_slug, results):
         trainer_object = get_db_object(model_name=Trainer.__name__,
                                            model_slug=object_slug
                                            )
+
         if "error_message" in results or "model_summary" not in results:
             trainer_object.status = "FAILED"
             trainer_object.save()
@@ -299,6 +303,7 @@ def write_into_databases1(job_type, object_slug, results):
         stock_objects = get_db_object(model_name=StockDataset.__name__,
                                            model_slug=object_slug
                                            )
+        results['name'] = stock_objects.name
         results = add_slugs(results, object_slug=object_slug)
         stock_objects.data = json.dumps(results)
         stock_objects.analysis_done = True
@@ -405,3 +410,33 @@ def kill_application_using_fabric(app_id=None):
             return True
     except:
         return True
+
+#
+# @task(name='stock_sense_crawling', queue=CONFIG_FILE_NAME)
+# def stock_sense_crawl(object_slug):
+#
+#     from api import helper
+#     import json
+#     from api.helper import get_db_object
+#     from api.views import chart_changes_in_metadata_chart, add_slugs
+#     print "stock_sense_crawl"*2
+#     stock_dataset_object = get_db_object(model_name=StockDataset.__name__,
+#                                    model_slug=object_slug
+#                                    )
+#     stock_dataset_object.call_mlscripts()
+#     stock_dataset_object.save()
+
+@task(name='stock_sense_crawling', queue=CONFIG_FILE_NAME)
+def stock_sense_crawl(object_slug):
+
+    from api import helper
+    import json
+    from api.helper import get_db_object
+    from api.views import chart_changes_in_metadata_chart, add_slugs
+    print "stock_sense_crawl"*2
+    stock_dataset_object = get_db_object(model_name=StockDataset.__name__,
+                                   model_slug=object_slug
+                                   )
+    stock_dataset_object.generate_meta_data()
+    stock_dataset_object.save()
+    # stock_dataset_object.call_mlscripts()

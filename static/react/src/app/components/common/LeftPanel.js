@@ -4,7 +4,7 @@ import {connect} from "react-redux";
 import {hideDataPreview, getDataList,storeSearchElement_data} from "../../actions/dataActions";
 import {getList,storeSearchElement,emptySignalAnalysis} from "../../actions/signalActions";
 import {getUserDetailsOrRestart} from "../../helpers/helper"
-import {APPS_ALLOWED} from "../../helpers/env.js"
+import {APPS_ALLOWED,ENABLE_KYLO_UI} from "../../helpers/env.js"
 
 @connect((store) => {
   return {dataPreviewFlag: store.datasets.dataPreviewFlag};
@@ -48,6 +48,7 @@ class LeftPanel extends React.Component {
     let view_signal_permission = getUserDetailsOrRestart.get().view_signal_permission
     let view_trainer_permission = getUserDetailsOrRestart.get().view_trainer_permission
     let view_score_permission = getUserDetailsOrRestart.get().view_score_permission
+    let enable_kylo = ENABLE_KYLO_UI
     return (
       <div>
         <div>
@@ -57,8 +58,8 @@ class LeftPanel extends React.Component {
               <ul className="nav navbar-nav">
               {(view_signal_permission=="true")?
                 <li>
-                  <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" className="sdb sdb_signal" to="/signals">
-                    <span></span>
+                  <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" className="sdb" to="/signals">
+                    <i className="fa fa-podcast fa-2x" aria-hidden="true"></i><br />
                     SIGNALS</NavLink>
                 </li>:<li className="notAllowed" title="Access Denied">
                   <NavLink className="sdb sdb_signal deactivate" to="/signals">
@@ -72,14 +73,14 @@ class LeftPanel extends React.Component {
                   </li>*/}
                 {(APPS_ALLOWED==true)?
                 <li>
-                  <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" isActive={(match,location) => /^[/]apps/.test(location.pathname)} className=" sdb sdb_app" to="/apps">
-                    <span></span>
+                  <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" isActive={(match,location) => /^[/]apps/.test(location.pathname)} className=" sdb" to="/apps">
+                     <i className="fa fa-cubes fa-2x" aria-hidden="true"></i><br />
                     APPS</NavLink>
                 </li>:""}
                 {(view_data_permission=="true")?
                 <li>
-                  <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" className="sdb sdb_data" to="/data">
-                    <span></span>
+                  <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" className="sdb" to="/data">
+                    <i className="fa fa-database fa-2x" aria-hidden="true"></i><br />
                     DATA</NavLink>
                 </li>:<li className="notAllowed" title="Access Denied">
                   <NavLink className="sdb sdb_data deactivate" to="/data">
@@ -91,11 +92,12 @@ class LeftPanel extends React.Component {
                       <span></span>
                       SETTINGS</NavLink>
                   </li> */}
-                  {/*<li>
-                    <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" isActive={(match,location) => /^[/]datamgmt/.test(location.pathname)} className=" sdb sdb_story" to="/datamgmt">
-                      <span></span>
-                      DATA MANAGE</NavLink>
-                  </li>*/}
+                  {(enable_kylo==true||enable_kylo=="True"||enable_kylo=="true")?<li>
+                    <NavLink onClick={this.hideDataPrev.bind(this)} activeClassName="active" isActive={(match,location) => /^[/]datamgmt/.test(location.pathname)} className=" sdb" to="/datamgmt">
+                      <i className="fa fa-folder-open fa-2x" aria-hidden="true"></i><br />
+                      DATA<br />MANAGE</NavLink>
+                  </li>:<div/>}
+
               </ul>
             </div>
             {/* // /.Side bar Main Menu  -->*/}

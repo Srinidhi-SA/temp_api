@@ -3,12 +3,13 @@ import {API,STATIC_URL} from "../helpers/env";
 import {PERPAGE,DULOADERPERVALUE,DEFAULTINTERVAL,SUCCESS,FAILED,getUserDetailsOrRestart,DEFAULTANALYSISVARIABLES,statusMessages} from "../helpers/helper";
 import store from "../store";
 import {dataPreviewInterval,dataUploadLoaderValue,clearLoadingMsg,clearDatasetPreview} from "./dataUploadActions";
-import {closeAppsLoaderValue} from "./appActions";
+import {closeAppsLoaderValue,openAppsLoaderValue} from "./appActions";
 import renderHTML from 'react-render-html';
 import Dialog from 'react-bootstrap-dialog'
 import { showLoading, hideLoading } from 'react-redux-loading-bar';
 import {isEmpty,RENAME,DELETE,REPLACE,DATA_TYPE,REMOVE,CURRENTVALUE,NEWVALUE,SET_VARIABLE,UNIQUE_IDENTIFIER,SET_POLARITY,handleJobProcessing,IGNORE_SUGGESTION} from "../helpers/helper";
 import {updateVariablesCount} from "./signalActions";
+import Notifications, {notify} from 'react-notify-toast';
 let refDialogBox = "";
 var refreshDatasetsInterval = null;
 function getHeader(token){
@@ -23,8 +24,8 @@ export function refreshDatasets(props){
         if(refreshDatasetsInterval != null)
         clearInterval(refreshDatasetsInterval);
         refreshDatasetsInterval = setInterval(function() {
-            var pageNo = window.location.href.split("=")[1];
-            if(pageNo == undefined) pageNo = 1;
+            var pageNo = window.location.href.split("=").pop();
+            if(isNaN(pageNo)) pageNo = 1;
             if(window.location.pathname == "/data")
                 dispatch(getDataList(parseInt(pageNo)));
         },DEFAULTINTERVAL);
@@ -132,6 +133,14 @@ export function getDataSetPreview(slug,interval) {
         return fetchDataPreview(slug,dispatch,interval).then(([response, json]) =>{
             if(response.status === 200){
                 console.log(json)
+                if(json.message && json.message == "failed"){
+                    let myColor = { background: '#00998c', text: "#FFFFFF" };
+                    notify.show("You are not authorized to view this content.", "custom", 2000,myColor);
+                    setTimeout(function() {
+                    window.location.pathname="/signals";
+                    },2000);
+                }
+                else
                 dispatch(fetchDataPreviewSuccess(json,interval,dispatch))
             }
             else{
@@ -162,7 +171,11 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
     console.log(dataPreview)
     var  slug = dataPreview.slug;
     var dataset = slug;
-    if(dataPreview.status == SUCCESS){
+    if(window.location.pathname == "/apps-stock-advisor" || window.location.pathname.includes("apps-stock-advisor-analyze") )
+    var getStatus = dataPreview.meta_data_status;
+    else
+    var getStatus = dataPreview.status;
+    if(getStatus == SUCCESS){
 
         if(interval != undefined){
             clearInterval(interval);
@@ -179,7 +192,7 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
             dataPreview,
             slug,
         }
-    }else if(dataPreview.status == FAILED){
+    }else if(getStatus == FAILED){
         clearInterval(interval);
         dispatch(hideDULoaderPopup());
         bootbox.alert("The uploaded file does not contain data in readable format. Please check the source file.", function() {
@@ -187,6 +200,7 @@ function fetchDataPreviewSuccess(dataPreview,interval,dispatch) {
           });
         dispatch(dataUploadLoaderValue(DULOADERPERVALUE));
         dispatch(clearLoadingMsg())
+        dispatch(closeAppsLoaderValue());
         //clearDatasetPreview()
         //dispatch(hideDataPreview())
 columns
@@ -195,8 +209,11 @@ columns
             dataPreview,
             slug,
         }
-    }else if(dataPreview.status == "INPROGRESS"){
+    }else if(getStatus == "INPROGRESS"){
         dispatch(dispatchDataPreviewLoadingMsg(dataPreview));
+        if (dataPreview.message && dataPreview.message !== null && dataPreview.message.length > 0) {
+            dispatch(openAppsLoaderValue(dataPreview.message[0].stageCompletionPercentage, dataPreview.message[0].shortExplanation));
+        }
         return {
             type: "SELECTED_DATASET",
             dataset,
@@ -566,7 +583,7 @@ function getIsAllSelected(array){
     var isAllSelected = true;
 
     for(var i=0;i<array.length;i++){
-        isAllSelected = array[i].selected;
+        isAllSelected = array[i].selected || array[i].targetColumn;
         if(!isAllSelected)break;
     }
 
@@ -655,11 +672,8 @@ export function updateSelectedVariables(evt){
                     if (!$(this).is(":checked"))
                     $(this).prop('disabled', true);
                 });
-                $('.measureAll[type="checkbox"]').each(function() {
-                    $(this).prop('disabled', true);
-                });
-                $('.dimensionAll').prop("disabled",true);
-                $('.measureAll').prop("disabled",true);
+                if(!($("input[name='date_type']:checked").val()))
+                $('.timeDimension').prop("disabled",true);
                 //document.getElementById('measure').disabled = true;
             }
             else{
@@ -669,6 +683,7 @@ export function updateSelectedVariables(evt){
                 $('.dimension[type="checkbox"]').each(function() {
                     $(this).prop('disabled', false);
                 });
+                $('.timeDimension').prop("disabled",false);
             }
         }
         if(evt.target.baseURI.includes("/createSignal"))
@@ -1102,9 +1117,14 @@ export function renameMetaDataColumn(dialog,colName,colSlug,dispatch,actionName)
         actions: [
                   Dialog.CancelAction(),
                   Dialog.OKAction(() => {
+                      if($("#idRenameMetaCloumn").val().trim()=="")
+                      {
+                        bootbox.alert(statusMessages("warning","Please enter the valid column name.","small_mascot"));
+                      }
+                      else{
                       updateColumnName(dispatch,colSlug,$("#idRenameMetaCloumn").val());
                       updateColumnStatus(dispatch,colSlug,$("#idRenameMetaCloumn").val(),actionName);
-
+                      }
                   })
                   ],
                   bsSize: 'medium',
@@ -1542,7 +1562,7 @@ export function updateSelectAllAnlysis(flag){
 export function hideDataPreviewDropDown(props){
   if(props.indexOf("scores") != -1){
       $("#sub_settings").hide();
-      $('.dropdown-toggle').removeAttr('data-toggle');
+      $('.cst_table .dropdown-toggle').removeAttr('data-toggle');
   }
 
 }
@@ -1551,12 +1571,14 @@ export function popupAlertBox(msg,props,url){
         props.history.push(url)
     });
 }
-export function deselectAllVariablesDataPrev(){
+export function deselectAllVariablesDataPrev(flag){
   let dataPrev=store.getState().datasets.dataPreview
   let slug=store.getState().datasets.selectedDataSet
   if(dataPrev&&dataPrev.meta_data){
   for(var i=0;i<dataPrev.meta_data.uiMetaData.varibaleSelectionArray.length;i++){
-    dataPrev.meta_data.uiMetaData.varibaleSelectionArray[i].selected=false
+    if(dataPrev.meta_data.uiMetaData.varibaleSelectionArray[i].columnType == "datetime" || dataPrev.meta_data.uiMetaData.varibaleSelectionArray[i].dateSuggestionFlag)
+    continue;
+    dataPrev.meta_data.uiMetaData.varibaleSelectionArray[i].selected=flag;
   }
   dispatchDataPreview(dataPrev,slug)
 }

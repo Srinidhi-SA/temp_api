@@ -52,7 +52,11 @@ export class AudioFileUpload extends React.Component {
 				<div class="newCardStyle firstCard">
 				<div class="card-header"></div>
 				<div class="card-center newStoryCard">
-				<div class="col-xs-12 text-center">+<br/><small>Analyse Speech</small></div>
+				
+				 
+				<div class="col-xs-3 col-xs-offset-2 xs-pr-0"><i class="fa fa-file-audio-o fa-4x"></i></div>
+				<div class="col-xs-6 xs-m-0 xs-pl-0"><small>Analyse Speech</small></div>
+				
 				</div>
 				</div>
 				

@@ -7,7 +7,7 @@ import {Link, Redirect} from "react-router-dom";
 import store from "../../store";
 import {connect} from "react-redux";
 import {APPID1,APPID2,APPID3,APPNAME1,APPNAME2,APPNAME3,getUserDetailsOrRestart} from "../../helpers/helper.js"
-import {getAppsStockList,getStockAnalysis,updateStockSlug} from "../../actions/appActions";
+import {getAppsStockList,getStockAnalysis,updateStockSlug,addDefaultStockSymbolsComp} from "../../actions/appActions";
 import Dialog from 'react-bootstrap-dialog'
 import {AppsCreateStockAnalysis} from "./AppsCreateStockAnalysis";
 import {STATIC_URL} from "../../helpers/env.js";
@@ -39,20 +39,16 @@ export class LatestStocks extends React.Component {
         this.props.dispatch(updateStockSlug(e.target.id))
         this.props.dispatch(getStockAnalysis(e.target.id))
     }
-    handleDelete(slug){
-
+    resetAnalyzepopup(){
+        this.props.dispatch(addDefaultStockSymbolsComp());
     }
-    handleRename(slug,name){
-
-    }
-  
     render() {
         var data = this.props.latestStocks;
         console.log(this.props)
-        let addButton =   <AppsCreateStockAnalysis match={this.props.props.match}/>;
+        let addButton =   <div onClick={this.resetAnalyzepopup.bind(this)}><AppsCreateStockAnalysis match={this.props.props.match}/></div>;
         let latestStocks = "";
         if(data){
-            latestStocks =  <StocksCard data={data}/>;
+            latestStocks =  <StocksCard data={data} loadfunc={this.props.loadfunc}/>;
         }
         return (
                 <div class="dashboard_head">

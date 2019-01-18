@@ -54,6 +54,9 @@ export class DataPreviewLeftPanel extends React.Component {
                 let colIndex = "row_"+id
                 if(id > 0){
                         colData =  row.map((colData,index) =>{
+                            if(row.length-1==index || row.length-2==index)
+                            return(<td class="activeColumn">{colData}</td>)
+                            else
                             return(<td>{colData}</td>)
                         })
                     }

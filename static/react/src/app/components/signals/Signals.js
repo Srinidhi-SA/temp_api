@@ -204,7 +204,7 @@ export class Signals extends React.Component {
                     </div>
                   </div>
                   <div class="btn-group">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                    <button type="button" title="Sorting" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                       <i class="zmdi zmdi-hc-lg zmdi-sort-asc"></i>
                     </button>
                     <ul role="menu" class="dropdown-menu dropdown-menu-right">

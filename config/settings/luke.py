@@ -20,7 +20,7 @@ DATABASES = {
         'NAME': 'madvisor',
         'USER': 'root',
         'PASSWORD': 'Marlabs@123',
-        'HOST': 'localhost',
+        'HOST': '172.31.53.141',
         'PORT': '',
         }
 }
@@ -99,7 +99,7 @@ REDIS_SALT = "123"
 APPEND_SLASH=False
 DATA_UPLOAD_MAX_MEMORY_SIZE = 1024*1024*1024
 
-SCORES_SCRIPTS_FOLDER = '/home/ubuntu/mAdvisorScores/'
+SCORES_SCRIPTS_FOLDER = '/home/ubuntu/mAdvisorScores1/'
 IMAGE_URL = "/api/get_profile_image/"
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -130,8 +130,8 @@ DEPLOYMENT_ENV = "prod"
 HADOOP_CONF_DIR= False
 HADOOP_USER_NAME="hduser"
 
-CELERY_BROKER_URL = 'redis://localhost:6379/'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/'
+CELERY_BROKER_URL = 'redis://172.31.53.141:6379/'
+CELERY_RESULT_BACKEND = 'redis://172.31.53.141:6379/'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
@@ -151,4 +151,26 @@ CELERY_QUEUES = {
 
 
 PEM_KEY = "/keyfiles/TIAA.pem"
-USING_KYLO = False
+ENABLE_KYLO = True
+KYLO_UI_URL = "http://data-management.marlabsai.com"
+END_RESULTS_SHOULD_BE_PROCESSED_IN_CELERY = True
+KYLO_SERVER_DETAILS = {
+    "host": "34.200.233.5",
+    "port" : 8088,
+    "user": "ankush",
+    "key_path": "~/.ssh/ankush.pem",
+    "group_propertie_quote": "madvisor,user",
+    "kylo_file_path":"/opt/kylo/"
+}
+
+CELERY_ONCE_CONFIG = {
+  'backend': 'celery_once.backends.Redis',
+  'settings': {
+    'url': 'redis://172.31.53.141:6379/',
+    'default_timeout': 60 * 60
+  }
+}
+
+SUBMIT_JOB_THROUGH_CELERY = True
+CELERY_SCRIPTS_DIR="/home/hduser/codebase/mAdvisor-api/scripts/"
+USE_YARN_DEFAULT_QUEUE=True
