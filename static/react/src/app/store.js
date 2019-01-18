@@ -42,7 +42,7 @@ const middleware = applyMiddleware(promise(), thunk, logger, err)
 const store = createStore(reducer, middleware)
 
 store.subscribe(() => {
-  console.log("store updated", store.getState());
+  // console.log("store updated", store.getState());
 });
 
 export default store;

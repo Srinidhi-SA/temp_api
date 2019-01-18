@@ -59,6 +59,8 @@ export class DataCleansing extends React.Component {
   componentWillMount() {
     if (this.props.dataPreview == null || isEmpty(this.props.dataPreview) || this.props.dataPreview.status == 'FAILED') {
       this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
+    }else{
+      console.log("not updating dataPreview data from server");
     }
   }
 
@@ -102,19 +104,30 @@ variableCheckboxOnChange(event){
 handleRemoveDuplicatesOnChange(event){
 this.props.dispatch(removeDuplicatesAction(event.target.dataset["duplicatename"], event.target.value));
 }
-
-
-handleSelectAll(event){
-      $('.variableToBeSelected[type="checkbox"]').each(function() {
-          $(this).prop('checked', event.target.checked);
-          $(this).click();
-      });
+getUpdatedDataType(colSlug){
+  // this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(item => item.slug == slug);
+  // console.log(this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(item => item.slug == slug));
+  let colType = this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(item => item.slug == colSlug)[0].columnType
+  var arr = [ "Measure","Dimension", "Timedimension"]
+  var optionsHtml = arr.map(item => {
+    if(item== colType ){
+      return <option value={item} selected>{item}</option>
+    }else{
+      return <option value={item} >{item}</option>
+    }
+  })
+  return <select className="form-control"  >
+  {optionsHtml}
+</select>
 }
+
+
 
 getOutlierRemovalOptions(dataType, colName, colSlug){
   var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
   if (dataType in data_cleansing && "outlier_removal" in data_cleansing[dataType]){
-    var dcHTML =  (data_cleansing[dataType].outlier_removal.operations.map(item => <option value={item.name} selected >{item.displayName}</option>))
+    var dcHTML =  (data_cleansing[dataType].outlier_removal.operations.map(item =>
+      <option value={item.name} selected >{item.displayName}</option>))
     return (<select className="form-control" data-colName={colName} data-colslug={colSlug} onChange={this.outlierRemovalOnChange.bind(this)}>{dcHTML}</select>);
   }
   else { return "";}
@@ -131,6 +144,9 @@ getOutlierRemovalOptions(dataType, colName, colSlug){
     {
       var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
       cleansingHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
+        // console.log(item);
+
+        console.log("==============================================================================");
         return (
           <tr>
             {/* <td><div class="ma-checkbox inline">
@@ -139,8 +155,9 @@ getOutlierRemovalOptions(dataType, colName, colSlug){
               </div></td> */}
 
           <td>{item.name}</td>
-          <td>  {item.actualColumnType}</td>
+          <td>  {this.getUpdatedDataType(item.slug)}</td>
          {/* using filter and map to retrive data from array inside array*/}
+         {/* <td> */}
          <td>
              {item.columnStats.filter(function(items){
                  return  items.name == "numberOfUniqueValues" }).map((option)=>{
@@ -192,7 +209,7 @@ getOutlierRemovalOptions(dataType, colName, colSlug){
                 <label for="rd1" class="col-sm-5 control-label"> Do you want to remove duplicate attributes/columns in the dataset?</label>
                 <div class="col-sm-7">
                   <div class="btn-group" data-toggle="buttons">
-                      <input type="button" id="rd1_Yes" name="rdc_dataset" value="Yes" class="btn btn-default" data-duplicatename="remove_duplicate_attributes" onClick={this.handleRemoveDuplicatesOnChange.bind(this)}/>
+                      <input type="button" id="rd1_Yes" name="rdc_dataset" value="Yes" class="btn btn-default" data-duplicatename="remove_duplicate_attributes" onClick={this.handleRemoveDuplicatesOnChange.bind(this)} checked/>
                       <input type="button" id="rd1_No" name="rdc_dataset" value="No" class="btn btn-default " data-duplicatename="remove_duplicate_attributes" onClick={this.handleRemoveDuplicatesOnChange.bind(this)}/>
                   </div>
                 </div>
@@ -202,8 +219,8 @@ getOutlierRemovalOptions(dataType, colName, colSlug){
                 <label for="rd2" class="col-sm-5 control-label"> Do you want to remove duplicate observations  in the dataset?</label>
                 <div class="col-sm-7">
                   <div class="btn-group" data-toggle="buttons">
-                       <input type="button" id="rd2_Yes" name="rd_odataset" value="Yes"  class="btn btn-default" data-duplicatename="remove_duplicate_observations"  onClick={this.handleRemoveDuplicatesOnChange.bind(this)} />
-                      <input type="button" id="rd2_No" name="rd_odataset" value="No"  class="btn btn-default " data-duplicatename="remove_duplicate_observations"  onClick={this.handleRemoveDuplicatesOnChange.bind(this)} checked/>
+                       <input type="button" id="rd2_Yes" name="rd_odataset" value="Yes"  class="btn btn-default" data-duplicatename="remove_duplicate_observations"  onClick={this.handleRemoveDuplicatesOnChange.bind(this)} se />
+                      <input type="button" id="rd2_No" name="rd_odataset" value="No"  class="btn btn-default " data-duplicatename="remove_duplicate_observations"  onClick={this.handleRemoveDuplicatesOnChange.bind(this)} />
   </div>
                 </div>
               </div>

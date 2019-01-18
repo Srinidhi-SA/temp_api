@@ -27,8 +27,8 @@ export default function reducer(state = {
   latestSignals:{},
   selected_signal_type:""
 }, action) {
-  console.log("in SIGNAL reducer!!");
-  console.log(action);
+  // console.log("in SIGNAL reducer!!");
+  // console.log(action);
 
   switch (action.type) {
     case "SIGNAL_LIST":

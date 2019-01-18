@@ -87,8 +87,8 @@ export default function reducer(state = {
         selectedAlgObj:{},
 
 }, action) {
-    console.log("In APPs reducer!!");
-    console.log(action);
+    // console.log("In APPs reducer!!");
+    // console.log(action);
 
     switch (action.type) {
     case "APPS_MODEL_SHOW_POPUP":
@@ -753,7 +753,7 @@ export default function reducer(state = {
         }
     }
     break;
-    
+
     case "SCORE_TO_PROCEED":
     {
         return{
