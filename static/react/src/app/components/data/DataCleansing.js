@@ -108,7 +108,7 @@ getUpdatedDataType(colSlug){
   // this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(item => item.slug == slug);
   // console.log(this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(item => item.slug == slug));
   let colType = this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(item => item.slug == colSlug)[0].columnType
-  var arr = [ "Measure","Dimension", "Timedimension"]
+  var arr = [ "Measure","dimension", "timedimension"]
   var optionsHtml = arr.map(item => {
     if(item== colType ){
       return <option value={item} selected>{item}</option>
