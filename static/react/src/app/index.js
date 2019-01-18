@@ -300,6 +300,8 @@ class App extends React.Component {
             <Route exact path="/apps-stock-document-mode/:slug" component={AppsStockDocumentMode}/>
             <Route exact path="/apps/:AppId/scores/:slug/dataPreview" render={score}/>
             <Route exact path="/apps/:AppId/models/data/:slug/createModel/Proceed" component={ModelAlgorithmSelection}/>
+            <Route exact path="/apps/:AppId/models/data/:slug/createModel/modeSelection" component={ModelBuildingModeSelection}/>
+
             <Route exact path="/apps-regression" component={RegressionAppList}/>
             <Route exact path="/apps-regression-score" component={RegressionAppList}/>
             <Route exact path="/apps-regression/scores" component={RegressionAppList}/>
