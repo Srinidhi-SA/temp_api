@@ -618,3 +618,22 @@ export function checkChatbotPresent() {
   }
   return false
 }
+
+/**
+* Check dataset and get all the selected variables
+*/
+export function getRemovedVariableNames(dataset){
+    var arr = [];
+
+    var pickRemoved = function(item){
+        if(!item.selected){
+            arr.push(item.name)
+        }
+    }
+
+    dataset.CopyOfDimension.map(pickRemoved);
+    dataset.CopyOfMeasures.map(pickRemoved);
+    dataset.CopyTimeDimension.map(pickRemoved);
+    return arr;
+
+}

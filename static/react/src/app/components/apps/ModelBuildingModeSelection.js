@@ -30,7 +30,6 @@ import {statusMessages} from "../../helpers/helper";
 export class ModelBuildingModeSelection extends React.Component {
     componentWillMount() {
         //It will trigger when refresh happens on url
-        debugger;
         if(this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null){
             window.history.go(-1);
         }
@@ -57,7 +56,7 @@ export class ModelBuildingModeSelection extends React.Component {
                       <p>
         			           Automatic ML modeling process that executes recommended set of data cleansing and transformation operations.
                 </p>
-                  <a href="javascript:;" className="btn btn-primary" onClick={this.handleModeSelected.bind(this,"automl")}>Analyst Mode</a>                    </div>
+                  <a href="javascript:;" className="btn btn-primary" onClick={this.handleModeSelected.bind(this,"automl")}>Auto ML Mode</a></div>
                   </div>
                   <div className="col-md-4">
                     <div className="mod-process mod-process-table-primary">

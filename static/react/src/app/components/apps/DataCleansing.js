@@ -19,13 +19,13 @@ import {
 import {dataSubsetting, clearDataPreview, clearLoadingMsg} from "../../actions/dataUploadActions"
 import {Button, Dropdown, Menu, MenuItem} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"
-import {showHideSideChart, showHideSideTable, MINROWINDATASET,toggleVisualization} from "../../helpers/helper.js"
+import {showHideSideChart, showHideSideTable, MINROWINDATASET,toggleVisualization, getRemovedVariableNames} from "../../helpers/helper.js"
 import {isEmpty, CREATESIGNAL, CREATESCORE, CREATEMODEL} from "../../helpers/helper";
 
 import {DataUploadLoader} from "../common/DataUploadLoader";
 import Dialog from 'react-bootstrap-dialog';
 import {checkCreateScoreToProceed, getAppDetails} from "../../actions/appActions";
-import {missingValueTreatmentSelectedAction, outlierRemovalSelectedAction, variableSelectedAction, removeDuplicatesAction } from "../../actions/dataCleansingActions";
+import {missingValueTreatmentSelectedAction, outlierRemovalSelectedAction, variableSelectedAction, removeDuplicatesAction, dataCleansingDataTypeChange } from "../../actions/dataCleansingActions";
 
 @connect((store) => {
   return {
@@ -42,17 +42,13 @@ import {missingValueTreatmentSelectedAction, outlierRemovalSelectedAction, varia
     subsettedSlug: store.datasets.subsettedSlug,
     dataTransformSettings: store.datasets.dataTransformSettings,
     scoreToProceed: store.apps.scoreToProceed,
-    currentAppDetails: store.apps.currentAppDetails
+    currentAppDetails: store.apps.currentAppDetails,
+    datasets : store.datasets
     //data_cleansing: store.datasets.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing
   };
 })
 
 export class DataCleansing extends React.Component {
-
-  constructor(props) {
-    super(props);
-
-  }
 
   componentWillMount() {
     if (this.props.dataPreview == null || isEmpty(this.props.dataPreview) || this.props.dataPreview.status == 'FAILED') {
@@ -76,14 +72,8 @@ export class DataCleansing extends React.Component {
 onchangeMissingValueTreatment(event, variable_name){
 
 }
-getMissingValueTreatmentOptions(dataType, colName, colSlug){
-  var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
-  if (dataType in data_cleansing && "missing_value_treatment" in data_cleansing[dataType]){
-    var dcHTML =  (data_cleansing[dataType].missing_value_treatment.operations.map(item => <option value={item.name} selected >{item.displayName}</option>))
-    return (<select className="form-control" data-colslug={colSlug} data-colname={colName} onChange={this.missingValueTreatmentOnChange.bind(this)} >{dcHTML}</select>);
-  }
-  else { return "";}
-}
+
+
 missingValueTreatmentOnChange(event){
 
   console.log(event.target.dataset);
@@ -102,19 +92,24 @@ variableCheckboxOnChange(event){
 handleRemoveDuplicatesOnChange(event){
 this.props.dispatch(removeDuplicatesAction(event.target.dataset["duplicatename"], event.target.value));
 }
+handleDataTypeChange(colSlug, event){
+
+    this.props.dispatch(dataCleansingDataTypeChange(colSlug, event.target.value));
+
+}
 getUpdatedDataType(colSlug){
   // this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(item => item.slug == slug);
   // console.log(this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(item => item.slug == slug));
   let colType = this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(item => item.slug == colSlug)[0].columnType
-  var arr = [ "Measure","dimension", "timedimension"]
+  var arr = [ "Measure","Dimension", "Timedimension"]
   var optionsHtml = arr.map(item => {
-    if(item== colType ){
-      return <option value={item} selected>{item}</option>
+    if(item.toLowerCase()== colType.toLowerCase() ){
+      return <option value={item.toLowerCase()} selected>{item}</option>
     }else{
-      return <option value={item} >{item}</option>
+      return <option value={item.toLowerCase()} >{item}</option>
     }
   })
-  return <select className="form-control"  >
+  return <select className="form-control"  onChange={this.handleDataTypeChange.bind(this,colSlug )} >
   {optionsHtml}
 </select>
 }
@@ -130,19 +125,32 @@ getOutlierRemovalOptions(dataType, colName, colSlug){
   }
   else { return "";}
 }
-
+getMissingValueTreatmentOptions(dataType, colName, colSlug){
+  var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
+  if (dataType in data_cleansing && "missing_value_treatment" in data_cleansing[dataType]){
+    var dcHTML =  (data_cleansing[dataType].missing_value_treatment.operations.map(item =>
+    <option value={item.name} selected >{item.displayName}</option>))
+    var selectedValue = "none";
+    if(colSlug  in this.props.datasets.missingValueTreatment){
+        selectedValue = this.props.datasets.missingValueTreatment[colSlug].treatment
+    }
+    return (<select className="form-control" data-colslug={colSlug} data-colname={colName} onChange={this.missingValueTreatmentOnChange.bind(this)} value={selectedValue} >{dcHTML}</select>);
+  }
+  else { return "";}
+}
 
 
 
   render() {
 
-
       var cleansingHtml = <span>"Loading ... "</span>;
     if(this.props.dataPreview!=null)
     {
       var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
+      var removedVariables = getRemovedVariableNames(this.props.datasets);
       cleansingHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
         // console.log(item);
+        if(removedVariables.indexOf(item.name)!= -1 ) return "";
 
         console.log("==============================================================================");
         return (
@@ -178,10 +186,10 @@ getOutlierRemovalOptions(dataType, colName, colSlug){
                )}
          </td>
          <td>
-              {this.getMissingValueTreatmentOptions(item.actualColumnType, item.name, item.slug)}
+              {this.getMissingValueTreatmentOptions(item.columnType, item.name, item.slug)}
          </td>
          <td>
-              {this.getOutlierRemovalOptions(item.actualColumnType, item.name, item.slug)}
+              {this.getOutlierRemovalOptions(item.columnType, item.name, item.slug)}
          </td>
 
           </tr>
@@ -207,7 +215,7 @@ getOutlierRemovalOptions(dataType, colName, colSlug){
                 <label for="rd1" class="col-sm-5 control-label"> Do you want to remove duplicate attributes/columns in the dataset?</label>
                 <div class="col-sm-7">
                   <div class="btn-group" data-toggle="buttons">
-                      <input type="button" id="rd1_Yes" name="rdc_dataset" value="Yes" class="btn btn-default" data-duplicatename="remove_duplicate_attributes" onClick={this.handleRemoveDuplicatesOnChange.bind(this)} checked/>
+                      <input type="button" id="rd1_Yes" name="rdc_dataset" value="Yes" class="btn btn-default"  data-duplicatename="remove_duplicate_attributes" onClick={this.handleRemoveDuplicatesOnChange.bind(this)}/>
                       <input type="button" id="rd1_No" name="rdc_dataset" value="No" class="btn btn-default " data-duplicatename="remove_duplicate_attributes" onClick={this.handleRemoveDuplicatesOnChange.bind(this)}/>
                   </div>
                 </div>

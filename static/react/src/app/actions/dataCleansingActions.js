@@ -36,3 +36,12 @@ export function variableSelectedAction(colSlug, selecteOrNot, dispatch){
 
 	}
 }
+
+export function dataCleansingDataTypeChange(colSlug, newDataType, dispatch){
+    return {
+        type: "DATACLEANSING_DATA_TYPE_CHANGE",
+        colSlug,
+        newDataType
+    }
+}
+

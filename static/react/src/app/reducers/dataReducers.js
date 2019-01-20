@@ -617,7 +617,8 @@ export default function reducer(state = {
       case "MISSING_VALUE_TREATMENT":
       {
         var curmissingValueTreatment = state.missingValueTreatment;
-        curmissingValueTreatment[action.colName] = action.treatment;
+        curmissingValueTreatment[action.colSlug] = {"treatment" : action.treatment, "name" : action.colName };
+
         return {
           ...state,
           missingValueTreatment : curmissingValueTreatment
@@ -659,8 +660,43 @@ export default function reducer(state = {
 
       }
       break;
+      case "DATACLEANSING_DATA_TYPE_CHANGE":
+      {
+         console.log(   action.colSlug);
+         console.log(action.newDataType);
+         var newDataPreview = state.dataPreview
 
-    ;
+
+         newDataPreview.meta_data.uiMetaData.columnDataUI = newDataPreview.meta_data.uiMetaData.columnDataUI.map(item => {
+            if(item.slug == action.colSlug){
+               item.columnType = action.newDataType;
+            }
+            return item;
+         })
+         newDataPreview.meta_data.scriptMetaData.columnData = newDataPreview.meta_data.scriptMetaData.columnData.map(item => {
+            if(item.slug == action.colSlug){
+               item.columnType = action.newDataType;
+            }
+            return item;
+         })
+
+//        Clear missing value treatment
+          var curMissingValueTreatment = state.missingValueTreatment
+          delete(curMissingValueTreatment[action.colSlug]);
+//        Clear outlier removal
+          var curOutlierRemoval = state.outlierRemoval;
+          delete(curOutlierRemoval[action.colSlug]);
+
+
+        return {
+          ...state,
+          dataPreview: newDataPreview,
+          missingValueTreatment : curMissingValueTreatment,
+          outlierRemoval : curOutlierRemoval
+        }
+
+      }
+      break;
 
 
 
