@@ -20,7 +20,7 @@ import {dataSubsetting, clearDataPreview, clearLoadingMsg} from "../../actions/d
 import {Button, Dropdown, Menu, MenuItem} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"
 import {showHideSideChart, showHideSideTable, MINROWINDATASET,toggleVisualization} from "../../helpers/helper.js"
-import {isEmpty, PROCEEDTODATACLEANSING, CREATESCORE, CREATEMODEL} from "../../helpers/helper";
+import {isEmpty, CREATESIGNAL, CREATESCORE, CREATEMODEL} from "../../helpers/helper";
 import {SubSetting} from "./SubSetting";
 import {DataUploadLoader} from "../common/DataUploadLoader";
 import {DataValidation} from "./DataValidation";
@@ -116,8 +116,8 @@ export class DataPreview extends React.Component {
         text: "Close"
       };
       this.buttons['create'] = {
-        url: "/data_cleansing/" + this.props.match.params.slug ,
-        text: PROCEEDTODATACLEANSING
+        url: "/data/" + this.props.match.params.slug + "/createSignal",
+        text: CREATESIGNAL
       };
     }
     /* console.log(store.getState().datasets.curUrl.indexOf("models"));
@@ -418,7 +418,7 @@ export class DataPreview extends React.Component {
       let permission_details = this.props.dataPreview.permission_details;
       isSubsettingAllowed = permission_details.subsetting_dataset;
       isDataValidationAllowed = permission_details.data_validation;
-      if (this.buttons.create.text == PROCEEDTODATACLEANSING) {
+      if (this.buttons.create.text == CREATESIGNAL) {
         isCreateAllowed = permission_details.create_signal;
 
       } else if (this.buttons.create.text == CREATEMODEL) {
