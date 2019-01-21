@@ -49,6 +49,12 @@ import {missingValueTreatmentSelectedAction, outlierRemovalSelectedAction, varia
 })
 
 export class DataCleansing extends React.Component {
+  constructor(props) {
+    super(props);
+    this.buttons = {};
+
+  }
+
 
   componentWillMount() {
     if (this.props.dataPreview == null || isEmpty(this.props.dataPreview) || this.props.dataPreview.status == 'FAILED') {
@@ -56,6 +62,12 @@ export class DataCleansing extends React.Component {
     }else{
       console.log("not updating dataPreview data from server");
     }
+
+    if(this.props.match.path.includes("slug")){
+      this.buttons['proceed']={
+        url :"/feature-engineering/"+this.props.match.params.slug,
+        text:"Proceed"};
+      }
   }
 
   componentDidMount() {
@@ -114,7 +126,11 @@ getUpdatedDataType(colSlug){
 </select>
 }
 
-
+proceedFeatureEngineering()
+{
+  var url=this.buttons.proceed.url;
+  this.props.history.push(url);
+}
 
 getOutlierRemovalOptions(dataType, colName, colSlug){
   var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
@@ -263,7 +279,7 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
 
                   </div>
   <div class="buttonRow text-right">
-     <a href="featureEngineering.html" class="btn btn-primary">Proceed <i class="fa fa-angle-double-right"></i> </a>
+     <Button onClick={this.proceedFeatureEngineering.bind(this)}>{this.buttons.proceed.text}</Button>
    </div>
  </div>
         </div>

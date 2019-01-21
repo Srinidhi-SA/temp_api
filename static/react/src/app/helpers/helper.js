@@ -131,6 +131,7 @@ const IGNORE_SUGGESTION = "ignore_suggestion";
 const ACCESSDENIED = "Access Denied"
 const CREATESIGNAL = "Create Signal";
 const PROCEEDTODATACLEANSING = "Proceed to data cleansing";
+const PROCEEDTOFEATUREENGINEERING ="proceed to feature Engineering"
 const CREATEMODEL = "Create Model";
 const CREATESCORE = "Create Score";
 const DELETESTOCKMODEL = "Delete Analysis";
@@ -451,6 +452,7 @@ export {
   ACCESSDENIED,
   CREATESIGNAL,
   PROCEEDTODATACLEANSING,
+  PROCEEDTOFEATUREENGINEERING,
   CREATESCORE,
   CREATEMODEL,
   DELETESTOCKMODEL,

@@ -22,6 +22,7 @@ import {DataVariableSelection} from "./components/data/DataVariableSelection";
 import {ModelVariableSelection} from "./components/apps/ModelVariableSelection";
 import {ModelBuildingModeSelection} from "./components/apps/ModelBuildingModeSelection"
 import {DataCleansing} from "./components/apps/DataCleansing"
+import {FeatureEngineering} from "./components/apps/FeatureEngineering"
 import {AppsModelDetail} from "./components/apps/AppsModelDetail";
 import {AppsModelHyperDetail} from "./components/apps/AppsModelHyperDetail";
 import {ScoreVariableSelection} from "./components/apps/ScoreVariableSelection";
@@ -135,11 +136,6 @@ class App extends React.Component {
     const data = (props) => {
       if (this.hasDataRoutePermission()) {
         switch (props.match.path) {
-        case "/data_cleansing/:slug":
-            {
-              return (<DataCleansing  {...props}/>)
-            }
-            break;
           case "/data":
             {
               return (<Data {...props}/>)
@@ -275,6 +271,7 @@ class App extends React.Component {
             <Route exact path="/apps/:AppId/models/:modelSlug/data/:slug/createScore" component={ScoreVariableSelection}/>
             <Route exact path="/data?page=:slug" render={data}/>
             <Route exact path="/data_cleansing/:slug" render={data}/>
+            <Route exact path="/feature-engineering/:slug" render={data}/>
             <Route exact path="/apps/:AppId/scores/:slug" render={score}/>
             <Route exact path="/data/:slug/createSignal" render={data}/>
             <Route exact path="/signals?page=:slug" render={signals}/>
@@ -303,6 +300,8 @@ class App extends React.Component {
             <Route exact path="/apps/:AppId/models/data/:slug/createModel/Proceed" component={ModelAlgorithmSelection}/>
             <Route exact path="/apps/:AppId/models/data/:slug/createModel/modeSelection" component={ModelBuildingModeSelection}/>
             <Route exact path="/apps/:AppId/models/data/:slug/createModel/dataCleansing" component={DataCleansing}/>
+            <Route exact path="/apps/:AppId/models/data/:slug/createModel/featureEngineering" component={FeatureEngineering}/>
+
             <Route exact path="/apps-regression" component={RegressionAppList}/>
             <Route exact path="/apps-regression-score" component={RegressionAppList}/>
             <Route exact path="/apps-regression/scores" component={RegressionAppList}/>

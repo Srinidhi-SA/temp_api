@@ -57,6 +57,13 @@ export default function reducer(state = {
   outlierRemoval:{},
   selectedVariables : {},
   removeDuplicates :{},
+  binsOrLevelsShowModal:false,
+
+transferColumnShowModal:false,
+
+selectedBinsOrLevelsTab:"Bins",
+
+selectedItem:{},
 
 }, action) {
   console.log("In DATA reducer!!");
@@ -698,6 +705,79 @@ export default function reducer(state = {
       }
       break;
 
+      case "BINS_LEVELS_SHOW_MODAL":
+            {
+              return {
+                ...state,
+                binsOrLevelsShowModal: true,
+                selectedItem:action.selectedItem
+              }
+            }
+            break;
+
+            case "BINS_LEVELS_HIDE_MODAL":
+
+            {
+
+              return {
+
+                ...state,
+
+                binsOrLevelsShowModal: false
+
+              }
+
+            }
+
+            break;
+
+           case "TRANSFORM_COLUMN_SHOW_MODAL":
+
+            {
+
+              return {
+
+                ...state,
+
+                transferColumnShowModal: true
+
+              }
+
+            }
+
+            break;
+
+            case "TRANSFORM_COLUMN_HIDE_MODAL":
+
+            {
+
+              return {
+
+                ...state,
+
+                transferColumnShowModal: false
+
+              }
+
+            }
+
+            break;
+
+            case "BINS_OR_LEVELS":
+
+            {
+
+              return {
+
+                ...state,
+
+                selectedBinsOrLevelsTab: action.selectedBinsOrLevelsTab
+
+              }
+
+            }
+
+            break;
 
 
   }

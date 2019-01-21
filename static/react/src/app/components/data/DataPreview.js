@@ -436,10 +436,10 @@ export class DataPreview extends React.Component {
 
               <div key={i} className="col-md-5ths col-xs-6 data_preview xs-mb-15">
                 <div className="bgStockBox">
-				<div className="row">					
+				<div className="row">
 					<div className="col-xs-8 xs-pr-0">
 							<h4 className="xs-pt-5 xs-pb-5">
-							{item.displayName}				  
+							{item.displayName}
 							</h4>
 					</div>
 					<div className="col-xs-4 xs-pl-0 text-right">
@@ -448,7 +448,7 @@ export class DataPreview extends React.Component {
 							</h4>
 					</div>
 					<div class="clearfix"></div>
-				</div>				
+				</div>
 				</div>
               </div>
 
@@ -589,14 +589,14 @@ export class DataPreview extends React.Component {
             {/*<!-- Page Content Area -->*/}
             <div className="main-content">
 			<div className="row d_preview">
-				 
+
 				 {topInfo}
-				 
+
 			</div>
               <div className="row">
                 <div className="col-md-9 preview_content">
-                  
-                     
+
+
                     <div className="clearfix"></div>
                     <div className="table-responsive noSwipe xs-pb-10">
 
@@ -616,7 +616,7 @@ export class DataPreview extends React.Component {
                         </table>
                       </Scrollbars>
                     </div>
-                 
+
                 </div>
                 <div className="col-md-3 preview_stats">
                   {/*<!-- Start Tab Statistics -->*/}
