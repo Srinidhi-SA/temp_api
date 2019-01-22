@@ -18,11 +18,10 @@ selectedItem: store.datasets.selectedItem,
 
 })
 export class Bins extends React.Component {
-  constructor(props); 
-  super(props);
-  console.log("Bins constructor method is called...");
-  
-}
+  constructor(props) {
+    super(props);
+    console.log("Bins constructor method is called...");
+   }
 
   componentWillMount() {
     console.log("Bins componentWillMount method is called...");
