@@ -206,7 +206,7 @@ class DatasetView(viewsets.ModelViewSet, viewsets.GenericViewSet):
                 object_details['meta_data']["uiMetaData"]["fe_config"] = {
                     "data_cleansing": feature_engineering_settings.data_cleansing_static,
                     "column_format": feature_engineering_settings.column_format,
-                    "fe": {}
+                    "fe": feature_engineering_settings.feture_engineering_static
                 }
 
         return Response(object_details)

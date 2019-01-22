@@ -49,7 +49,9 @@ data_cleansing_static = {
             "name": "missings_value_treatment",
             "displayName": "Missing value treatment",
             "selected": False,
-            "operations": [   {   'columns': [],
+            "operations": [
+    {
+        'columns': [],
         'displayName': 'Mean Imputation',
         'name': 'mean_impuration',
         'selected': False,
@@ -322,6 +324,9 @@ data_cleansing_final_config_format = {
       }
     },
 
+
+
+
 bin_conf = {
     'column_name': "",
     'type_of_binning': [
@@ -462,4 +467,973 @@ transform_column = [
     }
 ]
 
-feature_engineering_static = {}
+transform_dropdown_measure = [
+    {
+        "name": "Replace_value",
+        "displayName": "",
+
+    }
+]
+
+
+transform_dropdown_dimension = [
+
+]
+
+feture_engineering_static = {
+    'top_level_option': [
+        {
+          "name": "binning_all_measures",
+          "displayName": "Bin all Measures",
+          "selected": True,
+          "number_of_bins": 10,
+          "slug": "",
+            "display": True,
+        }
+    ],
+    'measure': {
+        "level_creation_settings":{
+            "name": "Creating_New_Bins_or_Levels",
+            "displayName": "Create Bins Or Levels",
+            "selected": True,
+            "display": True,
+            "operations": [
+                {
+                    "name": "create_equal_sized_bins",
+                    "displayName": "Create Equal Sized Bins",
+                    "selected": True,
+                    "columns":[],
+                    "display": True,
+                    "column_structure": {
+                          "name": "quantity",
+                          "modified_column_name": "Binned_quantity",
+                          "datatype": "measure",
+                          "number_of_bins": 10
+                        }
+                },
+                {
+                    "name": "create_custom_bins",
+                    "displayName": "Create Custom Bins",
+                    "selected": True,
+                    "columns":[],
+                    "display": True,
+                    "columns_structure": {
+                      "name": "age",
+                      "name_after_binning": "Custom_Binned_age",
+                      "datatype": "measure",
+                      "list_of_intervals": [10,20,30,40]
+                    }
+                },
+                {
+                    "name": "create_new_levels",
+                    "displayName": "Create Levels",
+                    "selected": True,
+                    "columns": [],
+                    "display": True,
+                    "columns_structure": {
+                        "name": "States",
+                        "name_after_binning": "States_Levels",
+                        "datatype": "dimension",
+                        "mapping_dict": {}
+                    }
+
+                },
+                {
+                    "name": "create_new_datetime_levels",
+                    "displayName": "Create Datetime Levels",
+                    "selected": True,
+                    "columns": [],
+                    "display": True,
+                    "column_structure": {
+                        "name": "Date_of_Birth",
+                        "name_after_binning": "Date_of_Birth_Levels",
+                        "datatype": "datetime",
+                        "mapping_dict": {}
+                    }
+                }
+          ],
+        },
+        "transformation_settings": {
+            "name": "Transformation_Settings",
+            "displayName": "Transform Variables",
+            "selected": True,
+            "display": True,
+            "operations": [
+                {
+                    "name": "Replace_Values_With",
+                    "displayName": "Replace Values With",
+                    "selected": True,
+                    "columns":[],
+                    "display": True,
+                    "column_structure": {
+                         "name": "Salary",
+                         "user_given_new_name": "Salary_new",
+                         "datatype": "measure",
+                         "replace_by": "mean",
+                         "replace_values_in_range": ["lower_val", "upper_val"]
+                    }
+                },
+                {
+                    "name": "Add_value_to",
+                    "displayName": "Add Specific value",
+                    "selected": True,
+                    "columns":[],
+                    "display": True,
+                    "column_structure": {
+                         "name": "age",
+                         "user_given_new_name": "age_added",
+                         "datatype": "measure",
+                         "value_to_be_added": 5
+                    }
+                },
+                {
+                    "name": "Subtract_value_from",
+                    "displayName": "Subtract Specific value",
+                    "selected": True,
+                    "columns":[],
+                    "display": True,
+                    "column_structure": {
+                        "name": "height",
+                        "user_given_new_name": "height_subtracted",
+                        "datatype": "measure",
+                        "value_to_be_subtracted": 10
+                        }
+                },
+                {
+                    "name": "Multiply_by_value",
+                    "displayName": "Multiply by Specific value",
+                    "selected": True,
+                    "columns": [],
+                    "display": True,
+                    "column_structure": {
+                        "name": "bonus_pay",
+                        "user_given_new_name": "bonus_pay_multiplied",
+                        "datatype": "measure",
+                        "value_to_be_multiplied": 10
+                    }
+                },
+                {
+                    "name": "Divide_by_value",
+                    "displayName": "Divide by Specific value",
+                    "selected": True,
+                    "columns": [],
+                    "display": True,
+                    "column_structure": {
+                     "name": "tax",
+                     "user_given_new_name": "tax_divided",
+                     "datatype": "measure",
+                     "value_to_be_divided": 10
+                    }
+                },
+                {
+                    "name": "Perform_Standardization",
+                    "displayName": "Perform Standardization",
+                    "selected": True,
+                    "columns": [],
+                    "display": True,
+                    "column_structure": {
+                      "name": "Marks_Scored",
+                      "user_given_new_name": "Marks_Scored_Standardized",
+                      "datatype": "measure",
+                      "standardization_type": "Min-Max Scaling"
+                    }
+                },
+                {
+                  "name": "Variable_Transformation",
+                  "displayName": "Variable Transformation",
+                  "selected": True,
+                    "display": True,
+                  "columns":[],
+                    "column_structure": {
+                      "name": "years_of_experience",
+                      "user_given_new_name": "years_of_experience_Transformed",
+                      "datatype": "measure",
+                      "transformation_type": "log-transform"
+                    }
+                },
+                {
+                  "name": "Encoding_Dimensions",
+                  "displayName": "Perform Encoding",
+                  "selected": True,
+                  "columns": [],
+                    "display": True,
+                    "column_structure":
+                    {
+                      "name": "country",
+                      "new_column_prefix": "Encoded_",
+                      "datatype": "dimension",
+                      "Encoding_type": "One-hot Encoding"
+                    }
+                },
+                {
+                  "name": "return_character_count",
+                  "displayName": "return Character Count",
+                  "selected": True,
+                  "columns": [],
+                    "display": True,
+                    "column_structure":
+                    {
+                      "name": "Cities",
+                      "user_given_new_name": "Cities_char_count",
+                      "datatype": "dimension"
+                    }
+                },
+                {
+                  "name": "is_custom_string_in",
+                  "displayName": "Is custom string in",
+                  "selected": True,
+                  "columns": [],
+                    "display": True,
+                    "column_structure": {
+                      "name": "Cities",
+                      "user_given_new_name": "Cities_char_check",
+                      "datatype": "dimension",
+                      "User_given_character": "Delhi"
+                    }
+                },
+                {
+                  "name": "is_date_weekend",
+                  "displayName": "Is Date Weekend",
+                  "selected": True,
+                    "display": True,
+                  "columns": [],
+                    "column_structure":
+                    {
+                      "name": "dates1",
+                      "user_given_new_name": "is_weekend_dates1",
+                      "datatype": "datetime"
+                    }
+                },
+                {
+                  "name": "extract_time_feature",
+                  "displayName": "Extract Time Feature",
+                  "selected": True,
+                    "display": True,
+                  "columns": [],
+                    "column_structure":
+                    {
+                      "name": "dates2",
+                      "user_given_new_name": "is_weekend_dates2",
+                      "datatype": "datetime",
+                      "time_feature_to_extract": "month"
+                    }
+                },
+                {
+                  "name": "time_since",
+                  "displayName": "Time Since Some Event",
+                  "selected": True,
+                    "display": True,
+                  "columns": [],
+                    "column_structure":
+                    {
+                      "name": "dates3",
+                      "user_given_new_name": "time_since_dates3",
+                      "datatype": "datetime",
+                      "time_since": "21/05/2016"
+                    }
+                }
+            ]
+        }
+    },
+    'dimension': {
+        "level_creation_settings":{
+            "name": "Creating_New_Bins_or_Levels",
+            "displayName": "Create Bins Or Levels",
+            "selected": True,
+"display": True,
+            "operations": [
+                {
+                    "name": "create_equal_sized_bins",
+                    "displayName": "Create Equal Sized Bins",
+                    "selected": True,
+                    "columns":[],"display": True,
+                    "column_structure": {
+                          "name": "quantity",
+                          "modified_column_name": "Binned_quantity",
+                          "datatype": "measure",
+                          "number_of_bins": 10
+                        }
+                },
+                {
+                    "name": "create_custom_bins",
+                    "displayName": "Create Custom Bins",
+                    "selected": True,"display": True,
+                    "columns":[],
+                    "columns_structure": {
+                      "name": "age",
+                      "name_after_binning": "Custom_Binned_age",
+                      "datatype": "measure",
+                      "list_of_intervals": [10,20,30,40]
+                    }
+                },
+                {
+                    "name": "create_new_levels",
+                    "displayName": "Create Levels",
+                    "selected": True,"display": True,
+                    "columns": [],
+                    "columns_structure": {
+                        "name": "States",
+                        "name_after_binning": "States_Levels",
+                        "datatype": "dimension",
+                        "mapping_dict": {}
+                    }
+
+                },
+                {
+                    "name": "create_new_datetime_levels",
+                    "displayName": "Create Datetime Levels",
+                    "selected": True,"display": True,
+                    "columns": [],
+                    "column_structure": {
+                        "name": "Date_of_Birth",
+                        "name_after_binning": "Date_of_Birth_Levels",
+                        "datatype": "datetime",
+                        "mapping_dict": {}
+                    }
+                }
+          ],
+        },
+        "transformation_settings": {
+            "name": "Transformation_Settings",
+            "displayName": "Transform Variables",
+            "selected": True,"display": True,
+            "operations": [
+                {
+                    "name": "Replace_Values_With",
+                    "displayName": "Replace Values With",
+                    "selected": True,"display": True,
+                    "columns":[],
+                    "column_structure": {
+                         "name": "Salary",
+                         "user_given_new_name": "Salary_new",
+                         "datatype": "measure",
+                         "replace_by": "mean",
+                         "replace_values_in_range": ["lower_val", "upper_val"]
+                    }
+                },
+                {
+                    "name": "Add_value_to",
+                    "displayName": "Add Specific value",
+                    "selected": True,"display": True,
+                    "columns":[],
+                    "column_structure": {
+                         "name": "age",
+                         "user_given_new_name": "age_added",
+                         "datatype": "measure",
+                         "value_to_be_added": 5
+                    }
+                },
+                {
+                    "name": "Subtract_value_from",
+                    "displayName": "Subtract Specific value",
+                    "selected": True,"display": True,
+                    "columns":[],
+                    "column_structure": {
+                        "name": "height",
+                        "user_given_new_name": "height_subtracted",
+                        "datatype": "measure",
+                        "value_to_be_subtracted": 10
+                        }
+                },
+                {
+                    "name": "Multiply_by_value",
+                    "displayName": "Multiply by Specific value",
+                    "selected": True,"display": True,
+                    "columns": [],
+                    "column_structure": {
+                        "name": "bonus_pay",
+                        "user_given_new_name": "bonus_pay_multiplied",
+                        "datatype": "measure",
+                        "value_to_be_multiplied": 10
+                    }
+                },
+                {
+                    "name": "Divide_by_value",
+                    "displayName": "Divide by Specific value",
+                    "selected": True,"display": True,
+                    "columns": [],
+                    "column_structure": {
+                     "name": "tax",
+                     "user_given_new_name": "tax_divided",
+                     "datatype": "measure",
+                     "value_to_be_divided": 10
+                    }
+                },
+                {
+                    "name": "Perform_Standardization",
+                    "displayName": "Perform Standardization",
+                    "selected": True,"display": True,
+                    "columns": [],
+                    "column_structure": {
+                      "name": "Marks_Scored",
+                      "user_given_new_name": "Marks_Scored_Standardized",
+                      "datatype": "measure",
+                      "standardization_type": "Min-Max Scaling"
+                    }
+                },
+                {
+                  "name": "Variable_Transformation",
+                  "displayName": "Variable Transformation",
+                  "selected": True,"display": True,
+                  "columns":[],
+                    "column_structure": {
+                      "name": "years_of_experience",
+                      "user_given_new_name": "years_of_experience_Transformed",
+                      "datatype": "measure",
+                      "transformation_type": "log-transform"
+                    }
+                },
+                {
+                  "name": "Encoding_Dimensions",
+                  "displayName": "Perform Encoding",
+                  "selected": True,"display": True,
+                  "columns": [],
+                    "column_structure":
+                    {
+                      "name": "country",
+                      "new_column_prefix": "Encoded_",
+                      "datatype": "dimension",
+                      "Encoding_type": "One-hot Encoding"
+                    }
+                },
+                {
+                  "name": "return_character_count",
+                  "displayName": "return Character Count",
+                  "selected": True,"display": True,
+                  "columns": [],
+                    "column_structure":
+                    {
+                      "name": "Cities",
+                      "user_given_new_name": "Cities_char_count",
+                      "datatype": "dimension"
+                    }
+                },
+                {
+                  "name": "is_custom_string_in",
+                  "displayName": "Is custom string in",
+                  "selected": True,"display": True,
+                  "columns": [],
+                    "column_structure": {
+                      "name": "Cities",
+                      "user_given_new_name": "Cities_char_check",
+                      "datatype": "dimension",
+                      "User_given_character": "Delhi"
+                    }
+                },
+                {
+                  "name": "is_date_weekend",
+                  "displayName": "Is Date Weekend",
+                  "selected": True,"display": True,
+                  "columns": [],
+                    "column_structure":
+                    {
+                      "name": "dates1",
+                      "user_given_new_name": "is_weekend_dates1",
+                      "datatype": "datetime"
+                    }
+                },
+                {
+                  "name": "extract_time_feature",
+                  "displayName": "Extract Time Feature",
+                  "selected": True,"display": True,
+                  "columns": [],
+                    "column_structure":
+                    {
+                      "name": "dates2",
+                      "user_given_new_name": "is_weekend_dates2",
+                      "datatype": "datetime",
+                      "time_feature_to_extract": "month"
+                    }
+                },
+                {
+                  "name": "time_since",
+                  "displayName": "Time Since Some Event",
+                  "selected": True,"display": True,
+                  "columns": [],
+                    "column_structure":
+                    {
+                      "name": "dates3",
+                      "user_given_new_name": "time_since_dates3",
+                      "datatype": "datetime",
+                      "time_since": "21/05/2016"
+                    }
+                }
+            ]
+        }
+    },
+    'time_dimension': {
+        "level_creation_settings":{
+            "name": "Creating_New_Bins_or_Levels",
+            "displayName": "Create Bins Or Levels",
+            "selected": True,"display": True,
+            "operations": [
+                {
+                    "name": "create_equal_sized_bins",
+                    "displayName": "Create Equal Sized Bins",
+                    "selected": True,"display": True,
+                    "columns":[],
+                    "column_structure": {
+                          "name": "quantity",
+                          "modified_column_name": "Binned_quantity",
+                          "datatype": "measure",
+                          "number_of_bins": 10
+                        }
+                },
+                {
+                    "name": "create_custom_bins",
+                    "displayName": "Create Custom Bins",
+                    "selected": True,"display": True,
+                    "columns":[],
+                    "columns_structure": {
+                      "name": "age",
+                      "name_after_binning": "Custom_Binned_age",
+                      "datatype": "measure",
+                      "list_of_intervals": [10,20,30,40]
+                    }
+                },
+                {
+                    "name": "create_new_levels",
+                    "displayName": "Create Levels",
+                    "selected": True,"display": True,
+                    "columns": [],
+                    "columns_structure": {
+                        "name": "States",
+                        "name_after_binning": "States_Levels",
+                        "datatype": "dimension",
+                        "mapping_dict": {}
+                    }
+
+                },
+                {
+                    "name": "create_new_datetime_levels",
+                    "displayName": "Create Datetime Levels",
+                    "selected": True,"display": True,
+                    "columns": [],
+                    "column_structure": {
+                        "name": "Date_of_Birth",
+                        "name_after_binning": "Date_of_Birth_Levels",
+                        "datatype": "datetime",
+                        "mapping_dict": {}
+                    }
+                }
+          ],
+        },
+        "transformation_settings": {
+            "name": "Transformation_Settings",
+            "displayName": "Transform Variables",
+            "selected": True,"display": True,
+            "operations": [
+                {
+                    "name": "Replace_Values_With",
+                    "displayName": "Replace Values With",
+                    "selected": True,"display": True,
+                    "columns":[],
+                    "column_structure": {
+                         "name": "Salary",
+                         "user_given_new_name": "Salary_new",
+                         "datatype": "measure",
+                         "replace_by": "mean",
+                         "replace_values_in_range": ["lower_val", "upper_val"]
+                    }
+                },
+                {
+                    "name": "Add_value_to",
+                    "displayName": "Add Specific value",
+                    "selected": True,"display": True,
+                    "columns":[],
+                    "column_structure": {
+                         "name": "age",
+                         "user_given_new_name": "age_added",
+                         "datatype": "measure",
+                         "value_to_be_added": 5
+                    }
+                },
+                {
+                    "name": "Subtract_value_from",
+                    "displayName": "Subtract Specific value",
+                    "selected": True,"display": True,
+                    "columns":[],
+                    "column_structure": {
+                        "name": "height",
+                        "user_given_new_name": "height_subtracted",
+                        "datatype": "measure",
+                        "value_to_be_subtracted": 10
+                        }
+                },
+                {
+                    "name": "Multiply_by_value",
+                    "displayName": "Multiply by Specific value",
+                    "selected": True,"display": True,
+                    "columns": [],
+                    "column_structure": {
+                        "name": "bonus_pay",
+                        "user_given_new_name": "bonus_pay_multiplied",
+                        "datatype": "measure",
+                        "value_to_be_multiplied": 10
+                    }
+                },
+                {
+                    "name": "Divide_by_value",
+                    "displayName": "Divide by Specific value",
+                    "selected": True,"display": True,
+                    "columns": [],
+                    "column_structure": {
+                     "name": "tax",
+                     "user_given_new_name": "tax_divided",
+                     "datatype": "measure",
+                     "value_to_be_divided": 10
+                    }
+                },
+                {
+                    "name": "Perform_Standardization",
+                    "displayName": "Perform Standardization",
+                    "selected": True,"display": True,
+                    "columns": [],
+                    "column_structure": {
+                      "name": "Marks_Scored",
+                      "user_given_new_name": "Marks_Scored_Standardized",
+                      "datatype": "measure",
+                      "standardization_type": "Min-Max Scaling"
+                    }
+                },
+                {
+                  "name": "Variable_Transformation",
+                  "displayName": "Variable Transformation",
+                  "selected": True,"display": True,
+                  "columns":[],
+                    "column_structure": {
+                      "name": "years_of_experience",
+                      "user_given_new_name": "years_of_experience_Transformed",
+                      "datatype": "measure",
+                      "transformation_type": "log-transform"
+                    }
+                },
+                {
+                  "name": "Encoding_Dimensions",
+                  "displayName": "Perform Encoding",
+                  "selected": True,"display": True,
+                  "columns": [],
+                    "column_structure":
+                    {
+                      "name": "country",
+                      "new_column_prefix": "Encoded_",
+                      "datatype": "dimension",
+                      "Encoding_type": "One-hot Encoding"
+                    }
+                },
+                {
+                  "name": "return_character_count",
+                  "displayName": "return Character Count",
+                  "selected": True,"display": True,
+                  "columns": [],
+                    "column_structure":
+                    {
+                      "name": "Cities",
+                      "user_given_new_name": "Cities_char_count",
+                      "datatype": "dimension"
+                    }
+                },
+                {
+                  "name": "is_custom_string_in",
+                  "displayName": "Is custom string in",
+                  "selected": True,"display": True,
+                  "columns": [],
+                    "column_structure": {
+                      "name": "Cities",
+                      "user_given_new_name": "Cities_char_check",
+                      "datatype": "dimension",
+                      "User_given_character": "Delhi"
+                    }
+                },
+                {
+                  "name": "is_date_weekend",
+                  "displayName": "Is Date Weekend",
+                  "selected": True,"display": True,
+                  "columns": [],
+                    "column_structure":
+                    {
+                      "name": "dates1",
+                      "user_given_new_name": "is_weekend_dates1",
+                      "datatype": "datetime"
+                    }
+                },
+                {
+                  "name": "extract_time_feature",
+                  "displayName": "Extract Time Feature",
+                  "selected": True,"display": True,
+                  "columns": [],
+                    "column_structure":
+                    {
+                      "name": "dates2",
+                      "user_given_new_name": "is_weekend_dates2",
+                      "datatype": "datetime",
+                      "time_feature_to_extract": "month"
+                    }
+                },
+                {
+                  "name": "time_since",
+                  "displayName": "Time Since Some Event",
+                  "selected": True,"display": True,
+                  "columns": [],
+                    "column_structure":
+                    {
+                      "name": "dates3",
+                      "user_given_new_name": "time_since_dates3",
+                      "datatype": "datetime",
+                      "time_since": "21/05/2016"
+                    }
+                }
+            ]
+        }
+    }
+}
+
+feature_engineering_ml_settings = {
+      "name": "feature_engineering",
+      "displayName": "Feature Engineering",
+      "selected": True,
+      "slug": "",
+      "overall_settings": [
+        {
+          "name": "binning_all_measures",
+          "displayName": "Bin all Measures",
+          "selected": True,
+          "number_of_bins": 10,
+          "slug": "",
+        }],
+      "column_wise_settings": {
+        "level_creation_settings": {
+          "name": "Creating_New_Bins_or_Levels",
+          "displayName": "Create Bins Or Levels",
+          "selected": True,
+          "operations": [
+            {
+              "name": "create_equal_sized_bins",
+              "displayName": "Create Equal Sized Bins",
+              "selected": True,
+              "columns":[
+                {
+                  "name": "quantity",
+                  "name_after_binning": "Binned_quantity",
+                  "datatype": "measure",
+                  "number_of_bins": 10
+                }]
+
+            },
+            {
+              "name": "create_custom_bins",
+              "displayName": "Create Custom Bins",
+              "selected": True,
+              "columns":[
+                {
+                  "name": "age",
+                  "name_after_binning": "Custom_Binned_age",
+                  "datatype": "measure",
+                  "list_of_intervals": [10,20,30,40]
+                }]
+            },
+            {
+              "name": "create_new_levels",
+              "displayName": "Create Levels",
+              "selected": True,
+              "columns": [
+                {
+                  "name": "States",
+                  "name_after_binning": "States_Levels",
+                  "datatype": "dimension",
+                  "mapping_dict": {
+                    "South": [
+                      "Kerala", "Karnataka", "Tamil Nadu",
+                      "Andhra Pradesh"
+                      ],
+                    "North": [
+                      "MP", "UP", "HP", "J&K"
+                      ]
+                  }
+
+                }
+                ]
+
+            },
+            {
+              "name": "create_new_datetime_levels",
+              "displayName": "Create Datetime Levels",
+              "selected": True,
+              "columns": [
+                {
+                  "name": "Date_of_Birth",
+                  "name_after_binning": "Date_of_Birth_Levels",
+                  "datatype": "datetime",
+                  "mapping_dict": {
+                    "Quarter1": ["Start_date", "End_date"],
+                    "Quarter2": ["Start_date", "End_date"]
+                  }
+                }
+                ]
+            }]
+        },
+        "transformation_settings": {
+          "name": "Transformation_Settings",
+          "displayName": "Transform Variables",
+          "selected": True,
+          "operations": [
+            {
+              "name": "Replace_Values_With",
+              "displayName": "Replace Values With",
+              "selected": True,
+              "columns":[
+                {
+                 "name": "Salary",
+                 "user_given_new_name": "Salary_new",
+                 "datatype": "measure",
+                 "replace_by": "mean",
+                 "replace_values_in_range": ["lower_val", "upper_val"]
+                }]
+            },
+            {
+              "name": "Add_value_to",
+              "displayName": "Add Specific value",
+              "selected": True,
+              "columns":[
+                {
+                 "name": "age",
+                 "user_given_new_name": "age_added",
+                 "datatype": "measure",
+                 "value_to_be_added": 5
+                }]
+
+            },
+            {
+              "name": "Subtract_value_from",
+              "displayName": "Subtract Specific value",
+              "selected": True,
+              "columns":[
+                {
+                 "name": "height",
+                 "user_given_new_name": "height_subtracted",
+                 "datatype": "measure",
+                 "value_to_be_subtracted": 10
+                }]
+            },
+            {
+              "name": "Multiply_by_value",
+              "displayName": "Multiply by Specific value",
+              "selected": True,
+              "columns": [
+                {
+                 "name": "bonus_pay",
+                 "user_given_new_name": "bonus_pay_multiplied",
+                 "datatype": "measure",
+                 "value_to_be_multiplied": 10
+                }]
+            },
+            {
+              "name": "Divide_by_value",
+              "displayName": "Divide by Specific value",
+              "selected": True,
+              "columns": [
+                {
+                 "name": "tax",
+                 "user_given_new_name": "tax_divided",
+                 "datatype": "measure",
+                 "value_to_be_divided": 10
+                }]
+            },
+            {
+              "name": "Perform_Standardization",
+              "displayName": "Perform Standardization",
+              "selected": True,
+              "columns": [
+                {
+                  "name": "Marks_Scored",
+                  "user_given_new_name": "Marks_Scored_Standardized",
+                  "datatype": "measure",
+                  "standardization_type": "Min-Max Scaling"
+                }]
+            },
+            {
+              "name": "Variable_Transformation",
+              "displayName": "Variable Transformation",
+              "selected": True,
+              "columns":[
+                {
+                  "name": "years_of_experience",
+                  "user_given_new_name": "years_of_experience_Transformed",
+                  "datatype": "measure",
+                  "transformation_type": "log-transform"
+                }]
+            },
+            {
+              "name": "Encoding_Dimensions",
+              "displayName": "Perform Encoding",
+              "selected": True,
+              "columns": [
+                {
+                  "name": "country",
+                  "new_column_prefix": "Encoded_",
+                  "datatype": "dimension",
+                  "Encoding_type": "One-hot Encoding"
+                }]
+            },
+            {
+              "name": "return_character_count",
+              "displayName": "return Character Count",
+              "selected": True,
+              "columns": [
+                {
+                  "name": "Cities",
+                  "user_given_new_name": "Cities_char_count",
+                  "datatype": "dimension"
+                }]
+            },
+            {
+              "name": "is_custom_string_in",
+              "displayName": "Is custom string in",
+              "selected": True,
+              "columns": [
+                {
+                  "name": "Cities",
+                  "user_given_new_name": "Cities_char_check",
+                  "datatype": "dimension",
+                  "User_given_character": "Delhi"
+                }]
+            },
+            {
+              "name": "is_date_weekend",
+              "displayName": "Is Date Weekend",
+              "selected": True,
+              "columns": [
+                {
+                  "name": "dates1",
+                  "user_given_new_name": "is_weekend_dates1",
+                  "datatype": "datetime"
+                }]
+            },
+            {
+              "name": "extract_time_feature",
+              "displayName": "Extract Time Feature",
+              "selected": True,
+              "columns": [
+                {
+                  "name": "dates2",
+                  "user_given_new_name": "is_weekend_dates2",
+                  "datatype": "datetime",
+                  "time_feature_to_extract": "month"
+                }]
+            },
+            {
+              "name": "time_since",
+              "displayName": "Time Since Some Event",
+              "selected": True,
+              "columns": [
+                {
+                  "name": "dates3",
+                  "user_given_new_name": "time_since_dates3",
+                  "datatype": "datetime",
+                  "time_since": "21/05/2016"
+                }]
+            }
+            ]
+        }
+      }
+    }
