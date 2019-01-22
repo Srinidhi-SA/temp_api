@@ -22,6 +22,7 @@ export class Bins extends React.Component {
   super(props);
   console.log("Bins constructor method is called...");
   }
+}
 
   componentWillMount() {
     console.log("Bins componentWillMount method is called...");
