@@ -629,7 +629,7 @@ feture_engineering_static = {
                   "displayName": "Perform Encoding",
                   "selected": True,
                   "columns": [],
-                    "display": True,
+                    "display": False,
                     "column_structure":
                     {
                       "name": "country",
@@ -643,7 +643,7 @@ feture_engineering_static = {
                   "displayName": "return Character Count",
                   "selected": True,
                   "columns": [],
-                    "display": True,
+                    "display": False,
                     "column_structure":
                     {
                       "name": "Cities",
@@ -656,7 +656,7 @@ feture_engineering_static = {
                   "displayName": "Is custom string in",
                   "selected": True,
                   "columns": [],
-                    "display": True,
+                    "display": False,
                     "column_structure": {
                       "name": "Cities",
                       "user_given_new_name": "Cities_char_check",
@@ -668,7 +668,7 @@ feture_engineering_static = {
                   "name": "is_date_weekend",
                   "displayName": "Is Date Weekend",
                   "selected": True,
-                    "display": True,
+                    "display": False,
                   "columns": [],
                     "column_structure":
                     {
@@ -681,7 +681,7 @@ feture_engineering_static = {
                   "name": "extract_time_feature",
                   "displayName": "Extract Time Feature",
                   "selected": True,
-                    "display": True,
+                    "display": False,
                   "columns": [],
                     "column_structure":
                     {
@@ -695,7 +695,7 @@ feture_engineering_static = {
                   "name": "time_since",
                   "displayName": "Time Since Some Event",
                   "selected": True,
-                    "display": True,
+                    "display": False,
                   "columns": [],
                     "column_structure":
                     {
@@ -774,7 +774,7 @@ feture_engineering_static = {
                 {
                     "name": "Replace_Values_With",
                     "displayName": "Replace Values With",
-                    "selected": True,"display": True,
+                    "selected": True,"display": False,
                     "columns":[],
                     "column_structure": {
                          "name": "Salary",
@@ -787,7 +787,7 @@ feture_engineering_static = {
                 {
                     "name": "Add_value_to",
                     "displayName": "Add Specific value",
-                    "selected": True,"display": True,
+                    "selected": True,"display": False,
                     "columns":[],
                     "column_structure": {
                          "name": "age",
@@ -799,7 +799,7 @@ feture_engineering_static = {
                 {
                     "name": "Subtract_value_from",
                     "displayName": "Subtract Specific value",
-                    "selected": True,"display": True,
+                    "selected": True,"display": False,
                     "columns":[],
                     "column_structure": {
                         "name": "height",
@@ -811,7 +811,7 @@ feture_engineering_static = {
                 {
                     "name": "Multiply_by_value",
                     "displayName": "Multiply by Specific value",
-                    "selected": True,"display": True,
+                    "selected": True,"display": False,
                     "columns": [],
                     "column_structure": {
                         "name": "bonus_pay",
@@ -823,7 +823,7 @@ feture_engineering_static = {
                 {
                     "name": "Divide_by_value",
                     "displayName": "Divide by Specific value",
-                    "selected": True,"display": True,
+                    "selected": True,"display": False,
                     "columns": [],
                     "column_structure": {
                      "name": "tax",
@@ -835,7 +835,7 @@ feture_engineering_static = {
                 {
                     "name": "Perform_Standardization",
                     "displayName": "Perform Standardization",
-                    "selected": True,"display": True,
+                    "selected": True,"display": False,
                     "columns": [],
                     "column_structure": {
                       "name": "Marks_Scored",
@@ -847,7 +847,7 @@ feture_engineering_static = {
                 {
                   "name": "Variable_Transformation",
                   "displayName": "Variable Transformation",
-                  "selected": True,"display": True,
+                  "selected": True,"display": False,
                   "columns":[],
                     "column_structure": {
                       "name": "years_of_experience",
@@ -896,7 +896,7 @@ feture_engineering_static = {
                 {
                   "name": "is_date_weekend",
                   "displayName": "Is Date Weekend",
-                  "selected": True,"display": True,
+                  "selected": True,"display": False,
                   "columns": [],
                     "column_structure":
                     {
@@ -908,7 +908,7 @@ feture_engineering_static = {
                 {
                   "name": "extract_time_feature",
                   "displayName": "Extract Time Feature",
-                  "selected": True,"display": True,
+                  "selected": True,"display": False,
                   "columns": [],
                     "column_structure":
                     {
@@ -921,7 +921,7 @@ feture_engineering_static = {
                 {
                   "name": "time_since",
                   "displayName": "Time Since Some Event",
-                  "selected": True,"display": True,
+                  "selected": True,"display": False,
                   "columns": [],
                     "column_structure":
                     {
@@ -999,7 +999,7 @@ feture_engineering_static = {
                 {
                     "name": "Replace_Values_With",
                     "displayName": "Replace Values With",
-                    "selected": True,"display": True,
+                    "selected": True,"display": False,
                     "columns":[],
                     "column_structure": {
                          "name": "Salary",
@@ -1012,7 +1012,7 @@ feture_engineering_static = {
                 {
                     "name": "Add_value_to",
                     "displayName": "Add Specific value",
-                    "selected": True,"display": True,
+                    "selected": True,"display": False,
                     "columns":[],
                     "column_structure": {
                          "name": "age",
@@ -1024,7 +1024,7 @@ feture_engineering_static = {
                 {
                     "name": "Subtract_value_from",
                     "displayName": "Subtract Specific value",
-                    "selected": True,"display": True,
+                    "selected": True,"display": False,
                     "columns":[],
                     "column_structure": {
                         "name": "height",
@@ -1036,7 +1036,7 @@ feture_engineering_static = {
                 {
                     "name": "Multiply_by_value",
                     "displayName": "Multiply by Specific value",
-                    "selected": True,"display": True,
+                    "selected": True,"display": False,
                     "columns": [],
                     "column_structure": {
                         "name": "bonus_pay",
@@ -1048,7 +1048,7 @@ feture_engineering_static = {
                 {
                     "name": "Divide_by_value",
                     "displayName": "Divide by Specific value",
-                    "selected": True,"display": True,
+                    "selected": True,"display": False,
                     "columns": [],
                     "column_structure": {
                      "name": "tax",
@@ -1060,7 +1060,7 @@ feture_engineering_static = {
                 {
                     "name": "Perform_Standardization",
                     "displayName": "Perform Standardization",
-                    "selected": True,"display": True,
+                    "selected": True,"display": False,
                     "columns": [],
                     "column_structure": {
                       "name": "Marks_Scored",
@@ -1072,7 +1072,7 @@ feture_engineering_static = {
                 {
                   "name": "Variable_Transformation",
                   "displayName": "Variable Transformation",
-                  "selected": True,"display": True,
+                  "selected": True,"display": False,
                   "columns":[],
                     "column_structure": {
                       "name": "years_of_experience",
@@ -1084,7 +1084,7 @@ feture_engineering_static = {
                 {
                   "name": "Encoding_Dimensions",
                   "displayName": "Perform Encoding",
-                  "selected": True,"display": True,
+                  "selected": True,"display": False,
                   "columns": [],
                     "column_structure":
                     {
@@ -1097,7 +1097,7 @@ feture_engineering_static = {
                 {
                   "name": "return_character_count",
                   "displayName": "return Character Count",
-                  "selected": True,"display": True,
+                  "selected": True,"display": False,
                   "columns": [],
                     "column_structure":
                     {
@@ -1109,7 +1109,7 @@ feture_engineering_static = {
                 {
                   "name": "is_custom_string_in",
                   "displayName": "Is custom string in",
-                  "selected": True,"display": True,
+                  "selected": True,"display": False,
                   "columns": [],
                     "column_structure": {
                       "name": "Cities",
