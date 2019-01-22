@@ -72,7 +72,7 @@ console.log("FeatureEngineering componentWillMount method is called...");
                <tr>
                   <td> {item.name}</td>
                   <td> {item.columnType}</td>
-                  <td> <Button onClick={this.openBinsOrLevelsModal.bind(this, item)} bsStyle="primary">Create bins or levels</Button></td>
+                  <td> <Button onClick={this.openBinsOrLevelsModal.bind(this, item)} bsStyle="primary">Create { (item.columnType == "measure")? "Bins" : "Levels" }</Button></td>
                   <td> <Button onClick={this.openTransformColumnModal.bind(this,item)} bsStyle="primary">Transform</Button></td>
                 </tr>  );
               })
@@ -110,12 +110,13 @@ console.log("FeatureEngineering componentWillMount method is called...");
         <div id="transformColumnPopup" role="dialog" className="modal fade modal-colored-header">
           <Modal show={this.props.transferColumnShowModal} onHide={this.closeTransformColumnModal.bind(this)} dialogClassName="modal-colored-header">
             <Modal.Header closeButton>
-              <h3 className="modal-title">Transfer column</h3>
+              <h3 className="modal-title">Transform column</h3>
             </Modal.Header>
             <Modal.Body>
-              <div class="form-group">
+              {/* <div class="form-group">
               </div>
-              <div id="errorMsgs" className="text-danger"></div>
+              <div id="errorMsgs" className="text-danger"></div> */}
+            
             </Modal.Body>
             <Modal.Footer>
               <Button onClick={this.closeTransformColumnModal.bind(this)}>Cancel</Button>
@@ -194,7 +195,7 @@ console.log("FeatureEngineering componentWillMount method is called...");
                                 <div className="navbar">
                                     <ul className="nav navbar-nav navbar-right">
                                         <li className="text-right">
-                                          <Button onClick={this.proceedFeatureEngineering.bind(this)} bsStyle="primary">{this.buttons.proceed.text} </Button>
+                                          <Button onClick={this.proceedFeatureEngineering.bind(this)} bsStyle="primary">{this.buttons.proceed.text} <i class="fa fa-angle-double-right"></i></Button>
                                         </li>
                                       </ul>
                                     </div>
