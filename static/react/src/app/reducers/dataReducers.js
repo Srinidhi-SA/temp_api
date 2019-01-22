@@ -792,13 +792,13 @@ isSpecifyIntervalsEnabled:false,
             break;
 
             case "SAVE_BIN_LEVEL_TRANSFORMATION_DATA":
-            var curFeData = state.featureEngineering
-            var curSlugData = curFeData[action.coloumnSlug];
-            if(curSlugData == undefined){
-              curSlugData = {}
-            }
-            curSlugData[action.actionType] = action.userData;
-            curFeData[action.coloumnSlug] = curSlugData;
+              var curFeData = state.featureEngineering
+              var curSlugData = curFeData[action.coloumnSlug];
+              if(curSlugData == undefined){
+                curSlugData = {}
+              }
+              curSlugData[action.actionType] = action.userData;
+              curFeData[action.coloumnSlug] = curSlugData;
             return{
                ...state,
               featureEngineering : curFeData

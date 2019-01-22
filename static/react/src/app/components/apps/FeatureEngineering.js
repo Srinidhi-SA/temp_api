@@ -79,6 +79,7 @@ console.log("FeatureEngineering componentWillMount method is called...");
   handleCreateClicked(actionType, event){
     this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, this.state[this.props.selectedItem.slug][actionType]));
     this.closeBinsOrLevelsModal();
+    this.closeTransformColumnModal();
   }
 
 
