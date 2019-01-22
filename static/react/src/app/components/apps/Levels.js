@@ -21,7 +21,6 @@ import {
     selectedItem: store.datasets.selectedItem,
   };
 })
-
 export class Levels extends React.Component {
   constructor(props) {
     super(props);
