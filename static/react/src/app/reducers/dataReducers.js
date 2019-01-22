@@ -732,7 +732,8 @@ selectedItem:{},
 
                 ...state,
 
-                transferColumnShowModal: true
+                transferColumnShowModal: true,
+                selectedItem:action.selectedItem
 
               }
 
