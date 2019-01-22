@@ -1,8 +1,8 @@
 export function openBinsOrLevelsModalAction(selectedItem) {
-    return {
-           type: "BINS_LEVELS_SHOW_MODAL",
-           selectedItem
-       }
+  return {
+    type: "BINS_LEVELS_SHOW_MODAL",
+    selectedItem
+  }
 }
 
 

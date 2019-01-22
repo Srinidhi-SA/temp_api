@@ -716,19 +716,12 @@ selectedItem:{},
             break;
 
             case "BINS_LEVELS_HIDE_MODAL":
-
             {
-
               return {
-
                 ...state,
-
                 binsOrLevelsShowModal: false
-
               }
-
             }
-
             break;
 
            case "TRANSFORM_COLUMN_SHOW_MODAL":
