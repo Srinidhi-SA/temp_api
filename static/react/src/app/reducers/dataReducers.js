@@ -55,6 +55,7 @@ export default function reducer(state = {
   createScoreShowVariables:false,
   missingValueTreatment:{},
   outlierRemoval:{},
+  featureEngineering:{},
   selectedVariables : {},
   removeDuplicates :{},
   binsOrLevelsShowModal:false,
@@ -64,7 +65,8 @@ transferColumnShowModal:false,
 selectedBinsOrLevelsTab:"Bins",
 
 selectedItem:{},
-
+isNoOfBinsEnabled:false,
+isSpecifyIntervalsEnabled:false,
 }, action) {
   console.log("In DATA reducer!!");
   console.log(action);
@@ -778,6 +780,55 @@ selectedItem:{},
             }
 
             break;
+            case "NUM_OF_BINS_SPECIFY_INTERVALS":
+
+            {
+
+              return {
+
+                ...state,
+
+                isNoOfBinsEnabled: action.isNoOfBinsEnabled,
+                isSpecifyIntervalsEnabled: action.isSpecifyIntervalsEnabled
+
+              }
+
+            }
+
+            break;
+
+            case "SAVE_BIN_LEVEL_TRANSFORMATION_DATA":
+            var curFeData = state.featureEngineering
+            var curSlugData = curFeData[action.coloumnSlug];
+            if(curSlugData == undefined){
+              curSlugData = {}
+            }
+            curSlugData[action.actionType] = action.userData;
+            curFeData[action.coloumnSlug] = curSlugData;
+            return{
+               ...state,
+              featureEngineering : curFeData
+            }
+            break;
+
+            // case "SPECIFY_INTERVALS_ENABLED":
+            //
+            // {
+            //
+            //   return {
+            //
+            //     ...state,
+            //
+            //     isSpecifyIntervalsEnabled: action.isSpecifyIntervalsEnabled
+            //
+            //   }
+            //
+            // }
+            //
+            // break;
+
+
+
 
 
   }

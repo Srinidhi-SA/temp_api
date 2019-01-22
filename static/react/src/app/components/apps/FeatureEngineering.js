@@ -8,6 +8,7 @@ openBinsOrLevelsModalAction,
   openTransformColumnModalAction,
   closeTransformColumnModalAction,
   selectedBinsOrLevelsTabAction,
+  saveBinLevelTransformationValuesAction,
 } from "../../actions/featureEngineeringActions";
 
 import { getDataSetPreview } from "../../actions/dataActions";
@@ -31,6 +32,7 @@ return {
     selectedBinsOrLevelsTab: store.datasets.selectedBinsOrLevelsTab,
     selectedItem: store.datasets.selectedItem,
 
+
   };
 
 })
@@ -40,7 +42,10 @@ export class FeatureEngineering extends React.Component {
   super(props);
   console.log("FeatureEngineering constructor method is called...");
   console.log(props);
+
   this.buttons = {};
+  this.state = {};
+  this.pickValue = this.pickValue.bind(this);
 
 }
 
@@ -56,20 +61,42 @@ console.log("FeatureEngineering componentWillMount method is called...");
       text: "Proceed"
     };
   }
+    pickValuesAndStoreLocally(slug, inputId, event){
+
+  }
+  pickValue(actionType, event){
+    if(this.state[this.props.selectedItem.slug] == undefined){
+      this.state[this.props.selectedItem.slug] = {}
+    }
+    if(this.state[this.props.selectedItem.slug][actionType] == undefined){
+      this.state[this.props.selectedItem.slug][actionType] = {}
+    }
+
+    this.state[this.props.selectedItem.slug][actionType][event.target.name] = event.target.value;
+  }
+
+  handleCreateClicked(actionType, event){
+    this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, this.state[this.props.selectedItem.slug][actionType]));
+    this.closeBinsOrLevelsModal();
+  }
+
 
 
 
   render() {
     console.log("FeatureEngineering render method is called...");
-    debugger;
+    // debugger;
     var feHtml = "";
     var binsOrLevelsPopup = "";
     var transformColumnPopup = "";
     let typeofBinningSelectBox = null;
+    var values = null;
+
+
     if (this.props.dataPreview != null) {
-            feHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
+            feHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map((item,key )=> {
        return (
-               <tr>
+               <tr key={key}>
                   <td> {item.name}</td>
                   <td> {item.columnType}</td>
                   <td> <Button onClick={this.openBinsOrLevelsModal.bind(this, item)} bsStyle="primary">Create { (item.columnType == "measure")? "Bins" : "Levels" }</Button></td>
@@ -77,6 +104,20 @@ console.log("FeatureEngineering componentWillMount method is called...");
                 </tr>  );
               })
             }
+
+            if(this.props.selectedItem.columnType == "measure"){
+              values= <Bins parentPickValue={this.pickValue}/>
+            }
+            else if(this.props.selectedItem.columnType == "dimension")
+            {
+              values= <Levels/>
+            }
+            else
+            {
+              values=""
+            }
+
+
 
 
 
@@ -93,13 +134,15 @@ console.log("FeatureEngineering componentWillMount method is called...");
                 <Modal.Body>
                   <div>
                       <h4>What you want to do?</h4>
-                      { (this.props.selectedItem.columnType == "measure")? <Bins /> : <Levels /> }
+                      {/* { (this.props.selectedItem.columnType == "measure")? <Bins /> : <Levels /> } */}
+                    {values
+                    }
                 </div>
                 <div id="errorMsgs" className="text-danger"></div>
               </Modal.Body>
               <Modal.Footer>
                 <Button onClick={this.closeBinsOrLevelsModal.bind(this)}>Cancel</Button>
-                <Button bsStyle="primary" onClick={this.createBinsorLevels.bind(this)}>Create</Button>
+                <Button bsStyle="primary" onClick={this.handleCreateClicked.bind(this, "binData")}>Create</Button>
               </Modal.Footer>
             </Modal>
           </div>
@@ -116,7 +159,79 @@ console.log("FeatureEngineering componentWillMount method is called...");
               {/* <div class="form-group">
               </div>
               <div id="errorMsgs" className="text-danger"></div> */}
-            
+
+              <h4>What would you like to do with  ""column?</h4>
+              <p>Please select any of the options provided below that will help in transforming the chosen column into multiple new features.
+                Each option will create an additional feature derived out of the original column.</p>
+              <hr />
+
+
+
+              <form class="form_withrowlabels">
+                <div class="row form-group">
+                  <div class="col-md-5 col-sm-5">
+                    <div class="ma-checkbox inline">
+                      <input id="qnty_chk1" type="checkbox" class="needsclick"/>
+                      <label for="qnty_chk1">Replace values where Quantity is:</label>
+                    </div>
+                  </div>
+                  <div class="col-md-3 col-sm-3">
+                    <input type="text" id="txt_qnt1" class="form-control" placeholder="Value" />
+                  </div>
+                  <label for="txt_qValue1" class="col-md-1 col-sm-1 control-label xs-p-0 xs-mt-5 text-right">With</label>
+                  <div class="col-md-3 col-sm-3">
+                    <select class="form-control" id="txt_qValue1">
+                      <option>Mean</option>
+                      <option>Median</option>
+                      <option>Mode</option>
+                    </select>
+                  </div>
+                </div>
+
+
+                <div class="row form-group">
+                  <div class="col-md-5 col-sm-5">
+                    <div class="ma-checkbox inline">
+                      <input id="qnty_chk6" type="checkbox" class="needsclick"/>
+                      <label for="qnty_chk6">Perform standardization:</label>
+                    </div>
+                  </div>
+                  <div class="col-md-3 col-sm-3">
+                    <select class="form-control" id="drp_qnt6">
+                      <option selected>Min-Max Scaling</option>
+                      <option>Log Transformation</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="row form-group">
+                  <div class="col-md-5 col-sm-5">
+                    <div class="ma-checkbox inline">
+                      <input id="qnty_chk7" type="checkbox" class="needsclick"/>
+                      <label for="qnty_chk7">Transform variable using:</label>
+                    </div>
+                  </div>
+                  <div class="col-md-3 col-sm-3">
+                    <select class="form-control" id="drp_qnt7">
+                      <option>Min-Max Scaling</option>
+                      <option selected>Log Transformation</option>
+                    </select>
+                  </div>
+                </div>
+              </form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             </Modal.Body>
             <Modal.Footer>
               <Button onClick={this.closeTransformColumnModal.bind(this)}>Cancel</Button>
@@ -176,7 +291,7 @@ console.log("FeatureEngineering componentWillMount method is called...");
                <div className="table-responsive ">
                   <table className="table table-striped table-bordered break-if-longText">
                     <thead>
-                      <tr>
+                      <tr key="trKey">
                         <th>Variable name</th>
                         <th>Data type</th>
                         <th></th>
@@ -227,7 +342,13 @@ openBinsOrLevelsModal(item) {
     console.log(`selected ${selectedKey}`);
     this.props.dispatch(selectedBinsOrLevelsTabAction(selectedKey));
   }
-  createBinsorLevels() {  }
+  // createBins(slug,actionType,userData) {
+  // this.props.dispatch(saveBinLevelTransformationValuesAction(slug, actionType, userData);
+  // }
+
+    createLevels(slug) {
+      this.props.dispatch();
+    }
 
   createTransferColumn() {  }
   proceedFeatureEngineering() {  }

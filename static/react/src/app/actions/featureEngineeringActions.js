@@ -54,3 +54,27 @@ export function selectedBinsOrLevelsTabAction(selectedBinsOrLevelsTab) {
        }
 
 }
+//
+export function binningOptionsOnChangeAction(isNoOfBinsEnabled,isSpecifyIntervalsEnabled) {
+
+    return {
+
+           type: "NUM_OF_BINS_SPECIFY_INTERVALS",
+
+           isNoOfBinsEnabled,
+           isSpecifyIntervalsEnabled
+       }
+
+}
+//
+
+export function saveBinLevelTransformationValuesAction(coloumnSlug, actionType, userData){
+  return {
+
+         type: "SAVE_BIN_LEVEL_TRANSFORMATION_DATA",
+         coloumnSlug,
+         userData,
+         actionType
+     }
+
+}
