@@ -90,7 +90,7 @@ console.log("FeatureEngineering componentWillMount method is called...");
     var binsOrLevelsPopup = "";
     var transformColumnPopup = "";
     let typeofBinningSelectBox = null;
-    var values = null;
+    var binOrLevels = "";
 
 
     if (this.props.dataPreview != null) {
@@ -106,15 +106,15 @@ console.log("FeatureEngineering componentWillMount method is called...");
             }
 
             if(this.props.selectedItem.columnType == "measure"){
-              values= <Bins parentPickValue={this.pickValue}/>
+              binOrLevels= <Bins parentPickValue={this.pickValue}/>
             }
             else if(this.props.selectedItem.columnType == "dimension")
             {
-              values= <Levels/>
+              binOrLevels= <Levels/>
             }
             else
             {
-              values=""
+              binOrLevels=""
             }
 
 
@@ -135,8 +135,7 @@ console.log("FeatureEngineering componentWillMount method is called...");
                   <div>
                       <h4>What you want to do?</h4>
                       {/* { (this.props.selectedItem.columnType == "measure")? <Bins /> : <Levels /> } */}
-                    {values
-                    }
+                    {binOrLevels}
                 </div>
                 <div id="errorMsgs" className="text-danger"></div>
               </Modal.Body>
@@ -180,7 +179,7 @@ console.log("FeatureEngineering componentWillMount method is called...");
                   </div>
                   <label for="txt_qValue1" class="col-md-1 col-sm-1 control-label xs-p-0 xs-mt-5 text-right">With</label>
                   <div class="col-md-3 col-sm-3">
-                    <select class="form-control" id="txt_qValue1">
+                    <select class="form-control" id="txt_qValue1" >
                       <option>Mean</option>
                       <option>Median</option>
                       <option>Mode</option>
