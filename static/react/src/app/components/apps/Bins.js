@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import { Scrollbars } from 'react-custom-scrollbars';
 import { Button, Dropdown, Menu, MenuItem, Modal, Nav, NavItem, Tab, Row, Col } from "react-bootstrap";
 import {
-<<<<<<< HEAD
   openBinsOrLevelsModalAction,
   closeBinsOrLevelsModalAction,
   openTransformColumnModalAction,
@@ -12,26 +11,13 @@ import {
 } from "../../actions/dataActions";
 
 @connect((store) => {
-  return {
-    login_response: store.login.login_response,
-    selectedItem: store.datasets.selectedItem,
-  };
-=======
-    openBinsOrLevelsModalAction,
-    closeBinsOrLevelsModalAction,
-    openTransformColumnModalAction,
-    closeTransformColumnModalAction,
-    selectedBinsOrLevelsTabAction,
-} from "../../actions/dataActions";
-@connect((store) => {
 return {
 login_response: store.login.login_response,
 selectedItem: store.datasets.selectedItem,
 };
->>>>>>> 48c9331190855956612adce3b0581a76efb1f87e
+
 })
 export class Bins extends React.Component {
-<<<<<<< HEAD
   constructor(props) {
   super(props);
   console.log("Bins constructor method is called...");
@@ -97,7 +83,7 @@ export class Bins extends React.Component {
         </Tab.Container>
       </div>
     );
-=======
+    
 constructor(props) {
   super(props);
           console.log("Bins constructor method is called...");
