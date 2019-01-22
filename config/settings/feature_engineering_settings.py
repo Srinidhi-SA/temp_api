@@ -523,33 +523,6 @@ feture_engineering_static = {
                       "datatype": "measure",
                       "list_of_intervals": [10,20,30,40]
                     }
-                },
-                {
-                    "name": "create_new_levels",
-                    "displayName": "Create Levels",
-                    "selected": True,
-                    "columns": [],
-                    "display": True,
-                    "columns_structure": {
-                        "name": "States",
-                        "name_after_binning": "States_Levels",
-                        "datatype": "dimension",
-                        "mapping_dict": {}
-                    }
-
-                },
-                {
-                    "name": "create_new_datetime_levels",
-                    "displayName": "Create Datetime Levels",
-                    "selected": True,
-                    "columns": [],
-                    "display": True,
-                    "column_structure": {
-                        "name": "Date_of_Birth",
-                        "name_after_binning": "Date_of_Birth_Levels",
-                        "datatype": "datetime",
-                        "mapping_dict": {}
-                    }
                 }
           ],
         },
@@ -740,13 +713,13 @@ feture_engineering_static = {
             "name": "Creating_New_Bins_or_Levels",
             "displayName": "Create Bins Or Levels",
             "selected": True,
-"display": True,
+            "display": True,
             "operations": [
                 {
                     "name": "create_equal_sized_bins",
                     "displayName": "Create Equal Sized Bins",
                     "selected": True,
-                    "columns":[],"display": True,
+                    "columns":[],"display": False,
                     "column_structure": {
                           "name": "quantity",
                           "modified_column_name": "Binned_quantity",
@@ -757,7 +730,7 @@ feture_engineering_static = {
                 {
                     "name": "create_custom_bins",
                     "displayName": "Create Custom Bins",
-                    "selected": True,"display": True,
+                    "selected": True,"display": False,
                     "columns":[],
                     "columns_structure": {
                       "name": "age",
@@ -782,7 +755,7 @@ feture_engineering_static = {
                 {
                     "name": "create_new_datetime_levels",
                     "displayName": "Create Datetime Levels",
-                    "selected": True,"display": True,
+                    "selected": True,"display": False,
                     "columns": [],
                     "column_structure": {
                         "name": "Date_of_Birth",
@@ -970,7 +943,7 @@ feture_engineering_static = {
                 {
                     "name": "create_equal_sized_bins",
                     "displayName": "Create Equal Sized Bins",
-                    "selected": True,"display": True,
+                    "selected": True,"display": False,
                     "columns":[],
                     "column_structure": {
                           "name": "quantity",
@@ -982,7 +955,7 @@ feture_engineering_static = {
                 {
                     "name": "create_custom_bins",
                     "displayName": "Create Custom Bins",
-                    "selected": True,"display": True,
+                    "selected": True,"display": False,
                     "columns":[],
                     "columns_structure": {
                       "name": "age",
@@ -994,7 +967,7 @@ feture_engineering_static = {
                 {
                     "name": "create_new_levels",
                     "displayName": "Create Levels",
-                    "selected": True,"display": True,
+                    "selected": True,"display": False,
                     "columns": [],
                     "columns_structure": {
                         "name": "States",
