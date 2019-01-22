@@ -15,6 +15,7 @@ import { getDataSetPreview } from "../../actions/dataActions";
 
 import { Bins } from "./Bins";
 import { Levels } from "./Levels";
+import { Transform } from "./Transform";
 
 @connect((store) => {
 return {
@@ -155,86 +156,11 @@ console.log("FeatureEngineering componentWillMount method is called...");
               <h3 className="modal-title">Transform column</h3>
             </Modal.Header>
             <Modal.Body>
-              {/* <div class="form-group">
-              </div>
-              <div id="errorMsgs" className="text-danger"></div> */}
-
-              <h4>What would you like to do with  ""column?</h4>
-              <p>Please select any of the options provided below that will help in transforming the chosen column into multiple new features.
-                Each option will create an additional feature derived out of the original column.</p>
-              <hr />
-
-
-
-              <form class="form_withrowlabels">
-                <div class="row form-group">
-                  <div class="col-md-5 col-sm-5">
-                    <div class="ma-checkbox inline">
-                      <input id="qnty_chk1" type="checkbox" class="needsclick"/>
-                      <label for="qnty_chk1">Replace values where Quantity is:</label>
-                    </div>
-                  </div>
-                  <div class="col-md-3 col-sm-3">
-                    <input type="text" id="txt_qnt1" class="form-control" placeholder="Value" />
-                  </div>
-                  <label for="txt_qValue1" class="col-md-1 col-sm-1 control-label xs-p-0 xs-mt-5 text-right">With</label>
-                  <div class="col-md-3 col-sm-3">
-                    <select class="form-control" id="txt_qValue1" >
-                      <option>Mean</option>
-                      <option>Median</option>
-                      <option>Mode</option>
-                    </select>
-                  </div>
-                </div>
-
-
-                <div class="row form-group">
-                  <div class="col-md-5 col-sm-5">
-                    <div class="ma-checkbox inline">
-                      <input id="qnty_chk6" type="checkbox" class="needsclick"/>
-                      <label for="qnty_chk6">Perform standardization:</label>
-                    </div>
-                  </div>
-                  <div class="col-md-3 col-sm-3">
-                    <select class="form-control" id="drp_qnt6">
-                      <option selected>Min-Max Scaling</option>
-                      <option>Log Transformation</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="row form-group">
-                  <div class="col-md-5 col-sm-5">
-                    <div class="ma-checkbox inline">
-                      <input id="qnty_chk7" type="checkbox" class="needsclick"/>
-                      <label for="qnty_chk7">Transform variable using:</label>
-                    </div>
-                  </div>
-                  <div class="col-md-3 col-sm-3">
-                    <select class="form-control" id="drp_qnt7">
-                      <option>Min-Max Scaling</option>
-                      <option selected>Log Transformation</option>
-                    </select>
-                  </div>
-                </div>
-              </form>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+              {<Transform parentPickValue={this.pickValue} />}
             </Modal.Body>
             <Modal.Footer>
               <Button onClick={this.closeTransformColumnModal.bind(this)}>Cancel</Button>
-              <Button bsStyle="primary" onClick={this.createTransferColumn.bind(this)}>Create</Button>
+              <Button bsStyle="primary" onClick={this.handleCreateClicked.bind(this,"transformationData")}>Create</Button>
             </Modal.Footer>
           </Modal>
         </div>
@@ -332,7 +258,7 @@ openBinsOrLevelsModal(item) {
     this.props.dispatch(closeBinsOrLevelsModalAction());
   }
   openTransformColumnModal(item) {
-    this.props.dispatch(openTransformColumnModalAction());
+    this.props.dispatch(openTransformColumnModalAction(item));
   }
   closeTransformColumnModal() {
     this.props.dispatch(closeTransformColumnModalAction());

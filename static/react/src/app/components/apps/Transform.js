@@ -22,10 +22,15 @@ export class Transform extends React.Component {
   constructor(props) {
     super(props);
     console.log("Transform constructor method is called...");
+    this.pickValue = this.pickValue.bind(this);
+
   }
 
   componentWillMount() {
     console.log("Transform componentWillMount method is called...");
+  }
+  pickValue(event){
+    this.props.parentPickValue("transformationData", event);
   }
 
   render() {
@@ -37,7 +42,7 @@ export class Transform extends React.Component {
       if(item.display){
         return (
           <div class="ma-checkbox inline">
-            <input id={item.name} type="checkbox" class="needsclick"/>
+            <input id={item.name} name={item.name} type="checkbox" class="needsclick" onInput={this.pickValue} onChange={this.pickValue}/>
             <label for={item.name}>{item.displayName}:</label>
           </div>
         );
@@ -75,7 +80,7 @@ export class Transform extends React.Component {
                     {mtransform}
                 </div>
                 <div class="col-md-3 col-sm-3">
-                  <input type="text" id="txt_qnt1" class="form-control" placeholder="Value" />
+                  <input type="text" id="txt_qnt1" name="repaceWithValue" onInput={this.pickValue} class="form-control" placeholder="Value" />
                 </div>
                 <label for="txt_qValue1" class="col-md-1 col-sm-1 control-label xs-p-0 xs-mt-5 text-right">With</label>
                 <div class="col-md-3 col-sm-3">
