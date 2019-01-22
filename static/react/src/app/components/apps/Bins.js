@@ -144,6 +144,5 @@ bins =
   </Tab.Container>
   </div>
   );
->>>>>>> 48c9331190855956612adce3b0581a76efb1f87e
   }
 }
