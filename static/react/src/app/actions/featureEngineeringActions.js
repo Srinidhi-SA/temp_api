@@ -1,8 +1,8 @@
 export function openBinsOrLevelsModalAction(selectedItem) {
-    return {
-           type: "BINS_LEVELS_SHOW_MODAL",
-           selectedItem
-       }
+  return {
+    type: "BINS_LEVELS_SHOW_MODAL",
+    selectedItem
+  }
 }
 
 
@@ -19,12 +19,12 @@ export function closeBinsOrLevelsModalAction() {
 
 
 
-export function openTransformColumnModalAction() {
+export function openTransformColumnModalAction(selectedItem) {
 
     return {
 
            type: "TRANSFORM_COLUMN_SHOW_MODAL",
-
+           selectedItem
        }
 
 }

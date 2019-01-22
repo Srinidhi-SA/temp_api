@@ -718,19 +718,12 @@ isSpecifyIntervalsEnabled:false,
             break;
 
             case "BINS_LEVELS_HIDE_MODAL":
-
             {
-
               return {
-
                 ...state,
-
                 binsOrLevelsShowModal: false
-
               }
-
             }
-
             break;
 
            case "TRANSFORM_COLUMN_SHOW_MODAL":
@@ -741,7 +734,8 @@ isSpecifyIntervalsEnabled:false,
 
                 ...state,
 
-                transferColumnShowModal: true
+                transferColumnShowModal: true,
+                selectedItem:action.selectedItem
 
               }
 
