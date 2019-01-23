@@ -547,7 +547,7 @@ feture_engineering_static = {
                     }
                 },
                 {
-                    "name": "Add_value_to",
+                    "name": "add_value_to",
                     "displayName": "Add Specific value",
                     "selected": True,
                     "columns":[],
@@ -560,7 +560,7 @@ feture_engineering_static = {
                     }
                 },
                 {
-                    "name": "Subtract_value_from",
+                    "name": "subtract_value_from",
                     "displayName": "Subtract Specific value",
                     "selected": True,
                     "columns":[],
@@ -573,7 +573,7 @@ feture_engineering_static = {
                         }
                 },
                 {
-                    "name": "Multiply_by_value",
+                    "name": "multiply_by_value",
                     "displayName": "Multiply by Specific value",
                     "selected": True,
                     "columns": [],
@@ -586,7 +586,7 @@ feture_engineering_static = {
                     }
                 },
                 {
-                    "name": "Divide_by_value",
+                    "name": "divide_by_value",
                     "displayName": "Divide by Specific value",
                     "selected": True,
                     "columns": [],
@@ -599,7 +599,7 @@ feture_engineering_static = {
                     }
                 },
                 {
-                    "name": "Perform_Standardization",
+                    "name": "perform_standardization",
                     "displayName": "Perform Standardization",
                     "selected": True,
                     "columns": [],
@@ -612,7 +612,7 @@ feture_engineering_static = {
                     }
                 },
                 {
-                  "name": "Variable_Transformation",
+                  "name": "variable_transformation",
                   "displayName": "Variable Transformation",
                   "selected": True,
                     "display": True,
@@ -625,7 +625,7 @@ feture_engineering_static = {
                     }
                 },
                 {
-                  "name": "Encoding_Dimensions",
+                  "name": "encoding_dimensions",
                   "displayName": "Perform Encoding",
                   "selected": True,
                   "columns": [],
@@ -710,7 +710,7 @@ feture_engineering_static = {
     },
     'dimension': {
         "level_creation_settings":{
-            "name": "Creating_New_Bins_or_Levels",
+            "name": "creating_new_bins_or_levels",
             "displayName": "Create Bins Or Levels",
             "selected": True,
             "display": True,
@@ -767,12 +767,12 @@ feture_engineering_static = {
           ],
         },
         "transformation_settings": {
-            "name": "Transformation_Settings",
+            "name": "transformation_settings",
             "displayName": "Transform Variables",
             "selected": True,"display": True,
             "operations": [
                 {
-                    "name": "Replace_Values_With",
+                    "name": "replace_values_with",
                     "displayName": "Replace Values With",
                     "selected": True,"display": False,
                     "columns":[],
@@ -785,7 +785,7 @@ feture_engineering_static = {
                     }
                 },
                 {
-                    "name": "Add_value_to",
+                    "name": "add_value_to",
                     "displayName": "Add Specific value",
                     "selected": True,"display": False,
                     "columns":[],
@@ -797,7 +797,7 @@ feture_engineering_static = {
                     }
                 },
                 {
-                    "name": "Subtract_value_from",
+                    "name": "subtract_value_from",
                     "displayName": "Subtract Specific value",
                     "selected": True,"display": False,
                     "columns":[],
@@ -809,7 +809,7 @@ feture_engineering_static = {
                         }
                 },
                 {
-                    "name": "Multiply_by_value",
+                    "name": "multiply_by_value",
                     "displayName": "Multiply by Specific value",
                     "selected": True,"display": False,
                     "columns": [],
@@ -821,7 +821,7 @@ feture_engineering_static = {
                     }
                 },
                 {
-                    "name": "Divide_by_value",
+                    "name": "divide_by_value",
                     "displayName": "Divide by Specific value",
                     "selected": True,"display": False,
                     "columns": [],
@@ -833,7 +833,7 @@ feture_engineering_static = {
                     }
                 },
                 {
-                    "name": "Perform_Standardization",
+                    "name": "perform_standardization",
                     "displayName": "Perform Standardization",
                     "selected": True,"display": False,
                     "columns": [],
@@ -845,7 +845,7 @@ feture_engineering_static = {
                     }
                 },
                 {
-                  "name": "Variable_Transformation",
+                  "name": "variable_transformation",
                   "displayName": "Variable Transformation",
                   "selected": True,"display": False,
                   "columns":[],
@@ -857,7 +857,7 @@ feture_engineering_static = {
                     }
                 },
                 {
-                  "name": "Encoding_Dimensions",
+                  "name": "encoding_dimensions",
                   "displayName": "Perform Encoding",
                   "selected": True,"display": True,
                   "columns": [],
@@ -936,7 +936,7 @@ feture_engineering_static = {
     },
     'time_dimension': {
         "level_creation_settings":{
-            "name": "Creating_New_Bins_or_Levels",
+            "name": "creating_new_bins_or_levels",
             "displayName": "Create Bins Or Levels",
             "selected": True,"display": True,
             "operations": [
@@ -992,12 +992,12 @@ feture_engineering_static = {
           ],
         },
         "transformation_settings": {
-            "name": "Transformation_Settings",
+            "name": "transformation_settings",
             "displayName": "Transform Variables",
             "selected": True,"display": True,
             "operations": [
                 {
-                    "name": "Replace_Values_With",
+                    "name": "replace_values_with",
                     "displayName": "Replace Values With",
                     "selected": True,"display": False,
                     "columns":[],
@@ -1010,7 +1010,7 @@ feture_engineering_static = {
                     }
                 },
                 {
-                    "name": "Add_value_to",
+                    "name": "add_value_to",
                     "displayName": "Add Specific value",
                     "selected": True,"display": False,
                     "columns":[],
@@ -1022,7 +1022,7 @@ feture_engineering_static = {
                     }
                 },
                 {
-                    "name": "Subtract_value_from",
+                    "name": "subtract_value_from",
                     "displayName": "Subtract Specific value",
                     "selected": True,"display": False,
                     "columns":[],
@@ -1034,7 +1034,7 @@ feture_engineering_static = {
                         }
                 },
                 {
-                    "name": "Multiply_by_value",
+                    "name": "multiply_by_value",
                     "displayName": "Multiply by Specific value",
                     "selected": True,"display": False,
                     "columns": [],
@@ -1046,7 +1046,7 @@ feture_engineering_static = {
                     }
                 },
                 {
-                    "name": "Divide_by_value",
+                    "name": "divide_by_value",
                     "displayName": "Divide by Specific value",
                     "selected": True,"display": False,
                     "columns": [],
@@ -1058,7 +1058,7 @@ feture_engineering_static = {
                     }
                 },
                 {
-                    "name": "Perform_Standardization",
+                    "name": "perform_standardization",
                     "displayName": "Perform Standardization",
                     "selected": True,"display": False,
                     "columns": [],
@@ -1070,7 +1070,7 @@ feture_engineering_static = {
                     }
                 },
                 {
-                  "name": "Variable_Transformation",
+                  "name": "variable_transformation",
                   "displayName": "Variable Transformation",
                   "selected": True,"display": False,
                   "columns":[],
@@ -1082,7 +1082,7 @@ feture_engineering_static = {
                     }
                 },
                 {
-                  "name": "Encoding_Dimensions",
+                  "name": "encoding_dimensions",
                   "displayName": "Perform Encoding",
                   "selected": True,"display": False,
                   "columns": [],
@@ -1176,7 +1176,7 @@ feature_engineering_ml_settings = {
         }],
       "column_wise_settings": {
         "level_creation_settings": {
-          "name": "Creating_New_Bins_or_Levels",
+          "name": "creating_new_bins_or_levels",
           "displayName": "Create Bins Or Levels",
           "selected": True,
           "operations": [
@@ -1246,17 +1246,17 @@ feature_engineering_ml_settings = {
             }]
         },
         "transformation_settings": {
-          "name": "Transformation_Settings",
+          "name": "transformation_settings",
           "displayName": "Transform Variables",
           "selected": True,
           "operations": [
             {
-              "name": "Replace_Values_With",
+              "name": "replace_values_with",
               "displayName": "Replace Values With",
               "selected": True,
               "columns":[
                 {
-                 "name": "Salary",
+                 "name": "salary",
                  "user_given_new_name": "Salary_new",
                  "datatype": "measure",
                  "replace_by": "mean",
@@ -1264,7 +1264,7 @@ feature_engineering_ml_settings = {
                 }]
             },
             {
-              "name": "Add_value_to",
+              "name": "add_value_to",
               "displayName": "Add Specific value",
               "selected": True,
               "columns":[
@@ -1277,7 +1277,7 @@ feature_engineering_ml_settings = {
 
             },
             {
-              "name": "Subtract_value_from",
+              "name": "subtract_value_from",
               "displayName": "Subtract Specific value",
               "selected": True,
               "columns":[
@@ -1289,7 +1289,7 @@ feature_engineering_ml_settings = {
                 }]
             },
             {
-              "name": "Multiply_by_value",
+              "name": "multiply_by_value",
               "displayName": "Multiply by Specific value",
               "selected": True,
               "columns": [
@@ -1301,7 +1301,7 @@ feature_engineering_ml_settings = {
                 }]
             },
             {
-              "name": "Divide_by_value",
+              "name": "divide_by_value",
               "displayName": "Divide by Specific value",
               "selected": True,
               "columns": [
@@ -1313,19 +1313,19 @@ feature_engineering_ml_settings = {
                 }]
             },
             {
-              "name": "Perform_Standardization",
+              "name": "perform_standardization",
               "displayName": "Perform Standardization",
               "selected": True,
               "columns": [
                 {
-                  "name": "Marks_Scored",
+                  "name": "marks_scored",
                   "user_given_new_name": "Marks_Scored_Standardized",
                   "datatype": "measure",
                   "standardization_type": "Min-Max Scaling"
                 }]
             },
             {
-              "name": "Variable_Transformation",
+              "name": "variable_transformation",
               "displayName": "Variable Transformation",
               "selected": True,
               "columns":[
@@ -1337,7 +1337,7 @@ feature_engineering_ml_settings = {
                 }]
             },
             {
-              "name": "Encoding_Dimensions",
+              "name": "encoding_dimensions",
               "displayName": "Perform Encoding",
               "selected": True,
               "columns": [
@@ -1354,7 +1354,7 @@ feature_engineering_ml_settings = {
               "selected": True,
               "columns": [
                 {
-                  "name": "Cities",
+                  "name": "cities",
                   "user_given_new_name": "Cities_char_count",
                   "datatype": "dimension"
                 }]
