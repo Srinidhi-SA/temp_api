@@ -29,17 +29,33 @@ export class Transform extends React.Component {
   componentWillMount() {
     console.log("Transform componentWillMount method is called...");
   }
+
   pickValue(event){
     this.props.parentPickValue("transformationData", event);
   }
 
   render() {
     console.log("Transforms render method is called...");
-    var mtransform = "";
     var transformHtml = this.props.dataPreview.meta_data.uiMetaData.fe_config.fe;
 
     var mtransform = transformHtml.measure.transformation_settings.operations.map(item => {
       if(item.display){
+
+      var replacevalue = (
+        <div>
+        <div class="col-md-3 col-sm-3">
+          <input type="text" id="txt_qnt1" name="repaceWithValue" onInput={this.pickValue} class="form-control" placeholder="Value" />
+        </div>
+        <label for="txt_qValue1" class="col-md-1 col-sm-1 control-label xs-p-0 xs-mt-5 text-right">With</label>
+        <div class="col-md-3 col-sm-3">
+          <select class="form-control" id="txt_qValue1">
+            <option>Mean</option>
+            <option>Median</option>
+            <option>Mode</option>
+          </select>
+        </div>
+      </div>)
+
         return (
           <div class="ma-checkbox inline">
             <input id={item.name} name={item.name} type="checkbox" class="needsclick" onInput={this.pickValue} onChange={this.pickValue}/>
@@ -48,8 +64,8 @@ export class Transform extends React.Component {
         );
       }
       else{
-      return "";
-    }
+        return "";
+      }
     })
 
     var dtransform = transformHtml.dimension.transformation_settings.operations.map(item => {
@@ -78,17 +94,6 @@ export class Transform extends React.Component {
               <div class="row form-group">
                 <div class="col-md-5 col-sm-5">
                     {mtransform}
-                </div>
-                <div class="col-md-3 col-sm-3">
-                  <input type="text" id="txt_qnt1" name="repaceWithValue" onInput={this.pickValue} class="form-control" placeholder="Value" />
-                </div>
-                <label for="txt_qValue1" class="col-md-1 col-sm-1 control-label xs-p-0 xs-mt-5 text-right">With</label>
-                <div class="col-md-3 col-sm-3">
-                  <select class="form-control" id="txt_qValue1">
-                    <option>Mean</option>
-                    <option>Median</option>
-                    <option>Mode</option>
-                  </select>
                 </div>
               </div>
             </form>
