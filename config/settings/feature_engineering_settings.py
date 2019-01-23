@@ -493,7 +493,7 @@ feture_engineering_static = {
     ],
     'measure': {
         "level_creation_settings":{
-            "name": "Creating_New_Bins_or_Levels",
+            "name": "creating_new_bins_or_levels",
             "displayName": "Create Bins Or Levels",
             "selected": True,
             "display": True,
