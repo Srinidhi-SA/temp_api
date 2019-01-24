@@ -92,7 +92,7 @@ export class Transform extends React.Component {
                   </div>
                   <label for="replace_values_with_selected" class="col-md-1 col-sm-1 control-label xs-p-0 xs-mt-5 text-right">With</label>
                   <div class="col-md-3 col-sm-3">
-                    <select class="form-control" id="replace_values_with_selected" name="replace_values_with_selected" onChange={this.pickValue}>
+                    <select class="form-control" id="replace_values_with_selected" name="replace_values_with_selected" value={this.getTranformDataValue("replace_values_with")} onChange={this.pickValue}>
                       <option>Mean</option>
                       <option>Median</option>
                       <option>Mode</option>
@@ -107,7 +107,7 @@ export class Transform extends React.Component {
                     </div>
                   </div>
                   <div class="col-md-3 col-sm-3">
-                    <input type="text" name="add_specific_value_input" class="form-control" placeholder="Value" onInput={this.pickValue}/>
+                    <input type="text" name="add_specific_value_input" class="form-control" placeholder="Value" defaultInput={this.getTranformDataValue("add_specific_value")} onInput={this.pickValue}/>
                   </div>
                 </div>
                 <div class="row form-group">
@@ -118,7 +118,7 @@ export class Transform extends React.Component {
                     </div>
                   </div>
                   <div class="col-md-3 col-sm-3">
-                    <input type="text" name="subtract_specific_value_input" class="form-control" placeholder="Value" onInput={this.pickValue}/>
+                    <input type="text" name="subtract_specific_value_input" class="form-control" placeholder="Value" defaultInput={this.getTranformDataValue("subtract_specific_value")} onInput={this.pickValue}/>
                   </div>
                 </div>
                 <div class="row form-group">
@@ -129,7 +129,7 @@ export class Transform extends React.Component {
                     </div>
                   </div>
                   <div class="col-md-3 col-sm-3">
-                    <input type="text" name="multiply_specific_value_input" class="form-control" placeholder="Value" onInput={this.pickValue}/>
+                    <input type="text" name="multiply_specific_value_input" class="form-control" placeholder="Value" defaultInput={this.getTranformDataValue("multiply_specific_value")} onInput={this.pickValue}/>
                   </div>
                 </div>
                 <div class="row form-group">
@@ -140,7 +140,7 @@ export class Transform extends React.Component {
                     </div>
                   </div>
                   <div class="col-md-3 col-sm-3">
-                    <input type="text" name="divide_specific_value_input" class="form-control" placeholder="Value" onInput={this.pickValue}/>
+                    <input type="text" name="divide_specific_value_input" class="form-control" placeholder="Value" defaultInput={this.getTranformDataValue("divide_specific_value")} onInput={this.pickValue}/>
                   </div>
                 </div>
                   <div class="row form-group">
@@ -151,7 +151,7 @@ export class Transform extends React.Component {
                       </div>
                     </div>
                     <div class="col-md-4 col-sm-4">
-                      <select class="form-control" id="perform_standardization_select" name="perform_standardization_select" onChange={this.pickValue}>
+                      <select class="form-control" id="perform_standardization_select" name="perform_standardization_select" value={this.getTranformDataValue("perform_standardization")} onChange={this.pickValue}>
                         <option selected>Min-Max Scaling</option>
                         <option>Log Transformation</option>
                       </select>
@@ -165,7 +165,7 @@ export class Transform extends React.Component {
                       </div>
                     </div>
                     <div class="col-md-4 col-sm-3">
-                      <select class="form-control" id="variable_transformation_select" name="variable_transformation_select" onChange={this.pickValue}>
+                      <select class="form-control" id="variable_transformation_select" name="variable_transformation_select" value={this.getTranformDataValue("variable_transformation")} onChange={this.pickValue}>
                         <option>Min-Max Scaling</option>
                         <option selected>Log Transformation</option>
                       </select>
@@ -194,7 +194,7 @@ export class Transform extends React.Component {
                   </div>
                   <div class="col-md-7 col-sm-6">
                     <div class="ma-checkbox inline">
-                      <input type="radio" id="one_hot_encoding" name="encoding" checked="checked" onChange={this.pickValue}/>
+                      <input type="radio" id="one_hot_encoding" name="encoding" checked="checked" defaultSelected={this.getTranformDataValue("encoding_dimensions")} onChange={this.pickValue}/>
                       <label for="one_hot_encoding">One hot encoding</label>
                     </div>
                     <div class="ma-checkbox inline">
@@ -219,7 +219,7 @@ export class Transform extends React.Component {
                     </div>
                   </div>
                   <div class="col-md-3 col-sm-3">
-                    <input type="text" id="is_custom_string_in_input" name="is_custom_string_in_input" class="form-control" placeholder="Please Type" onInput={this.pickValue}/>
+                    <input type="text" id="is_custom_string_in_input" name="is_custom_string_in_input" class="form-control" placeholder="Please Type" defaultInput={this.getTranformDataValue("is_custom_string_in")} onInput={this.pickValue}/>
                   </div>
                 </div>
               </form>
@@ -251,7 +251,7 @@ export class Transform extends React.Component {
                     </div>
                   </div>
                   <div class="col-md-4 col-sm-3">
-                    <select class="form-control" name="extract_time_feature_select" onChange={this.pickValue}>
+                    <select class="form-control" name="extract_time_feature_select" value={this.getTranformDataValue("extract_time_feature")} onChange={this.pickValue}>
                       <option selected>Day of week</option>
                       <option>Month of Year</option>
                     </select>
@@ -265,7 +265,7 @@ export class Transform extends React.Component {
                     </div>
                   </div>
                   <div class="col-md-3 col-sm-3">
-                    <input type="text" name="time_since_input" class="form-control" placeholder="Please Type" onInput={this.pickValue}/>
+                    <input type="text" name="time_since_input" class="form-control" placeholder="Please Type" defaultInput={this.getTranformDataValue("time_since")} onInput={this.pickValue}/>
                   </div>
                 </div>
               </form>
