@@ -5,6 +5,10 @@
 @import 'helper.css';
 @import 'slick.min.css';
 @import 'slick-theme.min.css';
+@import 'prime_multiselect.css';
+@import 'prime_theme.css';
+@import 'prime_layout.css';
+
 .mAd_icons { background:url(../images/mAd_image.png) no-repeat }
 /*@import url('https://fonts.googleapis.com/css?family=Open+Sans');*/
 
@@ -254,8 +258,8 @@ div.col-md-6.col-xs-12{ display:inline-block; float:left; width:48%; margin-bott
 body {
 /*	font-family: 'Roboto', sans-serif;  mAdv Old Style 'Open Sans', sans-serif; Roboto Condensed*/
 
-	font-family: 'Roboto', sans-serif;	
-	font-size: 13px; 
+	font-family: 'Roboto', sans-serif;
+	font-size: 13px;
 	letter-spacing: 0.4px;line-height: 22px;
 	/*letter-spacing:1px; line-height: 22px;1.42857143;*/
 	/*color: #555; mAdvisor Old */
@@ -264,7 +268,7 @@ body {
 	/*background-color: #f3f3f4;  edecec f2f4f8height: 100% old bg-color: #ededed -- f0f0f0; #f7f7f7*/
 }
 button, input, select, textarea {
-	 
+
 	font-size: inherit;
 	line-height: inherit
 }
@@ -2138,7 +2142,7 @@ box-shadow:         0 2px 2px rgba(0,0,0,0.05);
 }
 .navbar-default {
 	border-bottom: 1px solid #e6e6e6;
-    background: #FFFFFF;	
+    background: #FFFFFF;
 }
 .navbar-default .navbar-brand {
 	color: #777
@@ -2768,7 +2772,7 @@ a.thumbnail.active, a.thumbnail:focus, a.thumbnail:hover {
 	position: relative;
 	display: block;
 	margin-bottom: -1px;
-	
+
 	height:40px;
 	overflow:hidden;
 }
@@ -5433,7 +5437,7 @@ button:focus {
 	font-size:13px;
 	text-align: center;
     color: #adadad;
-	background:#FFFFFF;	
+	background:#FFFFFF;
 }
 .side-menu .navbar-nav li a .fa { margin-bottom:7px; }
 .side-menu .navbar-nav .active a, .side-menu .navbar-nav  a.active {
@@ -5456,7 +5460,7 @@ color: #FFF; }
 
 /* small screen */
 @media (max-width: 768px) {
-	
+
 .side-menu {
 	position: relative;
 	width: 100%;
@@ -5532,7 +5536,7 @@ color: #FFF; }
 	top: 54px;
 }
 .side-menu-container > .navbar-nav {
-	/* Add position:absolute for scrollable menu -> see top comment 
+	/* Add position:absolute for scrollable menu -> see top comment
 	position: fixed;*/
 	left: -100px;
 	width: 100px;
@@ -6749,13 +6753,13 @@ body.open-right-sidebar .ma-right-sidebar {
   background-size: 100%;
   background-repeat: no-repeat;
   background-position:center center;
-  
 
-/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#079088+0,0c6965+100  
-background-color: #00998c;  Old browsers  
-background-color: -moz-linear-gradient(top, #00998c 0%, #0c6965 100%);   FF3.6-15  
-background-color: -webkit-linear-gradient(top, #00998c 0%,#0c6965 100%);   Chrome10-25,Safari5.1-6  
-background-color: linear-gradient(to bottom, #00998c 0%,#0c6965 100%);   W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+  
+
+/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#079088+0,0c6965+100
+background-color: #00998c;  Old browsers
+background-color: -moz-linear-gradient(top, #00998c 0%, #0c6965 100%);   FF3.6-15
+background-color: -webkit-linear-gradient(top, #00998c 0%,#0c6965 100%);   Chrome10-25,Safari5.1-6
+background-color: linear-gradient(to bottom, #00998c 0%,#0c6965 100%);   W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00998c', endColorstr='#0c6965',GradientType=0 );   IE6-9 */
 }
 .ma-login .ma-content-right {
@@ -11318,8 +11322,7 @@ pre {
 .modal-content {
 	box-shadow: 0 4px 6px rgba(0, 0, 0, .3);
 	border-radius: 3px;
-	overflow: hidden;
-	color: #555;
+	/* overflow: hidden; */
 	border-width: 0;
 	background:#FFFFFF;
 }
@@ -14046,7 +14049,7 @@ box-shadow: 1px 2px 6px -3px rgba(0,0,0,0.44); }
    font-weight: bold;
    text-decoration:underline;
 }
-.newStoryCard{ 
+.newStoryCard{
   /*  color: #fff;
      float: right; */
     /* text-align: center; */
@@ -14056,8 +14059,8 @@ box-shadow: 1px 2px 6px -3px rgba(0,0,0,0.44); }
     margin-top: 10%;
     margin-left: 20%;
         margin-left: 20%;
-    margin-top: 8%;*/ 
-    white-space:nowrap;	    
+    margin-top: 8%;*/
+    white-space:nowrap;
 }
 .firstCard{
 	/*background-color: #00998c;
@@ -14205,7 +14208,7 @@ box-shadow: 0px 6px 9px 0px rgba(240,255,246,1);  }
     float: none;
     display: table-cell;
 }
-.full-width-tabs > ul.nav.nav-tabs > li > a { 
+.full-width-tabs > ul.nav.nav-tabs > li > a {
 	padding: 14px 20px 12px 12px;
     margin-bottom: 0;
     background-color: rgb(255, 255, 255);
@@ -14507,7 +14510,7 @@ a.tabs-control.right span { right: -2px; border-radius: 50px; }
    /* max-height: 500px;*/; margin:0;
 }
 .col-xs-12.content { padding: 15px 4%; }
-.col-xs-12.content .col-md-12 .col-xs-12 { padding:0; } 
+.col-xs-12.content .col-md-12 .col-xs-12 { padding:0; }
 /*** Round Circle style for Data Upload ***/
 .glyphicon-ring {
   width: 60px;
@@ -14742,7 +14745,7 @@ table.apps_table_style thead th { font-weight:bold }
 
 /*
 .panel.panel-mAd { padding: 10px 15px; border:none;  } */
- 
+
 .txt-justify { text-align: justify }
 
 
@@ -14919,7 +14922,7 @@ a.disabled { color:#ccc !important; }
 }
 .sb_navigation {
     background: #FFFFFF;
-   /* border-bottom: 1px solid #e8e8e8;*/ 
+   /* border-bottom: 1px solid #e8e8e8;*/
 }
 .sb_navigation li a { font-size: 13px; padding: 4px 3px;
     display: block;
@@ -14936,7 +14939,7 @@ a.disabled { color:#ccc !important; }
 .sb_navigation li a.active {     color: #21c7b9;
     border: 1px solid #21c7b9;
     background: #FFFFFF; }
-	
+
 /*.slick-list { background: rgba(246, 246, 246, 1)}*/
 .slick-next:before, .slick-prev:before {     font-size: 13px;}
 .slick-next, .slick-prev {     z-index: 10;
@@ -14946,11 +14949,11 @@ a.disabled { color:#ccc !important; }
     width: 32px;
     border-radius: 50px;
     height: 32px;}
-	
+
 
 .slick-next { right:5px; border:1px solid #00bfb2}
 .slick-prev { left: 5px; border:1px solid #00bfb2 }
-.slick-next:hover, .slick-prev:hover { background:#FFFFFF; } 
+.slick-next:hover, .slick-prev:hover { background:#FFFFFF; }
 .slider.slider-horizontal { width: 94%; margin-top: 9px; margin-left: 10px; margin-right: 10px; }
 
 .scrollable-menu {
@@ -15186,35 +15189,35 @@ a:hover .icon-container .class { color: #02988c;}
 blockquote {
 background:#f7f7f7;
 border:none;
-font-style:italic; 
+font-style:italic;
 margin-bottom:-30px;
-position: relative;  
-    margin: 0 auto; 
-    padding: 2.7em; 
+position: relative;
+    margin: 0 auto;
+    padding: 2.7em;
 	border-radius:10px;
 	text-align:left;
 }
 
-blockquote p:before { 
+blockquote p:before {
     content: "\201C";
     font-weight: bold;
     font-size:60px;
     color:#adadad;
-    position: absolute; 
+    position: absolute;
     top: -0.2em;
-    left: -0.5em; 
-} 
-blockquote p:after { 
+    left: -0.5em;
+}
+blockquote p:after {
     content: "\201D";
     font-weight: bold;
     font-size:60px;
     color:#adadad;
-    position: absolute; 
+    position: absolute;
     bottom: -0.7em;
-    right: -12px; 
+    right: -12px;
 }
 #algosel .nav-tabs li a { font-weight:600 }
-.card_kpi .alert-primary { background-color: #f6f6f6; border: 1px solid #ececec; color: #00998c; border-radius: 2px;	
+.card_kpi .alert-primary { background-color: #f6f6f6; border: 1px solid #ececec; color: #00998c; border-radius: 2px;
 	/*background-color: #24ccbe; border: 1px solid #2fd2c4; border-radius: 2px; */}
 .stockClassName .col-md-6, .stockClassName	.col-md-12 { padding-left:12px !important; margin-top:20px; }
 .stockClassName	.col-md-12 .col-md-7 {padding:0 !important; margin:0 important;  }
@@ -15308,7 +15311,7 @@ html{
     stroke: lightgray !important;
     stroke-width: 1.5px !important;
 }
- 
+
 
 .row-offcanvas-left h4 { margin-top:10px; font-size:17px; font-weight:normal; }
 
@@ -15344,7 +15347,7 @@ html{
 
 
 
- 
+
 .documentModeSpacing{
 	padding: 15px 40px !important
 }
@@ -15670,7 +15673,7 @@ display: inline-block;
     color: #aeb0b3;
 }*/
 
-.dashboard_head { 
+.dashboard_head {
 background: rgba(76,205,192,1);
 background: -moz-linear-gradient(left, rgba(76,205,192,1) 0%, rgba(32,136,124,1) 100%);
 background: -webkit-gradient(left top, right top, color-stop(0%, rgba(76,205,192,1)), color-stop(100%, rgba(32,136,124,1)));
@@ -15873,14 +15876,14 @@ body div#welcome-body-frame { background: rgba(255, 255, 255, 0.42); transition:
 body div#welcome-body-frame:hover { background: rgba(255, 255, 255, 1);}
 body div#welcome-body-frame p#message { line-height: 19px; color: #8c8c8c !important; }
 /************************** 8888888888 *******************************/
- 
+
 .sticky-container {
 /*background-color: #333;*/
     padding: 0px;
     margin: 0px;
     position: fixed;
 	right: 75px;
-    top: 235px; 
+    top: 235px;
     z-index: 11;
 }
 .sticky { margin:0; padding-left:40px; }
@@ -15944,7 +15947,7 @@ body div#welcome-body-frame p#message { line-height: 19px; color: #8c8c8c !impor
 	padding: 0 0 20px;
 	color: #525252
 }
- 
+
 
 .mod-process-table-primary { transition: all .2s ease-in-out; }
 .mod-process-table-primary img { border:1px solid #ededed; }
