@@ -109,16 +109,16 @@ render() {
                       </div>
               </div>
                     <div className="row form-group">
-                      <label for="sel_to bg" className="col-sm-4 control-label">{"Specify intervals"}</label>
-                      <div className="col-sm-8">
+                        <label for="sel_to bg" className="col-sm-4 control-label">{"Specify intervals"}</label>
+                        <div className="col-sm-8">
                         <input type="text" title="Please Enter " name="specifyintervals"   defaultValue={binData.specifyintervals} disabled={this.props.isSpecifyIntervalsEnabled} onChange={this.onchangeInput.bind(this)} className="form-control" onInput={this.pickValue} />
                       </div>
                     </div>
                     <div className="row form-group">
-                      <label for="sel_tobg" className="col-sm-4 control-label">{"New column name"}</label>
-                      <div className="col-sm-8">
-                        <input type="text" title="Please Enter " name="newcolumnname"  defaultValue={binData.newcolumnname} onChange={this.onchangeInput.bind(this)}   className="form-control" onInput={this.pickValue} />
-                        </div>
+                          <label for="sel_tobg" className="col-sm-4 control-label">{"New column name"}</label>
+                          <div className="col-sm-8">
+                          <input type="text" title="Please Enter " name="newcolumnname"  defaultValue={binData.newcolumnname} onChange={this.onchangeInput.bind(this)}   className="form-control" onInput={this.pickValue} />
+                            </div>
                       </div>
                     </Tab.Pane>
         )
