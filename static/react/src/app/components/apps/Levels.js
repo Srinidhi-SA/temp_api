@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Scrollbars } from 'react-custom-scrollbars';
+import {MultiSelect} from 'primereact/multiselect';
 import { Button, Dropdown, Menu, MenuItem, Modal, Nav, NavItem, Tab, Row, Col } from "react-bootstrap";
 import {
   openBinsOrLevelsModalAction,
@@ -26,27 +27,72 @@ export class Levels extends React.Component {
   constructor(props) {
     super(props);
     console.log("Levels constructor method is called...");
-    this.state = { levelsArr: [{ name: "" }] };
+    this.state = { levelsArray: [{ name: "" }] ,
+    cars1: [],
+    cars2: []}
   }
 
   componentWillMount() {
     console.log("Levels componentWillMount method is called...");
   }
 
+  onClickCheckBox(event) {
+    var checkedValue = event.target.checked;
+    var checkedAttr = event.target.name;
+    console.log("checkedval:", checkedValue, "checkedAttr:", checkedAttr);
+    if (checkedValue) {
+        this.state.statesArray.filter(item => item.name == checkedAttr);
+    } else {
+        var obj = { name: checkedAttr };
+        if (this.state.statesArray[checkedAttr] != undefined) {
+          this.state.statesArray.push(obj);
+        }
+      }
+    }
+
+
   render() {
     console.log("Levels render method is called...");
+
+    const cars = [
+            {label: 'Audi', value: 'Audi'},
+            {label: 'BMW', value: 'BMW'},
+            {label: 'Fiat', value: 'Fiat'},
+            {label: 'Honda', value: 'Honda'},
+            {label: 'Jaguar', value: 'Jaguar'},
+            {label: 'Mercedes', value: 'Mercedes'},
+            {label: 'Renault', value: 'Renault'},
+            {label: 'VW', value: 'VW'},
+            {label: 'Volvo', value: 'Volvo'}
+        ];
+
+
     var levels = "";
     levels = (
       <Tab.Pane>
-        {this.state.levelsArr.map((level, idx) => (
-          <div className="level">
-            <input type="text" placeholder={`level #${idx + 1} name`} value={level.name}/>
-            <button type="button" onClick={this.handleRemoveLevel(idx).bind(this)} className="small">-</button>
+        {this.state.levelsArray.map((level, idx) => (
+
+
+
+        <form class="form_withrowlabels form-inline">
+
+          <div class="clearfix"></div>
+          <div class="form-group">
+            <input type="text" id="txt_clvlregion1" class="form-control" placeholder={`level #${idx + 1} name`} value={level.name} />
           </div>
+          <div class="form-group">
+            <label for="txt_sPeriod">&nbsp;&nbsp;&nbsp; Which will include:</label>
+          </div>
+          <div className="content-section implementation multiselect-demo">
+          <MultiSelect value={this.state.cars1} options={cars} onChange={(e) => this.setState({cars1: e.value})}
+                            style={{minWidth:'12em'}} filter={true} placeholder="Choose" />
+
+          </div>
+          <button class="btn btn-primary b-inline" onClick={this.handleRemoveLevel.bind(this,idx)} ><i class="fa fa-close"></i></button>
+          <button class="btn btn-primary b-inline" onClick={this.handleAddLevel.bind(this)} ><i class="fa fa-plus"></i></button>
+        </form>
+
         ))}
-        <div className=" text-center" onClick={this.handleAddLevel.bind(this)} >+<br/>
-          <small>Add Level</small>
-        </div>
       </Tab.Pane>
     )
 
@@ -67,15 +113,15 @@ export class Levels extends React.Component {
 
   };
 
-  handleAddLevel = () => {
+  handleAddLevel(){
     this.setState({
-      levelsArr: this.state.levelsArr.concat([{ name: "" }])
+      levelsArray: this.state.levelsArray.concat([{ name: "" }])
     });
   };
 
-  handleRemoveLevel = idx => () => {
+  handleRemoveLevel(idx){
     this.setState({
-      levelsArr: this.state.levelsArr.filter((s, sidx) => idx !== sidx)
+      levelsArray: this.state.levelsArray.filter((s, sidx) => idx !== sidx)
     });
   };
 }

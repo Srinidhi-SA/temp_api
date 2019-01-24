@@ -59,14 +59,11 @@ export default function reducer(state = {
   selectedVariables : {},
   removeDuplicates :{},
   binsOrLevelsShowModal:false,
-
-transferColumnShowModal:false,
-
-selectedBinsOrLevelsTab:"Bins",
-
-selectedItem:{},
-isNoOfBinsEnabled:false,
-isSpecifyIntervalsEnabled:false,
+  transferColumnShowModal:false,
+  selectedBinsOrLevelsTab:"Bins",
+  selectedItem:{},
+  isNoOfBinsEnabled:false,
+  isSpecifyIntervalsEnabled:false,
 }, action) {
   console.log("In DATA reducer!!");
   console.log(action);

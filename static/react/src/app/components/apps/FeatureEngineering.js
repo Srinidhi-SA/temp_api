@@ -18,18 +18,36 @@ import { Transform } from "./Transform";
 @connect((store) => {
 return {
   login_response: store.login.login_response,
-  dataPreview: store.datasets.dataPreview,
-  dataSets: store.datasets.allDataSets,
-  binsOrLevelsShowModal: store.datasets.binsOrLevelsShowModal,
-  transferColumnShowModal: store.datasets.transferColumnShowModal,
-  selectedBinsOrLevelsTab: store.datasets.selectedBinsOrLevelsTab,
-  selectedItem: store.datasets.selectedItem,
+
+    dataPreview: store.datasets.dataPreview,
+
+    dataSets: store.datasets.allDataSets,
+
+    binsOrLevelsShowModal: store.datasets.binsOrLevelsShowModal,
+
+    transferColumnShowModal: store.datasets.transferColumnShowModal,
+
+    selectedBinsOrLevelsTab: store.datasets.selectedBinsOrLevelsTab,
+    selectedItem: store.datasets.selectedItem,
+    featureEngineering:store.datasets.featureEngineering
+
+
+
   };
 })
 
 export class FeatureEngineering extends React.Component {
   constructor(props) {
-    super(props);
+  super(props);
+  console.log("FeatureEngineering constructor method is called...");
+  console.log(props);
+
+  this.buttons = {};
+  this.state = {};
+  this.prevState = this.state;
+  this.pickValue = this.pickValue.bind(this);
+
+}
 
     console.log("FeatureEngineering constructor method is called...");
     console.log(props);
@@ -40,7 +58,10 @@ export class FeatureEngineering extends React.Component {
   }
 
   componentWillMount() {
-    if (this.props.dataPreview == null || isEmpty(this.props.dataPreview) || this.props.dataPreview.status == 'FAILED') {
+    //set state with data from store always
+    this.setState({featureEngineering:this.props.featureEngineering});
+    //debugger;
+    if (this.props.dataPreview == null|| this.props.dataPreview.status == 'FAILED') {
       this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
     }
     console.log("FeatureEngineering componentWillMount method is called...");
@@ -50,7 +71,12 @@ export class FeatureEngineering extends React.Component {
     };
   }
 
-  pickValuesAndStoreLocally(slug, inputId, event){
+// componentDidUpdate(){
+//   console.log("FeatureEngineering componentDidUpdate method is called...");
+// this.setState({featureEngineering:this.props.featureEngineering});
+// }
+
+    pickValuesAndStoreLocally(slug, inputId, event){
 
   }
 
@@ -61,10 +87,15 @@ export class FeatureEngineering extends React.Component {
     if(this.state[this.props.selectedItem.slug][actionType] == undefined){
       this.state[this.props.selectedItem.slug][actionType] = {}
     }
+    if(event.target.type == "checkbox"){
+    this.state[this.props.selectedItem.slug][actionType][event.target.name] = event.target.checked;
+    }else{
     this.state[this.props.selectedItem.slug][actionType][event.target.name] = event.target.value;
+    }
   }
 
   handleCreateClicked(actionType, event){
+    //debugger;
     this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, this.state[this.props.selectedItem.slug][actionType]));
     this.closeBinsOrLevelsModal();
     this.closeTransformColumnModal();
@@ -78,6 +109,8 @@ export class FeatureEngineering extends React.Component {
     var transformColumnPopup = "";
     let typeofBinningSelectBox = null;
     var binOrLevels = "";
+
+
 
     if (this.props.dataPreview != null) {
       feHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map((item,key )=> {
@@ -102,24 +135,26 @@ export class FeatureEngineering extends React.Component {
       binOrLevels=""
     }
 
-    binsOrLevelsPopup = (
-      <div class="col-md-3 xs-mb-15 list-boxes" >
-        <div id="binsOrLevels" role="dialog" className="modal fade modal-colored-header">
-          <Modal show={this.props.binsOrLevelsShowModal} onHide={this.closeBinsOrLevelsModal.bind(this)} dialogClassName="modal-colored-header">
-            <Modal.Header closeButton>
-              <h3 className="modal-title">Create { (this.props.selectedItem.columnType == "measure")? "Bins" : "Levels" }</h3>
-            </Modal.Header>
-            <Modal.Body>
-              <div>
-                <h4>What you want to do?</h4> {binOrLevels}
-              </div>
-            <div id="errorMsgs" className="text-danger"></div>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button onClick={this.closeBinsOrLevelsModal.bind(this)}>Cancel</Button>
-              <Button bsStyle="primary" onClick={this.handleCreateClicked.bind(this, "binData")}>Create</Button>
-            </Modal.Footer>
-          </Modal>
+        <div class="col-md-3 xs-mb-15 list-boxes" >
+            <div id="binsOrLevels" role="dialog" className="modal fade modal-colored-header">
+              <Modal show={this.props.binsOrLevelsShowModal} onHide={this.closeBinsOrLevelsModal.bind(this)} dialogClassName="modal-colored-header">
+                <Modal.Header closeButton>
+                  <h3 className="modal-title">Create { (this.props.selectedItem.columnType == "measure")? "Bins" : "Levels" }</h3>
+                </Modal.Header>
+                <Modal.Body>
+                  <div>
+                      <h4>What you want to do?</h4>
+                      {/* { (this.props.selectedItem.columnType == "measure")? <Bins /> : <Levels /> } */}
+                    {binOrLevels}
+                </div>
+                <div id="errorMsgs" className="text-danger"></div>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button onClick={this.closeBinsOrLevelsModal.bind(this)}>Cancel</Button>
+                <Button bsStyle="primary" onClick={this.handleCreateClicked.bind(this, "binData")}>Create now</Button>
+              </Modal.Footer>
+            </Modal>
+          </div>
         </div>
       </div>
     )
@@ -213,21 +248,28 @@ export class FeatureEngineering extends React.Component {
         {/* <!-- Main Content ends with side-body --> */}
       </div>
     );
-  }
+    }
 
   openBinsOrLevelsModal(item) {
+    console.log("open ---openBinsOrLevelsModal");
     this.props.dispatch(openBinsOrLevelsModalAction(item));
   }
 
-  closeBinsOrLevelsModal() {
+  closeBinsOrLevelsModal(event) {
+    console.log("closeddddd ---closeBinsOrLevelsModal");
+    //debugger;
+    console.log(".... ",);
     this.props.dispatch(closeBinsOrLevelsModalAction());
+
   }
 
   openTransformColumnModal(item) {
+    console.log("open ---openTransformColumnModal");
     this.props.dispatch(openTransformColumnModalAction(item));
   }
 
   closeTransformColumnModal() {
+    console.log("closeddddd ---closeTransformColumnModal");
     this.props.dispatch(closeTransformColumnModalAction());
   }
 
