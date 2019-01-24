@@ -15,6 +15,7 @@ import {
     login_response: store.login.login_response,
     dataPreview: store.datasets.dataPreview,
     selectedItem: store.datasets.selectedItem,
+    featureEngineering:store.datasets.featureEngineering,
   };
 })
 
@@ -29,6 +30,25 @@ export class Transform extends React.Component {
   componentWillMount() {
     console.log("Transform componentWillMount method is called...");
   }
+
+  getTransformationata(){
+      var transformationData = {};
+      if(this.props.featureEngineering != undefined || this.props.featureEngineering !=null){
+      var slugData = this.props.featureEngineering[this.props.selectedItem.slug];
+        if(slugData != undefined ){
+          if(slugData.transformationData != undefined)
+          transformationData = slugData.transformationData;
+          }
+        }
+        return transformationData;
+      }
+
+    getTranformDataValue(name){
+      var transformationData = this.getTransformationata();
+      var value = transformationData[name];
+      console.log("value ..............",value);
+      return value;
+    }
 
   pickValue(event){
     this.props.parentPickValue("transformationData", event);
@@ -63,7 +83,7 @@ export class Transform extends React.Component {
                 <div class="row form-group">
                   <div class="col-md-5 col-sm-5">
                     <div class="ma-checkbox inline">
-                      <input id="replace_values_with" name="replace_values_with" type="checkbox" class="needsclick" onChange={this.pickValue}/>
+                      <input id="replace_values_with" name="replace_values_with" defaultChecked={this.getTranformDataValue("replace_values_with")} type="checkbox" class="needsclick" onChange={this.pickValue}/>
                       <label for="replace_values_with">Replace Values With:</label>
                     </div>
                   </div>
@@ -82,7 +102,7 @@ export class Transform extends React.Component {
                 <div class="row form-group">
                   <div class="col-md-5 col-sm-5">
                     <div class="ma-checkbox inline">
-                      <input id="add_specific_value" name="add_specific_value" type="checkbox" class="needsclick" onChange={this.pickValue}/>
+                      <input id="add_specific_value" name="add_specific_value" type="checkbox" defaultChecked={this.getTranformDataValue("add_specific_value")} class="needsclick" onChange={this.pickValue}/>
                       <label for="add_specific_value">Add Specific value:</label>
                     </div>
                   </div>
@@ -93,7 +113,7 @@ export class Transform extends React.Component {
                 <div class="row form-group">
                   <div class="col-md-5 col-sm-5">
                     <div class="ma-checkbox inline">
-                      <input id="subtract_specific_value" name="subtract_specific_value" type="checkbox" class="needsclick" onChange={this.pickValue}/>
+                      <input id="subtract_specific_value" name="subtract_specific_value" type="checkbox" defaultChecked={this.getTranformDataValue("subtract_specific_value")} class="needsclick" onChange={this.pickValue}/>
                       <label for="subtract_specific_value">Subtract Specific value:</label>
                     </div>
                   </div>
@@ -104,7 +124,7 @@ export class Transform extends React.Component {
                 <div class="row form-group">
                   <div class="col-md-5 col-sm-5">
                     <div class="ma-checkbox inline">
-                      <input id="multiply_specific_value" name="multiply_specific_value" type="checkbox" class="needsclick" onChange={this.pickValue}/>
+                      <input id="multiply_specific_value" name="multiply_specific_value" type="checkbox" defaultChecked={this.getTranformDataValue("multiply_specific_value")} class="needsclick" onChange={this.pickValue}/>
                       <label for="multiply_specific_value">Multiply Specific value:</label>
                     </div>
                   </div>
@@ -115,7 +135,7 @@ export class Transform extends React.Component {
                 <div class="row form-group">
                   <div class="col-md-5 col-sm-5">
                     <div class="ma-checkbox inline">
-                      <input id="divide_specific_value" name="divide_specific_value" type="checkbox" class="needsclick" onChange={this.pickValue}/>
+                      <input id="divide_specific_value" name="divide_specific_value" type="checkbox" defaultChecked={this.getTranformDataValue("divide_specific_value")} class="needsclick" onChange={this.pickValue}/>
                       <label for="divide_specific_value">Divide Specific value:</label>
                     </div>
                   </div>
@@ -126,7 +146,7 @@ export class Transform extends React.Component {
                   <div class="row form-group">
                     <div class="col-md-5 col-sm-5">
                       <div class="ma-checkbox inline">
-                        <input id="perform_standardization" name="perform_standardization" type="checkbox" class="needsclick" onChange={this.pickValue}/>
+                        <input id="perform_standardization" name="perform_standardization" type="checkbox" defaultChecked={this.getTranformDataValue("perform_standardization")} class="needsclick" onChange={this.pickValue}/>
                         <label for="perform_standardization">Perform Standardization:</label>
                       </div>
                     </div>
@@ -140,7 +160,7 @@ export class Transform extends React.Component {
                   <div class="row form-group">
                     <div class="col-md-5 col-sm-5">
                       <div class="ma-checkbox inline">
-                        <input id="variable_transformation" name="variable_transformation" type="checkbox" class="needsclick" onChange={this.pickValue}/>
+                        <input id="variable_transformation" name="variable_transformation" defaultChecked={this.getTranformDataValue("variable_transformation")} type="checkbox" class="needsclick" onChange={this.pickValue}/>
                         <label for="variable_transformation">Variable Transformation:</label>
                       </div>
                     </div>
@@ -168,17 +188,17 @@ export class Transform extends React.Component {
                 <div class="row form-group">
                   <div class="col-md-5 col-sm-5">
                     <div class="ma-checkbox inline">
-                      <input id="encoding_dimensions" name="encoding_dimensions" type="checkbox" class="needsclick" onChange={this.pickValue}/>
+                      <input id="encoding_dimensions" name="encoding_dimensions" type="checkbox" defaultChecked={this.getTranformDataValue("encoding_dimensions")} class="needsclick" onChange={this.pickValue}/>
                       <label for="encoding_dimensions">Perform Encoding:</label>
                     </div>
                   </div>
                   <div class="col-md-7 col-sm-6">
                     <div class="ma-checkbox inline">
-                      <input type="radio" id="one_hot_encoding" name="one_hot_encoding" checked="checked" onChange={this.pickValue}/>
+                      <input type="radio" id="one_hot_encoding" name="encoding" checked="checked" onChange={this.pickValue}/>
                       <label for="one_hot_encoding">One hot encoding</label>
                     </div>
                     <div class="ma-checkbox inline">
-                      <input type="radio" id="label_encoding" name="label_encoding" onChange={this.pickValue}/>
+                      <input type="radio" id="label_encoding" name="encoding" onChange={this.pickValue}/>
                       <label for="label_encoding">Label encoding</label>
                     </div>
                   </div>
@@ -186,7 +206,7 @@ export class Transform extends React.Component {
                 <div class="row form-group">
                   <div class="col-md-5 col-sm-5">
                     <div class="ma-checkbox inline">
-                      <input id="return_character_count" name="return_character_count" type="checkbox" class="needsclick" onChange={this.pickValue}/>
+                      <input id="return_character_count" name="return_character_count" type="checkbox" defaultChecked={this.getTranformDataValue("return_character_count")} class="needsclick" onChange={this.pickValue}/>
                       <label for="return_character_count">return Character Count</label>
                     </div>
                   </div>
@@ -194,7 +214,7 @@ export class Transform extends React.Component {
                 <div class="row form-group">
                   <div class="col-md-5 col-sm-5">
                     <div class="ma-checkbox inline">
-                      <input id="is_custom_string_in" name="is_custom_string_in" type="checkbox" class="needsclick" onChange={this.pickValue}/>
+                      <input id="is_custom_string_in" name="is_custom_string_in" type="checkbox" defaultChecked={this.getTranformDataValue("is_custom_string_in")} class="needsclick" onChange={this.pickValue}/>
                       <label for="is_custom_string_in">Is custom string in:</label>
                     </div>
                   </div>
@@ -218,7 +238,7 @@ export class Transform extends React.Component {
                 <div class="row form-group">
                   <div class="col-md-5 col-sm-5">
                     <div class="ma-checkbox inline">
-                      <input id="is_date_weekend" name="is_date_weekend" type="checkbox" class="needsclick" onChange={this.pickValue}/>
+                      <input id="is_date_weekend" name="is_date_weekend" type="checkbox" defaultChecked={this.getTranformDataValue("is_date_weekend")} class="needsclick" onChange={this.pickValue}/>
                       <label for="is_date_weekend">Is Date Weekend or Not?</label>
                     </div>
                   </div>
@@ -226,7 +246,7 @@ export class Transform extends React.Component {
                 <div class="row form-group">
                   <div class="col-md-5 col-sm-5">
                     <div class="ma-checkbox inline">
-                      <input id="extract_time_feature" name="extract_time_feature" type="checkbox" class="needsclick" onChange={this.pickValue}/>
+                      <input id="extract_time_feature" name="extract_time_feature" type="checkbox" defaultChecked={this.getTranformDataValue("extract_time_feature")} class="needsclick" onChange={this.pickValue}/>
                       <label for="extract_time_feature">Extract Time Feature:</label>
                     </div>
                   </div>
@@ -240,7 +260,7 @@ export class Transform extends React.Component {
                 <div class="row form-group">
                   <div class="col-md-5 col-sm-5">
                     <div class="ma-checkbox inline">
-                      <input id="time_since" name="time_since" type="checkbox" class="needsclick" onChange={this.pickValue}/>
+                      <input id="time_since" name="time_since" type="checkbox" defaultChecked={this.getTranformDataValue("time_since")} class="needsclick" onChange={this.pickValue}/>
                       <label for="time_since">Time Since Some Event:</label>
                     </div>
                   </div>
