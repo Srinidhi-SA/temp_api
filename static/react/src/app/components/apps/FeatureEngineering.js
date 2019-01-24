@@ -93,6 +93,7 @@ console.log("FeatureEngineering componentWillMount method is called...");
 
   handleCreateClicked(actionType, event){
     //debugger;
+    console.log("actionType : ",actionType);
     this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, this.state[this.props.selectedItem.slug][actionType]));
     this.closeBinsOrLevelsModal();
     this.closeTransformColumnModal();
@@ -109,7 +110,7 @@ console.log("FeatureEngineering componentWillMount method is called...");
     var transformColumnPopup = "";
     let typeofBinningSelectBox = null;
     var binOrLevels = "";
-
+    var binOrLevelData="";
 
 
     if (this.props.dataPreview != null) {
@@ -126,10 +127,12 @@ console.log("FeatureEngineering componentWillMount method is called...");
 
             if(this.props.selectedItem.columnType == "measure"){
               binOrLevels= <Bins parentPickValue={this.pickValue}/>
+              binOrLevelData="binData";
             }
             else if(this.props.selectedItem.columnType == "dimension")
             {
-              binOrLevels= <Levels/>
+              binOrLevels= <Levels parentPickValue={this.pickValue}/>
+              binOrLevelData="levelData";
             }
             else
             {
@@ -160,7 +163,7 @@ console.log("FeatureEngineering componentWillMount method is called...");
               </Modal.Body>
               <Modal.Footer>
                 <Button onClick={this.closeBinsOrLevelsModal.bind(this)}>Cancel</Button>
-                <Button bsStyle="primary" onClick={this.handleCreateClicked.bind(this, "binData")}>Create now</Button>
+                <Button bsStyle="primary" onClick={this.handleCreateClicked.bind(this, binOrLevelData)}>Create</Button>
               </Modal.Footer>
             </Modal>
           </div>

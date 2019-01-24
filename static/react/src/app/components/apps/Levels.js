@@ -20,11 +20,13 @@ import {
     transferColumnShowModal: store.datasets.transferColumnShowModal,
     selectedBinsOrLevelsTab: store.datasets.selectedBinsOrLevelsTab,
     selectedItem: store.datasets.selectedItem,
+    featureEngineering:store.datasets.featureEngineering,
   };
 })
 export class Levels extends React.Component {
   constructor(props) {
     super(props);
+    this.pickValue = this.pickValue.bind(this);
     console.log("Levels constructor method is called...");
     this.state = { levelsArray: [{ name: "" }] ,
     cars1: [],
@@ -33,6 +35,42 @@ export class Levels extends React.Component {
 
   componentWillMount() {
     console.log("Levels componentWillMount method is called...");
+  }
+
+  handleLevelSubmit = evt => {
+
+  };
+
+  handleAddLevel(){
+    this.setState({
+      levelsArray: this.state.levelsArray.concat([{ name: "" }])
+    });
+  };
+
+  handleRemoveLevel(idx){
+    this.setState({
+      levelsArray: this.state.levelsArray.filter((s, sidx) => idx !== sidx)
+    });
+  };
+
+  getLevelData(){
+    var levelData = {};
+    if(this.props.featureEngineering != undefined || this.props.featureEngineering !=null){
+    var slugData = this.props.featureEngineering[this.props.selectedItem.slug];
+      if(slugData != undefined){
+        levelData = slugData.levelData;
+      }
+
+    }
+    return levelData;
+  }
+
+  pickValue(event){
+    this.props.parentPickValue("levelData", event);
+  }
+
+  onchangeInput(event){
+    return event.target.value;
   }
 
   onClickCheckBox(event) {
@@ -53,6 +91,8 @@ export class Levels extends React.Component {
   render() {
     console.log("Levels render method is called...");
 
+    var levelData = this.getLevelData();
+
     const cars = [
             {label: 'Audi', value: 'Audi'},
             {label: 'BMW', value: 'BMW'},
@@ -70,14 +110,11 @@ export class Levels extends React.Component {
     levels = (
       <Tab.Pane>
         {this.state.levelsArray.map((level, idx) => (
-
-
-
-        <form class="form_withrowlabels form-inline">
+          <form class="form_withrowlabels form-inline">
 
           <div class="clearfix"></div>
           <div class="form-group">
-            <input type="text" id={`txt_clvlregion1${idx + 1}`} class="form-control" placeholder={`level #${idx + 1} name`} value={level.name} />
+            <input type="text" name={`name #${idx + 1}`} class="form-control" placeholder={`level #${idx + 1} name`} onInput={this.pickValue}  onChange={this.onchangeInput.bind(this)} />
           </div>
           <div class="form-group">
             <label for="txt_sPeriod">&nbsp;&nbsp;&nbsp; Which will include:</label>
@@ -111,19 +148,5 @@ export class Levels extends React.Component {
     );
   }
 
-  handleLevelSubmit = evt => {
 
-  };
-
-  handleAddLevel(){
-    this.setState({
-      levelsArray: this.state.levelsArray.concat([{ name: "" }])
-    });
-  };
-
-  handleRemoveLevel(idx){
-    this.setState({
-      levelsArray: this.state.levelsArray.filter((s, sidx) => idx !== sidx)
-    });
-  };
 }
