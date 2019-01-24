@@ -119,7 +119,7 @@ console.log("FeatureEngineering componentWillMount method is called...");
                <tr key={key}>
                   <td> {item.name}</td>
                   <td> {item.columnType}</td>
-                  <td> <Button onClick={this.openBinsOrLevelsModal.bind(this, item)} bsStyle="primary">Create { (item.columnType == "measure")? "Bins" : "Levels" }</Button></td>
+                  <td> <Button onClick={this.openBinsOrLevelsModal.bind(this, item)} bsStyle="primary">Create bins or levels</Button></td>
                   <td> <Button onClick={this.openTransformColumnModal.bind(this,item)} bsStyle="primary">Transform</Button></td>
                 </tr>  );
               })
