@@ -32,6 +32,8 @@ return {
 
     selectedBinsOrLevelsTab: store.datasets.selectedBinsOrLevelsTab,
     selectedItem: store.datasets.selectedItem,
+    featureEngineering:store.datasets.featureEngineering
+
 
 
   };
@@ -46,6 +48,7 @@ export class FeatureEngineering extends React.Component {
 
   this.buttons = {};
   this.state = {};
+  this.prevState = this.state;
   this.pickValue = this.pickValue.bind(this);
 
 }
@@ -53,7 +56,10 @@ export class FeatureEngineering extends React.Component {
 
 
   componentWillMount() {
-    if (this.props.dataPreview == null || isEmpty(this.props.dataPreview) || this.props.dataPreview.status == 'FAILED') {
+    //set state with data from store always
+    this.setState({featureEngineering:this.props.featureEngineering});
+    //debugger;
+    if (this.props.dataPreview == null|| this.props.dataPreview.status == 'FAILED') {
       this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
     }
 console.log("FeatureEngineering componentWillMount method is called...");
@@ -62,6 +68,12 @@ console.log("FeatureEngineering componentWillMount method is called...");
       text: "Proceed"
     };
   }
+
+// componentDidUpdate(){
+//   console.log("FeatureEngineering componentDidUpdate method is called...");
+// this.setState({featureEngineering:this.props.featureEngineering});
+// }
+
     pickValuesAndStoreLocally(slug, inputId, event){
 
   }
@@ -72,11 +84,15 @@ console.log("FeatureEngineering componentWillMount method is called...");
     if(this.state[this.props.selectedItem.slug][actionType] == undefined){
       this.state[this.props.selectedItem.slug][actionType] = {}
     }
-
+    if(event.target.type == "checkbox"){
+    this.state[this.props.selectedItem.slug][actionType][event.target.name] = event.target.checked;
+    }else{
     this.state[this.props.selectedItem.slug][actionType][event.target.name] = event.target.value;
+    }
   }
 
   handleCreateClicked(actionType, event){
+    //debugger;
     this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, this.state[this.props.selectedItem.slug][actionType]));
     this.closeBinsOrLevelsModal();
     this.closeTransformColumnModal();
@@ -93,6 +109,7 @@ console.log("FeatureEngineering componentWillMount method is called...");
     var transformColumnPopup = "";
     let typeofBinningSelectBox = null;
     var binOrLevels = "";
+
 
 
     if (this.props.dataPreview != null) {
@@ -143,7 +160,7 @@ console.log("FeatureEngineering componentWillMount method is called...");
               </Modal.Body>
               <Modal.Footer>
                 <Button onClick={this.closeBinsOrLevelsModal.bind(this)}>Cancel</Button>
-                <Button bsStyle="primary" onClick={this.handleCreateClicked.bind(this, "binData")}>Create</Button>
+                <Button bsStyle="primary" onClick={this.handleCreateClicked.bind(this, "binData")}>Create now</Button>
               </Modal.Footer>
             </Modal>
           </div>
@@ -252,16 +269,26 @@ console.log("FeatureEngineering componentWillMount method is called...");
       </div>
     );
     }
-openBinsOrLevelsModal(item) {
+
+  openBinsOrLevelsModal(item) {
+    console.log("open ---openBinsOrLevelsModal");
     this.props.dispatch(openBinsOrLevelsModalAction(item));
   }
-  closeBinsOrLevelsModal() {
+
+  closeBinsOrLevelsModal(event) {
+    console.log("closeddddd ---closeBinsOrLevelsModal");
+    //debugger;
+    console.log(".... ",);
     this.props.dispatch(closeBinsOrLevelsModalAction());
+
   }
+
   openTransformColumnModal(item) {
+    console.log("open ---openTransformColumnModal");
     this.props.dispatch(openTransformColumnModalAction(item));
   }
   closeTransformColumnModal() {
+    console.log("closeddddd ---closeTransformColumnModal");
     this.props.dispatch(closeTransformColumnModalAction());
   }
   handleSelect(selectedKey) {

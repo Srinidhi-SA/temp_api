@@ -60,7 +60,6 @@ export function binningOptionsOnChangeAction(isNoOfBinsEnabled,isSpecifyInterval
     return {
 
            type: "NUM_OF_BINS_SPECIFY_INTERVALS",
-
            isNoOfBinsEnabled,
            isSpecifyIntervalsEnabled
        }

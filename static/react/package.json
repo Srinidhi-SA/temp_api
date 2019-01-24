@@ -23,6 +23,8 @@
     "bootbox": "^4.4.0",
     "bootstrap-multiselect": "^0.9.13-1",
     "dateformat": "^2.0.0",
+    "primeicons": "^1.0.0",
+    "primereact": "^3.0.0",
     "react": "^15.6.1",
     "react-addons-shallow-compare": "^15.6.2",
     "react-bootstrap": "^0.31.2",
