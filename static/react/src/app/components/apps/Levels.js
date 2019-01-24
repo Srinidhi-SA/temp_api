@@ -119,10 +119,13 @@ export class Levels extends React.Component {
           <div class="form-group">
             <label for="txt_sPeriod">&nbsp;&nbsp;&nbsp; Which will include:</label>
           </div>
+          <div class="form-group">
+
           <div className="content-section implementation multiselect-demo">
           <MultiSelect value={this.state.cars1} options={cars} onChange={(e) => this.setState({cars1: e.value})}
-                            style={{minWidth:'12em'}} filter={true} placeholder="Choose" />
+                            style={{minWidth:'12em'}} filter={true}  />
 
+          </div>
           </div>
           <button class="btn btn-primary b-inline" onClick={this.handleRemoveLevel.bind(this,idx)} ><i class="fa fa-close"></i></button>
           <button class="btn btn-primary b-inline" onClick={this.handleAddLevel.bind(this)} ><i class="fa fa-plus"></i></button>
