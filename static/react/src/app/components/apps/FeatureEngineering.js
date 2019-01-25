@@ -119,6 +119,7 @@ console.log("FeatureEngineering componentWillMount method is called...");
 
   render() {
     console.log("FeatureEngineering render method is called...");
+    // debugger;
     var feHtml = "";
     var binsOrLevelsPopup = "";
     var transformColumnPopup = "";
@@ -235,9 +236,9 @@ console.log("FeatureEngineering componentWillMount method is called...");
                     <input type="radio" id="mTod-binning2" name="mTod-binning" checked="checked"/>
                     <label for="mTod-binning2">No </label>
                   </div>
-            <div id="box-binning" class="xs-ml-20 block-inline"   >
-              <span class="inline-block"> Number of bins : <input type="text" oninput="numberOnly(this.id);" class="test_css" maxlength="2" id="flight_number" name="number"/></span>
-            </div>
+                  <div id="box-binning" class="xs-ml-20 block-inline"   >
+                    <span class="inline-block"> Number of bins : <input type="text" oninput="numberOnly(this.id);" class="test_css" maxlength="2" id="flight_number" name="number"/></span>
+                  </div>
 
                 </div>
               </div>
