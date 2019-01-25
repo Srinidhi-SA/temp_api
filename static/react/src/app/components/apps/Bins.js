@@ -62,7 +62,7 @@ getBindata(){
     //var binData = this.getBindata();
 
     if(selectedValue == "create_equal_sized_bins"){
-      this.props.dispatch(binningOptionsOnChangeAction(false, true));
+      this.props.dispatch(binningOptionsOnChangeAction( false,true));
     }else if(selectedValue == "create_custom_bins"){
 
         this.props.dispatch(binningOptionsOnChangeAction(true, false));
