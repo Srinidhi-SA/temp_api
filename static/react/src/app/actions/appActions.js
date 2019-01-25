@@ -53,7 +53,7 @@ export function refreshAppsModelList(props) {
   return (dispatch) => {
     if(refreshAppsModelInterval != null)
     clearInterval(refreshAppsModelInterval);
-    refreshAppsModelInterval = setInterval(function() 
+    refreshAppsModelInterval = setInterval(function()
     {
       var pageNo = window.location.href.split("=").pop();
       if (pageNo == undefined || isNaN(parseInt(pageNo)))
@@ -169,11 +169,15 @@ export function createModel(modelName, targetVariable, targetLevel) {
                 }
             }
             var AlgorithmSettings = store.getState().apps.regression_algorithm_data_manual;
+            var dataCleansing = {"missingValueTreatment" :store.getState().datasets.missingValueTreatment,
+                                  "outlierRemoval" : store.getState().datasets.missingValueTreatment}
 
             var details = {
                 "ALGORITHM_SETTING":AlgorithmSettings,
                 "validationTechnique":validationTechnique,
                 "targetLevel":targetLevel,
+                "dataCleansing" : dataCleansing,
+                "featureEngineering" : store.getState().datasets.featureEngineering, 
                 "variablesSelection":store.getState().datasets.dataPreview.meta_data.uiMetaData.varibaleSelectionArray
             }
         }
@@ -753,7 +757,7 @@ export function showDialogBox(slug, dialog, dispatch, title, msgText) {
 export function handleModelDelete(slug, dialog) {
   return (dispatch) => {
     showDialogBox(slug, dialog, dispatch, DELETEMODEL, renderHTML(statusMessages("warning","Are you sure, you want to delete model?","small_mascot")))
-	 
+
   }
 }
 function deleteModel(slug, dialog, dispatch) {
@@ -781,7 +785,7 @@ function deleteModelAPI(slug) {
 
 export function handleModelRename(slug, dialog, name) {
   const customBody = (
-		<div className="row">	
+		<div className="row">
 			<div className="col-md-4">
 				<img src={STATIC_URL + "assets/images/alert_thinking.gif"} class="img-responsive" />
 			</div>
@@ -792,7 +796,7 @@ export function handleModelRename(slug, dialog, name) {
 			</div>
 			</div>
 		</div>
-    
+
   )
   return (dispatch) => {
     showRenameDialogBox(slug, dialog, dispatch, RENAMEMODEL, customBody)
@@ -878,7 +882,7 @@ function deleteScoreAPI(slug) {
 
 export function handleScoreRename(slug, dialog, name) {
   const customBody = (
-	<div className="row">	
+	<div className="row">
 	<div className="col-md-4">
 		<img src={STATIC_URL + "assets/images/alert_thinking.gif"} class="img-responsive" />
 	</div>
@@ -952,7 +956,7 @@ function deleteInsightAPI(slug) {
 
 export function handleInsightRename(slug, dialog, name) {
   const customBody = (
-		<div className="row">	
+		<div className="row">
 		<div className="col-md-4">
 		<img src={STATIC_URL + "assets/images/alert_thinking.gif"} class="img-responsive" />
 		</div>
@@ -1189,7 +1193,7 @@ function deleteAudioAPI(slug) {
 
 export function handleAudioRename(slug, dialog, name) {
   const customBody = (
-		<div className="row">	
+		<div className="row">
 		<div className="col-md-4">
 		<img src={STATIC_URL + "assets/images/alert_thinking.gif"} class="img-responsive" />
 		</div>
@@ -1502,7 +1506,7 @@ export function triggerStockAnalysis(slug,dispatch) {
     return {type: "STOCK_CRAWL_SUCCESS", slug, displayHideCancel}
   }, APPSDEFAULTINTERVAL);
   return {type: "STOCK_CRAWL_SUCCESS", slug, displayHideCancel}
-    
+
 }
 export function getStockAnalysis(slug,appsInterval) {
   return (dispatch) => {
@@ -1966,7 +1970,7 @@ export function clearSelectedModelsCount(){
 export function handleStockDelete(slug, dialog) {
   return (dispatch) => {
     showDialogBox(slug, dialog, dispatch, DELETESTOCKMODEL, renderHTML(statusMessages("warning","Are you sure, you want to delete analysis?","small_mascot")))
-	 
+
   }
 }
 function deleteStockModel(slug, dialog, dispatch) {
@@ -1995,7 +1999,7 @@ function deleteStockModelAPI(slug) {
 
 export function handleStockModelRename(slug, dialog, name) {
   const customBody = (
-		<div className="row">	
+		<div className="row">
 			<div className="col-md-4">
 				<img src={STATIC_URL + "assets/images/alert_thinking.gif"} class="img-responsive" />
 			</div>
@@ -2006,7 +2010,7 @@ export function handleStockModelRename(slug, dialog, name) {
 			</div>
 			</div>
 		</div>
-    
+
   )
   return (dispatch) => {
     showRenameDialogBox(slug, dialog, dispatch, RENAMESTOCKMODEL, customBody)
