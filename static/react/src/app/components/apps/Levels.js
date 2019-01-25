@@ -27,30 +27,55 @@ export class Levels extends React.Component {
   constructor(props) {
     super(props);
     this.pickValue = this.pickValue.bind(this);
-    console.log("Levels constructor method is called...");
-    this.state = { levelsArray: [{ name: "" }] ,
-    cars1: [],
-    cars2: []}
+
+    this.state = { levelsArray: this.props.levelsData ,}
+  // this.handleRemoveLevel = this.handleRemoveLevel.bind(this);
+
+  }
+  getAllOptions(){
+    // meta_data.scriptMetaData.columnData[1].chartData.chart_c3.data.columns[""0""]
+    return this.props.dataPreview.meta_data.scriptMetaData.columnData.filter(item => item.slug == this.props.selectedItem.slug )[0].chartData.chart_c3.data.columns[0].slice(1)
+  }
+  getMultiSelectOptions(idx){
+    var allSelectedItemsExceptCur = this.getAllSelectedOptionsExceptCurrent(idx);
+      return this.getAllOptions().filter(item => !allSelectedItemsExceptCur.has(item)).map(function(elem) {
+        return {"label": elem, "value" : elem };
+      });
+  }
+  getAllSelectedOptionsExceptCurrent(idx){
+    var allSelectedItems = new Set();
+    this.state.levelsArray.map(function(elem,elemIdx){
+      if(elemIdx != idx){
+        allSelectedItems = new Set([...allSelectedItems,...elem.multiselectValue])
+      }
+    });
+    return allSelectedItems;
   }
 
   componentWillMount() {
     console.log("Levels componentWillMount method is called...");
+    this.addNewLevel();
+  }
+  componentWillUpdate(){
+    this.props.parentUpdateLevelsData(this.state.levelsArray);
   }
 
   handleLevelSubmit = evt => {
 
   };
 
-  handleAddLevel(){
+  addNewLevel(){
+    var newObj = {"inputValue":"", "multiselectValue":""};
     this.setState({
-      levelsArray: this.state.levelsArray.concat([{ name: "" }])
+      levelsArray: this.state.levelsArray.concat([newObj,])
     });
   };
 
-  handleRemoveLevel(idx){
+  handleRemoveLevel(idx, event){
     this.setState({
       levelsArray: this.state.levelsArray.filter((s, sidx) => idx !== sidx)
     });
+    this.props.parentUpdateLevelsData(this.state.levelsArray);
   };
 
   getLevelData(){
@@ -87,52 +112,55 @@ export class Levels extends React.Component {
       }
     }
 
+    inputOnChangeHandler(idx, event){
+
+      var newArray = this.state.levelsArray;
+      newArray[idx]["inputValue"] = event.target.value;
+      this.setState({
+        levelsArray: newArray
+      });
+    }
+
+    multiSelectOnChangeHandler(idx,event){
+      var newArray = this.state.levelsArray;
+      newArray[idx]["multiselectValue"] = event.target.value;
+      this.setState({
+        levelsArray: newArray
+      });
+
+    }
 
   render() {
     console.log("Levels render method is called...");
 
     var levelData = this.getLevelData();
 
-    const cars = [
-            {label: 'Audi', value: 'Audi'},
-            {label: 'BMW', value: 'BMW'},
-            {label: 'Fiat', value: 'Fiat'},
-            {label: 'Honda', value: 'Honda'},
-            {label: 'Jaguar', value: 'Jaguar'},
-            {label: 'Mercedes', value: 'Mercedes'},
-            {label: 'Renault', value: 'Renault'},
-            {label: 'VW', value: 'VW'},
-            {label: 'Volvo', value: 'Volvo'}
-        ];
-
-
     var levels = "";
     levels = (
-      <Tab.Pane>
+      <div>
         {this.state.levelsArray.map((level, idx) => (
-          <form class="form_withrowlabels form-inline">
-
-          <div class="clearfix"></div>
-          <div class="form-group">
-            <input type="text" name={`name #${idx + 1}`} class="form-control" placeholder={`level #${idx + 1} name`} onInput={this.pickValue}  onChange={this.onchangeInput.bind(this)} />
+          <div className="form_withrowlabels form-inline">
+          <div className="form-group">
+            <input type="text" value={level.inputValue} name={`name #${idx + 1}`} className="form-control" placeholder={`level #${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx)} />
           </div>
-          <div class="form-group">
+          <div className="form-group">
             <label for="txt_sPeriod">&nbsp;&nbsp;&nbsp; Which will include:</label>
           </div>
-          <div class="form-group">
+          <div className="form-group">
 
           <div className="content-section implementation multiselect-demo">
-          <MultiSelect value={this.state.cars1} options={cars} onChange={(e) => this.setState({cars1: e.value})}
-                            style={{minWidth:'12em'}} filter={true}  />
-
+          <MultiSelect value={level.multiselectValue} options={this.getMultiSelectOptions(idx)} onChange={this.multiSelectOnChangeHandler.bind(this,idx)}
+                            style={{minWidth:'12em'}} filter={true} placeholder="choose" />
           </div>
           </div>
-          <button class="btn btn-primary b-inline" onClick={this.handleRemoveLevel.bind(this,idx)} ><i class="fa fa-close"></i></button>
-          <button class="btn btn-primary b-inline" onClick={this.handleAddLevel.bind(this)} ><i class="fa fa-plus"></i></button>
-        </form>
+          <div className="form-group">
+          <button className="btn btn-primary b-inline" data-levelIndex={idx} onClick={this.handleRemoveLevel.bind(this, idx)} ><i className="fa fa-close"></i></button>
+          </div>
+        </div>
 
         ))}
-      </Tab.Pane>
+        <button className="btn btn-primary b-inline" onClick={this.addNewLevel.bind(this)} ><i className="fa fa-plus"></i></button>
+      </div>
     )
 
     return (
