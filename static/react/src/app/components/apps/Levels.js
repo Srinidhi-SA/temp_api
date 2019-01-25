@@ -27,11 +27,8 @@ export class Levels extends React.Component {
   constructor(props) {
     super(props);
     this.pickValue = this.pickValue.bind(this);
-    console.log("Levels constructor method is called...");
-    this.state = { levelsArray: [ ] ,
-    allValues:[],
-    selectedValues: []
-  }
+
+    this.state = { levelsArray: this.props.levelsData ,}
   // this.handleRemoveLevel = this.handleRemoveLevel.bind(this);
 
   }
@@ -59,6 +56,9 @@ export class Levels extends React.Component {
     console.log("Levels componentWillMount method is called...");
     this.addNewLevel();
   }
+  componentWillUpdate(){
+    this.props.parentUpdateLevelsData(this.state.levelsArray);
+  }
 
   handleLevelSubmit = evt => {
 
@@ -75,6 +75,7 @@ export class Levels extends React.Component {
     this.setState({
       levelsArray: this.state.levelsArray.filter((s, sidx) => idx !== sidx)
     });
+    this.props.parentUpdateLevelsData(this.state.levelsArray);
   };
 
   getLevelData(){
@@ -112,8 +113,14 @@ export class Levels extends React.Component {
     }
 
     inputOnChangeHandler(idx, event){
-      this.state.levelsArray[idx]["inputValue"] = event.target.value;
+
+      var newArray = this.state.levelsArray;
+      newArray[idx]["inputValue"] = event.target.value;
+      this.setState({
+        levelsArray: newArray
+      });
     }
+
     multiSelectOnChangeHandler(idx,event){
       var newArray = this.state.levelsArray;
       newArray[idx]["multiselectValue"] = event.target.value;
@@ -128,27 +135,13 @@ export class Levels extends React.Component {
 
     var levelData = this.getLevelData();
 
-    const multiSelectOptions = [
-            {label: 'VW', value: 'VW'},
-            {label: 'Audi', value: 'Audi'},
-            {label: 'BMW', value: 'BMW'},
-            {label: 'Fiat', value: 'Fiat'},
-            {label: 'Honda', value: 'Honda'},
-            {label: 'Jaguar', value: 'Jaguar'},
-            {label: 'Mercedes', value: 'Mercedes'},
-            {label: 'Renault', value: 'Renault'},
-
-            {label: 'Volvo', value: 'Volvo'}
-        ];
-
-
     var levels = "";
     levels = (
       <div>
         {this.state.levelsArray.map((level, idx) => (
           <div className="form_withrowlabels form-inline">
           <div className="form-group">
-            <input type="text" name={`name #${idx + 1}`} className="form-control" placeholder={`level #${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx)} />
+            <input type="text" value={level.inputValue} name={`name #${idx + 1}`} className="form-control" placeholder={`level #${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx)} />
           </div>
           <div className="form-group">
             <label for="txt_sPeriod">&nbsp;&nbsp;&nbsp; Which will include:</label>
