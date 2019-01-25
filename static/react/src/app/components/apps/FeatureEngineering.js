@@ -9,6 +9,7 @@ openBinsOrLevelsModalAction,
   closeTransformColumnModalAction,
   selectedBinsOrLevelsTabAction,
   saveBinLevelTransformationValuesAction,
+  saveTopLevelValuesAction,
 } from "../../actions/featureEngineeringActions";
 
 import { getDataSetPreview } from "../../actions/dataActions";
@@ -45,6 +46,7 @@ export class FeatureEngineering extends React.Component {
 
   this.buttons = {};
   this.state = {};
+  this.state.topLevelRadioButton = "false";
   this.prevState = this.state;
   this.pickValue = this.pickValue.bind(this);
   this.updateLevelsData = this.updateLevelsData.bind(this);
@@ -115,10 +117,21 @@ console.log("FeatureEngineering componentWillMount method is called...");
   }
 
 
+  handleTopLevelRadioButtonOnchange(event){
+    this.state.topLevelRadioButton = event.target.value;
+    this.saveTopLevelValues();
+  }
+  handleTopLevelInputOnchange(event){
+    this.state.topLevelInput = event.target.value;
+    this.saveTopLevelValues();
+  }
+  saveTopLevelValues(){
+    this.props.dispatch(saveTopLevelValuesAction(this.state.topLevelRadioButton, this.state.topLevelInput));
+    this.setState({ state: this.state });
+  }
 
 
   render() {
-    console.log("FeatureEngineering render method is called...");
     // debugger;
     var feHtml = "";
     var binsOrLevelsPopup = "";
@@ -228,17 +241,17 @@ console.log("FeatureEngineering componentWillMount method is called...");
             <p class="inline-block">
             Do you want to convert all measures into dimension using binning? &nbsp;&nbsp;&nbsp;
             </p>
+            <span onChange={this.handleTopLevelRadioButtonOnchange.bind(this)} className="inline">
              <div class="ma-checkbox inline">
-                    <input type="radio" id="mTod-binning1" name="mTod-binning"/>
+                    <input type="radio" id="mTod-binning1" value="true" name="mTod-binning"  checked={this.state.topLevelRadioButton === "true"} />
                     <label for="mTod-binning1">Yes</label>
                   </div>
                   <div class="ma-checkbox inline">
-                    <input type="radio" id="mTod-binning2" name="mTod-binning" checked="checked"/>
+                    <input type="radio" id="mTod-binning2" value="false" name="mTod-binning"  checked={this.state.topLevelRadioButton === "false"} />
                     <label for="mTod-binning2">No </label>
                   </div>
-            <div id="box-binning" class="xs-ml-20 block-inline"   >
-              <span class="inline-block"> Number of bins : <input type="text" oninput="numberOnly(this.id);" class="test_css" maxlength="2" id="flight_number" name="number"/></span>
-            </div>
+                  </span>
+                  {(this.state.topLevelRadioButton == "true")?<div id="box-binning" class="xs-ml-20 block-inline"   ><span class="inline-block"> Number of bins : <input type="text" onInput={this.handleTopLevelInputOnchange.bind(this)} class="test_css" maxlength="2" id="flight_number" name="number"/></span></div>:""}
 
                 </div>
               </div>
