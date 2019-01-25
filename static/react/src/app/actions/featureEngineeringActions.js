@@ -77,3 +77,10 @@ export function saveBinLevelTransformationValuesAction(coloumnSlug, actionType, 
      }
 
 }
+export function saveTopLevelValuesAction(yesNoValue, numberOfBins){
+  return {
+         type: "FE_SAVE_TOP_LEVEL_DATA",
+         yesNoValue,
+         numberOfBins
+     }
+}
