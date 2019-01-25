@@ -28,7 +28,6 @@ export class Bins extends React.Component {
   }
 
 getBindata(){
-  debugger;
   if(this.props.featureEngineering != undefined || this.props.featureEngineering !=null){
   var slugData = this.props.featureEngineering[this.props.selectedItem.slug];
     if(slugData != undefined && slugData.binData != undefined){

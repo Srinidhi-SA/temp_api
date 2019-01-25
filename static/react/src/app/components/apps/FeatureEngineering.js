@@ -119,7 +119,6 @@ console.log("FeatureEngineering componentWillMount method is called...");
 
   render() {
     console.log("FeatureEngineering render method is called...");
-    // debugger;
     var feHtml = "";
     var binsOrLevelsPopup = "";
     var transformColumnPopup = "";
