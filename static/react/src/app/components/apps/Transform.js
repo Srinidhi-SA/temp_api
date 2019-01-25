@@ -40,7 +40,7 @@ export class Transform extends React.Component {
           transformationData = slugData.transformationData;
           }
         }
-        return transformationData;
+        return slugData.transformationData;
       }
 
     getTranformDataValue(name){
@@ -60,21 +60,6 @@ export class Transform extends React.Component {
 
   render() {
     console.log("Transforms render method is called...");
-    // var transformHtml = this.props.dataPreview.meta_data.uiMetaData.fe_config.fe;
-    // var mtransform = transformHtml.measure.transformation_settings.operations.map(item => {
-    //   if(item.display){
-    //     return (
-    //       <div class="ma-checkbox inline">
-    //         <input id={item.name} name={item.name} type="checkbox" class="needsclick" onInput={this.pickValue} onChange={this.pickValue}/>
-    //         <label for={item.name}>{item.name}:</label>
-    //       </div>
-    //
-    //     );
-    //   }
-    //   else{
-    //     return "";
-    //   }
-    // })
         if(this.props.selectedItem.columnType == "measure"){
           return (
             <div class="modal-body">

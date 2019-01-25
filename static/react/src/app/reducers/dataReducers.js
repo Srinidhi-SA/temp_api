@@ -63,7 +63,7 @@ export default function reducer(state = {
   selectedBinsOrLevelsTab:"Bins",
   selectedItem:{},
   isNoOfBinsEnabled:false,
-  isSpecifyIntervalsEnabled:false,
+  isSpecifyIntervalsEnabled:true,
 }, action) {
   console.log("In DATA reducer!!");
   console.log(action);
