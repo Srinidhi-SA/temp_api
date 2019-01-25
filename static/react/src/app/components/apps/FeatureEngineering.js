@@ -33,9 +33,6 @@ return {
     selectedBinsOrLevelsTab: store.datasets.selectedBinsOrLevelsTab,
     selectedItem: store.datasets.selectedItem,
     featureEngineering:store.datasets.featureEngineering
-
-
-
   };
 
 })
@@ -50,6 +47,7 @@ export class FeatureEngineering extends React.Component {
   this.state = {};
   this.prevState = this.state;
   this.pickValue = this.pickValue.bind(this);
+  this.updateLevelsData = this.updateLevelsData.bind(this);
 
 }
 
@@ -91,10 +89,27 @@ console.log("FeatureEngineering componentWillMount method is called...");
     }
   }
 
+  updateLevelsData(data){
+    if(!this.state[this.props.selectedItem.slug]){
+      this.state[this.props.selectedItem.slug]={};
+    }
+    this.state[this.props.selectedItem.slug]["levelData"] = data;
+  }
+
+  getLevelsData(){
+    if(this.props.featureEngineering[this.props.selectedItem.slug]){
+      var levelsData = this.props.featureEngineering[this.props.selectedItem.slug]["levelData"];
+      if(levelsData){
+        return JSON.parse(JSON.stringify(levelsData));
+      }
+    }
+    return []
+  }
+
   handleCreateClicked(actionType, event){
     //debugger;
-    console.log("actionType : ",actionType);
-    this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, this.state[this.props.selectedItem.slug][actionType]));
+    var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
+    this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
     this.closeBinsOrLevelsModal();
     this.closeTransformColumnModal();
   }
@@ -131,7 +146,7 @@ console.log("FeatureEngineering componentWillMount method is called...");
             }
             else if(this.props.selectedItem.columnType == "dimension")
             {
-              binOrLevels= <Levels parentPickValue={this.pickValue}/>
+              binOrLevels= <Levels parentPickValue={this.pickValue} parentUpdateLevelsData={this.updateLevelsData} levelsData={this.getLevelsData()}/>
               binOrLevelData="levelData";
             }
             else

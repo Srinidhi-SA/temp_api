@@ -22,26 +22,20 @@ featureEngineering:store.datasets.featureEngineering
 };
 })
 export class Bins extends React.Component {
-constructor(props) {
-  super(props);
-  this.pickValue = this.pickValue.bind(this);
-          console.log("Bins constructor method is called...");
-}
-componentWillMount() {
-console.log("Bins componentWillMount method is called...");
-//this.setState({featureEngineering:this.props.featureEngineering});
+  constructor(props) {
+    super(props);
+    this.pickValue = this.pickValue.bind(this);
   }
 
 getBindata(){
-  var binData = {};
+  debugger;
   if(this.props.featureEngineering != undefined || this.props.featureEngineering !=null){
   var slugData = this.props.featureEngineering[this.props.selectedItem.slug];
-    if(slugData != undefined){
-      binData = slugData.binData;
+    if(slugData != undefined && slugData.binData != undefined){
+      return JSON.parse(JSON.stringify(slugData.binData));;
     }
-
   }
-  return binData;
+  return {};
 }
 
   getbinningOptions(){
