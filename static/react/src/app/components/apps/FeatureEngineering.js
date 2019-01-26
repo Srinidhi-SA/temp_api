@@ -129,6 +129,10 @@ console.log("FeatureEngineering componentWillMount method is called...");
     this.props.dispatch(saveTopLevelValuesAction(this.state.topLevelRadioButton, this.state.topLevelInput));
     this.setState({ state: this.state });
   }
+  handleProcedClicked(event){
+    var proccedUrl = this.props.match.url.replace('featureEngineering','Proceed');
+    this.props.history.push(proccedUrl);
+  }
 
 
   render() {
@@ -284,7 +288,7 @@ console.log("FeatureEngineering componentWillMount method is called...");
                                 <div className="navbar">
                                     <ul className="nav navbar-nav navbar-right">
                                         <li className="text-right">
-                                          <Button onClick={this.proceedFeatureEngineering.bind(this)} bsStyle="primary">{this.buttons.proceed.text} <i class="fa fa-angle-double-right"></i></Button>
+                                          <Button onClick={this.handleProcedClicked.bind(this)} bsStyle="primary">{this.buttons.proceed.text} <i class="fa fa-angle-double-right"></i></Button>
                                         </li>
                                       </ul>
                                     </div>
@@ -334,6 +338,4 @@ console.log("FeatureEngineering componentWillMount method is called...");
       this.props.dispatch();
     }
 
-  createTransferColumn() {  }
-  proceedFeatureEngineering() {  }
 }

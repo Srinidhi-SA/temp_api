@@ -63,9 +63,11 @@ export class DataCleansing extends React.Component {
       console.log("not updating dataPreview data from server");
     }
 
+    var proccedUrl = this.props.match.url.replace('dataCleansing','featureEngineering');
+
     if(this.props.match.path.includes("slug")){
       this.buttons['proceed']={
-        url :"/feature-engineering/"+this.props.match.params.slug,
+        url : proccedUrl,
         text:"Proceed"};
       }
   }
@@ -128,8 +130,8 @@ getUpdatedDataType(colSlug){
 
 proceedFeatureEngineering()
 {
-  var url=this.buttons.proceed.url;
-  this.props.history.push(url);
+  var proccedUrl = this.props.match.url.replace('dataCleansing','featureEngineering');
+  this.props.history.push(proccedUrl);
 }
 
 getOutlierRemovalOptions(dataType, colName, colSlug){
@@ -279,7 +281,7 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
 
                   </div>
   <div class="buttonRow text-right">
-     <Button onClick={this.proceedFeatureEngineering.bind(this)}>{this.buttons.proceed.text}</Button>
+     <Button onClick={this.proceedFeatureEngineering.bind(this)}  bsStyle="primary">Proceed <i class="fa fa-angle-double-right"></i></Button>
    </div>
  </div>
         </div>
