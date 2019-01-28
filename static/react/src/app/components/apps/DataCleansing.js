@@ -170,7 +170,6 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
         // console.log(item);
         if(removedVariables.indexOf(item.name)!= -1 ) return "";
 
-        console.log("==============================================================================");
         return (
           <tr>
             {/* <td><div class="ma-checkbox inline">
