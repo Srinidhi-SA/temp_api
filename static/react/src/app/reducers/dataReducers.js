@@ -793,6 +793,7 @@ export default function reducer(state = {
               topLevelData: {"yesNoValue": action.yesNoValue, "numberOfBins" : action.numberOfBins}
             }
             break;
+
             case "SAVE_BIN_LEVEL_TRANSFORMATION_DATA":
               var curFeData = state.featureEngineering
               var curSlugData = curFeData[action.coloumnSlug];
