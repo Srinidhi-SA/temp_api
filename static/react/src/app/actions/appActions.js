@@ -171,7 +171,7 @@ export function createModel(modelName, targetVariable, targetLevel) {
             var AlgorithmSettings = store.getState().apps.regression_algorithm_data_manual;
             var dataCleansing = {  "columnsSettings" : {
                                     "missingValueTreatment" :store.getState().datasets.missingValueTreatment,
-                                    "outlierRemoval" : store.getState().datasets.missingValueTreatment,
+                                    "outlierRemoval" : store.getState().datasets.outlierRemoval,
                                      },
                                    "overallSettings" : store.getState().datasets.removeDuplicates,
                                   }
