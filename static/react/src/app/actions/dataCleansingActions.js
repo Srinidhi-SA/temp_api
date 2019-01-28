@@ -17,7 +17,7 @@ export function outlierRemovalSelectedAction(colName,colType,colslug, treatment,
 		colName,
     colType,
     colslug,
-        treatment
+    treatment
 	}
 }
 export function variableSelectedAction(colSlug, selecteOrNot, dispatch){
@@ -29,13 +29,19 @@ export function variableSelectedAction(colSlug, selecteOrNot, dispatch){
 }
 
 
- export function removeDuplicatesAction(duplicate_removal_name, yesOrNo, dispatch){
-  return {
-		type: "REMOVE_DUPLICATES",
+export function removeDuplicateAttributesAction(duplicate_removal_name, yesOrNo, dispatch){
+     return {
+		type: "REMOVE_DUPLICATE_ATTRIBUTES",
     yesOrNo,
     duplicate_removal_name
+	}
+}
 
-
+export function removeDuplicateObservationsAction(duplicate_removal_name, yesOrNo, dispatch){
+     return {
+		type: "REMOVE_DUPLICATE_OBSERVATIONS",
+    yesOrNo,
+    duplicate_removal_name
 	}
 }
 

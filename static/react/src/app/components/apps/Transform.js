@@ -9,6 +9,7 @@ import {
   closeTransformColumnModalAction,
   selectedBinsOrLevelsTabAction,
 } from "../../actions/dataActions";
+import {  saveEncodingValuesAction } from "../../actions/featureEngineeringActions";
 
 @connect((store) => {
   return {
@@ -24,6 +25,8 @@ export class Transform extends React.Component {
     super(props);
     console.log("Transform constructor method is called...");
     this.pickValue = this.pickValue.bind(this);
+    this.state = {};
+    this.state.encodingRadioButton;
 
   }
 
@@ -56,6 +59,19 @@ export class Transform extends React.Component {
 
   onchangeInput(event){
     return event.target.value;
+  }
+
+  handleEncodingRadioButtonOnchange(event){
+    this.state.encodingRadioButton = event.target.value;
+    this.saveEncodingValues();
+  }
+  // handleEncodingInputOnchange(event){
+  //   this.state.encodingInput = event.target.value;
+  //   this.saveEncodingValues();
+  // }
+  saveEncodingValues(){
+    this.props.dispatch(saveEncodingValuesAction(this.state.encodingRadioButton));
+    this.setState({ state: this.state });
   }
 
   render() {
@@ -196,39 +212,20 @@ export class Transform extends React.Component {
                       <label for="encoding_dimensions">Perform Encoding:</label>
                     </div>
                   </div>
-
-
-                  <span  onChange={this.onchangeInput.bind(this)} className="inline">
+                  <span onChange={this.onchangeInput.bind(this)} className="inline">
                   <div class="col-md-7 col-sm-6">
                     <div class="ma-checkbox inline">
-                       <input type="radio" id="one_hot_encoding" value="one_hot_encoding" name="encoding"   onInput={this.pickValue}/>
-                       <label for="one_hot_encoding">One hot encoding</label>
+                      <input type="radio" id="one_hot_encoding" name="encoding" value="one_hot_encoding" onInput={this.pickValue} />
+                      <label for="one_hot_encoding">One hot encoding</label>
                     </div>
                     <div class="ma-checkbox inline">
-                       <input type="radio" id="label_encoding" value="label_encoding" name="encoding"   onInput={this.pickValue}/>
-                       <label for="label_encoding">Label encoding</label>
+                      <input type="radio" id="label_encoding" name="encoding" value="label_encoding" onInput={this.pickValue} />
+                      <label for="label_encoding">Label encoding</label>
                     </div>
                   </div>
                 </span>
-
-                {/* <span onChange={this.handleTopLevelRadioButtonOnchange.bind(this)} className="inline">
-                 <div class="ma-checkbox inline">
-                        <input type="radio" id="mTod-binning1" value="true" name="mTod-binning"  checked={this.state.topLevelRadioButton === "true"} />
-                        <label for="mTod-binning1">Yes</label>
-                      </div>
-                      <div class="ma-checkbox inline">
-                        <input type="radio" id="mTod-binning2" value="false" name="mTod-binning"  checked={this.state.topLevelRadioButton === "false"} />
-                        <label for="mTod-binning2">No </label>
-                      </div>
-                      </span> */}
-
-
-
-
-
-
-
                 </div>
+
                 <div class="row form-group">
                   <div class="col-md-5 col-sm-5">
                     <div class="ma-checkbox inline">

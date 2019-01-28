@@ -57,7 +57,8 @@ export default function reducer(state = {
   outlierRemoval:{},
   featureEngineering:{},
   selectedVariables : {},
-  removeDuplicates :{},
+  removeDuplicateAttributes :{},
+  removeDuplicateObservations :{},
   binsOrLevelsShowModal:false,
   transferColumnShowModal:false,
   selectedBinsOrLevelsTab:"Bins",
@@ -623,8 +624,11 @@ export default function reducer(state = {
       case "MISSING_VALUE_TREATMENT":
       {
         var curmissingValueTreatment = state.missingValueTreatment;
-        curmissingValueTreatment[action.colSlug] = {"treatment" : action.treatment, "name" : action.colName };
-
+        curmissingValueTreatment[action.colSlug] = {
+          "treatment" : action.treatment,
+          "name" : action.colName,
+          "type" : action.colType
+        };
         return {
           ...state,
           missingValueTreatment : curmissingValueTreatment
@@ -635,7 +639,11 @@ export default function reducer(state = {
       case "OUTLIER_REMOVAL":
       {
         var curOutlierRemoval = state.outlierRemoval;
-        curOutlierRemoval[action.colSlug] = action.treatment;
+        curOutlierRemoval[action.colSlug] = {
+          "treatment" : action.treatment,
+          "name" : action.colName,
+          "type" : action.colType
+        };
         return {
           ...state,
           outlierRemoval : curOutlierRemoval
@@ -655,17 +663,28 @@ export default function reducer(state = {
       }
       break;
 
-      case "REMOVE_DUPLICATES":
+      case "REMOVE_DUPLICATE_ATTRIBUTES":
       {
-        var curRemoveDuplicates = state.removeDuplicates;
-        curRemoveDuplicates[action.duplicate_removal_name] = action.yesOrNo;
+        var curRemoveDuplicateAttributes = state.removeDuplicateAttributes;
+        curRemoveDuplicateAttributes[action.duplicate_removal_name] = action.yesOrNo;
         return {
           ...state,
-          removeDuplicates : curRemoveDuplicates
+          removeDuplicate : curRemoveDuplicateAttributes
         }
-
       }
       break;
+
+      case "REMOVE_DUPLICATE_OBSERVATIONS":
+      {
+        var curremoveDuplicateObservations = state.removeDuplicateObservations;
+        curremoveDuplicateObservations[action.duplicate_removal_name] = action.yesOrNo;
+        return {
+          ...state,
+          removeDuplicates : curremoveDuplicateObservations
+        }
+      }
+      break;
+
       case "DATACLEANSING_DATA_TYPE_CHANGE":
       {
          console.log(   action.colSlug);
@@ -793,6 +812,7 @@ export default function reducer(state = {
               topLevelData: {"yesNoValue": action.yesNoValue, "numberOfBins" : action.numberOfBins}
             }
             break;
+
             case "SAVE_BIN_LEVEL_TRANSFORMATION_DATA":
               var curFeData = state.featureEngineering
               var curSlugData = curFeData[action.coloumnSlug];
