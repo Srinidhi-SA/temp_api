@@ -1044,7 +1044,7 @@ class Trainer(models.Model):
         if 'dataCleansing' in config:
             data_cleansing_config = self.data_cleansing_adaptor_for_ml(config['dataCleansing'], column_data)
         if 'fe' in config:
-            feature_engineering_config = self.feature_engineering_config_for_ml(config['fe'], column_data)
+            feature_engineering_config = self.feature_engineering_config_for_ml(config['featureEngineering'], column_data)
 
         return {
             'data_cleansing_config': data_cleansing_config,
@@ -1098,10 +1098,10 @@ class Trainer(models.Model):
 
         from config.settings import feature_engineering_settings
         import copy
-        data_cleansing = copy.deepcopy(feature_engineering_settings.data_cleansing_final_config_format[0])
+        data_cleansing = copy.deepcopy(feature_engineering_settings.data_cleansing_final_config_format)
         columns_wise_settings = data_cleansing['columns_wise_settings']
         overall_settings = data_cleansing['overall_settings']
-
+        import pdb;pdb.set_trace()
         # pass
         columns_wise_data = data_cleansing_config['columnsSettings']
         if 'overallSettings' in data_cleansing_config:
@@ -1150,7 +1150,7 @@ class Trainer(models.Model):
                         op['columns'].append(column_dict)
 
         data_cleansing['overall_settings'] = overall_settings
-
+        import pdb;pdb.set_trace()
         return data_cleansing
 
     def convert_variable_selection_config_into_dict(self, data):

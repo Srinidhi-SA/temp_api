@@ -185,6 +185,7 @@ class TrainerView(viewsets.ModelViewSet):
         import pdb;
         pdb.set_trace()
         print(data['config']['dataCleansing'])
+        print(data['config']['featureEngineering'])
         data = convert_to_string(data)
 
         data['dataset'] = Dataset.objects.filter(slug=data['dataset'])

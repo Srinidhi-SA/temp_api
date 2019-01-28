@@ -385,7 +385,7 @@ data_cleansing_final_config_format = {
         'slug': 'pSUkr21TwfCzZCdbFbqIEj'}]
         }
       }
-    },
+    }
 
 
 
@@ -551,7 +551,7 @@ feture_engineering_static = {
           "selected": True,
           "number_of_bins": 10,
           "slug": "",
-            "display": True,
+          "display": True,
         }
     ],
     'measure': {
