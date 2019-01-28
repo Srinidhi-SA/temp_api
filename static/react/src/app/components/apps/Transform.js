@@ -201,11 +201,11 @@ export class Transform extends React.Component {
                   <span  onChange={this.onchangeInput.bind(this)} className="inline">
                   <div class="col-md-7 col-sm-6">
                     <div class="ma-checkbox inline">
-                       <input type="radio" id="one_hot_encoding" value="true" name="encoding"   onInput={this.pickValue}/>
+                       <input type="radio" id="one_hot_encoding" value="one_hot_encoding" name="encoding"   onInput={this.pickValue}/>
                        <label for="one_hot_encoding">One hot encoding</label>
                     </div>
                     <div class="ma-checkbox inline">
-                       <input type="radio" id="label_encoding" value="false" name="encoding"   onInput={this.pickValue}/>
+                       <input type="radio" id="label_encoding" value="label_encoding" name="encoding"   onInput={this.pickValue}/>
                        <label for="label_encoding">Label encoding</label>
                     </div>
                   </div>
