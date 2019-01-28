@@ -864,6 +864,8 @@ class Trainer(models.Model):
         elif self.app_id in settings.CLASSIFICATION_APP_ID:
             config['config']["ALGORITHM_SETTING"] = self.make_config_algorithm_setting()
 
+        config['config']['FEATURE_ENGINEERING_SETTINGS'] = self.create_configuration_fe_settings()
+
         self.config = json.dumps(config)
         self.save()
         return config
@@ -1031,6 +1033,119 @@ class Trainer(models.Model):
     def make_config_algorithm_setting(self):
         config = self.get_config()
         return config['ALGORITHM_SETTING']
+
+    def create_configuration_fe_settings(self):
+        config = self.get_config()
+        data_cleansing_config = dict()
+        feature_engineering_config = dict()
+        if 'data_cleansing' in config:
+            data_cleansing_config = self.data_cleansing_adaptor_for_ml(config['data_cleansing_config'])
+        if 'fe' in config:
+            feature_engineering_config = self.feature_engineering_config_for_ml(config['fe'])
+        return {
+            'data_cleansing_config': data_cleansing_config,
+            'feature_engineering_config': feature_engineering_config
+        }
+
+    def data_cleansing_adaptor_for_ml(self, data_cleansing_config):
+        '''
+        sample json:
+        data_cleansing_config = {
+            "overall_settings": [
+                {
+                  "name": "duplicate_row",
+                  "displayName": "Duplicate row treatment",
+                  "selected": True,
+                  "slug": ""
+                },
+                {
+                  "name": "duplicate_column",
+                  "displayName": "Duplicate columns treatment",
+                  "selected": True,
+                  "slug": ""
+                }
+            ],
+            "columns_wise_settings": {
+                "missing_value_treatment": {
+                        "column_name1": {
+                            "datatype": "measure",
+                            "name": "mean_imputation",
+                        },
+                        "column_name2": {
+                            "datatype": "measure",
+                            "name": "mean_imputation",
+                        }
+                },
+                "outlier_treatment":  {
+                        "column_name1": {
+                            "datatype": "measure",
+                            "name": "mean_imputation",
+                        },
+                        "column_name2": {
+                            "datatype": "measure",
+                            "name": "mean_imputation",
+                        }
+                }
+
+            }
+        }
+
+        '''
+        from config.settings import feature_engineering_settings
+        import copy
+        data_cleansing = copy.deepcopy(feature_engineering_settings.data_cleansing_final_config_format)
+        columns_wise_settings = data_cleansing['columns_wise_settings']
+        columns_wise_data = data_cleansing_config['columns_wise_settings']
+
+        overall_data = data_cleansing_config['overall_settings']
+
+        for fkey in columns_wise_data:
+            columns_wise_data_f = columns_wise_data[fkey]
+            if fkey == "missing_value_treatment":
+                for key in columns_wise_data_f:
+                    value = columns_wise_data_f[key]
+                    column_dict = {
+                        "name": key,
+                        "datatype": value['datatype'],
+                        "mvt_value": 0,
+                        "ol_lower_range": 0,
+                        "ol_upper_range": 0,
+                        "ol_lower_value": 0,
+                        "ol_upper_value": 0
+                    }
+
+                    columns_wise_settings['missings_value_treatment']['selected'] = True
+                    operations = columns_wise_settings['missings_value_treatment']['operations']
+                    for op in operations:
+                        if value['name'] == op['name']:
+                            op['selected'] = True
+                            op['columns'].append(column_dict)
+
+            elif fkey == "outlier_treatment":
+                for key in columns_wise_data_f:
+                    value = columns_wise_data_f[key]
+                    column_dict = {
+                        "name": key,
+                        "datatype": value['datatype'],
+                        "mvt_value": 0,
+                        "ol_lower_range": 0,
+                        "ol_upper_range": 0,
+                        "ol_lower_value": 0,
+                        "ol_upper_value": 0
+                    }
+
+                    columns_wise_settings['outlier_treatment']['selected'] = True
+                    operations = columns_wise_settings['outlier_treatment']['operations']
+                    for op in operations:
+                        if value['name'] == op['name']:
+                            op['selected'] = True
+                            op['columns'].append(column_dict)
+
+        data_cleansing['overall_settings'] = overall_data
+        return data_cleansing
+
+    def feature_engineering_config_for_ml(self, feature_engineering_config):
+        pass
 
 # TODO: Add generate config
 # TODO: Add set_result function: it will be contain many things.
