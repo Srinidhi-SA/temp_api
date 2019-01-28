@@ -5,7 +5,8 @@ import {MainHeader} from "../common/MainHeader";
 import {connect} from "react-redux";
 //import {Redirect} from 'react-router';
 import {Link, Redirect} from "react-router-dom";
-import store from "../../store";
+import store from "../../store"
+import {SelectButton} from 'primereact/selectbutton';
 import {C3Chart} from "../c3Chart";
 import ReactDOM from 'react-dom';
 import {
@@ -52,6 +53,10 @@ export class DataCleansing extends React.Component {
   constructor(props) {
     super(props);
     this.buttons = {};
+    this.state = {
+            value1: null,
+            value2: null
+        };
 
   }
 
@@ -92,11 +97,11 @@ missingValueTreatmentOnChange(event){
 
   console.log(event.target.dataset);
 
-  this.props.dispatch(missingValueTreatmentSelectedAction(event.target.dataset["colname"],event.target.dataset["colslug"], event.target.value));
+  this.props.dispatch(missingValueTreatmentSelectedAction(event.target.dataset["colname"],event.target.dataset["coltype"], event.target.dataset["colslug"], event.target.value));
 
 }
 outlierRemovalOnChange(event){
-  this.props.dispatch(outlierRemovalSelectedAction(event.target.dataset["colname"],event.target.dataset["colslug"], event.target.value));
+  this.props.dispatch(outlierRemovalSelectedAction(event.target.dataset["colname"],event.target.dataset["coltype"],event.target.dataset["colslug"], event.target.value));
 }
 
 variableCheckboxOnChange(event){
@@ -139,7 +144,7 @@ getOutlierRemovalOptions(dataType, colName, colSlug){
   if (dataType in data_cleansing && "outlier_removal" in data_cleansing[dataType]){
     var dcHTML =  (data_cleansing[dataType].outlier_removal.operations.map(item =>
       <option value={item.name} selected >{item.displayName}</option>))
-    return (<select className="form-control" data-colName={colName} data-colslug={colSlug} onChange={this.outlierRemovalOnChange.bind(this)}>{dcHTML}</select>);
+    return (<select className="form-control" data-colType={dataType} data-colName={colName} data-colslug={colSlug} onChange={this.outlierRemovalOnChange.bind(this)}>{dcHTML}</select>);
   }
   else { return "";}
 }
@@ -152,7 +157,7 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
     if(colSlug  in this.props.datasets.missingValueTreatment){
         selectedValue = this.props.datasets.missingValueTreatment[colSlug].treatment
     }
-    return (<select className="form-control" data-colslug={colSlug} data-colname={colName} onChange={this.missingValueTreatmentOnChange.bind(this)} value={selectedValue} >{dcHTML}</select>);
+    return (<select className="form-control" data-colType={dataType} data-colslug={colSlug} data-colname={colName} onChange={this.missingValueTreatmentOnChange.bind(this)} value={selectedValue} >{dcHTML}</select>);
   }
   else { return "";}
 }
@@ -160,6 +165,12 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
 
 
   render() {
+
+
+    const options = [
+            {label: 'Yes', value: 'Yes'},
+            {label: 'No', value: 'No'},
+        ];
 
       var cleansingHtml = <span>"Loading ... "</span>;
     if(this.props.dataPreview!=null)
@@ -236,6 +247,9 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
                       <input type="button" id="rd1_Yes" name="rdc_dataset" value="Yes" class="btn btn-default"  data-duplicatename="remove_duplicate_attributes" onClick={this.handleRemoveDuplicatesOnChange.bind(this)}/>
                       <input type="button" id="rd1_No" name="rdc_dataset" value="No" class="btn btn-default " data-duplicatename="remove_duplicate_attributes" onClick={this.handleRemoveDuplicatesOnChange.bind(this)}/>
                   </div>
+                  {/* <SelectButton value={this.state.value1} options={options}  onChange={(e) => this.setState({value1: e.value})} />
+                    <p>Selected Value: {this.state.value1}</p> */}
+
                 </div>
               </div>
               <div class="clearfix xs-mb-5"></div>
