@@ -180,6 +180,7 @@ class TrainerView(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         # try:
+        import pdb;pdb.set_trace()
         data = request.data
         data = convert_to_string(data)
         data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
