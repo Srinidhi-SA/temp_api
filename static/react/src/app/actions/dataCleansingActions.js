@@ -2,20 +2,22 @@ import React from "react";
 import {API,STATIC_URL} from "../helpers/env";
 
 
-export function missingValueTreatmentSelectedAction(colName,colSlug, treatment, dispatch){
+export function missingValueTreatmentSelectedAction( colType,colName,colSlug, treatment, dispatch){
   return {
 		type: "MISSING_VALUE_TREATMENT",
-		colName,
+    colName,
+    colType,
     colSlug,
     treatment
 	}
 }
-export function outlierRemovalSelectedAction(colName,colslug, treatment, dispatch){
+export function outlierRemovalSelectedAction(colType,colName,colslug, treatment, dispatch){
   return {
 		type: "OUTLIER_REMOVAL",
-		colName,
+    colName,
+    colType,
     colslug,
-        treatment
+    treatment
 	}
 }
 export function variableSelectedAction(colSlug, selecteOrNot, dispatch){
@@ -27,13 +29,19 @@ export function variableSelectedAction(colSlug, selecteOrNot, dispatch){
 }
 
 
- export function removeDuplicatesAction(duplicate_removal_name, yesOrNo, dispatch){
-  return {
-		type: "REMOVE_DUPLICATES",
+export function removeDuplicateAttributesAction(duplicate_removal_name, yesOrNo, dispatch){
+     return {
+		type: "REMOVE_DUPLICATE_ATTRIBUTES",
     yesOrNo,
     duplicate_removal_name
+	}
+}
 
-
+export function removeDuplicateObservationsAction(duplicate_removal_name, yesOrNo, dispatch){
+     return {
+		type: "REMOVE_DUPLICATE_OBSERVATIONS",
+    yesOrNo,
+    duplicate_removal_name
 	}
 }
 
@@ -44,4 +52,3 @@ export function dataCleansingDataTypeChange(colSlug, newDataType, dispatch){
         newDataType
     }
 }
-
