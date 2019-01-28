@@ -1210,21 +1210,26 @@ class Trainer(models.Model):
 
 
     def add_to_feature_engineering_bin_creation_settings(self, level_creation_settings, mlJson):
-        for key in level_creation_settings['operations']:
-            if key['name'] == mlJson['selectBinType']:
-                level_creation_settings['selected'] = True
-                key['selected'] = True
-                key['columns'].append(mlJson['colStructure'])
+        try:
+            for key in level_creation_settings['operations']:
+                if key['name'] == mlJson['selectBinType']:
+                    level_creation_settings['selected'] = True
+                    key['selected'] = True
+                    key['columns'].append(mlJson['colStructure'])
+        except:
+            pass
 
 
     def add_to_feature_engineering_level_creation_settings(self, level_creation_settings, mlJson):
 
-        for key in level_creation_settings['operations']:
-            if key['name'] == 'create_new_levels':
-                level_creation_settings['selected'] = True
-                key['selected'] = True
-                key['columns'].append(mlJson)
-
+        try:
+            for key in level_creation_settings['operations']:
+                if key['name'] == 'create_new_levels':
+                    level_creation_settings['selected'] = True
+                    key['selected'] = True
+                    key['columns'].append(mlJson)
+        except:
+            pass
 
     def transformationUiJsonToMLJsonAdapter(self, uiJson, columnName, columnType):
         mlJson = {}
