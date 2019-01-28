@@ -635,7 +635,7 @@ export default function reducer(state = {
       case "OUTLIER_REMOVAL":
       {
         var curOutlierRemoval = state.outlierRemoval;
-        curOutlierRemoval[action.colSlug] = action.treatment;
+       curOutlierRemoval[action.colSlug] = {"treatment" : action.treatment, "name" : action.colName };
         return {
           ...state,
           outlierRemoval : curOutlierRemoval
@@ -668,8 +668,6 @@ export default function reducer(state = {
       break;
       case "DATACLEANSING_DATA_TYPE_CHANGE":
       {
-         console.log(   action.colSlug);
-         console.log(action.newDataType);
          var newDataPreview = state.dataPreview
 
 
