@@ -10,33 +10,33 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-# DATABASES = {
-#     'default1': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     },
-#     "default": {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'madvisor',
-#         'USER': 'root',
-#         'PASSWORD': 'Marlabs@123',
-#         'HOST': '172.31.53.141',
-#         'PORT': '',
-#         }
-# }
-
 DATABASES = {
-    'default': {
+    'default1': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    },
+    "default": {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'madvisor',
-        # 'USER': 'marlabs',
-        # 'PASSWORD': 'Password@123',
         'USER': 'root',
-        'PASSWORD': 'root',
-        'HOST': 'localhost',
+        'PASSWORD': 'Marlabs@123',
+        'HOST': '172.31.53.141',
         'PORT': '',
-    }
+        }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'madvisor',
+#         # 'USER': 'marlabs',
+#         # 'PASSWORD': 'Password@123',
+#         'USER': 'root',
+#         'PASSWORD': 'root',
+#         'HOST': 'localhost',
+#         'PORT': '',
+#     }
+# }
 
 PROJECT_APP = [
 ]

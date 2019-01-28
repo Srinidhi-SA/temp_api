@@ -180,9 +180,13 @@ class TrainerView(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         # try:
-        import pdb;pdb.set_trace()
+
         data = request.data
+        import pdb;
+        pdb.set_trace()
+        print(data['config']['dataCleansing'])
         data = convert_to_string(data)
+
         data['dataset'] = Dataset.objects.filter(slug=data['dataset'])
         data['created_by'] = request.user.id  # "Incorrect type. Expected pk value, received User."
         serializer = TrainerSerlializer(data=data, context={"request": self.request})

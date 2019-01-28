@@ -1038,16 +1038,20 @@ class Trainer(models.Model):
         config = self.get_config()
         data_cleansing_config = dict()
         feature_engineering_config = dict()
-        if 'data_cleansing' in config:
-            data_cleansing_config = self.data_cleansing_adaptor_for_ml(config['data_cleansing_config'])
+        variable_selection = config['variablesSelection']
+        column_data = self.convert_variable_selection_config_into_dict(data=variable_selection)
+
+        if 'dataCleansing' in config:
+            data_cleansing_config = self.data_cleansing_adaptor_for_ml(config['dataCleansing'], column_data)
         if 'fe' in config:
-            feature_engineering_config = self.feature_engineering_config_for_ml(config['fe'])
+            feature_engineering_config = self.feature_engineering_config_for_ml(config['fe'], column_data)
+
         return {
             'data_cleansing_config': data_cleansing_config,
             'feature_engineering_config': feature_engineering_config
         }
 
-    def data_cleansing_adaptor_for_ml(self, data_cleansing_config):
+    def data_cleansing_adaptor_for_ml(self, data_cleansing_config, column_data):
         '''
         sample json:
         data_cleansing_config = {
@@ -1091,60 +1095,73 @@ class Trainer(models.Model):
         }
 
         '''
+
         from config.settings import feature_engineering_settings
         import copy
-        data_cleansing = copy.deepcopy(feature_engineering_settings.data_cleansing_final_config_format)
+        data_cleansing = copy.deepcopy(feature_engineering_settings.data_cleansing_final_config_format[0])
         columns_wise_settings = data_cleansing['columns_wise_settings']
-        columns_wise_data = data_cleansing_config['columns_wise_settings']
+        overall_settings = data_cleansing['overall_settings']
 
-        overall_data = data_cleansing_config['overall_settings']
+        # pass
+        columns_wise_data = data_cleansing_config['columnsSettings']
+        if 'overallSettings' in data_cleansing_config:
+            overall_data = data_cleansing_config['overallSettings']
+            for d in overall_data:
+                for i in overall_settings:
+                    if i['name'] == d:
+                        i['selected'] = True
+
+        name_mapping = {
+            'missingValueTreatment': 'missings_value_treatment',
+            'outlierRemoval': 'outlier_treatment'
+        }
 
         for fkey in columns_wise_data:
             columns_wise_data_f = columns_wise_data[fkey]
-            if fkey == "missing_value_treatment":
-                for key in columns_wise_data_f:
-                    value = columns_wise_data_f[key]
-                    column_dict = {
-                        "name": key,
-                        "datatype": value['datatype'],
-                        "mvt_value": 0,
-                        "ol_lower_range": 0,
-                        "ol_upper_range": 0,
-                        "ol_lower_value": 0,
-                        "ol_upper_value": 0
-                    }
 
-                    columns_wise_settings['missings_value_treatment']['selected'] = True
-                    operations = columns_wise_settings['missings_value_treatment']['operations']
-                    for op in operations:
-                        if value['name'] == op['name']:
-                            op['selected'] = True
-                            op['columns'].append(column_dict)
+            for slug in columns_wise_data_f:
+                value = columns_wise_data_f[slug]
 
-            elif fkey == "outlier_treatment":
-                for key in columns_wise_data_f:
-                    value = columns_wise_data_f[key]
-                    column_dict = {
-                        "name": key,
-                        "datatype": value['datatype'],
-                        "mvt_value": 0,
-                        "ol_lower_range": 0,
-                        "ol_upper_range": 0,
-                        "ol_lower_value": 0,
-                        "ol_upper_value": 0
-                    }
+                column_name_as_per_variable_selection = column_data[slug]['name']
+                if 'datatpe' in value:
+                    column_datatype = value['datatype']
+                else:
+                    column_datatype = column_data[slug]['columnType']
 
-                    columns_wise_settings['outlier_treatment']['selected'] = True
-                    operations = columns_wise_settings['outlier_treatment']['operations']
-                    for op in operations:
-                        if value['name'] == op['name']:
-                            op['selected'] = True
-                            op['columns'].append(column_dict)
+                column_dict = {
+                    "name": column_name_as_per_variable_selection,
+                    "datatype": column_datatype,
+                    "mvt_value": 0,
+                    "ol_lower_range": 0,
+                    "ol_upper_range": 0,
+                    "ol_lower_value": 0,
+                    "ol_upper_value": 0
+                }
 
-        data_cleansing['overall_settings'] = overall_data
+                columns_wise_settings[name_mapping[fkey]]['selected'] = True
+                operations = columns_wise_settings[name_mapping[fkey]]['operations']
+                print([op['name'] for op in operations])
+                treatment = value['treatment']
+                treatment = "_".join(treatment.split(' '))
+                for op in operations:
+                    if treatment == op['name']:
+                        print('match')
+                        op['selected'] = True
+                        op['columns'].append(column_dict)
+
+        data_cleansing['overall_settings'] = overall_settings
+
         return data_cleansing
 
-    def feature_engineering_config_for_ml(self, feature_engineering_config):
+    def convert_variable_selection_config_into_dict(self, data):
+        new_dict = {}
+        for item in data:
+            name = item.pop('slug')
+            new_dict[name] = item
+
+        return new_dict
+
+    def feature_engineering_config_for_ml(self, feature_engineering_config, column_data):
         pass
 
 # TODO: Add generate config
