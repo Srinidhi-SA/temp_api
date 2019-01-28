@@ -9,7 +9,6 @@ import store from "../../store"
 import {SelectButton} from 'primereact/selectbutton';
 import {C3Chart} from "../c3Chart";
 import ReactDOM from 'react-dom';
-import {SelectButton} from 'primereact/selectbutton';
 import {
   hideDataPreview,
   getDataSetPreview,
@@ -61,17 +60,12 @@ export class DataCleansing extends React.Component {
     super(props);
     this.buttons = {};
     this.state = {
-<<<<<<< HEAD
-            value1: null,
-            value2: null
-        };
-=======
       value1: null,
       value2: null
     };
     this.state.topLevelRadioButton = "false";
    }
->>>>>>> a7eac109416ae035f5b80f1b5ed4e61969c80afb
+
 
 
 
@@ -110,20 +104,11 @@ onchangeMissingValueTreatment(event, variable_name){
 missingValueTreatmentOnChange(event){
 
   console.log(event.target.dataset);
-
-<<<<<<< HEAD
   this.props.dispatch(missingValueTreatmentSelectedAction(event.target.dataset["colname"],event.target.dataset["coltype"], event.target.dataset["colslug"], event.target.value));
 
 }
 outlierRemovalOnChange(event){
   this.props.dispatch(outlierRemovalSelectedAction(event.target.dataset["colname"],event.target.dataset["coltype"],event.target.dataset["colslug"], event.target.value));
-=======
-  this.props.dispatch(missingValueTreatmentSelectedAction(event.target.dataset["coltype"],event.target.dataset["colname"],event.target.dataset["colslug"], event.target.value));
-
-}
-outlierRemovalOnChange(event){
-  this.props.dispatch(outlierRemovalSelectedAction(event.target.dataset["coltype"],event.target.dataset["colname"],event.target.dataset["colslug"], event.target.value));
->>>>>>> a7eac109416ae035f5b80f1b5ed4e61969c80afb
 }
 
 variableCheckboxOnChange(event){
@@ -171,11 +156,7 @@ getOutlierRemovalOptions(dataType, colName, colSlug){
   if (dataType in data_cleansing && "outlier_removal" in data_cleansing[dataType]){
     var dcHTML =  (data_cleansing[dataType].outlier_removal.operations.map(item =>
       <option value={item.name} selected >{item.displayName}</option>))
-<<<<<<< HEAD
     return (<select className="form-control" data-colType={dataType} data-colName={colName} data-colslug={colSlug} onChange={this.outlierRemovalOnChange.bind(this)}>{dcHTML}</select>);
-=======
-    return (<select className="form-control" data-coltype={dataType} data-colName={colName} data-colslug={colSlug} onChange={this.outlierRemovalOnChange.bind(this)}>{dcHTML}</select>);
->>>>>>> a7eac109416ae035f5b80f1b5ed4e61969c80afb
   }
   else { return "";}
 }
