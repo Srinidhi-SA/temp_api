@@ -67,6 +67,11 @@ data_cleansing_static = {
         'selected': False,
         'slug': 'ToO7vD2uKTyHMBjLs26dgU'},
     {   'columns': [],
+        'displayName': 'Remove Observations',
+        'name': 'remove_observations',
+        'selected': False,
+        'slug': 'N7QJ2V82cSwfXS8ix5HPLq'},
+    {   'columns': [],
         'displayName': 'None',
         'name': 'none',
         'selected': False,
@@ -96,7 +101,13 @@ data_cleansing_static = {
         'displayName': 'None',
         'name': 'none',
         'selected': False,
-        'slug': 'pSUkr21TwfCzZCdbFbqIEj'}]
+        'slug': 'pSUkr21TwfCzZCdbFbqIEj'},
+      {'columns': [],
+       'displayName': 'Remove Observations',
+       'name': 'remove_observations',
+       'selected': False,
+       'slug': 'N7QJ2V82cSwfXS8ix5HPLq'},
+      ]
         },
     },
     "dimension": {
@@ -133,12 +144,19 @@ data_cleansing_static = {
         'name': 'knn_imputation',
         'selected': False,
         'slug': 'x5FU8rJgsgrJDNPsZUaQ7F'},
+    {
+            'columns': [],
+        'displayName': 'Remove Observations',
+        'name': 'remove_observations',
+        'selected': False,
+        'slug': 'N7QJ2V82cSwfXS8ix5HPLq'
+        },
     {   'columns': [],
         'displayName': 'None',
         'name': 'none',
         'selected': False,
-        'slug': 'H3uY15p2TmHZ4KWXWfZGUq'}
-            ],
+        'slug': 'H3uY15p2TmHZ4KWXWfZGUq'},
+    ],
         },
 
     },
