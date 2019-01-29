@@ -18,13 +18,13 @@ Data cleansing
 data_cleansing_static = {
     "top_level_options": [
         {
-            'name': 'remove_duplicate_attributes',
+            'name': 'duplicate_column',
               'displayName': 'Do you want to remove duplicate attributes/columns in the dataset?',
               'selected': True,
               'slug': 'vjYloNUHxUqjPFTC9Oc8nm'
         },
         {
-            'name': 'remove_duplicate_observations',
+            'name': 'duplicate_row',
             'displayName': 'Do you want to remove duplicate observations  in the dataset?',
             'selected': True,
             'slug': '4e0mzsNOeiVG4SzRFu1mpp'
@@ -98,8 +98,8 @@ data_cleansing_static = {
         'slug': 'ggususBEm6Uhj7zDMKGUrN'}],
         },
         "outlier_removal": {
-            "name": "missings_value_treatment",
-            "displayName": "Missing value treatment",
+            "name": "outlier_treatment",
+            "displayName": "Outlier Treatment",
             "selected": False,
             "operations": [   {   'columns': [],
         'displayName': 'Remove outliers',
@@ -231,21 +231,21 @@ data_cleansing_final_config_format = {
       "slug": "",
       "overall_settings": [
         {
-            'name': 'remove_duplicate_attributes',
+            'name': 'duplicate_column',
               'displayName': 'Do you want to remove duplicate attributes/columns in the dataset?',
               'selected': False,
               'slug': 'vjYloNUHxUqjPFTC9Oc8nm'
         },
         {
-            'name': 'remove_duplicate_observations',
+            'name': 'duplicate_row',
             'displayName': 'Do you want to remove duplicate observations  in the dataset?',
             'selected': False,
             'slug': '4e0mzsNOeiVG4SzRFu1mpp'
         }
         ],
       "columns_wise_settings": {
-        "missings_value_treatment": {
-          "name": "missings_value_treatment",
+        "missing_value_treatment": {
+          "name": "missing_value_treatment",
           "displayName": "Missing value treatment",
           "selected": True,
           "operations": [
@@ -359,7 +359,7 @@ data_cleansing_final_config_format = {
   }
 ]
         },
-        "outlier_treatment": {
+        "outlier_removal": {
           "name": "outlier_treatment",
           "displayName": "Outlier treatment",
           "selected": True,
@@ -378,16 +378,10 @@ data_cleansing_final_config_format = {
         'name': 'replace_with_median',
         'selected': False,
         'slug': '2MWuRulQahdbkD66y3R0b0'},
-    {   'columns': [],
-        'displayName': 'None',
-        'name': 'none',
-        'selected': False,
-        'slug': 'pSUkr21TwfCzZCdbFbqIEj'}]
+    ]
         }
       }
     }
-
-
 
 
 bin_conf = {

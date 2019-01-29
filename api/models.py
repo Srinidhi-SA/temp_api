@@ -864,7 +864,7 @@ class Trainer(models.Model):
         elif self.app_id in settings.CLASSIFICATION_APP_ID:
             config['config']["ALGORITHM_SETTING"] = self.make_config_algorithm_setting()
 
-        config['config']['FEATURE_ENGINEERING_SETTINGS'] = self.create_configuration_fe_settings()
+        config['config']['FEATURE_SETTINGS'] = self.create_configuration_fe_settings()
 
         self.config = json.dumps(config)
         self.save()
@@ -1047,8 +1047,8 @@ class Trainer(models.Model):
             feature_engineering_config = self.feature_engineering_config_for_ml(config['featureEngineering'], column_data)
 
         return {
-            'data_cleansing_config': data_cleansing_config,
-            'feature_engineering_config': feature_engineering_config
+            'DATA_CLEANSING': data_cleansing_config,
+            'FEATURE_ENGINEERING': feature_engineering_config
         }
 
     def data_cleansing_adaptor_for_ml(self, data_cleansing_config, column_data):
@@ -1112,7 +1112,7 @@ class Trainer(models.Model):
 
         name_mapping = {
             'missingValueTreatment': 'missings_value_treatment',
-            'outlierRemoval': 'outlier_treatment'
+            'outlierRemoval': 'outlier_removal'
         }
 
         for fkey in columns_wise_data:
@@ -1274,6 +1274,7 @@ class Trainer(models.Model):
                 }
 
             if key == "perform_standardization":
+
                 colStructure = {
                     "standardization_type": uiJson.get("perform_standardization_select", "min_max_scaling"),
                 }
