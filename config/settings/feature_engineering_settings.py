@@ -18,13 +18,13 @@ Data cleansing
 data_cleansing_static = {
     "top_level_options": [
         {
-            'name': 'remove_duplicate_attributes',
+            'name': 'duplicate_column',
               'displayName': 'Do you want to remove duplicate attributes/columns in the dataset?',
               'selected': True,
               'slug': 'vjYloNUHxUqjPFTC9Oc8nm'
         },
         {
-            'name': 'remove_duplicate_observations',
+            'name': 'duplicate_row',
             'displayName': 'Do you want to remove duplicate observations  in the dataset?',
             'selected': True,
             'slug': '4e0mzsNOeiVG4SzRFu1mpp'
@@ -67,26 +67,6 @@ data_cleansing_static = {
         'selected': False,
         'slug': 'ToO7vD2uKTyHMBjLs26dgU'},
     {   'columns': [],
-        'displayName': 'Backward Filling',
-        'name': 'backward_filling',
-        'selected': False,
-        'slug': 'cFruIkyFXLbarvFeObC1Rx'},
-    {   'columns': [],
-        'displayName': 'Forward Filling',
-        'name': 'forward_filling',
-        'selected': False,
-        'slug': 'zu5VKiX2n5MqEP0jge9TSJ'},
-    {   'columns': [],
-        'displayName': 'Regression Imputation',
-        'name': 'regression_imputation',
-        'selected': False,
-        'slug': 'cpDLZigzHSekw7y90kioQn'},
-    {   'columns': [],
-        'displayName': 'Stocastic Imputation',
-        'name': 'stocastic_imputation',
-        'selected': False,
-        'slug': 'Tm4E16v15xUF7BZznuYpOs'},
-    {   'columns': [],
         'displayName': 'Remove Observations',
         'name': 'remove_observations',
         'selected': False,
@@ -95,11 +75,12 @@ data_cleansing_static = {
         'displayName': 'None',
         'name': 'none',
         'selected': False,
-        'slug': 'ggususBEm6Uhj7zDMKGUrN'}],
+        'slug': 'H3uY15p2TmHZ4KWXWfZGUq'}
+            ],
         },
         "outlier_removal": {
-            "name": "missings_value_treatment",
-            "displayName": "Missing value treatment",
+            "name": "outlier_treatment",
+            "displayName": "Outlier Treatment",
             "selected": False,
             "operations": [   {   'columns': [],
         'displayName': 'Remove outliers',
@@ -116,11 +97,18 @@ data_cleansing_static = {
         'name': 'replace_with_median',
         'selected': False,
         'slug': '2MWuRulQahdbkD66y3R0b0'},
+      {'columns': [],
+       'displayName': 'Remove Observations',
+       'name': 'remove_observations',
+       'selected': False,
+       'slug': 'N7QJ2V82cSwfXS8ix5HPLq'},
     {   'columns': [],
         'displayName': 'None',
         'name': 'none',
         'selected': False,
-        'slug': 'pSUkr21TwfCzZCdbFbqIEj'}]
+        'slug': 'pSUkr21TwfCzZCdbFbqIEj'},
+
+      ]
         },
     },
     "dimension": {
@@ -157,26 +145,19 @@ data_cleansing_static = {
         'name': 'knn_imputation',
         'selected': False,
         'slug': 'x5FU8rJgsgrJDNPsZUaQ7F'},
-    {   'columns': [],
-        'displayName': 'Backward filling',
-        'name': 'backward_filling',
-        'selected': False,
-        'slug': 'r4fGVYBdO0E5G1BpcD8p3o'},
-    {   'columns': [],
-        'displayName': 'Forward filling',
-        'name': 'forward_filling',
-        'selected': False,
-        'slug': 'UN8lBvMTUrKDHywYOYWdxN'},
-    {   'columns': [],
-        'displayName': 'Remove observations',
+    {
+            'columns': [],
+        'displayName': 'Remove Observations',
         'name': 'remove_observations',
         'selected': False,
-        'slug': 'FMEKI4wQea8SRZjB1Fdpd3'},
+        'slug': 'N7QJ2V82cSwfXS8ix5HPLq'
+        },
     {   'columns': [],
         'displayName': 'None',
         'name': 'none',
         'selected': False,
-        'slug': 'XSncwv7FQ5PnxnNZnZZetm'}],
+        'slug': 'H3uY15p2TmHZ4KWXWfZGUq'},
+    ],
         },
 
     },
@@ -231,21 +212,21 @@ data_cleansing_final_config_format = {
       "slug": "",
       "overall_settings": [
         {
-            'name': 'remove_duplicate_attributes',
+            'name': 'duplicate_column',
               'displayName': 'Do you want to remove duplicate attributes/columns in the dataset?',
               'selected': False,
               'slug': 'vjYloNUHxUqjPFTC9Oc8nm'
         },
         {
-            'name': 'remove_duplicate_observations',
+            'name': 'duplicate_row',
             'displayName': 'Do you want to remove duplicate observations  in the dataset?',
             'selected': False,
             'slug': '4e0mzsNOeiVG4SzRFu1mpp'
         }
         ],
       "columns_wise_settings": {
-        "missings_value_treatment": {
-          "name": "missings_value_treatment",
+        "missing_value_treatment": {
+          "name": "missing_value_treatment",
           "displayName": "Missing value treatment",
           "selected": True,
           "operations": [
@@ -359,7 +340,7 @@ data_cleansing_final_config_format = {
   }
 ]
         },
-        "outlier_treatment": {
+        "outlier_removal": {
           "name": "outlier_treatment",
           "displayName": "Outlier treatment",
           "selected": True,
@@ -378,16 +359,10 @@ data_cleansing_final_config_format = {
         'name': 'replace_with_median',
         'selected': False,
         'slug': '2MWuRulQahdbkD66y3R0b0'},
-    {   'columns': [],
-        'displayName': 'None',
-        'name': 'none',
-        'selected': False,
-        'slug': 'pSUkr21TwfCzZCdbFbqIEj'}]
+    ]
         }
       }
     }
-
-
 
 
 bin_conf = {
@@ -1241,233 +1216,118 @@ feature_engineering_ml_settings = {
         "level_creation_settings": {
           "name": "creating_new_bins_or_levels",
           "displayName": "Create Bins Or Levels",
-          "selected": True,
+          "selected": False,
           "operations": [
             {
               "name": "create_equal_sized_bins",
               "displayName": "Create Equal Sized Bins",
-              "selected": True,
-              "columns":[
-                {
-                  "name": "quantity",
-                  "name_after_binning": "Binned_quantity",
-                  "datatype": "measure",
-                  "number_of_bins": 10
-                }]
+              "selected": False,
+              "columns":[]
 
             },
             {
               "name": "create_custom_bins",
               "displayName": "Create Custom Bins",
-              "selected": True,
-              "columns":[
-                {
-                  "name": "age",
-                  "name_after_binning": "Custom_Binned_age",
-                  "datatype": "measure",
-                  "list_of_intervals": [10,20,30,40]
-                }]
+               "selected": False,
+              "columns":[]
             },
             {
               "name": "create_new_levels",
               "displayName": "Create Levels",
-              "selected": True,
-              "columns": [
-                {
-                  "name": "States",
-                  "name_after_binning": "States_Levels",
-                  "datatype": "dimension",
-                  "mapping_dict": {
-                    "South": [
-                      "Kerala", "Karnataka", "Tamil Nadu",
-                      "Andhra Pradesh"
-                      ],
-                    "North": [
-                      "MP", "UP", "HP", "J&K"
-                      ]
-                  }
-
-                }
-                ]
+               "selected": False,
+              "columns":[]
 
             },
             {
               "name": "create_new_datetime_levels",
               "displayName": "Create Datetime Levels",
-              "selected": True,
-              "columns": [
-                {
-                  "name": "Date_of_Birth",
-                  "name_after_binning": "Date_of_Birth_Levels",
-                  "datatype": "datetime",
-                  "mapping_dict": {
-                    "Quarter1": ["Start_date", "End_date"],
-                    "Quarter2": ["Start_date", "End_date"]
-                  }
-                }
-                ]
+             "selected": False,
+              "columns":[]
             }]
         },
         "transformation_settings": {
           "name": "transformation_settings",
           "displayName": "Transform Variables",
-          "selected": True,
+          "selected": False,
           "operations": [
             {
               "name": "replace_values_with",
               "displayName": "Replace Values With",
-              "selected": True,
-              "columns":[
-                {
-                 "name": "salary",
-                 "user_given_new_name": "Salary_new",
-                 "datatype": "measure",
-                 "replace_by": "mean",
-                 "replace_values_in_range": ["lower_val", "upper_val"]
-                }]
+              "selected": False,
+              "columns":[]
             },
             {
               "name": "add_value_to",
               "displayName": "Add Specific value",
-              "selected": True,
-              "columns":[
-                {
-                 "name": "age",
-                 "user_given_new_name": "age_added",
-                 "datatype": "measure",
-                 "value_to_be_added": 5
-                }]
+              "selected": False,
+              "columns":[]
 
             },
             {
               "name": "subtract_value_from",
               "displayName": "Subtract Specific value",
-              "selected": True,
-              "columns":[
-                {
-                 "name": "height",
-                 "user_given_new_name": "height_subtracted",
-                 "datatype": "measure",
-                 "value_to_be_subtracted": 10
-                }]
+              "selected": False,
+              "columns":[]
             },
             {
               "name": "multiply_by_value",
               "displayName": "Multiply by Specific value",
-              "selected": True,
-              "columns": [
-                {
-                 "name": "bonus_pay",
-                 "user_given_new_name": "bonus_pay_multiplied",
-                 "datatype": "measure",
-                 "value_to_be_multiplied": 10
-                }]
+              "selected": False,
+              "columns":[]
             },
             {
               "name": "divide_by_value",
               "displayName": "Divide by Specific value",
-              "selected": True,
-              "columns": [
-                {
-                 "name": "tax",
-                 "user_given_new_name": "tax_divided",
-                 "datatype": "measure",
-                 "value_to_be_divided": 10
-                }]
+              "selected": False,
+              "columns":[]
             },
             {
               "name": "perform_standardization",
               "displayName": "Perform Standardization",
-              "selected": True,
-              "columns": [
-                {
-                  "name": "marks_scored",
-                  "user_given_new_name": "Marks_Scored_Standardized",
-                  "datatype": "measure",
-                  "standardization_type": "Min-Max Scaling"
-                }]
+              "selected": False,
+              "columns":[]
             },
             {
               "name": "variable_transformation",
               "displayName": "Variable Transformation",
-              "selected": True,
-              "columns":[
-                {
-                  "name": "years_of_experience",
-                  "user_given_new_name": "years_of_experience_Transformed",
-                  "datatype": "measure",
-                  "transformation_type": "log-transform"
-                }]
+              "selected": False,
+              "columns":[]
             },
             {
               "name": "encoding_dimensions",
               "displayName": "Perform Encoding",
-              "selected": True,
-              "columns": [
-                {
-                  "name": "country",
-                  "new_column_prefix": "Encoded_",
-                  "datatype": "dimension",
-                  "Encoding_type": "One-hot Encoding"
-                }]
+              "selected": False,
+              "columns":[]
             },
             {
               "name": "return_character_count",
               "displayName": "return Character Count",
-              "selected": True,
-              "columns": [
-                {
-                  "name": "cities",
-                  "user_given_new_name": "Cities_char_count",
-                  "datatype": "dimension"
-                }]
+              "selected": False,
+              "columns":[]
             },
             {
               "name": "is_custom_string_in",
               "displayName": "Is custom string in",
-              "selected": True,
-              "columns": [
-                {
-                  "name": "Cities",
-                  "user_given_new_name": "Cities_char_check",
-                  "datatype": "dimension",
-                  "User_given_character": "Delhi"
-                }]
+              "selected": False,
+              "columns":[]
             },
             {
               "name": "is_date_weekend",
               "displayName": "Is Date Weekend",
-              "selected": True,
-              "columns": [
-                {
-                  "name": "dates1",
-                  "user_given_new_name": "is_weekend_dates1",
-                  "datatype": "datetime"
-                }]
+              "selected": False,
+              "columns":[]
             },
             {
               "name": "extract_time_feature",
               "displayName": "Extract Time Feature",
-              "selected": True,
-              "columns": [
-                {
-                  "name": "dates2",
-                  "user_given_new_name": "is_weekend_dates2",
-                  "datatype": "datetime",
-                  "time_feature_to_extract": "month"
-                }]
+              "selected": False,
+              "columns":[]
             },
             {
               "name": "time_since",
               "displayName": "Time Since Some Event",
-              "selected": True,
-              "columns": [
-                {
-                  "name": "dates3",
-                  "user_given_new_name": "time_since_dates3",
-                  "datatype": "datetime",
-                  "time_since": "21/05/2016"
-                }]
+              "selected": False,
+              "columns":[]
             }
             ]
         }
