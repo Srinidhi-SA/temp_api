@@ -116,12 +116,12 @@ variableCheckboxOnChange(event){
 }
 
 handleDuplicateAttributesOnChange(event){
-  this.setState({value1: event.target.value})
+  this.setState({value1: event.target.value});
   this.props.dispatch(removeDuplicateAttributesAction(event.target.name,event.target.value));
 }
 
 handleDuplicateObservationsOnChange(event){
-  this.setState({value2: event.target.value})
+  this.setState({value2: event.target.value});
   this.props.dispatch(removeDuplicateObservationsAction(event.target.name,event.target.value));
 }
 

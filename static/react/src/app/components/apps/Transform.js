@@ -119,7 +119,7 @@ export class Transform extends React.Component {
                     </select>
                   </div>
                 </div>
-                <div class="row form-group">
+                {/* <div class="row form-group">
                   <div class="col-md-5 col-sm-5">
                     <div class="ma-checkbox inline">
                       <input id="add_specific_value" name="add_specific_value" type="checkbox"  defaultChecked={this.getTranformDataValue("add_specific_value")} class="needsclick" onChange={this.pickValue}/>
@@ -162,7 +162,7 @@ export class Transform extends React.Component {
                   <div class="col-md-3 col-sm-3">
                     <input type="text" name="divide_specific_value_input" class="form-control" placeholder="Value" defaultValue={this.getTranformDataValue("divide_specific_value_input")} onChange={this.onchangeInput.bind(this)} onInput={this.pickValue}/>
                   </div>
-                </div>
+                </div> */}
                   <div class="row form-group">
                     <div class="col-md-5 col-sm-5">
                       <div class="ma-checkbox inline">
@@ -173,7 +173,7 @@ export class Transform extends React.Component {
                     <div class="col-md-4 col-sm-4">
                       <select class="form-control" id="perform_standardization_select" name="perform_standardization_select" value={this.getTranformDataValue("perform_standardization_select")} onChange={this.pickValue}>
                         <option selected>Min-Max Scaling</option>
-                        <option>Log Transformation</option>
+                        <option>Standard deviation</option>
                       </select>
                     </div>
                   </div>
@@ -186,8 +186,10 @@ export class Transform extends React.Component {
                     </div>
                     <div class="col-md-4 col-sm-3">
                       <select class="form-control" id="variable_transformation_select" name="variable_transformation_select" value={this.getTranformDataValue("variable_transformation_select")} onChange={this.pickValue}>
-                        <option>Min-Max Scaling</option>
-                        <option selected>Log Transformation</option>
+                        <option selected>Log</option>
+                        <option>Square root</option>
+                        <option>Cube root</option>
+                        <option>Modulus</option>
                       </select>
                     </div>
                   </div>
