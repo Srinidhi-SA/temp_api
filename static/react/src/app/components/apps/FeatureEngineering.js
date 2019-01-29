@@ -137,6 +137,9 @@ console.log("FeatureEngineering componentWillMount method is called...");
     var proccedUrl = this.props.match.url.replace('featureEngineering','Proceed');
     this.props.history.push(proccedUrl);
   }
+  isBinningOrLevelsDisabled(item){
+      return ((this.state.topLevelRadioButton == "true" && item.columnType == "measure") || (item.columnType!=item.actualColumnType)  )
+  }
 
 
   render() {
@@ -177,7 +180,7 @@ console.log("FeatureEngineering componentWillMount method is called...");
                <tr key={key}>
                   <td> {item.name}</td>
                   <td> {item.columnType}</td>
-                  <td> <Button onClick={this.openBinsOrLevelsModal.bind(this, item)} disabled={item.columnType!=item.actualColumnType} bsStyle="primary">Create bins or levels</Button></td>
+                  <td> <Button onClick={this.openBinsOrLevelsModal.bind(this, item)} disabled={this.isBinningOrLevelsDisabled(item)} bsStyle="primary">Create bins or levels</Button></td>
                   <td> <Button onClick={this.openTransformColumnModal.bind(this,item)} bsStyle="primary">Transform</Button></td>
                 </tr>  );
               })
