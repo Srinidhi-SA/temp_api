@@ -11,6 +11,7 @@ openBinsOrLevelsModalAction,
   saveBinLevelTransformationValuesAction,
   saveTopLevelValuesAction,
 } from "../../actions/featureEngineeringActions";
+import {showHideSideChart, showHideSideTable, MINROWINDATASET,toggleVisualization, getRemovedVariableNames} from "../../helpers/helper.js"
 
 import { getDataSetPreview } from "../../actions/dataActions";
 
@@ -25,7 +26,7 @@ return {
 
     dataPreview: store.datasets.dataPreview,
 
-    dataSets: store.datasets.allDataSets,
+    dataSets: store.datasets,
 
     binsOrLevelsShowModal: store.datasets.binsOrLevelsShowModal,
 
@@ -159,12 +160,12 @@ console.log("FeatureEngineering componentWillMount method is called...");
 
 
 
-
-
-
+    var removedVariables = getRemovedVariableNames(this.props.datasets);
 
     if (this.props.dataPreview != null) {
             feHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map((item,key )=> {
+        if(removedVariables.indexOf(item.name)!= -1 ) return "";
+
        return (
                <tr key={key}>
                   <td> {item.name}</td>
