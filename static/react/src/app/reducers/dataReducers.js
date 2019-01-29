@@ -687,8 +687,6 @@ export default function reducer(state = {
 
       case "DATACLEANSING_DATA_TYPE_CHANGE":
       {
-         console.log(   action.colSlug);
-         console.log(action.newDataType);
          var newDataPreview = state.dataPreview
 
 

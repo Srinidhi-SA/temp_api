@@ -36,7 +36,6 @@ export class ModelAlgorithmSelection extends React.Component {
     }
     componentWillMount() {
         //It will trigger when refresh happens on url
-        debugger;
         if(this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null){
             window.history.go(-1);
         }

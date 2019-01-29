@@ -8,6 +8,7 @@
     "start": "npm run build",
     "buildLinux": "webpack -d && cp src/index.html dist/index.html && webpack-dev-server --content-base src/ --inline --hot --history-api-fallback",
     "build": "webpack -d && copy src\\index.html dist\\index.html && webpack-dev-server --content-base src/ --inline --hot --history-api-fallback",
+    "buildAnkush": "webpack -p",
     "buildDev": "webpack -p",
     "buildProd": "webpack -p",
     "buildLuke": "webpack -p",

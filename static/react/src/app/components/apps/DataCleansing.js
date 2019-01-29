@@ -155,8 +155,15 @@ getOutlierRemovalOptions(dataType, colName, colSlug){
   var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
   if (dataType in data_cleansing && "outlier_removal" in data_cleansing[dataType]){
     var dcHTML =  (data_cleansing[dataType].outlier_removal.operations.map(item =>
-      <option value={item.name} selected >{item.displayName}</option>))
-    return (<select className="form-control" data-colType={dataType} data-colName={colName} data-colslug={colSlug} onChange={this.outlierRemovalOnChange.bind(this)}>{dcHTML}</select>);
+                        <option value={item.name} selected >{item.displayName}</option>))
+
+    var selectedValue = "none";
+    if(colSlug  in this.props.datasets.outlierRemoval){
+        selectedValue = this.props.datasets.outlierRemoval[colSlug].treatment
+    }
+
+
+    return (<select className="form-control" data-colName={colName} data-colslug={colSlug} onChange={this.outlierRemovalOnChange.bind(this)} value={selectedValue} >{dcHTML}</select>);
   }
   else { return "";}
 }
@@ -165,12 +172,14 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
   var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
   if (dataType in data_cleansing && "missing_value_treatment" in data_cleansing[dataType]){
     var dcHTML =  (data_cleansing[dataType].missing_value_treatment.operations.map(item =>
-    <option value={item.name} selected >{item.displayName}</option>))
+                    <option value={item.name} selected >{item.displayName}</option>))
+
     var selectedValue = "none";
     if(colSlug  in this.props.datasets.missingValueTreatment){
         selectedValue = this.props.datasets.missingValueTreatment[colSlug].treatment
     }
-    return (<select className="form-control" data-coltype={dataType} data-colslug={colSlug} data-colname={colName} onChange={this.missingValueTreatmentOnChange.bind(this)} value={selectedValue} >{dcHTML}</select>);
+
+    return (<select className="form-control" data-coltype={dataType}  data-colslug={colSlug} data-colname={colName} onChange={this.missingValueTreatmentOnChange.bind(this)} value={selectedValue} >{dcHTML}</select>);
   }
   else { return "";}
 }
@@ -193,9 +202,9 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
       var removedVariables = getRemovedVariableNames(this.props.datasets);
       cleansingHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map(item => {
         // console.log(item);
-      if(removedVariables.indexOf(item.name)!= -1 ) return "";
-      console.log("==============================================================================");
-      return (
+        if(removedVariables.indexOf(item.name)!= -1 ) return "";
+
+        return (
           <tr>
             {/* <td><div class="ma-checkbox inline">
                 <input id={item.slug} type="checkbox" class="needsclick variableToBeSelected"  data-colslug={item.slug} onChange={this.variableCheckboxOnChange.bind(this)}/>

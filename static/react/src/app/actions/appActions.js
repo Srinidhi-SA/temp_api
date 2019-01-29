@@ -169,15 +169,21 @@ export function createModel(modelName, targetVariable, targetLevel) {
                 }
             }
             var AlgorithmSettings = store.getState().apps.regression_algorithm_data_manual;
-            var dataCleansing = {"missingValueTreatment" :store.getState().datasets.missingValueTreatment,
-                                  "outlierRemoval" : store.getState().datasets.missingValueTreatment}
+            var dataCleansing = {  "columnsSettings" : {
+                                    "missingValueTreatment" :store.getState().datasets.missingValueTreatment,
+                                    "outlierRemoval" : store.getState().datasets.outlierRemoval,
+                                     },
+                                   "overallSettings" : store.getState().datasets.removeDuplicates,
+                                  }
 
             var details = {
                 "ALGORITHM_SETTING":AlgorithmSettings,
                 "validationTechnique":validationTechnique,
                 "targetLevel":targetLevel,
                 "dataCleansing" : dataCleansing,
-                "featureEngineering" : store.getState().datasets.featureEngineering, 
+                "featureEngineering" : {"columnsSettings" :store.getState().datasets.featureEngineering,
+                                       "overallSettings" :  store.getState().datasets.topLevelData,
+                                          },
                 "variablesSelection":store.getState().datasets.dataPreview.meta_data.uiMetaData.varibaleSelectionArray
             }
         }

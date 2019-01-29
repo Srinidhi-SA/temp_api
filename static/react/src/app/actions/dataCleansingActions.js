@@ -11,12 +11,12 @@ export function missingValueTreatmentSelectedAction(colName,colType,colSlug, tre
     treatment
 	}
 }
-export function outlierRemovalSelectedAction(colName,colType,colslug, treatment, dispatch){
+export function outlierRemovalSelectedAction(colName,colType,colSlug, treatment, dispatch){
   return {
 		type: "OUTLIER_REMOVAL",
 		colName,
     colType,
-    colslug,
+    colSlug,
     treatment
 	}
 }

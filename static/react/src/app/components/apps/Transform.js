@@ -49,7 +49,6 @@ export class Transform extends React.Component {
     getTranformDataValue(name){
       var transformationData = this.getTransformationata();
       var value = transformationData[name];
-      console.log("value ..............",value);
       return value;
     }
 
@@ -128,8 +127,8 @@ export class Transform extends React.Component {
                     </div>
                     <div class="col-md-4 col-sm-4">
                       <select class="form-control" id="perform_standardization_select" name="perform_standardization_select" value={this.getTranformDataValue("perform_standardization_select")} onChange={this.pickValue}>
-                        <option selected>Min-Max Scaling</option>
-                        <option>Standard deviation</option>
+                        <option value="min_max_scaling" selected>Min-Max Scaling</option>
+                        <option value="standard_deviation">Standard deviation</option>
                       </select>
                     </div>
                   </div>
@@ -142,10 +141,10 @@ export class Transform extends React.Component {
                     </div>
                     <div class="col-md-4 col-sm-3">
                       <select class="form-control" id="variable_transformation_select" name="variable_transformation_select" value={this.getTranformDataValue("variable_transformation_select")} onChange={this.pickValue}>
-                        <option selected> Log</option>
-                        <option>Square root</option>
-                        <option>Cube root</option>
-                        <option > Modulus</option>
+                        <option value="log" selected> Log</option>
+                        <option value="square_root">Square root</option>
+                        <option value="cube_root">Cube root</option>
+                        <option value="modulus" > Modulus</option>
                       </select>
                     </div>
                   </div>
@@ -173,11 +172,11 @@ export class Transform extends React.Component {
                   <span onChange={this.onchangeInput.bind(this)} className="inline">
                   <div class="col-md-7 col-sm-6">
                     <div class="ma-checkbox inline">
-                      <input type="radio" id="one_hot_encoding" name="encoding" value="one_hot_encoding" onInput={this.pickValue} />
+                      <input type="radio" id="one_hot_encoding" name="encoding_type" value="one_hot_encoding"  defaultValue={this.getTranformDataValue("encoding_type")} onChange={this.onchangeInput.bind(this)} onInput={this.pickValue}/>
                       <label for="one_hot_encoding">One hot encoding</label>
                     </div>
                     <div class="ma-checkbox inline">
-                      <input type="radio" id="label_encoding" name="encoding" value="label_encoding" onInput={this.pickValue} />
+                      <input type="radio" id="label_encoding" name="encoding_type"  value="label_encoding" defaultValue={this.getTranformDataValue("encoding_type")} onChange={this.onchangeInput.bind(this)} onInput={this.pickValue}/>
                       <label for="label_encoding">Label encoding</label>
                     </div>
                   </div>
