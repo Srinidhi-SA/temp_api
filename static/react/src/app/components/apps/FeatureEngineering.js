@@ -57,6 +57,9 @@ export class FeatureEngineering extends React.Component {
 
 
   componentWillMount() {
+    if(this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null){
+            window.history.go(-1);
+        }
     //set state with data from store always
     this.setState({featureEngineering:this.props.featureEngineering});
     //debugger;
