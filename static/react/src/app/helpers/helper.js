@@ -630,6 +630,7 @@ export function getRemovedVariableNames(dataset){
     var pickRemoved = function(item){
         if(item.targetColumn||!item.selected ){
             // if(!item.selected ){
+            // if(item.selected="true"|| item.targetColumn=="true"){
             arr.push(item.name)
         }
     }
