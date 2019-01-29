@@ -139,7 +139,7 @@ export class Levels extends React.Component {
     levels = (
       <div>
         {this.state.levelsArray.map((level, idx) => (
-          <div className="form_withrowlabels form-inline">
+          <div className="form_withrowlabels form-inline" key={idx} >
           <div className="form-group">
             <input type="text" value={level.inputValue} name={`name #${idx + 1}`} className="form-control" placeholder={`level #${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx)} />
           </div>

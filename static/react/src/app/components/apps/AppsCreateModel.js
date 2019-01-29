@@ -5,7 +5,7 @@ import {push} from "react-router-redux";
 import {Modal,Button,Tab,Row,Col,Nav,NavItem} from "react-bootstrap";
 import store from "../../store";
 import {closeModelPopup,openModelPopup} from "../../actions/appActions";
-import {getAllDataList,getDataSetPreview,storeSignalMeta,updateDatasetName} from "../../actions/dataActions";
+import {getAllDataList,getDataSetPreview,storeSignalMeta,updateDatasetName,clearDataCleansing,clearFeatureEngineering} from "../../actions/dataActions";
 import {DataSourceList} from "../data/DataSourceList";
 import {open,close,fileUpload,dataUpload} from "../../actions/dataUploadActions";
 import {ACCESSDENIED} from "../../helpers/helper";
@@ -35,6 +35,8 @@ export class AppsCreateModel extends React.Component {
 		this.props.dispatch(getAllDataList());
 		this.props.dispatch(storeSignalMeta(null,this.props.match.url));
 		this.props.dispatch(closeModelPopup());
+		this.props.dispatch(clearDataCleansing());
+		this.props.dispatch(clearFeatureEngineering());
 	}
 	openModelPopup(){
 		// if(store.getState().datasets.allDataSets.data)
