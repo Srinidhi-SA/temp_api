@@ -810,6 +810,27 @@ export default function reducer(state = {
               topLevelData: {"yesNoValue": action.yesNoValue, "numberOfBins" : action.numberOfBins}
             }
             break;
+            case "CLEAR_DATACLEANSING":
+            return{
+              ...state,
+              removeDuplicates:{},
+              missingValueTreatment:{},
+              outlierRemoval:{},
+
+              removeDuplicateAttributes :{},
+              removeDuplicateObservations :{},
+
+
+            }
+            break;
+            case "CLEAR_FEATUREENGINEERING":
+            return{
+              ...state,
+                featureEngineering:{},
+                topLevelData:{}
+            }
+            break;
+
 
             case "SAVE_BIN_LEVEL_TRANSFORMATION_DATA":
               var curFeData = state.featureEngineering
