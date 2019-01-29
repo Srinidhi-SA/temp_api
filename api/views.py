@@ -180,7 +180,6 @@ class TrainerView(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         # try:
-
         data = request.data
         data = convert_to_string(data)
 

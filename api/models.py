@@ -1051,7 +1051,7 @@ class Trainer(models.Model):
             'FEATURE_ENGINEERING': feature_engineering_config
         }
 
-    def data_cleansing_adaptor_for_ml(self, data_cleansing_config, column_data):
+    def data_cleansing_adaptor_for_ml(self, data_cleansing_config_ui, column_data):
         '''
         sample json:
         data_cleansing_config = {
@@ -1102,27 +1102,30 @@ class Trainer(models.Model):
         columns_wise_settings = data_cleansing['columns_wise_settings']
         overall_settings = data_cleansing['overall_settings']
         # pass
-        columns_wise_data = data_cleansing_config['columnsSettings']
-        if 'overallSettings' in data_cleansing_config:
-            overall_data = data_cleansing_config['overallSettings']
+        columns_wise_data_ui = data_cleansing_config_ui['columnsSettings']
+
+        # overall_settings
+        if 'overallSettings' in data_cleansing_config_ui:
+            overall_data = data_cleansing_config_ui['overallSettings']
             for d in overall_data:
                 for i in overall_settings:
                     if i['name'] == d:
                         i['selected'] = True
 
         name_mapping = {
-            'missingValueTreatment': 'missings_value_treatment',
+            'missingValueTreatment': 'missing_value_treatment',
             'outlierRemoval': 'outlier_removal'
         }
 
-        for fkey in columns_wise_data:
-            columns_wise_data_f = columns_wise_data[fkey]
+        # column_wise_settings
+        for fkey in columns_wise_data_ui:
+            columns_wise_data_f = columns_wise_data_ui[fkey]
 
             for slug in columns_wise_data_f:
                 value = columns_wise_data_f[slug]
 
                 column_name_as_per_variable_selection = column_data[slug]['name']
-                if 'datatpe' in value:
+                if 'datatype' in value:
                     column_datatype = value['datatype']
                 else:
                     column_datatype = column_data[slug]['columnType']
@@ -1160,15 +1163,21 @@ class Trainer(models.Model):
         return new_dict
 
     def feature_engineering_config_for_ml(self, feature_engineering_config, column_data):
-
         from config.settings import feature_engineering_settings
         import copy
         feature_engineering_ml_config = copy.deepcopy(feature_engineering_settings.feature_engineering_ml_settings)
         columns_wise_settings = feature_engineering_ml_config['column_wise_settings']
+        overall_settings = feature_engineering_ml_config['overall_settings']
         transformation_settings = columns_wise_settings['transformation_settings']
         level_creation_settings = columns_wise_settings['level_creation_settings']
 
         columns_wise_data = feature_engineering_config['columnsSettings']
+        overall_data = feature_engineering_config['overallSettings']
+
+        if overall_data['yesNoValue'] == True or overall_data['yesNoValue'] == 'true':
+            overall_settings[0]['selected'] = True
+            overall_settings[0]['number_of_bins'] = int(overall_data['numberOfBins'])
+
 
         for slug in columns_wise_data:
             columns_wise_data_f = columns_wise_data[slug]
