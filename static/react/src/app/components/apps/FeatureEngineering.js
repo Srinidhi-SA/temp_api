@@ -143,6 +143,24 @@ console.log("FeatureEngineering componentWillMount method is called...");
     let typeofBinningSelectBox = null;
     var binOrLevels = "";
     var binOrLevelData="";
+    var values="";
+
+    // if (this.props.dataPreview != null) {
+    //         values = this.props.dataPreview.meta_data.scriptMetaData.columnData.map((item,key )=> {
+    //         if(item.columnType == "measure")
+    //    return (
+    //            <span>{item.columnType.length}</span>
+    //             );
+    //           })
+    //         }
+
+
+
+
+
+
+
+
 
 
     if (this.props.dataPreview != null) {
@@ -151,7 +169,7 @@ console.log("FeatureEngineering componentWillMount method is called...");
                <tr key={key}>
                   <td> {item.name}</td>
                   <td> {item.columnType}</td>
-                  <td> <Button onClick={this.openBinsOrLevelsModal.bind(this, item)} bsStyle="primary">Create bins or levels</Button></td>
+                  <td> <Button onClick={this.openBinsOrLevelsModal.bind(this, item)} disabled={item.columnType!=item.actualColumnType} bsStyle="primary">Create bins or levels</Button></td>
                   <td> <Button onClick={this.openTransformColumnModal.bind(this,item)} bsStyle="primary">Transform</Button></td>
                 </tr>  );
               })
