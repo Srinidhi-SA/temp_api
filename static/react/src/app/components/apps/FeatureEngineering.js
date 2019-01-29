@@ -161,11 +161,15 @@ console.log("FeatureEngineering componentWillMount method is called...");
 
 
     var removedVariables = getRemovedVariableNames(this.props.datasets);
+    var numberOfSelectedMeasures = 0;
+    var numberOfSelectedDimensions = 0;
+
 
     if (this.props.dataPreview != null) {
             feHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map((item,key )=> {
         if(removedVariables.indexOf(item.name)!= -1 ) return "";
-
+        if(item.columnType == "measure") numberOfSelectedMeasures +=1;
+        else numberOfSelectedDimensions +=1;
        return (
                <tr key={key}>
                   <td> {item.name}</td>
@@ -259,7 +263,7 @@ console.log("FeatureEngineering componentWillMount method is called...");
 
               <div class="panel box-shadow xs-m-0">
                 <div class="panel-body no-border xs-p-20">
-                  <h4> The dataset contains 14 columns or features (7 measures and 7 dimensions).  If you would like to transform the existing features or
+                  <h4> The dataset contains {numberOfSelectedMeasures + numberOfSelectedDimensions} columns or features ({numberOfSelectedMeasures} measures and {numberOfSelectedDimensions} dimensions).  If you would like to transform the existing features or
                     create new features from the existing data, you can use the options provided below. </h4>
             <p class="inline-block">
             Do you want to convert all measures into dimension using binning? &nbsp;&nbsp;&nbsp;
