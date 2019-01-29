@@ -65,7 +65,12 @@ data_cleansing_static = {
         'displayName': 'Median Imputation',
         'name': 'median_imputation',
         'selected': False,
-        'slug': 'ToO7vD2uKTyHMBjLs26dgU'}
+        'slug': 'ToO7vD2uKTyHMBjLs26dgU'},
+    {   'columns': [],
+        'displayName': 'None',
+        'name': 'none',
+        'selected': False,
+        'slug': 'H3uY15p2TmHZ4KWXWfZGUq'}
             ],
         },
         "outlier_removal": {
@@ -127,7 +132,12 @@ data_cleansing_static = {
         'displayName': 'KNN imputation',
         'name': 'knn_imputation',
         'selected': False,
-        'slug': 'x5FU8rJgsgrJDNPsZUaQ7F'}
+        'slug': 'x5FU8rJgsgrJDNPsZUaQ7F'},
+    {   'columns': [],
+        'displayName': 'None',
+        'name': 'none',
+        'selected': False,
+        'slug': 'H3uY15p2TmHZ4KWXWfZGUq'}
             ],
         },
 
