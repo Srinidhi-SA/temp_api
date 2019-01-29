@@ -26,7 +26,7 @@ return {
 
     dataPreview: store.datasets.dataPreview,
 
-    dataSets: store.datasets,
+    datasets: store.datasets,
 
     binsOrLevelsShowModal: store.datasets.binsOrLevelsShowModal,
 
