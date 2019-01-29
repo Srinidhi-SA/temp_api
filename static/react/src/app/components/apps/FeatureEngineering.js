@@ -34,6 +34,8 @@ return {
 
     selectedBinsOrLevelsTab: store.datasets.selectedBinsOrLevelsTab,
     selectedItem: store.datasets.selectedItem,
+    apps_regression_modelName:store.apps.apps_regression_modelName,
+    currentAppDetails:store.apps.currentAppDetails,
     featureEngineering:store.datasets.featureEngineering
   };
 

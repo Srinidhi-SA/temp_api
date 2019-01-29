@@ -49,6 +49,7 @@ import {
     subsettedSlug: store.datasets.subsettedSlug,
     dataTransformSettings: store.datasets.dataTransformSettings,
     scoreToProceed: store.apps.scoreToProceed,
+    apps_regression_modelName:store.apps.apps_regression_modelName,
     currentAppDetails: store.apps.currentAppDetails,
     datasets : store.datasets
     //data_cleansing: store.datasets.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing
