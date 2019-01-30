@@ -81,41 +81,40 @@ render() {
    var binData= this.getBindata();
 
   bins =
-  (<Tab.Pane>
-    <div className="row form-group">
-  <label for="sel_tobg" className="col-sm-4 control-label">{"Column name"}</label>
-  <div className="col-sm-8">
-  <input type="text" title="Please Enter " name="name" value={this.props.selectedItem.name} disabled className="form-control" />
-</div>
-  </div>
-  <div className="row form-group">
-                    <label for="sel_tobg" className="col-sm-4 control-label">{"Type of binning"}</label>
-                    <div className="col-sm-8">
-                      {this.getbinningOptions()}
-                    </div>
-                              </div>
-              <div className="row form-group">
-                    <label for="sel_tobg" className="col-sm-4 control-label">{"Number of bins"}</label>
-                      <div className="col-sm-8">
-                        <input type="text" title="Please Enter " name="numberofbins"  defaultValue={binData.numberofbins} disabled={this.props.isNoOfBinsEnabled} onInput={this.pickValue}  onChange={this.onchangeInput.bind(this)} className="form-control" />
-                      </div>
-              </div>
-                    <div className="row form-group">
-                        <label for="sel_to bg" className="col-sm-4 control-label">{"Specify intervals"}</label>
-                        <div className="col-sm-8">
-                        <input type="text" title="Please Enter " name="specifyintervals"   defaultValue={binData.specifyintervals} disabled={this.props.isSpecifyIntervalsEnabled} onChange={this.onchangeInput.bind(this)} className="form-control" onInput={this.pickValue} />
-                      </div>
-                    </div>
-                    <div className="row form-group">
-                          <label for="sel_tobg" className="col-sm-4 control-label">{"New column name"}</label>
-                          <div className="col-sm-8">
-                          <input type="text" title="Please Enter " name="newcolumnname"  defaultValue={binData.newcolumnname} onChange={this.onchangeInput.bind(this)}   className="form-control" onInput={this.pickValue} />
-                            </div>
-                      </div>
-                    </Tab.Pane>
-        )
-
-
+  (
+    <Tab.Pane>
+      <div className="row form-group">
+        <label for="sel_tobg" className="col-sm-4 control-label">{"Column name"}</label>
+        <div className="col-sm-8">
+          <input type="text" title="Please Enter " name="name" value={this.props.selectedItem.name} disabled className="form-control" />
+        </div>
+      </div>
+      <div className="row form-group">
+        <label for="sel_tobg" className="col-sm-4 control-label">{"Type of binning"}</label>
+        <div className="col-sm-8">
+          {this.getbinningOptions()}
+        </div>
+      </div>
+      <div className="row form-group">
+        <label for="sel_tobg" className="col-sm-4 control-label">{"Number of bins"}</label>
+        <div className="col-sm-8">
+          <input type="number" title="Please Enter " name="numberofbins" min="1" defaultValue={binData.numberofbins} disabled={this.props.isNoOfBinsEnabled} onInput={this.pickValue}  onChange={this.onchangeInput.bind(this)} className="form-control" />
+        </div>
+      </div>
+      <div className="row form-group">
+        <label for="sel_to bg" className="col-sm-4 control-label">{"Specify intervals"}</label>
+        <div className="col-sm-8">
+          <input type="text" title="Please Enter " name="specifyintervals"   defaultValue={binData.specifyintervals} disabled={this.props.isSpecifyIntervalsEnabled} onChange={this.onchangeInput.bind(this)} className="form-control" onInput={this.pickValue} />
+        </div>
+      </div>
+      <div className="row form-group">
+        <label for="sel_tobg" className="col-sm-4 control-label">{"New column name"}</label>
+        <div className="col-sm-8">
+          <input type="text" title="Please Enter " name="newcolumnname"  defaultValue={binData.newcolumnname} onChange={this.onchangeInput.bind(this)}   className="form-control" onInput={this.pickValue} required="required"/>
+        </div>
+      </div>
+    </Tab.Pane>
+  )
 
       return (
         <div>

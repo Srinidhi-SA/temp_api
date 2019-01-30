@@ -113,7 +113,6 @@ export class Levels extends React.Component {
     }
 
     inputOnChangeHandler(idx, event){
-
       var newArray = this.state.levelsArray;
       newArray[idx]["inputValue"] = event.target.value;
       this.setState({
@@ -141,7 +140,7 @@ export class Levels extends React.Component {
         {this.state.levelsArray.map((level, idx) => (
           <div className="form_withrowlabels form-inline" key={idx} >
           <div className="form-group">
-            <input type="text" value={level.inputValue} name={`name #${idx + 1}`} className="form-control" placeholder={`level #${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx)} />
+            <input type="text" value={level.inputValue} name={`name #${idx + 1}`} className="form-control" placeholder={`level ${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx)} />
           </div>
           <div className="form-group">
             <label for="txt_sPeriod">&nbsp;&nbsp;&nbsp; Which will include:</label>
