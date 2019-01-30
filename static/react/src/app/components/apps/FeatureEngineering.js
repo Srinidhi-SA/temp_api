@@ -149,10 +149,10 @@ console.log("FeatureEngineering componentWillMount method is called...");
             feHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map((item,key )=> {
        return (
                <tr key={key}>
-                  <td> {item.name}</td>
+                  <td className="text-left"> {item.name}</td>
                   <td> {item.columnType}</td>
-                  <td> <Button onClick={this.openBinsOrLevelsModal.bind(this, item)} bsStyle="primary">Create bins or levels</Button></td>
-                  <td> <Button onClick={this.openTransformColumnModal.bind(this,item)} bsStyle="primary">Transform</Button></td>
+                  <td> <Button onClick={this.openBinsOrLevelsModal.bind(this, item)} bsStyle="primary btn-feng">CREATE BINS OR LEVELS</Button></td>
+                  <td> <Button onClick={this.openTransformColumnModal.bind(this,item)} bsStyle="primary btn-feng">TRANSFORM</Button></td>
                 </tr>  );
               })
             }
@@ -233,70 +233,58 @@ console.log("FeatureEngineering componentWillMount method is called...");
          <div className="main-content">
           <div class="row">
             <div class="col-md-12">
-
-
-
-
-
-              <div class="panel box-shadow xs-m-0">
-                <div class="panel-body no-border xs-p-20">
-                  <h4> The dataset contains 14 columns or features (7 measures and 7 dimensions).  If you would like to transform the existing features or
-                    create new features from the existing data, you can use the options provided below. </h4>
-            <p class="inline-block">
-            Do you want to convert all measures into dimension using binning? &nbsp;&nbsp;&nbsp;
-            </p>
-            <span onChange={this.handleTopLevelRadioButtonOnchange.bind(this)} className="inline">
-             <div class="ma-checkbox inline">
-                    <input type="radio" id="mTod-binning1" value="true" name="mTod-binning"  checked={this.state.topLevelRadioButton === "true"} />
-                    <label for="mTod-binning1">Yes</label>
-                  </div>
-                  <div class="ma-checkbox inline">
-                    <input type="radio" id="mTod-binning2" value="false" name="mTod-binning"  checked={this.state.topLevelRadioButton === "false"} />
-                    <label for="mTod-binning2">No </label>
-                  </div>
-                  </span>
-                  {(this.state.topLevelRadioButton == "true")?<div id="box-binning" class="xs-ml-20 block-inline"   ><span class="inline-block"> Number of bins : <input type="text" onInput={this.handleTopLevelInputOnchange.bind(this)} class="test_css" maxlength="2" id="flight_number" name="number"/></span></div>:""}
-
-                </div>
-              </div>
-
-
-
-
-
-              <div className="panel box-shadow ">
-              <div class="panel-body no-border xs-p-20">
-               <div className="table-responsive ">
-                  <table className="table table-striped table-bordered break-if-longText">
-                    <thead>
-                      <tr key="trKey">
-                        <th>Variable name</th>
-                        <th>Data type</th>
-                        <th></th>
-                        <th></th>
-                      </tr>
-                      </thead>
-                        <tbody className="no-border-x">{feHtml}</tbody>
-                      </table>
-                    </div>
-                    </div>
-                    </div>
-                    <div className="row buttonRow" id="dataPreviewButton">
-                      <div className="col-md-12">
-                          <div className="panel xs-mb-0">
-                            <div className="panel-body box-shadow">
-                                <div className="navbar">
-                                    <ul className="nav navbar-nav navbar-right">
-                                        <li className="text-right">
-                                          <Button onClick={this.handleProcedClicked.bind(this)} bsStyle="primary">{this.buttons.proceed.text} <i class="fa fa-angle-double-right"></i></Button>
-                                        </li>
-                                      </ul>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
+			
+				<div class="panel box-shadow xs-m-0">
+					<div class="panel-body no-border xs-p-20">
+						<h4> The dataset contains 14 columns or features (7 measures and 7 dimensions).  If you would like to transform the existing features or
+					create new features from the existing data, you can use the options provided below. </h4>
+						<hr />
+						<p class="inline-block">
+						<i class="fa fa-angle-double-right text-primary"></i> Do you want to convert all measures into dimension using binning? &nbsp;&nbsp;&nbsp;
+						</p>
+						
+						<span onChange={this.handleTopLevelRadioButtonOnchange.bind(this)} className="inline">
+							<div class="ma-checkbox inline">
+							<input type="radio" id="mTod-binning1" value="true" name="mTod-binning"  checked={this.state.topLevelRadioButton === "true"} />
+							<label for="mTod-binning1">Yes</label>
+							</div>
+							<div class="ma-checkbox inline">
+							<input type="radio" id="mTod-binning2" value="false" name="mTod-binning"  checked={this.state.topLevelRadioButton === "false"} />
+							<label for="mTod-binning2">No </label>
+							</div>
+						</span>
+						
+						{(this.state.topLevelRadioButton == "true")?
+						<div id="box-binning" class="xs-ml-20 block-inline">
+							<span class="inline-block"> Number of bins : <input type="text" onInput={this.handleTopLevelInputOnchange.bind(this)} class="test_css form-control" maxlength="2" id="flight_number" name="number"/>
+							</span>
+						</div>:""}
+					</div>
+				</div>
+				
+				<div className="panel box-shadow ">
+					<div class="panel-body no-border xs-p-20">
+						<div className="table-responsive ">
+						<table className="table table-striped table-bordered break-if-longText">
+							<thead>
+								<tr key="trKey">
+									<th className="text-left"><b>Variable Name</b></th>
+									<th><b>Data type</b></th>
+									<th></th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody className="no-border-x">{feHtml}</tbody>
+						</table>
+						</div>
+						
+						<div className="buttonRow text-right" id="dataPreviewButton">
+							<Button onClick={this.handleProcedClicked.bind(this)} bsStyle="primary">{this.buttons.proceed.text} <i class="fa fa-angle-double-right"></i></Button>     
+						</div>
+					</div>
+				</div>
+				
+            </div>
 {/* <!--End of Page Content Area --> */}
             </div>
         </div>
