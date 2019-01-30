@@ -9,6 +9,7 @@ import {
   closeTransformColumnModalAction,
   selectedBinsOrLevelsTabAction,
 } from "../../actions/dataActions";
+import {  saveEncodingValuesAction } from "../../actions/featureEngineeringActions";
 
 @connect((store) => {
   return {
@@ -24,6 +25,8 @@ export class Transform extends React.Component {
     super(props);
     console.log("Transform constructor method is called...");
     this.pickValue = this.pickValue.bind(this);
+    this.state = {};
+    this.state.encodingRadioButton;
 
   }
 
@@ -55,6 +58,19 @@ export class Transform extends React.Component {
 
   onchangeInput(event){
     return event.target.value;
+  }
+
+  handleEncodingRadioButtonOnchange(event){
+    this.state.encodingRadioButton = event.target.value;
+    this.saveEncodingValues();
+  }
+  // handleEncodingInputOnchange(event){
+  //   this.state.encodingInput = event.target.value;
+  //   this.saveEncodingValues();
+  // }
+  saveEncodingValues(){
+    this.props.dispatch(saveEncodingValuesAction(this.state.encodingRadioButton));
+    this.setState({ state: this.state });
   }
 
   render() {
@@ -96,57 +112,14 @@ export class Transform extends React.Component {
                   <label for="replace_values_with_selected" class="col-md-1 col-sm-1 control-label xs-p-0 xs-mt-5 text-right">With</label>
                   <div class="col-md-3 col-sm-3">
                     <select class="form-control" id="replace_values_with_selected" name="replace_values_with_selected" value={this.getTranformDataValue("replace_values_with_selected")} onChange={this.onchangeInput.bind(this)} onChange={this.pickValue}>
-                      <option>Mean</option>
-                      <option>Median</option>
-                      <option>Mode</option>
+                      <option value="None" selected> None</option>
+                      <option value="Mean">Mean</option>
+                      <option value="Median">Median</option>
+                      <option value="Mode" >Mode</option>
                     </select>
                   </div>
                 </div>
-                <div class="row form-group">
-                  <div class="col-md-5 col-sm-5">
-                    <div class="ma-checkbox inline">
-                      <input id="add_specific_value" name="add_specific_value" type="checkbox"  defaultChecked={this.getTranformDataValue("add_specific_value")} class="needsclick" onChange={this.pickValue}/>
-                      <label for="add_specific_value">Add Specific value:</label>
-                    </div>
-                  </div>
-                  <div class="col-md-3 col-sm-3">
-                    <input type="text" name="add_specific_value_input" class="form-control" placeholder="Value" defaultValue={this.getTranformDataValue("add_specific_value_input")} onChange={this.onchangeInput.bind(this)} onInput={this.pickValue}/>
-                  </div>
-                </div>
-                <div class="row form-group">
-                  <div class="col-md-5 col-sm-5">
-                    <div class="ma-checkbox inline">
-                      <input id="subtract_specific_value" name="subtract_specific_value" type="checkbox" defaultChecked={this.getTranformDataValue("subtract_specific_value")} class="needsclick" onChange={this.pickValue}/>
-                      <label for="subtract_specific_value">Subtract Specific value:</label>
-                    </div>
-                  </div>
-                  <div class="col-md-3 col-sm-3">
-                    <input type="text" name="subtract_specific_value_input" class="form-control" placeholder="Value" defaultValue={this.getTranformDataValue("subtract_specific_value_input")} onChange={this.onchangeInput.bind(this)} onInput={this.pickValue}/>
-                  </div>
-                </div>
-                <div class="row form-group">
-                  <div class="col-md-5 col-sm-5">
-                    <div class="ma-checkbox inline">
-                      <input id="multiply_specific_value" name="multiply_specific_value" type="checkbox" defaultChecked={this.getTranformDataValue("multiply_specific_value")} class="needsclick" onChange={this.pickValue}/>
-                      <label for="multiply_specific_value">Multiply Specific value:</label>
-                    </div>
-                  </div>
-                  <div class="col-md-3 col-sm-3">
-                    <input type="text" name="multiply_specific_value_input" class="form-control" placeholder="Value" defaultValue={this.getTranformDataValue("multiply_specific_value_input")} onChange={this.onchangeInput.bind(this)} onInput={this.pickValue}/>
-                  </div>
-                </div>
-                <div class="row form-group">
-                  <div class="col-md-5 col-sm-5">
-                    <div class="ma-checkbox inline">
-                      <input id="divide_specific_value" name="divide_specific_value" type="checkbox" defaultChecked={this.getTranformDataValue("divide_specific_value")} class="needsclick" onChange={this.pickValue}/>
-                      <label for="divide_specific_value">Divide Specific value:</label>
-                    </div>
-                  </div>
-                  <div class="col-md-3 col-sm-3">
-                    <input type="text" name="divide_specific_value_input" class="form-control" placeholder="Value" defaultValue={this.getTranformDataValue("divide_specific_value_input")} onChange={this.onchangeInput.bind(this)} onInput={this.pickValue}/>
-                  </div>
-                </div>
-                  <div class="row form-group">
+                 <div class="row form-group">
                     <div class="col-md-5 col-sm-5">
                       <div class="ma-checkbox inline">
                         <input id="perform_standardization" name="perform_standardization" type="checkbox" defaultChecked={this.getTranformDataValue("perform_standardization")} class="needsclick" onChange={this.pickValue}/>
@@ -155,8 +128,9 @@ export class Transform extends React.Component {
                     </div>
                     <div class="col-md-4 col-sm-4">
                       <select class="form-control" id="perform_standardization_select" name="perform_standardization_select" value={this.getTranformDataValue("perform_standardization_select")} onChange={this.pickValue}>
-                        <option value="min_max_scaling" selected>Min-Max Scaling</option>
-                        <option value="log_transformation">Log Transformation</option>
+                        <option value="None" selected> None</option>
+                        <option value="min_max_scaling">Min-Max Scaling</option>
+                        <option value="standard_deviation">Standard deviation</option>
                       </select>
                     </div>
                   </div>
@@ -169,8 +143,11 @@ export class Transform extends React.Component {
                     </div>
                     <div class="col-md-4 col-sm-3">
                       <select class="form-control" id="variable_transformation_select" name="variable_transformation_select" value={this.getTranformDataValue("variable_transformation_select")} onChange={this.pickValue}>
-                        <option value="min_max_scaling">Min-Max Scaling</option>
-                        <option value="log_transformation" selected>Log Transformation</option>
+                      <option value="None" selected> None</option>
+                        <option value="log"> Log</option>
+                        <option value="square_root">Square root</option>
+                        <option value="cube_root">Cube root</option>
+                        <option value="modulus" > Modulus</option>
                       </select>
                     </div>
                   </div>
@@ -191,21 +168,24 @@ export class Transform extends React.Component {
                 <div class="row form-group">
                   <div class="col-md-5 col-sm-5">
                     <div class="ma-checkbox inline">
-                      <input id="encoding_dimensions" name="encoding_dimensions" type="checkbox" defaultChecked={this.getTranformDataValue("encoding_dimensions")} class="needsclick" onChange={this.pickValue}/>
+                      <input id="encoding_dimensions" name="encoding_dimensions" type="checkbox" defaultChecked={this.getTranformDataValue("encoding_dimensions")} class="needsclick" onChange={this.onchangeInput.bind(this)}  onInput={this.pickValue}/>
                       <label for="encoding_dimensions">Perform Encoding:</label>
                     </div>
                   </div>
+                  <span onChange={this.onchangeInput.bind(this)} className="inline">
                   <div class="col-md-7 col-sm-6">
                     <div class="ma-checkbox inline">
-                      <input type="radio" id="one_hot_encoding" name="encoding_type" value="one_hot_encoding"  defaultValue={this.getTranformDataValue("encoding_type")} onChange={this.onchangeInput.bind(this)} onInput={this.pickValue}/>
+                      <input type="radio" id="one_hot_encoding" name="encoding_type" value="one_hot_encoding"  defaultChecked={this.getTranformDataValue("encoding_type") === "one_hot_encoding" } onChange={this.pickValue}/>
                       <label for="one_hot_encoding">One hot encoding</label>
                     </div>
                     <div class="ma-checkbox inline">
-                      <input type="radio" id="label_encoding" name="encoding_type"  value="label_encoding" defaultValue={this.getTranformDataValue("encoding_type")} onChange={this.onchangeInput.bind(this)} onInput={this.pickValue}/>
+                      <input type="radio" id="label_encoding" name="encoding_type"  value="label_encoding" defaultChecked={this.getTranformDataValue("encoding_type") === "label_encoding"} onChange={this.pickValue}/>
                       <label for="label_encoding">Label encoding</label>
                     </div>
                   </div>
+                </span>
                 </div>
+
                 <div class="row form-group">
                   <div class="col-md-5 col-sm-5">
                     <div class="ma-checkbox inline">

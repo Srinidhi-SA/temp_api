@@ -1,54 +1,24 @@
 @charset "UTF-8";
 /* open-sans-300 - latin */
-@font-face {
-  font-family: 'Open Sans';
-  font-style: normal;
-  font-weight: 300;
-  src: url("./fonts/open-sans-v15-latin-300.eot");
-  /* IE9 Compat Modes */
-  src: local("Open Sans Light"), local("OpenSans-Light"), url("./fonts/open-sans-v15-latin-300.eot?#iefix") format("embedded-opentype"), url("./fonts/open-sans-v15-latin-300.woff2") format("woff2"), url("./fonts/open-sans-v15-latin-300.woff") format("woff"), url("./fonts/open-sans-v15-latin-300.ttf") format("truetype"), url("./fonts/open-sans-v15-latin-300.svg#OpenSans") format("svg");
-  /* Legacy iOS */ }
-/* open-sans-regular - latin */
-@font-face {
-  font-family: 'Open Sans';
-  font-style: normal;
-  font-weight: 400;
-  src: url("./fonts/open-sans-v15-latin-regular.eot");
-  /* IE9 Compat Modes */
-  src: local("Open Sans Regular"), local("OpenSans-Regular"), url("./fonts/open-sans-v15-latin-regular.eot?#iefix") format("embedded-opentype"), url("./fonts/open-sans-v15-latin-regular.woff2") format("woff2"), url("./fonts/open-sans-v15-latin-regular.woff") format("woff"), url("./fonts/open-sans-v15-latin-regular.ttf") format("truetype"), url("./fonts/open-sans-v15-latin-regular.svg#OpenSans") format("svg");
-  /* Legacy iOS */ }
-/* open-sans-700 - latin */
-@font-face {
-  font-family: 'Open Sans';
-  font-style: normal;
-  font-weight: 700;
-  src: url("./fonts/open-sans-v15-latin-700.eot");
-  /* IE9 Compat Modes */
-  src: local("Open Sans Bold"), local("OpenSans-Bold"), url("./fonts/open-sans-v15-latin-700.eot?#iefix") format("embedded-opentype"), url("./fonts/open-sans-v15-latin-700.woff2") format("woff2"), url("./fonts/open-sans-v15-latin-700.woff") format("woff"), url("./fonts/open-sans-v15-latin-700.ttf") format("truetype"), url("./fonts/open-sans-v15-latin-700.svg#OpenSans") format("svg");
-  /* Legacy iOS */ }
+ 
+ 
+ 
 * {
   -webkit-box-sizing: border-box;
   box-sizing: border-box; }
 
-body .p-component {
-  font-family: "Open Sans", "Helvetica Neue", sans-serif;
+body .p-component { 
   font-size: 14px;
   text-decoration: none; }
-body a {
-  color: #007ad9;
-  text-decoration: none; }
-  body a:hover {
-    color: #116fbf; }
-  body a:active {
-    color: #005b9f; }
+ 
+ 
 body .p-disabled, body .p-component:disabled {
   opacity: 0.5;
   filter: alpha(opacity=50); }
 body .pi {
   font-size: 1.25em; }
 
-body {
-  /* Validations */ }
+ 
   body .p-inputtext {
     font-size: 14px;
     color: #333333;
@@ -361,7 +331,7 @@ body {
     border-radius: 3px;
     }
     body .p-multiselect:not(.p-disabled):hover {
-      border-color: #212121; }
+      border-color: #e0e0e0; }
     body .p-multiselect:not(.p-disabled):focus {
       border-color: #007ad9;
       outline: 0 none;
@@ -370,7 +340,7 @@ body {
     body .p-multiselect .p-multiselect-label {
       padding: 0.429em;
       padding-right: 2em;
-      font-weight: 400; }
+      font-weight: 400; margin-bottom: 0px; }
     body .p-multiselect .p-multiselect-trigger {
       background-color: #ffffff;
       width: 2em;
@@ -398,7 +368,7 @@ body {
         vertical-align: middle;
         margin-left: 0; }
         body .p-multiselect-panel .p-multiselect-header .p-multiselect-filter-container .p-inputtext {
-          padding: 0.429em;
+        /* padding: 0.429em;*/
           padding-right: 2em; }
         body .p-multiselect-panel .p-multiselect-header .p-multiselect-filter-container .p-multiselect-filter-icon {
           color: #007ad9;
@@ -815,8 +785,8 @@ body {
 body .p-button {
   margin: 0;
   color: #ffffff;
-  background-color: #007ad9;
-  border: 1px solid #007ad9;
+  background-color: #00998c;
+  border: 1px solid #00998c;
   font-size: 14px;
   -o-transition: background-color 0.2s;
   -webkit-transition: background-color 0.2s;
@@ -829,11 +799,11 @@ body .p-button {
   body .p-button:enabled:focus {
     outline: 0 none;
     outline-offset: 0px;
-    background-color: #0088f3; }
+    background-color: #00998c; }
   body .p-button:enabled:active {
-    background-color: #005b9f;
+    background-color: #00998c;
     color: #ffffff;
-    border-color: #005b9f; }
+    border-color: #00998c; }
   body .p-button.p-button-text-only .p-button-text {
     padding: 0.429em 1em; }
   body .p-button.p-button-text-icon-left .p-button-text {
@@ -902,33 +872,33 @@ body .p-selectbutton .p-button {
   body .p-selectbutton .p-button .p-button-icon-left {
     color: #666666; }
   body .p-selectbutton .p-button:not(.p-disabled):not(.p-highlight):hover {
-    background-color: #c8c8c8;
-    border-color: #c8c8c8;
-    color: #333333; }
+    background-color: #00998c;
+    border-color: #00998c;
+    color: #ffffff; }
     body .p-selectbutton .p-button:not(.p-disabled):not(.p-highlight):hover .p-button-icon-left {
       color: #212121; }
   body .p-selectbutton .p-button:not(.p-disabled):not(.p-highlight).p-focus {
-    background-color: #c8c8c8;
-    border-color: #c8c8c8;
-    color: #333333;
+    background-color: #00998c;
+    border-color: #00998c;
+    color: #ffffff;
     outline: 0 none; }
     body .p-selectbutton .p-button:not(.p-disabled):not(.p-highlight).p-focus .p-button-icon-left {
       color: #212121; }
   body .p-selectbutton .p-button.p-highlight {
-    background-color: #007ad9;
-    border-color: #007ad9;
+    background-color: #00998c;
+    border-color: #00998c;
     color: #ffffff; }
     body .p-selectbutton .p-button.p-highlight .p-button-icon-left {
       color: #ffffff; }
     body .p-selectbutton .p-button.p-highlight:not(.p-disabled):hover {
-      background-color: #116fbf;
-      border-color: #116fbf;
+      background-color: #00998c;
+      border-color: #00998c;
       color: #ffffff; }
       body .p-selectbutton .p-button.p-highlight:not(.p-disabled):hover .p-button-icon-left {
         color: #ffffff; }
     body .p-selectbutton .p-button.p-highlight.p-focus {
-      background-color: #005b9f;
-      border-color: #005b9f;
+      background-color: #00998c;
+      border-color: #00998c;
       color: #ffffff; }
       body .p-selectbutton .p-button.p-highlight.p-focus .p-button-icon-left {
         color: #ffffff; }

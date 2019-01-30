@@ -1754,3 +1754,10 @@ export function updateVariableSelectionArray(summary){
         }
     }
 }
+
+export function clearDataCleansing(){
+    return {type:"CLEAR_DATACLEANSING"}
+}
+export function clearFeatureEngineering(){
+    return {type:"CLEAR_FEATUREENGINEERING"}
+}

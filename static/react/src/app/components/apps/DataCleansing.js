@@ -5,7 +5,8 @@ import {MainHeader} from "../common/MainHeader";
 import {connect} from "react-redux";
 //import {Redirect} from 'react-router';
 import {Link, Redirect} from "react-router-dom";
-import store from "../../store";
+import store from "../../store"
+import {SelectButton} from 'primereact/selectbutton';
 import {C3Chart} from "../c3Chart";
 import ReactDOM from 'react-dom';
 import {
@@ -21,11 +22,17 @@ import {Button, Dropdown, Menu, MenuItem} from "react-bootstrap";
 import {STATIC_URL} from "../../helpers/env.js"
 import {showHideSideChart, showHideSideTable, MINROWINDATASET,toggleVisualization, getRemovedVariableNames} from "../../helpers/helper.js"
 import {isEmpty, CREATESIGNAL, CREATESCORE, CREATEMODEL} from "../../helpers/helper";
-
 import {DataUploadLoader} from "../common/DataUploadLoader";
 import Dialog from 'react-bootstrap-dialog';
 import {checkCreateScoreToProceed, getAppDetails} from "../../actions/appActions";
-import {missingValueTreatmentSelectedAction, outlierRemovalSelectedAction, variableSelectedAction, removeDuplicatesAction, dataCleansingDataTypeChange } from "../../actions/dataCleansingActions";
+import {
+  missingValueTreatmentSelectedAction,
+  outlierRemovalSelectedAction,
+  variableSelectedAction,
+  removeDuplicateAttributesAction,
+  removeDuplicateObservationsAction,
+  dataCleansingDataTypeChange
+} from "../../actions/dataCleansingActions";
 
 @connect((store) => {
   return {
@@ -42,6 +49,7 @@ import {missingValueTreatmentSelectedAction, outlierRemovalSelectedAction, varia
     subsettedSlug: store.datasets.subsettedSlug,
     dataTransformSettings: store.datasets.dataTransformSettings,
     scoreToProceed: store.apps.scoreToProceed,
+    apps_regression_modelName:store.apps.apps_regression_modelName,
     currentAppDetails: store.apps.currentAppDetails,
     datasets : store.datasets
     //data_cleansing: store.datasets.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing
@@ -52,11 +60,20 @@ export class DataCleansing extends React.Component {
   constructor(props) {
     super(props);
     this.buttons = {};
+    this.state = {
+      value1: null,
+      value2: null
+    };
+    this.state.topLevelRadioButton = "false";
+   }
 
-  }
+
 
 
   componentWillMount() {
+    if(this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null){
+            window.history.go(-1);
+        }
     if (this.props.dataPreview == null || isEmpty(this.props.dataPreview) || this.props.dataPreview.status == 'FAILED') {
       this.props.dispatch(getDataSetPreview(this.props.match.params.slug));
     }else{
@@ -91,25 +108,29 @@ onchangeMissingValueTreatment(event, variable_name){
 missingValueTreatmentOnChange(event){
 
   console.log(event.target.dataset);
-
-  this.props.dispatch(missingValueTreatmentSelectedAction(event.target.dataset["colname"],event.target.dataset["colslug"], event.target.value));
+  this.props.dispatch(missingValueTreatmentSelectedAction(event.target.dataset["colname"],event.target.dataset["coltype"], event.target.dataset["colslug"], event.target.value));
 
 }
 outlierRemovalOnChange(event){
-  this.props.dispatch(outlierRemovalSelectedAction(event.target.dataset["colname"],event.target.dataset["colslug"], event.target.value));
+  this.props.dispatch(outlierRemovalSelectedAction(event.target.dataset["colname"],event.target.dataset["coltype"],event.target.dataset["colslug"], event.target.value));
 }
 
 variableCheckboxOnChange(event){
   this.props.dispatch(variableSelectedAction(event.target.dataset["colslug"], event.target.checked));
 }
 
-handleRemoveDuplicatesOnChange(event){
-this.props.dispatch(removeDuplicatesAction(event.target.dataset["duplicatename"], event.target.value));
+handleDuplicateAttributesOnChange(event){
+  this.setState({value1: event.target.value})
+  this.props.dispatch(removeDuplicateAttributesAction(event.target.name,event.target.value));
 }
+
+handleDuplicateObservationsOnChange(event){
+  this.setState({value2: event.target.value})
+  this.props.dispatch(removeDuplicateObservationsAction(event.target.name,event.target.value));
+}
+
 handleDataTypeChange(colSlug, event){
-
-    this.props.dispatch(dataCleansingDataTypeChange(colSlug, event.target.value));
-
+  this.props.dispatch(dataCleansingDataTypeChange(colSlug, event.target.value));
 }
 getUpdatedDataType(colSlug){
   // this.props.dataPreview.meta_data.uiMetaData.columnDataUI.filter(item => item.slug == slug);
@@ -150,6 +171,7 @@ getOutlierRemovalOptions(dataType, colName, colSlug){
   }
   else { return "";}
 }
+
 getMissingValueTreatmentOptions(dataType, colName, colSlug){
   var data_cleansing = this.props.dataPreview.meta_data.uiMetaData.fe_config.data_cleansing ;
   if (dataType in data_cleansing && "missing_value_treatment" in data_cleansing[dataType]){
@@ -161,7 +183,7 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
         selectedValue = this.props.datasets.missingValueTreatment[colSlug].treatment
     }
 
-    return (<select className="form-control" data-colslug={colSlug} data-colname={colName} onChange={this.missingValueTreatmentOnChange.bind(this)} value={selectedValue} >{dcHTML}</select>);
+    return (<select className="form-control" data-coltype={dataType}  data-colslug={colSlug} data-colname={colName} onChange={this.missingValueTreatmentOnChange.bind(this)} value={selectedValue} >{dcHTML}</select>);
   }
   else { return "";}
 }
@@ -169,6 +191,13 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
 
 
   render() {
+
+
+
+    const options = [
+            {label: 'Yes', value: 'Yes'},
+            {label: 'No', value: 'No'},
+        ];
 
       var cleansingHtml = <span>"Loading ... "</span>;
     if(this.props.dataPreview!=null)
@@ -186,7 +215,7 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
                 <label for={item.slug}> </label>
               </div></td> */}
 
-          <td>{item.name}</td>
+          <td className="text-left">{item.name}</td>
           <td>  {this.getUpdatedDataType(item.slug)}</td>
          {/* using filter and map to retrive data from array inside array*/}
          {/* <td> */}
@@ -238,22 +267,27 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
           <div class="panel box-shadow xs-m-0">
             <div class="panel-body no-border xs-p-20">
               <div class="form-group">
-                <label for="rd1" class="col-sm-5 control-label"> Do you want to remove duplicate attributes/columns in the dataset?</label>
+                <label for="rd1" class="col-sm-5 control-label"><i class="fa fa-angle-double-right"></i> Do you want to remove duplicate attributes/columns in the dataset?</label>
                 <div class="col-sm-7">
-                  <div class="btn-group" data-toggle="buttons">
-                      <input type="button" id="rd1_Yes" name="rdc_dataset" value="Yes" class="btn btn-default"  data-duplicatename="remove_duplicate_attributes" onClick={this.handleRemoveDuplicatesOnChange.bind(this)}/>
-                      <input type="button" id="rd1_No" name="rdc_dataset" value="No" class="btn btn-default " data-duplicatename="remove_duplicate_attributes" onClick={this.handleRemoveDuplicatesOnChange.bind(this)}/>
+                  <div className="content-section implementation">
+                    <SelectButton id="rd1" value={this.state.value1} options={options} name="remove_duplicate_attributes"  onChange={this.handleDuplicateAttributesOnChange.bind(this)} />
+                    {/* <p>Selected Value: {this.state.value1}</p> */}
                   </div>
+                  {/* <SelectButton value={this.state.value1} options={options}  onChange={(e) => this.setState({value1: e.value})} />
+                    <p>Selected Value: {this.state.value1}</p> */}
+
                 </div>
               </div>
+
               <div class="clearfix xs-mb-5"></div>
+
               <div class="form-group">
                 <label for="rd2" class="col-sm-5 control-label"> Do you want to remove duplicate observations  in the dataset?</label>
                 <div class="col-sm-7">
-                  <div class="btn-group" data-toggle="buttons">
-                       <input type="button" id="rd2_Yes" name="rd_odataset" value="Yes"  class="btn btn-default" data-duplicatename="remove_duplicate_observations"  onClick={this.handleRemoveDuplicatesOnChange.bind(this)} se />
-                      <input type="button" id="rd2_No" name="rd_odataset" value="No"  class="btn btn-default " data-duplicatename="remove_duplicate_observations"  onClick={this.handleRemoveDuplicatesOnChange.bind(this)} />
-  </div>
+                  <div className="content-section implementation">
+                    <SelectButton id="rd2" value={this.state.value2} options={options} name="remove_duplicate_observations"  onChange={this.handleDuplicateObservationsOnChange.bind(this)} />
+                    {/* <p>Selected Value: {this.state.value2}</p> */}
+                  </div>
                 </div>
               </div>
             </div>
@@ -264,22 +298,19 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
                       <table className="table table-striped table-bordered break-if-longText">
                         <thead>
                           <tr>
-
-
-
                             {/* <th> <div class="ma-checkbox inline">
                                 <input id="checkAll" type="checkbox" class="needsclick" onChange={this.handleSelectAll.bind(this)}/>
                                 <label for="checkAll">All</label>
                               </div>
                             </th> */}
 
-                            <th>Variable name</th>
-                            <th>Data type</th>
-                            <th># of unique values</th>
-                            <th># of outliers</th>
-                            <th>% of missing values</th>
-                            <th>Missing value treatment</th>
-                            <th>Outlier removal</th>
+                            <th className="text-left"><b>Variable name</b></th>
+                            <th><b>Data type</b></th>
+                            <th><b>No of unique values</b></th>
+                            <th><b>No of outliers</b></th>
+                            <th><b>% of missing values</b></th>
+                            <th><b>Missing value treatment</b></th>
+                            <th><b>Outlier removal</b></th>
                             </tr>
                         </thead>
                         <tbody className="no-border-x">

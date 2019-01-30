@@ -139,12 +139,12 @@ export class Levels extends React.Component {
     levels = (
       <div>
         {this.state.levelsArray.map((level, idx) => (
-          <div className="form_withrowlabels form-inline">
+          <div className="form_withrowlabels form-inline" key={idx} >
           <div className="form-group">
             <input type="text" value={level.inputValue} name={`name #${idx + 1}`} className="form-control" placeholder={`level #${idx + 1} name`} onInput={this.inputOnChangeHandler.bind(this, idx)} />
           </div>
           <div className="form-group">
-            <label for="txt_sPeriod">&nbsp;&nbsp;&nbsp; Which will include:</label>
+            <label for="txt_sPeriod">&nbsp;&nbsp;&nbsp; Which will include:&nbsp;</label>
           </div>
           <div className="form-group">
 
@@ -154,12 +154,13 @@ export class Levels extends React.Component {
           </div>
           </div>
           <div className="form-group">
-          <button className="btn btn-primary b-inline" data-levelIndex={idx} onClick={this.handleRemoveLevel.bind(this, idx)} ><i className="fa fa-close"></i></button>
+          &nbsp;<button className="btn btn-grey b-inline" data-levelIndex={idx} onClick={this.handleRemoveLevel.bind(this, idx)} ><i className="fa fa-close"></i></button>
           </div>
         </div>
 
         ))}
         <button className="btn btn-primary b-inline" onClick={this.addNewLevel.bind(this)} ><i className="fa fa-plus"></i></button>
+
       </div>
     )
 
