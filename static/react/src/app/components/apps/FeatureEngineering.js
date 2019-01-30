@@ -155,6 +155,7 @@ export class FeatureEngineering extends React.Component {
   }
 
   render() {
+    console.log("FeatureEngineering render method is called...");
     var feHtml = "";
     var binsOrLevelsPopup = "";
     var transformColumnPopup = "";
@@ -167,10 +168,9 @@ export class FeatureEngineering extends React.Component {
         return (
           <tr key={key}>
             <td> {item.name}</td>
-            <td> {item.columnType}------------{item.value}</td>
-            <td>
-              <Button id="disable_create_bin" onClick={this.openBinsOrLevelsModal.bind(this, item)} disabled={item.columnType!=item.actualColumnType} bsStyle="primary">Create bins or levels</Button>
-            </td>     
+            <td> {item.columnType}</td>
+            <td><Button id="disable_create_bin" onClick={this.openBinsOrLevelsModal.bind(this, item)} disabled={item.columnType!=item.actualColumnType} bsStyle="primary">Create bins or levels</Button>
+            </td>
             <td> <Button onClick={this.openTransformColumnModal.bind(this,item)} bsStyle="primary">Transform</Button></td>
           </tr>
         );

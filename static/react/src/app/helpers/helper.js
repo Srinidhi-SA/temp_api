@@ -628,7 +628,7 @@ export function getRemovedVariableNames(dataset){
     var arr = [];
 
     var pickRemoved = function(item){
-        if(!item.selected){
+        if(!item.selected || item.targetColumn){
             arr.push(item.name)
         }
     }

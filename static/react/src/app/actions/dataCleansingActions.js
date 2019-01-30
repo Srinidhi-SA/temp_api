@@ -2,21 +2,21 @@ import React from "react";
 import {API,STATIC_URL} from "../helpers/env";
 
 
-export function missingValueTreatmentSelectedAction( colType,colName,colSlug, treatment, dispatch){
+export function missingValueTreatmentSelectedAction(colName,colType,colSlug, treatment, dispatch){
   return {
 		type: "MISSING_VALUE_TREATMENT",
-    colName,
+		colName,
     colType,
     colSlug,
     treatment
 	}
 }
-export function outlierRemovalSelectedAction(colType,colName,colslug, treatment, dispatch){
+export function outlierRemovalSelectedAction(colName,colType,colSlug, treatment, dispatch){
   return {
 		type: "OUTLIER_REMOVAL",
-    colName,
+		colName,
     colType,
-    colslug,
+    colSlug,
     treatment
 	}
 }

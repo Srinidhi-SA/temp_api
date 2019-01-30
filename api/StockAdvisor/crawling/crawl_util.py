@@ -34,9 +34,16 @@ def fetch_news_sentiments_from_newsapi(stock):
         nl_understanding = myutils.get_nl_understanding_from_bluemix(
             url=news['final_url'], content_of_the_url=short_desc)
         if nl_understanding:
-            news['keywords'] = nl_understanding.get('keywords', [])
-            news['sentiment'] = nl_understanding.get('sentiment', [])
-            stock_news_with_sentiments.append(news)
+            keywords = nl_understanding.get('keywords', [])
+            sentiment = nl_understanding.get('sentiment', [])
+
+            if len(keywords) > 0 and len(sentiment) > 0:
+                news['keywords'] = keywords
+
+                if 'document' in sentiment:
+                    sentiment['document']['score'] = float(sentiment['document']['score'])
+                    news['sentiment'] = sentiment
+                    stock_news_with_sentiments.append(news)
 
     return stock_news_with_sentiments
 

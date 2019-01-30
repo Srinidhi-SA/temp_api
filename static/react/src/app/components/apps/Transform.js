@@ -49,7 +49,6 @@ export class Transform extends React.Component {
     getTranformDataValue(name){
       var transformationData = this.getTransformationata();
       var value = transformationData[name];
-      console.log("value ..............",value);
       return value;
     }
 
@@ -220,11 +219,11 @@ export class Transform extends React.Component {
                   <span onChange={this.onchangeInput.bind(this)} className="inline">
                   <div class="col-md-7 col-sm-6">
                     <div class="ma-checkbox inline">
-                      <input type="radio" id="one_hot_encoding" name="encoding" value="one_hot_encoding" onInput={this.pickValue} />
+                      <input type="radio" id="one_hot_encoding" name="encoding_type" value="one_hot_encoding"  defaultValue={this.getTranformDataValue("encoding_type")} onChange={this.onchangeInput.bind(this)} onInput={this.pickValue}/>
                       <label for="one_hot_encoding">One hot encoding</label>
                     </div>
                     <div class="ma-checkbox inline">
-                      <input type="radio" id="label_encoding" name="encoding" value="label_encoding" onInput={this.pickValue} />
+                      <input type="radio" id="label_encoding" name="encoding_type"  value="label_encoding" defaultValue={this.getTranformDataValue("encoding_type")} onChange={this.onchangeInput.bind(this)} onInput={this.pickValue}/>
                       <label for="label_encoding">Label encoding</label>
                     </div>
                   </div>
