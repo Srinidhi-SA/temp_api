@@ -56,7 +56,7 @@ export class ModelBuildingModeSelection extends React.Component {
                     <div className="mod-process mod-process-table-primary">
                       <div className="mod-process-title">For business users</div>
                        <div className="mod-process-table-img">
-                       <img src={ STATIC_URL + "assets/images/mProcess_autoMlmode.png" } />
+                       <img src={ STATIC_URL + "assets/images/mProcess_autoMlmode.png" } className="img-responsive" />
                       </div>
                       <p className="mProcess">
         			           Automatic ML modeling process that executes recommended set of data cleansing and transformation operations.
@@ -67,7 +67,7 @@ export class ModelBuildingModeSelection extends React.Component {
                     <div className="mod-process mod-process-table-primary">
                       <div className="mod-process-title">For analysts and data scientists</div>
                        <div className="mod-process-table-img">
-                          <img src={ STATIC_URL + "assets/images/mProcess_automode.png" } />
+                          <img src={ STATIC_URL + "assets/images/mProcess_automode.png" } className="img-responsive" />
                        </div>
                       <p className="mProcess">Robust set of data cleansing and feature transformation and generation options are provided.<br/></p>
         			           <a href="javascript:;" className="btn btn-primary" onClick={this.handleModeSelected.bind(this,"analystmode")}>ANALYST MODE</a>
