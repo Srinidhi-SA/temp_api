@@ -15227,6 +15227,8 @@ blockquote p:after {
 .form_withrowlabels .control-label { margin-top:10px;}
 .form_withrowlabels .ma-checkbox {margin:0;}
 .form_withrowlabels .form-group { margin-bottom: 10px;}
+input#flight_number { display: inherit; width: inherit; }
+.mProcess { min-height:80px; }
 /**************** Css realated to developers, keep the source down ***/
 #prediction_dropdown{
 	    width: 40%;

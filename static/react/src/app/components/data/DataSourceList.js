@@ -169,6 +169,7 @@ export class DataSourceList extends React.Component {
       return (
         <div>
           <Tab.Container id="left-tabs-example" defaultActiveKey="fileUpload">
+		  <div className="container-fluid">
             <Row className="clearfix">
               <Col sm={3}>
                 <Nav bsStyle="pills" stacked>
@@ -183,6 +184,7 @@ export class DataSourceList extends React.Component {
               </Col>
 
             </Row>
+			</div>
           </Tab.Container>
         </div>
       )
