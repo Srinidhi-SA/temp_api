@@ -54,6 +54,7 @@ export class Transform extends React.Component {
 
   pickValue(event){
     this.props.parentPickValue("transformationData", event);
+
   }
 
   onchangeInput(event){
@@ -111,8 +112,8 @@ export class Transform extends React.Component {
                   </div>
                   <label for="replace_values_with_selected" class="col-md-1 col-sm-1 control-label xs-p-0 xs-mt-5 text-right">With</label>
                   <div class="col-md-3 col-sm-3">
-                    <select class="form-control" id="replace_values_with_selected" name="replace_values_with_selected" value={this.getTranformDataValue("replace_values_with_selected")} onChange={this.onchangeInput.bind(this)} onChange={this.pickValue}>
-                      <option value="None" selected> None</option>
+                    <select class="form-control" id="replace_values_with_selected" name="replace_values_with_selected" defaultValue={this.getTranformDataValue("replace_values_with_selected")}    onChange={this.pickValue}>
+                      <option value="None" > None</option>
                       <option value="Mean">Mean</option>
                       <option value="Median">Median</option>
                       <option value="Mode" >Mode</option>
@@ -127,7 +128,7 @@ export class Transform extends React.Component {
                       </div>
                     </div>
                     <div class="col-md-4 col-sm-4">
-                      <select class="form-control" id="perform_standardization_select" name="perform_standardization_select" value={this.getTranformDataValue("perform_standardization_select")} onChange={this.pickValue}>
+                      <select class="form-control" id="perform_standardization_select" name="perform_standardization_select" defaultValue={this.getTranformDataValue("perform_standardization_select")} onChange={this.pickValue}>
                         <option value="None" selected> None</option>
                         <option value="min_max_scaling">Min-Max Scaling</option>
                         <option value="standard_deviation">Standard deviation</option>
