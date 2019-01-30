@@ -46,29 +46,36 @@ export class ModelBuildingModeSelection extends React.Component {
 
     }
     render() {
-        return (<div className="row mod-processs">
+        return (
+		 <div className="side-body">
+			<div class="page-head">
+			<h3 class="xs-mt-0 xs-mb-0 text-capitalize"> Please choose the modeling process.</h3>
+			</div>
+			<div className="row mod-processs">
                   <div className="col-md-4 col-md-offset-2">
                     <div className="mod-process mod-process-table-primary">
                       <div className="mod-process-title">For business users</div>
                        <div className="mod-process-table-img">
-                       <img src={ STATIC_URL + "assets/images/mProcess_autoMlmode.png" } className="img-responsive" />
+                       <img src={ STATIC_URL + "assets/images/mProcess_autoMlmode.png" } />
                       </div>
-                      <p>
+                      <p className="mProcess">
         			           Automatic ML modeling process that executes recommended set of data cleansing and transformation operations.
                 </p>
-                  <a href="javascript:;" className="btn btn-primary" onClick={this.handleModeSelected.bind(this,"automl")}>Auto ML Mode</a></div>
+                  <a href="javascript:;" className="btn btn-primary" onClick={this.handleModeSelected.bind(this,"automl")}>AUTO ML MODE</a></div>
                   </div>
                   <div className="col-md-4">
                     <div className="mod-process mod-process-table-primary">
                       <div className="mod-process-title">For analysts and data scientists</div>
                        <div className="mod-process-table-img">
-                          <img src={ STATIC_URL + "assets/images/mProcess_automode.png" } className="img-responsive" />
+                          <img src={ STATIC_URL + "assets/images/mProcess_automode.png" } />
                        </div>
-                      <p>Robust set of data cleansing and feature transformation and generation options are provided.<br/><br/></p>
-        			           <a href="javascript:;" className="btn btn-primary" onClick={this.handleModeSelected.bind(this,"analystmode")}>Analyst Mode</a>
+                      <p className="mProcess">Robust set of data cleansing and feature transformation and generation options are provided.<br/></p>
+        			           <a href="javascript:;" className="btn btn-primary" onClick={this.handleModeSelected.bind(this,"analystmode")}>ANALYST MODE</a>
                     </div>
                   </div>
-                </div>)
+                </div>
+			</div>
+				)
 
 
     }

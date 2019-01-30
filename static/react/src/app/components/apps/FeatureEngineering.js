@@ -177,6 +177,7 @@ export class FeatureEngineering extends React.Component {
     var numberOfSelectedDimensions = 0;
 
     if (this.props.dataPreview != null) {
+<<<<<<< HEAD
         feHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map((item,key )=> {
           if(removedVariables.indexOf(item.name)!= -1 ) return "";
           if(item.columnType == "measure") numberOfSelectedMeasures +=1;
@@ -191,6 +192,43 @@ export class FeatureEngineering extends React.Component {
           );
         })
       }
+=======
+            feHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map((item,key )=> {
+        if(removedVariables.indexOf(item.name)!= -1 ) return "";
+        if(item.columnType == "measure") numberOfSelectedMeasures +=1;
+        else numberOfSelectedDimensions +=1;
+       return (
+               <tr key={key}>
+                  <td className="text-left"> {item.name}</td>
+                  <td> {item.columnType}</td>
+
+                  <td> <Button onClick={this.openBinsOrLevelsModal.bind(this, item)} disabled={this.isBinningOrLevelsDisabled(item)} bsStyle="primary">CREATE BINS OR LEVELS</Button></td>
+                  <td> <Button onClick={this.openTransformColumnModal.bind(this,item)} bsStyle="primary">TRANSFORM</Button></td>
+
+                </tr>  );
+              })
+            }
+
+            if(this.props.selectedItem.columnType == "measure"){
+              binOrLevels= <Bins parentPickValue={this.pickValue}/>
+              binOrLevelData="binData";
+            }
+            else if(this.props.selectedItem.columnType == "dimension")
+            {
+              binOrLevels= <Levels parentPickValue={this.pickValue} parentUpdateLevelsData={this.updateLevelsData} levelsData={this.getLevelsData()}/>
+              binOrLevelData="levelData";
+            }
+            else
+            {
+              binOrLevels=""
+            }
+
+
+
+
+
+    binsOrLevelsPopup =
+>>>>>>> 9525a3e74b9140bf34e670e00b67a5d9b4b9b137
 
       if(this.props.selectedItem.columnType == "measure"){
         binOrLevels= <Bins parentPickValue={this.pickValue}/>
@@ -263,12 +301,25 @@ export class FeatureEngineering extends React.Component {
         <div className="main-content">
           <div class="row">
             <div class="col-md-12">
+<<<<<<< HEAD
               <div class="panel box-shadow xs-m-0">
                 <div class="panel-body no-border xs-p-20">
                   <h4> The dataset contains {numberOfSelectedMeasures + numberOfSelectedDimensions} columns or features ({numberOfSelectedMeasures} measures and {numberOfSelectedDimensions} dimensions).  If you would like to transform the existing features or create new features from the existing data, you can use the options provided below. </h4>
                   <p class="inline-block">Do you want to convert all measures into dimension using binning? &nbsp;&nbsp;&nbsp;</p>
                   <span onChange={this.handleTopLevelRadioButtonOnchange.bind(this)} className="inline">
                     <div class="ma-checkbox inline">
+=======
+			<div class="panel box-shadow xs-m-0">
+                <div class="panel-body no-border xs-p-20">
+                  <h4> The dataset contains {numberOfSelectedMeasures + numberOfSelectedDimensions} columns or features ({numberOfSelectedMeasures} measures and {numberOfSelectedDimensions} dimensions).  If you would like to transform the existing features or
+                    create new features from the existing data, you can use the options provided below. </h4>
+					<hr/>
+            <p class="inline-block">
+           <i class="fa fa-angle-double-right text-primary"></i> Do you want to convert all measures into dimension using binning? &nbsp;&nbsp;&nbsp;
+            </p>
+            <span onChange={this.handleTopLevelRadioButtonOnchange.bind(this)} className="inline">
+             <div class="ma-checkbox inline">
+>>>>>>> 9525a3e74b9140bf34e670e00b67a5d9b4b9b137
                     <input type="radio" id="mTod-binning1" value="true" name="mTod-binning"  checked={this.state.topLevelRadioButton === "true"} />
                     <label for="mTod-binning1">Yes</label>
                   </div>
@@ -277,9 +328,17 @@ export class FeatureEngineering extends React.Component {
                     <label for="mTod-binning2">No </label>
                   </div>
                   </span>
+<<<<<<< HEAD
                   {(this.state.topLevelRadioButton == "true")?<div id="box-binning" class="xs-ml-20 block-inline"   ><span class="inline-block"> Number of bins : <input type="text" onInput={this.handleTopLevelInputOnchange.bind(this)} class="test_css" maxlength="2" id="flight_number" name="number"/></span></div>:""}
                 </div>
               </div>
+=======
+                  {(this.state.topLevelRadioButton == "true")?<div id="box-binning" class="xs-ml-20 block-inline"   ><span class="inline-block"> Number of bins : <input type="text" onInput={this.handleTopLevelInputOnchange.bind(this)} class="test_css form-control" maxlength="2" id="flight_number" name="number"/></span></div>:""}
+
+                </div>
+              </div>
+
+>>>>>>> 9525a3e74b9140bf34e670e00b67a5d9b4b9b137
               <div className="panel box-shadow ">
                 <div class="panel-body no-border xs-p-20">
                   <div className="table-responsive ">
@@ -292,6 +351,7 @@ export class FeatureEngineering extends React.Component {
                           <th></th>
                         </tr>
                       </thead>
+<<<<<<< HEAD
                       <tbody className="no-border-x">{feHtml}</tbody>
                     </table>
                   </div>
@@ -312,6 +372,19 @@ export class FeatureEngineering extends React.Component {
                   </div>
                 </div>
               </div>
+=======
+                        <tbody className="no-border-x">{feHtml}</tbody>
+                      </table>
+                    </div>
+					   <div className="buttonRow text-right" id="dataPreviewButton">
+                      <Button onClick={this.handleProcedClicked.bind(this)} bsStyle="primary">{this.buttons.proceed.text} <i class="fa fa-angle-double-right"></i></Button>
+                            </div>
+                    </div>
+                    </div>
+                 
+                          </div>
+{/* <!--End of Page Content Area --> */}
+>>>>>>> 9525a3e74b9140bf34e670e00b67a5d9b4b9b137
             </div>
             {/* <!--End of Page Content Area --> */}
           </div>
