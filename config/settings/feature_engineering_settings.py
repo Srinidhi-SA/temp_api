@@ -561,6 +561,16 @@ feture_engineering_static = {
                       "datatype": "measure",
                       "list_of_intervals": [10,20,30,40]
                     }
+                },
+                {
+                    "name": "none",
+                    "displayName": "None",
+                    "selected": True,
+                    "columns": [],
+                    "display": True,
+                    "columns_structure": {
+
+                    }
                 }
           ],
         },
