@@ -1427,6 +1427,7 @@ class Score(models.Model):
         config['config']["DATA_SOURCE"] = self.dataset.get_datasource_info()
         # config['config']["DATE_SETTINGS"] = self.create_configuration_filter_settings()
         # config['config']["META_HELPER"] = self.create_configuration_meta_data()
+        config['config']['FEATURE_SETTINGS'] = self.get_trainer_feature_settings()
 
         self.config = json.dumps(config)
         self.save()
@@ -1542,6 +1543,12 @@ class Score(models.Model):
         ret.update(meta_data_related_config)
 
         return ret
+
+    def get_trainer_feature_settings(self):
+        model_config = json.loads(self.trainer.config)
+        model_config_feature_settings = model_config['config']['FEATURE_SETTINGS']
+        return model_config_feature_settings
+
 
     def get_local_file_path(self):
         return '/tmp/' + self.slug
