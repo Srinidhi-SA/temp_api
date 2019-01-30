@@ -107,7 +107,7 @@ export class Transform extends React.Component {
                     </div>
                   </div>
                   <div class="col-md-3 col-sm-3">
-                    <input type="text" name="replace_values_with_input" class="form-control" placeholder="Value" defaultValue={this.getTranformDataValue("replace_values_with_input")} onChange={this.onchangeInput.bind(this)} onInput={this.pickValue}/>
+                    <input type="number" name="replace_values_with_input" class="form-control" placeholder="Value" defaultValue={this.getTranformDataValue("replace_values_with_input")} onChange={this.onchangeInput.bind(this)} onInput={this.pickValue}/>
                   </div>
                   <label for="replace_values_with_selected" class="col-md-1 col-sm-1 control-label xs-p-0 xs-mt-5 text-right">With</label>
                   <div class="col-md-3 col-sm-3">

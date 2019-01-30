@@ -286,7 +286,7 @@ console.log("FeatureEngineering componentWillMount method is called...");
                     <label for="mTod-binning2">No </label>
                   </div>
                   </span>
-                  {(this.state.topLevelRadioButton == "true")?<div id="box-binning" class="xs-ml-20 block-inline"   ><span class="inline-block"> Number of bins : <input type="text" onInput={this.handleTopLevelInputOnchange.bind(this)} class="test_css" maxlength="2" id="flight_number" name="number"/></span></div>:""}
+                  {(this.state.topLevelRadioButton == "true")?<div id="box-binning" class="xs-ml-20 block-inline"   ><span class="inline-block"> Number of bins : <input type="number" onInput={this.handleTopLevelInputOnchange.bind(this)} class="test_css" maxlength="2" id="flight_number" name="number"/></span></div>:""}
 
                 </div>
               </div>
