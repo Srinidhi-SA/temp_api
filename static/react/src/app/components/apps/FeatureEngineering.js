@@ -354,7 +354,11 @@ console.log("FeatureEngineering componentWillMount method is called...");
                     create new features from the existing data, you can use the options provided below. </h4>
 					<hr/>
             <p class="inline-block">
+<<<<<<< HEAD
            <i class="fa fa-angle-double-right text-primary"></i> Do you want to convert all measures into dimension using binning? &nbsp;&nbsp;&nbsp;
+=======
+           <i class="fa fa-angle-double-right"></i> Do you want to convert all measures into dimension using binning? &nbsp;&nbsp;&nbsp;
+>>>>>>> 0e87b9a70b7cc363cb8b3435cea821c72267f056
             </p>
             <span onChange={this.handleTopLevelRadioButtonOnchange.bind(this)} className="inline">
              <div class="ma-checkbox inline">
@@ -366,7 +370,11 @@ console.log("FeatureEngineering componentWillMount method is called...");
                     <label for="mTod-binning2">No </label>
                   </div>
                   </span>
+<<<<<<< HEAD
                   {(this.state.topLevelRadioButton == "true")?<div id="box-binning" class="xs-ml-20 block-inline"   ><span class="inline-block"> Number of bins : <input type="text" onInput={this.handleTopLevelInputOnchange.bind(this)} class="test_css form-control" maxlength="2" id="flight_number" name="number"/></span></div>:""}
+=======
+                  {(this.state.topLevelRadioButton == "true")?<div id="box-binning" class="xs-ml-20 block-inline"><span class="inline-block"> Number of bins : <input type="text" onInput={this.handleTopLevelInputOnchange.bind(this)} class="test_css form-control" maxlength="2" id="flight_number" name="number"/></span></div>:""}
+>>>>>>> 0e87b9a70b7cc363cb8b3435cea821c72267f056
 
                 </div>
               </div>
