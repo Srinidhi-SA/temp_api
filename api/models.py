@@ -1176,7 +1176,9 @@ class Trainer(models.Model):
         if 'overallSettings' in feature_engineering_config_ui:
             overall_data = feature_engineering_config_ui['overallSettings']
 
-            if overall_data['yesNoValue'] == True or overall_data['yesNoValue'] == 'true':
+	
+            if 'yesNoValue' in overall_data and (overall_data['yesNoValue'] == True or overall_data['yesNoValue'] == 'true'):
+            #if overall_data['yesNoValue'] == True or overall_data['yesNoValue'] == 'true':
                 overall_settings[0]['selected'] = True
                 overall_settings[0]['number_of_bins'] = int(overall_data['numberOfBins'])
 
