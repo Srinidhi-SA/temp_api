@@ -537,6 +537,16 @@ feture_engineering_static = {
             "display": True,
             "operations": [
                 {
+                    "name": "none",
+                    "displayName": "None",
+                    "selected": True,
+                    "columns": [],
+                    "display": True,
+                    "columns_structure": {
+
+                    }
+                },
+                {
                     "name": "create_equal_sized_bins",
                     "displayName": "Create Equal Sized Bins",
                     "selected": True,
@@ -560,16 +570,6 @@ feture_engineering_static = {
                       "name_after_binning": "Custom_Binned_age",
                       "datatype": "measure",
                       "list_of_intervals": [10,20,30,40]
-                    }
-                },
-                {
-                    "name": "none",
-                    "displayName": "None",
-                    "selected": True,
-                    "columns": [],
-                    "display": True,
-                    "columns_structure": {
-
                     }
                 }
           ],
