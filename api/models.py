@@ -1173,7 +1173,7 @@ class Trainer(models.Model):
 
         columns_wise_data = feature_engineering_config_ui['columnsSettings']
 
-        if 'overallSettings' in feature_engineering_config_ui
+        if 'overallSettings' in feature_engineering_config_ui:
             overall_data = feature_engineering_config_ui['overallSettings']
 
             if overall_data['yesNoValue'] == True or overall_data['yesNoValue'] == 'true':
