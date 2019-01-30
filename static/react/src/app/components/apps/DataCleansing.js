@@ -215,7 +215,7 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
                 <label for={item.slug}> </label>
               </div></td> */}
 
-          <td>{item.name}</td>
+          <td className="text-left">{item.name}</td>
           <td>  {this.getUpdatedDataType(item.slug)}</td>
          {/* using filter and map to retrive data from array inside array*/}
          {/* <td> */}
@@ -298,22 +298,19 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
                       <table className="table table-striped table-bordered break-if-longText">
                         <thead>
                           <tr>
-
-
-
                             {/* <th> <div class="ma-checkbox inline">
                                 <input id="checkAll" type="checkbox" class="needsclick" onChange={this.handleSelectAll.bind(this)}/>
                                 <label for="checkAll">All</label>
                               </div>
                             </th> */}
 
-                            <th>Variable name</th>
-                            <th>Data type</th>
-                            <th># of unique values</th>
-                            <th># of outliers</th>
-                            <th>% of missing values</th>
-                            <th>Missing value treatment</th>
-                            <th>Outlier removal</th>
+                            <th className="text-left"><b>Variable name</b></th>
+                            <th><b>Data type</b></th>
+                            <th><b>No of unique values</b></th>
+                            <th><b>No of outliers</b></th>
+                            <th><b>% of missing values</b></th>
+                            <th><b>Missing value treatment</b></th>
+                            <th><b>Outlier removal</b></th>
                             </tr>
                         </thead>
                         <tbody className="no-border-x">
