@@ -52,6 +52,7 @@ export class FeatureEngineering extends React.Component {
   this.state.topLevelRadioButton = "false";
   this.prevState = this.state;
   this.pickValue = this.pickValue.bind(this);
+  this.clearBinsAndIntervals = this.clearBinsAndIntervals.bind(this);
   this.updateLevelsData = this.updateLevelsData.bind(this);
 
 }
@@ -59,9 +60,9 @@ export class FeatureEngineering extends React.Component {
 
 
   componentWillMount() {
-    if(this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null){
-            window.history.go(-1);
-        }
+    // if(this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null){
+    //         window.history.go(-1);
+    //     }
     //set state with data from store always
     this.setState({featureEngineering:this.props.featureEngineering});
     //debugger;
@@ -82,6 +83,14 @@ console.log("FeatureEngineering componentWillMount method is called...");
 
     pickValuesAndStoreLocally(slug, inputId, event){
 
+  }
+  clearBinsAndIntervals(event){
+    debugger;
+    if(this.state[this.props.selectedItem.slug] != undefined  && this.state[this.props.selectedItem.slug]["binData"] != undefined){
+      this.state[this.props.selectedItem.slug]["binData"]["numberofbins"] = ""
+      this.state[this.props.selectedItem.slug]["binData"]["specifyintervals"] = ""
+      this.setState({ state: this.state });
+    }
   }
   pickValue(actionType, event){
     if(this.state[this.props.selectedItem.slug] == undefined){
@@ -116,11 +125,84 @@ console.log("FeatureEngineering componentWillMount method is called...");
 
   handleCreateClicked(actionType, event){
     //debugger;
-    var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
-    this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
-    this.closeBinsOrLevelsModal();
-    this.closeTransformColumnModal();
+    if(actionType == "binData"){
+      this.validateBinData(actionType);
+
+    }else if (actionType == "levelData"){
+
+      var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
+      this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
+      this.closeBinsOrLevelsModal();
+      this.closeTransformColumnModal();
+
+    }else if(actionType == "transformationData"){
+
+      var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
+      this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
+      this.closeBinsOrLevelsModal();
+      this.closeTransformColumnModal();
+
+    }
+
+
   }
+
+  validateBinData(actionType){
+    var slugData = this.state[this.props.selectedItem.slug];
+      if(slugData != undefined && this.state[this.props.selectedItem.slug][actionType] != undefined){
+        var binData = this.state[this.props.selectedItem.slug][actionType];
+
+
+        if(binData.selectBinType == undefined || binData.selectBinType == "none"){
+            $("#fileErrorMsg").removeClass("visibilityHidden");
+            $("#fileErrorMsg").html("Please select type of binning");
+            return;
+        }else{
+          if(binData.selectBinType == "create_equal_sized_bins"){
+
+            if(binData.numberofbins == undefined || binData.numberofbins == null|| binData.numberofbins == "" ){
+                $("#fileErrorMsg").removeClass("visibilityHidden");
+                $("#fileErrorMsg").html("Please enter number of bins");
+                return;
+            }
+            else if(parseInt(binData.numberofbins) <= 0){
+              $("#fileErrorMsg").removeClass("visibilityHidden");
+              $("#fileErrorMsg").html("Please enter number greater than zero");
+              return;
+            }
+
+          }else if(binData.selectBinType == "create_custom_bins"){
+
+            if(binData.specifyintervals == undefined|| binData.specifyintervals == null|| binData.specifyintervals == "" ){
+              $("#fileErrorMsg").removeClass("visibilityHidden");
+                $("#fileErrorMsg").html("Please enter specify intervals");
+                return;
+              }
+          }
+        }
+
+        if(binData.newcolumnname == undefined || binData.newcolumnname == null|| binData.newcolumnname == "" ){
+            $("#fileErrorMsg").removeClass("visibilityHidden");
+            $("#fileErrorMsg").html("Please enter the new column name");
+            return;
+        }
+        var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
+        this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
+        this.closeBinsOrLevelsModal();
+        this.closeTransformColumnModal();
+
+
+      }else{
+        $("#fileErrorMsg").removeClass("visibilityHidden");
+        $("#fileErrorMsg").html("Please fill in the details");
+      }
+
+  }
+
+  validateTransformdata(){
+
+  }
+
 
 
   handleTopLevelRadioButtonOnchange(event){
@@ -182,14 +264,16 @@ console.log("FeatureEngineering componentWillMount method is called...");
                <tr key={key}>
                   <td className="text-left"> {item.name}</td>
                   <td> {item.columnType}</td>
-                  <td> <Button onClick={this.openBinsOrLevelsModal.bind(this, item)} disabled={this.isBinningOrLevelsDisabled(item)} bsStyle="primary">Create bins or levels</Button></td>
-                  <td> <Button onClick={this.openTransformColumnModal.bind(this,item)} bsStyle="primary">Transform</Button></td>
+
+                  <td> <Button onClick={this.openBinsOrLevelsModal.bind(this, item)} disabled={this.isBinningOrLevelsDisabled(item)} bsStyle="primary">CREATE BINS OR LEVELS</Button></td>
+                  <td> <Button onClick={this.openTransformColumnModal.bind(this,item)} bsStyle="primary">TRANSFORM</Button></td>
+
                 </tr>  );
               })
             }
 
             if(this.props.selectedItem.columnType == "measure"){
-              binOrLevels= <Bins parentPickValue={this.pickValue}/>
+              binOrLevels= <Bins parentPickValue={this.pickValue}   clearBinsAndIntervals={this.clearBinsAndIntervals} />
               binOrLevelData="binData";
             }
             else if(this.props.selectedItem.columnType == "dimension")
@@ -226,7 +310,7 @@ console.log("FeatureEngineering componentWillMount method is called...");
               </Modal.Body>
               <Modal.Footer>
                 <Button onClick={this.closeBinsOrLevelsModal.bind(this)}>Cancel</Button>
-                <Button bsStyle="primary" onClick={this.handleCreateClicked.bind(this, binOrLevelData)}>Create</Button>
+                <Button bsStyle="primary" form="binsForm" content="Submit" value="Submit" onClick={this.handleCreateClicked.bind(this, binOrLevelData)}>Create</Button>
               </Modal.Footer>
             </Modal>
           </div>
@@ -264,18 +348,17 @@ console.log("FeatureEngineering componentWillMount method is called...");
          <div className="main-content">
           <div class="row">
             <div class="col-md-12">
-
-
-
-
-
-              <div class="panel box-shadow xs-m-0">
+			<div class="panel box-shadow xs-m-0">
                 <div class="panel-body no-border xs-p-20">
                   <h4> The dataset contains {numberOfSelectedMeasures + numberOfSelectedDimensions} columns or features ({numberOfSelectedMeasures} measures and {numberOfSelectedDimensions} dimensions).  If you would like to transform the existing features or
                     create new features from the existing data, you can use the options provided below. </h4>
 					<hr/>
             <p class="inline-block">
+<<<<<<< HEAD
+           <i class="fa fa-angle-double-right text-primary"></i> Do you want to convert all measures into dimension using binning? &nbsp;&nbsp;&nbsp;
+=======
            <i class="fa fa-angle-double-right"></i> Do you want to convert all measures into dimension using binning? &nbsp;&nbsp;&nbsp;
+>>>>>>> 0e87b9a70b7cc363cb8b3435cea821c72267f056
             </p>
             <span onChange={this.handleTopLevelRadioButtonOnchange.bind(this)} className="inline">
              <div class="ma-checkbox inline">
@@ -287,14 +370,14 @@ console.log("FeatureEngineering componentWillMount method is called...");
                     <label for="mTod-binning2">No </label>
                   </div>
                   </span>
+<<<<<<< HEAD
+                  {(this.state.topLevelRadioButton == "true")?<div id="box-binning" class="xs-ml-20 block-inline"   ><span class="inline-block"> Number of bins : <input type="text" onInput={this.handleTopLevelInputOnchange.bind(this)} class="test_css form-control" maxlength="2" id="flight_number" name="number"/></span></div>:""}
+=======
                   {(this.state.topLevelRadioButton == "true")?<div id="box-binning" class="xs-ml-20 block-inline"><span class="inline-block"> Number of bins : <input type="text" onInput={this.handleTopLevelInputOnchange.bind(this)} class="test_css form-control" maxlength="2" id="flight_number" name="number"/></span></div>:""}
+>>>>>>> 0e87b9a70b7cc363cb8b3435cea821c72267f056
 
                 </div>
               </div>
-
-
-
-
 
               <div className="panel box-shadow ">
               <div class="panel-body no-border xs-p-20">
@@ -302,9 +385,8 @@ console.log("FeatureEngineering componentWillMount method is called...");
                   <table className="table table-striped table-bordered break-if-longText">
                     <thead>
                       <tr key="trKey">
-                        <th className="text-left"><b>Variable name</b></th>
-                        <th><b>Data type</b></th>
-
+                        <th>Variable name</th>
+                        <th>Data type</th>
                         <th></th>
                         <th></th>
                       </tr>
@@ -312,23 +394,12 @@ console.log("FeatureEngineering componentWillMount method is called...");
                         <tbody className="no-border-x">{feHtml}</tbody>
                       </table>
                     </div>
-                    </div>
-                    </div>
-                    <div className="row buttonRow" id="dataPreviewButton">
-                      <div className="col-md-12">
-                          <div className="panel xs-mb-0">
-                            <div className="panel-body box-shadow">
-                                <div className="navbar">
-                                    <ul className="nav navbar-nav navbar-right">
-                                        <li className="text-right">
-                                          <Button onClick={this.handleProcedClicked.bind(this)} bsStyle="primary">{this.buttons.proceed.text} <i class="fa fa-angle-double-right"></i></Button>
-                                        </li>
-                                      </ul>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
+					   <div className="buttonRow text-right" id="dataPreviewButton">
+                      <Button onClick={this.handleProcedClicked.bind(this)} bsStyle="primary">{this.buttons.proceed.text} <i class="fa fa-angle-double-right"></i></Button>
                             </div>
+                    </div>
+                    </div>
+
                           </div>
 {/* <!--End of Page Content Area --> */}
             </div>
