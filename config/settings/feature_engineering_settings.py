@@ -1208,7 +1208,7 @@ feature_engineering_ml_settings = {
         {
           "name": "binning_all_measures",
           "displayName": "Bin all Measures",
-          "selected": True,
+          "selected": False,
           "number_of_bins": 10,
           "slug": "",
         }],
