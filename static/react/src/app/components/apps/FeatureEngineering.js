@@ -273,8 +273,9 @@ console.log("FeatureEngineering componentWillMount method is called...");
                 <div class="panel-body no-border xs-p-20">
                   <h4> The dataset contains {numberOfSelectedMeasures + numberOfSelectedDimensions} columns or features ({numberOfSelectedMeasures} measures and {numberOfSelectedDimensions} dimensions).  If you would like to transform the existing features or
                     create new features from the existing data, you can use the options provided below. </h4>
+					<hr/>
             <p class="inline-block">
-            Do you want to convert all measures into dimension using binning? &nbsp;&nbsp;&nbsp;
+           <i class="fa fa-angle-double-right"></i> Do you want to convert all measures into dimension using binning? &nbsp;&nbsp;&nbsp;
             </p>
             <span onChange={this.handleTopLevelRadioButtonOnchange.bind(this)} className="inline">
              <div class="ma-checkbox inline">
@@ -286,7 +287,7 @@ console.log("FeatureEngineering componentWillMount method is called...");
                     <label for="mTod-binning2">No </label>
                   </div>
                   </span>
-                  {(this.state.topLevelRadioButton == "true")?<div id="box-binning" class="xs-ml-20 block-inline"   ><span class="inline-block"> Number of bins : <input type="text" onInput={this.handleTopLevelInputOnchange.bind(this)} class="test_css" maxlength="2" id="flight_number" name="number"/></span></div>:""}
+                  {(this.state.topLevelRadioButton == "true")?<div id="box-binning" class="xs-ml-20 block-inline"><span class="inline-block"> Number of bins : <input type="text" onInput={this.handleTopLevelInputOnchange.bind(this)} class="test_css form-control" maxlength="2" id="flight_number" name="number"/></span></div>:""}
 
                 </div>
               </div>
