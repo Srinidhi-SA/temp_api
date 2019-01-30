@@ -112,10 +112,10 @@ export class Transform extends React.Component {
                   <label for="replace_values_with_selected" class="col-md-1 col-sm-1 control-label xs-p-0 xs-mt-5 text-right">With</label>
                   <div class="col-md-3 col-sm-3">
                     <select class="form-control" id="replace_values_with_selected" name="replace_values_with_selected" value={this.getTranformDataValue("replace_values_with_selected")} onChange={this.onchangeInput.bind(this)} onChange={this.pickValue}>
-                      <option>Mean</option>
-                      <option>Median</option>
-                      <option>Mode</option>
-                      <option selected >None</option>
+                      <option value="None" selected> None</option>
+                      <option value="Mean">Mean</option>
+                      <option value="Median">Median</option>
+                      <option value="Mode" >Mode</option>
                     </select>
                   </div>
                 </div>
@@ -212,18 +212,18 @@ export class Transform extends React.Component {
                 <div class="row form-group">
                   <div class="col-md-5 col-sm-5">
                     <div class="ma-checkbox inline">
-                      <input id="encoding_dimensions" name="encoding_dimensions" type="checkbox" defaultChecked={this.getTranformDataValue("encoding_dimensions")} class="needsclick" onChange={this.pickValue}/>
+                      <input id="encoding_dimensions" name="encoding_dimensions" type="checkbox" defaultChecked={this.getTranformDataValue("encoding_dimensions")} class="needsclick" onChange={this.onchangeInput.bind(this)}  onInput={this.pickValue}/>
                       <label for="encoding_dimensions">Perform Encoding:</label>
                     </div>
                   </div>
                   <span onChange={this.onchangeInput.bind(this)} className="inline">
                   <div class="col-md-7 col-sm-6">
                     <div class="ma-checkbox inline">
-                      <input type="radio" id="one_hot_encoding" name="encoding_type" value="one_hot_encoding"  defaultValue={this.getTranformDataValue("encoding_type")} onChange={this.onchangeInput.bind(this)} onInput={this.pickValue}/>
+                      <input type="radio" id="one_hot_encoding" name="encoding_type" value="one_hot_encoding"  defaultChecked={this.getTranformDataValue("encoding_type") === "one_hot_encoding" } onChange={this.pickValue}/>
                       <label for="one_hot_encoding">One hot encoding</label>
                     </div>
                     <div class="ma-checkbox inline">
-                      <input type="radio" id="label_encoding" name="encoding_type"  value="label_encoding" defaultValue={this.getTranformDataValue("encoding_type")} onChange={this.onchangeInput.bind(this)} onInput={this.pickValue}/>
+                      <input type="radio" id="label_encoding" name="encoding_type"  value="label_encoding" defaultChecked={this.getTranformDataValue("encoding_type") === "label_encoding"} onChange={this.pickValue}/>
                       <label for="label_encoding">Label encoding</label>
                     </div>
                   </div>

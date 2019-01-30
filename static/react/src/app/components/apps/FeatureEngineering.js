@@ -11,6 +11,7 @@ import {
   saveBinLevelTransformationValuesAction,
   saveTopLevelValuesAction,
 } from "../../actions/featureEngineeringActions";
+import {showHideSideChart, showHideSideTable, MINROWINDATASET,toggleVisualization, getRemovedVariableNames} from "../../helpers/helper.js"
 
 import { getDataSetPreview } from "../../actions/dataActions";
 import { Bins } from "./Bins";
@@ -21,11 +22,13 @@ import { Transform } from "./Transform";
   return {
     login_response: store.login.login_response,
     dataPreview: store.datasets.dataPreview,
-    dataSets: store.datasets.allDataSets,
+    datasets: store.datasets,
     binsOrLevelsShowModal: store.datasets.binsOrLevelsShowModal,
     transferColumnShowModal: store.datasets.transferColumnShowModal,
     selectedBinsOrLevelsTab: store.datasets.selectedBinsOrLevelsTab,
     selectedItem: store.datasets.selectedItem,
+    apps_regression_modelName:store.apps.apps_regression_modelName,
+    currentAppDetails:store.apps.currentAppDetails,
     featureEngineering:store.datasets.featureEngineering
   };
 })
@@ -44,6 +47,9 @@ export class FeatureEngineering extends React.Component {
   }
 
   componentWillMount() {
+    if(this.props.apps_regression_modelName == "" || this.props.currentAppDetails == null){
+            window.history.go(-1);
+        }
     //set state with data from store always
     this.setState({featureEngineering:this.props.featureEngineering});
     if (this.props.dataPreview == null|| this.props.dataPreview.status == 'FAILED') {
@@ -153,6 +159,9 @@ export class FeatureEngineering extends React.Component {
     var proccedUrl = this.props.match.url.replace('featureEngineering','Proceed');
     this.props.history.push(proccedUrl);
   }
+  isBinningOrLevelsDisabled(item){
+      return ((this.state.topLevelRadioButton == "true" && item.columnType == "measure") || (item.columnType!=item.actualColumnType)  )
+  }
 
   render() {
     console.log("FeatureEngineering render method is called...");
@@ -162,34 +171,54 @@ export class FeatureEngineering extends React.Component {
     let typeofBinningSelectBox = null;
     var binOrLevels = "";
     var binOrLevelData="";
+    var values="";
+
+    // if (this.props.dataPreview != null) {
+    //         values = this.props.dataPreview.meta_data.scriptMetaData.columnData.map((item,key )=> {
+    //         if(item.columnType == "measure")
+    //    return (
+    //            <span>{item.columnType.length}</span>
+    //             );
+    //           })
+    //         }
+
+
+
+
+
+
+    var removedVariables = getRemovedVariableNames(this.props.datasets);
+    var numberOfSelectedMeasures = 0;
+    var numberOfSelectedDimensions = 0;
 
     if (this.props.dataPreview != null) {
-      feHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map((item,key )=> {
+        feHtml = this.props.dataPreview.meta_data.scriptMetaData.columnData.map((item,key )=> {
+        if(removedVariables.indexOf(item.name)!= -1 ) return "";
+        if(item.columnType == "measure") numberOfSelectedMeasures +=1;
+        else numberOfSelectedDimensions +=1;
         return (
-          <tr key={key}>
-            <td> {item.name}</td>
-            <td> {item.columnType}</td>
-            <td><Button id="disable_create_bin" onClick={this.openBinsOrLevelsModal.bind(this, item)} disabled={item.columnType!=item.actualColumnType} bsStyle="primary">Create bins or levels</Button>
-            </td>
-            <td> <Button onClick={this.openTransformColumnModal.bind(this,item)} bsStyle="primary">Transform</Button></td>
-          </tr>
-        );
-      })
-    }
+               <tr key={key}>
+                  <td> {item.name}</td>
+                  <td> {item.columnType}</td>
+                  <td> <Button onClick={this.openBinsOrLevelsModal.bind(this, item)} disabled={this.isBinningOrLevelsDisabled(item)} bsStyle="primary">Create bins or levels</Button></td>
+                  <td> <Button onClick={this.openTransformColumnModal.bind(this,item)} bsStyle="primary">Transform</Button></td>
+                </tr>  );
+              })
+            }
 
-    if(this.props.selectedItem.columnType == "measure"){
-      binOrLevels= <Bins parentPickValue={this.pickValue}/>
-      binOrLevelData="binData";
-    }
-    else if(this.props.selectedItem.columnType == "dimension")
-    {
-        binOrLevels= <Levels parentPickValue={this.pickValue} parentUpdateLevelsData={this.updateLevelsData} levelsData={this.getLevelsData()}/>
-        binOrLevelData="levelData";
-    }
-    else
-    {
-      binOrLevels=""
-    }
+            if(this.props.selectedItem.columnType == "measure"){
+              binOrLevels= <Bins parentPickValue={this.pickValue}/>
+              binOrLevelData="binData";
+            }
+            else if(this.props.selectedItem.columnType == "dimension")
+            {
+              binOrLevels= <Levels parentPickValue={this.pickValue} parentUpdateLevelsData={this.updateLevelsData} levelsData={this.getLevelsData()}/>
+              binOrLevelData="levelData";
+            }
+            else
+            {
+              binOrLevels=""
+            }
 
     binsOrLevelsPopup = (
       <div class="col-md-3 xs-mb-15 list-boxes" >
@@ -250,17 +279,20 @@ export class FeatureEngineering extends React.Component {
             <div class="col-md-12">
               <div class="panel box-shadow xs-m-0">
                 <div class="panel-body no-border xs-p-20">
-                  <h4> The dataset contains --- columns or features (7 measures and 7 dimensions).  If you would like to transform the existing features or create new features from the existing data, you can use the options provided below. </h4>
-                  <p class="inline-block">Do you want to convert all measures into dimension using binning? &nbsp;&nbsp;&nbsp;</p>
-                  <span onChange={this.handleTopLevelRadioButtonOnchange.bind(this)} className="inline">
-                    <div class="ma-checkbox inline">
-                      <input type="radio" id="mTod-binning1" value="true" name="mTod-binning"  checked={this.state.topLevelRadioButton === "true"} />
-                      <label for="mTod-binning1">Yes</label>
-                    </div>
-                    <div class="ma-checkbox inline">
-                      <input type="radio" id="mTod-binning2" value="false" name="mTod-binning"  checked={this.state.topLevelRadioButton === "false"} />
-                      <label for="mTod-binning2">No </label>
-                    </div>
+                  <h4> The dataset contains {numberOfSelectedMeasures + numberOfSelectedDimensions} columns or features ({numberOfSelectedMeasures} measures and {numberOfSelectedDimensions} dimensions).  If you would like to transform the existing features or
+                    create new features from the existing data, you can use the options provided below. </h4>
+            <p class="inline-block">
+            Do you want to convert all measures into dimension using binning? &nbsp;&nbsp;&nbsp;
+            </p>
+            <span onChange={this.handleTopLevelRadioButtonOnchange.bind(this)} className="inline">
+             <div class="ma-checkbox inline">
+                    <input type="radio" id="mTod-binning1" value="true" name="mTod-binning"  checked={this.state.topLevelRadioButton === "true"} />
+                    <label for="mTod-binning1">Yes</label>
+                  </div>
+                  <div class="ma-checkbox inline">
+                    <input type="radio" id="mTod-binning2" value="false" name="mTod-binning"  checked={this.state.topLevelRadioButton === "false"} />
+                    <label for="mTod-binning2">No </label>
+                  </div>
                   </span>
                   {(this.state.topLevelRadioButton == "true")?<div id="box-binning" class="xs-ml-20 block-inline"   ><span class="inline-block"> Number of bins : <input type="text" onInput={this.handleTopLevelInputOnchange.bind(this)} class="test_css" maxlength="2" id="flight_number" name="number"/></span></div>:""}
                 </div>
