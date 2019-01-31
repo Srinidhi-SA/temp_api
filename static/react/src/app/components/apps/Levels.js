@@ -159,7 +159,7 @@ export class Levels extends React.Component {
         </div>
 
         ))}
-        <button className="btn btn-primary b-inline" onClick={this.addNewLevel.bind(this)} ><i className="fa fa-plus"></i></button>
+        <button className="btn btn-primary b-inline addn" onClick={this.addNewLevel.bind(this)} ><i className="fa fa-plus"></i> Add</button>
 
       </div>
     )
