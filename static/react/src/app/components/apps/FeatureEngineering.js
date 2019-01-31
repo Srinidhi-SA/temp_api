@@ -136,10 +136,11 @@ export class FeatureEngineering extends React.Component {
       if(slugData != undefined && this.state[this.props.selectedItem.slug][actionType] != undefined){
         var binData = this.state[this.props.selectedItem.slug][actionType];
 
-
         if(binData.selectBinType == undefined || binData.selectBinType == "none"){
             $("#fileErrorMsg").removeClass("visibilityHidden");
             $("#fileErrorMsg").html("Please select type of binning");
+			$("select[name='selectBinType']").css("border-color","red");
+			$("select[name='selectBinType']").focus();
             return;
         }else{
           if(binData.selectBinType == "create_equal_sized_bins"){
@@ -147,38 +148,51 @@ export class FeatureEngineering extends React.Component {
             if(binData.numberofbins == undefined || binData.numberofbins == null|| binData.numberofbins == "" ){
                 $("#fileErrorMsg").removeClass("visibilityHidden");
                 $("#fileErrorMsg").html("Please enter number of bins");
+				$("input[name='numberofbins']").css("border-color","red");
+				$("input[name='numberofbins']").focus();
                 return;
             }
             else if(parseInt(binData.numberofbins) <= 0){
               $("#fileErrorMsg").removeClass("visibilityHidden");
               $("#fileErrorMsg").html("Please enter number greater than zero");
+			  $("input[name='numberofbins']").css("border-color","red");
+			  $("input[name='numberofbins']").focus();
               return;
-            }
-
+            }			
+			
           }else if(binData.selectBinType == "create_custom_bins"){
 
             if(binData.specifyintervals == undefined|| binData.specifyintervals == null|| binData.specifyintervals == "" ){
               $("#fileErrorMsg").removeClass("visibilityHidden");
-                $("#fileErrorMsg").html("Please enter specify intervals");
+                $("#fileErrorMsg").html("Please enter 'Specify Intervals' field");
+				$("input[name='specifyintervals']").css("border-color","red");
+				$("input[name='specifyintervals']").focus();
                 return;
               }
+			  
           }
         }
 
         if(binData.newcolumnname == undefined || binData.newcolumnname == null|| binData.newcolumnname == "" ){
             $("#fileErrorMsg").removeClass("visibilityHidden");
             $("#fileErrorMsg").html("Please enter the new column name");
+			$("input[name='newcolumnname']").focus();
             return;
         }
         var dataToSave = JSON.parse(JSON.stringify(this.state[this.props.selectedItem.slug][actionType]));
         this.props.dispatch(saveBinLevelTransformationValuesAction(this.props.selectedItem.slug, actionType, dataToSave));
         this.closeBinsOrLevelsModal();
         this.closeTransformColumnModal();
-
-
       }else{
         $("#fileErrorMsg").removeClass("visibilityHidden");
-        $("#fileErrorMsg").html("Please fill in the details");
+		$("select[name='selectBinType']").css("border-color","red");
+		$("input[name='numberofbins']").css("border-color","red");		
+		$("input[name='newcolumnname']").css("border-color","red");
+		
+        $("#fileErrorMsg").html("Please enter Mandatory fields * ");
+		
+		
+		
       }
 
   }

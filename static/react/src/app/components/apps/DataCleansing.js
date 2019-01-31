@@ -279,7 +279,7 @@ getMissingValueTreatmentOptions(dataType, colName, colSlug){
               <div class="clearfix xs-mb-5"></div>
 
               <div class="form-group">
-                <label for="rd2" class="col-sm-5 control-label"> Do you want to remove duplicate observations  in the dataset?</label>
+                <label for="rd2" class="col-sm-5 control-label"><i class="fa fa-angle-double-right"></i> Do you want to remove duplicate observations  in the dataset?</label>
                 <div class="col-sm-7">
                   <div className="content-section implementation">
                     <SelectButton id="rd2" value={this.state.value2} options={options} name="remove_duplicate_observations"  onChange={this.handleDuplicateObservationsOnChange.bind(this)} />
